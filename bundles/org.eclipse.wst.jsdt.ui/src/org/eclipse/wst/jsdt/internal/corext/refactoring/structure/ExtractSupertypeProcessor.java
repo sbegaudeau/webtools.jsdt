@@ -44,24 +44,24 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditCopier;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.ASTRequestor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.Type;
@@ -70,8 +70,8 @@ import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility2;
@@ -92,10 +92,10 @@ import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.JavaPreferencesSettings;
 import org.eclipse.wst.jsdt.ui.CodeGeneration;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Refactoring processor for the extract supertype refactoring.
@@ -116,7 +116,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 
 	/**
 	 * The changes of the working copy layer (element type:
-	 * &lt;ICompilationUnit, TextEditBasedChange&gt;)
+	 * &lt;IJavaScriptUnit, TextEditBasedChange&gt;)
 	 * <p>
 	 * The compilation units are all primary working copies or normal
 	 * compilation units.
@@ -158,11 +158,11 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected final RefactoringStatus checkDeclaringSuperTypes(final IProgressMonitor monitor) throws JavaModelException {
+	protected final RefactoringStatus checkDeclaringSuperTypes(final IProgressMonitor monitor) throws JavaScriptModelException {
 		return new RefactoringStatus();
 	}
 	
-	protected CompilationUnitRewrite getCompilationUnitRewrite(final Map rewrites, final ICompilationUnit unit) {
+	protected CompilationUnitRewrite getCompilationUnitRewrite(final Map rewrites, final IJavaScriptUnit unit) {
 		Assert.isNotNull(rewrites);
 		Assert.isNotNull(unit);
 		CompilationUnitRewrite rewrite= (CompilationUnitRewrite) rewrites.get(unit);
@@ -181,7 +181,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 	 */
 	public RefactoringStatus checkExtractedCompilationUnit() {
 		final RefactoringStatus status= new RefactoringStatus();
-		final ICompilationUnit cu= getDeclaringType().getCompilationUnit();
+		final IJavaScriptUnit cu= getDeclaringType().getJavaScriptUnit();
 		if (fTypeName == null || "".equals(fTypeName)) //$NON-NLS-1$
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.Checks_Choose_name);
 		status.merge(Checks.checkTypeName(fTypeName));
@@ -221,9 +221,9 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 		if (name != null && !name.equals("")) {//$NON-NLS-1$
 			final IType declaring= getDeclaringType();
 			try {
-				final ICompilationUnit[] units= declaring.getPackageFragment().getCompilationUnits(fOwner);
-				final String newName= JavaModelUtil.getRenamedCUName(declaring.getCompilationUnit(), name);
-				ICompilationUnit result= null;
+				final IJavaScriptUnit[] units= declaring.getPackageFragment().getJavaScriptUnits(fOwner);
+				final String newName= JavaModelUtil.getRenamedCUName(declaring.getJavaScriptUnit(), name);
+				IJavaScriptUnit result= null;
 				for (int index= 0; index < units.length; index++) {
 					if (units[index].getElementName().equals(newName))
 						result= units[index];
@@ -233,8 +233,8 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 					setDestinationType(type);
 					return type;
 				}
-			} catch (JavaModelException exception) {
-				JavaPlugin.log(exception);
+			} catch (JavaScriptModelException exception) {
+				JavaScriptPlugin.log(exception);
 			}
 		}
 		return null;
@@ -248,31 +248,31 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 			final Map arguments= new HashMap();
 			String project= null;
 			final IType declaring= getDeclaringType();
-			final IJavaProject javaProject= declaring.getJavaProject();
+			final IJavaScriptProject javaProject= declaring.getJavaScriptProject();
 			if (javaProject != null)
 				project= javaProject.getElementName();
-			int flags= JavaRefactoringDescriptor.JAR_MIGRATION | JavaRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
+			int flags= JavaScriptRefactoringDescriptor.JAR_MIGRATION | JavaScriptRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
 			try {
 				if (declaring.isLocal() || declaring.isAnonymous())
-					flags|= JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
-			} catch (JavaModelException exception) {
-				JavaPlugin.log(exception);
+					flags|= JavaScriptRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
+			} catch (JavaScriptModelException exception) {
+				JavaScriptPlugin.log(exception);
 			}
 			final String description= Messages.format(RefactoringCoreMessages.ExtractSupertypeProcessor_descriptor_description_short, fTypeName);
-			final String header= Messages.format(RefactoringCoreMessages.ExtractSupertypeProcessor_descriptor_description, new String[] { JavaElementLabels.getElementLabel(fDestinationType, JavaElementLabels.ALL_FULLY_QUALIFIED), JavaElementLabels.getElementLabel(fCachedDeclaringType, JavaElementLabels.ALL_FULLY_QUALIFIED)});
+			final String header= Messages.format(RefactoringCoreMessages.ExtractSupertypeProcessor_descriptor_description, new String[] { JavaScriptElementLabels.getElementLabel(fDestinationType, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), JavaScriptElementLabels.getElementLabel(fCachedDeclaringType, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)});
 			final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
 			final IType[] types= getTypesToExtract();
 			String[] settings= new String[types.length];
 			for (int index= 0; index < settings.length; index++)
-				settings[index]= JavaElementLabels.getElementLabel(types[index], JavaElementLabels.ALL_FULLY_QUALIFIED);
+				settings[index]= JavaScriptElementLabels.getElementLabel(types[index], JavaScriptElementLabels.ALL_FULLY_QUALIFIED);
 			comment.addSetting(JDTRefactoringDescriptorComment.createCompositeSetting(RefactoringCoreMessages.ExtractSupertypeProcessor_subtypes_pattern, settings));
-			comment.addSetting(Messages.format(RefactoringCoreMessages.ExtractSupertypeProcessor_refactored_element_pattern, JavaElementLabels.getElementLabel(fDestinationType, JavaElementLabels.ALL_FULLY_QUALIFIED)));
+			comment.addSetting(Messages.format(RefactoringCoreMessages.ExtractSupertypeProcessor_refactored_element_pattern, JavaScriptElementLabels.getElementLabel(fDestinationType, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
 			settings= new String[fMembersToMove.length];
 			for (int index= 0; index < settings.length; index++)
-				settings[index]= JavaElementLabels.getElementLabel(fMembersToMove[index], JavaElementLabels.ALL_FULLY_QUALIFIED);
+				settings[index]= JavaScriptElementLabels.getElementLabel(fMembersToMove[index], JavaScriptElementLabels.ALL_FULLY_QUALIFIED);
 			comment.addSetting(JDTRefactoringDescriptorComment.createCompositeSetting(RefactoringCoreMessages.ExtractInterfaceProcessor_extracted_members_pattern, settings));
 			addSuperTypeSettings(comment, true);
-			final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaRefactorings.EXTRACT_SUPERCLASS, project, description, comment.asString(), arguments, flags);
+			final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaScriptRefactorings.EXTRACT_SUPERCLASS, project, description, comment.asString(), arguments, flags);
 			arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_NAME, fTypeName);
 			arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_INPUT, descriptor.elementToHandle(getDeclaringType()));
 			arguments.put(ATTRIBUTE_REPLACE, Boolean.valueOf(fReplace).toString());
@@ -291,9 +291,9 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 			for (int offset= 0; offset < fTypesToExtract.length; offset++)
 				arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_ELEMENT + (offset + fMembersToMove.length + fDeletedMethods.length + fAbstractMethods.length + 1), descriptor.elementToHandle(fTypesToExtract[offset]));
 			final DynamicValidationRefactoringChange change= new DynamicValidationRefactoringChange(descriptor, RefactoringCoreMessages.ExtractSupertypeProcessor_extract_supertype, fChangeManager.getAllChanges());
-			final IFile file= ResourceUtil.getFile(declaring.getCompilationUnit());
+			final IFile file= ResourceUtil.getFile(declaring.getJavaScriptUnit());
 			if (fSuperSource != null && fSuperSource.length() > 0)
-				change.add(new CreateCompilationUnitChange(declaring.getPackageFragment().getCompilationUnit(JavaModelUtil.getRenamedCUName(declaring.getCompilationUnit(), fTypeName)), fSuperSource, file.getCharset(false)));
+				change.add(new CreateCompilationUnitChange(declaring.getPackageFragment().getJavaScriptUnit(JavaModelUtil.getRenamedCUName(declaring.getJavaScriptUnit(), fTypeName)), fSuperSource, file.getCharset(false)));
 			return change;
 		} finally {
 			monitor.done();
@@ -320,12 +320,12 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 		try {
 			monitor.beginTask(RefactoringCoreMessages.ExtractSupertypeProcessor_preparing, 20);
 			final IType declaring= getDeclaringType();
-			final CompilationUnitRewrite declaringRewrite= new CompilationUnitRewrite(fOwner, declaring.getCompilationUnit());
+			final CompilationUnitRewrite declaringRewrite= new CompilationUnitRewrite(fOwner, declaring.getJavaScriptUnit());
 			final AbstractTypeDeclaration declaringDeclaration= ASTNodeSearchUtil.getAbstractTypeDeclarationNode(declaring, declaringRewrite.getRoot());
 			if (declaringDeclaration != null) {
-				final String name= JavaModelUtil.getRenamedCUName(declaring.getCompilationUnit(), fTypeName);
-				final ICompilationUnit original= declaring.getPackageFragment().getCompilationUnit(name);
-				final ICompilationUnit copy= getSharedWorkingCopy(original.getPrimary(), new SubProgressMonitor(monitor, 10));
+				final String name= JavaModelUtil.getRenamedCUName(declaring.getJavaScriptUnit(), fTypeName);
+				final IJavaScriptUnit original= declaring.getPackageFragment().getJavaScriptUnit(name);
+				final IJavaScriptUnit copy= getSharedWorkingCopy(original.getPrimary(), new SubProgressMonitor(monitor, 10));
 				fSuperSource= createSuperTypeSource(copy, superType, declaringDeclaration, status, new SubProgressMonitor(monitor, 10));
 				if (fSuperSource != null) {
 					copy.getBuffer().setContents(fSuperSource);
@@ -354,7 +354,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 	 * @param status
 	 *            the refactoring status
 	 */
-	protected final void createModifiedSubType(final ICompilationUnit unit, final CompilationUnit root, final IType extractedType, final ITypeBinding extractedBinding, final AbstractTypeDeclaration subDeclaration, final RefactoringStatus status) {
+	protected final void createModifiedSubType(final IJavaScriptUnit unit, final JavaScriptUnit root, final IType extractedType, final ITypeBinding extractedBinding, final AbstractTypeDeclaration subDeclaration, final RefactoringStatus status) {
 		Assert.isNotNull(unit);
 		Assert.isNotNull(subDeclaration);
 		Assert.isNotNull(extractedType);
@@ -372,17 +372,17 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 					copy.apply(document, TextEdit.NONE);
 				}
 			}
-			final ICompilationUnit copy= getSharedWorkingCopy(unit, new NullProgressMonitor());
+			final IJavaScriptUnit copy= getSharedWorkingCopy(unit, new NullProgressMonitor());
 			copy.getBuffer().setContents(document.get());
 			JavaModelUtil.reconcile(copy);
 		} catch (CoreException exception) {
-			JavaPlugin.log(exception);
+			JavaScriptPlugin.log(exception);
 			status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ExtractSupertypeProcessor_unexpected_exception_on_layer));
 		} catch (MalformedTreeException exception) {
-			JavaPlugin.log(exception);
+			JavaScriptPlugin.log(exception);
 			status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ExtractSupertypeProcessor_unexpected_exception_on_layer));
 		} catch (BadLocationException exception) {
-			JavaPlugin.log(exception);
+			JavaScriptPlugin.log(exception);
 			status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ExtractSupertypeProcessor_unexpected_exception_on_layer));
 		}
 	}
@@ -406,7 +406,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 		if (superType != null) {
 			final ITypeBinding binding= targetDeclaration.resolveBinding();
 			if (binding != null && binding.isClass()) {
-				final IMethodBinding[] bindings= StubUtility2.getVisibleConstructors(binding, true, true);
+				final IFunctionBinding[] bindings= StubUtility2.getVisibleConstructors(binding, true, true);
 				int deprecationCount= 0;
 				for (int i= 0; i < bindings.length; i++) {
 					if (bindings[i].isDeprecated())
@@ -416,15 +416,15 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 				if (rewrite != null) {
 					boolean createDeprecated= deprecationCount == bindings.length;
 					for (int i= 0; i < bindings.length; i++) {
-						IMethodBinding curr= bindings[i];
+						IFunctionBinding curr= bindings[i];
 						if (!curr.isDeprecated() || createDeprecated) {
-							MethodDeclaration stub;
+							FunctionDeclaration stub;
 							try {
 								stub= StubUtility2.createConstructorStub(targetRewrite.getCu(), targetRewrite.getASTRewrite(), targetRewrite.getImportRewrite(), curr, binding.getName(), Modifier.PUBLIC, false, false, fSettings);
 								if (stub != null)
 									rewrite.insertLast(stub, null);
 							} catch (CoreException exception) {
-								JavaPlugin.log(exception);
+								JavaScriptPlugin.log(exception);
 								status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ExtractSupertypeProcessor_unexpected_exception_on_layer));
 							}
 						}
@@ -452,7 +452,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 	 * @throws CoreException
 	 *             if an error occurs
 	 */
-	protected final String createSuperTypeSource(final ICompilationUnit extractedWorkingCopy, final IType superType, final AbstractTypeDeclaration declaringDeclaration, final RefactoringStatus status, final IProgressMonitor monitor) throws CoreException {
+	protected final String createSuperTypeSource(final IJavaScriptUnit extractedWorkingCopy, final IType superType, final AbstractTypeDeclaration declaringDeclaration, final RefactoringStatus status, final IProgressMonitor monitor) throws CoreException {
 		Assert.isNotNull(extractedWorkingCopy);
 		Assert.isNotNull(declaringDeclaration);
 		Assert.isNotNull(status);
@@ -462,7 +462,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 			monitor.beginTask("", 2); //$NON-NLS-1$
 			monitor.setTaskName(RefactoringCoreMessages.ExtractSupertypeProcessor_preparing);
 			final IType declaring= getDeclaringType();
-			final String delimiter= StubUtility.getLineDelimiterUsed(extractedWorkingCopy.getJavaProject());
+			final String delimiter= StubUtility.getLineDelimiterUsed(extractedWorkingCopy.getJavaScriptProject());
 			String typeComment= null;
 			String fileComment= null;
 			if (fSettings.createComments) {
@@ -499,15 +499,15 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 				source= buffer.toString();
 			}
 			final IDocument document= new Document(source);
-			final TextEdit edit= CodeFormatterUtil.format2(CodeFormatter.K_COMPILATION_UNIT, source, 0, delimiter, extractedWorkingCopy.getJavaProject().getOptions(true));
+			final TextEdit edit= CodeFormatterUtil.format2(CodeFormatter.K_JAVASCRIPT_UNIT, source, 0, delimiter, extractedWorkingCopy.getJavaScriptProject().getOptions(true));
 			if (edit != null) {
 				try {
 					edit.apply(document, TextEdit.UPDATE_REGIONS);
 				} catch (MalformedTreeException exception) {
-					JavaPlugin.log(exception);
+					JavaScriptPlugin.log(exception);
 					status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ExtractSupertypeProcessor_unexpected_exception_on_layer));
 				} catch (BadLocationException exception) {
-					JavaPlugin.log(exception);
+					JavaScriptPlugin.log(exception);
 					status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ExtractSupertypeProcessor_unexpected_exception_on_layer));
 				}
 				source= document.get();
@@ -540,7 +540,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 	 * @throws CoreException
 	 *             if an error occurs
 	 */
-	protected final void createTypeDeclaration(final ICompilationUnit extractedWorkingCopy, final IType superType, final AbstractTypeDeclaration declaringDeclaration, final String comment, final StringBuffer buffer, final RefactoringStatus status, final IProgressMonitor monitor) throws CoreException {
+	protected final void createTypeDeclaration(final IJavaScriptUnit extractedWorkingCopy, final IType superType, final AbstractTypeDeclaration declaringDeclaration, final String comment, final StringBuffer buffer, final RefactoringStatus status, final IProgressMonitor monitor) throws CoreException {
 		Assert.isNotNull(extractedWorkingCopy);
 		Assert.isNotNull(declaringDeclaration);
 		Assert.isNotNull(buffer);
@@ -549,7 +549,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 		try {
 			monitor.beginTask("", 1); //$NON-NLS-1$
 			monitor.setTaskName(RefactoringCoreMessages.ExtractSupertypeProcessor_preparing);
-			final IJavaProject project= extractedWorkingCopy.getJavaProject();
+			final IJavaScriptProject project= extractedWorkingCopy.getJavaScriptProject();
 			final String delimiter= StubUtility.getLineDelimiterUsed(project);
 			if (comment != null && !"".equals(comment)) { //$NON-NLS-1$
 				buffer.append(comment);
@@ -587,10 +587,10 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 			try {
 				edit.apply(document, TextEdit.UPDATE_REGIONS);
 			} catch (MalformedTreeException exception) {
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 				status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ExtractSupertypeProcessor_unexpected_exception_on_layer));
 			} catch (BadLocationException exception) {
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 				status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ExtractSupertypeProcessor_unexpected_exception_on_layer));
 			}
 			buffer.setLength(0);
@@ -640,10 +640,10 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 	 *            the binding of the extracted super type
 	 * @param monitor
 	 *            the progress monitor to use
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *             if the type parameters cannot be retrieved
 	 */
-	protected final void createTypeSignature(final CompilationUnitRewrite subRewrite, final AbstractTypeDeclaration declaration, final IType extractedType, final ITypeBinding extractedBinding, final IProgressMonitor monitor) throws JavaModelException {
+	protected final void createTypeSignature(final CompilationUnitRewrite subRewrite, final AbstractTypeDeclaration declaration, final IType extractedType, final ITypeBinding extractedBinding, final IProgressMonitor monitor) throws JavaScriptModelException {
 		Assert.isNotNull(subRewrite);
 		Assert.isNotNull(declaration);
 		Assert.isNotNull(extractedType);
@@ -745,7 +745,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 			final Set units= new HashSet(subTypes.size());
 			for (int index= 0; index < subTypes.size(); index++) {
 				final IType type= (IType) subTypes.get(index);
-				final ICompilationUnit unit= type.getCompilationUnit();
+				final IJavaScriptUnit unit= type.getJavaScriptUnit();
 				units.add(unit);
 				Collection collection= (Collection) unitToTypes.get(unit);
 				if (collection == null) {
@@ -756,11 +756,11 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 			}
 			final Map projectToUnits= new HashMap();
 			Collection collection= null;
-			IJavaProject project= null;
-			ICompilationUnit current= null;
+			IJavaScriptProject project= null;
+			IJavaScriptUnit current= null;
 			for (final Iterator iterator= units.iterator(); iterator.hasNext();) {
-				current= (ICompilationUnit) iterator.next();
-				project= current.getJavaProject();
+				current= (IJavaScriptUnit) iterator.next();
+				project= current.getJavaScriptProject();
 				collection= (Collection) projectToUnits.get(project);
 				if (collection == null) {
 					collection= new ArrayList();
@@ -773,8 +773,8 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 			extractParser.setWorkingCopyOwner(fOwner);
 			extractParser.setResolveBindings(true);
 			extractParser.setProject(project);
-			extractParser.setSource(extractedType.getCompilationUnit());
-			final CompilationUnit extractUnit= (CompilationUnit) extractParser.createAST(new SubProgressMonitor(monitor, 10));
+			extractParser.setSource(extractedType.getJavaScriptUnit());
+			final JavaScriptUnit extractUnit= (JavaScriptUnit) extractParser.createAST(new SubProgressMonitor(monitor, 10));
 			if (extractUnit != null) {
 				final AbstractTypeDeclaration extractDeclaration= ASTNodeSearchUtil.getAbstractTypeDeclarationNode(extractedType, extractUnit);
 				if (extractDeclaration != null)
@@ -787,7 +787,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 				subMonitor.beginTask("", keySet.size()); //$NON-NLS-1$
 				subMonitor.setTaskName(RefactoringCoreMessages.ExtractSupertypeProcessor_preparing);
 				for (final Iterator iterator= keySet.iterator(); iterator.hasNext();) {
-					project= (IJavaProject) iterator.next();
+					project= (IJavaScriptProject) iterator.next();
 					collection= (Collection) projectToUnits.get(project);
 					parser.setWorkingCopyOwner(fOwner);
 					parser.setResolveBindings(true);
@@ -797,9 +797,9 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 					try {
 						subsubMonitor.beginTask("", collection.size()); //$NON-NLS-1$
 						subsubMonitor.setTaskName(RefactoringCoreMessages.ExtractSupertypeProcessor_preparing);
-						parser.createASTs((ICompilationUnit[]) collection.toArray(new ICompilationUnit[collection.size()]), new String[0], new ASTRequestor() {
+						parser.createASTs((IJavaScriptUnit[]) collection.toArray(new IJavaScriptUnit[collection.size()]), new String[0], new ASTRequestor() {
 
-							public final void acceptAST(final ICompilationUnit unit, final CompilationUnit node) {
+							public final void acceptAST(final IJavaScriptUnit unit, final JavaScriptUnit node) {
 								try {
 									final Collection types= (Collection) unitToTypes.get(unit);
 									if (types != null) {
@@ -811,7 +811,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 										}
 									}
 								} catch (CoreException exception) {
-									JavaPlugin.log(exception);
+									JavaScriptPlugin.log(exception);
 									status.merge(RefactoringStatus.createFatalErrorStatus(exception.getLocalizedMessage()));
 								} finally {
 									subsubMonitor.worked(1);
@@ -830,7 +830,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 				subMonitor.done();
 			}
 		} catch (CoreException exception) {
-			JavaPlugin.log(exception);
+			JavaScriptPlugin.log(exception);
 			status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ExtractSupertypeProcessor_unexpected_exception_on_layer));
 		} finally {
 			monitor.done();
@@ -862,8 +862,8 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 						}
 						fPossibleCandidates= (IType[]) list.toArray(new IType[list.size()]);
 					}
-				} catch (JavaModelException exception) {
-					JavaPlugin.log(exception);
+				} catch (JavaScriptModelException exception) {
+					JavaScriptPlugin.log(exception);
 				} finally {
 					monitor.done();
 				}
@@ -920,25 +920,25 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_NAME));
 			String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-				if (element == null || element.getElementType() != IJavaElement.TYPE)
-					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaRefactorings.EXTRACT_SUPERCLASS);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				if (element == null || element.getElementType() != IJavaScriptElement.TYPE)
+					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.EXTRACT_SUPERCLASS);
 				IType type= null;
-				final ICompilationUnit unit= ((IType) element).getCompilationUnit();
+				final IJavaScriptUnit unit= ((IType) element).getJavaScriptUnit();
 				if (unit != null && unit.exists()) {
 					try {
-						final ICompilationUnit copy= getSharedWorkingCopy(unit, new NullProgressMonitor());
-						final IJavaElement[] elements= copy.findElements(element);
+						final IJavaScriptUnit copy= getSharedWorkingCopy(unit, new NullProgressMonitor());
+						final IJavaScriptElement[] elements= copy.findElements(element);
 						if (elements != null && elements.length == 1 && elements[0] instanceof IType && elements[0].exists())
 							type= (IType) elements[0];
-					} catch (JavaModelException exception) {
+					} catch (JavaScriptModelException exception) {
 						// TODO: log exception
 					}
 				}
 				if (type != null)
 					fCachedDeclaringType= type;
 				else
-					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaRefactorings.EXTRACT_SUPERCLASS);
+					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.EXTRACT_SUPERCLASS);
 			} else
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));
 			final String stubs= extended.getAttribute(ATTRIBUTE_STUBS);
@@ -1002,9 +1002,9 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 				final String attribute= JDTRefactoringDescriptor.ATTRIBUTE_ELEMENT + (index + 1);
 				handle= extended.getAttribute(attribute);
 				if (handle != null && !"".equals(handle)) { //$NON-NLS-1$
-					final IJavaElement element= JDTRefactoringDescriptor.handleToElement(fOwner, extended.getProject(), handle, false);
+					final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(fOwner, extended.getProject(), handle, false);
 					if (element == null || !element.exists())
-						status.merge(ScriptableRefactoring.createInputWarningStatus(element, getRefactoring().getName(), IJavaRefactorings.EXTRACT_SUPERCLASS));
+						status.merge(ScriptableRefactoring.createInputWarningStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.EXTRACT_SUPERCLASS));
 					else
 						elements.add(element);
 				} else
@@ -1016,46 +1016,46 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 				final String attribute= JDTRefactoringDescriptor.ATTRIBUTE_ELEMENT + (extractCount + index + 1);
 				handle= extended.getAttribute(attribute);
 				if (handle != null && !"".equals(handle)) { //$NON-NLS-1$
-					final IJavaElement element= JDTRefactoringDescriptor.handleToElement(fOwner, extended.getProject(), handle, false);
+					final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(fOwner, extended.getProject(), handle, false);
 					if (element == null || !element.exists())
-						status.merge(ScriptableRefactoring.createInputWarningStatus(element, getRefactoring().getName(), IJavaRefactorings.EXTRACT_SUPERCLASS));
+						status.merge(ScriptableRefactoring.createInputWarningStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.EXTRACT_SUPERCLASS));
 					else
 						elements.add(element);
 				} else
 					return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, attribute));
 			}
-			fDeletedMethods= (IMethod[]) elements.toArray(new IMethod[elements.size()]);
+			fDeletedMethods= (IFunction[]) elements.toArray(new IFunction[elements.size()]);
 			elements= new ArrayList();
 			for (int index= 0; index < abstractCount; index++) {
 				final String attribute= JDTRefactoringDescriptor.ATTRIBUTE_ELEMENT + (extractCount + abstractCount + index + 1);
 				handle= extended.getAttribute(attribute);
 				if (handle != null && !"".equals(handle)) { //$NON-NLS-1$
-					final IJavaElement element= JDTRefactoringDescriptor.handleToElement(fOwner, extended.getProject(), handle, false);
+					final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(fOwner, extended.getProject(), handle, false);
 					if (element == null || !element.exists())
-						status.merge(ScriptableRefactoring.createInputWarningStatus(element, getRefactoring().getName(), IJavaRefactorings.EXTRACT_SUPERCLASS));
+						status.merge(ScriptableRefactoring.createInputWarningStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.EXTRACT_SUPERCLASS));
 					else
 						elements.add(element);
 				} else
 					return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, attribute));
 			}
-			fAbstractMethods= (IMethod[]) elements.toArray(new IMethod[elements.size()]);
+			fAbstractMethods= (IFunction[]) elements.toArray(new IFunction[elements.size()]);
 			elements= new ArrayList();
 			for (int index= 0; index < typeCount; index++) {
 				final String attribute= JDTRefactoringDescriptor.ATTRIBUTE_ELEMENT + (extractCount + abstractCount + deleteCount + index + 1);
 				handle= extended.getAttribute(attribute);
 				if (handle != null && !"".equals(handle)) { //$NON-NLS-1$
-					final IJavaElement element= JDTRefactoringDescriptor.handleToElement(fOwner, extended.getProject(), handle, false);
+					final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(fOwner, extended.getProject(), handle, false);
 					if (element == null || !element.exists())
-						status.merge(ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaRefactorings.EXTRACT_SUPERCLASS));
+						status.merge(ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.EXTRACT_SUPERCLASS));
 					else
 						elements.add(element);
 				} else
 					return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, attribute));
 			}
 			fTypesToExtract= (IType[]) elements.toArray(new IType[elements.size()]);
-			IJavaProject project= null;
+			IJavaScriptProject project= null;
 			if (fMembersToMove.length > 0)
-				project= fMembersToMove[0].getJavaProject();
+				project= fMembersToMove[0].getJavaScriptProject();
 			fSettings= JavaPreferencesSettings.getCodeGenerationSettings(project);
 			if (!status.isOK())
 				return status;
@@ -1069,11 +1069,11 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 	 */
 	protected void registerChanges(final TextEditBasedChangeManager manager) throws CoreException {
 		try {
-			final ICompilationUnit extractedUnit= getExtractedType().getCompilationUnit();
-			ICompilationUnit unit= null;
+			final IJavaScriptUnit extractedUnit= getExtractedType().getJavaScriptUnit();
+			IJavaScriptUnit unit= null;
 			CompilationUnitRewrite rewrite= null;
 			for (final Iterator iterator= fCompilationUnitRewrites.keySet().iterator(); iterator.hasNext();) {
-				unit= (ICompilationUnit) iterator.next();
+				unit= (IJavaScriptUnit) iterator.next();
 				if (unit.equals(extractedUnit)) {
 					rewrite= (CompilationUnitRewrite) fCompilationUnitRewrites.get(unit);
 					if (rewrite != null) {
@@ -1086,9 +1086,9 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 								try {
 									edit.apply(document, TextEdit.UPDATE_REGIONS);
 								} catch (MalformedTreeException exception) {
-									JavaPlugin.log(exception);
+									JavaScriptPlugin.log(exception);
 								} catch (BadLocationException exception) {
-									JavaPlugin.log(exception);
+									JavaScriptPlugin.log(exception);
 								}
 								fSuperSource= document.get();
 								manager.remove(extractedUnit);
@@ -1117,9 +1117,9 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 			}
 			for (Iterator iterator= fLayerChanges.entrySet().iterator(); iterator.hasNext();) {
 				final Map.Entry entry= (Map.Entry) iterator.next();
-				manager.manage((ICompilationUnit) entry.getKey(), (TextEditBasedChange) entry.getValue());
+				manager.manage((IJavaScriptUnit) entry.getKey(), (TextEditBasedChange) entry.getValue());
 			}
-			ICompilationUnit[] units= manager.getAllCompilationUnits();
+			IJavaScriptUnit[] units= manager.getAllCompilationUnits();
 			for (int index= 0; index < units.length; index++) {
 				if (units[index].getPath().equals(extractedUnit.getPath()))
 					manager.remove(units[index]);

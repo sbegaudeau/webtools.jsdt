@@ -13,8 +13,8 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.BuildPathsPropertyPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.CodeStylePreferencePage;
 
@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.CodeStylePreferencePage;
 public class JavaScriptLibrariesAction implements IObjectActionDelegate {
 
 	private IWorkbenchSite fSite;
-	protected IJavaProject project;
+	protected IJavaScriptProject project;
 	protected static final Hashtable PROPS_TO_IDS = new Hashtable();
 	
 	{
@@ -73,9 +73,9 @@ public class JavaScriptLibrariesAction implements IObjectActionDelegate {
 	
 	protected Shell getShell() {
 		if (fSite == null)
-			return JavaPlugin.getActiveWorkbenchShell();
+			return JavaScriptPlugin.getActiveWorkbenchShell();
 		
-	    return fSite.getShell() != null ? fSite.getShell() : JavaPlugin.getActiveWorkbenchShell();
+	    return fSite.getShell() != null ? fSite.getShell() : JavaScriptPlugin.getActiveWorkbenchShell();
     }
 
 }

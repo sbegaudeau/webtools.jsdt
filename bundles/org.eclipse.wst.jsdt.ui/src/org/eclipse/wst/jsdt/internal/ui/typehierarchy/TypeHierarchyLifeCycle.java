@@ -20,21 +20,21 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IRegion;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.ITypeHierarchyChangedListener;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Manages a type hierarchy, to keep it refreshed, and to allow it to be shared.
@@ -43,7 +43,7 @@ public class TypeHierarchyLifeCycle implements ITypeHierarchyChangedListener, IE
 	
 	private boolean fHierarchyRefreshNeeded;
 	private ITypeHierarchy fHierarchy;
-	private IJavaElement fInputElement;
+	private IJavaScriptElement fInputElement;
 	private boolean fIsSuperTypesOnly;
 	
 	private List fChangeListeners;
@@ -63,7 +63,7 @@ public class TypeHierarchyLifeCycle implements ITypeHierarchyChangedListener, IE
 		return fHierarchy;
 	}
 	
-	public IJavaElement getInputElement() {
+	public IJavaScriptElement getInputElement() {
 		return fInputElement;
 	}
 	
@@ -71,7 +71,7 @@ public class TypeHierarchyLifeCycle implements ITypeHierarchyChangedListener, IE
 	public void freeHierarchy() {
 		if (fHierarchy != null) {
 			fHierarchy.removeTypeHierarchyChangedListener(this);
-			JavaCore.removeElementChangedListener(this);
+			JavaScriptCore.removeElementChangedListener(this);
 			fHierarchy= null;
 			fInputElement= null;
 		}
@@ -94,7 +94,7 @@ public class TypeHierarchyLifeCycle implements ITypeHierarchyChangedListener, IE
 		}
 	}
 			
-	public void ensureRefreshedTypeHierarchy(final IJavaElement element, IRunnableContext context) throws InvocationTargetException, InterruptedException {
+	public void ensureRefreshedTypeHierarchy(final IJavaScriptElement element, IRunnableContext context) throws InvocationTargetException, InterruptedException {
 		if (element == null || !element.exists()) {
 			freeHierarchy();
 			return;
@@ -107,7 +107,7 @@ public class TypeHierarchyLifeCycle implements ITypeHierarchyChangedListener, IE
 				public void run(IProgressMonitor pm) throws InvocationTargetException, InterruptedException {
 					try {
 						doHierarchyRefresh(element, pm);
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						throw new InvocationTargetException(e);
 					} catch (OperationCanceledException e) {
 						throw new InterruptedException();
@@ -120,8 +120,8 @@ public class TypeHierarchyLifeCycle implements ITypeHierarchyChangedListener, IE
 		}
 	}
 	
-	private ITypeHierarchy createTypeHierarchy(IJavaElement element, IProgressMonitor pm) throws JavaModelException {
-		if (element.getElementType() == IJavaElement.TYPE) {
+	private ITypeHierarchy createTypeHierarchy(IJavaScriptElement element, IProgressMonitor pm) throws JavaScriptModelException {
+		if (element.getElementType() == IJavaScriptElement.TYPE) {
 			IType type= (IType) element;
 			if (fIsSuperTypesOnly) {
 				return type.newSupertypeHierarchy(pm);
@@ -129,17 +129,17 @@ public class TypeHierarchyLifeCycle implements ITypeHierarchyChangedListener, IE
 				return type.newTypeHierarchy(pm);
 			}
 		} else {
-			IRegion region= JavaCore.newRegion();
-			if (element.getElementType() == IJavaElement.JAVA_PROJECT) {
+			IRegion region= JavaScriptCore.newRegion();
+			if (element.getElementType() == IJavaScriptElement.JAVASCRIPT_PROJECT) {
 				// for projects only add the contained source folders
-				IPackageFragmentRoot[] roots= ((IJavaProject) element).getPackageFragmentRoots();
+				IPackageFragmentRoot[] roots= ((IJavaScriptProject) element).getPackageFragmentRoots();
 				for (int i= 0; i < roots.length; i++) {
 					if (!roots[i].isExternal()) {
 						region.add(roots[i]);
 					}
 				}
-			} else if (element.getElementType() == IJavaElement.PACKAGE_FRAGMENT) {
-				IPackageFragmentRoot[] roots= element.getJavaProject().getPackageFragmentRoots();
+			} else if (element.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT) {
+				IPackageFragmentRoot[] roots= element.getJavaScriptProject().getPackageFragmentRoots();
 				String name= element.getElementName();
 				for (int i= 0; i < roots.length; i++) {
 					IPackageFragment pack= roots[i].getPackageFragment(name);
@@ -150,19 +150,19 @@ public class TypeHierarchyLifeCycle implements ITypeHierarchyChangedListener, IE
 			} else {
 				region.add(element);
 			}
-			IJavaProject jproject= element.getJavaProject();
+			IJavaScriptProject jproject= element.getJavaScriptProject();
 			return jproject.newTypeHierarchy(region, pm);
 		}
 	}
 	
 	
-	public synchronized void doHierarchyRefresh(IJavaElement element, IProgressMonitor pm) throws JavaModelException {
+	public synchronized void doHierarchyRefresh(IJavaScriptElement element, IProgressMonitor pm) throws JavaScriptModelException {
 		boolean hierachyCreationNeeded= (fHierarchy == null || !element.equals(fInputElement));
 		// to ensure the order of the two listeners always remove / add listeners on operations
 		// on type hierarchies
 		if (fHierarchy != null) {
 			fHierarchy.removeTypeHierarchyChangedListener(this);
-			JavaCore.removeElementChangedListener(this);
+			JavaScriptCore.removeElementChangedListener(this);
 		}
 		if (hierachyCreationNeeded) {
 			fHierarchy= createTypeHierarchy(element, pm);
@@ -174,7 +174,7 @@ public class TypeHierarchyLifeCycle implements ITypeHierarchyChangedListener, IE
 			fHierarchy.refresh(pm);
 		}
 		fHierarchy.addTypeHierarchyChangedListener(this);
-		JavaCore.addElementChangedListener(this);
+		JavaScriptCore.addElementChangedListener(this);
 		fHierarchyRefreshNeeded= false;
 	}		
 	
@@ -208,26 +208,26 @@ public class TypeHierarchyLifeCycle implements ITypeHierarchyChangedListener, IE
 	/*
 	 * Assume that the hierarchy is intact (no refresh needed)
 	 */					
-	private void processDelta(IJavaElementDelta delta, ArrayList changedTypes) {
-		IJavaElement element= delta.getElement();
+	private void processDelta(IJavaScriptElementDelta delta, ArrayList changedTypes) {
+		IJavaScriptElement element= delta.getElement();
 		switch (element.getElementType()) {
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				processTypeDelta((IType) element, changedTypes);
 				processChildrenDelta(delta, changedTypes); // (inner types)
 				break;
-			case IJavaElement.JAVA_MODEL:
-			case IJavaElement.JAVA_PROJECT:
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
-			case IJavaElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.JAVASCRIPT_MODEL:
+			case IJavaScriptElement.JAVASCRIPT_PROJECT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				processChildrenDelta(delta, changedTypes);
 				break;
-			case IJavaElement.COMPILATION_UNIT:
-				ICompilationUnit cu= (ICompilationUnit)element;
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
+				IJavaScriptUnit cu= (IJavaScriptUnit)element;
 				if (!JavaModelUtil.isPrimary(cu)) {
 					return;
 				}
 				
-				if (delta.getKind() == IJavaElementDelta.CHANGED && isPossibleStructuralChange(delta.getFlags())) {
+				if (delta.getKind() == IJavaScriptElementDelta.CHANGED && isPossibleStructuralChange(delta.getFlags())) {
 					try {
 						if (cu.exists()) {
 							IType[] types= cu.getAllTypes();
@@ -235,15 +235,15 @@ public class TypeHierarchyLifeCycle implements ITypeHierarchyChangedListener, IE
 								processTypeDelta(types[i], changedTypes);
 							}
 						}
-					} catch (JavaModelException e) {
-						JavaPlugin.log(e);
+					} catch (JavaScriptModelException e) {
+						JavaScriptPlugin.log(e);
 					}
 				} else {
 					processChildrenDelta(delta, changedTypes);
 				}
 				break;
-			case IJavaElement.CLASS_FILE:	
-				if (delta.getKind() == IJavaElementDelta.CHANGED) {
+			case IJavaScriptElement.CLASS_FILE:	
+				if (delta.getKind() == IJavaScriptElementDelta.CHANGED) {
 					IType type= ((IClassFile) element).getType();
 					processTypeDelta(type, changedTypes);
 				} else {
@@ -254,7 +254,7 @@ public class TypeHierarchyLifeCycle implements ITypeHierarchyChangedListener, IE
 	}
 	
 	private boolean isPossibleStructuralChange(int flags) {
-		return (flags & (IJavaElementDelta.F_CONTENT | IJavaElementDelta.F_FINE_GRAINED)) == IJavaElementDelta.F_CONTENT;
+		return (flags & (IJavaScriptElementDelta.F_CONTENT | IJavaScriptElementDelta.F_FINE_GRAINED)) == IJavaScriptElementDelta.F_CONTENT;
 	}
 	
 	private void processTypeDelta(IType type, ArrayList changedTypes) {
@@ -263,8 +263,8 @@ public class TypeHierarchyLifeCycle implements ITypeHierarchyChangedListener, IE
 		}
 	}
 	
-	private void processChildrenDelta(IJavaElementDelta delta, ArrayList changedTypes) {
-		IJavaElementDelta[] children= delta.getAffectedChildren();
+	private void processChildrenDelta(IJavaScriptElementDelta delta, ArrayList changedTypes) {
+		IJavaScriptElementDelta[] children= delta.getAffectedChildren();
 		for (int i= 0; i < children.length; i++) {
 			processDelta(children[i], changedTypes); // recursive
 		}

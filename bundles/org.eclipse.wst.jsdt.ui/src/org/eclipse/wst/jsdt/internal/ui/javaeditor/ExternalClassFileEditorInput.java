@@ -15,7 +15,7 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 
 /**
@@ -41,7 +41,7 @@ public class ExternalClassFileEditorInput extends FileEditorInput implements ICl
 	 * Refreshes this input element. Workaround for non-updating class file elements.
 	 */
 	public void refresh() {
-		Object element= JavaCore.create(getFile());
+		Object element= JavaScriptCore.create(getFile());
 		if (element instanceof IClassFile)
 			fClassFile= (IClassFile) element;
 	}

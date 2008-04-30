@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
@@ -50,8 +50,8 @@ public class ModifierRewrite {
 
 	private ListRewrite evaluateListRewrite(ASTRewrite rewrite, ASTNode declNode) {
 		switch (declNode.getNodeType()) {
-			case ASTNode.METHOD_DECLARATION:
-				return rewrite.getListRewrite(declNode, MethodDeclaration.MODIFIERS2_PROPERTY);
+			case ASTNode.FUNCTION_DECLARATION:
+				return rewrite.getListRewrite(declNode, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			case ASTNode.FIELD_DECLARATION:
 				return rewrite.getListRewrite(declNode, FieldDeclaration.MODIFIERS2_PROPERTY);
 			case ASTNode.VARIABLE_DECLARATION_EXPRESSION:

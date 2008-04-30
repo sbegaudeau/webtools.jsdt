@@ -28,8 +28,8 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IReferenceUpdati
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ISimilarDeclarationUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ITextUpdating;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Helper class to generate a refactoring descriptor comment.
@@ -165,13 +165,13 @@ public final class JDTRefactoringDescriptorComment {
 	private void initializeInferredSettings(final Object object) {
 		if (object instanceof INameUpdating) {
 			final INameUpdating updating= (INameUpdating) object;
-			fSettings.add(Messages.format(RefactoringCoreMessages.JavaRefactoringDescriptor_original_element_pattern, JavaElementLabels.getTextLabel(updating.getElements()[0], JavaElementLabels.ALL_FULLY_QUALIFIED)));
+			fSettings.add(Messages.format(RefactoringCoreMessages.JavaRefactoringDescriptor_original_element_pattern, JavaScriptElementLabels.getTextLabel(updating.getElements()[0], JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
 			try {
 				final Object element= updating.getNewElement();
 				if (element != null)
-					fSettings.add(Messages.format(RefactoringCoreMessages.JavaRefactoringDescriptor_renamed_element_pattern, JavaElementLabels.getTextLabel(element, JavaElementLabels.ALL_FULLY_QUALIFIED)));
+					fSettings.add(Messages.format(RefactoringCoreMessages.JavaRefactoringDescriptor_renamed_element_pattern, JavaScriptElementLabels.getTextLabel(element, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
 				else {
-					final String oldLabel= JavaElementLabels.getTextLabel(updating.getElements()[0], JavaElementLabels.ALL_FULLY_QUALIFIED);
+					final String oldLabel= JavaScriptElementLabels.getTextLabel(updating.getElements()[0], JavaScriptElementLabels.ALL_FULLY_QUALIFIED);
 					final String newName= updating.getCurrentElementName();
 					if (newName.length() < oldLabel.length()) {
 						final String newLabel= oldLabel.substring(0, oldLabel.length() - newName.length());
@@ -179,14 +179,14 @@ public final class JDTRefactoringDescriptorComment {
 					}
 				}
 			} catch (CoreException exception) {
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 			}
 		} else if (object instanceof RefactoringProcessor) {
 			final RefactoringProcessor processor= (RefactoringProcessor) object;
 			final Object[] elements= processor.getElements();
 			if (elements != null) {
 				if (elements.length == 1 && elements[0] != null)
-					fSettings.add(Messages.format(RefactoringCoreMessages.JavaRefactoringDescriptor_original_element_pattern, JavaElementLabels.getTextLabel(elements[0], JavaElementLabels.ALL_FULLY_QUALIFIED)));
+					fSettings.add(Messages.format(RefactoringCoreMessages.JavaRefactoringDescriptor_original_element_pattern, JavaScriptElementLabels.getTextLabel(elements[0], JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
 				else if (elements.length > 1) {
 					final StringBuffer buffer= new StringBuffer(128);
 					buffer.append(RefactoringCoreMessages.JavaRefactoringDescriptor_original_elements);
@@ -194,7 +194,7 @@ public final class JDTRefactoringDescriptorComment {
 						if (elements[index] != null) {
 							buffer.append(LINE_DELIMITER);
 							buffer.append(ELEMENT_DELIMITER);
-							buffer.append(JavaElementLabels.getTextLabel(elements[index], JavaElementLabels.ALL_FULLY_QUALIFIED));
+							buffer.append(JavaScriptElementLabels.getTextLabel(elements[index], JavaScriptElementLabels.ALL_FULLY_QUALIFIED));
 						} else {
 							buffer.append(LINE_DELIMITER);
 							buffer.append(ELEMENT_DELIMITER);
@@ -208,11 +208,11 @@ public final class JDTRefactoringDescriptorComment {
 			final IReorgPolicy policy= (IReorgPolicy) object;
 			Object destination= policy.getJavaElementDestination();
 			if (destination != null)
-				fSettings.add(Messages.format(RefactoringCoreMessages.JavaRefactoringDescriptorComment_destination_pattern, JavaElementLabels.getTextLabel(destination, JavaElementLabels.ALL_FULLY_QUALIFIED)));
+				fSettings.add(Messages.format(RefactoringCoreMessages.JavaRefactoringDescriptorComment_destination_pattern, JavaScriptElementLabels.getTextLabel(destination, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
 			else {
 				destination= policy.getResourceDestination();
 				if (destination != null)
-					fSettings.add(Messages.format(RefactoringCoreMessages.JavaRefactoringDescriptorComment_destination_pattern, JavaElementLabels.getTextLabel(destination, JavaElementLabels.ALL_FULLY_QUALIFIED)));
+					fSettings.add(Messages.format(RefactoringCoreMessages.JavaRefactoringDescriptorComment_destination_pattern, JavaScriptElementLabels.getTextLabel(destination, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
 			}
 			final List list= new ArrayList();
 			list.addAll(Arrays.asList(policy.getJavaElements()));
@@ -220,7 +220,7 @@ public final class JDTRefactoringDescriptorComment {
 			final Object[] elements= list.toArray();
 			if (elements != null) {
 				if (elements.length == 1 && elements[0] != null)
-					fSettings.add(Messages.format(RefactoringCoreMessages.JavaRefactoringDescriptor_original_element_pattern, JavaElementLabels.getTextLabel(elements[0], JavaElementLabels.ALL_FULLY_QUALIFIED)));
+					fSettings.add(Messages.format(RefactoringCoreMessages.JavaRefactoringDescriptor_original_element_pattern, JavaScriptElementLabels.getTextLabel(elements[0], JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
 				else if (elements.length > 1) {
 					final StringBuffer buffer= new StringBuffer(128);
 					buffer.append(RefactoringCoreMessages.JavaRefactoringDescriptor_original_elements);
@@ -228,7 +228,7 @@ public final class JDTRefactoringDescriptorComment {
 						if (elements[index] != null) {
 							buffer.append(LINE_DELIMITER);
 							buffer.append(ELEMENT_DELIMITER);
-							buffer.append(JavaElementLabels.getTextLabel(elements[index], JavaElementLabels.ALL_FULLY_QUALIFIED));
+							buffer.append(JavaScriptElementLabels.getTextLabel(elements[index], JavaScriptElementLabels.ALL_FULLY_QUALIFIED));
 						} else {
 							buffer.append(LINE_DELIMITER);
 							buffer.append(ELEMENT_DELIMITER);

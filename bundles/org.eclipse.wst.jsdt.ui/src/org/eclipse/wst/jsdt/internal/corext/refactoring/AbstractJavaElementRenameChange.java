@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.ltk.core.refactoring.Change;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JDTChange;
 
 public abstract class AbstractJavaElementRenameChange extends JDTChange {
@@ -51,7 +51,7 @@ public abstract class AbstractJavaElementRenameChange extends JDTChange {
 	protected abstract void doRename(IProgressMonitor pm) throws CoreException;
 
 	public Object getModifiedElement() {
-		return JavaCore.create(getResource());
+		return JavaScriptCore.create(getResource());
 	}
 
 	public String getNewName() {

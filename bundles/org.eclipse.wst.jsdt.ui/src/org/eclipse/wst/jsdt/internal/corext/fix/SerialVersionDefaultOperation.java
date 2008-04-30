@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.corext.fix;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
@@ -36,7 +36,7 @@ public final class SerialVersionDefaultOperation extends AbstractSerialVersionOp
 	 * @param nodes
 	 *            the originally selected nodes
 	 */
-	public SerialVersionDefaultOperation(ICompilationUnit unit, ASTNode[] nodes) {
+	public SerialVersionDefaultOperation(IJavaScriptUnit unit, ASTNode[] nodes) {
 		super(unit, nodes);
 	}
 

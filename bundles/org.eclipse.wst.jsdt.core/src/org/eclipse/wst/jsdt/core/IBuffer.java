@@ -221,12 +221,12 @@ public void replace(int position, int length, String text);
  * @param force a <code> boolean </code> flag indicating how to deal with resource
  *   inconsistencies.
  *
- * @exception JavaModelException if an error occurs writing the buffer
+ * @exception JavaScriptModelException if an error occurs writing the buffer
  *	to the underlying resource
  *
  * @see org.eclipse.core.resources.IFile#setContents(java.io.InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)
  */
-public void save(IProgressMonitor progress, boolean force) throws JavaModelException;
+public void save(IProgressMonitor progress, boolean force) throws JavaScriptModelException;
 /**
  * Sets the contents of this buffer to the given character array.
  * This buffer will now have unsaved changes.

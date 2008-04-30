@@ -930,7 +930,7 @@ public boolean getNextCharAsJavaIdentifierPart() {
 	}
 }
 /*
- * External API in JavaConventions.
+ * External API in JavaScriptConventions.
  * This is used to optimize the case where the scanner is used to scan a single identifier.
  * In this case, the AIOOBE is slower to handle than a bound check
  */

@@ -24,7 +24,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.ISaveParticipantPreferenceConfiguration;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.SaveParticipantDescriptor;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.SaveParticipantRegistry;
@@ -67,7 +67,7 @@ class SaveParticipantConfigurationBlock implements IPreferenceAndPropertyConfigu
     	gridLayout.marginWidth= 0;
 		composite.setLayout(gridLayout);
 		
-		SaveParticipantRegistry registry= JavaPlugin.getDefault().getSaveParticipantRegistry();
+		SaveParticipantRegistry registry= JavaScriptPlugin.getDefault().getSaveParticipantRegistry();
 		SaveParticipantDescriptor[] descriptors= registry.getSaveParticipantDescriptors();
 		
 		if (descriptors.length == 0)

@@ -709,7 +709,7 @@ protected void consumeMemberValuePair() {
 
 }
 protected void consumeMethodInvocationName() {
-	// MethodInvocation ::= Name '(' ArgumentListopt ')'
+	// FunctionInvocation ::= Name '(' ArgumentListopt ')'
 
 	// when the name is only an identifier...we have a message send to "this" (implicit)
 
@@ -761,7 +761,7 @@ protected void consumeMethodInvocationName() {
 //  Nothing here applicable to javascript
 //protected void consumeMethodInvocationPrimary() {
 //	//optimize the push/pop
-//	//MethodInvocation ::= Primary '.' 'Identifier' '(' ArgumentListopt ')'
+//	//FunctionInvocation ::= Primary '.' 'Identifier' '(' ArgumentListopt ')'
 //
 //	char[] selector = identifierStack[identifierPtr];
 //	int accessMode;

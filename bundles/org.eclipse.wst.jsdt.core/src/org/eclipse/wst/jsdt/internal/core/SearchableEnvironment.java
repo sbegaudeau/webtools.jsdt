@@ -14,18 +14,18 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.IInferenceFile;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.codeassist.ISearchRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
@@ -44,17 +44,17 @@ import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessTypeRequestor;
  * assist which uses the Java model as a search tool.
  */
 public class SearchableEnvironment implements INameEnvironment,
-		IJavaSearchConstants {
+		IJavaScriptSearchConstants {
 
 	public NameLookup nameLookup;
 
 	protected ICompilationUnit unitToSkip;
 
-	protected org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies;
+	protected org.eclipse.wst.jsdt.core.IJavaScriptUnit[] workingCopies;
 
 	protected JavaProject javaProject;
 
-	protected IJavaSearchScope searchScope;
+	protected IJavaScriptSearchScope searchScope;
 
 	protected boolean checkAccessRestrictions;
 
@@ -63,14 +63,14 @@ public class SearchableEnvironment implements INameEnvironment,
 	 */
 	public SearchableEnvironment(JavaProject project,
 			IRestrictedAccessBindingRequestor resolutionScope,
-			org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies)
-			throws JavaModelException {
+			org.eclipse.wst.jsdt.core.IJavaScriptUnit[] workingCopies)
+			throws JavaScriptModelException {
 
 		this.javaProject = project;
-		this.checkAccessRestrictions = !JavaCore.IGNORE.equals(project
-				.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
-				|| !JavaCore.IGNORE.equals(project.getOption(
-						JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true));
+		this.checkAccessRestrictions = !JavaScriptCore.IGNORE.equals(project
+				.getOption(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
+				|| !JavaScriptCore.IGNORE.equals(project.getOption(
+						JavaScriptCore.COMPILER_PB_DISCOURAGED_REFERENCE, true));
 		this.workingCopies = workingCopies;
 		this.nameLookup = javaProject.newNameLookup(workingCopies);
 		this.nameLookup.setRestrictedAccessRequestor(resolutionScope);
@@ -86,39 +86,39 @@ public class SearchableEnvironment implements INameEnvironment,
 	}
 	public SearchableEnvironment(JavaProject project,
 
-			org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies)
-			throws JavaModelException {
+			org.eclipse.wst.jsdt.core.IJavaScriptUnit[] workingCopies)
+			throws JavaScriptModelException {
 		this(project,null,workingCopies);
 	}
 	/**
 	 * Creates a SearchableEnvironment on the given project
 	 */
 	public SearchableEnvironment(JavaProject project, WorkingCopyOwner owner)
-			throws JavaModelException {
+			throws JavaScriptModelException {
 		this(project, owner == null ? null : JavaModelManager
 				.getJavaModelManager()
 				.getWorkingCopies(owner, true/* add primary WCs */));
 	}
 
 	public SearchableEnvironment(JavaProject project, IRestrictedAccessBindingRequestor resolutionScope,WorkingCopyOwner owner)
-	throws JavaModelException {
+	throws JavaScriptModelException {
 		this(project, resolutionScope, owner == null ? null : JavaModelManager
 		.getJavaModelManager()
 		.getWorkingCopies(owner, true/* add primary WCs */));
 }
 	private static int convertSearchFilterToModelFilter(int searchFilter) {
 		switch (searchFilter) {
-			case IJavaSearchConstants.CLASS:
+			case IJavaScriptSearchConstants.CLASS:
 				return NameLookup.ACCEPT_CLASSES;
-			case IJavaSearchConstants.INTERFACE:
+			case IJavaScriptSearchConstants.INTERFACE:
 				return NameLookup.ACCEPT_INTERFACES;
-			case IJavaSearchConstants.ENUM:
+			case IJavaScriptSearchConstants.ENUM:
 				return NameLookup.ACCEPT_ENUMS;
-			case IJavaSearchConstants.ANNOTATION_TYPE:
+			case IJavaScriptSearchConstants.ANNOTATION_TYPE:
 				return NameLookup.ACCEPT_ANNOTATIONS;
-			case IJavaSearchConstants.CLASS_AND_ENUM:
+			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
 				return NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_ENUMS;
-			case IJavaSearchConstants.CLASS_AND_INTERFACE:
+			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE:
 				return NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_INTERFACES;
 			default:
 				return NameLookup.ACCEPT_ALL;
@@ -142,7 +142,7 @@ public class SearchableEnvironment implements INameEnvironment,
 					return new NameEnvironmentAnswer(
 							(IBinaryType) ((BinaryType) answer.type)
 									.getElementInfo(), answer.restriction);
-				} catch (JavaModelException npe) {
+				} catch (JavaScriptModelException npe) {
 					return null;
 				}
 			} else { // SourceType
@@ -160,7 +160,7 @@ public class SearchableEnvironment implements INameEnvironment,
 						topLevelType = topLevelType.getEnclosingType();
 					}
 					IType[] types = null;
-					org.eclipse.wst.jsdt.core.ICompilationUnit compilationUnit = sourceType.getHandle().getCompilationUnit();
+					org.eclipse.wst.jsdt.core.IJavaScriptUnit compilationUnit = sourceType.getHandle().getJavaScriptUnit();
 					// find all siblings (other types declared in same unit,
 					// since may be used for name resolution)
 					if (compilationUnit!=null)
@@ -190,7 +190,7 @@ public class SearchableEnvironment implements INameEnvironment,
 					}
 					return new NameEnvironmentAnswer(sourceTypes,
 							answer.restriction);
-				} catch (JavaModelException npe) {
+				} catch (JavaScriptModelException npe) {
 					return null;
 				}
 			}
@@ -215,9 +215,9 @@ public class SearchableEnvironment implements INameEnvironment,
 				NameLookup.ACCEPT_ALL,
 				this.checkAccessRestrictions,  returnMultiple,  excludePath);
 		if (answer != null && answer.element!=null) {
-			if (answer.element instanceof IJavaElement)
+			if (answer.element instanceof IJavaScriptElement)
 			{
-				IOpenable openable = ((IJavaElement)answer.element).getOpenable();
+				IOpenable openable = ((IJavaScriptElement)answer.element).getOpenable();
 
 				ICompilationUnit compilationUnit=	null;
 				if (openable instanceof ClassFile) {
@@ -274,7 +274,7 @@ public class SearchableEnvironment implements INameEnvironment,
 		try {
 			final String excludePath;
 			if (this.unitToSkip != null) {
-				if (!(this.unitToSkip instanceof IJavaElement)) {
+				if (!(this.unitToSkip instanceof IJavaScriptElement)) {
 					// revert to model investigation
 					findExactTypes(
 						new String(name),
@@ -282,7 +282,7 @@ public class SearchableEnvironment implements INameEnvironment,
 						convertSearchFilterToModelFilter(searchFor));
 					return;
 				}
-				excludePath = ((IJavaElement) this.unitToSkip).getPath().toString();
+				excludePath = ((IJavaScriptElement) this.unitToSkip).getPath().toString();
 			} else {
 				excludePath = null;
 			}
@@ -340,7 +340,7 @@ public class SearchableEnvironment implements INameEnvironment,
 					storage,
 					convertSearchFilterToModelFilter(searchFor));
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			findExactTypes(
 				new String(name),
 				storage,
@@ -431,13 +431,13 @@ public class SearchableEnvironment implements INameEnvironment,
 		try {
 			final String excludePath;
 			if (this.unitToSkip != null) {
-				if (!(this.unitToSkip instanceof IJavaElement)) {
+				if (!(this.unitToSkip instanceof IJavaScriptElement)) {
 					// revert to model investigation
 					findTypes(new String(prefix), storage,
 							convertSearchFilterToModelFilter(searchFor));
 					return;
 				}
-				excludePath = ((IJavaElement) this.unitToSkip).getPath()
+				excludePath = ((IJavaScriptElement) this.unitToSkip).getPath()
 						.toString();
 			} else {
 				excludePath = null;
@@ -522,7 +522,7 @@ public class SearchableEnvironment implements INameEnvironment,
 			} catch (OperationCanceledException e) {
 				findTypes(new String(prefix), storage, convertSearchFilterToModelFilter(searchFor));
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			findTypes(new String(prefix), storage, NameLookup.ACCEPT_ALL);
 		}
 	}
@@ -555,13 +555,13 @@ public class SearchableEnvironment implements INameEnvironment,
 		try {
 			final String excludePath;
 			if (this.unitToSkip != null) {
-				if (!(this.unitToSkip instanceof IJavaElement)) {
+				if (!(this.unitToSkip instanceof IJavaScriptElement)) {
 					// revert to model investigation
 					findBindings(new String(prefix),bindingType, storage,
 							NameLookup.ACCEPT_ALL);
 					return;
 				}
-				excludePath = ((IJavaElement) this.unitToSkip).getPath()
+				excludePath = ((IJavaScriptElement) this.unitToSkip).getPath()
 						.toString();
 			} else {
 				excludePath = null;
@@ -663,14 +663,14 @@ public class SearchableEnvironment implements INameEnvironment,
 						simpleName,
 						bindingType,
 						matchRule, // not case sensitive
-						/*IJavaSearchConstants.TYPE,*/ this.searchScope,
+						/*IJavaScriptSearchConstants.TYPE,*/ this.searchScope,
 						bindingRequestor, CANCEL_IF_NOT_READY_TO_SEARCH,
 						true,
 						progressMonitor);
 			} catch (OperationCanceledException e) {
 				findBindings(new String(prefix),bindingType, storage, NameLookup.ACCEPT_ALL);
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			findTypes(new String(prefix), storage, NameLookup.ACCEPT_ALL);
 		}
 	}

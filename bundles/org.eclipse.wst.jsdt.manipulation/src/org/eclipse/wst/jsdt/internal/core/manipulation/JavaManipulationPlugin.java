@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 
-import org.eclipse.wst.jsdt.core.manipulation.JavaManipulation;
+import org.eclipse.wst.jsdt.core.manipulation.JavaScriptManipulation;
 
 import org.osgi.framework.BundleContext;
 
@@ -59,7 +59,7 @@ public class JavaManipulationPlugin extends Plugin {
 	}
 	
 	public static String getPluginId() {
-		return JavaManipulation.ID_PLUGIN;
+		return JavaScriptManipulation.ID_PLUGIN;
 	}
 
 	public static void log(IStatus status) {

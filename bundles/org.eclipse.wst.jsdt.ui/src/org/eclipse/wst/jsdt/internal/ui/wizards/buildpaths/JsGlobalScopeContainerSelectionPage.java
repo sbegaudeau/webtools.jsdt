@@ -28,7 +28,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
@@ -63,7 +63,7 @@ public class JsGlobalScopeContainerSelectionPage extends WizardPage {
 
 		fContainers= containerPages;
 
-		IDialogSettings settings= JavaPlugin.getDefault().getDialogSettings();
+		IDialogSettings settings= JavaScriptPlugin.getDefault().getDialogSettings();
 		fDialogSettings= settings.getSection(DIALOGSTORE_SECTION);
 		if (fDialogSettings == null) {
 			fDialogSettings= settings.addNewSection(DIALOGSTORE_SECTION);

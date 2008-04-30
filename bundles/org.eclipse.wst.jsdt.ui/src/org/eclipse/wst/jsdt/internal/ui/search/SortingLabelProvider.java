@@ -13,10 +13,10 @@ package org.eclipse.wst.jsdt.internal.ui.search;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredJavaElementLabels;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class SortingLabelProvider extends SearchLabelProvider {
 	
@@ -24,8 +24,8 @@ public class SortingLabelProvider extends SearchLabelProvider {
 	public static final int SHOW_CONTAINER_ELEMENT= 2;
 	public static final int SHOW_PATH= 3;
 	
-	private static final long FLAGS_QUALIFIED= DEFAULT_SEARCH_TEXTFLAGS | JavaElementLabels.F_FULLY_QUALIFIED | JavaElementLabels.M_FULLY_QUALIFIED | JavaElementLabels.I_FULLY_QUALIFIED
-		| JavaElementLabels.T_FULLY_QUALIFIED | JavaElementLabels.D_QUALIFIED | JavaElementLabels.CF_QUALIFIED  | JavaElementLabels.CU_QUALIFIED | ColoredJavaElementLabels.COLORIZE;
+	private static final long FLAGS_QUALIFIED= DEFAULT_SEARCH_TEXTFLAGS | JavaScriptElementLabels.F_FULLY_QUALIFIED | JavaScriptElementLabels.M_FULLY_QUALIFIED | JavaScriptElementLabels.I_FULLY_QUALIFIED
+		| JavaScriptElementLabels.T_FULLY_QUALIFIED | JavaScriptElementLabels.D_QUALIFIED | JavaScriptElementLabels.CF_QUALIFIED  | JavaScriptElementLabels.CU_QUALIFIED | ColoredJavaElementLabels.COLORIZE;
 	
 	
 	private int fCurrentOrder;
@@ -37,7 +37,7 @@ public class SortingLabelProvider extends SearchLabelProvider {
 
 	public Image getImage(Object element) {
 		Image image= null;
-		if (element instanceof IJavaElement || element instanceof IResource)
+		if (element instanceof IJavaScriptElement || element instanceof IResource)
 			image= super.getImage(element);
 		if (image != null)
 			return image;
@@ -78,8 +78,8 @@ public class SortingLabelProvider extends SearchLabelProvider {
 	}
 
 	private String getPostQualification(Object element, String text) {
-		String textLabel= JavaElementLabels.getTextLabel(element, JavaElementLabels.ALL_POST_QUALIFIED);
-		int indexOf= textLabel.indexOf(JavaElementLabels.CONCAT_STRING);
+		String textLabel= JavaScriptElementLabels.getTextLabel(element, JavaScriptElementLabels.ALL_POST_QUALIFIED);
+		int indexOf= textLabel.indexOf(JavaScriptElementLabels.CONCAT_STRING);
 		if (indexOf != -1) {
 			return textLabel.substring(indexOf);
 		}
@@ -94,7 +94,7 @@ public class SortingLabelProvider extends SearchLabelProvider {
 		else if (orderFlag == SHOW_CONTAINER_ELEMENT)
 			flags= FLAGS_QUALIFIED;
 		else if (orderFlag == SHOW_PATH) {
-			flags= FLAGS_QUALIFIED | JavaElementLabels.PREPEND_ROOT_PATH;
+			flags= FLAGS_QUALIFIED | JavaScriptElementLabels.PREPEND_ROOT_PATH;
 		}
 		setTextFlags(flags);
 	}

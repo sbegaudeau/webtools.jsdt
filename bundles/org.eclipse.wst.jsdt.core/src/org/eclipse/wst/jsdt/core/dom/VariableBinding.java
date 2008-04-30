@@ -11,7 +11,7 @@
 
 package org.eclipse.wst.jsdt.core.dom;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.util.IModifierConstants;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -108,7 +108,7 @@ class VariableBinding implements IVariableBinding {
 	/*
 	 * @see IVariableBinding#getDeclaringMethod()
 	 */
-	public IMethodBinding getDeclaringMethod() {
+	public IFunctionBinding getDeclaringMethod() {
 		if (!isField()) {
 			ASTNode node = this.resolver.findDeclaringNode(this);
 			while (true) {
@@ -116,8 +116,8 @@ class VariableBinding implements IVariableBinding {
 				switch(node.getNodeType()) {
 					case ASTNode.INITIALIZER :
 						return null;
-					case ASTNode.METHOD_DECLARATION :
-						MethodDeclaration methodDeclaration = (MethodDeclaration) node;
+					case ASTNode.FUNCTION_DECLARATION :
+						FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
 						return methodDeclaration.resolveBinding();
 					default:
 						node = node.getParent();
@@ -130,7 +130,7 @@ class VariableBinding implements IVariableBinding {
 	/*
 	 * @see IBinding#getJavaElement()
 	 */
-	public IJavaElement getJavaElement() {
+	public IJavaScriptElement getJavaElement() {
 		JavaElement element = getUnresolvedJavaElement();
 		if (element == null)
 			return null;
@@ -197,7 +197,7 @@ class VariableBinding implements IVariableBinding {
 			return (JavaElement) declaringType.getField(getName());
 		}
 		// local variable
-		IMethodBinding declaringMethod = getDeclaringMethod();
+		IFunctionBinding declaringMethod = getDeclaringMethod();
 		if (declaringMethod == null) return null;
 		JavaElement method = (JavaElement) declaringMethod.getJavaElement();
 		if (!(this.resolver instanceof DefaultBindingResolver)) return null;
@@ -292,8 +292,8 @@ class VariableBinding implements IVariableBinding {
 			}
 		} else {
 			if (BindingComparator.isEqual(this.binding, otherBinding)) {
-				IMethodBinding declaringMethod = this.getDeclaringMethod();
-				IMethodBinding otherDeclaringMethod = ((VariableBinding) other).getDeclaringMethod();
+				IFunctionBinding declaringMethod = this.getDeclaringMethod();
+				IFunctionBinding otherDeclaringMethod = ((VariableBinding) other).getDeclaringMethod();
 				if (declaringMethod == null) {
 					if (otherDeclaringMethod != null) {
 						return false;

@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractConstantRefactoring;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -75,7 +75,7 @@ public class ExtractConstantAction extends SelectionDispatchAction {
 		try{
 			final ExtractConstantRefactoring refactoring= new ExtractConstantRefactoring(SelectionConverter.getInputAsCompilationUnit(fEditor), selection.getOffset(), selection.getLength());
 			new RefactoringStarter().activate(refactoring, new ExtractConstantWizard(refactoring), getShell(), RefactoringMessages.ExtractConstantAction_extract_constant, RefactoringSaveHelper.SAVE_NOTHING);
-		} catch (JavaModelException e){
+		} catch (JavaScriptModelException e){
 			ExceptionHandler.handle(e, RefactoringMessages.ExtractConstantAction_extract_constant, RefactoringMessages.NewTextRefactoringAction_exception); 
 		}	
 	}

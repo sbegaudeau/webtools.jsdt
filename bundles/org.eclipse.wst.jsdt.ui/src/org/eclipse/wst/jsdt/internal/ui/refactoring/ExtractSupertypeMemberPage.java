@@ -52,7 +52,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ExtractSupertypeProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ExtractSupertypeRefactoring;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -61,8 +61,8 @@ import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Wizard page for the extract supertype refactoring, which, apart from pull up
@@ -190,7 +190,7 @@ public final class ExtractSupertypeMemberPage extends PullUpMemberPage {
 	 * @return a label provider
 	 */
 	private static ILabelProvider createLabelProvider() {
-		return new SupertypeSelectionLabelProvider(JavaElementLabels.T_TYPE_PARAMETERS | JavaElementLabels.T_POST_QUALIFIED, JavaElementImageProvider.OVERLAY_ICONS);
+		return new SupertypeSelectionLabelProvider(JavaScriptElementLabels.T_TYPE_PARAMETERS | JavaScriptElementLabels.T_POST_QUALIFIED, JavaElementImageProvider.OVERLAY_ICONS);
 	}
 
 	/** The supertype name field */
@@ -385,7 +385,7 @@ public final class ExtractSupertypeMemberPage extends PullUpMemberPage {
 	protected void createSuperTypeControl(final Composite parent) {
 		try {
 			createSuperTypeList(parent);
-		} catch (JavaModelException exception) {
+		} catch (JavaScriptModelException exception) {
 			ExceptionHandler.handle(exception, getShell(), RefactoringMessages.ExtractSupertypeMemberPage_extract_supertype, RefactoringMessages.PullUpInputPage_exception);
 		}
 	}
@@ -418,7 +418,7 @@ public final class ExtractSupertypeMemberPage extends PullUpMemberPage {
 	 * @param parent
 	 *            the parent control
 	 */
-	protected void createSuperTypeList(final Composite parent) throws JavaModelException {
+	protected void createSuperTypeList(final Composite parent) throws JavaScriptModelException {
 		createSpacer(parent);
 
 		final Label label= new Label(parent, SWT.NONE);
@@ -443,7 +443,7 @@ public final class ExtractSupertypeMemberPage extends PullUpMemberPage {
 		fTableViewer.getTable().setLayoutData(data);
 		fTableViewer.setLabelProvider(createLabelProvider());
 		fTableViewer.setContentProvider(new ArrayContentProvider());
-		fTableViewer.setComparator(new JavaElementComparator());
+		fTableViewer.setComparator(new JavaScriptElementComparator());
 		fTypesToExtract.add(getDeclaringType());
 		fTableViewer.setInput(fTypesToExtract.toArray());
 

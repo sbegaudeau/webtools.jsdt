@@ -21,11 +21,11 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Resources;
 import org.eclipse.wst.jsdt.internal.ui.dnd.JdtViewerDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
@@ -49,7 +49,7 @@ class FileTransferDropAdapter extends JdtViewerDropAdapter implements TransferDr
 		Object target= event.item != null ? event.item.getData() : null;
 		if (target == null)
 			return false;
-		return target instanceof IJavaElement || target instanceof IResource;
+		return target instanceof IJavaScriptElement || target instanceof IResource;
 	}
 
 	//---- Actual DND -----------------------------------------------------------------
@@ -58,7 +58,7 @@ class FileTransferDropAdapter extends JdtViewerDropAdapter implements TransferDr
 		event.detail= DND.DROP_NONE;
 		
 		boolean isPackageFragment= target instanceof IPackageFragment;
-		boolean isJavaProject= target instanceof IJavaProject;
+		boolean isJavaProject= target instanceof IJavaScriptProject;
 		boolean isPackageFragmentRoot= target instanceof IPackageFragmentRoot;
 		boolean isContainer= target instanceof IContainer;
 		
@@ -70,7 +70,7 @@ class FileTransferDropAdapter extends JdtViewerDropAdapter implements TransferDr
 			if (container.isAccessible() && !Resources.isReadOnly(container))
 				event.detail= DND.DROP_COPY;
 		} else {
-			IJavaElement element= (IJavaElement)target;
+			IJavaScriptElement element= (IJavaScriptElement)target;
 			if (!element.isReadOnly()) 
 				event.detail= DND.DROP_COPY;
 		}
@@ -102,18 +102,18 @@ class FileTransferDropAdapter extends JdtViewerDropAdapter implements TransferDr
 					event.detail= DND.DROP_COPY;
 				}
 			});
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			String title= PackagesMessages.DropAdapter_errorTitle; 
 			String message= PackagesMessages.DropAdapter_errorMessage; 
 			ExceptionHandler.handle(e, getShell(), title, message);
 		}
 	}
 	
-	private IContainer getActualTarget(Object dropTarget) throws JavaModelException{
+	private IContainer getActualTarget(Object dropTarget) throws JavaScriptModelException{
 		if (dropTarget instanceof IContainer)
 			return (IContainer)dropTarget;
-		else if (dropTarget instanceof IJavaElement)
-			return getActualTarget(((IJavaElement)dropTarget).getCorrespondingResource());	
+		else if (dropTarget instanceof IJavaScriptElement)
+			return getActualTarget(((IJavaScriptElement)dropTarget).getCorrespondingResource());	
 		return null;
 	}
 	

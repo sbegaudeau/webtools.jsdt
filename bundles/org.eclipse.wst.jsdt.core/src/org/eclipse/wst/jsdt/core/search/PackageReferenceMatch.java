@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.core.search;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
  * A Java search match that represents a package reference.
@@ -36,7 +36,7 @@ public class PackageReferenceMatch extends SearchMatch {
 	 * @param participant the search participant that created the match
 	 * @param resource the resource of the element
 	 */
-	public PackageReferenceMatch(IJavaElement enclosingElement, int accuracy, int offset, int length, boolean insideDocComment, SearchParticipant participant, IResource resource) {
+	public PackageReferenceMatch(IJavaScriptElement enclosingElement, int accuracy, int offset, int length, boolean insideDocComment, SearchParticipant participant, IResource resource) {
 		super(enclosingElement, accuracy, offset, length, participant, resource);
 		setInsideDocComment(insideDocComment);
 	}

@@ -31,7 +31,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
 import org.eclipse.wst.jsdt.internal.ui.dnd.JdtViewerDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.OthersWorkingSetUpdater;
@@ -117,7 +117,7 @@ public class WorkingSetDropAdapter extends JdtViewerDropAdapter implements Trans
 			if (fElementsToAdds.length != realJavaElements.size() + realResource.size())
 				return DND.DROP_NONE;
 			for (Iterator iter= realJavaElements.iterator(); iter.hasNext();) {
-				IJavaElement element= (IJavaElement)iter.next();
+				IJavaScriptElement element= (IJavaScriptElement)iter.next();
 				if (ReorgUtils.containsElementOrParent(fCurrentElements, element))
 					return DND.DROP_NONE;
 			}

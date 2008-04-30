@@ -24,7 +24,7 @@ import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -39,7 +39,7 @@ import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
@@ -47,14 +47,14 @@ import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
@@ -95,7 +95,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractTempRefactor
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.InlineTempRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.PromoteTempToFieldRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.fix.ControlStatementsCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ConvertLoopCleanUp;
@@ -218,7 +218,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 			return true;
 		}
 		
-		final ICompilationUnit cu= context.getCompilationUnit();
+		final IJavaScriptUnit cu= context.getCompilationUnit();
 		final ExtractTempRefactoring extractTempRefactoring= new ExtractTempRefactoring(context.getASTRoot(), expression.getStartPosition(), expression.getLength());
 		if (extractTempRefactoring.checkInitialConditions(new NullProgressMonitor()).isOK()) {
 			String label= CorrectionMessages.QuickAssistProcessor_extract_to_local_description;
@@ -268,7 +268,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 			return true;
 		}
 
-		final ICompilationUnit cu= context.getCompilationUnit();
+		final IJavaScriptUnit cu= context.getCompilationUnit();
 		final ConvertAnonymousToNestedRefactoring refactoring= new ConvertAnonymousToNestedRefactoring(anonymTypeDecl);
 		String extTypeName= ASTNodes.getSimpleNameIdentifier((Name) node);
 		if (anonymTypeDecl.resolveBinding().getInterfaces().length == 0) {
@@ -282,7 +282,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 			refactoring.setLinkedProposalModel(linkedProposalModel);
 			
 			String label= CorrectionMessages.QuickAssistProcessor_convert_anonym_to_nested;
-			Image image= JavaPlugin.getImageDescriptorRegistry().get(JavaElementImageProvider.getTypeImageDescriptor(true, false, Flags.AccPrivate, false));
+			Image image= JavaScriptPlugin.getImageDescriptorRegistry().get(JavaElementImageProvider.getTypeImageDescriptor(true, false, Flags.AccPrivate, false));
 			RefactoringCorrectionProposal proposal= new RefactoringCorrectionProposal(label, cu, refactoring, 5, image);
 			proposal.setLinkedProposalModel(linkedProposalModel);
 			proposal.setCommandId(CONVERT_ANONYMOUS_TO_LOCAL_ID);
@@ -491,7 +491,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 			return true;
 		}
 
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
 		AssignToVariableAssistProposal localProposal= new AssignToVariableAssistProposal(cu, AssignToVariableAssistProposal.LOCAL, expressionStatement, typeBinding, 2);
 		localProposal.setCommandId(ASSIGN_TO_LOCAL_ID);
@@ -510,13 +510,13 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 	private static boolean getAssignParamToFieldProposals(IInvocationContext context, ASTNode node, Collection resultingCollections) {
 		node= ASTNodes.getNormalizedNode(node);
 		ASTNode parent= node.getParent();
-		if (!(parent instanceof SingleVariableDeclaration) || !(parent.getParent() instanceof MethodDeclaration)) {
+		if (!(parent instanceof SingleVariableDeclaration) || !(parent.getParent() instanceof FunctionDeclaration)) {
 			return false;
 		}
 		SingleVariableDeclaration paramDecl= (SingleVariableDeclaration) parent;
 		IVariableBinding binding= paramDecl.resolveBinding();
 
-		MethodDeclaration methodDecl= (MethodDeclaration) parent.getParent();
+		FunctionDeclaration methodDecl= (FunctionDeclaration) parent.getParent();
 		if (binding == null || methodDecl.getBody() == null) {
 			return false;
 		}
@@ -532,7 +532,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 		ITypeBinding parentType= Bindings.getBindingOfParentType(node);
 		if (parentType != null) {
 			// assign to existing fields
-			CompilationUnit root= context.getASTRoot();
+			JavaScriptUnit root= context.getASTRoot();
 			IVariableBinding[] declaredFields= parentType.getDeclaredFields();
 			boolean isStaticContext= ASTResolving.isInStaticContext(node);
 			for (int i= 0; i < declaredFields.length; i++) {
@@ -626,7 +626,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 		}
 
 		BodyDeclaration bodyDeclaration= ASTResolving.findParentBodyDeclaration(catchClause);
-		if (!(bodyDeclaration instanceof MethodDeclaration) && !(bodyDeclaration instanceof Initializer)) {
+		if (!(bodyDeclaration instanceof FunctionDeclaration) && !(bodyDeclaration instanceof Initializer)) {
 			return false;
 		}
 
@@ -636,8 +636,8 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 
 		AST ast= bodyDeclaration.getAST();
 
-		if (bodyDeclaration instanceof MethodDeclaration) {
-			MethodDeclaration methodDeclaration= (MethodDeclaration) bodyDeclaration;
+		if (bodyDeclaration instanceof FunctionDeclaration) {
+			FunctionDeclaration methodDeclaration= (FunctionDeclaration) bodyDeclaration;
 
 			ASTRewrite rewrite= ASTRewrite.create(ast);
 
@@ -648,7 +648,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 				Name name= ((SimpleType) type).getName();
 				Name newName= (Name) ASTNode.copySubtree(ast, name);
 
-				ListRewrite listRewriter= rewrite.getListRewrite(methodDeclaration, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY);
+				ListRewrite listRewriter= rewrite.getListRewrite(methodDeclaration, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY);
 				listRewriter.insertLast(newName, null);
 			}
 
@@ -809,8 +809,8 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 			List decls= ((AnonymousClassDeclaration) outer).bodyDeclarations();
 			for (int i= 0; i < decls.size(); i++) {
 				ASTNode elem= (ASTNode) decls.get(i);
-				if (elem instanceof MethodDeclaration) {
-					Block curr= ((MethodDeclaration) elem).getBody();
+				if (elem instanceof FunctionDeclaration) {
+					Block curr= ((FunctionDeclaration) elem).getBody();
 					if (curr != null && !curr.statements().isEmpty()) {
 						if (body != null) {
 							return false;
@@ -835,14 +835,14 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 			//ParenthesizedExpression expression= (ParenthesizedExpression) outer;
 			//body= expression.getExpression();
 			//label= CorrectionMessages.getString("QuickAssistProcessor.unwrap.parenthesis");	 //$NON-NLS-1$
-		} else if (outer instanceof MethodInvocation) {
-			MethodInvocation invocation= (MethodInvocation) outer;
+		} else if (outer instanceof FunctionInvocation) {
+			FunctionInvocation invocation= (FunctionInvocation) outer;
 			if (invocation.arguments().size() == 1) {
 				body= (ASTNode) invocation.arguments().get(0);
 				if (invocation.getParent().getNodeType() == ASTNode.EXPRESSION_STATEMENT) {
 					int kind= body.getNodeType();
 					if (kind != ASTNode.ASSIGNMENT && kind != ASTNode.PREFIX_EXPRESSION && kind != ASTNode.POSTFIX_EXPRESSION
-							&& kind != ASTNode.METHOD_INVOCATION && kind != ASTNode.SUPER_METHOD_INVOCATION) {
+							&& kind != ASTNode.FUNCTION_INVOCATION && kind != ASTNode.SUPER_METHOD_INVOCATION) {
 						body= null;
 					}
 				}
@@ -1074,10 +1074,10 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 
 	private static boolean getInvertEqualsProposal(IInvocationContext context, ASTNode node, Collection resultingCollections) {
 		ASTNode parent= node.getParent();
-		if (!(parent instanceof MethodInvocation)) {
+		if (!(parent instanceof FunctionInvocation)) {
 			return false;
 		}
-		MethodInvocation method= (MethodInvocation) parent;
+		FunctionInvocation method= (FunctionInvocation) parent;
 		if (!"equals".equals(method.getName().getIdentifier())) { //$NON-NLS-1$
 			return false;
 		}
@@ -1099,13 +1099,13 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 		AST ast= method.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(ast);
 		if (left == null) { // equals(x) -> x.equals(this)
-			MethodInvocation replacement= ast.newMethodInvocation();
+			FunctionInvocation replacement= ast.newFunctionInvocation();
 			replacement.setName((SimpleName) rewrite.createCopyTarget(method.getName()));
 			replacement.arguments().add(ast.newThisExpression());
 			replacement.setExpression((Expression) rewrite.createCopyTarget(right));
 			rewrite.replace(method, replacement, null);
 		} else if (right instanceof ThisExpression) { // x.equals(this) -> equals(x)
-			MethodInvocation replacement= ast.newMethodInvocation();
+			FunctionInvocation replacement= ast.newFunctionInvocation();
 			replacement.setName((SimpleName) rewrite.createCopyTarget(method.getName()));
 			replacement.arguments().add(rewrite.createCopyTarget(left));
 			rewrite.replace(method, replacement, null);
@@ -1178,18 +1178,18 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 
 
 	public static boolean getCreateInSuperClassProposals(IInvocationContext context, ASTNode node, Collection resultingCollections) throws CoreException {
-		if (!(node instanceof SimpleName) || !(node.getParent() instanceof MethodDeclaration)) {
+		if (!(node instanceof SimpleName) || !(node.getParent() instanceof FunctionDeclaration)) {
 			return false;
 		}
-		MethodDeclaration decl= (MethodDeclaration) node.getParent();
+		FunctionDeclaration decl= (FunctionDeclaration) node.getParent();
 		if (decl.getName() != node || decl.resolveBinding() == null || Modifier.isPrivate(decl.getModifiers())) {
 			return false;
 		}
 
-		ICompilationUnit cu= context.getCompilationUnit();
-		CompilationUnit astRoot= context.getASTRoot();
+		IJavaScriptUnit cu= context.getCompilationUnit();
+		JavaScriptUnit astRoot= context.getASTRoot();
 
-		IMethodBinding binding= decl.resolveBinding();
+		IFunctionBinding binding= decl.resolveBinding();
 		ITypeBinding[] paramTypes= binding.getParameterTypes();
 
 		ITypeBinding[] superTypes= Bindings.getAllSuperTypes(binding.getDeclaringClass());
@@ -1212,10 +1212,10 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 		for (int i= 0; i < superTypes.length; i++) {
 			ITypeBinding curr= superTypes[i];
 			if (curr.isFromSource()) {
-				IMethodBinding method= Bindings.findOverriddenMethodInType(curr, binding);
+				IFunctionBinding method= Bindings.findOverriddenMethodInType(curr, binding);
 				if (method == null) {
 					ITypeBinding typeDecl= curr.getTypeDeclaration();
-					ICompilationUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, typeDecl);
+					IJavaScriptUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, typeDecl);
 					if (targetCU != null) {
 						String label= Messages.format(CorrectionMessages.QuickAssistProcessor_createmethodinsuper_description, new String[] { curr.getName(), binding.getName() });
 						resultingCollections.add(new NewDefiningMethodProposal(label, targetCU, astRoot, typeDecl, binding, paramNames, 6));
@@ -1386,7 +1386,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 	private static class RefactoringCorrectionProposal extends CUCorrectionProposal {
 		private final Refactoring fRefactoring;
 
-		public RefactoringCorrectionProposal(String name, ICompilationUnit cu, Refactoring refactoring, int relevance, Image image) {
+		public RefactoringCorrectionProposal(String name, IJavaScriptUnit cu, Refactoring refactoring, int relevance, Image image) {
 			super(name, cu, null, relevance, image);
 			fRefactoring= refactoring;
 		}

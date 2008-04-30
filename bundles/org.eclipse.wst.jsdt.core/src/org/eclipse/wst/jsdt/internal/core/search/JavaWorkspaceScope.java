@@ -13,10 +13,10 @@ package org.eclipse.wst.jsdt.internal.core.search;
 import java.util.HashSet;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
@@ -30,7 +30,7 @@ public class JavaWorkspaceScope extends JavaSearchScope {
 
 protected boolean needsInitialize;
 
-public boolean encloses(IJavaElement element) {
+public boolean encloses(IJavaScriptElement element) {
 	/*
 	if (this.needsInitialize) {
 		this.initialize();
@@ -78,60 +78,60 @@ public int hashCode() {
 public void initialize(int size) {
 	super.initialize(size);
 	try {
-		IJavaProject[] projects = JavaModelManager.getJavaModelManager().getJavaModel().getJavaProjects();
+		IJavaScriptProject[] projects = JavaModelManager.getJavaModelManager().getJavaModel().getJavaScriptProjects();
 		for (int i = 0, length = projects.length; i < length; i++) {
 			int includeMask = SOURCES | APPLICATION_LIBRARIES | SYSTEM_LIBRARIES;
 			add((JavaProject) projects[i], null, includeMask, new HashSet(length*2, 1), null);
 		}
-	} catch (JavaModelException ignored) {
+	} catch (JavaScriptModelException ignored) {
 		// ignore
 	}
 	this.needsInitialize = false;
 }
-public void processDelta(IJavaElementDelta delta) {
+public void processDelta(IJavaScriptElementDelta delta) {
 	if (this.needsInitialize) return;
-	IJavaElement element = delta.getElement();
+	IJavaScriptElement element = delta.getElement();
 	switch (element.getElementType()) {
-		case IJavaElement.JAVA_MODEL:
-			IJavaElementDelta[] children = delta.getAffectedChildren();
+		case IJavaScriptElement.JAVASCRIPT_MODEL:
+			IJavaScriptElementDelta[] children = delta.getAffectedChildren();
 			for (int i = 0, length = children.length; i < length; i++) {
-				IJavaElementDelta child = children[i];
+				IJavaScriptElementDelta child = children[i];
 				this.processDelta(child);
 			}
 			break;
-		case IJavaElement.JAVA_PROJECT:
+		case IJavaScriptElement.JAVASCRIPT_PROJECT:
 			int kind = delta.getKind();
 			switch (kind) {
-				case IJavaElementDelta.ADDED:
-				case IJavaElementDelta.REMOVED:
+				case IJavaScriptElementDelta.ADDED:
+				case IJavaScriptElementDelta.REMOVED:
 					this.needsInitialize = true;
 					break;
-				case IJavaElementDelta.CHANGED:
+				case IJavaScriptElementDelta.CHANGED:
 					int flags = delta.getFlags();
-					if ((flags & IJavaElementDelta.F_CLOSED) != 0
-							|| (flags & IJavaElementDelta.F_OPENED) != 0) {
+					if ((flags & IJavaScriptElementDelta.F_CLOSED) != 0
+							|| (flags & IJavaScriptElementDelta.F_OPENED) != 0) {
 						this.needsInitialize = true;
 					} else {
 						children = delta.getAffectedChildren();
 						for (int i = 0, length = children.length; i < length; i++) {
-							IJavaElementDelta child = children[i];
+							IJavaScriptElementDelta child = children[i];
 							this.processDelta(child);
 						}
 					}
 					break;
 			}
 			break;
-		case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 			kind = delta.getKind();
 			switch (kind) {
-				case IJavaElementDelta.ADDED:
-				case IJavaElementDelta.REMOVED:
+				case IJavaScriptElementDelta.ADDED:
+				case IJavaScriptElementDelta.REMOVED:
 					this.needsInitialize = true;
 					break;
-				case IJavaElementDelta.CHANGED:
+				case IJavaScriptElementDelta.CHANGED:
 					int flags = delta.getFlags();
-					if ((flags & IJavaElementDelta.F_ADDED_TO_CLASSPATH) > 0
-						|| (flags & IJavaElementDelta.F_REMOVED_FROM_CLASSPATH) > 0) {
+					if ((flags & IJavaScriptElementDelta.F_ADDED_TO_CLASSPATH) > 0
+						|| (flags & IJavaScriptElementDelta.F_REMOVED_FROM_CLASSPATH) > 0) {
 						this.needsInitialize = true;
 					}
 					break;

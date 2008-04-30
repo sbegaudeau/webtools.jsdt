@@ -46,18 +46,18 @@ import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
@@ -68,7 +68,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapte
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.wizards.NewElementWizardPage;
 
@@ -87,11 +87,11 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 	
 	private IWorkspaceRoot fWorkspaceRoot;
 	
-	private IJavaProject fCurrJProject;
-	private IClasspathEntry[] fEntries;
+	private IJavaScriptProject fCurrJProject;
+	private IIncludePathEntry[] fEntries;
 	private IPath fOutputLocation;
 	
-	private IClasspathEntry[] fNewEntries;
+	private IIncludePathEntry[] fNewEntries;
 	private IPath fNewOutputLocation;	
 	
 	private boolean fIsProjectAsSourceFolder;
@@ -122,7 +122,7 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 		fExcludeInOthersFields.setDialogFieldListener(adapter);
 		fExcludeInOthersFields.setLabelText(NewWizardMessages.NewSourceFolderWizardPage_exclude_label); 
 		
-		//fExcludeInOthersFields.setEnabled(JavaCore.ENABLED.equals(JavaCore.getOption(JavaCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS)));
+		//fExcludeInOthersFields.setEnabled(JavaScriptCore.ENABLED.equals(JavaScriptCore.getOption(JavaScriptCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS)));
 		fExcludeInOthersFields.setEnabled(true);
 		fRootStatus= new StatusInfo();
 		fProjectStatus= new StatusInfo();
@@ -151,8 +151,8 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 			if (proj != null) {
 				return proj.getFullPath().makeRelative().toString();
 			}	
-		} else if (selectedElement instanceof IJavaElement) {
-			IJavaProject jproject= ((IJavaElement)selectedElement).getJavaProject();
+		} else if (selectedElement instanceof IJavaScriptElement) {
+			IJavaScriptProject jproject= ((IJavaScriptElement)selectedElement).getJavaScriptProject();
 			if (jproject != null) {
 				return jproject.getProject().getFullPath().makeRelative().toString();
 			}
@@ -224,7 +224,7 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 				fRootDialogField.setText(path.toString());
 			}
 		} else if (field == fProjectField) {
-			IJavaProject jproject= chooseProject();
+			IJavaScriptProject jproject= chooseProject();
 			if (jproject != null) {
 				IPath path= jproject.getProject().getFullPath().makeRelative();
 				fProjectField.setText(path.toString());
@@ -269,15 +269,15 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 			return;	
 		}
 		try {
-			if (project.hasNature(JavaCore.NATURE_ID)) {
-				fCurrJProject= JavaCore.create(project);
-				fEntries= fCurrJProject.getRawClasspath();
+			if (project.hasNature(JavaScriptCore.NATURE_ID)) {
+				fCurrJProject= JavaScriptCore.create(project);
+				fEntries= fCurrJProject.getRawIncludepath();
 				fOutputLocation= fCurrJProject.getOutputLocation();
 				fProjectStatus.setOK();
 				return;
 			}
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			fCurrJProject= null;
 		}	
 		fProjectStatus.setError(NewWizardMessages.NewSourceFolderWizardPage_error_NotAJavaProject); 
@@ -327,8 +327,8 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 				int projectEntryIndex= -1;
 				
 				for (int i= 0; i < fEntries.length; i++) {
-					IClasspathEntry curr= fEntries[i];
-					if (curr.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+					IIncludePathEntry curr= fEntries[i];
+					if (curr.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 						if (path.equals(curr.getPath())) {
 							fRootStatus.setError(NewWizardMessages.NewSourceFolderWizardPage_error_AlreadyExisting); 
 							return;
@@ -340,31 +340,31 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 					newEntries.add(curr);
 				}
 				
-				IClasspathEntry newEntry= JavaCore.newSourceEntry(path);
+				IIncludePathEntry newEntry= JavaScriptCore.newSourceEntry(path);
 				
 				Set modified= new HashSet();				
 				if (fExcludeInOthersFields.isSelected()) {
 					addExclusionPatterns(newEntry, newEntries, modified);
-					IClasspathEntry entry= JavaCore.newSourceEntry(path);
+					IIncludePathEntry entry= JavaScriptCore.newSourceEntry(path);
 					insertAtEndOfCategory(entry, newEntries);
 				} else {
 					if (projectEntryIndex != -1) {
 						fIsProjectAsSourceFolder= true;
 						newEntries.set(projectEntryIndex, newEntry);
 					} else {
-						IClasspathEntry entry= JavaCore.newSourceEntry(path);
+						IIncludePathEntry entry= JavaScriptCore.newSourceEntry(path);
 						insertAtEndOfCategory(entry, newEntries);
 					}
 				}
 					
-				fNewEntries= (IClasspathEntry[]) newEntries.toArray(new IClasspathEntry[newEntries.size()]);
+				fNewEntries= (IIncludePathEntry[]) newEntries.toArray(new IIncludePathEntry[newEntries.size()]);
 				fNewOutputLocation= fOutputLocation;
 
-				IJavaModelStatus status= JavaConventions.validateClasspath(fCurrJProject, fNewEntries, fNewOutputLocation);
+				IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(fCurrJProject, fNewEntries, fNewOutputLocation);
 				if (!status.isOK()) {
 					if (fOutputLocation.equals(projPath)) {
 						fNewOutputLocation= projPath.append(PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.SRCBIN_BINNAME));
-						IStatus status2= JavaConventions.validateClasspath(fCurrJProject, fNewEntries, fNewOutputLocation);
+						IStatus status2= JavaScriptConventions.validateClasspath(fCurrJProject, fNewEntries, fNewOutputLocation);
 						if (status2.isOK()) {
 							if (fIsProjectAsSourceFolder) {
 								fRootStatus.setInfo(Messages.format(NewWizardMessages.NewSourceFolderWizardPage_warning_ReplaceSFandOL, fNewOutputLocation.makeRelative().toString())); 
@@ -388,9 +388,9 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 		}
 	}
 	
-	private void insertAtEndOfCategory(IClasspathEntry entry, List entries) {
+	private void insertAtEndOfCategory(IIncludePathEntry entry, List entries) {
 		int length= entries.size();
-		IClasspathEntry[] elements= (IClasspathEntry[])entries.toArray(new IClasspathEntry[length]);
+		IIncludePathEntry[] elements= (IIncludePathEntry[])entries.toArray(new IIncludePathEntry[length]);
 		int i= 0;
 		while (i < length && elements[i].getEntryKind() != entry.getEntryKind()) {
 			i++;
@@ -405,25 +405,25 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 		}
 		
 		switch (entry.getEntryKind()) {
-		case IClasspathEntry.CPE_SOURCE:
+		case IIncludePathEntry.CPE_SOURCE:
 			entries.add(0, entry);
 			break;
-		case IClasspathEntry.CPE_CONTAINER:
-		case IClasspathEntry.CPE_LIBRARY:
-		case IClasspathEntry.CPE_PROJECT:
-		case IClasspathEntry.CPE_VARIABLE:
+		case IIncludePathEntry.CPE_CONTAINER:
+		case IIncludePathEntry.CPE_LIBRARY:
+		case IIncludePathEntry.CPE_PROJECT:
+		case IIncludePathEntry.CPE_VARIABLE:
 		default:
 			entries.add(entry);
 			break;
 		}
 	}
 	
-	private void addExclusionPatterns(IClasspathEntry newEntry, List existing, Set modifiedEntries) {
+	private void addExclusionPatterns(IIncludePathEntry newEntry, List existing, Set modifiedEntries) {
 		IPath entryPath= newEntry.getPath();
 		for (int i= 0; i < existing.size(); i++) {
-			IClasspathEntry curr= (IClasspathEntry) existing.get(i);
+			IIncludePathEntry curr= (IIncludePathEntry) existing.get(i);
 			IPath currPath= curr.getPath();
-			if (curr.getEntryKind() == IClasspathEntry.CPE_SOURCE && currPath.isPrefixOf(entryPath)) {
+			if (curr.getEntryKind() == IIncludePathEntry.CPE_SOURCE && currPath.isPrefixOf(entryPath)) {
 				IPath[] exclusionFilters= curr.getExclusionPatterns();
 				if (!JavaModelUtil.isExcludedPath(entryPath, exclusionFilters)) {
 					IPath pathToExclude= entryPath.removeFirstSegments(currPath.segmentCount()).addTrailingSeparator();
@@ -431,7 +431,7 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 					System.arraycopy(exclusionFilters, 0, newExclusionFilters, 0, exclusionFilters.length);
 					newExclusionFilters[exclusionFilters.length]= pathToExclude;
 					
-					IClasspathEntry updated= JavaCore.newSourceEntry(currPath, newExclusionFilters, curr.getOutputLocation());
+					IIncludePathEntry updated= JavaScriptCore.newSourceEntry(currPath, newExclusionFilters, curr.getOutputLocation());
 					existing.set(i, updated);
 					modifiedEntries.add(updated);
 				}
@@ -474,7 +474,7 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 				throw new InterruptedException();
 			}
 			
-			fCurrJProject.setRawClasspath(fNewEntries, fNewOutputLocation, new SubProgressMonitor(monitor, 2));
+			fCurrJProject.setRawIncludepath(fNewEntries, fNewOutputLocation, new SubProgressMonitor(monitor, 2));
 	
 			fCreatedRoot= fCurrJProject.getPackageFragmentRoot(folder);
 		} finally {
@@ -512,16 +512,16 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 		return null;		
 	}
 	
-	private IJavaProject chooseProject() {
-		IJavaProject[] projects;
+	private IJavaScriptProject chooseProject() {
+		IJavaScriptProject[] projects;
 		try {
-			projects= JavaCore.create(fWorkspaceRoot).getJavaProjects();
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
-			projects= new IJavaProject[0];
+			projects= JavaScriptCore.create(fWorkspaceRoot).getJavaScriptProjects();
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
+			projects= new IJavaScriptProject[0];
 		}
 		
-		ILabelProvider labelProvider= new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT);
+		ILabelProvider labelProvider= new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_DEFAULT);
 		ElementListSelectionDialog dialog= new ElementListSelectionDialog(getShell(), labelProvider);
 		dialog.setTitle(NewWizardMessages.NewSourceFolderWizardPage_ChooseProjectDialog_title); 
 		dialog.setMessage(NewWizardMessages.NewSourceFolderWizardPage_ChooseProjectDialog_description); 
@@ -529,7 +529,7 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 		dialog.setInitialSelections(new Object[] { fCurrJProject });
 		dialog.setHelpAvailable(false);
 		if (dialog.open() == Window.OK) {			
-			return (IJavaProject) dialog.getFirstResult();
+			return (IJavaScriptProject) dialog.getFirstResult();
 		}			
 		return null;		
 	}

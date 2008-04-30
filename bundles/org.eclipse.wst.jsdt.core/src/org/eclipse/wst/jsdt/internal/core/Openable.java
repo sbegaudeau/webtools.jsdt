@@ -26,10 +26,10 @@ import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IBufferChangedListener;
 import org.eclipse.wst.jsdt.core.IBufferFactory;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IOpenable;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.codeassist.CompletionEngine;
 import org.eclipse.wst.jsdt.internal.codeassist.SelectionEngine;
@@ -39,7 +39,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 /**
  * Abstract class for implementations of java elements which are IOpenable.
  *
- * @see IJavaElement
+ * @see IJavaScriptElement
  * @see IOpenable
  */
 public abstract class Openable extends JavaElement implements IOpenable, IBufferChangedListener {
@@ -73,14 +73,14 @@ public void bufferChanged(BufferChangedEvent event) {
  * if successful, or false if an error is encountered while determining
  * the structure of this element.
  */
-protected abstract boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException;
+protected abstract boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaScriptModelException;
 /*
  * Returns whether this element can be removed from the Java model cache to make space.
  */
 public boolean canBeRemovedFromCache() {
 	try {
 		return !hasUnsavedChanges();
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		return false;
 	}
 }
@@ -107,7 +107,7 @@ protected void closeBuffer() {
 protected void closing(Object info) {
 	closeBuffer();
 }
-protected void codeComplete(org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit cu, org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit unitToSkip, int position, CompletionRequestor requestor, WorkingCopyOwner owner) throws JavaModelException {
+protected void codeComplete(org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit cu, org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit unitToSkip, int position, CompletionRequestor requestor, WorkingCopyOwner owner) throws JavaScriptModelException {
 	if (requestor == null) {
 		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
 	}
@@ -122,9 +122,9 @@ protected void codeComplete(org.eclipse.wst.jsdt.internal.compiler.env.ICompilat
 		return;
 	}
 	if (position < -1 || position > buffer.getLength()) {
-		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INDEX_OUT_OF_BOUNDS));
+		throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INDEX_OUT_OF_BOUNDS));
 	}
-	JavaProject project = (JavaProject) getJavaProject();
+	JavaProject project = (JavaProject) getJavaScriptProject();
 	SearchableEnvironment environment = newSearchableNameEnvironment(owner);
 
 	// set unit to skip
@@ -141,7 +141,7 @@ protected void codeComplete(org.eclipse.wst.jsdt.internal.compiler.env.ICompilat
 		System.out.println(Thread.currentThread() + " TIME SPENT in NameLoopkup#seekTypesInBinaryPackage: " + environment.nameLookup.timeSpentInSeekTypesInBinaryPackage + "ms");  //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }
-protected IJavaElement[] codeSelect(org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit cu, int offset, int length, WorkingCopyOwner owner) throws JavaModelException {
+protected IJavaScriptElement[] codeSelect(org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit cu, int offset, int length, WorkingCopyOwner owner) throws JavaScriptModelException {
 	PerformanceStats performanceStats = SelectionEngine.PERF
 		? PerformanceStats.getStats(JavaModelManager.SELECTION_PERF, this)
 		: null;
@@ -149,7 +149,7 @@ protected IJavaElement[] codeSelect(org.eclipse.wst.jsdt.internal.compiler.env.I
 		performanceStats.startRun(new String(cu.getFileName()) + " at [" + offset + "," + length + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
-	JavaProject project = (JavaProject)getJavaProject();
+	JavaProject project = (JavaProject)getJavaScriptProject();
 	SearchableEnvironment environment = newSearchableNameEnvironment(owner);
 
 	SelectionRequestor requestor= new SelectionRequestor(environment.nameLookup, this);
@@ -159,7 +159,7 @@ protected IJavaElement[] codeSelect(org.eclipse.wst.jsdt.internal.compiler.env.I
 	}
 	int end= buffer.getLength();
 	if (offset < 0 || length < 0 || offset + length > end ) {
-		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INDEX_OUT_OF_BOUNDS));
+		throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INDEX_OUT_OF_BOUNDS));
 	}
 
 	// fix for 1FVXGDK
@@ -182,7 +182,7 @@ protected Object createElementInfo() {
 	return new OpenableElementInfo();
 }
 /**
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public boolean exists() {
 	JavaModelManager manager = JavaModelManager.getJavaModelManager();
@@ -195,17 +195,17 @@ public boolean exists() {
 	}
 	return super.exists();
 }
-public String findRecommendedLineSeparator() throws JavaModelException {
+public String findRecommendedLineSeparator() throws JavaScriptModelException {
 	IBuffer buffer = getBuffer();
 	String source = buffer == null ? null : buffer.getContents();
-	return Util.getLineSeparator(source, getJavaProject());
+	return Util.getLineSeparator(source, getJavaScriptProject());
 }
-protected void generateInfos(Object info, HashMap newElements, IProgressMonitor monitor) throws JavaModelException {
+protected void generateInfos(Object info, HashMap newElements, IProgressMonitor monitor) throws JavaScriptModelException {
 
 	if (JavaModelCache.VERBOSE){
 		String element;
 		switch (getElementType()) {
-			case JAVA_PROJECT:
+			case JAVASCRIPT_PROJECT:
 				element = "project"; //$NON-NLS-1$
 				break;
 			case PACKAGE_FRAGMENT_ROOT:
@@ -217,7 +217,7 @@ protected void generateInfos(Object info, HashMap newElements, IProgressMonitor 
 			case CLASS_FILE:
 				element = "class file"; //$NON-NLS-1$
 				break;
-			case COMPILATION_UNIT:
+			case JAVASCRIPT_UNIT:
 				element = "compilation unit"; //$NON-NLS-1$
 				break;
 			default:
@@ -240,7 +240,7 @@ protected void generateInfos(Object info, HashMap newElements, IProgressMonitor 
 		OpenableElementInfo openableElementInfo = (OpenableElementInfo)info;
 		boolean isStructureKnown = buildStructure(openableElementInfo, monitor, newElements, getResource());
 		openableElementInfo.setIsStructureKnown(isStructureKnown);
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		newElements.remove(this);
 		throw e;
 	}
@@ -261,7 +261,7 @@ protected void generateInfos(Object info, HashMap newElements, IProgressMonitor 
  *
  * @see IOpenable
  */
-public IBuffer getBuffer() throws JavaModelException {
+public IBuffer getBuffer() throws JavaScriptModelException {
 	if (hasBuffer()) {
 		// ensure element is open
 		Object info = getElementInfo();
@@ -296,13 +296,13 @@ protected BufferManager getBufferManager() {
  * Return my underlying resource. Elements that may not have a
  * corresponding resource must override this method.
  *
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
-public IResource getCorrespondingResource() throws JavaModelException {
+public IResource getCorrespondingResource() throws JavaScriptModelException {
 	return getUnderlyingResource();
 }
 /*
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public IOpenable getOpenable() {
 	return this;
@@ -311,9 +311,9 @@ public IOpenable getOpenable() {
 
 
 /**
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
-public IResource getUnderlyingResource() throws JavaModelException {
+public IResource getUnderlyingResource() throws JavaScriptModelException {
 	IResource parentResource = this.parent.getUnderlyingResource();
 	if (parentResource == null) {
 		return null;
@@ -342,7 +342,7 @@ protected boolean hasBuffer() {
 /**
  * @see IOpenable
  */
-public boolean hasUnsavedChanges() throws JavaModelException{
+public boolean hasUnsavedChanges() throws JavaScriptModelException{
 
 	if (isReadOnly() || !isOpen()) {
 		return false;
@@ -356,13 +356,13 @@ public boolean hasUnsavedChanges() throws JavaModelException{
 	int elementType = getElementType();
 	if (elementType == PACKAGE_FRAGMENT ||
 		elementType == PACKAGE_FRAGMENT_ROOT ||
-		elementType == JAVA_PROJECT ||
-		elementType == JAVA_MODEL) { // fix for 1FWNMHH
+		elementType == JAVASCRIPT_PROJECT ||
+		elementType == JAVASCRIPT_MODEL) { // fix for 1FWNMHH
 		Enumeration openBuffers= getBufferManager().getOpenBuffers();
 		while (openBuffers.hasMoreElements()) {
 			IBuffer buffer= (IBuffer)openBuffers.nextElement();
 			if (buffer.hasUnsavedChanges()) {
-				IJavaElement owner= (IJavaElement)buffer.getOwner();
+				IJavaScriptElement owner= (IJavaScriptElement)buffer.getOwner();
 				if (isAncestorOf(owner)) {
 					return true;
 				}
@@ -396,22 +396,22 @@ protected boolean isSourceElement() {
 	return false;
 }
 /**
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
-public boolean isStructureKnown() throws JavaModelException {
+public boolean isStructureKnown() throws JavaScriptModelException {
 	return ((OpenableElementInfo)getElementInfo()).isStructureKnown();
 }
 /**
  * @see IOpenable
  */
-public void makeConsistent(IProgressMonitor monitor) throws JavaModelException {
+public void makeConsistent(IProgressMonitor monitor) throws JavaScriptModelException {
 	// only compilation units can be inconsistent
 	// other openables cannot be inconsistent so default is to do nothing
 }
 /**
  * @see IOpenable
  */
-public void open(IProgressMonitor pm) throws JavaModelException {
+public void open(IProgressMonitor pm) throws JavaScriptModelException {
 	getElementInfo(pm);
 }
 
@@ -421,14 +421,14 @@ public void open(IProgressMonitor pm) throws JavaModelException {
  * By default, do nothing - subclasses that have buffers
  * must override as required.
  */
-protected IBuffer openBuffer(IProgressMonitor pm, Object info) throws JavaModelException {
+protected IBuffer openBuffer(IProgressMonitor pm, Object info) throws JavaScriptModelException {
 	return null;
 }
 
 /**
  * Open the parent element if necessary.
  */
-protected void openParent(Object childInfo, HashMap newElements, IProgressMonitor pm) throws JavaModelException {
+protected void openParent(Object childInfo, HashMap newElements, IProgressMonitor pm) throws JavaScriptModelException {
 
 	Openable openableParent = (Openable)getOpenableParent();
 	if (openableParent != null && !openableParent.isOpen()){
@@ -442,7 +442,7 @@ protected void openParent(Object childInfo, HashMap newElements, IProgressMonito
  */
 protected boolean parentExists(){
 
-	IJavaElement parentElement = getParent();
+	IJavaScriptElement parentElement = getParent();
 	if (parentElement == null) return true;
 	return parentElement.exists();
 }
@@ -463,9 +463,9 @@ protected boolean resourceExists() {
 /**
  * @see IOpenable
  */
-public void save(IProgressMonitor pm, boolean force) throws JavaModelException {
+public void save(IProgressMonitor pm, boolean force) throws JavaScriptModelException {
 	if (isReadOnly()) {
-		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
+		throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.READ_ONLY, this));
 	}
 	IBuffer buf = getBuffer();
 	if (buf != null) { // some Openables (like a JavaProject) don't have a buffer
@@ -478,7 +478,7 @@ public void save(IProgressMonitor pm, boolean force) throws JavaModelException {
  * Find enclosing package fragment root if any
  */
 public PackageFragmentRoot getPackageFragmentRoot() {
-	return (PackageFragmentRoot) getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+	return (PackageFragmentRoot) getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 }
 
 }

@@ -43,9 +43,9 @@ import org.eclipse.wst.jsdt.core.BufferChangedEvent;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IBufferChangedListener;
 import org.eclipse.wst.jsdt.core.IOpenable;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 
 /**
@@ -77,7 +77,7 @@ public class DocumentAdapter implements IBuffer, IDocumentListener {
 		public void removeBufferChangedListener(IBufferChangedListener listener) {}
 		public void replace(int position, int length, char[] text) {}
 		public void replace(int position, int length, String text) {}
-		public void save(IProgressMonitor progress, boolean force) throws JavaModelException {}
+		public void save(IProgressMonitor progress, boolean force) throws JavaScriptModelException {}
 		public void setContents(char[] contents) {}
 		public void setContents(String contents) {}
 	}
@@ -411,12 +411,12 @@ public class DocumentAdapter implements IBuffer, IDocumentListener {
 	/*
 	 * @see IBuffer#save(IProgressMonitor, boolean)
 	 */
-	public void save(IProgressMonitor progress, boolean force) throws JavaModelException {
+	public void save(IProgressMonitor progress, boolean force) throws JavaScriptModelException {
 		try {
 			if (fTextFileBuffer != null)
 				fTextFileBuffer.commit(progress, force);
 		} catch (CoreException e) {
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		}
 	}
 
@@ -464,7 +464,7 @@ public class DocumentAdapter implements IBuffer, IDocumentListener {
 						existingDelimiters.add(curr);
 					}
 				} catch (BadLocationException e) {
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 				}
 			}
 			if (existingDelimiters.isEmpty()) {
@@ -491,11 +491,11 @@ public class DocumentAdapter implements IBuffer, IDocumentListener {
 							buf.append(' ');
 						buf.append((int)curr.charAt(k));
 					}
-					IStatus status= new Status(IStatus.WARNING, JavaUI.ID_PLUGIN, IStatus.OK, buf.toString(), new Throwable());
-					JavaPlugin.log(status);
+					IStatus status= new Status(IStatus.WARNING, JavaScriptUI.ID_PLUGIN, IStatus.OK, buf.toString(), new Throwable());
+					JavaScriptPlugin.log(status);
 				}
 			} catch (BadLocationException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 	}

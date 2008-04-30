@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.java.hover.IJavaEditorTextHover;
@@ -115,7 +115,7 @@ public class JavaEditorTextHoverDescriptor {
 			try {
 				return (IJavaEditorTextHover)fElement.createExecutableExtension(CLASS_ATTRIBUTE);
 			} catch (CoreException x) {
-				JavaPlugin.log(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), 0, JavaHoverMessages.JavaTextHover_createTextHover, null));
+				JavaScriptPlugin.log(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), 0, JavaHoverMessages.JavaTextHover_createTextHover, null));
 			}
 		}
 
@@ -198,7 +198,7 @@ public class JavaEditorTextHoverDescriptor {
 	}
 
 	private static void initializeFromPreferences(JavaEditorTextHoverDescriptor[] hovers) {
-		String compiledTextHoverModifiers= JavaPlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.EDITOR_TEXT_HOVER_MODIFIERS);
+		String compiledTextHoverModifiers= JavaScriptPlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.EDITOR_TEXT_HOVER_MODIFIERS);
 
 		StringTokenizer tokenizer= new StringTokenizer(compiledTextHoverModifiers, VALUE_SEPARATOR);
 		HashMap idToModifier= new HashMap(tokenizer.countTokens() / 2);
@@ -209,7 +209,7 @@ public class JavaEditorTextHoverDescriptor {
 				idToModifier.put(id, tokenizer.nextToken());
 		}
 
-		String compiledTextHoverModifierMasks= JavaPlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.EDITOR_TEXT_HOVER_MODIFIER_MASKS);
+		String compiledTextHoverModifierMasks= JavaScriptPlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.EDITOR_TEXT_HOVER_MODIFIER_MASKS);
 
 		tokenizer= new StringTokenizer(compiledTextHoverModifierMasks, VALUE_SEPARATOR);
 		HashMap idToModifierMask= new HashMap(tokenizer.countTokens() / 2);

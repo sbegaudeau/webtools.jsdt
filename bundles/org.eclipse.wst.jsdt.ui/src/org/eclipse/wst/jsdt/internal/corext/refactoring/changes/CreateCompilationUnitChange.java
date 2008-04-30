@@ -11,16 +11,16 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.changes;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.changes.CreateTextFileChange;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 public final class CreateCompilationUnitChange extends CreateTextFileChange {
 
-	private final ICompilationUnit fUnit;
+	private final IJavaScriptUnit fUnit;
 
-	public CreateCompilationUnitChange(ICompilationUnit unit, String source, String encoding) {
+	public CreateCompilationUnitChange(IJavaScriptUnit unit, String source, String encoding) {
 		super(unit.getResource().getFullPath(), source, encoding, "java"); //$NON-NLS-1$
 		fUnit= unit;
 	}

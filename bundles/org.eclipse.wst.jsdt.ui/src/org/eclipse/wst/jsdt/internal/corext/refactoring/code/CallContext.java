@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.code;
 
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Expression;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.internal.corext.dom.CodeScopeBuilder;
@@ -40,7 +40,7 @@ public class CallContext {
 		if (expression != null) {
 			return expression.resolveTypeBinding();
 		}
-		IMethodBinding method= Invocations.resolveBinding(invocation);
+		IFunctionBinding method= Invocations.resolveBinding(invocation);
 		if (method != null) {
 			return method.getDeclaringClass();
 		}

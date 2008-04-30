@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.folding.JavaFoldingStructureProviderDescriptor;
 import org.eclipse.wst.jsdt.internal.ui.text.folding.JavaFoldingStructureProviderRegistry;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
@@ -117,7 +117,7 @@ class FoldingConfigurationBlock implements IPreferenceConfigurationBlock {
 	}
 
 	private Map createListModel() {
-		JavaFoldingStructureProviderRegistry reg= JavaPlugin.getDefault().getFoldingStructureProviderRegistry();
+		JavaFoldingStructureProviderRegistry reg= JavaScriptPlugin.getDefault().getFoldingStructureProviderRegistry();
 		reg.reloadExtensions();
 		JavaFoldingStructureProviderDescriptor[] descs= reg.getFoldingProviderDescriptors();
 		Map map= new HashMap();
@@ -288,7 +288,7 @@ class FoldingConfigurationBlock implements IPreferenceConfigurationBlock {
 		if (desc == null) {
 			// safety in case there is no such descriptor
 			String message= Messages.format(PreferencesMessages.FoldingConfigurationBlock_error_not_exist, id);
-			JavaPlugin.log(new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, message, null));
+			JavaScriptPlugin.log(new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, message, null));
 			prefs= new ErrorPreferences(message);
 		} else {
 			prefs= (IJavaFoldingPreferenceBlock) fProviderPreferences.get(id);
@@ -297,7 +297,7 @@ class FoldingConfigurationBlock implements IPreferenceConfigurationBlock {
 					prefs= desc.createPreferences();
 					fProviderPreferences.put(id, prefs);
 				} catch (CoreException e) {
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 					prefs= new ErrorPreferences(e.getLocalizedMessage());
 				}
 			}
@@ -359,9 +359,9 @@ class FoldingConfigurationBlock implements IPreferenceConfigurationBlock {
 		// Fallback to default
 		if (provider == null) {
 			String message= Messages.format(PreferencesMessages.FoldingConfigurationBlock_warning_providerNotFound_resetToDefault, id);
-			JavaPlugin.log(new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, message, null));
+			JavaScriptPlugin.log(new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, message, null));
 			
-			id= JavaPlugin.getDefault().getPreferenceStore().getDefaultString(PreferenceConstants.EDITOR_FOLDING_PROVIDER);
+			id= JavaScriptPlugin.getDefault().getPreferenceStore().getDefaultString(PreferenceConstants.EDITOR_FOLDING_PROVIDER);
 			
 			provider= fProviderDescriptors.get(id);
 			Assert.isNotNull(provider);

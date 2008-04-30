@@ -44,16 +44,16 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.AST;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
@@ -70,7 +70,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
@@ -83,7 +83,7 @@ import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
 import org.eclipse.wst.jsdt.internal.ui.util.ElementValidator;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 import com.ibm.icu.text.Collator;
 
@@ -121,14 +121,14 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 			if (selection != null && selection.length > 0) {
 				int count= 0;
 				List bindings= new ArrayList(selection.length);
-				IMethodBinding binding= null;
+				IFunctionBinding binding= null;
 				for (int index= 0; index < selection.length; index++) {
 					if (selection[index] instanceof IBinding[]) {
 						count++;
-						binding= (IMethodBinding) ((IBinding[]) selection[index])[1];
-						IMethodBinding existing= null;
+						binding= (IFunctionBinding) ((IBinding[]) selection[index])[1];
+						IFunctionBinding existing= null;
 						for (int offset= 0; offset < bindings.size(); offset++) {
-							existing= (IMethodBinding) bindings.get(offset);
+							existing= (IFunctionBinding) bindings.get(offset);
 							if (Bindings.isEqualMethod(binding, existing.getName(), existing.getParameterTypes())) {
 								return new StatusInfo(IStatus.ERROR, ActionMessages.AddDelegateMethodsAction_duplicate_methods); 
 							}
@@ -150,11 +150,11 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 
 		private IVariableBinding[] fExpanded= new IVariableBinding[0];
 
-		private final CompilationUnit fUnit;
+		private final JavaScriptUnit fUnit;
 
-		AddDelegateMethodsContentProvider(IType type, IField[] fields) throws JavaModelException {
+		AddDelegateMethodsContentProvider(IType type, IField[] fields) throws JavaScriptModelException {
 			RefactoringASTParser parser= new RefactoringASTParser(AST.JLS3);
-			fUnit= parser.parse(type.getCompilationUnit(), true);
+			fUnit= parser.parse(type.getJavaScriptUnit(), true);
 			final ITypeBinding binding= ASTNodes.getTypeBinding(fUnit, type);
 			if (binding != null) {
 				IBinding[][] bindings= StubUtility2.getDelegatableMethods(fUnit.getAST(), binding);
@@ -177,7 +177,7 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 			}
 		}
 
-		public CompilationUnit getCompilationUnit() {
+		public JavaScriptUnit getCompilationUnit() {
 			return fUnit;
 		}
 
@@ -244,7 +244,7 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 
 	private static class AddDelegateMethodsDialog extends SourceActionDialog {
 
-		public AddDelegateMethodsDialog(Shell parent, ILabelProvider labelProvider, ITreeContentProvider contentProvider, CompilationUnitEditor editor, IType type, boolean isConstructor) throws JavaModelException {
+		public AddDelegateMethodsDialog(Shell parent, ILabelProvider labelProvider, ITreeContentProvider contentProvider, CompilationUnitEditor editor, IType type, boolean isConstructor) throws JavaScriptModelException {
 			super(parent, labelProvider, contentProvider, editor, type, isConstructor);
 		}
 
@@ -322,13 +322,13 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 
 	private static final String DIALOG_TITLE= ActionMessages.AddDelegateMethodsAction_error_title; 
 
-	private static boolean hasPrimitiveType(IField field) throws JavaModelException {
+	private static boolean hasPrimitiveType(IField field) throws JavaScriptModelException {
 		String signature= field.getTypeSignature();
 		char first= Signature.getElementType(signature).charAt(0);
 		return (first != Signature.C_RESOLVED && first != Signature.C_UNRESOLVED);
 	}
 
-	private static boolean isArray(IField field) throws JavaModelException {
+	private static boolean isArray(IField field) throws JavaScriptModelException {
 		return Signature.getArrayCount(field.getTypeSignature()) > 0;
 	}
 
@@ -362,22 +362,22 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.ADD_DELEGATE_METHODS_ACTION);
 	}
 
-	private boolean canEnable(IStructuredSelection selection) throws JavaModelException {
+	private boolean canEnable(IStructuredSelection selection) throws JavaScriptModelException {
 		if (getSelectedFields(selection) != null)
 			return true;
 
 		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IType)) {
 			IType type= (IType) selection.getFirstElement();
-			return type.getCompilationUnit() != null && !type.isInterface();
+			return type.getJavaScriptUnit() != null && !type.isInterface();
 		}
 
-		if ((selection.size() == 1) && (selection.getFirstElement() instanceof ICompilationUnit))
+		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IJavaScriptUnit))
 			return true;
 
 		return false;
 	}
 
-	private boolean canRunOn(IField[] fields) throws JavaModelException {
+	private boolean canRunOn(IField[] fields) throws JavaScriptModelException {
 		if (fields == null || fields.length == 0)
 			return false;
 		int count= 0;
@@ -390,8 +390,8 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 		return (count > 0);
 	}
 
-	private boolean canRunOn(IType type) throws JavaModelException {
-		if (type == null || type.getCompilationUnit() == null) {
+	private boolean canRunOn(IType type) throws JavaScriptModelException {
+		if (type == null || type.getJavaScriptUnit() == null) {
 			MessageDialog.openInformation(getShell(), DIALOG_TITLE, ActionMessages.AddDelegateMethodsAction_not_in_source_file); 
 			return false;
 		} else if (type.isAnnotation()) {
@@ -408,18 +408,18 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 		List elements= selection.toList();
 		if (elements.size() > 0) {
 			IField[] result= new IField[elements.size()];
-			ICompilationUnit unit= null;
+			IJavaScriptUnit unit= null;
 			for (int index= 0; index < elements.size(); index++) {
 				if (elements.get(index) instanceof IField) {
 					IField field= (IField) elements.get(index);
 
 					if (index == 0) {
 						// remember the CU of the first element
-						unit= field.getCompilationUnit();
+						unit= field.getJavaScriptUnit();
 						if (unit == null) {
 							return null;
 						}
-					} else if (!unit.equals(field.getCompilationUnit())) {
+					} else if (!unit.equals(field.getJavaScriptUnit())) {
 						// all fields must be in the same CU
 						return null;
 					}
@@ -428,8 +428,8 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 						if (type!=null && type.isInterface()) {
 							return null;
 						}
-					} catch (JavaModelException exception) {
-						JavaPlugin.log(exception);
+					} catch (JavaScriptModelException exception) {
+						JavaScriptPlugin.log(exception);
 						return null;
 					}
 
@@ -456,8 +456,8 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 			Object firstElement= selection.getFirstElement();
 			if (firstElement instanceof IType)
 				run((IType) firstElement, new IField[0], false);
-			else if (firstElement instanceof ICompilationUnit)
-				run(JavaElementUtil.getMainType((ICompilationUnit) firstElement), new IField[0], false);
+			else if (firstElement instanceof IJavaScriptUnit)
+				run(JavaElementUtil.getMainType((IJavaScriptUnit) firstElement), new IField[0], false);
 			else if (!(firstElement instanceof IField))
 				MessageDialog.openInformation(getShell(), DIALOG_TITLE, ActionMessages.AddDelegateMethodsAction_not_applicable); 
 		} catch (CoreException e) {
@@ -474,15 +474,15 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 			if (!ActionUtil.isProcessable(fEditor))
 				return;
 
-			IJavaElement[] elements= SelectionConverter.codeResolveForked(fEditor, true);
+			IJavaScriptElement[] elements= SelectionConverter.codeResolveForked(fEditor, true);
 			if (elements.length == 1 && (elements[0] instanceof IField)) {
 				IField field= (IField) elements[0];
 				run(field.getDeclaringType(), new IField[] { field}, true);
 				return;
 			}
-			IJavaElement element= SelectionConverter.getElementAtOffset(fEditor);
+			IJavaScriptElement element= SelectionConverter.getElementAtOffset(fEditor);
 			if (element != null) {
-				IType type= (IType) element.getAncestor(IJavaElement.TYPE);
+				IType type= (IType) element.getAncestor(IJavaScriptElement.TYPE);
 				if (type != null) {
 					if (type.getFields().length > 0) {
 						run(type, new IField[0], true);
@@ -518,10 +518,10 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(canEnable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			setEnabled(false);
 		}
 	}
@@ -570,12 +570,12 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 					if (object[index] instanceof IBinding[])
 						tuples.add(object[index]);
 				}
-				IEditorPart part= JavaUI.openInEditor(type);
+				IEditorPart part= JavaScriptUI.openInEditor(type);
 				IRewriteTarget target= (IRewriteTarget) part.getAdapter(IRewriteTarget.class);
 				try {
 					if (target != null)
 						target.beginCompoundChange();
-					CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(type.getJavaProject());
+					CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(type.getJavaScriptProject());
 					settings.createComments= dialog.getGenerateComment();
 					final int size= tuples.size();
 					String[] methodKeys= new String[size];
@@ -586,7 +586,7 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 						methodKeys[index]= tuple[1].getKey();
 					}
 					AddDelegateMethodsOperation operation= new AddDelegateMethodsOperation(type, dialog.getElementPosition(), provider.getCompilationUnit(), variableKeys, methodKeys, settings, true, false);
-					IRunnableContext context= JavaPlugin.getActiveWorkbenchWindow();
+					IRunnableContext context= JavaScriptPlugin.getActiveWorkbenchWindow();
 					if (context == null)
 						context= new BusyIndicatorRunnableContext();
 					try {

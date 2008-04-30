@@ -13,14 +13,14 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
@@ -134,7 +134,7 @@ protected void addToResult(char[][] compoundName) {
 /*
  * Parse the given compiation unit and build its type bindings.
  */
-protected CompilationUnitDeclaration buildBindings(ICompilationUnit compilationUnit, boolean isTopLevelOrMember) throws JavaModelException {
+protected CompilationUnitDeclaration buildBindings(IJavaScriptUnit compilationUnit, boolean isTopLevelOrMember) throws JavaScriptModelException {
 	// source unit
 	org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit sourceUnit = (org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit) compilationUnit;
 
@@ -154,12 +154,12 @@ protected CompilationUnitDeclaration buildBindings(ICompilationUnit compilationU
 	}
 	return unit;
 }
-public char[][][] collect() throws JavaModelException {
+public char[][][] collect() throws JavaScriptModelException {
 	if (this.type != null) {
 		// Collect the paths of the cus that are in the hierarchy of the given type
 		this.result = new char[1][][];
 		this.resultIndex = 0;
-		JavaProject javaProject = (JavaProject) this.type.getJavaProject();
+		JavaProject javaProject = (JavaProject) this.type.getJavaScriptProject();
 		this.locator.initialize(javaProject, 0);
 		try {
 			if (this.type.isBinary()) {
@@ -167,7 +167,7 @@ public char[][][] collect() throws JavaModelException {
 				if (binding != null)
 					collectSuperTypeNames(binding);
 			} else {
-				ICompilationUnit unit = this.type.getCompilationUnit();
+				IJavaScriptUnit unit = this.type.getJavaScriptUnit();
 				SourceType sourceType = (SourceType) this.type;
 				boolean isTopLevelOrMember = sourceType.getOuterMostLocalContext() == null;
 				CompilationUnitDeclaration parsedUnit = buildBindings(unit, isTopLevelOrMember);
@@ -208,13 +208,13 @@ public char[][][] collect() throws JavaModelException {
 			Openable openable = this.locator.handleFactory.createOpenable(paths[i], this.locator.scope);
 			if (openable == null) continue; // outside classpath
 
-			IJavaProject project = openable.getJavaProject();
+			IJavaScriptProject project = openable.getJavaScriptProject();
 			if (!project.equals(previousProject)) {
 				previousProject = (JavaProject) project;
 				this.locator.initialize(previousProject, 0);
 			}
-			if (openable instanceof ICompilationUnit) {
-				ICompilationUnit unit = (ICompilationUnit) openable;
+			if (openable instanceof IJavaScriptUnit) {
+				IJavaScriptUnit unit = (IJavaScriptUnit) openable;
 				CompilationUnitDeclaration parsedUnit = buildBindings(unit, true /*only toplevel and member types are visible to the focus type*/);
 				if (parsedUnit != null)
 					parsedUnit.traverse(new TypeDeclarationVisitor(), parsedUnit.scope);
@@ -226,7 +226,7 @@ public char[][][] collect() throws JavaModelException {
 			}
 		} catch (AbortCompilation e) {
 			// ignore: continue with next element
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignore: continue with next element
 		}
 	}
@@ -257,7 +257,7 @@ protected String[] getPathsOfDeclaringType() {
 	if (this.typeQualification == null && this.typeSimpleName == null) return null;
 
 	final PathCollector pathCollector = new PathCollector();
-	IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
+	IJavaScriptSearchScope scope = SearchEngine.createWorkspaceScope();
 	IndexManager indexManager = JavaModelManager.getJavaModelManager().getIndexManager();
 	SearchPattern searchPattern = new TypeDeclarationPattern(
 		this.typeSimpleName != null ? null : this.typeQualification, // use the qualification only if no simple name
@@ -281,7 +281,7 @@ protected String[] getPathsOfDeclaringType() {
 			new JavaSearchParticipant(),
 			scope,
 			searchRequestor),
-		IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 		progressMonitor == null ? null : new SubProgressMonitor(progressMonitor, 100));
 	return pathCollector.getPaths();
 }

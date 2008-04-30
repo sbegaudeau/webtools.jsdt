@@ -17,8 +17,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.progress.UIJob;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class InitializeAfterLoadJob extends UIJob {
 	
@@ -29,16 +29,16 @@ public class InitializeAfterLoadJob extends UIJob {
 		protected IStatus run(IProgressMonitor monitor) {
 			monitor.beginTask("", 10); //$NON-NLS-1$
 			try {
-				JavaCore.initializeAfterLoad(new SubProgressMonitor(monitor, 6));
-				JavaPlugin.initializeAfterLoad(new SubProgressMonitor(monitor, 4));
+				JavaScriptCore.initializeAfterLoad(new SubProgressMonitor(monitor, 6));
+				JavaScriptPlugin.initializeAfterLoad(new SubProgressMonitor(monitor, 4));
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 				return e.getStatus();
 			}
-			return new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
+			return new Status(IStatus.OK, JavaScriptPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
 		}
 		public boolean belongsTo(Object family) {
-			return JavaUI.ID_PLUGIN.equals(family);
+			return JavaScriptUI.ID_PLUGIN.equals(family);
 		}
 	}
 	
@@ -50,6 +50,6 @@ public class InitializeAfterLoadJob extends UIJob {
 		Job job = new RealJob(JavaUIMessages.JavaPlugin_initializing_ui);
 		job.setPriority(Job.SHORT);
 		job.schedule();
-		return new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
+		return new Status(IStatus.OK, JavaScriptPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
 	}
 }

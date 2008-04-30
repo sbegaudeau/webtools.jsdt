@@ -22,11 +22,11 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.compiler.util.ObjectVector;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager.PerProjectInfo;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IndexManager;
@@ -38,11 +38,11 @@ public class ClasspathChange {
 	public static int HAS_PROJECT_CHANGE = 0x10;
 
 	JavaProject project;
-	IClasspathEntry[] oldRawClasspath;
+	IIncludePathEntry[] oldRawClasspath;
 	IPath oldOutputLocation;
-	IClasspathEntry[] oldResolvedClasspath;
+	IIncludePathEntry[] oldResolvedClasspath;
 
-	public ClasspathChange(JavaProject project, IClasspathEntry[] oldRawClasspath, IPath oldOutputLocation, IClasspathEntry[] oldResolvedClasspath) {
+	public ClasspathChange(JavaProject project, IIncludePathEntry[] oldRawClasspath, IPath oldOutputLocation, IIncludePathEntry[] oldResolvedClasspath) {
 		this.project = project;
 		this.oldRawClasspath = oldRawClasspath;
 		this.oldOutputLocation = oldOutputLocation;
@@ -53,12 +53,12 @@ public class ClasspathChange {
 		for (int i = 0; i < roots.length; i++) {
 			IPackageFragmentRoot root = roots[i];
 			delta.changed(root, flag);
-			if ((flag & IJavaElementDelta.F_REMOVED_FROM_CLASSPATH) != 0
-					|| (flag & IJavaElementDelta.F_SOURCEATTACHED) != 0
-					|| (flag & IJavaElementDelta.F_SOURCEDETACHED) != 0){
+			if ((flag & IJavaScriptElementDelta.F_REMOVED_FROM_CLASSPATH) != 0
+					|| (flag & IJavaScriptElementDelta.F_SOURCEATTACHED) != 0
+					|| (flag & IJavaScriptElementDelta.F_SOURCEDETACHED) != 0){
 				try {
 					root.close();
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					// ignore
 				}
 			}
@@ -69,11 +69,11 @@ public class ClasspathChange {
 	 * Returns the index of the item in the list if the given list contains the specified entry. If the list does
 	 * not contain the entry, -1 is returned.
 	 */
-	private int classpathContains(IClasspathEntry[] list, IClasspathEntry entry) {
+	private int classpathContains(IIncludePathEntry[] list, IIncludePathEntry entry) {
 		IPath[] exclusionPatterns = entry.getExclusionPatterns();
 		IPath[] inclusionPatterns = entry.getInclusionPatterns();
 		nextEntry: for (int i = 0; i < list.length; i++) {
-			IClasspathEntry other = list[i];
+			IIncludePathEntry other = list[i];
 			if (other.getContentKind() == entry.getContentKind()
 				&& other.getEntryKind() == entry.getEntryKind()
 				&& other.isExported() == entry.isExported()
@@ -126,7 +126,7 @@ public class ClasspathChange {
 	/*
 	 * Recursively adds all subfolders of <code>folder</code> to the given collection.
 	 */
-	private void collectAllSubfolders(IFolder folder, ArrayList collection) throws JavaModelException {
+	private void collectAllSubfolders(IFolder folder, ArrayList collection) throws JavaScriptModelException {
 		try {
 			IResource[] members= folder.members();
 			for (int i = 0, max = members.length; i < max; i++) {
@@ -137,7 +137,7 @@ public class ClasspathChange {
 				}
 			}
 		} catch (CoreException e) {
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		}
 	}
 
@@ -147,7 +147,7 @@ public class ClasspathChange {
 	 * location. The collection is empty if no package fragments are
 	 * affected.
 	 */
-	private ArrayList determineAffectedPackageFragments(IPath location) throws JavaModelException {
+	private ArrayList determineAffectedPackageFragments(IPath location) throws JavaScriptModelException {
 		ArrayList fragments = new ArrayList();
 
 		// see if this will cause any package fragments to be affected
@@ -159,11 +159,11 @@ public class ClasspathChange {
 		if (resource != null && resource.getType() == IResource.FOLDER) {
 			IFolder folder = (IFolder) resource;
 			// only changes if it actually existed
-			IClasspathEntry[] classpath = this.project.getExpandedClasspath();
+			IIncludePathEntry[] classpath = this.project.getExpandedClasspath();
 			for (int i = 0; i < classpath.length; i++) {
-				IClasspathEntry entry = classpath[i];
+				IIncludePathEntry entry = classpath[i];
 				IPath path = classpath[i].getPath();
-				if (entry.getEntryKind() != IClasspathEntry.CPE_PROJECT && path.isPrefixOf(location) && !path.equals(location)) {
+				if (entry.getEntryKind() != IIncludePathEntry.CPE_PROJECT && path.isPrefixOf(location) && !path.equals(location)) {
 					IPackageFragmentRoot[] roots = this.project.computePackageFragmentRoots(classpath[i]);
 					PackageFragmentRoot root = (PackageFragmentRoot) roots[0];
 					// now the output location becomes a package fragment - along with any subfolders
@@ -206,7 +206,7 @@ public class ClasspathChange {
 			return NO_DELTA;
 
 		DeltaProcessor deltaProcessor = state.getDeltaProcessor();
-		IClasspathEntry[] newResolvedClasspath = null;
+		IIncludePathEntry[] newResolvedClasspath = null;
 		IPath newOutputLocation = null;
 		int result = NO_DELTA;
 		try {
@@ -214,7 +214,7 @@ public class ClasspathChange {
 
 			// get new info
 			this.project.resolveClasspath(perProjectInfo);
-			IClasspathEntry[] newRawClasspath;
+			IIncludePathEntry[] newRawClasspath;
 
 			// use synchronized block to ensure consistency
 			synchronized (perProjectInfo) {
@@ -225,7 +225,7 @@ public class ClasspathChange {
 
 			// check if raw classpath has changed
 			if (this.oldRawClasspath != null && !JavaProject.areClasspathsEqual(this.oldRawClasspath, newRawClasspath, this.oldOutputLocation, newOutputLocation)) {
-				delta.changed(this.project, IJavaElementDelta.F_CLASSPATH_CHANGED);
+				delta.changed(this.project, IJavaScriptElementDelta.F_INCLUDEPATH_CHANGED);
 				result |= HAS_DELTA;
 			}
 
@@ -235,7 +235,7 @@ public class ClasspathChange {
 
 			// close cached info
 			this.project.close();
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			if (DeltaProcessor.VERBOSE) {
 				e.printStackTrace();
 			}
@@ -266,7 +266,7 @@ public class ClasspathChange {
 			int index = classpathContains(newResolvedClasspath, this.oldResolvedClasspath[i]);
 			if (index == -1) {
 				// remote project changes
-				if (this.oldResolvedClasspath[i].getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+				if (this.oldResolvedClasspath[i].getEntryKind() == IIncludePathEntry.CPE_PROJECT) {
 					result |= HAS_PROJECT_CHANGE;
 					continue;
 				}
@@ -293,20 +293,20 @@ public class ClasspathChange {
 							null); /*no reverse map*/
 						pkgFragmentRoots = new IPackageFragmentRoot[accumulatedRoots.size()];
 						accumulatedRoots.copyInto(pkgFragmentRoots);
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						pkgFragmentRoots =  new IPackageFragmentRoot[] {};
 					}
 				}
-				addClasspathDeltas(delta, pkgFragmentRoots, IJavaElementDelta.F_REMOVED_FROM_CLASSPATH);
+				addClasspathDeltas(delta, pkgFragmentRoots, IJavaScriptElementDelta.F_REMOVED_FROM_CLASSPATH);
 				result |= HAS_DELTA;
 			} else {
 				// remote project changes
-				if (this.oldResolvedClasspath[i].getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+				if (this.oldResolvedClasspath[i].getEntryKind() == IIncludePathEntry.CPE_PROJECT) {
 					result |= HAS_PROJECT_CHANGE;
 					continue;
 				}
 				if (index != i) { //reordering of the classpath
-					addClasspathDeltas(delta, this.project.computePackageFragmentRoots(this.oldResolvedClasspath[i]),	IJavaElementDelta.F_REORDER);
+					addClasspathDeltas(delta, this.project.computePackageFragmentRoots(this.oldResolvedClasspath[i]),	IJavaScriptElementDelta.F_REORDER);
 					result |= HAS_DELTA;
 				}
 
@@ -330,7 +330,7 @@ public class ClasspathChange {
 							// force detach source on jar package fragment roots (source will be lazily computed when needed)
 							try {
 								root.close();
-							} catch (JavaModelException e) {
+							} catch (JavaScriptModelException e) {
 								// ignore
 							}
 						}
@@ -343,11 +343,11 @@ public class ClasspathChange {
 			int index = classpathContains(this.oldResolvedClasspath, newResolvedClasspath[i]);
 			if (index == -1) {
 				// remote project changes
-				if (newResolvedClasspath[i].getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+				if (newResolvedClasspath[i].getEntryKind() == IIncludePathEntry.CPE_PROJECT) {
 					result |= HAS_PROJECT_CHANGE;
 					continue;
 				}
-				addClasspathDeltas(delta, this.project.computePackageFragmentRoots(newResolvedClasspath[i]), IJavaElementDelta.F_ADDED_TO_CLASSPATH);
+				addClasspathDeltas(delta, this.project.computePackageFragmentRoots(newResolvedClasspath[i]), IJavaScriptElementDelta.F_ADDED_TO_CLASSPATH);
 				result |= HAS_DELTA;
 			} // classpath reordering has already been generated in previous loop
 		}
@@ -374,7 +374,7 @@ public class ClasspathChange {
 					delta.removed(frag);
 					result |= HAS_DELTA;
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				if (DeltaProcessor.VERBOSE)
 					e.printStackTrace();
 			}
@@ -391,14 +391,14 @@ public class ClasspathChange {
 	private int getSourceAttachmentDeltaFlag(IPath oldPath, IPath newPath) {
 		if (oldPath == null) {
 			if (newPath != null) {
-				return IJavaElementDelta.F_SOURCEATTACHED;
+				return IJavaScriptElementDelta.F_SOURCEATTACHED;
 			} else {
 				return 0;
 			}
 		} else if (newPath == null) {
-			return IJavaElementDelta.F_SOURCEDETACHED;
+			return IJavaScriptElementDelta.F_SOURCEDETACHED;
 		} else if (!oldPath.equals(newPath)) {
-			return IJavaElementDelta.F_SOURCEATTACHED | IJavaElementDelta.F_SOURCEDETACHED;
+			return IJavaScriptElementDelta.F_SOURCEATTACHED | IJavaScriptElementDelta.F_SOURCEDETACHED;
 		} else {
 			return 0;
 		}
@@ -412,10 +412,10 @@ public class ClasspathChange {
 	 * Request the indexing of entries that have been added, and remove the index for removed entries.
 	 */
 	public void requestIndexing() {
-		IClasspathEntry[] newResolvedClasspath = null;
+		IIncludePathEntry[] newResolvedClasspath = null;
 		try {
 			newResolvedClasspath = this.project.getResolvedClasspath();
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// project doesn't exist
 			return;
 		}
@@ -432,22 +432,22 @@ public class ClasspathChange {
 			int index = classpathContains(newResolvedClasspath, this.oldResolvedClasspath[i]);
 			if (index == -1) {
 				// remote projects are not indexed in this project
-				if (this.oldResolvedClasspath[i].getEntryKind() == IClasspathEntry.CPE_PROJECT){
+				if (this.oldResolvedClasspath[i].getEntryKind() == IIncludePathEntry.CPE_PROJECT){
 					continue;
 				}
 
 				// Remove the .js files from the index for a source folder
 				// For a lib folder or a .jar file, remove the corresponding index if not shared.
-				IClasspathEntry oldEntry = this.oldResolvedClasspath[i];
+				IIncludePathEntry oldEntry = this.oldResolvedClasspath[i];
 				final IPath path = oldEntry.getPath();
 				int changeKind = this.oldResolvedClasspath[i].getEntryKind();
 				switch (changeKind) {
-					case IClasspathEntry.CPE_SOURCE:
+					case IIncludePathEntry.CPE_SOURCE:
 						char[][] inclusionPatterns = ((ClasspathEntry)oldEntry).fullInclusionPatternChars();
 						char[][] exclusionPatterns = ((ClasspathEntry)oldEntry).fullExclusionPatternChars();
 						indexManager.removeSourceFolderFromIndex(this.project, path, inclusionPatterns, exclusionPatterns);
 						break;
-					case IClasspathEntry.CPE_LIBRARY:
+					case IIncludePathEntry.CPE_LIBRARY:
 						if (state.otherRoots.get(path) == null) { // if root was not shared
 							indexManager.discardJobs(path.toString());
 							indexManager.removeIndex(path);
@@ -462,18 +462,18 @@ public class ClasspathChange {
 			int index = classpathContains(this.oldResolvedClasspath, newResolvedClasspath[i]);
 			if (index == -1) {
 				// remote projects are not indexed in this project
-				if (newResolvedClasspath[i].getEntryKind() == IClasspathEntry.CPE_PROJECT){
+				if (newResolvedClasspath[i].getEntryKind() == IIncludePathEntry.CPE_PROJECT){
 					continue;
 				}
 
 				// Request indexing
 				int entryKind = newResolvedClasspath[i].getEntryKind();
 				switch (entryKind) {
-					case IClasspathEntry.CPE_LIBRARY:
+					case IIncludePathEntry.CPE_LIBRARY:
 						boolean pathHasChanged = true;
 						IPath newPath = newResolvedClasspath[i].getPath();
 						for (int j = 0; j < oldLength; j++) {
-							IClasspathEntry oldEntry = this.oldResolvedClasspath[j];
+							IIncludePathEntry oldEntry = this.oldResolvedClasspath[j];
 							if (oldEntry.getPath().equals(newPath)) {
 								pathHasChanged = false;
 								break;
@@ -483,8 +483,8 @@ public class ClasspathChange {
 							indexManager.indexLibrary(newResolvedClasspath[i], this.project.getProject());
 						}
 						break;
-					case IClasspathEntry.CPE_SOURCE:
-						IClasspathEntry entry = newResolvedClasspath[i];
+					case IIncludePathEntry.CPE_SOURCE:
+						IIncludePathEntry entry = newResolvedClasspath[i];
 						IPath path = entry.getPath();
 						char[][] inclusionPatterns = ((ClasspathEntry)entry).fullInclusionPatternChars();
 						char[][] exclusionPatterns = ((ClasspathEntry)entry).fullExclusionPatternChars();

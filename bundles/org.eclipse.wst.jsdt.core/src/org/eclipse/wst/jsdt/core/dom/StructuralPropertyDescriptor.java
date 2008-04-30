@@ -20,7 +20,7 @@ package org.eclipse.wst.jsdt.core.dom;
  * AST node; for example, the identifier of a {@link SimpleName}</li>
  * <li>child properties ({@link ChildPropertyDescriptor})
  * - properties whose value is another AST node;
- * for example, the name of a {@link MethodDeclaration}</li>
+ * for example, the name of a {@link FunctionDeclaration}</li>
  * <li>child list properties ({@link ChildListPropertyDescriptor})
  * - properties where the value is a list of AST nodes;
  * for example, the statements of a {@link Block}</li>

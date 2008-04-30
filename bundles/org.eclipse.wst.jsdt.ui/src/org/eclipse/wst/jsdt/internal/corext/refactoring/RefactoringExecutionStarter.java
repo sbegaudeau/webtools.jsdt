@@ -35,20 +35,20 @@ import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.RefactoringStatusCodes;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ConvertAnonymousToNestedRefactoring;
@@ -140,35 +140,35 @@ import org.eclipse.wst.jsdt.ui.refactoring.RenameSupport;
  */
 public final class RefactoringExecutionStarter {
 
-	private static RenameSupport createRenameSupport(IJavaElement element, String newName, int flags) throws CoreException {
+	private static RenameSupport createRenameSupport(IJavaScriptElement element, String newName, int flags) throws CoreException {
 		switch (element.getElementType()) {
-			case IJavaElement.JAVA_PROJECT:
-				return RenameSupport.create((IJavaProject) element, newName, flags);
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.JAVASCRIPT_PROJECT:
+				return RenameSupport.create((IJavaScriptProject) element, newName, flags);
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 				return RenameSupport.create((IPackageFragmentRoot) element, newName);
-			case IJavaElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				return RenameSupport.create((IPackageFragment) element, newName, flags);
-			case IJavaElement.COMPILATION_UNIT:
-				return RenameSupport.create((ICompilationUnit) element, newName, flags);
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
+				return RenameSupport.create((IJavaScriptUnit) element, newName, flags);
+			case IJavaScriptElement.TYPE:
 				return RenameSupport.create((IType) element, newName, flags);
-			case IJavaElement.METHOD:
-				final IMethod method= (IMethod) element;
+			case IJavaScriptElement.METHOD:
+				final IFunction method= (IFunction) element;
 				if (method.isConstructor())
 					return createRenameSupport(method.getDeclaringType(), newName, flags);
 				else
-					return RenameSupport.create((IMethod) element, newName, flags);
-			case IJavaElement.FIELD:
+					return RenameSupport.create((IFunction) element, newName, flags);
+			case IJavaScriptElement.FIELD:
 				return RenameSupport.create((IField) element, newName, flags);
-			case IJavaElement.TYPE_PARAMETER:
+			case IJavaScriptElement.TYPE_PARAMETER:
 				return RenameSupport.create((ITypeParameter) element, newName, flags);
-			case IJavaElement.LOCAL_VARIABLE:
+			case IJavaScriptElement.LOCAL_VARIABLE:
 				return RenameSupport.create((ILocalVariable) element, newName, flags);
 		}
 		return null;
 	}
 
-	public static void startChangeSignatureRefactoring(final IMethod method, final SelectionDispatchAction action, final Shell shell) throws JavaModelException {
+	public static void startChangeSignatureRefactoring(final IFunction method, final SelectionDispatchAction action, final Shell shell) throws JavaScriptModelException {
 		if (!RefactoringAvailabilityTester.isChangeSignatureAvailable(method))
 			return;
 		final ChangeSignatureRefactoring refactoring= new ChangeSignatureRefactoring(method);
@@ -213,12 +213,12 @@ public final class RefactoringExecutionStarter {
 		}
 	}
 
-	public static void startChangeTypeRefactoring(final ICompilationUnit unit, final Shell shell, final int offset, final int length) throws JavaModelException {
+	public static void startChangeTypeRefactoring(final IJavaScriptUnit unit, final Shell shell, final int offset, final int length) throws JavaScriptModelException {
 		final ChangeTypeRefactoring refactoring= new ChangeTypeRefactoring(unit, offset, length);
 		new RefactoringStarter().activate(refactoring, new ChangeTypeWizard(refactoring), shell, RefactoringMessages.ChangeTypeAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 	
-	public static void startCleanupRefactoring(ICompilationUnit[] cus, ICleanUp[] cleanUps, Shell shell, boolean showWizard, String actionName) throws InvocationTargetException, JavaModelException {
+	public static void startCleanupRefactoring(IJavaScriptUnit[] cus, ICleanUp[] cleanUps, Shell shell, boolean showWizard, String actionName) throws InvocationTargetException, JavaScriptModelException {
 		final CleanUpRefactoring refactoring= new CleanUpRefactoring(actionName);
 		for (int i= 0; i < cus.length; i++) {
 			refactoring.addCompilationUnit(cus[i]);
@@ -248,12 +248,12 @@ public final class RefactoringExecutionStarter {
 		}
 	}
 
-	public static void startConvertAnonymousRefactoring(final ICompilationUnit unit, final int offset, final int length, final Shell shell) throws JavaModelException {
+	public static void startConvertAnonymousRefactoring(final IJavaScriptUnit unit, final int offset, final int length, final Shell shell) throws JavaScriptModelException {
 		final ConvertAnonymousToNestedRefactoring refactoring= new ConvertAnonymousToNestedRefactoring(unit, offset, length);
 		new RefactoringStarter().activate(refactoring, new ConvertAnonymousToNestedWizard(refactoring), shell, RefactoringMessages.ConvertAnonymousToNestedAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 
-	public static void startCopyRefactoring(IResource[] resources, IJavaElement[] javaElements, Shell shell) throws JavaModelException {
+	public static void startCopyRefactoring(IResource[] resources, IJavaScriptElement[] javaElements, Shell shell) throws JavaScriptModelException {
 		ICopyPolicy copyPolicy= ReorgPolicyFactory.createCopyPolicy(resources, javaElements);
 		if (copyPolicy.canEnable()) {
 			JavaCopyProcessor processor= new JavaCopyProcessor(copyPolicy);
@@ -277,22 +277,22 @@ public final class RefactoringExecutionStarter {
 		DeleteUserInterfaceManager.getDefault().getStarter(refactoring).activate(refactoring, shell, RefactoringSaveHelper.SAVE_NOTHING);
 	}
 
-	public static void startExtractInterfaceRefactoring(final IType type, final Shell shell) throws JavaModelException {
-		final ExtractInterfaceRefactoring refactoring= new ExtractInterfaceRefactoring(new ExtractInterfaceProcessor(type, JavaPreferencesSettings.getCodeGenerationSettings(type.getJavaProject())));
+	public static void startExtractInterfaceRefactoring(final IType type, final Shell shell) throws JavaScriptModelException {
+		final ExtractInterfaceRefactoring refactoring= new ExtractInterfaceRefactoring(new ExtractInterfaceProcessor(type, JavaPreferencesSettings.getCodeGenerationSettings(type.getJavaScriptProject())));
 		new RefactoringStarter().activate(refactoring, new ExtractInterfaceWizard(refactoring), shell, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 
-	public static void startExtractSupertypeRefactoring(final IMember[] members, final Shell shell) throws JavaModelException {
+	public static void startExtractSupertypeRefactoring(final IMember[] members, final Shell shell) throws JavaScriptModelException {
 		if (!RefactoringAvailabilityTester.isExtractSupertypeAvailable(members))
 			return;
-		IJavaProject project= null;
+		IJavaScriptProject project= null;
 		if (members != null && members.length > 0)
-			project= members[0].getJavaProject();
+			project= members[0].getJavaScriptProject();
 		final ExtractSupertypeRefactoring refactoring= new ExtractSupertypeRefactoring(new ExtractSupertypeProcessor(members, JavaPreferencesSettings.getCodeGenerationSettings(project)));
 		new RefactoringStarter().activate(refactoring, new ExtractSupertypeWizard(refactoring), shell, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 
-	public static void startInferTypeArgumentsRefactoring(final IJavaElement[] elements, final Shell shell) {
+	public static void startInferTypeArgumentsRefactoring(final IJavaScriptElement[] elements, final Shell shell) {
 		try {
 			if (!RefactoringAvailabilityTester.isInferTypeArgumentsAvailable(elements))
 				return;
@@ -303,7 +303,7 @@ public final class RefactoringExecutionStarter {
 		}
 	}
 
-	public static boolean startInlineConstantRefactoring(final ICompilationUnit unit, final CompilationUnit node, final int offset, final int length, final Shell shell) throws JavaModelException {
+	public static boolean startInlineConstantRefactoring(final IJavaScriptUnit unit, final JavaScriptUnit node, final int offset, final int length, final Shell shell) throws JavaScriptModelException {
 		final InlineConstantRefactoring refactoring= new InlineConstantRefactoring(unit, node, offset, length);
 		if (! refactoring.checkStaticFinalConstantNameSelected().hasFatalError()) {
 			new RefactoringStarter().activate(refactoring, new InlineConstantWizard(refactoring), shell, RefactoringMessages.InlineConstantAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
@@ -312,7 +312,7 @@ public final class RefactoringExecutionStarter {
 		return false;
 	}
 
-	public static boolean startInlineMethodRefactoring(final ITypeRoot typeRoot, final CompilationUnit node, final int offset, final int length, final Shell shell) throws JavaModelException {
+	public static boolean startInlineMethodRefactoring(final ITypeRoot typeRoot, final JavaScriptUnit node, final int offset, final int length, final Shell shell) throws JavaScriptModelException {
 		final InlineMethodRefactoring refactoring= InlineMethodRefactoring.create(typeRoot, node, offset, length);
 		if (refactoring != null) {
 			new RefactoringStarter().activate(refactoring, new InlineMethodWizard(refactoring), shell, RefactoringMessages.InlineMethodAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
@@ -321,7 +321,7 @@ public final class RefactoringExecutionStarter {
 		return false;
 	}
 
-	public static boolean startInlineTempRefactoring(final ICompilationUnit unit, CompilationUnit node, final ITextSelection selection, final Shell shell) throws JavaModelException {
+	public static boolean startInlineTempRefactoring(final IJavaScriptUnit unit, JavaScriptUnit node, final ITextSelection selection, final Shell shell) throws JavaScriptModelException {
 		final InlineTempRefactoring refactoring= new InlineTempRefactoring(unit, node, selection.getOffset(), selection.getLength());
 		if (! refactoring.checkIfTempSelected().hasFatalError()) {
 			new RefactoringStarter().activate(refactoring, new InlineTempWizard(refactoring), shell, RefactoringMessages.InlineTempAction_inline_temp, RefactoringSaveHelper.SAVE_NOTHING);
@@ -330,44 +330,44 @@ public final class RefactoringExecutionStarter {
 		return false;
 	}
 
-	public static void startIntroduceFactoryRefactoring(final ICompilationUnit unit, final ITextSelection selection, final Shell shell) throws JavaModelException {
+	public static void startIntroduceFactoryRefactoring(final IJavaScriptUnit unit, final ITextSelection selection, final Shell shell) throws JavaScriptModelException {
 		final IntroduceFactoryRefactoring refactoring= new IntroduceFactoryRefactoring(unit, selection.getOffset(), selection.getLength());
 		new RefactoringStarter().activate(refactoring, new IntroduceFactoryWizard(refactoring, RefactoringMessages.IntroduceFactoryAction_use_factory), shell, RefactoringMessages.IntroduceFactoryAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 
-	public static void startIntroduceIndirectionRefactoring(final IClassFile file, final int offset, final int length, final Shell shell) throws JavaModelException {
+	public static void startIntroduceIndirectionRefactoring(final IClassFile file, final int offset, final int length, final Shell shell) throws JavaScriptModelException {
 		final IntroduceIndirectionRefactoring refactoring= new IntroduceIndirectionRefactoring(file, offset, length);
 		new RefactoringStarter().activate(refactoring, new IntroduceIndirectionWizard(refactoring, RefactoringMessages.IntroduceIndirectionAction_dialog_title), shell, RefactoringMessages.IntroduceIndirectionAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 
-	public static void startIntroduceIndirectionRefactoring(final ICompilationUnit unit, final int offset, final int length, final Shell shell) throws JavaModelException {
+	public static void startIntroduceIndirectionRefactoring(final IJavaScriptUnit unit, final int offset, final int length, final Shell shell) throws JavaScriptModelException {
 		final IntroduceIndirectionRefactoring refactoring= new IntroduceIndirectionRefactoring(unit, offset, length);
 		new RefactoringStarter().activate(refactoring, new IntroduceIndirectionWizard(refactoring, RefactoringMessages.IntroduceIndirectionAction_dialog_title), shell, RefactoringMessages.IntroduceIndirectionAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 
-	public static void startIntroduceIndirectionRefactoring(final IMethod method, final Shell shell) throws JavaModelException {
+	public static void startIntroduceIndirectionRefactoring(final IFunction method, final Shell shell) throws JavaScriptModelException {
 		final IntroduceIndirectionRefactoring refactoring= new IntroduceIndirectionRefactoring(method);
 		new RefactoringStarter().activate(refactoring, new IntroduceIndirectionWizard(refactoring, RefactoringMessages.IntroduceIndirectionAction_dialog_title), shell, RefactoringMessages.IntroduceIndirectionAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 
-	public static void startIntroduceParameter(ICompilationUnit unit, int offset, int length, Shell shell) throws JavaModelException {
+	public static void startIntroduceParameter(IJavaScriptUnit unit, int offset, int length, Shell shell) throws JavaScriptModelException {
 		final IntroduceParameterRefactoring refactoring= new IntroduceParameterRefactoring(unit, offset, length);
 		new RefactoringStarter().activate(refactoring, new IntroduceParameterWizard(refactoring), shell, RefactoringMessages.IntroduceParameterAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 
-	public static void startMoveInnerRefactoring(final IType type, final Shell shell) throws JavaModelException {
+	public static void startMoveInnerRefactoring(final IType type, final Shell shell) throws JavaScriptModelException {
 		if (!RefactoringAvailabilityTester.isMoveInnerAvailable(type))
 			return;
-		final MoveInnerToTopRefactoring refactoring= new MoveInnerToTopRefactoring(type, JavaPreferencesSettings.getCodeGenerationSettings(type.getJavaProject()));
+		final MoveInnerToTopRefactoring refactoring= new MoveInnerToTopRefactoring(type, JavaPreferencesSettings.getCodeGenerationSettings(type.getJavaScriptProject()));
 		new RefactoringStarter().activate(refactoring, new MoveInnerToTopWizard(refactoring), shell, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 
-	public static void startMoveMethodRefactoring(final IMethod method, final Shell shell) throws JavaModelException {
-		final MoveInstanceMethodRefactoring refactoring= new MoveInstanceMethodRefactoring(new MoveInstanceMethodProcessor(method, JavaPreferencesSettings.getCodeGenerationSettings(method.getJavaProject())));
+	public static void startMoveMethodRefactoring(final IFunction method, final Shell shell) throws JavaScriptModelException {
+		final MoveInstanceMethodRefactoring refactoring= new MoveInstanceMethodRefactoring(new MoveInstanceMethodProcessor(method, JavaPreferencesSettings.getCodeGenerationSettings(method.getJavaScriptProject())));
 		new RefactoringStarter().activate(refactoring, new MoveInstanceMethodWizard(refactoring), shell, RefactoringMessages.MoveInstanceMethodAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 
-	public static void startMoveRefactoring(final IResource[] resources, final IJavaElement[] elements, final Shell shell) throws JavaModelException {
+	public static void startMoveRefactoring(final IResource[] resources, final IJavaScriptElement[] elements, final Shell shell) throws JavaScriptModelException {
 		IMovePolicy policy= ReorgPolicyFactory.createMovePolicy(resources, elements);
 		if (policy.canEnable()) {
 			final JavaMoveProcessor processor= new JavaMoveProcessor(policy);
@@ -379,37 +379,37 @@ public final class RefactoringExecutionStarter {
 		}
 	}
 
-	public static void startMoveStaticMembersRefactoring(final IMember[] members, final Shell shell) throws JavaModelException {
+	public static void startMoveStaticMembersRefactoring(final IMember[] members, final Shell shell) throws JavaScriptModelException {
 		if (!RefactoringAvailabilityTester.isMoveStaticAvailable(members))
 			return;
 		final Set set= new HashSet();
 		set.addAll(Arrays.asList(members));
 		final IMember[] elements= (IMember[]) set.toArray(new IMember[set.size()]);
-		IJavaProject project= null;
+		IJavaScriptProject project= null;
 		if (elements.length > 0)
-			project= elements[0].getJavaProject();
+			project= elements[0].getJavaScriptProject();
 		final JavaMoveRefactoring refactoring= new JavaMoveRefactoring(new MoveStaticMembersProcessor(elements, JavaPreferencesSettings.getCodeGenerationSettings(project)));
 		new RefactoringStarter().activate(refactoring, new MoveMembersWizard(refactoring), shell, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringSaveHelper.SAVE_NON_JAVA_UPDATES);
 	}
 
-	public static void startPullUpRefactoring(final IMember[] members, final Shell shell) throws JavaModelException {
+	public static void startPullUpRefactoring(final IMember[] members, final Shell shell) throws JavaScriptModelException {
 		if (!RefactoringAvailabilityTester.isPullUpAvailable(members))
 			return;
-		IJavaProject project= null;
+		IJavaScriptProject project= null;
 		if (members != null && members.length > 0)
-			project= members[0].getJavaProject();
+			project= members[0].getJavaScriptProject();
 		final PullUpRefactoring refactoring= new PullUpRefactoring(new PullUpRefactoringProcessor(members, JavaPreferencesSettings.getCodeGenerationSettings(project)));
 		new RefactoringStarter().activate(refactoring, new PullUpWizard(refactoring), shell, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 
-	public static void startPushDownRefactoring(final IMember[] members, final Shell shell) throws JavaModelException {
+	public static void startPushDownRefactoring(final IMember[] members, final Shell shell) throws JavaScriptModelException {
 		if (!RefactoringAvailabilityTester.isPushDownAvailable(members))
 			return;
 		final PushDownRefactoring refactoring= new PushDownRefactoring(new PushDownRefactoringProcessor(members));
 		new RefactoringStarter().activate(refactoring, new PushDownWizard(refactoring), shell, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 
-	public static void startRenameRefactoring(final IJavaElement element, final Shell shell) throws CoreException {
+	public static void startRenameRefactoring(final IJavaScriptElement element, final Shell shell) throws CoreException {
 		final RenameSupport support= createRenameSupport(element, null, RenameSupport.UPDATE_REFERENCES);
 		if (support != null && support.preCheck().isOK())
 			support.openDialog(shell);
@@ -420,12 +420,12 @@ public final class RefactoringExecutionStarter {
 		RenameUserInterfaceManager.getDefault().getStarter(refactoring).activate(refactoring, shell, RefactoringSaveHelper.SAVE_ALL);
 	}
 
-	public static void startReplaceInvocationsRefactoring(final ITypeRoot typeRoot, final int offset, final int length, final Shell shell) throws JavaModelException {
+	public static void startReplaceInvocationsRefactoring(final ITypeRoot typeRoot, final int offset, final int length, final Shell shell) throws JavaScriptModelException {
 		final ReplaceInvocationsRefactoring refactoring= new ReplaceInvocationsRefactoring(typeRoot, offset, length);
 		new RefactoringStarter().activate(refactoring, new ReplaceInvocationsWizard(refactoring), shell, RefactoringMessages.ReplaceInvocationsAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 
-	public static void startReplaceInvocationsRefactoring(final IMethod method, final Shell shell) throws JavaModelException {
+	public static void startReplaceInvocationsRefactoring(final IFunction method, final Shell shell) throws JavaScriptModelException {
 		final ReplaceInvocationsRefactoring refactoring= new ReplaceInvocationsRefactoring(method);
 		new RefactoringStarter().activate(refactoring, new ReplaceInvocationsWizard(refactoring), shell, RefactoringMessages.ReplaceInvocationsAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
@@ -436,12 +436,12 @@ public final class RefactoringExecutionStarter {
 				return;
 			final SelfEncapsulateFieldRefactoring refactoring= new SelfEncapsulateFieldRefactoring(field);
 			new RefactoringStarter().activate(refactoring, new SelfEncapsulateFieldWizard(refactoring), shell, "", RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES); //$NON-NLS-1$
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, ActionMessages.SelfEncapsulateFieldAction_dialog_title, ActionMessages.SelfEncapsulateFieldAction_dialog_cannot_perform);
 		}
 	}
 
-	public static void startUseSupertypeRefactoring(final IType type, final Shell shell) throws JavaModelException {
+	public static void startUseSupertypeRefactoring(final IType type, final Shell shell) throws JavaScriptModelException {
 		final UseSuperTypeRefactoring refactoring= new UseSuperTypeRefactoring(new UseSuperTypeProcessor(type));
 		new RefactoringStarter().activate(refactoring, new UseSupertypeWizard(refactoring), shell, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
@@ -450,15 +450,15 @@ public final class RefactoringExecutionStarter {
 		// Not for instantiation
 	}
 	
-//	public static void startIntroduceParameterObject(ICompilationUnit unit, int offset, int length, Shell shell) throws CoreException {
-//		IJavaElement javaElement= unit.getElementAt(offset);
-//		if (javaElement instanceof IMethod) {
-//			IMethod method= (IMethod) javaElement;
+//	public static void startIntroduceParameterObject(IJavaScriptUnit unit, int offset, int length, Shell shell) throws CoreException {
+//		IJavaScriptElement javaElement= unit.getElementAt(offset);
+//		if (javaElement instanceof IFunction) {
+//			IFunction method= (IFunction) javaElement;
 //			startIntroduceParameterObject(method, shell);
 //		}
 //	}
 //
-//	public static void startIntroduceParameterObject(IMethod method, Shell shell) throws CoreException {
+//	public static void startIntroduceParameterObject(IFunction method, Shell shell) throws CoreException {
 //		RefactoringStatus availability= Checks.checkAvailability(method);
 //		if (availability.hasError()){
 //			MessageDialog.openError(shell, RefactoringMessages.RefactoringExecutionStarter_IntroduceParameterObject_problem_title, RefactoringMessages.RefactoringExecutionStarter_IntroduceParameterObject_problem_description);
@@ -472,7 +472,7 @@ public final class RefactoringExecutionStarter {
 //
 //				String message= entry.getMessage();
 //				final Object element= entry.getData();
-//				IMethod superMethod= (IMethod) element;
+//				IFunction superMethod= (IFunction) element;
 //				availability= Checks.checkAvailability(superMethod);
 //				if (availability.hasError()){
 //					MessageDialog.openError(shell, RefactoringMessages.RefactoringExecutionStarter_IntroduceParameterObject_problem_title, RefactoringMessages.RefactoringExecutionStarter_IntroduceParameterObject_problem_description);

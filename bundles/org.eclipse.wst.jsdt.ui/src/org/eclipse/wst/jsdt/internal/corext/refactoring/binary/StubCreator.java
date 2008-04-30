@@ -19,12 +19,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
@@ -41,7 +41,7 @@ public class StubCreator {
 		fStubInvisible= stubInvisible;
 	}
 
-	protected void appendEnumConstants(final IType type) throws JavaModelException {
+	protected void appendEnumConstants(final IType type) throws JavaScriptModelException {
 		final IField[] fields= type.getFields();
 		final List list= new ArrayList(fields.length);
 		for (int index= 0; index < fields.length; index++) {
@@ -80,7 +80,7 @@ public class StubCreator {
 		}
 	}
 
-	protected void appendFieldDeclaration(final IField field) throws JavaModelException {
+	protected void appendFieldDeclaration(final IField field) throws JavaScriptModelException {
 		appendFlags(field);
 		fBuffer.append(" "); //$NON-NLS-1$
 		final String signature= field.getTypeSignature();
@@ -94,10 +94,10 @@ public class StubCreator {
 		fBuffer.append(";"); //$NON-NLS-1$
 	}
 
-	protected void appendFlags(final IMember member) throws JavaModelException {
+	protected void appendFlags(final IMember member) throws JavaScriptModelException {
 		int flags= member.getFlags();
 		final int kind= member.getElementType();
-		if (kind == IJavaElement.TYPE) {
+		if (kind == IJavaScriptElement.TYPE) {
 			flags&= ~Flags.AccSuper;
 			final IType type= (IType) member;
 			if (!type.isMember())
@@ -105,7 +105,7 @@ public class StubCreator {
 		}
 		if (Flags.isEnum(flags))
 			flags&= ~Flags.AccFinal;
-		if (kind == IJavaElement.METHOD) {
+		if (kind == IJavaScriptElement.METHOD) {
 			flags&= ~Flags.AccVarargs;
 			flags&= ~Flags.AccBridge;
 		}
@@ -113,10 +113,10 @@ public class StubCreator {
 			fBuffer.append(Flags.toString(flags));
 	}
 
-	protected void appendMembers(final IType type, final IProgressMonitor monitor) throws JavaModelException {
+	protected void appendMembers(final IType type, final IProgressMonitor monitor) throws JavaScriptModelException {
 		try {
 			monitor.beginTask(RefactoringCoreMessages.StubCreationOperation_creating_type_stubs, 1);
-			final IJavaElement[] children= type.getChildren();
+			final IJavaScriptElement[] children= type.getChildren();
 			for (int index= 0; index < children.length; index++) {
 				final IMember child= (IMember) children[index];
 				final int flags= child.getFlags();
@@ -129,8 +129,8 @@ public class StubCreator {
 				} else if (child instanceof IField) {
 					if (stub && !Flags.isEnum(flags) && !Flags.isSynthetic(flags))
 						appendFieldDeclaration((IField) child);
-				} else if (child instanceof IMethod) {
-					final IMethod method= (IMethod) child;
+				} else if (child instanceof IFunction) {
+					final IFunction method= (IFunction) child;
 					final String name= method.getElementName();
 					if (method.getDeclaringType()!=null && method.getDeclaringType().isEnum()) {
 						final int count= method.getNumberOfParameters();
@@ -155,19 +155,19 @@ public class StubCreator {
 		}
 	}
 
-	protected void appendMethodBody(final IMethod method) throws JavaModelException {
+	protected void appendMethodBody(final IFunction method) throws JavaScriptModelException {
 		if (method.isConstructor()) {
 			final IType declaringType= method.getDeclaringType();
 			String superSignature= declaringType.getSuperclassTypeSignature();
 			if (superSignature != null) {
 				superSignature= Signature.getTypeErasure(superSignature);
-				final IType superclass= declaringType.getJavaProject().findType(Signature.getSignatureQualifier(superSignature), Signature.getSignatureSimpleName(superSignature));
+				final IType superclass= declaringType.getJavaScriptProject().findType(Signature.getSignatureQualifier(superSignature), Signature.getSignatureSimpleName(superSignature));
 				if (superclass != null) {
-					final IMethod[] superMethods= superclass.getMethods();
-					IMethod superConstructor= null;
+					final IFunction[] superMethods= superclass.getFunctions();
+					IFunction superConstructor= null;
 					final int length= superMethods.length;
 					for (int index= 0; index < length; index++) {
-						final IMethod superMethod= superMethods[index];
+						final IFunction superMethod= superMethods[index];
 						if (superMethod.isConstructor() && !Flags.isPrivate(superMethod.getFlags())) {
 							superConstructor= superMethod;
 							if (superConstructor.getExceptionTypes().length == 0)
@@ -199,7 +199,7 @@ public class StubCreator {
 		}
 	}
 
-	protected void appendMethodDeclaration(final IMethod method) throws JavaModelException {
+	protected void appendMethodDeclaration(final IFunction method) throws JavaScriptModelException {
 		appendFlags(method);
 		fBuffer.append(" "); //$NON-NLS-1$
 		final String returnType= method.getReturnType();
@@ -250,12 +250,12 @@ public class StubCreator {
 		}
 	}
 
-	protected void appendMethodParameterName(IMethod method, int index) {
+	protected void appendMethodParameterName(IFunction method, int index) {
 		fBuffer.append("a"); //$NON-NLS-1$
 		fBuffer.append(index);
 	}
 
-	protected void appendSuperInterfaceTypes(final IType type) throws JavaModelException {
+	protected void appendSuperInterfaceTypes(final IType type) throws JavaScriptModelException {
 		final String[] signatures= type.getSuperInterfaceTypeSignatures();
 		if (signatures.length > 0) {
 			if (type.isInterface())
@@ -270,7 +270,7 @@ public class StubCreator {
 		}
 	}
 
-	protected void appendTopLevelType(final IType type, IProgressMonitor subProgressMonitor) throws JavaModelException {
+	protected void appendTopLevelType(final IType type, IProgressMonitor subProgressMonitor) throws JavaScriptModelException {
 		String packageName= type.getPackageFragment().getElementName();
 		if (packageName.length() > 0) {
 			fBuffer.append("package "); //$NON-NLS-1$
@@ -280,7 +280,7 @@ public class StubCreator {
 		appendTypeDeclaration(type, subProgressMonitor);
 	}
 
-	protected void appendTypeDeclaration(final IType type, final IProgressMonitor monitor) throws JavaModelException {
+	protected void appendTypeDeclaration(final IType type, final IProgressMonitor monitor) throws JavaScriptModelException {
 		try {
 			monitor.beginTask(RefactoringCoreMessages.StubCreationOperation_creating_type_stubs, 1);
 			if (type.isInterface()) {
@@ -328,7 +328,7 @@ public class StubCreator {
 		}
 	}
 
-	protected void appendTypeParameters(final ITypeParameter[] parameters) throws JavaModelException {
+	protected void appendTypeParameters(final ITypeParameter[] parameters) throws JavaScriptModelException {
 		final int length= parameters.length;
 		if (length > 0)
 			fBuffer.append("<"); //$NON-NLS-1$
@@ -356,9 +356,9 @@ public class StubCreator {
 	 * @param monitor
 	 *            progress monitor, can be <code>null</code>
 	 * @return source stub
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public String createStub(IType topLevelType, IProgressMonitor monitor) throws JavaModelException {
+	public String createStub(IType topLevelType, IProgressMonitor monitor) throws JavaScriptModelException {
 		Assert.isTrue(Checks.isTopLevel(topLevelType));
 		if (monitor == null)
 			monitor= new NullProgressMonitor();

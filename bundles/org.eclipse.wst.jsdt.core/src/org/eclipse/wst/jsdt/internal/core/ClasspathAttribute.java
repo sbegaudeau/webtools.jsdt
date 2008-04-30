@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
-public class ClasspathAttribute implements IClasspathAttribute {
+public class ClasspathAttribute implements IIncludePathAttribute {
 
 	private String name;
 	private String value;

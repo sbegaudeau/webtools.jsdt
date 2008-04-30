@@ -19,16 +19,16 @@ import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.StringLiteral;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.AccessorClassReference;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSHintHelper;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 
 /**
@@ -51,11 +51,11 @@ public class NLSKeyHyperlinkDetector extends AbstractHyperlinkDetector {
 		if (site == null)
 			return null;
 
-		IJavaElement javaElement= getInputJavaElement(textEditor);
+		IJavaScriptElement javaElement= getInputJavaElement(textEditor);
 		if (javaElement == null)
 			return null;
 
-		CompilationUnit ast= JavaPlugin.getDefault().getASTProvider().getAST(javaElement, ASTProvider.WAIT_NO, null);
+		JavaScriptUnit ast= JavaScriptPlugin.getDefault().getASTProvider().getAST(javaElement, ASTProvider.WAIT_NO, null);
 		if (ast == null)
 			return null;
 
@@ -82,13 +82,13 @@ public class NLSKeyHyperlinkDetector extends AbstractHyperlinkDetector {
 		return null;
 	}
 
-	private IJavaElement getInputJavaElement(ITextEditor editor) {
+	private IJavaScriptElement getInputJavaElement(ITextEditor editor) {
 		IEditorInput editorInput= editor.getEditorInput();
 		if (editorInput instanceof IClassFileEditorInput)
 			return ((IClassFileEditorInput)editorInput).getClassFile();
 
 		if (editor instanceof CompilationUnitEditor)
-			return JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(editorInput);
+			return JavaScriptPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(editorInput);
 
 		return null;
 	}

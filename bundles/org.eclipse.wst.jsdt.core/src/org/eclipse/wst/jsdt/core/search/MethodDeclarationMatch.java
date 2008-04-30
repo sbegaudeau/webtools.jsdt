@@ -11,11 +11,11 @@
 package org.eclipse.wst.jsdt.core.search;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
  * A Java search match that represents a method declaration.
- * The element is an <code>IMethod</code>.
+ * The element is an <code>IFunction</code>.
  * <p>
  * This class is intended to be instantiated and subclassed by clients.
  * </p>
@@ -34,7 +34,7 @@ public class MethodDeclarationMatch extends SearchMatch {
 	 * @param participant the search participant that created the match
 	 * @param resource the resource of the element
 	 */
-	public MethodDeclarationMatch(IJavaElement element, int accuracy, int offset, int length, SearchParticipant participant, IResource resource) {
+	public MethodDeclarationMatch(IJavaScriptElement element, int accuracy, int offset, int length, SearchParticipant participant, IResource resource) {
 		super(element, accuracy, offset, length, participant, resource);
 	}
 

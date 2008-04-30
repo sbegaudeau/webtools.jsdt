@@ -14,10 +14,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.core.index.Index;
@@ -57,8 +57,8 @@ public class TypeParameterPattern extends JavaSearchPattern {
 		this.declaringMemberName = member.getElementName().toCharArray(); // store type parameter declaring member name
 
 		// For method type parameter, store also declaring class name and parameters type names
-		if (member instanceof IMethod) {
-			IMethod method = (IMethod) member;
+		if (member instanceof IFunction) {
+			IFunction method = (IFunction) member;
 			this.methodDeclaringClassName = method.getParent().getElementName().toCharArray();
 			String[] parameters = method.getParameterTypes();
 			int length = parameters.length;
@@ -72,14 +72,14 @@ public class TypeParameterPattern extends JavaSearchPattern {
 	/*
 	 * Same than LocalVariablePattern.
 	 */
-	public void findIndexMatches(Index index, IndexQueryRequestor requestor, SearchParticipant participant, IJavaSearchScope scope, IProgressMonitor progressMonitor) {
-//	    IPackageFragmentRoot root = (IPackageFragmentRoot) this.typeParameter.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+	public void findIndexMatches(Index index, IndexQueryRequestor requestor, SearchParticipant participant, IJavaScriptSearchScope scope, IProgressMonitor progressMonitor) {
+//	    IPackageFragmentRoot root = (IPackageFragmentRoot) this.typeParameter.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 		String documentPath;
 		String relativePath;
 //	    if (root.isArchive()) {
-// 	    	IType type = (IType) this.typeParameter.getAncestor(IJavaElement.TYPE);
+// 	    	IType type = (IType) this.typeParameter.getAncestor(IJavaScriptElement.TYPE);
 //    	    relativePath = (type.getFullyQualifiedName('/')).replace('.', '/') + SuffixConstants.SUFFIX_STRING_class;
-//	        documentPath = root.getPath() + IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR + relativePath;
+//	        documentPath = root.getPath() + IJavaScriptSearchScope.JAR_FILE_ENTRY_SEPARATOR + relativePath;
 //	    } else
 	    {
 			IPath path = this.typeParameter.getPath();

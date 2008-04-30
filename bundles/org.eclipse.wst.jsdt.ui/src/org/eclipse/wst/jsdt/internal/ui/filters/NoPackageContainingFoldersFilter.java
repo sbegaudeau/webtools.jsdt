@@ -15,9 +15,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 public class NoPackageContainingFoldersFilter extends ViewerFilter {
 
@@ -40,7 +40,7 @@ public class NoPackageContainingFoldersFilter extends ViewerFilter {
 	}
 	
 	private boolean containsPackage(IFolder folder) throws CoreException {
-		IJavaElement element= JavaCore.create(folder);
+		IJavaScriptElement element= JavaScriptCore.create(folder);
 		if (element instanceof IPackageFragment)
 			return true;
 		IResource[] resources= folder.members();

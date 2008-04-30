@@ -38,12 +38,12 @@ import org.eclipse.text.edits.RangeMarker;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
@@ -54,17 +54,17 @@ import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
@@ -78,9 +78,9 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.corext.Corext;
@@ -110,8 +110,8 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TightSourceRangeCom
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class InlineConstantRefactoring extends ScriptableRefactoring {
 
@@ -146,7 +146,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 		
 			private static boolean isStaticAccess(SimpleName memberName) {
 				IBinding binding= memberName.resolveBinding();
-				Assert.isTrue(binding instanceof IVariableBinding || binding instanceof IMethodBinding || binding instanceof ITypeBinding);
+				Assert.isTrue(binding instanceof IVariableBinding || binding instanceof IFunctionBinding || binding instanceof ITypeBinding);
 		
 				if (binding instanceof ITypeBinding)
 					return true;
@@ -238,7 +238,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 		
 			private void perform(Expression initializer) {
 				initializer.accept(this);
-				if (initializer instanceof MethodInvocation || initializer instanceof SuperMethodInvocation) {
+				if (initializer instanceof FunctionInvocation || initializer instanceof SuperMethodInvocation) {
 					addExplicitTypeArgumentsIfNecessary(initializer);
 				}
 			}
@@ -249,7 +249,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 					if (! (referenceContext instanceof VariableDeclarationFragment
 							|| referenceContext instanceof SingleVariableDeclaration
 							|| referenceContext instanceof Assignment)) {
-						IMethodBinding methodBinding= Invocations.resolveBinding(invocation);
+						IFunctionBinding methodBinding= Invocations.resolveBinding(invocation);
 						ITypeBinding[] typeArguments= methodBinding.getTypeArguments();
 						ListRewrite typeArgsRewrite= fInitializerRewrite.getListRewrite(invocation, Invocations.getTypeArgumentsProperty(invocation));
 						for (int i= 0; i < typeArguments.length; i++) {
@@ -266,7 +266,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 				return false;
 			}
 		
-			public boolean visit(MethodInvocation invocation) {
+			public boolean visit(FunctionInvocation invocation) {
 				if (invocation.getExpression() == null)
 					qualifyUnqualifiedMemberNameIfNecessary(invocation.getName());
 				else
@@ -282,7 +282,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 				SimpleName leftmost= getLeftmost(name);
 		
 				IBinding leftmostBinding= leftmost.resolveBinding();
-				if (leftmostBinding instanceof IVariableBinding || leftmostBinding instanceof IMethodBinding || leftmostBinding instanceof ITypeBinding) {
+				if (leftmostBinding instanceof IVariableBinding || leftmostBinding instanceof IFunctionBinding || leftmostBinding instanceof ITypeBinding) {
 					if (shouldUnqualify(leftmost))
 						unqualifyMemberName(leftmost);
 					else
@@ -339,7 +339,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 				if (isStaticAccess(memberName)) {
 					IBinding memberBinding= memberName.resolveBinding();
 					
-					if (memberBinding instanceof IVariableBinding || memberBinding instanceof IMethodBinding) {
+					if (memberBinding instanceof IVariableBinding || memberBinding instanceof IFunctionBinding) {
 						if (fStaticImportsInReference.contains(fNewLocation)) { // use static import if reference location used static import
 							importStatically(memberName, memberBinding);
 							return;
@@ -376,8 +376,8 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 			private static ITypeBinding getDeclaringClassBinding(SimpleName memberName) {
 		
 				IBinding binding= memberName.resolveBinding();
-				if (binding instanceof IMethodBinding)
-					return ((IMethodBinding) binding).getDeclaringClass();
+				if (binding instanceof IFunctionBinding)
+					return ((IFunctionBinding) binding).getDeclaringClass();
 		
 				if (binding instanceof IVariableBinding)
 					return ((IVariableBinding) binding).getDeclaringClass();
@@ -393,7 +393,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 		}
 		
 		private final Expression fInitializer;
-		private final ICompilationUnit fInitializerUnit;
+		private final IJavaScriptUnit fInitializerUnit;
 		private final VariableDeclarationFragment fOriginalDeclaration; 
 		
 		/** The references in this compilation unit, represented as AST Nodes in the parsed representation of the compilation unit */
@@ -404,7 +404,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 		private final HashSet fStaticImportsInInitializer;
 		private final boolean fIs15;
 		
-		private InlineTargetCompilationUnit(CompilationUnitRewrite cuRewrite, Name[] references, InlineConstantRefactoring refactoring, HashSet staticImportsInInitializer) throws JavaModelException {
+		private InlineTargetCompilationUnit(CompilationUnitRewrite cuRewrite, Name[] references, InlineConstantRefactoring refactoring, HashSet staticImportsInInitializer) throws JavaScriptModelException {
 			fInitializer= refactoring.getInitializer();
 			fInitializerUnit= refactoring.getDeclaringCompilationUnit();
 			
@@ -422,7 +422,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 			for (int i= 0; i < references.length; i++)
 				fReferences[i]= getQualifiedReference(references[i]);
 			
-			fIs15= JavaModelUtil.is50OrHigher(cuRewrite.getCu().getJavaProject());
+			fIs15= JavaModelUtil.is50OrHigher(cuRewrite.getCu().getJavaScriptProject());
 			fStaticImportsInInitializer= fIs15 ? staticImportsInInitializer : new HashSet(0);
 		}
 
@@ -443,7 +443,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 			if (parent instanceof QualifiedName && ((QualifiedName) parent).getName() == fieldName)
 				return true;
 
-			if (parent instanceof MethodInvocation && ((MethodInvocation) parent).getName() == fieldName)
+			if (parent instanceof FunctionInvocation && ((FunctionInvocation) parent).getName() == fieldName)
 				return true;
 
 			return false;
@@ -497,7 +497,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 
 		private String prepareInitializerForLocation(Expression location) throws CoreException {
 			HashSet staticImportsInReference= new HashSet();
-			final IJavaProject project= fCuRewrite.getCu().getJavaProject();
+			final IJavaScriptProject project= fCuRewrite.getCu().getJavaScriptProject();
 			if (fIs15)
 				location.accept(new ImportReferencesCollector(project, null, new ArrayList(), staticImportsInReference));
 			InitializerTraversal traversal= new InitializerTraversal(fInitializer, fStaticImportsInInitializer, location, staticImportsInReference, fCuRewrite);
@@ -505,7 +505,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 			IDocument document= new Document(fInitializerUnit.getBuffer().getContents()); // could reuse document when generating and applying undo edits
 			
 			final RangeMarker marker= new RangeMarker(fInitializer.getStartPosition(), fInitializer.getLength());
-			TextEdit[] rewriteEdits= initializerRewrite.rewriteAST(document, fInitializerUnit.getJavaProject().getOptions(true)).removeChildren();
+			TextEdit[] rewriteEdits= initializerRewrite.rewriteAST(document, fInitializerUnit.getJavaScriptProject().getOptions(true)).removeChildren();
 			marker.addChildren(rewriteEdits);
 			try {
 				marker.apply(document, TextEdit.UPDATE_REGIONS);
@@ -514,9 +514,9 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 				int oldIndent= Strings.computeIndentUnits(document.get(region.getOffset(), region.getLength()), project);
 				return Strings.changeIndent(rewrittenInitializer, oldIndent, project, "", TextUtilities.getDefaultLineDelimiter(document)); //$NON-NLS-1$
 			} catch (MalformedTreeException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			} catch (BadLocationException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 			return fInitializerUnit.getBuffer().getText(fInitializer.getStartPosition(), fInitializer.getLength());
 		}
@@ -557,7 +557,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 	private int fSelectionStart;
 	private int fSelectionLength;
 	
-	private ICompilationUnit fSelectionCu;
+	private IJavaScriptUnit fSelectionCu;
 	private CompilationUnitRewrite fSelectionCuRewrite;
 	private Name fSelectedConstantName;
 	
@@ -595,7 +595,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 	 * @param selectionStart
 	 * @param selectionLength
 	 */
-	public InlineConstantRefactoring(ICompilationUnit unit, CompilationUnit node, int selectionStart, int selectionLength) {
+	public InlineConstantRefactoring(IJavaScriptUnit unit, JavaScriptUnit node, int selectionStart, int selectionLength) {
 		Assert.isTrue(selectionStart >= 0);
 		Assert.isTrue(selectionLength >= 0);
 		fSelectionCu= unit;
@@ -605,7 +605,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 			initialize(unit, node);
 	}
 
-	private void initialize(ICompilationUnit cu, CompilationUnit node) {
+	private void initialize(IJavaScriptUnit cu, JavaScriptUnit node) {
 		fSelectionCuRewrite= new CompilationUnitRewrite(cu, node);
 		fSelectedConstantName= findConstantNameNode();
 	}
@@ -678,14 +678,14 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 		}
 	}
 
-	private RefactoringStatus findField() throws JavaModelException {
+	private RefactoringStatus findField() throws JavaScriptModelException {
 		fField= (IField) ((IVariableBinding) fSelectedConstantName.resolveBinding()).getJavaElement();
 		if (fField != null && ! fField.exists())
 			return RefactoringStatus.createStatus(RefactoringStatus.FATAL, RefactoringCoreMessages.InlineConstantRefactoring_local_anonymous_unsupported, null, Corext.getPluginId(), RefactoringStatusCodes.LOCAL_AND_ANONYMOUS_NOT_SUPPORTED, null); 
 		
 		return null;
 	}
-	private RefactoringStatus findDeclaration() throws JavaModelException {
+	private RefactoringStatus findDeclaration() throws JavaScriptModelException {
 		fDeclarationSelectedChecked= true;
 		fDeclarationSelected= false;
 		ASTNode parent= fSelectedConstantName.getParent();
@@ -706,10 +706,10 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 			return null;
 		}
 
-		if (fField.getCompilationUnit() == null)
+		if (fField.getJavaScriptUnit() == null)
 			return RefactoringStatus.createStatus(RefactoringStatus.FATAL, RefactoringCoreMessages.InlineConstantRefactoring_binary_file, null, Corext.getPluginId(), RefactoringStatusCodes.DECLARED_IN_CLASSFILE, null); 
 		
-		fDeclarationCuRewrite= new CompilationUnitRewrite(fField.getCompilationUnit());
+		fDeclarationCuRewrite= new CompilationUnitRewrite(fField.getJavaScriptUnit());
 		fDeclaration= ASTNodeSearchUtil.getFieldDeclarationFragmentNode(fField, fDeclarationCuRewrite.getRoot());
 		return null;
 	}
@@ -724,7 +724,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 		return new RefactoringStatus();
 	}
 
-	private VariableDeclarationFragment getDeclaration() throws JavaModelException {
+	private VariableDeclarationFragment getDeclaration() throws JavaScriptModelException {
 		return fDeclaration;
 	}
 
@@ -732,8 +732,8 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 		return fDeclaration.getInitializer();
 	}
 	
-	private ICompilationUnit getDeclaringCompilationUnit() throws JavaModelException {
-		return fField.getCompilationUnit();
+	private IJavaScriptUnit getDeclaringCompilationUnit() throws JavaScriptModelException {
+		return fField.getJavaScriptUnit();
 	}
 
 	public RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws CoreException {
@@ -743,7 +743,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 		try {
 			List/*<CompilationUnitChange>*/changes= new ArrayList();
 			HashSet staticImportsInInitializer= new HashSet();
-			ImportReferencesCollector importReferencesCollector= new ImportReferencesCollector(fField.getJavaProject(), null, new ArrayList(), staticImportsInInitializer);
+			ImportReferencesCollector importReferencesCollector= new ImportReferencesCollector(fField.getJavaScriptProject(), null, new ArrayList(), staticImportsInInitializer);
 			getInitializer().accept(importReferencesCollector);
 			
 			if (getReplaceAllReferences()) {
@@ -752,7 +752,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 					if (pm.isCanceled())
 						throw new OperationCanceledException();
 					SearchResultGroup group= searchResultGroups[i];
-					ICompilationUnit cu= group.getCompilationUnit();
+					IJavaScriptUnit cu= group.getCompilationUnit();
 
 					CompilationUnitRewrite cuRewrite= getCuRewrite(cu);
 					Name[] references= extractReferenceNodes(group.getSearchResults(), cuRewrite.getRoot());
@@ -788,7 +788,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 				}
 			}
 
-			ICompilationUnit[] cus= new ICompilationUnit[changes.size()];
+			IJavaScriptUnit[] cus= new IJavaScriptUnit[changes.size()];
 			for (int i= 0; i < changes.size(); i++) {
 				CompilationUnitChange change= (CompilationUnitChange) changes.get(i);
 				cus[i]= change.getCompilationUnit();
@@ -810,18 +810,18 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 		}
 	}
 
-	private Name[] extractReferenceNodes(SearchMatch[] searchResults, CompilationUnit cuNode) {
+	private Name[] extractReferenceNodes(SearchMatch[] searchResults, JavaScriptUnit cuNode) {
 		Name[] references= new Name[searchResults.length];
 		for (int i= 0; i < searchResults.length; i++)
 			references[i]= (Name) NodeFinder.perform(cuNode, searchResults[i].getOffset(), searchResults[i].getLength());
 		return references;
 	}
 
-	private CompilationUnitRewrite getCuRewrite(ICompilationUnit cu) {
+	private CompilationUnitRewrite getCuRewrite(IJavaScriptUnit cu) {
 		CompilationUnitRewrite cuRewrite;
 		if (cu.equals(fSelectionCu)) {
 			cuRewrite= fSelectionCuRewrite;
-		} else if (cu.equals(fField.getCompilationUnit())) {
+		} else if (cu.equals(fField.getJavaScriptUnit())) {
 			cuRewrite= fDeclarationCuRewrite;
 		} else {
 			cuRewrite= new CompilationUnitRewrite(cu);
@@ -829,8 +829,8 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 		return cuRewrite;
 	}
 
-	private SearchResultGroup[] findReferences(IProgressMonitor pm, RefactoringStatus status) throws JavaModelException {
-		final RefactoringSearchEngine2 engine= new RefactoringSearchEngine2(SearchPattern.createPattern(fField, IJavaSearchConstants.REFERENCES));
+	private SearchResultGroup[] findReferences(IProgressMonitor pm, RefactoringStatus status) throws JavaScriptModelException {
+		final RefactoringSearchEngine2 engine= new RefactoringSearchEngine2(SearchPattern.createPattern(fField, IJavaScriptSearchConstants.REFERENCES));
 		engine.setFiltering(true, true);
 		engine.setScope(RefactoringScopeFactory.create(fField));
 		engine.setStatus(status);
@@ -848,25 +848,25 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 			pm.beginTask(RefactoringCoreMessages.InlineConstantRefactoring_preview, 2);
 			final Map arguments= new HashMap();
 			String project= null;
-			IJavaProject javaProject= fSelectionCu.getJavaProject();
+			IJavaScriptProject javaProject= fSelectionCu.getJavaScriptProject();
 			if (javaProject != null)
 				project= javaProject.getElementName();
-			int flags= RefactoringDescriptor.STRUCTURAL_CHANGE | JavaRefactoringDescriptor.JAR_REFACTORING | JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
+			int flags= RefactoringDescriptor.STRUCTURAL_CHANGE | JavaScriptRefactoringDescriptor.JAR_REFACTORING | JavaScriptRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
 			try {
 				if (!Flags.isPrivate(fField.getFlags()))
 					flags|= RefactoringDescriptor.MULTI_CHANGE;
-			} catch (JavaModelException exception) {
-				JavaPlugin.log(exception);
+			} catch (JavaScriptModelException exception) {
+				JavaScriptPlugin.log(exception);
 			}
 			final String description= Messages.format(RefactoringCoreMessages.InlineConstantRefactoring_descriptor_description_short, fField.getElementName());
-			final String header= Messages.format(RefactoringCoreMessages.InlineConstantRefactoring_descriptor_description, new String[] { JavaElementLabels.getElementLabel(fField, JavaElementLabels.ALL_FULLY_QUALIFIED), JavaElementLabels.getElementLabel(fField.getParent(), JavaElementLabels.ALL_FULLY_QUALIFIED)});
+			final String header= Messages.format(RefactoringCoreMessages.InlineConstantRefactoring_descriptor_description, new String[] { JavaScriptElementLabels.getElementLabel(fField, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), JavaScriptElementLabels.getElementLabel(fField.getParent(), JavaScriptElementLabels.ALL_FULLY_QUALIFIED)});
 			final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
-			comment.addSetting(Messages.format(RefactoringCoreMessages.InlineConstantRefactoring_original_pattern, JavaElementLabels.getElementLabel(fField, JavaElementLabels.ALL_FULLY_QUALIFIED)));
+			comment.addSetting(Messages.format(RefactoringCoreMessages.InlineConstantRefactoring_original_pattern, JavaScriptElementLabels.getElementLabel(fField, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
 			if (fRemoveDeclaration)
 				comment.addSetting(RefactoringCoreMessages.InlineConstantRefactoring_remove_declaration);
 			if (fReplaceAllReferences)
 				comment.addSetting(RefactoringCoreMessages.InlineConstantRefactoring_replace_references);
-			final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaRefactorings.INLINE_CONSTANT, project, description, comment.asString(), arguments, flags);
+			final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaScriptRefactorings.INLINE_CONSTANT, project, description, comment.asString(), arguments, flags);
 			arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_INPUT, descriptor.elementToHandle(fSelectionCu));
 			arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_SELECTION, new Integer(fSelectionStart).toString() + " " + new Integer(fSelectionLength).toString()); //$NON-NLS-1$
 			arguments.put(ATTRIBUTE_REMOVE, Boolean.valueOf(fRemoveDeclaration).toString());
@@ -931,12 +931,12 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 			}
 			final String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
 				if (element == null || !element.exists())
-					return createInputFatalStatus(element, IJavaRefactorings.INLINE_CONSTANT);
+					return createInputFatalStatus(element, IJavaScriptRefactorings.INLINE_CONSTANT);
 				else {
-					if (element instanceof ICompilationUnit) {
-						fSelectionCu= (ICompilationUnit) element;
+					if (element instanceof IJavaScriptUnit) {
+						fSelectionCu= (IJavaScriptUnit) element;
 						if (selection == null)
 							return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_SELECTION));
 					} else if (element instanceof IField) {
@@ -947,20 +947,20 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 								fSelectionStart= range.getOffset();
 								fSelectionLength= range.getLength();
 							} else
-								return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, IJavaRefactorings.INLINE_CONSTANT));
-						} catch (JavaModelException exception) {
-							return createInputFatalStatus(element, IJavaRefactorings.INLINE_CONSTANT);
+								return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, IJavaScriptRefactorings.INLINE_CONSTANT));
+						} catch (JavaScriptModelException exception) {
+							return createInputFatalStatus(element, IJavaScriptRefactorings.INLINE_CONSTANT);
 						}
-						fSelectionCu= field.getCompilationUnit();
+						fSelectionCu= field.getJavaScriptUnit();
 					} else
 						return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_illegal_argument, new Object[] { handle, JDTRefactoringDescriptor.ATTRIBUTE_INPUT}));
 					final ASTParser parser= ASTParser.newParser(AST.JLS3);
 					parser.setResolveBindings(true);
 					parser.setSource(fSelectionCu);
-					final CompilationUnit unit= (CompilationUnit) parser.createAST(null);
+					final JavaScriptUnit unit= (JavaScriptUnit) parser.createAST(null);
 					initialize(fSelectionCu, unit);
 					if (checkStaticFinalConstantNameSelected().hasFatalError())
-						return createInputFatalStatus(element, IJavaRefactorings.INLINE_CONSTANT);
+						return createInputFatalStatus(element, IJavaScriptRefactorings.INLINE_CONSTANT);
 				}
 			} else
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));

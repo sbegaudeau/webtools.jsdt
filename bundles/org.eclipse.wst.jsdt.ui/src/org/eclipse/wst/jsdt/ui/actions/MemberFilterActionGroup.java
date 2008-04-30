@@ -22,7 +22,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.MemberFilter;
@@ -217,7 +217,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 			int filterProperty= propertyKeys[i];
 			boolean set= propertyValues[i];
 
-			IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+			IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 			boolean found= false;
 			for (int j= 0; j < fFilterActions.length; j++) {
 				int currProperty= fFilterActions[j].getFilterProperty();

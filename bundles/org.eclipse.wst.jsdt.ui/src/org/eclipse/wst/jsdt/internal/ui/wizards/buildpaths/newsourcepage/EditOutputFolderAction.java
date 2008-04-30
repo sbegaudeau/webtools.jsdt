@@ -31,23 +31,23 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.CPJavaProject;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElementAttribute;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.OutputLocationDialog;
 
-//SelectedElements iff enabled: (IPackageFragmentRoot || IJavaProject || CPListElementAttribute) && size == 1
+//SelectedElements iff enabled: (IPackageFragmentRoot || IJavaScriptProject || CPListElementAttribute) && size == 1
 public class EditOutputFolderAction extends BuildpathModifierAction {
 
 	private final IRunnableContext fContext;
@@ -95,20 +95,20 @@ public class EditOutputFolderAction extends BuildpathModifierAction {
 
 			final Shell shell= getShell();
 			
-			final IJavaProject javaProject;
+			final IJavaScriptProject javaProject;
 			CPListElement cpElement= null;
 			Object firstElement= getSelectedElements().get(0);
-			if (firstElement instanceof IJavaProject) {
-				javaProject= (IJavaProject)firstElement;
+			if (firstElement instanceof IJavaScriptProject) {
+				javaProject= (IJavaScriptProject)firstElement;
 				
-				final IClasspathEntry entry= ClasspathModifier.getClasspathEntryFor(javaProject.getPath(), javaProject, IClasspathEntry.CPE_SOURCE);
+				final IIncludePathEntry entry= ClasspathModifier.getClasspathEntryFor(javaProject.getPath(), javaProject, IIncludePathEntry.CPE_SOURCE);
 				cpElement= CPListElement.createFromExisting(entry, javaProject);
 			} else if (firstElement instanceof IPackageFragmentRoot) {
 				IPackageFragmentRoot root= (IPackageFragmentRoot)firstElement;
 				
-				javaProject= root.getJavaProject();
+				javaProject= root.getJavaScriptProject();
 								
-				final IClasspathEntry entry= ClasspathModifier.getClasspathEntryFor(root.getPath(), javaProject, IClasspathEntry.CPE_SOURCE);
+				final IIncludePathEntry entry= ClasspathModifier.getClasspathEntryFor(root.getPath(), javaProject, IIncludePathEntry.CPE_SOURCE);
 				cpElement= CPListElement.createFromExisting(entry, javaProject);
 			} else if (firstElement instanceof CPListElementAttribute) {
 				CPListElementAttribute attribute= (CPListElementAttribute)firstElement;
@@ -153,7 +153,7 @@ public class EditOutputFolderAction extends BuildpathModifierAction {
                                 folderToDelete.delete(true, new SubProgressMonitor(monitor, 10));
                         	
                         	informListeners(delta);
-                        	selectAndReveal(new StructuredSelection(JavaCore.create(element.getResource())));    
+                        	selectAndReveal(new StructuredSelection(JavaScriptCore.create(element.getResource())));    
 						} catch (CoreException e) {
 							throw new InvocationTargetException(e);
 						} finally {
@@ -163,7 +163,7 @@ public class EditOutputFolderAction extends BuildpathModifierAction {
 				};
 				fContext.run(false, false, runnable);
 			} catch (final InvocationTargetException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			} catch (final InterruptedException e) {
 			}
 			
@@ -208,17 +208,17 @@ public class EditOutputFolderAction extends BuildpathModifierAction {
 				if (root.getKind() != IPackageFragmentRoot.K_SOURCE)
 					return false;
 					
-				IJavaProject javaProject= root.getJavaProject();
+				IJavaScriptProject javaProject= root.getJavaScriptProject();
 				if (javaProject == null)
 					return false;
 				
-				final IClasspathEntry entry= ClasspathModifier.getClasspathEntryFor(root.getPath(), javaProject, IClasspathEntry.CPE_SOURCE);
+				final IIncludePathEntry entry= ClasspathModifier.getClasspathEntryFor(root.getPath(), javaProject, IIncludePathEntry.CPE_SOURCE);
 				if (entry == null)
 					return false;
 				
 				return true;
-			} else if (element instanceof IJavaProject) {
-				IJavaProject project= (IJavaProject)element;
+			} else if (element instanceof IJavaScriptProject) {
+				IJavaScriptProject project= (IJavaScriptProject)element;
 				if (!(ClasspathModifier.isSourceFolder(project)))
 					return false;
 				
@@ -231,7 +231,7 @@ public class EditOutputFolderAction extends BuildpathModifierAction {
 				return true;
 			}
 
-		} catch (final JavaModelException e) {
+		} catch (final JavaScriptModelException e) {
 			return false;
 		}
 		return false;

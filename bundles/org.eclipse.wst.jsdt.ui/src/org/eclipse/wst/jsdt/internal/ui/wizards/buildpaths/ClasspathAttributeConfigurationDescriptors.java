@@ -19,9 +19,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration;
 
 public class ClasspathAttributeConfigurationDescriptors {
@@ -42,10 +42,10 @@ public class ClasspathAttributeConfigurationDescriptors {
 			String pageClassName = configElement.getAttribute(ATT_CLASS);
 	
 			if (name == null) {
-				throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, 0, "Invalid extension (missing attributeName)", null)); //$NON-NLS-1$
+				throw new CoreException(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, 0, "Invalid extension (missing attributeName)", null)); //$NON-NLS-1$
 			}
 			if (pageClassName == null) {
-				throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, 0, "Invalid extension (missing class name): " + name, null)); //$NON-NLS-1$
+				throw new CoreException(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, 0, "Invalid extension (missing class name): " + name, null)); //$NON-NLS-1$
 			}
 		}
 	
@@ -55,7 +55,7 @@ public class ClasspathAttributeConfigurationDescriptors {
 				if (elem instanceof ClasspathAttributeConfiguration) {
 					fInstance= (ClasspathAttributeConfiguration) elem;
 				} else {
-					throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, 0, "Invalid extension (page not of type IJsGlobalScopeContainerPage): " + getKey(), null)); //$NON-NLS-1$
+					throw new CoreException(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, 0, "Invalid extension (page not of type IJsGlobalScopeContainerPage): " + getKey(), null)); //$NON-NLS-1$
 				}
 			}
 			return fInstance;
@@ -94,7 +94,7 @@ public class ClasspathAttributeConfigurationDescriptors {
 		SafeRunner.run(new ISafeRunnable() {
 
 			public void handleException(Throwable exception) {
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 				getDescriptors().remove(attributeKey); // remove from list
 			}
 
@@ -106,14 +106,14 @@ public class ClasspathAttributeConfigurationDescriptors {
 	}
 	
 	private static HashMap readExtensions() {
-		IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(JavaUI.ID_PLUGIN, ATT_EXTENSION);
+		IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(JavaScriptUI.ID_PLUGIN, ATT_EXTENSION);
 		HashMap descriptors= new HashMap(elements.length * 2);
 		for (int i= 0; i < elements.length; i++) {
 			try {
 				Descriptor curr= new Descriptor(elements[i]);
 				descriptors.put(curr.getKey(), curr);
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 		return descriptors;

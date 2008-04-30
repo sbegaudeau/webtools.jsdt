@@ -33,18 +33,18 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CodeTemplateContextType;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.wst.jsdt.internal.ui.util.ViewerPane;
@@ -88,7 +88,7 @@ public class OverrideMethodDialog extends SourceActionDialog {
 
 		private final Object[] fEmpty= new Object[0];
 
-		private IMethod[] fMethods;
+		private IFunction[] fMethods;
 
 		private IDialogSettings fSettings;
 
@@ -106,7 +106,7 @@ public class OverrideMethodDialog extends SourceActionDialog {
 		 * Constructor for OverrideMethodContentProvider.
 		 */
 		public OverrideMethodContentProvider() {
-			IDialogSettings dialogSettings= JavaPlugin.getDefault().getDialogSettings();
+			IDialogSettings dialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();
 			fSettings= dialogSettings.getSection(SETTINGS_SECTION);
 			if (fSettings == null) {
 				fSettings= dialogSettings.addNewSection(SETTINGS_SECTION);
@@ -125,7 +125,7 @@ public class OverrideMethodDialog extends SourceActionDialog {
 		 * @see ITreeContentProvider#getChildren(Object)
 		 */
 		public Object[] getChildren(Object parentElement) {
-			if (parentElement instanceof ICompilationUnit) {
+			if (parentElement instanceof IJavaScriptUnit) {
 				ArrayList result= new ArrayList(fMethods.length);
 				for (int index= 0; index < fMethods.length; index++) {
 					if (fMethods[index].getCompilationUnit() == parentElement)
@@ -147,8 +147,8 @@ public class OverrideMethodDialog extends SourceActionDialog {
 		 * @see ITreeContentProvider#getParent(Object)
 		 */
 		public Object getParent(Object element) {
-			if (element instanceof IMethod) {
-				return ((IMethod) element).getCompilationUnit();
+			if (element instanceof IFunction) {
+				return ((IFunction) element).getCompilationUnit();
 			}
 			return null;
 		}
@@ -164,7 +164,7 @@ public class OverrideMethodDialog extends SourceActionDialog {
 			return getChildren(element).length > 0;
 		}
 
-		public void init(IMethod[] methods) {
+		public void init(IFunction[] methods) {
 			fMethods= methods;
 			//fTypes= types;
 		}
@@ -238,7 +238,7 @@ public class OverrideMethodDialog extends SourceActionDialog {
 		public IStatus validate(Object[] selection) {
 			int count= 0;
 			for (int index= 0; index < selection.length; index++) {
-				if (selection[index] instanceof IMethod)
+				if (selection[index] instanceof IFunction)
 					count++;
 			}
 			if (count == 0)
@@ -270,18 +270,18 @@ public class OverrideMethodDialog extends SourceActionDialog {
 		return null;
 	}
 
-	private CompilationUnit fUnit= null;
+	private JavaScriptUnit fUnit= null;
 
-	public OverrideMethodDialog(Shell shell, CompilationUnitEditor editor, IType type, boolean isSubType) throws JavaModelException {
+	public OverrideMethodDialog(Shell shell, CompilationUnitEditor editor, IType type, boolean isSubType) throws JavaScriptModelException {
 		super(shell, new BindingLabelProvider(), new OverrideMethodContentProvider(), editor, type, false);
 
 //		IMethod[] methods = type.getMethods();
 		String parentName = type.getSuperclassName();
-		IType superType =  type.getJavaProject().findType(parentName);
-		IMethod pMethods[] = superType.getMethods();
-		IMethod tMethods[] = type.getMethods();
+		IType superType =  type.getJavaScriptProject().findType(parentName);
+		IFunction pMethods[] = superType.getMethods();
+		IFunction tMethods[] = type.getMethods();
 		
-		IMethod parentMethods[] = new IMethod[0];
+		IFunction parentMethods[] = new IFunction[0];
 		
 		if(OverrideMethodDialog.SHOW_ONLY_SUPER){
 			
@@ -296,7 +296,7 @@ public class OverrideMethodDialog extends SourceActionDialog {
 				
 							
 						}
-			parentMethods = (IMethod[]) show.toArray(new IMethod[show.size()]);
+			parentMethods = (IFunction[]) show.toArray(new IFunction[show.size()]);
 			
 		}
 		
@@ -315,7 +315,7 @@ public class OverrideMethodDialog extends SourceActionDialog {
 			types.add(parentMethods[i]);
 		}
 
-		IMethod[] typesArrays= (IMethod[]) types.toArray(new IMethod[types.size()]);
+		IFunction[] typesArrays= (IFunction[]) types.toArray(new IFunction[types.size()]);
 		OverrideMethodComparator comparator= null;//new OverrideMethodComparator(binding);
 		if (expanded.isEmpty() && typesArrays.length > 0) {
 			comparator.sort(null, typesArrays);
@@ -334,7 +334,7 @@ public class OverrideMethodDialog extends SourceActionDialog {
 		setInput(new Object());
 	}
 
-	public CompilationUnit getCompilationUnit() {
+	public JavaScriptUnit getCompilationUnit() {
 		return fUnit;
 	}
 

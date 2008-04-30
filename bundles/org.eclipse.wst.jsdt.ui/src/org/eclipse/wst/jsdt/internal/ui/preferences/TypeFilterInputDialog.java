@@ -23,9 +23,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -107,7 +107,7 @@ public class TypeFilterInputDialog extends StatusDialog {
 	}
 	
 	private void doButtonPressed() {
-		IJavaSearchScope scope= SearchEngine.createWorkspaceScope();
+		IJavaScriptSearchScope scope= SearchEngine.createWorkspaceScope();
 		BusyIndicatorRunnableContext context= new BusyIndicatorRunnableContext();
 		int flags= PackageSelectionDialog.F_SHOW_PARENTS | PackageSelectionDialog.F_HIDE_DEFAULT_PACKAGE | PackageSelectionDialog.F_REMOVE_DUPLICATES;
 		PackageSelectionDialog dialog = new PackageSelectionDialog(getShell(), context, flags , scope);
@@ -128,7 +128,7 @@ public class TypeFilterInputDialog extends StatusDialog {
 			status.setError(PreferencesMessages.TypeFilterInputDialog_error_enterName); 
 		} else {
 			newText= newText.replace('*', 'X').replace('?', 'Y');
-			IStatus val= JavaConventions.validatePackageName(newText, JavaCore.VERSION_1_3, JavaCore.VERSION_1_3);
+			IStatus val= JavaScriptConventions.validatePackageName(newText, JavaScriptCore.VERSION_1_3, JavaScriptCore.VERSION_1_3);
 			if (val.matches(IStatus.ERROR)) {
 				status.setError(Messages.format(PreferencesMessages.TypeFilterInputDialog_error_invalidName, val.getMessage())); 
 			} else {

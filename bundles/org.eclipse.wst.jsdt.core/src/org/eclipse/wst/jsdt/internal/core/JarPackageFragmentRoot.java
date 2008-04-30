@@ -20,11 +20,11 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
@@ -52,7 +52,7 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 
 	/**
 	 * Constructs a package fragment root which is the root of the Java package directory hierarchy
-	 * based on a JAR file that is not contained in a <code>IJavaProject</code> and
+	 * based on a JAR file that is not contained in a <code>IJavaScriptProject</code> and
 	 * does not have an associated <code>IResource</code>.
 	 */
 	protected JarPackageFragmentRoot(IPath jarPath, JavaProject project) {
@@ -74,7 +74,7 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 	 * by the path of class files contained in the jar of this package fragment root.
 	 * Has the side effect of opening the package fragment children.
 	 */
-	protected boolean computeChildren(OpenableElementInfo info, Map newElements) throws JavaModelException {
+	protected boolean computeChildren(OpenableElementInfo info, Map newElements) throws JavaScriptModelException {
 
 		ArrayList vChildren= new ArrayList();
 		final int JAVA = 0;
@@ -115,14 +115,14 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 				vChildren.add(packFrag);
 			}
 		} catch (CoreException e) {
-			if (e instanceof JavaModelException) throw (JavaModelException)e;
-			throw new JavaModelException(e);
+			if (e instanceof JavaScriptModelException) throw (JavaScriptModelException)e;
+			throw new JavaScriptModelException(e);
 		} finally {
 			JavaModelManager.getJavaModelManager().closeZipFile(jar);
 		}
 
 
-		IJavaElement[] children= new IJavaElement[vChildren.size()];
+		IJavaScriptElement[] children= new IJavaScriptElement[vChildren.size()];
 		vChildren.toArray(children);
 		info.setChildren(children);
 		return true;
@@ -175,7 +175,7 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 	/**
 	 * Returns an array of non-java resources contained in the receiver.
 	 */
-	public Object[] getNonJavaResources() throws JavaModelException {
+	public Object[] getNonJavaScriptResources() throws JavaScriptModelException {
 		// We want to show non java resources of the default package at the root (see PR #1G58NB8)
 		Object[] defaultPkgResources =  ((JarPackageFragment) getPackageFragment(CharOperation.NO_STRINGS)).storedNonJavaResources();
 		int length = defaultPkgResources.length;
@@ -215,9 +215,9 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 
 
 	/**
-	 * @see IJavaElement
+	 * @see IJavaScriptElement
 	 */
-	public IResource getUnderlyingResource() throws JavaModelException {
+	public IResource getUnderlyingResource() throws JavaScriptModelException {
 		if (isExternal()) {
 			if (!exists()) throw newNotPresentException();
 			return null;
@@ -240,9 +240,9 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 			existingLength--;
 		}
 		JavaModelManager manager = JavaModelManager.getJavaModelManager();
-		IJavaProject project = getJavaProject();
+		IJavaScriptProject project = getJavaScriptProject();
 		for (int i = existingLength; i < length; i++) {
-			if (Util.isValidFolderNameForPackage(pkgName[i], project.getOption(JavaCore.COMPILER_SOURCE, true), project.getOption(JavaCore.COMPILER_COMPLIANCE, true))) {
+			if (Util.isValidFolderNameForPackage(pkgName[i], project.getOption(JavaScriptCore.COMPILER_SOURCE, true), project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true))) {
 				System.arraycopy(existing, 0, existing = new String[i+1], 0, i);
 				existing[i] = manager.intern(pkgName[i]);
 				packageFragToTypes.put(existing, new ArrayList[] { EMPTY_LIST, EMPTY_LIST });

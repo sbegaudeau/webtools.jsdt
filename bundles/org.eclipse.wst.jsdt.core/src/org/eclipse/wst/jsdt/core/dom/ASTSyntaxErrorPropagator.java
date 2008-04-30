@@ -92,7 +92,7 @@ class ASTSyntaxErrorPropagator extends ASTVisitor {
 	/*
 	 * Method declared on ASTVisitor.
 	 */
-	public boolean visit(MethodDeclaration node) {
+	public boolean visit(FunctionDeclaration node) {
 		return checkAndTagAsMalformed(node);
 	}
 
@@ -113,7 +113,7 @@ class ASTSyntaxErrorPropagator extends ASTVisitor {
 	/*
 	 * Method declared on ASTVisitor.
 	 */
-	public boolean visit(CompilationUnit node) {
+	public boolean visit(JavaScriptUnit node) {
 		return checkAndTagAsMalformed(node);
 	}
 

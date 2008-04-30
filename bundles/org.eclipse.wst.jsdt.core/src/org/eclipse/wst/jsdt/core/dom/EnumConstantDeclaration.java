@@ -154,7 +154,7 @@ public class EnumConstantDeclaration extends BodyDeclaration {
 			if (get) {
 				return getJavadoc();
 			} else {
-				setJavadoc((Javadoc) child);
+				setJavadoc((JSdoc) child);
 				return null;
 			}
 		}
@@ -228,7 +228,7 @@ public class EnumConstantDeclaration extends BodyDeclaration {
 		EnumConstantDeclaration result = new EnumConstantDeclaration(target);
 		result.setSourceRange(this.getStartPosition(), this.getLength());
 		result.setJavadoc(
-			(Javadoc) ASTNode.copySubtree(target, getJavadoc()));
+			(JSdoc) ASTNode.copySubtree(target, getJavadoc()));
 		result.modifiers().addAll(ASTNode.copySubtrees(target, modifiers()));
 		result.setName((SimpleName) getName().clone(target));
 		result.arguments().addAll(ASTNode.copySubtrees(target, arguments()));
@@ -348,7 +348,7 @@ public class EnumConstantDeclaration extends BodyDeclaration {
 	 * @return the constructor binding, or <code>null</code> if the binding
 	 *    cannot be resolved
 	 */
-	public IMethodBinding resolveConstructorBinding() {
+	public IFunctionBinding resolveConstructorBinding() {
 		return this.ast.getBindingResolver().resolveConstructor(this);
 	}
 

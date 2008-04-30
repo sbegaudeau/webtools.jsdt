@@ -17,7 +17,7 @@ import java.net.URL;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 /**
  * Abstract implementation of a VM install.
  * <p>
@@ -328,9 +328,9 @@ public abstract class AbstractVMInstall implements IVMInstall, IVMInstall2, IVMI
 //				boolean hasXMLSupport = false;
 //				if (javaVersion != null) {
 //					hasXMLSupport = true;
-//					if (javaVersion.startsWith(JavaCore.VERSION_1_1) ||
-//							javaVersion.startsWith(JavaCore.VERSION_1_2) ||
-//							javaVersion.startsWith(JavaCore.VERSION_1_3)) {
+//					if (javaVersion.startsWith(JavaScriptCore.VERSION_1_1) ||
+//							javaVersion.startsWith(JavaScriptCore.VERSION_1_2) ||
+//							javaVersion.startsWith(JavaScriptCore.VERSION_1_3)) {
 //						hasXMLSupport = false;
 //					}
 //				}
@@ -461,7 +461,7 @@ public abstract class AbstractVMInstall implements IVMInstall, IVMInstall2, IVMI
 	 * @since 3.2
 	 */
 	protected void abort(String message, Throwable exception, int code) throws CoreException {
-		throw new CoreException(new Status(IStatus.ERROR, JavaCore.PLUGIN_ID, code, message, exception));
+		throw new CoreException(new Status(IStatus.ERROR, JavaScriptCore.PLUGIN_ID, code, message, exception));
 	}	
     
 }

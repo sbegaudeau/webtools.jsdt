@@ -52,13 +52,13 @@ import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
@@ -102,7 +102,7 @@ public class BuildPathsBlock {
 	private StatusInfo fOutputFolderStatus;	
 	private StatusInfo fBuildPathStatus;
 
-	private IJavaProject fCurrJProject;
+	private IJavaScriptProject fCurrJProject;
 		
 	//private IPath fOutputLocationPath;
 	
@@ -137,7 +137,7 @@ public class BuildPathsBlock {
 	
 	public BuildPathsBlock(IRunnableContext runnableContext, IStatusChangeListener context, int pageToShow, boolean useNewPage, IWorkbenchPreferenceContainer pageContainer) {
 		fPageContainer= pageContainer;
-//		fWorkspaceRoot= JavaPlugin.getWorkspace().getRoot();
+//		fWorkspaceRoot= JavaScriptPlugin.getWorkspace().getRoot();
 		fContext= context;
 		fUseNewPage= useNewPage;
 		
@@ -244,7 +244,7 @@ public class BuildPathsBlock {
         item.setData(fSourceContainerPage);     
         item.setControl(fSourceContainerPage.getControl(folder));
 		
-		IWorkbench workbench= JavaPlugin.getDefault().getWorkbench();	
+		IWorkbench workbench= JavaScriptPlugin.getDefault().getWorkbench();	
 		Image projectImage= workbench.getSharedImages().getImage(IDE.SharedImages.IMG_OBJ_PROJECT);
 		
 		fProjectsPage= new ProjectsWorkbookPage(fClassPathList, fPageContainer);		
@@ -284,7 +284,7 @@ public class BuildPathsBlock {
 //		if (fSWTWidget != null) {
 //			return fSWTWidget.getShell();
 //		}
-//		return JavaPlugin.getActiveWorkbenchShell();
+//		return JavaScriptPlugin.getActiveWorkbenchShell();
 //	}
 	
 	/**
@@ -298,8 +298,8 @@ public class BuildPathsBlock {
 	 * is passed, jdt default settings are used, or - if the project is an existing Java project - the
 	 * classpath entries of the existing project
 	 */	
-	// public void init(IJavaProject jproject, IPath outputLocation, IClasspathEntry[] classpathEntries) {
-	public void init(IJavaProject jproject,IClasspathEntry[] classpathEntries) {
+	// public void init(IJavaScriptProject jproject, IPath outputLocation, IIncludePathEntry[] classpathEntries) {
+	public void init(IJavaScriptProject jproject,IIncludePathEntry[] classpathEntries) {
 		fCurrJProject= jproject;
 		boolean projectExists= false;
 		List newClassPath= null;
@@ -310,7 +310,7 @@ public class BuildPathsBlock {
 //				outputLocation=  fCurrJProject.readOutputLocation();
 //			}
 			if (classpathEntries == null) {
-				classpathEntries=  fCurrJProject.readRawClasspath();
+				classpathEntries=  fCurrJProject.readRawIncludepath();
 			}
 		}
 ////		if (outputLocation == null) {
@@ -327,7 +327,7 @@ public class BuildPathsBlock {
 		List exportedEntries = new ArrayList();
 		for (int i= 0; i < newClassPath.size(); i++) {
 			CPListElement curr= (CPListElement) newClassPath.get(i);
-			if (curr.isExported() || curr.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+			if (curr.isExported() || curr.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 				exportedEntries.add(curr);
 			}
 		}
@@ -434,10 +434,10 @@ public class BuildPathsBlock {
 		fUserSettingsTimeStamp= getEncodedSettings();
 	}
 
-	private ArrayList getExistingEntries(IClasspathEntry[] classpathEntries) {
+	private ArrayList getExistingEntries(IIncludePathEntry[] classpathEntries) {
 		ArrayList newClassPath= new ArrayList();
 		for (int i= 0; i < classpathEntries.length; i++) {
-			IClasspathEntry curr= classpathEntries[i];
+			IIncludePathEntry curr= classpathEntries[i];
 			newClassPath.add(CPListElement.createFromExisting(curr, fCurrJProject));
 		}
 		return newClassPath;
@@ -449,7 +449,7 @@ public class BuildPathsBlock {
 	 * @return Returns the Java project. Can return <code>null<code> if the page has not
 	 * been initialized.
 	 */
-	public IJavaProject getJavaProject() {
+	public IJavaScriptProject getJavaProject() {
 		return fCurrJProject;
 	}
 	
@@ -464,10 +464,10 @@ public class BuildPathsBlock {
 	/**
 	 *  @return Returns the current class path (raw). Note that the entries returned must not be valid.
 	 */	
-	public IClasspathEntry[] getRawClassPath() {
+	public IIncludePathEntry[] getRawClassPath() {
 		List elements=  fClassPathList.getElements();
 		int nElements= elements.size();
-		IClasspathEntry[] entries= new IClasspathEntry[elements.size()];
+		IIncludePathEntry[] entries= new IIncludePathEntry[elements.size()];
 
 		for (int i= 0; i < nElements; i++) {
 			CPListElement currElement= (CPListElement) elements.get(i);
@@ -482,7 +482,7 @@ public class BuildPathsBlock {
 	
 	
 	// -------- evaluate default settings --------
-	private List getDefaultClassPath(IJavaProject jproj) {
+	private List getDefaultClassPath(IJavaScriptProject jproj) {
 		List list= new ArrayList();
 		IResource srcFolder;
 		IPreferenceStore store= PreferenceConstants.getPreferenceStore();
@@ -493,21 +493,21 @@ public class BuildPathsBlock {
 			srcFolder= jproj.getProject();
 		}
 
-		list.add(new CPListElement(jproj, IClasspathEntry.CPE_SOURCE, srcFolder.getFullPath(), srcFolder));
+		list.add(new CPListElement(jproj, IIncludePathEntry.CPE_SOURCE, srcFolder.getFullPath(), srcFolder));
 
-		IClasspathEntry[] jreEntries= PreferenceConstants.getDefaultJRELibrary();
+		IIncludePathEntry[] jreEntries= PreferenceConstants.getDefaultJRELibrary();
 		list.addAll(getExistingEntries(jreEntries));
 		return list;
 	}	
-//	private List getDefaultClassPath(IJavaProject jproj) {
+//	private List getDefaultClassPath(IJavaScriptProject jproj) {
 //		List list= new ArrayList();
 //
 //
 //		
 //
-//		IClasspathEntry[] jreEntries= PreferenceConstants.getDefaultJRELibrary();
+//		IIncludePathEntry[] jreEntries= PreferenceConstants.getDefaultJRELibrary();
 //		list.addAll(getExistingEntries(jreEntries));
-//		CPListElement projectSourceRoot = new CPListElement(jproj, IClasspathEntry.CPE_SOURCE,jproj.getProject().getFullPath(),jproj.getProject());
+//		CPListElement projectSourceRoot = new CPListElement(jproj, IIncludePathEntry.CPE_SOURCE,jproj.getProject().getFullPath(),jproj.getProject());
 //				
 //		
 //		projectSourceRoot.setAttribute(CPListElement.EXCLUSION, (new IPath[] {new Path("*/*/**")}));
@@ -519,7 +519,7 @@ public class BuildPathsBlock {
 //	}
 //	
 	
-	public static LibrarySuperType getProjectSuperType(IJavaProject jproj) {
+	public static LibrarySuperType getProjectSuperType(IJavaScriptProject jproj) {
 		if(jproj==null) {
 			return getDefaultSuperType(jproj);
 		}
@@ -556,14 +556,14 @@ public class BuildPathsBlock {
 //		}
 	}	
 	
-	public static LibrarySuperType getDefaultSuperType(IJavaProject jproj) {
+	public static LibrarySuperType getDefaultSuperType(IJavaScriptProject jproj) {
 		IPath JREPath = new Path(JavaRuntime.DEFAULT_SUPER_TYPE_LIBRARY);
 		String superTypeName = JavaRuntime.DEFAULT_SUPER_TYPE;
 		
 		return new LibrarySuperType(JREPath, jproj, superTypeName);
 	}	
 	
-	public static void setProjectSuperType(IJavaProject jproj, LibrarySuperType superType) {
+	public static void setProjectSuperType(IJavaScriptProject jproj, LibrarySuperType superType) {
 		
 		JavaProject javaProject = ((JavaProject)jproj);
 		javaProject.setCommonSuperType(superType);	
@@ -696,12 +696,12 @@ public class BuildPathsBlock {
 		CPListElement entryMissing= null;
 		CPListElement entryDeprecated= null;
 		int nEntriesMissing= 0;
-		IClasspathEntry[] entries= new IClasspathEntry[elements.size()];
+		IIncludePathEntry[] entries= new IIncludePathEntry[elements.size()];
 
 		for (int i= elements.size()-1 ; i >= 0 ; i--) {
 			CPListElement currElement= (CPListElement)elements.get(i);
 			boolean isChecked= fClassPathList.isChecked(currElement);
-			if (currElement.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+			if (currElement.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 				if (!isChecked) {
 					fClassPathList.setCheckedWithoutUpdate(currElement, true);
 				}
@@ -782,14 +782,14 @@ public class BuildPathsBlock {
 		
 	private void updateBuildPathStatus() {
 		List elements= fClassPathList.getElements();
-		IClasspathEntry[] entries= new IClasspathEntry[elements.size()];
+		IIncludePathEntry[] entries= new IIncludePathEntry[elements.size()];
 	
 		for (int i= elements.size()-1 ; i >= 0 ; i--) {
 			CPListElement currElement= (CPListElement)elements.get(i);
 			entries[i]= currElement.getClasspathEntry();
 		}
 		
-		//IJavaModelStatus status= JavaConventions.validateClasspath(fCurrJProject, entries);
+		//IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(fCurrJProject, entries);
 //		if (!status.isOK()) {
 //			fBuildPathStatus.setError(status.getMessage());
 //			return;
@@ -831,12 +831,12 @@ public class BuildPathsBlock {
 		if (monitor != null && monitor.isCanceled()) {
 			throw new OperationCanceledException();
 		}
-		if (!project.hasNature(JavaCore.NATURE_ID)) {
+		if (!project.hasNature(JavaScriptCore.NATURE_ID)) {
 			IProjectDescription description = project.getDescription();
 			String[] prevNatures= description.getNatureIds();
 			String[] newNatures= new String[prevNatures.length + 1];
 			System.arraycopy(prevNatures, 0, newNatures, 0, prevNatures.length);
-			newNatures[prevNatures.length]= JavaCore.NATURE_ID;
+			newNatures[prevNatures.length]= JavaScriptCore.NATURE_ID;
 			description.setNatureIds(newNatures);
 			project.setDescription(description, monitor);
 		} else {
@@ -867,8 +867,8 @@ public class BuildPathsBlock {
 	 * Creates the Java project and sets the configured build path and output location.
 	 * If the project already exists only build paths are updated.
 	 */
-	//public static void flush(List classPathEntries, IPath outputLocation, IJavaProject javaProject, IProgressMonitor monitor) throws CoreException, OperationCanceledException {		
-	public static void flush(List classPathEntries,  IJavaProject javaProject, LibrarySuperType superType, IProgressMonitor monitor) throws CoreException, OperationCanceledException {
+	//public static void flush(List classPathEntries, IPath outputLocation, IJavaScriptProject javaProject, IProgressMonitor monitor) throws CoreException, OperationCanceledException {		
+	public static void flush(List classPathEntries,  IJavaScriptProject javaProject, LibrarySuperType superType, IProgressMonitor monitor) throws CoreException, OperationCanceledException {
 		if(superType==null) {
 			System.out.println("---------------------------------- NULL SUPER TYPE -------------------------"); //$NON-NLS-1$
 		}
@@ -892,7 +892,7 @@ public class BuildPathsBlock {
 			
 //			if (oldOutputLocation.equals(projPath) && !outputLocation.equals(projPath)) {
 //				if (BuildPathsBlock.hasClassfiles(project)) {
-//					if (BuildPathsBlock.getRemoveOldBinariesQuery(JavaPlugin.getActiveWorkbenchShell()).doQuery(projPath)) {
+//					if (BuildPathsBlock.getRemoveOldBinariesQuery(JavaScriptPlugin.getActiveWorkbenchShell()).doQuery(projPath)) {
 //						BuildPathsBlock.removeOldClassfiles(project);
 //					}
 //				}
@@ -900,7 +900,7 @@ public class BuildPathsBlock {
 			
 			monitor.worked(1);
 			
-			IWorkspaceRoot fWorkspaceRoot= JavaPlugin.getWorkspace().getRoot();
+			IWorkspaceRoot fWorkspaceRoot= JavaScriptPlugin.getWorkspace().getRoot();
 			
 			//create and set the output path first
 //			if (!fWorkspaceRoot.exists(outputLocation)) {
@@ -913,11 +913,11 @@ public class BuildPathsBlock {
 			if (monitor.isCanceled()) {
 				throw new OperationCanceledException();
 			}
-			//classPathEntries.add(JavaCore.newSourceEntry(projPath));
+			//classPathEntries.add(JavaScriptCore.newSourceEntry(projPath));
 			
 			//int nEntries= classPathEntries.size();
 			
-			IClasspathEntry[] classpath= new IClasspathEntry[classPathEntries.size()];
+			IIncludePathEntry[] classpath= new IIncludePathEntry[classPathEntries.size()];
 			
 			//if(classPathEntries!=null && classPathEntries.size()>0) classpath[0] = ((CPListElement)classPathEntries.get(0)).getClasspathEntry();
 			
@@ -925,12 +925,12 @@ public class BuildPathsBlock {
 //				if(classPathEntries.get(i) instanceof CPListElement) {
 //					classpath[i] = ((CPListElement)classPathEntries.get(i)).getClasspathEntry();
 //				}else {
-//					classpath[i]= (IClasspathEntry)classPathEntries.get(i);
+//					classpath[i]= (IIncludePathEntry)classPathEntries.get(i);
 //				}
 //			}
 			
 			
-			//IClasspathEntry[] classpath= new IClasspathEntry[nEntries];
+			//IIncludePathEntry[] classpath= new IIncludePathEntry[nEntries];
 			int i= 0;
 			
 			for (Iterator iter= classPathEntries.iterator(); iter.hasNext();) {
@@ -947,7 +947,7 @@ public class BuildPathsBlock {
 				}
 				
 				//3 ticks
-				if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+				if (entry.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 					IPath folderOutput= (IPath) entry.getAttribute(CPListElement.OUTPUT);
 					if (folderOutput != null && folderOutput.segmentCount() > 1) {
 						IFolder folder= fWorkspaceRoot.getFolder(folderOutput);
@@ -1017,7 +1017,7 @@ public class BuildPathsBlock {
 
 			//javaProject.setRawClasspath(classpath, outputLocation, new SubProgressMonitor(monitor, 2));
 			
-			javaProject.setRawClasspath(classpath, projPath, new SubProgressMonitor(monitor, 2));
+			javaProject.setRawIncludepath(classpath, projPath, new SubProgressMonitor(monitor, 2));
 		} finally {
 			monitor.done();
 		}
@@ -1056,7 +1056,7 @@ public class BuildPathsBlock {
 				final int[] res= new int[] { 1 };
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
-						Shell sh= shell != null ? shell : JavaPlugin.getActiveWorkbenchShell();
+						Shell sh= shell != null ? shell : JavaScriptPlugin.getActiveWorkbenchShell();
 						String title= NewWizardMessages.BuildPathsBlock_RemoveBinariesDialog_title; 
 						String message;
 						if (removeFolder) {
@@ -1139,19 +1139,19 @@ public class BuildPathsBlock {
 	
 	private int getPageIndex(int entryKind) {
 		switch (entryKind) {
-			case IClasspathEntry.CPE_CONTAINER:
-			case IClasspathEntry.CPE_LIBRARY:
-			case IClasspathEntry.CPE_VARIABLE:
+			case IIncludePathEntry.CPE_CONTAINER:
+			case IIncludePathEntry.CPE_LIBRARY:
+			case IIncludePathEntry.CPE_VARIABLE:
 				return 2;
-			case IClasspathEntry.CPE_PROJECT:
+			case IIncludePathEntry.CPE_PROJECT:
 				return 1;
-			case IClasspathEntry.CPE_SOURCE:
+			case IIncludePathEntry.CPE_SOURCE:
 				return 0;
 		}
 		return 0;
 	}
 	
-	private CPListElement findElement(IClasspathEntry entry) {
+	private CPListElement findElement(IIncludePathEntry entry) {
 		for (int i= 0, len= fClassPathList.getSize(); i < len; i++) {
 			CPListElement curr= (CPListElement) fClassPathList.getElement(i);
 			if (curr.getEntryKind() == entry.getEntryKind() && curr.getPath().equals(entry.getPath())) {
@@ -1161,7 +1161,7 @@ public class BuildPathsBlock {
 		return null;
 	}
 	
-	public void setElementToReveal(IClasspathEntry entry, String attributeKey) {
+	public void setElementToReveal(IIncludePathEntry entry, String attributeKey) {
 		int pageIndex= getPageIndex(entry.getEntryKind());
 		if (fTabFolder == null) {
 			fPageIndex= pageIndex;
@@ -1198,7 +1198,7 @@ public class BuildPathsBlock {
 	}
 	
 	
-	public void addElement(IClasspathEntry entry) {
+	public void addElement(IIncludePathEntry entry) {
 		int pageIndex= getPageIndex(entry.getEntryKind());
 		if (fTabFolder == null) {
 			fPageIndex= pageIndex;

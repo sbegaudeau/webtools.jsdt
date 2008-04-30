@@ -16,15 +16,15 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
@@ -59,16 +59,16 @@ public class CreatePackageFragmentOperation extends JavaModelOperation {
  * If the folders already exist, this operation has no effect.
  */
 public CreatePackageFragmentOperation(IPackageFragmentRoot parentElement, String packageName, boolean force) {
-	super(null, new IJavaElement[]{parentElement}, force);
+	super(null, new IJavaScriptElement[]{parentElement}, force);
 	this.pkgName = packageName == null ? null : Util.getTrimmedSimpleNames(packageName);
 }
 /**
  * Execute the operation - creates the new package fragment and any
  * side effect package fragments.
  *
- * @exception JavaModelException if the operation is unable to complete
+ * @exception JavaScriptModelException if the operation is unable to complete
  */
-protected void executeOperation() throws JavaModelException {
+protected void executeOperation() throws JavaScriptModelException {
 	try {
 		JavaElementDelta delta = null;
 		PackageFragmentRoot root = (PackageFragmentRoot) getParentElement();
@@ -100,7 +100,7 @@ protected void executeOperation() throws JavaModelException {
 			worked(1);
 		}
 		if (results.size() > 0) {
-			this.resultElements = new IJavaElement[results.size()];
+			this.resultElements = new IJavaScriptElement[results.size()];
 			results.toArray(this.resultElements);
 			if (delta != null) {
 				addDelta(delta);
@@ -121,23 +121,23 @@ protected void executeOperation() throws JavaModelException {
  * 		with the same name as a folder in the package fragment's hierarchy.
  *	<li>ELEMENT_NOT_PRESENT - the underlying resource for the root is missing
  * </ul>
- * @see IJavaModelStatus
- * @see JavaConventions
+ * @see IJavaScriptModelStatus
+ * @see JavaScriptConventions
  */
-public IJavaModelStatus verify() {
-	IJavaElement parentElement = getParentElement();
+public IJavaScriptModelStatus verify() {
+	IJavaScriptElement parentElement = getParentElement();
 	if (parentElement == null) {
-		return new JavaModelStatus(IJavaModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
+		return new JavaModelStatus(IJavaScriptModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
 	}
 
 	String packageName = this.pkgName == null ? null : Util.concatWith(this.pkgName, '.');
-	IJavaProject project = parentElement.getJavaProject();
-	if (this.pkgName == null || (this.pkgName.length > 0 && JavaConventions.validatePackageName(packageName, project.getOption(JavaCore.COMPILER_SOURCE, true), project.getOption(JavaCore.COMPILER_COMPLIANCE, true)).getSeverity() == IStatus.ERROR)) {
-		return new JavaModelStatus(IJavaModelStatusConstants.INVALID_NAME, packageName);
+	IJavaScriptProject project = parentElement.getJavaScriptProject();
+	if (this.pkgName == null || (this.pkgName.length > 0 && JavaScriptConventions.validatePackageName(packageName, project.getOption(JavaScriptCore.COMPILER_SOURCE, true), project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true)).getSeverity() == IStatus.ERROR)) {
+		return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_NAME, packageName);
 	}
 	IPackageFragmentRoot root = (IPackageFragmentRoot) getParentElement();
 	if (root.isReadOnly()) {
-		return new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, root);
+		return new JavaModelStatus(IJavaScriptModelStatusConstants.READ_ONLY, root);
 	}
 	IContainer parentFolder = (IContainer) root.getResource();
 	int i;
@@ -146,7 +146,7 @@ public IJavaModelStatus verify() {
 		if (subFolder != null) {
 			if (subFolder.getType() != IResource.FOLDER) {
 				return new JavaModelStatus(
-					IJavaModelStatusConstants.NAME_COLLISION,
+					IJavaScriptModelStatusConstants.NAME_COLLISION,
 					Messages.bind(Messages.status_nameCollision, subFolder.getFullPath().toString()));
 			}
 			parentFolder = (IContainer) subFolder;

@@ -12,8 +12,8 @@ package org.eclipse.wst.jsdt.internal.ui.compare;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.team.ui.history.ElementLocalHistoryPageSource;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 
 public class JavaElementHistoryPageSource extends ElementLocalHistoryPageSource {
@@ -27,25 +27,25 @@ public class JavaElementHistoryPageSource extends ElementLocalHistoryPageSource 
 	}
 	
 	/**
-	 * Returns true if the given IJavaElement maps to a JavaNode.
+	 * Returns true if the given IJavaScriptElement maps to a JavaNode.
 	 * The JavaHistoryAction uses this function to determine whether
 	 * a selected Java element can be replaced by some piece of
 	 * code from the local history.
 	 */
-	public static boolean hasEdition(IJavaElement je) {
+	public static boolean hasEdition(IJavaScriptElement je) {
 
 		if (je instanceof IMember && ((IMember)je).isBinary())
 			return false;
 			
 		switch (je.getElementType()) {
-		case IJavaElement.COMPILATION_UNIT:
-		case IJavaElement.TYPE:
-		case IJavaElement.FIELD:
-		case IJavaElement.METHOD:
-		case IJavaElement.INITIALIZER:
-		case IJavaElement.PACKAGE_DECLARATION:
-		case IJavaElement.IMPORT_CONTAINER:
-		case IJavaElement.IMPORT_DECLARATION:
+		case IJavaScriptElement.JAVASCRIPT_UNIT:
+		case IJavaScriptElement.TYPE:
+		case IJavaScriptElement.FIELD:
+		case IJavaScriptElement.METHOD:
+		case IJavaScriptElement.INITIALIZER:
+		case IJavaScriptElement.PACKAGE_DECLARATION:
+		case IJavaScriptElement.IMPORT_CONTAINER:
+		case IJavaScriptElement.IMPORT_DECLARATION:
 			return true;
 		}
 		return false;
@@ -56,11 +56,11 @@ public class JavaElementHistoryPageSource extends ElementLocalHistoryPageSource 
 	 */
 	public IFile getFile(Object input) {
 		// extract CU from input
-		ICompilationUnit cu= null;
-		if (input instanceof ICompilationUnit)
-			cu= (ICompilationUnit) input;
+		IJavaScriptUnit cu= null;
+		if (input instanceof IJavaScriptUnit)
+			cu= (IJavaScriptUnit) input;
 		else if (input instanceof IMember)
-			cu= ((IMember)input).getCompilationUnit();
+			cu= ((IMember)input).getJavaScriptUnit();
 			
 		if (cu == null || !cu.exists())
 			return null;

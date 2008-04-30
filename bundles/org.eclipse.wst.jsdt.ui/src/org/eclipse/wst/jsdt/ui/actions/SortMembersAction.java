@@ -24,11 +24,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.SortMembersOperation;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
@@ -42,7 +42,7 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.IJavaAnnotation;
 import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
 import org.eclipse.wst.jsdt.internal.ui.util.ElementValidator;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * Sorts the members of a compilation unit with the sort order as specified in
@@ -52,7 +52,7 @@ import org.eclipse.wst.jsdt.ui.JavaUI;
  * is unsaved, so the user can decide if the changes are acceptable.
  * <p>
  * The action is applicable to structured selections containing a single
- * <code>ICompilationUnit</code> or top level <code>IType</code> in a
+ * <code>IJavaScriptUnit</code> or top level <code>IType</code> in a
  * compilation unit.
  * 
  * <p>
@@ -113,11 +113,11 @@ public class SortMembersAction extends SelectionDispatchAction {
 	public void run(IStructuredSelection selection) {
 		Shell shell= getShell();
 		try {
-			ICompilationUnit cu= getSelectedCompilationUnit(selection);
+			IJavaScriptUnit cu= getSelectedCompilationUnit(selection);
 			if (cu == null) {
 				return;
 			}
-			IJavaElement[] types= cu.getChildren();
+			IJavaScriptElement[] types= cu.getChildren();
 			if (!hasMembersToSort(types)) {
 				return;
 			}
@@ -135,7 +135,7 @@ public class SortMembersAction extends SelectionDispatchAction {
 			}
 			
 			// open an editor and work on a working copy
-			IEditorPart editor= JavaUI.openInEditor(cu);
+			IEditorPart editor= JavaScriptUI.openInEditor(cu);
 			if (editor != null) {
 				run(shell, cu, editor, dialog.isNotSortingFieldsEnabled());
 			}
@@ -144,12 +144,12 @@ public class SortMembersAction extends SelectionDispatchAction {
 		}			
 	}
 	
-	private boolean hasMembersToSort(IJavaElement[] members) throws JavaModelException {
+	private boolean hasMembersToSort(IJavaScriptElement[] members) throws JavaScriptModelException {
 		if (members.length > 1) {
 			return true;
 		}
 		if (members.length == 1) {
-			IJavaElement elem= members[0];
+			IJavaScriptElement elem= members[0];
 			if (elem instanceof IParent) {
 				return hasMembersToSort(((IParent) elem).getChildren());
 			}
@@ -170,8 +170,8 @@ public class SortMembersAction extends SelectionDispatchAction {
 	 */
 	public void run(ITextSelection selection) {
 		Shell shell= getShell();
-		IJavaElement input= SelectionConverter.getInput(fEditor);
-		if (input instanceof ICompilationUnit) {
+		IJavaScriptElement input= SelectionConverter.getInput(fEditor);
+		if (input instanceof IJavaScriptUnit) {
 			if (!ActionUtil.isEditable(fEditor)) {
 				return;
 			}
@@ -182,7 +182,7 @@ public class SortMembersAction extends SelectionDispatchAction {
 			if (!ElementValidator.check(input, getShell(), getDialogTitle(), true)) {
 				return;
 			}
-			run(shell, (ICompilationUnit) input, fEditor, dialog.isNotSortingFieldsEnabled());
+			run(shell, (IJavaScriptUnit) input, fEditor, dialog.isNotSortingFieldsEnabled());
 		} else {
 			MessageDialog.openInformation(shell, getDialogTitle(), ActionMessages.SortMembersAction_not_applicable); 
 		}
@@ -191,7 +191,7 @@ public class SortMembersAction extends SelectionDispatchAction {
 	//---- Helpers -------------------------------------------------------------------
 	
 	private boolean containsRelevantMarkers(IEditorPart editor) {
-		IAnnotationModel model= JavaUI.getDocumentProvider().getAnnotationModel(editor.getEditorInput());
+		IAnnotationModel model= JavaScriptUI.getDocumentProvider().getAnnotationModel(editor.getEditorInput());
 		Iterator iterator= model.getAnnotationIterator();
 		while (iterator.hasNext()) {
 			Object element= iterator.next();
@@ -204,7 +204,7 @@ public class SortMembersAction extends SelectionDispatchAction {
 		return false;
 	}
 	
-	private void run(Shell shell, ICompilationUnit cu, IEditorPart editor, boolean isNotSortFields) {
+	private void run(Shell shell, IJavaScriptUnit cu, IEditorPart editor, boolean isNotSortFields) {
 		if (containsRelevantMarkers(editor)) {
 			int returnCode= OptionalMessageDialog.open(ID_OPTIONAL_DIALOG, 
 					getShell(), 
@@ -232,15 +232,15 @@ public class SortMembersAction extends SelectionDispatchAction {
 	}
 
 		
-	private ICompilationUnit getSelectedCompilationUnit(IStructuredSelection selection) {
+	private IJavaScriptUnit getSelectedCompilationUnit(IStructuredSelection selection) {
 		if (selection.size() == 1) {
 			Object element= selection.getFirstElement();
-			if (element instanceof ICompilationUnit) {
-				return (ICompilationUnit) element;
+			if (element instanceof IJavaScriptUnit) {
+				return (IJavaScriptUnit) element;
 			} else if (element instanceof IType) {
 				IType type= (IType) element;
-				if (type.getParent() instanceof ICompilationUnit) { // only top level types
-					return type.getCompilationUnit();
+				if (type.getParent() instanceof IJavaScriptUnit) { // only top level types
+					return type.getJavaScriptUnit();
 				}
 			}
 		}

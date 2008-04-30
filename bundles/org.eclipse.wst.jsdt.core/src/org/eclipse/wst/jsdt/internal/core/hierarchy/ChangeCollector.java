@@ -15,14 +15,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportContainer;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.SimpleDelta;
 
@@ -45,24 +45,24 @@ public class ChangeCollector {
 	/*
 	 * Adds the children of the given delta to the list of changes.
 	 */
-	private void addAffectedChildren(IJavaElementDelta delta) throws JavaModelException {
-		IJavaElementDelta[] children = delta.getAffectedChildren();
+	private void addAffectedChildren(IJavaScriptElementDelta delta) throws JavaScriptModelException {
+		IJavaScriptElementDelta[] children = delta.getAffectedChildren();
 		for (int i = 0, length = children.length; i < length; i++) {
-			IJavaElementDelta child = children[i];
-			IJavaElement childElement = child.getElement();
+			IJavaScriptElementDelta child = children[i];
+			IJavaScriptElement childElement = child.getElement();
 			switch (childElement.getElementType()) {
-				case IJavaElement.IMPORT_CONTAINER:
+				case IJavaScriptElement.IMPORT_CONTAINER:
 					addChange((IImportContainer)childElement, child);
 					break;
-				case IJavaElement.IMPORT_DECLARATION:
+				case IJavaScriptElement.IMPORT_DECLARATION:
 					addChange((IImportDeclaration)childElement, child);
 					break;
-				case IJavaElement.TYPE:
+				case IJavaScriptElement.TYPE:
 					addChange((IType)childElement, child);
 					break;
-				case IJavaElement.INITIALIZER:
-				case IJavaElement.FIELD:
-				case IJavaElement.METHOD:
+				case IJavaScriptElement.INITIALIZER:
+				case IJavaScriptElement.FIELD:
+				case IJavaScriptElement.METHOD:
 					addChange((IMember)childElement, child);
 					break;
 			}
@@ -72,10 +72,10 @@ public class ChangeCollector {
 	/*
 	 * Adds the given delta on a compilation unit to the list of changes.
 	 */
-	public void addChange(ICompilationUnit cu, IJavaElementDelta newDelta) throws JavaModelException {
+	public void addChange(IJavaScriptUnit cu, IJavaScriptElementDelta newDelta) throws JavaScriptModelException {
 		int newKind = newDelta.getKind();
 		switch (newKind) {
-			case IJavaElementDelta.ADDED:
+			case IJavaScriptElementDelta.ADDED:
 				ArrayList allTypes = new ArrayList();
 				getAllTypesFromElement(cu, allTypes);
 				for (int i = 0, length = allTypes.size(); i < length; i++) {
@@ -83,7 +83,7 @@ public class ChangeCollector {
 					addTypeAddition(type, (SimpleDelta)this.changes.get(type));
 				}
 				break;
-			case IJavaElementDelta.REMOVED:
+			case IJavaScriptElementDelta.REMOVED:
 				allTypes = new ArrayList();
 				getAllTypesFromHierarchy((JavaElement)cu, allTypes);
 				for (int i = 0, length = allTypes.size(); i < length; i++) {
@@ -91,29 +91,29 @@ public class ChangeCollector {
 					addTypeRemoval(type, (SimpleDelta)this.changes.get(type));
 				}
 				break;
-			case IJavaElementDelta.CHANGED:
+			case IJavaScriptElementDelta.CHANGED:
 				addAffectedChildren(newDelta);
 				break;
 		}
 	}
 
-	private void addChange(IImportContainer importContainer, IJavaElementDelta newDelta) throws JavaModelException {
+	private void addChange(IImportContainer importContainer, IJavaScriptElementDelta newDelta) throws JavaScriptModelException {
 		int newKind = newDelta.getKind();
-		if (newKind == IJavaElementDelta.CHANGED) {
+		if (newKind == IJavaScriptElementDelta.CHANGED) {
 			addAffectedChildren(newDelta);
 			return;
 		}
 		SimpleDelta existingDelta = (SimpleDelta)this.changes.get(importContainer);
 		if (existingDelta != null) {
 			switch (newKind) {
-				case IJavaElementDelta.ADDED:
-					if (existingDelta.getKind() == IJavaElementDelta.REMOVED) {
+				case IJavaScriptElementDelta.ADDED:
+					if (existingDelta.getKind() == IJavaScriptElementDelta.REMOVED) {
 						// REMOVED then ADDED
 						this.changes.remove(importContainer);
 					}
 					break;
-				case IJavaElementDelta.REMOVED:
-					if (existingDelta.getKind() == IJavaElementDelta.ADDED) {
+				case IJavaScriptElementDelta.REMOVED:
+					if (existingDelta.getKind() == IJavaScriptElementDelta.ADDED) {
 						// ADDED then REMOVED
 						this.changes.remove(importContainer);
 					}
@@ -123,10 +123,10 @@ public class ChangeCollector {
 		} else {
 			SimpleDelta delta = new SimpleDelta();
 			switch (newKind) {
-				case IJavaElementDelta.ADDED:
+				case IJavaScriptElementDelta.ADDED:
 					delta.added();
 					break;
-				case IJavaElementDelta.REMOVED:
+				case IJavaScriptElementDelta.REMOVED:
 					delta.removed();
 					break;
 			}
@@ -134,19 +134,19 @@ public class ChangeCollector {
 		}
 	}
 
-	private void addChange(IImportDeclaration importDecl, IJavaElementDelta newDelta) {
+	private void addChange(IImportDeclaration importDecl, IJavaScriptElementDelta newDelta) {
 		SimpleDelta existingDelta = (SimpleDelta)this.changes.get(importDecl);
 		int newKind = newDelta.getKind();
 		if (existingDelta != null) {
 			switch (newKind) {
-				case IJavaElementDelta.ADDED:
-					if (existingDelta.getKind() == IJavaElementDelta.REMOVED) {
+				case IJavaScriptElementDelta.ADDED:
+					if (existingDelta.getKind() == IJavaScriptElementDelta.REMOVED) {
 						// REMOVED then ADDED
 						this.changes.remove(importDecl);
 					}
 					break;
-				case IJavaElementDelta.REMOVED:
-					if (existingDelta.getKind() == IJavaElementDelta.ADDED) {
+				case IJavaScriptElementDelta.REMOVED:
+					if (existingDelta.getKind() == IJavaScriptElementDelta.ADDED) {
 						// ADDED then REMOVED
 						this.changes.remove(importDecl);
 					}
@@ -156,10 +156,10 @@ public class ChangeCollector {
 		} else {
 			SimpleDelta delta = new SimpleDelta();
 			switch (newKind) {
-				case IJavaElementDelta.ADDED:
+				case IJavaScriptElementDelta.ADDED:
 					delta.added();
 					break;
-				case IJavaElementDelta.REMOVED:
+				case IJavaScriptElementDelta.REMOVED:
 					delta.removed();
 					break;
 			}
@@ -170,10 +170,10 @@ public class ChangeCollector {
 	/*
 	 * Adds a change for the given member (a method, a field or an initializer) and the types it defines.
 	 */
-	private void addChange(IMember member, IJavaElementDelta newDelta) throws JavaModelException {
+	private void addChange(IMember member, IJavaScriptElementDelta newDelta) throws JavaScriptModelException {
 		int newKind = newDelta.getKind();
 		switch (newKind) {
-			case IJavaElementDelta.ADDED:
+			case IJavaScriptElementDelta.ADDED:
 				ArrayList allTypes = new ArrayList();
 				getAllTypesFromElement(member, allTypes);
 				for (int i = 0, length = allTypes.size(); i < length; i++) {
@@ -181,7 +181,7 @@ public class ChangeCollector {
 					addTypeAddition(innerType, (SimpleDelta)this.changes.get(innerType));
 				}
 				break;
-			case IJavaElementDelta.REMOVED:
+			case IJavaScriptElementDelta.REMOVED:
 				allTypes = new ArrayList();
 				getAllTypesFromHierarchy((JavaElement)member, allTypes);
 				for (int i = 0, length = allTypes.size(); i < length; i++) {
@@ -189,7 +189,7 @@ public class ChangeCollector {
 					addTypeRemoval(type, (SimpleDelta)this.changes.get(type));
 				}
 				break;
-			case IJavaElementDelta.CHANGED:
+			case IJavaScriptElementDelta.CHANGED:
 				addAffectedChildren(newDelta);
 				break;
 		}
@@ -198,11 +198,11 @@ public class ChangeCollector {
 	/*
 	 * Adds a change for the given type and the types it defines.
 	 */
-	private void addChange(IType type, IJavaElementDelta newDelta) throws JavaModelException {
+	private void addChange(IType type, IJavaScriptElementDelta newDelta) throws JavaScriptModelException {
 		 int newKind = newDelta.getKind();
 		SimpleDelta existingDelta = (SimpleDelta)this.changes.get(type);
 		switch (newKind) {
-			case IJavaElementDelta.ADDED:
+			case IJavaScriptElementDelta.ADDED:
 				addTypeAddition(type, existingDelta);
 				ArrayList allTypes = new ArrayList();
 				getAllTypesFromElement(type, allTypes);
@@ -211,7 +211,7 @@ public class ChangeCollector {
 					addTypeAddition(innerType, (SimpleDelta)this.changes.get(innerType));
 				}
 				break;
-			case IJavaElementDelta.REMOVED:
+			case IJavaScriptElementDelta.REMOVED:
 				addTypeRemoval(type, existingDelta);
 				allTypes = new ArrayList();
 				getAllTypesFromHierarchy((JavaElement)type, allTypes);
@@ -220,17 +220,17 @@ public class ChangeCollector {
 					addTypeRemoval(innerType, (SimpleDelta)this.changes.get(innerType));
 				}
 				break;
-			case IJavaElementDelta.CHANGED:
+			case IJavaScriptElementDelta.CHANGED:
 				addTypeChange(type, newDelta.getFlags(), existingDelta);
 				addAffectedChildren(newDelta);
 				break;
 		}
 	}
 
-	private void addTypeAddition(IType type, SimpleDelta existingDelta) throws JavaModelException {
+	private void addTypeAddition(IType type, SimpleDelta existingDelta) throws JavaScriptModelException {
 		if (existingDelta != null) {
 			switch (existingDelta.getKind()) {
-				case IJavaElementDelta.REMOVED:
+				case IJavaScriptElementDelta.REMOVED:
 					// REMOVED then ADDED
 					boolean hasChange = false;
 					if (hasSuperTypeChange(type)) {
@@ -261,19 +261,19 @@ public class ChangeCollector {
 		}
 	}
 
-	private void addTypeChange(IType type, int newFlags, SimpleDelta existingDelta) throws JavaModelException {
+	private void addTypeChange(IType type, int newFlags, SimpleDelta existingDelta) throws JavaScriptModelException {
 		if (existingDelta != null) {
 			switch (existingDelta.getKind()) {
-				case IJavaElementDelta.CHANGED:
+				case IJavaScriptElementDelta.CHANGED:
 					// CHANGED then CHANGED
 					int existingFlags = existingDelta.getFlags();
 					boolean hasChange = false;
-					if ((existingFlags & IJavaElementDelta.F_SUPER_TYPES) != 0
+					if ((existingFlags & IJavaScriptElementDelta.F_SUPER_TYPES) != 0
 							&& hasSuperTypeChange(type)) {
 						existingDelta.superTypes();
 						hasChange = true;
 					}
-					if ((existingFlags & IJavaElementDelta.F_MODIFIERS) != 0
+					if ((existingFlags & IJavaScriptElementDelta.F_MODIFIERS) != 0
 							&& hasVisibilityChange(type)) {
 						existingDelta.modifiers();
 						hasChange = true;
@@ -289,12 +289,12 @@ public class ChangeCollector {
 		} else {
 			// check whether the type change affects the hierarchy
 			SimpleDelta typeDelta = null;
-			if ((newFlags & IJavaElementDelta.F_SUPER_TYPES) != 0
+			if ((newFlags & IJavaScriptElementDelta.F_SUPER_TYPES) != 0
 					&& this.hierarchy.includesTypeOrSupertype(type)) {
 				typeDelta = new SimpleDelta();
 				typeDelta.superTypes();
 			}
-			if ((newFlags & IJavaElementDelta.F_MODIFIERS) != 0
+			if ((newFlags & IJavaScriptElementDelta.F_MODIFIERS) != 0
 					&& (this.hierarchy.hasSupertype(type.getElementName())
 						|| type.equals(this.hierarchy.focusType))) {
 				if (typeDelta == null) {
@@ -311,11 +311,11 @@ public class ChangeCollector {
 	private void addTypeRemoval(IType type, SimpleDelta existingDelta) {
 		if (existingDelta != null) {
 			switch (existingDelta.getKind()) {
-				case IJavaElementDelta.ADDED:
+				case IJavaScriptElementDelta.ADDED:
 					// ADDED then REMOVED
 					this.changes.remove(type);
 					break;
-				case IJavaElementDelta.CHANGED:
+				case IJavaScriptElementDelta.CHANGED:
 					// CHANGED then REMOVED
 					existingDelta.removed();
 					break;
@@ -334,17 +334,17 @@ public class ChangeCollector {
 	/*
 	 * Returns all types defined in the given element excluding the given element.
 	 */
-	private void getAllTypesFromElement(IJavaElement element, ArrayList allTypes) throws JavaModelException {
+	private void getAllTypesFromElement(IJavaScriptElement element, ArrayList allTypes) throws JavaScriptModelException {
 		switch (element.getElementType()) {
-			case IJavaElement.COMPILATION_UNIT:
-				IType[] types = ((ICompilationUnit)element).getTypes();
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
+				IType[] types = ((IJavaScriptUnit)element).getTypes();
 				for (int i = 0, length = types.length; i < length; i++) {
 					IType type = types[i];
 					allTypes.add(type);
 					getAllTypesFromElement(type, allTypes);
 				}
 				break;
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				types = ((IType)element).getTypes();
 				for (int i = 0, length = types.length; i < length; i++) {
 					IType type = types[i];
@@ -352,12 +352,12 @@ public class ChangeCollector {
 					getAllTypesFromElement(type, allTypes);
 				}
 				break;
-			case IJavaElement.INITIALIZER:
-			case IJavaElement.FIELD:
-			case IJavaElement.METHOD:
-				IJavaElement[] children = ((IMember)element).getChildren();
+			case IJavaScriptElement.INITIALIZER:
+			case IJavaScriptElement.FIELD:
+			case IJavaScriptElement.METHOD:
+				IJavaScriptElement[] children = ((IMember)element).getChildren();
 				for (int i = 0, length = children.length; i < length; i++) {
-					if (element.getElementType()==IJavaElement.TYPE)
+					if (element.getElementType()==IJavaScriptElement.TYPE)
 					{
 						IType type = (IType)children[i];
 						allTypes.add(type);
@@ -373,17 +373,17 @@ public class ChangeCollector {
 	 */
 	private void getAllTypesFromHierarchy(JavaElement element, ArrayList allTypes) {
 		switch (element.getElementType()) {
-			case IJavaElement.COMPILATION_UNIT:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
 				ArrayList types = (ArrayList)this.hierarchy.files.get(element);
 				if (types != null) {
 					allTypes.addAll(types);
 				}
 				break;
-			case IJavaElement.TYPE:
-			case IJavaElement.INITIALIZER:
-			case IJavaElement.FIELD:
-			case IJavaElement.METHOD:
-				types = (ArrayList)this.hierarchy.files.get(((IMember)element).getCompilationUnit());
+			case IJavaScriptElement.TYPE:
+			case IJavaScriptElement.INITIALIZER:
+			case IJavaScriptElement.FIELD:
+			case IJavaScriptElement.METHOD:
+				types = (ArrayList)this.hierarchy.files.get(((IMember)element).getJavaScriptUnit());
 				if (types != null) {
 					for (int i = 0, length = types.size(); i < length; i++) {
 						IType type = (IType)types.get(i);
@@ -396,7 +396,7 @@ public class ChangeCollector {
 		}
 	}
 
-	private boolean hasSuperTypeChange(IType type) throws JavaModelException {
+	private boolean hasSuperTypeChange(IType type) throws JavaScriptModelException {
 		// check super class
 		IType superclass = this.hierarchy.getSuperclass(type);
 		String existingSuperclassName = superclass == null ? null : superclass.getElementName();
@@ -421,7 +421,7 @@ public class ChangeCollector {
 		return false;
 	}
 
-	private boolean hasVisibilityChange(IType type) throws JavaModelException {
+	private boolean hasVisibilityChange(IType type) throws JavaScriptModelException {
 		int existingFlags = this.hierarchy.getCachedFlags(type);
 		int newFlags = type.getFlags();
 		return existingFlags != newFlags;

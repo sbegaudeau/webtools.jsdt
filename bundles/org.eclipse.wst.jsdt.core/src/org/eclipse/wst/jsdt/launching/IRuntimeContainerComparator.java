@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IPath;
  * @since 2.0.1
  * @deprecated support has been added to <code>JsGlobalScopeContainerInitializer</code>
  *  to handle comparison of classpath containers. Use
- *  <code>JsGlobalScopeContainerInitializer.getComparisonID(IPath,IJavaProject)</code>.
+ *  <code>JsGlobalScopeContainerInitializer.getComparisonID(IPath,IJavaScriptProject)</code>.
  *  When a classpath container implements this interface, this interface is
  *  used to determine equality before using the support defined in
  *  <code>JsGlobalScopeContainerInitializer</code>. 

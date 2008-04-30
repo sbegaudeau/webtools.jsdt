@@ -21,15 +21,15 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IRegion;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
@@ -53,7 +53,7 @@ public class DeleteElementsOperation extends MultiOperation {
 	protected Map childrenToRemove;
 	/**
 	 * The <code>ASTParser</code> used to manipulate the source code of
-	 * <code>ICompilationUnit</code>.
+	 * <code>IJavaScriptUnit</code>.
 	 */
 	protected ASTParser parser;
 	/**
@@ -61,16 +61,16 @@ public class DeleteElementsOperation extends MultiOperation {
 	 * to delete cannot be <code>null</code> or empty, and must be contained within a
 	 * compilation unit.
 	 */
-	public DeleteElementsOperation(IJavaElement[] elementsToDelete, boolean force) {
+	public DeleteElementsOperation(IJavaScriptElement[] elementsToDelete, boolean force) {
 		super(elementsToDelete, force);
 		initASTParser();
 	}
 
-	private void deleteElement(IJavaElement elementToRemove, ICompilationUnit cu) throws JavaModelException {
+	private void deleteElement(IJavaScriptElement elementToRemove, IJavaScriptUnit cu) throws JavaScriptModelException {
 		// ensure cu is consistent (noop if already consistent)
 		cu.makeConsistent(this.progressMonitor);
 		this.parser.setSource(cu);
-		CompilationUnit astCU = (CompilationUnit) this.parser.createAST(this.progressMonitor);
+		JavaScriptUnit astCU = (JavaScriptUnit) this.parser.createAST(this.progressMonitor);
 		ASTNode node = ((JavaElement) elementToRemove).findNode(astCU);
 		if (node == null)
 			Assert.isTrue(false, "Failed to locate " + elementToRemove.getElementName() + " in " + cu.getElementName()); //$NON-NLS-1$//$NON-NLS-2$
@@ -82,7 +82,7 @@ public class DeleteElementsOperation extends MultiOperation {
  		try {
 	 		edits.apply(document);
  		} catch (BadLocationException e) {
- 			throw new JavaModelException(e, IJavaModelStatusConstants.INVALID_CONTENTS);
+ 			throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.INVALID_CONTENTS);
  		}
 	}
 
@@ -110,14 +110,14 @@ public class DeleteElementsOperation extends MultiOperation {
 	 * discarded (only the parents are processed). Removes any
 	 * duplicates specified in elements to be processed.
 	 */
-	protected void groupElements() throws JavaModelException {
+	protected void groupElements() throws JavaScriptModelException {
 		childrenToRemove = new HashMap(1);
 		int uniqueCUs = 0;
 		for (int i = 0, length = elementsToProcess.length; i < length; i++) {
-			IJavaElement e = elementsToProcess[i];
-			ICompilationUnit cu = getCompilationUnitFor(e);
+			IJavaScriptElement e = elementsToProcess[i];
+			IJavaScriptUnit cu = getCompilationUnitFor(e);
 			if (cu == null) {
-				throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, e));
+				throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.READ_ONLY, e));
 			} else {
 				IRegion region = (IRegion) childrenToRemove.get(cu);
 				if (region == null) {
@@ -128,32 +128,32 @@ public class DeleteElementsOperation extends MultiOperation {
 				region.add(e);
 			}
 		}
-		elementsToProcess = new IJavaElement[uniqueCUs];
+		elementsToProcess = new IJavaScriptElement[uniqueCUs];
 		Iterator iter = childrenToRemove.keySet().iterator();
 		int i = 0;
 		while (iter.hasNext()) {
-			elementsToProcess[i++] = (IJavaElement) iter.next();
+			elementsToProcess[i++] = (IJavaScriptElement) iter.next();
 		}
 	}
 	/**
 	 * Deletes this element from its compilation unit.
 	 * @see MultiOperation
 	 */
-	protected void processElement(IJavaElement element) throws JavaModelException {
-		ICompilationUnit cu = (ICompilationUnit) element;
+	protected void processElement(IJavaScriptElement element) throws JavaScriptModelException {
+		IJavaScriptUnit cu = (IJavaScriptUnit) element;
 
 		// keep track of the import statements - if all are removed, delete
 		// the import container (and report it in the delta)
 		int numberOfImports = cu.getImports().length;
 
 		JavaElementDelta delta = new JavaElementDelta(cu);
-		IJavaElement[] cuElements = ((IRegion) childrenToRemove.get(cu)).getElements();
+		IJavaScriptElement[] cuElements = ((IRegion) childrenToRemove.get(cu)).getElements();
 		for (int i = 0, length = cuElements.length; i < length; i++) {
-			IJavaElement e = cuElements[i];
+			IJavaScriptElement e = cuElements[i];
 			if (e.exists()) {
 				deleteElement(e, cu);
 				delta.removed(e);
-				if (e.getElementType() == IJavaElement.IMPORT_DECLARATION) {
+				if (e.getElementType() == IJavaScriptElement.IMPORT_DECLARATION) {
 					numberOfImports--;
 					if (numberOfImports == 0) {
 						delta.removed(cu.getImportContainer());
@@ -171,25 +171,25 @@ public class DeleteElementsOperation extends MultiOperation {
 	}
 	/**
 	 * @see MultiOperation
-	 * This method first group the elements by <code>ICompilationUnit</code>,
-	 * and then processes the <code>ICompilationUnit</code>.
+	 * This method first group the elements by <code>IJavaScriptUnit</code>,
+	 * and then processes the <code>IJavaScriptUnit</code>.
 	 */
-	protected void processElements() throws JavaModelException {
+	protected void processElements() throws JavaScriptModelException {
 		groupElements();
 		super.processElements();
 	}
 	/**
 	 * @see MultiOperation
 	 */
-	protected void verify(IJavaElement element) throws JavaModelException {
-		IJavaElement[] children = ((IRegion) childrenToRemove.get(element)).getElements();
+	protected void verify(IJavaScriptElement element) throws JavaScriptModelException {
+		IJavaScriptElement[] children = ((IRegion) childrenToRemove.get(element)).getElements();
 		for (int i = 0; i < children.length; i++) {
-			IJavaElement child = children[i];
+			IJavaScriptElement child = children[i];
 			if (child.getCorrespondingResource() != null)
-				error(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, child);
+				error(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, child);
 
 			if (child.isReadOnly())
-				error(IJavaModelStatusConstants.READ_ONLY, child);
+				error(IJavaScriptModelStatusConstants.READ_ONLY, child);
 		}
 	}
 }

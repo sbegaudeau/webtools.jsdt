@@ -22,10 +22,10 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 
 public class SourceReferenceUtil {
@@ -34,22 +34,22 @@ public class SourceReferenceUtil {
 	private SourceReferenceUtil(){}
 	
 	public static IFile getFile(ISourceReference ref) {
-		ICompilationUnit unit= getCompilationUnit(ref);
+		IJavaScriptUnit unit= getCompilationUnit(ref);
 		return (IFile) unit.getPrimary().getResource();
 	}
 	
-	public static ICompilationUnit getCompilationUnit(ISourceReference o){
+	public static IJavaScriptUnit getCompilationUnit(ISourceReference o){
 		Assert.isTrue(! (o instanceof IClassFile));
 		
-		if (o instanceof ICompilationUnit)
-			return (ICompilationUnit)o;
-		if (o instanceof IJavaElement)
-			return (ICompilationUnit) ((IJavaElement)o).getAncestor(IJavaElement.COMPILATION_UNIT);
+		if (o instanceof IJavaScriptUnit)
+			return (IJavaScriptUnit)o;
+		if (o instanceof IJavaScriptElement)
+			return (IJavaScriptUnit) ((IJavaScriptElement)o).getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 		return null;
 	}	
 	
-	private static boolean hasParentInSet(IJavaElement elem, Set set){
-		IJavaElement parent= elem.getParent();
+	private static boolean hasParentInSet(IJavaScriptElement elem, Set set){
+		IJavaScriptElement parent= elem.getParent();
 		while (parent != null) {
 			if (set.contains(parent))	
 				return true;
@@ -63,10 +63,10 @@ public class SourceReferenceUtil {
 		List result= new ArrayList(elems.length);
 		for (int i= 0; i < elems.length; i++) {
 			ISourceReference elem= elems[i];
-			if (! (elem instanceof IJavaElement))
+			if (! (elem instanceof IJavaScriptElement))
 				result.add(elem);
 			else{	
-				if (! hasParentInSet(((IJavaElement)elem), set))
+				if (! hasParentInSet(((IJavaScriptElement)elem), set))
 					result.add(elem);
 			}	
 		}
@@ -93,7 +93,7 @@ public class SourceReferenceUtil {
 			public int compare(Object o1, Object o2){
 				try{
 					return ((ISourceReference)o2).getSourceRange().getOffset() - ((ISourceReference)o1).getSourceRange().getOffset();
-				} catch (JavaModelException e){
+				} catch (JavaScriptModelException e){
 					return o2.hashCode() - o1.hashCode();
 				}	
 			}

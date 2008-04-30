@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
@@ -26,8 +26,8 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
  */
 public class AppearanceAwareLabelProvider extends JavaUILabelProvider implements IPropertyChangeListener, IPropertyListener {
 
-	public final static long DEFAULT_TEXTFLAGS= JavaElementLabels.ROOT_VARIABLE | JavaElementLabels.T_TYPE_PARAMETERS | JavaElementLabels.M_PARAMETER_TYPES |  
-		JavaElementLabels.M_APP_TYPE_PARAMETERS | JavaElementLabels.M_APP_RETURNTYPE  | JavaElementLabels.REFERENCED_ROOT_POST_QUALIFIED;
+	public final static long DEFAULT_TEXTFLAGS= JavaScriptElementLabels.ROOT_VARIABLE | JavaScriptElementLabels.T_TYPE_PARAMETERS | JavaScriptElementLabels.M_PARAMETER_TYPES |  
+		JavaScriptElementLabels.M_APP_TYPE_PARAMETERS | JavaScriptElementLabels.M_APP_RETURNTYPE  | JavaScriptElementLabels.REFERENCED_ROOT_POST_QUALIFIED;
 	public final static int DEFAULT_IMAGEFLAGS= JavaElementImageProvider.OVERLAY_ICONS;
 	
 	private long fTextFlagMask;
@@ -54,16 +54,16 @@ public class AppearanceAwareLabelProvider extends JavaUILabelProvider implements
 		IPreferenceStore store= PreferenceConstants.getPreferenceStore();
 		fTextFlagMask= -1;
 		if (!store.getBoolean(PreferenceConstants.APPEARANCE_METHOD_RETURNTYPE)) {
-			fTextFlagMask ^= JavaElementLabels.M_APP_RETURNTYPE;
+			fTextFlagMask ^= JavaScriptElementLabels.M_APP_RETURNTYPE;
 		}
 		if (!store.getBoolean(PreferenceConstants.APPEARANCE_METHOD_TYPEPARAMETERS)) {
-			fTextFlagMask ^= JavaElementLabels.M_APP_TYPE_PARAMETERS;
+			fTextFlagMask ^= JavaScriptElementLabels.M_APP_TYPE_PARAMETERS;
 		}
 		if (!store.getBoolean(PreferenceConstants.APPEARANCE_COMPRESS_PACKAGE_NAMES)) {
-			fTextFlagMask ^= JavaElementLabels.P_COMPRESSED;
+			fTextFlagMask ^= JavaScriptElementLabels.P_COMPRESSED;
 		}
 		if (!store.getBoolean(PreferenceConstants.APPEARANCE_CATEGORY)) {
-			fTextFlagMask ^= JavaElementLabels.ALL_CATEGORY;
+			fTextFlagMask ^= JavaScriptElementLabels.ALL_CATEGORY;
 		}
 		
 		fImageFlagMask= -1;

@@ -31,12 +31,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer;
@@ -45,7 +45,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.JsGlobalScopeContainerWizard;
 
-//SelectedElements: IJavaProject && size == 1
+//SelectedElements: IJavaScriptProject && size == 1
 public class AddLibraryToBuildpathAction extends BuildpathModifierAction {
 
 	public AddLibraryToBuildpathAction(IWorkbenchSite site) {
@@ -75,22 +75,22 @@ public class AddLibraryToBuildpathAction extends BuildpathModifierAction {
 	 * {@inheritDoc}
 	 */
 	public void run() {
-		final IJavaProject project= (IJavaProject)getSelectedElements().get(0);
+		final IJavaScriptProject project= (IJavaScriptProject)getSelectedElements().get(0);
 
 		Shell shell= getShell();
 		if (shell == null) {
-			shell= JavaPlugin.getActiveWorkbenchShell();
+			shell= JavaScriptPlugin.getActiveWorkbenchShell();
 		}
 
-		IClasspathEntry[] classpath;
+		IIncludePathEntry[] classpath;
 		try {
-			classpath= project.getRawClasspath();
-		} catch (JavaModelException e1) {
+			classpath= project.getRawIncludepath();
+		} catch (JavaScriptModelException e1) {
 			showExceptionDialog(e1, NewWizardMessages.AddLibraryToBuildpathAction_ErrorTitle);
 			return;
 		}
 
-		JsGlobalScopeContainerWizard wizard= new JsGlobalScopeContainerWizard((IClasspathEntry) null, project, classpath) {
+		JsGlobalScopeContainerWizard wizard= new JsGlobalScopeContainerWizard((IIncludePathEntry) null, project, classpath) {
 
 			/**
 			 * {@inheritDoc}
@@ -118,7 +118,7 @@ public class AddLibraryToBuildpathAction extends BuildpathModifierAction {
 							runnable= new WorkbenchRunnableAdapter(op, ResourcesPlugin.getWorkspace().getRoot());
 						getContainer().run(false, true, runnable);
 					} catch (InvocationTargetException e) {
-						JavaPlugin.log(e);
+						JavaScriptPlugin.log(e);
 						return false;
 					} catch  (InterruptedException e) {
 						return false;
@@ -129,14 +129,14 @@ public class AddLibraryToBuildpathAction extends BuildpathModifierAction {
 			}
 
 			private void finishPage(IProgressMonitor pm) throws InterruptedException {
-				IClasspathEntry[] selected= getNewEntries();
+				IIncludePathEntry[] selected= getNewEntries();
 				if (selected != null) {
 					try {
 						pm.beginTask(NewWizardMessages.ClasspathModifier_Monitor_AddToBuildpath, 4); 
 
 						List addedEntries= new ArrayList();
 						for (int i= 0; i < selected.length; i++) {
-							addedEntries.add(new CPListElement(project, IClasspathEntry.CPE_CONTAINER, selected[i].getPath(), null));
+							addedEntries.add(new CPListElement(project, IIncludePathEntry.CPE_CONTAINER, selected[i].getPath(), null));
 						}
 
 						pm.worked(1);
@@ -182,7 +182,7 @@ public class AddLibraryToBuildpathAction extends BuildpathModifierAction {
 		if (selection.size() != 1)
 			return false;
 		
-		if (!(selection.getFirstElement() instanceof IJavaProject))
+		if (!(selection.getFirstElement() instanceof IJavaScriptProject))
 			return false;
 			
 		return true;

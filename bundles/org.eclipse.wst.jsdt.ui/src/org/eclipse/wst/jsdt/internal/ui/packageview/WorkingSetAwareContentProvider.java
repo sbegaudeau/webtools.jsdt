@@ -29,10 +29,10 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetModel;
 
 public class WorkingSetAwareContentProvider extends PackageExplorerContentProvider implements IMultiElementTreeContentProvider {
@@ -96,10 +96,10 @@ public class WorkingSetAwareContentProvider extends PackageExplorerContentProvid
 				if (project.isOpen()) {
 					processResource((IResource) element, result);
 				}
-			} else if (element instanceof IJavaProject) {
+			} else if (element instanceof IJavaScriptProject) {
 				result.add(element); // also add closed projects
-			} else if (element instanceof IJavaElement) {
-				IJavaElement elem= (IJavaElement) element;
+			} else if (element instanceof IJavaScriptElement) {
+				IJavaScriptElement elem= (IJavaScriptElement) element;
 				IProject project= getProject(elem);
 				if (project != null && project.isOpen()) {
 					result.add(elem);
@@ -115,7 +115,7 @@ public class WorkingSetAwareContentProvider extends PackageExplorerContentProvid
 	}
 	
 	private void processResource(IResource resource, Collection result) {
-		IJavaElement elem= JavaCore.create(resource);
+		IJavaScriptElement elem= JavaScriptCore.create(resource);
 		if (elem != null && elem.exists()) {
 			result.add(elem);
 		} else {
@@ -123,8 +123,8 @@ public class WorkingSetAwareContentProvider extends PackageExplorerContentProvid
 		}
 	}
 	
-	private IProject getProject(IJavaElement element) {
-		IJavaProject project= element.getJavaProject();
+	private IProject getProject(IJavaScriptElement element) {
+		IJavaScriptProject project= element.getJavaScriptProject();
 		if (project == null)
 			return null;
 		return project.getProject();
@@ -152,7 +152,7 @@ public class WorkingSetAwareContentProvider extends PackageExplorerContentProvid
 		Object parent= super.getParent(element);
 		Object input= getViewerInput();
 		// stop at input or on JavaModel. We never visualize it anyway.
-		while (parent != null && !parent.equals(input) && !(parent instanceof IJavaModel)) {
+		while (parent != null && !parent.equals(input) && !(parent instanceof IJavaScriptModel)) {
 			result.add(parent);
 			parent= super.getParent(parent);
 		}
@@ -190,7 +190,7 @@ public class WorkingSetAwareContentProvider extends PackageExplorerContentProvid
 	
 	protected void augmentElementToRefresh(List toRefresh, int relation, Object affectedElement) {
 		// we are refreshing the JavaModel and are in working set mode.
-		if (JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).equals(affectedElement)) {
+		if (JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot()).equals(affectedElement)) {
 			toRefresh.remove(affectedElement);
 			toRefresh.add(fWorkingSetModel);
 		} else if (relation == GRANT_PARENT) {

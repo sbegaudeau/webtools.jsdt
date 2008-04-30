@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesAccess;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -389,7 +389,7 @@ public abstract class ProfileManager extends Observable {
 				
 				Profile matching= null;
 			
-				String projProfileId= context.getNode(JavaUI.ID_PLUGIN).get(fProfileKey, null);
+				String projProfileId= context.getNode(JavaScriptUI.ID_PLUGIN).get(fProfileKey, null);
 				if (projProfileId != null) {
 					Profile curr= (Profile) fProfiles.get(projProfileId);
 					if (curr != null && (curr.isBuiltInProfile() || curr.hasEqualSettings(map, allKeys))) {
@@ -425,10 +425,10 @@ public abstract class ProfileManager extends Observable {
 	}
 
 	protected String getSelectedProfileId(IScopeContext instanceScope) {
-		String profileId= instanceScope.getNode(JavaUI.ID_PLUGIN).get(fProfileKey, null);
+		String profileId= instanceScope.getNode(JavaScriptUI.ID_PLUGIN).get(fProfileKey, null);
 		if (profileId == null) {
 			// request from bug 129427
-			profileId= new DefaultScope().getNode(JavaUI.ID_PLUGIN).get(fProfileKey, null);
+			profileId= new DefaultScope().getNode(JavaScriptUI.ID_PLUGIN).get(fProfileKey, null);
 		}
 	    return profileId;
     }
@@ -473,7 +473,7 @@ public abstract class ProfileManager extends Observable {
 	 */
 	private Map readFromPreferenceStore(IScopeContext context, Profile workspaceProfile) {
 		final Map profileOptions= new HashMap();
-		IEclipsePreferences uiPrefs= context.getNode(JavaUI.ID_PLUGIN);
+		IEclipsePreferences uiPrefs= context.getNode(JavaScriptUI.ID_PLUGIN);
 				
 		int version= uiPrefs.getInt(fProfileVersionKey, fProfileVersioner.getFirstVersion());
 		if (version != fProfileVersioner.getCurrentVersion()) {
@@ -562,7 +562,7 @@ public abstract class ProfileManager extends Observable {
 	        updatePreferences(context.getNode(fKeySets[i].getNodeName()), fKeySets[i].getKeys(), profileOptions);
         }
 		
-		final IEclipsePreferences uiPrefs= context.getNode(JavaUI.ID_PLUGIN);
+		final IEclipsePreferences uiPrefs= context.getNode(JavaScriptUI.ID_PLUGIN);
 		if (uiPrefs.getInt(fProfileVersionKey, 0) != fProfileVersioner.getCurrentVersion()) {
 			uiPrefs.putInt(fProfileVersionKey, fProfileVersioner.getCurrentVersion());
 		}
@@ -628,7 +628,7 @@ public abstract class ProfileManager extends Observable {
 	        updatePreferences(context.getNode(fKeySets[i].getNodeName()), fKeySets[i].getKeys(), Collections.EMPTY_MAP);
         }
 		
-		final IEclipsePreferences uiPrefs= context.getNode(JavaUI.ID_PLUGIN);
+		final IEclipsePreferences uiPrefs= context.getNode(JavaScriptUI.ID_PLUGIN);
 		uiPrefs.remove(fProfileKey);
 	}
 	
@@ -761,7 +761,7 @@ public abstract class ProfileManager extends Observable {
 		IProject[] projects= ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (int i= 0; i < projects.length; i++) {
 			IScopeContext projectScope= fPreferencesAccess.getProjectScope(projects[i]);
-			IEclipsePreferences node= projectScope.getNode(JavaUI.ID_PLUGIN);
+			IEclipsePreferences node= projectScope.getNode(JavaScriptUI.ID_PLUGIN);
 			String profileId= node.get(fProfileKey, null);
 			if (oldName.equals(profileId)) {
 				if (newProfile == null) {
@@ -777,7 +777,7 @@ public abstract class ProfileManager extends Observable {
 		}
 		
 		IScopeContext instanceScope= fPreferencesAccess.getInstanceScope();
-		final IEclipsePreferences uiPrefs= instanceScope.getNode(JavaUI.ID_PLUGIN);
+		final IEclipsePreferences uiPrefs= instanceScope.getNode(JavaScriptUI.ID_PLUGIN);
 		if (newProfile != null && oldName.equals(uiPrefs.get(fProfileKey, null))) {
 			writeToPreferenceStore(newProfile, instanceScope);
 		}

@@ -31,16 +31,16 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
 /**
@@ -56,7 +56,7 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 		/*
 		 * Run this action.
 		 */
-		void run() throws JavaModelException;
+		void run() throws JavaScriptModelException;
 	}
 	/*
 	 * Constants controlling the insertion mode of an action.
@@ -91,26 +91,26 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	 * or <code>null</code> if this operation
 	 * does not operate on specific elements.
 	 */
-	protected IJavaElement[] elementsToProcess;
+	protected IJavaScriptElement[] elementsToProcess;
 	/**
 	 * The parent elements this operation operates with
 	 * or <code>null</code> if this operation
 	 * does not operate with specific parent elements.
 	 */
-	protected IJavaElement[] parentElements;
+	protected IJavaScriptElement[] parentElements;
 	/**
-	 * An empty collection of <code>IJavaElement</code>s - the common
+	 * An empty collection of <code>IJavaScriptElement</code>s - the common
 	 * empty result if no elements are created, or if this
 	 * operation is not actually executed.
 	 */
-	protected static IJavaElement[] NO_ELEMENTS= new IJavaElement[] {};
+	protected static IJavaScriptElement[] NO_ELEMENTS= new IJavaScriptElement[] {};
 
 
 	/**
 	 * The elements created by this operation - empty
 	 * until the operation actually creates elements.
 	 */
-	protected IJavaElement[] resultElements= NO_ELEMENTS;
+	protected IJavaScriptElement[] resultElements= NO_ELEMENTS;
 
 	/**
 	 * The progress monitor passed into this operation
@@ -135,20 +135,20 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	/**
 	 * A common constructor for all Java Model operations.
 	 */
-	protected JavaModelOperation(IJavaElement[] elements) {
+	protected JavaModelOperation(IJavaScriptElement[] elements) {
 		this.elementsToProcess = elements;
 	}
 	/**
 	 * Common constructor for all Java Model operations.
 	 */
-	protected JavaModelOperation(IJavaElement[] elementsToProcess, IJavaElement[] parentElements) {
+	protected JavaModelOperation(IJavaScriptElement[] elementsToProcess, IJavaScriptElement[] parentElements) {
 		this.elementsToProcess = elementsToProcess;
 		this.parentElements= parentElements;
 	}
 	/**
 	 * A common constructor for all Java Model operations.
 	 */
-	protected JavaModelOperation(IJavaElement[] elementsToProcess, IJavaElement[] parentElements, boolean force) {
+	protected JavaModelOperation(IJavaScriptElement[] elementsToProcess, IJavaScriptElement[] parentElements, boolean force) {
 		this.elementsToProcess = elementsToProcess;
 		this.parentElements= parentElements;
 		this.force= force;
@@ -156,7 +156,7 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	/**
 	 * A common constructor for all Java Model operations.
 	 */
-	protected JavaModelOperation(IJavaElement[] elements, boolean force) {
+	protected JavaModelOperation(IJavaScriptElement[] elements, boolean force) {
 		this.elementsToProcess = elements;
 		this.force= force;
 	}
@@ -164,14 +164,14 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	/**
 	 * Common constructor for all Java Model operations.
 	 */
-	protected JavaModelOperation(IJavaElement element) {
-		this.elementsToProcess = new IJavaElement[]{element};
+	protected JavaModelOperation(IJavaScriptElement element) {
+		this.elementsToProcess = new IJavaScriptElement[]{element};
 	}
 	/**
 	 * A common constructor for all Java Model operations.
 	 */
-	protected JavaModelOperation(IJavaElement element, boolean force) {
-		this.elementsToProcess = new IJavaElement[]{element};
+	protected JavaModelOperation(IJavaScriptElement element, boolean force) {
+		this.elementsToProcess = new IJavaScriptElement[]{element};
 		this.force= force;
 	}
 
@@ -188,25 +188,25 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	/*
 	 * Registers the given delta with the Java Model Manager.
 	 */
-	protected void addDelta(IJavaElementDelta delta) {
+	protected void addDelta(IJavaScriptElementDelta delta) {
 		JavaModelManager.getJavaModelManager().getDeltaProcessor().registerJavaModelDelta(delta);
 	}
 	/*
 	 * Registers the given reconcile delta with the Java Model Manager.
 	 */
-	protected void addReconcileDelta(ICompilationUnit workingCopy, IJavaElementDelta delta) {
+	protected void addReconcileDelta(IJavaScriptUnit workingCopy, IJavaScriptElementDelta delta) {
 		HashMap reconcileDeltas = JavaModelManager.getJavaModelManager().getDeltaProcessor().reconcileDeltas;
 		JavaElementDelta previousDelta = (JavaElementDelta)reconcileDeltas.get(workingCopy);
 		if (previousDelta != null) {
-			IJavaElementDelta[] children = delta.getAffectedChildren();
+			IJavaScriptElementDelta[] children = delta.getAffectedChildren();
 			for (int i = 0, length = children.length; i < length; i++) {
 				JavaElementDelta child = (JavaElementDelta)children[i];
 				previousDelta.insertDeltaTree(child.getElement(), child);
 			}
 			// note that the last delta's AST always takes precedence over the existing delta's AST
 			// since it is the result of the last reconcile operation
-			if ((delta.getFlags() & IJavaElementDelta.F_AST_AFFECTED) != 0) {
-				previousDelta.changedAST(delta.getCompilationUnitAST());
+			if ((delta.getFlags() & IJavaScriptElementDelta.F_AST_AFFECTED) != 0) {
+				previousDelta.changedAST(delta.getJavaScriptUnitAST());
 			}
 
 		} else {
@@ -216,7 +216,7 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	/*
 	 * Deregister the reconcile delta for the given working copy
 	 */
-	protected void removeReconcileDelta(ICompilationUnit workingCopy) {
+	protected void removeReconcileDelta(IJavaScriptUnit workingCopy) {
 		JavaModelManager.getJavaModelManager().getDeltaProcessor().reconcileDeltas.remove(workingCopy);
 	}
 	/**
@@ -250,13 +250,13 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	 * Common code used to verify the elements this operation is processing.
 	 * @see JavaModelOperation#verify()
 	 */
-	protected IJavaModelStatus commonVerify() {
+	protected IJavaScriptModelStatus commonVerify() {
 		if (elementsToProcess == null || elementsToProcess.length == 0) {
-			return new JavaModelStatus(IJavaModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
+			return new JavaModelStatus(IJavaScriptModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
 		}
 		for (int i = 0; i < elementsToProcess.length; i++) {
 			if (elementsToProcess[i] == null) {
-				return new JavaModelStatus(IJavaModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
+				return new JavaModelStatus(IJavaScriptModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
 			}
 		}
 		return JavaModelStatus.VERIFIED_OK;
@@ -264,20 +264,20 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	/**
 	 * Convenience method to copy resources
 	 */
-	protected void copyResources(IResource[] resources, IPath destinationPath) throws JavaModelException {
+	protected void copyResources(IResource[] resources, IPath destinationPath) throws JavaScriptModelException {
 		IProgressMonitor subProgressMonitor = getSubProgressMonitor(resources.length);
 		IWorkspace workspace = resources[0].getWorkspace();
 		try {
 			workspace.copy(resources, destinationPath, false, subProgressMonitor);
 			setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
 		} catch (CoreException e) {
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		}
 	}
 	/**
 	 * Convenience method to create a file
 	 */
-	protected void createFile(IContainer folder, String name, InputStream contents, boolean forceFlag) throws JavaModelException {
+	protected void createFile(IContainer folder, String name, InputStream contents, boolean forceFlag) throws JavaScriptModelException {
 		IFile file= folder.getFile(new Path(name));
 		try {
 			file.create(
@@ -286,13 +286,13 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 				getSubProgressMonitor(1));
 				setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
 		} catch (CoreException e) {
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		}
 	}
 	/**
 	 * Convenience method to create a folder
 	 */
-	protected void createFolder(IContainer parentFolder, String name, boolean forceFlag) throws JavaModelException {
+	protected void createFolder(IContainer parentFolder, String name, boolean forceFlag) throws JavaScriptModelException {
 		IFolder folder= parentFolder.getFolder(new Path(name));
 		try {
 			// we should use true to create the file locally. Only VCM should use tru/false
@@ -302,7 +302,7 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 				getSubProgressMonitor(1));
 			setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
 		} catch (CoreException e) {
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		}
 	}
 	/**
@@ -312,7 +312,7 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 		IPackageFragment fragment,
 		boolean forceFlag,
 		IResource rootResource)
-		throws JavaModelException {
+		throws JavaScriptModelException {
 
 		IContainer resource = (IContainer) fragment.getResource();
 
@@ -333,24 +333,24 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 				}
 			}
 		} catch (CoreException e) {
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		}
 	}
 	/**
 	 * Convenience method to delete a resource
 	 */
-	protected void deleteResource(IResource resource,int flags) throws JavaModelException {
+	protected void deleteResource(IResource resource,int flags) throws JavaScriptModelException {
 		try {
 			resource.delete(flags, getSubProgressMonitor(1));
 			setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
 		} catch (CoreException e) {
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		}
 	}
 	/**
 	 * Convenience method to delete resources
 	 */
-	protected void deleteResources(IResource[] resources, boolean forceFlag) throws JavaModelException {
+	protected void deleteResources(IResource[] resources, boolean forceFlag) throws JavaScriptModelException {
 		if (resources == null || resources.length == 0) return;
 		IProgressMonitor subProgressMonitor = getSubProgressMonitor(resources.length);
 		IWorkspace workspace = resources[0].getWorkspace();
@@ -361,7 +361,7 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 				subProgressMonitor);
 				setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
 		} catch (CoreException e) {
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		}
 	}
 	/**
@@ -386,10 +386,10 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	/**
 	 * Convenience method to run an operation within this operation
 	 */
-	public void executeNestedOperation(JavaModelOperation operation, int subWorkAmount) throws JavaModelException {
-		IJavaModelStatus status= operation.verify();
+	public void executeNestedOperation(JavaModelOperation operation, int subWorkAmount) throws JavaScriptModelException {
+		IJavaScriptModelStatus status= operation.verify();
 		if (!status.isOK()) {
-			throw new JavaModelException(status);
+			throw new JavaScriptModelException(status);
 		}
 		IProgressMonitor subProgressMonitor = getSubProgressMonitor(subWorkAmount);
 		// fix for 1FW7IKC, part (1)
@@ -397,24 +397,24 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 			operation.setNested(true);
 			operation.run(subProgressMonitor);
 		} catch (CoreException ce) {
-			if (ce instanceof JavaModelException) {
-				throw (JavaModelException)ce;
+			if (ce instanceof JavaScriptModelException) {
+				throw (JavaScriptModelException)ce;
 			} else {
 				// translate the core exception to a java model exception
 				if (ce.getStatus().getCode() == IResourceStatus.OPERATION_FAILED) {
 					Throwable e = ce.getStatus().getException();
-					if (e instanceof JavaModelException) {
-						throw (JavaModelException) e;
+					if (e instanceof JavaScriptModelException) {
+						throw (JavaScriptModelException) e;
 					}
 				}
-				throw new JavaModelException(ce);
+				throw new JavaScriptModelException(ce);
 			}
 		}
 	}
 	/**
 	 * Performs the operation specific behavior. Subclasses must override.
 	 */
-	protected abstract void executeOperation() throws JavaModelException;
+	protected abstract void executeOperation() throws JavaScriptModelException;
 	/*
 	 * Returns the attribute registered at the given key with the top level operation.
 	 * Returns null if no such attribute is found.
@@ -434,9 +434,9 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	 * or the element itself (if it is a compilation unit),
 	 * otherwise <code>null</code>.
 	 */
-	protected ICompilationUnit getCompilationUnitFor(IJavaElement element) {
+	protected IJavaScriptUnit getCompilationUnitFor(IJavaScriptElement element) {
 
-		return ((JavaElement)element).getCompilationUnit();
+		return ((JavaElement)element).getJavaScriptUnit();
 	}
 	/*
 	 * Returns the stack of operations running in the current thread.
@@ -453,7 +453,7 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	/*
 	 * Returns the existing document for the given cu, or a DocumentAdapter if none.
 	 */
-	protected IDocument getDocument(ICompilationUnit cu) throws JavaModelException {
+	protected IDocument getDocument(IJavaScriptUnit cu) throws JavaScriptModelException {
 		IBuffer buffer = cu.getBuffer();
 		if (buffer instanceof IDocument)
 			return (IDocument) buffer;
@@ -463,14 +463,14 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	 * Returns the elements to which this operation applies,
 	 * or <code>null</code> if not applicable.
 	 */
-	protected IJavaElement[] getElementsToProcess() {
+	protected IJavaScriptElement[] getElementsToProcess() {
 		return elementsToProcess;
 	}
 	/**
 	 * Returns the element to which this operation applies,
 	 * or <code>null</code> if not applicable.
 	 */
-	protected IJavaElement getElementToProcess() {
+	protected IJavaScriptElement getElementToProcess() {
 		if (elementsToProcess == null || elementsToProcess.length == 0) {
 			return null;
 		}
@@ -479,12 +479,12 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	/**
 	 * Returns the Java Model this operation is operating in.
 	 */
-	public IJavaModel getJavaModel() {
+	public IJavaScriptModel getJavaModel() {
 		return JavaModelManager.getJavaModelManager().getJavaModel();
 	}
-	protected IPath[] getNestedFolders(IPackageFragmentRoot root) throws JavaModelException {
+	protected IPath[] getNestedFolders(IPackageFragmentRoot root) throws JavaScriptModelException {
 		IPath rootPath = root.getPath();
-		IClasspathEntry[] classpath = root.getJavaProject().getRawClasspath();
+		IIncludePathEntry[] classpath = root.getJavaScriptProject().getRawIncludepath();
 		int length = classpath.length;
 		IPath[] result = new IPath[length];
 		int index = 0;
@@ -503,7 +503,7 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	 * Returns the parent element to which this operation applies,
 	 * or <code>null</code> if not applicable.
 	 */
-	protected IJavaElement getParentElement() {
+	protected IJavaScriptElement getParentElement() {
 		if (parentElements == null || parentElements.length == 0) {
 			return null;
 		}
@@ -513,13 +513,13 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	 * Returns the parent elements to which this operation applies,
 	 * or <code>null</code> if not applicable.
 	 */
-	protected IJavaElement[] getParentElements() {
+	protected IJavaScriptElement[] getParentElements() {
 		return parentElements;
 	}
 	/**
 	 * Returns the elements created by this operation.
 	 */
-	public IJavaElement[] getResultElements() {
+	public IJavaScriptElement[] getResultElements() {
 		return resultElements;
 	}
 	/*
@@ -594,7 +594,7 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	/**
 	 * Convenience method to move resources
 	 */
-	protected void moveResources(IResource[] resources, IPath destinationPath) throws JavaModelException {
+	protected void moveResources(IResource[] resources, IPath destinationPath) throws JavaScriptModelException {
 		IProgressMonitor subProgressMonitor = null;
 		if (progressMonitor != null) {
 			subProgressMonitor = new SubProgressMonitor(progressMonitor, resources.length, SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
@@ -604,11 +604,11 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 			workspace.move(resources, destinationPath, false, subProgressMonitor);
 			setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
 		} catch (CoreException e) {
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		}
 	}
 	/**
-	 * Creates and returns a new <code>IJavaElementDelta</code>
+	 * Creates and returns a new <code>IJavaScriptElementDelta</code>
 	 * on the Java Model.
 	 */
 	public JavaElementDelta newJavaElementDelta() {
@@ -752,22 +752,22 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 
 				// update JavaModel using deltas that were recorded during this operation
 				for (int i = previousDeltaCount, size = deltaProcessor.javaModelDeltas.size(); i < size; i++) {
-					deltaProcessor.updateJavaModel((IJavaElementDelta)deltaProcessor.javaModelDeltas.get(i));
+					deltaProcessor.updateJavaModel((IJavaScriptElementDelta)deltaProcessor.javaModelDeltas.get(i));
 				}
 
 				// close the parents of the created elements and reset their project's cache (in case we are in an
 				// IWorkspaceRunnable and the clients wants to use the created element's parent)
 				// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=83646
 				for (int i = 0, length = this.resultElements.length; i < length; i++) {
-					IJavaElement element = this.resultElements[i];
+					IJavaScriptElement element = this.resultElements[i];
 					Openable openable = (Openable) element.getOpenable();
 					if (!(openable instanceof CompilationUnit) || !((CompilationUnit) openable).isWorkingCopy()) { // a working copy must remain a child of its parent even after a move
 						((JavaElement) openable.getParent()).close();
 					}
 					switch (element.getElementType()) {
-						case IJavaElement.PACKAGE_FRAGMENT_ROOT:
-						case IJavaElement.PACKAGE_FRAGMENT:
-							deltaProcessor.projectCachesToReset.add(element.getJavaProject());
+						case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
+						case IJavaScriptElement.PACKAGE_FRAGMENT:
+							deltaProcessor.projectCachesToReset.add(element.getJavaScriptProject());
 							break;
 					}
 				}
@@ -792,10 +792,10 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	 * Main entry point for Java Model operations. Runs a Java Model Operation as an IWorkspaceRunnable
 	 * if not read-only.
 	 */
-	public void runOperation(IProgressMonitor monitor) throws JavaModelException {
-		IJavaModelStatus status= verify();
+	public void runOperation(IProgressMonitor monitor) throws JavaScriptModelException {
+		IJavaScriptModelStatus status= verify();
 		if (!status.isOK()) {
-			throw new JavaModelException(status);
+			throw new JavaScriptModelException(status);
 		}
 		try {
 			if (isReadOnly()) {
@@ -807,20 +807,20 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 				ResourcesPlugin.getWorkspace().run(this, getSchedulingRule(), IWorkspace.AVOID_UPDATE, monitor);
 			}
 		} catch (CoreException ce) {
-			if (ce instanceof JavaModelException) {
-				throw (JavaModelException)ce;
+			if (ce instanceof JavaScriptModelException) {
+				throw (JavaScriptModelException)ce;
 			} else {
 				if (ce.getStatus().getCode() == IResourceStatus.OPERATION_FAILED) {
 					Throwable e= ce.getStatus().getException();
-					if (e instanceof JavaModelException) {
-						throw (JavaModelException) e;
+					if (e instanceof JavaScriptModelException) {
+						throw (JavaScriptModelException) e;
 					}
 				}
-				throw new JavaModelException(ce);
+				throw new JavaScriptModelException(ce);
 			}
 		}
 	}
-	protected void runPostActions() throws JavaModelException {
+	protected void runPostActions() throws JavaScriptModelException {
 		while (this.actionsStart <= this.actionsEnd) {
 			IPostAction postAction = this.actions[this.actionsStart++];
 			if (POST_ACTION_VERBOSE) {
@@ -881,9 +881,9 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	 * Subclasses must override if they have any conditions to verify
 	 * before this operation executes.
 	 *
-	 * @see IJavaModelStatus
+	 * @see IJavaScriptModelStatus
 	 */
-	protected IJavaModelStatus verify() {
+	protected IJavaScriptModelStatus verify() {
 		return commonVerify();
 	}
 

@@ -56,20 +56,20 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
@@ -92,12 +92,12 @@ public class EditorUtility {
 
 		try {
 			input= getEditorInput(inputElement);
-		} catch (JavaModelException x) {
-			JavaPlugin.log(x.getStatus());
+		} catch (JavaScriptModelException x) {
+			JavaScriptPlugin.log(x.getStatus());
 		}
 
 		if (input != null) {
-			IWorkbenchPage p= JavaPlugin.getActivePage();
+			IWorkbenchPage p= JavaScriptPlugin.getActivePage();
 			if (p != null) {
 				return p.findEditor(input);
 			}
@@ -107,36 +107,36 @@ public class EditorUtility {
 	}
 
 	/**
-	 * Opens a Java editor for an element such as <code>IJavaElement</code>, <code>IFile</code>, or <code>IStorage</code>.
+	 * Opens a Java editor for an element such as <code>IJavaScriptElement</code>, <code>IFile</code>, or <code>IStorage</code>.
 	 * The editor is activated by default.
 	 * 
 	 * @return an open editor or <code>null</code> if an external editor was opened
 	 * @throws PartInitException if the editor could not be opened or the input element is not valid
 	 */
-	public static IEditorPart openInEditor(Object inputElement) throws JavaModelException, PartInitException {
+	public static IEditorPart openInEditor(Object inputElement) throws JavaScriptModelException, PartInitException {
 		return openInEditor(inputElement, true);
 	}
 
 	/**
-	 * Opens the editor currently associated with the given element (IJavaElement, IFile, IStorage...)
+	 * Opens the editor currently associated with the given element (IJavaScriptElement, IFile, IStorage...)
 	 * 
 	 * @return an open editor or <code>null</code> if an external editor was opened
 	 * @throws PartInitException if the editor could not be opened or the input element is not valid
 	 */
-	public static IEditorPart openInEditor(Object inputElement, boolean activate) throws JavaModelException, PartInitException {
+	public static IEditorPart openInEditor(Object inputElement, boolean activate) throws JavaScriptModelException, PartInitException {
 
 		if (inputElement instanceof IFile)
 			return openInEditor((IFile) inputElement, activate);
 		
-		if(inputElement instanceof IJavaElement && ((IJavaElement)inputElement).isVirtual()) {
+		if(inputElement instanceof IJavaScriptElement && ((IJavaScriptElement)inputElement).isVirtual()) {
 			
-			URI hostElementPath = ((IJavaElement)inputElement).getHostPath(); 
+			URI hostElementPath = ((IJavaScriptElement)inputElement).getHostPath(); 
 			
 			if(hostElementPath!=null) {
 				/* See if we can resolve the URI on the workspace */
-				IResource realFile = ((IJavaElement)inputElement).getJavaProject().getProject().getWorkspace().getRoot().getFileForLocation(new Path(hostElementPath.getPath()));
+				IResource realFile = ((IJavaScriptElement)inputElement).getJavaScriptProject().getProject().getWorkspace().getRoot().getFileForLocation(new Path(hostElementPath.getPath()));
 				if(realFile==null || !realFile.exists()) {
-					realFile = ((IJavaElement)inputElement).getJavaProject().getProject().getWorkspace().getRoot().findMember(hostElementPath.getPath());
+					realFile = ((IJavaScriptElement)inputElement).getJavaScriptProject().getProject().getWorkspace().getRoot().findMember(hostElementPath.getPath());
 				}
 				if(realFile!=null) return openInEditor((IFile)realFile, activate);
 				return openInEditor(hostElementPath, activate);
@@ -154,14 +154,14 @@ public class EditorUtility {
 		 * we can fix this code by creating the correct editor input
 		 * in getEditorInput(Object)  
 		 */
-		if (inputElement instanceof IJavaElement) {
-			ICompilationUnit cu= (ICompilationUnit)((IJavaElement)inputElement).getAncestor(IJavaElement.COMPILATION_UNIT);
+		if (inputElement instanceof IJavaScriptElement) {
+			IJavaScriptUnit cu= (IJavaScriptUnit)((IJavaScriptElement)inputElement).getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 			if (cu != null && !JavaModelUtil.isPrimary(cu)) {
-				IWorkbenchPage page= JavaPlugin.getActivePage();
+				IWorkbenchPage page= JavaScriptPlugin.getActivePage();
 				if (page != null) {
 					IEditorPart editor= page.getActiveEditor();
 					if (editor != null) {
-						IJavaElement editorCU= EditorUtility.getEditorInputJavaElement(editor, false);
+						IJavaScriptElement editorCU= EditorUtility.getEditorInputJavaElement(editor, false);
 						if (cu.equals(editorCU)) {
 							if (activate && page.getActivePart() != editor)
 								page.activate(editor);
@@ -182,7 +182,7 @@ public class EditorUtility {
 	/**
 	 * Selects a Java Element in an editor
 	 */
-	public static void revealInEditor(IEditorPart part, IJavaElement element) {
+	public static void revealInEditor(IEditorPart part, IJavaScriptElement element) {
 		if (element == null)
 			return;
 
@@ -194,7 +194,7 @@ public class EditorUtility {
 		// Support for non-Java editor
 		try {
 			ISourceRange range= null;
-			if (element instanceof ICompilationUnit)
+			if (element instanceof IJavaScriptUnit)
 				range= null;
 			else if (element instanceof IClassFile)
 				range= null;
@@ -209,7 +209,7 @@ public class EditorUtility {
 
 			if (range != null)
 				revealInEditor(part, range.getOffset(), range.getLength());
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// don't reveal
 		}
 	}
@@ -285,7 +285,7 @@ public class EditorUtility {
 		if (file == null)
 			throwPartInitException(JavaEditorMessages.EditorUtility_file_must_not_be_null);
 		
-		IWorkbenchPage p= JavaPlugin.getActivePage();
+		IWorkbenchPage p= JavaScriptPlugin.getActivePage();
 		if (p == null)
 			throwPartInitException(JavaEditorMessages.EditorUtility_no_active_WorkbenchPage);
 		
@@ -298,7 +298,7 @@ public class EditorUtility {
 		if (file == null)
 			throwPartInitException(JavaEditorMessages.EditorUtility_file_must_not_be_null);
 		
-		IWorkbenchPage p= JavaPlugin.getActivePage();
+		IWorkbenchPage p= JavaScriptPlugin.getActivePage();
 		if (p == null)
 			throwPartInitException(JavaEditorMessages.EditorUtility_no_active_WorkbenchPage);
 		
@@ -316,7 +316,7 @@ public class EditorUtility {
 		Assert.isNotNull(input);
 		Assert.isNotNull(editorID);
 
-		IWorkbenchPage p= JavaPlugin.getActivePage();
+		IWorkbenchPage p= JavaScriptPlugin.getActivePage();
 		if (p == null)
 			throwPartInitException(JavaEditorMessages.EditorUtility_no_active_WorkbenchPage);
 
@@ -326,7 +326,7 @@ public class EditorUtility {
 	}
 
 	private static void throwPartInitException(String message) throws PartInitException {
-		IStatus status= new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.OK, message, null);
+		IStatus status= new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.OK, message, null);
 		throw new PartInitException(status);
 	}
 
@@ -335,7 +335,7 @@ public class EditorUtility {
 			IAction toggleAction= editorPart.getEditorSite().getActionBars().getGlobalActionHandler(ITextEditorActionDefinitionIds.TOGGLE_SHOW_SELECTED_ELEMENT_ONLY);
 			boolean enable= toggleAction != null; 
 			if (enable && editorPart instanceof JavaEditor)
-				enable= JavaPlugin.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS);
+				enable= JavaScriptPlugin.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS);
 			else
 				enable= enable && toggleAction.isEnabled() && toggleAction.isChecked();
 			if (enable) {
@@ -360,7 +360,7 @@ public class EditorUtility {
 		if (input instanceof IFileEditorInput)
 			editorDescriptor= IDE.getEditorDescriptor(((IFileEditorInput)input).getFile());
 		else if (input instanceof InternalClassFileEditorInput )
-			return JavaUI.ID_CF_EDITOR;
+			return JavaScriptUI.ID_CF_EDITOR;
 		else {
 			String name= input.getName();
 			if (name == null)
@@ -378,23 +378,23 @@ public class EditorUtility {
 	 * @return the given editor's input as Java element or <code>null</code> if none
 	 * @since 3.2
 	 */
-	public static IJavaElement getEditorInputJavaElement(IEditorPart editor, boolean primaryOnly) {
+	public static IJavaScriptElement getEditorInputJavaElement(IEditorPart editor, boolean primaryOnly) {
 		Assert.isNotNull(editor);
 		IEditorInput editorInput= editor.getEditorInput();
 		if (editorInput == null)
 			return null;
 		
-		IJavaElement je= JavaUI.getEditorInputJavaElement(editorInput);
+		IJavaScriptElement je= JavaScriptUI.getEditorInputJavaElement(editorInput);
 		if (je != null || primaryOnly)
 			return je;
 
-		return  JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(editorInput, false);
+		return  JavaScriptPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(editorInput, false);
 	}
 
-	private static IEditorInput getEditorInput(IJavaElement element) throws JavaModelException {
+	private static IEditorInput getEditorInput(IJavaScriptElement element) throws JavaScriptModelException {
 		while (element != null) {
-			if (element instanceof ICompilationUnit) {
-				ICompilationUnit unit= ((ICompilationUnit) element).getPrimary();
+			if (element instanceof IJavaScriptUnit) {
+				IJavaScriptUnit unit= ((IJavaScriptUnit) element).getPrimary();
 					IResource resource= unit.getResource();
 					if (resource instanceof IFile)
 						return new FileEditorInput((IFile) resource);
@@ -409,9 +409,9 @@ public class EditorUtility {
 		return null;
 	}
 
-	public static IEditorInput getEditorInput(Object input) throws JavaModelException {
-		if (input instanceof IJavaElement)
-			return getEditorInput((IJavaElement) input);
+	public static IEditorInput getEditorInput(Object input) throws JavaScriptModelException {
+		if (input instanceof IJavaScriptElement)
+			return getEditorInput((IJavaScriptElement) input);
 
 		if (input instanceof IFile)
 			return new FileEditorInput((IFile) input);
@@ -426,14 +426,14 @@ public class EditorUtility {
 	 * If the current active editor edits a java element return it, else
 	 * return null
 	 */
-	public static IJavaElement getActiveEditorJavaInput() {
-		IWorkbenchPage page= JavaPlugin.getActivePage();
+	public static IJavaScriptElement getActiveEditorJavaInput() {
+		IWorkbenchPage page= JavaScriptPlugin.getActivePage();
 		if (page != null) {
 			IEditorPart part= page.getActiveEditor();
 			if (part != null) {
 				IEditorInput editorInput= part.getEditorInput();
 				if (editorInput != null) {
-					return JavaUI.getEditorInputJavaElement(editorInput);
+					return JavaScriptUI.getEditorInputJavaElement(editorInput);
 				}
 			}
 		}
@@ -513,17 +513,17 @@ public class EditorUtility {
 	 *
 	 * @since 3.0
 	 */
-	public static IJavaProject getJavaProject(IEditorInput input) {
-		IJavaProject jProject= null;
+	public static IJavaScriptProject getJavaProject(IEditorInput input) {
+		IJavaScriptProject jProject= null;
 		if (input instanceof IFileEditorInput) {
 			IProject project= ((IFileEditorInput)input).getFile().getProject();
 			if (project != null) {
-				jProject= JavaCore.create(project);
+				jProject= JavaScriptCore.create(project);
 				if (!jProject.exists())
 					jProject= null;
 			}
 		} else if (input instanceof IClassFileEditorInput) {
-			jProject= ((IClassFileEditorInput)input).getClassFile().getJavaProject();
+			jProject= ((IClassFileEditorInput)input).getClassFile().getJavaScriptProject();
 		}
 		return jProject;
 	}
@@ -603,9 +603,9 @@ public class EditorUtility {
 		if (resource == null)
 			return saveUnknownEditors;
 
-		IJavaElement javaElement= JavaCore.create(resource);
-		if (javaElement instanceof ICompilationUnit) {
-			ICompilationUnit cu= (ICompilationUnit) javaElement;
+		IJavaScriptElement javaElement= JavaScriptCore.create(resource);
+		if (javaElement instanceof IJavaScriptUnit) {
+			IJavaScriptUnit cu= (IJavaScriptUnit) javaElement;
 			if (!cu.isWorkingCopy()) {
 				return true;
 			}

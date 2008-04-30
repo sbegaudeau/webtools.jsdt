@@ -21,20 +21,20 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
@@ -98,7 +98,7 @@ public class BasicSearchEngine {
 	 * A list of working copies that take precedence over their original
 	 * compilation units.
 	 */
-	private ICompilationUnit[] workingCopies;
+	private IJavaScriptUnit[] workingCopies;
 
 	/*
 	 * A working copy owner whose working copies will take precedent over
@@ -119,9 +119,9 @@ public class BasicSearchEngine {
 	}
 
 	/**
-	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#SearchEngine(ICompilationUnit[]) for detailed comment.
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#SearchEngine(IJavaScriptUnit[]) for detailed comment.
 	 */
-	public BasicSearchEngine(ICompilationUnit[] workingCopies) {
+	public BasicSearchEngine(IJavaScriptUnit[] workingCopies) {
 		this.workingCopies = workingCopies;
 	}
 
@@ -144,43 +144,43 @@ public class BasicSearchEngine {
 	/**
 	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createHierarchyScope(IType) for detailed comment.
 	 */
-	public static IJavaSearchScope createHierarchyScope(IType type) throws JavaModelException {
+	public static IJavaScriptSearchScope createHierarchyScope(IType type) throws JavaScriptModelException {
 		return createHierarchyScope(type, DefaultWorkingCopyOwner.PRIMARY);
 	}
 
 	/**
 	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createHierarchyScope(IType,WorkingCopyOwner) for detailed comment.
 	 */
-	public static IJavaSearchScope createHierarchyScope(IType type, WorkingCopyOwner owner) throws JavaModelException {
+	public static IJavaScriptSearchScope createHierarchyScope(IType type, WorkingCopyOwner owner) throws JavaScriptModelException {
 		return new HierarchyScope(type, owner);
 	}
 
 	/**
-	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createJavaSearchScope(IJavaElement[]) for detailed comment.
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createJavaSearchScope(IJavaScriptElement[]) for detailed comment.
 	 */
-	public static IJavaSearchScope createJavaSearchScope(IJavaElement[] elements) {
+	public static IJavaScriptSearchScope createJavaSearchScope(IJavaScriptElement[] elements) {
 		return createJavaSearchScope(elements, true);
 	}
 
 	/**
-	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createJavaSearchScope(IJavaElement[], boolean) for detailed comment.
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createJavaSearchScope(IJavaScriptElement[], boolean) for detailed comment.
 	 */
-	public static IJavaSearchScope createJavaSearchScope(IJavaElement[] elements, boolean includeReferencedProjects) {
-		int includeMask = IJavaSearchScope.SOURCES | IJavaSearchScope.APPLICATION_LIBRARIES | IJavaSearchScope.SYSTEM_LIBRARIES;
+	public static IJavaScriptSearchScope createJavaSearchScope(IJavaScriptElement[] elements, boolean includeReferencedProjects) {
+		int includeMask = IJavaScriptSearchScope.SOURCES | IJavaScriptSearchScope.APPLICATION_LIBRARIES | IJavaScriptSearchScope.SYSTEM_LIBRARIES;
 		if (includeReferencedProjects) {
-			includeMask |= IJavaSearchScope.REFERENCED_PROJECTS;
+			includeMask |= IJavaScriptSearchScope.REFERENCED_PROJECTS;
 		}
 		return createJavaSearchScope(elements, includeMask);
 	}
 
 	/**
-	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createJavaSearchScope(IJavaElement[], int) for detailed comment.
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createJavaSearchScope(IJavaScriptElement[], int) for detailed comment.
 	 */
-	public static IJavaSearchScope createJavaSearchScope(IJavaElement[] elements, int includeMask) {
+	public static IJavaScriptSearchScope createJavaSearchScope(IJavaScriptElement[] elements, int includeMask) {
 		JavaSearchScope scope = new JavaSearchScope();
 		HashSet visitedProjects = new HashSet(2);
 		for (int i = 0, length = elements.length; i < length; i++) {
-			IJavaElement element = elements[i];
+			IJavaScriptElement element = elements[i];
 			if (element != null) {
 				try {
 					if (element instanceof JavaProject) {
@@ -188,7 +188,7 @@ public class BasicSearchEngine {
 					} else {
 						scope.add(element);
 					}
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					// ignore
 				}
 			}
@@ -206,7 +206,7 @@ public class BasicSearchEngine {
 	/**
 	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createWorkspaceScope() for detailed comment.
 	 */
-	public static IJavaSearchScope createWorkspaceScope() {
+	public static IJavaScriptSearchScope createWorkspaceScope() {
 		return JavaModelManager.getJavaModelManager().getWorkspaceScope();
 	}
 
@@ -218,7 +218,7 @@ public class BasicSearchEngine {
 	 * @param scope the search result has to be limited to the given scope
 	 * @param requestor a callback object to which each match is reported
 	 */
-	void findMatches(SearchPattern pattern, SearchParticipant[] participants, IJavaSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException {
+	void findMatches(SearchPattern pattern, SearchParticipant[] participants, IJavaScriptSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException {
 		if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
 		try {
 			if (VERBOSE) {
@@ -247,7 +247,7 @@ public class BasicSearchEngine {
 					PathCollector pathCollector = new PathCollector();
 					indexManager.performConcurrentJob(
 						new PatternSearchJob(pattern, participant, scope, pathCollector),
-						IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+						IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 						monitor==null ? null : new SubProgressMonitor(monitor, 50));
 					if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
 
@@ -334,33 +334,33 @@ public class BasicSearchEngine {
 	 */
 	public static String getSearchForString(final int searchFor) {
 		switch (searchFor) {
-			case IJavaSearchConstants.TYPE:
+			case IJavaScriptSearchConstants.TYPE:
 				return ("TYPE"); //$NON-NLS-1$
-			case IJavaSearchConstants.METHOD:
+			case IJavaScriptSearchConstants.METHOD:
 				return ("METHOD"); //$NON-NLS-1$
-			case IJavaSearchConstants.PACKAGE:
+			case IJavaScriptSearchConstants.PACKAGE:
 				return ("PACKAGE"); //$NON-NLS-1$
-			case IJavaSearchConstants.CONSTRUCTOR:
+			case IJavaScriptSearchConstants.CONSTRUCTOR:
 				return ("CONSTRUCTOR"); //$NON-NLS-1$
-			case IJavaSearchConstants.FIELD:
+			case IJavaScriptSearchConstants.FIELD:
 				return ("FIELD"); //$NON-NLS-1$
-			case IJavaSearchConstants.CLASS:
+			case IJavaScriptSearchConstants.CLASS:
 				return ("CLASS"); //$NON-NLS-1$
-			case IJavaSearchConstants.INTERFACE:
+			case IJavaScriptSearchConstants.INTERFACE:
 				return ("INTERFACE"); //$NON-NLS-1$
-			case IJavaSearchConstants.ENUM:
+			case IJavaScriptSearchConstants.ENUM:
 				return ("ENUM"); //$NON-NLS-1$
-			case IJavaSearchConstants.ANNOTATION_TYPE:
+			case IJavaScriptSearchConstants.ANNOTATION_TYPE:
 				return ("ANNOTATION_TYPE"); //$NON-NLS-1$
-			case IJavaSearchConstants.CLASS_AND_ENUM:
+			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
 				return ("CLASS_AND_ENUM"); //$NON-NLS-1$
-			case IJavaSearchConstants.CLASS_AND_INTERFACE:
+			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE:
 				return ("CLASS_AND_INTERFACE"); //$NON-NLS-1$
-			case IJavaSearchConstants.INTERFACE_AND_ANNOTATION:
+			case IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION:
 				return ("INTERFACE_AND_ANNOTATION"); //$NON-NLS-1$
-			case IJavaSearchConstants.VAR:
+			case IJavaScriptSearchConstants.VAR:
 				return ("VAR"); //$NON-NLS-1$
-			case IJavaSearchConstants.FUNCTION:
+			case IJavaScriptSearchConstants.FUNCTION:
 				return ("FUNCTION"); //$NON-NLS-1$
 		}
 		return "UNKNOWN"; //$NON-NLS-1$
@@ -368,7 +368,7 @@ public class BasicSearchEngine {
 
 	private Parser getParser() {
 		if (this.parser == null) {
-			this.compilerOptions = new CompilerOptions(JavaCore.getOptions());
+			this.compilerOptions = new CompilerOptions(JavaScriptCore.getOptions());
 			ProblemReporter problemReporter =
 				new ProblemReporter(
 					DefaultErrorHandlingPolicies.proceedWithAllProblems(),
@@ -383,8 +383,8 @@ public class BasicSearchEngine {
 	 * Returns the list of working copies used by this search engine.
 	 * Returns null if none.
 	 */
-	private ICompilationUnit[] getWorkingCopies() {
-		ICompilationUnit[] copies;
+	private IJavaScriptUnit[] getWorkingCopies() {
+		IJavaScriptUnit[] copies;
 		if (this.workingCopies != null) {
 			if (this.workingCopyOwner == null) {
 				copies = JavaModelManager.getJavaModelManager().getWorkingCopies(DefaultWorkingCopyOwner.PRIMARY, false/*don't add primary WCs a second time*/);
@@ -393,15 +393,15 @@ public class BasicSearchEngine {
 				} else {
 					HashMap pathToCUs = new HashMap();
 					for (int i = 0, length = copies.length; i < length; i++) {
-						ICompilationUnit unit = copies[i];
+						IJavaScriptUnit unit = copies[i];
 						pathToCUs.put(unit.getPath(), unit);
 					}
 					for (int i = 0, length = this.workingCopies.length; i < length; i++) {
-						ICompilationUnit unit = this.workingCopies[i];
+						IJavaScriptUnit unit = this.workingCopies[i];
 						pathToCUs.put(unit.getPath(), unit);
 					}
 					int length = pathToCUs.size();
-					copies = new ICompilationUnit[length];
+					copies = new IJavaScriptUnit[length];
 					pathToCUs.values().toArray(copies);
 				}
 			} else {
@@ -415,7 +415,7 @@ public class BasicSearchEngine {
 		if (copies == null) return null;
 
 		// filter out primary working copies that are saved
-		ICompilationUnit[] result = null;
+		IJavaScriptUnit[] result = null;
 		int length = copies.length;
 		int index = 0;
 		for (int i = 0; i < length; i++) {
@@ -425,16 +425,16 @@ public class BasicSearchEngine {
 						|| copy.hasUnsavedChanges()
 						|| copy.hasResourceChanged()) {
 					if (result == null) {
-						result = new ICompilationUnit[length];
+						result = new IJavaScriptUnit[length];
 					}
 					result[index++] = copy;
 				}
-			}  catch (JavaModelException e) {
+			}  catch (JavaScriptModelException e) {
 				// copy doesn't exist: ignore
 			}
 		}
 		if (index != length && result != null) {
-			System.arraycopy(result, 0, result = new ICompilationUnit[index], 0, index);
+			System.arraycopy(result, 0, result = new IJavaScriptUnit[index], 0, index);
 		}
 		return result;
 	}
@@ -442,19 +442,19 @@ public class BasicSearchEngine {
 	/*
 	 * Returns the list of working copies used to do the search on the given Java element.
 	 */
-	private ICompilationUnit[] getWorkingCopies(IJavaElement element) {
+	private IJavaScriptUnit[] getWorkingCopies(IJavaScriptElement element) {
 		if (element instanceof IMember) {
-			ICompilationUnit cu = ((IMember)element).getCompilationUnit();
+			IJavaScriptUnit cu = ((IMember)element).getJavaScriptUnit();
 			if (cu != null && cu.isWorkingCopy()) {
-				ICompilationUnit[] copies = getWorkingCopies();
+				IJavaScriptUnit[] copies = getWorkingCopies();
 				int length = copies == null ? 0 : copies.length;
 				if (length > 0) {
-					ICompilationUnit[] newWorkingCopies = new ICompilationUnit[length+1];
+					IJavaScriptUnit[] newWorkingCopies = new IJavaScriptUnit[length+1];
 					System.arraycopy(copies, 0, newWorkingCopies, 0, length);
 					newWorkingCopies[length] = cu;
 					return newWorkingCopies;
 				}
-				return new ICompilationUnit[] {cu};
+				return new IJavaScriptUnit[] {cu};
 			}
 		}
 		return getWorkingCopies();
@@ -546,12 +546,12 @@ public class BasicSearchEngine {
 	 * methods (from a String pattern or a Java element) and encapsulate the description of what is
 	 * being searched (for example, search method declarations in a case sensitive way).
 	 *
-	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#search(SearchPattern, SearchParticipant[], IJavaSearchScope, SearchRequestor, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#search(SearchPattern, SearchParticipant[], IJavaScriptSearchScope, SearchRequestor, IProgressMonitor)
 	 * 	for detailed comment
 	 */
-	public void search(SearchPattern pattern, SearchParticipant[] participants, IJavaSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException {
+	public void search(SearchPattern pattern, SearchParticipant[] participants, IJavaScriptSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException {
 		if (VERBOSE) {
-			Util.verbose("BasicSearchEngine.search(SearchPattern, SearchParticipant[], IJavaSearchScope, SearchRequestor, IProgressMonitor)"); //$NON-NLS-1$
+			Util.verbose("BasicSearchEngine.search(SearchPattern, SearchParticipant[], IJavaScriptSearchScope, SearchRequestor, IProgressMonitor)"); //$NON-NLS-1$
 		}
 		findMatches(pattern, participants, scope, requestor, monitor);
 	}
@@ -563,14 +563,14 @@ public class BasicSearchEngine {
 			final int bindingType,
 			final int matchRule,
 //			int searchFor,
-			IJavaSearchScope scope,
+			IJavaScriptSearchScope scope,
 			final IRestrictedAccessBindingRequestor nameRequestor,
 			int waitingPolicy,
 			boolean doParse,
-			IProgressMonitor progressMonitor)  throws JavaModelException {
+			IProgressMonitor progressMonitor)  throws JavaScriptModelException {
 
 			if (VERBOSE) {
-				Util.verbose("BasicSearchEngine.searchAllBindingNames(char[], char[], int, int, IJavaSearchScope, IRestrictedAccessTypeRequestor, int, IProgressMonitor)"); //$NON-NLS-1$
+				Util.verbose("BasicSearchEngine.searchAllBindingNames(char[], char[], int, int, IJavaScriptSearchScope, IRestrictedAccessTypeRequestor, int, IProgressMonitor)"); //$NON-NLS-1$
 				Util.verbose("	- package name: "+(packageName==null?"null":new String(packageName))); //$NON-NLS-1$ //$NON-NLS-2$
 				Util.verbose("	- type name: "+(bindingName==null?"null":new String(bindingName))); //$NON-NLS-1$ //$NON-NLS-2$
 				Util.verbose("	- match rule: "+getMatchRuleString(matchRule)); //$NON-NLS-1$
@@ -667,14 +667,14 @@ public class BasicSearchEngine {
 			// Get working copy path(s). Store in a single string in case of only one to optimize comparison in requestor
 			final HashSet workingCopyPaths = new HashSet();
 			String workingCopyPath = null;
-			ICompilationUnit[] copies = getWorkingCopies();
+			IJavaScriptUnit[] copies = getWorkingCopies();
 			final int copiesLength = copies == null ? 0 : copies.length;
 			if (copies != null) {
 				if (copiesLength == 1) {
 					workingCopyPath = copies[0].getPath().toString();
 				} else {
 					for (int i = 0; i < copiesLength; i++) {
-						ICompilationUnit workingCopy = copies[i];
+						IJavaScriptUnit workingCopy = copies[i];
 						workingCopyPaths.add(workingCopy.getPath().toString());
 					}
 				}
@@ -785,7 +785,7 @@ public class BasicSearchEngine {
 				// add type names from working copies
 				if (copies != null && doParse) {
 					for (int i = 0; i < copiesLength; i++) {
-						ICompilationUnit workingCopy = copies[i];
+						IJavaScriptUnit workingCopy = copies[i];
 						if (!scope.encloses(workingCopy)) continue;
 						final String path = workingCopy.getPath().toString();
 						if (workingCopy.isConsistent()) {
@@ -798,7 +798,7 @@ public class BasicSearchEngine {
 								IType[] allTypes = workingCopy.getAllTypes();
 								for (int j = 0, allTypesLength = allTypes.length; j < allTypesLength; j++) {
 									IType type = allTypes[j];
-									IJavaElement parent = type.getParent();
+									IJavaScriptElement parent = type.getParent();
 									char[][] enclosingTypeNames;
 									if (parent instanceof IType) {
 										char[] parentQualifiedName = ((IType)parent).getTypeQualifiedName('.').toCharArray();
@@ -824,10 +824,10 @@ public class BasicSearchEngine {
 							}
 							case Binding.METHOD:
 							{
-								IMethod[] allMethods = workingCopy.getMethods();
+								IFunction[] allMethods = workingCopy.getFunctions();
 								for (int j = 0, allMethodsLength = allMethods.length; j < allMethodsLength; j++) {
-									IMethod method = allMethods[j];
-									IJavaElement parent = method.getParent();
+									IFunction method = allMethods[j];
+									IJavaScriptElement parent = method.getParent();
 //									char[][] enclosingTypeNames;
 									if (parent instanceof IType) {
 //										char[] parentQualifiedName = ((IType)parent).getTypeQualifiedName('.').toCharArray();
@@ -850,7 +850,7 @@ public class BasicSearchEngine {
 								IField[] allFields = workingCopy.getFields ();
 								for (int j = 0, allFieldsLength = allFields.length; j < allFieldsLength; j++) {
 									IField field = allFields[j];
-									IJavaElement parent = field.getParent();
+									IJavaScriptElement parent = field.getParent();
 									char[][] enclosingTypeNames;
 									if (parent instanceof IType) {
 										char[] parentQualifiedName = ((IType)parent).getTypeQualifiedName('.').toCharArray();
@@ -942,7 +942,7 @@ public class BasicSearchEngine {
 			IPackageFragmentRoot[] sourceFolders,
 			final IRestrictedAccessTypeRequestor nameRequestor,
 			boolean waitForIndexes,
-			IProgressMonitor progressMonitor)  throws JavaModelException {
+			IProgressMonitor progressMonitor)  throws JavaScriptModelException {
 
 		if (VERBOSE) {
 			Util.verbose("BasicSearchEngine.searchAllSecondaryTypeNames(IPackageFragmentRoot[], IRestrictedAccessTypeRequestor, boolean, IProgressMonitor)"); //$NON-NLS-1$
@@ -967,14 +967,14 @@ public class BasicSearchEngine {
 		// Get working copy path(s). Store in a single string in case of only one to optimize comparison in requestor
 		final HashSet workingCopyPaths = new HashSet();
 		String workingCopyPath = null;
-		ICompilationUnit[] copies = getWorkingCopies();
+		IJavaScriptUnit[] copies = getWorkingCopies();
 		final int copiesLength = copies == null ? 0 : copies.length;
 		if (copies != null) {
 			if (copiesLength == 1) {
 				workingCopyPath = copies[0].getPath().toString();
 			} else {
 				for (int i = 0; i < copiesLength; i++) {
-					ICompilationUnit workingCopy = copies[i];
+					IJavaScriptUnit workingCopy = copies[i];
 					workingCopyPaths.add(workingCopy.getPath().toString());
 				}
 			}
@@ -1047,8 +1047,8 @@ public class BasicSearchEngine {
 					createJavaSearchScope(sourceFolders),
 					searchRequestor),
 				waitForIndexes
-					? IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH
-					: IJavaSearchConstants.FORCE_IMMEDIATE_SEARCH,
+					? IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH
+					: IJavaScriptSearchConstants.FORCE_IMMEDIATE_SEARCH,
 				progressMonitor == null ? null : new SubProgressMonitor(progressMonitor, 100));
 		} catch (OperationCanceledException oce) {
 			// do nothing
@@ -1064,7 +1064,7 @@ public class BasicSearchEngine {
 	 * The search can be selecting specific types (given a package or a type name
 	 * prefix and match modes).
 	 *
-	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchAllTypeNames(char[], int, char[], int, int, IJavaSearchScope, org.eclipse.wst.jsdt.core.search.TypeNameRequestor, int, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchAllTypeNames(char[], int, char[], int, int, IJavaScriptSearchScope, org.eclipse.wst.jsdt.core.search.TypeNameRequestor, int, IProgressMonitor)
 	 * 	for detailed comment
 	 */
 	public void searchAllTypeNames(
@@ -1073,13 +1073,13 @@ public class BasicSearchEngine {
 		final char[] typeName,
 		final int typeMatchRule,
 		int searchFor,
-		IJavaSearchScope scope,
+		IJavaScriptSearchScope scope,
 		final IRestrictedAccessTypeRequestor nameRequestor,
 		int waitingPolicy,
-		IProgressMonitor progressMonitor)  throws JavaModelException {
+		IProgressMonitor progressMonitor)  throws JavaScriptModelException {
 
 		if (VERBOSE) {
-			Util.verbose("BasicSearchEngine.searchAllTypeNames(char[], char[], int, int, IJavaSearchScope, IRestrictedAccessTypeRequestor, int, IProgressMonitor)"); //$NON-NLS-1$
+			Util.verbose("BasicSearchEngine.searchAllTypeNames(char[], char[], int, int, IJavaScriptSearchScope, IRestrictedAccessTypeRequestor, int, IProgressMonitor)"); //$NON-NLS-1$
 			Util.verbose("	- package name: "+(packageName==null?"null":new String(packageName))); //$NON-NLS-1$ //$NON-NLS-2$
 			Util.verbose("	- match rule: "+getMatchRuleString(packageMatchRule)); //$NON-NLS-1$
 			Util.verbose("	- type name: "+(typeName==null?"null":new String(typeName))); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1092,25 +1092,25 @@ public class BasicSearchEngine {
 		IndexManager indexManager = JavaModelManager.getJavaModelManager().getIndexManager();
 		final char typeSuffix;
 		switch(searchFor){
-			case IJavaSearchConstants.CLASS :
+			case IJavaScriptSearchConstants.CLASS :
 				typeSuffix = IIndexConstants.CLASS_SUFFIX;
 				break;
-			case IJavaSearchConstants.CLASS_AND_INTERFACE :
+			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE :
 				typeSuffix = IIndexConstants.CLASS_AND_INTERFACE_SUFFIX;
 				break;
-			case IJavaSearchConstants.CLASS_AND_ENUM :
+			case IJavaScriptSearchConstants.CLASS_AND_ENUM :
 				typeSuffix = IIndexConstants.CLASS_AND_ENUM_SUFFIX;
 				break;
-			case IJavaSearchConstants.INTERFACE :
+			case IJavaScriptSearchConstants.INTERFACE :
 				typeSuffix = IIndexConstants.INTERFACE_SUFFIX;
 				break;
-			case IJavaSearchConstants.INTERFACE_AND_ANNOTATION :
+			case IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION :
 				typeSuffix = IIndexConstants.INTERFACE_AND_ANNOTATION_SUFFIX;
 				break;
-			case IJavaSearchConstants.ENUM :
+			case IJavaScriptSearchConstants.ENUM :
 				typeSuffix = IIndexConstants.ENUM_SUFFIX;
 				break;
-			case IJavaSearchConstants.ANNOTATION_TYPE :
+			case IJavaScriptSearchConstants.ANNOTATION_TYPE :
 				typeSuffix = IIndexConstants.ANNOTATION_TYPE_SUFFIX;
 				break;
 			default :
@@ -1134,14 +1134,14 @@ public class BasicSearchEngine {
 		// Get working copy path(s). Store in a single string in case of only one to optimize comparison in requestor
 		final HashSet workingCopyPaths = new HashSet();
 		String workingCopyPath = null;
-		ICompilationUnit[] copies = getWorkingCopies();
+		IJavaScriptUnit[] copies = getWorkingCopies();
 		final int copiesLength = copies == null ? 0 : copies.length;
 		if (copies != null) {
 			if (copiesLength == 1) {
 				workingCopyPath = copies[0].getPath().toString();
 			} else {
 				for (int i = 0; i < copiesLength; i++) {
-					ICompilationUnit workingCopy = copies[i];
+					IJavaScriptUnit workingCopy = copies[i];
 					workingCopyPaths.add(workingCopy.getPath().toString());
 				}
 			}
@@ -1218,7 +1218,7 @@ public class BasicSearchEngine {
 			// add type names from working copies
 			if (copies != null) {
 				for (int i = 0; i < copiesLength; i++) {
-					final ICompilationUnit workingCopy = copies[i];
+					final IJavaScriptUnit workingCopy = copies[i];
 					if (!scope.encloses(workingCopy)) continue;
 					final String path = workingCopy.getPath().toString();
 					if (workingCopy.isConsistent()) {
@@ -1227,7 +1227,7 @@ public class BasicSearchEngine {
 						IType[] allTypes = workingCopy.getAllTypes();
 						for (int j = 0, allTypesLength = allTypes.length; j < allTypesLength; j++) {
 							IType type = allTypes[j];
-							IJavaElement parent = type.getParent();
+							IJavaScriptElement parent = type.getParent();
 							char[][] enclosingTypeNames;
 							if (parent instanceof IType) {
 								char[] parentQualifiedName = ((IType)parent).getTypeQualifiedName('.').toCharArray();
@@ -1319,7 +1319,7 @@ public class BasicSearchEngine {
 	 * Searches for all top-level types and member types in the given scope using  a case sensitive exact match
 	 * with the given qualified names and type names.
 	 *
-	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchAllTypeNames(char[][], char[][], IJavaSearchScope, org.eclipse.wst.jsdt.core.search.TypeNameRequestor, int, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchAllTypeNames(char[][], char[][], IJavaScriptSearchScope, org.eclipse.wst.jsdt.core.search.TypeNameRequestor, int, IProgressMonitor)
 	 * 	for detailed comment
 	 */
 	public void searchAllTypeNames(
@@ -1327,13 +1327,13 @@ public class BasicSearchEngine {
 		final char[][] typeNames,
 		final int matchRule,
 		int searchFor,
-		IJavaSearchScope scope,
+		IJavaScriptSearchScope scope,
 		final IRestrictedAccessTypeRequestor nameRequestor,
 		int waitingPolicy,
-		IProgressMonitor progressMonitor)  throws JavaModelException {
+		IProgressMonitor progressMonitor)  throws JavaScriptModelException {
 
 		if (VERBOSE) {
-			Util.verbose("BasicSearchEngine.searchAllTypeNames(char[][], char[][], int, int, IJavaSearchScope, IRestrictedAccessTypeRequestor, int, IProgressMonitor)"); //$NON-NLS-1$
+			Util.verbose("BasicSearchEngine.searchAllTypeNames(char[][], char[][], int, int, IJavaScriptSearchScope, IRestrictedAccessTypeRequestor, int, IProgressMonitor)"); //$NON-NLS-1$
 			Util.verbose("	- package name: "+(qualifications==null?"null":new String(CharOperation.concatWith(qualifications, ',')))); //$NON-NLS-1$ //$NON-NLS-2$
 			Util.verbose("	- type name: "+(typeNames==null?"null":new String(CharOperation.concatWith(typeNames, ',')))); //$NON-NLS-1$ //$NON-NLS-2$
 			Util.verbose("	- match rule: "+matchRule); //$NON-NLS-1$
@@ -1344,25 +1344,25 @@ public class BasicSearchEngine {
 
 		final char typeSuffix;
 		switch(searchFor){
-			case IJavaSearchConstants.CLASS :
+			case IJavaScriptSearchConstants.CLASS :
 				typeSuffix = IIndexConstants.CLASS_SUFFIX;
 				break;
-			case IJavaSearchConstants.CLASS_AND_INTERFACE :
+			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE :
 				typeSuffix = IIndexConstants.CLASS_AND_INTERFACE_SUFFIX;
 				break;
-			case IJavaSearchConstants.CLASS_AND_ENUM :
+			case IJavaScriptSearchConstants.CLASS_AND_ENUM :
 				typeSuffix = IIndexConstants.CLASS_AND_ENUM_SUFFIX;
 				break;
-			case IJavaSearchConstants.INTERFACE :
+			case IJavaScriptSearchConstants.INTERFACE :
 				typeSuffix = IIndexConstants.INTERFACE_SUFFIX;
 				break;
-			case IJavaSearchConstants.INTERFACE_AND_ANNOTATION :
+			case IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION :
 				typeSuffix = IIndexConstants.INTERFACE_AND_ANNOTATION_SUFFIX;
 				break;
-			case IJavaSearchConstants.ENUM :
+			case IJavaScriptSearchConstants.ENUM :
 				typeSuffix = IIndexConstants.ENUM_SUFFIX;
 				break;
-			case IJavaSearchConstants.ANNOTATION_TYPE :
+			case IJavaScriptSearchConstants.ANNOTATION_TYPE :
 				typeSuffix = IIndexConstants.ANNOTATION_TYPE_SUFFIX;
 				break;
 			default :
@@ -1374,14 +1374,14 @@ public class BasicSearchEngine {
 		// Get working copy path(s). Store in a single string in case of only one to optimize comparison in requestor
 		final HashSet workingCopyPaths = new HashSet();
 		String workingCopyPath = null;
-		ICompilationUnit[] copies = getWorkingCopies();
+		IJavaScriptUnit[] copies = getWorkingCopies();
 		final int copiesLength = copies == null ? 0 : copies.length;
 		if (copies != null) {
 			if (copiesLength == 1) {
 				workingCopyPath = copies[0].getPath().toString();
 			} else {
 				for (int i = 0; i < copiesLength; i++) {
-					ICompilationUnit workingCopy = copies[i];
+					IJavaScriptUnit workingCopy = copies[i];
 					workingCopyPaths.add(workingCopy.getPath().toString());
 				}
 			}
@@ -1456,7 +1456,7 @@ public class BasicSearchEngine {
 			// add type names from working copies
 			if (copies != null) {
 				for (int i = 0, length = copies.length; i < length; i++) {
-					ICompilationUnit workingCopy = copies[i];
+					IJavaScriptUnit workingCopy = copies[i];
 					final String path = workingCopy.getPath().toString();
 					if (workingCopy.isConsistent()) {
 						IPackageDeclaration[] packageDeclarations = workingCopy.getPackageDeclarations();
@@ -1464,7 +1464,7 @@ public class BasicSearchEngine {
 						IType[] allTypes = workingCopy.getAllTypes();
 						for (int j = 0, allTypesLength = allTypes.length; j < allTypesLength; j++) {
 							IType type = allTypes[j];
-							IJavaElement parent = type.getParent();
+							IJavaScriptElement parent = type.getParent();
 							char[][] enclosingTypeNames;
 							char[] qualification = packageDeclaration;
 							if (parent instanceof IType) {
@@ -1544,15 +1544,15 @@ public class BasicSearchEngine {
 		}
 	}
 
-	public void searchDeclarations(IJavaElement enclosingElement, SearchRequestor requestor, SearchPattern pattern, IProgressMonitor monitor) throws JavaModelException {
+	public void searchDeclarations(IJavaScriptElement enclosingElement, SearchRequestor requestor, SearchPattern pattern, IProgressMonitor monitor) throws JavaScriptModelException {
 		if (VERBOSE) {
 			Util.verbose("	- java element: "+enclosingElement); //$NON-NLS-1$
 		}
-		IJavaSearchScope scope = createJavaSearchScope(new IJavaElement[] {enclosingElement});
+		IJavaScriptSearchScope scope = createJavaSearchScope(new IJavaScriptElement[] {enclosingElement});
 		IResource resource = enclosingElement.getResource();
 		if (enclosingElement instanceof IMember) {
 			IMember member = (IMember) enclosingElement;
-			ICompilationUnit cu = member.getCompilationUnit();
+			IJavaScriptUnit cu = member.getJavaScriptUnit();
 			if (cu != null) {
 				resource = cu.getResource();
 			} else if (member.isBinary()) {
@@ -1592,9 +1592,9 @@ public class BasicSearchEngine {
 					monitor);
 			}
 		} catch (CoreException e) {
-			if (e instanceof JavaModelException)
-				throw (JavaModelException) e;
-			throw new JavaModelException(e);
+			if (e instanceof JavaScriptModelException)
+				throw (JavaScriptModelException) e;
+			throw new JavaScriptModelException(e);
 		}
 	}
 
@@ -1603,12 +1603,12 @@ public class BasicSearchEngine {
 	 * The element can be a compilation unit, a source type, or a source method.
 	 * Reports the field declarations using the given requestor.
 	 *
-	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchDeclarationsOfAccessedFields(IJavaElement, SearchRequestor, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchDeclarationsOfAccessedFields(IJavaScriptElement, SearchRequestor, IProgressMonitor)
 	 * 	for detailed comment
 	 */
-	public void searchDeclarationsOfAccessedFields(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
+	public void searchDeclarationsOfAccessedFields(IJavaScriptElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaScriptModelException {
 		if (VERBOSE) {
-			Util.verbose("BasicSearchEngine.searchDeclarationsOfAccessedFields(IJavaElement, SearchRequestor, SearchPattern, IProgressMonitor)"); //$NON-NLS-1$
+			Util.verbose("BasicSearchEngine.searchDeclarationsOfAccessedFields(IJavaScriptElement, SearchRequestor, SearchPattern, IProgressMonitor)"); //$NON-NLS-1$
 		}
 		SearchPattern pattern = new DeclarationOfAccessedFieldsPattern(enclosingElement);
 		searchDeclarations(enclosingElement, requestor, pattern, monitor);
@@ -1619,12 +1619,12 @@ public class BasicSearchEngine {
 	 * The element can be a compilation unit, a source type, or a source method.
 	 * Reports the type declarations using the given requestor.
 	 *
-	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchDeclarationsOfReferencedTypes(IJavaElement, SearchRequestor, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchDeclarationsOfReferencedTypes(IJavaScriptElement, SearchRequestor, IProgressMonitor)
 	 * 	for detailed comment
 	 */
-	public void searchDeclarationsOfReferencedTypes(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
+	public void searchDeclarationsOfReferencedTypes(IJavaScriptElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaScriptModelException {
 		if (VERBOSE) {
-			Util.verbose("BasicSearchEngine.searchDeclarationsOfReferencedTypes(IJavaElement, SearchRequestor, SearchPattern, IProgressMonitor)"); //$NON-NLS-1$
+			Util.verbose("BasicSearchEngine.searchDeclarationsOfReferencedTypes(IJavaScriptElement, SearchRequestor, SearchPattern, IProgressMonitor)"); //$NON-NLS-1$
 		}
 		SearchPattern pattern = new DeclarationOfReferencedTypesPattern(enclosingElement);
 		searchDeclarations(enclosingElement, requestor, pattern, monitor);
@@ -1635,12 +1635,12 @@ public class BasicSearchEngine {
 	 * The element can be a compilation unit, a source type, or a source method.
 	 * Reports the method declarations using the given requestor.
 	 *
-	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchDeclarationsOfSentMessages(IJavaElement, SearchRequestor, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchDeclarationsOfSentMessages(IJavaScriptElement, SearchRequestor, IProgressMonitor)
 	 * 	for detailed comment
 	 */
-	public void searchDeclarationsOfSentMessages(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
+	public void searchDeclarationsOfSentMessages(IJavaScriptElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaScriptModelException {
 		if (VERBOSE) {
-			Util.verbose("BasicSearchEngine.searchDeclarationsOfSentMessages(IJavaElement, SearchRequestor, SearchPattern, IProgressMonitor)"); //$NON-NLS-1$
+			Util.verbose("BasicSearchEngine.searchDeclarationsOfSentMessages(IJavaScriptElement, SearchRequestor, SearchPattern, IProgressMonitor)"); //$NON-NLS-1$
 		}
 		SearchPattern pattern = new DeclarationOfReferencedMethodsPattern(enclosingElement);
 		searchDeclarations(enclosingElement, requestor, pattern, monitor);

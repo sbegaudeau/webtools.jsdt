@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.RenameResourceAction
  * Renames a Java element or workbench resource.
  * <p>
  * Action is applicable to selections containing elements of type
- * <code>IJavaElement</code> or <code>IResource</code>.
+ * <code>IJavaScriptElement</code> or <code>IResource</code>.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.

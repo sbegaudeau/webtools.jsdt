@@ -62,17 +62,17 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
 import org.eclipse.ui.actions.CopyProjectOperation;
 import org.eclipse.ui.part.ResourceTransfer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
@@ -82,7 +82,7 @@ import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
@@ -103,7 +103,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringExecutionHelper;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
@@ -112,7 +112,7 @@ import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.OthersWorkingSetUpdater;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
@@ -129,7 +129,7 @@ public class PasteAction extends SelectionDispatchAction{
 		setText(ReorgMessages.PasteAction_4); 
 		setDescription(ReorgMessages.PasteAction_5); 
 
-		ISharedImages workbenchImages= JavaPlugin.getDefault().getWorkbench().getSharedImages();
+		ISharedImages workbenchImages= JavaScriptPlugin.getDefault().getWorkbench().getSharedImages();
 		setDisabledImageDescriptor(workbenchImages.getImageDescriptor(ISharedImages.IMG_TOOL_PASTE_DISABLED));
 		setImageDescriptor(workbenchImages.getImageDescriptor(ISharedImages.IMG_TOOL_PASTE));
 		setHoverImageDescriptor(workbenchImages.getImageDescriptor(ISharedImages.IMG_TOOL_PASTE));
@@ -144,7 +144,7 @@ public class PasteAction extends SelectionDispatchAction{
 		// Moved condition checking to run (see http://bugs.eclipse.org/bugs/show_bug.cgi?id=78450)
 	}
 
-	private Paster[] createEnabledPasters(TransferData[] availableDataTypes) throws JavaModelException {
+	private Paster[] createEnabledPasters(TransferData[] availableDataTypes) throws JavaScriptModelException {
 		Paster paster;
 		Shell shell = getShell();
 		List result= new ArrayList(2);
@@ -197,7 +197,7 @@ public class PasteAction extends SelectionDispatchAction{
 			TransferData[] availableTypes= fClipboard.getAvailableTypes();
 			List elements= selection.toList();
 			IResource[] resources= ReorgUtils.getResources(elements);
-			IJavaElement[] javaElements= ReorgUtils.getJavaElements(elements);
+			IJavaScriptElement[] javaElements= ReorgUtils.getJavaElements(elements);
 			IWorkingSet[] workingSets= ReorgUtils.getWorkingSets(elements);
 			Paster[] pasters= createEnabledPasters(availableTypes);
 			for (int i= 0; i < pasters.length; i++) {
@@ -209,8 +209,8 @@ public class PasteAction extends SelectionDispatchAction{
 			String msg= resources.length + javaElements.length + workingSets.length == 0
 					? ReorgMessages.PasteAction_cannot_no_selection
 					: ReorgMessages.PasteAction_cannot_selection;
-			MessageDialog.openError(JavaPlugin.getActiveWorkbenchShell(), ReorgMessages.PasteAction_name, msg); 
-		} catch (JavaModelException e) {
+			MessageDialog.openError(JavaScriptPlugin.getActiveWorkbenchShell(), ReorgMessages.PasteAction_name, msg); 
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringMessages.OpenRefactoringWizardAction_exception); 
 		} catch (InvocationTargetException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringMessages.OpenRefactoringWizardAction_exception); 
@@ -241,10 +241,10 @@ public class PasteAction extends SelectionDispatchAction{
 			return null;
 		}
 
-		protected final IJavaElement[] getClipboardJavaElements(TransferData[] availableDataTypes) {
+		protected final IJavaScriptElement[] getClipboardJavaElements(TransferData[] availableDataTypes) {
 			Transfer transfer= JavaElementTransfer.getInstance();
 			if (isAvailable(transfer, availableDataTypes)) {
-				return (IJavaElement[])getContents(fClipboard2, transfer, getShell());
+				return (IJavaScriptElement[])getContents(fClipboard2, transfer, getShell());
 			}
 			return null;
 		}
@@ -267,12 +267,12 @@ public class PasteAction extends SelectionDispatchAction{
 
 		/**
 		 * Used to be called on selection change, but is only called on execution now
-		 * (before {@link #canPasteOn(IJavaElement[], IResource[], IWorkingSet[])}).
+		 * (before {@link #canPasteOn(IJavaScriptElement[], IResource[], IWorkingSet[])}).
 		 * @param availableTypes transfer types
 		 * @return whether the paste action can be enabled
-		 * @throws JavaModelException 
+		 * @throws JavaScriptModelException 
 		 */
-		public abstract boolean canEnable(TransferData[] availableTypes)  throws JavaModelException;
+		public abstract boolean canEnable(TransferData[] availableTypes)  throws JavaScriptModelException;
 		
 		/**
 		 * Only called if {@link #canEnable(TransferData[])} returns <code>true</code>.
@@ -280,21 +280,21 @@ public class PasteAction extends SelectionDispatchAction{
 		 * @param selectedResources 
 		 * @param selectedWorkingSets 
 		 * @return whether the paste action can be enabled
-		 * @throws JavaModelException 
+		 * @throws JavaScriptModelException 
 		 */
-		public abstract boolean canPasteOn(IJavaElement[] selectedJavaElements, IResource[] selectedResources, IWorkingSet[] selectedWorkingSets)  throws JavaModelException;
+		public abstract boolean canPasteOn(IJavaScriptElement[] selectedJavaElements, IResource[] selectedResources, IWorkingSet[] selectedWorkingSets)  throws JavaScriptModelException;
 		
 		/**
-		 * only called if {@link #canPasteOn(IJavaElement[], IResource[], IWorkingSet[])} returns <code>true</code>
+		 * only called if {@link #canPasteOn(IJavaScriptElement[], IResource[], IWorkingSet[])} returns <code>true</code>
 		 * @param selectedJavaElements 
 		 * @param selectedResources 
 		 * @param selectedWorkingSets 
 		 * @param availableTypes 
-		 * @throws JavaModelException 
+		 * @throws JavaScriptModelException 
 		 * @throws InterruptedException 
 		 * @throws InvocationTargetException 
 		 */
-		public abstract void paste(IJavaElement[] selectedJavaElements, IResource[] selectedResources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) throws JavaModelException, InterruptedException, InvocationTargetException;
+		public abstract void paste(IJavaScriptElement[] selectedJavaElements, IResource[] selectedResources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) throws JavaScriptModelException, InterruptedException, InvocationTargetException;
 	}
     
     private static class TextPaster extends Paster {
@@ -304,7 +304,7 @@ public class PasteAction extends SelectionDispatchAction{
 			private final String fTypeName;
 			private final String fPackageName;
 
-			public static ParsedCu[] parse(IJavaProject javaProject, String text) {
+			public static ParsedCu[] parse(IJavaScriptProject javaProject, String text) {
 				IScanner scanner= ToolFactory.createScanner(false, false, false, false);
 				scanner.setSource(text.toCharArray());
 				
@@ -340,13 +340,13 @@ public class PasteAction extends SelectionDispatchAction{
 				return (ParsedCu[]) cus.toArray(new ParsedCu[cus.size()]);
 			}
 			
-			private static ParsedCu parseCu(IJavaProject javaProject, String text) {
+			private static ParsedCu parseCu(IJavaScriptProject javaProject, String text) {
 				String packageName= IPackageFragment.DEFAULT_PACKAGE_NAME;
 				ASTParser parser= ASTParser.newParser(AST.JLS3);
 				parser.setProject(javaProject);
 				parser.setSource(text.toCharArray());
 				parser.setStatementsRecovery(true);
-				CompilationUnit unit= (CompilationUnit) parser.createAST(null);
+				JavaScriptUnit unit= (JavaScriptUnit) parser.createAST(null);
 				
 				if (unit == null)
 					return null;
@@ -412,7 +412,7 @@ public class PasteAction extends SelectionDispatchAction{
 			return PasteAction.isAvailable(TextTransfer.getInstance(), availableTypes);
 		}
 
-		public boolean canPasteOn(IJavaElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets) throws JavaModelException {
+		public boolean canPasteOn(IJavaScriptElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets) throws JavaScriptModelException {
 			if (selectedWorkingSets.length != 0)
 				return false;
 			if (resources.length != 0)
@@ -421,11 +421,11 @@ public class PasteAction extends SelectionDispatchAction{
 				return false;
 			
 			String text= getClipboardText(fAvailableTypes);
-			IJavaProject javaProject= null;
-			IJavaElement destination= null;
+			IJavaScriptProject javaProject= null;
+			IJavaScriptElement destination= null;
 			if (javaElements.length == 1) {
 				destination= javaElements[0];
-				javaProject= destination.getJavaProject();
+				javaProject= destination.getJavaScriptProject();
 			}
 			fParsedCus= ParsedCu.parse(javaProject, text);
 			
@@ -443,8 +443,8 @@ public class PasteAction extends SelectionDispatchAction{
 			IPackageFragmentRoot packageFragmentRoot;
 			IPackageFragment destinationPack;
 			switch (destination.getElementType()) {
-				case IJavaElement.JAVA_PROJECT :
-					IPackageFragmentRoot[] packageFragmentRoots= ((IJavaProject) destination).getPackageFragmentRoots();
+				case IJavaScriptElement.JAVASCRIPT_PROJECT :
+					IPackageFragmentRoot[] packageFragmentRoots= ((IJavaScriptProject) destination).getPackageFragmentRoots();
 					for (int i= 0; i < packageFragmentRoots.length; i++) {
 						packageFragmentRoot= packageFragmentRoots[i];
 						if (isWritable(packageFragmentRoot)) {
@@ -454,7 +454,7 @@ public class PasteAction extends SelectionDispatchAction{
 					}
 					return false;
 					
-				case IJavaElement.PACKAGE_FRAGMENT_ROOT :
+				case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT :
 					packageFragmentRoot= (IPackageFragmentRoot) destination;
 					if (isWritable(packageFragmentRoot)) {
 						fDestination= packageFragmentRoot;
@@ -462,7 +462,7 @@ public class PasteAction extends SelectionDispatchAction{
 					}
 					return false;
 					
-				case IJavaElement.PACKAGE_FRAGMENT :
+				case IJavaScriptElement.PACKAGE_FRAGMENT :
 					destinationPack= (IPackageFragment) destination;
 					packageFragmentRoot= (IPackageFragmentRoot) destinationPack.getParent();
 					if (isWritable(packageFragmentRoot)) {
@@ -474,7 +474,7 @@ public class PasteAction extends SelectionDispatchAction{
 					}
 					return false;
 					
-				case IJavaElement.COMPILATION_UNIT :
+				case IJavaScriptElement.JAVASCRIPT_UNIT :
 					destinationPack= (IPackageFragment) destination.getParent();
 					packageFragmentRoot= (IPackageFragmentRoot) destinationPack.getParent();
 					if (isWritable(packageFragmentRoot)) {
@@ -495,12 +495,12 @@ public class PasteAction extends SelectionDispatchAction{
 			try {
 				return packageFragmentRoot.exists() && ! packageFragmentRoot.isArchive() && ! packageFragmentRoot.isReadOnly()
 						&& packageFragmentRoot.getKind() == IPackageFragmentRoot.K_SOURCE;
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return false;
 			}
 		}
 
-		public void paste(IJavaElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) throws JavaModelException, InterruptedException, InvocationTargetException{
+		public void paste(IJavaScriptElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) throws JavaScriptModelException, InterruptedException, InvocationTargetException{
 			final IEditorPart[] editorPart= new IEditorPart[1];
 			
 			IRunnableWithProgress op= new IRunnableWithProgress() {
@@ -510,7 +510,7 @@ public class PasteAction extends SelectionDispatchAction{
 				public void run(IProgressMonitor monitor) throws InvocationTargetException {
 					final ArrayList cus= new ArrayList();
 					try {
-						JavaCore.run(new IWorkspaceRunnable() {
+						JavaScriptCore.run(new IWorkspaceRunnable() {
 							public void run(IProgressMonitor pm) throws CoreException {
 								pm.beginTask("", 1 + fParsedCus.length); //$NON-NLS-1$
 					
@@ -523,7 +523,7 @@ public class PasteAction extends SelectionDispatchAction{
 								for (int i= 0; i < fParsedCus.length; i++) {
 									if (pm.isCanceled())
 										break;
-									ICompilationUnit cu= pasteCU(fParsedCus[i], new SubProgressMonitor(pm, 1), confirmQuery);
+									IJavaScriptUnit cu= pasteCU(fParsedCus[i], new SubProgressMonitor(pm, 1), confirmQuery);
 									if (cu != null)
 										cus.add(cu);
 								}
@@ -537,11 +537,11 @@ public class PasteAction extends SelectionDispatchAction{
 					} finally {
 						monitor.done();
 					}
-					IResource[] cuResources= ResourceUtil.getFiles((ICompilationUnit[]) cus.toArray(new ICompilationUnit[cus.size()]));
+					IResource[] cuResources= ResourceUtil.getFiles((IJavaScriptUnit[]) cus.toArray(new IJavaScriptUnit[cus.size()]));
 					SelectionUtil.selectAndReveal(cuResources, PlatformUI.getWorkbench().getActiveWorkbenchWindow());
 				}
 
-				private ICompilationUnit pasteCU(ParsedCu parsedCu, SubProgressMonitor pm, IConfirmQuery confirmQuery) throws CoreException, OperationCanceledException {
+				private IJavaScriptUnit pasteCU(ParsedCu parsedCu, SubProgressMonitor pm, IConfirmQuery confirmQuery) throws CoreException, OperationCanceledException {
 					pm.beginTask("", 4); //$NON-NLS-1$
 					try {
 						IPackageFragment destinationPack;
@@ -559,7 +559,7 @@ public class PasteAction extends SelectionDispatchAction{
 						}
 						
 						final String cuName= parsedCu.getTypeName() + JavaModelUtil.DEFAULT_CU_SUFFIX;
-						ICompilationUnit cu= destinationPack.getCompilationUnit(cuName);
+						IJavaScriptUnit cu= destinationPack.getJavaScriptUnit(cuName);
 						boolean alreadyExists= cu.exists();
 						if (alreadyExists) {
 							String msg= Messages.format(ReorgMessages.PasteAction_TextPaster_exists, new Object[] {cuName});
@@ -600,13 +600,13 @@ public class PasteAction extends SelectionDispatchAction{
 					int i= 1;
 					do {
 						String name= Messages.format(ReorgMessages.PasteAction_projectName, i == 1 ? (Object) "" : new Integer(i)); //$NON-NLS-1$
-						project= JavaPlugin.getWorkspace().getRoot().getProject(name);
+						project= JavaScriptPlugin.getWorkspace().getRoot().getProject(name);
 						i++;
 					} while (project.exists());
 					
 					BuildPathsBlock.createProject(project, null, new SubProgressMonitor(pm, 3));
 					BuildPathsBlock.addJavaNature(project, new SubProgressMonitor(pm, 1));
-					IJavaProject javaProject= JavaCore.create(project);
+					IJavaScriptProject javaProject= JavaScriptCore.create(project);
 					
 					IResource srcFolder;
 					IPreferenceStore store= PreferenceConstants.getPreferenceStore();
@@ -628,11 +628,11 @@ public class PasteAction extends SelectionDispatchAction{
 						JavaModelUtil.setDefaultClassfileOptions(options, fCompilerCompliance);
 						javaProject.setOptions(options);
 					}
-					IClasspathEntry srcEntry= JavaCore.newSourceEntry(srcFolder.getFullPath());
-					IClasspathEntry jreEntry= JavaCore.newContainerEntry(fVMPath);
+					IIncludePathEntry srcEntry= JavaScriptCore.newSourceEntry(srcFolder.getFullPath());
+					IIncludePathEntry jreEntry= JavaScriptCore.newContainerEntry(fVMPath);
 					//IPath outputLocation= BuildPathsBlock.getDefaultOutputLocation(javaProject);
-					IClasspathEntry[] cpes= new IClasspathEntry[] { srcEntry, jreEntry };
-					javaProject.setRawClasspath(cpes, null, new SubProgressMonitor(pm, 1));
+					IIncludePathEntry[] cpes= new IIncludePathEntry[] { srcEntry, jreEntry };
+					javaProject.setRawIncludepath(cpes, null, new SubProgressMonitor(pm, 1));
 					return javaProject.getPackageFragmentRoot(srcFolder);
 				}
 
@@ -688,7 +688,7 @@ public class PasteAction extends SelectionDispatchAction{
 //					}
 //				}
 
-				private void removePackageDeclaration(final ICompilationUnit cu) throws JavaModelException, CoreException {
+				private void removePackageDeclaration(final IJavaScriptUnit cu) throws JavaScriptModelException, CoreException {
 					IPackageDeclaration[] packageDeclarations= cu.getPackageDeclarations();
 					if (packageDeclarations.length != 0) {
 						ITextFileBuffer buffer= null;
@@ -697,7 +697,7 @@ public class PasteAction extends SelectionDispatchAction{
 							ISourceRange sourceRange= packageDeclarations[0].getSourceRange();
 							buffer.getDocument().replace(sourceRange.getOffset(), sourceRange.getLength(), ""); //$NON-NLS-1$
 						} catch (BadLocationException e) {
-							JavaPlugin.log(e);
+							JavaScriptPlugin.log(e);
 						} finally {
 							if (buffer != null)
 								RefactoringFileBuffers.release(cu);
@@ -706,24 +706,24 @@ public class PasteAction extends SelectionDispatchAction{
 				}
 			};
 			
-			IRunnableContext context= JavaPlugin.getActiveWorkbenchWindow();
+			IRunnableContext context= JavaScriptPlugin.getActiveWorkbenchWindow();
 			if (context == null) {
 				context= new BusyIndicatorRunnableContext();
 			}
-			PlatformUI.getWorkbench().getProgressService().runInUI(context, op, JavaPlugin.getWorkspace().getRoot());
+			PlatformUI.getWorkbench().getProgressService().runInUI(context, op, JavaScriptPlugin.getWorkspace().getRoot());
 			
 			if (editorPart[0] != null)
 				editorPart[0].getEditorSite().getPage().activate(editorPart[0]); //activate editor again, since runInUI restores previous active part
 		}
 
-		private IEditorPart openCu(ICompilationUnit cu) {
+		private IEditorPart openCu(IJavaScriptUnit cu) {
 			try {
-				return JavaUI.openInEditor(cu, true, true);
+				return JavaScriptUI.openInEditor(cu, true, true);
 			} catch (PartInitException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 				return null;
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 				return null;
 			}
 		}
@@ -733,10 +733,10 @@ public class PasteAction extends SelectionDispatchAction{
 		protected WorkingSetPaster(Shell shell, Clipboard clipboard) {
 			super(shell, clipboard);
 		}
-		public void paste(IJavaElement[] selectedJavaElements, IResource[] selectedResources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) throws JavaModelException, InterruptedException, InvocationTargetException {
+		public void paste(IJavaScriptElement[] selectedJavaElements, IResource[] selectedResources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) throws JavaScriptModelException, InterruptedException, InvocationTargetException {
 			IWorkingSet workingSet= selectedWorkingSets[0];
 			Set elements= new HashSet(Arrays.asList(workingSet.getElements()));
-			IJavaElement[] javaElements= getClipboardJavaElements(availableTypes);
+			IJavaScriptElement[] javaElements= getClipboardJavaElements(availableTypes);
 			if (javaElements != null) {
 				for (int i= 0; i < javaElements.length; i++) {
 					if (!ReorgUtils.containsElementOrParent(elements, javaElements[i]))
@@ -749,7 +749,7 @@ public class PasteAction extends SelectionDispatchAction{
 				List realResource= new ArrayList();
 				ReorgUtils.splitIntoJavaElementsAndResources(resources, realJavaElements, realResource);
 				for (Iterator iter= realJavaElements.iterator(); iter.hasNext();) {
-					IJavaElement element= (IJavaElement)iter.next();
+					IJavaScriptElement element= (IJavaScriptElement)iter.next();
 					if (!ReorgUtils.containsElementOrParent(elements, element))
 						elements.add(element);
 				}
@@ -761,11 +761,11 @@ public class PasteAction extends SelectionDispatchAction{
 			}
 			workingSet.setElements((IAdaptable[])elements.toArray(new IAdaptable[elements.size()]));
 		}
-		public boolean canEnable(TransferData[] availableTypes) throws JavaModelException {
+		public boolean canEnable(TransferData[] availableTypes) throws JavaScriptModelException {
 			return isAvailable(ResourceTransfer.getInstance(), availableTypes) ||
 				isAvailable(JavaElementTransfer.getInstance(), availableTypes);
 		}
-		public boolean canPasteOn(IJavaElement[] selectedJavaElements, IResource[] selectedResources, IWorkingSet[] selectedWorkingSets) throws JavaModelException {
+		public boolean canPasteOn(IJavaScriptElement[] selectedJavaElements, IResource[] selectedResources, IWorkingSet[] selectedWorkingSets) throws JavaScriptModelException {
 			if (selectedResources.length != 0 || selectedJavaElements.length != 0 || selectedWorkingSets.length != 1)
 				return false;
 			IWorkingSet ws= selectedWorkingSets[0];
@@ -789,7 +789,7 @@ public class PasteAction extends SelectionDispatchAction{
 			return canPasteJavaProjects(availableDataTypes) && canPasteSimpleProjects(availableDataTypes);
     	}
     	
-		public void paste(IJavaElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) {
+		public void paste(IJavaScriptElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) {
 			pasteProjects(availableTypes);
 		}
 
@@ -805,7 +805,7 @@ public class PasteAction extends SelectionDispatchAction{
 		}
 		private IProject[] getProjectsToPaste(TransferData[] availableTypes) {
 			IResource[] resources= getClipboardResources(availableTypes);
-			IJavaElement[] javaElements= getClipboardJavaElements(availableTypes);
+			IJavaScriptElement[] javaElements= getClipboardJavaElements(availableTypes);
 			Set result= new HashSet();
 			if (resources != null)
 				result.addAll(Arrays.asList(resources));
@@ -815,15 +815,15 @@ public class PasteAction extends SelectionDispatchAction{
 			return (IProject[]) result.toArray(new IProject[result.size()]);
 		}
 
-		public boolean canPasteOn(IJavaElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets) {
+		public boolean canPasteOn(IJavaScriptElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets) {
 			return selectedWorkingSets.length == 0; // Can't paste on working sets here
 		}
 		
 		private boolean canPasteJavaProjects(TransferData[] availableDataTypes) {
-			IJavaElement[] javaElements= getClipboardJavaElements(availableDataTypes);
+			IJavaScriptElement[] javaElements= getClipboardJavaElements(availableDataTypes);
 			return 	javaElements != null && 
 					javaElements.length != 0 && 
-					! ReorgUtils.hasElementsNotOfType(javaElements, IJavaElement.JAVA_PROJECT);
+					! ReorgUtils.hasElementsNotOfType(javaElements, IJavaScriptElement.JAVASCRIPT_PROJECT);
 		}
 
 		private boolean canPasteSimpleProjects(TransferData[] availableDataTypes) {
@@ -842,7 +842,7 @@ public class PasteAction extends SelectionDispatchAction{
 			super(shell, clipboard);
 		}
 
-		public void paste(IJavaElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) throws JavaModelException {
+		public void paste(IJavaScriptElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) throws JavaScriptModelException {
 			String[] fileData= getClipboardFiles(availableTypes);
 			if (fileData == null)
 				return;
@@ -854,7 +854,7 @@ public class PasteAction extends SelectionDispatchAction{
 			new CopyFilesAndFoldersOperation(getShell()).copyFiles(fileData, container);
 		}
 		
-		private Object getTarget(IJavaElement[] javaElements, IResource[] resources) {
+		private Object getTarget(IJavaScriptElement[] javaElements, IResource[] resources) {
 			if (javaElements.length + resources.length == 1){
 				if (javaElements.length == 1)
 					return javaElements[0];
@@ -864,18 +864,18 @@ public class PasteAction extends SelectionDispatchAction{
 				return getCommonParent(javaElements, resources);
 		}
 
-		public boolean canPasteOn(IJavaElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets) throws JavaModelException {
+		public boolean canPasteOn(IJavaScriptElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets) throws JavaScriptModelException {
 			Object target= getTarget(javaElements, resources);
 			return target != null && canPasteFilesOn(getAsContainer(target)) && selectedWorkingSets.length == 0;
 		}
 
-		public boolean canEnable(TransferData[] availableDataTypes) throws JavaModelException {
+		public boolean canEnable(TransferData[] availableDataTypes) throws JavaScriptModelException {
 			return isAvailable(FileTransfer.getInstance(), availableDataTypes);
 		}
 				
 		private boolean canPasteFilesOn(Object target) {
 			boolean isPackageFragment= target instanceof IPackageFragment;
-			boolean isJavaProject= target instanceof IJavaProject;
+			boolean isJavaProject= target instanceof IJavaScriptProject;
 			boolean isPackageFragmentRoot= target instanceof IPackageFragmentRoot;
 			boolean isContainer= target instanceof IContainer;
 		
@@ -885,19 +885,19 @@ public class PasteAction extends SelectionDispatchAction{
 			if (isContainer) {
 				return true;
 			} else {
-				IJavaElement element= (IJavaElement)target;
+				IJavaScriptElement element= (IJavaScriptElement)target;
 				return !element.isReadOnly();
 			}
 		}
 		
-		private IContainer getAsContainer(Object target) throws JavaModelException{
+		private IContainer getAsContainer(Object target) throws JavaScriptModelException{
 			if (target == null) 
 				return null;
 			if (target instanceof IContainer) 
 				return (IContainer)target;
 			if (target instanceof IFile)
 				return ((IFile)target).getParent();
-			return getAsContainer(((IJavaElement)target).getCorrespondingResource());
+			return getAsContainer(((IJavaScriptElement)target).getCorrespondingResource());
 		}
 		
 		private String[] getClipboardFiles(TransferData[] availableDataTypes) {
@@ -907,7 +907,7 @@ public class PasteAction extends SelectionDispatchAction{
 			}
 			return null;
 		}
-		private Object getCommonParent(IJavaElement[] javaElements, IResource[] resources) {
+		private Object getCommonParent(IJavaScriptElement[] javaElements, IResource[] resources) {
 			return new ParentChecker(resources, javaElements).getCommonParent();		
 		}
     }
@@ -919,22 +919,22 @@ public class PasteAction extends SelectionDispatchAction{
 
 		private TransferData[] fAvailableTypes;
 
-		public void paste(IJavaElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) throws JavaModelException, InterruptedException, InvocationTargetException{
+		public void paste(IJavaScriptElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) throws JavaScriptModelException, InterruptedException, InvocationTargetException{
 			IResource[] clipboardResources= getClipboardResources(availableTypes);
 			if (clipboardResources == null) 
 				clipboardResources= new IResource[0];
-			IJavaElement[] clipboardJavaElements= getClipboardJavaElements(availableTypes);
+			IJavaScriptElement[] clipboardJavaElements= getClipboardJavaElements(availableTypes);
 			if (clipboardJavaElements == null) 
-				clipboardJavaElements= new IJavaElement[0];
+				clipboardJavaElements= new IJavaScriptElement[0];
 
 			Object destination= getTarget(javaElements, resources);
-			if (destination instanceof IJavaElement)
-				ReorgCopyStarter.create(clipboardJavaElements, clipboardResources, (IJavaElement)destination).run(getShell());
+			if (destination instanceof IJavaScriptElement)
+				ReorgCopyStarter.create(clipboardJavaElements, clipboardResources, (IJavaScriptElement)destination).run(getShell());
 			else if (destination instanceof IResource)
 				ReorgCopyStarter.create(clipboardJavaElements, clipboardResources, (IResource)destination).run(getShell());
 		}
 
-		private Object getTarget(IJavaElement[] javaElements, IResource[] resources) {
+		private Object getTarget(IJavaScriptElement[] javaElements, IResource[] resources) {
 			if (javaElements.length + resources.length == 1){
 				if (javaElements.length == 1)
 					return javaElements[0];
@@ -944,22 +944,22 @@ public class PasteAction extends SelectionDispatchAction{
 				return getCommonParent(javaElements, resources);
 		}
 		
-		private Object getCommonParent(IJavaElement[] javaElements, IResource[] resources) {
+		private Object getCommonParent(IJavaScriptElement[] javaElements, IResource[] resources) {
 			return new ParentChecker(resources, javaElements).getCommonParent();		
 		}
 
-		public boolean canPasteOn(IJavaElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets) throws JavaModelException {
+		public boolean canPasteOn(IJavaScriptElement[] javaElements, IResource[] resources, IWorkingSet[] selectedWorkingSets) throws JavaScriptModelException {
 			if (selectedWorkingSets.length != 0)
 				return false;
 			IResource[] clipboardResources= getClipboardResources(fAvailableTypes);
 			if (clipboardResources == null) 
 				clipboardResources= new IResource[0];
-			IJavaElement[] clipboardJavaElements= getClipboardJavaElements(fAvailableTypes);
+			IJavaScriptElement[] clipboardJavaElements= getClipboardJavaElements(fAvailableTypes);
 			if (clipboardJavaElements == null) 
-				clipboardJavaElements= new IJavaElement[0];
+				clipboardJavaElements= new IJavaScriptElement[0];
 			Object destination= getTarget(javaElements, resources);
-			if (destination instanceof IJavaElement)
-				return ReorgCopyStarter.create(clipboardJavaElements, clipboardResources, (IJavaElement)destination) != null;
+			if (destination instanceof IJavaScriptElement)
+				return ReorgCopyStarter.create(clipboardJavaElements, clipboardResources, (IJavaScriptElement)destination) != null;
 			if (destination instanceof IResource)
 				return ReorgCopyStarter.create(clipboardJavaElements, clipboardResources, (IResource)destination) != null;
 			return false;
@@ -978,41 +978,41 @@ public class PasteAction extends SelectionDispatchAction{
 		}
 		private TransferData[] fAvailableTypes;
 
-		public boolean canEnable(TransferData[] availableTypes) throws JavaModelException {
+		public boolean canEnable(TransferData[] availableTypes) throws JavaScriptModelException {
 			fAvailableTypes= availableTypes;
 			return isAvailable(TypedSourceTransfer.getInstance(), availableTypes);
 		}
 
-		public boolean canPasteOn(IJavaElement[] selectedJavaElements, IResource[] selectedResources, IWorkingSet[] selectedWorkingSets) throws JavaModelException {
+		public boolean canPasteOn(IJavaScriptElement[] selectedJavaElements, IResource[] selectedResources, IWorkingSet[] selectedWorkingSets) throws JavaScriptModelException {
 			if (selectedResources.length != 0 || selectedWorkingSets.length != 0)
 				return false;
 			TypedSource[] typedSources= getClipboardTypedSources(fAvailableTypes);				
 			Object destination= getTarget(selectedJavaElements, selectedResources);
-			if (destination instanceof IJavaElement)
-				return ReorgTypedSourcePasteStarter.create(typedSources, (IJavaElement)destination) != null;
+			if (destination instanceof IJavaScriptElement)
+				return ReorgTypedSourcePasteStarter.create(typedSources, (IJavaScriptElement)destination) != null;
 			return false;
 		}
 		
-		public void paste(IJavaElement[] selectedJavaElements, IResource[] selectedResources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) throws JavaModelException, InterruptedException, InvocationTargetException {
+		public void paste(IJavaScriptElement[] selectedJavaElements, IResource[] selectedResources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) throws JavaScriptModelException, InterruptedException, InvocationTargetException {
 			TypedSource[] typedSources= getClipboardTypedSources(availableTypes);
-			IJavaElement destination= getTarget(selectedJavaElements, selectedResources);
+			IJavaScriptElement destination= getTarget(selectedJavaElements, selectedResources);
 			ReorgTypedSourcePasteStarter.create(typedSources, destination).run(getShell());		
 		}
 		
-		private static IJavaElement getTarget(IJavaElement[] selectedJavaElements, IResource[] selectedResources) {
+		private static IJavaScriptElement getTarget(IJavaScriptElement[] selectedJavaElements, IResource[] selectedResources) {
 			Assert.isTrue(selectedResources.length == 0);
 			if (selectedJavaElements.length == 1) 
 				return getAsTypeOrCu(selectedJavaElements[0]);
 			Object parent= new ParentChecker(selectedResources, selectedJavaElements).getCommonParent();
-			if (parent instanceof IJavaElement)
-				return getAsTypeOrCu((IJavaElement)parent);
+			if (parent instanceof IJavaScriptElement)
+				return getAsTypeOrCu((IJavaScriptElement)parent);
 			return null;
 		}
-		private static IJavaElement getAsTypeOrCu(IJavaElement element) {
+		private static IJavaScriptElement getAsTypeOrCu(IJavaScriptElement element) {
 			//try to get type first
-			if (element.getElementType() == IJavaElement.COMPILATION_UNIT || element.getElementType() == IJavaElement.TYPE)
+			if (element.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT || element.getElementType() == IJavaScriptElement.TYPE)
 				return element;
-			IJavaElement ancestorType= element.getAncestor(IJavaElement.TYPE);
+			IJavaScriptElement ancestorType= element.getAncestor(IJavaScriptElement.TYPE);
 			if (ancestorType != null)
 				return ancestorType;
 			return ReorgUtils.getCompilationUnit(element);
@@ -1026,7 +1026,7 @@ public class PasteAction extends SelectionDispatchAction{
 				fPasteRefactoring= pasteRefactoring;
 			}
 	
-			public static ReorgTypedSourcePasteStarter create(TypedSource[] typedSources, IJavaElement destination) {
+			public static ReorgTypedSourcePasteStarter create(TypedSource[] typedSources, IJavaScriptElement destination) {
 				Assert.isNotNull(typedSources);
 				Assert.isNotNull(destination);
 				PasteTypedSourcesRefactoring pasteRefactoring= PasteTypedSourcesRefactoring.create(typedSources);
@@ -1045,14 +1045,14 @@ public class PasteAction extends SelectionDispatchAction{
 		private static class PasteTypedSourcesRefactoring extends Refactoring {
 			
 			private final TypedSource[] fSources;
-			private IJavaElement fDestination;
+			private IJavaScriptElement fDestination;
 			
 			static PasteTypedSourcesRefactoring create(TypedSource[] sources){
 				if (! isAvailable(sources))
 					return null;
 				return new PasteTypedSourcesRefactoring(sources);
 			}
-			public RefactoringStatus setDestination(IJavaElement destination) {
+			public RefactoringStatus setDestination(IJavaScriptElement destination) {
 				fDestination= destination;
 				if (ReorgUtils.getCompilationUnit(destination) == null)
 					return RefactoringStatus.createFatalErrorStatus(ReorgMessages.PasteAction_wrong_destination); 
@@ -1062,29 +1062,29 @@ public class PasteAction extends SelectionDispatchAction{
 					return RefactoringStatus.createFatalErrorStatus(ReorgMessages.PasteAction_invalid_destination); 
 				return new RefactoringStatus();
 			}
-			private boolean canPasteAll(IJavaElement destination) {
+			private boolean canPasteAll(IJavaScriptElement destination) {
 				for (int i= 0; i < fSources.length; i++) {
 					if (! canPaste(fSources[i].getType(), destination))
 						return false;
 				}
 				return true;
 			}
-			private static boolean canPaste(int elementType, IJavaElement destination) {
+			private static boolean canPaste(int elementType, IJavaScriptElement destination) {
 				IType ancestorType= getAncestorType(destination);
 				if (ancestorType != null)
 					return canPasteToType(elementType);
 				return canPasteToCu(elementType);
 			}
 			private static boolean canPasteToType(int elementType) {
-				return 	elementType == IJavaElement.TYPE || 
-						elementType == IJavaElement.FIELD || 
-						elementType == IJavaElement.INITIALIZER || 
-						elementType == IJavaElement.METHOD;
+				return 	elementType == IJavaScriptElement.TYPE || 
+						elementType == IJavaScriptElement.FIELD || 
+						elementType == IJavaScriptElement.INITIALIZER || 
+						elementType == IJavaScriptElement.METHOD;
 			}
 			private static boolean canPasteToCu(int elementType) {
-				return	elementType == IJavaElement.PACKAGE_DECLARATION ||
-						elementType == IJavaElement.TYPE ||
-						elementType == IJavaElement.IMPORT_DECLARATION;
+				return	elementType == IJavaScriptElement.PACKAGE_DECLARATION ||
+						elementType == IJavaScriptElement.TYPE ||
+						elementType == IJavaScriptElement.IMPORT_DECLARATION;
 			}
 			PasteTypedSourcesRefactoring(TypedSource[] sources){
 				Assert.isNotNull(sources);
@@ -1102,22 +1102,22 @@ public class PasteAction extends SelectionDispatchAction{
 
 			public RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws CoreException {
 				RefactoringStatus result= Checks.validateModifiesFiles(
-					ResourceUtil.getFiles(new ICompilationUnit[]{getDestinationCu()}), getValidationContext());
+					ResourceUtil.getFiles(new IJavaScriptUnit[]{getDestinationCu()}), getValidationContext());
 				return result;
 			}
 
 			public Change createChange(IProgressMonitor pm) throws CoreException {
 				ASTParser p= ASTParser.newParser(AST.JLS3);
 				p.setSource(getDestinationCu());
-				CompilationUnit cuNode= (CompilationUnit) p.createAST(pm);
+				JavaScriptUnit cuNode= (JavaScriptUnit) p.createAST(pm);
 				ASTRewrite rewrite= ASTRewrite.create(cuNode.getAST());
 				TypedSource source= null;
 				for (int i= fSources.length - 1; i >= 0; i--) {
 					source= fSources[i];
 					final ASTNode destination= getDestinationNodeForSourceElement(fDestination, source.getType(), cuNode);
 					if (destination != null) {
-						if (destination instanceof CompilationUnit)
-							insertToCu(rewrite, createNewNodeToInsertToCu(source, rewrite), (CompilationUnit) destination);
+						if (destination instanceof JavaScriptUnit)
+							insertToCu(rewrite, createNewNodeToInsertToCu(source, rewrite), (JavaScriptUnit) destination);
 						else if (destination instanceof AbstractTypeDeclaration)
 							insertToType(rewrite, createNewNodeToInsertToType(source, rewrite), (AbstractTypeDeclaration) destination);
 					}
@@ -1125,7 +1125,7 @@ public class PasteAction extends SelectionDispatchAction{
 				final CompilationUnitChange result= new CompilationUnitChange(ReorgMessages.PasteAction_change_name, getDestinationCu()); 
 				try {
 					ITextFileBuffer buffer= RefactoringFileBuffers.acquire(getDestinationCu());
-					TextEdit rootEdit= rewrite.rewriteAST(buffer.getDocument(), fDestination.getJavaProject().getOptions(true));
+					TextEdit rootEdit= rewrite.rewriteAST(buffer.getDocument(), fDestination.getJavaScriptProject().getOptions(true));
 					if (getDestinationCu().isWorkingCopy())
 						result.setSaveMode(TextFileChange.LEAVE_DIRTY);
 					TextChangeCompatibility.addTextEdit(result, ReorgMessages.PasteAction_edit_name, rootEdit); 
@@ -1140,7 +1140,7 @@ public class PasteAction extends SelectionDispatchAction{
 					case ASTNode.ANNOTATION_TYPE_DECLARATION:
 					case ASTNode.ENUM_DECLARATION:
 					case ASTNode.TYPE_DECLARATION:
-					case ASTNode.METHOD_DECLARATION:
+					case ASTNode.FUNCTION_DECLARATION:
 					case ASTNode.FIELD_DECLARATION:
 					case ASTNode.INITIALIZER:
 						rewrite.getListRewrite(typeDeclaration, typeDeclaration.getBodyDeclarationsProperty()).insertAt(node, ASTNodes.getInsertionIndex((BodyDeclaration) node, typeDeclaration.bodyDeclarations()), null);
@@ -1150,20 +1150,20 @@ public class PasteAction extends SelectionDispatchAction{
 				}
 			}
 
-			private static void insertToCu(ASTRewrite rewrite, ASTNode node, CompilationUnit cuNode) {
+			private static void insertToCu(ASTRewrite rewrite, ASTNode node, JavaScriptUnit cuNode) {
 				switch (node.getNodeType()) {
 					case ASTNode.TYPE_DECLARATION:
 					case ASTNode.ENUM_DECLARATION:
 					case ASTNode.ANNOTATION_TYPE_DECLARATION:
-						rewrite.getListRewrite(cuNode, CompilationUnit.TYPES_PROPERTY).insertAt(node, ASTNodes.getInsertionIndex((AbstractTypeDeclaration) node, cuNode.types()), null);
+						rewrite.getListRewrite(cuNode, JavaScriptUnit.TYPES_PROPERTY).insertAt(node, ASTNodes.getInsertionIndex((AbstractTypeDeclaration) node, cuNode.types()), null);
 						break;
 					case ASTNode.IMPORT_DECLARATION:
-						rewrite.getListRewrite(cuNode, CompilationUnit.IMPORTS_PROPERTY).insertLast(node, null);
+						rewrite.getListRewrite(cuNode, JavaScriptUnit.IMPORTS_PROPERTY).insertLast(node, null);
 						break;
 					case ASTNode.PACKAGE_DECLARATION:
 						// only insert if none exists
 						if (cuNode.getPackage() == null)
-							rewrite.set(cuNode, CompilationUnit.PACKAGE_PROPERTY, node, null);
+							rewrite.set(cuNode, JavaScriptUnit.PACKAGE_PROPERTY, node, null);
 						break;
 					default:
 						Assert.isTrue(false, String.valueOf(node.getNodeType()));
@@ -1171,27 +1171,27 @@ public class PasteAction extends SelectionDispatchAction{
 			}
 
 			/**
-			 * @return an AbstractTypeDeclaration, a CompilationUnit, or null
+			 * @return an AbstractTypeDeclaration, a JavaScriptUnit, or null
 			 */ 
-			private ASTNode getDestinationNodeForSourceElement(IJavaElement destination, int kind, CompilationUnit unit) throws JavaModelException {
+			private ASTNode getDestinationNodeForSourceElement(IJavaScriptElement destination, int kind, JavaScriptUnit unit) throws JavaScriptModelException {
 				final IType ancestor= getAncestorType(destination);
 				if (ancestor != null)
 					return ASTNodeSearchUtil.getAbstractTypeDeclarationNode(ancestor, unit);
-				if (kind == IJavaElement.TYPE || kind == IJavaElement.PACKAGE_DECLARATION || kind == IJavaElement.IMPORT_DECLARATION || kind == IJavaElement.IMPORT_CONTAINER)
+				if (kind == IJavaScriptElement.TYPE || kind == IJavaScriptElement.PACKAGE_DECLARATION || kind == IJavaScriptElement.IMPORT_DECLARATION || kind == IJavaScriptElement.IMPORT_CONTAINER)
 					return unit;
 				return null;	
 			}
 			
-			private static IType getAncestorType(IJavaElement destinationElement) {
-				return destinationElement.getElementType() == IJavaElement.TYPE ? (IType)destinationElement: (IType)destinationElement.getAncestor(IJavaElement.TYPE);
+			private static IType getAncestorType(IJavaScriptElement destinationElement) {
+				return destinationElement.getElementType() == IJavaScriptElement.TYPE ? (IType)destinationElement: (IType)destinationElement.getAncestor(IJavaScriptElement.TYPE);
 			}
 			private ASTNode createNewNodeToInsertToCu(TypedSource source, ASTRewrite rewrite) {
 				switch(source.getType()){
-					case IJavaElement.TYPE:
+					case IJavaScriptElement.TYPE:
 						return rewrite.createStringPlaceholder(source.getSource(), ASTNode.TYPE_DECLARATION);
-					case IJavaElement.PACKAGE_DECLARATION:
+					case IJavaScriptElement.PACKAGE_DECLARATION:
 						return rewrite.createStringPlaceholder(source.getSource(), ASTNode.PACKAGE_DECLARATION);
-					case IJavaElement.IMPORT_DECLARATION:
+					case IJavaScriptElement.IMPORT_DECLARATION:
 						return rewrite.createStringPlaceholder(source.getSource(), ASTNode.IMPORT_DECLARATION);
 					default: Assert.isTrue(false, String.valueOf(source.getType()));
 						return null;
@@ -1200,20 +1200,20 @@ public class PasteAction extends SelectionDispatchAction{
 			
 			private ASTNode createNewNodeToInsertToType(TypedSource source, ASTRewrite rewrite) {
 				switch(source.getType()){
-					case IJavaElement.TYPE:
+					case IJavaScriptElement.TYPE:
 						return rewrite.createStringPlaceholder(source.getSource(), ASTNode.TYPE_DECLARATION);
-					case IJavaElement.METHOD:
-						return rewrite.createStringPlaceholder(source.getSource(), ASTNode.METHOD_DECLARATION);
-					case IJavaElement.FIELD:
+					case IJavaScriptElement.METHOD:
+						return rewrite.createStringPlaceholder(source.getSource(), ASTNode.FUNCTION_DECLARATION);
+					case IJavaScriptElement.FIELD:
 						return rewrite.createStringPlaceholder(source.getSource(), ASTNode.FIELD_DECLARATION);
-					case IJavaElement.INITIALIZER:
+					case IJavaScriptElement.INITIALIZER:
 						return rewrite.createStringPlaceholder(source.getSource(), ASTNode.INITIALIZER);
 					default: Assert.isTrue(false);
 						return null;
 				}
 			}
 			
-			private ICompilationUnit getDestinationCu() {
+			private IJavaScriptUnit getDestinationCu() {
 				return ReorgUtils.getCompilationUnit(fDestination);
 			}
 

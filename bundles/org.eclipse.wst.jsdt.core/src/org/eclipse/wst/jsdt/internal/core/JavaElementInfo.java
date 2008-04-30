@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
  * Holds cached structure and properties for a Java element.
@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 	 * object. This is an empty array if this element has
 	 * no children.
 	 */
-	protected IJavaElement[] children;
+	protected IJavaScriptElement[] children;
 
 	/**
 	 * Shared empty collection used for efficiency.
@@ -33,16 +33,16 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 	protected JavaElementInfo() {
 		this.children = JavaElement.NO_ELEMENTS;
 	}
-	public void addChild(IJavaElement child) {
+	public void addChild(IJavaScriptElement child) {
 		int length = this.children.length;
 		if (length == 0) {
-			this.children = new IJavaElement[] {child};
+			this.children = new IJavaScriptElement[] {child};
 		} else {
 			for (int i = 0; i < length; i++) {
 				if (children[i].equals(child))
 					return; // already included
 			}
-			System.arraycopy(this.children, 0, this.children = new IJavaElement[length+1], 0, length);
+			System.arraycopy(this.children, 0, this.children = new IJavaScriptElement[length+1], 0, length);
 			this.children[length] = child;
 		}
 	}
@@ -54,17 +54,17 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 			throw new Error();
 		}
 	}
-	public IJavaElement[] getChildren() {
+	public IJavaScriptElement[] getChildren() {
 		return this.children;
 	}
-	public void removeChild(IJavaElement child) {
+	public void removeChild(IJavaScriptElement child) {
 		for (int i = 0, length = this.children.length; i < length; i++) {
-			IJavaElement element = this.children[i];
+			IJavaScriptElement element = this.children[i];
 			if (element.equals(child)) {
 				if (length == 1) {
 					this.children = JavaElement.NO_ELEMENTS;
 				} else {
-					IJavaElement[] newChildren = new IJavaElement[length-1];
+					IJavaScriptElement[] newChildren = new IJavaScriptElement[length-1];
 					System.arraycopy(this.children, 0, newChildren , 0, i);
 					if (i < length-1)
 						System.arraycopy(this.children, i+1, newChildren, i, length-1-i);
@@ -74,7 +74,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 			}
 		}
 	}
-	public void setChildren(IJavaElement[] children) {
+	public void setChildren(IJavaScriptElement[] children) {
 		this.children = children;
 	}
 }

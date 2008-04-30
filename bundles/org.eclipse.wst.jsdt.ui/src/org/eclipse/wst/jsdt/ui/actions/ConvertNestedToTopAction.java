@@ -18,15 +18,15 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -81,10 +81,10 @@ public class ConvertNestedToTopAction extends SelectionDispatchAction {
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isMoveInnerAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 			if (!(e.getException() instanceof CharConversionException) && JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			setEnabled(false);//no UI
 		}
 	}
@@ -102,22 +102,22 @@ public class ConvertNestedToTopAction extends SelectionDispatchAction {
 					return;
 				RefactoringExecutionStarter.startMoveInnerRefactoring(singleSelectedType, getShell());
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, 
 				RefactoringMessages.OpenRefactoringWizardAction_refactoring, 
 				RefactoringMessages.OpenRefactoringWizardAction_exception); 
 		}
 	}
 
-	private static IType getSingleSelectedType(IStructuredSelection selection) throws JavaModelException {
+	private static IType getSingleSelectedType(IStructuredSelection selection) throws JavaScriptModelException {
 		if (selection.isEmpty() || selection.size() != 1)
 			return null;
 
 		Object first= selection.getFirstElement();
 		if (first instanceof IType)
 			return (IType)first;
-		if (first instanceof ICompilationUnit)
-			return JavaElementUtil.getMainType((ICompilationUnit)first);
+		if (first instanceof IJavaScriptUnit)
+			return JavaElementUtil.getMainType((IJavaScriptUnit)first);
 		return null;
 	}
 
@@ -136,7 +136,7 @@ public class ConvertNestedToTopAction extends SelectionDispatchAction {
 	public void selectionChanged(JavaTextSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isMoveInnerAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			setEnabled(false);
 		}
 	}
@@ -154,7 +154,7 @@ public class ConvertNestedToTopAction extends SelectionDispatchAction {
 			} else {
 				MessageDialog.openInformation(getShell(), RefactoringMessages.OpenRefactoringWizardAction_unavailable, RefactoringMessages.ConvertNestedToTopAction_To_activate); 
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, 
 				RefactoringMessages.OpenRefactoringWizardAction_refactoring,
 				RefactoringMessages.OpenRefactoringWizardAction_exception); 

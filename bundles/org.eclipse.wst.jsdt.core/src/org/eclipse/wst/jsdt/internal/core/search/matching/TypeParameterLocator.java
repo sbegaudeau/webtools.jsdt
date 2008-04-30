@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
@@ -106,7 +106,7 @@ public class TypeParameterLocator extends PatternLocator {
 	}
 
 	protected int referenceType() {
-		return IJavaElement.TYPE_PARAMETER;
+		return IJavaScriptElement.TYPE_PARAMETER;
 	}
 
 	/*

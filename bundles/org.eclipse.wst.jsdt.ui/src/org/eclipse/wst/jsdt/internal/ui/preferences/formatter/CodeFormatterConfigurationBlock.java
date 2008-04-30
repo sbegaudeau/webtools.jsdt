@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesAccess;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Profile;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 
 
@@ -34,7 +34,7 @@ public class CodeFormatterConfigurationBlock extends ProfileConfigurationBlock {
     
     private static final String FORMATTER_DIALOG_PREFERENCE_KEY= "formatter_page"; //$NON-NLS-1$
 
-	private static final String DIALOGSTORE_LASTSAVELOADPATH= JavaUI.ID_PLUGIN + ".codeformatter"; //$NON-NLS-1$
+	private static final String DIALOGSTORE_LASTSAVELOADPATH= JavaScriptUI.ID_PLUGIN + ".codeformatter"; //$NON-NLS-1$
     
 	/**
      * Some Java source code used for preview.

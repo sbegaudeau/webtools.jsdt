@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.launching;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
  
  
@@ -30,25 +30,25 @@ public interface IVMInstallChangedListener {
 	 * Property constant indicating the library locations associated
 	 * with a VM install have changed.
 	 */
-	public static final String PROPERTY_LIBRARY_LOCATIONS = JavaCore.PLUGIN_ID + ".PROPERTY_LIBRARY_LOCATIONS"; //$NON-NLS-1$
+	public static final String PROPERTY_LIBRARY_LOCATIONS = JavaScriptCore.PLUGIN_ID + ".PROPERTY_LIBRARY_LOCATIONS"; //$NON-NLS-1$
 
 	/**
 	 * Property constant indicating the name associated
 	 * with a VM install has changed.
 	 */
-	public static final String PROPERTY_NAME = JavaCore.PLUGIN_ID + ".PROPERTY_NAME"; //$NON-NLS-1$
+	public static final String PROPERTY_NAME = JavaScriptCore.PLUGIN_ID + ".PROPERTY_NAME"; //$NON-NLS-1$
 	
 	/**
 	 * Property constant indicating the install location of
 	 * a VM install has changed.
 	 */
-	public static final String PROPERTY_INSTALL_LOCATION =JavaCore.PLUGIN_ID + ".PROPERTY_INSTALL_LOCATION";	 //$NON-NLS-1$
+	public static final String PROPERTY_INSTALL_LOCATION =JavaScriptCore.PLUGIN_ID + ".PROPERTY_INSTALL_LOCATION";	 //$NON-NLS-1$
 			
 	/**
 	 * Property constant indicating the Javadoc location associated
 	 * with a VM install has changed.
 	 */
-	public static final String PROPERTY_JAVADOC_LOCATION = JavaCore.PLUGIN_ID+ ".PROPERTY_JAVADOC_LOCATION"; //$NON-NLS-1$
+	public static final String PROPERTY_JAVADOC_LOCATION = JavaScriptCore.PLUGIN_ID+ ".PROPERTY_JAVADOC_LOCATION"; //$NON-NLS-1$
 
 	/**
 	 * Property constant indicating the VM arguments associated
@@ -56,7 +56,7 @@ public interface IVMInstallChangedListener {
      * 
      * @since 3.2
 	 */
-	public static final String PROPERTY_VM_ARGUMENTS = JavaCore.PLUGIN_ID + ".PROPERTY_VM_ARGUMENTS"; //$NON-NLS-1$
+	public static final String PROPERTY_VM_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".PROPERTY_VM_ARGUMENTS"; //$NON-NLS-1$
 
 	/**
 	 * Notification that the workspace default VM install

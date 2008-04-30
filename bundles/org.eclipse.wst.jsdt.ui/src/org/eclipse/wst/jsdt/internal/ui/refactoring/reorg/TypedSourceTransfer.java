@@ -74,7 +74,7 @@ public class TypedSourceTransfer extends ByteArrayTransfer {
 		 * The serialization format is:
 		 *  (int) number of elements
 		 * Then, the following for each element:
-		 *  (int) type (see <code>IJavaElement</code>)
+		 *  (int) type (see <code>IJavaScriptElement</code>)
 		 *  (String) source of the element
 		 */
 		

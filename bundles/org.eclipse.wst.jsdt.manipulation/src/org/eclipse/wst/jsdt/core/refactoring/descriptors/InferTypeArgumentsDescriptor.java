@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the infer type arguments refactoring.
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class InferTypeArgumentsDescriptor extends JavaRefactoringDescriptor {
+public final class InferTypeArgumentsDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public InferTypeArgumentsDescriptor() {
-		super(IJavaRefactorings.INFER_TYPE_ARGUMENTS);
+		super(IJavaScriptRefactorings.INFER_TYPE_ARGUMENTS);
 	}
 }

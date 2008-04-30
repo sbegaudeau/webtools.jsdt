@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.InlineMethodRefactoring;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
@@ -108,7 +108,7 @@ public class InlineMethodInputPage extends UserInputWizardPage {
 		RefactoringStatus status;
 		try {
 			status= fRefactoring.setCurrentMode(mode);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			status= RefactoringStatus.createFatalErrorStatus(e.getMessage());
 		}
 		setPageComplete(status);

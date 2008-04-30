@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.dom;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
@@ -81,11 +81,11 @@ public class NodeFinder extends GenericVisitor {
 	 * @param source the source of the compilation unit
 	 * 
 	 * @return the result node
-	 * @throws JavaModelException if an error occurs in the Java model
+	 * @throws JavaScriptModelException if an error occurs in the Java model
 	 * 
 	 * @since		3.0
 	 */
-	public static ASTNode perform(ASTNode root, int start, int length, ITypeRoot source) throws JavaModelException {
+	public static ASTNode perform(ASTNode root, int start, int length, ITypeRoot source) throws JavaScriptModelException {
 		NodeFinder finder= new NodeFinder(start, length);
 		root.accept(finder);
 		ASTNode result= finder.getCoveredNode();

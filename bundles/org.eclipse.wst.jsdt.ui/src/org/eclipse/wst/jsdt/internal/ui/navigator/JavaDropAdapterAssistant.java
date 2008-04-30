@@ -27,8 +27,8 @@ import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
 import org.eclipse.ui.navigator.CommonDropAdapter;
 import org.eclipse.ui.navigator.CommonDropAdapterAssistant;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaCopyProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaMoveProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgPolicyFactory;
@@ -61,7 +61,7 @@ public class JavaDropAdapterAssistant extends CommonDropAdapterAssistant {
 						handleDropCopy(target);
 						break;
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				ExceptionHandler.handle(e, PackagesMessages.SelectionTransferDropAdapter_error_title, PackagesMessages.SelectionTransferDropAdapter_error_message); 
 			} catch (InvocationTargetException e) {
 				ExceptionHandler.handle(e, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringMessages.OpenRefactoringWizardAction_exception); 
@@ -89,7 +89,7 @@ public class JavaDropAdapterAssistant extends CommonDropAdapterAssistant {
 
 				getShell().forceActive();
 				new CopyFilesAndFoldersOperation(getShell()).copyFiles((String[]) data, targetContainer);
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				String title = PackagesMessages.DropAdapter_errorTitle; 
 				String message = PackagesMessages.DropAdapter_errorMessage; 
 				ExceptionHandler.handle(e, getShell(), title, message);
@@ -127,7 +127,7 @@ public class JavaDropAdapterAssistant extends CommonDropAdapterAssistant {
 						} 
 						break;
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				ExceptionHandler.handle(e, PackagesMessages.SelectionTransferDropAdapter_error_title, PackagesMessages.SelectionTransferDropAdapter_error_message); 
 				//event.detail= DND.DROP_NONE;
 				result = Status.CANCEL_STATUS;
@@ -140,11 +140,11 @@ public class JavaDropAdapterAssistant extends CommonDropAdapterAssistant {
 		return super.isSupportedType(transferType) || FileTransfer.getInstance().isSupportedType(transferType);
 	}
 	
-	private IContainer getActualTarget(Object dropTarget) throws JavaModelException {
+	private IContainer getActualTarget(Object dropTarget) throws JavaScriptModelException {
 		if (dropTarget instanceof IContainer)
 			return (IContainer) dropTarget;
-		else if (dropTarget instanceof IJavaElement)
-			return getActualTarget(((IJavaElement) dropTarget).getCorrespondingResource());
+		else if (dropTarget instanceof IJavaScriptElement)
+			return getActualTarget(((IJavaScriptElement) dropTarget).getCorrespondingResource());
 		return null;
 	}
 
@@ -157,31 +157,31 @@ public class JavaDropAdapterAssistant extends CommonDropAdapterAssistant {
 		fElements = ((IStructuredSelection) s).toList();
 	}
 
-	private void handleDropMove(final Object target) throws JavaModelException, InvocationTargetException, InterruptedException {
-		IJavaElement[] javaElements = ReorgUtils.getJavaElements(fElements);
+	private void handleDropMove(final Object target) throws JavaScriptModelException, InvocationTargetException, InterruptedException {
+		IJavaScriptElement[] javaElements = ReorgUtils.getJavaElements(fElements);
 		IResource[] resources = ReorgUtils.getResources(fElements);
 		ReorgMoveStarter starter = null;
 		if (target instanceof IResource)
 			starter = ReorgMoveStarter.create(javaElements, resources, (IResource) target);
-		else if (target instanceof IJavaElement)
-			starter = ReorgMoveStarter.create(javaElements, resources, (IJavaElement) target);
+		else if (target instanceof IJavaScriptElement)
+			starter = ReorgMoveStarter.create(javaElements, resources, (IJavaScriptElement) target);
 		if (starter != null)
 			starter.run(getShell());
 	}
  
-	private void handleDropCopy(final Object target) throws JavaModelException, InvocationTargetException, InterruptedException {
-		IJavaElement[] javaElements = ReorgUtils.getJavaElements(fElements);
+	private void handleDropCopy(final Object target) throws JavaScriptModelException, InvocationTargetException, InterruptedException {
+		IJavaScriptElement[] javaElements = ReorgUtils.getJavaElements(fElements);
 		IResource[] resources = ReorgUtils.getResources(fElements);
 		ReorgCopyStarter starter = null;
 		if (target instanceof IResource)
 			starter = ReorgCopyStarter.create(javaElements, resources, (IResource) target);
-		else if (target instanceof IJavaElement)
-			starter = ReorgCopyStarter.create(javaElements, resources, (IJavaElement) target);
+		else if (target instanceof IJavaScriptElement)
+			starter = ReorgCopyStarter.create(javaElements, resources, (IJavaScriptElement) target);
 		if (starter != null)
 			starter.run(getShell());
 	}
  
-	private int handleValidateCopy(Object target) throws JavaModelException {
+	private int handleValidateCopy(Object target) throws JavaScriptModelException {
 
 		final ICopyPolicy policy= ReorgPolicyFactory.createCopyPolicy(ReorgUtils.getResources(fElements), ReorgUtils.getJavaElements(fElements));
 		fCopyProcessor= policy.canEnable() ? new JavaCopyProcessor(policy) : null;
@@ -191,20 +191,20 @@ public class JavaDropAdapterAssistant extends CommonDropAdapterAssistant {
 
 		if (target instanceof IResource && fCopyProcessor != null && fCopyProcessor.setDestination((IResource)target).isOK())
 			return DND.DROP_COPY;
-		else if (target instanceof IJavaElement && fCopyProcessor != null && fCopyProcessor.setDestination((IJavaElement)target).isOK())
+		else if (target instanceof IJavaScriptElement && fCopyProcessor != null && fCopyProcessor.setDestination((IJavaScriptElement)target).isOK())
 			return DND.DROP_COPY;
 		else
 			return DND.DROP_NONE;					
 	}
  
-	private int handleValidateDefault(Object target) throws JavaModelException {
+	private int handleValidateDefault(Object target) throws JavaScriptModelException {
 		if (target == null)
 			return DND.DROP_NONE;
 
 		return handleValidateMove(target);
 	}
 
-	private int handleValidateMove(Object target) throws JavaModelException {
+	private int handleValidateMove(Object target) throws JavaScriptModelException {
 		if (target == null)
 			return DND.DROP_NONE;
 		
@@ -216,7 +216,7 @@ public class JavaDropAdapterAssistant extends CommonDropAdapterAssistant {
 
 		if (target instanceof IResource && fMoveProcessor != null && fMoveProcessor.setDestination((IResource)target).isOK())
 			return DND.DROP_MOVE;
-		else if (target instanceof IJavaElement && fMoveProcessor != null && fMoveProcessor.setDestination((IJavaElement)target).isOK())
+		else if (target instanceof IJavaScriptElement && fMoveProcessor != null && fMoveProcessor.setDestination((IJavaScriptElement)target).isOK())
 			return DND.DROP_MOVE;
 		else
 			return DND.DROP_NONE;	

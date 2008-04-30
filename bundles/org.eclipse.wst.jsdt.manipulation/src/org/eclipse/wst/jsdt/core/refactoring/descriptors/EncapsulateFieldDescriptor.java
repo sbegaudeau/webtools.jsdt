@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the encapsulate field refactoring.
@@ -26,12 +26,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class EncapsulateFieldDescriptor extends JavaRefactoringDescriptor {
+public final class EncapsulateFieldDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public EncapsulateFieldDescriptor() {
-		super(IJavaRefactorings.ENCAPSULATE_FIELD);
+		super(IJavaScriptRefactorings.ENCAPSULATE_FIELD);
 	}
 }

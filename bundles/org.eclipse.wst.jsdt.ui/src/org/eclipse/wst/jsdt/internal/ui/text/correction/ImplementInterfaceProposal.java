@@ -12,10 +12,10 @@ package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.Type;
@@ -33,10 +33,10 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 public class ImplementInterfaceProposal extends LinkedCorrectionProposal {
 
 	private IBinding fBinding;
-	private CompilationUnit fAstRoot;
+	private JavaScriptUnit fAstRoot;
 	private ITypeBinding fNewInterface;
 
-	public ImplementInterfaceProposal(ICompilationUnit targetCU, ITypeBinding binding, CompilationUnit astRoot, ITypeBinding newInterface, int relevance) {
+	public ImplementInterfaceProposal(IJavaScriptUnit targetCU, ITypeBinding binding, JavaScriptUnit astRoot, ITypeBinding newInterface, int relevance) {
 		super("", targetCU, null, relevance, JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE)); //$NON-NLS-1$
 
 		Assert.isTrue(binding != null && Bindings.isDeclarationBinding(binding));
@@ -52,7 +52,7 @@ public class ImplementInterfaceProposal extends LinkedCorrectionProposal {
 	protected ASTRewrite getRewrite() throws CoreException {
 		ASTNode boundNode= fAstRoot.findDeclaringNode(fBinding);
 		ASTNode declNode= null;
-		CompilationUnit newRoot= fAstRoot;
+		JavaScriptUnit newRoot= fAstRoot;
 		if (boundNode != null) {
 			declNode= boundNode; // is same CU
 		} else {

@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.ui.filters;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 
 /**
@@ -31,8 +31,8 @@ public class EmptyInnerPackageFilter extends ViewerFilter {
 			try {
 				if (pkg.isDefaultPackage())
 					return true;//pkg.hasChildren();
-				return !pkg.hasSubpackages() || pkg.hasChildren() || (pkg.getNonJavaResources().length > 0);
-			} catch (JavaModelException e) {
+				return !pkg.hasSubpackages() || pkg.hasChildren() || (pkg.getNonJavaScriptResources().length > 0);
+			} catch (JavaScriptModelException e) {
 				return false;
 			}
 		}

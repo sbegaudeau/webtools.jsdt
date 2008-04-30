@@ -17,7 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 
@@ -54,7 +54,7 @@ public class NewInterfaceWizardPage extends NewTypeWizardPage {
 	 * @param selection used to initialize the fields
 	 */
 	public void init(IStructuredSelection selection) {
-		IJavaElement jelem= getInitialJavaElement(selection);
+		IJavaScriptElement jelem= getInitialJavaElement(selection);
 			
 		initContainerPage(jelem);
 		initTypePage(jelem);

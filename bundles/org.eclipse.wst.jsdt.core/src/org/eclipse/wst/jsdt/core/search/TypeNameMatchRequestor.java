@@ -19,7 +19,7 @@ package org.eclipse.wst.jsdt.core.search;
  *		char[] typeName,
  *		int typeMatchRule,
  *		int searchFor,
- *		IJavaSearchScope scope,
+ *		IJavaScriptSearchScope scope,
  *		TypeNameMatchRequestor nameMatchRequestor,
  *		int waitingPolicy,
  * 	org.eclipse.core.runtime.IProgressMonitor monitor)} method.

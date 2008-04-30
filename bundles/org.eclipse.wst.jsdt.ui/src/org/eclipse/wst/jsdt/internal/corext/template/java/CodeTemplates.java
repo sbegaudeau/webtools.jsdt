@@ -15,12 +15,12 @@ import java.io.File;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.templates.Template;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * <code>CodeTemplates</code> gives access to the available code templates.
  * @since 3.0
- * @deprecated use {@link org.eclipse.wst.jsdt.internal.ui.JavaPlugin#getCodeTemplateStore()} instead 
+ * @deprecated use {@link org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin#getCodeTemplateStore()} instead 
  */
 public class CodeTemplates extends org.eclipse.wst.jsdt.internal.corext.template.java.TemplateSet {
 
@@ -44,7 +44,7 @@ public class CodeTemplates extends org.eclipse.wst.jsdt.internal.corext.template
 	}
 	
 	private CodeTemplates() {
-		super("codetemplate", JavaPlugin.getDefault().getCodeTemplateContextRegistry()); //$NON-NLS-1$
+		super("codetemplate", JavaScriptPlugin.getDefault().getCodeTemplateContextRegistry()); //$NON-NLS-1$
 		create();
 	}
 	
@@ -57,7 +57,7 @@ public class CodeTemplates extends org.eclipse.wst.jsdt.internal.corext.template
 			}
 
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			clear();
 		}
 
@@ -82,7 +82,7 @@ public class CodeTemplates extends org.eclipse.wst.jsdt.internal.corext.template
 	}
 
 	private static File getTemplateFile() {
-		IPath path= JavaPlugin.getDefault().getStateLocation();
+		IPath path= JavaScriptPlugin.getDefault().getStateLocation();
 		path= path.append(TEMPLATE_FILE);
 		
 		return path.toFile();

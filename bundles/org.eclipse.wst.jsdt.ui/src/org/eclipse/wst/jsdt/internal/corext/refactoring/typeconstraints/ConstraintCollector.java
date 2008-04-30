@@ -29,7 +29,7 @@ import org.eclipse.wst.jsdt.core.dom.BreakStatement;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
@@ -46,11 +46,11 @@ import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
 import org.eclipse.wst.jsdt.core.dom.ListExpression;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
@@ -228,9 +228,9 @@ public final class ConstraintCollector extends ASTVisitor {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.CompilationUnit)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit)
 	 */
-	public boolean visit(CompilationUnit node) {
+	public boolean visit(JavaScriptUnit node) {
 		add(fCreator.create(node));
 		return true;
 	}
@@ -366,7 +366,7 @@ public final class ConstraintCollector extends ASTVisitor {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.Javadoc)
 	 */
-	public boolean visit(Javadoc node) {
+	public boolean visit(JSdoc node) {
 		add(fCreator.create(node));
 		return true;
 	}
@@ -385,17 +385,17 @@ public final class ConstraintCollector extends ASTVisitor {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.MethodDeclaration)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.FunctionDeclaration)
 	 */
-	public boolean visit(MethodDeclaration node) {
+	public boolean visit(FunctionDeclaration node) {
 		add(fCreator.create(node));
 		return true;
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.MethodInvocation)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.FunctionInvocation)
 	 */
-	public boolean visit(MethodInvocation node) {
+	public boolean visit(FunctionInvocation node) {
 		add(fCreator.create(node));
 		return true;
 	}

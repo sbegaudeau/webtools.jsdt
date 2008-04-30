@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the pull up refactoring.
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class PullUpDescriptor extends JavaRefactoringDescriptor {
+public final class PullUpDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public PullUpDescriptor() {
-		super(IJavaRefactorings.PULL_UP);
+		super(IJavaScriptRefactorings.PULL_UP);
 	}
 }

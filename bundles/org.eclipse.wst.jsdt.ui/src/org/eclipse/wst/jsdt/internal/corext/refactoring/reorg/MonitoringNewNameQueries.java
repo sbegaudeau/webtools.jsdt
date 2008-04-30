@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.participants.ReorgExecutionLog;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;
@@ -28,7 +28,7 @@ public class MonitoringNewNameQueries implements INewNameQueries {
 		fDelegate= delegate;
 		fExecutionLog= log;
 	}
-	public INewNameQuery createNewCompilationUnitNameQuery(final ICompilationUnit cu, final String initialSuggestedName) {
+	public INewNameQuery createNewCompilationUnitNameQuery(final IJavaScriptUnit cu, final String initialSuggestedName) {
 		return new INewNameQuery() {
 			public String getNewName() throws OperationCanceledException {
 				String result= fDelegate.createNewCompilationUnitNameQuery(cu, initialSuggestedName).getNewName();

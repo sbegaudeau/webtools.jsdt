@@ -11,11 +11,11 @@
 package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
@@ -47,38 +47,38 @@ public class CreateInitializerOperation extends CreateTypeMemberOperation {
 public CreateInitializerOperation(IType parentElement, String source) {
 	super(parentElement, source, false);
 }
-protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, ICompilationUnit cu) throws JavaModelException {
+protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IJavaScriptUnit cu) throws JavaScriptModelException {
 	ASTNode node = super.generateElementAST(rewriter, document, cu);
 	if (node.getNodeType() != ASTNode.INITIALIZER)
-		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_CONTENTS));
+		throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_CONTENTS));
 	return node;
 }
 /**
  * @see CreateElementInCUOperation#generateResultHandle
  */
-protected IJavaElement generateResultHandle() {
+protected IJavaScriptElement generateResultHandle() {
 	try {
 		//update the children to be current
-		getType().getCompilationUnit().close();
+		getType().getJavaScriptUnit().close();
 		if (this.anchorElement == null) {
 			return getType().getInitializer(this.numberOfInitializers);
 		} else {
-			IJavaElement[] children = getType().getChildren();
+			IJavaScriptElement[] children = getType().getChildren();
 			int count = 0;
 			for (int i = 0; i < children.length; i++) {
-				IJavaElement child = children[i];
+				IJavaScriptElement child = children[i];
 				if (child.equals(this.anchorElement)) {
-					if (child .getElementType() == IJavaElement.INITIALIZER && this.insertionPolicy == CreateElementInCUOperation.INSERT_AFTER) {
+					if (child .getElementType() == IJavaScriptElement.INITIALIZER && this.insertionPolicy == CreateElementInCUOperation.INSERT_AFTER) {
 						count++;
 					}
 					return getType().getInitializer(count);
 				} else
-					if (child.getElementType() == IJavaElement.INITIALIZER) {
+					if (child.getElementType() == IJavaScriptElement.INITIALIZER) {
 						count++;
 					}
 			}
 		}
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// type doesn't exist: ignore
 	}
 	return null;
@@ -100,7 +100,7 @@ protected SimpleName rename(ASTNode node, SimpleName newName) {
 protected void initializeDefaultPosition() {
 	IType parentElement = getType();
 	try {
-		IJavaElement[] elements = parentElement.getInitializers();
+		IJavaScriptElement[] elements = parentElement.getInitializers();
 		if (elements != null && elements.length > 0) {
 			this.numberOfInitializers = elements.length;
 			createAfter(elements[elements.length - 1]);
@@ -110,7 +110,7 @@ protected void initializeDefaultPosition() {
 				createBefore(elements[0]);
 			}
 		}
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// type doesn't exist: ignore
 	}
 }

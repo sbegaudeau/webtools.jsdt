@@ -44,7 +44,7 @@ import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ChangeTypeRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
 
 
@@ -87,7 +87,7 @@ public class ChangeTypeWizard extends RefactoringWizard {
 	
 	
 	/**
-	 * A JavaElementLabelProvider that supports graying out of invalid types.
+	 * A JavaScriptElementLabelProvider that supports graying out of invalid types.
 	 */
 	private class ChangeTypeLabelProvider extends BindingLabelProvider 
 										  implements IColorProvider {
@@ -200,7 +200,7 @@ public class ChangeTypeWizard extends RefactoringWizard {
 					getWizard().getContainer().run(true, true, runnable);
 				} catch (InvocationTargetException e) {
 					internalError= true;
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 					ChangeTypeInputPage.this.setErrorMessage(RefactoringMessages.ChangeTypeWizard_internalError); 
 				} catch (InterruptedException e) {
 					ChangeTypeInputPage.this.setMessage(RefactoringMessages.ChangeTypeWizard_computationInterrupted); 

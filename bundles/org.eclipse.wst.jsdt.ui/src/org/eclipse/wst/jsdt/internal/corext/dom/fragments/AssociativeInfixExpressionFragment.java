@@ -17,10 +17,10 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
@@ -34,7 +34,7 @@ class AssociativeInfixExpressionFragment extends ASTFragment implements IExpress
 	private final List/*<Expression>*/ fOperands;
 	private final InfixExpression fGroupRoot;
 	
-	public static IExpressionFragment createSubPartFragmentBySourceRange(InfixExpression node, SourceRange range, ICompilationUnit cu) throws JavaModelException {
+	public static IExpressionFragment createSubPartFragmentBySourceRange(InfixExpression node, SourceRange range, IJavaScriptUnit cu) throws JavaScriptModelException {
 		Assert.isNotNull(node);
 		Assert.isNotNull(range);
 		Assert.isTrue(!range.covers(node));
@@ -131,7 +131,7 @@ class AssociativeInfixExpressionFragment extends ASTFragment implements IExpress
 		        && pos <= next.getStartPosition();
 	}
 	
-	private static boolean rangeIncludesExtraNonWhitespace(SourceRange range, List/*<Expression>*/ operands, ICompilationUnit cu) throws JavaModelException {
+	private static boolean rangeIncludesExtraNonWhitespace(SourceRange range, List/*<Expression>*/ operands, IJavaScriptUnit cu) throws JavaScriptModelException {
 		return Util.rangeIncludesNonWhitespaceOutsideRange(range, getRangeOfOperands(operands), cu.getBuffer());
 	}
 	
@@ -347,14 +347,14 @@ class AssociativeInfixExpressionFragment extends ASTFragment implements IExpress
 		return fGroupRoot.getOperator();
 	}
 	
-	public Expression createCopyTarget(ASTRewrite rewrite) throws JavaModelException {
+	public Expression createCopyTarget(ASTRewrite rewrite) throws JavaScriptModelException {
 		List allOperands= findGroupMembersInOrderFor(fGroupRoot);
 		if (allOperands.size() == fOperands.size()) {
 			return (Expression) rewrite.createCopyTarget(fGroupRoot);
 		}
 		
-		CompilationUnit root= (CompilationUnit) fGroupRoot.getRoot();
-		ICompilationUnit cu= (ICompilationUnit) root.getJavaElement();
+		JavaScriptUnit root= (JavaScriptUnit) fGroupRoot.getRoot();
+		IJavaScriptUnit cu= (IJavaScriptUnit) root.getJavaElement();
 		String source= cu.getBuffer().getText(getStartPosition(), getLength());
 		return (Expression) rewrite.createStringPlaceholder(source, ASTNode.INFIX_EXPRESSION);
 		

@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
@@ -510,7 +510,7 @@ public ReferenceBinding convertToParameterizedType(ReferenceBinding originalType
 }
 
 public TypeBinding convertToRawType(TypeBinding type) {
-	if (JavaCore.IS_ECMASCRIPT4)
+	if (JavaScriptCore.IS_ECMASCRIPT4)
 	{
 		int dimension;
 		TypeBinding originalType;

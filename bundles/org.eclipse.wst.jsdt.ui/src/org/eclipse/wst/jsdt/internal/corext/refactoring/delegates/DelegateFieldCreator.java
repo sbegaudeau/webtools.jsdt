@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.delegates;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ChildPropertyDescriptor;
@@ -48,7 +48,7 @@ public class DelegateFieldCreator extends DelegateCreator {
 		setInsertBefore(false); // delegate must be inserted after the original field that is referenced in the initializer
 	}
 
-	protected ASTNode createBody(BodyDeclaration fd) throws JavaModelException {
+	protected ASTNode createBody(BodyDeclaration fd) throws JavaScriptModelException {
 		FieldDeclaration result= (FieldDeclaration) fd;
 		Expression initializer= createDelegateFieldInitializer(result);
 		return initializer;
@@ -85,7 +85,7 @@ public class DelegateFieldCreator extends DelegateCreator {
 
 	// ******************* INTERNAL HELPERS ***************************
 
-	private Expression createDelegateFieldInitializer(final FieldDeclaration declaration) throws JavaModelException {
+	private Expression createDelegateFieldInitializer(final FieldDeclaration declaration) throws JavaScriptModelException {
 		Assert.isNotNull(declaration);
 
 		Expression qualification= getAccess();

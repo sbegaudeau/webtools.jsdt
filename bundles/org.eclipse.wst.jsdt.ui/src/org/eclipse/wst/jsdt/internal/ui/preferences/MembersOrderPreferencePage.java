@@ -32,14 +32,14 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 public class MembersOrderPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
@@ -86,7 +86,7 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 
 	public MembersOrderPreferencePage() {
 		//set the preference store
-		setPreferenceStore(JavaPlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(JavaScriptPlugin.getDefault().getPreferenceStore());
 		
 		setDescription(PreferencesMessages.MembersOrderPreferencePage_label_description); 
 
@@ -222,7 +222,7 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
 	 */
 	protected void performDefaults() {
-		IPreferenceStore prefs= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore prefs= JavaScriptPlugin.getDefault().getPreferenceStore();
 		String str= prefs.getDefaultString(PREF_OUTLINE_SORT_OPTION);
 		if (str != null)
 			fSortOrderList.setElements(parseList(str));
@@ -253,7 +253,7 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 		
 		//update the button setting
 		store.setValue(PREF_USE_VISIBILITY_SORT_OPTION, fUseVisibilitySortField.isSelected());
-		JavaPlugin.getDefault().savePluginPreferences();
+		JavaScriptPlugin.getDefault().savePluginPreferences();
 		
 		return true;
 	}
@@ -279,7 +279,7 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 		*/
 		public Image getImage(Object element) {
 			//access to image registry
-			ImageDescriptorRegistry registry= JavaPlugin.getImageDescriptorRegistry();
+			ImageDescriptorRegistry registry= JavaScriptPlugin.getImageDescriptorRegistry();
 			ImageDescriptor descriptor= null;
 
 			if (element instanceof String) {
@@ -292,22 +292,22 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 				} else if (s.equals(CONSTRUCTORS)) {
 					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, visibility);
 					//add a constructor adornment to the image descriptor
-					descriptor= new JavaElementImageDescriptor(descriptor, JavaElementImageDescriptor.CONSTRUCTOR, JavaElementImageProvider.SMALL_SIZE);
+					descriptor= new JavaScriptElementImageDescriptor(descriptor, JavaScriptElementImageDescriptor.CONSTRUCTOR, JavaElementImageProvider.SMALL_SIZE);
 				} else if (s.equals(METHODS)) {
 					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, visibility);
 //				} else if (s.equals(STATIC_FIELDS)) {
 //					descriptor= JavaElementImageProvider.getFieldImageDescriptor(false, visibility);
 					//add a static fields adornment to the image descriptor
-//					descriptor= new JavaElementImageDescriptor(descriptor, JavaElementImageDescriptor.STATIC, JavaElementImageProvider.SMALL_SIZE);
+//					descriptor= new JavaScriptElementImageDescriptor(descriptor, JavaScriptElementImageDescriptor.STATIC, JavaElementImageProvider.SMALL_SIZE);
 //				} else if (s.equals(STATIC_METHODS)) {
 //					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, visibility);
 					//add a static methods adornment to the image descriptor
-//					descriptor= new JavaElementImageDescriptor(descriptor, JavaElementImageDescriptor.STATIC, JavaElementImageProvider.SMALL_SIZE);
+//					descriptor= new JavaScriptElementImageDescriptor(descriptor, JavaScriptElementImageDescriptor.STATIC, JavaElementImageProvider.SMALL_SIZE);
 				} else if (s.equals(INIT)) {
 					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, visibility);
 //				} else if (s.equals(STATIC_INIT)) {
 //					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, visibility);
-//					descriptor= new JavaElementImageDescriptor(descriptor, JavaElementImageDescriptor.STATIC, JavaElementImageProvider.SMALL_SIZE);
+//					descriptor= new JavaScriptElementImageDescriptor(descriptor, JavaScriptElementImageDescriptor.STATIC, JavaElementImageProvider.SMALL_SIZE);
 				} else if (s.equals(TYPES)) {
 					descriptor= JavaElementImageProvider.getTypeImageDescriptor(true, false, Flags.AccPublic, false);
 				} else {
@@ -360,7 +360,7 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 		 */
 		public Image getImage(Object element) {
 			//access to image registry
-			ImageDescriptorRegistry registry= JavaPlugin.getImageDescriptorRegistry();
+			ImageDescriptorRegistry registry= JavaScriptPlugin.getImageDescriptorRegistry();
 			ImageDescriptor descriptor= null;
 			
 			if (element instanceof String) {

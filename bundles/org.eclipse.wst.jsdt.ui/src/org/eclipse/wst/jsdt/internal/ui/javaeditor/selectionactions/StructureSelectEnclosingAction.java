@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor.selectionactions;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.internal.corext.dom.SelectionAnalyzer;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -35,9 +35,9 @@ public class StructureSelectEnclosingAction extends StructureSelectionAction {
 	}
 
     /*
-     * @see StructureSelectionAction#internalGetNewSelectionRange(ISourceRange, ICompilationUnit, SelectionAnalyzer)
+     * @see StructureSelectionAction#internalGetNewSelectionRange(ISourceRange, IJavaScriptUnit, SelectionAnalyzer)
      */
-	ISourceRange internalGetNewSelectionRange(ISourceRange oldSourceRange, ISourceReference sr, SelectionAnalyzer selAnalyzer) throws JavaModelException{
+	ISourceRange internalGetNewSelectionRange(ISourceRange oldSourceRange, ISourceReference sr, SelectionAnalyzer selAnalyzer) throws JavaScriptModelException{
 		ASTNode first= selAnalyzer.getFirstSelectedNode();
 		if (first == null || first.getParent() == null)
 			return getLastCoveringNodeRange(oldSourceRange, sr, selAnalyzer);

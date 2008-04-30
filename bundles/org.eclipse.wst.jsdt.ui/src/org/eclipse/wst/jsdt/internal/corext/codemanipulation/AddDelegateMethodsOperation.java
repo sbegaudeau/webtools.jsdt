@@ -29,22 +29,22 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
@@ -52,7 +52,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitC
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringFileBuffers;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Workspace runnable to add delegate methods.
@@ -71,7 +71,7 @@ public final class AddDelegateMethodsOperation implements IWorkspaceRunnable {
 	private TextEdit fEdit= null;
 
 	/** The insertion point, or <code>null</code> */
-	private final IJavaElement fInsert;
+	private final IJavaScriptElement fInsert;
 
 	/** The method binding keys to implement */
 	private final String[] fMethodKeys;
@@ -86,7 +86,7 @@ public final class AddDelegateMethodsOperation implements IWorkspaceRunnable {
 	private final IType fType;
 
 	/** The compilation unit ast node */
-	private final CompilationUnit fUnit;
+	private final JavaScriptUnit fUnit;
 
 	/** The variable binding keys to implement */
 	private final String[] fVariableKeys;
@@ -102,7 +102,7 @@ public final class AddDelegateMethodsOperation implements IWorkspaceRunnable {
 	 * @param apply <code>true</code> if the resulting edit should be applied, <code>false</code> otherwise
 	 * @param save <code>true</code> if the changed compilation unit should be saved, <code>false</code> otherwise
 	 */
-	public AddDelegateMethodsOperation(final IType type, final IJavaElement insert, final CompilationUnit unit, final String[] variableKeys, final String[] methodKeys, final CodeGenerationSettings settings, final boolean apply, final boolean save) {
+	public AddDelegateMethodsOperation(final IType type, final IJavaScriptElement insert, final JavaScriptUnit unit, final String[] variableKeys, final String[] methodKeys, final CodeGenerationSettings settings, final boolean apply, final boolean save) {
 		Assert.isNotNull(type);
 		Assert.isNotNull(unit);
 		Assert.isNotNull(variableKeys);
@@ -158,12 +158,12 @@ public final class AddDelegateMethodsOperation implements IWorkspaceRunnable {
 			monitor.beginTask("", 1); //$NON-NLS-1$
 			monitor.setTaskName(CodeGenerationMessages.AddDelegateMethodsOperation_monitor_message);
 			fCreated.clear();
-			final ICompilationUnit unit= fType.getCompilationUnit();
+			final IJavaScriptUnit unit= fType.getJavaScriptUnit();
 			final CompilationUnitRewrite rewrite= new CompilationUnitRewrite(unit, fUnit);
 			ITypeBinding binding= null;
 			ListRewrite rewriter= null;
 			if (fType.isAnonymous()) {
-				final IJavaElement parent= fType.getParent();
+				final IJavaScriptElement parent= fType.getParent();
 				if (parent instanceof IField && Flags.isEnum(((IMember) parent).getFlags())) {
 					final EnumConstantDeclaration constant= (EnumConstantDeclaration) NodeFinder.perform(rewrite.getRoot(), ((ISourceReference) parent).getSourceRange());
 					if (constant != null) {
@@ -203,11 +203,11 @@ public final class AddDelegateMethodsOperation implements IWorkspaceRunnable {
 							document= buffer.getDocument();
 						}
 						ASTNode insertion= null;
-						if (fInsert instanceof IMethod)
-							insertion= ASTNodes.getParent(NodeFinder.perform(rewrite.getRoot(), ((IMethod) fInsert).getNameRange()), MethodDeclaration.class);
+						if (fInsert instanceof IFunction)
+							insertion= ASTNodes.getParent(NodeFinder.perform(rewrite.getRoot(), ((IFunction) fInsert).getNameRange()), FunctionDeclaration.class);
 						String variableKey= null;
 						String methodKey= null;
-						MethodDeclaration stub= null;
+						FunctionDeclaration stub= null;
 						for (int index= 0; index < fMethodKeys.length; index++) {
 							methodKey= fMethodKeys[index];
 							variableKey= fVariableKeys[index];
@@ -243,7 +243,7 @@ public final class AddDelegateMethodsOperation implements IWorkspaceRunnable {
 											unit.getBuffer().setContents(document.get());
 									}
 								} catch (Exception exception) {
-									throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), 0, exception.getLocalizedMessage(), exception));
+									throw new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), 0, exception.getLocalizedMessage(), exception));
 								}
 							}
 						}

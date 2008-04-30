@@ -19,7 +19,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ExtractSupertypeProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ExtractSupertypeRefactoring;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Wizard page to select methods to be deleted after extract supertype.
@@ -67,7 +67,7 @@ public class ExtractSupertypeMethodPage extends PullUpMethodPage {
 					}
 				});
 			} catch (InvocationTargetException exception) {
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 			} catch (InterruptedException exception) {
 				// Does not happen
 			}

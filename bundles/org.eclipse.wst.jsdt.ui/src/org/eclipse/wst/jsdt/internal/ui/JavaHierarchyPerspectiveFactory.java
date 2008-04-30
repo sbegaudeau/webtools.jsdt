@@ -19,7 +19,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IPlaceholderFolderLayout;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class JavaHierarchyPerspectiveFactory implements IPerspectiveFactory {
 		
@@ -34,9 +34,9 @@ public class JavaHierarchyPerspectiveFactory implements IPerspectiveFactory {
  		String editorArea = layout.getEditorArea();
 		
 		IFolderLayout folder= layout.createFolder("left", IPageLayout.LEFT, (float)0.25, editorArea); //$NON-NLS-1$
-		folder.addView(JavaUI.ID_TYPE_HIERARCHY); 
+		folder.addView(JavaScriptUI.ID_TYPE_HIERARCHY); 
 		folder.addPlaceholder(IPageLayout.ID_OUTLINE);
-		folder.addPlaceholder(JavaUI.ID_PACKAGES);
+		folder.addPlaceholder(JavaScriptUI.ID_PACKAGES);
 		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
 		
 		IPlaceholderFolderLayout outputfolder= layout.createPlaceholderFolder("bottom", IPageLayout.BOTTOM, (float)0.75, editorArea); //$NON-NLS-1$
@@ -44,17 +44,17 @@ public class JavaHierarchyPerspectiveFactory implements IPerspectiveFactory {
 		outputfolder.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
 		outputfolder.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
 		outputfolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
-		outputfolder.addPlaceholder(JavaUI.ID_SOURCE_VIEW);
-		outputfolder.addPlaceholder(JavaUI.ID_JAVADOC_VIEW);
+		outputfolder.addPlaceholder(JavaScriptUI.ID_SOURCE_VIEW);
+		outputfolder.addPlaceholder(JavaScriptUI.ID_JAVADOC_VIEW);
 		outputfolder.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
 		
 		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
-		layout.addActionSet(JavaUI.ID_ACTION_SET);
-		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);		
+		layout.addActionSet(JavaScriptUI.ID_ACTION_SET);
+		layout.addActionSet(JavaScriptUI.ID_ELEMENT_CREATION_ACTION_SET);		
 		
 		// views - java
-		layout.addShowViewShortcut(JavaUI.ID_PACKAGES);
-		layout.addShowViewShortcut(JavaUI.ID_TYPE_HIERARCHY);
+		layout.addShowViewShortcut(JavaScriptUI.ID_PACKAGES);
+		layout.addShowViewShortcut(JavaScriptUI.ID_TYPE_HIERARCHY);
 
 		layout.addShowViewShortcut(NewSearchUI.SEARCH_VIEW_ID);
 		

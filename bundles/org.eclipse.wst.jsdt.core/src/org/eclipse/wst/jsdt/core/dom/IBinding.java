@@ -11,7 +11,7 @@
 
 package org.eclipse.wst.jsdt.core.dom;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
  * A binding represents a named entity in the Java language. The world of
@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
  * @see IPackageBinding
  * @see ITypeBinding
  * @see IVariableBinding
- * @see IMethodBinding
+ * @see IFunctionBinding
  * @since 2.0
  */
 public interface IBinding {
@@ -60,10 +60,10 @@ public interface IBinding {
 
 	/**
 	 * Kind constant (value 4) indicating a method or constructor binding.
-	 * Bindings of this kind can be safely cast to <code>IMethodBinding</code>.
+	 * Bindings of this kind can be safely cast to <code>IFunctionBinding</code>.
 	 *
 	 * @see #getKind()
-	 * @see IMethodBinding
+	 * @see IFunctionBinding
 	 */
 	public static final int METHOD = 4;
 
@@ -175,13 +175,13 @@ public interface IBinding {
 	 * the compiler generates for class declarations with no explicit constructors
 	 * declarations) are not generally considered synthetic (although they
 	 * may be if the class itself is synthetic).
-	 * But see {@link IMethodBinding#isDefaultConstructor() IMethodBinding.isDefaultConstructor}
+	 * But see {@link IFunctionBinding#isDefaultConstructor() IFunctionBinding.isDefaultConstructor}
 	 * for cases where the compiled-generated default constructor can be recognized
 	 * instead.
 	 *
 	 * @return <code>true</code> if this binding is synthetic, and
 	 *    <code>false</code> otherwise
-	 * @see IMethodBinding#isDefaultConstructor()
+	 * @see IFunctionBinding#isDefaultConstructor()
 	 */
 	public boolean isSynthetic();
 
@@ -216,7 +216,7 @@ public interface IBinding {
 	 * 		or <code>null</code> if none
 	 * @since 3.1
 	 */
-	public IJavaElement getJavaElement();
+	public IJavaScriptElement getJavaElement();
 
 	/**
 	 * Returns the key for this binding.

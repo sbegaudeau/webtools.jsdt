@@ -22,9 +22,9 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 
 public class GotoResourceAction extends Action {
@@ -32,10 +32,10 @@ public class GotoResourceAction extends Action {
 	private PackageExplorerPart fPackageExplorer;
 
 	private static class GotoResourceDialog extends FilteredResourcesSelectionDialog {
-		private IJavaModel fJavaModel;
+		private IJavaScriptModel fJavaModel;
 		public GotoResourceDialog(Shell parentShell, IContainer container, StructuredViewer viewer) {
 			super(parentShell, false, container, IResource.FILE | IResource.FOLDER | IResource.PROJECT);
-			fJavaModel= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
+			fJavaModel= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
 			setTitle(PackagesMessages.GotoResource_dialog_title); 
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(parentShell, IJavaHelpContextIds.GOTO_RESOURCE_DIALOG);
 		}
@@ -71,7 +71,7 @@ public class GotoResourceAction extends Action {
 			private boolean select(IResource resource) {
 				IProject project= resource.getProject();
 				try {
-					if (project.getNature(JavaCore.NATURE_ID) != null)
+					if (project.getNature(JavaScriptCore.NATURE_ID) != null)
 						return fJavaModel.contains(resource);
 				} catch (CoreException e) {
 					// do nothing. Consider resource;
@@ -112,7 +112,7 @@ public class GotoResourceAction extends Action {
 	 	if (result == null || result.length == 0 || !(result[0] instanceof IResource))
 	 		return;
 	 	StructuredSelection selection= null;
-		IJavaElement element = JavaCore.create((IResource)result[0]);
+		IJavaScriptElement element = JavaScriptCore.create((IResource)result[0]);
 		if (element != null && element.exists())
 			selection= new StructuredSelection(element);
 		else 

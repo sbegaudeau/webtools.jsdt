@@ -15,12 +15,12 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -43,7 +43,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * char[] source = ...;
  * ASTParser parser = ASTParser.newParser(AST.JLS3);  // handles JDK 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6
  * parser.setSource(source);
- * CompilationUnit result = (CompilationUnit) parser.createAST(null);
+ * JavaScriptUnit result = (JavaScriptUnit) parser.createAST(null);
  * </pre>
  * Once a configured parser instance has been used to create an AST,
  * the settings are automatically reset to their defaults,
@@ -53,14 +53,14 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * There are a number of configurable features:
  * <ul>
  * <li>Source string from {@link #setSource(char[]) char[]},
- * {@link #setSource(ICompilationUnit) ICompilationUnit},
+ * {@link #setSource(IJavaScriptUnit) IJavaScriptUnit},
  * or {@link #setSource(IClassFile) IClassFile}, and limited
  * to a specified {@linkplain #setSourceRange(int,int) subrange}.</li>
  * <li>Whether {@linkplain #setResolveBindings(boolean) bindings} will be created.</li>
  * <li>Which {@linkplain #setWorkingCopyOwner(WorkingCopyOwner)
  * working set owner} to use when resolving bindings).</li>
  * <li>A hypothetical {@linkplain #setUnitName(String) compilation unit file name}
- * and {@linkplain #setProject(IJavaProject) Java project}
+ * and {@linkplain #setProject(IJavaScriptProject) Java project}
  * for locating a raw source string in the Java model (when
  * resolving bindings)</li>
  * <li>Which {@linkplain #setCompilerOptions(Map) compiler options}
@@ -123,7 +123,7 @@ public class ASTParser {
 	private int astKind;
 
 	/**
-	 * Compiler options. Defaults to JavaCore.getOptions().
+	 * Compiler options. Defaults to JavaScriptCore.getOptions().
 	 */
 	private Map compilerOptions;
 
@@ -187,7 +187,7 @@ public class ASTParser {
 	 * Java project used to resolve names, or <code>null</code> if none.
      * Defaults to none.
      */
-	private IJavaProject project = null;
+	private IJavaScriptProject project = null;
 
     /**
 	 * Name of the compilation unit for resolving bindings, or
@@ -227,8 +227,8 @@ public class ASTParser {
 		this.unitName = null;
 		this.project = null;
 		this.partial = false;
-		Map options = JavaCore.getOptions();
-		options.remove(JavaCore.COMPILER_TASK_TAGS); // no need to parse task tags
+		Map options = JavaScriptCore.getOptions();
+		options.remove(JavaScriptCore.COMPILER_TASK_TAGS); // no need to parse task tags
 		this.compilerOptions = options;
 	}
 
@@ -255,10 +255,10 @@ public class ASTParser {
 	 * Sets the compiler options to be used when parsing.
 	 * <p>
 	 * Note that {@link #setSource(IClassFile)},
-	 * {@link #setSource(ICompilationUnit)},
-	 * and {@link #setProject(IJavaProject)} reset the compiler options
+	 * {@link #setSource(IJavaScriptUnit)},
+	 * and {@link #setProject(IJavaScriptProject)} reset the compiler options
 	 * based on the Java project. In other cases, compiler options default
-	 * to {@link JavaCore#getOptions()}. In either case, and especially
+	 * to {@link JavaScriptCore#getOptions()}. In either case, and especially
 	 * in the latter, the caller should carefully weight the consequences of
 	 * allowing compiler options to be defaulted as opposed to being
 	 * explicitly specified for the <code>ASTParser</code> instance.
@@ -278,12 +278,12 @@ public class ASTParser {
 	 */
 	public void setCompilerOptions(Map options) {
 		if (options == null) {
-			options = JavaCore.getOptions();
+			options = JavaScriptCore.getOptions();
 		} else {
 			// copy client's options so as to not do any side effect on them
 			options = new HashMap(options);
 		}
-		options.remove(JavaCore.COMPILER_TASK_TAGS); // no need to parse task tags
+		options.remove(JavaScriptCore.COMPILER_TASK_TAGS); // no need to parse task tags
 		this.compilerOptions = options;
 	}
 
@@ -324,11 +324,11 @@ public class ASTParser {
      * Binding information is obtained from the Java model.
      * This means that the compilation unit must be located relative to the
      * Java model. This happens automatically when the source code comes from
-     * either {@link #setSource(ICompilationUnit) setSource(ICompilationUnit)}
+     * either {@link #setSource(IJavaScriptUnit) setSource(IJavaScriptUnit)}
      * or {@link #setSource(IClassFile) setSource(IClassFile)}.
      * When source is supplied by {@link #setSource(char[]) setSource(char[])},
      * the location must be extablished explicitly by calling
-     * {@link #setProject(IJavaProject)} and  {@link #setUnitName(String)}.
+     * {@link #setProject(IJavaScriptProject)} and  {@link #setUnitName(String)}.
 	 * Note that the compiler options that affect doc comment checking may also
 	 * affect whether any bindings are resolved for nodes within doc comments.
 	 * </p>
@@ -388,8 +388,8 @@ public class ASTParser {
 	 * When the parse is successful the result returned includes the ASTs for the
 	 * requested source:
 	 * <ul>
-	 * <li>{@link #K_COMPILATION_UNIT K_COMPILATION_UNIT}: The result node
-	 * is a {@link CompilationUnit}.</li>
+	 * <li>{@link #K_JAVASCRIPT_UNIT K_JAVASCRIPT_UNIT}: The result node
+	 * is a {@link JavaScriptUnit}.</li>
 	 * <li>{@link #K_CLASS_BODY_DECLARATIONS K_CLASS_BODY_DECLARATIONS}: The result node
 	 * is a {@link TypeDeclaration} whose
 	 * {@link TypeDeclaration#bodyDeclarations() bodyDeclarations}
@@ -401,22 +401,22 @@ public class ASTParser {
 	 * {@link Expression Expression}. Other aspects of the expression are unspecified.</li>
 	 * </ul>
 	 * The resulting AST node is rooted under (possibly contrived)
-	 * {@link CompilationUnit CompilationUnit} node, to allow the
+	 * {@link JavaScriptUnit JavaScriptUnit} node, to allow the
 	 * client to retrieve the following pieces of information
 	 * available there:
 	 * <ul>
-	 * <li>{@linkplain CompilationUnit#getLineNumber(int) Line number map}. Line
+	 * <li>{@linkplain JavaScriptUnit#getLineNumber(int) Line number map}. Line
 	 * numbers start at 1 and only cover the subrange scanned
 	 * (<code>source[offset]</code> through <code>source[offset+length-1]</code>).</li>
-	 * <li>{@linkplain CompilationUnit#getMessages() Compiler messages}
-	 * and {@linkplain CompilationUnit#getProblems() detailed problem reports}.
+	 * <li>{@linkplain JavaScriptUnit#getMessages() Compiler messages}
+	 * and {@linkplain JavaScriptUnit#getProblems() detailed problem reports}.
 	 * Character positions are relative to the start of
 	 * <code>source</code>; line positions are for the subrange scanned.</li>
-	 * <li>{@linkplain CompilationUnit#getCommentList() Comment list}
+	 * <li>{@linkplain JavaScriptUnit#getCommentList() Comment list}
 	 * for the subrange scanned.</li>
 	 * </ul>
 	 * The contrived nodes do not have source positions. Other aspects of the
-	 * {@link CompilationUnit CompilationUnit} node are unspecified, including
+	 * {@link JavaScriptUnit JavaScriptUnit} node are unspecified, including
 	 * the exact arrangment of intervening nodes.
 	 * </p>
 	 * <p>
@@ -424,7 +424,7 @@ public class ASTParser {
 	 * a result node being marked as {@link ASTNode#MALFORMED MALFORMED}.
 	 * In more severe failure cases where the parser is unable to
 	 * recognize the input, this method returns
-	 * a {@link CompilationUnit CompilationUnit} node with at least the
+	 * a {@link JavaScriptUnit JavaScriptUnit} node with at least the
 	 * compiler messages.
 	 * </p>
 	 * <p>Each node in the subtree (other than the contrived nodes)
@@ -444,11 +444,11 @@ public class ASTParser {
 	 * </p>
 	 * <p>
 	 * Binding information is only computed when <code>kind</code> is
-     * <code>K_COMPILATION_UNIT</code>.
+     * <code>K_JAVASCRIPT_UNIT</code>.
 	 * </p>
 	 *
 	 * @param kind the kind of construct to parse: one of
-	 * {@link #K_COMPILATION_UNIT},
+	 * {@link #K_JAVASCRIPT_UNIT},
 	 * {@link #K_CLASS_BODY_DECLARATIONS},
 	 * {@link #K_EXPRESSION},
 	 * {@link #K_STATEMENTS}
@@ -484,7 +484,7 @@ public class ASTParser {
 	 * @param source the Java model compilation unit whose source code
      * is to be parsed, or <code>null</code> if none
       */
-	public void setSource(ICompilationUnit source) {
+	public void setSource(IJavaScriptUnit source) {
 		setSource((ITypeRoot)source);
 	}
 
@@ -520,9 +520,9 @@ public class ASTParser {
 		// clear the raw source
 		this.rawSource = null;
 		if (source != null) {
-			this.project = source.getJavaProject();
+			this.project = source.getJavaScriptProject();
 			Map options = this.project.getOptions(true);
-			options.remove(JavaCore.COMPILER_TASK_TAGS); // no need to parse task tags
+			options.remove(JavaScriptCore.COMPILER_TASK_TAGS); // no need to parse task tags
 			this.compilerOptions = options;
 		}
 	}
@@ -579,12 +579,12 @@ public class ASTParser {
 	/**
      * Sets the name of the compilation unit that would hypothetically contains
      * the source string. This is used in conjunction with {@link #setSource(char[])}
-     * and {@link #setProject(IJavaProject) } to locate the compilation unit relative to a Java project.
+     * and {@link #setProject(IJavaScriptProject) } to locate the compilation unit relative to a Java project.
      * Defaults to none (<code>null</code>).
 	 * <p>
 	 * The name of the compilation unit must be supplied for resolving bindings.
 	 * This name should be suffixed by a dot ('.') followed by one of the
-	 * {@link JavaCore#getJavaLikeExtensions() Java-like extensions}
+	 * {@link JavaScriptCore#getJavaScriptLikeExtensions() Java-like extensions}
 	 * and match the name of the main (public) class or interface declared in the source.</p>
 	 *
 	 * <p>This name must represent the full path of the unit inside the given project. For example, if the source
@@ -618,11 +618,11 @@ public class ASTParser {
 	 * @param project the Java project used to resolve names, or
 	 *    <code>null</code> if none
 	 */
-	public void setProject(IJavaProject project) {
+	public void setProject(IJavaScriptProject project) {
 		this.project = project;
 		if (project != null) {
 			Map options = project.getOptions(true);
-			options.remove(JavaCore.COMPILER_TASK_TAGS); // no need to parse task tags
+			options.remove(JavaScriptCore.COMPILER_TASK_TAGS); // no need to parse task tags
 			this.compilerOptions = options;
 		}
 	}
@@ -637,7 +637,7 @@ public class ASTParser {
 	 * @param monitor the progress monitor used to report progress and request cancelation,
 	 *   or <code>null</code> if none
 	 * @return an AST node whose type depends on the kind of parse
-	 *  requested, with a fallback to a <code>CompilationUnit</code>
+	 *  requested, with a fallback to a <code>JavaScriptUnit</code>
 	 *  in the case of severe parsing errors
 	 * @exception IllegalStateException if the settings provided
 	 * are insufficient, contradictory, or otherwise unsupported
@@ -687,7 +687,7 @@ public class ASTParser {
 	 * Note also the following parser parameters are used, regardless of what
 	 * may have been specified:
 	 * <ul>
-	 * <li>The {@linkplain #setKind(int) parser kind} is <code>K_COMPILATION_UNIT</code></li>
+	 * <li>The {@linkplain #setKind(int) parser kind} is <code>K_JAVASCRIPT_UNIT</code></li>
 	 * <li>The {@linkplain #setSourceRange(int,int) source range} is <code>(0, -1)</code></li>
 	 * <li>The {@linkplain #setFocalPosition(int) focal position} is not set</li>
 	 * </ul>
@@ -721,17 +721,17 @@ public class ASTParser {
 	 * are insufficient, contradictory, or otherwise unsupported
 	 * @since 3.1
      */
-	public void createASTs(ICompilationUnit[] compilationUnits, String[] bindingKeys, ASTRequestor requestor, IProgressMonitor monitor) {
+	public void createASTs(IJavaScriptUnit[] compilationUnits, String[] bindingKeys, ASTRequestor requestor, IProgressMonitor monitor) {
 		try {
 			int flags = 0;
-			if (this.statementsRecovery) flags |= ICompilationUnit.ENABLE_STATEMENTS_RECOVERY;
+			if (this.statementsRecovery) flags |= IJavaScriptUnit.ENABLE_STATEMENTS_RECOVERY;
 			if (this.resolveBindings) {
 				if (this.project == null)
 					throw new IllegalStateException("project not specified"); //$NON-NLS-1$
-				if (this.bindingsRecovery) flags |= ICompilationUnit.ENABLE_BINDINGS_RECOVERY;
-				CompilationUnitResolver.resolve(compilationUnits, bindingKeys, requestor, this.apiLevel, this.compilerOptions, this.project, this.workingCopyOwner, flags, monitor);
+				if (this.bindingsRecovery) flags |= IJavaScriptUnit.ENABLE_BINDINGS_RECOVERY;
+				JavaScriptUnitResolver.resolve(compilationUnits, bindingKeys, requestor, this.apiLevel, this.compilerOptions, this.project, this.workingCopyOwner, flags, monitor);
 			} else {
-				CompilationUnitResolver.parse(compilationUnits, requestor, this.apiLevel, this.compilerOptions, flags, monitor);
+				JavaScriptUnitResolver.parse(compilationUnits, requestor, this.apiLevel, this.compilerOptions, flags, monitor);
 			}
 		} finally {
 	   	   // re-init defaults to allow reuse (and avoid leaking)
@@ -741,7 +741,7 @@ public class ASTParser {
 
 	/**
      * Creates bindings for a batch of Java elements. These elements are either
-     * enclosed in {@link ICompilationUnit}s or in {@link IClassFile}s.
+     * enclosed in {@link IJavaScriptUnit}s or in {@link IClassFile}s.
      * <p>
      * All enclosing compilation units and class files must
      * come from the same Java project, which must be set beforehand
@@ -761,7 +761,7 @@ public class ASTParser {
 	 * may have been specified:
 	 * <ul>
 	 * <li>The {@linkplain #setResolveBindings(boolean) binding resolution flag} is <code>true</code></li>
-	 * <li>The {@linkplain #setKind(int) parser kind} is <code>K_COMPILATION_UNIT</code></li>
+	 * <li>The {@linkplain #setKind(int) parser kind} is <code>K_JAVASCRIPT_UNIT</code></li>
 	 * <li>The {@linkplain #setSourceRange(int,int) source range} is <code>(0, -1)</code></li>
 	 * <li>The {@linkplain #setFocalPosition(int) focal position} is not set</li>
 	 * </ul>
@@ -778,14 +778,14 @@ public class ASTParser {
 	 * are insufficient, contradictory, or otherwise unsupported
 	 * @since 3.1
      */
-	public IBinding[] createBindings(IJavaElement[] elements, IProgressMonitor monitor) {
+	public IBinding[] createBindings(IJavaScriptElement[] elements, IProgressMonitor monitor) {
 		try {
 			if (this.project == null)
 				throw new IllegalStateException("project not specified"); //$NON-NLS-1$
 			int flags = 0;
-			if (this.statementsRecovery) flags |= ICompilationUnit.ENABLE_STATEMENTS_RECOVERY;
-			if (this.bindingsRecovery)  flags |= ICompilationUnit.ENABLE_BINDINGS_RECOVERY;
-			return CompilationUnitResolver.resolve(elements, this.apiLevel, this.compilerOptions, this.project, this.workingCopyOwner,flags, monitor);
+			if (this.statementsRecovery) flags |= IJavaScriptUnit.ENABLE_STATEMENTS_RECOVERY;
+			if (this.bindingsRecovery)  flags |= IJavaScriptUnit.ENABLE_BINDINGS_RECOVERY;
+			return JavaScriptUnitResolver.resolve(elements, this.apiLevel, this.compilerOptions, this.project, this.workingCopyOwner,flags, monitor);
 		} finally {
 	   	   // re-init defaults to allow reuse (and avoid leaking)
 	   	   initializeDefaults();
@@ -811,10 +811,10 @@ public class ASTParser {
 					NodeSearcher searcher = null;
 					org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit sourceUnit = null;
 					WorkingCopyOwner wcOwner = this.workingCopyOwner;
-					if (this.typeRoot instanceof ICompilationUnit) {
+					if (this.typeRoot instanceof IJavaScriptUnit) {
 							/*
 							 * this.compilationUnitSource is an instance of org.eclipse.wst.jsdt.internal.core.CompilationUnit that implements
-							 * both org.eclipse.wst.jsdt.core.ICompilationUnit and org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit
+							 * both org.eclipse.wst.jsdt.core.IJavaScriptUnit and org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit
 							 */
 							sourceUnit = (org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit) this.typeRoot;
 							/*
@@ -823,7 +823,7 @@ public class ASTParser {
 							 * (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=75632)
 							 */
 							sourceUnit = new BasicCompilationUnit(sourceUnit.getContents(), sourceUnit.getPackageName(), new String(sourceUnit.getFileName()), this.project);
-							wcOwner = ((ICompilationUnit) this.typeRoot).getOwner();
+							wcOwner = ((IJavaScriptUnit) this.typeRoot).getOwner();
 					} else if (this.typeRoot instanceof IClassFile) {
 						try {
 							String sourceString = this.typeRoot.getSource();
@@ -846,7 +846,7 @@ public class ASTParser {
 //								fileName = newFileName;
 //							}
 							sourceUnit = new BasicCompilationUnit(sourceString.toCharArray(), Util.toCharArrays(packageFragment.names), new String(fileName), this.project);
-						} catch(JavaModelException e) {
+						} catch(JavaScriptModelException e) {
 							// an error occured accessing the java element
 							throw new IllegalStateException();
 						}
@@ -860,13 +860,13 @@ public class ASTParser {
 						searcher = new NodeSearcher(this.focalPointPosition);
 					}
 					int flags = 0;
-					if (this.statementsRecovery) flags |= ICompilationUnit.ENABLE_STATEMENTS_RECOVERY;
+					if (this.statementsRecovery) flags |= IJavaScriptUnit.ENABLE_STATEMENTS_RECOVERY;
 					if (needToResolveBindings) {
-						if (this.bindingsRecovery) flags |= ICompilationUnit.ENABLE_BINDINGS_RECOVERY;
+						if (this.bindingsRecovery) flags |= IJavaScriptUnit.ENABLE_BINDINGS_RECOVERY;
 						try {
 							// parse and resolve
 							compilationUnitDeclaration =
-								CompilationUnitResolver.resolve(
+								JavaScriptUnitResolver.resolve(
 									sourceUnit,
 									this.project,
 									searcher,
@@ -874,9 +874,9 @@ public class ASTParser {
 									this.workingCopyOwner,
 									flags,
 									monitor);
-						} catch (JavaModelException e) {
-							flags &= ~ICompilationUnit.ENABLE_BINDINGS_RECOVERY;
-							compilationUnitDeclaration = CompilationUnitResolver.parse(
+						} catch (JavaScriptModelException e) {
+							flags &= ~IJavaScriptUnit.ENABLE_BINDINGS_RECOVERY;
+							compilationUnitDeclaration = JavaScriptUnitResolver.parse(
 									sourceUnit,
 									searcher,
 									this.compilerOptions,
@@ -884,14 +884,14 @@ public class ASTParser {
 							needToResolveBindings = false;
 						}
 					} else {
-						compilationUnitDeclaration = CompilationUnitResolver.parse(
+						compilationUnitDeclaration = JavaScriptUnitResolver.parse(
 								sourceUnit,
 								searcher,
 								this.compilerOptions,
 								flags);
 						needToResolveBindings = false;
 					}
-					CompilationUnit result = CompilationUnitResolver.convert(
+					JavaScriptUnit result = JavaScriptUnitResolver.convert(
 						compilationUnitDeclaration,
 						sourceUnit.getContents(),
 						this.apiLevel,
@@ -932,22 +932,22 @@ public class ASTParser {
 	 * {@link Expression Expression}. Other aspects of the expression are unspecified.</li>
 	 * </ul>
 	 * The resulting AST node is rooted under an contrived
-	 * {@link CompilationUnit CompilationUnit} node, to allow the
+	 * {@link JavaScriptUnit JavaScriptUnit} node, to allow the
 	 * client to retrieve the following pieces of information
 	 * available there:
 	 * <ul>
-	 * <li>{@linkplain CompilationUnit#getLineNumber(int) Line number map}. Line
+	 * <li>{@linkplain JavaScriptUnit#getLineNumber(int) Line number map}. Line
 	 * numbers start at 1 and only cover the subrange scanned
 	 * (<code>source[offset]</code> through <code>source[offset+length-1]</code>).</li>
-	 * <li>{@linkplain CompilationUnit#getMessages() Compiler messages}
-	 * and {@linkplain CompilationUnit#getProblems() detailed problem reports}.
+	 * <li>{@linkplain JavaScriptUnit#getMessages() Compiler messages}
+	 * and {@linkplain JavaScriptUnit#getProblems() detailed problem reports}.
 	 * Character positions are relative to the start of
 	 * <code>source</code>; line positions are for the subrange scanned.</li>
-	 * <li>{@linkplain CompilationUnit#getCommentList() Comment list}
+	 * <li>{@linkplain JavaScriptUnit#getCommentList() Comment list}
 	 * for the subrange scanned.</li>
 	 * </ul>
 	 * The contrived nodes do not have source positions. Other aspects of the
-	 * {@link CompilationUnit CompilationUnit} node are unspecified, including
+	 * {@link JavaScriptUnit JavaScriptUnit} node are unspecified, including
 	 * the exact arrangment of intervening nodes.
 	 * </p>
 	 * <p>
@@ -955,7 +955,7 @@ public class ASTParser {
 	 * a result node being marked as {@link ASTNode#MALFORMED MALFORMED}.
 	 * In more severe failure cases where the parser is unable to
 	 * recognize the input, this method returns
-	 * a {@link CompilationUnit CompilationUnit} node with at least the
+	 * a {@link JavaScriptUnit JavaScriptUnit} node with at least the
 	 * compiler messages.
 	 * </p>
 	 * <p>Each node in the subtree (other than the contrived nodes)
@@ -979,7 +979,7 @@ public class ASTParser {
 	 * </p>
 	 *
 	 * @return an AST node whose type depends on the kind of parse
-	 *  requested, with a fallback to a <code>CompilationUnit</code>
+	 *  requested, with a fallback to a <code>JavaScriptUnit</code>
 	 *  in the case of severe parsing errors
 	 * @see ASTNode#getStartPosition()
 	 * @see ASTNode#getLength()
@@ -994,11 +994,11 @@ public class ASTParser {
 		ast.setDefaultNodeFlag(ASTNode.ORIGINAL);
 		ast.setBindingResolver(new BindingResolver());
 		if (this.statementsRecovery) {
-			ast.setFlag(ICompilationUnit.ENABLE_STATEMENTS_RECOVERY);
+			ast.setFlag(IJavaScriptUnit.ENABLE_STATEMENTS_RECOVERY);
 		}
 		converter.setAST(ast);
 		CodeSnippetParsingUtil codeSnippetParsingUtil = new CodeSnippetParsingUtil();
-		CompilationUnit compilationUnit = ast.newCompilationUnit();
+		JavaScriptUnit compilationUnit = ast.newJavaScriptUnit();
 		if (this.sourceLength == -1) {
 			this.sourceLength = this.rawSource.length;
 		}
@@ -1073,7 +1073,7 @@ public class ASTParser {
 //					TypeDeclaration typeDeclaration = converter.convert(nodes);
 //					typeDeclaration.setSourceRange(this.sourceOffset, this.sourceOffset + this.sourceLength);
 //					rootNodeToCompilationUnit(typeDeclaration.getAST(), compilationUnit, typeDeclaration, codeSnippetParsingUtil.recordedParsingInformation, null);
-					CompilationUnit compUnit=converter.convert(nodes, compilationUnit);
+					JavaScriptUnit compUnit=converter.convert(nodes, compilationUnit);
 					rootNodeToCompilationUnit(compUnit.getAST(), compilationUnit, compUnit, codeSnippetParsingUtil.recordedParsingInformation, null);
 					ast.setDefaultNodeFlag(0);
 					ast.setOriginalModificationCount(ast.modificationCount());
@@ -1098,7 +1098,7 @@ public class ASTParser {
 		}
 	}
 
-	private void rootNodeToCompilationUnit(AST ast, CompilationUnit compilationUnit, ASTNode node, RecordedParsingInformation recordedParsingInformation, RecoveryScannerData data) {
+	private void rootNodeToCompilationUnit(AST ast, JavaScriptUnit compilationUnit, ASTNode node, RecordedParsingInformation recordedParsingInformation, RecoveryScannerData data) {
 		final int problemsCount = recordedParsingInformation.problemsCount;
 		switch(node.getNodeType()) {
 			case ASTNode.BLOCK :
@@ -1117,9 +1117,9 @@ public class ASTParser {
 					compilationUnit.types().add(typeDeclaration);
 				}
 				break;
-			case ASTNode.COMPILATION_UNIT :
+			case ASTNode.JAVASCRIPT_UNIT :
 			{
-				CompilationUnit compUnit = (CompilationUnit) node;
+				JavaScriptUnit compUnit = (JavaScriptUnit) node;
 				if (problemsCount != 0) {
 					// propagate and record problems
 					final CategorizedProblem[] problems = recordedParsingInformation.problems;

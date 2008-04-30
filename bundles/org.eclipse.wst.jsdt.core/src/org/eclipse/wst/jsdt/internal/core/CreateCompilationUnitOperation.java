@@ -24,16 +24,16 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -70,20 +70,20 @@ public class CreateCompilationUnitOperation extends JavaModelOperation {
  * The name should have the ".js" suffix.
  */
 public CreateCompilationUnitOperation(IPackageFragment parentElement, String name, String source, boolean force) {
-	super(null, new IJavaElement[] {parentElement}, force);
+	super(null, new IJavaScriptElement[] {parentElement}, force);
 	fName = name;
 	fSource = source;
 }
 /**
  * Creates a compilation unit.
  *
- * @exception JavaModelException if unable to create the compilation unit.
+ * @exception JavaScriptModelException if unable to create the compilation unit.
  */
-protected void executeOperation() throws JavaModelException {
+protected void executeOperation() throws JavaScriptModelException {
 	try {
 		beginTask(Messages.operation_createUnitProgress, 2);
 		JavaElementDelta delta = newJavaElementDelta();
-		ICompilationUnit unit = getCompilationUnit();
+		IJavaScriptUnit unit = getCompilationUnit();
 		IPackageFragment pkg = (IPackageFragment) getParentElement();
 		IContainer folder = (IContainer) pkg.getResource();
 		worked(1);
@@ -95,17 +95,17 @@ protected void executeOperation() throws JavaModelException {
 				if (buffer == null) return;
 				buffer.setContents(fSource);
 				unit.save(new NullProgressMonitor(), false);
-				resultElements = new IJavaElement[] {unit};
+				resultElements = new IJavaScriptElement[] {unit};
 				if (!Util.isExcluded(unit)
 						&& unit.getParent().exists()) {
 					for (int i = 0; i < resultElements.length; i++) {
-						delta.changed(resultElements[i], IJavaElementDelta.F_CONTENT);
+						delta.changed(resultElements[i], IJavaScriptElementDelta.F_CONTENT);
 					}
 					addDelta(delta);
 				}
 			} else {
-				throw new JavaModelException(new JavaModelStatus(
-					IJavaModelStatusConstants.NAME_COLLISION,
+				throw new JavaScriptModelException(new JavaModelStatus(
+					IJavaScriptModelStatusConstants.NAME_COLLISION,
 					Messages.bind(Messages.status_nameCollision, compilationUnitFile.getFullPath().toString())));
 			}
 		} else {
@@ -119,7 +119,7 @@ protected void executeOperation() throws JavaModelException {
 				}
 				InputStream stream = new ByteArrayInputStream(encoding == null ? fSource.getBytes() : fSource.getBytes(encoding));
 				createFile(folder, unit.getElementName(), stream, force);
-				resultElements = new IJavaElement[] {unit};
+				resultElements = new IJavaScriptElement[] {unit};
 				if (!Util.isExcluded(unit)
 						&& unit.getParent().exists()) {
 					for (int i = 0; i < resultElements.length; i++) {
@@ -128,7 +128,7 @@ protected void executeOperation() throws JavaModelException {
 					addDelta(delta);
 				}
 			} catch (IOException e) {
-				throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
+				throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.IO_EXCEPTION);
 			}
 		}
 		worked(1);
@@ -139,8 +139,8 @@ protected void executeOperation() throws JavaModelException {
 /**
  * @see CreateElementInCUOperation#getCompilationUnit()
  */
-protected ICompilationUnit getCompilationUnit() {
-	return ((IPackageFragment)getParentElement()).getCompilationUnit(fName);
+protected IJavaScriptUnit getCompilationUnit() {
+	return ((IPackageFragment)getParentElement()).getJavaScriptUnit(fName);
 }
 protected ISchedulingRule getSchedulingRule() {
 	IResource resource  = getCompilationUnit().getResource();
@@ -160,16 +160,16 @@ protected ISchedulingRule getSchedulingRule() {
  *  <li>INVALID_CONTENTS - the source specified for the compiliation unit is null
  * </ul>
  */
-public IJavaModelStatus verify() {
+public IJavaScriptModelStatus verify() {
 	if (getParentElement() == null) {
-		return new JavaModelStatus(IJavaModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
+		return new JavaModelStatus(IJavaScriptModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
 	}
-	IJavaProject project = getParentElement().getJavaProject();
-	if (JavaConventions.validateCompilationUnitName(fName, project.getOption(JavaCore.COMPILER_SOURCE, true), project.getOption(JavaCore.COMPILER_COMPLIANCE, true)).getSeverity() == IStatus.ERROR) {
-		return new JavaModelStatus(IJavaModelStatusConstants.INVALID_NAME, fName);
+	IJavaScriptProject project = getParentElement().getJavaScriptProject();
+	if (JavaScriptConventions.validateCompilationUnitName(fName, project.getOption(JavaScriptCore.COMPILER_SOURCE, true), project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true)).getSeverity() == IStatus.ERROR) {
+		return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_NAME, fName);
 	}
 	if (fSource == null) {
-		return new JavaModelStatus(IJavaModelStatusConstants.INVALID_CONTENTS);
+		return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_CONTENTS);
 	}
 	return JavaModelStatus.VERIFIED_OK;
 }

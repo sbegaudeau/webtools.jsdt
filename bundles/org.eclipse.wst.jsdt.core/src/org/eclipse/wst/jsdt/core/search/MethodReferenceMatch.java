@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.core.search;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
  * A Java search match that represents a method reference.
@@ -39,7 +39,7 @@ public class MethodReferenceMatch extends SearchMatch {
 	 * @param participant the search participant that created the match
 	 * @param resource the resource of the element
 	 */
-	public MethodReferenceMatch(IJavaElement enclosingElement, int accuracy, int offset, int length, boolean insideDocComment, SearchParticipant participant, IResource resource) {
+	public MethodReferenceMatch(IJavaScriptElement enclosingElement, int accuracy, int offset, int length, boolean insideDocComment, SearchParticipant participant, IResource resource) {
 		super(enclosingElement, accuracy, offset, length, participant, resource);
 		setInsideDocComment(insideDocComment);
 	}
@@ -61,7 +61,7 @@ public class MethodReferenceMatch extends SearchMatch {
 	 * @param resource the resource of the element
 	 * @since 3.1
 	 */
-	public MethodReferenceMatch(IJavaElement enclosingElement, int accuracy, int offset, int length, boolean constructor, boolean synthetic, boolean insideDocComment, SearchParticipant participant, IResource resource) {
+	public MethodReferenceMatch(IJavaScriptElement enclosingElement, int accuracy, int offset, int length, boolean constructor, boolean synthetic, boolean insideDocComment, SearchParticipant participant, IResource resource) {
 		this(enclosingElement, accuracy, offset, length, insideDocComment, participant, resource);
 		this.constructor = constructor;
 		this.synthetic = synthetic;
@@ -86,7 +86,7 @@ public class MethodReferenceMatch extends SearchMatch {
 	 * @param resource the resource of the element
 	 * @since 3.3
 	 */
-	public MethodReferenceMatch(IJavaElement enclosingElement, int accuracy, int offset, int length, boolean constructor, boolean synthetic, boolean superInvocation, boolean insideDocComment, SearchParticipant participant, IResource resource) {
+	public MethodReferenceMatch(IJavaScriptElement enclosingElement, int accuracy, int offset, int length, boolean constructor, boolean synthetic, boolean superInvocation, boolean insideDocComment, SearchParticipant participant, IResource resource) {
 		this(enclosingElement, accuracy, offset, length, constructor, synthetic, insideDocComment, participant, resource);
 		this.superInvocation = superInvocation;
 	}

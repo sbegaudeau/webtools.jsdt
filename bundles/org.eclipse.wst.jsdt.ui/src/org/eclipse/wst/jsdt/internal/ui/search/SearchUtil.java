@@ -27,13 +27,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.OptionalMessageDialog;
 import org.osgi.framework.Bundle;
 
@@ -83,10 +83,10 @@ public class SearchUtil {
 	 * @param	element the java element whose compilation unit is searched for
 	 * @return	the compilation unit of the given java element
 	 */
-	static ICompilationUnit findCompilationUnit(IJavaElement element) {
+	static IJavaScriptUnit findCompilationUnit(IJavaScriptElement element) {
 		if (element == null)
 			return null;
-		return (ICompilationUnit) element.getAncestor(IJavaElement.COMPILATION_UNIT);
+		return (IJavaScriptUnit) element.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 	}
 
 
@@ -170,9 +170,9 @@ public class SearchUtil {
 	}
 
 	private static IDialogSettings getDialogStoreSection() {
-		IDialogSettings settingsStore= JavaPlugin.getDefault().getDialogSettings().getSection(DIALOG_SETTINGS_KEY);
+		IDialogSettings settingsStore= JavaScriptPlugin.getDefault().getDialogSettings().getSection(DIALOG_SETTINGS_KEY);
 		if (settingsStore == null)
-			settingsStore= JavaPlugin.getDefault().getDialogSettings().addNewSection(DIALOG_SETTINGS_KEY);
+			settingsStore= JavaScriptPlugin.getDefault().getDialogSettings().addNewSection(DIALOG_SETTINGS_KEY);
 		return settingsStore;
 	}
 
@@ -196,7 +196,7 @@ public class SearchUtil {
 			saveState(settingsStore);
 	}
 
-	public static void warnIfBinaryConstant(IJavaElement element, Shell shell) {
+	public static void warnIfBinaryConstant(IJavaScriptElement element, Shell shell) {
 		if (isBinaryPrimitiveConstantOrString(element))
 			OptionalMessageDialog.open(
 				BIN_PRIM_CONST_WARN_DIALOG_ID,
@@ -209,13 +209,13 @@ public class SearchUtil {
 				0);
 	}
 	
-	private static boolean isBinaryPrimitiveConstantOrString(IJavaElement element) {
-		if (element != null && element.getElementType() == IJavaElement.FIELD) {
+	private static boolean isBinaryPrimitiveConstantOrString(IJavaScriptElement element) {
+		if (element != null && element.getElementType() == IJavaScriptElement.FIELD) {
 			IField field= (IField)element;
 			int flags;
 			try {
 				flags= field.getFlags();
-			} catch (JavaModelException ex) {
+			} catch (JavaScriptModelException ex) {
 				return false;
 			}
 			return field.isBinary() && Flags.isStatic(flags) && Flags.isFinal(flags) && isPrimitiveOrString(field);
@@ -227,7 +227,7 @@ public class SearchUtil {
 		String fieldType;
 		try {
 			fieldType= field.getTypeSignature();
-		} catch (JavaModelException ex) {
+		} catch (JavaScriptModelException ex) {
 			return false;
 		}
 		char first= fieldType.charAt(0);

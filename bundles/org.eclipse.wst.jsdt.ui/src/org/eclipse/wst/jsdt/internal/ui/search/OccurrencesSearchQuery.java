@@ -20,7 +20,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 
@@ -30,13 +30,13 @@ public class OccurrencesSearchQuery implements ISearchQuery {
 	private final OccurrencesSearchResult fResult;
 	private IOccurrencesFinder fFinder;
 	private IDocument fDocument;
-	private final IJavaElement fElement;
+	private final IJavaScriptElement fElement;
 	private final String fJobLabel;
 	private final String fSingularLabel;
 	private final String fPluralLabel;
 	private final String fName;
 	
-	public OccurrencesSearchQuery(IOccurrencesFinder finder, IDocument document, IJavaElement element) {
+	public OccurrencesSearchQuery(IOccurrencesFinder finder, IDocument document, IJavaScriptElement element) {
 		fFinder= finder;
 		fDocument= document;
 		fElement= element;

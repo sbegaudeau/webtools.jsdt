@@ -33,25 +33,25 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.IMethodContainer;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IFunctionContainer;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaScriptElementDescriptor;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.MethodDeclarationMatch;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
@@ -84,9 +84,9 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public abstract class RenameMethodProcessor extends JavaRenameProcessor implements IReferenceUpdating, IDelegateUpdating {
 
@@ -95,8 +95,8 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 
 	private SearchResultGroup[] fOccurrences;
 	private boolean fUpdateReferences;
-	private IMethod fMethod;
-	private Set/*<IMethod>*/ fMethodsToRename;
+	private IFunction fMethod;
+	private Set/*<IFunction>*/ fMethodsToRename;
 	private TextChangeManager fChangeManager;
 	private WorkingCopyOwner fWorkingCopyOwner;
 	private boolean fIsComposite;
@@ -111,7 +111,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 	 * Creates a new rename method processor.
 	 * @param method the method, or <code>null</code> if invoked by scripting
 	 */
-	protected RenameMethodProcessor(IMethod method) {
+	protected RenameMethodProcessor(IFunction method) {
 		this(method, new TextChangeManager(true), null);
 		fIsComposite= false;
 	}
@@ -126,7 +126,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 	 * @param manager the change manager
 	 * @param categorySet the group category set
 	 */
-	protected RenameMethodProcessor(IMethod method, TextChangeManager manager, GroupCategorySet categorySet) {
+	protected RenameMethodProcessor(IFunction method, TextChangeManager manager, GroupCategorySet categorySet) {
 		initialize(method);
 		fChangeManager= manager;
 		fCategorySet= categorySet;
@@ -135,7 +135,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		fIsComposite= true;
 	}
 	
-	protected void initialize(IMethod method) {
+	protected void initialize(IFunction method) {
 		fMethod= method;
 		if (!fInitialized) {
 			if (method != null)
@@ -178,7 +178,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		RenameModifications result= new RenameModifications();
 		RenameArguments args= new RenameArguments(getNewElementName(), getUpdateReferences());
 		for (Iterator iter= fMethodsToRename.iterator(); iter.hasNext();) {
-			IMethod method= (IMethod) iter.next();
+			IFunction method= (IFunction) iter.next();
 			result.rename(method, args);
 		}
 		return result;
@@ -201,7 +201,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 	public final RefactoringStatus checkNewElementName(String newName) {
 		Assert.isNotNull(newName, "new name"); //$NON-NLS-1$
 				
-		RefactoringStatus status= Checks.checkName(newName, JavaConventions.validateMethodName(newName));
+		RefactoringStatus status= Checks.checkName(newName, JavaScriptConventions.validateFunctionName(newName));
 		if (status.isOK() && Checks.startsWithUpperCase(newName))
 			status= RefactoringStatus.createWarningStatus(fIsComposite 
 					? Messages.format(RefactoringCoreMessages.Checks_method_names_lowercase2, new String[] { newName, fMethod.getDeclaringType().getElementName()})
@@ -217,11 +217,11 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 	
 	public Object getNewElement() {
 		if (fMethod.getDeclaringType()!=null)
-			return fMethod.getDeclaringType().getMethod(getNewElementName(), fMethod.getParameterTypes());
-		return fMethod.getCompilationUnit().getMethod(getNewElementName(), fMethod.getParameterTypes());
+			return fMethod.getDeclaringType().getFunction(getNewElementName(), fMethod.getParameterTypes());
+		return fMethod.getJavaScriptUnit().getFunction(getNewElementName(), fMethod.getParameterTypes());
 	}
 	
-	public final IMethod getMethod() {
+	public final IFunction getMethod() {
 		return fMethod;
 	}
 	
@@ -230,7 +230,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 			fMethodsToRename= new HashSet(Arrays.asList(MethodChecks.getOverriddenMethods(getMethod(), pm)));
 	}
 	
-	protected void setMethodsToRename(IMethod[] methods) {
+	protected void setMethodsToRename(IFunction[] methods) {
 		fMethodsToRename= new HashSet(Arrays.asList(methods));
 	}
 	
@@ -279,7 +279,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 	public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException {
 		if (! fMethod.exists()){
 			String message= Messages.format(RefactoringCoreMessages.RenameMethodRefactoring_deleted, 
-								fMethod.getCompilationUnit().getElementName());
+								fMethod.getJavaScriptUnit().getElementName());
 			return RefactoringStatus.createFatalErrorStatus(message);
 		}	
 		
@@ -310,7 +310,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 				return result;
 			
 			boolean mustAnalyzeShadowing;
-			IMethod[] newNameMethods= searchForDeclarationsOfClashingMethods(new SubProgressMonitor(pm, 1));
+			IFunction[] newNameMethods= searchForDeclarationsOfClashingMethods(new SubProgressMonitor(pm, 1));
 			if (newNameMethods.length == 0) {
 				mustAnalyzeShadowing= false;
 				pm.worked(1);
@@ -376,10 +376,10 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		}	
 	}
 	
-	private IType[] searchForOuterTypesOfReferences(IMethod[] newNameMethods, IProgressMonitor pm) throws CoreException {
+	private IType[] searchForOuterTypesOfReferences(IFunction[] newNameMethods, IProgressMonitor pm) throws CoreException {
 		final Set outerTypesOfReferences= new HashSet();
-		SearchPattern pattern= RefactoringSearchEngine.createOrPattern(newNameMethods, IJavaSearchConstants.REFERENCES);
-		IJavaSearchScope scope= createRefactoringScope(getMethod());
+		SearchPattern pattern= RefactoringSearchEngine.createOrPattern(newNameMethods, IJavaScriptSearchConstants.REFERENCES);
+		IJavaScriptSearchScope scope= createRefactoringScope(getMethod());
 		SearchRequestor requestor= new SearchRequestor() {
 			public void acceptSearchMatch(SearchMatch match) throws CoreException {
 				IMember member= (IMember) match.getElement();
@@ -396,24 +396,24 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		return (IType[]) outerTypesOfReferences.toArray(new IType[outerTypesOfReferences.size()]);
 	}
 
-	private IMethod[] searchForDeclarationsOfClashingMethods(IProgressMonitor pm) throws CoreException {
+	private IFunction[] searchForDeclarationsOfClashingMethods(IProgressMonitor pm) throws CoreException {
 		final List results= new ArrayList();
 		SearchPattern pattern= createNewMethodPattern();
-		IJavaSearchScope scope= RefactoringScopeFactory.create(getMethod().getJavaProject());
+		IJavaScriptSearchScope scope= RefactoringScopeFactory.create(getMethod().getJavaScriptProject());
 		SearchRequestor requestor= new SearchRequestor() {
 			public void acceptSearchMatch(SearchMatch match) throws CoreException {
 				Object method= match.getElement();
-				if (method instanceof IMethod) // check for bug 90138: [refactoring] [rename] Renaming method throws internal exception
+				if (method instanceof IFunction) // check for bug 90138: [refactoring] [rename] Renaming method throws internal exception
 					results.add(method);
 				else
-					JavaPlugin.logErrorMessage("Unexpected element in search match: " + match.toString()); //$NON-NLS-1$
+					JavaScriptPlugin.logErrorMessage("Unexpected element in search match: " + match.toString()); //$NON-NLS-1$
 			}
 		};
 		new SearchEngine().search(pattern, SearchUtils.getDefaultSearchParticipants(), scope, requestor, pm);
-		return (IMethod[]) results.toArray(new IMethod[results.size()]);
+		return (IFunction[]) results.toArray(new IFunction[results.size()]);
 	}
 	
-	private SearchPattern createNewMethodPattern() throws JavaModelException {
+	private SearchPattern createNewMethodPattern() throws JavaScriptModelException {
 		StringBuffer stringPattern= new StringBuffer(getNewElementName()).append('(');
 		int paramCount= getMethod().getNumberOfParameters();
 		for (int i= 0; i < paramCount; i++) {
@@ -423,23 +423,23 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		}
 		stringPattern.append(')');
 		
-		return SearchPattern.createPattern(stringPattern.toString(), IJavaSearchConstants.FUNCTION,
-				IJavaSearchConstants.DECLARATIONS, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
+		return SearchPattern.createPattern(stringPattern.toString(), IJavaScriptSearchConstants.FUNCTION,
+				IJavaScriptSearchConstants.DECLARATIONS, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
 	}
 	
-	protected final IJavaSearchScope createRefactoringScope() throws CoreException {
+	protected final IJavaScriptSearchScope createRefactoringScope() throws CoreException {
 		return createRefactoringScope(fMethod);
 	}
 	//TODO: shouldn't scope take all ripple methods into account?
-	protected static final IJavaSearchScope createRefactoringScope(IMethod method) throws CoreException {
+	protected static final IJavaScriptSearchScope createRefactoringScope(IFunction method) throws CoreException {
 		return RefactoringScopeFactory.create(method);
 	}
 	
 	SearchPattern createOccurrenceSearchPattern() {
 		HashSet methods= new HashSet(fMethodsToRename);
 		methods.add(fMethod);
-		IMethod[] ms= (IMethod[]) methods.toArray(new IMethod[methods.size()]);
-		return RefactoringSearchEngine.createOrPattern(ms, IJavaSearchConstants.ALL_OCCURRENCES);
+		IFunction[] ms= (IFunction[]) methods.toArray(new IFunction[methods.size()]);
+		return RefactoringSearchEngine.createOrPattern(ms, IJavaScriptSearchConstants.ALL_OCCURRENCES);
 	}
 
 	SearchResultGroup[] getOccurrences(){
@@ -458,12 +458,12 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 	private RefactoringStatus checkRelatedMethods() throws CoreException { 
 		RefactoringStatus result= new RefactoringStatus();
 		for (Iterator iter= fMethodsToRename.iterator(); iter.hasNext(); ) {
-			IMethod method= (IMethod)iter.next();
+			IFunction method= (IFunction)iter.next();
 			
 			if (method.getDeclaringType()!=null)
 			  result.merge(Checks.checkIfConstructorName(method, getNewElementName(), method.getDeclaringType().getElementName()));
 			
-			String[] msgData= new String[]{method.getElementName(), method.getCompilationUnit().getElementName()};
+			String[] msgData= new String[]{method.getElementName(), method.getJavaScriptUnit().getElementName()};
 //			String[] msgData= new String[]{method.getElementName(), JavaModelUtil.getFullyQualifiedName(method.getDeclaringType())};
 			if (! method.exists()){
 				result.addFatalError(Messages.format(RefactoringCoreMessages.RenameMethodRefactoring_not_in_model, msgData)); 
@@ -496,21 +496,21 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 	//-------
 	
 	private RefactoringStatus analyzeRenameChanges(IProgressMonitor pm) throws CoreException {
-		ICompilationUnit[] newDeclarationWCs= null;
+		IJavaScriptUnit[] newDeclarationWCs= null;
 		try {
 			pm.beginTask("", 4); //$NON-NLS-1$
 			RefactoringStatus result= new RefactoringStatus();
-			ICompilationUnit[] declarationCUs= getDeclarationCUs();
+			IJavaScriptUnit[] declarationCUs= getDeclarationCUs();
 			newDeclarationWCs= RenameAnalyzeUtil.createNewWorkingCopies(declarationCUs,
 					fChangeManager, fWorkingCopyOwner, new SubProgressMonitor(pm, 1));
 			
-			IMethod[] wcOldMethods= new IMethod[fMethodsToRename.size()];
-			IMethod[] wcNewMethods= new IMethod[fMethodsToRename.size()];
+			IFunction[] wcOldMethods= new IFunction[fMethodsToRename.size()];
+			IFunction[] wcNewMethods= new IFunction[fMethodsToRename.size()];
 			int i= 0;
 			for (Iterator iter= fMethodsToRename.iterator(); iter.hasNext(); i++) {
-				IMethod method= (IMethod) iter.next();
-				ICompilationUnit newCu= RenameAnalyzeUtil.findWorkingCopyForCu(newDeclarationWCs, method.getCompilationUnit());
-				IMethodContainer typeWc= (IMethodContainer) JavaModelUtil.findInCompilationUnit(newCu, method.getParent());
+				IFunction method= (IFunction) iter.next();
+				IJavaScriptUnit newCu= RenameAnalyzeUtil.findWorkingCopyForCu(newDeclarationWCs, method.getJavaScriptUnit());
+				IFunctionContainer typeWc= (IFunctionContainer) JavaModelUtil.findInCompilationUnit(newCu, method.getParent());
 				if (typeWc == null)
 					continue;
 				wcOldMethods[i]= getMethodInWorkingCopy(method, getCurrentElementName(), typeWc);
@@ -534,22 +534,22 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 	
 	//Lower memory footprint than batchFindNewOccurrences. Not used because it is too slow.
 	//Final solution is maybe to do searches in chunks of ~ 50 CUs.
-//	private SearchResultGroup[] findNewOccurrences(IMethod[] newMethods, ICompilationUnit[] newDeclarationWCs, IProgressMonitor pm) throws CoreException {
+//	private SearchResultGroup[] findNewOccurrences(IFunction[] newMethods, IJavaScriptUnit[] newDeclarationWCs, IProgressMonitor pm) throws CoreException {
 //		pm.beginTask("", fOccurrences.length * 2); //$NON-NLS-1$
 //		
-//		SearchPattern refsPattern= RefactoringSearchEngine.createOrPattern(newMethods, IJavaSearchConstants.REFERENCES);
+//		SearchPattern refsPattern= RefactoringSearchEngine.createOrPattern(newMethods, IJavaScriptSearchConstants.REFERENCES);
 //		SearchParticipant[] searchParticipants= SearchUtils.getDefaultSearchParticipants();
-//		IJavaSearchScope scope= RefactoringScopeFactory.create(newMethods);
+//		IJavaScriptSearchScope scope= RefactoringScopeFactory.create(newMethods);
 //		MethodOccurenceCollector requestor= new MethodOccurenceCollector(getNewElementName());
 //		SearchEngine searchEngine= new SearchEngine(fWorkingCopyOwner);
 //		
 //		//TODO: should process only references
 //		for (int j= 0; j < fOccurrences.length; j++) { //should be getReferences()
 //			//cut memory peak by holding only one reference CU at a time in memory
-//			ICompilationUnit originalCu= fOccurrences[j].getCompilationUnit();
-//			ICompilationUnit newWc= null;
+//			IJavaScriptUnit originalCu= fOccurrences[j].getCompilationUnit();
+//			IJavaScriptUnit newWc= null;
 //			try {
-//				ICompilationUnit wc= RenameAnalyzeUtil.findWorkingCopyForCu(newDeclarationWCs, originalCu);
+//				IJavaScriptUnit wc= RenameAnalyzeUtil.findWorkingCopyForCu(newDeclarationWCs, originalCu);
 //				if (wc == null) {
 //					newWc= RenameAnalyzeUtil.createNewWorkingCopy(originalCu, fChangeManager, fWorkingCopyOwner,
 //							new SubProgressMonitor(pm, 1));
@@ -565,12 +565,12 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 //		return newResults;
 //	}
 
-	private SearchResultGroup[] batchFindNewOccurrences(IMethod[] wcNewMethods, final IMethod[] wcOldMethods, ICompilationUnit[] newDeclarationWCs, IProgressMonitor pm, RefactoringStatus status) throws CoreException {
+	private SearchResultGroup[] batchFindNewOccurrences(IFunction[] wcNewMethods, final IFunction[] wcOldMethods, IJavaScriptUnit[] newDeclarationWCs, IProgressMonitor pm, RefactoringStatus status) throws CoreException {
 		pm.beginTask("", 2); //$NON-NLS-1$
 		
-		SearchPattern refsPattern= RefactoringSearchEngine.createOrPattern(wcNewMethods, IJavaSearchConstants.REFERENCES);
+		SearchPattern refsPattern= RefactoringSearchEngine.createOrPattern(wcNewMethods, IJavaScriptSearchConstants.REFERENCES);
 		SearchParticipant[] searchParticipants= SearchUtils.getDefaultSearchParticipants();
-		IJavaSearchScope scope= RefactoringScopeFactory.create(wcNewMethods);
+		IJavaScriptSearchScope scope= RefactoringScopeFactory.create(wcNewMethods);
 		
 		MethodOccurenceCollector requestor;
 		if (getDelegateUpdating()) {
@@ -579,7 +579,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 			// Note that except these ocurrences, the delegate bodies are empty 
 			// (as they were created this way).
 			requestor= new MethodOccurenceCollector(getNewElementName()) {
-				public void acceptSearchMatch(ICompilationUnit unit, SearchMatch match) throws CoreException {
+				public void acceptSearchMatch(IJavaScriptUnit unit, SearchMatch match) throws CoreException {
 					for (int i= 0; i < wcOldMethods.length; i++) 
 						if (wcOldMethods[i].equals(match.getElement()))
 							return;
@@ -596,14 +596,14 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		for (int i= 0; i < newDeclarationWCs.length; i++)
 			declaringCUs.add(newDeclarationWCs[i].getPrimary());
 		for (int i= 0; i < fOccurrences.length; i++) {
-			ICompilationUnit cu= fOccurrences[i].getCompilationUnit();
+			IJavaScriptUnit cu= fOccurrences[i].getCompilationUnit();
 			if (! declaringCUs.contains(cu))
 				needWCs.add(cu);
 		}
-		ICompilationUnit[] otherWCs= null;
+		IJavaScriptUnit[] otherWCs= null;
 		try {
 			otherWCs= RenameAnalyzeUtil.createNewWorkingCopies(
-					(ICompilationUnit[]) needWCs.toArray(new ICompilationUnit[needWCs.size()]),
+					(IJavaScriptUnit[]) needWCs.toArray(new IJavaScriptUnit[needWCs.size()]),
 					fChangeManager, fWorkingCopyOwner, new SubProgressMonitor(pm, 1));
 			searchEngine.search(refsPattern, searchParticipants, scope,	requestor, new SubProgressMonitor(pm, 1));
 		} finally {
@@ -618,22 +618,22 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		return newResults;
 	}
 	
-	private ICompilationUnit[] getDeclarationCUs() {
+	private IJavaScriptUnit[] getDeclarationCUs() {
 		Set cus= new HashSet();
 		for (Iterator iter= fMethodsToRename.iterator(); iter.hasNext();) {
-			IMethod method= (IMethod) iter.next();
-			cus.add(method.getCompilationUnit());
+			IFunction method= (IFunction) iter.next();
+			cus.add(method.getJavaScriptUnit());
 		}
-		return (ICompilationUnit[]) cus.toArray(new ICompilationUnit[cus.size()]);
+		return (IJavaScriptUnit[]) cus.toArray(new IJavaScriptUnit[cus.size()]);
 	}
 	
-	private IMethod getMethodInWorkingCopy(IMethod method, String elementName, IMethodContainer typeWc) throws CoreException{
+	private IFunction getMethodInWorkingCopy(IFunction method, String elementName, IFunctionContainer typeWc) throws CoreException{
 		String[] paramTypeSignatures= method.getParameterTypes();
-		return typeWc.getMethod(elementName, paramTypeSignatures);
+		return typeWc.getFunction(elementName, paramTypeSignatures);
 	}
 
 	//-------
-	private static IMethod[] classesDeclareMethodName(ITypeHierarchy hier, List classes, IMethod method, String newName)  throws CoreException {
+	private static IFunction[] classesDeclareMethodName(ITypeHierarchy hier, List classes, IFunction method, String newName)  throws CoreException {
 		Set result= new HashSet();
 		IType type= method.getDeclaringType();
 		List subtypes= Arrays.asList(hier.getAllSubtypes(type));
@@ -643,10 +643,10 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		
 		for (Iterator iter= classes.iterator(); iter.hasNext(); ){
 			IType clazz= (IType) iter.next();
-			IMethod[] methods= clazz.getMethods();
+			IFunction[] methods= clazz.getFunctions();
 			boolean isSubclass= subtypes.contains(clazz);
 			for (int j= 0; j < methods.length; j++) {
-				IMethod foundMethod= Checks.findMethod(newName, parameterCount, false, new IMethod[] {methods[j]});
+				IFunction foundMethod= Checks.findMethod(newName, parameterCount, false, new IFunction[] {methods[j]});
 				if (foundMethod == null)
 					continue;
 				if (isSubclass || type.equals(clazz))
@@ -655,25 +655,25 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 					result.add(foundMethod);
 			}
 		}
-		return (IMethod[]) result.toArray(new IMethod[result.size()]);
+		return (IFunction[]) result.toArray(new IFunction[result.size()]);
 	}
 
-	final static IMethod[] hierarchyDeclaresMethodName(IProgressMonitor pm, ITypeHierarchy hierarchy, IMethod method, String newName) throws CoreException {
+	final static IFunction[] hierarchyDeclaresMethodName(IProgressMonitor pm, ITypeHierarchy hierarchy, IFunction method, String newName) throws CoreException {
 		Set result= new HashSet();
 		IType type= method.getDeclaringType();
-		IMethod foundMethod= Checks.findMethod(newName, method.getParameterTypes().length, false, type);
+		IFunction foundMethod= Checks.findMethod(newName, method.getParameterTypes().length, false, type);
 		if (foundMethod != null) 
 			result.add(foundMethod);
 
-		IMethod[] foundInHierarchyClasses= classesDeclareMethodName(hierarchy, Arrays.asList(hierarchy.getAllClasses()), method, newName);
+		IFunction[] foundInHierarchyClasses= classesDeclareMethodName(hierarchy, Arrays.asList(hierarchy.getAllClasses()), method, newName);
 		if (foundInHierarchyClasses != null)
 			result.addAll(Arrays.asList(foundInHierarchyClasses));
 		
 		IType[] implementingClasses= hierarchy.getImplementingClasses(type);	
-		IMethod[] foundInImplementingClasses= classesDeclareMethodName(hierarchy, Arrays.asList(implementingClasses), method, newName);
+		IFunction[] foundInImplementingClasses= classesDeclareMethodName(hierarchy, Arrays.asList(implementingClasses), method, newName);
 		if (foundInImplementingClasses != null)
 			result.addAll(Arrays.asList(foundInImplementingClasses));
-		return (IMethod[]) result.toArray(new IMethod[result.size()]);	
+		return (IFunction[]) result.toArray(new IFunction[result.size()]);	
 	}
 
 	public Change createChange(IProgressMonitor monitor) throws CoreException {
@@ -682,27 +682,27 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 			final List list= new ArrayList(changes.length);
 			list.addAll(Arrays.asList(changes));
 			String project= null;
-			IJavaProject javaProject= fMethod.getJavaProject();
+			IJavaScriptProject javaProject= fMethod.getJavaScriptProject();
 			if (javaProject != null)
 				project= javaProject.getElementName();
-			int flags= JavaRefactoringDescriptor.JAR_MIGRATION | JavaRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE;
+			int flags= JavaScriptRefactoringDescriptor.JAR_MIGRATION | JavaScriptRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE;
 			try {
 				if (!Flags.isPrivate(fMethod.getFlags()))
 					flags|= RefactoringDescriptor.MULTI_CHANGE;
-			} catch (JavaModelException exception) {
-				JavaPlugin.log(exception);
+			} catch (JavaScriptModelException exception) {
+				JavaScriptPlugin.log(exception);
 			}
 			final IType declaring= fMethod.getDeclaringType();
 			try {
 				if (declaring!=null && (declaring.isAnonymous() || declaring.isLocal()))
-					flags|= JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
-			} catch (JavaModelException exception) {
-				JavaPlugin.log(exception);
+					flags|= JavaScriptRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
+			} catch (JavaScriptModelException exception) {
+				JavaScriptPlugin.log(exception);
 			}
 			final String description= Messages.format(RefactoringCoreMessages.RenameMethodProcessor_descriptor_description_short, fMethod.getElementName());
-			final String header= Messages.format(RefactoringCoreMessages.RenameMethodProcessor_descriptor_description, new String[] { JavaElementLabels.getTextLabel(fMethod, JavaElementLabels.ALL_FULLY_QUALIFIED), getNewElementName()});
+			final String header= Messages.format(RefactoringCoreMessages.RenameMethodProcessor_descriptor_description, new String[] { JavaScriptElementLabels.getTextLabel(fMethod, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), getNewElementName()});
 			final String comment= new JDTRefactoringDescriptorComment(project, this, header).asString();
-			final RenameJavaElementDescriptor descriptor= new RenameJavaElementDescriptor(IJavaRefactorings.RENAME_METHOD);
+			final RenameJavaScriptElementDescriptor descriptor= new RenameJavaScriptElementDescriptor(IJavaScriptRefactorings.RENAME_METHOD);
 			descriptor.setProject(project);
 			descriptor.setDescription(description);
 			descriptor.setComment(comment);
@@ -728,7 +728,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 	void addOccurrences(TextChangeManager manager, IProgressMonitor pm, RefactoringStatus status) throws CoreException/*thrown in subtype*/{
 		pm.beginTask("", fOccurrences.length);				 //$NON-NLS-1$
 		for (int i= 0; i < fOccurrences.length; i++){
-			ICompilationUnit cu= fOccurrences[i].getCompilationUnit();
+			IJavaScriptUnit cu= fOccurrences[i].getCompilationUnit();
 			if (cu == null)	
 				continue;
 			
@@ -756,7 +756,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 
 					for (Iterator iter= declarationsInThisCu.iterator(); iter.hasNext();) {
 						SearchMatch element= (SearchMatch) iter.next();
-						MethodDeclaration method= ASTNodeSearchUtil.getMethodDeclarationNode((IMethod) element.getElement(), rewrite.getRoot());
+						FunctionDeclaration method= ASTNodeSearchUtil.getMethodDeclarationNode((IFunction) element.getElement(), rewrite.getRoot());
 						DelegateCreator creator= new DelegateMethodCreator();
 						creator.setDeclareDeprecated(fDelegateDeprecation);
 						creator.setDeclaration(method);
@@ -794,19 +794,19 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		pm.done();
 	}
 
-	private void simpleUpdate(SearchMatch element, ICompilationUnit cu, TextChange textChange) {
+	private void simpleUpdate(SearchMatch element, IJavaScriptUnit cu, TextChange textChange) {
 		String editName= RefactoringCoreMessages.RenameMethodRefactoring_update_occurrence;
 		ReplaceEdit replaceEdit= createReplaceEdit(element, cu);
 		addTextEdit(textChange, editName, replaceEdit);
 	}
 
-	protected final ReplaceEdit createReplaceEdit(SearchMatch searchResult, ICompilationUnit cu) {
+	protected final ReplaceEdit createReplaceEdit(SearchMatch searchResult, IJavaScriptUnit cu) {
 		if (searchResult.isImplicit()) { // handle Annotation Element references, see bug 94062
 			StringBuffer sb= new StringBuffer(getNewElementName());
-			if (JavaCore.INSERT.equals(cu.getJavaProject().getOption(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_ASSIGNMENT_OPERATOR, true)))
+			if (JavaScriptCore.INSERT.equals(cu.getJavaScriptProject().getOption(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_ASSIGNMENT_OPERATOR, true)))
 				sb.append(' ');
 			sb.append('=');
-			if (JavaCore.INSERT.equals(cu.getJavaProject().getOption(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_ASSIGNMENT_OPERATOR, true)))
+			if (JavaScriptCore.INSERT.equals(cu.getJavaScriptProject().getOption(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_ASSIGNMENT_OPERATOR, true)))
 				sb.append(' ');
 			return new ReplaceEdit(searchResult.getOffset(), 0, sb.toString());
 		} else {
@@ -820,24 +820,24 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 			final JavaRefactoringArguments extended= (JavaRefactoringArguments) arguments;
 			final String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
 				final String refactoring= getRefactoring().getName();
-				if (element instanceof IMethod) {
-					final IMethod method= (IMethod) element;
+				if (element instanceof IFunction) {
+					final IFunction method= (IFunction) element;
 					final IType declaring= method.getDeclaringType();
 					if (declaring != null && declaring.exists()) {
-						final IMethod[] methods= declaring.findMethods(method);
+						final IFunction[] methods= declaring.findMethods(method);
 						if (methods != null && methods.length == 1 && methods[0] != null) {
 							if (!methods[0].exists())
-								return ScriptableRefactoring.createInputFatalStatus(methods[0], refactoring, IJavaRefactorings.RENAME_METHOD);
+								return ScriptableRefactoring.createInputFatalStatus(methods[0], refactoring, IJavaScriptRefactorings.RENAME_METHOD);
 							fMethod= methods[0];
 							initializeWorkingCopyOwner();
 						} else
-							return ScriptableRefactoring.createInputFatalStatus(null, refactoring, IJavaRefactorings.RENAME_METHOD);
+							return ScriptableRefactoring.createInputFatalStatus(null, refactoring, IJavaScriptRefactorings.RENAME_METHOD);
 					} else
-						return ScriptableRefactoring.createInputFatalStatus(element, refactoring, IJavaRefactorings.RENAME_METHOD);
+						return ScriptableRefactoring.createInputFatalStatus(element, refactoring, IJavaScriptRefactorings.RENAME_METHOD);
 				} else
-					return ScriptableRefactoring.createInputFatalStatus(element, refactoring, IJavaRefactorings.RENAME_METHOD);
+					return ScriptableRefactoring.createInputFatalStatus(element, refactoring, IJavaScriptRefactorings.RENAME_METHOD);
 			} else
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));
 			final String name= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_NAME);

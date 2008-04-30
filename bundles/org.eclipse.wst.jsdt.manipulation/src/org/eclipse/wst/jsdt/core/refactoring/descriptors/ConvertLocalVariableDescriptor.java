@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the convert local variable refactoring.
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class ConvertLocalVariableDescriptor extends JavaRefactoringDescriptor {
+public final class ConvertLocalVariableDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public ConvertLocalVariableDescriptor() {
-		super(IJavaRefactorings.CONVERT_LOCAL_VARIABLE);
+		super(IJavaScriptRefactorings.CONVERT_LOCAL_VARIABLE);
 	}
 }

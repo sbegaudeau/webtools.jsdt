@@ -35,27 +35,27 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.MoveStaticMembersProcessor;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.FilteredTypesSelectionDialog;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.TextFieldNavigationHandler;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.ControlContentAssistHelper;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.JavaTypeCompletionProcessor;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class MoveMembersWizard extends RefactoringWizard {
 
@@ -74,7 +74,7 @@ public class MoveMembersWizard extends RefactoringWizard {
 	private static class MoveMembersInputPage extends UserInputWizardPage {
 
 		public static final String PAGE_NAME= "MoveMembersInputPage"; //$NON-NLS-1$
-		private static final long LABEL_FLAGS= JavaElementLabels.ALL_DEFAULT;
+		private static final long LABEL_FLAGS= JavaScriptElementLabels.ALL_DEFAULT;
 
 		private Combo fDestinationField;
 		private Button fLeaveDelegateCheckBox;
@@ -147,7 +147,7 @@ public class MoveMembersWizard extends RefactoringWizard {
 			if (members.length == 1) {
 				label.setText(Messages.format(
 						RefactoringMessages.MoveMembersInputPage_destination_single, 
-						JavaElementLabels.getElementLabel(members[0], LABEL_FLAGS)));
+						JavaScriptElementLabels.getElementLabel(members[0], LABEL_FLAGS)));
 			} else {
 				label.setText(Messages.format(
 						RefactoringMessages.MoveMembersInputPage_destination_multi, 
@@ -168,15 +168,15 @@ public class MoveMembersWizard extends RefactoringWizard {
 					handleDestinationChanged();
 				}
 				private void handleDestinationChanged() {
-					IStatus status= JavaConventions.validateJavaTypeName(fDestinationField.getText());
+					IStatus status= JavaScriptConventions.validateJavaScriptTypeName(fDestinationField.getText());
 					if (status.getSeverity() == IStatus.ERROR){
 						error(status.getMessage());
 					} else {
 						try {
 							final IType declaring= getMoveProcessor().getDeclaringType();
-							IType resolvedType= declaring.getJavaProject().findType(fDestinationField.getText());
+							IType resolvedType= declaring.getJavaScriptProject().findType(fDestinationField.getText());
 							if (resolvedType == null)
-								resolvedType= declaring.getJavaProject().findType(declaring.getPackageFragment().getElementName(), fDestinationField.getText());
+								resolvedType= declaring.getJavaScriptProject().findType(declaring.getPackageFragment().getElementName(), fDestinationField.getText());
 							IStatus validationStatus= validateDestinationType(resolvedType, fDestinationField.getText());
 							if (validationStatus.isOK()){
 								setErrorMessage(null);
@@ -184,8 +184,8 @@ public class MoveMembersWizard extends RefactoringWizard {
 							} else {
 								error(validationStatus.getMessage());
 							}
-						} catch(JavaModelException ex) {
-							JavaPlugin.log(ex); //no ui here
+						} catch(JavaScriptModelException ex) {
+							JavaScriptPlugin.log(ex); //no ui here
 							error(RefactoringMessages.MoveMembersInputPage_invalid_name); 
 						}
 					}
@@ -201,7 +201,7 @@ public class MoveMembersWizard extends RefactoringWizard {
 				setPageComplete(false);
 			}
 			JavaTypeCompletionProcessor processor= new JavaTypeCompletionProcessor(false, false, true);
-			IPackageFragment context= (IPackageFragment) getMoveProcessor().getDeclaringType().getAncestor(IJavaElement.PACKAGE_FRAGMENT);
+			IPackageFragment context= (IPackageFragment) getMoveProcessor().getDeclaringType().getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT);
 			processor.setPackageFragment(context);
 			ControlContentAssistHelper.createComboContentAssistant(fDestinationField, processor);
 			TextFieldNavigationHandler.install(fDestinationField);
@@ -235,19 +235,19 @@ public class MoveMembersWizard extends RefactoringWizard {
 				fgMruDestinations.add(0, destination);
 				
 				getMoveProcessor().setDestinationTypeFullyQualifiedName(destination);
-			} catch(JavaModelException e) {
+			} catch(JavaScriptModelException e) {
 				ExceptionHandler.handle(e, getShell(), RefactoringMessages.MoveMembersInputPage_move_Member, RefactoringMessages.MoveMembersInputPage_exception); 
 			}
 		}
 	
-		private IJavaSearchScope createWorkspaceSourceScope(){
-			IJavaElement[] project= new IJavaElement[] { getMoveProcessor().getDeclaringType().getJavaProject() };
-			return SearchEngine.createJavaSearchScope(project, IJavaSearchScope.REFERENCED_PROJECTS | IJavaSearchScope.SOURCES);
+		private IJavaScriptSearchScope createWorkspaceSourceScope(){
+			IJavaScriptElement[] project= new IJavaScriptElement[] { getMoveProcessor().getDeclaringType().getJavaScriptProject() };
+			return SearchEngine.createJavaSearchScope(project, IJavaScriptSearchScope.REFERENCED_PROJECTS | IJavaScriptSearchScope.SOURCES);
 		}
 	
 		private void openTypeSelectionDialog(){
-			int elementKinds= IJavaSearchConstants.TYPE;
-			final IJavaSearchScope scope= createWorkspaceSourceScope();
+			int elementKinds= IJavaScriptSearchConstants.TYPE;
+			final IJavaScriptSearchScope scope= createWorkspaceSourceScope();
 			FilteredTypesSelectionDialog dialog= new FilteredTypesSelectionDialog(getShell(), false,
 				getWizard().getContainer(), scope, elementKinds);
 			dialog.setTitle(RefactoringMessages.MoveMembersInputPage_choose_Type); 
@@ -256,10 +256,10 @@ public class MoveMembersWizard extends RefactoringWizard {
 				public IStatus validate(Object[] selection) {
 					Assert.isTrue(selection.length <= 1);
 					if (selection.length == 0)
-						return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, RefactoringMessages.MoveMembersInputPage_Invalid_selection, null); 
+						return new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, RefactoringMessages.MoveMembersInputPage_Invalid_selection, null); 
 					Object element= selection[0];
 					if (! (element instanceof IType))
-						return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, RefactoringMessages.MoveMembersInputPage_Invalid_selection, null); 
+						return new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, RefactoringMessages.MoveMembersInputPage_Invalid_selection, null); 
 					IType type= (IType)element;
 					return validateDestinationType(type, type.getElementName());
 				}
@@ -280,10 +280,10 @@ public class MoveMembersWizard extends RefactoringWizard {
 	
 		private static IStatus validateDestinationType(IType type, String typeName){
 			if (type == null || ! type.exists())
-				return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, Messages.format(RefactoringMessages.MoveMembersInputPage_not_found, typeName), null); 
+				return new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, Messages.format(RefactoringMessages.MoveMembersInputPage_not_found, typeName), null); 
 			if (type.isBinary())
-				return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, RefactoringMessages.MoveMembersInputPage_no_binary, null); 
-			return new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
+				return new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, RefactoringMessages.MoveMembersInputPage_no_binary, null); 
+			return new Status(IStatus.OK, JavaScriptPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
 		}
 	
 		private MoveStaticMembersProcessor getMoveProcessor() {

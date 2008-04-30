@@ -49,11 +49,11 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.ui.preferences.IWorkingCopyManager;
 import org.eclipse.ui.preferences.WorkingCopyManager;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -239,29 +239,29 @@ public abstract class OptionsConfigurationBlock {
 	}
 	
 	protected final static Key getJDTCoreKey(String key) {
-		return getKey(JavaCore.PLUGIN_ID, key);
+		return getKey(JavaScriptCore.PLUGIN_ID, key);
 	}
 	
 	protected final static Key getJDTUIKey(String key) {
-		return getKey(JavaUI.ID_PLUGIN, key);
+		return getKey(JavaScriptUI.ID_PLUGIN, key);
 	}
 	
 		
 	private void testIfOptionsComplete(Key[] allKeys) {
 		for (int i= 0; i < allKeys.length; i++) {
 			if (allKeys[i].getStoredValue(fLookupOrder, false, fManager) == null) {
-				JavaPlugin.logErrorMessage("preference option missing: " + allKeys[i] + " (" + this.getClass().getName() +')');  //$NON-NLS-1$//$NON-NLS-2$
+				JavaScriptPlugin.logErrorMessage("preference option missing: " + allKeys[i] + " (" + this.getClass().getName() +')');  //$NON-NLS-1$//$NON-NLS-2$
 			}
 		}
 	}
 	
 	private int getRebuildCount() {
-		return fManager.getWorkingCopy(new DefaultScope().getNode(JavaUI.ID_PLUGIN)).getInt(REBUILD_COUNT_KEY, 0);
+		return fManager.getWorkingCopy(new DefaultScope().getNode(JavaScriptUI.ID_PLUGIN)).getInt(REBUILD_COUNT_KEY, 0);
 	}
 	
 	private void incrementRebuildCount() {
 		fRebuildCount++;
-		fManager.getWorkingCopy(new DefaultScope().getNode(JavaUI.ID_PLUGIN)).putInt(REBUILD_COUNT_KEY, fRebuildCount);
+		fManager.getWorkingCopy(new DefaultScope().getNode(JavaScriptUI.ID_PLUGIN)).putInt(REBUILD_COUNT_KEY, fRebuildCount);
 	}
 	
 	
@@ -743,7 +743,7 @@ public abstract class OptionsConfigurationBlock {
 			try {
 				fManager.applyChanges();
 			} catch (BackingStoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 				return false;
 			}
 			if (doBuild) {

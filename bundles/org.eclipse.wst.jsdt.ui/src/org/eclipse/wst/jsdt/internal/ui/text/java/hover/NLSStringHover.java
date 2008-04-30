@@ -18,17 +18,17 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.StringLiteral;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.AccessorClassReference;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSHintHelper;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ClassFileEditor;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
@@ -50,12 +50,12 @@ public class NLSStringHover extends AbstractJavaEditorTextHover {
 		if (!(getEditor() instanceof JavaEditor))
 			return null;
 
-		IJavaElement je= getEditorInputJavaElement();
+		IJavaScriptElement je= getEditorInputJavaElement();
 		if (je == null)
 			return null;
 
 		// Never wait for an AST in UI thread.
-		CompilationUnit ast= JavaPlugin.getDefault().getASTProvider().getAST(je, ASTProvider.WAIT_NO, null);
+		JavaScriptUnit ast= JavaScriptPlugin.getDefault().getASTProvider().getAST(je, ASTProvider.WAIT_NO, null);
 		if (ast == null)
 			return null;
 
@@ -78,11 +78,11 @@ public class NLSStringHover extends AbstractJavaEditorTextHover {
 		if (!(getEditor() instanceof JavaEditor))
 			return null;
 
-		IJavaElement je= getEditorInputJavaElement();
+		IJavaScriptElement je= getEditorInputJavaElement();
 		if (je == null)
 			return null;
 
-		CompilationUnit ast= JavaPlugin.getDefault().getASTProvider().getAST(je, ASTProvider.WAIT_ACTIVE_ONLY, null);
+		JavaScriptUnit ast= JavaScriptPlugin.getDefault().getASTProvider().getAST(je, ASTProvider.WAIT_ACTIVE_ONLY, null);
 		if (ast == null)
 			return null;
 
@@ -99,10 +99,10 @@ public class NLSStringHover extends AbstractJavaEditorTextHover {
 
 		IStorage propertiesFile;
 		try {
-			propertiesFile= NLSHintHelper.getResourceBundle(je.getJavaProject(), ref);
+			propertiesFile= NLSHintHelper.getResourceBundle(je.getJavaScriptProject(), ref);
 			if (propertiesFile == null)
 				return toHtml(JavaHoverMessages.NLSStringHover_NLSStringHover_PropertiesFileNotDetectedWarning, ""); //$NON-NLS-1$
-		} catch (JavaModelException ex) {
+		} catch (JavaScriptModelException ex) {
 			return null;
 		}
 
@@ -142,9 +142,9 @@ public class NLSStringHover extends AbstractJavaEditorTextHover {
 		return buffer.toString();
 	}
 
-	private IJavaElement getEditorInputJavaElement() {
+	private IJavaScriptElement getEditorInputJavaElement() {
 		if (getEditor() instanceof CompilationUnitEditor)
-			return JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(getEditor().getEditorInput());
+			return JavaScriptPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(getEditor().getEditorInput());
 		else if (getEditor() instanceof ClassFileEditor) {
 			IEditorInput editorInput= getEditor().getEditorInput();
 			if (editorInput instanceof IClassFileEditorInput)

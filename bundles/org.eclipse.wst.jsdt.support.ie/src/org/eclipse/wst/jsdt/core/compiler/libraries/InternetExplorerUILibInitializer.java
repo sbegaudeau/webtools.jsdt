@@ -6,7 +6,7 @@ package org.eclipse.wst.jsdt.core.compiler.libraries;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitializerExtension;
 
 /**
@@ -14,7 +14,7 @@ import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitializerExtens
  *
  */
 public class InternetExplorerUILibInitializer implements  IJsGlobalScopeContainerInitializerExtension{
-	public ImageDescriptor getImage(IPath containerPath, String element, IJavaProject project) {
+	public ImageDescriptor getImage(IPath containerPath, String element, IJavaScriptProject project) {
 
 		if(containerPath==null) return null;
 		/* Dont use the rino image for the individual files */

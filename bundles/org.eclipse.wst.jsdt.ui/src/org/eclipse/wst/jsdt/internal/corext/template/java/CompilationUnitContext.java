@@ -14,10 +14,10 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.templates.DocumentTemplateContext;
 import org.eclipse.jface.text.templates.TemplateContextType;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.MultiVariableGuess;
 
 
@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.MultiVariabl
 public abstract class CompilationUnitContext extends DocumentTemplateContext {
 
 	/** The compilation unit, may be <code>null</code>. */
-	private final ICompilationUnit fCompilationUnit;
+	private final IJavaScriptUnit fCompilationUnit;
 	/** A flag to force evaluation in head-less mode. */
 	protected boolean fForceEvaluation;
 	/** A global state for proposals that change if a master proposal changes. */
@@ -44,7 +44,7 @@ public abstract class CompilationUnitContext extends DocumentTemplateContext {
 	 * @param completionLength the completion length within the document
 	 * @param compilationUnit the compilation unit (may be <code>null</code>)
 	 */
-	protected CompilationUnitContext(TemplateContextType type, IDocument document, int completionOffset, int completionLength, ICompilationUnit compilationUnit) {
+	protected CompilationUnitContext(TemplateContextType type, IDocument document, int completionOffset, int completionLength, IJavaScriptUnit compilationUnit) {
 		super(type, document, completionOffset, completionLength);
 		fCompilationUnit= compilationUnit;
 		fIsManaged= false;
@@ -59,7 +59,7 @@ public abstract class CompilationUnitContext extends DocumentTemplateContext {
 	 * @param compilationUnit the compilation unit (may be <code>null</code>)
 	 * @since 3.2
 	 */
-	protected CompilationUnitContext(TemplateContextType type, IDocument document, Position completionPosition, ICompilationUnit compilationUnit) {
+	protected CompilationUnitContext(TemplateContextType type, IDocument document, Position completionPosition, IJavaScriptUnit compilationUnit) {
 		super(type, document, completionPosition);
 		fCompilationUnit= compilationUnit;
 		fIsManaged= true;
@@ -71,7 +71,7 @@ public abstract class CompilationUnitContext extends DocumentTemplateContext {
 	 * 
 	 * @return the compilation unit of this context or <code>null</code>
 	 */
-	public final ICompilationUnit getCompilationUnit() {
+	public final IJavaScriptUnit getCompilationUnit() {
 		return fCompilationUnit;
 	}
 
@@ -82,19 +82,19 @@ public abstract class CompilationUnitContext extends DocumentTemplateContext {
 	 * @param elementType the element type
 	 * @return the enclosing element of the given type or <code>null</code>
 	 */
-	public IJavaElement findEnclosingElement(int elementType) {
+	public IJavaScriptElement findEnclosingElement(int elementType) {
 		if (fCompilationUnit == null)
 			return null;
 
 		try {
-			IJavaElement element= fCompilationUnit.getElementAt(getStart());
+			IJavaScriptElement element= fCompilationUnit.getElementAt(getStart());
 			if (element == null) {
 				element= fCompilationUnit;
 			}
 			
 			return element.getAncestor(elementType);
 
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return null;
 		}	
 	}
@@ -125,9 +125,9 @@ public abstract class CompilationUnitContext extends DocumentTemplateContext {
 		fMultiVariableGuess= multiVariableGuess;
 	}
 	
-	protected IJavaProject getJavaProject() {
-		ICompilationUnit compilationUnit= getCompilationUnit();
-		IJavaProject project= compilationUnit == null ? null : compilationUnit.getJavaProject();
+	protected IJavaScriptProject getJavaProject() {
+		IJavaScriptUnit compilationUnit= getCompilationUnit();
+		IJavaScriptProject project= compilationUnit == null ? null : compilationUnit.getJavaScriptProject();
 		return project;
 	}	
 }

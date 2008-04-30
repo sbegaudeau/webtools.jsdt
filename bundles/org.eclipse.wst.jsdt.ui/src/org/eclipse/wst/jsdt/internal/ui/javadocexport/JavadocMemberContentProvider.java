@@ -12,10 +12,10 @@ package org.eclipse.wst.jsdt.internal.ui.javadocexport;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 public class JavadocMemberContentProvider implements ITreeContentProvider {
 
@@ -46,7 +46,7 @@ public class JavadocMemberContentProvider implements ITreeContentProvider {
 				IPackageFragment iPackageFragment= (IPackageFragment) element;
 				return (iPackageFragment.getChildren().length > 0);
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 		}
 		return false;
 	}
@@ -57,11 +57,11 @@ public class JavadocMemberContentProvider implements ITreeContentProvider {
 	public Object[] getElements(Object inputElement) {
 		try {
 			if (inputElement instanceof IPackageFragment) {
-				ICompilationUnit[] cu= ((IPackageFragment) inputElement).getCompilationUnits();
+				IJavaScriptUnit[] cu= ((IPackageFragment) inputElement).getJavaScriptUnits();
 				return cu;
 			}
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 		}
 		return new Object[0];
 	}

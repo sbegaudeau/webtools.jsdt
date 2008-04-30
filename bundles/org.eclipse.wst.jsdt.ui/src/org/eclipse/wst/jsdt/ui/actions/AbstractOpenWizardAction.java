@@ -27,8 +27,8 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.NewProjectAction;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewElementWizard;
@@ -46,7 +46,7 @@ public abstract class AbstractOpenWizardAction extends Action {
 	
 	private Shell fShell;
 	private IStructuredSelection fSelection;
-	private IJavaElement fCreatedElement;
+	private IJavaScriptElement fCreatedElement;
 	
 	/**
 	 * Creates the action.
@@ -106,7 +106,7 @@ public abstract class AbstractOpenWizardAction extends Action {
 	}
 			
 	private IStructuredSelection evaluateCurrentSelection() {
-		IWorkbenchWindow window= JavaPlugin.getActiveWorkbenchWindow();
+		IWorkbenchWindow window= JavaScriptPlugin.getActiveWorkbenchWindow();
 		if (window != null) {
 			ISelection selection= window.getSelectionService().getSelection();
 			if (selection instanceof IStructuredSelection) {
@@ -131,7 +131,7 @@ public abstract class AbstractOpenWizardAction extends Action {
 	 */
 	protected Shell getShell() {
 		if (fShell == null) {
-			return JavaPlugin.getActiveWorkbenchShell();
+			return JavaScriptPlugin.getActiveWorkbenchShell();
 		}
 		return fShell;
 	}
@@ -168,7 +168,7 @@ public abstract class AbstractOpenWizardAction extends Action {
 	 * Returns the created element or <code>null</code> if the wizard has not run or was canceled.
 	 * @return the created element or <code>null</code>
 	 */
-	public IJavaElement getCreatedElement() {
+	public IJavaScriptElement getCreatedElement() {
 		return fCreatedElement;
 	}
 	

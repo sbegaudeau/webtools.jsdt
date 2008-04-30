@@ -33,27 +33,27 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.browsing.LogicalPackage;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class JavaSearchScopeFactory {
 	
-	public static final int JRE= IJavaSearchScope.SYSTEM_LIBRARIES;
-	public static final int LIBS= IJavaSearchScope.APPLICATION_LIBRARIES;
-	public static final int PROJECTS= IJavaSearchScope.REFERENCED_PROJECTS;
-	public static final int SOURCES= IJavaSearchScope.SOURCES;
+	public static final int JRE= IJavaScriptSearchScope.SYSTEM_LIBRARIES;
+	public static final int LIBS= IJavaScriptSearchScope.APPLICATION_LIBRARIES;
+	public static final int PROJECTS= IJavaScriptSearchScope.REFERENCED_PROJECTS;
+	public static final int SOURCES= IJavaScriptSearchScope.SOURCES;
 	
 	public static final int ALL= JRE | LIBS | PROJECTS | SOURCES;
 	public static final int NO_PROJ= JRE | LIBS | SOURCES;
@@ -61,7 +61,7 @@ public class JavaSearchScopeFactory {
 	public static final int NO_JRE_NO_PROJ= LIBS | PROJECTS | SOURCES;
 
 	private static JavaSearchScopeFactory fgInstance;
-	private final IJavaSearchScope EMPTY_SCOPE= SearchEngine.createJavaSearchScope(new IJavaElement[] {});
+	private final IJavaScriptSearchScope EMPTY_SCOPE= SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {});
 	
 	private JavaSearchScopeFactory() {
 	}
@@ -72,8 +72,8 @@ public class JavaSearchScopeFactory {
 		return fgInstance;
 	}
 
-	public IWorkingSet[] queryWorkingSets() throws JavaModelException, InterruptedException {
-		Shell shell= JavaPlugin.getActiveWorkbenchShell();
+	public IWorkingSet[] queryWorkingSets() throws JavaScriptModelException, InterruptedException {
+		Shell shell= JavaScriptPlugin.getActiveWorkbenchShell();
 		if (shell == null)
 			return null;
 		IWorkingSetSelectionDialog dialog= PlatformUI.getWorkbench().getWorkingSetManager().createWorkingSetSelectionDialog(shell, true);
@@ -87,11 +87,11 @@ public class JavaSearchScopeFactory {
 		return null; // 'no working set' selected
 	}
 
-	public IJavaSearchScope createJavaSearchScope(IWorkingSet[] workingSets, boolean includeJRE) {
+	public IJavaScriptSearchScope createJavaSearchScope(IWorkingSet[] workingSets, boolean includeJRE) {
 		return createJavaSearchScope(workingSets, includeJRE ? ALL : NO_JRE);
 	}
 	
-	public IJavaSearchScope createJavaSearchScope(IWorkingSet[] workingSets, int includeMask) {
+	public IJavaScriptSearchScope createJavaSearchScope(IWorkingSet[] workingSets, int includeMask) {
 		if (workingSets == null || workingSets.length < 1)
 			return EMPTY_SCOPE;
 
@@ -106,11 +106,11 @@ public class JavaSearchScopeFactory {
 		return createJavaSearchScope(javaElements, includeMask);
 	}
 	
-	public IJavaSearchScope createJavaSearchScope(IWorkingSet workingSet, boolean includeJRE) {
+	public IJavaScriptSearchScope createJavaSearchScope(IWorkingSet workingSet, boolean includeJRE) {
 		return createJavaSearchScope(workingSet, includeJRE ? NO_PROJ : NO_JRE_NO_PROJ);
 	}
 	
-	public IJavaSearchScope createJavaSearchScope(IWorkingSet workingSet, int includeMask) {
+	public IJavaScriptSearchScope createJavaSearchScope(IWorkingSet workingSet, int includeMask) {
 		Set javaElements= new HashSet(10);
 		if (workingSet.isEmpty() && workingSet.isAggregateWorkingSet()) {
 			return createWorkspaceScope(includeMask);
@@ -119,11 +119,11 @@ public class JavaSearchScopeFactory {
 		return createJavaSearchScope(javaElements, includeMask);
 	}
 	
-	public IJavaSearchScope createJavaSearchScope(IResource[] resources, boolean includeJRE) {
+	public IJavaScriptSearchScope createJavaSearchScope(IResource[] resources, boolean includeJRE) {
 		return createJavaSearchScope(resources, includeJRE ? NO_PROJ : NO_JRE_NO_PROJ);
 	}
 
-	public IJavaSearchScope createJavaSearchScope(IResource[] resources, int includeMask) {
+	public IJavaScriptSearchScope createJavaSearchScope(IResource[] resources, int includeMask) {
 		if (resources == null)
 			return EMPTY_SCOPE;
 		Set javaElements= new HashSet(resources.length);
@@ -131,23 +131,23 @@ public class JavaSearchScopeFactory {
 		return createJavaSearchScope(javaElements, includeMask);
 	}
 		
-	public IJavaSearchScope createJavaSearchScope(ISelection selection, boolean includeJRE) {
+	public IJavaScriptSearchScope createJavaSearchScope(ISelection selection, boolean includeJRE) {
 		return createJavaSearchScope(selection, includeJRE ? NO_PROJ : NO_JRE_NO_PROJ);
 	}
 	
-	public IJavaSearchScope createJavaSearchScope(ISelection selection, int includeMask) {
+	public IJavaScriptSearchScope createJavaSearchScope(ISelection selection, int includeMask) {
 		return createJavaSearchScope(getJavaElements(selection), includeMask);
 	}
 	
-	public IJavaSearchScope createJavaProjectSearchScope(String[] projectNames, boolean includeJRE) {
+	public IJavaScriptSearchScope createJavaProjectSearchScope(String[] projectNames, boolean includeJRE) {
 		return createJavaProjectSearchScope(projectNames, includeJRE ? NO_PROJ : NO_JRE_NO_PROJ);
 	}
 	
-	public IJavaSearchScope createJavaProjectSearchScope(String[] projectNames, int includeMask) {
+	public IJavaScriptSearchScope createJavaProjectSearchScope(String[] projectNames, int includeMask) {
 		ArrayList res= new ArrayList();
 		IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();
 		for (int i= 0; i < projectNames.length; i++) {
-			IJavaProject project= JavaCore.create(root.getProject(projectNames[i]));
+			IJavaScriptProject project= JavaScriptCore.create(root.getProject(projectNames[i]));
 			if (project.exists()) {
 				res.add(project);
 			}
@@ -155,22 +155,22 @@ public class JavaSearchScopeFactory {
 		return createJavaSearchScope(res, includeMask);
 	}
 	
-	public IJavaSearchScope createJavaProjectSearchScope(IJavaProject project, boolean includeJRE) {
+	public IJavaScriptSearchScope createJavaProjectSearchScope(IJavaScriptProject project, boolean includeJRE) {
 		return createJavaProjectSearchScope(project, includeJRE ? NO_PROJ : NO_JRE_NO_PROJ);
 	}
 
-	public IJavaSearchScope createJavaProjectSearchScope(IJavaProject project, int includeMask) {
-		return SearchEngine.createJavaSearchScope(new IJavaElement[] { project }, getSearchFlags(includeMask));
+	public IJavaScriptSearchScope createJavaProjectSearchScope(IJavaScriptProject project, int includeMask) {
+		return SearchEngine.createJavaSearchScope(new IJavaScriptElement[] { project }, getSearchFlags(includeMask));
 	}
 	
-	public IJavaSearchScope createJavaProjectSearchScope(IEditorInput editorInput, boolean includeJRE) {
+	public IJavaScriptSearchScope createJavaProjectSearchScope(IEditorInput editorInput, boolean includeJRE) {
 		return createJavaProjectSearchScope(editorInput, includeJRE ? ALL : NO_JRE);
 	}
 	
-	public IJavaSearchScope createJavaProjectSearchScope(IEditorInput editorInput, int includeMask) {
-		IJavaElement elem= JavaUI.getEditorInputJavaElement(editorInput);
+	public IJavaScriptSearchScope createJavaProjectSearchScope(IEditorInput editorInput, int includeMask) {
+		IJavaScriptElement elem= JavaScriptUI.getEditorInputJavaElement(editorInput);
 		if (elem != null) {
-			IJavaProject project= elem.getJavaProject();
+			IJavaScriptProject project= elem.getJavaScriptProject();
 			if (project != null) {
 				return createJavaProjectSearchScope(project, includeMask);
 			}
@@ -205,7 +205,7 @@ public class JavaSearchScopeFactory {
 		return scopeDescription;
 	}
 	
-	public String getProjectScopeDescription(IJavaProject project, boolean includeJRE) {
+	public String getProjectScopeDescription(IJavaScriptProject project, boolean includeJRE) {
 		if (includeJRE) {
 			return Messages.format(SearchMessages.ProjectScope, project.getElementName());
 		} else {
@@ -214,9 +214,9 @@ public class JavaSearchScopeFactory {
 	}
 	
 	public String getProjectScopeDescription(IEditorInput editorInput, boolean includeJRE) {
-		IJavaElement elem= JavaUI.getEditorInputJavaElement(editorInput);
+		IJavaScriptElement elem= JavaScriptUI.getEditorInputJavaElement(editorInput);
 		if (elem != null) {
-			IJavaProject project= elem.getJavaProject();
+			IJavaScriptProject project= elem.getJavaScriptProject();
 			if (project != null) {
 				return getProjectScopeDescription(project, includeJRE);
 			}
@@ -228,12 +228,12 @@ public class JavaSearchScopeFactory {
 		return Messages.format(SearchMessages.HierarchyScope, new String[] { type.getElementName() }); 
 	}
 
-	public String getSelectionScopeDescription(IJavaElement[] javaElements, int includeMask) {
+	public String getSelectionScopeDescription(IJavaScriptElement[] javaElements, int includeMask) {
 		return getSelectionScopeDescription(javaElements, (includeMask & JRE) != 0);
 	}
 	
 
-	public String getSelectionScopeDescription(IJavaElement[] javaElements, boolean includeJRE) {
+	public String getSelectionScopeDescription(IJavaScriptElement[] javaElements, boolean includeJRE) {
 		if (javaElements.length == 0) {
 			return SearchMessages.JavaSearchScopeFactory_undefined_selection;
 		}
@@ -272,7 +272,7 @@ public class JavaSearchScopeFactory {
 		return Messages.format(label, new String[] { workingSets[0].getLabel(), workingSets[1].getLabel()});
 	}
 	
-	public IProject[] getProjects(IJavaSearchScope scope) {
+	public IProject[] getProjects(IJavaScriptSearchScope scope) {
 		IPath[] paths= scope.enclosingProjectsAndJars();
 		HashSet temp= new HashSet();
 		for (int i= 0; i < paths.length; i++) {
@@ -283,23 +283,23 @@ public class JavaSearchScopeFactory {
 		return (IProject[]) temp.toArray(new IProject[temp.size()]);
 	}
 
-	public IJavaElement[] getJavaElements(ISelection selection) {
+	public IJavaScriptElement[] getJavaElements(ISelection selection) {
 		if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
 			return getJavaElements(((IStructuredSelection)selection).toArray());
 		} else {
-			return new IJavaElement[0];
+			return new IJavaScriptElement[0];
 		}
 	}
 
-	private IJavaElement[] getJavaElements(Object[] elements) {
+	private IJavaScriptElement[] getJavaElements(Object[] elements) {
 		if (elements.length == 0)
-			return new IJavaElement[0];
+			return new IJavaScriptElement[0];
 		
 		Set result= new HashSet(elements.length);
 		for (int i= 0; i < elements.length; i++) {
 			Object selectedElement= elements[i];
-			if (selectedElement instanceof IJavaElement) {
-				addJavaElements(result, (IJavaElement) selectedElement);
+			if (selectedElement instanceof IJavaScriptElement) {
+				addJavaElements(result, (IJavaScriptElement) selectedElement);
 			} else if (selectedElement instanceof IResource) {
 				addJavaElements(result, (IResource) selectedElement);
 			} else if (selectedElement instanceof LogicalPackage) {
@@ -314,23 +314,23 @@ public class JavaSearchScopeFactory {
 			}
 			
 		}
-		return (IJavaElement[]) result.toArray(new IJavaElement[result.size()]);
+		return (IJavaScriptElement[]) result.toArray(new IJavaScriptElement[result.size()]);
 	}
 	
-	public IJavaSearchScope createJavaSearchScope(IJavaElement[] javaElements, boolean includeJRE) {
+	public IJavaScriptSearchScope createJavaSearchScope(IJavaScriptElement[] javaElements, boolean includeJRE) {
 		return createJavaSearchScope(javaElements, includeJRE ? NO_PROJ : NO_JRE_NO_PROJ);
 	}
 	
-	public IJavaSearchScope createJavaSearchScope(IJavaElement[] javaElements, int includeMask) {
+	public IJavaScriptSearchScope createJavaSearchScope(IJavaScriptElement[] javaElements, int includeMask) {
 		if (javaElements.length == 0)
 			return EMPTY_SCOPE;
 		return SearchEngine.createJavaSearchScope(javaElements, getSearchFlags(includeMask));
 	}
 
-	private IJavaSearchScope createJavaSearchScope(Collection javaElements, int includeMask) {
+	private IJavaScriptSearchScope createJavaSearchScope(Collection javaElements, int includeMask) {
 		if (javaElements.isEmpty())
 			return EMPTY_SCOPE;
-		IJavaElement[] elementArray= (IJavaElement[]) javaElements.toArray(new IJavaElement[javaElements.size()]);
+		IJavaScriptElement[] elementArray= (IJavaScriptElement[]) javaElements.toArray(new IJavaScriptElement[javaElements.size()]);
 		return SearchEngine.createJavaSearchScope(elementArray, getSearchFlags(includeMask));
 	}
 	
@@ -344,12 +344,12 @@ public class JavaSearchScopeFactory {
 	}
 
 	private void addJavaElements(Set javaElements, IResource resource) {
-		IJavaElement javaElement= (IJavaElement)resource.getAdapter(IJavaElement.class);
+		IJavaScriptElement javaElement= (IJavaScriptElement)resource.getAdapter(IJavaScriptElement.class);
 		if (javaElement == null)
 			// not a Java resource
 			return;
 		
-		if (javaElement.getElementType() == IJavaElement.PACKAGE_FRAGMENT) {
+		if (javaElement.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT) {
 			// add other possible package fragments
 			try {
 				addJavaElements(javaElements, ((IFolder)resource).members());
@@ -361,7 +361,7 @@ public class JavaSearchScopeFactory {
 		javaElements.add(javaElement);
 	}
 
-	private void addJavaElements(Set javaElements, IJavaElement javaElement) {
+	private void addJavaElements(Set javaElements, IJavaScriptElement javaElement) {
 		javaElements.add(javaElement);
 	}
 	
@@ -371,17 +371,17 @@ public class JavaSearchScopeFactory {
 		
 		if (workingSet.isAggregateWorkingSet() && workingSet.isEmpty()) {
 			try {
-				IJavaProject[] projects= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
+				IJavaScriptProject[] projects= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaScriptProjects();
 				javaElements.addAll(Arrays.asList(projects));
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 			}
 			return;
 		}
 		
 		IAdaptable[] elements= workingSet.getElements();
 		for (int i= 0; i < elements.length; i++) {
-			IJavaElement javaElement=(IJavaElement) elements[i].getAdapter(IJavaElement.class);
+			IJavaScriptElement javaElement=(IJavaScriptElement) elements[i].getAdapter(IJavaScriptElement.class);
 			if (javaElement != null) { 
 				addJavaElements(javaElements, javaElement);
 				continue;
@@ -401,34 +401,34 @@ public class JavaSearchScopeFactory {
 			addJavaElements(javaElements, packages[i]);
 	}
 	
-	public IJavaSearchScope createWorkspaceScope(boolean includeJRE) {
+	public IJavaScriptSearchScope createWorkspaceScope(boolean includeJRE) {
 		return createWorkspaceScope(includeJRE ? ALL : NO_JRE);
 	}
 	
-	public IJavaSearchScope createWorkspaceScope(int includeMask) {
+	public IJavaScriptSearchScope createWorkspaceScope(int includeMask) {
 		if ((includeMask & NO_PROJ) != NO_PROJ) {
 			try {
-				IJavaProject[] projects= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
+				IJavaScriptProject[] projects= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaScriptProjects();
 				return SearchEngine.createJavaSearchScope(projects, getSearchFlags(includeMask));
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore, use workspace scope instead
 			}
 		}
 		return SearchEngine.createWorkspaceScope();
 	}
 
-	public boolean isInsideJRE(IJavaElement element) {
-		IPackageFragmentRoot root= (IPackageFragmentRoot) element.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+	public boolean isInsideJRE(IJavaScriptElement element) {
+		IPackageFragmentRoot root= (IPackageFragmentRoot) element.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 		if (root != null) {
 			try {
-				IClasspathEntry entry= root.getRawClasspathEntry();
-				if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-					IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(entry.getPath(), root.getJavaProject());
+				IIncludePathEntry entry= root.getRawIncludepathEntry();
+				if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
+					IJsGlobalScopeContainer container= JavaScriptCore.getJsGlobalScopeContainer(entry.getPath(), root.getJavaScriptProject());
 					return container != null && container.getKind() == IJsGlobalScopeContainer.K_DEFAULT_SYSTEM;
 				}
 				return false;
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 			}
 		}
 		return true; // include JRE in doubt

@@ -22,7 +22,7 @@ import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 
 /**
@@ -53,7 +53,7 @@ public class AddBlockCommentAction extends BlockCommentAction {
 		int selectionOffset= selection.getOffset();
 		int selectionEndOffset= selectionOffset + selection.getLength();
 		List edits= new LinkedList();
-		ITypedRegion partition= docExtension.getPartition(IJavaPartitions.JAVA_PARTITIONING, selectionOffset, false);
+		ITypedRegion partition= docExtension.getPartition(IJavaScriptPartitions.JAVA_PARTITIONING, selectionOffset, false);
 
 		handleFirstPartition(partition, edits, factory, selectionOffset);
 
@@ -126,11 +126,11 @@ public class AddBlockCommentAction extends BlockCommentAction {
 		
 		boolean wasJavadoc= false; // true if the previous partition is javadoc
 		
-		if (partType == IJavaPartitions.JAVA_DOC) {
+		if (partType == IJavaScriptPartitions.JAVA_DOC) {
 			
 			wasJavadoc= true;
 			
-		} else if (partType == IJavaPartitions.JAVA_MULTI_LINE_COMMENT) {
+		} else if (partType == IJavaScriptPartitions.JAVA_MULTI_LINE_COMMENT) {
 			
 			// already in a comment - remove ending mark
 			edits.add(factory.createEdit(partEndOffset - tokenLength, tokenLength, "")); //$NON-NLS-1$
@@ -138,7 +138,7 @@ public class AddBlockCommentAction extends BlockCommentAction {
 		}
 
 		// advance to next partition
-		partition= docExtension.getPartition(IJavaPartitions.JAVA_PARTITIONING, partEndOffset, false);
+		partition= docExtension.getPartition(IJavaScriptPartitions.JAVA_PARTITIONING, partEndOffset, false);
 		partType= partition.getType();
 
 		// start of next partition
@@ -153,10 +153,10 @@ public class AddBlockCommentAction extends BlockCommentAction {
 			
 		} else { // !wasJavadoc
 		
-			if (partType == IJavaPartitions.JAVA_DOC) {
+			if (partType == IJavaScriptPartitions.JAVA_DOC) {
 				// if next is javadoc, end block comment before
 				edits.add(factory.createEdit(partition.getOffset(), 0, getCommentEnd()));
-			} else if (partType == IJavaPartitions.JAVA_MULTI_LINE_COMMENT) {
+			} else if (partType == IJavaScriptPartitions.JAVA_MULTI_LINE_COMMENT) {
 				// already in a comment - remove startToken
 				edits.add(factory.createEdit(partition.getOffset(), getCommentStart().length(), "")); //$NON-NLS-1$
 			}
@@ -200,9 +200,9 @@ public class AddBlockCommentAction extends BlockCommentAction {
 	 *         <code>false</code> otherwise
 	 */
 	private boolean isSpecialPartition(String partType) {
-		return partType == IJavaPartitions.JAVA_CHARACTER
-				|| partType == IJavaPartitions.JAVA_STRING
-				|| partType == IJavaPartitions.JAVA_SINGLE_LINE_COMMENT;
+		return partType == IJavaScriptPartitions.JAVA_CHARACTER
+				|| partType == IJavaScriptPartitions.JAVA_STRING
+				|| partType == IJavaScriptPartitions.JAVA_SINGLE_LINE_COMMENT;
 	}
 
 	/*

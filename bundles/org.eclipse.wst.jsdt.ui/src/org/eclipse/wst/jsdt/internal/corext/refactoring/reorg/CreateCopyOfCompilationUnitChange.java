@@ -22,12 +22,12 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.participants.ReorgExecutionLog;
 import org.eclipse.text.edits.ReplaceEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
@@ -45,11 +45,11 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 public final class CreateCopyOfCompilationUnitChange extends CreateTextFileChange {
 
-	private static TextChangeManager createChangeManager(IProgressMonitor monitor, ICompilationUnit copy, String newName) throws CoreException {
+	private static TextChangeManager createChangeManager(IProgressMonitor monitor, IJavaScriptUnit copy, String newName) throws CoreException {
 		TextChangeManager manager= new TextChangeManager();
 		SearchResultGroup refs= getReferences(copy, monitor);
 		if (refs == null)
@@ -70,17 +70,17 @@ public final class CreateCopyOfCompilationUnitChange extends CreateTextFileChang
 		return manager;
 	}
 
-	private static SearchPattern createSearchPattern(IType type) throws JavaModelException {
-		SearchPattern pattern= SearchPattern.createPattern(type, IJavaSearchConstants.ALL_OCCURRENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
-		IMethod[] constructors= JavaElementUtil.getAllConstructors(type);
+	private static SearchPattern createSearchPattern(IType type) throws JavaScriptModelException {
+		SearchPattern pattern= SearchPattern.createPattern(type, IJavaScriptSearchConstants.ALL_OCCURRENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
+		IFunction[] constructors= JavaElementUtil.getAllConstructors(type);
 		if (constructors.length == 0)
 			return pattern;
-		SearchPattern constructorDeclarationPattern= RefactoringSearchEngine.createOrPattern(constructors, IJavaSearchConstants.DECLARATIONS);
+		SearchPattern constructorDeclarationPattern= RefactoringSearchEngine.createOrPattern(constructors, IJavaScriptSearchConstants.DECLARATIONS);
 		return SearchPattern.createOrPattern(pattern, constructorDeclarationPattern);
 	}
 
-	private static String getCopiedFileSource(IProgressMonitor monitor, ICompilationUnit unit, String newTypeName) throws CoreException {
-		ICompilationUnit copy= unit.getPrimary().getWorkingCopy(null);
+	private static String getCopiedFileSource(IProgressMonitor monitor, IJavaScriptUnit unit, String newTypeName) throws CoreException {
+		IJavaScriptUnit copy= unit.getPrimary().getWorkingCopy(null);
 		try {
 			TextChangeManager manager= createChangeManager(monitor, copy, newTypeName);
 			String result= manager.get(copy).getPreviewContent(new NullProgressMonitor());
@@ -90,9 +90,9 @@ public final class CreateCopyOfCompilationUnitChange extends CreateTextFileChang
 		}
 	}
 
-	private static SearchResultGroup getReferences(final ICompilationUnit copy, IProgressMonitor monitor) throws JavaModelException {
-		final ICompilationUnit[] copies= new ICompilationUnit[] { copy};
-		IJavaSearchScope scope= SearchEngine.createJavaSearchScope(copies);
+	private static SearchResultGroup getReferences(final IJavaScriptUnit copy, IProgressMonitor monitor) throws JavaScriptModelException {
+		final IJavaScriptUnit[] copies= new IJavaScriptUnit[] { copy};
+		IJavaScriptSearchScope scope= SearchEngine.createJavaSearchScope(copies);
 		final IType type= copy.findPrimaryType();
 		if (type == null)
 			return null;
@@ -107,7 +107,7 @@ public final class CreateCopyOfCompilationUnitChange extends CreateTextFileChang
 				try {
 					return fTypeOccurrenceCollector.acceptSearchMatch2(copy, match);
 				} catch (CoreException e) {
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 					return null;
 				}
 			}
@@ -126,9 +126,9 @@ public final class CreateCopyOfCompilationUnitChange extends CreateTextFileChang
 
 	private final INewNameQuery fNameQuery;
 
-	private final ICompilationUnit fOldCu;
+	private final IJavaScriptUnit fOldCu;
 
-	public CreateCopyOfCompilationUnitChange(IPath path, String source, ICompilationUnit oldCu, INewNameQuery nameQuery) {
+	public CreateCopyOfCompilationUnitChange(IPath path, String source, IJavaScriptUnit oldCu, INewNameQuery nameQuery) {
 		super(path, source, null, "java"); //$NON-NLS-1$
 		fOldCu= oldCu;
 		fNameQuery= nameQuery;
@@ -170,7 +170,7 @@ public final class CreateCopyOfCompilationUnitChange extends CreateTextFileChang
 		return buffer.toString();
 	}
 
-	private void markAsExecuted(ICompilationUnit unit, ResourceMapping mapping) {
+	private void markAsExecuted(IJavaScriptUnit unit, ResourceMapping mapping) {
 		ReorgExecutionLog log= (ReorgExecutionLog) getAdapter(ReorgExecutionLog.class);
 		if (log != null) {
 			log.markAsProcessed(unit);
@@ -185,7 +185,7 @@ public final class CreateCopyOfCompilationUnitChange extends CreateTextFileChang
 		return result;
 	}
 
-	private void setEncoding(ICompilationUnit unit) {
+	private void setEncoding(IJavaScriptUnit unit) {
 		IResource resource= unit.getResource();
 		// no file so the encoding is taken from the target
 		if (!(resource instanceof IFile))

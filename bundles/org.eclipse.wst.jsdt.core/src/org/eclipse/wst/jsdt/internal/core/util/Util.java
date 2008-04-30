@@ -41,13 +41,13 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -765,7 +765,7 @@ public class Util {
 			if (!ENABLE_JAVA_LIKE_EXTENSIONS)
 				JAVA_LIKE_EXTENSIONS = new char[][] {SuffixConstants.EXTENSION_java.toCharArray()};
 			else {
-				IContentType javaContentType = Platform.getContentTypeManager().getContentType(JavaCore.JAVA_SOURCE_CONTENT_TYPE);
+				IContentType javaContentType = Platform.getContentTypeManager().getContentType(JavaScriptCore.JAVA_SOURCE_CONTENT_TYPE);
 				HashSet fileExtensions = new HashSet();
 				// content types derived from java content type should be included (https://bugs.eclipse.org/bugs/show_bug.cgi?id=121715)
 				IContentType[] contentTypes = Platform.getContentTypeManager().getAllContentTypes();
@@ -812,7 +812,7 @@ public class Util {
 	 * If the project is null, returns the line separator for the workspace.
 	 * If still null, return the system line separator.
 	 */
-	public static String getLineSeparator(String text, IJavaProject project) {
+	public static String getLineSeparator(String text, IJavaScriptProject project) {
 		String lineSeparator = null;
 
 		// line delimiter in given text
@@ -855,7 +855,7 @@ public class Util {
 			lineSeparator = findLineSeparator(text);
 			if (lineSeparator == null) {
 				// default to system line separator
-				return getLineSeparator((String) null, (IJavaProject) null);
+				return getLineSeparator((String) null, (IJavaScriptProject) null);
 			}
 		}
 		return lineSeparator;
@@ -953,17 +953,17 @@ public class Util {
 	/**
 	 * Returns the given file's contents as a byte array.
 	 */
-	public static byte[] getResourceContentsAsByteArray(IFile file) throws JavaModelException {
+	public static byte[] getResourceContentsAsByteArray(IFile file) throws JavaScriptModelException {
 		InputStream stream= null;
 		try {
 			stream = file.getContents(true);
 		} catch (CoreException e) {
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		}
 		try {
 			return org.eclipse.wst.jsdt.internal.compiler.util.Util.getInputStreamAsByteArray(stream, -1);
 		} catch (IOException e) {
-			throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
+			throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.IO_EXCEPTION);
 		} finally {
 			try {
 				stream.close();
@@ -976,7 +976,7 @@ public class Util {
 	/**
 	 * Returns the given file's contents as a character array.
 	 */
-	public static char[] getResourceContentsAsCharArray(IFile file) throws JavaModelException {
+	public static char[] getResourceContentsAsCharArray(IFile file) throws JavaScriptModelException {
 		// Get encoding from file
 		String encoding;
 		try {
@@ -988,7 +988,7 @@ public class Util {
 		return getResourceContentsAsCharArray(file, encoding);
 	}
 
-	public static char[] getResourceContentsAsCharArray(IFile file, String encoding) throws JavaModelException {
+	public static char[] getResourceContentsAsCharArray(IFile file, String encoding) throws JavaScriptModelException {
 		// Get file length
 		// workaround https://bugs.eclipse.org/bugs/show_bug.cgi?id=130736 by using java.io.File if possible
 		IPath location = file.getLocation();
@@ -998,7 +998,7 @@ public class Util {
 			try {
 				length = EFS.getStore(file.getLocationURI()).fetchInfo().getLength();
 			} catch (CoreException e) {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			}
 		} else {
 			// local file
@@ -1010,12 +1010,12 @@ public class Util {
 		try {
 			stream = file.getContents(true);
 		} catch (CoreException e) {
-			throw new JavaModelException(e, IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST);
+			throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST);
 		}
 		try {
 			return org.eclipse.wst.jsdt.internal.compiler.util.Util.getInputStreamAsCharArray(stream, (int) length, encoding);
 		} catch (IOException e) {
-			throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
+			throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.IO_EXCEPTION);
 		} finally {
 			try {
 				stream.close();
@@ -1037,7 +1037,7 @@ public class Util {
 	/*
 	 * Returns the source attachment property for this package fragment root's path
 	 */
-	public static String getSourceAttachmentProperty(IPath path) throws JavaModelException {
+	public static String getSourceAttachmentProperty(IPath path) throws JavaScriptModelException {
 		Map rootPathToAttachments = JavaModelManager.getJavaModelManager().rootPathToAttachments;
 		String property = (String) rootPathToAttachments.get(path);
 		if (property == null) {
@@ -1050,7 +1050,7 @@ public class Util {
 				rootPathToAttachments.put(path, property);
 				return property;
 			} catch (CoreException e)  {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			}
 		} else if (property.equals(PackageFragmentRoot.NO_SOURCE_ATTACHMENT)) {
 			return null;
@@ -1059,7 +1059,7 @@ public class Util {
 	}
 
 	private static QualifiedName getSourceAttachmentPropertyName(IPath path) {
-		return new QualifiedName(JavaCore.PLUGIN_ID, "sourceattachment: " + path.toOSString()); //$NON-NLS-1$
+		return new QualifiedName(JavaScriptCore.PLUGIN_ID, "sourceattachment: " + path.toOSString()); //$NON-NLS-1$
 	}
 
 	public static void setSourceAttachmentProperty(IPath path, String property) {
@@ -1252,21 +1252,21 @@ public class Util {
 	 * Returns whether the given java element is exluded from its root's classpath.
 	 * It doesn't check whether the root itself is on the classpath or not
 	 */
-	public static final boolean isExcluded(IJavaElement element) {
+	public static final boolean isExcluded(IJavaScriptElement element) {
 		int elementType = element.getElementType();
 		switch (elementType) {
-			case IJavaElement.JAVA_MODEL:
-			case IJavaElement.JAVA_PROJECT:
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.JAVASCRIPT_MODEL:
+			case IJavaScriptElement.JAVASCRIPT_PROJECT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 				return false;
 
-			case IJavaElement.PACKAGE_FRAGMENT:
-				PackageFragmentRoot root = (PackageFragmentRoot)element.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
+				PackageFragmentRoot root = (PackageFragmentRoot)element.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 				IResource resource = element.getResource();
 				return resource != null && isExcluded(resource, root.fullInclusionPatternChars(), root.fullExclusionPatternChars());
 
-			case IJavaElement.COMPILATION_UNIT:
-				root = (PackageFragmentRoot)element.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
+				root = (PackageFragmentRoot)element.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 				resource = element.getResource();
 				if (resource == null)
 					return false;
@@ -1275,7 +1275,7 @@ public class Util {
 				return isExcluded(element.getParent());
 
 			default:
-				IJavaElement cu = element.getAncestor(IJavaElement.COMPILATION_UNIT);
+				IJavaScriptElement cu = element.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 				return cu != null && isExcluded(cu);
 		}
 	}
@@ -1283,8 +1283,8 @@ public class Util {
 	 * Returns whether the given resource path matches one of the inclusion/exclusion
 	 * patterns.
 	 * NOTE: should not be asked directly using pkg root pathes
-	 * @see IClasspathEntry#getInclusionPatterns
-	 * @see IClasspathEntry#getExclusionPatterns
+	 * @see IIncludePathEntry#getInclusionPatterns
+	 * @see IIncludePathEntry#getExclusionPatterns
 	 */
 	public final static boolean isExcluded(IPath resourcePath, char[][] inclusionPatterns, char[][] exclusionPatterns, boolean isFolderPath) {
 		if (inclusionPatterns == null && exclusionPatterns == null) return false;
@@ -1294,7 +1294,7 @@ public class Util {
 	/*
 	 * Returns whether the given resource matches one of the exclusion patterns.
 	 * NOTE: should not be asked directly using pkg root pathes
-	 * @see IClasspathEntry#getExclusionPatterns
+	 * @see IIncludePathEntry#getExclusionPatterns
 	 */
 	public final static boolean isExcluded(IResource resource, char[][] inclusionPatterns, char[][] exclusionPatterns) {
 		IPath path = resource.getFullPath();
@@ -1325,7 +1325,7 @@ public class Util {
 	 *		object indicating what is wrong with the name
 	 */
 	public static boolean isValidClassFileName(String name, String sourceLevel, String complianceLevel) {
-		return JavaConventions.validateClassFileName(name, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
+		return JavaScriptConventions.validateClassFileName(name, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
 	}
 
 
@@ -1346,7 +1346,7 @@ public class Util {
 	 *		object indicating what is wrong with the name
 	 */
 	public static boolean isValidCompilationUnitName(String name, String sourceLevel, String complianceLevel) {
-		return JavaConventions.validateCompilationUnitName(name, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
+		return JavaScriptConventions.validateCompilationUnitName(name, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
 	}
 
 	/**
@@ -1357,7 +1357,7 @@ public class Util {
 	 * @param complianceLevel the compliance level
 	 */
 	public static boolean isValidFolderNameForPackage(String folderName, String sourceLevel, String complianceLevel) {
-		return JavaConventions.validateIdentifier(folderName, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
+		return JavaScriptConventions.validateIdentifier(folderName, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
 	}
 
 	/**
@@ -1411,17 +1411,17 @@ public class Util {
 	 */
 	public static void log(Throwable e, String message) {
 		Throwable nestedException;
-		if (e instanceof JavaModelException
-				&& (nestedException = ((JavaModelException)e).getException()) != null) {
+		if (e instanceof JavaScriptModelException
+				&& (nestedException = ((JavaScriptModelException)e).getException()) != null) {
 			e = nestedException;
 		}
 		IStatus status= new Status(
 			IStatus.ERROR,
-			JavaCore.PLUGIN_ID,
+			JavaScriptCore.PLUGIN_ID,
 			IStatus.ERROR,
 			message,
 			e);
-		JavaCore.getPlugin().getLog().log(status);
+		JavaScriptCore.getPlugin().getLog().log(status);
 	}
 
 	/**
@@ -1845,9 +1845,9 @@ public class Util {
 	 * returning a new array with the sorted items.
 	 * The original array is left untouched.
 	 */
-	public static IJavaElement[] sortCopy(IJavaElement[] elements) {
+	public static IJavaScriptElement[] sortCopy(IJavaScriptElement[] elements) {
 		int len = elements.length;
-		IJavaElement[] copy = new IJavaElement[len];
+		IJavaScriptElement[] copy = new IJavaScriptElement[len];
 		System.arraycopy(elements, 0, copy, 0, len);
 		sort(copy, new Comparer() {
 			public int compare(Object a, Object b) {
@@ -2700,7 +2700,7 @@ public class Util {
 	 * @return char[][] Array of signatures for each level of given unique key
 	 */
 	public final static char[][] splitTypeLevelsSignature(String typeSignature) {
-		// In case of IJavaElement signature, replace '$' by '.'
+		// In case of IJavaScriptElement signature, replace '$' by '.'
 		char[] source = Signature.removeCapture(typeSignature.toCharArray());
 		CharOperation.replace(source, '$', '.');
 

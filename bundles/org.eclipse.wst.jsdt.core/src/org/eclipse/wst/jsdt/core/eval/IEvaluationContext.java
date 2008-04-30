@@ -13,10 +13,10 @@ package org.eclipse.wst.jsdt.core.eval;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.ICompletionRequestor;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 
 /**
@@ -72,7 +72,7 @@ import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
  * Example of use:
  * <pre>
  * <code>
- * IJavaProject project = getJavaProject();
+ * IJavaScriptProject project = getJavaProject();
  * IEvaluationContext context = project.newEvaluationContext();
  * String codeSnippet = "int i= 0; i++";
  * ICodeSnippetRequestor requestor = ...;
@@ -82,11 +82,11 @@ import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
  * </p>
  * <p>
  * This interface is not intended to be implemented by clients.
- * <code>IJavaProject.newEvaluationContext</code> can be used to obtain an
+ * <code>IJavaScriptProject.newEvaluationContext</code> can be used to obtain an
  * instance.
  * </p>
  *
- * @see IJavaProject#newEvaluationContext()
+ * @see IJavaScriptProject#newEvaluationContext()
  */
 public interface IEvaluationContext {
 	/**
@@ -108,7 +108,7 @@ public interface IEvaluationContext {
 	 *   or -1 indicating the beginning of the snippet
 	 * @param requestor the code completion requestor capable of accepting all
 	 *    possible types of completions
-	 * @exception JavaModelException if code completion could not be performed. Reasons include:
+	 * @exception JavaScriptModelException if code completion could not be performed. Reasons include:
 	 *  <ul>
 	 *	  <li>The position specified is less than -1 or is greater than the snippet's
 	 *	    length (INDEX_OUT_OF_BOUNDS)</li>
@@ -120,7 +120,7 @@ public interface IEvaluationContext {
 		String codeSnippet,
 		int position,
 		ICompletionRequestor requestor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 	/**
 	 * Performs a code completion at the given position in the given code snippet,
 	 * reporting results to the given completion requestor.
@@ -141,7 +141,7 @@ public interface IEvaluationContext {
 	 * @param requestor the code completion requestor capable of accepting all
 	 *    possible types of completions
 	 * @param owner the owner of working copies that take precedence over their original compilation units
-	 * @exception JavaModelException if code completion could not be performed. Reasons include:
+	 * @exception JavaScriptModelException if code completion could not be performed. Reasons include:
 	 *  <ul>
 	 *	  <li>The position specified is less than -1 or is greater than the snippet's
 	 *	    length (INDEX_OUT_OF_BOUNDS)</li>
@@ -154,7 +154,7 @@ public interface IEvaluationContext {
 		int position,
 		ICompletionRequestor requestor,
 		WorkingCopyOwner owner)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 	/**
 	 * Performs a code completion at the given position in the given code snippet,
 	 * reporting results to the given completion requestor.
@@ -167,7 +167,7 @@ public interface IEvaluationContext {
 	 *   or -1 indicating the beginning of the snippet
 	 * @param requestor the code completion requestor capable of accepting all
 	 *    possible types of completions
-	 * @exception JavaModelException if code completion could not be performed. Reasons include:
+	 * @exception JavaScriptModelException if code completion could not be performed. Reasons include:
 	 *  <ul>
 	 *	  <li>The position specified is less than -1 or is greater than the snippet's
 	 *	    length (INDEX_OUT_OF_BOUNDS)</li>
@@ -178,7 +178,7 @@ public interface IEvaluationContext {
 		String codeSnippet,
 		int position,
 		CompletionRequestor requestor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 	/**
 	 * Performs a code completion at the given position in the given code snippet,
 	 * reporting results to the given completion requestor.
@@ -199,7 +199,7 @@ public interface IEvaluationContext {
 	 * @param requestor the code completion requestor capable of accepting all
 	 *    possible types of completions
 	 * @param owner the owner of working copies that take precedence over their original compilation units
-	 * @exception JavaModelException if code completion could not be performed. Reasons include:
+	 * @exception JavaScriptModelException if code completion could not be performed. Reasons include:
 	 *  <ul>
 	 *	  <li>The position specified is less than -1 or is greater than the snippet's
 	 *	    length (INDEX_OUT_OF_BOUNDS)</li>
@@ -211,7 +211,7 @@ public interface IEvaluationContext {
 		int position,
 		CompletionRequestor requestor,
 		WorkingCopyOwner owner)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 	/**
 	 * Resolves and returns a collection of Java elements corresponding to the source
 	 * code at the given positions in the given code snippet.
@@ -225,15 +225,15 @@ public interface IEvaluationContext {
 	 *   of the code to resolve
 	 * @param length the length of the selected code to resolve
 	 * @return the (possibly empty) list of selection Java elements
-	 * @exception JavaModelException if code resolve could not be performed.
+	 * @exception JavaScriptModelException if code resolve could not be performed.
 	 *   Reasons include:
 	 *   <ul>
 	 *	   <li>The position specified is less than -1 or is greater than the snippet's
 	 *	     length (INDEX_OUT_OF_BOUNDS)</li>
 	 *   </ul>
 	 */
-	public IJavaElement[] codeSelect(String codeSnippet, int offset, int length)
-		throws JavaModelException;
+	public IJavaScriptElement[] codeSelect(String codeSnippet, int offset, int length)
+		throws JavaScriptModelException;
 	/**
 	 * Resolves and returns a collection of Java elements corresponding to the source
 	 * code at the given positions in the given code snippet.
@@ -255,7 +255,7 @@ public interface IEvaluationContext {
 	 * @param length the length of the selected code to resolve
 	 * @param owner the owner of working copies that take precedence over their original compilation units
 	 * @return the (possibly empty) list of selection Java elements
-	 * @exception JavaModelException if code resolve could not be performed.
+	 * @exception JavaScriptModelException if code resolve could not be performed.
 	 *   Reasons include:
 	 *   <ul>
 	 *	   <li>The position specified is less than -1 or is greater than the snippet's
@@ -263,8 +263,8 @@ public interface IEvaluationContext {
 	 *   </ul>
 	 * @since 3.0
 	 */
-	public IJavaElement[] codeSelect(String codeSnippet, int offset, int length, WorkingCopyOwner owner)
-		throws JavaModelException;
+	public IJavaScriptElement[] codeSelect(String codeSnippet, int offset, int length, WorkingCopyOwner owner)
+		throws JavaScriptModelException;
 	/**
 	 * Deletes the given variable from this evaluation context. Does nothing if
 	 * the given variable has already been deleted.
@@ -304,7 +304,7 @@ public interface IEvaluationContext {
 	 * @param isConstructorCall whether the code snippet is evaluated in a constructor of the declaring type.
 	 * @param requestor the code snippet requestor
 	 * @param progressMonitor a progress monitor
-	 * @exception JavaModelException if a runtime problem occurred or if this
+	 * @exception JavaScriptModelException if a runtime problem occurred or if this
 	 *   context's project has no build state
 	 */
 	public void evaluateCodeSnippet(
@@ -317,7 +317,7 @@ public interface IEvaluationContext {
 		boolean isConstructorCall,
 		ICodeSnippetRequestor requestor,
 		IProgressMonitor progressMonitor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 	/**
 	 * Evaluates the given code snippet. The code snippet is
 	 * compiled along with this context's package declaration, imports, and
@@ -334,14 +334,14 @@ public interface IEvaluationContext {
 	 * @param codeSnippet the code snippet
 	 * @param requestor the code snippet requestor
 	 * @param progressMonitor a progress monitor
-	 * @exception JavaModelException if a runtime problem occurred or if this
+	 * @exception JavaScriptModelException if a runtime problem occurred or if this
 	 *   context's project has no build state
 	 */
 	public void evaluateCodeSnippet(
 		String codeSnippet,
 		ICodeSnippetRequestor requestor,
 		IProgressMonitor progressMonitor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 	/**
 	 * Evaluates the given global variable. During this operation,
 	 * this context's package declaration, imports, and <i>all</i> its declared
@@ -355,14 +355,14 @@ public interface IEvaluationContext {
 	 * @param variable the global variable
 	 * @param requestor the code snippet requestor
 	 * @param progressMonitor a progress monitor
-	 * @exception JavaModelException if a runtime problem occurred or if this
+	 * @exception JavaScriptModelException if a runtime problem occurred or if this
 	 *   context's project has no build state
 	 */
 	public void evaluateVariable(
 		IGlobalVariable variable,
 		ICodeSnippetRequestor requestor,
 		IProgressMonitor progressMonitor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 	/**
 	 * Returns the import declarations for this evaluation context. Returns and empty
 	 * list if there are no imports (the default if the imports have never been set).
@@ -387,7 +387,7 @@ public interface IEvaluationContext {
 	 *
 	 * @return the Java project
 	 */
-	public IJavaProject getProject();
+	public IJavaScriptProject getProject();
 	/**
 	 * Creates a new global variable with the given name, type, and initializer.
 	 * <p>
@@ -431,10 +431,10 @@ public interface IEvaluationContext {
 	 * <code>acceptProblem</code> method is called for each problem that is detected.
 	 *
 	 * @param requestor the code snippet requestor
-	 * @exception JavaModelException if this context's project has no build state
+	 * @exception JavaScriptModelException if this context's project has no build state
 	 */
 	public void validateImports(ICodeSnippetRequestor requestor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 
 	/**
 	 * Performs a code completion at the given position in the given code snippet,
@@ -448,7 +448,7 @@ public interface IEvaluationContext {
 	 *   or -1 indicating the beginning of the snippet
 	 * @param requestor the code completion requestor capable of accepting all
 	 *    possible types of completions
-	 * @exception JavaModelException if code completion could not be performed. Reasons include:
+	 * @exception JavaScriptModelException if code completion could not be performed. Reasons include:
 	 *  <ul>
 	 *	  <li>The position specified is less than -1 or is greater than the snippet's
 	 *	    length (INDEX_OUT_OF_BOUNDS)</li>
@@ -459,6 +459,6 @@ public interface IEvaluationContext {
 		String codeSnippet,
 		int position,
 		org.eclipse.wst.jsdt.core.ICodeCompletionRequestor requestor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 
 }

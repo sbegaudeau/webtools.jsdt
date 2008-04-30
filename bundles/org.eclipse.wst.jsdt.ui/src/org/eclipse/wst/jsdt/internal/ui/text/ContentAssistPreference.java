@@ -18,13 +18,13 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProcessor;
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavadocCompletionProcessor;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 
 public class ContentAssistPreference {
@@ -66,7 +66,7 @@ public class ContentAssistPreference {
 	}
 
 	private static Color getColor(IPreferenceStore store, String key) {
-		JavaTextTools textTools= JavaPlugin.getDefault().getJavaTextTools();
+		JavaScriptTextTools textTools= JavaScriptPlugin.getDefault().getJavaTextTools();
 		return getColor(store, key, textTools.getColorManager());
 	}
 
@@ -78,7 +78,7 @@ public class ContentAssistPreference {
 	}
 
 	private static JavadocCompletionProcessor getJavaDocProcessor(ContentAssistant assistant) {
-		IContentAssistProcessor p= assistant.getContentAssistProcessor(IJavaPartitions.JAVA_DOC);
+		IContentAssistProcessor p= assistant.getContentAssistProcessor(IJavaScriptPartitions.JAVA_DOC);
 		if (p instanceof JavadocCompletionProcessor)
 			return (JavadocCompletionProcessor) p;
 		return null;
@@ -118,7 +118,7 @@ public class ContentAssistPreference {
 	 */
 	public static void configure(ContentAssistant assistant, IPreferenceStore store) {
 
-		JavaTextTools textTools= JavaPlugin.getDefault().getJavaTextTools();
+		JavaScriptTextTools textTools= JavaScriptPlugin.getDefault().getJavaTextTools();
 		IColorManager manager= textTools.getColorManager();
 
 

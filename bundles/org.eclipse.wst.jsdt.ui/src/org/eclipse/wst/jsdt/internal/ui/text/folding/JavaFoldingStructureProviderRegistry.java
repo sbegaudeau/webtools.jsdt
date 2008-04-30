@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProvider;
 
@@ -80,14 +80,14 @@ public class JavaFoldingStructureProviderRegistry {
 	 * @return the current provider according to the preferences
 	 */
 	public IJavaFoldingStructureProvider getCurrentFoldingProvider() {
-		IPreferenceStore preferenceStore= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferenceStore= JavaScriptPlugin.getDefault().getPreferenceStore();
 		String currentProviderId= preferenceStore.getString(PreferenceConstants.EDITOR_FOLDING_PROVIDER);
 		JavaFoldingStructureProviderDescriptor desc= getFoldingProviderDescriptor(currentProviderId);
 		
 		// Fallback to default if extension has gone
 		if (desc == null) {
 			String message= Messages.format(FoldingMessages.JavaFoldingStructureProviderRegistry_warning_providerNotFound_resetToDefault, currentProviderId);
-			JavaPlugin.log(new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, message, null));
+			JavaScriptPlugin.log(new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, message, null));
 			
 			String defaultProviderId= preferenceStore.getDefaultString(PreferenceConstants.EDITOR_FOLDING_PROVIDER);
 			
@@ -100,7 +100,7 @@ public class JavaFoldingStructureProviderRegistry {
 		try {
 			return desc.createProvider();
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			return null;
 		}
 	}
@@ -125,7 +125,7 @@ public class JavaFoldingStructureProviderRegistry {
 		IExtensionRegistry registry= Platform.getExtensionRegistry();
 		Map map= new HashMap();
 
-		IConfigurationElement[] elements= registry.getConfigurationElementsFor(JavaPlugin.getPluginId(), EXTENSION_POINT);
+		IConfigurationElement[] elements= registry.getConfigurationElementsFor(JavaScriptPlugin.getPluginId(), EXTENSION_POINT);
 		for (int i= 0; i < elements.length; i++) {
 			JavaFoldingStructureProviderDescriptor desc= new JavaFoldingStructureProviderDescriptor(elements[i]);
 			map.put(desc.getId(), desc);

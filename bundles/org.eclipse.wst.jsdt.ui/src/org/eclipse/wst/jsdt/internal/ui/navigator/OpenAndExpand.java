@@ -24,7 +24,7 @@ import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaTextSelection;
 import org.eclipse.wst.jsdt.ui.actions.OpenAction;
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
@@ -99,7 +99,7 @@ public class OpenAndExpand extends SelectionDispatchAction implements IAction {
 		return fOpenAction.getDisabledImageDescriptor();
 	}
 
-	public Object getElementToOpen(Object object) throws JavaModelException {
+	public Object getElementToOpen(Object object) throws JavaScriptModelException {
 		return fOpenAction.getElementToOpen(object);
 	}
 

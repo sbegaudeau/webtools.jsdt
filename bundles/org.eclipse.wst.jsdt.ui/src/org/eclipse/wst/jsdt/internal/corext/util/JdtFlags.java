@@ -12,15 +12,15 @@ package org.eclipse.wst.jsdt.internal.corext.util;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
@@ -39,23 +39,23 @@ public class JdtFlags {
 
 	public static final int VISIBILITY_CODE_INVALID= 	-1;
 
-	public static boolean isAbstract(IMember member) throws JavaModelException{
+	public static boolean isAbstract(IMember member) throws JavaScriptModelException{
 		if (isInterfaceOrAnnotationMethod(member))
 			return true;
 		return Flags.isAbstract(member.getFlags());	
 	}
 	
-	public static boolean isAbstract(IMethodBinding member) {
+	public static boolean isAbstract(IFunctionBinding member) {
 		if (isInterfaceOrAnnotationMember(member))
 			return true;
 		return Modifier.isAbstract(member.getModifiers());	
 	}
 
-	public static boolean isDeprecated(IMember member) throws JavaModelException{
+	public static boolean isDeprecated(IMember member) throws JavaScriptModelException{
 		return Flags.isDeprecated(member.getFlags());
 	}
 
-	public static boolean isFinal(IMember member) throws JavaModelException{
+	public static boolean isFinal(IMember member) throws JavaScriptModelException{
 		if (isInterfaceOrAnnotationField(member))
 			return true;
 		if (isAnonymousType(member))	
@@ -65,11 +65,11 @@ public class JdtFlags {
 		return Flags.isFinal(member.getFlags());
 	}
 
-	public static boolean isNative(IMember member) throws JavaModelException{
+	public static boolean isNative(IMember member) throws JavaScriptModelException{
 		return Flags.isNative(member.getFlags());
 	}
 
-	public static boolean isPackageVisible(IMember member) throws JavaModelException{
+	public static boolean isPackageVisible(IMember member) throws JavaScriptModelException{
 		return (! isPrivate(member) && ! isProtected(member) && ! isPublic(member));
 	}
 
@@ -81,7 +81,7 @@ public class JdtFlags {
 		return (! isPrivate(binding) && ! isProtected(binding) && ! isPublic(binding));
 	}
 	
-	public static boolean isPrivate(IMember member) throws JavaModelException{
+	public static boolean isPrivate(IMember member) throws JavaScriptModelException{
 		return Flags.isPrivate(member.getFlags());
 	}
 
@@ -93,7 +93,7 @@ public class JdtFlags {
 		return Modifier.isPrivate(binding.getModifiers());
 	}
 
-	public static boolean isProtected(IMember member) throws JavaModelException{
+	public static boolean isProtected(IMember member) throws JavaScriptModelException{
 		return Flags.isProtected(member.getFlags());
 	}
 
@@ -105,7 +105,7 @@ public class JdtFlags {
 		return Modifier.isProtected(binding.getModifiers());
 	}
 
-	public static boolean isPublic(IMember member) throws JavaModelException{
+	public static boolean isPublic(IMember member) throws JavaScriptModelException{
 		if (isInterfaceOrAnnotationMember(member))
 			return true;
 		if (isEnumConstant(member))
@@ -126,17 +126,17 @@ public class JdtFlags {
 		return Modifier.isPublic(bodyDeclaration.getModifiers());
 	}
 
-	public static boolean isStatic(IMember member) throws JavaModelException{
+	public static boolean isStatic(IMember member) throws JavaScriptModelException{
 		if (isNestedInterfaceOrAnnotation(member))
 			return true;
-		if (member.getElementType() != IJavaElement.METHOD && isInterfaceOrAnnotationMember(member))
+		if (member.getElementType() != IJavaScriptElement.METHOD && isInterfaceOrAnnotationMember(member))
 			return true;
 		if (isEnumConstant(member))
 			return true;
 		return Flags.isStatic(member.getFlags());
 	}
 
-	public static boolean isStatic(IMethodBinding methodBinding){
+	public static boolean isStatic(IFunctionBinding methodBinding){
 		return Modifier.isStatic(methodBinding.getModifiers());
 	}
 
@@ -146,47 +146,47 @@ public class JdtFlags {
 		return Modifier.isStatic(variableBinding.getModifiers());
 	}
 
-	public static boolean isStrictfp(IMember member) throws JavaModelException{
+	public static boolean isStrictfp(IMember member) throws JavaScriptModelException{
 		return Flags.isStrictfp(member.getFlags());
 	}
 
-	public static boolean isSynchronized(IMember member) throws JavaModelException{
+	public static boolean isSynchronized(IMember member) throws JavaScriptModelException{
 		return Flags.isSynchronized(member.getFlags());
 	}
 
-	public static boolean isSynthetic(IMember member) throws JavaModelException{
+	public static boolean isSynthetic(IMember member) throws JavaScriptModelException{
 		return Flags.isSynthetic(member.getFlags());
 	}
 
-	public static boolean isAnnotation(IMember member) throws JavaModelException{
+	public static boolean isAnnotation(IMember member) throws JavaScriptModelException{
 		return Flags.isAnnotation(member.getFlags());
 	}
 
-	public static boolean isEnum(IMember member) throws JavaModelException{
+	public static boolean isEnum(IMember member) throws JavaScriptModelException{
 		return Flags.isEnum(member.getFlags());
 	}
 
-	public static boolean isVarargs(IMethod method) throws JavaModelException{
+	public static boolean isVarargs(IFunction method) throws JavaScriptModelException{
 		return Flags.isVarargs(method.getFlags());
 	}
 
-	public static boolean isTransient(IMember member) throws JavaModelException{
+	public static boolean isTransient(IMember member) throws JavaScriptModelException{
 		return Flags.isTransient(member.getFlags());
 	}
 
-	public static boolean isVolatile(IMember member) throws JavaModelException{
+	public static boolean isVolatile(IMember member) throws JavaScriptModelException{
 		return Flags.isVolatile(member.getFlags());
 	}
 	
-	private static boolean isInterfaceOrAnnotationMethod(IMember member) throws JavaModelException {
-		return member.getElementType() == IJavaElement.METHOD && isInterfaceOrAnnotationMember(member);
+	private static boolean isInterfaceOrAnnotationMethod(IMember member) throws JavaScriptModelException {
+		return member.getElementType() == IJavaScriptElement.METHOD && isInterfaceOrAnnotationMember(member);
 	}
 
-	private static boolean isInterfaceOrAnnotationField(IMember member) throws JavaModelException {
-		return member.getElementType() == IJavaElement.FIELD && isInterfaceOrAnnotationMember(member);
+	private static boolean isInterfaceOrAnnotationField(IMember member) throws JavaScriptModelException {
+		return member.getElementType() == IJavaScriptElement.FIELD && isInterfaceOrAnnotationMember(member);
 	}
 
-	private static boolean isInterfaceOrAnnotationMember(IMember member) throws JavaModelException {
+	private static boolean isInterfaceOrAnnotationMember(IMember member) throws JavaScriptModelException {
 		return member.getDeclaringType() != null && JavaModelUtil.isInterfaceOrAnnotation(member.getDeclaringType());
 	}
 	
@@ -194,8 +194,8 @@ public class JdtFlags {
 		ITypeBinding declaringType= null;
 		if (binding instanceof IVariableBinding) {
 			declaringType= ((IVariableBinding) binding).getDeclaringClass();
-		} else if (binding instanceof IMethodBinding) {
-			declaringType= ((IMethodBinding) binding).getDeclaringClass();
+		} else if (binding instanceof IFunctionBinding) {
+			declaringType= ((IFunctionBinding) binding).getDeclaringClass();
 		} else if (binding instanceof ITypeBinding) {
 			declaringType= ((ITypeBinding) binding).getDeclaringClass();
 		}
@@ -209,22 +209,22 @@ public class JdtFlags {
 		return 	isInterface || isAnnotation;
 	}
 
-	private static boolean isNestedInterfaceOrAnnotation(IMember member) throws JavaModelException{
-		return member.getElementType() == IJavaElement.TYPE && 
+	private static boolean isNestedInterfaceOrAnnotation(IMember member) throws JavaScriptModelException{
+		return member.getElementType() == IJavaScriptElement.TYPE && 
 				member.getDeclaringType() != null &&
 				JavaModelUtil.isInterfaceOrAnnotation((IType)member);
 	}
 	
-	private static boolean isEnumConstant(IMember member) throws JavaModelException {
-		return member.getElementType() == IJavaElement.FIELD && isEnum(member);
+	private static boolean isEnumConstant(IMember member) throws JavaScriptModelException {
+		return member.getElementType() == IJavaScriptElement.FIELD && isEnum(member);
 	}
 
-	private static boolean isAnonymousType(IMember member) throws JavaModelException {
-		return member.getElementType() == IJavaElement.TYPE && 
+	private static boolean isAnonymousType(IMember member) throws JavaScriptModelException {
+		return member.getElementType() == IJavaScriptElement.TYPE && 
 				((IType)member).isAnonymous();
 	}
 
-	public static int getVisibilityCode(IMember member) throws JavaModelException {
+	public static int getVisibilityCode(IMember member) throws JavaScriptModelException {
 		if (isPublic(member))
 			return Modifier.PUBLIC;
 		else if (isProtected(member))

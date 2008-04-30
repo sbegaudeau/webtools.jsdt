@@ -22,9 +22,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
@@ -54,14 +54,14 @@ public class LegacyJavadocCompletionProposalComputer implements IJavaCompletionP
 		if (fSubProcessors == null) {
 			try {
 				IExtensionRegistry registry= Platform.getExtensionRegistry();
-				IConfigurationElement[] elements=	registry.getConfigurationElementsFor(JavaUI.ID_PLUGIN, PROCESSOR_CONTRIBUTION_ID);
+				IConfigurationElement[] elements=	registry.getConfigurationElementsFor(JavaScriptUI.ID_PLUGIN, PROCESSOR_CONTRIBUTION_ID);
 				IJavadocCompletionProcessor[] result= new IJavadocCompletionProcessor[elements.length];
 				for (int i= 0; i < elements.length; i++) {
 					result[i]= (IJavadocCompletionProcessor) elements[i].createExecutableExtension("class"); //$NON-NLS-1$
 				}
 				fSubProcessors= result;
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 				fSubProcessors= new IJavadocCompletionProcessor[0];
 			}
 		}
@@ -75,7 +75,7 @@ public class LegacyJavadocCompletionProposalComputer implements IJavaCompletionP
 		if (context instanceof JavaContentAssistInvocationContext) {
 			JavaContentAssistInvocationContext javaContext= (JavaContentAssistInvocationContext) context;
 			
-			ICompilationUnit cu= javaContext.getCompilationUnit();
+			IJavaScriptUnit cu= javaContext.getCompilationUnit();
 			int offset= javaContext.getInvocationOffset();
 			
 			ArrayList result= new ArrayList();
@@ -106,7 +106,7 @@ public class LegacyJavadocCompletionProposalComputer implements IJavaCompletionP
 		if (context instanceof JavadocContentAssistInvocationContext) {
 			JavadocContentAssistInvocationContext javaContext= (JavadocContentAssistInvocationContext) context;
 			
-			ICompilationUnit cu= javaContext.getCompilationUnit();
+			IJavaScriptUnit cu= javaContext.getCompilationUnit();
 			int offset= javaContext.getInvocationOffset();
 			int length= javaContext.getSelectionLength();
 			Point selection= javaContext.getViewer().getSelectedRange();

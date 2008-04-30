@@ -21,7 +21,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchResultPage;
 import org.eclipse.wst.jsdt.internal.ui.search.TextSearchTableContentProvider;
 
@@ -48,7 +48,7 @@ public class NLSSearchResultPage extends AbstractTextSearchViewPage  implements 
 				ITextEditor textEditor= (ITextEditor) editor;
 				textEditor.selectAndReveal(currentOffset, currentLength);
 			}
-		} catch (JavaModelException e1) {
+		} catch (JavaScriptModelException e1) {
 			throw new PartInitException(e1.getStatus());
 		}
 	}

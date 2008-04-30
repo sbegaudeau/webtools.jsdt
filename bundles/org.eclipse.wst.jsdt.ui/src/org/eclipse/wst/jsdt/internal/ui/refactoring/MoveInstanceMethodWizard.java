@@ -49,7 +49,7 @@ import org.eclipse.wst.jsdt.internal.ui.dialogs.TextFieldNavigationHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 import org.eclipse.wst.jsdt.internal.ui.util.TableLayoutComposite;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Refactoring wizard for the 'move instance method' refactoring.
@@ -108,7 +108,7 @@ public final class MoveInstanceMethodWizard extends RefactoringWizard {
 			control.setLayout(layout);
 
 			Label label= new Label(control, SWT.SINGLE);
-			label.setText(Messages.format(RefactoringMessages.MoveInstanceMethodPage_New_receiver, JavaElementLabels.getElementLabel(fProcessor.getMethod(), JavaElementLabels.ALL_DEFAULT | JavaElementLabels.M_PRE_RETURNTYPE | JavaElementLabels.M_PRE_TYPE_PARAMETERS | JavaElementLabels.M_PARAMETER_NAMES))); 
+			label.setText(Messages.format(RefactoringMessages.MoveInstanceMethodPage_New_receiver, JavaScriptElementLabels.getElementLabel(fProcessor.getMethod(), JavaScriptElementLabels.ALL_DEFAULT | JavaScriptElementLabels.M_PRE_RETURNTYPE | JavaScriptElementLabels.M_PRE_TYPE_PARAMETERS | JavaScriptElementLabels.M_PARAMETER_NAMES))); 
 
 			GridData data= new GridData();
 			data.horizontalSpan= 2;

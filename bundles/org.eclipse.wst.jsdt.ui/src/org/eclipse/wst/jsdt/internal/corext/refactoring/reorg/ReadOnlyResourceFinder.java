@@ -16,7 +16,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
@@ -27,19 +27,19 @@ class ReadOnlyResourceFinder{
 	private ReadOnlyResourceFinder(){
 	}
 
-	static boolean confirmDeleteOfReadOnlyElements(IJavaElement[] javaElements, IResource[] resources, IReorgQueries queries) throws CoreException {
+	static boolean confirmDeleteOfReadOnlyElements(IJavaScriptElement[] javaElements, IResource[] resources, IReorgQueries queries) throws CoreException {
 		String queryTitle= RefactoringCoreMessages.ReadOnlyResourceFinder_0; 
 		String question= RefactoringCoreMessages.ReadOnlyResourceFinder_1; 
 		return ReadOnlyResourceFinder.confirmOperationOnReadOnlyElements(queryTitle, question, javaElements, resources, queries);
 	}
 
-	static boolean confirmMoveOfReadOnlyElements(IJavaElement[] javaElements, IResource[] resources, IReorgQueries queries) throws CoreException {
+	static boolean confirmMoveOfReadOnlyElements(IJavaScriptElement[] javaElements, IResource[] resources, IReorgQueries queries) throws CoreException {
 		String queryTitle= RefactoringCoreMessages.ReadOnlyResourceFinder_2; 
 		String question= RefactoringCoreMessages.ReadOnlyResourceFinder_3; 
 		return ReadOnlyResourceFinder.confirmOperationOnReadOnlyElements(queryTitle, question, javaElements, resources, queries);
 	}
 
-	private static boolean confirmOperationOnReadOnlyElements(String queryTitle, String question, IJavaElement[] javaElements, IResource[] resources, IReorgQueries queries) throws CoreException {
+	private static boolean confirmOperationOnReadOnlyElements(String queryTitle, String question, IJavaScriptElement[] javaElements, IResource[] resources, IReorgQueries queries) throws CoreException {
 		boolean hasReadOnlyResources= ReadOnlyResourceFinder.hasReadOnlyResourcesAndSubResources(javaElements, resources);
 		if (hasReadOnlyResources) {
 			IConfirmQuery query= queries.createYesNoQuery(queryTitle, false, IReorgQueries.CONFIRM_READ_ONLY_ELEMENTS);
@@ -48,12 +48,12 @@ class ReadOnlyResourceFinder{
 		return true;
 	}
 
-	private static boolean hasReadOnlyResourcesAndSubResources(IJavaElement[] javaElements, IResource[] resources) throws CoreException {
+	private static boolean hasReadOnlyResourcesAndSubResources(IJavaScriptElement[] javaElements, IResource[] resources) throws CoreException {
 		return (hasReadOnlyResourcesAndSubResources(resources)||
 				  hasReadOnlyResourcesAndSubResources(javaElements));
 	}
 
-	private static boolean hasReadOnlyResourcesAndSubResources(IJavaElement[] javaElements) throws CoreException {
+	private static boolean hasReadOnlyResourcesAndSubResources(IJavaScriptElement[] javaElements) throws CoreException {
 		for (int i= 0; i < javaElements.length; i++) {
 			if (hasReadOnlyResourcesAndSubResources(javaElements[i]))
 				return true;
@@ -61,30 +61,30 @@ class ReadOnlyResourceFinder{
 		return false;
 	}
 
-	private static boolean hasReadOnlyResourcesAndSubResources(IJavaElement javaElement) throws CoreException {
+	private static boolean hasReadOnlyResourcesAndSubResources(IJavaScriptElement javaElement) throws CoreException {
 		switch(javaElement.getElementType()){
-			case IJavaElement.CLASS_FILE:
+			case IJavaScriptElement.CLASS_FILE:
 				//if this assert fails, it means that a precondition is missing
 				Assert.isTrue(((IClassFile)javaElement).getResource() instanceof IFile);
 				//fall thru
-			case IJavaElement.COMPILATION_UNIT:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
 				IResource resource= ReorgUtils.getResource(javaElement);
 				return (resource != null && Resources.isReadOnly(resource));
-			case IJavaElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				IResource packResource= ReorgUtils.getResource(javaElement);
 				if (packResource == null)
 					return false;
 				IPackageFragment pack= (IPackageFragment)javaElement;
 				if (Resources.isReadOnly(packResource))
 					return true;
-				Object[] nonJava= pack.getNonJavaResources();
+				Object[] nonJava= pack.getNonJavaScriptResources();
 				for (int i= 0; i < nonJava.length; i++) {
 					Object object= nonJava[i];
 					if (object instanceof IResource && hasReadOnlyResourcesAndSubResources((IResource)object))
 						return true;
 				}
 				return hasReadOnlyResourcesAndSubResources(pack.getChildren());
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 				IPackageFragmentRoot root= (IPackageFragmentRoot) javaElement;
 				if (root.isArchive())
 					return false;
@@ -93,7 +93,7 @@ class ReadOnlyResourceFinder{
 					return false;
 				if (Resources.isReadOnly(pfrResource))
 					return true;
-				Object[] nonJava1= root.getNonJavaResources();
+				Object[] nonJava1= root.getNonJavaScriptResources();
 				for (int i= 0; i < nonJava1.length; i++) {
 					Object object= nonJava1[i];
 					if (object instanceof IResource && hasReadOnlyResourcesAndSubResources((IResource)object))
@@ -101,13 +101,13 @@ class ReadOnlyResourceFinder{
 				}
 				return hasReadOnlyResourcesAndSubResources(root.getChildren());
 
-			case IJavaElement.FIELD:
-			case IJavaElement.IMPORT_CONTAINER:
-			case IJavaElement.IMPORT_DECLARATION:
-			case IJavaElement.INITIALIZER:
-			case IJavaElement.METHOD:
-			case IJavaElement.PACKAGE_DECLARATION:
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.FIELD:
+			case IJavaScriptElement.IMPORT_CONTAINER:
+			case IJavaScriptElement.IMPORT_DECLARATION:
+			case IJavaScriptElement.INITIALIZER:
+			case IJavaScriptElement.METHOD:
+			case IJavaScriptElement.PACKAGE_DECLARATION:
+			case IJavaScriptElement.TYPE:
 				return false;
 			default: 
 				Assert.isTrue(false);//not handled here

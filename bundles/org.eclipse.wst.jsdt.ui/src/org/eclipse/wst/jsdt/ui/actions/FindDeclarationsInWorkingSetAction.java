@@ -13,9 +13,9 @@ package org.eclipse.wst.jsdt.ui.actions;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -90,7 +90,7 @@ public class FindDeclarationsInWorkingSetAction extends FindDeclarationsAction {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.FIND_DECLARATIONS_IN_WORKING_SET_ACTION);
 	}
 
-	QuerySpecification createQuery(IJavaElement element) throws JavaModelException, InterruptedException {
+	QuerySpecification createQuery(IJavaScriptElement element) throws JavaScriptModelException, InterruptedException {
 		JavaSearchScopeFactory factory= JavaSearchScopeFactory.getInstance();
 		
 		IWorkingSet[] workingSets= fWorkingSet;
@@ -100,7 +100,7 @@ public class FindDeclarationsInWorkingSetAction extends FindDeclarationsAction {
 				return null;
 		}
 		SearchUtil.updateLRUWorkingSets(workingSets);
-		IJavaSearchScope scope= factory.createJavaSearchScope(workingSets, true);
+		IJavaScriptSearchScope scope= factory.createJavaSearchScope(workingSets, true);
 		String description= factory.getWorkingSetScopeDescription(workingSets, true);
 		return new ElementQuerySpecification(element, getLimitTo(), scope, description);
 	}

@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Viewer filter for archive selection dialogs.
@@ -82,7 +82,7 @@ public class ArchiveFileFilter extends ViewerFilter {
 					}
 				}
 			} catch (CoreException e) {
-				JavaPlugin.log(e.getStatus());
+				JavaScriptPlugin.log(e.getStatus());
 			}				
 		}
 		return false;

@@ -14,10 +14,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 
 /**
@@ -68,11 +68,11 @@ public class MemberFilter extends ViewerFilter {
 				IMember member= (IMember) element;
 				int memberType= member.getElementType();
 				
-				if (hasFilter(FILTER_FIELDS) && memberType == IJavaElement.FIELD) {
+				if (hasFilter(FILTER_FIELDS) && memberType == IJavaScriptElement.FIELD) {
 					return false;
 				}
 
-				if (hasFilter(FILTER_LOCALTYPES) && memberType == IJavaElement.TYPE && isLocalType((IType) member)) {
+				if (hasFilter(FILTER_LOCALTYPES) && memberType == IJavaScriptElement.TYPE && isLocalType((IType) member)) {
 					return false;
 				}
 				
@@ -80,31 +80,31 @@ public class MemberFilter extends ViewerFilter {
 					return false;
 				}
 				int flags= member.getFlags();
-				if (hasFilter(FILTER_STATIC) && (Flags.isStatic(flags) || isFieldInInterfaceOrAnnotation(member)) && memberType != IJavaElement.TYPE) {
+				if (hasFilter(FILTER_STATIC) && (Flags.isStatic(flags) || isFieldInInterfaceOrAnnotation(member)) && memberType != IJavaScriptElement.TYPE) {
 					return false;
 				}
 				if (hasFilter(FILTER_NONPUBLIC) && !Flags.isPublic(flags) && !isMemberInInterfaceOrAnnotation(member) && !isTopLevelType(member) && !isEnumConstant(member)) {
 					return false;
 				}
 			}			
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignore
 		}
 		return true;
 	}
 	
 	private boolean isLocalType(IType type) {
-		IJavaElement parent= type.getParent();
+		IJavaScriptElement parent= type.getParent();
 		return parent instanceof IMember && !(parent instanceof IType);
 	}
 	
-	private boolean isMemberInInterfaceOrAnnotation(IMember member) throws JavaModelException {
+	private boolean isMemberInInterfaceOrAnnotation(IMember member) throws JavaScriptModelException {
 		IType parent= member.getDeclaringType();
 		return parent != null && JavaModelUtil.isInterfaceOrAnnotation(parent);
 	}
 	
-	private boolean isFieldInInterfaceOrAnnotation(IMember member) throws JavaModelException {
-		return (member.getElementType() == IJavaElement.FIELD) && JavaModelUtil.isInterfaceOrAnnotation(member.getDeclaringType());
+	private boolean isFieldInInterfaceOrAnnotation(IMember member) throws JavaScriptModelException {
+		return (member.getElementType() == IJavaScriptElement.FIELD) && JavaModelUtil.isInterfaceOrAnnotation(member.getDeclaringType());
 	}	
 	
 	private boolean isTopLevelType(IMember member) {
@@ -113,7 +113,7 @@ public class MemberFilter extends ViewerFilter {
 		return true;
 	}
 	
-	private boolean isEnumConstant(IMember member) throws JavaModelException {
-		return (member.getElementType() == IJavaElement.FIELD) && ((IField)member).isEnumConstant();
+	private boolean isEnumConstant(IMember member) throws JavaScriptModelException {
+		return (member.getElementType() == IJavaScriptElement.FIELD) && ((IField)member).isEnumConstant();
 	}
 }

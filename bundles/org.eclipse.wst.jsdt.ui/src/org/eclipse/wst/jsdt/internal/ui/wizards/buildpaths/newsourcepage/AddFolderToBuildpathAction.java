@@ -37,16 +37,16 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
@@ -55,7 +55,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage.ClasspathModifierQueries.OutputFolderQuery;
 
-//SelectedElements iff enabled: IJavaProject || IPackageFrament || IFolder
+//SelectedElements iff enabled: IJavaScriptProject || IPackageFrament || IFolder
 public class AddFolderToBuildpathAction extends BuildpathModifierAction {
 
 	private final IRunnableContext fContext;
@@ -89,8 +89,8 @@ public class AddFolderToBuildpathAction extends BuildpathModifierAction {
 			return NewWizardMessages.PackageExplorerActionGroup_FormText_Default_toBuildpath;
 		
 		Object obj= getSelectedElements().get(0);
-		if (obj instanceof IJavaProject) {
-			return Messages.format(NewWizardMessages.PackageExplorerActionGroup_FormText_ProjectToBuildpath, ((IJavaProject)obj).getElementName());
+		if (obj instanceof IJavaScriptProject) {
+			return Messages.format(NewWizardMessages.PackageExplorerActionGroup_FormText_ProjectToBuildpath, ((IJavaScriptProject)obj).getElementName());
 		} else if (obj instanceof IPackageFragment) {
 			return Messages.format(NewWizardMessages.PackageExplorerActionGroup_FormText_PackageToBuildpath, ((IPackageFragment)obj).getElementName());
 		} else if (obj instanceof IResource) {
@@ -106,15 +106,15 @@ public class AddFolderToBuildpathAction extends BuildpathModifierAction {
 	public void run() {
 
 		try {
-			final IJavaProject project;
+			final IJavaScriptProject project;
 			Object object= getSelectedElements().get(0);
-			if (object instanceof IJavaProject) {
-				project= (IJavaProject)object;
+			if (object instanceof IJavaScriptProject) {
+				project= (IJavaScriptProject)object;
 			} else if (object instanceof IPackageFragment) {
-				project= ((IPackageFragment)object).getJavaProject();
+				project= ((IPackageFragment)object).getJavaScriptProject();
 			} else {
 				IFolder folder= (IFolder)object;
-				project= JavaCore.create(folder.getProject());
+				project= JavaScriptCore.create(folder.getProject());
 				if (project == null)
 					return;
 			}
@@ -127,7 +127,7 @@ public class AddFolderToBuildpathAction extends BuildpathModifierAction {
 			final IPath newDefaultOutputLocation;
 			final boolean removeOldClassFiles;
 			IPath projPath= project.getProject().getFullPath();
-			if (!(getSelectedElements().size() == 1 && getSelectedElements().get(0) instanceof IJavaProject) && //if only the project should be added, then the query does not need to be executed 
+			if (!(getSelectedElements().size() == 1 && getSelectedElements().get(0) instanceof IJavaScriptProject) && //if only the project should be added, then the query does not need to be executed 
 					(outputLocation.equals(projPath) || defaultOutputLocation.segmentCount() == 1)) {
 
 
@@ -176,7 +176,7 @@ public class AddFolderToBuildpathAction extends BuildpathModifierAction {
 				if (e.getCause() instanceof CoreException) {
 					showExceptionDialog((CoreException)e.getCause(), NewWizardMessages.AddSourceFolderToBuildpathAction_ErrorTitle);
 				} else {
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 				}
 			} catch (final InterruptedException e) {
 			}
@@ -185,8 +185,8 @@ public class AddFolderToBuildpathAction extends BuildpathModifierAction {
 		}
 	}
 
-	private List addToClasspath(List elements, IJavaProject project, IPath outputLocation, boolean removeProjectFromClasspath, boolean removeOldClassFiles, IProgressMonitor monitor) throws OperationCanceledException, CoreException {
-		if (!project.getProject().hasNature(JavaCore.NATURE_ID)) {
+	private List addToClasspath(List elements, IJavaScriptProject project, IPath outputLocation, boolean removeProjectFromClasspath, boolean removeOldClassFiles, IProgressMonitor monitor) throws OperationCanceledException, CoreException {
+		if (!project.getProject().hasNature(JavaScriptCore.NATURE_ID)) {
 			StatusInfo rootStatus= new StatusInfo();
 			rootStatus.setError(NewWizardMessages.ClasspathModifier_Error_NoNatures); 
 			throw new CoreException(rootStatus);
@@ -194,7 +194,7 @@ public class AddFolderToBuildpathAction extends BuildpathModifierAction {
 		
 		try {
 			monitor.beginTask(NewWizardMessages.ClasspathModifier_Monitor_AddToBuildpath, elements.size() + 4); 
-			IWorkspaceRoot workspaceRoot= JavaPlugin.getWorkspace().getRoot();
+			IWorkspaceRoot workspaceRoot= JavaScriptPlugin.getWorkspace().getRoot();
 			
 			if (removeOldClassFiles) {
 				IResource res= workspaceRoot.findMember(project.getOutputLocation());
@@ -226,7 +226,7 @@ public class AddFolderToBuildpathAction extends BuildpathModifierAction {
 				if (element instanceof IResource)
 					entry= ClasspathModifier.addToClasspath((IResource) element, existingEntries, newEntries, project, new SubProgressMonitor(monitor, 1));
 				else
-					entry= ClasspathModifier.addToClasspath((IJavaElement) element, existingEntries, newEntries, project, new SubProgressMonitor(monitor, 1));
+					entry= ClasspathModifier.addToClasspath((IJavaScriptElement) element, existingEntries, newEntries, project, new SubProgressMonitor(monitor, 1));
 				newEntries.add(entry);
 			}
 
@@ -242,8 +242,8 @@ public class AddFolderToBuildpathAction extends BuildpathModifierAction {
 
 			List result= new ArrayList();
 			for (int i= 0; i < newEntries.size(); i++) {
-				IClasspathEntry entry= ((CPListElement) newEntries.get(i)).getClasspathEntry();
-				IJavaElement root;
+				IIncludePathEntry entry= ((CPListElement) newEntries.get(i)).getClasspathEntry();
+				IJavaScriptElement root;
 				if (entry.getPath().equals(project.getPath()))
 					root= project;
 				else
@@ -265,19 +265,19 @@ public class AddFolderToBuildpathAction extends BuildpathModifierAction {
 		try {
 			for (Iterator iter= elements.iterator(); iter.hasNext();) {
 				Object element= iter.next();
-				if (element instanceof IJavaProject) {
-					if (ClasspathModifier.isSourceFolder((IJavaProject)element))
+				if (element instanceof IJavaScriptProject) {
+					if (ClasspathModifier.isSourceFolder((IJavaScriptProject)element))
 						return false;
 				} else if (element instanceof IPackageFragment) {
 					IPackageFragment fragment= (IPackageFragment)element;
 					if (ClasspathModifier.isDefaultFragment(fragment))
 	                    return false;
 	                
-	                if (((IPackageFragmentRoot)fragment.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT)).isArchive())
+	                if (((IPackageFragmentRoot)fragment.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT)).isArchive())
 	                    return false;
 				} else if (element instanceof IFolder) {
 					IProject project= ((IFolder)element).getProject();
-					IJavaProject javaProject= JavaCore.create(project);
+					IJavaScriptProject javaProject= JavaScriptCore.create(project);
 					if (javaProject == null || !javaProject.exists())
 						return false;
 				} else {

@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.core.util.LRUCache;
 
 /**
@@ -89,20 +89,20 @@ public JavaModelCache() {
 /**
  *  Returns the info for the element.
  */
-public Object getInfo(IJavaElement element) {
+public Object getInfo(IJavaScriptElement element) {
 	switch (element.getElementType()) {
-		case IJavaElement.JAVA_MODEL:
+		case IJavaScriptElement.JAVASCRIPT_MODEL:
 			return this.modelInfo;
-		case IJavaElement.JAVA_PROJECT:
+		case IJavaScriptElement.JAVASCRIPT_PROJECT:
 			return this.projectCache.get(element);
-		case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 			return this.rootCache.get(element);
-		case IJavaElement.PACKAGE_FRAGMENT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT:
 			return this.pkgCache.get(element);
-		case IJavaElement.COMPILATION_UNIT:
-		case IJavaElement.CLASS_FILE:
+		case IJavaScriptElement.JAVASCRIPT_UNIT:
+		case IJavaScriptElement.CLASS_FILE:
 			return this.openableCache.get(element);
-		case IJavaElement.TYPE:
+		case IJavaScriptElement.TYPE:
 			Object result = this.jarTypeCache.get(element);
 			if (result != null)
 				return result;
@@ -127,20 +127,20 @@ protected double getMemoryRatio() {
  *  Returns the info for this element without
  *  disturbing the cache ordering.
  */
-protected Object peekAtInfo(IJavaElement element) {
+protected Object peekAtInfo(IJavaScriptElement element) {
 	switch (element.getElementType()) {
-		case IJavaElement.JAVA_MODEL:
+		case IJavaScriptElement.JAVASCRIPT_MODEL:
 			return this.modelInfo;
-		case IJavaElement.JAVA_PROJECT:
+		case IJavaScriptElement.JAVASCRIPT_PROJECT:
 			return this.projectCache.get(element);
-		case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 			return this.rootCache.peek(element);
-		case IJavaElement.PACKAGE_FRAGMENT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT:
 			return this.pkgCache.peek(element);
-		case IJavaElement.COMPILATION_UNIT:
-		case IJavaElement.CLASS_FILE:
+		case IJavaScriptElement.JAVASCRIPT_UNIT:
+		case IJavaScriptElement.CLASS_FILE:
 			return this.openableCache.peek(element);
-		case IJavaElement.TYPE:
+		case IJavaScriptElement.TYPE:
 			Object result = this.jarTypeCache.peek(element);
 			if (result != null)
 				return result;
@@ -154,25 +154,25 @@ protected Object peekAtInfo(IJavaElement element) {
 /**
  * Remember the info for the element.
  */
-protected void putInfo(IJavaElement element, Object info) {
+protected void putInfo(IJavaScriptElement element, Object info) {
 	switch (element.getElementType()) {
-		case IJavaElement.JAVA_MODEL:
+		case IJavaScriptElement.JAVASCRIPT_MODEL:
 			this.modelInfo = (JavaModelInfo) info;
 			break;
-		case IJavaElement.JAVA_PROJECT:
+		case IJavaScriptElement.JAVASCRIPT_PROJECT:
 			this.projectCache.put(element, info);
 			this.rootCache.ensureSpaceLimit(((JavaElementInfo) info).children.length, element);
 			break;
-		case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 			this.rootCache.put(element, info);
 			this.pkgCache.ensureSpaceLimit(((JavaElementInfo) info).children.length, element);
 			break;
-		case IJavaElement.PACKAGE_FRAGMENT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT:
 			this.pkgCache.put(element, info);
 			this.openableCache.ensureSpaceLimit(((JavaElementInfo) info).children.length, element);
 			break;
-		case IJavaElement.COMPILATION_UNIT:
-		case IJavaElement.CLASS_FILE:
+		case IJavaScriptElement.JAVASCRIPT_UNIT:
+		case IJavaScriptElement.CLASS_FILE:
 			this.openableCache.put(element, info);
 			break;
 		default:
@@ -184,23 +184,23 @@ protected void putInfo(IJavaElement element, Object info) {
  */
 protected void removeInfo(JavaElement element) {
 	switch (element.getElementType()) {
-		case IJavaElement.JAVA_MODEL:
+		case IJavaScriptElement.JAVASCRIPT_MODEL:
 			this.modelInfo = null;
 			break;
-		case IJavaElement.JAVA_PROJECT:
+		case IJavaScriptElement.JAVASCRIPT_PROJECT:
 			this.projectCache.remove(element);
 			this.rootCache.resetSpaceLimit((int) (DEFAULT_ROOT_SIZE * getMemoryRatio()), element);
 			break;
-		case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 			this.rootCache.remove(element);
 			this.pkgCache.resetSpaceLimit((int) (DEFAULT_PKG_SIZE * getMemoryRatio()), element);
 			break;
-		case IJavaElement.PACKAGE_FRAGMENT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT:
 			this.pkgCache.remove(element);
 			this.openableCache.resetSpaceLimit((int) (DEFAULT_OPENABLE_SIZE * getMemoryRatio()), element);
 			break;
-		case IJavaElement.COMPILATION_UNIT:
-		case IJavaElement.CLASS_FILE:
+		case IJavaScriptElement.JAVASCRIPT_UNIT:
+		case IJavaScriptElement.CLASS_FILE:
 			this.openableCache.remove(element);
 			break;
 		default:

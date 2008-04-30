@@ -26,12 +26,12 @@ import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelMarker;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelMarker;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.BuildContext;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -79,17 +79,17 @@ public static int MAX_AT_ONCE = 2000; // best compromise between space used and 
 public final static String[] JAVA_PROBLEM_MARKER_ATTRIBUTE_NAMES = {
 	IMarker.MESSAGE,
 	IMarker.SEVERITY,
-	IJavaModelMarker.ID,
+	IJavaScriptModelMarker.ID,
 	IMarker.CHAR_START,
 	IMarker.CHAR_END,
 	IMarker.LINE_NUMBER,
-	IJavaModelMarker.ARGUMENTS,
-	IJavaModelMarker.CATEGORY_ID,
+	IJavaScriptModelMarker.ARGUMENTS,
+	IJavaScriptModelMarker.CATEGORY_ID,
 };
 public final static String[] JAVA_TASK_MARKER_ATTRIBUTE_NAMES = {
 	IMarker.MESSAGE,
 	IMarker.PRIORITY,
-	IJavaModelMarker.ID,
+	IJavaScriptModelMarker.ID,
 	IMarker.CHAR_START,
 	IMarker.CHAR_END,
 	IMarker.LINE_NUMBER,
@@ -206,9 +206,9 @@ protected void addAllSourceFiles(final ArrayList sourceFiles) throws CoreExcepti
 									folderPath = proxy.requestFullPath();
 								String packageName = folderPath.lastSegment();
 								if (packageName.length() > 0) {
-									String sourceLevel = javaBuilder.javaProject.getOption(JavaCore.COMPILER_SOURCE, true);
-									String complianceLevel = javaBuilder.javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-									if (JavaConventions.validatePackageName(packageName, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR)
+									String sourceLevel = javaBuilder.javaProject.getOption(JavaScriptCore.COMPILER_SOURCE, true);
+									String complianceLevel = javaBuilder.javaProject.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true);
+									if (JavaScriptConventions.validatePackageName(packageName, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR)
 										createFolder(folderPath.removeFirstSegments(segmentCount), outputFolder);
 								}
 							}
@@ -334,8 +334,8 @@ protected void compile(SourceFile[] units, SourceFile[] additionalUnits, boolean
 
 protected void createProblemFor(IResource resource, IMember javaElement, String message, String problemSeverity) {
 	try {
-		IMarker marker = resource.createMarker(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER);
-		int severity = problemSeverity.equals(JavaCore.WARNING) ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_ERROR;
+		IMarker marker = resource.createMarker(IJavaScriptModelMarker.JAVASCRIPT_MODEL_PROBLEM_MARKER);
+		int severity = problemSeverity.equals(JavaScriptCore.WARNING) ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_ERROR;
 
 		ISourceRange range = javaElement == null ? null : javaElement.getNameRange();
 		int start = range == null ? 0 : range.getOffset();
@@ -430,7 +430,7 @@ protected RuntimeException internalException(CoreException t) {
 	return imageBuilderException;
 }
 
-protected boolean isExcludedFromProject(IPath childPath) throws JavaModelException {
+protected boolean isExcludedFromProject(IPath childPath) throws JavaScriptModelException {
 	// answer whether the folder should be ignored when walking the project as a source folder
 	if (childPath.segmentCount() > 2) return false; // is a subfolder of a package
 
@@ -445,15 +445,15 @@ protected boolean isExcludedFromProject(IPath childPath) throws JavaModelExcepti
 protected Compiler newCompiler() {
 	// disable entire javadoc support if not interested in diagnostics
 	Map projectOptions = javaBuilder.javaProject.getOptions(true);
-	String option = (String) projectOptions.get(JavaCore.COMPILER_PB_INVALID_JAVADOC);
-	if (option == null || option.equals(JavaCore.IGNORE)) { // TODO (frederic) see why option is null sometimes while running model tests!?
-		option = (String) projectOptions.get(JavaCore.COMPILER_PB_MISSING_JAVADOC_TAGS);
-		if (option == null || option.equals(JavaCore.IGNORE)) {
-			option = (String) projectOptions.get(JavaCore.COMPILER_PB_MISSING_JAVADOC_COMMENTS);
-			if (option == null || option.equals(JavaCore.IGNORE)) {
-				option = (String) projectOptions.get(JavaCore.COMPILER_PB_UNUSED_IMPORT);
-				if (option == null || option.equals(JavaCore.IGNORE)) { // Unused import need also to look inside javadoc comment
-					projectOptions.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.DISABLED);
+	String option = (String) projectOptions.get(JavaScriptCore.COMPILER_PB_INVALID_JAVADOC);
+	if (option == null || option.equals(JavaScriptCore.IGNORE)) { // TODO (frederic) see why option is null sometimes while running model tests!?
+		option = (String) projectOptions.get(JavaScriptCore.COMPILER_PB_MISSING_JAVADOC_TAGS);
+		if (option == null || option.equals(JavaScriptCore.IGNORE)) {
+			option = (String) projectOptions.get(JavaScriptCore.COMPILER_PB_MISSING_JAVADOC_COMMENTS);
+			if (option == null || option.equals(JavaScriptCore.IGNORE)) {
+				option = (String) projectOptions.get(JavaScriptCore.COMPILER_PB_UNUSED_IMPORT);
+				if (option == null || option.equals(JavaScriptCore.IGNORE)) { // Unused import need also to look inside javadoc comment
+					projectOptions.put(JavaScriptCore.COMPILER_DOC_COMMENT_SUPPORT, JavaScriptCore.DISABLED);
 				}
 			}
 		}
@@ -612,15 +612,15 @@ protected void storeProblemsFor(SourceFile sourceFile, CategorizedProblem[] prob
 			String missingClassfileName = problem.getArguments()[0];
 			if (JavaBuilder.DEBUG)
 				System.out.println(Messages.bind(Messages.build_incompleteClassPath, missingClassfileName));
-			boolean isInvalidClasspathError = JavaCore.ERROR.equals(javaBuilder.javaProject.getOption(JavaCore.CORE_INCOMPLETE_CLASSPATH, true));
+			boolean isInvalidClasspathError = JavaScriptCore.ERROR.equals(javaBuilder.javaProject.getOption(JavaScriptCore.CORE_INCOMPLETE_CLASSPATH, true));
 			// insert extra classpath problem, and make it the only problem for this project (optional)
-			if (isInvalidClasspathError && JavaCore.ABORT.equals(javaBuilder.javaProject.getOption(JavaCore.CORE_JAVA_BUILD_INVALID_CLASSPATH, true))) {
+			if (isInvalidClasspathError && JavaScriptCore.ABORT.equals(javaBuilder.javaProject.getOption(JavaScriptCore.CORE_JAVA_BUILD_INVALID_CLASSPATH, true))) {
 				JavaBuilder.removeProblemsAndTasksFor(javaBuilder.currentProject); // make this the only problem for this project
 				this.keepStoringProblemMarkers = false;
 			}
-			IMarker marker = this.javaBuilder.currentProject.createMarker(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER);
+			IMarker marker = this.javaBuilder.currentProject.createMarker(IJavaScriptModelMarker.JAVASCRIPT_MODEL_PROBLEM_MARKER);
 			marker.setAttributes(
-				new String[] {IMarker.MESSAGE, IMarker.SEVERITY, IJavaModelMarker.CATEGORY_ID, IMarker.SOURCE_ID},
+				new String[] {IMarker.MESSAGE, IMarker.SEVERITY, IJavaScriptModelMarker.CATEGORY_ID, IMarker.SOURCE_ID},
 				new Object[] {
 					Messages.bind(Messages.build_incompleteClassPath, missingClassfileName),
 					new Integer(isInvalidClasspathError ? IMarker.SEVERITY_ERROR : IMarker.SEVERITY_WARNING),
@@ -634,7 +634,7 @@ protected void storeProblemsFor(SourceFile sourceFile, CategorizedProblem[] prob
 
 		String markerType = problem.getMarkerType();
 		boolean managedProblem = false;
-		if (IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER.equals(markerType)
+		if (IJavaScriptModelMarker.JAVASCRIPT_MODEL_PROBLEM_MARKER.equals(markerType)
 				|| (managedProblem = managedMarkerTypes.contains(markerType))) {
 			IMarker marker = resource.createMarker(markerType);
 
@@ -684,12 +684,12 @@ protected void storeTasksFor(SourceFile sourceFile, CategorizedProblem[] tasks) 
 	for (int i = 0, l = tasks.length; i < l; i++) {
 		CategorizedProblem task = tasks[i];
 		if (task.getID() == IProblem.Task) {
-			IMarker marker = resource.createMarker(IJavaModelMarker.TASK_MARKER);
+			IMarker marker = resource.createMarker(IJavaScriptModelMarker.TASK_MARKER);
 			Integer priority = P_NORMAL;
 			String compilerPriority = task.getArguments()[2];
-			if (JavaCore.COMPILER_TASK_PRIORITY_HIGH.equals(compilerPriority))
+			if (JavaScriptCore.COMPILER_TASK_PRIORITY_HIGH.equals(compilerPriority))
 				priority = P_HIGH;
-			else if (JavaCore.COMPILER_TASK_PRIORITY_LOW.equals(compilerPriority))
+			else if (JavaScriptCore.COMPILER_TASK_PRIORITY_LOW.equals(compilerPriority))
 				priority = P_LOW;
 
 			String[] attributeNames = JAVA_TASK_MARKER_ATTRIBUTE_NAMES;

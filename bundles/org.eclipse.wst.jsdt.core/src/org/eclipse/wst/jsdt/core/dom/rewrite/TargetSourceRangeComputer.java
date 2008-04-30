@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.core.dom.rewrite;
 
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 
 /**
  * An object for computing adjusted source ranges for AST nodes
@@ -111,8 +111,8 @@ public class TargetSourceRangeComputer {
 	 * 	</p>
 	 * <p>
 	 * The default implementation uses
-	 * {@link CompilationUnit#getExtendedStartPosition(ASTNode)}
-	 * and {@link CompilationUnit#getExtendedLength(ASTNode)}
+	 * {@link JavaScriptUnit#getExtendedStartPosition(ASTNode)}
+	 * and {@link JavaScriptUnit#getExtendedLength(ASTNode)}
 	 * to compute the target source range. Clients may override or
 	 * extend this method to expand or contract the source range of the
 	 * given node. The resulting source range must cover at least the
@@ -126,8 +126,8 @@ public class TargetSourceRangeComputer {
 	 */
 	public SourceRange computeSourceRange(ASTNode node) {
 		ASTNode root= node.getRoot();
-		if (root instanceof CompilationUnit) {
-			CompilationUnit cu= (CompilationUnit) root;
+		if (root instanceof JavaScriptUnit) {
+			JavaScriptUnit cu= (JavaScriptUnit) root;
 			return new SourceRange(cu.getExtendedStartPosition(node), cu.getExtendedLength(node));
 		}
 		return new SourceRange(node.getStartPosition(), node.getLength());

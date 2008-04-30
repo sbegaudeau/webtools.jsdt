@@ -23,8 +23,8 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaCopyProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaMoveProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgPolicyFactory;
@@ -62,7 +62,7 @@ public class SelectionTransferDropAdapter extends JdtViewerDropAdapter implement
 		Object target= event.item != null ? event.item.getData() : null;
 		if (target == null)
 			return false;
-		return target instanceof IJavaElement || target instanceof IResource;
+		return target instanceof IJavaScriptElement || target instanceof IResource;
 	}
 
 	//---- Actual DND -----------------------------------------------------------------
@@ -100,7 +100,7 @@ public class SelectionTransferDropAdapter extends JdtViewerDropAdapter implement
 				case DND.DROP_COPY: 	event.detail= handleValidateCopy(target, event); break;
 				case DND.DROP_MOVE: 	event.detail= handleValidateMove(target, event); break;
 			}
-		} catch (JavaModelException e){
+		} catch (JavaScriptModelException e){
 			ExceptionHandler.handle(e, PackagesMessages.SelectionTransferDropAdapter_error_title, PackagesMessages.SelectionTransferDropAdapter_error_message); 
 			event.detail= DND.DROP_NONE;
 		}	
@@ -130,7 +130,7 @@ public class SelectionTransferDropAdapter extends JdtViewerDropAdapter implement
 				case DND.DROP_MOVE: handleDropMove(target, event); break;
 				case DND.DROP_COPY: handleDropCopy(target, event); break;
 			}
-		} catch (JavaModelException e){
+		} catch (JavaScriptModelException e){
 			ExceptionHandler.handle(e, PackagesMessages.SelectionTransferDropAdapter_error_title, PackagesMessages.SelectionTransferDropAdapter_error_message); 
 		} catch(InvocationTargetException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringMessages.OpenRefactoringWizardAction_exception); 
@@ -144,7 +144,7 @@ public class SelectionTransferDropAdapter extends JdtViewerDropAdapter implement
 		}
 	}
 	
-	private int handleValidateDefault(Object target, DropTargetEvent event) throws JavaModelException{
+	private int handleValidateDefault(Object target, DropTargetEvent event) throws JavaScriptModelException{
 		if (target == null)
 			return DND.DROP_NONE;
 		
@@ -157,7 +157,7 @@ public class SelectionTransferDropAdapter extends JdtViewerDropAdapter implement
 		return DND.DROP_NONE;
 	}
 	
-	private int handleValidateMove(Object target, DropTargetEvent event) throws JavaModelException{
+	private int handleValidateMove(Object target, DropTargetEvent event) throws JavaScriptModelException{
 		if (target == null)
 			return DND.DROP_NONE;
 		
@@ -172,7 +172,7 @@ public class SelectionTransferDropAdapter extends JdtViewerDropAdapter implement
 
 		if (target instanceof IResource && fMoveProcessor != null && fMoveProcessor.setDestination((IResource)target).isOK())
 			return DND.DROP_MOVE;
-		else if (target instanceof IJavaElement && fMoveProcessor != null && fMoveProcessor.setDestination((IJavaElement)target).isOK())
+		else if (target instanceof IJavaScriptElement && fMoveProcessor != null && fMoveProcessor.setDestination((IJavaScriptElement)target).isOK())
 			return DND.DROP_MOVE;
 		else
 			return DND.DROP_NONE;	
@@ -187,19 +187,19 @@ public class SelectionTransferDropAdapter extends JdtViewerDropAdapter implement
 		return fCanMoveElements == 2;
 	}
 
-	private void handleDropMove(final Object target, DropTargetEvent event) throws JavaModelException, InvocationTargetException, InterruptedException{
-		IJavaElement[] javaElements= ReorgUtils.getJavaElements(fElements);
+	private void handleDropMove(final Object target, DropTargetEvent event) throws JavaScriptModelException, InvocationTargetException, InterruptedException{
+		IJavaScriptElement[] javaElements= ReorgUtils.getJavaElements(fElements);
 		IResource[] resources= ReorgUtils.getResources(fElements);
 		ReorgMoveStarter starter= null;
 		if (target instanceof IResource) 
 			starter= ReorgMoveStarter.create(javaElements, resources, (IResource)target);
-		else if (target instanceof IJavaElement)
-			starter= ReorgMoveStarter.create(javaElements, resources, (IJavaElement)target);
+		else if (target instanceof IJavaScriptElement)
+			starter= ReorgMoveStarter.create(javaElements, resources, (IJavaScriptElement)target);
 		if (starter != null)
 			starter.run(getShell());
 	}
 
-	private int handleValidateCopy(Object target, DropTargetEvent event) throws JavaModelException{
+	private int handleValidateCopy(Object target, DropTargetEvent event) throws JavaScriptModelException{
 
 		if (fCopyProcessor == null) {
 			final ICopyPolicy policy= ReorgPolicyFactory.createCopyPolicy(ReorgUtils.getResources(fElements), ReorgUtils.getJavaElements(fElements));
@@ -211,7 +211,7 @@ public class SelectionTransferDropAdapter extends JdtViewerDropAdapter implement
 
 		if (target instanceof IResource && fCopyProcessor != null && fCopyProcessor.setDestination((IResource)target).isOK())
 			return DND.DROP_COPY;
-		else if (target instanceof IJavaElement && fCopyProcessor != null && fCopyProcessor.setDestination((IJavaElement)target).isOK())
+		else if (target instanceof IJavaScriptElement && fCopyProcessor != null && fCopyProcessor.setDestination((IJavaScriptElement)target).isOK())
 			return DND.DROP_COPY;
 		else
 			return DND.DROP_NONE;					
@@ -226,14 +226,14 @@ public class SelectionTransferDropAdapter extends JdtViewerDropAdapter implement
 		return fCanCopyElements == 2;
 	}		
 	
-	private void handleDropCopy(final Object target, DropTargetEvent event) throws JavaModelException, InvocationTargetException, InterruptedException{
-		IJavaElement[] javaElements= ReorgUtils.getJavaElements(fElements);
+	private void handleDropCopy(final Object target, DropTargetEvent event) throws JavaScriptModelException, InvocationTargetException, InterruptedException{
+		IJavaScriptElement[] javaElements= ReorgUtils.getJavaElements(fElements);
 		IResource[] resources= ReorgUtils.getResources(fElements);
 		ReorgCopyStarter starter= null;
 		if (target instanceof IResource) 
 			starter= ReorgCopyStarter.create(javaElements, resources, (IResource)target);
-		else if (target instanceof IJavaElement)
-			starter= ReorgCopyStarter.create(javaElements, resources, (IJavaElement)target);
+		else if (target instanceof IJavaScriptElement)
+			starter= ReorgCopyStarter.create(javaElements, resources, (IJavaScriptElement)target);
 		if (starter != null)
 			starter.run(getShell());
 	}

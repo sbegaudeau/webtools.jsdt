@@ -27,8 +27,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalCollector;
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
@@ -145,7 +145,7 @@ public class JavaCompletionProposalComputer implements IJavaCompletionProposalCo
 	}
 
 	private List internalComputeCompletionProposals(int offset, JavaContentAssistInvocationContext context, IProgressMonitor monitor) {
-		ICompilationUnit unit= context.getCompilationUnit();
+		IJavaScriptUnit unit= context.getCompilationUnit();
 		if (unit == null)
 			return Collections.EMPTY_LIST;
 		
@@ -172,9 +172,9 @@ public class JavaCompletionProposalComputer implements IJavaCompletionProposalCo
 				collector.setReplacementLength(selection.y);
 			
 				unit.codeComplete(offset, collector);
-		} catch (JavaModelException x) {
+		} catch (JavaScriptModelException x) {
 			Shell shell= viewer.getTextWidget().getShell();
-			if (x.isDoesNotExist() && !unit.getJavaProject().isOnClasspath(unit))
+			if (x.isDoesNotExist() && !unit.getJavaScriptProject().isOnIncludepath(unit))
 				MessageDialog.openInformation(shell, JavaTextMessages.CompletionProcessor_error_notOnBuildPath_title, JavaTextMessages.CompletionProcessor_error_notOnBuildPath_message);
 			else
 				ErrorDialog.openError(shell, JavaTextMessages.CompletionProcessor_error_accessing_title, JavaTextMessages.CompletionProcessor_error_accessing_message, x.getStatus());

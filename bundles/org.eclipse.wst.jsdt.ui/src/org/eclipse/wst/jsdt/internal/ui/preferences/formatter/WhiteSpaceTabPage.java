@@ -42,11 +42,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.eclipse.ui.part.PageBook;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.WhiteSpaceOptions.InnerNode;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.WhiteSpaceOptions.Node;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.WhiteSpaceOptions.OptionNode;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 
 public class WhiteSpaceTabPage extends FormatterTabPage {
@@ -59,7 +59,7 @@ public class WhiteSpaceTabPage extends FormatterTabPage {
 	
 	private final class SyntaxComponent implements ISelectionChangedListener, ICheckStateListener, IDoubleClickListener {
 
-	    private final String PREF_NODE_KEY= JavaUI.ID_PLUGIN + "formatter_page.white_space_tab_page.node"; //$NON-NLS-1$
+	    private final String PREF_NODE_KEY= JavaScriptUI.ID_PLUGIN + "formatter_page.white_space_tab_page.node"; //$NON-NLS-1$
 	    
 	    private final List fIndexedNodeList;
 		private final List fTree;
@@ -182,8 +182,8 @@ public class WhiteSpaceTabPage extends FormatterTabPage {
 	
 	private final class JavaElementComponent implements ISelectionChangedListener, ICheckStateListener {
 	    
-	    private final String PREF_INNER_INDEX= JavaUI.ID_PLUGIN + "formatter_page.white_space.java_view.inner"; //$NON-NLS-1$ 
-		private final String PREF_OPTION_INDEX= JavaUI.ID_PLUGIN + "formatter_page.white_space.java_view.option"; //$NON-NLS-1$
+	    private final String PREF_INNER_INDEX= JavaScriptUI.ID_PLUGIN + "formatter_page.white_space.java_view.inner"; //$NON-NLS-1$ 
+		private final String PREF_OPTION_INDEX= JavaScriptUI.ID_PLUGIN + "formatter_page.white_space.java_view.option"; //$NON-NLS-1$
 		
 	    private final ArrayList fIndexedNodeList;
 	    private final ArrayList fTree;
@@ -370,7 +370,7 @@ public class WhiteSpaceTabPage extends FormatterTabPage {
 	 * the appropriate update requests.
 	 */
 	private final class SwitchComponent extends SelectionAdapter {
-	    private final String PREF_VIEW_KEY= JavaUI.ID_PLUGIN + "formatter_page.white_space_tab_page.view"; //$NON-NLS-1$
+	    private final String PREF_VIEW_KEY= JavaScriptUI.ID_PLUGIN + "formatter_page.white_space_tab_page.view"; //$NON-NLS-1$
 	    private final String [] fItems= new String [] {
 	        FormatterMessages.WhiteSpaceTabPage_sort_by_java_element, 
 	        FormatterMessages.WhiteSpaceTabPage_sort_by_syntax_element
@@ -451,7 +451,7 @@ public class WhiteSpaceTabPage extends FormatterTabPage {
 	 */
 	public WhiteSpaceTabPage(ModifyDialog modifyDialog, Map workingValues) {
 		super(modifyDialog, workingValues);
-		fDialogSettings= JavaPlugin.getDefault().getDialogSettings();
+		fDialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();
 		fSwitchComponent= new SwitchComponent();
 	}
 

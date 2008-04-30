@@ -20,7 +20,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.spelling.SpellingProblem;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellCheckEngine;
@@ -69,7 +69,7 @@ public class WordIgnoreProposal implements IJavaCompletionProposal {
 	}
 
 	private ITextEditor getEditor() {
-		IWorkbenchPage activePage= JavaPlugin.getActivePage();
+		IWorkbenchPage activePage= JavaScriptPlugin.getActivePage();
 		if (activePage == null)
 			return null;
 	

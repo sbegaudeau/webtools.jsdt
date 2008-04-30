@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IAccessRule;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
@@ -160,7 +160,7 @@ public class AccessRuleEntryDialog extends StatusDialog {
 	public IAccessRule getRule() {
 		IPath filePattern= new Path(fPattern);
 		int kind= fRuleKinds[fRuleKindCombo.getSelectionIndex()];
-		return JavaCore.newAccessRule(filePattern, kind);
+		return JavaScriptCore.newAccessRule(filePattern, kind);
 	}
 	
 	/*

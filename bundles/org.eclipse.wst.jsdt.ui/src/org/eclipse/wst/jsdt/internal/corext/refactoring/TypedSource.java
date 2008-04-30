@@ -21,16 +21,16 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IImportContainer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
@@ -39,18 +39,18 @@ import org.eclipse.wst.jsdt.internal.corext.util.Strings;
 
 /**
  * A tuple used to keep source of an element and its type.
- * @see IJavaElement
+ * @see IJavaScriptElement
  * @see org.eclipse.wst.jsdt.core.ISourceReference
  */
 public class TypedSource {
 
 	private static class SourceTuple {
 
-		private SourceTuple(ICompilationUnit unit) {
+		private SourceTuple(IJavaScriptUnit unit) {
 			this.unit= unit;
 		}
-		private ICompilationUnit unit;
-		private CompilationUnit node;
+		private IJavaScriptUnit unit;
+		private JavaScriptUnit node;
 	}
 
 	private final String fSource;
@@ -96,13 +96,13 @@ public class TypedSource {
 	}
 
 	private static boolean canCreateForType(int type){
-		return 		type == IJavaElement.FIELD 
-				|| 	type == IJavaElement.TYPE
-				|| 	type == IJavaElement.IMPORT_CONTAINER
-				|| 	type == IJavaElement.IMPORT_DECLARATION
-				|| 	type == IJavaElement.INITIALIZER
-				|| 	type == IJavaElement.METHOD
-				|| 	type == IJavaElement.PACKAGE_DECLARATION;
+		return 		type == IJavaScriptElement.FIELD 
+				|| 	type == IJavaScriptElement.TYPE
+				|| 	type == IJavaScriptElement.IMPORT_CONTAINER
+				|| 	type == IJavaScriptElement.IMPORT_DECLARATION
+				|| 	type == IJavaScriptElement.INITIALIZER
+				|| 	type == IJavaScriptElement.METHOD
+				|| 	type == IJavaScriptElement.PACKAGE_DECLARATION;
 	}
 	
 	
@@ -117,15 +117,15 @@ public class TypedSource {
 			}
 		};
 	}
-	public static TypedSource[] createTypedSources(IJavaElement[] javaElements) throws CoreException {
-		//Map<ICompilationUnit, List<IJavaElement>>
+	public static TypedSource[] createTypedSources(IJavaScriptElement[] javaElements) throws CoreException {
+		//Map<IJavaScriptUnit, List<IJavaScriptElement>>
 		Map grouped= ReorgUtils.groupByCompilationUnit(Arrays.asList(javaElements));
 		List result= new ArrayList(javaElements.length);
 		for (Iterator iter= grouped.keySet().iterator(); iter.hasNext();) {
-			ICompilationUnit cu= (ICompilationUnit) iter.next();
+			IJavaScriptUnit cu= (IJavaScriptUnit) iter.next();
 			for (Iterator iterator= ((List) grouped.get(cu)).iterator(); iterator.hasNext();) {
 				SourceTuple tuple= new SourceTuple(cu);
-				TypedSource[] ts= createTypedSources((IJavaElement) iterator.next(), tuple);
+				TypedSource[] ts= createTypedSources((IJavaScriptElement) iterator.next(), tuple);
 				if (ts != null)
 					result.addAll(Arrays.asList(ts));				
 			}
@@ -133,18 +133,18 @@ public class TypedSource {
 		return (TypedSource[]) result.toArray(new TypedSource[result.size()]);		
 	}
 
-	private static TypedSource[] createTypedSources(IJavaElement elem, SourceTuple tuple) throws CoreException {
+	private static TypedSource[] createTypedSources(IJavaScriptElement elem, SourceTuple tuple) throws CoreException {
 		if (! ReorgUtils.isInsideCompilationUnit(elem))
 			return null;
-		if (elem.getElementType() == IJavaElement.IMPORT_CONTAINER) 
+		if (elem.getElementType() == IJavaScriptElement.IMPORT_CONTAINER) 
 			return createTypedSourcesForImportContainer(tuple, (IImportContainer)elem);
-		else if (elem.getElementType() == IJavaElement.FIELD) 
+		else if (elem.getElementType() == IJavaScriptElement.FIELD) 
 			return new TypedSource[] {create(getFieldSource((IField)elem, tuple), elem.getElementType())};
 		return new TypedSource[] {create(getSourceOfDeclararationNode(elem, tuple.unit), elem.getElementType())};
 	}
 
-	private static TypedSource[] createTypedSourcesForImportContainer(SourceTuple tuple, IImportContainer container) throws JavaModelException, CoreException {
-		IJavaElement[] imports= container.getChildren();
+	private static TypedSource[] createTypedSourcesForImportContainer(SourceTuple tuple, IImportContainer container) throws JavaScriptModelException, CoreException {
+		IJavaScriptElement[] imports= container.getChildren();
 		List result= new ArrayList(imports.length);
 		for (int i= 0; i < imports.length; i++) {
 			result.addAll(Arrays.asList(createTypedSources(imports[i], tuple)));
@@ -161,7 +161,7 @@ public class TypedSource {
 			if (tuple.node == null) {
 				ASTParser parser= ASTParser.newParser(AST.JLS3);
 				parser.setSource(tuple.unit);
-				tuple.node= (CompilationUnit) parser.createAST(null);
+				tuple.node= (JavaScriptUnit) parser.createAST(null);
 			}
 			FieldDeclaration declaration= ASTNodeSearchUtil.getFieldDeclarationNode(field, tuple.node);
 			if (declaration.fragments().size() == 1)
@@ -177,13 +177,13 @@ public class TypedSource {
 		return ""; //$NON-NLS-1$
 	}
 
-	private static String getSourceOfDeclararationNode(IJavaElement elem, ICompilationUnit cu) throws JavaModelException, CoreException {
-		Assert.isTrue(elem.getElementType() != IJavaElement.IMPORT_CONTAINER);
+	private static String getSourceOfDeclararationNode(IJavaScriptElement elem, IJavaScriptUnit cu) throws JavaScriptModelException, CoreException {
+		Assert.isTrue(elem.getElementType() != IJavaScriptElement.IMPORT_CONTAINER);
 		if (elem instanceof ISourceReference) {
 			ISourceReference reference= (ISourceReference) elem;
 			String source= reference.getSource();
 			if (source != null)
-				return Strings.trimIndentation(source, cu.getJavaProject(), false);
+				return Strings.trimIndentation(source, cu.getJavaScriptProject(), false);
 		}
 		return ""; //$NON-NLS-1$
 	}

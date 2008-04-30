@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.ui.packageview;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.TreeHierarchyLayoutProblemsDecorator;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
 
 
 public class PackageExplorerProblemsDecorator extends TreeHierarchyLayoutProblemsDecorator {
@@ -36,10 +36,10 @@ public class PackageExplorerProblemsDecorator extends TreeHierarchyLayoutProblem
 		for (int i= 0; i < elements.length; i++) {
 			IAdaptable element= elements[i];
 			int flags= super.computeAdornmentFlags(element);
-			if ((flags & JavaElementImageDescriptor.ERROR) != 0)
-				return JavaElementImageDescriptor.ERROR;
-			if ((flags & JavaElementImageDescriptor.WARNING) != 0)
-				result= JavaElementImageDescriptor.WARNING;
+			if ((flags & JavaScriptElementImageDescriptor.ERROR) != 0)
+				return JavaScriptElementImageDescriptor.ERROR;
+			if ((flags & JavaScriptElementImageDescriptor.WARNING) != 0)
+				result= JavaScriptElementImageDescriptor.WARNING;
 		}
 		return result;
 	}

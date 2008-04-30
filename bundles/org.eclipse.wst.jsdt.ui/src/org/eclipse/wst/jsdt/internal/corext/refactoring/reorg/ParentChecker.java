@@ -15,15 +15,15 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 
 public class ParentChecker {
 	private IResource[] fResources;
-	private IJavaElement[] fJavaElements;
+	private IJavaScriptElement[] fJavaElements;
 
-	public ParentChecker(IResource[] resources, IJavaElement[] javaElements) {
+	public ParentChecker(IResource[] resources, IJavaScriptElement[] javaElements) {
 		Assert.isNotNull(resources);
 		Assert.isNotNull(javaElements);
 		fResources= resources;
@@ -42,7 +42,7 @@ public class ParentChecker {
 		if (fJavaElements.length == 0){
 			IResource commonResourceParent= getCommonResourceParent();
 			Assert.isNotNull(commonResourceParent);
-			IJavaElement convertedToJava= JavaCore.create(commonResourceParent);
+			IJavaScriptElement convertedToJava= JavaScriptCore.create(commonResourceParent);
 			if (convertedToJava != null && convertedToJava.exists())
 				return convertedToJava;
 			else
@@ -52,10 +52,10 @@ public class ParentChecker {
 			return getCommonJavaElementParent();
 			
 		IResource commonResourceParent= getCommonResourceParent();
-		IJavaElement commonJavaElementParent= getCommonJavaElementParent();
+		IJavaScriptElement commonJavaElementParent= getCommonJavaElementParent();
 		Assert.isNotNull(commonJavaElementParent);
 		Assert.isNotNull(commonResourceParent);
-		IJavaElement convertedToJava= JavaCore.create(commonResourceParent);
+		IJavaScriptElement convertedToJava= JavaScriptCore.create(commonResourceParent);
 		if (convertedToJava == null || 
 			! convertedToJava.exists() || 
 			! commonJavaElementParent.equals(convertedToJava))
@@ -63,7 +63,7 @@ public class ParentChecker {
 		return commonJavaElementParent;	
 	}
 
-	private IJavaElement getCommonJavaElementParent() {
+	private IJavaScriptElement getCommonJavaElementParent() {
 		Assert.isNotNull(fJavaElements);
 		Assert.isTrue(fJavaElements.length > 0);//safe - checked before
 		return fJavaElements[0].getParent();
@@ -78,7 +78,7 @@ public class ParentChecker {
 	private boolean javaElementsHaveCommonParent() {
 		if (fJavaElements.length == 0)
 			return true;
-		IJavaElement firstParent= fJavaElements[0].getParent();
+		IJavaScriptElement firstParent= fJavaElements[0].getParent();
 		Assert.isNotNull(firstParent); //this should never happen			
 		for (int i= 1; i < fJavaElements.length; i++) {
 			if (! firstParent.equals(fJavaElements[i].getParent()))
@@ -103,7 +103,7 @@ public class ParentChecker {
 		return fResources;
 	}		
 		
-	public IJavaElement[] getJavaElements(){
+	public IJavaScriptElement[] getJavaElements(){
 		return fJavaElements;
 	}
 
@@ -121,7 +121,7 @@ public class ParentChecker {
 		for (int i= 0; i < fResources.length; i++) {
 			IResource subResource= fResources[i];
 			for (int j= 0; j < fJavaElements.length; j++) {
-				IJavaElement superElements= fJavaElements[j];
+				IJavaScriptElement superElements= fJavaElements[j];
 				if (isDescendantOf(subResource, superElements))
 					subResources.add(subResource);
 			}
@@ -132,14 +132,14 @@ public class ParentChecker {
 	private void removeJavaElementsDescendantsOfJavaElements() {
 		List subElements= new ArrayList(3);
 		for (int i= 0; i < fJavaElements.length; i++) {
-			IJavaElement subElement= fJavaElements[i];
+			IJavaScriptElement subElement= fJavaElements[i];
 			for (int j= 0; j < fJavaElements.length; j++) {
-				IJavaElement superElement= fJavaElements[j];
+				IJavaScriptElement superElement= fJavaElements[j];
 				if (isDescendantOf(subElement, superElement))
 					subElements.add(subElement);
 			}
 		}
-		removeFromSetToDelete((IJavaElement[]) subElements.toArray(new IJavaElement[subElements.size()]));
+		removeFromSetToDelete((IJavaScriptElement[]) subElements.toArray(new IJavaScriptElement[subElements.size()]));
 	}
 
 	private void removeResourcesDescendantsOfResources() {
@@ -155,10 +155,10 @@ public class ParentChecker {
 		removeFromSetToDelete((IResource[]) subResources.toArray(new IResource[subResources.size()]));
 	}
 
-	public static boolean isDescendantOf(IResource subResource, IJavaElement superElement) {
+	public static boolean isDescendantOf(IResource subResource, IJavaScriptElement superElement) {
 		IResource parent= subResource.getParent();
 		while(parent != null){
-			IJavaElement el= JavaCore.create(parent);
+			IJavaScriptElement el= JavaScriptCore.create(parent);
 			if (el != null && el.exists() && el.equals(superElement))
 				return true;
 			parent= parent.getParent();
@@ -166,10 +166,10 @@ public class ParentChecker {
 		return false;
 	}
 
-	public static boolean isDescendantOf(IJavaElement subElement, IJavaElement superElement) {
+	public static boolean isDescendantOf(IJavaScriptElement subElement, IJavaScriptElement superElement) {
 		if (subElement.equals(superElement))
 			return false;
-		IJavaElement parent= subElement.getParent();
+		IJavaScriptElement parent= subElement.getParent();
 		while(parent != null){
 			if (parent.equals(superElement))
 				return true;
@@ -186,7 +186,7 @@ public class ParentChecker {
 		fResources= ReorgUtils.setMinus(fResources, resourcesToNotDelete);
 	}
 	
-	private void removeFromSetToDelete(IJavaElement[] elementsToNotDelete) {
+	private void removeFromSetToDelete(IJavaScriptElement[] elementsToNotDelete) {
 		fJavaElements= ReorgUtils.setMinus(fJavaElements, elementsToNotDelete);
 	}
 }

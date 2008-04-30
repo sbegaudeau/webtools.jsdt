@@ -19,14 +19,14 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.ui.IWorkbenchSite;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class AllCleanUpsAction extends CleanUpAction {
 
@@ -53,7 +53,7 @@ public class AllCleanUpsAction extends CleanUpAction {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ICleanUp[] createCleanUps(ICompilationUnit[] units) {
+	protected ICleanUp[] createCleanUps(IJavaScriptUnit[] units) {
 		return CleanUpRefactoring.createCleanUps();
 	}
 
@@ -67,18 +67,18 @@ public class AllCleanUpsAction extends CleanUpAction {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void performRefactoring(ICompilationUnit[] cus, ICleanUp[] cleanUps) throws JavaModelException, InvocationTargetException {
+	protected void performRefactoring(IJavaScriptUnit[] cus, ICleanUp[] cleanUps) throws JavaScriptModelException, InvocationTargetException {
 		RefactoringExecutionStarter.startCleanupRefactoring(cus, cleanUps, getShell(), showWizard(), getActionName());
 	}
 
 	private boolean showWizard() {
 		InstanceScope instanceScope= new InstanceScope();
-		IEclipsePreferences instanceNode= instanceScope.getNode(JavaUI.ID_PLUGIN);
+		IEclipsePreferences instanceNode= instanceScope.getNode(JavaScriptUI.ID_PLUGIN);
 		if (instanceNode.get(CleanUpConstants.SHOW_CLEAN_UP_WIZARD, null) != null)
 			return instanceNode.getBoolean(CleanUpConstants.SHOW_CLEAN_UP_WIZARD, true);
 
 		DefaultScope defaultScope= new DefaultScope();
-		IEclipsePreferences defaultNode= defaultScope.getNode(JavaUI.ID_PLUGIN);
+		IEclipsePreferences defaultNode= defaultScope.getNode(JavaScriptUI.ID_PLUGIN);
 		return defaultNode.getBoolean(CleanUpConstants.SHOW_CLEAN_UP_WIZARD, true);
 	}
 
@@ -98,12 +98,12 @@ public class AllCleanUpsAction extends CleanUpAction {
 				}
 			}
 		};
-		new InstanceScope().getNode(JavaUI.ID_PLUGIN).addPreferenceChangeListener(fPreferenceChangeListener);
+		new InstanceScope().getNode(JavaScriptUI.ID_PLUGIN).addPreferenceChangeListener(fPreferenceChangeListener);
     }
 	
 	public void dispose() {
 		if (fPreferenceChangeListener != null) {
-			new InstanceScope().getNode(JavaUI.ID_PLUGIN).removePreferenceChangeListener(fPreferenceChangeListener);
+			new InstanceScope().getNode(JavaScriptUI.ID_PLUGIN).removePreferenceChangeListener(fPreferenceChangeListener);
 			fPreferenceChangeListener= null;
 		}
 	}

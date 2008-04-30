@@ -54,7 +54,7 @@ import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ChildPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
@@ -74,16 +74,16 @@ import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
 import org.eclipse.wst.jsdt.core.dom.ListExpression;
 import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
-import org.eclipse.wst.jsdt.core.dom.MethodRef;
-import org.eclipse.wst.jsdt.core.dom.MethodRefParameter;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
@@ -1032,8 +1032,8 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		return doVisit(parent, property, pos);
 	}
 
-	private void rewriteMethodBody(MethodDeclaration parent, int startPos) {
-		RewriteEvent event= getEvent(parent, MethodDeclaration.BODY_PROPERTY);
+	private void rewriteMethodBody(FunctionDeclaration parent, int startPos) {
+		RewriteEvent event= getEvent(parent, FunctionDeclaration.BODY_PROPERTY);
 		if (event != null) {
 			switch (event.getChangeKind()) {
 				case RewriteEvent.INSERTED: {
@@ -1064,7 +1064,7 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 				}
 			}
 		}
-		voidVisit(parent, MethodDeclaration.BODY_PROPERTY);
+		voidVisit(parent, FunctionDeclaration.BODY_PROPERTY);
 	}
 
 	private int rewriteExtraDimensions(ASTNode parent, StructuralPropertyDescriptor property, int pos) {
@@ -1405,22 +1405,22 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(CompilationUnit)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(JavaScriptUnit)
 	 */
-	public boolean visit(CompilationUnit node) {
+	public boolean visit(JavaScriptUnit node) {
 		if (!hasChildrenChanges(node)) {
 			return doVisitUnchangedChildren(node);
 		}
 
-		int startPos= rewriteNode(node, CompilationUnit.PACKAGE_PROPERTY, 0, ASTRewriteFormatter.NONE);
+		int startPos= rewriteNode(node, JavaScriptUnit.PACKAGE_PROPERTY, 0, ASTRewriteFormatter.NONE);
 
-		if (getChangeKind(node, CompilationUnit.PACKAGE_PROPERTY) == RewriteEvent.INSERTED) {
-			doTextInsert(0, getLineDelimiter(), getEditGroup(node, CompilationUnit.PACKAGE_PROPERTY));
+		if (getChangeKind(node, JavaScriptUnit.PACKAGE_PROPERTY) == RewriteEvent.INSERTED) {
+			doTextInsert(0, getLineDelimiter(), getEditGroup(node, JavaScriptUnit.PACKAGE_PROPERTY));
 		}
 
-		startPos= rewriteParagraphList(node, CompilationUnit.IMPORTS_PROPERTY, startPos, 0, 0, 2);
-//		startPos= rewriteParagraphList(node, CompilationUnit.TYPES_PROPERTY, startPos, 0, -1, 2);
-		rewriteParagraphList(node, CompilationUnit.STATEMENTS_PROPERTY, startPos, 0, -1, 1);
+		startPos= rewriteParagraphList(node, JavaScriptUnit.IMPORTS_PROPERTY, startPos, 0, 0, 2);
+//		startPos= rewriteParagraphList(node, JavaScriptUnit.TYPES_PROPERTY, startPos, 0, -1, 2);
+		rewriteParagraphList(node, JavaScriptUnit.STATEMENTS_PROPERTY, startPos, 0, -1, 1);
 		return false;
 	}
 
@@ -1542,8 +1542,8 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		return false;
 	}
 
-	private void rewriteReturnType(MethodDeclaration node, boolean isConstructor, boolean isConstructorChange) {
-		ChildPropertyDescriptor property= (node.getAST().apiLevel() == JLS2_INTERNAL) ? MethodDeclaration.RETURN_TYPE_PROPERTY : MethodDeclaration.RETURN_TYPE2_PROPERTY;
+	private void rewriteReturnType(FunctionDeclaration node, boolean isConstructor, boolean isConstructorChange) {
+		ChildPropertyDescriptor property= (node.getAST().apiLevel() == JLS2_INTERNAL) ? FunctionDeclaration.RETURN_TYPE_PROPERTY : FunctionDeclaration.RETURN_TYPE2_PROPERTY;
 
 		// weakness in the AST: return type can exist, even if missing in source
 		ASTNode originalReturnType= (ASTNode) getOriginalValue(node, property);
@@ -1556,7 +1556,7 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		ASTNode newReturnType= (ASTNode) getNewValue(node, property);
 		if (isConstructorChange || !returnTypeExists && newReturnType != originalReturnType) {
 			// use the start offset of the method name to insert
-			ASTNode originalMethodName= (ASTNode) getOriginalValue(node, MethodDeclaration.NAME_PROPERTY);
+			ASTNode originalMethodName= (ASTNode) getOriginalValue(node, FunctionDeclaration.NAME_PROPERTY);
 			int nextStart= originalMethodName.getStartPosition(); // see bug 84049: can't use extended offset
 			TextEditGroup editGroup= getEditGroup(node, property);
 			if (isConstructor || !returnTypeExists) { // insert
@@ -1571,22 +1571,22 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(MethodDeclaration)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(FunctionDeclaration)
 	 */
-	public boolean visit(MethodDeclaration node) {
+	public boolean visit(FunctionDeclaration node) {
 		if (!hasChildrenChanges(node)) {
 			return doVisitUnchangedChildren(node);
 		}
-		int pos= rewriteJavadoc(node, MethodDeclaration.JAVADOC_PROPERTY);
+		int pos= rewriteJavadoc(node, FunctionDeclaration.JAVADOC_PROPERTY);
 //		if (node.getAST().apiLevel() == JLS2_INTERNAL) {
-//			rewriteModifiers(node, MethodDeclaration.MODIFIERS_PROPERTY, pos);
+//			rewriteModifiers(node, FunctionDeclaration.MODIFIERS_PROPERTY, pos);
 //		} else {
-//			pos= rewriteModifiers2(node, MethodDeclaration.MODIFIERS2_PROPERTY, pos);
-//			pos= rewriteOptionalTypeParameters(node, MethodDeclaration.TYPE_PARAMETERS_PROPERTY, pos, " ", true, pos != node.getStartPosition()); //$NON-NLS-1$
+//			pos= rewriteModifiers2(node, FunctionDeclaration.MODIFIERS2_PROPERTY, pos);
+//			pos= rewriteOptionalTypeParameters(node, FunctionDeclaration.TYPE_PARAMETERS_PROPERTY, pos, " ", true, pos != node.getStartPosition()); //$NON-NLS-1$
 //		}
 
-		boolean isConstructorChange= isChanged(node, MethodDeclaration.CONSTRUCTOR_PROPERTY);
-		boolean isConstructor= ((Boolean) getOriginalValue(node, MethodDeclaration.CONSTRUCTOR_PROPERTY)).booleanValue();
+		boolean isConstructorChange= isChanged(node, FunctionDeclaration.CONSTRUCTOR_PROPERTY);
+		boolean isConstructor= ((Boolean) getOriginalValue(node, FunctionDeclaration.CONSTRUCTOR_PROPERTY)).booleanValue();
 		if (!isConstructor || isConstructorChange) {
 			rewriteReturnType(node, isConstructor, isConstructorChange);
 		}
@@ -1595,33 +1595,33 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 			// method name
 			pos= getScanner().getTokenEndOffset(ITerminalSymbols.TokenNamefunction, pos);
 
-			pos= rewriteNode(node, MethodDeclaration.NAME_PROPERTY, pos, ASTRewriteFormatter.NONE);
+			pos= rewriteNode(node, FunctionDeclaration.NAME_PROPERTY, pos, ASTRewriteFormatter.NONE);
 
 			// parameters
-			if (isChanged(node, MethodDeclaration.PARAMETERS_PROPERTY)) {
+			if (isChanged(node, FunctionDeclaration.PARAMETERS_PROPERTY)) {
 				pos= getScanner().getTokenEndOffset(ITerminalSymbols.TokenNameLPAREN, pos);
-				pos= rewriteNodeList(node, MethodDeclaration.PARAMETERS_PROPERTY, pos, "", ", "); //$NON-NLS-1$ //$NON-NLS-2$
+				pos= rewriteNodeList(node, FunctionDeclaration.PARAMETERS_PROPERTY, pos, "", ", "); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
-				pos= doVisit(node, MethodDeclaration.PARAMETERS_PROPERTY, pos);
+				pos= doVisit(node, FunctionDeclaration.PARAMETERS_PROPERTY, pos);
 			}
 
 			pos= getScanner().getTokenEndOffset(ITerminalSymbols.TokenNameRPAREN, pos);
 
-			int extraDims= rewriteExtraDimensions(node, MethodDeclaration.EXTRA_DIMENSIONS_PROPERTY, pos);
+			int extraDims= rewriteExtraDimensions(node, FunctionDeclaration.EXTRA_DIMENSIONS_PROPERTY, pos);
 
-			boolean hasExceptionChanges= isChanged(node, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY);
+			boolean hasExceptionChanges= isChanged(node, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY);
 
-			int bodyChangeKind= getChangeKind(node, MethodDeclaration.BODY_PROPERTY);
+			int bodyChangeKind= getChangeKind(node, FunctionDeclaration.BODY_PROPERTY);
 
 			if ((extraDims > 0) && (hasExceptionChanges || bodyChangeKind == RewriteEvent.INSERTED || bodyChangeKind == RewriteEvent.REMOVED)) {
-				int dim= ((Integer) getOriginalValue(node, MethodDeclaration.EXTRA_DIMENSIONS_PROPERTY)).intValue();
+				int dim= ((Integer) getOriginalValue(node, FunctionDeclaration.EXTRA_DIMENSIONS_PROPERTY)).intValue();
 				while (dim > 0) {
 					pos= getScanner().getTokenEndOffset(ITerminalSymbols.TokenNameRBRACKET, pos);
 					dim--;
 				}
 			}
 
-			pos= rewriteNodeList(node, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY, pos, " throws ", ", "); //$NON-NLS-1$ //$NON-NLS-2$
+			pos= rewriteNodeList(node, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY, pos, " throws ", ", "); //$NON-NLS-1$ //$NON-NLS-2$
 			rewriteMethodBody(node, pos);
 		} catch (CoreException e) {
 			// ignore
@@ -2477,14 +2477,14 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(Javadoc)
 	 */
-	public boolean visit(Javadoc node) {
+	public boolean visit(JSdoc node) {
 		if (!hasChildrenChanges(node)) {
 			return doVisitUnchangedChildren(node);
 		}
 		int startPos= node.getStartPosition() + 3;
 		String separator= getLineDelimiter() + getIndentAtOffset(node.getStartPosition())  + " * "; //$NON-NLS-1$
 
-		rewriteNodeList(node, Javadoc.TAGS_PROPERTY, startPos, separator, separator);
+		rewriteNodeList(node, JSdoc.TAGS_PROPERTY, startPos, separator, separator);
 		return false;
 	}
 
@@ -2502,30 +2502,30 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(MethodInvocation)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(FunctionInvocation)
 	 */
-	public boolean visit(MethodInvocation node) {
+	public boolean visit(FunctionInvocation node) {
 		if (!hasChildrenChanges(node)) {
 			return doVisitUnchangedChildren(node);
 		}
 
-		int pos= rewriteOptionalQualifier(node, MethodInvocation.EXPRESSION_PROPERTY, node.getStartPosition());
+		int pos= rewriteOptionalQualifier(node, FunctionInvocation.EXPRESSION_PROPERTY, node.getStartPosition());
 		if (node.getAST().apiLevel() >= AST.JLS3) {
-			pos= rewriteOptionalTypeParameters(node, MethodInvocation.TYPE_ARGUMENTS_PROPERTY, pos, "", false, false); //$NON-NLS-1$
+			pos= rewriteOptionalTypeParameters(node, FunctionInvocation.TYPE_ARGUMENTS_PROPERTY, pos, "", false, false); //$NON-NLS-1$
 		}
 
-		pos= rewriteOptionalQualifier(node, MethodInvocation.NAME_PROPERTY,pos);
+		pos= rewriteOptionalQualifier(node, FunctionInvocation.NAME_PROPERTY,pos);
 
-		if (isChanged(node, MethodInvocation.ARGUMENTS_PROPERTY)) {
+		if (isChanged(node, FunctionInvocation.ARGUMENTS_PROPERTY)) {
 			// eval position after opening parent
 			try {
 				int startOffset= getScanner().getTokenEndOffset(ITerminalSymbols.TokenNameLPAREN, pos);
-				rewriteNodeList(node, MethodInvocation.ARGUMENTS_PROPERTY, startOffset, "", ", "); //$NON-NLS-1$ //$NON-NLS-2$
+				rewriteNodeList(node, FunctionInvocation.ARGUMENTS_PROPERTY, startOffset, "", ", "); //$NON-NLS-1$ //$NON-NLS-2$
 			} catch (CoreException e) {
 				handleException(e);
 			}
 		} else {
-			voidVisit(node, MethodInvocation.ARGUMENTS_PROPERTY);
+			voidVisit(node, FunctionInvocation.ARGUMENTS_PROPERTY);
 		}
 		return false;
 	}
@@ -3069,53 +3069,53 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.MethodRef)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.FunctionRef)
 	 */
-	public boolean visit(MethodRef node) {
+	public boolean visit(FunctionRef node) {
 		if (!hasChildrenChanges(node)) {
 			return doVisitUnchangedChildren(node);
 		}
-		rewriteNode(node, MethodRef.QUALIFIER_PROPERTY, node.getStartPosition(), ASTRewriteFormatter.NONE);
+		rewriteNode(node, FunctionRef.QUALIFIER_PROPERTY, node.getStartPosition(), ASTRewriteFormatter.NONE);
 
-		int pos= rewriteRequiredNode(node, MethodRef.NAME_PROPERTY);
+		int pos= rewriteRequiredNode(node, FunctionRef.NAME_PROPERTY);
 
-		if (isChanged(node, MethodRef.PARAMETERS_PROPERTY)) {
+		if (isChanged(node, FunctionRef.PARAMETERS_PROPERTY)) {
 			// eval position after opening parent
 			try {
 				int startOffset= getScanner().getTokenEndOffset(ITerminalSymbols.TokenNameLPAREN, pos);
-				rewriteNodeList(node, MethodRef.PARAMETERS_PROPERTY, startOffset, "", ", "); //$NON-NLS-1$ //$NON-NLS-2$
+				rewriteNodeList(node, FunctionRef.PARAMETERS_PROPERTY, startOffset, "", ", "); //$NON-NLS-1$ //$NON-NLS-2$
 			} catch (CoreException e) {
 				handleException(e);
 			}
 		} else {
-			voidVisit(node, MethodRef.PARAMETERS_PROPERTY);
+			voidVisit(node, FunctionRef.PARAMETERS_PROPERTY);
 		}
 		return false;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.MethodRefParameter)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.FunctionRefParameter)
 	 */
-	public boolean visit(MethodRefParameter node) {
+	public boolean visit(FunctionRefParameter node) {
 		if (!hasChildrenChanges(node)) {
 			return doVisitUnchangedChildren(node);
 		}
-		int pos= rewriteRequiredNode(node, MethodRefParameter.TYPE_PROPERTY);
+		int pos= rewriteRequiredNode(node, FunctionRefParameter.TYPE_PROPERTY);
 		if (node.getAST().apiLevel() >= AST.JLS3) {
-			if (isChanged(node, MethodRefParameter.VARARGS_PROPERTY)) {
-				if (getNewValue(node, MethodRefParameter.VARARGS_PROPERTY).equals(Boolean.TRUE)) {
-					doTextInsert(pos, "...", getEditGroup(node, MethodRefParameter.VARARGS_PROPERTY)); //$NON-NLS-1$
+			if (isChanged(node, FunctionRefParameter.VARARGS_PROPERTY)) {
+				if (getNewValue(node, FunctionRefParameter.VARARGS_PROPERTY).equals(Boolean.TRUE)) {
+					doTextInsert(pos, "...", getEditGroup(node, FunctionRefParameter.VARARGS_PROPERTY)); //$NON-NLS-1$
 				} else {
 					try {
 						int ellipsisEnd= getScanner().getNextEndOffset(pos, true);
-						doTextRemove(pos, ellipsisEnd - pos, getEditGroup(node, MethodRefParameter.VARARGS_PROPERTY));
+						doTextRemove(pos, ellipsisEnd - pos, getEditGroup(node, FunctionRefParameter.VARARGS_PROPERTY));
 					} catch (CoreException e) {
 						handleException(e);
 					}
 				}
 			}
 		}
-		rewriteNode(node, MethodRefParameter.NAME_PROPERTY, pos, ASTRewriteFormatter.SPACE);
+		rewriteNode(node, FunctionRefParameter.NAME_PROPERTY, pos, ASTRewriteFormatter.SPACE);
 		return false;
 	}
 

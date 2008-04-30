@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the extract method refactoring.
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class ExtractMethodDescriptor extends JavaRefactoringDescriptor {
+public final class ExtractMethodDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public ExtractMethodDescriptor() {
-		super(IJavaRefactorings.EXTRACT_METHOD);
+		super(IJavaScriptRefactorings.EXTRACT_METHOD);
 	}
 }

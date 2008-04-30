@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ICreateTargetQueries;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ICreateTargetQuery;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewPackageCreationWizard;
 import org.eclipse.wst.jsdt.ui.wizards.NewPackageWizardPage;
@@ -48,7 +48,7 @@ public class CreateTargetQueries implements ICreateTargetQueries {
 		else if (fShell != null)
 			return fShell;
 		else
-			return JavaPlugin.getActiveWorkbenchShell();
+			return JavaScriptPlugin.getActiveWorkbenchShell();
 	}
 	
 	public ICreateTargetQuery createNewPackageQuery() {
@@ -69,7 +69,7 @@ public class CreateTargetQueries implements ICreateTargetQueries {
 	}
 	
 	private IWizardPage[] openNewElementWizard(IWorkbenchWizard wizard, Shell shell, Object selection) {
-		wizard.init(JavaPlugin.getDefault().getWorkbench(), new StructuredSelection(selection));
+		wizard.init(JavaScriptPlugin.getDefault().getWorkbench(), new StructuredSelection(selection));
 		
 		WizardDialog dialog= new WizardDialog(shell, wizard);
 		PixelConverter converter= new PixelConverter(JFaceResources.getDialogFont());

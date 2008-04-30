@@ -21,8 +21,8 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.ltk.core.refactoring.participants.ReorgExecutionLog;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IQualifiedNameUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IReferenceUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IScriptableRefactoring;
@@ -32,20 +32,20 @@ public interface IReorgPolicy extends IReferenceUpdating, IQualifiedNameUpdating
 	public ChangeDescriptor getDescriptor();
 
 	public RefactoringStatus checkFinalConditions(IProgressMonitor monitor, CheckConditionsContext context, IReorgQueries queries) throws CoreException;
-	public RefactoringStatus setDestination(IResource resource) throws JavaModelException;
-	public RefactoringStatus setDestination(IJavaElement javaElement) throws JavaModelException;
+	public RefactoringStatus setDestination(IResource resource) throws JavaScriptModelException;
+	public RefactoringStatus setDestination(IJavaScriptElement javaElement) throws JavaScriptModelException;
 	
-	public boolean canEnable() throws JavaModelException;
+	public boolean canEnable() throws JavaScriptModelException;
 	public boolean canChildrenBeDestinations(IResource resource);
-	public boolean canChildrenBeDestinations(IJavaElement javaElement);
+	public boolean canChildrenBeDestinations(IJavaScriptElement javaElement);
 	public boolean canElementBeDestination(IResource resource);
-	public boolean canElementBeDestination(IJavaElement javaElement);
+	public boolean canElementBeDestination(IJavaScriptElement javaElement);
 	
 	public IResource[] getResources();
-	public IJavaElement[] getJavaElements();
+	public IJavaScriptElement[] getJavaElements();
 	
 	public IResource getResourceDestination();
-	public IJavaElement getJavaElementDestination();
+	public IJavaScriptElement getJavaElementDestination();
 	
 	public boolean hasAllInputSet();
 
@@ -57,11 +57,11 @@ public interface IReorgPolicy extends IReferenceUpdating, IQualifiedNameUpdating
 	public String getPolicyId();
 
 	public static interface ICopyPolicy extends IReorgPolicy{
-		public Change createChange(IProgressMonitor monitor, INewNameQueries queries) throws JavaModelException;
+		public Change createChange(IProgressMonitor monitor, INewNameQueries queries) throws JavaScriptModelException;
 		public ReorgExecutionLog getReorgExecutionLog();
 	}
 	public static interface IMovePolicy extends IReorgPolicy{
-		public Change createChange(IProgressMonitor monitor) throws JavaModelException;
+		public Change createChange(IProgressMonitor monitor) throws JavaScriptModelException;
 		public Change postCreateChange(Change[] participantChanges, IProgressMonitor monitor) throws CoreException;
 		public ICreateTargetQuery getCreateTargetQuery(ICreateTargetQueries createQueries);
 		public boolean isTextualMove();

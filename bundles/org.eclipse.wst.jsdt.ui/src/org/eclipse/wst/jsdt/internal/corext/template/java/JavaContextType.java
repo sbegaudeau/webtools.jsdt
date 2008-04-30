@@ -17,8 +17,8 @@ import org.eclipse.jface.text.templates.GlobalTemplateVariables;
 import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateVariable;
 import org.eclipse.jface.text.templates.TemplateVariableResolver;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitCompletion.Variable;
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.MultiVariable;
@@ -273,11 +273,11 @@ public class JavaContextType extends CompilationUnitContextType {
 		}
 		protected String resolve(TemplateContext context) {
 			JavaContext javaContext= (JavaContext) context;
-			ICompilationUnit compilationUnit= javaContext.getCompilationUnit();
+			IJavaScriptUnit compilationUnit= javaContext.getCompilationUnit();
 			if (compilationUnit == null)
 				return "XXX"; //$NON-NLS-1$
 			
-			IJavaProject javaProject= compilationUnit.getJavaProject();
+			IJavaScriptProject javaProject= compilationUnit.getJavaScriptProject();
 			String todoTaskTag= StubUtility.getTodoTaskTag(javaProject);
 			if (todoTaskTag == null)
 				return "XXX"; //$NON-NLS-1$
@@ -335,16 +335,16 @@ public class JavaContextType extends CompilationUnitContextType {
 	
 
 	/*
-	 * @see org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContextType#createContext(org.eclipse.jface.text.IDocument, int, int, org.eclipse.wst.jsdt.core.ICompilationUnit)
+	 * @see org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContextType#createContext(org.eclipse.jface.text.IDocument, int, int, org.eclipse.wst.jsdt.core.IJavaScriptUnit)
 	 */
-	public CompilationUnitContext createContext(IDocument document, int offset, int length, ICompilationUnit compilationUnit) {
+	public CompilationUnitContext createContext(IDocument document, int offset, int length, IJavaScriptUnit compilationUnit) {
 		return new JavaContext(this, document, offset, length, compilationUnit);
 	}
 
 	/*
-	 * @see org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContextType#createContext(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.Position, org.eclipse.wst.jsdt.core.ICompilationUnit)
+	 * @see org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContextType#createContext(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.Position, org.eclipse.wst.jsdt.core.IJavaScriptUnit)
 	 */
-	public CompilationUnitContext createContext(IDocument document, Position completionPosition, ICompilationUnit compilationUnit) {
+	public CompilationUnitContext createContext(IDocument document, Position completionPosition, IJavaScriptUnit compilationUnit) {
 		return new JavaContext(this, document, completionPosition, compilationUnit);
 	}
 }

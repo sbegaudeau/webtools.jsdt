@@ -18,8 +18,8 @@ import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.IInformationProviderExtension;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -77,12 +77,12 @@ public class JavaElementProvider implements IInformationProvider, IInformationPr
 				if (!sel.isEmpty())
 					return sel.getFirstElement();
 			}
-			IJavaElement element= SelectionConverter.getElementAtOffset(fEditor);
+			IJavaScriptElement element= SelectionConverter.getElementAtOffset(fEditor);
 			if (element != null)
 				return element;
 			
 			return EditorUtility.getEditorInputJavaElement(fEditor, false);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return null;
 		}
 	}

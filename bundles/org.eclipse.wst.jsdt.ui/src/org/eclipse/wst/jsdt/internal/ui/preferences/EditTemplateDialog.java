@@ -70,14 +70,14 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.wst.jsdt.internal.ui.text.template.preferences.TemplateVariableProcessor;
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 /**
  * Dialog to edit a template.
@@ -378,9 +378,9 @@ class EditTemplateDialog extends StatusDialog {
 	private SourceViewer createEditor(Composite parent) {
 		String prefix= getPrefix();
 		IDocument document= new Document(prefix + fTemplate.getPattern());
-		JavaTextTools tools= JavaPlugin.getDefault().getJavaTextTools();
-		tools.setupJavaDocumentPartitioner(document, IJavaPartitions.JAVA_PARTITIONING);
-		IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
+		JavaScriptTextTools tools= JavaScriptPlugin.getDefault().getJavaTextTools();
+		tools.setupJavaDocumentPartitioner(document, IJavaScriptPartitions.JAVA_PARTITIONING);
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 		SourceViewer viewer= new JavaSourceViewer(parent, null, null, false, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, store);
 		CodeTemplateSourceViewerConfiguration configuration= new CodeTemplateSourceViewerConfiguration(tools.getColorManager(), store, null, fTemplateProcessor);
 		viewer.configure(configuration);
@@ -598,7 +598,7 @@ class EditTemplateDialog extends StatusDialog {
 	 */
 	protected IDialogSettings getDialogBoundsSettings() {
 		String sectionName= getClass().getName() + "_dialogBounds"; //$NON-NLS-1$
-		IDialogSettings settings= JavaPlugin.getDefault().getDialogSettings();
+		IDialogSettings settings= JavaScriptPlugin.getDefault().getDialogSettings();
 		IDialogSettings section= settings.getSection(sectionName);
 		if (section == null)
 			section= settings.addNewSection(sectionName);

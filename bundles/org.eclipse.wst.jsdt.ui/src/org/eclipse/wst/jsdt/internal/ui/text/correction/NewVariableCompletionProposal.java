@@ -20,14 +20,14 @@ import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
@@ -37,9 +37,9 @@ import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -78,7 +78,7 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 	final private SimpleName fOriginalNode;
 	final private ITypeBinding fSenderBinding;
 
-	public NewVariableCompletionProposal(String label, ICompilationUnit cu, int variableKind, SimpleName node, ITypeBinding senderBinding, int relevance, Image image) {
+	public NewVariableCompletionProposal(String label, IJavaScriptUnit cu, int variableKind, SimpleName node, ITypeBinding senderBinding, int relevance, Image image) {
 		super(label, cu, null, relevance, image);
 		if (senderBinding == null) {
 			Assert.isTrue(variableKind == PARAM || variableKind == LOCAL);
@@ -92,7 +92,7 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 	}
 
 	protected ASTRewrite getRewrite() throws CoreException {
-		CompilationUnit cu= ASTResolving.findParentCompilationUnit(fOriginalNode);
+		JavaScriptUnit cu= ASTResolving.findParentCompilationUnit(fOriginalNode);
 		switch (fVariableKind) {
 			case PARAM:
 				return doAddParam(cu);
@@ -108,23 +108,23 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 		}
 	}
 
-	private ASTRewrite doAddParam(CompilationUnit cu) throws CoreException {
+	private ASTRewrite doAddParam(JavaScriptUnit cu) throws CoreException {
 		AST ast= cu.getAST();
 		SimpleName node= fOriginalNode;
 
 		BodyDeclaration decl= ASTResolving.findParentBodyDeclaration(node);
-		if (decl instanceof MethodDeclaration) {
-			MethodDeclaration methodDeclaration= (MethodDeclaration) decl;
+		if (decl instanceof FunctionDeclaration) {
+			FunctionDeclaration methodDeclaration= (FunctionDeclaration) decl;
 
 			ASTRewrite rewrite= ASTRewrite.create(ast);
 			
-			ImportRewrite imports= createImportRewrite((CompilationUnit) decl.getRoot());
+			ImportRewrite imports= createImportRewrite((JavaScriptUnit) decl.getRoot());
 
 			SingleVariableDeclaration newDecl= ast.newSingleVariableDeclaration();
 			newDecl.setType(evaluateVariableType(ast, imports, methodDeclaration.resolveBinding()));
 			newDecl.setName(ast.newSimpleName(node.getIdentifier()));
 
-			ListRewrite listRewriter= rewrite.getListRewrite(decl, MethodDeclaration.PARAMETERS_PROPERTY);
+			ListRewrite listRewriter= rewrite.getListRewrite(decl, FunctionDeclaration.PARAMETERS_PROPERTY);
 			listRewriter.insertLast(newDecl, null);
 
 			addLinkedPosition(rewrite.track(newDecl.getType()), false, KEY_TYPE);
@@ -132,7 +132,7 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 			addLinkedPosition(rewrite.track(newDecl.getName()), false, KEY_NAME);
 
 			// add javadoc tag
-			Javadoc javadoc= methodDeclaration.getJavadoc();
+			JSdoc javadoc= methodDeclaration.getJavadoc();
 			if (javadoc != null) {
 				HashSet leadingNames= new HashSet();
 				for (Iterator iter= methodDeclaration.parameters().iterator(); iter.hasNext();) {
@@ -150,7 +150,7 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 				addLinkedPosition(rewrite.track(newTagRef), true, KEY_NAME);
 				addLinkedPosition(rewrite.track(commentStart), false, "comment_start"); //$NON-NLS-1$
 
-				ListRewrite tagsRewriter= rewrite.getListRewrite(javadoc, Javadoc.TAGS_PROPERTY);
+				ListRewrite tagsRewriter= rewrite.getListRewrite(javadoc, JSdoc.TAGS_PROPERTY);
 				JavadocTagsSubProcessor.insertTag(tagsRewriter, newTagElement, leadingNames);
 			}
 
@@ -183,15 +183,15 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 	}
 
 
-	private ASTRewrite doAddLocal(CompilationUnit cu) throws CoreException {
+	private ASTRewrite doAddLocal(JavaScriptUnit cu) throws CoreException {
 		AST ast= cu.getAST();
 
 		ASTNode body;
 		BodyDeclaration decl= ASTResolving.findParentBodyDeclaration(fOriginalNode);
 		IBinding targetContext= null;
-		if (decl instanceof MethodDeclaration) {
-			body= (((MethodDeclaration) decl).getBody());
-			targetContext= ((MethodDeclaration) decl).resolveBinding();
+		if (decl instanceof FunctionDeclaration) {
+			body= (((FunctionDeclaration) decl).getBody());
+			targetContext= ((FunctionDeclaration) decl).resolveBinding();
 		} else if (decl instanceof Initializer) {
 			body= (((Initializer) decl).getBody());
 			targetContext= Bindings.getBindingOfParentType(decl);
@@ -335,7 +335,7 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 		return parent;
 	}
 
-	private ASTRewrite doAddField(CompilationUnit astRoot) throws CoreException {
+	private ASTRewrite doAddField(JavaScriptUnit astRoot) throws CoreException {
 		SimpleName node= fOriginalNode;
 		boolean isInDifferentCU= false;
 
@@ -405,8 +405,8 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 	}
 
 	private Type evaluateVariableType(AST ast, ImportRewrite imports, IBinding targetContext) throws CoreException {
-		if (fOriginalNode.getParent() instanceof MethodInvocation) {
-			MethodInvocation parent= (MethodInvocation) fOriginalNode.getParent();
+		if (fOriginalNode.getParent() instanceof FunctionInvocation) {
+			FunctionInvocation parent= (FunctionInvocation) fOriginalNode.getParent();
 			if (parent.getExpression() == fOriginalNode) {
 				// _x_.foo() -> guess qualifier type by looking for a type with method 'foo'
 				ITypeBinding[] bindings= ASTResolving.getQualifierGuess(fOriginalNode.getRoot(), parent.getName().getIdentifier(), parent.arguments(), targetContext);
@@ -493,7 +493,7 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 		return modifiers;
 	}
 
-	private ASTRewrite doAddEnumConst(CompilationUnit astRoot) throws CoreException {
+	private ASTRewrite doAddEnumConst(JavaScriptUnit astRoot) throws CoreException {
 		SimpleName node= fOriginalNode;
 
 		ASTNode newTypeDecl= astRoot.findDeclaringNode(fSenderBinding);

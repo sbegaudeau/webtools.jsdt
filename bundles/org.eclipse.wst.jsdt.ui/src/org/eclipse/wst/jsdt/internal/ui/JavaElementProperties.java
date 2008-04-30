@@ -16,11 +16,11 @@ import org.eclipse.jface.viewers.IBasicPropertyConstants;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 public class JavaElementProperties implements IPropertySource {
 	
-	private IJavaElement fSource;
+	private IJavaScriptElement fSource;
 	
 	// Property Descriptors
 	private static final IPropertyDescriptor[] fgPropertyDescriptors= new IPropertyDescriptor[1];
@@ -33,7 +33,7 @@ public class JavaElementProperties implements IPropertySource {
 		fgPropertyDescriptors[0]= descriptor;
 	}
 	
-	public JavaElementProperties(IJavaElement source) {
+	public JavaElementProperties(IJavaScriptElement source) {
 		fSource= source;
 	}
 	

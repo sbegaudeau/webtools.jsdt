@@ -19,12 +19,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.MainMethodSearchEngine;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 /**
  * A dialog to select a type from a list of types. The dialog allows
@@ -33,17 +33,17 @@ import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
 public class MultiMainTypeSelectionDialog extends ElementListSelectionDialog {
 
 	private IRunnableContext fRunnableContext;
-	private IJavaSearchScope fScope;
+	private IJavaScriptSearchScope fScope;
 	private int fStyle;
 		
 	/**
 	 * Constructor.
 	 */
 	public MultiMainTypeSelectionDialog(Shell shell, IRunnableContext context,
-		IJavaSearchScope scope, int style)
+		IJavaScriptSearchScope scope, int style)
 	{
-		super(shell, new JavaElementLabelProvider(
-			JavaElementLabelProvider.SHOW_PARAMETERS | JavaElementLabelProvider.SHOW_POST_QUALIFIED | JavaElementLabelProvider.SHOW_ROOT));
+		super(shell, new JavaScriptElementLabelProvider(
+			JavaScriptElementLabelProvider.SHOW_PARAMETERS | JavaScriptElementLabelProvider.SHOW_POST_QUALIFIED | JavaScriptElementLabelProvider.SHOW_ROOT));
 
 		setMultipleSelection(true);
 

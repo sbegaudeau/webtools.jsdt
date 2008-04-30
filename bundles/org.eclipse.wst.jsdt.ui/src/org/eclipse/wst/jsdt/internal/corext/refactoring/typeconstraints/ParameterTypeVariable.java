@@ -11,15 +11,15 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 
 public class ParameterTypeVariable extends ConstraintVariable {
 
-	private final IMethodBinding fMethodBinding;
+	private final IFunctionBinding fMethodBinding;
 	private final int fParameterIndex;
 	
-	public ParameterTypeVariable(IMethodBinding methodBinding, int parameterIndex) {
+	public ParameterTypeVariable(IFunctionBinding methodBinding, int parameterIndex) {
 		super(methodBinding.getParameterTypes()[parameterIndex]);
 		Assert.isNotNull(methodBinding);
 		Assert.isTrue(0 <= parameterIndex);
@@ -35,7 +35,7 @@ public class ParameterTypeVariable extends ConstraintVariable {
 		return "[Parameter(" + fParameterIndex + "," + Bindings.asString(fMethodBinding) + ")]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
-	public IMethodBinding getMethodBinding() {
+	public IFunctionBinding getMethodBinding() {
 		return fMethodBinding;
 	}
 

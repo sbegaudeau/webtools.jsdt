@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
@@ -34,7 +34,7 @@ public class HistoryDropDownAction extends Action implements IMenuCreator {
 		}
 			
 		public void run() {
-			fView.setHistoryEntries(new IJavaElement[0]);
+			fView.setHistoryEntries(new IJavaScriptElement[0]);
 			fView.setInputElement(null);
 		}
 	}
@@ -70,7 +70,7 @@ public class HistoryDropDownAction extends Action implements IMenuCreator {
 			fMenu.dispose();
 		}
 		fMenu= new Menu(parent);
-		IJavaElement[] elements= fHierarchyView.getHistoryEntries();
+		IJavaScriptElement[] elements= fHierarchyView.getHistoryEntries();
 		addEntries(fMenu, elements);
 		new MenuItem(fMenu, SWT.SEPARATOR);
 		addActionToMenu(fMenu, new HistoryListAction(fHierarchyView));
@@ -78,7 +78,7 @@ public class HistoryDropDownAction extends Action implements IMenuCreator {
 		return fMenu;
 	}
 	
-	private boolean addEntries(Menu menu, IJavaElement[] elements) {
+	private boolean addEntries(Menu menu, IJavaScriptElement[] elements) {
 		boolean checked= false;
 		
 		int min= Math.min(elements.length, RESULTS_IN_DROP_DOWN);

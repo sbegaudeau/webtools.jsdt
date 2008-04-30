@@ -39,19 +39,19 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.services.IDisposable;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 
 public class JavaStructureCreator extends StructureCreator {
@@ -250,9 +250,9 @@ public class JavaStructureCreator extends StructureCreator {
 		if (input instanceof IResourceProvider) {
 			IResource resource= ((IResourceProvider) input).getResource();
 			if (resource != null) {
-				IJavaElement element= JavaCore.create(resource);
+				IJavaScriptElement element= JavaScriptCore.create(resource);
 				if (element != null) {
-					IJavaProject javaProject= element.getJavaProject();
+					IJavaScriptProject javaProject= element.getJavaScriptProject();
 					if (javaProject != null)
 						compilerOptions= javaProject.getOptions(true);
 				}
@@ -281,7 +281,7 @@ public class JavaStructureCreator extends StructureCreator {
 				parser.setCompilerOptions(compilerOptions);
 			parser.setSource(buffer);
 			parser.setFocalPosition(0);
-			CompilationUnit cu= (CompilationUnit) parser.createAST(monitor);
+			JavaScriptUnit cu= (JavaScriptUnit) parser.createAST(monitor);
 			cu.accept(new JavaParseTreeBuilder(root, buffer, true));
 			
 			return root;
@@ -308,7 +308,7 @@ public class JavaStructureCreator extends StructureCreator {
 		try {
 			content= JavaCompareUtilities.readString(sca);
 		} catch (CoreException ex) {
-			JavaPlugin.log(ex);
+			JavaScriptPlugin.log(ex);
 			return null;
 		}
 				
@@ -447,9 +447,9 @@ public class JavaStructureCreator extends StructureCreator {
 	 * a selected Java element can be replaced by some piece of
 	 * code from the local history.
 	 * @param je Java element
-	 * @return true if the given IJavaElement maps to a JavaNode
+	 * @return true if the given IJavaScriptElement maps to a JavaNode
 	 */
-	static boolean hasEdition(IJavaElement je) {
+	static boolean hasEdition(IJavaScriptElement je) {
 		return JavaElementHistoryPageSource.hasEdition(je);
 	}
 
@@ -464,17 +464,17 @@ public class JavaStructureCreator extends StructureCreator {
 	 * @see org.eclipse.compare.structuremergeviewer.StructureCreator#getDocumentPartitioning()
 	 */
 	protected String getDocumentPartitioning() {
-		return IJavaPartitions.JAVA_PARTITIONING;
+		return IJavaScriptPartitions.JAVA_PARTITIONING;
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.StructureCreator#getPath(java.lang.Object, java.lang.Object)
 	 */
 	protected String[] getPath(Object element, Object input) {
-		if (element instanceof IJavaElement) {
-			IJavaElement je = (IJavaElement) element;
+		if (element instanceof IJavaScriptElement) {
+			IJavaScriptElement je = (IJavaScriptElement) element;
 			// build a path starting at the given Java element and walk
-			// up the parent chain until we reach a IWorkingCopy or ICompilationUnit
+			// up the parent chain until we reach a IWorkingCopy or IJavaScriptUnit
 			List args= new ArrayList();
 			while (je != null) {
 				// each path component has a name that uses the same
@@ -483,7 +483,7 @@ public class JavaStructureCreator extends StructureCreator {
 				if (name == null)
 					return null;
 				args.add(name);
-				if (je instanceof ICompilationUnit)
+				if (je instanceof IJavaScriptUnit)
 					break;
 				je= je.getParent();
 			}

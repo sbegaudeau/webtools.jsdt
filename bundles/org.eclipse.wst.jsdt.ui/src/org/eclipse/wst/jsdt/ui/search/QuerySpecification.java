@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.search;
 
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 
 /**
  * <p>
@@ -30,11 +30,11 @@ import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
  * @since 3.0
  */
 public abstract class QuerySpecification {
-	private IJavaSearchScope fScope;
+	private IJavaScriptSearchScope fScope;
 	private int fLimitTo;
 	private String fScopeDescription;
 
-	QuerySpecification(int limitTo, IJavaSearchScope scope, String scopeDescription) {
+	QuerySpecification(int limitTo, IJavaScriptSearchScope scope, String scopeDescription) {
 		fScope= scope;
 		fLimitTo= limitTo;
 		fScopeDescription= scopeDescription;
@@ -44,7 +44,7 @@ public abstract class QuerySpecification {
 	 * Returns the search scope to be used in the query.
 	 * @return The search scope.
 	 */
-	public IJavaSearchScope getScope() {
+	public IJavaScriptSearchScope getScope() {
 		return fScope;
 	}
 	
@@ -60,7 +60,7 @@ public abstract class QuerySpecification {
 	/**
 	 * Returns what kind of occurrences the query should look for.
 	 * @return Whether to search for reference, declaration, etc.
-	 * @see org.eclipse.wst.jsdt.core.search.IJavaSearchConstants
+	 * @see org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants
 	 */
 	public int getLimitTo() {
 		return fLimitTo;

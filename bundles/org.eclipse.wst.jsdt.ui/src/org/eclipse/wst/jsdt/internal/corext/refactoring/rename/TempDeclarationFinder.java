@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.rename;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -31,7 +31,7 @@ public class TempDeclarationFinder {
 	 * @return <code>null</code> if the selection is invalid or does not cover a temp
 	 * declaration or reference.
 	 */
-	public static VariableDeclaration findTempDeclaration(CompilationUnit cu, int selectionOffset, int selectionLength) {
+	public static VariableDeclaration findTempDeclaration(JavaScriptUnit cu, int selectionOffset, int selectionLength) {
 		TempSelectionAnalyzer analyzer= new TempSelectionAnalyzer(selectionOffset, selectionLength);
 		cu.accept(analyzer);
 		

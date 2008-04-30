@@ -21,13 +21,13 @@ import org.eclipse.ltk.core.refactoring.ChangeDescriptor;
 import org.eclipse.ltk.core.refactoring.ContentStamp;
 import org.eclipse.ltk.core.refactoring.TextFileChange;
 import org.eclipse.text.edits.UndoEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 public class CompilationUnitChange extends TextFileChange {
 
-	private final ICompilationUnit fCUnit;
+	private final IJavaScriptUnit fCUnit;
 	
 	/** The (optional) refactoring descriptor */
 	private ChangeDescriptor fDescriptor;
@@ -38,14 +38,14 @@ public class CompilationUnitChange extends TextFileChange {
 	 * @param name the change's name mainly used to render the change in the UI
 	 * @param cunit the compilation unit this text change works on
 	 */
-	public CompilationUnitChange(String name, ICompilationUnit cunit) {
+	public CompilationUnitChange(String name, IJavaScriptUnit cunit) {
 		super(name, getFile(cunit));
 		Assert.isNotNull(cunit);
 		fCUnit= cunit;
 		setTextType("js"); //$NON-NLS-1$
 	}
 	
-	private static IFile getFile(ICompilationUnit cunit) {
+	private static IFile getFile(IJavaScriptUnit cunit) {
 		return (IFile) cunit.getResource();
 	}
 	
@@ -61,7 +61,7 @@ public class CompilationUnitChange extends TextFileChange {
 	 * 
 	 * @return the compilation unit this change works on
 	 */
-	public ICompilationUnit getCompilationUnit() {
+	public IJavaScriptUnit getCompilationUnit() {
 		return fCUnit;
 	}
 	
@@ -99,7 +99,7 @@ public class CompilationUnitChange extends TextFileChange {
 		try {
 			return new UndoCompilationUnitChange(getName(), fCUnit, edit, stampToRestore, getSaveMode());
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			return null;
 		}
 	}
@@ -108,7 +108,7 @@ public class CompilationUnitChange extends TextFileChange {
 	 * {@inheritDoc}
 	 */
 	public Object getAdapter(Class adapter) {
-		if (ICompilationUnit.class.equals(adapter))
+		if (IJavaScriptUnit.class.equals(adapter))
 			return fCUnit;
 		return super.getAdapter(adapter);
 	}

@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring.code;
 
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.InlineMethodRefactoring;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 
 public class InlineMethodWizard extends RefactoringWizard {
@@ -22,7 +22,7 @@ public class InlineMethodWizard extends RefactoringWizard {
 	public InlineMethodWizard(InlineMethodRefactoring ref){
 		super(ref, DIALOG_BASED_USER_INTERFACE);
 		setDefaultPageTitle(RefactoringMessages.InlineMethodWizard_page_title);  
-		setDialogSettings(JavaPlugin.getDefault().getDialogSettings());
+		setDialogSettings(JavaScriptPlugin.getDefault().getDialogSettings());
 	}
 
 	protected void addUserInputPages(){

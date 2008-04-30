@@ -63,7 +63,7 @@ public class JavadocImplicitTypeReference extends TypeReference implements IJsDo
 	}
 
 	/*
-	 * Resolves type on a Block, Class or CompilationUnit scope.
+	 * Resolves type on a Block, Class or JavaScriptUnit scope.
 	 * We need to modify resoling behavior to avoid raw type creation.
 	 */
 	private TypeBinding internalResolveType(Scope scope) {

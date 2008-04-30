@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import java.util.HashMap;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 
@@ -31,16 +31,16 @@ public class CompilationUnitElementInfo extends OpenableElementInfo {
 
 	/*
 	 * The positions of annotations for each element in this compilation unit.
-	 * A map from IJavaElement to long[]
+	 * A map from IJavaScriptElement to long[]
 	 */
 	public HashMap annotationPositions;
 
 	/*
-	 * A map from an IJavaElement (this type or a child of this type) to a String[] (the categories of this element)
+	 * A map from an IJavaScriptElement (this type or a child of this type) to a String[] (the categories of this element)
 	 */
 	protected HashMap categories;
 
-protected void addCategories(IJavaElement element, char[][] elementCategories) {
+protected void addCategories(IJavaScriptElement element, char[][] elementCategories) {
 	if (elementCategories == null) return;
 	if (this.categories == null)
 		this.categories = new HashMap();
@@ -48,13 +48,13 @@ protected void addCategories(IJavaElement element, char[][] elementCategories) {
 }
 
 /*
- * Return a map from an IJavaElement (this type or a child of this type) to a String[] (the categories of this element)
+ * Return a map from an IJavaScriptElement (this type or a child of this type) to a String[] (the categories of this element)
  */
 public HashMap getCategories() {
 	return this.categories;
 }
 
-public void addAnnotationPositions(IJavaElement handle, long[] positions) {
+public void addAnnotationPositions(IJavaScriptElement handle, long[] positions) {
 	if (positions == null) return;
 	if (this.annotationPositions == null)
 		this.annotationPositions = new HashMap();

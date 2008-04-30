@@ -212,7 +212,7 @@ public class SimpleName extends Name {
 	 * ones where a name is defined:
 	 * <ul>
 	 * <li>The type name in a <code>TypeDeclaration</code> node.</li>
-	 * <li>The method name in a <code>MethodDeclaration</code> node
+	 * <li>The method name in a <code>FunctionDeclaration</code> node
 	 * providing <code>isConstructor</code> is <code>false</code>.</li>
 	 * <li>The variable name in any type of <code>VariableDeclaration</code>
 	 * node.</li>
@@ -245,10 +245,10 @@ public class SimpleName extends Name {
 		if (parent instanceof TypeDeclaration) {
 			return (d == TypeDeclaration.NAME_PROPERTY);
 		}
-		if (parent instanceof MethodDeclaration) {
-			MethodDeclaration p = (MethodDeclaration) parent;
+		if (parent instanceof FunctionDeclaration) {
+			FunctionDeclaration p = (FunctionDeclaration) parent;
 			// could be the name of the method or constructor
-			return !p.isConstructor() && (d == MethodDeclaration.NAME_PROPERTY);
+			return !p.isConstructor() && (d == FunctionDeclaration.NAME_PROPERTY);
 		}
 		if (parent instanceof SingleVariableDeclaration) {
 			return (d == SingleVariableDeclaration.NAME_PROPERTY);

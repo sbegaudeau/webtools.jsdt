@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.launching;
 
 
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 
 /**
  * Optional enhancements to {@link IRuntimeClasspathEntryResolver}.
@@ -28,5 +28,5 @@ public interface IRuntimeClasspathEntryResolver2 extends IRuntimeClasspathEntryR
 	 * @param entry classpath entry
 	 * @return whether the given classpath entry references a VM install
 	 */
-	public boolean isVMInstallReference(IClasspathEntry entry);
+	public boolean isVMInstallReference(IIncludePathEntry entry);
 }

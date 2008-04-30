@@ -36,11 +36,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
@@ -48,7 +48,7 @@ import org.eclipse.wst.jsdt.core.dom.ASTRequestor;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorHighlightingSynchronizer;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
@@ -118,7 +118,7 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 				}
 				return buf.toString();
 				
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return null;
 			}
 		}
@@ -214,9 +214,9 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 
 					return;
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// log and continue
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 
@@ -272,9 +272,9 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 	 * </p>
 	 *
 	 * @return the type argument proposals for the proposed type
-	 * @throws JavaModelException if accessing the java model fails
+	 * @throws JavaScriptModelException if accessing the java model fails
 	 */
-	private TypeArgumentProposal[] computeTypeArgumentProposals() throws JavaModelException {
+	private TypeArgumentProposal[] computeTypeArgumentProposals() throws JavaScriptModelException {
 		if (fTypeArgumentProposals == null) {
 			
 			IType type= (IType) getJavaElement();
@@ -340,9 +340,9 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 	 * 
 	 * @param parameter the type parameter of the inserted type
 	 * @return a type argument proposal for <code>parameter</code>
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	private TypeArgumentProposal computeTypeProposal(ITypeParameter parameter) throws JavaModelException {
+	private TypeArgumentProposal computeTypeProposal(ITypeParameter parameter) throws JavaScriptModelException {
 		String[] bounds= parameter.getBounds();
 		String elementName= parameter.getElementName();
 		String displayName= computeTypeParameterDisplayName(parameter, bounds);
@@ -381,10 +381,10 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 	 * @param binding the type argument binding in the expected type
 	 * @param parameter the type parameter of the inserted type
 	 * @return a type argument proposal for <code>binding</code>
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 * @see #computeTypeProposal(ITypeParameter)
 	 */
-	private TypeArgumentProposal computeTypeProposal(ITypeBinding binding, ITypeParameter parameter) throws JavaModelException {
+	private TypeArgumentProposal computeTypeProposal(ITypeBinding binding, ITypeParameter parameter) throws JavaScriptModelException {
 		final String name= binding.getName();
 		if (binding.isWildcardType()) {
 
@@ -422,9 +422,9 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 	 *         <code>subType</code>, or <code>null</code> if
 	 *         <code>subType</code> does not inherit from
 	 *         <code>superType</code>
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	private IType[] computeInheritancePath(IType subType, IType superType) throws JavaModelException {
+	private IType[] computeInheritancePath(IType subType, IType superType) throws JavaScriptModelException {
 		if (superType == null)
 			return null;
 
@@ -470,11 +470,11 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 	 *         corresponding to the type parameter at <code>paramIndex</code>
 	 *         in <code>path[pathIndex]</code>, or -1 if there is no
 	 *         corresponding type parameter
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 * @throws ArrayIndexOutOfBoundsException if <code>path[pathIndex]</code>
 	 *         has &lt;= <code>paramIndex</code> parameters
 	 */
-	private int mapTypeParameterIndex(IType[] path, int pathIndex, int paramIndex) throws JavaModelException, ArrayIndexOutOfBoundsException {
+	private int mapTypeParameterIndex(IType[] path, int pathIndex, int paramIndex) throws JavaScriptModelException, ArrayIndexOutOfBoundsException {
 		if (pathIndex == 0)
 			// break condition: we've reached the top of the hierarchy
 			return paramIndex;
@@ -503,11 +503,11 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 	 *        <code>subType</code>
 	 * @return the super type signature of <code>subType</code> referring
 	 *         to <code>superType</code>
-	 * @throws JavaModelException if extracting the super type signatures
+	 * @throws JavaScriptModelException if extracting the super type signatures
 	 *         fails, or if <code>subType</code> contains no super type
 	 *         signature to <code>superType</code>
 	 */
-	private String findMatchingSuperTypeSignature(IType subType, IType superType) throws JavaModelException {
+	private String findMatchingSuperTypeSignature(IType subType, IType superType) throws JavaScriptModelException {
 		String[] signatures= getSuperTypeSignatures(subType, superType);
 		for (int i= 0; i < signatures.length; i++) {
 			String signature= signatures[i];
@@ -522,7 +522,7 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 			// TODO handle local types
 		}
 
-		throw new JavaModelException(new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, "Illegal hierarchy", null))); //$NON-NLS-1$
+		throw new JavaScriptModelException(new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, "Illegal hierarchy", null))); //$NON-NLS-1$
 	}
 
 	/**
@@ -556,9 +556,9 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 	 * @param subType the sub type signature
 	 * @param superType the super type signature
 	 * @return the super type signatures of <code>subType</code>
-	 * @throws JavaModelException if any java model operation fails
+	 * @throws JavaScriptModelException if any java model operation fails
 	 */
-	private String[] getSuperTypeSignatures(IType subType, IType superType) throws JavaModelException {
+	private String[] getSuperTypeSignatures(IType subType, IType superType) throws JavaScriptModelException {
 		if (superType.isInterface())
 			return subType.getSuperInterfaceTypeSignatures();
 		else
@@ -582,7 +582,7 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 		}
 
 		final ASTParser parser= ASTParser.newParser(AST.JLS3);
-		parser.setProject(fCompilationUnit.getJavaProject());
+		parser.setProject(fCompilationUnit.getJavaScriptProject());
 		parser.setResolveBindings(true);
 
 		final Map bindings= new HashMap();
@@ -591,7 +591,7 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 				bindings.put(bindingKey, binding);
 			}
 		};
-		parser.createASTs(new ICompilationUnit[0], keys, requestor, null);
+		parser.createASTs(new IJavaScriptUnit[0], keys, requestor, null);
 
 		if (bindings.size() > 0)
 			return (ITypeBinding) bindings.get(keys[0]);
@@ -710,7 +710,7 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 			fSelectedRegion= ui.getSelectedRegion();
 
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			openErrorDialog(e);
 		}
 	}
@@ -733,7 +733,7 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 	 * @return  the currently active java editor, or <code>null</code>
 	 */
 	private JavaEditor getJavaEditor() {
-		IEditorPart part= JavaPlugin.getActivePage().getActiveEditor();
+		IEditorPart part= JavaScriptPlugin.getActivePage().getActiveEditor();
 		if (part instanceof JavaEditor)
 			return (JavaEditor) part;
 		else
@@ -765,7 +765,7 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 				if (hasAmbiguousProposals(proposals))
 					return new ContextInformation(this);
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 		}
 		return super.computeContextInformation();
 	}
@@ -783,7 +783,7 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 				return false;
 
 			return type.getTypeParameters().length > 0;
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return false;
 		}
 	}

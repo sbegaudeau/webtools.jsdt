@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.ui.text.java;
 
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 
 
 /**
@@ -75,7 +75,7 @@ public interface IProblemLocation {
 	 * @param astRoot The root node of the current AST
 	 * @return Returns the node that covers the location of the problem
 	 */
-	ASTNode getCoveringNode(CompilationUnit astRoot);
+	ASTNode getCoveringNode(JavaScriptUnit astRoot);
 
 	/**
 	 * Convenience method to evaluate the AST node covered by this problem.
@@ -83,6 +83,6 @@ public interface IProblemLocation {
 	 * @param astRoot The root node of the current AST
 	 * @return Returns the node that is covered by the location of the problem
 	 */
-	ASTNode getCoveredNode(CompilationUnit astRoot);
+	ASTNode getCoveredNode(JavaScriptUnit astRoot);
 
 }

@@ -32,8 +32,8 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.ReorgExecutionLog;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JavaRefactoringArguments;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.DynamicValidationStateChange;
@@ -62,7 +62,7 @@ public final class JavaCopyProcessor extends CopyProcessor implements IReorgDest
 		fCopyPolicy= copyPolicy;
 	}
 
-	public boolean canChildrenBeDestinations(IJavaElement javaElement) {
+	public boolean canChildrenBeDestinations(IJavaScriptElement javaElement) {
 		return fCopyPolicy.canChildrenBeDestinations(javaElement);
 	}
 
@@ -70,7 +70,7 @@ public final class JavaCopyProcessor extends CopyProcessor implements IReorgDest
 		return fCopyPolicy.canChildrenBeDestinations(resource);
 	}
 
-	public boolean canElementBeDestination(IJavaElement javaElement) {
+	public boolean canElementBeDestination(IJavaScriptElement javaElement) {
 		return fCopyPolicy.canElementBeDestination(javaElement);
 	}
 
@@ -161,7 +161,7 @@ public final class JavaCopyProcessor extends CopyProcessor implements IReorgDest
 	}
 
 	public Object[] getElements() {
-		IJavaElement[] jElements= fCopyPolicy.getJavaElements();
+		IJavaScriptElement[] jElements= fCopyPolicy.getJavaElements();
 		IResource[] resources= fCopyPolicy.getResources();
 		List result= new ArrayList(jElements.length + resources.length);
 		result.addAll(Arrays.asList(jElements));
@@ -173,7 +173,7 @@ public final class JavaCopyProcessor extends CopyProcessor implements IReorgDest
 		return IDENTIFIER;
 	}
 
-	public IJavaElement[] getJavaElements() {
+	public IJavaScriptElement[] getJavaElements() {
 		return fCopyPolicy.getJavaElements();
 	}
 
@@ -218,11 +218,11 @@ public final class JavaCopyProcessor extends CopyProcessor implements IReorgDest
 		fComment= comment;
 	}
 
-	public RefactoringStatus setDestination(IJavaElement destination) throws JavaModelException {
+	public RefactoringStatus setDestination(IJavaScriptElement destination) throws JavaScriptModelException {
 		return fCopyPolicy.setDestination(destination);
 	}
 
-	public RefactoringStatus setDestination(IResource destination) throws JavaModelException {
+	public RefactoringStatus setDestination(IResource destination) throws JavaScriptModelException {
 		return fCopyPolicy.setDestination(destination);
 	}
 

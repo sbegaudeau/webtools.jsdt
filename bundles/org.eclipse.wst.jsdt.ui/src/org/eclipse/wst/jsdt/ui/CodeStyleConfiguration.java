@@ -13,10 +13,10 @@ package org.eclipse.wst.jsdt.ui;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 
 /**
@@ -35,37 +35,37 @@ public class CodeStyleConfiguration {
 	
 	
 	/**
-	 * Returns a {@link ImportRewrite} using {@link ImportRewrite#create(ICompilationUnit, boolean)} and
+	 * Returns a {@link ImportRewrite} using {@link ImportRewrite#create(IJavaScriptUnit, boolean)} and
 	 * configures the rewriter with the settings as specified in the JDT UI preferences.
 	 * <p>
 	 * 
 	 * @param cu the compilation unit to create the rewriter on
 	 * @param restoreExistingImports specifies if the existing imports should be kept or removed.
 	 * @return the new rewriter configured with the settings as specified in the JDT UI preferences.
-	 * @throws JavaModelException thrown when the compilation unit could not be accessed.
+	 * @throws JavaScriptModelException thrown when the compilation unit could not be accessed.
 	 * 
-	 * @see ImportRewrite#create(ICompilationUnit, boolean)
+	 * @see ImportRewrite#create(IJavaScriptUnit, boolean)
 	 */
-	public static ImportRewrite createImportRewrite(ICompilationUnit cu, boolean restoreExistingImports) throws JavaModelException {
+	public static ImportRewrite createImportRewrite(IJavaScriptUnit cu, boolean restoreExistingImports) throws JavaScriptModelException {
 		return configureImportRewrite(ImportRewrite.create(cu, restoreExistingImports));
 	}
 	
 	/**
-	 * Returns a {@link ImportRewrite} using {@link ImportRewrite#create(CompilationUnit, boolean)} and
+	 * Returns a {@link ImportRewrite} using {@link ImportRewrite#create(JavaScriptUnit, boolean)} and
 	 * configures the rewriter with the settings as specified in the JDT UI preferences.
 	 * 
 	 * @param astRoot the AST root to create the rewriter on
 	 * @param restoreExistingImports specifies if the existing imports should be kept or removed.
 	 * @return the new rewriter configured with the settings as specified in the JDT UI preferences.
 	 * 
-	 * @see ImportRewrite#create(CompilationUnit, boolean)
+	 * @see ImportRewrite#create(JavaScriptUnit, boolean)
 	 */
-	public static ImportRewrite createImportRewrite(CompilationUnit astRoot, boolean restoreExistingImports) {
+	public static ImportRewrite createImportRewrite(JavaScriptUnit astRoot, boolean restoreExistingImports) {
 		return configureImportRewrite(ImportRewrite.create(astRoot, restoreExistingImports));
 	}
 	
 	private static ImportRewrite configureImportRewrite(ImportRewrite rewrite) {
-		IJavaProject project= rewrite.getCompilationUnit().getJavaProject();
+		IJavaScriptProject project= rewrite.getCompilationUnit().getJavaScriptProject();
 		String order= PreferenceConstants.getPreference(PreferenceConstants.ORGIMPORTS_IMPORTORDER, project);
 		rewrite.setImportOrder(SEMICOLON_PATTERN.split(order, 0));
 

@@ -23,10 +23,10 @@ package org.eclipse.wst.jsdt.core;
  * </p>
  * <p>
  * This interface is not intended to be implemented by clients.
- * Instances can be created via the <code>JavaCore.newRegion</code>.
+ * Instances can be created via the <code>JavaScriptCore.newRegion</code>.
  * </p>
  *
- * @see JavaCore#newRegion()
+ * @see JavaScriptCore#newRegion()
  */
 public interface IRegion {
 	/**
@@ -38,21 +38,21 @@ public interface IRegion {
 	 *
 	 * @param element the given element
 	 */
-	void add(IJavaElement element);
+	void add(IJavaScriptElement element);
 	/**
 	 * Returns whether the given element is contained in this region.
 	 *
 	 * @param element the given element
 	 * @return true if the given element is contained in this region, false otherwise
 	 */
-	boolean contains(IJavaElement element);
+	boolean contains(IJavaScriptElement element);
 	/**
 	 * Returns the top level elements in this region.
 	 * All descendents of these elements are also included in this region.
 	 *
 	 * @return the top level elements in this region
 	 */
-	IJavaElement[] getElements();
+	IJavaScriptElement[] getElements();
 	/**
 	 * Removes the specified element from the region and returns
 	 * <code>true</code> if successful, <code>false</code> if the remove
@@ -63,5 +63,5 @@ public interface IRegion {
 	 * @param element the given element
 	 * @return <code>true</code> if successful, <code>false</code> if the remove fails
 	 */
-	boolean remove(IJavaElement element);
+	boolean remove(IJavaScriptElement element);
 }

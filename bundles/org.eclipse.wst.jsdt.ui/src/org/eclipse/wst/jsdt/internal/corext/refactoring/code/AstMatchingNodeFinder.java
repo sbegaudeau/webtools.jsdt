@@ -33,7 +33,7 @@ import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
@@ -53,17 +53,17 @@ import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
 import org.eclipse.wst.jsdt.core.dom.LineComment;
 import org.eclipse.wst.jsdt.core.dom.ListExpression;
 import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
-import org.eclipse.wst.jsdt.core.dom.MethodRef;
-import org.eclipse.wst.jsdt.core.dom.MethodRefParameter;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
@@ -247,7 +247,7 @@ class AstMatchingNodeFinder {
 			return super.visit(node);
 		}
 
-		public boolean visit(CompilationUnit node) {
+		public boolean visit(JavaScriptUnit node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
 			return super.visit(node);
@@ -343,7 +343,7 @@ class AstMatchingNodeFinder {
 			return super.visit(node);
         }
 
-		public boolean visit(Javadoc node) {
+		public boolean visit(JSdoc node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
 			return super.visit(node);
@@ -361,13 +361,13 @@ class AstMatchingNodeFinder {
 				return matches(node);
 			return super.visit(node);
 		}
-		public boolean visit(MethodDeclaration node) {
+		public boolean visit(FunctionDeclaration node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
 			return super.visit(node);
 		}
 
-		public boolean visit(MethodInvocation node) {
+		public boolean visit(FunctionInvocation node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
 			return super.visit(node);
@@ -616,13 +616,13 @@ class AstMatchingNodeFinder {
 			return super.visit(node);
 		}
 
-		public boolean visit(MethodRef node) {
+		public boolean visit(FunctionRef node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
 			return super.visit(node);
 		}
 
-		public boolean visit(MethodRefParameter node) {
+		public boolean visit(FunctionRefParameter node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
 			return super.visit(node);

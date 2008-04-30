@@ -32,12 +32,12 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditorExtension2;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.wst.jsdt.internal.ui.text.SmartBackspaceManager;
 import org.eclipse.wst.jsdt.internal.ui.text.SmartBackspaceManager.UndoSpec;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 /**
  * Modifies <code>DocumentCommand</code>s inserting semicolons and opening braces to place them
@@ -92,13 +92,13 @@ public class SmartSemicolonAutoEditStrategy implements IAutoEditStrategy {
 		else
 			return;
 
-		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 		if (fCharacter == SEMICHAR && !store.getBoolean(PreferenceConstants.EDITOR_SMART_SEMICOLON))
 			return;
 		if (fCharacter == BRACECHAR && !store.getBoolean(PreferenceConstants.EDITOR_SMART_OPENING_BRACE))
 			return;
 
-		IWorkbenchPage page= JavaPlugin.getActivePage();
+		IWorkbenchPage page= JavaScriptPlugin.getActivePage();
 		if (page == null)
 			return;
 		IEditorPart part= page.getActiveEditor();
@@ -144,7 +144,7 @@ public class SmartSemicolonAutoEditStrategy implements IAutoEditStrategy {
 		try {
 
 			final SmartBackspaceManager manager= (SmartBackspaceManager) editor.getAdapter(SmartBackspaceManager.class);
-			if (manager != null && JavaPlugin.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_SMART_BACKSPACE)) {
+			if (manager != null && JavaScriptPlugin.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_SMART_BACKSPACE)) {
 				TextEdit e1= new ReplaceEdit(command.offset, command.text.length(), document.get(command.offset, command.length));
 				UndoSpec s1= new UndoSpec(command.offset + command.text.length(),
 						new Region(command.offset, 0),
@@ -170,9 +170,9 @@ public class SmartSemicolonAutoEditStrategy implements IAutoEditStrategy {
 			command.doit= true;
 			command.owner= null;
 		} catch (MalformedTreeException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 
 
@@ -947,18 +947,18 @@ public class SmartSemicolonAutoEditStrategy implements IAutoEditStrategy {
 	private static int getValidPositionForPartition(IDocument doc, ITypedRegion partition, int maxOffset) {
 		final int INVALID= -1;
 
-		if (IJavaPartitions.JAVA_DOC.equals(partition.getType()))
+		if (IJavaScriptPartitions.JAVA_DOC.equals(partition.getType()))
 			return INVALID;
-		if (IJavaPartitions.JAVA_MULTI_LINE_COMMENT.equals(partition.getType()))
+		if (IJavaScriptPartitions.JAVA_MULTI_LINE_COMMENT.equals(partition.getType()))
 			return INVALID;
-		if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(partition.getType()))
+		if (IJavaScriptPartitions.JAVA_SINGLE_LINE_COMMENT.equals(partition.getType()))
 			return INVALID;
 
 		int endOffset= Math.min(maxOffset, partition.getOffset() + partition.getLength());
 
-		if (IJavaPartitions.JAVA_CHARACTER.equals(partition.getType()))
+		if (IJavaScriptPartitions.JAVA_CHARACTER.equals(partition.getType()))
 			return endOffset;
-		if (IJavaPartitions.JAVA_STRING.equals(partition.getType()))
+		if (IJavaScriptPartitions.JAVA_STRING.equals(partition.getType()))
 			return endOffset;
 		if (IDocument.DEFAULT_CONTENT_TYPE.equals(partition.getType())) {
 			try {

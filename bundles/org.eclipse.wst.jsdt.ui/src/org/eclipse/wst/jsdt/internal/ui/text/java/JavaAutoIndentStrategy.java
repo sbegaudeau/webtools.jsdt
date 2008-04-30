@@ -29,7 +29,7 @@ import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
@@ -49,13 +49,13 @@ import org.eclipse.wst.jsdt.core.dom.WhileStatement;
 import org.eclipse.wst.jsdt.core.dom.WithStatement;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.FastJavaPartitionScanner;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaHeuristicScanner;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaIndenter;
 import org.eclipse.wst.jsdt.internal.ui.text.Symbols;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 /**
  * Auto indent strategy sensitive to brackets.
@@ -81,7 +81,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	private boolean fIsSmartMode;
 
 	private String fPartitioning;
-	private final IJavaProject fProject;
+	private final IJavaScriptProject fProject;
 	private static IScanner fgScanner= ToolFactory.createScanner(false, false, false, false);
 
 	/**
@@ -90,7 +90,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	 * @param partitioning the document partitioning
 	 * @param project the project to get formatting preferences from, or null to use default preferences
 	 */
-	public JavaAutoIndentStrategy(String partitioning, IJavaProject project) {
+	public JavaAutoIndentStrategy(String partitioning, IJavaScriptProject project) {
 		fPartitioning= partitioning;
 		fProject= project;
  	}
@@ -214,7 +214,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 				}
 			}
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 	}
 
@@ -255,7 +255,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 			}
 
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 
 	}
@@ -286,7 +286,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
 			int start= reg.getOffset();
 			ITypedRegion region= TextUtilities.getPartition(d, fPartitioning, start, true);
-			if (IJavaPartitions.JAVA_DOC.equals(region.getType()))
+			if (IJavaScriptPartitions.JAVA_DOC.equals(region.getType()))
 				start= d.getLineInformationOfOffset(region.getOffset()).getOffset();
 
 			// insert closing brace on new line after an unclosed opening brace
@@ -337,7 +337,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 			c.text= buf.toString();
 
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 	}
 
@@ -493,11 +493,11 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 		if (info == null)
 			return false;
 
-		CompilationUnit compilationUnit= null;
+		JavaScriptUnit compilationUnit= null;
 		try {
 			ASTParser parser= ASTParser.newParser(AST.JLS3);
 			parser.setSource(info.buffer);
-			compilationUnit= (CompilationUnit) parser.createAST(null);
+			compilationUnit= (JavaScriptUnit) parser.createAST(null);
 		} catch (ArrayIndexOutOfBoundsException x) {
 			// work around for parser problem
 			return false;
@@ -609,16 +609,16 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	 */
 	private static void installJavaStuff(Document document) {
 		String[] types= new String[] {
-									  IJavaPartitions.JAVA_DOC,
-									  IJavaPartitions.JAVA_MULTI_LINE_COMMENT,
-									  IJavaPartitions.JAVA_SINGLE_LINE_COMMENT,
-									  IJavaPartitions.JAVA_STRING,
-									  IJavaPartitions.JAVA_CHARACTER,
+									  IJavaScriptPartitions.JAVA_DOC,
+									  IJavaScriptPartitions.JAVA_MULTI_LINE_COMMENT,
+									  IJavaScriptPartitions.JAVA_SINGLE_LINE_COMMENT,
+									  IJavaScriptPartitions.JAVA_STRING,
+									  IJavaScriptPartitions.JAVA_CHARACTER,
 									  IDocument.DEFAULT_CONTENT_TYPE
 		};
 		FastPartitioner partitioner= new FastPartitioner(new FastJavaPartitionScanner(), types);
 		partitioner.connect(document);
-		document.setDocumentPartitioner(IJavaPartitions.JAVA_PARTITIONING, partitioner);
+		document.setDocumentPartitioner(IJavaScriptPartitions.JAVA_PARTITIONING, partitioner);
 	}
 
 	/**
@@ -627,7 +627,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	 * @param document the document
 	 */
 	private static void removeJavaStuff(Document document) {
-		document.setDocumentPartitioner(IJavaPartitions.JAVA_PARTITIONING, null);
+		document.setDocumentPartitioner(IJavaScriptPartitions.JAVA_PARTITIONING, null);
 	}
 
 	private void smartPaste(IDocument document, DocumentCommand command) {
@@ -733,7 +733,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 			command.text= newText;
 
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 
 	}
@@ -768,8 +768,8 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
 		// don't count the space before javadoc like, asterisk-style comment lines
 		if (to > from && to < endOffset - 1 && document.get(to - 1, 2).equals(" *")) { //$NON-NLS-1$
-			String type= TextUtilities.getContentType(document, IJavaPartitions.JAVA_PARTITIONING, to, true);
-			if (type.equals(IJavaPartitions.JAVA_DOC) || type.equals(IJavaPartitions.JAVA_MULTI_LINE_COMMENT))
+			String type= TextUtilities.getContentType(document, IJavaScriptPartitions.JAVA_PARTITIONING, to, true);
+			if (type.equals(IJavaScriptPartitions.JAVA_DOC) || type.equals(IJavaScriptPartitions.JAVA_MULTI_LINE_COMMENT))
 				to--;
 		}
 
@@ -1166,7 +1166,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 			}
 
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 	}
 
@@ -1194,7 +1194,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	}
 
 	private static IPreferenceStore getPreferenceStore() {
-		return JavaPlugin.getDefault().getCombinedPreferenceStore();
+		return JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 	}
 
 	private boolean closeBrace() {
@@ -1212,7 +1212,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	}
 
 	private boolean computeSmartMode() {
-		IWorkbenchPage page= JavaPlugin.getActivePage();
+		IWorkbenchPage page= JavaScriptPlugin.getActivePage();
 		if (page != null)  {
 			IEditorPart part= page.getActiveEditor();
 			if (part instanceof ITextEditorExtension3) {
@@ -1243,7 +1243,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 			return new CompilationUnitInfo(buffer, sourceRange.getOffset() - methodOffset);
 
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 
 		return null;

@@ -16,16 +16,16 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.core.util.DOMFinder;
 import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
@@ -50,7 +50,7 @@ protected SourceRefElement(JavaElement parent) {
 /**
  * This element is being closed.  Do any necessary cleanup.
  */
-protected void closing(Object info) throws JavaModelException {
+protected void closing(Object info) throws JavaScriptModelException {
 	// Do any necessary cleanup
 }
 /**
@@ -62,28 +62,28 @@ protected Object createElementInfo() {
 /**
  * @see org.eclipse.wst.jsdt.core.ISourceManipulation
  */
-public void copy(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
+public void copy(IJavaScriptElement container, IJavaScriptElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
 	if (container == null) {
 		throw new IllegalArgumentException(Messages.operation_nullContainer);
 	}
-	IJavaElement[] elements= new IJavaElement[] {this};
-	IJavaElement[] containers= new IJavaElement[] {container};
-	IJavaElement[] siblings= null;
+	IJavaScriptElement[] elements= new IJavaScriptElement[] {this};
+	IJavaScriptElement[] containers= new IJavaScriptElement[] {container};
+	IJavaScriptElement[] siblings= null;
 	if (sibling != null) {
-		siblings= new IJavaElement[] {sibling};
+		siblings= new IJavaScriptElement[] {sibling};
 	}
 	String[] renamings= null;
 	if (rename != null) {
 		renamings= new String[] {rename};
 	}
-	getJavaModel().copy(elements, containers, siblings, renamings, force, monitor);
+	getJavaScriptModel().copy(elements, containers, siblings, renamings, force, monitor);
 }
 /**
  * @see org.eclipse.wst.jsdt.core.ISourceManipulation
  */
-public void delete(boolean force, IProgressMonitor monitor) throws JavaModelException {
-	IJavaElement[] elements = new IJavaElement[] {this};
-	getJavaModel().delete(elements, force, monitor);
+public void delete(boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
+	IJavaScriptElement[] elements = new IJavaScriptElement[] {this};
+	getJavaScriptModel().delete(elements, force, monitor);
 }
 public boolean equals(Object o) {
 	if (!(o instanceof SourceRefElement)) return false;
@@ -94,11 +94,11 @@ public boolean equals(Object o) {
  * Returns the <code>ASTNode</code> that corresponds to this <code>JavaElement</code>
  * or <code>null</code> if there is no corresponding node.
  */
-public ASTNode findNode(CompilationUnit ast) {
+public ASTNode findNode(JavaScriptUnit ast) {
 	DOMFinder finder = new DOMFinder(ast, this, false);
 	try {
 		return finder.search();
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// receiver doesn't exist
 		return null;
 	}
@@ -106,7 +106,7 @@ public ASTNode findNode(CompilationUnit ast) {
 /*
  * @see JavaElement#generateInfos
  */
-protected void generateInfos(Object info, HashMap newElements, IProgressMonitor pm) throws JavaModelException {
+protected void generateInfos(Object info, HashMap newElements, IProgressMonitor pm) throws JavaScriptModelException {
 	Openable openableParent = (Openable)getOpenableParent();
 	if (openableParent == null) return;
 
@@ -117,24 +117,31 @@ protected void generateInfos(Object info, HashMap newElements, IProgressMonitor 
 }
 /**
  * @see org.eclipse.wst.jsdt.core.IMember
+ * @deprecated Use {@link #getJavaScriptUnit()} instead
  */
-public ICompilationUnit getCompilationUnit() {
-	return (ICompilationUnit) getAncestor(COMPILATION_UNIT);
+public IJavaScriptUnit getCompilationUnit() {
+	return getJavaScriptUnit();
+}
+/**
+ * @see org.eclipse.wst.jsdt.core.IMember
+ */
+public IJavaScriptUnit getJavaScriptUnit() {
+	return (IJavaScriptUnit) getAncestor(JAVASCRIPT_UNIT);
 }
 /**
  * Elements within compilation units and class files have no
  * corresponding resource.
  *
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
-public IResource getCorrespondingResource() throws JavaModelException {
+public IResource getCorrespondingResource() throws JavaScriptModelException {
 	if (!exists()) throw newNotPresentException();
 	return null;
 }
 /*
  * @see JavaElement
  */
-public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner workingCopyOwner) {
+public IJavaScriptElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner workingCopyOwner) {
 	switch (token.charAt(0)) {
 		case JEM_COUNT:
 			return getHandleUpdatingCountFromMemento(memento, workingCopyOwner);
@@ -152,7 +159,7 @@ protected void getHandleMemento(StringBuffer buff) {
  * Update the occurence count of the receiver and creates a Java element handle from the given memento.
  * The given working copy owner is used only for compilation unit handles.
  */
-public IJavaElement getHandleUpdatingCountFromMemento(MementoTokenizer memento, WorkingCopyOwner owner) {
+public IJavaScriptElement getHandleUpdatingCountFromMemento(MementoTokenizer memento, WorkingCopyOwner owner) {
 	if (!memento.hasMoreTokens()) return this;
 	this.occurrenceCount = Integer.parseInt(memento.nextToken());
 	if (!memento.hasMoreTokens()) return this;
@@ -170,7 +177,7 @@ public int getOccurrenceCount() {
  * type (going up the hierarchy from this type);
  */
 public IOpenable getOpenableParent() {
-	IJavaElement current = getParent();
+	IJavaScriptElement current = getParent();
 	while (current != null){
 		if (current instanceof IOpenable){
 			return (IOpenable) current;
@@ -180,13 +187,13 @@ public IOpenable getOpenableParent() {
 	return null;
 }
 /*
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public IPath getPath() {
 	return this.getParent().getPath();
 }
 /*
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public IResource getResource() {
 	return this.getParent().getResource();
@@ -194,7 +201,7 @@ public IResource getResource() {
 /**
  * @see ISourceReference
  */
-public String getSource() throws JavaModelException {
+public String getSource() throws JavaScriptModelException {
 	IOpenable openable = getOpenableParent();
 	IBuffer buffer = openable.getBuffer();
 	if (buffer == null) {
@@ -215,66 +222,66 @@ public String getSource() throws JavaModelException {
 /**
  * @see ISourceReference
  */
-public ISourceRange getSourceRange() throws JavaModelException {
+public ISourceRange getSourceRange() throws JavaScriptModelException {
 	SourceRefElementInfo info = (SourceRefElementInfo) getElementInfo();
 	return info.getSourceRange();
 }
 /**
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
-public IResource getUnderlyingResource() throws JavaModelException {
+public IResource getUnderlyingResource() throws JavaScriptModelException {
 	if (!exists()) throw newNotPresentException();
 	return getParent().getUnderlyingResource();
 }
 /**
  * @see org.eclipse.wst.jsdt.core.IParent
  */
-public boolean hasChildren() throws JavaModelException {
+public boolean hasChildren() throws JavaScriptModelException {
 	return getChildren().length > 0;
 }
 /**
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
-public boolean isStructureKnown() throws JavaModelException {
+public boolean isStructureKnown() throws JavaScriptModelException {
 	// structure is always known inside an openable
 	return true;
 }
 /**
  * @see org.eclipse.wst.jsdt.core.ISourceManipulation
  */
-public void move(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
+public void move(IJavaScriptElement container, IJavaScriptElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
 	if (container == null) {
 		throw new IllegalArgumentException(Messages.operation_nullContainer);
 	}
 	if (getClassFile()!=null)
-		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
+		throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.READ_ONLY, this));
 
-	IJavaElement[] elements= new IJavaElement[] {this};
-	IJavaElement[] containers= new IJavaElement[] {container};
-	IJavaElement[] siblings= null;
+	IJavaScriptElement[] elements= new IJavaScriptElement[] {this};
+	IJavaScriptElement[] containers= new IJavaScriptElement[] {container};
+	IJavaScriptElement[] siblings= null;
 	if (sibling != null) {
-		siblings= new IJavaElement[] {sibling};
+		siblings= new IJavaScriptElement[] {sibling};
 	}
 	String[] renamings= null;
 	if (rename != null) {
 		renamings= new String[] {rename};
 	}
-	getJavaModel().move(elements, containers, siblings, renamings, force, monitor);
+	getJavaScriptModel().move(elements, containers, siblings, renamings, force, monitor);
 }
 /**
  * @see org.eclipse.wst.jsdt.core.ISourceManipulation
  */
-public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaModelException {
+public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
 	if (newName == null) {
 		throw new IllegalArgumentException(Messages.element_nullName);
 	}
 	if (getClassFile()!=null)
-		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
+		throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.READ_ONLY, this));
 
-	IJavaElement[] elements= new IJavaElement[] {this};
-	IJavaElement[] dests= new IJavaElement[] {this.getParent()};
+	IJavaScriptElement[] elements= new IJavaScriptElement[] {this};
+	IJavaScriptElement[] dests= new IJavaScriptElement[] {this.getParent()};
 	String[] renamings= new String[] {newName};
-	getJavaModel().rename(elements, dests, renamings, force, monitor);
+	getJavaScriptModel().rename(elements, dests, renamings, force, monitor);
 }
 protected void toStringName(StringBuffer buffer) {
 	super.toStringName(buffer);

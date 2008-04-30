@@ -27,13 +27,13 @@ import org.eclipse.ltk.core.refactoring.TextEditBasedChangeGroup;
 import org.eclipse.ltk.ui.refactoring.LanguageElementNode;
 import org.eclipse.ltk.ui.refactoring.TextEditChangeNode;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class CompilationUnitChangeNode extends TextEditChangeNode {
 
@@ -41,23 +41,23 @@ public class CompilationUnitChangeNode extends TextEditChangeNode {
 	
 	private static class JavaLanguageNode extends LanguageElementNode {
 
-		private IJavaElement fJavaElement;
+		private IJavaScriptElement fJavaElement;
 		private static JavaElementImageProvider fgImageProvider= new JavaElementImageProvider();
 
-		public JavaLanguageNode(TextEditChangeNode parent, IJavaElement element) {
+		public JavaLanguageNode(TextEditChangeNode parent, IJavaScriptElement element) {
 			super(parent);
 			fJavaElement= element;
 			Assert.isNotNull(fJavaElement);
 		}
 		
-		public JavaLanguageNode(ChildNode parent, IJavaElement element) {
+		public JavaLanguageNode(ChildNode parent, IJavaScriptElement element) {
 			super(parent);
 			fJavaElement= element;
 			Assert.isNotNull(fJavaElement);
 		}
 		
 		public String getText() {
-			return JavaElementLabels.getElementLabel(fJavaElement, JavaElementLabels.ALL_DEFAULT);
+			return JavaScriptElementLabels.getElementLabel(fJavaElement, JavaScriptElementLabels.ALL_DEFAULT);
 		}
 		
 		public ImageDescriptor getImageDescriptor() {
@@ -78,7 +78,7 @@ public class CompilationUnitChangeNode extends TextEditChangeNode {
 	
 	protected ChildNode[] createChildNodes() {
 		final TextEditBasedChange change= getTextEditBasedChange();
-		ICompilationUnit cunit= (ICompilationUnit) change.getAdapter(ICompilationUnit.class);
+		IJavaScriptUnit cunit= (IJavaScriptUnit) change.getAdapter(IJavaScriptUnit.class);
 		if (cunit != null) {
 			List children= new ArrayList(5);
 			Map map= new HashMap(20);
@@ -86,14 +86,14 @@ public class CompilationUnitChangeNode extends TextEditChangeNode {
 			for (int i= 0; i < changes.length; i++) {
 				TextEditBasedChangeGroup tec= changes[i];
 				try {
-					IJavaElement element= getModifiedJavaElement(tec, cunit);
+					IJavaScriptElement element= getModifiedJavaElement(tec, cunit);
 					if (element.equals(cunit)) {
 						children.add(createTextEditGroupNode(this, tec));
 					} else {
 						JavaLanguageNode pjce= getChangeElement(map, element, children, this);
 						pjce.addChild(createTextEditGroupNode(pjce, tec));
 					}
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					children.add(createTextEditGroupNode(this, tec));
 				}
 			}
@@ -133,11 +133,11 @@ public class CompilationUnitChangeNode extends TextEditChangeNode {
 		return (TextEditBasedChangeGroup[])result.toArray(new TextEditBasedChangeGroup[result.size()]);
 	}
 	
-	private IJavaElement getModifiedJavaElement(TextEditBasedChangeGroup edit, ICompilationUnit cunit) throws JavaModelException {
+	private IJavaScriptElement getModifiedJavaElement(TextEditBasedChangeGroup edit, IJavaScriptUnit cunit) throws JavaScriptModelException {
 		IRegion range= edit.getRegion();
 		if (range.getOffset() == 0 && range.getLength() == 0)
 			return cunit;
-		IJavaElement result= cunit.getElementAt(range.getOffset());
+		IJavaScriptElement result= cunit.getElementAt(range.getOffset());
 		if (result == null)
 			return cunit;
 		
@@ -145,11 +145,11 @@ public class CompilationUnitChangeNode extends TextEditChangeNode {
 			while(true) {
 				ISourceReference ref= (ISourceReference)result;
 				IRegion sRange= new Region(ref.getSourceRange().getOffset(), ref.getSourceRange().getLength());
-				if (result.getElementType() == IJavaElement.COMPILATION_UNIT || result.getParent() == null || coveredBy(edit, sRange))
+				if (result.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT || result.getParent() == null || coveredBy(edit, sRange))
 					break;
 				result= result.getParent();
 			}
-		} catch(JavaModelException e) {
+		} catch(JavaScriptModelException e) {
 			// Do nothing, use old value.
 		} catch(ClassCastException e) {
 			// Do nothing, use old value.
@@ -157,12 +157,12 @@ public class CompilationUnitChangeNode extends TextEditChangeNode {
 		return result;
 	}
 	
-	private JavaLanguageNode getChangeElement(Map map, IJavaElement element, List children, TextEditChangeNode cunitChange) {
+	private JavaLanguageNode getChangeElement(Map map, IJavaScriptElement element, List children, TextEditChangeNode cunitChange) {
 		JavaLanguageNode result= (JavaLanguageNode)map.get(element);
 		if (result != null)
 			return result;
-		IJavaElement parent= element.getParent();
-		if (parent instanceof ICompilationUnit) {
+		IJavaScriptElement parent= element.getParent();
+		if (parent instanceof IJavaScriptUnit) {
 			result= new JavaLanguageNode(cunitChange, element);
 			children.add(result);
 			map.put(element, result);

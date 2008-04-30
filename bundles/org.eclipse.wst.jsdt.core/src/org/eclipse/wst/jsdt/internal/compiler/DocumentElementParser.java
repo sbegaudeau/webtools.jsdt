@@ -262,7 +262,7 @@ protected void consumeClassHeaderName1() {
  * INTERNAL USE-ONLY
  */
 protected void consumeCompilationUnit() {
-	// CompilationUnit ::= EnterCompilationUnit PackageDeclarationopt ImportDeclarationsopt
+	// JavaScriptUnit ::= EnterCompilationUnit PackageDeclarationopt ImportDeclarationsopt
 	requestor.exitCompilationUnit(scanner.source.length - 1);
 }
 /*
@@ -749,7 +749,7 @@ protected void consumeLocalVariableDeclaration() {
  * INTERNAL USE-ONLY
  */
 protected void consumeMethodDeclaration(boolean isNotAbstract) {
-	// MethodDeclaration ::= MethodHeader MethodBody
+	// FunctionDeclaration ::= MethodHeader MethodBody
 	// AbstractMethodDeclaration ::= MethodHeader ';'
 	super.consumeMethodDeclaration(isNotAbstract);
 	if (isLocalDeclaration()) {

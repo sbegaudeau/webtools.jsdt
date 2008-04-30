@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -69,7 +69,7 @@ public class AssignToVariableAssistProposal extends LinkedCorrectionProposal {
 
 	private VariableDeclarationFragment fExistingFragment;
 	
-	public AssignToVariableAssistProposal(ICompilationUnit cu, int variableKind, ExpressionStatement node, ITypeBinding typeBinding, int relevance) {
+	public AssignToVariableAssistProposal(IJavaScriptUnit cu, int variableKind, ExpressionStatement node, ITypeBinding typeBinding, int relevance) {
 		super("", cu, null, relevance, null); //$NON-NLS-1$
 
 		fVariableKind= variableKind;
@@ -86,10 +86,10 @@ public class AssignToVariableAssistProposal extends LinkedCorrectionProposal {
 			setDisplayName(CorrectionMessages.AssignToVariableAssistProposal_assigntofield_description);
 			setImage(JavaPluginImages.get(JavaPluginImages.IMG_FIELD_PRIVATE));
 		}
-		createImportRewrite((CompilationUnit) node.getRoot());
+		createImportRewrite((JavaScriptUnit) node.getRoot());
 	}
 
-	public AssignToVariableAssistProposal(ICompilationUnit cu, SingleVariableDeclaration parameter, VariableDeclarationFragment existingFragment, ITypeBinding typeBinding, int relevance) {
+	public AssignToVariableAssistProposal(IJavaScriptUnit cu, SingleVariableDeclaration parameter, VariableDeclarationFragment existingFragment, ITypeBinding typeBinding, int relevance) {
 		super("", cu, null, relevance, null); //$NON-NLS-1$
 
 		fVariableKind= FIELD;
@@ -119,7 +119,7 @@ public class AssignToVariableAssistProposal extends LinkedCorrectionProposal {
 
 		ASTRewrite rewrite= ASTRewrite.create(ast);
 		
-		createImportRewrite((CompilationUnit) fNodeToAssign.getRoot());
+		createImportRewrite((JavaScriptUnit) fNodeToAssign.getRoot());
 
 		String[] varNames= suggestLocalVariableNames(fTypeBinding, expression);
 		for (int i= 0; i < varNames.length; i++) {
@@ -158,12 +158,12 @@ public class AssignToVariableAssistProposal extends LinkedCorrectionProposal {
 		AST ast= newTypeDecl.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(ast);
 
-		createImportRewrite((CompilationUnit) fNodeToAssign.getRoot());
+		createImportRewrite((JavaScriptUnit) fNodeToAssign.getRoot());
 		
 		BodyDeclaration bodyDecl= ASTResolving.findParentBodyDeclaration(fNodeToAssign);
 		Block body;
-		if (bodyDecl instanceof MethodDeclaration) {
-			body= ((MethodDeclaration) bodyDecl).getBody();
+		if (bodyDecl instanceof FunctionDeclaration) {
+			body= ((FunctionDeclaration) bodyDecl).getBody();
 		} else if (bodyDecl instanceof Initializer) {
 			body= ((Initializer) bodyDecl).getBody();
 		} else {
@@ -172,7 +172,7 @@ public class AssignToVariableAssistProposal extends LinkedCorrectionProposal {
 
 		boolean isAnonymous= newTypeDecl.getNodeType() == ASTNode.ANONYMOUS_CLASS_DECLARATION;
 		boolean isStatic= Modifier.isStatic(bodyDecl.getModifiers()) && !isAnonymous;
-		boolean isConstructorParam= isParamToField && fNodeToAssign.getParent() instanceof MethodDeclaration && ((MethodDeclaration) fNodeToAssign.getParent()).isConstructor();
+		boolean isConstructorParam= isParamToField && fNodeToAssign.getParent() instanceof FunctionDeclaration && ((FunctionDeclaration) fNodeToAssign.getParent()).isConstructor();
 		int modifiers= Modifier.PRIVATE;
 		if (isStatic) {
 			modifiers |= Modifier.STATIC;
@@ -186,7 +186,7 @@ public class AssignToVariableAssistProposal extends LinkedCorrectionProposal {
 		Assignment assignment= ast.newAssignment();
 		assignment.setRightHandSide((Expression) rewrite.createCopyTarget(expression));
 
-		boolean needsThis= StubUtility.useThisForFieldAccess(getCompilationUnit().getJavaProject());
+		boolean needsThis= StubUtility.useThisForFieldAccess(getCompilationUnit().getJavaScriptProject());
 		if (isParamToField) {
 			needsThis |= varName.equals(((SimpleName) expression).getIdentifier());
 		}
@@ -271,12 +271,12 @@ public class AssignToVariableAssistProposal extends LinkedCorrectionProposal {
 	}
 
 	private String[] suggestLocalVariableNames(ITypeBinding binding, Expression expression) {
-		IJavaProject project= getCompilationUnit().getJavaProject();
+		IJavaScriptProject project= getCompilationUnit().getJavaScriptProject();
 		return StubUtility.getVariableNameSuggestions(StubUtility.LOCAL, project, binding, expression, getUsedVariableNames());
 	}
 
 	private String[] suggestFieldNames(ITypeBinding binding, Expression expression, int modifiers) {
-		IJavaProject project= getCompilationUnit().getJavaProject();
+		IJavaScriptProject project= getCompilationUnit().getJavaScriptProject();
 		int varKind= Modifier.isStatic(modifiers) ? StubUtility.STATIC_FIELD : StubUtility.INSTANCE_FIELD;
 		return StubUtility.getVariableNameSuggestions(varKind, project, binding, expression, getUsedVariableNames());
 	}
@@ -288,7 +288,7 @@ public class AssignToVariableAssistProposal extends LinkedCorrectionProposal {
 	private int findAssignmentInsertIndex(List statements) {
 
 		HashSet paramsBefore= new HashSet();
-		List params = ((MethodDeclaration) fNodeToAssign.getParent()).parameters();
+		List params = ((FunctionDeclaration) fNodeToAssign.getParent()).parameters();
 		for (int i = 0; i < params.size() && (params.get(i) != fNodeToAssign); i++) {
 			SingleVariableDeclaration decl= (SingleVariableDeclaration) params.get(i);
 			paramsBefore.add(decl.getName().getIdentifier());

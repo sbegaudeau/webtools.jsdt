@@ -18,7 +18,7 @@ package org.eclipse.wst.jsdt.core;
  * This interface is not intended to be implemented by clients.
  * </p>
  */
-public interface IImportContainer extends IJavaElement, IParent, ISourceReference {
+public interface IImportContainer extends IJavaScriptElement, IParent, ISourceReference {
 /**
  * Returns the first import declaration in this import container with the given name.
  * This is a handle-only method. The import declaration may or may not exist.

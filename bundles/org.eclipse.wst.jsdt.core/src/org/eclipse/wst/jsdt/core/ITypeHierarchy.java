@@ -271,9 +271,9 @@ IType getType();
  * Re-computes the type hierarchy reporting progress.
  *
  * @param monitor the given progress monitor
- * @exception JavaModelException if unable to refresh the hierarchy
+ * @exception JavaScriptModelException if unable to refresh the hierarchy
  */
-void refresh(IProgressMonitor monitor) throws JavaModelException;
+void refresh(IProgressMonitor monitor) throws JavaScriptModelException;
 /**
  * Removes the given listener from this type hierarchy.
  * Has no affect if an identical listener is not registered.
@@ -283,21 +283,21 @@ void refresh(IProgressMonitor monitor) throws JavaModelException;
 void removeTypeHierarchyChangedListener(ITypeHierarchyChangedListener listener);
 /**
  * Stores the type hierarchy in an output stream. This stored hierarchy can be load by
- * IType#loadTypeHierachy(IJavaProject, InputStream, IProgressMonitor).
+ * IType#loadTypeHierachy(IJavaScriptProject, InputStream, IProgressMonitor).
  * Listeners of this hierarchy are not stored.
  *
  * Only hierarchies created by the following methods can be store:
  * <ul>
  * <li>IType#newSupertypeHierarchy(IProgressMonitor)</li>
- * <li>IType#newTypeHierarchy(IJavaProject, IProgressMonitor)</li>
+ * <li>IType#newTypeHierarchy(IJavaScriptProject, IProgressMonitor)</li>
  * <li>IType#newTypeHierarchy(IProgressMonitor)</li>
  * </ul>
  *
  * @param outputStream output stream where the hierarchy will be stored
  * @param monitor the given progress monitor
- * @exception JavaModelException if unable to store the hierarchy in the ouput stream
+ * @exception JavaScriptModelException if unable to store the hierarchy in the ouput stream
  * @see IType#loadTypeHierachy(java.io.InputStream, IProgressMonitor)
  * @since 2.1
  */
-void store(OutputStream outputStream, IProgressMonitor monitor) throws JavaModelException;
+void store(OutputStream outputStream, IProgressMonitor monitor) throws JavaScriptModelException;
 }

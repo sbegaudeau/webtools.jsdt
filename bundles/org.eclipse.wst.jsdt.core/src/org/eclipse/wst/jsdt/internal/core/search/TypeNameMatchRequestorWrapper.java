@@ -13,14 +13,14 @@ package org.eclipse.wst.jsdt.internal.core.search;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatchRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot;
@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
  * 	char[] typeName,
  * 	int typeMatchRule,
  * 	int searchFor,
- * 	org.eclipse.wst.jsdt.core.search.IJavaSearchScope scope,
+ * 	org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope scope,
  * 	IRestrictedAccessTypeRequestor nameRequestor,
  * 	int waitingPolicy,
  * 	org.eclipse.core.runtime.IProgressMonitor monitor) }.
@@ -48,15 +48,15 @@ import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
  * 	char[] typeName,
  * 	int matchRule,
  * 	int searchFor,
- * 	org.eclipse.wst.jsdt.core.search.IJavaSearchScope scope,
+ * 	org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope scope,
  * 	org.eclipse.wst.jsdt.core.search.TypeNameRequestor nameRequestor,
  * 	int waitingPolicy,
  * 	org.eclipse.core.runtime.IProgressMonitor monitor) }.
  */
 public class TypeNameMatchRequestorWrapper implements IRestrictedAccessTypeRequestor {
 	TypeNameMatchRequestor requestor;
-	private IJavaSearchScope scope; // scope is needed to retrieve project path for external resource
-	private HandleFactory handleFactory; // in case of IJavaSearchScope defined by clients, use an HandleFactory instead
+	private IJavaScriptSearchScope scope; // scope is needed to retrieve project path for external resource
+	private HandleFactory handleFactory; // in case of IJavaScriptSearchScope defined by clients, use an HandleFactory instead
 
 	/**
 	 * Cache package fragment root information to optimize speed performance.
@@ -69,7 +69,7 @@ public class TypeNameMatchRequestorWrapper implements IRestrictedAccessTypeReque
 	 */
 	private HashtableOfArrayToObject packageHandles;
 
-public TypeNameMatchRequestorWrapper(TypeNameMatchRequestor requestor, IJavaSearchScope scope) {
+public TypeNameMatchRequestorWrapper(TypeNameMatchRequestor requestor, IJavaScriptSearchScope scope) {
 	this.requestor = requestor;
 	this.scope = scope;
 	if (!(scope instanceof JavaSearchScope)) {
@@ -87,8 +87,8 @@ public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName,
 			Openable openable = this.handleFactory.createOpenable(path, this.scope);
 			if (openable == null) return;
 			switch (openable.getElementType()) {
-				case IJavaElement.COMPILATION_UNIT:
-					ICompilationUnit cu = (ICompilationUnit) openable;
+				case IJavaScriptElement.JAVASCRIPT_UNIT:
+					IJavaScriptUnit cu = (IJavaScriptUnit) openable;
 					if (enclosingTypeNames != null && enclosingTypeNames.length > 0) {
 						type = cu.getType(new String(enclosingTypeNames[0]));
 						for (int j=1, l=enclosingTypeNames.length; j<l; j++) {
@@ -99,12 +99,12 @@ public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName,
 						type = cu.getType(new String(simpleTypeName));
 					}
 					break;
-				case IJavaElement.CLASS_FILE:
+				case IJavaScriptElement.CLASS_FILE:
 					type = ((IClassFile)openable).getType();
 					break;
 			}
 		} else {
-			int separatorIndex= path.indexOf(IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR);
+			int separatorIndex= path.indexOf(IJavaScriptSearchScope.JAR_FILE_ENTRY_SEPARATOR);
 			type = separatorIndex == -1
 				? createTypeFromPath(path, new String(simpleTypeName), enclosingTypeNames)
 				: createTypeFromJar(path, separatorIndex);
@@ -112,11 +112,11 @@ public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName,
 		if (type != null) {
 			this.requestor.acceptTypeNameMatch(new JavaSearchTypeNameMatch(type, modifiers));
 		}
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// skip
 	}
 }
-private IType createTypeFromJar(String resourcePath, int separatorIndex) throws JavaModelException {
+private IType createTypeFromJar(String resourcePath, int separatorIndex) throws JavaScriptModelException {
 	// path to a class file inside a jar
 	// Optimization: cache package fragment root handle and package handles
 	if (this.lastPkgFragmentRootPath == null
@@ -147,7 +147,7 @@ private IType createTypeFromJar(String resourcePath, int separatorIndex) throws 
 	}
 	return pkgFragment.getClassFile(simpleNames[length]).getType();
 }
-private IType createTypeFromPath(String resourcePath, String simpleTypeName, char[][] enclosingTypeNames) throws JavaModelException {
+private IType createTypeFromPath(String resourcePath, String simpleTypeName, char[][] enclosingTypeNames) throws JavaScriptModelException {
 	// path to a file in a directory
 	// Optimization: cache package fragment root handle and package handles
 	int rootPathLength = -1;
@@ -197,7 +197,7 @@ private IType createTypeFromPath(String resourcePath, String simpleTypeName, cha
 		}
 		String simpleName= simpleNames[length];
 		if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(simpleName) && !(pkgFragment instanceof LibraryPackageFragment)) {
-			ICompilationUnit unit= pkgFragment.getCompilationUnit(simpleName);
+			IJavaScriptUnit unit= pkgFragment.getJavaScriptUnit(simpleName);
 			int etnLength = enclosingTypeNames == null ? 0 : enclosingTypeNames.length;
 			IType type = (etnLength == 0) ? unit.getType(simpleTypeName) : unit.getType(new String(enclosingTypeNames[0]));
 			if (etnLength > 0) {

@@ -17,13 +17,13 @@ public class LibrarySuperType {
 	IPath cpEntry;
 	String superTypeName;
 	String libraryName;
-	IJavaProject javaProject;
+	IJavaScriptProject javaProject;
 
 	public static final String SUPER_TYPE_CONTAINER= "org.eclipse.wst.jsdt.ui.superType.container"; //$NON-NLS-1$
 	public static final String SUPER_TYPE_NAME= "org.eclipse.wst.jsdt.ui.superType.name"; //$NON-NLS-1$
 
 	/* Only one superTypeName per instance so enforce that */
-	public LibrarySuperType(IPath classPathEntry, IJavaProject project, String superTypeName) {
+	public LibrarySuperType(IPath classPathEntry, IJavaScriptProject project, String superTypeName) {
 		this.cpEntry = classPathEntry;
 		this.superTypeName = superTypeName;
 		this.javaProject =  project;
@@ -31,11 +31,11 @@ public class LibrarySuperType {
 
 	}
 
-	public LibrarySuperType(String classPathEntry, IJavaProject project, String superTypeName) {
+	public LibrarySuperType(String classPathEntry, IJavaScriptProject project, String superTypeName) {
 		this(new Path(classPathEntry),project,superTypeName);
 	}
 	/* Construct parent */
-	public LibrarySuperType(IPath classPathEntry,  IJavaProject project) {
+	public LibrarySuperType(IPath classPathEntry,  IJavaScriptProject project) {
 		this(classPathEntry,project, null);
 	}
 
@@ -70,20 +70,20 @@ public class LibrarySuperType {
 		return getContainerInitializer(cpEntry);
 	}
 
-	public IClasspathEntry[] getClasspathEntries() {
+	public IIncludePathEntry[] getClasspathEntries() {
 		IJsGlobalScopeContainer container=null;
 		try {
-			container = JavaCore.getJsGlobalScopeContainer(this.cpEntry, this.javaProject);
-		} catch (JavaModelException ex) {
+			container = JavaScriptCore.getJsGlobalScopeContainer(this.cpEntry, this.javaProject);
+		} catch (JavaScriptModelException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
-		if(container!=null) return	container.getClasspathEntries();
+		if(container!=null) return	container.getIncludepathEntries();
 
-		return new IClasspathEntry[0];
+		return new IIncludePathEntry[0];
 	}
 
-	private static LibrarySuperType[] getFlatLibrarySuperTypes(IPath classPathEntry, IJavaProject javaProject) {
+	private static LibrarySuperType[] getFlatLibrarySuperTypes(IPath classPathEntry, IJavaScriptProject javaProject) {
 		JsGlobalScopeContainerInitializer init = getContainerInitializer(classPathEntry);
 		if (init == null) return new LibrarySuperType[0];
 		String[] availableSuperTypes = init.containerSuperTypes();
@@ -152,7 +152,7 @@ public class LibrarySuperType {
 	}
 
 	public IPackageFragment[] getPackageFragments(){
-		IClasspathEntry[] entries = getClasspathEntries();
+		IIncludePathEntry[] entries = getClasspathEntries();
 		ArrayList allFrags = new ArrayList();
 
 		try {
@@ -160,14 +160,14 @@ public class LibrarySuperType {
 				IPath path = entries[i].getPath();
 				IPackageFragmentRoot root = javaProject.findPackageFragmentRoot(path.makeAbsolute());
 
-				IJavaElement[] children = root.getChildren();
+				IJavaScriptElement[] children = root.getChildren();
 				for(int k = 0;k<children.length;k++) {
 					if(children[k] instanceof IPackageFragment) {
 						allFrags.add(children[k]);
 					}
 				}
 			}
-		} catch (JavaModelException ex) {
+		} catch (JavaScriptModelException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
@@ -176,7 +176,7 @@ public class LibrarySuperType {
 
 	public static JsGlobalScopeContainerInitializer getContainerInitializer(IPath classPathEntry) {
 		if(classPathEntry==null ) return null;
-		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(classPathEntry.segment(0));
+		JsGlobalScopeContainerInitializer initializer= JavaScriptCore.getJsGlobalScopeContainerInitializer(classPathEntry.segment(0));
 		return initializer ;
 	}
 }

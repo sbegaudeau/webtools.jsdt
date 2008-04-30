@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.browsing;
 
 import java.util.Comparator;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 public class JavaElementTypeComparator implements Comparator {
 
@@ -27,9 +27,9 @@ public class JavaElementTypeComparator implements Comparator {
 	 * @see Comparator#compare(Object, Object)
 	 */
 	public int compare(Object o1, Object o2) {
-		if (!(o1 instanceof IJavaElement) || !(o2 instanceof IJavaElement))
+		if (!(o1 instanceof IJavaScriptElement) || !(o2 instanceof IJavaScriptElement))
 			throw new ClassCastException();
-		return getIdForJavaElement((IJavaElement)o1) - getIdForJavaElement((IJavaElement)o2);
+		return getIdForJavaElement((IJavaScriptElement)o1) - getIdForJavaElement((IJavaScriptElement)o2);
 	}
 
 	/**
@@ -42,42 +42,42 @@ public class JavaElementTypeComparator implements Comparator {
 	 * @see Comparator#compare(Object, Object)
 	 */
 	public int compare(Object o1, int elementType) {
-		if (!(o1 instanceof IJavaElement))
+		if (!(o1 instanceof IJavaScriptElement))
 			throw new ClassCastException();
-		return getIdForJavaElement((IJavaElement)o1) - getIdForJavaElementType(elementType);
+		return getIdForJavaElement((IJavaScriptElement)o1) - getIdForJavaElementType(elementType);
 	}
 
-	int getIdForJavaElement(IJavaElement element) {
+	int getIdForJavaElement(IJavaScriptElement element) {
 		return getIdForJavaElementType(element.getElementType());
 	}
 
 	int getIdForJavaElementType(int elementType) {
 		switch (elementType) {
-			case IJavaElement.JAVA_MODEL:
+			case IJavaScriptElement.JAVASCRIPT_MODEL:
 				return 130;
-			case IJavaElement.JAVA_PROJECT:
+			case IJavaScriptElement.JAVASCRIPT_PROJECT:
 				return 120;
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 				return 110;
-			case IJavaElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				return 100;
-			case IJavaElement.COMPILATION_UNIT:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
 				return 90;
-			case IJavaElement.CLASS_FILE:
+			case IJavaScriptElement.CLASS_FILE:
 				return 80;
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				return 70;
-			case IJavaElement.FIELD:
+			case IJavaScriptElement.FIELD:
 				return 60;
-			case IJavaElement.METHOD:
+			case IJavaScriptElement.METHOD:
 				return 50;
-			case IJavaElement.INITIALIZER:
+			case IJavaScriptElement.INITIALIZER:
 				return 40;
-			case IJavaElement.PACKAGE_DECLARATION:
+			case IJavaScriptElement.PACKAGE_DECLARATION:
 				return 30;
-			case IJavaElement.IMPORT_CONTAINER:
+			case IJavaScriptElement.IMPORT_CONTAINER:
 				return 20;
-			case IJavaElement.IMPORT_DECLARATION:
+			case IJavaScriptElement.IMPORT_DECLARATION:
 				return 10;
 			default :
 				return 1;

@@ -13,11 +13,11 @@ package org.eclipse.wst.jsdt.internal.core;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
- * An operation created as a result of a call to JavaCore.run(IWorkspaceRunnable, IProgressMonitor)
+ * An operation created as a result of a call to JavaScriptCore.run(IWorkspaceRunnable, IProgressMonitor)
  * that encapsulates a user defined IWorkspaceRunnable.
  */
 public class BatchOperation extends JavaModelOperation {
@@ -34,20 +34,20 @@ public class BatchOperation extends JavaModelOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.core.JavaModelOperation#executeOperation()
 	 */
-	protected void executeOperation() throws JavaModelException {
+	protected void executeOperation() throws JavaScriptModelException {
 		try {
 			this.runnable.run(this.progressMonitor);
 		} catch (CoreException ce) {
-			if (ce instanceof JavaModelException) {
-				throw (JavaModelException)ce;
+			if (ce instanceof JavaScriptModelException) {
+				throw (JavaScriptModelException)ce;
 			} else {
 				if (ce.getStatus().getCode() == IResourceStatus.OPERATION_FAILED) {
 					Throwable e= ce.getStatus().getException();
-					if (e instanceof JavaModelException) {
-						throw (JavaModelException) e;
+					if (e instanceof JavaScriptModelException) {
+						throw (JavaScriptModelException) e;
 					}
 				}
-				throw new JavaModelException(ce);
+				throw new JavaScriptModelException(ce);
 			}
 		}
 	}
@@ -55,7 +55,7 @@ public class BatchOperation extends JavaModelOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.core.JavaModelOperation#verify()
 	 */
-	protected IJavaModelStatus verify() {
+	protected IJavaScriptModelStatus verify() {
 		// cannot verify user defined operation
 		return JavaModelStatus.VERIFIED_OK;
 	}

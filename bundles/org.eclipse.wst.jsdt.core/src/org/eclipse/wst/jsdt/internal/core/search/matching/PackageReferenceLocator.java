@@ -11,10 +11,10 @@
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
@@ -54,7 +54,7 @@ public static boolean isDeclaringPackageFragment(IPackageFragment packageFragmen
 		try {
 			switch (packageFragment.getKind()) {
 				case IPackageFragmentRoot.K_SOURCE :
-					if (!org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(fileName) || !packageFragment.getCompilationUnit(new String(fileName)).exists()) {
+					if (!org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(fileName) || !packageFragment.getJavaScriptUnit(new String(fileName)).exists()) {
 						return false; // unit doesn't live in selected package
 					}
 					break;
@@ -69,7 +69,7 @@ public static boolean isDeclaringPackageFragment(IPackageFragment packageFragmen
 					}
 					break;
 			}
-		} catch(JavaModelException e) {
+		} catch(JavaScriptModelException e) {
 			// unable to determine kind; tolerate this match
 		}
 	}
@@ -89,7 +89,7 @@ public int match(ASTNode node, MatchingNodeSet nodeSet) { // interested in Impor
 //public int match(ConstructorDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(Expression node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(FieldDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
-//public int match(MethodDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
+//public int match(FunctionDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(MessageSend node, MatchingNodeSet nodeSet) - SKIP IT
 public int match(Reference node, MatchingNodeSet nodeSet) { // interested in QualifiedNameReference
 	if (!(node instanceof QualifiedNameReference)) return IMPOSSIBLE_MATCH;
@@ -165,7 +165,7 @@ protected void matchLevelAndReportImportRef(ImportReference importRef, Binding b
 	}
 	super.matchLevelAndReportImportRef(importRef, refBinding, locator);
 }
-protected void matchReportImportRef(ImportReference importRef, Binding binding, IJavaElement element, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportImportRef(ImportReference importRef, Binding binding, IJavaScriptElement element, int accuracy, MatchLocator locator) throws CoreException {
 	if (binding == null) {
 		this.matchReportReference(importRef, element, null/*no binding*/, accuracy, locator);
 	} else {
@@ -188,7 +188,7 @@ protected void matchReportImportRef(ImportReference importRef, Binding binding, 
 		}
 	}
 }
-protected void matchReportReference(ASTNode reference, IJavaElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportReference(ASTNode reference, IJavaScriptElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
 	long[] positions = null;
 	int last = -1;
 	if (reference instanceof ImportReference) {
@@ -266,7 +266,7 @@ protected void matchReportReference(ASTNode reference, IJavaElement element, Bin
 	locator.report(match);
 }
 protected int referenceType() {
-	return IJavaElement.PACKAGE_FRAGMENT;
+	return IJavaScriptElement.PACKAGE_FRAGMENT;
 }
 public int resolveLevel(ASTNode node) {
 	if (node instanceof JavadocQualifiedTypeReference) {

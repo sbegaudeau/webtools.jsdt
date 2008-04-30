@@ -146,7 +146,7 @@ public interface IVariableBinding extends IBinding {
 	 * local variable, or <code>null</code> if none
 	 * @since 3.1
 	 */
-	public IMethodBinding getDeclaringMethod();
+	public IFunctionBinding getDeclaringMethod();
 
 	/**
 	 * Returns the binding for the variable declaration corresponding to this

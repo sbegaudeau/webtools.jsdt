@@ -15,8 +15,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.internal.core.search.processing.JobManager;
@@ -33,7 +33,7 @@ public class JavaSearchDocument extends SearchDocument {
 		super(documentPath, participant);
 	}
 	public JavaSearchDocument(java.util.zip.ZipEntry zipEntry, IPath zipFilePath, byte[] contents, SearchParticipant participant) {
-		super(zipFilePath + IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR + zipEntry.getName(), participant);
+		super(zipFilePath + IJavaScriptSearchScope.JAR_FILE_ENTRY_SEPARATOR + zipEntry.getName(), participant);
 		this.byteContents = contents;
 	}
 
@@ -48,7 +48,7 @@ public class JavaSearchDocument extends SearchDocument {
 		if (this.byteContents != null) return this.byteContents;
 		try {
 			return Util.getResourceContentsAsByteArray(getFile());
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			if (BasicSearchEngine.VERBOSE || JobManager.VERBOSE) { // used during search and during indexing
 				e.printStackTrace();
 			}
@@ -59,7 +59,7 @@ public class JavaSearchDocument extends SearchDocument {
 		if (this.charContents != null) return this.charContents;
 		try {
 			return Util.getResourceContentsAsCharArray(getFile());
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			if (BasicSearchEngine.VERBOSE || JobManager.VERBOSE) { // used during search and during indexing
 				e.printStackTrace();
 			}

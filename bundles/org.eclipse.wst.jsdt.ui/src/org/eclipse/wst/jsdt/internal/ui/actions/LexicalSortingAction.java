@@ -15,18 +15,18 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.browsing.JavaBrowsingMessages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.SourcePositionComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
 
 /*
  * XXX: This class should become part of the MemberFilterActionGroup
  *      which should be renamed to MemberActionsGroup
  */
 public class LexicalSortingAction extends Action {
-	private JavaElementComparator fComparator= new JavaElementComparator();
+	private JavaScriptElementComparator fComparator= new JavaScriptElementComparator();
 	private SourcePositionComparator fSourcePositonComparator= new SourcePositionComparator();
 	private StructuredViewer fViewer;
 	private String fPreferenceKey;
@@ -39,7 +39,7 @@ public class LexicalSortingAction extends Action {
 		JavaPluginImages.setLocalImageDescriptors(this, "alphab_sort_co.gif"); //$NON-NLS-1$
 		setToolTipText(JavaBrowsingMessages.LexicalSortingAction_tooltip); 
 		setDescription(JavaBrowsingMessages.LexicalSortingAction_description); 
-		boolean checked= JavaPlugin.getDefault().getPreferenceStore().getBoolean(fPreferenceKey); 
+		boolean checked= JavaScriptPlugin.getDefault().getPreferenceStore().getBoolean(fPreferenceKey); 
 		valueChanged(checked, false);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.LEXICAL_SORTING_BROWSING_ACTION);
 	}
@@ -60,6 +60,6 @@ public class LexicalSortingAction extends Action {
 		});
 		
 		if (store)
-			JavaPlugin.getDefault().getPreferenceStore().setValue(fPreferenceKey, on);
+			JavaScriptPlugin.getDefault().getPreferenceStore().setValue(fPreferenceKey, on);
 	}
 }

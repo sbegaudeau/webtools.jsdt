@@ -22,19 +22,19 @@ public interface IParent {
  * Unless otherwise specified by the implementing element,
  * the children are in no particular order.
  *
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource
  * @return the immediate children of this element
  */
-IJavaElement[] getChildren() throws JavaModelException;
+IJavaScriptElement[] getChildren() throws JavaScriptModelException;
 /**
  * Returns whether this element has one or more immediate children.
  * This is a convenience method, and may be more efficient than
  * testing whether <code>getChildren</code> is an empty array.
  *
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource
  * @return true if the immediate children of this element, false otherwise
  */
-boolean hasChildren() throws JavaModelException;
+boolean hasChildren() throws JavaScriptModelException;
 }

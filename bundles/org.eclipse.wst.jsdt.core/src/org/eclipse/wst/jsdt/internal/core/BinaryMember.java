@@ -13,10 +13,10 @@ package org.eclipse.wst.jsdt.internal.core;
 import java.util.HashMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 
 /**
@@ -32,19 +32,19 @@ protected BinaryMember(JavaElement parent, String name) {
 /*
  * @see ISourceManipulation
  */
-public void copy(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
+public void copy(IJavaScriptElement container, IJavaScriptElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
+	throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.READ_ONLY, this));
 }
 /*
  * @see JavaElement#generateInfos
  */
-protected void generateInfos(Object info, HashMap newElements, IProgressMonitor pm) throws JavaModelException {
+protected void generateInfos(Object info, HashMap newElements, IProgressMonitor pm) throws JavaScriptModelException {
 	Openable openableParent = (Openable) getOpenableParent();
 	if (JavaModelManager.getJavaModelManager().getInfo(openableParent) == null) {
 		openableParent.generateInfos(openableParent.createElementInfo(), newElements, pm);
 	}
 }
-public String[] getCategories() throws JavaModelException {
+public String[] getCategories() throws JavaScriptModelException {
 	SourceMapper mapper= getSourceMapper();
 	if (mapper != null) {
 		// ensure the class file's buffer is open so that categories are computed
@@ -61,7 +61,7 @@ public String[] getCategories() throws JavaModelException {
 public String getKey() {
 	try {
 		return getKey(false/*don't open*/);
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// happen only if force open is true
 		return null;
 	}
@@ -69,11 +69,11 @@ public String getKey() {
 /**
  * @see org.eclipse.wst.jsdt.internal.compiler.lookup.Binding#computeUniqueKey()
  */
-public abstract String getKey(boolean forceOpen) throws JavaModelException;
+public abstract String getKey(boolean forceOpen) throws JavaScriptModelException;
 /*
  * @see ISourceReference
  */
-public ISourceRange getNameRange() throws JavaModelException {
+public ISourceRange getNameRange() throws JavaScriptModelException {
 	SourceMapper mapper= getSourceMapper();
 	if (mapper != null) {
 		// ensure the class file's buffer is open so that source ranges are computed
@@ -87,7 +87,7 @@ public ISourceRange getNameRange() throws JavaModelException {
 /*
  * @see ISourceReference
  */
-//public ISourceRange getSourceRange() throws JavaModelException {
+//public ISourceRange getSourceRange() throws JavaScriptModelException {
 //	SourceMapper mapper= getSourceMapper();
 //	if (mapper != null) {
 //		// ensure the class file's buffer is open so that source ranges are computed
@@ -105,28 +105,28 @@ public boolean isBinary() {
 	return true;
 }
 /*
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
-public boolean isStructureKnown() throws JavaModelException {
-	return ((IJavaElement)getOpenableParent()).isStructureKnown();
+public boolean isStructureKnown() throws JavaScriptModelException {
+	return ((IJavaScriptElement)getOpenableParent()).isStructureKnown();
 }
 /*
  * @see ISourceManipulation
  */
-public void move(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
+public void move(IJavaScriptElement container, IJavaScriptElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
+	throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.READ_ONLY, this));
 }
 /*
  * @see ISourceManipulation
  */
-public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
+public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
+	throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.READ_ONLY, this));
 }
 /*
  * Sets the contents of this element.
  * Throws an exception as this element is read only.
  */
-public void setContents(String contents, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
+public void setContents(String contents, IProgressMonitor monitor) throws JavaScriptModelException {
+	throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.READ_ONLY, this));
 }
 }

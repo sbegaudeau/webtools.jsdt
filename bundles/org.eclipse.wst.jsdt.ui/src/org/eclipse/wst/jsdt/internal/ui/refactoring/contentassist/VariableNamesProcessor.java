@@ -24,7 +24,7 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposal;
@@ -42,7 +42,7 @@ public class VariableNamesProcessor implements IContentAssistProcessor, ISubject
 	public VariableNamesProcessor(String[] tempNameProposals) {
 		fTempNameProposals= (String[]) tempNameProposals.clone();
 		Arrays.sort(fTempNameProposals);
-		fImageRegistry= JavaPlugin.getImageDescriptorRegistry();
+		fImageRegistry= JavaScriptPlugin.getImageDescriptorRegistry();
 		fProposalImageDescriptor= JavaPluginImages.DESC_OBJS_LOCAL_VARIABLE;
 
 	}

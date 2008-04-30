@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.ui.preferences;
 import java.util.StringTokenizer;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 public class JavaPreferencesSettings  {
 	
 	
-	public static CodeGenerationSettings getCodeGenerationSettings(IJavaProject project) {
+	public static CodeGenerationSettings getCodeGenerationSettings(IJavaScriptProject project) {
 		CodeGenerationSettings res= new CodeGenerationSettings();
 		res.createComments= Boolean.valueOf(PreferenceConstants.getPreference(PreferenceConstants.CODEGEN_ADD_COMMENTS, project)).booleanValue();
 		res.useKeywordThis= Boolean.valueOf(PreferenceConstants.getPreference(PreferenceConstants.CODEGEN_KEYWORD_THIS, project)).booleanValue();
@@ -36,13 +36,13 @@ public class JavaPreferencesSettings  {
 	}
 	
 	/**
-	 * @deprecated Use getCodeGenerationSettings(IJavaProject) instead
+	 * @deprecated Use getCodeGenerationSettings(IJavaScriptProject) instead
 	 */
 	public static CodeGenerationSettings getCodeGenerationSettings() {
 		return getCodeGenerationSettings(null);
 	}
 
-	public static int getImportNumberThreshold(IJavaProject project) {
+	public static int getImportNumberThreshold(IJavaScriptProject project) {
 		String thresholdStr= PreferenceConstants.getPreference(PreferenceConstants.ORGIMPORTS_ONDEMANDTHRESHOLD, project);
 		try {
 			int threshold= Integer.parseInt(thresholdStr);
@@ -55,7 +55,7 @@ public class JavaPreferencesSettings  {
 		}
 	}
 	
-	public static int getStaticImportNumberThreshold(IJavaProject project) {
+	public static int getStaticImportNumberThreshold(IJavaScriptProject project) {
 		String thresholdStr= PreferenceConstants.getPreference(PreferenceConstants.ORGIMPORTS_ONDEMANDTHRESHOLD, project);
 		try {
 			int threshold= Integer.parseInt(thresholdStr);
@@ -68,7 +68,7 @@ public class JavaPreferencesSettings  {
 		}
 	}
 
-	public static String[] getImportOrderPreference(IJavaProject project) {
+	public static String[] getImportOrderPreference(IJavaScriptProject project) {
 		String str= PreferenceConstants.getPreference(PreferenceConstants.ORGIMPORTS_IMPORTORDER, project);
 		if (str != null) {
 			return unpackList(str, ";"); //$NON-NLS-1$
@@ -77,7 +77,7 @@ public class JavaPreferencesSettings  {
 	}
 	
 	/**
-	 * @deprecated Use getImportNumberThreshold(IJavaProject) instead
+	 * @deprecated Use getImportNumberThreshold(IJavaScriptProject) instead
 	 */
 	public static int getImportNumberThreshold(IPreferenceStore prefs) {
 		int threshold= prefs.getInt(PreferenceConstants.ORGIMPORTS_ONDEMANDTHRESHOLD);
@@ -88,7 +88,7 @@ public class JavaPreferencesSettings  {
 	}
 
 	/**
-	 * @deprecated Use getImportOrderPreference(IJavaProject) instead
+	 * @deprecated Use getImportOrderPreference(IJavaScriptProject) instead
 	 */
 	public static String[] getImportOrderPreference(IPreferenceStore prefs) {
 		String str= prefs.getString(PreferenceConstants.ORGIMPORTS_IMPORTORDER);

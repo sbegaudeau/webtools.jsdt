@@ -24,7 +24,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 
 
@@ -32,7 +32,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
  * A converting selection provider is a special selection provider which converts
  * a selection before notifying any listeners. Additional it converts the selection
  * on <code>getSelection</code> and <code>setSelection</code>. The default strategy
- * used to adapt the elements of the selection to {@link IJavaElement} or a {@link IResource},
+ * used to adapt the elements of the selection to {@link IJavaScriptElement} or a {@link IResource},
  * but implementors can override this behavior.
  *   
  * @since 3.2
@@ -79,7 +79,7 @@ public class ConvertingSelectionProvider implements ISelectionProvider {
 	/**
 	 * Converts the given original viewer selection into a new
 	 * selection. The default behavior adapts the elements in the selection
-	 * first to {@link IJavaElement} then to {@link IResource}.
+	 * first to {@link IJavaScriptElement} then to {@link IResource}.
 	 * Implementors want to override this method. 
 	 * 
 	 * @param viewerSelection the original viewer selection
@@ -98,11 +98,11 @@ public class ConvertingSelectionProvider implements ISelectionProvider {
 		List result= new ArrayList(selection.size());
 		for (Iterator iter= selection.iterator(); iter.hasNext();) {
 			Object element= iter.next();
-			if (element instanceof IResource || element instanceof IJavaElement) {
+			if (element instanceof IResource || element instanceof IJavaScriptElement) {
 				result.add(element);
 			} else if (element instanceof IAdaptable) {
 				IAdaptable adaptable= (IAdaptable)element;
-				IJavaElement jElement= (IJavaElement)adaptable.getAdapter(IJavaElement.class);
+				IJavaScriptElement jElement= (IJavaScriptElement)adaptable.getAdapter(IJavaScriptElement.class);
 				if (jElement != null) {
 					result.add(jElement);
 				} else {

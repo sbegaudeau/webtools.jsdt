@@ -11,7 +11,7 @@
 
 package org.eclipse.wst.jsdt.internal.corext.refactoring;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 /**
  * 
@@ -19,10 +19,10 @@ import org.eclipse.wst.jsdt.core.ICompilationUnit;
 public abstract class RefactoringElementFilter {
 
 	/**
-	 * @param cu the ICompilationUnit under test
-	 * @return <code>true</code> iff the given ICompilationUnit should be
+	 * @param cu the IJavaScriptUnit under test
+	 * @return <code>true</code> iff the given IJavaScriptUnit should be
 	 *         filtered (i.e., refactorings should not touch the compilation
 	 *         unit)
 	 */
-	public abstract boolean filter(ICompilationUnit cu);
+	public abstract boolean filter(IJavaScriptUnit cu);
 }

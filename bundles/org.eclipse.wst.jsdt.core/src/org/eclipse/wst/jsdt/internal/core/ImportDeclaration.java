@@ -12,8 +12,8 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * Handle for an import declaration. Info object is a ImportDeclarationElementInfo.
@@ -47,7 +47,7 @@ public String getNameWithoutStar() {
 	return this.name;
 }
 /**
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public int getElementType() {
 	return IMPORT_DECLARATION;
@@ -55,7 +55,7 @@ public int getElementType() {
 /**
  * @see org.eclipse.wst.jsdt.core.IImportDeclaration#getFlags()
  */
-public int getFlags() throws JavaModelException {
+public int getFlags() throws JavaScriptModelException {
 	ImportDeclarationElementInfo info = (ImportDeclarationElementInfo)getElementInfo();
 	return info.getModifiers();
 }
@@ -82,7 +82,7 @@ protected char getHandleMementoDelimiter() {
 /*
  * @see JavaElement#getPrimaryElement(boolean)
  */
-public IJavaElement getPrimaryElement(boolean checkOwner) {
+public IJavaScriptElement getPrimaryElement(boolean checkOwner) {
 	CompilationUnit cu = (CompilationUnit)this.parent.getParent();
 	if (checkOwner && cu.isPrimary()) return this;
 	return cu.getImport(getElementName());

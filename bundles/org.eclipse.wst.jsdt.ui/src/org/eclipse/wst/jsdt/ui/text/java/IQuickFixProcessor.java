@@ -12,13 +12,13 @@
 package org.eclipse.wst.jsdt.ui.text.java;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 
 /**
  * Interface to be implemented by contributors to the extension point
  * <code>org.eclipse.wst.jsdt.ui.quickFixProcessors</code>.
- * <p>Since 3.2, each extension specifies the marker types it can handle, and {@link #hasCorrections(ICompilationUnit, int)} and
+ * <p>Since 3.2, each extension specifies the marker types it can handle, and {@link #hasCorrections(IJavaScriptUnit, int)} and
  * {@link #getCorrections(IInvocationContext, IProblemLocation[])} are called if (and only if) quick fix is
  * required for a problem of these types.</p>
  * <p>Note, if a extension does not specify marker types it will be only called for problem of type
@@ -38,7 +38,7 @@ public interface IQuickFixProcessor {
 	 * the extension point.
 	 * @return <code>true</code> if the processor has proposals for the given problem
 	 */
-	boolean hasCorrections(ICompilationUnit unit, int problemId);
+	boolean hasCorrections(IJavaScriptUnit unit, int problemId);
 
 	/**
 	 * Collects corrections or code manipulations for the given context.

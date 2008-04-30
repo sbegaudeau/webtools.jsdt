@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.structure;
 import java.util.List;
 
 import org.eclipse.wst.jsdt.core.dom.Expression;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.ParameterInfo;
 
@@ -30,7 +30,7 @@ public interface IDefaultValueAdvisor {
 	 * @param cuRewrite the CompilationUnitRewrite to use for rewrite, imports etc..
 	 * @return a new Expression to be used as argument for the new parameter
 	 */
-	Expression createDefaultExpression(List/*<Expression>*/ invocationArguments, ParameterInfo addedInfo, List/*<ParameterInfo>*/ parameterInfos, MethodDeclaration enclosingMethod, boolean isRecursive, CompilationUnitRewrite cuRewrite);
+	Expression createDefaultExpression(List/*<Expression>*/ invocationArguments, ParameterInfo addedInfo, List/*<ParameterInfo>*/ parameterInfos, FunctionDeclaration enclosingMethod, boolean isRecursive, CompilationUnitRewrite cuRewrite);
 
 	/**
 	 * Create a type for the added parameter.

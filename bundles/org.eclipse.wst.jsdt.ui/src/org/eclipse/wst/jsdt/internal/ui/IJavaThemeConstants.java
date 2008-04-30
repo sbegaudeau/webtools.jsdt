@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui;
 
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
  */
 public interface IJavaThemeConstants {
 
-	String ID_PREFIX= JavaUI.ID_PLUGIN + "."; //$NON-NLS-1$
+	String ID_PREFIX= JavaScriptUI.ID_PLUGIN + "."; //$NON-NLS-1$
 
 	/**
 	 * Theme constant for the color used to highlight matching brackets.

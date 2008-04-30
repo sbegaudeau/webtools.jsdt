@@ -41,12 +41,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
@@ -140,7 +140,7 @@ public class VariableBlock {
 		if (fControl != null) {
 			return fControl.getShell();
 		}
-		return JavaPlugin.getActiveWorkbenchShell();
+		return JavaScriptPlugin.getActiveWorkbenchShell();
 	}
 	
 	private class VariablesAdapter implements IDialogFieldListener, IListAdapter {
@@ -253,7 +253,7 @@ public class VariableBlock {
 	public boolean performOk() {
 		ArrayList removedVariables= new ArrayList();
 		ArrayList changedVariables= new ArrayList();
-		removedVariables.addAll(Arrays.asList(JavaCore.getClasspathVariableNames()));
+		removedVariables.addAll(Arrays.asList(JavaScriptCore.getIncludepathVariableNames()));
 
 		// remove all unchanged
 		List changedElements= fVariablesList.getElements();
@@ -263,7 +263,7 @@ public class VariableBlock {
 				changedElements.remove(curr);
 			} else {
 				IPath path= curr.getPath();
-				IPath prevPath= JavaCore.getClasspathVariable(curr.getName());
+				IPath prevPath= JavaScriptCore.getIncludepathVariable(curr.getName());
 				if (prevPath != null && prevPath.equals(path)) {
 					changedElements.remove(curr);
 				} else {
@@ -308,13 +308,13 @@ public class VariableBlock {
 	
 	private boolean doesChangeRequireFullBuild(List removed, List changed) {
 		try {
-			IJavaModel model= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
-			IJavaProject[] projects= model.getJavaProjects();
+			IJavaScriptModel model= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
+			IJavaScriptProject[] projects= model.getJavaScriptProjects();
 			for (int i= 0; i < projects.length; i++) {
-				IClasspathEntry[] entries= projects[i].getRawClasspath();
+				IIncludePathEntry[] entries= projects[i].getRawIncludepath();
 				for (int k= 0; k < entries.length; k++) {
-					IClasspathEntry curr= entries[k];
-					if (curr.getEntryKind() == IClasspathEntry.CPE_VARIABLE) {
+					IIncludePathEntry curr= entries[k];
+					if (curr.getEntryKind() == IIncludePathEntry.CPE_VARIABLE) {
 						String var= curr.getPath().segment(0);
 						if (removed.contains(var) || changed.contains(var)) {
 							return true;
@@ -322,7 +322,7 @@ public class VariableBlock {
 					}
 				}
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return true;
 		}
 		return false;
@@ -354,7 +354,7 @@ public class VariableBlock {
 			}
 		}
 
-		public void setVariables(IProgressMonitor monitor) throws JavaModelException, CoreException {
+		public void setVariables(IProgressMonitor monitor) throws JavaScriptModelException, CoreException {
 			int nVariables= fToChange.size() + fToRemove.size();
 			
 			String[] names= new String[nVariables];
@@ -372,7 +372,7 @@ public class VariableBlock {
 				paths[k]= null;
 				k++;					
 			}
-			JavaCore.setClasspathVariables(names, paths, new SubProgressMonitor(monitor, 1));
+			JavaScriptCore.setIncludepathVariables(names, paths, new SubProgressMonitor(monitor, 1));
 		}
 	}
 	
@@ -390,12 +390,12 @@ public class VariableBlock {
 	public void refresh(String initSelection) {
 		CPVariableElement initSelectedElement= null;
 		
-		String[] entries= JavaCore.getClasspathVariableNames();
+		String[] entries= JavaScriptCore.getIncludepathVariableNames();
 		ArrayList elements= new ArrayList(entries.length);
 		for (int i= 0; i < entries.length; i++) {
 			String name= entries[i];
 			CPVariableElement elem;
-			IPath entryPath= JavaCore.getClasspathVariable(name);
+			IPath entryPath= JavaScriptCore.getIncludepathVariable(name);
 			if (entryPath != null) {
 				elem= new CPVariableElement(name, entryPath);
 				elements.add(elem);
@@ -403,7 +403,7 @@ public class VariableBlock {
 					initSelectedElement= elem;
 				}
 			} else {				
-				JavaPlugin.logErrorMessage("VariableBlock: Classpath variable with null value: " + name); //$NON-NLS-1$
+				JavaScriptPlugin.logErrorMessage("VariableBlock: Classpath variable with null value: " + name); //$NON-NLS-1$
 			}
 		}
 		

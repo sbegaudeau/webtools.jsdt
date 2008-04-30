@@ -16,7 +16,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.StringMatcher;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 public class TypeFilter implements IPropertyChangeListener {
 	
 	public static TypeFilter getDefault() {
-		return JavaPlugin.getDefault().getTypeFilter();
+		return JavaScriptPlugin.getDefault().getTypeFilter();
 	}
 	
 	public static boolean isFiltered(String fullTypeName) {

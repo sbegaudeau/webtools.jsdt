@@ -15,11 +15,11 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IOpenable;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -29,7 +29,7 @@ import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerPart;
  * package explorer. 
  * <p>
  * The action is applicable to selections containing elements of type
- * <code>IJavaElement</code>.
+ * <code>IJavaScriptElement</code>.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -81,7 +81,7 @@ public class ShowInPackageViewAction extends SelectionDispatchAction {
 	private boolean checkEnabled(IStructuredSelection selection) {
 		if (selection.size() != 1)
 			return false;
-		return selection.getFirstElement() instanceof IJavaElement;
+		return selection.getFirstElement() instanceof IJavaScriptElement;
 	}
 	
 	/* (non-Javadoc)
@@ -89,11 +89,11 @@ public class ShowInPackageViewAction extends SelectionDispatchAction {
 	 */
 	public void run(ITextSelection selection) {
 		try {
-			IJavaElement element= SelectionConverter.getElementAtOffset(fEditor);
+			IJavaScriptElement element= SelectionConverter.getElementAtOffset(fEditor);
 			if (element != null)
 				run(element);
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 			String message= ActionMessages.ShowInPackageViewAction_error_message; 
 			ErrorDialog.openError(getShell(), getDialogTitle(), message, e.getStatus());
 		}	
@@ -105,21 +105,21 @@ public class ShowInPackageViewAction extends SelectionDispatchAction {
 	public void run(IStructuredSelection selection) {
 		if (!checkEnabled(selection))
 			return;
-		run((IJavaElement)selection.getFirstElement());
+		run((IJavaScriptElement)selection.getFirstElement());
 	}
 	
 	/*
 	 * No Javadoc. The method should be internal but can't be changed since
 	 * we shipped it with a public visibility 
 	 */
-	public void run(IJavaElement element) {
+	public void run(IJavaScriptElement element) {
 		if (element == null)
 			return;
 			
 		// reveal the top most element only
 		IOpenable openable= element.getOpenable();
-		if (openable instanceof IJavaElement)
-			element= (IJavaElement)openable;
+		if (openable instanceof IJavaScriptElement)
+			element= (IJavaScriptElement)openable;
 
 		PackageExplorerPart view= PackageExplorerPart.openInActivePerspective();
 		view.tryToReveal(element);

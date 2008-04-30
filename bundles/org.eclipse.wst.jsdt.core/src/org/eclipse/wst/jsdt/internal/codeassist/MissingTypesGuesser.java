@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
@@ -492,7 +492,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 			}
 
 		};
-		nameEnvironment.findExactTypes(missingSimpleName, true, IJavaSearchConstants.TYPE, storage);
+		nameEnvironment.findExactTypes(missingSimpleName, true, IJavaScriptSearchConstants.TYPE, storage);
 		if(results.size() == 0) return null;
 		return (char[][][])results.toArray(new char[results.size()][0][0]);
 	}

@@ -25,12 +25,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
@@ -42,7 +42,7 @@ import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
  * This action opens a call hierarchy on the selected method.
  * <p>
  * The action is applicable to selections containing elements of type
- * <code>IMethod</code>.
+ * <code>IFunction</code>.
  */
 public class OpenCallHierarchyAction extends SelectionDispatchAction {
     
@@ -110,10 +110,10 @@ public class OpenCallHierarchyAction extends SelectionDispatchAction {
         if (selection.size() != 1)
             return false;
         Object input= selection.getFirstElement();
-        if (!(input instanceof IJavaElement))
+        if (!(input instanceof IJavaScriptElement))
             return false;
-        switch (((IJavaElement)input).getElementType()) {
-            case IJavaElement.METHOD:
+        switch (((IJavaScriptElement)input).getElementType()) {
+            case IJavaScriptElement.METHOD:
                 return true;
             default:
                 return false;
@@ -124,27 +124,27 @@ public class OpenCallHierarchyAction extends SelectionDispatchAction {
      * Method declared on SelectionDispatchAction.
      */
 	public void run(ITextSelection selection) {
-        IJavaElement input= SelectionConverter.getInput(fEditor);
+        IJavaScriptElement input= SelectionConverter.getInput(fEditor);
         if (!ActionUtil.isProcessable(getShell(), input))
             return;     
         
         try {
-			IJavaElement[] elements= SelectionConverter.codeResolveOrInputForked(fEditor);
+			IJavaScriptElement[] elements= SelectionConverter.codeResolveOrInputForked(fEditor);
 			if (elements == null)
 			    return;
 			List candidates= new ArrayList(elements.length);
 			for (int i= 0; i < elements.length; i++) {
-			    IJavaElement[] resolvedElements= CallHierarchyUI.getCandidates(elements[i]);
+			    IJavaScriptElement[] resolvedElements= CallHierarchyUI.getCandidates(elements[i]);
 			    if (resolvedElements != null)   
 			        candidates.addAll(Arrays.asList(resolvedElements));
 			}
 			if (candidates.isEmpty()) {
-			    IJavaElement enclosingMethod= getEnclosingMethod(input, selection);
+			    IJavaScriptElement enclosingMethod= getEnclosingMethod(input, selection);
 			    if (enclosingMethod != null) {
 			        candidates.add(enclosingMethod);
 			    }
 			}
-			run((IJavaElement[])candidates.toArray(new IJavaElement[candidates.size()]));
+			run((IJavaScriptElement[])candidates.toArray(new IJavaScriptElement[candidates.size()]));
 		} catch (InvocationTargetException e) {
 			ExceptionHandler.handle(e, getShell(), getErrorDialogTitle(), ActionMessages.SelectionConverter_codeResolve_failed);
 		} catch (InterruptedException e) {
@@ -152,28 +152,28 @@ public class OpenCallHierarchyAction extends SelectionDispatchAction {
 		}
     }
     
-    private IJavaElement getEnclosingMethod(IJavaElement input, ITextSelection selection) {
-        IJavaElement enclosingElement= null;
+    private IJavaScriptElement getEnclosingMethod(IJavaScriptElement input, ITextSelection selection) {
+        IJavaScriptElement enclosingElement= null;
         try {
             switch (input.getElementType()) {
-                case IJavaElement.CLASS_FILE :
-                    IClassFile classFile= (IClassFile) input.getAncestor(IJavaElement.CLASS_FILE);
+                case IJavaScriptElement.CLASS_FILE :
+                    IClassFile classFile= (IClassFile) input.getAncestor(IJavaScriptElement.CLASS_FILE);
                     if (classFile != null) {
                         enclosingElement= classFile.getElementAt(selection.getOffset());
                     }
                     break;
-                case IJavaElement.COMPILATION_UNIT :
-                    ICompilationUnit cu= (ICompilationUnit) input.getAncestor(IJavaElement.COMPILATION_UNIT);
+                case IJavaScriptElement.JAVASCRIPT_UNIT :
+                    IJavaScriptUnit cu= (IJavaScriptUnit) input.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
                     if (cu != null) {
                         enclosingElement= cu.getElementAt(selection.getOffset());
                     }
                     break;
             }
-            if (enclosingElement != null && enclosingElement.getElementType() == IJavaElement.METHOD) {
+            if (enclosingElement != null && enclosingElement.getElementType() == IJavaScriptElement.METHOD) {
                 return enclosingElement;
             }
-        } catch (JavaModelException e) {
-            JavaPlugin.log(e);
+        } catch (JavaScriptModelException e) {
+            JavaScriptPlugin.log(e);
         }
 
         return null;
@@ -187,19 +187,19 @@ public class OpenCallHierarchyAction extends SelectionDispatchAction {
             return;
         Object input= selection.getFirstElement();
 
-        if (!(input instanceof IJavaElement)) {
+        if (!(input instanceof IJavaScriptElement)) {
             IStatus status= createStatus(CallHierarchyMessages.OpenCallHierarchyAction_messages_no_java_element); 
             openErrorDialog(status);
             return;
         }
-        IJavaElement element= (IJavaElement) input;
+        IJavaScriptElement element= (IJavaScriptElement) input;
         if (!ActionUtil.isProcessable(getShell(), element))
             return;
 
         List result= new ArrayList(1);
         IStatus status= compileCandidates(result, element);
         if (status.isOK()) {
-            run((IJavaElement[]) result.toArray(new IJavaElement[result.size()]));
+            run((IJavaScriptElement[]) result.toArray(new IJavaScriptElement[result.size()]));
         } else {
             openErrorDialog(status);
         }
@@ -215,7 +215,7 @@ public class OpenCallHierarchyAction extends SelectionDispatchAction {
         return CallHierarchyMessages.OpenCallHierarchyAction_dialog_title; 
     }
     
-	public void run(IJavaElement[] elements) {
+	public void run(IJavaScriptElement[] elements) {
         if (elements.length == 0) {
             getShell().getDisplay().beep();
             return;
@@ -223,10 +223,10 @@ public class OpenCallHierarchyAction extends SelectionDispatchAction {
         CallHierarchyUI.open(elements, getSite().getWorkbenchWindow());
     }
     
-    private static IStatus compileCandidates(List result, IJavaElement elem) {
-        IStatus ok= new Status(IStatus.OK, JavaPlugin.getPluginId(), 0, "", null); //$NON-NLS-1$        
+    private static IStatus compileCandidates(List result, IJavaScriptElement elem) {
+        IStatus ok= new Status(IStatus.OK, JavaScriptPlugin.getPluginId(), 0, "", null); //$NON-NLS-1$        
         switch (elem.getElementType()) {
-            case IJavaElement.METHOD:
+            case IJavaScriptElement.METHOD:
                 result.add(elem);
                 return ok;
         }
@@ -234,6 +234,6 @@ public class OpenCallHierarchyAction extends SelectionDispatchAction {
     }
     
     private static IStatus createStatus(String message) {
-        return new Status(IStatus.INFO, JavaPlugin.getPluginId(), IJavaStatusConstants.INTERNAL_ERROR, message, null);
+        return new Status(IStatus.INFO, JavaScriptPlugin.getPluginId(), IJavaStatusConstants.INTERNAL_ERROR, message, null);
     }           
 }

@@ -18,7 +18,7 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 
 /**
@@ -77,7 +77,7 @@ public class PersistentSpellDictionary extends AbstractSpellDictionary {
 			
 			fileStream.write(byteArray, bomCutSize, size - bomCutSize);
 		} catch (IOException exception) {
-			JavaPlugin.log(exception);
+			JavaScriptPlugin.log(exception);
 			return;
 		} finally {
 			try {

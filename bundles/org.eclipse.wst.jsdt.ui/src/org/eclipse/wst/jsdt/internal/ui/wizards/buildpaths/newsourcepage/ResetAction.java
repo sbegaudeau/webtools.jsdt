@@ -26,20 +26,20 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElementAttribute;
 
 //Warning: This is unused and untested code. Images and descriptions are missing too.
-//SelectedElements iff enabled: IJavaProject || IPackageFragmentRoot || CPListElementAttribute
+//SelectedElements iff enabled: IJavaScriptProject || IPackageFragmentRoot || CPListElementAttribute
 public class ResetAction extends BuildpathModifierAction {
 
 	private final IRunnableContext fContext;
@@ -95,11 +95,11 @@ public class ResetAction extends BuildpathModifierAction {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				try {
 					Object firstElement= getSelectedElements().get(0);
-					IJavaProject project= null;
-					if (firstElement instanceof IJavaProject) {
-						project= (IJavaProject)firstElement;
+					IJavaScriptProject project= null;
+					if (firstElement instanceof IJavaScriptProject) {
+						project= (IJavaScriptProject)firstElement;
 					} else if (firstElement instanceof IPackageFragmentRoot) {
-						project= ((IPackageFragmentRoot)firstElement).getJavaProject();
+						project= ((IPackageFragmentRoot)firstElement).getJavaScriptProject();
 					} else {
 						project= ((CPListElementAttribute)firstElement).getParent().getJavaProject();
 					}
@@ -117,13 +117,13 @@ public class ResetAction extends BuildpathModifierAction {
         	if (e.getCause() instanceof CoreException) {
 				showExceptionDialog((CoreException)e.getCause(), ""); //$NON-NLS-1$
 			} else {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
         } catch (InterruptedException e) {
         }
 	}
 	
-	private List reset(List selection, IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
+	private List reset(List selection, IJavaScriptProject project, IProgressMonitor monitor) throws JavaScriptModelException {
 	    if (monitor == null)
         	monitor= new NullProgressMonitor();
         try {
@@ -132,10 +132,10 @@ public class ResetAction extends BuildpathModifierAction {
         	List result= new ArrayList();
         	for (int i= 0; i < selection.size(); i++) {
         		Object element= selection.get(i);
-        		if (element instanceof IJavaElement) {
-        			IJavaElement javaElement= (IJavaElement) element;
+        		if (element instanceof IJavaScriptElement) {
+        			IJavaScriptElement javaElement= (IJavaScriptElement) element;
         			IPackageFragmentRoot root;
-        			if (element instanceof IJavaProject)
+        			if (element instanceof IJavaScriptProject)
         				root= project.getPackageFragmentRoot(project.getResource());
         			else
         				root= (IPackageFragmentRoot) element;
@@ -166,12 +166,12 @@ public class ResetAction extends BuildpathModifierAction {
 		try {
 	        for (Iterator iterator= elements.iterator(); iterator.hasNext();) {
 	            Object element= iterator.next();
-	            if (element instanceof IJavaProject) {
-	            	IJavaProject project= (IJavaProject)element;
-	            	if (!project.isOnClasspath(project))
+	            if (element instanceof IJavaScriptProject) {
+	            	IJavaScriptProject project= (IJavaScriptProject)element;
+	            	if (!project.isOnIncludepath(project))
 	            		return false;
 	            	
-	            	IClasspathEntry entry= ClasspathModifier.getClasspathEntryFor(project.getPath(), project, IClasspathEntry.CPE_SOURCE);
+	            	IIncludePathEntry entry= ClasspathModifier.getClasspathEntryFor(project.getPath(), project, IIncludePathEntry.CPE_SOURCE);
 	                if (entry.getInclusionPatterns().length == 0 && entry.getExclusionPatterns().length == 0)
 	                    return false;
 	            	
@@ -186,7 +186,7 @@ public class ResetAction extends BuildpathModifierAction {
 	            	return false;
 	            }
 	        }
-        } catch (JavaModelException e) {
+        } catch (JavaScriptModelException e) {
 	        return false;
         }
 		return false;

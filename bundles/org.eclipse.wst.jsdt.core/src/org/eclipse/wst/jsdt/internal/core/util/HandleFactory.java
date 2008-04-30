@@ -20,18 +20,18 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
@@ -81,9 +81,9 @@ public class HandleFactory {
 	 *            and it uses '/' for entries in a zip file.
 	 * If not null, uses the given scope as a hint for getting Java project handles.
 	 */
-	public Openable createOpenable(String resourcePath, IJavaSearchScope scope) {
+	public Openable createOpenable(String resourcePath, IJavaScriptSearchScope scope) {
 		int separatorIndex;
-//		if ((separatorIndex= resourcePath.indexOf(IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR)) > -1) {
+//		if ((separatorIndex= resourcePath.indexOf(IJavaScriptSearchScope.JAR_FILE_ENTRY_SEPARATOR)) > -1) {
 //			// path to a class file inside a jar
 //			// Optimization: cache package fragment root handle and package handles
 //			int rootPathLength;
@@ -159,7 +159,7 @@ public class HandleFactory {
 			
 			if (pkgFragment.isSource() && 
 					!Util.isMetadataFileName(simpleName)) {
-				ICompilationUnit unit= pkgFragment.getCompilationUnit(simpleName);
+				IJavaScriptUnit unit= pkgFragment.getJavaScriptUnit(simpleName);
 				return (Openable) unit;
 			} else {
 				IClassFile classFile= pkgFragment.getClassFile(simpleName);
@@ -171,14 +171,14 @@ public class HandleFactory {
 	/**
 	 * Returns a handle denoting the class member identified by its scope.
 	 */
-	public IJavaElement createElement(ClassScope scope, ICompilationUnit unit, HashSet existingElements, HashMap knownScopes) {
+	public IJavaScriptElement createElement(ClassScope scope, IJavaScriptUnit unit, HashSet existingElements, HashMap knownScopes) {
 		return createElement(scope, scope.referenceContext.sourceStart, unit, existingElements, knownScopes);
 	}
 	/**
 	 * Create handle by adding child to parent obtained by recursing into parent scopes.
 	 */
-	private IJavaElement createElement(Scope scope, int elementPosition, ICompilationUnit unit, HashSet existingElements, HashMap knownScopes) {
-		IJavaElement newElement = (IJavaElement)knownScopes.get(scope);
+	private IJavaScriptElement createElement(Scope scope, int elementPosition, IJavaScriptUnit unit, HashSet existingElements, HashMap knownScopes) {
+		IJavaScriptElement newElement = (IJavaScriptElement)knownScopes.get(scope);
 		if (newElement != null) return newElement;
 
 		switch(scope.kind) {
@@ -186,17 +186,17 @@ public class HandleFactory {
 				newElement = unit;
 				break;
 			case Scope.CLASS_SCOPE :
-				IJavaElement parentElement = createElement(scope.parent, elementPosition, unit, existingElements, knownScopes);
+				IJavaScriptElement parentElement = createElement(scope.parent, elementPosition, unit, existingElements, knownScopes);
 				switch (parentElement.getElementType()) {
-					case IJavaElement.COMPILATION_UNIT :
-						newElement = ((ICompilationUnit)parentElement).getType(new String(scope.enclosingSourceType().sourceName));
+					case IJavaScriptElement.JAVASCRIPT_UNIT :
+						newElement = ((IJavaScriptUnit)parentElement).getType(new String(scope.enclosingSourceType().sourceName));
 						break;
-					case IJavaElement.TYPE :
+					case IJavaScriptElement.TYPE :
 						newElement = ((IType)parentElement).getType(new String(scope.enclosingSourceType().sourceName));
 						break;
-					case IJavaElement.FIELD :
-					case IJavaElement.INITIALIZER :
-					case IJavaElement.METHOD :
+					case IJavaScriptElement.FIELD :
+					case IJavaScriptElement.INITIALIZER :
+					case IJavaScriptElement.METHOD :
 					    IMember member = (IMember)parentElement;
 					    if (member.isBinary()) {
 					        return null;
@@ -240,7 +240,7 @@ public class HandleFactory {
 				} else {
 					// method element
 					AbstractMethodDeclaration method = methodScope.referenceMethod();
-					newElement = parentType.getMethod(new String(method.getSafeName()), Util.typeParameterSignatures(method));
+					newElement = parentType.getFunction(new String(method.getSafeName()), Util.typeParameterSignatures(method));
 					if (newElement != null) {
 						knownScopes.put(scope, newElement);
 					}
@@ -258,7 +258,7 @@ public class HandleFactory {
 	 * See createOpenable(...) for the format of the jar path string.
 	 * If not null, uses the given scope as a hint for getting Java project handles.
 	 */
-	private IPackageFragmentRoot getJarPkgFragmentRoot(String jarPathString, IJavaSearchScope scope) {
+	private IPackageFragmentRoot getJarPkgFragmentRoot(String jarPathString, IJavaScriptSearchScope scope) {
 
 		IPath jarPath= new Path(jarPathString);
 
@@ -270,30 +270,30 @@ public class HandleFactory {
 			IFile jarFile = (IFile)target;
 			JavaProject javaProject = (JavaProject) this.javaModel.getJavaProject(jarFile);
 			try {
-				IClasspathEntry entry = javaProject.getClasspathEntryFor(jarPath);
+				IIncludePathEntry entry = javaProject.getClasspathEntryFor(jarPath);
 				if (entry != null) {
 					return javaProject.getPackageFragmentRoot(jarFile);
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore and try to find another project
 			}
 		}
 
 		// walk projects in the scope and find the first one that has the given jar path in its classpath
-		IJavaProject[] projects;
+		IJavaScriptProject[] projects;
 		if (scope != null) {
 			IPath[] enclosingProjectsAndJars = scope.enclosingProjectsAndJars();
 			int length = enclosingProjectsAndJars.length;
-			projects = new IJavaProject[length];
+			projects = new IJavaScriptProject[length];
 			int index = 0;
 			for (int i = 0; i < length; i++) {
 				IPath path = enclosingProjectsAndJars[i];
 				if (!org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(path.lastSegment())) {
-					projects[index++] = this.javaModel.getJavaProject(path.segment(0));
+					projects[index++] = this.javaModel.getJavaScriptProject(path.segment(0));
 				}
 			}
 			if (index < length) {
-				System.arraycopy(projects, 0, projects = new IJavaProject[index], 0, index);
+				System.arraycopy(projects, 0, projects = new IJavaScriptProject[index], 0, index);
 			}
 			IPackageFragmentRoot root = getJarPkgFragmentRoot(jarPath, target, projects);
 			if (root != null) {
@@ -303,8 +303,8 @@ public class HandleFactory {
 
 		// not found in the scope, walk all projects
 		try {
-			projects = this.javaModel.getJavaProjects();
-		} catch (JavaModelException e) {
+			projects = this.javaModel.getJavaScriptProjects();
+		} catch (JavaScriptModelException e) {
 			// java model is not accessible
 			return null;
 		}
@@ -314,11 +314,11 @@ public class HandleFactory {
 	private IPackageFragmentRoot getJarPkgFragmentRoot(
 		IPath jarPath,
 		Object target,
-		IJavaProject[] projects) {
+		IJavaScriptProject[] projects) {
 		for (int i= 0, projectCount= projects.length; i < projectCount; i++) {
 			try {
 				JavaProject javaProject= (JavaProject)projects[i];
-				IClasspathEntry classpathEnty = javaProject.getClasspathEntryFor(jarPath);
+				IIncludePathEntry classpathEnty = javaProject.getClasspathEntryFor(jarPath);
 				if (classpathEnty != null) {
 					if (target instanceof IFile) {
 						// internal jar
@@ -328,8 +328,8 @@ public class HandleFactory {
 						return javaProject.getPackageFragmentRoot0(jarPath);
 					}
 				}
-			} catch (JavaModelException e) {
-				// JavaModelException from getResolvedClasspath - a problem occured while accessing project: nothing we can do, ignore
+			} catch (JavaScriptModelException e) {
+				// JavaScriptModelException from getResolvedClasspath - a problem occured while accessing project: nothing we can do, ignore
 			}
 		}
 		return null;
@@ -347,8 +347,8 @@ public class HandleFactory {
 			try {
 				IProject project = projects[i];
 				if (!project.isAccessible()
-					|| !project.hasNature(JavaCore.NATURE_ID)) continue;
-				IJavaProject javaProject= this.javaModel.getJavaProject(project);
+					|| !project.hasNature(JavaScriptCore.NATURE_ID)) continue;
+				IJavaScriptProject javaProject= this.javaModel.getJavaProject(project);
 				IPackageFragmentRoot[] roots= javaProject.getPackageFragmentRoots();
 				for (int j= 0, rootCount= roots.length; j < rootCount; j++) {
 					PackageFragmentRoot root= (PackageFragmentRoot)roots[j];
@@ -364,7 +364,7 @@ public class HandleFactory {
 				}
 			} catch (CoreException e) {
 				// CoreException from hasNature - should not happen since we check that the project is accessible
-				// JavaModelException from getPackageFragmentRoots - a problem occured while accessing project: nothing we can do, ignore
+				// JavaScriptModelException from getPackageFragmentRoots - a problem occured while accessing project: nothing we can do, ignore
 			}
 		}
 		return null;

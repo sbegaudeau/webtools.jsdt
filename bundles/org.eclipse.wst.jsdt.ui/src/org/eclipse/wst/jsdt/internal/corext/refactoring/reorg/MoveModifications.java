@@ -32,8 +32,8 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.eclipse.ltk.core.refactoring.participants.ValidateEditChecker;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
@@ -112,7 +112,7 @@ public class MoveModifications extends RefactoringModifications {
 		}
 	}
 
-	public void move(ICompilationUnit unit, MoveArguments args) throws CoreException {
+	public void move(IJavaScriptUnit unit, MoveArguments args) throws CoreException {
 		add(unit, args, null);
 		IType[] types= unit.getTypes();
 		for (int tt= 0; tt < types.length; tt++) {
@@ -137,8 +137,8 @@ public class MoveModifications extends RefactoringModifications {
 	public void buildValidateEdits(ValidateEditChecker checker) {
 		for (Iterator iter= fMoves.iterator(); iter.hasNext();) {
 			Object element= iter.next();
-			if (element instanceof ICompilationUnit) {
-				ICompilationUnit unit= (ICompilationUnit)element;
+			if (element instanceof IJavaScriptUnit) {
+				IJavaScriptUnit unit= (IJavaScriptUnit)element;
 				IResource resource= unit.getResource();
 				if (resource != null && resource.getType() == IResource.FILE) {
 					checker.addFile((IFile)resource);
@@ -171,8 +171,8 @@ public class MoveModifications extends RefactoringModifications {
 	private IResource getResourceDestination(MoveArguments args) {
 		Object genericDestination= args.getDestination();
 		IResource resourceDestination= null;
-		if (genericDestination instanceof IJavaElement) {
-			resourceDestination= ((IJavaElement)genericDestination).getResource();
+		if (genericDestination instanceof IJavaScriptElement) {
+			resourceDestination= ((IJavaScriptElement)genericDestination).getResource();
 		} else if (genericDestination instanceof IResource) {
 			resourceDestination= (IResource)genericDestination;
 		}

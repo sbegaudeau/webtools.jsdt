@@ -22,9 +22,9 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -52,8 +52,8 @@ public class JavaUIHelp {
 		IStructuredSelection selection;
 		try {
 			selection= SelectionConverter.getStructuredSelection(part);
-		} catch (JavaModelException ex) {
-			JavaPlugin.log(ex);
+		} catch (JavaScriptModelException ex) {
+			JavaScriptPlugin.log(ex);
 			selection= StructuredSelection.EMPTY;
 		}
 		Object[] elements= selection.toArray();
@@ -89,14 +89,14 @@ public class JavaUIHelp {
 						selected= ((IStructuredSelection)selection).toArray();
 					}
 				} else if (fEditor != null) {
-					IJavaElement input= SelectionConverter.getInput(fEditor);
+					IJavaScriptElement input= SelectionConverter.getInput(fEditor);
 					if (ActionUtil.isOnBuildPath(input)) {
 						selected= SelectionConverter.codeResolve(fEditor);
 					}
 				}
 				JavadocHelpContext.displayHelp(fContextId, selected);
 			} catch (CoreException x) {
-				JavaPlugin.log(x);
+				JavaScriptPlugin.log(x);
 			}
 		}
 	}
@@ -116,12 +116,12 @@ public class JavaUIHelp {
 			if (fSelected != null && fSelected.length > 0) {
 				try {
 					context= new JavadocHelpContext(context, fSelected);
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					// since we are updating the UI with async exec it
 					// can happen that the element doesn't exist anymore
 					// but we are still showing it in the user interface
 					if (!e.isDoesNotExist())
-						JavaPlugin.log(e);
+						JavaScriptPlugin.log(e);
 				}
 			}
 			return context;

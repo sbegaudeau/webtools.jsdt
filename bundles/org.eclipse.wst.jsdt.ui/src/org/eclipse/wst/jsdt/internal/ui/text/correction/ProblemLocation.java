@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
-import org.eclipse.wst.jsdt.core.IJavaModelMarker;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelMarker;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IJavaAnnotation;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaMarkerAnnotation;
@@ -40,7 +40,7 @@ public class ProblemLocation implements IProblemLocation {
 		fIsError= JavaMarkerAnnotation.ERROR_ANNOTATION_TYPE.equals(annotation.getType());
 		
 		String markerType= annotation.getMarkerType();
-		fMarkerType= markerType != null ? markerType : IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER;
+		fMarkerType= markerType != null ? markerType : IJavaScriptModelMarker.JAVASCRIPT_MODEL_PROBLEM_MARKER;
 	}
 
 	public ProblemLocation(int offset, int length, int id, String[] arguments, boolean isError, String markerType) {
@@ -58,7 +58,7 @@ public class ProblemLocation implements IProblemLocation {
 		fOffset= problem.getSourceStart();
 		fLength= problem.getSourceEnd() - fOffset + 1;
 		fIsError= problem.isError();
-		fMarkerType= problem instanceof CategorizedProblem ? ((CategorizedProblem) problem).getMarkerType() : IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER;
+		fMarkerType= problem instanceof CategorizedProblem ? ((CategorizedProblem) problem).getMarkerType() : IJavaScriptModelMarker.JAVASCRIPT_MODEL_PROBLEM_MARKER;
 	}
 
 
@@ -106,9 +106,9 @@ public class ProblemLocation implements IProblemLocation {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.ui.text.correction.IProblemLocation#getCoveringNode(org.eclipse.wst.jsdt.core.dom.CompilationUnit)
+	 * @see org.eclipse.wst.jsdt.internal.ui.text.correction.IProblemLocation#getCoveringNode(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit)
 	 */
-	public ASTNode getCoveringNode(CompilationUnit astRoot) {
+	public ASTNode getCoveringNode(JavaScriptUnit astRoot) {
 		NodeFinder finder= new NodeFinder(fOffset, fLength);
 		astRoot.accept(finder);
 		return finder.getCoveringNode();
@@ -116,9 +116,9 @@ public class ProblemLocation implements IProblemLocation {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.ui.text.correction.IProblemLocation#getCoveredNode(org.eclipse.wst.jsdt.core.dom.CompilationUnit)
+	 * @see org.eclipse.wst.jsdt.internal.ui.text.correction.IProblemLocation#getCoveredNode(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit)
 	 */
-	public ASTNode getCoveredNode(CompilationUnit astRoot) {
+	public ASTNode getCoveredNode(JavaScriptUnit astRoot) {
 		NodeFinder finder= new NodeFinder(fOffset, fLength);
 		astRoot.accept(finder);
 		return finder.getCoveredNode();

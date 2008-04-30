@@ -69,7 +69,7 @@ public class ASTMatcher {
 	 *
 	 * @param matchDocTags <code>true</code> if doc comment tags are
 	 * to be compared by default, and <code>false</code> otherwise
-	 * @see #match(Javadoc,Object)
+	 * @see #match(JSdoc,Object)
 	 * @since 3.0
 	 */
 	public ASTMatcher(boolean matchDocTags) {
@@ -614,11 +614,11 @@ public class ASTMatcher {
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
 	 */
-	public boolean match(CompilationUnit node, Object other) {
-		if (!(other instanceof CompilationUnit)) {
+	public boolean match(JavaScriptUnit node, Object other) {
+		if (!(other instanceof JavaScriptUnit)) {
 			return false;
 		}
-		CompilationUnit o = (CompilationUnit) other;
+		JavaScriptUnit o = (JavaScriptUnit) other;
 		return (
 			safeSubtreeMatch(node.getPackage(), o.getPackage())
 				&& safeSubtreeListMatch(node.imports(), o.imports())
@@ -1127,7 +1127,7 @@ public class ASTMatcher {
 	 * Conversely, when the parameter is <code>false</code>, the
 	 * implementation tests whether the other object is also a
 	 * <code>Javadoc</code> with exactly the same comment string;
-	 * the tag elements ({@link Javadoc#tags() Javadoc.tags} are
+	 * the tag elements ({@link JSdoc#tags() Javadoc.tags} are
 	 * ignored. Subclasses may reimplement.
 	 * </p>
 	 *
@@ -1139,11 +1139,11 @@ public class ASTMatcher {
 	 * @see #ASTMatcher()
 	 * @see #ASTMatcher(boolean)
 	 */
-	public boolean match(Javadoc node, Object other) {
-		if (!(other instanceof Javadoc)) {
+	public boolean match(JSdoc node, Object other) {
+		if (!(other instanceof JSdoc)) {
 			return false;
 		}
-		Javadoc o = (Javadoc) other;
+		JSdoc o = (JSdoc) other;
 		if (this.matchDocTags) {
 			return safeSubtreeListMatch(node.tags(), o.tags());
 		} else {
@@ -1157,7 +1157,7 @@ public class ASTMatcher {
 	 * Note the only purpose of this method is to hide deprecated warnings.
 	 * @deprecated mark deprecated to hide deprecated usage
 	 */
-	private boolean compareDeprecatedComment(Javadoc first, Javadoc second) {
+	private boolean compareDeprecatedComment(JSdoc first, JSdoc second) {
 		if (first.getAST().apiLevel == AST.JLS2_INTERNAL) {
 			return safeEquals(first.getComment(), second.getComment());
 		} else {
@@ -1311,11 +1311,11 @@ public class ASTMatcher {
 	 *   different node type or is <code>null</code>
 	 * @since 3.0
 	 */
-	public boolean match(MethodRef node, Object other) {
-		if (!(other instanceof MethodRef)) {
+	public boolean match(FunctionRef node, Object other) {
+		if (!(other instanceof FunctionRef)) {
 			return false;
 		}
-		MethodRef o = (MethodRef) other;
+		FunctionRef o = (FunctionRef) other;
 		return (
 				safeSubtreeMatch(node.getQualifier(), o.getQualifier())
 				&& safeSubtreeMatch(node.getName(), o.getName())
@@ -1337,11 +1337,11 @@ public class ASTMatcher {
 	 *   different node type or is <code>null</code>
 	 * @since 3.0
 	 */
-	public boolean match(MethodRefParameter node, Object other) {
-		if (!(other instanceof MethodRefParameter)) {
+	public boolean match(FunctionRefParameter node, Object other) {
+		if (!(other instanceof FunctionRefParameter)) {
 			return false;
 		}
-		MethodRefParameter o = (MethodRefParameter) other;
+		FunctionRefParameter o = (FunctionRefParameter) other;
 		int level = node.getAST().apiLevel;
 		if (level >= AST.JLS3) {
 			if (node.isVarargs() != o.isVarargs()) {
@@ -1375,11 +1375,11 @@ public class ASTMatcher {
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
 	 */
-	public boolean match(MethodDeclaration node, Object other) {
-		if (!(other instanceof MethodDeclaration)) {
+	public boolean match(FunctionDeclaration node, Object other) {
+		if (!(other instanceof FunctionDeclaration)) {
 			return false;
 		}
-		MethodDeclaration o = (MethodDeclaration) other;
+		FunctionDeclaration o = (FunctionDeclaration) other;
 		int level = node.getAST().apiLevel;
 		if (level == AST.JLS2_INTERNAL) {
 			if (node.getModifiers() != o.getModifiers()) {
@@ -1425,11 +1425,11 @@ public class ASTMatcher {
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
 	 */
-	public boolean match(MethodInvocation node, Object other) {
-		if (!(other instanceof MethodInvocation)) {
+	public boolean match(FunctionInvocation node, Object other) {
+		if (!(other instanceof FunctionInvocation)) {
 			return false;
 		}
-		MethodInvocation o = (MethodInvocation) other;
+		FunctionInvocation o = (FunctionInvocation) other;
 		if (node.getAST().apiLevel >= AST.JLS3) {
 			if (!safeSubtreeListMatch(node.typeArguments(), o.typeArguments())) {
 				return false;

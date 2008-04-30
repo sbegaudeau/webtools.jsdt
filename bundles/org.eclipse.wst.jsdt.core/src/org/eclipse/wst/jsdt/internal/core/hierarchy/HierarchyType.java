@@ -43,7 +43,7 @@ public HierarchyType(
  * @see org.eclipse.wst.jsdt.internal.compiler.env.IDependent#getFileName()
  */
 public char[] getFileName() {
-	return this.typeHandle.getCompilationUnit().getElementName().toCharArray();
+	return this.typeHandle.getJavaScriptUnit().getElementName().toCharArray();
 }
 
 /**

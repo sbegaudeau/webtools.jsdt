@@ -12,9 +12,9 @@ package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 import org.eclipse.wst.jsdt.internal.core.refactoring.descriptors.DescriptorMessages;
 
 /**
@@ -32,7 +32,7 @@ import org.eclipse.wst.jsdt.internal.core.refactoring.descriptors.DescriptorMess
  * 
  * @since 3.3
  */
-public final class RenameLocalVariableDescriptor extends JavaRefactoringDescriptor {
+public final class RenameLocalVariableDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/** The name attribute */
 	private String fName= null;
@@ -44,13 +44,13 @@ public final class RenameLocalVariableDescriptor extends JavaRefactoringDescript
 	private ISourceRange fSelection= null;
 
 	/** The compilation unit attribute */
-	private ICompilationUnit fUnit= null;
+	private IJavaScriptUnit fUnit= null;
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public RenameLocalVariableDescriptor() {
-		super(IJavaRefactorings.RENAME_LOCAL_VARIABLE);
+		super(IJavaScriptRefactorings.RENAME_LOCAL_VARIABLE);
 	}
 
 	/**
@@ -58,10 +58,10 @@ public final class RenameLocalVariableDescriptor extends JavaRefactoringDescript
 	 */
 	protected void populateArgumentMap() {
 		super.populateArgumentMap();
-		fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_NAME, fName);
-		fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_INPUT, elementToHandle(getProject(), fUnit));
-		fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_SELECTION, new Integer(fSelection.getOffset()).toString() + " " + new Integer(fSelection.getLength()).toString()); //$NON-NLS-1$
-		fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_REFERENCES, Boolean.toString(fReferences));
+		fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_NAME, fName);
+		fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_INPUT, elementToHandle(getProject(), fUnit));
+		fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_SELECTION, new Integer(fSelection.getOffset()).toString() + " " + new Integer(fSelection.getLength()).toString()); //$NON-NLS-1$
+		fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_REFERENCES, Boolean.toString(fReferences));
 	}
 
 	/**
@@ -70,7 +70,7 @@ public final class RenameLocalVariableDescriptor extends JavaRefactoringDescript
 	 * @param unit
 	 *            the compilation unit to set
 	 */
-	public void setCompilationUnit(final ICompilationUnit unit) {
+	public void setCompilationUnit(final IJavaScriptUnit unit) {
 		Assert.isNotNull(unit);
 		fUnit= unit;
 	}

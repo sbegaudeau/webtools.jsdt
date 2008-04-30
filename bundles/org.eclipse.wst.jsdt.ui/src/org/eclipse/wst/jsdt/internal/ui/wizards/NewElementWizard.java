@@ -35,9 +35,9 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.ui.IUIConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.OptionalMessageDialog;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
@@ -52,7 +52,7 @@ public abstract class NewElementWizard extends Wizard implements INewWizard {
 	}
 			
 	protected void openResource(final IFile resource) {
-		final IWorkbenchPage activePage= JavaPlugin.getActivePage();
+		final IWorkbenchPage activePage= JavaScriptPlugin.getActivePage();
 		if (activePage != null) {
 			final Display display= getShell().getDisplay();
 			if (display != null) {
@@ -61,7 +61,7 @@ public abstract class NewElementWizard extends Wizard implements INewWizard {
 						try {
 							IDE.openEditor(activePage, resource, true);
 						} catch (PartInitException e) {
-							JavaPlugin.log(e);
+							JavaScriptPlugin.log(e);
 						}
 					}
 				});
@@ -90,7 +90,7 @@ public abstract class NewElementWizard extends Wizard implements INewWizard {
 		return true;
 	}
 	
-	public abstract IJavaElement getCreatedElement();
+	public abstract IJavaScriptElement getCreatedElement();
 	
 	protected void handleFinishException(Shell shell, InvocationTargetException e) {
 		String title= NewWizardMessages.NewElementWizard_op_error_title; 
@@ -134,7 +134,7 @@ public abstract class NewElementWizard extends Wizard implements INewWizard {
 	protected void warnAboutTypeCommentDeprecation() {
 		String key= IUIConstants.DIALOGSTORE_TYPECOMMENT_DEPRECATED;
 		if (OptionalMessageDialog.isDialogEnabled(key)) {
-			TemplateStore templates= JavaPlugin.getDefault().getTemplateStore();
+			TemplateStore templates= JavaScriptPlugin.getDefault().getTemplateStore();
 			boolean isOldWorkspace= templates.findTemplate("filecomment") != null && templates.findTemplate("typecomment") != null; //$NON-NLS-1$ //$NON-NLS-2$
 			if (!isOldWorkspace) {
 				OptionalMessageDialog.setDialogEnabled(key, false);

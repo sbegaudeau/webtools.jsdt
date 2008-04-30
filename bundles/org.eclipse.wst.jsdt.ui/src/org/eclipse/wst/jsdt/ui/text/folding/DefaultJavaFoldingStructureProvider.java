@@ -43,23 +43,23 @@ import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
 import org.eclipse.wst.jsdt.core.IImportContainer;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -79,7 +79,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructureProvider, IJavaFoldingStructureProviderExtension {
 	/**
 	 * A context that contains the information needed to compute the folding structure of an
-	 * {@link org.eclipse.wst.jsdt.core.ICompilationUnit} or an {@link org.eclipse.wst.jsdt.core.IClassFile}. Computed folding regions are collected
+	 * {@link org.eclipse.wst.jsdt.core.IJavaScriptUnit} or an {@link org.eclipse.wst.jsdt.core.IClassFile}. Computed folding regions are collected
 	 * via
 	 * {@linkplain #addProjectionRange(DefaultJavaFoldingStructureProvider.JavaProjectionAnnotation, Position) addProjectionRange}.
 	 */
@@ -220,7 +220,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	 */
 	protected static final class JavaProjectionAnnotation extends ProjectionAnnotation {
 
-		private IJavaElement fJavaElement;
+		private IJavaScriptElement fJavaElement;
 		private boolean fIsComment;
 
 		/**
@@ -232,17 +232,17 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 		 * @param isComment <code>true</code> for a foldable comment, <code>false</code> for a
 		 *        foldable code element
 		 */
-		public JavaProjectionAnnotation(boolean isCollapsed, IJavaElement element, boolean isComment) {
+		public JavaProjectionAnnotation(boolean isCollapsed, IJavaScriptElement element, boolean isComment) {
 			super(isCollapsed);
 			fJavaElement= element;
 			fIsComment= isComment;
 		}
 
-		IJavaElement getElement() {
+		IJavaScriptElement getElement() {
 			return fJavaElement;
 		}
 
-		void setElement(IJavaElement element) {
+		void setElement(IJavaScriptElement element) {
 			fJavaElement= element;
 		}
 
@@ -300,9 +300,9 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	private static final class MemberFilter implements Filter {
 		public boolean match(JavaProjectionAnnotation annotation) {
 			if (!annotation.isComment() && !annotation.isMarkedDeleted()) {
-				IJavaElement element= annotation.getElement();
+				IJavaScriptElement element= annotation.getElement();
 				if (element instanceof IMember) {
-					if (element.getElementType() != IJavaElement.TYPE || ((IMember) element).getDeclaringType() != null) {
+					if (element.getElementType() != IJavaScriptElement.TYPE || ((IMember) element).getDeclaringType() != null) {
 						return true;
 					}
 				}
@@ -315,10 +315,10 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	 * Matches java elements contained in a certain set.
 	 */
 	private static final class JavaElementSetFilter implements Filter {
-		private final Set/*<? extends IJavaElement>*/ fSet;
+		private final Set/*<? extends IJavaScriptElement>*/ fSet;
 		private final boolean fMatchCollapsed;
 
-		private JavaElementSetFilter(Set/*<? extends IJavaElement>*/ set, boolean matchCollapsed) {
+		private JavaElementSetFilter(Set/*<? extends IJavaScriptElement>*/ set, boolean matchCollapsed) {
 			fSet= set;
 			fMatchCollapsed= matchCollapsed;
 		}
@@ -326,7 +326,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 		public boolean match(JavaProjectionAnnotation annotation) {
 			boolean stateMatch= fMatchCollapsed == annotation.isCollapsed();
 			if (stateMatch && !annotation.isComment() && !annotation.isMarkedDeleted()) {
-				IJavaElement element= annotation.getElement();
+				IJavaScriptElement element= annotation.getElement();
 				if (fSet.contains(element)) {
 					return true;
 				}
@@ -341,10 +341,10 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 		 * @see org.eclipse.wst.jsdt.core.IElementChangedListener#elementChanged(org.eclipse.wst.jsdt.core.ElementChangedEvent)
 		 */
 		public void elementChanged(ElementChangedEvent e) {
-			IJavaElementDelta delta= findElement(fInput, e.getDelta());
-			if (delta != null && (delta.getFlags() & (IJavaElementDelta.F_CONTENT | IJavaElementDelta.F_CHILDREN)) != 0) {
+			IJavaScriptElementDelta delta= findElement(fInput, e.getDelta());
+			if (delta != null && (delta.getFlags() & (IJavaScriptElementDelta.F_CONTENT | IJavaScriptElementDelta.F_CHILDREN)) != 0) {
 			
-				if (shouldIgnoreDelta(e.getDelta().getCompilationUnitAST(), delta))
+				if (shouldIgnoreDelta(e.getDelta().getJavaScriptUnitAST(), delta))
 					return;
 
 				fUpdatingCount++;
@@ -368,7 +368,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 		 * @return <code>true</code> if the delta should be ignored
 		 * @since 3.3
 		 */
-		private boolean shouldIgnoreDelta(CompilationUnit ast, IJavaElementDelta delta) {
+		private boolean shouldIgnoreDelta(JavaScriptUnit ast, IJavaScriptElementDelta delta) {
 			if (ast == null)
 				return false; // can't compute
 				
@@ -382,12 +382,12 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 			
 			try {
 				if (delta.getAffectedChildren().length == 1 && delta.getAffectedChildren()[0].getElement() instanceof IImportContainer) {
-					IJavaElement elem= SelectionConverter.getElementAtOffset(ast.getJavaElement(), new TextSelection(editor.getCachedSelectedRange().x, editor.getCachedSelectedRange().y));
+					IJavaScriptElement elem= SelectionConverter.getElementAtOffset(ast.getJavaElement(), new TextSelection(editor.getCachedSelectedRange().x, editor.getCachedSelectedRange().y));
 					if (!(elem instanceof IImportDeclaration))
 						return false;
 					
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return false; // can't compute
 			}
 			
@@ -409,23 +409,23 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 			return false;
 		}
 
-		private IJavaElementDelta findElement(IJavaElement target, IJavaElementDelta delta) {
+		private IJavaScriptElementDelta findElement(IJavaScriptElement target, IJavaScriptElementDelta delta) {
 
 			if (delta == null || target == null)
 				return null;
 
-			IJavaElement element= delta.getElement();
+			IJavaScriptElement element= delta.getElement();
 
-			if (element.getElementType() > IJavaElement.CLASS_FILE)
+			if (element.getElementType() > IJavaScriptElement.CLASS_FILE)
 				return null;
 
 			if (target.equals(element))
 				return delta;
 
-			IJavaElementDelta[] children= delta.getAffectedChildren();
+			IJavaScriptElementDelta[] children= delta.getAffectedChildren();
 
 			for (int i= 0; i < children.length; i++) {
-				IJavaElementDelta d= findElement(target, children[i]);
+				IJavaScriptElementDelta d= findElement(target, children[i]);
 				if (d != null)
 					return d;
 			}
@@ -576,7 +576,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 				if (nameRange != null)
 					nameStart= nameRange.getOffset();
 
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore and use default
 			}
 
@@ -628,7 +628,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 				ISourceRange nameRange= fMember.getNameRange();
 				if (nameRange != null)
 					nameStart= nameRange.getOffset();
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore and use default
 			}
 
@@ -682,7 +682,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	/* context and listeners */
 	private JavaEditor fEditor;
 	private ProjectionListener fProjectionListener;
-	private IJavaElement fInput;
+	private IJavaScriptElement fInput;
 	private IElementChangedListener fElementListener;
 
 	/* preferences */
@@ -789,7 +789,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 		if (isInstalled()) {
 			initialize();
 			fElementListener= new ElementChangedListener();
-			JavaCore.addElementChangedListener(fElementListener);
+			JavaScriptCore.addElementChangedListener(fElementListener);
 		}
 	}
 
@@ -805,7 +805,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	 */
 	protected void handleProjectionDisabled() {
 		if (fElementListener != null) {
-			JavaCore.removeElementChangedListener(fElementListener);
+			JavaScriptCore.removeElementChangedListener(fElementListener);
 			fElementListener= null;
 		}
 	}
@@ -848,14 +848,14 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 		return new FoldingStructureComputationContext(doc, model, allowCollapse, scanner);
 	}
 	
-	private IJavaElement getInputElement() {
+	private IJavaScriptElement getInputElement() {
 		if (fEditor == null)
 			return null;
 		return EditorUtility.getEditorInputJavaElement(fEditor, false);
 	}
 
 	private void initializePreferences() {
-		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 		fCollapseInnerTypes= store.getBoolean(PreferenceConstants.EDITOR_FOLDING_INNERTYPES);
 		fCollapseImportContainer= store.getBoolean(PreferenceConstants.EDITOR_FOLDING_IMPORTS);
 		fCollapseJavadoc= store.getBoolean(PreferenceConstants.EDITOR_FOLDING_JAVADOC);
@@ -880,7 +880,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 			JavaProjectionAnnotation newAnnotation= (JavaProjectionAnnotation) e.next();
 			Position newPosition= (Position) newStructure.get(newAnnotation);
 
-			IJavaElement element= newAnnotation.getElement();
+			IJavaScriptElement element= newAnnotation.getElement();
 			/*
 			 * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=130472 and
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=127445 In the presence of syntax
@@ -890,7 +890,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 			 * position update and keep the old range, in order to keep the folding structure
 			 * stable.
 			 */
-			boolean isMalformedAnonymousType= newPosition.getOffset() == 0 && element.getElementType() == IJavaElement.TYPE && isInnerType((IType) element);
+			boolean isMalformedAnonymousType= newPosition.getOffset() == 0 && element.getElementType() == IJavaScriptElement.TYPE && isInnerType((IType) element);
 			List annotations= (List) oldStructure.get(element);
 			if (annotations == null) {
 				if (!isMalformedAnonymousType)
@@ -955,13 +955,13 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 			
 			ctx.getScanner().setSource(source.toCharArray());
 			computeFoldingStructure(parent.getChildren(), ctx);
-		} catch (JavaModelException x) {
+		} catch (JavaScriptModelException x) {
 		}
 	}
 
-	private void computeFoldingStructure(IJavaElement[] elements, FoldingStructureComputationContext ctx) throws JavaModelException {
+	private void computeFoldingStructure(IJavaScriptElement[] elements, FoldingStructureComputationContext ctx) throws JavaScriptModelException {
 		for (int i= 0; i < elements.length; i++) {
-			IJavaElement element= elements[i];
+			IJavaScriptElement element= elements[i];
 
 			computeFoldingStructure(element, ctx);
 
@@ -973,7 +973,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	}
 
 	/**
-	 * Computes the folding structure for a given {@link IJavaElement java element}. Computed
+	 * Computes the folding structure for a given {@link IJavaScriptElement java element}. Computed
 	 * projection annotations are
 	 * {@link DefaultJavaFoldingStructureProvider.FoldingStructureComputationContext#addProjectionRange(DefaultJavaFoldingStructureProvider.JavaProjectionAnnotation, Position) added}
 	 * to the computation context.
@@ -991,22 +991,22 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	 * @param element the java element to compute the folding structure for
 	 * @param ctx the computation context
 	 */
-	protected void computeFoldingStructure(IJavaElement element, FoldingStructureComputationContext ctx) {
+	protected void computeFoldingStructure(IJavaScriptElement element, FoldingStructureComputationContext ctx) {
 
 		boolean collapse= false;
 		boolean collapseCode= true;
 		switch (element.getElementType()) {
 
-			case IJavaElement.IMPORT_CONTAINER:
+			case IJavaScriptElement.IMPORT_CONTAINER:
 				collapse= ctx.collapseImportContainer();
 				break;
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				collapseCode= isInnerType((IType) element) && !isAnonymousEnum((IType) element);
 				collapse= ctx.collapseInnerTypes() && collapseCode;
 				break;
-			case IJavaElement.METHOD:
-			case IJavaElement.FIELD:
-			case IJavaElement.INITIALIZER:
+			case IJavaScriptElement.METHOD:
+			case IJavaScriptElement.FIELD:
+			case IJavaScriptElement.INITIALIZER:
 				collapse= ctx.collapseMembers();
 				break;
 			default:
@@ -1054,7 +1054,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	private boolean isAnonymousEnum(IType type) {
 		try {
 			return type.isEnum() && type.isAnonymous();
-		} catch (JavaModelException x) {
+		} catch (JavaScriptModelException x) {
 			return false; // optimistically
 		}
 	}
@@ -1132,14 +1132,14 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 				IRegion[] result= new IRegion[regions.size()];
 				regions.toArray(result);
 				return result;
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 		} catch (InvalidInputException e) {
 		}
 
 		return new IRegion[0];
 	}
 
-	private IRegion computeHeaderComment(FoldingStructureComputationContext ctx) throws JavaModelException {
+	private IRegion computeHeaderComment(FoldingStructureComputationContext ctx) throws JavaScriptModelException {
 		// search at most up to the first type
 		ISourceRange range= ctx.getFirstType().getSourceRange();
 		if (range == null)
@@ -1306,7 +1306,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 			}
 			
 			if (match != null) {
-				IJavaElement element= match.annotation.getElement();
+				IJavaScriptElement element= match.annotation.getElement();
 				deleted.setElement(element);
 				deletedPosition.setLength(match.position.getLength());
 				if (deletedPosition instanceof JavaElementPosition && element instanceof IMember) {
@@ -1417,17 +1417,17 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	}
 
 	/*
-	 * @see org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProviderExtension#collapseElements(org.eclipse.wst.jsdt.core.IJavaElement[])
+	 * @see org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProviderExtension#collapseElements(org.eclipse.wst.jsdt.core.IJavaScriptElement[])
 	 */
-	public final void collapseElements(IJavaElement[] elements) {
+	public final void collapseElements(IJavaScriptElement[] elements) {
 		Set set= new HashSet(Arrays.asList(elements));
 		modifyFiltered(new JavaElementSetFilter(set, false), false);
 	}
 
 	/*
-	 * @see org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProviderExtension#expandElements(org.eclipse.wst.jsdt.core.IJavaElement[])
+	 * @see org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProviderExtension#expandElements(org.eclipse.wst.jsdt.core.IJavaScriptElement[])
 	 */
-	public final void expandElements(IJavaElement[] elements) {
+	public final void expandElements(IJavaScriptElement[] elements) {
 		Set set= new HashSet(Arrays.asList(elements));
 		modifyFiltered(new JavaElementSetFilter(set, true), true);
 	}

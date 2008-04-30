@@ -12,9 +12,9 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 import org.eclipse.core.filebuffers.IDocumentSetupParticipant;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 /**
  * The document setup participant for JDT.
@@ -28,7 +28,7 @@ public class JavaDocumentSetupParticipant  implements IDocumentSetupParticipant 
 	 * @see org.eclipse.core.filebuffers.IDocumentSetupParticipant#setup(org.eclipse.jface.text.IDocument)
 	 */
 	public void setup(IDocument document) {
-		JavaTextTools tools= JavaPlugin.getDefault().getJavaTextTools();
-		tools.setupJavaDocumentPartitioner(document, IJavaPartitions.JAVA_PARTITIONING);
+		JavaScriptTextTools tools= JavaScriptPlugin.getDefault().getJavaTextTools();
+		tools.setupJavaDocumentPartitioner(document, IJavaScriptPartitions.JAVA_PARTITIONING);
 	}
 }

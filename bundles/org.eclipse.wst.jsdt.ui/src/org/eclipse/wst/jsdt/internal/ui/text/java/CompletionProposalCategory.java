@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.action.LegacyActionTools;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
 import org.osgi.framework.Bundle;
 
@@ -104,8 +104,8 @@ public final class CompletionProposalCategory {
 		if (obj == null) {
 			Object[] args= { getId(), fElement.getContributor().getName(), attribute };
 			String message= Messages.format(JavaTextMessages.CompletionProposalComputerDescriptor_illegal_attribute_message, args);
-			IStatus status= new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, message, null);
-			JavaPlugin.log(status);
+			IStatus status= new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, message, null);
+			JavaScriptPlugin.log(status);
 			throw new InvalidRegistryObjectException();
 		}
 	}

@@ -31,24 +31,24 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -59,7 +59,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 
 public class NLSHintHelper {
@@ -70,7 +70,7 @@ public class NLSHintHelper {
 	/**
 	 * Returns the accessor binding info or <code>null</code> if this element is not a nls'ed entry
 	 */
-	public static AccessorClassReference getAccessorClassReference(CompilationUnit astRoot, NLSElement nlsElement) {
+	public static AccessorClassReference getAccessorClassReference(JavaScriptUnit astRoot, NLSElement nlsElement) {
 		IRegion region= nlsElement.getPosition();
 		return getAccessorClassReference(astRoot, region);
 	}
@@ -78,7 +78,7 @@ public class NLSHintHelper {
 	/**
 	 * Returns the accessor binding info or <code>null</code> if this element is not a nls'ed entry
 	 */
-	public static AccessorClassReference getAccessorClassReference(CompilationUnit astRoot, IRegion region) {
+	public static AccessorClassReference getAccessorClassReference(JavaScriptUnit astRoot, IRegion region) {
 		ASTNode nlsStringLiteral= NodeFinder.perform(astRoot, region.getOffset(), region.getLength());
 		if (nlsStringLiteral == null) {
 			return null; // not found
@@ -86,8 +86,8 @@ public class NLSHintHelper {
 		ASTNode parent= nlsStringLiteral.getParent();
 		
 		ITypeBinding accessorBinding= null;
-		if (parent instanceof MethodInvocation) {
-			MethodInvocation methodInvocation= (MethodInvocation) parent;
+		if (parent instanceof FunctionInvocation) {
+			FunctionInvocation methodInvocation= (FunctionInvocation) parent;
 			List args= methodInvocation.arguments();
 			if (args.indexOf(nlsStringLiteral) != 0) {
 				return null; // must be first argument in lookup method
@@ -104,7 +104,7 @@ public class NLSHintHelper {
 				return null;
 			}
 			
-			IMethodBinding methodBinding= methodInvocation.resolveMethodBinding();
+			IFunctionBinding methodBinding= methodInvocation.resolveMethodBinding();
 			if (methodBinding == null || !Modifier.isStatic(methodBinding.getModifiers())) {
 				return null; // only static methods qualify
 			}
@@ -145,7 +145,7 @@ public class NLSHintHelper {
 		String resourceBundleName;
 		try {
 			resourceBundleName= getResourceBundleName(accessorBinding);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return null;
 		}
 		
@@ -155,9 +155,9 @@ public class NLSHintHelper {
 		return null;
 	}
 	
-	public static IPackageFragment getPackageOfAccessorClass(IJavaProject javaProject, ITypeBinding accessorBinding) throws JavaModelException {
+	public static IPackageFragment getPackageOfAccessorClass(IJavaScriptProject javaProject, ITypeBinding accessorBinding) throws JavaScriptModelException {
 		if (accessorBinding != null) {
-			ICompilationUnit unit= Bindings.findCompilationUnit(accessorBinding, javaProject);
+			IJavaScriptUnit unit= Bindings.findCompilationUnit(accessorBinding, javaProject);
 			if (unit != null) {
 				return (IPackageFragment) unit.getParent();
 			}
@@ -165,33 +165,33 @@ public class NLSHintHelper {
 		return null;
 	}
 
-	public static String getResourceBundleName(ITypeBinding accessorClassBinding) throws JavaModelException {
-		IJavaElement je= accessorClassBinding.getJavaElement();
+	public static String getResourceBundleName(ITypeBinding accessorClassBinding) throws JavaScriptModelException {
+		IJavaScriptElement je= accessorClassBinding.getJavaElement();
 		if (je == null)
 			return null;
 		
 		IOpenable openable= je.getOpenable();
-		IJavaElement container= null;
-		if (openable instanceof ICompilationUnit)
-			container= (ICompilationUnit)openable;
+		IJavaScriptElement container= null;
+		if (openable instanceof IJavaScriptUnit)
+			container= (IJavaScriptUnit)openable;
 		else if (openable instanceof IClassFile)
 			container= (IClassFile)openable;
 		else
 			Assert.isLegal(false);
-		CompilationUnit astRoot= JavaPlugin.getDefault().getASTProvider().getAST(container, ASTProvider.WAIT_YES, null);
+		JavaScriptUnit astRoot= JavaScriptPlugin.getDefault().getASTProvider().getAST(container, ASTProvider.WAIT_YES, null);
 	
 		return getResourceBundleName(astRoot);
 	}
 	
-	public static String getResourceBundleName(ICompilationUnit unit) throws JavaModelException {
-		return getResourceBundleName(JavaPlugin.getDefault().getASTProvider().getAST(unit, ASTProvider.WAIT_YES, null));
+	public static String getResourceBundleName(IJavaScriptUnit unit) throws JavaScriptModelException {
+		return getResourceBundleName(JavaScriptPlugin.getDefault().getASTProvider().getAST(unit, ASTProvider.WAIT_YES, null));
 	}
 	
-	public static String getResourceBundleName(IClassFile classFile) throws JavaModelException {
-		return getResourceBundleName(JavaPlugin.getDefault().getASTProvider().getAST(classFile, ASTProvider.WAIT_YES, null));
+	public static String getResourceBundleName(IClassFile classFile) throws JavaScriptModelException {
+		return getResourceBundleName(JavaScriptPlugin.getDefault().getASTProvider().getAST(classFile, ASTProvider.WAIT_YES, null));
 	}
 	
-	public static String getResourceBundleName(CompilationUnit astRoot) throws JavaModelException {
+	public static String getResourceBundleName(JavaScriptUnit astRoot) throws JavaScriptModelException {
 
 		if (astRoot == null)
 			return null;
@@ -202,8 +202,8 @@ public class NLSHintHelper {
 		
 		astRoot.accept(new ASTVisitor() {
 
-			public boolean visit(MethodInvocation node) {
-				IMethodBinding method= node.resolveMethodBinding();
+			public boolean visit(FunctionInvocation node) {
+				IFunctionBinding method= node.resolveMethodBinding();
 				if (method == null)
 					return true;
 
@@ -256,8 +256,8 @@ public class NLSHintHelper {
 				if (initializer instanceof StringLiteral)
 					return ((StringLiteral)initializer).getLiteralValue();
 
-				if (initializer instanceof MethodInvocation) {
-					MethodInvocation methInvocation= (MethodInvocation)initializer;
+				if (initializer instanceof FunctionInvocation) {
+					FunctionInvocation methInvocation= (FunctionInvocation)initializer;
 					Expression exp= methInvocation.getExpression();
 					if ((exp != null) && (exp instanceof TypeLiteral)) {
 						SimpleType simple= (SimpleType)((TypeLiteral) exp).getType();
@@ -301,14 +301,14 @@ public class NLSHintHelper {
 		return null;
 	}
 
-	public static IPackageFragment getResourceBundlePackage(IJavaProject javaProject, String packageName, String resourceName) throws JavaModelException {
+	public static IPackageFragment getResourceBundlePackage(IJavaScriptProject javaProject, String packageName, String resourceName) throws JavaScriptModelException {
 		IPackageFragmentRoot[] allRoots= javaProject.getAllPackageFragmentRoots();
 		for (int i= 0; i < allRoots.length; i++) {
 			IPackageFragmentRoot root= allRoots[i];
 			if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
 				IPackageFragment packageFragment= root.getPackageFragment(packageName);
 				if (packageFragment.exists()) {
-					Object[] resources= packageFragment.isDefaultPackage() ? root.getNonJavaResources() : packageFragment.getNonJavaResources();
+					Object[] resources= packageFragment.isDefaultPackage() ? root.getNonJavaScriptResources() : packageFragment.getNonJavaScriptResources();
 					for (int j= 0; j < resources.length; j++) {
 						Object object= resources[j];
 						if (object instanceof IFile) {
@@ -324,8 +324,8 @@ public class NLSHintHelper {
 		return null;
 	}
 	
-	public static IStorage getResourceBundle(ICompilationUnit compilationUnit) throws JavaModelException {
-		IJavaProject project= compilationUnit.getJavaProject();
+	public static IStorage getResourceBundle(IJavaScriptUnit compilationUnit) throws JavaScriptModelException {
+		IJavaScriptProject project= compilationUnit.getJavaScriptProject();
 		if (project == null)
 			return null;
 		
@@ -339,7 +339,7 @@ public class NLSHintHelper {
 		return getResourceBundle(project, packName, resourceName);
 	}
 	
-	public static IStorage getResourceBundle(IJavaProject javaProject, String packageName, String resourceName) throws JavaModelException {
+	public static IStorage getResourceBundle(IJavaScriptProject javaProject, String packageName, String resourceName) throws JavaScriptModelException {
 		IPackageFragmentRoot[] allRoots= javaProject.getAllPackageFragmentRoots();
 		for (int i= 0; i < allRoots.length; i++) {
 			IPackageFragmentRoot root= allRoots[i];
@@ -352,10 +352,10 @@ public class NLSHintHelper {
 		return null;
 	}
 	
-	public static IStorage getResourceBundle(IPackageFragmentRoot root, String packageName, String resourceName) throws JavaModelException {
+	public static IStorage getResourceBundle(IPackageFragmentRoot root, String packageName, String resourceName) throws JavaScriptModelException {
 		IPackageFragment packageFragment= root.getPackageFragment(packageName);
 		if (packageFragment.exists()) {
-			Object[] resources= packageFragment.isDefaultPackage() ? root.getNonJavaResources() : packageFragment.getNonJavaResources();
+			Object[] resources= packageFragment.isDefaultPackage() ? root.getNonJavaScriptResources() : packageFragment.getNonJavaScriptResources();
 			for (int j= 0; j < resources.length; j++) {
 				Object object= resources[j];
 				if (JavaModelUtil.isOpenableStorage(object)) {
@@ -369,7 +369,7 @@ public class NLSHintHelper {
 		return null;
 	}
 
-	public static IStorage getResourceBundle(IJavaProject javaProject, AccessorClassReference accessorClassReference) throws JavaModelException {
+	public static IStorage getResourceBundle(IJavaScriptProject javaProject, AccessorClassReference accessorClassReference) throws JavaScriptModelException {
 		String resourceBundle= accessorClassReference.getResourceBundleName();
 		if (resourceBundle == null)
 			return null;
@@ -381,7 +381,7 @@ public class NLSHintHelper {
 		if (accessorClass.isFromSource())
 			return getResourceBundle(javaProject, packName, resourceName);
 		else if (accessorClass.getJavaElement() != null)
-			return getResourceBundle((IPackageFragmentRoot)accessorClass.getJavaElement().getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT), packName, resourceName);
+			return getResourceBundle((IPackageFragmentRoot)accessorClass.getJavaElement().getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT), packName, resourceName);
 		
 		return null;
 	}
@@ -394,11 +394,11 @@ public class NLSHintHelper {
 	 * @param accessorClassReference the accessor class reference
 	 * @return the properties or <code>null</code> if it was not successfully read
 	 */
-	public static Properties getProperties(IJavaProject javaProject, AccessorClassReference accessorClassReference) {
+	public static Properties getProperties(IJavaScriptProject javaProject, AccessorClassReference accessorClassReference) {
 		try {
 			IStorage storage= NLSHintHelper.getResourceBundle(javaProject, accessorClassReference);
 			return getProperties(storage);
-		} catch (JavaModelException ex) {
+		} catch (JavaScriptModelException ex) {
 			// sorry no properties
 			return null;
 		}
@@ -445,7 +445,7 @@ public class NLSHintHelper {
 				is.close();
 			} catch (IOException e) {
 				// return properties anyway but log
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 		return props;

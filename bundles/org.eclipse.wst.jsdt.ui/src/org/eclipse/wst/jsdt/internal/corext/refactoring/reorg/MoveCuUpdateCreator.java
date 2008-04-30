@@ -29,18 +29,18 @@ import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
@@ -57,21 +57,21 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TextChangeManager;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 public class MoveCuUpdateCreator {
 	
 	private final String fNewPackage;
-	private ICompilationUnit[] fCus;
+	private IJavaScriptUnit[] fCus;
 	private IPackageFragment fDestination;
 	
-	private Map fImportRewrites; //ICompilationUnit -> ImportEdit
+	private Map fImportRewrites; //IJavaScriptUnit -> ImportEdit
 	
-	public MoveCuUpdateCreator(ICompilationUnit cu, IPackageFragment pack){
-		this(new ICompilationUnit[]{cu}, pack);
+	public MoveCuUpdateCreator(IJavaScriptUnit cu, IPackageFragment pack){
+		this(new IJavaScriptUnit[]{cu}, pack);
 	}
 	
-	public MoveCuUpdateCreator(ICompilationUnit[] cus, IPackageFragment pack){
+	public MoveCuUpdateCreator(IJavaScriptUnit[] cus, IPackageFragment pack){
 		Assert.isNotNull(cus);
 		Assert.isNotNull(pack);
 		fCus= cus;
@@ -80,17 +80,17 @@ public class MoveCuUpdateCreator {
 		fNewPackage= fDestination.isDefaultPackage() ? "" : fDestination.getElementName() + '.'; //$NON-NLS-1$
 	}
 	
-	public TextChangeManager createChangeManager(IProgressMonitor pm, RefactoringStatus status) throws JavaModelException{
+	public TextChangeManager createChangeManager(IProgressMonitor pm, RefactoringStatus status) throws JavaScriptModelException{
 		pm.beginTask("", 5); //$NON-NLS-1$
 		try{
 			TextChangeManager changeManager= new TextChangeManager();
 			addUpdates(changeManager, new SubProgressMonitor(pm, 4), status);
 			addImportRewriteUpdates(changeManager);
 			return changeManager;
-		} catch (JavaModelException e){
+		} catch (JavaScriptModelException e){
 			throw e;
 		} catch (CoreException e){	
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		} finally{
 			pm.done();
 		}
@@ -99,7 +99,7 @@ public class MoveCuUpdateCreator {
 
 	private void addImportRewriteUpdates(TextChangeManager changeManager) throws CoreException {
 		for (Iterator iter= fImportRewrites.keySet().iterator(); iter.hasNext();) {
-			ICompilationUnit cu= (ICompilationUnit) iter.next();
+			IJavaScriptUnit cu= (IJavaScriptUnit) iter.next();
 			ImportRewrite importRewrite= (ImportRewrite) fImportRewrites.get(cu);
 			if (importRewrite != null && importRewrite.hasRecordedChanges()) {
 				TextChangeCompatibility.addTextEdit(changeManager.get(cu), RefactoringCoreMessages.MoveCuUpdateCreator_update_imports, importRewrite.rewriteImports(null)); 
@@ -117,7 +117,7 @@ public class MoveCuUpdateCreator {
 		}
 	}
 	
-	private void addUpdates(TextChangeManager changeManager, ICompilationUnit movedUnit, IProgressMonitor pm, RefactoringStatus status) throws CoreException{
+	private void addUpdates(TextChangeManager changeManager, IJavaScriptUnit movedUnit, IProgressMonitor pm, RefactoringStatus status) throws CoreException{
 		try{
 			pm.beginTask("", 3);  //$NON-NLS-1$
 		  	pm.subTask(Messages.format(RefactoringCoreMessages.MoveCuUpdateCreator_searching, movedUnit.getElementName())); 
@@ -135,12 +135,12 @@ public class MoveCuUpdateCreator {
 		}
 	}
 
-	private void addReferenceUpdates(TextChangeManager changeManager, ICompilationUnit movedUnit, IProgressMonitor pm, RefactoringStatus status) throws JavaModelException, CoreException {
+	private void addReferenceUpdates(TextChangeManager changeManager, IJavaScriptUnit movedUnit, IProgressMonitor pm, RefactoringStatus status) throws JavaScriptModelException, CoreException {
 		List cuList= Arrays.asList(fCus);
 		SearchResultGroup[] references= getReferences(movedUnit, pm, status);
 		for (int i= 0; i < references.length; i++) {
 			SearchResultGroup searchResultGroup= references[i];
-			ICompilationUnit referencingCu= searchResultGroup.getCompilationUnit();
+			IJavaScriptUnit referencingCu= searchResultGroup.getCompilationUnit();
 			if (referencingCu == null)
 				continue;
 
@@ -173,7 +173,7 @@ public class MoveCuUpdateCreator {
 		}
 	}
 
-	private void addStaticImport(ICompilationUnit movedUnit, IImportDeclaration importDecl, ImportRewrite rewrite) {
+	private void addStaticImport(IJavaScriptUnit movedUnit, IImportDeclaration importDecl, ImportRewrite rewrite) {
 		String old= importDecl.getElementName();
 		int oldPackLength= movedUnit.getParent().getElementName().length();
 
@@ -196,7 +196,7 @@ public class MoveCuUpdateCreator {
 			return packageName + '.' + typeName;
 	}
 
-    private String createStringForNewImport(ICompilationUnit movedUnit, IImportDeclaration importDecl) {
+    private String createStringForNewImport(IJavaScriptUnit movedUnit, IImportDeclaration importDecl) {
     	String old= importDecl.getElementName();
 		int oldPackLength= movedUnit.getParent().getElementName().length();
 		
@@ -210,7 +210,7 @@ public class MoveCuUpdateCreator {
 		return result.toString();
     }
 	
-	private void removeImportsToDestinationPackageTypes(ICompilationUnit movedUnit) throws CoreException{
+	private void removeImportsToDestinationPackageTypes(IJavaScriptUnit movedUnit) throws CoreException{
 		ImportRewrite importEdit= getImportRewrite(movedUnit);
 		IType[] destinationTypes= getDestinationPackageTypes();
 		for (int i= 0; i < destinationTypes.length; i++) {
@@ -218,10 +218,10 @@ public class MoveCuUpdateCreator {
 		}
 	}
 	
-	private IType[] getDestinationPackageTypes() throws JavaModelException {
+	private IType[] getDestinationPackageTypes() throws JavaScriptModelException {
 		List types= new ArrayList();
 		if (fDestination.exists()) {
-			ICompilationUnit[] cus= fDestination.getCompilationUnits();
+			IJavaScriptUnit[] cus= fDestination.getJavaScriptUnits();
 			for (int i= 0; i < cus.length; i++) {
 				types.addAll(Arrays.asList(cus[i].getAllTypes()));
 			}
@@ -229,7 +229,7 @@ public class MoveCuUpdateCreator {
 		return (IType[]) types.toArray(new IType[types.size()]);
 	}
 	
-	private void addImportToSourcePackageTypes(ICompilationUnit movedUnit, IProgressMonitor pm) throws CoreException{
+	private void addImportToSourcePackageTypes(IJavaScriptUnit movedUnit, IProgressMonitor pm) throws CoreException{
 		List cuList= Arrays.asList(fCus);
 		IType[] allCuTypes= movedUnit.getAllTypes();
 		IType[] referencedTypes= ReferenceFinderUtil.getTypesReferencedIn(allCuTypes, pm);
@@ -242,13 +242,13 @@ public class MoveCuUpdateCreator {
 					continue;
 				if (! iType.getPackageFragment().equals(srcPack))
 					continue;
-				if (cuList.contains(iType.getCompilationUnit()))
+				if (cuList.contains(iType.getJavaScriptUnit()))
 					continue;
 				importEdit.addImport(JavaModelUtil.getFullyQualifiedName(iType));
 		}
 	}
 	
-	private ImportRewrite getImportRewrite(ICompilationUnit cu) throws CoreException{
+	private ImportRewrite getImportRewrite(IJavaScriptUnit cu) throws CoreException{
 		if (fImportRewrites.containsKey(cu))	
 			return (ImportRewrite)fImportRewrites.get(cu);
 		ImportRewrite importEdit= StubUtility.createImportRewrite(cu, true);
@@ -256,7 +256,7 @@ public class MoveCuUpdateCreator {
 		return importEdit;	
 	}
 	
-	private boolean simpleReferencesNeedNewImport(ICompilationUnit movedUnit, ICompilationUnit referencingCu, List cuList) {
+	private boolean simpleReferencesNeedNewImport(IJavaScriptUnit movedUnit, IJavaScriptUnit referencingCu, List cuList) {
 		if (referencingCu.equals(movedUnit))	
 			return false;
 		if (cuList.contains(referencingCu))	
@@ -275,7 +275,7 @@ public class MoveCuUpdateCreator {
 		return false; 
 	}
 
-	private boolean isReferenceInAnotherFragmentOfSamePackage(ICompilationUnit referencingCu, ICompilationUnit movedUnit) {
+	private boolean isReferenceInAnotherFragmentOfSamePackage(IJavaScriptUnit referencingCu, IJavaScriptUnit movedUnit) {
 		if (referencingCu == null)
 			return false;
 		if (! (referencingCu.getParent() instanceof IPackageFragment))
@@ -284,15 +284,15 @@ public class MoveCuUpdateCreator {
 		return isInAnotherFragmentOfSamePackage(movedUnit, pack);
 	}
 	
-	private static boolean isInAnotherFragmentOfSamePackage(ICompilationUnit cu, IPackageFragment pack) {
+	private static boolean isInAnotherFragmentOfSamePackage(IJavaScriptUnit cu, IPackageFragment pack) {
 		if (! (cu.getParent() instanceof IPackageFragment))
 			return false;
 		IPackageFragment cuPack= (IPackageFragment) cu.getParent();
 		return ! cuPack.equals(pack) && JavaModelUtil.isSamePackage(cuPack, pack);
 	}
 
-	private static SearchResultGroup[] getReferences(ICompilationUnit unit, IProgressMonitor pm, RefactoringStatus status) throws CoreException {
-		final SearchPattern pattern= RefactoringSearchEngine.createOrPattern(unit.getChildren(), IJavaSearchConstants.REFERENCES);
+	private static SearchResultGroup[] getReferences(IJavaScriptUnit unit, IProgressMonitor pm, RefactoringStatus status) throws CoreException {
+		final SearchPattern pattern= RefactoringSearchEngine.createOrPattern(unit.getChildren(), IJavaScriptSearchConstants.REFERENCES);
 		if (pattern != null)
 			return RefactoringSearchEngine.search(pattern, RefactoringScopeFactory.create(unit), new Collector(((IPackageFragment) unit.getParent())), new SubProgressMonitor(pm, 1), status);
 		return new SearchResultGroup[] {};
@@ -316,16 +316,16 @@ public class MoveCuUpdateCreator {
 			 * already required by the search engine to locate the matches.
 			 */
 			// [start, end[ include qualification.
-			IJavaElement element= SearchUtils.getEnclosingJavaElement(match);
+			IJavaScriptElement element= SearchUtils.getEnclosingJavaElement(match);
 			int accuracy= match.getAccuracy();
 			int start= match.getOffset();
 			int length= match.getLength();
 			boolean insideDocComment= match.isInsideDocComment();
 			IResource res= match.getResource();
-			if (element.getAncestor(IJavaElement.IMPORT_DECLARATION) != null) {
+			if (element.getAncestor(IJavaScriptElement.IMPORT_DECLARATION) != null) {
 				super.acceptSearchMatch(TypeReference.createImportReference(element, accuracy, start, length, insideDocComment, res));
 			} else {
-				ICompilationUnit unit= (ICompilationUnit) element.getAncestor(IJavaElement.COMPILATION_UNIT);
+				IJavaScriptUnit unit= (IJavaScriptUnit) element.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 				if (unit != null) {
 					IBuffer buffer= unit.getBuffer();
 					String matchText= buffer.getText(start, length);
@@ -355,7 +355,7 @@ public class MoveCuUpdateCreator {
 					tokenType= fScanner.getNextToken();
 				}
 			} catch (InvalidInputException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 			return lastIdentifierStart;
 		}
@@ -366,7 +366,7 @@ public class MoveCuUpdateCreator {
 		private String fSimpleTypeName;
 		private int fSimpleNameStart;
 		
-		private TypeReference(IJavaElement enclosingElement, int accuracy, int start, int length,
+		private TypeReference(IJavaScriptElement enclosingElement, int accuracy, int start, int length,
 				boolean insideDocComment, IResource resource, int simpleNameStart, String simpleName) {
 			super(enclosingElement, accuracy, start, length,
 					insideDocComment, SearchEngine.getDefaultSearchParticipant(), resource);
@@ -374,24 +374,24 @@ public class MoveCuUpdateCreator {
 			fSimpleTypeName= simpleName;
 		}
 		
-		public static TypeReference createQualifiedReference(IJavaElement enclosingElement, int accuracy, int start, int length,
+		public static TypeReference createQualifiedReference(IJavaScriptElement enclosingElement, int accuracy, int start, int length,
 				boolean insideDocComment, IResource resource, int simpleNameStart) {
 			Assert.isTrue(start < simpleNameStart && simpleNameStart < start + length);
 			return new TypeReference(enclosingElement, accuracy, start, length, insideDocComment, resource, simpleNameStart, null);
 		}
 		
-		public static TypeReference createImportReference(IJavaElement enclosingElement, int accuracy, int start, int length,
+		public static TypeReference createImportReference(IJavaScriptElement enclosingElement, int accuracy, int start, int length,
 				boolean insideDocComment, IResource resource) {
 			return new TypeReference(enclosingElement, accuracy, start, length, insideDocComment, resource, -1, null);
 		}
 		
-		public static TypeReference createSimpleReference(IJavaElement enclosingElement, int accuracy, int start, int length,
+		public static TypeReference createSimpleReference(IJavaScriptElement enclosingElement, int accuracy, int start, int length,
 				boolean insideDocComment, IResource resource, String simpleName) {
 			return new TypeReference(enclosingElement, accuracy, start, length, insideDocComment, resource, -1, simpleName);
 		}
 		
 		public boolean isImportDeclaration() {
-			return SearchUtils.getEnclosingJavaElement(this).getAncestor(IJavaElement.IMPORT_DECLARATION) != null;
+			return SearchUtils.getEnclosingJavaElement(this).getAncestor(IJavaScriptElement.IMPORT_DECLARATION) != null;
 		}
 		
 		public boolean isQualified() {

@@ -14,10 +14,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 
 /**
- * Implementation of IJavaModel. A Java Model is specific to a
+ * Implementation of IJavaScriptModel. A Java Model is specific to a
  * workspace.
  *
- * @see org.eclipse.wst.jsdt.core.IJavaModel
+ * @see org.eclipse.wst.jsdt.core.IJavaScriptModel
  */
 public class JavaModelInfo extends OpenableElementInfo {
 

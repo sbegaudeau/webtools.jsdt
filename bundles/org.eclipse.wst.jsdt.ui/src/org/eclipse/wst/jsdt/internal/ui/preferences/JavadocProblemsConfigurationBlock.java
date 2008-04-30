@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
@@ -28,35 +28,35 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
   */
 public class JavadocProblemsConfigurationBlock extends OptionsConfigurationBlock {
 
-	private static final Key PREF_JAVADOC_SUPPORT= getJDTCoreKey(JavaCore.COMPILER_DOC_COMMENT_SUPPORT);
+	private static final Key PREF_JAVADOC_SUPPORT= getJDTCoreKey(JavaScriptCore.COMPILER_DOC_COMMENT_SUPPORT);
 
-	private static final Key PREF_PB_INVALID_JAVADOC= getJDTCoreKey(JavaCore.COMPILER_PB_INVALID_JAVADOC);
-	private static final Key PREF_PB_INVALID_JAVADOC_TAGS= getJDTCoreKey(JavaCore.COMPILER_PB_INVALID_JAVADOC_TAGS);
-	private static final Key PREF_PB_INVALID_JAVADOC_TAGS_NOT_VISIBLE_REF= getJDTCoreKey(JavaCore.COMPILER_PB_INVALID_JAVADOC_TAGS__NOT_VISIBLE_REF);
-	private static final Key PREF_PB_INVALID_JAVADOC_TAGS_DEPRECATED_REF= getJDTCoreKey(JavaCore.COMPILER_PB_INVALID_JAVADOC_TAGS__DEPRECATED_REF);
-	private static final Key PREF_PB_INVALID_JAVADOC_TAGS_VISIBILITY= getJDTCoreKey(JavaCore.COMPILER_PB_INVALID_JAVADOC_TAGS_VISIBILITY);
+	private static final Key PREF_PB_INVALID_JAVADOC= getJDTCoreKey(JavaScriptCore.COMPILER_PB_INVALID_JAVADOC);
+	private static final Key PREF_PB_INVALID_JAVADOC_TAGS= getJDTCoreKey(JavaScriptCore.COMPILER_PB_INVALID_JAVADOC_TAGS);
+	private static final Key PREF_PB_INVALID_JAVADOC_TAGS_NOT_VISIBLE_REF= getJDTCoreKey(JavaScriptCore.COMPILER_PB_INVALID_JAVADOC_TAGS__NOT_VISIBLE_REF);
+	private static final Key PREF_PB_INVALID_JAVADOC_TAGS_DEPRECATED_REF= getJDTCoreKey(JavaScriptCore.COMPILER_PB_INVALID_JAVADOC_TAGS__DEPRECATED_REF);
+	private static final Key PREF_PB_INVALID_JAVADOC_TAGS_VISIBILITY= getJDTCoreKey(JavaScriptCore.COMPILER_PB_INVALID_JAVADOC_TAGS_VISIBILITY);
 
-	private static final Key PREF_PB_MISSING_JAVADOC_TAGS= getJDTCoreKey(JavaCore.COMPILER_PB_MISSING_JAVADOC_TAGS);
-	private static final Key PREF_PB_MISSING_JAVADOC_TAGS_VISIBILITY= getJDTCoreKey(JavaCore.COMPILER_PB_MISSING_JAVADOC_TAGS_VISIBILITY);
-	private static final Key PREF_PB_MISSING_JAVADOC_TAGS_OVERRIDING= getJDTCoreKey(JavaCore.COMPILER_PB_MISSING_JAVADOC_TAGS_OVERRIDING);
+	private static final Key PREF_PB_MISSING_JAVADOC_TAGS= getJDTCoreKey(JavaScriptCore.COMPILER_PB_MISSING_JAVADOC_TAGS);
+	private static final Key PREF_PB_MISSING_JAVADOC_TAGS_VISIBILITY= getJDTCoreKey(JavaScriptCore.COMPILER_PB_MISSING_JAVADOC_TAGS_VISIBILITY);
+	private static final Key PREF_PB_MISSING_JAVADOC_TAGS_OVERRIDING= getJDTCoreKey(JavaScriptCore.COMPILER_PB_MISSING_JAVADOC_TAGS_OVERRIDING);
 
-	private static final Key PREF_PB_MISSING_JAVADOC_COMMENTS= getJDTCoreKey(JavaCore.COMPILER_PB_MISSING_JAVADOC_COMMENTS);
-	private static final Key PREF_PB_MISSING_JAVADOC_COMMENTS_VISIBILITY= getJDTCoreKey(JavaCore.COMPILER_PB_MISSING_JAVADOC_COMMENTS_VISIBILITY);
-	private static final Key PREF_PB_MISSING_JAVADOC_COMMENTS_OVERRIDING= getJDTCoreKey(JavaCore.COMPILER_PB_MISSING_JAVADOC_COMMENTS_OVERRIDING);
+	private static final Key PREF_PB_MISSING_JAVADOC_COMMENTS= getJDTCoreKey(JavaScriptCore.COMPILER_PB_MISSING_JAVADOC_COMMENTS);
+	private static final Key PREF_PB_MISSING_JAVADOC_COMMENTS_VISIBILITY= getJDTCoreKey(JavaScriptCore.COMPILER_PB_MISSING_JAVADOC_COMMENTS_VISIBILITY);
+	private static final Key PREF_PB_MISSING_JAVADOC_COMMENTS_OVERRIDING= getJDTCoreKey(JavaScriptCore.COMPILER_PB_MISSING_JAVADOC_COMMENTS_OVERRIDING);
 	
 
 	// values
-	private static final String ERROR= JavaCore.ERROR;
-	private static final String WARNING= JavaCore.WARNING;
-	private static final String IGNORE= JavaCore.IGNORE;
+	private static final String ERROR= JavaScriptCore.ERROR;
+	private static final String WARNING= JavaScriptCore.WARNING;
+	private static final String IGNORE= JavaScriptCore.IGNORE;
 
-	private static final String ENABLED= JavaCore.ENABLED;
-	private static final String DISABLED= JavaCore.DISABLED;
+	private static final String ENABLED= JavaScriptCore.ENABLED;
+	private static final String DISABLED= JavaScriptCore.DISABLED;
 	
-	private static final String PUBLIC= JavaCore.PUBLIC;
-	private static final String PROTECTED= JavaCore.PROTECTED;
-	private static final String DEFAULT= JavaCore.DEFAULT;
-	private static final String PRIVATE= JavaCore.PRIVATE;
+	private static final String PUBLIC= JavaScriptCore.PUBLIC;
+	private static final String PROTECTED= JavaScriptCore.PROTECTED;
+	private static final String DEFAULT= JavaScriptCore.DEFAULT;
+	private static final String PRIVATE= JavaScriptCore.PRIVATE;
 	
 	private PixelConverter fPixelConverter;
 	private Composite fJavadocComposite;

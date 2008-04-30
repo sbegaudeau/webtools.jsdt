@@ -16,17 +16,17 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
 import org.eclipse.wst.jsdt.internal.corext.dom.SelectionAnalyzer;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -60,7 +60,7 @@ public abstract class StructureSelectionAction extends Action {
 	 * Method declared in IAction.
 	 */
 	public final  void run() {
-		IJavaElement inputElement= EditorUtility.getEditorInputJavaElement(fEditor, false);
+		IJavaScriptElement inputElement= EditorUtility.getEditorInputJavaElement(fEditor, false);
 		if (!(inputElement instanceof ISourceReference && inputElement.exists()))
 			return;
 
@@ -74,7 +74,7 @@ public abstract class StructureSelectionAction extends Action {
 					SelectionActionMessages.StructureSelect_error_message);
 				return;
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 		}
 		ITextSelection selection= getTextSelection();
 		ISourceRange newRange= getNewSelectionRange(createSourceRange(selection), source);
@@ -92,15 +92,15 @@ public abstract class StructureSelectionAction extends Action {
 
 	public final ISourceRange getNewSelectionRange(ISourceRange oldSourceRange, ISourceReference sr) {
 		try{
-			CompilationUnit root= getAST(sr);
+			JavaScriptUnit root= getAST(sr);
 			if (root == null)
 				return oldSourceRange;
 			Selection selection= Selection.createFromStartLength(oldSourceRange.getOffset(), oldSourceRange.getLength());
 			SelectionAnalyzer selAnalyzer= new SelectionAnalyzer(selection, true);
 			root.accept(selAnalyzer);
 			return internalGetNewSelectionRange(oldSourceRange, sr, selAnalyzer);
-	 	}	catch (JavaModelException e){
-	 		JavaPlugin.log(e); //dialog would be too heavy here
+	 	}	catch (JavaScriptModelException e){
+	 		JavaScriptPlugin.log(e); //dialog would be too heavy here
 	 		return new SourceRange(oldSourceRange.getOffset(), oldSourceRange.getLength());
 	 	}
 	}
@@ -108,7 +108,7 @@ public abstract class StructureSelectionAction extends Action {
 	/**
 	 * Subclasses determine the actual new selection.
 	 */
-	abstract ISourceRange internalGetNewSelectionRange(ISourceRange oldSourceRange, ISourceReference sr, SelectionAnalyzer selAnalyzer) throws JavaModelException;
+	abstract ISourceRange internalGetNewSelectionRange(ISourceRange oldSourceRange, ISourceReference sr, SelectionAnalyzer selAnalyzer) throws JavaScriptModelException;
 
 	protected final ITextSelection getTextSelection() {
 		return (ITextSelection)fEditor.getSelectionProvider().getSelection();
@@ -116,14 +116,14 @@ public abstract class StructureSelectionAction extends Action {
 	
 	// -- helper methods for subclasses to fit a node range into the source range
 
-	protected static ISourceRange getLastCoveringNodeRange(ISourceRange oldSourceRange, ISourceReference sr, SelectionAnalyzer selAnalyzer) throws JavaModelException {
+	protected static ISourceRange getLastCoveringNodeRange(ISourceRange oldSourceRange, ISourceReference sr, SelectionAnalyzer selAnalyzer) throws JavaScriptModelException {
 		if (selAnalyzer.getLastCoveringNode() == null)
 			return oldSourceRange;
 		else
 			return getSelectedNodeSourceRange(sr, selAnalyzer.getLastCoveringNode());
 	}
 
-	protected static ISourceRange getSelectedNodeSourceRange(ISourceReference sr, ASTNode nodeToSelect) throws JavaModelException {
+	protected static ISourceRange getSelectedNodeSourceRange(ISourceReference sr, ASTNode nodeToSelect) throws JavaScriptModelException {
 		int offset= nodeToSelect.getStartPosition();
 		int end= Math.min(sr.getSourceRange().getLength(), nodeToSelect.getStartPosition() + nodeToSelect.getLength() - 1);
 		return createSourceRange(offset, end);
@@ -135,8 +135,8 @@ public abstract class StructureSelectionAction extends Action {
 		return new SourceRange(ts.getOffset(), ts.getLength());
 	}
 
-	private static CompilationUnit getAST(ISourceReference sr) {
-		return ASTProvider.getASTProvider().getAST((IJavaElement) sr, ASTProvider.WAIT_YES, null);
+	private static JavaScriptUnit getAST(ISourceReference sr) {
+		return ASTProvider.getASTProvider().getAST((IJavaScriptElement) sr, ASTProvider.WAIT_YES, null);
 	}
 
 	//-- helper methods for this class and subclasses

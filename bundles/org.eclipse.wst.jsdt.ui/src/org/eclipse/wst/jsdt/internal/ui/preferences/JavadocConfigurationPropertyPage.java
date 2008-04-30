@@ -31,25 +31,25 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.ArchiveFileFilter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathSupport;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * Property page used to set the project's Javadoc location for sources
@@ -62,7 +62,7 @@ public class JavadocConfigurationPropertyPage extends PropertyPage implements IS
 	private boolean fIsValidElement;
 	
 	private IPath fContainerPath;
-	private IClasspathEntry fEntry;
+	private IIncludePathEntry fEntry;
 	private URL fInitalLocation;
 
 	public JavadocConfigurationPropertyPage() {
@@ -72,19 +72,19 @@ public class JavadocConfigurationPropertyPage extends PropertyPage implements IS
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createControl(Composite parent) {
-		IJavaElement elem= getJavaElement();
+		IJavaScriptElement elem= getJavaElement();
 		try {
 			if (elem instanceof IPackageFragmentRoot && ((IPackageFragmentRoot) elem).getKind() == IPackageFragmentRoot.K_BINARY) {
 				IPackageFragmentRoot root= (IPackageFragmentRoot) elem;
 				
-				IClasspathEntry entry= root.getRawClasspathEntry();
+				IIncludePathEntry entry= root.getRawIncludepathEntry();
 				if (entry == null) {
 					fIsValidElement= false;
 					setDescription(PreferencesMessages.JavadocConfigurationPropertyPage_IsIncorrectElement_description);
 				} else {
-					if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+					if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
 						fContainerPath= entry.getPath();
-						fEntry= handleContainerEntry(fContainerPath, elem.getJavaProject(), root.getPath());
+						fEntry= handleContainerEntry(fContainerPath, elem.getJavaScriptProject(), root.getPath());
 						fIsValidElement= fEntry != null;
 					} else {
 						fContainerPath= null;
@@ -94,14 +94,14 @@ public class JavadocConfigurationPropertyPage extends PropertyPage implements IS
 					}
 				}
 
-			} else if (elem instanceof IJavaProject) {
+			} else if (elem instanceof IJavaScriptProject) {
 				fIsValidElement= true;
 				setDescription(PreferencesMessages.JavadocConfigurationPropertyPage_IsJavaProject_description); 
 			} else {
 				fIsValidElement= false;
 				setDescription(PreferencesMessages.JavadocConfigurationPropertyPage_IsIncorrectElement_description);
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			fIsValidElement= false;
 			setDescription(PreferencesMessages.JavadocConfigurationPropertyPage_IsIncorrectElement_description);
 		}
@@ -109,15 +109,15 @@ public class JavadocConfigurationPropertyPage extends PropertyPage implements IS
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IJavaHelpContextIds.JAVADOC_CONFIGURATION_PROPERTY_PAGE);
 	}
 	
-	private IClasspathEntry handleContainerEntry(IPath containerPath, IJavaProject jproject, IPath jarPath) throws JavaModelException {
-		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
-		IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(containerPath, jproject);
+	private IIncludePathEntry handleContainerEntry(IPath containerPath, IJavaScriptProject jproject, IPath jarPath) throws JavaScriptModelException {
+		JsGlobalScopeContainerInitializer initializer= JavaScriptCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
+		IJsGlobalScopeContainer container= JavaScriptCore.getJsGlobalScopeContainer(containerPath, jproject);
 		if (initializer == null || container == null) {
 			setDescription(Messages.format(PreferencesMessages.JavadocConfigurationPropertyPage_invalid_container, containerPath.toString()));
 			return null;
 		}
 		String containerName= container.getDescription();
-		IStatus status= initializer.getAttributeStatus(containerPath, jproject, IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME);
+		IStatus status= initializer.getAttributeStatus(containerPath, jproject, IIncludePathAttribute.JSDOC_LOCATION_ATTRIBUTE_NAME);
 		if (status.getCode() == JsGlobalScopeContainerInitializer.ATTRIBUTE_NOT_SUPPORTED) {
 			setDescription(Messages.format(PreferencesMessages.JavadocConfigurationPropertyPage_not_supported, containerName));
 			return null;
@@ -126,7 +126,7 @@ public class JavadocConfigurationPropertyPage extends PropertyPage implements IS
 			setDescription(Messages.format(PreferencesMessages.JavadocConfigurationPropertyPage_read_only, containerName));
 			return null;
 		}
-		IClasspathEntry entry= JavaModelUtil.findEntryInContainer(container, jarPath);
+		IIncludePathEntry entry= JavaModelUtil.findEntryInContainer(container, jarPath);
 		Assert.isNotNull(entry);
 		setDescription(PreferencesMessages.JavadocConfigurationPropertyPage_IsPackageFragmentRoot_description); 
 		return entry;
@@ -140,17 +140,17 @@ public class JavadocConfigurationPropertyPage extends PropertyPage implements IS
 			return new Composite(parent, SWT.NONE);
 		}
 		
-		IJavaElement elem= getJavaElement();
+		IJavaScriptElement elem= getJavaElement();
 		fInitalLocation= null;
 		if (elem != null) {
 			try {
-				fInitalLocation= JavaUI.getJavadocBaseLocation(elem);
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+				fInitalLocation= JavaScriptUI.getJSdocBaseLocation(elem);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 			}
 		}
 		
-		boolean isProject= (elem instanceof IJavaProject);
+		boolean isProject= (elem instanceof IJavaScriptProject);
 		fJavadocConfigurationBlock= new JavadocConfigurationBlock(getShell(), this, fInitalLocation, isProject);
 		Control control= fJavadocConfigurationBlock.createContents(parent);
 		control.setVisible(elem != null);
@@ -159,9 +159,9 @@ public class JavadocConfigurationPropertyPage extends PropertyPage implements IS
 		return control;
 	}
 
-	private IJavaElement getJavaElement() {
+	private IJavaScriptElement getJavaElement() {
 		IAdaptable adaptable= getElement();
-		IJavaElement elem= (IJavaElement) adaptable.getAdapter(IJavaElement.class);
+		IJavaScriptElement elem= (IJavaScriptElement) adaptable.getAdapter(IJavaScriptElement.class);
 		if (elem == null) {
 
 			IResource resource= (IResource) adaptable.getAdapter(IResource.class);
@@ -169,13 +169,13 @@ public class JavadocConfigurationPropertyPage extends PropertyPage implements IS
 			try {
 				if (resource instanceof IFile && ArchiveFileFilter.isArchivePath(resource.getFullPath())) {
 					IProject proj= resource.getProject();
-					if (proj.hasNature(JavaCore.NATURE_ID)) {
-						IJavaProject jproject= JavaCore.create(proj);
+					if (proj.hasNature(JavaScriptCore.NATURE_ID)) {
+						IJavaScriptProject jproject= JavaScriptCore.create(proj);
 						elem= jproject.getPackageFragmentRoot(resource); // create a handle
 					}
 				}
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 		return elem;
@@ -202,7 +202,7 @@ public class JavadocConfigurationPropertyPage extends PropertyPage implements IS
 			}
 			
 			
-			IJavaElement elem= getJavaElement();
+			IJavaScriptElement elem= getJavaElement();
 			try {
 				IRunnableWithProgress runnable= getRunnable(getShell(), elem, javadocLocation, fEntry, fContainerPath);
 				PlatformUI.getWorkbench().getProgressService().run(true, true, runnable);
@@ -220,20 +220,20 @@ public class JavadocConfigurationPropertyPage extends PropertyPage implements IS
 	}
 	
 	
-	private static IRunnableWithProgress getRunnable(final Shell shell, final IJavaElement elem, final URL javadocLocation, final IClasspathEntry entry, final IPath containerPath) {
+	private static IRunnableWithProgress getRunnable(final Shell shell, final IJavaScriptElement elem, final URL javadocLocation, final IIncludePathEntry entry, final IPath containerPath) {
 		return new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {				
 				try {
-					IJavaProject project= elem.getJavaProject();
+					IJavaScriptProject project= elem.getJavaScriptProject();
 					if (elem instanceof IPackageFragmentRoot) {
 						CPListElement cpElem= CPListElement.createFromExisting(entry, project);
 						String loc= javadocLocation != null ? javadocLocation.toExternalForm() : null;
 						cpElem.setAttribute(CPListElement.JAVADOC, loc);
-						IClasspathEntry newEntry= cpElem.getClasspathEntry();
+						IIncludePathEntry newEntry= cpElem.getClasspathEntry();
 						String[] changedAttributes= { CPListElement.JAVADOC };
 						BuildPathSupport.modifyClasspathEntry(shell, newEntry, changedAttributes, project, containerPath, monitor);
 					} else {
-						JavaUI.setProjectJavadocLocation(project, javadocLocation);
+						JavaScriptUI.setProjectJSdocLocation(project, javadocLocation);
 					}
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);

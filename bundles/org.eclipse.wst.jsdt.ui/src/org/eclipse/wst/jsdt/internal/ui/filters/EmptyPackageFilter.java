@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.ui.filters;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 
 /** 
@@ -33,7 +33,7 @@ public class EmptyPackageFilter extends ViewerFilter {
 			IPackageFragment pkg= (IPackageFragment)element;
 			try {
 				return pkg.hasChildren();
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return false;
 			}
 		}

@@ -20,7 +20,7 @@ import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.TypedRegion;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 /**
  * Utility methods for heuristic based Java manipulations in an incomplete Java source file.
@@ -270,12 +270,12 @@ public final class JavaHeuristicScanner implements Symbols {
 	}
 
 	/**
-	 * Calls <code>this(document, IJavaPartitions.JAVA_PARTITIONING, IDocument.DEFAULT_CONTENT_TYPE)</code>.
+	 * Calls <code>this(document, IJavaScriptPartitions.JAVA_PARTITIONING, IDocument.DEFAULT_CONTENT_TYPE)</code>.
 	 *
 	 * @param document the document to scan.
 	 */
 	public JavaHeuristicScanner(IDocument document) {
-		this(document, IJavaPartitions.JAVA_PARTITIONING, IDocument.DEFAULT_CONTENT_TYPE);
+		this(document, IJavaScriptPartitions.JAVA_PARTITIONING, IDocument.DEFAULT_CONTENT_TYPE);
 	}
 
 	/**

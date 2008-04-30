@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.dom;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ElementValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
@@ -78,7 +78,7 @@ class AnnotationBinding implements IAnnotationBinding {
 		return allPairs;
 	}
 
-	public IJavaElement getJavaElement() {
+	public IJavaScriptElement getJavaElement() {
 		ITypeBinding annotationType = getAnnotationType();
 		if (annotationType == null)
 			return null;

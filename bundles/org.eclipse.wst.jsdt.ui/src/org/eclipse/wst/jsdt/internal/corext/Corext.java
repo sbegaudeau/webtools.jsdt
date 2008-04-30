@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext;
 
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
- * Facade for JavaPlugin to not contaminate corext classes.
+ * Facade for JavaScriptPlugin to not contaminate corext classes.
  */
 public class Corext {
 
 	public static String getPluginId() {
-		return JavaPlugin.getPluginId();
+		return JavaScriptPlugin.getPluginId();
 	}
 }

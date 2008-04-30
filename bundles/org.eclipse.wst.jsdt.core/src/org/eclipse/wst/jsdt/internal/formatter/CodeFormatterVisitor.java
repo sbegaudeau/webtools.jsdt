@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
@@ -185,7 +185,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 	public CodeFormatterVisitor(DefaultCodeFormatterOptions preferences, Map settings, int offset, int length, CodeSnippetParsingUtil codeSnippetParsingUtil) {
 		long sourceLevel = settings == null
 			? ClassFileConstants.JDK1_3
-			: CompilerOptions.versionToJdkLevel(settings.get(JavaCore.COMPILER_SOURCE));
+			: CompilerOptions.versionToJdkLevel(settings.get(JavaScriptCore.COMPILER_SOURCE));
 		this.localScanner = new Scanner(true, false, false/*nls*/, sourceLevel/*sourceLevel*/, null/*taskTags*/, null/*taskPriorities*/, true/*taskCaseSensitive*/);
 
 		this.preferences = preferences;

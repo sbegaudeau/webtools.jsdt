@@ -12,8 +12,8 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -71,7 +71,7 @@ public TypeReferenceLocator(TypeReferencePattern pattern) {
 	this.pattern = pattern;
 	this.isDeclarationOfReferencedTypesPattern = this.pattern instanceof DeclarationOfReferencedTypesPattern;
 }
-protected IJavaElement findElement(IJavaElement element, int accuracy) {
+protected IJavaScriptElement findElement(IJavaScriptElement element, int accuracy) {
 	// need exact match to be able to open on type ref
 	if (accuracy != SearchMatch.A_ACCURATE) return null;
 
@@ -92,7 +92,7 @@ public int match(ASTNode node, MatchingNodeSet nodeSet) { // interested in Impor
 //public int match(ConstructorDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(Expression node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(FieldDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
-//public int match(MethodDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
+//public int match(FunctionDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(MessageSend node, MatchingNodeSet nodeSet) - SKIP IT
 public int match(Reference node, MatchingNodeSet nodeSet) { // interested in NameReference & its subtypes
 	if (!(node instanceof NameReference))
@@ -220,7 +220,7 @@ protected void matchLevelAndReportImportRef(ImportReference importRef, Binding b
 	}
 	super.matchLevelAndReportImportRef(importRef, refBinding, locator);
 }
-protected void matchReportImportRef(ImportReference importRef, Binding binding, IJavaElement element, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportImportRef(ImportReference importRef, Binding binding, IJavaScriptElement element, int accuracy, MatchLocator locator) throws CoreException {
 	if (this.isDeclarationOfReferencedTypesPattern) {
 		if ((element = findElement(element, accuracy)) != null) {
 			SimpleSet knownTypes = ((DeclarationOfReferencedTypesPattern) this.pattern).knownTypes;
@@ -297,7 +297,7 @@ protected void matchReportImportRef(ImportReference importRef, Binding binding, 
 	}
 	locator.reportAccurateTypeReference(match, importRef, this.pattern.simpleName);
 }
-protected void matchReportReference(ArrayTypeReference arrayRef, IJavaElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportReference(ArrayTypeReference arrayRef, IJavaScriptElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
 	if (this.pattern.simpleName == null) {
 		// TODO (frederic) need to add a test for this case while searching generic types...
 		if (locator.encloses(element)) {
@@ -323,13 +323,13 @@ protected void matchReportReference(ArrayTypeReference arrayRef, IJavaElement el
 /**
  * Reports the match of the given reference.
  */
-protected void matchReportReference(ASTNode reference, IJavaElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportReference(ASTNode reference, IJavaScriptElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
 	matchReportReference(reference, element, null, null, elementBinding, accuracy, locator);
 }
 /**
  * Reports the match of the given reference. Also provide a local and other elements to eventually report in match.
  */
-protected void matchReportReference(ASTNode reference, IJavaElement element, IJavaElement localElement, IJavaElement[] otherElements, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportReference(ASTNode reference, IJavaScriptElement element, IJavaScriptElement localElement, IJavaScriptElement[] otherElements, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
 	if (this.isDeclarationOfReferencedTypesPattern) {
 		if ((element = findElement(element, accuracy)) != null)
 			reportDeclaration(reference, element, locator, ((DeclarationOfReferencedTypesPattern) this.pattern).knownTypes);
@@ -361,7 +361,7 @@ protected void matchReportReference(ASTNode reference, IJavaElement element, IJa
 /**
  * Reports the match of the given reference. Also provide a scope to look for possible local and other elements.
  */
-protected void matchReportReference(ASTNode reference, IJavaElement element, Binding elementBinding, Scope scope, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportReference(ASTNode reference, IJavaScriptElement element, Binding elementBinding, Scope scope, int accuracy, MatchLocator locator) throws CoreException {
 	if (scope == null || (scope.kind != Scope.BLOCK_SCOPE && scope.kind != Scope.METHOD_SCOPE)) {
 		matchReportReference(reference, element, elementBinding, accuracy, locator);
 		return;
@@ -370,8 +370,8 @@ protected void matchReportReference(ASTNode reference, IJavaElement element, Bin
 	// Look if some block scope local variable declarations include reference start position
 	BlockScope blockScope = (BlockScope) scope;
 	LocalDeclaration[] localDeclarations = blockScope.findLocalVariableDeclarations(reference.sourceStart);
-	IJavaElement localElement = null;
-	IJavaElement[] otherElements = null;
+	IJavaScriptElement localElement = null;
+	IJavaScriptElement[] otherElements = null;
 
 	// Some local variable declaration are matching
 	if (localDeclarations != null) {
@@ -402,20 +402,20 @@ protected void matchReportReference(ASTNode reference, IJavaElement element, Bin
 			if (localDeclarations[j] == null) break;
 			if (reference.sourceStart == localDeclarations[j].declarationSourceStart) {
 				if (otherElements == null) {
-					otherElements = new IJavaElement[length-j];
+					otherElements = new IJavaScriptElement[length-j];
 				}
 				otherElements[size++] = locator.createHandle(localDeclarations[j], element);
 			}
 		}
 		if (size > 0 && size != (length-1)) {
-			System.arraycopy(otherElements, 0, otherElements = new IJavaElement[size], 0, size);
+			System.arraycopy(otherElements, 0, otherElements = new IJavaScriptElement[size], 0, size);
 		}
 	}
 
 	// Report match with local and other elements if any
 	matchReportReference(reference, element, localElement, otherElements, elementBinding, accuracy, locator);
 }
-protected void matchReportReference(QualifiedNameReference qNameRef, IJavaElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportReference(QualifiedNameReference qNameRef, IJavaScriptElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
 	Binding binding = qNameRef.binding;
 	TypeBinding typeBinding = null;
 	int lastIndex = qNameRef.tokens.length - 1;
@@ -480,7 +480,7 @@ protected void matchReportReference(QualifiedNameReference qNameRef, IJavaElemen
 	}
 	locator.reportAccurateTypeReference(match, qNameRef, this.pattern.simpleName);
 }
-protected void matchReportReference(QualifiedTypeReference qTypeRef, IJavaElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportReference(QualifiedTypeReference qTypeRef, IJavaScriptElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
 	TypeBinding typeBinding = qTypeRef.resolvedType;
 	int lastIndex = qTypeRef.tokens.length - 1;
 	if (typeBinding instanceof ArrayBinding)
@@ -568,9 +568,9 @@ void matchReportReference(Expression expr, int lastIndex, TypeBinding refBinding
 	if (refBinding.isLocalType()) {
 		// see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=82673
 		LocalTypeBinding local = (LocalTypeBinding) refBinding;
-		IJavaElement focus = ((InternalSearchPattern)pattern).focus;
-		if (focus != null && local.enclosingMethod != null && focus.getParent().getElementType() == IJavaElement.METHOD) {
-			IMethod method = (IMethod) focus.getParent();
+		IJavaScriptElement focus = ((InternalSearchPattern)pattern).focus;
+		if (focus != null && local.enclosingMethod != null && focus.getParent().getElementType() == IJavaScriptElement.METHOD) {
+			IFunction method = (IFunction) focus.getParent();
 			if (!CharOperation.equals(local.enclosingMethod.selector, method.getElementName().toCharArray())) {
 				return;
 			}
@@ -579,9 +579,9 @@ void matchReportReference(Expression expr, int lastIndex, TypeBinding refBinding
 	locator.report(match);
 }
 protected int referenceType() {
-	return IJavaElement.TYPE;
+	return IJavaScriptElement.TYPE;
 }
-protected void reportDeclaration(ASTNode reference, IJavaElement element, MatchLocator locator, SimpleSet knownTypes) throws CoreException {
+protected void reportDeclaration(ASTNode reference, IJavaScriptElement element, MatchLocator locator, SimpleSet knownTypes) throws CoreException {
 	int maxType = -1;
 	TypeBinding typeBinding = null;
 	if (reference instanceof TypeReference) {
@@ -639,7 +639,7 @@ protected void reportDeclaration(ReferenceBinding typeBinding, int maxType, Matc
 	IBinaryType info = null;
 	if (isBinary) {
 		if (resource == null)
-			resource = type.getJavaProject().getProject();
+			resource = type.getJavaScriptProject().getProject();
 		info = locator.getBinaryInfo((org.eclipse.wst.jsdt.internal.core.ClassFile) type.getClassFile(), resource);
 	}
 	while (maxType >= 0 && type != null) {
@@ -660,7 +660,7 @@ protected void reportDeclaration(ReferenceBinding typeBinding, int maxType, Matc
 			knownTypes.add(type);
 		}
 		typeBinding = typeBinding.enclosingType();
-		IJavaElement parent = type.getParent();
+		IJavaScriptElement parent = type.getParent();
 		if (parent instanceof IType) {
 			type = (IType)parent;
 		} else {

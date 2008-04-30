@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 
 public abstract class VariablePattern extends JavaSearchPattern {
@@ -39,16 +39,16 @@ public VariablePattern(int patternKind, boolean findDeclarations, boolean readAc
 	this.sourceVariable=sourceRef;
 }
 
-public IJavaElement getJavaElement()
+public IJavaScriptElement getJavaElement()
 {
-	return (IJavaElement) this.sourceVariable;
+	return (IJavaScriptElement) this.sourceVariable;
 }
 
 protected int getVariableStart()
 {
 	try {
 		return this.sourceVariable.getSourceRange().getOffset();
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		return -1;
 	}
 }
@@ -57,7 +57,7 @@ protected int getVariableLength()
 {
 	try {
 		return this.sourceVariable.getSourceRange().getLength();
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		return -1;
 	}
 }

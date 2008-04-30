@@ -32,14 +32,14 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.internal.corext.dom.LinkedNodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorHighlightingSynchronizer;
@@ -90,19 +90,19 @@ public class LinkedNamesAssistProposal implements IJavaCompletionProposal, IComp
 	public static final String ASSIST_ID= "org.eclipse.wst.jsdt.ui.correction.renameInFile.assist"; //$NON-NLS-1$
 	
 	private SimpleName fNode;
-	private ICompilationUnit fCompilationUnit;
+	private IJavaScriptUnit fCompilationUnit;
 	private String fLabel;
 	private String fValueSuggestion;
 	private int fRelevance;
 
-	public LinkedNamesAssistProposal(ICompilationUnit cu, SimpleName node) {
+	public LinkedNamesAssistProposal(IJavaScriptUnit cu, SimpleName node) {
 		this(CorrectionMessages.LinkedNamesAssistProposal_description, cu, node, null);
 		fNode= node;
 		fCompilationUnit= cu;
 		fRelevance= 8;
 	}
 
-	public LinkedNamesAssistProposal(String label, ICompilationUnit cu, SimpleName node, String valueSuggestion) {
+	public LinkedNamesAssistProposal(String label, IJavaScriptUnit cu, SimpleName node, String valueSuggestion) {
 		fLabel= label;
 		fNode= node;
 		fCompilationUnit= cu;
@@ -118,7 +118,7 @@ public class LinkedNamesAssistProposal implements IJavaCompletionProposal, IComp
 			Point seletion= viewer.getSelectedRange();
 
 			// get full ast
-			CompilationUnit root= JavaPlugin.getDefault().getASTProvider().getAST(fCompilationUnit, ASTProvider.WAIT_YES, null);
+			JavaScriptUnit root= JavaScriptPlugin.getDefault().getASTProvider().getAST(fCompilationUnit, ASTProvider.WAIT_YES, null);
 
 			ASTNode nameNode= NodeFinder.perform(root, fNode.getStartPosition(), fNode.getLength());
 			final int pos= fNode.getStartPosition();
@@ -183,7 +183,7 @@ public class LinkedNamesAssistProposal implements IJavaCompletionProposal, IComp
 			viewer.setSelectedRange(seletion.x, seletion.y); // by default full word is selected, restore original selection
 
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 	}
 
@@ -194,7 +194,7 @@ public class LinkedNamesAssistProposal implements IJavaCompletionProposal, IComp
 	 * @return  the currently active java editor, or <code>null</code>
 	 */
 	private JavaEditor getJavaEditor() {
-		IEditorPart part= JavaPlugin.getActivePage().getActiveEditor();
+		IEditorPart part= JavaScriptPlugin.getActivePage().getActiveEditor();
 		if (part instanceof JavaEditor)
 			return (JavaEditor) part;
 		else

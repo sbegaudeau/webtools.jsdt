@@ -28,7 +28,7 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelListener;
 import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitAnnotationModelEvent;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 
@@ -110,7 +110,7 @@ public class ProblemMarkerManager implements IResourceChangeListener, IAnnotatio
 			if (delta != null)
 				delta.accept(new ProjectErrorVisitor(changedElements));
 		} catch (CoreException e) {
-			JavaPlugin.log(e.getStatus());
+			JavaScriptPlugin.log(e.getStatus());
 		}
 
 		if (!changedElements.isEmpty()) {
@@ -145,8 +145,8 @@ public class ProblemMarkerManager implements IResourceChangeListener, IAnnotatio
 	 */
 	public void addListener(IProblemChangedListener listener) {
 		if (fListeners.isEmpty()) { 
-			JavaPlugin.getWorkspace().addResourceChangeListener(this);
-			JavaPlugin.getDefault().getCompilationUnitDocumentProvider().addGlobalAnnotationModelListener(this);
+			JavaScriptPlugin.getWorkspace().addResourceChangeListener(this);
+			JavaScriptPlugin.getDefault().getCompilationUnitDocumentProvider().addGlobalAnnotationModelListener(this);
 		}
 		fListeners.add(listener);
 	}
@@ -157,8 +157,8 @@ public class ProblemMarkerManager implements IResourceChangeListener, IAnnotatio
 	public void removeListener(IProblemChangedListener listener) {
 		fListeners.remove(listener);
 		if (fListeners.isEmpty()) {
-			JavaPlugin.getWorkspace().removeResourceChangeListener(this);
-			JavaPlugin.getDefault().getCompilationUnitDocumentProvider().removeGlobalAnnotationModelListener(this);
+			JavaScriptPlugin.getWorkspace().removeResourceChangeListener(this);
+			JavaScriptPlugin.getDefault().getCompilationUnitDocumentProvider().removeGlobalAnnotationModelListener(this);
 		}
 	}
 	

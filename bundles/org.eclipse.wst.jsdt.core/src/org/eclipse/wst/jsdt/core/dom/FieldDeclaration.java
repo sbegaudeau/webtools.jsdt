@@ -185,7 +185,7 @@ public class FieldDeclaration extends BodyDeclaration {
 			if (get) {
 				return getJavadoc();
 			} else {
-				setJavadoc((Javadoc) child);
+				setJavadoc((JSdoc) child);
 				return null;
 			}
 		}
@@ -250,7 +250,7 @@ public class FieldDeclaration extends BodyDeclaration {
 		FieldDeclaration result = new FieldDeclaration(target);
 		result.setSourceRange(this.getStartPosition(), this.getLength());
 		result.setJavadoc(
-			(Javadoc) ASTNode.copySubtree(target, getJavadoc()));
+			(JSdoc) ASTNode.copySubtree(target, getJavadoc()));
 		if (this.ast.apiLevel == AST.JLS2_INTERNAL) {
 			result.internalSetModifiers(getModifiers());
 		}

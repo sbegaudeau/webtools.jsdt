@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
@@ -103,7 +103,7 @@ public int match(FieldDeclaration field, MatchingNodeSet nodeSet) {
 
 	return nodeSet.addMatch(field, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 }
-//public int match(MethodDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
+//public int match(FunctionDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 /**
  * Special case for message send in javadoc comment. They can be in fact bound to a contructor.
  * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=83285"
@@ -206,7 +206,7 @@ boolean matchParametersCount(ASTNode node, Expression[] args) {
 	}
 	return true;
 }
-protected void matchReportReference(ASTNode reference, IJavaElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportReference(ASTNode reference, IJavaScriptElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
 
 	MethodBinding constructorBinding = null;
 	boolean isSynthetic = false;
@@ -290,7 +290,7 @@ protected void matchReportReference(ASTNode reference, IJavaElement element, Bin
 	}
 	locator.report(match);
 }
-public SearchMatch newDeclarationMatch(ASTNode reference, IJavaElement element, Binding binding, int accuracy, int length, MatchLocator locator) {
+public SearchMatch newDeclarationMatch(ASTNode reference, IJavaScriptElement element, Binding binding, int accuracy, int length, MatchLocator locator) {
 	match = null;
 	int offset = reference.sourceStart;
 	if (this.pattern.findReferences) {
@@ -336,7 +336,7 @@ public int resolveLevel(ASTNode node) {
 	return IMPOSSIBLE_MATCH;
 }
 protected int referenceType() {
-	return IJavaElement.METHOD;
+	return IJavaScriptElement.METHOD;
 }
 protected int resolveLevel(AllocationExpression allocation) {
 	// constructor name is simple type name

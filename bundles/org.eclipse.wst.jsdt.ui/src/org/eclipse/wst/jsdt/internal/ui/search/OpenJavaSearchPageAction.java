@@ -16,7 +16,7 @@ import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Opens the Search Dialog and brings the Java search page to front
@@ -37,7 +37,7 @@ public class OpenJavaSearchPageAction implements IWorkbenchWindowActionDelegate 
 	public void run(IAction action) {
 		if (fWindow == null || fWindow.getActivePage() == null) {
 			beep();
-			JavaPlugin.logErrorMessage("Could not open the search dialog - for some reason the window handle was null"); //$NON-NLS-1$
+			JavaScriptPlugin.logErrorMessage("Could not open the search dialog - for some reason the window handle was null"); //$NON-NLS-1$
 			return;
 		}
 		NewSearchUI.openSearchDialog(fWindow, JAVA_SEARCH_PAGE_ID);
@@ -52,7 +52,7 @@ public class OpenJavaSearchPageAction implements IWorkbenchWindowActionDelegate 
 	}
 
 	protected void beep() {
-		Shell shell= JavaPlugin.getActiveWorkbenchShell();
+		Shell shell= JavaScriptPlugin.getActiveWorkbenchShell();
 		if (shell != null && shell.getDisplay() != null)
 			shell.getDisplay().beep();
 	}	

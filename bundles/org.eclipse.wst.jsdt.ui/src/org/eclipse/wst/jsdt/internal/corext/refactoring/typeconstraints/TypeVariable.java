@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
@@ -24,7 +24,7 @@ public final class TypeVariable extends ConstraintVariable {
 	public TypeVariable(Type type){
 		super(type.resolveBinding());
 		fSource= type.toString();
-		ICompilationUnit cu= ASTCreator.getCu(type);
+		IJavaScriptUnit cu= ASTCreator.getCu(type);
 		Assert.isNotNull(cu);
 		fTypeRange= new CompilationUnitRange(cu, ASTNodes.getElementType(type));
 	}

@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 /**
  * This <code>IPostSaveListener</code> is informed when 
@@ -67,6 +67,6 @@ public interface IPostSaveListener {
 	 * @param monitor the progress monitor for reporting progress
 	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider
 	 */
-	void saved(ICompilationUnit compilationUnit, IProgressMonitor monitor) throws CoreException;
+	void saved(IJavaScriptUnit compilationUnit, IProgressMonitor monitor) throws CoreException;
 
 }

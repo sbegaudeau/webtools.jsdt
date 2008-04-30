@@ -38,16 +38,16 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.TextFileChange;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.ui.ide.undo.ResourceDescription;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.Corext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IPackageFragmentRootManipulationQuery;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 public class DeletePackageFragmentRootChange extends AbstractDeleteChange {
 	
@@ -74,7 +74,7 @@ public class DeletePackageFragmentRootChange extends AbstractDeleteChange {
 	}
 	
 	private IPackageFragmentRoot getRoot(){
-		return (IPackageFragmentRoot)JavaCore.create(fHandle);
+		return (IPackageFragmentRoot)JavaScriptCore.create(fHandle);
 	}
 	
 	public RefactoringStatus isValid(IProgressMonitor pm) throws CoreException {
@@ -93,7 +93,7 @@ public class DeletePackageFragmentRootChange extends AbstractDeleteChange {
 		if (! confirmDeleteIfReferenced())
 			return new NullChange();
 		int resourceUpdateFlags= IResource.KEEP_HISTORY;
-		int jCoreUpdateFlags= IPackageFragmentRoot.ORIGINATING_PROJECT_CLASSPATH | IPackageFragmentRoot.OTHER_REFERRING_PROJECTS_CLASSPATH;
+		int jCoreUpdateFlags= IPackageFragmentRoot.ORIGINATING_PROJECT_INCLUDEPATH | IPackageFragmentRoot.OTHER_REFERRING_PROJECTS_INCLUDEPATH;
 		
 		pm.beginTask("", 2); //$NON-NLS-1$
 		IPackageFragmentRoot root= getRoot();
@@ -101,10 +101,10 @@ public class DeletePackageFragmentRootChange extends AbstractDeleteChange {
 		CompositeChange result= new CompositeChange(getName());
 		
 		ResourceDescription rootDescription = ResourceDescription.fromResource(rootResource);
-		IJavaProject[] referencingProjects= JavaElementUtil.getReferencingProjects(root);
+		IJavaScriptProject[] referencingProjects= JavaElementUtil.getReferencingProjects(root);
 		HashMap/*<IFile, String>*/ classpathFilesContents= new HashMap();
 		for (int i= 0; i < referencingProjects.length; i++) {
-			IJavaProject javaProject= referencingProjects[i];
+			IJavaScriptProject javaProject= referencingProjects[i];
 			IFile classpathFile= javaProject.getJSDTScopeFile(); //$NON-NLS-1$
 			if (classpathFile.exists()) {
 				classpathFilesContents.put(classpathFile, getFileContents(classpathFile));
@@ -147,7 +147,7 @@ public class DeletePackageFragmentRootChange extends AbstractDeleteChange {
 		try {
 			reader= new InputStreamReader(contents, file.getCharset());
 		} catch (UnsupportedEncodingException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			reader= new InputStreamReader(contents);
 		}
 		try {
@@ -157,12 +157,12 @@ public class DeletePackageFragmentRootChange extends AbstractDeleteChange {
 		}
 	}
 
-	private boolean confirmDeleteIfReferenced() throws JavaModelException {
+	private boolean confirmDeleteIfReferenced() throws JavaScriptModelException {
 		if (! getRoot().isArchive()) //for source folders, you don't ask, just do it
 			return true;
 		if (fUpdateClasspathQuery == null)
 			return true;
-		IJavaProject[] referencingProjects= JavaElementUtil.getReferencingProjects(getRoot());
+		IJavaScriptProject[] referencingProjects= JavaElementUtil.getReferencingProjects(getRoot());
 		if (referencingProjects.length <= 1)
 			return true;
 		return fUpdateClasspathQuery.confirmManipulation(getRoot(), referencingProjects);

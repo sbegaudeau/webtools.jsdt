@@ -17,15 +17,15 @@ import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IBufferFactory;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICodeCompletionRequestor;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ICompletionRequestor;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IProblemRequestor;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
@@ -43,7 +43,7 @@ public class MetadataFile extends Openable implements
 	protected String name;
 	protected IPath filePath;
 	private static final IField[] NO_FIELDS = new IField[0];
-	private static final IMethod[] NO_METHODS = new IMethod[0];
+	private static final IFunction[] NO_METHODS = new IFunction[0];
 	private LibraryAPIs apis=null;
 	
 	
@@ -61,7 +61,7 @@ public class MetadataFile extends Openable implements
 
 	protected boolean buildStructure(OpenableElementInfo info,
 			IProgressMonitor pm, Map newElements, IResource underlyingResource)
-			throws JavaModelException {
+			throws JavaScriptModelException {
 		if (underlyingResource != null && !underlyingResource.isAccessible()) {
 			throw newNotPresentException();
 		}
@@ -79,7 +79,7 @@ public class MetadataFile extends Openable implements
 //		HashMap problems;
 		if (info instanceof ASTHolderCUInfo) {
 			ASTHolderCUInfo astHolder = (ASTHolderCUInfo) info;
-			createAST = astHolder.astLevel != ICompilationUnit.NO_AST;
+			createAST = astHolder.astLevel != IJavaScriptUnit.NO_AST;
 //			problems = astHolder.problems;
 		} else {
 			createAST = false;
@@ -106,7 +106,7 @@ public class MetadataFile extends Openable implements
 
 			if (createAST) {
 //				int astLevel = ((ASTHolderCUInfo) info).astLevel;
-//				org.eclipse.wst.jsdt.core.dom.CompilationUnit cu = AST.convertCompilationUnit(astLevel, unit, contents, options, computeProblems, this, pm);
+//				org.eclipse.wst.jsdt.core.dom.JavaScriptUnit cu = AST.convertCompilationUnit(astLevel, unit, contents, options, computeProblems, this, pm);
 //				((ASTHolderCUInfo) info).ast = cu;
 				throw new RuntimeException("Implement this"); //$NON-NLS-1$
 			}
@@ -134,7 +134,7 @@ public class MetadataFile extends Openable implements
 		return apis;
 	}
 
-	public IJavaElement getHandleFromMemento(String token,
+	public IJavaScriptElement getHandleFromMemento(String token,
 			MementoTokenizer memento, WorkingCopyOwner owner) {
 		switch (token.charAt(0)) {
 		case JEM_TYPE:
@@ -151,13 +151,13 @@ public class MetadataFile extends Openable implements
 
 	}
 
-	public ICompilationUnit becomeWorkingCopy(
+	public IJavaScriptUnit becomeWorkingCopy(
 			IProblemRequestor problemRequestor, WorkingCopyOwner owner,
-			IProgressMonitor monitor) throws JavaModelException {
+			IProgressMonitor monitor) throws JavaScriptModelException {
 		return null;
 	}
 
-	public byte[] getBytes() throws JavaModelException {
+	public byte[] getBytes() throws JavaScriptModelException {
 		IFile file = (IFile) getResource();
 		return Util.getResourceContentsAsByteArray(file);
 	}
@@ -166,23 +166,23 @@ public class MetadataFile extends Openable implements
 		return null;
 	}
 
-	public IType[] getTypes() throws JavaModelException {
+	public IType[] getTypes() throws JavaScriptModelException {
 		ArrayList list = getChildrenOfType(TYPE);
 		IType[] array= new IType[list.size()];
 		list.toArray(array);
 		return array;
 	}
 
-	public IJavaElement getWorkingCopy(IProgressMonitor monitor,
-			IBufferFactory factory) throws JavaModelException {
+	public IJavaScriptElement getWorkingCopy(IProgressMonitor monitor,
+			IBufferFactory factory) throws JavaScriptModelException {
 		return null;
 	}
 
-	public boolean isClass() throws JavaModelException {
+	public boolean isClass() throws JavaScriptModelException {
 		return true;
 	}
 
-	public boolean isInterface() throws JavaModelException {
+	public boolean isInterface() throws JavaScriptModelException {
 		return false;
 	}
 
@@ -190,12 +190,12 @@ public class MetadataFile extends Openable implements
 		return null;
 	}
 
-	public IJavaElement getElementAt(int position) throws JavaModelException {
+	public IJavaScriptElement getElementAt(int position) throws JavaScriptModelException {
 		return null;
 	}
 
-	public ICompilationUnit getWorkingCopy(WorkingCopyOwner owner,
-			IProgressMonitor monitor) throws JavaModelException {
+	public IJavaScriptUnit getWorkingCopy(WorkingCopyOwner owner,
+			IProgressMonitor monitor) throws JavaScriptModelException {
 		return null;
 	}
 
@@ -211,7 +211,7 @@ public class MetadataFile extends Openable implements
 		return ((IContainer)this.getParent().getResource()).getFile(new Path(this.getElementName()));
 	}
 
-	public String getSource() throws JavaModelException {
+	public String getSource() throws JavaScriptModelException {
 		IBuffer buffer = super.getBuffer();
 		if (buffer == null) {
 			return null;
@@ -219,42 +219,42 @@ public class MetadataFile extends Openable implements
 		return buffer.getContents();
 	}
 
-	public ISourceRange getSourceRange() throws JavaModelException {
+	public ISourceRange getSourceRange() throws JavaScriptModelException {
 		return null;
 	}
 
 	public void codeComplete(int offset, ICodeCompletionRequestor requestor)
-			throws JavaModelException {
+			throws JavaScriptModelException {
 
 	}
 
 	public void codeComplete(int offset, ICompletionRequestor requestor)
-			throws JavaModelException {
+			throws JavaScriptModelException {
 
 	}
 
 	public void codeComplete(int offset, CompletionRequestor requestor)
-			throws JavaModelException {
+			throws JavaScriptModelException {
 
 	}
 
 	public void codeComplete(int offset, ICompletionRequestor requestor,
-			WorkingCopyOwner owner) throws JavaModelException {
+			WorkingCopyOwner owner) throws JavaScriptModelException {
 
 	}
 
 	public void codeComplete(int offset, CompletionRequestor requestor,
-			WorkingCopyOwner owner) throws JavaModelException {
+			WorkingCopyOwner owner) throws JavaScriptModelException {
 
 	}
 
-	public IJavaElement[] codeSelect(int offset, int length)
-			throws JavaModelException {
+	public IJavaScriptElement[] codeSelect(int offset, int length)
+			throws JavaScriptModelException {
 		return null;
 	}
 
-	public IJavaElement[] codeSelect(int offset, int length,
-			WorkingCopyOwner owner) throws JavaModelException {
+	public IJavaScriptElement[] codeSelect(int offset, int length,
+			WorkingCopyOwner owner) throws JavaScriptModelException {
 		return null;
 	}
 
@@ -262,7 +262,7 @@ public class MetadataFile extends Openable implements
 		return new SourceField(this, fieldName);
 	}
 
-	public IField[] getFields() throws JavaModelException {
+	public IField[] getFields() throws JavaScriptModelException {
 		ArrayList list = getChildrenOfType(FIELD);
 		int size;
 		if ((size = list.size()) == 0) {
@@ -274,17 +274,31 @@ public class MetadataFile extends Openable implements
 		}
 	}
 
-	public IMethod getMethod(String selector, String[] parameterTypeSignatures) {
+	/**
+	 * @deprecated Use {@link #getFunction(String,String[])} instead
+	 */
+	public IFunction getMethod(String selector, String[] parameterTypeSignatures) {
+		return getFunction(selector, parameterTypeSignatures);
+	}
+
+	public IFunction getFunction(String selector, String[] parameterTypeSignatures) {
 		return new SourceMethod(this, selector, parameterTypeSignatures);
 	}
 
-	public IMethod[] getMethods() throws JavaModelException {
+	/**
+	 * @deprecated Use {@link #getFunctions()} instead
+	 */
+	public IFunction[] getMethods() throws JavaScriptModelException {
+		return getFunctions();
+	}
+
+	public IFunction[] getFunctions() throws JavaScriptModelException {
 		ArrayList list = getChildrenOfType(METHOD);
 		int size;
 		if ((size = list.size()) == 0) {
 			return NO_METHODS;
 		} else {
-			IMethod[] array= new IMethod[size];
+			IFunction[] array= new IFunction[size];
 			list.toArray(array);
 			return array;
 		}

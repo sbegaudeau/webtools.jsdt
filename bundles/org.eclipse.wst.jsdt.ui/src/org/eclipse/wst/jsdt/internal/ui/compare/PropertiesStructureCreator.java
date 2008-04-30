@@ -35,7 +35,7 @@ import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.IPropertiesFilePartitions;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFilePartitionScanner;
 
@@ -112,7 +112,7 @@ public class PropertiesStructureCreator extends StructureCreator {
 		} catch (IOException ex) {
 			if (sharedDocumentAdapter != null)
 				sharedDocumentAdapter.disconnect(input);
-			throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), 0, CompareMessages.PropertiesStructureCreator_error_occurred, ex));
+			throw new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), 0, CompareMessages.PropertiesStructureCreator_error_occurred, ex));
 		} finally {
 			monitor.done();
 		}
@@ -130,7 +130,7 @@ public class PropertiesStructureCreator extends StructureCreator {
 			try {
 				return JavaCompareUtilities.readString(sca);
 			} catch (CoreException ex) {
-				JavaPlugin.log(ex);
+				JavaScriptPlugin.log(ex);
 			}
 		}
 		return null;

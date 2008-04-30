@@ -17,22 +17,22 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
@@ -157,12 +157,12 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 		}
 	}
 	
-	private IJavaProject getJavaProject() {
-		return getRoot().getJavaElement().getJavaProject();
+	private IJavaScriptProject getJavaProject() {
+		return getRoot().getJavaElement().getJavaScriptProject();
 	}
 	
-	private CompilationUnit getRoot() {
-		return (CompilationUnit)getForStatement().getRoot();
+	private JavaScriptUnit getRoot() {
+		return (JavaScriptUnit)getForStatement().getRoot();
 	}
 	
 	/**
@@ -175,8 +175,8 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 	private Expression getExpression(final ASTRewrite rewrite) {
 		if (fThis)
 			return rewrite.getAST().newThisExpression();
-		if (fExpression instanceof MethodInvocation)
-			return (MethodInvocation)rewrite.createMoveTarget(fExpression);
+		if (fExpression instanceof FunctionInvocation)
+			return (FunctionInvocation)rewrite.createMoveTarget(fExpression);
 		return (Expression)ASTNode.copySubtree(rewrite.getAST(), fExpression);
 	}
 	
@@ -271,8 +271,8 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 					return false;
 				}
 				
-				public final boolean visit(final MethodInvocation node) {
-					final IMethodBinding binding= node.resolveMethodBinding();
+				public final boolean visit(final FunctionInvocation node) {
+					final IFunctionBinding binding= node.resolveMethodBinding();
 					if (binding != null && (binding.getName().equals("next") || binding.getName().equals("nextElement"))) { //$NON-NLS-1$ //$NON-NLS-2$
 						final Expression expression= node.getExpression();
 						if (expression instanceof Name) {
@@ -360,8 +360,8 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 						final VariableDeclarationFragment fragment= (VariableDeclarationFragment)fragments.get(0);
 						fragment.accept(new ASTVisitor() {
 							
-							public final boolean visit(final MethodInvocation node) {
-								final IMethodBinding binding= node.resolveMethodBinding();
+							public final boolean visit(final FunctionInvocation node) {
+								final IFunctionBinding binding= node.resolveMethodBinding();
 								if (binding != null) {
 									final ITypeBinding type= binding.getReturnType();
 									if (type != null) {
@@ -377,8 +377,8 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 														if (qualifier instanceof Name) {
 															final Name name= (Name)qualifier;
 															fIterable= name.resolveBinding();
-														} else if (qualifier instanceof MethodInvocation) {
-															final MethodInvocation invocation= (MethodInvocation)qualifier;
+														} else if (qualifier instanceof FunctionInvocation) {
+															final FunctionInvocation invocation= (FunctionInvocation)qualifier;
 															fIterable= invocation.resolveMethodBinding();
 														} else if (qualifier instanceof FieldAccess) {
 															final FieldAccess access= (FieldAccess)qualifier;
@@ -462,9 +462,9 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 					}
 					
 					private boolean visit(final Expression left, final Expression right) {
-						if (right instanceof MethodInvocation) {
-//							final MethodInvocation invocation= (MethodInvocation)right;
-//							final IMethodBinding binding= invocation.resolveMethodBinding();
+						if (right instanceof FunctionInvocation) {
+//							final FunctionInvocation invocation= (FunctionInvocation)right;
+//							final IFunctionBinding binding= invocation.resolveMethodBinding();
 //							if (binding != null && (binding.getName().equals("next") || binding.getName().equals("nextElement"))) { //$NON-NLS-1$ //$NON-NLS-2$
 //								final Expression expression= invocation.getExpression();
 //								if (expression instanceof Name) {
@@ -493,8 +493,8 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 					/**
 					 * {@inheritDoc}
 					 */
-					public boolean visit(MethodInvocation invocation) {
-						final IMethodBinding binding= invocation.resolveMethodBinding();
+					public boolean visit(FunctionInvocation invocation) {
+						final IFunctionBinding binding= invocation.resolveMethodBinding();
 						if (binding != null) {
 							final Expression expression= invocation.getExpression();
 							if (expression instanceof Name) {
@@ -560,11 +560,11 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 		String warningLable= FixMessages.ConvertIterableLoopOperation_semanticChangeWarning;
 		
 		Expression expression= getForStatement().getExpression();
-		if (!(expression instanceof MethodInvocation))
+		if (!(expression instanceof FunctionInvocation))
 			return new StatusInfo(IStatus.WARNING, warningLable);
 		
-		MethodInvocation invoc= (MethodInvocation)expression;
-		IMethodBinding methodBinding= invoc.resolveMethodBinding();
+		FunctionInvocation invoc= (FunctionInvocation)expression;
+		IFunctionBinding methodBinding= invoc.resolveMethodBinding();
 		if (methodBinding == null)
 			return new StatusInfo(IStatus.ERROR, ""); //$NON-NLS-1$
 			

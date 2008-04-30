@@ -28,14 +28,14 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
@@ -91,7 +91,7 @@ public class IncludeToBuildpathAction extends BuildpathModifierAction {
 	 */
 	public void run() {
 		IResource resource= (IResource)getSelectedElements().get(0);
-		final IJavaProject project= JavaCore.create(resource.getProject());
+		final IJavaScriptProject project= JavaScriptCore.create(resource.getProject());
 
 		try {
 			final IRunnableWithProgress runnable= new IRunnableWithProgress() {
@@ -109,13 +109,13 @@ public class IncludeToBuildpathAction extends BuildpathModifierAction {
 			if (e.getCause() instanceof CoreException) {
 				showExceptionDialog((CoreException)e.getCause(), NewWizardMessages.IncludeToBuildpathAction_ErrorTitle);
 			} else {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		} catch (final InterruptedException e) {
 		}
 	}
 
-	protected List unExclude(List elements, IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
+	protected List unExclude(List elements, IJavaScriptProject project, IProgressMonitor monitor) throws JavaScriptModelException {
 		if (monitor == null)
 			monitor= new NullProgressMonitor();
 		try {
@@ -153,7 +153,7 @@ public class IncludeToBuildpathAction extends BuildpathModifierAction {
 				Object element= iter.next();
 				if (element instanceof IResource) {
 					IResource resource= (IResource)element;
-					IJavaProject project= JavaCore.create(resource.getProject());
+					IJavaScriptProject project= JavaScriptCore.create(resource.getProject());
 					if (project == null || !project.exists())
 						return false;
 

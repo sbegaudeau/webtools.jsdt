@@ -24,17 +24,17 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaDeleteProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.MessageWizardPage;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 
@@ -91,10 +91,10 @@ public class DeleteWizard extends RefactoringWizard {
 					String pattern= createConfirmationStringForManyElements();
 					return Messages.format(pattern, new String[] { String.valueOf(numberOfSelectedElements())});
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 				if (JavaModelUtil.isExceptionToBeLogged(e))
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 				setPageComplete(false);
 				if (e.isDoesNotExist())
 					return RefactoringMessages.DeleteWizard_12; 
@@ -143,15 +143,15 @@ public class DeleteWizard extends RefactoringWizard {
 			getDeleteProcessor().setDeleteSubPackages(fDeleteSubPackagesCheckBox.getSelection());
 		}
 
-		private String getNameOfSingleSelectedElement() throws JavaModelException {
+		private String getNameOfSingleSelectedElement() throws JavaScriptModelException {
 			if (getSingleSelectedResource() != null)
 				return ReorgUtils.getName(getSingleSelectedResource());
 			else
 				return ReorgUtils.getName(getSingleSelectedJavaElement());
 		}
 
-		private IJavaElement getSingleSelectedJavaElement() {
-			IJavaElement[] elements= getSelectedJavaElements();
+		private IJavaScriptElement getSingleSelectedJavaElement() {
+			IJavaScriptElement[] elements= getSelectedJavaElements();
 			return elements.length == 1 ? elements[0] : null;
 		}
 
@@ -183,10 +183,10 @@ public class DeleteWizard extends RefactoringWizard {
 			super.dispose();
 		}
 
-		private String createConfirmationStringForOneElement() throws JavaModelException {
-			IJavaElement[] elements= getSelectedJavaElements();
+		private String createConfirmationStringForOneElement() throws JavaScriptModelException {
+			IJavaScriptElement[] elements= getSelectedJavaElements();
 			if (elements.length == 1) {
-				IJavaElement element= elements[0];
+				IJavaScriptElement element= elements[0];
 				if (isDefaultPackageWithLinkedFiles(element))
 					return RefactoringMessages.DeleteWizard_3; 
 
@@ -206,9 +206,9 @@ public class DeleteWizard extends RefactoringWizard {
 			}
 		}
 
-		private String createConfirmationStringForManyElements() throws JavaModelException {
+		private String createConfirmationStringForManyElements() throws JavaScriptModelException {
 			IResource[] resources= getSelectedResources();
-			IJavaElement[] javaElements= getSelectedJavaElements();
+			IJavaScriptElement[] javaElements= getSelectedJavaElements();
 			if (!containsLinkedResources(resources, javaElements))
 				return RefactoringMessages.DeleteWizard_9; 
 
@@ -219,25 +219,25 @@ public class DeleteWizard extends RefactoringWizard {
 			return RefactoringMessages.DeleteWizard_11; 
 		}
 
-		private static boolean isLinkedPackageOrPackageFragmentRoot(IJavaElement element) {
+		private static boolean isLinkedPackageOrPackageFragmentRoot(IJavaScriptElement element) {
 			if ((element instanceof IPackageFragment) || (element instanceof IPackageFragmentRoot))
 				return isLinkedResource(element);
 			else
 				return false;
 		}
 
-		private static boolean containsLinkedPackagesOrPackageFragmentRoots(IJavaElement[] javaElements) {
+		private static boolean containsLinkedPackagesOrPackageFragmentRoots(IJavaScriptElement[] javaElements) {
 			for (int i= 0; i < javaElements.length; i++) {
-				IJavaElement element= javaElements[i];
+				IJavaScriptElement element= javaElements[i];
 				if (isLinkedPackageOrPackageFragmentRoot(element))
 					return true;
 			}
 			return false;
 		}
 
-		private static boolean containsLinkedResources(IResource[] resources, IJavaElement[] javaElements) throws JavaModelException {
+		private static boolean containsLinkedResources(IResource[] resources, IJavaScriptElement[] javaElements) throws JavaScriptModelException {
 			for (int i= 0; i < javaElements.length; i++) {
-				IJavaElement element= javaElements[i];
+				IJavaScriptElement element= javaElements[i];
 				if (isLinkedResource(element))
 					return true;
 				if (isDefaultPackageWithLinkedFiles(element))
@@ -251,11 +251,11 @@ public class DeleteWizard extends RefactoringWizard {
 			return false;
 		}
 
-		private static boolean isDefaultPackageWithLinkedFiles(Object firstElement) throws JavaModelException {
+		private static boolean isDefaultPackageWithLinkedFiles(Object firstElement) throws JavaScriptModelException {
 			if (!JavaElementUtil.isDefaultPackage(firstElement))
 				return false;
 			IPackageFragment defaultPackage= (IPackageFragment)firstElement;
-			ICompilationUnit[] cus= defaultPackage.getCompilationUnits();
+			IJavaScriptUnit[] cus= defaultPackage.getJavaScriptUnits();
 			for (int i= 0; i < cus.length; i++) {
 				if (isLinkedResource(cus[i]))
 					return true;
@@ -263,7 +263,7 @@ public class DeleteWizard extends RefactoringWizard {
 			return false;
 		}
 
-		private static boolean isLinkedResource(IJavaElement element) {
+		private static boolean isLinkedResource(IJavaScriptElement element) {
 			return isLinked(ReorgUtils.getResource(element));
 		}
 
@@ -271,7 +271,7 @@ public class DeleteWizard extends RefactoringWizard {
 			return resource != null && resource.isLinked();
 		}
 
-		private IJavaElement[] getSelectedJavaElements() {
+		private IJavaScriptElement[] getSelectedJavaElements() {
 			return getDeleteProcessor().getJavaElementsToDelete();
 		}
 

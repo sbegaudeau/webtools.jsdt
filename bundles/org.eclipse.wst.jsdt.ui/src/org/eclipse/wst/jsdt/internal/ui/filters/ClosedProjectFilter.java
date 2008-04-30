@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.ui.filters;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
  * Filters closed projects
@@ -25,8 +25,8 @@ public class ClosedProjectFilter extends ViewerFilter {
 	 * @see ViewerFilter
 	 */
 	public boolean select(Viewer viewer, Object parent, Object element) {
-		if (element instanceof IJavaElement) 
-			return ((IJavaElement)element).getJavaProject().getProject().isOpen();
+		if (element instanceof IJavaScriptElement) 
+			return ((IJavaScriptElement)element).getJavaScriptProject().getProject().isOpen();
 		if (element instanceof IResource)
 			return ((IResource)element).getProject().isOpen();
 		return true;

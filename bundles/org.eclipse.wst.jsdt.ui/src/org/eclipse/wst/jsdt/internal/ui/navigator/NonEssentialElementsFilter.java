@@ -20,7 +20,7 @@ import org.eclipse.ui.navigator.CommonViewer;
 import org.eclipse.ui.navigator.IExtensionStateModel;
 import org.eclipse.ui.navigator.INavigatorContentService;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * 
@@ -60,7 +60,7 @@ public abstract class NonEssentialElementsFilter extends ViewerFilter {
 					if (isHierarchicalLayout && !fragment.isDefaultPackage() && fragment.hasSubpackages()) {
 						return hasFilteredChildren((StructuredViewer) viewer, fragment);
 					}
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					return false;
 				}
 			}

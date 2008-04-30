@@ -29,16 +29,16 @@ import org.eclipse.ui.editors.text.FileDocumentProvider;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.IResourceLocator;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 
 /**
@@ -68,7 +68,7 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 
 			fInput= input;
 
-			IJavaElement parent= fInput.getClassFile().getParent();
+			IJavaScriptElement parent= fInput.getClassFile().getParent();
 			while (parent != null && !(parent instanceof IPackageFragmentRoot)) {
 				parent= parent.getParent();
 			}
@@ -79,14 +79,14 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 		 * Installs the synchronizer.
 		 */
 		public void install() {
-			JavaCore.addElementChangedListener(this);
+			JavaScriptCore.addElementChangedListener(this);
 		}
 
 		/**
 		 * Uninstalls the synchronizer.
 		 */
 		public void uninstall() {
-			JavaCore.removeElementChangedListener(this);
+			JavaScriptCore.removeElementChangedListener(this);
 		}
 
 		/*
@@ -100,42 +100,42 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 		 * Recursively check whether the class file has been deleted.
 		 * Returns true if delta processing can be stopped.
 		 */
-		protected boolean check(IPackageFragmentRoot input, IJavaElementDelta delta) {
-			IJavaElement element= delta.getElement();
+		protected boolean check(IPackageFragmentRoot input, IJavaScriptElementDelta delta) {
+			IJavaScriptElement element= delta.getElement();
 
-			if ((delta.getKind() & IJavaElementDelta.REMOVED) != 0 || (delta.getFlags() & IJavaElementDelta.F_CLOSED) != 0) {
+			if ((delta.getKind() & IJavaScriptElementDelta.REMOVED) != 0 || (delta.getFlags() & IJavaScriptElementDelta.F_CLOSED) != 0) {
 				// http://dev.eclipse.org/bugs/show_bug.cgi?id=19023
-				if (element.equals(input.getJavaProject()) || element.equals(input)) {
+				if (element.equals(input.getJavaScriptProject()) || element.equals(input)) {
 					handleDeleted(fInput);
 					return true;
 				}
 			}
 
-			if (((delta.getFlags() & IJavaElementDelta.F_ARCHIVE_CONTENT_CHANGED) != 0) && input.equals(element)) {
+			if (((delta.getFlags() & IJavaScriptElementDelta.F_ARCHIVE_CONTENT_CHANGED) != 0) && input.equals(element)) {
 				handleDeleted(fInput);
 				return true;
 			}
 
-			if (((delta.getFlags() & IJavaElementDelta.F_REMOVED_FROM_CLASSPATH) != 0) && input.equals(element)) {
+			if (((delta.getFlags() & IJavaScriptElementDelta.F_REMOVED_FROM_CLASSPATH) != 0) && input.equals(element)) {
 				handleDeleted(fInput);
 				return true;
 			}
 
-			IJavaElementDelta[] subdeltas= delta.getAffectedChildren();
+			IJavaScriptElementDelta[] subdeltas= delta.getAffectedChildren();
 			for (int i= 0; i < subdeltas.length; i++) {
 				if (check(input, subdeltas[i]))
 					return true;
 			}
 
-			if ((delta.getFlags() & IJavaElementDelta.F_SOURCEDETACHED) != 0 ||
-				(delta.getFlags() & IJavaElementDelta.F_SOURCEATTACHED) != 0)
+			if ((delta.getFlags() & IJavaScriptElementDelta.F_SOURCEDETACHED) != 0 ||
+				(delta.getFlags() & IJavaScriptElementDelta.F_SOURCEATTACHED) != 0)
 			{
 				IClassFile file= fInput != null ? fInput.getClassFile() : null;
-				IJavaProject project= input != null ? input.getJavaProject() : null;
+				IJavaScriptProject project= input != null ? input.getJavaScriptProject() : null;
 
 				boolean isOnClasspath= false;
 				if (file != null && project != null)
-					isOnClasspath= project.isOnClasspath(file);
+					isOnClasspath= project.isOnIncludepath(file);
 
 				if (isOnClasspath) {
 					fireInputChanged(fInput);
@@ -242,8 +242,8 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 	protected IDocument createDocument(Object element) throws CoreException {
 		IDocument document= super.createDocument(element);
 		if (document != null) {
-			JavaTextTools tools= JavaPlugin.getDefault().getJavaTextTools();
-			tools.setupJavaDocumentPartitioner(document, IJavaPartitions.JAVA_PARTITIONING);
+			JavaScriptTextTools tools= JavaScriptPlugin.getDefault().getJavaTextTools();
+			tools.setupJavaDocumentPartitioner(document, IJavaScriptPartitions.JAVA_PARTITIONING);
 		}
 		return document;
 	}
@@ -319,7 +319,7 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 			IResource resource;
 			try {
 				resource= input.getClassFile().getUnderlyingResource();
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return true;
 			}
 			return resource == null || resource.isSynchronized(IResource.DEPTH_ZERO);

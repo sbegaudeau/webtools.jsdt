@@ -35,7 +35,7 @@ public String getName();
  *
  * @return the method binding for the annotation type member
  */
-public IMethodBinding getMethodBinding();
+public IFunctionBinding getMethodBinding();
 
 /**
  * Returns the resolved value. Resolved values are represented as follows:

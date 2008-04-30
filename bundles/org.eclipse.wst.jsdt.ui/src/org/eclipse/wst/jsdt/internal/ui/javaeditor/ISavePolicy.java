@@ -12,19 +12,19 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 public interface ISavePolicy {
 
 	/**
 	 *
 	 */
-	void preSave(ICompilationUnit unit);
+	void preSave(IJavaScriptUnit unit);
 
 	/**
 	 * Returns the compilation unit in which the argument
 	 * has been changed. If the argument is not changed, the
 	 * returned result is <code>null</code>.
 	 */
-	ICompilationUnit postSave(ICompilationUnit unit);
+	IJavaScriptUnit postSave(IJavaScriptUnit unit);
 }

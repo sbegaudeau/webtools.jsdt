@@ -56,10 +56,10 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
@@ -71,7 +71,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Strings;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeFilter;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeInfoFilter;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeInfoRequestorAdapter;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
@@ -79,7 +79,7 @@ import org.eclipse.wst.jsdt.launching.IVMInstall;
 import org.eclipse.wst.jsdt.launching.IVMInstallType;
 import org.eclipse.wst.jsdt.launching.JavaRuntime;
 import org.eclipse.wst.jsdt.launching.LibraryLocation;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoFilterExtension;
 import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoImageProvider;
 
@@ -201,7 +201,7 @@ public class TypeInfoViewer {
 			try {
 				if (type.getPackageFragmentRoot().getKind() == IPackageFragmentRoot.K_SOURCE)
 					return 0;
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -272,7 +272,7 @@ public class TypeInfoViewer {
 			StringBuffer result= new StringBuffer();
 			result.append(type.getSimpleTypeName());
 			String containerName= type.getTypeContainerName();
-			result.append(JavaElementLabels.CONCAT_STRING);
+			result.append(JavaScriptElementLabels.CONCAT_STRING);
 			if (containerName.length() > 0) {
 				result.append(containerName);
 			} else {
@@ -285,10 +285,10 @@ public class TypeInfoViewer {
 			result.append(type.getSimpleTypeName());
 			String containerName= type.getTypeContainerName();
 			if (containerName.length() > 0) {
-				result.append(JavaElementLabels.CONCAT_STRING);
+				result.append(JavaScriptElementLabels.CONCAT_STRING);
 				result.append(containerName);
 			}
-			result.append(JavaElementLabels.CONCAT_STRING);
+			result.append(JavaScriptElementLabels.CONCAT_STRING);
 			result.append(getContainerName(type));
 			return result.toString();
 		}
@@ -303,9 +303,9 @@ public class TypeInfoViewer {
 				String lastTCN= getTypeContainerName(last);
 				if (currentTCN.equals(lastTCN)) {
 					if (currentTN.equals(lastTN)) {
-						result.append(JavaElementLabels.CONCAT_STRING);
+						result.append(JavaScriptElementLabels.CONCAT_STRING);
 						result.append(currentTCN);
-						result.append(JavaElementLabels.CONCAT_STRING);
+						result.append(JavaScriptElementLabels.CONCAT_STRING);
 						result.append(getContainerName(current));
 						return result.toString();
 					}
@@ -318,9 +318,9 @@ public class TypeInfoViewer {
 				String nextTCN= getTypeContainerName(next);
 				if (currentTCN.equals(nextTCN)) {
 					if (currentTN.equals(nextTN)) {
-						result.append(JavaElementLabels.CONCAT_STRING);
+						result.append(JavaScriptElementLabels.CONCAT_STRING);
 						result.append(currentTCN);
-						result.append(JavaElementLabels.CONCAT_STRING);
+						result.append(JavaScriptElementLabels.CONCAT_STRING);
 						result.append(getContainerName(current));
 						return result.toString();
 					}
@@ -329,10 +329,10 @@ public class TypeInfoViewer {
 				}
 			}
 			if (qualifications > 0) {
-				result.append(JavaElementLabels.CONCAT_STRING);
+				result.append(JavaScriptElementLabels.CONCAT_STRING);
 				result.append(currentTCN);
 				if (fFullyQualifyDuplicates) {
-					result.append(JavaElementLabels.CONCAT_STRING);
+					result.append(JavaScriptElementLabels.CONCAT_STRING);
 					result.append(getContainerName(current));
 				}
 			}
@@ -343,7 +343,7 @@ public class TypeInfoViewer {
 			String containerName= type.getTypeContainerName();
 			if (containerName.length() > 0) {
 				result.append(containerName);
-				result.append(JavaElementLabels.CONCAT_STRING);
+				result.append(JavaScriptElementLabels.CONCAT_STRING);
 			}
 			result.append(getContainerName(type));
 			return result.toString();
@@ -386,7 +386,7 @@ public class TypeInfoViewer {
 					return lib;
 			}
 			StringBuffer buf= new StringBuffer();
-			JavaElementLabels.getPackageFragmentRootLabel(root, JavaElementLabels.ROOT_QUALIFIED | JavaElementLabels.ROOT_VARIABLE, buf);
+			JavaScriptElementLabels.getPackageFragmentRootLabel(root, JavaScriptElementLabels.ROOT_QUALIFIED | JavaScriptElementLabels.ROOT_VARIABLE, buf);
 			return buf.toString();
 		}
 	}
@@ -404,11 +404,11 @@ public class TypeInfoViewer {
 		}
 		public IStatus runInUIThread(IProgressMonitor monitor) {
 			if (stopped()) 
-				return new Status(IStatus.CANCEL, JavaPlugin.getPluginId(), IStatus.CANCEL, "", null); //$NON-NLS-1$
+				return new Status(IStatus.CANCEL, JavaScriptPlugin.getPluginId(), IStatus.CANCEL, "", null); //$NON-NLS-1$
 			fViewer.updateProgressMessage();
 			if (!stopped())
 				schedule(300);
-			return new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
+			return new Status(IStatus.OK, JavaScriptPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
 		}
 		private boolean stopped() {
 			return fStopped || fViewer.getTable().isDisposed();
@@ -511,7 +511,7 @@ public class TypeInfoViewer {
 				}
 			} catch (CoreException e) {
 				fViewer.searchJobFailed(fTicket, e);
-				return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR, JavaUIMessages.TypeInfoViewer_job_error, e);
+				return new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.ERROR, JavaUIMessages.TypeInfoViewer_job_error, e);
 			} catch (InterruptedException e) {
 				return canceled(e, true);
 			} catch (OperationCanceledException e) {
@@ -628,20 +628,20 @@ public class TypeInfoViewer {
 		}
 		private IStatus canceled(Exception e, boolean removePendingItems) {
 			fViewer.searchJobCanceled(fTicket, removePendingItems);
-			return new Status(IStatus.CANCEL, JavaPlugin.getPluginId(), IStatus.CANCEL, JavaUIMessages.TypeInfoViewer_job_cancel, e);
+			return new Status(IStatus.CANCEL, JavaScriptPlugin.getPluginId(), IStatus.CANCEL, JavaUIMessages.TypeInfoViewer_job_cancel, e);
 		}
 		private IStatus ok() {
-			return new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
+			return new Status(IStatus.OK, JavaScriptPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
 		}
 	}
 	
 	private static class SearchEngineJob extends AbstractSearchJob {
-		private IJavaSearchScope fScope;
+		private IJavaScriptSearchScope fScope;
 		private int fElementKind;
 		private SearchRequestor fReqestor;
 		
 		public SearchEngineJob(int ticket, TypeInfoViewer viewer, TypeInfoFilter filter, OpenTypeHistory history, int numberOfVisibleItems, int mode, 
-				IJavaSearchScope scope, int elementKind) {
+				IJavaScriptSearchScope scope, int elementKind) {
 			super(ticket, viewer, filter, history, numberOfVisibleItems, mode);
 			fScope= scope;
 			fElementKind= elementKind;
@@ -666,7 +666,7 @@ public class TypeInfoViewer {
 				fElementKind, 
 				fScope, 
 				fReqestor, 
-				IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, 
+				IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, 
 				monitor);
 			if (DEBUG)
 				System.out.println("Time needed until search has finished: " + (System.currentTimeMillis() - start)); //$NON-NLS-1$
@@ -719,20 +719,20 @@ public class TypeInfoViewer {
 					// make sure we search a concrete name. This is faster according to Kent  
 					"_______________".toCharArray(), //$NON-NLS-1$
 					SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE, 
-					IJavaSearchConstants.ENUM,
+					IJavaScriptSearchConstants.ENUM,
 					SearchEngine.createWorkspaceScope(), 
 					new TypeNameRequestor() {}, 
-					IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, 
+					IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, 
 					monitor);
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
-				return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR, JavaUIMessages.TypeInfoViewer_job_error, e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
+				return new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.ERROR, JavaUIMessages.TypeInfoViewer_job_error, e);
 			} catch (OperationCanceledException e) {
-				return new Status(IStatus.CANCEL, JavaPlugin.getPluginId(), IStatus.CANCEL, JavaUIMessages.TypeInfoViewer_job_cancel, e);
+				return new Status(IStatus.CANCEL, JavaScriptPlugin.getPluginId(), IStatus.CANCEL, JavaUIMessages.TypeInfoViewer_job_cancel, e);
 			} finally {
 				fViewer.syncJobDone();
 			}
-			return new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
+			return new Status(IStatus.OK, JavaScriptPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
 		}
 	}
 	
@@ -829,7 +829,7 @@ public class TypeInfoViewer {
 	
 	private int fSearchJobTicket;
 	protected int fElementKind;
-	protected IJavaSearchScope fSearchScope;
+	protected IJavaScriptSearchScope fSearchScope;
 	
 	private AbstractSearchJob fSearchJob;
 
@@ -849,7 +849,7 @@ public class TypeInfoViewer {
 		
 
 	public TypeInfoViewer(Composite parent, int flags, Label progressLabel, 
-			IJavaSearchScope scope, int elementKind, String initialFilter,
+			IJavaScriptSearchScope scope, int elementKind, String initialFilter,
 			ITypeInfoFilterExtension filterExtension, ITypeInfoImageProvider imageExtension) {
 		Assert.isNotNull(scope);
 		fDisplay= parent.getDisplay();
@@ -1058,7 +1058,7 @@ public class TypeInfoViewer {
 		}
 	}
 	
-	public void setSearchScope(IJavaSearchScope scope, boolean refresh) {
+	public void setSearchScope(IJavaScriptSearchScope scope, boolean refresh) {
 		fSearchScope= scope;
 		if (!refresh)
 			return;
@@ -1353,7 +1353,7 @@ public class TypeInfoViewer {
 	
 	private synchronized void searchJobFailed(int ticket, CoreException e) {
 		searchJobDone(ticket);
-		JavaPlugin.log(e);
+		JavaScriptPlugin.log(e);
 	}
 	
 	//-- virtual table support -------------------------------------------------------

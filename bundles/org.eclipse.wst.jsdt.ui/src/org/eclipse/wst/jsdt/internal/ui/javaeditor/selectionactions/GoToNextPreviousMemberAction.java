@@ -21,19 +21,19 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.wst.jsdt.core.IInitializer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 
@@ -82,7 +82,7 @@ public class GoToNextPreviousMemberAction extends Action implements IUpdate {
 			try {
 				range= ref.getSourceRange();
 				enabled= range != null && range.getLength() > 0;
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// enabled= false;
 			}
 		}
@@ -101,12 +101,12 @@ public class GoToNextPreviousMemberAction extends Action implements IUpdate {
 		fEditor.selectAndReveal(newRange.getOffset(), newRange.getLength());
 	}
 
-	private IType[] getTypes() throws JavaModelException {
+	private IType[] getTypes() throws JavaScriptModelException {
 		IEditorInput input= fEditor.getEditorInput();
 		if (input instanceof IClassFileEditorInput) {
 			return new IType[] { ((IClassFileEditorInput)input).getClassFile().getType() };
 		} else {
-			return JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(input).getAllTypes();
+			return JavaScriptPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(input).getAllTypes();
 		}
 	}
 
@@ -115,7 +115,7 @@ public class GoToNextPreviousMemberAction extends Action implements IUpdate {
 		if (input instanceof IClassFileEditorInput) {
 			return ((IClassFileEditorInput)input).getClassFile();
 		} else {
-			return JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(input);
+			return JavaScriptPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(input);
 		}
 	}
 
@@ -139,8 +139,8 @@ public class GoToNextPreviousMemberAction extends Action implements IUpdate {
 			else
 				return createNewSourceRange(getPreviousOffset(index, offsetArray, oldOffset));
 
-	 	}	catch (JavaModelException e){
-	 		JavaPlugin.log(e); //dialog would be too heavy here
+	 	}	catch (JavaScriptModelException e){
+	 		JavaScriptPlugin.log(e); //dialog would be too heavy here
 	 		return oldSourceRange;
 	 	}
 	}
@@ -184,28 +184,28 @@ public class GoToNextPreviousMemberAction extends Action implements IUpdate {
 		return new SourceRange(offset.intValue(), 0);
 	}
 
-	private static Integer[] createOffsetArray(IType[] types) throws JavaModelException {
+	private static Integer[] createOffsetArray(IType[] types) throws JavaScriptModelException {
 		List result= new ArrayList();
 		for (int i= 0; i < types.length; i++) {
 			IType iType= types[i];
 			addOffset(result, iType.getNameRange().getOffset());
 			addOffset(result, iType.getSourceRange().getOffset() + iType.getSourceRange().getLength());
-			addMemberOffsetList(result, iType.getMethods());
+			addMemberOffsetList(result, iType.getFunctions());
 			addMemberOffsetList(result, iType.getFields());
 			addMemberOffsetList(result, iType.getInitializers());
 		}
 		return (Integer[]) result.toArray(new Integer[result.size()]);
 	}
 
-	private static void addMemberOffsetList(List result, IMember[] members) throws JavaModelException {
+	private static void addMemberOffsetList(List result, IMember[] members) throws JavaScriptModelException {
 		for (int i= 0; i < members.length; i++) {
 			addOffset(result, getOffset(members[i]));
 		}
 	}
 
-	private static int getOffset(IMember iMember) throws JavaModelException {
+	private static int getOffset(IMember iMember) throws JavaScriptModelException {
 		//special case
-		if (iMember.getElementType() == IJavaElement.INITIALIZER)
+		if (iMember.getElementType() == IJavaScriptElement.INITIALIZER)
 			return firstOpeningBraceOffset((IInitializer)iMember);
 
 		if (iMember.getNameRange() != null && iMember.getNameRange().getOffset() >= 0)
@@ -213,7 +213,7 @@ public class GoToNextPreviousMemberAction extends Action implements IUpdate {
 		return iMember.getSourceRange().getOffset();
 	}
 
-	private static int firstOpeningBraceOffset(IInitializer iInitializer) throws JavaModelException {
+	private static int firstOpeningBraceOffset(IInitializer iInitializer) throws JavaScriptModelException {
 		try {
 			IScanner scanner= ToolFactory.createScanner(false, false, false, false);
 			scanner.setSource(iInitializer.getSource().toCharArray());

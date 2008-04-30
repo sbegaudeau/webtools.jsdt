@@ -19,12 +19,12 @@ import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesAccess;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.IProfileVersioner;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class CleanUpProfileManager extends ProfileManager {
 	
 	public static KeySet[] KEY_SETS= {
-		new KeySet(JavaUI.ID_PLUGIN, new ArrayList(CleanUpConstants.getEclipseDefaultSettings().keySet()))		
+		new KeySet(JavaScriptUI.ID_PLUGIN, new ArrayList(CleanUpConstants.getEclipseDefaultSettings().keySet()))		
 	};
 	
 	private final PreferencesAccess fPreferencesAccess;
@@ -47,7 +47,7 @@ public class CleanUpProfileManager extends ProfileManager {
     protected void updateProfilesWithName(String oldName, Profile newProfile, boolean applySettings) {
         super.updateProfilesWithName(oldName, newProfile, applySettings);
         
-        IEclipsePreferences node= fPreferencesAccess.getInstanceScope().getNode(JavaUI.ID_PLUGIN);
+        IEclipsePreferences node= fPreferencesAccess.getInstanceScope().getNode(JavaScriptUI.ID_PLUGIN);
         String name= node.get(CleanUpConstants.CLEANUP_ON_SAVE_PROFILE, null);
         if (name != null && name.equals(oldName)) {
         	if (newProfile == null) {

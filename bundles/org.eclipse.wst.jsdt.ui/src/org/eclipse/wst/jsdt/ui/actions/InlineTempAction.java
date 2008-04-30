@@ -15,9 +15,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -75,7 +75,7 @@ public class InlineTempAction extends SelectionDispatchAction {
 	public void selectionChanged(JavaTextSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isInlineTempAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			setEnabled(false);
 		}
 	}
@@ -85,11 +85,11 @@ public class InlineTempAction extends SelectionDispatchAction {
 	 */		
 	public void run(ITextSelection selection) {
 		try{
-			ICompilationUnit input= SelectionConverter.getInputAsCompilationUnit(fEditor);
+			IJavaScriptUnit input= SelectionConverter.getInputAsCompilationUnit(fEditor);
 			if (!ActionUtil.isEditable(fEditor))
 				return;
 			RefactoringExecutionStarter.startInlineTempRefactoring(input, null, selection, getShell());
-		} catch (JavaModelException e){
+		} catch (JavaScriptModelException e){
 			ExceptionHandler.handle(e, RefactoringMessages.InlineTempAction_inline_temp, RefactoringMessages.NewTextRefactoringAction_exception); 
 		}	
 	}
@@ -108,12 +108,12 @@ public class InlineTempAction extends SelectionDispatchAction {
 		setEnabled(false);
 	}
 
-	/* package */ boolean tryInlineTemp(ICompilationUnit unit, CompilationUnit node, ITextSelection selection, Shell shell) {
+	/* package */ boolean tryInlineTemp(IJavaScriptUnit unit, JavaScriptUnit node, ITextSelection selection, Shell shell) {
 		try {
 			if (RefactoringExecutionStarter.startInlineTempRefactoring(unit, node, selection, shell)) {
 				return true;
 			}
-		} catch (JavaModelException exception) {
+		} catch (JavaScriptModelException exception) {
 			ExceptionHandler.handle(exception, RefactoringMessages.InlineTempAction_inline_temp, RefactoringMessages.NewTextRefactoringAction_exception); 
 		}
 		return false;

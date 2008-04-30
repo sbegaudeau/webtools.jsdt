@@ -21,9 +21,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.VariableBlock;
 
 public class ClasspathVariablesPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
@@ -39,7 +39,7 @@ public class ClasspathVariablesPreferencePage extends PreferencePage implements 
 	 * Constructor for ClasspathVariablesPreferencePage
 	 */
 	public ClasspathVariablesPreferencePage() {
-		setPreferenceStore(JavaPlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(JavaScriptPlugin.getDefault().getPreferenceStore());
 		fVariableBlock= new VariableBlock(true, null);
 		fStoredSettings= null;
 		
@@ -86,7 +86,7 @@ public class ClasspathVariablesPreferencePage extends PreferencePage implements 
 	 * @see PreferencePage#performOk()
 	 */
 	public boolean performOk() {
-		JavaPlugin.getDefault().savePluginPreferences();
+		JavaScriptPlugin.getDefault().savePluginPreferences();
 		return fVariableBlock.performOk();
 	}
 	
@@ -115,11 +115,11 @@ public class ClasspathVariablesPreferencePage extends PreferencePage implements 
 	
 	private String getCurrentSettings() {
 		StringBuffer buf= new StringBuffer();
-		String[] names= JavaCore.getClasspathVariableNames();
+		String[] names= JavaScriptCore.getIncludepathVariableNames();
 		for (int i= 0; i < names.length; i++) {
 			String curr= names[i];
 			buf.append(curr).append('\0');
-			IPath val= JavaCore.getClasspathVariable(curr);
+			IPath val= JavaScriptCore.getIncludepathVariable(curr);
 			if (val != null) {
 				buf.append(val.toString());
 			}

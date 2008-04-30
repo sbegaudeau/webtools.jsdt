@@ -16,12 +16,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JDTChange;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Change to create move targets during scripting of move refactorings.
@@ -67,14 +67,14 @@ public final class LoggedCreateTargetChange extends JDTChange {
 	 * {@inheritDoc}
 	 */
 	public RefactoringStatus isValid(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
-		if (fSelection instanceof IJavaElement) {
-			final IJavaElement element= (IJavaElement) fSelection;
+		if (fSelection instanceof IJavaScriptElement) {
+			final IJavaScriptElement element= (IJavaScriptElement) fSelection;
 			if (!Checks.isAvailable(element))
-				RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.RenameResourceChange_does_not_exist, JavaElementLabels.getTextLabel(fSelection, JavaElementLabels.ALL_DEFAULT)));
+				RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.RenameResourceChange_does_not_exist, JavaScriptElementLabels.getTextLabel(fSelection, JavaScriptElementLabels.ALL_DEFAULT)));
 		} else if (fSelection instanceof IResource) {
 			final IResource resource= (IResource) fSelection;
 			if (!resource.exists())
-				RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.RenameResourceChange_does_not_exist, JavaElementLabels.getTextLabel(fSelection, JavaElementLabels.ALL_DEFAULT)));
+				RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.RenameResourceChange_does_not_exist, JavaScriptElementLabels.getTextLabel(fSelection, JavaScriptElementLabels.ALL_DEFAULT)));
 		}
 		return new RefactoringStatus();
 	}

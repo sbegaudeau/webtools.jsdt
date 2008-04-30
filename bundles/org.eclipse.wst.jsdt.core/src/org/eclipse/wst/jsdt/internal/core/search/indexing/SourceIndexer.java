@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
@@ -52,7 +52,7 @@ public class SourceIndexer extends AbstractIndexer implements SuffixConstants {
 		if (parser == null) {
 			IPath path = new Path(documentPath);
 			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(path.segment(0));
-			parser = JavaModelManager.getJavaModelManager().indexManager.getSourceElementParser(JavaCore.create(project), requestor);
+			parser = JavaModelManager.getJavaModelManager().indexManager.getSourceElementParser(JavaScriptCore.create(project), requestor);
 		} else {
 			parser.requestor = requestor;
 		}

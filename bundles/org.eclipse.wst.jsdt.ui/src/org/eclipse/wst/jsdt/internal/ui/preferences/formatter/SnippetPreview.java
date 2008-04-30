@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 
 
@@ -62,9 +62,9 @@ public class SnippetPreview extends JavaPreview {
             try {
                 formattedSource= CodeFormatterUtil.format(snippet.kind, snippet.source, 0, null, delimiter, fWorkingValues);
             } catch (Exception e) {
-                final IStatus status= new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IJavaStatusConstants.INTERNAL_ERROR, 
+                final IStatus status= new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IJavaStatusConstants.INTERNAL_ERROR, 
                     FormatterMessages.JavaPreview_formatter_exception, e); 
-                JavaPlugin.log(status);
+                JavaScriptPlugin.log(status);
                 continue;
             }
             buffer.append(delimiter);            

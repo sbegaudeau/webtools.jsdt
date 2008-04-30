@@ -20,11 +20,11 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.IPropertiesFilePartitions;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFilePartitionScanner;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileSourceViewerConfiguration;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 /**
  * Properties file merge viewer.
@@ -48,14 +48,14 @@ public class PropertiesFileMergeViewer extends TextMergeViewer {
 	 */
 	protected void configureTextViewer(TextViewer textViewer) {
 		if (textViewer instanceof SourceViewer) {
-			JavaTextTools tools= JavaCompareUtilities.getJavaTextTools();			
+			JavaScriptTextTools tools= JavaCompareUtilities.getJavaTextTools();			
 			if (tools != null)
 				((SourceViewer)textViewer).configure(getSourceViewerConfiguration(tools));
 		}
 	}
 
-	private SourceViewerConfiguration getSourceViewerConfiguration(JavaTextTools textTools) {
-		IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
+	private SourceViewerConfiguration getSourceViewerConfiguration(JavaScriptTextTools textTools) {
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 		return new PropertiesFileSourceViewerConfiguration(textTools.getColorManager(), store, null, getDocumentPartitioning());
 	}
 

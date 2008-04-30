@@ -14,7 +14,7 @@
 package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 
 
 abstract class SearchScopeAction extends Action {
@@ -25,7 +25,7 @@ abstract class SearchScopeAction extends Action {
 		this.fGroup = group;
 	}
 	
-	public abstract IJavaSearchScope getSearchScope();
+	public abstract IJavaScriptSearchScope getSearchScope();
 	
 	public abstract int getSearchScopeType();
 	

@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
@@ -50,7 +50,7 @@ import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
@@ -58,13 +58,13 @@ import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
 import org.eclipse.wst.jsdt.core.dom.ListExpression;
 import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
@@ -497,7 +497,7 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		process(info, node.getAnonymousClassDeclaration());
 	}
 	
-	public void endVisit(CompilationUnit node) {
+	public void endVisit(JavaScriptUnit node) {
 		if (skipNode(node))
 			return;
 		GenericSequentialFlowInfo info= processSequential(node, node.imports());
@@ -646,7 +646,7 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		assignFlowInfo(node, node.getBody());
 	}
 	
-	public void endVisit(Javadoc node) {
+	public void endVisit(JSdoc node) {
 		// no influence on flow analysis
 	}
 	
@@ -685,7 +685,7 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		
 	}
 	
-	public void endVisit(MethodDeclaration node) {
+	public void endVisit(FunctionDeclaration node) {
 		if (skipNode(node))
 			return;
 		GenericSequentialFlowInfo info= processSequential(node, node.getReturnType2());
@@ -694,7 +694,7 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		process(info, node.getBody());
 	}
 	
-	public void endVisit(MethodInvocation node) {
+	public void endVisit(FunctionInvocation node) {
 		endVisitMethodInvocation(node, node.getExpression(), node.arguments(), getMethodBinding(node.getName()));
 	}
 	
@@ -962,7 +962,7 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		assignFlowInfo(node, node.getBound());
 	}
 	
-	private void endVisitMethodInvocation(ASTNode node, ASTNode receiver, List arguments, IMethodBinding binding) {
+	private void endVisitMethodInvocation(ASTNode node, ASTNode receiver, List arguments, IFunctionBinding binding) {
 		if (skipNode(node))
 			return;
 		MessageSendFlowInfo info= createMessageSendFlowInfo();
@@ -993,12 +993,12 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		}
 	}
 	
-	private IMethodBinding getMethodBinding(Name name) {
+	private IFunctionBinding getMethodBinding(Name name) {
 		if (name == null)
 			return null;
 		IBinding binding= name.resolveBinding();
-		if (binding instanceof IMethodBinding)
-			return (IMethodBinding)binding;
+		if (binding instanceof IFunctionBinding)
+			return (IFunctionBinding)binding;
 		return null;
 	}		
 }

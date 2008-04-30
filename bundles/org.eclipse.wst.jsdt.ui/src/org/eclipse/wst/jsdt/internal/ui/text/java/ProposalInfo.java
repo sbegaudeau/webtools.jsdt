@@ -16,12 +16,12 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavaDoc2HTMLTextReader;
-import org.eclipse.wst.jsdt.ui.JavadocContentAccess;
+import org.eclipse.wst.jsdt.ui.JSdocContentAccess;
 
 
 public class ProposalInfo {
@@ -29,7 +29,7 @@ public class ProposalInfo {
 	private boolean fJavadocResolved= false;
 	private String fJavadoc= null;
 
-	protected IJavaElement fElement;
+	protected IJavaScriptElement fElement;
 
 	public ProposalInfo(IMember member) {
 		fElement= member;
@@ -39,7 +39,7 @@ public class ProposalInfo {
 		fElement= null;
 	}
 
-	public IJavaElement getJavaElement() throws JavaModelException {
+	public IJavaScriptElement getJavaElement() throws JavaScriptModelException {
 		return fElement;
 	}
 
@@ -67,15 +67,15 @@ public class ProposalInfo {
 	 */
 	private String computeInfo(IProgressMonitor monitor) {
 		try {
-			final IJavaElement javaElement= getJavaElement();
+			final IJavaScriptElement javaElement= getJavaElement();
 			if (javaElement instanceof IMember) {
 				IMember member= (IMember) javaElement;
 				return extractJavadoc(member, monitor);
 			}
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 		} catch (IOException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		return null;
 	}
@@ -88,10 +88,10 @@ public class ProposalInfo {
 	 * @param monitor a progress monitor
 	 * @return the javadoc for <code>member</code> or <code>null</code> if
 	 *         it is not available
-	 * @throws JavaModelException if accessing the javadoc fails
+	 * @throws JavaScriptModelException if accessing the javadoc fails
 	 * @throws IOException if reading the javadoc fails
 	 */
-	private String extractJavadoc(IMember member, IProgressMonitor monitor) throws JavaModelException, IOException {
+	private String extractJavadoc(IMember member, IProgressMonitor monitor) throws JavaScriptModelException, IOException {
 		if (member != null) {
 			Reader reader=  getHTMLContentReader(member, monitor);
 			if (reader != null)
@@ -100,8 +100,8 @@ public class ProposalInfo {
 		return null;
 	}
 
-	private Reader getHTMLContentReader(IMember member, IProgressMonitor monitor) throws JavaModelException {
-	    Reader contentReader= JavadocContentAccess.getContentReader(member, true);
+	private Reader getHTMLContentReader(IMember member, IProgressMonitor monitor) throws JavaScriptModelException {
+	    Reader contentReader= JSdocContentAccess.getContentReader(member, true);
         if (contentReader != null)
         	return new JavaDoc2HTMLTextReader(contentReader);
         

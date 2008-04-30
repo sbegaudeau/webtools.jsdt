@@ -35,15 +35,15 @@ import org.eclipse.ltk.core.refactoring.TextFileChange;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.IExtendedModifier;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
@@ -70,7 +70,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParse
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.SelectionAwareSourceRangeComputer;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Surround a set of statements with a try/catch block.
@@ -91,25 +91,25 @@ public class SurroundWithTryCatchRefactoring extends Refactoring {
 	private SurroundWithTryCatchAnalyzer fAnalyzer;
 	private boolean fLeaveDirty;
 
-	private ICompilationUnit fCUnit;
-	private CompilationUnit fRootNode;
+	private IJavaScriptUnit fCUnit;
+	private JavaScriptUnit fRootNode;
 	private ASTRewrite fRewriter;
 	private ImportRewrite fImportRewrite;
 	private CodeScopeBuilder.Scope fScope;
 	private ASTNode[] fSelectedNodes;
 
-	private SurroundWithTryCatchRefactoring(ICompilationUnit cu, Selection selection, ISurroundWithTryCatchQuery query) {
+	private SurroundWithTryCatchRefactoring(IJavaScriptUnit cu, Selection selection, ISurroundWithTryCatchQuery query) {
 		fCUnit= cu;
 		fSelection= selection;
 		fQuery= query;
 		fLeaveDirty= false;
 	}
 
-	public static SurroundWithTryCatchRefactoring create(ICompilationUnit cu, ITextSelection selection, ISurroundWithTryCatchQuery query) {
+	public static SurroundWithTryCatchRefactoring create(IJavaScriptUnit cu, ITextSelection selection, ISurroundWithTryCatchQuery query) {
 		return new SurroundWithTryCatchRefactoring(cu, Selection.createFromStartLength(selection.getOffset(), selection.getLength()), query);
 	}
 		
-	public static SurroundWithTryCatchRefactoring create(ICompilationUnit cu, int offset, int length, ISurroundWithTryCatchQuery query) {
+	public static SurroundWithTryCatchRefactoring create(IJavaScriptUnit cu, int offset, int length, ISurroundWithTryCatchQuery query) {
 		return new SurroundWithTryCatchRefactoring(cu, Selection.createFromStartLength(offset, length), query);
 	}
 
@@ -131,7 +131,7 @@ public class SurroundWithTryCatchRefactoring extends Refactoring {
 		return RefactoringCoreMessages.SurroundWithTryCatchRefactoring_name; 
 	}
 
-	public RefactoringStatus checkActivationBasics(CompilationUnit rootNode) throws JavaModelException {
+	public RefactoringStatus checkActivationBasics(JavaScriptUnit rootNode) throws JavaScriptModelException {
 		RefactoringStatus result= new RefactoringStatus();
 		fRootNode= rootNode;
 			
@@ -146,7 +146,7 @@ public class SurroundWithTryCatchRefactoring extends Refactoring {
 	 * @see Refactoring#checkActivation(IProgressMonitor)
 	 */
 	public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException {
-		CompilationUnit rootNode= new RefactoringASTParser(AST.JLS3).parse(fCUnit, true, pm);
+		JavaScriptUnit rootNode= new RefactoringASTParser(AST.JLS3).parse(fCUnit, true, pm);
 		return checkActivationBasics(rootNode);
 	}
 
@@ -155,7 +155,7 @@ public class SurroundWithTryCatchRefactoring extends Refactoring {
 	 */
 	public RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws CoreException {
 		return Checks.validateModifiesFiles(
-			ResourceUtil.getFiles(new ICompilationUnit[]{fCUnit}),
+			ResourceUtil.getFiles(new IJavaScriptUnit[]{fCUnit}),
 			getValidationContext());
 	}
 
@@ -195,12 +195,12 @@ public class SurroundWithTryCatchRefactoring extends Refactoring {
 				root.addChild(edit);
 				result.addTextEditGroup(new TextEditGroup(NN, new TextEdit[] {edit} ));
 			}
-			TextEdit change= fRewriter.rewriteAST(document, fCUnit.getJavaProject().getOptions(true));
+			TextEdit change= fRewriter.rewriteAST(document, fCUnit.getJavaScriptProject().getOptions(true));
 			root.addChild(change);
 			result.addTextEditGroup(new TextEditGroup(NN, new TextEdit[] {change} ));
 			return result;
 		} catch (BadLocationException e) {
-			throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR,
+			throw new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.ERROR,
 				e.getMessage(), e));
 		} finally {
 			bufferManager.disconnect(path, LocationKind.IFILE, new SubProgressMonitor(pm, 1));
@@ -223,7 +223,7 @@ public class SurroundWithTryCatchRefactoring extends Refactoring {
 			CatchClause catchClause= getAST().newCatchClause();
 			tryStatement.catchClauses().add(catchClause);
 			SingleVariableDeclaration decl= getAST().newSingleVariableDeclaration();
-			String varName= StubUtility.getExceptionVariableName(fCUnit.getJavaProject());
+			String varName= StubUtility.getExceptionVariableName(fCUnit.getJavaScriptProject());
 			
 			String name= fScope.createName(varName, false);
 			decl.setName(getAST().newSimpleName(name));
@@ -264,7 +264,7 @@ public class SurroundWithTryCatchRefactoring extends Refactoring {
 						fragment.setInitializer(ASTNodeFactory.newDefaultExpression(ast, binding.getType()));
 					}
 				}
-				CompilationUnit root= (CompilationUnit)statement.getRoot();
+				JavaScriptUnit root= (JavaScriptUnit)statement.getRoot();
 				int extendedStart= root.getExtendedStartPosition(statement);
 				// we have a leading comment and the comment is covered by the selection
 				if (extendedStart != statement.getStartPosition() && extendedStart >= fSelection.getOffset()) {

@@ -25,7 +25,7 @@ import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings;
 import org.eclipse.wst.jsdt.internal.ui.text.AbstractJavaScanner;
 import org.eclipse.wst.jsdt.internal.ui.text.CombinedWordRule;
@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.JavaWhitespaceDetector;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaWordDetector;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
-import org.eclipse.wst.jsdt.ui.text.IJavaColorConstants;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptColorConstants;
 
 
 /**
@@ -279,10 +279,10 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 //		 *        <code>'@\s*interface'</code> is matched
 //		 * @param atToken the token to return if <code>'@'</code>
 //		 *        is matched, but not <code>'@\s*interface'</code>
-//		 * @param version the lowest <code>JavaCore.COMPILER_SOURCE</code>
+//		 * @param version the lowest <code>JavaScriptCore.COMPILER_SOURCE</code>
 //		 *        version that this rule is enabled
 //		 * @param currentVersion the current
-//		 *        <code>JavaCore.COMPILER_SOURCE</code> version
+//		 *        <code>JavaScriptCore.COMPILER_SOURCE</code> version
 //		 */
 //		public AnnotationRule(IToken interfaceToken, Token atToken, String version, String currentVersion) {
 //			fInterfaceToken= interfaceToken;
@@ -354,7 +354,7 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 //
 //	}
 
-	private static final String SOURCE_VERSION= JavaCore.COMPILER_SOURCE;
+	private static final String SOURCE_VERSION= JavaScriptCore.COMPILER_SOURCE;
 
 	static String[] fgKeywords= {
 		"abstract", //$NON-NLS-1$
@@ -386,12 +386,12 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 	private static final String ANNOTATION_COLOR_KEY= ANNOTATION_BASE_KEY + PreferenceConstants.EDITOR_SEMANTIC_HIGHLIGHTING_COLOR_SUFFIX;
 
 	private static String[] fgTokenProperties= {
-		IJavaColorConstants.JAVA_KEYWORD,
-		IJavaColorConstants.JAVA_STRING,
-		IJavaColorConstants.JAVA_DEFAULT,
-		IJavaColorConstants.JAVA_KEYWORD_RETURN,
-		IJavaColorConstants.JAVA_OPERATOR,
-		IJavaColorConstants.JAVA_BRACKET,
+		IJavaScriptColorConstants.JAVA_KEYWORD,
+		IJavaScriptColorConstants.JAVA_STRING,
+		IJavaScriptColorConstants.JAVA_DEFAULT,
+		IJavaScriptColorConstants.JAVA_KEYWORD_RETURN,
+		IJavaScriptColorConstants.JAVA_OPERATOR,
+		IJavaScriptColorConstants.JAVA_BRACKET,
 		ANNOTATION_COLOR_KEY,
 	};
 
@@ -423,7 +423,7 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 		List rules= new ArrayList();
 
 		// Add rule for character constants.
-		Token token= getToken(IJavaColorConstants.JAVA_STRING);
+		Token token= getToken(IJavaScriptColorConstants.JAVA_STRING);
 		rules.add(new SingleLineRule("'", "'", token, '\\')); //$NON-NLS-2$ //$NON-NLS-1$
 
 
@@ -434,28 +434,28 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 
 		// Add JLS3 rule for /@\s*interface/ and /@\s*\w+/
 //		token= getToken(ANNOTATION_COLOR_KEY);
-//		AnnotationRule atInterfaceRule= new AnnotationRule(getToken(IJavaColorConstants.JAVA_KEYWORD), token, JavaCore.VERSION_1_5, version);
+//		AnnotationRule atInterfaceRule= new AnnotationRule(getToken(IJavaScriptColorConstants.JAVA_KEYWORD), token, JavaScriptCore.VERSION_1_5, version);
 //		rules.add(atInterfaceRule);
 //		fVersionDependentRules.add(atInterfaceRule);
 
 		// Add word rule for new keywords, 4077
 		JavaWordDetector wordDetector= new JavaWordDetector();
-		token= getToken(IJavaColorConstants.JAVA_DEFAULT);
+		token= getToken(IJavaScriptColorConstants.JAVA_DEFAULT);
 		CombinedWordRule combinedWordRule= new CombinedWordRule(wordDetector, token);
 
-		token= getToken(IJavaColorConstants.JAVA_DEFAULT);
-		VersionedWordMatcher j14Matcher= new VersionedWordMatcher(token, JavaCore.VERSION_1_4, version);
+		token= getToken(IJavaScriptColorConstants.JAVA_DEFAULT);
+		VersionedWordMatcher j14Matcher= new VersionedWordMatcher(token, JavaScriptCore.VERSION_1_4, version);
 
-		token= getToken(IJavaColorConstants.JAVA_KEYWORD);
+		token= getToken(IJavaScriptColorConstants.JAVA_KEYWORD);
 		for (int i=0; i<fgJava14Keywords.length; i++)
 			j14Matcher.addWord(fgJava14Keywords[i], token);
 
 		combinedWordRule.addWordMatcher(j14Matcher);
 		fVersionDependentRules.add(j14Matcher);
 
-		token= getToken(IJavaColorConstants.JAVA_DEFAULT);
-		VersionedWordMatcher j15Matcher= new VersionedWordMatcher(token, JavaCore.VERSION_1_5, version);
-		token= getToken(IJavaColorConstants.JAVA_KEYWORD);
+		token= getToken(IJavaScriptColorConstants.JAVA_DEFAULT);
+		VersionedWordMatcher j15Matcher= new VersionedWordMatcher(token, JavaScriptCore.VERSION_1_5, version);
+		token= getToken(IJavaScriptColorConstants.JAVA_KEYWORD);
 		for (int i=0; i<fgJava15Keywords.length; i++)
 			j15Matcher.addWord(fgJava15Keywords[i], token);
 
@@ -463,22 +463,22 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 		fVersionDependentRules.add(j15Matcher);
 
 		// Add rule for operators
-		token= getToken(IJavaColorConstants.JAVA_OPERATOR);
+		token= getToken(IJavaScriptColorConstants.JAVA_OPERATOR);
 		rules.add(new OperatorRule(token));
 
 		// Add rule for brackets
-		token= getToken(IJavaColorConstants.JAVA_BRACKET);
+		token= getToken(IJavaScriptColorConstants.JAVA_BRACKET);
 		rules.add(new BracketRule(token));
 
 		// Add word rule for keyword 'return'.
 		CombinedWordRule.WordMatcher returnWordRule= new CombinedWordRule.WordMatcher();
-		token= getToken(IJavaColorConstants.JAVA_KEYWORD_RETURN);
+		token= getToken(IJavaScriptColorConstants.JAVA_KEYWORD_RETURN);
 		returnWordRule.addWord(RETURN, token);  
 		combinedWordRule.addWordMatcher(returnWordRule);
 
 		// Add word rule for keywords, types, and constants.
 		CombinedWordRule.WordMatcher wordRule= new CombinedWordRule.WordMatcher();
-		token= getToken(IJavaColorConstants.JAVA_KEYWORD);
+		token= getToken(IJavaScriptColorConstants.JAVA_KEYWORD);
 		for (int i=0; i<fgKeywords.length; i++)
 			wordRule.addWord(fgKeywords[i], token);
 		for (int i=0; i<fgTypes.length; i++)
@@ -490,7 +490,7 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 
 		rules.add(combinedWordRule);
 
-		setDefaultReturnToken(getToken(IJavaColorConstants.JAVA_DEFAULT));
+		setDefaultReturnToken(getToken(IJavaScriptColorConstants.JAVA_DEFAULT));
 		return rules;
 	}
 	

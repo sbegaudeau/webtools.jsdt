@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the change method signature refactoring.
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class ChangeMethodSignatureDescriptor extends JavaRefactoringDescriptor {
+public final class ChangeMethodSignatureDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public ChangeMethodSignatureDescriptor() {
-		super(IJavaRefactorings.CHANGE_METHOD_SIGNATURE);
+		super(IJavaScriptRefactorings.CHANGE_METHOD_SIGNATURE);
 	}
 }

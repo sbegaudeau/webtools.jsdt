@@ -13,8 +13,8 @@ package org.eclipse.wst.jsdt.core.dom;
 
 import java.util.List;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
@@ -103,7 +103,7 @@ class RecoveredTypeBinding implements ITypeBinding {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getDeclaredMethods()
 	 */
-	public IMethodBinding[] getDeclaredMethods() {
+	public IFunctionBinding[] getDeclaredMethods() {
 		return TypeBinding.NO_METHOD_BINDINGS;
 	}
 
@@ -131,7 +131,7 @@ class RecoveredTypeBinding implements ITypeBinding {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getDeclaringMethod()
 	 */
-	public IMethodBinding getDeclaringMethod() {
+	public IFunctionBinding getDeclaringMethod() {
 		return null;
 	}
 
@@ -493,10 +493,10 @@ class RecoveredTypeBinding implements ITypeBinding {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.IBinding#getJavaElement()
 	 */
-	public IJavaElement getJavaElement() {
+	public IJavaScriptElement getJavaElement() {
 		try {
 			return new CompilationUnit(null, this.getInternalName(), this.resolver.getWorkingCopyOwner()).getWorkingCopy(this.resolver.getWorkingCopyOwner(), null);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			//ignore
 		}
 		return null;

@@ -28,17 +28,17 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
@@ -55,10 +55,10 @@ public class ReorgUtils {
 	private ReorgUtils() {
 	}
 
-	public static boolean isArchiveMember(IJavaElement[] elements) {
+	public static boolean isArchiveMember(IJavaScriptElement[] elements) {
 		for (int i= 0; i < elements.length; i++) {
-			IJavaElement element= elements[i];
-			IPackageFragmentRoot root= (IPackageFragmentRoot)element.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+			IJavaScriptElement element= elements[i];
+			IPackageFragmentRoot root= (IPackageFragmentRoot)element.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 			if (root != null && root.isArchive())
 				return true;
 		}
@@ -76,51 +76,51 @@ public class ReorgUtils {
 	}
 	
 	public static boolean isProject(Object element){
-		return (element instanceof IJavaProject) || (element instanceof IProject);
+		return (element instanceof IJavaScriptProject) || (element instanceof IProject);
 	}
 
-	public static boolean isInsideCompilationUnit(IJavaElement element) {
-		return 	!(element instanceof ICompilationUnit) && 
-				hasAncestorOfType(element, IJavaElement.COMPILATION_UNIT);
+	public static boolean isInsideCompilationUnit(IJavaScriptElement element) {
+		return 	!(element instanceof IJavaScriptUnit) && 
+				hasAncestorOfType(element, IJavaScriptElement.JAVASCRIPT_UNIT);
 	}
 	
-	public static boolean isInsideClassFile(IJavaElement element) {
+	public static boolean isInsideClassFile(IJavaScriptElement element) {
 		return 	!(element instanceof IClassFile) && 
-				hasAncestorOfType(element, IJavaElement.CLASS_FILE);
+				hasAncestorOfType(element, IJavaScriptElement.CLASS_FILE);
 	}
 	
-	public static boolean hasAncestorOfType(IJavaElement element, int type){
+	public static boolean hasAncestorOfType(IJavaScriptElement element, int type){
 		return element.getAncestor(type) != null;
 	}
 	
 	/**
 	 * May be <code>null</code>.
 	 */
-	public static ICompilationUnit getCompilationUnit(IJavaElement javaElement){
-		if (javaElement instanceof ICompilationUnit)
-			return (ICompilationUnit) javaElement;
-		return (ICompilationUnit) javaElement.getAncestor(IJavaElement.COMPILATION_UNIT);
+	public static IJavaScriptUnit getCompilationUnit(IJavaScriptElement javaElement){
+		if (javaElement instanceof IJavaScriptUnit)
+			return (IJavaScriptUnit) javaElement;
+		return (IJavaScriptUnit) javaElement.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 	}
 
 	/**
 	 * some of the returned elements may be <code>null</code>.
 	 */
-	public static ICompilationUnit[] getCompilationUnits(IJavaElement[] javaElements){
-		ICompilationUnit[] result= new ICompilationUnit[javaElements.length];
+	public static IJavaScriptUnit[] getCompilationUnits(IJavaScriptElement[] javaElements){
+		IJavaScriptUnit[] result= new IJavaScriptUnit[javaElements.length];
 		for (int i= 0; i < javaElements.length; i++) {
 			result[i]= getCompilationUnit(javaElements[i]);
 		}
 		return result;
 	}
 		
-	public static IResource getResource(IJavaElement element){
-		if (element instanceof ICompilationUnit)
-			return ((ICompilationUnit)element).getPrimary().getResource();
+	public static IResource getResource(IJavaScriptElement element){
+		if (element instanceof IJavaScriptUnit)
+			return ((IJavaScriptUnit)element).getPrimary().getResource();
 		else
 			return element.getResource();
 	}
 	
-	public static IResource[] getResources(IJavaElement[] elements) {
+	public static IResource[] getResources(IJavaScriptElement[] elements) {
 		IResource[] result= new IResource[elements.length];
 		for (int i= 0; i < elements.length; i++) {
 			result[i]= ReorgUtils.getResource(elements[i]);
@@ -152,40 +152,40 @@ public class ReorgUtils {
 		return new String[]{resource.getName()};
 	}
 
-	public static String getName(IJavaElement element) throws JavaModelException {
+	public static String getName(IJavaScriptElement element) throws JavaScriptModelException {
 		String pattern= createNamePattern(element);
 		String[] args= createNameArguments(element);
 		return Messages.format(pattern, args);
 	}
 
-	private static String[] createNameArguments(IJavaElement element) throws JavaModelException {
+	private static String[] createNameArguments(IJavaScriptElement element) throws JavaScriptModelException {
 		switch(element.getElementType()){
-			case IJavaElement.CLASS_FILE:
+			case IJavaScriptElement.CLASS_FILE:
 				return new String[]{element.getElementName()};
-			case IJavaElement.COMPILATION_UNIT:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
 				return new String[]{element.getElementName()};
-			case IJavaElement.FIELD:
+			case IJavaScriptElement.FIELD:
 				return new String[]{element.getElementName()};
-			case IJavaElement.IMPORT_CONTAINER:
+			case IJavaScriptElement.IMPORT_CONTAINER:
 				return new String[0];
-			case IJavaElement.IMPORT_DECLARATION:
+			case IJavaScriptElement.IMPORT_DECLARATION:
 				return new String[]{element.getElementName()};
-			case IJavaElement.INITIALIZER:
+			case IJavaScriptElement.INITIALIZER:
 				return new String[0];
-			case IJavaElement.JAVA_PROJECT:
+			case IJavaScriptElement.JAVASCRIPT_PROJECT:
 				return new String[]{element.getElementName()};
-			case IJavaElement.METHOD:
+			case IJavaScriptElement.METHOD:
 				return new String[]{element.getElementName()};
-			case IJavaElement.PACKAGE_DECLARATION:
+			case IJavaScriptElement.PACKAGE_DECLARATION:
 				if (JavaElementUtil.isDefaultPackage(element))
 					return new String[0];
 				else
 					return new String[]{element.getElementName()};
-			case IJavaElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				return new String[]{element.getElementName()};
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 				return new String[]{element.getElementName()};
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				IType type= (IType)element;
 				String name= type.getElementName();
 				if (name.length() == 0 && type.isAnonymous()) {
@@ -199,41 +199,41 @@ public class ReorgUtils {
 		}
 	}
 
-	private static String createNamePattern(IJavaElement element) throws JavaModelException {
+	private static String createNamePattern(IJavaScriptElement element) throws JavaScriptModelException {
 		switch(element.getElementType()){
-			case IJavaElement.CLASS_FILE:
+			case IJavaScriptElement.CLASS_FILE:
 				return RefactoringCoreMessages.ReorgUtils_3; 
-			case IJavaElement.COMPILATION_UNIT:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
 				return RefactoringCoreMessages.ReorgUtils_4; 
-			case IJavaElement.FIELD:
+			case IJavaScriptElement.FIELD:
 				return RefactoringCoreMessages.ReorgUtils_5; 
-			case IJavaElement.IMPORT_CONTAINER:
+			case IJavaScriptElement.IMPORT_CONTAINER:
 				return RefactoringCoreMessages.ReorgUtils_6; 
-			case IJavaElement.IMPORT_DECLARATION:
+			case IJavaScriptElement.IMPORT_DECLARATION:
 				return RefactoringCoreMessages.ReorgUtils_7; 
-			case IJavaElement.INITIALIZER:
+			case IJavaScriptElement.INITIALIZER:
 				return RefactoringCoreMessages.ReorgUtils_8; 
-			case IJavaElement.JAVA_PROJECT:
+			case IJavaScriptElement.JAVASCRIPT_PROJECT:
 				return RefactoringCoreMessages.ReorgUtils_9; 
-			case IJavaElement.METHOD:
-				if (((IMethod)element).isConstructor())
+			case IJavaScriptElement.METHOD:
+				if (((IFunction)element).isConstructor())
 					return RefactoringCoreMessages.ReorgUtils_10; 
 				else
 					return RefactoringCoreMessages.ReorgUtils_11; 
-			case IJavaElement.PACKAGE_DECLARATION:
+			case IJavaScriptElement.PACKAGE_DECLARATION:
 				return RefactoringCoreMessages.ReorgUtils_12; 
-			case IJavaElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				if (JavaElementUtil.isDefaultPackage(element))
 					return RefactoringCoreMessages.ReorgUtils_13; 
 				else
 					return RefactoringCoreMessages.ReorgUtils_14; 
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 				if (isSourceFolder(element))
 					return RefactoringCoreMessages.ReorgUtils_15; 
 				if (isClassFolder(element))
 					return RefactoringCoreMessages.ReorgUtils_16; 
 				return RefactoringCoreMessages.ReorgUtils_17; 
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				IType type= (IType)element;
 				if (type.getElementName().length() == 0 && type.isAnonymous())
 					return RefactoringCoreMessages.ReorgUtils_20; 
@@ -254,14 +254,14 @@ public class ReorgUtils {
 		return (IResource[]) resources.toArray(new IResource[resources.size()]);
 	}
 
-	public static IJavaElement[] getJavaElements(List elements) {
+	public static IJavaScriptElement[] getJavaElements(List elements) {
 		List resources= new ArrayList(elements.size());
 		for (Iterator iter= elements.iterator(); iter.hasNext();) {
 			Object element= iter.next();
-			if (element instanceof IJavaElement)
+			if (element instanceof IJavaScriptElement)
 				resources.add(element);
 		}
-		return (IJavaElement[]) resources.toArray(new IJavaElement[resources.size()]);
+		return (IJavaScriptElement[]) resources.toArray(new IJavaScriptElement[resources.size()]);
 	}
 	
 	public static IWorkingSet[] getWorkingSets(List elements) {
@@ -275,7 +275,7 @@ public class ReorgUtils {
 		return (IWorkingSet[])result.toArray(new IWorkingSet[result.size()]);
 	}
 
-	public static boolean hasSourceAvailable(IMember member) throws JavaModelException{
+	public static boolean hasSourceAvailable(IMember member) throws JavaScriptModelException{
 		return ! member.isBinary() || 
 				(member.getSourceRange() != null && ! fgUnknownRange.equals(member.getSourceRange()));
 	}
@@ -287,18 +287,18 @@ public class ReorgUtils {
 		return (IResource[]) setMinus.toArray(new IResource[setMinus.size()]);		
 	}
 
-	public static IJavaElement[] setMinus(IJavaElement[] setToRemoveFrom, IJavaElement[] elementsToRemove) {
+	public static IJavaScriptElement[] setMinus(IJavaScriptElement[] setToRemoveFrom, IJavaScriptElement[] elementsToRemove) {
 		Set setMinus= new HashSet(setToRemoveFrom.length - setToRemoveFrom.length);
 		setMinus.addAll(Arrays.asList(setToRemoveFrom));
 		setMinus.removeAll(Arrays.asList(elementsToRemove));
-		return (IJavaElement[]) setMinus.toArray(new IJavaElement[setMinus.size()]);		
+		return (IJavaScriptElement[]) setMinus.toArray(new IJavaScriptElement[setMinus.size()]);		
 	}
 	
-	public static IJavaElement[] union(IJavaElement[] set1, IJavaElement[] set2) {
+	public static IJavaScriptElement[] union(IJavaScriptElement[] set1, IJavaScriptElement[] set2) {
 		List union= new ArrayList(set1.length + set2.length);//use lists to avoid sequence problems
 		addAll(set1, union);
 		addAll(set2, union);
-		return (IJavaElement[]) union.toArray(new IJavaElement[union.size()]);
+		return (IJavaScriptElement[]) union.toArray(new IJavaScriptElement[union.size()]);
 	}	
 
 	public static IResource[] union(IResource[] set1, IResource[] set2) {
@@ -322,10 +322,10 @@ public class ReorgUtils {
 		return union;
 	}
 
-	public static IType[] getMainTypes(IJavaElement[] javaElements) throws JavaModelException {
+	public static IType[] getMainTypes(IJavaScriptElement[] javaElements) throws JavaScriptModelException {
 		List result= new ArrayList();
 		for (int i= 0; i < javaElements.length; i++) {
-			IJavaElement element= javaElements[i];
+			IJavaScriptElement element= javaElements[i];
 			if (element instanceof IType && JavaElementUtil.isMainType((IType)element))
 				result.add(element);
 		}
@@ -354,7 +354,7 @@ public class ReorgUtils {
 	
 	//the result can be cast down to the requested type array
 	//type is _not_ a mask	
-	public static List getElementsOfType(IJavaElement[] javaElements, int type){
+	public static List getElementsOfType(IJavaScriptElement[] javaElements, int type){
 		List result= new ArrayList(javaElements.length);
 		for (int i= 0; i < javaElements.length; i++) {
 			if (isOfType(javaElements[i], type))
@@ -373,9 +373,9 @@ public class ReorgUtils {
 	}
 
 	//type is _not_ a mask	
-	public static boolean hasElementsNotOfType(IJavaElement[] javaElements, int type) {
+	public static boolean hasElementsNotOfType(IJavaScriptElement[] javaElements, int type) {
 		for (int i= 0; i < javaElements.length; i++) {
-			IJavaElement element= javaElements[i];
+			IJavaScriptElement element= javaElements[i];
 			if (element != null && ! isOfType(element, type))
 				return true;
 		}
@@ -383,16 +383,16 @@ public class ReorgUtils {
 	}
 	
 	//type is _not_ a mask	
-	public static boolean hasElementsOfType(IJavaElement[] javaElements, int type) {
+	public static boolean hasElementsOfType(IJavaScriptElement[] javaElements, int type) {
 		for (int i= 0; i < javaElements.length; i++) {
-			IJavaElement element= javaElements[i];
+			IJavaScriptElement element= javaElements[i];
 			if (element != null && isOfType(element, type))
 				return true;
 		}
 		return false;
 	}
 
-	public static boolean hasElementsOfType(IJavaElement[] javaElements, int[] types) {
+	public static boolean hasElementsOfType(IJavaScriptElement[] javaElements, int[] types) {
 		for (int i= 0; i < types.length; i++) {
 			if (hasElementsOfType(javaElements, types[i])) return true;
 		}
@@ -408,7 +408,7 @@ public class ReorgUtils {
 		return false;
 	}
 
-	private static boolean isOfType(IJavaElement element, int type) {
+	private static boolean isOfType(IJavaScriptElement element, int type) {
 		return element.getElementType() == type;//this is _not_ a mask
 	}
 		
@@ -420,17 +420,17 @@ public class ReorgUtils {
 		return (flags & flag) != 0;
 	}
 
-	public static boolean isSourceFolder(IJavaElement javaElement) throws JavaModelException {
+	public static boolean isSourceFolder(IJavaScriptElement javaElement) throws JavaScriptModelException {
 		return (javaElement instanceof IPackageFragmentRoot) &&
 				((IPackageFragmentRoot)javaElement).getKind() == IPackageFragmentRoot.K_SOURCE;
 	}
 	
-	public static boolean isClassFolder(IJavaElement javaElement) throws JavaModelException {
+	public static boolean isClassFolder(IJavaScriptElement javaElement) throws JavaScriptModelException {
 		return (javaElement instanceof IPackageFragmentRoot) &&
 				((IPackageFragmentRoot)javaElement).getKind() == IPackageFragmentRoot.K_BINARY;
 	}
 	
-	public static boolean isPackageFragmentRoot(IJavaProject javaProject) throws JavaModelException{
+	public static boolean isPackageFragmentRoot(IJavaScriptProject javaProject) throws JavaScriptModelException{
 		return getCorrespondingPackageFragmentRoot(javaProject) != null;
 	}
 	
@@ -438,7 +438,7 @@ public class ReorgUtils {
 		return root.getResource() instanceof IProject;
 	}
 
-	public static IPackageFragmentRoot getCorrespondingPackageFragmentRoot(IJavaProject p) throws JavaModelException {
+	public static IPackageFragmentRoot getCorrespondingPackageFragmentRoot(IJavaScriptProject p) throws JavaScriptModelException {
 		IPackageFragmentRoot[] roots= p.getPackageFragmentRoots();
 		for (int i= 0; i < roots.length; i++) {
 			if (isPackageFragmentRootCorrespondingToProject(roots[i]))
@@ -454,7 +454,7 @@ public class ReorgUtils {
 		return false;
 	}
 	
-	public static boolean containsLinkedResources(IJavaElement[] javaElements){
+	public static boolean containsLinkedResources(IJavaScriptElement[] javaElements){
 		for (int i= 0; i < javaElements.length; i++) {
 			IResource res= getResource(javaElements[i]);
 			if (res != null && res.isLinked()) return true;
@@ -466,10 +466,10 @@ public class ReorgUtils {
 		return resource.isAccessible() && resource instanceof IProject;
 	}
 
-	public static boolean canBeDestinationForLinkedResources(IJavaElement javaElement) {
+	public static boolean canBeDestinationForLinkedResources(IJavaScriptElement javaElement) {
 		if (javaElement instanceof IPackageFragmentRoot){
 			return isPackageFragmentRootCorrespondingToProject((IPackageFragmentRoot)javaElement);
-		} else if (javaElement instanceof IJavaProject){
+		} else if (javaElement instanceof IJavaScriptProject){
 			return true;//XXX ???
 		} else return false;
 	}
@@ -477,7 +477,7 @@ public class ReorgUtils {
 	public static boolean isParentInWorkspaceOrOnDisk(IPackageFragment pack, IPackageFragmentRoot root){
 		if (pack == null)
 			return false;		
-		IJavaElement packParent= pack.getParent();
+		IJavaScriptElement packParent= pack.getParent();
 		if (packParent == null)
 			return false;		
 		if (packParent.equals(root))	
@@ -487,10 +487,10 @@ public class ReorgUtils {
 		return isParentInWorkspaceOrOnDisk(packageResource, packageRootResource);
 	}
 
-	public static boolean isParentInWorkspaceOrOnDisk(IPackageFragmentRoot root, IJavaProject javaProject){
+	public static boolean isParentInWorkspaceOrOnDisk(IPackageFragmentRoot root, IJavaScriptProject javaProject){
 		if (root == null)
 			return false;		
-		IJavaElement rootParent= root.getParent();
+		IJavaScriptElement rootParent= root.getParent();
 		if (rootParent == null)
 			return false;		
 		if (rootParent.equals(root))	
@@ -500,10 +500,10 @@ public class ReorgUtils {
 		return isParentInWorkspaceOrOnDisk(packageResource, packageRootResource);
 	}
 
-	public static boolean isParentInWorkspaceOrOnDisk(ICompilationUnit cu, IPackageFragment dest){
+	public static boolean isParentInWorkspaceOrOnDisk(IJavaScriptUnit cu, IPackageFragment dest){
 		if (cu == null)
 			return false;
-		IJavaElement cuParent= cu.getParent();
+		IJavaScriptElement cuParent= cu.getParent();
 		if (cuParent == null)
 			return false;
 		if (cuParent.equals(dest))	
@@ -551,14 +551,14 @@ public class ReorgUtils {
 		return (IResource[]) result.toArray(new IResource[result.size()]);
 	}
 	
-	/* List<IJavaElement> javaElements
-	 * return ICompilationUnit -> List<IJavaElement>
+	/* List<IJavaScriptElement> javaElements
+	 * return IJavaScriptUnit -> List<IJavaScriptElement>
 	 */
 	public static Map groupByCompilationUnit(List javaElements){
 		Map result= new HashMap();
 		for (Iterator iter= javaElements.iterator(); iter.hasNext();) {
-			IJavaElement element= (IJavaElement) iter.next();
-			ICompilationUnit cu= ReorgUtils.getCompilationUnit(element);
+			IJavaScriptElement element= (IJavaScriptElement) iter.next();
+			IJavaScriptUnit cu= ReorgUtils.getCompilationUnit(element);
 			if (cu != null){
 				if (! result.containsKey(cu))
 					result.put(cu, new ArrayList(1));
@@ -571,11 +571,11 @@ public class ReorgUtils {
 	public static void splitIntoJavaElementsAndResources(Object[] elements, List javaElementResult, List resourceResult) {
 		for (int i= 0; i < elements.length; i++) {
 			Object element= elements[i];
-			if (element instanceof IJavaElement) {
+			if (element instanceof IJavaScriptElement) {
 				javaElementResult.add(element);
 			} else if (element instanceof IResource) {
 				IResource resource= (IResource)element;
-				IJavaElement jElement= JavaCore.create(resource);
+				IJavaScriptElement jElement= JavaScriptCore.create(resource);
 				if (jElement != null && jElement.exists())
 					javaElementResult.add(jElement);
 				else
@@ -584,8 +584,8 @@ public class ReorgUtils {
 		}
 	}
 
-	public static boolean containsElementOrParent(Set elements, IJavaElement element) {
-		IJavaElement curr= element;
+	public static boolean containsElementOrParent(Set elements, IJavaScriptElement element) {
+		IJavaScriptElement curr= element;
 		do {
 			if (elements.contains(curr))
 				return true;
@@ -599,7 +599,7 @@ public class ReorgUtils {
 		do {
 			if (elements.contains(curr))
 				return true;
-			IJavaElement jElement= JavaCore.create(curr);
+			IJavaScriptElement jElement= JavaScriptCore.create(curr);
 			if (jElement != null && jElement.exists()) {
 				return containsElementOrParent(elements, jElement);
 			}

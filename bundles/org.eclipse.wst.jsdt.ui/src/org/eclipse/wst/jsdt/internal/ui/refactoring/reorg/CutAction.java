@@ -19,14 +19,14 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
@@ -40,7 +40,7 @@ public class CutAction extends SelectionDispatchAction{
 		setText(ReorgMessages.CutAction_text); 
 		fCopyToClipboardAction= new CopyToClipboardAction(site, clipboard);
 
-		ISharedImages workbenchImages= JavaPlugin.getDefault().getWorkbench().getSharedImages();
+		ISharedImages workbenchImages= JavaScriptPlugin.getDefault().getWorkbench().getSharedImages();
 		setDisabledImageDescriptor(workbenchImages.getImageDescriptor(ISharedImages.IMG_TOOL_CUT_DISABLED));
 		setImageDescriptor(workbenchImages.getImageDescriptor(ISharedImages.IMG_TOOL_CUT));
 		setHoverImageDescriptor(workbenchImages.getImageDescriptor(ISharedImages.IMG_TOOL_CUT));
@@ -62,7 +62,7 @@ public class CutAction extends SelectionDispatchAction{
 				// no ui here - this happens on selection changes
 				// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 				if (JavaModelUtil.isExceptionToBeLogged(e))
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 				setEnabled(false);
 			}
 		} else
@@ -72,7 +72,7 @@ public class CutAction extends SelectionDispatchAction{
 	private static boolean containsOnlyElementsInsideCompilationUnits(IStructuredSelection selection) {
 		for (Iterator iter = selection.iterator(); iter.hasNext();) {
 			Object object= iter.next();
-			if (! (object instanceof IJavaElement && ReorgUtils.isInsideCompilationUnit((IJavaElement)object)))
+			if (! (object instanceof IJavaScriptElement && ReorgUtils.isInsideCompilationUnit((IJavaScriptElement)object)))
 				return false;
 		}
 		return true;

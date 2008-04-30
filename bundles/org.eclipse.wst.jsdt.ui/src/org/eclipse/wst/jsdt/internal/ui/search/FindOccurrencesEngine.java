@@ -14,12 +14,12 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 
 public abstract class FindOccurrencesEngine {
@@ -33,10 +33,10 @@ public abstract class FindOccurrencesEngine {
 			super(finder);
 			fClassFile= file;
 		}
-		protected CompilationUnit createAST() {
-			return JavaPlugin.getDefault().getASTProvider().getAST(fClassFile, ASTProvider.WAIT_YES, null);
+		protected JavaScriptUnit createAST() {
+			return JavaScriptPlugin.getDefault().getASTProvider().getAST(fClassFile, ASTProvider.WAIT_YES, null);
 		}
-		protected IJavaElement getInput() {
+		protected IJavaScriptElement getInput() {
 			return fClassFile;
 		}
 		protected ISourceReference getSourceReference() {
@@ -45,16 +45,16 @@ public abstract class FindOccurrencesEngine {
 	}
 
 	private static class FindOccurencesCUEngine extends FindOccurrencesEngine {
-		private ICompilationUnit fCUnit;
+		private IJavaScriptUnit fCUnit;
 		
-		public FindOccurencesCUEngine(ICompilationUnit unit, IOccurrencesFinder finder) {
+		public FindOccurencesCUEngine(IJavaScriptUnit unit, IOccurrencesFinder finder) {
 			super(finder);
 			fCUnit= unit;
 		}
-		protected CompilationUnit createAST() {
-			return JavaPlugin.getDefault().getASTProvider().getAST(fCUnit, ASTProvider.WAIT_YES, null);
+		protected JavaScriptUnit createAST() {
+			return JavaScriptPlugin.getDefault().getASTProvider().getAST(fCUnit, ASTProvider.WAIT_YES, null);
 		}
-		protected IJavaElement getInput() {
+		protected IJavaScriptElement getInput() {
 			return fCUnit;
 		}
 		protected ISourceReference getSourceReference() {
@@ -66,22 +66,22 @@ public abstract class FindOccurrencesEngine {
 		fFinder= finder;
 	}
 	
-	public static FindOccurrencesEngine create(IJavaElement root, IOccurrencesFinder finder) {
+	public static FindOccurrencesEngine create(IJavaScriptElement root, IOccurrencesFinder finder) {
 		if (root == null || finder == null)
 			return null;
 		
-		ICompilationUnit unit= (ICompilationUnit)root.getAncestor(IJavaElement.COMPILATION_UNIT);
+		IJavaScriptUnit unit= (IJavaScriptUnit)root.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 		if (unit != null)
 			return new FindOccurencesCUEngine(unit, finder);
-		IClassFile cf= (IClassFile)root.getAncestor(IJavaElement.CLASS_FILE);
+		IClassFile cf= (IClassFile)root.getAncestor(IJavaScriptElement.CLASS_FILE);
 		if (cf != null)
 			return new FindOccurencesClassFileEngine(cf, finder);
 		return null;
 	}
 
-	protected abstract CompilationUnit createAST();
+	protected abstract JavaScriptUnit createAST();
 	
-	protected abstract IJavaElement getInput();
+	protected abstract IJavaScriptElement getInput();
 	
 	protected abstract ISourceReference getSourceReference();
 	
@@ -89,13 +89,13 @@ public abstract class FindOccurrencesEngine {
 		return fFinder;
 	}
 
-	public String run(int offset, int length) throws JavaModelException {
+	public String run(int offset, int length) throws JavaScriptModelException {
 		ISourceReference sr= getSourceReference();
 		if (sr.getSourceRange() == null) {
 			return SearchMessages.FindOccurrencesEngine_noSource_text; 
 		}
 		
-		final CompilationUnit root= createAST();
+		final JavaScriptUnit root= createAST();
 		if (root == null) {
 			return SearchMessages.FindOccurrencesEngine_cannotParse_text; 
 		}
@@ -109,7 +109,7 @@ public abstract class FindOccurrencesEngine {
 		return null;
 	}
 	
-	private void performNewSearch(IOccurrencesFinder finder, IDocument document, IJavaElement element) {
+	private void performNewSearch(IOccurrencesFinder finder, IDocument document, IJavaScriptElement element) {
 		NewSearchUI.runQueryInBackground(new OccurrencesSearchQuery(finder, document, element));
 	}
 }

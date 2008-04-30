@@ -15,9 +15,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
@@ -34,13 +34,13 @@ import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Class used to find the target for a break or continue statement according 
@@ -56,7 +56,7 @@ public class BreakContinueTargetFinder extends ASTVisitor {
 	private boolean fIsBreak;
 	private SimpleName fLabel;
 	private String fContents;//contents are used for scanning to select the right extent of the keyword
-	private static final Class[] STOPPERS=        {MethodDeclaration.class, Initializer.class};
+	private static final Class[] STOPPERS=        {FunctionDeclaration.class, Initializer.class};
 	private static final Class[] BREAKTARGETS=    {ForStatement.class, ForInStatement.class, EnhancedForStatement.class, WhileStatement.class, DoStatement.class, SwitchStatement.class};
 	private static final Class[] CONTINUETARGETS= {ForStatement.class, ForInStatement.class, EnhancedForStatement.class, WhileStatement.class, DoStatement.class};
 	private static final int BRACE_LENGTH= 1;
@@ -64,14 +64,14 @@ public class BreakContinueTargetFinder extends ASTVisitor {
 	/*
 	 * Initializes the finder. Returns error message or <code>null</code> if everything is OK.
 	 */
-	public String initialize(CompilationUnit root, int offset, int length) {
+	public String initialize(JavaScriptUnit root, int offset, int length) {
 		return initialize(root, NodeFinder.perform(root, offset, length));
 	}
 	
 	/*
 	 * Initializes the finder. Returns error message or <code>null</code> if everything is OK.
 	 */
-	public String initialize(CompilationUnit root, ASTNode node) {
+	public String initialize(JavaScriptUnit root, ASTNode node) {
 		ASTNode controlNode= getBreakOrContinueNode(node);
 		if (controlNode != null){
 			fContents= getContents(root);
@@ -88,19 +88,19 @@ public class BreakContinueTargetFinder extends ASTVisitor {
 	}
 
 	/* Returns contents or <code>null</code> if there's trouble. */
-	private String getContents(CompilationUnit root) {
+	private String getContents(JavaScriptUnit root) {
 		try {
-			IJavaElement rootElem= root.getJavaElement();
+			IJavaScriptElement rootElem= root.getJavaElement();
 			if ((rootElem instanceof ISourceReference))
 				return ((ISourceReference)rootElem).getSource();
 			else
 				return null;
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			//We must handle it here because JavaEditor does not expect an exception
 			
 			/* showing a dialog here would be too heavy but we cannot just 
              * swallow the exception */
-			JavaPlugin.log(e); 
+			JavaScriptPlugin.log(e); 
 			return null;
 		}
 	}
@@ -153,7 +153,7 @@ public class BreakContinueTargetFinder extends ASTVisitor {
 	}
 
 	private boolean isEnclosingStatement(ASTNode targetNode) {
-		return (targetNode != null) && !(targetNode instanceof MethodDeclaration) && !(targetNode instanceof Initializer);
+		return (targetNode != null) && !(targetNode instanceof FunctionDeclaration) && !(targetNode instanceof Initializer);
 	}
 
 	private ASTNode findTargetNode(ASTNode node) {

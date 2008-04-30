@@ -20,8 +20,8 @@ import java.util.Map;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.NamingConventions;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -31,13 +31,13 @@ import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.IPackageBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
@@ -65,18 +65,18 @@ import org.eclipse.wst.jsdt.ui.CodeGeneration;
  */
 public final class StubUtility2 {
 
-	public static void addOverrideAnnotation(ASTRewrite rewrite, MethodDeclaration decl, IMethodBinding binding) {
-		String version= binding.getJavaElement().getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-		if (!binding.getDeclaringClass().isInterface() || !JavaModelUtil.isVersionLessThan(version, JavaCore.VERSION_1_6)) {
+	public static void addOverrideAnnotation(ASTRewrite rewrite, FunctionDeclaration decl, IFunctionBinding binding) {
+		String version= binding.getJavaElement().getJavaScriptProject().getOption(JavaScriptCore.COMPILER_COMPLIANCE, true);
+		if (!binding.getDeclaringClass().isInterface() || !JavaModelUtil.isVersionLessThan(version, JavaScriptCore.VERSION_1_6)) {
 			final Annotation marker= rewrite.getAST().newMarkerAnnotation();
 			marker.setTypeName(rewrite.getAST().newSimpleName("Override")); //$NON-NLS-1$
-			rewrite.getListRewrite(decl, MethodDeclaration.MODIFIERS2_PROPERTY).insertFirst(marker, null);
+			rewrite.getListRewrite(decl, FunctionDeclaration.MODIFIERS2_PROPERTY).insertFirst(marker, null);
 		}
 	}
 
-	public static MethodDeclaration createConstructorStub(ICompilationUnit unit, ASTRewrite rewrite, ImportRewrite imports, IMethodBinding binding, String type, int modifiers, boolean omitSuperForDefConst, boolean todo, CodeGenerationSettings settings) throws CoreException {
+	public static FunctionDeclaration createConstructorStub(IJavaScriptUnit unit, ASTRewrite rewrite, ImportRewrite imports, IFunctionBinding binding, String type, int modifiers, boolean omitSuperForDefConst, boolean todo, CodeGenerationSettings settings) throws CoreException {
 		AST ast= rewrite.getAST();
-		MethodDeclaration decl= ast.newMethodDeclaration();
+		FunctionDeclaration decl= ast.newFunctionDeclaration();
 		decl.modifiers().addAll(ASTNodeFactory.newModifiers(ast, modifiers & ~Modifier.ABSTRACT & ~Modifier.NATIVE));
 		decl.setName(ast.newSimpleName(type));
 		decl.setConstructor(true);
@@ -118,7 +118,7 @@ public final class StubUtility2 {
 				varDecl= (SingleVariableDeclaration) iterator.next();
 				invocation.arguments().add(ast.newSimpleName(varDecl.getName().getIdentifier()));
 			}
-			bodyStatement= ASTNodes.asFormattedString(invocation, 0, delimiter, unit.getJavaProject().getOptions(true));
+			bodyStatement= ASTNodes.asFormattedString(invocation, 0, delimiter, unit.getJavaScriptProject().getOptions(true));
 		}
 
 		if (todo) {
@@ -135,16 +135,16 @@ public final class StubUtility2 {
 		if (settings != null && settings.createComments) {
 			String string= CodeGeneration.getMethodComment(unit, type, decl, binding, delimiter);
 			if (string != null) {
-				Javadoc javadoc= (Javadoc) rewrite.createStringPlaceholder(string, ASTNode.JAVADOC);
+				JSdoc javadoc= (JSdoc) rewrite.createStringPlaceholder(string, ASTNode.JSDOC);
 				decl.setJavadoc(javadoc);
 			}
 		}
 		return decl;
 	}
 
-	public static MethodDeclaration createConstructorStub(ICompilationUnit unit, ASTRewrite rewrite, ImportRewrite imports, ITypeBinding typeBinding, AST ast, IMethodBinding superConstructor, IVariableBinding[] variableBindings, int modifiers, CodeGenerationSettings settings) throws CoreException {
+	public static FunctionDeclaration createConstructorStub(IJavaScriptUnit unit, ASTRewrite rewrite, ImportRewrite imports, ITypeBinding typeBinding, AST ast, IFunctionBinding superConstructor, IVariableBinding[] variableBindings, int modifiers, CodeGenerationSettings settings) throws CoreException {
 
-		MethodDeclaration decl= ast.newMethodDeclaration();
+		FunctionDeclaration decl= ast.newFunctionDeclaration();
 		decl.modifiers().addAll(ASTNodeFactory.newModifiers(ast, modifiers & ~Modifier.ABSTRACT & ~Modifier.NATIVE));
 		decl.setName(ast.newSimpleName(typeBinding.getName()));
 		decl.setConstructor(true);
@@ -234,24 +234,24 @@ public final class StubUtility2 {
 		if (settings != null && settings.createComments) {
 			String string= CodeGeneration.getMethodComment(unit, typeBinding.getName(), decl, superConstructor, delimiter);
 			if (string != null) {
-				Javadoc javadoc= (Javadoc) rewrite.createStringPlaceholder(string, ASTNode.JAVADOC);
+				JSdoc javadoc= (JSdoc) rewrite.createStringPlaceholder(string, ASTNode.JSDOC);
 				decl.setJavadoc(javadoc);
 			}
 		}
 		return decl;
 	}
 
-	public static MethodDeclaration createDelegationStub(ICompilationUnit unit, ASTRewrite rewrite, ImportRewrite imports, AST ast, IBinding[] bindings, CodeGenerationSettings settings) throws CoreException {
+	public static FunctionDeclaration createDelegationStub(IJavaScriptUnit unit, ASTRewrite rewrite, ImportRewrite imports, AST ast, IBinding[] bindings, CodeGenerationSettings settings) throws CoreException {
 		Assert.isNotNull(bindings);
 		Assert.isNotNull(settings);
 		Assert.isTrue(bindings.length == 2);
 		Assert.isTrue(bindings[0] instanceof IVariableBinding);
-		Assert.isTrue(bindings[1] instanceof IMethodBinding);
+		Assert.isTrue(bindings[1] instanceof IFunctionBinding);
 
 		IVariableBinding variableBinding= (IVariableBinding) bindings[0];
-		IMethodBinding methodBinding= (IMethodBinding) bindings[1];
+		IFunctionBinding methodBinding= (IFunctionBinding) bindings[1];
 
-		MethodDeclaration decl= ast.newMethodDeclaration();
+		FunctionDeclaration decl= ast.newFunctionDeclaration();
 		decl.modifiers().addAll(ASTNodeFactory.newModifiers(ast, methodBinding.getModifiers() & ~Modifier.SYNCHRONIZED & ~Modifier.ABSTRACT & ~Modifier.NATIVE));
 
 		decl.setName(ast.newSimpleName(methodBinding.getName()));
@@ -277,7 +277,7 @@ public final class StubUtility2 {
 
 		List parameters= decl.parameters();
 		ITypeBinding[] params= methodBinding.getParameterTypes();
-		String[] paramNames= StubUtility.suggestArgumentNames(unit.getJavaProject(), methodBinding);
+		String[] paramNames= StubUtility.suggestArgumentNames(unit.getJavaScriptProject(), methodBinding);
 		for (int i= 0; i < params.length; i++) {
 			SingleVariableDeclaration varDecl= ast.newSingleVariableDeclaration();
 			if (params[i].isWildcardType() && !params[i].isUpperbound())
@@ -309,7 +309,7 @@ public final class StubUtility2 {
 		String delimiter= StubUtility.getLineDelimiterUsed(unit);
 
 		Statement statement= null;
-		MethodInvocation invocation= ast.newMethodInvocation();
+		FunctionInvocation invocation= ast.newFunctionInvocation();
 		invocation.setName(ast.newSimpleName(methodBinding.getName()));
 		List arguments= invocation.arguments();
 		for (int i= 0; i < params.length; i++)
@@ -346,7 +346,7 @@ public final class StubUtility2 {
 			/*
 			 * TODO: have API for delegate method comments This is an inlined
 			 * version of
-			 * {@link CodeGeneration#getMethodComment(ICompilationUnit, String, MethodDeclaration, IMethodBinding, String)}
+			 * {@link CodeGeneration#getMethodComment(IJavaScriptUnit, String, FunctionDeclaration, IFunctionBinding, String)}
 			 */
 			methodBinding= methodBinding.getMethodDeclaration();
 			String declaringClassQualifiedName= methodBinding.getDeclaringClass().getQualifiedName();
@@ -354,16 +354,16 @@ public final class StubUtility2 {
 			String[] parameterTypesQualifiedNames= StubUtility.getParameterTypeNamesForSeeTag(methodBinding);
 			String string= StubUtility.getMethodComment(unit, qualifiedName, decl, methodBinding.isDeprecated(), linkToMethodName, declaringClassQualifiedName, parameterTypesQualifiedNames, true, delimiter);
 			if (string != null) {
-				Javadoc javadoc= (Javadoc) rewrite.createStringPlaceholder(string, ASTNode.JAVADOC);
+				JSdoc javadoc= (JSdoc) rewrite.createStringPlaceholder(string, ASTNode.JSDOC);
 				decl.setJavadoc(javadoc);
 			}
 		}
 		return decl;
 	}
 
-	public static MethodDeclaration createImplementationStub(ICompilationUnit unit, ASTRewrite rewrite, ImportRewrite imports, AST ast, IMethodBinding binding, String type, CodeGenerationSettings settings, boolean deferred, ImportRewriteContext context) throws CoreException {
+	public static FunctionDeclaration createImplementationStub(IJavaScriptUnit unit, ASTRewrite rewrite, ImportRewrite imports, AST ast, IFunctionBinding binding, String type, CodeGenerationSettings settings, boolean deferred, ImportRewriteContext context) throws CoreException {
 
-		MethodDeclaration decl= ast.newMethodDeclaration();
+		FunctionDeclaration decl= ast.newFunctionDeclaration();
 		decl.modifiers().addAll(getImplementationModifiers(ast, binding, deferred));
 
 		decl.setName(ast.newSimpleName(binding.getName()));
@@ -398,7 +398,7 @@ public final class StubUtility2 {
 
 		String delimiter= StubUtility.getLineDelimiterUsed(unit);
 		if (!deferred) {
-			Map options= unit.getJavaProject().getOptions(true);
+			Map options= unit.getJavaScriptProject().getOptions(true);
 
 			Block body= ast.newBlock();
 			decl.setBody(body);
@@ -441,20 +441,20 @@ public final class StubUtility2 {
 		if (settings.createComments) {
 			String string= CodeGeneration.getMethodComment(unit, type, decl, binding, delimiter);
 			if (string != null) {
-				Javadoc javadoc= (Javadoc) rewrite.createStringPlaceholder(string, ASTNode.JAVADOC);
+				JSdoc javadoc= (JSdoc) rewrite.createStringPlaceholder(string, ASTNode.JSDOC);
 				decl.setJavadoc(javadoc);
 			}
 		}
-		if (settings.overrideAnnotation && JavaModelUtil.is50OrHigher(unit.getJavaProject())) {
+		if (settings.overrideAnnotation && JavaModelUtil.is50OrHigher(unit.getJavaScriptProject())) {
 			addOverrideAnnotation(rewrite, decl, binding);
 		}
 
 		return decl;
 	}
 
-	public static MethodDeclaration createImplementationStub(ICompilationUnit unit, ASTRewrite rewrite, ImportRewrite importRewrite, IMethodBinding binding, String type, boolean deferred, CodeGenerationSettings settings) throws CoreException {
+	public static FunctionDeclaration createImplementationStub(IJavaScriptUnit unit, ASTRewrite rewrite, ImportRewrite importRewrite, IFunctionBinding binding, String type, boolean deferred, CodeGenerationSettings settings) throws CoreException {
 		AST ast= rewrite.getAST();
-		MethodDeclaration decl= ast.newMethodDeclaration();
+		FunctionDeclaration decl= ast.newFunctionDeclaration();
 		decl.modifiers().addAll(getImplementationModifiers(ast, binding, deferred));
 
 		decl.setName(ast.newSimpleName(binding.getName()));
@@ -487,7 +487,7 @@ public final class StubUtility2 {
 
 		String delimiter= StubUtility.getLineDelimiterUsed(unit);
 		if (!deferred) {
-			Map options= unit.getJavaProject().getOptions(true);
+			Map options= unit.getJavaScriptProject().getOptions(true);
 			
 			Block body= ast.newBlock();
 			decl.setBody(body);
@@ -530,20 +530,20 @@ public final class StubUtility2 {
 		if (settings != null && settings.createComments) {
 			String string= CodeGeneration.getMethodComment(unit, type, decl, binding, delimiter);
 			if (string != null) {
-				Javadoc javadoc= (Javadoc) rewrite.createStringPlaceholder(string, ASTNode.JAVADOC);
+				JSdoc javadoc= (JSdoc) rewrite.createStringPlaceholder(string, ASTNode.JSDOC);
 				decl.setJavadoc(javadoc);
 			}
 		}
-		if (settings != null && settings.overrideAnnotation && JavaModelUtil.is50OrHigher(unit.getJavaProject())) {
+		if (settings != null && settings.overrideAnnotation && JavaModelUtil.is50OrHigher(unit.getJavaScriptProject())) {
 			addOverrideAnnotation(rewrite, decl, binding);
 		}
 		return decl;
 	}
 
-	private static List createParameters(ICompilationUnit unit, ImportRewrite imports, AST ast, IMethodBinding binding, MethodDeclaration decl, ImportRewriteContext context) {
+	private static List createParameters(IJavaScriptUnit unit, ImportRewrite imports, AST ast, IFunctionBinding binding, FunctionDeclaration decl, ImportRewriteContext context) {
 		List parameters= decl.parameters();
 		ITypeBinding[] params= binding.getParameterTypes();
-		String[] paramNames= StubUtility.suggestArgumentNames(unit.getJavaProject(), binding);
+		String[] paramNames= StubUtility.suggestArgumentNames(unit.getJavaScriptProject(), binding);
 		for (int i= 0; i < params.length; i++) {
 			SingleVariableDeclaration var= ast.newSingleVariableDeclaration();
 			if (binding.isVarargs() && params[i].isArray() && i == params.length - 1) {
@@ -560,10 +560,10 @@ public final class StubUtility2 {
 		return parameters;
 	}
 
-	private static List createParameters(ICompilationUnit unit, ImportRewrite imports, AST ast, IMethodBinding binding, MethodDeclaration decl) {
+	private static List createParameters(IJavaScriptUnit unit, ImportRewrite imports, AST ast, IFunctionBinding binding, FunctionDeclaration decl) {
 		List parameters= decl.parameters();
 		ITypeBinding[] params= binding.getParameterTypes();
-		String[] paramNames= StubUtility.suggestArgumentNames(unit.getJavaProject(), binding);
+		String[] paramNames= StubUtility.suggestArgumentNames(unit.getJavaScriptProject(), binding);
 		for (int i= 0; i < params.length; i++) {
 			SingleVariableDeclaration var= ast.newSingleVariableDeclaration();
 			if (binding.isVarargs() && params[i].isArray() && i == params.length - 1) {
@@ -618,9 +618,9 @@ public final class StubUtility2 {
 		return ast.newSimpleType(ASTNodeFactory.newName(ast, Bindings.getRawName(normalized)));
 	}
 
-	private static IMethodBinding findMethodBinding(IMethodBinding method, List allMethods) {
+	private static IFunctionBinding findMethodBinding(IFunctionBinding method, List allMethods) {
 		for (int i= 0; i < allMethods.size(); i++) {
-			IMethodBinding curr= (IMethodBinding) allMethods.get(i);
+			IFunctionBinding curr= (IFunctionBinding) allMethods.get(i);
 			if (Bindings.isSubsignature(method, curr)) {
 				return curr;
 			}
@@ -628,9 +628,9 @@ public final class StubUtility2 {
 		return null;
 	}
 
-	private static IMethodBinding findOverridingMethod(IMethodBinding method, List allMethods) {
+	private static IFunctionBinding findOverridingMethod(IFunctionBinding method, List allMethods) {
 		for (int i= 0; i < allMethods.size(); i++) {
-			IMethodBinding curr= (IMethodBinding) allMethods.get(i);
+			IFunctionBinding curr= (IFunctionBinding) allMethods.get(i);
 			if (Bindings.areOverriddenMethods(curr, method) || Bindings.isSubsignature(curr, method))
 				return curr;
 		}
@@ -639,10 +639,10 @@ public final class StubUtility2 {
 
 	private static void findUnimplementedInterfaceMethods(ITypeBinding typeBinding, HashSet visited, ArrayList allMethods, IPackageBinding currPack, ArrayList toImplement) {
 		if (visited.add(typeBinding)) {
-			IMethodBinding[] typeMethods= typeBinding.getDeclaredMethods();
+			IFunctionBinding[] typeMethods= typeBinding.getDeclaredMethods();
 			for (int i= 0; i < typeMethods.length; i++) {
-				IMethodBinding curr= typeMethods[i];
-				IMethodBinding impl= findMethodBinding(curr, allMethods);
+				IFunctionBinding curr= typeMethods[i];
+				IFunctionBinding impl= findMethodBinding(curr, allMethods);
 				if (impl == null || !Bindings.isVisibleInHierarchy(impl, currPack)) {
 					if (impl != null)
 						allMethods.remove(impl);
@@ -659,7 +659,7 @@ public final class StubUtility2 {
 	public static IBinding[][] getDelegatableMethods(AST ast, ITypeBinding binding) {
 		final List tuples= new ArrayList();
 		final List declared= new ArrayList();
-		IMethodBinding[] typeMethods= binding.getDeclaredMethods();
+		IFunctionBinding[] typeMethods= binding.getDeclaredMethods();
 		for (int index= 0; index < typeMethods.length; index++)
 			declared.add(typeMethods[index]);
 		IVariableBinding[] typeFields= binding.getDeclaredFields();
@@ -668,7 +668,7 @@ public final class StubUtility2 {
 			if (fieldBinding.isField() && !fieldBinding.isEnumConstant() && !fieldBinding.isSynthetic())
 				getDelegatableMethods(ast, tuples, new ArrayList(declared), fieldBinding, fieldBinding.getType(), binding);
 		}
-		// list of tuple<IVariableBinding, IMethodBinding>
+		// list of tuple<IVariableBinding, IFunctionBinding>
 		return (IBinding[][]) tuples.toArray(new IBinding[tuples.size()][2]);
 	}
 
@@ -679,12 +679,12 @@ public final class StubUtility2 {
 			if (typeBounds == null || typeBounds.length == 0)
 				typeBounds= new ITypeBinding[] { ast.resolveWellKnownType("java.lang.Object") }; //$NON-NLS-1$
 			for (int index= 0; index < typeBounds.length; index++) {
-				IMethodBinding[] candidates= getDelegateCandidates(typeBounds[index], binding);
+				IFunctionBinding[] candidates= getDelegateCandidates(typeBounds[index], binding);
 				for (int candidate= 0; candidate < candidates.length; candidate++) {
 					match= false;
-					final IMethodBinding methodBinding= candidates[candidate];
+					final IFunctionBinding methodBinding= candidates[candidate];
 					for (int offset= 0; offset < methods.size() && !match; offset++) {
-						if (Bindings.areOverriddenMethods((IMethodBinding) methods.get(offset), methodBinding))
+						if (Bindings.areOverriddenMethods((IFunctionBinding) methods.get(offset), methodBinding))
 							match= true;
 					}
 					if (!match) {
@@ -700,12 +700,12 @@ public final class StubUtility2 {
 					getDelegatableMethods(ast, tuples, methods, fieldBinding, superInterfaces[offset], binding);
 			}
 		} else {
-			IMethodBinding[] candidates= getDelegateCandidates(typeBinding, binding);
+			IFunctionBinding[] candidates= getDelegateCandidates(typeBinding, binding);
 			for (int index= 0; index < candidates.length; index++) {
 				match= false;
-				final IMethodBinding methodBinding= candidates[index];
+				final IFunctionBinding methodBinding= candidates[index];
 				for (int offset= 0; offset < methods.size() && !match; offset++) {
-					if (Bindings.areOverriddenMethods((IMethodBinding) methods.get(offset), methodBinding))
+					if (Bindings.areOverriddenMethods((IFunctionBinding) methods.get(offset), methodBinding))
 						match= true;
 				}
 				if (!match) {
@@ -722,14 +722,14 @@ public final class StubUtility2 {
 		}
 	}
 
-	private static IMethodBinding[] getDelegateCandidates(ITypeBinding binding, ITypeBinding hierarchy) {
+	private static IFunctionBinding[] getDelegateCandidates(ITypeBinding binding, ITypeBinding hierarchy) {
 		List allMethods= new ArrayList();
 		boolean isInterface= binding.isInterface();
-		IMethodBinding[] typeMethods= binding.getDeclaredMethods();
+		IFunctionBinding[] typeMethods= binding.getDeclaredMethods();
 		for (int index= 0; index < typeMethods.length; index++) {
 			final int modifiers= typeMethods[index].getModifiers();
 			if (!typeMethods[index].isConstructor() && !Modifier.isStatic(modifiers) && (isInterface || Modifier.isPublic(modifiers))) {
-				IMethodBinding result= Bindings.findOverriddenMethodInHierarchy(hierarchy, typeMethods[index]);
+				IFunctionBinding result= Bindings.findOverriddenMethodInHierarchy(hierarchy, typeMethods[index]);
 				if (result != null && Flags.isFinal(result.getModifiers()))
 					continue;
 				ITypeBinding[] parameterBindings= typeMethods[index].getParameterTypes();
@@ -742,10 +742,10 @@ public final class StubUtility2 {
 					allMethods.add(typeMethods[index]);
 			}
 		}
-		return (IMethodBinding[]) allMethods.toArray(new IMethodBinding[allMethods.size()]);
+		return (IFunctionBinding[]) allMethods.toArray(new IFunctionBinding[allMethods.size()]);
 	}
 
-	private static List getImplementationModifiers(AST ast, IMethodBinding method, boolean deferred) {
+	private static List getImplementationModifiers(AST ast, IFunctionBinding method, boolean deferred) {
 		int modifiers= method.getModifiers() & ~Modifier.ABSTRACT & ~Modifier.NATIVE & ~Modifier.PRIVATE;
 		if (deferred) {
 			modifiers= modifiers & ~Modifier.PROTECTED;
@@ -754,9 +754,9 @@ public final class StubUtility2 {
 		return ASTNodeFactory.newModifiers(ast, modifiers);
 	}
 
-	public static IMethodBinding[] getOverridableMethods(AST ast, ITypeBinding typeBinding, boolean isSubType) {
+	public static IFunctionBinding[] getOverridableMethods(AST ast, ITypeBinding typeBinding, boolean isSubType) {
 		List allMethods= new ArrayList();
-		IMethodBinding[] typeMethods= typeBinding.getDeclaredMethods();
+		IFunctionBinding[] typeMethods= typeBinding.getDeclaredMethods();
 		for (int index= 0; index < typeMethods.length; index++) {
 			final int modifiers= typeMethods[index].getModifiers();
 			if (!typeMethods[index].isConstructor() && !Modifier.isStatic(modifiers) && !Modifier.isPrivate(modifiers))
@@ -764,7 +764,7 @@ public final class StubUtility2 {
 		}
 		ITypeBinding clazz= typeBinding.getSuperclass();
 		while (clazz != null) {
-			IMethodBinding[] methods= clazz.getDeclaredMethods();
+			IFunctionBinding[] methods= clazz.getDeclaredMethods();
 			for (int offset= 0; offset < methods.length; offset++) {
 				final int modifiers= methods[offset].getModifiers();
 				if (!methods[offset].isConstructor() && !Modifier.isStatic(modifiers) && !Modifier.isPrivate(modifiers)) {
@@ -789,17 +789,17 @@ public final class StubUtility2 {
 		int modifiers= 0;
 		if (!typeBinding.isInterface()) {
 			for (int index= allMethods.size() - 1; index >= 0; index--) {
-				IMethodBinding method= (IMethodBinding) allMethods.get(index);
+				IFunctionBinding method= (IFunctionBinding) allMethods.get(index);
 				modifiers= method.getModifiers();
 				if (Modifier.isFinal(modifiers))
 					allMethods.remove(index);
 			}
 		}
-		return (IMethodBinding[]) allMethods.toArray(new IMethodBinding[allMethods.size()]);
+		return (IFunctionBinding[]) allMethods.toArray(new IFunctionBinding[allMethods.size()]);
 	}
 
 	private static void getOverridableMethods(AST ast, ITypeBinding superBinding, List allMethods) {
-		IMethodBinding[] methods= superBinding.getDeclaredMethods();
+		IFunctionBinding[] methods= superBinding.getDeclaredMethods();
 		for (int offset= 0; offset < methods.length; offset++) {
 			final int modifiers= methods[offset].getModifiers();
 			if (!methods[offset].isConstructor() && !Modifier.isStatic(modifiers) && !Modifier.isPrivate(modifiers)) {
@@ -813,18 +813,18 @@ public final class StubUtility2 {
 		}
 	}
 
-	private static String getParameterName(ICompilationUnit unit, IVariableBinding binding, String[] excluded) {
-		final String name= NamingConventions.removePrefixAndSuffixForFieldName(unit.getJavaProject(), binding.getName(), binding.getModifiers());
-		return StubUtility.suggestArgumentName(unit.getJavaProject(), name, excluded);
+	private static String getParameterName(IJavaScriptUnit unit, IVariableBinding binding, String[] excluded) {
+		final String name= NamingConventions.removePrefixAndSuffixForFieldName(unit.getJavaScriptProject(), binding.getName(), binding.getModifiers());
+		return StubUtility.suggestArgumentName(unit.getJavaScriptProject(), name, excluded);
 	}
 
-	public static IMethodBinding[] getUnimplementedMethods(ITypeBinding typeBinding) {
+	public static IFunctionBinding[] getUnimplementedMethods(ITypeBinding typeBinding) {
 		ArrayList allMethods= new ArrayList();
 		ArrayList toImplement= new ArrayList();
 
-		IMethodBinding[] typeMethods= typeBinding.getDeclaredMethods();
+		IFunctionBinding[] typeMethods= typeBinding.getDeclaredMethods();
 		for (int i= 0; i < typeMethods.length; i++) {
-			IMethodBinding curr= typeMethods[i];
+			IFunctionBinding curr= typeMethods[i];
 			int modifiers= curr.getModifiers();
 			if (!curr.isConstructor() && !Modifier.isStatic(modifiers) && !Modifier.isPrivate(modifiers)) {
 				allMethods.add(curr);
@@ -835,7 +835,7 @@ public final class StubUtility2 {
 		while (superClass != null) {
 			typeMethods= superClass.getDeclaredMethods();
 			for (int i= 0; i < typeMethods.length; i++) {
-				IMethodBinding curr= typeMethods[i];
+				IFunctionBinding curr= typeMethods[i];
 				int modifiers= curr.getModifiers();
 				if (!curr.isConstructor() && !Modifier.isStatic(modifiers) && !Modifier.isPrivate(modifiers)) {
 					if (findMethodBinding(curr, allMethods) == null) {
@@ -847,7 +847,7 @@ public final class StubUtility2 {
 		}
 
 		for (int i= 0; i < allMethods.size(); i++) {
-			IMethodBinding curr= (IMethodBinding) allMethods.get(i);
+			IFunctionBinding curr= (IFunctionBinding) allMethods.get(i);
 			int modifiers= curr.getModifiers();
 			if ((Modifier.isAbstract(modifiers) || curr.getDeclaringClass().isInterface()) && (typeBinding != curr.getDeclaringClass())) {
 				// implement all abstract methods
@@ -865,30 +865,30 @@ public final class StubUtility2 {
 			curr= curr.getSuperclass();
 		}
 
-		return (IMethodBinding[]) toImplement.toArray(new IMethodBinding[toImplement.size()]);
+		return (IFunctionBinding[]) toImplement.toArray(new IFunctionBinding[toImplement.size()]);
 	}
 
-	public static IMethodBinding[] getVisibleConstructors(ITypeBinding binding, boolean accountExisting, boolean proposeDefault) {
+	public static IFunctionBinding[] getVisibleConstructors(ITypeBinding binding, boolean accountExisting, boolean proposeDefault) {
 		List constructorMethods= new ArrayList();
 		List existingConstructors= null;
 		ITypeBinding superType= binding.getSuperclass();
 		if (superType == null)
-			return new IMethodBinding[0];
+			return new IFunctionBinding[0];
 		if (accountExisting) {
-			IMethodBinding[] methods= binding.getDeclaredMethods();
+			IFunctionBinding[] methods= binding.getDeclaredMethods();
 			existingConstructors= new ArrayList(methods.length);
 			for (int index= 0; index < methods.length; index++) {
-				IMethodBinding method= methods[index];
+				IFunctionBinding method= methods[index];
 				if (method.isConstructor() && !method.isDefaultConstructor())
 					existingConstructors.add(method);
 			}
 		}
 		if (existingConstructors != null)
 			constructorMethods.addAll(existingConstructors);
-		IMethodBinding[] methods= binding.getDeclaredMethods();
-		IMethodBinding[] superMethods= superType.getDeclaredMethods();
+		IFunctionBinding[] methods= binding.getDeclaredMethods();
+		IFunctionBinding[] superMethods= superType.getDeclaredMethods();
 		for (int index= 0; index < superMethods.length; index++) {
-			IMethodBinding method= superMethods[index];
+			IFunctionBinding method= superMethods[index];
 			if (method.isConstructor()) {
 				if (Bindings.isVisibleInHierarchy(method, binding.getPackage()) && (!accountExisting || !Bindings.containsSignatureEquivalentConstructor(methods, method)))
 					constructorMethods.add(method);
@@ -900,13 +900,13 @@ public final class StubUtility2 {
 			superType= binding;
 			while (superType.getSuperclass() != null)
 				superType= superType.getSuperclass();
-			IMethodBinding method= Bindings.findMethodInType(superType, "Object", new ITypeBinding[0]); //$NON-NLS-1$
+			IFunctionBinding method= Bindings.findMethodInType(superType, "Object", new ITypeBinding[0]); //$NON-NLS-1$
 			if (method != null) {
 				if ((proposeDefault || (!accountExisting || (existingConstructors == null || existingConstructors.isEmpty()))) && (!accountExisting || !Bindings.containsSignatureEquivalentConstructor(methods, method)))
 					constructorMethods.add(method);
 			}
 		}
-		return (IMethodBinding[]) constructorMethods.toArray(new IMethodBinding[constructorMethods.size()]);
+		return (IFunctionBinding[]) constructorMethods.toArray(new IFunctionBinding[constructorMethods.size()]);
 	}
 
 

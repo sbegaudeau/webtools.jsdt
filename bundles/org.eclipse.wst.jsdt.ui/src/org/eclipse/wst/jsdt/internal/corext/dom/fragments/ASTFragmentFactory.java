@@ -11,8 +11,8 @@
 package org.eclipse.wst.jsdt.internal.corext.dom.fragments;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
@@ -69,9 +69,9 @@ public class ASTFragmentFactory {
 	 * @return IASTFragment	A fragment whose source range is <code>range</code> within
 	 * 							compilation unit <code>cu</code>, residing somewhere within the
 	 * 							AST subtree identified by <code>scope</code>.
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public static IASTFragment createFragmentForSourceRange(SourceRange range, ASTNode scope, ICompilationUnit cu) throws JavaModelException {
+	public static IASTFragment createFragmentForSourceRange(SourceRange range, ASTNode scope, IJavaScriptUnit cu) throws JavaScriptModelException {
 		SelectionAnalyzer sa= new SelectionAnalyzer(Selection.createFromStartLength(range.getOffset(), range.getLength()), false);
 		scope.accept(sa);
 
@@ -89,10 +89,10 @@ public class ASTFragmentFactory {
 		return range.getLength() == 0 && sa.getFirstSelectedNode() == null && sa.getLastCoveringNode() != null;
 	}
 
-	private static boolean isSingleNodeSelected(SelectionAnalyzer sa, SourceRange range, ICompilationUnit cu) throws JavaModelException {
+	private static boolean isSingleNodeSelected(SelectionAnalyzer sa, SourceRange range, IJavaScriptUnit cu) throws JavaScriptModelException {
 		return sa.getSelectedNodes().length == 1 && !rangeIncludesNonWhitespaceOutsideNode(range, sa.getFirstSelectedNode(), cu);
 	}
-	private static boolean rangeIncludesNonWhitespaceOutsideNode(SourceRange range, ASTNode node, ICompilationUnit cu) throws JavaModelException {
+	private static boolean rangeIncludesNonWhitespaceOutsideNode(SourceRange range, ASTNode node, IJavaScriptUnit cu) throws JavaScriptModelException {
 		return Util.rangeIncludesNonWhitespaceOutsideRange(range, new SourceRange(node), cu.getBuffer());
 	}
 	
@@ -102,7 +102,7 @@ public class ASTFragmentFactory {
 	 * the node, do not correspond to a valid node-sub-part
 	 * fragment.
 	 */
-	private static IASTFragment createFragmentForSubPartBySourceRange(ASTNode node, SourceRange range, ICompilationUnit cu) throws JavaModelException {
+	private static IASTFragment createFragmentForSubPartBySourceRange(ASTNode node, SourceRange range, IJavaScriptUnit cu) throws JavaScriptModelException {
 		return FragmentForSubPartBySourceRangeFactory.createFragmentFor(node, range, cu);
 	}
 		
@@ -134,18 +134,18 @@ public class ASTFragmentFactory {
 	}
 	private static class FragmentForSubPartBySourceRangeFactory extends FragmentFactory {
 		private SourceRange fRange;
-		private ICompilationUnit fCu;
+		private IJavaScriptUnit fCu;
 		
-		private JavaModelException javaModelException= null;
+		private JavaScriptModelException javaModelException= null;
 		
-		public static IASTFragment createFragmentFor(ASTNode node, SourceRange range, ICompilationUnit cu) throws JavaModelException {
+		public static IASTFragment createFragmentFor(ASTNode node, SourceRange range, IJavaScriptUnit cu) throws JavaScriptModelException {
 			return new FragmentForSubPartBySourceRangeFactory().createFragment(node, range, cu);	
 		}
 		
 		public boolean visit(InfixExpression node) {
 			try {
 				setFragment(createInfixExpressionSubPartFragmentBySourceRange(node, fRange, fCu));
-			} catch(JavaModelException e) {
+			} catch(JavaScriptModelException e) {
 				javaModelException= e;
 			}
 			return false;	
@@ -156,7 +156,7 @@ public class ASTFragmentFactory {
 			return false;			
 		}
 		
-		protected IASTFragment createFragment(ASTNode node, SourceRange range, ICompilationUnit cu) throws JavaModelException {
+		protected IASTFragment createFragment(ASTNode node, SourceRange range, IJavaScriptUnit cu) throws JavaScriptModelException {
 			fRange= range;
 			fCu= cu;
 			IASTFragment result= createFragment(node);
@@ -165,7 +165,7 @@ public class ASTFragmentFactory {
 			return result;	
 		}
 		
-		private static IExpressionFragment createInfixExpressionSubPartFragmentBySourceRange(InfixExpression node, SourceRange range, ICompilationUnit cu) throws JavaModelException {
+		private static IExpressionFragment createInfixExpressionSubPartFragmentBySourceRange(InfixExpression node, SourceRange range, IJavaScriptUnit cu) throws JavaScriptModelException {
 			return AssociativeInfixExpressionFragment.createSubPartFragmentBySourceRange(node, range, cu);
 		}
 	}

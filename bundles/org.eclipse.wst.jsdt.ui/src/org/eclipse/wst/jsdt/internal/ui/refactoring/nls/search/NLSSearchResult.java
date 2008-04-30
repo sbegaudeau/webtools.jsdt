@@ -29,12 +29,12 @@ import org.eclipse.search.ui.text.Match;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IParent;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput;
 
@@ -43,7 +43,7 @@ public class NLSSearchResult extends AbstractTextSearchResult implements IEditor
 	private static final Match[] NO_MATCHES= new Match[0];
 
 	/*
-	 * Element (group key) is always IJavaElement or FileEntry.
+	 * Element (group key) is always IJavaScriptElement or FileEntry.
 	 */
 	private NLSSearchQuery fQuery;
 	private final List fFileEntryGroups;
@@ -98,23 +98,23 @@ public class NLSSearchResult extends AbstractTextSearchResult implements IEditor
 		try {
 			for (Iterator iter= fCompilationUnitGroups.iterator(); iter.hasNext();) {
 				CompilationUnitEntry element= (CompilationUnitEntry)iter.next();
-				ICompilationUnit cu= element.getCompilationUnit();
+				IJavaScriptUnit cu= element.getCompilationUnit();
 				if (cu.exists() && file.equals(cu.getCorrespondingResource())) {
 					matches.addAll(Arrays.asList(getMatches(element)));
 				}
 			}
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 			return NO_MATCHES;
 		}
 		
 		//TODO: copied from JavaSearchResult:
-		IJavaElement javaElement= JavaCore.create(file);
+		IJavaScriptElement javaElement= JavaScriptCore.create(file);
 		collectMatches(matches, javaElement);
 		return (Match[]) matches.toArray(new Match[matches.size()]);
 	}
 	
-	private void collectMatches(Set matches, IJavaElement element) {
+	private void collectMatches(Set matches, IJavaScriptElement element) {
 		//TODO: copied from JavaSearchResult:
 		Match[] m= getMatches(element);
 		if (m.length != 0) {
@@ -125,11 +125,11 @@ public class NLSSearchResult extends AbstractTextSearchResult implements IEditor
 		if (element instanceof IParent) {
 			IParent parent= (IParent) element;
 			try {
-				IJavaElement[] children= parent.getChildren();
+				IJavaScriptElement[] children= parent.getChildren();
 				for (int i= 0; i < children.length; i++) {
 					collectMatches(matches, children[i]);
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// we will not be tracking these results
 			}
 		}
@@ -142,16 +142,16 @@ public class NLSSearchResult extends AbstractTextSearchResult implements IEditor
 		if (element instanceof FileEntry) {
 			return ((FileEntry) element).getPropertiesFile();
 		} else {
-			IJavaElement javaElement= null;
+			IJavaScriptElement javaElement= null;
 			if (element instanceof CompilationUnitEntry) {
 				javaElement= ((CompilationUnitEntry)element).getCompilationUnit();
 			} else {
-				javaElement= (IJavaElement) element;
+				javaElement= (IJavaScriptElement) element;
 			}
 			IResource resource= null;
 			try {
 				resource= javaElement.getCorrespondingResource();
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// no resource
 			}
 			if (resource instanceof IFile)
@@ -171,25 +171,25 @@ public class NLSSearchResult extends AbstractTextSearchResult implements IEditor
 			if (editorInput instanceof IFileEditorInput) {
 				return ((IFileEditorInput) editorInput).getFile().equals(file);
 			}
-		} else if (match.getElement() instanceof IJavaElement || match.getElement() instanceof CompilationUnitEntry) {
-			IJavaElement je= null;
-			if (match.getElement() instanceof IJavaElement) {
-				je= (IJavaElement) match.getElement();
+		} else if (match.getElement() instanceof IJavaScriptElement || match.getElement() instanceof CompilationUnitEntry) {
+			IJavaScriptElement je= null;
+			if (match.getElement() instanceof IJavaScriptElement) {
+				je= (IJavaScriptElement) match.getElement();
 			} else {
 				je= ((CompilationUnitEntry)match.getElement()).getCompilationUnit();
 			}
 			if (editorInput instanceof IFileEditorInput) {
 				try {
-					ICompilationUnit cu= (ICompilationUnit) je.getAncestor(IJavaElement.COMPILATION_UNIT);
+					IJavaScriptUnit cu= (IJavaScriptUnit) je.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 					if (cu == null)
 						return false;
 					else
 						return ((IFileEditorInput) editorInput).getFile().equals(cu.getCorrespondingResource());
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					return false;
 				}
 			} else if (editorInput instanceof IClassFileEditorInput) {
-				return ((IClassFileEditorInput) editorInput).getClassFile().equals(je.getAncestor(IJavaElement.CLASS_FILE));
+				return ((IClassFileEditorInput) editorInput).getClassFile().equals(je.getAncestor(IJavaScriptElement.CLASS_FILE));
 			}
 		}
 		return false;

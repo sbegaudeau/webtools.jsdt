@@ -16,8 +16,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
@@ -47,7 +47,7 @@ public class ASTRewriteCorrectionProposal extends CUCorrectionProposal {
 	 * @param image The image that is displayed for this proposal or <code>null</code> if no
 	 * image is desired.
 	 */
-	public ASTRewriteCorrectionProposal(String name, ICompilationUnit cu, ASTRewrite rewrite, int relevance, Image image) {
+	public ASTRewriteCorrectionProposal(String name, IJavaScriptUnit cu, ASTRewrite rewrite, int relevance, Image image) {
 		super(name, cu, relevance, image);
 		fRewrite= rewrite;
 	}
@@ -69,7 +69,7 @@ public class ASTRewriteCorrectionProposal extends CUCorrectionProposal {
 	/**
 	 * Sets the import rewriter used for this compilation unit.
 	 */
-	public ImportRewrite createImportRewrite(CompilationUnit astRoot) {
+	public ImportRewrite createImportRewrite(JavaScriptUnit astRoot) {
 		fImportRewrite= StubUtility.createImportRewrite(astRoot, true);
 		return fImportRewrite;
 	}

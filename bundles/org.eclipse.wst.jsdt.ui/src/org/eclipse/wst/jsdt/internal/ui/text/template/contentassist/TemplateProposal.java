@@ -56,7 +56,7 @@ import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContext;
 import org.eclipse.wst.jsdt.internal.corext.template.java.JavaDocContext;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorHighlightingSynchronizer;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IndentUtil;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -247,11 +247,11 @@ public class TemplateProposal implements IJavaCompletionProposal, ICompletionPro
 				fSelectedRegion= new Region(getCaretOffset(templateBuffer) + start, 0);
 
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			openErrorDialog(viewer.getTextWidget().getShell(), e);
 			fSelectedRegion= fRegion;
 		} catch (BadPositionCategoryException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			openErrorDialog(viewer.getTextWidget().getShell(), e);
 			fSelectedRegion= fRegion;
 		}
@@ -281,7 +281,7 @@ public class TemplateProposal implements IJavaCompletionProposal, ICompletionPro
 	 * @return  the currently active java editor, or <code>null</code>
 	 */
 	private JavaEditor getJavaEditor() {
-		IEditorPart part= JavaPlugin.getActivePage().getActiveEditor();
+		IEditorPart part= JavaScriptPlugin.getActivePage().getActiveEditor();
 		if (part instanceof JavaEditor)
 			return (JavaEditor) part;
 		else
@@ -391,7 +391,7 @@ public class TemplateProposal implements IJavaCompletionProposal, ICompletionPro
 			return document.get();
 
 	    } catch (BadLocationException e) {
-			handleException(JavaPlugin.getActiveWorkbenchShell(), new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, "", e))); //$NON-NLS-1$
+			handleException(JavaScriptPlugin.getActiveWorkbenchShell(), new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, "", e))); //$NON-NLS-1$
 			return null;
 		}
 	}

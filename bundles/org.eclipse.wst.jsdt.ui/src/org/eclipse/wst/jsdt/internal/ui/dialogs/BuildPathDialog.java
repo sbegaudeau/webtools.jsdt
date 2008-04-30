@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
@@ -39,10 +39,10 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 
 public class BuildPathDialog extends StatusDialog {
 
-	private IJavaProject fProject;
+	private IJavaScriptProject fProject;
 	private BuildPathsBlock fBlock;
 
-	public BuildPathDialog(Shell parent, IJavaProject project) {
+	public BuildPathDialog(Shell parent, IJavaScriptProject project) {
 		super(parent);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		Assert.isNotNull(project);

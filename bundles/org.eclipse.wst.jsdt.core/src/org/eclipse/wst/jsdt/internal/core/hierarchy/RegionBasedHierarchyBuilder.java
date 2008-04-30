@@ -18,13 +18,13 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.core.Openable;
@@ -33,7 +33,7 @@ import org.eclipse.wst.jsdt.internal.core.SearchableEnvironment;
 public class RegionBasedHierarchyBuilder extends HierarchyBuilder {
 
 	public RegionBasedHierarchyBuilder(TypeHierarchy hierarchy)
-		throws JavaModelException {
+		throws JavaScriptModelException {
 
 		super(hierarchy);
 	}
@@ -88,7 +88,7 @@ private void createTypeHierarchyBasedOnRegion(HashMap allOpenablesInRegion, IPro
 				SearchableEnvironment searchableEnvironment = project.newSearchableNameEnvironment(this.hierarchy.workingCopies);
 				this.nameLookup = searchableEnvironment.nameLookup;
 				this.hierarchyResolver.resolve(openables, null, monitor);
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// project doesn't exit: ignore
 			}
 		}
@@ -99,44 +99,44 @@ private void createTypeHierarchyBasedOnRegion(HashMap allOpenablesInRegion, IPro
 
 	/**
 	 * Returns all of the openables defined in the region of this type hierarchy.
-	 * Returns a map from IJavaProject to ArrayList of Openable
+	 * Returns a map from IJavaScriptProject to ArrayList of Openable
 	 */
 	private HashMap determineOpenablesInRegion(IProgressMonitor monitor) {
 
 		try {
 			HashMap allOpenables = new HashMap();
-			IJavaElement[] roots =
+			IJavaScriptElement[] roots =
 				((RegionBasedTypeHierarchy) this.hierarchy).region.getElements();
 			int length = roots.length;
 			if (monitor != null) monitor.beginTask("", length); //$NON-NLS-1$
 			for (int i = 0; i <length; i++) {
-				IJavaElement root = roots[i];
-				IJavaProject javaProject = root.getJavaProject();
+				IJavaScriptElement root = roots[i];
+				IJavaScriptProject javaProject = root.getJavaScriptProject();
 				ArrayList openables = (ArrayList) allOpenables.get(javaProject);
 				if (openables == null) {
 					openables = new ArrayList();
 					allOpenables.put(javaProject, openables);
 				}
 				switch (root.getElementType()) {
-					case IJavaElement.JAVA_PROJECT :
-						injectAllOpenablesForJavaProject((IJavaProject) root, openables);
+					case IJavaScriptElement.JAVASCRIPT_PROJECT :
+						injectAllOpenablesForJavaProject((IJavaScriptProject) root, openables);
 						break;
-					case IJavaElement.PACKAGE_FRAGMENT_ROOT :
+					case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT :
 						injectAllOpenablesForPackageFragmentRoot((IPackageFragmentRoot) root, openables);
 						break;
-					case IJavaElement.PACKAGE_FRAGMENT :
+					case IJavaScriptElement.PACKAGE_FRAGMENT :
 						injectAllOpenablesForPackageFragment((IPackageFragment) root, openables);
 						break;
-					case IJavaElement.CLASS_FILE :
-					case IJavaElement.COMPILATION_UNIT :
+					case IJavaScriptElement.CLASS_FILE :
+					case IJavaScriptElement.JAVASCRIPT_UNIT :
 						openables.add(root);
 						break;
-					case IJavaElement.TYPE :
+					case IJavaScriptElement.TYPE :
 						IType type = (IType)root;
 						if (type.isBinary()) {
 							openables.add(type.getClassFile());
 						} else {
-							openables.add(type.getCompilationUnit());
+							openables.add(type.getJavaScriptUnit());
 						}
 						break;
 					default :
@@ -155,7 +155,7 @@ private void createTypeHierarchyBasedOnRegion(HashMap allOpenablesInRegion, IPro
 	 * list.
 	 */
 	private void injectAllOpenablesForJavaProject(
-		IJavaProject project,
+		IJavaScriptProject project,
 		ArrayList openables) {
 		try {
 			IPackageFragmentRoot[] devPathRoots =
@@ -167,7 +167,7 @@ private void createTypeHierarchyBasedOnRegion(HashMap allOpenablesInRegion, IPro
 				IPackageFragmentRoot root = devPathRoots[j];
 				injectAllOpenablesForPackageFragmentRoot(root, openables);
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignore
 		}
 	}
@@ -186,7 +186,7 @@ private void createTypeHierarchyBasedOnRegion(HashMap allOpenablesInRegion, IPro
 			if (kind != 0) {
 				boolean isSourcePackageFragment = (kind == IPackageFragmentRoot.K_SOURCE);
 				if (isSourcePackageFragment) {
-					ICompilationUnit[] cus = packFrag.getCompilationUnits();
+					IJavaScriptUnit[] cus = packFrag.getJavaScriptUnits();
 					for (int i = 0, length = cus.length; i < length; i++) {
 						openables.add(cus[i]);
 					}
@@ -197,7 +197,7 @@ private void createTypeHierarchyBasedOnRegion(HashMap allOpenablesInRegion, IPro
 					}
 				}
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignore
 		}
 	}
@@ -210,12 +210,12 @@ private void createTypeHierarchyBasedOnRegion(HashMap allOpenablesInRegion, IPro
 		IPackageFragmentRoot root,
 		ArrayList openables) {
 		try {
-			IJavaElement[] packFrags = root.getChildren();
+			IJavaScriptElement[] packFrags = root.getChildren();
 			for (int k = 0; k < packFrags.length; k++) {
 				IPackageFragment packFrag = (IPackageFragment) packFrags[k];
 				injectAllOpenablesForPackageFragment(packFrag, openables);
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return;
 		}
 	}

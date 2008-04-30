@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
@@ -902,7 +902,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		FieldBinding notVisibleField = null;
 		// we could hold onto the not visible field for extra error reporting
 		while (keepLooking) {
-			if (JavaCore.IS_ECMASCRIPT4)
+			if (JavaScriptCore.IS_ECMASCRIPT4)
 			{
 				ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
 				if (itsInterfaces == null) { // needed for statically imported types which don't know their hierarchy yet
@@ -946,7 +946,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		}
 
 		// walk all visible interfaces to find ambiguous references
-		if (JavaCore.IS_ECMASCRIPT4 && interfacesToVisit != null) {
+		if (JavaScriptCore.IS_ECMASCRIPT4 && interfacesToVisit != null) {
 			ProblemFieldBinding ambiguous = null;
 			done : for (int i = 0; i < nextPosition; i++) {
 				ReferenceBinding anInterface = interfacesToVisit[i];
@@ -4077,7 +4077,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 						}
 					}
 // do not return a new methodBinding until we know that it does not cause problems
-//					return new MethodBinding(
+//					return new FunctionBinding(
 //						current.modifiers,
 //						current.selector,
 //						current.returnType,

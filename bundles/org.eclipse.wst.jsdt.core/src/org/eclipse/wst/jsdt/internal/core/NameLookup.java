@@ -25,27 +25,27 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IInitializer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.IInferenceFile;
 import org.eclipse.wst.jsdt.core.infer.InferrenceManager;
 import org.eclipse.wst.jsdt.core.infer.InferrenceProvider;
 import org.eclipse.wst.jsdt.core.infer.ResolutionConfiguration;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
@@ -76,7 +76,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * which start with <code>find*</code> are intended to be convenience methods for quickly
  * finding an element within another element; for instance, for finding a class within a
  * package.  The other set of methods all begin with <code>seek*</code>.  These methods
- * do comprehensive searches of the <code>IJavaProject</code> returning hits
+ * do comprehensive searches of the <code>IJavaScriptProject</code> returning hits
  * in real time through an <code>IJavaElementRequestor</code>.
  *
  */
@@ -138,7 +138,7 @@ public class NameLookup implements SuffixConstants {
 	public static boolean VERBOSE = false;
 
 	private static final IType[] NO_TYPES = {};
-	private static final IJavaElement[] NO_BINDINGS = {};
+	private static final IJavaScriptElement[] NO_BINDINGS = {};
 
 	private boolean searchFiles=true;
 	
@@ -177,14 +177,14 @@ public class NameLookup implements SuffixConstants {
 	public long timeSpentInSeekTypesInBinaryPackage = 0;
 
 	protected HashSet acceptedCUs=new HashSet();
-	private ICompilationUnit[] workingCopies;
+	private IJavaScriptUnit[] workingCopies;
 
 	IRestrictedAccessBindingRequestor restrictedRequestor;
 
 	public NameLookup(
 			IPackageFragmentRoot[] packageFragmentRoots,
 			HashtableOfArrayToObject packageFragments,
-			ICompilationUnit[] workingCopies,
+			IJavaScriptUnit[] workingCopies,
 			Map rootToResolvedEntries) {
 		long start = -1;
 		if (VERBOSE) {
@@ -210,7 +210,7 @@ public class NameLookup implements SuffixConstants {
 			this.bindingsInWorkingCopies = new HashMap();
 			this.workingCopies=workingCopies;
 			for (int i = 0, length = workingCopies.length; i < length; i++) {
-				ICompilationUnit workingCopy = workingCopies[i];
+				IJavaScriptUnit workingCopy = workingCopies[i];
 				PackageFragment pkg = (PackageFragment) workingCopy.getParent();
 				HashMap typeMap = (HashMap) this.typesInWorkingCopies.get(pkg);
 				HashMap[] bindingsMap = (HashMap[]) this.bindingsInWorkingCopies.get(pkg);
@@ -252,9 +252,9 @@ public class NameLookup implements SuffixConstants {
 					addWorkingCopyBindings(types, bindingsMap[Binding.TYPE]);
 					addWorkingCopyBindings(workingCopy.getFields(), bindingsMap[Binding.VARIABLE]);
 					addWorkingCopyBindings(workingCopy.getFields(), bindingsMap[Binding.LOCAL]);
-					addWorkingCopyBindings(workingCopy.getMethods(), bindingsMap[Binding.METHOD]);
+					addWorkingCopyBindings(workingCopy.getFunctions(), bindingsMap[Binding.METHOD]);
 
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					// working copy doesn't exist -> ignore
 				}
 
@@ -344,20 +344,20 @@ public class NameLookup implements SuffixConstants {
 		return this.restrictedRequestor;
 	}
 
-	private void addWorkingCopyBindings(IJavaElement [] elements, HashMap bindingsMap)
+	private void addWorkingCopyBindings(IJavaScriptElement [] elements, HashMap bindingsMap)
 	{
 		for (int j = 0; j < elements.length; j++) {
-			IJavaElement element = elements[j];
+			IJavaScriptElement element = elements[j];
 			String elementName = element.getElementName();
 			Object existing = bindingsMap.get(elementName);
 			if (existing == null) {
 				bindingsMap.put(elementName, element);
-			} else if (existing instanceof IJavaElement) {
-				bindingsMap.put(elementName, new IJavaElement[] {(IJavaElement) existing, element});
+			} else if (existing instanceof IJavaScriptElement) {
+				bindingsMap.put(elementName, new IJavaScriptElement[] {(IJavaScriptElement) existing, element});
 			} else {
-				IJavaElement[] existingElements = (IJavaElement[]) existing;
+				IJavaScriptElement[] existingElements = (IJavaScriptElement[]) existing;
 				int existingElementsLength = existingElements.length;
-				System.arraycopy(existingElements, 0, existingElements = new IJavaElement[existingElementsLength+1], 0, existingElementsLength);
+				System.arraycopy(existingElements, 0, existingElements = new IJavaScriptElement[existingElementsLength+1], 0, existingElementsLength);
 				existingElements[existingElementsLength] = element;
 				bindingsMap.put(elementName, existingElements);
 			}
@@ -398,19 +398,19 @@ public class NameLookup implements SuffixConstants {
 					//case IGenericType.ANNOTATION_TYPE :
 					return (acceptFlags & ACCEPT_ANNOTATIONS) != 0;
 			}
-		} catch (JavaModelException npe) {
+		} catch (JavaScriptModelException npe) {
 			return false; // the class is not present, do not accept.
 		}
 	}
 
-	protected boolean doAcceptBinding(IJavaElement element, int bindingType, boolean isSourceType,IJavaElementRequestor requestor) {
+	protected boolean doAcceptBinding(IJavaScriptElement element, int bindingType, boolean isSourceType,IJavaElementRequestor requestor) {
 		switch (bindingType)
 		{
 		  case Binding.FIELD | Binding.METHOD:
-			  if (element instanceof IMethod)
+			  if (element instanceof IFunction)
 			  {
 
-				  requestor.acceptMethod((IMethod)element);
+				  requestor.acceptMethod((IFunction)element);
 				  return true;
 			  }
 			  if (element instanceof IField)
@@ -428,9 +428,9 @@ public class NameLookup implements SuffixConstants {
 			  }
 			  return false;
 		  case Binding.METHOD:
-			  if (element instanceof IMethod)
+			  if (element instanceof IFunction)
 			  {
-				  requestor.acceptMethod((IMethod)element);
+				  requestor.acceptMethod((IFunction)element);
 				  return true;
 			  }
 		  case Binding.TYPE:
@@ -458,10 +458,10 @@ public class NameLookup implements SuffixConstants {
 			if (requestor.isCanceled())
 				return;
 			IPackageFragmentRoot root= this.packageFragmentRoots[i];
-			IJavaElement[] packages= null;
+			IJavaScriptElement[] packages= null;
 			try {
 				packages= root.getChildren();
-			} catch (JavaModelException npe) {
+			} catch (JavaScriptModelException npe) {
 				continue; // the root is not present, continue;
 			}
 			if (packages != null) {
@@ -480,10 +480,10 @@ public class NameLookup implements SuffixConstants {
 			if (requestor.isCanceled())
 				return;
 			IPackageFragmentRoot root= this.packageFragmentRoots[i];
-			IJavaElement[] packages= null;
+			IJavaScriptElement[] packages= null;
 			try {
 				packages= root.getChildren();
-			} catch (JavaModelException npe) {
+			} catch (JavaScriptModelException npe) {
 				continue; // the root is not present, continue;
 			}
 			if (packages != null) {
@@ -497,10 +497,10 @@ public class NameLookup implements SuffixConstants {
 	}
 
 	/**
-	 * Returns the <code>ICompilationUnit</code> which defines the type
+	 * Returns the <code>IJavaScriptUnit</code> which defines the type
 	 * named <code>qualifiedTypeName</code>, or <code>null</code> if
 	 * none exists. The domain of the search is bounded by the classpath
-	 * of the <code>IJavaProject</code> this <code>NameLookup</code> was
+	 * of the <code>IJavaScriptProject</code> this <code>NameLookup</code> was
 	 * obtained from.
 	 * <p>
 	 * The name must be fully qualified (eg "java.lang.Object", "java.util.Hashtable$Entry")
@@ -540,9 +540,9 @@ public class NameLookup implements SuffixConstants {
 		if (!root.isArchive()) {
 			IPackageFragment pkg = root.getPackageFragment(pkgName);
 			try {
-				ICompilationUnit[] cus = pkg.getCompilationUnits();
+				IJavaScriptUnit[] cus = pkg.getJavaScriptUnits();
 				for (int j = 0, length = cus.length; j < length; j++) {
-					ICompilationUnit cu = cus[j];
+					IJavaScriptUnit cu = cus[j];
 					if (Util.equalsIgnoreJavaLikeExtension(cu.getElementName(), cuName))
 						return cu;
 				}
@@ -552,7 +552,7 @@ public class NameLookup implements SuffixConstants {
 					if (Util.equalsIgnoreJavaLikeExtension(cu.getElementName(), cuName))
 						return cu;
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// pkg does not exist
 				// -> try next package
 			}
@@ -563,7 +563,7 @@ public class NameLookup implements SuffixConstants {
 	/**
 	 * Returns the package fragment whose path matches the given
 	 * (absolute) path, or <code>null</code> if none exist. The domain of
-	 * the search is bounded by the classpath of the <code>IJavaProject</code>
+	 * the search is bounded by the classpath of the <code>IJavaScriptProject</code>
 	 * this <code>NameLookup</code> was obtained from.
 	 * The path can be:
 	 * 	- internal to the workbench: "/Project/src"
@@ -592,10 +592,10 @@ public class NameLookup implements SuffixConstants {
 					// + 1 is for the File.separatorChar
 					name = name.substring(rootPath.toOSString().length() + 1, name.length());
 					name = name.replace(File.separatorChar, '.');
-					IJavaElement[] list = null;
+					IJavaScriptElement[] list = null;
 					try {
 						list = root.getChildren();
-					} catch (JavaModelException npe) {
+					} catch (JavaScriptModelException npe) {
 						continue; // the package fragment root is not present;
 					}
 					int elementCount = list.length;
@@ -608,18 +608,18 @@ public class NameLookup implements SuffixConstants {
 				}
 			}
 		} else {
-			IJavaElement fromFactory = JavaCore.create(possibleFragment);
+			IJavaScriptElement fromFactory = JavaScriptCore.create(possibleFragment);
 			if (fromFactory == null) {
 				return null;
 			}
 			switch (fromFactory.getElementType()) {
-				case IJavaElement.PACKAGE_FRAGMENT:
+				case IJavaScriptElement.PACKAGE_FRAGMENT:
 					return (IPackageFragment) fromFactory;
-				case IJavaElement.JAVA_PROJECT:
+				case IJavaScriptElement.JAVASCRIPT_PROJECT:
 					// default package in a default root
 					JavaProject project = (JavaProject) fromFactory;
 					try {
-						IClasspathEntry entry = project.getClasspathEntryFor(path);
+						IIncludePathEntry entry = project.getClasspathEntryFor(path);
 						if (entry != null) {
 							IPackageFragmentRoot root =
 								project.getPackageFragmentRoot(project.getResource());
@@ -638,11 +638,11 @@ public class NameLookup implements SuffixConstants {
 								}
 							}
 						}
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						return null;
 					}
 					return null;
-				case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+				case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 					return ((PackageFragmentRoot)fromFactory).getPackageFragment(CharOperation.NO_STRINGS);
 			}
 		}
@@ -682,7 +682,7 @@ public class NameLookup implements SuffixConstants {
 	public IPackageFragment[] findPackageFragments(String name, boolean partialMatch, boolean patternMatch) {
 		ArrayList fragRootChildren = new ArrayList();
 		for (int i = 0; i < this.packageFragmentRoots.length; i++) {
-			IJavaElement[] children;
+			IJavaScriptElement[] children;
 			try {
 				children = packageFragmentRoots[i].getChildren();
 				for (int j = 0; j < children.length; j++) {
@@ -690,7 +690,7 @@ public class NameLookup implements SuffixConstants {
 					if(packageFragment!=null && packageFragment.getElementName().equals(name))
 						fragRootChildren.add((packageFragment));
 				}
-			} catch (JavaModelException e) {}
+			} catch (JavaScriptModelException e) {}
 
 		}
 
@@ -761,7 +761,7 @@ public class NameLookup implements SuffixConstants {
 	/*
 	 * Find secondary type for a project.
 	 */
-	private IType findSecondaryType(String packageName, String typeName, IJavaProject project, boolean waitForIndexes, IProgressMonitor monitor) {
+	private IType findSecondaryType(String packageName, String typeName, IJavaScriptProject project, boolean waitForIndexes, IProgressMonitor monitor) {
 		if (JavaModelManager.VERBOSE) {
 			Util.verbose("NameLookup FIND SECONDARY TYPES:"); //$NON-NLS-1$
 			Util.verbose(" -> pkg name: " + packageName);  //$NON-NLS-1$
@@ -770,7 +770,7 @@ public class NameLookup implements SuffixConstants {
 		}
 		JavaModelManager manager = JavaModelManager.getJavaModelManager();
 		try {
-			IJavaProject javaProject = project;
+			IJavaScriptProject javaProject = project;
 			Map secondaryTypePaths = manager.secondaryTypes(javaProject, waitForIndexes, monitor);
 			if (secondaryTypePaths.size() > 0) {
 				Map types = (Map) secondaryTypePaths.get(packageName==null?"":packageName); //$NON-NLS-1$
@@ -785,7 +785,7 @@ public class NameLookup implements SuffixConstants {
 				}
 			}
 		}
-		catch (JavaModelException jme) {
+		catch (JavaScriptModelException jme) {
 			// give up
 		}
 		return null;
@@ -875,7 +875,7 @@ public class NameLookup implements SuffixConstants {
 	 * @param waitForIndexes
 	 * @return all found compilationUnits containg [typeName]
 	 */
-	public ICompilationUnit[] findTypeSources(String typeName, boolean waitForIndexes) {
+	public IJavaScriptUnit[] findTypeSources(String typeName, boolean waitForIndexes) {
 
 		// Look for concerned package fragments
 		JavaElementRequestor elementRequestor = new JavaElementRequestor();
@@ -885,7 +885,7 @@ public class NameLookup implements SuffixConstants {
 		IType type = null;
 		int length= packages.length;
 		HashSet projects = null;
-		IJavaProject javaProject = null;
+		IJavaScriptProject javaProject = null;
 //		Answer suggestedAnswer = null;
 		ArrayList found = new ArrayList();
 
@@ -895,15 +895,15 @@ public class NameLookup implements SuffixConstants {
 				found.add(type);
 			}
 			if (javaProject == null) {
-				javaProject = packages[i].getJavaProject();
+				javaProject = packages[i].getJavaScriptProject();
 			} else if (projects == null)  {
-				if (!javaProject.equals(packages[i].getJavaProject())) {
+				if (!javaProject.equals(packages[i].getJavaScriptProject())) {
 					projects = new HashSet(3);
 					projects.add(javaProject);
-					projects.add(packages[i].getJavaProject());
+					projects.add(packages[i].getJavaScriptProject());
 				}
 			} else {
-				projects.add(packages[i].getJavaProject());
+				projects.add(packages[i].getJavaScriptProject());
 			}
 
 		}
@@ -915,7 +915,7 @@ public class NameLookup implements SuffixConstants {
 			} else {
 				Iterator allProjects = projects.iterator();
 				while (type == null && allProjects.hasNext()) {
-					type = findSecondaryType(IPackageFragment.DEFAULT_PACKAGE_NAME, typeName, (IJavaProject) allProjects.next(), waitForIndexes, new NullProgressMonitor());
+					type = findSecondaryType(IPackageFragment.DEFAULT_PACKAGE_NAME, typeName, (IJavaScriptProject) allProjects.next(), waitForIndexes, new NullProgressMonitor());
 				}
 			}
 		}
@@ -950,7 +950,7 @@ public class NameLookup implements SuffixConstants {
 		IType type = null;
 		int length= packages.length;
 		HashSet projects = null;
-		IJavaProject javaProject = null;
+		IJavaScriptProject javaProject = null;
 		Answer suggestedAnswer = null;
 		for (int i= 0; i < length; i++) {
 			type = findType(typeName, packages[i], partialMatch, acceptFlags);
@@ -969,15 +969,15 @@ public class NameLookup implements SuffixConstants {
 			}
 			else if (suggestedAnswer == null && considerSecondaryTypes) {
 				if (javaProject == null) {
-					javaProject = packages[i].getJavaProject();
+					javaProject = packages[i].getJavaScriptProject();
 				} else if (projects == null)  {
-					if (!javaProject.equals(packages[i].getJavaProject())) {
+					if (!javaProject.equals(packages[i].getJavaScriptProject())) {
 						projects = new HashSet(3);
 						projects.add(javaProject);
-						projects.add(packages[i].getJavaProject());
+						projects.add(packages[i].getJavaScriptProject());
 					}
 				} else {
-					projects.add(packages[i].getJavaProject());
+					projects.add(packages[i].getJavaScriptProject());
 				}
 			}
 		}
@@ -992,7 +992,7 @@ public class NameLookup implements SuffixConstants {
 			} else {
 				Iterator allProjects = projects.iterator();
 				while (type == null && allProjects.hasNext()) {
-					type = findSecondaryType(packageName, typeName, (IJavaProject) allProjects.next(), waitForIndexes, monitor);
+					type = findSecondaryType(packageName, typeName, (IJavaScriptProject) allProjects.next(), waitForIndexes, monitor);
 				}
 			}
 		}
@@ -1028,7 +1028,7 @@ public class NameLookup implements SuffixConstants {
 		Object element = null;
 		int length= packages.length;
 		HashSet projects = null;
-		IJavaProject javaProject = null;
+		IJavaScriptProject javaProject = null;
 		Answer suggestedAnswer = null;
 		for (int i= 0; i < length; i++) {
 			element = findBinding(bindingName, bindingType,packages[i], partialMatch, acceptFlags);
@@ -1061,15 +1061,15 @@ public class NameLookup implements SuffixConstants {
 			}
 			else if (suggestedAnswer == null && considerSecondaryTypes) {
 				if (javaProject == null) {
-					javaProject = packages[i].getJavaProject();
+					javaProject = packages[i].getJavaScriptProject();
 				} else if (projects == null)  {
-					if (!javaProject.equals(packages[i].getJavaProject())) {
+					if (!javaProject.equals(packages[i].getJavaScriptProject())) {
 						projects = new HashSet(3);
 						projects.add(javaProject);
-						projects.add(packages[i].getJavaProject());
+						projects.add(packages[i].getJavaScriptProject());
 					}
 				} else {
-					projects.add(packages[i].getJavaProject());
+					projects.add(packages[i].getJavaScriptProject());
 				}
 			}
 		}
@@ -1084,7 +1084,7 @@ public class NameLookup implements SuffixConstants {
 //			} else {
 //				Iterator allProjects = projects.iterator();
 //				while (type == null && allProjects.hasNext()) {
-//					type = findSecondaryType(packageName, typeName, (IJavaProject) allProjects.next(), waitForIndexes, monitor);
+//					type = findSecondaryType(packageName, typeName, (IJavaScriptProject) allProjects.next(), waitForIndexes, monitor);
 //				}
 //			}
 //		}
@@ -1092,7 +1092,7 @@ public class NameLookup implements SuffixConstants {
 	}
 
 	private AccessRestriction getViolatedRestriction(String typeName, String packageName, IType type, AccessRestriction accessRestriction) {
-		PackageFragmentRoot root = (PackageFragmentRoot) type.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+		PackageFragmentRoot root = (PackageFragmentRoot) type.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 		ClasspathEntry entry = (ClasspathEntry) this.rootToResolvedEntries.get(root);
 		if (entry != null) { // reverse map always contains resolved CP entry
 			AccessRuleSet accessRuleSet = entry.getAccessRuleSet();
@@ -1109,7 +1109,7 @@ public class NameLookup implements SuffixConstants {
 	private AccessRestriction getViolatedRestriction(String typeName, String packageName, Object element, AccessRestriction accessRestriction) {
 //TODO: implement
 //		System.out.println("implement NameLookup.getViolatedRestriction");
-//		PackageFragmentRoot root = (PackageFragmentRoot) type.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+//		PackageFragmentRoot root = (PackageFragmentRoot) type.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 //		ClasspathEntry entry = (ClasspathEntry) this.rootToResolvedEntries.get(root);
 //		if (entry != null) { // reverse map always contains resolved CP entry
 //			AccessRuleSet accessRuleSet = entry.getAccessRuleSet();
@@ -1147,7 +1147,7 @@ public class NameLookup implements SuffixConstants {
 	public IType findType(String name, IPackageFragment pkg, boolean partialMatch, int acceptFlags, boolean considerSecondaryTypes) {
 		IType type = findType(name, pkg, partialMatch, acceptFlags);
 		if (type == null && considerSecondaryTypes) {
-			type = findSecondaryType(pkg.getElementName(), name, pkg.getJavaProject(), false, null);
+			type = findSecondaryType(pkg.getElementName(), name, pkg.getJavaScriptProject(), false, null);
 		}
 		return type;
 	}
@@ -1182,14 +1182,14 @@ public class NameLookup implements SuffixConstants {
 		return typeRequestor.getType();
 	}
 
-	public IJavaElement findBinding(String name, int type, IPackageFragment pkg, boolean partialMatch, int acceptFlags) {
+	public IJavaScriptElement findBinding(String name, int type, IPackageFragment pkg, boolean partialMatch, int acceptFlags) {
 		if (pkg == null) return null;
 
 		// Return first found (ignore duplicates).
 		JavaElementRequestor requestor = new JavaElementRequestor();
 		seekBindings(name,type, pkg, partialMatch, acceptFlags, requestor);
 		  IField[] fields = requestor.getFields();
-		  IMethod[] methods = requestor.getMethods();
+		  IFunction[] methods = requestor.getMethods();
 		  IType[] types = requestor.getTypes();
 		switch (type)
 		{
@@ -1290,7 +1290,7 @@ public class NameLookup implements SuffixConstants {
 	 * NOTE: in partialMatch mode, the case will be ignored, and the searchName must already have
 	 *          been lowercased.
 	 */
-	protected boolean nameMatches(String searchName, IJavaElement element, boolean partialMatch) {
+	protected boolean nameMatches(String searchName, IJavaScriptElement element, boolean partialMatch) {
 		if (partialMatch) {
 			// partial matches are used in completion mode, thus case insensitive mode
 			return element.getElementName().toLowerCase().startsWith(searchName);
@@ -1308,7 +1308,7 @@ public class NameLookup implements SuffixConstants {
 	 * NOTE: in partialMatch mode, the case will be ignored, and the searchName must already have
 	 *          been lowercased.
 	 */
-	protected boolean nameMatches(String searchName, ICompilationUnit cu, boolean partialMatch) {
+	protected boolean nameMatches(String searchName, IJavaScriptUnit cu, boolean partialMatch) {
 		if (partialMatch) {
 			// partial matches are used in completion mode, thus case insensitive mode
 			return cu.getElementName().toLowerCase().startsWith(searchName);
@@ -1321,7 +1321,7 @@ public class NameLookup implements SuffixConstants {
 	 * Notifies the given requestor of all package fragments with the
 	 * given name. Checks the requestor at regular intervals to see if the
 	 * requestor has canceled. The domain of
-	 * the search is bounded by the <code>IJavaProject</code>
+	 * the search is bounded by the <code>IJavaScriptProject</code>
 	 * this <code>NameLookup</code> was obtained from.
 	 *
 	 * @param partialMatch partial name matches qualify when <code>true</code>;
@@ -1337,7 +1337,7 @@ public class NameLookup implements SuffixConstants {
 		for (int i = 0; i < this.packageFragmentRoots.length; i++) {
 
 
-			IJavaElement[] children;
+			IJavaScriptElement[] children;
 			try {
 				if (this.searchFiles || packageFragmentRoots[i].isLibrary())
 				{
@@ -1346,7 +1346,7 @@ public class NameLookup implements SuffixConstants {
 						requestor.acceptPackageFragment((IPackageFragment)children[j]);
 					}
 				}
-			} catch (JavaModelException e) {}
+			} catch (JavaScriptModelException e) {}
 
 		}
 
@@ -1397,13 +1397,13 @@ public class NameLookup implements SuffixConstants {
 //			for (int i = 0; i < this.packageFragmentRoots.length; i++) {
 //				if (packageFragmentRoots[i] instanceof LibraryFragmentRoot)
 //				{
-//					IJavaElement[] children;
+//					IJavaScriptElement[] children;
 //					try {
 //						children = packageFragmentRoots[i].getChildren();
 //						for (int j = 0; j < children.length; j++) {
 //							requestor.acceptPackageFragment((IPackageFragment)children[j]);
 //						}
-//					} catch (JavaModelException e) {
+//					} catch (JavaScriptModelException e) {
 //					}
 //				}
 //			}
@@ -1488,7 +1488,7 @@ public class NameLookup implements SuffixConstants {
 				default :
 					return;
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return;
 		}
 	}
@@ -1536,7 +1536,7 @@ public class NameLookup implements SuffixConstants {
 						default :
 							return;
 					}
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					return;
 				}
 			}
@@ -1561,10 +1561,10 @@ public class NameLookup implements SuffixConstants {
 //					}
 //				}
 //			} else {
-//				IJavaElement[] classFiles= null;
+//				IJavaScriptElement[] classFiles= null;
 //				try {
 //					classFiles= pkg.getChildren();
-//				} catch (JavaModelException npe) {
+//				} catch (JavaScriptModelException npe) {
 //					return; // the package is not present
 //				}
 //				int length= classFiles.length;
@@ -1580,7 +1580,7 @@ public class NameLookup implements SuffixConstants {
 //				for (int i = 0; i < length; i++) {
 //					if (requestor.isCanceled())
 //						return;
-//					IJavaElement classFile= classFiles[i];
+//					IJavaScriptElement classFile= classFiles[i];
 //					// MatchName will never have the extension ".class" and the elementName always will.
 //					String elementName = classFile.getElementName();
 //					if (elementName.regionMatches(true /*ignore case*/, 0, name, 0, matchLength)) {
@@ -1605,10 +1605,10 @@ public class NameLookup implements SuffixConstants {
 			start = System.currentTimeMillis();
 		try {
 			this.acceptedCUs.clear();
-			IJavaElement[] classFiles= null;
+			IJavaScriptElement[] classFiles= null;
 			try {
 				classFiles= pkg.getChildren();
-			} catch (JavaModelException npe) {
+			} catch (JavaScriptModelException npe) {
 				return; // the package is not present
 			}
 			int length= classFiles.length;
@@ -1645,14 +1645,14 @@ public class NameLookup implements SuffixConstants {
 //						int lastDot = cuName.lastIndexOf('.');
 //						if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot))
 //							continue;
-						IMethod method = classFile.getMethod(name, null);
+						IFunction method = classFile.getFunction(name, null);
 						if (method.exists()) {
 							acceptedCUs.add(classFile);
 							requestor.acceptMethod(method);
 						}
 						break;
 					case Binding.METHOD | Binding.VARIABLE:
-						 method = classFile.getMethod(name, null);
+						 method = classFile.getFunction(name, null);
 						if (method!=null
 							&& method.exists()) {
 								acceptedCUs.add(classFile);
@@ -1680,7 +1680,7 @@ public class NameLookup implements SuffixConstants {
 							}
 							if ((Binding.METHOD & bindingType)!=0)
 							{
-								 method = classFile.getMethod(name, null);
+								 method = classFile.getFunction(name, null);
 									if (method!=null && method.exists()) {
 										acceptedCUs.add(classFile);
 										requestor.acceptMethod(method);
@@ -1710,7 +1710,7 @@ public class NameLookup implements SuffixConstants {
 				for (int i = 0; i < length; i++) {
 					if (requestor.isCanceled())
 						return;
-					IJavaElement classFile= classFiles[i];
+					IJavaScriptElement classFile= classFiles[i];
 					// MatchName will never have the extension ".class" and the elementName always will.
 					String elementName = classFile.getElementName();
 					if (elementName.regionMatches(true /*ignore case*/, 0, name, 0, matchLength)) {
@@ -1747,45 +1747,45 @@ public class NameLookup implements SuffixConstants {
 		try {
 			if (!partialMatch) {
 				try {
-					IJavaElement[] compilationUnits = pkg.getChildren();
+					IJavaScriptElement[] compilationUnits = pkg.getChildren();
 					for (int i = 0, length = compilationUnits.length; i < length; i++) {
 						if (requestor.isCanceled())
 							return;
-						IJavaElement cu = compilationUnits[i];
+						IJavaScriptElement cu = compilationUnits[i];
 //						String cuName = cu.getElementName();
 						//int lastDot = cuName.lastIndexOf('.');
 						//if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot)) \
 						//if(topLevelTypeName!=null && !topLevelTypeName.equals(cuName))
 						//	continue;
-						IType type = ((ICompilationUnit) cu).getType(name);
+						IType type = ((IJavaScriptUnit) cu).getType(name);
 						//type = getMemberType(type, name, firstDot);
 						if (acceptType(type, acceptFlags, true/*a source type*/)) { // accept type checks for existence
 							requestor.acceptType(type);
 							break;  // since an exact match was requested, no other matching type can exist
 						}
 					}
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					// package doesn't exist -> ignore
 				}
 			} else {
 				try {
 					String cuPrefix = firstDot == -1 ? name : name.substring(0, firstDot);
-					IJavaElement[] compilationUnits = pkg.getChildren();
+					IJavaScriptElement[] compilationUnits = pkg.getChildren();
 					for (int i = 0, length = compilationUnits.length; i < length; i++) {
 						if (requestor.isCanceled())
 							return;
-						IJavaElement cu = compilationUnits[i];
+						IJavaScriptElement cu = compilationUnits[i];
 						if (!cu.getElementName().toLowerCase().startsWith(cuPrefix))
 							continue;
 						try {
-							IType[] types = ((ICompilationUnit) cu).getTypes();
+							IType[] types = ((IJavaScriptUnit) cu).getTypes();
 							for (int j = 0, typeLength = types.length; j < typeLength; j++)
 								seekTypesInTopLevelType(name, firstDot, types[j], requestor, acceptFlags);
-						} catch (JavaModelException e) {
+						} catch (JavaScriptModelException e) {
 							// cu doesn't exist -> ignore
 						}
 					}
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					// package doesn't exist -> ignore
 				}
 			}
@@ -1811,12 +1811,12 @@ public class NameLookup implements SuffixConstants {
 		try {
 			if (!partialMatch) {
 				try {
-					IJavaElement[] compilationUnits = pkg.getChildren();
+					IJavaScriptElement[] compilationUnits = pkg.getChildren();
 					for (int i = 0, length = compilationUnits.length; i < length; i++) {
 						if (requestor.isCanceled())
 							return;
-						IJavaElement cu = compilationUnits[i];
-						if (cu instanceof ICompilationUnit && ((ICompilationUnit)cu).isWorkingCopy())
+						IJavaScriptElement cu = compilationUnits[i];
+						if (cu instanceof IJavaScriptUnit && ((IJavaScriptUnit)cu).isWorkingCopy())
 							continue;
 						if (this.acceptedCUs.contains(cu))
 							continue;
@@ -1827,7 +1827,7 @@ public class NameLookup implements SuffixConstants {
 //							int lastDot = cuName.lastIndexOf('.');
 //							if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot))
 //								continue;
-							IType type = ((ICompilationUnit) cu).getType(topLevelTypeName);
+							IType type = ((IJavaScriptUnit) cu).getType(topLevelTypeName);
 							type = getMemberType(type, name, firstDot);
 							if (acceptType(type, acceptFlags, true/*a source type*/)) { // accept type checks for existence
 								acceptedCUs.add(cu);
@@ -1841,7 +1841,7 @@ public class NameLookup implements SuffixConstants {
 //							int lastDot = cuName.lastIndexOf('.');
 //							if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot))
 //								continue;
-							IField field = ((ICompilationUnit) cu).getField(name);
+							IField field = ((IJavaScriptUnit) cu).getField(name);
 							if (field.exists()) {
 								acceptedCUs.add(cu);
 								requestor.acceptField(field);
@@ -1854,21 +1854,21 @@ public class NameLookup implements SuffixConstants {
 //							int lastDot = cuName.lastIndexOf('.');
 //							if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot))
 //								continue;
-							IMethod method = ((ICompilationUnit) cu).getMethod(name, null);
+							IFunction method = ((IJavaScriptUnit) cu).getFunction(name, null);
 							if (method.exists()) {
 								acceptedCUs.add(cu);
 								requestor.acceptMethod(method);
 							}
 							break;
 						case Binding.METHOD | Binding.VARIABLE:
-							 method = ((ICompilationUnit) cu).getMethod(name, null);
+							 method = ((IJavaScriptUnit) cu).getFunction(name, null);
 							if (method!=null)
 								if  (method.exists()) {
 									acceptedCUs.add(cu);
 									requestor.acceptMethod(method);
 								} else
 							{
-							   field = ((ICompilationUnit) cu).getField(name);
+							   field = ((IJavaScriptUnit) cu).getField(name);
 								if  (field.exists()) {
 									acceptedCUs.add(cu);
 									requestor.acceptField(field);
@@ -1881,28 +1881,28 @@ public class NameLookup implements SuffixConstants {
 						}
 
 					}
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					// package doesn't exist -> ignore
 				}
 			} else {
 				try {
 					String cuPrefix = firstDot == -1 ? name : name.substring(0, firstDot);
-					IJavaElement[] compilationUnits = pkg.getChildren();
+					IJavaScriptElement[] compilationUnits = pkg.getChildren();
 					for (int i = 0, length = compilationUnits.length; i < length; i++) {
 						if (requestor.isCanceled())
 							return;
-						IJavaElement cu = compilationUnits[i];
+						IJavaScriptElement cu = compilationUnits[i];
 						if (!cu.getElementName().toLowerCase().startsWith(cuPrefix))
 							continue;
 						try {
-							IType[] types = ((ICompilationUnit) cu).getTypes();
+							IType[] types = ((IJavaScriptUnit) cu).getTypes();
 							for (int j = 0, typeLength = types.length; j < typeLength; j++)
 								seekTypesInTopLevelType(name, firstDot, types[j], requestor, acceptFlags);
-						} catch (JavaModelException e) {
+						} catch (JavaScriptModelException e) {
 							// cu doesn't exist -> ignore
 						}
 					}
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					// package doesn't exist -> ignore
 				}
 			}
@@ -1922,7 +1922,7 @@ public class NameLookup implements SuffixConstants {
 		IType[] types= null;
 		try {
 			types= type.getTypes();
-		} catch (JavaModelException npe) {
+		} catch (JavaScriptModelException npe) {
 			return false; // the enclosing type is not present
 		}
 		int length= types.length;
@@ -2028,13 +2028,13 @@ public class NameLookup implements SuffixConstants {
 	private boolean checkBindingAccept(String topLevelTypeName,HashMap []bindingsMap,int bindingType,IJavaElementRequestor requestor)
 	{
 		Object object = bindingsMap[bindingType].get(topLevelTypeName);
-		if (object instanceof IJavaElement) {
-			if (doAcceptBinding((IJavaElement)object, bindingType , true/*a source type*/,requestor)) {
+		if (object instanceof IJavaScriptElement) {
+			if (doAcceptBinding((IJavaScriptElement)object, bindingType , true/*a source type*/,requestor)) {
 				return true; // don't continue with compilation unit
 			}
-		} else if (object instanceof IJavaElement[]) {
+		} else if (object instanceof IJavaScriptElement[]) {
 			if (object == NO_BINDINGS) return true; // all types where deleted -> type is hidden
-			IJavaElement[] topLevelElements = (IJavaElement[]) object;
+			IJavaScriptElement[] topLevelElements = (IJavaScriptElement[]) object;
 			for (int i = 0, length = topLevelElements.length; i < length; i++) {
 				if (requestor.isCanceled())
 					return false;
@@ -2098,7 +2098,7 @@ public class NameLookup implements SuffixConstants {
 
 	   public static final boolean USE_BINDING_SEARCH=true;
 	   private HandleFactory handleFactory;
-		protected IJavaSearchScope searchScope;
+		protected IJavaScriptSearchScope searchScope;
 		public Answer findBindingSearch(
 				String bindingName,
 				String packageName,
@@ -2113,7 +2113,7 @@ public class NameLookup implements SuffixConstants {
 
 			class MyRequestor implements IJavaElementRequestor
 			{
-				IJavaElement element;
+				IJavaScriptElement element;
 				public void acceptField(IField field) {
 					element=field;
 				}
@@ -2125,7 +2125,7 @@ public class NameLookup implements SuffixConstants {
 					element=type;
 				}
 
-				public void acceptMethod(IMethod method) {
+				public void acceptMethod(IFunction method) {
 					element=method;
 
 				}
@@ -2189,8 +2189,8 @@ public class NameLookup implements SuffixConstants {
 							bindingName.toCharArray(),
 							bindingType,
 							matchRule, // not case sensitive
-							/*IJavaSearchConstants.TYPE,*/ this.searchScope,
-							bindingAcceptor, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+							/*IJavaScriptSearchConstants.TYPE,*/ this.searchScope,
+							bindingAcceptor, IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 							false,
 							progressMonitor);
 					if (bindingAcceptor.getFoundPath()!=null)
@@ -2229,7 +2229,7 @@ public class NameLookup implements SuffixConstants {
 				{
 					bindingAcceptor.reset();
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return findBinding( bindingName,packageName,bindingType,partialMatch,acceptFlags,considerSecondaryTypes,waitForIndexes,
 						checkRestrictions,progressMonitor);
 				}
@@ -2240,7 +2240,7 @@ public class NameLookup implements SuffixConstants {
 		 * be faster then the current method so leaveing in case...
 		 *
 		 * */
-		public IOpenable createOpenable(String resourcePath, IJavaSearchScope scope) {
+		public IOpenable createOpenable(String resourcePath, IJavaScriptSearchScope scope) {
 			if(packageFragmentRoots==null) return null;
 			IPath resourceP = new Path(resourcePath);
 			for(int i = 0;i<packageFragmentRoots.length;i++) {
@@ -2272,7 +2272,7 @@ public class NameLookup implements SuffixConstants {
 								if(indexName>-1) {
 									pkgName = pkgName.substring(0,indexName-1);
 								}
-								ICompilationUnit file = root.getPackageFragment(pkgName).getCompilationUnit((fileName));
+								IJavaScriptUnit file = root.getPackageFragment(pkgName).getJavaScriptUnit((fileName));
 								return file;
 							}
 						}

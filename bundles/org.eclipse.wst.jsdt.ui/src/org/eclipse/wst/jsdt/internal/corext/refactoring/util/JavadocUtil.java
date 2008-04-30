@@ -16,10 +16,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.dom.AST;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TagElement;
@@ -37,7 +37,7 @@ public class JavadocUtil {
 	}
 	
 	//TODO: is a copy of ChangeSignatureRefactoring.DeclarationUpdate#createParamTag(..)
-	public static TagElement createParamTag(String parameterName, AST ast, IJavaProject javaProject) {
+	public static TagElement createParamTag(String parameterName, AST ast, IJavaScriptProject javaProject) {
 		TagElement paramNode= ast.newTagElement();
 		paramNode.setTagName(TagElement.TAG_PARAM);
 	
@@ -58,8 +58,8 @@ public class JavadocUtil {
 	 * @param methodDeclaration the method declaration
 	 * @return method has javadoc && (method had no parameter before || there is already an @param tag)
 	 */
-	public static boolean shouldAddParamJavadoc(MethodDeclaration methodDeclaration) {
-		Javadoc javadoc= methodDeclaration.getJavadoc();
+	public static boolean shouldAddParamJavadoc(FunctionDeclaration methodDeclaration) {
+		JSdoc javadoc= methodDeclaration.getJavadoc();
 		if (javadoc == null)
 			return false;
 		if (methodDeclaration.parameters().size() == 0)
@@ -82,12 +82,12 @@ public class JavadocUtil {
 	 * @param javaProject
 	 * @param groupDescription
 	 */
-	public static void addParamJavadoc(String parameterName, MethodDeclaration methodDeclaration,
-			ASTRewrite astRewrite, IJavaProject javaProject, TextEditGroup groupDescription) {
+	public static void addParamJavadoc(String parameterName, FunctionDeclaration methodDeclaration,
+			ASTRewrite astRewrite, IJavaScriptProject javaProject, TextEditGroup groupDescription) {
 		if (! shouldAddParamJavadoc(methodDeclaration))
 			return;
 		
-		ListRewrite tagsRewrite= astRewrite.getListRewrite(methodDeclaration.getJavadoc(), Javadoc.TAGS_PROPERTY);
+		ListRewrite tagsRewrite= astRewrite.getListRewrite(methodDeclaration.getJavadoc(), JSdoc.TAGS_PROPERTY);
 		HashSet leadingNames= new HashSet();
 		for (Iterator iter= methodDeclaration.parameters().iterator(); iter.hasNext();) {
 			SingleVariableDeclaration curr= (SingleVariableDeclaration) iter.next();

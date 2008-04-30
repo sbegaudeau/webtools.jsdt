@@ -17,11 +17,11 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput;
@@ -88,7 +88,7 @@ public class FindExceptionOccurrencesAction extends SelectionDispatchAction {
 	 * Method declared in SelectionDispatchAction.
 	 */
 	public final void run(ITextSelection ts) {
-		IJavaElement input= getEditorInput(fEditor);
+		IJavaScriptElement input= getEditorInput(fEditor);
 		if (!ActionUtil.isProcessable(getShell(), input))
 			return;
 		FindOccurrencesEngine engine= FindOccurrencesEngine.create(input, new ExceptionOccurrencesFinder());
@@ -96,16 +96,16 @@ public class FindExceptionOccurrencesAction extends SelectionDispatchAction {
 			String result= engine.run(ts.getOffset(), ts.getLength());
 			if (result != null)
 				showMessage(getShell(), fEditor, result);
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 		}
 	}
 
-	private static IJavaElement getEditorInput(JavaEditor editor) {
+	private static IJavaScriptElement getEditorInput(JavaEditor editor) {
 		IEditorInput input= editor.getEditorInput();
 		if (input instanceof IClassFileEditorInput)
 			return ((IClassFileEditorInput)input).getClassFile();
-		return  JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(input);
+		return  JavaScriptPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(input);
 	} 
 		
 	private static void showMessage(Shell shell, JavaEditor editor, String msg) {

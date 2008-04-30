@@ -31,16 +31,16 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.progress.IProgressService;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -57,7 +57,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.Separator;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 public class NLSAccessorConfigurationDialog extends StatusDialog {
 
@@ -104,7 +104,7 @@ public class NLSAccessorConfigurationDialog extends StatusDialog {
 
 		AccessorAdapter updateListener= new AccessorAdapter();
 
-		ICompilationUnit cu= refactoring.getCu();
+		IJavaScriptUnit cu= refactoring.getCu();
 
 		fAccessorPackage= new SourceFirstPackageSelectionDialogField(NLSUIMessages.NLSAccessorConfigurationDialog_accessor_path, 
 				NLSUIMessages.NLSAccessorConfigurationDialog_accessor_package, 
@@ -213,7 +213,7 @@ public class NLSAccessorConfigurationDialog extends StatusDialog {
 	}
 
 	private void browseForPropertyFile() {
-		ElementListSelectionDialog dialog= new ElementListSelectionDialog(getShell(), new JavaElementLabelProvider());
+		ElementListSelectionDialog dialog= new ElementListSelectionDialog(getShell(), new JavaScriptElementLabelProvider());
 		dialog.setIgnoreCase(false);
 		dialog.setTitle(NLSUIMessages.NLSAccessorConfigurationDialog_Property_File_Selection); 
 		dialog.setMessage(NLSUIMessages.NLSAccessorConfigurationDialog_Choose_the_property_file); 
@@ -230,10 +230,10 @@ public class NLSAccessorConfigurationDialog extends StatusDialog {
 		IProgressService service= PlatformUI.getWorkbench().getProgressService();
 		IPackageFragmentRoot root= fAccessorPackage.getSelectedFragmentRoot();
 		
-		IJavaSearchScope scope= root != null ? SearchEngine.createJavaSearchScope(new IJavaElement[] { root }) : SearchEngine.createWorkspaceScope();
+		IJavaScriptSearchScope scope= root != null ? SearchEngine.createJavaSearchScope(new IJavaScriptElement[] { root }) : SearchEngine.createWorkspaceScope();
 		
 		FilteredTypesSelectionDialog  dialog= new FilteredTypesSelectionDialog (getShell(), false, 
-			service, scope, IJavaSearchConstants.CLASS);
+			service, scope, IJavaScriptSearchConstants.CLASS);
 		dialog.setTitle(NLSUIMessages.NLSAccessorConfigurationDialog_Accessor_Selection); 
 		dialog.setMessage(NLSUIMessages.NLSAccessorConfigurationDialog_Choose_the_accessor_file); 
 		dialog.setInitialPattern("*Messages"); //$NON-NLS-1$
@@ -255,14 +255,14 @@ public class NLSAccessorConfigurationDialog extends StatusDialog {
 			if (fPkgFragment == null)
 				return new Object[0];
 			List result= new ArrayList(1);
-			Object[] nonjava= fPkgFragment.getNonJavaResources();
+			Object[] nonjava= fPkgFragment.getNonJavaScriptResources();
 			for (int i= 0; i < nonjava.length; i++) {
 				if (isPropertyFile(nonjava[i]))
 					result.add(nonjava[i]);
 			}
 			return result.toArray();
 
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, NLSUIMessages.NLSAccessorConfigurationDialog_externalizing, NLSUIMessages .NLSAccessorConfigurationDialog_exception); 
 			return new Object[0];
 		}
@@ -294,7 +294,7 @@ public class NLSAccessorConfigurationDialog extends StatusDialog {
 	private void validateAccessorClassName() {
 		String className= fAccessorClassName.getText();
 
-		IStatus status= JavaConventions.validateJavaTypeName(className);
+		IStatus status= JavaScriptConventions.validateJavaScriptTypeName(className);
 		if (status.getSeverity() == IStatus.ERROR) {
 			setInvalid(IDX_ACCESSOR_CLASS, status.getMessage());
 			return;
@@ -339,7 +339,7 @@ public class NLSAccessorConfigurationDialog extends StatusDialog {
 		
 		String pkgName= fragment.getElementName();
 
-		IStatus status= JavaConventions.validatePackageName(pkgName);
+		IStatus status= JavaScriptConventions.validatePackageName(pkgName);
 		if ((pkgName.length() > 0) && (status.getSeverity() == IStatus.ERROR)) {
 			setInvalid(IDX_BUNDLE_PACKAGE, status.getMessage());
 			return;
@@ -347,9 +347,9 @@ public class NLSAccessorConfigurationDialog extends StatusDialog {
 
 		IPath pkgPath= new Path(pkgName.replace('.', IPath.SEPARATOR)).makeRelative();
 
-		IJavaProject project= fRefactoring.getCu().getJavaProject();
+		IJavaScriptProject project= fRefactoring.getCu().getJavaScriptProject();
 		try {
-			IJavaElement element= project.findElement(pkgPath);
+			IJavaScriptElement element= project.findElement(pkgPath);
 			if (element == null || !element.exists()) {
 				setInvalid(IDX_BUNDLE_PACKAGE, NLSUIMessages.NLSAccessorConfigurationDialog_must_exist); 
 				return;
@@ -363,7 +363,7 @@ public class NLSAccessorConfigurationDialog extends StatusDialog {
 				setInvalid(IDX_BUNDLE_PACKAGE, NLSUIMessages.NLSAccessorConfigurationDialog_incorrect_package); 
 				return;
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			setInvalid(IDX_BUNDLE_PACKAGE, e.getStatus().getMessage());
 			return;
 		}

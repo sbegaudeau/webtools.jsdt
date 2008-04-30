@@ -19,13 +19,13 @@ import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 public class DeletePackageFragmentRootOperation extends JavaModelOperation {
 
@@ -42,10 +42,10 @@ public class DeletePackageFragmentRootOperation extends JavaModelOperation {
 		this.updateModelFlags = updateModelFlags;
 	}
 
-	protected void executeOperation() throws JavaModelException {
+	protected void executeOperation() throws JavaScriptModelException {
 
 		IPackageFragmentRoot root = (IPackageFragmentRoot)this.getElementToProcess();
-		IClasspathEntry rootEntry = root.getRawClasspathEntry();
+		IIncludePathEntry rootEntry = root.getRawIncludepathEntry();
 
 		// remember olds roots
 		DeltaProcessor deltaProcessor = JavaModelManager.getJavaModelManager().getDeltaProcessor();
@@ -53,11 +53,11 @@ public class DeletePackageFragmentRootOperation extends JavaModelOperation {
 			deltaProcessor.oldRoots = new HashMap();
 
 		// update classpath if needed
-		if ((updateModelFlags & IPackageFragmentRoot.ORIGINATING_PROJECT_CLASSPATH) != 0) {
-			updateProjectClasspath(rootEntry.getPath(), root.getJavaProject(), deltaProcessor.oldRoots);
+		if ((updateModelFlags & IPackageFragmentRoot.ORIGINATING_PROJECT_INCLUDEPATH) != 0) {
+			updateProjectClasspath(rootEntry.getPath(), root.getJavaScriptProject(), deltaProcessor.oldRoots);
 		}
-		if ((updateModelFlags & IPackageFragmentRoot.OTHER_REFERRING_PROJECTS_CLASSPATH) != 0) {
-			updateReferringProjectClasspaths(rootEntry.getPath(), root.getJavaProject(), deltaProcessor.oldRoots);
+		if ((updateModelFlags & IPackageFragmentRoot.OTHER_REFERRING_PROJECTS_INCLUDEPATH) != 0) {
+			updateReferringProjectClasspaths(rootEntry.getPath(), root.getJavaScriptProject(), deltaProcessor.oldRoots);
 		}
 
 		// delete resource
@@ -68,15 +68,15 @@ public class DeletePackageFragmentRootOperation extends JavaModelOperation {
 
 	protected void deleteResource(
 		IPackageFragmentRoot root,
-		IClasspathEntry rootEntry)
-		throws JavaModelException {
+		IIncludePathEntry rootEntry)
+		throws JavaScriptModelException {
 		final char[][] exclusionPatterns = ((ClasspathEntry)rootEntry).fullExclusionPatternChars();
 		IResource rootResource = root.getResource();
-		if (rootEntry.getEntryKind() != IClasspathEntry.CPE_SOURCE || exclusionPatterns == null) {
+		if (rootEntry.getEntryKind() != IIncludePathEntry.CPE_SOURCE || exclusionPatterns == null) {
 			try {
 				rootResource.delete(this.updateResourceFlags, progressMonitor);
 			} catch (CoreException e) {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			}
 		} else {
 			final IPath[] nestedFolders = getNestedFolders(root);
@@ -101,7 +101,7 @@ public class DeletePackageFragmentRootOperation extends JavaModelOperation {
 			try {
 				rootResource.accept(visitor, IResource.NONE);
 			} catch (CoreException e) {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			}
 		}
 		setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
@@ -111,11 +111,11 @@ public class DeletePackageFragmentRootOperation extends JavaModelOperation {
 	/*
 	 * Deletes the classpath entries equals to the given rootPath from all Java projects.
 	 */
-	protected void updateReferringProjectClasspaths(IPath rootPath, IJavaProject projectOfRoot, Map oldRoots) throws JavaModelException {
-		IJavaModel model = this.getJavaModel();
-		IJavaProject[] projects = model.getJavaProjects();
+	protected void updateReferringProjectClasspaths(IPath rootPath, IJavaScriptProject projectOfRoot, Map oldRoots) throws JavaScriptModelException {
+		IJavaScriptModel model = this.getJavaModel();
+		IJavaScriptProject[] projects = model.getJavaScriptProjects();
 		for (int i = 0, length = projects.length; i < length; i++) {
-			IJavaProject project = projects[i];
+			IJavaScriptProject project = projects[i];
 			if (project.equals(projectOfRoot)) continue;
 			updateProjectClasspath(rootPath, project, oldRoots);
 		}
@@ -124,19 +124,19 @@ public class DeletePackageFragmentRootOperation extends JavaModelOperation {
 	/*
 	 * Deletes the classpath entries equals to the given rootPath from the given project.
 	 */
-	protected void updateProjectClasspath(IPath rootPath, IJavaProject project, Map oldRoots) throws JavaModelException {
+	protected void updateProjectClasspath(IPath rootPath, IJavaScriptProject project, Map oldRoots) throws JavaScriptModelException {
 		// remember old roots
 		oldRoots.put(project, project.getPackageFragmentRoots());
 
-		IClasspathEntry[] classpath = project.getRawClasspath();
-		IClasspathEntry[] newClasspath = null;
+		IIncludePathEntry[] classpath = project.getRawIncludepath();
+		IIncludePathEntry[] newClasspath = null;
 		int cpLength = classpath.length;
 		int newCPIndex = -1;
 		for (int j = 0; j < cpLength; j++) {
-			IClasspathEntry entry = classpath[j];
+			IIncludePathEntry entry = classpath[j];
 			if (rootPath.equals(entry.getPath())) {
 				if (newClasspath == null) {
-					newClasspath = new IClasspathEntry[cpLength-1];
+					newClasspath = new IIncludePathEntry[cpLength-1];
 					System.arraycopy(classpath, 0, newClasspath, 0, j);
 					newCPIndex = j;
 				}
@@ -146,25 +146,25 @@ public class DeletePackageFragmentRootOperation extends JavaModelOperation {
 		}
 		if (newClasspath != null) {
 			if (newCPIndex < newClasspath.length) {
-				System.arraycopy(newClasspath, 0, newClasspath = new IClasspathEntry[newCPIndex], 0, newCPIndex);
+				System.arraycopy(newClasspath, 0, newClasspath = new IIncludePathEntry[newCPIndex], 0, newCPIndex);
 			}
-			project.setRawClasspath(newClasspath, progressMonitor);
+			project.setRawIncludepath(newClasspath, progressMonitor);
 		}
 	}
-	protected IJavaModelStatus verify() {
-		IJavaModelStatus status = super.verify();
+	protected IJavaScriptModelStatus verify() {
+		IJavaScriptModelStatus status = super.verify();
 		if (!status.isOK()) {
 			return status;
 		}
 		IPackageFragmentRoot root = (IPackageFragmentRoot) this.getElementToProcess();
 		if (root == null || !root.exists()) {
-			return new JavaModelStatus(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, root);
+			return new JavaModelStatus(IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST, root);
 		}
 
 		IResource resource = root.getResource();
 		if (resource instanceof IFolder) {
 			if (resource.isLinked()) {
-				return new JavaModelStatus(IJavaModelStatusConstants.INVALID_RESOURCE, root);
+				return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_RESOURCE, root);
 			}
 		}
 		return JavaModelStatus.VERIFIED_OK;

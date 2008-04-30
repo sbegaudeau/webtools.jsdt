@@ -371,7 +371,7 @@ public final class Flags {
 	 * the AccTransient flag (valid for fields only), attempting to get the description of method modifiers with the AccVarargs flag set would result in an
 	 * unexpected description. Clients should ensure that the AccVarargs is not included in the flags of a method as follows:
 	 * <pre>
-	 * IMethod method = ...
+	 * IFunction method = ...
 	 * int flags = method.getFlags() & ~Flags.AccVarargs;
 	 * return Flags.toString(flags);
 	 * </pre>

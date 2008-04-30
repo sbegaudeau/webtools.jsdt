@@ -14,7 +14,7 @@
 package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchScopeFactory;
@@ -27,7 +27,7 @@ class SearchScopeWorkspaceAction extends SearchScopeAction {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.CALL_HIERARCHY_SEARCH_SCOPE_ACTION);
 	}
 	
-	public IJavaSearchScope getSearchScope() {
+	public IJavaScriptSearchScope getSearchScope() {
 		return SearchEngine.createWorkspaceScope();
 	}
 	

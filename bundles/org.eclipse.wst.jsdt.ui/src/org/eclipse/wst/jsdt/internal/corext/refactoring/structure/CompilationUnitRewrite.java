@@ -23,18 +23,18 @@ import org.eclipse.ltk.core.refactoring.GroupCategorySet;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.AST;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * A {@link CompilationUnitRewrite} holds all data structures that are typically
@@ -47,10 +47,10 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
  */
 public class CompilationUnitRewrite {
 	//TODO: add RefactoringStatus fStatus;?
-	private ICompilationUnit fCu;
+	private IJavaScriptUnit fCu;
 	private List/*<TextEditGroup>*/ fTextEditGroups= new ArrayList();
 	
-	private CompilationUnit fRoot; // lazily initialized
+	private JavaScriptUnit fRoot; // lazily initialized
 	private ASTRewrite fRewrite; // lazily initialized
 	private ImportRewrite fImportRewrite; // lazily initialized
 	private ImportRemover fImportRemover; // lazily initialized
@@ -61,19 +61,19 @@ public class CompilationUnitRewrite {
 	private IDocument fRememberContent= null;
 
 	
-	public CompilationUnitRewrite(ICompilationUnit cu) {
+	public CompilationUnitRewrite(IJavaScriptUnit cu) {
 		this(null, cu, null);
 	}
 
-	public CompilationUnitRewrite(WorkingCopyOwner owner, ICompilationUnit cu) {
+	public CompilationUnitRewrite(WorkingCopyOwner owner, IJavaScriptUnit cu) {
 		this(owner, cu, null);
 	}
 
-	public CompilationUnitRewrite(ICompilationUnit cu, CompilationUnit root) {
+	public CompilationUnitRewrite(IJavaScriptUnit cu, JavaScriptUnit root) {
 		this(null, cu, root);
 	}
 
-	public CompilationUnitRewrite(WorkingCopyOwner owner, ICompilationUnit cu, CompilationUnit root) {
+	public CompilationUnitRewrite(WorkingCopyOwner owner, IJavaScriptUnit cu, JavaScriptUnit root) {
 		fOwner= owner;
 		fCu= cu;
 		fRoot= root;
@@ -89,7 +89,7 @@ public class CompilationUnitRewrite {
 	 * nodes it creates. To be effective, this method must be called before any
 	 * of {@link #getRoot()},{@link #getASTRewrite()},
 	 * {@link #getImportRemover()}. This method has no effect if the target object
-	 * has been created with {@link #CompilationUnitRewrite(ICompilationUnit, CompilationUnit)}.
+	 * has been created with {@link #CompilationUnitRewrite(IJavaScriptUnit, JavaScriptUnit)}.
 	 * <p>
 	 * Defaults to <b><code>true</code></b> (do resolve bindings).
 	 * </p>
@@ -110,7 +110,7 @@ public class CompilationUnitRewrite {
 	 * To be effective, this method must be called before any
 	 * of {@link #getRoot()},{@link #getASTRewrite()},
 	 * {@link #getImportRemover()}. This method has no effect if the target object
-	 * has been created with {@link #CompilationUnitRewrite(ICompilationUnit, CompilationUnit)}.
+	 * has been created with {@link #CompilationUnitRewrite(IJavaScriptUnit, JavaScriptUnit)}.
 	 * <p>
 	 * Defaults to <b><code>false</code></b> (do not perform statements recovery).
 	 * </p>
@@ -127,7 +127,7 @@ public class CompilationUnitRewrite {
 	 * To be effective, this method must be called before any
 	 * of {@link #getRoot()},{@link #getASTRewrite()},
 	 * {@link #getImportRemover()}. This method has no effect if the target object
-	 * has been created with {@link #CompilationUnitRewrite(ICompilationUnit, CompilationUnit)}.
+	 * has been created with {@link #CompilationUnitRewrite(IJavaScriptUnit, JavaScriptUnit)}.
 	 * <p>
 	 * Defaults to <b><code>false</code></b> (do not perform bindings recovery).
 	 * </p>
@@ -228,7 +228,7 @@ public class CompilationUnitRewrite {
 			if (needsAstRewrite) {
 				TextEdit rewriteEdit;
 				if (fRememberContent != null) {
-					rewriteEdit= fRewrite.rewriteAST(fRememberContent, fCu.getJavaProject().getOptions(true));
+					rewriteEdit= fRewrite.rewriteAST(fRememberContent, fCu.getJavaScriptProject().getOptions(true));
 				} else {
 					rewriteEdit= fRewrite.rewriteAST();
 				}
@@ -268,11 +268,11 @@ public class CompilationUnitRewrite {
 		return edit.getClass() == MultiTextEdit.class && ! edit.hasChildren();
 	}
 	
-	public ICompilationUnit getCu() {
+	public IJavaScriptUnit getCu() {
 		return fCu;
 	}
 
-	public CompilationUnit getRoot() {
+	public JavaScriptUnit getRoot() {
 		if (fRoot == null)
 			fRoot= new RefactoringASTParser(AST.JLS3).parse(fCu, fOwner, fResolveBindings, fStatementsRecovery, fBindingsRecovery, null);
 		return fRoot;
@@ -288,7 +288,7 @@ public class CompilationUnitRewrite {
 			if (fRememberContent != null) { // wain until ast rewrite is accessed first
 				try {
 					fRememberContent.set(fCu.getSource());
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					fRememberContent= null;
 				}
 			}
@@ -306,7 +306,7 @@ public class CompilationUnitRewrite {
 					fImportRewrite= StubUtility.createImportRewrite(getRoot(), true);
 				}
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 				throw new IllegalStateException(e.getMessage()); // like ASTParser#createAST(..) does
 			}
 		}
@@ -316,7 +316,7 @@ public class CompilationUnitRewrite {
 	
 	public ImportRemover getImportRemover() {
 		if (fImportRemover == null) {
-			fImportRemover= new ImportRemover(fCu.getJavaProject(), getRoot());
+			fImportRemover= new ImportRemover(fCu.getJavaScriptProject(), getRoot());
 		}
 		return fImportRemover;
 	}

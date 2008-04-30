@@ -33,7 +33,7 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.part.ISetSelectionTarget;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.IBuildpathModifierListener;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 public abstract class BuildpathModifierAction extends Action implements ISelectionChangedListener {
 	
@@ -123,9 +123,9 @@ public abstract class BuildpathModifierAction extends Action implements ISelecti
 	
 	protected Shell getShell() {
 		if (fSite == null)
-			return JavaPlugin.getActiveWorkbenchShell();
+			return JavaScriptPlugin.getActiveWorkbenchShell();
 		
-	    return fSite.getShell() != null ? fSite.getShell() : JavaPlugin.getActiveWorkbenchShell();
+	    return fSite.getShell() != null ? fSite.getShell() : JavaScriptPlugin.getActiveWorkbenchShell();
     }
 	
 	protected void showExceptionDialog(CoreException exception, String title) {

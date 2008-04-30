@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.SharedScrolledComposite;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 
 public class ScrolledPageContent extends SharedScrolledComposite {
@@ -31,7 +31,7 @@ public class ScrolledPageContent extends SharedScrolledComposite {
 		
 		setFont(parent.getFont());
 		
-		fToolkit= JavaPlugin.getDefault().getDialogsFormToolkit();
+		fToolkit= JavaScriptPlugin.getDefault().getDialogsFormToolkit();
 		
 		setExpandHorizontal(true);
 		setExpandVertical(true);

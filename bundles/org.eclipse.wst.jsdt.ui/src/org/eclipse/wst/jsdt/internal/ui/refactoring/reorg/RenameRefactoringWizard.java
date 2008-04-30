@@ -17,7 +17,7 @@ import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.INameUpdating;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 
 public class RenameRefactoringWizard extends RefactoringWizard {
@@ -73,7 +73,7 @@ public class RenameRefactoringWizard extends RefactoringWizard {
 		fInputPageDescription= inputPageDescription;
 		fInputPageImageDescriptor= inputPageImageDescriptor;
 		fPageContextHelpId= pageContextHelpId;
-		setDialogSettings(JavaPlugin.getDefault().getDialogSettings());
+		setDialogSettings(JavaScriptPlugin.getDefault().getDialogSettings());
 	}
 
 	/* non java-doc
@@ -104,7 +104,7 @@ public class RenameRefactoringWizard extends RefactoringWizard {
 		try{
 			return ref.checkNewElementName(newName);
 		} catch (CoreException e){
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			return RefactoringStatus.createFatalErrorStatus(RefactoringMessages.RenameRefactoringWizard_internal_error);
 		}	
 	}

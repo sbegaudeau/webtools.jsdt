@@ -54,7 +54,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 import org.eclipse.ui.wizards.datatransfer.ZipFileStructureProvider;
 import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.OpenBrowserUtil;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
@@ -67,7 +67,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListene
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class JavadocConfigurationBlock {
 	private static final String FILE_IMPORT_MASK= "*.jar;*.zip"; //$NON-NLS-1$
@@ -549,7 +549,7 @@ public class JavadocConfigurationBlock {
 				return new Path(name).removeTrailingSeparator().toString();
 			}
 		} catch (IOException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		} finally {
 			if (zipFile != null) {
 				try {
@@ -635,7 +635,7 @@ public class JavadocConfigurationBlock {
 				URL url= new File(result).toURL();
 				return url.toExternalForm();
 			} catch (MalformedURLException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 		return null;
@@ -877,7 +877,7 @@ public class JavadocConfigurationBlock {
 	private static class ZipDialogLabelProvider extends LabelProvider {
 	
 		private final Image IMG_JAR=
-			JavaUI.getSharedImages().getImage(org.eclipse.wst.jsdt.ui.ISharedImages.IMG_OBJS_JAR);
+			JavaScriptUI.getSharedImages().getImage(org.eclipse.wst.jsdt.ui.ISharedImages.IMG_OBJS_JAR);
 		private final Image IMG_FOLDER=
 			PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
 	

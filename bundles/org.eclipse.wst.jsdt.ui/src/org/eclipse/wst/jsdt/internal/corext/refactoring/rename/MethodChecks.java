@@ -16,11 +16,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.internal.corext.Corext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
@@ -39,7 +39,7 @@ public class MethodChecks {
 	private MethodChecks(){
 	}
 	
-	public static boolean isVirtual(IMethod method) throws JavaModelException {
+	public static boolean isVirtual(IFunction method) throws JavaScriptModelException {
 		if (method.isConstructor())
 			return false;
 		if (JdtFlags.isPrivate(method))	
@@ -51,7 +51,7 @@ public class MethodChecks {
 		return true;	
 	}	
 	
-	public static boolean isVirtual(IMethodBinding methodBinding){
+	public static boolean isVirtual(IFunctionBinding methodBinding){
 		if (methodBinding.isConstructor())
 			return false;
 		if (Modifier.isPrivate(methodBinding.getModifiers()))	//TODO is this enough?
@@ -61,8 +61,8 @@ public class MethodChecks {
 		return true;	
 	}
 	
-	public static RefactoringStatus checkIfOverridesAnother(IMethod method, ITypeHierarchy hierarchy) throws JavaModelException {
-		IMethod overrides= MethodChecks.overridesAnotherMethod(method, hierarchy);
+	public static RefactoringStatus checkIfOverridesAnother(IFunction method, ITypeHierarchy hierarchy) throws JavaScriptModelException {
+		IFunction overrides= MethodChecks.overridesAnotherMethod(method, hierarchy);
 		if (overrides == null)
 			return null;
 
@@ -77,8 +77,8 @@ public class MethodChecks {
 	 * is an interface the method returns <code>false</code> if it is only declared in that
 	 * interface.
 	 */
-	public static RefactoringStatus checkIfComesFromInterface(IMethod method, ITypeHierarchy hierarchy, IProgressMonitor monitor) throws JavaModelException {
-		IMethod inInterface= MethodChecks.isDeclaredInInterface(method, hierarchy, monitor);
+	public static RefactoringStatus checkIfComesFromInterface(IFunction method, ITypeHierarchy hierarchy, IProgressMonitor monitor) throws JavaScriptModelException {
+		IFunction inInterface= MethodChecks.isDeclaredInInterface(method, hierarchy, monitor);
 			
 		if (inInterface == null)
 			return null;
@@ -94,7 +94,7 @@ public class MethodChecks {
 	 * is an interface the method returns <code>false</code> if it is only declared in that
 	 * interface.
 	 */
-	public static IMethod isDeclaredInInterface(IMethod method, ITypeHierarchy hierarchy, IProgressMonitor monitor) throws JavaModelException {
+	public static IFunction isDeclaredInInterface(IFunction method, ITypeHierarchy hierarchy, IProgressMonitor monitor) throws JavaScriptModelException {
 		Assert.isTrue(isVirtual(method));
 		IProgressMonitor subMonitor= new SubProgressMonitor(monitor, 1);
 		try {
@@ -108,7 +108,7 @@ public class MethodChecks {
 				else
 					superinterfaces= clazz.newSupertypeHierarchy(new SubProgressMonitor(subMonitor, 1)).getAllSuperInterfaces(clazz);
 				for (int j= 0; j < superinterfaces.length; j++) {
-					IMethod found= Checks.findSimilarMethod(method, superinterfaces[j]);
+					IFunction found= Checks.findSimilarMethod(method, superinterfaces[j]);
 					if (found != null && !found.equals(method))
 						return found;
 				}
@@ -120,9 +120,9 @@ public class MethodChecks {
 		}
 	}
 
-	public static IMethod overridesAnotherMethod(IMethod method, ITypeHierarchy hierarchy) throws JavaModelException {
+	public static IFunction overridesAnotherMethod(IFunction method, ITypeHierarchy hierarchy) throws JavaScriptModelException {
 		MethodOverrideTester tester= new MethodOverrideTester(method.getDeclaringType(), hierarchy);
-		IMethod found= tester.findDeclaringMethod(method, true);
+		IFunction found= tester.findDeclaringMethod(method, true);
 		boolean overrides= (found != null && !found.equals(method) && (!JdtFlags.isStatic(found)) && (!JdtFlags.isPrivate(found)));
 		if (overrides)
 			return found;
@@ -134,18 +134,18 @@ public class MethodChecks {
 	 * Locates the topmost method of an override ripple and returns it. If none
 	 * is found, null is returned.
 	 *
-	 * @param method the IMethod which may be part of a ripple
+	 * @param method the IFunction which may be part of a ripple
 	 * @param typeHierarchy a ITypeHierarchy of the declaring type of the method. May be null
 	 * @param monitor an IProgressMonitor
 	 * @return the topmost method of the ripple, or null if none
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public static IMethod getTopmostMethod(IMethod method, ITypeHierarchy typeHierarchy, IProgressMonitor monitor) throws JavaModelException {
+	public static IFunction getTopmostMethod(IFunction method, ITypeHierarchy typeHierarchy, IProgressMonitor monitor) throws JavaScriptModelException {
 
 		Assert.isNotNull(method);
 
 		ITypeHierarchy hierarchy= typeHierarchy;
-		IMethod topmostMethod= null;
+		IFunction topmostMethod= null;
 		final IType declaringType= method.getDeclaringType();
 		if (declaringType==null)
 			return method;
@@ -153,14 +153,14 @@ public class MethodChecks {
 			if ((hierarchy == null) || !declaringType.equals(hierarchy.getType()))
 				hierarchy= declaringType.newTypeHierarchy(monitor);
 			
-			IMethod inInterface= isDeclaredInInterface(method, hierarchy, monitor);
+			IFunction inInterface= isDeclaredInInterface(method, hierarchy, monitor);
 			if (inInterface != null && !inInterface.equals(method))
 				topmostMethod= inInterface;
 		}
 		if (topmostMethod == null) {
 			if (hierarchy == null)
 				hierarchy= declaringType.newSupertypeHierarchy(monitor);
-			IMethod overrides= overridesAnotherMethod(method, hierarchy);
+			IFunction overrides= overridesAnotherMethod(method, hierarchy);
 			if (overrides != null && !overrides.equals(method))
 				topmostMethod= overrides;
 		}
@@ -171,7 +171,7 @@ public class MethodChecks {
 	 * Finds all overridden methods of a certain method.
 	 * 
 	 */
-	public static IMethod[] getOverriddenMethods(IMethod method, IProgressMonitor monitor) throws CoreException {
+	public static IFunction[] getOverriddenMethods(IFunction method, IProgressMonitor monitor) throws CoreException {
 
 		Assert.isNotNull(method);
 		return RippleMethodFinder2.getRelatedMethods(method, monitor, null);

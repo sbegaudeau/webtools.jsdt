@@ -18,8 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
@@ -35,22 +35,22 @@ import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
@@ -87,7 +87,7 @@ import org.eclipse.wst.jsdt.internal.corext.dom.ScopeAnalyzer;
 import org.eclipse.wst.jsdt.internal.corext.dom.TypeBindingVisitor;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class ASTResolving {
 
@@ -144,21 +144,21 @@ public class ASTResolving {
 			break;
 		case ASTNode.SUPER_METHOD_INVOCATION:
 			SuperMethodInvocation superMethodInvocation= (SuperMethodInvocation) parent;
-			IMethodBinding superMethodBinding= ASTNodes.getMethodBinding(superMethodInvocation.getName());
+			IFunctionBinding superMethodBinding= ASTNodes.getMethodBinding(superMethodInvocation.getName());
 			if (superMethodBinding != null) {
 				return getParameterTypeBinding(node, superMethodInvocation.arguments(), superMethodBinding);
 			}
 			break;
-		case ASTNode.METHOD_INVOCATION:
-			MethodInvocation methodInvocation= (MethodInvocation) parent;
-			IMethodBinding methodBinding= methodInvocation.resolveMethodBinding();
+		case ASTNode.FUNCTION_INVOCATION:
+			FunctionInvocation methodInvocation= (FunctionInvocation) parent;
+			IFunctionBinding methodBinding= methodInvocation.resolveMethodBinding();
 			if (methodBinding != null) {
 				return getParameterTypeBinding(node, methodInvocation.arguments(), methodBinding);
 			}
 			break;
 		case ASTNode.SUPER_CONSTRUCTOR_INVOCATION: {
 			SuperConstructorInvocation superInvocation= (SuperConstructorInvocation) parent;
-			IMethodBinding superBinding= superInvocation.resolveConstructorBinding();
+			IFunctionBinding superBinding= superInvocation.resolveConstructorBinding();
 			if (superBinding != null) {
 				return getParameterTypeBinding(node, superInvocation.arguments(), superBinding);
 			}
@@ -166,7 +166,7 @@ public class ASTResolving {
 		}
 		case ASTNode.CONSTRUCTOR_INVOCATION: {
 			ConstructorInvocation constrInvocation= (ConstructorInvocation) parent;
-			IMethodBinding constrBinding= constrInvocation.resolveConstructorBinding();
+			IFunctionBinding constrBinding= constrInvocation.resolveConstructorBinding();
 			if (constrBinding != null) {
 				return getParameterTypeBinding(node, constrInvocation.arguments(), constrBinding);
 			}
@@ -174,7 +174,7 @@ public class ASTResolving {
 		}
 		case ASTNode.CLASS_INSTANCE_CREATION: {
 			ClassInstanceCreation creation= (ClassInstanceCreation) parent;
-			IMethodBinding creationBinding= creation.resolveConstructorBinding();
+			IFunctionBinding creationBinding= creation.resolveConstructorBinding();
 			if (creationBinding != null) {
 				return getParameterTypeBinding(node, creation.arguments(), creationBinding);
 			}
@@ -209,7 +209,7 @@ public class ASTResolving {
 				dim-= varDecl.getExtraDimensions();
 			} else if (initializerParent instanceof MemberValuePair) {
 				String name= ((MemberValuePair) initializerParent).getName().getIdentifier();
-				IMethodBinding annotMember= findAnnotationMember((Annotation) initializerParent.getParent(), name);
+				IFunctionBinding annotMember= findAnnotationMember((Annotation) initializerParent.getParent(), name);
 				if (annotMember != null) {
 					return getReducedDimensionBinding(annotMember.getReturnType(), dim);
 				}
@@ -251,7 +251,7 @@ public class ASTResolving {
 			}
 			break;
 		case ASTNode.RETURN_STATEMENT:
-			MethodDeclaration decl= ASTResolving.findParentMethodDeclaration(parent);
+			FunctionDeclaration decl= ASTResolving.findParentMethodDeclaration(parent);
 			if (decl != null && !decl.isConstructor()) {
 				return decl.getReturnType2().resolveBinding();
 			}
@@ -284,7 +284,7 @@ public class ASTResolving {
 			}
 			return parent.getAST().resolveWellKnownType("java.lang.String"); //$NON-NLS-1$			
 		case ASTNode.SINGLE_MEMBER_ANNOTATION: {
-			IMethodBinding annotMember= findAnnotationMember((Annotation) parent, "value"); //$NON-NLS-1$
+			IFunctionBinding annotMember= findAnnotationMember((Annotation) parent, "value"); //$NON-NLS-1$
 			if (annotMember != null) {
 				return annotMember.getReturnType();
 			}
@@ -292,7 +292,7 @@ public class ASTResolving {
 		}
 		case ASTNode.MEMBER_VALUE_PAIR: {
 			String name= ((MemberValuePair) parent).getName().getIdentifier();
-			IMethodBinding annotMember= findAnnotationMember((Annotation) parent.getParent(), name);
+			IFunctionBinding annotMember= findAnnotationMember((Annotation) parent.getParent(), name);
 			if (annotMember != null) {
 				return annotMember.getReturnType();
 			}
@@ -305,7 +305,7 @@ public class ASTResolving {
 		return null;
 	}
 	
-	private static IMethodBinding findAnnotationMember(Annotation annotation, String name) {
+	private static IFunctionBinding findAnnotationMember(Annotation annotation, String name) {
 		ITypeBinding annotBinding= annotation.resolveTypeBinding();
 		if (annotBinding != null) {
 			return Bindings.findMethodInType(annotBinding, name, (String[]) null);
@@ -371,7 +371,7 @@ public class ASTResolving {
 		return arrayBinding;
 	}
 
-	private static ITypeBinding getParameterTypeBinding(ASTNode node, List args, IMethodBinding binding) {
+	private static ITypeBinding getParameterTypeBinding(ASTNode node, List args, IFunctionBinding binding) {
 		ITypeBinding[] paramTypes= binding.getParameterTypes();
 		int index= args.indexOf(node);
 		if (binding.isVarargs() && index >= paramTypes.length - 1) {
@@ -481,8 +481,8 @@ public class ASTResolving {
 				TagElement tagElement= (TagElement) parent;
 				if (TagElement.TAG_THROWS.equals(tagElement.getTagName()) || TagElement.TAG_EXCEPTION.equals(tagElement.getTagName())) {
 					ASTNode methNode= tagElement.getParent().getParent();
-					if (methNode instanceof MethodDeclaration) {
-						List thrownExcpetions= ((MethodDeclaration) methNode).thrownExceptions();
+					if (methNode instanceof FunctionDeclaration) {
+						List thrownExcpetions= ((FunctionDeclaration) methNode).thrownExceptions();
 						if (thrownExcpetions.size() == 1) {
 							return ((Name) thrownExcpetions.get(0)).resolveTypeBinding();
 						}
@@ -517,9 +517,9 @@ public class ASTResolving {
 		
 		// test if selector is a object method
 		ITypeBinding binding= searchRoot.getAST().resolveWellKnownType("Object"); //$NON-NLS-1$
-		IMethodBinding[] objectMethods= binding.getDeclaredMethods();
+		IFunctionBinding[] objectMethods= binding.getDeclaredMethods();
 		for (int i= 0; i < objectMethods.length; i++) {
-			IMethodBinding meth= objectMethods[i];
+			IFunctionBinding meth= objectMethods[i];
 			if (meth.getName().equals(selector) && meth.getParameterTypes().length == nArgs) {
 				return new ITypeBinding[] { binding };
 			}
@@ -544,9 +544,9 @@ public class ASTResolving {
 					return true;
 				}
 				
-				IMethodBinding[] methods= node.getDeclaredMethods();
+				IFunctionBinding[] methods= node.getDeclaredMethods();
 				for (int i= 0; i < methods.length; i++) {
-					IMethodBinding meth= methods[i];
+					IFunctionBinding meth= methods[i];
 					if (meth.getName().equals(selector) && meth.getParameterTypes().length == nArgs) {
 						result.add(node);
 					}
@@ -592,8 +592,8 @@ public class ASTResolving {
 
 	public static IBinding getParentMethodOrTypeBinding(ASTNode node) {
 		do {
-			if (node instanceof MethodDeclaration) {
-				return ((MethodDeclaration) node).resolveBinding();
+			if (node instanceof FunctionDeclaration) {
+				return ((FunctionDeclaration) node).resolveBinding();
 			} else if (node instanceof AbstractTypeDeclaration) {
 				return ((AbstractTypeDeclaration) node).resolveBinding();
 			} else if (node instanceof AnonymousClassDeclaration) {
@@ -623,7 +623,7 @@ public class ASTResolving {
 				}
 				treatModifiersOutside= false;
 			}
-			else if (node instanceof CompilationUnit)
+			else if (node instanceof JavaScriptUnit)
 				return node;
 			lastLocation= node.getLocationInParent();
 			node= node.getParent();
@@ -632,8 +632,8 @@ public class ASTResolving {
 	}
 	
 
-	public static CompilationUnit findParentCompilationUnit(ASTNode node) {
-		return (CompilationUnit) findAncestor(node, ASTNode.COMPILATION_UNIT);
+	public static JavaScriptUnit findParentCompilationUnit(ASTNode node) {
+		return (JavaScriptUnit) findAncestor(node, ASTNode.JAVASCRIPT_UNIT);
 	}
 
 	/**
@@ -669,7 +669,7 @@ public class ASTResolving {
 	public static ASTNode findParent(ASTNode node) {
 		while (node != null) {
 			
-		 if (node instanceof CompilationUnit) {
+		 if (node instanceof JavaScriptUnit) {
 			return node;
 		}
 		 else	if (node instanceof AbstractTypeDeclaration) {
@@ -687,12 +687,12 @@ public class ASTResolving {
 	 * Returns the method binding of the node's parent method declaration or <code>null</code> if the node
 	 * is not inside a method
 	 * @param node
-	 * @return CompilationUnit
+	 * @return JavaScriptUnit
 	 */
-	public static MethodDeclaration findParentMethodDeclaration(ASTNode node) {
+	public static FunctionDeclaration findParentMethodDeclaration(ASTNode node) {
 		while (node != null) {
-			if (node.getNodeType() == ASTNode.METHOD_DECLARATION) {
-				return (MethodDeclaration) node;
+			if (node.getNodeType() == ASTNode.FUNCTION_DECLARATION) {
+				return (FunctionDeclaration) node;
 			}
 			if (node instanceof AbstractTypeDeclaration || node instanceof AnonymousClassDeclaration) {
 				return null;
@@ -729,7 +729,7 @@ public class ASTResolving {
 		return (TryStatement) node;
 	}
 
-	public static boolean isInsideConstructorInvocation(MethodDeclaration methodDeclaration, ASTNode node) {
+	public static boolean isInsideConstructorInvocation(FunctionDeclaration methodDeclaration, ASTNode node) {
 		if (methodDeclaration.isConstructor()) {
 			Statement statement= ASTResolving.findParentStatement(node);
 			if (statement instanceof ConstructorInvocation || statement instanceof SuperConstructorInvocation) {
@@ -751,8 +751,8 @@ public class ASTResolving {
 
 	public static boolean isInStaticContext(ASTNode selectedNode) {
 		BodyDeclaration decl= ASTResolving.findParentBodyDeclaration(selectedNode);
-		if (decl instanceof MethodDeclaration) {
-			if (isInsideConstructorInvocation((MethodDeclaration) decl, selectedNode)) {
+		if (decl instanceof FunctionDeclaration) {
+			if (isInsideConstructorInvocation((FunctionDeclaration) decl, selectedNode)) {
 				return true;
 			}
 			return Modifier.isStatic(decl.getModifiers());
@@ -853,10 +853,10 @@ public class ASTResolving {
 			case ASTNode.ENUM_DECLARATION:
 				kind= SimilarElementsRequestor.INTERFACES;
 				break;
-			case ASTNode.METHOD_DECLARATION:
-				if (node.getLocationInParent() == MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY) {
+			case ASTNode.FUNCTION_DECLARATION:
+				if (node.getLocationInParent() == FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY) {
 					kind= SimilarElementsRequestor.CLASSES;
-				} else if (node.getLocationInParent() == MethodDeclaration.RETURN_TYPE2_PROPERTY) {
+				} else if (node.getLocationInParent() == FunctionDeclaration.RETURN_TYPE2_PROPERTY) {
 					kind= SimilarElementsRequestor.ALL_TYPES | SimilarElementsRequestor.VOIDTYPE;
 				}
 				break;
@@ -909,18 +909,18 @@ public class ASTResolving {
 		return name.getFullyQualifiedName();
 	}
 
-	public static ICompilationUnit findCompilationUnitForBinding(ICompilationUnit cu, CompilationUnit astRoot, ITypeBinding binding) throws JavaModelException {
+	public static IJavaScriptUnit findCompilationUnitForBinding(IJavaScriptUnit cu, JavaScriptUnit astRoot, ITypeBinding binding) throws JavaScriptModelException {
 		if (binding == null || !binding.isFromSource() || binding.isTypeVariable() || binding.isWildcardType()) {
 			return null;
 		}
 		ASTNode node= astRoot.findDeclaringNode(binding.getTypeDeclaration());
 		if (node == null) {
-			ICompilationUnit targetCU= Bindings.findCompilationUnit(binding, cu.getJavaProject());
+			IJavaScriptUnit targetCU= Bindings.findCompilationUnit(binding, cu.getJavaScriptProject());
 			if (targetCU != null) {
 				return targetCU;
 			}
 			return null;
-		} else if (node instanceof CompilationUnit || node instanceof AbstractTypeDeclaration || node instanceof AnonymousClassDeclaration) {
+		} else if (node instanceof JavaScriptUnit || node instanceof AbstractTypeDeclaration || node instanceof AnonymousClassDeclaration) {
 			return cu;
 		}
 
@@ -988,7 +988,7 @@ public class ASTResolving {
 	}
 	
 	public static String[] getUsedVariableNames(ASTNode node) {
-		CompilationUnit root= (CompilationUnit) node.getRoot();
+		JavaScriptUnit root= (JavaScriptUnit) node.getRoot();
 		Collection res= (new ScopeAnalyzer(root)).getUsedVariableNames(node.getStartPosition(), node.getLength());
 		return (String[]) res.toArray(new String[res.size()]);
 	}
@@ -1001,11 +1001,11 @@ public class ASTResolving {
 				binding= var.getDeclaringClass();
 			}
 		}
-		if (binding instanceof IMethodBinding) {
+		if (binding instanceof IFunctionBinding) {
 			if (binding == typeVariable.getDeclaringMethod()) {
 				return true;
 			}
-			binding= ((IMethodBinding) binding).getDeclaringClass();
+			binding= ((IFunctionBinding) binding).getDeclaringClass();
 		}
 
 		while (binding instanceof ITypeBinding) {
@@ -1104,7 +1104,7 @@ public class ASTResolving {
 		return BindingLabelProvider.getBindingLabel(type, BindingLabelProvider.DEFAULT_TEXTFLAGS);
 	}
 
-	public static String getMethodSignature(IMethodBinding binding, boolean inOtherCU) {
+	public static String getMethodSignature(IFunctionBinding binding, boolean inOtherCU) {
 		StringBuffer buf= new StringBuffer();
 		if (inOtherCU && !binding.isConstructor()) {
 			buf.append(binding.getDeclaringClass().getTypeDeclaration().getName()).append('.'); // simple type name
@@ -1117,7 +1117,7 @@ public class ASTResolving {
 		buf.append(name).append('(');
 		for (int i= 0; i < params.length; i++) {
 			if (i > 0) {
-				buf.append(JavaElementLabels.COMMA_STRING);
+				buf.append(JavaScriptElementLabels.COMMA_STRING);
 			}
 			if (isVarArgs && i == params.length - 1) {
 				buf.append(getTypeSignature(params[i].getElementType()));
@@ -1130,13 +1130,13 @@ public class ASTResolving {
 		return buf.toString();
 	}
 
-	public static CompilationUnit createQuickFixAST(ICompilationUnit compilationUnit, IProgressMonitor monitor) {
+	public static JavaScriptUnit createQuickFixAST(IJavaScriptUnit compilationUnit, IProgressMonitor monitor) {
 		ASTParser astParser= ASTParser.newParser(ASTProvider.SHARED_AST_LEVEL);
 		astParser.setSource(compilationUnit);
 		astParser.setResolveBindings(true);
 		astParser.setStatementsRecovery(ASTProvider.SHARED_AST_STATEMENT_RECOVERY);
 		astParser.setBindingsRecovery(ASTProvider.SHARED_BINDING_RECOVERY);
-		return (CompilationUnit) astParser.createAST(monitor);
+		return (JavaScriptUnit) astParser.createAST(monitor);
 	}
 
 }

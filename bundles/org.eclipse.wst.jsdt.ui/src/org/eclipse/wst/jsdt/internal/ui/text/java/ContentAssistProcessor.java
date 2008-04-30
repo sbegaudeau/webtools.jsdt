@@ -54,11 +54,11 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.OptionalMessageDialog;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
 
 /**
@@ -413,7 +413,7 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 		// default mix - enable all included computers
 		List included= getDefaultCategoriesUnchecked();
 
-		if ((IJavaPartitions.JAVA_DOC.equals(fPartition) || IDocument.DEFAULT_CONTENT_TYPE.equals(fPartition)) && included.isEmpty() && !fCategories.isEmpty())
+		if ((IJavaScriptPartitions.JAVA_DOC.equals(fPartition) || IDocument.DEFAULT_CONTENT_TYPE.equals(fPartition)) && included.isEmpty() && !fCategories.isEmpty())
 			if (informUserAboutEmptyDefaultCategory())
 				// preferences were restored - recompute the default categories
 				included= getDefaultCategoriesUnchecked();
@@ -439,7 +439,7 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 	 */
 	private boolean informUserAboutEmptyDefaultCategory() {
 		if (OptionalMessageDialog.isDialogEnabled(PREF_WARN_ABOUT_EMPTY_ASSIST_CATEGORY)) {
-			final Shell shell= JavaPlugin.getActiveWorkbenchShell();
+			final Shell shell= JavaScriptPlugin.getActiveWorkbenchShell();
 			String title= JavaTextMessages.ContentAssistProcessor_all_disabled_title;
 			String message= JavaTextMessages.ContentAssistProcessor_all_disabled_message;
 			// see PreferencePage#createControl for the 'defaults' label
@@ -498,7 +498,7 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 	        int returnValue= dialog.open();
 	        if (restoreId == returnValue || settingsId == returnValue) {
 	        	if (restoreId == returnValue) {
-	        		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+	        		IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 	        		store.setToDefault(PreferenceConstants.CODEASSIST_CATEGORY_ORDER);
 	        		store.setToDefault(PreferenceConstants.CODEASSIST_EXCLUDED_CATEGORIES);
 	        	}

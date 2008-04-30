@@ -34,15 +34,15 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaHeuristicScanner;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaIndenter;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 
 /**
@@ -106,7 +106,7 @@ public class IndentAction extends TextEditorAction {
 				nLines= document.getLineOfOffset(offset + length - minusOne) - firstLine + 1;
 			} catch (BadLocationException e) {
 				// will only happen on concurrent modification
-				JavaPlugin.log(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, "", e)); //$NON-NLS-1$
+				JavaScriptPlugin.log(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, "", e)); //$NON-NLS-1$
 				return;
 			}
 			
@@ -144,7 +144,7 @@ public class IndentAction extends TextEditorAction {
 						document.removePosition(end);
 					} catch (BadLocationException e) {
 						// will only happen on concurrent modification
-						JavaPlugin.log(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, "ConcurrentModification in IndentAction", e)); //$NON-NLS-1$
+						JavaScriptPlugin.log(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, "ConcurrentModification in IndentAction", e)); //$NON-NLS-1$
 						
 					} finally {
 						if (target != null)
@@ -202,12 +202,12 @@ public class IndentAction extends TextEditorAction {
 		
 		String indent= null;
 		if (offset < document.getLength()) {
-			ITypedRegion partition= TextUtilities.getPartition(document, IJavaPartitions.JAVA_PARTITIONING, offset, true);
-			ITypedRegion startingPartition= TextUtilities.getPartition(document, IJavaPartitions.JAVA_PARTITIONING, offset, false);
+			ITypedRegion partition= TextUtilities.getPartition(document, IJavaScriptPartitions.JAVA_PARTITIONING, offset, true);
+			ITypedRegion startingPartition= TextUtilities.getPartition(document, IJavaScriptPartitions.JAVA_PARTITIONING, offset, false);
 			String type= partition.getType();
-			if (type.equals(IJavaPartitions.JAVA_DOC) || type.equals(IJavaPartitions.JAVA_MULTI_LINE_COMMENT)) {
+			if (type.equals(IJavaScriptPartitions.JAVA_DOC) || type.equals(IJavaScriptPartitions.JAVA_MULTI_LINE_COMMENT)) {
 				indent= computeJavadocIndent(document, line, scanner, startingPartition);
-			} else if (!fIsTabAction && startingPartition.getOffset() == offset && startingPartition.getType().equals(IJavaPartitions.JAVA_SINGLE_LINE_COMMENT)) {
+			} else if (!fIsTabAction && startingPartition.getOffset() == offset && startingPartition.getType().equals(IJavaScriptPartitions.JAVA_SINGLE_LINE_COMMENT)) {
 				
 				// line comment starting at position 0 -> indent inside
 				int max= document.getLength() - offset;
@@ -371,7 +371,7 @@ public class IndentAction extends TextEditorAction {
 	 */
 	private String getTabEquivalent() {
 		String tab;
-		if (JavaCore.SPACE.equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR))) {
+		if (JavaScriptCore.SPACE.equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR))) {
 			int size= getTabSize();
 			StringBuffer buf= new StringBuffer();
 			for (int i= 0; i< size; i++)
@@ -411,9 +411,9 @@ public class IndentAction extends TextEditorAction {
 	 * @since 3.1
 	 */
 	private String getCoreFormatterOption(String key) {
-		IJavaProject project= getJavaProject();
+		IJavaScriptProject project= getJavaProject();
 		if (project == null)
-			return JavaCore.getOption(key);
+			return JavaScriptCore.getOption(key);
 		return project.getOption(key, true);
 	}
 
@@ -435,22 +435,22 @@ public class IndentAction extends TextEditorAction {
 	}
 
 	/**
-	 * Returns the <code>IJavaProject</code> of the current editor input, or
+	 * Returns the <code>IJavaScriptProject</code> of the current editor input, or
 	 * <code>null</code> if it cannot be found.
 	 * 
-	 * @return the <code>IJavaProject</code> of the current editor input, or
+	 * @return the <code>IJavaScriptProject</code> of the current editor input, or
 	 *         <code>null</code> if it cannot be found
 	 * @since 3.1
 	 */
-	private IJavaProject getJavaProject() {
+	private IJavaScriptProject getJavaProject() {
 		ITextEditor editor= getTextEditor();
 		if (editor == null)
 			return null;
 		
-		ICompilationUnit cu= JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(editor.getEditorInput());
+		IJavaScriptUnit cu= JavaScriptPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(editor.getEditorInput());
 		if (cu == null)
 			return null;
-		return cu.getJavaProject();
+		return cu.getJavaScriptProject();
 	}
 
 	/**

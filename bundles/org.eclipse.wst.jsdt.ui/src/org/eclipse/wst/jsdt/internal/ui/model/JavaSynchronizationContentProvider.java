@@ -52,14 +52,14 @@ import org.eclipse.team.core.mapping.provider.ResourceDiffTree;
 import org.eclipse.ui.navigator.IPipelinedTreeContentProvider;
 import org.eclipse.ui.navigator.PipelinedShapeModification;
 import org.eclipse.ui.navigator.PipelinedViewerUpdate;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Java-aware synchronization content provider.
@@ -92,8 +92,8 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 	 * @return the resource mapping
 	 */
 	static ResourceMapping getResourceMapping(final Object element) {
-		if (element instanceof IJavaElement)
-			return JavaElementResourceMapping.create((IJavaElement) element);
+		if (element instanceof IJavaScriptElement)
+			return JavaElementResourceMapping.create((IJavaScriptElement) element);
 		if (element instanceof IAdaptable) {
 			final IAdaptable adaptable= (IAdaptable) element;
 			final Object adapted= adaptable.getAdapter(ResourceMapping.class);
@@ -116,7 +116,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 			try {
 				return mapping.getTraversals(ResourceMappingContext.LOCAL_CONTEXT, new NullProgressMonitor());
 			} catch (final CoreException exception) {
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 			}
 		return new ResourceTraversal[0];
 	}
@@ -135,14 +135,14 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 	 * @return the associated java element, or <code>null</code> if the
 	 *         project is not a java project
 	 */
-	private IJavaProject asJavaProject(final IProject project) {
+	private IJavaScriptProject asJavaProject(final IProject project) {
 		try {
-			if (project.getDescription().hasNature(JavaCore.NATURE_ID))
-				return JavaCore.create(project);
+			if (project.getDescription().hasNature(JavaScriptCore.NATURE_ID))
+				return JavaScriptCore.create(project);
 		} catch (final CoreException exception) {
 			// Only log the error for projects that are accessible (i.e. exist and are open)
 			if (project.isAccessible())
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 		}
 		return null;
 	}
@@ -156,7 +156,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 	private void convertToJavaElements(final PipelinedShapeModification modification) {
 		final Object parent= modification.getParent();
 		if (parent instanceof IResource) {
-			final IJavaElement project= asJavaProject(((IResource) parent).getProject());
+			final IJavaScriptElement project= asJavaProject(((IResource) parent).getProject());
 			if (project != null) {
 				modification.getChildren().clear();
 				return;
@@ -167,7 +167,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 			for (final Iterator iterator= modification.getChildren().iterator(); iterator.hasNext();) {
 				final Object element= iterator.next();
 				if (element instanceof IProject) {
-					final IJavaElement project= asJavaProject((IProject) element);
+					final IJavaScriptElement project= asJavaProject((IProject) element);
 					if (project != null) {
 						iterator.remove();
 						result.add(project);
@@ -191,7 +191,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 		for (final Iterator iterator= update.getRefreshTargets().iterator(); iterator.hasNext();) {
 			final Object element= iterator.next();
 			if (element instanceof IProject) {
-				final IJavaElement project= asJavaProject((IProject) element);
+				final IJavaScriptElement project= asJavaProject((IProject) element);
 				if (project != null) {
 					iterator.remove();
 					result.add(project);
@@ -222,13 +222,13 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 	 *            the event
 	 * @return the projects that contain changes
 	 */
-	private IJavaProject[] getChangedProjects(final IDiffChangeEvent event) {
+	private IJavaScriptProject[] getChangedProjects(final IDiffChangeEvent event) {
 		final Set result= new HashSet();
 		final IDiff[] changes= event.getChanges();
 		for (int index= 0; index < changes.length; index++) {
 			final IResource resource= ResourceDiffTree.getResourceFor(changes[index]);
 			if (resource != null) {
-				final IJavaProject project= asJavaProject(resource.getProject());
+				final IJavaScriptProject project= asJavaProject(resource.getProject());
 				if (project != null)
 					result.add(project);
 			}
@@ -237,7 +237,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 		for (int index= 0; index < additions.length; index++) {
 			final IResource resource= ResourceDiffTree.getResourceFor(additions[index]);
 			if (resource != null) {
-				final IJavaProject project= asJavaProject(resource.getProject());
+				final IJavaScriptProject project= asJavaProject(resource.getProject());
 				if (project != null)
 					result.add(project);
 			}
@@ -249,13 +249,13 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 				IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(path.segment(0));
 				// Only consider projects that still exist
 				if (project.exists()) {
-					final IJavaProject javaProject= asJavaProject(project.getProject());
+					final IJavaScriptProject javaProject= asJavaProject(project.getProject());
 					if (javaProject != null)
 						result.add(javaProject);
 				}
 			}
 		}
-		return (IJavaProject[]) result.toArray(new IJavaProject[result.size()]);
+		return (IJavaScriptProject[]) result.toArray(new IJavaScriptProject[result.size()]);
 	}
 
 	/**
@@ -267,7 +267,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 			return getPackageFragmentChildren(context, parent, elements);
 		else if (parent instanceof IPackageFragmentRoot)
 			return getPackageFragmentRootChildren(context, parent, elements);
-		else if (parent instanceof IJavaProject)
+		else if (parent instanceof IJavaScriptProject)
 			return getJavaProjectChildren(context, parent, elements);
 		else if (parent instanceof RefactoringHistory)
 			return ((RefactoringHistory) parent).getDescriptors();
@@ -289,7 +289,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 		final List result= new ArrayList(children.length);
 		for (int index= 0; index < children.length; index++) {
 			if (children[index] instanceof IFolder) {
-				if (!(JavaCore.create((IFolder) children[index]) instanceof IPackageFragmentRoot))
+				if (!(JavaScriptCore.create((IFolder) children[index]) instanceof IPackageFragmentRoot))
 					result.add(children[index]);
 			} else
 				result.add(children[index]);
@@ -431,7 +431,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 	 */
 	protected Object getModelRoot() {
 		if (fModelRoot == null)
-			fModelRoot= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
+			fModelRoot= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
 		return fModelRoot;
 	}
 
@@ -460,7 +460,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 					final IDiff diff= tree.getDiff(members[index]);
 					if (diff != null && isVisible(diff))
 						if (isInScope(context.getScope(), parent, members[index])) {
-							final IJavaElement element= JavaCore.create(members[index]);
+							final IJavaScriptElement element= JavaScriptCore.create(members[index]);
 							if (element == null) {
 								set.add(members[index]);
 							} else {
@@ -507,12 +507,12 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 					// If the file is not a compilation unit add it.
 					// (compilation units are always children of packages so they
 					// don't need to be added here)
-					final IJavaElement element= JavaCore.create((IFile) members[index]);
+					final IJavaScriptElement element= JavaScriptCore.create((IFile) members[index]);
 					if (element == null)
 						set.add(members[index]);
 				} else if (type == IResource.FOLDER && contained && visible && tree.getDiff(members[index]) != null) {
 					// If the folder is out-of-sync, add it
-					final IJavaElement element= JavaCore.create(members[index]);
+					final IJavaScriptElement element= JavaScriptCore.create(members[index]);
 					if (element != null)
 						set.add(element);
 				}
@@ -527,11 +527,11 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 								if (current != null) {
 									final int kind= current.getType();
 									if (kind == IResource.FILE) {
-										final IJavaElement element= JavaCore.create(current.getParent());
+										final IJavaScriptElement element= JavaScriptCore.create(current.getParent());
 										if (element != null)
 											set.add(element);
 									} else {
-										final IJavaElement element= JavaCore.create(current);
+										final IJavaScriptElement element= JavaScriptCore.create(current);
 										if (element != null)
 											set.add(element);
 									}
@@ -554,12 +554,12 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 		if (parent instanceof ISynchronizationContext) {
 			// When a context is the root, the resource content provider returns
 			// projects as direct children. We should replace any projects that
-			// are Java projects with an IJavaProject
+			// are Java projects with an IJavaScriptProject
 			final Set result= new HashSet(children.size());
 			for (final Iterator iterator= children.iterator(); iterator.hasNext();) {
 				final Object element= iterator.next();
 				if (element instanceof IProject) {
-					final IJavaElement java= asJavaProject((IProject) element);
+					final IJavaScriptElement java= asJavaProject((IProject) element);
 					if (java != null) {
 						iterator.remove();
 						result.add(java);
@@ -567,7 +567,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 				}
 				if (element instanceof IFolder) {
 					IFolder folder = (IFolder) element;
-					IJavaElement javaElement = JavaCore.create(folder);
+					IJavaScriptElement javaElement = JavaScriptCore.create(folder);
 					// If the folder is also a package, don't show it
 					// as a folder since it will be shown as a package
 					if (javaElement instanceof IPackageFragmentRoot) {
@@ -588,7 +588,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 				final Object element= iterator.next();
 				if (element instanceof IFolder) {
 					IFolder folder = (IFolder) element;
-					IJavaElement javaElement = JavaCore.create(folder);
+					IJavaScriptElement javaElement = JavaScriptCore.create(folder);
 					if (javaElement instanceof IPackageFragmentRoot) {
 						iterator.remove();
 					}
@@ -608,7 +608,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 	 * {@inheritDoc}
 	 */
 	public Object getPipelinedParent(final Object element, final Object parent) {
-		if (element instanceof IJavaElement)
+		if (element instanceof IJavaScriptElement)
 			return getParent(element);
 		return parent;
 	}
@@ -630,7 +630,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 		final Set result= new HashSet();
 		for (int index= 0; index < children.length; index++) {
 			final Object data= children[index].getData();
-			if (data instanceof IJavaProject)
+			if (data instanceof IJavaScriptProject)
 				result.add(data);
 		}
 		return result;
@@ -647,12 +647,12 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 		// Get all existing and open projects that contain changes
 		// and determine what needs to be done to the project
 		// (i.e. add, remove or refresh)
-		final IJavaProject[] changed= getChangedProjects(event);
+		final IJavaScriptProject[] changed= getChangedProjects(event);
 		final List refreshes= new ArrayList(changed.length);
 		final List additions= new ArrayList(changed.length);
 		final List removals= new ArrayList(changed.length);
 		for (int index= 0; index < changed.length; index++) {
-			final IJavaProject project= changed[index];
+			final IJavaScriptProject project= changed[index];
 			if (hasVisibleChanges(event.getTree(), project)) {
 				if (existing.contains(project))
 					refreshes.add(project);
@@ -664,7 +664,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 		// Remove any java projects that correspond to deleted or closed projects
 		final Set removed= getDeletedProjects(event);
 		for (final Iterator iterator= existing.iterator(); iterator.hasNext();) {
-			final IJavaProject element= (IJavaProject) iterator.next();
+			final IJavaScriptProject element= (IJavaScriptProject) iterator.next();
 			if (removed.contains(element.getResource()))
 				removals.add(element);
 		}
@@ -692,7 +692,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 	 * {@inheritDoc}
 	 */
 	public boolean hasChildren(final Object element) {
-		if (element instanceof ICompilationUnit || element instanceof IFile || element instanceof RefactoringDescriptorProxy || element instanceof RefactoringDescriptor)
+		if (element instanceof IJavaScriptUnit || element instanceof IFile || element instanceof RefactoringDescriptorProxy || element instanceof RefactoringDescriptor)
 			return false;
 		return super.hasChildren(element);
 	}
@@ -734,7 +734,7 @@ public final class JavaSynchronizationContentProvider extends AbstractSynchroniz
 	 * @return <code>true</code> if it has visible changes, <code>false</code>
 	 *         otherwise
 	 */
-	private boolean hasVisibleChanges(final IDiffTree tree, final IJavaProject project) {
+	private boolean hasVisibleChanges(final IDiffTree tree, final IJavaScriptProject project) {
 		return tree.hasMatchingDiffs(project.getResource().getFullPath(), new FastDiffFilter() {
 
 			public boolean select(final IDiff diff) {

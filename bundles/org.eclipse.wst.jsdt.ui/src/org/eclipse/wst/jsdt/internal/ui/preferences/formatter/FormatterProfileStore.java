@@ -22,11 +22,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesAccess;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.CustomProfile;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.osgi.service.prefs.BackingStoreException;
 import org.xml.sax.InputSource;
 
@@ -67,7 +67,7 @@ public class FormatterProfileStore extends ProfileStore {
 		// in 3.0 M9 and less the profiles were stored in a file in the plugin's meta data
 		final String STORE_FILE= "code_formatter_profiles.xml"; //$NON-NLS-1$
 
-		File file= JavaPlugin.getDefault().getStateLocation().append(STORE_FILE).toFile();
+		File file= JavaScriptPlugin.getDefault().getStateLocation().append(STORE_FILE).toFile();
 		if (!file.exists())
 			return null;
 		
@@ -88,9 +88,9 @@ public class FormatterProfileStore extends ProfileStore {
 				reader.close();
 			}
 		} catch (CoreException e) {
-			JavaPlugin.log(e); // log but ignore
+			JavaScriptPlugin.log(e); // log but ignore
 		} catch (IOException e) {
-			JavaPlugin.log(e); // log but ignore
+			JavaScriptPlugin.log(e); // log but ignore
 		}
 		return null;
 	}
@@ -101,7 +101,7 @@ public class FormatterProfileStore extends ProfileStore {
 		ProfileVersioner profileVersioner= new ProfileVersioner();
 		
 		IScopeContext instanceScope= access.getInstanceScope();
-		IEclipsePreferences uiPreferences= instanceScope.getNode(JavaUI.ID_PLUGIN);
+		IEclipsePreferences uiPreferences= instanceScope.getNode(JavaScriptUI.ID_PLUGIN);
 		int version= uiPreferences.getInt(PREF_FORMATTER_PROFILES + VERSION_KEY_SUFFIX, 0);
 		if (version >= profileVersioner.getCurrentVersion()) {
 			return; // is up to date
@@ -113,7 +113,7 @@ public class FormatterProfileStore extends ProfileStore {
 			}
 			ProfileManager manager= new FormatterProfileManager(profiles, instanceScope, access, profileVersioner);
 			if (manager.getSelected() instanceof CustomProfile) {
-				manager.commitChanges(instanceScope); // updates JavaCore options
+				manager.commitChanges(instanceScope); // updates JavaScriptCore options
 			}
 			uiPreferences.putInt(PREF_FORMATTER_PROFILES + VERSION_KEY_SUFFIX, profileVersioner.getCurrentVersion());
 			savePreferences(instanceScope);
@@ -123,22 +123,22 @@ public class FormatterProfileStore extends ProfileStore {
 				IScopeContext scope= access.getProjectScope(projects[i]);
 				if (manager.hasProjectSpecificSettings(scope)) {
 					manager= new FormatterProfileManager(profiles, scope, access, profileVersioner);
-					manager.commitChanges(scope); // updates JavaCore project options
+					manager.commitChanges(scope); // updates JavaScriptCore project options
 					savePreferences(scope);
 				}
 			}
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		} catch (BackingStoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 	}
 	
 	private static void savePreferences(final IScopeContext context) throws BackingStoreException {
 		try {
-			context.getNode(JavaUI.ID_PLUGIN).flush();
+			context.getNode(JavaScriptUI.ID_PLUGIN).flush();
 		} finally {
-			context.getNode(JavaCore.PLUGIN_ID).flush();
+			context.getNode(JavaScriptCore.PLUGIN_ID).flush();
 		}
 	}
 }

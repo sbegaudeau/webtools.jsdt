@@ -30,11 +30,11 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredJavaElementLabels;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
 import org.eclipse.wst.jsdt.ui.search.IMatchPresentation;
 
@@ -46,7 +46,7 @@ public abstract class SearchLabelProvider extends AppearanceAwareLabelProvider {
 	private static final String EMPHASIZE_POTENTIAL_MATCHES= "org.eclipse.search.potentialMatch.emphasize"; //$NON-NLS-1$
 	private static final String POTENTIAL_MATCH_FG_COLOR= "org.eclipse.search.potentialMatch.fgColor"; //$NON-NLS-1$
 
-	protected static final long DEFAULT_SEARCH_TEXTFLAGS= (DEFAULT_TEXTFLAGS | JavaElementLabels.P_COMPRESSED) & ~JavaElementLabels.M_APP_RETURNTYPE;
+	protected static final long DEFAULT_SEARCH_TEXTFLAGS= (DEFAULT_TEXTFLAGS | JavaScriptElementLabels.P_COMPRESSED) & ~JavaScriptElementLabels.M_APP_RETURNTYPE;
 	protected static final int DEFAULT_SEARCH_IMAGEFLAGS= DEFAULT_IMAGEFLAGS;
 	
 	private Color fPotentialMatchFgColor;
@@ -94,7 +94,7 @@ public abstract class SearchLabelProvider extends AppearanceAwareLabelProvider {
 	
 	private Color getForegroundColor() {
 		if (fPotentialMatchFgColor == null) {
-			fPotentialMatchFgColor= new Color(JavaPlugin.getActiveWorkbenchShell().getDisplay(), getPotentialMatchForegroundColor());
+			fPotentialMatchFgColor= new Color(JavaScriptPlugin.getActiveWorkbenchShell().getDisplay(), getPotentialMatchForegroundColor());
 		}
 		return fPotentialMatchFgColor;
 	}

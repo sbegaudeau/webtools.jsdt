@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.dom;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 /**
  * An AST requestor handles ASTs for compilation units passed to
@@ -28,7 +28,7 @@ import org.eclipse.wst.jsdt.core.ICompilationUnit;
  * thread-safe.
  * </p>
  *
- * @see ASTParser#createASTs(ICompilationUnit[], String[], ASTRequestor, org.eclipse.core.runtime.IProgressMonitor)
+ * @see ASTParser#createASTs(IJavaScriptUnit[], String[], ASTRequestor, org.eclipse.core.runtime.IProgressMonitor)
  * @since 3.1
  */
 public abstract class ASTRequestor {
@@ -39,7 +39,7 @@ public abstract class ASTRequestor {
 	 * only within the dynamic scope of a call to
 	 * <code>ASTParser.createASTs</code>.
 	 */
-	CompilationUnitResolver compilationUnitResolver = null;
+	JavaScriptUnitResolver compilationUnitResolver = null;
 
 	/**
 	 * Creates a new instance.
@@ -59,7 +59,7 @@ public abstract class ASTRequestor {
 	 * @param source the compilation unit the ast is coming from
 	 * @param ast the requested abtract syntax tree
 	 */
-	public void acceptAST(ICompilationUnit source, CompilationUnit ast) {
+	public void acceptAST(IJavaScriptUnit source, JavaScriptUnit ast) {
 		// do nothing
 	}
 

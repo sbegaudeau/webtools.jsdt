@@ -19,7 +19,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
@@ -35,7 +35,7 @@ public class TaskMarkerProposal extends CUCorrectionProposal {
 
 	private IProblemLocation fLocation;
 
-	public TaskMarkerProposal(ICompilationUnit cu, IProblemLocation location, int relevance) {
+	public TaskMarkerProposal(IJavaScriptUnit cu, IProblemLocation location, int relevance) {
 		super("", cu, relevance, null); //$NON-NLS-1$
 		fLocation= location;
 

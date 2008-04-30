@@ -15,7 +15,7 @@ package org.eclipse.wst.jsdt.core.dom;
  * There are exactly three kinds of comment:
  * line comments ({@link LineComment}),
  * block comments ({@link BlockComment}), and
- * doc comments ({@link Javadoc}).
+ * doc comments ({@link JSdoc}).
  * <p>
  * <pre>
  * Comment:
@@ -77,7 +77,7 @@ public abstract class Comment extends ASTNode {
 	 *    <code>false</code> otherwise
 	 */
 	public final boolean isDocComment() {
-		return (this instanceof Javadoc);
+		return (this instanceof JSdoc);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public abstract class Comment extends ASTNode {
 	 * <p>
 	 * Typically, the comment nodes created while parsing a compilation
 	 * unit are not considered descendents of the normal AST
-	 * root, namely an {@link CompilationUnit}. Instead, these
+	 * root, namely an {@link JavaScriptUnit}. Instead, these
 	 * comment nodes exist outside the normal AST and each is
 	 * a root in its own right. This optional property provides
 	 * a well-known way to navigate from the comment to the

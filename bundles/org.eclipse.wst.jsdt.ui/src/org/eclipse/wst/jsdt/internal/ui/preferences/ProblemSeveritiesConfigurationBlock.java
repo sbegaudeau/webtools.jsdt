@@ -20,8 +20,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
@@ -32,88 +32,88 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 
 	private static final String SETTINGS_SECTION_NAME= "ProblemSeveritiesConfigurationBlock";  //$NON-NLS-1$
 	
-	// Preference store keys, see JavaCore.getOptions
-	private static final Key PREF_PB_UNDEFINED_FIELD= getJDTCoreKey(JavaCore.COMPILER_PB_UNDEFINED_FIELD);
-//	private static final Key PREF_PB_METHOD_WITH_CONSTRUCTOR_NAME= getJDTCoreKey(JavaCore.COMPILER_PB_METHOD_WITH_CONSTRUCTOR_NAME);
-	private static final Key PREF_PB_DEPRECATION= getJDTCoreKey(JavaCore.COMPILER_PB_DEPRECATION);
-	private static final Key PREF_PB_DEPRECATION_IN_DEPRECATED_CODE=getJDTCoreKey(JavaCore.COMPILER_PB_DEPRECATION_IN_DEPRECATED_CODE);
-	private static final Key PREF_PB_DEPRECATION_WHEN_OVERRIDING= getJDTCoreKey(JavaCore.COMPILER_PB_DEPRECATION_WHEN_OVERRIDING_DEPRECATED_METHOD);
+	// Preference store keys, see JavaScriptCore.getOptions
+	private static final Key PREF_PB_UNDEFINED_FIELD= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNDEFINED_FIELD);
+//	private static final Key PREF_PB_METHOD_WITH_CONSTRUCTOR_NAME= getJDTCoreKey(JavaScriptCore.COMPILER_PB_METHOD_WITH_CONSTRUCTOR_NAME);
+	private static final Key PREF_PB_DEPRECATION= getJDTCoreKey(JavaScriptCore.COMPILER_PB_DEPRECATION);
+	private static final Key PREF_PB_DEPRECATION_IN_DEPRECATED_CODE=getJDTCoreKey(JavaScriptCore.COMPILER_PB_DEPRECATION_IN_DEPRECATED_CODE);
+	private static final Key PREF_PB_DEPRECATION_WHEN_OVERRIDING= getJDTCoreKey(JavaScriptCore.COMPILER_PB_DEPRECATION_WHEN_OVERRIDING_DEPRECATED_METHOD);
 	
-	private static final Key PREF_PB_HIDDEN_CATCH_BLOCK= getJDTCoreKey(JavaCore.COMPILER_PB_HIDDEN_CATCH_BLOCK);
-	private static final Key PREF_PB_UNUSED_LOCAL= getJDTCoreKey(JavaCore.COMPILER_PB_UNUSED_LOCAL);
-	private static final Key PREF_PB_UNUSED_PARAMETER= getJDTCoreKey(JavaCore.COMPILER_PB_UNUSED_PARAMETER);
-//	private static final Key PREF_PB_SIGNAL_PARAMETER_IN_OVERRIDING= getJDTCoreKey(JavaCore.COMPILER_PB_UNUSED_PARAMETER_WHEN_OVERRIDING_CONCRETE);
-	private static final Key PREF_PB_UNUSED_PARAMETER_INCLUDE_DOC_COMMENT_REFERENCE= getJDTCoreKey(JavaCore.COMPILER_PB_UNUSED_PARAMETER_INCLUDE_DOC_COMMENT_REFERENCE);
-	private static final Key PREF_PB_SIGNAL_PARAMETER_IN_ABSTRACT= getJDTCoreKey(JavaCore.COMPILER_PB_UNUSED_PARAMETER_WHEN_IMPLEMENTING_ABSTRACT);
-//	private static final Key PREF_PB_SYNTHETIC_ACCESS_EMULATION= getJDTCoreKey(JavaCore.COMPILER_PB_SYNTHETIC_ACCESS_EMULATION);
-	private static final Key PREF_PB_NON_EXTERNALIZED_STRINGS= getJDTCoreKey(JavaCore.COMPILER_PB_NON_NLS_STRING_LITERAL);
-//	private static final Key PREF_PB_UNUSED_IMPORT= getJDTCoreKey(JavaCore.COMPILER_PB_UNUSED_IMPORT);
-	private static final Key PREF_PB_UNUSED_PRIVATE= getJDTCoreKey(JavaCore.COMPILER_PB_UNUSED_PRIVATE_MEMBER);
-//	private static final Key PREF_PB_STATIC_ACCESS_RECEIVER= getJDTCoreKey(JavaCore.COMPILER_PB_STATIC_ACCESS_RECEIVER);
-	private static final Key PREF_PB_NO_EFFECT_ASSIGNMENT= getJDTCoreKey(JavaCore.COMPILER_PB_NO_EFFECT_ASSIGNMENT);
-//	private static final Key PREF_PB_CHAR_ARRAY_IN_CONCAT= getJDTCoreKey(JavaCore.COMPILER_PB_CHAR_ARRAY_IN_STRING_CONCATENATION);
-	private static final Key PREF_PB_POSSIBLE_ACCIDENTAL_BOOLEAN_ASSIGNMENT= getJDTCoreKey(JavaCore.COMPILER_PB_POSSIBLE_ACCIDENTAL_BOOLEAN_ASSIGNMENT);
-	private static final Key PREF_PB_LOCAL_VARIABLE_HIDING= getJDTCoreKey(JavaCore.COMPILER_PB_LOCAL_VARIABLE_HIDING);
-	private static final Key PREF_PB_FIELD_HIDING= getJDTCoreKey(JavaCore.COMPILER_PB_FIELD_HIDING);
-//	private static final Key PREF_PB_SPECIAL_PARAMETER_HIDING_FIELD= getJDTCoreKey(JavaCore.COMPILER_PB_SPECIAL_PARAMETER_HIDING_FIELD);
-	private static final Key PREF_PB_INDIRECT_STATIC_ACCESS= getJDTCoreKey(JavaCore.COMPILER_PB_INDIRECT_STATIC_ACCESS);
-	private static final Key PREF_PB_EMPTY_STATEMENT= getJDTCoreKey(JavaCore.COMPILER_PB_EMPTY_STATEMENT);
-	private static final Key PREF_PB_UNNECESSARY_ELSE= getJDTCoreKey(JavaCore.COMPILER_PB_UNNECESSARY_ELSE);
-//	private static final Key PREF_PB_UNNECESSARY_TYPE_CHECK= getJDTCoreKey(JavaCore.COMPILER_PB_UNNECESSARY_TYPE_CHECK);
-//	private static final Key PREF_PB_INCOMPATIBLE_INTERFACE_METHOD= getJDTCoreKey(JavaCore.COMPILER_PB_INCOMPATIBLE_NON_INHERITED_INTERFACE_METHOD);
-//	private static final Key PREF_PB_UNUSED_DECLARED_THROWN_EXCEPTION= getJDTCoreKey(JavaCore.COMPILER_PB_UNUSED_DECLARED_THROWN_EXCEPTION);
-//	private static final Key PREF_PB_MISSING_SERIAL_VERSION= getJDTCoreKey(JavaCore.COMPILER_PB_MISSING_SERIAL_VERSION);
-	private static final Key PREF_PB_UNDOCUMENTED_EMPTY_BLOCK= getJDTCoreKey(JavaCore.COMPILER_PB_UNDOCUMENTED_EMPTY_BLOCK);
-	private static final Key PREF_PB_FINALLY_BLOCK_NOT_COMPLETING= getJDTCoreKey(JavaCore.COMPILER_PB_FINALLY_BLOCK_NOT_COMPLETING);
-	private static final Key PREF_PB_UNUSED_DECLARED_THROWN_EXCEPTION_WHEN_OVERRIDING= getJDTCoreKey(JavaCore.COMPILER_PB_UNUSED_DECLARED_THROWN_EXCEPTION_WHEN_OVERRIDING);
-//	private static final Key PREF_PB_UNQUALIFIED_FIELD_ACCESS= getJDTCoreKey(JavaCore.COMPILER_PB_UNQUALIFIED_FIELD_ACCESS);
-	private static final Key PREF_PB_MISSING_DEPRECATED_ANNOTATION= getJDTCoreKey(JavaCore.COMPILER_PB_MISSING_DEPRECATED_ANNOTATION);
-	private static final Key PREF_PB_FORBIDDEN_REFERENCE= getJDTCoreKey(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE);
-	private static final Key PREF_PB_DISCOURRAGED_REFERENCE= getJDTCoreKey(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE);
-	private static final Key PREF_PB_UNUSED_LABEL= getJDTCoreKey(JavaCore.COMPILER_PB_UNUSED_LABEL);
-	private static final Key PREF_PB_PARAMETER_ASSIGNMENT= getJDTCoreKey(JavaCore.COMPILER_PB_PARAMETER_ASSIGNMENT);
-	private static final Key PREF_PB_FALLTHROUGH_CASE= getJDTCoreKey(JavaCore.COMPILER_PB_FALLTHROUGH_CASE);
+	private static final Key PREF_PB_HIDDEN_CATCH_BLOCK= getJDTCoreKey(JavaScriptCore.COMPILER_PB_HIDDEN_CATCH_BLOCK);
+	private static final Key PREF_PB_UNUSED_LOCAL= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNUSED_LOCAL);
+	private static final Key PREF_PB_UNUSED_PARAMETER= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNUSED_PARAMETER);
+//	private static final Key PREF_PB_SIGNAL_PARAMETER_IN_OVERRIDING= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNUSED_PARAMETER_WHEN_OVERRIDING_CONCRETE);
+	private static final Key PREF_PB_UNUSED_PARAMETER_INCLUDE_DOC_COMMENT_REFERENCE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNUSED_PARAMETER_INCLUDE_DOC_COMMENT_REFERENCE);
+	private static final Key PREF_PB_SIGNAL_PARAMETER_IN_ABSTRACT= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNUSED_PARAMETER_WHEN_IMPLEMENTING_ABSTRACT);
+//	private static final Key PREF_PB_SYNTHETIC_ACCESS_EMULATION= getJDTCoreKey(JavaScriptCore.COMPILER_PB_SYNTHETIC_ACCESS_EMULATION);
+	private static final Key PREF_PB_NON_EXTERNALIZED_STRINGS= getJDTCoreKey(JavaScriptCore.COMPILER_PB_NON_NLS_STRING_LITERAL);
+//	private static final Key PREF_PB_UNUSED_IMPORT= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNUSED_IMPORT);
+	private static final Key PREF_PB_UNUSED_PRIVATE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNUSED_PRIVATE_MEMBER);
+//	private static final Key PREF_PB_STATIC_ACCESS_RECEIVER= getJDTCoreKey(JavaScriptCore.COMPILER_PB_STATIC_ACCESS_RECEIVER);
+	private static final Key PREF_PB_NO_EFFECT_ASSIGNMENT= getJDTCoreKey(JavaScriptCore.COMPILER_PB_NO_EFFECT_ASSIGNMENT);
+//	private static final Key PREF_PB_CHAR_ARRAY_IN_CONCAT= getJDTCoreKey(JavaScriptCore.COMPILER_PB_CHAR_ARRAY_IN_STRING_CONCATENATION);
+	private static final Key PREF_PB_POSSIBLE_ACCIDENTAL_BOOLEAN_ASSIGNMENT= getJDTCoreKey(JavaScriptCore.COMPILER_PB_POSSIBLE_ACCIDENTAL_BOOLEAN_ASSIGNMENT);
+	private static final Key PREF_PB_LOCAL_VARIABLE_HIDING= getJDTCoreKey(JavaScriptCore.COMPILER_PB_LOCAL_VARIABLE_HIDING);
+	private static final Key PREF_PB_FIELD_HIDING= getJDTCoreKey(JavaScriptCore.COMPILER_PB_FIELD_HIDING);
+//	private static final Key PREF_PB_SPECIAL_PARAMETER_HIDING_FIELD= getJDTCoreKey(JavaScriptCore.COMPILER_PB_SPECIAL_PARAMETER_HIDING_FIELD);
+	private static final Key PREF_PB_INDIRECT_STATIC_ACCESS= getJDTCoreKey(JavaScriptCore.COMPILER_PB_INDIRECT_STATIC_ACCESS);
+	private static final Key PREF_PB_EMPTY_STATEMENT= getJDTCoreKey(JavaScriptCore.COMPILER_PB_EMPTY_STATEMENT);
+	private static final Key PREF_PB_UNNECESSARY_ELSE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNNECESSARY_ELSE);
+//	private static final Key PREF_PB_UNNECESSARY_TYPE_CHECK= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNNECESSARY_TYPE_CHECK);
+//	private static final Key PREF_PB_INCOMPATIBLE_INTERFACE_METHOD= getJDTCoreKey(JavaScriptCore.COMPILER_PB_INCOMPATIBLE_NON_INHERITED_INTERFACE_METHOD);
+//	private static final Key PREF_PB_UNUSED_DECLARED_THROWN_EXCEPTION= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNUSED_DECLARED_THROWN_EXCEPTION);
+//	private static final Key PREF_PB_MISSING_SERIAL_VERSION= getJDTCoreKey(JavaScriptCore.COMPILER_PB_MISSING_SERIAL_VERSION);
+	private static final Key PREF_PB_UNDOCUMENTED_EMPTY_BLOCK= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNDOCUMENTED_EMPTY_BLOCK);
+	private static final Key PREF_PB_FINALLY_BLOCK_NOT_COMPLETING= getJDTCoreKey(JavaScriptCore.COMPILER_PB_FINALLY_BLOCK_NOT_COMPLETING);
+	private static final Key PREF_PB_UNUSED_DECLARED_THROWN_EXCEPTION_WHEN_OVERRIDING= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNUSED_DECLARED_THROWN_EXCEPTION_WHEN_OVERRIDING);
+//	private static final Key PREF_PB_UNQUALIFIED_FIELD_ACCESS= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNQUALIFIED_FIELD_ACCESS);
+	private static final Key PREF_PB_MISSING_DEPRECATED_ANNOTATION= getJDTCoreKey(JavaScriptCore.COMPILER_PB_MISSING_DEPRECATED_ANNOTATION);
+	private static final Key PREF_PB_FORBIDDEN_REFERENCE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE);
+	private static final Key PREF_PB_DISCOURRAGED_REFERENCE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_DISCOURAGED_REFERENCE);
+	private static final Key PREF_PB_UNUSED_LABEL= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNUSED_LABEL);
+	private static final Key PREF_PB_PARAMETER_ASSIGNMENT= getJDTCoreKey(JavaScriptCore.COMPILER_PB_PARAMETER_ASSIGNMENT);
+	private static final Key PREF_PB_FALLTHROUGH_CASE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_FALLTHROUGH_CASE);
 	
-	private static final Key PREF_PB_NULL_REFERENCE= getJDTCoreKey(JavaCore.COMPILER_PB_NULL_REFERENCE);
-	private static final Key PREF_PB_POTENTIAL_NULL_REFERENCE= getJDTCoreKey(JavaCore.COMPILER_PB_POTENTIAL_NULL_REFERENCE);
-	private static final Key PREF_PB_REDUNDANT_NULL_CHECK= getJDTCoreKey(JavaCore.COMPILER_PB_REDUNDANT_NULL_CHECK);
+	private static final Key PREF_PB_NULL_REFERENCE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_NULL_REFERENCE);
+	private static final Key PREF_PB_POTENTIAL_NULL_REFERENCE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_POTENTIAL_NULL_REFERENCE);
+	private static final Key PREF_PB_REDUNDANT_NULL_CHECK= getJDTCoreKey(JavaScriptCore.COMPILER_PB_REDUNDANT_NULL_CHECK);
 	
-//	private static final Key PREF_15_PB_UNCHECKED_TYPE_OPERATION= getJDTCoreKey(JavaCore.COMPILER_PB_UNCHECKED_TYPE_OPERATION);
-//	private static final Key PREF_15_PB_FINAL_PARAM_BOUND= getJDTCoreKey(JavaCore.COMPILER_PB_FINAL_PARAMETER_BOUND);
-//	private static final Key PREF_15_PB_VARARGS_ARGUMENT_NEED_CAST= getJDTCoreKey(JavaCore.COMPILER_PB_VARARGS_ARGUMENT_NEED_CAST);
-//	private static final Key PREF_15_PB_AUTOBOXING_PROBLEM= getJDTCoreKey(JavaCore.COMPILER_PB_AUTOBOXING);
+//	private static final Key PREF_15_PB_UNCHECKED_TYPE_OPERATION= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNCHECKED_TYPE_OPERATION);
+//	private static final Key PREF_15_PB_FINAL_PARAM_BOUND= getJDTCoreKey(JavaScriptCore.COMPILER_PB_FINAL_PARAMETER_BOUND);
+//	private static final Key PREF_15_PB_VARARGS_ARGUMENT_NEED_CAST= getJDTCoreKey(JavaScriptCore.COMPILER_PB_VARARGS_ARGUMENT_NEED_CAST);
+//	private static final Key PREF_15_PB_AUTOBOXING_PROBLEM= getJDTCoreKey(JavaScriptCore.COMPILER_PB_AUTOBOXING);
 	
-//	private static final Key PREF_15_PB_MISSING_OVERRIDE_ANNOTATION= getJDTCoreKey(JavaCore.COMPILER_PB_MISSING_OVERRIDE_ANNOTATION);
-//	private static final Key PREF_15_PB_ANNOTATION_SUPER_INTERFACE= getJDTCoreKey(JavaCore.COMPILER_PB_ANNOTATION_SUPER_INTERFACE);
-//	private static final Key PREF_15_PB_TYPE_PARAMETER_HIDING= getJDTCoreKey(JavaCore.COMPILER_PB_TYPE_PARAMETER_HIDING);
-//	private static final Key PREF_15_PB_INCOMPLETE_ENUM_SWITCH= getJDTCoreKey(JavaCore.COMPILER_PB_INCOMPLETE_ENUM_SWITCH);
-//	private static final Key PREF_15_PB_RAW_TYPE_REFERENCE= getJDTCoreKey(JavaCore.COMPILER_PB_RAW_TYPE_REFERENCE);
+//	private static final Key PREF_15_PB_MISSING_OVERRIDE_ANNOTATION= getJDTCoreKey(JavaScriptCore.COMPILER_PB_MISSING_OVERRIDE_ANNOTATION);
+//	private static final Key PREF_15_PB_ANNOTATION_SUPER_INTERFACE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_ANNOTATION_SUPER_INTERFACE);
+//	private static final Key PREF_15_PB_TYPE_PARAMETER_HIDING= getJDTCoreKey(JavaScriptCore.COMPILER_PB_TYPE_PARAMETER_HIDING);
+//	private static final Key PREF_15_PB_INCOMPLETE_ENUM_SWITCH= getJDTCoreKey(JavaScriptCore.COMPILER_PB_INCOMPLETE_ENUM_SWITCH);
+//	private static final Key PREF_15_PB_RAW_TYPE_REFERENCE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_RAW_TYPE_REFERENCE);
 	
-//	private static final Key PREF_PB_SUPPRESS_WARNINGS= getJDTCoreKey(JavaCore.COMPILER_PB_SUPPRESS_WARNINGS);
-//	private static final Key PREF_PB_UNHANDLED_WARNING_TOKEN= getJDTCoreKey(JavaCore.COMPILER_PB_UNHANDLED_WARNING_TOKEN);
-	//private static final Key PREF_PB_FATAL_OPTIONAL_ERROR= getJDTCoreKey(JavaCore.COMPILER_PB_FATAL_OPTIONAL_ERROR);
+//	private static final Key PREF_PB_SUPPRESS_WARNINGS= getJDTCoreKey(JavaScriptCore.COMPILER_PB_SUPPRESS_WARNINGS);
+//	private static final Key PREF_PB_UNHANDLED_WARNING_TOKEN= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNHANDLED_WARNING_TOKEN);
+	//private static final Key PREF_PB_FATAL_OPTIONAL_ERROR= getJDTCoreKey(JavaScriptCore.COMPILER_PB_FATAL_OPTIONAL_ERROR);
 
 	/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
-	private static final Key PREF_UNRESOLVED_TYPE_OPTIONAL_ERROR =  getJDTCoreKey(JavaCore.UNRESOLVED_TYPE_REFERENCE);
-	private static final Key PREF_UNRESOLVED_FIELD_OPTIONAL_ERROR =  getJDTCoreKey(JavaCore.UNRESOLVED_FIELD_REFERENCE);
-	private static final Key PREF_UNRESOLVED_METHOD_OPTIONAL_ERROR =  getJDTCoreKey(JavaCore.UNRESOLVED_METHOD_REFERENCE);
+	private static final Key PREF_UNRESOLVED_TYPE_OPTIONAL_ERROR =  getJDTCoreKey(JavaScriptCore.UNRESOLVED_TYPE_REFERENCE);
+	private static final Key PREF_UNRESOLVED_FIELD_OPTIONAL_ERROR =  getJDTCoreKey(JavaScriptCore.UNRESOLVED_FIELD_REFERENCE);
+	private static final Key PREF_UNRESOLVED_METHOD_OPTIONAL_ERROR =  getJDTCoreKey(JavaScriptCore.UNRESOLVED_METHOD_REFERENCE);
 	/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
 	
 	
 	/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
-	private static final Key PREF_LOOSE_VAR =  getJDTCoreKey(JavaCore.LOOSE_VAR_DECL);
-	private static final Key PREF_OPTIONAL_SEMICOLON =  getJDTCoreKey(JavaCore.OPTIONAL_SEMICOLON);
+	private static final Key PREF_LOOSE_VAR =  getJDTCoreKey(JavaScriptCore.LOOSE_VAR_DECL);
+	private static final Key PREF_OPTIONAL_SEMICOLON =  getJDTCoreKey(JavaScriptCore.OPTIONAL_SEMICOLON);
 
 	
 	/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */	
 	
 	// values
-	private static final String ERROR= JavaCore.ERROR;
-	private static final String WARNING= JavaCore.WARNING;
-	private static final String IGNORE= JavaCore.IGNORE;
+	private static final String ERROR= JavaScriptCore.ERROR;
+	private static final String WARNING= JavaScriptCore.WARNING;
+	private static final String IGNORE= JavaScriptCore.IGNORE;
 
-	private static final String ENABLED= JavaCore.ENABLED;
-	private static final String DISABLED= JavaCore.DISABLED;
+	private static final String ENABLED= JavaScriptCore.ENABLED;
+	private static final String DISABLED= JavaScriptCore.DISABLED;
 	
 
 	private PixelConverter fPixelConverter;
@@ -473,7 +473,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		//addCheckBox(composite, label, PREF_PB_FATAL_OPTIONAL_ERROR, enableDisableValues, 0);
 
 		
-		IDialogSettings section= JavaPlugin.getDefault().getDialogSettings().getSection(SETTINGS_SECTION_NAME);
+		IDialogSettings section= JavaScriptPlugin.getDefault().getDialogSettings().getSection(SETTINGS_SECTION_NAME);
 		restoreSectionExpansionStates(section);
 		
 		return sc1;
@@ -538,7 +538,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 	 * @see org.eclipse.wst.jsdt.internal.ui.preferences.OptionsConfigurationBlock#dispose()
 	 */
 	public void dispose() {
-		IDialogSettings section= JavaPlugin.getDefault().getDialogSettings().addNewSection(SETTINGS_SECTION_NAME);
+		IDialogSettings section= JavaScriptPlugin.getDefault().getDialogSettings().addNewSection(SETTINGS_SECTION_NAME);
 		storeSectionExpansionStates(section);
 		super.dispose();
 	}

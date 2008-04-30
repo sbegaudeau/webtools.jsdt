@@ -35,7 +35,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.AnnotationPreferenceLookup;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IJavaAnnotation;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaMarkerAnnotation;
@@ -78,7 +78,7 @@ public class JavaExpandHover extends AnnotationExpandHover {
 	}
 
 	private AnnotationPreferenceLookup fLookup= new AnnotationPreferenceLookup();
-	private IPreferenceStore fStore= JavaPlugin.getDefault().getCombinedPreferenceStore();
+	private IPreferenceStore fStore= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 
 	public JavaExpandHover(CompositeRuler ruler, IAnnotationAccess access, IDoubleClickListener doubleClickListener) {
 		super(ruler, access, doubleClickListener);

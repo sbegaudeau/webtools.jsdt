@@ -23,9 +23,9 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class RecentSettingsStore {
 	
@@ -69,7 +69,7 @@ public class RecentSettingsStore {
 				IProject project= root.getProject(projectName);
 				//make sure project has not been removed
 				if (project.isAccessible()) {
-					IJavaProject javaProject= JavaCore.create(project);
+					IJavaScriptProject javaProject= JavaScriptCore.create(project);
 					if (!fPerProjectSettings.containsKey(javaProject)) {
 						String hrefs= curr.get(HREF);
 						if (hrefs == null) {
@@ -99,7 +99,7 @@ public class RecentSettingsStore {
 		for (int i= 0; i < projects.length; i++) {
 			IProject project= projects[i];
 			if (project.isAccessible()) {
-				IJavaProject curr= JavaCore.create(project);
+				IJavaScriptProject curr= JavaScriptCore.create(project);
 				if (!fPerProjectSettings.containsKey(curr)) {
 					ProjectData data= new ProjectData();
 					data.setDestination(getDefaultDestination(curr));
@@ -119,7 +119,7 @@ public class RecentSettingsStore {
 		Set keys= fPerProjectSettings.keySet();
 		for (Iterator iter= keys.iterator(); iter.hasNext();) {
 
-			IJavaProject curr= (IJavaProject) iter.next();
+			IJavaScriptProject curr= (IJavaScriptProject) iter.next();
 
 			IDialogSettings proj= projectsSection.addNewSection(curr.getElementName());
 			if (!keys.contains(curr)) {
@@ -136,7 +136,7 @@ public class RecentSettingsStore {
 		}
 	}
 
-	public void setProjectSettings(IJavaProject project, String destination, String antpath, String[] hrefs) {
+	public void setProjectSettings(IJavaScriptProject project, String destination, String antpath, String[] hrefs) {
 		ProjectData data= (ProjectData) fPerProjectSettings.get(project);
 		if (data == null) {
 			data= new ProjectData();
@@ -166,7 +166,7 @@ public class RecentSettingsStore {
 	
 	
 	
-	public String[] getHRefs(IJavaProject project) {
+	public String[] getHRefs(IJavaScriptProject project) {
 		ProjectData data= (ProjectData) fPerProjectSettings.get(project);
 		if (data != null) {
 			String refs= data.getHRefs();
@@ -177,7 +177,7 @@ public class RecentSettingsStore {
 	
 	//for now if multiple projects are selected the destination
 	//feild will be empty, 
-	public String getDestination(IJavaProject project) {
+	public String getDestination(IJavaScriptProject project) {
 
 		ProjectData data= (ProjectData) fPerProjectSettings.get(project);
 		if (data != null)
@@ -186,7 +186,7 @@ public class RecentSettingsStore {
 			return getDefaultDestination(project);
 	}
 	
-	public String getAntpath(IJavaProject project) {
+	public String getAntpath(IJavaScriptProject project) {
 		ProjectData data= (ProjectData) fPerProjectSettings.get(project);
 		if (data != null)
 			return data.getAntPath();
@@ -197,7 +197,7 @@ public class RecentSettingsStore {
 	/// internal
 	
 	
-	private String getDefaultAntPath(IJavaProject project) {
+	private String getDefaultAntPath(IJavaScriptProject project) {
 		if (project != null) {
 			// The Javadoc.xml file can only be stored locally. So if
 			// the project isn't local then we can't provide a good 
@@ -210,9 +210,9 @@ public class RecentSettingsStore {
 		return ""; //$NON-NLS-1$
 	}
 
-	private String getDefaultDestination(IJavaProject project) {
+	private String getDefaultDestination(IJavaScriptProject project) {
 		if (project != null) {
-			URL url= JavaUI.getProjectJavadocLocation(project);
+			URL url= JavaScriptUI.getProjectJSdocLocation(project);
 			//uses default if source is has http protocol
 			if (url == null || !url.getProtocol().equals("file")) { //$NON-NLS-1$
 				// Since Javadoc.exe is a local tool its output is local.

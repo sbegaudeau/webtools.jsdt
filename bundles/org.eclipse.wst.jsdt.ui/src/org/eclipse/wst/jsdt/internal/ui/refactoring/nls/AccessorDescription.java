@@ -12,10 +12,10 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring.nls;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 
 /**
@@ -52,7 +52,7 @@ public class AccessorDescription {
 			buf.append('.');
 		}
 		buf.append(getAccessorClassName());
-		buf.append(JavaElementLabels.CONCAT_STRING);
+		buf.append(JavaScriptElementLabels.CONCAT_STRING);
 		IPath propertyFilePath= getResourceBundlePackage().getPath().append(getResourceBundleName());
 		buf.append(propertyFilePath.makeRelative().toString());
 		return buf.toString();
@@ -122,7 +122,7 @@ public class AccessorDescription {
 		if (accessorPackHandle == null) {
 			return null;
 		}
-		IJavaElement accessorPack= JavaCore.create(accessorPackHandle);
+		IJavaScriptElement accessorPack= JavaScriptCore.create(accessorPackHandle);
 		if (!(accessorPack instanceof IPackageFragment) || !accessorPack.exists()) {
 			return null;
 		}
@@ -136,7 +136,7 @@ public class AccessorDescription {
 		if (bundlePackHandle == null) {
 			return null;
 		}
-		IJavaElement bundlePack= JavaCore.create(bundlePackHandle);
+		IJavaScriptElement bundlePack= JavaScriptCore.create(bundlePackHandle);
 		if (!(bundlePack instanceof IPackageFragment) || !bundlePack.exists()) {
 			return null;
 		}

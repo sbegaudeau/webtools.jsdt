@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.IDecorationContext;
 import org.eclipse.team.ui.mapping.SynchronizationStateTester;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;
 
@@ -61,7 +61,7 @@ public class HierarchicalDecorationContext implements IDecorationContext {
 		public int getState(Object element, int stateMask, IProgressMonitor monitor) throws CoreException {
 			if (element instanceof JavaElementResourceMapping) {
 				JavaElementResourceMapping mapping= (JavaElementResourceMapping) element;
-				IJavaElement javaElement= mapping.getJavaElement();
+				IJavaScriptElement javaElement= mapping.getJavaElement();
 				if (javaElement instanceof IPackageFragment) {
 					IPackageFragment packageFragment= (IPackageFragment) javaElement;
 					if (!packageFragment.isDefaultPackage()) {
@@ -83,7 +83,7 @@ public class HierarchicalDecorationContext implements IDecorationContext {
 			return fPack;
 		}
 		public IProject[] getProjects() {
-			return new IProject[] {fPack.getJavaProject().getProject() };
+			return new IProject[] {fPack.getJavaScriptProject().getProject() };
 		}
 		public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) throws CoreException {
 			return new ResourceTraversal[] {

@@ -15,9 +15,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 
@@ -33,11 +33,11 @@ public ClassFileWorkingCopy(IClassFile classFile, WorkingCopyOwner owner) {
 	this.classFile = classFile;
 }
 
-public void commitWorkingCopy(boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, this));
+public void commitWorkingCopy(boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
+	throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, this));
 }
 
-public IBuffer getBuffer() throws JavaModelException {
+public IBuffer getBuffer() throws JavaScriptModelException {
 	if (isWorkingCopy())
 		return super.getBuffer();
 	else
@@ -51,7 +51,7 @@ public char[] getContents() {
 		char[] characters = buffer.getCharacters();
 		if (characters == null) return CharOperation.NO_CHAR;
 		return characters;
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		return CharOperation.NO_CHAR;
 	}
 }
@@ -60,7 +60,7 @@ public IPath getPath() {
 	return this.classFile.getPath();
 }
 
-public IJavaElement getPrimaryElement(boolean checkOwner) {
+public IJavaScriptElement getPrimaryElement(boolean checkOwner) {
 	if (checkOwner && isPrimary()) return this;
 	return new ClassFileWorkingCopy(this.classFile, DefaultWorkingCopyOwner.PRIMARY);
 }

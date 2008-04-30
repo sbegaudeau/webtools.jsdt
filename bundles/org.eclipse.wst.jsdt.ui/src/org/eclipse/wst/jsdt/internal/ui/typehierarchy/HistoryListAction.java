@@ -25,15 +25,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 public class HistoryListAction extends Action {
 	
@@ -41,9 +41,9 @@ public class HistoryListAction extends Action {
 		
 		private ListDialogField fHistoryList;
 		private IStatus fHistoryStatus;
-		private IJavaElement fResult;
+		private IJavaScriptElement fResult;
 		
-		private HistoryListDialog(Shell shell, IJavaElement[] elements) {
+		private HistoryListDialog(Shell shell, IJavaScriptElement[] elements) {
 			super(shell);
 			setTitle(TypeHierarchyMessages.HistoryListDialog_title); 
 			
@@ -64,7 +64,7 @@ public class HistoryListAction extends Action {
 				}				
 			};
 		
-			JavaElementLabelProvider labelProvider= new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_QUALIFIED | JavaElementLabelProvider.SHOW_ROOT);
+			JavaScriptElementLabelProvider labelProvider= new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_QUALIFIED | JavaScriptElementLabelProvider.SHOW_ROOT);
 			
 			fHistoryList= new ListDialogField(adapter, buttonLabels, labelProvider);
 			fHistoryList.setLabelText(TypeHierarchyMessages.HistoryListDialog_label); 
@@ -123,20 +123,20 @@ public class HistoryListAction extends Action {
 				status.setError(""); //$NON-NLS-1$
 				fResult= null;
 			} else {
-				fResult= (IJavaElement) selected.get(0);
+				fResult= (IJavaScriptElement) selected.get(0);
 			}
 			fHistoryList.enableButton(0, fHistoryList.getSize() > selected.size() && selected.size() != 0);			
 			fHistoryStatus= status;
 			updateStatus(status);	
 		}
 				
-		public IJavaElement getResult() {
+		public IJavaScriptElement getResult() {
 			return fResult;
 		}
 		
-		public IJavaElement[] getRemaining() {
+		public IJavaScriptElement[] getRemaining() {
 			List elems= fHistoryList.getElements();
-			return (IJavaElement[]) elems.toArray(new IJavaElement[elems.size()]);
+			return (IJavaScriptElement[]) elems.toArray(new IJavaScriptElement[elems.size()]);
 		}	
 		
 		/*
@@ -169,8 +169,8 @@ public class HistoryListAction extends Action {
 	 * @see IAction#run()
 	 */
 	public void run() {
-		IJavaElement[] historyEntries= fView.getHistoryEntries();
-		HistoryListDialog dialog= new HistoryListDialog(JavaPlugin.getActiveWorkbenchShell(), historyEntries);
+		IJavaScriptElement[] historyEntries= fView.getHistoryEntries();
+		HistoryListDialog dialog= new HistoryListDialog(JavaScriptPlugin.getActiveWorkbenchShell(), historyEntries);
 		if (dialog.open() == Window.OK) {
 			fView.setHistoryEntries(dialog.getRemaining());
 			fView.setInputElement(dialog.getResult());

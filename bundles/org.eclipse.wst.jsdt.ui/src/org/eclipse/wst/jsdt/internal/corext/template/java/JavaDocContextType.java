@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.template.java;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.templates.GlobalTemplateVariables;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 
 /**
@@ -51,16 +51,16 @@ public class JavaDocContextType extends CompilationUnitContextType {
 	}
 	
 	/*
-	 * @see org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContextType#createContext(org.eclipse.jface.text.IDocument, int, int, org.eclipse.wst.jsdt.core.ICompilationUnit)
+	 * @see org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContextType#createContext(org.eclipse.jface.text.IDocument, int, int, org.eclipse.wst.jsdt.core.IJavaScriptUnit)
 	 */
-	public CompilationUnitContext createContext(IDocument document, int offset, int length, ICompilationUnit compilationUnit) {
+	public CompilationUnitContext createContext(IDocument document, int offset, int length, IJavaScriptUnit compilationUnit) {
 		return new JavaDocContext(this, document, offset, length, compilationUnit);
 	}	
 	
 	/*
-	 * @see org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContextType#createContext(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.Position, org.eclipse.wst.jsdt.core.ICompilationUnit)
+	 * @see org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContextType#createContext(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.Position, org.eclipse.wst.jsdt.core.IJavaScriptUnit)
 	 */
-	public CompilationUnitContext createContext(IDocument document, Position completionPosition, ICompilationUnit compilationUnit) {
+	public CompilationUnitContext createContext(IDocument document, Position completionPosition, IJavaScriptUnit compilationUnit) {
 		return new JavaDocContext(this, document, completionPosition, compilationUnit);
 	}
 }

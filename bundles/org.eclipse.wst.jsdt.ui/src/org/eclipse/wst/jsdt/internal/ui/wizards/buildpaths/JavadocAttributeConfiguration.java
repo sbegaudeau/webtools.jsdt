@@ -15,8 +15,8 @@ import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
@@ -73,7 +73,7 @@ public class JavadocAttributeConfiguration extends ClasspathAttributeConfigurati
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration#performEdit(org.eclipse.swt.widgets.Shell, org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration.ClasspathAttributeAccess)
 	 */
-	public IClasspathAttribute performEdit(Shell shell, ClasspathAttributeAccess attribute) {
+	public IIncludePathAttribute performEdit(Shell shell, ClasspathAttributeAccess attribute) {
 		String initialLocation= attribute.getClasspathAttribute().getValue();
 		String elementName= attribute.getParentClasspassEntry().getPath().lastSegment();
 		try {
@@ -82,7 +82,7 @@ public class JavadocAttributeConfiguration extends ClasspathAttributeConfigurati
 			if (result != null) {
 				URL newURL= result[0];
 				String string= newURL != null ? newURL.toExternalForm() : null;
-				return JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, string);
+				return JavaScriptCore.newIncludepathAttribute(IIncludePathAttribute.JSDOC_LOCATION_ATTRIBUTE_NAME, string);
 			}
 		} catch (MalformedURLException e) {
 			// todo
@@ -93,8 +93,8 @@ public class JavadocAttributeConfiguration extends ClasspathAttributeConfigurati
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration#performRemove(org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration.ClasspathAttributeAccess)
 	 */
-	public IClasspathAttribute performRemove(ClasspathAttributeAccess attribute) {
-		return JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, null);
+	public IIncludePathAttribute performRemove(ClasspathAttributeAccess attribute) {
+		return JavaScriptCore.newIncludepathAttribute(IIncludePathAttribute.JSDOC_LOCATION_ATTRIBUTE_NAME, null);
 	}
 
 	/* (non-Javadoc)

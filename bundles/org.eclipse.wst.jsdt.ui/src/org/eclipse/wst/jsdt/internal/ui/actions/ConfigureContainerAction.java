@@ -23,9 +23,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
@@ -56,12 +56,12 @@ public class ConfigureContainerAction implements IObjectActionDelegate {
 		}
 	}
 	
-	private void openWizard(IClasspathEntry entry, String label, final IJavaProject project) {
+	private void openWizard(IIncludePathEntry entry, String label, final IJavaScriptProject project) {
 		Shell shell= fPart.getSite().getShell();
 		try {
-			IClasspathEntry[] entries= project.getRawClasspath();
+			IIncludePathEntry[] entries= project.getRawIncludepath();
 			
-			IClasspathEntry result= BuildPathDialogAccess.configureContainerEntry(shell, entry, project, entries);
+			IIncludePathEntry result= BuildPathDialogAccess.configureContainerEntry(shell, entry, project, entries);
 			if (result == null || result.equals(entry)) {
 				return; // user cancelled or no changes
 			}
@@ -71,7 +71,7 @@ public class ConfigureContainerAction implements IObjectActionDelegate {
 				return;
 			}
 			
-			final IClasspathEntry[] newEntries= new IClasspathEntry[entries.length];
+			final IIncludePathEntry[] newEntries= new IIncludePathEntry[entries.length];
 			System.arraycopy(entries, 0, newEntries, 0, entries.length);
 			newEntries[idx]= result;
 			
@@ -82,13 +82,13 @@ public class ConfigureContainerAction implements IObjectActionDelegate {
 			context.run(true, true, new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					try {			
-						project.setRawClasspath(newEntries, project.getOutputLocation(), monitor);
+						project.setRawIncludepath(newEntries, project.getOutputLocation(), monitor);
 					} catch (CoreException e) {
 						throw new InvocationTargetException(e);
 					}
 				}
 			});
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			String title= ActionMessages.ConfigureContainerAction_error_title; 
 			String message= ActionMessages.ConfigureContainerAction_error_creationfailed_message; 
 			ExceptionHandler.handle(e, shell, title, message);
@@ -101,7 +101,7 @@ public class ConfigureContainerAction implements IObjectActionDelegate {
 		}
 	}
 	
-	protected static int indexInClasspath(IClasspathEntry[] entries, IClasspathEntry entry) {
+	protected static int indexInClasspath(IIncludePathEntry[] entries, IIncludePathEntry entry) {
 		for (int i= 0; i < entries.length; i++) {
 			if (entries[i] == entry) {
 				return i;

@@ -12,15 +12,15 @@ package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
@@ -62,7 +62,7 @@ public class FindReferencesInHierarchyAction extends FindReferencesAction {
 	}
 	
 	Class[] getValidTypes() {
-		return new Class[] { ICompilationUnit.class, IType.class, IMethod.class, IField.class, ILocalVariable.class, ITypeParameter.class };
+		return new Class[] { IJavaScriptUnit.class, IType.class, IFunction.class, IField.class, ILocalVariable.class, ITypeParameter.class };
 	}
 	
 	void init() {
@@ -72,13 +72,13 @@ public class FindReferencesInHierarchyAction extends FindReferencesAction {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.FIND_REFERENCES_IN_HIERARCHY_ACTION);
 	}
 
-	QuerySpecification createQuery(IJavaElement element) throws JavaModelException, InterruptedException {
+	QuerySpecification createQuery(IJavaScriptElement element) throws JavaScriptModelException, InterruptedException {
 		IType type= getType(element);
 		if (type == null) {
 			return super.createQuery(element);
 		}
 		JavaSearchScopeFactory factory= JavaSearchScopeFactory.getInstance();
-		IJavaSearchScope scope= SearchEngine.createHierarchyScope(type);
+		IJavaScriptSearchScope scope= SearchEngine.createHierarchyScope(type);
 		String description= factory.getHierarchyScopeDescription(type);
 		return new ElementQuerySpecification(element, getLimitTo(), scope, description);
 	}

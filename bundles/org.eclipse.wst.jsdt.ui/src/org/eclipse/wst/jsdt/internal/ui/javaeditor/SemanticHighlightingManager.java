@@ -29,7 +29,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaPresentationReconciler;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
 import org.eclipse.wst.jsdt.ui.text.IColorManagerExtension;
-import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
 
 /**
  * Semantic highlighting manager
@@ -268,7 +268,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 	/** The preference store */
 	private IPreferenceStore fPreferenceStore;
 	/** The source viewer configuration */
-	private JavaSourceViewerConfiguration fConfiguration;
+	private JavaScriptSourceViewerConfiguration fConfiguration;
 	/** The presentation reconciler */
 	private JavaPresentationReconciler fPresentationReconciler;
 

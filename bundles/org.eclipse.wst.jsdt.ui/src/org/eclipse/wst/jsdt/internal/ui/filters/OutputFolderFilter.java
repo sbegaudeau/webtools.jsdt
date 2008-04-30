@@ -17,9 +17,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 
 /** 
@@ -46,10 +46,10 @@ public class OutputFolderFilter extends ViewerFilter {
 			IFolder folder= (IFolder)element;
 			IProject proj= folder.getProject();
 			try {
-				if (!proj.hasNature(JavaCore.NATURE_ID))
+				if (!proj.hasNature(JavaScriptCore.NATURE_ID))
 					return true;
 				
-				IJavaProject jProject= JavaCore.create(folder.getProject());
+				IJavaScriptProject jProject= JavaScriptCore.create(folder.getProject());
 				if (jProject == null || !jProject.exists())
 					return true;
 				
@@ -60,7 +60,7 @@ public class OutputFolderFilter extends ViewerFilter {
 					return false;
 				
 				// Check output location for each class path entry
-				IClasspathEntry[] cpEntries= jProject.getRawClasspath();
+				IIncludePathEntry[] cpEntries= jProject.getRawIncludepath();
 				for (int i= 0, length= cpEntries.length; i < length; i++) {
 					IPath outputLocation= cpEntries[i].getOutputLocation();
 					if (outputLocation != null && outputLocation.equals(folderPath))

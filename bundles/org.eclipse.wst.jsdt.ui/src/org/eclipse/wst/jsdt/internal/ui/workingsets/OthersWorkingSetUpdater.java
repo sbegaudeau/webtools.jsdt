@@ -31,13 +31,13 @@ import org.eclipse.ui.IWorkingSetUpdater;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 public class OthersWorkingSetUpdater implements IWorkingSetUpdater {
 	
@@ -88,19 +88,19 @@ public class OthersWorkingSetUpdater implements IWorkingSetUpdater {
 			
 			processJavaDelta(new ArrayList(Arrays.asList(fWorkingSet.getElements())), event.getDelta());
 		}
-		private void processJavaDelta(List elements, IJavaElementDelta delta) {
-			IJavaElement jElement= delta.getElement();
+		private void processJavaDelta(List elements, IJavaScriptElementDelta delta) {
+			IJavaScriptElement jElement= delta.getElement();
 			int type= jElement.getElementType();
-			if (type == IJavaElement.JAVA_PROJECT) {
+			if (type == IJavaScriptElement.JAVASCRIPT_PROJECT) {
 				int index= elements.indexOf(jElement);
 				int kind= delta.getKind();
 				int flags= delta.getFlags();
-				if (kind == IJavaElementDelta.CHANGED) {
-					if (index != -1 && (flags & IJavaElementDelta.F_CLOSED) != 0) {
-						elements.set(index, ((IJavaProject)jElement).getProject());
+				if (kind == IJavaScriptElementDelta.CHANGED) {
+					if (index != -1 && (flags & IJavaScriptElementDelta.F_CLOSED) != 0) {
+						elements.set(index, ((IJavaScriptProject)jElement).getProject());
 						fWorkingSet.setElements((IAdaptable[])elements.toArray(new IAdaptable[elements.size()]));
-					} else if ((flags & IJavaElementDelta.F_OPENED) != 0) {
-						index= elements.indexOf(((IJavaProject)jElement).getProject());
+					} else if ((flags & IJavaScriptElementDelta.F_OPENED) != 0) {
+						index= elements.indexOf(((IJavaScriptProject)jElement).getProject());
 						if (index != -1) {
 							elements.set(index, jElement);
 							fWorkingSet.setElements((IAdaptable[])elements.toArray(new IAdaptable[elements.size()]));
@@ -110,7 +110,7 @@ public class OthersWorkingSetUpdater implements IWorkingSetUpdater {
 				// don't visit below projects
 				return;
 			}
-			IJavaElementDelta[] children= delta.getAffectedChildren();
+			IJavaScriptElementDelta[] children= delta.getAffectedChildren();
 			for (int i= 0; i < children.length; i++) {
 				processJavaDelta(elements, children[i]);
 			}
@@ -149,7 +149,7 @@ public class OthersWorkingSetUpdater implements IWorkingSetUpdater {
 		fWorkingSetListener= new WorkingSetListener();
 		PlatformUI.getWorkbench().getWorkingSetManager().addPropertyChangeListener(fWorkingSetListener);
 		fJavaElementChangeListener= new JavaElementChangeListener();
-		JavaCore.addElementChangedListener(fJavaElementChangeListener, ElementChangedEvent.POST_CHANGE);
+		JavaScriptCore.addElementChangedListener(fJavaElementChangeListener, ElementChangedEvent.POST_CHANGE);
 	}
 	
 	public void dispose() {
@@ -162,7 +162,7 @@ public class OthersWorkingSetUpdater implements IWorkingSetUpdater {
 			fWorkingSetListener= null;
 		}
 		if (fJavaElementChangeListener != null) {
-			JavaCore.removeElementChangedListener(fJavaElementChangeListener);
+			JavaScriptCore.removeElementChangedListener(fJavaElementChangeListener);
 		}
 	}
 	
@@ -184,20 +184,20 @@ public class OthersWorkingSetUpdater implements IWorkingSetUpdater {
 				}
 			}
 		}
-		IJavaModel model= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
+		IJavaScriptModel model= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
 		try {
-			IJavaProject[] jProjects= model.getJavaProjects();
+			IJavaScriptProject[] jProjects= model.getJavaScriptProjects();
 			for (int i= 0; i < jProjects.length; i++) {
 				if (!projects.contains(jProjects[i].getProject()))
 					result.add(jProjects[i]);
 			}
-			Object[] rProjects= model.getNonJavaResources();
+			Object[] rProjects= model.getNonJavaScriptResources();
 			for (int i= 0; i < rProjects.length; i++) {
 				if (!projects.contains(rProjects[i]))
 					result.add(rProjects[i]);
 			}
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 		}
 		fWorkingSet.setElements((IAdaptable[])result.toArray(new IAdaptable[result.size()]));
 	}

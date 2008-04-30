@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
@@ -172,7 +172,7 @@ public class CodeScopeBuilder extends ASTVisitor {
 		return false;
 	}
 	
-	public boolean visit(MethodInvocation node) {
+	public boolean visit(FunctionInvocation node) {
 		Expression receiver= node.getExpression();
 		if (receiver == null) {
 			SimpleName name= node.getName();

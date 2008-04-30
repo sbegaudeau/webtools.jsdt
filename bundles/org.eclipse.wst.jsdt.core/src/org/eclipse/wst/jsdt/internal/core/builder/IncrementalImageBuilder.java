@@ -22,8 +22,8 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IJavaModelMarker;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelMarker;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
@@ -50,8 +50,8 @@ public static int MaxCompileLoop = 5; // perform a full build if it takes more t
 protected IncrementalImageBuilder(JavaBuilder javaBuilder, State buildState) {
 	super(javaBuilder, true, buildState);
 	this.nameEnvironment.isIncrementalBuild = true;
-	this.makeOutputFolderConsistent = JavaCore.ENABLED.equals(
-		javaBuilder.javaProject.getOption(JavaCore.CORE_JAVA_BUILD_RECREATE_MODIFIED_CLASS_FILES_IN_OUTPUT_FOLDER, true));
+	this.makeOutputFolderConsistent = JavaScriptCore.ENABLED.equals(
+		javaBuilder.javaProject.getOption(JavaScriptCore.CORE_JAVA_BUILD_RECREATE_MODIFIED_CLASS_FILES_IN_OUTPUT_FOLDER, true));
 }
 
 protected IncrementalImageBuilder(JavaBuilder javaBuilder) {
@@ -87,7 +87,7 @@ public boolean build(SimpleLookupTable deltas) {
 			// but we need to rebuild every source file since problems were not recorded
 			// AND to avoid the infinite build scenario if this project is involved in a cycle, see bug 160550
 			// we need to avoid unnecessary deltas caused by doing a full build in this case
-			javaBuilder.currentProject.deleteMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
+			javaBuilder.currentProject.deleteMarkers(IJavaScriptModelMarker.JAVASCRIPT_MODEL_PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
 			addAllSourceFiles(sourceFiles);
 			notifier.updateProgressDelta(0.25f);
 		} else {

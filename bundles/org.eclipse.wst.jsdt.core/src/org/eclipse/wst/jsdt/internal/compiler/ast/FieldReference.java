@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import java.util.ArrayList;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IFieldReference;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -47,7 +47,7 @@ public class FieldReference extends Reference implements InvocationSite, IFieldR
 	public FieldBinding binding;															// exact binding resulting from lookup
 	public TypeBinding typeBinding;															// exact binding resulting from lookup
 //	protected FieldBinding codegenBinding;									// actual binding used for code generation (if no synthetic accessor)
-//	public MethodBinding[] syntheticAccessors; // [0]=read accessor [1]=write accessor
+//	public FunctionBinding[] syntheticAccessors; // [0]=read accessor [1]=write accessor
 
 	public long nameSourcePosition; //(start<<32)+end
 	public TypeBinding receiverType;
@@ -190,7 +190,7 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 //		if ((currentScope.enclosingSourceType() != this.codegenBinding.declaringClass)
 //				&& binding.constant() == Constant.NotAConstant) {
 //			if (syntheticAccessors == null)
-//				syntheticAccessors = new MethodBinding[2];
+//				syntheticAccessors = new FunctionBinding[2];
 //			syntheticAccessors[isReadAccess ? READ : WRITE] =
 //				((SourceTypeBinding) this.codegenBinding.declaringClass).addSyntheticMethod(this.codegenBinding, isReadAccess);
 //			currentScope.problemReporter().needToEmulateFieldAccess(this.codegenBinding, this, isReadAccess);
@@ -204,7 +204,7 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 //			(SourceTypeBinding) (((QualifiedSuperReference) receiver)
 //				.currentCompatibleType);
 //		if (syntheticAccessors == null)
-//			syntheticAccessors = new MethodBinding[2];
+//			syntheticAccessors = new FunctionBinding[2];
 //		syntheticAccessors[isReadAccess ? READ : WRITE] = destinationType.addSyntheticMethod(this.codegenBinding, isReadAccess);
 //		currentScope.problemReporter().needToEmulateFieldAccess(this.codegenBinding, this, isReadAccess);
 //		return;
@@ -220,7 +220,7 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 //				(SourceTypeBinding) enclosingSourceType.enclosingTypeAt(
 //					(bits & DepthMASK) >> DepthSHIFT);
 //			if (syntheticAccessors == null)
-//				syntheticAccessors = new MethodBinding[2];
+//				syntheticAccessors = new FunctionBinding[2];
 //			syntheticAccessors[isReadAccess ? READ : WRITE] = currentCompatibleType.addSyntheticMethod(this.codegenBinding, isReadAccess);
 //			currentScope.problemReporter().needToEmulateFieldAccess(this.codegenBinding, this, isReadAccess);
 //			return;
@@ -428,7 +428,7 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 			}
 	//		return this.resolvedType=TypeBinding.UNKNOWN;
 		}
-		if (JavaCore.IS_ECMASCRIPT4)
+		if (JavaScriptCore.IS_ECMASCRIPT4)
 		{
 			TypeBinding receiverErasure = this.receiverType.erasure();
 			if (receiverErasure instanceof ReferenceBinding) {

@@ -33,18 +33,18 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
 import org.eclipse.wst.jsdt.internal.corext.CorextMessages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.w3c.dom.Element;
 
 /**
@@ -67,41 +67,41 @@ public class OpenTypeHistory extends History {
 		 * @return <code>true</code> if consistency must be checked 
 		 *  <code>false</code> otherwise.
 		 */
-		private boolean processDelta(IJavaElementDelta delta) {
-			IJavaElement elem= delta.getElement();
+		private boolean processDelta(IJavaScriptElementDelta delta) {
+			IJavaScriptElement elem= delta.getElement();
 			
-			boolean isChanged= delta.getKind() == IJavaElementDelta.CHANGED;
-			boolean isRemoved= delta.getKind() == IJavaElementDelta.REMOVED;
+			boolean isChanged= delta.getKind() == IJavaScriptElementDelta.CHANGED;
+			boolean isRemoved= delta.getKind() == IJavaScriptElementDelta.REMOVED;
 						
 			switch (elem.getElementType()) {
-				case IJavaElement.JAVA_PROJECT:
+				case IJavaScriptElement.JAVASCRIPT_PROJECT:
 					if (isRemoved || (isChanged && 
-							(delta.getFlags() & IJavaElementDelta.F_CLOSED) != 0)) {
+							(delta.getFlags() & IJavaScriptElementDelta.F_CLOSED) != 0)) {
 						return true;
 					}
 					return processChildrenDelta(delta);
-				case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+				case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 					if (isRemoved || (isChanged && (
-							(delta.getFlags() & IJavaElementDelta.F_ARCHIVE_CONTENT_CHANGED) != 0 ||
-							(delta.getFlags() & IJavaElementDelta.F_REMOVED_FROM_CLASSPATH) != 0))) {
+							(delta.getFlags() & IJavaScriptElementDelta.F_ARCHIVE_CONTENT_CHANGED) != 0 ||
+							(delta.getFlags() & IJavaScriptElementDelta.F_REMOVED_FROM_CLASSPATH) != 0))) {
 						return true;
 					}
 					return processChildrenDelta(delta);
-				case IJavaElement.TYPE:
-					if (isChanged && (delta.getFlags() & IJavaElementDelta.F_MODIFIERS) != 0) {
+				case IJavaScriptElement.TYPE:
+					if (isChanged && (delta.getFlags() & IJavaScriptElementDelta.F_MODIFIERS) != 0) {
 						return true;
 					}
 					// type children can be inner classes: fall through
-				case IJavaElement.JAVA_MODEL:
-				case IJavaElement.PACKAGE_FRAGMENT:
-				case IJavaElement.CLASS_FILE:
+				case IJavaScriptElement.JAVASCRIPT_MODEL:
+				case IJavaScriptElement.PACKAGE_FRAGMENT:
+				case IJavaScriptElement.CLASS_FILE:
 					if (isRemoved) {
 						return true;
 					}				
 					return processChildrenDelta(delta);
-				case IJavaElement.COMPILATION_UNIT:
+				case IJavaScriptElement.JAVASCRIPT_UNIT:
 					// Not the primary compilation unit. Ignore it 
-					if (!JavaModelUtil.isPrimary((ICompilationUnit) elem)) {
+					if (!JavaModelUtil.isPrimary((IJavaScriptUnit) elem)) {
 						return false;
 					}
 
@@ -116,19 +116,19 @@ public class OpenTypeHistory extends History {
 		}
 		
 		private boolean isUnknownStructuralChange(int flags) {
-			if ((flags & IJavaElementDelta.F_CONTENT) == 0)
+			if ((flags & IJavaScriptElementDelta.F_CONTENT) == 0)
 				return false;
-			return (flags & IJavaElementDelta.F_FINE_GRAINED) == 0; 
+			return (flags & IJavaScriptElementDelta.F_FINE_GRAINED) == 0; 
 		}
 
 		/*
 		private boolean isPossibleStructuralChange(int flags) {
-			return (flags & (IJavaElementDelta.F_CONTENT | IJavaElementDelta.F_FINE_GRAINED)) == IJavaElementDelta.F_CONTENT;
+			return (flags & (IJavaScriptElementDelta.F_CONTENT | IJavaScriptElementDelta.F_FINE_GRAINED)) == IJavaScriptElementDelta.F_CONTENT;
 		}
 		*/		
 		
-		private boolean processChildrenDelta(IJavaElementDelta delta) {
-			IJavaElementDelta[] children= delta.getAffectedChildren();
+		private boolean processChildrenDelta(IJavaScriptElementDelta delta) {
+			IJavaScriptElementDelta[] children= delta.getAffectedChildren();
 			for (int i= 0; i < children.length; i++) {
 				if (processDelta(children[i])) {
 					return true;
@@ -146,7 +146,7 @@ public class OpenTypeHistory extends History {
 		protected IStatus run(IProgressMonitor monitor) {
 			OpenTypeHistory history= OpenTypeHistory.getInstance();
 			history.internalCheckConsistency(monitor);
-			return new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
+			return new Status(IStatus.OK, JavaScriptPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
 		}
 		public boolean belongsTo(Object family) {
 			return FAMILY.equals(family);
@@ -188,7 +188,7 @@ public class OpenTypeHistory extends History {
 		fNeedsConsistencyCheck= true;
 		load();
 		fDeltaListener= new TypeHistoryDeltaListener();
-		JavaCore.addElementChangedListener(fDeltaListener);
+		JavaScriptCore.addElementChangedListener(fDeltaListener);
 		fUpdateJob= new UpdateJob();
 		// It is not necessary anymore that the update job has a rule since
 		// markAsInconsistent isn't synchronized anymore. See bugs
@@ -308,7 +308,7 @@ public class OpenTypeHistory extends History {
 						fTimestampMapping.put(type, new Long(currentTimestamp));
 					}
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				remove(type);
 			}
 			if (monitor.isCanceled())
@@ -330,7 +330,7 @@ public class OpenTypeHistory extends History {
 					if (info.exists()) {
 						// The element could be removed from the build path. So check
 						// if the Java element still exists.
-						IJavaElement element= JavaCore.create(resource);
+						IJavaScriptElement element= JavaScriptCore.create(resource);
 						if (element != null && element.exists())
 							return info.getLastModified();
 					}
@@ -352,7 +352,7 @@ public class OpenTypeHistory extends History {
 	
 	
 	public boolean isContainerDirty(TypeNameMatch match) {
-		ICompilationUnit cu= match.getType().getCompilationUnit();
+		IJavaScriptUnit cu= match.getType().getJavaScriptUnit();
 		if (cu == null) {
 			return false;
 		}
@@ -367,7 +367,7 @@ public class OpenTypeHistory extends History {
 	
 	
 	private void doShutdown() {
-		JavaCore.removeElementChangedListener(fDeltaListener);
+		JavaScriptCore.removeElementChangedListener(fDeltaListener);
 		save();
 	}
 	
@@ -376,7 +376,7 @@ public class OpenTypeHistory extends History {
 		if (handle == null )
 			return null;
 		
-		IJavaElement element= JavaCore.create(handle);
+		IJavaScriptElement element= JavaScriptCore.create(handle);
 		if (!(element instanceof IType))
 			return null;
 		

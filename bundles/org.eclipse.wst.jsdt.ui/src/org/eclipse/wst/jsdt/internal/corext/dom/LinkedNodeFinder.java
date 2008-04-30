@@ -18,15 +18,15 @@ import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 
@@ -131,11 +131,11 @@ public class LinkedNodeFinder  {
 		ArrayList res= new ArrayList();
 		
 		ASTNode astRoot = parent.getRoot();
-		if (!(astRoot instanceof CompilationUnit)) {
+		if (!(astRoot instanceof JavaScriptUnit)) {
 			return null;
 		}
 			
-		IProblem[] problems= ((CompilationUnit) astRoot).getProblems();
+		IProblem[] problems= ((JavaScriptUnit) astRoot).getProblems();
 		int nameNodeKind= getNameNodeProblemKind(problems, nameNode);
 		if (nameNodeKind == 0) { // no problem on node
 			return null;
@@ -221,7 +221,7 @@ public class LinkedNodeFinder  {
 			fResult= result;
 		}
 		
-		public boolean visit(MethodDeclaration node) {
+		public boolean visit(FunctionDeclaration node) {
 			if (node.isConstructor() && fBinding.getKind() == IBinding.TYPE) {
 				ASTNode typeNode= node.getParent();
 				if (typeNode instanceof AbstractTypeDeclaration) {
@@ -235,7 +235,7 @@ public class LinkedNodeFinder  {
 		
 		public boolean visit(TypeDeclaration node) {
 			if (fBinding.getKind() == IBinding.METHOD) {
-				IMethodBinding binding= (IMethodBinding) fBinding;
+				IFunctionBinding binding= (IFunctionBinding) fBinding;
 				if (binding.isConstructor() && binding.getDeclaringClass() == node.resolveBinding()) {
 					fResult.add(node.getName());
 				}
@@ -245,7 +245,7 @@ public class LinkedNodeFinder  {
 
 		public boolean visit(EnumDeclaration node) {
 			if (fBinding.getKind() == IBinding.METHOD) {
-				IMethodBinding binding= (IMethodBinding) fBinding;
+				IFunctionBinding binding= (IFunctionBinding) fBinding;
 				if (binding.isConstructor() && binding.getDeclaringClass() == node.resolveBinding()) {
 					fResult.add(node.getName());
 				}
@@ -268,8 +268,8 @@ public class LinkedNodeFinder  {
 			if (fBinding == binding) {
 				fResult.add(node);
 			} else if (binding.getKind() == IBinding.METHOD) {
-				IMethodBinding curr= (IMethodBinding) binding;
-				IMethodBinding methodBinding= (IMethodBinding) fBinding;
+				IFunctionBinding curr= (IFunctionBinding) binding;
+				IFunctionBinding methodBinding= (IFunctionBinding) fBinding;
 				if (methodBinding.overrides(curr) || curr.overrides(methodBinding)) {
 					fResult.add(node);
 				}
@@ -280,8 +280,8 @@ public class LinkedNodeFinder  {
 		private static IBinding getDeclaration(IBinding binding) {
 			if (binding instanceof ITypeBinding) {
 				return ((ITypeBinding) binding).getTypeDeclaration();
-			} else if (binding instanceof IMethodBinding) {
-				return ((IMethodBinding) binding).getMethodDeclaration();
+			} else if (binding instanceof IFunctionBinding) {
+				return ((IFunctionBinding) binding).getMethodDeclaration();
 			} else if (binding instanceof IVariableBinding) {
 				return ((IVariableBinding) binding).getVariableDeclaration();
 			}

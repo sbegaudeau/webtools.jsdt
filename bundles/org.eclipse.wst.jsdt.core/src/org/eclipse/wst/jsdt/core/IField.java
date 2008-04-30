@@ -85,10 +85,10 @@ public interface IField extends IMember {
  * </table>
  *
  * @return  the constant value associated with this field or <code>null</code> if this field has none.
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource
  */
-public Object getConstant() throws JavaModelException;
+public Object getConstant() throws JavaScriptModelException;
 /**
  * Returns the simple name of this field.
  * @return the simple name of this field.
@@ -115,20 +115,20 @@ String getKey();
  * </p>
  *
  * @return the type signature of this field
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource
  * @see Signature
  */
-String getTypeSignature() throws JavaModelException;
+String getTypeSignature() throws JavaScriptModelException;
 /**
  * Returns whether this field represents an enum constant.
  *
  * @return whether this field represents an enum constant
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource
  * @since 3.1
  */
-boolean isEnumConstant() throws JavaModelException;
+boolean isEnumConstant() throws JavaScriptModelException;
 /**
  * Returns whether this field represents a resolved field.
  * If a field is resoved, its key contains resolved information.

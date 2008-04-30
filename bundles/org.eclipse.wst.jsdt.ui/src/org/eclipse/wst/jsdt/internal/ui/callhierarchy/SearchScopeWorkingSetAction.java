@@ -15,7 +15,7 @@ package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchScopeFactory;
 
@@ -31,7 +31,7 @@ class SearchScopeWorkingSetAction extends SearchScopeAction {
 		this.fWorkingSets = workingSets;
 	}
 	
-	public IJavaSearchScope getSearchScope() {
+	public IJavaScriptSearchScope getSearchScope() {
 		return JavaSearchScopeFactory.getInstance().createJavaSearchScope(fWorkingSets, true);
 	}
 	

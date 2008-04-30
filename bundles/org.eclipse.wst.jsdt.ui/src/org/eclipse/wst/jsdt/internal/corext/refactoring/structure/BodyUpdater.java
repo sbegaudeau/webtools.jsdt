@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.structure;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 
 
 public abstract class BodyUpdater {
@@ -28,7 +28,7 @@ public abstract class BodyUpdater {
 	 * @param result
 	 * @throws CoreException 
 	 */
-	public abstract void updateBody(MethodDeclaration methodDeclaration, CompilationUnitRewrite cuRewrite, RefactoringStatus result) throws CoreException;
+	public abstract void updateBody(FunctionDeclaration methodDeclaration, CompilationUnitRewrite cuRewrite, RefactoringStatus result) throws CoreException;
 
 	/**
 	 * Returns whether {@link ChangeSignatureRefactoring} should check if

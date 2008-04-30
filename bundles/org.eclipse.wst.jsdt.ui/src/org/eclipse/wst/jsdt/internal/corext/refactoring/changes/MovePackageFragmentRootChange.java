@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IPackageFragmentRootManipulationQuery;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -26,7 +26,7 @@ public class MovePackageFragmentRootChange extends PackageFragmentRootReorgChang
 		super(root, destination, null, updateClasspathQuery);
 	}
 
-	protected Change doPerformReorg(IPath destinationPath, IProgressMonitor pm) throws JavaModelException {
+	protected Change doPerformReorg(IPath destinationPath, IProgressMonitor pm) throws JavaScriptModelException {
 		getRoot().move(destinationPath, getResourceUpdateFlags(), getUpdateModelFlags(false), null, pm);
 		return null;
 	}

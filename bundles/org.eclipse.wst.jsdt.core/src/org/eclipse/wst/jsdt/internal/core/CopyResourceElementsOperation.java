@@ -26,21 +26,21 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -86,15 +86,15 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	protected Map deltasPerProject = new HashMap(1);
 	/**
 	 * The <code>ASTParser</code> used to manipulate the source code of
-	 * <code>ICompilationUnit</code>.
+	 * <code>IJavaScriptUnit</code>.
 	 */
 	protected ASTParser parser;
 	/**
 	 * When executed, this operation will copy the given resources to the
 	 * given container.
 	 */
-	public CopyResourceElementsOperation(IJavaElement[] resourcesToCopy, IJavaElement destContainer, boolean force) {
-		this(resourcesToCopy, new IJavaElement[]{destContainer}, force);
+	public CopyResourceElementsOperation(IJavaScriptElement[] resourcesToCopy, IJavaScriptElement destContainer, boolean force) {
+		this(resourcesToCopy, new IJavaScriptElement[]{destContainer}, force);
 	}
 	/**
 	 * When executed, this operation will copy the given resources to the
@@ -102,7 +102,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 * the correct order. If there is > 1 destination, the number of destinations
 	 * must be the same as the number of resources being copied/moved.
 	 */
-	public CopyResourceElementsOperation(IJavaElement[] resourcesToCopy, IJavaElement[] destContainers, boolean force) {
+	public CopyResourceElementsOperation(IJavaScriptElement[] resourcesToCopy, IJavaScriptElement[] destContainers, boolean force) {
 		super(resourcesToCopy, destContainers, force);
 		initializeASTParser();
 	}
@@ -114,21 +114,21 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 * If <code>source</code> is a <code>K_SOURCE</code>, these are the <code>.java</code>
 	 * files, if it is a <code>K_BINARY</code>, they are the <code>.class</code> files.
 	 */
-	private IResource[] collectResourcesOfInterest(IPackageFragment source) throws JavaModelException {
-		IJavaElement[] children = source.getChildren();
-		int childOfInterest = IJavaElement.COMPILATION_UNIT;
+	private IResource[] collectResourcesOfInterest(IPackageFragment source) throws JavaScriptModelException {
+		IJavaScriptElement[] children = source.getChildren();
+		int childOfInterest = IJavaScriptElement.JAVASCRIPT_UNIT;
 		if (source.getKind() == IPackageFragmentRoot.K_BINARY) {
-			childOfInterest = IJavaElement.CLASS_FILE;
+			childOfInterest = IJavaScriptElement.CLASS_FILE;
 		}
 		ArrayList correctKindChildren = new ArrayList(children.length);
 		for (int i = 0; i < children.length; i++) {
-			IJavaElement child = children[i];
+			IJavaScriptElement child = children[i];
 			if (child.getElementType() == childOfInterest) {
 				correctKindChildren.add(child.getResource());
 			}
 		}
 		// Gather non-java resources
-		Object[] nonJavaResources = source.getNonJavaResources();
+		Object[] nonJavaResources = source.getNonJavaScriptResources();
 		int actualNonJavaResourceCount = 0;
 		for (int i = 0, max = nonJavaResources.length; i < max; i++){
 			if (nonJavaResources[i] instanceof IResource) actualNonJavaResourceCount++;
@@ -154,7 +154,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 * Creates any destination package fragment(s) which do not exists yet.
 	 * Return true if a read-only package fragment has been found among package fragments, false otherwise
 	 */
-	private boolean createNeededPackageFragments(IContainer sourceFolder, PackageFragmentRoot root, String[] newFragName, boolean moveFolder) throws JavaModelException {
+	private boolean createNeededPackageFragments(IContainer sourceFolder, PackageFragmentRoot root, String[] newFragName, boolean moveFolder) throws JavaScriptModelException {
 		boolean containsReadOnlyPackageFragment = false;
 		IContainer parentFolder = (IContainer) root.getResource();
 		JavaElementDelta projectDelta = null;
@@ -179,7 +179,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 				if (i < newFragName.length - 1 // all but the last one are side effect packages
 						&& !Util.isExcluded(parentFolder, inclusionPatterns, exclusionPatterns)) {
 					if (projectDelta == null) {
-						projectDelta = getDeltaFor(root.getJavaProject());
+						projectDelta = getDeltaFor(root.getJavaScriptProject());
 					}
 					projectDelta.added(sideEffectPackage);
 				}
@@ -196,7 +196,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 * creating it and putting it in <code>fDeltasPerProject</code> if
 	 * it does not exist yet.
 	 */
-	private JavaElementDelta getDeltaFor(IJavaProject javaProject) {
+	private JavaElementDelta getDeltaFor(IJavaScriptProject javaProject) {
 		JavaElementDelta delta = (JavaElementDelta) deltasPerProject.get(javaProject);
 		if (delta == null) {
 			delta = new JavaElementDelta(javaProject);
@@ -221,11 +221,11 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 * If the operation is rooted in a single project, the delta is rooted in that project
 	 *
 	 */
-	protected void prepareDeltas(IJavaElement sourceElement, IJavaElement destinationElement, boolean isMove) {
+	protected void prepareDeltas(IJavaScriptElement sourceElement, IJavaScriptElement destinationElement, boolean isMove) {
 		if (Util.isExcluded(sourceElement) || Util.isExcluded(destinationElement)) return;
-		IJavaProject destProject = destinationElement.getJavaProject();
+		IJavaScriptProject destProject = destinationElement.getJavaScriptProject();
 		if (isMove) {
-			IJavaProject sourceProject = sourceElement.getJavaProject();
+			IJavaScriptProject sourceProject = sourceElement.getJavaScriptProject();
 			getDeltaFor(sourceProject).movedFrom(sourceElement, destinationElement);
 			getDeltaFor(destProject).movedTo(destinationElement, sourceElement);
 		} else {
@@ -238,10 +238,10 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 * The package statement in the compilation unit is updated if necessary.
 	 * The main type of the compilation unit is renamed if necessary.
 	 *
-	 * @exception JavaModelException if the operation is unable to
+	 * @exception JavaScriptModelException if the operation is unable to
 	 * complete
 	 */
-	private void processCompilationUnitResource(ICompilationUnit source, PackageFragment dest) throws JavaModelException {
+	private void processCompilationUnitResource(IJavaScriptUnit source, PackageFragment dest) throws JavaScriptModelException {
 		String newCUName = getNewNameFor(source);
 		String destName = (newCUName != null) ? newCUName : source.getElementName();
 		ASTRewrite rewrite = updateContent(source, dest, newCUName); // null if unchanged
@@ -271,8 +271,8 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 							destCU.close(); // ensure the in-memory buffer for the dest CU is closed
 						} else {
 							// abort
-							throw new JavaModelException(new JavaModelStatus(
-								IJavaModelStatusConstants.NAME_COLLISION,
+							throw new JavaScriptModelException(new JavaModelStatus(
+								IJavaScriptModelStatusConstants.NAME_COLLISION,
 								Messages.bind(Messages.status_nameCollision, destFile.getFullPath().toString())));
 						}
 					}
@@ -288,10 +288,10 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 				} else {
 					destCU.getBuffer().setContents(source.getBuffer().getContents());
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				throw e;
 			} catch (CoreException e) {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			}
 
 			// update new resource content
@@ -300,8 +300,8 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 				try {
 					saveContent(dest, destName, rewrite, sourceEncoding, destFile);
 				} catch (CoreException e) {
-					if (e instanceof JavaModelException) throw (JavaModelException) e;
-					throw new JavaModelException(e);
+					if (e instanceof JavaScriptModelException) throw (JavaScriptModelException) e;
+					throw new JavaScriptModelException(e);
 				} finally {
 					Util.setReadOnly(destFile, wasReadOnly);
 				}
@@ -317,8 +317,8 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 			}
 		} else {
 			if (!this.force) {
-				throw new JavaModelException(new JavaModelStatus(
-					IJavaModelStatusConstants.NAME_COLLISION,
+				throw new JavaScriptModelException(new JavaModelStatus(
+					IJavaScriptModelStatusConstants.NAME_COLLISION,
 					Messages.bind(Messages.status_nameCollision, destFile.getFullPath().toString())));
 			}
 			// update new resource content
@@ -334,7 +334,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 */
 	protected void processDeltas() {
 		for (Iterator deltas = this.deltasPerProject.values().iterator(); deltas.hasNext();){
-			addDelta((IJavaElementDelta) deltas.next());
+			addDelta((IJavaScriptElementDelta) deltas.next());
 		}
 	}
 	/**
@@ -343,18 +343,18 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 * <code>processPackageFragmentResource</code>, depending on the type of
 	 * <code>element</code>.
 	 */
-	protected void processElement(IJavaElement element) throws JavaModelException {
-		IJavaElement dest = getDestinationParent(element);
+	protected void processElement(IJavaScriptElement element) throws JavaScriptModelException {
+		IJavaScriptElement dest = getDestinationParent(element);
 		switch (element.getElementType()) {
-			case IJavaElement.COMPILATION_UNIT :
-				processCompilationUnitResource((ICompilationUnit) element, (PackageFragment) dest);
-				createdElements.add(((IPackageFragment) dest).getCompilationUnit(element.getElementName()));
+			case IJavaScriptElement.JAVASCRIPT_UNIT :
+				processCompilationUnitResource((IJavaScriptUnit) element, (PackageFragment) dest);
+				createdElements.add(((IPackageFragment) dest).getJavaScriptUnit(element.getElementName()));
 				break;
-			case IJavaElement.PACKAGE_FRAGMENT :
+			case IJavaScriptElement.PACKAGE_FRAGMENT :
 				processPackageFragmentResource((PackageFragment) element, (PackageFragmentRoot) dest, getNewNameFor(element));
 				break;
 			default :
-				throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, element));
+				throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, element));
 		}
 	}
 	/**
@@ -362,14 +362,14 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 * Overridden to allow special processing of <code>JavaElementDelta</code>s
 	 * and <code>fResultElements</code>.
 	 */
-	protected void processElements() throws JavaModelException {
+	protected void processElements() throws JavaScriptModelException {
 		createdElements = new ArrayList(elementsToProcess.length);
 		try {
 			super.processElements();
-		} catch (JavaModelException jme) {
+		} catch (JavaScriptModelException jme) {
 			throw jme;
 		} finally {
-			resultElements = new IJavaElement[createdElements.size()];
+			resultElements = new IJavaScriptElement[createdElements.size()];
 			createdElements.toArray(resultElements);
 			processDeltas();
 		}
@@ -378,10 +378,10 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 * Copies/moves a package fragment with the name <code>newName</code>
 	 * to the destination package.<br>
 	 *
-	 * @exception JavaModelException if the operation is unable to
+	 * @exception JavaScriptModelException if the operation is unable to
 	 * complete
 	 */
-	private void processPackageFragmentResource(PackageFragment source, PackageFragmentRoot root, String newName) throws JavaModelException {
+	private void processPackageFragmentResource(PackageFragment source, PackageFragmentRoot root, String newName) throws JavaScriptModelException {
 		try {
 			String[] newFragName = (newName == null) ? source.names : Util.getTrimmedSimpleNames(newName);
 			IPackageFragment newFrag = root.getPackageFragment(newFragName);
@@ -436,8 +436,8 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 								if (force) {
 									deleteResource(destinationResource, IResource.KEEP_HISTORY);
 								} else {
-									throw new JavaModelException(new JavaModelStatus(
-										IJavaModelStatusConstants.NAME_COLLISION,
+									throw new JavaScriptModelException(new JavaModelStatus(
+										IJavaScriptModelStatusConstants.NAME_COLLISION,
 										Messages.bind(Messages.status_nameCollision, destinationResource.getFullPath().toString())));
 								}
 							}
@@ -452,8 +452,8 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 									// we need to delete this resource if this operation wants to override existing resources
 									deleteResource(destinationResource, IResource.KEEP_HISTORY);
 								} else {
-									throw new JavaModelException(new JavaModelStatus(
-										IJavaModelStatusConstants.NAME_COLLISION,
+									throw new JavaScriptModelException(new JavaModelStatus(
+										IJavaScriptModelStatusConstants.NAME_COLLISION,
 										Messages.bind(Messages.status_nameCollision, destinationResource.getFullPath().toString())));
 								}
 							}
@@ -471,10 +471,10 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 					String resourceName = resources[i].getName();
 					if (Util.isJavaLikeFileName(resourceName)) {
 						// we only consider potential compilation units
-						ICompilationUnit cu = newFrag.getCompilationUnit(resourceName);
+						IJavaScriptUnit cu = newFrag.getJavaScriptUnit(resourceName);
 						if (Util.isExcluded(cu.getPath(), inclusionPatterns, exclusionPatterns, false/*not a folder*/)) continue;
 						this.parser.setSource(cu);
-						CompilationUnit astCU = (CompilationUnit) this.parser.createAST(this.progressMonitor);
+						JavaScriptUnit astCU = (JavaScriptUnit) this.parser.createAST(this.progressMonitor);
 						AST ast = astCU.getAST();
 						ASTRewrite rewrite = ASTRewrite.create(ast);
 						updatePackageStatement(astCU, newFragName, rewrite);
@@ -483,7 +483,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 						try {
 							edits.apply(document);
 						} catch (BadLocationException e) {
-							throw new JavaModelException(e, IJavaModelStatusConstants.INVALID_CONTENTS);
+							throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.INVALID_CONTENTS);
 						}
 						cu.save(null, false);
 					}
@@ -528,18 +528,18 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 			}
 			// workaround for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=24505
 			if (isEmpty && isMove() && !(Util.isExcluded(source) || Util.isExcluded(newFrag))) {
-				IJavaProject sourceProject = source.getJavaProject();
+				IJavaScriptProject sourceProject = source.getJavaScriptProject();
 				getDeltaFor(sourceProject).movedFrom(source, newFrag);
-				IJavaProject destProject = newFrag.getJavaProject();
+				IJavaScriptProject destProject = newFrag.getJavaScriptProject();
 				getDeltaFor(destProject).movedTo(newFrag, source);
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			throw e;
 		} catch (CoreException ce) {
-			throw new JavaModelException(ce);
+			throw new JavaScriptModelException(ce);
 		}
 	}
-	private void saveContent(PackageFragment dest, String destName, ASTRewrite rewrite, String sourceEncoding, IFile destFile) throws JavaModelException {
+	private void saveContent(PackageFragment dest, String destName, ASTRewrite rewrite, String sourceEncoding, IFile destFile) throws JavaScriptModelException {
 		try {
 			// TODO (frederic) remove when bug 67606 will be fixed (bug 67823)
 			// fix bug 66898
@@ -553,13 +553,13 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 		// note this doesn't interfer with repository providers as this is a new resource that cannot be under
 		// version control yet
 		Util.setReadOnly(destFile, false);
-		ICompilationUnit destCU = dest.getCompilationUnit(destName);
+		IJavaScriptUnit destCU = dest.getJavaScriptUnit(destName);
 		IDocument document = getDocument(destCU);
 		TextEdit edits = rewrite.rewriteAST(document, null);
 		try {
 			edits.apply(document);
 		} catch (BadLocationException e) {
-			throw new JavaModelException(e, IJavaModelStatusConstants.INVALID_CONTENTS);
+			throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.INVALID_CONTENTS);
 		}
 		destCU.save(getSubProgressMonitor(1), this.force);
 	}
@@ -569,7 +569,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 *
 	 * @return an AST rewrite or null if no rewrite needed
 	 */
-	private ASTRewrite updateContent(ICompilationUnit cu, PackageFragment dest, String newName) throws JavaModelException {
+	private ASTRewrite updateContent(IJavaScriptUnit cu, PackageFragment dest, String newName) throws JavaScriptModelException {
 		String[] currPackageName = ((PackageFragment) cu.getParent()).names;
 		String[] destPackageName = dest.names;
 		if (Util.equalArraysOrNull(currPackageName, destPackageName) && newName == null) {
@@ -578,7 +578,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 			// ensure cu is consistent (noop if already consistent)
 			cu.makeConsistent(this.progressMonitor);
 			this.parser.setSource(cu);
-			CompilationUnit astCU = (CompilationUnit) this.parser.createAST(this.progressMonitor);
+			JavaScriptUnit astCU = (JavaScriptUnit) this.parser.createAST(this.progressMonitor);
 			AST ast = astCU.getAST();
 			ASTRewrite rewrite = ASTRewrite.create(ast);
 			updateTypeName(cu, astCU, cu.getElementName(), newName, rewrite);
@@ -586,13 +586,13 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 			return rewrite;
 		}
 	}
-	private void updatePackageStatement(CompilationUnit astCU, String[] pkgName, ASTRewrite rewriter) throws JavaModelException {
+	private void updatePackageStatement(JavaScriptUnit astCU, String[] pkgName, ASTRewrite rewriter) throws JavaScriptModelException {
 		boolean defaultPackage = pkgName.length == 0;
 		AST ast = astCU.getAST();
 		if (defaultPackage) {
 			// remove existing package statement
 			if (astCU.getPackage() != null)
-				rewriter.set(astCU, CompilationUnit.PACKAGE_PROPERTY, null, null);
+				rewriter.set(astCU, JavaScriptUnit.PACKAGE_PROPERTY, null, null);
 		} else {
 			org.eclipse.wst.jsdt.core.dom.PackageDeclaration pkg = astCU.getPackage();
 			if (pkg != null) {
@@ -603,7 +603,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 				// create new package statement
 				pkg = ast.newPackageDeclaration();
 				pkg.setName(ast.newName(pkgName));
-				rewriter.set(astCU, CompilationUnit.PACKAGE_PROPERTY, pkg, null);
+				rewriter.set(astCU, JavaScriptUnit.PACKAGE_PROPERTY, pkg, null);
 			}
 		}
 	}
@@ -636,7 +636,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 			/**
 		 * Renames the main type in <code>cu</code>.
 		 */
-		private void updateTypeName(ICompilationUnit cu, CompilationUnit astCU, String oldName, String newName, ASTRewrite rewriter) throws JavaModelException {
+		private void updateTypeName(IJavaScriptUnit cu, JavaScriptUnit astCU, String oldName, String newName, ASTRewrite rewriter) throws JavaScriptModelException {
 			if (newName != null) {
 				String oldTypeName= Util.getNameWithoutJavaLikeExtension(oldName);
 				String newTypeName= Util.getNameWithoutJavaLikeExtension(newName);
@@ -654,8 +654,8 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 							Iterator bodyDeclarations = typeNode.bodyDeclarations().iterator();
 							while (bodyDeclarations.hasNext()) {
 								Object bodyDeclaration = bodyDeclarations.next();
-								if (bodyDeclaration instanceof MethodDeclaration) {
-									MethodDeclaration methodDeclaration = (MethodDeclaration) bodyDeclaration;
+								if (bodyDeclaration instanceof FunctionDeclaration) {
+									FunctionDeclaration methodDeclaration = (FunctionDeclaration) bodyDeclaration;
 									if (methodDeclaration.isConstructor()) {
 										SimpleName methodName = methodDeclaration.getName();
 										if (methodName.getIdentifier().equals(oldTypeName)) {
@@ -677,42 +677,42 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 *		does not match the number of elements that were supplied.
 	 * </ul>
 	 */
-	protected IJavaModelStatus verify() {
-		IJavaModelStatus status = super.verify();
+	protected IJavaScriptModelStatus verify() {
+		IJavaScriptModelStatus status = super.verify();
 		if (!status.isOK()) {
 			return status;
 		}
 
 		if (this.renamingsList != null && this.renamingsList.length != elementsToProcess.length) {
-			return new JavaModelStatus(IJavaModelStatusConstants.INDEX_OUT_OF_BOUNDS);
+			return new JavaModelStatus(IJavaScriptModelStatusConstants.INDEX_OUT_OF_BOUNDS);
 		}
 		return JavaModelStatus.VERIFIED_OK;
 	}
 	/**
 	 * @see MultiOperation
 	 */
-	protected void verify(IJavaElement element) throws JavaModelException {
+	protected void verify(IJavaScriptElement element) throws JavaScriptModelException {
 		if (element == null || !element.exists())
-			error(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, element);
+			error(IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST, element);
 
 		if (element.isReadOnly() && (isRename() || isMove()))
-			error(IJavaModelStatusConstants.READ_ONLY, element);
+			error(IJavaScriptModelStatusConstants.READ_ONLY, element);
 
 		IResource resource = element.getResource();
 		if (resource instanceof IFolder) {
 			if (resource.isLinked()) {
-				error(IJavaModelStatusConstants.INVALID_RESOURCE, element);
+				error(IJavaScriptModelStatusConstants.INVALID_RESOURCE, element);
 			}
 		}
 
 		int elementType = element.getElementType();
 
-		if (elementType == IJavaElement.COMPILATION_UNIT) {
+		if (elementType == IJavaScriptElement.JAVASCRIPT_UNIT) {
 			org.eclipse.wst.jsdt.internal.core.CompilationUnit compilationUnit = (org.eclipse.wst.jsdt.internal.core.CompilationUnit) element;
 			if (isMove() && compilationUnit.isWorkingCopy() && !compilationUnit.isPrimary())
-				error(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, element);
-		} else if (elementType != IJavaElement.PACKAGE_FRAGMENT) {
-			error(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, element);
+				error(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, element);
+		} else if (elementType != IJavaScriptElement.PACKAGE_FRAGMENT) {
+			error(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, element);
 		}
 
 		JavaElement dest = (JavaElement) getDestinationParent(element);

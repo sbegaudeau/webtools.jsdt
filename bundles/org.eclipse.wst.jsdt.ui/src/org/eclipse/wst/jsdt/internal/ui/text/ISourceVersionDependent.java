@@ -21,10 +21,10 @@ public interface ISourceVersionDependent {
 
 	/**
 	 * Sets the configured java source version to one of the
-	 * <code>JavaCore.VERSION_X_Y</code> values.
+	 * <code>JavaScriptCore.VERSION_X_Y</code> values.
 	 *
 	 * @param version the new java source version
-	 * @see org.eclipse.wst.jsdt.core.JavaCore
+	 * @see org.eclipse.wst.jsdt.core.JavaScriptCore
 	 */
 	void setSourceVersion(String version);
 }

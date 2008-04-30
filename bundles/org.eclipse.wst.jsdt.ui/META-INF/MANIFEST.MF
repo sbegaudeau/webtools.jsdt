@@ -101,7 +101,7 @@ Export-Package: org.eclipse.wst.jsdt.internal.corext;x-friends:="org.eclipse.wst
  org.eclipse.wst.jsdt.ui.text.java.hover,
  org.eclipse.wst.jsdt.ui.wizards
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.eclipse.wst.jsdt.internal.ui.JavaPlugin
+Bundle-Activator: org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin
 Require-Bundle: org.eclipse.ui;bundle-version="[3.4.0,4.0.0)",
  org.eclipse.ui.console;bundle-version="[3.3.0,4.0.0)",
  org.eclipse.help;bundle-version="[3.3.0,4.0.0)",

@@ -20,7 +20,7 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 
 /**
@@ -39,7 +39,7 @@ public class ExceptionHandler {
 	 * logged as an error with the error code <code>JavaStatusConstants.INTERNAL_ERROR</code>.
 	 */
 	public static void log(Throwable t, String message) {
-		JavaPlugin.log(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), 
+		JavaScriptPlugin.log(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), 
 			IJavaStatusConstants.INTERNAL_ERROR, message, t));
 	}
 	
@@ -52,7 +52,7 @@ public class ExceptionHandler {
 	 * @param message message to be displayed by the dialog window
 	 */
 	public static void handle(CoreException e, String title, String message) {
-		handle(e, JavaPlugin.getActiveWorkbenchShell(), title, message);
+		handle(e, JavaScriptPlugin.getActiveWorkbenchShell(), title, message);
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class ExceptionHandler {
 	 * @param message message to be displayed by the dialog window
 	 */
 	public static void handle(InvocationTargetException e, String title, String message) {
-		handle(e, JavaPlugin.getActiveWorkbenchShell(), title, message);
+		handle(e, JavaScriptPlugin.getActiveWorkbenchShell(), title, message);
 	}
 	
 	/**
@@ -94,7 +94,7 @@ public class ExceptionHandler {
 	//---- Hooks for subclasses to control exception handling ------------------------------------
 	
 	protected void perform(CoreException e, Shell shell, String title, String message) {
-		JavaPlugin.log(e);
+		JavaScriptPlugin.log(e);
 		IStatus status= e.getStatus();
 		if (status != null) {
 			ErrorDialog.openError(shell, title, message, status);
@@ -108,7 +108,7 @@ public class ExceptionHandler {
 		if (target instanceof CoreException) {
 			perform((CoreException)target, shell, title, message);
 		} else {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			if (e.getMessage() != null && e.getMessage().length() > 0) {
 				displayMessageDialog(e, e.getMessage(), shell, title, message);
 			} else {

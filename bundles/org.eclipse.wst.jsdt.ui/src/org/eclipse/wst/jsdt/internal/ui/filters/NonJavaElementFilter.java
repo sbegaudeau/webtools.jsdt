@@ -15,7 +15,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 
 /**
@@ -30,7 +30,7 @@ public class NonJavaElementFilter  extends ViewerFilter {
 	 * @return Returns true if element should be included in filtered set
 	 */
 	public boolean select(Viewer viewer, Object parent, Object element) {
-		if (element instanceof IJavaElement)
+		if (element instanceof IJavaScriptElement)
 			return true;
 		
 		if (element instanceof IResource) {

@@ -12,24 +12,24 @@ package org.eclipse.wst.jsdt.core;
 
 /**
  * Common protocol for Java elements that can be members of types.
- * This set consists of <code>IType</code>, <code>IMethod</code>,
+ * This set consists of <code>IType</code>, <code>IFunction</code>,
  * <code>IField</code>, and <code>IInitializer</code>.
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
  */
-public interface IMember extends IJavaElement, ISourceReference, ISourceManipulation, IParent {
+public interface IMember extends IJavaScriptElement, ISourceReference, ISourceManipulation, IParent {
 /**
  * Returns the categories defined by this member's Javadoc. A category is the identifier
  * following the tag <code>@category</code> in the member's Javadoc.
  * Returns an empty array if no category is defined in this member's Javadoc.
  *
  * @return the categories defined by this member's doc
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource.
  *  @since 3.2
  */
-String[] getCategories() throws JavaModelException;
+String[] getCategories() throws JavaScriptModelException;
 /**
  * Returns the class file in which this member is declared, or <code>null</code>
  * if this member is not declared in a class file (for example, a source type).
@@ -46,8 +46,18 @@ IClassFile getClassFile();
  *
  * @return the compilation unit in which this member is declared, or <code>null</code>
  * if this member is not declared in a compilation unit (for example, a binary type)
+ * @deprecated Use {@link #getJavaScriptUnit()} instead
  */
-ICompilationUnit getCompilationUnit();
+IJavaScriptUnit getCompilationUnit();
+/**
+ * Returns the compilation unit in which this member is declared, or <code>null</code>
+ * if this member is not declared in a compilation unit (for example, a binary type).
+ * This is a handle-only method.
+ *
+ * @return the compilation unit in which this member is declared, or <code>null</code>
+ * if this member is not declared in a compilation unit (for example, a binary type)
+ */
+IJavaScriptUnit getJavaScriptUnit();
 /**
  * Returns the type in which this member is declared, or <code>null</code>
  * if this member is not declared in a type (for example, a top-level type).
@@ -65,12 +75,12 @@ IType getDeclaringType();
  * defines a method <code>void myMethod();</code> the flags don't include the
  * 'public' flag.
  *
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource.
  * @return the modifier flags for this member
  * @see Flags
  */
-int getFlags() throws JavaModelException;
+int getFlags() throws JavaScriptModelException;
 /**
  * Returns the Javadoc range if this element is from source or if this element
  * is a binary element with an attached source, null otherwise.
@@ -81,7 +91,7 @@ int getFlags() throws JavaModelException;
  * attached source if present.</p>
  * <p>If this element's openable is not consistent, then null is returned.</p>
  *
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource.
  * @return a source range corresponding to the javadoc source or <code>null</code>
  * if no source is available, this element has no javadoc comment or
@@ -89,21 +99,21 @@ int getFlags() throws JavaModelException;
  * @see IOpenable#isConsistent()
  * @since 3.2
  */
-ISourceRange getJavadocRange() throws JavaModelException;
+ISourceRange getJSdocRange() throws JavaScriptModelException;
 /**
  * Returns the source range of this member's simple name,
  * or <code>null</code> if this member does not have a name
  * (for example, an initializer), or if this member does not have
  * associated source code (for example, a binary type).
  *
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource.
  * @return the source range of this member's simple name,
  * or <code>null</code> if this member does not have a name
  * (for example, an initializer), or if this member does not have
  * associated source code (for example, a binary type)
  */
-ISourceRange getNameRange() throws JavaModelException;
+ISourceRange getNameRange() throws JavaScriptModelException;
 /**
  * Returns the position relative to the order this member is defined in the source.
  * Numbering starts at 1 (thus the first occurrence is occurrence 1, not occurrence 0).

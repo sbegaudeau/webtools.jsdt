@@ -107,19 +107,19 @@ import org.eclipse.ui.views.framelist.IFrameSource;
 import org.eclipse.ui.views.framelist.TreeFrame;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJarEntryResource;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dnd.DelegatingDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.dnd.JdtViewerDragAdapter;
 import org.eclipse.wst.jsdt.internal.ui.dnd.ResourceTransferDragAdapter;
@@ -139,11 +139,11 @@ import org.eclipse.wst.jsdt.internal.ui.workingsets.ViewActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetFilterActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetModel;
 import org.eclipse.wst.jsdt.ui.IPackagesViewPart;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
+import org.eclipse.wst.jsdt.ui.StandardJavaScriptElementContentProvider;
 import org.eclipse.wst.jsdt.ui.actions.CustomFiltersActionGroup;
  
 /**
@@ -165,7 +165,7 @@ public class PackageExplorerPart extends ViewPart
 	private static final int HIERARCHICAL_LAYOUT= 0x1;
 	private static final int FLAT_LAYOUT= 0x2;
 	
-	private final static String VIEW_ID= JavaUI.ID_PACKAGES;
+	private final static String VIEW_ID= JavaScriptUI.ID_PACKAGES;
 				
 	// Persistence tags.
 	private static final String TAG_LAYOUT= "layout"; //$NON-NLS-1$
@@ -226,7 +226,7 @@ public class PackageExplorerPart extends ViewPart
 		
 		public void treeExpanded(TreeExpansionEvent event) {
 			Object element= event.getElement();
-			if (element instanceof ICompilationUnit || 
+			if (element instanceof IJavaScriptUnit || 
 				element instanceof IClassFile)
 				expandMainType(element);
 		}
@@ -261,8 +261,8 @@ public class PackageExplorerPart extends ViewPart
 		}
 	    
 		protected boolean evaluateExpandableWithFilters(Object parent) {
-			if (parent instanceof IJavaProject
-					|| parent instanceof ICompilationUnit || parent instanceof IClassFile
+			if (parent instanceof IJavaScriptProject
+					|| parent instanceof IJavaScriptUnit || parent instanceof IClassFile
 					|| parent instanceof JsGlobalScopeContainer) {
 				return false;
 			}
@@ -295,8 +295,8 @@ public class PackageExplorerPart extends ViewPart
 						return hasFilteredChildren(fragment);
 					}
 				}
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 			}
 			return false;
 		}
@@ -312,8 +312,8 @@ public class PackageExplorerPart extends ViewPart
 			boolean changed= false;
 			for (Iterator iter= is.iterator(); iter.hasNext();) {
 				Object element= iter.next();
-				if (element instanceof IJavaProject) {
-					IProject project= ((IJavaProject)element).getProject();
+				if (element instanceof IJavaScriptProject) {
+					IProject project= ((IJavaScriptProject)element).getProject();
 					if (!project.isOpen() && project.exists()) {
 						ns.add(project);
 						changed= true;
@@ -321,7 +321,7 @@ public class PackageExplorerPart extends ViewPart
 				} else if (element instanceof IProject) {
 					IProject project= (IProject)element;
 					if (project.isOpen()) {
-						IJavaProject jProject= JavaCore.create(project);
+						IJavaScriptProject jProject= JavaScriptCore.create(project);
 						if (jProject != null && jProject.exists())
 							ns.add(jProject);
 							changed= true;
@@ -433,7 +433,7 @@ public class PackageExplorerPart extends ViewPart
 		};
 		
 		// exception: initialize from preference
-		fDialogSettings= JavaPlugin.getDefault().getDialogSettingsSection(getClass().getName());
+		fDialogSettings= JavaScriptPlugin.getDefault().getDialogSettingsSection(getClass().getName());
 		
 		// on by default
 		fShowLibrariesNode= fDialogSettings.get(TAG_GROUP_LIBRARIES) == null || fDialogSettings.getBoolean(TAG_GROUP_LIBRARIES);
@@ -499,7 +499,7 @@ public class PackageExplorerPart extends ViewPart
 	 * @return the package explorer from the active perspective
 	 */
 	public static PackageExplorerPart getFromActivePerspective() {
-		IWorkbenchPage activePage= JavaPlugin.getActivePage();
+		IWorkbenchPage activePage= JavaScriptPlugin.getActivePage();
 		if (activePage == null)
 			return null;
 		IViewPart view= activePage.findView(VIEW_ID);
@@ -516,7 +516,7 @@ public class PackageExplorerPart extends ViewPart
 	 */
 	public static PackageExplorerPart openInActivePerspective() {
 		try {
-			return (PackageExplorerPart)JavaPlugin.getActivePage().showView(VIEW_ID);
+			return (PackageExplorerPart)JavaScriptPlugin.getActivePage().showView(VIEW_ID);
 		} catch(PartInitException pe) {
 			return null;
 		}
@@ -538,7 +538,7 @@ public class PackageExplorerPart extends ViewPart
 		
 		getSite().getPage().removePartListener(fLinkWithEditorListener); // always remove even if we didn't register
 		
-		JavaPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
+		JavaScriptPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 		if (fViewer != null) {
 			fViewer.removeTreeListener(fExpansionListener);
 		}
@@ -567,7 +567,7 @@ public class PackageExplorerPart extends ViewPart
 		
 		setProviders();
 		
-		JavaPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
+		JavaScriptPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	
 		
 		MenuManager menuMgr= new MenuManager("#PopupMenu"); //$NON-NLS-1$
@@ -730,9 +730,9 @@ public class PackageExplorerPart extends ViewPart
 		} else {
 			Object input= getSite().getPage().getInput();
 			if (input instanceof IWorkspace) { 
-				return JavaCore.create(((IWorkspace)input).getRoot());
+				return JavaScriptCore.create(((IWorkspace)input).getRoot());
 			} else if (input instanceof IContainer) {
-				IJavaElement element= JavaCore.create((IContainer)input);
+				IJavaScriptElement element= JavaScriptCore.create((IContainer)input);
 				if (element != null && element.exists())
 					return element;
 				return input;
@@ -740,7 +740,7 @@ public class PackageExplorerPart extends ViewPart
 			//1GERPRT: ITPJUI:ALL - Packages View is empty when shown in Type Hierarchy Perspective
 			// we can't handle the input
 			// fall back to show the workspace
-			return JavaCore.create(JavaPlugin.getWorkspace().getRoot());
+			return JavaScriptCore.create(JavaScriptPlugin.getWorkspace().getRoot());
 		}
 	}
 	
@@ -775,10 +775,10 @@ public class PackageExplorerPart extends ViewPart
 	String getToolTipText(Object element) {
 		String result;
 		if (!(element instanceof IResource)) {
-			if (element instanceof IJavaModel) {
+			if (element instanceof IJavaScriptModel) {
 				result= PackagesMessages.PackageExplorerPart_workspace; 
-			} else if (element instanceof IJavaElement){
-				result= JavaElementLabels.getTextLabel(element, JavaElementLabels.ALL_FULLY_QUALIFIED);
+			} else if (element instanceof IJavaScriptElement){
+				result= JavaScriptElementLabels.getTextLabel(element, JavaScriptElementLabels.ALL_FULLY_QUALIFIED);
 			} else if (element instanceof IWorkingSet) {
 				result= ((IWorkingSet)element).getLabel();
 			} else if (element instanceof WorkingSetModel) {
@@ -851,7 +851,7 @@ public class PackageExplorerPart extends ViewPart
 	 * @see IMenuListener#menuAboutToShow(IMenuManager)
 	 */
 	public void menuAboutToShow(IMenuManager menu) {
-		JavaPlugin.createStandardGroups(menu);
+		JavaScriptPlugin.createStandardGroups(menu);
 		
 		fActionSet.setContext(new ActionContext(getSelection()));
 		fActionSet.fillContextMenu(menu);
@@ -951,11 +951,11 @@ public class PackageExplorerPart extends ViewPart
 	}
 
 	private Object convertElement(Object original) {
-		if (original instanceof IJavaElement) {
-			if (original instanceof ICompilationUnit) {
-				ICompilationUnit cu= (ICompilationUnit) original;
-				IJavaProject javaProject= cu.getJavaProject();
-				if (javaProject != null && javaProject.exists() && ! javaProject.isOnClasspath(cu)) {
+		if (original instanceof IJavaScriptElement) {
+			if (original instanceof IJavaScriptUnit) {
+				IJavaScriptUnit cu= (IJavaScriptUnit) original;
+				IJavaScriptProject javaProject= cu.getJavaScriptProject();
+				if (javaProject != null && javaProject.exists() && ! javaProject.isOnIncludepath(cu)) {
 					// could be a working copy of a .java file that is not on classpath 
 					IResource resource= cu.getResource();
 					if (resource != null)
@@ -966,22 +966,22 @@ public class PackageExplorerPart extends ViewPart
 			return original;
 		
 		} else if (original instanceof IResource) {
-			IJavaElement je= JavaCore.create((IResource)original);
+			IJavaScriptElement je= JavaScriptCore.create((IResource)original);
 			if (je != null && je.exists()) {
-				IJavaProject javaProject= je.getJavaProject();
+				IJavaScriptProject javaProject= je.getJavaScriptProject();
 				if (javaProject != null && javaProject.exists()) {
 					return je;
 				}
 			}
 		} else if (original instanceof IAdaptable) {
 			IAdaptable adaptable= (IAdaptable)original;
-			IJavaElement je= (IJavaElement) adaptable.getAdapter(IJavaElement.class);
+			IJavaScriptElement je= (IJavaScriptElement) adaptable.getAdapter(IJavaScriptElement.class);
 			if (je != null && je.exists())
 				return je;
 			
 			IResource r= (IResource) adaptable.getAdapter(IResource.class);
 			if (r != null) {
-				je= JavaCore.create(r);
+				je= JavaScriptCore.create(r);
 				if (je != null && je.exists()) 
 					return je;
 				else
@@ -1015,8 +1015,8 @@ public class PackageExplorerPart extends ViewPart
 			if (part != null) {
 				IWorkbenchPage page= getSite().getPage();
 				page.bringToTop(part);
-				if (obj instanceof IJavaElement)
-					EditorUtility.revealInEditor(part, (IJavaElement)obj);
+				if (obj instanceof IJavaScriptElement)
+					EditorUtility.revealInEditor(part, (IJavaScriptElement)obj);
 			}
 		}
 	}
@@ -1111,7 +1111,7 @@ public class PackageExplorerPart extends ViewPart
 	}
 	
 	private Object getInputFromEditor(IEditorInput editorInput) {
-		Object input= JavaUI.getEditorInputJavaElement(editorInput);
+		Object input= JavaScriptUI.getEditorInputJavaElement(editorInput);
 		if (input == null) {
 			input= editorInput.getAdapter(IFile.class); 
 		}
@@ -1133,7 +1133,7 @@ public class PackageExplorerPart extends ViewPart
 		IEditorInput selectionAsInput= null;
 		try {
 			selectionAsInput= EditorUtility.getEditorInput(selection.getFirstElement());
-		} catch (JavaModelException e1) {
+		} catch (JavaScriptModelException e1) {
 			return false;
 		}
 		return input.equals(selectionAsInput);
@@ -1143,7 +1143,7 @@ public class PackageExplorerPart extends ViewPart
 		Object element= null;
 			
 		if (input instanceof IFile && isOnClassPath((IFile)input)) {
-			element= JavaCore.create((IFile)input);
+			element= JavaScriptCore.create((IFile)input);
 		}
 				
 		if (element == null) // try a non Java resource
@@ -1176,8 +1176,8 @@ public class PackageExplorerPart extends ViewPart
 	}
 	
 	private boolean isOnClassPath(IFile file) {
-		IJavaProject jproject= JavaCore.create(file.getProject());
-		return jproject.isOnClasspath(file);
+		IJavaScriptProject jproject= JavaScriptCore.create(file.getProject());
+		return jproject.isOnIncludepath(file);
 	}
 
 	/**
@@ -1187,8 +1187,8 @@ public class PackageExplorerPart extends ViewPart
 	 * @return the parent or <code>null</code> if there's no parent
 	 */
 	private Object getParent(Object element) {
-		if (element instanceof IJavaElement)
-			return ((IJavaElement)element).getParent();
+		if (element instanceof IJavaScriptElement)
+			return ((IJavaScriptElement)element).getParent();
 		else if (element instanceof IResource)
 			return ((IResource)element).getParent();
 		else if (element instanceof IJarEntryResource) {
@@ -1205,8 +1205,8 @@ public class PackageExplorerPart extends ViewPart
 	void expandMainType(Object element) {
 		try {
 			IType type= null;
-			if (element instanceof ICompilationUnit) {
-				ICompilationUnit cu= (ICompilationUnit)element;
+			if (element instanceof IJavaScriptUnit) {
+				IJavaScriptUnit cu= (IJavaScriptUnit)element;
 				IType[] types= cu.getTypes();
 				if (types.length > 0)
 					type= types[0];
@@ -1228,7 +1228,7 @@ public class PackageExplorerPart extends ViewPart
 					}); 
 				}
 			}
-		} catch(JavaModelException e) {
+		} catch(JavaScriptModelException e) {
 			// no reveal
 		}
 	}
@@ -1259,11 +1259,11 @@ public class PackageExplorerPart extends ViewPart
 	void updateTitle() {		
 		Object input= fViewer.getInput();
 		if (input == null
-			|| (input instanceof IJavaModel)) {
+			|| (input instanceof IJavaScriptModel)) {
 			setContentDescription(""); //$NON-NLS-1$
 			setTitleToolTip(""); //$NON-NLS-1$
 		} else {
-			String inputText= JavaElementLabels.getTextLabel(input, AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS);
+			String inputText= JavaScriptElementLabels.getTextLabel(input, AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS);
 			setContentDescription(inputText);
 			setTitleToolTip(getToolTipText(input));
 		} 
@@ -1291,7 +1291,7 @@ public class PackageExplorerPart extends ViewPart
 			fActionSet.updateActionBars(getViewSite().getActionBars());
 			
 			boolean showCUChildren= PreferenceConstants.getPreferenceStore().getBoolean(PreferenceConstants.SHOW_CU_CHILDREN);
-			((StandardJavaElementContentProvider)fViewer.getContentProvider()).setProvideMembers(showCUChildren);
+			((StandardJavaScriptElementContentProvider)fViewer.getContentProvider()).setProvideMembers(showCUChildren);
 			
 			refreshViewer= true;
 		} else if (MembersOrderPreferenceCache.isMemberOrderProperty(event.getProperty())) {
@@ -1391,8 +1391,8 @@ public class PackageExplorerPart extends ViewPart
 	 * @return the name of the frame
 	 */
 	String getFrameName(Object element) {
-		if (element instanceof IJavaElement) {
-			return ((IJavaElement) element).getElementName();
+		if (element instanceof IJavaScriptElement) {
+			return ((IJavaScriptElement) element).getElementName();
 		} else if (element instanceof WorkingSetModel) {
 			return ""; //$NON-NLS-1$
 		} else {
@@ -1409,8 +1409,8 @@ public class PackageExplorerPart extends ViewPart
 		    IWorkingSet workingSet= workingSetGroup.getWorkingSet();  	    
 		    if (workingSetGroup.isFiltered(getVisibleParent(element), element)) {
 		    	String message;
-		    	if (element instanceof IJavaElement) {
-		    		String elementLabel= JavaElementLabels.getElementLabel((IJavaElement)element, JavaElementLabels.ALL_DEFAULT);
+		    	if (element instanceof IJavaScriptElement) {
+		    		String elementLabel= JavaScriptElementLabels.getElementLabel((IJavaScriptElement)element, JavaScriptElementLabels.ALL_DEFAULT);
 		    		message= Messages.format(PackagesMessages.PackageExplorerPart_notFoundSepcific, new String[] {elementLabel, workingSet.getLabel()});
 		    	} else {
 		    		message= Messages.format(PackagesMessages.PackageExplorer_notFound, workingSet.getLabel());  		    		
@@ -1430,8 +1430,8 @@ public class PackageExplorerPart extends ViewPart
         String[] newFilters= filterGroup.removeFiltersFor(getVisibleParent(element), element, getTreeViewer().getContentProvider()); 
         if (currentFilters.length > newFilters.length) {
         	String message;
-        	if (element instanceof IJavaElement) {
-	    		String elementLabel= JavaElementLabels.getElementLabel((IJavaElement)element, JavaElementLabels.ALL_DEFAULT);
+        	if (element instanceof IJavaScriptElement) {
+	    		String elementLabel= JavaScriptElementLabels.getElementLabel((IJavaScriptElement)element, JavaScriptElementLabels.ALL_DEFAULT);
 	    		message= Messages.format(PackagesMessages.PackageExplorerPart_removeFiltersSpecific, elementLabel);
 	    	} else {
 	    		message= PackagesMessages.PackageExplorer_removeFilters;  		    		
@@ -1464,8 +1464,8 @@ public class PackageExplorerPart extends ViewPart
 		if (element != null) {
 		    if (revealAndVerify(element))
 		        return true;
-		    if (element instanceof IJavaElement) {
-		        IResource resource= ((IJavaElement)element).getResource();
+		    if (element instanceof IJavaScriptElement) {
+		        IResource resource= ((IJavaScriptElement)element).getResource();
 		        if (resource != null) {
 		            if (revealAndVerify(resource))
 		                return true;
@@ -1479,21 +1479,21 @@ public class PackageExplorerPart extends ViewPart
     	// Fix for http://dev.eclipse.org/bugs/show_bug.cgi?id=19104
     	if (object == null)
     		return null;
-    	if (!(object instanceof IJavaElement))
+    	if (!(object instanceof IJavaScriptElement))
     	    return object;
-    	IJavaElement element2= (IJavaElement) object;
+    	IJavaScriptElement element2= (IJavaScriptElement) object;
     	switch (element2.getElementType()) {
-    		case IJavaElement.IMPORT_DECLARATION:
-    		case IJavaElement.PACKAGE_DECLARATION:
-    		case IJavaElement.IMPORT_CONTAINER:
-    		case IJavaElement.TYPE:
-    		case IJavaElement.METHOD:
-    		case IJavaElement.FIELD:
-    		case IJavaElement.INITIALIZER:
+    		case IJavaScriptElement.IMPORT_DECLARATION:
+    		case IJavaScriptElement.PACKAGE_DECLARATION:
+    		case IJavaScriptElement.IMPORT_CONTAINER:
+    		case IJavaScriptElement.TYPE:
+    		case IJavaScriptElement.METHOD:
+    		case IJavaScriptElement.FIELD:
+    		case IJavaScriptElement.INITIALIZER:
     			// select parent cu/classfile
-    			element2= (IJavaElement)element2.getOpenable();
+    			element2= (IJavaScriptElement)element2.getOpenable();
     			break;
-    		case IJavaElement.JAVA_MODEL:
+    		case IJavaScriptElement.JAVASCRIPT_MODEL:
     			element2= null;
     			break;
     	}
@@ -1519,7 +1519,7 @@ public class PackageExplorerPart extends ViewPart
 		}
 		IStructuredSelection selection= new StructuredSelection(((IStructuredSelection) fViewer.getSelection()).toArray());
 		Object input= fViewer.getInput();
-		boolean isRootInputChange= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).equals(input) 
+		boolean isRootInputChange= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot()).equals(input) 
 			|| (fWorkingSetModel != null && fWorkingSetModel.equals(input))
 			|| input instanceof IWorkingSet;
 		try {
@@ -1591,7 +1591,7 @@ public class PackageExplorerPart extends ViewPart
 		if (showWorkingSets()) {
 			fViewer.setComparator(new WorkingSetAwareJavaElementSorter());
 		} else {
-			fViewer.setComparator(new JavaElementComparator());
+			fViewer.setComparator(new JavaScriptElementComparator());
 		}
 	}
 	

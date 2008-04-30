@@ -14,13 +14,13 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.wst.jsdt.core.CompletionContext;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.text.java.ContentAssistHistory.RHSHistory;
 
@@ -35,7 +35,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.java.ContentAssistHistory.RHSHistor
 public class JavaContentAssistInvocationContext extends ContentAssistInvocationContext {
 	private final IEditorPart fEditor;
 	
-	private ICompilationUnit fCU= null;
+	private IJavaScriptUnit fCU= null;
 	private boolean fCUComputed= false;
 	
 	private CompletionProposalLabelProvider fLabelProvider;
@@ -64,7 +64,7 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 	 * 
 	 * @param unit the compilation unit in <code>document</code>
 	 */
-	public JavaContentAssistInvocationContext(ICompilationUnit unit) {
+	public JavaContentAssistInvocationContext(IJavaScriptUnit unit) {
 		super();
 		fCU= unit;
 		fCUComputed= true;
@@ -77,15 +77,15 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 	 * 
 	 * @return the compilation unit that content assist is invoked in, possibly <code>null</code>
 	 */
-	public ICompilationUnit getCompilationUnit() {
+	public IJavaScriptUnit getCompilationUnit() {
 		if (!fCUComputed) {
 			fCUComputed= true;
 			if (fCollector != null)
 				fCU= fCollector.getCompilationUnit();
 			else {
-				IJavaElement je= EditorUtility.getEditorInputJavaElement(fEditor, false);
-				if (je instanceof ICompilationUnit)
-					fCU= (ICompilationUnit)je;
+				IJavaScriptElement je= EditorUtility.getEditorInputJavaElement(fEditor, false);
+				if (je instanceof IJavaScriptUnit)
+					fCU= (IJavaScriptUnit)je;
 			}
 		}
 		return fCU;
@@ -97,9 +97,9 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 	 * 
 	 * @return the current java project, possibly <code>null</code>
 	 */
-	public IJavaProject getProject() {
-		ICompilationUnit unit= getCompilationUnit();
-		return unit == null ? null : unit.getJavaProject();
+	public IJavaScriptProject getProject() {
+		IJavaScriptUnit unit= getCompilationUnit();
+		return unit == null ? null : unit.getJavaScriptProject();
 	}
 	
 	/**
@@ -178,11 +178,11 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 				char[][] expectedTypes= context.getExpectedTypesSignatures();
 				if (expectedTypes != null && expectedTypes.length > 0) {
 					String expected= SignatureUtil.stripSignatureToFQN(String.valueOf(expectedTypes[0]));
-					fRHSHistory= JavaPlugin.getDefault().getContentAssistHistory().getHistory(expected);
+					fRHSHistory= JavaScriptPlugin.getDefault().getContentAssistHistory().getHistory(expected);
 				}
 			}
 			if (fRHSHistory == null)
-				fRHSHistory= JavaPlugin.getDefault().getContentAssistHistory().getHistory(null);
+				fRHSHistory= JavaScriptPlugin.getDefault().getContentAssistHistory().getHistory(null);
 		}
 		return fRHSHistory;
 	}
@@ -203,12 +203,12 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 			if (context != null) {
 				char[][] expectedTypes= context.getExpectedTypesSignatures();
 				if (expectedTypes != null && expectedTypes.length > 0) {
-					IJavaProject project= getCompilationUnit().getJavaProject();
+					IJavaScriptProject project= getCompilationUnit().getJavaScriptProject();
 					if (project != null) {
 						try {
 							fType= project.findType(SignatureUtil.stripSignatureToFQN(String.valueOf(expectedTypes[0])));
-						} catch (JavaModelException x) {
-							JavaPlugin.log(x);
+						} catch (JavaScriptModelException x) {
+							JavaScriptPlugin.log(x);
 						}
 					}
 				}
@@ -256,7 +256,7 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 	 * @since 3.3
 	 */
 	private void computeKeywordsAndContext() {
-		ICompilationUnit cu= getCompilationUnit();
+		IJavaScriptUnit cu= getCompilationUnit();
 		if (cu == null) {
 			if (fKeywordProposals == null)
 				fKeywordProposals= new IJavaCompletionProposal[0];
@@ -276,13 +276,13 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 		collector.setIgnored(CompletionProposal.PACKAGE_REF, true);
 		collector.setIgnored(CompletionProposal.POTENTIAL_METHOD_DECLARATION, true);
 		collector.setIgnored(CompletionProposal.VARIABLE_DECLARATION, true);
-		collector.setIgnored(CompletionProposal.JAVADOC_BLOCK_TAG, true);
-		collector.setIgnored(CompletionProposal.JAVADOC_FIELD_REF, true);
-		collector.setIgnored(CompletionProposal.JAVADOC_INLINE_TAG, true);
-		collector.setIgnored(CompletionProposal.JAVADOC_METHOD_REF, true);
-		collector.setIgnored(CompletionProposal.JAVADOC_PARAM_REF, true);
-		collector.setIgnored(CompletionProposal.JAVADOC_TYPE_REF, true);
-		collector.setIgnored(CompletionProposal.JAVADOC_VALUE_REF, true);
+		collector.setIgnored(CompletionProposal.JSDOC_BLOCK_TAG, true);
+		collector.setIgnored(CompletionProposal.JSDOC_FIELD_REF, true);
+		collector.setIgnored(CompletionProposal.JSDOC_INLINE_TAG, true);
+		collector.setIgnored(CompletionProposal.JSDOC_METHOD_REF, true);
+		collector.setIgnored(CompletionProposal.JSDOC_PARAM_REF, true);
+		collector.setIgnored(CompletionProposal.JSDOC_TYPE_REF, true);
+		collector.setIgnored(CompletionProposal.JSDOC_VALUE_REF, true);
 		collector.setIgnored(CompletionProposal.TYPE_REF, true);
 		
 		try {
@@ -293,8 +293,8 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 				fKeywordProposals= collector.getKeywordCompletionProposals();
 			if (fLabelProvider == null)
 				fLabelProvider= collector.getLabelProvider();
-		} catch (JavaModelException x) {
-			JavaPlugin.log(x);
+		} catch (JavaScriptModelException x) {
+			JavaScriptPlugin.log(x);
 			if (fKeywordProposals == null)
 				fKeywordProposals= new IJavaCompletionProposal[0];
 		}

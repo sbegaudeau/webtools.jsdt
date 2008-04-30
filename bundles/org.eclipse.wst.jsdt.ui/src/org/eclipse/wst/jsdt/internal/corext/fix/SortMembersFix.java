@@ -18,25 +18,25 @@ import org.eclipse.ltk.core.refactoring.GroupCategory;
 import org.eclipse.ltk.core.refactoring.GroupCategorySet;
 import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.util.CompilationUnitSorter;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.util.JavaScriptUnitSorter;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.SortMembersOperation.DefaultJavaElementComparator;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 
 public class SortMembersFix implements IFix {
 	
-	public static IFix createCleanUp(CompilationUnit compilationUnit, boolean sortMembers, boolean sortFields) throws CoreException {
+	public static IFix createCleanUp(JavaScriptUnit compilationUnit, boolean sortMembers, boolean sortFields) throws CoreException {
 		if (!sortMembers && !sortFields)
 			return null;
 		
-		ICompilationUnit cu= (ICompilationUnit)compilationUnit.getJavaElement();
+		IJavaScriptUnit cu= (IJavaScriptUnit)compilationUnit.getJavaElement();
 		
 		String label= FixMessages.SortMembersFix_Change_description;
 		CategorizedTextEditGroup group= new CategorizedTextEditGroup(label, new GroupCategorySet(new GroupCategory(label, label, label)));
 		
-		TextEdit edit= CompilationUnitSorter.sort(compilationUnit, new DefaultJavaElementComparator(!sortFields), 0, group, null);
+		TextEdit edit= JavaScriptUnitSorter.sort(compilationUnit, new DefaultJavaElementComparator(!sortFields), 0, group, null);
 		if (edit == null)
 			return null;
 		
@@ -47,10 +47,10 @@ public class SortMembersFix implements IFix {
 		return new SortMembersFix(change, cu);
 	}
 	
-	private final ICompilationUnit fCompilationUnit;
+	private final IJavaScriptUnit fCompilationUnit;
 	private final TextChange fChange;
 	
-	public SortMembersFix(TextChange change, ICompilationUnit compilationUnit) {
+	public SortMembersFix(TextChange change, IJavaScriptUnit compilationUnit) {
 		fChange= change;
 		fCompilationUnit= compilationUnit;
 	}
@@ -65,7 +65,7 @@ public class SortMembersFix implements IFix {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ICompilationUnit getCompilationUnit() {
+	public IJavaScriptUnit getCompilationUnit() {
 		return fCompilationUnit;
 	}
 	

@@ -29,8 +29,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
 import org.osgi.framework.Bundle;
@@ -59,7 +59,7 @@ final class CompletionProposalComputerDescriptor {
 	/** Set of Java partition types. */
 	private static final Set PARTITION_SET;
 	/** The name of the performance event used to trace extensions. */
-	private static final String PERFORMANCE_EVENT= JavaPlugin.getPluginId() + "/perf/content_assist/extensions"; //$NON-NLS-1$
+	private static final String PERFORMANCE_EVENT= JavaScriptPlugin.getPluginId() + "/perf/content_assist/extensions"; //$NON-NLS-1$
 	/**
 	 * If <code>true</code>, execution time of extensions is measured and the data forwarded to
 	 * core's {@link PerformanceStats} service.
@@ -82,11 +82,11 @@ final class CompletionProposalComputerDescriptor {
 	static {
 		Set partitions= new HashSet();
 		partitions.add(IDocument.DEFAULT_CONTENT_TYPE);
-		partitions.add(IJavaPartitions.JAVA_DOC);
-		partitions.add(IJavaPartitions.JAVA_MULTI_LINE_COMMENT);
-		partitions.add(IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
-		partitions.add(IJavaPartitions.JAVA_STRING);
-		partitions.add(IJavaPartitions.JAVA_CHARACTER);
+		partitions.add(IJavaScriptPartitions.JAVA_DOC);
+		partitions.add(IJavaScriptPartitions.JAVA_MULTI_LINE_COMMENT);
+		partitions.add(IJavaScriptPartitions.JAVA_SINGLE_LINE_COMMENT);
+		partitions.add(IJavaScriptPartitions.JAVA_STRING);
+		partitions.add(IJavaScriptPartitions.JAVA_CHARACTER);
 		
 		PARTITION_SET= Collections.unmodifiableSet(partitions);
 	}
@@ -191,8 +191,8 @@ final class CompletionProposalComputerDescriptor {
 		if (obj == null) {
 			Object[] args= { getId(), fElement.getContributor().getName(), attribute };
 			String message= Messages.format(JavaTextMessages.CompletionProposalComputerDescriptor_illegal_attribute_message, args);
-			IStatus status= new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, message, null);
-			JavaPlugin.log(status);
+			IStatus status= new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, message, null);
+			JavaScriptPlugin.log(status);
 			throw new InvalidRegistryObjectException();
 		}
 	}
@@ -472,35 +472,35 @@ final class CompletionProposalComputerDescriptor {
 		// extension has become invalid - log & disable
 		String blame= createBlameMessage();
 		String reason= JavaTextMessages.CompletionProposalComputerDescriptor_reason_invalid;
-		return new Status(IStatus.INFO, JavaPlugin.getPluginId(), IStatus.OK, blame + " " + reason, x); //$NON-NLS-1$
+		return new Status(IStatus.INFO, JavaScriptPlugin.getPluginId(), IStatus.OK, blame + " " + reason, x); //$NON-NLS-1$
 	}
 
 	private IStatus createExceptionStatus(CoreException x) {
 		// unable to instantiate the extension - log & disable
 		String blame= createBlameMessage();
 		String reason= JavaTextMessages.CompletionProposalComputerDescriptor_reason_instantiation;
-		return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, blame + " " + reason, x); //$NON-NLS-1$
+		return new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, blame + " " + reason, x); //$NON-NLS-1$
 	}
 	
 	private IStatus createExceptionStatus(RuntimeException x) {
 		// misbehaving extension - log & disable
 		String blame= createBlameMessage();
 		String reason= JavaTextMessages.CompletionProposalComputerDescriptor_reason_runtime_ex;
-		return new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, blame + " " + reason, x); //$NON-NLS-1$
+		return new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, blame + " " + reason, x); //$NON-NLS-1$
 	}
 
 	private IStatus createAPIViolationStatus(String operation) {
 		String blame= createBlameMessage();
 		Object[] args= {operation};
 		String reason= Messages.format(JavaTextMessages.CompletionProposalComputerDescriptor_reason_API, args);
-		return new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, blame + " " + reason, null); //$NON-NLS-1$
+		return new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, blame + " " + reason, null); //$NON-NLS-1$
 	}
 
 	private IStatus createPerformanceStatus(String operation) {
 		String blame= createBlameMessage();
 		Object[] args= {operation};
 		String reason= Messages.format(JavaTextMessages.CompletionProposalComputerDescriptor_reason_performance, args);
-		return new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, blame + " " + reason, null); //$NON-NLS-1$
+		return new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, blame + " " + reason, null); //$NON-NLS-1$
 	}
 
 	private String createBlameMessage() {

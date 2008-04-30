@@ -15,11 +15,11 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelMarker;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelMarker;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
@@ -200,7 +200,7 @@ public class CompilationUnitProblemFinder extends Compiler {
 
 	public static CompilationUnitDeclaration process(
 		CompilationUnitDeclaration unit,
-		ICompilationUnit unitElement,
+		IJavaScriptUnit unitElement,
 		char[] contents,
 		Parser parser,
 		WorkingCopyOwner workingCopyOwner,
@@ -208,9 +208,9 @@ public class CompilationUnitProblemFinder extends Compiler {
 		boolean creatingAST,
 		int reconcileFlags,
 		IProgressMonitor monitor)
-		throws JavaModelException {
+		throws JavaScriptModelException {
 
-		JavaProject project = (JavaProject) unitElement.getJavaProject();
+		JavaProject project = (JavaProject) unitElement.getJavaScriptProject();
 		CancelableNameEnvironment environment = null;
 		CancelableProblemFactory problemFactory = null;
 		CompilationUnitProblemFinder problemFinder = null;
@@ -233,13 +233,13 @@ public class CompilationUnitProblemFinder extends Compiler {
 			problemFinder = new CompilationUnitProblemFinder(
 				environment,
 				getHandlingPolicy(),
-				getCompilerOptions(project.getOptions(true), creatingAST, ((reconcileFlags & ICompilationUnit.ENABLE_STATEMENTS_RECOVERY) != 0)),
+				getCompilerOptions(project.getOptions(true), creatingAST, ((reconcileFlags & IJavaScriptUnit.ENABLE_STATEMENTS_RECOVERY) != 0)),
 				getRequestor(),
 				problemFactory);
 			if (parser != null) {
 				problemFinder.parser = parser;
 			}
-			PackageFragment packageFragment = (PackageFragment)unitElement.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
+			PackageFragment packageFragment = (PackageFragment)unitElement.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT);
 			char[][] expectedPackageName = null;
 			if (packageFragment != null){
 				expectedPackageName = Util.toCharArrays(packageFragment.names);
@@ -268,14 +268,14 @@ public class CompilationUnitProblemFinder extends Compiler {
 			if (length > 0) {
 				CategorizedProblem[] categorizedProblems = new CategorizedProblem[length];
 				System.arraycopy(unitProblems, 0, categorizedProblems, 0, length);
-				problems.put(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, categorizedProblems);
+				problems.put(IJavaScriptModelMarker.JAVASCRIPT_MODEL_PROBLEM_MARKER, categorizedProblems);
 			}
 			unitProblems = unitResult.getTasks();
 			length = unitProblems == null ? 0 : unitProblems.length;
 			if (length > 0) {
 				CategorizedProblem[] categorizedProblems = new CategorizedProblem[length];
 				System.arraycopy(unitProblems, 0, categorizedProblems, 0, length);
-				problems.put(IJavaModelMarker.TASK_MARKER, categorizedProblems);
+				problems.put(IJavaScriptModelMarker.TASK_MARKER, categorizedProblems);
 			}
 			if (NameLookup.VERBOSE) {
 				System.out.println(Thread.currentThread() + " TIME SPENT in NameLoopkup#seekTypesInSourcePackage: " + environment.nameLookup.timeSpentInSeekTypesInSourcePackage + "ms");  //$NON-NLS-1$ //$NON-NLS-2$
@@ -295,7 +295,7 @@ public class CompilationUnitProblemFinder extends Compiler {
 			message.append(lineDelimiter);
 			message.append("----------------------------------- SOURCE END -------------------------------------"); //$NON-NLS-1$
 			Util.log(e, message.toString());
-			throw new JavaModelException(e, IJavaModelStatusConstants.COMPILER_FAILURE);
+			throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.VALIDATION_FAILURE);
 		} finally {
 			if (environment != null)
 				environment.monitor = null; // don't hold a reference to this external object
@@ -308,14 +308,14 @@ public class CompilationUnitProblemFinder extends Compiler {
 	}
 
 	public static CompilationUnitDeclaration process(
-		ICompilationUnit unitElement,
+		IJavaScriptUnit unitElement,
 		char[] contents,
 		WorkingCopyOwner workingCopyOwner,
 		HashMap problems,
 		boolean creatingAST,
 		int reconcileFlags,
 		IProgressMonitor monitor)
-		throws JavaModelException {
+		throws JavaScriptModelException {
 
 		return process(null/*no CompilationUnitDeclaration*/, unitElement, contents, null/*use default Parser*/, workingCopyOwner, problems, creatingAST, reconcileFlags, monitor);
 	}

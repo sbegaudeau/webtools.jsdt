@@ -31,11 +31,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
@@ -55,15 +55,15 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 	private IProject fProject;
 		
 	private IPath fResultOutputFolder;
-	private IClasspathEntry[] fResultClasspath;
+	private IIncludePathEntry[] fResultClasspath;
 	
 	private IProgressMonitor fMonitor;
 	
 	private static class CPSorter implements Comparator {
 		private Collator fCollator= Collator.getInstance();
 		public int compare(Object o1, Object o2) {
-			IClasspathEntry e1= (IClasspathEntry) o1;
-			IClasspathEntry e2= (IClasspathEntry) o2;
+			IIncludePathEntry e1= (IIncludePathEntry) o1;
+			IIncludePathEntry e2= (IIncludePathEntry) o2;
 			return fCollator.compare(e1.getPath().toString(), e2.getPath().toString());
 		}
 	}
@@ -133,13 +133,13 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 			if (cpEntries.isEmpty()/* && fClassFiles.isEmpty()*/) {
 				return;
 			}
-			IClasspathEntry[] jreEntries= PreferenceConstants.getDefaultJRELibrary();
+			IIncludePathEntry[] jreEntries= PreferenceConstants.getDefaultJRELibrary();
 			for (int i= 0; i < jreEntries.length; i++) {
 				cpEntries.add(jreEntries[i]);
 			}
 
-			IClasspathEntry[] entries= (IClasspathEntry[]) cpEntries.toArray(new IClasspathEntry[cpEntries.size()]);
-			if (!JavaConventions.validateClasspath(JavaCore.create(fProject), entries, outputLocation).isOK()) {
+			IIncludePathEntry[] entries= (IIncludePathEntry[]) cpEntries.toArray(new IIncludePathEntry[cpEntries.size()]);
+			if (!JavaScriptConventions.validateClasspath(JavaScriptCore.create(fProject), entries, outputLocation).isOK()) {
 				return;
 			}
 
@@ -177,7 +177,7 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 //					if (content != null)
 //						content.close();
 //				} catch (IOException e) {
-//					throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR,
+//					throw new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.ERROR,
 //						Messages.format(NewWizardMessages.ClassPathDetector_error_closing_file, file.getFullPath().toString()),
 //						e));
 //				}
@@ -236,7 +236,7 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 //			if (outputLocation != null && outputLocation.isPrefixOf(path)) {
 //				continue;
 //			}
-//			IClasspathEntry entry= JavaCore.newLibraryEntry(path, null, null);
+//			IIncludePathEntry entry= JavaScriptCore.newLibraryEntry(path, null, null);
 //			res.add(entry);	
 //		}
 //		Collections.sort(res, new CPSorter());
@@ -258,7 +258,7 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 				}
 			}
 			IPath[] excludedPaths= (IPath[]) excluded.toArray(new IPath[excluded.size()]);
-			IClasspathEntry entry= JavaCore.newSourceEntry(path, excludedPaths);
+			IIncludePathEntry entry= JavaScriptCore.newSourceEntry(path, excludedPaths);
 			res.add(entry);
 		}
 		Collections.sort(res, new CPSorter());
@@ -266,9 +266,9 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 	}
 
 	private void visitCompilationUnit(IFile file) {
-		ICompilationUnit cu= JavaCore.createCompilationUnitFrom(file);
+		IJavaScriptUnit cu= JavaScriptCore.createCompilationUnitFrom(file);
 		if (cu != null) {
-			ICompilationUnit workingCopy= null;
+			IJavaScriptUnit workingCopy= null;
 			try {
 				workingCopy= cu.getWorkingCopy(null);
 				IPath relPath= getPackagePath(workingCopy.getSource());
@@ -282,7 +282,7 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 						addToMap(fSourceFolders, folderPath, relPath.append(cuName));
 					}					
 				}				
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore
 			} catch (InvalidInputException e) {
 				// ignore
@@ -290,7 +290,7 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 				if (workingCopy != null) {
 					try {
 						workingCopy.discardWorkingCopy();
-					} catch (JavaModelException ignore) {
+					} catch (JavaScriptModelException ignore) {
 					}
 				}
 			}
@@ -345,7 +345,7 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 //	}
 	
 	private boolean isValidCUName(String name) {
-		return !JavaConventions.validateCompilationUnitName(name).matches(IStatus.ERROR);
+		return !JavaScriptConventions.validateCompilationUnitName(name).matches(IStatus.ERROR);
 	}	
 
 	/* (non-Javadoc)
@@ -375,9 +375,9 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 		return fResultOutputFolder;
 	}
 		
-	public IClasspathEntry[] getClasspath() {
+	public IIncludePathEntry[] getClasspath() {
 		if (fResultClasspath == null)
-			return new IClasspathEntry[0];
+			return new IIncludePathEntry[0];
 		return fResultClasspath;
 	}
 }

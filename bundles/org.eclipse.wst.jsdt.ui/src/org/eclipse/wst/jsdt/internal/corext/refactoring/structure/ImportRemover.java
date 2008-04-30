@@ -18,12 +18,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -55,13 +55,13 @@ public class ImportRemover {
 
 	private Set/* <StaticImportData> */fAddedStaticImports= new HashSet();
 
-	private final IJavaProject fProject;
+	private final IJavaScriptProject fProject;
 
 	private List/* <ASTNode> */fRemovedNodes= new ArrayList();
 
-	private final CompilationUnit fRoot;
+	private final JavaScriptUnit fRoot;
 
-	public ImportRemover(IJavaProject project, CompilationUnit root) {
+	public ImportRemover(IJavaScriptProject project, JavaScriptUnit root) {
 		fProject= project;
 		fRoot= root;
 	}
@@ -128,8 +128,8 @@ public class ImportRemover {
 		if (binding instanceof IVariableBinding) {
 			IVariableBinding variable= (IVariableBinding) binding;
 			return hasAddedStaticImport(variable.getDeclaringClass().getQualifiedName(), variable.getName(), true);
-		} else if (binding instanceof IMethodBinding) {
-			IMethodBinding method= (IMethodBinding) binding;
+		} else if (binding instanceof IFunctionBinding) {
+			IFunctionBinding method= (IFunctionBinding) binding;
 			return hasAddedStaticImport(method.getDeclaringClass().getQualifiedName(), method.getName(), false);
 		}
 		return false;
@@ -200,8 +200,8 @@ public class ImportRemover {
 			ITypeBinding declaringType= ((IVariableBinding) binding).getDeclaringClass();
 			fAddedStaticImports.add(new StaticImportData(Bindings.getRawQualifiedName(declaringType), binding.getName(), true));
 			
-		} else if (binding instanceof IMethodBinding) {
-			ITypeBinding declaringType= ((IMethodBinding) binding).getDeclaringClass();
+		} else if (binding instanceof IFunctionBinding) {
+			ITypeBinding declaringType= ((IFunctionBinding) binding).getDeclaringClass();
 			fAddedStaticImports.add(new StaticImportData(Bindings.getRawQualifiedName(declaringType), binding.getName(), false));
 			
 		} else {
@@ -220,8 +220,8 @@ public class ImportRemover {
 			if (bindings[i] instanceof ITypeBinding) {
 				ITypeBinding typeBinding= (ITypeBinding) bindings[i];
 				importRewrite.removeImport(typeBinding.getTypeDeclaration().getQualifiedName());
-			} else if (bindings[i] instanceof IMethodBinding) {
-				IMethodBinding binding= (IMethodBinding) bindings[i];
+			} else if (bindings[i] instanceof IFunctionBinding) {
+				IFunctionBinding binding= (IFunctionBinding) bindings[i];
 				importRewrite.removeStaticImport(binding.getDeclaringClass().getQualifiedName() + '.' + binding.getName());
 			} else if (bindings[i] instanceof IVariableBinding) {
 				IVariableBinding binding= (IVariableBinding) bindings[i];

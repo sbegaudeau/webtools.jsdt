@@ -26,7 +26,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.AccessorClassReference;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSHintHelper;
@@ -83,8 +83,8 @@ public class NLSKeyHyperlink implements IHyperlink {
 		IStorage propertiesFile= null;
 		try {
 			ITypeBinding typeBinding= fAccessorClassReference.getBinding();
-			propertiesFile= NLSHintHelper.getResourceBundle(typeBinding.getJavaElement().getJavaProject(), fAccessorClassReference);
-		} catch (JavaModelException e) {
+			propertiesFile= NLSHintHelper.getResourceBundle(typeBinding.getJavaElement().getJavaScriptProject(), fAccessorClassReference);
+		} catch (JavaScriptModelException e) {
 			// Don't open the file
 		}
 		if (propertiesFile == null) {
@@ -98,7 +98,7 @@ public class NLSKeyHyperlink implements IHyperlink {
 		} catch (PartInitException e) {
 			handleOpenPropertiesFileFailed(propertiesFile);
 			return;
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			handleOpenPropertiesFileFailed(propertiesFile);
 			return;
 		}

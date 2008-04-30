@@ -23,15 +23,15 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * A completion requester to collect informations on local variables.
@@ -146,7 +146,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 			if (fUnit == null)
 				return false;
 
-			IJavaProject project= fUnit.getJavaProject();
+			IJavaScriptProject project= fUnit.getJavaScriptProject();
 
 			try {
 				IType sub= project.findType(implementorName);
@@ -169,7 +169,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 					}
 				}
 
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore and return false
 			}			
 			
@@ -187,7 +187,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 			if (fUnit == null)
 				return empty;
 			
-			IJavaProject project= fUnit.getJavaProject();
+			IJavaScriptProject project= fUnit.getJavaScriptProject();
 			
 			try {
 				IType sub= project.findType(implementorName);
@@ -211,7 +211,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 					return (IType[]) matches.toArray(new IType[matches.size()]);
 				}
 				
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore and return false
 			}			
 			
@@ -241,11 +241,11 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 						try {
 							TypeParameterResolver util= new TypeParameterResolver(this);
 							fMemberTypes= util.computeBinding("java.lang.Iterable", 0); //$NON-NLS-1$
-						} catch (JavaModelException e) {
+						} catch (JavaScriptModelException e) {
 							try {
 								TypeParameterResolver util= new TypeParameterResolver(this);
 								fMemberTypes= util.computeBinding("java.util.Collection", 0); //$NON-NLS-1$
-							} catch (JavaModelException x) {
+							} catch (JavaScriptModelException x) {
 								fMemberTypes= new String[0];
 							}
 						}
@@ -305,7 +305,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 						TypeParameterResolver util= new TypeParameterResolver(this);
 						String[] result= util.computeBinding(supertypes[i].getFullyQualifiedName(), index);
 						all.addAll(Arrays.asList(result));
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 					} catch (IndexOutOfBoundsException e) {
 					}
 				}
@@ -360,12 +360,12 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 		 * constraints along the inheritance path.
 		 * 
 		 * @param variable the local variable under investigation
-		 * @throws JavaModelException if the type of <code>variable</code>
+		 * @throws JavaScriptModelException if the type of <code>variable</code>
 		 *         cannot be found
 		 */
-		public TypeParameterResolver(Variable variable) throws JavaModelException {
+		public TypeParameterResolver(Variable variable) throws JavaScriptModelException {
 			String typeName= SignatureUtil.stripSignatureToFQN(variable.signature);
-			IJavaProject project= fUnit.getJavaProject();
+			IJavaScriptProject project= fUnit.getJavaScriptProject();
 			fType= project.findType(typeName);
 			fHierarchy= fType.newSupertypeHierarchy(null);
 			fVariable= variable;
@@ -385,14 +385,14 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 		 *        the type parameter binding for
 		 * @param index the index into the list of type parameters of
 		 *        <code>superType</code>
-		 * @throws JavaModelException if any java model operation fails
+		 * @throws JavaScriptModelException if any java model operation fails
 		 * @throws IndexOutOfBoundsException if the index is not valid
 		 */
-		public String[] computeBinding(String superType, int index) throws JavaModelException, IndexOutOfBoundsException {
-			IJavaProject project= fUnit.getJavaProject();
+		public String[] computeBinding(String superType, int index) throws JavaScriptModelException, IndexOutOfBoundsException {
+			IJavaScriptProject project= fUnit.getJavaScriptProject();
 			IType type= project.findType(superType);
 			if (type == null)
-				throw new JavaModelException(new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, "No such type", null))); //$NON-NLS-1$
+				throw new JavaScriptModelException(new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, "No such type", null))); //$NON-NLS-1$
 			return computeBinding(type, index);
 		}
 
@@ -410,10 +410,10 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 		 *        for
 		 * @param index the index into the list of type parameters of
 		 *        <code>superType</code>
-		 * @throws JavaModelException if any java model operation fails
+		 * @throws JavaScriptModelException if any java model operation fails
 		 * @throws IndexOutOfBoundsException if the index is not valid
 		 */
-		public String[] computeBinding(IType superType, int index) throws JavaModelException, IndexOutOfBoundsException {
+		public String[] computeBinding(IType superType, int index) throws JavaScriptModelException, IndexOutOfBoundsException {
 			initBounds();
 			computeTypeParameterBinding(superType, index);
 			return (String[]) fBounds.toArray(new String[fBounds.size()]);
@@ -436,10 +436,10 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 		 *        for
 		 * @param index the index into the list of type parameters of
 		 *        <code>superType</code>
-		 * @throws JavaModelException if any java model operation fails
+		 * @throws JavaScriptModelException if any java model operation fails
 		 * @throws IndexOutOfBoundsException if the index is not valid
 		 */
-		private void computeTypeParameterBinding(final IType superType, final int index) throws JavaModelException, IndexOutOfBoundsException {
+		private void computeTypeParameterBinding(final IType superType, final int index) throws JavaScriptModelException, IndexOutOfBoundsException {
 			int nParameters= superType.getTypeParameters().length;
 			if (nParameters <= index)
 				throw new IndexOutOfBoundsException();
@@ -538,11 +538,11 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 		 *        <code>subType</code>
 		 * @return the super type signature of <code>subType</code> referring
 		 *         to <code>superType</code>
-		 * @throws JavaModelException if extracting the super type signatures
+		 * @throws JavaScriptModelException if extracting the super type signatures
 		 *         fails, or if <code>subType</code> contains no super type
 		 *         signature to <code>superType</code>
 		 */
-		private String findMatchingSuperTypeSignature(IType subType, IType superType) throws JavaModelException {
+		private String findMatchingSuperTypeSignature(IType subType, IType superType) throws JavaScriptModelException {
 			String[] signatures= getSuperTypeSignatures(subType, superType);
 			for (int i= 0; i < signatures.length; i++) {
 				String signature= signatures[i];
@@ -560,7 +560,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 				}
 			}
 			
-			throw new JavaModelException(new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, "Illegal hierarchy", null))); //$NON-NLS-1$
+			throw new JavaScriptModelException(new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, "Illegal hierarchy", null))); //$NON-NLS-1$
 		}
 		
 		/**
@@ -571,9 +571,9 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 		 * @param subType the sub type signature
 		 * @param superType the super type signature
 		 * @return the super type signatures of <code>subType</code>
-		 * @throws JavaModelException if any java model operation fails
+		 * @throws JavaScriptModelException if any java model operation fails
 		 */
-		private String[] getSuperTypeSignatures(IType subType, IType superType) throws JavaModelException {
+		private String[] getSuperTypeSignatures(IType subType, IType superType) throws JavaScriptModelException {
 			if (superType.isInterface())
 				return subType.getSuperInterfaceTypeSignatures();
 			else
@@ -636,7 +636,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 			if (Signature.getTypeSignatureKind(subTypeSignature) != Signature.BASE_TYPE_SIGNATURE && SignatureUtil.isJavaLangObject(superTypeSignature)) 
 				return true;
 			
-			IJavaProject project= fUnit.getJavaProject();
+			IJavaScriptProject project= fUnit.getJavaScriptProject();
 			
 			try {
 				
@@ -658,7 +658,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 				for (int i= 0; i < types.length; i++)
 					if (types[i].equals(superType))
 						return true;
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore and return false
 			}			
 			
@@ -671,23 +671,23 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 		 * 
 		 * @param signature the signature to check
 		 * @param context the context inside which to resolve the type
-		 * @throws JavaModelException if finding the type fails
+		 * @throws JavaScriptModelException if finding the type fails
 		 */
-		private boolean isConcreteType(String signature, IType context) throws JavaModelException {
+		private boolean isConcreteType(String signature, IType context) throws JavaScriptModelException {
 			// Inexpensive check for the variable type first
 			if (Signature.TYPE_VARIABLE_SIGNATURE == Signature.getTypeSignatureKind(signature))
 				return false;
 			
 			// try and resolve otherwise
 			if (context.isBinary()) {
-				return fUnit.getJavaProject().findType(SignatureUtil.stripSignatureToFQN(signature)) != null;
+				return fUnit.getJavaScriptProject().findType(SignatureUtil.stripSignatureToFQN(signature)) != null;
 			} else {
 				return context.resolveType(SignatureUtil.stripSignatureToFQN(signature)) != null;
 			}
 		}
 	}
 	
-	private ICompilationUnit fUnit;
+	private IJavaScriptUnit fUnit;
 
 	private List fLocalVariables= new ArrayList();
 	private List fFields= new ArrayList();
@@ -700,7 +700,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 	 * 
 	 * @param unit the compilation unit, may be <code>null</code>.
 	 */
-	CompilationUnitCompletion(ICompilationUnit unit) {
+	CompilationUnitCompletion(IJavaScriptUnit unit) {
 		reset(unit);
 		setIgnored(CompletionProposal.ANONYMOUS_CLASS_DECLARATION, true);
 		setIgnored(CompletionProposal.KEYWORD, true);
@@ -719,7 +719,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 	 * 
 	 * @param unit the compilation unit, may be <code>null</code>.
 	 */
-	private void reset(ICompilationUnit unit) {
+	private void reset(IJavaScriptUnit unit) {
 		fUnit= unit;
 		fLocalVariables.clear();
 		fFields.clear();
@@ -733,7 +733,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 					String sig= Signature.createTypeSignature(fqn, true);
 					fLocalTypes.put(sig, cuTypes[i].getElementName());
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore
 			}
 		}

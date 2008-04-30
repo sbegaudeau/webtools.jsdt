@@ -33,14 +33,14 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaWordFinder;
 import org.eclipse.wst.jsdt.internal.ui.text.SimpleJavaSourceViewerConfiguration;
 import org.eclipse.wst.jsdt.internal.ui.text.template.preferences.TemplateVariableProcessor;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 
 public class CodeTemplateSourceViewerConfiguration extends SimpleJavaSourceViewerConfiguration {
@@ -96,7 +96,7 @@ public class CodeTemplateSourceViewerConfiguration extends SimpleJavaSourceViewe
 	private final TemplateVariableProcessor fProcessor;
 
 	public CodeTemplateSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore store, ITextEditor editor, TemplateVariableProcessor processor) {
-		super(colorManager, store, editor, IJavaPartitions.JAVA_PARTITIONING, false);
+		super(colorManager, store, editor, IJavaScriptPartitions.JAVA_PARTITIONING, false);
 		fProcessor= processor;
 	}
 	
@@ -105,19 +105,19 @@ public class CodeTemplateSourceViewerConfiguration extends SimpleJavaSourceViewe
 	 */
 	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 
-		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
-		JavaTextTools textTools= JavaPlugin.getDefault().getJavaTextTools();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
+		JavaScriptTextTools textTools= JavaScriptPlugin.getDefault().getJavaTextTools();
 		IColorManager manager= textTools.getColorManager();					
 		
 
 		ContentAssistant assistant= new ContentAssistant();
 		assistant.setContentAssistProcessor(fProcessor, IDocument.DEFAULT_CONTENT_TYPE);
 			// Register the same processor for strings and single line comments to get code completion at the start of those partitions.
-		assistant.setContentAssistProcessor(fProcessor, IJavaPartitions.JAVA_STRING);
-		assistant.setContentAssistProcessor(fProcessor, IJavaPartitions.JAVA_CHARACTER);
-		assistant.setContentAssistProcessor(fProcessor, IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
-		assistant.setContentAssistProcessor(fProcessor, IJavaPartitions.JAVA_MULTI_LINE_COMMENT);
-		assistant.setContentAssistProcessor(fProcessor, IJavaPartitions.JAVA_DOC);
+		assistant.setContentAssistProcessor(fProcessor, IJavaScriptPartitions.JAVA_STRING);
+		assistant.setContentAssistProcessor(fProcessor, IJavaScriptPartitions.JAVA_CHARACTER);
+		assistant.setContentAssistProcessor(fProcessor, IJavaScriptPartitions.JAVA_SINGLE_LINE_COMMENT);
+		assistant.setContentAssistProcessor(fProcessor, IJavaScriptPartitions.JAVA_MULTI_LINE_COMMENT);
+		assistant.setContentAssistProcessor(fProcessor, IJavaScriptPartitions.JAVA_DOC);
 
 		assistant.enableAutoInsert(store.getBoolean(PreferenceConstants.CODEASSIST_AUTOINSERT));
 		assistant.enableAutoActivation(store.getBoolean(PreferenceConstants.CODEASSIST_AUTOACTIVATION));

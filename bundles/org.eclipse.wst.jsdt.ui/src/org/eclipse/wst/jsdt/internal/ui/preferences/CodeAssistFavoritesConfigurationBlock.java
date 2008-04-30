@@ -35,10 +35,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
@@ -56,8 +56,8 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapte
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
-import org.eclipse.wst.jsdt.ui.IJavaElementSearchConstants;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.IJavaScriptElementSearchConstants;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 
@@ -163,17 +163,17 @@ class CodeAssistFavoritesConfigurationBlock extends OptionsConfigurationBlock {
 		
 		private void doBrowseTypes() {		
 			IRunnableContext context= new BusyIndicatorRunnableContext();
-			IJavaSearchScope scope= SearchEngine.createWorkspaceScope();
-			int style= IJavaElementSearchConstants.CONSIDER_ALL_TYPES;
+			IJavaScriptSearchScope scope= SearchEngine.createWorkspaceScope();
+			int style= IJavaScriptElementSearchConstants.CONSIDER_ALL_TYPES;
 			try {
-				SelectionDialog dialog= JavaUI.createTypeDialog(getShell(), context, scope, style, false, fNameDialogField.getText());
+				SelectionDialog dialog= JavaScriptUI.createTypeDialog(getShell(), context, scope, style, false, fNameDialogField.getText());
 				dialog.setTitle(PreferencesMessages.FavoriteStaticMemberInputDialog_ChooseTypeDialog_title); 
 				dialog.setMessage(PreferencesMessages.FavoriteStaticMemberInputDialog_ChooseTypeDialog_description); 
 				if (dialog.open() == Window.OK) {
 					IType res= (IType) dialog.getResult()[0];
 					fNameDialogField.setText(res.getFullyQualifiedName('.'));
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				ExceptionHandler.handle(e, getShell(), PreferencesMessages.FavoriteStaticMemberInputDialog_ChooseTypeDialog_title, PreferencesMessages.FavoriteStaticMemberInputDialog_ChooseTypeDialog_error_message);  
 			}
 		}
@@ -188,7 +188,7 @@ class CodeAssistFavoritesConfigurationBlock extends OptionsConfigurationBlock {
 			if (newText.length() == 0) {
 				status.setError(""); //$NON-NLS-1$
 			} else {
-				IStatus val= JavaConventions.validateJavaTypeName(newText, JavaCore.VERSION_1_3, JavaCore.VERSION_1_3);
+				IStatus val= JavaScriptConventions.validateJavaScriptTypeName(newText, JavaScriptCore.VERSION_1_3, JavaScriptCore.VERSION_1_3);
 				if (val.matches(IStatus.ERROR)) {
 					if (fIsEditingMember) 
 						status.setError(PreferencesMessages.FavoriteStaticMemberInputDialog_error_invalidMemberName);

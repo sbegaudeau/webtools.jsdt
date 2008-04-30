@@ -18,16 +18,16 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.ContextSensitiveImportRewriteContext;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
@@ -40,7 +40,7 @@ import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
   */
 public class ImportCompletionProposal extends AbstractJavaCompletionProposal {
 
-	private final ICompilationUnit fCompilationUnit;
+	private final IJavaScriptUnit fCompilationUnit;
 	private final int fParentProposalKind;
 	private ImportRewrite fImportRewrite;
 	private ContextSensitiveImportRewriteContext fImportContext;
@@ -125,9 +125,9 @@ public class ImportCompletionProposal extends AbstractJavaCompletionProposal {
 				setReplacementOffset(getReplacementOffset() + document.getLength() - oldLen);
 			}
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 	}
 	
@@ -140,7 +140,7 @@ public class ImportCompletionProposal extends AbstractJavaCompletionProposal {
 	private ImportRewrite createImportRewrite() {
 		if (fCompilationUnit != null && shouldAddImports()) {
 			try {
-				CompilationUnit cu= getASTRoot(fCompilationUnit);
+				JavaScriptUnit cu= getASTRoot(fCompilationUnit);
 				if (cu == null) {
 					ImportRewrite rewrite= StubUtility.createImportRewrite(fCompilationUnit, true);
 					fImportContext= null;
@@ -151,14 +151,14 @@ public class ImportCompletionProposal extends AbstractJavaCompletionProposal {
 					return rewrite;
 				}
 			} catch (CoreException x) {
-				JavaPlugin.log(x);
+				JavaScriptPlugin.log(x);
 			}
 		}
 		return null;
 	}
 
-	private CompilationUnit getASTRoot(ICompilationUnit compilationUnit) {
-		return JavaPlugin.getDefault().getASTProvider().getAST(compilationUnit, ASTProvider.WAIT_NO, new NullProgressMonitor());
+	private JavaScriptUnit getASTRoot(IJavaScriptUnit compilationUnit) {
+		return JavaScriptPlugin.getDefault().getASTProvider().getAST(compilationUnit, ASTProvider.WAIT_NO, new NullProgressMonitor());
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class ImportCompletionProposal extends AbstractJavaCompletionProposal {
 		if (isInJavadoc() && !isJavadocProcessingEnabled())
 			return false;
 		
-		IPreferenceStore preferenceStore= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferenceStore= JavaScriptPlugin.getDefault().getPreferenceStore();
 		return preferenceStore.getBoolean(PreferenceConstants.CODEASSIST_ADDIMPORT);
 	}
 
@@ -195,12 +195,12 @@ public class ImportCompletionProposal extends AbstractJavaCompletionProposal {
 	 * @return <code>true</code> if Javadoc processing is enabled, <code>false</code> otherwise
 	 */
 	private boolean isJavadocProcessingEnabled() {
-		IJavaProject project= fCompilationUnit.getJavaProject();
+		IJavaScriptProject project= fCompilationUnit.getJavaScriptProject();
 		boolean processJavadoc;
 		if (project == null)
-			processJavadoc= JavaCore.ENABLED.equals(JavaCore.getOption(JavaCore.COMPILER_DOC_COMMENT_SUPPORT));
+			processJavadoc= JavaScriptCore.ENABLED.equals(JavaScriptCore.getOption(JavaScriptCore.COMPILER_DOC_COMMENT_SUPPORT));
 		else
-			processJavadoc= JavaCore.ENABLED.equals(project.getOption(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, true));
+			processJavadoc= JavaScriptCore.ENABLED.equals(project.getOption(JavaScriptCore.COMPILER_DOC_COMMENT_SUPPORT, true));
 		return processJavadoc;
 	}
 }

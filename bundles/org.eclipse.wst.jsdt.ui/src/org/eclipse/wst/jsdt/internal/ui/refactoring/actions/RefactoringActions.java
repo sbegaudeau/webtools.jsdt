@@ -12,10 +12,10 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring.actions;
 
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaTextSelection;
@@ -34,25 +34,25 @@ public class RefactoringActions {
 	 *   <li>otherwise <code>null</code> is returned.
 	 * </ul>
 	 */
-	public static IType getEnclosingOrPrimaryType(JavaTextSelection selection) throws JavaModelException {
-		final IJavaElement element= selection.resolveEnclosingElement();
+	public static IType getEnclosingOrPrimaryType(JavaTextSelection selection) throws JavaScriptModelException {
+		final IJavaScriptElement element= selection.resolveEnclosingElement();
 		if (element != null)
 			return convertToEnclosingOrPrimaryType(element);
 		return null;
 	}
-	public static IType getEnclosingOrPrimaryType(JavaEditor editor) throws JavaModelException {
+	public static IType getEnclosingOrPrimaryType(JavaEditor editor) throws JavaScriptModelException {
 		return convertToEnclosingOrPrimaryType(SelectionConverter.resolveEnclosingElement(
 			editor, (ITextSelection)editor.getSelectionProvider().getSelection()));
 	}
 
-	private static IType convertToEnclosingOrPrimaryType(IJavaElement element) throws JavaModelException {
+	private static IType convertToEnclosingOrPrimaryType(IJavaScriptElement element) throws JavaScriptModelException {
 		if (element instanceof IType)
 			return (IType)element;
-		IType result= (IType)element.getAncestor(IJavaElement.TYPE);
+		IType result= (IType)element.getAncestor(IJavaScriptElement.TYPE);
 		if (result != null)
 			return result;
-		if (element instanceof ICompilationUnit)
-			return ((ICompilationUnit)element).findPrimaryType();
+		if (element instanceof IJavaScriptUnit)
+			return ((IJavaScriptUnit)element).findPrimaryType();
 		if (element instanceof IClassFile) 
 			return ((IClassFile)element).getType();
 		return null;
@@ -65,19 +65,19 @@ public class RefactoringActions {
 	 *   <li>otherwise <code>null</code> is returned.
 	 * </ul>
 	 */
-	public static IType getEnclosingType(JavaTextSelection selection) throws JavaModelException {
+	public static IType getEnclosingType(JavaTextSelection selection) throws JavaScriptModelException {
 		return convertToEnclosingType(selection.resolveEnclosingElement());
 	}
-	public static IType getEnclosingType(JavaEditor editor) throws JavaModelException {
+	public static IType getEnclosingType(JavaEditor editor) throws JavaScriptModelException {
 		return convertToEnclosingType(SelectionConverter.resolveEnclosingElement(
 			editor, (ITextSelection)editor.getSelectionProvider().getSelection()));
 	}
 	
-	private static IType convertToEnclosingType(IJavaElement element) {
+	private static IType convertToEnclosingType(IJavaScriptElement element) {
 		if (element == null)
 			return null;
 		if (! (element instanceof IType))
-			element= element.getAncestor(IJavaElement.TYPE);
+			element= element.getAncestor(IJavaScriptElement.TYPE);
 		return (IType)element;
 	}
 }

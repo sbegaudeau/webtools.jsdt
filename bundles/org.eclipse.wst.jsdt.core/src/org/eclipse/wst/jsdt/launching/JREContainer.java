@@ -19,10 +19,10 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.IAccessRule;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 import com.ibm.icu.text.MessageFormat;
 
@@ -54,7 +54,7 @@ public class JREContainer implements IJsGlobalScopeContainer {
 	 * @param vm
 	 * @return classpath entries
 	 */
-	private static IClasspathEntry[] getClasspathEntries(IVMInstall vm) {
+	private static IIncludePathEntry[] getClasspathEntries(IVMInstall vm) {
 		if (fgClasspathEntries == null) {
 			fgClasspathEntries = new HashMap(10);
 			// add a listener to clear cached value when a VM changes or is removed
@@ -77,7 +77,7 @@ public class JREContainer implements IJsGlobalScopeContainer {
 //			}; 
 //			JavaRuntime.addVMInstallChangedListener(listener);
 		}
-		IClasspathEntry[] entries = (IClasspathEntry[])fgClasspathEntries.get(vm);
+		IIncludePathEntry[] entries = (IIncludePathEntry[])fgClasspathEntries.get(vm);
 		if (entries == null) {
 			entries = computeClasspathEntries(vm);
 			fgClasspathEntries.put(vm, entries);
@@ -91,7 +91,7 @@ public class JREContainer implements IJsGlobalScopeContainer {
 	 * @param vm
 	 * @return classpath entries
 	 */
-	private static IClasspathEntry[] computeClasspathEntries(IVMInstall vm) {
+	private static IIncludePathEntry[] computeClasspathEntries(IVMInstall vm) {
 		LibraryLocation[] libs = vm.getLibraryLocations();
 		boolean overrideJavaDoc = false;
 		if (libs == null) {
@@ -113,16 +113,16 @@ public class JREContainer implements IJsGlobalScopeContainer {
 				if (overrideJavaDoc && javadocLocation == null) {
 					javadocLocation = vm.getJavadocLocation();
 				}
-				IClasspathAttribute[] attributes = null;
+				IIncludePathAttribute[] attributes = null;
 				if (javadocLocation == null) {
-					attributes = new IClasspathAttribute[0];
+					attributes = new IIncludePathAttribute[0];
 				} else {
-					attributes = new IClasspathAttribute[]{JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, javadocLocation.toExternalForm())};
+					attributes = new IIncludePathAttribute[]{JavaScriptCore.newIncludepathAttribute(IIncludePathAttribute.JSDOC_LOCATION_ATTRIBUTE_NAME, javadocLocation.toExternalForm())};
 				}
-				entries.add(JavaCore.newLibraryEntry(libs[i].getSystemLibraryPath(), sourcePath, rootPath, EMPTY_RULES, attributes, false));
+				entries.add(JavaScriptCore.newLibraryEntry(libs[i].getSystemLibraryPath(), sourcePath, rootPath, EMPTY_RULES, attributes, false));
 			}
 		}
-		return (IClasspathEntry[])entries.toArray(new IClasspathEntry[entries.size()]);		
+		return (IIncludePathEntry[])entries.toArray(new IIncludePathEntry[entries.size()]);		
 	}
 	
 	/**
@@ -138,8 +138,16 @@ public class JREContainer implements IJsGlobalScopeContainer {
 	
 	/**
 	 * @see IJsGlobalScopeContainer#getClasspathEntries()
+	 * @deprecated Use {@link #getIncludepathEntries()} instead
 	 */
-	public IClasspathEntry[] getClasspathEntries() {
+	public IIncludePathEntry[] getClasspathEntries() {
+		return getIncludepathEntries();
+	}
+
+	/**
+	 * @see IJsGlobalScopeContainer#getIncludepathEntries()
+	 */
+	public IIncludePathEntry[] getIncludepathEntries() {
 		return getClasspathEntries(fVMInstall);
 	}
 

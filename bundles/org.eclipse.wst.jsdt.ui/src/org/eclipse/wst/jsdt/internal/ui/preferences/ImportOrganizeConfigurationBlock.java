@@ -32,9 +32,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
@@ -47,8 +47,8 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /*
@@ -61,8 +61,8 @@ public class ImportOrganizeConfigurationBlock extends OptionsConfigurationBlock 
 	private static final Key PREF_IGNORELOWERCASE= getJDTUIKey(PreferenceConstants.ORGIMPORTS_IGNORELOWERCASE);
 	private static final Key PREF_STATICONDEMANDTHRESHOLD= getJDTUIKey(PreferenceConstants.ORGIMPORTS_STATIC_ONDEMANDTHRESHOLD);
 	
-	private static final String DIALOGSETTING_LASTLOADPATH= JavaUI.ID_PLUGIN + ".importorder.loadpath"; //$NON-NLS-1$
-	private static final String DIALOGSETTING_LASTSAVEPATH= JavaUI.ID_PLUGIN + ".importorder.savepath"; //$NON-NLS-1$
+	private static final String DIALOGSETTING_LASTLOADPATH= JavaScriptUI.ID_PLUGIN + ".importorder.loadpath"; //$NON-NLS-1$
+	private static final String DIALOGSETTING_LASTSAVEPATH= JavaScriptUI.ID_PLUGIN + ".importorder.savepath"; //$NON-NLS-1$
 
 	private static Key[] getAllKeys() {
 		return new Key[] {
@@ -101,7 +101,7 @@ public class ImportOrganizeConfigurationBlock extends OptionsConfigurationBlock 
 
 		public ImportOrganizeLabelProvider() {
 			PCK_ICON= JavaPluginImages.get(JavaPluginImages.IMG_OBJS_PACKAGE);
-			STATIC_CLASS_ICON= JavaElementImageProvider.getDecoratedImage(JavaPluginImages.DESC_MISC_PUBLIC, JavaElementImageDescriptor.STATIC, JavaElementImageProvider.SMALL_SIZE);
+			STATIC_CLASS_ICON= JavaElementImageProvider.getDecoratedImage(JavaPluginImages.DESC_MISC_PUBLIC, JavaScriptElementImageDescriptor.STATIC, JavaElementImageProvider.SMALL_SIZE);
 		}
 		
 		public Image getImage(Object element) {
@@ -309,7 +309,7 @@ public class ImportOrganizeConfigurationBlock extends OptionsConfigurationBlock 
 			String curr= properties.getProperty(String.valueOf(i));
 			if (curr != null) {
 				ImportOrderEntry entry= ImportOrderEntry.fromSerialized(curr);
-				if (!JavaConventions.validatePackageName(entry.name, JavaCore.VERSION_1_3, JavaCore.VERSION_1_5).matches(IStatus.ERROR)) {
+				if (!JavaScriptConventions.validatePackageName(entry.name, JavaScriptCore.VERSION_1_3, JavaScriptCore.VERSION_1_5).matches(IStatus.ERROR)) {
 					res.add(entry);
 				} else {
 					return null;
@@ -322,7 +322,7 @@ public class ImportOrganizeConfigurationBlock extends OptionsConfigurationBlock 
 	}
 	
 	private List loadImportOrder() {
-		IDialogSettings dialogSettings= JavaPlugin.getDefault().getDialogSettings();
+		IDialogSettings dialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();
 		
 		FileDialog dialog= new FileDialog(getShell(), SWT.OPEN);
 		dialog.setText(PreferencesMessages.ImportOrganizeConfigurationBlock_loadDialog_title); 
@@ -345,7 +345,7 @@ public class ImportOrganizeConfigurationBlock extends OptionsConfigurationBlock 
 					return res;
 				}
 			} catch (IOException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			} finally {
 				if (fis != null) {
 					try { fis.close(); } catch (IOException e) {}
@@ -359,7 +359,7 @@ public class ImportOrganizeConfigurationBlock extends OptionsConfigurationBlock 
 	}
 	
 	private void saveImportOrder(List elements) {
-		IDialogSettings dialogSettings= JavaPlugin.getDefault().getDialogSettings();
+		IDialogSettings dialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();
 		
 		FileDialog dialog= new FileDialog(getShell(), SWT.SAVE);
 		dialog.setText(PreferencesMessages.ImportOrganizeConfigurationBlock_saveDialog_title); 
@@ -383,7 +383,7 @@ public class ImportOrganizeConfigurationBlock extends OptionsConfigurationBlock 
 				fos= new FileOutputStream(fileName);
 				properties.store(fos, "Organize Import Order"); //$NON-NLS-1$
 			} catch (IOException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 				String title= PreferencesMessages.ImportOrganizeConfigurationBlock_saveDialog_error_title; 
 				String message= PreferencesMessages.ImportOrganizeConfigurationBlock_saveDialog_error_message; 
 				MessageDialog.openError(getShell(), title, message);				

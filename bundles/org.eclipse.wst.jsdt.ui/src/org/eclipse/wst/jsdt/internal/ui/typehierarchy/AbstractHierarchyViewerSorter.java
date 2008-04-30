@@ -13,14 +13,14 @@ package org.eclipse.wst.jsdt.internal.ui.typehierarchy;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.SourcePositionComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
 
 /**
   */
@@ -31,11 +31,11 @@ public abstract class AbstractHierarchyViewerSorter extends ViewerComparator {
 	private static final int INTERFACE= 3;
 	private static final int ANONYM= 4;
 	
-	private JavaElementComparator fNormalSorter;
+	private JavaScriptElementComparator fNormalSorter;
 	private SourcePositionComparator fSourcePositonSorter;
 	
 	public AbstractHierarchyViewerSorter() {
-		fNormalSorter= new JavaElementComparator();
+		fNormalSorter= new JavaScriptElementComparator();
 		fSourcePositonSorter= new SourcePositionComparator();
 	}
 	
@@ -44,7 +44,7 @@ public abstract class AbstractHierarchyViewerSorter extends ViewerComparator {
 	public abstract boolean isSortAlphabetically();
 	
 	
-	protected int getTypeFlags(IType type) throws JavaModelException {
+	protected int getTypeFlags(IType type) throws JavaScriptModelException {
 		return type.getFlags();
 	}
 	
@@ -64,7 +64,7 @@ public abstract class AbstractHierarchyViewerSorter extends ViewerComparator {
 				} else {
 					return CLASS;
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore
 			}
 		}
@@ -88,8 +88,8 @@ public abstract class AbstractHierarchyViewerSorter extends ViewerComparator {
 		if (cat1 == OTHER) { // method or field
 			if (isSortByDefiningType()) {
 				try {
-					IType def1= (e1 instanceof IMethod) ? getDefiningType((IMethod) e1) : null;
-					IType def2= (e2 instanceof IMethod) ? getDefiningType((IMethod) e2) : null;
+					IType def1= (e1 instanceof IFunction) ? getDefiningType((IFunction) e1) : null;
+					IType def2= (e2 instanceof IFunction) ? getDefiningType((IFunction) e2) : null;
 					if (def1 != null) {
 						if (def2 != null) {
 							if (!def2.equals(def1)) {
@@ -103,7 +103,7 @@ public abstract class AbstractHierarchyViewerSorter extends ViewerComparator {
 							return 1;
 						}	
 					}
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					// ignore, default to normal comparison
 				}
 			}
@@ -121,7 +121,7 @@ public abstract class AbstractHierarchyViewerSorter extends ViewerComparator {
 		return 0;
 	}
 	
-	private IType getDefiningType(IMethod method) throws JavaModelException {
+	private IType getDefiningType(IFunction method) throws JavaScriptModelException {
 		int flags= method.getFlags();
 		if (Flags.isPrivate(flags) || Flags.isStatic(flags) || method.isConstructor()) {
 			return null;
@@ -131,7 +131,7 @@ public abstract class AbstractHierarchyViewerSorter extends ViewerComparator {
 		ITypeHierarchy hierarchy= getHierarchy(declaringType);
 		if (hierarchy != null) {
 			MethodOverrideTester tester= new MethodOverrideTester(declaringType, hierarchy);
-			IMethod res= tester.findDeclaringMethod(method, true);
+			IFunction res= tester.findDeclaringMethod(method, true);
 			if (res != null) {
 				return res.getDeclaringType();
 			}
@@ -157,7 +157,7 @@ public abstract class AbstractHierarchyViewerSorter extends ViewerComparator {
 			} else if (Flags.isInterface(flags2)) {
 				return -1;
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignore
 		}
 		String name1= def1.getElementName();

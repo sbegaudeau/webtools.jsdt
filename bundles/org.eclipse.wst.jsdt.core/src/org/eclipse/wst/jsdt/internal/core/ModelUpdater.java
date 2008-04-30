@@ -14,15 +14,15 @@ package org.eclipse.wst.jsdt.internal.core;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * This class is used by <code>JavaModelManager</code> to update the JavaModel
- * based on some <code>IJavaElementDelta</code>s.
+ * based on some <code>IJavaScriptElementDelta</code>s.
  */
 public class ModelUpdater {
 
@@ -38,7 +38,7 @@ public class ModelUpdater {
 			try {
 				JavaElementInfo info = (JavaElementInfo)parent.getElementInfo();
 				info.addChild(child);
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// do nothing - we already checked if open
 			}
 		}
@@ -51,7 +51,7 @@ public class ModelUpdater {
 
 		try {
 			element.close();
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// do nothing
 		}
 	}
@@ -68,7 +68,7 @@ public class ModelUpdater {
 	protected void elementAdded(Openable element) {
 
 		int elementType = element.getElementType();
-		if (elementType == IJavaElement.JAVA_PROJECT) {
+		if (elementType == IJavaScriptElement.JAVASCRIPT_PROJECT) {
 			// project add is handled by JavaProject.configure() because
 			// when a project is created, it does not yet have a java nature
 			addToParentInfo(element);
@@ -89,13 +89,13 @@ public class ModelUpdater {
 		}
 
 		switch (elementType) {
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT :
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT :
 				// when a root is added, and is on the classpath, the project must be updated
-				this.projectsToUpdate.add(element.getJavaProject());
+				this.projectsToUpdate.add(element.getJavaScriptProject());
 				break;
-			case IJavaElement.PACKAGE_FRAGMENT :
+			case IJavaScriptElement.PACKAGE_FRAGMENT :
 				// get rid of package fragment cache
-				JavaProject project = (JavaProject) element.getJavaProject();
+				JavaProject project = (JavaProject) element.getJavaScriptProject();
 				project.resetCaches();
 				break;
 		}
@@ -128,21 +128,21 @@ public class ModelUpdater {
 		int elementType = element.getElementType();
 
 		switch (elementType) {
-			case IJavaElement.JAVA_MODEL :
+			case IJavaScriptElement.JAVASCRIPT_MODEL :
 				JavaModelManager.getJavaModelManager().getIndexManager().reset();
 				break;
-			case IJavaElement.JAVA_PROJECT :
+			case IJavaScriptElement.JAVASCRIPT_PROJECT :
 				JavaModelManager manager = JavaModelManager.getJavaModelManager();
 				JavaProject javaProject = (JavaProject) element;
 				manager.removePerProjectInfo(javaProject);
 				manager.containerRemove(javaProject);
 				break;
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT :
-				this.projectsToUpdate.add(element.getJavaProject());
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT :
+				this.projectsToUpdate.add(element.getJavaScriptProject());
 				break;
-			case IJavaElement.PACKAGE_FRAGMENT :
+			case IJavaScriptElement.PACKAGE_FRAGMENT :
 				// get rid of package fragment cache
-				JavaProject project = (JavaProject) element.getJavaProject();
+				JavaProject project = (JavaProject) element.getJavaScriptProject();
 				project.resetCaches();
 				break;
 		}
@@ -150,10 +150,10 @@ public class ModelUpdater {
 
 	/**
 	 * Converts a <code>IResourceDelta</code> rooted in a <code>Workspace</code> into
-	 * the corresponding set of <code>IJavaElementDelta</code>, rooted in the
+	 * the corresponding set of <code>IJavaScriptElementDelta</code>, rooted in the
 	 * relevant <code>JavaModel</code>s.
 	 */
-	public void processJavaDelta(IJavaElementDelta delta) {
+	public void processJavaDelta(IJavaScriptElementDelta delta) {
 
 //		if (DeltaProcessor.VERBOSE){
 //			System.out.println("UPDATING Model with Delta: ["+Thread.currentThread()+":" + delta + "]:");
@@ -185,7 +185,7 @@ public class ModelUpdater {
 			try {
 				JavaElementInfo info = (JavaElementInfo)parent.getElementInfo();
 				info.removeChild(child);
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// do nothing - we already checked if open
 			}
 		}
@@ -193,54 +193,54 @@ public class ModelUpdater {
 
 	/**
 	 * Converts an <code>IResourceDelta</code> and its children into
-	 * the corresponding <code>IJavaElementDelta</code>s.
+	 * the corresponding <code>IJavaScriptElementDelta</code>s.
 	 * Return whether the delta corresponds to a resource on the classpath.
 	 * If it is not a resource on the classpath, it will be added as a non-java
 	 * resource by the sender of this method.
 	 */
 	protected void traverseDelta(
-		IJavaElementDelta delta,
+		IJavaScriptElementDelta delta,
 		IPackageFragmentRoot root,
-		IJavaProject project) {
+		IJavaScriptProject project) {
 
 		boolean processChildren = true;
 
 		Openable element = (Openable) delta.getElement();
 		switch (element.getElementType()) {
-			case IJavaElement.JAVA_PROJECT :
-				project = (IJavaProject) element;
+			case IJavaScriptElement.JAVASCRIPT_PROJECT :
+				project = (IJavaScriptProject) element;
 				break;
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT :
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT :
 				root = (IPackageFragmentRoot) element;
 				break;
-			case IJavaElement.COMPILATION_UNIT :
+			case IJavaScriptElement.JAVASCRIPT_UNIT :
 				// filter out working copies that are not primary (we don't want to add/remove them to/from the package fragment
 				CompilationUnit cu = (CompilationUnit)element;
 				if (cu.isWorkingCopy() && !cu.isPrimary()) {
 					return;
 				}
-			case IJavaElement.CLASS_FILE :
+			case IJavaScriptElement.CLASS_FILE :
 				processChildren = false;
 				break;
 		}
 
 		switch (delta.getKind()) {
-			case IJavaElementDelta.ADDED :
+			case IJavaScriptElementDelta.ADDED :
 				elementAdded(element);
 				break;
-			case IJavaElementDelta.REMOVED :
+			case IJavaScriptElementDelta.REMOVED :
 				elementRemoved(element);
 				break;
-			case IJavaElementDelta.CHANGED :
-				if ((delta.getFlags() & IJavaElementDelta.F_CONTENT) != 0){
+			case IJavaScriptElementDelta.CHANGED :
+				if ((delta.getFlags() & IJavaScriptElementDelta.F_CONTENT) != 0){
 					elementChanged(element);
 				}
 				break;
 		}
 		if (processChildren) {
-			IJavaElementDelta[] children = delta.getAffectedChildren();
+			IJavaScriptElementDelta[] children = delta.getAffectedChildren();
 			for (int i = 0; i < children.length; i++) {
-				IJavaElementDelta childDelta = children[i];
+				IJavaScriptElementDelta childDelta = children[i];
 				this.traverseDelta(childDelta, root, project);
 			}
 		}

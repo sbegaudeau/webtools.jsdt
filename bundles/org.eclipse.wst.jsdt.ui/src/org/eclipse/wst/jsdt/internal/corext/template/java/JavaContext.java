@@ -44,17 +44,17 @@ import org.eclipse.jface.text.templates.TemplateVariable;
 import org.eclipse.jface.text.templates.TemplateVariableType;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite.ImportRewriteContext;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
@@ -64,14 +64,14 @@ import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitComplet
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeNameMatchCollector;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ASTResolving;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.SimilarElementsRequestor;
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.MultiVariable;
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.MultiVariableGuess;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
@@ -97,7 +97,7 @@ public class JavaContext extends CompilationUnitContext {
 	 * @param completionLength the completion length.
 	 * @param compilationUnit the compilation unit (may be <code>null</code>).
 	 */
-	public JavaContext(TemplateContextType type, IDocument document, int completionOffset, int completionLength, ICompilationUnit compilationUnit) {
+	public JavaContext(TemplateContextType type, IDocument document, int completionOffset, int completionLength, IJavaScriptUnit compilationUnit) {
 		super(type, document, completionOffset, completionLength, compilationUnit);
 	}
 	
@@ -110,7 +110,7 @@ public class JavaContext extends CompilationUnitContext {
 	 * @param compilationUnit the compilation unit (may be <code>null</code>).
 	 * @since 3.2
 	 */
-	public JavaContext(TemplateContextType type, IDocument document, Position completionPosition, ICompilationUnit compilationUnit) {
+	public JavaContext(TemplateContextType type, IDocument document, Position completionPosition, IJavaScriptUnit compilationUnit) {
 		super(type, document, completionPosition, compilationUnit);
 	}
 	
@@ -125,7 +125,7 @@ public class JavaContext extends CompilationUnitContext {
 		try {
 			IRegion region= document.getLineInformationOfOffset(start);
 			String lineContent= document.get(region.getOffset(), region.getLength());
-			IJavaProject project= getJavaProject();
+			IJavaScriptProject project= getJavaProject();
 			return Strings.computeIndentUnits(lineContent, project);
 		} catch (BadLocationException e) {
 			return 0;
@@ -155,10 +155,10 @@ public class JavaContext extends CompilationUnitContext {
 
 		getContextType().resolve(buffer, this);
 
-		IPreferenceStore prefs= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore prefs= JavaScriptPlugin.getDefault().getPreferenceStore();
 		boolean useCodeFormatter= prefs.getBoolean(PreferenceConstants.TEMPLATES_USE_CODEFORMATTER);
 
-		IJavaProject project= getJavaProject();
+		IJavaScriptProject project= getJavaProject();
 		JavaFormatter formatter= new JavaFormatter(TextUtilities.getDefaultLineDelimiter(getDocument()), getIndentation(), useCodeFormatter, project);
 		formatter.format(buffer, this);
 		
@@ -296,20 +296,20 @@ public class JavaContext extends CompilationUnitContext {
 		else if (e instanceof InvocationTargetException)
 			ExceptionHandler.handle((InvocationTargetException)e, shell, title, null);
 		else {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			MessageDialog.openError(shell, title, e.getMessage());
 		}
 	}	
 
 	private CompilationUnitCompletion getCompletion() {
-		ICompilationUnit compilationUnit= getCompilationUnit();
+		IJavaScriptUnit compilationUnit= getCompilationUnit();
 		if (fCompletion == null) {
 			fCompletion= new CompilationUnitCompletion(compilationUnit);
 			
 			if (compilationUnit != null) {
 				try {
 					compilationUnit.codeComplete(getStart(), fCompletion);
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					// ignore
 				}
 			}
@@ -411,7 +411,7 @@ public class JavaContext extends CompilationUnitContext {
 			type= type.substring(0, type.length() - 2);
 		}
 		
-		IJavaProject project= getJavaProject();
+		IJavaScriptProject project= getJavaProject();
 		if (project != null)
 			return StubUtility.getVariableNameSuggestions(StubUtility.LOCAL, project, type, dim, Arrays.asList(excludes), true);
 		
@@ -423,14 +423,14 @@ public class JavaContext extends CompilationUnitContext {
 		if (isReadOnly())
 			return;
 		
-		ICompilationUnit cu= getCompilationUnit();
+		IJavaScriptUnit cu= getCompilationUnit();
 		if (cu == null)
 			return;
 
 		try {
 			boolean qualified= type.indexOf('.') != -1;
 			if (!qualified) {
-				IJavaSearchScope searchScope= SearchEngine.createJavaSearchScope(new IJavaElement[] { cu.getJavaProject() });
+				IJavaScriptSearchScope searchScope= SearchEngine.createJavaSearchScope(new IJavaScriptElement[] { cu.getJavaScriptProject() });
 				SimpleName nameNode= null;
 				TypeNameMatch[] matches= findAllTypes(type, searchScope, nameNode, null, cu);
 				if (matches.length != 1) // only add import if we have a single match
@@ -449,7 +449,7 @@ public class JavaContext extends CompilationUnitContext {
 			try {
 				
 				ImportRewrite rewrite= StubUtility.createImportRewrite(cu, true);
-				CompilationUnit root= getASTRoot(cu);
+				JavaScriptUnit root= getASTRoot(cu);
 				ImportRewriteContext context;
 				if (root == null)
 					context= null;
@@ -473,20 +473,20 @@ public class JavaContext extends CompilationUnitContext {
 			handleException(null, e);
 		} catch (BadPositionCategoryException e) {
 			handleException(null, e);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			handleException(null, e);
 		}
 	}
 	
-	private CompilationUnit getASTRoot(ICompilationUnit compilationUnit) {
-		return JavaPlugin.getDefault().getASTProvider().getAST(compilationUnit, ASTProvider.WAIT_NO, new NullProgressMonitor());
+	private JavaScriptUnit getASTRoot(IJavaScriptUnit compilationUnit) {
+		return JavaScriptPlugin.getDefault().getASTProvider().getAST(compilationUnit, ASTProvider.WAIT_NO, new NullProgressMonitor());
 	}
 	
 	/*
 	 * Finds a type by the simple name. From AddImportsOperation
 	 */
-	private TypeNameMatch[] findAllTypes(String simpleTypeName, IJavaSearchScope searchScope, SimpleName nameNode, IProgressMonitor monitor, ICompilationUnit cu) throws JavaModelException {
-		boolean is50OrHigher= JavaModelUtil.is50OrHigher(cu.getJavaProject());
+	private TypeNameMatch[] findAllTypes(String simpleTypeName, IJavaScriptSearchScope searchScope, SimpleName nameNode, IProgressMonitor monitor, IJavaScriptUnit cu) throws JavaScriptModelException {
+		boolean is50OrHigher= JavaModelUtil.is50OrHigher(cu.getJavaScriptProject());
 		
 		int typeKinds= SimilarElementsRequestor.ALL_TYPES;
 		if (nameNode != null) {
@@ -495,7 +495,7 @@ public class JavaContext extends CompilationUnitContext {
 		
 		ArrayList typeInfos= new ArrayList();
 		TypeNameMatchCollector requestor= new TypeNameMatchCollector(typeInfos);
-		new SearchEngine().searchAllTypeNames(null, 0, simpleTypeName.toCharArray(), SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE, getSearchForConstant(typeKinds), searchScope, requestor, IJavaSearchConstants.FORCE_IMMEDIATE_SEARCH, monitor);
+		new SearchEngine().searchAllTypeNames(null, 0, simpleTypeName.toCharArray(), SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE, getSearchForConstant(typeKinds), searchScope, requestor, IJavaScriptSearchConstants.FORCE_IMMEDIATE_SEARCH, monitor);
 
 		ArrayList typeRefsFound= new ArrayList(typeInfos.size());
 		for (int i= 0, len= typeInfos.size(); i < len; i++) {
@@ -516,13 +516,13 @@ public class JavaContext extends CompilationUnitContext {
 		final int ANNOTATIONS= SimilarElementsRequestor.ANNOTATIONS;
 
 		switch (typeKinds & (CLASSES | INTERFACES | ENUMS | ANNOTATIONS)) {
-			case CLASSES: return IJavaSearchConstants.CLASS;
-			case INTERFACES: return IJavaSearchConstants.INTERFACE;
-			case ENUMS: return IJavaSearchConstants.ENUM;
-			case ANNOTATIONS: return IJavaSearchConstants.ANNOTATION_TYPE;
-			case CLASSES | INTERFACES: return IJavaSearchConstants.CLASS_AND_INTERFACE;
-			case CLASSES | ENUMS: return IJavaSearchConstants.CLASS_AND_ENUM;
-			default: return IJavaSearchConstants.TYPE;
+			case CLASSES: return IJavaScriptSearchConstants.CLASS;
+			case INTERFACES: return IJavaScriptSearchConstants.INTERFACE;
+			case ENUMS: return IJavaScriptSearchConstants.ENUM;
+			case ANNOTATIONS: return IJavaScriptSearchConstants.ANNOTATION_TYPE;
+			case CLASSES | INTERFACES: return IJavaScriptSearchConstants.CLASS_AND_INTERFACE;
+			case CLASSES | ENUMS: return IJavaScriptSearchConstants.CLASS_AND_ENUM;
+			default: return IJavaScriptSearchConstants.TYPE;
 		}
 	}
 	
@@ -541,7 +541,7 @@ public class JavaContext extends CompilationUnitContext {
 	}
 
 	
-	private boolean isVisible(TypeNameMatch curr, ICompilationUnit cu) {
+	private boolean isVisible(TypeNameMatch curr, IJavaScriptUnit cu) {
 		int flags= curr.getModifiers();
 		if (Flags.isPrivate(flags)) {
 			return false;
@@ -563,11 +563,11 @@ public class JavaContext extends CompilationUnitContext {
 	 * @throws BadLocationException in case the position is invalid in the compilation unit
 	 * @throws TemplateException in case the evaluation fails
 	 */
-	public static String evaluateTemplate(Template template, ICompilationUnit compilationUnit, int position) throws CoreException, BadLocationException, TemplateException {
+	public static String evaluateTemplate(Template template, IJavaScriptUnit compilationUnit, int position) throws CoreException, BadLocationException, TemplateException {
 
-		TemplateContextType contextType= JavaPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
+		TemplateContextType contextType= JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
 		if (contextType == null)
-			throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.ERROR, JavaTemplateMessages.JavaContext_error_message, null)); 
+			throw new CoreException(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.ERROR, JavaTemplateMessages.JavaContext_error_message, null)); 
 
 		IDocument document= new Document();
 		if (compilationUnit != null && compilationUnit.exists())

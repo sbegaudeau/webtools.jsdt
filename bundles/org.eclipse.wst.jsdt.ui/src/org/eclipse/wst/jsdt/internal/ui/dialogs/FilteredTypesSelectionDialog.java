@@ -68,12 +68,12 @@ import org.eclipse.ui.dialogs.SearchPattern;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatchRequestor;
@@ -84,7 +84,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Strings;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeFilter;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeInfoRequestorAdapter;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.preferences.TypeFilterPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchScopeFactory;
@@ -100,8 +100,8 @@ import org.eclipse.wst.jsdt.launching.IVMInstall;
 import org.eclipse.wst.jsdt.launching.IVMInstallType;
 import org.eclipse.wst.jsdt.launching.JavaRuntime;
 import org.eclipse.wst.jsdt.launching.LibraryLocation;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoFilterExtension;
 import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoImageProvider;
 import org.eclipse.wst.jsdt.ui.dialogs.ITypeSelectionComponent;
@@ -135,7 +135,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 
 	private ShowContainerForDuplicatesAction fShowContainerForDuplicatesAction;
 
-	private IJavaSearchScope fSearchScope;
+	private IJavaScriptSearchScope fSearchScope;
 	
 	private boolean fAllowScopeSwitching;
 
@@ -169,16 +169,16 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 	 *            scope used when searching for types
 	 * @param elementKinds
 	 *            flags defining nature of searched elements; the only valid
-	 *            values are: <code>IJavaSearchConstants.TYPE</code>
-	 * 	<code>IJavaSearchConstants.ANNOTATION_TYPE</code>
-	 * 	<code>IJavaSearchConstants.INTERFACE</code>
-	 * 	<code>IJavaSearchConstants.ENUM</code>
-	 * 	<code>IJavaSearchConstants.CLASS_AND_INTERFACE</code>
-	 * 	<code>IJavaSearchConstants.CLASS_AND_ENUM</code>.
+	 *            values are: <code>IJavaScriptSearchConstants.TYPE</code>
+	 * 	<code>IJavaScriptSearchConstants.ANNOTATION_TYPE</code>
+	 * 	<code>IJavaScriptSearchConstants.INTERFACE</code>
+	 * 	<code>IJavaScriptSearchConstants.ENUM</code>
+	 * 	<code>IJavaScriptSearchConstants.CLASS_AND_INTERFACE</code>
+	 * 	<code>IJavaScriptSearchConstants.CLASS_AND_ENUM</code>.
 	 *            Please note that the bitwise OR combination of the elementary
 	 *            constants is not supported.
 	 */
-	public FilteredTypesSelectionDialog(Shell parent, boolean multi, IRunnableContext context, IJavaSearchScope scope, int elementKinds) {
+	public FilteredTypesSelectionDialog(Shell parent, boolean multi, IRunnableContext context, IJavaScriptSearchScope scope, int elementKinds) {
 		this(parent, multi, context, scope, elementKinds, null);
 	}
 
@@ -198,19 +198,19 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 	 *            choose a working set as scope. 
 	 * @param elementKinds
 	 *            flags defining nature of searched elements; the only valid
-	 *            values are: <code>IJavaSearchConstants.TYPE</code>
-	 * 	<code>IJavaSearchConstants.ANNOTATION_TYPE</code>
-	 * 	<code>IJavaSearchConstants.INTERFACE</code>
-	 * 	<code>IJavaSearchConstants.ENUM</code>
-	 * 	<code>IJavaSearchConstants.CLASS_AND_INTERFACE</code>
-	 * 	<code>IJavaSearchConstants.CLASS_AND_ENUM</code>.
+	 *            values are: <code>IJavaScriptSearchConstants.TYPE</code>
+	 * 	<code>IJavaScriptSearchConstants.ANNOTATION_TYPE</code>
+	 * 	<code>IJavaScriptSearchConstants.INTERFACE</code>
+	 * 	<code>IJavaScriptSearchConstants.ENUM</code>
+	 * 	<code>IJavaScriptSearchConstants.CLASS_AND_INTERFACE</code>
+	 * 	<code>IJavaScriptSearchConstants.CLASS_AND_ENUM</code>.
 	 *            Please note that the bitwise OR combination of the elementary
 	 *            constants is not supported.
 	 * @param extension
 	 *            an extension of the standard type selection dialog; See
 	 *            {@link TypeSelectionExtension}
 	 */
-	public FilteredTypesSelectionDialog(Shell shell, boolean multi, IRunnableContext context, IJavaSearchScope scope, int elementKinds, TypeSelectionExtension extension) {
+	public FilteredTypesSelectionDialog(Shell shell, boolean multi, IRunnableContext context, IJavaScriptSearchScope scope, int elementKinds, TypeSelectionExtension extension) {
 		super(shell, multi);
 		
 		setSelectionHistory(new TypeSelectionHistory());
@@ -271,10 +271,10 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 	 * @see org.eclipse.ui.dialogs.AbstractSearchDialog#getDialogSettings()
 	 */
 	protected IDialogSettings getDialogSettings() {
-		IDialogSettings settings= JavaPlugin.getDefault().getDialogSettings().getSection(DIALOG_SETTINGS);
+		IDialogSettings settings= JavaScriptPlugin.getDefault().getDialogSettings().getSection(DIALOG_SETTINGS);
 
 		if (settings == null) {
-			settings= JavaPlugin.getDefault().getDialogSettings().addNewSection(DIALOG_SETTINGS);
+			settings= JavaScriptPlugin.getDefault().getDialogSettings().addNewSection(DIALOG_SETTINGS);
 		}
 
 		return settings;
@@ -302,7 +302,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 				settings.put(WORKINGS_SET_SETTINGS, writer.getBuffer().toString());
 			} catch (IOException e) {
 				// don't do anything. Simply don't store the settings
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 	}
@@ -331,7 +331,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 					fFilterActionGroup.restoreState(memento);
 				} catch (WorkbenchException e) {
 					// don't do anything. Simply don't restore the settings
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 				}
 			}
 			IWorkingSet ws= fFilterActionGroup.getWorkingSet();
@@ -365,7 +365,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 			menuManager.add(fShowContainerForDuplicatesAction);
 		}
 		if (fAllowScopeSwitching) {
-			fFilterActionGroup= new WorkingSetFilterActionGroup(getShell(), JavaPlugin.getActivePage(), new IPropertyChangeListener() {
+			fFilterActionGroup= new WorkingSetFilterActionGroup(getShell(), JavaScriptPlugin.getActivePage(), new IPropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent event) {
 					IWorkingSet ws= (IWorkingSet) event.getNewValue();
 					if (ws == null || (ws.isAggregateWorkingSet() && ws.isEmpty())) {
@@ -430,7 +430,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 				} else {
 					TypeNameMatch typeInfo= (TypeNameMatch) newResult.get(i);
 					IPackageFragmentRoot root= typeInfo.getPackageFragmentRoot();
-					String containerName= JavaElementLabels.getElementLabel(root, JavaElementLabels.ROOT_QUALIFIED);
+					String containerName= JavaScriptElementLabels.getElementLabel(root, JavaScriptElementLabels.ROOT_QUALIFIED);
 					String message= Messages.format(JavaUIMessages.FilteredTypesSelectionDialog_dialogMessage, new String[] { typeInfo.getFullyQualifiedName(), containerName });
 					MessageDialog.openError(getShell(), fTitle, message);
 					getSelectionHistory().remove(typeInfo);
@@ -459,14 +459,14 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 	 */
 	public int open() {
 		if (getInitialPattern() == null) {
-			IWorkbenchWindow window= JavaPlugin.getActiveWorkbenchWindow();
+			IWorkbenchWindow window= JavaScriptPlugin.getActiveWorkbenchWindow();
 			if (window != null) {
 				ISelection selection= window.getSelectionService().getSelection();
 				if (selection instanceof ITextSelection) {
 					String text= ((ITextSelection) selection).getText();
 					if (text != null) {
 						text= text.trim();
-						if (text.length() > 0 && JavaConventions.validateJavaTypeName(text, JavaCore.VERSION_1_3, JavaCore.VERSION_1_3).isOK()) {
+						if (text.length() > 0 && JavaScriptConventions.validateJavaScriptTypeName(text, JavaScriptCore.VERSION_1_3, JavaScriptCore.VERSION_1_3).isOK()) {
 							setInitialPattern(text, FULL_SELECTION);
 						}
 					}
@@ -588,7 +588,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 					typeSearchFilter.getElementKind(),
 					typeSearchFilter.getSearchScope(),
 					requestor,
-					IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+					IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 					progressMonitor);
 		} finally {
 			typeSearchFilter.setMatchEverythingMode(false);
@@ -622,16 +622,16 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 	protected IStatus validateItem(Object item) {
 
 		if (item == null)
-			return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR, "", null); //$NON-NLS-1$
+			return new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.ERROR, "", null); //$NON-NLS-1$
 
 		if (fValidator != null) {
 			IType type= ((TypeNameMatch) item).getType();
 			if (!type.exists())
-				return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR, Messages.format(JavaUIMessages.FilteredTypesSelectionDialog_error_type_doesnot_exist, ((TypeNameMatch) item).getFullyQualifiedName()), null);
+				return new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.ERROR, Messages.format(JavaUIMessages.FilteredTypesSelectionDialog_error_type_doesnot_exist, ((TypeNameMatch) item).getFullyQualifiedName()), null);
 			Object[] elements= { type };
 			return fValidator.validate(elements);
 		} else
-			return new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
+			return new Status(IStatus.OK, JavaScriptPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
 	}
 
 	/**
@@ -640,7 +640,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 	 * @param scope
 	 *            the new scope
 	 */
-	private void setSearchScope(IJavaSearchScope scope) {
+	private void setSearchScope(IJavaScriptSearchScope scope) {
 		fSearchScope= scope;
 	}
 	
@@ -653,7 +653,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 			if (fgFirstTime) {
 				// Join the initialize after load job.
 				IJobManager manager= Job.getJobManager();
-				manager.join(JavaUI.ID_PLUGIN, monitor);
+				manager.join(JavaScriptUI.ID_PLUGIN, monitor);
 			}
 			OpenTypeHistory history= OpenTypeHistory.getInstance();
 			if (fgFirstTime || history.isEmpty()) {
@@ -682,12 +682,12 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 						// make sure we search a concrete name. This is faster according to Kent  
 						"_______________".toCharArray(), //$NON-NLS-1$
 						SearchPattern.RULE_EXACT_MATCH | SearchPattern.RULE_CASE_SENSITIVE, 
-						IJavaSearchConstants.ENUM,
+						IJavaScriptSearchConstants.ENUM,
 						SearchEngine.createWorkspaceScope(), 
 						new TypeNameRequestor() {}, 
-						IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, 
+						IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, 
 						monitor);
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				throw new InvocationTargetException(e);
 			}
 		}
@@ -807,7 +807,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 
 			ImageDescriptor iD= JavaElementImageProvider.getTypeImageDescriptor(isInnerType(type), false, type.getModifiers(), false);
 			
-			return JavaPlugin.getImageDescriptorRegistry().get(iD);
+			return JavaScriptPlugin.getImageDescriptorRegistry().get(iD);
 		}
 
 		/*
@@ -974,7 +974,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 			StringBuffer result= new StringBuffer();
 			result.append(type.getSimpleTypeName());
 			String containerName= type.getTypeContainerName();
-			result.append(JavaElementLabels.CONCAT_STRING);
+			result.append(JavaScriptElementLabels.CONCAT_STRING);
 			if (containerName.length() > 0) {
 				result.append(containerName);
 			} else {
@@ -988,10 +988,10 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 			result.append(type.getSimpleTypeName());
 			String containerName= type.getTypeContainerName();
 			if (containerName.length() > 0) {
-				result.append(JavaElementLabels.CONCAT_STRING);
+				result.append(JavaScriptElementLabels.CONCAT_STRING);
 				result.append(containerName);
 			}
-			result.append(JavaElementLabels.CONCAT_STRING);
+			result.append(JavaScriptElementLabels.CONCAT_STRING);
 			result.append(getContainerName(type));
 			return result.toString();
 		}
@@ -1007,9 +1007,9 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 				String lastTCN= getTypeContainerName(last);
 				if (currentTCN.equals(lastTCN)) {
 					if (currentTN.equals(lastTN)) {
-						result.append(JavaElementLabels.CONCAT_STRING);
+						result.append(JavaScriptElementLabels.CONCAT_STRING);
 						result.append(currentTCN);
-						result.append(JavaElementLabels.CONCAT_STRING);
+						result.append(JavaScriptElementLabels.CONCAT_STRING);
 						result.append(getContainerName(current));
 						return result.toString();
 					}
@@ -1022,9 +1022,9 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 				String nextTCN= getTypeContainerName(next);
 				if (currentTCN.equals(nextTCN)) {
 					if (currentTN.equals(nextTN)) {
-						result.append(JavaElementLabels.CONCAT_STRING);
+						result.append(JavaScriptElementLabels.CONCAT_STRING);
 						result.append(currentTCN);
-						result.append(JavaElementLabels.CONCAT_STRING);
+						result.append(JavaScriptElementLabels.CONCAT_STRING);
 						result.append(getContainerName(current));
 						return result.toString();
 					}
@@ -1033,10 +1033,10 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 				}
 			}
 			if (qualifications > 0) {
-				result.append(JavaElementLabels.CONCAT_STRING);
+				result.append(JavaScriptElementLabels.CONCAT_STRING);
 				result.append(currentTCN);
 				if (fFullyQualifyDuplicates) {
-					result.append(JavaElementLabels.CONCAT_STRING);
+					result.append(JavaScriptElementLabels.CONCAT_STRING);
 					result.append(getContainerName(current));
 				}
 			}
@@ -1048,7 +1048,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 			String containerName= type.getTypeContainerName();
 			if (containerName.length() > 0) {
 				result.append(containerName);
-				result.append(JavaElementLabels.CONCAT_STRING);
+				result.append(JavaScriptElementLabels.CONCAT_STRING);
 			}
 			result.append(getContainerName(type));
 			return result.toString();
@@ -1090,7 +1090,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 					return lib;
 			}
 			StringBuffer buf= new StringBuffer();
-			JavaElementLabels.getPackageFragmentRootLabel(root, JavaElementLabels.ROOT_QUALIFIED | JavaElementLabels.ROOT_VARIABLE, buf);
+			JavaScriptElementLabels.getPackageFragmentRootLabel(root, JavaScriptElementLabels.ROOT_QUALIFIED | JavaScriptElementLabels.ROOT_VARIABLE, buf);
 			return buf.toString();
 		}
 	}
@@ -1102,7 +1102,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 
 		private static final int TYPE_MODIFIERS= Flags.AccEnum | Flags.AccAnnotation | Flags.AccInterface;
 
-		private final IJavaSearchScope fScope;
+		private final IJavaScriptSearchScope fScope;
 
 		private final boolean fIsWorkspaceScope;
 
@@ -1125,7 +1125,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 		 * @param elementKind
 		 * @param extension
 		 */
-		public TypeItemsFilter(IJavaSearchScope scope, int elementKind, ITypeInfoFilterExtension extension) {
+		public TypeItemsFilter(IJavaScriptSearchScope scope, int elementKind, ITypeInfoFilterExtension extension) {
 			super(new TypeSearchPattern());
 			fScope= scope;
 			fIsWorkspaceScope= scope == null ? false : scope.equals(SearchEngine.createWorkspaceScope());
@@ -1177,7 +1177,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 			return fFilterExt;
 		}
 
-		public IJavaSearchScope getSearchScope() {
+		public IJavaScriptSearchScope getSearchScope() {
 			return fScope;
 		}
 
@@ -1239,21 +1239,21 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 		}
 
 		private boolean matchesModifiers(TypeNameMatch type) {
-			if (fElemKind == IJavaSearchConstants.TYPE)
+			if (fElemKind == IJavaScriptSearchConstants.TYPE)
 				return true;
 			int modifiers= type.getModifiers() & TYPE_MODIFIERS;
 			switch (fElemKind) {
-			case IJavaSearchConstants.CLASS:
+			case IJavaScriptSearchConstants.CLASS:
 				return modifiers == 0;
-			case IJavaSearchConstants.ANNOTATION_TYPE:
+			case IJavaScriptSearchConstants.ANNOTATION_TYPE:
 				return Flags.isAnnotation(modifiers);
-			case IJavaSearchConstants.INTERFACE:
+			case IJavaScriptSearchConstants.INTERFACE:
 				return Flags.isInterface(modifiers);
-			case IJavaSearchConstants.ENUM:
+			case IJavaScriptSearchConstants.ENUM:
 				return Flags.isEnum(modifiers);
-			case IJavaSearchConstants.CLASS_AND_INTERFACE:
+			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE:
 				return modifiers == 0 || Flags.isInterface(modifiers);
-			case IJavaSearchConstants.CLASS_AND_ENUM:
+			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
 				return modifiers == 0 || Flags.isEnum(modifiers);
 			}
 			return false;
@@ -1559,7 +1559,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 					return lib;
 			}
 			StringBuffer buf= new StringBuffer();
-			JavaElementLabels.getPackageFragmentRootLabel(root, JavaElementLabels.ROOT_QUALIFIED | JavaElementLabels.ROOT_VARIABLE, buf);
+			JavaScriptElementLabels.getPackageFragmentRootLabel(root, JavaScriptElementLabels.ROOT_QUALIFIED | JavaScriptElementLabels.ROOT_VARIABLE, buf);
 			return buf.toString();
 		}
 
@@ -1567,8 +1567,8 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 			try {
 				if (type.getPackageFragmentRoot().getKind() == IPackageFragmentRoot.K_SOURCE)
 					return 0;
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 			}
 			return 1;
 		}

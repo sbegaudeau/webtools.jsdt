@@ -26,11 +26,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
@@ -41,7 +41,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.EditFilterWizard;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
-//SelectedElements iff enabled: (IJavaProject || IPackageFragmentRoot) && size == 1
+//SelectedElements iff enabled: (IJavaScriptProject || IPackageFragmentRoot) && size == 1
 public class EditFilterAction extends BuildpathModifierAction {
 	
 	public EditFilterAction(IWorkbenchSite site) {
@@ -113,19 +113,19 @@ public class EditFilterAction extends BuildpathModifierAction {
 	}
 	
 	private EditFilterWizard createWizard() throws CoreException {
-		IJavaProject javaProject= null;
+		IJavaScriptProject javaProject= null;
 		Object firstElement= getSelectedElements().get(0);
-		if (firstElement instanceof IJavaProject) {
-			javaProject= (IJavaProject)firstElement;
+		if (firstElement instanceof IJavaScriptProject) {
+			javaProject= (IJavaScriptProject)firstElement;
 		} else {
-			javaProject= ((IPackageFragmentRoot)firstElement).getJavaProject();
+			javaProject= ((IPackageFragmentRoot)firstElement).getJavaScriptProject();
 		}
 		CPListElement[] existingEntries= CPListElement.createFromExisting(javaProject);
-		CPListElement elementToEdit= findElement((IJavaElement)firstElement, existingEntries);
+		CPListElement elementToEdit= findElement((IJavaScriptElement)firstElement, existingEntries);
 		return new EditFilterWizard(existingEntries, elementToEdit, getOutputLocation(javaProject));
 	}
 	
-	private IPath getOutputLocation(IJavaProject javaProject) {
+	private IPath getOutputLocation(IJavaScriptProject javaProject) {
 		try {
 			return javaProject.getOutputLocation();		
 		} catch (CoreException e) {
@@ -135,11 +135,11 @@ public class EditFilterAction extends BuildpathModifierAction {
 		}
 	}
 	
-	private static CPListElement findElement(IJavaElement element, CPListElement[] elements) {
+	private static CPListElement findElement(IJavaScriptElement element, CPListElement[] elements) {
 		IPath path= element.getPath();
 		for (int i= 0; i < elements.length; i++) {
 			CPListElement cur= elements[i];
-			if (cur.getEntryKind() == IClasspathEntry.CPE_SOURCE && cur.getPath().equals(path)) {
+			if (cur.getEntryKind() == IIncludePathEntry.CPE_SOURCE && cur.getPath().equals(path)) {
 				return cur;
 			}
 		}
@@ -152,16 +152,16 @@ public class EditFilterAction extends BuildpathModifierAction {
 		
 		try {
 			Object element= selection.getFirstElement();
-			if (element instanceof IJavaProject) {
-				return ClasspathModifier.isSourceFolder((IJavaProject)element);
+			if (element instanceof IJavaScriptProject) {
+				return ClasspathModifier.isSourceFolder((IJavaScriptProject)element);
 			} else if (element instanceof IPackageFragmentRoot) {
 				IPackageFragmentRoot packageFragmentRoot= ((IPackageFragmentRoot) element);
 				if (packageFragmentRoot.getKind() != IPackageFragmentRoot.K_SOURCE)
 					return false;
 				
-				return packageFragmentRoot.getJavaProject() != null;
+				return packageFragmentRoot.getJavaScriptProject() != null;
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 		}
 		return false;
 	}

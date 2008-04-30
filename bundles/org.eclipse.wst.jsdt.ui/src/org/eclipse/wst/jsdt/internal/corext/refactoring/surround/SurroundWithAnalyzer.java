@@ -12,18 +12,18 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.surround;
 
 import java.util.List;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.Message;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
@@ -37,7 +37,7 @@ public class SurroundWithAnalyzer extends CodeAnalyzer {
 	
 	private VariableDeclaration[] fLocals;
 
-	public SurroundWithAnalyzer(ICompilationUnit cunit, Selection selection) throws JavaModelException {
+	public SurroundWithAnalyzer(IJavaScriptUnit cunit, Selection selection) throws JavaScriptModelException {
 		super(cunit, selection, false);
 	}
 	
@@ -64,7 +64,7 @@ public class SurroundWithAnalyzer extends CodeAnalyzer {
 		return true;
 	}
 	
-	public void endVisit(CompilationUnit node) {
+	public void endVisit(JavaScriptUnit node) {
 		postProcessSelectedNodes(internalGetSelectedNodes());
 		BodyDeclaration enclosingNode= null;
 		superCall: {
@@ -85,7 +85,7 @@ public class SurroundWithAnalyzer extends CodeAnalyzer {
 				break superCall;
 			}
 			enclosingNode= (BodyDeclaration)ASTNodes.getParent(getFirstSelectedNode(), BodyDeclaration.class);
-			if (!(enclosingNode instanceof MethodDeclaration) && !(enclosingNode instanceof Initializer)) {
+			if (!(enclosingNode instanceof FunctionDeclaration) && !(enclosingNode instanceof Initializer)) {
 				invalidSelection(RefactoringCoreMessages.SurroundWithTryCatchAnalyzer_doesNotContain);  
 				break superCall;
 			}

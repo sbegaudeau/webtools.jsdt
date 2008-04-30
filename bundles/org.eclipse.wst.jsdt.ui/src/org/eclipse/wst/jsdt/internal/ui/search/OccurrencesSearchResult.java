@@ -23,8 +23,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput;
 
@@ -50,7 +50,7 @@ public class OccurrencesSearchResult extends AbstractTextSearchResult implements
 		try {
 			if (file.equals(jel.getJavaElement().getCorrespondingResource()))
 				return collectMatches(elements);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// no resource
 		}
 		return NO_MATCHES;
@@ -89,7 +89,7 @@ public class OccurrencesSearchResult extends AbstractTextSearchResult implements
 		IResource resource= null;
 		try {
 			resource= jel.getJavaElement().getCorrespondingResource();
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// no resource
 		}
 		if (resource instanceof IFile)
@@ -103,12 +103,12 @@ public class OccurrencesSearchResult extends AbstractTextSearchResult implements
 	 */
 	public boolean isShownInEditor(Match match, IEditorPart editor) {
 		Object element= match.getElement();
-		IJavaElement je= ((JavaElementLine) element).getJavaElement();
+		IJavaScriptElement je= ((JavaElementLine) element).getJavaElement();
 		IEditorInput editorInput= editor.getEditorInput();
 		if (editorInput instanceof IFileEditorInput) {
 			try {
 				return ((IFileEditorInput)editorInput).getFile().equals(je.getCorrespondingResource());
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return false;
 			}
 		} else if (editorInput instanceof IClassFileEditorInput) {

@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
@@ -38,11 +38,11 @@ import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
@@ -86,7 +86,7 @@ class SourceAnalyzer  {
 	private class ActivationAnalyzer extends ASTVisitor {
 		public RefactoringStatus status= new RefactoringStatus();
 		private ASTNode fLastNode= getLastNode();
-		private IMethodBinding fBinding= getBinding();
+		private IFunctionBinding fBinding= getBinding();
 		public boolean visit(ReturnStatement node) {
 			if (node != fLastNode) {
 				fInterruptedExecutionFlow= true;
@@ -105,8 +105,8 @@ class SourceAnalyzer  {
 		public boolean visit(AnonymousClassDeclaration node) {
 			return false;
 		}
-		public boolean visit(MethodInvocation node) {
-			IMethodBinding methodBinding= node.resolveMethodBinding();
+		public boolean visit(FunctionInvocation node) {
+			IFunctionBinding methodBinding= node.resolveMethodBinding();
 			if (methodBinding != null)
 				methodBinding.getMethodDeclaration();
 			if (fBinding != null && methodBinding != null && fBinding.isEqualTo(methodBinding) && !status.hasFatalError()) {
@@ -143,8 +143,8 @@ class SourceAnalyzer  {
 				return null;
 			return (ASTNode)statements.get(statements.size() - 1);
 		}
-		private IMethodBinding getBinding() {
-			IMethodBinding result= fDeclaration.resolveBinding();
+		private IFunctionBinding getBinding() {
+			IFunctionBinding result= fDeclaration.resolveBinding();
 			if (result != null)
 				return result.getMethodDeclaration();
 			return result;
@@ -190,7 +190,7 @@ class SourceAnalyzer  {
 			addReferencesToName(node.getName());
 			return false;
 		}
-		public boolean visit(MethodDeclaration node) {
+		public boolean visit(FunctionDeclaration node) {
 			if (node.isConstructor()) {
 				AbstractTypeDeclaration decl= (AbstractTypeDeclaration) ASTNodes.getParent(node, AbstractTypeDeclaration.class);
 				NameData name= (NameData)fNames.get(decl.getName().resolveBinding());
@@ -200,7 +200,7 @@ class SourceAnalyzer  {
 			}
 			return true;
 		}
-		public boolean visit(MethodInvocation node) {
+		public boolean visit(FunctionInvocation node) {
 			if (fTypeCounter == 0) {
 				Expression receiver= node.getExpression();
 				if (receiver == null && !isStaticallyImported(node.getName())) {
@@ -322,7 +322,7 @@ class SourceAnalyzer  {
 	}
 
 	private ITypeRoot fTypeRoot;
-	private MethodDeclaration fDeclaration;
+	private FunctionDeclaration fDeclaration;
 	private Map fParameters;
 	private Map fNames;
 	private List fImplicitReceivers;
@@ -341,7 +341,7 @@ class SourceAnalyzer  {
 	
 	private boolean fInterruptedExecutionFlow;
 
-	public SourceAnalyzer(ITypeRoot typeRoot, MethodDeclaration declaration) {
+	public SourceAnalyzer(ITypeRoot typeRoot, FunctionDeclaration declaration) {
 		super();
 		fTypeRoot= typeRoot;
 		fDeclaration= declaration;
@@ -351,7 +351,7 @@ class SourceAnalyzer  {
 		return fInterruptedExecutionFlow;
 	}
 	
-	public RefactoringStatus checkActivation() throws JavaModelException {
+	public RefactoringStatus checkActivation() throws JavaScriptModelException {
 		RefactoringStatus result= new RefactoringStatus();
 		if (!fTypeRoot.isStructureKnown()) {
 			result.addFatalError(		
@@ -366,7 +366,7 @@ class SourceAnalyzer  {
 				JavaStatusContext.create(fTypeRoot, fDeclaration));		
 			return result;
 		}
-		final IMethodBinding declarationBinding= fDeclaration.resolveBinding();
+		final IFunctionBinding declarationBinding= fDeclaration.resolveBinding();
 		if (declarationBinding != null) {
 			final int modifiers= declarationBinding.getModifiers();
 			if (Modifier.isAbstract(modifiers)) {
@@ -418,7 +418,7 @@ class SourceAnalyzer  {
 			
 			fMethodTypeParameterReferences= new ArrayList(0);
 			fMethodTypeParameterMapping= new HashMap();
-			IMethodBinding method= declarationBinding;
+			IFunctionBinding method= declarationBinding;
 			typeParameters= method.getTypeParameters();
 			for (int i= 0; i < typeParameters.length; i++) {
 				NameData data= new NameData(typeParameters[i].getName());
@@ -443,7 +443,7 @@ class SourceAnalyzer  {
 		fTypesToImport= new ArrayList();
 		fStaticsToImport= new ArrayList();
 		ImportReferencesCollector collector= new ImportReferencesCollector(
-			fTypeRoot.getJavaProject(), null, fTypesToImport, fStaticsToImport);
+			fTypeRoot.getJavaScriptProject(), null, fTypesToImport, fStaticsToImport);
 		body.accept(collector);
 		
 		// Now collect implicit references and name references

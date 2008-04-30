@@ -14,18 +14,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
- * This class is used to perform operations on multiple <code>IJavaElement</code>.
+ * This class is used to perform operations on multiple <code>IJavaScriptElement</code>.
  * It is responible for running each operation in turn, collecting
  * the errors and merging the corresponding <code>JavaElementDelta</code>s.
  * <p>
@@ -60,13 +60,13 @@ public abstract class MultiOperation extends JavaModelOperation {
 	/**
 	 * Creates a new <code>MultiOperation</code> on <code>elementsToProcess</code>.
 	 */
-	protected MultiOperation(IJavaElement[] elementsToProcess, boolean force) {
+	protected MultiOperation(IJavaScriptElement[] elementsToProcess, boolean force) {
 		super(elementsToProcess, force);
 	}
 	/**
 	 * Creates a new <code>MultiOperation</code>.
 	 */
-	protected MultiOperation(IJavaElement[] elementsToProcess, IJavaElement[] parentElements, boolean force) {
+	protected MultiOperation(IJavaScriptElement[] elementsToProcess, IJavaScriptElement[] parentElements, boolean force) {
 		super(elementsToProcess, parentElements, force);
 		this.newParents = new HashMap(elementsToProcess.length);
 		if (elementsToProcess.length == parentElements.length) {
@@ -81,27 +81,27 @@ public abstract class MultiOperation extends JavaModelOperation {
 
 	}
 	/**
-	 * Convenience method to create a <code>JavaModelException</code>
+	 * Convenience method to create a <code>JavaScriptModelException</code>
 	 * embending a <code>JavaModelStatus</code>.
 	 */
-	protected void error(int code, IJavaElement element) throws JavaModelException {
-		throw new JavaModelException(new JavaModelStatus(code, element));
+	protected void error(int code, IJavaScriptElement element) throws JavaScriptModelException {
+		throw new JavaScriptModelException(new JavaModelStatus(code, element));
 	}
 	/**
 	 * Executes the operation.
 	 *
-	 * @exception JavaModelException if one or several errors occured during the operation.
+	 * @exception JavaScriptModelException if one or several errors occured during the operation.
 	 * If multiple errors occured, the corresponding <code>JavaModelStatus</code> is a
 	 * multi-status. Otherwise, it is a simple one.
 	 */
-	protected void executeOperation() throws JavaModelException {
+	protected void executeOperation() throws JavaScriptModelException {
 		processElements();
 	}
 	/**
 	 * Returns the parent of the element being copied/moved/renamed.
 	 */
-	protected IJavaElement getDestinationParent(IJavaElement child) {
-		return (IJavaElement)this.newParents.get(child);
+	protected IJavaScriptElement getDestinationParent(IJavaScriptElement child) {
+		return (IJavaScriptElement)this.newParents.get(child);
 	}
 	/**
 	 * Returns the name to be used by the progress monitor.
@@ -111,11 +111,11 @@ public abstract class MultiOperation extends JavaModelOperation {
 	 * Returns the new name for <code>element</code>, or <code>null</code>
 	 * if there are no renamings specified.
 	 */
-	protected String getNewNameFor(IJavaElement element) throws JavaModelException {
+	protected String getNewNameFor(IJavaScriptElement element) throws JavaScriptModelException {
 		String newName = null;
 		if (this.renamings != null)
 			newName = (String) this.renamings.get(element);
-		if (newName == null && element instanceof IMethod && ((IMethod) element).isConstructor())
+		if (newName == null && element instanceof IFunction && ((IFunction) element).isConstructor())
 			newName = getDestinationParent(element).getElementName();
 		return newName;
 	}
@@ -150,43 +150,43 @@ public abstract class MultiOperation extends JavaModelOperation {
 	}
 
 	/**
-	 * Subclasses must implement this method to process a given <code>IJavaElement</code>.
+	 * Subclasses must implement this method to process a given <code>IJavaScriptElement</code>.
 	 */
-	protected abstract void processElement(IJavaElement element) throws JavaModelException;
+	protected abstract void processElement(IJavaScriptElement element) throws JavaScriptModelException;
 	/**
-	 * Processes all the <code>IJavaElement</code>s in turn, collecting errors
+	 * Processes all the <code>IJavaScriptElement</code>s in turn, collecting errors
 	 * and updating the progress monitor.
 	 *
-	 * @exception JavaModelException if one or several operation(s) was unable to
+	 * @exception JavaScriptModelException if one or several operation(s) was unable to
 	 * be completed.
 	 */
-	protected void processElements() throws JavaModelException {
+	protected void processElements() throws JavaScriptModelException {
 		try {
 			beginTask(getMainTaskName(), this.elementsToProcess.length);
-			IJavaModelStatus[] errors = new IJavaModelStatus[3];
+			IJavaScriptModelStatus[] errors = new IJavaScriptModelStatus[3];
 			int errorsCounter = 0;
 			for (int i = 0; i < this.elementsToProcess.length; i++) {
 				try {
 					verify(this.elementsToProcess[i]);
 					processElement(this.elementsToProcess[i]);
-				} catch (JavaModelException jme) {
+				} catch (JavaScriptModelException jme) {
 					if (errorsCounter == errors.length) {
 						// resize
-						System.arraycopy(errors, 0, (errors = new IJavaModelStatus[errorsCounter*2]), 0, errorsCounter);
+						System.arraycopy(errors, 0, (errors = new IJavaScriptModelStatus[errorsCounter*2]), 0, errorsCounter);
 					}
-					errors[errorsCounter++] = jme.getJavaModelStatus();
+					errors[errorsCounter++] = jme.getJavaScriptModelStatus();
 				} finally {
 					worked(1);
 				}
 			}
 			if (errorsCounter == 1) {
-				throw new JavaModelException(errors[0]);
+				throw new JavaScriptModelException(errors[0]);
 			} else if (errorsCounter > 1) {
 				if (errorsCounter != errors.length) {
 					// resize
-					System.arraycopy(errors, 0, (errors = new IJavaModelStatus[errorsCounter]), 0, errorsCounter);
+					System.arraycopy(errors, 0, (errors = new IJavaScriptModelStatus[errorsCounter]), 0, errorsCounter);
 				}
-				throw new JavaModelException(JavaModelStatus.newMultiStatus(errors));
+				throw new JavaScriptModelException(JavaModelStatus.newMultiStatus(errors));
 			}
 		} finally {
 			done();
@@ -199,7 +199,7 @@ public abstract class MultiOperation extends JavaModelOperation {
 	 * The default is <code>null</code>, which indicates that the element is to be
 	 * inserted at the end of the container.
 	 */
-	public void setInsertBefore(IJavaElement modifiedElement, IJavaElement newSibling) {
+	public void setInsertBefore(IJavaScriptElement modifiedElement, IJavaScriptElement newSibling) {
 		this.insertBeforeElements.put(modifiedElement, newSibling);
 	}
 	/**
@@ -219,99 +219,99 @@ public abstract class MultiOperation extends JavaModelOperation {
 		initializeRenamings();
 	}
 	/**
-	 * This method is called for each <code>IJavaElement</code> before
+	 * This method is called for each <code>IJavaScriptElement</code> before
 	 * <code>processElement</code>. It should check that this <code>element</code>
 	 * can be processed.
 	 */
-	protected abstract void verify(IJavaElement element) throws JavaModelException;
+	protected abstract void verify(IJavaScriptElement element) throws JavaScriptModelException;
 	/**
 	 * Verifies that the <code>destination</code> specified for the <code>element</code> is valid for the types of the
 	 * <code>element</code> and <code>destination</code>.
 	 */
-	protected void verifyDestination(IJavaElement element, IJavaElement destination) throws JavaModelException {
+	protected void verifyDestination(IJavaScriptElement element, IJavaScriptElement destination) throws JavaScriptModelException {
 		if (destination == null || !destination.exists())
-			error(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, destination);
+			error(IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST, destination);
 
 		int destType = destination.getElementType();
 		switch (element.getElementType()) {
-			case IJavaElement.PACKAGE_DECLARATION :
-			case IJavaElement.IMPORT_DECLARATION :
-				if (destType != IJavaElement.COMPILATION_UNIT)
-					error(IJavaModelStatusConstants.INVALID_DESTINATION, element);
+			case IJavaScriptElement.PACKAGE_DECLARATION :
+			case IJavaScriptElement.IMPORT_DECLARATION :
+				if (destType != IJavaScriptElement.JAVASCRIPT_UNIT)
+					error(IJavaScriptModelStatusConstants.INVALID_DESTINATION, element);
 				break;
-			case IJavaElement.TYPE :
-				if (destType != IJavaElement.COMPILATION_UNIT && destType != IJavaElement.TYPE)
-					error(IJavaModelStatusConstants.INVALID_DESTINATION, element);
+			case IJavaScriptElement.TYPE :
+				if (destType != IJavaScriptElement.JAVASCRIPT_UNIT && destType != IJavaScriptElement.TYPE)
+					error(IJavaScriptModelStatusConstants.INVALID_DESTINATION, element);
 				break;
-			case IJavaElement.METHOD :
-			case IJavaElement.FIELD :
-			case IJavaElement.INITIALIZER :
-				if (!(destType == IJavaElement.TYPE ||destType == IJavaElement.COMPILATION_UNIT) || destination instanceof BinaryType)
-					error(IJavaModelStatusConstants.INVALID_DESTINATION, element);
+			case IJavaScriptElement.METHOD :
+			case IJavaScriptElement.FIELD :
+			case IJavaScriptElement.INITIALIZER :
+				if (!(destType == IJavaScriptElement.TYPE ||destType == IJavaScriptElement.JAVASCRIPT_UNIT) || destination instanceof BinaryType)
+					error(IJavaScriptModelStatusConstants.INVALID_DESTINATION, element);
 				break;
-			case IJavaElement.COMPILATION_UNIT :
-				if (destType != IJavaElement.PACKAGE_FRAGMENT)
-					error(IJavaModelStatusConstants.INVALID_DESTINATION, element);
+			case IJavaScriptElement.JAVASCRIPT_UNIT :
+				if (destType != IJavaScriptElement.PACKAGE_FRAGMENT)
+					error(IJavaScriptModelStatusConstants.INVALID_DESTINATION, element);
 				else {
 					CompilationUnit cu = (CompilationUnit)element;
 					if (isMove() && cu.isWorkingCopy() && !cu.isPrimary())
-						error(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, element);
+						error(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, element);
 				}
 				break;
-			case IJavaElement.PACKAGE_FRAGMENT :
+			case IJavaScriptElement.PACKAGE_FRAGMENT :
 				IPackageFragment fragment = (IPackageFragment) element;
-				IJavaElement parent = fragment.getParent();
+				IJavaScriptElement parent = fragment.getParent();
 				if (parent.isReadOnly())
-					error(IJavaModelStatusConstants.READ_ONLY, element);
-				else if (destType != IJavaElement.PACKAGE_FRAGMENT_ROOT)
-					error(IJavaModelStatusConstants.INVALID_DESTINATION, element);
+					error(IJavaScriptModelStatusConstants.READ_ONLY, element);
+				else if (destType != IJavaScriptElement.PACKAGE_FRAGMENT_ROOT)
+					error(IJavaScriptModelStatusConstants.INVALID_DESTINATION, element);
 				break;
 			default :
-				error(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, element);
+				error(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, element);
 		}
 	}
 	/**
 	 * Verify that the new name specified for <code>element</code> is
 	 * valid for that type of Java element.
 	 */
-	protected void verifyRenaming(IJavaElement element) throws JavaModelException {
+	protected void verifyRenaming(IJavaScriptElement element) throws JavaScriptModelException {
 		String newName = getNewNameFor(element);
 		boolean isValid = true;
-	    IJavaProject project = element.getJavaProject();
-	    String sourceLevel = project.getOption(JavaCore.COMPILER_SOURCE, true);
-	    String complianceLevel = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+	    IJavaScriptProject project = element.getJavaScriptProject();
+	    String sourceLevel = project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
+	    String complianceLevel = project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true);
 		switch (element.getElementType()) {
-			case IJavaElement.PACKAGE_FRAGMENT :
+			case IJavaScriptElement.PACKAGE_FRAGMENT :
 				if (((IPackageFragment) element).isDefaultPackage()) {
 					// don't allow renaming of default package (see PR #1G47GUM)
-					throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.NAME_COLLISION, element));
+					throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.NAME_COLLISION, element));
 				}
-				isValid = JavaConventions.validatePackageName(newName, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
+				isValid = JavaScriptConventions.validatePackageName(newName, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
 				break;
-			case IJavaElement.COMPILATION_UNIT :
-				isValid = JavaConventions.validateCompilationUnitName(newName,sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
+			case IJavaScriptElement.JAVASCRIPT_UNIT :
+				isValid = JavaScriptConventions.validateCompilationUnitName(newName,sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
 				break;
-			case IJavaElement.INITIALIZER :
+			case IJavaScriptElement.INITIALIZER :
 				isValid = false; //cannot rename initializers
 				break;
 			default :
-				isValid = JavaConventions.validateIdentifier(newName, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
+				isValid = JavaScriptConventions.validateIdentifier(newName, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
 				break;
 		}
 
 		if (!isValid) {
-			throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_NAME, element, newName));
+			throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_NAME, element, newName));
 		}
 	}
 	/**
 	 * Verifies that the positioning sibling specified for the <code>element</code> is exists and
 	 * its parent is the destination container of this <code>element</code>.
 	 */
-	protected void verifySibling(IJavaElement element, IJavaElement destination) throws JavaModelException {
-		IJavaElement insertBeforeElement = (IJavaElement) this.insertBeforeElements.get(element);
+	protected void verifySibling(IJavaScriptElement element, IJavaScriptElement destination) throws JavaScriptModelException {
+		IJavaScriptElement insertBeforeElement = (IJavaScriptElement) this.insertBeforeElements.get(element);
 		if (insertBeforeElement != null) {
 			if (!insertBeforeElement.exists() || !insertBeforeElement.getParent().equals(destination)) {
-				error(IJavaModelStatusConstants.INVALID_SIBLING, insertBeforeElement);
+				error(IJavaScriptModelStatusConstants.INVALID_SIBLING, insertBeforeElement);
 			}
 		}
 	}

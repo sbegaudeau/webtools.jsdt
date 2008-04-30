@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.JavaWhitespaceDetector;
 import org.eclipse.wst.jsdt.internal.ui.text.CombinedWordRule.CharacterBuffer;
 import org.eclipse.wst.jsdt.internal.ui.text.CombinedWordRule.WordMatcher;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
-import org.eclipse.wst.jsdt.ui.text.IJavaColorConstants;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptColorConstants;
 
 /**
  * A rule based JavaDoc scanner.
@@ -100,7 +100,7 @@ public final class JavaDocScanner extends JavaCommentScanner {
 			} catch (BadLocationException exception) {
 				// Do nothing
 			}
-			return getToken(IJavaColorConstants.JAVADOC_DEFAULT);
+			return getToken(IJavaScriptColorConstants.JAVADOC_DEFAULT);
 		}
 
 		/*
@@ -115,16 +115,16 @@ public final class JavaDocScanner extends JavaCommentScanner {
 	}
 
 	private static String[] fgTokenProperties= {
-		IJavaColorConstants.JAVADOC_KEYWORD,
-		IJavaColorConstants.JAVADOC_TAG,
-		IJavaColorConstants.JAVADOC_LINK,
-		IJavaColorConstants.JAVADOC_DEFAULT,
+		IJavaScriptColorConstants.JAVADOC_KEYWORD,
+		IJavaScriptColorConstants.JAVADOC_TAG,
+		IJavaScriptColorConstants.JAVADOC_LINK,
+		IJavaScriptColorConstants.JAVADOC_DEFAULT,
 		TASK_TAG
 	};
 
 
 	public JavaDocScanner(IColorManager manager, IPreferenceStore store, Preferences coreStore) {
-		super(manager, store, coreStore, IJavaColorConstants.JAVADOC_DEFAULT, fgTokenProperties);
+		super(manager, store, coreStore, IJavaScriptColorConstants.JAVADOC_DEFAULT, fgTokenProperties);
 	}
 
 	/**
@@ -150,7 +150,7 @@ public final class JavaDocScanner extends JavaCommentScanner {
 		List list= new ArrayList();
 
 		// Add rule for tags.
-		Token token= getToken(IJavaColorConstants.JAVADOC_TAG);
+		Token token= getToken(IJavaScriptColorConstants.JAVADOC_TAG);
 		list.add(new TagRule(token));
 
 
@@ -162,7 +162,7 @@ public final class JavaDocScanner extends JavaCommentScanner {
 
 
 		// Add rule for links.
-		token= getToken(IJavaColorConstants.JAVADOC_LINK);
+		token= getToken(IJavaScriptColorConstants.JAVADOC_LINK);
 		list.add(new SingleLineRule("{@link", "}", token)); //$NON-NLS-2$ //$NON-NLS-1$
 		list.add(new SingleLineRule("{@value", "}", token)); //$NON-NLS-2$ //$NON-NLS-1$
 
@@ -182,7 +182,7 @@ public final class JavaDocScanner extends JavaCommentScanner {
 		List list= super.createMatchers();
 
 		// Add word rule for keywords.
-		final IToken token= getToken(IJavaColorConstants.JAVADOC_KEYWORD);
+		final IToken token= getToken(IJavaScriptColorConstants.JAVADOC_KEYWORD);
 		WordMatcher matcher= new CombinedWordRule.WordMatcher() {
 			public IToken evaluate(ICharacterScanner scanner, CharacterBuffer word) {
 				int length= word.length();

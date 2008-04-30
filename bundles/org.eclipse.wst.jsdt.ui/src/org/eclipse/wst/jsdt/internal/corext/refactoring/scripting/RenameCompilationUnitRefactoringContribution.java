@@ -13,8 +13,8 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.scripting;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaScriptElementDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringContribution;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameCompilationUnitProcessor;
@@ -37,6 +37,6 @@ public final class RenameCompilationUnitRefactoringContribution extends JDTRefac
 	 * {@inheritDoc}
 	 */
 	public RefactoringDescriptor createDescriptor() {
-		return new RenameJavaElementDescriptor(IJavaRefactorings.RENAME_COMPILATION_UNIT);
+		return new RenameJavaScriptElementDescriptor(IJavaScriptRefactorings.RENAME_JAVASCRIPT_UNIT);
 	}
 }

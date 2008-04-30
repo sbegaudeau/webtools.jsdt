@@ -38,24 +38,24 @@ import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditProcessor;
 import org.eclipse.text.edits.UndoEdit;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
@@ -73,7 +73,7 @@ import org.eclipse.wst.jsdt.internal.corext.dom.CodeScopeBuilder;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.SourceAnalyzer.NameData;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * A SourceProvider encapsulates a piece of code (source) and the logic
@@ -83,7 +83,7 @@ public class SourceProvider {
 
 	private ITypeRoot fTypeRoot;
 	private IDocument fDocument;
-	private MethodDeclaration fDeclaration;
+	private FunctionDeclaration fDeclaration;
 	private SourceAnalyzer fAnalyzer;
 	private boolean fMustEvalReturnedExpression;
 	private boolean fReturnValueNeedsLocalVariable;
@@ -110,7 +110,7 @@ public class SourceProvider {
 		}
 	}
 
-	public SourceProvider(ITypeRoot typeRoot, MethodDeclaration declaration) {
+	public SourceProvider(ITypeRoot typeRoot, FunctionDeclaration declaration) {
 		super();
 		fTypeRoot= typeRoot;
 		fDeclaration= declaration;
@@ -128,16 +128,16 @@ public class SourceProvider {
 	/**
 	 * TODO: unit's source does not match contents of source document and declaration node.
 	 */
-	public SourceProvider(ITypeRoot typeRoot, IDocument source, MethodDeclaration declaration) {
+	public SourceProvider(ITypeRoot typeRoot, IDocument source, FunctionDeclaration declaration) {
 		this(typeRoot, declaration);
 		fSource= source;
 	}
 
-	public RefactoringStatus checkActivation() throws JavaModelException {
+	public RefactoringStatus checkActivation() throws JavaScriptModelException {
 		return fAnalyzer.checkActivation();
 	}
 	
-	public void initialize() throws JavaModelException {
+	public void initialize() throws JavaScriptModelException {
 		fDocument= fSource == null ? new Document(fTypeRoot.getBuffer().getContents()) : fSource;
 		fAnalyzer.initialize();
 		if (hasReturnValue()) {
@@ -183,7 +183,7 @@ public class SourceProvider {
 	}
 
 	public boolean hasReturnValue() {
-		IMethodBinding binding= fDeclaration.resolveBinding();
+		IFunctionBinding binding= fDeclaration.resolveBinding();
 		return binding.getReturnType() != fDeclaration.getAST().resolveWellKnownType("void"); //$NON-NLS-1$
 	}
 	
@@ -235,7 +235,7 @@ public class SourceProvider {
 		return ((IfStatement) statement).getElseStatement() == null;
 	}
 	
-	public MethodDeclaration getDeclaration() {
+	public FunctionDeclaration getDeclaration() {
 		return fDeclaration;
 	}
 	
@@ -301,7 +301,7 @@ public class SourceProvider {
 	public TextEdit getDeleteEdit() {
 		final ASTRewrite rewriter= ASTRewrite.create(fDeclaration.getAST());
 		rewriter.remove(fDeclaration, null);
-		return rewriter.rewriteAST(fDocument, fTypeRoot.getJavaProject().getOptions(true));
+		return rewriter.rewriteAST(fDocument, fTypeRoot.getJavaScriptProject().getOptions(true));
 	}
 	
 	public String[] getCodeBlocks(CallContext context) throws CoreException {
@@ -330,7 +330,7 @@ public class SourceProvider {
 			}
 		}
 
-		final TextEdit dummy= rewriter.rewriteAST(fDocument, fTypeRoot.getJavaProject().getOptions(true));
+		final TextEdit dummy= rewriter.rewriteAST(fDocument, fTypeRoot.getJavaScriptProject().getOptions(true));
 		int size= ranges.size();
 		RangeMarker[] markers= new RangeMarker[size];
 		for (int i= 0; i < markers.length; i++) {
@@ -362,9 +362,9 @@ public class SourceProvider {
 			processor.performEdits();
 			return result;
 		} catch (MalformedTreeException exception) {
-			JavaPlugin.log(exception);
+			JavaScriptPlugin.log(exception);
 		} catch (BadLocationException exception) {
-			JavaPlugin.log(exception);
+			JavaScriptPlugin.log(exception);
 		}
 		return new String[] {};
 	}
@@ -391,7 +391,7 @@ public class SourceProvider {
 				List references= nd.references();
 				for (Iterator refs= references.iterator(); refs.hasNext();) {
 					SimpleName element= (SimpleName) refs.next();
-					ASTNode newNode= rewriter.createStringPlaceholder(newName, ASTNode.METHOD_INVOCATION);
+					ASTNode newNode= rewriter.createStringPlaceholder(newName, ASTNode.FUNCTION_INVOCATION);
 					rewriter.replace(element, newNode, null);
 				}
 			}
@@ -404,14 +404,14 @@ public class SourceProvider {
 		List implicitReceivers= fAnalyzer.getImplicitReceivers();
 		for (Iterator iter= implicitReceivers.iterator(); iter.hasNext();) {
 			ASTNode node= (ASTNode)iter.next();
-			if (node instanceof MethodInvocation) {
-				final MethodInvocation inv= (MethodInvocation)node;
-				rewriter.set(inv, MethodInvocation.EXPRESSION_PROPERTY, createReceiver(rewriter, context, (IMethodBinding)inv.getName().resolveBinding()), null);
+			if (node instanceof FunctionInvocation) {
+				final FunctionInvocation inv= (FunctionInvocation)node;
+				rewriter.set(inv, FunctionInvocation.EXPRESSION_PROPERTY, createReceiver(rewriter, context, (IFunctionBinding)inv.getName().resolveBinding()), null);
 			} else if (node instanceof ClassInstanceCreation) {
 				final ClassInstanceCreation inst= (ClassInstanceCreation)node;
 				rewriter.set(inst, ClassInstanceCreation.EXPRESSION_PROPERTY, createReceiver(rewriter, context, inst.resolveConstructorBinding()), null);
 			} else if (node instanceof ThisExpression) {
-				rewriter.replace(node, rewriter.createStringPlaceholder(context.receiver, ASTNode.METHOD_INVOCATION), null);
+				rewriter.replace(node, rewriter.createStringPlaceholder(context.receiver, ASTNode.FUNCTION_INVOCATION), null);
 			} else if (node instanceof FieldAccess) { 
 				final FieldAccess access= (FieldAccess)node;
 				rewriter.set(access, FieldAccess.EXPRESSION_PROPERTY, createReceiver(rewriter, context, access.resolveFieldBinding()), null);
@@ -467,11 +467,11 @@ public class SourceProvider {
 		
 	}
 
-	private Expression createReceiver(ASTRewrite rewriter, CallContext context, IMethodBinding method) {
+	private Expression createReceiver(ASTRewrite rewriter, CallContext context, IFunctionBinding method) {
 		String receiver= getReceiver(context, method.getModifiers());
 		if (receiver == null)
 			return null;
-		return (Expression)rewriter.createStringPlaceholder(receiver, ASTNode.METHOD_INVOCATION);
+		return (Expression)rewriter.createStringPlaceholder(receiver, ASTNode.FUNCTION_INVOCATION);
 	}
 	
 	private Expression createReceiver(ASTRewrite rewriter, CallContext context, IVariableBinding field) {
@@ -503,7 +503,7 @@ public class SourceProvider {
 	}
 	
 	private void updateMethodTypeVariable(ASTRewrite rewriter, CallContext context) {
-		IMethodBinding method= Invocations.resolveBinding(context.invocation);
+		IFunctionBinding method= Invocations.resolveBinding(context.invocation);
 		if (method == null)
 			return;
 		rewriteReferences(rewriter, method.getTypeArguments(), fAnalyzer.getMethodTypeParameterReferences());
@@ -592,8 +592,8 @@ public class SourceProvider {
 	private IRegion createRange(List statements, int end) {
 		ASTNode first= (ASTNode)statements.get(0);
 		ASTNode root= first.getRoot();
-		if (root instanceof CompilationUnit) {
-			CompilationUnit unit= (CompilationUnit)root;
+		if (root instanceof JavaScriptUnit) {
+			JavaScriptUnit unit= (JavaScriptUnit)root;
 			int start= unit.getExtendedStartPosition(first);
 			ASTNode last= (ASTNode)statements.get(end);
 			int length = unit.getExtendedStartPosition(last) - start + unit.getExtendedLength(last);
@@ -614,9 +614,9 @@ public class SourceProvider {
 			RangeMarker marker= markers[i];
 			String content= fDocument.get(marker.getOffset(), marker.getLength());
 			String lines[]= Strings.convertIntoLines(content);
-			Strings.trimIndentation(lines, fTypeRoot.getJavaProject(), false);
+			Strings.trimIndentation(lines, fTypeRoot.getJavaScriptProject(), false);
 			if (fMarkerMode == STATEMENT_MODE && lines.length == 2 && isSingleControlStatementWithoutBlock()) {
-				lines[1]= CodeFormatterUtil.createIndentString(1, fTypeRoot.getJavaProject()) + lines[1];
+				lines[1]= CodeFormatterUtil.createIndentString(1, fTypeRoot.getJavaScriptProject()) + lines[1];
 			}
 			result[i]= Strings.concatenate(lines, TextUtilities.getDefaultLineDelimiter(fDocument));
 		}

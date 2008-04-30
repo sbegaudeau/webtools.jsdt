@@ -44,11 +44,11 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
@@ -271,34 +271,34 @@ public class JavadocStandardWizardPage extends JavadocWizardPage {
 	/**
 	 * Returns IJavaProjects and IPaths that will be on the classpath  
 	 */
-	private JavadocLinkRef[] getReferencedElements(IJavaProject[] checkedProjects) {
+	private JavadocLinkRef[] getReferencedElements(IJavaScriptProject[] checkedProjects) {
 		HashSet result= new HashSet();
 		for (int i= 0; i < checkedProjects.length; i++) {
-			IJavaProject project= checkedProjects[i];
+			IJavaScriptProject project= checkedProjects[i];
 			try {
 				collectReferencedElements(project, result);
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 				// ignore
 			}
 		}
 		return (JavadocLinkRef[]) result.toArray(new JavadocLinkRef[result.size()]);	
 	}
 	
-	private void collectReferencedElements(IJavaProject project, HashSet result) throws CoreException {
+	private void collectReferencedElements(IJavaScriptProject project, HashSet result) throws CoreException {
 		IRuntimeClasspathEntry[] unresolved = JavaRuntime.computeUnresolvedRuntimeClasspath(project);
 		for (int i= 0; i < unresolved.length; i++) {
 			IRuntimeClasspathEntry curr= unresolved[i];
 			if (curr.getType() == IRuntimeClasspathEntry.PROJECT) {
-				result.add(new JavadocLinkRef(JavaCore.create((IProject) curr.getResource())));
+				result.add(new JavadocLinkRef(JavaScriptCore.create((IProject) curr.getResource())));
 			} else {
 				IRuntimeClasspathEntry[] entries= JavaRuntime.resolveRuntimeClasspathEntry(curr, project);
 				for (int k = 0; k < entries.length; k++) {
 					IRuntimeClasspathEntry entry= entries[k];
 					if (entry.getType() == IRuntimeClasspathEntry.PROJECT) {
-						result.add(new JavadocLinkRef(JavaCore.create((IProject) entry.getResource())));
+						result.add(new JavadocLinkRef(JavaScriptCore.create((IProject) entry.getResource())));
 					} else if (entry.getType() == IRuntimeClasspathEntry.ARCHIVE) {
-						IClasspathEntry classpathEntry= entry.getClasspathEntry();
+						IIncludePathEntry classpathEntry= entry.getClasspathEntry();
 						if (classpathEntry != null) {
 							IPath containerPath= null;
 							if (curr.getType() == IRuntimeClasspathEntry.CONTAINER) {
@@ -414,7 +414,7 @@ public class JavadocStandardWizardPage extends JavadocWizardPage {
 	 * depended on the projects or elements of projects selected in the
 	 * TreeViewer on the JavadocTreeWizardPage.
 	 */
-	private void updateHRefList(IJavaProject[] checkedProjects) {
+	private void updateHRefList(IJavaScriptProject[] checkedProjects) {
 		JavadocLinkRef[] res= getReferencedElements(checkedProjects);
 		fListDialogField.setElements(Arrays.asList(res));
 			

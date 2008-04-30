@@ -18,7 +18,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.NewWizardMenu;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
 
@@ -70,13 +70,13 @@ public class NewWizardsActionGroup extends ActionGroup {
 		if (element instanceof IResource) {
 			return true;
 		}
-		if (element instanceof IJavaElement) {
-			int type= ((IJavaElement)element).getElementType();
-			return type == IJavaElement.JAVA_PROJECT ||
-				type == IJavaElement.PACKAGE_FRAGMENT_ROOT || 
-				type == IJavaElement.PACKAGE_FRAGMENT ||
-				type == IJavaElement.COMPILATION_UNIT ||
-				type == IJavaElement.TYPE;
+		if (element instanceof IJavaScriptElement) {
+			int type= ((IJavaScriptElement)element).getElementType();
+			return type == IJavaScriptElement.JAVASCRIPT_PROJECT ||
+				type == IJavaScriptElement.PACKAGE_FRAGMENT_ROOT || 
+				type == IJavaScriptElement.PACKAGE_FRAGMENT ||
+				type == IJavaScriptElement.JAVASCRIPT_UNIT ||
+				type == IJavaScriptElement.TYPE;
 		}
 		return false;
 	}	

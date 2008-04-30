@@ -17,8 +17,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSUtil;
 
 public class CreateTextFileChange extends CreateFileChange {
@@ -34,7 +34,7 @@ public class CreateTextFileChange extends CreateFileChange {
 		return fTextType;
 	}
 	
-	public String getCurrentContent() throws JavaModelException {
+	public String getCurrentContent() throws JavaScriptModelException {
 		IFile file= getOldFile(new NullProgressMonitor());
 		if (! file.exists())
 			return ""; //$NON-NLS-1$
@@ -45,7 +45,7 @@ public class CreateTextFileChange extends CreateFileChange {
 			String c= NLSUtil.readString(stream, encoding);
 			return (c == null) ? "": c; //$NON-NLS-1$
 		} catch (CoreException e){
-			throw new JavaModelException(e, IJavaModelStatusConstants.CORE_EXCEPTION);
+			throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.CORE_EXCEPTION);
 		} finally {
 			try {
 				if (stream != null)

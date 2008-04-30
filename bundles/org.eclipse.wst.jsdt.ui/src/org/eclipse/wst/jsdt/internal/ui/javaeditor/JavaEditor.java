@@ -131,21 +131,21 @@ import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportContainer;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Name;
@@ -153,7 +153,7 @@ import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.core.util.IModifierConstants;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.actions.CopyQualifiedNameAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.FoldingActionGroup;
@@ -183,16 +183,16 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.ISelectionListenerWithAST;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.IViewPartInputProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.SelectionListenerWithASTManager;
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.OpenEditorActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.ShowInPackageViewAction;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProvider;
 import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProviderExtension;
 import org.osgi.service.prefs.BackingStoreException;
@@ -674,13 +674,13 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 			String type= IDocument.DEFAULT_CONTENT_TYPE;
 			try {
-				type= TextUtilities.getContentType(document, IJavaPartitions.JAVA_PARTITIONING, offset, true);
+				type= TextUtilities.getContentType(document, IJavaScriptPartitions.JAVA_PARTITIONING, offset, true);
 			} catch (BadLocationException exception) {
 				// Should not happen
 			}
 
 			int index= super.getLineStartPosition(document, line, length, offset);
-			if (type.equals(IJavaPartitions.JAVA_DOC) || type.equals(IJavaPartitions.JAVA_MULTI_LINE_COMMENT)) {
+			if (type.equals(IJavaScriptPartitions.JAVA_DOC) || type.equals(IJavaScriptPartitions.JAVA_MULTI_LINE_COMMENT)) {
 				if (index < length - 1 && line.charAt(index) == '*' && line.charAt(index + 1) != '/') {
 					do {
 						++index;
@@ -1121,15 +1121,15 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 				try {
 					viewer.setRedraw(false);
 
-					final String type= TextUtilities.getContentType(viewer.getDocument(), IJavaPartitions.JAVA_PARTITIONING, selection.x, true);
+					final String type= TextUtilities.getContentType(viewer.getDocument(), IJavaScriptPartitions.JAVA_PARTITIONING, selection.x, true);
 					if (type.equals(IDocument.DEFAULT_CONTENT_TYPE) && selection.y == 0) {
 
 						try {
-							final IJavaElement element= getElementAt(selection.x, true);
+							final IJavaScriptElement element= getElementAt(selection.x, true);
 							if (element != null && element.exists()) {
 
 								final int kind= element.getElementType();
-								if (kind == IJavaElement.TYPE || kind == IJavaElement.METHOD || kind == IJavaElement.INITIALIZER) {
+								if (kind == IJavaScriptElement.TYPE || kind == IJavaScriptElement.METHOD || kind == IJavaScriptElement.INITIALIZER) {
 
 									final ISourceReference reference= (ISourceReference)element;
 									final ISourceRange range= reference.getSourceRange();
@@ -1140,7 +1140,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 									}
 								}
 							}
-						} catch (JavaModelException exception) {
+						} catch (JavaScriptModelException exception) {
 							// Should not happen
 						}
 					} else {
@@ -1179,7 +1179,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 		public void windowActivated(IWorkbenchWindow window) {
 			if (window == getEditorSite().getWorkbenchWindow() && fMarkOccurrenceAnnotations && isActivePart()) {
 				fForcedMarkOccurrencesSelection= getSelectionProvider().getSelection();
-				updateOccurrenceAnnotations((ITextSelection)fForcedMarkOccurrencesSelection, JavaPlugin.getDefault().getASTProvider().getAST(getInputJavaElement(), ASTProvider.WAIT_NO, getProgressMonitor()));
+				updateOccurrenceAnnotations((ITextSelection)fForcedMarkOccurrencesSelection, JavaScriptPlugin.getDefault().getASTProvider().getAST(getInputJavaElement(), ASTProvider.WAIT_NO, getProgressMonitor()));
 			}
 		}
 
@@ -1494,15 +1494,15 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * @param offset the offset inside of the requested element
 	 * @return the most narrow java element
 	 */
-	abstract protected IJavaElement getElementAt(int offset);
+	abstract protected IJavaScriptElement getElementAt(int offset);
 
 	/**
-	 * Returns the java element of this editor's input corresponding to the given IJavaElement.
+	 * Returns the java element of this editor's input corresponding to the given IJavaScriptElement.
 	 *
 	 * @param element the java element
 	 * @return the corresponding Java element
 	 */
-	abstract protected IJavaElement getCorrespondingElement(IJavaElement element);
+	abstract protected IJavaScriptElement getCorrespondingElement(IJavaScriptElement element);
 
 	/**
 	 * Default constructor.
@@ -1521,7 +1521,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 		if (page == null)
 			return;
 		
-		IJavaElement je= getInputJavaElement();
+		IJavaScriptElement je= getInputJavaElement();
 		if (je != null && je.exists())
 			page.setInput(je);
 		else
@@ -1559,12 +1559,12 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * Returns a new Java source viewer configuration.
 	 * 
-	 * @return a new <code>JavaSourceViewerConfiguration</code>
+	 * @return a new <code>JavaScriptSourceViewerConfiguration</code>
 	 * @since 3.3
 	 */
-	protected JavaSourceViewerConfiguration createJavaSourceViewerConfiguration() {
-		JavaTextTools textTools= JavaPlugin.getDefault().getJavaTextTools();
-		return new JavaSourceViewerConfiguration(textTools.getColorManager(), getPreferenceStore(), this, IJavaPartitions.JAVA_PARTITIONING);
+	protected JavaScriptSourceViewerConfiguration createJavaSourceViewerConfiguration() {
+		JavaScriptTextTools textTools= JavaScriptPlugin.getDefault().getJavaTextTools();
+		return new JavaScriptSourceViewerConfiguration(textTools.getColorManager(), getPreferenceStore(), this, IJavaScriptPartitions.JAVA_PARTITIONING);
 	}
 
 	/*
@@ -1606,7 +1606,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 		});
 		fProjectionSupport.install();
 
-		fProjectionModelUpdater= JavaPlugin.getDefault().getFoldingStructureProviderRegistry().getCurrentFoldingProvider();
+		fProjectionModelUpdater= JavaScriptPlugin.getDefault().getFoldingStructureProviderRegistry().getCurrentFoldingProvider();
 		if (fProjectionModelUpdater != null)
 			fProjectionModelUpdater.install(this, projectionViewer);
 
@@ -1631,7 +1631,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * @see AbstractTextEditor#affectsTextPresentation(PropertyChangeEvent)
 	 */
 	protected boolean affectsTextPresentation(PropertyChangeEvent event) {
-		return ((JavaSourceViewerConfiguration)getSourceViewerConfiguration()).affectsTextPresentation(event) || super.affectsTextPresentation(event);
+		return ((JavaScriptSourceViewerConfiguration)getSourceViewerConfiguration()).affectsTextPresentation(event) || super.affectsTextPresentation(event);
 	}
 
 	/**
@@ -1645,13 +1645,13 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	private IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
 		List stores= new ArrayList(3);
 
-		IJavaProject project= EditorUtility.getJavaProject(input);
+		IJavaScriptProject project= EditorUtility.getJavaProject(input);
 		if (project != null) {
-			stores.add(new EclipsePreferencesAdapter(new ProjectScope(project.getProject()), JavaCore.PLUGIN_ID));
+			stores.add(new EclipsePreferencesAdapter(new ProjectScope(project.getProject()), JavaScriptCore.PLUGIN_ID));
 		}
 
-		stores.add(JavaPlugin.getDefault().getPreferenceStore());
-		stores.add(new PreferencesAdapter(JavaCore.getPlugin().getPluginPreferences()));
+		stores.add(JavaScriptPlugin.getDefault().getPreferenceStore());
+		stores.add(new PreferencesAdapter(JavaScriptCore.getPlugin().getPluginPreferences()));
 		stores.add(EditorsUI.getPreferenceStore());
 
 		return new ChainedPreferenceStore((IPreferenceStore[]) stores.toArray(new IPreferenceStore[stores.size()]));
@@ -1769,7 +1769,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 		if (required == IShowInTargetList.class) {
 			return new IShowInTargetList() {
 				public String[] getShowInTargetIds() {
-					return new String[] { JavaUI.ID_PACKAGES, IPageLayout.ID_OUTLINE, IPageLayout.ID_RES_NAV };
+					return new String[] { JavaScriptUI.ID_PACKAGES, IPageLayout.ID_OUTLINE, IPageLayout.ID_RES_NAV };
 				}
 
 			};
@@ -1784,13 +1784,13 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 						 * @since 3.3
 						 */
 						public ISelection getSelection() {
-							IJavaElement je= null;
+							IJavaScriptElement je= null;
 							try {
 								je= SelectionConverter.getElementAtOffset(JavaEditor.this);
 								if (je==null)
 									return null;
 								return new StructuredSelection(je);
-							} catch (JavaModelException ex) {
+							} catch (JavaScriptModelException ex) {
 								return null;
 							}
 						}
@@ -1859,7 +1859,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 			try {
 				ISourceRange range= null;
 				if (reference instanceof ILocalVariable) {
-					IJavaElement je= ((ILocalVariable)reference).getParent();
+					IJavaScriptElement je= ((ILocalVariable)reference).getParent();
 					if (je instanceof ISourceReference)
 						range= ((ISourceReference)je).getSourceRange();
 				} else
@@ -1946,7 +1946,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 					markInNavigationHistory();
 				}
 
-			} catch (JavaModelException x) {
+			} catch (JavaScriptModelException x) {
 			} catch (IllegalArgumentException x) {
 			}
 
@@ -1956,18 +1956,18 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 		}
 	}
 
-	public void setSelection(IJavaElement element) {
+	public void setSelection(IJavaScriptElement element) {
 
-		if (element == null || element instanceof ICompilationUnit || element instanceof IClassFile) {
+		if (element == null || element instanceof IJavaScriptUnit || element instanceof IClassFile) {
 			/*
-			 * If the element is an ICompilationUnit this unit is either the input
+			 * If the element is an IJavaScriptUnit this unit is either the input
 			 * of this editor or not being displayed. In both cases, nothing should
 			 * happened. (http://dev.eclipse.org/bugs/show_bug.cgi?id=5128)
 			 */
 			return;
 		}
 
-		IJavaElement corresponding= getCorrespondingElement(element);
+		IJavaScriptElement corresponding= getCorrespondingElement(element);
 		if (corresponding instanceof ISourceReference) {
 			ISourceReference reference= (ISourceReference) corresponding;
 			// set highlight range
@@ -1994,8 +1994,8 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 				break;
 			}
 		}
-		if (!isActivePart() && JavaPlugin.getActivePage() != null)
-			JavaPlugin.getActivePage().bringToTop(this);
+		if (!isActivePart() && JavaScriptPlugin.getActivePage() != null)
+			JavaScriptPlugin.getActivePage().bringToTop(this);
 
 		setSelection(reference, !isActivePart());
 		
@@ -2007,7 +2007,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 		if (!(textSelection instanceof ITextSelection))
 			return;
 		
-		CompilationUnit ast= JavaPlugin.getDefault().getASTProvider().getAST(getInputJavaElement(), ASTProvider.WAIT_ACTIVE_ONLY, getProgressMonitor());
+		JavaScriptUnit ast= JavaScriptPlugin.getDefault().getASTProvider().getAST(getInputJavaElement(), ASTProvider.WAIT_ACTIVE_ONLY, getProgressMonitor());
 		if (ast != null) {
 			fForcedMarkOccurrencesSelection= textSelection;
 			updateOccurrenceAnnotations((ITextSelection)textSelection, ast);
@@ -2022,7 +2022,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 		try {
 
-			IJavaElement element= getElementAt(offset, false);
+			IJavaScriptElement element= getElementAt(offset, false);
 			while (element instanceof ISourceReference) {
 				ISourceRange range= ((ISourceReference) element).getSourceRange();
 				if (range != null && offset < range.getOffset() + range.getLength() && range.getOffset() < offset + length) {
@@ -2045,8 +2045,8 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 				element= element.getParent();
 			}
 
-		} catch (JavaModelException x) {
-			JavaPlugin.log(x.getStatus());
+		} catch (JavaScriptModelException x) {
+			JavaScriptPlugin.log(x.getStatus());
 		}
 
 		ISourceViewer viewer= getSourceViewer();
@@ -2171,9 +2171,9 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 */
 	protected void setPreferenceStore(IPreferenceStore store) {
 		super.setPreferenceStore(store);
-		if (getSourceViewerConfiguration() instanceof JavaSourceViewerConfiguration) {
-			JavaTextTools textTools= JavaPlugin.getDefault().getJavaTextTools();
-			setSourceViewerConfiguration(new JavaSourceViewerConfiguration(textTools.getColorManager(), store, this, IJavaPartitions.JAVA_PARTITIONING));
+		if (getSourceViewerConfiguration() instanceof JavaScriptSourceViewerConfiguration) {
+			JavaScriptTextTools textTools= JavaScriptPlugin.getDefault().getJavaTextTools();
+			setSourceViewerConfiguration(new JavaScriptSourceViewerConfiguration(textTools.getColorManager(), store, this, IJavaScriptPartitions.JAVA_PARTITIONING));
 		}
 		if (getSourceViewer() instanceof JavaSourceViewer)
 			((JavaSourceViewer)getSourceViewer()).setPreferenceStore(store);
@@ -2441,13 +2441,13 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 				return;
 			}
 
-			if (JavaCore.COMPILER_SOURCE.equals(property)) {
+			if (JavaScriptCore.COMPILER_SOURCE.equals(property)) {
 				if (event.getNewValue() instanceof String)
 					fBracketMatcher.setSourceVersion((String) event.getNewValue());
 				// fall through as others are interested in source change as well.
 			}
 
-			((JavaSourceViewerConfiguration)getSourceViewerConfiguration()).handlePropertyChangeEvent(event);
+			((JavaScriptSourceViewerConfiguration)getSourceViewerConfiguration()).handlePropertyChangeEvent(event);
 
 			if (affectsOverrideIndicatorAnnotations(event)) {
 				if (isShowingOverrideIndicators()) {
@@ -2466,7 +2466,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 					if (fProjectionModelUpdater != null)
 						fProjectionModelUpdater.uninstall();
 					// either freshly enabled or provider changed
-					fProjectionModelUpdater= JavaPlugin.getDefault().getFoldingStructureProviderRegistry().getCurrentFoldingProvider();
+					fProjectionModelUpdater= JavaScriptPlugin.getDefault().getFoldingStructureProviderRegistry().getCurrentFoldingProvider();
 					if (fProjectionModelUpdater != null) {
 						fProjectionModelUpdater.install(this, projectionViewer);
 					}
@@ -2570,7 +2570,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * @see org.eclipse.wst.jsdt.internal.ui.viewsupport.IViewPartInputProvider#getViewPartInput()
 	 */
 	public Object getViewPartInput() {
-		return getEditorInput().getAdapter(IJavaElement.class);
+		return getEditorInput().getAdapter(IJavaScriptElement.class);
 	}
 
 	/*
@@ -2582,7 +2582,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	}
 
 	boolean isFoldingEnabled() {
-		return JavaPlugin.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
+		return JavaScriptPlugin.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
 	}
 
 	/*
@@ -2610,7 +2610,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 	protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
 
-		fBracketMatcher.setSourceVersion(getPreferenceStore().getString(JavaCore.COMPILER_SOURCE));
+		fBracketMatcher.setSourceVersion(getPreferenceStore().getString(JavaScriptCore.COMPILER_SOURCE));
 		support.setCharacterPairMatcher(fBracketMatcher);
 		support.setMatchingCharacterPainterPreferenceKeys(MATCHING_BRACKETS, MATCHING_BRACKETS_COLOR);
 
@@ -2768,7 +2768,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * @param astRoot the compilation unit AST
 	 * @since 3.0
 	 */
-	protected void updateOccurrenceAnnotations(ITextSelection selection, CompilationUnit astRoot) {
+	protected void updateOccurrenceAnnotations(ITextSelection selection, JavaScriptUnit astRoot) {
 
 		if (fOccurrencesFinderJob != null)
 			fOccurrencesFinderJob.cancel();
@@ -2877,14 +2877,14 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 		fMarkOccurrenceAnnotations= true;
 
 		fPostSelectionListenerWithAST= new ISelectionListenerWithAST() {
-			public void selectionChanged(IEditorPart part, ITextSelection selection, CompilationUnit astRoot) {
+			public void selectionChanged(IEditorPart part, ITextSelection selection, JavaScriptUnit astRoot) {
 				updateOccurrenceAnnotations(selection, astRoot);
 			}
 		};
 		SelectionListenerWithASTManager.getDefault().addListener(this, fPostSelectionListenerWithAST);
 		if (forceUpdate && getSelectionProvider() != null) {
 			fForcedMarkOccurrencesSelection= getSelectionProvider().getSelection();
-			updateOccurrenceAnnotations((ITextSelection)fForcedMarkOccurrencesSelection, JavaPlugin.getDefault().getASTProvider().getAST(getInputJavaElement(), ASTProvider.WAIT_NO, getProgressMonitor()));
+			updateOccurrenceAnnotations((ITextSelection)fForcedMarkOccurrencesSelection, JavaScriptPlugin.getDefault().getASTProvider().getAST(getInputJavaElement(), ASTProvider.WAIT_NO, getProgressMonitor()));
 		}
 
 		if (fOccurrencesFinderJobCanceler == null) {
@@ -2982,7 +2982,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	protected void installOverrideIndicator(boolean provideAST) {
 		uninstallOverrideIndicator();
 		IAnnotationModel model= getDocumentProvider().getAnnotationModel(getEditorInput());
-		final IJavaElement inputElement= getInputJavaElement();
+		final IJavaScriptElement inputElement= getInputJavaElement();
 
 		if (model == null || inputElement == null)
 			return;
@@ -2990,7 +2990,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 		fOverrideIndicatorManager= new OverrideIndicatorManager(model, inputElement, null);
 		
 		if (provideAST) {
-			CompilationUnit ast= JavaPlugin.getDefault().getASTProvider().getAST(inputElement, ASTProvider.WAIT_ACTIVE_ONLY, getProgressMonitor());
+			JavaScriptUnit ast= JavaScriptPlugin.getDefault().getASTProvider().getAST(inputElement, ASTProvider.WAIT_ACTIVE_ONLY, getProgressMonitor());
 			fOverrideIndicatorManager.reconciled(ast, true, getProgressMonitor());
 		}
 	}
@@ -3059,7 +3059,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	private void installSemanticHighlighting() {
 		if (fSemanticManager == null) {
 			fSemanticManager= new SemanticHighlightingManager();
-			fSemanticManager.install(this, (JavaSourceViewer) getSourceViewer(), JavaPlugin.getDefault().getJavaTextTools().getColorManager(), getPreferenceStore());
+			fSemanticManager.install(this, (JavaSourceViewer) getSourceViewer(), JavaScriptPlugin.getDefault().getJavaTextTools().getColorManager(), getPreferenceStore());
 		}
 	}
 
@@ -3081,7 +3081,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * @return the Java element wrapped by this editors input.
 	 * @since 3.0
 	 */
-	protected IJavaElement getInputJavaElement() {
+	protected IJavaScriptElement getInputJavaElement() {
 		return EditorUtility.getEditorInputJavaElement(this, false);
 	}
 
@@ -3366,12 +3366,12 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 			caret= offset + styledText.getCaretOffset();
 		}
 
-		IJavaElement element= getElementAt(caret, false);
+		IJavaScriptElement element= getElementAt(caret, false);
 
 		if ( !(element instanceof ISourceReference))
 			return null;
 
-		if (element.getElementType() == IJavaElement.IMPORT_DECLARATION) {
+		if (element.getElementType() == IJavaScriptElement.IMPORT_DECLARATION) {
 
 			IImportDeclaration declaration= (IImportDeclaration) element;
 			IImportContainer container= (IImportContainer) declaration.getParent();
@@ -3379,7 +3379,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 			try {
 				srcRange= container.getSourceRange();
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 			}
 
 			if (srcRange != null && srcRange.getOffset() == caret)
@@ -3397,7 +3397,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * @return the most narrow java element
 	 * @since 3.0
 	 */
-	protected IJavaElement getElementAt(int offset, boolean reconcile) {
+	protected IJavaScriptElement getElementAt(int offset, boolean reconcile) {
 		return getElementAt(offset);
 	}
 
@@ -3405,7 +3405,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createChangeHover()
 	 */
 	protected LineChangeHover createChangeHover() {
-		return new JavaChangeHover(IJavaPartitions.JAVA_PARTITIONING, getOrientation());
+		return new JavaChangeHover(IJavaScriptPartitions.JAVA_PARTITIONING, getOrientation());
 	}
 
 	/*

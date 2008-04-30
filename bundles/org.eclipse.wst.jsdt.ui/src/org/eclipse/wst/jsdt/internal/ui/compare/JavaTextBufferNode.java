@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Implements the IStreamContentAccessor and ITypedElement protocols
@@ -78,7 +78,7 @@ class JavaTextBufferNode implements ITypedElement, IEncodedStreamContentAccessor
 		try {
 			states= file.getHistory(null);
 		} catch (CoreException ex) {
-			JavaPlugin.log(ex);
+			JavaScriptPlugin.log(ex);
 		}
 		
 		int count= 1;
@@ -118,7 +118,7 @@ class JavaTextBufferNode implements ITypedElement, IEncodedStreamContentAccessor
 				
 			case JavaNode.CONSTRUCTOR:
 			case JavaNode.METHOD:
-				return ASTNode.METHOD_DECLARATION;
+				return ASTNode.FUNCTION_DECLARATION;
 				
 			case JavaNode.FIELD:
 				return ASTNode.FIELD_DECLARATION;
@@ -131,7 +131,7 @@ class JavaTextBufferNode implements ITypedElement, IEncodedStreamContentAccessor
 				return ASTNode.IMPORT_DECLARATION;
 
 			case JavaNode.CU:
-			    return ASTNode.COMPILATION_UNIT;
+			    return ASTNode.JAVASCRIPT_UNIT;
 			}
 		}
 		return -1;

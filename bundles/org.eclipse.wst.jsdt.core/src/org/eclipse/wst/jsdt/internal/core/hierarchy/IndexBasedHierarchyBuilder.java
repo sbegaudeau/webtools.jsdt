@@ -22,15 +22,15 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
@@ -69,7 +69,7 @@ public class IndexBasedHierarchyBuilder extends HierarchyBuilder implements Suff
 	/**
 	 * The scope this hierarchy builder should restrain results to.
 	 */
-	protected IJavaSearchScope scope;
+	protected IJavaScriptSearchScope scope;
 
 	/**
 	 * Cache used to record binaries recreated from index matches
@@ -109,7 +109,7 @@ public class IndexBasedHierarchyBuilder extends HierarchyBuilder implements Suff
 			return buffer.toString();
 		}
 	}
-public IndexBasedHierarchyBuilder(TypeHierarchy hierarchy, IJavaSearchScope scope) throws JavaModelException {
+public IndexBasedHierarchyBuilder(TypeHierarchy hierarchy, IJavaScriptSearchScope scope) throws JavaScriptModelException {
 	super(hierarchy);
 	this.cuToHandle = new HashMap(5);
 	this.binariesFromIndexMatches = new HashMap(10);
@@ -155,7 +155,7 @@ public void build(boolean computeSubtypes) {
 		manager.flushZipFiles();
 	}
 }
-private void buildForProject(JavaProject project, ArrayList potentialSubtypes, org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies, HashSet localTypes, IProgressMonitor monitor) throws JavaModelException {
+private void buildForProject(JavaProject project, ArrayList potentialSubtypes, org.eclipse.wst.jsdt.core.IJavaScriptUnit[] workingCopies, HashSet localTypes, IProgressMonitor monitor) throws JavaScriptModelException {
 	// resolve
 	int openablesLength = potentialSubtypes.size();
 	if (openablesLength > 0) {
@@ -170,7 +170,7 @@ private void buildForProject(JavaProject project, ArrayList potentialSubtypes, o
 		int rootsLength = roots.length;
 		final HashtableOfObjectToInt indexes = new HashtableOfObjectToInt(openablesLength);
 		for (int i = 0; i < openablesLength; i++) {
-			IJavaElement root = openables[i].getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+			IJavaScriptElement root = openables[i].getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 			int index;
 			for (index = 0; index < rootsLength; index++) {
 				if (roots[index].equals(root))
@@ -189,16 +189,16 @@ private void buildForProject(JavaProject project, ArrayList potentialSubtypes, o
 		});
 
 		IType focusType = this.getType();
-		boolean inProjectOfFocusType = focusType != null && focusType.getJavaProject().equals(project);
-		org.eclipse.wst.jsdt.core.ICompilationUnit[] unitsToLookInside = null;
+		boolean inProjectOfFocusType = focusType != null && focusType.getJavaScriptProject().equals(project);
+		org.eclipse.wst.jsdt.core.IJavaScriptUnit[] unitsToLookInside = null;
 		if (inProjectOfFocusType) {
-			org.eclipse.wst.jsdt.core.ICompilationUnit unitToLookInside = focusType.getCompilationUnit();
+			org.eclipse.wst.jsdt.core.IJavaScriptUnit unitToLookInside = focusType.getJavaScriptUnit();
 			if (unitToLookInside != null) {
 				int wcLength = workingCopies == null ? 0 : workingCopies.length;
 				if (wcLength == 0) {
-					unitsToLookInside = new org.eclipse.wst.jsdt.core.ICompilationUnit[] {unitToLookInside};
+					unitsToLookInside = new org.eclipse.wst.jsdt.core.IJavaScriptUnit[] {unitToLookInside};
 				} else {
-					unitsToLookInside = new org.eclipse.wst.jsdt.core.ICompilationUnit[wcLength+1];
+					unitsToLookInside = new org.eclipse.wst.jsdt.core.IJavaScriptUnit[wcLength+1];
 					unitsToLookInside[0] = unitToLookInside;
 					System.arraycopy(workingCopies, 0, unitsToLookInside, 1, wcLength);
 				}
@@ -211,7 +211,7 @@ private void buildForProject(JavaProject project, ArrayList potentialSubtypes, o
 		this.nameLookup = searchableEnvironment.nameLookup;
 		Map options = project.getOptions(true);
 		// disable task tags to speed up parsing
-		options.put(JavaCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
+		options.put(JavaScriptCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
 		this.hierarchyResolver =
 			new HierarchyResolver(searchableEnvironment, options, this, new DefaultProblemFactory());
 		if (focusType != null) {
@@ -232,7 +232,7 @@ private void buildForProject(JavaProject project, ArrayList potentialSubtypes, o
 				if (declaringMember.isBinary()) {
 					openable = (Openable)declaringMember.getClassFile();
 				} else {
-					openable = (Openable)declaringMember.getCompilationUnit();
+					openable = (Openable)declaringMember.getJavaScriptUnit();
 				}
 				localTypes = new HashSet();
 				localTypes.add(openable.getPath().toString());
@@ -252,11 +252,11 @@ private void buildFromPotentialSubtypes(String[] allPotentialSubTypes, HashSet l
 	// substitute compilation units with working copies
 	HashMap wcPaths = new HashMap(); // a map from path to working copies
 	int wcLength;
-	org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies = this.hierarchy.workingCopies;
+	org.eclipse.wst.jsdt.core.IJavaScriptUnit[] workingCopies = this.hierarchy.workingCopies;
 	if (workingCopies != null && (wcLength = workingCopies.length) > 0) {
 		String[] newPaths = new String[wcLength];
 		for (int i = 0; i < wcLength; i++) {
-			org.eclipse.wst.jsdt.core.ICompilationUnit workingCopy = workingCopies[i];
+			org.eclipse.wst.jsdt.core.IJavaScriptUnit workingCopy = workingCopies[i];
 			String path = workingCopy.getPath().toString();
 			wcPaths.put(path, workingCopy);
 			newPaths[i] = path;
@@ -271,7 +271,7 @@ private void buildFromPotentialSubtypes(String[] allPotentialSubTypes, HashSet l
 	// inject the compilation unit of the focus type (so that types in
 	// this cu have special visibility permission (this is also usefull
 	// when the cu is a working copy)
-	Openable focusCU = (Openable)focusType.getCompilationUnit();
+	Openable focusCU = (Openable)focusType.getJavaScriptUnit();
 	String focusPath = null;
 	if (focusCU != null) {
 		focusPath = focusCU.getPath().toString();
@@ -293,7 +293,7 @@ private void buildFromPotentialSubtypes(String[] allPotentialSubTypes, HashSet l
 	try {
 		// create element infos for subtypes
 		HandleFactory factory = new HandleFactory();
-		IJavaProject currentProject = null;
+		IJavaScriptProject currentProject = null;
 		if (monitor != null) monitor.beginTask("", length*2 /* 1 for build binding, 1 for connect hierarchy*/); //$NON-NLS-1$
 		for (int i = 0; i < length; i++) {
 			try {
@@ -303,7 +303,7 @@ private void buildFromPotentialSubtypes(String[] allPotentialSubTypes, HashSet l
 				if (i > 0 && resourcePath.equals(allPotentialSubTypes[i-1])) continue;
 
 				Openable handle;
-				org.eclipse.wst.jsdt.core.ICompilationUnit workingCopy = (org.eclipse.wst.jsdt.core.ICompilationUnit)wcPaths.get(resourcePath);
+				org.eclipse.wst.jsdt.core.IJavaScriptUnit workingCopy = (org.eclipse.wst.jsdt.core.IJavaScriptUnit)wcPaths.get(resourcePath);
 				if (workingCopy != null) {
 					handle = (Openable)workingCopy;
 				} else {
@@ -314,7 +314,7 @@ private void buildFromPotentialSubtypes(String[] allPotentialSubTypes, HashSet l
 					if (handle == null) continue; // match is outside classpath
 				}
 
-				IJavaProject project = handle.getJavaProject();
+				IJavaScriptProject project = handle.getJavaScriptProject();
 				if (currentProject == null) {
 					currentProject = project;
 					potentialSubtypes = new ArrayList(5);
@@ -326,7 +326,7 @@ private void buildFromPotentialSubtypes(String[] allPotentialSubTypes, HashSet l
 				}
 
 				potentialSubtypes.add(handle);
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				continue;
 			}
 		}
@@ -335,30 +335,30 @@ private void buildFromPotentialSubtypes(String[] allPotentialSubTypes, HashSet l
 		try {
 			if (currentProject == null) {
 				// case of no potential subtypes
-				currentProject = focusType.getJavaProject();
+				currentProject = focusType.getJavaScriptProject();
 				if (focusType.isBinary()) {
 					potentialSubtypes.add(focusType.getClassFile());
 				} else {
-					potentialSubtypes.add(focusType.getCompilationUnit());
+					potentialSubtypes.add(focusType.getJavaScriptUnit());
 				}
 			}
 			this.buildForProject((JavaProject)currentProject, potentialSubtypes, workingCopies, localTypes, monitor);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignore
 		}
 
 		// Compute hierarchy of focus type if not already done (case of a type with potential subtypes that are not real subtypes)
 		if (!this.hierarchy.contains(focusType)) {
 			try {
-				currentProject = focusType.getJavaProject();
+				currentProject = focusType.getJavaScriptProject();
 				potentialSubtypes = new ArrayList();
 				if (focusType.isBinary()) {
 					potentialSubtypes.add(focusType.getClassFile());
 				} else {
-					potentialSubtypes.add(focusType.getCompilationUnit());
+					potentialSubtypes.add(focusType.getJavaScriptUnit());
 				}
 				this.buildForProject((JavaProject)currentProject, potentialSubtypes, workingCopies, localTypes, monitor);
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore
 			}
 		}
@@ -401,7 +401,7 @@ private String[] determinePossibleSubTypes(final HashSet localTypes, IProgressMo
 			this.scope,
 			this.binariesFromIndexMatches,
 			collector,
-			IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+			IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 			monitor);
 	} finally {
 		if (monitor != null) monitor.done();
@@ -434,7 +434,7 @@ private String[] determinePossibleSubTypes(final HashSet localTypes, IProgressMo
  */
 public static void searchAllPossibleSubTypes(
 	IType type,
-	IJavaSearchScope scope,
+	IJavaScriptSearchScope scope,
 	final Map binariesFromIndexMatches,
 	final IPathRequestor pathRequestor,
 	int waitingPolicy,	// WaitUntilReadyToSearch | ForceImmediateSearch | CancelIfNotReadyToSearch
@@ -488,7 +488,7 @@ public static void searchAllPossibleSubTypes(
 	int superRefKind;
 	try {
 		superRefKind = type.isClass() ? SuperTypeReferencePattern.ONLY_SUPER_CLASSES : SuperTypeReferencePattern.ALL_SUPER_TYPES;
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		superRefKind = SuperTypeReferencePattern.ALL_SUPER_TYPES;
 	}
 	SuperTypeReferencePattern pattern =

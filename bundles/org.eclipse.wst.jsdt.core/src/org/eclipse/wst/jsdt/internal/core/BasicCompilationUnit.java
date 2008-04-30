@@ -16,23 +16,23 @@ import java.io.IOException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 /**
- * A basic implementation of <code>ICompilationUnit</code>
+ * A basic implementation of <code>IJavaScriptUnit</code>
  * for use in the <code>SourceMapper</code>.
- * @see ICompilationUnit
+ * @see IJavaScriptUnit
  */
 public class BasicCompilationUnit implements ICompilationUnit {
 	protected char[] contents;
 
-	// Note that if this compiler ICompilationUnit's content is known in advance, the fileName is not used to retrieve this content.
-	// Instead it is used to keep enough information to recreate the IJavaElement corresponding to this compiler ICompilationUnit.
+	// Note that if this compiler IJavaScriptUnit's content is known in advance, the fileName is not used to retrieve this content.
+	// Instead it is used to keep enough information to recreate the IJavaScriptElement corresponding to this compiler IJavaScriptUnit.
 	// Thus the fileName can be a path to a .class file, or even a path in a .jar to a .class file.
 	// (e.g. /P/lib/mylib.jar|org/eclipse/test/X.class)
 	protected char[] fileName;
@@ -53,16 +53,16 @@ public BasicCompilationUnit(char[] contents, char[][] packageName, String fileNa
 	this.encoding = encoding;
 }
 
-public BasicCompilationUnit(char[] contents, char[][] packageName, String fileName, IJavaElement javaElement) {
+public BasicCompilationUnit(char[] contents, char[][] packageName, String fileName, IJavaScriptElement javaElement) {
 	this(contents, packageName, fileName);
 	if(javaElement instanceof ICompilationUnit) {
 		superType = ((ICompilationUnit)javaElement).getCommonSuperType();
-		//mainTypeName = ((ICompilationUnit)javaElement).getMainTypeName();
+		//mainTypeName = ((IJavaScriptUnit)javaElement).getMainTypeName();
 	}
 	initEncoding(javaElement);
 }
 
-public BasicCompilationUnit(char[] contents, char[][] packageName, String fileName, IJavaElement javaElement, String mainTypeName) {
+public BasicCompilationUnit(char[] contents, char[][] packageName, String fileName, IJavaScriptElement javaElement, String mainTypeName) {
 	this(contents, packageName, fileName);
 	initEncoding(javaElement);
 	if(mainTypeName!=null) this.mainTypeName = mainTypeName.toCharArray();
@@ -76,12 +76,12 @@ public BasicCompilationUnit(char[] contents, char[][] packageName, String fileNa
  * a corresponding source file resource.
  * If we have a compilation unit, then get encoding from its resource directly...
  */
-private void initEncoding(IJavaElement javaElement) {
+private void initEncoding(IJavaScriptElement javaElement) {
 	if (javaElement != null) {
 		try {
-			IJavaProject javaProject = javaElement.getJavaProject();
+			IJavaScriptProject javaProject = javaElement.getJavaScriptProject();
 			switch (javaElement.getElementType()) {
-				case IJavaElement.COMPILATION_UNIT:
+				case IJavaScriptElement.JAVASCRIPT_UNIT:
 					IFile file = (IFile) javaElement.getResource();
 					if (file != null) {
 						this.encoding = file.getCharset();
@@ -145,7 +145,7 @@ public char[][] getPackageName() {
 	return this.packageName;
 }
 public String toString(){
-	return "CompilationUnit: "+new String(this.fileName); //$NON-NLS-1$
+	return "JavaScriptUnit: "+new String(this.fileName); //$NON-NLS-1$
 }
 
 /* (non-Javadoc)

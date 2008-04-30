@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.core;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.internal.codeassist.impl.AssistOptions;
@@ -36,7 +36,7 @@ public class InternalNamingConventions {
 				null/*taskPriorities*/,
 				true/*taskCaseSensitive*/);
 	}
-	public static void suggestArgumentNames(IJavaProject javaProject, char[] packageName, char[] qualifiedTypeName, int dim, char[] internalPrefix, char[][] excludedNames, INamingRequestor requestor) {
+	public static void suggestArgumentNames(IJavaScriptProject javaProject, char[] packageName, char[] qualifiedTypeName, int dim, char[] internalPrefix, char[][] excludedNames, INamingRequestor requestor) {
 		Map options = javaProject.getOptions(true);
 		CompilerOptions compilerOptions = new CompilerOptions(options);
 		AssistOptions assistOptions = new AssistOptions(options);
@@ -52,7 +52,7 @@ public class InternalNamingConventions {
 			getNameScanner(compilerOptions),
 			requestor);
 	}
-	public static void suggestFieldNames(IJavaProject javaProject, char[] packageName, char[] qualifiedTypeName, int dim, int modifiers, char[] internalPrefix, char[][] excludedNames, INamingRequestor requestor) {
+	public static void suggestFieldNames(IJavaScriptProject javaProject, char[] packageName, char[] qualifiedTypeName, int dim, int modifiers, char[] internalPrefix, char[][] excludedNames, INamingRequestor requestor) {
 		boolean isStatic = Flags.isStatic(modifiers);
 
 		Map options = javaProject.getOptions(true);
@@ -70,7 +70,7 @@ public class InternalNamingConventions {
 			getNameScanner(compilerOptions),
 			requestor);
 	}
-	public static void suggestLocalVariableNames(IJavaProject javaProject, char[] packageName, char[] qualifiedTypeName, int dim, char[] internalPrefix, char[][] excludedNames, INamingRequestor requestor) {
+	public static void suggestLocalVariableNames(IJavaScriptProject javaProject, char[] packageName, char[] qualifiedTypeName, int dim, char[] internalPrefix, char[][] excludedNames, INamingRequestor requestor) {
 		Map options = javaProject.getOptions(true);
 		CompilerOptions compilerOptions = new CompilerOptions(options);
 		AssistOptions assistOptions = new AssistOptions(options);

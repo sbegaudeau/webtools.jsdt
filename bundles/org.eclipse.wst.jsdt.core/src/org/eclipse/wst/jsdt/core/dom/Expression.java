@@ -33,7 +33,7 @@ package org.eclipse.wst.jsdt.core.dom;
  *    ClassInstanceCreation
  *    ArrayCreation
  *    ArrayInitializer
- *    MethodInvocation
+ *    FunctionInvocation
  *    SuperMethodInvocation
  *    ArrayAccess
  *    InfixExpression

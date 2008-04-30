@@ -16,14 +16,14 @@ import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 
 /**
  * This scanner recognizes the JavaDoc comments, Java multi line comments, Java single line comments,
  * Java strings and Java characters.
  */
-public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaPartitions {
+public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaScriptPartitions {
 
 	// states
 	private static final int JAVA= 0;
@@ -36,10 +36,10 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaPa
 	// beginning of prefixes and postfixes
 	private static final int NONE= 0;
 	private static final int BACKSLASH= 1; // postfix for STRING and CHARACTER
-	private static final int SLASH= 2; // prefix for SINGLE_LINE or MULTI_LINE or JAVADOC
-	private static final int SLASH_STAR= 3; // prefix for MULTI_LINE_COMMENT or JAVADOC
-	private static final int SLASH_STAR_STAR= 4; // prefix for MULTI_LINE_COMMENT or JAVADOC
-	private static final int STAR= 5; // postfix for MULTI_LINE_COMMENT or JAVADOC
+	private static final int SLASH= 2; // prefix for SINGLE_LINE or MULTI_LINE or JSDOC
+	private static final int SLASH_STAR= 3; // prefix for MULTI_LINE_COMMENT or JSDOC
+	private static final int SLASH_STAR_STAR= 4; // prefix for MULTI_LINE_COMMENT or JSDOC
+	private static final int STAR= 5; // postfix for MULTI_LINE_COMMENT or JSDOC
 	private static final int CARRIAGE_RETURN=6; // postfix for STRING, CHARACTER and SINGLE_LINE_COMMENT
 
 	/** The scanner. */

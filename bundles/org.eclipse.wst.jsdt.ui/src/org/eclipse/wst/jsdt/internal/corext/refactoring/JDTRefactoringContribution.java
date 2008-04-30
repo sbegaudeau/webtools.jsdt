@@ -15,14 +15,14 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringContribution;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringContribution;
 
 /**
  * Partial implementation of a JDT refactoring contribution.
  * 
  * @since 3.2
  */
-public abstract class JDTRefactoringContribution extends JavaRefactoringContribution {
+public abstract class JDTRefactoringContribution extends JavaScriptRefactoringContribution {
 
 	/**
 	 * {@inheritDoc}

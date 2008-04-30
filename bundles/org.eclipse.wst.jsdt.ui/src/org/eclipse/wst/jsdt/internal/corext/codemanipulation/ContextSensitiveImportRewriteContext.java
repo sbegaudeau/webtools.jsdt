@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
@@ -33,13 +33,13 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
  */
 public class ContextSensitiveImportRewriteContext extends ImportRewriteContext {
 	
-	private final CompilationUnit fCompilationUnit;
+	private final JavaScriptUnit fCompilationUnit;
 	private final int fPosition;
 	private IBinding[] fDeclarationsInScope;
 	private Name[] fImportedNames;
 	private final ImportRewrite fImportRewrite;
 	
-	public ContextSensitiveImportRewriteContext(CompilationUnit compilationUnit, int position, ImportRewrite importRewrite) {
+	public ContextSensitiveImportRewriteContext(JavaScriptUnit compilationUnit, int position, ImportRewrite importRewrite) {
 		fCompilationUnit= compilationUnit;
 		fPosition= position;
 		fImportRewrite= importRewrite;
@@ -113,13 +113,13 @@ public class ContextSensitiveImportRewriteContext extends ImportRewriteContext {
 		
 //		if (qualifier.equals("java.lang")) { //$NON-NLS-1$
 //			//No explicit import statement required
-//			IJavaElement parent= fCompilationUnit.getJavaElement().getParent();
+//			IJavaScriptElement parent= fCompilationUnit.getJavaElement().getParent();
 //			if (parent instanceof IPackageFragment) {
 //				IPackageFragment packageFragment= (IPackageFragment)parent;
 //				try {
-//					ICompilationUnit[] compilationUnits= packageFragment.getCompilationUnits();
+//					IJavaScriptUnit[] compilationUnits= packageFragment.getCompilationUnits();
 //					for (int i= 0; i < compilationUnits.length; i++) {
-//						ICompilationUnit cu= compilationUnits[i];
+//						IJavaScriptUnit cu= compilationUnits[i];
 //						IType[] allTypes= cu.getAllTypes();
 //						for (int j= 0; j < allTypes.length; j++) {
 //							IType type= allTypes[j];
@@ -128,7 +128,7 @@ public class ContextSensitiveImportRewriteContext extends ImportRewriteContext {
 //								return RES_NAME_CONFLICT;
 //						}
 //					}
-//				} catch (JavaModelException e) {
+//				} catch (JavaScriptModelException e) {
 //				}
 //			}
 //		}
@@ -190,10 +190,10 @@ public class ContextSensitiveImportRewriteContext extends ImportRewriteContext {
 	
 	private Name[] getImportedNames() {
 		if (fImportedNames == null) {
-			IJavaProject project= null;
-			IJavaElement javaElement= fCompilationUnit.getJavaElement();
+			IJavaScriptProject project= null;
+			IJavaScriptElement javaElement= fCompilationUnit.getJavaElement();
 			if (javaElement != null)
-				project= javaElement.getJavaProject();
+				project= javaElement.getJavaScriptProject();
 			
 			List imports= new ArrayList();
 			ImportReferencesCollector.collect(fCompilationUnit, project, null, imports, null);

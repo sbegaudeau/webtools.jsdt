@@ -24,7 +24,7 @@ public class AnnotationMethodDeclaration extends MethodDeclaration implements IA
 	public int extendedDimensions;
 
 	/**
-	 * MethodDeclaration constructor comment.
+	 * FunctionDeclaration constructor comment.
 	 */
 	public AnnotationMethodDeclaration(CompilationResult compilationResult) {
 		super(compilationResult);

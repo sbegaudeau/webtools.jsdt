@@ -16,8 +16,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.OpenInNewWindowAction;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 /*
  * XXX: This is a workaround for: http://dev.eclipse.org/bugs/show_bug.cgi?id=13070
@@ -43,17 +43,17 @@ public class PatchedOpenInNewWindowAction extends OpenInNewWindowAction {
 		}
 	}
 
-	private IJavaElement getSelectedJavaElement() {
+	private IJavaScriptElement getSelectedJavaElement() {
 		if (fWorkbenchWindow.getActivePage() != null) {
 			ISelection selection= fWorkbenchWindow.getActivePage().getSelection();
 			if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
 				Object selectedElement= ((IStructuredSelection)selection).getFirstElement();
-				if (selectedElement instanceof IJavaElement)
-					return (IJavaElement)selectedElement;
-				if (!(selectedElement instanceof IJavaElement) && selectedElement instanceof IAdaptable)
-					return (IJavaElement)((IAdaptable)selectedElement).getAdapter(IJavaElement.class);
+				if (selectedElement instanceof IJavaScriptElement)
+					return (IJavaScriptElement)selectedElement;
+				if (!(selectedElement instanceof IJavaScriptElement) && selectedElement instanceof IAdaptable)
+					return (IJavaScriptElement)((IAdaptable)selectedElement).getAdapter(IJavaScriptElement.class);
 				else if (selectedElement instanceof IWorkspace)
-						return JavaCore.create(((IWorkspace)selectedElement).getRoot());
+						return JavaScriptCore.create(((IWorkspace)selectedElement).getRoot());
 			}
 		}
 		return null;

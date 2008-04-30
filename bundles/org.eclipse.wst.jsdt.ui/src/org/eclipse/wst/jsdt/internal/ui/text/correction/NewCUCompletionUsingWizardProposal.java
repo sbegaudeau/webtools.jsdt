@@ -23,15 +23,15 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
@@ -40,7 +40,7 @@ import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
@@ -49,7 +49,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.NewClassCreationWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewElementWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewEnumCreationWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewInterfaceCreationWizard;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.wizards.NewTypeWizardPage;
 
 /**
@@ -69,15 +69,15 @@ public class NewCUCompletionUsingWizardProposal extends ChangeCorrectionProposal
 	public static final int K_ANNOTATION= 4;
 
 	private Name fNode;
-	private ICompilationUnit fCompilationUnit;
+	private IJavaScriptUnit fCompilationUnit;
 	private int fTypeKind;
-	private IJavaElement fTypeContainer; // IType or IPackageFragment
+	private IJavaScriptElement fTypeContainer; // IType or IPackageFragment
 	private String fTypeNameWithParameters;
 	private IType fCreatedType;
 
 	private boolean fShowDialog;
 
-	public NewCUCompletionUsingWizardProposal(ICompilationUnit cu, Name node, int typeKind, IJavaElement typeContainer, int severity) {
+	public NewCUCompletionUsingWizardProposal(IJavaScriptUnit cu, Name node, int typeKind, IJavaScriptElement typeContainer, int severity) {
 		super("", null, severity, null); //$NON-NLS-1$
 
 		fCompilationUnit= cu;
@@ -192,12 +192,12 @@ public class NewCUCompletionUsingWizardProposal extends ChangeCorrectionProposal
 
 	public void apply(IDocument document) {
 		NewElementWizard wizard= createWizard();
-		wizard.init(JavaPlugin.getDefault().getWorkbench(), new StructuredSelection(fCompilationUnit));
+		wizard.init(JavaScriptPlugin.getDefault().getWorkbench(), new StructuredSelection(fCompilationUnit));
 
 		IType createdType= null;
 		
 		if (fShowDialog) {
-			Shell shell= JavaPlugin.getActiveWorkbenchShell();
+			Shell shell= JavaScriptPlugin.getActiveWorkbenchShell();
 			WizardDialog dialog= new WizardDialog(shell, wizard);
 			PixelConverter converter= new PixelConverter(JFaceResources.getDialogFont());
 			dialog.setMinimumPageSize(converter.convertWidthInCharsToPixels(70), converter.convertHeightInCharsToPixels(20));
@@ -215,14 +215,14 @@ public class NewCUCompletionUsingWizardProposal extends ChangeCorrectionProposal
 				page.createType(null);
 				createdType= page.getCreatedType();
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			} catch (InterruptedException e) {
 			}
 		}
 		
 		if (createdType != null) {
-			IJavaElement container= createdType.getParent();
-			if (container instanceof ICompilationUnit) {
+			IJavaScriptElement container= createdType.getParent();
+			if (container instanceof IJavaScriptUnit) {
 				container= container.getParent();
 			}
 			if (!container.equals(fTypeContainer)) {
@@ -312,8 +312,8 @@ public class NewCUCompletionUsingWizardProposal extends ChangeCorrectionProposal
 		node= ASTNodes.getNormalizedNode(node);
 		ASTNode parent= node.getParent();
 		switch (parent.getNodeType()) {
-			case ASTNode.METHOD_DECLARATION:
-				if (node.getLocationInParent() == MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY) {
+			case ASTNode.FUNCTION_DECLARATION:
+				if (node.getLocationInParent() == FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY) {
 					return ast.resolveWellKnownType("java.lang.Exception"); //$NON-NLS-1$
 				}
 				break;
@@ -362,7 +362,7 @@ public class NewCUCompletionUsingWizardProposal extends ChangeCorrectionProposal
 			buf.append(CorrectionMessages.NewCUCompletionUsingWizardProposal_tooltip_package);
 		}
 		buf.append(" <b>"); //$NON-NLS-1$
-		buf.append(JavaElementLabels.getElementLabel(fTypeContainer, JavaElementLabels.T_FULLY_QUALIFIED));
+		buf.append(JavaScriptElementLabels.getElementLabel(fTypeContainer, JavaScriptElementLabels.T_FULLY_QUALIFIED));
 		buf.append("</b><br>"); //$NON-NLS-1$
 		buf.append("public "); //$NON-NLS-1$
 

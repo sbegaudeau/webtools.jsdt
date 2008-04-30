@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
@@ -42,7 +42,7 @@ public final class ProposalSorterRegistry {
 
 	public static synchronized ProposalSorterRegistry getDefault() {
 		if (fInstance == null)
-			fInstance= new ProposalSorterRegistry(JavaPlugin.getDefault().getPreferenceStore(), PreferenceConstants.CODEASSIST_SORTER);
+			fInstance= new ProposalSorterRegistry(JavaScriptPlugin.getDefault().getPreferenceStore(), PreferenceConstants.CODEASSIST_SORTER);
 		return fInstance;
 	}
 
@@ -72,7 +72,7 @@ public final class ProposalSorterRegistry {
 
 		Map sorters= new LinkedHashMap();
 		IExtensionRegistry registry= Platform.getExtensionRegistry();
-		List elements= new ArrayList(Arrays.asList(registry.getConfigurationElementsFor(JavaPlugin.getPluginId(), EXTENSION_POINT)));
+		List elements= new ArrayList(Arrays.asList(registry.getConfigurationElementsFor(JavaScriptPlugin.getPluginId(), EXTENSION_POINT)));
 
 		for (Iterator iter= elements.iterator(); iter.hasNext();) {
 			IConfigurationElement element= (IConfigurationElement) iter.next();
@@ -93,7 +93,7 @@ public final class ProposalSorterRegistry {
 				 */
 				Object[] args= { element.toString() };
 				String message= Messages.format(JavaTextMessages.CompletionProposalComputerRegistry_invalid_message, args);
-				IStatus status= new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, message, x);
+				IStatus status= new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, message, x);
 				informUser(status);
 			}
 		}
@@ -102,10 +102,10 @@ public final class ProposalSorterRegistry {
 	}
 
 	private void informUser(IStatus status) {
-		JavaPlugin.log(status);
+		JavaScriptPlugin.log(status);
 		String title= JavaTextMessages.CompletionProposalComputerRegistry_error_dialog_title;
 		String message= status.getMessage();
-		MessageDialog.openError(JavaPlugin.getActiveWorkbenchShell(), title, message);
+		MessageDialog.openError(JavaScriptPlugin.getActiveWorkbenchShell(), title, message);
 	}
 
 	public ProposalSorterHandle[] getSorters() {

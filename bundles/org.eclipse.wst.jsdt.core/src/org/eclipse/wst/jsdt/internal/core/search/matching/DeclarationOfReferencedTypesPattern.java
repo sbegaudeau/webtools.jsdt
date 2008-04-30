@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 
 public class DeclarationOfReferencedTypesPattern extends TypeReferencePattern {
 
 protected SimpleSet knownTypes;
-protected IJavaElement enclosingElement;
+protected IJavaScriptElement enclosingElement;
 
-public DeclarationOfReferencedTypesPattern(IJavaElement enclosingElement) {
+public DeclarationOfReferencedTypesPattern(IJavaScriptElement enclosingElement) {
 	super(null, null, R_PATTERN_MATCH);
 
 	this.enclosingElement = enclosingElement;

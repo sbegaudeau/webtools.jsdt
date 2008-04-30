@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.ui;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdapterFactory;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 
 /**
  * An adapter factory for IJavaProjects.
@@ -31,7 +31,7 @@ public class JavaProjectAdapterFactory implements IAdapterFactory {
 	
 	public Object getAdapter(Object element, Class key) {
 		if (IProject.class.equals(key)) {
-			IJavaProject javaProject= (IJavaProject)element;
+			IJavaScriptProject javaProject= (IJavaScriptProject)element;
 			return javaProject.getProject();
 		} 
 		return null; 

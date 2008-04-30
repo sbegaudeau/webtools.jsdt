@@ -16,7 +16,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 
 /**
- * Used to convert an IFile into an ICompilationUnit,
+ * Used to convert an IFile into an IJavaScriptUnit,
  * for clients outside of this package.
  * @since 3.3
  */

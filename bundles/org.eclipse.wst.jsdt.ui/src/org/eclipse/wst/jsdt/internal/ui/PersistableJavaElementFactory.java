@@ -14,11 +14,11 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 /** 
- * The JavaElementFactory is used to save and recreate an IJavaElement object.
+ * The JavaElementFactory is used to save and recreate an IJavaScriptElement object.
  * As such, it implements the IPersistableElement interface for storage
  * and the IElementFactory interface for recreation.
  *
@@ -31,7 +31,7 @@ public class PersistableJavaElementFactory implements IElementFactory, IPersista
 	private static final String KEY= "elementID"; //$NON-NLS-1$
 	private static final String FACTORY_ID= "org.eclipse.wst.jsdt.ui.PersistableJavaElementFactory"; //$NON-NLS-1$
 
-	private IJavaElement fElement;
+	private IJavaScriptElement fElement;
 	
 	/**
 	 * Create a JavaElementFactory.  
@@ -43,7 +43,7 @@ public class PersistableJavaElementFactory implements IElementFactory, IPersista
 	 * Create a JavaElementFactory.  This constructor is typically used
 	 * for our IPersistableElement side.
 	 */
-	public PersistableJavaElementFactory(IJavaElement element) {
+	public PersistableJavaElementFactory(IJavaScriptElement element) {
 		fElement= element;
 	}
 
@@ -54,7 +54,7 @@ public class PersistableJavaElementFactory implements IElementFactory, IPersista
 	
 		String identifier= memento.getString(KEY);
 		if (identifier != null) {
-			return JavaCore.create(identifier);
+			return JavaScriptCore.create(identifier);
 		}
 		return null;
 	}

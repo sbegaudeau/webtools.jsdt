@@ -19,10 +19,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
@@ -46,8 +46,8 @@ protected LibraryPackageFragment(PackageFragmentRoot root, String[] names) {
 protected boolean computeChildren(OpenableElementInfo info) {
 	String name = this.getPackageFragmentRoot().getPath().toOSString();
 	ClassFile classFile = new ClassFile(this,name);
-//	CompilationUnit cu= new CompilationUnit(this, this.getPackageFragmentRoot().getPath().toOSString(), DefaultWorkingCopyOwner.PRIMARY);
-	IJavaElement[] children= new IJavaElement[]{classFile};
+//	JavaScriptUnit cu= new JavaScriptUnit(this, this.getPackageFragmentRoot().getPath().toOSString(), DefaultWorkingCopyOwner.PRIMARY);
+	IJavaScriptElement[] children= new IJavaScriptElement[]{classFile};
 	info.setChildren(children);
 	return true;
 }
@@ -56,14 +56,14 @@ protected boolean computeChildren(OpenableElementInfo info) {
  * Returns true if this fragment contains at least one java resource.
  * Returns false otherwise.
  */
-public boolean containsJavaResources() throws JavaModelException {
+public boolean containsJavaResources() throws JavaScriptModelException {
 	return true;
 }
 /**
  * @see org.eclipse.wst.jsdt.core.IPackageFragment
  */
-public ICompilationUnit createCompilationUnit(String cuName, String contents, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
+public IJavaScriptUnit createCompilationUnit(String cuName, String contents, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
+	throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.READ_ONLY, this));
 }
 /**
  * @see JavaElement
@@ -74,7 +74,7 @@ protected Object createElementInfo() {
 /*
  * @see JavaElement#generateInfos
  */
-protected void generateInfos(Object info, HashMap newElements, IProgressMonitor pm) throws JavaModelException {
+protected void generateInfos(Object info, HashMap newElements, IProgressMonitor pm) throws JavaScriptModelException {
 	// Open my jar: this creates all the pkg infos
 	Openable openableParent = (Openable)this.parent;
 	if (!openableParent.isOpen()) {
@@ -84,7 +84,7 @@ protected void generateInfos(Object info, HashMap newElements, IProgressMonitor 
 /**
  * @see org.eclipse.wst.jsdt.core.IPackageFragment
  */
-public IClassFile[] getClassFiles() throws JavaModelException {
+public IClassFile[] getClassFiles() throws JavaScriptModelException {
 	ArrayList list = getChildrenOfType(CLASS_FILE);
 	IClassFile[] array= new IClassFile[list.size()];
 	list.toArray(array);
@@ -93,14 +93,22 @@ public IClassFile[] getClassFiles() throws JavaModelException {
 /**
  * A jar package fragment never contains compilation units.
  * @see org.eclipse.wst.jsdt.core.IPackageFragment
+ * @deprecated Use {@link #getJavaScriptUnits()} instead
  */
-public ICompilationUnit[] getCompilationUnits() {
+public IJavaScriptUnit[] getCompilationUnits() {
+	return getJavaScriptUnits();
+}
+/**
+ * A jar package fragment never contains compilation units.
+ * @see org.eclipse.wst.jsdt.core.IPackageFragment
+ */
+public IJavaScriptUnit[] getJavaScriptUnits() {
 	return NO_COMPILATION_UNITS;
 }
 /**
  * A package fragment in a jar has no corresponding resource.
  *
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public IResource getCorrespondingResource() {
 	return null;
@@ -108,7 +116,7 @@ public IResource getCorrespondingResource() {
 /**
  * Returns an array of non-java resources contained in the receiver.
  */
-public Object[] getNonJavaResources() throws JavaModelException {
+public Object[] getNonJavaScriptResources() throws JavaScriptModelException {
 	if (this.isDefaultPackage()) {
 		// We don't want to show non java resources of the default package (see PR #1G58NB8)
 		return JavaElementInfo.NO_NON_JAVA_RESOURCES;
@@ -123,7 +131,7 @@ public boolean isReadOnly() {
 	return true;
 }
  static final Object[] NO_OBJECTS={};
-protected Object[] storedNonJavaResources() throws JavaModelException {
+protected Object[] storedNonJavaResources() throws JavaScriptModelException {
 	return NO_OBJECTS;
 }
 
@@ -157,7 +165,7 @@ public String getDisplayName() {
 	if(parent instanceof LibraryFragmentRoot) {
 		JsGlobalScopeContainerInitializer initializer = ((LibraryFragmentRoot)parent).getContainerInitializer();
 		if(initializer==null) return getPath().removeLastSegments(1).toString();
-		String name = initializer.getDescription(getPath(), getJavaProject());
+		String name = initializer.getDescription(getPath(), getJavaScriptProject());
 		if(name!=null) return name;
 	}
 	return  parent.getPath().lastSegment();

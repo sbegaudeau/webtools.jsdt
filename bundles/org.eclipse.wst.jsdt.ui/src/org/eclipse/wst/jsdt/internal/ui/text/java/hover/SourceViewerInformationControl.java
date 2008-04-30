@@ -37,11 +37,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.wst.jsdt.internal.ui.text.SimpleJavaSourceViewerConfiguration;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 /**
  * Source viewer based implementation of <code>IInformationControl</code>.
@@ -149,9 +149,9 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 		}
 
 		// Source viewer
-		IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 		fViewer= new JavaSourceViewer(composite, null, null, false, style, store);
-		fViewer.configure(new SimpleJavaSourceViewerConfiguration(JavaPlugin.getDefault().getJavaTextTools().getColorManager(), store, null, IJavaPartitions.JAVA_PARTITIONING, false));
+		fViewer.configure(new SimpleJavaSourceViewerConfiguration(JavaScriptPlugin.getDefault().getJavaTextTools().getColorManager(), store, null, IJavaScriptPartitions.JAVA_PARTITIONING, false));
 		fViewer.setEditable(false);
 
 		fText= fViewer.getTextWidget();
@@ -211,7 +211,7 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 	}
 	
 	private RGB getHoverBackgroundColorRGB() {
-		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 		return store.getBoolean(PreferenceConstants.EDITOR_SOURCE_HOVER_BACKGROUND_COLOR_SYSTEM_DEFAULT)
 			? null
 			: PreferenceConverter.getColor(store, PreferenceConstants.EDITOR_SOURCE_HOVER_BACKGROUND_COLOR);
@@ -300,7 +300,7 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 		}
 
 		IDocument doc= new Document(content);
-		JavaPlugin.getDefault().getJavaTextTools().setupJavaDocumentPartitioner(doc, IJavaPartitions.JAVA_PARTITIONING);
+		JavaScriptPlugin.getDefault().getJavaTextTools().setupJavaDocumentPartitioner(doc, IJavaScriptPartitions.JAVA_PARTITIONING);
 		fViewer.setInput(doc);
 	}
 

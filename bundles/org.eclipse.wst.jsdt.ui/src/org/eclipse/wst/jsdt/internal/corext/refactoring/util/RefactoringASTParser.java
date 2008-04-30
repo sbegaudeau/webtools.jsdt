@@ -15,15 +15,15 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 
@@ -35,19 +35,19 @@ public class RefactoringASTParser {
 		fParser= ASTParser.newParser(level);
 	}
 	
-	public CompilationUnit parse(ITypeRoot typeRoot, boolean resolveBindings) {
+	public JavaScriptUnit parse(ITypeRoot typeRoot, boolean resolveBindings) {
 		return parse(typeRoot, resolveBindings, null);
 	}
 
-	public CompilationUnit parse(ITypeRoot typeRoot, boolean resolveBindings, IProgressMonitor pm) {
+	public JavaScriptUnit parse(ITypeRoot typeRoot, boolean resolveBindings, IProgressMonitor pm) {
 		return parse(typeRoot, null, resolveBindings, pm);
 	}
 
-	public CompilationUnit parse(ITypeRoot typeRoot, WorkingCopyOwner owner, boolean resolveBindings, IProgressMonitor pm) {
+	public JavaScriptUnit parse(ITypeRoot typeRoot, WorkingCopyOwner owner, boolean resolveBindings, IProgressMonitor pm) {
 		return parse(typeRoot, owner, resolveBindings, false, false, pm);
 	}
 
-	public CompilationUnit parse(ITypeRoot typeRoot, WorkingCopyOwner owner, boolean resolveBindings, boolean statementsRecovery, boolean bindingsRecovery, IProgressMonitor pm) {
+	public JavaScriptUnit parse(ITypeRoot typeRoot, WorkingCopyOwner owner, boolean resolveBindings, boolean statementsRecovery, boolean bindingsRecovery, IProgressMonitor pm) {
 		fParser.setResolveBindings(resolveBindings);
 		fParser.setStatementsRecovery(statementsRecovery);
 		fParser.setBindingsRecovery(bindingsRecovery);
@@ -55,7 +55,7 @@ public class RefactoringASTParser {
 		if (owner != null)
 			fParser.setWorkingCopyOwner(owner);
 		fParser.setCompilerOptions(getCompilerOptions(typeRoot));
-		CompilationUnit result= (CompilationUnit) fParser.createAST(pm);
+		JavaScriptUnit result= (JavaScriptUnit) fParser.createAST(pm);
 		return result;
 	}
 
@@ -65,16 +65,16 @@ public class RefactoringASTParser {
 	 * @param resolveBindings whether bindings are to be resolved
 	 * @param statementsRecovery whether statements recovery should be enabled
 	 * @param pm an {@link IProgressMonitor}, or <code>null</code>
-	 * @return the parsed CompilationUnit
+	 * @return the parsed JavaScriptUnit
 	 */
-	public CompilationUnit parse(String newCuSource, ICompilationUnit originalCu, boolean resolveBindings, boolean statementsRecovery, IProgressMonitor pm) {
+	public JavaScriptUnit parse(String newCuSource, IJavaScriptUnit originalCu, boolean resolveBindings, boolean statementsRecovery, IProgressMonitor pm) {
 		fParser.setResolveBindings(resolveBindings);
 		fParser.setStatementsRecovery(statementsRecovery);
 		fParser.setSource(newCuSource.toCharArray());
 		fParser.setUnitName(originalCu.getElementName());
-		fParser.setProject(originalCu.getJavaProject());
+		fParser.setProject(originalCu.getJavaScriptProject());
 		fParser.setCompilerOptions(getCompilerOptions(originalCu));
-		CompilationUnit newCUNode= (CompilationUnit) fParser.createAST(pm);
+		JavaScriptUnit newCUNode= (JavaScriptUnit) fParser.createAST(pm);
 		return newCUNode;
 	}
 	
@@ -84,17 +84,17 @@ public class RefactoringASTParser {
 	 * @param resolveBindings whether bindings are to be resolved
 	 * @param statementsRecovery whether statements recovery should be enabled
 	 * @param pm an {@link IProgressMonitor}, or <code>null</code>
-	 * @return the parsed CompilationUnit
+	 * @return the parsed JavaScriptUnit
 	 */
-	public CompilationUnit parse(String newCfSource, IClassFile originalCf, boolean resolveBindings, boolean statementsRecovery, IProgressMonitor pm) {
+	public JavaScriptUnit parse(String newCfSource, IClassFile originalCf, boolean resolveBindings, boolean statementsRecovery, IProgressMonitor pm) {
 		fParser.setResolveBindings(resolveBindings);
 		fParser.setStatementsRecovery(statementsRecovery);
 		fParser.setSource(newCfSource.toCharArray());
 		String cfName= originalCf.getElementName();
 		fParser.setUnitName(cfName.substring(0, cfName.length() - 6) + JavaModelUtil.DEFAULT_CU_SUFFIX);
-		fParser.setProject(originalCf.getJavaProject());
+		fParser.setProject(originalCf.getJavaScriptProject());
 		fParser.setCompilerOptions(getCompilerOptions(originalCf));
-		CompilationUnit newCUNode= (CompilationUnit) fParser.createAST(pm);
+		JavaScriptUnit newCUNode= (JavaScriptUnit) fParser.createAST(pm);
 		return newCUNode;
 	}
 	
@@ -106,10 +106,10 @@ public class RefactoringASTParser {
 	 * @param typeRoot the type root
 	 * @param resolveBindings TODO
 	 * @param pm an {@link IProgressMonitor}, or <code>null</code>
-	 * @return the parsed CompilationUnit
+	 * @return the parsed JavaScriptUnit
 	 */
-	public static CompilationUnit parseWithASTProvider(ITypeRoot typeRoot, boolean resolveBindings, IProgressMonitor pm) {
-		CompilationUnit cuNode= ASTProvider.getASTProvider().getAST(typeRoot, ASTProvider.WAIT_ACTIVE_ONLY, pm);
+	public static JavaScriptUnit parseWithASTProvider(ITypeRoot typeRoot, boolean resolveBindings, IProgressMonitor pm) {
+		JavaScriptUnit cuNode= ASTProvider.getASTProvider().getAST(typeRoot, ASTProvider.WAIT_ACTIVE_ONLY, pm);
 		if (cuNode != null) {
 			return cuNode;
 		} else {
@@ -117,18 +117,18 @@ public class RefactoringASTParser {
 		}
 	}
 
-	public static ICompilationUnit getCompilationUnit(ASTNode node) {
+	public static IJavaScriptUnit getCompilationUnit(ASTNode node) {
 		ASTNode root= node.getRoot();
-		if (root instanceof CompilationUnit) {
-			IJavaElement cu= ((CompilationUnit) root).getJavaElement();
-			if (cu instanceof ICompilationUnit)
-				return (ICompilationUnit) cu;
+		if (root instanceof JavaScriptUnit) {
+			IJavaScriptElement cu= ((JavaScriptUnit) root).getJavaElement();
+			if (cu instanceof IJavaScriptUnit)
+				return (IJavaScriptUnit) cu;
 		}
 		return null;
 	}
 	
-	public static Map getCompilerOptions(IJavaElement element) {
-		IJavaProject project= element.getJavaProject();
+	public static Map getCompilerOptions(IJavaScriptElement element) {
+		IJavaScriptProject project= element.getJavaScriptProject();
 		Map options= project.getOptions(true);
 		// turn all errors and warnings into ignore. The customizable set of compiler
 		// options only contains additional Eclipse options. The standard JDK compiler
@@ -141,7 +141,7 @@ public class RefactoringASTParser {
 				options.put(key, "ignore"); //$NON-NLS-1$
 			}
 		}
-		options.put(JavaCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$		
+		options.put(JavaScriptCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$		
 		return options;
 	}
 }

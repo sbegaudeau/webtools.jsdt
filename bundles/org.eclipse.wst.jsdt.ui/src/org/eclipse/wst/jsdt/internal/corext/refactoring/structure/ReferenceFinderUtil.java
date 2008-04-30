@@ -19,13 +19,13 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
@@ -42,19 +42,19 @@ public class ReferenceFinderUtil {
 
 	//----- referenced types -
 	
-	public static IType[] getTypesReferencedIn(IJavaElement[] elements, IProgressMonitor pm) throws JavaModelException {
+	public static IType[] getTypesReferencedIn(IJavaScriptElement[] elements, IProgressMonitor pm) throws JavaScriptModelException {
 		SearchMatch[] results= getTypeReferencesIn(elements, null, pm);
-		Set referencedTypes= extractElements(results, IJavaElement.TYPE);
+		Set referencedTypes= extractElements(results, IJavaScriptElement.TYPE);
 		return (IType[]) referencedTypes.toArray(new IType[referencedTypes.size()]);	
 	}
 	
-	public static IType[] getTypesReferencedIn(IJavaElement[] elements, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaModelException {
+	public static IType[] getTypesReferencedIn(IJavaScriptElement[] elements, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaScriptModelException {
 		SearchMatch[] results= getTypeReferencesIn(elements, owner, pm);
-		Set referencedTypes= extractElements(results, IJavaElement.TYPE);
+		Set referencedTypes= extractElements(results, IJavaScriptElement.TYPE);
 		return (IType[]) referencedTypes.toArray(new IType[referencedTypes.size()]);	
 	}
 	
-	private static SearchMatch[] getTypeReferencesIn(IJavaElement[] elements, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaModelException {
+	private static SearchMatch[] getTypeReferencesIn(IJavaScriptElement[] elements, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaScriptModelException {
 		List referencedTypes= new ArrayList();
 		pm.beginTask("", elements.length); //$NON-NLS-1$
 		for (int i = 0; i < elements.length; i++) {
@@ -64,7 +64,7 @@ public class ReferenceFinderUtil {
 		return (SearchMatch[]) referencedTypes.toArray(new SearchMatch[referencedTypes.size()]);
 	}
 	
-	private static List getTypeReferencesIn(IJavaElement element, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaModelException {
+	private static List getTypeReferencesIn(IJavaScriptElement element, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaScriptModelException {
 		CollectingSearchRequestor requestor= new CollectingSearchRequestor();
 		SearchEngine engine= owner != null ? new SearchEngine(owner) : new SearchEngine();
 		engine.searchDeclarationsOfReferencedTypes(element, requestor, pm);
@@ -73,19 +73,19 @@ public class ReferenceFinderUtil {
 	
 	//----- referenced fields ----
 	
-	public static IField[] getFieldsReferencedIn(IJavaElement[] elements, IProgressMonitor pm) throws JavaModelException {
+	public static IField[] getFieldsReferencedIn(IJavaScriptElement[] elements, IProgressMonitor pm) throws JavaScriptModelException {
 		SearchMatch[] results= getFieldReferencesIn(elements, null, pm);
-		Set referencedFields= extractElements(results, IJavaElement.FIELD);
+		Set referencedFields= extractElements(results, IJavaScriptElement.FIELD);
 		return (IField[]) referencedFields.toArray(new IField[referencedFields.size()]);
 	}
 	
-	public static IField[] getFieldsReferencedIn(IJavaElement[] elements, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaModelException {
+	public static IField[] getFieldsReferencedIn(IJavaScriptElement[] elements, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaScriptModelException {
 		SearchMatch[] results= getFieldReferencesIn(elements, owner, pm);
-		Set referencedFields= extractElements(results, IJavaElement.FIELD);
+		Set referencedFields= extractElements(results, IJavaScriptElement.FIELD);
 		return (IField[]) referencedFields.toArray(new IField[referencedFields.size()]);
 	}
 
-	private static SearchMatch[] getFieldReferencesIn(IJavaElement[] elements, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaModelException {
+	private static SearchMatch[] getFieldReferencesIn(IJavaScriptElement[] elements, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaScriptModelException {
 		List referencedFields= new ArrayList();
 		pm.beginTask("", elements.length); //$NON-NLS-1$
 		for (int i = 0; i < elements.length; i++) {
@@ -95,7 +95,7 @@ public class ReferenceFinderUtil {
 		return (SearchMatch[]) referencedFields.toArray(new SearchMatch[referencedFields.size()]);
 	}
 	
-	private static List getFieldReferencesIn(IJavaElement element, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaModelException {
+	private static List getFieldReferencesIn(IJavaScriptElement element, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaScriptModelException {
 		CollectingSearchRequestor requestor= new CollectingSearchRequestor();
 		SearchEngine engine= owner != null ? new SearchEngine(owner) : new SearchEngine();
 		engine.searchDeclarationsOfAccessedFields(element, requestor, pm);
@@ -104,19 +104,19 @@ public class ReferenceFinderUtil {
 	
 	//----- referenced methods ----
 	
-	public static IMethod[] getMethodsReferencedIn(IJavaElement[] elements, IProgressMonitor pm) throws JavaModelException {
+	public static IFunction[] getMethodsReferencedIn(IJavaScriptElement[] elements, IProgressMonitor pm) throws JavaScriptModelException {
 		SearchMatch[] results= getMethodReferencesIn(elements, null, pm);
-		Set referencedMethods= extractElements(results, IJavaElement.METHOD);
-		return (IMethod[]) referencedMethods.toArray(new IMethod[referencedMethods.size()]);
+		Set referencedMethods= extractElements(results, IJavaScriptElement.METHOD);
+		return (IFunction[]) referencedMethods.toArray(new IFunction[referencedMethods.size()]);
 	}
 	
-	public static IMethod[] getMethodsReferencedIn(IJavaElement[] elements, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaModelException {
+	public static IFunction[] getMethodsReferencedIn(IJavaScriptElement[] elements, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaScriptModelException {
 		SearchMatch[] results= getMethodReferencesIn(elements, owner, pm);
-		Set referencedMethods= extractElements(results, IJavaElement.METHOD);
-		return (IMethod[]) referencedMethods.toArray(new IMethod[referencedMethods.size()]);
+		Set referencedMethods= extractElements(results, IJavaScriptElement.METHOD);
+		return (IFunction[]) referencedMethods.toArray(new IFunction[referencedMethods.size()]);
 	}
 	
-	private static SearchMatch[] getMethodReferencesIn(IJavaElement[] elements, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaModelException {
+	private static SearchMatch[] getMethodReferencesIn(IJavaScriptElement[] elements, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaScriptModelException {
 		List referencedMethods= new ArrayList();
 		pm.beginTask("", elements.length); //$NON-NLS-1$
 		for (int i = 0; i < elements.length; i++) {
@@ -126,14 +126,14 @@ public class ReferenceFinderUtil {
 		return (SearchMatch[]) referencedMethods.toArray(new SearchMatch[referencedMethods.size()]);
 	}
 	
-	private static List getMethodReferencesIn(IJavaElement element, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaModelException {
+	private static List getMethodReferencesIn(IJavaScriptElement element, WorkingCopyOwner owner, IProgressMonitor pm) throws JavaScriptModelException {
 		CollectingSearchRequestor requestor= new CollectingSearchRequestor();
 		SearchEngine engine= owner != null ? new SearchEngine(owner) : new SearchEngine();
 		engine.searchDeclarationsOfSentMessages(element, requestor, pm);
 		return requestor.getResults();
 	}
 	
-	public static ITypeBinding[] getTypesReferencedInDeclarations(MethodDeclaration[] methods) {
+	public static ITypeBinding[] getTypesReferencedInDeclarations(FunctionDeclaration[] methods) {
 		Set typesUsed= new HashSet();
 		for (int i= 0; i < methods.length; i++) {
 			typesUsed.addAll(getTypesUsedInDeclaration(methods[i]));
@@ -142,7 +142,7 @@ public class ReferenceFinderUtil {
 	}
 		
 	//set of ITypeBindings
-	public static Set getTypesUsedInDeclaration(MethodDeclaration methodDeclaration) {
+	public static Set getTypesUsedInDeclaration(FunctionDeclaration methodDeclaration) {
 		if (methodDeclaration == null)
 			return new HashSet(0);
 		Set result= new HashSet();
@@ -172,7 +172,7 @@ public class ReferenceFinderUtil {
 	private static Set extractElements(SearchMatch[] searchResults, int elementType) {
 		Set elements= new HashSet();
 		for (int i= 0; i < searchResults.length; i++) {
-			IJavaElement el= SearchUtils.getEnclosingJavaElement(searchResults[i]);
+			IJavaScriptElement el= SearchUtils.getEnclosingJavaElement(searchResults[i]);
 			if (el.exists() && el.getElementType() == elementType)
 				elements.add(el);
 		}

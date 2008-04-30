@@ -77,7 +77,7 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.wst.jsdt.internal.ui.preferences.JavaBasePreferencePage;
@@ -267,7 +267,7 @@ public class RenameInformationPopup implements IWidgetTokenKeeper, IWidgetTokenK
 	}
 
 	private IDialogSettings getDialogSettings() {
-		return JavaPlugin.getDefault().getDialogSettingsSection(DIALOG_SETTINGS_SECTION);
+		return JavaScriptPlugin.getDefault().getDialogSettingsSection(DIALOG_SETTINGS_SECTION);
 	}
 
 	public void open() {

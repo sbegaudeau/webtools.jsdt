@@ -26,11 +26,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaUILabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
@@ -40,7 +40,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ITreeListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.TreeListDialogField;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
 
 
 public class ProjectsWorkbookPage extends BuildPathBasePage {
@@ -51,7 +51,7 @@ public class ProjectsWorkbookPage extends BuildPathBasePage {
 	private final int IDX_REMOVE= 3;
 	
 	private ListDialogField fClassPathList;
-	private IJavaProject fCurrJProject;
+	private IJavaScriptProject fCurrJProject;
 	
 	private TreeListDialogField fProjectsList;
 	
@@ -83,7 +83,7 @@ public class ProjectsWorkbookPage extends BuildPathBasePage {
 		fProjectsList.setViewerComparator(new CPListElementSorter());
 	}
 	
-	public void init(final IJavaProject jproject) {
+	public void init(final IJavaScriptProject jproject) {
 		fCurrJProject= jproject;
 		
 		if (Display.getCurrent() != null) {
@@ -97,7 +97,7 @@ public class ProjectsWorkbookPage extends BuildPathBasePage {
 		}
 	}
 		
-	private void updateProjectsList(IJavaProject currJProject) {
+	private void updateProjectsList(IJavaScriptProject currJProject) {
 		// add the projects-cpentries that are already on the class path
 		List cpelements= fClassPathList.getElements();
 		
@@ -176,7 +176,7 @@ public class ProjectsWorkbookPage extends BuildPathBasePage {
 	 * @see org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathBasePage#isEntryKind(int)
 	 */
 	public boolean isEntryKind(int kind) {
-		return kind == IClasspathEntry.CPE_PROJECT;
+		return kind == IIncludePathEntry.CPE_PROJECT;
 	}
 
 
@@ -394,7 +394,7 @@ public class ProjectsWorkbookPage extends BuildPathBasePage {
 		if (fSWTControl != null) {
 			return fSWTControl.getShell();
 		}
-		return JavaPlugin.getActiveWorkbenchShell();
+		return JavaScriptPlugin.getActiveWorkbenchShell();
 	}
 
 
@@ -402,17 +402,17 @@ public class ProjectsWorkbookPage extends BuildPathBasePage {
 		
 		try {
 			ArrayList selectable= new ArrayList();
-			selectable.addAll(Arrays.asList(fCurrJProject.getJavaModel().getJavaProjects()));
+			selectable.addAll(Arrays.asList(fCurrJProject.getJavaScriptModel().getJavaScriptProjects()));
 			selectable.remove(fCurrJProject);
 			
 			List elements= fProjectsList.getElements();
 			for (int i= 0; i < elements.size(); i++) {
 				CPListElement curr= (CPListElement) elements.get(0);
-				IJavaProject proj= (IJavaProject) JavaCore.create(curr.getResource());
+				IJavaScriptProject proj= (IJavaScriptProject) JavaScriptCore.create(curr.getResource());
 				selectable.remove(proj);
 			}
 			Object[] selectArr= selectable.toArray();
-			new JavaElementComparator().sort(null, selectArr);
+			new JavaScriptElementComparator().sort(null, selectArr);
 					
 			ListSelectionDialog dialog= new ListSelectionDialog(getShell(), Arrays.asList(selectArr), new ArrayContentProvider(), new JavaUILabelProvider(), NewWizardMessages.ProjectsWorkbookPage_chooseProjects_message); 
 			dialog.setTitle(NewWizardMessages.ProjectsWorkbookPage_chooseProjects_title); 
@@ -421,12 +421,12 @@ public class ProjectsWorkbookPage extends BuildPathBasePage {
 				Object[] result= dialog.getResult();
 				CPListElement[] cpElements= new CPListElement[result.length];
 				for (int i= 0; i < result.length; i++) {
-					IJavaProject curr= (IJavaProject) result[i];
-					cpElements[i]= new CPListElement(fCurrJProject, IClasspathEntry.CPE_PROJECT, curr.getPath(), curr.getResource());
+					IJavaScriptProject curr= (IJavaScriptProject) result[i];
+					cpElements[i]= new CPListElement(fCurrJProject, IIncludePathEntry.CPE_PROJECT, curr.getPath(), curr.getResource());
 				}
 				return cpElements;
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return null;
 		}
 		return null;

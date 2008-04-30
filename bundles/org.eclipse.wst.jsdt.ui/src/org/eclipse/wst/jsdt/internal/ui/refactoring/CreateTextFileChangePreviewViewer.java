@@ -28,14 +28,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.changes.CreateTextFileChange;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.IPropertiesFilePartitions;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileDocumentSetupParticipant;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileSourceViewerConfiguration;
 import org.eclipse.wst.jsdt.internal.ui.util.ViewerPane;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 /**
  * Change preview viewer for <code>CreateTextFileChange</code> objects.
@@ -133,11 +133,11 @@ public final class CreateTextFileChangePreviewViewer implements IChangePreviewVi
 		// source viewer registry.
 		fSourceViewer.unconfigure();
 		String textType= textFileChange.getTextType();
-		JavaTextTools textTools= JavaPlugin.getDefault().getJavaTextTools();
-		IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
+		JavaScriptTextTools textTools= JavaScriptPlugin.getDefault().getJavaTextTools();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 		if ("java".equals(textType)) { //$NON-NLS-1$
 			textTools.setupJavaDocumentPartitioner(document);
-			fSourceViewer.configure(new JavaSourceViewerConfiguration(textTools.getColorManager(), store, null, null));
+			fSourceViewer.configure(new JavaScriptSourceViewerConfiguration(textTools.getColorManager(), store, null, null));
 		} else if ("properties".equals(textType)) { //$NON-NLS-1$
 			PropertiesFileDocumentSetupParticipant.setupDocument(document);
 			fSourceViewer.configure(new PropertiesFileSourceViewerConfiguration(textTools.getColorManager(), store, null, IPropertiesFilePartitions.PROPERTIES_FILE_PARTITIONING));

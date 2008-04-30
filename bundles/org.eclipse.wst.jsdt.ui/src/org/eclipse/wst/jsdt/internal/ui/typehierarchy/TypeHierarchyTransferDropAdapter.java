@@ -14,7 +14,7 @@ import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.ui.packageview.SelectionTransferDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.util.OpenTypeHierarchyUtil;
 import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
@@ -53,15 +53,15 @@ public class TypeHierarchyTransferDropAdapter extends SelectionTransferDropAdapt
 			super.drop(target, event);
 			return;
 		}	
-		IJavaElement input= getInputElement(getSelection());
+		IJavaScriptElement input= getInputElement(getSelection());
 		fTypeHierarchyViewPart.setInputElement(input);
 	}
 	
-	private static IJavaElement getInputElement(ISelection selection) {
+	private static IJavaScriptElement getInputElement(ISelection selection) {
 		Object single= SelectionUtil.getSingleElement(selection);
 		if (single == null)
 			return null;
-		IJavaElement[] candidates= OpenTypeHierarchyUtil.getCandidates(single);
+		IJavaScriptElement[] candidates= OpenTypeHierarchyUtil.getCandidates(single);
 		if (candidates != null && candidates.length > 0) 
 			return candidates[0];
 		return null;

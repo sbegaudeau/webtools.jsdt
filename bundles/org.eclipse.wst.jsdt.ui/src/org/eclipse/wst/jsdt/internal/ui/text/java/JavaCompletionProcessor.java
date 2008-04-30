@@ -18,7 +18,7 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
  */
 public class JavaCompletionProcessor extends ContentAssistProcessor {
 
-	private final static String VISIBILITY= JavaCore.CODEASSIST_VISIBILITY_CHECK;
+	private final static String VISIBILITY= JavaScriptCore.CODEASSIST_VISIBILITY_CHECK;
 	private final static String ENABLED= "enabled"; //$NON-NLS-1$
 	private final static String DISABLED= "disabled"; //$NON-NLS-1$
 	
@@ -46,13 +46,13 @@ public class JavaCompletionProcessor extends ContentAssistProcessor {
 	 * @param restrict <code>true</code> if proposals should be restricted
 	 */
 	public void restrictProposalsToVisibility(boolean restrict) {
-		Hashtable options= JavaCore.getOptions();
+		Hashtable options= JavaScriptCore.getOptions();
 		Object value= options.get(VISIBILITY);
 		if (value instanceof String) {
 			String newValue= restrict ? ENABLED : DISABLED;
 			if ( !newValue.equals(value)) {
 				options.put(VISIBILITY, newValue);
-				JavaCore.setOptions(options);
+				JavaScriptCore.setOptions(options);
 			}
 		}
 	}

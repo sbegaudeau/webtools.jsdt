@@ -28,11 +28,11 @@ import org.eclipse.search.ui.text.Match;
 import org.eclipse.search.ui.text.MatchFilter;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IParent;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.search.IMatchPresentation;
 
 public class JavaSearchResult extends AbstractTextSearchResult implements IEditorMatchAdapter, IFileMatchAdapter {
@@ -84,7 +84,7 @@ public class JavaSearchResult extends AbstractTextSearchResult implements IEdito
 	}
 	
 	private Match[] computeContainedMatches(IAdaptable adaptable) {
-		IJavaElement javaElement= (IJavaElement) adaptable.getAdapter(IJavaElement.class);
+		IJavaScriptElement javaElement= (IJavaScriptElement) adaptable.getAdapter(IJavaScriptElement.class);
 		Set matches= new HashSet();
 		if (javaElement != null) {
 			collectMatches(matches, javaElement);
@@ -109,7 +109,7 @@ public class JavaSearchResult extends AbstractTextSearchResult implements IEdito
 		}
 	}
 	
-	private void collectMatches(Set matches, IJavaElement element) {
+	private void collectMatches(Set matches, IJavaScriptElement element) {
 		Match[] m= getMatches(element);
 		if (m.length != 0) {
 			for (int i= 0; i < m.length; i++) {
@@ -119,11 +119,11 @@ public class JavaSearchResult extends AbstractTextSearchResult implements IEdito
 		if (element instanceof IParent) {
 			IParent parent= (IParent) element;
 			try {
-				IJavaElement[] children= parent.getChildren();
+				IJavaScriptElement[] children= parent.getChildren();
 				for (int i= 0; i < children.length; i++) {
 					collectMatches(matches, children[i]);
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// we will not be tracking these results
 			}
 		}
@@ -132,13 +132,13 @@ public class JavaSearchResult extends AbstractTextSearchResult implements IEdito
 	 * @see org.eclipse.search.ui.ISearchResultCategory#getFile(java.lang.Object)
 	 */
 	public IFile getFile(Object element) {
-		if (element instanceof IJavaElement) {
-			IJavaElement javaElement= (IJavaElement) element;
-			ICompilationUnit cu= (ICompilationUnit) javaElement.getAncestor(IJavaElement.COMPILATION_UNIT);
+		if (element instanceof IJavaScriptElement) {
+			IJavaScriptElement javaElement= (IJavaScriptElement) element;
+			IJavaScriptUnit cu= (IJavaScriptUnit) javaElement.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 			if (cu != null) {
 				return (IFile) cu.getResource();
 			} else {
-				IClassFile cf= (IClassFile) javaElement.getAncestor(IJavaElement.CLASS_FILE);
+				IClassFile cf= (IClassFile) javaElement.getAncestor(IJavaScriptElement.CLASS_FILE);
 				if (cf != null)
 					return (IFile) cf.getResource();
 			}
@@ -157,9 +157,9 @@ public class JavaSearchResult extends AbstractTextSearchResult implements IEdito
 	 */
 	public boolean isShownInEditor(Match match, IEditorPart editor) {
 		Object element= match.getElement();
-		if (element instanceof IJavaElement) {
-			element= ((IJavaElement) element).getOpenable(); // class file or compilation unit 
-			return element != null && element.equals(editor.getEditorInput().getAdapter(IJavaElement.class));
+		if (element instanceof IJavaScriptElement) {
+			element= ((IJavaScriptElement) element).getOpenable(); // class file or compilation unit 
+			return element != null && element.equals(editor.getEditorInput().getAdapter(IJavaScriptElement.class));
 		} else if (element instanceof IFile) {
 			return element.equals(editor.getEditorInput().getAdapter(IFile.class));
 		}
@@ -181,7 +181,7 @@ public class JavaSearchResult extends AbstractTextSearchResult implements IEdito
 		Object element= match.getElement();
 		if (fElementsToParticipants.get(element) != null) {
 			// TODO must access the participant id / label to properly report the error.
-			JavaPlugin.log(new Status(IStatus.WARNING, JavaPlugin.getPluginId(), 0, "A second search participant was found for an element", null)); //$NON-NLS-1$
+			JavaScriptPlugin.log(new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), 0, "A second search participant was found for an element", null)); //$NON-NLS-1$
 			return false;
 		}
 		fElementsToParticipants.put(element, participant);

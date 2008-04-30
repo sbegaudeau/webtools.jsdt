@@ -407,9 +407,9 @@ public class ASTFlattener extends GenericVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(CompilationUnit)
+	 * @see ASTVisitor#visit(JavaScriptUnit)
 	 */
-	public boolean visit(CompilationUnit node) {
+	public boolean visit(JavaScriptUnit node) {
 		if (node.getPackage() != null) {
 			node.getPackage().accept(this);
 		}
@@ -752,7 +752,7 @@ public class ASTFlattener extends GenericVisitor {
 	/*
 	 * @see ASTVisitor#visit(Javadoc)
 	 */
-	public boolean visit(Javadoc node) {
+	public boolean visit(JSdoc node) {
 		this.fBuffer.append("/** ");//$NON-NLS-1$
 		for (Iterator it= node.tags().iterator(); it.hasNext();) {
 			ASTNode e= (ASTNode) it.next();
@@ -828,10 +828,10 @@ public class ASTFlattener extends GenericVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(MethodRef)
+	 * @see ASTVisitor#visit(FunctionRef)
 	 * @since 3.0
 	 */
-	public boolean visit(MethodRef node) {
+	public boolean visit(FunctionRef node) {
 		if (node.getQualifier() != null) {
 			node.getQualifier().accept(this);
 		}
@@ -839,7 +839,7 @@ public class ASTFlattener extends GenericVisitor {
 		node.getName().accept(this);
 		this.fBuffer.append("(");//$NON-NLS-1$
 		for (Iterator it= node.parameters().iterator(); it.hasNext();) {
-			MethodRefParameter e= (MethodRefParameter) it.next();
+			FunctionRefParameter e= (FunctionRefParameter) it.next();
 			e.accept(this);
 			if (it.hasNext()) {
 				this.fBuffer.append(",");//$NON-NLS-1$
@@ -850,10 +850,10 @@ public class ASTFlattener extends GenericVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(MethodRefParameter)
+	 * @see ASTVisitor#visit(FunctionRefParameter)
 	 * @since 3.0
 	 */
-	public boolean visit(MethodRefParameter node) {
+	public boolean visit(FunctionRefParameter node) {
 		node.getType().accept(this);
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			if (node.isVarargs()) {
@@ -868,9 +868,9 @@ public class ASTFlattener extends GenericVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(MethodDeclaration)
+	 * @see ASTVisitor#visit(FunctionDeclaration)
 	 */
-	public boolean visit(MethodDeclaration node) {
+	public boolean visit(FunctionDeclaration node) {
 		if (node.getJavadoc() != null) {
 			node.getJavadoc().accept(this);
 		}
@@ -938,9 +938,9 @@ public class ASTFlattener extends GenericVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(MethodInvocation)
+	 * @see ASTVisitor#visit(FunctionInvocation)
 	 */
-	public boolean visit(MethodInvocation node) {
+	public boolean visit(FunctionInvocation node) {
 		if (node.getExpression() != null) {
 			node.getExpression().accept(this);
 			this.fBuffer.append(".");//$NON-NLS-1$
@@ -1327,7 +1327,7 @@ public class ASTFlattener extends GenericVisitor {
 		for (Iterator it= node.fragments().iterator(); it.hasNext();) {
 			ASTNode e= (ASTNode) it.next();
 			// assume text elements include necessary leading and trailing whitespace
-			// but Name, MemberRef, MethodRef, and nested TagElement do not include white space
+			// but Name, MemberRef, FunctionRef, and nested TagElement do not include white space
 			boolean currentIncludesWhiteSpace= (e instanceof TextElement);
 			if (previousRequiresNewLine && currentIncludesWhiteSpace) {
 				this.fBuffer.append("\n * ");//$NON-NLS-1$

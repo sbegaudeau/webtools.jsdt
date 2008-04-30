@@ -34,13 +34,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.SelectionStatusDialog;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
-import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.StandardJavaScriptElementContentProvider;
 
 public class ProjectSelectionDialog extends SelectionStatusDialog {
 
@@ -101,9 +101,9 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
 		data.widthHint= SIZING_SELECTION_WIDGET_WIDTH;
 		fTableViewer.getTable().setLayoutData(data);
 
-		fTableViewer.setLabelProvider(new JavaElementLabelProvider());
-		fTableViewer.setContentProvider(new StandardJavaElementContentProvider());
-		fTableViewer.setComparator(new JavaElementComparator());
+		fTableViewer.setLabelProvider(new JavaScriptElementLabelProvider());
+		fTableViewer.setContentProvider(new StandardJavaScriptElementContentProvider());
+		fTableViewer.setComparator(new JavaScriptElementComparator());
 		fTableViewer.getControl().setFont(font);
 
 		Button checkbox= new Button(composite, SWT.CHECK);
@@ -117,12 +117,12 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
 				updateFilter(((Button) e.widget).getSelection());
 			}
 		});
-		IDialogSettings dialogSettings= JavaPlugin.getDefault().getDialogSettings();
+		IDialogSettings dialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();
 		boolean doFilter= !dialogSettings.getBoolean(DIALOG_SETTINGS_SHOW_ALL) && !fProjectsWithSpecifics.isEmpty();
 		checkbox.setSelection(doFilter);
 		updateFilter(doFilter);
 		
-		IJavaModel input= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
+		IJavaScriptModel input= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
 		fTableViewer.setInput(input);
 		
 		doSelectionChanged(new Object[0]);
@@ -136,7 +136,7 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
 		} else {
 			fTableViewer.removeFilter(fFilter);
 		}
-		JavaPlugin.getDefault().getDialogSettings().put(DIALOG_SETTINGS_SHOW_ALL, !selected);
+		JavaScriptPlugin.getDefault().getDialogSettings().put(DIALOG_SETTINGS_SHOW_ALL, !selected);
 	}
 
 	private void doSelectionChanged(Object[] objects) {

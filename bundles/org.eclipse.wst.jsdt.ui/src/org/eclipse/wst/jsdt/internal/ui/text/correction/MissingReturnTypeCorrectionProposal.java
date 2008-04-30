@@ -12,18 +12,18 @@ package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
 import java.util.List;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Block;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
@@ -36,10 +36,10 @@ public class MissingReturnTypeCorrectionProposal extends LinkedCorrectionProposa
 
 	private static final String RETURN_EXPRESSION_KEY= "value"; //$NON-NLS-1$
 
-	private MethodDeclaration fMethodDecl;
+	private FunctionDeclaration fMethodDecl;
 	private ReturnStatement fExistingReturn;
 
-	public MissingReturnTypeCorrectionProposal(ICompilationUnit cu, MethodDeclaration decl, ReturnStatement existingReturn, int relevance) {
+	public MissingReturnTypeCorrectionProposal(IJavaScriptUnit cu, FunctionDeclaration decl, ReturnStatement existingReturn, int relevance) {
 		super("", cu, null, relevance, JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE)); //$NON-NLS-1$
 		fMethodDecl= decl;
 		fExistingReturn= existingReturn;
@@ -116,7 +116,7 @@ public class MissingReturnTypeCorrectionProposal extends LinkedCorrectionProposa
 	}
 
 	private ITypeBinding getReturnTypeBinding() {
-		IMethodBinding methodBinding= fMethodDecl.resolveBinding();
+		IFunctionBinding methodBinding= fMethodDecl.resolveBinding();
 		if (methodBinding != null && methodBinding.getReturnType() != null) {
 			return methodBinding.getReturnType();
 		}
@@ -128,7 +128,7 @@ public class MissingReturnTypeCorrectionProposal extends LinkedCorrectionProposa
 	 * Evaluates possible return expressions. The favourite expression is returned.
 	 */
 	private Expression evaluateReturnExpressions(AST ast, ITypeBinding returnBinding, int returnOffset) {
-		CompilationUnit root= (CompilationUnit) fMethodDecl.getRoot();
+		JavaScriptUnit root= (JavaScriptUnit) fMethodDecl.getRoot();
 
 		Expression result= null;
 		if (returnBinding != null) {

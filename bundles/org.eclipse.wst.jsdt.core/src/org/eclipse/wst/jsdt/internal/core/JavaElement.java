@@ -33,27 +33,27 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
@@ -61,10 +61,10 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 /**
  * Root of Java element handle hierarchy.
  *
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
-public abstract class JavaElement extends PlatformObject implements IJavaElement {
-//	private static final QualifiedName PROJECT_JAVADOC= new QualifiedName(JavaCore.PLUGIN_ID, "project_javadoc_location"); //$NON-NLS-1$
+public abstract class JavaElement extends PlatformObject implements IJavaScriptElement {
+//	private static final QualifiedName PROJECT_JAVADOC= new QualifiedName(JavaScriptCore.PLUGIN_ID, "project_javadoc_location"); //$NON-NLS-1$
 
 	private static final byte[] CLOSING_DOUBLE_QUOTE = new byte[] { 34 };
 	private static final byte[] CHARSET = new byte[] {99, 104, 97, 114, 115, 101, 116, 61 };
@@ -112,13 +112,13 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	/**
 	 * @see IOpenable
 	 */
-	public void close() throws JavaModelException {
+	public void close() throws JavaScriptModelException {
 		JavaModelManager.getJavaModelManager().removeInfoAndChildren(this);
 	}
 	/**
 	 * This element is being closed.  Do any necessary cleanup.
 	 */
-	protected abstract void closing(Object info) throws JavaModelException;
+	protected abstract void closing(Object info) throws JavaScriptModelException;
 	/*
 	 * Returns a new element info for this element.
 	 */
@@ -171,14 +171,14 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		}
 	}
 	/**
-	 * @see IJavaElement
+	 * @see IJavaScriptElement
 	 */
 	public boolean exists() {
 
 		try {
 			getElementInfo();
 			return true;
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// element doesn't exist: return false
 		}
 		return false;
@@ -188,21 +188,21 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	 * Returns the <code>ASTNode</code> that corresponds to this <code>JavaElement</code>
 	 * or <code>null</code> if there is no corresponding node.
 	 */
-	public ASTNode findNode(CompilationUnit ast) {
+	public ASTNode findNode(JavaScriptUnit ast) {
 		return null; // works only inside a compilation unit
 	}
 	/**
 	 * Generates the element infos for this element, its ancestors (if they are not opened) and its children (if it is an Openable).
 	 * Puts the newly created element info in the given map.
 	 */
-	protected abstract void generateInfos(Object info, HashMap newElements, IProgressMonitor pm) throws JavaModelException;
+	protected abstract void generateInfos(Object info, HashMap newElements, IProgressMonitor pm) throws JavaScriptModelException;
 
 	/**
-	 * @see IJavaElement
+	 * @see IJavaScriptElement
 	 */
-	public IJavaElement getAncestor(int ancestorType) {
+	public IJavaScriptElement getAncestor(int ancestorType) {
 
-		IJavaElement element = this;
+		IJavaScriptElement element = this;
 		while (element != null) {
 			if (element.getElementType() == ancestorType)  return element;
 			element= element.getParent();
@@ -212,7 +212,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	/**
 	 * @see IParent
 	 */
-	public IJavaElement[] getChildren() throws JavaModelException {
+	public IJavaScriptElement[] getChildren() throws JavaScriptModelException {
 		Object elementInfo = getElementInfo();
 		if (elementInfo instanceof JavaElementInfo) {
 			return ((JavaElementInfo)elementInfo).getChildren();
@@ -226,8 +226,8 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	 *
 	 * @param type - one of the JEM_* constants defined by JavaElement
 	 */
-	public ArrayList getChildrenOfType(int type) throws JavaModelException {
-		IJavaElement[] children = getChildren();
+	public ArrayList getChildrenOfType(int type) throws JavaScriptModelException {
+		IJavaScriptElement[] children = getChildren();
 		int size = children.length;
 		ArrayList list = new ArrayList(size);
 		for (int i = 0; i < size; ++i) {
@@ -246,8 +246,15 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	}
 	/**
 	 * @see org.eclipse.wst.jsdt.core.IMember
+	 * @deprecated Use {@link #getJavaScriptUnit()} instead
 	 */
-	public ICompilationUnit getCompilationUnit() {
+	public IJavaScriptUnit getCompilationUnit() {
+		return getJavaScriptUnit();
+	}
+	/**
+	 * @see org.eclipse.wst.jsdt.core.IMember
+	 */
+	public IJavaScriptUnit getJavaScriptUnit() {
 		return null;
 	}
 	/**
@@ -255,9 +262,9 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	 * If this element is not already open, it and all of its parents are opened.
 	 * Does not return null.
 	 * NOTE: BinaryType infos are NOT rooted under JavaElementInfo.
-	 * @exception JavaModelException if the element is not present or not accessible
+	 * @exception JavaScriptModelException if the element is not present or not accessible
 	 */
-	public Object getElementInfo() throws JavaModelException {
+	public Object getElementInfo() throws JavaScriptModelException {
 		return getElementInfo(null);
 	}
 	/**
@@ -265,9 +272,9 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	 * If this element is not already open, it and all of its parents are opened.
 	 * Does not return null.
 	 * NOTE: BinaryType infos are NOT rooted under JavaElementInfo.
-	 * @exception JavaModelException if the element is not present or not accessible
+	 * @exception JavaScriptModelException if the element is not present or not accessible
 	 */
-	public Object getElementInfo(IProgressMonitor monitor) throws JavaModelException {
+	public Object getElementInfo(IProgressMonitor monitor) throws JavaScriptModelException {
 
 		JavaModelManager manager = JavaModelManager.getJavaModelManager();
 		Object info = manager.getInfo(this);
@@ -285,18 +292,18 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	 * The given token is the current delimiter indicating the type of the next token(s).
 	 * The given working copy owner is used only for compilation unit handles.
 	 */
-	public abstract IJavaElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner owner);
+	public abstract IJavaScriptElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner owner);
 	/*
 	 * Creates a Java element handle from the given memento.
 	 * The given working copy owner is used only for compilation unit handles.
 	 */
-	public IJavaElement getHandleFromMemento(MementoTokenizer memento, WorkingCopyOwner owner) {
+	public IJavaScriptElement getHandleFromMemento(MementoTokenizer memento, WorkingCopyOwner owner) {
 		if (!memento.hasMoreTokens()) return this;
 		String token = memento.nextToken();
 		return getHandleFromMemento(token, memento, owner);
 	}
 	/**
-	 * @see IJavaElement
+	 * @see IJavaScriptElement
 	 */
 	public String getHandleIdentifier() {
 		return getHandleMemento();
@@ -320,28 +327,28 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	 */
 	protected abstract char getHandleMementoDelimiter();
 	/**
-	 * @see IJavaElement
+	 * @see IJavaScriptElement
 	 */
-	public IJavaModel getJavaModel() {
-		IJavaElement current = this;
+	public IJavaScriptModel getJavaScriptModel() {
+		IJavaScriptElement current = this;
 		do {
-			if (current instanceof IJavaModel) return (IJavaModel) current;
+			if (current instanceof IJavaScriptModel) return (IJavaScriptModel) current;
 		} while ((current = current.getParent()) != null);
 		return null;
 	}
 
 	/**
-	 * @see IJavaElement
+	 * @see IJavaScriptElement
 	 */
-	public IJavaProject getJavaProject() {
-		IJavaElement current = this;
+	public IJavaScriptProject getJavaScriptProject() {
+		IJavaScriptElement current = this;
 		do {
-			if (current instanceof IJavaProject) return (IJavaProject) current;
+			if (current instanceof IJavaScriptProject) return (IJavaScriptProject) current;
 		} while ((current = current.getParent()) != null);
 		return null;
 	}
 	/*
-	 * @see IJavaElement
+	 * @see IJavaScriptElement
 	 */
 	public IOpenable getOpenable() {
 		return this.getOpenableParent();
@@ -356,36 +363,36 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		return (IOpenable)this.parent;
 	}
 	/**
-	 * @see IJavaElement
+	 * @see IJavaScriptElement
 	 */
-	public IJavaElement getParent() {
+	public IJavaScriptElement getParent() {
 		return this.parent;
 	}
 	/*
-	 * @see IJavaElement#getPrimaryElement()
+	 * @see IJavaScriptElement#getPrimaryElement()
 	 */
-	public IJavaElement getPrimaryElement() {
+	public IJavaScriptElement getPrimaryElement() {
 		return getPrimaryElement(true);
 	}
 	/*
 	 * Returns the primary element. If checkOwner, and the cu owner is primary,
 	 * return this element.
 	 */
-	public IJavaElement getPrimaryElement(boolean checkOwner) {
+	public IJavaScriptElement getPrimaryElement(boolean checkOwner) {
 		return this;
 	}
 	/**
 	 * Returns the element that is located at the given source position
-	 * in this element.  This is a helper method for <code>ICompilationUnit#getElementAt</code>,
+	 * in this element.  This is a helper method for <code>IJavaScriptUnit#getElementAt</code>,
 	 * and only works on compilation units and types. The position given is
 	 * known to be within this element's source range already, and if no finer
 	 * grained element is found at the position, this element is returned.
 	 */
-	protected IJavaElement getSourceElementAt(int position) throws JavaModelException {
+	protected IJavaScriptElement getSourceElementAt(int position) throws JavaScriptModelException {
 		if (this instanceof ISourceReference) {
-			IJavaElement[] children = getChildren();
+			IJavaScriptElement[] children = getChildren();
 			for (int i = children.length-1; i >= 0; i--) {
-				IJavaElement aChild = children[i];
+				IJavaScriptElement aChild = children[i];
 				if (aChild instanceof SourceRefElement) {
 					SourceRefElement child = (SourceRefElement) children[i];
 					ISourceRange range = child.getSourceRange();
@@ -431,7 +438,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		return ((JavaElement)getParent()).getSourceMapper();
 	}
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IJavaElement#getSchedulingRule()
+	 * @see org.eclipse.wst.jsdt.core.IJavaScriptElement#getSchedulingRule()
 	 */
 	public ISchedulingRule getSchedulingRule() {
 		IResource resource = getResource();
@@ -465,7 +472,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	/**
 	 * @see IParent
 	 */
-	public boolean hasChildren() throws JavaModelException {
+	public boolean hasChildren() throws JavaScriptModelException {
 		// if I am not open, return true to avoid opening (case of a Java project, a compilation unit or a class file).
 		// also see https://bugs.eclipse.org/bugs/show_bug.cgi?id=52474
 		Object elementInfo = JavaModelManager.getJavaModelManager().getInfo(this);
@@ -490,8 +497,8 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	 * Returns true if this element is an ancestor of the given element,
 	 * otherwise false.
 	 */
-	public boolean isAncestorOf(IJavaElement e) {
-		IJavaElement parentElement= e.getParent();
+	public boolean isAncestorOf(IJavaScriptElement e) {
+		IJavaScriptElement parentElement= e.getParent();
 		while (parentElement != null && !parentElement.equals(this)) {
 			parentElement= parentElement.getParent();
 		}
@@ -499,7 +506,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	}
 
 	/**
-	 * @see IJavaElement
+	 * @see IJavaScriptElement
 	 */
 	public boolean isReadOnly() {
 		return false;
@@ -507,23 +514,23 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	/**
 	 * Creates and returns a new not present exception for this element.
 	 */
-	public JavaModelException newNotPresentException() {
-		return new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
+	public JavaScriptModelException newNotPresentException() {
+		return new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
 	}
 	/**
 	 * Creates and returns a new Java model exception for this element with the given status.
 	 */
-	public JavaModelException newJavaModelException(IStatus status) {
-		if (status instanceof IJavaModelStatus)
-			return new JavaModelException((IJavaModelStatus) status);
+	public JavaScriptModelException newJavaModelException(IStatus status) {
+		if (status instanceof IJavaScriptModelStatus)
+			return new JavaScriptModelException((IJavaScriptModelStatus) status);
 		else
-			return new JavaModelException(new JavaModelStatus(status.getSeverity(), status.getCode(), status.getMessage()));
+			return new JavaScriptModelException(new JavaModelStatus(status.getSeverity(), status.getCode(), status.getMessage()));
 	}
 	/*
 	 * Opens an <code>Openable</code> that is known to be closed (no check for <code>isOpen()</code>).
 	 * Returns the created element info.
 	 */
-	protected Object openWhenClosed(Object info, IProgressMonitor monitor) throws JavaModelException {
+	protected Object openWhenClosed(Object info, IProgressMonitor monitor) throws JavaScriptModelException {
 		JavaModelManager manager = JavaModelManager.getJavaModelManager();
 		boolean hadTemporaryCache = manager.hasTemporaryCache();
 		try {
@@ -626,7 +633,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	 */
 	protected void toStringChildren(int tab, StringBuffer buffer, Object info) {
 		if (info == null || !(info instanceof JavaElementInfo)) return;
-		IJavaElement[] children = ((JavaElementInfo)info).getChildren();
+		IJavaScriptElement[] children = ((JavaElementInfo)info).getChildren();
 		for (int i = 0; i < children.length; i++) {
 			buffer.append("\n"); //$NON-NLS-1$
 			((JavaElement)children[i]).toString(tab + 1, buffer);
@@ -658,19 +665,19 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		buffer.append(getElementName());
 	}
 
-	protected URL getJavadocBaseLocation() throws JavaModelException {
-		IPackageFragmentRoot root= (IPackageFragmentRoot) this.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+	protected URL getJavadocBaseLocation() throws JavaScriptModelException {
+		IPackageFragmentRoot root= (IPackageFragmentRoot) this.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 		if (root == null) {
 			return null;
 		}
 
 		if (root.getKind() == IPackageFragmentRoot.K_BINARY) {
-			IClasspathEntry entry= root.getRawClasspathEntry();
+			IIncludePathEntry entry= root.getRawIncludepathEntry();
 			if (entry == null) {
 				return null;
 			}
-			if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-				entry= getRealClasspathEntry(root.getJavaProject(), entry.getPath(), root.getPath());
+			if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
+				entry= getRealClasspathEntry(root.getJavaScriptProject(), entry.getPath(), root.getPath());
 				if (entry == null) {
 					return null;
 				}
@@ -680,19 +687,19 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		return null;
 	}
 
-	private static IClasspathEntry getRealClasspathEntry(IJavaProject jproject, IPath containerPath, IPath libPath) throws JavaModelException {
-		IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(containerPath, jproject);
+	private static IIncludePathEntry getRealClasspathEntry(IJavaScriptProject jproject, IPath containerPath, IPath libPath) throws JavaScriptModelException {
+		IJsGlobalScopeContainer container= JavaScriptCore.getJsGlobalScopeContainer(containerPath, jproject);
 		if (container != null) {
-			IClasspathEntry[] entries= container.getClasspathEntries();
+			IIncludePathEntry[] entries= container.getIncludepathEntries();
 			for (int i= 0; i < entries.length; i++) {
-				IClasspathEntry curr = entries[i];
+				IIncludePathEntry curr = entries[i];
 				if (curr == null) {
 					if (JavaModelManager.CP_RESOLVE_VERBOSE) {
 						JavaModelManager.getJavaModelManager().verbose_missbehaving_container(jproject, containerPath, entries);
 					}
 					break;
 				}
-				IClasspathEntry resolved= JavaCore.getResolvedClasspathEntry(curr);
+				IIncludePathEntry resolved= JavaScriptCore.getResolvedIncludepathEntry(curr);
 				if (resolved != null && libPath.equals(resolved.getPath())) {
 					return curr; // return the real entry
 				}
@@ -701,24 +708,24 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		return null; // not found
 	}
 
-	protected static URL getLibraryJavadocLocation(IClasspathEntry entry) throws JavaModelException {
+	protected static URL getLibraryJavadocLocation(IIncludePathEntry entry) throws JavaScriptModelException {
 		switch(entry.getEntryKind()) {
-			case IClasspathEntry.CPE_LIBRARY :
-			case IClasspathEntry.CPE_VARIABLE :
+			case IIncludePathEntry.CPE_LIBRARY :
+			case IIncludePathEntry.CPE_VARIABLE :
 				break;
 			default :
 				throw new IllegalArgumentException("Entry must be of kind CPE_LIBRARY or CPE_VARIABLE"); //$NON-NLS-1$
 		}
 
-		IClasspathAttribute[] extraAttributes= entry.getExtraAttributes();
+		IIncludePathAttribute[] extraAttributes= entry.getExtraAttributes();
 		for (int i= 0; i < extraAttributes.length; i++) {
-			IClasspathAttribute attrib= extraAttributes[i];
-			if (IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME.equals(attrib.getName())) {
+			IIncludePathAttribute attrib= extraAttributes[i];
+			if (IIncludePathAttribute.JSDOC_LOCATION_ATTRIBUTE_NAME.equals(attrib.getName())) {
 				String value = attrib.getValue();
 				try {
 					return new URL(value);
 				} catch (MalformedURLException e) {
-					throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.CANNOT_RETRIEVE_ATTACHED_JAVADOC, value));
+					throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.CANNOT_RETRIEVE_ATTACHED_JSDOC, value));
 				}
 			}
 		}
@@ -726,9 +733,9 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	}
 
 	/*
-	 * @see IJavaElement#getAttachedJavadoc(IProgressMonitor)
+	 * @see IJavaScriptElement#getAttachedJavadoc(IProgressMonitor)
 	 */
-	public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelException {
+	public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaScriptModelException {
 		return null;
 	}
 
@@ -754,7 +761,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	 * We don't use getContentEncoding() on the URL connection, because it might leave open streams behind.
 	 * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=117890
 	 */
-	protected String getURLContents(String docUrlValue) throws JavaModelException {
+	protected String getURLContents(String docUrlValue) throws JavaScriptModelException {
 		InputStream stream = null;
 		JarURLConnection connection2 = null;
 		try {
@@ -787,7 +794,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 			}
 			try {
 				if (encoding == null) {
-					encoding = this.getJavaProject().getProject().getDefaultCharset();
+					encoding = this.getJavaScriptProject().getProject().getDefaultCharset();
 				}
 			} catch (CoreException e) {
 				// ignore
@@ -801,7 +808,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 				}
 			}
  		} catch (MalformedURLException e) {
- 			throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.CANNOT_RETRIEVE_ATTACHED_JAVADOC, this));
+ 			throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.CANNOT_RETRIEVE_ATTACHED_JSDOC, this));
 		} catch (FileNotFoundException e) {
 			// ignore. see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=120559
 		} catch(IOException e) {
@@ -810,7 +817,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 			e.printStackTrace(writer);
 			writer.flush();
 			writer.close();
-			throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.CANNOT_RETRIEVE_ATTACHED_JAVADOC, this, String.valueOf(stringWriter.getBuffer())));
+			throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.CANNOT_RETRIEVE_ATTACHED_JSDOC, this, String.valueOf(stringWriter.getBuffer())));
 		} finally {
 			if (stream != null) {
 				try {
@@ -838,31 +845,31 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	/*
 	 * Returns a new name lookup. This name lookup first looks in the given working copies.
 	 */
-	public NameLookup newNameLookup(ICompilationUnit[] workingCopies) throws JavaModelException {
-		return parent!=null?parent.newNameLookup(workingCopies):getJavaProject().newNameLookup(workingCopies);
+	public NameLookup newNameLookup(IJavaScriptUnit[] workingCopies) throws JavaScriptModelException {
+		return parent!=null?parent.newNameLookup(workingCopies):getJavaScriptProject().newNameLookup(workingCopies);
 	}
 
 	/*
 	 * Returns a new name lookup. This name lookup first looks in the working copies of the given owner.
 	 */
-	public NameLookup newNameLookup(WorkingCopyOwner owner) throws JavaModelException {
+	public NameLookup newNameLookup(WorkingCopyOwner owner) throws JavaScriptModelException {
 
-		return parent!=null?parent.newNameLookup(owner):getJavaProject().newNameLookup(owner);
+		return parent!=null?parent.newNameLookup(owner):getJavaScriptProject().newNameLookup(owner);
 	}
 
 	/*
 	 * Returns a new search name environment for this project. This name environment first looks in the given working copies.
 	 */
-	public SearchableEnvironment newSearchableNameEnvironment(ICompilationUnit[] workingCopies) throws JavaModelException {
-		return parent!=null?parent.newSearchableNameEnvironment(workingCopies):getJavaProject().newSearchableNameEnvironment(workingCopies);
+	public SearchableEnvironment newSearchableNameEnvironment(IJavaScriptUnit[] workingCopies) throws JavaScriptModelException {
+		return parent!=null?parent.newSearchableNameEnvironment(workingCopies):getJavaScriptProject().newSearchableNameEnvironment(workingCopies);
 	}
 
 	/*
 	 * Returns a new search name environment for this project. This name environment first looks in the working copies
 	 * of the given owner.
 	 */
-	public SearchableEnvironment newSearchableNameEnvironment(WorkingCopyOwner owner) throws JavaModelException {
-		return parent!=null?parent.newSearchableNameEnvironment(owner):getJavaProject().newSearchableNameEnvironment(owner);
+	public SearchableEnvironment newSearchableNameEnvironment(WorkingCopyOwner owner) throws JavaScriptModelException {
+		return parent!=null?parent.newSearchableNameEnvironment(owner):getJavaScriptProject().newSearchableNameEnvironment(owner);
 	}
 
 	public String getDisplayName() {

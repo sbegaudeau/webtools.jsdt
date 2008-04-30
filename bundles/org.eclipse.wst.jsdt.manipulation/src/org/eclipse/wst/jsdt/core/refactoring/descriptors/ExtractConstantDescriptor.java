@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the extract constant refactoring.
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class ExtractConstantDescriptor extends JavaRefactoringDescriptor {
+public final class ExtractConstantDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public ExtractConstantDescriptor() {
-		super(IJavaRefactorings.EXTRACT_CONSTANT);
+		super(IJavaScriptRefactorings.EXTRACT_CONSTANT);
 	}
 }

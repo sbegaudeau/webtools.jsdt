@@ -17,15 +17,15 @@ import java.util.Map;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IInitializer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.Signature;
 
 
 /**
- * Helper class to transplant a IJavaElement handle from a certain state of the
+ * Helper class to transplant a IJavaScriptElement handle from a certain state of the
  * Java Model into another.
  * 
  * The changes to the workspace include one type rename, a number of field
@@ -40,14 +40,14 @@ public class RefactoringHandleTransplanter {
 
 	private final IType fOldType;
 	private final IType fNewType;
-	private final Map/*<IJavaElement, String>*/ fRefactoredSimilarElements;
+	private final Map/*<IJavaScriptElement, String>*/ fRefactoredSimilarElements;
 
 	/**
 	 * @param oldType old type
 	 * @param newType renamed type
-	 * @param refactoredSimilarElements map from similar element (IJavaElement) to new name (String), or <code>null</code>
+	 * @param refactoredSimilarElements map from similar element (IJavaScriptElement) to new name (String), or <code>null</code>
 	 */
-	public RefactoringHandleTransplanter(IType oldType, IType newType, Map/*<IJavaElement, String>*/ refactoredSimilarElements) {
+	public RefactoringHandleTransplanter(IType oldType, IType newType, Map/*<IJavaScriptElement, String>*/ refactoredSimilarElements) {
 		fOldType= oldType;
 		fNewType= newType;
 		if (refactoredSimilarElements == null)
@@ -81,7 +81,7 @@ public class RefactoringHandleTransplanter {
 
 	private void addElements(IMember element, LinkedList chain) {
 		chain.addFirst(element);
-		IJavaElement parent= element.getParent();
+		IJavaScriptElement parent= element.getParent();
 		if (parent instanceof IMember)
 			addElements((IMember) parent, chain);
 	}
@@ -106,28 +106,28 @@ public class RefactoringHandleTransplanter {
 		 */
 
 		for (int i= 1; i < oldElements.length; i++) {
-			final IJavaElement newParent= newElements[i - 1];
-			final IJavaElement currentElement= oldElements[i];
+			final IJavaScriptElement newParent= newElements[i - 1];
+			final IJavaScriptElement currentElement= oldElements[i];
 			switch (newParent.getElementType()) {
-				case IJavaElement.TYPE: {
+				case IJavaScriptElement.TYPE: {
 					switch (currentElement.getElementType()) {
-						case IJavaElement.TYPE: {
+						case IJavaScriptElement.TYPE: {
 							final String newName= resolveTypeName((IType) currentElement);
 							newElements[i]= ((IType) newParent).getType(newName);
 							break;
 						}
-						case IJavaElement.METHOD: {
+						case IJavaScriptElement.METHOD: {
 							final String newName= resolveElementName(currentElement);
-							final String[] newParameterTypes= resolveParameterTypes((IMethod) currentElement);
-							newElements[i]= ((IType) newParent).getMethod(newName, newParameterTypes);
+							final String[] newParameterTypes= resolveParameterTypes((IFunction) currentElement);
+							newElements[i]= ((IType) newParent).getFunction(newName, newParameterTypes);
 							break;
 						}
-						case IJavaElement.INITIALIZER: {
+						case IJavaScriptElement.INITIALIZER: {
 							final IInitializer initializer= (IInitializer) currentElement;
 							newElements[i]= ((IType) newParent).getInitializer(initializer.getOccurrenceCount());
 							break;
 						}
-						case IJavaElement.FIELD: {
+						case IJavaScriptElement.FIELD: {
 							final String newName= resolveElementName(currentElement);
 							newElements[i]= ((IType) newParent).getField(newName);
 							break;
@@ -135,27 +135,27 @@ public class RefactoringHandleTransplanter {
 					}
 					break;
 				}
-				case IJavaElement.METHOD: {
+				case IJavaScriptElement.METHOD: {
 					switch (currentElement.getElementType()) {
-						case IJavaElement.TYPE: {
-							newElements[i]= resolveTypeInMember((IMethod) newParent, (IType) currentElement);
+						case IJavaScriptElement.TYPE: {
+							newElements[i]= resolveTypeInMember((IFunction) newParent, (IType) currentElement);
 							break;
 						}
 					}
 					break;
 				}
-				case IJavaElement.INITIALIZER: {
+				case IJavaScriptElement.INITIALIZER: {
 					switch (currentElement.getElementType()) {
-						case IJavaElement.TYPE: {
+						case IJavaScriptElement.TYPE: {
 							newElements[i]= resolveTypeInMember((IInitializer) newParent, (IType) currentElement);
 							break;
 						}
 					}
 					break;
 				}
-				case IJavaElement.FIELD: {
+				case IJavaScriptElement.FIELD: {
 					switch (currentElement.getElementType()) {
-						case IJavaElement.TYPE: {
+						case IJavaScriptElement.TYPE: {
 							// anonymous type in field declaration
 							newElements[i]= resolveTypeInMember((IField) newParent, (IType) currentElement);
 							break;
@@ -168,7 +168,7 @@ public class RefactoringHandleTransplanter {
 		return newElements;
 	}
 
-	private String[] resolveParameterTypes(IMethod method) {
+	private String[] resolveParameterTypes(IFunction method) {
 		final String[] oldParameterTypes= method.getParameterTypes();
 		final String[] newparams= new String[oldParameterTypes.length];
 
@@ -195,7 +195,7 @@ public class RefactoringHandleTransplanter {
 		return newparams;
 	}
 
-	private String resolveElementName(IJavaElement element) {
+	private String resolveElementName(IJavaScriptElement element) {
 		final String newName= (String) fRefactoredSimilarElements.get(element);
 		if (newName != null)
 			return newName;

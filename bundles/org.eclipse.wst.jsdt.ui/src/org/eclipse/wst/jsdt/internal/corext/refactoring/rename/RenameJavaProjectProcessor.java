@@ -27,11 +27,11 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaScriptElementDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptorComment;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JavaRefactoringArguments;
@@ -48,7 +48,7 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 
 public final class RenameJavaProjectProcessor extends JavaRenameProcessor implements IReferenceUpdating {
 
-	private IJavaProject fProject;
+	private IJavaScriptProject fProject;
 	private boolean fUpdateReferences;
 
 	public static final String IDENTIFIER= "org.eclipse.wst.jsdt.ui.renameJavaProjectProcessor"; //$NON-NLS-1$
@@ -57,7 +57,7 @@ public final class RenameJavaProjectProcessor extends JavaRenameProcessor implem
 	 * Creates a new rename java project processor.
 	 * @param project the java project, or <code>null</code> if invoked by scripting
 	 */
-	public RenameJavaProjectProcessor(IJavaProject project) {
+	public RenameJavaProjectProcessor(IJavaScriptProject project) {
 		fProject= project;
 		if (fProject != null)
 			setNewElementName(fProject.getElementName());
@@ -86,7 +86,7 @@ public final class RenameJavaProjectProcessor extends JavaRenameProcessor implem
 
 	public Object getNewElement() throws CoreException {
 		IPath newPath= fProject.getPath().removeLastSegments(1).append(getNewElementName());
-		return JavaCore.create(ResourcesPlugin.getWorkspace().getRoot().findMember(newPath));
+		return JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot().findMember(newPath));
 	}
 	
 	protected RenameModifications computeRenameModifications() throws CoreException {
@@ -184,7 +184,7 @@ public final class RenameJavaProjectProcessor extends JavaRenameProcessor implem
 			final String header= Messages.format(RefactoringCoreMessages.RenameJavaProjectChange_descriptor_description, new String[] { fProject.getElementName(), getNewElementName()});
 			final String comment= new JDTRefactoringDescriptorComment(null, this, header).asString();
 			final int flags= RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE | RefactoringDescriptor.BREAKING_CHANGE;
-			final RenameJavaElementDescriptor descriptor= new RenameJavaElementDescriptor(IJavaRefactorings.RENAME_JAVA_PROJECT);
+			final RenameJavaScriptElementDescriptor descriptor= new RenameJavaScriptElementDescriptor(IJavaScriptRefactorings.RENAME_JAVA_PROJECT);
 			descriptor.setProject(null);
 			descriptor.setDescription(description);
 			descriptor.setComment(comment);
@@ -203,11 +203,11 @@ public final class RenameJavaProjectProcessor extends JavaRenameProcessor implem
 			final JavaRefactoringArguments extended= (JavaRefactoringArguments) arguments;
 			final String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-				if (element == null || !element.exists() || element.getElementType() != IJavaElement.JAVA_PROJECT)
-					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaRefactorings.RENAME_JAVA_PROJECT);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.JAVASCRIPT_PROJECT)
+					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.RENAME_JAVA_PROJECT);
 				else
-					fProject= (IJavaProject) element;
+					fProject= (IJavaScriptProject) element;
 			} else
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));
 			final String name= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_NAME);

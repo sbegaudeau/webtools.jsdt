@@ -21,13 +21,13 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.internal.ui.navigator.ContainerFolder;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Provides the labels for the Package Explorer.
@@ -46,7 +46,7 @@ public class PackageExplorerLabelProvider extends AppearanceAwareLabelProvider {
 	private PackageExplorerProblemsDecorator fProblemDecorator;
 
 	public PackageExplorerLabelProvider(PackageExplorerContentProvider cp) {
-		super(DEFAULT_TEXTFLAGS | JavaElementLabels.P_COMPRESSED | JavaElementLabels.ALL_CATEGORY, DEFAULT_IMAGEFLAGS | JavaElementImageProvider.SMALL_ICONS);
+		super(DEFAULT_TEXTFLAGS | JavaScriptElementLabels.P_COMPRESSED | JavaScriptElementLabels.ALL_CATEGORY, DEFAULT_IMAGEFLAGS | JavaElementImageProvider.SMALL_ICONS);
 		
 		fProblemDecorator= new PackageExplorerProblemsDecorator();
 		addLabelDecorator(fProblemDecorator);
@@ -92,8 +92,8 @@ public class PackageExplorerLabelProvider extends AppearanceAwareLabelProvider {
 		text = super.getText(element);
 		if(element instanceof IClassFile) {
 			text = ((IClassFile)element).getPath().lastSegment();
-		}else if (element instanceof ICompilationUnit) {
-			text = ((ICompilationUnit)element).getPath().lastSegment();
+		}else if (element instanceof IJavaScriptUnit) {
+			text = ((IJavaScriptUnit)element).getPath().lastSegment();
 		}
 		
 		return text;

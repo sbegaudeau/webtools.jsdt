@@ -13,10 +13,10 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration.ClasspathAttributeAccess;
 
 
@@ -47,9 +47,9 @@ public class CPListElementAttribute {
     	fBuiltIn= buildIn;
     }
 
-	public IClasspathAttribute getClasspathAttribute() {
+	public IIncludePathAttribute getClasspathAttribute() {
 		Assert.isTrue(!fBuiltIn);
-		return JavaCore.newClasspathAttribute(fKey, (String) fValue);
+		return JavaScriptCore.newIncludepathAttribute(fKey, (String) fValue);
 	}
 	
 	public CPListElement getParent() {
@@ -130,13 +130,13 @@ public class CPListElementAttribute {
     public ClasspathAttributeAccess getClasspathAttributeAccess() {
     	if (fCachedAccess == null) {
 	    	fCachedAccess= new ClasspathAttributeAccess() {
-	    		public IClasspathAttribute getClasspathAttribute() {
+	    		public IIncludePathAttribute getClasspathAttribute() {
 	 				return CPListElementAttribute.this.getClasspathAttribute();
 				}
-				public IJavaProject getJavaProject() {
+				public IJavaScriptProject getJavaProject() {
 					return getParent().getJavaProject();
 				}
-				public IClasspathEntry getParentClasspassEntry() {
+				public IIncludePathEntry getParentClasspassEntry() {
 					return getParent().getClasspathEntry();
 				}
 	    	};

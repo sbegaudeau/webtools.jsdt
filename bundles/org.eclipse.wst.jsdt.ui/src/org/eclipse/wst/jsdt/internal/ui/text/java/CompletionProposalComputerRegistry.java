@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
@@ -61,7 +61,7 @@ public final class CompletionProposalComputerRegistry {
 	/**
 	 * Returns the default computer registry.
 	 * <p>
-	 * TODO keep this or add some other singleton, e.g. JavaPlugin?
+	 * TODO keep this or add some other singleton, e.g. JavaScriptPlugin?
 	 * </p>
 	 * 
 	 * @return the singleton instance
@@ -116,7 +116,7 @@ public final class CompletionProposalComputerRegistry {
 	 * type.
 	 * <p>
 	 * A valid partition is either one of the constants defined in
-	 * {@link org.eclipse.wst.jsdt.ui.text.IJavaPartitions} or
+	 * {@link org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions} or
 	 * {@link org.eclipse.jface.text.IDocument#DEFAULT_CONTENT_TYPE}. An empty list is returned if
 	 * there are no extensions for the given partition.
 	 * </p>
@@ -202,7 +202,7 @@ public final class CompletionProposalComputerRegistry {
 	 */
 	public void reload() {
 		IExtensionRegistry registry= Platform.getExtensionRegistry();
-		List elements= new ArrayList(Arrays.asList(registry.getConfigurationElementsFor(JavaPlugin.getPluginId(), EXTENSION_POINT)));
+		List elements= new ArrayList(Arrays.asList(registry.getConfigurationElementsFor(JavaScriptPlugin.getPluginId(), EXTENSION_POINT)));
 		
 		Map map= new HashMap();
 		List all= new ArrayList();
@@ -232,7 +232,7 @@ public final class CompletionProposalComputerRegistry {
 				 */
 				Object[] args= {element.toString()};
 				String message= Messages.format(JavaTextMessages.CompletionProposalComputerRegistry_invalid_message, args);
-				IStatus status= new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, message, x);
+				IStatus status= new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, message, x);
 				informUser(status);
 			}
 		}
@@ -263,7 +263,7 @@ public final class CompletionProposalComputerRegistry {
 	}
 
 	private List getCategories(List elements) {
-		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 		String preference= store.getString(PreferenceConstants.CODEASSIST_EXCLUDED_CATEGORIES);
 		Set disabled= new HashSet();
 		StringTokenizer tok= new StringTokenizer(preference, "\0");  //$NON-NLS-1$
@@ -305,7 +305,7 @@ public final class CompletionProposalComputerRegistry {
 				 */
 				Object[] args= {element.toString()};
 				String message= Messages.format(JavaTextMessages.CompletionProposalComputerRegistry_invalid_message, args);
-				IStatus status= new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, message, x);
+				IStatus status= new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, message, x);
 				informUser(status);
 			}
 		}
@@ -319,7 +319,7 @@ public final class CompletionProposalComputerRegistry {
 	 * @param status a status object that will be logged
 	 */
 	void informUser(CompletionProposalComputerDescriptor descriptor, IStatus status) {
-		JavaPlugin.log(status);
+		JavaScriptPlugin.log(status);
         String title= JavaTextMessages.CompletionProposalComputerRegistry_error_dialog_title;
         CompletionProposalCategory category= descriptor.getCategory();
         IContributor culprit= descriptor.getContributor();
@@ -334,7 +334,7 @@ public final class CompletionProposalComputerRegistry {
         
 		String message= status.getMessage();
         // inlined from MessageDialog.openError
-        MessageDialog dialog = new MessageDialog(JavaPlugin.getActiveWorkbenchShell(), title, null /* default image */, message, MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0) {
+        MessageDialog dialog = new MessageDialog(JavaScriptPlugin.getActiveWorkbenchShell(), title, null /* default image */, message, MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0) {
         	protected Control createCustomArea(Composite parent) {
         		Link link= new Link(parent, SWT.NONE);
         		link.setText(avoidHint);
@@ -380,9 +380,9 @@ public final class CompletionProposalComputerRegistry {
     }
 
 	private void informUser(IStatus status) {
-		JavaPlugin.log(status);
+		JavaScriptPlugin.log(status);
 		String title= JavaTextMessages.CompletionProposalComputerRegistry_error_dialog_title;
 		String message= status.getMessage();
-		MessageDialog.openError(JavaPlugin.getActiveWorkbenchShell(), title, message);
+		MessageDialog.openError(JavaScriptPlugin.getActiveWorkbenchShell(), title, message);
 	}
 }

@@ -44,13 +44,13 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.AddUnimplementedConstructorsOperation;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
@@ -62,7 +62,7 @@ import org.eclipse.wst.jsdt.internal.corext.template.java.CodeTemplateContextTyp
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
@@ -76,8 +76,8 @@ import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
 import org.eclipse.wst.jsdt.internal.ui.util.ElementValidator;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * Creates unimplemented constructors for a type.
@@ -102,13 +102,13 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 
 		private static final Object[] EMPTY= new Object[0];
 
-		private IMethodBinding[] fMethodsList= new IMethodBinding[0];
+		private IFunctionBinding[] fMethodsList= new IFunctionBinding[0];
 
-		private final CompilationUnit fUnit;
+		private final JavaScriptUnit fUnit;
 	
-		public AddUnimplementedConstructorsContentProvider(IType type) throws JavaModelException {
+		public AddUnimplementedConstructorsContentProvider(IType type) throws JavaScriptModelException {
 			RefactoringASTParser parser= new RefactoringASTParser(AST.JLS3);
-			fUnit= parser.parse(type.getCompilationUnit(), true);
+			fUnit= parser.parse(type.getJavaScriptUnit(), true);
 			AbstractTypeDeclaration declaration= (AbstractTypeDeclaration) ASTNodes.getParent(NodeFinder.perform(fUnit, type.getNameRange()), AbstractTypeDeclaration.class);
 			if (declaration != null) {
 				ITypeBinding binding= declaration.resolveBinding();
@@ -117,7 +117,7 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 			}
 		}
 
-		public CompilationUnit getCompilationUnit() {
+		public JavaScriptUnit getCompilationUnit() {
 			return fUnit;
 		}
 
@@ -177,10 +177,10 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 
 		private final String SETTINGS_SECTION= "AddUnimplementedConstructorsDialog"; //$NON-NLS-1$
 
-		public AddUnimplementedConstructorsDialog(Shell parent, ILabelProvider labelProvider, ITreeContentProvider contentProvider, CompilationUnitEditor editor, IType type) throws JavaModelException {
+		public AddUnimplementedConstructorsDialog(Shell parent, ILabelProvider labelProvider, ITreeContentProvider contentProvider, CompilationUnitEditor editor, IType type) throws JavaScriptModelException {
 			super(parent, labelProvider, contentProvider, editor, type, true);
 
-			IDialogSettings dialogSettings= JavaPlugin.getDefault().getDialogSettings();
+			IDialogSettings dialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();
 			fAddConstructorsSettings= dialogSettings.getSection(SETTINGS_SECTION);
 			if (fAddConstructorsSettings == null) {
 				fAddConstructorsSettings= dialogSettings.addNewSection(SETTINGS_SECTION);
@@ -343,7 +343,7 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 		private int countSelectedMethods(Object[] selection) {
 			int count= 0;
 			for (int i= 0; i < selection.length; i++) {
-				if (selection[i] instanceof IMethodBinding)
+				if (selection[i] instanceof IFunctionBinding)
 					count++;
 			}
 			return count;
@@ -391,13 +391,13 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.ADD_UNIMPLEMENTED_CONSTRUCTORS_ACTION);
 	}
 
-	private boolean canEnable(IStructuredSelection selection) throws JavaModelException {
+	private boolean canEnable(IStructuredSelection selection) throws JavaScriptModelException {
 		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IType)) {
 			IType type= (IType) selection.getFirstElement();
-			return type.getCompilationUnit() != null && !type.isInterface() && !type.isEnum();
+			return type.getJavaScriptUnit() != null && !type.isInterface() && !type.isEnum();
 		}
 
-		if ((selection.size() == 1) && (selection.getFirstElement() instanceof ICompilationUnit))
+		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IJavaScriptUnit))
 			return true;
 
 		return false;
@@ -411,15 +411,15 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 		return DIALOG_TITLE;
 	}
 
-	private IType getSelectedType(IStructuredSelection selection) throws JavaModelException {
+	private IType getSelectedType(IStructuredSelection selection) throws JavaScriptModelException {
 		Object[] elements= selection.toArray();
 		if (elements.length == 1 && (elements[0] instanceof IType)) {
 			IType type= (IType) elements[0];
-			if (type.getCompilationUnit() != null && !type.isInterface() && !type.isEnum()) {
+			if (type.getJavaScriptUnit() != null && !type.isInterface() && !type.isEnum()) {
 				return type;
 			}
-		} else if (elements[0] instanceof ICompilationUnit) {
-			ICompilationUnit cu= (ICompilationUnit) elements[0];
+		} else if (elements[0] instanceof IJavaScriptUnit) {
+			IJavaScriptUnit cu= (IJavaScriptUnit) elements[0];
 			IType type= cu.findPrimaryType();
 			if (type != null && !type.isInterface() && !type.isEnum())
 				return type;
@@ -467,7 +467,7 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 				run(shell, type, true);
 			else
 				MessageDialog.openInformation(shell, getDialogTitle(), ActionMessages.AddUnimplementedConstructorsAction_not_applicable); 
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, getShell(), getDialogTitle(), null);
 		} catch (CoreException e) {
 			ExceptionHandler.handle(e, getShell(), getDialogTitle(), null);
@@ -499,7 +499,7 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 		dialog.setTitle(ActionMessages.AddUnimplementedConstructorsAction_dialog_title); 
 		dialog.setInitialSelections(constructors);
 		dialog.setContainerMode(true);
-		dialog.setComparator(new JavaElementComparator());
+		dialog.setComparator(new JavaScriptElementComparator());
 		dialog.setSize(60, 18);
 		dialog.setInput(new Object());
 		dialog.setMessage(ActionMessages.AddUnimplementedConstructorsAction_dialog_label); 
@@ -516,25 +516,25 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 			ArrayList result= new ArrayList();
 			for (int i= 0; i < elements.length; i++) {
 				Object elem= elements[i];
-				if (elem instanceof IMethodBinding) {
+				if (elem instanceof IFunctionBinding) {
 					result.add(elem);
 				}
 			}
-			IMethodBinding[] selected= (IMethodBinding[]) result.toArray(new IMethodBinding[result.size()]);
+			IFunctionBinding[] selected= (IFunctionBinding[]) result.toArray(new IFunctionBinding[result.size()]);
 
-			CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(type.getJavaProject());
+			CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(type.getJavaScriptProject());
 			settings.createComments= dialog.getGenerateComment();
-			IEditorPart editor= JavaUI.openInEditor(type, true, false);
+			IEditorPart editor= JavaScriptUI.openInEditor(type, true, false);
 			IRewriteTarget target= editor != null ? (IRewriteTarget) editor.getAdapter(IRewriteTarget.class) : null;
 			if (target != null)
 				target.beginCompoundChange();
 			try {
-				CompilationUnit astRoot= provider.getCompilationUnit();
+				JavaScriptUnit astRoot= provider.getCompilationUnit();
 				final ITypeBinding typeBinding= ASTNodes.getTypeBinding(astRoot, type);
 				int insertPos= dialog.getInsertOffset();
 				
 				AddUnimplementedConstructorsOperation operation= (AddUnimplementedConstructorsOperation) createRunnable(astRoot, typeBinding, selected, insertPos, dialog.getGenerateComment(), dialog.getVisibilityModifier(), dialog.isOmitSuper());
-				IRunnableContext context= JavaPlugin.getActiveWorkbenchWindow();
+				IRunnableContext context= JavaScriptPlugin.getActiveWorkbenchWindow();
 				if (context == null)
 					context= new BusyIndicatorRunnableContext();
 				PlatformUI.getWorkbench().getProgressService().runInUI(context, new WorkbenchRunnableAdapter(operation, operation.getSchedulingRule()), operation.getSchedulingRule());
@@ -557,8 +557,8 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 	/**
 	 * Returns a runnable that creates the constructor stubs.
 	 * 
-	 * @param astRoot the AST of the compilation unit to work on. The AST must have been created from a {@link ICompilationUnit}, that
-	 * means {@link org.eclipse.wst.jsdt.core.dom.ASTParser#setSource(ICompilationUnit)} was used.
+	 * @param astRoot the AST of the compilation unit to work on. The AST must have been created from a {@link IJavaScriptUnit}, that
+	 * means {@link org.eclipse.wst.jsdt.core.dom.ASTParser#setSource(IJavaScriptUnit)} was used.
 	 * @param type the binding of the type to add the new methods to. The type binding must correspond to a type declaration in the AST.
 	 * @param constructorsToOverride the bindings of constructors to override or <code>null</code> to implement all visible constructors from the super class.
 	 * @param insertPos a hint for a location in the source where to insert the new methods or <code>-1</code> to use the default behavior.
@@ -566,11 +566,11 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 	 * @param visibility the visibility for the new modifiers. (see {@link org.eclipse.wst.jsdt.core.Flags}) for visibility constants.
 	 * @param omitSuper if set, no <code>super()</code> call without arguments will be created.
 	 * @return returns a runnable that creates the constructor stubs.
-	 * @throws IllegalArgumentException a {@link IllegalArgumentException} is thrown if the AST passed has not been created from a {@link ICompilationUnit}.
+	 * @throws IllegalArgumentException a {@link IllegalArgumentException} is thrown if the AST passed has not been created from a {@link IJavaScriptUnit}.
 	 * 
 	 * @since 3.2
 	 */
-	public static IWorkspaceRunnable createRunnable(CompilationUnit astRoot, ITypeBinding type, IMethodBinding[] constructorsToOverride, int insertPos, boolean createComments, int visibility, boolean omitSuper) {
+	public static IWorkspaceRunnable createRunnable(JavaScriptUnit astRoot, ITypeBinding type, IFunctionBinding[] constructorsToOverride, int insertPos, boolean createComments, int visibility, boolean omitSuper) {
 		AddUnimplementedConstructorsOperation operation= new AddUnimplementedConstructorsOperation(astRoot, type, constructorsToOverride, insertPos, true, true, false);
 		operation.setCreateComments(createComments);
 		operation.setOmitSuper(omitSuper);
@@ -586,10 +586,10 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(canEnable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			setEnabled(false);
 		}
 	}

@@ -24,11 +24,11 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
@@ -39,7 +39,7 @@ import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
@@ -48,14 +48,14 @@ import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Message;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
@@ -74,7 +74,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.MembersOrderPreferenceCache;
 
 public class ASTNodes {
@@ -181,8 +181,8 @@ public class ASTNodes {
         
 	public static ASTNode findDeclaration(IBinding binding, ASTNode root) {
 		root= root.getRoot();
-		if (root instanceof CompilationUnit) {
-			return ((CompilationUnit)root).findDeclaringNode(binding);
+		if (root instanceof JavaScriptUnit) {
+			return ((JavaScriptUnit)root).findDeclaringNode(binding);
 		}
 		return null;
 	}
@@ -285,8 +285,8 @@ public class ASTNodes {
 	}
 	
 	public static ChildListPropertyDescriptor getBodyDeclarationsProperty(ASTNode node) {
-		if (node instanceof CompilationUnit) {
-			return CompilationUnit.STATEMENTS_PROPERTY;
+		if (node instanceof JavaScriptUnit) {
+			return JavaScriptUnit.STATEMENTS_PROPERTY;
 		} else if (node instanceof AbstractTypeDeclaration) {
 				return ((AbstractTypeDeclaration)node).getBodyDeclarationsProperty();
 		} else if (node instanceof AnonymousClassDeclaration) {
@@ -394,8 +394,8 @@ public class ASTNodes {
     		VariableDeclarationFragment vdf= (VariableDeclarationFragment)parent;
     		if (vdf.getInitializer().equals(location))
     			return false;
-    	} else if (parent instanceof MethodInvocation){
-    		MethodInvocation mi= (MethodInvocation)parent;
+    	} else if (parent instanceof FunctionInvocation){
+    		FunctionInvocation mi= (FunctionInvocation)parent;
     		if (mi.arguments().contains(location))
     			return false;
     	} else if (parent instanceof ReturnStatement)
@@ -471,10 +471,10 @@ public class ASTNodes {
 		return node.getStartPosition() + node.getLength() - 1;
 	}
 	
-	public static IMethodBinding getMethodBinding(Name node) {
+	public static IFunctionBinding getMethodBinding(Name node) {
 		IBinding binding= node.resolveBinding();
-		if (binding instanceof IMethodBinding)
-			return (IMethodBinding)binding;
+		if (binding instanceof IFunctionBinding)
+			return (IFunctionBinding)binding;
 		return null;
 	}
 	
@@ -514,7 +514,7 @@ public class ASTNodes {
 	 * @param invocation method invocation to resolve type of
 	 * @return the type binding of the receiver
 	 */
-	public static ITypeBinding getReceiverTypeBinding(MethodInvocation invocation) {
+	public static ITypeBinding getReceiverTypeBinding(FunctionInvocation invocation) {
 		ITypeBinding result= null;
 		Expression exp= invocation.getExpression();
 		if(exp != null) {
@@ -534,8 +534,8 @@ public class ASTNodes {
 				return ((AbstractTypeDeclaration)node).resolveBinding();
 			} else if (node instanceof AnonymousClassDeclaration) {
 				return ((AnonymousClassDeclaration)node).resolveBinding();
-			}  else if (node instanceof CompilationUnit) {
-				return ((CompilationUnit)node).resolveBinding();
+			}  else if (node instanceof JavaScriptUnit) {
+				return ((JavaScriptUnit)node).resolveBinding();
 			}
 			node= node.getParent();
 		}
@@ -544,9 +544,9 @@ public class ASTNodes {
 
 	public static IProblem[] getProblems(ASTNode node, int scope, int severity) {
 		ASTNode root= node.getRoot();
-		if (!(root instanceof CompilationUnit))
+		if (!(root instanceof JavaScriptUnit))
 			return EMPTY_PROBLEMS;
-		IProblem[] problems= ((CompilationUnit)root).getProblems();
+		IProblem[] problems= ((JavaScriptUnit)root).getProblems();
 		if (root == node)
 			return problems;
 		final int iterations= computeIterations(scope);
@@ -580,9 +580,9 @@ public class ASTNodes {
 	
 	public static Message[] getMessages(ASTNode node, int flags) {
 		ASTNode root= node.getRoot();
-		if (!(root instanceof CompilationUnit))
+		if (!(root instanceof JavaScriptUnit))
 			return EMPTY_MESSAGES;
-		Message[] messages= ((CompilationUnit)root).getMessages();
+		Message[] messages= ((JavaScriptUnit)root).getMessages();
 		if (root == node)
 			return messages;
 		final int iterations= computeIterations(flags);
@@ -644,11 +644,11 @@ public class ASTNodes {
 				return store.getCategoryIndex(MembersOrderPreferenceCache.INIT_INDEX) * 2;
 			case ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION:
 				return store.getCategoryIndex(MembersOrderPreferenceCache.METHOD_INDEX) * 2;
-			case ASTNode.METHOD_DECLARATION:
+			case ASTNode.FUNCTION_DECLARATION:
 				if (Modifier.isStatic(modifiers)) {
 					return store.getCategoryIndex(MembersOrderPreferenceCache.STATIC_METHODS_INDEX) * 2;
 				}
-				if (((MethodDeclaration) member).isConstructor()) {
+				if (((FunctionDeclaration) member).isConstructor()) {
 					return store.getCategoryIndex(MembersOrderPreferenceCache.CONSTRUCTORS_INDEX) * 2;
 				}
 				return store.getCategoryIndex(MembersOrderPreferenceCache.METHOD_INDEX) * 2;
@@ -667,7 +667,7 @@ public class ASTNodes {
 	public static int getInsertionIndex(BodyDeclaration member, List container) {
 		int containerSize= container.size();
 		
-		MembersOrderPreferenceCache orderStore= JavaPlugin.getDefault().getMemberOrderPreferenceCache();
+		MembersOrderPreferenceCache orderStore= JavaScriptPlugin.getDefault().getMemberOrderPreferenceCache();
 		
 		int orderIndex= getOrderPreference(member, orderStore);
 		
@@ -799,9 +799,9 @@ public class ASTNodes {
 		return null;
 	}
 
-	public static ITypeBinding getTypeBinding(CompilationUnit root, IType type) throws JavaModelException {
+	public static ITypeBinding getTypeBinding(JavaScriptUnit root, IType type) throws JavaScriptModelException {
 		if (type.isAnonymous()) {
-			final IJavaElement parent= type.getParent();
+			final IJavaScriptElement parent= type.getParent();
 			if (parent instanceof IField && Flags.isEnum(((IMember) parent).getFlags())) {
 				final EnumConstantDeclaration constant= (EnumConstantDeclaration) NodeFinder.perform(root, ((ISourceReference) parent).getSourceRange());
 				if (constant != null) {

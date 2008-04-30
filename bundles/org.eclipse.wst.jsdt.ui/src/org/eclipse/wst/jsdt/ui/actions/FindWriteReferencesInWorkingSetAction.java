@@ -15,7 +15,7 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -86,7 +86,7 @@ public class FindWriteReferencesInWorkingSetAction extends FindReferencesInWorki
 	}
 
 	int getLimitTo() {
-		return IJavaSearchConstants.WRITE_ACCESSES;
+		return IJavaScriptSearchConstants.WRITE_ACCESSES;
 	}
 
 	String getOperationUnavailableMessage() {

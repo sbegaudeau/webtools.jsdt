@@ -24,8 +24,8 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension4;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
@@ -33,11 +33,11 @@ import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ITrackedNodePosition;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
@@ -48,16 +48,16 @@ import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility2;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.JavaPreferencesSettings;
 
 public class OverrideCompletionProposal extends JavaTypeCompletionProposal implements ICompletionProposalExtension4 {
 
-	private IJavaProject fJavaProject;
+	private IJavaScriptProject fJavaProject;
 	private String fMethodName;
 	private String[] fParamTypes;
 
-	public OverrideCompletionProposal(IJavaProject jproject, ICompilationUnit cu, String methodName, String[] paramTypes, int start, int length, String displayName, String completionProposal) {
+	public OverrideCompletionProposal(IJavaScriptProject jproject, IJavaScriptUnit cu, String methodName, String[] paramTypes, int start, int length, String displayName, String completionProposal) {
 		super(completionProposal, cu, start, length, null, displayName, 0);
 		Assert.isNotNull(jproject);
 		Assert.isNotNull(methodName);
@@ -98,8 +98,8 @@ public class OverrideCompletionProposal extends JavaTypeCompletionProposal imple
 		parser.setStatementsRecovery(true);
 		parser.setSource(buffer.get().toCharArray());
 		parser.setUnitName(fCompilationUnit.getResource().getFullPath().toString());
-		parser.setProject(fCompilationUnit.getJavaProject());
-		final CompilationUnit unit= (CompilationUnit) parser.createAST(new NullProgressMonitor());
+		parser.setProject(fCompilationUnit.getJavaScriptProject());
+		final JavaScriptUnit unit= (JavaScriptUnit) parser.createAST(new NullProgressMonitor());
 		ITypeBinding binding= null;
 		ChildListPropertyDescriptor descriptor= null;
 		ASTNode node= NodeFinder.perform(unit, index + 1, 0);
@@ -109,7 +109,7 @@ public class OverrideCompletionProposal extends JavaTypeCompletionProposal imple
 					binding= ((ClassInstanceCreation) node.getParent()).resolveTypeBinding();
 					break;
 				case ASTNode.ENUM_CONSTANT_DECLARATION:
-					IMethodBinding methodBinding= ((EnumConstantDeclaration) node.getParent()).resolveConstructorBinding();
+					IFunctionBinding methodBinding= ((EnumConstantDeclaration) node.getParent()).resolveConstructorBinding();
 					if (methodBinding != null) {
 						binding= methodBinding.getDeclaringClass();
 					}
@@ -122,10 +122,10 @@ public class OverrideCompletionProposal extends JavaTypeCompletionProposal imple
 		}
 		if (binding != null) {
 			ASTRewrite rewrite= ASTRewrite.create(unit.getAST());
-			IMethodBinding[] bindings= StubUtility2.getOverridableMethods(rewrite.getAST(), binding, true);
+			IFunctionBinding[] bindings= StubUtility2.getOverridableMethods(rewrite.getAST(), binding, true);
 			if (bindings != null && bindings.length > 0) {
 				List candidates= new ArrayList(bindings.length);
-				IMethodBinding method= null;
+				IFunctionBinding method= null;
 				for (index= 0; index < bindings.length; index++) {
 					if (bindings[index].getName().equals(fMethodName) && bindings[index].getParameterTypes().length == fParamTypes.length)
 						candidates.add(bindings[index]);
@@ -137,12 +137,12 @@ public class OverrideCompletionProposal extends JavaTypeCompletionProposal imple
 						method= Bindings.findMethodInType(objectType, fMethodName, fParamTypes);
 					}
 				} else if (candidates.size() == 1)
-					method= (IMethodBinding) candidates.get(0);
+					method= (IFunctionBinding) candidates.get(0);
 				if (method != null) {
 					CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(fJavaProject);
 					ListRewrite rewriter= rewrite.getListRewrite(node, descriptor);
 					String key= method.getKey();
-					MethodDeclaration stub= null;
+					FunctionDeclaration stub= null;
 					for (index= 0; index < bindings.length; index++) {
 						if (key.equals(bindings[index].getKey())) {
 							stub= StubUtility2.createImplementationStub(fCompilationUnit, rewrite, importRewrite, bindings[index], binding.getName(), binding.isInterface(), settings);
@@ -159,9 +159,9 @@ public class OverrideCompletionProposal extends JavaTypeCompletionProposal imple
 						try {
 							rewrite.rewriteAST(contents, fJavaProject.getOptions(true)).apply(contents, TextEdit.UPDATE_REGIONS);
 						} catch (MalformedTreeException exception) {
-							JavaPlugin.log(exception);
+							JavaScriptPlugin.log(exception);
 						} catch (BadLocationException exception) {
-							JavaPlugin.log(exception);
+							JavaScriptPlugin.log(exception);
 						}
 						setReplacementString(IndentManipulation.changeIndent(Strings.trimIndentation(contents.get(position.getStartPosition(), position.getLength()), settings.tabWidth, settings.indentWidth, false), 0, settings.tabWidth, settings.indentWidth, indent, TextUtilities.getDefaultLineDelimiter(contents)));
 					}

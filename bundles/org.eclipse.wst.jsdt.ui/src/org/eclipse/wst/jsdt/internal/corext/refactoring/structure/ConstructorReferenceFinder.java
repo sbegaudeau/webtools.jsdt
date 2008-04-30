@@ -20,24 +20,24 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Type;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
@@ -55,33 +55,33 @@ import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
  */
 class ConstructorReferenceFinder {
 	private final IType fType;
-	private final IMethod[] fConstructors;
+	private final IFunction[] fConstructors;
 
-	private ConstructorReferenceFinder(IType type) throws JavaModelException{
+	private ConstructorReferenceFinder(IType type) throws JavaScriptModelException{
 		fConstructors= JavaElementUtil.getAllConstructors(type);
 		fType= type;
 	}
 
-	private ConstructorReferenceFinder(IMethod constructor){
-		fConstructors= new IMethod[]{constructor};
+	private ConstructorReferenceFinder(IFunction constructor){
+		fConstructors= new IFunction[]{constructor};
 		fType= constructor.getDeclaringType();
 	}
 
-	public static SearchResultGroup[] getConstructorReferences(IType type, IProgressMonitor pm, RefactoringStatus status) throws JavaModelException{
-		return new ConstructorReferenceFinder(type).getConstructorReferences(pm, null, IJavaSearchConstants.REFERENCES, status);
+	public static SearchResultGroup[] getConstructorReferences(IType type, IProgressMonitor pm, RefactoringStatus status) throws JavaScriptModelException{
+		return new ConstructorReferenceFinder(type).getConstructorReferences(pm, null, IJavaScriptSearchConstants.REFERENCES, status);
 	}
 
-	public static SearchResultGroup[] getConstructorReferences(IType type, WorkingCopyOwner owner, IProgressMonitor pm, RefactoringStatus status) throws JavaModelException{
-		return new ConstructorReferenceFinder(type).getConstructorReferences(pm, owner, IJavaSearchConstants.REFERENCES, status);
+	public static SearchResultGroup[] getConstructorReferences(IType type, WorkingCopyOwner owner, IProgressMonitor pm, RefactoringStatus status) throws JavaScriptModelException{
+		return new ConstructorReferenceFinder(type).getConstructorReferences(pm, owner, IJavaScriptSearchConstants.REFERENCES, status);
 	}
 
-	public static SearchResultGroup[] getConstructorOccurrences(IMethod constructor, IProgressMonitor pm, RefactoringStatus status) throws JavaModelException{
+	public static SearchResultGroup[] getConstructorOccurrences(IFunction constructor, IProgressMonitor pm, RefactoringStatus status) throws JavaScriptModelException{
 		Assert.isTrue(constructor.isConstructor());
-		return new ConstructorReferenceFinder(constructor).getConstructorReferences(pm, null, IJavaSearchConstants.ALL_OCCURRENCES, status);
+		return new ConstructorReferenceFinder(constructor).getConstructorReferences(pm, null, IJavaScriptSearchConstants.ALL_OCCURRENCES, status);
 	}
 
-	private SearchResultGroup[] getConstructorReferences(IProgressMonitor pm, WorkingCopyOwner owner, int limitTo, RefactoringStatus status) throws JavaModelException{
-		IJavaSearchScope scope= createSearchScope();
+	private SearchResultGroup[] getConstructorReferences(IProgressMonitor pm, WorkingCopyOwner owner, int limitTo, RefactoringStatus status) throws JavaScriptModelException{
+		IJavaScriptSearchScope scope= createSearchScope();
 		SearchPattern pattern= RefactoringSearchEngine.createOrPattern(fConstructors, limitTo);
 		if (pattern == null){
 			if (fConstructors.length != 0)
@@ -96,10 +96,10 @@ class ConstructorReferenceFinder {
 		List result= new ArrayList(groups.length);
 		for (int i= 0; i < groups.length; i++) {
 			SearchResultGroup group= groups[i];
-			ICompilationUnit cu= group.getCompilationUnit();
+			IJavaScriptUnit cu= group.getCompilationUnit();
 			if (cu == null)
 				continue;
-			CompilationUnit cuNode= new RefactoringASTParser(AST.JLS3).parse(cu, false);
+			JavaScriptUnit cuNode= new RefactoringASTParser(AST.JLS3).parse(cu, false);
 			SearchMatch[] allSearchResults= group.getSearchResults();
 			List realConstructorReferences= new ArrayList(Arrays.asList(allSearchResults));
 			for (int j= 0; j < allSearchResults.length; j++) {
@@ -126,9 +126,9 @@ class ConstructorReferenceFinder {
 			//==> "B" is found as reference to A()
 			return false;
 		}
-		if (node.getParent() instanceof MethodDeclaration
-				&& MethodDeclaration.NAME_PROPERTY.equals(node.getLocationInParent())) {
-			MethodDeclaration md= (MethodDeclaration)node.getParent();
+		if (node.getParent() instanceof FunctionDeclaration
+				&& FunctionDeclaration.NAME_PROPERTY.equals(node.getLocationInParent())) {
+			FunctionDeclaration md= (FunctionDeclaration)node.getParent();
 			if (md.isConstructor() && ! md.getName().getIdentifier().equals(typeName)) {
 				//Example:
 				//	class A{
@@ -144,25 +144,25 @@ class ConstructorReferenceFinder {
 		return true;
 	}
 	
-	private IJavaSearchScope createSearchScope() throws JavaModelException{
+	private IJavaScriptSearchScope createSearchScope() throws JavaScriptModelException{
 		if (fConstructors.length == 0)
 			return RefactoringScopeFactory.create(fType);
 		return RefactoringScopeFactory.create(getMostVisibleConstructor());
 	}
 	
-	private IMethod getMostVisibleConstructor() throws JavaModelException {
+	private IFunction getMostVisibleConstructor() throws JavaScriptModelException {
 		Assert.isTrue(fConstructors.length > 0);
-		IMethod candidate= fConstructors[0];
+		IFunction candidate= fConstructors[0];
 		int visibility= JdtFlags.getVisibilityCode(fConstructors[0]);
 		for (int i= 1; i < fConstructors.length; i++) {
-			IMethod constructor= fConstructors[i];
+			IFunction constructor= fConstructors[i];
 			if (JdtFlags.isHigherVisibility(JdtFlags.getVisibilityCode(constructor), visibility))
 				candidate= constructor;
 		}
 		return candidate;
 	}
 
-	private SearchResultGroup[] getImplicitConstructorReferences(IProgressMonitor pm, WorkingCopyOwner owner, RefactoringStatus status) throws JavaModelException {
+	private SearchResultGroup[] getImplicitConstructorReferences(IProgressMonitor pm, WorkingCopyOwner owner, RefactoringStatus status) throws JavaScriptModelException {
 		pm.beginTask("", 2); //$NON-NLS-1$
 		List searchMatches= new ArrayList();
 		searchMatches.addAll(getImplicitConstructorReferencesFromHierarchy(owner, new SubProgressMonitor(pm, 1)));
@@ -172,18 +172,18 @@ class ConstructorReferenceFinder {
 	}
 		
 	//List of SearchResults
-	private List getImplicitConstructorReferencesInClassCreations(WorkingCopyOwner owner, IProgressMonitor pm, RefactoringStatus status) throws JavaModelException {
+	private List getImplicitConstructorReferencesInClassCreations(WorkingCopyOwner owner, IProgressMonitor pm, RefactoringStatus status) throws JavaScriptModelException {
 		//XXX workaround for jdt core bug 23112
-		SearchPattern pattern= SearchPattern.createPattern(fType, IJavaSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
-		IJavaSearchScope scope= RefactoringScopeFactory.create(fType);
+		SearchPattern pattern= SearchPattern.createPattern(fType, IJavaScriptSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
+		IJavaScriptSearchScope scope= RefactoringScopeFactory.create(fType);
 		SearchResultGroup[] refs= RefactoringSearchEngine.search(pattern, owner, scope, pm, status);
 		List result= new ArrayList();
 		for (int i= 0; i < refs.length; i++) {
 			SearchResultGroup group= refs[i];
-			ICompilationUnit cu= group.getCompilationUnit();
+			IJavaScriptUnit cu= group.getCompilationUnit();
 			if (cu == null)
 				continue;
-			CompilationUnit cuNode= new RefactoringASTParser(AST.JLS3).parse(cu, false);
+			JavaScriptUnit cuNode= new RefactoringASTParser(AST.JLS3).parse(cu, false);
 			SearchMatch[] results= group.getSearchResults();
 			for (int j= 0; j < results.length; j++) {
 				SearchMatch searchResult= results[j];
@@ -212,7 +212,7 @@ class ConstructorReferenceFinder {
 	}
 
 	//List of SearchResults
-	private List getImplicitConstructorReferencesFromHierarchy(WorkingCopyOwner owner, IProgressMonitor pm) throws JavaModelException{
+	private List getImplicitConstructorReferencesFromHierarchy(WorkingCopyOwner owner, IProgressMonitor pm) throws JavaScriptModelException{
 		IType[] subTypes= getNonBinarySubtypes(owner, fType, pm);
 		List result= new ArrayList(subTypes.length);
 		for (int i= 0; i < subTypes.length; i++) {
@@ -221,7 +221,7 @@ class ConstructorReferenceFinder {
 		return result;
 	}
 
-	private static IType[] getNonBinarySubtypes(WorkingCopyOwner owner, IType type, IProgressMonitor monitor) throws JavaModelException{
+	private static IType[] getNonBinarySubtypes(WorkingCopyOwner owner, IType type, IProgressMonitor monitor) throws JavaScriptModelException{
 		ITypeHierarchy hierarchy= null;
 		if (owner == null)
 			hierarchy= type.newTypeHierarchy(monitor);
@@ -238,9 +238,9 @@ class ConstructorReferenceFinder {
 	}
 
 	//Collection of SearchResults
-	private static Collection getAllSuperConstructorInvocations(IType type) throws JavaModelException {
-		IMethod[] constructors= JavaElementUtil.getAllConstructors(type);
-		CompilationUnit cuNode= new RefactoringASTParser(AST.JLS3).parse(type.getCompilationUnit(), false);
+	private static Collection getAllSuperConstructorInvocations(IType type) throws JavaScriptModelException {
+		IFunction[] constructors= JavaElementUtil.getAllConstructors(type);
+		JavaScriptUnit cuNode= new RefactoringASTParser(AST.JLS3).parse(type.getJavaScriptUnit(), false);
 		List result= new ArrayList(constructors.length);
 		for (int i= 0; i < constructors.length; i++) {
 			ASTNode superCall= getSuperConstructorCallNode(constructors[i], cuNode);
@@ -250,7 +250,7 @@ class ConstructorReferenceFinder {
 		return result;
 	}
 
-	private static SearchMatch createSearchResult(ASTNode superCall, IMethod constructor) {
+	private static SearchMatch createSearchResult(ASTNode superCall, IFunction constructor) {
 		int start= superCall.getStartPosition();
 		int end= ASTNodes.getInclusiveEnd(superCall); //TODO: why inclusive?
 		IResource resource= constructor.getResource();
@@ -258,9 +258,9 @@ class ConstructorReferenceFinder {
 				SearchEngine.getDefaultSearchParticipant(), resource);
 	}
 
-	private static SuperConstructorInvocation getSuperConstructorCallNode(IMethod constructor, CompilationUnit cuNode) throws JavaModelException {
+	private static SuperConstructorInvocation getSuperConstructorCallNode(IFunction constructor, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		Assert.isTrue(constructor.isConstructor());
-		MethodDeclaration constructorNode= ASTNodeSearchUtil.getMethodDeclarationNode(constructor, cuNode);
+		FunctionDeclaration constructorNode= ASTNodeSearchUtil.getMethodDeclarationNode(constructor, cuNode);
 		Assert.isTrue(constructorNode.isConstructor());
 		Block body= constructorNode.getBody();
 		Assert.isNotNull(body);

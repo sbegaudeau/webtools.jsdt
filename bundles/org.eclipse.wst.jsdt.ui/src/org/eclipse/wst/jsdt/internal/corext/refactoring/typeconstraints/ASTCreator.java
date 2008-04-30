@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 
 
@@ -27,25 +27,25 @@ public class ASTCreator {
 		//private
 	}
 	
-	public static CompilationUnit createAST(ICompilationUnit cu, WorkingCopyOwner workingCopyOwner) {
-		CompilationUnit cuNode= getCuNode(workingCopyOwner, cu);
+	public static JavaScriptUnit createAST(IJavaScriptUnit cu, WorkingCopyOwner workingCopyOwner) {
+		JavaScriptUnit cuNode= getCuNode(workingCopyOwner, cu);
 		cuNode.setProperty(CU_PROPERTY, cu);
 		return cuNode;
 	}
 
-	private static CompilationUnit getCuNode(WorkingCopyOwner workingCopyOwner, ICompilationUnit cu) {
+	private static JavaScriptUnit getCuNode(WorkingCopyOwner workingCopyOwner, IJavaScriptUnit cu) {
 		ASTParser p = ASTParser.newParser(AST.JLS3);
 		p.setSource(cu);
 		p.setResolveBindings(true);
 		p.setWorkingCopyOwner(workingCopyOwner);
 		p.setCompilerOptions(RefactoringASTParser.getCompilerOptions(cu));
-		return (CompilationUnit) p.createAST(null);
+		return (JavaScriptUnit) p.createAST(null);
 	}
 
-	public static ICompilationUnit getCu(ASTNode node) {
+	public static IJavaScriptUnit getCu(ASTNode node) {
 		Object property= node.getRoot().getProperty(CU_PROPERTY);
-		if (property instanceof ICompilationUnit)
-			return (ICompilationUnit)property;
+		if (property instanceof IJavaScriptUnit)
+			return (IJavaScriptUnit)property;
 		return null;
 	}
 }

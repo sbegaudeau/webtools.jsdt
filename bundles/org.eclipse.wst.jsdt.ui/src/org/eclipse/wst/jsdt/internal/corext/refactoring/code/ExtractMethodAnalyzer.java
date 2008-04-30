@@ -18,8 +18,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -28,18 +28,18 @@ import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.Message;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -79,7 +79,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 	/** This is either a method declaration or an initializer */
 	private BodyDeclaration fEnclosingBodyDeclaration;
-	private IMethodBinding fEnclosingMethodBinding;
+	private IFunctionBinding fEnclosingMethodBinding;
 	private int fMaxVariableId;
 
 	private int fReturnKind;
@@ -102,7 +102,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 	private boolean fForceStatic;
 	private boolean fIsLastStatementSelected;
 	
-	public ExtractMethodAnalyzer(ICompilationUnit unit, Selection selection) throws JavaModelException {
+	public ExtractMethodAnalyzer(IJavaScriptUnit unit, Selection selection) throws JavaScriptModelException {
 		super(unit, selection, false);
 	}
 	
@@ -237,8 +237,8 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 				}
 				break;	
 			case RETURN_STATEMENT_VALUE:
-				if (fEnclosingBodyDeclaration.getNodeType() == ASTNode.METHOD_DECLARATION)
-					fReturnType= ((MethodDeclaration)fEnclosingBodyDeclaration).getReturnType2();
+				if (fEnclosingBodyDeclaration.getNodeType() == ASTNode.FUNCTION_DECLARATION)
+					fReturnType= ((FunctionDeclaration)fEnclosingBodyDeclaration).getReturnType2();
 				break;
 			default:
 				fReturnType= ast.newPrimitiveType(PrimitiveType.VOID);
@@ -340,8 +340,8 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 			fIsLastStatementSelected= false;
 		} else {
 			Block body= null;
-			if (fEnclosingBodyDeclaration instanceof MethodDeclaration) {
-				body= ((MethodDeclaration) fEnclosingBodyDeclaration).getBody();
+			if (fEnclosingBodyDeclaration instanceof FunctionDeclaration) {
+				body= ((FunctionDeclaration) fEnclosingBodyDeclaration).getBody();
 			} else if (fEnclosingBodyDeclaration instanceof Initializer) {
 				body= ((Initializer) fEnclosingBodyDeclaration).getBody();
 			}
@@ -363,7 +363,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 		List result= new ArrayList(bindings.length);
 		Selection selection= getSelection();
 		for (int i= 0; i < bindings.length; i++) {
-			ASTNode decl= ((CompilationUnit)fEnclosingBodyDeclaration.getRoot()).findDeclaringNode(bindings[i]);
+			ASTNode decl= ((JavaScriptUnit)fEnclosingBodyDeclaration.getRoot()).findDeclaringNode(bindings[i]);
 			if (!selection.covers(decl))
 				result.add(bindings[i]);
 		}
@@ -375,10 +375,10 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 		Set result= new HashSet();
 		// first remove all type variables that come from outside of the method
 		// or are covered by the selection
-		CompilationUnit compilationUnit= (CompilationUnit)fEnclosingBodyDeclaration.getRoot();
+		JavaScriptUnit compilationUnit= (JavaScriptUnit)fEnclosingBodyDeclaration.getRoot();
 		for (int i= 0; i < bindings.length; i++) {
 			ASTNode decl= compilationUnit.findDeclaringNode(bindings[i]);
-			if (decl == null || (!selection.covers(decl) && decl.getParent() instanceof MethodDeclaration))
+			if (decl == null || (!selection.covers(decl) && decl.getParent() instanceof FunctionDeclaration))
 				result.add(bindings[i]);
 		}
 		// all all type variables which are needed since a local variable uses it
@@ -387,7 +387,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 			ITypeBinding type= arg.getType();
 			if (type != null && type.isTypeVariable()) {
 				ASTNode decl= compilationUnit.findDeclaringNode(type);
-				if (decl == null || (!selection.covers(decl) && decl.getParent() instanceof MethodDeclaration))
+				if (decl == null || (!selection.covers(decl) && decl.getParent() instanceof FunctionDeclaration))
 					result.add(type);
 			}
 		}
@@ -534,15 +534,15 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 		invalidSelection(RefactoringCoreMessages.ExtractMethodAnalyzer_parent_mismatch); 
 	}
 	
-	public void endVisit(CompilationUnit node) {
+	public void endVisit(JavaScriptUnit node) {
 		RefactoringStatus status= getStatus();
 		superCall: {
 			if (status.hasFatalError())
 				break superCall;
 			if (!hasSelectedNodes()) {
 				ASTNode coveringNode= getLastCoveringNode();
-				if (coveringNode instanceof Block && coveringNode.getParent() instanceof MethodDeclaration) {
-					MethodDeclaration methodDecl= (MethodDeclaration)coveringNode.getParent();
+				if (coveringNode instanceof Block && coveringNode.getParent() instanceof FunctionDeclaration) {
+					FunctionDeclaration methodDecl= (FunctionDeclaration)coveringNode.getParent();
 					Message[] messages= ASTNodes.getMessages(methodDecl, ASTNodes.NODE_ONLY);
 					if (messages.length > 0) {
 						status.addFatalError(Messages.format(
@@ -556,15 +556,15 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 			}
 			fEnclosingBodyDeclaration= (BodyDeclaration)ASTNodes.getParent(getFirstSelectedNode(), BodyDeclaration.class);
 			if (fEnclosingBodyDeclaration == null || 
-					(fEnclosingBodyDeclaration.getNodeType() != ASTNode.METHOD_DECLARATION && 
+					(fEnclosingBodyDeclaration.getNodeType() != ASTNode.FUNCTION_DECLARATION && 
 					 fEnclosingBodyDeclaration.getNodeType() != ASTNode.INITIALIZER)) {
 				status.addFatalError(RefactoringCoreMessages.ExtractMethodAnalyzer_only_method_body); 
 				break superCall;
 			} else if (ASTNodes.getEnclosingType(fEnclosingBodyDeclaration) == null) {
 				status.addFatalError(RefactoringCoreMessages.ExtractMethodAnalyzer_compile_errors_no_parent_binding);
 				break superCall;
-			} else if (fEnclosingBodyDeclaration.getNodeType() == ASTNode.METHOD_DECLARATION) {
-				fEnclosingMethodBinding= ((MethodDeclaration)fEnclosingBodyDeclaration).resolveBinding();
+			} else if (fEnclosingBodyDeclaration.getNodeType() == ASTNode.FUNCTION_DECLARATION) {
+				fEnclosingMethodBinding= ((FunctionDeclaration)fEnclosingBodyDeclaration).resolveBinding();
 			}
 			if (!isSingleExpressionOrStatementSet()) {
 				status.addFatalError(RefactoringCoreMessages.ExtractMethodAnalyzer_single_expression_or_set); 
@@ -578,7 +578,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 						status.addFatalError(RefactoringCoreMessages.ExtractMethodAnalyzer_cannot_extract_type_reference); 
 						break superCall;
 					}
-					if (name.resolveBinding() instanceof IMethodBinding) {
+					if (name.resolveBinding() instanceof IFunctionBinding) {
 						status.addFatalError(RefactoringCoreMessages.ExtractMethodAnalyzer_cannot_extract_method_name_reference); 
 					}
 					if (name.isSimpleName() && ((SimpleName)name).isDeclaration()) {
@@ -632,7 +632,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 		return result;
 	}
 
-	public boolean visit(MethodDeclaration node) {
+	public boolean visit(FunctionDeclaration node) {
 		Block body= node.getBody();
 		if (body == null)
 			return false;

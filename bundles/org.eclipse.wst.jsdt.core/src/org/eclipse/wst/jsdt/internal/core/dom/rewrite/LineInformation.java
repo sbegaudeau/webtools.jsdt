@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.core.dom.rewrite;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 
 /**
  *
@@ -40,7 +40,7 @@ public abstract class LineInformation {
 		};
 	}
 
-	public static LineInformation create(final CompilationUnit astRoot) {
+	public static LineInformation create(final JavaScriptUnit astRoot) {
 		return new LineInformation() {
 			public int getLineOfOffset(int offset) {
 				return astRoot.getLineNumber(offset) - 1;

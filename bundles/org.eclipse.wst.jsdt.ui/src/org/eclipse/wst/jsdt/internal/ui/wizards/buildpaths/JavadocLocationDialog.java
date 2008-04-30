@@ -35,7 +35,7 @@ public class JavadocLocationDialog extends StatusDialog {
 	
 	/**
 	 * Shows the UI for configuring a javadoc location.
-	 * Use {@link org.eclipse.wst.jsdt.ui.JavaUI} to access and configure Javadoc locations.
+	 * Use {@link org.eclipse.wst.jsdt.ui.JavaScriptUI} to access and configure Javadoc locations.
 	 * 
 	 * @param parent The parent shell for the dialog.
 	 * @param libraryName Name of of the library to which configured javadoc location belongs.

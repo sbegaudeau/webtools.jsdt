@@ -12,16 +12,16 @@
 package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.Type;
@@ -37,14 +37,14 @@ public class CastCompletionProposal extends LinkedCorrectionProposal {
 	private Expression fNodeToCast;
 	private final Object fCastType; // String or ITypeBinding or null: Should become ITypeBinding
 
-	public CastCompletionProposal(String label, ICompilationUnit targetCU, Expression nodeToCast, String castType, int relevance) {
+	public CastCompletionProposal(String label, IJavaScriptUnit targetCU, Expression nodeToCast, String castType, int relevance) {
 		super(label, targetCU, null, relevance, JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CAST)); 
 		fNodeToCast= nodeToCast;
 		fCastType= castType;
 		setCommandId(ADD_CAST_ID);
 	}
 
-	public CastCompletionProposal(String label, ICompilationUnit targetCU, Expression nodeToCast, ITypeBinding castType, int relevance) {
+	public CastCompletionProposal(String label, IJavaScriptUnit targetCU, Expression nodeToCast, ITypeBinding castType, int relevance) {
 		super(label, targetCU, null, relevance, JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CAST)); 
 		fNodeToCast= nodeToCast;
 		fCastType= castType;
@@ -72,8 +72,8 @@ public class CastCompletionProposal extends LinkedCorrectionProposal {
 			node= parent;
 			parent= parent.getParent();
 		}
-		if (parent instanceof MethodInvocation) {
-			MethodInvocation invocation= (MethodInvocation) node.getParent();
+		if (parent instanceof FunctionInvocation) {
+			FunctionInvocation invocation= (FunctionInvocation) node.getParent();
 			if (invocation.getExpression() == node) {
 				IBinding targetContext= ASTResolving.getParentMethodOrTypeBinding(node);
 				ITypeBinding[] bindings= ASTResolving.getQualifierGuess(node.getRoot(), invocation.getName().getIdentifier(), invocation.arguments(), targetContext);
@@ -115,7 +115,7 @@ public class CastCompletionProposal extends LinkedCorrectionProposal {
 	protected ASTRewrite getRewrite() throws CoreException {
 		AST ast= fNodeToCast.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(ast);
-		ImportRewrite importRewrite= createImportRewrite((CompilationUnit) fNodeToCast.getRoot());
+		ImportRewrite importRewrite= createImportRewrite((JavaScriptUnit) fNodeToCast.getRoot());
 
 		Type newTypeNode= getNewCastTypeNode(rewrite, importRewrite);
 
@@ -156,8 +156,8 @@ public class CastCompletionProposal extends LinkedCorrectionProposal {
 
 	private static boolean needsOuterParantheses(ASTNode nodeToCast) {
 		ASTNode parent= nodeToCast.getParent();
-		if (parent instanceof MethodInvocation) {
-			if (((MethodInvocation)parent).getExpression() == nodeToCast) {
+		if (parent instanceof FunctionInvocation) {
+			if (((FunctionInvocation)parent).getExpression() == nodeToCast) {
 				return true;
 			}
 		} else if (parent instanceof QualifiedName) {

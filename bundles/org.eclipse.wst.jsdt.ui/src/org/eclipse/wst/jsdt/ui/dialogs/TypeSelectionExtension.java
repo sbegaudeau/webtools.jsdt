@@ -22,7 +22,7 @@ import org.eclipse.ui.dialogs.ISelectionStatusValidator;
  * selection dialog. 
  * </p>
  * 
- * @see org.eclipse.wst.jsdt.ui.JavaUI#createTypeDialog(org.eclipse.swt.widgets.Shell, org.eclipse.jface.operation.IRunnableContext, org.eclipse.wst.jsdt.core.search.IJavaSearchScope, int, boolean, String, TypeSelectionExtension)
+ * @see org.eclipse.wst.jsdt.ui.JavaScriptUI#createTypeDialog(org.eclipse.swt.widgets.Shell, org.eclipse.jface.operation.IRunnableContext, org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope, int, boolean, String, TypeSelectionExtension)
  * @since 3.2
  */
 public abstract class TypeSelectionExtension {

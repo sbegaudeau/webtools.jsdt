@@ -17,9 +17,9 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.participants.ReorgExecutionLog;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JDTChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.INewNameQuery;
@@ -33,14 +33,14 @@ abstract class CompilationUnitReorgChange extends JDTChange {
 
 	private INewNameQuery fNewNameQuery;
 
-	CompilationUnitReorgChange(ICompilationUnit cu, IPackageFragment dest, INewNameQuery newNameQuery) {
+	CompilationUnitReorgChange(IJavaScriptUnit cu, IPackageFragment dest, INewNameQuery newNameQuery) {
 		fCuHandle= cu.getHandleIdentifier();
 		fNewPackageHandle= dest.getHandleIdentifier();
 		fNewNameQuery= newNameQuery;
 		fOldPackageHandle= cu.getParent().getHandleIdentifier();
 	}
 
-	CompilationUnitReorgChange(ICompilationUnit cu, IPackageFragment dest) {
+	CompilationUnitReorgChange(IJavaScriptUnit cu, IPackageFragment dest) {
 		this(cu, dest, null);
 	}
 
@@ -53,7 +53,7 @@ abstract class CompilationUnitReorgChange extends JDTChange {
 	public final Change perform(IProgressMonitor pm) throws CoreException, OperationCanceledException {
 		pm.beginTask(getName(), 1);
 		try {
-			ICompilationUnit unit= getCu();
+			IJavaScriptUnit unit= getCu();
 			ResourceMapping mapping= JavaElementResourceMapping.create(unit);
 			Change result= doPerformReorg(new SubProgressMonitor(pm, 1));
 			markAsExecuted(unit, mapping);
@@ -69,16 +69,16 @@ abstract class CompilationUnitReorgChange extends JDTChange {
 		return getCu();
 	}
 
-	ICompilationUnit getCu() {
-		return (ICompilationUnit)JavaCore.create(fCuHandle);
+	IJavaScriptUnit getCu() {
+		return (IJavaScriptUnit)JavaScriptCore.create(fCuHandle);
 	}
 
 	IPackageFragment getOldPackage() {
-		return (IPackageFragment)JavaCore.create(fOldPackageHandle);
+		return (IPackageFragment)JavaScriptCore.create(fOldPackageHandle);
 	}
 
 	IPackageFragment getDestinationPackage() {
-		return (IPackageFragment)JavaCore.create(fNewPackageHandle);
+		return (IPackageFragment)JavaScriptCore.create(fNewPackageHandle);
 	}
 
 	String getNewName() throws OperationCanceledException {
@@ -94,7 +94,7 @@ abstract class CompilationUnitReorgChange extends JDTChange {
 			return pack.getElementName();
 	}
 
-	private void markAsExecuted(ICompilationUnit unit, ResourceMapping mapping) {
+	private void markAsExecuted(IJavaScriptUnit unit, ResourceMapping mapping) {
 		ReorgExecutionLog log= (ReorgExecutionLog)getAdapter(ReorgExecutionLog.class);
 		if (log != null) {
 			log.markAsProcessed(unit);

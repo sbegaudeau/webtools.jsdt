@@ -19,10 +19,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * Action to programmatically open a Java perspective.
@@ -43,7 +43,7 @@ public class OpenJavaBrowsingPerspectiveAction extends Action {
 	}
 
 	public void run() {
-		IWorkbench workbench= JavaPlugin.getDefault().getWorkbench();
+		IWorkbench workbench= JavaScriptPlugin.getDefault().getWorkbench();
 		IWorkbenchWindow window= workbench.getActiveWorkbenchWindow();
 		IWorkbenchPage page= window.getActivePage();
 		IAdaptable input;
@@ -52,7 +52,7 @@ public class OpenJavaBrowsingPerspectiveAction extends Action {
 		else
 			input= ResourcesPlugin.getWorkspace().getRoot();
 		try {
-			workbench.showPerspective(JavaUI.ID_BROWSING_PERSPECTIVE, window, input);
+			workbench.showPerspective(JavaScriptUI.ID_BROWSING_PERSPECTIVE, window, input);
 		} catch (WorkbenchException e) {
 			ExceptionHandler.handle(e, window.getShell(), 
 				ActionMessages.OpenJavaBrowsingPerspectiveAction_dialog_title, 

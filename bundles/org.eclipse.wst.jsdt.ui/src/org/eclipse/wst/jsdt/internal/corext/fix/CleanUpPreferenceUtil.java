@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpMessages;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpProfileManager;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpProfileVersioner;
@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Bui
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.CustomProfile;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.KeySet;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Profile;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class CleanUpPreferenceUtil {
 	
@@ -42,7 +42,7 @@ public class CleanUpPreferenceUtil {
     }
 
 	private static Map loadOptions(IScopeContext context, String profileIdKey, String defaultProfileId) {
-    	IEclipsePreferences contextNode= context.getNode(JavaUI.ID_PLUGIN);
+    	IEclipsePreferences contextNode= context.getNode(JavaScriptUI.ID_PLUGIN);
     	String id= contextNode.get(profileIdKey, null);
     	
     	if (id != null && ProjectScope.SCOPE.equals(context.getName())) {
@@ -52,10 +52,10 @@ public class CleanUpPreferenceUtil {
     	InstanceScope instanceScope= new InstanceScope();
     	if (id == null) {
     		if (ProjectScope.SCOPE.equals(context.getName())) {
-    			id= instanceScope.getNode(JavaUI.ID_PLUGIN).get(profileIdKey, null);
+    			id= instanceScope.getNode(JavaScriptUI.ID_PLUGIN).get(profileIdKey, null);
     		}
     		if (id == null) {
-    			id= new DefaultScope().getNode(JavaUI.ID_PLUGIN).get(profileIdKey, defaultProfileId);
+    			id= new DefaultScope().getNode(JavaScriptUI.ID_PLUGIN).get(profileIdKey, defaultProfileId);
     		}
     	}
     	
@@ -76,7 +76,7 @@ public class CleanUpPreferenceUtil {
         try {
             list= profileStore.readProfiles(instanceScope);
         } catch (CoreException e1) {
-            JavaPlugin.log(e1);
+            JavaScriptPlugin.log(e1);
         }
         if (list == null)
         	return null;
@@ -92,7 +92,7 @@ public class CleanUpPreferenceUtil {
 	
 	private static Map loadFromProject(IScopeContext context) {
 		final Map profileOptions= new HashMap();
-		IEclipsePreferences uiPrefs= context.getNode(JavaUI.ID_PLUGIN);
+		IEclipsePreferences uiPrefs= context.getNode(JavaScriptUI.ID_PLUGIN);
 		
     	CleanUpProfileVersioner versioner= new CleanUpProfileVersioner();
     	
@@ -130,11 +130,11 @@ public class CleanUpPreferenceUtil {
 	public static Map loadSaveParticipantOptions(IScopeContext context) {
 		IEclipsePreferences node;
 		if (hasSettingsInScope(context)) {
-			node= context.getNode(JavaUI.ID_PLUGIN);
+			node= context.getNode(JavaScriptUI.ID_PLUGIN);
 		} else {
 			IScopeContext instanceScope= new InstanceScope();
 			if (hasSettingsInScope(instanceScope)) {
-				node= instanceScope.getNode(JavaUI.ID_PLUGIN);
+				node= instanceScope.getNode(JavaScriptUI.ID_PLUGIN);
 			} else {
 				return CleanUpConstants.getSaveParticipantSettings();
 			}
@@ -151,7 +151,7 @@ public class CleanUpPreferenceUtil {
 	}
 	
     public static void saveSaveParticipantOptions(IScopeContext context, Map settings) {
-    	IEclipsePreferences node= context.getNode(JavaUI.ID_PLUGIN);
+    	IEclipsePreferences node= context.getNode(JavaScriptUI.ID_PLUGIN);
     	for (Iterator iterator= settings.keySet().iterator(); iterator.hasNext();) {
 	        String key= (String)iterator.next();
 	        node.put(SAVE_PARTICIPANT_KEY_PREFIX + key, (String)settings.get(key));
@@ -159,7 +159,7 @@ public class CleanUpPreferenceUtil {
     }
 
     private static boolean hasSettingsInScope(IScopeContext context) {
-    	IEclipsePreferences node= context.getNode(JavaUI.ID_PLUGIN);
+    	IEclipsePreferences node= context.getNode(JavaScriptUI.ID_PLUGIN);
     	
 		Map defaultSettings= CleanUpConstants.getSaveParticipantSettings();
 		for (Iterator iterator= defaultSettings.keySet().iterator(); iterator.hasNext();) {
@@ -187,7 +187,7 @@ public class CleanUpPreferenceUtil {
         try {
             list= profileStore.readProfiles(scope);
         } catch (CoreException e1) {
-            JavaPlugin.log(e1);
+            JavaScriptPlugin.log(e1);
         }
         if (list == null) {
         	list= getBuiltInProfiles();

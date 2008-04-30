@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.CastVariable2;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.CollectionElementVariable2;
 
@@ -34,14 +34,14 @@ public class InferTypeArgumentsUpdate {
 		}
 	}
 	
-	private HashMap/*<ICompilationUnit, CuUpdate>*/ fUpdates= new HashMap();
+	private HashMap/*<IJavaScriptUnit, CuUpdate>*/ fUpdates= new HashMap();
 	
-	public HashMap/*<ICompilationUnit, CuUpdate>*/ getUpdates() {
+	public HashMap/*<IJavaScriptUnit, CuUpdate>*/ getUpdates() {
 		return fUpdates;
 	}
 	
 	public void addDeclaration(CollectionElementVariable2 elementCv) {
-		ICompilationUnit cu= elementCv.getCompilationUnit();
+		IJavaScriptUnit cu= elementCv.getCompilationUnit();
 		if (cu == null)
 			return;
 		CuUpdate update= getUpdate(cu);
@@ -49,12 +49,12 @@ public class InferTypeArgumentsUpdate {
 	}
 
 	public void addCastToRemove(CastVariable2 castCv) {
-		ICompilationUnit cu= castCv.getCompilationUnit();
+		IJavaScriptUnit cu= castCv.getCompilationUnit();
 		CuUpdate update= getUpdate(cu);
 		update.fCastsToRemove.add(castCv);
 	}
 
-	private CuUpdate getUpdate(ICompilationUnit cu) {
+	private CuUpdate getUpdate(IJavaScriptUnit cu) {
 		Assert.isNotNull(cu);
 		Object obj= fUpdates.get(cu);
 		CuUpdate update;

@@ -11,12 +11,12 @@
 package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -37,25 +37,25 @@ public class CreateTypeOperation extends CreateTypeMemberOperation {
  * When executed, this operation will create a type unit
  * in the given parent element (a compilation unit, type)
  */
-public CreateTypeOperation(IJavaElement parentElement, String source, boolean force) {
+public CreateTypeOperation(IJavaScriptElement parentElement, String source, boolean force) {
 	super(parentElement, source, force);
 }
-protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, ICompilationUnit cu) throws JavaModelException {
+protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IJavaScriptUnit cu) throws JavaScriptModelException {
 	ASTNode node = super.generateElementAST(rewriter, document, cu);
 	if (!(node instanceof AbstractTypeDeclaration))
-		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_CONTENTS));
+		throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_CONTENTS));
 	return node;
 }
 
 /**
  * @see CreateElementInCUOperation#generateResultHandle()
  */
-protected IJavaElement generateResultHandle() {
-	IJavaElement parent= getParentElement();
+protected IJavaScriptElement generateResultHandle() {
+	IJavaScriptElement parent= getParentElement();
 	switch (parent.getElementType()) {
-		case IJavaElement.COMPILATION_UNIT:
-			return ((ICompilationUnit)parent).getType(getASTNodeName());
-		case IJavaElement.TYPE:
+		case IJavaScriptElement.JAVASCRIPT_UNIT:
+			return ((IJavaScriptUnit)parent).getType(getASTNodeName());
+		case IJavaScriptElement.TYPE:
 			return ((IType)parent).getType(getASTNodeName());
 		// Note: creating local/anonymous type is not supported
 	}
@@ -71,8 +71,8 @@ public String getMainTaskName(){
  * Returns the <code>IType</code> the member is to be created in.
  */
 protected IType getType() {
-	IJavaElement parent = getParentElement();
-	if (parent.getElementType() == IJavaElement.TYPE) {
+	IJavaScriptElement parent = getParentElement();
+	if (parent.getElementType() == IJavaScriptElement.TYPE) {
 		return (IType) parent;
 	}
 	return null;
@@ -80,22 +80,22 @@ protected IType getType() {
 /**
  * @see CreateTypeMemberOperation#verifyNameCollision
  */
-protected IJavaModelStatus verifyNameCollision() {
-	IJavaElement parent = getParentElement();
+protected IJavaScriptModelStatus verifyNameCollision() {
+	IJavaScriptElement parent = getParentElement();
 	switch (parent.getElementType()) {
-		case IJavaElement.COMPILATION_UNIT:
+		case IJavaScriptElement.JAVASCRIPT_UNIT:
 			String typeName = getASTNodeName();
-			if (((ICompilationUnit) parent).getType(typeName).exists()) {
+			if (((IJavaScriptUnit) parent).getType(typeName).exists()) {
 				return new JavaModelStatus(
-					IJavaModelStatusConstants.NAME_COLLISION,
+					IJavaScriptModelStatusConstants.NAME_COLLISION,
 					Messages.bind(Messages.status_nameCollision, typeName));
 			}
 			break;
-		case IJavaElement.TYPE:
+		case IJavaScriptElement.TYPE:
 			typeName = getASTNodeName();
 			if (((IType) parent).getType(typeName).exists()) {
 				return new JavaModelStatus(
-					IJavaModelStatusConstants.NAME_COLLISION,
+					IJavaScriptModelStatusConstants.NAME_COLLISION,
 					Messages.bind(Messages.status_nameCollision, typeName));
 			}
 			break;

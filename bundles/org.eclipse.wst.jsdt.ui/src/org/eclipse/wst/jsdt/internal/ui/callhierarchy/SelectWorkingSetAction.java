@@ -14,9 +14,9 @@ package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchScopeFactory;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 
@@ -44,8 +44,8 @@ class SelectWorkingSetAction extends Action {
 			} else {
 				this.fGroup.setActiveWorkingSets(null);
 			}
-		} catch (JavaModelException e) {
-			ExceptionHandler.handle(e, JavaPlugin.getActiveWorkbenchShell(), 
+		} catch (JavaScriptModelException e) {
+			ExceptionHandler.handle(e, JavaScriptPlugin.getActiveWorkbenchShell(), 
 					CallHierarchyMessages.SelectWorkingSetAction_error_title, 
 					CallHierarchyMessages.SelectWorkingSetAction_error_message); 
 		} catch (InterruptedException e) {

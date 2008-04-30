@@ -15,11 +15,11 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 
 /**
@@ -42,7 +42,7 @@ public class ClassFileEditorInputFactory implements IElementFactory {
 		if (identifier == null)
 			return null;
 			
-		IJavaElement element= JavaCore.create(identifier);
+		IJavaScriptElement element= JavaScriptCore.create(identifier);
 		try {
 			if (!element.exists() && element instanceof IClassFile) {
 				/*
@@ -51,7 +51,7 @@ public class ClassFileEditorInputFactory implements IElementFactory {
 				 */ 
 				IClassFile cf= (IClassFile)element;
 				IType type= cf.getType(); // this will work, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=154667
-				IJavaProject project= element.getJavaProject();
+				IJavaScriptProject project= element.getJavaScriptProject();
 				if (project != null) {
 					type= JavaModelUtil.findType(project, type.getFullyQualifiedName());
 					if (type == null)
@@ -60,7 +60,7 @@ public class ClassFileEditorInputFactory implements IElementFactory {
 				}
 			}
 			return EditorUtility.getEditorInput(element);
-		} catch (JavaModelException x) {
+		} catch (JavaScriptModelException x) {
 			// Don't report but simply return null
 			return null;
 		}

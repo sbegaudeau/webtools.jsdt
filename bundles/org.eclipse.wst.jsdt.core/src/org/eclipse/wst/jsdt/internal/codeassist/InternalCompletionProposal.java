@@ -11,10 +11,10 @@
 package org.eclipse.wst.jsdt.internal.codeassist;
 
 import org.eclipse.wst.jsdt.core.IAccessRule;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.core.BinaryType;
 import org.eclipse.wst.jsdt.internal.core.NameLookup;
@@ -115,14 +115,14 @@ public class InternalCompletionProposal {
 			for(int i = 0;	i< length ; i++){
 				args[i] = new String(paramTypeNames[i]);
 			}
-			IMethod method = type.getMethod(new String(selector),args);
+			IFunction method = type.getFunction(new String(selector),args);
 			try{
 				parameterNames = new char[length][];
 				String[] params = method.getParameterNames();
 				for(int i = 0;	i< length ; i++){
 					parameterNames[i] = params[i].toCharArray();
 				}
-			} catch(JavaModelException e){
+			} catch(JavaScriptModelException e){
 				parameterNames = null;
 			}
 		}
@@ -195,7 +195,7 @@ public class InternalCompletionProposal {
 		this.originalSignature = originalSignature;
 	}
 
-	public IJavaProject getJavaProject() {
+	public IJavaScriptProject getJavaProject() {
 		return completionEngine.javaProject;
 	}
 

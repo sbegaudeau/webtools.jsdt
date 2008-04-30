@@ -58,12 +58,12 @@ import org.eclipse.ui.part.ResourceTransfer;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.actions.CopyQualifiedNameAction;
 import org.eclipse.wst.jsdt.internal.ui.dnd.JdtViewerDragAdapter;
@@ -74,7 +74,7 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProblemTableViewer;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProblemTreeViewer;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 import org.eclipse.wst.jsdt.ui.search.IMatchPresentation;
 
@@ -129,7 +129,7 @@ public class JavaSearchResultPage extends AbstractTextSearchViewPage implements 
 	
 	private int fCurrentGrouping;
 	
-	private static final String[] SHOW_IN_TARGETS= new String[] { JavaUI.ID_PACKAGES , IPageLayout.ID_RES_NAV };
+	private static final String[] SHOW_IN_TARGETS= new String[] { JavaScriptUI.ID_PACKAGES , IPageLayout.ID_RES_NAV };
 	public static final IShowInTargetList SHOW_IN_TARGET_LIST= new IShowInTargetList() {
 		public String[] getShowInTargetIds() {
 			return SHOW_IN_TARGETS;
@@ -155,8 +155,8 @@ public class JavaSearchResultPage extends AbstractTextSearchViewPage implements 
 	private void initGroupingActions() {
 		fGroupProjectAction= new GroupAction(SearchMessages.JavaSearchResultPage_groupby_project, SearchMessages.JavaSearchResultPage_groupby_project_tooltip, this, LevelTreeContentProvider.LEVEL_PROJECT); 
 		JavaPluginImages.setLocalImageDescriptors(fGroupProjectAction, "prj_mode.gif"); //$NON-NLS-1$
-		if(JavaCore.IS_ECMASCRIPT4) fGroupPackageAction= new GroupAction(SearchMessages.JavaSearchResultPage_groupby_package, SearchMessages.JavaSearchResultPage_groupby_package_tooltip, this, LevelTreeContentProvider.LEVEL_PACKAGE); 
-		if(JavaCore.IS_ECMASCRIPT4) JavaPluginImages.setLocalImageDescriptors(fGroupPackageAction, "package_mode.gif"); //$NON-NLS-1$
+		if(JavaScriptCore.IS_ECMASCRIPT4) fGroupPackageAction= new GroupAction(SearchMessages.JavaSearchResultPage_groupby_package, SearchMessages.JavaSearchResultPage_groupby_package_tooltip, this, LevelTreeContentProvider.LEVEL_PACKAGE); 
+		if(JavaScriptCore.IS_ECMASCRIPT4) JavaPluginImages.setLocalImageDescriptors(fGroupPackageAction, "package_mode.gif"); //$NON-NLS-1$
 		fGroupFileAction= new GroupAction(SearchMessages.JavaSearchResultPage_groupby_file, SearchMessages.JavaSearchResultPage_groupby_file_tooltip, this, LevelTreeContentProvider.LEVEL_FILE); 
 		JavaPluginImages.setLocalImageDescriptors(fGroupFileAction, "file_mode.gif"); //$NON-NLS-1$
 		fGroupTypeAction= new GroupAction(SearchMessages.JavaSearchResultPage_groupby_type, SearchMessages.JavaSearchResultPage_groupby_type_tooltip, this, LevelTreeContentProvider.LEVEL_TYPE); 
@@ -172,7 +172,7 @@ public class JavaSearchResultPage extends AbstractTextSearchViewPage implements 
 		IEditorPart editor;
 		try {
 			editor= fEditorOpener.openMatch(match);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			throw new PartInitException(e.getStatus());
 		}
 		
@@ -256,7 +256,7 @@ public class JavaSearchResultPage extends AbstractTextSearchViewPage implements 
 	private void addGroupActions(IToolBarManager mgr) {
 		mgr.appendToGroup(IContextMenuConstants.GROUP_VIEWER_SETUP, new Separator(GROUP_GROUPING));
 		mgr.appendToGroup(GROUP_GROUPING, fGroupProjectAction);
-		if(JavaCore.IS_ECMASCRIPT4) mgr.appendToGroup(GROUP_GROUPING, fGroupPackageAction);
+		if(JavaScriptCore.IS_ECMASCRIPT4) mgr.appendToGroup(GROUP_GROUPING, fGroupPackageAction);
 		mgr.appendToGroup(GROUP_GROUPING, fGroupFileAction);
 		mgr.appendToGroup(GROUP_GROUPING, fGroupTypeAction);
 		
@@ -266,7 +266,7 @@ public class JavaSearchResultPage extends AbstractTextSearchViewPage implements 
 
 	private void updateGroupingActions() {
 		fGroupProjectAction.setChecked(fCurrentGrouping == LevelTreeContentProvider.LEVEL_PROJECT);
-		if(JavaCore.IS_ECMASCRIPT4) fGroupPackageAction.setChecked(fCurrentGrouping == LevelTreeContentProvider.LEVEL_PACKAGE);
+		if(JavaScriptCore.IS_ECMASCRIPT4) fGroupPackageAction.setChecked(fCurrentGrouping == LevelTreeContentProvider.LEVEL_PACKAGE);
 		fGroupFileAction.setChecked(fCurrentGrouping == LevelTreeContentProvider.LEVEL_FILE);
 		fGroupTypeAction.setChecked(fCurrentGrouping == LevelTreeContentProvider.LEVEL_TYPE);
 	}
@@ -352,7 +352,7 @@ public class JavaSearchResultPage extends AbstractTextSearchViewPage implements 
 		menuManager.appendToGroup(IContextMenuConstants.GROUP_PROPERTIES, new Action(SearchMessages.JavaSearchResultPage_preferences_label) {
 			public void run() {
 				String pageId= "org.eclipse.search.preferences.SearchPreferencePage"; //$NON-NLS-1$
-				PreferencesUtil.createPreferenceDialogOn(JavaPlugin.getActiveWorkbenchShell(), pageId, null, null).open();
+				PreferencesUtil.createPreferenceDialogOn(JavaScriptPlugin.getActiveWorkbenchShell(), pageId, null, null).open();
 			}
 		});
 	}
@@ -523,7 +523,7 @@ public class JavaSearchResultPage extends AbstractTextSearchViewPage implements 
 	
 	protected void handleOpen(OpenEvent event) {
 		Object firstElement= ((IStructuredSelection)event.getSelection()).getFirstElement();
-		if (firstElement instanceof ICompilationUnit || 
+		if (firstElement instanceof IJavaScriptUnit || 
 				firstElement instanceof IClassFile || 
 				firstElement instanceof IMember) {
 			if (getDisplayedMatchCount(firstElement) == 0) {

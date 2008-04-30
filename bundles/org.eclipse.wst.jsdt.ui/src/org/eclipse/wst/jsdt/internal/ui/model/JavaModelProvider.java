@@ -18,8 +18,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;
 
 /**
@@ -41,8 +41,8 @@ public final class JavaModelProvider extends ModelProvider {
 	 */
 	public static IResource getResource(final Object element) {
 		IResource resource= null;
-		if (element instanceof IJavaElement) {
-			resource= ((IJavaElement) element).getResource();
+		if (element instanceof IJavaScriptElement) {
+			resource= ((IJavaScriptElement) element).getResource();
 		} else if (element instanceof IResource) {
 			resource= (IResource) element;
 		} else if (element instanceof IAdaptable) {
@@ -69,7 +69,7 @@ public final class JavaModelProvider extends ModelProvider {
 	 * {@inheritDoc}
 	 */
 	public ResourceMapping[] getMappings(final IResource resource, final ResourceMappingContext context, final IProgressMonitor monitor) throws CoreException {
-		final IJavaElement element= JavaCore.create(resource);
+		final IJavaScriptElement element= JavaScriptCore.create(resource);
 		if (element != null)
 			return new ResourceMapping[] { JavaElementResourceMapping.create(element)};
 		final Object adapted= resource.getAdapter(ResourceMapping.class);

@@ -27,10 +27,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.PackageSelectionDialog;
@@ -45,8 +45,8 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapte
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
-import org.eclipse.wst.jsdt.ui.IJavaElementSearchConstants;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.IJavaScriptElementSearchConstants;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * Dialog to enter a new package entry in the organize import preference page.
@@ -150,7 +150,7 @@ public class ImportOrganizeInputDialog extends StatusDialog {
 	
 	final void doBrowsePackages() {
 		IRunnableContext context= new BusyIndicatorRunnableContext();
-		IJavaSearchScope scope= SearchEngine.createWorkspaceScope();
+		IJavaScriptSearchScope scope= SearchEngine.createWorkspaceScope();
 		int style= PackageSelectionDialog.F_REMOVE_DUPLICATES | PackageSelectionDialog.F_SHOW_PARENTS | PackageSelectionDialog.F_HIDE_DEFAULT_PACKAGE;
 		PackageSelectionDialog dialog= new PackageSelectionDialog(getShell(), context, style, scope);
 		dialog.setFilter(fNameDialogField.getText());
@@ -166,17 +166,17 @@ public class ImportOrganizeInputDialog extends StatusDialog {
 	
 	private void doBrowseTypes() {		
 		IRunnableContext context= new BusyIndicatorRunnableContext();
-		IJavaSearchScope scope= SearchEngine.createWorkspaceScope();
-		int style= IJavaElementSearchConstants.CONSIDER_ALL_TYPES;
+		IJavaScriptSearchScope scope= SearchEngine.createWorkspaceScope();
+		int style= IJavaScriptElementSearchConstants.CONSIDER_ALL_TYPES;
 		try {
-			SelectionDialog dialog= JavaUI.createTypeDialog(getShell(), context, scope, style, false, fNameDialogField.getText());
+			SelectionDialog dialog= JavaScriptUI.createTypeDialog(getShell(), context, scope, style, false, fNameDialogField.getText());
 			dialog.setTitle(PreferencesMessages.ImportOrganizeInputDialog_ChooseTypeDialog_title); 
 			dialog.setMessage(PreferencesMessages.ImportOrganizeInputDialog_ChooseTypeDialog_description); 
 			if (dialog.open() == Window.OK) {
 				IType res= (IType) dialog.getResult()[0];
 				fNameDialogField.setText(res.getFullyQualifiedName('.'));
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, getShell(), PreferencesMessages.ImportOrganizeInputDialog_ChooseTypeDialog_title, PreferencesMessages.ImportOrganizeInputDialog_ChooseTypeDialog_error_message);  
 		}
 	}
@@ -204,7 +204,7 @@ public class ImportOrganizeInputDialog extends StatusDialog {
 					status.setError(PreferencesMessages.ImportOrganizeInputDialog_error_entryExists); 
 				}
 			} else {
-				IStatus val= JavaConventions.validateJavaTypeName(newText, JavaCore.VERSION_1_3, JavaCore.VERSION_1_3);
+				IStatus val= JavaScriptConventions.validateJavaScriptTypeName(newText, JavaScriptCore.VERSION_1_3, JavaScriptCore.VERSION_1_3);
 				if (val.matches(IStatus.ERROR)) {
 					status.setError(PreferencesMessages.ImportOrganizeInputDialog_error_invalidName); 
 				} else {

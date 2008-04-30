@@ -32,8 +32,8 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -46,20 +46,20 @@ import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
@@ -94,7 +94,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.surround.ExceptionAnalyz
 import org.eclipse.wst.jsdt.internal.corext.refactoring.surround.SurroundWithTryCatchRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.fix.CodeStyleCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.Java50CleanUp;
@@ -123,9 +123,9 @@ public class LocalCorrectionsSubProcessor {
 	private static final String REMOVE_UNNECESSARY_NLS_TAG_ID= "org.eclipse.wst.jsdt.ui.correction.removeNlsTag"; //$NON-NLS-1$
 	
 	public static void addUncaughtExceptionProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
-		CompilationUnit astRoot= context.getASTRoot();
+		JavaScriptUnit astRoot= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveringNode(astRoot);
 		if (selectedNode == null) {
 			return;
@@ -181,7 +181,7 @@ public class LocalCorrectionsSubProcessor {
 			ListRewrite clausesRewrite= rewrite.getListRewrite(surroundingTry, TryStatement.CATCH_CLAUSES_PROPERTY);
 			for (int i= 0; i < uncaughtExceptions.length; i++) {
 				ITypeBinding excBinding= uncaughtExceptions[i];
-				String varName= StubUtility.getExceptionVariableName(cu.getJavaProject());
+				String varName= StubUtility.getExceptionVariableName(cu.getJavaScriptProject());
 				SingleVariableDeclaration var= ast.newSingleVariableDeclaration();
 				var.setName(ast.newSimpleName(varName));
 				var.setType(imports.addImport(excBinding, ast));
@@ -203,9 +203,9 @@ public class LocalCorrectionsSubProcessor {
 			proposals.add(proposal);
 		}
 
-		if (decl instanceof MethodDeclaration) {
-			MethodDeclaration methodDecl= (MethodDeclaration) decl;
-			IMethodBinding binding= methodDecl.resolveBinding();
+		if (decl instanceof FunctionDeclaration) {
+			FunctionDeclaration methodDecl= (FunctionDeclaration) decl;
+			IFunctionBinding binding= methodDecl.resolveBinding();
 			if (binding != null) {
 				ITypeBinding[] methodExceptions= binding.getExceptionTypes();
 				ArrayList unhandledExceptions= new ArrayList(uncaughtExceptions.length);
@@ -274,7 +274,7 @@ public class LocalCorrectionsSubProcessor {
 	}
 
 	public static void addNLSProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-		final ICompilationUnit cu= context.getCompilationUnit();
+		final IJavaScriptUnit cu= context.getCompilationUnit();
 		if (cu == null || !cu.exists()){
 			return;
 		}
@@ -288,9 +288,9 @@ public class LocalCorrectionsSubProcessor {
 						return;
 					ExternalizeWizard wizard= new ExternalizeWizard(refactoring);
 					String dialogTitle= CorrectionMessages.LocalCorrectionsSubProcessor_externalizestrings_dialog_title;
-					new RefactoringStarter().activate(refactoring, wizard, JavaPlugin.getActiveWorkbenchShell(), dialogTitle, RefactoringSaveHelper.SAVE_NON_JAVA_UPDATES);
-				} catch (JavaModelException e) {
-					JavaPlugin.log(e);
+					new RefactoringStarter().activate(refactoring, wizard, JavaScriptPlugin.getActiveWorkbenchShell(), dialogTitle, RefactoringSaveHelper.SAVE_NON_JAVA_UPDATES);
+				} catch (JavaScriptModelException e) {
+					JavaScriptPlugin.log(e);
 				}
 			}
 			public String getAdditionalProposalInfo() {
@@ -314,7 +314,7 @@ public class LocalCorrectionsSubProcessor {
 	public static void getUnnecessaryNLSTagProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
 		IFix fix= StringFix.createFix(context.getASTRoot(), problem, true, false);
 		if (fix != null) {
-			Image image= JavaPlugin.getDefault().getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE);
+			Image image= JavaScriptPlugin.getDefault().getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE);
 			Map options= new Hashtable();
 			options.put(CleanUpConstants.REMOVE_UNNECESSARY_NLS_TAGS, CleanUpConstants.TRUE);
 			FixCorrectionProposal proposal= new FixCorrectionProposal(fix, new StringCleanUp(options), 6, image, context);
@@ -365,7 +365,7 @@ public class LocalCorrectionsSubProcessor {
 	}
 
 	public static void addUnimplementedMethodsProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
 		if (selectedNode == null) {
 			return;
@@ -394,7 +394,7 @@ public class LocalCorrectionsSubProcessor {
 	}
 
 	public static void addUninitializedLocalVariableProposal(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
 		if (!(selectedNode instanceof Name)) {
@@ -407,7 +407,7 @@ public class LocalCorrectionsSubProcessor {
 		}
 		IVariableBinding varBinding= (IVariableBinding) binding;
 
-		CompilationUnit astRoot= context.getASTRoot();
+		JavaScriptUnit astRoot= context.getASTRoot();
 		ASTNode node= astRoot.findDeclaringNode(binding);
 		if (node instanceof VariableDeclarationFragment) {
 			ASTRewrite rewrite= ASTRewrite.create(node.getAST());
@@ -452,10 +452,10 @@ public class LocalCorrectionsSubProcessor {
 		if (binding == null || binding.getSuperclass() == null) {
 			return;
 		}
-		ICompilationUnit cu= context.getCompilationUnit();
-		IMethodBinding[] methods= binding.getSuperclass().getDeclaredMethods();
+		IJavaScriptUnit cu= context.getCompilationUnit();
+		IFunctionBinding[] methods= binding.getSuperclass().getDeclaredMethods();
 		for (int i= 0; i < methods.length; i++) {
-			IMethodBinding curr= methods[i];
+			IFunctionBinding curr= methods[i];
 			if (curr.isConstructor() && !Modifier.isPrivate(curr.getModifiers())) {
 				proposals.add(new ConstructorFromSuperclassProposal(cu, typeDeclaration, curr, 5));
 			}
@@ -478,7 +478,7 @@ public class LocalCorrectionsSubProcessor {
 
 	private static void addProposal(IInvocationContext context, Collection proposals, final UnusedCodeFix fix) {
 		if (fix != null) {
-			Image image= JavaPlugin.getDefault().getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE);
+			Image image= JavaScriptPlugin.getDefault().getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE);
 			FixCorrectionProposal proposal= new FixCorrectionProposal(fix, fix.getCleanUp(), 10, image, context);
 			proposals.add(proposal);
 		}
@@ -541,11 +541,11 @@ public class LocalCorrectionsSubProcessor {
 
 	public static void addUnnecessaryThrownExceptionProposal(IInvocationContext context, IProblemLocation problem, Collection proposals) {
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
-		if (selectedNode == null || !(selectedNode.getParent() instanceof MethodDeclaration)) {
+		if (selectedNode == null || !(selectedNode.getParent() instanceof FunctionDeclaration)) {
 			return;
 		}
-		MethodDeclaration decl= (MethodDeclaration) selectedNode.getParent();
-		IMethodBinding binding= decl.resolveBinding();
+		FunctionDeclaration decl= (FunctionDeclaration) selectedNode.getParent();
+		IFunctionBinding binding= decl.resolveBinding();
 		if (binding != null) {
 			List thrownExceptions= decl.thrownExceptions();
 			int index= thrownExceptions.indexOf(selectedNode);
@@ -555,7 +555,7 @@ public class LocalCorrectionsSubProcessor {
 			ChangeDescription[] desc= new ChangeDescription[thrownExceptions.size()];
 			desc[index]= new RemoveDescription();
 
-			ICompilationUnit cu= context.getCompilationUnit();
+			IJavaScriptUnit cu= context.getCompilationUnit();
 			String label= CorrectionMessages.LocalCorrectionsSubProcessor_unnecessarythrow_description;
 			Image image= JavaPluginImages.get(JavaPluginImages.IMG_OBJS_EXCEPTION);
 
@@ -579,10 +579,10 @@ public class LocalCorrectionsSubProcessor {
 	public static void addInvalidVariableNameProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
 		// hiding, redefined or future keyword
 
-		CompilationUnit root= context.getASTRoot();
+		JavaScriptUnit root= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveringNode(root);
-		if (selectedNode instanceof MethodDeclaration) {
-			selectedNode= ((MethodDeclaration) selectedNode).getName();
+		if (selectedNode instanceof FunctionDeclaration) {
+			selectedNode= ((FunctionDeclaration) selectedNode).getName();
 		}
 		if (!(selectedNode instanceof SimpleName)) {
 			return;
@@ -624,7 +624,7 @@ public class LocalCorrectionsSubProcessor {
 	}
 
 	public static void getInvalidOperatorProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		CompilationUnit root= context.getASTRoot();
+		JavaScriptUnit root= context.getASTRoot();
 		AST ast= root.getAST();
 
 		ASTNode selectedNode= problem.getCoveringNode(root);
@@ -736,7 +736,7 @@ public class LocalCorrectionsSubProcessor {
 	}
 
 	public static void getUnnecessaryElseProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		CompilationUnit root= context.getASTRoot();
+		JavaScriptUnit root= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveringNode(root);
 		if (selectedNode == null) {
 			return;
@@ -768,7 +768,7 @@ public class LocalCorrectionsSubProcessor {
 
 
 	public static void getInterfaceExtendsClassProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		CompilationUnit root= context.getASTRoot();
+		JavaScriptUnit root= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveringNode(root);
 		if (selectedNode == null) {
 			return;
@@ -808,7 +808,7 @@ public class LocalCorrectionsSubProcessor {
 	}
 
 	public static void getUnreachableCodeProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		CompilationUnit root= context.getASTRoot();
+		JavaScriptUnit root= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveringNode(root);
 		if (selectedNode == null) {
 			return;
@@ -821,14 +821,14 @@ public class LocalCorrectionsSubProcessor {
 			ASTRewrite rewrite= ASTRewrite.create(selectedNode.getAST());
 			rewrite.remove(selectedNode, null);
 			String label= CorrectionMessages.LocalCorrectionsSubProcessor_removeunreachablecode_description;
-			Image image= JavaPlugin.getDefault().getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE);
+			Image image= JavaScriptPlugin.getDefault().getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE);
 			ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, context.getCompilationUnit(), rewrite, 3, image); 
 			proposals.add(proposal);
 		}
 	}
 
 	public static void getAssignmentHasNoEffectProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		CompilationUnit root= context.getASTRoot();
+		JavaScriptUnit root= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveringNode(root);
 		if (!(selectedNode instanceof Assignment)) {
 			return;
@@ -863,7 +863,7 @@ public class LocalCorrectionsSubProcessor {
 			}
 		}	
 		
-		if (binding == fieldBinding && ASTResolving.findParentBodyDeclaration(selectedNode) instanceof MethodDeclaration) {
+		if (binding == fieldBinding && ASTResolving.findParentBodyDeclaration(selectedNode) instanceof FunctionDeclaration) {
 			SimpleName simpleName= (SimpleName) ((assignedNode instanceof SimpleName) ? assignedNode : assignExpression);
 			String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createparameter_description, simpleName.getIdentifier());
 			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_LOCAL);
@@ -896,7 +896,7 @@ public class LocalCorrectionsSubProcessor {
 	}
 
 	public static void addValueForAnnotationProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
 		if (selectedNode instanceof Annotation) {
 			Annotation annotation= (Annotation) selectedNode;
@@ -929,11 +929,11 @@ public class LocalCorrectionsSubProcessor {
 		}
 		
 		//Infer Generic Type Arguments... proposal
-		final ICompilationUnit cu= context.getCompilationUnit();
+		final IJavaScriptUnit cu= context.getCompilationUnit();
 		ChangeCorrectionProposal proposal= new ChangeCorrectionProposal(CorrectionMessages.LocalCorrectionsSubProcessor_InferGenericTypeArguments, null, 5, JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE)) {
 			public void apply(IDocument document) {
 				IEditorInput input= new FileEditorInput((IFile) cu.getResource());
-				IWorkbenchPage p= JavaPlugin.getActivePage();
+				IWorkbenchPage p= JavaScriptPlugin.getActivePage();
 				if (p == null)
 					return;
 				
@@ -986,7 +986,7 @@ public class LocalCorrectionsSubProcessor {
 						ASTRewrite astRewrite= ASTRewrite.create(ast);
 						ImportRewrite importRewrite= StubUtility.createImportRewrite(context.getASTRoot(), true);
 
-						MethodInvocation method= ast.newMethodInvocation();
+						FunctionInvocation method= ast.newFunctionInvocation();
 						String qfn= importRewrite.addImport(methodName[0]);
 						method.setExpression(ast.newName(qfn));
 						method.setName(ast.newSimpleName(methodName[1]));

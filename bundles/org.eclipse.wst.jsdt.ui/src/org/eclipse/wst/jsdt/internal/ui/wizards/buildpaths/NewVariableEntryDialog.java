@@ -39,10 +39,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.preferences.ClasspathVariablesPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
@@ -144,11 +144,11 @@ public class NewVariableEntryDialog extends StatusDialog {
 	}
 	
 	private void initializeElements() {
-		String[] entries= JavaCore.getClasspathVariableNames();
+		String[] entries= JavaScriptCore.getIncludepathVariableNames();
 		ArrayList elements= new ArrayList(entries.length);
 		for (int i= 0; i < entries.length; i++) {
 			String name= entries[i];
-			IPath entryPath= JavaCore.getClasspathVariable(name);
+			IPath entryPath= JavaScriptCore.getIncludepathVariable(name);
 			if (entryPath != null) {
 				elements.add(new CPVariableElement(name, entryPath));
 			}
@@ -170,7 +170,7 @@ public class NewVariableEntryDialog extends StatusDialog {
 	 * @see org.eclipse.jface.dialogs.Dialog#getDialogBoundsSettings()
 	 */
 	protected IDialogSettings getDialogBoundsSettings() {
-		return JavaPlugin.getDefault().getDialogSettingsSection(getClass().getName());
+		return JavaScriptPlugin.getDefault().getDialogSettingsSection(getClass().getName());
 	}
 			
 	/* (non-Javadoc)

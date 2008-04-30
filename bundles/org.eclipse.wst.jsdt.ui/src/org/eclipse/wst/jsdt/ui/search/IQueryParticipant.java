@@ -52,8 +52,8 @@ public interface IQueryParticipant {
 	int estimateTicks(QuerySpecification specification);
 	/**
 	 * Gets the UI participant responsible for handling the display of elements not known to the Java search UI.  The Java search UI knows
-	 * elements are of type <code>IJavaElement</code> and <code>IResource</code>.
-	 * A participant may return <code>null</code> if matches are only reported against elements of type <code>IResource</code> and <code>IJavaElement</code>.
+	 * elements are of type <code>IJavaScriptElement</code> and <code>IResource</code>.
+	 * A participant may return <code>null</code> if matches are only reported against elements of type <code>IResource</code> and <code>IJavaScriptElement</code>.
 	 * @return The UI participant for this query participant or <code>null</code>.
 	 */
 	IMatchPresentation getUIParticipant();

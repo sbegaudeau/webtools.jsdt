@@ -12,12 +12,12 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.structure;
 
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
-import org.eclipse.wst.jsdt.core.dom.MethodRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -101,7 +101,7 @@ import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 	
 	//---- method invocations ----------------------------------
 	
-	public boolean visit(MethodInvocation node) {
+	public boolean visit(FunctionInvocation node) {
 		IBinding binding= node.resolveMethodBinding();
 		if (isSourceAccess(binding)) {
 			if (isMovedMember(binding)) {
@@ -139,7 +139,7 @@ import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 		return super.visit(node);
 	}
 	
-	public boolean visit(MethodRef node) {
+	public boolean visit(FunctionRef node) {
 		IBinding binding= node.resolveBinding();
 		if (isSourceAccess(binding)) {
 			if (isMovedMember(binding)) {
@@ -160,8 +160,8 @@ import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 	//---- helper methods --------------------------------------
 	
 	private boolean isSourceAccess(IBinding binding) {
-		if (binding instanceof IMethodBinding) {
-			IMethodBinding method= (IMethodBinding)binding;
+		if (binding instanceof IFunctionBinding) {
+			IFunctionBinding method= (IFunctionBinding)binding;
 			return Modifier.isStatic(method.getModifiers()) && Bindings.equals(fSource, method.getDeclaringClass());
 		} else if (binding instanceof ITypeBinding) {
 			ITypeBinding type= (ITypeBinding)binding;
@@ -174,8 +174,8 @@ import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 	}
 	
 	private boolean isTargetAccess(IBinding binding) {
-		if (binding instanceof IMethodBinding) {
-			IMethodBinding method= (IMethodBinding)binding;
+		if (binding instanceof IFunctionBinding) {
+			IFunctionBinding method= (IFunctionBinding)binding;
 			return Modifier.isStatic(method.getModifiers()) && Bindings.equals(fTarget, method.getDeclaringClass());
 		} else if (binding instanceof ITypeBinding) {
 			ITypeBinding type= (ITypeBinding)binding;

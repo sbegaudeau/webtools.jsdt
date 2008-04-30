@@ -42,9 +42,9 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.spelling.SpellingService;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
 
 
@@ -142,7 +142,7 @@ public class JavaReconciler extends MonoReconciler {
 		 * @see org.eclipse.wst.jsdt.core.IElementChangedListener#elementChanged(org.eclipse.wst.jsdt.core.ElementChangedEvent)
 		 */
 		public void elementChanged(ElementChangedEvent event) {
-			if (event.getDelta().getFlags() == IJavaElementDelta.F_AST_AFFECTED)
+			if (event.getDelta().getFlags() == IJavaScriptElementDelta.F_AST_AFFECTED)
 				return;
 			setJavaModelChanged(true);
 			if (!fIsReconciling && isEditorActive() )
@@ -279,10 +279,10 @@ public class JavaReconciler extends MonoReconciler {
 		shell.addShellListener(fActivationListener);
 
 		fJavaElementChangedListener= new ElementChangedListener();
-		JavaCore.addElementChangedListener(fJavaElementChangedListener);
+		JavaScriptCore.addElementChangedListener(fJavaElementChangedListener);
 
 		fResourceChangeListener= new ResourceChangeListener();
-		IWorkspace workspace= JavaPlugin.getWorkspace();
+		IWorkspace workspace= JavaScriptPlugin.getWorkspace();
 		workspace.addResourceChangeListener(fResourceChangeListener);
 		
 		fPropertyChangeListener= new IPropertyChangeListener() {
@@ -291,7 +291,7 @@ public class JavaReconciler extends MonoReconciler {
 					forceReconciling();
 			}
 		};
-		JavaPlugin.getDefault().getCombinedPreferenceStore().addPropertyChangeListener(fPropertyChangeListener);
+		JavaScriptPlugin.getDefault().getCombinedPreferenceStore().addPropertyChangeListener(fPropertyChangeListener);
 	}
 
 	/*
@@ -309,14 +309,14 @@ public class JavaReconciler extends MonoReconciler {
 			shell.removeShellListener(fActivationListener);
 		fActivationListener= null;
 
-		JavaCore.removeElementChangedListener(fJavaElementChangedListener);
+		JavaScriptCore.removeElementChangedListener(fJavaElementChangedListener);
 		fJavaElementChangedListener= null;
 
-		IWorkspace workspace= JavaPlugin.getWorkspace();
+		IWorkspace workspace= JavaScriptPlugin.getWorkspace();
 		workspace.removeResourceChangeListener(fResourceChangeListener);
 		fResourceChangeListener= null;
 		
-		JavaPlugin.getDefault().getCombinedPreferenceStore().removePropertyChangeListener(fPropertyChangeListener);
+		JavaScriptPlugin.getDefault().getCombinedPreferenceStore().removePropertyChangeListener(fPropertyChangeListener);
 		fPropertyChangeListener= null;
 
 		super.uninstall();

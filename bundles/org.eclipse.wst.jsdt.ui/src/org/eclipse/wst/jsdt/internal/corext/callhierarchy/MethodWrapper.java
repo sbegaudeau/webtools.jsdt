@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.internal.ui.callhierarchy.MethodWrapperWorkbenchAdapter;
 
@@ -61,7 +61,7 @@ public abstract class MethodWrapper extends PlatformObject {
     }
 
     public Object getAdapter(Class adapter) {
-		if (adapter == IJavaElement.class) {
+		if (adapter == IJavaScriptElement.class) {
 	        return getMember();
 	    } else if (adapter == IWorkbenchAdapter.class){
 	    	return new MethodWrapperWorkbenchAdapter(this);
@@ -232,7 +232,7 @@ public abstract class MethodWrapper extends PlatformObject {
     }
 
     /**
-     * This method finds the children of the current IMethod (either callers or
+     * This method finds the children of the current IFunction (either callers or
      * callees, depending on the concrete subclass.
      * @return The result of the search for children
      */

@@ -85,7 +85,7 @@ public final class RenameSourceFolderChange extends AbstractJavaElementRenameCha
 	}
 
 	private int getJavaModelUpdateFlags() {
-		return IPackageFragmentRoot.DESTINATION_PROJECT_CLASSPATH | IPackageFragmentRoot.ORIGINATING_PROJECT_CLASSPATH | IPackageFragmentRoot.OTHER_REFERRING_PROJECTS_CLASSPATH | IPackageFragmentRoot.REPLACE;
+		return IPackageFragmentRoot.DESTINATION_PROJECT_INCLUDEPATH | IPackageFragmentRoot.ORIGINATING_PROJECT_INCLUDEPATH | IPackageFragmentRoot.OTHER_REFERRING_PROJECTS_INCLUDEPATH | IPackageFragmentRoot.REPLACE;
 	}
 
 	public String getName() {

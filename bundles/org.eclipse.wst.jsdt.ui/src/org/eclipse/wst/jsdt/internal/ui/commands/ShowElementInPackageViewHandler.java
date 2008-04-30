@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.ui.commands;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerPart;
 
 /**
@@ -27,7 +27,7 @@ public class ShowElementInPackageViewHandler extends AbstractHandler {
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		IJavaElement javaElement= (IJavaElement) event.getObjectParameterForExecution(PARAM_ID_ELEMENT_REF);
+		IJavaScriptElement javaElement= (IJavaScriptElement) event.getObjectParameterForExecution(PARAM_ID_ELEMENT_REF);
 
 		PackageExplorerPart view= PackageExplorerPart.openInActivePerspective();
 		view.tryToReveal(javaElement);

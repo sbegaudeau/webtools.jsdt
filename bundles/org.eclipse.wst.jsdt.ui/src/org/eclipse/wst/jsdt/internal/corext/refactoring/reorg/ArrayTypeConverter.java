@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 
@@ -34,9 +34,9 @@ class ArrayTypeConverter {
 		return (IFolder[]) l.toArray(new IFolder[l.size()]);
 	}
 
-	static ICompilationUnit[] toCuArray(Object[] objects){
+	static IJavaScriptUnit[] toCuArray(Object[] objects){
 		List l= Arrays.asList(objects);
-		return (ICompilationUnit[]) l.toArray(new ICompilationUnit[l.size()]);
+		return (IJavaScriptUnit[]) l.toArray(new IJavaScriptUnit[l.size()]);
 	}
 	
 	static IPackageFragmentRoot[] toPackageFragmentRootArray(Object[] objects){

@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 import org.eclipse.wst.jsdt.internal.core.refactoring.descriptors.DescriptorMessages;
 
 /**
@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.internal.core.refactoring.descriptors.DescriptorMess
  * 
  * @since 3.3
  */
-public final class UseSupertypeDescriptor extends JavaRefactoringDescriptor {
+public final class UseSupertypeDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/** The instanceof attribute */
 	private static final String ATTRIBUTE_INSTANCEOF= "instanceof"; //$NON-NLS-1$
@@ -49,7 +49,7 @@ public final class UseSupertypeDescriptor extends JavaRefactoringDescriptor {
 	 * Creates a new refactoring descriptor.
 	 */
 	public UseSupertypeDescriptor() {
-		super(IJavaRefactorings.USE_SUPER_TYPE);
+		super(IJavaScriptRefactorings.USE_SUPER_TYPE);
 	}
 
 	/**
@@ -58,8 +58,8 @@ public final class UseSupertypeDescriptor extends JavaRefactoringDescriptor {
 	protected void populateArgumentMap() {
 		super.populateArgumentMap();
 		fArguments.put(ATTRIBUTE_INSTANCEOF, Boolean.valueOf(fInstanceof).toString());
-		fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_INPUT, elementToHandle(getProject(), fSubType));
-		fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_ELEMENT + 1, elementToHandle(getProject(), fSupertype));
+		fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_INPUT, elementToHandle(getProject(), fSubType));
+		fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_ELEMENT + 1, elementToHandle(getProject(), fSupertype));
 	}
 
 	/**

@@ -16,7 +16,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameVirtualMethodProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
@@ -33,7 +33,7 @@ public class RenameMethodUserInterfaceStarter extends RenameUserInterfaceStarter
 		if (processor != null) {
 			RefactoringStatus status= processor.checkInitialConditions(new NullProgressMonitor());
 			if (!status.hasFatalError()) {
-				IMethod method= processor.getMethod();
+				IFunction method= processor.getMethod();
 				if (!method.equals(processor.getOriginalMethod())) {
 					String message= null;
 					if (method.getDeclaringType()!=null && method.getDeclaringType().isInterface()) {

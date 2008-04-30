@@ -32,9 +32,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.Resources;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -122,13 +122,13 @@ public class RefreshAction extends SelectionDispatchAction {
 						}
 					}
 					resource.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 1));
-					IJavaElement jElement= JavaCore.create(resource);
+					IJavaScriptElement jElement= JavaScriptCore.create(resource);
 					if (jElement != null && jElement.exists())
 						javaElements.add(jElement);
 				}
-				IJavaModel model= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
+				IJavaScriptModel model= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
 				model.refreshExternalArchives(
-					(IJavaElement[]) javaElements.toArray(new IJavaElement[javaElements.size()]),
+					(IJavaScriptElement[]) javaElements.toArray(new IJavaScriptElement[javaElements.size()]),
 					new SubProgressMonitor(monitor, resources.length));
 			}
 		};

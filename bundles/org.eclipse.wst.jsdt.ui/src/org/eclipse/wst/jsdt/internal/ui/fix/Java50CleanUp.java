@@ -16,10 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.Java50Fix;
@@ -43,7 +43,7 @@ public class Java50CleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean requireAST(ICompilationUnit unit) throws CoreException {
+	public boolean requireAST(IJavaScriptUnit unit) throws CoreException {
 		boolean addAnotations= isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS);
 		
 		return addAnotations && isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS_OVERRIDE) || 
@@ -51,7 +51,7 @@ public class Java50CleanUp extends AbstractCleanUp {
 		       isEnabled(CleanUpConstants.VARIABLE_DECLARATION_USE_TYPE_ARGUMENTS_FOR_RAW_TYPE_REFERENCES);
 	}
 
-	public IFix createFix(CompilationUnit compilationUnit) throws CoreException {
+	public IFix createFix(JavaScriptUnit compilationUnit) throws CoreException {
 		if (compilationUnit == null)
 			return null;
 		
@@ -65,7 +65,7 @@ public class Java50CleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IFix createFix(CompilationUnit compilationUnit, IProblemLocation[] problems) throws CoreException {
+	public IFix createFix(JavaScriptUnit compilationUnit, IProblemLocation[] problems) throws CoreException {
 		if (compilationUnit == null)
 			return null;
 		
@@ -78,13 +78,13 @@ public class Java50CleanUp extends AbstractCleanUp {
 	public Map getRequiredOptions() {
 		Map options= new Hashtable();
 		if (isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS) && isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS_OVERRIDE))
-			options.put(JavaCore.COMPILER_PB_MISSING_OVERRIDE_ANNOTATION, JavaCore.WARNING);
+			options.put(JavaScriptCore.COMPILER_PB_MISSING_OVERRIDE_ANNOTATION, JavaScriptCore.WARNING);
 		
 		if (isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS) && isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS_DEPRECATED))
-			options.put(JavaCore.COMPILER_PB_MISSING_DEPRECATED_ANNOTATION, JavaCore.WARNING);
+			options.put(JavaScriptCore.COMPILER_PB_MISSING_DEPRECATED_ANNOTATION, JavaScriptCore.WARNING);
 		
 		if (isEnabled(CleanUpConstants.VARIABLE_DECLARATION_USE_TYPE_ARGUMENTS_FOR_RAW_TYPE_REFERENCES))
-			options.put(JavaCore.COMPILER_PB_RAW_TYPE_REFERENCE, JavaCore.WARNING);
+			options.put(JavaScriptCore.COMPILER_PB_RAW_TYPE_REFERENCE, JavaScriptCore.WARNING);
 				
 		return options;
 	}
@@ -131,7 +131,7 @@ public class Java50CleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean canFix(CompilationUnit compilationUnit, IProblemLocation problem) throws CoreException {
+	public boolean canFix(JavaScriptUnit compilationUnit, IProblemLocation problem) throws CoreException {
 		if (isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS) && isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS_OVERRIDE)) {
 			Java50Fix fix= Java50Fix.createAddOverrideAnnotationFix(compilationUnit, problem);
 			if (fix != null)
@@ -153,7 +153,7 @@ public class Java50CleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int maximalNumberOfFixes(CompilationUnit compilationUnit) {
+	public int maximalNumberOfFixes(JavaScriptUnit compilationUnit) {
 		int result= 0;
 		IProblem[] problems= compilationUnit.getProblems();
 		if (isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS) && isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS_OVERRIDE)) {

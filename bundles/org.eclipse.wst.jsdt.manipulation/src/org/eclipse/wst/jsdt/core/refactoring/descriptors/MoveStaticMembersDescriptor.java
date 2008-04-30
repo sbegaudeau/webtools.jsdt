@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 import org.eclipse.wst.jsdt.internal.core.refactoring.descriptors.DescriptorMessages;
 
 /**
@@ -32,7 +32,7 @@ import org.eclipse.wst.jsdt.internal.core.refactoring.descriptors.DescriptorMess
  * 
  * @since 3.3
  */
-public final class MoveStaticMembersDescriptor extends JavaRefactoringDescriptor {
+public final class MoveStaticMembersDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/** The delegate attribute */
 	private static final String ATTRIBUTE_DELEGATE= "delegate"; //$NON-NLS-1$
@@ -56,7 +56,7 @@ public final class MoveStaticMembersDescriptor extends JavaRefactoringDescriptor
 	 * Creates a new refactoring descriptor.
 	 */
 	public MoveStaticMembersDescriptor() {
-		super(IJavaRefactorings.MOVE_STATIC_MEMBERS);
+		super(IJavaScriptRefactorings.MOVE_STATIC_MEMBERS);
 	}
 
 	/**
@@ -64,11 +64,11 @@ public final class MoveStaticMembersDescriptor extends JavaRefactoringDescriptor
 	 */
 	protected void populateArgumentMap() {
 		super.populateArgumentMap();
-		fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_INPUT, elementToHandle(getProject(), fType));
+		fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_INPUT, elementToHandle(getProject(), fType));
 		fArguments.put(ATTRIBUTE_DELEGATE, Boolean.valueOf(fDelegate).toString());
 		fArguments.put(ATTRIBUTE_DEPRECATE, Boolean.valueOf(fDeprecate).toString());
 		for (int index= 0; index < fMembers.length; index++)
-			fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_ELEMENT + (index + 1), elementToHandle(getProject(), fMembers[index]));
+			fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_ELEMENT + (index + 1), elementToHandle(getProject(), fMembers[index]));
 	}
 
 	/**

@@ -20,31 +20,31 @@ import org.eclipse.wst.jsdt.internal.core.InternalNamingConventions;
 /**
  * Provides methods for computing Java-specific names.
  * <p>
- * The behavior of the methods is dependent of several JavaCore options.
+ * The behavior of the methods is dependent of several JavaScriptCore options.
  * <p>
  * The possible options are :
  * <ul>
- * <li> {@link JavaCore#CODEASSIST_FIELD_PREFIXES} : Define the Prefixes for Field Name.</li>
- * <li> {@link JavaCore#CODEASSIST_STATIC_FIELD_PREFIXES} : Define the Prefixes for Static Field Name.</li>
- * <li> {@link JavaCore#CODEASSIST_LOCAL_PREFIXES} : Define the Prefixes for Local Variable Name.</li>
- * <li> {@link JavaCore#CODEASSIST_ARGUMENT_PREFIXES} : Define the Prefixes for Argument Name.</li>
- * <li> {@link JavaCore#CODEASSIST_FIELD_SUFFIXES} : Define the Suffixes for Field Name.</li>
- * <li> {@link JavaCore#CODEASSIST_STATIC_FIELD_SUFFIXES} : Define the Suffixes for Static Field Name.</li>
- * <li> {@link JavaCore#CODEASSIST_LOCAL_SUFFIXES} : Define the Suffixes for Local Variable Name.</li>
- * <li> {@link JavaCore#CODEASSIST_ARGUMENT_SUFFIXES} : Define the Suffixes for Argument Name.</li>
+ * <li> {@link JavaScriptCore#CODEASSIST_FIELD_PREFIXES} : Define the Prefixes for Field Name.</li>
+ * <li> {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_PREFIXES} : Define the Prefixes for Static Field Name.</li>
+ * <li> {@link JavaScriptCore#CODEASSIST_LOCAL_PREFIXES} : Define the Prefixes for Local Variable Name.</li>
+ * <li> {@link JavaScriptCore#CODEASSIST_ARGUMENT_PREFIXES} : Define the Prefixes for Argument Name.</li>
+ * <li> {@link JavaScriptCore#CODEASSIST_FIELD_SUFFIXES} : Define the Suffixes for Field Name.</li>
+ * <li> {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_SUFFIXES} : Define the Suffixes for Static Field Name.</li>
+ * <li> {@link JavaScriptCore#CODEASSIST_LOCAL_SUFFIXES} : Define the Suffixes for Local Variable Name.</li>
+ * <li> {@link JavaScriptCore#CODEASSIST_ARGUMENT_SUFFIXES} : Define the Suffixes for Argument Name.</li>
  * </ul>
  * </p>
  * <p>
  * For a complete description of the configurable options, see <code>getDefaultOptions</code>.
- * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+ * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
  * </p>
  * <p>
  * This class provides static methods and constants only; it is not intended to be
  * instantiated or subclassed by clients.
  * </p>
  *
- * @see JavaCore#setOptions(java.util.Hashtable)
- * @see JavaCore#getDefaultOptions()
+ * @see JavaScriptCore#setOptions(java.util.Hashtable)
+ * @see JavaScriptCore#getDefaultOptions()
  * @since 2.1
  */
 public final class NamingConventions {
@@ -279,25 +279,25 @@ public final class NamingConventions {
 	 * <p>
 	 * If argument name prefix is <code>pre</code> and argument name suffix is <code>suf</code>
 	 * then for an argument named <code>preArgsuf</code> the result of this method is <code>arg</code>.
-	 * If there is no prefix or suffix defined in JavaCore options the result is the unchanged
+	 * If there is no prefix or suffix defined in JavaScriptCore options the result is the unchanged
 	 * name <code>preArgsuf</code>.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_ARGUMENT_PREFIXES} and
-	 *  {@link JavaCore#CODEASSIST_ARGUMENT_SUFFIXES}.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_ARGUMENT_PREFIXES} and
+	 *  {@link JavaScriptCore#CODEASSIST_ARGUMENT_SUFFIXES}.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
  	 *
 	 * @param javaProject project which contains the argument.
 	 * @param argumentName argument's name.
 	 * @return char[] the name without prefix and suffix.
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static char[] removePrefixAndSuffixForArgumentName(IJavaProject javaProject, char[] argumentName) {
+	public static char[] removePrefixAndSuffixForArgumentName(IJavaScriptProject javaProject, char[] argumentName) {
 		AssistOptions assistOptions = new AssistOptions(javaProject.getOptions(true));
 		return	removePrefixAndSuffix(
 			argumentName,
@@ -310,25 +310,25 @@ public final class NamingConventions {
 	 * <p>
 	 * If argument name prefix is <code>pre</code> and argument name suffix is <code>suf</code>
 	 * then for an argument named <code>preArgsuf</code> the result of this method is <code>arg</code>.
-	 * If there is no prefix or suffix defined in JavaCore options the result is the unchanged
+	 * If there is no prefix or suffix defined in JavaScriptCore options the result is the unchanged
 	 * name <code>preArgsuf</code>.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_ARGUMENT_PREFIXES} and
-	 *  {@link JavaCore#CODEASSIST_ARGUMENT_SUFFIXES}.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_ARGUMENT_PREFIXES} and
+	 *  {@link JavaScriptCore#CODEASSIST_ARGUMENT_SUFFIXES}.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
  	 *
 	 * @param javaProject project which contains the argument.
 	 * @param argumentName argument's name.
 	 * @return char[] the name without prefix and suffix.
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static String removePrefixAndSuffixForArgumentName(IJavaProject javaProject, String argumentName) {
+	public static String removePrefixAndSuffixForArgumentName(IJavaScriptProject javaProject, String argumentName) {
 		return String.valueOf(removePrefixAndSuffixForArgumentName(javaProject, argumentName.toCharArray()));
 	}
 
@@ -337,17 +337,17 @@ public final class NamingConventions {
 	 * <p>
 	 * If field name prefix is <code>pre</code> and field name suffix is <code>suf</code>
 	 * then for a field named <code>preFieldsuf</code> the result of this method is <code>field</code>.
-	 * If there is no prefix or suffix defined in JavaCore options the result is the unchanged
+	 * If there is no prefix or suffix defined in JavaScriptCore options the result is the unchanged
 	 * name <code>preFieldsuf</code>.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options : {@link JavaCore#CODEASSIST_FIELD_PREFIXES} } ,
-	 *  {@link JavaCore#CODEASSIST_FIELD_SUFFIXES} for instance field and  {@link JavaCore#CODEASSIST_STATIC_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
+	 * This method is affected by the following JavaScriptCore options : {@link JavaScriptCore#CODEASSIST_FIELD_PREFIXES} } ,
+	 *  {@link JavaScriptCore#CODEASSIST_FIELD_SUFFIXES} for instance field and  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
 	 *
 	 * @param javaProject project which contains the field.
@@ -356,10 +356,10 @@ public final class NamingConventions {
 	 * <code>Flags</code>.
 	 * @return char[] the name without prefix and suffix.
 	 * @see Flags
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static char[] removePrefixAndSuffixForFieldName(IJavaProject javaProject, char[] fieldName, int modifiers) {
+	public static char[] removePrefixAndSuffixForFieldName(IJavaScriptProject javaProject, char[] fieldName, int modifiers) {
 		boolean isStatic = Flags.isStatic(modifiers);
 		AssistOptions assistOptions = new AssistOptions(javaProject.getOptions(true));
 		return	removePrefixAndSuffix(
@@ -373,17 +373,17 @@ public final class NamingConventions {
 	 * <p>
 	 * If field name prefix is <code>pre</code> and field name suffix is <code>suf</code>
 	 * then for a field named <code>preFieldsuf</code> the result of this method is <code>field</code>.
-	 * If there is no prefix or suffix defined in JavaCore options the result is the unchanged
+	 * If there is no prefix or suffix defined in JavaScriptCore options the result is the unchanged
 	 * name <code>preFieldsuf</code>.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_FIELD_SUFFIXES} for instance field and  {@link JavaCore#CODEASSIST_STATIC_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_FIELD_SUFFIXES} for instance field and  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
 	 *
 	 * @param javaProject project which contains the field.
@@ -392,10 +392,10 @@ public final class NamingConventions {
 	 * <code>Flags</code>.
 	 * @return char[] the name without prefix and suffix.
 	 * @see Flags
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static String removePrefixAndSuffixForFieldName(IJavaProject javaProject, String fieldName, int modifiers) {
+	public static String removePrefixAndSuffixForFieldName(IJavaScriptProject javaProject, String fieldName, int modifiers) {
 		return String.valueOf(removePrefixAndSuffixForFieldName(javaProject, fieldName.toCharArray(), modifiers));
 	}
 	/**
@@ -403,25 +403,25 @@ public final class NamingConventions {
 	 * <p>
 	 * If local variable name prefix is <code>pre</code> and local variable name suffix is <code>suf</code>
 	 * then for a local variable named <code>preLocalsuf</code> the result of this method is <code>local</code>.
-	 * If there is no prefix or suffix defined in JavaCore options the result is the unchanged
+	 * If there is no prefix or suffix defined in JavaScriptCore options the result is the unchanged
 	 * name <code>preLocalsuf</code>.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_LOCAL_PREFIXES} and
-	 *  {@link JavaCore#CODEASSIST_LOCAL_SUFFIXES}.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_LOCAL_PREFIXES} and
+	 *  {@link JavaScriptCore#CODEASSIST_LOCAL_SUFFIXES}.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
 	 *
 	 * @param javaProject project which contains the variable.
 	 * @param localName variable's name.
 	 * @return char[] the name without prefix and suffix.
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static char[] removePrefixAndSuffixForLocalVariableName(IJavaProject javaProject, char[] localName) {
+	public static char[] removePrefixAndSuffixForLocalVariableName(IJavaScriptProject javaProject, char[] localName) {
 		AssistOptions assistOptions = new AssistOptions(javaProject.getOptions(true));
 		return	removePrefixAndSuffix(
 			localName,
@@ -434,25 +434,25 @@ public final class NamingConventions {
 	 * <p>
 	 * If local variable name prefix is <code>pre</code> and local variable name suffix is <code>suf</code>
 	 * then for a local variable named <code>preLocalsuf</code> the result of this method is <code>local</code>.
-	 * If there is no prefix or suffix defined in JavaCore options the result is the unchanged
+	 * If there is no prefix or suffix defined in JavaScriptCore options the result is the unchanged
 	 * name <code>preLocalsuf</code>.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_LOCAL_PREFIXES} and
-	 *  {@link JavaCore#CODEASSIST_LOCAL_SUFFIXES}.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_LOCAL_PREFIXES} and
+	 *  {@link JavaScriptCore#CODEASSIST_LOCAL_SUFFIXES}.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
 	 *
 	 * @param javaProject project which contains the variable.
 	 * @param localName variable's name.
 	 * @return char[] the name without prefix and suffix.
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static String removePrefixAndSuffixForLocalVariableName(IJavaProject javaProject, String localName) {
+	public static String removePrefixAndSuffixForLocalVariableName(IJavaScriptProject javaProject, String localName) {
 		return String.valueOf(removePrefixAndSuffixForLocalVariableName(javaProject, localName.toCharArray()));
 	}
 
@@ -466,12 +466,12 @@ public final class NamingConventions {
 	 * and <code>name</code>.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_ARGUMENT_PREFIXES} and
-	 *  {@link JavaCore#CODEASSIST_ARGUMENT_SUFFIXES}.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_ARGUMENT_PREFIXES} and
+	 *  {@link JavaScriptCore#CODEASSIST_ARGUMENT_SUFFIXES}.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
 	 *
 	 * @param javaProject project which contains the argument.
@@ -481,10 +481,10 @@ public final class NamingConventions {
 	 * @param excludedNames a list of names which cannot be suggested (already used names).
 	 *         Can be <code>null</code> if there is no excluded names.
 	 * @return char[][] an array of names.
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static char[][] suggestArgumentNames(IJavaProject javaProject, char[] packageName, char[] qualifiedTypeName, int dim, char[][] excludedNames) {
+	public static char[][] suggestArgumentNames(IJavaScriptProject javaProject, char[] packageName, char[] qualifiedTypeName, int dim, char[][] excludedNames) {
 		NamingRequestor requestor = new NamingRequestor();
 		InternalNamingConventions.suggestArgumentNames(
 			javaProject,
@@ -508,12 +508,12 @@ public final class NamingConventions {
 	 * and <code>name</code>.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_ARGUMENT_PREFIXES} and
-	 *  {@link JavaCore#CODEASSIST_ARGUMENT_SUFFIXES}.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_ARGUMENT_PREFIXES} and
+	 *  {@link JavaScriptCore#CODEASSIST_ARGUMENT_SUFFIXES}.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
 	 *
 	 * @param javaProject project which contains the argument.
@@ -523,10 +523,10 @@ public final class NamingConventions {
 	 * @param excludedNames a list of names which cannot be suggested (already used names).
 	 *         Can be <code>null</code> if there is no excluded names.
 	 * @return char[][] an array of names.
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static String[] suggestArgumentNames(IJavaProject javaProject, String packageName, String qualifiedTypeName, int dim, String[] excludedNames) {
+	public static String[] suggestArgumentNames(IJavaScriptProject javaProject, String packageName, String qualifiedTypeName, int dim, String[] excludedNames) {
 		return convertCharsToString(
 			suggestArgumentNames(
 				javaProject,
@@ -545,13 +545,13 @@ public final class NamingConventions {
 	 * and <code>name</code>.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_FIELD_SUFFIXES} and for instance field and  {@link JavaCore#CODEASSIST_STATIC_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_FIELD_SUFFIXES} and for instance field and  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
 	 *
 	 * @param javaProject project which contains the field.
@@ -564,10 +564,10 @@ public final class NamingConventions {
 	 *         Can be <code>null</code> if there is no excluded names.
 	 * @return char[][] an array of names.
 	 * @see Flags
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static char[][] suggestFieldNames(IJavaProject javaProject, char[] packageName, char[] qualifiedTypeName, int dim, int modifiers, char[][] excludedNames) {
+	public static char[][] suggestFieldNames(IJavaScriptProject javaProject, char[] packageName, char[] qualifiedTypeName, int dim, int modifiers, char[][] excludedNames) {
 		NamingRequestor requestor = new NamingRequestor();
 		InternalNamingConventions.suggestFieldNames(
 			javaProject,
@@ -592,13 +592,13 @@ public final class NamingConventions {
 	 * and <code>name</code>.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_FIELD_SUFFIXES} and for instance field and  {@link JavaCore#CODEASSIST_STATIC_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_FIELD_SUFFIXES} and for instance field and  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
 	 *
 	 * @param javaProject project which contains the field.
@@ -611,10 +611,10 @@ public final class NamingConventions {
 	 *         Can be <code>null</code> if there is no excluded names.
 	 * @return char[][] an array of names.
 	 * @see Flags
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static String[] suggestFieldNames(IJavaProject javaProject, String packageName, String qualifiedTypeName, int dim, int modifiers, String[] excludedNames) {
+	public static String[] suggestFieldNames(IJavaScriptProject javaProject, String packageName, String qualifiedTypeName, int dim, int modifiers, String[] excludedNames) {
 		return convertCharsToString(
 			suggestFieldNames(
 				javaProject,
@@ -635,12 +635,12 @@ public final class NamingConventions {
 	 * and <code>name</code>.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_LOCAL_PREFIXES} and
-	 *  {@link JavaCore#CODEASSIST_LOCAL_SUFFIXES}.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_LOCAL_PREFIXES} and
+	 *  {@link JavaScriptCore#CODEASSIST_LOCAL_SUFFIXES}.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
 	 *
 	 * @param javaProject project which contains the variable.
@@ -650,10 +650,10 @@ public final class NamingConventions {
 	 * @param excludedNames a list of names which cannot be suggested (already used names).
 	 *         Can be <code>null</code> if there is no excluded names.
 	 * @return char[][] an array of names.
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static char[][] suggestLocalVariableNames(IJavaProject javaProject, char[] packageName, char[] qualifiedTypeName, int dim, char[][] excludedNames) {
+	public static char[][] suggestLocalVariableNames(IJavaScriptProject javaProject, char[] packageName, char[] qualifiedTypeName, int dim, char[][] excludedNames) {
 		NamingRequestor requestor = new NamingRequestor();
 		InternalNamingConventions.suggestLocalVariableNames(
 			javaProject,
@@ -677,12 +677,12 @@ public final class NamingConventions {
 	 * and <code>name</code>.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_LOCAL_PREFIXES} and
-	 *  {@link JavaCore#CODEASSIST_LOCAL_SUFFIXES}.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_LOCAL_PREFIXES} and
+	 *  {@link JavaScriptCore#CODEASSIST_LOCAL_SUFFIXES}.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
 	 *
 	 * @param javaProject project which contains the variable.
@@ -692,10 +692,10 @@ public final class NamingConventions {
 	 * @param excludedNames a list of names which cannot be suggested (already used names).
 	 *         Can be <code>null</code> if there is no excluded names.
 	 * @return char[][] an array of names.
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static String[] suggestLocalVariableNames(IJavaProject javaProject, String packageName, String qualifiedTypeName, int dim, String[] excludedNames) {
+	public static String[] suggestLocalVariableNames(IJavaScriptProject javaProject, String packageName, String qualifiedTypeName, int dim, String[] excludedNames) {
 		return convertCharsToString(
 			suggestLocalVariableNames(
 				javaProject,
@@ -715,13 +715,13 @@ public final class NamingConventions {
 	 * for boolean field or <code>getPreFieldNamesuf</code> for others.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_FIELD_SUFFIXES} for instance field and  {@link JavaCore#CODEASSIST_STATIC_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_FIELD_SUFFIXES} for instance field and  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
 	 *
 	 * @param project project which contains the field.
@@ -733,10 +733,10 @@ public final class NamingConventions {
 	 *         Can be <code>null</code> if there is no excluded names.
 	 * @return char[] a name.
 	 * @see Flags
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static char[] suggestGetterName(IJavaProject project, char[] fieldName, int modifiers, boolean isBoolean, char[][] excludedNames) {
+	public static char[] suggestGetterName(IJavaScriptProject project, char[] fieldName, int modifiers, boolean isBoolean, char[][] excludedNames) {
 		if (isBoolean) {
 			char[] name = removePrefixAndSuffixForFieldName(project, fieldName, modifiers);
 			int prefixLen =  GETTER_BOOL_NAME.length;
@@ -767,13 +767,13 @@ public final class NamingConventions {
 	 * for boolean field or <code>getPreFieldNamesuf</code> for others.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_FIELD_SUFFIXES} for instance field and  {@link JavaCore#CODEASSIST_STATIC_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_FIELD_SUFFIXES} for instance field and  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
 	 *
 	 * @param project project which contains the field.
@@ -785,10 +785,10 @@ public final class NamingConventions {
 	 *         Can be <code>null</code> if there is no excluded names.
 	 * @return char[] a name.
 	 * @see Flags
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static String suggestGetterName(IJavaProject project, String fieldName, int modifiers, boolean isBoolean, String[] excludedNames) {
+	public static String suggestGetterName(IJavaScriptProject project, String fieldName, int modifiers, boolean isBoolean, String[] excludedNames) {
 		return String.valueOf(
 			suggestGetterName(
 				project,
@@ -807,13 +807,13 @@ public final class NamingConventions {
 	 * If there is no prefix and suffix the proposal is <code>setPreFieldNamesuf</code>.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_FIELD_SUFFIXES} for instance field and  {@link JavaCore#CODEASSIST_STATIC_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_FIELD_SUFFIXES} for instance field and  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
 	 *
 	 * @param project project which contains the field.
@@ -825,10 +825,10 @@ public final class NamingConventions {
 	 *         Can be <code>null</code> if there is no excluded names.
 	 * @return char[] a name.
 	 * @see Flags
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static char[] suggestSetterName(IJavaProject project, char[] fieldName, int modifiers, boolean isBoolean, char[][] excludedNames) {
+	public static char[] suggestSetterName(IJavaScriptProject project, char[] fieldName, int modifiers, boolean isBoolean, char[][] excludedNames) {
 
 		if (isBoolean) {
 			char[] name = removePrefixAndSuffixForFieldName(project, fieldName, modifiers);
@@ -863,13 +863,13 @@ public final class NamingConventions {
 	 * If there is no prefix and suffix the proposal is <code>setPreFieldNamesuf</code>.
 	 * </p>
 	 * <p>
-	 * This method is affected by the following JavaCore options :  {@link JavaCore#CODEASSIST_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_FIELD_SUFFIXES} for instance field and  {@link JavaCore#CODEASSIST_STATIC_FIELD_PREFIXES},
-	 *  {@link JavaCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
+	 * This method is affected by the following JavaScriptCore options :  {@link JavaScriptCore#CODEASSIST_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_FIELD_SUFFIXES} for instance field and  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_PREFIXES},
+	 *  {@link JavaScriptCore#CODEASSIST_STATIC_FIELD_SUFFIXES} for static field.
 	 * </p>
 	 * <p>
 	 * For a complete description of these configurable options, see <code>getDefaultOptions</code>.
-	 * For programmaticaly change these options, see <code>JavaCore#setOptions()</code>.
+	 * For programmaticaly change these options, see <code>JavaScriptCore#setOptions()</code>.
 	 * </p>
 	 *
 	 * @param project project which contains the field.
@@ -881,10 +881,10 @@ public final class NamingConventions {
 	 *         Can be <code>null</code> if there is no excluded names.
 	 * @return char[] a name.
 	 * @see Flags
-	 * @see JavaCore#setOptions(java.util.Hashtable)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#setOptions(java.util.Hashtable)
+	 * @see JavaScriptCore#getDefaultOptions()
 	 */
-	public static String suggestSetterName(IJavaProject project, String fieldName, int modifiers, boolean isBoolean, String[] excludedNames) {
+	public static String suggestSetterName(IJavaScriptProject project, String fieldName, int modifiers, boolean isBoolean, String[] excludedNames) {
 		return String.valueOf(
 			suggestSetterName(
 				project,
@@ -894,7 +894,7 @@ public final class NamingConventions {
 				convertStringToChars(excludedNames)));
 	}
 
-	private static char[] suggestAccessorName(IJavaProject project, char[] fieldName, int modifiers) {
+	private static char[] suggestAccessorName(IJavaScriptProject project, char[] fieldName, int modifiers) {
 		char[] name = removePrefixAndSuffixForFieldName(project, fieldName, modifiers);
 		if (name.length > 0 && ScannerHelper.isLowerCase(name[0])) {
 			name[0] = ScannerHelper.toUpperCase(name[0]);

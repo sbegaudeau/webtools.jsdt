@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * Provides methods for encoding and decoding type and method signature strings.
  * <p>
  * Signatures obtained from parsing source files (i.e. files with one of the
- * {@link JavaCore#getJavaLikeExtensions() Java-like extensions}) differ subtly
+ * {@link JavaScriptCore#getJavaScriptLikeExtensions() Java-like extensions}) differ subtly
  * from ones obtained from pre-compiled binary (".class") files in class names are
  * usually left unresolved in the former. For example, the normal resolved form
  * of the type "String" embeds the class's package name ("Ljava.lang.String;"

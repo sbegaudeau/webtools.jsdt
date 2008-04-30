@@ -27,18 +27,18 @@ import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStringStatusContext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.DynamicValidationStateChange;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 
 public class NLSRefactoring extends Refactoring {
@@ -60,7 +60,7 @@ public class NLSRefactoring extends Refactoring {
 	private IPackageFragment fResourceBundlePackage;
 
 	private String fSubstitutionPattern;
-	private ICompilationUnit fCu;
+	private IJavaScriptUnit fCu;
 	private NLSSubstitution[] fSubstitutions;
 	
 	private String fPrefix;
@@ -71,11 +71,11 @@ public class NLSRefactoring extends Refactoring {
 	 */
 	private boolean fIsEclipseNLS;
 
-	private NLSRefactoring(ICompilationUnit cu) {
+	private NLSRefactoring(IJavaScriptUnit cu) {
 		Assert.isNotNull(cu);
 		fCu= cu;
 
-		CompilationUnit astRoot= JavaPlugin.getDefault().getASTProvider().getAST(fCu, ASTProvider.WAIT_YES, null);
+		JavaScriptUnit astRoot= JavaScriptPlugin.getDefault().getASTProvider().getAST(fCu, ASTProvider.WAIT_YES, null);
 		NLSHint nlsHint= new NLSHint(fCu, astRoot);
 
 		fSubstitutions= nlsHint.getSubstitutions();
@@ -93,7 +93,7 @@ public class NLSRefactoring extends Refactoring {
 			setPrefix(cuName.substring(0, cuName.length() - 4)); // A.java -> A.
 	}
 
-	public static NLSRefactoring create(ICompilationUnit cu) {
+	public static NLSRefactoring create(IJavaScriptUnit cu) {
 		if (cu == null || !cu.exists())
 			return null;
 		return new NLSRefactoring(cu);
@@ -123,7 +123,7 @@ public class NLSRefactoring extends Refactoring {
 			return fSubstitutionPattern;
 	}
 
-	public ICompilationUnit getCu() {
+	public IJavaScriptUnit getCu() {
 		return fCu;
 	}
 
@@ -281,7 +281,7 @@ public class NLSRefactoring extends Refactoring {
 	}
 
 	//should stop checking if fatal error
-	private RefactoringStatus checkIfAnythingToDo() throws JavaModelException {
+	private RefactoringStatus checkIfAnythingToDo() throws JavaScriptModelException {
 		if (NLSSubstitution.countItems(fSubstitutions, NLSSubstitution.EXTERNALIZED) != 0 && willCreateAccessorClass())
 			return null;
 
@@ -359,9 +359,9 @@ public class NLSRefactoring extends Refactoring {
 		return result;
 	}
 
-	public boolean willCreateAccessorClass() throws JavaModelException {
+	public boolean willCreateAccessorClass() throws JavaScriptModelException {
 
-		ICompilationUnit compilationUnit= getAccessorCu();
+		IJavaScriptUnit compilationUnit= getAccessorCu();
 		if (compilationUnit.exists()) {
 			return false;
 		}
@@ -373,8 +373,8 @@ public class NLSRefactoring extends Refactoring {
 		return (!Checks.resourceExists(getAccessorCUPath()));
 	}
 
-	private ICompilationUnit getAccessorCu() {
-		return fAccessorClassPackage.getCompilationUnit(getAccessorCUName());
+	private IJavaScriptUnit getAccessorCu() {
+		return fAccessorClassPackage.getJavaScriptUnit(getAccessorCUName());
 	}
 
 	private boolean willModifySource() {
@@ -411,7 +411,7 @@ public class NLSRefactoring extends Refactoring {
 		return false;
 	}
 
-	private boolean typeNameExistsInPackage(IPackageFragment pack, String name) throws JavaModelException {
+	private boolean typeNameExistsInPackage(IPackageFragment pack, String name) throws JavaScriptModelException {
 		return Checks.findTypeInPackage(pack, name) != null;
 	}
 
@@ -484,7 +484,7 @@ public class NLSRefactoring extends Refactoring {
 	 */
 	public boolean detectIsEclipseNLS() {
 		if (getAccessorClassPackage() != null) {
-			ICompilationUnit accessorCU= getAccessorClassPackage().getCompilationUnit(getAccessorCUName());
+			IJavaScriptUnit accessorCU= getAccessorClassPackage().getJavaScriptUnit(getAccessorCUName());
 			IType type= accessorCU.getType(getAccessorClassName());
 			if (type.exists()) {
 				try {
@@ -493,7 +493,7 @@ public class NLSRefactoring extends Refactoring {
 						return false;
 					IType superclass= type.newSupertypeHierarchy(null).getSuperclass(type);
 					return superclass != null && NLS.class.getName().equals(superclass.getFullyQualifiedName());
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					return false;
 				}
 			}

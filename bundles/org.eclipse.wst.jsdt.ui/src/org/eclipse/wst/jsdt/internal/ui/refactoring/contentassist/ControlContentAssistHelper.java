@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.ContentAssistPreference;
 
 
@@ -53,7 +53,7 @@ public class ControlContentAssistHelper {
 		
 		contentAssistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
 		
-		ContentAssistPreference.configure(contentAssistant, JavaPlugin.getDefault().getPreferenceStore());
+		ContentAssistPreference.configure(contentAssistant, JavaScriptPlugin.getDefault().getPreferenceStore());
 		contentAssistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
 		contentAssistant.setInformationControlCreator(new IInformationControlCreator() {
 			public IInformationControl createInformationControl(Shell parent) {

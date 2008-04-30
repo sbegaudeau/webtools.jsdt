@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the introduce indirection refactoring.
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class IntroduceIndirectionDescriptor extends JavaRefactoringDescriptor {
+public final class IntroduceIndirectionDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public IntroduceIndirectionDescriptor() {
-		super(IJavaRefactorings.INTRODUCE_INDIRECTION);
+		super(IJavaScriptRefactorings.INTRODUCE_INDIRECTION);
 	}
 }

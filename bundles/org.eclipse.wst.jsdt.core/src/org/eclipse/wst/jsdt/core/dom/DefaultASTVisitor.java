@@ -84,7 +84,7 @@ class DefaultASTVisitor extends ASTVisitor {
 	public void endVisit(ClassInstanceCreation node) {
 		endVisitNode(node);
 	}
-	public void endVisit(CompilationUnit node) {
+	public void endVisit(JavaScriptUnit node) {
 		endVisitNode(node);
 	}
 	public void endVisit(ConditionalExpression node) {
@@ -148,7 +148,7 @@ class DefaultASTVisitor extends ASTVisitor {
 	public void endVisit(InstanceofExpression node) {
 		endVisitNode(node);
 	}
-	public void endVisit(Javadoc node) {
+	public void endVisit(JSdoc node) {
 		endVisitNode(node);
 	}
 	public void endVisit(LabeledStatement node) {
@@ -166,16 +166,16 @@ class DefaultASTVisitor extends ASTVisitor {
 	public void endVisit(MemberValuePair node) {
 		endVisitNode(node);
 	}
-	public void endVisit(MethodDeclaration node) {
+	public void endVisit(FunctionDeclaration node) {
 		endVisitNode(node);
 	}
-	public void endVisit(MethodInvocation node) {
+	public void endVisit(FunctionInvocation node) {
 		endVisitNode(node);
 	}
-	public void endVisit(MethodRef node) {
+	public void endVisit(FunctionRef node) {
 		endVisitNode(node);
 	}
-	public void endVisit(MethodRefParameter node) {
+	public void endVisit(FunctionRefParameter node) {
 		endVisitNode(node);
 	}
 	public void endVisit(NullLiteral node) {
@@ -343,7 +343,7 @@ class DefaultASTVisitor extends ASTVisitor {
 	public boolean visit(ClassInstanceCreation node) {
 		return visitNode(node);
 	}
-	public boolean visit(CompilationUnit node) {
+	public boolean visit(JavaScriptUnit node) {
 		return visitNode(node);
 	}
 
@@ -409,7 +409,7 @@ class DefaultASTVisitor extends ASTVisitor {
 	public boolean visit(InstanceofExpression node) {
 		return visitNode(node);
 	}
-	public boolean visit(Javadoc node) {
+	public boolean visit(JSdoc node) {
 		//	do not visit Javadoc tags by default. Use constructor with boolean to enable.
 		if (super.visit(node)) {
 			return visitNode(node);
@@ -431,16 +431,16 @@ class DefaultASTVisitor extends ASTVisitor {
 	public boolean visit(MemberValuePair node) {
 		return visitNode(node);
 	}
-	public boolean visit(MethodDeclaration node) {
+	public boolean visit(FunctionDeclaration node) {
 		return visitNode(node);
 	}
-	public boolean visit(MethodInvocation node) {
+	public boolean visit(FunctionInvocation node) {
 		return visitNode(node);
 	}
-	public boolean visit(MethodRef node) {
+	public boolean visit(FunctionRef node) {
 		return visitNode(node);
 	}
-	public boolean visit(MethodRefParameter node) {
+	public boolean visit(FunctionRefParameter node) {
 		return visitNode(node);
 	}
 	public boolean visit(NullLiteral node) {

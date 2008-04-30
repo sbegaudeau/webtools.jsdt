@@ -76,7 +76,7 @@ public class ToolFactory {
 	 */
 	public static ICodeFormatter createCodeFormatter(){
 
-			Plugin jdtCorePlugin = JavaCore.getPlugin();
+			Plugin jdtCorePlugin = JavaScriptCore.getPlugin();
 			if (jdtCorePlugin == null) return null;
 
 			IExtensionPoint extension = jdtCorePlugin.getDescriptor().getExtensionPoint(JavaModelManager.FORMATTER_EXTPOINT_ID);
@@ -103,20 +103,20 @@ public class ToolFactory {
 
 	/**
 	 * Create an instance of the built-in code formatter.
-	 * <p>The given options should at least provide the source level ({@link JavaCore#COMPILER_SOURCE}),
-	 * the  compiler compliance level ({@link JavaCore#COMPILER_COMPLIANCE}) and the target platform
-	 * ({@link JavaCore#COMPILER_CODEGEN_TARGET_PLATFORM}).
+	 * <p>The given options should at least provide the source level ({@link JavaScriptCore#COMPILER_SOURCE}),
+	 * the  compiler compliance level ({@link JavaScriptCore#COMPILER_COMPLIANCE}) and the target platform
+	 * ({@link JavaScriptCore#COMPILER_CODEGEN_TARGET_PLATFORM}).
 	 * Without these options, it is not possible for the code formatter to know what kind of source it needs to format.
 	 * </p><p>
 	 * Note this is equivalent to <code>createCodeFormatter(options, M_FORMAT_NEW)</code>. Thus some code formatter options
 	 * may be ignored. See @{link {@link #M_FORMAT_NEW} for more details.
 	 * </p>
 	 * @param options - the options map to use for formatting with the default code formatter. Recognized options
-	 * 	are documented on <code>JavaCore#getDefaultOptions()</code>. If set to <code>null</code>, then use
-	 * 	the current settings from <code>JavaCore#getOptions</code>.
+	 * 	are documented on <code>JavaScriptCore#getDefaultOptions()</code>. If set to <code>null</code>, then use
+	 * 	the current settings from <code>JavaScriptCore#getOptions</code>.
 	 * @return an instance of the built-in code formatter
 	 * @see CodeFormatter
-	 * @see JavaCore#getOptions()
+	 * @see JavaScriptCore#getOptions()
 	 * @since 3.0
 	 */
 	public static CodeFormatter createCodeFormatter(Map options){
@@ -125,9 +125,9 @@ public class ToolFactory {
 
 	/**
 	 * Create an instance of the built-in code formatter.
-	 * <p>The given options should at least provide the source level ({@link JavaCore#COMPILER_SOURCE}),
-	 * the  compiler compliance level ({@link JavaCore#COMPILER_COMPLIANCE}) and the target platform
-	 * ({@link JavaCore#COMPILER_CODEGEN_TARGET_PLATFORM}).
+	 * <p>The given options should at least provide the source level ({@link JavaScriptCore#COMPILER_SOURCE}),
+	 * the  compiler compliance level ({@link JavaScriptCore#COMPILER_COMPLIANCE}) and the target platform
+	 * ({@link JavaScriptCore#COMPILER_CODEGEN_TARGET_PLATFORM}).
 	 * Without these options, it is not possible for the code formatter to know what kind of source it needs to format.
 	 * </p>
 	 * <p>The given mode determines what options should be enabled when formatting the code. It can have the following
@@ -135,17 +135,17 @@ public class ToolFactory {
 	 * </p>
 	 *
 	 * @param options the options map to use for formatting with the default code formatter. Recognized options
-	 * 	are documented on <code>JavaCore#getDefaultOptions()</code>. If set to <code>null</code>, then use
-	 * 	the current settings from <code>JavaCore#getOptions</code>.
+	 * 	are documented on <code>JavaScriptCore#getDefaultOptions()</code>. If set to <code>null</code>, then use
+	 * 	the current settings from <code>JavaScriptCore#getOptions</code>.
 	 * @param mode the given mode to modify the given options.
 	 *
 	 * @return an instance of the built-in code formatter
 	 * @see CodeFormatter
-	 * @see JavaCore#getOptions()
+	 * @see JavaScriptCore#getOptions()
 	 * @since 3.3
 	 */
 	public static CodeFormatter createCodeFormatter(Map options, int mode) {
-		if (options == null) options = JavaCore.getOptions();
+		if (options == null) options = JavaScriptCore.getOptions();
 		Map currentOptions = new HashMap(options);
 		if (mode == M_FORMAT_NEW) {
 			// disable the option for not indenting comments starting on first column
@@ -165,16 +165,16 @@ public class ToolFactory {
 	 * default to using the default code formatter.
 	 *
 	 * @param options - the options map to use for formatting with the default code formatter. Recognized options
-	 * 	are documented on <code>JavaCore#getDefaultOptions()</code>. If set to <code>null</code>, then use
-	 * 	the current settings from <code>JavaCore#getOptions</code>.
+	 * 	are documented on <code>JavaScriptCore#getDefaultOptions()</code>. If set to <code>null</code>, then use
+	 * 	the current settings from <code>JavaScriptCore#getOptions</code>.
 	 * @return an instance of the built-in code formatter
 	 * @see ICodeFormatter
 	 * @see ToolFactory#createCodeFormatter()
-	 * @see JavaCore#getOptions()
+	 * @see JavaScriptCore#getOptions()
 	 * @deprecated Use {@link #createCodeFormatter(Map)} instead
 	 */
 	public static ICodeFormatter createDefaultCodeFormatter(Map options){
-		if (options == null) options = JavaCore.getOptions();
+		if (options == null) options = JavaScriptCore.getOptions();
 		return new org.eclipse.wst.jsdt.internal.formatter.old.CodeFormatter(options);
 	}
 

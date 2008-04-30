@@ -17,7 +17,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IDelegateUpdating;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * This is a helper class to keep a consistent design between refactorings
@@ -102,7 +102,7 @@ public class DelegateUIHelper {
 	}
 
 	private static boolean getBooleanSetting(String key, boolean defaultValue) {
-		String update= JavaPlugin.getDefault().getDialogSettings().get(key);
+		String update= JavaScriptPlugin.getDefault().getDialogSettings().get(key);
 		if (update != null)
 			return Boolean.valueOf(update).booleanValue();
 		else
@@ -111,6 +111,6 @@ public class DelegateUIHelper {
 
 	private static void saveBooleanSetting(String key, Button button) {
 		if (button != null && !button.isDisposed() && button.getEnabled())
-			JavaPlugin.getDefault().getDialogSettings().put(key, button.getSelection());
+			JavaScriptPlugin.getDefault().getDialogSettings().put(key, button.getSelection());
 	}
 }

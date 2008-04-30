@@ -17,13 +17,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
@@ -85,13 +85,13 @@ public class ConvertForLoopOperation extends ConvertLoopOperation {
 	
 	public IStatus satisfiesPreconditions() {
 		ForStatement statement= getForStatement();
-		CompilationUnit ast= (CompilationUnit)statement.getRoot();
+		JavaScriptUnit ast= (JavaScriptUnit)statement.getRoot();
 		
-		IJavaElement javaElement= ast.getJavaElement();
+		IJavaScriptElement javaElement= ast.getJavaElement();
 		if (javaElement == null)
 			return ERROR_STATUS;
 		
-		if (!JavaModelUtil.is50OrHigher(javaElement.getJavaProject()))
+		if (!JavaModelUtil.is50OrHigher(javaElement.getJavaScriptProject()))
 			return ERROR_STATUS;
 		
 		if (!validateInitializers(statement))
@@ -474,7 +474,7 @@ public class ConvertForLoopOperation extends ConvertLoopOperation {
 			return fElementDeclaration.getName().getIdentifier();
 		} else {
 			ForStatement forStatement= getForStatement();
-			IJavaProject javaProject= ((CompilationUnit)forStatement.getRoot()).getJavaElement().getJavaProject();
+			IJavaScriptProject javaProject= ((JavaScriptUnit)forStatement.getRoot()).getJavaElement().getJavaScriptProject();
 			String[] proposals= getVariableNameProposals(fArrayAccess.resolveTypeBinding(), javaProject);
 			return proposals[0];
 		}
@@ -507,7 +507,7 @@ public class ConvertForLoopOperation extends ConvertLoopOperation {
 		
 		ForStatement forStatement= getForStatement();
 		
-		IJavaProject javaProject= ((CompilationUnit)forStatement.getRoot()).getJavaElement().getJavaProject();
+		IJavaScriptProject javaProject= ((JavaScriptUnit)forStatement.getRoot()).getJavaElement().getJavaScriptProject();
 		String[] proposals= getVariableNameProposals(fArrayAccess.resolveTypeBinding(), javaProject);
 		
 		String parameterName;
@@ -596,7 +596,7 @@ public class ConvertForLoopOperation extends ConvertLoopOperation {
 	}
 	
 	private SingleVariableDeclaration createParameterDeclaration(String parameterName, VariableDeclarationFragment fragement, Expression arrayAccess, ForStatement statement, ImportRewrite importRewrite, ASTRewrite rewrite, TextEditGroup group, LinkedProposalPositionGroup pg, boolean makeFinal) {
-		CompilationUnit compilationUnit= (CompilationUnit)arrayAccess.getRoot();
+		JavaScriptUnit compilationUnit= (JavaScriptUnit)arrayAccess.getRoot();
 		AST ast= compilationUnit.getAST();
 		
 		SingleVariableDeclaration result= ast.newSingleVariableDeclaration();
@@ -623,7 +623,7 @@ public class ConvertForLoopOperation extends ConvertLoopOperation {
 		return result;
 	}
 	
-	private String[] getVariableNameProposals(ITypeBinding arrayTypeBinding, IJavaProject project) {
+	private String[] getVariableNameProposals(ITypeBinding arrayTypeBinding, IJavaScriptProject project) {
 		String[] variableNames= getUsedVariableNames();
 		String[] elementSuggestions= StubUtility.getLocalNameSuggestions(project, FOR_LOOP_ELEMENT_IDENTIFIER, 0, variableNames);
 		

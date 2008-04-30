@@ -37,14 +37,14 @@ import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -54,20 +54,20 @@ import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
-import org.eclipse.wst.jsdt.core.dom.MethodRef;
-import org.eclipse.wst.jsdt.core.dom.MethodRefParameter;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
@@ -82,10 +82,10 @@ import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.corext.Corext;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
@@ -131,8 +131,8 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TightSourceRangeCom
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class ChangeSignatureRefactoring extends ScriptableRefactoring implements IDelegateUpdating {
 	
@@ -154,9 +154,9 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	private List fExceptionInfos;
 	protected TextChangeManager fChangeManager;
 	protected List/*<Change>*/ fOtherChanges;
-	private IMethod fMethod;
-	private IMethod fTopMethod;
-	private IMethod[] fRippleMethods;
+	private IFunction fMethod;
+	private IFunction fTopMethod;
+	private IFunction[] fRippleMethods;
 	private SearchResultGroup[] fOccurrences;
 	private ReturnTypeInfo fReturnTypeInfo;
 	private String fMethodName;
@@ -178,9 +178,9 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	/**
 	 * Creates a new change signature refactoring.
 	 * @param method the method, or <code>null</code> if invoked by scripting framework
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public ChangeSignatureRefactoring(IMethod method) throws JavaModelException {
+	public ChangeSignatureRefactoring(IFunction method) throws JavaScriptModelException {
 		fMethod= method;
 		fOldVarargIndex= -1;
 		fDelegateUpdating= false;
@@ -194,7 +194,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		}
 	}
 
-	private static List createParameterInfoList(IMethod method) {
+	private static List createParameterInfoList(IFunction method) {
 		try {
 			String[] typeNames= method.getParameterTypes();
 			String[] oldNames= method.getParameterNames();
@@ -214,8 +214,8 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 				result.add(parameterInfo);
 			}
 			return result;
-		} catch(JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch(JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 			return new ArrayList(0);
 		}		
 	}
@@ -227,7 +227,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		return RefactoringCoreMessages.ChangeSignatureRefactoring_modify_Parameters; 
 	}
 	
-	public IMethod getMethod() {
+	public IFunction getMethod() {
 		return fMethod;
 	}
 	
@@ -252,8 +252,8 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	public boolean canChangeNameAndReturnType(){
 		try {
 			return ! fMethod.isConstructor();
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 			return false;
 		}
 	}
@@ -281,7 +281,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	/*
 	 * @see JdtFlags
 	 */	
-	public int[] getAvailableVisibilities() throws JavaModelException{
+	public int[] getAvailableVisibilities() throws JavaScriptModelException{
 //		if (fTopMethod.getDeclaringType().isInterface())
 //			return new int[]{Modifier.PUBLIC};
 //		else if (fTopMethod.getDeclaringType().isEnum() && fTopMethod.isConstructor())
@@ -378,7 +378,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		return result;
 	}
     
-	public boolean isSignatureSameAsInitial() throws JavaModelException {
+	public boolean isSignatureSameAsInitial() throws JavaScriptModelException {
 		if (! isVisibilitySameAsInitial())
 			return false;
 		if (! isMethodNameSameAsInitial())
@@ -400,9 +400,9 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	/**
 	 * @return true if the new method cannot coexist with the old method since
 	 *         the signatures are too much alike
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public boolean isSignatureClashWithInitial() throws JavaModelException {
+	public boolean isSignatureClashWithInitial() throws JavaScriptModelException {
 
 		if (!isMethodNameSameAsInitial())
 			return false; // name has changed.
@@ -436,7 +436,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		return true;
 	}
 	
-	private boolean isReturnTypeSameAsInitial() throws JavaModelException {
+	private boolean isReturnTypeSameAsInitial() throws JavaScriptModelException {
 		return ! fReturnTypeInfo.isTypeNameChanged();
 	}
 	
@@ -516,14 +516,14 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		}	
 	}
 	
-	private RefactoringStatus checkVarargs() throws JavaModelException {
+	private RefactoringStatus checkVarargs() throws JavaScriptModelException {
 		RefactoringStatus result= checkOriginalVarargs();
 		if (result != null)
 			return result;
 			
 		if (fRippleMethods != null) {
 			for (int iRipple= 0; iRipple < fRippleMethods.length; iRipple++) {
-				IMethod rippleMethod= fRippleMethods[iRipple];
+				IFunction rippleMethod= fRippleMethods[iRipple];
 				if (! JdtFlags.isVarargs(rippleMethod))
 					continue;
 				
@@ -544,7 +544,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		return null;
 	}
 
-	private RefactoringStatus checkOriginalVarargs() throws JavaModelException {
+	private RefactoringStatus checkOriginalVarargs() throws JavaScriptModelException {
 		if (JdtFlags.isVarargs(fMethod))
 			fOldVarargIndex= fMethod.getNumberOfParameters() - 1;
 		List notDeletedInfos= getNotDeletedInfos();
@@ -561,7 +561,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		return null;
 	}
 	
-	private RefactoringStatus checkTypeVariables() throws JavaModelException {
+	private RefactoringStatus checkTypeVariables() throws JavaScriptModelException {
 		if (fRippleMethods.length == 1)
 			return null;
 		
@@ -623,7 +623,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			  .append(CONST_CLOSE);
 		ASTParser p= ASTParser.newParser(AST.JLS3);
 		p.setSource(cuBuff.toString().toCharArray());
-		CompilationUnit cu= (CompilationUnit) p.createAST(null);
+		JavaScriptUnit cu= (JavaScriptUnit) p.createAST(null);
 		Selection selection= Selection.createFromStartLength(offset, trimmed.length());
 		SelectionAnalyzer analyzer= new SelectionAnalyzer(selection, false);
 		cu.accept(analyzer);
@@ -642,7 +642,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			  .append(CONST_CLOSE);
 		ASTParser p= ASTParser.newParser(AST.JLS3);
 		p.setSource(cuBuff.toString().toCharArray());
-		CompilationUnit cu= (CompilationUnit) p.createAST(null);
+		JavaScriptUnit cu= (JavaScriptUnit) p.createAST(null);
 		Selection selection= Selection.createFromStartLength(offset, trimmed.length());
 		SelectionAnalyzer analyzer= new SelectionAnalyzer(selection, false);
 		cu.accept(analyzer);
@@ -663,7 +663,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			  .append(");}}"); //$NON-NLS-1$
 		ASTParser p= ASTParser.newParser(AST.JLS3);
 		p.setSource(cuBuff.toString().toCharArray());
-		CompilationUnit cu= (CompilationUnit) p.createAST(null);
+		JavaScriptUnit cu= (JavaScriptUnit) p.createAST(null);
 		Selection selection= Selection.createFromStartLength(offset, trimmed.length());
 		SelectionAnalyzer analyzer= new SelectionAnalyzer(selection, false);
 		cu.accept(analyzer);
@@ -688,7 +688,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		return fContextCuStartEnd;
 	}
 
-	private ITypeHierarchy getCachedTypeHierarchy(IProgressMonitor monitor) throws JavaModelException {
+	private ITypeHierarchy getCachedTypeHierarchy(IProgressMonitor monitor) throws JavaScriptModelException {
 		if (fCachedTypeHierarchy == null)
 			fCachedTypeHierarchy= fMethod.getDeclaringType().newTypeHierarchy(new SubProgressMonitor(monitor, 1));
 		return fCachedTypeHierarchy;
@@ -754,9 +754,9 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			fExceptionInfos= new ArrayList(0);
 			try {
 				ASTNode nameNode= NodeFinder.perform(fBaseCuRewrite.getRoot(), fMethod.getNameRange());
-				if (nameNode == null || !(nameNode instanceof Name) || !(nameNode.getParent() instanceof MethodDeclaration))
+				if (nameNode == null || !(nameNode instanceof Name) || !(nameNode.getParent() instanceof FunctionDeclaration))
 					return null;
-				MethodDeclaration methodDeclaration= (MethodDeclaration) nameNode.getParent();
+				FunctionDeclaration methodDeclaration= (FunctionDeclaration) nameNode.getParent();
 				List exceptions= methodDeclaration.thrownExceptions();
 				List result= new ArrayList(exceptions.size());
 				for (int i= 0; i < exceptions.size(); i++) {
@@ -768,8 +768,8 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 					result.add(ExceptionInfo.createInfoForOldException(type, typeBinding));
 				}
 				fExceptionInfos= result;
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 			}
 		}
 		return null;
@@ -851,7 +851,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		fOtherChanges= new ArrayList();
 	}
 	
-	private RefactoringStatus checkVisibilityChanges() throws JavaModelException {
+	private RefactoringStatus checkVisibilityChanges() throws JavaScriptModelException {
 		if (isVisibilitySameAsInitial())
 			return null;
 	    if (fRippleMethods.length == 1)
@@ -862,11 +862,11 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		return null;
 	}
 
-	public String getOldMethodSignature() throws JavaModelException{
+	public String getOldMethodSignature() throws JavaScriptModelException{
 		StringBuffer buff= new StringBuffer();
 		
 		int flags= getMethod().getFlags();
-		if(JavaCore.IS_ECMASCRIPT4) {
+		if(JavaScriptCore.IS_ECMASCRIPT4) {
 			buff.append(getVisibilityString(flags));
 			if (Flags.isStatic(flags))
 				buff.append("static "); //$NON-NLS-1$
@@ -876,11 +876,11 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			buff.append(ATTRIBUTE_FUNCTION_HEAD + " "); //$NON-NLS-1$
 		}
 		
-		if (! getMethod().isConstructor() && JavaCore.IS_ECMASCRIPT4)
+		if (! getMethod().isConstructor() && JavaScriptCore.IS_ECMASCRIPT4)
 			buff.append(fReturnTypeInfo.getOldTypeName())
 				.append(' ');
 
-		buff.append(JavaElementLabels.getElementLabel(fMethod.getParent(), JavaElementLabels.ALL_FULLY_QUALIFIED));
+		buff.append(JavaScriptElementLabels.getElementLabel(fMethod.getParent(), JavaScriptElementLabels.ALL_FULLY_QUALIFIED));
 		buff.append('.');
 		buff.append(fMethod.getElementName())
 			.append(Signature.C_PARAM_START)
@@ -892,24 +892,24 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		return buff.toString();
 	}
 
-	public String getNewMethodSignature() throws JavaModelException{
+	public String getNewMethodSignature() throws JavaScriptModelException{
 		StringBuffer buff= new StringBuffer();
 		if(PREFIX_FUNCTION_HEAD) {
 			buff.append(ATTRIBUTE_FUNCTION_HEAD + " "); //$NON-NLS-1$
 		}
-		if(JavaCore.IS_ECMASCRIPT4) {
+		if(JavaScriptCore.IS_ECMASCRIPT4) {
 			buff.append(getVisibilityString(fVisibility));
 			if (Flags.isStatic(getMethod().getFlags()))
 				buff.append("static "); //$NON-NLS-1$
 		}
-		if (! getMethod().isConstructor() && JavaCore.IS_ECMASCRIPT4)
+		if (! getMethod().isConstructor() && JavaScriptCore.IS_ECMASCRIPT4)
 			buff.append(getReturnTypeString()).append(' ');
 
 		buff.append(getMethodName())
 			.append(Signature.C_PARAM_START)
 			.append(getMethodParameters())
 			.append(Signature.C_PARAM_END);
-		if(JavaCore.IS_ECMASCRIPT4) 
+		if(JavaScriptCore.IS_ECMASCRIPT4) 
 			buff.append(getMethodThrows());
 		
 		return buff.toString();
@@ -969,26 +969,26 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		}
 	}
 	
-	private ICompilationUnit getCu() {
-		return fMethod.getCompilationUnit();
+	private IJavaScriptUnit getCu() {
+		return fMethod.getJavaScriptUnit();
 	}
 	
-	private boolean mustAnalyzeAstOfDeclaringCu() throws JavaModelException{
+	private boolean mustAnalyzeAstOfDeclaringCu() throws JavaScriptModelException{
 		if (JdtFlags.isAbstract(getMethod()))
 			return false;
 		else if (JdtFlags.isNative(getMethod()))
 			return false;
-		else if (JavaCore.IS_ECMASCRIPT4 && getMethod().getDeclaringType().isInterface())
+		else if (JavaScriptCore.IS_ECMASCRIPT4 && getMethod().getDeclaringType().isInterface())
 			return false;
 		else 
 			return true;
 	}
 	
 	private RefactoringStatus checkCompilationofDeclaringCu() throws CoreException {
-		ICompilationUnit cu= getCu();
+		IJavaScriptUnit cu= getCu();
 		TextChange change= fChangeManager.get(cu);
 		String newCuSource= change.getPreviewContent(new NullProgressMonitor());
-		CompilationUnit newCUNode= new RefactoringASTParser(AST.JLS3).parse(newCuSource, cu, true, false, null);
+		JavaScriptUnit newCUNode= new RefactoringASTParser(AST.JLS3).parse(newCuSource, cu, true, false, null);
 		IProblem[] problems= RefactoringAnalyzeUtil.getIntroducedCompileProblems(newCUNode, fBaseCuRewrite.getRoot());
 		RefactoringStatus result= new RefactoringStatus();
 		for (int i= 0; i < problems.length; i++) {
@@ -999,7 +999,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		return result;
 	}
 		
-	private boolean shouldReport(IProblem problem, CompilationUnit cu) {
+	private boolean shouldReport(IProblem problem, JavaScriptUnit cu) {
 		if (! problem.isError())
 			return false;
 		if (problem.getID() == IProblem.UndefinedType) //reported when trying to import
@@ -1088,7 +1088,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		return true;
 	}
 
-	private RefactoringStatus checkReorderings(IProgressMonitor pm) throws JavaModelException {
+	private RefactoringStatus checkReorderings(IProgressMonitor pm) throws JavaScriptModelException {
 		try{
 			pm.beginTask(RefactoringCoreMessages.ChangeSignatureRefactoring_checking_preconditions, 1); 
 			return checkNativeMethods();
@@ -1097,7 +1097,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		}	
 	}
 	
-	private RefactoringStatus checkRenamings(IProgressMonitor pm) throws JavaModelException {
+	private RefactoringStatus checkRenamings(IProgressMonitor pm) throws JavaScriptModelException {
 		try{
 			pm.beginTask(RefactoringCoreMessages.ChangeSignatureRefactoring_checking_preconditions, 1); 
 			return checkParameterNamesInRippleMethods();
@@ -1106,7 +1106,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		}	
 	}
 	
-	private RefactoringStatus checkParameterNamesInRippleMethods() throws JavaModelException {
+	private RefactoringStatus checkParameterNamesInRippleMethods() throws JavaScriptModelException {
 		RefactoringStatus result= new RefactoringStatus();
 		Set newParameterNames= getNewParameterNamesList();
 		for (int i= 0; i < fRippleMethods.length; i++) {
@@ -1115,7 +1115,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 				if (newParameterNames.contains(paramNames[j])){
 					String[] args= new String[]{JavaElementUtil.createMethodSignature(fRippleMethods[i]), paramNames[j]};
 					String msg= Messages.format(RefactoringCoreMessages.ChangeSignatureRefactoring_already_has, args); 
-					RefactoringStatusContext context= JavaStatusContext.create(fRippleMethods[i].getCompilationUnit(), fRippleMethods[i].getNameRange());
+					RefactoringStatusContext context= JavaStatusContext.create(fRippleMethods[i].getJavaScriptUnit(), fRippleMethods[i].getNameRange());
 					result.addError(msg, context);
 				}	
 			}
@@ -1149,7 +1149,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		return result;
 	}
 	
-	private RefactoringStatus checkNativeMethods() throws JavaModelException{
+	private RefactoringStatus checkNativeMethods() throws JavaScriptModelException{
 		RefactoringStatus result= new RefactoringStatus();
 		for (int i= 0; i < fRippleMethods.length; i++) {
 			if (JdtFlags.isNative(fRippleMethods[i])){
@@ -1178,18 +1178,18 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			list.addAll(Arrays.asList(changes));
 			final Map arguments= new HashMap();
 			String project= null;
-			IJavaProject javaProject= fMethod.getJavaProject();
+			IJavaScriptProject javaProject= fMethod.getJavaScriptProject();
 			if (javaProject != null)
 				project= javaProject.getElementName();
-			int flags= JavaRefactoringDescriptor.JAR_MIGRATION | JavaRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE;
+			int flags= JavaScriptRefactoringDescriptor.JAR_MIGRATION | JavaScriptRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE;
 			try {
 				if (!Flags.isPrivate(fMethod.getFlags()))
 					flags|= RefactoringDescriptor.MULTI_CHANGE;
 				final IType declaring= fMethod.getDeclaringType();
 				if (declaring!=null && (declaring.isAnonymous() || declaring.isLocal()))
-					flags|= JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
-			} catch (JavaModelException exception) {
-				JavaPlugin.log(exception);
+					flags|= JavaScriptRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
+			} catch (JavaScriptModelException exception) {
+				JavaScriptPlugin.log(exception);
 			}
 			JDTRefactoringDescriptor descriptor= null;
 			try {
@@ -1238,7 +1238,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 					comment.addSetting(JDTRefactoringDescriptorComment.createCompositeSetting(RefactoringCoreMessages.ChangeSignatureRefactoring_added_exceptions, (String[]) added.toArray(new String[added.size()])));
 				if (!deleted.isEmpty())
 					comment.addSetting(JDTRefactoringDescriptorComment.createCompositeSetting(RefactoringCoreMessages.ChangeSignatureRefactoring_removed_exceptions, (String[]) deleted.toArray(new String[deleted.size()])));
-				descriptor= new JDTRefactoringDescriptor(IJavaRefactorings.CHANGE_METHOD_SIGNATURE, project, description, comment.asString(), arguments, flags);
+				descriptor= new JDTRefactoringDescriptor(IJavaScriptRefactorings.CHANGE_METHOD_SIGNATURE, project, description, comment.asString(), arguments, flags);
 				arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_INPUT, descriptor.elementToHandle(fMethod));
 				arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_NAME, fMethodName);
 				arguments.put(ATTRIBUTE_DELEGATE, Boolean.valueOf(fDelegateUpdating).toString());
@@ -1248,8 +1248,8 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 				try {
 					if (!isVisibilitySameAsInitial())
 						arguments.put(ATTRIBUTE_VISIBILITY, new Integer(fVisibility).toString());
-				} catch (JavaModelException exception) {
-					JavaPlugin.log(exception);
+				} catch (JavaScriptModelException exception) {
+					JavaScriptPlugin.log(exception);
 				}
 				int count= 1;
 				for (final Iterator iterator= fParameterInfos.iterator(); iterator.hasNext();) {
@@ -1279,8 +1279,8 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 					arguments.put(ATTRIBUTE_KIND + count, new Integer(info.getKind()).toString());
 					count++;
 				}
-			} catch (JavaModelException exception) {
-				JavaPlugin.log(exception);
+			} catch (JavaScriptModelException exception) {
+				JavaScriptPlugin.log(exception);
 				return null;
 			}
 			return new DynamicValidationRefactoringChange(descriptor, doGetRefactoringChangeName(), (Change[]) list.toArray(new Change[list.size()]));
@@ -1309,7 +1309,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			if (pm.isCanceled())
 				throw new OperationCanceledException();
 			SearchResultGroup group= fOccurrences[i];
-			ICompilationUnit cu= group.getCompilationUnit();
+			IJavaScriptUnit cu= group.getCompilationUnit();
 			if (cu == null)
 				continue;
 			CompilationUnitRewrite cuRewrite;
@@ -1354,15 +1354,15 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		return fChangeManager;
 	}
 	
-	//Map<ICompilationUnit, Set<IType>>
-	private Map createNamedSubclassMapping(IProgressMonitor pm) throws JavaModelException{
+	//Map<IJavaScriptUnit, Set<IType>>
+	private Map createNamedSubclassMapping(IProgressMonitor pm) throws JavaScriptModelException{
 		IType[] subclasses= getCachedTypeHierarchy(new SubProgressMonitor(pm, 1)).getSubclasses(fMethod.getDeclaringType());
 		Map result= new HashMap();
 		for (int i= 0; i < subclasses.length; i++) {
 			IType subclass= subclasses[i];
 			if (subclass.isAnonymous())
 				continue;
-			ICompilationUnit cu= subclass.getCompilationUnit();
+			IJavaScriptUnit cu= subclass.getJavaScriptUnit();
 			if (! result.containsKey(cu))
 				result.put(cu, new HashSet());
 			((Set)result.get(cu)).add(subclass);
@@ -1371,7 +1371,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	}
 	
 	private void modifyImplicitCallsToNoArgConstructor(AbstractTypeDeclaration subclass, CompilationUnitRewrite cuRewrite) {
-		MethodDeclaration[] constructors= getAllConstructors(subclass);
+		FunctionDeclaration[] constructors= getAllConstructors(subclass);
 		if (constructors.length == 0){
 			addNewConstructorToSubclass(subclass, cuRewrite);
 		} else {
@@ -1383,7 +1383,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		}
 	}
 	
-	private void addExplicitSuperConstructorCall(MethodDeclaration constructor, CompilationUnitRewrite cuRewrite) {
+	private void addExplicitSuperConstructorCall(FunctionDeclaration constructor, CompilationUnitRewrite cuRewrite) {
 		SuperConstructorInvocation superCall= constructor.getAST().newSuperConstructorInvocation();
 		addArgumentsToNewSuperConstructorCall(superCall, cuRewrite);
 		String msg= RefactoringCoreMessages.ChangeSignatureRefactoring_add_super_call; 
@@ -1395,13 +1395,13 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		int i= 0;
 		for (Iterator iter= getNotDeletedInfos().iterator(); iter.hasNext(); i++) {
 			ParameterInfo info= (ParameterInfo) iter.next();
-			Expression newExpression= createNewExpression(info, getParameterInfos(), superCall.arguments(), cuRewrite, (MethodDeclaration) ASTNodes.getParent(superCall, MethodDeclaration.class));
+			Expression newExpression= createNewExpression(info, getParameterInfos(), superCall.arguments(), cuRewrite, (FunctionDeclaration) ASTNodes.getParent(superCall, FunctionDeclaration.class));
 			if (newExpression != null)
 				superCall.arguments().add(newExpression);
 		}
 	}
 	
-	private static boolean containsImplicitCallToSuperConstructor(MethodDeclaration constructor) {
+	private static boolean containsImplicitCallToSuperConstructor(FunctionDeclaration constructor) {
 		Assert.isTrue(constructor.isConstructor());
 		Block body= constructor.getBody();
 		if (body == null)
@@ -1417,7 +1417,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	
 	private void addNewConstructorToSubclass(AbstractTypeDeclaration subclass, CompilationUnitRewrite cuRewrite) {
 		AST ast= subclass.getAST();
-		MethodDeclaration newConstructor= ast.newMethodDeclaration();
+		FunctionDeclaration newConstructor= ast.newFunctionDeclaration();
 		newConstructor.setName(ast.newSimpleName(subclass.getName().getIdentifier()));
 		newConstructor.setConstructor(true);
 		newConstructor.setExtraDimensions(0);
@@ -1449,52 +1449,52 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			return Modifier.NONE;
 	}
 	
-	private MethodDeclaration[] getAllConstructors(AbstractTypeDeclaration typeDeclaration) {
+	private FunctionDeclaration[] getAllConstructors(AbstractTypeDeclaration typeDeclaration) {
 		BodyDeclaration decl;
 		List result= new ArrayList(1);
 		for (Iterator it = typeDeclaration.bodyDeclarations().listIterator(); it.hasNext(); ) {
 			decl= (BodyDeclaration) it.next();
-			if (decl instanceof MethodDeclaration && ((MethodDeclaration) decl).isConstructor())
+			if (decl instanceof FunctionDeclaration && ((FunctionDeclaration) decl).isConstructor())
 				result.add(decl);
 		}
-		return (MethodDeclaration[]) result.toArray(new MethodDeclaration[result.size()]);
+		return (FunctionDeclaration[]) result.toArray(new FunctionDeclaration[result.size()]);
 	}
 	
-	private boolean isNoArgConstructor() throws JavaModelException {
+	private boolean isNoArgConstructor() throws JavaScriptModelException {
 		return fMethod.isConstructor() && fMethod.getNumberOfParameters() == 0;
 	}
 	
-	private Expression createNewExpression(ParameterInfo info, List parameterInfos, List nodes, CompilationUnitRewrite cuRewrite, MethodDeclaration method) {
+	private Expression createNewExpression(ParameterInfo info, List parameterInfos, List nodes, CompilationUnitRewrite cuRewrite, FunctionDeclaration method) {
 		if (info.isNewVarargs() && info.getDefaultValue().trim().length() == 0)
 			return null;
 		else {
 			if (fDefaultValueAdvisor == null)
-				return (Expression) cuRewrite.getASTRewrite().createStringPlaceholder(info.getDefaultValue(), ASTNode.METHOD_INVOCATION);
+				return (Expression) cuRewrite.getASTRewrite().createStringPlaceholder(info.getDefaultValue(), ASTNode.FUNCTION_INVOCATION);
 			else
 				return fDefaultValueAdvisor.createDefaultExpression(nodes, info, parameterInfos, method, false, cuRewrite);
 		}
 	}
 
-	private boolean isVisibilitySameAsInitial() throws JavaModelException {
+	private boolean isVisibilitySameAsInitial() throws JavaScriptModelException {
 		return fVisibility == JdtFlags.getVisibilityCode(fMethod);
 	}
 	
-	private IJavaSearchScope createRefactoringScope()  throws JavaModelException{
+	private IJavaScriptSearchScope createRefactoringScope()  throws JavaScriptModelException{
 		return RefactoringScopeFactory.create(fMethod);
 	}
 	
-	private SearchResultGroup[] findOccurrences(IProgressMonitor pm, RefactoringStatus status) throws JavaModelException{
+	private SearchResultGroup[] findOccurrences(IProgressMonitor pm, RefactoringStatus status) throws JavaScriptModelException{
 		if (fMethod.isConstructor()){
 			// workaround for bug 27236:
 			return ConstructorReferenceFinder.getConstructorOccurrences(fMethod, pm, status);
 		}else{	
-			SearchPattern pattern= RefactoringSearchEngine.createOrPattern(fRippleMethods, IJavaSearchConstants.ALL_OCCURRENCES);
+			SearchPattern pattern= RefactoringSearchEngine.createOrPattern(fRippleMethods, IJavaScriptSearchConstants.ALL_OCCURRENCES);
 			return RefactoringSearchEngine.search(pattern, createRefactoringScope(), pm, status);
 		}
 	}
 	
 	private static String createDeclarationString(ParameterInfo info) {
-		if(JavaCore.IS_ECMASCRIPT4) {
+		if(JavaScriptCore.IS_ECMASCRIPT4) {
 			String newTypeName= info.getNewTypeName();
 			int index= newTypeName.indexOf('.');
 			if (index != -1){
@@ -1515,10 +1515,10 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		if (isReferenceNode(node))
 			return new ReferenceUpdate(node, cuRewrite, result);
 		
-		else if (node instanceof SimpleName && node.getParent() instanceof MethodDeclaration)
-			return new DeclarationUpdate((MethodDeclaration) node.getParent(), cuRewrite, result);
+		else if (node instanceof SimpleName && node.getParent() instanceof FunctionDeclaration)
+			return new DeclarationUpdate((FunctionDeclaration) node.getParent(), cuRewrite, result);
 		
-		else if (node instanceof MemberRef || node instanceof MethodRef)
+		else if (node instanceof MemberRef || node instanceof FunctionRef)
 			return new DocReferenceUpdate(node, cuRewrite, result);
 		
 		else if (ASTNodes.getParent(node, ImportDeclaration.class) != null)
@@ -1530,7 +1530,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 
 	private static boolean isReferenceNode(ASTNode node){
 		switch (node.getNodeType()) {
-			case ASTNode.METHOD_INVOCATION :
+			case ASTNode.FUNCTION_INVOCATION :
 			case ASTNode.SUPER_METHOD_INVOCATION :
 			case ASTNode.CLASS_INSTANCE_CREATION :
 			case ASTNode.CONSTRUCTOR_INVOCATION :
@@ -1765,8 +1765,8 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		
 		/** @return {@inheritDoc} (element type: Expression) */
 		protected ListRewrite getParamgumentsRewrite() {
-			if (fNode instanceof MethodInvocation)	
-				return getASTRewrite().getListRewrite(fNode, MethodInvocation.ARGUMENTS_PROPERTY);
+			if (fNode instanceof FunctionInvocation)	
+				return getASTRewrite().getListRewrite(fNode, FunctionInvocation.ARGUMENTS_PROPERTY);
 				
 			if (fNode instanceof SuperMethodInvocation)	
 				return getASTRewrite().getListRewrite(fNode, SuperMethodInvocation.ARGUMENTS_PROPERTY);
@@ -1788,23 +1788,23 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		
 		protected ASTNode createNewParamgument(ParameterInfo info, List parameterInfos, List nodes) {
 			CompilationUnitRewrite cuRewrite= getCompilationUnitRewrite();
-			MethodDeclaration declaration= (MethodDeclaration) ASTNodes.getParent(fNode, MethodDeclaration.class);
+			FunctionDeclaration declaration= (FunctionDeclaration) ASTNodes.getParent(fNode, FunctionDeclaration.class);
 			if (isRecursiveReference()) {
 				return createNewExpressionRecursive(info, parameterInfos, nodes, cuRewrite, declaration);
 			} else
 				return createNewExpression(info, parameterInfos, nodes, cuRewrite, declaration);
 		}
 
-		private Expression createNewExpressionRecursive(ParameterInfo info, List parameterInfos, List nodes, CompilationUnitRewrite cuRewrite, MethodDeclaration methodDeclaration) {
+		private Expression createNewExpressionRecursive(ParameterInfo info, List parameterInfos, List nodes, CompilationUnitRewrite cuRewrite, FunctionDeclaration methodDeclaration) {
 			if (fDefaultValueAdvisor != null && info.isAdded()) {
 				return fDefaultValueAdvisor.createDefaultExpression(nodes, info, parameterInfos, methodDeclaration, true, cuRewrite);
 			}
-			return (Expression) getASTRewrite().createStringPlaceholder(info.getNewName(), ASTNode.METHOD_INVOCATION);
+			return (Expression) getASTRewrite().createStringPlaceholder(info.getNewName(), ASTNode.FUNCTION_INVOCATION);
 		}
 
 		protected SimpleName getMethodNameNode() {
-			if (fNode instanceof MethodInvocation)	
-				return ((MethodInvocation)fNode).getName();
+			if (fNode instanceof FunctionInvocation)	
+				return ((FunctionInvocation)fNode).getName();
 				
 			if (fNode instanceof SuperMethodInvocation)	
 				return ((SuperMethodInvocation)fNode).getName();
@@ -1813,19 +1813,19 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		}
 		
 		private boolean isRecursiveReference() {
-			MethodDeclaration enclosingMethodDeclaration= (MethodDeclaration) ASTNodes.getParent(fNode, MethodDeclaration.class);
+			FunctionDeclaration enclosingMethodDeclaration= (FunctionDeclaration) ASTNodes.getParent(fNode, FunctionDeclaration.class);
 			if (enclosingMethodDeclaration == null)
 				return false;
 			
-			IMethodBinding enclosingMethodBinding= enclosingMethodDeclaration.resolveBinding();
+			IFunctionBinding enclosingMethodBinding= enclosingMethodDeclaration.resolveBinding();
 			if (enclosingMethodBinding == null)
 				return false;
 			
-			if (fNode instanceof MethodInvocation)	
-				return enclosingMethodBinding == ((MethodInvocation)fNode).resolveMethodBinding();
+			if (fNode instanceof FunctionInvocation)	
+				return enclosingMethodBinding == ((FunctionInvocation)fNode).resolveMethodBinding();
 				
 			if (fNode instanceof SuperMethodInvocation) {
-				IMethodBinding methodBinding= ((SuperMethodInvocation)fNode).resolveMethodBinding();
+				IFunctionBinding methodBinding= ((SuperMethodInvocation)fNode).resolveMethodBinding();
 				return isSameMethod(methodBinding, enclosingMethodBinding);
 			}
 				
@@ -1854,7 +1854,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		 * 		<ul><li>the methods are both constructors with same argument types, or</li>
 		 *	 		<li>the methods have the same name and the same argument types</li></ul>
 		 */
-		private boolean isSameMethod(IMethodBinding m1, IMethodBinding m2) {
+		private boolean isSameMethod(IFunctionBinding m1, IFunctionBinding m2) {
 			if (m1.isConstructor()) {
 				if (! m2.isConstructor())
 					return false;
@@ -1877,9 +1877,9 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	}
 
 	class DeclarationUpdate extends OccurrenceUpdate {
-		private MethodDeclaration fMethDecl;
+		private FunctionDeclaration fMethDecl;
 
-		protected DeclarationUpdate(MethodDeclaration decl, CompilationUnitRewrite cuRewrite, RefactoringStatus result) {
+		protected DeclarationUpdate(FunctionDeclaration decl, CompilationUnitRewrite cuRewrite, RefactoringStatus result) {
 			super(cuRewrite, cuRewrite.createGroupDescription(RefactoringCoreMessages.ChangeSignatureRefactoring_change_signature), result); 
 			fMethDecl= decl;
 		}
@@ -1915,7 +1915,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 				addDelegate();
 		}
 
-		private void addDelegate() throws JavaModelException {
+		private void addDelegate() throws JavaScriptModelException {
 
 			DelegateMethodCreator creator= new DelegateMethodCreator();
 			creator.setDeclaration(fMethDecl);
@@ -1942,7 +1942,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		
 		/** @return {@inheritDoc} (element type: SingleVariableDeclaration) */
 		protected ListRewrite getParamgumentsRewrite() {
-			return getASTRewrite().getListRewrite(fMethDecl, MethodDeclaration.PARAMETERS_PROPERTY);
+			return getASTRewrite().getListRewrite(fMethDecl, FunctionDeclaration.PARAMETERS_PROPERTY);
 		}
 
 		protected void changeParamgumentName(ParameterInfo info) {
@@ -1974,7 +1974,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			}
 		}
 	
-		private void changeReturnType() throws JavaModelException {
+		private void changeReturnType() throws JavaScriptModelException {
 		    if (isReturnTypeSameAsInitial())
 		    	return;
 			replaceTypeNode(fMethDecl.getReturnType2(), fReturnTypeInfo.getNewTypeName(), fReturnTypeInfo.getNewTypeBinding());
@@ -1983,12 +1983,12 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	    	//Could add return statement with default value and add todo comment, but compile error is better.
 		}
 	
-		private void removeExtraDimensions(MethodDeclaration methDecl) {
+		private void removeExtraDimensions(FunctionDeclaration methDecl) {
 			if (methDecl.getExtraDimensions() != 0)
-				getASTRewrite().set(methDecl, MethodDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(0), fDescription);
+				getASTRewrite().set(methDecl, FunctionDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(0), fDescription);
 		}
 
-		private boolean needsVisibilityUpdate() throws JavaModelException {
+		private boolean needsVisibilityUpdate() throws JavaScriptModelException {
 			if (isVisibilitySameAsInitial())
 				return false;
 			if (isIncreasingVisibility())
@@ -1997,7 +1997,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 				return JdtFlags.isHigherVisibility(JdtFlags.getVisibilityCode(fMethDecl), fVisibility);
 		}
 		
-		private boolean isIncreasingVisibility() throws JavaModelException{
+		private boolean isIncreasingVisibility() throws JavaScriptModelException{
 			return JdtFlags.isHigherVisibility(fVisibility, JdtFlags.getVisibilityCode(fMethod));
 		}
 		
@@ -2013,7 +2013,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 				if (info.isDeleted())
 					removeExceptionFromNodeList(info, fMethDecl.thrownExceptions());
 				else
-					addExceptionToNodeList(info, getASTRewrite().getListRewrite(fMethDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY));
+					addExceptionToNodeList(info, getASTRewrite().getListRewrite(fMethDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY));
 			}
 		}
 		
@@ -2028,7 +2028,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 				 * - A.m() throws IOException, Exception;
 				 * - B.m() throws IOException, AWTException;
 				 * Removing Exception should remove AWTException,
-				 * but NOT remove IOException (or a subclass of JavaModelException). */
+				 * but NOT remove IOException (or a subclass of JavaScriptModelException). */
 				 // if (Bindings.isSuperType(typeToRemove, currentType))
 				if (currentType == null)
 					continue; // newly added or unresolvable type
@@ -2056,16 +2056,16 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			exceptionListRewrite.insertLast(exNode, fDescription);
 		}
 		
-		private void changeJavadocTags() throws JavaModelException {
+		private void changeJavadocTags() throws JavaScriptModelException {
 			//update tags in javadoc: @param, @return, @exception, @throws, ...
-			Javadoc javadoc= fMethDecl.getJavadoc();
+			JSdoc javadoc= fMethDecl.getJavadoc();
 			if (javadoc == null)
 				return;
 
 			ITypeBinding typeBinding= Bindings.getBindingOfParentType(fMethDecl);
 			if (typeBinding == null)
 				return;
-			IMethodBinding methodBinding= fMethDecl.resolveBinding();
+			IFunctionBinding methodBinding= fMethDecl.resolveBinding();
 			if (methodBinding == null)
 				return;
 				
@@ -2074,7 +2074,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			//TODO: should have preference for adding tags in (overriding) methods (with template: todo, inheritDoc, ...)
 			
 			List tags= javadoc.tags(); // List of TagElement
-			ListRewrite tagsRewrite= getASTRewrite().getListRewrite(javadoc, Javadoc.TAGS_PROPERTY);
+			ListRewrite tagsRewrite= getASTRewrite().getListRewrite(javadoc, JSdoc.TAGS_PROPERTY);
 
 			if (! isReturnTypeSameAsInitial()) {
 				if (PrimitiveType.VOID.toString().equals(fReturnTypeInfo.getNewTypeName())) {
@@ -2138,7 +2138,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 							first= false;
 							if (! isTopOfRipple)
 								continue;
-							TagElement paramNode= JavadocUtil.createParamTag(newName, fCuRewrite.getRoot().getAST(), fCuRewrite.getCu().getJavaProject());
+							TagElement paramNode= JavadocUtil.createParamTag(newName, fCuRewrite.getRoot().getAST(), fCuRewrite.getCu().getJavaScriptProject());
 							insertTag(paramNode, previousTag, tagsRewrite);
 							previousTag= paramNode;
 						} else {
@@ -2256,7 +2256,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			returnNode.setTagName(TagElement.TAG_RETURN);
 			
 			TextElement textElement= getASTRewrite().getAST().newTextElement();
-			String text= StubUtility.getTodoTaskTag(fCuRewrite.getCu().getJavaProject());
+			String text= StubUtility.getTodoTaskTag(fCuRewrite.getCu().getJavaScriptProject());
 			if (text != null)
 				textElement.setText(text); //TODO: use template with {@todo} ...
 			returnNode.fragments().add(textElement);
@@ -2272,7 +2272,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			excptNode.fragments().add(nameNode);
 
 			TextElement textElement= getASTRewrite().getAST().newTextElement();
-			String text= StubUtility.getTodoTaskTag(fCuRewrite.getCu().getJavaProject());
+			String text= StubUtility.getTodoTaskTag(fCuRewrite.getCu().getJavaScriptProject());
 			if (text != null)
 				textElement.setText(text); //TODO: use template with {@todo} ...
 			excptNode.fragments().add(textElement);
@@ -2341,7 +2341,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			}	
 		}
 		
-		private String getFullTypeName(MethodDeclaration decl) {
+		private String getFullTypeName(FunctionDeclaration decl) {
 			ASTNode node= decl;
 			while (true) {
 				node= node.getParent();
@@ -2376,7 +2376,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	}
 
 	class DocReferenceUpdate extends OccurrenceUpdate {
-		/** instanceof MemberRef || MethodRef */
+		/** instanceof MemberRef || FunctionRef */
 		private ASTNode fNode;
 
 		protected DocReferenceUpdate(ASTNode node, CompilationUnitRewrite cuRewrite, RefactoringStatus result) {
@@ -2385,7 +2385,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		}
 
 		public void updateNode() {
-			if (fNode instanceof MethodRef) {
+			if (fNode instanceof FunctionRef) {
 				changeParamguments();
 				reshuffleElements();
 			}
@@ -2397,13 +2397,13 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			return createNewMethodRefParameter(info);
 		}
 		
-		private MethodRefParameter createNewMethodRefParameter(ParameterInfo info) {
-			MethodRefParameter newP= getASTRewrite().getAST().newMethodRefParameter();
+		private FunctionRefParameter createNewMethodRefParameter(ParameterInfo info) {
+			FunctionRefParameter newP= getASTRewrite().getAST().newFunctionRefParameter();
 			
 			// only add name iff first parameter already has a name:
 			List parameters= getParamgumentsRewrite().getOriginalList();
 			if (parameters.size() > 0)
-				if (((MethodRefParameter) parameters.get(0)).getName() != null)
+				if (((FunctionRefParameter) parameters.get(0)).getName() != null)
 					newP.setName(getASTRewrite().getAST().newSimpleName(info.getNewName()));
 			
 			newP.setType(createNewDocRefType(info));
@@ -2423,32 +2423,32 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			if (fNode instanceof MemberRef)
 				return ((MemberRef) fNode).getName();
 			
-			if (fNode instanceof MethodRef)
-				return ((MethodRef) fNode).getName();
+			if (fNode instanceof FunctionRef)
+				return ((FunctionRef) fNode).getName();
 			
 			return null;	
 		}
 		
-		/** @return {@inheritDoc} (element type: MethodRefParameter) */
+		/** @return {@inheritDoc} (element type: FunctionRefParameter) */
 		protected ListRewrite getParamgumentsRewrite() {
-			return getASTRewrite().getListRewrite(fNode, MethodRef.PARAMETERS_PROPERTY);
+			return getASTRewrite().getListRewrite(fNode, FunctionRef.PARAMETERS_PROPERTY);
 		}
 
 		protected void changeParamgumentName(ParameterInfo info) {
-			if (! (fNode instanceof MethodRef))
+			if (! (fNode instanceof FunctionRef))
 				return;
 
-			MethodRefParameter oldParam= (MethodRefParameter) ((MethodRef) fNode).parameters().get(info.getOldIndex());
+			FunctionRefParameter oldParam= (FunctionRefParameter) ((FunctionRef) fNode).parameters().get(info.getOldIndex());
 			SimpleName oldParamName= oldParam.getName();
 			if (oldParamName != null)
 				getASTRewrite().set(oldParamName, SimpleName.IDENTIFIER_PROPERTY, info.getNewName(), fDescription);
 		}
 		
 		protected void changeParamgumentType(ParameterInfo info) {
-			if (! (fNode instanceof MethodRef))
+			if (! (fNode instanceof FunctionRef))
 				return;
 			
-			MethodRefParameter oldParam= (MethodRefParameter) ((MethodRef) fNode).parameters().get(info.getOldIndex());
+			FunctionRefParameter oldParam= (FunctionRefParameter) ((FunctionRef) fNode).parameters().get(info.getOldIndex());
 			Type oldTypeNode= oldParam.getType();
 			Type newTypeNode= createNewDocRefType(info);
 			if (info.isNewVarargs()) {
@@ -2456,11 +2456,11 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 					// leave as array reference of old reference was not vararg
 					newTypeNode= getASTRewrite().getAST().newArrayType(newTypeNode);
 				} else {
-					getASTRewrite().set(oldParam, MethodRefParameter.VARARGS_PROPERTY, Boolean.TRUE, fDescription);
+					getASTRewrite().set(oldParam, FunctionRefParameter.VARARGS_PROPERTY, Boolean.TRUE, fDescription);
 				}
 			} else {
 				if (oldParam.isVarargs()) {
-					getASTRewrite().set(oldParam, MethodRefParameter.VARARGS_PROPERTY, Boolean.FALSE, fDescription);
+					getASTRewrite().set(oldParam, FunctionRefParameter.VARARGS_PROPERTY, Boolean.FALSE, fDescription);
 				}
 			}
 			
@@ -2478,7 +2478,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			fImportDecl= importDecl;
 		}
 
-		public void updateNode() throws JavaModelException {
+		public void updateNode() throws JavaScriptModelException {
 			ImportRewrite importRewrite= fCuRewrite.getImportRewrite();
 			QualifiedName name= (QualifiedName) fImportDecl.getName();
 			//will be removed by importRemover if not used elsewhere ... importRewrite.removeStaticImport(name.getFullyQualifiedName());
@@ -2504,12 +2504,12 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			super(cuRewrite, null, result);
 			fNode= node;
 		}
-		public void updateNode() throws JavaModelException {
+		public void updateNode() throws JavaScriptModelException {
 			int start= fNode.getStartPosition();
 			int length= fNode.getLength();
 			String msg= "Cannot update found node: nodeType=" + fNode.getNodeType() + "; "  //$NON-NLS-1$//$NON-NLS-2$
 					+ fNode.toString() + "[" + start + ", " + length + "]";  //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-			JavaPlugin.log(new Exception(msg + ":\n" + fCuRewrite.getCu().getSource().substring(start, start + length))); //$NON-NLS-1$
+			JavaScriptPlugin.log(new Exception(msg + ":\n" + fCuRewrite.getCu().getSource().substring(start, start + length))); //$NON-NLS-1$
 			fResult.addError(msg, JavaStatusContext.create(fCuRewrite.getCu(), fNode));
 		}
 		protected ListRewrite getParamgumentsRewrite() {
@@ -2528,16 +2528,16 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			final JavaRefactoringArguments extended= (JavaRefactoringArguments) arguments;
 			final String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-				if (element == null || !element.exists() || element.getElementType() != IJavaElement.METHOD)
-					return createInputFatalStatus(element, IJavaRefactorings.CHANGE_METHOD_SIGNATURE);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.METHOD)
+					return createInputFatalStatus(element, IJavaScriptRefactorings.CHANGE_METHOD_SIGNATURE);
 				else {
-					fMethod= (IMethod) element;
+					fMethod= (IFunction) element;
 					fMethodName= fMethod.getElementName();
 					try {
 						fVisibility= JdtFlags.getVisibilityCode(fMethod);
 						fReturnTypeInfo= new ReturnTypeInfo(Signature.toString(Signature.getReturnType(fMethod.getSignature())));
-					} catch (JavaModelException exception) {
+					} catch (JavaScriptModelException exception) {
 						return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_illegal_argument, ATTRIBUTE_VISIBILITY));
 					}
 				}
@@ -2602,9 +2602,9 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 				ExceptionInfo info= null;
 				final String kind= extended.getAttribute(ATTRIBUTE_KIND + count);
 				if (kind != null) {
-					final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), value, false);
+					final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), value, false);
 					if (element == null || !element.exists())
-						return createInputFatalStatus(element, IJavaRefactorings.CHANGE_METHOD_SIGNATURE);
+						return createInputFatalStatus(element, IJavaScriptRefactorings.CHANGE_METHOD_SIGNATURE);
 					else {
 						try {
 							info= new ExceptionInfo((IType) element, Integer.valueOf(kind).intValue(), null);

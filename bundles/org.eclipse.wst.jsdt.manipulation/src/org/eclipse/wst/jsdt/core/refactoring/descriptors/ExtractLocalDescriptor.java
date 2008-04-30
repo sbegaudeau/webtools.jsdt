@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the extract local variable refactoring.
@@ -26,12 +26,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class ExtractLocalDescriptor extends JavaRefactoringDescriptor {
+public final class ExtractLocalDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public ExtractLocalDescriptor() {
-		super(IJavaRefactorings.EXTRACT_LOCAL_VARIABLE);
+		super(IJavaScriptRefactorings.EXTRACT_LOCAL_VARIABLE);
 	}
 }

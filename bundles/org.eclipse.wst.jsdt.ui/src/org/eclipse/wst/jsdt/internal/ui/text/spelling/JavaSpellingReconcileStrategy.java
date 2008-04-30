@@ -106,7 +106,7 @@ public class JavaSpellingReconcileStrategy implements IReconcilingStrategy, IRec
 	public static final int SPELLING_PROBLEM_ID= 0x80000000;
 
 //	/** Properties file content type */
-//	private static final IContentType JAVA_CONTENT_TYPE= Platform.getContentTypeManager().getContentType(JavaCore.JAVA_SOURCE_CONTENT_TYPE);
+//	private static final IContentType JAVA_CONTENT_TYPE= Platform.getContentTypeManager().getContentType(JavaScriptCore.JAVA_SOURCE_CONTENT_TYPE);
 
 	/** The text editor to operate on. */
 	private ITextEditor fEditor;

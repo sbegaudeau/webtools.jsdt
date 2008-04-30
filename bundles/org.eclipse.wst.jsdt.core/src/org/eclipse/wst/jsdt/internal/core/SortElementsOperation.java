@@ -23,11 +23,11 @@ import org.eclipse.text.edits.RangeMarker;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
@@ -41,7 +41,7 @@ import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-import org.eclipse.wst.jsdt.core.util.CompilationUnitSorter;
+import org.eclipse.wst.jsdt.core.util.JavaScriptUnitSorter;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
@@ -66,7 +66,7 @@ public class SortElementsOperation extends JavaModelOperation {
 	 * @param positions
 	 * @param comparator
 	 */
-	public SortElementsOperation(int level, IJavaElement[] elements, int[] positions, Comparator comparator) {
+	public SortElementsOperation(int level, IJavaScriptElement[] elements, int[] positions, Comparator comparator) {
 		super(elements);
 		this.comparator = comparator;
         this.positions = positions;
@@ -94,11 +94,11 @@ public class SortElementsOperation extends JavaModelOperation {
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.core.JavaModelOperation#executeOperation()
 	 */
-	protected void executeOperation() throws JavaModelException {
+	protected void executeOperation() throws JavaScriptModelException {
 		try {
 			beginTask(Messages.operation_sortelements, getMainAmountOfWork());
 			CompilationUnit copy = (CompilationUnit) this.elementsToProcess[0];
-			ICompilationUnit unit = copy.getPrimary();
+			IJavaScriptUnit unit = copy.getPrimary();
 			IBuffer buffer = copy.getBuffer();
 			if (buffer  == null) {
 				return;
@@ -119,17 +119,17 @@ public class SortElementsOperation extends JavaModelOperation {
 	 * @param group
 	 * @return the edit or null if no sorting is required
 	 */
-	public TextEdit calculateEdit(org.eclipse.wst.jsdt.core.dom.CompilationUnit unit, TextEditGroup group) throws JavaModelException {
+	public TextEdit calculateEdit(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit unit, TextEditGroup group) throws JavaScriptModelException {
 		if (this.elementsToProcess.length != 1)
-			throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.NO_ELEMENTS_TO_PROCESS));
+			throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.NO_ELEMENTS_TO_PROCESS));
 
-		if (!(this.elementsToProcess[0] instanceof ICompilationUnit))
-			throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, this.elementsToProcess[0]));
+		if (!(this.elementsToProcess[0] instanceof IJavaScriptUnit))
+			throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, this.elementsToProcess[0]));
 
 		try {
 			beginTask(Messages.operation_sortelements, getMainAmountOfWork());
 
-			ICompilationUnit cu= (ICompilationUnit)this.elementsToProcess[0];
+			IJavaScriptUnit cu= (IJavaScriptUnit)this.elementsToProcess[0];
 			String content= cu.getBuffer().getContents();
 			ASTRewrite rewrite= sortCompilationUnit(unit, group);
 			if (rewrite == null) {
@@ -148,15 +148,15 @@ public class SortElementsOperation extends JavaModelOperation {
 	 * @param unit
 	 * @param source
 	 */
-	private String processElement(ICompilationUnit unit, char[] source) {
+	private String processElement(IJavaScriptUnit unit, char[] source) {
 		Document document = new Document(new String(source));
-		CompilerOptions options = new CompilerOptions(unit.getJavaProject().getOptions(true));
+		CompilerOptions options = new CompilerOptions(unit.getJavaScriptProject().getOptions(true));
 		ASTParser parser = ASTParser.newParser(this.apiLevel);
 		parser.setCompilerOptions(options.getMap());
 		parser.setSource(source);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setResolveBindings(false);
-		org.eclipse.wst.jsdt.core.dom.CompilationUnit ast = (org.eclipse.wst.jsdt.core.dom.CompilationUnit) parser.createAST(null);
+		org.eclipse.wst.jsdt.core.dom.JavaScriptUnit ast = (org.eclipse.wst.jsdt.core.dom.JavaScriptUnit) parser.createAST(null);
 
 		ASTRewrite rewriter= sortCompilationUnit(ast, null);
 		if (rewriter == null)
@@ -186,13 +186,13 @@ public class SortElementsOperation extends JavaModelOperation {
 	}
 
 
-	private ASTRewrite sortCompilationUnit(org.eclipse.wst.jsdt.core.dom.CompilationUnit ast, final TextEditGroup group) {
+	private ASTRewrite sortCompilationUnit(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit ast, final TextEditGroup group) {
 		ast.accept(new ASTVisitor() {
-			public boolean visit(org.eclipse.wst.jsdt.core.dom.CompilationUnit compilationUnit) {
+			public boolean visit(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit compilationUnit) {
 				List types = compilationUnit.types();
 				for (Iterator iter = types.iterator(); iter.hasNext();) {
 					AbstractTypeDeclaration typeDeclaration = (AbstractTypeDeclaration) iter.next();
-					typeDeclaration.setProperty(CompilationUnitSorter.RELATIVE_ORDER, new Integer(typeDeclaration.getStartPosition()));
+					typeDeclaration.setProperty(JavaScriptUnitSorter.RELATIVE_ORDER, new Integer(typeDeclaration.getStartPosition()));
 					compilationUnit.setProperty(CONTAINS_MALFORMED_NODES, Boolean.valueOf(isMalformed(typeDeclaration)));
 				}
 				return true;
@@ -201,7 +201,7 @@ public class SortElementsOperation extends JavaModelOperation {
 				List bodyDeclarations = annotationTypeDeclaration.bodyDeclarations();
 				for (Iterator iter = bodyDeclarations.iterator(); iter.hasNext();) {
 					BodyDeclaration bodyDeclaration = (BodyDeclaration) iter.next();
-					bodyDeclaration.setProperty(CompilationUnitSorter.RELATIVE_ORDER, new Integer(bodyDeclaration.getStartPosition()));
+					bodyDeclaration.setProperty(JavaScriptUnitSorter.RELATIVE_ORDER, new Integer(bodyDeclaration.getStartPosition()));
 					annotationTypeDeclaration.setProperty(CONTAINS_MALFORMED_NODES, Boolean.valueOf(isMalformed(bodyDeclaration)));
 				}
 				return true;
@@ -211,7 +211,7 @@ public class SortElementsOperation extends JavaModelOperation {
 				List bodyDeclarations = anonymousClassDeclaration.bodyDeclarations();
 				for (Iterator iter = bodyDeclarations.iterator(); iter.hasNext();) {
 					BodyDeclaration bodyDeclaration = (BodyDeclaration) iter.next();
-					bodyDeclaration.setProperty(CompilationUnitSorter.RELATIVE_ORDER, new Integer(bodyDeclaration.getStartPosition()));
+					bodyDeclaration.setProperty(JavaScriptUnitSorter.RELATIVE_ORDER, new Integer(bodyDeclaration.getStartPosition()));
 					anonymousClassDeclaration.setProperty(CONTAINS_MALFORMED_NODES, Boolean.valueOf(isMalformed(bodyDeclaration)));
 				}
 				return true;
@@ -221,7 +221,7 @@ public class SortElementsOperation extends JavaModelOperation {
 				List bodyDeclarations = typeDeclaration.bodyDeclarations();
 				for (Iterator iter = bodyDeclarations.iterator(); iter.hasNext();) {
 					BodyDeclaration bodyDeclaration = (BodyDeclaration) iter.next();
-					bodyDeclaration.setProperty(CompilationUnitSorter.RELATIVE_ORDER, new Integer(bodyDeclaration.getStartPosition()));
+					bodyDeclaration.setProperty(JavaScriptUnitSorter.RELATIVE_ORDER, new Integer(bodyDeclaration.getStartPosition()));
 					typeDeclaration.setProperty(CONTAINS_MALFORMED_NODES, Boolean.valueOf(isMalformed(bodyDeclaration)));
 				}
 				return true;
@@ -231,13 +231,13 @@ public class SortElementsOperation extends JavaModelOperation {
 				List bodyDeclarations = enumDeclaration.bodyDeclarations();
 				for (Iterator iter = bodyDeclarations.iterator(); iter.hasNext();) {
 					BodyDeclaration bodyDeclaration = (BodyDeclaration) iter.next();
-					bodyDeclaration.setProperty(CompilationUnitSorter.RELATIVE_ORDER, new Integer(bodyDeclaration.getStartPosition()));
+					bodyDeclaration.setProperty(JavaScriptUnitSorter.RELATIVE_ORDER, new Integer(bodyDeclaration.getStartPosition()));
 					enumDeclaration.setProperty(CONTAINS_MALFORMED_NODES, Boolean.valueOf(isMalformed(bodyDeclaration)));
 				}
 				List enumConstants = enumDeclaration.enumConstants();
 				for (Iterator iter = enumConstants.iterator(); iter.hasNext();) {
 					EnumConstantDeclaration enumConstantDeclaration = (EnumConstantDeclaration) iter.next();
-					enumConstantDeclaration.setProperty(CompilationUnitSorter.RELATIVE_ORDER, new Integer(enumConstantDeclaration.getStartPosition()));
+					enumConstantDeclaration.setProperty(JavaScriptUnitSorter.RELATIVE_ORDER, new Integer(enumConstantDeclaration.getStartPosition()));
 					enumDeclaration.setProperty(CONTAINS_MALFORMED_NODES, Boolean.valueOf(isMalformed(enumConstantDeclaration)));
 				}
 				return true;
@@ -267,12 +267,12 @@ public class SortElementsOperation extends JavaModelOperation {
 				}
 			}
 
-			public boolean visit(org.eclipse.wst.jsdt.core.dom.CompilationUnit compilationUnit) {
+			public boolean visit(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit compilationUnit) {
 				if (checkMalformedNodes(compilationUnit)) {
 					return true; // abort sorting of current element
 				}
 
-				sortElements(compilationUnit.types(), rewriter.getListRewrite(compilationUnit, org.eclipse.wst.jsdt.core.dom.CompilationUnit.TYPES_PROPERTY));
+				sortElements(compilationUnit.types(), rewriter.getListRewrite(compilationUnit, org.eclipse.wst.jsdt.core.dom.JavaScriptUnit.TYPES_PROPERTY));
 				return true;
 			}
 
@@ -326,17 +326,17 @@ public class SortElementsOperation extends JavaModelOperation {
 	 *  <li>NO_ELEMENTS_TO_PROCESS - the compilation unit supplied to the operation is <code>null</code></li>.
 	 *  <li>INVALID_ELEMENT_TYPES - the supplied elements are not an instance of IWorkingCopy</li>.
 	 * </ul>
-	 * @return IJavaModelStatus
+	 * @return IJavaScriptModelStatus
 	 */
-	public IJavaModelStatus verify() {
+	public IJavaScriptModelStatus verify() {
 		if (this.elementsToProcess.length != 1) {
-			return new JavaModelStatus(IJavaModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
+			return new JavaModelStatus(IJavaScriptModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
 		}
 		if (this.elementsToProcess[0] == null) {
-			return new JavaModelStatus(IJavaModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
+			return new JavaModelStatus(IJavaScriptModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
 		}
-		if (!(this.elementsToProcess[0] instanceof ICompilationUnit) || !((ICompilationUnit) this.elementsToProcess[0]).isWorkingCopy()) {
-			return new JavaModelStatus(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, this.elementsToProcess[0]);
+		if (!(this.elementsToProcess[0] instanceof IJavaScriptUnit) || !((IJavaScriptUnit) this.elementsToProcess[0]).isWorkingCopy()) {
+			return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, this.elementsToProcess[0]);
 		}
 		return JavaModelStatus.VERIFIED_OK;
 	}

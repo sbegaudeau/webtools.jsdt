@@ -17,14 +17,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.ImportReferencesCollector;
@@ -66,11 +66,11 @@ public final class ImportRewriteUtil {
 		Assert.isNotNull(staticImports);
 		final Set types= new HashSet();
 		final Set members= new HashSet();
-		final ImportReferencesCollector collector= new ImportReferencesCollector(rewrite.getCu().getJavaProject(), null, types, members) {
+		final ImportReferencesCollector collector= new ImportReferencesCollector(rewrite.getCu().getJavaScriptProject(), null, types, members) {
 
 			public final boolean visit(final Block block) {
 				Assert.isNotNull(block);
-				if (declarations && block.getParent() instanceof MethodDeclaration)
+				if (declarations && block.getParent() instanceof FunctionDeclaration)
 					return false;
 				return super.visit(block);
 			}
@@ -101,8 +101,8 @@ public final class ImportRewriteUtil {
 					staticImports.put(name, rewriter.addStaticImport(variable));
 					remover.registerAddedStaticImport(declaring.getQualifiedName(), variable.getName(), true);
 				}
-			} else if (binding instanceof IMethodBinding) {
-				final IMethodBinding method= (IMethodBinding) binding;
+			} else if (binding instanceof IFunctionBinding) {
+				final IFunctionBinding method= (IFunctionBinding) binding;
 				final ITypeBinding declaring= method.getDeclaringClass();
 				if (declaring != null && (excludeBindings == null || !excludeBindings.contains(method))) {
 					staticImports.put(name, rewriter.addStaticImport(method));
@@ -121,7 +121,7 @@ public final class ImportRewriteUtil {
 	 * @param staticBindings the set of bindings (element type: Set <IBinding>).
 	 * @param declarations <code>true</code> if method declarations are treated as abstract, <code>false</code> otherwise
 	 */
-	public static void collectImports(final IJavaProject project, final ASTNode node, final Collection typeBindings, final Collection staticBindings, final boolean declarations) {
+	public static void collectImports(final IJavaScriptProject project, final ASTNode node, final Collection typeBindings, final Collection staticBindings, final boolean declarations) {
 		collectImports(project, node, typeBindings, staticBindings, null, declarations);
 	}
 
@@ -135,7 +135,7 @@ public final class ImportRewriteUtil {
 	 * @param excludeBindings the set of bindings to exclude (element type: Set <IBinding>).
 	 * @param declarations <code>true</code> if method declarations are treated as abstract, <code>false</code> otherwise
 	 */
-	public static void collectImports(final IJavaProject project, final ASTNode node, final Collection typeBindings, final Collection staticBindings, final Collection excludeBindings, final boolean declarations) {
+	public static void collectImports(final IJavaScriptProject project, final ASTNode node, final Collection typeBindings, final Collection staticBindings, final Collection excludeBindings, final boolean declarations) {
 		Assert.isNotNull(project);
 		Assert.isNotNull(node);
 		Assert.isNotNull(typeBindings);
@@ -146,7 +146,7 @@ public final class ImportRewriteUtil {
 
 			public final boolean visit(final Block block) {
 				Assert.isNotNull(block);
-				if (declarations && block.getParent() instanceof MethodDeclaration)
+				if (declarations && block.getParent() instanceof FunctionDeclaration)
 					return false;
 				return super.visit(block);
 			}

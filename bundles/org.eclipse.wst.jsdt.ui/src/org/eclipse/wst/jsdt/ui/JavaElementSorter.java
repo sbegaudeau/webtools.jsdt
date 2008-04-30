@@ -22,19 +22,19 @@ import org.eclipse.jface.viewers.ViewerSorter;
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
  * 
- * @deprecated use {@link JavaElementComparator} instead.
+ * @deprecated use {@link JavaScriptElementComparator} instead.
  * @since 2.0
  */
 public class JavaElementSorter extends ViewerSorter {
 	
-	private final JavaElementComparator fComparator;
+	private final JavaScriptElementComparator fComparator;
 	
 	/**
 	 * Constructor.
 	 */
 	public JavaElementSorter() {	
 		super(null); // delay initialization of collator
-		fComparator= new JavaElementComparator();
+		fComparator= new JavaScriptElementComparator();
 	}
 		
 	/**

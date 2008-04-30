@@ -33,12 +33,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorHighlightingSynchronizer;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
@@ -111,11 +111,11 @@ public final class ParameterGuessingProposal extends JavaMethodCompletionProposa
 
 		} catch (BadLocationException e) {
 			ensurePositionCategoryRemoved(document);
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			openErrorDialog(e);
 		} catch (BadPositionCategoryException e) {
 			ensurePositionCategoryRemoved(document);
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			openErrorDialog(e);
 		}
 	}
@@ -139,10 +139,10 @@ public final class ParameterGuessingProposal extends JavaMethodCompletionProposa
 		String replacement;
 		try {
 			replacement= computeGuessingCompletion();
-		} catch (JavaModelException x) {
+		} catch (JavaScriptModelException x) {
 			fPositions= null;
 			fChoices= null;
-			JavaPlugin.log(x);
+			JavaScriptPlugin.log(x);
 			openErrorDialog(x);
 			return super.computeReplacementString();
 		}
@@ -155,7 +155,7 @@ public final class ParameterGuessingProposal extends JavaMethodCompletionProposa
 	 * Creates the completion string. Offsets and Lengths are set to the offsets and lengths
 	 * of the parameters.
 	 */
-	private String computeGuessingCompletion() throws JavaModelException {
+	private String computeGuessingCompletion() throws JavaScriptModelException {
 		
 		StringBuffer buffer= new StringBuffer(String.valueOf(fProposal.getName()));
 		
@@ -207,14 +207,14 @@ public final class ParameterGuessingProposal extends JavaMethodCompletionProposa
 	 * @return  the currently active java editor, or <code>null</code>
 	 */
 	private JavaEditor getJavaEditor() {
-		IEditorPart part= JavaPlugin.getActivePage().getActiveEditor();
+		IEditorPart part= JavaScriptPlugin.getActivePage().getActiveEditor();
 		if (part instanceof JavaEditor)
 			return (JavaEditor) part;
 		else
 			return null;
 	}
 
-	private ICompletionProposal[][] guessParameters() throws JavaModelException {
+	private ICompletionProposal[][] guessParameters() throws JavaScriptModelException {
 		// find matches in reverse order.  Do this because people tend to declare the variable meant for the last
 		// parameter last.  That is, local variables for the last parameter in the method completion are more
 		// likely to be closer to the point of code completion. As an example consider a "delegation" completion:
@@ -232,7 +232,7 @@ public final class ParameterGuessingProposal extends JavaMethodCompletionProposa
 		fChoices= new ICompletionProposal[count][];
 
 		IDocument document= fInvocationContext.getDocument();
-		ICompilationUnit cu= fInvocationContext.getCompilationUnit();
+		IJavaScriptUnit cu= fInvocationContext.getCompilationUnit();
 		JavaModelUtil.reconcile(cu);
 		String[][] parameterTypes= getParameterSignatures();
 		ParameterGuesser guesser= new ParameterGuesser(fProposal.getCompletionLocation() + 1, cu);

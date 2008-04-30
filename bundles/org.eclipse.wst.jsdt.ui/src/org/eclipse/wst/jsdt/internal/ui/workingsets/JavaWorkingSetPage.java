@@ -50,15 +50,15 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetPage;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.filters.EmptyInnerPackageFilter;
@@ -68,8 +68,8 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * The Java working set page allows the user to create
@@ -144,16 +144,16 @@ public class JavaWorkingSetPage extends WizardPage implements IWorkingSetPage {
 		
 		AppearanceAwareLabelProvider fJavaElementLabelProvider= 
 			new AppearanceAwareLabelProvider(
-				AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS | JavaElementLabels.P_COMPRESSED,
+				AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS | JavaScriptElementLabels.P_COMPRESSED,
 				AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS | JavaElementImageProvider.SMALL_ICONS
 			);
 		
 		fTree.setLabelProvider(new DecoratingJavaLabelProvider(fJavaElementLabelProvider));
-		fTree.setComparator(new JavaElementComparator());
+		fTree.setComparator(new JavaScriptElementComparator());
 		fTree.addFilter(new EmptyInnerPackageFilter());
 		fTree.setUseHashlookup(true);
 		
-		fTree.setInput(JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()));
+		fTree.setInput(JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot()));
 
 		fTree.addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
@@ -403,11 +403,11 @@ public class JavaWorkingSetPage extends WizardPage implements IWorkingSetPage {
 				Object[] elements;
 				if (fWorkingSet == null) {
 					// Use current part's selection for initialization
-					IWorkbenchPage page= JavaPlugin.getActivePage();
+					IWorkbenchPage page= JavaScriptPlugin.getActivePage();
 					if (page == null)
 						return;
 					
-					IWorkbenchPart part= JavaPlugin.getActivePage().getActivePart();
+					IWorkbenchPart part= JavaScriptPlugin.getActivePage().getActivePart();
 					if (part == null)
 						return;
 					
@@ -415,12 +415,12 @@ public class JavaWorkingSetPage extends WizardPage implements IWorkingSetPage {
 						elements= SelectionConverter.getStructuredSelection(part).toArray();
 						for (int i= 0; i < elements.length; i++) {
 							if (elements[i] instanceof IResource) {
-								IJavaElement je= (IJavaElement)((IResource)elements[i]).getAdapter(IJavaElement.class);
-								if (je != null && je.exists() &&  je.getJavaProject().isOnClasspath((IResource)elements[i]))
+								IJavaScriptElement je= (IJavaScriptElement)((IResource)elements[i]).getAdapter(IJavaScriptElement.class);
+								if (je != null && je.exists() &&  je.getJavaScriptProject().isOnIncludepath((IResource)elements[i]))
 									elements[i]= je;
 							}
 						}
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						return;
 					}
 				}
@@ -435,8 +435,8 @@ public class JavaWorkingSetPage extends WizardPage implements IWorkingSetPage {
 						if (!project.isAccessible())
 							elements[i]= project;
 					}
-					if (element instanceof IJavaElement) {
-						IJavaProject jProject= ((IJavaElement)element).getJavaProject();
+					if (element instanceof IJavaScriptElement) {
+						IJavaScriptProject jProject= ((IJavaScriptElement)element).getJavaScriptProject();
 						if (jProject != null && !jProject.getProject().isAccessible()) 
 							elements[i]= jProject.getProject();
 					}
@@ -467,13 +467,13 @@ public class JavaWorkingSetPage extends WizardPage implements IWorkingSetPage {
 	
 	private boolean isExpandable(Object element) {
 		return (
-			element instanceof IJavaProject
+			element instanceof IJavaScriptProject
 			||
 			element instanceof IPackageFragmentRoot
 			||
 			element instanceof IPackageFragment
 			||
-			element instanceof IJavaModel
+			element instanceof IJavaScriptModel
 			||
 			element instanceof IContainer);
 	}

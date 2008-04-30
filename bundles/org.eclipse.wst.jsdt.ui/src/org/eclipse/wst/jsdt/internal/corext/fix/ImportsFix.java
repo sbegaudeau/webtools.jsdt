@@ -18,9 +18,9 @@ import org.eclipse.ltk.core.refactoring.GroupCategorySet;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.OrganizeImportsOperation;
@@ -36,7 +36,7 @@ public class ImportsFix extends AbstractFix {
 		private static final long serialVersionUID= 1L;
 	}
 
-	public static IFix createCleanUp(final CompilationUnit cu, CodeGenerationSettings settings, boolean organizeImports, RefactoringStatus status) throws CoreException {
+	public static IFix createCleanUp(final JavaScriptUnit cu, CodeGenerationSettings settings, boolean organizeImports, RefactoringStatus status) throws CoreException {
 		if (!organizeImports)
 			return null;
 		
@@ -45,7 +45,7 @@ public class ImportsFix extends AbstractFix {
 				throw new AmbiguousImportException();
 			}
 		};
-		OrganizeImportsOperation op= new OrganizeImportsOperation((ICompilationUnit)cu.getJavaElement(), cu, settings.importIgnoreLowercase, false, false, query);
+		OrganizeImportsOperation op= new OrganizeImportsOperation((IJavaScriptUnit)cu.getJavaElement(), cu, settings.importIgnoreLowercase, false, false, query);
 		final TextEdit edit;
 		try {
 			edit= op.createTextEdit(null);
@@ -75,8 +75,8 @@ public class ImportsFix extends AbstractFix {
 	            return result;
             }
 
-			public ICompilationUnit getCompilationUnit() {
-	            return (ICompilationUnit)cu.getJavaElement();
+			public IJavaScriptUnit getCompilationUnit() {
+	            return (IJavaScriptUnit)cu.getJavaElement();
             }
 
 			public String getDescription() {
@@ -89,11 +89,11 @@ public class ImportsFix extends AbstractFix {
     	};
     }
 
-	private static String getLocationString(final CompilationUnit cu) {
+	private static String getLocationString(final JavaScriptUnit cu) {
 		return cu.getJavaElement().getPath().makeRelative().toString();
 	}
 	
-	protected ImportsFix(String name, CompilationUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations) {
+	protected ImportsFix(String name, JavaScriptUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations) {
 	    super(name, compilationUnit, fixRewriteOperations);
     }
 }

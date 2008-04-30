@@ -221,7 +221,7 @@ class DefaultCommentMapper {
 	 * Scanner is necessary to scan between nodes and comments and verify if there's
 	 * nothing else than white spaces.
 	 */
-	void initialize(CompilationUnit unit, Scanner sc) {
+	void initialize(JavaScriptUnit unit, Scanner sc) {
 
 		// Init array pointers
 		this.leadingPtr = -1;
@@ -597,7 +597,7 @@ class DefaultCommentMapper {
 					System.arraycopy(this.parentLineRange, 0, this.parentLineRange = new int[this.siblingPtr*2][], 0, this.siblingPtr);
 				}
 				if (this.topSiblingParent == null) {
-					// node is a CompilationUnit
+					// node is a JavaScriptUnit
 					this.parentLineRange[this.siblingPtr] = previousLineRange;
 				} else {
 					int parentStart = parent.getStartPosition();
@@ -631,14 +631,14 @@ class DefaultCommentMapper {
 				}
 			}
 			// Remove sibling if needed
-			if (this.topSiblingParent != null /*not a CompilationUnit*/
+			if (this.topSiblingParent != null /*not a JavaScriptUnit*/
 					&& this.topSiblingParent == node) {
 				this.siblingPtr--;
 				this.topSiblingParent = node.getParent();
 			}
 		}
 
-		public boolean visit ( CompilationUnit node) {
+		public boolean visit ( JavaScriptUnit node) {
 			// do nothing special, just go down in sub-levels
 			return true;
 		}

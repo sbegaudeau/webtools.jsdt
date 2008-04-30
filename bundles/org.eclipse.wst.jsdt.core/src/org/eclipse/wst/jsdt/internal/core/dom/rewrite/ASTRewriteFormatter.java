@@ -25,7 +25,7 @@ import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Block;
@@ -128,7 +128,7 @@ import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 		this.eventStore= eventStore;
 
 		if (options == null) {
-			options= JavaCore.getOptions();
+			options= JavaScriptCore.getOptions();
 		}
 		//options.put(DefaultCodeFormatterConstants.FORMATTER_LINE_SPLIT, String.valueOf(9999));
 
@@ -282,8 +282,8 @@ import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 					suffix= "> x;"; //$NON-NLS-1$
 					code= CodeFormatter.K_CLASS_BODY_DECLARATIONS;
 					break;
-				case ASTNode.COMPILATION_UNIT:
-					code= CodeFormatter.K_COMPILATION_UNIT;
+				case ASTNode.JAVASCRIPT_UNIT:
+					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
 				case ASTNode.VARIABLE_DECLARATION_EXPRESSION:
 				case ASTNode.SINGLE_VARIABLE_DECLARATION:
@@ -298,11 +298,11 @@ import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 				case ASTNode.PACKAGE_DECLARATION:
 				case ASTNode.IMPORT_DECLARATION:
 					suffix= "\nclass A {}"; //$NON-NLS-1$
-					code= CodeFormatter.K_COMPILATION_UNIT;
+					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
-				case ASTNode.JAVADOC:
+				case ASTNode.JSDOC:
 					suffix= "\nclass A {}"; //$NON-NLS-1$
-					code= CodeFormatter.K_COMPILATION_UNIT;
+					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
 				case ASTNode.CATCH_CLAUSE:
 					prefix= "try {}"; //$NON-NLS-1$
@@ -316,20 +316,20 @@ import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 				case ASTNode.MEMBER_VALUE_PAIR:
 					prefix= "@Author("; //$NON-NLS-1$
 					suffix= ") class x {}"; //$NON-NLS-1$
-					code= CodeFormatter.K_COMPILATION_UNIT;
+					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
 				case ASTNode.MODIFIER:
 					suffix= " class x {}"; //$NON-NLS-1$
-					code= CodeFormatter.K_COMPILATION_UNIT;
+					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
 				case ASTNode.TYPE_PARAMETER:
 					prefix= "class X<"; //$NON-NLS-1$
 					suffix= "> {}"; //$NON-NLS-1$
-					code= CodeFormatter.K_COMPILATION_UNIT;
+					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
 				case ASTNode.MEMBER_REF:
-				case ASTNode.METHOD_REF:
-				case ASTNode.METHOD_REF_PARAMETER:
+				case ASTNode.FUNCTION_REF:
+				case ASTNode.FUNCTION_REF_PARAMETER:
 				case ASTNode.TAG_ELEMENT:
 				case ASTNode.TEXT_ELEMENT:
 					// javadoc formatting disabled due to bug 93644
@@ -337,12 +337,12 @@ import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 
 //				wiat for bug 93644
 //				case ASTNode.MEMBER_REF:
-//				case ASTNode.METHOD_REF:
+//				case ASTNode.FUNCTION_REF:
 //					prefix= "/**\n * @see ";
 //					suffix= "\n*/";
 //					code= CodeFormatter.K_JAVA_DOC;
 //					break;
-//				case ASTNode.METHOD_REF_PARAMETER:
+//				case ASTNode.FUNCTION_REF_PARAMETER:
 //					prefix= "/**\n * @see A#foo(";
 //					suffix= ")\n*/";
 //					code= CodeFormatter.K_JAVA_DOC;
@@ -535,13 +535,13 @@ import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 	public final Prefix FINALLY_BLOCK= new FormattingPrefix("try {} finally {}", "} finally {", CodeFormatter.K_STATEMENTS); //$NON-NLS-1$ //$NON-NLS-2$
 	public final Prefix CATCH_BLOCK= new FormattingPrefix("try {} catch(Exception e) {}", "} c" , CodeFormatter.K_STATEMENTS); //$NON-NLS-1$ //$NON-NLS-2$
 	public final Prefix ANNOT_MEMBER_DEFAULT= new FormattingPrefix("String value() default 1;", ") default 1" , CodeFormatter.K_CLASS_BODY_DECLARATIONS); //$NON-NLS-1$ //$NON-NLS-2$
-	public final Prefix ENUM_BODY_START= new FormattingPrefix("enum E { A(){void foo(){}} }", "){v" , CodeFormatter.K_COMPILATION_UNIT); //$NON-NLS-1$ //$NON-NLS-2$
-	public final Prefix ENUM_BODY_END= new FormattingPrefix("enum E { A(){void foo(){ }}, B}", "}}," , CodeFormatter.K_COMPILATION_UNIT); //$NON-NLS-1$ //$NON-NLS-2$
+	public final Prefix ENUM_BODY_START= new FormattingPrefix("enum E { A(){void foo(){}} }", "){v" , CodeFormatter.K_JAVASCRIPT_UNIT); //$NON-NLS-1$ //$NON-NLS-2$
+	public final Prefix ENUM_BODY_END= new FormattingPrefix("enum E { A(){void foo(){ }}, B}", "}}," , CodeFormatter.K_JAVASCRIPT_UNIT); //$NON-NLS-1$ //$NON-NLS-2$
 	public final Prefix WILDCARD_EXTENDS= new FormattingPrefix("A<? extends B> a;", "? extends B" , CodeFormatter.K_CLASS_BODY_DECLARATIONS); //$NON-NLS-1$ //$NON-NLS-2$
 	public final Prefix WILDCARD_SUPER= new FormattingPrefix("A<? super B> a;", "? super B" , CodeFormatter.K_CLASS_BODY_DECLARATIONS); //$NON-NLS-1$ //$NON-NLS-2$
 
-	public final Prefix FIRST_ENUM_CONST= new FormattingPrefix("enum E { X;}", "{ X" , CodeFormatter.K_COMPILATION_UNIT); //$NON-NLS-1$ //$NON-NLS-2$
-	public final Prefix ANNOTATION_SEPARATION= new FormattingPrefix("@A @B class C {}", "A @" , CodeFormatter.K_COMPILATION_UNIT); //$NON-NLS-1$ //$NON-NLS-2$
+	public final Prefix FIRST_ENUM_CONST= new FormattingPrefix("enum E { X;}", "{ X" , CodeFormatter.K_JAVASCRIPT_UNIT); //$NON-NLS-1$ //$NON-NLS-2$
+	public final Prefix ANNOTATION_SEPARATION= new FormattingPrefix("@A @B class C {}", "A @" , CodeFormatter.K_JAVASCRIPT_UNIT); //$NON-NLS-1$ //$NON-NLS-2$
 
 	public final BlockContext IF_BLOCK_WITH_ELSE= new BlockFormattingPrefixSuffix("if (true)", "else{}", 8); //$NON-NLS-1$ //$NON-NLS-2$
 	public final BlockContext IF_BLOCK_NO_ELSE= new BlockFormattingPrefix("if (true)", 8); //$NON-NLS-1$

@@ -13,11 +13,11 @@ package org.eclipse.wst.jsdt.internal.core;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IInitializer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
@@ -38,7 +38,7 @@ public boolean equals(Object o) {
 	return super.equals(o);
 }
 /**
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public int getElementType() {
 	return INITIALIZER;
@@ -69,8 +69,8 @@ public String readableName() {
 /**
  * @see org.eclipse.wst.jsdt.core.ISourceManipulation
  */
-public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, this));
+public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
+	throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, this));
 }
 /**
  * @see org.eclipse.wst.jsdt.core.IMember
@@ -81,12 +81,12 @@ public ISourceRange getNameRange() {
 /*
  * @see JavaElement#getPrimaryElement(boolean)
  */
-public IJavaElement getPrimaryElement(boolean checkOwner) {
+public IJavaScriptElement getPrimaryElement(boolean checkOwner) {
 	if (checkOwner) {
-		CompilationUnit cu = (CompilationUnit)getAncestor(COMPILATION_UNIT);
+		CompilationUnit cu = (CompilationUnit)getAncestor(JAVASCRIPT_UNIT);
 		if (cu == null || cu.isPrimary()) return this;
 	}
-	IJavaElement primaryParent = this.parent.getPrimaryElement(false);
+	IJavaScriptElement primaryParent = this.parent.getPrimaryElement(false);
 	return ((IType)primaryParent).getInitializer(this.occurrenceCount);
 }
 /**
@@ -111,8 +111,8 @@ protected void toStringInfo(int tab, StringBuffer buffer, Object info, boolean s
 		buffer.append("initializer #"); //$NON-NLS-1$
 		buffer.append(this.occurrenceCount);
 		buffer.append(">"); //$NON-NLS-1$
-		} catch (JavaModelException e) {
-			buffer.append("<JavaModelException in toString of " + getElementName()); //$NON-NLS-1$
+		} catch (JavaScriptModelException e) {
+			buffer.append("<JavaScriptModelException in toString of " + getElementName()); //$NON-NLS-1$
 		}
 	}
 }

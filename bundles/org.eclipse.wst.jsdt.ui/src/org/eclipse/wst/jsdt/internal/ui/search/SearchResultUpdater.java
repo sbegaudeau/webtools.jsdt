@@ -22,28 +22,28 @@ import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 public class SearchResultUpdater implements IElementChangedListener, IQueryListener {
 
 	JavaSearchResult fResult;
-	private static final int REMOVED_FLAGS= IJavaElementDelta.F_MOVED_TO | 
-									IJavaElementDelta.F_REMOVED_FROM_CLASSPATH |
-									IJavaElementDelta.F_CLOSED |
-									IJavaElementDelta.F_CONTENT;
+	private static final int REMOVED_FLAGS= IJavaScriptElementDelta.F_MOVED_TO | 
+									IJavaScriptElementDelta.F_REMOVED_FROM_CLASSPATH |
+									IJavaScriptElementDelta.F_CLOSED |
+									IJavaScriptElementDelta.F_CONTENT;
 	
 	public SearchResultUpdater(JavaSearchResult result) {
 		fResult= result;
 		NewSearchUI.addQueryListener(this);
-		JavaCore.addElementChangedListener(this);
+		JavaScriptCore.addElementChangedListener(this);
 		// TODO make this work with resources
 	}
 
 	public void elementChanged(ElementChangedEvent event) {
 		//long t0= System.currentTimeMillis();
-		IJavaElementDelta delta= event.getDelta();
+		IJavaScriptElementDelta delta= event.getDelta();
 		Set removedElements= new HashSet();
 		Set potentiallyRemovedElements= new HashSet();
 		collectRemoved(potentiallyRemovedElements, removedElements, delta);
@@ -58,8 +58,8 @@ public class SearchResultUpdater implements IElementChangedListener, IQueryListe
 		Object[] elements= fResult.getElements();
 		for (int i= 0; i < elements.length; i++) {
 			if (isContainedInRemoved(removedElements, elements[i])) {
-				if (elements[i] instanceof IJavaElement) {
-					IJavaElement je= (IJavaElement)elements[i];
+				if (elements[i] instanceof IJavaScriptElement) {
+					IJavaScriptElement je= (IJavaScriptElement)elements[i];
 					if (!je.exists()) {
 						//System.out.println("removing: "+je+" in "+fResult.getUserData());
 						Match[] matches= fResult.getMatches(elements[i]);
@@ -97,22 +97,22 @@ public class SearchResultUpdater implements IElementChangedListener, IQueryListe
 	}
 
 	private Object getParent(Object object) {
-		if (object instanceof IJavaElement)
-			return ((IJavaElement)object).getParent();
+		if (object instanceof IJavaScriptElement)
+			return ((IJavaScriptElement)object).getParent();
 		else if (object instanceof IResource)
 			return ((IResource)object).getParent();
 		return null;
 	}
 
-	private void collectRemoved(Set potentiallyRemovedSet, Set removedElements, IJavaElementDelta delta) {
-		if (delta.getKind() == IJavaElementDelta.REMOVED) 
+	private void collectRemoved(Set potentiallyRemovedSet, Set removedElements, IJavaScriptElementDelta delta) {
+		if (delta.getKind() == IJavaScriptElementDelta.REMOVED) 
 			removedElements.add(delta.getElement());
-		else if (delta.getKind() == IJavaElementDelta.CHANGED) {
+		else if (delta.getKind() == IJavaScriptElementDelta.CHANGED) {
 			int flags= delta.getFlags();
 			if ((flags & REMOVED_FLAGS) != 0) {
 				potentiallyRemovedSet.add(delta.getElement());
 			} else {
-				IJavaElementDelta[] childDeltas= delta.getAffectedChildren();
+				IJavaScriptElementDelta[] childDeltas= delta.getAffectedChildren();
 				for (int i= 0; i < childDeltas.length; i++) {
 					collectRemoved(potentiallyRemovedSet, removedElements, childDeltas[i]);
 				}
@@ -132,7 +132,7 @@ public class SearchResultUpdater implements IElementChangedListener, IQueryListe
 
 	public void queryRemoved(ISearchQuery query) {
 		if (fResult.equals(query.getSearchResult())) {
-			JavaCore.removeElementChangedListener(this);
+			JavaScriptCore.removeElementChangedListener(this);
 			NewSearchUI.removeQueryListener(this);
 		}		
 	}

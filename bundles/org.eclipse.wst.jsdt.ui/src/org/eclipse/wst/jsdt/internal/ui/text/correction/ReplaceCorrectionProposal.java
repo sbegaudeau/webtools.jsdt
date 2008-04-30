@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
 public class ReplaceCorrectionProposal extends CUCorrectionProposal {
@@ -24,7 +24,7 @@ public class ReplaceCorrectionProposal extends CUCorrectionProposal {
 	private int fOffset;
 	private int fLength;
 
-	public ReplaceCorrectionProposal(String name, ICompilationUnit cu, int offset, int length, String replacementString, int relevance) {
+	public ReplaceCorrectionProposal(String name, IJavaScriptUnit cu, int offset, int length, String replacementString, int relevance) {
 		super(name, cu, relevance, JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE));
 		fReplacementString= replacementString;
 		fOffset= offset;

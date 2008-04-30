@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ICommentProvider;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IScriptableRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Partial implementation of a scriptable refactoring which provides a comment
@@ -43,7 +43,7 @@ public abstract class ScriptableRefactoring extends Refactoring implements IScri
 		Assert.isNotNull(name);
 		Assert.isNotNull(id);
 		if (element != null)
-			return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_input_not_exists, new String[] { JavaElementLabels.getTextLabel(element, JavaElementLabels.ALL_FULLY_QUALIFIED), name, id}));
+			return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_input_not_exists, new String[] { JavaScriptElementLabels.getTextLabel(element, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), name, id}));
 		else
 			return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_inputs_do_not_exist, new String[] { name, id}));
 	}
@@ -63,7 +63,7 @@ public abstract class ScriptableRefactoring extends Refactoring implements IScri
 		Assert.isNotNull(name);
 		Assert.isNotNull(id);
 		if (element != null)
-			return RefactoringStatus.createWarningStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_input_not_exists, new String[] { JavaElementLabels.getTextLabel(element, JavaElementLabels.ALL_FULLY_QUALIFIED), name, id}));
+			return RefactoringStatus.createWarningStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_input_not_exists, new String[] { JavaScriptElementLabels.getTextLabel(element, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), name, id}));
 		else
 			return RefactoringStatus.createWarningStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_inputs_do_not_exist, new String[] { name, id}));
 	}

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.wizards;
 
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 
 /**
  * Classpath container pages that implement <code>IJsGlobalScopeContainerPage</code> can 
@@ -33,6 +33,6 @@ public interface IJsGlobalScopeContainerPageExtension {
 	 * @param currentEntries The class path entries currently selected to be set as the projects classpath. This can also
 	 * include the entry to be edited.
 	 */
-	public void initialize(IJavaProject project, IClasspathEntry[] currentEntries);
+	public void initialize(IJavaScriptProject project, IIncludePathEntry[] currentEntries);
 
 }

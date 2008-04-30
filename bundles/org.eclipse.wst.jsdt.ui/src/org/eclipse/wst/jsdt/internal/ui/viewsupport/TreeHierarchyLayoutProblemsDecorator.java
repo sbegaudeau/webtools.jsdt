@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.viewsupport;
 
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.internal.ui.browsing.LogicalPackage;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
 import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
 
 /**
@@ -56,7 +56,7 @@ public class TreeHierarchyLayoutProblemsDecorator extends ProblemsLabelDecorator
 			int res= 0;
 			for (int i= 0; i < fragments.length; i++) {
 				int flags= computePackageAdornmentFlags(fragments[i]);
-				if (flags == JavaElementImageDescriptor.ERROR) {
+				if (flags == JavaScriptElementImageDescriptor.ERROR) {
 					return flags;
 				} else if (flags != 0) {
 					res= flags;

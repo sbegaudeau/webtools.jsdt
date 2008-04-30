@@ -15,24 +15,24 @@ import java.util.Collection;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
@@ -49,7 +49,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignaturePro
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.InsertDescription;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.RemoveDescription;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
@@ -65,9 +65,9 @@ public class TypeMismatchSubProcessor {
 			return;
 		}
 
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
-		CompilationUnit astRoot= context.getASTRoot();
+		JavaScriptUnit astRoot= context.getASTRoot();
 		AST ast= astRoot.getAST();
 		
 		ASTNode selectedNode= problem.getCoveredNode(astRoot);
@@ -126,8 +126,8 @@ public class TypeMismatchSubProcessor {
 		// change method return statement to actual type
 		if (!nullOrVoid && parentNodeType == ASTNode.RETURN_STATEMENT) {
 			BodyDeclaration decl= ASTResolving.findParentBodyDeclaration(selectedNode);
-			if (decl instanceof MethodDeclaration) {
-				MethodDeclaration methodDeclaration= (MethodDeclaration) decl;
+			if (decl instanceof FunctionDeclaration) {
+				FunctionDeclaration methodDeclaration= (FunctionDeclaration) decl;
 
 
 				currBinding= Bindings.normalizeTypeBinding(currBinding);
@@ -173,11 +173,11 @@ public class TypeMismatchSubProcessor {
 		addChangeSenderTypeProposals(context, nodeToCast, castTypeBinding, false, 5, proposals);
 	}
 
-	public static void addChangeSenderTypeProposals(IInvocationContext context, Expression nodeToCast, ITypeBinding castTypeBinding, boolean isAssignedNode, int relevance, Collection proposals) throws JavaModelException {
+	public static void addChangeSenderTypeProposals(IInvocationContext context, Expression nodeToCast, ITypeBinding castTypeBinding, boolean isAssignedNode, int relevance, Collection proposals) throws JavaScriptModelException {
 		IBinding callerBinding= null;
 		switch (nodeToCast.getNodeType()) {
-			case ASTNode.METHOD_INVOCATION:
-				callerBinding= ((MethodInvocation) nodeToCast).resolveMethodBinding();
+			case ASTNode.FUNCTION_INVOCATION:
+				callerBinding= ((FunctionInvocation) nodeToCast).resolveMethodBinding();
 				break;
 			case ASTNode.SUPER_METHOD_INVOCATION:
 				callerBinding= ((SuperMethodInvocation) nodeToCast).resolveMethodBinding();
@@ -194,10 +194,10 @@ public class TypeMismatchSubProcessor {
 				break;
 		}
 
-		ICompilationUnit cu= context.getCompilationUnit();
-		CompilationUnit astRoot= context.getASTRoot();
+		IJavaScriptUnit cu= context.getCompilationUnit();
+		JavaScriptUnit astRoot= context.getASTRoot();
 
-		ICompilationUnit targetCu= null;
+		IJavaScriptUnit targetCu= null;
 		ITypeBinding declaringType= null;
 		IBinding callerBindingDecl= callerBinding;
 		if (callerBinding instanceof IVariableBinding) {
@@ -216,8 +216,8 @@ public class TypeMismatchSubProcessor {
 				}
 				declaringType= declaringClass.getTypeDeclaration();
 			}
-		} else if (callerBinding instanceof IMethodBinding) {
-			IMethodBinding methodBinding= (IMethodBinding) callerBinding;
+		} else if (callerBinding instanceof IFunctionBinding) {
+			IFunctionBinding methodBinding= (IFunctionBinding) callerBinding;
 			if (!methodBinding.isConstructor()) {
 				declaringType= methodBinding.getDeclaringClass().getTypeDeclaration();
 				callerBindingDecl= methodBinding.getMethodDeclaration();
@@ -242,7 +242,7 @@ public class TypeMismatchSubProcessor {
 			ITypeBinding nodeType= nodeToCast.resolveTypeBinding();
 			if (castTypeBinding.isInterface() && nodeType != null && nodeType.isClass() && !nodeType.isAnonymous() && nodeType.isFromSource()) {
 				ITypeBinding typeDecl= nodeType.getTypeDeclaration();
-				ICompilationUnit nodeCu= ASTResolving.findCompilationUnitForBinding(cu, astRoot, typeDecl);
+				IJavaScriptUnit nodeCu= ASTResolving.findCompilationUnitForBinding(cu, astRoot, typeDecl);
 				if (nodeCu != null && ASTResolving.isUseableTypeInContext(castTypeBinding, typeDecl, true)) {
 					proposals.add(new ImplementInterfaceProposal(nodeCu, typeDecl, astRoot, castTypeBinding, relevance - 1));
 				}
@@ -251,10 +251,10 @@ public class TypeMismatchSubProcessor {
 	}
 
 	public static ASTRewriteCorrectionProposal createCastProposal(IInvocationContext context, ITypeBinding castTypeBinding, Expression nodeToCast, int relevance) {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
 		String label;
-		String castType= BindingLabelProvider.getBindingLabel(castTypeBinding, JavaElementLabels.ALL_DEFAULT);
+		String castType= BindingLabelProvider.getBindingLabel(castTypeBinding, JavaScriptElementLabels.ALL_DEFAULT);
 		if (nodeToCast.getNodeType() == ASTNode.CAST_EXPRESSION) {
 			label= Messages.format(CorrectionMessages.TypeMismatchSubProcessor_changecast_description, castType);
 		} else {
@@ -263,34 +263,34 @@ public class TypeMismatchSubProcessor {
 		return new CastCompletionProposal(label, cu, nodeToCast, castTypeBinding, relevance);
 	}
 
-	public static void addIncompatibleReturnTypeProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws JavaModelException {
-		CompilationUnit astRoot= context.getASTRoot();
+	public static void addIncompatibleReturnTypeProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws JavaScriptModelException {
+		JavaScriptUnit astRoot= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveringNode(astRoot);
 		if (selectedNode == null) {
 			return;
 		}
-		MethodDeclaration decl= ASTResolving.findParentMethodDeclaration(selectedNode);
+		FunctionDeclaration decl= ASTResolving.findParentMethodDeclaration(selectedNode);
 		if (decl == null) {
 			return;
 		}
-		IMethodBinding methodDeclBinding= decl.resolveBinding();
+		IFunctionBinding methodDeclBinding= decl.resolveBinding();
 		if (methodDeclBinding == null) {
 			return;
 		}
 
-		IMethodBinding overridden= Bindings.findOverriddenMethod(methodDeclBinding, false);
+		IFunctionBinding overridden= Bindings.findOverriddenMethod(methodDeclBinding, false);
 		if (overridden == null || overridden.getReturnType() == methodDeclBinding.getReturnType()) {
 			return;
 		}
 
 
-		ICompilationUnit cu= context.getCompilationUnit();
-		IMethodBinding methodDecl= methodDeclBinding.getMethodDeclaration();
+		IJavaScriptUnit cu= context.getCompilationUnit();
+		IFunctionBinding methodDecl= methodDeclBinding.getMethodDeclaration();
 		proposals.add(new TypeChangeCompletionProposal(cu, methodDecl, astRoot, overridden.getReturnType(), false, 8));
 
-		ICompilationUnit targetCu= cu;
+		IJavaScriptUnit targetCu= cu;
 
-		IMethodBinding overriddenDecl= overridden.getMethodDeclaration();
+		IFunctionBinding overriddenDecl= overridden.getMethodDeclaration();
 		ITypeBinding overridenDeclType= overriddenDecl.getDeclaringClass();
 
 		ITypeBinding returnType= methodDeclBinding.getReturnType();
@@ -308,24 +308,24 @@ public class TypeMismatchSubProcessor {
 		}
 	}
 
-	public static void addIncompatibleThrowsProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws JavaModelException {
-		CompilationUnit astRoot= context.getASTRoot();
+	public static void addIncompatibleThrowsProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws JavaScriptModelException {
+		JavaScriptUnit astRoot= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveringNode(astRoot);
-		if (!(selectedNode instanceof MethodDeclaration)) {
+		if (!(selectedNode instanceof FunctionDeclaration)) {
 			return;
 		}
-		MethodDeclaration decl= (MethodDeclaration) selectedNode;
-		IMethodBinding methodDeclBinding= decl.resolveBinding();
+		FunctionDeclaration decl= (FunctionDeclaration) selectedNode;
+		IFunctionBinding methodDeclBinding= decl.resolveBinding();
 		if (methodDeclBinding == null) {
 			return;
 		}
 
-		IMethodBinding overridden= Bindings.findOverriddenMethod(methodDeclBinding, false);
+		IFunctionBinding overridden= Bindings.findOverriddenMethod(methodDeclBinding, false);
 		if (overridden == null) {
 			return;
 		}
 
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
 		ITypeBinding[] methodExceptions= methodDeclBinding.getExceptionTypes();
 		ITypeBinding[] definedExceptions= overridden.getExceptionTypes();
@@ -346,7 +346,7 @@ public class TypeMismatchSubProcessor {
 		}
 
 		ITypeBinding declaringType= overridden.getDeclaringClass();	
-		ICompilationUnit targetCu= cu;
+		IJavaScriptUnit targetCu= cu;
 		if (declaringType.isFromSource()) {
 			targetCu= ASTResolving.findCompilationUnitForBinding(cu, astRoot, declaringType);
 		}
@@ -356,7 +356,7 @@ public class TypeMismatchSubProcessor {
 			for (int i= 0; i < undeclaredExceptions.size(); i++) {
 				changes[i + definedExceptions.length]= new InsertDescription((ITypeBinding) undeclaredExceptions.get(i), ""); //$NON-NLS-1$
 			}
-			IMethodBinding overriddenDecl= overridden.getMethodDeclaration();
+			IFunctionBinding overriddenDecl= overridden.getMethodDeclaration();
 			String[] args= {  declaringType.getName(), overridden.getName() };
 			String label= Messages.format(CorrectionMessages.TypeMismatchSubProcessor_addexceptions_description, args);
 			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_ADD);

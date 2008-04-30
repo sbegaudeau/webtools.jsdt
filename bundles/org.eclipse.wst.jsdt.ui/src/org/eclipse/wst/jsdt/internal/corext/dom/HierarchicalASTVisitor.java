@@ -148,10 +148,10 @@ public void endVisit(BodyDeclaration node) {
 		endVisit((BodyDeclaration) node);
 	}
 	
-	public boolean visit(MethodDeclaration node) {
+	public boolean visit(FunctionDeclaration node) {
 		return visit((BodyDeclaration) node);
 	}
-	public void endVisit(MethodDeclaration node) {
+	public void endVisit(FunctionDeclaration node) {
 		endVisit((BodyDeclaration) node);
 	}
 	
@@ -179,10 +179,10 @@ public void endVisit(Comment node) {
 		endVisit((Comment) node);
 	}
 	
-	public boolean visit(Javadoc node) {
+	public boolean visit(JSdoc node) {
 		return visit((Comment) node);
 	}
-	public void endVisit(Javadoc node) {
+	public void endVisit(JSdoc node) {
 		endVisit((Comment) node);
 	}
 	
@@ -198,10 +198,10 @@ public void endVisit(Comment node) {
 	}
 //---- End Comment Hierarchy -----------------------------
 
-public boolean visit(CompilationUnit node) {
+public boolean visit(JavaScriptUnit node) {
 	return visit((ASTNode) node);
 }
-public void endVisit(CompilationUnit node) {
+public void endVisit(JavaScriptUnit node) {
 	endVisit((ASTNode) node);
 }
 
@@ -361,10 +361,10 @@ public void endVisit(Expression node) {
 	public void endVisit(ListExpression node) {
 		endVisit((Expression) node);
 	}
-		public boolean visit(MethodInvocation node) {
+		public boolean visit(FunctionInvocation node) {
 		return visit((Expression) node);
 	}
-	public void endVisit(MethodInvocation node) {
+	public void endVisit(FunctionInvocation node) {
 		endVisit((Expression) node);
 	}
 
@@ -498,17 +498,17 @@ public void endVisit(MemberValuePair node) {
 	endVisit((ASTNode) node);
 }
 
-public boolean visit(MethodRef node) {
+public boolean visit(FunctionRef node) {
 	return visit((ASTNode) node);
 }
-public void endVisit(MethodRef node) {
+public void endVisit(FunctionRef node) {
 	endVisit((ASTNode) node);
 }
 
-public boolean visit(MethodRefParameter node) {
+public boolean visit(FunctionRefParameter node) {
 	return visit((ASTNode) node);
 }
-public void endVisit(MethodRefParameter node) {
+public void endVisit(FunctionRefParameter node) {
 	endVisit((ASTNode) node);
 }
 

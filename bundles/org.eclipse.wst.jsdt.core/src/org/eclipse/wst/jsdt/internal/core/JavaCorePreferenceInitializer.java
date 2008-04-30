@@ -18,13 +18,13 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 
 /**
- * JavaCore eclipse preferences initializer.
- * Initially done in JavaCore.initializeDefaultPreferences which was deprecated
+ * JavaScriptCore eclipse preferences initializer.
+ * Initially done in JavaScriptCore.initializeDefaultPreferences which was deprecated
  * with new eclipse preferences mechanism.
  */
 public class JavaCorePreferenceInitializer extends AbstractPreferenceInitializer {
@@ -41,31 +41,31 @@ public class JavaCorePreferenceInitializer extends AbstractPreferenceInitializer
 		Map defaultOptionsMap = new CompilerOptions().getMap(); // compiler defaults
 
 		// Override some compiler defaults
-		defaultOptionsMap.put(JavaCore.COMPILER_LOCAL_VARIABLE_ATTR, JavaCore.GENERATE);
-		defaultOptionsMap.put(JavaCore.COMPILER_CODEGEN_UNUSED_LOCAL, JavaCore.PRESERVE);
-		defaultOptionsMap.put(JavaCore.COMPILER_TASK_TAGS, JavaCore.DEFAULT_TASK_TAGS);
-		defaultOptionsMap.put(JavaCore.COMPILER_TASK_PRIORITIES, JavaCore.DEFAULT_TASK_PRIORITIES);
-		defaultOptionsMap.put(JavaCore.COMPILER_TASK_CASE_SENSITIVE, JavaCore.ENABLED);
-		defaultOptionsMap.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
-		defaultOptionsMap.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
+		defaultOptionsMap.put(JavaScriptCore.COMPILER_LOCAL_VARIABLE_ATTR, JavaScriptCore.GENERATE);
+		defaultOptionsMap.put(JavaScriptCore.COMPILER_CODEGEN_UNUSED_LOCAL, JavaScriptCore.PRESERVE);
+		defaultOptionsMap.put(JavaScriptCore.COMPILER_TASK_TAGS, JavaScriptCore.DEFAULT_TASK_TAGS);
+		defaultOptionsMap.put(JavaScriptCore.COMPILER_TASK_PRIORITIES, JavaScriptCore.DEFAULT_TASK_PRIORITIES);
+		defaultOptionsMap.put(JavaScriptCore.COMPILER_TASK_CASE_SENSITIVE, JavaScriptCore.ENABLED);
+		defaultOptionsMap.put(JavaScriptCore.COMPILER_DOC_COMMENT_SUPPORT, JavaScriptCore.ENABLED);
+		defaultOptionsMap.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
 
 		// Builder settings
-		defaultOptionsMap.put(JavaCore.CORE_JAVA_BUILD_RESOURCE_COPY_FILTER, ""); //$NON-NLS-1$
-		defaultOptionsMap.put(JavaCore.CORE_JAVA_BUILD_INVALID_CLASSPATH, JavaCore.ABORT);
-		defaultOptionsMap.put(JavaCore.CORE_JAVA_BUILD_DUPLICATE_RESOURCE, JavaCore.WARNING);
-		defaultOptionsMap.put(JavaCore.CORE_JAVA_BUILD_CLEAN_OUTPUT_FOLDER, JavaCore.CLEAN);
-		defaultOptionsMap.put(JavaCore.CORE_JAVA_BUILD_RECREATE_MODIFIED_CLASS_FILES_IN_OUTPUT_FOLDER, JavaCore.IGNORE);
+		defaultOptionsMap.put(JavaScriptCore.CORE_JAVA_BUILD_RESOURCE_COPY_FILTER, ""); //$NON-NLS-1$
+		defaultOptionsMap.put(JavaScriptCore.CORE_JAVA_BUILD_INVALID_CLASSPATH, JavaScriptCore.ABORT);
+		defaultOptionsMap.put(JavaScriptCore.CORE_JAVA_BUILD_DUPLICATE_RESOURCE, JavaScriptCore.WARNING);
+		defaultOptionsMap.put(JavaScriptCore.CORE_JAVA_BUILD_CLEAN_OUTPUT_FOLDER, JavaScriptCore.CLEAN);
+		defaultOptionsMap.put(JavaScriptCore.CORE_JAVA_BUILD_RECREATE_MODIFIED_CLASS_FILES_IN_OUTPUT_FOLDER, JavaScriptCore.IGNORE);
 
-		// JavaCore settings
-		defaultOptionsMap.put(JavaCore.CORE_JAVA_BUILD_ORDER, JavaCore.IGNORE);
-		defaultOptionsMap.put(JavaCore.CORE_INCOMPLETE_CLASSPATH, JavaCore.ERROR);
-		defaultOptionsMap.put(JavaCore.CORE_CIRCULAR_CLASSPATH, JavaCore.ERROR);
-		defaultOptionsMap.put(JavaCore.CORE_INCOMPATIBLE_JDK_LEVEL, JavaCore.IGNORE);
-		defaultOptionsMap.put(JavaCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS, JavaCore.ENABLED);
-		defaultOptionsMap.put(JavaCore.CORE_ENABLE_CLASSPATH_MULTIPLE_OUTPUT_LOCATIONS, JavaCore.ENABLED);
+		// JavaScriptCore settings
+		defaultOptionsMap.put(JavaScriptCore.CORE_JAVA_BUILD_ORDER, JavaScriptCore.IGNORE);
+		defaultOptionsMap.put(JavaScriptCore.CORE_INCOMPLETE_CLASSPATH, JavaScriptCore.ERROR);
+		defaultOptionsMap.put(JavaScriptCore.CORE_CIRCULAR_CLASSPATH, JavaScriptCore.ERROR);
+		defaultOptionsMap.put(JavaScriptCore.CORE_INCOMPATIBLE_JDK_LEVEL, JavaScriptCore.IGNORE);
+		defaultOptionsMap.put(JavaScriptCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS, JavaScriptCore.ENABLED);
+		defaultOptionsMap.put(JavaScriptCore.CORE_ENABLE_CLASSPATH_MULTIPLE_OUTPUT_LOCATIONS, JavaScriptCore.ENABLED);
 
 		// encoding setting comes from resource plug-in
-		optionNames.add(JavaCore.CORE_ENCODING);
+		optionNames.add(JavaScriptCore.CORE_ENCODING);
 
 		// Formatter settings
 		Map codeFormatterOptionsMap = DefaultCodeFormatterConstants.getEclipseDefaultSettings(); // code formatter defaults
@@ -77,41 +77,41 @@ public class JavaCorePreferenceInitializer extends AbstractPreferenceInitializer
 		}
 
 		// CodeAssist settings
-		defaultOptionsMap.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.DISABLED);
-		defaultOptionsMap.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.DISABLED);
-		defaultOptionsMap.put(JavaCore.CODEASSIST_IMPLICIT_QUALIFICATION, JavaCore.DISABLED);
-		defaultOptionsMap.put(JavaCore.CODEASSIST_FIELD_PREFIXES, ""); //$NON-NLS-1$
-		defaultOptionsMap.put(JavaCore.CODEASSIST_STATIC_FIELD_PREFIXES, ""); //$NON-NLS-1$
-		defaultOptionsMap.put(JavaCore.CODEASSIST_LOCAL_PREFIXES, ""); //$NON-NLS-1$
-		defaultOptionsMap.put(JavaCore.CODEASSIST_ARGUMENT_PREFIXES, ""); //$NON-NLS-1$
-		defaultOptionsMap.put(JavaCore.CODEASSIST_FIELD_SUFFIXES, ""); //$NON-NLS-1$
-		defaultOptionsMap.put(JavaCore.CODEASSIST_STATIC_FIELD_SUFFIXES, ""); //$NON-NLS-1$
-		defaultOptionsMap.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES, ""); //$NON-NLS-1$
-		defaultOptionsMap.put(JavaCore.CODEASSIST_ARGUMENT_SUFFIXES, ""); //$NON-NLS-1$
-		defaultOptionsMap.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.ENABLED);
-		defaultOptionsMap.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-		defaultOptionsMap.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		defaultOptionsMap.put(JavaCore.CODEASSIST_SUGGEST_STATIC_IMPORTS, JavaCore.ENABLED);
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.DISABLED);
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.DISABLED);
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_IMPLICIT_QUALIFICATION, JavaScriptCore.DISABLED);
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES, ""); //$NON-NLS-1$
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_STATIC_FIELD_PREFIXES, ""); //$NON-NLS-1$
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES, ""); //$NON-NLS-1$
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_ARGUMENT_PREFIXES, ""); //$NON-NLS-1$
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES, ""); //$NON-NLS-1$
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_STATIC_FIELD_SUFFIXES, ""); //$NON-NLS-1$
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES, ""); //$NON-NLS-1$
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_ARGUMENT_SUFFIXES, ""); //$NON-NLS-1$
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.ENABLED);
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		defaultOptionsMap.put(JavaScriptCore.CODEASSIST_SUGGEST_STATIC_IMPORTS, JavaScriptCore.ENABLED);
 
 		/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
 		/*
 		 * Default ERROR for unresolved types/fields/methods
 		 */
-		defaultOptionsMap.put(JavaCore.UNRESOLVED_TYPE_REFERENCE, JavaCore.ERROR);
-		defaultOptionsMap.put(JavaCore.UNRESOLVED_FIELD_REFERENCE, JavaCore.ERROR);
-		defaultOptionsMap.put(JavaCore.UNRESOLVED_METHOD_REFERENCE, JavaCore.ERROR);
+		defaultOptionsMap.put(JavaScriptCore.UNRESOLVED_TYPE_REFERENCE, JavaScriptCore.ERROR);
+		defaultOptionsMap.put(JavaScriptCore.UNRESOLVED_FIELD_REFERENCE, JavaScriptCore.ERROR);
+		defaultOptionsMap.put(JavaScriptCore.UNRESOLVED_METHOD_REFERENCE, JavaScriptCore.ERROR);
 		/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
 		/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
-		defaultOptionsMap.put(JavaCore.LOOSE_VAR_DECL, JavaCore.WARNING);
-		defaultOptionsMap.put(JavaCore.OPTIONAL_SEMICOLON, JavaCore.WARNING);
+		defaultOptionsMap.put(JavaScriptCore.LOOSE_VAR_DECL, JavaScriptCore.WARNING);
+		defaultOptionsMap.put(JavaScriptCore.OPTIONAL_SEMICOLON, JavaScriptCore.WARNING);
 
 		/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 
 		// Time out for parameter names
-		defaultOptionsMap.put(JavaCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC, "50"); //$NON-NLS-1$
+		defaultOptionsMap.put(JavaScriptCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC, "50"); //$NON-NLS-1$
 
 		// Store default values to default preferences
-	 	IEclipsePreferences defaultPreferences = ((IScopeContext) new DefaultScope()).getNode(JavaCore.PLUGIN_ID);
+	 	IEclipsePreferences defaultPreferences = ((IScopeContext) new DefaultScope()).getNode(JavaScriptCore.PLUGIN_ID);
 		for (Iterator iter = defaultOptionsMap.entrySet().iterator(); iter.hasNext();) {
 			Map.Entry entry = (Map.Entry) iter.next();
 			String optionName = (String) entry.getKey();

@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
@@ -221,30 +221,30 @@ private void buildMethods() {
 //
 //		ReferenceBinding[] itsInterfaces = superInterfaces();
 //		if (itsInterfaces != Binding.NO_SUPERINTERFACES) {
-//			MethodBinding[] defaultAbstracts = null;
+//			FunctionBinding[] defaultAbstracts = null;
 //			int defaultAbstractsCount = 0;
 //			ReferenceBinding[] interfacesToVisit = itsInterfaces;
 //			int nextPosition = interfacesToVisit.length;
 //			for (int i = 0; i < nextPosition; i++) {
 //				ReferenceBinding superType = interfacesToVisit[i];
 //				if (superType.isValidBinding()) {
-//					MethodBinding[] superMethods = superType.methods();
+//					FunctionBinding[] superMethods = superType.methods();
 //					nextAbstractMethod: for (int m = superMethods.length; --m >= 0;) {
-//						MethodBinding method = superMethods[m];
+//						FunctionBinding method = superMethods[m];
 //						// explicitly implemented ?
 //						if (implementsMethod(method))
 //							continue nextAbstractMethod;
 //						if (defaultAbstractsCount == 0) {
-//							defaultAbstracts = new MethodBinding[5];
+//							defaultAbstracts = new FunctionBinding[5];
 //						} else {
 //							// already added as default abstract ?
 //							for (int k = 0; k < defaultAbstractsCount; k++) {
-//								MethodBinding alreadyAdded = defaultAbstracts[k];
+//								FunctionBinding alreadyAdded = defaultAbstracts[k];
 //								if (CharOperation.equals(alreadyAdded.selector, method.selector) && alreadyAdded.areParametersEqual(method))
 //									continue nextAbstractMethod;
 //							}
 //						}
-//						MethodBinding defaultAbstract = new MethodBinding(
+//						FunctionBinding defaultAbstract = new FunctionBinding(
 //								method.modifiers | ExtraCompilerModifiers.AccDefaultAbstract,
 //								method.selector,
 //								method.returnType,
@@ -252,7 +252,7 @@ private void buildMethods() {
 //								method.thrownExceptions,
 //								this);
 //						if (defaultAbstractsCount == defaultAbstracts.length)
-//							System.arraycopy(defaultAbstracts, 0, defaultAbstracts = new MethodBinding[2 * defaultAbstractsCount], 0, defaultAbstractsCount);
+//							System.arraycopy(defaultAbstracts, 0, defaultAbstracts = new FunctionBinding[2 * defaultAbstractsCount], 0, defaultAbstractsCount);
 //						defaultAbstracts[defaultAbstractsCount++] = defaultAbstract;
 //					}
 //
@@ -271,7 +271,7 @@ private void buildMethods() {
 //			}
 //			if (defaultAbstractsCount > 0) {
 //				int length = this.methods.length;
-//				System.arraycopy(this.methods, 0, this.methods = new MethodBinding[length + defaultAbstractsCount], 0, length);
+//				System.arraycopy(this.methods, 0, this.methods = new FunctionBinding[length + defaultAbstractsCount], 0, length);
 //				System.arraycopy(defaultAbstracts, 0, this.methods, length, defaultAbstractsCount);
 //				// re-sort methods
 //				length = length + defaultAbstractsCount;
@@ -988,7 +988,7 @@ private MethodBinding getExactMethod0(char[] selector, TypeBinding[] argumentTyp
 			}
 			return this.methods[start];
 //			nextMethod: for (int imethod = start; imethod <= end; imethod++) {
-//				MethodBinding method = this.methods[imethod];
+//				FunctionBinding method = this.methods[imethod];
 //				TypeBinding[] toMatch = method.parameters;
 //				if (toMatch.length == argCount) {
 //					for (int iarg = 0; iarg < argCount; iarg++)
@@ -1001,7 +1001,7 @@ private MethodBinding getExactMethod0(char[] selector, TypeBinding[] argumentTyp
 	}
 
 	if (foundNothing) {
-		if (JavaCore.IS_ECMASCRIPT4 && isInterface()) {
+		if (JavaScriptCore.IS_ECMASCRIPT4 && isInterface()) {
 			 if (this.superInterfaces.length == 1) {
 				if (refScope != null)
 					refScope.recordTypeReference(this.superInterfaces[0]);
@@ -1581,7 +1581,7 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 	if (methodDecl == null) return null; // method could not be resolved in previous iteration
 
 	TypeParameter[] typeParameters = methodDecl.typeParameters();
-	if (JavaCore.IS_ECMASCRIPT4)
+	if (JavaScriptCore.IS_ECMASCRIPT4)
 	{
 		if (typeParameters != null) {
 			methodDecl.scope.connectTypeVariables(typeParameters, true);
@@ -1681,7 +1681,7 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 		method.parameters = Binding.NO_PARAMETERS; // see 107004
 		// nullify type parameter bindings as well as they have a backpointer to the method binding
 		// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=81134)
-		if (JavaCore.IS_ECMASCRIPT4)
+		if (JavaScriptCore.IS_ECMASCRIPT4)
 		{
 			if (typeParameters != null)
 				for (int i = 0, length = typeParameters.length; i < length; i++)

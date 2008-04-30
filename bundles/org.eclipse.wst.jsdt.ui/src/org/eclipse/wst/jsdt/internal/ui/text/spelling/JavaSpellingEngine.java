@@ -18,11 +18,11 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.texteditor.spelling.ISpellingProblemCollector;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellChecker;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellEventListener;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 /**
  * Java spelling engine
@@ -48,7 +48,7 @@ public class JavaSpellingEngine extends SpellingEngine {
 			try {
 				for (int i= 0; i < regions.length; i++) {
 					IRegion region= regions[i];
-					ITypedRegion[] partitions= TextUtilities.computePartitioning(document, IJavaPartitions.JAVA_PARTITIONING, region.getOffset(), region.getLength(), false);
+					ITypedRegion[] partitions= TextUtilities.computePartitioning(document, IJavaScriptPartitions.JAVA_PARTITIONING, region.getOffset(), region.getLength(), false);
 					for (int index= 0; index < partitions.length; index++) {
 						if (monitor != null && monitor.isCanceled())
 							return;
@@ -56,15 +56,15 @@ public class JavaSpellingEngine extends SpellingEngine {
 						ITypedRegion partition= partitions[index];
 						final String type= partition.getType();
 						
-						if (isIgnoringJavaStrings && type.equals(IJavaPartitions.JAVA_STRING))
+						if (isIgnoringJavaStrings && type.equals(IJavaScriptPartitions.JAVA_STRING))
 							continue;
 						
-						if (!type.equals(IDocument.DEFAULT_CONTENT_TYPE) && !type.equals(IJavaPartitions.JAVA_CHARACTER))
+						if (!type.equals(IDocument.DEFAULT_CONTENT_TYPE) && !type.equals(IJavaScriptPartitions.JAVA_CHARACTER))
 							checker.execute(new SpellCheckIterator(document, partition, checker.getLocale()));
 					}
 				}
 			} catch (BadLocationException x) {
-				JavaPlugin.log(x);
+				JavaScriptPlugin.log(x);
 			}
 		} finally {
 			checker.removeListener(listener);

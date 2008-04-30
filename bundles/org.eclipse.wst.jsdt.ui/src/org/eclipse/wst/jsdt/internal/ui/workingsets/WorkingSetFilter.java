@@ -15,11 +15,11 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.IWorkingSet;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer;
 import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer.RequiredProjectWrapper;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaViewerFilter;
@@ -31,22 +31,22 @@ public class WorkingSetFilter extends JavaViewerFilter {
 	
 	private static class WorkingSetCompareEntry {
 		private IPath fResourcePath;
-		private IJavaElement fJavaElement;
+		private IJavaScriptElement fJavaElement;
 		
 		public WorkingSetCompareEntry(IAdaptable a) {
-			if (a instanceof IJavaElement) {
-				init((IJavaElement) a);
+			if (a instanceof IJavaScriptElement) {
+				init((IJavaScriptElement) a);
 			} else if (a instanceof IResource) {
 				init((IResource) a);
 			} else if (a instanceof RequiredProjectWrapper) {
 				RequiredProjectWrapper wrapper= (RequiredProjectWrapper) a;
-				IJavaProject proj= wrapper.getParentJsGlobalScopeContainer().getJavaProject();
+				IJavaScriptProject proj= wrapper.getParentJsGlobalScopeContainer().getJavaProject();
 				// the project reference is treated like an internal JAR.
 				// that means it will only appear if the parent container project is in the working set
 				IResource fakeInternal= proj.getProject().getFile(wrapper.getProject().getElementName() + "-fake-jar.jar"); //$NON-NLS-1$
 				init(proj.getPackageFragmentRoot(fakeInternal));
 			} else {
-				IJavaElement je= (IJavaElement) a.getAdapter(IJavaElement.class);
+				IJavaScriptElement je= (IJavaScriptElement) a.getAdapter(IJavaScriptElement.class);
 				if (je != null) {
 					init(je);
 				} else {
@@ -62,22 +62,22 @@ public class WorkingSetFilter extends JavaViewerFilter {
 		}
 		
 		private void init(IResource resource) {
-			fJavaElement= JavaCore.create(resource);
+			fJavaElement= JavaScriptCore.create(resource);
 			fResourcePath= resource.getFullPath();
 		}
 
-		private void init(IJavaElement curr) {
+		private void init(IJavaScriptElement curr) {
 			fJavaElement= curr;
 			fResourcePath= curr.getPath();
 		}
 		
 		public boolean contains(WorkingSetCompareEntry element) {
 			if (fJavaElement != null && element.fJavaElement != null) {
-				IJavaElement other= element.fJavaElement;
-				if (fJavaElement.getElementType() == IJavaElement.JAVA_PROJECT) {
-					IPackageFragmentRoot pkgRoot= (IPackageFragmentRoot) other.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+				IJavaScriptElement other= element.fJavaElement;
+				if (fJavaElement.getElementType() == IJavaScriptElement.JAVASCRIPT_PROJECT) {
+					IPackageFragmentRoot pkgRoot= (IPackageFragmentRoot) other.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 					if (pkgRoot != null && pkgRoot.isExternal() && pkgRoot.isArchive()) {
-						if (((IJavaProject) fJavaElement).isOnClasspath(other)) {
+						if (((IJavaScriptProject) fJavaElement).isOnIncludepath(other)) {
 							return true;
 						}
 					}
@@ -96,8 +96,8 @@ public class WorkingSetFilter extends JavaViewerFilter {
 			return false;
 		}
 		
-		private boolean isAncestor(IJavaElement elem, IJavaElement parent) {
-			IJavaElement anc= elem.getAncestor(parent.getElementType());
+		private boolean isAncestor(IJavaScriptElement elem, IJavaScriptElement parent) {
+			IJavaScriptElement anc= elem.getAncestor(parent.getElementType());
 			if (parent.equals(anc)) {
 				return true;
 			}

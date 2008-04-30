@@ -28,14 +28,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.IBuildpathModifierListener;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.ScrolledPageContent;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.util.ViewerPane;
@@ -58,7 +58,7 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
 	//private final StringDialogField fOutputLocationField;
 	private DialogPackageExplorerActionGroup fActionGroup;
 	
-	private IJavaProject fJavaProject;
+	private IJavaScriptProject fJavaProject;
 
 	private final IRunnableContext fContext;
 
@@ -100,7 +100,7 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
      * 
      * @param javaProject the current java project
      */
-    public void init(IJavaProject javaProject) {
+    public void init(IJavaScriptProject javaProject) {
 		fJavaProject= javaProject;
 		fPackageExplorer.addPostSelectionChangedListener(fHintTextGroup);
 	    fActionGroup.getResetAllAction().setBreakPoint(javaProject);
@@ -123,7 +123,7 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
 		List cpelements= fClassPathList.getElements();
 		for (int i= 0; i < cpelements.size() && !useFolderOutputs; i++) {
 			CPListElement cpe= (CPListElement) cpelements.get(i);
-			if (cpe.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+			if (cpe.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 				if (cpe.getAttribute(CPListElement.OUTPUT) != null) {
 					useFolderOutputs= true;
 				}
@@ -147,16 +147,16 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
      * 
      * Before calling this method, make sure to have 
      * initialized this instance with a java project 
-     * using <code>init(IJavaProject)</code>.
+     * using <code>init(IJavaScriptProject)</code>.
      * 
      * @param parent the parent composite
      * @return composite containing controls
      * 
-     * @see #init(IJavaProject)
+     * @see #init(IJavaScriptProject)
      */
     public Control getControl(Composite parent) {
         final int[] sashWeight= {60};
-        final IPreferenceStore preferenceStore= JavaPlugin.getDefault().getPreferenceStore();
+        final IPreferenceStore preferenceStore= JavaScriptPlugin.getDefault().getPreferenceStore();
         preferenceStore.setDefault(OPEN_SETTING, true);
         
         // ScrolledPageContent is needed for resizing on expand the expandable composite
@@ -290,7 +290,7 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
     public List getSelection() {
         List selectedList= new ArrayList();
         
-        IJavaProject project= fJavaProject;
+        IJavaScriptProject project= fJavaProject;
         try {
             List list= ((StructuredSelection)fPackageExplorer.getSelection()).toList();
             List existingEntries= ClasspathModifier.getExistingEntries(project);
@@ -302,15 +302,15 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
                     CPListElement cpElement= ClasspathModifier.getClasspathEntry(existingEntries, element); 
                     selectedList.add(cpElement);
                 }
-                else if (obj instanceof IJavaProject) {
-                    IClasspathEntry entry= ClasspathModifier.getClasspathEntryFor(project.getPath(), project, IClasspathEntry.CPE_SOURCE);
+                else if (obj instanceof IJavaScriptProject) {
+                    IIncludePathEntry entry= ClasspathModifier.getClasspathEntryFor(project.getPath(), project, IIncludePathEntry.CPE_SOURCE);
                     if (entry == null)
                         continue;
                     CPListElement cpElement= CPListElement.createFromExisting(entry, project);
                     selectedList.add(cpElement);
                 }
             }
-        } catch (JavaModelException e) {
+        } catch (JavaScriptModelException e) {
             return new ArrayList();
         }
         return selectedList;
@@ -331,13 +331,13 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
 			Object obj= selection.get(i);
 			if (obj instanceof CPListElement) {
 				CPListElement element= (CPListElement) obj;
-				if (element.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+				if (element.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 					cpEntries.add(element);
 				}
 			} else if (obj instanceof CPListElementAttribute) {
 				CPListElementAttribute attribute= (CPListElementAttribute)obj;
 				CPListElement element= attribute.getParent();
-				if (element.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+				if (element.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 					cpEntries.add(element);
 				}
 			}
@@ -345,15 +345,15 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
 		
         // refresh classpath
         List list= fClassPathList.getElements();
-        IClasspathEntry[] entries= new IClasspathEntry[list.size()];
+        IIncludePathEntry[] entries= new IIncludePathEntry[list.size()];
         for(int i= 0; i < list.size(); i++) {
             CPListElement entry= (CPListElement) list.get(i);
             entries[i]= entry.getClasspathEntry(); 
         }
         try {
-			fJavaProject.setRawClasspath(entries, null);
-        } catch (JavaModelException e) {
-            JavaPlugin.log(e);
+			fJavaProject.setRawIncludepath(entries, null);
+        } catch (JavaScriptModelException e) {
+            JavaScriptPlugin.log(e);
         }
         
         fPackageExplorer.setSelection(cpEntries);
@@ -363,7 +363,7 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
      * @see org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathBasePage#isEntryKind(int)
      */
     public boolean isEntryKind(int kind) {
-        return kind == IClasspathEntry.CPE_SOURCE;
+        return kind == IIncludePathEntry.CPE_SOURCE;
     }
     
     /**
@@ -374,8 +374,8 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
 //        
 //        try {
 //	        fOutputLocationField.setText(fJavaProject.getOutputLocation().makeRelative().toString());
-//        } catch (JavaModelException e) {
-//	        JavaPlugin.log(e);
+//        } catch (JavaScriptModelException e) {
+//	        JavaScriptPlugin.log(e);
 //        }
     }
 
@@ -390,15 +390,15 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
 //			
 //			if (!outputLocation.equals(fJavaProject.getPath())) {
 //				IFolder folder= fJavaProject.getProject().getWorkspace().getRoot().getFolder(outputLocation);
-//				if (folder.exists() && JavaCore.create(folder) == null) {
+//				if (folder.exists() && JavaScriptCore.create(folder) == null) {
 //					folder.delete(true, null);
 //				}
 //			}
 //	        fJavaProject.setOutputLocation(path, null);
-//        } catch (JavaModelException e) {
-//	     	JavaPlugin.log(e);
+//        } catch (JavaScriptModelException e) {
+//	     	JavaScriptPlugin.log(e);
 //        } catch (CoreException e) {
-//	        JavaPlugin.log(e);
+//	        JavaScriptPlugin.log(e);
 //        }
     }
 
@@ -409,7 +409,7 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
     	fPackageExplorer.getViewerControl().setFocus();
     }
 
-	public IJavaProject getJavaProject() {
+	public IJavaScriptProject getJavaProject() {
 		return fJavaProject;
 	}
 }

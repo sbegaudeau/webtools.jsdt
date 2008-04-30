@@ -20,9 +20,9 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CompositeChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 //import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 
@@ -93,7 +93,7 @@ public class DynamicValidationStateChange extends CompositeChange implements Wor
 				result[0]= DynamicValidationStateChange.super.perform(monitor);
 			}
 		};
-		JavaCore.run(runnable, fSchedulingRule, pm);
+		JavaScriptCore.run(runnable, fSchedulingRule, pm);
 		return result[0];
 	}
 
@@ -125,7 +125,7 @@ public class DynamicValidationStateChange extends CompositeChange implements Wor
 					change.dispose();
 				}
 				public void handleException(Throwable exception) {
-					JavaPlugin.log(exception);
+					JavaScriptPlugin.log(exception);
 				}
 			});
 		}

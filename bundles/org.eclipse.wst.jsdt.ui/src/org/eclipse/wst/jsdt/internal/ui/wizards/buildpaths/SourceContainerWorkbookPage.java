@@ -39,13 +39,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
@@ -125,7 +125,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 	}
 
 	private ListDialogField fClassPathList;
-	private IJavaProject fCurrJProject;
+	private IJavaScriptProject fCurrJProject;
 	
 	private Control fSWTControl;
 	private TreeListDialogField fFoldersList;
@@ -180,7 +180,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 //		fUseFolderOutputs.setDialogFieldListener(adapter);
 	}
 	
-	public void init(IJavaProject jproject) {
+	public void init(IJavaScriptProject jproject) {
 		fCurrJProject= jproject;
 		if (Display.getCurrent() != null) {
 			updateFoldersList();
@@ -258,7 +258,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 		if (fSWTControl != null) {
 			return fSWTControl.getShell();
 		}
-		return JavaPlugin.getActiveWorkbenchShell();
+		return JavaScriptPlugin.getActiveWorkbenchShell();
 	}
 	
 	
@@ -342,13 +342,13 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 						refresh(dialog.getInsertedElements(), dialog.getRemovedElements(), dialog.getModifiedElements(), dialog.getOutputLocation());
 					}
 				} else {
-					CPListElement newElement= new CPListElement(fCurrJProject, IClasspathEntry.CPE_SOURCE);
+					CPListElement newElement= new CPListElement(fCurrJProject, IIncludePathEntry.CPE_SOURCE);
 					AddSourceFolderWizard wizard= newSourceFolderWizard(newElement, fFoldersList.getElements(), "", true); //$NON-NLS-1$
 					OpenBuildPathWizardAction action= new OpenBuildPathWizardAction(wizard);
 					action.run();
 				}
 			} else if (index == IDX_ADD_LINK) {
-				CPListElement newElement= new CPListElement(fCurrJProject, IClasspathEntry.CPE_SOURCE);
+				CPListElement newElement= new CPListElement(fCurrJProject, IIncludePathEntry.CPE_SOURCE);
 				AddSourceFolderWizard wizard= newLinkedSourceFolderWizard(newElement, fFoldersList.getElements(), "", true); //$NON-NLS-1$
 				OpenBuildPathWizardAction action= new OpenBuildPathWizardAction(wizard);
 				action.run();
@@ -431,7 +431,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 			if (selected != null) {
 				ArrayList res= new ArrayList();
 				for (int i= 0; i < selected.length; i++) {
-					tempElem = new CPListElement(fCurrJProject, IClasspathEntry.CPE_LIBRARY, selected[i], null);
+					tempElem = new CPListElement(fCurrJProject, IIncludePathEntry.CPE_LIBRARY, selected[i], null);
 					tempElem.setExported(true);
 					res.add(tempElem);
 				}
@@ -440,7 +440,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 		} else {
 			IPath configured= BuildPathDialogAccess.configureExternalJAREntry(getShell(), existing.getPath());
 			if (configured != null) {
-				tempElem = new CPListElement(fCurrJProject, IClasspathEntry.CPE_LIBRARY, configured, null);
+				tempElem = new CPListElement(fCurrJProject, IIncludePathEntry.CPE_LIBRARY, configured, null);
 				tempElem.setExported(true);
 				return new CPListElement[] { tempElem };
 			}
@@ -454,7 +454,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 		for (int i= 0; i < cplist.size(); i++) {
 			CPListElement elem= (CPListElement)cplist.get(i);
 			// 
-			if ( elem.getEntryKind() == IClasspathEntry.CPE_LIBRARY && (elem != existing)) {
+			if ( elem.getEntryKind() == IIncludePathEntry.CPE_LIBRARY && (elem != existing)) {
 				IResource resource= elem.getResource();
 				if (resource instanceof IFile) {
 					res.add(resource.getFullPath());
@@ -466,7 +466,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 		return (IPath[]) res.toArray(new IPath[res.size()]);
 	}
 	private CPListElement newCPLibraryElement(IResource res) {
-		CPListElement elem= new CPListElement(fCurrJProject, IClasspathEntry.CPE_LIBRARY, res.getFullPath(), res);
+		CPListElement elem= new CPListElement(fCurrJProject, IIncludePathEntry.CPE_LIBRARY, res.getFullPath(), res);
 		elem.setExported(true);
 		return elem;
 	}	
@@ -476,7 +476,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 		ArrayList existingPaths= new ArrayList(existingElements.size());
 		for (int i= 0; i < existingElements.size(); i++) {
 			CPListElement elem= (CPListElement) existingElements.get(i);
-			if (elem.getEntryKind() == IClasspathEntry.CPE_VARIABLE) {
+			if (elem.getEntryKind() == IIncludePathEntry.CPE_VARIABLE) {
 				existingPaths.add(elem.getPath());
 			}
 		}
@@ -504,8 +504,8 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 		return null;
 	}
 	private CPListElement createCPVariableElement(IPath path) {
-		CPListElement elem= new CPListElement(fCurrJProject, IClasspathEntry.CPE_VARIABLE, path, null);
-		IPath resolvedPath= JavaCore.getResolvedVariablePath(path);
+		CPListElement elem= new CPListElement(fCurrJProject, IIncludePathEntry.CPE_VARIABLE, path, null);
+		IPath resolvedPath= JavaScriptCore.getResolvedVariablePath(path);
 		elem.setIsMissing((resolvedPath == null) || !resolvedPath.toFile().exists());
 		
 		return elem;
@@ -555,9 +555,9 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 		CPListElement[] res= null;
 		
 		
-		if(elem.getEntryKind()== IClasspathEntry.CPE_CONTAINER) {
+		if(elem.getEntryKind()== IIncludePathEntry.CPE_CONTAINER) {
 			res= openContainerSelectionDialog(elem);
-		}else if(elem.getEntryKind()== IClasspathEntry.CPE_LIBRARY) {
+		}else if(elem.getEntryKind()== IIncludePathEntry.CPE_LIBRARY) {
 			IResource resource= elem.getResource();
 			if (resource == null) {
 				res= openExtJarFileDialog(elem);
@@ -570,7 +570,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 			} else if (resource.getType() == IResource.FILE) {
 				res= openJarFileDialog(elem);			
 			}
-		}else if(elem.getEntryKind()== IClasspathEntry.CPE_VARIABLE) {
+		}else if(elem.getEntryKind()== IIncludePathEntry.CPE_VARIABLE) {
 			res= openVariableSelectionDialog(elem);
 		
 		}else if (elem.getLinkTarget() != null) {
@@ -617,16 +617,16 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 				if (outputLocation != null && outputLocation.segmentCount() > 1) { // != Project
 					res.add(outputLocation);
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore it here, just log
-				JavaPlugin.log(e.getStatus());
+				JavaScriptPlugin.log(e.getStatus());
 			}
 		}	
 			
 		List cplist= fFoldersList.getElements();
 		for (int i= 0; i < cplist.size(); i++) {
 			CPListElement elem= (CPListElement)cplist.get(i);
-			if (elem.getEntryKind() == IClasspathEntry.CPE_LIBRARY && (elem != existing)) {
+			if (elem.getEntryKind() == IIncludePathEntry.CPE_LIBRARY && (elem != existing)) {
 				IResource resource= elem.getResource();
 				if (resource instanceof IContainer && !resource.equals(existing)) {
 					res.add(resource.getFullPath());
@@ -658,26 +658,26 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 	
 	private CPListElement[] openContainerSelectionDialog(CPListElement existing) {
 		if (existing == null) {
-			IClasspathEntry[] created= BuildPathDialogAccess.chooseContainerEntries(getShell(), fCurrJProject, getRawClasspath());
+			IIncludePathEntry[] created= BuildPathDialogAccess.chooseContainerEntries(getShell(), fCurrJProject, getRawClasspath());
 			if (created != null) {
 				CPListElement[] res= new CPListElement[created.length];
 				for (int i= 0; i < res.length; i++) {
-					res[i]= new CPListElement(fCurrJProject, IClasspathEntry.CPE_CONTAINER, created[i].getPath(), null);
+					res[i]= new CPListElement(fCurrJProject, IIncludePathEntry.CPE_CONTAINER, created[i].getPath(), null);
 				}
 				return res;
 			}
 		} else {
-			IClasspathEntry created= BuildPathDialogAccess.configureContainerEntry(getShell(), existing.getClasspathEntry(), fCurrJProject, getRawClasspath());
+			IIncludePathEntry created= BuildPathDialogAccess.configureContainerEntry(getShell(), existing.getClasspathEntry(), fCurrJProject, getRawClasspath());
 			if (created != null) {
-				CPListElement elem= new CPListElement(fCurrJProject, IClasspathEntry.CPE_CONTAINER, created.getPath(), null);
+				CPListElement elem= new CPListElement(fCurrJProject, IIncludePathEntry.CPE_CONTAINER, created.getPath(), null);
 				return new CPListElement[] { elem };
 			}
 		}		
 		return null;
 	}
 	
-	private IClasspathEntry[] getRawClasspath() {
-		IClasspathEntry[] currEntries= new IClasspathEntry[fClassPathList.getSize()];
+	private IIncludePathEntry[] getRawClasspath() {
+		IIncludePathEntry[] currEntries= new IIncludePathEntry[fClassPathList.getSize()];
 		for (int i= 0; i < currEntries.length; i++) {
 			CPListElement curr= (CPListElement) fClassPathList.getElement(i);
 			currEntries[i]= curr.getClasspathEntry();
@@ -687,12 +687,12 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 	private void attributeUpdated(CPListElement selElement, String[] changedAttributes) {
 		Object parentContainer= selElement.getParentContainer();
 		if (parentContainer instanceof CPListElement) { // inside a container: apply changes right away
-			IClasspathEntry updatedEntry= selElement.getClasspathEntry();
+			IIncludePathEntry updatedEntry= selElement.getClasspathEntry();
 			updateContainerEntry(updatedEntry, changedAttributes, fCurrJProject, ((CPListElement) parentContainer).getPath());
 		}
 	}
 	
-	private void updateContainerEntry(final IClasspathEntry newEntry, final String[] changedAttributes, final IJavaProject jproject, final IPath containerPath) {
+	private void updateContainerEntry(final IIncludePathEntry newEntry, final String[] changedAttributes, final IJavaScriptProject jproject, final IPath containerPath) {
 		try {
 			IWorkspaceRunnable runnable= new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {				
@@ -716,7 +716,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 		CPListElement selElement= elem.getParent();
 		
 		if (key.equals(CPListElement.SOURCEATTACHMENT)) {
-			IClasspathEntry result= BuildPathDialogAccess.configureSourceAttachment(getShell(), selElement.getClasspathEntry());
+			IIncludePathEntry result= BuildPathDialogAccess.configureSourceAttachment(getShell(), selElement.getClasspathEntry());
 			if (result != null) {
 				selElement.setAttribute(CPListElement.SOURCEATTACHMENT, result.getSourceAttachmentPath());
 				String[] changedAttributes= { CPListElement.SOURCEATTACHMENT };
@@ -795,7 +795,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 		} else {
 			for (Iterator iter= selElements.iterator(); iter.hasNext();) {
 				CPListElement element= (CPListElement)iter.next();
-				if (element.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+				if (element.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 					List list= ClasspathModifier.removeFilters(element.getPath(), fCurrJProject, fFoldersList.getElements());
 					for (Iterator iterator= list.iterator(); iterator.hasNext();) {
 						CPListElement modified= (CPListElement)iterator.next();
@@ -944,7 +944,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 	 * @see org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathBasePage#isEntryKind(int)
 	 */
 	public boolean isEntryKind(int kind) {
-		return (kind == IClasspathEntry.CPE_SOURCE || kind==IClasspathEntry.CPE_LIBRARY || kind==IClasspathEntry.CPE_VARIABLE);
+		return (kind == IIncludePathEntry.CPE_SOURCE || kind==IIncludePathEntry.CPE_LIBRARY || kind==IIncludePathEntry.CPE_VARIABLE);
 	}
 
 	private void refresh(List insertedElements, List removedElements, List modifiedElements, IPath outputLocation) {

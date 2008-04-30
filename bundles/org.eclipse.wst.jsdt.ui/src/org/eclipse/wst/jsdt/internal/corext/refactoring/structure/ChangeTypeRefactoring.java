@@ -33,22 +33,22 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -60,10 +60,10 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.TargetSourceRangeComputer;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
@@ -101,9 +101,9 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParse
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * @author tip
@@ -112,7 +112,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 
 	private static final String ATTRIBUTE_TYPE= "type"; //$NON-NLS-1$
 
-	private final Map/*<ICompilationUnit, Collection<ITypeConstraint>>*/ fConstraintCache;
+	private final Map/*<IJavaScriptUnit, Collection<ITypeConstraint>>*/ fConstraintCache;
 	/**
 	 * Offset of the selected text area.
 	 */
@@ -134,17 +134,17 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	private int fEffectiveSelectionLength;
 	
 	/**
-	 * ICompilationUnit containing the selection.
+	 * IJavaScriptUnit containing the selection.
 	 */
-	private ICompilationUnit fCu;
+	private IJavaScriptUnit fCu;
 	
 	/**
 	 * If the selection corresponds to a method parameter/return type, this field stores
-	 * a reference to its IMethodBinding, otherwise this field remains null. Used during 
+	 * a reference to its IFunctionBinding, otherwise this field remains null. Used during 
 	 * search for references in other CUs, and for determining the ConstraintVariable
 	 * that corresponds to the selection
 	 */
-	private IMethodBinding fMethodBinding;
+	private IFunctionBinding fMethodBinding;
 	
 	/**
 	 * If the selection corresponds to a method parameter, this field stores the parameter
@@ -167,7 +167,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	/**
 	 * The compilation units that contain constraint variables related to the selection
 	 */
-	private ICompilationUnit[] fAffectedUnits;
+	private IJavaScriptUnit[] fAffectedUnits;
 
 	/**
 	 * The constraint variables that are of interest to this refactoring. This includes
@@ -203,9 +203,9 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	private ITypeBinding fSelectedType;
 	
 	/**
-	 * Organizes SearchResults by CompilationUnit
+	 * Organizes SearchResults by JavaScriptUnit
 	 */
-	private Map/*<ICompilationUnit,SearchResultGroup>*/ fCuToSearchResultGroup= new HashMap();
+	private Map/*<IJavaScriptUnit,SearchResultGroup>*/ fCuToSearchResultGroup= new HashMap();
 	
 	
 	/**
@@ -227,14 +227,14 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	private ITypeBinding fSelectionTypeBinding;
 	private ConstraintCollector fCollector;
 
-	public ChangeTypeRefactoring(ICompilationUnit cu, int selectionStart, int selectionLength) {
+	public ChangeTypeRefactoring(IJavaScriptUnit cu, int selectionStart, int selectionLength) {
 		this(cu, selectionStart, selectionLength, null);
 	}
 
 	/**
 	 * Constructor for ChangeTypeRefactoring (invoked from tests only)
 	 */
-	public ChangeTypeRefactoring(ICompilationUnit cu, int selectionStart, int selectionLength, String selectedType) {
+	public ChangeTypeRefactoring(IJavaScriptUnit cu, int selectionStart, int selectionLength, String selectedType) {
 		Assert.isTrue(selectionStart >= 0);
 		Assert.isTrue(selectionLength >= 0);
 
@@ -275,7 +275,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	 * Check if the right type of AST Node is selected. Create the TypeHierarchy needed to
 	 * bring up the wizard.
 	 */
-	private RefactoringStatus checkSelection(IProgressMonitor pm) throws JavaModelException {
+	private RefactoringStatus checkSelection(IProgressMonitor pm) throws JavaScriptModelException {
 		try {
 			pm.beginTask("", 5); //$NON-NLS-1$
 
@@ -315,7 +315,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 			}
 			
 			if (fMethodBinding != null) {
-				IMethod selectedMethod= (IMethod) fMethodBinding.getJavaElement();
+				IFunction selectedMethod= (IFunction) fMethodBinding.getJavaElement();
 				if (selectedMethod == null){
 					return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ChangeTypeRefactoring_insideLocalTypesNotSupported); 
 				}
@@ -366,14 +366,14 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 		}
 	}
 	
-	private boolean checkOverriddenBinaryMethods() throws JavaModelException {
+	private boolean checkOverriddenBinaryMethods() throws JavaScriptModelException {
 		if (fMethodBinding != null){
 			Set declaringSupertypes= getDeclaringSuperTypes(fMethodBinding);
 			for (Iterator iter= declaringSupertypes.iterator(); iter.hasNext();) {
 				ITypeBinding superType= (ITypeBinding) iter.next();
-				IMethodBinding overriddenMethod= findMethod(fMethodBinding, superType);
+				IFunctionBinding overriddenMethod= findMethod(fMethodBinding, superType);
 				Assert.isNotNull(overriddenMethod);//because we asked for declaring types
-				IMethod iMethod= (IMethod) overriddenMethod.getJavaElement();
+				IFunction iMethod= (IFunction) overriddenMethod.getJavaElement();
 				if (iMethod.isBinary()){
 					return true;
 				}
@@ -383,14 +383,14 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	}
 	
 	// copied from FullConstraintCreator
-	private static IMethodBinding findMethod(IMethodBinding methodBinding, ITypeBinding type) {
+	private static IFunctionBinding findMethod(IFunctionBinding methodBinding, ITypeBinding type) {
 		  if (methodBinding.getDeclaringClass().equals(type))
 			  return methodBinding;
 		  return Bindings.findOverriddenMethodInType(type, methodBinding);
 	}
 
 	// copied from FullConstraintCreator
-	private static Set getDeclaringSuperTypes(IMethodBinding methodBinding) {
+	private static Set getDeclaringSuperTypes(IFunctionBinding methodBinding) {
 		ITypeBinding[] allSuperTypes= Bindings.getAllSuperTypes(methodBinding.getDeclaringClass());
 		Set result= new HashSet();
 		for (int i= 0; i < allSuperTypes.length; i++) {
@@ -434,7 +434,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 			if (DEBUG)
 				printCollection("valid types:", getValidTypeNames()); //$NON-NLS-1$
 		} catch (CoreException e) {
-			JavaPlugin.logErrorMessage("Error occurred during computation of valid types: " + e.toString()); //$NON-NLS-1$ 
+			JavaScriptPlugin.logErrorMessage("Error occurred during computation of valid types: " + e.toString()); //$NON-NLS-1$ 
 			fValidTypes.clear(); // error occurred during computation of valid types
 		}
 		
@@ -463,26 +463,26 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	public Change createChange(IProgressMonitor pm) throws CoreException {
 		pm.beginTask(RefactoringCoreMessages.ChangeTypeMessages_CreateChangesForChangeType, 1);
 		try {
-			Map/* <ICompilationUnit,Set<ConstraintVariable>> */relevantVarsByUnit= new HashMap/* <ICompilationUnit,HashSet<ConstraintVariable>> */();
+			Map/* <IJavaScriptUnit,Set<ConstraintVariable>> */relevantVarsByUnit= new HashMap/* <IJavaScriptUnit,HashSet<ConstraintVariable>> */();
 			groupChangesByCompilationUnit(relevantVarsByUnit);
 			final Map arguments= new HashMap();
 			String project= null;
-			IJavaProject javaProject= fCu.getJavaProject();
+			IJavaScriptProject javaProject= fCu.getJavaScriptProject();
 			if (javaProject != null)
 				project= javaProject.getElementName();
 			final String description= RefactoringCoreMessages.ChangeTypeRefactoring_descriptor_description_short;
-			final String header= Messages.format(RefactoringCoreMessages.ChangeTypeRefactoring_descriptor_description, new String[] { BindingLabelProvider.getBindingLabel(fSelectionBinding, JavaElementLabels.ALL_FULLY_QUALIFIED), BindingLabelProvider.getBindingLabel(fSelectedType, JavaElementLabels.ALL_FULLY_QUALIFIED)});
+			final String header= Messages.format(RefactoringCoreMessages.ChangeTypeRefactoring_descriptor_description, new String[] { BindingLabelProvider.getBindingLabel(fSelectionBinding, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), BindingLabelProvider.getBindingLabel(fSelectedType, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)});
 			final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
-			comment.addSetting(Messages.format(RefactoringCoreMessages.ChangeTypeRefactoring_original_element_pattern, BindingLabelProvider.getBindingLabel(fSelectionBinding, JavaElementLabels.ALL_FULLY_QUALIFIED)));
-			comment.addSetting(Messages.format(RefactoringCoreMessages.ChangeTypeRefactoring_original_type_pattern, BindingLabelProvider.getBindingLabel(getOriginalType(), JavaElementLabels.ALL_FULLY_QUALIFIED)));
-			comment.addSetting(Messages.format(RefactoringCoreMessages.ChangeTypeRefactoring_refactored_type_pattern, BindingLabelProvider.getBindingLabel(fSelectedType, JavaElementLabels.ALL_FULLY_QUALIFIED)));
-			final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaRefactorings.GENERALIZE_TYPE, project, description, comment.asString(), arguments, (RefactoringDescriptor.STRUCTURAL_CHANGE | JavaRefactoringDescriptor.JAR_REFACTORING | JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT));
+			comment.addSetting(Messages.format(RefactoringCoreMessages.ChangeTypeRefactoring_original_element_pattern, BindingLabelProvider.getBindingLabel(fSelectionBinding, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
+			comment.addSetting(Messages.format(RefactoringCoreMessages.ChangeTypeRefactoring_original_type_pattern, BindingLabelProvider.getBindingLabel(getOriginalType(), JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
+			comment.addSetting(Messages.format(RefactoringCoreMessages.ChangeTypeRefactoring_refactored_type_pattern, BindingLabelProvider.getBindingLabel(fSelectedType, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
+			final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaScriptRefactorings.GENERALIZE_TYPE, project, description, comment.asString(), arguments, (RefactoringDescriptor.STRUCTURAL_CHANGE | JavaScriptRefactoringDescriptor.JAR_REFACTORING | JavaScriptRefactoringDescriptor.JAR_SOURCE_ATTACHMENT));
 			arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_INPUT, descriptor.elementToHandle(fCu));
 			arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_SELECTION, new Integer(fSelectionStart).toString() + " " + new Integer(fSelectionLength).toString()); //$NON-NLS-1$
 			arguments.put(ATTRIBUTE_TYPE, fSelectedType.getQualifiedName());
 			final DynamicValidationRefactoringChange result= new DynamicValidationRefactoringChange(descriptor, RefactoringCoreMessages.ChangeTypeRefactoring_allChanges);
-			for (Iterator/* <ICompilationUnit> */it= relevantVarsByUnit.keySet().iterator(); it.hasNext();) {
-				ICompilationUnit icu= (ICompilationUnit) it.next();
+			for (Iterator/* <IJavaScriptUnit> */it= relevantVarsByUnit.keySet().iterator(); it.hasNext();) {
+				IJavaScriptUnit icu= (IJavaScriptUnit) it.next();
 				Set/* <ConstraintVariable> */cVars= (Set) relevantVarsByUnit.get(icu);
 				CompilationUnitChange cuChange= new CompilationUnitChange(getName(), icu);
 				addAllChangesFor(icu, cVars, cuChange);
@@ -498,10 +498,10 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	}
 
 	/**
-	 * Apply all changes related to a single ICompilationUnit
+	 * Apply all changes related to a single IJavaScriptUnit
 	 */
-	private void addAllChangesFor(ICompilationUnit icu, Set vars, CompilationUnitChange unitChange) throws CoreException {
-		CompilationUnit	unit= new RefactoringASTParser(AST.JLS3).parse(icu, false);
+	private void addAllChangesFor(IJavaScriptUnit icu, Set vars, CompilationUnitChange unitChange) throws CoreException {
+		JavaScriptUnit	unit= new RefactoringASTParser(AST.JLS3).parse(icu, false);
 		ASTRewrite unitRewriter= ASTRewrite.create(unit.getAST());
 		MultiTextEdit root= new MultiTextEdit();
 		unitChange.setEdit(root); // Adam sez don't need this, but then unitChange.addGroupDescription() fails an assertion!
@@ -517,8 +517,8 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 		}
 	}
 	
-	private void updateCu(CompilationUnit unit, Set vars, CompilationUnitChange unitChange, 
-		ASTRewrite unitRewriter, String typeName) throws JavaModelException {
+	private void updateCu(JavaScriptUnit unit, Set vars, CompilationUnitChange unitChange, 
+		ASTRewrite unitRewriter, String typeName) throws JavaScriptModelException {
 		
         // use custom SourceRangeComputer to avoid losing comments
 		unitRewriter.setTargetSourceRangeComputer(new SourceRangeComputer());
@@ -529,7 +529,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 			if ((decl instanceof SimpleName || decl instanceof QualifiedName) && cv instanceof ExpressionVariable) {
 				ASTNode gp= decl.getParent().getParent();
 				updateType(unit, getType(gp), unitChange, unitRewriter, typeName);   // local variable or parameter
-			} else if (decl instanceof MethodDeclaration || decl instanceof FieldDeclaration) {
+			} else if (decl instanceof FunctionDeclaration || decl instanceof FieldDeclaration) {
 				updateType(unit, getType(decl), unitChange, unitRewriter, typeName); // method return or field type
 			} else if (decl instanceof ParameterizedType){
 				updateType(unit, getType(decl), unitChange, unitRewriter, typeName);
@@ -537,7 +537,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 		}	
 	}
 
-	private void updateType(CompilationUnit cu, Type oldType, CompilationUnitChange unitChange, 
+	private void updateType(JavaScriptUnit cu, Type oldType, CompilationUnitChange unitChange, 
 							ASTRewrite unitRewriter, String typeName) {
 		
 		String oldName= fSelectionTypeBinding.getName();
@@ -591,20 +591,20 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	
 	
 	
-	private void groupChangesByCompilationUnit(Map relevantVarsByUnit) throws JavaModelException {
+	private void groupChangesByCompilationUnit(Map relevantVarsByUnit) throws JavaScriptModelException {
 		for (Iterator it= fRelevantVars.iterator(); it.hasNext();) {
 			ConstraintVariable cv= (ConstraintVariable) it.next();
 			if (!(cv instanceof ExpressionVariable) && !(cv instanceof ReturnTypeVariable)){
 				continue;
 			} 
-			ICompilationUnit icu = null;
+			IJavaScriptUnit icu = null;
 			if (cv instanceof ExpressionVariable) {
 				ExpressionVariable ev = (ExpressionVariable)cv;
 				icu = ev.getCompilationUnitRange().getCompilationUnit();
 			} else if (cv instanceof ReturnTypeVariable){
 				ReturnTypeVariable rtv = (ReturnTypeVariable)cv;
-				IMethodBinding mb= rtv.getMethodBinding();
-				icu= ((IMethod) mb.getJavaElement()).getCompilationUnit();
+				IFunctionBinding mb= rtv.getMethodBinding();
+				icu= ((IFunction) mb.getJavaElement()).getJavaScriptUnit();
 			}
 			if (!relevantVarsByUnit.containsKey(icu)){
 				relevantVarsByUnit.put(icu, new HashSet/*<ConstraintVariable>*/());
@@ -613,7 +613,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 		}
 	}
 
-	private ASTNode findDeclaration(CompilationUnit root, ConstraintVariable cv) throws JavaModelException {
+	private ASTNode findDeclaration(JavaScriptUnit root, ConstraintVariable cv) throws JavaScriptModelException {
 
 		if (fFieldBinding != null){
 			IField f= (IField) fFieldBinding.getJavaElement();
@@ -636,8 +636,8 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 			}
 		} else if (cv instanceof ReturnTypeVariable) {
 			ReturnTypeVariable rtv= (ReturnTypeVariable) cv;
-			IMethodBinding mb= rtv.getMethodBinding();
-			IMethod im= (IMethod) mb.getJavaElement();
+			IFunctionBinding mb= rtv.getMethodBinding();
+			IFunction im= (IFunction) mb.getJavaElement();
 			return ASTNodeSearchUtil.getMethodDeclarationNode(im, root);
 		}
 		return null;
@@ -651,8 +651,8 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 				return ((FieldDeclaration) node).getType();
 			case ASTNode.VARIABLE_DECLARATION_STATEMENT:
 				return ((VariableDeclarationStatement) node).getType();
-			case ASTNode.METHOD_DECLARATION:
-				return ((MethodDeclaration)node).getReturnType2();
+			case ASTNode.FUNCTION_DECLARATION:
+				return ((FunctionDeclaration)node).getReturnType2();
 			case ASTNode.PARAMETERIZED_TYPE:
 				return ((ParameterizedType)node).getType();
 			default:
@@ -756,8 +756,8 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	  */
 	private String parameterizedTypeSelected(ParameterizedType pt) {
 		ASTNode parent= pt.getParent();
-		if (parent.getNodeType() == ASTNode.METHOD_DECLARATION){
-			fMethodBinding= ((MethodDeclaration)parent).resolveBinding();
+		if (parent.getNodeType() == ASTNode.FUNCTION_DECLARATION){
+			fMethodBinding= ((FunctionDeclaration)parent).resolveBinding();
 			fParamIndex= -1;
 			fEffectiveSelectionStart= pt.getStartPosition();
 			fEffectiveSelectionLength= pt.getLength();
@@ -841,10 +841,10 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 			}
 		} else if (parent.getNodeType() == ASTNode.SINGLE_VARIABLE_DECLARATION) {
 			SingleVariableDeclaration singleVariableDeclaration= (SingleVariableDeclaration) parent;
-			if ((grandParent.getNodeType() == ASTNode.METHOD_DECLARATION)) {
-				fMethodBinding= ((MethodDeclaration)grandParent).resolveBinding();
+			if ((grandParent.getNodeType() == ASTNode.FUNCTION_DECLARATION)) {
+				fMethodBinding= ((FunctionDeclaration)grandParent).resolveBinding();
 				setOriginalType(simpleName.resolveTypeBinding());
-				fParamIndex= ((MethodDeclaration)grandParent).parameters().indexOf(parent);
+				fParamIndex= ((FunctionDeclaration)grandParent).parameters().indexOf(parent);
 				fParamName= singleVariableDeclaration.getName().getIdentifier();
 			} else {
 				setSelectionRanges(singleVariableDeclaration.getName());
@@ -855,25 +855,25 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 			if (singleVariableDeclaration.getExtraDimensions() > 0) {
 				return RefactoringCoreMessages.ChangeTypeRefactoring_arraysNotSupported;
 			}
-			if (greatGrandParent != null && greatGrandParent.getNodeType() == ASTNode.METHOD_DECLARATION) {
-				fMethodBinding= ((MethodDeclaration)greatGrandParent).resolveBinding();
-				fParamIndex= ((MethodDeclaration)greatGrandParent).parameters().indexOf(grandParent);
+			if (greatGrandParent != null && greatGrandParent.getNodeType() == ASTNode.FUNCTION_DECLARATION) {
+				fMethodBinding= ((FunctionDeclaration)greatGrandParent).resolveBinding();
+				fParamIndex= ((FunctionDeclaration)greatGrandParent).parameters().indexOf(grandParent);
 				fParamName= singleVariableDeclaration.getName().getIdentifier();
 				setSelectionRanges(simpleName);
 			} else {
 				setSelectionRanges(singleVariableDeclaration.getName());
 			}
-		} else if (parent.getNodeType() == ASTNode.SIMPLE_TYPE && grandParent.getNodeType() == ASTNode.METHOD_DECLARATION) {
-			fMethodBinding= ((MethodDeclaration)grandParent).resolveBinding();
+		} else if (parent.getNodeType() == ASTNode.SIMPLE_TYPE && grandParent.getNodeType() == ASTNode.FUNCTION_DECLARATION) {
+			fMethodBinding= ((FunctionDeclaration)grandParent).resolveBinding();
 			setOriginalType(fMethodBinding.getReturnType());
 			fParamIndex= -1;
-		} else if (parent.getNodeType() == ASTNode.METHOD_DECLARATION && 
+		} else if (parent.getNodeType() == ASTNode.FUNCTION_DECLARATION && 
 				grandParent.getNodeType() == ASTNode.TYPE_DECLARATION) {
-			MethodDeclaration methodDeclaration= (MethodDeclaration)parent;
+			FunctionDeclaration methodDeclaration= (FunctionDeclaration)parent;
 			if (methodDeclaration.getName().equals(simpleName) || methodDeclaration.thrownExceptions().contains(simpleName)){
 				return RefactoringCoreMessages.ChangeTypeRefactoring_notSupportedOnNodeType; 
 			}
-			fMethodBinding= ((MethodDeclaration)parent).resolveBinding();
+			fMethodBinding= ((FunctionDeclaration)parent).resolveBinding();
 			fParamIndex= -1;
 		} else if (
 				parent.getNodeType() == ASTNode.SIMPLE_TYPE && (grandParent.getNodeType() == ASTNode.VARIABLE_DECLARATION_STATEMENT)) {
@@ -909,7 +909,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	 */
 	private ConstraintVariable findConstraintVariableForSelectedNode(IProgressMonitor pm) {
 		pm.beginTask(RefactoringCoreMessages.ChangeTypeRefactoring_analyzingMessage, 100);  
-		ICompilationUnit[] cus= { fCu }; // only search in CU containing selection
+		IJavaScriptUnit[] cus= { fCu }; // only search in CU containing selection
 		
 		if (DEBUG){
 			System.out.println("Effective selection: " + fEffectiveSelectionStart + "/" + fEffectiveSelectionLength); //$NON-NLS-1$ //$NON-NLS-2$
@@ -969,7 +969,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 		pm.beginTask(RefactoringCoreMessages.ChangeTypeRefactoring_analyzingMessage, 150); 
 		Collection/*<ConstraintVariable>*/ result= new HashSet();
 		result.add(cv);
-		ICompilationUnit[] cus= collectAffectedUnits(new SubProgressMonitor(pm, 50));
+		IJavaScriptUnit[] cus= collectAffectedUnits(new SubProgressMonitor(pm, 50));
 		Collection/*<ITypeConstraint>*/ allConstraints= getConstraints(cus, new SubProgressMonitor(pm, 50));
 
 		List/*<ConstraintVariable>*/ workList= new ArrayList(result);
@@ -1016,7 +1016,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	private Collection/*<ITypeConstraint>*/ findRelevantConstraints(Collection/*<ConstraintVariable>*/ relevantConstraintVars, 
 																	IProgressMonitor pm) throws CoreException {
 
-		ICompilationUnit[] cus= collectAffectedUnits(new SubProgressMonitor(pm, 100));
+		IJavaScriptUnit[] cus= collectAffectedUnits(new SubProgressMonitor(pm, 100));
 		
 		fAllConstraints= getConstraints(cus, new SubProgressMonitor(pm, 900));
 		
@@ -1061,8 +1061,8 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	private static ASTNode findDeclaration(final ASTNode root, final int start, final int length){
 		ASTNode node= NodeFinder.perform(root, start, length);
 		Assert.isTrue(node instanceof SimpleName, String.valueOf(node.getNodeType()));
-		Assert.isTrue(root instanceof CompilationUnit, String.valueOf(root.getNodeType()));
-		return ((CompilationUnit)root).findDeclaringNode(((SimpleName)node).resolveBinding());
+		Assert.isTrue(root instanceof JavaScriptUnit, String.valueOf(root.getNodeType()));
+		return ((JavaScriptUnit)root).findDeclaringNode(((SimpleName)node).resolveBinding());
 	}	
 	
 	// For debugging
@@ -1089,10 +1089,10 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	private Collection/*<ITypeBinding>*/ computeValidTypes(ITypeBinding originalType, 
 													Collection/*<ConstraintVariable>*/ relevantVars,
 													Collection/*<ITypeConstraint>*/ relevantConstraints,
-													IProgressMonitor pm) throws JavaModelException {
+													IProgressMonitor pm) throws JavaScriptModelException {
 		
 		Collection/*<ITypeBinding>*/ result= new HashSet();
-		IJavaProject project= fCu.getJavaProject();
+		IJavaScriptProject project= fCu.getJavaScriptProject();
 
 		Collection/*<ITypeBinding>*/ allTypes = new HashSet/*<IType>*/();
 		allTypes.addAll(getAllSuperTypes(originalType)); 
@@ -1119,11 +1119,11 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	/**
 	 * Determines if a given type satisfies a set of type constraints.
 	 */
-	private boolean isValid(IJavaProject project,
+	private boolean isValid(IJavaScriptProject project,
 							ITypeBinding type,
 						    Collection/*<ConstraintVariable>*/ relevantVars, 
 						    Collection/*<ITypeConstraint>*/ constraints,
-							IProgressMonitor pm) throws JavaModelException {
+							IProgressMonitor pm) throws JavaScriptModelException {
 		pm.beginTask(RefactoringCoreMessages.ChangeTypeRefactoring_analyzingMessage, constraints.size()); 
 		for (Iterator it= constraints.iterator(); it.hasNext(); ) {
 			ITypeConstraint tc= (ITypeConstraint)it.next();
@@ -1140,9 +1140,9 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 		return true;
 	}
 	
-	private boolean isValidSimpleConstraint(IJavaProject project, ITypeBinding type, 
+	private boolean isValidSimpleConstraint(IJavaScriptProject project, ITypeBinding type, 
 											Collection/*<ConstraintVariable>*/ relevantVars,
-											SimpleTypeConstraint stc) throws JavaModelException{
+											SimpleTypeConstraint stc) throws JavaScriptModelException{
 		if (relevantVars.contains(stc.getLeft())) { // upper bound
 			if (!isSubTypeOf(type, findType(stc.getRight()))) {
 				return false;
@@ -1151,9 +1151,9 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 		return true;
 	}
 	
-	private boolean isValidOrConstraint(IJavaProject project, ITypeBinding type, 
+	private boolean isValidOrConstraint(IJavaScriptProject project, ITypeBinding type, 
 										Collection/*<ConstraintVariable>*/ relevantVars,
-										CompositeOrTypeConstraint cotc) throws JavaModelException{
+										CompositeOrTypeConstraint cotc) throws JavaScriptModelException{
 		ITypeConstraint[] components= cotc.getConstraints();
 		for (int i= 0; i < components.length; i++) {
 			if (components[i] instanceof SimpleTypeConstraint) {
@@ -1178,7 +1178,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	/**
 	 * Gather constraints associated with a set of compilation units.
 	 */
-	private Collection/*<ITypeConstraint>*/ getConstraints(ICompilationUnit[] referringCus, IProgressMonitor pm) {
+	private Collection/*<ITypeConstraint>*/ getConstraints(IJavaScriptUnit[] referringCus, IProgressMonitor pm) {
 		pm.beginTask(RefactoringCoreMessages.ChangeTypeRefactoring_analyzingMessage, referringCus.length); 
 		Collection/*<ITypeConstraint>*/ result= new ArrayList();
 		for (int i= 0; i < referringCus.length; i++) {
@@ -1191,25 +1191,25 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 		return result;
 	}
 
-	private List/*<ITypeConstraint>*/ getConstraints(ICompilationUnit unit) {
+	private List/*<ITypeConstraint>*/ getConstraints(IJavaScriptUnit unit) {
 		if (fConstraintCache.containsKey(unit))
 			return (List) fConstraintCache.get(unit);
 		
-		CompilationUnit cu= ASTCreator.createAST(unit, null);
+		JavaScriptUnit cu= ASTCreator.createAST(unit, null);
 		
-		// only generate type constraints for relevant MethodDeclaration subtrees 
+		// only generate type constraints for relevant FunctionDeclaration subtrees 
 		if (fMethodBinding != null && fCuToSearchResultGroup.containsKey(unit)){
 			SearchResultGroup group= (SearchResultGroup) fCuToSearchResultGroup.get(unit);
 			ASTNode[] nodes= ASTNodeSearchUtil.getAstNodes(group.getSearchResults(), cu);
 			for (int i=0; i < nodes.length; i++){
 				ASTNode node = nodes[i];
 				if (fMethodBinding != null){
-					// find MethodDeclaration above it in the tree
+					// find FunctionDeclaration above it in the tree
 					ASTNode n= node;
-					while (!(n instanceof MethodDeclaration)){
+					while (!(n instanceof FunctionDeclaration)){
 						n = n.getParent();
 					}
-					MethodDeclaration md = (MethodDeclaration)n;
+					FunctionDeclaration md = (FunctionDeclaration)n;
 					md.accept(fCollector);
 				}
 			}
@@ -1222,9 +1222,9 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	}
 	
 	/**
-	 * update a CompilationUnit's imports after changing the type of declarations
+	 * update a JavaScriptUnit's imports after changing the type of declarations
 	 */
-	private String updateImports(CompilationUnit astRoot, MultiTextEdit rootEdit) throws CoreException{	
+	private String updateImports(JavaScriptUnit astRoot, MultiTextEdit rootEdit) throws CoreException{	
 		ImportRewrite rewrite= StubUtility.createImportRewrite(astRoot, true);
 		String typeName= rewrite.addImport(fSelectedType.getQualifiedName());
 		rootEdit.addChild(rewrite.rewriteImports(null));
@@ -1289,8 +1289,8 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	 * @param length
 	 * @return ASTNode
 	 */
-	private ASTNode getTargetNode(ICompilationUnit unit, int offset, int length) {
-		CompilationUnit root= ASTCreator.createAST(unit, null);
+	private ASTNode getTargetNode(IJavaScriptUnit unit, int offset, int length) {
+		JavaScriptUnit root= ASTCreator.createAST(unit, null);
 		ASTNode node= NodeFinder.perform(root, offset, length);
 		return node;
 	}
@@ -1300,7 +1300,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	 * we are interested in. This involves searching for overriding/overridden methods,
 	 * method calls, field accesses.
 	 */
-	private ICompilationUnit[] collectAffectedUnits(IProgressMonitor pm) throws CoreException {
+	private IJavaScriptUnit[] collectAffectedUnits(IProgressMonitor pm) throws CoreException {
 		// BUG: currently, no type constraints are generated for methods that are related
 		// but that do not override each other. As a result, we may miss certain relevant
 		// variables
@@ -1316,7 +1316,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 			if (fMethodBinding != null) {
 				
 				
-				IMethod selectedMethod= (IMethod) fMethodBinding.getJavaElement();
+				IFunction selectedMethod= (IFunction) fMethodBinding.getJavaElement();
 				if (selectedMethod == null) {
 					// can't happen since we checked it up front in check initial conditions
 					Assert.isTrue(false, RefactoringCoreMessages.ChangeTypeRefactoring_no_method); 
@@ -1325,24 +1325,24 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 				// the following code fragment appears to be the source of a memory leak, when
 				// GT is repeatedly applied
 						
-				IMethod root= selectedMethod;
+				IFunction root= selectedMethod;
 				if (! root.getDeclaringType().isInterface() && MethodChecks.isVirtual(root)) {
 					final SubProgressMonitor subMonitor= new SubProgressMonitor(pm, 5);
-					IMethod inInterface= MethodChecks.isDeclaredInInterface(root, root.getDeclaringType().newTypeHierarchy(new SubProgressMonitor(subMonitor, 1)), subMonitor);
+					IFunction inInterface= MethodChecks.isDeclaredInInterface(root, root.getDeclaringType().newTypeHierarchy(new SubProgressMonitor(subMonitor, 1)), subMonitor);
 					if (inInterface != null && !inInterface.equals(root))
 						root= inInterface;
 				}
 
 				// end code fragment
 				
-				IMethod[] rippleMethods= RippleMethodFinder2.getRelatedMethods(
+				IFunction[] rippleMethods= RippleMethodFinder2.getRelatedMethods(
 						root, new SubProgressMonitor(pm, 15), null);
 				SearchPattern pattern= RefactoringSearchEngine.createOrPattern(
-						rippleMethods, IJavaSearchConstants.ALL_OCCURRENCES);
+						rippleMethods, IJavaScriptSearchConstants.ALL_OCCURRENCES);
 
 				// To compute the scope we have to use the selected method. Otherwise we
 				// might start from the wrong project.
-				IJavaSearchScope scope= RefactoringScopeFactory.create(selectedMethod);
+				IJavaScriptSearchScope scope= RefactoringScopeFactory.create(selectedMethod);
 				CollectingSearchRequestor csr= new CollectingSearchRequestor();
 				
 				SearchResultGroup[] groups= RefactoringSearchEngine.search(
@@ -1362,8 +1362,8 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 				Assert.isTrue(false, RefactoringCoreMessages.ChangeTypeRefactoring_no_filed); 
 			}
 			SearchPattern pattern= SearchPattern.createPattern(
-					iField, IJavaSearchConstants.ALL_OCCURRENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
-			IJavaSearchScope scope= RefactoringScopeFactory.create(iField);
+					iField, IJavaScriptSearchConstants.ALL_OCCURRENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
+			IJavaScriptSearchScope scope= RefactoringScopeFactory.create(iField);
 			CollectingSearchRequestor csr= new CollectingSearchRequestor();
 			SearchResultGroup[] groups=
 				RefactoringSearchEngine.search(pattern, null, scope, csr, new SubProgressMonitor(pm, 100),
@@ -1372,7 +1372,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 		} else {
 			// otherwise, selection was a local variable and we only have to search the CU
 			// containing the selection
-			fAffectedUnits= new ICompilationUnit[] { fCu };
+			fAffectedUnits= new IJavaScriptUnit[] { fCu };
 		}
 		if (DEBUG) {
 			System.out.println("Determining affected CUs:"); //$NON-NLS-1$
@@ -1412,17 +1412,17 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	/**
 	 * Returns the compilation units that contain the search results.
 	 */
-	private ICompilationUnit[] getCus(SearchResultGroup[] groups) {
+	private IJavaScriptUnit[] getCus(SearchResultGroup[] groups) {
 		List result= new ArrayList(groups.length);
 		for (int i= 0; i < groups.length; i++) {
 			SearchResultGroup group= groups[i];
-			ICompilationUnit cu= group.getCompilationUnit();
+			IJavaScriptUnit cu= group.getCompilationUnit();
 			if (cu != null) {
 				result.add(cu);
 				fCuToSearchResultGroup.put(cu, group);
 			}
 		}
-		return (ICompilationUnit[]) result.toArray(new ICompilationUnit[result.size()]);
+		return (IJavaScriptUnit[]) result.toArray(new IJavaScriptUnit[result.size()]);
 	}
     
     /**
@@ -1498,11 +1498,11 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_SELECTION));
 			final String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-				if (element == null || !element.exists() || element.getElementType() != IJavaElement.COMPILATION_UNIT)
-					return createInputFatalStatus(element, IJavaRefactorings.GENERALIZE_TYPE);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.JAVASCRIPT_UNIT)
+					return createInputFatalStatus(element, IJavaScriptRefactorings.GENERALIZE_TYPE);
 				else
-					fCu= (ICompilationUnit) element;
+					fCu= (IJavaScriptUnit) element;
 			} else
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));
 			final String type= extended.getAttribute(ATTRIBUTE_TYPE);

@@ -24,24 +24,24 @@ import org.eclipse.text.edits.DeleteEdit;
 import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.core.infer.ImportRewriteSupport;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
 
 public final class ImportRewriteAnalyzer {
 
-	private final ICompilationUnit compilationUnit;
+	private final IJavaScriptUnit compilationUnit;
 	private final ArrayList packageEntries;
 
 	private final List importsCreated;
@@ -66,7 +66,7 @@ public final class ImportRewriteAnalyzer {
 	
     private boolean isRewriteExisting=true;
 
-	public ImportRewriteAnalyzer(ICompilationUnit cu, CompilationUnit root, String[] importOrder, int threshold, int staticThreshold, boolean restoreExistingImports,
+	public ImportRewriteAnalyzer(IJavaScriptUnit cu, JavaScriptUnit root, String[] importOrder, int threshold, int staticThreshold, boolean restoreExistingImports,
 			ImportRewriteSupport importRewriteExtension) {
 		this.compilationUnit= cu;
 		this.importOnDemandThreshold= threshold;
@@ -104,7 +104,7 @@ public final class ImportRewriteAnalyzer {
 
 	private int getSpacesBetweenImportGroups() {
 		try {
-			int num= Integer.parseInt(this.compilationUnit.getJavaProject().getOption(DefaultCodeFormatterConstants.FORMATTER_BLANK_LINES_BETWEEN_IMPORT_GROUPS, true));
+			int num= Integer.parseInt(this.compilationUnit.getJavaScriptProject().getOption(DefaultCodeFormatterConstants.FORMATTER_BLANK_LINES_BETWEEN_IMPORT_GROUPS, true));
 			if (num >= 0)
 				return num;
 		} catch (NumberFormatException e) {
@@ -182,7 +182,7 @@ public final class ImportRewriteAnalyzer {
 		return decl.isOnDemand() ? name + ".*": name; //$NON-NLS-1$
 	}
 
-	private void addExistingImports(CompilationUnit root) {
+	private void addExistingImports(JavaScriptUnit root) {
 		List/*ImportDeclaration*/ decls= root.imports();
 		if (decls.isEmpty()) {
 			return;
@@ -389,7 +389,7 @@ public final class ImportRewriteAnalyzer {
 		return bestMatch;
 	}
 
-	private static boolean isImplicitImport(String qualifier, ICompilationUnit cu) {
+	private static boolean isImplicitImport(String qualifier, IJavaScriptUnit cu) {
 //		if (JAVA_LANG.equals(qualifier)) {
 //			return true;
 //		}
@@ -397,7 +397,7 @@ public final class ImportRewriteAnalyzer {
 //		if (qualifier.equals(packageName)) {
 //			return true;
 //		}
-//		String mainTypeName= JavaCore.removeJavaLikeExtension(cu.getElementName());
+//		String mainTypeName= JavaScriptCore.removeJavaLikeExtension(cu.getElementName());
 //		if (packageName.length() == 0) {
 //			return qualifier.equals(mainTypeName);
 //		}
@@ -467,7 +467,7 @@ public final class ImportRewriteAnalyzer {
 		}
 	}
 
-	private IRegion evaluateReplaceRange(CompilationUnit root) {
+	private IRegion evaluateReplaceRange(JavaScriptUnit root) {
 		List imports= root.imports();
 		if (!imports.isEmpty()) {
 			ImportDeclaration first= (ImportDeclaration) imports.get(0);
@@ -503,7 +503,7 @@ public final class ImportRewriteAnalyzer {
 		}
 	}
 
-	public MultiTextEdit getResultingEdits(IProgressMonitor monitor) throws JavaModelException {
+	public MultiTextEdit getResultingEdits(IProgressMonitor monitor) throws JavaScriptModelException {
 		if (monitor == null) {
 			monitor= new NullProgressMonitor();
 		}
@@ -660,12 +660,12 @@ public final class ImportRewriteAnalyzer {
 		return -1;
 	}
 
-	private Set evaluateStarImportConflicts(IProgressMonitor monitor) throws JavaModelException {
+	private Set evaluateStarImportConflicts(IProgressMonitor monitor) throws JavaScriptModelException {
 		//long start= System.currentTimeMillis();
 
 		final HashSet/*String*/ onDemandConflicts= new HashSet();
 
-		IJavaSearchScope scope= SearchEngine.createJavaSearchScope(new IJavaElement[] { this.compilationUnit.getJavaProject() });
+		IJavaScriptSearchScope scope= SearchEngine.createJavaSearchScope(new IJavaScriptElement[] { this.compilationUnit.getJavaScriptProject() });
 
 		ArrayList/*<char[][]>*/  starImportPackages= new ArrayList();
 		ArrayList/*<char[][]>*/ simpleTypeNames= new ArrayList();
@@ -716,7 +716,7 @@ public final class ImportRewriteAnalyzer {
 				}
 			}
 		};
-		new SearchEngine().searchAllTypeNames(allPackages, allTypes, scope, requestor, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, monitor);
+		new SearchEngine().searchAllTypeNames(allPackages, allTypes, scope, requestor, IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, monitor);
 		return onDemandConflicts;
 	}
 
@@ -744,7 +744,7 @@ public final class ImportRewriteAnalyzer {
 		return newImportString;
 	}
 
-	private static int getFirstTypeBeginPos(CompilationUnit root) {
+	private static int getFirstTypeBeginPos(JavaScriptUnit root) {
 		List types= root.types();
 		if (!types.isEmpty()) {
 			return root.getExtendedStartPosition(((ASTNode) types.get(0)));
@@ -752,7 +752,7 @@ public final class ImportRewriteAnalyzer {
 		return -1;
 	}
 
-	private int getPackageStatementEndPos(CompilationUnit root) {
+	private int getPackageStatementEndPos(JavaScriptUnit root) {
 		PackageDeclaration packDecl= root.getPackage();
 		if (packDecl != null) {
 			int lineAfterPackage= root.getLineNumber(packDecl.getStartPosition() + packDecl.getLength()) + 1;

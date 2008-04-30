@@ -26,7 +26,7 @@ import org.eclipse.team.core.diff.IDiff;
 import org.eclipse.team.core.diff.IDiffTree;
 import org.eclipse.team.core.mapping.ISynchronizationContext;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
 
@@ -111,7 +111,7 @@ public final class JavaSynchronizationLabelProvider extends AbstractSynchronizat
 	 */
 	protected Object getModelRoot() {
 		if (fModelRoot == null)
-			fModelRoot= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
+			fModelRoot= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
 		return fModelRoot;
 	}
 

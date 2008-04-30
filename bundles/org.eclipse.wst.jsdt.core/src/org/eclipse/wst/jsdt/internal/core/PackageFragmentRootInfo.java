@@ -14,11 +14,11 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
@@ -54,18 +54,18 @@ public PackageFragmentRootInfo() {
  * Starting at this folder, create non-java resources for this package fragment root
  * and add them to the non-java resources collection.
  *
- * @exception JavaModelException  The resource associated with this package fragment does not exist
+ * @exception JavaScriptModelException  The resource associated with this package fragment does not exist
  */
-static Object[] computeFolderNonJavaResources(JavaProject project, IContainer folder, char[][] inclusionPatterns, char[][] exclusionPatterns) throws JavaModelException {
+static Object[] computeFolderNonJavaResources(JavaProject project, IContainer folder, char[][] inclusionPatterns, char[][] exclusionPatterns) throws JavaScriptModelException {
 	Object[] nonJavaResources = new IResource[5];
 	int nonJavaResourcesCounter = 0;
 	try {
-		IClasspathEntry[] classpath = project.getResolvedClasspath();
+		IIncludePathEntry[] classpath = project.getResolvedClasspath();
 		IResource[] members = folder.members();
 		int length = members.length;
 		if (length > 0) {
-			String sourceLevel = project.getOption(JavaCore.COMPILER_SOURCE, true);
-			String complianceLevel = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+			String sourceLevel = project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
+			String complianceLevel = project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true);
 			nextResource: for (int i = 0; i < length; i++) {
 				IResource member = members[i];
 				switch (member.getType()) {
@@ -103,13 +103,13 @@ static Object[] computeFolderNonJavaResources(JavaProject project, IContainer fo
 		}
 		return nonJavaResources;
 	} catch (CoreException e) {
-		throw new JavaModelException(e);
+		throw new JavaScriptModelException(e);
 	}
 }
 /**
  * Compute the non-package resources of this package fragment root.
  */
-private Object[] computeNonJavaResources(IJavaProject project, IResource underlyingResource, PackageFragmentRoot handle) {
+private Object[] computeNonJavaResources(IJavaScriptProject project, IResource underlyingResource, PackageFragmentRoot handle) {
 	Object[] nonJavaResources = NO_NON_JAVA_RESOURCES;
 	try {
 		// the underlying resource may be a folder or a project (in the case that the project folder
@@ -122,7 +122,7 @@ private Object[] computeNonJavaResources(IJavaProject project, IResource underly
 					handle.fullInclusionPatternChars(),
 					handle.fullExclusionPatternChars());
 		}
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// ignore
 	}
 	return nonJavaResources;
@@ -130,7 +130,7 @@ private Object[] computeNonJavaResources(IJavaProject project, IResource underly
 /**
  * Returns an array of non-java resources contained in the receiver.
  */
-synchronized Object[] getNonJavaResources(IJavaProject project, IResource underlyingResource, PackageFragmentRoot handle) {
+synchronized Object[] getNonJavaResources(IJavaScriptProject project, IResource underlyingResource, PackageFragmentRoot handle) {
 	Object[] nonJavaResources = this.fNonJavaResources;
 	if (nonJavaResources == null) {
 		nonJavaResources = this.computeNonJavaResources(project, underlyingResource, handle);
@@ -151,9 +151,9 @@ public int getRootKind() {
 protected SourceMapper getSourceMapper() {
 	return this.sourceMapper;
 }
-private static boolean isClasspathEntry(IPath path, IClasspathEntry[] resolvedClasspath) {
+private static boolean isClasspathEntry(IPath path, IIncludePathEntry[] resolvedClasspath) {
 	for (int i = 0, length = resolvedClasspath.length; i < length; i++) {
-		IClasspathEntry entry = resolvedClasspath[i];
+		IIncludePathEntry entry = resolvedClasspath[i];
 		if (entry.getPath().equals(path)) {
 			return true;
 		}

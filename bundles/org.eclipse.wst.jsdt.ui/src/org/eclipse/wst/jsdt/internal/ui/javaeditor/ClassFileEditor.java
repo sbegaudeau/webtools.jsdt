@@ -67,17 +67,17 @@ import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
@@ -123,8 +123,8 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 		 */
 		private IPackageFragmentRoot getPackageFragmentRoot(IClassFile file) {
 
-			IJavaElement element= file.getParent();
-			while (element != null && element.getElementType() != IJavaElement.PACKAGE_FRAGMENT_ROOT)
+			IJavaScriptElement element= file.getParent();
+			while (element != null && element.getElementType() != IJavaScriptElement.PACKAGE_FRAGMENT_ROOT)
 				element= element.getParent();
 
 			return (IPackageFragmentRoot) element;
@@ -178,7 +178,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 				if (root != null) {
 					createSourceAttachmentControls(fComposite, root);
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				String title= JavaEditorMessages.SourceAttachmentForm_error_title;
 				String message= JavaEditorMessages.SourceAttachmentForm_error_message;
 				ExceptionHandler.handle(e, fComposite.getShell(), title, message);
@@ -198,11 +198,11 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 			return fComposite;
 		}
 
-		private void createSourceAttachmentControls(Composite composite, IPackageFragmentRoot root) throws JavaModelException {
-			IClasspathEntry entry;
+		private void createSourceAttachmentControls(Composite composite, IPackageFragmentRoot root) throws JavaScriptModelException {
+			IIncludePathEntry entry;
 			try {
-				entry= root.getRawClasspathEntry();
-			} catch (JavaModelException ex) {
+				entry= root.getRawIncludepathEntry();
+			} catch (JavaScriptModelException ex) {
 				if (ex.isDoesNotExist())
 					entry= null;
 				else
@@ -215,11 +215,11 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 				return;
 			}
 
-			IJavaProject jproject= root.getJavaProject();
-			if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+			IJavaScriptProject jproject= root.getJavaScriptProject();
+			if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
 				containerPath= entry.getPath();
-				JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
-				IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(containerPath, jproject);
+				JsGlobalScopeContainerInitializer initializer= JavaScriptCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
+				IJsGlobalScopeContainer container= JavaScriptCore.getJsGlobalScopeContainer(containerPath, jproject);
 				if (initializer == null || container == null) {
 					createLabel(composite, Messages.format(JavaEditorMessages.ClassFileEditor_SourceAttachmentForm_cannotconfigure, containerPath.toString())); 
 					return;
@@ -260,12 +260,12 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 			button.addSelectionListener(getButtonListener(entry, containerPath, jproject));
 		}
 
-		private SelectionListener getButtonListener(final IClasspathEntry entry, final IPath containerPath, final IJavaProject jproject) {
+		private SelectionListener getButtonListener(final IIncludePathEntry entry, final IPath containerPath, final IJavaScriptProject jproject) {
 			return new SelectionListener() {
 				public void widgetSelected(SelectionEvent event) {
 					Shell shell= getSite().getShell();
 					try {
-						IClasspathEntry result= BuildPathDialogAccess.configureSourceAttachment(shell, entry);
+						IIncludePathEntry result= BuildPathDialogAccess.configureSourceAttachment(shell, entry);
 						if (result != null) {
 							applySourceAttachment(shell, result, jproject, containerPath);
 							verifyInput(getEditorInput());
@@ -281,7 +281,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 			};
 		}
 
-		protected void applySourceAttachment(Shell shell, IClasspathEntry newEntry, IJavaProject project, IPath containerPath) {
+		protected void applySourceAttachment(Shell shell, IIncludePathEntry newEntry, IJavaScriptProject project, IPath containerPath) {
 			try {
 				IRunnableWithProgress runnable= SourceAttachmentBlock.getRunnable(shell, newEntry, project, containerPath);
 				PlatformUI.getWorkbench().getProgressService().run(true, true, runnable);
@@ -391,10 +391,10 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 //			ClassFileBytesDisassembler disassembler= ToolFactory.createDefaultClassFileBytesDisassembler();
 //			try {
 //				content= disassembler.disassemble(classFile.getBytes(), "\n", ClassFileBytesDisassembler.DETAILED); //$NON-NLS-1$
-//			} catch (JavaModelException ex) {
-//				JavaPlugin.log(ex.getStatus());
+//			} catch (JavaScriptModelException ex) {
+//				JavaScriptPlugin.log(ex.getStatus());
 //			} catch (ClassFormatException ex) {
-//				JavaPlugin.log(ex);
+//				JavaScriptPlugin.log(ex);
 //			}
 //			styledText.setText(content == null ? "" : content); //$NON-NLS-1$
 //		}
@@ -503,7 +503,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 	 */
 	public ClassFileEditor() {
 		super();
-		setDocumentProvider(JavaPlugin.getDefault().getClassFileDocumentProvider());
+		setDocumentProvider(JavaScriptPlugin.getDefault().getClassFileDocumentProvider());
 		setEditorContextMenuId("#ClassFileEditorContext"); //$NON-NLS-1$
 		setRulerContextMenuId("#ReadOnlyJavaScriptRulerContext"); //$NON-NLS-1$
 		setOutlinerContextMenuId("#ClassFileOutlinerContext"); //$NON-NLS-1$
@@ -553,24 +553,24 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 	/*
 	 * @see JavaEditor#getElementAt(int)
 	 */
-	protected IJavaElement getElementAt(int offset) {
+	protected IJavaScriptElement getElementAt(int offset) {
 		if (getEditorInput() instanceof IClassFileEditorInput) {
 			try {
 				IClassFileEditorInput input= (IClassFileEditorInput) getEditorInput();
 				return input.getClassFile().getElementAt(offset);
-			} catch (JavaModelException x) {
+			} catch (JavaScriptModelException x) {
 			}
 		}
 		return null;
 	}
 
 	/*
-	 * @see JavaEditor#getCorrespondingElement(IJavaElement)
+	 * @see JavaEditor#getCorrespondingElement(IJavaScriptElement)
 	 */
-	protected IJavaElement getCorrespondingElement(IJavaElement element) {
+	protected IJavaScriptElement getCorrespondingElement(IJavaScriptElement element) {
 		if (getEditorInput() instanceof IClassFileEditorInput) {
 			IClassFileEditorInput input= (IClassFileEditorInput) getEditorInput();
-			IJavaElement parent= element.getAncestor(IJavaElement.CLASS_FILE);
+			IJavaScriptElement parent= element.getAncestor(IJavaScriptElement.CLASS_FILE);
 			if (input.getClassFile().equals(parent))
 				return element;
 		}
@@ -625,18 +625,18 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 		input= transformEditorInput(input);
 		if (!(input instanceof IClassFileEditorInput))
 			throw new CoreException(JavaUIStatus.createError(
-					IJavaModelStatusConstants.INVALID_RESOURCE_TYPE,
+					IJavaScriptModelStatusConstants.INVALID_RESOURCE_TYPE,
 					JavaEditorMessages.ClassFileEditor_error_invalid_input_message,
 					null)); 
 
-		JavaModelException e= probeInputForSource(input);
+		JavaScriptModelException e= probeInputForSource(input);
 		if (e != null) {
 			IClassFileEditorInput classFileEditorInput= (IClassFileEditorInput) input;
 			IClassFile file= classFileEditorInput.getClassFile();
-			IJavaProject javaProject= file.getJavaProject();
-			if (!javaProject.exists() || !javaProject.isOnClasspath(file)) {
+			IJavaScriptProject javaProject= file.getJavaScriptProject();
+			if (!javaProject.exists() || !javaProject.isOnIncludepath(file)) {
 				throw new CoreException(JavaUIStatus.createError(
-						IJavaModelStatusConstants.INVALID_RESOURCE,
+						IJavaScriptModelStatusConstants.INVALID_RESOURCE,
 						JavaEditorMessages.ClassFileEditor_error_classfile_not_on_classpath,
 						null)); 
 			} else {
@@ -656,7 +656,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 
 		verifyInput(getEditorInput());
 		
-		final IJavaElement inputElement= getInputJavaElement();
+		final IJavaScriptElement inputElement= getInputJavaElement();
 
 		Job job= new Job(JavaEditorMessages.OverrideIndicatorManager_intallJob) {
 			/*
@@ -664,7 +664,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 			 * @since 3.0
 			 */
 			protected IStatus run(IProgressMonitor monitor) {
-				CompilationUnit ast= JavaPlugin.getDefault().getASTProvider().getAST(inputElement, ASTProvider.WAIT_YES, null);
+				JavaScriptUnit ast= JavaScriptPlugin.getDefault().getASTProvider().getAST(inputElement, ASTProvider.WAIT_YES, null);
 				if (fOverrideIndicatorManager != null)
 					fOverrideIndicatorManager.reconciled(ast, true, monitor);
 				if (fSemanticManager != null) {
@@ -709,7 +709,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 		}
 	}
 
-	private JavaModelException probeInputForSource(IEditorInput input) {
+	private JavaScriptModelException probeInputForSource(IEditorInput input) {
 		if (input == null)
 			return null;
 
@@ -718,7 +718,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 
 		try {
 			file.getSourceRange();
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return e;
 		}
 
@@ -729,9 +729,9 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 	 * Checks if the class file input has no source attached. If so, a source attachment form is shown.
 	 * 
 	 * @param input the editor input 
-	 * @throws JavaModelException if an exception occurs while accessing its corresponding resource 
+	 * @throws JavaScriptModelException if an exception occurs while accessing its corresponding resource 
 	 */
-	private void verifyInput(IEditorInput input) throws JavaModelException {
+	private void verifyInput(IEditorInput input) throws JavaScriptModelException {
 
 		if (fParent == null || input == null)
 			return;

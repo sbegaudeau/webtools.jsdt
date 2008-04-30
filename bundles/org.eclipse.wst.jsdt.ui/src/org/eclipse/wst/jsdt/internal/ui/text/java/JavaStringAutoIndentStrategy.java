@@ -21,7 +21,7 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
@@ -160,7 +160,7 @@ public class JavaStringAutoIndentStrategy extends DefaultIndentLineAutoEditStrat
 		if (string.trim().length() != 0)
 			indentation += String.valueOf("\t\t"); //$NON-NLS-1$
 
-		IPreferenceStore preferenceStore= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferenceStore= JavaScriptPlugin.getDefault().getPreferenceStore();
 		if (isLineDelimiter(document, command.text))
 			command.text= "\" +" + command.text + indentation + "\"";  //$NON-NLS-1$//$NON-NLS-2$
 		else if (command.text.length() > 1 && preferenceStore.getBoolean(PreferenceConstants.EDITOR_ESCAPE_STRINGS))
@@ -168,7 +168,7 @@ public class JavaStringAutoIndentStrategy extends DefaultIndentLineAutoEditStrat
 	}
 
 	private boolean isSmartMode() {
-		IWorkbenchPage page= JavaPlugin.getActivePage();
+		IWorkbenchPage page= JavaScriptPlugin.getActivePage();
 		if (page != null)  {
 			IEditorPart part= page.getActiveEditor();
 			if (part instanceof ITextEditorExtension3) {
@@ -187,7 +187,7 @@ public class JavaStringAutoIndentStrategy extends DefaultIndentLineAutoEditStrat
 			if (command.text == null)
 				return;
 
-			IPreferenceStore preferenceStore= JavaPlugin.getDefault().getPreferenceStore();
+			IPreferenceStore preferenceStore= JavaScriptPlugin.getDefault().getPreferenceStore();
 
 			if (preferenceStore.getBoolean(PreferenceConstants.EDITOR_WRAP_STRINGS) && isSmartMode()) {
 				javaStringIndentAfterNewLine(document, command);

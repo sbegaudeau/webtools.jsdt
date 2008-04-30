@@ -30,7 +30,7 @@
 		</description>
 		<enablement>
 			<objectClass
-				name="org.eclipse.wst.jsdt.core.IMethod">
+				name="org.eclipse.wst.jsdt.core.IFunction">
 			</objectClass>
 		</enablement>
 	</decorator>	
@@ -47,7 +47,7 @@
 		<enablement>
 			<or>
 				<objectClass
-					name="org.eclipse.wst.jsdt.core.ICompilationUnit">
+					name="org.eclipse.wst.jsdt.core.IJavaScriptUnit">
 				</objectClass>
 				<objectClass
 					name="org.eclipse.wst.jsdt.core.IClassFile">
@@ -60,7 +60,7 @@
    <extension point="org.eclipse.core.runtime.adapters">
 		<factory 
             class="org.eclipse.wst.jsdt.internal.ui.JavaElementAdapterFactory" 
-            adaptableType="org.eclipse.wst.jsdt.core.IJavaElement">
+            adaptableType="org.eclipse.wst.jsdt.core.IJavaScriptElement">
             
             <adapter type="org.eclipse.core.resources.IResource"/>
             
@@ -81,14 +81,14 @@
 		
 		<factory 
             class="org.eclipse.wst.jsdt.internal.ui.JavaProjectAdapterFactory" 
-            adaptableType="org.eclipse.wst.jsdt.core.IJavaProject">
+            adaptableType="org.eclipse.wst.jsdt.core.IJavaScriptProject">
             <adapter type="org.eclipse.core.resources.IProject"/>
 		</factory>
 		
 		<factory 
             class="org.eclipse.wst.jsdt.internal.ui.ResourceAdapterFactory" 
             adaptableType="org.eclipse.core.resources.IResource">
-            <adapter type="org.eclipse.wst.jsdt.core.IJavaElement"/>
+            <adapter type="org.eclipse.wst.jsdt.core.IJavaScriptElement"/>
 		</factory>
 		
 		<factory 
@@ -101,7 +101,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.EditorInputAdapterFactory" 
             adaptableType="org.eclipse.ui.IEditorInput">
             <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
-            <adapter type="org.eclipse.wst.jsdt.core.IJavaElement"/>
+            <adapter type="org.eclipse.wst.jsdt.core.IJavaScriptElement"/>
 		</factory>
 		
 		<factory 
@@ -325,7 +325,7 @@
 		<commandParameterType
 			converter="org.eclipse.wst.jsdt.internal.ui.commands.JavaElementReferenceConverter"
 			id="org.eclipse.wst.jsdt.ui.commands.javaElementReference"
-			type="org.eclipse.wst.jsdt.core.IJavaElement"/>
+			type="org.eclipse.wst.jsdt.core.IJavaScriptElement"/>
 		<command
 			categoryId="org.eclipse.ui.category.navigate"
 			defaultHandler="org.eclipse.wst.jsdt.internal.ui.commands.OpenElementInEditorHandler"
@@ -1776,7 +1776,7 @@
          </action>
       </objectContribution>
       <objectContribution
-            objectClass="org.eclipse.wst.jsdt.core.ICompilationUnit"
+            objectClass="org.eclipse.wst.jsdt.core.IJavaScriptUnit"
             id="org.eclipse.wst.jsdt.internal.ui.compare.JavaAddElementFromHistoryAction">
          <action
                label="%JavaAddElementFromHistoryAction.label"
@@ -5348,7 +5348,7 @@
          <triggerPoints>
             <or>
                <instanceof value="org.eclipse.core.resources.IFolder" />
-               <instanceof value="org.eclipse.wst.jsdt.core.IJavaElement" />
+               <instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
                <instanceof value="org.eclipse.wst.jsdt.internal.ui.model.JavaModelProvider"/>
                <instanceof value="org.eclipse.ltk.core.refactoring.history.RefactoringHistory"/>
                <instanceof value="org.eclipse.ltk.core.refactoring.RefactoringDescriptorProxy"/>
@@ -5362,7 +5362,7 @@
                id="org.eclipse.wst.jsdt.ui.JavaElementSorter">
             <parentExpression>
                <or>
-                  <adapt type="org.eclipse.wst.jsdt.core.IJavaElement"/>
+                  <adapt type="org.eclipse.wst.jsdt.core.IJavaScriptElement"/>
                   <instanceof value="org.eclipse.wst.jsdt.internal.ui.model.JavaModelProvider"/>
                </or>
             </parentExpression>
@@ -5372,7 +5372,7 @@
                suppressedExtensionId="org.eclipse.team.ui.resourceContent"/>
          <possibleChildren>
           <or>
-             <instanceof value="org.eclipse.wst.jsdt.core.IJavaElement"/>
+             <instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement"/>
              <instanceof value="org.eclipse.core.resources.IFolder"/>
              <instanceof value="org.eclipse.core.resources.IFile"/>
              <instanceof value="org.eclipse.ltk.core.refactoring.history.RefactoringHistory"/>
@@ -5412,7 +5412,7 @@
 						<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
 					</adapt>
 					<instanceof	value="org.eclipse.core.resources.IResource" />
-					<instanceof value="org.eclipse.wst.jsdt.core.IJavaElement" />
+					<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
 					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
  				</or>
@@ -5420,7 +5420,7 @@
 			<possibleChildren>
 				<or>
 					<instanceof	value="org.eclipse.core.resources.IResource" />
-					<instanceof value="org.eclipse.wst.jsdt.core.IJavaElement" />
+					<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
 				</or>
 			</possibleChildren> 
@@ -5446,7 +5446,7 @@
 							<instanceof value="org.eclipse.core.resources.IProject" />
           					<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature" />
 						</and>
-						<instanceof value="org.eclipse.wst.jsdt.core.IJavaElement" />
+						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" /> 
 						<instanceof	value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" /> 
 						<adapt type="java.util.Collection"> 
@@ -5466,7 +5466,7 @@
 							<instanceof value="org.eclipse.core.resources.IProject" />
           					<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature" />
 						</and>
-						<instanceof value="org.eclipse.wst.jsdt.core.IJavaElement" />
+						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" /> 
 						<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" /> 
 						<adapt type="java.util.Collection"> 
@@ -5496,7 +5496,7 @@
 		        <or>
 		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragment"/>
 		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
-		           <instanceof value="org.eclipse.wst.jsdt.core.ICompilationUnit"/>
+		           <instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptUnit"/>
 		           <adapt type="org.eclipse.core.resources.IProject">
 		              <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
 		           </adapt>
@@ -5511,7 +5511,7 @@
 		        <or>
 		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragment"/>
 		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
-		           <instanceof value="org.eclipse.wst.jsdt.core.ICompilationUnit"/>
+		           <instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptUnit"/>
 		           <adapt type="org.eclipse.core.resources.IProject">
 		              <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
 		           </adapt>
@@ -5527,7 +5527,7 @@
 		        <or>
 		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragment"/>
 		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
-		           <instanceof value="org.eclipse.wst.jsdt.core.ICompilationUnit"/>
+		           <instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptUnit"/>
 		           <adapt type="org.eclipse.core.resources.IProject">
 		              <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
 		           </adapt>
@@ -5542,7 +5542,7 @@
 		        <or>
 		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragment"/>
 		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
-		           <instanceof value="org.eclipse.wst.jsdt.core.ICompilationUnit"/>
+		           <instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptUnit"/>
 		           <adapt type="org.eclipse.core.resources.IProject">
 		              <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
 		           </adapt>
@@ -5558,7 +5558,7 @@
 					<or>
 						<instanceof value="org.eclipse.wst.jsdt.core.IPackageFragment"/>
 						<instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
-						<instanceof value="org.eclipse.wst.jsdt.core.ICompilationUnit"/>
+						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptUnit"/>
 						<adapt type="org.eclipse.core.resources.IProject">
 							<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
 						</adapt>
@@ -5584,7 +5584,7 @@
  				<possibleDropTargets>
     				<or>
        					<instanceof value="org.eclipse.core.resources.IResource"/>
-       					<instanceof value="org.eclipse.wst.jsdt.core.IJavaElement"/>
+       					<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement"/>
     				</or>
  				</possibleDropTargets>
  			</dropAssistant>		   
@@ -5708,7 +5708,7 @@
 						<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
 					</adapt>
 					<instanceof value="org.eclipse.core.resources.IResource" />
-					<instanceof value="org.eclipse.wst.jsdt.core.IJavaElement" />
+					<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" /> 
 					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
 				</or>

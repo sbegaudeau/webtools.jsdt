@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.ui.text.java;
 
 import org.eclipse.jface.text.contentassist.IContextInformation;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 
 /**
@@ -45,7 +45,7 @@ public interface IJavadocCompletionProcessor {
 	 * @return	an array of context information objects or <code>null</code>
 	 * 				if no context could be found
 	 */
-	IContextInformation[] computeContextInformation(ICompilationUnit cu, int offset);
+	IContextInformation[] computeContextInformation(IJavaScriptUnit cu, int offset);
 
 
 	/**
@@ -62,7 +62,7 @@ public interface IJavadocCompletionProcessor {
 	 * @return an array of completion proposals or <code>null</code> if
 	 *				no proposals could be found
      */
-	IJavaCompletionProposal[] computeCompletionProposals(ICompilationUnit cu, int offset, int length, int flags);
+	IJavaCompletionProposal[] computeCompletionProposals(IJavaScriptUnit cu, int offset, int length, int flags);
 
 
 	/**

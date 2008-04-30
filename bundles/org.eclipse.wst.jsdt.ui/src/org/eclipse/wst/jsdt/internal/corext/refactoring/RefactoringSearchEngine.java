@@ -25,12 +25,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.IRefactoringStatusEntryComparator;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
@@ -48,8 +48,8 @@ public class RefactoringSearchEngine {
 	}
 	
 	//TODO: throw CoreException
-	public static ICompilationUnit[] findAffectedCompilationUnits(SearchPattern pattern,
-			IJavaSearchScope scope, final IProgressMonitor pm, RefactoringStatus status, final boolean tolerateInAccurateMatches) throws JavaModelException {
+	public static IJavaScriptUnit[] findAffectedCompilationUnits(SearchPattern pattern,
+			IJavaScriptSearchScope scope, final IProgressMonitor pm, RefactoringStatus status, final boolean tolerateInAccurateMatches) throws JavaScriptModelException {
 		
 		boolean hasNonCuMatches= false;
 		
@@ -72,26 +72,26 @@ public class RefactoringSearchEngine {
 		try {
 			new SearchEngine().search(pattern, SearchUtils.getDefaultSearchParticipants(), scope, requestor, pm);
 		} catch (CoreException e) {
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		}
 
 		List result= new ArrayList(requestor.resources.size());
 		for (Iterator iter= requestor.resources.iterator(); iter.hasNext(); ) {
 			IResource resource= (IResource) iter.next();
-			IJavaElement element= JavaCore.create(resource);
-			if (element instanceof ICompilationUnit) {
+			IJavaScriptElement element= JavaScriptCore.create(resource);
+			if (element instanceof IJavaScriptUnit) {
 				result.add(element);
 			} else {
 				hasNonCuMatches= true;
 			}
 		}
 		addStatusErrors(status, requestor.hasPotentialMatches, hasNonCuMatches);
-		return (ICompilationUnit[]) result.toArray(new ICompilationUnit[result.size()]);
+		return (IJavaScriptUnit[]) result.toArray(new IJavaScriptUnit[result.size()]);
 	}	
 	
 	//TODO: throw CoreException
-	public static ICompilationUnit[] findAffectedCompilationUnits(SearchPattern pattern,
-			IJavaSearchScope scope, final IProgressMonitor pm, RefactoringStatus status) throws JavaModelException {
+	public static IJavaScriptUnit[] findAffectedCompilationUnits(SearchPattern pattern,
+			IJavaScriptSearchScope scope, final IProgressMonitor pm, RefactoringStatus status) throws JavaScriptModelException {
 		return findAffectedCompilationUnits(pattern, scope, pm, status, false);
 	}
 	
@@ -105,39 +105,39 @@ public class RefactoringSearchEngine {
 	 * @return a {@link SearchResultGroup}[], where each {@link SearchResultGroup} 
 	 * 		has a different {@link SearchMatch#getResource() getResource()}s.
 	 * @see SearchMatch
-	 * @throws JavaModelException when the search failed
+	 * @throws JavaScriptModelException when the search failed
 	 */
 	//TODO: throw CoreException
-	public static SearchResultGroup[] search(SearchPattern pattern, IJavaSearchScope scope, IProgressMonitor monitor, RefactoringStatus status)
-			throws JavaModelException {
+	public static SearchResultGroup[] search(SearchPattern pattern, IJavaScriptSearchScope scope, IProgressMonitor monitor, RefactoringStatus status)
+			throws JavaScriptModelException {
 		return internalSearch(new SearchEngine(), pattern, scope, new CollectingSearchRequestor(), monitor, status);
 	}
 	
 	//TODO: throw CoreException
-	public static SearchResultGroup[] search(SearchPattern pattern, WorkingCopyOwner owner, IJavaSearchScope scope, IProgressMonitor monitor, RefactoringStatus status)
-			throws JavaModelException {
+	public static SearchResultGroup[] search(SearchPattern pattern, WorkingCopyOwner owner, IJavaScriptSearchScope scope, IProgressMonitor monitor, RefactoringStatus status)
+			throws JavaScriptModelException {
 		return internalSearch(owner != null ? new SearchEngine(owner) : new SearchEngine(), pattern, scope, new CollectingSearchRequestor(), monitor, status);
 	}
 	
 	//TODO: throw CoreException
-	public static SearchResultGroup[] search(SearchPattern pattern, IJavaSearchScope scope, CollectingSearchRequestor requestor,
-			IProgressMonitor monitor, RefactoringStatus status) throws JavaModelException {
+	public static SearchResultGroup[] search(SearchPattern pattern, IJavaScriptSearchScope scope, CollectingSearchRequestor requestor,
+			IProgressMonitor monitor, RefactoringStatus status) throws JavaScriptModelException {
 		return internalSearch(new SearchEngine(), pattern, scope, requestor, monitor, status);
 	}
 	
 	//TODO: throw CoreException
-	public static SearchResultGroup[] search(SearchPattern pattern, WorkingCopyOwner owner, IJavaSearchScope scope,
-			CollectingSearchRequestor requestor, IProgressMonitor monitor, RefactoringStatus status) throws JavaModelException {
+	public static SearchResultGroup[] search(SearchPattern pattern, WorkingCopyOwner owner, IJavaScriptSearchScope scope,
+			CollectingSearchRequestor requestor, IProgressMonitor monitor, RefactoringStatus status) throws JavaScriptModelException {
 		return internalSearch(owner != null ? new SearchEngine(owner) : new SearchEngine(), pattern, scope, requestor, monitor, status);
 	}
 		
 	//TODO: throw CoreException
-	private static SearchResultGroup[] internalSearch(SearchEngine searchEngine, SearchPattern pattern, IJavaSearchScope scope,
-			CollectingSearchRequestor requestor, IProgressMonitor monitor, RefactoringStatus status) throws JavaModelException {
+	private static SearchResultGroup[] internalSearch(SearchEngine searchEngine, SearchPattern pattern, IJavaScriptSearchScope scope,
+			CollectingSearchRequestor requestor, IProgressMonitor monitor, RefactoringStatus status) throws JavaScriptModelException {
 		try {
 			searchEngine.search(pattern, SearchUtils.getDefaultSearchParticipants(), scope, requestor, monitor);
 		} catch (CoreException e) {
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		}
 		return groupByCu(requestor.getResults(), status);
 	}
@@ -167,8 +167,8 @@ public class RefactoringSearchEngine {
 		
 		for (Iterator iter= grouped.keySet().iterator(); iter.hasNext();) {
 			IResource resource= (IResource) iter.next();
-			IJavaElement element= JavaCore.create(resource);
-			if (! (element instanceof ICompilationUnit)) {
+			IJavaScriptElement element= JavaScriptCore.create(resource);
+			if (! (element instanceof IJavaScriptUnit)) {
 				iter.remove();
 				hasNonCuMatches= true;
 			}
@@ -187,17 +187,17 @@ public class RefactoringSearchEngine {
 		return result;
 	}
 	
-	public static SearchPattern createOrPattern(IJavaElement[] elements, int limitTo) {
+	public static SearchPattern createOrPattern(IJavaScriptElement[] elements, int limitTo) {
 		if (elements == null || elements.length == 0)
 			return null;
 		Set set= new HashSet(Arrays.asList(elements));
 		Iterator iter= set.iterator();
-		IJavaElement first= (IJavaElement)iter.next();
+		IJavaScriptElement first= (IJavaScriptElement)iter.next();
 		SearchPattern pattern= SearchPattern.createPattern(first, limitTo, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
 		if (pattern == null) // check for bug 90138
 			throw new IllegalArgumentException("Invalid java element: " + first.getHandleIdentifier() + "\n" + first.toString()); //$NON-NLS-1$ //$NON-NLS-2$
 		while(iter.hasNext()){
-			IJavaElement each= (IJavaElement)iter.next();
+			IJavaScriptElement each= (IJavaScriptElement)iter.next();
 			SearchPattern nextPattern= SearchPattern.createPattern(each, limitTo, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
 			if (nextPattern == null) // check for bug 90138
 				throw new IllegalArgumentException("Invalid java element: " + each.getHandleIdentifier() + "\n" + each.toString()); //$NON-NLS-1$ //$NON-NLS-2$

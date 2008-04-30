@@ -20,13 +20,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Resources;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 
@@ -53,7 +53,7 @@ public class JavaElementInfoPage extends PropertyPage {
 		// ensure the page has no special buttons
 		noDefaultAndApplyButton();
 
-		IJavaElement element= (IJavaElement)getElement();
+		IJavaScriptElement element= (IJavaScriptElement)getElement();
 		
 		IResource resource= element.getResource();
 		
@@ -78,8 +78,8 @@ public class JavaElementInfoPage extends PropertyPage {
 			Label pathValueLabel= new Label(composite, SWT.NONE);
 			pathValueLabel.setText(resource.getFullPath().toString());
 		}
-		if (element instanceof ICompilationUnit) {
-			ICompilationUnit unit= (ICompilationUnit)element;
+		if (element instanceof IJavaScriptUnit) {
+			IJavaScriptUnit unit= (IJavaScriptUnit)element;
 			Label packageLabel= new Label(composite, SWT.NONE);
 			packageLabel.setText(PreferencesMessages.JavaElementInfoPage_package); 
 			Label packageName= new Label(composite, SWT.NONE);
@@ -95,7 +95,7 @@ public class JavaElementInfoPage extends PropertyPage {
 					packageContentsType.setText(PreferencesMessages.JavaElementInfoPage_source); 
 				else
 					packageContentsType.setText(PreferencesMessages.JavaElementInfoPage_binary); 
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				packageContentsType.setText(PreferencesMessages.JavaElementInfoPage_not_present); 
 			}
 		} else if (element instanceof IPackageFragmentRoot) {
@@ -103,16 +103,16 @@ public class JavaElementInfoPage extends PropertyPage {
 			rootContents.setText(PreferencesMessages.JavaElementInfoPage_classpath_entry_kind); 
 			Label rootContentsType= new Label(composite, SWT.NONE);
 			try {
-				IClasspathEntry entry= ((IPackageFragmentRoot)element).getRawClasspathEntry();
+				IIncludePathEntry entry= ((IPackageFragmentRoot)element).getRawIncludepathEntry();
 				if (entry != null) {
 					switch (entry.getEntryKind()) {
-						case IClasspathEntry.CPE_SOURCE:
+						case IIncludePathEntry.CPE_SOURCE:
 							rootContentsType.setText(PreferencesMessages.JavaElementInfoPage_source); break; 
-						case IClasspathEntry.CPE_PROJECT:
+						case IIncludePathEntry.CPE_PROJECT:
 							rootContentsType.setText(PreferencesMessages.JavaElementInfoPage_project); break; 
-						case IClasspathEntry.CPE_LIBRARY:
+						case IIncludePathEntry.CPE_LIBRARY:
 							rootContentsType.setText(PreferencesMessages.JavaElementInfoPage_library); break; 
-						case IClasspathEntry.CPE_VARIABLE:
+						case IIncludePathEntry.CPE_VARIABLE:
 							rootContentsType.setText(PreferencesMessages.JavaElementInfoPage_variable); 
 							Label varPath= new Label(composite, SWT.NONE);
 							varPath.setText(PreferencesMessages.JavaElementInfoPage_variable_path); 
@@ -123,13 +123,13 @@ public class JavaElementInfoPage extends PropertyPage {
 				} else {
 					rootContentsType.setText(PreferencesMessages.JavaElementInfoPage_not_present); 
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				rootContentsType.setText(PreferencesMessages.JavaElementInfoPage_not_present); 
 			}
-		} else if (element instanceof IJavaProject) {
+		} else if (element instanceof IJavaScriptProject) {
 			Label packageLabel= new Label(composite, SWT.NONE);
 			packageLabel.setText(PreferencesMessages.JavaElementInfoPage_location); 
-			String location= Resources.getLocationString(((IJavaProject)element).getProject());
+			String location= Resources.getLocationString(((IJavaScriptProject)element).getProject());
 			if (location != null) {
 				Label packageName= new Label(composite, SWT.NONE);
 				packageName.setText(location);				

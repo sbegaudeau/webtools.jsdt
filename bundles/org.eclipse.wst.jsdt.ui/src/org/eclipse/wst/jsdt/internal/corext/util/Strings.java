@@ -16,7 +16,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultLineTracker;
 import org.eclipse.jface.text.ILineTracker;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 
 
@@ -155,7 +155,7 @@ public class Strings {
 	 *        preferences, or <code>null</code> for global preferences
 	 * @since 3.1
 	 */
-	public static int computeIndentUnits(String line, IJavaProject project) {
+	public static int computeIndentUnits(String line, IJavaScriptProject project) {
 		return IndentManipulation.measureIndentUnits(line, CodeFormatterUtil.getTabWidth(project), CodeFormatterUtil.getIndentWidth(project));
 	}
 	
@@ -195,7 +195,7 @@ public class Strings {
 	 *        preferences, or <code>null</code> for global preferences
 	 * @since 3.1
 	 */
-	public static String trimIndent(String line, int indentsToRemove, IJavaProject project) {
+	public static String trimIndent(String line, int indentsToRemove, IJavaScriptProject project) {
 		return IndentManipulation.trimIndent(line, indentsToRemove, CodeFormatterUtil.getTabWidth(project), CodeFormatterUtil.getIndentWidth(project));
 	}
 	
@@ -218,7 +218,7 @@ public class Strings {
 	 *        preferences, or <code>null</code> for global preferences
 	 * @since 3.1
 	 */
-	public static void trimIndentation(String[] lines, IJavaProject project) {
+	public static void trimIndentation(String[] lines, IJavaScriptProject project) {
 		trimIndentation(lines, CodeFormatterUtil.getTabWidth(project), CodeFormatterUtil.getIndentWidth(project), true);
 	}
 	/**
@@ -240,7 +240,7 @@ public class Strings {
 	 *        preferences, or <code>null</code> for global preferences
 	 * @since 3.1
 	 */
-	public static void trimIndentation(String[] lines, IJavaProject project, boolean considerFirstLine) {
+	public static void trimIndentation(String[] lines, IJavaScriptProject project, boolean considerFirstLine) {
 		trimIndentation(lines, CodeFormatterUtil.getTabWidth(project), CodeFormatterUtil.getIndentWidth(project), considerFirstLine);
 	}
 	
@@ -293,7 +293,7 @@ public class Strings {
 	 * @return the indent part of <code>line</code>, but no odd spaces
 	 * @since 3.1
 	 */
-	public static String getIndentString(String line, IJavaProject project) {
+	public static String getIndentString(String line, IJavaScriptProject project) {
 		return IndentManipulation.extractIndentString(line, CodeFormatterUtil.getTabWidth(project), CodeFormatterUtil.getIndentWidth(project));
 	}
 	
@@ -337,7 +337,7 @@ public class Strings {
 	 *        preferences, or <code>null</code> for global preferences
 	 * @since 3.1
 	 */
-	public static String changeIndent(String code, int codeIndentLevel, IJavaProject project, String newIndent, String lineDelim) {
+	public static String changeIndent(String code, int codeIndentLevel, IJavaScriptProject project, String newIndent, String lineDelim) {
 		return IndentManipulation.changeIndent(code, codeIndentLevel, CodeFormatterUtil.getTabWidth(project), CodeFormatterUtil.getIndentWidth(project), newIndent, lineDelim);
 	}
 	
@@ -351,7 +351,7 @@ public class Strings {
 		return IndentManipulation.changeIndent(code, codeIndentLevel, tabWidth, indentWidth, newIndent, lineDelim);
 	}
 	
-	public static String trimIndentation(String source, IJavaProject project, boolean considerFirstLine) {
+	public static String trimIndentation(String source, IJavaScriptProject project, boolean considerFirstLine) {
 		return trimIndentation(source, CodeFormatterUtil.getTabWidth(project), CodeFormatterUtil.getIndentWidth(project), considerFirstLine);
 	}
 	

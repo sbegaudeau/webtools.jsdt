@@ -15,7 +15,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //
 //	private FieldBinding[] fields;
 //
-//	private MethodBinding[] methods;
+//	private FunctionBinding[] methods;
 //	public long tagBits = 0; // See values in the interface TagBits below
 	CompilationUnitScope compilationUnitScope;
 	private char[]shortName;
@@ -70,7 +70,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //
 ////	NOTE: the return type, arg & exception types of each method of a source type are resolved when needed
 ////	searches up the hierarchy as long as no potential (but not exact) match was found.
-//	public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes, CompilationUnitScope refScope) {
+//	public FunctionBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes, CompilationUnitScope refScope) {
 //		// sender from refScope calls recordTypeReference(this)
 //		int argCount = argumentTypes.length;
 //		boolean foundNothing = true;
@@ -79,7 +79,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //			long range;
 //			if ((range = ReferenceBinding.binarySearch(selector, this.methods)) >= 0) {
 //				nextMethod: for (int imethod = (int)range, end = (int)(range >> 32); imethod <= end; imethod++) {
-//					MethodBinding method = this.methods[imethod];
+//					FunctionBinding method = this.methods[imethod];
 //					foundNothing = false; // inner type lookups must know that a method with this name exists
 //					if (method.parameters.length == argCount) {
 //						TypeBinding[] toMatch = method.parameters;
@@ -104,7 +104,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //				// check unresolved method
 //				int start = (int) range, end = (int) (range >> 32);
 //				for (int imethod = start; imethod <= end; imethod++) {
-//					MethodBinding method = this.methods[imethod];
+//					FunctionBinding method = this.methods[imethod];
 //					if (resolveTypesFor(method) == null || method.returnType == null) {
 //						methods();
 //						return getExactMethod(selector, argumentTypes, refScope); // try again since the problem methods have been removed
@@ -113,9 +113,9 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //				// check dup collisions
 ////				boolean isSource15 = this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
 //				for (int i = start; i <= end; i++) {
-//					MethodBinding method1 = this.methods[i];
+//					FunctionBinding method1 = this.methods[i];
 //					for (int j = end; j > i; j--) {
-//						MethodBinding method2 = this.methods[j];
+//						FunctionBinding method2 = this.methods[j];
 //						boolean paramsMatch =
 ////							isSource15
 ////							? method1.areParameterErasuresEqual(method2)
@@ -128,7 +128,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //					}
 //				}
 //				nextMethod: for (int imethod = start; imethod <= end; imethod++) {
-//					MethodBinding method = this.methods[imethod];
+//					FunctionBinding method = this.methods[imethod];
 //					TypeBinding[] toMatch = method.parameters;
 //					if (toMatch.length == argCount) {
 //						for (int iarg = 0; iarg < argCount; iarg++)
@@ -200,7 +200,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //
 //
 ////	 NOTE: the return type, arg & exception types of each method of a source type are resolved when needed
-//	public MethodBinding[] methods() {
+//	public FunctionBinding[] methods() {
 //		if ((this.tagBits & TagBits.AreMethodsComplete) != 0)
 //			return this.methods;
 //
@@ -224,13 +224,13 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //			// find & report collision cases
 //			boolean complyTo15 = this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
 //			for (int i = 0, length = this.methods.length; i < length; i++) {
-//				MethodBinding method = this.methods[i];
+//				FunctionBinding method = this.methods[i];
 //				if (method == null)
 //					continue;
 //				char[] selector = method.selector;
 //				AbstractMethodDeclaration methodDecl = null;
 //				nextSibling: for (int j = i + 1; j < length; j++) {
-//					MethodBinding method2 = this.methods[j];
+//					FunctionBinding method2 = this.methods[j];
 //					if (method2 == null)
 //						continue nextSibling;
 //					if (!CharOperation.equals(selector, method2.selector))
@@ -249,9 +249,9 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //						TypeVariableBinding[] vars = method.typeVariables;
 //						TypeVariableBinding[] vars2 = method2.typeVariables;
 //						boolean equalTypeVars = vars == vars2;
-//						MethodBinding subMethod = method2;
+//						FunctionBinding subMethod = method2;
 //						if (!equalTypeVars) {
-//							MethodBinding temp = method.computeSubstitutedMethod(method2, this.scope.environment());
+//							FunctionBinding temp = method.computeSubstitutedMethod(method2, this.scope.environment());
 //							if (temp != null) {
 //								equalTypeVars = true;
 //								subMethod = temp;
@@ -329,7 +329,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //				if (newSize == 0) {
 //					this.methods = Binding.NO_METHODS;
 //				} else {
-//					MethodBinding[] newMethods = new MethodBinding[newSize];
+//					FunctionBinding[] newMethods = new FunctionBinding[newSize];
 //					for (int i = 0, j = 0, length = this.methods.length; i < length; i++)
 //						if (this.methods[i] != null)
 //							newMethods[j++] = this.methods[i];
@@ -399,7 +399,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //		}
 //		return null; // should never reach this point
 //	}
-//	private MethodBinding resolveTypesFor(MethodBinding method) {
+//	private FunctionBinding resolveTypesFor(FunctionBinding method) {
 //		if ((method.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
 //			return method;
 //
@@ -478,8 +478,8 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //
 //		boolean foundReturnTypeProblem = false;
 //		if (!method.isConstructor()) {
-//			TypeReference returnType = methodDecl instanceof MethodDeclaration
-//				? ((MethodDeclaration) methodDecl).returnType
+//			TypeReference returnType = methodDecl instanceof FunctionDeclaration
+//				? ((FunctionDeclaration) methodDecl).returnType
 //				: null;
 //			if (returnType != null) {
 ////				methodDecl.scope.problemReporter().missingReturnType(methodDecl);
@@ -491,7 +491,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //					foundReturnTypeProblem = true;
 //				}
 ////				else if (methodType.isArrayType() && ((ArrayBinding) methodType).leafComponentType == TypeBinding.VOID) {
-////					methodDecl.scope.problemReporter().returnTypeCannotBeVoidArray(this, (MethodDeclaration) methodDecl);
+////					methodDecl.scope.problemReporter().returnTypeCannotBeVoidArray(this, (FunctionDeclaration) methodDecl);
 ////					foundReturnTypeProblem = true;
 ////				}
 //				else {
@@ -523,7 +523,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //	public void setFields(FieldBinding[] fields) {
 //		this.fields = fields;
 //	}
-//	public void setMethods(MethodBinding[] methods) {
+//	public void setMethods(FunctionBinding[] methods) {
 //		this.methods = methods;
 //	}
 

@@ -17,9 +17,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
@@ -98,10 +98,10 @@ public class InlineAction extends SelectionDispatchAction {
 		if (typeRoot == null)
 			return;
 
-		CompilationUnit node= RefactoringASTParser.parseWithASTProvider(typeRoot, true, null);
+		JavaScriptUnit node= RefactoringASTParser.parseWithASTProvider(typeRoot, true, null);
 		
-		if (typeRoot instanceof ICompilationUnit) {
-			ICompilationUnit cu= (ICompilationUnit) typeRoot;
+		if (typeRoot instanceof IJavaScriptUnit) {
+			IJavaScriptUnit cu= (IJavaScriptUnit) typeRoot;
 			if (fInlineTemp.isEnabled() && fInlineTemp.tryInlineTemp(cu, node, selection, getShell()))
 				return;
 

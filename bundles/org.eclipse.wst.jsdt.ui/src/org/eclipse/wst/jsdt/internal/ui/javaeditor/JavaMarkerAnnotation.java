@@ -18,10 +18,10 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.eclipse.ui.texteditor.MarkerUtilities;
 import org.eclipse.wst.jsdt.core.CorrectionEngine;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelMarker;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelMarker;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 
 
@@ -59,15 +59,15 @@ public class JavaMarkerAnnotation extends MarkerAnnotation implements IJavaAnnot
 			return -1;
 
 		if (isProblem())
-			return marker.getAttribute(IJavaModelMarker.ID, -1);
+			return marker.getAttribute(IJavaScriptModelMarker.ID, -1);
 
 //		if (TASK_ANNOTATION_TYPE.equals(getAnnotationType())) {
 //			try {
-//				if (marker.isSubtypeOf(IJavaModelMarker.TASK_MARKER)) {
+//				if (marker.isSubtypeOf(IJavaScriptModelMarker.TASK_MARKER)) {
 //					return IProblem.Task;
 //				}
 //			} catch (CoreException e) {
-//				JavaPlugin.log(e); // should no happen, we test for marker.exists
+//				JavaScriptPlugin.log(e); // should no happen, we test for marker.exists
 //			}
 //		}
 
@@ -138,10 +138,10 @@ public class JavaMarkerAnnotation extends MarkerAnnotation implements IJavaAnnot
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.IJavaAnnotation#getCompilationUnit()
 	 */
-	public ICompilationUnit getCompilationUnit() {
-		IJavaElement element= JavaCore.create(getMarker().getResource());
-		if (element instanceof ICompilationUnit) {
-			return (ICompilationUnit)element;
+	public IJavaScriptUnit getCompilationUnit() {
+		IJavaScriptElement element= JavaScriptCore.create(getMarker().getResource());
+		if (element instanceof IJavaScriptUnit) {
+			return (IJavaScriptUnit)element;
 		}
 		return null;
 	}

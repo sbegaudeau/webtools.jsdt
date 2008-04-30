@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.search;
 
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 
 
 /**
@@ -34,7 +34,7 @@ public class PatternQuerySpecification extends QuerySpecification {
 	 * @param pattern
 	 *            The string that the query should search for.
 	 * @param searchFor
-	 *            What kind of <code>IJavaElement</code> the query should search for.
+	 *            What kind of <code>IJavaScriptElement</code> the query should search for.
 	 * @param caseSensitive
 	 *            Whether the query should be case sensitive.
 	 * @param limitTo
@@ -46,7 +46,7 @@ public class PatternQuerySpecification extends QuerySpecification {
 	 * 
 	 * @see org.eclipse.wst.jsdt.core.search.SearchPattern#createPattern(java.lang.String, int, int, int)
 	 */
-	public PatternQuerySpecification(String pattern, int searchFor, boolean caseSensitive, int limitTo, IJavaSearchScope scope, String scopeDescription) {
+	public PatternQuerySpecification(String pattern, int searchFor, boolean caseSensitive, int limitTo, IJavaScriptSearchScope scope, String scopeDescription) {
 		super(limitTo, scope, scopeDescription);
 		fPattern= pattern;
 		fSearchFor= searchFor;
@@ -71,11 +71,11 @@ public class PatternQuerySpecification extends QuerySpecification {
 	}
 
 	/**
-	 * Returns what kind of <code>IJavaElement</code> the query should search for.
+	 * Returns what kind of <code>IJavaScriptElement</code> the query should search for.
 	 * 
-	 * @return The kind of <code>IJavaElement</code> to search for.
+	 * @return The kind of <code>IJavaScriptElement</code> to search for.
 	 * 
-	 * @see org.eclipse.wst.jsdt.core.search.IJavaSearchConstants
+	 * @see org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants
 	 */
 	public int getSearchFor() {
 		return fSearchFor;

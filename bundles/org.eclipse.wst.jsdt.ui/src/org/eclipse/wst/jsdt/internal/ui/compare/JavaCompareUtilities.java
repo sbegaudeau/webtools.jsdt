@@ -32,15 +32,15 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileDocumentSetupParticipant;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 
 class JavaCompareUtilities {
@@ -88,18 +88,18 @@ class JavaCompareUtilities {
 
 	static ImageDescriptor getImageDescriptor(int type) {
 		switch (type) {			
-		case IJavaElement.INITIALIZER:
-		case IJavaElement.METHOD:
+		case IJavaScriptElement.INITIALIZER:
+		case IJavaScriptElement.METHOD:
 			return getImageDescriptor("obj16/compare_method.gif"); //$NON-NLS-1$			
-		case IJavaElement.FIELD:
+		case IJavaScriptElement.FIELD:
 			return getImageDescriptor("obj16/compare_field.gif"); //$NON-NLS-1$
-		case IJavaElement.PACKAGE_DECLARATION:
+		case IJavaScriptElement.PACKAGE_DECLARATION:
 			return JavaPluginImages.DESC_OBJS_PACKDECL;
-		case IJavaElement.IMPORT_DECLARATION:
+		case IJavaScriptElement.IMPORT_DECLARATION:
 			return JavaPluginImages.DESC_OBJS_IMPDECL;
-		case IJavaElement.IMPORT_CONTAINER:
+		case IJavaScriptElement.IMPORT_CONTAINER:
 			return JavaPluginImages.DESC_OBJS_IMPCONT;
-		case IJavaElement.COMPILATION_UNIT:
+		case IJavaScriptElement.JAVASCRIPT_UNIT:
 			return JavaPluginImages.DESC_OBJS_CUNIT;
 		}
 		return ImageDescriptor.getMissingImageDescriptor();
@@ -121,12 +121,12 @@ class JavaCompareUtilities {
 
 	static ImageDescriptor getImageDescriptor(IMember element) {
 		int t= element.getElementType();
-		if (t == IJavaElement.TYPE) {
+		if (t == IJavaScriptElement.TYPE) {
 			IType type= (IType) element;
 			try {
 				return getTypeImageDescriptor(type.isClass());
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 				return JavaPluginImages.DESC_OBJS_GHOST;
 			}
 		}
@@ -137,7 +137,7 @@ class JavaCompareUtilities {
 	 * Returns a name for the given Java element that uses the same conventions
 	 * as the JavaNode name of a corresponding element.
 	 */
-	static String getJavaElementID(IJavaElement je) {
+	static String getJavaElementID(IJavaScriptElement je) {
 		
 		if (je instanceof IMember && ((IMember)je).isBinary())
 			return null;
@@ -145,34 +145,34 @@ class JavaCompareUtilities {
 		StringBuffer sb= new StringBuffer();
 		
 		switch (je.getElementType()) {
-		case IJavaElement.COMPILATION_UNIT:
+		case IJavaScriptElement.JAVASCRIPT_UNIT:
 			sb.append(COMPILATIONUNIT);
 			break;
-		case IJavaElement.TYPE:
+		case IJavaScriptElement.TYPE:
 			sb.append(TYPE);
 			sb.append(je.getElementName());
 			break;
-		case IJavaElement.FIELD:
+		case IJavaScriptElement.FIELD:
 			sb.append(FIELD);
 			sb.append(je.getElementName());
 			break;
-		case IJavaElement.METHOD:
+		case IJavaScriptElement.METHOD:
 			sb.append(METHOD);
-			sb.append(JavaElementLabels.getElementLabel(je, JavaElementLabels.M_PARAMETER_TYPES));
+			sb.append(JavaScriptElementLabels.getElementLabel(je, JavaScriptElementLabels.M_PARAMETER_TYPES));
 			break;
-		case IJavaElement.INITIALIZER:
+		case IJavaScriptElement.INITIALIZER:
 			String id= je.getHandleIdentifier();
 			int pos= id.lastIndexOf(INITIALIZER);
 			if (pos >= 0)
 				sb.append(id.substring(pos));
 			break;
-		case IJavaElement.PACKAGE_DECLARATION:
+		case IJavaScriptElement.PACKAGE_DECLARATION:
 			sb.append(PACKAGEDECLARATION);
 			break;
-		case IJavaElement.IMPORT_CONTAINER:
+		case IJavaScriptElement.IMPORT_CONTAINER:
 			sb.append(IMPORT_CONTAINER);
 			break;
-		case IJavaElement.IMPORT_DECLARATION:
+		case IJavaScriptElement.IMPORT_DECLARATION:
 			sb.append(IMPORTDECLARATION);
 			sb.append(je.getElementName());			
 			break;
@@ -231,7 +231,7 @@ class JavaCompareUtilities {
 
 	static ImageDescriptor getImageDescriptor(String relativePath) {
 		IPath path= JavaPluginImages.ICONS_PATH.append(relativePath);
-		return JavaPluginImages.createImageDescriptor(JavaPlugin.getDefault().getBundle(), path, true);
+		return JavaPluginImages.createImageDescriptor(JavaScriptPlugin.getDefault().getBundle(), path, true);
 	}
 	
 	static boolean getBoolean(CompareConfiguration cc, String key, boolean dflt) {
@@ -248,24 +248,24 @@ class JavaCompareUtilities {
 		return id.createImage();
 	}
 
-	static JavaTextTools getJavaTextTools() {
-		JavaPlugin plugin= JavaPlugin.getDefault();
+	static JavaScriptTextTools getJavaTextTools() {
+		JavaScriptPlugin plugin= JavaScriptPlugin.getDefault();
 		if (plugin != null)
 			return plugin.getJavaTextTools();
 		return null;
 	}
 	
 	static IDocumentPartitioner createJavaPartitioner() {
-		JavaTextTools tools= getJavaTextTools();
+		JavaScriptTextTools tools= getJavaTextTools();
 		if (tools != null)
 			return tools.createDocumentPartitioner();
 		return null;
 	}
 	
 	static void setupDocument(IDocument document) {
-		JavaTextTools tools= getJavaTextTools();
+		JavaScriptTextTools tools= getJavaTextTools();
 		if (tools != null)
-			tools.setupJavaDocumentPartitioner(document, IJavaPartitions.JAVA_PARTITIONING);
+			tools.setupJavaDocumentPartitioner(document, IJavaScriptPartitions.JAVA_PARTITIONING);
 	}
 	
 	static void setupPropertiesFileDocument(IDocument document) {

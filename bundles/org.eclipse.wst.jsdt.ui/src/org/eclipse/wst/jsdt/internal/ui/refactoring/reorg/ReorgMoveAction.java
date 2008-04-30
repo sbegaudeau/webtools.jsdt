@@ -18,14 +18,14 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.MoveProjectAction;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaTextSelection;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
@@ -48,16 +48,16 @@ public class ReorgMoveAction extends SelectionDispatchAction {
 			try {
 				List elements= selection.toList();
 				IResource[] resources= ReorgUtils.getResources(elements);
-				IJavaElement[] javaElements= ReorgUtils.getJavaElements(elements);
+				IJavaScriptElement[] javaElements= ReorgUtils.getJavaElements(elements);
 				if (elements.size() != resources.length + javaElements.length)
 					setEnabled(false);
 				else
 					setEnabled(RefactoringAvailabilityTester.isMoveAvailable(resources, javaElements));
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// no ui here - this happens on selection changes
 				// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 				if (JavaModelUtil.isExceptionToBeLogged(e))
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 				setEnabled(false);
 			}
 		} else
@@ -74,7 +74,7 @@ public class ReorgMoveAction extends SelectionDispatchAction {
 	public void selectionChanged(JavaTextSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isMoveAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			setEnabled(false);
 		}
 	}
@@ -93,10 +93,10 @@ public class ReorgMoveAction extends SelectionDispatchAction {
 		try {
 			List elements= selection.toList();
 			IResource[] resources= ReorgUtils.getResources(elements);
-			IJavaElement[] javaElements= ReorgUtils.getJavaElements(elements);
+			IJavaScriptElement[] javaElements= ReorgUtils.getJavaElements(elements);
 			if (RefactoringAvailabilityTester.isMoveAvailable(resources, javaElements))
 				RefactoringExecutionStarter.startMoveRefactoring(resources, javaElements, getShell());
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringMessages.OpenRefactoringWizardAction_exception); 
 		}
 	}

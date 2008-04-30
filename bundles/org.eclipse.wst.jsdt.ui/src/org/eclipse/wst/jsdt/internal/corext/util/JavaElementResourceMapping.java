@@ -29,15 +29,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.browsing.LogicalPackage;
 import org.eclipse.wst.jsdt.internal.ui.model.JavaModelProvider;
 
@@ -53,10 +53,10 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 	protected JavaElementResourceMapping() {
 	}
 	
-	public IJavaElement getJavaElement() {
+	public IJavaScriptElement getJavaElement() {
 		Object o= getModelObject();
-		if (o instanceof IJavaElement)
-			return (IJavaElement)o;
+		if (o instanceof IJavaScriptElement)
+			return (IJavaScriptElement)o;
 		return null;
 	}
 	
@@ -67,7 +67,7 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 	}
 	
 	public int hashCode() {
-		IJavaElement javaElement= getJavaElement();
+		IJavaScriptElement javaElement= getJavaElement();
 		if (javaElement == null)
 			return super.hashCode();
 		
@@ -81,8 +81,8 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 	public boolean contains(ResourceMapping mapping) {
 		if (mapping instanceof JavaElementResourceMapping) {
 			JavaElementResourceMapping javaMapping = (JavaElementResourceMapping) mapping;
-			IJavaElement element = getJavaElement();
-			IJavaElement other = javaMapping.getJavaElement();
+			IJavaScriptElement element = getJavaElement();
+			IJavaScriptElement other = javaMapping.getJavaElement();
 			if (other != null && element != null)
 				return element.getPath().isPrefixOf(other.getPath());
 		}
@@ -92,8 +92,8 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 	//---- the factory code ---------------------------------------------------------------
 	
 	private static final class JavaModelResourceMapping extends JavaElementResourceMapping {
-		private final IJavaModel fJavaModel;
-		private JavaModelResourceMapping(IJavaModel model) {
+		private final IJavaScriptModel fJavaModel;
+		private JavaModelResourceMapping(IJavaScriptModel model) {
 			Assert.isNotNull(model);
 			fJavaModel= model;
 		}
@@ -101,11 +101,11 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 			return fJavaModel;
 		}
 		public IProject[] getProjects() {
-			IJavaProject[] projects= null;
+			IJavaScriptProject[] projects= null;
 			try {
-				projects= fJavaModel.getJavaProjects();
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+				projects= fJavaModel.getJavaScriptProjects();
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 				return new IProject[0];
 			}
 			IProject[] result= new IProject[projects.length];
@@ -115,7 +115,7 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 			return result;
 		}
 		public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) throws CoreException {
-			IJavaProject[] projects= fJavaModel.getJavaProjects();
+			IJavaScriptProject[] projects= fJavaModel.getJavaScriptProjects();
 			ResourceTraversal[] result= new ResourceTraversal[projects.length];
 			for (int i= 0; i < projects.length; i++) {
 				result[i]= new ResourceTraversal(new IResource[] {projects[i].getProject()}, IResource.DEPTH_INFINITE, 0);
@@ -125,8 +125,8 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 	}
 	
 	private static final class JavaProjectResourceMapping extends JavaElementResourceMapping {
-		private final IJavaProject fProject;
-		private JavaProjectResourceMapping(IJavaProject project) {
+		private final IJavaScriptProject fProject;
+		private JavaProjectResourceMapping(IJavaScriptProject project) {
 			Assert.isNotNull(project);
 			fProject= project;
 		}
@@ -153,7 +153,7 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 			return fRoot;
 		}
 		public IProject[] getProjects() {
-			return new IProject[] {fRoot.getJavaProject().getProject() };
+			return new IProject[] {fRoot.getJavaScriptProject().getProject() };
 		}
 		public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) throws CoreException {
 			return new ResourceTraversal[] {
@@ -189,7 +189,7 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 			return fPack;
 		}
 		public IProject[] getProjects() {
-			return new IProject[] { fPack.getJavaProject().getProject() };
+			return new IProject[] { fPack.getJavaScriptProject().getProject() };
 		}
 		public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) throws CoreException {
 			if (context instanceof RemoteResourceMappingContext) {
@@ -241,8 +241,8 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 	
 	
 	private static final class CompilationUnitResourceMapping extends JavaElementResourceMapping {
-		private final ICompilationUnit fUnit;
-		private CompilationUnitResourceMapping(ICompilationUnit unit) {
+		private final IJavaScriptUnit fUnit;
+		private CompilationUnitResourceMapping(IJavaScriptUnit unit) {
 			Assert.isNotNull(unit);
 			fUnit= unit;
 		}
@@ -250,7 +250,7 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 			return fUnit;
 		}
 		public IProject[] getProjects() {
-			return new IProject[] {fUnit.getJavaProject().getProject() };
+			return new IProject[] {fUnit.getJavaScriptProject().getProject() };
 		}
 		public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) throws CoreException {
 			return new ResourceTraversal[] {
@@ -268,7 +268,7 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 			return fClassFile;
 		}
 		public IProject[] getProjects() {
-			return new IProject[] { fClassFile.getJavaProject().getProject() };
+			return new IProject[] { fClassFile.getJavaScriptProject().getProject() };
 		}
 		public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) throws CoreException {
 			return new ResourceTraversal[] {
@@ -288,7 +288,7 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 		public IProject[] getProjects() {
 			Set result= new HashSet();
 			for (int i= 0; i < fFragments.length; i++) {
-				result.add(fFragments[i].getJavaProject().getProject());
+				result.add(fFragments[i].getJavaScriptProject().getProject());
 			}
 			return (IProject[])result.toArray(new IProject[result.size()]);
 		}
@@ -312,33 +312,33 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 		}
 	}
 	
-	public static ResourceMapping create(IJavaElement element) {
+	public static ResourceMapping create(IJavaScriptElement element) {
 		switch (element.getElementType()) {
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				return create((IType)element);
-			case IJavaElement.COMPILATION_UNIT:
-				return create((ICompilationUnit)element);
-			case IJavaElement.CLASS_FILE:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
+				return create((IJavaScriptUnit)element);
+			case IJavaScriptElement.CLASS_FILE:
 				return create((IClassFile)element);
-			case IJavaElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				return create((IPackageFragment)element);
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 				return create((IPackageFragmentRoot)element);
-			case IJavaElement.JAVA_PROJECT:
-				return create((IJavaProject)element);
-			case IJavaElement.JAVA_MODEL:
-				return create((IJavaModel)element);
+			case IJavaScriptElement.JAVASCRIPT_PROJECT:
+				return create((IJavaScriptProject)element);
+			case IJavaScriptElement.JAVASCRIPT_MODEL:
+				return create((IJavaScriptModel)element);
 			default:
 				return null;
 		}		
 		
 	}
 
-	public static ResourceMapping create(final IJavaModel model) {
+	public static ResourceMapping create(final IJavaScriptModel model) {
 		return new JavaModelResourceMapping(model);
 	}
 	
-	public static ResourceMapping create(final IJavaProject project) {
+	public static ResourceMapping create(final IJavaScriptProject project) {
 		return new JavaProjectResourceMapping(project);
 	}
 	
@@ -350,14 +350,14 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 	
 	public static ResourceMapping create(final IPackageFragment pack) {
 		// test if in an archive
-		IPackageFragmentRoot root= (IPackageFragmentRoot)pack.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+		IPackageFragmentRoot root= (IPackageFragmentRoot)pack.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 		if (!root.isArchive()) {
 			return new PackageFragmentResourceMapping(pack);
 		}
 		return null;
 	}
 	
-	public static ResourceMapping create(ICompilationUnit unit) {
+	public static ResourceMapping create(IJavaScriptUnit unit) {
 		if (unit == null)
 			return null;
 		return new CompilationUnitResourceMapping(unit.getPrimary());
@@ -365,7 +365,7 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 	
 	public static ResourceMapping create(IClassFile classFile) {
 		// test if in a archive
-		IPackageFragmentRoot root= (IPackageFragmentRoot)classFile.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+		IPackageFragmentRoot root= (IPackageFragmentRoot)classFile.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 		if (!root.isArchive()) {
 			return new ClassFileResourceMapping(classFile);
 		}
@@ -374,9 +374,9 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 	
 	public static ResourceMapping create(IType type) {
 		// top level types behave like the CU
-		IJavaElement parent= type.getParent();
-		if (parent instanceof ICompilationUnit) {
-			return create((ICompilationUnit)parent);
+		IJavaScriptElement parent= type.getParent();
+		if (parent instanceof IJavaScriptUnit) {
+			return create((IJavaScriptUnit)parent);
 		}
 		return null;
 	}
@@ -386,7 +386,7 @@ public abstract class JavaElementResourceMapping extends ResourceMapping {
 		List toProcess= new ArrayList(fragments.length);
 		for (int i= 0; i < fragments.length; i++) {
 			// only add if not part of an archive
-			IPackageFragmentRoot root= (IPackageFragmentRoot)fragments[i].getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+			IPackageFragmentRoot root= (IPackageFragmentRoot)fragments[i].getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 			if (!root.isArchive()) {
 				toProcess.add(fragments[i]);
 			}

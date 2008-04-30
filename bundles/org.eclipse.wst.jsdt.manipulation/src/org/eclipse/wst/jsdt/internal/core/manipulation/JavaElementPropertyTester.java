@@ -17,10 +17,10 @@ import org.eclipse.core.runtime.CoreException;
 
 import org.eclipse.core.expressions.PropertyTester;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * A property tester for various properties of IJavaElements.
@@ -88,17 +88,17 @@ public class JavaElementPropertyTester extends PropertyTester {
 	 * @see org.eclipse.core.expressions.IPropertyTester#test(java.lang.Object, java.lang.String, java.lang.Object[], java.lang.Object)
 	 */
 	public boolean test(Object receiver, String method, Object[] args, Object expectedValue) {
-		if (!(receiver instanceof IJavaElement)) {
+		if (!(receiver instanceof IJavaScriptElement)) {
 			return false;
 		}
-		IJavaElement res = (IJavaElement) receiver;
+		IJavaScriptElement res = (IJavaScriptElement) receiver;
 		if (method.equals(NAME)) {
 			return Pattern.matches(toString(expectedValue), res.getElementName());
 		} else if (method.equals(IS_IN_JAVA_PROJECT)) {
-			IJavaProject javaProject= res.getJavaProject();
+			IJavaScriptProject javaProject= res.getJavaScriptProject();
 			return javaProject != null && javaProject.exists() && javaProject.getProject().isOpen();
 		} else if (method.equals(IS_IN_JAVA_PROJECT_WITH_NATURE)) {
-			IJavaProject javaProject= res.getJavaProject();
+			IJavaScriptProject javaProject= res.getJavaScriptProject();
 			if (javaProject != null && javaProject.exists() && javaProject.getProject().isOpen() ) {
 				if (expectedValue != null) {
 					try {
@@ -110,35 +110,35 @@ public class JavaElementPropertyTester extends PropertyTester {
 			}
 			return false;
 		} else if (method.equals(IS_ON_CLASSPATH)) {
-			IJavaProject javaProject= res.getJavaProject();
+			IJavaScriptProject javaProject= res.getJavaScriptProject();
 			if (javaProject != null && javaProject.exists()) {
-				return javaProject.isOnClasspath(res);
+				return javaProject.isOnIncludepath(res);
 			}
 			return false;
 		} else if (method.equals(IN_SOURCE_FOLDER)) {
-			IJavaElement root= res.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+			IJavaScriptElement root= res.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 			if (root != null) {
 				try {
 					return ((IPackageFragmentRoot) root).getKind() == IPackageFragmentRoot.K_SOURCE;
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					// ignore
 				}
 			}
 			return false;
 		} else if (method.equals(IN_ARCHIVE)) {
-			IJavaElement root= res.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+			IJavaScriptElement root= res.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 			if (root != null) {
 				return ((IPackageFragmentRoot) root).isArchive();
 			}
 			return false;
 		} else if (method.equals(IN_EXTERNAL_ARCHIVE)) {
-			IJavaElement root= res.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+			IJavaScriptElement root= res.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 			if (root != null) {
 				return ((IPackageFragmentRoot) root).isExternal();
 			}
 			return false;
 		} else if (method.equals(PROJECT_OPTION)) {
-			IJavaProject project= res.getJavaProject();
+			IJavaScriptProject project= res.getJavaScriptProject();
 			if (project != null) {
 				if (args.length == 2) {
 					String current= project.getOption(toString(args[0]), true);
@@ -149,11 +149,11 @@ public class JavaElementPropertyTester extends PropertyTester {
 			}
 			return false;
 		} else if (method.equals(HAS_TYPE_ON_CLASSPATH)) {
-			IJavaProject javaProject= res.getJavaProject();
+			IJavaScriptProject javaProject= res.getJavaScriptProject();
 			if (javaProject != null && javaProject.exists()) {
 				try {
 					return javaProject.findType(toString(expectedValue)) != null;
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					return false;
 				}
 			}

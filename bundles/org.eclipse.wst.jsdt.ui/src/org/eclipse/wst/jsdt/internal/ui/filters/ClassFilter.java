@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.ui.filters;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 
 /**
@@ -30,7 +30,7 @@ public class ClassFilter extends ViewerFilter {
 			try {
 				final IType type= (IType)element;
 				return type.isInterface() || type.isEnum();
-			} catch (JavaModelException ex) {
+			} catch (JavaScriptModelException ex) {
 				return true;
 			}
 		}

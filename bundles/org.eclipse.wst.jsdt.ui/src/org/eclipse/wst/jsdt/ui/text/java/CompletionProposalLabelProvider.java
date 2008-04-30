@@ -18,7 +18,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.wst.jsdt.core.CompletionContext;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.JSDScopeUtil;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.Signature;
@@ -26,13 +26,13 @@ import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 
 /**
  * Provides labels for java content assist proposals. The functionality is
- * similar to the one provided by {@link org.eclipse.wst.jsdt.ui.JavaElementLabels},
+ * similar to the one provided by {@link org.eclipse.wst.jsdt.ui.JavaScriptElementLabels},
  * but based on signatures and {@link CompletionProposal}s.
  *
  * @see Signature
@@ -350,7 +350,7 @@ public class CompletionProposalLabelProvider {
 	private String extractDeclaringTypeFQN(CompletionProposal methodProposal) {
 		char[] declaringTypeSignature= methodProposal.getDeclarationSignature();
 		char[] compUnit = methodProposal.getDeclarationTypeName();
-		IJavaProject project = methodProposal.getJavaProject();
+		IJavaScriptProject project = methodProposal.getJavaProject();
 		JsGlobalScopeContainerInitializer init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
 		if(init!=null) {
 			String description = init.getDescription(new Path(new String(compUnit)),project);
@@ -387,7 +387,7 @@ public class CompletionProposalLabelProvider {
 		char[] declarationSignature = typeProposal.getDeclarationSignature();
 		if (declarationSignature!=null && declarationSignature.length>0)
 		{
-			buf.append(JavaElementLabels.CONCAT_STRING);
+			buf.append(JavaScriptElementLabels.CONCAT_STRING);
 			buf.append(declarationSignature);
 		}
 		return buf.toString();
@@ -418,7 +418,7 @@ public class CompletionProposalLabelProvider {
 		StringBuffer buf= new StringBuffer();
 //		buf.append(fullName, qIndex, fullName.length - qIndex);
 //		if (qIndex > 0) {
-//			buf.append(JavaElementLabels.CONCAT_STRING);
+//			buf.append(JavaScriptElementLabels.CONCAT_STRING);
 //			buf.append(fullName, 0, qIndex - 1);
 //		}
 		buf.append(fullName);
@@ -434,7 +434,7 @@ public class CompletionProposalLabelProvider {
 		buf.append(fullName, qIndex, fullName.length - qIndex);
 		buf.append('}');
 		if (qIndex > 0) {
-			buf.append(JavaElementLabels.CONCAT_STRING);
+			buf.append(JavaScriptElementLabels.CONCAT_STRING);
 			buf.append(fullName, 0, qIndex - 1);
 		}
 		return buf.toString();
@@ -541,7 +541,7 @@ public class CompletionProposalLabelProvider {
 			case CompletionProposal.METHOD_NAME_REFERENCE:
 			case CompletionProposal.METHOD_REF:
 			case CompletionProposal.POTENTIAL_METHOD_DECLARATION:
-				if (fContext != null && fContext.isInJavadoc())
+				if (fContext != null && fContext.isInJsdoc())
 					return createJavadocMethodProposalLabel(proposal);
 				return createMethodProposalLabel(proposal);
 			case CompletionProposal.METHOD_DECLARATION:
@@ -550,15 +550,15 @@ public class CompletionProposalLabelProvider {
 				return createAnonymousTypeLabel(proposal);
 			case CompletionProposal.TYPE_REF:
 				return createTypeProposalLabel(proposal);
-			case CompletionProposal.JAVADOC_TYPE_REF:
+			case CompletionProposal.JSDOC_TYPE_REF:
 				return createJavadocTypeProposalLabel(proposal);
-			case CompletionProposal.JAVADOC_FIELD_REF:
-			case CompletionProposal.JAVADOC_VALUE_REF:
-			case CompletionProposal.JAVADOC_BLOCK_TAG:
-			case CompletionProposal.JAVADOC_INLINE_TAG:
-			case CompletionProposal.JAVADOC_PARAM_REF:
+			case CompletionProposal.JSDOC_FIELD_REF:
+			case CompletionProposal.JSDOC_VALUE_REF:
+			case CompletionProposal.JSDOC_BLOCK_TAG:
+			case CompletionProposal.JSDOC_INLINE_TAG:
+			case CompletionProposal.JSDOC_PARAM_REF:
 				return createJavadocSimpleProposalLabel(proposal);
-			case CompletionProposal.JAVADOC_METHOD_REF:
+			case CompletionProposal.JSDOC_METHOD_REF:
 				return createJavadocMethodProposalLabel(proposal);
 			case CompletionProposal.PACKAGE_REF:
 				return createPackageProposalLabel(proposal);
@@ -586,7 +586,7 @@ public class CompletionProposalLabelProvider {
 	public ImageDescriptor createImageDescriptor(CompletionProposal proposal) {
 		char[] compUnit = proposal.getDeclarationTypeName();
 		char[] propType = proposal.getName();
-		IJavaProject project = proposal.getJavaProject();
+		IJavaScriptProject project = proposal.getJavaProject();
 		
 //		IJsGlobalScopeContainerInitializerExtension init = null;
 //		IType type = proposal.getNameLookup().findType(new String(compUnit), true, NameLookup.ACCEPT_ALL);
@@ -637,13 +637,13 @@ public class CompletionProposalLabelProvider {
 			case CompletionProposal.LABEL_REF:
 				descriptor= null;
 				break;
-			case CompletionProposal.JAVADOC_METHOD_REF:
-			case CompletionProposal.JAVADOC_TYPE_REF:
-			case CompletionProposal.JAVADOC_FIELD_REF:
-			case CompletionProposal.JAVADOC_VALUE_REF:
-			case CompletionProposal.JAVADOC_BLOCK_TAG:
-			case CompletionProposal.JAVADOC_INLINE_TAG:
-			case CompletionProposal.JAVADOC_PARAM_REF:
+			case CompletionProposal.JSDOC_METHOD_REF:
+			case CompletionProposal.JSDOC_TYPE_REF:
+			case CompletionProposal.JSDOC_FIELD_REF:
+			case CompletionProposal.JSDOC_VALUE_REF:
+			case CompletionProposal.JSDOC_BLOCK_TAG:
+			case CompletionProposal.JSDOC_INLINE_TAG:
+			case CompletionProposal.JSDOC_PARAM_REF:
 				descriptor = JavaPluginImages.DESC_OBJS_JAVADOCTAG;
 				break;
 			default:
@@ -659,7 +659,7 @@ public class CompletionProposalLabelProvider {
 	ImageDescriptor createMethodImageDescriptor(CompletionProposal proposal) {
 		char[] compUnit = proposal.getDeclarationTypeName();
 		char[] propType = proposal.getName();
-		IJavaProject project = proposal.getJavaProject();
+		IJavaScriptProject project = proposal.getJavaProject();
 		//if (compUnit!=null && compUnit.length>0)
 //		{
 //			IJsGlobalScopeContainerInitializerExtension init = JSDScopeUiUtil.findLibraryUiInitializer(new Path(new String(compUnit)),project);
@@ -681,9 +681,9 @@ public class CompletionProposalLabelProvider {
 	ImageDescriptor createFieldImageDescriptor(CompletionProposal proposal) {
 		char[] compUnit = proposal.getDeclarationTypeName();
 		char[] propType = proposal.getName();
-		IJavaProject project = proposal.getJavaProject();
+		IJavaScriptProject project = proposal.getJavaProject();
 //		NameLookup lookup = proposal.getNameLookup();
-//		ICompilationUnit[] sources = lookup.findTypeSources(new String(propType),true);
+//		IJavaScriptUnit[] sources = lookup.findTypeSources(new String(propType),true);
 		
 		
 //		if (compUnit!=null && compUnit.length>0)
@@ -722,20 +722,20 @@ public class CompletionProposalLabelProvider {
 		int kind= proposal.getKind();
 
 		if (Flags.isDeprecated(flags))
-			adornments |= JavaElementImageDescriptor.DEPRECATED;
+			adornments |= JavaScriptElementImageDescriptor.DEPRECATED;
 
 		if (kind == CompletionProposal.FIELD_REF || kind == CompletionProposal.METHOD_DECLARATION || kind == CompletionProposal.METHOD_DECLARATION || kind == CompletionProposal.METHOD_NAME_REFERENCE || kind == CompletionProposal.METHOD_REF)
 			if (Flags.isStatic(flags))
-				adornments |= JavaElementImageDescriptor.STATIC;
+				adornments |= JavaScriptElementImageDescriptor.STATIC;
 
 		if (kind == CompletionProposal.METHOD_DECLARATION || kind == CompletionProposal.METHOD_DECLARATION || kind == CompletionProposal.METHOD_NAME_REFERENCE || kind == CompletionProposal.METHOD_REF)
 			if (Flags.isSynchronized(flags))
-				adornments |= JavaElementImageDescriptor.SYNCHRONIZED;
+				adornments |= JavaScriptElementImageDescriptor.SYNCHRONIZED;
 
 		if (kind == CompletionProposal.TYPE_REF && Flags.isAbstract(flags) && !Flags.isInterface(flags))
-			adornments |= JavaElementImageDescriptor.ABSTRACT;
+			adornments |= JavaScriptElementImageDescriptor.ABSTRACT;
 
-		return new JavaElementImageDescriptor(descriptor, adornments, JavaElementImageProvider.SMALL_SIZE);
+		return new JavaScriptElementImageDescriptor(descriptor, adornments, JavaElementImageProvider.SMALL_SIZE);
 	}
 
 	/**

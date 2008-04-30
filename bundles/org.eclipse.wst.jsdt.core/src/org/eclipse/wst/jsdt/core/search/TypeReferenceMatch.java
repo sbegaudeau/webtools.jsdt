@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.core.search;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
  * A Java search match that represents a type reference.
@@ -24,8 +24,8 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
  */
 public class TypeReferenceMatch extends SearchMatch {
 
-	private IJavaElement localElement;
-	private IJavaElement[] otherElements;
+	private IJavaScriptElement localElement;
+	private IJavaScriptElement[] otherElements;
 
 	/**
 	 * Creates a new type reference match.
@@ -39,7 +39,7 @@ public class TypeReferenceMatch extends SearchMatch {
 	 * @param participant the search participant that created the match
 	 * @param resource the resource of the element
 	 */
-	public TypeReferenceMatch(IJavaElement enclosingElement, int accuracy,	int offset, int length, boolean insideDocComment, SearchParticipant participant, IResource resource) {
+	public TypeReferenceMatch(IJavaScriptElement enclosingElement, int accuracy,	int offset, int length, boolean insideDocComment, SearchParticipant participant, IResource resource) {
 		super(enclosingElement, accuracy, offset, length, participant, resource);
 		setInsideDocComment(insideDocComment);
 	}
@@ -53,7 +53,7 @@ public class TypeReferenceMatch extends SearchMatch {
 	 * 	no more specific local element than the element itself ({@link SearchMatch#getElement()}).
 	 * @since 3.2
 	 */
-	public final IJavaElement getLocalElement() {
+	public final IJavaScriptElement getLocalElement() {
 		return this.localElement;
 	}
 
@@ -68,7 +68,7 @@ public class TypeReferenceMatch extends SearchMatch {
 	 * @return the other elements of the search match, or <code>null</code> if none
 	 * @since 3.2
 	 */
-	public final IJavaElement[] getOtherElements() {
+	public final IJavaScriptElement[] getOtherElements() {
 		return this.otherElements;
 	}
 
@@ -79,7 +79,7 @@ public class TypeReferenceMatch extends SearchMatch {
 	 * 	or <code>null</code> if none
 	 * @since 3.2
 	 */
-	public final void setLocalElement(IJavaElement localElement) {
+	public final void setLocalElement(IJavaScriptElement localElement) {
 		this.localElement = localElement;
 	}
 
@@ -90,7 +90,7 @@ public class TypeReferenceMatch extends SearchMatch {
 	 * 	or <code>null</code> if none
 	 * @since 3.2
 	 */
-	public final void setOtherElements(IJavaElement[] otherElements) {
+	public final void setOtherElements(IJavaScriptElement[] otherElements) {
 		this.otherElements = otherElements;
 	}
 }

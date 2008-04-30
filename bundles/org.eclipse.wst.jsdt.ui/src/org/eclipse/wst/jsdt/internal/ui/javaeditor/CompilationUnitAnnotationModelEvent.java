@@ -20,7 +20,7 @@ import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationModelEvent;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Event sent out by changes of the compilation unit annotation model.
@@ -54,7 +54,7 @@ public class CompilationUnitAnnotationModelEvent  extends AnnotationModelEvent {
 					fIncludesProblemMarkerAnnotations= true;
 				}
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 	}

@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 
 public class FilterUpdater implements IResourceChangeListener {
@@ -64,8 +64,8 @@ public class FilterUpdater implements IResourceChangeListener {
 	private boolean needsRefiltering(IProject project) {
 		try {
 			Object element= project;
-			if (project.hasNature(JavaCore.NATURE_ID)) {
-				element= JavaCore.create(project);
+			if (project.hasNature(JavaScriptCore.NATURE_ID)) {
+				element= JavaScriptCore.create(project);
 			}
 			boolean inView= fViewer.testFindItem(element) != null;
 			boolean afterFilter= !fViewer.isFiltered(element, fViewer.getInput());

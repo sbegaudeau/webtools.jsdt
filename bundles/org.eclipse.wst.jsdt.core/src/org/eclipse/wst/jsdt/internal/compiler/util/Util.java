@@ -362,8 +362,8 @@ public class Util implements SuffixConstants {
 	 * Returns whether the given resource path matches one of the inclusion/exclusion
 	 * patterns.
 	 * NOTE: should not be asked directly using pkg root pathes
-	 * @see IClasspathEntry#getInclusionPatterns
-	 * @see IClasspathEntry#getExclusionPatterns
+	 * @see IIncludePathEntry#getInclusionPatterns
+	 * @see IIncludePathEntry#getExclusionPatterns
 	 */
 	public final static boolean isExcluded(char[] path, char[][] inclusionPatterns, char[][] exclusionPatterns, boolean isFolderPath) {
 		if (inclusionPatterns == null && exclusionPatterns == null) return false;

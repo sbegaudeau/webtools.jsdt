@@ -12,7 +12,7 @@
 package org.eclipse.wst.jsdt.ui;
 
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 /**
  * Extension interface for {@link IWorkingCopyManager}.
@@ -33,7 +33,7 @@ public interface IWorkingCopyManagerExtension {
 	 * @param input the editor input
 	 * @param workingCopy the working copy
 	 */
-	void setWorkingCopy(IEditorInput input, ICompilationUnit workingCopy);
+	void setWorkingCopy(IEditorInput input, IJavaScriptUnit workingCopy);
 	
 	/**
 	 * Removes the working copy set for the given editor input. If there is no

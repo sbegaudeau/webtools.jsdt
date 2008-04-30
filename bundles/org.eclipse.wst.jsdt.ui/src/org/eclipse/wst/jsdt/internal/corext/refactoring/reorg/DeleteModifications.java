@@ -27,14 +27,14 @@ import org.eclipse.ltk.core.refactoring.participants.ParticipantManager;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
 
@@ -43,7 +43,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
  */
 public class DeleteModifications extends RefactoringModifications {
 	
-	private List/*<IJavaElement>*/ fDelete;
+	private List/*<IJavaScriptElement>*/ fDelete;
 	
 	/**
 	 * Contains the actual packages when executing
@@ -67,22 +67,22 @@ public class DeleteModifications extends RefactoringModifications {
 		}
 	}
 	
-	public void delete(IJavaElement[] elements) throws CoreException {
+	public void delete(IJavaScriptElement[] elements) throws CoreException {
 		for (int i= 0; i < elements.length; i++) {
 			delete(elements[i]);
 		}
 	}
 	
-	public void delete(IJavaElement element) throws CoreException {
+	public void delete(IJavaScriptElement element) throws CoreException {
 		switch(element.getElementType()) {
-			case IJavaElement.JAVA_MODEL:
+			case IJavaScriptElement.JAVASCRIPT_MODEL:
 				return;
-			case IJavaElement.JAVA_PROJECT:
+			case IJavaScriptElement.JAVASCRIPT_PROJECT:
 				fDelete.add(element);
 				if (element.getResource() != null)
 					getResourceModifications().addDelete(element.getResource());
 				return;
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 				fDelete.add(element);
 				IResource resource= element.getResource();
 				// Flag an resource change even if we have an archive. If it is
@@ -90,19 +90,19 @@ public class DeleteModifications extends RefactoringModifications {
 				// change.
 				if (resource != null)
 					getResourceModifications().addDelete(resource);
-				IJavaProject[] referencingProjects= JavaElementUtil.getReferencingProjects((IPackageFragmentRoot) element);
+				IJavaScriptProject[] referencingProjects= JavaElementUtil.getReferencingProjects((IPackageFragmentRoot) element);
 				for (int i= 0; i < referencingProjects.length; i++) {
 					IFile classpath= referencingProjects[i].getJSDTScopeFile(); //$NON-NLS-1$
 					getResourceModifications().addChanged(classpath);
 				}
 				return;
-			case IJavaElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				fDelete.add(element);
 				fPackagesToDelete.add(element);
 				return;
-			case IJavaElement.COMPILATION_UNIT:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
 				fDelete.add(element);
-				IType[] types= ((ICompilationUnit)element).getTypes();
+				IType[] types= ((IJavaScriptUnit)element).getTypes();
 				fDelete.addAll(Arrays.asList(types));
 				if (element.getResource() != null)
 					getResourceModifications().addDelete(element.getResource());
@@ -206,7 +206,7 @@ public class DeleteModifications extends RefactoringModifications {
 					IFile file= (IFile)member;
 					if ("class".equals(file.getFileExtension()) && file.isDerived()) //$NON-NLS-1$
 						continue;
-					if (pack.isDefaultPackage() && ! JavaCore.isJavaLikeFileName(file.getName()))
+					if (pack.isDefaultPackage() && ! JavaScriptCore.isJavaScriptLikeFileName(file.getName()))
 						continue;
 					resourcesCollector.add(member);
 					getResourceModifications().addDelete(member);
@@ -215,7 +215,7 @@ public class DeleteModifications extends RefactoringModifications {
 					// Normally, folder children of packages are packages
 					// as well, but in case they have been removed from the build
 					// path, notify the participant
-					IPackageFragment frag= (IPackageFragment) JavaCore.create(member);
+					IPackageFragment frag= (IPackageFragment) JavaScriptCore.create(member);
 					if (frag == null) {
 						resourcesCollector.add(member);
 						getResourceModifications().addDelete(member);
@@ -229,7 +229,7 @@ public class DeleteModifications extends RefactoringModifications {
 	 * Returns true if this initially selected package is really deletable
 	 * (if it has non-selected sub packages, it may only be cleared).
 	 */
-	private boolean canRemoveCompletely(IPackageFragment pack) throws JavaModelException {
+	private boolean canRemoveCompletely(IPackageFragment pack) throws JavaScriptModelException {
 		final IPackageFragment[] subPackages= JavaElementUtil.getPackageAndSubpackages(pack);
 		for (int i= 0; i < subPackages.length; i++) {
 			if (!(subPackages[i].equals(pack)) && !(fPackagesToDelete.contains(subPackages[i])))

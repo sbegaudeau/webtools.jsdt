@@ -40,9 +40,9 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 
 public abstract class ModifyDialogTabPage {
@@ -363,7 +363,7 @@ public abstract class ModifyDialogTabPage {
 		}
 		
 		private IStatus createErrorStatus() {
-		    return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), 0, Messages.format(FormatterMessages.ModifyDialogTabPage_NumberPreference_error_invalid_value, new String [] {Integer.toString(fMinValue), Integer.toString(fMaxValue)}), null); 
+		    return new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), 0, Messages.format(FormatterMessages.ModifyDialogTabPage_NumberPreference_error_invalid_value, new String [] {Integer.toString(fMinValue), Integer.toString(fMaxValue)}), null); 
 		    
 		}
 
@@ -433,7 +433,7 @@ public abstract class ModifyDialogTabPage {
 			        fSelected= Integer.parseInt(s);
 			    } catch (NumberFormatException e) {
 			        final String message= Messages.format(FormatterMessages.ModifyDialogTabPage_NumberPreference_error_invalid_key, getKey()); 
-			        JavaPlugin.log(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, message, e));
+			        JavaScriptPlugin.log(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, message, e));
 			        s= ""; //$NON-NLS-1$
 			    }
 			    fNumberText.setText(s);
@@ -460,7 +460,7 @@ public abstract class ModifyDialogTabPage {
 	 */
 	protected final static class DefaultFocusManager extends FocusAdapter {
 		
-		private final static String PREF_LAST_FOCUS_INDEX= JavaUI.ID_PLUGIN + "formatter_page.modify_dialog_tab_page.last_focus_index"; //$NON-NLS-1$ 
+		private final static String PREF_LAST_FOCUS_INDEX= JavaScriptUI.ID_PLUGIN + "formatter_page.modify_dialog_tab_page.last_focus_index"; //$NON-NLS-1$ 
 		
 		private final IDialogSettings fDialogSettings;
 		
@@ -470,7 +470,7 @@ public abstract class ModifyDialogTabPage {
 		private int fIndex;
 		
 		public DefaultFocusManager() {
-			fDialogSettings= JavaPlugin.getDefault().getDialogSettings();
+			fDialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();
 			fItemMap= new HashMap();
 			fItemList= new ArrayList();
 			fIndex= 0;

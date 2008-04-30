@@ -51,13 +51,13 @@ import org.eclipse.ui.ide.dialogs.PathVariableSelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaConventions;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.TypedElementSelectionValidator;
@@ -69,7 +69,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.wizards.NewElementWizardPage;
 
@@ -79,7 +79,7 @@ public class AddSourceFolderWizardPage extends NewElementWizardPage {
 	private final class LinkFields implements IStringButtonAdapter, IDialogFieldListener{
 		private StringButtonDialogField fLinkLocation;
 		
-		private static final String DIALOGSTORE_LAST_EXTERNAL_LOC= JavaUI.ID_PLUGIN + ".last.external.project"; //$NON-NLS-1$
+		private static final String DIALOGSTORE_LAST_EXTERNAL_LOC= JavaScriptUI.ID_PLUGIN + ".last.external.project"; //$NON-NLS-1$
 
 		private RootFieldAdapter fAdapter;
 
@@ -130,7 +130,7 @@ public class AddSourceFolderWizardPage extends NewElementWizardPage {
 			dialog.setMessage(NewWizardMessages.JavaProjectWizardFirstPage_directory_message); 
 			String directoryName = fLinkLocation.getText().trim();
 			if (directoryName.length() == 0) {
-				String prevLocation= JavaPlugin.getDefault().getDialogSettings().get(DIALOGSTORE_LAST_EXTERNAL_LOC);
+				String prevLocation= JavaScriptPlugin.getDefault().getDialogSettings().get(DIALOGSTORE_LAST_EXTERNAL_LOC);
 				if (prevLocation != null) {
 					directoryName= prevLocation;
 				}
@@ -145,7 +145,7 @@ public class AddSourceFolderWizardPage extends NewElementWizardPage {
 			if (selectedDirectory != null) {
 				fLinkLocation.setText(selectedDirectory);
 				fRootDialogField.setText(selectedDirectory.substring(selectedDirectory.lastIndexOf(File.separatorChar) + 1));
-				JavaPlugin.getDefault().getDialogSettings().put(DIALOGSTORE_LAST_EXTERNAL_LOC, selectedDirectory);
+				JavaScriptPlugin.getDefault().getDialogSettings().put(DIALOGSTORE_LAST_EXTERNAL_LOC, selectedDirectory);
 				if (fAdapter != null) {
 					fAdapter.dialogFieldChanged(fRootDialogField);
 				}
@@ -389,7 +389,7 @@ public class AddSourceFolderWizardPage extends NewElementWizardPage {
 	}
 
 	private StatusInfo updateRootStatus() {		
-		IJavaProject javaProject= fNewElement.getJavaProject();		
+		IJavaScriptProject javaProject= fNewElement.getJavaProject();		
 		IProject project= javaProject.getProject();		
 		
 		StatusInfo pathNameStatus= validatePathName(fRootDialogField.getText(), fParent);
@@ -419,8 +419,8 @@ public class AddSourceFolderWizardPage extends NewElementWizardPage {
 		
 		IFolder folder= fParent.getFolder(new Path(fRootDialogField.getText()));
 		for (int i= 0; i < fExistingEntries.size(); i++) {
-			IClasspathEntry curr= ((CPListElement)fExistingEntries.get(i)).getClasspathEntry();
-			if (curr.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+			IIncludePathEntry curr= ((CPListElement)fExistingEntries.get(i)).getClasspathEntry();
+			if (curr.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 				if (path.equals(curr.getPath()) && fExistingEntries.get(i) != fNewElement) {
 					if (folder.exists()) {
 						result.setError(NewWizardMessages.NewSourceFolderWizardPage_error_AlreadyExisting); 
@@ -478,12 +478,12 @@ public class AddSourceFolderWizardPage extends NewElementWizardPage {
 			return new StatusInfo();
 		
 		fNewOutputLocation= null;
-		IJavaModelStatus status= JavaConventions.validateClasspath(javaProject, CPListElement.convertToClasspathEntries(fExistingEntries), fOutputLocation);
+		IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(javaProject, CPListElement.convertToClasspathEntries(fExistingEntries), fOutputLocation);
 		if (!status.isOK()) {
 			if (fOutputLocation.equals(projPath)) {
 				//Try to change the output folder
 				fNewOutputLocation= projPath.append(PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.SRCBIN_BINNAME));
-				IStatus status2= JavaConventions.validateClasspath(javaProject, CPListElement.convertToClasspathEntries(fExistingEntries), fNewOutputLocation);
+				IStatus status2= JavaScriptConventions.validateClasspath(javaProject, CPListElement.convertToClasspathEntries(fExistingEntries), fNewOutputLocation);
 				if (status2.isOK()) {
 					if (isProjectSourceFolderReplaced) {
 						result.setInfo(Messages.format(NewWizardMessages.NewSourceFolderWizardPage_warning_ReplaceSFandOL, fNewOutputLocation.makeRelative().toString())); 
@@ -608,7 +608,7 @@ public class AddSourceFolderWizardPage extends NewElementWizardPage {
 	 *  specified link target is valid given the linkHandle.
 	 */
 	private IStatus validateLinkLocation(String folderName) {
-		IWorkspace workspace= JavaPlugin.getWorkspace();
+		IWorkspace workspace= JavaScriptPlugin.getWorkspace();
 		IPath path= Path.fromOSString(fLinkFields.fLinkLocation.getText());
 
 		IFolder folder= fNewElement.getJavaProject().getProject().getFolder(new Path(folderName));
@@ -688,7 +688,7 @@ public class AddSourceFolderWizardPage extends NewElementWizardPage {
 		for (int i= 0; i < existing.size(); i++) {
 			CPListElement curr= (CPListElement) existing.get(i);
 			IPath currPath= curr.getPath();
-			if (curr != newEntry && curr.getEntryKind() == IClasspathEntry.CPE_SOURCE && currPath.isPrefixOf(entryPath)) {
+			if (curr != newEntry && curr.getEntryKind() == IIncludePathEntry.CPE_SOURCE && currPath.isPrefixOf(entryPath)) {
 				boolean added= curr.addToExclusions(entryPath);
 				if (added) {
 					modifiedEntries.add(curr);

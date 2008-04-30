@@ -43,11 +43,11 @@ import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.Name;
@@ -56,7 +56,7 @@ import org.eclipse.wst.jsdt.internal.corext.codemanipulation.ImportReferencesCol
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 
@@ -70,7 +70,7 @@ public final class ClipboardOperationAction extends TextEditorAction {
 		private String[] fTypeImports;
 		private String[] fStaticImports;
 
-		public ClipboardData(IJavaElement origin, String[] typeImports, String[] staticImports) {
+		public ClipboardData(IJavaScriptElement origin, String[] typeImports, String[] staticImports) {
 			Assert.isNotNull(origin);
 			Assert.isNotNull(typeImports);
 			Assert.isNotNull(staticImports);
@@ -116,7 +116,7 @@ public final class ClipboardOperationAction extends TextEditorAction {
 			return fStaticImports;
 		}
 
-		public boolean isFromSame(IJavaElement elem) {
+		public boolean isFromSame(IJavaScriptElement elem) {
 			return fOriginHandle.equals(elem.getHandleIdentifier());
 		}
 
@@ -305,7 +305,7 @@ public final class ClipboardOperationAction extends TextEditorAction {
 
 	private void doCutCopyWithImportsOperation() {
 		ITextEditor editor= getTextEditor();
-		IJavaElement inputElement= (IJavaElement) editor.getEditorInput().getAdapter(IJavaElement.class);
+		IJavaScriptElement inputElement= (IJavaScriptElement) editor.getEditorInput().getAdapter(IJavaScriptElement.class);
 		ISelection selection= editor.getSelectionProvider().getSelection();
 
 		Object clipboardData= null;
@@ -385,8 +385,8 @@ public final class ClipboardOperationAction extends TextEditorAction {
 	}
 
 
-	private ClipboardData getClipboardData(IJavaElement inputElement, int offset, int length) {
-		CompilationUnit astRoot= JavaPlugin.getDefault().getASTProvider().getAST(inputElement, ASTProvider.WAIT_ACTIVE_ONLY, null);
+	private ClipboardData getClipboardData(IJavaScriptElement inputElement, int offset, int length) {
+		JavaScriptUnit astRoot= JavaScriptPlugin.getDefault().getASTProvider().getAST(inputElement, ASTProvider.WAIT_ACTIVE_ONLY, null);
 		if (astRoot == null) {
 			return null;
 		}
@@ -406,7 +406,7 @@ public final class ClipboardOperationAction extends TextEditorAction {
 		ArrayList typeImportsRefs= new ArrayList();
 		ArrayList staticImportsRefs= new ArrayList();
 
-		ImportReferencesCollector.collect(astRoot, inputElement.getJavaProject(), new Region(offset, length), typeImportsRefs, staticImportsRefs);
+		ImportReferencesCollector.collect(astRoot, inputElement.getJavaScriptProject(), new Region(offset, length), typeImportsRefs, staticImportsRefs);
 
 		if (typeImportsRefs.isEmpty() && staticImportsRefs.isEmpty()) {
 			return null;
@@ -460,11 +460,11 @@ public final class ClipboardOperationAction extends TextEditorAction {
 
 	private void doPasteWithImportsOperation() {
 		ITextEditor editor= getTextEditor();
-		IJavaElement inputElement= (IJavaElement) editor.getEditorInput().getAdapter(IJavaElement.class);
+		IJavaScriptElement inputElement= (IJavaScriptElement) editor.getEditorInput().getAdapter(IJavaScriptElement.class);
 
 		Clipboard clipboard= new Clipboard(getDisplay());
 		ClipboardData importsData= (ClipboardData) clipboard.getContents(fgTransferInstance);
-		if (importsData != null && inputElement instanceof ICompilationUnit && !importsData.isFromSame(inputElement)) {
+		if (importsData != null && inputElement instanceof IJavaScriptUnit && !importsData.isFromSame(inputElement)) {
 			// combine operation and adding of imports
 			IRewriteTarget target= editor != null ? (IRewriteTarget) editor.getAdapter(IRewriteTarget.class) : null;
 			if (target != null) {
@@ -472,9 +472,9 @@ public final class ClipboardOperationAction extends TextEditorAction {
 			}
 			try {
 				fOperationTarget.doOperation(fOperationCode);
-				addImports((ICompilationUnit) inputElement, importsData);
+				addImports((IJavaScriptUnit) inputElement, importsData);
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			} finally {
 				if (target != null) {
 					target.endCompoundChange();
@@ -486,7 +486,7 @@ public final class ClipboardOperationAction extends TextEditorAction {
 	}
 
 
-	private void addImports(ICompilationUnit unit, ClipboardData data) throws CoreException {
+	private void addImports(IJavaScriptUnit unit, ClipboardData data) throws CoreException {
 		ImportRewrite rewrite= StubUtility.createImportRewrite(unit, true);
 		String[] imports= data.getTypeImports();
 		for (int i= 0; i < imports.length; i++) {

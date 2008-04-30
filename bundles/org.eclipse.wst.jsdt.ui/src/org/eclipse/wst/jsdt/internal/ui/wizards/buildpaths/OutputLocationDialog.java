@@ -43,7 +43,7 @@ import org.eclipse.wst.jsdt.internal.corext.buildpath.CPJavaProject;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
@@ -187,7 +187,7 @@ public class OutputLocationDialog extends StatusDialog {
 	        	fOutputLocation= outputPath;
 	        }
         } catch (CoreException e) {
-	        JavaPlugin.log(e);
+	        JavaScriptPlugin.log(e);
         }
 	}
 
@@ -241,7 +241,7 @@ public class OutputLocationDialog extends StatusDialog {
                     	if (result.getSeverity() == IStatus.ERROR)
 	                    	return result;
                     } catch (CoreException e) {
-	                    JavaPlugin.log(e);
+	                    JavaScriptPlugin.log(e);
                     }
                     return new StatusInfo();
                 } else {

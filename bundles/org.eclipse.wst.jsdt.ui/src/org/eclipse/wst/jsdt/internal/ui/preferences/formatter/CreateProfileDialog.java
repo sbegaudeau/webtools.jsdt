@@ -32,11 +32,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.CustomProfile;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Profile;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * The dialog to create a new profile. 
@@ -44,7 +44,7 @@ import org.eclipse.wst.jsdt.ui.JavaUI;
 public class CreateProfileDialog extends StatusDialog {
 	
     
-    private static final String PREF_OPEN_EDIT_DIALOG= JavaUI.ID_PLUGIN + ".codeformatter.create_profile_dialog.open_edit"; //$NON-NLS-1$
+    private static final String PREF_OPEN_EDIT_DIALOG= JavaScriptUI.ID_PLUGIN + ".codeformatter.create_profile_dialog.open_edit"; //$NON-NLS-1$
     
     
 	private Text fNameText;
@@ -139,7 +139,7 @@ public class CreateProfileDialog extends StatusDialog {
 			}
 		});
 		
-		final IDialogSettings dialogSettings= JavaPlugin.getDefault().getDialogSettings();//.get(PREF_OPEN_EDIT_DIALOG);
+		final IDialogSettings dialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();//.get(PREF_OPEN_EDIT_DIALOG);
 		if (dialogSettings.get(PREF_OPEN_EDIT_DIALOG) != null) {
 		    fOpenEditDialog= dialogSettings.getBoolean(PREF_OPEN_EDIT_DIALOG);
 		} else {
@@ -181,7 +181,7 @@ public class CreateProfileDialog extends StatusDialog {
 		if (!getStatus().isOK()) 
 			return;
 
-		JavaPlugin.getDefault().getDialogSettings().put(PREF_OPEN_EDIT_DIALOG, fOpenEditDialog);
+		JavaScriptPlugin.getDefault().getDialogSettings().put(PREF_OPEN_EDIT_DIALOG, fOpenEditDialog);
 
 		final Map baseSettings= new HashMap(((Profile)fSortedProfiles.get(fProfileCombo.getSelectionIndex())).getSettings());
 		final String profileName= fNameText.getText();

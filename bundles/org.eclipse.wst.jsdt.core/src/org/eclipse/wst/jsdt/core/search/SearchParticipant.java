@@ -44,9 +44,9 @@ import org.eclipse.wst.jsdt.internal.core.search.indexing.IndexManager;
  * </ul>
  * During the search phase, a subclass will be called with the following requests in order:
  * <ul>
- * <li>{@link #selectIndexes(SearchPattern, IJavaSearchScope)}</li>
+ * <li>{@link #selectIndexes(SearchPattern, IJavaScriptSearchScope)}</li>
  * <li>one or more {@link #getDocument(String)}</li>
- * <li>{@link #locateMatches(SearchDocument[], SearchPattern, IJavaSearchScope, SearchRequestor, IProgressMonitor)}</li>
+ * <li>{@link #locateMatches(SearchDocument[], SearchPattern, IJavaScriptSearchScope, SearchRequestor, IProgressMonitor)}</li>
  * </ul>
  * </p>
  *
@@ -119,7 +119,7 @@ public abstract class SearchParticipant {
 	 * delegatee's one). In the particular case of delegating to the default
 	 * search participant (see {@link SearchEngine#getDefaultSearchParticipant()}),
 	 * the provided document's path must be a path ending with one of the
-	 * {@link org.eclipse.wst.jsdt.core.JavaCore#getJavaLikeExtensions() Java-like extensions}
+	 * {@link org.eclipse.wst.jsdt.core.JavaScriptCore#getJavaScriptLikeExtensions() Java-like extensions}
 	 * or with '.class'.
 	 * <p>
 	 * The given index location must represent a path in the file system to a file that
@@ -160,7 +160,7 @@ public abstract class SearchParticipant {
 	 * or <code>null</code> if no progress should be reported
 	 * @throws CoreException if the requestor had problem accepting one of the matches
 	 */
-	public abstract void locateMatches(SearchDocument[] documents, SearchPattern pattern, IJavaSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException;
+	public abstract void locateMatches(SearchDocument[] documents, SearchPattern pattern, IJavaScriptSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Removes the index for a given path.
@@ -227,5 +227,5 @@ public abstract class SearchParticipant {
 	 * @param scope the given search scope
 	 * @return the collection of index paths to consider
 	 */
-	public abstract IPath[] selectIndexes(SearchPattern query, IJavaSearchScope scope);
+	public abstract IPath[] selectIndexes(SearchPattern query, IJavaScriptSearchScope scope);
 }

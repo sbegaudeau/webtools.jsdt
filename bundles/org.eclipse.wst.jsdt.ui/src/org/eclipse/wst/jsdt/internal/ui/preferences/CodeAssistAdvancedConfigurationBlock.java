@@ -59,9 +59,9 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.text.java.CompletionProposalCategory;
 import org.eclipse.wst.jsdt.internal.ui.text.java.CompletionProposalComputerRegistry;
@@ -78,7 +78,7 @@ final class CodeAssistAdvancedConfigurationBlock extends OptionsConfigurationBlo
 	
 	private static final Key PREF_EXCLUDED_CATEGORIES= getJDTUIKey(PreferenceConstants.CODEASSIST_EXCLUDED_CATEGORIES);
 	private static final Key PREF_CATEGORY_ORDER= getJDTUIKey(PreferenceConstants.CODEASSIST_CATEGORY_ORDER);
-	private static final Key PREF_CODEASSIST_TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC= getJDTCoreKey(JavaCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC);
+	private static final Key PREF_CODEASSIST_TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC= getJDTCoreKey(JavaScriptCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC);
 	
 	private static Key[] getAllKeys() {
 		return new Key[] {
@@ -729,7 +729,7 @@ final class CodeAssistAdvancedConfigurationBlock extends OptionsConfigurationBlo
 					copy.define(scheme.getName(), scheme.getDescription(), scheme.getParentId());
 				}
 			} catch (final NotDefinedException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 		fgLocalBindingManager.setLocale(bindingService.getLocale());
@@ -744,7 +744,7 @@ final class CodeAssistAdvancedConfigurationBlock extends OptionsConfigurationBlo
 			if (activeScheme != null)
 				fgLocalBindingManager.setActiveScheme(activeScheme);
 		} catch (NotDefinedException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		
 		TriggerSequence[] bindings= fgLocalBindingManager.getActiveBindingsDisregardingContextFor(command);

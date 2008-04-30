@@ -42,12 +42,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSElement;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSLine;
@@ -57,14 +57,14 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.ListDialog;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.RefactoringStarter;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.nls.ExternalizeWizard;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 /**
  * Find all strings in a package or project that are not externalized yet.
@@ -101,29 +101,29 @@ public class FindStringsToExternalizeAction extends SelectionDispatchAction {
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(computeEnablementState(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			setEnabled(false);//no UI - happens on selection changes
 		}
 	}
 	
-	private boolean computeEnablementState(IStructuredSelection selection) throws JavaModelException {
+	private boolean computeEnablementState(IStructuredSelection selection) throws JavaScriptModelException {
 		if (selection.isEmpty())
 			return false;
 		for (Iterator iter= selection.iterator(); iter.hasNext();) {
 			Object element= iter.next();
-			if (!(element instanceof IJavaElement))
+			if (!(element instanceof IJavaScriptElement))
 				return false;
-			IJavaElement javaElement= (IJavaElement)element;
+			IJavaScriptElement javaElement= (IJavaScriptElement)element;
 			if (! javaElement.exists() || javaElement.isReadOnly())
 				return false;
 			int elementType= javaElement.getElementType();
-			if (elementType != IJavaElement.PACKAGE_FRAGMENT && 
-				elementType != IJavaElement.PACKAGE_FRAGMENT_ROOT &&
-				elementType != IJavaElement.JAVA_PROJECT)
+			if (elementType != IJavaScriptElement.PACKAGE_FRAGMENT && 
+				elementType != IJavaScriptElement.PACKAGE_FRAGMENT_ROOT &&
+				elementType != IJavaScriptElement.JAVASCRIPT_PROJECT)
 				return false;
-			if (elementType == IJavaElement.PACKAGE_FRAGMENT_ROOT){
+			if (elementType == IJavaScriptElement.PACKAGE_FRAGMENT_ROOT){
 				IPackageFragmentRoot root= (IPackageFragmentRoot)javaElement;
 				if (root.isExternal() || ReorgUtils.isClassFolder(root))
 					return false;
@@ -172,13 +172,13 @@ public class FindStringsToExternalizeAction extends SelectionDispatchAction {
 		try{
 			List l= new ArrayList();	
 			for (Iterator iter= elements.iterator(); iter.hasNext();) {
-				IJavaElement element= (IJavaElement) iter.next();
-				if (element.getElementType() == IJavaElement.PACKAGE_FRAGMENT)
+				IJavaScriptElement element= (IJavaScriptElement) iter.next();
+				if (element.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT)
 					l.addAll(analyze((IPackageFragment) element, new SubProgressMonitor(pm, 1)));
-				else if (element.getElementType() == IJavaElement.PACKAGE_FRAGMENT_ROOT)
+				else if (element.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT_ROOT)
 					l.addAll(analyze((IPackageFragmentRoot) element, new SubProgressMonitor(pm, 1)));
-				if (element.getElementType() == IJavaElement.JAVA_PROJECT)
-					l.addAll(analyze((IJavaProject) element, new SubProgressMonitor(pm, 1)));
+				if (element.getElementType() == IJavaScriptElement.JAVASCRIPT_PROJECT)
+					l.addAll(analyze((IJavaScriptProject) element, new SubProgressMonitor(pm, 1)));
 			}
 			return (NonNLSElement[]) l.toArray(new NonNLSElement[l.size()]);
 		} finally{
@@ -211,7 +211,7 @@ public class FindStringsToExternalizeAction extends SelectionDispatchAction {
 			if (pack == null)
 				return new ArrayList(0);
 				
-			ICompilationUnit[] cus= pack.getCompilationUnits();
+			IJavaScriptUnit[] cus= pack.getJavaScriptUnits();
 	
 			pm.beginTask("", cus.length); //$NON-NLS-1$
 			pm.setTaskName(pack.getElementName());
@@ -237,13 +237,13 @@ public class FindStringsToExternalizeAction extends SelectionDispatchAction {
 	 */	
 	private List analyze(IPackageFragmentRoot sourceFolder, IProgressMonitor pm) throws CoreException {
 		try{
-			IJavaElement[] children= sourceFolder.getChildren();
+			IJavaScriptElement[] children= sourceFolder.getChildren();
 			pm.beginTask("", children.length); //$NON-NLS-1$
 			pm.setTaskName(sourceFolder.getElementName());
 			List result= new ArrayList();
 			for (int i= 0; i < children.length; i++) {
-				IJavaElement iJavaElement= children[i];
-				if (iJavaElement.getElementType() == IJavaElement.PACKAGE_FRAGMENT){
+				IJavaScriptElement iJavaElement= children[i];
+				if (iJavaElement.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT){
 					IPackageFragment pack= (IPackageFragment)iJavaElement;
 					if (! pack.isReadOnly())
 						result.addAll(analyze(pack, new SubProgressMonitor(pm, 1)));
@@ -261,7 +261,7 @@ public class FindStringsToExternalizeAction extends SelectionDispatchAction {
 	/*
 	 * returns List of Strings
 	 */
-	private List analyze(IJavaProject project, IProgressMonitor pm) throws CoreException {
+	private List analyze(IJavaScriptProject project, IProgressMonitor pm) throws CoreException {
 		try{
 			IPackageFragment[] packs= project.getPackageFragments();
 			pm.beginTask("", packs.length); //$NON-NLS-1$
@@ -287,7 +287,7 @@ public class FindStringsToExternalizeAction extends SelectionDispatchAction {
 		return found;
 	} 
 
-	private NonNLSElement analyze(ICompilationUnit cu) throws CoreException {
+	private NonNLSElement analyze(IJavaScriptUnit cu) throws CoreException {
 		int count= countNonExternalizedStrings(cu);
 		if (count == 0)
 			return null;
@@ -295,7 +295,7 @@ public class FindStringsToExternalizeAction extends SelectionDispatchAction {
 			return new NonNLSElement(cu, count);
 	}
 	
-	private int countNonExternalizedStrings(ICompilationUnit cu) throws CoreException {
+	private int countNonExternalizedStrings(IJavaScriptUnit cu) throws CoreException {
 		try{
 			NLSLine[] lines= NLSScanner.scan(cu);
 			int result= 0;
@@ -304,7 +304,7 @@ public class FindStringsToExternalizeAction extends SelectionDispatchAction {
 			}
 			return result;
 		} catch (InvalidInputException e) {
-			throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR,
+			throw new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.ERROR,
 				Messages.format(ActionMessages.FindStringsToExternalizeAction_error_cannotBeParsed, cu.getElementName()), 
 				e));
 		}	
@@ -398,14 +398,14 @@ public class FindStringsToExternalizeAction extends SelectionDispatchAction {
 			}
 		}
 
-		private void openWizard(ICompilationUnit unit) {
+		private void openWizard(IJavaScriptUnit unit) {
 			try {
 				if (unit != null && unit.exists()) {
 					NLSRefactoring refactoring= NLSRefactoring.create(unit);
 					if (refactoring != null)
 						new RefactoringStarter().activate(refactoring, new ExternalizeWizard(refactoring), getShell(), ActionMessages.ExternalizeStringsAction_dialog_title, RefactoringSaveHelper.SAVE_NON_JAVA_UPDATES); 
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				ExceptionHandler.handle(e, 
 					ActionMessages.FindStringsToExternalizeAction_dialog_title, 
 					ActionMessages.FindStringsToExternalizeAction_error_message); 
@@ -413,7 +413,7 @@ public class FindStringsToExternalizeAction extends SelectionDispatchAction {
 		}
 		
 		private static LabelProvider createLabelProvider() {
-			return new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT){ 
+			return new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_DEFAULT){ 
 				public String getText(Object element) {
 					NonNLSElement nlsel= (NonNLSElement)element;
 					String elementName= nlsel.cu.getResource().getFullPath().toString();
@@ -439,9 +439,9 @@ public class FindStringsToExternalizeAction extends SelectionDispatchAction {
 	}
 		
 	private static class NonNLSElement{
-		ICompilationUnit cu;
+		IJavaScriptUnit cu;
 		int count;
-		NonNLSElement(ICompilationUnit cu, int count){
+		NonNLSElement(IJavaScriptUnit cu, int count){
 			this.cu= cu;
 			this.count= count;
 		}

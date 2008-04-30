@@ -12,10 +12,10 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.wst.jsdt.core.IImportContainer;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
 
@@ -31,7 +31,7 @@ public boolean equals(Object o) {
 	return super.equals(o);
 }
 /**
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public int getElementType() {
 	return IMPORT_CONTAINER;
@@ -39,7 +39,7 @@ public int getElementType() {
 /*
  * @see JavaElement
  */
-public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner workingCopyOwner) {
+public IJavaScriptElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner workingCopyOwner) {
 	switch (token.charAt(0)) {
 		case JEM_COUNT:
 			return getHandleUpdatingCountFromMemento(memento, workingCopyOwner);
@@ -74,7 +74,7 @@ public IImportDeclaration getImport(String importName) {
 /*
  * @see JavaElement#getPrimaryElement(boolean)
  */
-public IJavaElement getPrimaryElement(boolean checkOwner) {
+public IJavaScriptElement getPrimaryElement(boolean checkOwner) {
 	CompilationUnit cu = (CompilationUnit)this.parent;
 	if (checkOwner && cu.isPrimary()) return this;
 	return cu.getImportContainer();
@@ -82,8 +82,8 @@ public IJavaElement getPrimaryElement(boolean checkOwner) {
 /**
  * @see ISourceReference
  */
-public ISourceRange getSourceRange() throws JavaModelException {
-	IJavaElement[] imports= getChildren();
+public ISourceRange getSourceRange() throws JavaScriptModelException {
+	IJavaScriptElement[] imports= getChildren();
 	ISourceRange firstRange= ((ISourceReference)imports[0]).getSourceRange();
 	ISourceRange lastRange= ((ISourceReference)imports[imports.length - 1]).getSourceRange();
 	SourceRange range= new SourceRange(firstRange.getOffset(), lastRange.getOffset() + lastRange.getLength() - firstRange.getOffset());
@@ -101,7 +101,7 @@ public String readableName() {
 protected void toString(int tab, StringBuffer buffer) {
 	Object info = JavaModelManager.getJavaModelManager().peekAtInfo(this);
 	if (info == null || !(info instanceof JavaElementInfo)) return;
-	IJavaElement[] children = ((JavaElementInfo)info).getChildren();
+	IJavaScriptElement[] children = ((JavaElementInfo)info).getChildren();
 	for (int i = 0; i < children.length; i++) {
 		if (i > 0) buffer.append("\n"); //$NON-NLS-1$
 		((JavaElement)children[i]).toString(tab, buffer);

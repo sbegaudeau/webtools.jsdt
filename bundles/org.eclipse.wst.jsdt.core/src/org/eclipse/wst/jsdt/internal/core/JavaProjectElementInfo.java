@@ -17,18 +17,18 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.HashSetOfArray;
 import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
- * Info for IJavaProject.
+ * Info for IJavaScriptProject.
  * <p>
  * Note: <code>getChildren()</code> returns all of the <code>IPackageFragmentRoots</code>
  * specified on the classpath for the project.  This can include roots external to the
@@ -110,7 +110,7 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 		IPath projectOutput = null;
 		boolean isClasspathResolved = true;
 		try {
-			IClasspathEntry entry = project.getClasspathEntryFor(projectPath);
+			IIncludePathEntry entry = project.getClasspathEntryFor(projectPath);
 			if (entry != null) {
 				srcIsProject = true;
 				inclusionPatterns = ((ClasspathEntry)entry).fullInclusionPatternChars();
@@ -118,7 +118,7 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 			}
 			projectOutput = project.getOutputLocation();
 			binIsProject = projectPath.equals(projectOutput);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			isClasspathResolved = false;
 		}
 
@@ -128,9 +128,9 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 			IResource[] members = ((IContainer) project.getResource()).members();
 			int length = members.length;
 			if (length > 0) {
-				String sourceLevel = project.getOption(JavaCore.COMPILER_SOURCE, true);
-				String complianceLevel = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-				IClasspathEntry[] classpath = project.getResolvedClasspath();
+				String sourceLevel = project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
+				String complianceLevel = project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true);
+				IIncludePathEntry[] classpath = project.getResolvedClasspath();
 				for (int i = 0; i < length; i++) {
 					IResource res = members[i];
 					switch (res.getType()) {
@@ -208,7 +208,7 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 			Map reverseMap = new HashMap(3);
 			try {
 				roots = project.getAllPackageFragmentRoots(reverseMap);
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// project does not exist: cannot happen since this is the info of the project
 				roots = new IPackageFragmentRoot[0];
 				reverseMap.clear();
@@ -246,7 +246,7 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 	}
 
 	private void initializePackageNames(IPackageFragmentRoot root, HashSetOfArray fragmentsCache) {
-		IJavaElement[] frags = null;
+		IJavaScriptElement[] frags = null;
 		try {
 			if (!root.isOpen()) {
 				PackageFragmentRootInfo info = root.isArchive() ? new JarPackageFragmentRootInfo() : new PackageFragmentRootInfo();
@@ -254,7 +254,7 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 				frags = info.children;
 			} else
 				frags = root.getChildren();
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// root doesn't exist: ignore
 			return;
 		}
@@ -266,10 +266,10 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 	/*
 	 * Returns whether the given path is a classpath entry or an output location.
 	 */
-	private boolean isClasspathEntryOrOutputLocation(IPath path, IClasspathEntry[] resolvedClasspath, IPath projectOutput) {
+	private boolean isClasspathEntryOrOutputLocation(IPath path, IIncludePathEntry[] resolvedClasspath, IPath projectOutput) {
 		if (projectOutput.equals(path)) return true;
 		for (int i = 0, length = resolvedClasspath.length; i < length; i++) {
-			IClasspathEntry entry = resolvedClasspath[i];
+			IIncludePathEntry entry = resolvedClasspath[i];
 			if (entry.getPath().equals(path)) {
 				return true;
 			}
@@ -286,7 +286,7 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 	 * The given project is assumed to be the handle of this info.
 	 * This name lookup first looks in the given working copies.
 	 */
-	NameLookup newNameLookup(JavaProject project, ICompilationUnit[] workingCopies) {
+	NameLookup newNameLookup(JavaProject project, IJavaScriptUnit[] workingCopies) {
 		LookupCache cache = getProjectCache(project);
 		HashtableOfArrayToObject allPkgFragmentsCache = cache.allPkgFragmentsCache;
 		if (allPkgFragmentsCache == null) {
@@ -307,7 +307,7 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 					LookupCache rootProjectCache;
 					try {
 						rootProjectCache = rootProject.getProjectCache();
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						// project doesn't exit
 						continue;
 					}

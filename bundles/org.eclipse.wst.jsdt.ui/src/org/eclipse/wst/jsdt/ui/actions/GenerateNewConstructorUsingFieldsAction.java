@@ -26,16 +26,16 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.AddCustomConstructorOperation;
@@ -46,7 +46,7 @@ import org.eclipse.wst.jsdt.internal.corext.dom.TokenScanner;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.GenerateConstructorUsingFieldsContentProvider;
@@ -60,7 +60,7 @@ import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
 import org.eclipse.wst.jsdt.internal.ui.util.ElementValidator;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * Creates constructors for a type based on existing fields.
@@ -111,22 +111,22 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.CREATE_NEW_CONSTRUCTOR_ACTION);
 	}
 
-	private boolean canEnable(IStructuredSelection selection) throws JavaModelException {
+	private boolean canEnable(IStructuredSelection selection) throws JavaScriptModelException {
 		if (getSelectedFields(selection) != null)
 			return true;
 
 		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IType)) {
 			IType type= (IType) selection.getFirstElement();
-			return type.getCompilationUnit() != null && !type.isInterface() && !type.isAnnotation();
+			return type.getJavaScriptUnit() != null && !type.isInterface() && !type.isAnnotation();
 		}
 
-		if ((selection.size() == 1) && (selection.getFirstElement() instanceof ICompilationUnit))
+		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IJavaScriptUnit))
 			return true;
 
 		return false;
 	}
 
-	private boolean canRunOn(IField[] fields) throws JavaModelException {
+	private boolean canRunOn(IField[] fields) throws JavaScriptModelException {
 		if (fields != null && fields.length > 0) {
 			for (int index= 0; index < fields.length; index++) {
 				if (JdtFlags.isEnum(fields[index])) {
@@ -151,17 +151,17 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 		List elements= selection.toList();
 		if (elements.size() > 0) {
 			IField[] fields= new IField[elements.size()];
-			ICompilationUnit unit= null;
+			IJavaScriptUnit unit= null;
 			for (int index= 0; index < elements.size(); index++) {
 				if (elements.get(index) instanceof IField) {
 					IField field= (IField) elements.get(index);
 					if (index == 0) {
 						// remember the CU of the first element
-						unit= field.getCompilationUnit();
+						unit= field.getJavaScriptUnit();
 						if (unit == null) {
 							return null;
 						}
-					} else if (!unit.equals(field.getCompilationUnit())) {
+					} else if (!unit.equals(field.getJavaScriptUnit())) {
 						// all fields must be in the same CU
 						return null;
 					}
@@ -169,8 +169,8 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 						final IType declaringType= field.getDeclaringType();
 						if (declaringType==null || declaringType.isInterface() || declaringType.isAnnotation())
 							return null;
-					} catch (JavaModelException exception) {
-						JavaPlugin.log(exception);
+					} catch (JavaScriptModelException exception) {
+						JavaScriptPlugin.log(exception);
 						return null;
 					}
 					fields[index]= field;
@@ -183,20 +183,20 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 		return null;
 	}
 
-	private IType getSelectedType(IStructuredSelection selection) throws JavaModelException {
+	private IType getSelectedType(IStructuredSelection selection) throws JavaScriptModelException {
 		Object[] elements= selection.toArray();
 		if (elements.length == 1 && (elements[0] instanceof IType)) {
 			IType type= (IType) elements[0];
-			if (type.getCompilationUnit() != null && !type.isInterface() && !type.isAnnotation()) {
+			if (type.getJavaScriptUnit() != null && !type.isInterface() && !type.isAnnotation()) {
 				return type;
 			}
-		} else if (elements[0] instanceof ICompilationUnit) {
-			ICompilationUnit unit= (ICompilationUnit) elements[0];
+		} else if (elements[0] instanceof IJavaScriptUnit) {
+			IJavaScriptUnit unit= (IJavaScriptUnit) elements[0];
 			IType type= unit.findPrimaryType();
 			if (type != null && !type.isInterface() && !type.isAnnotation())
 				return type;
 		} else if (elements[0] instanceof IField) {
-			return ((IField) elements[0]).getCompilationUnit().findPrimaryType();
+			return ((IField) elements[0]).getJavaScriptUnit().findPrimaryType();
 		}
 		return null;
 	}
@@ -223,8 +223,8 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 
 			if (firstElement instanceof IType) {
 				run((IType) firstElement, new IField[0], false);
-			} else if (firstElement instanceof ICompilationUnit) {
-				IType type= ((ICompilationUnit) firstElement).findPrimaryType();
+			} else if (firstElement instanceof IJavaScriptUnit) {
+				IType type= ((IJavaScriptUnit) firstElement).findPrimaryType();
 				if (type.isAnnotation()) {
 					MessageDialog.openInformation(getShell(), ActionMessages.GenerateConstructorUsingFieldsAction_error_title, ActionMessages.GenerateConstructorUsingFieldsAction_annotation_not_applicable);
 					notifyResult(false);
@@ -234,7 +234,7 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 					notifyResult(false);
 					return;
 				} else
-					run(((ICompilationUnit) firstElement).findPrimaryType(), new IField[0], false);
+					run(((IJavaScriptUnit) firstElement).findPrimaryType(), new IField[0], false);
 			}
 		} catch (CoreException exception) {
 			ExceptionHandler.handle(exception, getShell(), ActionMessages.GenerateConstructorUsingFieldsAction_error_title, ActionMessages.GenerateConstructorUsingFieldsAction_error_actionfailed); 
@@ -250,15 +250,15 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 			return;
 		}
 		try {
-			IJavaElement[] elements= SelectionConverter.codeResolveForked(fEditor, true);
+			IJavaScriptElement[] elements= SelectionConverter.codeResolveForked(fEditor, true);
 			if (elements.length == 1 && (elements[0] instanceof IField)) {
 				IField field= (IField) elements[0];
 				run(field.getDeclaringType(), new IField[] { field}, false);
 				return;
 			}
-			IJavaElement element= SelectionConverter.getElementAtOffset(fEditor);
+			IJavaScriptElement element= SelectionConverter.getElementAtOffset(fEditor);
 			if (element != null) {
-				IType type= (IType) element.getAncestor(IJavaElement.TYPE);
+				IType type= (IType) element.getAncestor(IJavaScriptElement.TYPE);
 				if (type != null) {
 					if (type.getFields().length > 0) {
 						run(type, new IField[0], true);
@@ -289,7 +289,7 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 			notifyResult(false);
 			return;
 		}
-		if (type.getCompilationUnit() == null) {
+		if (type.getJavaScriptUnit() == null) {
 			MessageDialog.openInformation(getShell(), ActionMessages.GenerateConstructorUsingFieldsAction_error_title, ActionMessages.GenerateNewConstructorUsingFieldsAction_error_not_a_source_file);
 			notifyResult(false);
 			return;
@@ -309,7 +309,7 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 						scanner.setSource(candidates[index].getSource().toCharArray());
 						TokenScanner tokenScanner= new TokenScanner(scanner);
 						tokenScanner.getTokenStartOffset(ITerminalSymbols.TokenNameEQUAL, 0);
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 					} catch (CoreException e) {
 						fields.add(candidates[index]);
 					}
@@ -323,7 +323,7 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 			return;
 		}
 		final GenerateConstructorUsingFieldsContentProvider provider= new GenerateConstructorUsingFieldsContentProvider(type, fields, Arrays.asList(selected));
-		IMethodBinding[] bindings= null;
+		IFunctionBinding[] bindings= null;
 		final ITypeBinding provided= provider.getType();
 		if (provided.isAnonymous()) {
 			MessageDialog.openInformation(getShell(), ActionMessages.GenerateConstructorUsingFieldsAction_error_title, ActionMessages.GenerateConstructorUsingFieldsAction_error_anonymous_class);
@@ -331,7 +331,7 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 			return;
 		}
 		if (provided.isEnum()) {
-			bindings= new IMethodBinding[] {getObjectConstructor(provider.getCompilationUnit())};
+			bindings= new IFunctionBinding[] {getObjectConstructor(provider.getCompilationUnit())};
 		} else {
 			bindings= StubUtility2.getVisibleConstructors(provided, false, true);
 			if (bindings.length == 0) {
@@ -365,10 +365,10 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 			}
 			IVariableBinding[] variables= new IVariableBinding[result.size()];
 			result.toArray(variables);
-			IEditorPart editor= JavaUI.openInEditor(type.getCompilationUnit());
-			CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(type.getJavaProject());
+			IEditorPart editor= JavaScriptUI.openInEditor(type.getJavaScriptUnit());
+			CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(type.getJavaScriptProject());
 			settings.createComments= dialog.getGenerateComment();
-			IMethodBinding constructor= dialog.getSuperConstructorChoice();
+			IFunctionBinding constructor= dialog.getSuperConstructorChoice();
 			IRewriteTarget target= editor != null ? (IRewriteTarget) editor.getAdapter(IRewriteTarget.class) : null;
 			if (target != null)
 				target.beginCompoundChange();
@@ -377,7 +377,7 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 				operation.setVisibility(dialog.getVisibilityModifier());
 				if (constructor.getParameterTypes().length == 0)
 					operation.setOmitSuper(dialog.isOmitSuper());
-				IRunnableContext context= JavaPlugin.getActiveWorkbenchWindow();
+				IRunnableContext context= JavaScriptPlugin.getActiveWorkbenchWindow();
 				if (context == null)
 					context= new BusyIndicatorRunnableContext();
 				PlatformUI.getWorkbench().getProgressService().runInUI(context, new WorkbenchRunnableAdapter(operation, operation.getSchedulingRule()), operation.getSchedulingRule());
@@ -394,7 +394,7 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 		notifyResult(dialogResult == Window.OK);
 	}
 
-	private IMethodBinding getObjectConstructor(CompilationUnit compilationUnit) {
+	private IFunctionBinding getObjectConstructor(JavaScriptUnit compilationUnit) {
 		final ITypeBinding binding= compilationUnit.getAST().resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
 		return Bindings.findMethodInType(binding, "Object", new ITypeBinding[0]); //$NON-NLS-1$
 	}
@@ -405,10 +405,10 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(canEnable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			setEnabled(false);
 		}
 	}

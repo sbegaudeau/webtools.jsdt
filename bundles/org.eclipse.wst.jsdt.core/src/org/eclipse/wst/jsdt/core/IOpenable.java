@@ -51,9 +51,9 @@ public interface IOpenable {
  * not expected to open and close elements - the Java model does this automatically
  * as elements are accessed.
  *
- * @exception JavaModelException if an error occurs closing this element
+ * @exception JavaScriptModelException if an error occurs closing this element
  */
-public void close() throws JavaModelException;
+public void close() throws JavaScriptModelException;
 /**
  * Finds and returns the recommended line separator for this element.
  * The element's buffer is first searched and the first line separator in this buffer is returned if any.
@@ -62,21 +62,21 @@ public void close() throws JavaModelException;
  * Finally if no such preference is set, the system line separator is returned.
  *
  * @return the recommended line separator for this element
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *		exception occurs while accessing its corresponding resource.
  * @since 3.2
  */
-public String findRecommendedLineSeparator() throws JavaModelException;
+public String findRecommendedLineSeparator() throws JavaScriptModelException;
 /**
  * Returns the buffer opened for this element, or <code>null</code>
  * if this element does not have a buffer.
  *
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *		exception occurs while accessing its corresponding resource.
  * @return the buffer opened for this element, or <code>null</code>
  * if this element does not have a buffer
  */
-public IBuffer getBuffer() throws JavaModelException;
+public IBuffer getBuffer() throws JavaScriptModelException;
 /**
  * Returns <code>true</code> if this element is open and:
  * <ul>
@@ -86,7 +86,7 @@ public IBuffer getBuffer() throws JavaModelException;
  * element's children and has not yet destroyed
  * </ul>
  *
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *		exception occurs while accessing its corresponding resource.
  * @return <code>true</code> if this element is open and:
  * <ul>
@@ -96,7 +96,7 @@ public IBuffer getBuffer() throws JavaModelException;
  * element's children and has not yet destroyed
  * </ul>
  */
-boolean hasUnsavedChanges() throws JavaModelException;
+boolean hasUnsavedChanges() throws JavaScriptModelException;
 /**
  * Returns whether the element is consistent with its underlying resource or buffer.
  * The element is consistent when opened, and is consistent if the underlying resource
@@ -107,12 +107,12 @@ boolean hasUnsavedChanges() throws JavaModelException;
  * compilation units present in its underlying folder. However, one or more of
  * the compilation units could be inconsistent.
  *
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *		exception occurs while accessing its corresponding resource.
  * @return true if the element is consistent with its underlying resource or buffer, false otherwise.
  * @see IOpenable#makeConsistent(IProgressMonitor)
  */
-boolean isConsistent() throws JavaModelException;
+boolean isConsistent() throws JavaScriptModelException;
 /**
  * Returns whether this openable is open. This is a handle-only method.
  * @return true if this openable is open, false otherwise
@@ -124,21 +124,21 @@ boolean isOpen();
  *<p>
  * Note: Using this functionality on a working copy will interfere with any
  * subsequent reconciling operation. Indeed, the next
- * {@link ICompilationUnit#reconcile(int, boolean, WorkingCopyOwner, IProgressMonitor)} or
- * {@link ICompilationUnit#reconcile(int, boolean, boolean, WorkingCopyOwner, IProgressMonitor)}
+ * {@link IJavaScriptUnit#reconcile(int, boolean, WorkingCopyOwner, IProgressMonitor)} or
+ * {@link IJavaScriptUnit#reconcile(int, boolean, boolean, WorkingCopyOwner, IProgressMonitor)}
  * operation will not account for changes which occurred before an
  * explicit use of {@link #makeConsistent(IProgressMonitor)}
  * <p>
  * @param progress the given progress monitor
- * @exception JavaModelException if the element is unable to access the contents
+ * @exception JavaScriptModelException if the element is unable to access the contents
  * 		of its underlying resource. Reasons include:
  * <ul>
  *  <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * </ul>
  * @see IOpenable#isConsistent()
- * @see ICompilationUnit#reconcile(int, boolean, WorkingCopyOwner, IProgressMonitor)
+ * @see IJavaScriptUnit#reconcile(int, boolean, WorkingCopyOwner, IProgressMonitor)
  */
-void makeConsistent(IProgressMonitor progress) throws JavaModelException;
+void makeConsistent(IProgressMonitor progress) throws JavaScriptModelException;
 /**
  * Opens this element and all parent elements that are not already open.
  * For compilation units, a buffer is opened on the contents of the underlying resource.
@@ -148,13 +148,13 @@ void makeConsistent(IProgressMonitor progress) throws JavaModelException;
  * as elements are accessed.
  *
  * @param progress the given progress monitor
- * @exception JavaModelException if an error occurs accessing the contents
+ * @exception JavaScriptModelException if an error occurs accessing the contents
  * 		of its underlying resource. Reasons include:
  * <ul>
  *  <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * </ul>
  */
-public void open(IProgressMonitor progress) throws JavaModelException;
+public void open(IProgressMonitor progress) throws JavaScriptModelException;
 /**
  * Saves any changes in this element's buffer to its underlying resource
  * via a workspace resource operation. This has no effect if the element has no underlying
@@ -178,12 +178,12 @@ public void open(IProgressMonitor progress) throws JavaModelException;
  * @param progress the given progress monitor
  * @param force it controls how this method deals with
  * cases where the workbench is not completely in sync with the local file system
- * @exception JavaModelException if an error occurs accessing the contents
+ * @exception JavaScriptModelException if an error occurs accessing the contents
  * 		of its underlying resource. Reasons include:
  * <ul>
  *  <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  *  <li>This Java element is read-only (READ_ONLY)</li>
  * </ul>
  */
-public void save(IProgressMonitor progress, boolean force) throws JavaModelException;
+public void save(IProgressMonitor progress, boolean force) throws JavaScriptModelException;
 }

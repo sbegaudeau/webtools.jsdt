@@ -28,10 +28,10 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 
 import com.ibm.icu.text.MessageFormat;
@@ -156,14 +156,14 @@ public final class JavaRuntime {
 	 * 
 	 * @since 2.0
 	 */
-	public static final String PREF_CONNECT_TIMEOUT = JavaCore.PLUGIN_ID + ".PREF_CONNECT_TIMEOUT"; //$NON-NLS-1$
+	public static final String PREF_CONNECT_TIMEOUT = JavaScriptCore.PLUGIN_ID + ".PREF_CONNECT_TIMEOUT"; //$NON-NLS-1$
 	
 	/**
 	 * Preference key for the String of XML that defines all installed VMs.
 	 * 
 	 * @since 2.1
 	 */
-	public static final String PREF_VM_XML = JavaCore.PLUGIN_ID + ".PREF_VM_XML"; //$NON-NLS-1$
+	public static final String PREF_VM_XML = JavaScriptCore.PLUGIN_ID + ".PREF_VM_XML"; //$NON-NLS-1$
 	
 	/**
 	 * Default launch/connect timeout (ms).
@@ -182,7 +182,7 @@ public final class JavaRuntime {
 	 * 
 	 * @deprecated - use <code>IProcess.ATTR_CMDLINE</code>
 	 */
-	public final static String ATTR_CMDLINE= JavaCore.PLUGIN_ID + ".launcher.cmdLine"; //$NON-NLS-1$
+	public final static String ATTR_CMDLINE= JavaScriptCore.PLUGIN_ID + ".launcher.cmdLine"; //$NON-NLS-1$
 	
 	/**
 	 * Attribute key for a classpath attribute referencing a
@@ -190,7 +190,7 @@ public final class JavaRuntime {
 	 * <code>-Djava.library.path</code> system property.
 	 * <p>
 	 * The factory methods <code>newLibraryPathsAttribute(String[])</code>
-	 * and <code>getLibraryPaths(IClasspathAttribute)</code> should be used to
+	 * and <code>getLibraryPaths(IIncludePathAttribute)</code> should be used to
 	 * encode and decode the attribute value. 
 	 * </p>
 	 * <p>
@@ -203,9 +203,9 @@ public final class JavaRuntime {
 	 * interpreted as an absolute path in the local file system.
 	 * </p>
 	 * @since 3.1
-	 * @see org.eclipse.wst.jsdt.core.IClasspathAttribute
+	 * @see org.eclipse.wst.jsdt.core.IIncludePathAttribute
 	 */
-	public static final String CLASSPATH_ATTR_LIBRARY_PATH_ENTRY =  JavaCore.PLUGIN_ID + ".CLASSPATH_ATTR_LIBRARY_PATH_ENTRY"; //$NON-NLS-1$
+	public static final String CLASSPATH_ATTR_LIBRARY_PATH_ENTRY =  JavaScriptCore.PLUGIN_ID + ".CLASSPATH_ATTR_LIBRARY_PATH_ENTRY"; //$NON-NLS-1$
 
 	// lock for vm initialization
 	private static Object fgVMLock = new Object();
@@ -267,7 +267,7 @@ public final class JavaRuntime {
 //	private static void initializeVMTypeExtensions() {
 //		IExtensionPoint extensionPoint= Platform.getExtensionRegistry().getExtensionPoint(JavaPlugin.getPluginId(), "vmInstallTypes"); //$NON-NLS-1$
 //		IConfigurationElement[] configs= extensionPoint.getConfigurationElements(); 
-//		MultiStatus status= new MultiStatus(JavaCore.PLUGIN_ID, IStatus.OK, LaunchingMessages.JavaRuntime_exceptionOccurred, null); 
+//		MultiStatus status= new MultiStatus(JavaScriptCore.PLUGIN_ID, IStatus.OK, LaunchingMessages.JavaRuntime_exceptionOccurred, null); 
 //		fgVMTypes= new IVMInstallType[configs.length];
 //
 //		for (int i= 0; i < configs.length; i++) {
@@ -303,21 +303,21 @@ public final class JavaRuntime {
 	 * 		   Returns <code>null</code> if no VM is referenced on the project's build path.
 	 * @throws CoreException if unable to determine the project's VM install
 	 */
-	public static IVMInstall getVMInstall(IJavaProject project) throws CoreException {
+	public static IVMInstall getVMInstall(IJavaScriptProject project) throws CoreException {
 		// check the classpath
 		IVMInstall vm = null;
-		IClasspathEntry[] classpath = project.getRawClasspath();
+		IIncludePathEntry[] classpath = project.getRawIncludepath();
 		IRuntimeClasspathEntryResolver resolver = null;
 		for (int i = 0; i < classpath.length; i++) {
-			IClasspathEntry entry = classpath[i];
+			IIncludePathEntry entry = classpath[i];
 			switch (entry.getEntryKind()) {
-				case IClasspathEntry.CPE_VARIABLE:
+				case IIncludePathEntry.CPE_VARIABLE:
 					resolver = getVariableResolver(entry.getPath().segment(0));
 					if (resolver != null) {
 						vm = resolver.resolveVMInstall(entry);
 					}
 					break;
-				case IClasspathEntry.CPE_CONTAINER:
+				case IIncludePathEntry.CPE_CONTAINER:
 					resolver = getContainerResolver(entry.getPath().segment(0));
 					if (resolver != null) {
 						vm = resolver.resolveVMInstall(entry);
@@ -527,7 +527,7 @@ public final class JavaRuntime {
 //	 * @return runtime classpath entry
 //	 * @since 3.0
 //	 */
-//	public static IRuntimeClasspathEntry newDefaultProjectClasspathEntry(IJavaProject project) {
+//	public static IRuntimeClasspathEntry newDefaultProjectClasspathEntry(IJavaScriptProject project) {
 //		return new DefaultProjectClasspathEntry(project);
 //	}	
 	
@@ -538,8 +538,8 @@ public final class JavaRuntime {
 	 * @return runtime classpath entry
 	 * @since 2.0
 	 */
-	public static IRuntimeClasspathEntry newProjectRuntimeClasspathEntry(IJavaProject project) {
-		IClasspathEntry cpe = JavaCore.newProjectEntry(project.getProject().getFullPath());
+	public static IRuntimeClasspathEntry newProjectRuntimeClasspathEntry(IJavaScriptProject project) {
+		IIncludePathEntry cpe = JavaScriptCore.newProjectEntry(project.getProject().getFullPath());
 		return newRuntimeClasspathEntry(cpe);
 	}
 	
@@ -552,7 +552,7 @@ public final class JavaRuntime {
 	 * @since 2.0
 	 */
 	public static IRuntimeClasspathEntry newArchiveRuntimeClasspathEntry(IResource resource) {
-		IClasspathEntry cpe = JavaCore.newLibraryEntry(resource.getFullPath(), null, null);
+		IIncludePathEntry cpe = JavaScriptCore.newLibraryEntry(resource.getFullPath(), null, null);
 		return newRuntimeClasspathEntry(cpe);
 	}
 	
@@ -565,7 +565,7 @@ public final class JavaRuntime {
 	 * @since 2.0
 	 */
 	public static IRuntimeClasspathEntry newArchiveRuntimeClasspathEntry(IPath path) {
-		IClasspathEntry cpe = JavaCore.newLibraryEntry(path, null, null);
+		IIncludePathEntry cpe = JavaScriptCore.newLibraryEntry(path, null, null);
 		return newRuntimeClasspathEntry(cpe);
 	}
 
@@ -579,7 +579,7 @@ public final class JavaRuntime {
 	 * @since 2.0
 	 */
 	public static IRuntimeClasspathEntry newVariableRuntimeClasspathEntry(IPath path) {
-		IClasspathEntry cpe = JavaCore.newVariableEntry(path, null, null);
+		IIncludePathEntry cpe = JavaScriptCore.newVariableEntry(path, null, null);
 		return newRuntimeClasspathEntry(cpe);
 	}
 
@@ -612,8 +612,8 @@ public final class JavaRuntime {
 	 * @exception CoreException if unable to construct a runtime classpath entry
 	 * @since 3.0
 	 */
-	public static IRuntimeClasspathEntry newRuntimeContainerClasspathEntry(IPath path, int classpathProperty, IJavaProject project) throws CoreException {
-//		IClasspathEntry cpe = JavaCore.newContainerEntry(path);
+	public static IRuntimeClasspathEntry newRuntimeContainerClasspathEntry(IPath path, int classpathProperty, IJavaScriptProject project) throws CoreException {
+//		IIncludePathEntry cpe = JavaScriptCore.newContainerEntry(path);
 //		RuntimeClasspathEntry entry = new RuntimeClasspathEntry(cpe, classpathProperty);
 //		entry.setJavaProject(project);
 //		return entry;
@@ -674,7 +674,7 @@ public final class JavaRuntime {
 	 * @return runtime classpath entry
 	 * @since 2.0
 	 */
-	private static IRuntimeClasspathEntry newRuntimeClasspathEntry(IClasspathEntry entry) {
+	private static IRuntimeClasspathEntry newRuntimeClasspathEntry(IIncludePathEntry entry) {
 //		return new RuntimeClasspathEntry(entry);
 		//TODO: implement
 		throw new org.eclipse.wst.jsdt.core.UnimplementedException();
@@ -689,14 +689,14 @@ public final class JavaRuntime {
 	 * @see IRuntimeClasspathEntry
 	 * @since 2.0
 	 */
-	public static IRuntimeClasspathEntry[] computeUnresolvedRuntimeClasspath(IJavaProject project) throws CoreException {
-//		IClasspathEntry[] entries = project.getRawClasspath();
+	public static IRuntimeClasspathEntry[] computeUnresolvedRuntimeClasspath(IJavaScriptProject project) throws CoreException {
+//		IIncludePathEntry[] entries = project.getRawClasspath();
 //		List classpathEntries = new ArrayList(3);
 //		for (int i = 0; i < entries.length; i++) {
-//			IClasspathEntry entry = entries[i];
+//			IIncludePathEntry entry = entries[i];
 //			switch (entry.getEntryKind()) {
-//				case IClasspathEntry.CPE_CONTAINER:
-//					IJsGlobalScopeContainer container = JavaCore.getJsGlobalScopeContainer(entry.getPath(), project);
+//				case IIncludePathEntry.CPE_CONTAINER:
+//					IJsGlobalScopeContainer container = JavaScriptCore.getJsGlobalScopeContainer(entry.getPath(), project);
 //					if (container != null) {
 //						switch (container.getKind()) {
 //							case IJsGlobalScopeContainer.K_APPLICATION:
@@ -711,7 +711,7 @@ public final class JavaRuntime {
 //						}						
 //					}
 //					break;
-//				case IClasspathEntry.CPE_VARIABLE:
+//				case IIncludePathEntry.CPE_VARIABLE:
 //					if (JRELIB_VARIABLE.equals(entry.getPath().segment(0))) {
 //						IRuntimeClasspathEntry jre = newVariableRuntimeClasspathEntry(entry.getPath());
 //						jre.setClasspathProperty(IRuntimeClasspathEntry.STANDARD_CLASSES);
@@ -831,7 +831,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //				IResource resource = entry.getResource();
 //				if (resource instanceof IProject) {
 //					IProject p = (IProject)resource;
-//					IJavaProject project = JavaCore.create(p);
+//					IJavaScriptProject project = JavaScriptCore.create(p);
 //					if (project == null || !p.isOpen() || !project.exists()) { 
 //						return new IRuntimeClasspathEntry[0];
 //					}
@@ -890,9 +890,9 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * @return IRuntimeClasspathEntry[]
 //	 * @throws CoreException
 //	 */
-//	private static IRuntimeClasspathEntry[] resolveVariableEntry(IRuntimeClasspathEntry entry, IJavaProject project, ILaunchConfiguration configuration) throws CoreException {
+//	private static IRuntimeClasspathEntry[] resolveVariableEntry(IRuntimeClasspathEntry entry, IJavaScriptProject project, ILaunchConfiguration configuration) throws CoreException {
 //		// default resolution - an archive
-//		IPath archPath = JavaCore.getClasspathVariable(entry.getVariableName());
+//		IPath archPath = JavaScriptCore.getClasspathVariable(entry.getVariableName());
 //		if (archPath != null) {
 //			if (entry.getPath().segmentCount() > 1) {
 //				archPath = archPath.append(entry.getPath().removeFirstSegments(1));
@@ -903,13 +903,13 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //			IPath srcRootVar = entry.getSourceAttachmentRootPath();
 //			if (archPath != null && !archPath.isEmpty()) {
 //				if (srcVar != null && !srcVar.isEmpty()) {
-//					srcPath = JavaCore.getClasspathVariable(srcVar.segment(0));
+//					srcPath = JavaScriptCore.getClasspathVariable(srcVar.segment(0));
 //					if (srcPath != null) {
 //						if (srcVar.segmentCount() > 1) {
 //							srcPath = srcPath.append(srcVar.removeFirstSegments(1));
 //						}
 //						if (srcRootVar != null && !srcRootVar.isEmpty()) {
-//							srcRootPath = JavaCore.getClasspathVariable(srcRootVar.segment(0));	
+//							srcRootPath = JavaScriptCore.getClasspathVariable(srcRootVar.segment(0));	
 //							if (srcRootPath != null) {
 //								if (srcRootVar.segmentCount() > 1) {
 //									srcRootPath = srcRootPath.append(srcRootVar.removeFirstSegments(1));					
@@ -919,7 +919,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //					}
 //				}
 //				// now resolve the archive (recursively)
-//				IClasspathEntry archEntry = JavaCore.newLibraryEntry(archPath, srcPath, srcRootPath, entry.getClasspathEntry().isExported());
+//				IIncludePathEntry archEntry = JavaScriptCore.newLibraryEntry(archPath, srcPath, srcRootPath, entry.getClasspathEntry().isExported());
 //				IRuntimeClasspathEntry runtimeArchEntry = newRuntimeClasspathEntry(archEntry);
 //				runtimeArchEntry.setClasspathProperty(entry.getClasspathProperty());
 //				if (configuration == null) {
@@ -941,13 +941,13 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * @return IRuntimeClasspathEntry[] or <code>null</code>
 //	 * @throws CoreException
 //	 */
-//	private static IRuntimeClasspathEntry[] resolveOutputLocations(IJavaProject project, int classpathProperty) throws CoreException {
+//	private static IRuntimeClasspathEntry[] resolveOutputLocations(IJavaScriptProject project, int classpathProperty) throws CoreException {
 //		List nonDefault = new ArrayList();
 //		if (project.exists() && project.getProject().isOpen()) {
-//			IClasspathEntry entries[] = project.getRawClasspath();
+//			IIncludePathEntry entries[] = project.getRawClasspath();
 //			for (int i = 0; i < entries.length; i++) {
-//				IClasspathEntry classpathEntry = entries[i];
-//				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+//				IIncludePathEntry classpathEntry = entries[i];
+//				if (classpathEntry.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 //					IPath path = classpathEntry.getOutputLocation();
 //					if (path != null) {
 //						nonDefault.add(path);
@@ -965,7 +965,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //		}
 //		IRuntimeClasspathEntry[] locations = new IRuntimeClasspathEntry[nonDefault.size()];
 //		for (int i = 0; i < locations.length; i++) {
-//			IClasspathEntry newEntry = JavaCore.newLibraryEntry((IPath)nonDefault.get(i), null, null);
+//			IIncludePathEntry newEntry = JavaScriptCore.newLibraryEntry((IPath)nonDefault.get(i), null, null);
 //			locations[i] = new RuntimeClasspathEntry(newEntry);
 //			locations[i].setClasspathProperty(classpathProperty);
 //		}
@@ -994,14 +994,14 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * @see IRuntimeClasspathEntryResolver
 	 * @since 2.0
 	 */
-	public static IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry, IJavaProject project) throws CoreException {
+	public static IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry, IJavaScriptProject project) throws CoreException {
 //		switch (entry.getType()) {
 //			case IRuntimeClasspathEntry.PROJECT:
 //				// if the project has multiple output locations, they must be returned
 //				IResource resource = entry.getResource();
 //				if (resource instanceof IProject) {
 //					IProject p = (IProject)resource;
-//					IJavaProject jp = JavaCore.create(p);
+//					IJavaScriptProject jp = JavaScriptCore.create(p);
 //					if (jp != null && p.isOpen() && jp.exists()) {
 //						IRuntimeClasspathEntry[] entries = resolveOutputLocations(jp, entry.getClasspathProperty());
 //						if (entries != null) {
@@ -1044,7 +1044,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * Delegates to the Java model.
 	 */
 //	private static IRuntimeClasspathEntry[] computeDefaultContainerEntries(IRuntimeClasspathEntry entry, ILaunchConfiguration config) throws CoreException {
-//		IJavaProject project = entry.getJavaProject();
+//		IJavaScriptProject project = entry.getJavaProject();
 //		if (project == null) {
 //			project = getJavaProject(config);
 //		}
@@ -1055,20 +1055,20 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * Performs default resolution for a container entry.
 	 * Delegates to the Java model.
 	 */
-//	private static IRuntimeClasspathEntry[] computeDefaultContainerEntries(IRuntimeClasspathEntry entry, IJavaProject project) throws CoreException {
+//	private static IRuntimeClasspathEntry[] computeDefaultContainerEntries(IRuntimeClasspathEntry entry, IJavaScriptProject project) throws CoreException {
 //		//TODO: implement
 //		throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 ////		if (project == null || entry == null) {
 ////			// cannot resolve without entry or project context
 ////			return new IRuntimeClasspathEntry[0];
 ////		} 
-////		IJsGlobalScopeContainer container = JavaCore.getJsGlobalScopeContainer(entry.getPath(), project);
+////		IJsGlobalScopeContainer container = JavaScriptCore.getJsGlobalScopeContainer(entry.getPath(), project);
 ////		if (container == null) {
 ////			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_Could_not_resolve_classpath_container___0__1, new String[]{entry.getPath().toString()}), null); 
 ////			// execution will not reach here - exception will be thrown
 ////			return null;
 ////		} 
-////		IClasspathEntry[] cpes = container.getClasspathEntries();
+////		IIncludePathEntry[] cpes = container.getClasspathEntries();
 ////		int property = -1;
 ////		switch (container.getKind()) {
 ////			case IJsGlobalScopeContainer.K_APPLICATION:
@@ -1094,10 +1094,10 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 ////		fgEntryCount.set(new Integer(intCount));
 ////		try {
 ////			for (int i = 0; i < cpes.length; i++) {
-////				IClasspathEntry cpe = cpes[i];
-////				if (cpe.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+////				IIncludePathEntry cpe = cpes[i];
+////				if (cpe.getEntryKind() == IIncludePathEntry.CPE_PROJECT) {
 ////					IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(cpe.getPath().segment(0));
-////					IJavaProject jp = JavaCore.create(p);
+////					IJavaScriptProject jp = JavaScriptCore.create(p);
 ////					if (!projects.contains(jp)) {
 ////						projects.add(jp);
 ////						IRuntimeClasspathEntry classpath = newDefaultProjectClasspathEntry(jp);
@@ -1167,20 +1167,20 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	}	
 	
 	/**
-	 * Return the <code>IJavaProject</code> referenced in the specified configuration or
+	 * Return the <code>IJavaScriptProject</code> referenced in the specified configuration or
 	 * <code>null</code> if none.
 	 *
 	 * @exception CoreException if the referenced Java project does not exist
 	 * @since 2.0
 	 */
-	public static IJavaProject getJavaProject(ILaunchConfiguration configuration) throws CoreException {
+	public static IJavaScriptProject getJavaProject(ILaunchConfiguration configuration) throws CoreException {
 ////TODO: implement
 //throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 				String projectName = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String)null);
 		if ((projectName == null) || (projectName.trim().length() < 1)) {
 			return null;
 		}			
-		IJavaProject javaProject = getJavaModel().getJavaProject(projectName);
+		IJavaScriptProject javaProject = getJavaModel().getJavaScriptProject(projectName);
 		if (javaProject != null && javaProject.getProject().exists() && !javaProject.getProject().isOpen()) {
 			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_28, new String[] {configuration.getName(), projectName}), IJavaLaunchConfigurationConstants.ERR_PROJECT_CLOSED, null); 
 		}
@@ -1193,8 +1193,8 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	/**
 	 * Convenience method to get the java model.
 	 */
-	private static IJavaModel getJavaModel() {
-		return JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
+	private static IJavaScriptModel getJavaModel() {
+		return JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
 	}
 	
 	/**
@@ -1222,7 +1222,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 		if (jreAttr == null) {
 			String type = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE, (String)null);
 			if (type == null) {
-				IJavaProject proj = getJavaProject(configuration);
+				IJavaScriptProject proj = getJavaProject(configuration);
 				if (proj != null) {
 					IVMInstall vm = getVMInstall(proj);
 					if (vm != null) {
@@ -1235,7 +1235,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 			}
 		} else {
 			IPath jrePath = Path.fromPortableString(jreAttr);
-			IClasspathEntry entry = JavaCore.newContainerEntry(jrePath);
+			IIncludePathEntry entry = JavaScriptCore.newContainerEntry(jrePath);
 			IRuntimeClasspathEntryResolver2 resolver = getVariableResolver(jrePath.segment(0));
 			if (resolver != null) {
 				return resolver.resolveVMInstall(entry);
@@ -1269,8 +1269,8 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 		if (name == null) {
 			// error - type specified without a specific install (could be an old config that specified a VM ID)
 			// log the error, but choose the default VM.
-			IStatus status = new Status(IStatus.WARNING, JavaCore.PLUGIN_ID, IJavaLaunchConfigurationConstants.ERR_UNSPECIFIED_VM_INSTALL, MessageFormat.format(LaunchingMessages.JavaRuntime_VM_not_fully_specified_in_launch_configuration__0____missing_VM_name__Reverting_to_default_VM__1, new String[] {configuration.getName()}), null); 
-			JavaCore.getPlugin().getLog().log(status);
+			IStatus status = new Status(IStatus.WARNING, JavaScriptCore.PLUGIN_ID, IJavaLaunchConfigurationConstants.ERR_UNSPECIFIED_VM_INSTALL, MessageFormat.format(LaunchingMessages.JavaRuntime_VM_not_fully_specified_in_launch_configuration__0____missing_VM_name__Reverting_to_default_VM__1, new String[] {configuration.getName()}), null); 
+			JavaScriptCore.getPlugin().getLog().log(status);
 			return getDefaultVMInstall();
 		} 
 		vm = vt.findVMInstallByName(name);
@@ -1306,7 +1306,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 *  error, or <code>null</code> if none
 	 */
 	private static void abort(String message, int code, Throwable exception) throws CoreException {
-		throw new CoreException(new Status(IStatus.ERROR, JavaCore.PLUGIN_ID, code, message, exception));
+		throw new CoreException(new Status(IStatus.ERROR, JavaScriptCore.PLUGIN_ID, code, message, exception));
 	}	
 		
 	/**
@@ -1317,7 +1317,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * @return	The computed classpath. May be empty, but not null.
 	 * @throws	CoreException if unable to compute the default classpath
 	 */
-	public static String[] computeDefaultRuntimeClassPath(IJavaProject jproject) throws CoreException {
+	public static String[] computeDefaultRuntimeClassPath(IJavaScriptProject jproject) throws CoreException {
 		IRuntimeClasspathEntry[] unresolved = computeUnresolvedRuntimeClasspath(jproject);
 		// 1. remove bootpath entries
 		// 2. resolve & translate to local file system paths
@@ -1359,11 +1359,11 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //			getPreferences().setValue(PREF_VM_XML, xml);
 //			savePreferences();
 //		} catch (IOException e) {
-//			throw new CoreException(new Status(IStatus.ERROR, JavaCore.PLUGIN_ID, IStatus.ERROR, LaunchingMessages.JavaRuntime_exceptionsOccurred, e)); 
+//			throw new CoreException(new Status(IStatus.ERROR, JavaScriptCore.PLUGIN_ID, IStatus.ERROR, LaunchingMessages.JavaRuntime_exceptionsOccurred, e)); 
 //		} catch (ParserConfigurationException e) {
-//			throw new CoreException(new Status(IStatus.ERROR, JavaCore.PLUGIN_ID, IStatus.ERROR, LaunchingMessages.JavaRuntime_exceptionsOccurred, e)); 
+//			throw new CoreException(new Status(IStatus.ERROR, JavaScriptCore.PLUGIN_ID, IStatus.ERROR, LaunchingMessages.JavaRuntime_exceptionsOccurred, e)); 
 //		} catch (TransformerException e) {
-//			throw new CoreException(new Status(IStatus.ERROR, JavaCore.PLUGIN_ID, IStatus.ERROR, LaunchingMessages.JavaRuntime_exceptionsOccurred, e)); 
+//			throw new CoreException(new Status(IStatus.ERROR, JavaScriptCore.PLUGIN_ID, IStatus.ERROR, LaunchingMessages.JavaRuntime_exceptionsOccurred, e)); 
 //		}
 	}
 	
@@ -1673,10 +1673,10 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * Creates and returns a classpath entry describing
 //	 * the JRE_LIB classpath variable.
 //	 * 
-//	 * @return a new IClasspathEntry that describes the JRE_LIB classpath variable
+//	 * @return a new IIncludePathEntry that describes the JRE_LIB classpath variable
 //	 */
-//	public static IClasspathEntry getJREVariableEntry() {
-//		return JavaCore.newVariableEntry(
+//	public static IIncludePathEntry getJREVariableEntry() {
+//		return JavaScriptCore.newVariableEntry(
 //			new Path(JRELIB_VARIABLE),
 //			new Path(JRESRC_VARIABLE),
 //			new Path(JRESRCROOT_VARIABLE)
@@ -1687,11 +1687,11 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * Creates and returns a classpath entry describing
 	 * the default JRE container entry.
 	 * 
-	 * @return a new IClasspathEntry that describes the default JRE container entry
+	 * @return a new IIncludePathEntry that describes the default JRE container entry
 	 * @since 2.0
 	 */
-	public static IClasspathEntry getDefaultJREContainerEntry() {
-		return JavaCore.newContainerEntry(newDefaultJREContainerPath());
+	public static IIncludePathEntry getDefaultJREContainerEntry() {
+		return JavaScriptCore.newContainerEntry(newDefaultJREContainerPath());
 	}	
 	
 	/**
@@ -1834,7 +1834,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 			String type = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE, (String)null);
 			if (type == null) {
 				// default JRE for the launch configuration
-				IJavaProject proj = getJavaProject(configuration);
+				IJavaScriptProject proj = getJavaProject(configuration);
 				if (proj == null) {
 					containerPath = newDefaultJREContainerPath();
 				} else {
@@ -1866,13 +1866,13 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * 	accessing the project's classpath
 	 * @since 3.2
 	 */
-	public static IRuntimeClasspathEntry computeJREEntry(IJavaProject project) throws CoreException {
-		IClasspathEntry[] rawClasspath = project.getRawClasspath();
+	public static IRuntimeClasspathEntry computeJREEntry(IJavaScriptProject project) throws CoreException {
+		IIncludePathEntry[] rawClasspath = project.getRawIncludepath();
 		IRuntimeClasspathEntryResolver2 resolver = null;
 		for (int i = 0; i < rawClasspath.length; i++) {
-			IClasspathEntry entry = rawClasspath[i];
+			IIncludePathEntry entry = rawClasspath[i];
 			switch (entry.getEntryKind()) {
-				case IClasspathEntry.CPE_VARIABLE:
+				case IIncludePathEntry.CPE_VARIABLE:
 					resolver = getVariableResolver(entry.getPath().segment(0));
 					if (resolver != null) {
 						if (resolver.isVMInstallReference(entry)) {
@@ -1880,11 +1880,11 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 						}
 					}					
 					break;
-				case IClasspathEntry.CPE_CONTAINER:
+				case IIncludePathEntry.CPE_CONTAINER:
 					resolver = getContainerResolver(entry.getPath().segment(0));
 					if (resolver != null) {
 						if (resolver.isVMInstallReference(entry)) {
-							IJsGlobalScopeContainer container = JavaCore.getJsGlobalScopeContainer(entry.getPath(), project);
+							IJsGlobalScopeContainer container = JavaScriptCore.getJsGlobalScopeContainer(entry.getPath(), project);
 							if (container != null) {
 								switch (container.getKind()) {
 									case IJsGlobalScopeContainer.K_APPLICATION:
@@ -1912,16 +1912,16 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * @since 3.2
 //	 */
 //	public static boolean isVMInstallReference(IRuntimeClasspathEntry entry) {
-//		IClasspathEntry classpathEntry = entry.getClasspathEntry();
+//		IIncludePathEntry classpathEntry = entry.getClasspathEntry();
 //		if (classpathEntry != null) {
 //			switch (classpathEntry.getEntryKind()) {
-//				case IClasspathEntry.CPE_VARIABLE:
+//				case IIncludePathEntry.CPE_VARIABLE:
 //					IRuntimeClasspathEntryResolver2 resolver = getVariableResolver(classpathEntry.getPath().segment(0));
 //					if (resolver != null) {
 //						return resolver.isVMInstallReference(classpathEntry);
 //					}
 //					break;					
-//				case IClasspathEntry.CPE_CONTAINER:
+//				case IIncludePathEntry.CPE_CONTAINER:
 //					resolver = getContainerResolver(classpathEntry.getPath().segment(0));
 //					if (resolver != null) {
 //						return resolver.isVMInstallReference(classpathEntry);
@@ -1961,7 +1961,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * @since 2.0
 	 */
 	public static Preferences getPreferences() {
-		return JavaCore.getPlugin().getPluginPreferences();
+		return JavaScriptCore.getPlugin().getPluginPreferences();
 	}
 	
 	/**
@@ -1970,7 +1970,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * @since 2.0
 	 */
 	public static void savePreferences() {
-		 JavaCore.getPlugin().savePluginPreferences();
+		 JavaScriptCore.getPlugin().savePluginPreferences();
 	}
 	
 //	/**
@@ -2198,7 +2198,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	public static String getProjectOutputDirectory(ILaunchConfiguration config) {
 //		try {
 //			if (config != null) {
-//				IJavaProject javaProject = JavaRuntime.getJavaProject(config);
+//				IJavaScriptProject javaProject = JavaRuntime.getJavaProject(config);
 //				if (javaProject != null) {
 //					IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 //					IPath outputLocation = javaProject.getOutputLocation();
@@ -2243,10 +2243,10 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 *  to the given project's <code>java.library.path</code>
 //	 * @throws CoreException if unable to compute the Java library path
 //	 * @since 3.1
-//	 * @see org.eclipse.wst.jsdt.core.IClasspathAttribute
+//	 * @see org.eclipse.wst.jsdt.core.IIncludePathAttribute
 //	 * @see JavaRuntime#CLASSPATH_ATTR_LIBRARY_PATH_ENTRY
 //	 */
-//	public static String[] computeJavaLibraryPath(IJavaProject project, boolean requiredProjects) throws CoreException {
+//	public static String[] computeJavaLibraryPath(IJavaScriptProject project, boolean requiredProjects) throws CoreException {
 //		Set visited = new HashSet();
 //		List entries = new ArrayList();
 //		gatherJavaLibraryPathEntries(project, requiredProjects, visited, entries);
@@ -2285,21 +2285,21 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * @throws CoreException if unable to gather classpath entries
 //	 * @since 3.1
 //	 */
-//	private static void gatherJavaLibraryPathEntries(IJavaProject project, boolean requiredProjects, Set visited, List entries) throws CoreException {
+//	private static void gatherJavaLibraryPathEntries(IJavaScriptProject project, boolean requiredProjects, Set visited, List entries) throws CoreException {
 //		if (visited.contains(project)) {
 //			return;
 //		}
 //		visited.add(project);
-//		IClasspathEntry[] rawClasspath = project.getRawClasspath();
-//		IClasspathEntry[] required = processJavaLibraryPathEntries(project, requiredProjects, rawClasspath, entries);
+//		IIncludePathEntry[] rawClasspath = project.getRawClasspath();
+//		IIncludePathEntry[] required = processJavaLibraryPathEntries(project, requiredProjects, rawClasspath, entries);
 //		if (required != null) {
 //			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 //			for (int i = 0; i < required.length; i++) {
-//				IClasspathEntry entry = required[i];
+//				IIncludePathEntry entry = required[i];
 //				String projectName = entry.getPath().segment(0);
 //				IProject p = root.getProject(projectName);
 //				if (p.exists()) {
-//					IJavaProject requiredProject = JavaCore.create(p);
+//					IJavaScriptProject requiredProject = JavaScriptCore.create(p);
 //					if (requiredProject != null) {
 //						gatherJavaLibraryPathEntries(requiredProject, requiredProjects, visited, entries);
 //					}
@@ -2321,11 +2321,11 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * @throws CoreException
 //	 * @since 3.1
 //	 */
-//	private static IClasspathEntry[] processJavaLibraryPathEntries(IJavaProject project, boolean collectRequired, IClasspathEntry[] classpathEntries, List entries) throws CoreException {
+//	private static IIncludePathEntry[] processJavaLibraryPathEntries(IJavaScriptProject project, boolean collectRequired, IIncludePathEntry[] classpathEntries, List entries) throws CoreException {
 //		List req = null;
 //		for (int i = 0; i < classpathEntries.length; i++) {
-//			IClasspathEntry entry = classpathEntries[i];
-//			IClasspathAttribute[] extraAttributes = entry.getExtraAttributes();
+//			IIncludePathEntry entry = classpathEntries[i];
+//			IIncludePathAttribute[] extraAttributes = entry.getExtraAttributes();
 //			for (int j = 0; j < extraAttributes.length; j++) {
 //				String[] paths = getLibraryPaths(extraAttributes[j]);
 //				if (paths != null) {
@@ -2334,10 +2334,10 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //					}
 //				}
 //			}
-//			if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-//				IJsGlobalScopeContainer container = JavaCore.getJsGlobalScopeContainer(entry.getPath(), project);
+//			if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
+//				IJsGlobalScopeContainer container = JavaScriptCore.getJsGlobalScopeContainer(entry.getPath(), project);
 //				if (container != null) {
-//					IClasspathEntry[] requiredProjects = processJavaLibraryPathEntries(project, collectRequired, container.getClasspathEntries(), entries);
+//					IIncludePathEntry[] requiredProjects = processJavaLibraryPathEntries(project, collectRequired, container.getClasspathEntries(), entries);
 //					if (requiredProjects != null) {
 //						if (req == null) {
 //							req = new ArrayList();
@@ -2347,7 +2347,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //						}
 //					}
 //				}
-//			} else if (collectRequired && entry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+//			} else if (collectRequired && entry.getEntryKind() == IIncludePathEntry.CPE_PROJECT) {
 //				if (req == null) {
 //					req = new ArrayList();
 //				}
@@ -2355,7 +2355,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //			}
 //		}
 //		if (req != null) {
-//			return (IClasspathEntry[]) req.toArray(new IClasspathEntry[req.size()]);
+//			return (IIncludePathEntry[]) req.toArray(new IIncludePathEntry[req.size()]);
 //		}
 //		return null;
 //	}
@@ -2363,10 +2363,10 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	/**
 //	 * Creates a new classpath attribute referencing a list of shared libraries that should
 //	 * appear on the <code>-Djava.library.path</code> system property at runtime
-//	 * for an associated {@link IClasspathEntry}.
+//	 * for an associated {@link IIncludePathEntry}.
 //	 * <p>
 //	 * The factory methods <code>newLibraryPathsAttribute(String[])</code>
-//	 * and <code>getLibraryPaths(IClasspathAttribute)</code> should be used to
+//	 * and <code>getLibraryPaths(IIncludePathAttribute)</code> should be used to
 //	 * encode and decode the attribute value.
 //	 * </p>
 //	 * @param paths an array of strings representing paths of shared libraries.
@@ -2378,7 +2378,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * and an value encoded to the specified paths.
 //	 * @since 3.1
 //	 */
-//	public static IClasspathAttribute newLibraryPathsAttribute(String[] paths) {
+//	public static IIncludePathAttribute newLibraryPathsAttribute(String[] paths) {
 //		StringBuffer value = new StringBuffer();
 //		for (int i = 0; i < paths.length; i++) {
 //			value.append(paths[i]);
@@ -2386,31 +2386,31 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //				value.append("|"); //$NON-NLS-1$
 //			}
 //		}
-//		return JavaCore.newClasspathAttribute(CLASSPATH_ATTR_LIBRARY_PATH_ENTRY, value.toString());
+//		return JavaScriptCore.newClasspathAttribute(CLASSPATH_ATTR_LIBRARY_PATH_ENTRY, value.toString());
 //	}
 //	
 //	/**
 //	 * Returns an array of strings referencing shared libraries that should
 //	 * appear on the <code>-Djava.library.path</code> system property at runtime
-//	 * for an associated {@link IClasspathEntry}, or <code>null</code> if the
+//	 * for an associated {@link IIncludePathEntry}, or <code>null</code> if the
 //	 * given attribute is not a <code>CLASSPATH_ATTR_LIBRARY_PATH_ENTRY</code>.
 //	 * Each string is used to create an <code>IPath</code> using the constructor
 //	 * <code>Path(String)</code>, and may contain <code>IStringVariable</code>'s. 
 //	 * <p>
 //	 * The factory methods <code>newLibraryPathsAttribute(String[])</code>
-//	 * and <code>getLibraryPaths(IClasspathAttribute)</code> should be used to
+//	 * and <code>getLibraryPaths(IIncludePathAttribute)</code> should be used to
 //	 * encode and decode the attribute value. 
 //	 * </p>
 //	 * @param attribute a <code>CLASSPATH_ATTR_LIBRARY_PATH_ENTRY</code> classpath attribute
 //	 * @return an array of strings referencing shared libraries that should
 //	 * appear on the <code>-Djava.library.path</code> system property at runtime
-//	 * for an associated {@link IClasspathEntry}, or <code>null</code> if the
+//	 * for an associated {@link IIncludePathEntry}, or <code>null</code> if the
 //	 * given attribute is not a <code>CLASSPATH_ATTR_LIBRARY_PATH_ENTRY</code>.
 //	 * Each string is used to create an <code>IPath</code> using the constructor
 //	 * <code>Path(String)</code>, and may contain <code>IStringVariable</code>'s.
 //	 * @since 3.1
 //	 */	
-//	public static String[] getLibraryPaths(IClasspathAttribute attribute) {
+//	public static String[] getLibraryPaths(IIncludePathAttribute attribute) {
 //		if (CLASSPATH_ATTR_LIBRARY_PATH_ENTRY.equals(attribute.getName())) {
 //			String value = attribute.getValue();
 //			return value.split("\\|"); //$NON-NLS-1$
@@ -2564,24 +2564,24 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	private static void updateCompliance(IVMInstall vm) {
 //        if (vm instanceof IVMInstall2) {
 //            String javaVersion = ((IVMInstall2)vm).getJavaVersion();
-//            if (javaVersion != null && javaVersion.startsWith(JavaCore.VERSION_1_5)) {
-//                Hashtable defaultOptions = JavaCore.getDefaultOptions();
-//                Hashtable options = JavaCore.getOptions();
+//            if (javaVersion != null && javaVersion.startsWith(JavaScriptCore.VERSION_1_5)) {
+//                Hashtable defaultOptions = JavaScriptCore.getDefaultOptions();
+//                Hashtable options = JavaScriptCore.getOptions();
 //                boolean isDefault =
-//                	equals(JavaCore.COMPILER_COMPLIANCE, defaultOptions, options) &&
-//                	equals(JavaCore.COMPILER_SOURCE, defaultOptions, options) &&
-//                	equals(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, defaultOptions, options) &&
-//                	equals(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER, defaultOptions, options) &&
-//                	equals(JavaCore.COMPILER_PB_ENUM_IDENTIFIER, defaultOptions, options);
+//                	equals(JavaScriptCore.COMPILER_COMPLIANCE, defaultOptions, options) &&
+//                	equals(JavaScriptCore.COMPILER_SOURCE, defaultOptions, options) &&
+//                	equals(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, defaultOptions, options) &&
+//                	equals(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, defaultOptions, options) &&
+//                	equals(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, defaultOptions, options);
 //                // only update the compliance settings if they are default settings, otherwise the
 //                // settings have already been modified by a tool or user
 //                if (isDefault) {
-//                    options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
-//                    options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
-//                    options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);
-//                    options.put(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaCore.ERROR);
-//                    options.put(JavaCore.COMPILER_PB_ENUM_IDENTIFIER, JavaCore.ERROR);
-//                    JavaCore.setOptions(options);
+//                    options.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_5);
+//                    options.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_5);
+//                    options.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_5);
+//                    options.put(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.ERROR);
+//                    options.put(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, JavaScriptCore.ERROR);
+//                    JavaScriptCore.setOptions(options);
 //                }
 //            }
 //        }		

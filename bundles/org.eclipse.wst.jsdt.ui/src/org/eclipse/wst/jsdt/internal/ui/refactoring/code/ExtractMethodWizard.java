@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractMethodRefactoring;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 
 public class ExtractMethodWizard extends RefactoringWizard {
@@ -26,7 +26,7 @@ public class ExtractMethodWizard extends RefactoringWizard {
 	public ExtractMethodWizard(ExtractMethodRefactoring ref){
 		super(ref, DIALOG_BASED_USER_INTERFACE | PREVIEW_EXPAND_FIRST_NODE);
 		setDefaultPageTitle(RefactoringMessages.ExtractMethodWizard_extract_method); 
-		setDialogSettings(JavaPlugin.getDefault().getDialogSettings());
+		setDialogSettings(JavaScriptPlugin.getDefault().getDialogSettings());
 	}
 
 	public Change createChange(){
@@ -34,7 +34,7 @@ public class ExtractMethodWizard extends RefactoringWizard {
 		try {
 			return getRefactoring().createChange(new NullProgressMonitor());
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			return null;
 		}	
 	}

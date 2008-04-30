@@ -29,12 +29,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.preferences.UserLibraryPreferencePage;
@@ -61,7 +61,7 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IJsGl
 	private CPUserLibraryElement fEditResult;
 	private Set fUsedPaths;
 	private boolean fIsEditMode;
-	private IJavaProject fProject;
+	private IJavaScriptProject fProject;
 	private boolean fIsExported;
 	
 	public UserLibraryWizardPage() {
@@ -83,19 +83,19 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IJsGl
 		updateStatus(validateSetting(Collections.EMPTY_LIST));
 	}
     
-    private static IJavaProject createPlaceholderProject() {
+    private static IJavaScriptProject createPlaceholderProject() {
         String name= "####internal"; //$NON-NLS-1$
         IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();
         while (true) {
             IProject project= root.getProject(name);
             if (!project.exists()) {
-                return JavaCore.create(project);
+                return JavaScriptCore.create(project);
             }
             name += '1';
         }       
     }
 
-	private void updateDescription(IClasspathEntry containerEntry) {
+	private void updateDescription(IIncludePathEntry containerEntry) {
 		if (containerEntry == null || containerEntry.getPath().segmentCount() != 2) {
 			setDescription(NewWizardMessages.UserLibraryWizardPage_description_new); 
 		} else {
@@ -117,15 +117,15 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IJsGl
 
 		ArrayList entriesToCheck= new ArrayList();
 		
-		String[] names= JavaCore.getUserLibraryNames();
+		String[] names= JavaScriptCore.getUserLibraryNames();
 		Arrays.sort(names, Collator.getInstance());
 
 		ArrayList elements= new ArrayList(names.length);
 		for (int i= 0; i < names.length; i++) {
 			String curr= names[i];
-			IPath path= new Path(JavaCore.USER_LIBRARY_CONTAINER_ID).append(curr);
+			IPath path= new Path(JavaScriptCore.USER_LIBRARY_CONTAINER_ID).append(curr);
 			try {
-				IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(path, fProject);
+				IJsGlobalScopeContainer container= JavaScriptCore.getJsGlobalScopeContainer(path, fProject);
 				CPUserLibraryElement elem= new CPUserLibraryElement(curr, container, fProject);
 				elements.add(elem);
 				if (!oldCheckedNames.isEmpty()) {
@@ -137,8 +137,8 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IJsGl
 						entriesToCheck.add(elem);
 					}
 				}
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 				// ignore
 			}
 		}
@@ -238,9 +238,9 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IJsGl
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPage#getSelection()
 	 */
-	public IClasspathEntry getSelection() {
+	public IIncludePathEntry getSelection() {
 		if (fEditResult != null) {
-			return JavaCore.newContainerEntry(fEditResult.getPath(), fIsExported);
+			return JavaScriptCore.newContainerEntry(fEditResult.getPath(), fIsExported);
 		}
 		return null;
 	}
@@ -248,20 +248,20 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IJsGl
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension2#getNewContainers()
 	 */
-	public IClasspathEntry[] getNewContainers() {
+	public IIncludePathEntry[] getNewContainers() {
 		List selected= fLibrarySelector.getCheckedElements();
-		IClasspathEntry[] res= new IClasspathEntry[selected.size()];
+		IIncludePathEntry[] res= new IIncludePathEntry[selected.size()];
 		for (int i= 0; i < res.length; i++) {
 			CPUserLibraryElement curr= (CPUserLibraryElement) selected.get(i);
-			res[i]= JavaCore.newContainerEntry(curr.getPath(), fIsExported);
+			res[i]= JavaScriptCore.newContainerEntry(curr.getPath(), fIsExported);
 		}
 		return res;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPage#setSelection(org.eclipse.wst.jsdt.core.IClasspathEntry)
+	 * @see org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPage#setSelection(org.eclipse.wst.jsdt.core.IIncludePathEntry)
 	 */
-	public void setSelection(IClasspathEntry containerEntry) {
+	public void setSelection(IIncludePathEntry containerEntry) {
 		fIsExported= containerEntry != null && containerEntry.isExported();
 		
 		updateDescription(containerEntry);
@@ -311,12 +311,12 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IJsGl
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension#initialize(org.eclipse.wst.jsdt.core.IJavaProject, org.eclipse.wst.jsdt.core.IClasspathEntry[])
+	 * @see org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension#initialize(org.eclipse.wst.jsdt.core.IJavaScriptProject, org.eclipse.wst.jsdt.core.IIncludePathEntry[])
 	 */
-	public void initialize(IJavaProject project, IClasspathEntry[] currentEntries) {
+	public void initialize(IJavaScriptProject project, IIncludePathEntry[] currentEntries) {
 		for (int i= 0; i < currentEntries.length; i++) {
-			IClasspathEntry curr= currentEntries[i];
-			if (curr.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+			IIncludePathEntry curr= currentEntries[i];
+			if (curr.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
 				fUsedPaths.add(curr.getPath());
 			}
 		}

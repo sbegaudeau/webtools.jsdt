@@ -11,8 +11,8 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.util;
 
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStatusContext;
 
 public class CodeAnalyzer extends StatementAnalyzer {
 
-	public CodeAnalyzer(ICompilationUnit cunit, Selection selection, boolean traverseSelectedNode) throws JavaModelException {
+	public CodeAnalyzer(IJavaScriptUnit cunit, Selection selection, boolean traverseSelectedNode) throws JavaScriptModelException {
 		super(cunit, selection, traverseSelectedNode);
 	}
 	

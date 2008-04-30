@@ -194,13 +194,13 @@ public MethodDeclaration addMissingAbstractMethodFor(MethodBinding methodBinding
 	methodDeclaration.bindArguments();
 
 /*		if (binding.methods == null) {
-			binding.methods = new MethodBinding[] { methodDeclaration.binding };
+			binding.methods = new FunctionBinding[] { methodDeclaration.binding };
 		} else {
-			MethodBinding[] newMethods;
+			FunctionBinding[] newMethods;
 			System.arraycopy(
 				binding.methods,
 				0,
-				newMethods = new MethodBinding[binding.methods.length + 1],
+				newMethods = new FunctionBinding[binding.methods.length + 1],
 				1,
 				binding.methods.length);
 			newMethods[0] = methodDeclaration.binding;

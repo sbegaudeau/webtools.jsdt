@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the introduce parameter refactoring.
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class IntroduceParameterDescriptor extends JavaRefactoringDescriptor {
+public final class IntroduceParameterDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public IntroduceParameterDescriptor() {
-		super(IJavaRefactorings.INTRODUCE_PARAMETER);
+		super(IJavaScriptRefactorings.INTRODUCE_PARAMETER);
 	}
 }

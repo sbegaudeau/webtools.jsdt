@@ -33,10 +33,10 @@ import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -45,17 +45,17 @@ import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
@@ -91,7 +91,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.sef.SelfEncapsulateField
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.fix.Java50CleanUp;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringExecutionHelper;
@@ -99,7 +99,7 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.RefactoringStarter;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.sef.SelfEncapsulateFieldWizard;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
@@ -115,7 +115,7 @@ public class ModifierCorrectionSubProcessor {
 	public static final int TO_NON_FINAL= 5;
 
 	public static void addNonAccessibleReferenceProposal(IInvocationContext context, IProblemLocation problem, Collection proposals, int kind, int relevance) throws CoreException {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
 		if (selectedNode == null) {
@@ -133,8 +133,8 @@ public class ModifierCorrectionSubProcessor {
 			case ASTNode.SIMPLE_TYPE:
 				binding= ((SimpleType) selectedNode).resolveBinding();
 				break;
-			case ASTNode.METHOD_INVOCATION:
-				binding= ((MethodInvocation) selectedNode).getName().resolveBinding();
+			case ASTNode.FUNCTION_INVOCATION:
+				binding= ((FunctionInvocation) selectedNode).getName().resolveBinding();
 				break;
 			case ASTNode.SUPER_METHOD_INVOCATION:
 				binding= ((SuperMethodInvocation) selectedNode).getName().resolveBinding();
@@ -158,8 +158,8 @@ public class ModifierCorrectionSubProcessor {
 		String name;
 		IBinding bindingDecl;
 		boolean isLocalVar= false;
-		if (binding instanceof IMethodBinding) {
-			IMethodBinding methodDecl= (IMethodBinding) binding;
+		if (binding instanceof IFunctionBinding) {
+			IFunctionBinding methodDecl= (IFunctionBinding) binding;
 			bindingDecl= methodDecl.getMethodDeclaration();
 			typeBinding= methodDecl.getDeclaringClass();
 			name= methodDecl.getName() + "()"; //$NON-NLS-1$
@@ -205,7 +205,7 @@ public class ModifierCorrectionSubProcessor {
 				default:
 					throw new IllegalArgumentException("not supported"); //$NON-NLS-1$
 			}
-			ICompilationUnit targetCU= isLocalVar ? cu : ASTResolving.findCompilationUnitForBinding(cu, context.getASTRoot(), typeBinding.getTypeDeclaration());
+			IJavaScriptUnit targetCU= isLocalVar ? cu : ASTResolving.findCompilationUnitForBinding(cu, context.getASTRoot(), typeBinding.getTypeDeclaration());
 			if (targetCU != null) {
 				Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
 				proposals.add(new ModifierChangeCompletionProposal(label, targetCU, bindingDecl, selectedNode, includedModifiers, excludedModifiers, relevance, image));
@@ -216,20 +216,20 @@ public class ModifierCorrectionSubProcessor {
 		}
 	}
 
-	public static void addChangeOverriddenModfierProposal(IInvocationContext context, IProblemLocation problem, Collection proposals, int kind) throws JavaModelException {
-		ICompilationUnit cu= context.getCompilationUnit();
+	public static void addChangeOverriddenModfierProposal(IInvocationContext context, IProblemLocation problem, Collection proposals, int kind) throws JavaScriptModelException {
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
-		if (!(selectedNode instanceof MethodDeclaration)) {
+		if (!(selectedNode instanceof FunctionDeclaration)) {
 			return;
 		}
 
-		IMethodBinding method= ((MethodDeclaration) selectedNode).resolveBinding();
+		IFunctionBinding method= ((FunctionDeclaration) selectedNode).resolveBinding();
 		ITypeBinding curr= method.getDeclaringClass();
 
 
 		if (kind == TO_VISIBLE && problem.getProblemId() != IProblem.OverridingNonVisibleMethod) {
-			IMethodBinding defining= Bindings.findOverriddenMethod(method, false);
+			IFunctionBinding defining= Bindings.findOverriddenMethod(method, false);
 			if (defining != null) {
 				int excludedModifiers= Modifier.PRIVATE | Modifier.PROTECTED | Modifier.PUBLIC;
 				int includedModifiers= JdtFlags.getVisibilityCode(defining);
@@ -239,14 +239,14 @@ public class ModifierCorrectionSubProcessor {
 			}
 		}
 
-		IMethodBinding overriddenInClass= null;
+		IFunctionBinding overriddenInClass= null;
 		while (overriddenInClass == null && curr.getSuperclass() != null) {
 			curr= curr.getSuperclass();
 			overriddenInClass= Bindings.findOverriddenMethodInType(curr, method);
 		}
 		if (overriddenInClass != null) {
-			IMethodBinding overriddenDecl= overriddenInClass.getMethodDeclaration();
-			ICompilationUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, context.getASTRoot(), overriddenDecl.getDeclaringClass());
+			IFunctionBinding overriddenDecl= overriddenInClass.getMethodDeclaration();
+			IJavaScriptUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, context.getASTRoot(), overriddenDecl.getDeclaringClass());
 			if (targetCU != null) {
 				String methodName= curr.getName() + '.' + overriddenInClass.getName();
 				String label;
@@ -279,7 +279,7 @@ public class ModifierCorrectionSubProcessor {
 	}
 
 	public static void addNonFinalLocalProposal(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
 		if (!(selectedNode instanceof SimpleName)) {
@@ -298,11 +298,11 @@ public class ModifierCorrectionSubProcessor {
 
 
 	public static void addRemoveInvalidModfiersProposal(IInvocationContext context, IProblemLocation problem, Collection proposals, int relevance) {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
-		if (selectedNode instanceof MethodDeclaration) {
-			selectedNode= ((MethodDeclaration) selectedNode).getName();
+		if (selectedNode instanceof FunctionDeclaration) {
+			selectedNode= ((FunctionDeclaration) selectedNode).getName();
 		}
 
 		if (!(selectedNode instanceof SimpleName)) {
@@ -363,7 +363,7 @@ public class ModifierCorrectionSubProcessor {
 					break;
 				case IProblem.IllegalModifierForMethod:
 					excludedModifiers= ~(Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE | Modifier.STATIC | Modifier.ABSTRACT | Modifier.FINAL | Modifier.NATIVE | Modifier.STRICTFP);
-					if (((IMethodBinding) binding).isConstructor()) {
+					if (((IFunctionBinding) binding).isConstructor()) {
 						excludedModifiers |= Modifier.STATIC;
 					}
 					break;
@@ -395,8 +395,8 @@ public class ModifierCorrectionSubProcessor {
 					}
 				}
 			}
-			if (problemId == IProblem.UnexpectedStaticModifierForMethod && binding instanceof IMethodBinding) {
-				ITypeBinding declClass= ((IMethodBinding) binding).getDeclaringClass();
+			if (problemId == IProblem.UnexpectedStaticModifierForMethod && binding instanceof IFunctionBinding) {
+				ITypeBinding declClass= ((IFunctionBinding) binding).getDeclaringClass();
 				if (declClass.isMember()) {
 					ASTNode parentType= context.getASTRoot().findDeclaringNode(declClass);
 					if (parentType != null) {
@@ -436,19 +436,19 @@ public class ModifierCorrectionSubProcessor {
 	}
 
 	public static void addAbstractMethodProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
-		CompilationUnit astRoot= context.getASTRoot();
+		JavaScriptUnit astRoot= context.getASTRoot();
 
 		ASTNode selectedNode= problem.getCoveringNode(astRoot);
 		if (selectedNode == null) {
 			return;
 		}
-		MethodDeclaration decl;
+		FunctionDeclaration decl;
 		if (selectedNode instanceof SimpleName) {
-			decl= (MethodDeclaration) selectedNode.getParent();
-		} else if (selectedNode instanceof MethodDeclaration) {
-			decl= (MethodDeclaration) selectedNode;
+			decl= (FunctionDeclaration) selectedNode.getParent();
+		} else if (selectedNode instanceof FunctionDeclaration) {
+			decl= (FunctionDeclaration) selectedNode;
 		} else {
 			return;
 		}
@@ -473,7 +473,7 @@ public class ModifierCorrectionSubProcessor {
 
 			if (hasNoBody) {
 				Block newBody= ast.newBlock();
-				rewrite.set(decl, MethodDeclaration.BODY_PROPERTY, newBody, null);
+				rewrite.set(decl, FunctionDeclaration.BODY_PROPERTY, newBody, null);
 
 				Expression expr= ASTNodeFactory.newDefaultExpression(ast, decl.getReturnType2(), decl.getExtraDimensions());
 				if (expr != null) {
@@ -507,19 +507,19 @@ public class ModifierCorrectionSubProcessor {
 	}
 
 	public static void addNativeMethodProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
-		CompilationUnit astRoot= context.getASTRoot();
+		JavaScriptUnit astRoot= context.getASTRoot();
 
 		ASTNode selectedNode= problem.getCoveringNode(astRoot);
 		if (selectedNode == null) {
 			return;
 		}
-		MethodDeclaration decl;
+		FunctionDeclaration decl;
 		if (selectedNode instanceof SimpleName) {
-			decl= (MethodDeclaration) selectedNode.getParent();
-		} else if (selectedNode instanceof MethodDeclaration) {
-			decl= (MethodDeclaration) selectedNode;
+			decl= (FunctionDeclaration) selectedNode.getParent();
+		} else if (selectedNode instanceof FunctionDeclaration) {
+			decl= (FunctionDeclaration) selectedNode;
 		} else {
 			return;
 		}
@@ -534,7 +534,7 @@ public class ModifierCorrectionSubProcessor {
 			}
 
 			Block newBody= ast.newBlock();
-			rewrite.set(decl, MethodDeclaration.BODY_PROPERTY, newBody, null);
+			rewrite.set(decl, FunctionDeclaration.BODY_PROPERTY, newBody, null);
 
 			Expression expr= ASTNodeFactory.newDefaultExpression(ast, decl.getReturnType2(), decl.getExtraDimensions());
 			if (expr != null) {
@@ -563,7 +563,7 @@ public class ModifierCorrectionSubProcessor {
 
 
 
-	public static ASTRewriteCorrectionProposal getMakeTypeAbstractProposal(ICompilationUnit cu, TypeDeclaration typeDeclaration, int relevance) {
+	public static ASTRewriteCorrectionProposal getMakeTypeAbstractProposal(IJavaScriptUnit cu, TypeDeclaration typeDeclaration, int relevance) {
 		AST ast= typeDeclaration.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(ast);
 		Modifier newModifier= ast.newModifier(Modifier.ModifierKeyword.ABSTRACT_KEYWORD);
@@ -577,14 +577,14 @@ public class ModifierCorrectionSubProcessor {
 	}
 
 	public static void addMethodRequiresBodyProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 		AST ast= context.getASTRoot().getAST();
 
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
-		if (!(selectedNode instanceof MethodDeclaration)) {
+		if (!(selectedNode instanceof FunctionDeclaration)) {
 			return;
 		}
-		MethodDeclaration decl=  (MethodDeclaration) selectedNode;
+		FunctionDeclaration decl=  (FunctionDeclaration) selectedNode;
 		{
 			ASTRewrite rewrite= ASTRewrite.create(ast);
 
@@ -594,7 +594,7 @@ public class ModifierCorrectionSubProcessor {
 			}
 
 			Block body= ast.newBlock();
-			rewrite.set(decl, MethodDeclaration.BODY_PROPERTY, body, null);
+			rewrite.set(decl, FunctionDeclaration.BODY_PROPERTY, body, null);
 
 
 			if (!decl.isConstructor()) {
@@ -617,7 +617,7 @@ public class ModifierCorrectionSubProcessor {
 			ASTRewrite rewrite= ASTRewrite.create(ast);
 
 			Modifier newModifier= ast.newModifier(Modifier.ModifierKeyword.ABSTRACT_KEYWORD);
-			rewrite.getListRewrite(decl, MethodDeclaration.MODIFIERS2_PROPERTY).insertLast(newModifier, null);
+			rewrite.getListRewrite(decl, FunctionDeclaration.MODIFIERS2_PROPERTY).insertLast(newModifier, null);
 
 			String label= CorrectionMessages.ModifierCorrectionSubProcessor_setmethodabstract_description;
 			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
@@ -631,7 +631,7 @@ public class ModifierCorrectionSubProcessor {
 
 
 	public static void addNeedToEmulateProposal(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
 		if (!(selectedNode instanceof SimpleName)) {
@@ -673,14 +673,14 @@ public class ModifierCorrectionSubProcessor {
 	
 	public static void addOverridingDeprecatedMethodProposal(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
 		
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
-		if (!(selectedNode instanceof MethodDeclaration)) {
+		if (!(selectedNode instanceof FunctionDeclaration)) {
 			return;
 		}
-		boolean is50OrHigher= JavaModelUtil.is50OrHigher(cu.getJavaProject());
-		MethodDeclaration methodDecl= (MethodDeclaration) selectedNode;
+		boolean is50OrHigher= JavaModelUtil.is50OrHigher(cu.getJavaScriptProject());
+		FunctionDeclaration methodDecl= (FunctionDeclaration) selectedNode;
 		AST ast= methodDecl.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(ast);
 		if (is50OrHigher) {
@@ -688,15 +688,15 @@ public class ModifierCorrectionSubProcessor {
 			annot.setTypeName(ast.newName("Deprecated")); //$NON-NLS-1$
 			rewrite.getListRewrite(methodDecl, methodDecl.getModifiersProperty()).insertFirst(annot, null);
 		}
-		Javadoc javadoc= methodDecl.getJavadoc();
+		JSdoc javadoc= methodDecl.getJavadoc();
 		if (javadoc != null || !is50OrHigher) {
 			if (!is50OrHigher) {
-				javadoc= ast.newJavadoc();
-				rewrite.set(methodDecl, MethodDeclaration.JAVADOC_PROPERTY, javadoc, null);
+				javadoc= ast.newJSdoc();
+				rewrite.set(methodDecl, FunctionDeclaration.JAVADOC_PROPERTY, javadoc, null);
 			}
 			TagElement newTag= ast.newTagElement();
 			newTag.setTagName(TagElement.TAG_DEPRECATED);
-			JavadocTagsSubProcessor.insertTag(rewrite.getListRewrite(javadoc, Javadoc.TAGS_PROPERTY), newTag, null);
+			JavadocTagsSubProcessor.insertTag(rewrite.getListRewrite(javadoc, JSdoc.TAGS_PROPERTY), newTag, null);
 		}
 		
 		String label= CorrectionMessages.ModifierCorrectionSubProcessor_overrides_deprecated_description;
@@ -706,13 +706,13 @@ public class ModifierCorrectionSubProcessor {
 	}
 		
 	public static void removeOverrideAnnotationProposal(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
-		if (!(selectedNode instanceof MethodDeclaration)) {
+		if (!(selectedNode instanceof FunctionDeclaration)) {
 			return;
 		}
-		MethodDeclaration methodDecl= (MethodDeclaration) selectedNode;
+		FunctionDeclaration methodDecl= (FunctionDeclaration) selectedNode;
 		Annotation annot= findAnnotation("java.lang.Override", methodDecl.modifiers()); //$NON-NLS-1$
 		if (annot != null) {
 			ASTRewrite rewrite= ASTRewrite.create(annot.getAST());
@@ -776,7 +776,7 @@ public class ModifierCorrectionSubProcessor {
 				}
 				return edit;
 			} catch (BadLocationException e) {
-				throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.ERROR, e.getMessage(), e));
+				throw new CoreException(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.ERROR, e.getMessage(), e));
 			}
 		}
 	}
@@ -830,13 +830,13 @@ public class ModifierCorrectionSubProcessor {
 	
 	private static class ProposalParameter {
 		public final boolean useSuper;
-		public final ICompilationUnit compilationUnit;
+		public final IJavaScriptUnit compilationUnit;
 		public final ASTRewrite astRewrite;
 		public final Expression accessNode;
 		public final Expression qualifier;
 		public final IVariableBinding variableBinding;
 
-		public ProposalParameter(boolean useSuper, ICompilationUnit compilationUnit, ASTRewrite rewrite, Expression accessNode, Expression qualifier, IVariableBinding variableBinding) {
+		public ProposalParameter(boolean useSuper, IJavaScriptUnit compilationUnit, ASTRewrite rewrite, Expression accessNode, Expression qualifier, IVariableBinding variableBinding) {
 			this.useSuper= useSuper;
 			this.compilationUnit= compilationUnit;
 			this.astRewrite= rewrite;
@@ -875,14 +875,14 @@ public class ModifierCorrectionSubProcessor {
 				refactoring.setConsiderVisibility(false);//private field references are just searched in local file
 				if (fNoDialog) {
 					IWorkbenchWindow window= PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-					final RefactoringExecutionHelper helper= new RefactoringExecutionHelper(refactoring, RefactoringStatus.ERROR, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES, JavaPlugin.getActiveWorkbenchShell(), window);
+					final RefactoringExecutionHelper helper= new RefactoringExecutionHelper(refactoring, RefactoringStatus.ERROR, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES, JavaScriptPlugin.getActiveWorkbenchShell(), window);
 					if (Display.getCurrent() != null) {
 						try {
 							helper.perform(false, false);
 						} catch (InterruptedException e) {
-							JavaPlugin.log(e);
+							JavaScriptPlugin.log(e);
 						} catch (InvocationTargetException e) {
-							JavaPlugin.log(e);
+							JavaScriptPlugin.log(e);
 						}
 					} else {
 						Display.getDefault().syncExec(new Runnable() {
@@ -890,17 +890,17 @@ public class ModifierCorrectionSubProcessor {
 								try {
 									helper.perform(false, false);
 								} catch (InterruptedException e) {
-									JavaPlugin.log(e);
+									JavaScriptPlugin.log(e);
 								} catch (InvocationTargetException e) {
-									JavaPlugin.log(e);
+									JavaScriptPlugin.log(e);
 								}
 							}
 						});
 					}
 				} else {
-					new RefactoringStarter().activate(refactoring, new SelfEncapsulateFieldWizard(refactoring), JavaPlugin.getActiveWorkbenchShell(), "", RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES); //$NON-NLS-1$
+					new RefactoringStarter().activate(refactoring, new SelfEncapsulateFieldWizard(refactoring), JavaScriptPlugin.getActiveWorkbenchShell(), "", RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES); //$NON-NLS-1$
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				ExceptionHandler.handle(e, CorrectionMessages.ModifierCorrectionSubProcessor_encapsulate_field_error_title, CorrectionMessages.ModifierCorrectionSubProcessor_encapsulate_field_error_message);
 			}
 		}
@@ -908,7 +908,7 @@ public class ModifierCorrectionSubProcessor {
 
 	public static void addGetterSetterProposal(IInvocationContext context, IProblemLocation problem, Collection proposals, int relevance) {
 		ASTNode coveringNode= problem.getCoveringNode(context.getASTRoot());
-		ICompilationUnit compilationUnit= context.getCompilationUnit();
+		IJavaScriptUnit compilationUnit= context.getCompilationUnit();
 		if (coveringNode instanceof SimpleName) {
 			SimpleName sn= (SimpleName) coveringNode;
 			if (sn.isDeclaration())
@@ -922,7 +922,7 @@ public class ModifierCorrectionSubProcessor {
 		}
 	}
 
-	private static ChangeCorrectionProposal getProposal(ICompilationUnit cu, SimpleName sn, IVariableBinding variableBinding, int relevance) {
+	private static ChangeCorrectionProposal getProposal(IJavaScriptUnit cu, SimpleName sn, IVariableBinding variableBinding, int relevance) {
 		Expression accessNode= sn;
 		Expression qualifier= null;
 		AST ast= sn.getAST();
@@ -955,7 +955,7 @@ public class ModifierCorrectionSubProcessor {
 	 * @return the proposal if available or null
 	 */
 	private static ChangeCorrectionProposal addGetterProposal(ProposalParameter context, int relevance) {
-		IMethodBinding method= findGetter(context);
+		IFunctionBinding method= findGetter(context);
 		if (method != null) {
 			Expression mi= createMethodInvocation(context, method, null);
 			context.astRewrite.replace(context.accessNode, mi, null);
@@ -965,31 +965,31 @@ public class ModifierCorrectionSubProcessor {
 			ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, context.compilationUnit, context.astRewrite, relevance, image);
 			return proposal;
 		} else {
-			IJavaElement element= context.variableBinding.getJavaElement();
+			IJavaScriptElement element= context.variableBinding.getJavaElement();
 			if (element instanceof IField) {
 				IField field= (IField) element;
 				try {
 					if (RefactoringAvailabilityTester.isSelfEncapsulateAvailable(field))
 						return new SelfEncapsulateFieldProposal(relevance, field, true);
-				} catch (JavaModelException e) {
-					JavaPlugin.log(e);
+				} catch (JavaScriptModelException e) {
+					JavaScriptPlugin.log(e);
 				}
 			}
 		}
 		return null;
 	}
 
-	private static IMethodBinding findGetter(ProposalParameter context) {
+	private static IFunctionBinding findGetter(ProposalParameter context) {
 		ITypeBinding returnType= context.variableBinding.getType();
-		String getterName= GetterSetterUtil.getGetterName(context.variableBinding, context.compilationUnit.getJavaProject(), null, isBoolean(context));
+		String getterName= GetterSetterUtil.getGetterName(context.variableBinding, context.compilationUnit.getJavaScriptProject(), null, isBoolean(context));
 		ITypeBinding declaringType= context.variableBinding.getDeclaringClass();
-		IMethodBinding getter= Bindings.findMethodInHierarchy(declaringType, getterName, new ITypeBinding[0]);
+		IFunctionBinding getter= Bindings.findMethodInHierarchy(declaringType, getterName, new ITypeBinding[0]);
 		if (getter != null && getter.getReturnType().isAssignmentCompatible(returnType) && Modifier.isStatic(getter.getModifiers()) == Modifier.isStatic(context.variableBinding.getModifiers()))
 			return getter;
 		return null;
 	}
 
-	private static Expression createMethodInvocation(ProposalParameter context, IMethodBinding method, Expression argument) {
+	private static Expression createMethodInvocation(ProposalParameter context, IFunctionBinding method, Expression argument) {
 		AST ast= context.astRewrite.getAST();
 		Expression qualifier= context.qualifier;
 		if (context.useSuper) {
@@ -1001,7 +1001,7 @@ public class ModifierCorrectionSubProcessor {
 				invocation.arguments().add(argument);
 			return invocation;
 		} else {
-			MethodInvocation invocation= ast.newMethodInvocation();
+			FunctionInvocation invocation= ast.newFunctionInvocation();
 			invocation.setName(ast.newSimpleName(method.getName()));
 			if (qualifier != null)
 				invocation.setExpression((Expression) context.astRewrite.createCopyTarget(qualifier));
@@ -1019,9 +1019,9 @@ public class ModifierCorrectionSubProcessor {
 	 */
 	private static ChangeCorrectionProposal addSetterProposal(ProposalParameter context, int relevance) {
 		boolean isBoolean= isBoolean(context);
-		String setterName= GetterSetterUtil.getSetterName(context.variableBinding, context.compilationUnit.getJavaProject(), null, isBoolean);
+		String setterName= GetterSetterUtil.getSetterName(context.variableBinding, context.compilationUnit.getJavaScriptProject(), null, isBoolean);
 		ITypeBinding declaringType= context.variableBinding.getDeclaringClass();
-		IMethodBinding method= Bindings.findMethodInHierarchy(declaringType, setterName, new ITypeBinding[] { context.variableBinding.getType() });
+		IFunctionBinding method= Bindings.findMethodInHierarchy(declaringType, setterName, new ITypeBinding[] { context.variableBinding.getType() });
 		if (method != null && Bindings.isVoidType(method.getReturnType()) && (Modifier.isStatic(method.getModifiers()) == Modifier.isStatic(context.variableBinding.getModifiers()))) {
 			Expression assignedValue= getAssignedValue(context);
 			if (assignedValue == null)
@@ -1034,14 +1034,14 @@ public class ModifierCorrectionSubProcessor {
 			ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, context.compilationUnit, context.astRewrite, relevance, image);
 			return proposal;
 		} else {
-			IJavaElement element= context.variableBinding.getJavaElement();
+			IJavaScriptElement element= context.variableBinding.getJavaElement();
 			if (element instanceof IField) {
 				IField field= (IField) element;
 				try {
 					if (RefactoringAvailabilityTester.isSelfEncapsulateAvailable(field))
 						return new SelfEncapsulateFieldProposal(relevance, field, false);
-				} catch (JavaModelException e) {
-					JavaPlugin.log(e);
+				} catch (JavaScriptModelException e) {
+					JavaScriptPlugin.log(e);
 				}
 			}
 		}
@@ -1071,7 +1071,7 @@ public class ModifierCorrectionSubProcessor {
 				copiedRightOp= checkForNarrowCast(context, copiedRightOp, true, rightHandSideType);
 				return copiedRightOp;
 			}
-			IMethodBinding getter= findGetter(context);
+			IFunctionBinding getter= findGetter(context);
 			if (getter != null) {
 				InfixExpression infix= ast.newInfixExpression();
 				infix.setLeftOperand(createMethodInvocation(context, getter, null));
@@ -1117,7 +1117,7 @@ public class ModifierCorrectionSubProcessor {
 
 	private static Expression createInfixInvocationFromPostPrefixExpression(ProposalParameter context, InfixExpression.Operator operator) {
 		AST ast= context.astRewrite.getAST();
-		IMethodBinding getter= findGetter(context);
+		IFunctionBinding getter= findGetter(context);
 		if (getter != null) {
 			InfixExpression infix= ast.newInfixExpression();
 			infix.setLeftOperand(createMethodInvocation(context, getter, null));
@@ -1145,7 +1145,7 @@ public class ModifierCorrectionSubProcessor {
 		if (type.isEqualTo(expressionType))
 			return expression; //no cast for same type
 		AST ast= context.astRewrite.getAST();
-		if (JavaModelUtil.is50OrHigher(context.compilationUnit.getJavaProject())) {
+		if (JavaModelUtil.is50OrHigher(context.compilationUnit.getJavaScriptProject())) {
 			if (ast.resolveWellKnownType("java.lang.Character").isEqualTo(type)) //$NON-NLS-1$
 				castTo= ast.newPrimitiveType(PrimitiveType.CHAR);
 			if (ast.resolveWellKnownType("java.lang.Byte").isEqualTo(type)) //$NON-NLS-1$

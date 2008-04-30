@@ -25,7 +25,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.PromoteTempToFieldRefactoring;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposal;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
@@ -35,7 +35,7 @@ public class FieldNameProcessor implements IContentAssistProcessor, ISubjectCont
 
 	private String[] fFieldNameProposals;
 	private String fErrorMessage;
-	private ImageDescriptorRegistry fImageRegistry= JavaPlugin.getImageDescriptorRegistry();
+	private ImageDescriptorRegistry fImageRegistry= JavaScriptPlugin.getImageDescriptorRegistry();
 	private PromoteTempToFieldRefactoring fRefactoring;
 
 	public FieldNameProcessor(String[] guessedFieldNames, PromoteTempToFieldRefactoring refactoring) {

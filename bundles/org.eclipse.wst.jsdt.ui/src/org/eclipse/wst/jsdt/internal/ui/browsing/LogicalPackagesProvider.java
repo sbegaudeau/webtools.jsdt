@@ -23,13 +23,13 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 abstract class LogicalPackagesProvider implements IPropertyChangeListener, IElementChangedListener {
 
@@ -47,7 +47,7 @@ abstract class LogicalPackagesProvider implements IPropertyChangeListener, IElem
 		fInputIsProject= true;
 		fMapToLogicalPackage= new HashMap();
 		fMapToPackageFragments= new HashMap();
-		JavaPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
+		JavaScriptPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	}
 
 	/**
@@ -65,7 +65,7 @@ abstract class LogicalPackagesProvider implements IPropertyChangeListener, IElem
 	}
 
 	protected String getKey(IPackageFragment fragment) {
-		return fragment.getElementName() + fragment.getJavaProject().getElementName();
+		return fragment.getElementName() + fragment.getJavaScriptProject().getElementName();
 	}
 
 	/**
@@ -162,7 +162,7 @@ abstract class LogicalPackagesProvider implements IPropertyChangeListener, IElem
 	}
 
 	public void dispose(){
-		JavaPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
+		JavaScriptPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 		fMapToLogicalPackage= null;
 		fMapToPackageFragments= null;
 	}
@@ -172,32 +172,32 @@ abstract class LogicalPackagesProvider implements IPropertyChangeListener, IElem
 	 */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		if (newInput != null) {
-			JavaCore.addElementChangedListener(this);
+			JavaScriptCore.addElementChangedListener(this);
 		} else {
-			JavaCore.removeElementChangedListener(this);
+			JavaScriptCore.removeElementChangedListener(this);
 		}
-		fInputIsProject= (newInput instanceof IJavaProject);
+		fInputIsProject= (newInput instanceof IJavaScriptProject);
 
 		if(viewer instanceof StructuredViewer)
 			fViewer= (StructuredViewer)viewer;
 	}
 
-	abstract protected void processDelta(IJavaElementDelta delta) throws JavaModelException;
+	abstract protected void processDelta(IJavaScriptElementDelta delta) throws JavaScriptModelException;
 
 	/*
 	 * @since 3.0
 	 */
-	protected boolean isClassPathChange(IJavaElementDelta delta) {
+	protected boolean isClassPathChange(IJavaScriptElementDelta delta) {
 
 		// need to test the flags only for package fragment roots
-		if (delta.getElement().getElementType() != IJavaElement.PACKAGE_FRAGMENT_ROOT)
+		if (delta.getElement().getElementType() != IJavaScriptElement.PACKAGE_FRAGMENT_ROOT)
 			return false;
 
 		int flags= delta.getFlags();
-		return (delta.getKind() == IJavaElementDelta.CHANGED &&
-			((flags & IJavaElementDelta.F_ADDED_TO_CLASSPATH) != 0) ||
-			 ((flags & IJavaElementDelta.F_REMOVED_FROM_CLASSPATH) != 0) ||
-			 ((flags & IJavaElementDelta.F_REORDER) != 0));
+		return (delta.getKind() == IJavaScriptElementDelta.CHANGED &&
+			((flags & IJavaScriptElementDelta.F_ADDED_TO_CLASSPATH) != 0) ||
+			 ((flags & IJavaScriptElementDelta.F_REMOVED_FROM_CLASSPATH) != 0) ||
+			 ((flags & IJavaScriptElementDelta.F_REORDER) != 0));
 	}
 
 	/*
@@ -206,8 +206,8 @@ abstract class LogicalPackagesProvider implements IPropertyChangeListener, IElem
 	public void elementChanged(ElementChangedEvent event) {
 		try {
 			processDelta(event.getDelta());
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 		}
 	}
 

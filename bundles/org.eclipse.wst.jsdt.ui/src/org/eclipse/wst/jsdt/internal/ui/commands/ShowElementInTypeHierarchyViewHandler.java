@@ -14,8 +14,8 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.OpenTypeHierarchyUtil;
 
 /**
@@ -29,11 +29,11 @@ public class ShowElementInTypeHierarchyViewHandler extends AbstractHandler {
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		IWorkbenchWindow window= JavaPlugin.getActiveWorkbenchWindow();
+		IWorkbenchWindow window= JavaScriptPlugin.getActiveWorkbenchWindow();
 		if (window == null)
 			return null;
 
-		IJavaElement javaElement= (IJavaElement) event.getObjectParameterForExecution(PARAM_ID_ELEMENT_REF);
+		IJavaScriptElement javaElement= (IJavaScriptElement) event.getObjectParameterForExecution(PARAM_ID_ELEMENT_REF);
 
 		OpenTypeHierarchyUtil.open(javaElement, window);
 

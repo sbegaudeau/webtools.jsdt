@@ -292,7 +292,7 @@ public class SuperConstructorInvocation extends Statement {
 	 * @return the constructor binding, or <code>null</code> if the binding
 	 *    cannot be resolved
 	 */
-	public IMethodBinding resolveConstructorBinding() {
+	public IFunctionBinding resolveConstructorBinding() {
 		return this.ast.getBindingResolver().resolveConstructor(this);
 	}
 

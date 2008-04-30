@@ -15,15 +15,15 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
 public class LibraryContainer extends PackageFragmentRootContainer {
 
-	public LibraryContainer(IJavaProject project) {
+	public LibraryContainer(IJavaScriptProject project) {
 		super(project);
 	}
 
@@ -61,12 +61,12 @@ public class LibraryContainer extends PackageFragmentRootContainer {
 			IPackageFragmentRoot[] roots= getJavaProject().getPackageFragmentRoots();
 			for (int i= 0; i < roots.length; i++) {
 				IPackageFragmentRoot root= roots[i];
-				int classpathEntryKind= root.getRawClasspathEntry().getEntryKind();
-				if (classpathEntryKind == IClasspathEntry.CPE_LIBRARY || classpathEntryKind == IClasspathEntry.CPE_VARIABLE) {
+				int classpathEntryKind= root.getRawIncludepathEntry().getEntryKind();
+				if (classpathEntryKind == IIncludePathEntry.CPE_LIBRARY || classpathEntryKind == IIncludePathEntry.CPE_VARIABLE) {
 					list.add(root);
 				}
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// fall through
 		}
 		return (IPackageFragmentRoot[]) list.toArray(new IPackageFragmentRoot[list.size()]);

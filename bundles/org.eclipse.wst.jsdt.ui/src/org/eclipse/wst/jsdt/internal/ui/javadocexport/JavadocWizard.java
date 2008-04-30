@@ -54,10 +54,10 @@ import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.actions.OpenBrowserUtil;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.OptionalMessageDialog;
@@ -66,7 +66,7 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.launching.IJavaLaunchConfigurationConstants;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class JavadocWizard extends Wizard implements IExportWizard {
 
@@ -116,7 +116,7 @@ public class JavadocWizard extends Wizard implements IExportWizard {
 		setDefaultPageImageDescriptor(JavaPluginImages.DESC_WIZBAN_EXPORT_JAVADOC);
 		setWindowTitle(JavadocExportMessages.JavadocWizard_javadocwizard_title); 
 
-		setDialogSettings(JavaPlugin.getDefault().getDialogSettings());
+		setDialogSettings(JavaScriptPlugin.getDefault().getDialogSettings());
 
 		fRoot= ResourcesPlugin.getWorkspace().getRoot();
 		fXmlJavadocFile= xmlJavadocFile;
@@ -129,7 +129,7 @@ public class JavadocWizard extends Wizard implements IExportWizard {
 	 */
 	public boolean performFinish() {
 
-		IJavaProject[] checkedProjects= fJTWPage.getCheckedProjects();
+		IJavaScriptProject[] checkedProjects= fJTWPage.getCheckedProjects();
 		updateStore(checkedProjects);
 		
 		fStore.updateDialogSettings(getDialogSettings(), checkedProjects);
@@ -153,8 +153,8 @@ public class JavadocWizard extends Wizard implements IExportWizard {
 				List projs= new ArrayList();
 				//get javadoc locations for all projects
 				for (int i= 0; i < checkedProjects.length; i++) {
-					IJavaProject curr= checkedProjects[i];
-					URL currURL= JavaUI.getProjectJavadocLocation(curr);
+					IJavaScriptProject curr= checkedProjects[i];
+					URL currURL= JavaScriptUI.getProjectJSdocLocation(curr);
 					if (!newURL.equals(currURL)) { // currURL can be null
 						//if not all projects have the same javadoc location ask if you want to change
 						//them to have the same javadoc location
@@ -162,10 +162,10 @@ public class JavadocWizard extends Wizard implements IExportWizard {
 					}
 				}
 				if (!projs.isEmpty()) {
-					setAllJavadocLocations((IJavaProject[]) projs.toArray(new IJavaProject[projs.size()]), newURL);
+					setAllJavadocLocations((IJavaScriptProject[]) projs.toArray(new IJavaScriptProject[projs.size()]), newURL);
 				}
 			} catch (MalformedURLException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 
@@ -194,7 +194,7 @@ public class JavadocWizard extends Wizard implements IExportWizard {
 		return true;
 	}
 	
-	private void updateStore(IJavaProject[] checkedProjects) {
+	private void updateStore(IJavaScriptProject[] checkedProjects) {
 		//writes the new settings to store
 		fJTWPage.updateStore(checkedProjects);
 		if (!fJTWPage.getCustom())
@@ -207,7 +207,7 @@ public class JavadocWizard extends Wizard implements IExportWizard {
 	 */
 	public boolean performCancel() {
 		
-		IJavaProject[] checkedProjects= fJTWPage.getCheckedProjects();
+		IJavaScriptProject[] checkedProjects= fJTWPage.getCheckedProjects();
 		updateStore(checkedProjects);
 		
 		//If the wizard was not launched from an ant file store the settings 
@@ -217,23 +217,23 @@ public class JavadocWizard extends Wizard implements IExportWizard {
 		return super.performCancel();
 	}
 
-	private void setAllJavadocLocations(IJavaProject[] projects, URL newURL) {
+	private void setAllJavadocLocations(IJavaScriptProject[] projects, URL newURL) {
 		Shell shell= getShell();
 		String[] buttonlabels= new String[] { IDialogConstants.YES_LABEL, IDialogConstants.YES_TO_ALL_LABEL, IDialogConstants.NO_LABEL, IDialogConstants.NO_TO_ALL_LABEL };
 
 		for (int j= 0; j < projects.length; j++) {
-			IJavaProject iJavaProject= projects[j];
+			IJavaScriptProject iJavaProject= projects[j];
 			String message= Messages.format(JavadocExportMessages.JavadocWizard_updatejavadoclocation_message, new String[] { iJavaProject.getElementName(), fDestination.toOSString()}); 
 			MessageDialog dialog= new MessageDialog(shell, JavadocExportMessages.JavadocWizard_updatejavadocdialog_label, null, message, MessageDialog.QUESTION, buttonlabels, 1);
 
 			switch (dialog.open()) {
 				case YES :
-					JavaUI.setProjectJavadocLocation(iJavaProject, newURL);
+					JavaScriptUI.setProjectJSdocLocation(iJavaProject, newURL);
 					break;
 				case YES_TO_ALL :
 					for (int i= j; i < projects.length; i++) {
 						iJavaProject= projects[i];
-						JavaUI.setProjectJavadocLocation(iJavaProject, newURL);
+						JavaScriptUI.setProjectJSdocLocation(iJavaProject, newURL);
 						j++;
 					}
 					break;
@@ -314,7 +314,7 @@ public class JavadocWizard extends Wizard implements IExportWizard {
 			String title= JavadocExportMessages.JavadocWizard_error_title; 
 			String message= JavadocExportMessages.JavadocWizard_exec_error_message; 
 
-			IStatus status= new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.ERROR, e.getMessage(), e);
+			IStatus status= new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.ERROR, e.getMessage(), e);
 			ExceptionHandler.handle(new CoreException(status), getShell(), title, message);
 			return false;
 		}
@@ -366,7 +366,7 @@ public class JavadocWizard extends Wizard implements IExportWizard {
 			if (selection instanceof IStructuredSelection) {
 				selected= ((IStructuredSelection) selection).toList();
 			} else {
-				IJavaElement element= EditorUtility.getActiveEditorJavaInput();
+				IJavaScriptElement element= EditorUtility.getActiveEditorJavaInput();
 				if (element != null) {
 					selected= new ArrayList();
 					selected.add(element);
@@ -381,7 +381,7 @@ public class JavadocWizard extends Wizard implements IExportWizard {
 			try {
 				fRoot.refreshLocal(IResource.DEPTH_INFINITE, null);
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 	}
@@ -393,7 +393,7 @@ public class JavadocWizard extends Wizard implements IExportWizard {
 				URL url= indexFile.toFile().toURL();
 				OpenBrowserUtil.open(url, display, getWindowTitle());
 			} catch (MalformedURLException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 	}

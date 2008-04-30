@@ -12,19 +12,19 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
 import org.eclipse.wst.jsdt.internal.corext.dom.SelectionAnalyzer;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 
 /**
@@ -33,14 +33,14 @@ import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
  */
 public class JavaTextSelection extends TextSelection {
 
-	private IJavaElement fElement;
-	private IJavaElement[] fResolvedElements;
+	private IJavaScriptElement fElement;
+	private IJavaScriptElement[] fResolvedElements;
 
 	private boolean fEnclosingElementRequested;
-	private IJavaElement fEnclosingElement;
+	private IJavaScriptElement fEnclosingElement;
 
 	private boolean fPartialASTRequested;
-	private CompilationUnit fPartialAST;
+	private JavaScriptUnit fPartialAST;
 
 	private boolean fNodesRequested;
 	private ASTNode[] fSelectedNodes;
@@ -58,20 +58,20 @@ public class JavaTextSelection extends TextSelection {
 	/**
 	 * Creates a new text selection at the given offset and length.
 	 */
-	public JavaTextSelection(IJavaElement element, IDocument document, int offset, int length) {
+	public JavaTextSelection(IJavaScriptElement element, IDocument document, int offset, int length) {
 		super(document, offset, length);
 		fElement= element;
 	}
 
 	/**
-	 * Resolves the <code>IJavaElement</code>s at the current offset. Returns
+	 * Resolves the <code>IJavaScriptElement</code>s at the current offset. Returns
 	 * an empty array if the string under the offset doesn't resolve to a
-	 * <code>IJavaElement</code>.
+	 * <code>IJavaScriptElement</code>.
 	 *
 	 * @return the resolved java elements at the current offset
-	 * @throws JavaModelException passed from the underlying code resolve API
+	 * @throws JavaScriptModelException passed from the underlying code resolve API
 	 */
-	public IJavaElement[] resolveElementAtOffset() throws JavaModelException {
+	public IJavaScriptElement[] resolveElementAtOffset() throws JavaScriptModelException {
 		if (fResolvedElements != null)
 			return fResolvedElements;
 		// long start= System.currentTimeMillis();
@@ -80,7 +80,7 @@ public class JavaTextSelection extends TextSelection {
 		return fResolvedElements;
 	}
 
-	public IJavaElement resolveEnclosingElement() throws JavaModelException {
+	public IJavaScriptElement resolveEnclosingElement() throws JavaScriptModelException {
 		if (fEnclosingElementRequested)
 			return fEnclosingElement;
 		fEnclosingElementRequested= true;
@@ -88,14 +88,14 @@ public class JavaTextSelection extends TextSelection {
 		return fEnclosingElement;
 	}
 
-	public CompilationUnit resolvePartialAstAtOffset() {
+	public JavaScriptUnit resolvePartialAstAtOffset() {
 		if (fPartialASTRequested)
 			return fPartialAST;
 		fPartialASTRequested= true;
-		if (! (fElement instanceof ICompilationUnit))
+		if (! (fElement instanceof IJavaScriptUnit))
 			return null;
 		// long start= System.currentTimeMillis();
-		fPartialAST= JavaPlugin.getDefault().getASTProvider().getAST(fElement, ASTProvider.WAIT_YES, null);
+		fPartialAST= JavaScriptPlugin.getDefault().getASTProvider().getAST(fElement, ASTProvider.WAIT_YES, null);
 		// System.out.println("Time requesting partial AST: " + (System.currentTimeMillis() - start));
 		return fPartialAST;
 	}
@@ -104,7 +104,7 @@ public class JavaTextSelection extends TextSelection {
 		if (fNodesRequested)
 			return fSelectedNodes;
 		fNodesRequested= true;
-		CompilationUnit root= resolvePartialAstAtOffset();
+		JavaScriptUnit root= resolvePartialAstAtOffset();
 		if (root == null)
 			return null;
 		Selection ds= Selection.createFromStartLength(getOffset(), getLength());
@@ -134,7 +134,7 @@ public class JavaTextSelection extends TextSelection {
 			while (node != null) {
 				int nodeType= node.getNodeType();
 				if (nodeType == ASTNode.BLOCK && node.getParent() instanceof BodyDeclaration) {
-					fInMethodBody= node.getParent().getNodeType() == ASTNode.METHOD_DECLARATION;
+					fInMethodBody= node.getParent().getNodeType() == ASTNode.FUNCTION_DECLARATION;
 					break;
 				} else if (nodeType == ASTNode.ANONYMOUS_CLASS_DECLARATION) {
 					fInMethodBody= false;

@@ -18,7 +18,7 @@ import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.ChildPropertyDescriptor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
@@ -381,7 +381,7 @@ public class ControlStatementsFix extends AbstractFix {
 
 	}
 
-	public static IFix[] createRemoveBlockFix(CompilationUnit compilationUnit, ASTNode node) {
+	public static IFix[] createRemoveBlockFix(JavaScriptUnit compilationUnit, ASTNode node) {
 		Statement statement= ASTResolving.findParentStatement(node);
 		if (statement == null) {
 			return null;
@@ -459,7 +459,7 @@ public class ControlStatementsFix extends AbstractFix {
 		return null;
 	}
 
-	public static IFix createCleanUp(CompilationUnit compilationUnit, 
+	public static IFix createCleanUp(JavaScriptUnit compilationUnit, 
 			boolean convertSingleStatementToBlock, 
 			boolean removeUnnecessaryBlock,
 			boolean removeUnnecessaryBlockContainingReturnOrThrow) throws CoreException {
@@ -478,7 +478,7 @@ public class ControlStatementsFix extends AbstractFix {
 		return new ControlStatementsFix(FixMessages.ControlStatementsFix_change_name, compilationUnit, ops);
 	}
 
-	protected ControlStatementsFix(String name, CompilationUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations) {
+	protected ControlStatementsFix(String name, JavaScriptUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations) {
 		super(name, compilationUnit, fixRewriteOperations);
 	}
 

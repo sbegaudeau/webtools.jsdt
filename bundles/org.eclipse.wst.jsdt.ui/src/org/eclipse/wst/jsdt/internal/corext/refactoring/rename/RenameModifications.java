@@ -37,12 +37,12 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.eclipse.ltk.core.refactoring.participants.ValidateEditChecker;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
@@ -67,7 +67,7 @@ public class RenameModifications extends RefactoringModifications {
 		add(resource, args, null);
 	}
 
-	public void rename(IJavaProject project, RenameArguments args) {
+	public void rename(IJavaScriptProject project, RenameArguments args) {
 		add(project, args, null);
 		IProject rProject= project.getProject();
 		if (rProject != null) {
@@ -129,7 +129,7 @@ public class RenameModifications extends RefactoringModifications {
 		}
 	}
 
-	public void rename(ICompilationUnit unit, RenameArguments args) {
+	public void rename(IJavaScriptUnit unit, RenameArguments args) {
 		add(unit, args, null);
 		if (unit.getResource() != null) {
 			getResourceModifications().addRename(unit.getResource(), new RenameArguments(args.getNewName(), args.getUpdateReferences()));
@@ -144,7 +144,7 @@ public class RenameModifications extends RefactoringModifications {
 		add(field, args, null);
 	}
 	
-	public void rename(IMethod method, RenameArguments args) {
+	public void rename(IFunction method, RenameArguments args) {
 		add(method, args, null);
 	} 
 	
@@ -169,8 +169,8 @@ public class RenameModifications extends RefactoringModifications {
 	public void buildValidateEdits(ValidateEditChecker checker) {
 		for (Iterator iter= fRename.iterator(); iter.hasNext();) {
 			Object element= iter.next();
-			if (element instanceof ICompilationUnit) {
-				ICompilationUnit unit= (ICompilationUnit)element;
+			if (element instanceof IJavaScriptUnit) {
+				IJavaScriptUnit unit= (IJavaScriptUnit)element;
 				IResource resource= unit.getResource();
 				if (resource != null && resource.getType() == IResource.FILE) {
 					checker.addFile((IFile)resource);
@@ -243,7 +243,7 @@ public class RenameModifications extends RefactoringModifications {
 
 	private IPackageFragment[] getSubpackages(IPackageFragment pack) throws CoreException {
 		IPackageFragmentRoot root= (IPackageFragmentRoot) pack.getParent();
-		IJavaElement[] allPackages= root.getChildren();
+		IJavaScriptElement[] allPackages= root.getChildren();
 		if (pack.isDefaultPackage())
 			return new IPackageFragment[0];
 		ArrayList result= new ArrayList();

@@ -19,8 +19,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.IWorkingCopyProvider;
 
 /**
@@ -93,19 +93,19 @@ public class MethodsContentProvider implements IStructuredContentProvider, IWork
 					for (int i= allSupertypes.length - 1; i >= 0; i--) {
 						IType superType= allSupertypes[i];
 						if (superType.exists()) {
-							addAll(superType.getMethods(), res);
+							addAll(superType.getFunctions(), res);
 							addAll(superType.getInitializers(), res);
 							addAll(superType.getFields(), res);
 						}
 					}
 				}
 				if (type.exists()) {
-					addAll(type.getMethods(), res);
+					addAll(type.getFunctions(), res);
 					addAll(type.getInitializers(), res);
 					addAll(type.getFields(), res);
 				}
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 			}
 			return res.toArray();
 		}

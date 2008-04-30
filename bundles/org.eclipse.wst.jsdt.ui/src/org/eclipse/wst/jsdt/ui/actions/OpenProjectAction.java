@@ -37,11 +37,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.OpenResourceAction;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 /**
  * Action to open a closed project. Action either opens the closed projects
@@ -160,7 +160,7 @@ public class OpenProjectAction extends SelectionDispatchAction implements IResou
 	}
 	
 	private void internalRun(List initialSelection) {
-		ListSelectionDialog dialog= new ListSelectionDialog(getShell(), getClosedProjectsInWorkspace(), new ArrayContentProvider(), new JavaElementLabelProvider(), ActionMessages.OpenProjectAction_dialog_message);
+		ListSelectionDialog dialog= new ListSelectionDialog(getShell(), getClosedProjectsInWorkspace(), new ArrayContentProvider(), new JavaScriptElementLabelProvider(), ActionMessages.OpenProjectAction_dialog_message);
 		dialog.setTitle(ActionMessages.OpenProjectAction_dialog_title); 
 		if (initialSelection != null && !initialSelection.isEmpty()) {
 			dialog.setInitialElementSelections(initialSelection);
@@ -190,7 +190,7 @@ public class OpenProjectAction extends SelectionDispatchAction implements IResou
 						project.open(new SubProgressMonitor(monitor, 1));
 					} catch (CoreException e) {
 						if (errorStatus == null)
-							errorStatus = new MultiStatus(JavaPlugin.getPluginId(), IStatus.ERROR, ActionMessages.OpenProjectAction_error_message, null); 
+							errorStatus = new MultiStatus(JavaScriptPlugin.getPluginId(), IStatus.ERROR, ActionMessages.OpenProjectAction_error_message, null); 
 						errorStatus.add(e.getStatus());
 					}
 				}

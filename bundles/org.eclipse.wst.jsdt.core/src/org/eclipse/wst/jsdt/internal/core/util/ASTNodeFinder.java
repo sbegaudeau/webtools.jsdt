@@ -12,10 +12,10 @@ package org.eclipse.wst.jsdt.internal.core.util;
 
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IInitializer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
@@ -33,7 +33,7 @@ import org.eclipse.wst.jsdt.internal.core.SourceRefElement;
 import org.eclipse.wst.jsdt.internal.core.SourceType;
 
 /**
- * Finds an ASTNode given an IJavaElement in a CompilationUnitDeclaration
+ * Finds an ASTNode given an IJavaScriptElement in a CompilationUnitDeclaration
  */
 public class ASTNodeFinder {
 	private CompilationUnitDeclaration unit;
@@ -86,7 +86,7 @@ public class ASTNodeFinder {
 	 * Finds the AbstractMethodDeclaration in the given ast corresponding to the given method handle.
 	 * Returns null if not found.
 	 */
-	public AbstractMethodDeclaration findMethod(IMethod methodHandle) {
+	public AbstractMethodDeclaration findMethod(IFunction methodHandle) {
 		TypeDeclaration typeDecl = findType((IType)methodHandle.getParent());
 		if (typeDecl == null) return null;
 		AbstractMethodDeclaration[] methods = typeDecl.methods;
@@ -120,9 +120,9 @@ public class ASTNodeFinder {
 	 * Returns null if not found.
 	 */
 	public TypeDeclaration findType(IType typeHandle) {
-		if (!JavaCore.IS_ECMASCRIPT4)
+		if (!JavaScriptCore.IS_ECMASCRIPT4)
 			return null;
-		IJavaElement parent = typeHandle.getParent();
+		IJavaScriptElement parent = typeHandle.getParent();
 		final char[] typeName = typeHandle.getElementName().toCharArray();
 		final int occurenceCount = ((SourceType)typeHandle).occurrenceCount;
 		final boolean findAnonymous = typeName.length == 0;
@@ -144,7 +144,7 @@ public class ASTNodeFinder {
 			}
 		}
 		switch (parent.getElementType()) {
-			case IJavaElement.COMPILATION_UNIT:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
 				TypeDeclaration[] types = this.unit.types;
 				if (types != null) {
 					for (int i = 0, length = types.length; i < length; i++) {
@@ -155,7 +155,7 @@ public class ASTNodeFinder {
 					}
 				}
 				break;
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				TypeDeclaration parentDecl = findType((IType)parent);
 				if (parentDecl == null) return null;
 				types = parentDecl.memberTypes;
@@ -168,20 +168,20 @@ public class ASTNodeFinder {
 					}
 				}
 				break;
-			case IJavaElement.FIELD:
+			case IJavaScriptElement.FIELD:
 				FieldDeclaration fieldDecl = findField((IField)parent);
 				if (fieldDecl == null) return null;
 				Visitor visitor = new Visitor();
 				fieldDecl.traverse(visitor, null);
 				return visitor.result;
-			case IJavaElement.INITIALIZER:
+			case IJavaScriptElement.INITIALIZER:
 				Initializer initializer = findInitializer((IInitializer)parent);
 				if (initializer == null) return null;
 				visitor = new Visitor();
 				initializer.traverse(visitor, null);
 				return visitor.result;
-			case IJavaElement.METHOD:
-				AbstractMethodDeclaration methodDecl = findMethod((IMethod)parent);
+			case IJavaScriptElement.METHOD:
+				AbstractMethodDeclaration methodDecl = findMethod((IFunction)parent);
 				if (methodDecl == null) return null;
 				visitor = new Visitor();
 				methodDecl.traverse(visitor, (ClassScope)null);

@@ -23,8 +23,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.SortMembersFix;
@@ -44,7 +44,7 @@ public class SortMembersCleanUp extends AbstractCleanUp {
 		super(options);
 	}
 
-	public IFix createFix(CompilationUnit compilationUnit) throws CoreException {
+	public IFix createFix(JavaScriptUnit compilationUnit) throws CoreException {
 		if (compilationUnit == null)
 			return null;
 		
@@ -54,7 +54,7 @@ public class SortMembersCleanUp extends AbstractCleanUp {
 			if (fTouchedFiles == null) {
 				fTouchedFiles= new HashSet();
 			}
-			fTouchedFiles.add(((ICompilationUnit)compilationUnit.getJavaElement()).getResource());
+			fTouchedFiles.add(((IJavaScriptUnit)compilationUnit.getJavaElement()).getResource());
 		}
 		return fix;
 	}
@@ -93,7 +93,7 @@ public class SortMembersCleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IFix createFix(CompilationUnit compilationUnit, IProblemLocation[] problems) throws CoreException {
+	public IFix createFix(JavaScriptUnit compilationUnit, IProblemLocation[] problems) throws CoreException {
 		return null;
 	}
 
@@ -144,15 +144,15 @@ public class SortMembersCleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int maximalNumberOfFixes(CompilationUnit compilationUnit) {
+	public int maximalNumberOfFixes(JavaScriptUnit compilationUnit) {
 		return -1;
 	}
 
-    public boolean canFix(CompilationUnit compilationUnit, IProblemLocation problem) throws CoreException {
+    public boolean canFix(JavaScriptUnit compilationUnit, IProblemLocation problem) throws CoreException {
 	    return false;
     }
     
-	public boolean requireAST(ICompilationUnit unit) throws CoreException {
+	public boolean requireAST(IJavaScriptUnit unit) throws CoreException {
 		return isEnabled(CleanUpConstants.SORT_MEMBERS);
 	}
 	

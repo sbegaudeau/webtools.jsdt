@@ -18,8 +18,8 @@ import java.util.zip.ZipFile;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.IJarEntryResource;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 /**
@@ -50,12 +50,12 @@ public class JarEntryFile  extends JarEntryResource {
 			String entryName = getEntryName();
 			ZipEntry zipEntry = zipFile.getEntry(entryName);
 			if (zipEntry == null){
-				throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_PATH, entryName));
+				throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_PATH, entryName));
 			}
 			byte[] contents = Util.getZipEntryByteContent(zipEntry, zipFile);
 			return new ByteArrayInputStream(contents);
 		} catch (IOException e){
-			throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
+			throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.IO_EXCEPTION);
 		} finally {
 			// avoid leaking ZipFiles
 			JavaModelManager.getJavaModelManager().closeZipFile(zipFile);

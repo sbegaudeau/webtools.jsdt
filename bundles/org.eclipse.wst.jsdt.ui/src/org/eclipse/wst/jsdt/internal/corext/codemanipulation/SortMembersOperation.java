@@ -18,7 +18,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
@@ -27,15 +27,15 @@ import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
-import org.eclipse.wst.jsdt.core.util.CompilationUnitSorter;
+import org.eclipse.wst.jsdt.core.util.JavaScriptUnitSorter;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.MembersOrderPreferenceCache;
 
 import com.ibm.icu.text.Collator;
@@ -58,14 +58,14 @@ public class SortMembersOperation implements IWorkspaceRunnable {
 		public DefaultJavaElementComparator(boolean doNotSortFields) {
 			fDoNotSortFields= doNotSortFields;
 			fCollator= Collator.getInstance();
-			fMemberOrderCache= JavaPlugin.getDefault().getMemberOrderPreferenceCache();
+			fMemberOrderCache= JavaScriptPlugin.getDefault().getMemberOrderPreferenceCache();
 		}
 
 		private int category(BodyDeclaration bodyDeclaration) {
 			switch (bodyDeclaration.getNodeType()) {
-				case ASTNode.METHOD_DECLARATION:
+				case ASTNode.FUNCTION_DECLARATION:
 					{
-						MethodDeclaration method= (MethodDeclaration) bodyDeclaration;
+						FunctionDeclaration method= (FunctionDeclaration) bodyDeclaration;
 						if (method.isConstructor()) {
 							return getMemberCategory(MembersOrderPreferenceCache.CONSTRUCTORS_INDEX);
 						}
@@ -109,9 +109,9 @@ public class SortMembersOperation implements IWorkspaceRunnable {
 		}
 
 		/**
-		 * This comparator follows the contract defined in CompilationUnitSorter.sort.
+		 * This comparator follows the contract defined in JavaScriptUnitSorter.sort.
 		 * @see Comparator#compare(java.lang.Object, java.lang.Object)
-		 * @see CompilationUnitSorter#sort(int, org.eclipse.wst.jsdt.core.ICompilationUnit, int[], java.util.Comparator, int, org.eclipse.core.runtime.IProgressMonitor)
+		 * @see JavaScriptUnitSorter#sort(int, org.eclipse.wst.jsdt.core.IJavaScriptUnit, int[], java.util.Comparator, int, org.eclipse.core.runtime.IProgressMonitor)
 		 */
 		public int compare(Object e1, Object e2) {
 			BodyDeclaration bodyDeclaration1= (BodyDeclaration) e1;
@@ -133,10 +133,10 @@ public class SortMembersOperation implements IWorkspaceRunnable {
 			}
 
 			switch (bodyDeclaration1.getNodeType()) {
-				case ASTNode.METHOD_DECLARATION :
+				case ASTNode.FUNCTION_DECLARATION :
 					{
-						MethodDeclaration method1= (MethodDeclaration) bodyDeclaration1;
-						MethodDeclaration method2= (MethodDeclaration) bodyDeclaration2;
+						FunctionDeclaration method1= (FunctionDeclaration) bodyDeclaration1;
+						FunctionDeclaration method2= (FunctionDeclaration) bodyDeclaration2;
 
 						if (fMemberOrderCache.isSortByVisibility()) {
 							int vis= fMemberOrderCache.getVisibilityIndex(method1.getModifiers()) - fMemberOrderCache.getVisibilityIndex(method2.getModifiers());
@@ -238,8 +238,8 @@ public class SortMembersOperation implements IWorkspaceRunnable {
 		}
 
 		private int preserveRelativeOrder(BodyDeclaration bodyDeclaration1, BodyDeclaration bodyDeclaration2) {
-			int value1= ((Integer) bodyDeclaration1.getProperty(CompilationUnitSorter.RELATIVE_ORDER)).intValue();
-			int value2= ((Integer) bodyDeclaration2.getProperty(CompilationUnitSorter.RELATIVE_ORDER)).intValue();
+			int value1= ((Integer) bodyDeclaration1.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
+			int value2= ((Integer) bodyDeclaration2.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
 			return value1 - value2;
 		}
 
@@ -257,7 +257,7 @@ public class SortMembersOperation implements IWorkspaceRunnable {
 	}
 
 
-	private ICompilationUnit fCompilationUnit;
+	private IJavaScriptUnit fCompilationUnit;
 	private int[] fPositions;
 	private final boolean fDoNotSortFields;
 	
@@ -267,7 +267,7 @@ public class SortMembersOperation implements IWorkspaceRunnable {
 	 * @param positions Positions to track or <code>null</code> if no positions
 	 * should be tracked.
 	 */
-	public SortMembersOperation(ICompilationUnit cu, int[] positions, boolean doNotSortFields) {
+	public SortMembersOperation(IJavaScriptUnit cu, int[] positions, boolean doNotSortFields) {
 		fCompilationUnit= cu;
 		fPositions= positions;
 		fDoNotSortFields= doNotSortFields;
@@ -278,7 +278,7 @@ public class SortMembersOperation implements IWorkspaceRunnable {
 	 * Runs the operation.
 	 */
 	public void run(IProgressMonitor monitor) throws CoreException {
-		CompilationUnitSorter.sort(AST.JLS3, fCompilationUnit, fPositions, new DefaultJavaElementComparator(fDoNotSortFields), 0, monitor);
+		JavaScriptUnitSorter.sort(AST.JLS3, fCompilationUnit, fPositions, new DefaultJavaElementComparator(fDoNotSortFields), 0, monitor);
 	}
 
 	/**

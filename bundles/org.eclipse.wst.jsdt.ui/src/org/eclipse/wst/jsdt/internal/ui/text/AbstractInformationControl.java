@@ -62,9 +62,9 @@ import org.eclipse.ui.commands.ICommandManager;
 import org.eclipse.ui.commands.IKeySequenceBinding;
 import org.eclipse.ui.commands.Priority;
 import org.eclipse.ui.keys.KeySequence;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IParent;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.util.StringMatcher;
 import org.eclipse.wst.jsdt.ui.actions.CustomFiltersActionGroup;
@@ -428,10 +428,10 @@ public abstract class AbstractInformationControl extends PopupDialog implements 
 			try {
 				dispose();
 				IEditorPart part= EditorUtility.openInEditor(selectedElement, true);
-				if (part != null && selectedElement instanceof IJavaElement)
-					EditorUtility.revealInEditor(part, (IJavaElement) selectedElement);
+				if (part != null && selectedElement instanceof IJavaScriptElement)
+					EditorUtility.revealInEditor(part, (IJavaScriptElement) selectedElement);
 			} catch (CoreException ex) {
-				JavaPlugin.log(ex);
+				JavaScriptPlugin.log(ex);
 			}
 		}
 	}
@@ -449,10 +449,10 @@ public abstract class AbstractInformationControl extends PopupDialog implements 
 			fTreeViewer.setSelection(StructuredSelection.EMPTY);
 	}
 
-	private IJavaElement findElement(TreeItem[] items) {
+	private IJavaScriptElement findElement(TreeItem[] items) {
 		ILabelProvider labelProvider= (ILabelProvider)fTreeViewer.getLabelProvider();
 		for (int i= 0; i < items.length; i++) {
-			IJavaElement element= (IJavaElement)items[i].getData();
+			IJavaScriptElement element= (IJavaScriptElement)items[i].getData();
 			if (fStringMatcher == null)
 				return element;
 
@@ -711,9 +711,9 @@ public abstract class AbstractInformationControl extends PopupDialog implements 
 	protected IDialogSettings getDialogSettings() {
 		String sectionName= getId();
 
-		IDialogSettings settings= JavaPlugin.getDefault().getDialogSettings().getSection(sectionName);
+		IDialogSettings settings= JavaScriptPlugin.getDefault().getDialogSettings().getSection(sectionName);
 		if (settings == null)
-			settings= JavaPlugin.getDefault().getDialogSettings().addNewSection(sectionName);
+			settings= JavaScriptPlugin.getDefault().getDialogSettings().addNewSection(sectionName);
 
 		return settings;
 	}

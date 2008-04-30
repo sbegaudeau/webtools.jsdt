@@ -20,7 +20,7 @@ import org.eclipse.jface.text.templates.TemplateVariableResolver;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * A proposal for insertion of template variables.
@@ -70,7 +70,7 @@ public class TemplateVariableProposal implements ICompletionProposal {
 			fSelection= new Point(fOffset + variable.length(), 0);
 
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 
 			Shell shell= fViewer.getTextWidget().getShell();
 			MessageDialog.openError(shell, TemplatePreferencesMessages.TemplateVariableProposal_error_title, e.getMessage());

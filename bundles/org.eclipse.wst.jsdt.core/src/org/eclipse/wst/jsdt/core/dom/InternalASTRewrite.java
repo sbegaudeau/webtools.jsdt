@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.internal.core.dom.rewrite.RewriteEventStore.Property
 class InternalASTRewrite extends NodeEventHandler {
 
 	/** root node for the rewrite: Only nodes under this root are accepted */
-	private CompilationUnit root;
+	private JavaScriptUnit root;
 
 	protected final RewriteEventStore eventStore;
 	protected final NodeInfoStore nodeStore;
@@ -46,7 +46,7 @@ class InternalASTRewrite extends NodeEventHandler {
 	 * Constructor
 	 * @param root root node of the recorded ast.
 	 */
-	public InternalASTRewrite(CompilationUnit root) {
+	public InternalASTRewrite(JavaScriptUnit root) {
 		this.root = root;
 		this.eventStore = new RewriteEventStore();
 		this.nodeStore = new NodeInfoStore(root.getAST());
@@ -64,7 +64,7 @@ class InternalASTRewrite extends NodeEventHandler {
 	public TextEdit rewriteAST(IDocument document, Map options) {
 		TextEdit result = new MultiTextEdit();
 
-		final CompilationUnit rootNode = getRootNode();
+		final JavaScriptUnit rootNode = getRootNode();
 		if (rootNode != null) {
 			TargetSourceRangeComputer xsrComputer = new TargetSourceRangeComputer() {
 				/**
@@ -116,7 +116,7 @@ class InternalASTRewrite extends NodeEventHandler {
 		}
 	}
 
-	private CompilationUnit getRootNode() {
+	private JavaScriptUnit getRootNode() {
 		return this.root;
 	}
 

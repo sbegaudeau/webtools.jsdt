@@ -36,9 +36,9 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
@@ -189,19 +189,19 @@ public abstract class PropertyAndPreferencePage extends PreferencePage implement
 		} else {
 			HashSet projectsWithSpecifics= new HashSet();
 			try {
-				IJavaProject[] projects= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
+				IJavaScriptProject[] projects= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaScriptProjects();
 				for (int i= 0; i < projects.length; i++) {
-					IJavaProject curr= projects[i];
+					IJavaScriptProject curr= projects[i];
 					if (hasProjectSpecificOptions(curr.getProject())) {
 						projectsWithSpecifics.add(curr);
 					}
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore
 			}
 			ProjectSelectionDialog dialog= new ProjectSelectionDialog(getShell(), projectsWithSpecifics);
 			if (dialog.open() == Window.OK) {
-				IJavaProject res= (IJavaProject) dialog.getFirstResult();
+				IJavaScriptProject res= (IJavaScriptProject) dialog.getFirstResult();
 				openProjectProperties(res.getProject(), data);
 			}
 		}

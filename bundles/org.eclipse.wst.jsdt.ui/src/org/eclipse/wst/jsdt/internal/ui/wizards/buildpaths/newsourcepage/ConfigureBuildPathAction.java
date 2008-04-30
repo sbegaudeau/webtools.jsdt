@@ -21,12 +21,12 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer;
@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer
 import org.eclipse.wst.jsdt.internal.ui.preferences.BuildPathsPropertyPage;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 
-//SelectedElements iff enabled: (IJavaElement || JsGlobalScopeContainer || IAdaptable) && size == 1
+//SelectedElements iff enabled: (IJavaScriptElement || JsGlobalScopeContainer || IAdaptable) && size == 1
 public class ConfigureBuildPathAction extends BuildpathModifierAction {
 
 	public ConfigureBuildPathAction(IWorkbenchSite site) {
@@ -58,21 +58,21 @@ public class ConfigureBuildPathAction extends BuildpathModifierAction {
 		Object firstElement= getSelectedElements().get(0);
 		HashMap data= new HashMap();
 		
-		if (firstElement instanceof IJavaElement) {
-			IJavaElement element= (IJavaElement) firstElement;
-			IPackageFragmentRoot root= (IPackageFragmentRoot) element.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+		if (firstElement instanceof IJavaScriptElement) {
+			IJavaScriptElement element= (IJavaScriptElement) firstElement;
+			IPackageFragmentRoot root= (IPackageFragmentRoot) element.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 			if (root != null) {
 				try {
-					data.put(BuildPathsPropertyPage.DATA_REVEAL_ENTRY, root.getRawClasspathEntry());
-				} catch (JavaModelException e) {
+					data.put(BuildPathsPropertyPage.DATA_REVEAL_ENTRY, root.getRawIncludepathEntry());
+				} catch (JavaScriptModelException e) {
 					// ignore
 				}
 			}
-			project= element.getJavaProject().getProject();
+			project= element.getJavaScriptProject().getProject();
 		} else if (firstElement instanceof PackageFragmentRootContainer) {
 			PackageFragmentRootContainer container= (PackageFragmentRootContainer) firstElement;
 			project= container.getJavaProject().getProject();
-			IClasspathEntry entry= container instanceof JsGlobalScopeContainer ? ((JsGlobalScopeContainer) container).getClasspathEntry() : JavaCore.newLibraryEntry(new Path("/x/y"), null, null); //$NON-NLS-1$
+			IIncludePathEntry entry= container instanceof JsGlobalScopeContainer ? ((JsGlobalScopeContainer) container).getClasspathEntry() : JavaScriptCore.newLibraryEntry(new Path("/x/y"), null, null); //$NON-NLS-1$
 			data.put(BuildPathsPropertyPage.DATA_REVEAL_ENTRY, entry);
 		} else {
 			project= ((IResource) ((IAdaptable) firstElement).getAdapter(IResource.class)).getProject();
@@ -86,13 +86,13 @@ public class ConfigureBuildPathAction extends BuildpathModifierAction {
 	
 		Object firstElement= elements.getFirstElement();
 		
-		if (firstElement instanceof IJavaElement) {
-			IJavaElement element= (IJavaElement) firstElement;
+		if (firstElement instanceof IJavaScriptElement) {
+			IJavaScriptElement element= (IJavaScriptElement) firstElement;
 			IPackageFragmentRoot root= JavaModelUtil.getPackageFragmentRoot(element);
 			if (root != null && root != element && root.isArchive()) {
 				return false;
 			}
-			IJavaProject project= element.getJavaProject();
+			IJavaScriptProject project= element.getJavaScriptProject();
 			if (project == null)
 				return false;
 			
@@ -109,7 +109,7 @@ public class ConfigureBuildPathAction extends BuildpathModifierAction {
 				return false;
 			
 			try {
-				return project.hasNature(JavaCore.NATURE_ID);
+				return project.hasNature(JavaScriptCore.NATURE_ID);
 			} catch (CoreException e) {
 				return false;
 			}

@@ -21,10 +21,10 @@ import org.eclipse.jface.text.templates.TemplateBuffer;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.jface.text.templates.TemplateTranslator;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 
@@ -47,7 +47,7 @@ public class JavaDocContext extends CompilationUnitContext {
 	 * @param completionLength the completion length within the document.
 	 * @param compilationUnit the compilation unit (may be <code>null</code>).
 	 */
-	public JavaDocContext(TemplateContextType type, IDocument document, int completionOffset, int completionLength, ICompilationUnit compilationUnit) {
+	public JavaDocContext(TemplateContextType type, IDocument document, int completionOffset, int completionLength, IJavaScriptUnit compilationUnit) {
 		super(type, document, completionOffset, completionLength, compilationUnit);
 	}
 
@@ -60,7 +60,7 @@ public class JavaDocContext extends CompilationUnitContext {
 	 * @param compilationUnit the compilation unit (may be <code>null</code>).
 	 * @since 3.2
 	 */
-	public JavaDocContext(TemplateContextType type, IDocument document, Position completionPosition, ICompilationUnit compilationUnit) {
+	public JavaDocContext(TemplateContextType type, IDocument document, Position completionPosition, IJavaScriptUnit compilationUnit) {
 		super(type, document, completionPosition, compilationUnit);
 	}
 	
@@ -187,10 +187,10 @@ public class JavaDocContext extends CompilationUnitContext {
 
 		getContextType().resolve(buffer, this);
 		
-		IPreferenceStore prefs= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore prefs= JavaScriptPlugin.getDefault().getPreferenceStore();
 		boolean useCodeFormatter= prefs.getBoolean(PreferenceConstants.TEMPLATES_USE_CODEFORMATTER);
 
-		IJavaProject project= getJavaProject();
+		IJavaScriptProject project= getJavaProject();
 		JavaFormatter formatter= new JavaFormatter(TextUtilities.getDefaultLineDelimiter(getDocument()), getIndentation(), useCodeFormatter, project);
 		formatter.format(buffer, this);
 			
@@ -208,7 +208,7 @@ public class JavaDocContext extends CompilationUnitContext {
 		try {
 			IRegion region= document.getLineInformationOfOffset(start);
 			String lineContent= document.get(region.getOffset(), region.getLength());
-			IJavaProject project= getJavaProject();
+			IJavaScriptProject project= getJavaProject();
 			return Strings.computeIndentUnits(lineContent, project);
 		} catch (BadLocationException e) {
 			return 0;

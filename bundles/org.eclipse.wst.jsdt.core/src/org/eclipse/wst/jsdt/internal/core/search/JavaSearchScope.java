@@ -22,15 +22,15 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
@@ -91,9 +91,9 @@ private void addEnclosingProjectOrJar(IPath path) {
 
 /**
  * Add java project all fragment roots to current java search scope.
- * @see #add(JavaProject, IPath, int, HashSet, IClasspathEntry)
+ * @see #add(JavaProject, IPath, int, HashSet, IIncludePathEntry)
  */
-public void add(JavaProject project, int includeMask, HashSet visitedProject) throws JavaModelException {
+public void add(JavaProject project, int includeMask, HashSet visitedProject) throws JavaScriptModelException {
 	add(project, null, includeMask, visitedProject, null);
 }
 /**
@@ -105,9 +105,9 @@ public void add(JavaProject project, int includeMask, HashSet visitedProject) th
  * @param includeMask Mask to apply on classpath entries
  * @param visitedProjects Set to avoid infinite recursion
  * @param referringEntry Project raw entry in referring project classpath
- * @throws JavaModelException May happen while getting java model info
+ * @throws JavaScriptModelException May happen while getting java model info
  */
-void add(JavaProject javaProject, IPath pathToAdd, int includeMask, HashSet visitedProjects, IClasspathEntry referringEntry) throws JavaModelException {
+void add(JavaProject javaProject, IPath pathToAdd, int includeMask, HashSet visitedProjects, IIncludePathEntry referringEntry) throws JavaScriptModelException {
 	IProject project = javaProject.getProject();
 	if (!project.isAccessible() || !visitedProjects.add(project)) return;
 
@@ -115,32 +115,32 @@ void add(JavaProject javaProject, IPath pathToAdd, int includeMask, HashSet visi
 	String projectPathString = projectPath.toString();
 	this.addEnclosingProjectOrJar(projectPath);
 
-	IClasspathEntry[] entries = javaProject.getResolvedClasspath();
-	IJavaModel model = javaProject.getJavaModel();
+	IIncludePathEntry[] entries = javaProject.getResolvedClasspath();
+	IJavaScriptModel model = javaProject.getJavaScriptModel();
 	JavaModelManager.PerProjectInfo perProjectInfo = javaProject.getPerProjectInfo();
 	for (int i = 0, length = entries.length; i < length; i++) {
-		IClasspathEntry entry = entries[i];
+		IIncludePathEntry entry = entries[i];
 		AccessRuleSet access = null;
 		ClasspathEntry cpEntry = (ClasspathEntry) entry;
 		if (referringEntry != null) {
 			// Add only exported entries.
 			// Source folder are implicitly exported.
-			if (!entry.isExported() && entry.getEntryKind() != IClasspathEntry.CPE_SOURCE) continue;
+			if (!entry.isExported() && entry.getEntryKind() != IIncludePathEntry.CPE_SOURCE) continue;
 			cpEntry = cpEntry.combineWith((ClasspathEntry)referringEntry);
 //				cpEntry = ((ClasspathEntry)referringEntry).combineWith(cpEntry);
 		}
 		access = cpEntry.getAccessRuleSet();
 		switch (entry.getEntryKind()) {
-			case IClasspathEntry.CPE_LIBRARY:
-				IClasspathEntry rawEntry = null;
+			case IIncludePathEntry.CPE_LIBRARY:
+				IIncludePathEntry rawEntry = null;
 				Map rootPathToRawEntries = perProjectInfo.rootPathToRawEntries;
 				if (rootPathToRawEntries != null) {
-					rawEntry = (IClasspathEntry) rootPathToRawEntries.get(entry.getPath());
+					rawEntry = (IIncludePathEntry) rootPathToRawEntries.get(entry.getPath());
 				}
 				if (rawEntry == null) break;
 				switch (rawEntry.getEntryKind()) {
-					case IClasspathEntry.CPE_LIBRARY:
-					case IClasspathEntry.CPE_VARIABLE:
+					case IIncludePathEntry.CPE_LIBRARY:
+					case IIncludePathEntry.CPE_VARIABLE:
 						if ((includeMask & APPLICATION_LIBRARIES) != 0) {
 							IPath path = entry.getPath();
 							if (pathToAdd == null || pathToAdd.equals(path)) {
@@ -150,8 +150,8 @@ void add(JavaProject javaProject, IPath pathToAdd, int includeMask, HashSet visi
 							}
 						}
 						break;
-					case IClasspathEntry.CPE_CONTAINER:
-						IJsGlobalScopeContainer container = JavaCore.getJsGlobalScopeContainer(rawEntry.getPath(), javaProject);
+					case IIncludePathEntry.CPE_CONTAINER:
+						IJsGlobalScopeContainer container = JavaScriptCore.getJsGlobalScopeContainer(rawEntry.getPath(), javaProject);
 						if (container == null) break;
 						if ((container.getKind() == IJsGlobalScopeContainer.K_APPLICATION && (includeMask & APPLICATION_LIBRARIES) != 0)
 								|| (includeMask & SYSTEM_LIBRARIES) != 0) {
@@ -165,15 +165,15 @@ void add(JavaProject javaProject, IPath pathToAdd, int includeMask, HashSet visi
 						break;
 				}
 				break;
-			case IClasspathEntry.CPE_PROJECT:
+			case IIncludePathEntry.CPE_PROJECT:
 				if ((includeMask & REFERENCED_PROJECTS) != 0) {
 					IPath path = entry.getPath();
 					if (pathToAdd == null || pathToAdd.equals(path)) {
-						add((JavaProject) model.getJavaProject(entry.getPath().lastSegment()), null, includeMask, visitedProjects, cpEntry);
+						add((JavaProject) model.getJavaScriptProject(entry.getPath().lastSegment()), null, includeMask, visitedProjects, cpEntry);
 					}
 				}
 				break;
-			case IClasspathEntry.CPE_SOURCE:
+			case IIncludePathEntry.CPE_SOURCE:
 				if ((includeMask & SOURCES) != 0) {
 					IPath path = entry.getPath();
 					if (pathToAdd == null || pathToAdd.equals(path)) {
@@ -187,26 +187,26 @@ void add(JavaProject javaProject, IPath pathToAdd, int includeMask, HashSet visi
 /**
  * Add an element to the java search scope.
  * @param element The element we want to add to current java search scope
- * @throws JavaModelException May happen if some Java Model info are not available
+ * @throws JavaScriptModelException May happen if some Java Model info are not available
  */
-public void add(IJavaElement element) throws JavaModelException {
+public void add(IJavaScriptElement element) throws JavaScriptModelException {
 	IPath containerPath = null;
 	String containerPathToString = null;
 	int includeMask = SOURCES | APPLICATION_LIBRARIES | SYSTEM_LIBRARIES;
 	switch (element.getElementType()) {
-		case IJavaElement.JAVA_MODEL:
+		case IJavaScriptElement.JAVASCRIPT_MODEL:
 			// a workspace sope should be used
 			break;
-		case IJavaElement.JAVA_PROJECT:
+		case IJavaScriptElement.JAVASCRIPT_PROJECT:
 			add((JavaProject)element, null, includeMask, new HashSet(2), null);
 			break;
-		case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 			IPackageFragmentRoot root = (IPackageFragmentRoot)element;
 
 
 			IPath rootPath = root.getPath();
 
-			IClasspathEntry entry = root.getResolvedClasspathEntry();
+			IIncludePathEntry entry = root.getResolvedIncludepathEntry();
 			IPath[] exclusionsPaths = entry.getExclusionPatterns();
 
 			if(exclusionsPaths!=null &&  exclusionsPaths.length>0)
@@ -216,7 +216,7 @@ public void add(IJavaElement element) throws JavaModelException {
 			containerPath = root.getKind() == IPackageFragmentRoot.K_SOURCE ? root.getParent().getPath() : rootPath;
 			containerPathToString = containerPath.getDevice() == null ? containerPath.toString() : containerPath.toOSString();
 			IResource rootResource = root.getResource();
-			String projectPath = root.getJavaProject().getPath().toString();
+			String projectPath = root.getJavaScriptProject().getPath().toString();
 			if (rootResource != null && rootResource.isAccessible()) {
 				String relativePath = Util.relativePath(rootResource.getFullPath(), containerPath.segmentCount());
 				add(projectPath, relativePath, containerPathToString, false/*not a package*/, null);
@@ -224,9 +224,9 @@ public void add(IJavaElement element) throws JavaModelException {
 				add(projectPath, "", containerPathToString, false/*not a package*/, null); //$NON-NLS-1$
 			}
 			break;
-		case IJavaElement.PACKAGE_FRAGMENT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT:
 			root = (IPackageFragmentRoot)element.getParent();
-			projectPath = root.getJavaProject().getPath().toString();
+			projectPath = root.getJavaScriptProject().getPath().toString();
 			if (root.isArchive()) {
 				String relativePath = Util.concatWith(((PackageFragment) element).names, '/');
 				containerPath = root.getPath();
@@ -255,8 +255,8 @@ public void add(IJavaElement element) throws JavaModelException {
 				}
 				this.elements.add(element);
 			}
-			root = (IPackageFragmentRoot) element.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
-			projectPath = root.getJavaProject().getPath().toString();
+			root = (IPackageFragmentRoot) element.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
+			projectPath = root.getJavaScriptProject().getPath().toString();
 			String relativePath;
 			if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
 				containerPath = root.getParent().getPath();
@@ -342,11 +342,11 @@ private void add(String projectPath, String relativePath, String containerPath, 
  *
  * 1. /P/src/pkg/X.js
  * 2. /P/src/pkg
- * 3. /P/lib.jar|org/eclipse/jdt/core/IJavaElement.class
+ * 3. /P/lib.jar|org/eclipse/jdt/core/IJavaScriptElement.class
  * 4. /home/mylib.jar|x/y/z/X.class
  * 5. c:\temp\mylib.jar|x/y/Y.class
  *
- * @see IJavaSearchScope#encloses(String)
+ * @see IJavaScriptSearchScope#encloses(String)
  */
 public boolean encloses(String resourcePathString) {
 	int separatorIndex = resourcePathString.indexOf(JAR_FILE_ENTRY_SEPARATOR);
@@ -451,13 +451,13 @@ private boolean encloses(String enclosingPath, String path, int index) {
 }
 
 /* (non-Javadoc)
- * @see IJavaSearchScope#encloses(IJavaElement)
+ * @see IJavaScriptSearchScope#encloses(IJavaScriptElement)
  */
-public boolean encloses(IJavaElement element) {
+public boolean encloses(IJavaScriptElement element) {
 	if (this.elements != null) {
 		for (int i = 0, length = this.elements.size(); i < length; i++) {
-			IJavaElement scopeElement = (IJavaElement)this.elements.get(i);
-			IJavaElement searchedElement = element;
+			IJavaScriptElement scopeElement = (IJavaScriptElement)this.elements.get(i);
+			IJavaScriptElement searchedElement = element;
 			while (searchedElement != null) {
 				if (searchedElement.equals(scopeElement))
 					return true;
@@ -466,7 +466,7 @@ public boolean encloses(IJavaElement element) {
 		}
 		return false;
 	}
-	IPackageFragmentRoot root = (IPackageFragmentRoot) element.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+	IPackageFragmentRoot root = (IPackageFragmentRoot) element.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 	if (root != null && root.isArchive()) {
 		// external or internal jar
 		IPath rootPath = root.getPath();
@@ -480,26 +480,26 @@ public boolean encloses(IJavaElement element) {
 }
 
 /* (non-Javadoc)
- * @see IJavaSearchScope#enclosingProjectsAndJars()
+ * @see IJavaScriptSearchScope#enclosingProjectsAndJars()
  */
 public IPath[] enclosingProjectsAndJars() {
 	return this.enclosingProjectsAndJars;
 }
-private IPath getPath(IJavaElement element, boolean relativeToRoot) {
+private IPath getPath(IJavaScriptElement element, boolean relativeToRoot) {
 	switch (element.getElementType()) {
-		case IJavaElement.JAVA_MODEL:
+		case IJavaScriptElement.JAVASCRIPT_MODEL:
 			return Path.EMPTY;
-		case IJavaElement.JAVA_PROJECT:
+		case IJavaScriptElement.JAVASCRIPT_PROJECT:
 			return element.getPath();
-		case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 			if (relativeToRoot)
 				return Path.EMPTY;
 			return element.getPath();
-		case IJavaElement.PACKAGE_FRAGMENT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT:
 			String relativePath = Util.concatWith(((PackageFragment) element).names, '/');
 			return getPath(element.getParent(), relativeToRoot).append(new Path(relativePath));
-		case IJavaElement.COMPILATION_UNIT:
-		case IJavaElement.CLASS_FILE:
+		case IJavaScriptElement.JAVASCRIPT_UNIT:
+		case IJavaScriptElement.CLASS_FILE:
 			return getPath(element.getParent(), relativeToRoot).append(new Path(element.getElementName()));
 		default:
 			return getPath(element.getParent(), relativeToRoot);
@@ -553,28 +553,28 @@ private String normalize(String path) {
 }
 
 /*
- * @see AbstractSearchScope#processDelta(IJavaElementDelta)
+ * @see AbstractSearchScope#processDelta(IJavaScriptElementDelta)
  */
-public void processDelta(IJavaElementDelta delta) {
+public void processDelta(IJavaScriptElementDelta delta) {
 	switch (delta.getKind()) {
-		case IJavaElementDelta.CHANGED:
-			IJavaElementDelta[] children = delta.getAffectedChildren();
+		case IJavaScriptElementDelta.CHANGED:
+			IJavaScriptElementDelta[] children = delta.getAffectedChildren();
 			for (int i = 0, length = children.length; i < length; i++) {
-				IJavaElementDelta child = children[i];
+				IJavaScriptElementDelta child = children[i];
 				this.processDelta(child);
 			}
 			break;
-		case IJavaElementDelta.REMOVED:
-			IJavaElement element = delta.getElement();
+		case IJavaScriptElementDelta.REMOVED:
+			IJavaScriptElement element = delta.getElement();
 			if (this.encloses(element)) {
 				if (this.elements != null) {
 					this.elements.remove(element);
 				}
 				IPath path = null;
 				switch (element.getElementType()) {
-					case IJavaElement.JAVA_PROJECT:
-						path = ((IJavaProject)element).getProject().getFullPath();
-					case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+					case IJavaScriptElement.JAVASCRIPT_PROJECT:
+						path = ((IJavaScriptProject)element).getProject().getFullPath();
+					case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 						if (path == null) {
 							path = ((IPackageFragmentRoot)element).getPath();
 						}
@@ -619,7 +619,7 @@ public IPackageFragmentRoot packageFragmentRoot(String resourcePathString) {
 		int idx = projectIndexes[index];
 		String projectPath = idx == -1 ? null : (String) this.projectPaths.get(idx);
 		if (projectPath != null) {
-			IJavaProject project =JavaCore.create(ResourcesPlugin.getWorkspace().getRoot().getProject(projectPath));
+			IJavaScriptProject project =JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot().getProject(projectPath));
 			if (isJarFile) {
 				return project.getPackageFragmentRoot(this.containerPaths[index]);
 			}
@@ -628,8 +628,8 @@ public IPackageFragmentRoot packageFragmentRoot(String resourcePathString) {
 				return project.getPackageFragmentRoot((IProject) target);
 			}
 			if (target instanceof IResource) {
-				IJavaElement element = JavaCore.create((IResource)target);
-				return (IPackageFragmentRoot) element.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+				IJavaScriptElement element = JavaScriptCore.create((IResource)target);
+				return (IPackageFragmentRoot) element.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 			}
 			if (target instanceof File)
 			{

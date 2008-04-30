@@ -37,15 +37,15 @@ import org.eclipse.ltk.core.refactoring.participants.ResourceChangeChecker;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.NamingConventions;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -57,16 +57,16 @@ import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.Message;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -75,9 +75,9 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.GetterSetterUtil;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
@@ -101,10 +101,10 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TextChangeManager;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
 import org.eclipse.wst.jsdt.ui.CodeGeneration;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Encapsulates a field into getter and setter calls.
@@ -121,7 +121,7 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 	private IField fField;
 	private TextChangeManager fChangeManager;
 	
-	private CompilationUnit fRoot;
+	private JavaScriptUnit fRoot;
 	private VariableDeclarationFragment fFieldDeclaration;
 	private ASTRewrite fRewriter;
 	private ImportRewrite fImportRewrite;
@@ -144,9 +144,9 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 	/**
 	 * Creates a new self encapsulate field refactoring.
 	 * @param field the field, or <code>null</code> if invoked by scripting
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public SelfEncapsulateFieldRefactoring(IField field) throws JavaModelException {
+	public SelfEncapsulateFieldRefactoring(IField field) throws JavaScriptModelException {
 		fEncapsulateDeclaringClass= true;
 		fChangeManager= new TextChangeManager();
 		fField= field;
@@ -154,10 +154,10 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 			initialize(field);
 	}
 
-	private void initialize(IField field) throws JavaModelException {
+	private void initialize(IField field) throws JavaScriptModelException {
 		fGetterName= GetterSetterUtil.getGetterName(field, null);
 		fSetterName= GetterSetterUtil.getSetterName(field, null);
-		fArgName= NamingConventions.removePrefixAndSuffixForFieldName(field.getJavaProject(), field.getElementName(), field.getFlags());
+		fArgName= NamingConventions.removePrefixAndSuffixForFieldName(field.getJavaScriptProject(), field.getElementName(), field.getFlags());
 		checkArgName();
 	}
 	
@@ -220,7 +220,7 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 		result.merge(Checks.checkAvailability(fField));
 		if (result.hasFatalError())
 			return result;
-		fRoot= new RefactoringASTParser(AST.JLS3).parse(fField.getCompilationUnit(), true, pm);
+		fRoot= new RefactoringASTParser(AST.JLS3).parse(fField.getJavaScriptUnit(), true, pm);
 		ISourceRange sourceRange= fField.getNameRange();
 		ASTNode node= NodeFinder.perform(fRoot, sourceRange.getOffset(), sourceRange.getLength());
 		if (node == null) {
@@ -285,15 +285,15 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 		boolean isStatic=false;
 		try {
 			isStatic= Flags.isStatic(field.getFlags());
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 		}
 		status.merge(Checks.checkMethodName(name));
 		for (Iterator iter= usedNames.iterator(); iter.hasNext(); ) {
-			IMethodBinding method= (IMethodBinding)iter.next();
+			IFunctionBinding method= (IFunctionBinding)iter.next();
 			String selector= method.getName();
 			if (selector.equals(name)) {
 				if (!reUseExistingField) {
-					status.addFatalError(Messages.format(RefactoringCoreMessages.SelfEncapsulateField_method_exists, new String[] { BindingLabelProvider.getBindingLabel(method, JavaElementLabels.ALL_FULLY_QUALIFIED), type.getElementName() }));
+					status.addFatalError(Messages.format(RefactoringCoreMessages.SelfEncapsulateField_method_exists, new String[] { BindingLabelProvider.getBindingLabel(method, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), type.getElementName() }));
 				} else {
 					boolean methodIsStatic= Modifier.isStatic(method.getModifiers());
 					if (methodIsStatic && !isStatic)
@@ -324,8 +324,8 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 			return result;
 		pm.setTaskName(RefactoringCoreMessages.SelfEncapsulateField_searching_for_cunits); 
 		final SubProgressMonitor subPm= new SubProgressMonitor(pm, 5);
-		ICompilationUnit[] affectedCUs= RefactoringSearchEngine.findAffectedCompilationUnits(
-			SearchPattern.createPattern(fField, IJavaSearchConstants.REFERENCES),
+		IJavaScriptUnit[] affectedCUs= RefactoringSearchEngine.findAffectedCompilationUnits(
+			SearchPattern.createPattern(fField, IJavaScriptSearchConstants.REFERENCES),
 			RefactoringScopeFactory.create(fField, fConsiderVisibility),
 			subPm,
 			result, true);
@@ -341,13 +341,13 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 		ITypeBinding declaringClass= 
 			((AbstractTypeDeclaration)ASTNodes.getParent(fFieldDeclaration, AbstractTypeDeclaration.class)).resolveBinding();
 		List ownerDescriptions= new ArrayList();
-		ICompilationUnit owner= fField.getCompilationUnit();
+		IJavaScriptUnit owner= fField.getJavaScriptUnit();
 		fImportRewrite= StubUtility.createImportRewrite(fRoot, true);
 		
 		for (int i= 0; i < affectedCUs.length; i++) {
-			ICompilationUnit unit= affectedCUs[i];
+			IJavaScriptUnit unit= affectedCUs[i];
 			sub.subTask(unit.getElementName());
-			CompilationUnit root= null;
+			JavaScriptUnit root= null;
 			ASTRewrite rewriter= null;
 			ImportRewrite importRewrite;
 			List descriptions;
@@ -391,7 +391,7 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 		return result;
 	}
 
-	private void createEdits(ICompilationUnit unit, ASTRewrite rewriter, List groups, ImportRewrite importRewrite) throws CoreException {
+	private void createEdits(IJavaScriptUnit unit, ASTRewrite rewriter, List groups, ImportRewrite importRewrite) throws CoreException {
 		TextChange change= fChangeManager.get(unit);
 		MultiTextEdit root= new MultiTextEdit();
 		change.setEdit(root);
@@ -405,21 +405,21 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 	public Change createChange(IProgressMonitor pm) throws CoreException {
 		final Map arguments= new HashMap();
 		String project= null;
-		IJavaProject javaProject= fField.getJavaProject();
+		IJavaScriptProject javaProject= fField.getJavaScriptProject();
 		if (javaProject != null)
 			project= javaProject.getElementName();
-		int flags= JavaRefactoringDescriptor.JAR_MIGRATION | JavaRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
+		int flags= JavaScriptRefactoringDescriptor.JAR_MIGRATION | JavaScriptRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
 		final IType declaring= fField.getDeclaringType();
 		try {
 			if (declaring.isAnonymous() || declaring.isLocal())
-				flags|= JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
-		} catch (JavaModelException exception) {
-			JavaPlugin.log(exception);
+				flags|= JavaScriptRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
+		} catch (JavaScriptModelException exception) {
+			JavaScriptPlugin.log(exception);
 		}
 		final String description= Messages.format(RefactoringCoreMessages.SelfEncapsulateField_descriptor_description_short, fField.getElementName());
-		final String header= Messages.format(RefactoringCoreMessages.SelfEncapsulateFieldRefactoring_descriptor_description, new String[] { JavaElementLabels.getElementLabel(fField, JavaElementLabels.ALL_FULLY_QUALIFIED), JavaElementLabels.getElementLabel(declaring, JavaElementLabels.ALL_FULLY_QUALIFIED)});
+		final String header= Messages.format(RefactoringCoreMessages.SelfEncapsulateFieldRefactoring_descriptor_description, new String[] { JavaScriptElementLabels.getElementLabel(fField, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), JavaScriptElementLabels.getElementLabel(declaring, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)});
 		final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
-		comment.addSetting(Messages.format(RefactoringCoreMessages.SelfEncapsulateField_original_pattern, JavaElementLabels.getElementLabel(fField, JavaElementLabels.ALL_FULLY_QUALIFIED)));
+		comment.addSetting(Messages.format(RefactoringCoreMessages.SelfEncapsulateField_original_pattern, JavaScriptElementLabels.getElementLabel(fField, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
 		comment.addSetting(Messages.format(RefactoringCoreMessages.SelfEncapsulateField_getter_pattern, fGetterName));
 		comment.addSetting(Messages.format(RefactoringCoreMessages.SelfEncapsulateField_setter_pattern, fSetterName));
 		String visibility= JdtFlags.getVisibilityString(fVisibility);
@@ -432,7 +432,7 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 			comment.addSetting(RefactoringCoreMessages.SelfEncapsulateField_do_not_use_accessors);			
 		if (fGenerateJavadoc)
 			comment.addSetting(RefactoringCoreMessages.SelfEncapsulateField_generate_comments);
-		final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaRefactorings.ENCAPSULATE_FIELD, project, description, comment.asString(), arguments, flags);
+		final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaScriptRefactorings.ENCAPSULATE_FIELD, project, description, comment.asString(), arguments, flags);
 		arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_INPUT, descriptor.elementToHandle(fField));
 		arguments.put(ATTRIBUTE_VISIBILITY, new Integer(fVisibility).toString());
 		arguments.put(ATTRIBUTE_INSERTION, new Integer(fInsertionIndex).toString());
@@ -458,7 +458,7 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 	
 	//---- Helper methods -------------------------------------------------------------
 	
-	private void checkCompileErrors(RefactoringStatus result, CompilationUnit root, ICompilationUnit element) {
+	private void checkCompileErrors(RefactoringStatus result, JavaScriptUnit root, IJavaScriptUnit element) {
 		IProblem[] messages= root.getProblems();
 		for (int i= 0; i < messages.length; i++) {
 			IProblem problem= messages[i];
@@ -483,7 +483,7 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 	}
 	
 	public static void checkMethodInHierarchy(ITypeBinding type, String methodName, ITypeBinding returnType, ITypeBinding[] parameters, RefactoringStatus result, boolean reUseMethod) {
-		IMethodBinding method= Bindings.findMethodInHierarchy(type, methodName, parameters);
+		IFunctionBinding method= Bindings.findMethodInHierarchy(type, methodName, parameters);
 		if (method != null) {
 			boolean returnTypeClash= false;
 			ITypeBinding methodReturnType= method.getReturnType();
@@ -521,9 +521,9 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 		fUsedModifyNames= new ArrayList(0);
 		IVariableBinding binding= fFieldDeclaration.resolveBinding();
 		ITypeBinding type= binding.getType();
-		IMethodBinding[] methods= binding.getDeclaringClass().getDeclaredMethods();
+		IFunctionBinding[] methods= binding.getDeclaringClass().getDeclaredMethods();
 		for (int i= 0; i < methods.length; i++) {
-			IMethodBinding method= methods[i];
+			IFunctionBinding method= methods[i];
 			ITypeBinding[] parameters= methods[i].getParameterTypes();
 			if (parameters == null || parameters.length == 0) {
 				fUsedReadNames.add(method);
@@ -533,7 +533,7 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 		}
 	}
 
-	private List addGetterSetterChanges(CompilationUnit root, ASTRewrite rewriter, String lineDelimiter, boolean usingLocalSetter, boolean usingLocalGetter) throws CoreException {
+	private List addGetterSetterChanges(JavaScriptUnit root, ASTRewrite rewriter, String lineDelimiter, boolean usingLocalSetter, boolean usingLocalGetter) throws CoreException {
 		List result= new ArrayList(2);
 		AST ast= root.getAST();
 		FieldDeclaration decl= (FieldDeclaration)ASTNodes.getParent(fFieldDeclaration, ASTNode.FIELD_DECLARATION);
@@ -542,7 +542,7 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 		List members= ASTNodes.getBodyDeclarations(decl.getParent());
 		for (Iterator iter= members.iterator(); iter.hasNext();) {
 			BodyDeclaration element= (BodyDeclaration)iter.next();
-			if (element.getNodeType() == ASTNode.METHOD_DECLARATION) {
+			if (element.getNodeType() == ASTNode.FUNCTION_DECLARATION) {
 				if (fInsertionIndex == -1) {
 					break;
 				} else if (fInsertionIndex == numberOfMethods) {
@@ -597,10 +597,10 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 		return null;
 	}
 
-	private MethodDeclaration createSetterMethod(AST ast, ASTRewrite rewriter, String lineDelimiter) throws CoreException {
+	private FunctionDeclaration createSetterMethod(AST ast, ASTRewrite rewriter, String lineDelimiter) throws CoreException {
 		FieldDeclaration field= (FieldDeclaration)ASTNodes.getParent(fFieldDeclaration, FieldDeclaration.class);
 		Type type= field.getType();
-		MethodDeclaration result= ast.newMethodDeclaration();
+		FunctionDeclaration result= ast.newFunctionDeclaration();
 		result.setName(ast.newSimpleName(fSetterName));
 		result.modifiers().addAll(ASTNodeFactory.newModifiers(ast, createModifiers()));
 		if (fSetterMustReturnValue) {
@@ -626,22 +626,22 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 		
 		if (fGenerateJavadoc) {
 			String string= CodeGeneration.getSetterComment(
-				fField.getCompilationUnit() , getTypeName(field.getParent()), fSetterName, 
+				fField.getJavaScriptUnit() , getTypeName(field.getParent()), fSetterName, 
 				fField.getElementName(), ASTNodes.asString(type), fArgName, 
-				NamingConventions.removePrefixAndSuffixForFieldName(fField.getJavaProject(), fField.getElementName(), fField.getFlags()),
+				NamingConventions.removePrefixAndSuffixForFieldName(fField.getJavaScriptProject(), fField.getElementName(), fField.getFlags()),
 				lineDelimiter);
 			if (string != null) {
-				Javadoc javadoc= (Javadoc)fRewriter.createStringPlaceholder(string, ASTNode.JAVADOC);
+				JSdoc javadoc= (JSdoc)fRewriter.createStringPlaceholder(string, ASTNode.JSDOC);
 				result.setJavadoc(javadoc);
 			}
 		}
 		return result;
 	}
 	
-	private MethodDeclaration createGetterMethod(AST ast, ASTRewrite rewriter, String lineDelimiter) throws CoreException {
+	private FunctionDeclaration createGetterMethod(AST ast, ASTRewrite rewriter, String lineDelimiter) throws CoreException {
 		FieldDeclaration field= (FieldDeclaration)ASTNodes.getParent(fFieldDeclaration, FieldDeclaration.class);
 		Type type= field.getType();
-		MethodDeclaration result= ast.newMethodDeclaration();
+		FunctionDeclaration result= ast.newFunctionDeclaration();
 		result.setName(ast.newSimpleName(fGetterName));
 		result.modifiers().addAll(ASTNodeFactory.newModifiers(ast, createModifiers()));
 		result.setReturnType2((Type)rewriter.createCopyTarget(type));
@@ -653,19 +653,19 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 		block.statements().add(rs);
 		if (fGenerateJavadoc) {
 			String string= CodeGeneration.getGetterComment(
-				fField.getCompilationUnit() , getTypeName(field.getParent()), fGetterName,
+				fField.getJavaScriptUnit() , getTypeName(field.getParent()), fGetterName,
 				fField.getElementName(), ASTNodes.asString(type), 
-				NamingConventions.removePrefixAndSuffixForFieldName(fField.getJavaProject(), fField.getElementName(), fField.getFlags()),
+				NamingConventions.removePrefixAndSuffixForFieldName(fField.getJavaScriptProject(), fField.getElementName(), fField.getFlags()),
 				lineDelimiter);
 			if (string != null) {
-				Javadoc javadoc= (Javadoc)fRewriter.createStringPlaceholder(string, ASTNode.JAVADOC);
+				JSdoc javadoc= (JSdoc)fRewriter.createStringPlaceholder(string, ASTNode.JSDOC);
 				result.setJavadoc(javadoc);
 			}
 		}
 		return result;
 	}
 
-	private int createModifiers() throws JavaModelException {
+	private int createModifiers() throws JavaScriptModelException {
 		int result= 0;
 		if (Flags.isPublic(fVisibility)) 
 			result |= Modifier.PUBLIC;
@@ -678,7 +678,7 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 		return result;
 	}
 	
-	private Expression createFieldAccess(AST ast) throws JavaModelException {
+	private Expression createFieldAccess(AST ast) throws JavaScriptModelException {
 		String fieldName= fField.getElementName();
 		if (fArgName.equals(fieldName)) {
 			if (JdtFlags.isStatic(fField)) {
@@ -701,14 +701,14 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 		boolean isStatic= true;
 		try {
 			isStatic= JdtFlags.isStatic(fField);
-		} catch(JavaModelException e) {
+		} catch(JavaScriptModelException e) {
 		}
-		IJavaProject project= fField.getJavaProject();
-		String sourceLevel= project.getOption(JavaCore.COMPILER_SOURCE, true);
-		String compliance= project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+		IJavaScriptProject project= fField.getJavaScriptProject();
+		String sourceLevel= project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
+		String compliance= project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true);
 		
 		if ((isStatic && fArgName.equals(fieldName) && fieldName.equals(fField.getDeclaringType().getElementName()))
-			|| JavaConventions.validateIdentifier(fArgName, sourceLevel, compliance).getSeverity() == IStatus.ERROR)
+			|| JavaScriptConventions.validateIdentifier(fArgName, sourceLevel, compliance).getSeverity() == IStatus.ERROR)
 			fArgName= "_" + fArgName; //$NON-NLS-1$
 	}
 	
@@ -728,15 +728,15 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 			final JavaRefactoringArguments extended= (JavaRefactoringArguments) arguments;
 			final String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-				if (element == null || !element.exists() || element.getElementType() != IJavaElement.FIELD)
-					return createInputFatalStatus(element, IJavaRefactorings.ENCAPSULATE_FIELD);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.FIELD)
+					return createInputFatalStatus(element, IJavaScriptRefactorings.ENCAPSULATE_FIELD);
 				else {
 					fField= (IField) element;
 					try {
 						initialize(fField);
-					} catch (JavaModelException exception) {
-						return createInputFatalStatus(element, IJavaRefactorings.ENCAPSULATE_FIELD);
+					} catch (JavaScriptModelException exception) {
+						return createInputFatalStatus(element, IJavaScriptRefactorings.ENCAPSULATE_FIELD);
 					}
 				}
 			} else
@@ -798,7 +798,7 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 	
 	private static boolean checkName(String name, List usedNames, IType type) {
 		for (Iterator iter= usedNames.iterator(); iter.hasNext(); ) {
-			IMethodBinding method= (IMethodBinding)iter.next();
+			IFunctionBinding method= (IFunctionBinding)iter.next();
 			String selector= method.getName();
 			if (selector.equals(name)) {
 				return true;

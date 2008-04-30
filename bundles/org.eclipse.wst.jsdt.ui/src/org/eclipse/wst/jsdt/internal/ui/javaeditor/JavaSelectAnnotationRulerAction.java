@@ -31,7 +31,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorExtension;
 import org.eclipse.ui.texteditor.SelectMarkerRulerAction;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.JavaCorrectionProcessor;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.QuickAssistLightBulbUpdater.AssistAnnotation;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
@@ -59,7 +59,7 @@ public class JavaSelectAnnotationRulerAction extends SelectMarkerRulerAction {
 		fTextEditor= editor;
 
 		fAnnotationPreferenceLookup= EditorsUI.getAnnotationPreferenceLookup();
-		fStore= JavaPlugin.getDefault().getCombinedPreferenceStore();
+		fStore= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.JAVA_SELECT_MARKER_RULER_ACTION);
 	}

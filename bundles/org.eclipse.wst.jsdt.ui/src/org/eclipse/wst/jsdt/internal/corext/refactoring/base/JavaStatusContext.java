@@ -12,21 +12,21 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.base;
 
 import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
 
 /**
  * A Java element context that can be used to annotate a </code>RefactoringStatusEntry<code> 
- * with detailed information about an error detected in an <code>IJavaElement</code>.
+ * with detailed information about an error detected in an <code>IJavaScriptElement</code>.
  */
 public abstract class JavaStatusContext extends RefactoringStatusContext {
 
@@ -38,8 +38,8 @@ public abstract class JavaStatusContext extends RefactoringStatusContext {
 		public boolean isBinary() {
 			return fMember.isBinary();
 		}
-		public ICompilationUnit getCompilationUnit() {
-			return fMember.getCompilationUnit();
+		public IJavaScriptUnit getCompilationUnit() {
+			return fMember.getJavaScriptUnit();
 		}
 		public IClassFile getClassFile() {
 			return fMember.getClassFile();
@@ -47,7 +47,7 @@ public abstract class JavaStatusContext extends RefactoringStatusContext {
 		public ISourceRange getSourceRange() {
 			try {
 				return fMember.getSourceRange();
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return new SourceRange(0,0);
 			}
 		}
@@ -61,8 +61,8 @@ public abstract class JavaStatusContext extends RefactoringStatusContext {
 		public boolean isBinary() {
 			return false;
 		}
-		public ICompilationUnit getCompilationUnit() {
-			return (ICompilationUnit)fImportDeclartion.getParent().getParent();
+		public IJavaScriptUnit getCompilationUnit() {
+			return (IJavaScriptUnit)fImportDeclartion.getParent().getParent();
 		}
 		public IClassFile getClassFile() {
 			return null;
@@ -70,16 +70,16 @@ public abstract class JavaStatusContext extends RefactoringStatusContext {
 		public ISourceRange getSourceRange() {
 			try {
 				return fImportDeclartion.getSourceRange();
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return new SourceRange(0,0);
 			}
 		}
 	}
 	
 	private static class CompilationUnitSourceContext extends JavaStatusContext {
-		private ICompilationUnit fCUnit;
+		private IJavaScriptUnit fCUnit;
 		private ISourceRange fSourceRange;
-		private CompilationUnitSourceContext(ICompilationUnit cunit, ISourceRange range) {
+		private CompilationUnitSourceContext(IJavaScriptUnit cunit, ISourceRange range) {
 			fCUnit= cunit;
 			fSourceRange= range;
 			if (fSourceRange == null)
@@ -88,7 +88,7 @@ public abstract class JavaStatusContext extends RefactoringStatusContext {
 		public boolean isBinary() {
 			return false;
 		}
-		public ICompilationUnit getCompilationUnit() {
+		public IJavaScriptUnit getCompilationUnit() {
 			return fCUnit;
 		}
 		public IClassFile getClassFile() {
@@ -114,7 +114,7 @@ public abstract class JavaStatusContext extends RefactoringStatusContext {
 		public boolean isBinary() {
 			return true;
 		}
-		public ICompilationUnit getCompilationUnit() {
+		public IJavaScriptUnit getCompilationUnit() {
 			return null;
 		}
 		public IClassFile getClassFile() {
@@ -163,8 +163,8 @@ public abstract class JavaStatusContext extends RefactoringStatusContext {
 	 * @return the status entry context or <code>Context.NULL_CONTEXT</code> if the
 	 * 	context cannot be created
 	 */
-	public static RefactoringStatusContext create(IMethodBinding method) {
-		return create((IMethod) method.getJavaElement());
+	public static RefactoringStatusContext create(IFunctionBinding method) {
+		return create((IFunction) method.getJavaElement());
 	}
 
 	/**
@@ -188,8 +188,8 @@ public abstract class JavaStatusContext extends RefactoringStatusContext {
 	 * 	context cannot be created
 	 */
 	public static RefactoringStatusContext create(ITypeRoot typeRoot, ISourceRange range) {
-		if (typeRoot instanceof ICompilationUnit)
-			return new CompilationUnitSourceContext((ICompilationUnit) typeRoot, range);
+		if (typeRoot instanceof IJavaScriptUnit)
+			return new CompilationUnitSourceContext((IJavaScriptUnit) typeRoot, range);
 		else if (typeRoot instanceof IClassFile)
 			return new ClassFileSourceContext((IClassFile) typeRoot, range);
 		else
@@ -242,7 +242,7 @@ public abstract class JavaStatusContext extends RefactoringStatusContext {
 	 * 
 	 * @return the compilation unit
 	 */
-	public abstract ICompilationUnit getCompilationUnit();
+	public abstract IJavaScriptUnit getCompilationUnit();
 	
 	/**
 	 * Returns the class file this context is working on. Returns <code>null</code>

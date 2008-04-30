@@ -16,10 +16,10 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
@@ -45,14 +45,14 @@ public class JavaSearchNameEnvironment implements INameEnvironment, SuffixConsta
 	 */
 	HashMap workingCopies;
 
-public JavaSearchNameEnvironment(IJavaProject javaProject, org.eclipse.wst.jsdt.core.ICompilationUnit[] copies) {
+public JavaSearchNameEnvironment(IJavaScriptProject javaProject, org.eclipse.wst.jsdt.core.IJavaScriptUnit[] copies) {
 	computeClasspathLocations(javaProject.getProject().getWorkspace().getRoot(), (JavaProject) javaProject);
 	try {
 		int length = copies == null ? 0 : copies.length;
 		this.workingCopies = new HashMap(length);
 		if (copies != null) {
 			for (int i = 0; i < length; i++) {
-				org.eclipse.wst.jsdt.core.ICompilationUnit workingCopy = copies[i];
+				org.eclipse.wst.jsdt.core.IJavaScriptUnit workingCopy = copies[i];
 				IPackageDeclaration[] pkgs = workingCopy.getPackageDeclarations();
 				String pkg = pkgs.length > 0 ? pkgs[0].getElementName() : ""; //$NON-NLS-1$
 				String cuName = workingCopy.getElementName();
@@ -61,7 +61,7 @@ public JavaSearchNameEnvironment(IJavaProject javaProject, org.eclipse.wst.jsdt.
 				this.workingCopies.put(qualifiedMainTypeName, workingCopy);
 			}
 		}
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// working copy doesn't exist: cannot happen
 	}
 }
@@ -77,7 +77,7 @@ private void computeClasspathLocations(IWorkspaceRoot workspaceRoot, JavaProject
 	IPackageFragmentRoot[] roots = null;
 	try {
 		roots = javaProject.getAllPackageFragmentRoots();
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// project doesn't exist
 		this.locations = new ClasspathLocation[0];
 		return;
@@ -97,10 +97,10 @@ private void computeClasspathLocations(IWorkspaceRoot workspaceRoot, JavaProject
 				} else if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
 					cpLocations[index++] = new ClasspathSourceDirectory((IContainer)target, root.fullExclusionPatternChars(), root.fullInclusionPatternChars());
 				} else  if (target instanceof IContainer){
-					cpLocations[index++] = ClasspathLocation.forBinaryFolder((IContainer) target, false, ((ClasspathEntry) root.getRawClasspathEntry()).getAccessRuleSet());
+					cpLocations[index++] = ClasspathLocation.forBinaryFolder((IContainer) target, false, ((ClasspathEntry) root.getRawIncludepathEntry()).getAccessRuleSet());
 				}
 				else
-					cpLocations[index++] = ClasspathLocation.forLibrary(path.toOSString(), ((ClasspathEntry) root.getRawClasspathEntry()).getAccessRuleSet());
+					cpLocations[index++] = ClasspathLocation.forLibrary(path.toOSString(), ((ClasspathEntry) root.getRawIncludepathEntry()).getAccessRuleSet());
 
 		} catch (CoreException e1) {
 			// problem opening zip file or getting root kind

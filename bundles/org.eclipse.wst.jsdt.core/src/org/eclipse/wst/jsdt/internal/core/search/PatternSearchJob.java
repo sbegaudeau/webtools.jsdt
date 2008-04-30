@@ -15,7 +15,7 @@ import java.io.IOException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
@@ -30,13 +30,13 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 public class PatternSearchJob implements IJob {
 
 protected SearchPattern pattern;
-protected IJavaSearchScope scope;
+protected IJavaScriptSearchScope scope;
 protected SearchParticipant participant;
 protected IndexQueryRequestor requestor;
 protected boolean areIndexesReady;
 protected long executionTime = 0;
 
-public PatternSearchJob(SearchPattern pattern, SearchParticipant participant, IJavaSearchScope scope, IndexQueryRequestor requestor) {
+public PatternSearchJob(SearchPattern pattern, SearchParticipant participant, IJavaScriptSearchScope scope, IndexQueryRequestor requestor) {
 	this.pattern = pattern;
 	this.participant = participant;
 	this.scope = scope;

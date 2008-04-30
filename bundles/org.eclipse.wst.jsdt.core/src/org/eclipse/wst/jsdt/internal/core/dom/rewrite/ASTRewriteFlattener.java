@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ChildPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
@@ -54,17 +54,17 @@ import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
 import org.eclipse.wst.jsdt.core.dom.LineComment;
 import org.eclipse.wst.jsdt.core.dom.ListExpression;
 import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
-import org.eclipse.wst.jsdt.core.dom.MethodRef;
-import org.eclipse.wst.jsdt.core.dom.MethodRefParameter;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
@@ -464,16 +464,16 @@ public class ASTRewriteFlattener extends ASTVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(CompilationUnit)
+	 * @see ASTVisitor#visit(JavaScriptUnit)
 	 */
-	public boolean visit(CompilationUnit node) {
-		ASTNode pack= getChildNode(node, CompilationUnit.PACKAGE_PROPERTY);
+	public boolean visit(JavaScriptUnit node) {
+		ASTNode pack= getChildNode(node, JavaScriptUnit.PACKAGE_PROPERTY);
 		if (pack != null) {
 			pack.accept(this);
 		}
-		visitList(node, CompilationUnit.IMPORTS_PROPERTY, null);
-//		visitList(node, CompilationUnit.TYPES_PROPERTY, null);
-		visitList(node, CompilationUnit.STATEMENTS_PROPERTY, null);
+		visitList(node, JavaScriptUnit.IMPORTS_PROPERTY, null);
+//		visitList(node, JavaScriptUnit.TYPES_PROPERTY, null);
+		visitList(node, JavaScriptUnit.STATEMENTS_PROPERTY, null);
 		return false;
 	}
 
@@ -697,9 +697,9 @@ public class ASTRewriteFlattener extends ASTVisitor {
 	/*
 	 * @see ASTVisitor#visit(Javadoc)
 	 */
-	public boolean visit(Javadoc node) {
+	public boolean visit(JSdoc node) {
 		this.result.append("/**"); //$NON-NLS-1$
-		List list= getChildList(node, Javadoc.TAGS_PROPERTY);
+		List list= getChildList(node, JSdoc.TAGS_PROPERTY);
 		for (int i= 0; i < list.size(); i++) {
 			this.result.append("\n * "); //$NON-NLS-1$
 			((ASTNode) list.get(i)).accept(this);
@@ -719,27 +719,27 @@ public class ASTRewriteFlattener extends ASTVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(MethodDeclaration)
+	 * @see ASTVisitor#visit(FunctionDeclaration)
 	 */
-	public boolean visit(MethodDeclaration node) {
-		ASTNode javadoc= getChildNode(node, MethodDeclaration.JAVADOC_PROPERTY);
+	public boolean visit(FunctionDeclaration node) {
+		ASTNode javadoc= getChildNode(node, FunctionDeclaration.JAVADOC_PROPERTY);
 		if (javadoc != null) {
 			javadoc.accept(this);
 		}
 		if (node.getAST().apiLevel() == JLS2_INTERNAL) {
-			printModifiers(getIntAttribute(node, MethodDeclaration.MODIFIERS_PROPERTY), this.result);
+			printModifiers(getIntAttribute(node, FunctionDeclaration.MODIFIERS_PROPERTY), this.result);
 		} else {
-//			visitList(node, MethodDeclaration.MODIFIERS2_PROPERTY, String.valueOf(' '), Util.EMPTY_STRING, String.valueOf(' '));
-//			visitList(node, MethodDeclaration.TYPE_PARAMETERS_PROPERTY, String.valueOf(','), String.valueOf('<'), String.valueOf('>'));
+//			visitList(node, FunctionDeclaration.MODIFIERS2_PROPERTY, String.valueOf(' '), Util.EMPTY_STRING, String.valueOf(' '));
+//			visitList(node, FunctionDeclaration.TYPE_PARAMETERS_PROPERTY, String.valueOf(','), String.valueOf('<'), String.valueOf('>'));
 		}
 
 		this.result.append("function "); //$NON-NLS-1$
 
-//		if (!getBooleanAttribute(node, MethodDeclaration.CONSTRUCTOR_PROPERTY)) {
+//		if (!getBooleanAttribute(node, FunctionDeclaration.CONSTRUCTOR_PROPERTY)) {
 //			if (node.getAST().apiLevel() == JLS2_INTERNAL) {
-//				getChildNode(node, MethodDeclaration.RETURN_TYPE_PROPERTY).accept(this);
+//				getChildNode(node, FunctionDeclaration.RETURN_TYPE_PROPERTY).accept(this);
 //			} else {
-//				ASTNode returnType = getChildNode(node, MethodDeclaration.RETURN_TYPE2_PROPERTY);
+//				ASTNode returnType = getChildNode(node, FunctionDeclaration.RETURN_TYPE2_PROPERTY);
 //				if (returnType != null) {
 //					returnType.accept(this);
 //				} else {
@@ -749,18 +749,18 @@ public class ASTRewriteFlattener extends ASTVisitor {
 //			}
 //			this.result.append(' ');
 //		}
-		ASTNode childNode = getChildNode(node, MethodDeclaration.NAME_PROPERTY);
+		ASTNode childNode = getChildNode(node, FunctionDeclaration.NAME_PROPERTY);
 		if (childNode!=null)
 			childNode.accept(this);
 		this.result.append('(');
-		visitList(node, MethodDeclaration.PARAMETERS_PROPERTY, String.valueOf(','));
+		visitList(node, FunctionDeclaration.PARAMETERS_PROPERTY, String.valueOf(','));
 		this.result.append(')');
-		int extraDims= getIntAttribute(node, MethodDeclaration.EXTRA_DIMENSIONS_PROPERTY);
+		int extraDims= getIntAttribute(node, FunctionDeclaration.EXTRA_DIMENSIONS_PROPERTY);
 		for (int i = 0; i < extraDims; i++) {
 			this.result.append("[]"); //$NON-NLS-1$
 		}
-		visitList(node, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY, String.valueOf(','), " throws ", Util.EMPTY_STRING); //$NON-NLS-1$
-		ASTNode body= getChildNode(node, MethodDeclaration.BODY_PROPERTY);
+		visitList(node, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY, String.valueOf(','), " throws ", Util.EMPTY_STRING); //$NON-NLS-1$
+		ASTNode body= getChildNode(node, FunctionDeclaration.BODY_PROPERTY);
 		if (body == null) {
 			this.result.append("{}"); //$NON-NLS-1$
 		} else {
@@ -770,24 +770,24 @@ public class ASTRewriteFlattener extends ASTVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(MethodInvocation)
+	 * @see ASTVisitor#visit(FunctionInvocation)
 	 */
-	public boolean visit(MethodInvocation node) {
-		ASTNode expression= getChildNode(node, MethodInvocation.EXPRESSION_PROPERTY);
-		ASTNode nameNode = getChildNode(node, MethodInvocation.NAME_PROPERTY);
+	public boolean visit(FunctionInvocation node) {
+		ASTNode expression= getChildNode(node, FunctionInvocation.EXPRESSION_PROPERTY);
+		ASTNode nameNode = getChildNode(node, FunctionInvocation.NAME_PROPERTY);
 		if (expression != null) {
 			expression.accept(this);
 			if (nameNode!=null)
 				this.result.append('.');
 		}
 		if (node.getAST().apiLevel() >= AST.JLS3) {
-			visitList(node, MethodInvocation.TYPE_ARGUMENTS_PROPERTY, String.valueOf(','), String.valueOf('<'), String.valueOf('>'));
+			visitList(node, FunctionInvocation.TYPE_ARGUMENTS_PROPERTY, String.valueOf(','), String.valueOf('<'), String.valueOf('>'));
 		}
 
 		if (nameNode!=null)
 			nameNode.accept(this);
 		this.result.append('(');
-		visitList(node, MethodInvocation.ARGUMENTS_PROPERTY, String.valueOf(','));
+		visitList(node, FunctionInvocation.ARGUMENTS_PROPERTY, String.valueOf(','));
 		this.result.append(')');
 		return false;
 	}
@@ -920,7 +920,7 @@ public class ASTRewriteFlattener extends ASTVisitor {
 //				this.result.append("...");//$NON-NLS-1$
 //			}
 //		}
-		if (node.getParent()!=null && node.getParent().getNodeType()!=ASTNode.METHOD_DECLARATION)
+		if (node.getParent()!=null && node.getParent().getNodeType()!=ASTNode.FUNCTION_DECLARATION)
 			this.result.append("var "); //$NON-NLS-1$
 		getChildNode(node, SingleVariableDeclaration.NAME_PROPERTY).accept(this);
 		int extraDimensions= getIntAttribute(node, SingleVariableDeclaration.EXTRA_DIMENSIONS_PROPERTY);
@@ -1226,31 +1226,31 @@ public class ASTRewriteFlattener extends ASTVisitor {
 		return false;
 	}
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.MethodRef)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.FunctionRef)
 	 */
-	public boolean visit(MethodRef node) {
-		ASTNode qualifier= getChildNode(node, MethodRef.QUALIFIER_PROPERTY);
+	public boolean visit(FunctionRef node) {
+		ASTNode qualifier= getChildNode(node, FunctionRef.QUALIFIER_PROPERTY);
 		if (qualifier != null) {
 			qualifier.accept(this);
 		}
 		this.result.append('#');
-		getChildNode(node, MethodRef.NAME_PROPERTY).accept(this);
+		getChildNode(node, FunctionRef.NAME_PROPERTY).accept(this);
 		this.result.append('(');
-		visitList(node, MethodRef.PARAMETERS_PROPERTY, ","); //$NON-NLS-1$
+		visitList(node, FunctionRef.PARAMETERS_PROPERTY, ","); //$NON-NLS-1$
 		this.result.append(')');
 		return false;
 	}
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.MethodRefParameter)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.FunctionRefParameter)
 	 */
-	public boolean visit(MethodRefParameter node) {
-		getChildNode(node, MethodRefParameter.TYPE_PROPERTY).accept(this);
+	public boolean visit(FunctionRefParameter node) {
+		getChildNode(node, FunctionRefParameter.TYPE_PROPERTY).accept(this);
 		if (node.getAST().apiLevel() >= AST.JLS3) {
-			if (getBooleanAttribute(node, MethodRefParameter.VARARGS_PROPERTY)) {
+			if (getBooleanAttribute(node, FunctionRefParameter.VARARGS_PROPERTY)) {
 				this.result.append("..."); //$NON-NLS-1$
 			}
 		}
-		ASTNode name= getChildNode(node, MethodRefParameter.NAME_PROPERTY);
+		ASTNode name= getChildNode(node, FunctionRefParameter.NAME_PROPERTY);
 		if (name != null) {
 			this.result.append(' ');
 			name.accept(this);

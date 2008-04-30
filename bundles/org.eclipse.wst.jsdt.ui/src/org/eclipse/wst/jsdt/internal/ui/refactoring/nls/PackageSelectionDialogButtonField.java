@@ -10,29 +10,29 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring.nls;
 
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.JavaPackageCompletionProcessor;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 public final class PackageSelectionDialogButtonField extends StringButtonDialogField {
 
 	private IPackageFragment fPackageFragment;
 
-	public PackageSelectionDialogButtonField(String label, String button, PackageBrowseAdapter adapter, IJavaProject root) {
+	public PackageSelectionDialogButtonField(String label, String button, PackageBrowseAdapter adapter, IJavaScriptProject root) {
 		super(adapter);
-		setContentAssistProcessor(new JavaPackageCompletionProcessor(new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_ROOT)));
+		setContentAssistProcessor(new JavaPackageCompletionProcessor(new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_ROOT)));
 
 		IPackageFragmentRoot[] roots;
 		try {
 			roots= root.getAllPackageFragmentRoots();
 			((JavaPackageCompletionProcessor)getContentAssistProcessor()).setPackageFragmentRoot(roots[0]);
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 			// if exception no content assist .. but thats no problem
 		}
 		setLabelText(label);

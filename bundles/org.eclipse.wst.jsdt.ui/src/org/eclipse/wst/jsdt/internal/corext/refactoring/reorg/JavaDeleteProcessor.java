@@ -44,18 +44,18 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.ResourceChangeChecker;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.GetterSetterUtil;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptorComment;
@@ -73,7 +73,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TextChangeManager;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.Resources;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 public final class JavaDeleteProcessor extends DeleteProcessor implements IScriptableRefactoring, ICommentProvider {
 
@@ -87,7 +87,7 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 	private boolean fSuggestGetterSetterDeletion;
 	private Object[] fElements;
 	private IResource[] fResources;
-	private IJavaElement[] fJavaElements;
+	private IJavaScriptElement[] fJavaElements;
 	private IReorgQueries fDeleteQueries;
 	private DeleteModifications fDeleteModifications;
 	private String fComment;
@@ -134,7 +134,7 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 		if (fJavaElements != null) {
 			for (int i= 0; i < fJavaElements.length; i++) {
 				int type= fJavaElements[i].getElementType();
-				if (type <= IJavaElement.CLASS_FILE)
+				if (type <= IJavaScriptElement.CLASS_FILE)
 					return true;
 			}
 		}
@@ -190,8 +190,8 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 						return true;
 				}
 			}
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 		}
 		return false;
 	}
@@ -201,7 +201,7 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 		fDeleteQueries= queries;
 	}
 	
-	public IJavaElement[] getJavaElementsToDelete(){
+	public IJavaScriptElement[] getJavaElementsToDelete(){
 		return fJavaElements;
 	}
 
@@ -223,7 +223,7 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 		IResource[] javaResources= ReorgUtils.getResources(fJavaElements);
 		result.merge(RefactoringStatus.create(Resources.checkInSync(ReorgUtils.getNotNulls(javaResources))));
 		for (int i= 0; i < fJavaElements.length; i++) {
-			IJavaElement element= fJavaElements[i];
+			IJavaScriptElement element= fJavaElements[i];
 			if (element instanceof IType && ((IType)element).isAnonymous()) {
 				// work around for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=44450
 				// result.addFatalError("Currently, there isn't any support to delete an anonymous type.");
@@ -264,10 +264,10 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 		} catch (OperationCanceledException e) {
 			fWasCanceled= true;
 			throw e;
-		} catch (JavaModelException e){
+		} catch (JavaScriptModelException e){
 			throw e;
 		} catch (CoreException e) {
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		} finally{
 			pm.done();
 		}
@@ -277,11 +277,11 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 		if (fJavaElements == null || fJavaElements.length == 0)
 			return;
 		for (int je= 0; je < fJavaElements.length; je++) {
-			IJavaElement element= fJavaElements[je];
-			if (element instanceof ICompilationUnit) {
-				checkDirtyCompilationUnit(result, (ICompilationUnit)element);	
+			IJavaScriptElement element= fJavaElements[je];
+			if (element instanceof IJavaScriptUnit) {
+				checkDirtyCompilationUnit(result, (IJavaScriptUnit)element);	
 			} else if (element instanceof IPackageFragment) {
-				ICompilationUnit[] units= ((IPackageFragment)element).getCompilationUnits();
+				IJavaScriptUnit[] units= ((IPackageFragment)element).getJavaScriptUnits();
 				for (int u = 0; u < units.length; u++) {
 					checkDirtyCompilationUnit(result, units[u]);
 				}
@@ -289,7 +289,7 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 		}
 	}
 	
-	private void checkDirtyCompilationUnit(RefactoringStatus result, ICompilationUnit cunit) {
+	private void checkDirtyCompilationUnit(RefactoringStatus result, IJavaScriptUnit cunit) {
 		IResource resource= cunit.getResource();
 		if (resource == null || resource.getType() != IResource.FILE)
 			return;
@@ -359,9 +359,9 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 	 * Adds all subpackages of the selected packages to the list of items to be
 	 * deleted.
 	 * 
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	private void addSubPackages() throws JavaModelException {
+	private void addSubPackages() throws JavaScriptModelException {
 
 		final Set javaElements= new HashSet();
 		for (int i= 0; i < fJavaElements.length; i++) {
@@ -372,7 +372,7 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 			}
 		}
 
-		fJavaElements= (IJavaElement[]) javaElements.toArray(new IJavaElement[javaElements.size()]);
+		fJavaElements= (IJavaScriptElement[]) javaElements.toArray(new IJavaScriptElement[javaElements.size()]);
 	}
 
 	/**
@@ -382,7 +382,7 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 	 */
 	private void addDeletableParentPackagesOnPackageDeletion() throws CoreException {
 
-		final List/* <IPackageFragment */initialPackagesToDelete= ReorgUtils.getElementsOfType(fJavaElements, IJavaElement.PACKAGE_FRAGMENT);
+		final List/* <IPackageFragment */initialPackagesToDelete= ReorgUtils.getElementsOfType(fJavaElements, IJavaScriptElement.PACKAGE_FRAGMENT);
 
 		if (initialPackagesToDelete.size() == 0)
 			return;
@@ -428,11 +428,11 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 		}
 
 		// Remove resources in deleted packages; and the packages as well
-		final List/* <IJavaElement> */javaElements= new ArrayList();
+		final List/* <IJavaScriptElement> */javaElements= new ArrayList();
 		for (int i= 0; i < fJavaElements.length; i++) {
 			if (!(fJavaElements[i] instanceof IPackageFragment)) {
 				// remove children of deleted packages
-				final IPackageFragment frag= (IPackageFragment) fJavaElements[i].getAncestor(IJavaElement.PACKAGE_FRAGMENT);
+				final IPackageFragment frag= (IPackageFragment) fJavaElements[i].getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT);
 				if (!allFragmentsToDelete.contains(frag))
 					javaElements.add(fJavaElements[i]);
 			}
@@ -450,7 +450,7 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 				resources.add(fResources[i]);
 		}
 
-		fJavaElements= (IJavaElement[]) javaElements.toArray(new IJavaElement[javaElements.size()]);
+		fJavaElements= (IJavaScriptElement[]) javaElements.toArray(new IJavaScriptElement[javaElements.size()]);
 		fResources= (IResource[]) resources.toArray(new IResource[resources.size()]);
 	}
 
@@ -459,7 +459,7 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 	 * (if it has non-selected subpackages, it may only be cleared).
 	 * 
 	 */
-	private boolean canRemoveCompletely(IPackageFragment pack, List packagesToDelete) throws JavaModelException {
+	private boolean canRemoveCompletely(IPackageFragment pack, List packagesToDelete) throws JavaScriptModelException {
 		final IPackageFragment[] subPackages= JavaElementUtil.getPackageAndSubpackages(pack);
 		for (int i= 0; i < subPackages.length; i++) {
 			if (!(subPackages[i].equals(pack)) && !(packagesToDelete.contains(subPackages[i])))
@@ -500,21 +500,21 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 
 	// ask for confirmation of deletion of all package fragment roots that are
 	// on classpaths of other projects
-	private void removeUnconfirmedReferencedArchives() throws JavaModelException {
+	private void removeUnconfirmedReferencedArchives() throws JavaScriptModelException {
 		String queryTitle= RefactoringCoreMessages.DeleteRefactoring_2; 
 		IConfirmQuery query= fDeleteQueries.createYesYesToAllNoNoToAllQuery(queryTitle, true, IReorgQueries.CONFIRM_DELETE_REFERENCED_ARCHIVES);
 		removeUnconfirmedReferencedPackageFragmentRoots(query);
 		removeUnconfirmedReferencedArchiveFiles(query);
 	}
 
-	private void removeUnconfirmedReferencedArchiveFiles(IConfirmQuery query) throws JavaModelException, OperationCanceledException {
+	private void removeUnconfirmedReferencedArchiveFiles(IConfirmQuery query) throws JavaScriptModelException, OperationCanceledException {
 		List filesToSkip= new ArrayList(0);
 		for (int i= 0; i < fResources.length; i++) {
 			IResource resource= fResources[i];
 			if (! (resource instanceof IFile))
 				continue;
 		
-			IJavaProject project= JavaCore.create(resource.getProject());
+			IJavaScriptProject project= JavaScriptCore.create(resource.getProject());
 			if (project == null || ! project.exists())
 				continue;
 			IPackageFragmentRoot root= project.findPackageFragmentRoot(resource.getFullPath());
@@ -527,19 +527,19 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 		removeFromSetToDelete((IFile[]) filesToSkip.toArray(new IFile[filesToSkip.size()]));
 	}
 
-	private void removeUnconfirmedReferencedPackageFragmentRoots(IConfirmQuery query) throws JavaModelException, OperationCanceledException {
+	private void removeUnconfirmedReferencedPackageFragmentRoots(IConfirmQuery query) throws JavaScriptModelException, OperationCanceledException {
 		List rootsToSkip= new ArrayList(0);
 		for (int i= 0; i < fJavaElements.length; i++) {
-			IJavaElement element= fJavaElements[i];
+			IJavaScriptElement element= fJavaElements[i];
 			if (! (element instanceof IPackageFragmentRoot))
 				continue;
 			IPackageFragmentRoot root= (IPackageFragmentRoot)element;
 			ArrayList referencingProjects= new ArrayList(Arrays.asList(JavaElementUtil.getReferencingProjects(root)));
-			referencingProjects.remove(root.getJavaProject());
+			referencingProjects.remove(root.getJavaScriptProject());
 			if (skipDeletingReferencedRoot(query, root, referencingProjects))
 				rootsToSkip.add(root);
 		}
-		removeFromSetToDelete((IJavaElement[]) rootsToSkip.toArray(new IJavaElement[rootsToSkip.size()]));
+		removeFromSetToDelete((IJavaScriptElement[]) rootsToSkip.toArray(new IJavaScriptElement[rootsToSkip.size()]));
 	}
 
 	private static boolean skipDeletingReferencedRoot(IConfirmQuery query, IPackageFragmentRoot root, List referencingProjects) throws OperationCanceledException {
@@ -572,7 +572,7 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 		for (int i = 0; i < subFolders.length; i++) {
 			if (! (subFolders[i] instanceof IFolder))
 				continue;
-			IJavaElement element= JavaCore.create(folder);
+			IJavaScriptElement element= JavaScriptCore.create(folder);
 			if (element instanceof IPackageFragmentRoot)	
 				return true;
 			if (element instanceof IPackageFragment)	
@@ -605,13 +605,13 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 			final String project= resource != null ? resource.getName() : null;
 			final String source= project != null ? Messages.format(RefactoringCoreMessages.JavaDeleteProcessor_project_pattern, project) : RefactoringCoreMessages.JavaDeleteProcessor_workspace;
 			final String header= Messages.format(RefactoringCoreMessages.JavaDeleteProcessor_header, new String[] { String.valueOf(fElements.length), source});
-			int flags= JavaRefactoringDescriptor.JAR_MIGRATION | JavaRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
+			int flags= JavaScriptRefactoringDescriptor.JAR_MIGRATION | JavaScriptRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
 			final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
 			if (fDeleteSubPackages)
 				comment.addSetting(RefactoringCoreMessages.JavaDeleteProcessor_delete_subpackages);
 		 	if (fAccessorsDeleted)
 				comment.addSetting(RefactoringCoreMessages.JavaDeleteProcessor_delete_accessors);
-			final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaRefactorings.DELETE, project, description, comment.asString(), arguments, flags);
+			final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaScriptRefactorings.DELETE, project, description, comment.asString(), arguments, flags);
 			arguments.put(ATTRIBUTE_DELETE_SUBPACKAGES, Boolean.valueOf(fDeleteSubPackages).toString());
 			arguments.put(ATTRIBUTE_SUGGEST_ACCESSORS, Boolean.valueOf(fSuggestGetterSetterDeletion).toString());
 			arguments.put(ATTRIBUTE_RESOURCES, new Integer(fResources.length).toString());
@@ -630,8 +630,8 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 		IProject first= null;
 		for (int index= 0; index < fElements.length; index++) {
 			IProject project= null;
-			if (fElements[index] instanceof IJavaElement)
-				project= ((IJavaElement) fElements[index]).getJavaProject().getProject();
+			if (fElements[index] instanceof IJavaScriptElement)
+				project= ((IJavaScriptElement) fElements[index]).getJavaScriptProject().getProject();
 			else if (fElements[index] instanceof IResource)
 				project= ((IResource) fElements[index]).getProject();
 			if (project != null) {
@@ -644,7 +644,7 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 		return first;
 	}
 
-	private void addToSetToDelete(IJavaElement[] newElements){
+	private void addToSetToDelete(IJavaScriptElement[] newElements){
 		fJavaElements= ReorgUtils.union(fJavaElements, newElements);		
 	}
 	
@@ -652,15 +652,15 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 		fResources= ReorgUtils.setMinus(fResources, resourcesToNotDelete);
 	}
 	
-	private void removeFromSetToDelete(IJavaElement[] elementsToNotDelete) {
+	private void removeFromSetToDelete(IJavaScriptElement[] elementsToNotDelete) {
 		fJavaElements= ReorgUtils.setMinus(fJavaElements, elementsToNotDelete);
 	}
 
-	private void addGettersSetters() throws JavaModelException {
+	private void addGettersSetters() throws JavaScriptModelException {
 		IField[] fields= getFields(fJavaElements);
 		if (fields.length == 0)
 			return;
-		//IField -> IMethod[]
+		//IField -> IFunction[]
 		Map getterSetterMapping= createGetterSetterMapping(fields);
 		if (getterSetterMapping.isEmpty())
 			return;
@@ -669,7 +669,7 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 			return;
 		fAccessorsDeleted= true;
 		List gettersSettersToAdd= getGettersSettersToDelete(getterSetterMapping);
-		addToSetToDelete((IMethod[]) gettersSettersToAdd.toArray(new IMethod[gettersSettersToAdd.size()]));
+		addToSetToDelete((IFunction[]) gettersSettersToAdd.toArray(new IFunction[gettersSettersToAdd.size()]));
 	}
 
 	private List getGettersSettersToDelete(Map getterSetterMapping) {
@@ -696,12 +696,12 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 		for (Iterator iter= getterSetterMapping.keySet().iterator(); iter.hasNext();) {
 			IField field= (IField) iter.next();
 			//remove getter
-			IMethod getter= getGetter(getterSetterMapping, field);
+			IFunction getter= getGetter(getterSetterMapping, field);
 			if (getter != null && elementsToDelete.contains(getter))
 				removeGetterFromMapping(getterSetterMapping, field);
 
 			//remove setter
-			IMethod setter= getSetter(getterSetterMapping, field);
+			IFunction setter= getSetter(getterSetterMapping, field);
 			if (setter != null && elementsToDelete.contains(setter))
 				removeSetterFromMapping(getterSetterMapping, field);
 
@@ -712,13 +712,13 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 	}
 
 	/*
-	 * IField -> IMethod[] (array of 2 - [getter, setter], one of which can be null)
+	 * IField -> IFunction[] (array of 2 - [getter, setter], one of which can be null)
 	 */
-	private static Map createGetterSetterMapping(IField[] fields) throws JavaModelException {
+	private static Map createGetterSetterMapping(IField[] fields) throws JavaScriptModelException {
 		Map result= new HashMap();
 		for (int i= 0; i < fields.length; i++) {
 			IField field= fields[i];
-			IMethod[] getterSetter= getGetterSetter(field);
+			IFunction[] getterSetter= getGetterSetter(field);
 			if (getterSetter != null)
 				result.put(field, getterSetter);
 		}		
@@ -733,18 +733,18 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 			   getGetter(getterSetterMapping, field) != null;
 	}
 	private static void removeGetterFromMapping(Map getterSetterMapping, IField field){
-		((IMethod[])getterSetterMapping.get(field))[0]= null;
+		((IFunction[])getterSetterMapping.get(field))[0]= null;
 	}
 	private static void removeSetterFromMapping(Map getterSetterMapping, IField field){
-		((IMethod[])getterSetterMapping.get(field))[1]= null;
+		((IFunction[])getterSetterMapping.get(field))[1]= null;
 	}
-	private static IMethod getGetter(Map getterSetterMapping, IField field){
-		return ((IMethod[])getterSetterMapping.get(field))[0];
+	private static IFunction getGetter(Map getterSetterMapping, IField field){
+		return ((IFunction[])getterSetterMapping.get(field))[0];
 	}
-	private static IMethod getSetter(Map getterSetterMapping, IField field){
-		return ((IMethod[])getterSetterMapping.get(field))[1];
+	private static IFunction getSetter(Map getterSetterMapping, IField field){
+		return ((IFunction[])getterSetterMapping.get(field))[1];
 	}
-	private static IField[] getFields(IJavaElement[] elements){
+	private static IField[] getFields(IJavaScriptElement[] elements){
 		List fields= new ArrayList(3);
 		for (int i= 0; i < elements.length; i++) {
 			if (elements[i] instanceof IField)
@@ -756,11 +756,11 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 	/*
 	 * returns an array of 2 [getter, setter] or null if no getter or setter exists
 	 */
-	private static IMethod[] getGetterSetter(IField field) throws JavaModelException {
-		IMethod getter= GetterSetterUtil.getGetter(field);
-		IMethod setter= GetterSetterUtil.getSetter(field);
+	private static IFunction[] getGetterSetter(IField field) throws JavaScriptModelException {
+		IFunction getter= GetterSetterUtil.getGetter(field);
+		IFunction setter= GetterSetterUtil.getSetter(field);
 		if ((getter != null && getter.exists()) || 	(setter != null && setter.exists()))
-			return new IMethod[]{getter, setter};
+			return new IFunction[]{getter, setter};
 		else
 			return null;
 	}
@@ -772,23 +772,23 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 	}
 
 	//----------- empty CUs related method
-	private void addEmptyCusToDelete() throws JavaModelException {
+	private void addEmptyCusToDelete() throws JavaScriptModelException {
 		Set cusToEmpty= getCusToEmpty();
-		addToSetToDelete((ICompilationUnit[]) cusToEmpty.toArray(new ICompilationUnit[cusToEmpty.size()]));
+		addToSetToDelete((IJavaScriptUnit[]) cusToEmpty.toArray(new IJavaScriptUnit[cusToEmpty.size()]));
 	}
 
-	private Set getCusToEmpty() throws JavaModelException {
+	private Set getCusToEmpty() throws JavaScriptModelException {
 		Set result= new HashSet();
 		for (int i= 0; i < fJavaElements.length; i++) {
-			IJavaElement element= fJavaElements[i];	
-			ICompilationUnit cu= ReorgUtils.getCompilationUnit(element);
+			IJavaScriptElement element= fJavaElements[i];	
+			IJavaScriptUnit cu= ReorgUtils.getCompilationUnit(element);
 			if (cu != null && ! result.contains(cu) && willHaveAllTopLevelTypesDeleted(cu))
 				result.add(cu);
 		}
 		return result;
 	}
 
-	private boolean willHaveAllTopLevelTypesDeleted(ICompilationUnit cu) throws JavaModelException {
+	private boolean willHaveAllTopLevelTypesDeleted(IJavaScriptUnit cu) throws JavaScriptModelException {
 		Set elementSet= new HashSet(Arrays.asList(fJavaElements));
 		IType[] topLevelTypes= cu.getTypes();
 		for (int i= 0; i < topLevelTypes.length; i++) {
@@ -853,7 +853,7 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 				if (handle != null && !"".equals(handle)) { //$NON-NLS-1$
 					final IResource resource= JDTRefactoringDescriptor.handleToResource(extended.getProject(), handle);
 					if (resource == null || !resource.exists())
-						status.merge(ScriptableRefactoring.createInputWarningStatus(resource, getRefactoring().getName(), IJavaRefactorings.DELETE));
+						status.merge(ScriptableRefactoring.createInputWarningStatus(resource, getRefactoring().getName(), IJavaScriptRefactorings.DELETE));
 					else
 						elements.add(resource);
 				} else
@@ -865,15 +865,15 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 				final String attribute= JDTRefactoringDescriptor.ATTRIBUTE_ELEMENT + (resourceCount + index + 1);
 				handle= extended.getAttribute(attribute);
 				if (handle != null && !"".equals(handle)) { //$NON-NLS-1$
-					final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+					final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
 					if (element == null || !element.exists())
-						status.merge(ScriptableRefactoring.createInputWarningStatus(element, getRefactoring().getName(), IJavaRefactorings.DELETE));
+						status.merge(ScriptableRefactoring.createInputWarningStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.DELETE));
 					else
 						elements.add(element);
 				} else
 					return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, attribute));
 			}
-			fJavaElements= (IJavaElement[]) elements.toArray(new IJavaElement[elements.size()]);
+			fJavaElements= (IJavaScriptElement[]) elements.toArray(new IJavaScriptElement[elements.size()]);
 			fElements= new Object[fResources.length + fJavaElements.length];
 			System.arraycopy(fResources, 0, fElements, 0, fResources.length);
 			System.arraycopy(fJavaElements, 0, fElements, fResources.length, fJavaElements.length);

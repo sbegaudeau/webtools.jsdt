@@ -14,11 +14,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.internal.corext.dom.LinkedNodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -38,7 +38,7 @@ public class CorrectMainTypeNameProposal extends ASTRewriteCorrectionProposal {
 	/**
 	 * Constructor for CorrectTypeNameProposal.
 	 */
-	public CorrectMainTypeNameProposal(ICompilationUnit cu, IInvocationContext context, String oldTypeName, String newTypeName, int relevance) {
+	public CorrectMainTypeNameProposal(IJavaScriptUnit cu, IInvocationContext context, String oldTypeName, String newTypeName, int relevance) {
 		super("", cu, null, relevance, null); //$NON-NLS-1$
 		fContext= context;
 
@@ -53,7 +53,7 @@ public class CorrectMainTypeNameProposal extends ASTRewriteCorrectionProposal {
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.correction.ASTRewriteCorrectionProposal#getRewrite()
 	 */
 	protected ASTRewrite getRewrite() throws CoreException {
-		CompilationUnit astRoot= fContext.getASTRoot();
+		JavaScriptUnit astRoot= fContext.getASTRoot();
 
 		AST ast= astRoot.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(ast);

@@ -17,24 +17,24 @@ import java.util.List;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 
 public class PackageBrowseAdapter implements IStringButtonAdapter {
 	
     PackageSelectionDialogButtonField  fReceiver;
-    private ICompilationUnit fCu;
+    private IJavaScriptUnit fCu;
     
-    public PackageBrowseAdapter(ICompilationUnit unit) {
+    public PackageBrowseAdapter(IJavaScriptUnit unit) {
         fCu = unit;
     }
     
@@ -44,7 +44,7 @@ public class PackageBrowseAdapter implements IStringButtonAdapter {
     
 	public void changeControlPressed(DialogField field) {
 		ElementListSelectionDialog dialog= new ElementListSelectionDialog(
-			Display.getCurrent().getActiveShell(), new JavaElementLabelProvider());
+			Display.getCurrent().getActiveShell(), new JavaScriptElementLabelProvider());
         dialog.setIgnoreCase(false);
         dialog.setTitle(NLSUIMessages.PackageBrowseAdapter_package_selection); 
         dialog.setMessage(NLSUIMessages.PackageBrowseAdapter_choose_package); 
@@ -56,9 +56,9 @@ public class PackageBrowseAdapter implements IStringButtonAdapter {
         	}						
         }
 	}
-	public static Object[] createPackageListInput(ICompilationUnit cu, String elementNameMatch){
+	public static Object[] createPackageListInput(IJavaScriptUnit cu, String elementNameMatch){
 		try{
-			IJavaProject project= cu.getJavaProject();
+			IJavaScriptProject project= cu.getJavaScriptProject();
 			IPackageFragmentRoot[] roots= project.getPackageFragmentRoots();
 			List result= new ArrayList();
 			HashMap entered =new HashMap();
@@ -68,13 +68,13 @@ public class PackageBrowseAdapter implements IStringButtonAdapter {
 				}	
 			}
 			return result.toArray();
-		} catch (JavaModelException e){
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e){
+			JavaScriptPlugin.log(e);
 			return new Object[0];
 		}
 	}
 
-    static boolean canAddPackageRoot(IPackageFragmentRoot root) throws JavaModelException{
+    static boolean canAddPackageRoot(IPackageFragmentRoot root) throws JavaScriptModelException{
     	if (! root.exists())
     		return false;
     	if (root.isArchive())	
@@ -88,11 +88,11 @@ public class PackageBrowseAdapter implements IStringButtonAdapter {
     	return true;	
     }
 	
-	static void getValidPackages(IPackageFragmentRoot root, List result, HashMap entered, String elementNameMatch) throws JavaModelException {
-		IJavaElement[] children= null;
+	static void getValidPackages(IPackageFragmentRoot root, List result, HashMap entered, String elementNameMatch) throws JavaScriptModelException {
+		IJavaScriptElement[] children= null;
 		try {
 			children= root.getChildren();
-		} catch (JavaModelException e){
+		} catch (JavaScriptModelException e){
 			return;
 		}	
 		for (int i= 0; i < children.length; i++){
@@ -116,7 +116,7 @@ public class PackageBrowseAdapter implements IStringButtonAdapter {
 		}
 	}
 
-    static boolean canAddPackage(IPackageFragment p) throws JavaModelException{ 
+    static boolean canAddPackage(IPackageFragment p) throws JavaScriptModelException{ 
     	if (! p.exists())
     		return false;
     	if (p.isReadOnly())
@@ -126,7 +126,7 @@ public class PackageBrowseAdapter implements IStringButtonAdapter {
     	return true;	
     }
 
-    public static List searchAllPackages(IJavaProject project, String matcher) {
+    public static List searchAllPackages(IJavaScriptProject project, String matcher) {
 		try{
 			IPackageFragmentRoot[] roots= project.getPackageFragmentRoots();
 			List result= new ArrayList();
@@ -136,8 +136,8 @@ public class PackageBrowseAdapter implements IStringButtonAdapter {
 				}	
 			}
 			return result;
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 			return new ArrayList(0);
 		}
     }

@@ -500,7 +500,7 @@ public class JavaPluginImages {
 	}
 	
 	/*
-	 * Helper method to access the image registry from the JavaPlugin class.
+	 * Helper method to access the image registry from the JavaScriptPlugin class.
 	 */
 	/* package */ static ImageRegistry getImageRegistry() {
 		if (fgImageRegistry == null) {
@@ -544,7 +544,7 @@ public class JavaPluginImages {
 		}
 		fgAvoidSWTErrorMap.put(key, result);
 		if (fgImageRegistry != null) {
-			JavaPlugin.logErrorMessage("Image registry already defined"); //$NON-NLS-1$
+			JavaScriptPlugin.logErrorMessage("Image registry already defined"); //$NON-NLS-1$
 		}
 		return result;
 	}
@@ -558,7 +558,7 @@ public class JavaPluginImages {
 	 */
 	private static ImageDescriptor create(String prefix, String name, boolean useMissingImageDescriptor) {
 		IPath path= ICONS_PATH.append(prefix).append(name);
-		return createImageDescriptor(JavaPlugin.getDefault().getBundle(), path, useMissingImageDescriptor);
+		return createImageDescriptor(JavaScriptPlugin.getDefault().getBundle(), path, useMissingImageDescriptor);
 	}
 	
 	/*

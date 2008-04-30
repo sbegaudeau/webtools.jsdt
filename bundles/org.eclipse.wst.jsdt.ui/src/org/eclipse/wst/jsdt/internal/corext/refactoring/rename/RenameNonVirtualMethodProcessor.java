@@ -20,12 +20,12 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
 import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.text.edits.ReplaceEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.MethodDeclarationMatch;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
@@ -57,7 +57,7 @@ public class RenameNonVirtualMethodProcessor extends RenameMethodProcessor {
 	 * @param manager the change manager
 	 * @param categorySet the group category set
 	 */
-	RenameNonVirtualMethodProcessor(IMethod method, TextChangeManager manager, GroupCategorySet categorySet) {
+	RenameNonVirtualMethodProcessor(IFunction method, TextChangeManager manager, GroupCategorySet categorySet) {
 		super(method, manager, categorySet);
 	}
 
@@ -65,7 +65,7 @@ public class RenameNonVirtualMethodProcessor extends RenameMethodProcessor {
 	 * Creates a new rename method processor.
 	 * @param method the method, or <code>null</code> if invoked by scripting
 	 */
-	public RenameNonVirtualMethodProcessor(IMethod method) {
+	public RenameNonVirtualMethodProcessor(IFunction method) {
 		super(method);
 	}
 	
@@ -83,16 +83,16 @@ public class RenameNonVirtualMethodProcessor extends RenameMethodProcessor {
 			if (result.hasFatalError())
 				return result;
 			
-			final IMethod method= getMethod();
+			final IFunction method= getMethod();
 			final IType declaring= method.getDeclaringType();
 			final String name= getNewElementName();
 			if (declaring!=null)
 			{
-			  IMethod[] hierarchyMethods= hierarchyDeclaresMethodName(
+			  IFunction[] hierarchyMethods= hierarchyDeclaresMethodName(
 				new SubProgressMonitor(pm, 1), declaring.newTypeHierarchy(new SubProgressMonitor(pm, 1)), method, name);
 			
 			  for (int i= 0; i < hierarchyMethods.length; i++) {
-				IMethod hierarchyMethod= hierarchyMethods[i];
+				IFunction hierarchyMethod= hierarchyMethods[i];
 				RefactoringStatusContext context= JavaStatusContext.create(hierarchyMethod);
 				if (Checks.compareParamTypes(method.getParameterTypes(), hierarchyMethod.getParameterTypes())) {
 					String message= Messages.format(
@@ -131,7 +131,7 @@ public class RenameNonVirtualMethodProcessor extends RenameMethodProcessor {
 		//Workaround bug 39700. Manually add declaration match:
 		for (int i= 0; i < groups.length; i++) {
 			SearchResultGroup group= groups[i];
-			ICompilationUnit cu= group.getCompilationUnit();
+			IJavaScriptUnit cu= group.getCompilationUnit();
 			if (cu.equals(getDeclaringCU())) {
 				IResource resource= group.getResource();
 				int start= getMethod().getNameRange().getOffset();
@@ -156,8 +156,8 @@ public class RenameNonVirtualMethodProcessor extends RenameMethodProcessor {
 		pm.worked(1);
 	}
 	
-	private ICompilationUnit getDeclaringCU() {
-		return getMethod().getCompilationUnit();
+	private IJavaScriptUnit getDeclaringCU() {
+		return getMethod().getJavaScriptUnit();
 	}
 
 	/*
@@ -165,13 +165,13 @@ public class RenameNonVirtualMethodProcessor extends RenameMethodProcessor {
 	 */
 	SearchPattern createOccurrenceSearchPattern(IProgressMonitor pm) {
 		pm.beginTask("", 1); //$NON-NLS-1$
-		SearchPattern pattern= SearchPattern.createPattern(getMethod(), IJavaSearchConstants.ALL_OCCURRENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
+		SearchPattern pattern= SearchPattern.createPattern(getMethod(), IJavaScriptSearchConstants.ALL_OCCURRENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
 		pm.done();
 		return pattern;
 	}
 
 	private SearchPattern createReferenceSearchPattern() {
-		return SearchPattern.createPattern(getMethod(), IJavaSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
+		return SearchPattern.createPattern(getMethod(), IJavaScriptSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
 	}
 	
 	final void addDeclarationUpdate(TextChangeManager manager) throws CoreException {
@@ -180,7 +180,7 @@ public class RenameNonVirtualMethodProcessor extends RenameMethodProcessor {
 			// create the delegate
 			CompilationUnitRewrite rewrite= new CompilationUnitRewrite(getDeclaringCU());
 			rewrite.setResolveBindings(true);
-			MethodDeclaration methodDeclaration= ASTNodeSearchUtil.getMethodDeclarationNode(getMethod(), rewrite.getRoot());
+			FunctionDeclaration methodDeclaration= ASTNodeSearchUtil.getMethodDeclarationNode(getMethod(), rewrite.getRoot());
 			DelegateMethodCreator creator= new DelegateMethodCreator();
 			creator.setDeclaration(methodDeclaration);
 			creator.setDeclareDeprecated(getDeprecateDelegates());
@@ -207,7 +207,7 @@ public class RenameNonVirtualMethodProcessor extends RenameMethodProcessor {
 		for (int i= 0; i < grouped.length; i++) {
 			SearchResultGroup group= grouped[i];
 			SearchMatch[] results= group.getSearchResults();
-			ICompilationUnit cu= group.getCompilationUnit();
+			IJavaScriptUnit cu= group.getCompilationUnit();
 			TextChange change= manager.get(cu);
 			for (int j= 0; j < results.length; j++){
 				String editName= RefactoringCoreMessages.RenamePrivateMethodRefactoring_update; 

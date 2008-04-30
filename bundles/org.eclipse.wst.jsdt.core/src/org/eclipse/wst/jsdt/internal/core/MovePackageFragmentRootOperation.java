@@ -18,34 +18,34 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOperation {
 	/*
 	 * Renames the classpath entries equal to the given path in the given project.
 	 * If an entry with the destination path already existed, remove it.
 	 */
-	protected void renameEntryInClasspath(IPath rootPath, IJavaProject project) throws JavaModelException {
+	protected void renameEntryInClasspath(IPath rootPath, IJavaScriptProject project) throws JavaScriptModelException {
 
-		IClasspathEntry[] classpath = project.getRawClasspath();
-		IClasspathEntry[] newClasspath = null;
+		IIncludePathEntry[] classpath = project.getRawIncludepath();
+		IIncludePathEntry[] newClasspath = null;
 		int cpLength = classpath.length;
 		int newCPIndex = -1;
 
 		for (int i = 0; i < cpLength; i++) {
-			IClasspathEntry entry = classpath[i];
+			IIncludePathEntry entry = classpath[i];
 			IPath entryPath = entry.getPath();
 			if (rootPath.equals(entryPath)) {
 				// rename entry
 				if (newClasspath == null) {
-					newClasspath = new IClasspathEntry[cpLength];
+					newClasspath = new IIncludePathEntry[cpLength];
 					System.arraycopy(classpath, 0, newClasspath, 0, i);
 					newCPIndex = i;
 				}
@@ -53,23 +53,23 @@ public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOpe
 			} else if (this.destination.equals(entryPath)) {
 				// remove entry equals to destination
 				if (newClasspath == null) {
-					newClasspath = new IClasspathEntry[cpLength];
+					newClasspath = new IIncludePathEntry[cpLength];
 					System.arraycopy(classpath, 0, newClasspath, 0, i);
 					newCPIndex = i;
 				}
-			} else if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+			} else if (entry.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 				// update exclusion/inclusion patterns
 				IPath projectRelativePath = rootPath.removeFirstSegments(1);
 				IPath[] newExclusionPatterns = renamePatterns(projectRelativePath, entry.getExclusionPatterns());
 				IPath[] newInclusionPatterns = renamePatterns(projectRelativePath, entry.getInclusionPatterns());
 				if (newExclusionPatterns != null || newInclusionPatterns != null) {
 					if (newClasspath == null) {
-						newClasspath = new IClasspathEntry[cpLength];
+						newClasspath = new IIncludePathEntry[cpLength];
 						System.arraycopy(classpath, 0, newClasspath, 0, i);
 						newCPIndex = i;
 					}
 					newClasspath[newCPIndex++] =
-						JavaCore.newSourceEntry(
+						JavaScriptCore.newSourceEntry(
 							entry.getPath(),
 							newInclusionPatterns == null ? entry.getInclusionPatterns() : newInclusionPatterns,
 							newExclusionPatterns == null ? entry.getExclusionPatterns() : newExclusionPatterns,
@@ -85,12 +85,12 @@ public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOpe
 
 		if (newClasspath != null) {
 			if (newCPIndex < newClasspath.length) {
-				System.arraycopy(newClasspath, 0, newClasspath = new IClasspathEntry[newCPIndex], 0, newCPIndex);
+				System.arraycopy(newClasspath, 0, newClasspath = new IIncludePathEntry[newCPIndex], 0, newCPIndex);
 			}
-			IJavaModelStatus status = JavaConventions.validateClasspath(project, newClasspath, project.getOutputLocation());
+			IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(project, newClasspath, project.getOutputLocation());
 			if (status.isOK())
-				project.setRawClasspath(newClasspath, progressMonitor);
-			// don't update classpath if status is not ok to avoid JavaModelException (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=129991)
+				project.setRawIncludepath(newClasspath, progressMonitor);
+			// don't update classpath if status is not ok to avoid JavaScriptModelException (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=129991)
 		}
 	}
 
@@ -119,7 +119,7 @@ public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOpe
 		IPath destination,
 		int updateResourceFlags,
 		int updateModelFlags,
-		IClasspathEntry sibling) {
+		IIncludePathEntry sibling) {
 
 		super(
 			root,
@@ -128,10 +128,10 @@ public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOpe
 			updateModelFlags,
 			sibling);
 	}
-	protected void executeOperation() throws JavaModelException {
+	protected void executeOperation() throws JavaScriptModelException {
 
 		IPackageFragmentRoot root = (IPackageFragmentRoot)this.getElementToProcess();
-		IClasspathEntry rootEntry = root.getRawClasspathEntry();
+		IIncludePathEntry rootEntry = root.getRawIncludepathEntry();
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 
 		// move resource
@@ -140,14 +140,14 @@ public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOpe
 		}
 
 		// update refering projects classpath excluding orignating project
-		IJavaProject originatingProject = root.getJavaProject();
-		if ((this.updateModelFlags & IPackageFragmentRoot.OTHER_REFERRING_PROJECTS_CLASSPATH) != 0) {
+		IJavaScriptProject originatingProject = root.getJavaScriptProject();
+		if ((this.updateModelFlags & IPackageFragmentRoot.OTHER_REFERRING_PROJECTS_INCLUDEPATH) != 0) {
 			updateReferringProjectClasspaths(rootEntry.getPath(), originatingProject);
 		}
 
 		boolean isRename = this.destination.segment(0).equals(originatingProject.getElementName());
-		boolean updateOriginating = (this.updateModelFlags & IPackageFragmentRoot.ORIGINATING_PROJECT_CLASSPATH) != 0;
-		boolean updateDestination = (this.updateModelFlags & IPackageFragmentRoot.DESTINATION_PROJECT_CLASSPATH) != 0;
+		boolean updateOriginating = (this.updateModelFlags & IPackageFragmentRoot.ORIGINATING_PROJECT_INCLUDEPATH) != 0;
+		boolean updateDestination = (this.updateModelFlags & IPackageFragmentRoot.DESTINATION_PROJECT_INCLUDEPATH) != 0;
 
 		// update originating classpath
 		if (updateOriginating) {
@@ -167,13 +167,13 @@ public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOpe
 	}
 	protected void moveResource(
 		IPackageFragmentRoot root,
-		IClasspathEntry rootEntry,
+		IIncludePathEntry rootEntry,
 		final IWorkspaceRoot workspaceRoot)
-		throws JavaModelException {
+		throws JavaScriptModelException {
 
 		final char[][] exclusionPatterns = ((ClasspathEntry)rootEntry).fullExclusionPatternChars();
 		IResource rootResource = root.getResource();
-		if (rootEntry.getEntryKind() != IClasspathEntry.CPE_SOURCE || exclusionPatterns == null) {
+		if (rootEntry.getEntryKind() != IIncludePathEntry.CPE_SOURCE || exclusionPatterns == null) {
 			try {
 				IResource destRes;
 				if ((this.updateModelFlags & IPackageFragmentRoot.REPLACE) != 0
@@ -182,7 +182,7 @@ public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOpe
 				}
 				rootResource.move(this.destination, this.updateResourceFlags, progressMonitor);
 			} catch (CoreException e) {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			}
 		} else {
 			final int sourceSegmentCount = rootEntry.getPath().segmentCount();
@@ -233,7 +233,7 @@ public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOpe
 			try {
 				rootResource.accept(visitor, IResource.NONE);
 			} catch (CoreException e) {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			}
 		}
 		setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
@@ -241,11 +241,11 @@ public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOpe
 	/*
 	 * Renames the classpath entries equal to the given path in all Java projects.
 	 */
-	protected void updateReferringProjectClasspaths(IPath rootPath, IJavaProject projectOfRoot) throws JavaModelException {
-		IJavaModel model = this.getJavaModel();
-		IJavaProject[] projects = model.getJavaProjects();
+	protected void updateReferringProjectClasspaths(IPath rootPath, IJavaScriptProject projectOfRoot) throws JavaScriptModelException {
+		IJavaScriptModel model = this.getJavaModel();
+		IJavaScriptProject[] projects = model.getJavaScriptProjects();
 		for (int i = 0, length = projects.length; i < length; i++) {
-			IJavaProject project = projects[i];
+			IJavaScriptProject project = projects[i];
 			if (project.equals(projectOfRoot)) continue;
 			renameEntryInClasspath(rootPath, project);
 		}
@@ -253,18 +253,18 @@ public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOpe
 	/*
 	 * Removes the classpath entry equal to the given path from the given project's classpath.
 	 */
-	protected void removeEntryFromClasspath(IPath rootPath, IJavaProject project) throws JavaModelException {
+	protected void removeEntryFromClasspath(IPath rootPath, IJavaScriptProject project) throws JavaScriptModelException {
 
-		IClasspathEntry[] classpath = project.getRawClasspath();
-		IClasspathEntry[] newClasspath = null;
+		IIncludePathEntry[] classpath = project.getRawIncludepath();
+		IIncludePathEntry[] newClasspath = null;
 		int cpLength = classpath.length;
 		int newCPIndex = -1;
 
 		for (int i = 0; i < cpLength; i++) {
-			IClasspathEntry entry = classpath[i];
+			IIncludePathEntry entry = classpath[i];
 			if (rootPath.equals(entry.getPath())) {
 				if (newClasspath == null) {
-					newClasspath = new IClasspathEntry[cpLength];
+					newClasspath = new IIncludePathEntry[cpLength];
 					System.arraycopy(classpath, 0, newClasspath, 0, i);
 					newCPIndex = i;
 				}
@@ -275,9 +275,9 @@ public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOpe
 
 		if (newClasspath != null) {
 			if (newCPIndex < newClasspath.length) {
-				System.arraycopy(newClasspath, 0, newClasspath = new IClasspathEntry[newCPIndex], 0, newCPIndex);
+				System.arraycopy(newClasspath, 0, newClasspath = new IIncludePathEntry[newCPIndex], 0, newCPIndex);
 			}
-			project.setRawClasspath(newClasspath, progressMonitor);
+			project.setRawIncludepath(newClasspath, progressMonitor);
 		}
 	}
 }

@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.INewNameQuery;
@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 public class CopyCompilationUnitChange extends CompilationUnitReorgChange {
 	
-	public CopyCompilationUnitChange(ICompilationUnit cu, IPackageFragment dest, INewNameQuery newNameQuery){
+	public CopyCompilationUnitChange(IJavaScriptUnit cu, IPackageFragment dest, INewNameQuery newNameQuery){
 		super(cu, dest, newNameQuery);
 	}
 		

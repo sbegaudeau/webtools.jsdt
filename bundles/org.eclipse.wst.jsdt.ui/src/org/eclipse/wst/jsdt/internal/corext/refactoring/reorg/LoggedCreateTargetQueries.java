@@ -18,13 +18,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 
@@ -46,15 +46,15 @@ public final class LoggedCreateTargetQueries implements ICreateTargetQueries {
 		}
 
 		private void createPackageFragmentRoot(IPackageFragmentRoot root) throws CoreException {
-			final IJavaProject project= root.getJavaProject();
+			final IJavaScriptProject project= root.getJavaScriptProject();
 			if (!project.exists())
 				createJavaProject(project.getProject());
 			final IFolder folder= project.getProject().getFolder(root.getElementName());
 			if (!folder.exists())
 				CoreUtility.createFolder(folder, true, true, new NullProgressMonitor());
-			final List list= Arrays.asList(project.getRawClasspath());
-			list.add(JavaCore.newSourceEntry(folder.getFullPath()));
-			project.setRawClasspath((IClasspathEntry[]) list.toArray(new IClasspathEntry[list.size()]), new NullProgressMonitor());
+			final List list= Arrays.asList(project.getRawIncludepath());
+			list.add(JavaScriptCore.newSourceEntry(folder.getFullPath()));
+			project.setRawIncludepath((IIncludePathEntry[]) list.toArray(new IIncludePathEntry[list.size()]), new NullProgressMonitor());
 		}
 
 		/**
@@ -64,7 +64,7 @@ public final class LoggedCreateTargetQueries implements ICreateTargetQueries {
 			final Object target= fLog.getCreatedElement(selection);
 			if (target instanceof IPackageFragment) {
 				final IPackageFragment fragment= (IPackageFragment) target;
-				final IJavaElement parent= fragment.getParent();
+				final IJavaScriptElement parent= fragment.getParent();
 				if (parent instanceof IPackageFragmentRoot) {
 					try {
 						final IPackageFragmentRoot root= (IPackageFragmentRoot) parent;
@@ -73,7 +73,7 @@ public final class LoggedCreateTargetQueries implements ICreateTargetQueries {
 						if (!fragment.exists())
 							root.createPackageFragment(fragment.getElementName(), true, new NullProgressMonitor());
 					} catch (CoreException exception) {
-						JavaPlugin.log(exception);
+						JavaScriptPlugin.log(exception);
 						return null;
 					}
 				}
@@ -86,7 +86,7 @@ public final class LoggedCreateTargetQueries implements ICreateTargetQueries {
 					if (!folder.exists())
 						CoreUtility.createFolder(folder, true, true, new NullProgressMonitor());
 				} catch (CoreException exception) {
-					JavaPlugin.log(exception);
+					JavaScriptPlugin.log(exception);
 					return null;
 				}
 			}

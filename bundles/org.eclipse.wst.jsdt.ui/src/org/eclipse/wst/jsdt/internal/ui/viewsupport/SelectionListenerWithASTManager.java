@@ -28,9 +28,9 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
@@ -121,7 +121,7 @@ public class SelectionListenerWithASTManager {
 			if (fCurrentJob != null) {
 				fCurrentJob.cancel();
 			}
-			final IJavaElement input= EditorUtility.getEditorInputJavaElement(fPart, false);
+			final IJavaScriptElement input= EditorUtility.getEditorInputJavaElement(fPart, false);
 			if (input == null) {
 				return;
 			}
@@ -141,13 +141,13 @@ public class SelectionListenerWithASTManager {
 			fCurrentJob.schedule();
 		}
 		
-		protected IStatus calculateASTandInform(IJavaElement input, ITextSelection selection, IProgressMonitor monitor) {
+		protected IStatus calculateASTandInform(IJavaScriptElement input, ITextSelection selection, IProgressMonitor monitor) {
 			if (monitor.isCanceled()) {
 				return Status.CANCEL_STATUS;
 			}
 			// create AST
 			try {
-				CompilationUnit astRoot= JavaPlugin.getDefault().getASTProvider().getAST(input, ASTProvider.WAIT_ACTIVE_ONLY, monitor);
+				JavaScriptUnit astRoot= JavaScriptPlugin.getDefault().getASTProvider().getAST(input, ASTProvider.WAIT_ACTIVE_ONLY, monitor);
 			
 				if (astRoot != null && !monitor.isCanceled()) {
 					Object[] listeners;

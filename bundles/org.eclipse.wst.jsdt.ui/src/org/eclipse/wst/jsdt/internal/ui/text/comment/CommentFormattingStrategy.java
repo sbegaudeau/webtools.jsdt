@@ -23,15 +23,15 @@ import org.eclipse.jface.text.formatter.FormattingContextProperties;
 import org.eclipse.jface.text.formatter.IFormattingContext;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 /**
  * Formatting strategy for general source code comments.
@@ -73,9 +73,9 @@ public class CommentFormattingStrategy extends ContextBasedFormattingStrategy {
 		try {
 			edit.apply(document);
 		} catch (MalformedTreeException x) {
-			JavaPlugin.log(x);
+			JavaScriptPlugin.log(x);
 		} catch (BadLocationException x) {
-			JavaPlugin.log(x);
+			JavaScriptPlugin.log(x);
 		}
 	}
 
@@ -119,7 +119,7 @@ public class CommentFormattingStrategy extends ContextBasedFormattingStrategy {
 				if (edit != null)
 					edit.moveTree(sourceOffset);
 			} catch (BadLocationException x) {
-				JavaPlugin.log(x);
+				JavaScriptPlugin.log(x);
 			}
 		} else if (isFormattingHeader) {
 			boolean wasJavaDoc= DefaultCodeFormatterConstants.TRUE.equals(preferences.get(DefaultCodeFormatterConstants.FORMATTER_COMMENT_FORMAT_JAVADOC_COMMENT));
@@ -150,7 +150,7 @@ public class CommentFormattingStrategy extends ContextBasedFormattingStrategy {
 				if (edit != null)
 					edit.moveTree(sourceOffset);
 			} catch (BadLocationException x) {
-				JavaPlugin.log(x);
+				JavaScriptPlugin.log(x);
 			} finally {
 				if (!wasJavaDoc)
 					preferences.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_FORMAT_JAVADOC_COMMENT, DefaultCodeFormatterConstants.FALSE);
@@ -185,7 +185,7 @@ public class CommentFormattingStrategy extends ContextBasedFormattingStrategy {
 	}
 
 	/**
-	 * Map from {@link IJavaPartitions}comment partition types to
+	 * Map from {@link IJavaScriptPartitions}comment partition types to
 	 * {@link CodeFormatter}code snippet kinds.
 	 *
 	 * @param type the partition type
@@ -193,11 +193,11 @@ public class CommentFormattingStrategy extends ContextBasedFormattingStrategy {
 	 * @since 3.1
 	 */
 	private static int getKindForPartitionType(String type) {
-		if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(type))
+		if (IJavaScriptPartitions.JAVA_SINGLE_LINE_COMMENT.equals(type))
 				return CodeFormatter.K_SINGLE_LINE_COMMENT;
-		if (IJavaPartitions.JAVA_MULTI_LINE_COMMENT.equals(type))
+		if (IJavaScriptPartitions.JAVA_MULTI_LINE_COMMENT.equals(type))
 				return CodeFormatter.K_MULTI_LINE_COMMENT;
-		if (IJavaPartitions.JAVA_DOC.equals(type))
+		if (IJavaScriptPartitions.JAVA_DOC.equals(type))
 				return CodeFormatter.K_JAVA_DOC;
 		return CodeFormatter.K_UNKNOWN;
 	}
@@ -267,7 +267,7 @@ public class CommentFormattingStrategy extends ContextBasedFormattingStrategy {
 		 * that case. See CodeFormatterUtil.
 		 */
 		String key;
-		if (JavaCore.SPACE.equals(preferences.get(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR)))
+		if (JavaScriptCore.SPACE.equals(preferences.get(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR)))
 			key= DefaultCodeFormatterConstants.FORMATTER_INDENTATION_SIZE;
 		else
 			key= DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE;
@@ -326,7 +326,7 @@ public class CommentFormattingStrategy extends ContextBasedFormattingStrategy {
 			// should not happen -> recompute
 		}
 
-		IScanner scanner= ToolFactory.createScanner(true, false, false, (String) preferences.get(JavaCore.COMPILER_SOURCE), (String) preferences.get(JavaCore.COMPILER_COMPLIANCE));
+		IScanner scanner= ToolFactory.createScanner(true, false, false, (String) preferences.get(JavaScriptCore.COMPILER_SOURCE), (String) preferences.get(JavaScriptCore.COMPILER_COMPLIANCE));
 		scanner.setSource(document.get().toCharArray());
 
 		try {

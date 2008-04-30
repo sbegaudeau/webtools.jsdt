@@ -27,7 +27,7 @@ public interface IContextMenuConstants {
 	 * 
 	 * @since 2.0
 	 */
-	public static final String TARGET_ID_HIERARCHY_VIEW= JavaUI.ID_TYPE_HIERARCHY + ".typehierarchy"; //$NON-NLS-1$	
+	public static final String TARGET_ID_HIERARCHY_VIEW= JavaScriptUI.ID_TYPE_HIERARCHY + ".typehierarchy"; //$NON-NLS-1$	
 
 	/**
 	 * Type hierarchy view part: pop-up menu target ID for supertype hierarchy viewer
@@ -35,7 +35,7 @@ public interface IContextMenuConstants {
 	 * 
 	 * @since 2.0
 	 */
-	public static final String TARGET_ID_SUPERTYPES_VIEW= JavaUI.ID_TYPE_HIERARCHY + ".supertypes"; //$NON-NLS-1$	
+	public static final String TARGET_ID_SUPERTYPES_VIEW= JavaScriptUI.ID_TYPE_HIERARCHY + ".supertypes"; //$NON-NLS-1$	
 
 	/**
 	 * Type hierarchy view part: Pop-up menu target ID for the subtype hierarchy viewer
@@ -43,7 +43,7 @@ public interface IContextMenuConstants {
 	 * 
 	 * @since 2.0
 	 */
-	public static final String TARGET_ID_SUBTYPES_VIEW= JavaUI.ID_TYPE_HIERARCHY + ".subtypes"; //$NON-NLS-1$	
+	public static final String TARGET_ID_SUBTYPES_VIEW= JavaScriptUI.ID_TYPE_HIERARCHY + ".subtypes"; //$NON-NLS-1$	
 
 	/**
 	 * Type hierarchy view part: pop-up menu target ID for the member viewer
@@ -51,7 +51,7 @@ public interface IContextMenuConstants {
 	 * 
 	 * @since 2.0
 	 */
-	public static final String TARGET_ID_MEMBERS_VIEW= JavaUI.ID_TYPE_HIERARCHY + ".members"; //$NON-NLS-1$	
+	public static final String TARGET_ID_MEMBERS_VIEW= JavaScriptUI.ID_TYPE_HIERARCHY + ".members"; //$NON-NLS-1$	
 	
 
 	/**

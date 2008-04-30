@@ -99,7 +99,7 @@ public final boolean areParametersEqual(MethodBinding method) {
 /*
  * Returns true if given parameters are compatible with this method parameters.
  * Callers to this method should first check that the number of TypeBindings
- * passed as argument matches this MethodBinding number of parameters
+ * passed as argument matches this FunctionBinding number of parameters
  */
 
 public final boolean areParametersCompatibleWith(TypeBinding[] arguments) {

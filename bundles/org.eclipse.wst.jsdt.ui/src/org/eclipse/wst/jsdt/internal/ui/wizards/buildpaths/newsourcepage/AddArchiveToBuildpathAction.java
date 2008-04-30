@@ -29,19 +29,19 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.CPJavaProject;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
 
-//SelectedElements iff enabled: IJavaProject && size==1
+//SelectedElements iff enabled: IJavaScriptProject && size==1
 public class AddArchiveToBuildpathAction extends BuildpathModifierAction {
 
 	private final IRunnableContext fContext;
@@ -82,7 +82,7 @@ public class AddArchiveToBuildpathAction extends BuildpathModifierAction {
 			return;
 		
 		try {
-			final IJavaProject javaProject= (IJavaProject)getSelectedElements().get(0);
+			final IJavaScriptProject javaProject= (IJavaScriptProject)getSelectedElements().get(0);
             IStatus status= ClasspathModifier.checkAddExternalJarsPrecondition(selected, CPJavaProject.createFromExisting(javaProject));
             if (status.getSeverity() == IStatus.ERROR) {
             	MessageDialog.openError(getShell(), NewWizardMessages.AddArchiveToBuildpathAction_InfoTitle, status.getMessage());
@@ -109,16 +109,16 @@ public class AddArchiveToBuildpathAction extends BuildpathModifierAction {
 			if (e.getCause() instanceof CoreException) {
 				showExceptionDialog((CoreException)e.getCause(), NewWizardMessages.AddArchiveToBuildpathAction_ErrorTitle);
 			} else {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		} catch (CoreException e) {
 			showExceptionDialog(e, NewWizardMessages.AddArchiveToBuildpathAction_ErrorTitle);
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
         } catch (InterruptedException e) {
         }
 	}
 	
-	private List addExternalJars(IPath[] jarPaths, IJavaProject project, IProgressMonitor monitor) throws CoreException {
+	private List addExternalJars(IPath[] jarPaths, IJavaScriptProject project, IProgressMonitor monitor) throws CoreException {
 		if (monitor == null)
 			monitor= new NullProgressMonitor();
 		try {
@@ -133,8 +133,8 @@ public class AddArchiveToBuildpathAction extends BuildpathModifierAction {
     		List addedEntries= delta.getAddedEntries();
 			List result= new ArrayList(addedEntries.size());
 			for (int i= 0; i < addedEntries.size(); i++) {
-				IClasspathEntry entry= ((CPListElement) addedEntries.get(i)).getClasspathEntry();
-				IJavaElement elem= project.findPackageFragmentRoot(entry.getPath());
+				IIncludePathEntry entry= ((CPListElement) addedEntries.get(i)).getClasspathEntry();
+				IJavaScriptElement elem= project.findPackageFragmentRoot(entry.getPath());
 				if (elem != null) {
 					result.add(elem);
 				}
@@ -151,7 +151,7 @@ public class AddArchiveToBuildpathAction extends BuildpathModifierAction {
 			return false;
 
 		Object first= selection.getFirstElement();
-		if (!(first instanceof IJavaProject))
+		if (!(first instanceof IJavaScriptProject))
 			return false;
 
 		return true;

@@ -17,14 +17,14 @@ import org.eclipse.text.edits.DeleteEdit;
 import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
@@ -32,7 +32,7 @@ public class CorrectPackageDeclarationProposal extends CUCorrectionProposal {
 
 	private IProblemLocation fLocation;
 
-	public CorrectPackageDeclarationProposal(ICompilationUnit cu, IProblemLocation location, int relevance) {
+	public CorrectPackageDeclarationProposal(IJavaScriptUnit cu, IProblemLocation location, int relevance) {
 		super(CorrectionMessages.CorrectPackageDeclarationProposal_name, cu, relevance,
 			JavaPluginImages.get(JavaPluginImages.IMG_OBJS_PACKDECL));
 		fLocation= location;
@@ -44,7 +44,7 @@ public class CorrectPackageDeclarationProposal extends CUCorrectionProposal {
 	protected void addEdits(IDocument doc, TextEdit root) throws CoreException {
 		super.addEdits(doc, root);
 
-		ICompilationUnit cu= getCompilationUnit();
+		IJavaScriptUnit cu= getCompilationUnit();
 
 		IPackageFragment parentPack= (IPackageFragment) cu.getParent();
 		IPackageDeclaration[] decls= cu.getPackageDeclarations();
@@ -70,7 +70,7 @@ public class CorrectPackageDeclarationProposal extends CUCorrectionProposal {
 	 * @see ICompletionProposal#getDisplayString()
 	 */
 	public String getDisplayString() {
-		ICompilationUnit cu= getCompilationUnit();
+		IJavaScriptUnit cu= getCompilationUnit();
 		IPackageFragment parentPack= (IPackageFragment) cu.getParent();
 		try {
 			IPackageDeclaration[] decls= cu.getPackageDeclarations();
@@ -80,8 +80,8 @@ public class CorrectPackageDeclarationProposal extends CUCorrectionProposal {
 			if (!parentPack.isDefaultPackage() && decls.length == 0) {
 				return (Messages.format(CorrectionMessages.CorrectPackageDeclarationProposal_add_description,  parentPack.getElementName()));
 			}
-		} catch(JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch(JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 		}
 		return (Messages.format(CorrectionMessages.CorrectPackageDeclarationProposal_change_description, parentPack.getElementName()));
 	}

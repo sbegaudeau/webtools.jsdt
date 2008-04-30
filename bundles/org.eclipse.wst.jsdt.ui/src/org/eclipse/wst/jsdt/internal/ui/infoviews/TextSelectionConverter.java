@@ -14,11 +14,11 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICodeAssist;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
 class TextSelectionConverter {
 
 	/** Empty result. */
-	private static final IJavaElement[] EMPTY_RESULT= new IJavaElement[0];
+	private static final IJavaScriptElement[] EMPTY_RESULT= new IJavaScriptElement[0];
 
 	/** Prevent instance creation. */
 	private TextSelectionConverter() {
@@ -43,9 +43,9 @@ class TextSelectionConverter {
 	 * @param editor the Java editor
 	 * @param selection the text selection
 	 * @return	the Java elements for the given editor selection
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public static IJavaElement[] codeResolve(JavaEditor editor, ITextSelection selection) throws JavaModelException {
+	public static IJavaScriptElement[] codeResolve(JavaEditor editor, ITextSelection selection) throws JavaScriptModelException {
 		return codeResolve(getInput(editor), selection);
 	}
 
@@ -56,50 +56,50 @@ class TextSelectionConverter {
 	 * @param editor the Java editor
 	 * @param selection the text selection
 	 * @return	the Java elements for the given editor selection
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public static IJavaElement getElementAtOffset(JavaEditor editor, ITextSelection selection) throws JavaModelException {
+	public static IJavaScriptElement getElementAtOffset(JavaEditor editor, ITextSelection selection) throws JavaScriptModelException {
 		return getElementAtOffset(getInput(editor), selection);
 	}
 
 	//-------------------- Helper methods --------------------
 
-	private static IJavaElement getInput(JavaEditor editor) {
+	private static IJavaScriptElement getInput(JavaEditor editor) {
 		if (editor == null)
 			return null;
 		IEditorInput input= editor.getEditorInput();
 		if (input instanceof IClassFileEditorInput)
 			return ((IClassFileEditorInput)input).getClassFile();
-		IWorkingCopyManager manager= JavaPlugin.getDefault().getWorkingCopyManager();
+		IWorkingCopyManager manager= JavaScriptPlugin.getDefault().getWorkingCopyManager();
 		return manager.getWorkingCopy(input);
 	}
 
-	private static IJavaElement[] codeResolve(IJavaElement input, ITextSelection selection) throws JavaModelException {
+	private static IJavaScriptElement[] codeResolve(IJavaScriptElement input, ITextSelection selection) throws JavaScriptModelException {
 			if (input instanceof ICodeAssist) {
-				if (input instanceof ICompilationUnit) {
-					ICompilationUnit cunit= (ICompilationUnit)input;
+				if (input instanceof IJavaScriptUnit) {
+					IJavaScriptUnit cunit= (IJavaScriptUnit)input;
 					if (cunit.isWorkingCopy())
 						JavaModelUtil.reconcile(cunit);
 				}
-				IJavaElement[] elements= ((ICodeAssist)input).codeSelect(selection.getOffset(), selection.getLength());
+				IJavaScriptElement[] elements= ((ICodeAssist)input).codeSelect(selection.getOffset(), selection.getLength());
 				if (elements != null && elements.length > 0)
 					return elements;
 			}
 			return EMPTY_RESULT;
 	}
 
-	private static IJavaElement getElementAtOffset(IJavaElement input, ITextSelection selection) throws JavaModelException {
-		if (input instanceof ICompilationUnit) {
-			ICompilationUnit cunit= (ICompilationUnit)input;
+	private static IJavaScriptElement getElementAtOffset(IJavaScriptElement input, ITextSelection selection) throws JavaScriptModelException {
+		if (input instanceof IJavaScriptUnit) {
+			IJavaScriptUnit cunit= (IJavaScriptUnit)input;
 			if (cunit.isWorkingCopy())
 				JavaModelUtil.reconcile(cunit);
-			IJavaElement ref= cunit.getElementAt(selection.getOffset());
+			IJavaScriptElement ref= cunit.getElementAt(selection.getOffset());
 			if (ref == null)
 				return input;
 			else
 				return ref;
 		} else if (input instanceof IClassFile) {
-			IJavaElement ref= ((IClassFile)input).getElementAt(selection.getOffset());
+			IJavaScriptElement ref= ((IClassFile)input).getElementAt(selection.getOffset());
 			if (ref == null)
 				return input;
 			else

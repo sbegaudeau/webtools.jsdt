@@ -20,27 +20,27 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.AssertionFailedException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
 public class CopyPackageFragmentRootOperation extends JavaModelOperation {
 	IPath destination;
 	int updateResourceFlags;
 	int updateModelFlags;
-	IClasspathEntry sibling;
+	IIncludePathEntry sibling;
 
 	public CopyPackageFragmentRootOperation(
 		IPackageFragmentRoot root,
 		IPath destination,
 		int updateResourceFlags,
 		int updateModelFlags,
-		IClasspathEntry sibling) {
+		IIncludePathEntry sibling) {
 
 		super(root);
 		this.destination = destination;
@@ -48,10 +48,10 @@ public class CopyPackageFragmentRootOperation extends JavaModelOperation {
 		this.updateModelFlags = updateModelFlags;
 		this.sibling = sibling;
 	}
-	protected void executeOperation() throws JavaModelException {
+	protected void executeOperation() throws JavaScriptModelException {
 
 		IPackageFragmentRoot root = (IPackageFragmentRoot)this.getElementToProcess();
-		IClasspathEntry rootEntry = root.getRawClasspathEntry();
+		IIncludePathEntry rootEntry = root.getRawIncludepathEntry();
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 
 		// copy resource
@@ -60,15 +60,15 @@ public class CopyPackageFragmentRootOperation extends JavaModelOperation {
 		}
 
 		// update classpath if needed
-		if ((this.updateModelFlags & IPackageFragmentRoot.DESTINATION_PROJECT_CLASSPATH) != 0) {
+		if ((this.updateModelFlags & IPackageFragmentRoot.DESTINATION_PROJECT_INCLUDEPATH) != 0) {
 			addEntryToClasspath(rootEntry, workspaceRoot);
 		}
 	}
 	protected void copyResource(
 		IPackageFragmentRoot root,
-		IClasspathEntry rootEntry,
+		IIncludePathEntry rootEntry,
 		final IWorkspaceRoot workspaceRoot)
-		throws JavaModelException {
+		throws JavaScriptModelException {
 		final char[][] exclusionPatterns = ((ClasspathEntry)rootEntry).fullExclusionPatternChars();
 		IResource rootResource = root.getResource();
 		if (root.getKind() == IPackageFragmentRoot.K_BINARY || exclusionPatterns == null) {
@@ -82,7 +82,7 @@ public class CopyPackageFragmentRootOperation extends JavaModelOperation {
 				}
 				rootResource.copy(this.destination, this.updateResourceFlags, progressMonitor);
 			} catch (CoreException e) {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			}
 		} else {
 			final int sourceSegmentCount = rootEntry.getPath().segmentCount();
@@ -133,28 +133,28 @@ public class CopyPackageFragmentRootOperation extends JavaModelOperation {
 			try {
 				rootResource.accept(visitor, IResource.NONE);
 			} catch (CoreException e) {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			}
 		}
 		setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
 	}
-	protected void addEntryToClasspath(IClasspathEntry rootEntry, IWorkspaceRoot workspaceRoot) throws JavaModelException {
+	protected void addEntryToClasspath(IIncludePathEntry rootEntry, IWorkspaceRoot workspaceRoot) throws JavaScriptModelException {
 
 		IProject destProject = workspaceRoot.getProject(this.destination.segment(0));
-		IJavaProject jProject = JavaCore.create(destProject);
-		IClasspathEntry[] classpath = jProject.getRawClasspath();
+		IJavaScriptProject jProject = JavaScriptCore.create(destProject);
+		IIncludePathEntry[] classpath = jProject.getRawIncludepath();
 		int length = classpath.length;
-		IClasspathEntry[] newClasspath;
+		IIncludePathEntry[] newClasspath;
 
 		// case of existing entry and REPLACE was specified
 		if ((this.updateModelFlags & IPackageFragmentRoot.REPLACE) != 0) {
 			// find existing entry
 			for (int i = 0; i < length; i++) {
 				if (this.destination.equals(classpath[i].getPath())) {
-					newClasspath = new IClasspathEntry[length];
+					newClasspath = new IIncludePathEntry[length];
 					System.arraycopy(classpath, 0, newClasspath, 0, length);
 					newClasspath[i] = copy(rootEntry);
-					jProject.setRawClasspath(newClasspath, progressMonitor);
+					jProject.setRawIncludepath(newClasspath, progressMonitor);
 					return;
 				}
 			}
@@ -176,77 +176,77 @@ public class CopyPackageFragmentRootOperation extends JavaModelOperation {
 			}
 		}
 		if (position == -1) {
-			throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_SIBLING, this.sibling.toString()));
+			throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_SIBLING, this.sibling.toString()));
 		}
-		newClasspath = new IClasspathEntry[length+1];
+		newClasspath = new IIncludePathEntry[length+1];
 		if (position != 0) {
 			System.arraycopy(classpath, 0, newClasspath, 0, position);
 		}
 		if (position != length) {
 			System.arraycopy(classpath, position, newClasspath, position+1, length-position);
 		}
-		IClasspathEntry newEntry = copy(rootEntry);
+		IIncludePathEntry newEntry = copy(rootEntry);
 		newClasspath[position] = newEntry;
-		jProject.setRawClasspath(newClasspath, progressMonitor);
+		jProject.setRawIncludepath(newClasspath, progressMonitor);
 	}
 	/*
 	 * Copies the given classpath entry replacing its path with the destination path
 	 * if it is a source folder or a library.
 	 */
-	protected IClasspathEntry copy(IClasspathEntry entry) throws JavaModelException {
+	protected IIncludePathEntry copy(IIncludePathEntry entry) throws JavaScriptModelException {
 		switch (entry.getEntryKind()) {
-			case IClasspathEntry.CPE_CONTAINER:
-				return JavaCore.newContainerEntry(entry.getPath(), entry.getAccessRules(), entry.getExtraAttributes(), entry.isExported());
-			case IClasspathEntry.CPE_LIBRARY:
+			case IIncludePathEntry.CPE_CONTAINER:
+				return JavaScriptCore.newContainerEntry(entry.getPath(), entry.getAccessRules(), entry.getExtraAttributes(), entry.isExported());
+			case IIncludePathEntry.CPE_LIBRARY:
 				try {
-					return JavaCore.newLibraryEntry(this.destination, entry.getSourceAttachmentPath(), entry.getSourceAttachmentRootPath(), entry.getAccessRules(), entry.getExtraAttributes(), entry.isExported());
+					return JavaScriptCore.newLibraryEntry(this.destination, entry.getSourceAttachmentPath(), entry.getSourceAttachmentRootPath(), entry.getAccessRules(), entry.getExtraAttributes(), entry.isExported());
 				} catch (AssertionFailedException e) {
-					IJavaModelStatus status = new JavaModelStatus(IJavaModelStatusConstants.INVALID_PATH, e.getMessage());
-					throw new JavaModelException(status);
+					IJavaScriptModelStatus status = new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_PATH, e.getMessage());
+					throw new JavaScriptModelException(status);
 				}
-			case IClasspathEntry.CPE_PROJECT:
-				return JavaCore.newProjectEntry(entry.getPath(), entry.getAccessRules(), entry.combineAccessRules(), entry.getExtraAttributes(), entry.isExported());
-			case IClasspathEntry.CPE_SOURCE:
-				return JavaCore.newSourceEntry(this.destination, entry.getInclusionPatterns(), entry.getExclusionPatterns(), entry.getOutputLocation(), entry.getExtraAttributes());
-			case IClasspathEntry.CPE_VARIABLE:
+			case IIncludePathEntry.CPE_PROJECT:
+				return JavaScriptCore.newProjectEntry(entry.getPath(), entry.getAccessRules(), entry.combineAccessRules(), entry.getExtraAttributes(), entry.isExported());
+			case IIncludePathEntry.CPE_SOURCE:
+				return JavaScriptCore.newSourceEntry(this.destination, entry.getInclusionPatterns(), entry.getExclusionPatterns(), entry.getOutputLocation(), entry.getExtraAttributes());
+			case IIncludePathEntry.CPE_VARIABLE:
 				try {
-					return JavaCore.newVariableEntry(entry.getPath(), entry.getSourceAttachmentPath(), entry.getSourceAttachmentRootPath(), entry.getAccessRules(), entry.getExtraAttributes(), entry.isExported());
+					return JavaScriptCore.newVariableEntry(entry.getPath(), entry.getSourceAttachmentPath(), entry.getSourceAttachmentRootPath(), entry.getAccessRules(), entry.getExtraAttributes(), entry.isExported());
 				} catch (AssertionFailedException e) {
-					IJavaModelStatus status = new JavaModelStatus(IJavaModelStatusConstants.INVALID_PATH, e.getMessage());
-					throw new JavaModelException(status);
+					IJavaScriptModelStatus status = new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_PATH, e.getMessage());
+					throw new JavaScriptModelException(status);
 				}
 			default:
-				throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this.getElementToProcess()));
+				throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this.getElementToProcess()));
 		}
 	}
-	public IJavaModelStatus verify() {
-		IJavaModelStatus status = super.verify();
+	public IJavaScriptModelStatus verify() {
+		IJavaScriptModelStatus status = super.verify();
 		if (!status.isOK()) {
 			return status;
 		}
 		IPackageFragmentRoot root = (IPackageFragmentRoot)getElementToProcess();
 		if (root == null || !root.exists()) {
-			return new JavaModelStatus(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, root);
+			return new JavaModelStatus(IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST, root);
 		}
 
 		IResource resource = root.getResource();
 		if (resource instanceof IFolder) {
 			if (resource.isLinked()) {
-				return new JavaModelStatus(IJavaModelStatusConstants.INVALID_RESOURCE, root);
+				return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_RESOURCE, root);
 			}
 		}
 
-		if ((this.updateModelFlags & IPackageFragmentRoot.DESTINATION_PROJECT_CLASSPATH) != 0) {
+		if ((this.updateModelFlags & IPackageFragmentRoot.DESTINATION_PROJECT_INCLUDEPATH) != 0) {
 			String destProjectName = this.destination.segment(0);
 			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(destProjectName);
 			if (JavaProject.hasJavaNature(project)) {
 				try {
-					IJavaProject destProject = JavaCore.create(project);
-					IClasspathEntry[] destClasspath = destProject.getRawClasspath();
+					IJavaScriptProject destProject = JavaScriptCore.create(project);
+					IIncludePathEntry[] destClasspath = destProject.getRawIncludepath();
 					boolean foundSibling = false;
 					boolean foundExistingEntry = false;
 					for (int i = 0, length = destClasspath.length; i < length; i++) {
-						IClasspathEntry entry = destClasspath[i];
+						IIncludePathEntry entry = destClasspath[i];
 						if (entry.equals(this.sibling)) {
 							foundSibling = true;
 							break;
@@ -256,15 +256,15 @@ public class CopyPackageFragmentRootOperation extends JavaModelOperation {
 						}
 					}
 					if (this.sibling != null && !foundSibling) {
-						return new JavaModelStatus(IJavaModelStatusConstants.INVALID_SIBLING, this.sibling.toString());
+						return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_SIBLING, this.sibling.toString());
 					}
 					if (foundExistingEntry && (this.updateModelFlags & IPackageFragmentRoot.REPLACE) == 0) {
 						return new JavaModelStatus(
-							IJavaModelStatusConstants.NAME_COLLISION,
+							IJavaScriptModelStatusConstants.NAME_COLLISION,
 							Messages.bind(Messages.status_nameCollision, new String[] {this.destination.toString()}));
 					}
-				} catch (JavaModelException e) {
-					return e.getJavaModelStatus();
+				} catch (JavaScriptModelException e) {
+					return e.getJavaScriptModelStatus();
 				}
 			}
 		}

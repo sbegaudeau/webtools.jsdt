@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -170,7 +170,7 @@ private MethodBinding createMethodBinding(Method method, boolean isConstructor) 
 	{
 		TypeBinding returnType = (method.returns!=null ) ? this.libraryScope.resolveType(method.returns.type) : TypeBinding.UNKNOWN;
 //		TypeBinding returnType =
-//		 (method instanceof MethodDeclaration && ((MethodDeclaration)method).returnType!=null && method.inferredMethod!=null)?method.inferredType.resolveType(this,((MethodDeclaration)method).returnType):TypeBinding.ANY;
+//		 (method instanceof FunctionDeclaration && ((FunctionDeclaration)method).returnType!=null && method.inferredMethod!=null)?method.inferredType.resolveType(this,((FunctionDeclaration)method).returnType):TypeBinding.ANY;
 		
 		methodBinding =
 				new MethodBinding(modifiers, method.name.toCharArray(),returnType, null, null, this);
@@ -421,7 +421,7 @@ public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes
 			}
 			return this.methods[start];
 //			nextMethod: for (int imethod = start; imethod <= end; imethod++) {
-//				MethodBinding method = this.methods[imethod];
+//				FunctionBinding method = this.methods[imethod];
 //				TypeBinding[] toMatch = method.parameters;
 //				if (toMatch.length == argCount) {
 //					for (int iarg = 0; iarg < argCount; iarg++)
@@ -434,7 +434,7 @@ public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes
 	}
 
 	if (foundNothing) {
-		if (JavaCore.IS_ECMASCRIPT4 && isInterface()) {
+		if (JavaScriptCore.IS_ECMASCRIPT4 && isInterface()) {
 			 if (this.superInterfaces.length == 1) {
 				if (refScope != null)
 					refScope.recordTypeReference(this.superInterfaces[0]);
@@ -747,7 +747,7 @@ public MethodBinding[] methods() {
 //										.arraycopy(
 //												this.methods,
 //												0,
-//												resolvedMethods = new MethodBinding[length],
+//												resolvedMethods = new FunctionBinding[length],
 //												0, length);
 //							}
 //							resolvedMethods[i] = null;
@@ -772,7 +772,7 @@ public MethodBinding[] methods() {
 //									.arraycopy(
 //											this.methods,
 //											0,
-//											resolvedMethods = new MethodBinding[length],
+//											resolvedMethods = new FunctionBinding[length],
 //											0, length);
 //						}
 //						resolvedMethods[j] = null;
@@ -787,7 +787,7 @@ public MethodBinding[] methods() {
 //					// do not alter original method array until resolution is over, due to reentrance (143259)
 //					if (resolvedMethods == this.methods) {
 //						System.arraycopy(this.methods, 0,
-//								resolvedMethods = new MethodBinding[length], 0,
+//								resolvedMethods = new FunctionBinding[length], 0,
 //								length);
 //					}
 //					resolvedMethods[i] = null;

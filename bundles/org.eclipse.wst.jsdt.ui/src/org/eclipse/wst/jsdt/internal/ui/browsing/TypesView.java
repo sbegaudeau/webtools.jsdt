@@ -26,8 +26,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
@@ -38,8 +38,8 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaUILabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 public class TypesView extends JavaBrowsingPart {
@@ -54,7 +54,7 @@ public class TypesView extends JavaBrowsingPart {
 	 */
 	protected JavaUILabelProvider createLabelProvider() {
 		return new AppearanceAwareLabelProvider(
-						AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS | JavaElementLabels.T_CATEGORY,
+						AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS | JavaScriptElementLabels.T_CATEGORY,
 						AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS);
 	}
 
@@ -72,7 +72,7 @@ public class TypesView extends JavaBrowsingPart {
 		if (key == IShowInTargetList.class) {
 			return new IShowInTargetList() {
 				public String[] getShowInTargetIds() {
-					return new String[] { JavaUI.ID_PACKAGES, IPageLayout.ID_RES_NAV  };
+					return new String[] { JavaScriptUI.ID_PACKAGES, IPageLayout.ID_RES_NAV  };
 				}
 
 			};
@@ -107,11 +107,11 @@ public class TypesView extends JavaBrowsingPart {
 	 * @return	<true> if the given element is a valid element
 	 */
 	protected boolean isValidElement(Object element) {
-		if (element instanceof ICompilationUnit)
-			return super.isValidElement(((ICompilationUnit)element).getParent());
+		if (element instanceof IJavaScriptUnit)
+			return super.isValidElement(((IJavaScriptUnit)element).getParent());
 		else if (element instanceof IType) {
 			IType type= (IType)element;
-			return type.getDeclaringType() == null && isValidElement(type.getCompilationUnit());
+			return type.getDeclaringType() == null && isValidElement(type.getJavaScriptUnit());
 		}
 		return false;
 	}
@@ -122,23 +122,23 @@ public class TypesView extends JavaBrowsingPart {
 	 * @param je	the Java element which has the focus
 	 * @return the element to select
 	 */
-	protected IJavaElement findElementToSelect(IJavaElement je) {
+	protected IJavaScriptElement findElementToSelect(IJavaScriptElement je) {
 		if (je == null)
 			return null;
 
 		switch (je.getElementType()) {
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				IType type= ((IType)je).getDeclaringType();
 				if (type == null)
 					type= (IType)je;
 				return type;
-			case IJavaElement.COMPILATION_UNIT:
-				return getTypeForCU((ICompilationUnit)je);
-			case IJavaElement.CLASS_FILE:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
+				return getTypeForCU((IJavaScriptUnit)je);
+			case IJavaScriptElement.CLASS_FILE:
 				return findElementToSelect(((IClassFile)je).getType());
-			case IJavaElement.IMPORT_CONTAINER:
-			case IJavaElement.IMPORT_DECLARATION:
-			case IJavaElement.PACKAGE_DECLARATION:
+			case IJavaScriptElement.IMPORT_CONTAINER:
+			case IJavaScriptElement.IMPORT_DECLARATION:
+			case IJavaScriptElement.PACKAGE_DECLARATION:
 				return findElementToSelect(je.getParent());
 			default:
 				if (je instanceof IMember)

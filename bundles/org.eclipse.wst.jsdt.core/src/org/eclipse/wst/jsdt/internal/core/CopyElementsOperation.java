@@ -14,15 +14,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
@@ -69,15 +69,15 @@ public class CopyElementsOperation extends MultiOperation implements SuffixConst
  * the correct order. If there is > 1 destination, the number of destinations
  * must be the same as the number of elements being copied/moved/renamed.
  */
-public CopyElementsOperation(IJavaElement[] elementsToCopy, IJavaElement[] destContainers, boolean force) {
+public CopyElementsOperation(IJavaScriptElement[] elementsToCopy, IJavaScriptElement[] destContainers, boolean force) {
 	super(elementsToCopy, destContainers, force);
 }
 /**
  * When executed, this operation will copy the given elements to the
  * given container.
  */
-public CopyElementsOperation(IJavaElement[] elementsToCopy, IJavaElement destContainer, boolean force) {
-	this(elementsToCopy, new IJavaElement[]{destContainer}, force);
+public CopyElementsOperation(IJavaScriptElement[] elementsToCopy, IJavaScriptElement destContainer, boolean force) {
+	this(elementsToCopy, new IJavaScriptElement[]{destContainer}, force);
 }
 /**
  * Returns the <code>String</code> to use as the main task name
@@ -89,48 +89,48 @@ protected String getMainTaskName() {
 /**
  * Returns the nested operation to use for processing this element
  */
-protected JavaModelOperation getNestedOperation(IJavaElement element) {
+protected JavaModelOperation getNestedOperation(IJavaScriptElement element) {
 	try {
-		IJavaElement dest = getDestinationParent(element);
+		IJavaScriptElement dest = getDestinationParent(element);
 		switch (element.getElementType()) {
-			case IJavaElement.PACKAGE_DECLARATION :
-				return new CreatePackageDeclarationOperation(element.getElementName(), (ICompilationUnit) dest);
-			case IJavaElement.IMPORT_DECLARATION :
+			case IJavaScriptElement.PACKAGE_DECLARATION :
+				return new CreatePackageDeclarationOperation(element.getElementName(), (IJavaScriptUnit) dest);
+			case IJavaScriptElement.IMPORT_DECLARATION :
 				IImportDeclaration importDeclaration = (IImportDeclaration) element;
-				return new CreateImportOperation(element.getElementName(), (ICompilationUnit) dest, importDeclaration.getFlags());
-			case IJavaElement.TYPE :
+				return new CreateImportOperation(element.getElementName(), (IJavaScriptUnit) dest, importDeclaration.getFlags());
+			case IJavaScriptElement.TYPE :
 				if (isRenamingMainType(element, dest)) {
 					IPath path = element.getPath();
 					String extension = path.getFileExtension();
-					return new RenameResourceElementsOperation(new IJavaElement[] {dest}, new IJavaElement[] {dest.getParent()}, new String[]{getNewNameFor(element) + '.' + extension}, this.force);
+					return new RenameResourceElementsOperation(new IJavaScriptElement[] {dest}, new IJavaScriptElement[] {dest.getParent()}, new String[]{getNewNameFor(element) + '.' + extension}, this.force);
 				} else {
 					String source = getSourceFor(element);
-					String lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(source, element.getJavaProject());
+					String lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(source, element.getJavaScriptProject());
 					return new CreateTypeOperation(dest, source + lineSeparator, this.force);
 				}
-			case IJavaElement.METHOD :
+			case IJavaScriptElement.METHOD :
 				String source = getSourceFor(element);
-				String lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(source, element.getJavaProject());
+				String lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(source, element.getJavaScriptProject());
 				return new CreateMethodOperation(dest, source + lineSeparator, this.force);
-			case IJavaElement.FIELD :
+			case IJavaScriptElement.FIELD :
 				source = getSourceFor(element);
-				lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(source, element.getJavaProject());
+				lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(source, element.getJavaScriptProject());
 				return new CreateFieldOperation(dest, source + lineSeparator, this.force);
-			case IJavaElement.INITIALIZER :
+			case IJavaScriptElement.INITIALIZER :
 				source = getSourceFor(element);
-				lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(source, element.getJavaProject());
+				lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(source, element.getJavaScriptProject());
 				return new CreateInitializerOperation((IType) dest, source + lineSeparator);
 			default :
 				return null;
 		}
-	} catch (JavaModelException npe) {
+	} catch (JavaScriptModelException npe) {
 		return null;
 	}
 }
 /**
  * Returns the cached source for this element or compute it if not already cached.
  */
-private String getSourceFor(IJavaElement element) throws JavaModelException {
+private String getSourceFor(IJavaScriptElement element) throws JavaScriptModelException {
 	String source = (String) this.sources.get(element);
 	if (source == null && element instanceof IMember) {
 		source = ((IMember)element).getSource();
@@ -141,9 +141,9 @@ private String getSourceFor(IJavaElement element) throws JavaModelException {
 /**
  * Returns <code>true</code> if this element is the main type of its compilation unit.
  */
-protected boolean isRenamingMainType(IJavaElement element, IJavaElement dest) throws JavaModelException {
+protected boolean isRenamingMainType(IJavaScriptElement element, IJavaScriptElement dest) throws JavaScriptModelException {
 	if ((isRename() || getNewNameFor(element) != null)
-		&& dest.getElementType() == IJavaElement.COMPILATION_UNIT) {
+		&& dest.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT) {
 		String typeName = dest.getElementName();
 		typeName = org.eclipse.wst.jsdt.internal.core.util.Util.getNameWithoutJavaLikeExtension(typeName);
 		return element.getElementName().equals(typeName) && element.getParent().equals(dest);
@@ -154,22 +154,22 @@ protected boolean isRenamingMainType(IJavaElement element, IJavaElement dest) th
  * Copy/move the element from the source to destination, renaming
  * the elements as specified, honoring the collision policy.
  *
- * @exception JavaModelException if the operation is unable to
+ * @exception JavaScriptModelException if the operation is unable to
  * be completed
  */
-protected void processElement(IJavaElement element) throws JavaModelException {
+protected void processElement(IJavaScriptElement element) throws JavaScriptModelException {
 	JavaModelOperation op = getNestedOperation(element);
 	boolean createElementInCUOperation =op instanceof CreateElementInCUOperation;
 	if (op == null) {
 		return;
 	}
 	if (createElementInCUOperation) {
-		IJavaElement sibling = (IJavaElement) this.insertBeforeElements.get(element);
+		IJavaScriptElement sibling = (IJavaScriptElement) this.insertBeforeElements.get(element);
 		if (sibling != null) {
 			((CreateElementInCUOperation) op).setRelativePosition(sibling, CreateElementInCUOperation.INSERT_BEFORE);
 		} else
 			if (isRename()) {
-				IJavaElement anchor = resolveRenameAnchor(element);
+				IJavaScriptElement anchor = resolveRenameAnchor(element);
 				if (anchor != null) {
 					((CreateElementInCUOperation) op).setRelativePosition(anchor, CreateElementInCUOperation.INSERT_AFTER); // insert after so that the anchor is found before when deleted below
 				}
@@ -182,13 +182,13 @@ protected void processElement(IJavaElement element) throws JavaModelException {
 	executeNestedOperation(op, 1);
 
 	JavaElement destination = (JavaElement) getDestinationParent(element);
-	ICompilationUnit unit= destination.getCompilationUnit();
+	IJavaScriptUnit unit= destination.getJavaScriptUnit();
 	if (!unit.isWorkingCopy()) {
 		unit.close();
 	}
 
 	if (createElementInCUOperation && isMove() && !isRenamingMainType(element, destination)) {
-		DeleteElementsOperation deleteOp = new DeleteElementsOperation(new IJavaElement[] { element }, this.force);
+		DeleteElementsOperation deleteOp = new DeleteElementsOperation(new IJavaScriptElement[] { element }, this.force);
 		executeNestedOperation(deleteOp, 1);
 	}
 }
@@ -197,11 +197,11 @@ protected void processElement(IJavaElement element) throws JavaModelException {
  * the element being renamed. For renaming, if no anchor has
  * explicitly been provided, the element is anchored in the same position.
  */
-private IJavaElement resolveRenameAnchor(IJavaElement element) throws JavaModelException {
+private IJavaScriptElement resolveRenameAnchor(IJavaScriptElement element) throws JavaScriptModelException {
 	IParent parent = (IParent) element.getParent();
-	IJavaElement[] children = parent.getChildren();
+	IJavaScriptElement[] children = parent.getChildren();
 	for (int i = 0; i < children.length; i++) {
-		IJavaElement child = children[i];
+		IJavaScriptElement child = children[i];
 		if (child.equals(element)) {
 			return child;
 		}
@@ -216,13 +216,13 @@ private IJavaElement resolveRenameAnchor(IJavaElement element) throws JavaModelE
  *		does not match the number of elements that were supplied.
  * </ul>
  */
-protected IJavaModelStatus verify() {
-	IJavaModelStatus status = super.verify();
+protected IJavaScriptModelStatus verify() {
+	IJavaScriptModelStatus status = super.verify();
 	if (!status.isOK()) {
 		return status;
 	}
 	if (this.renamingsList != null && this.renamingsList.length != this.elementsToProcess.length) {
-		return new JavaModelStatus(IJavaModelStatusConstants.INDEX_OUT_OF_BOUNDS);
+		return new JavaModelStatus(IJavaScriptModelStatusConstants.INDEX_OUT_OF_BOUNDS);
 	}
 	return JavaModelStatus.VERIFIED_OK;
 }
@@ -249,17 +249,17 @@ protected IJavaModelStatus verify() {
 
  * </ul>
  */
-protected void verify(IJavaElement element) throws JavaModelException {
+protected void verify(IJavaScriptElement element) throws JavaScriptModelException {
 	if (element == null || !element.exists())
-		error(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, element);
+		error(IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST, element);
 
-	if (element.getElementType() < IJavaElement.TYPE)
-		error(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, element);
+	if (element.getElementType() < IJavaScriptElement.TYPE)
+		error(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, element);
 
 	if (element.isReadOnly())
-		error(IJavaModelStatusConstants.READ_ONLY, element);
+		error(IJavaScriptModelStatusConstants.READ_ONLY, element);
 
-	IJavaElement dest = getDestinationParent(element);
+	IJavaScriptElement dest = getDestinationParent(element);
 	verifyDestination(element, dest);
 	verifySibling(element, dest);
 	if (this.renamingsList != null) {

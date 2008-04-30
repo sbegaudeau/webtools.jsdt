@@ -23,13 +23,13 @@ import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -102,8 +102,8 @@ public class ExpressionsFix extends AbstractFix {
 			}
 			// check case when this expression is cast expression and parent is method invocation with this expression as expression
 			if ((parenthesizedExpression.getExpression() instanceof CastExpression)
-				&& (parenthesizedExpression.getParent() instanceof MethodInvocation)) {
-				MethodInvocation parentMethodInvocation = (MethodInvocation) parenthesizedExpression.getParent();
+				&& (parenthesizedExpression.getParent() instanceof FunctionInvocation)) {
+				FunctionInvocation parentMethodInvocation = (FunctionInvocation) parenthesizedExpression.getParent();
 				if (parentMethodInvocation.getExpression() == parenthesizedExpression)
 					return;
 			}
@@ -174,7 +174,7 @@ public class ExpressionsFix extends AbstractFix {
 		}
 
 		private static int getExpressionPrecedence(Expression expression) {
-			if (expression instanceof PostfixExpression || expression instanceof MethodInvocation) {
+			if (expression instanceof PostfixExpression || expression instanceof FunctionInvocation) {
 				return 0;
 			}
 			if (expression instanceof PrefixExpression) {
@@ -309,7 +309,7 @@ public class ExpressionsFix extends AbstractFix {
 		}
 	}
 	
-	public static IFix createAddParanoidalParenthesisFix(CompilationUnit compilationUnit, ASTNode[] coveredNodes) throws CoreException {
+	public static IFix createAddParanoidalParenthesisFix(JavaScriptUnit compilationUnit, ASTNode[] coveredNodes) throws CoreException {
 		if (coveredNodes == null)
 			return null;
 		
@@ -330,7 +330,7 @@ public class ExpressionsFix extends AbstractFix {
 		return new ExpressionsFix(FixMessages.ExpressionsFix_addParanoiacParenthesis_description, compilationUnit, new IFixRewriteOperation[] {op});
 	}
 	
-	public static IFix createRemoveUnnecessaryParenthesisFix(CompilationUnit compilationUnit, ASTNode[] nodes) {
+	public static IFix createRemoveUnnecessaryParenthesisFix(JavaScriptUnit compilationUnit, ASTNode[] nodes) {
 		// check sub-expressions in fully covered nodes
 		final ArrayList changedNodes= new ArrayList();
 		for (int i= 0; i < nodes.length; i++) {
@@ -346,7 +346,7 @@ public class ExpressionsFix extends AbstractFix {
 		return new ExpressionsFix(FixMessages.ExpressionsFix_removeUnnecessaryParenthesis_description, compilationUnit, new IFixRewriteOperation[] {op});
 	}
 	
-	public static IFix createCleanUp(CompilationUnit compilationUnit, 
+	public static IFix createCleanUp(JavaScriptUnit compilationUnit, 
 			boolean addParanoicParentesis,
 			boolean removeUnnecessaryParenthesis) {
 		
@@ -378,7 +378,7 @@ public class ExpressionsFix extends AbstractFix {
 		return binding.getQualifiedName().equals("java.lang.String"); //$NON-NLS-1$
 	}
 
-	protected ExpressionsFix(String name, CompilationUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations) {
+	protected ExpressionsFix(String name, JavaScriptUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations) {
 		super(name, compilationUnit, fixRewriteOperations);
 	}
 

@@ -20,16 +20,16 @@ import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IAccessRule;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionNodeFound;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnAnnotationOfType;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnArgumentName;
@@ -393,7 +393,7 @@ public final class CompletionEngine
 
 	long targetedElement;
 
-	IJavaProject javaProject;
+	IJavaScriptProject javaProject;
 	CompletionParser parser;
 	CompletionRequestor requestor;
 	CompletionProblemFactory problemFactory;
@@ -498,7 +498,7 @@ public final class CompletionEngine
 			SearchableEnvironment nameEnvironment,
 			CompletionRequestor requestor,
 			Map settings,
-			IJavaProject javaProject) {
+			IJavaScriptProject javaProject) {
 		super(settings);
 		this.javaProject = javaProject;
 		this.requestor = requestor;
@@ -959,9 +959,9 @@ public final class CompletionEngine
 					}
 
 					// Javadoc proposal
-					if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JAVADOC_METHOD_REF)) {
+					if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JSDOC_METHOD_REF)) {
 						char[] javadocCompletion = inlineTagCompletion(completion, JavadocTagConstants.TAG_LINK);
-						CompletionProposal proposal = this.createProposal(CompletionProposal.JAVADOC_METHOD_REF, this.actualCompletionPosition);
+						CompletionProposal proposal = this.createProposal(CompletionProposal.JSDOC_METHOD_REF, this.actualCompletionPosition);
 						proposal.setDeclarationSignature(getSignature(method.declaringClass));
 						proposal.setSignature(getSignature(method));
 						MethodBinding original = method.original();
@@ -1007,7 +1007,7 @@ public final class CompletionEngine
 //						proposal.setDeclarationSignature(getSignature(method.declaringClass));
 //						proposal.setSignature(getSignature(method));
 	 					proposal.setSignature(defaultSignature);
-//						MethodBinding original = method.original();
+//						FunctionBinding original = method.original();
 //						if(original != method) {
 //							proposal.setOriginalSignature(getSignature(original));
 //						}
@@ -1030,12 +1030,12 @@ public final class CompletionEngine
 					}
 
 					// Javadoc proposal
-					if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JAVADOC_METHOD_REF)) {
+					if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JSDOC_METHOD_REF)) {
 						char[] javadocCompletion = inlineTagCompletion(completion, JavadocTagConstants.TAG_LINK);
-						CompletionProposal proposal = this.createProposal(CompletionProposal.JAVADOC_METHOD_REF, this.actualCompletionPosition);
+						CompletionProposal proposal = this.createProposal(CompletionProposal.JSDOC_METHOD_REF, this.actualCompletionPosition);
 //						proposal.setDeclarationSignature(getSignature(method.declaringClass));
 //						proposal.setSignature(getSignature(method));
-//						MethodBinding original = method.original();
+//						FunctionBinding original = method.original();
 //						if(original != method) {
 //							proposal.setOriginalSignature(getSignature(original));
 //						}
@@ -1106,9 +1106,9 @@ public final class CompletionEngine
 				}
 
 				// Javadoc completions
-				if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JAVADOC_FIELD_REF)) {
+				if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JSDOC_FIELD_REF)) {
 					char[] javadocCompletion = inlineTagCompletion(completion, JavadocTagConstants.TAG_LINK);
-					CompletionProposal proposal = this.createProposal(CompletionProposal.JAVADOC_FIELD_REF, this.actualCompletionPosition);
+					CompletionProposal proposal = this.createProposal(CompletionProposal.JSDOC_FIELD_REF, this.actualCompletionPosition);
 //					proposal.setDeclarationSignature(getSignature(variableBinding.declaringClass));
 					proposal.setSignature(getSignature(variableBinding.type));
 					proposal.setDeclarationPackageName(packageName);
@@ -1142,7 +1142,7 @@ public final class CompletionEngine
 
 
 
-	// this code is derived from MethodBinding#areParametersCompatibleWith(TypeBinding[])
+	// this code is derived from FunctionBinding#areParametersCompatibleWith(TypeBinding[])
 	private final boolean areParametersCompatibleWith(TypeBinding[] parameters, TypeBinding[] arguments, boolean isVarargs) {
 		int paramLength = parameters.length;
 		int argLength = arguments.length;
@@ -2147,7 +2147,7 @@ public final class CompletionEngine
 				// get the source positions of the completion identifier
 				if (qualifiedBinding instanceof ReferenceBinding && !(qualifiedBinding instanceof TypeVariableBinding)) {
 					if (!this.requestor.isIgnored(CompletionProposal.TYPE_REF) ||
-							((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JAVADOC_TYPE_REF))) {
+							((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JSDOC_TYPE_REF))) {
 						int rangeStart = typeRef.completeInText() ? typeRef.sourceStart : (int) (completionPosition >>> 32);
 						setSourceRange(rangeStart, (int) completionPosition);
 						findMemberTypes(this.completionToken,
@@ -2185,7 +2185,7 @@ public final class CompletionEngine
 					setSourceRange(rangeStart, (int) completionPosition);
 
 					if (!this.requestor.isIgnored(CompletionProposal.FIELD_REF)
-							|| !this.requestor.isIgnored(CompletionProposal.JAVADOC_FIELD_REF)) {
+							|| !this.requestor.isIgnored(CompletionProposal.JSDOC_FIELD_REF)) {
 						findFields(this.completionToken,
 							receiverType,
 							scope,
@@ -2203,7 +2203,7 @@ public final class CompletionEngine
 					}
 
 					if (!this.requestor.isIgnored(CompletionProposal.METHOD_REF)
-							|| !this.requestor.isIgnored(CompletionProposal.JAVADOC_METHOD_REF)) {
+							|| !this.requestor.isIgnored(CompletionProposal.JSDOC_METHOD_REF)) {
 						findMethods(this.completionToken,
 							null,
 							null,
@@ -2296,14 +2296,14 @@ public final class CompletionEngine
 					findConstructors(ref, argTypes, scope, allocExpression, false);
 				}
 			} else if (astNode instanceof CompletionOnJavadocParamNameReference) {
-				if (!this.requestor.isIgnored(CompletionProposal.JAVADOC_PARAM_REF)) {
+				if (!this.requestor.isIgnored(CompletionProposal.JSDOC_PARAM_REF)) {
 					CompletionOnJavadocParamNameReference paramRef = (CompletionOnJavadocParamNameReference) astNode;
 					setSourceRange(paramRef.tagSourceStart, paramRef.tagSourceEnd);
 					findJavadocParamNames(paramRef.token, paramRef.missingParams, false);
 					findJavadocParamNames(paramRef.token, paramRef.missingTypeParams, true);
 				}
 			} else if (astNode instanceof CompletionOnJavadocTypeParamReference) {
-				if (!this.requestor.isIgnored(CompletionProposal.JAVADOC_PARAM_REF)) {
+				if (!this.requestor.isIgnored(CompletionProposal.JSDOC_PARAM_REF)) {
 					CompletionOnJavadocTypeParamReference paramRef = (CompletionOnJavadocTypeParamReference) astNode;
 					setSourceRange(paramRef.tagSourceStart, paramRef.tagSourceEnd);
 					findJavadocParamNames(paramRef.token, paramRef.missingParams, true);
@@ -2423,7 +2423,7 @@ public final class CompletionEngine
 				System.out.println("Exception caught by CompletionEngine:"); //$NON-NLS-1$
 				e.printStackTrace(System.out);
 			}
-		} catch(JavaModelException e) {
+		} catch(JavaScriptModelException e) {
 			// Do nothing
 		}
 		if(!contextAccepted) {
@@ -3399,9 +3399,9 @@ public final class CompletionEngine
 								this.printDebug(proposal);
 							}
 						}
-						if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JAVADOC_METHOD_REF)) {
+						if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JSDOC_METHOD_REF)) {
 							char[] javadocCompletion = inlineTagCompletion(completion, JavadocTagConstants.TAG_LINK);
-							CompletionProposal proposal = this.createProposal(CompletionProposal.JAVADOC_METHOD_REF, this.actualCompletionPosition);
+							CompletionProposal proposal = this.createProposal(CompletionProposal.JSDOC_METHOD_REF, this.actualCompletionPosition);
 							proposal.setDeclarationSignature(getSignature(currentType));
 							proposal.setSignature(getSignature(constructor));
 							MethodBinding original = constructor.original();
@@ -3655,9 +3655,9 @@ public final class CompletionEngine
 			}
 
 			// Javadoc completions
-			if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JAVADOC_FIELD_REF)) {
+			if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JSDOC_FIELD_REF)) {
 				char[] javadocCompletion = inlineTagCompletion(completion, JavadocTagConstants.TAG_LINK);
-				CompletionProposal proposal = this.createProposal(CompletionProposal.JAVADOC_FIELD_REF, this.actualCompletionPosition);
+				CompletionProposal proposal = this.createProposal(CompletionProposal.JSDOC_FIELD_REF, this.actualCompletionPosition);
 				proposal.setDeclarationSignature(getSignature(field.declaringClass));
 				proposal.setSignature(getSignature(field.type));
 				proposal.setDeclarationPackageName(field.declaringClass.qualifiedPackageName());
@@ -3675,9 +3675,9 @@ public final class CompletionEngine
 					this.printDebug(proposal);
 				}
 				// Javadoc value completion for static fields
-				if (field.isStatic() && !this.requestor.isIgnored(CompletionProposal.JAVADOC_VALUE_REF)) {
+				if (field.isStatic() && !this.requestor.isIgnored(CompletionProposal.JSDOC_VALUE_REF)) {
 					javadocCompletion = inlineTagCompletion(completion, JavadocTagConstants.TAG_VALUE);
-					CompletionProposal valueProposal = this.createProposal(CompletionProposal.JAVADOC_VALUE_REF, this.actualCompletionPosition);
+					CompletionProposal valueProposal = this.createProposal(CompletionProposal.JSDOC_VALUE_REF, this.actualCompletionPosition);
 					valueProposal.setDeclarationSignature(getSignature(field.declaringClass));
 					valueProposal.setSignature(getSignature(field.type));
 					valueProposal.setDeclarationPackageName(field.declaringClass.qualifiedPackageName());
@@ -4401,7 +4401,7 @@ public final class CompletionEngine
 					importName,
 					findMembers,
 					this.options.camelCaseMatch,
-					IJavaSearchConstants.TYPE,
+					IJavaScriptSearchConstants.TYPE,
 					this);
 			acceptTypes(null);
 		}
@@ -4607,9 +4607,9 @@ public final class CompletionEngine
 			relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE); // no access restriction for keywors
 
 			this.noProposal = false;
-			if (!this.requestor.isIgnored(CompletionProposal.JAVADOC_BLOCK_TAG)) {
+			if (!this.requestor.isIgnored(CompletionProposal.JSDOC_BLOCK_TAG)) {
 				char[] possibleTag = possibleTags[i];
-				CompletionProposal proposal = this.createProposal(CompletionProposal.JAVADOC_BLOCK_TAG, this.actualCompletionPosition);
+				CompletionProposal proposal = this.createProposal(CompletionProposal.JSDOC_BLOCK_TAG, this.actualCompletionPosition);
 				proposal.setName(possibleTag);
 				int tagLength = possibleTag.length;
 				char[] completion = new char[1+tagLength];
@@ -4639,9 +4639,9 @@ public final class CompletionEngine
 			relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE); // no access restriction for keywors
 
 			this.noProposal = false;
-			if (!this.requestor.isIgnored(CompletionProposal.JAVADOC_INLINE_TAG)) {
+			if (!this.requestor.isIgnored(CompletionProposal.JSDOC_INLINE_TAG)) {
 				char[] possibleTag = possibleTags[i];
-				CompletionProposal proposal = this.createProposal(CompletionProposal.JAVADOC_INLINE_TAG, this.actualCompletionPosition);
+				CompletionProposal proposal = this.createProposal(CompletionProposal.JSDOC_INLINE_TAG, this.actualCompletionPosition);
 				proposal.setName(possibleTag);
 				int tagLength = possibleTag.length;
 //				boolean inlineTagStarted = javadocTag.completeInlineTagStarted();
@@ -5121,8 +5121,8 @@ public final class CompletionEngine
 			if (token == null || CharOperation.prefixEquals(token, argName)) {
 
 				this.noProposal = false;
-				if (!this.requestor.isIgnored(CompletionProposal.JAVADOC_PARAM_REF)) {
-					CompletionProposal proposal = this.createProposal(CompletionProposal.JAVADOC_PARAM_REF, this.actualCompletionPosition);
+				if (!this.requestor.isIgnored(CompletionProposal.JSDOC_PARAM_REF)) {
+					CompletionProposal proposal = this.createProposal(CompletionProposal.JSDOC_PARAM_REF, this.actualCompletionPosition);
 					proposal.setName(argName);
 					char[] completion = isTypeParam ? CharOperation.concat('<', argName, '>') : argName;
 					proposal.setCompletion(completion);
@@ -5464,7 +5464,7 @@ public final class CompletionEngine
 
 //			ReferenceBinding superTypeWithSameErasure = (ReferenceBinding)receiverType.findSuperTypeWithSameErasure(method.declaringClass);
 //			if (method.declaringClass != superTypeWithSameErasure) {
-//				MethodBinding[] otherMethods = superTypeWithSameErasure.getMethods(method.selector);
+//				FunctionBinding[] otherMethods = superTypeWithSameErasure.getMethods(method.selector);
 //				for (int i = 0; i < otherMethods.length; i++) {
 //					if(otherMethods[i].original() == method.original()) {
 //						method = otherMethods[i];
@@ -5615,9 +5615,9 @@ public final class CompletionEngine
 			}
 
 			// Javadoc proposal
-			if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JAVADOC_METHOD_REF)) {
+			if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JSDOC_METHOD_REF)) {
 				char[] javadocCompletion = inlineTagCompletion(completion, JavadocTagConstants.TAG_LINK);
-				CompletionProposal proposal = this.createProposal(CompletionProposal.JAVADOC_METHOD_REF, this.actualCompletionPosition);
+				CompletionProposal proposal = this.createProposal(CompletionProposal.JSDOC_METHOD_REF, this.actualCompletionPosition);
 				proposal.setDeclarationSignature(getSignature(method.declaringClass));
 				proposal.setSignature(getSignature(method));
 				MethodBinding original = method.original();
@@ -6242,7 +6242,7 @@ public final class CompletionEngine
 		}
 	}
 
-	// Helper method for findMethods(char[], MethodBinding[], Scope, ObjectVector, boolean, boolean, boolean, TypeBinding)
+	// Helper method for findMethods(char[], FunctionBinding[], Scope, ObjectVector, boolean, boolean, boolean, TypeBinding)
 	private void findLocalMethodDeclarations(
 		char[] methodName,
 		MethodBinding[] methods,
@@ -6861,8 +6861,8 @@ public final class CompletionEngine
 				for (int i = 0; i < length; i++) {
 					parameterTypeSignatures[i] = Signature.createTypeSignature(parameterTypeNames[i], false);
 				}
-				IMethod searchedMethod = typeHandle.getMethod(String.valueOf(method.selector), parameterTypeSignatures);
-				IMethod[] foundMethods = typeHandle.findMethods(searchedMethod);
+				IFunction searchedMethod = typeHandle.getFunction(String.valueOf(method.selector), parameterTypeSignatures);
+				IFunction[] foundMethods = typeHandle.findMethods(searchedMethod);
 
 				if(foundMethods != null) {
 					int len = foundMethods.length;
@@ -6870,7 +6870,7 @@ public final class CompletionEngine
 						try {
 							SourceMethod sourceMethod = (SourceMethod) foundMethods[0];
 							parameterNames = ((SourceMethodElementInfo) sourceMethod.getElementInfo()).getArgumentNames();
-						} catch (JavaModelException e) {
+						} catch (JavaScriptModelException e) {
 							// method doesn't exist: ignore
 						}
 					}
@@ -7088,7 +7088,7 @@ public final class CompletionEngine
 
 		boolean proposeType =
 			!this.requestor.isIgnored(CompletionProposal.TYPE_REF) ||
-			((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JAVADOC_TYPE_REF));
+			((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JSDOC_TYPE_REF));
 		boolean proposeAllMemberTypes = !this.assistNodeIsConstructor;
 
 		if (!skip && proposeType && scope.enclosingSourceType() != null) {
@@ -7317,15 +7317,15 @@ public final class CompletionEngine
 								'.');
 					this.knownTypes.put(fullyQualifiedTypeName, this);
 				}
-				int searchFor = IJavaSearchConstants.TYPE;
+				int searchFor = IJavaScriptSearchConstants.TYPE;
 				if(this.assistNodeIsClass) {
-					searchFor = IJavaSearchConstants.CLASS;
+					searchFor = IJavaScriptSearchConstants.CLASS;
 				} else if(this.assistNodeIsInterface) {
-					searchFor = IJavaSearchConstants.INTERFACE_AND_ANNOTATION;
+					searchFor = IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION;
 				} else if(this.assistNodeIsEnum) {
-					searchFor = IJavaSearchConstants.ENUM;
+					searchFor = IJavaScriptSearchConstants.ENUM;
 				} else if(this.assistNodeIsAnnotation) {
-					searchFor = IJavaSearchConstants.ANNOTATION_TYPE;
+					searchFor = IJavaScriptSearchConstants.ANNOTATION_TYPE;
 				}
 				this.nameEnvironment.findTypes(
 						token,
@@ -7348,7 +7348,7 @@ public final class CompletionEngine
 
 		boolean proposeType =
 			!this.requestor.isIgnored(CompletionProposal.TYPE_REF) ||
-			((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JAVADOC_TYPE_REF));
+			((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JSDOC_TYPE_REF));
 
 		char[] qualifiedName =
 			CharOperation.concatWith(packageBinding.compoundName, token, '.');
@@ -7436,15 +7436,15 @@ public final class CompletionEngine
 		}
 
 		if(proposeType) {
-			int searchFor = IJavaSearchConstants.TYPE;
+			int searchFor = IJavaScriptSearchConstants.TYPE;
 			if(this.assistNodeIsClass) {
-				searchFor = IJavaSearchConstants.CLASS;
+				searchFor = IJavaScriptSearchConstants.CLASS;
 			} else if(this.assistNodeIsInterface) {
-				searchFor = IJavaSearchConstants.INTERFACE_AND_ANNOTATION;
+				searchFor = IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION;
 			} else if(this.assistNodeIsEnum) {
-				searchFor = IJavaSearchConstants.ENUM;
+				searchFor = IJavaScriptSearchConstants.ENUM;
 			} else if(this.assistNodeIsAnnotation) {
-				searchFor = IJavaSearchConstants.ANNOTATION_TYPE;
+				searchFor = IJavaScriptSearchConstants.ANNOTATION_TYPE;
 			}
 			this.nameEnvironment.findTypes(
 					qualifiedName,
@@ -9208,9 +9208,9 @@ public final class CompletionEngine
 		}
 
 		// Create javadoc text proposal if necessary
-		if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JAVADOC_TYPE_REF)) {
+		if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JSDOC_TYPE_REF)) {
 			char[] javadocCompletion= inlineTagCompletion(completionName, JavadocTagConstants.TAG_LINK);
-			CompletionProposal proposal = CompletionProposal.create(CompletionProposal.JAVADOC_TYPE_REF, this.actualCompletionPosition - this.offset);
+			CompletionProposal proposal = CompletionProposal.create(CompletionProposal.JSDOC_TYPE_REF, this.actualCompletionPosition - this.offset);
 			proposal.nameLookup = this.nameEnvironment.nameLookup;
 			proposal.completionEngine = this;
 			proposal.setDeclarationSignature(packageName);
@@ -9255,9 +9255,9 @@ public final class CompletionEngine
 		}
 
 		// Create javadoc text proposal if necessary
-		if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JAVADOC_TYPE_REF)) {
+		if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JSDOC_TYPE_REF)) {
 			char[] javadocCompletion= inlineTagCompletion(completionName, JavadocTagConstants.TAG_LINK);
-			CompletionProposal proposal = CompletionProposal.create(CompletionProposal.JAVADOC_TYPE_REF, this.actualCompletionPosition - this.offset);
+			CompletionProposal proposal = CompletionProposal.create(CompletionProposal.JSDOC_TYPE_REF, this.actualCompletionPosition - this.offset);
 			proposal.nameLookup = this.nameEnvironment.nameLookup;
 			proposal.completionEngine = this;
 			proposal.setDeclarationSignature(refBinding.qualifiedPackageName());
@@ -9300,9 +9300,9 @@ public final class CompletionEngine
 		}
 
 		// Create javadoc text proposal if necessary
-		if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JAVADOC_TYPE_REF)) {
+		if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JSDOC_TYPE_REF)) {
 			char[] javadocCompletion= inlineTagCompletion(completionName, JavadocTagConstants.TAG_LINK);
-			CompletionProposal proposal = CompletionProposal.create(CompletionProposal.JAVADOC_TYPE_REF, this.actualCompletionPosition - this.offset);
+			CompletionProposal proposal = CompletionProposal.create(CompletionProposal.JSDOC_TYPE_REF, this.actualCompletionPosition - this.offset);
 			proposal.nameLookup = this.nameEnvironment.nameLookup;
 			proposal.completionEngine = this;
 			proposal.setSignature(getSignature(typeParameter.binding));
@@ -9378,10 +9378,10 @@ public final class CompletionEngine
 				buffer.append("LOCAL_VARIABLE_REF"); //$NON-NLS-1$
 				break;
 			case CompletionProposal.METHOD_DECLARATION :
-				buffer.append("METHOD_DECLARATION"); //$NON-NLS-1$
+				buffer.append("FUNCTION_DECLARATION"); //$NON-NLS-1$
 				break;
 			case CompletionProposal.METHOD_REF :
-				buffer.append("METHOD_REF"); //$NON-NLS-1$
+				buffer.append("FUNCTION_REF"); //$NON-NLS-1$
 				break;
 			case CompletionProposal.PACKAGE_REF :
 				buffer.append("PACKAGE_REF"); //$NON-NLS-1$

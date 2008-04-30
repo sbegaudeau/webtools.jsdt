@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.internal.ui.packageview.SelectionTransferDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
 
@@ -53,11 +53,11 @@ class CallHierarchyTransferDropAdapter extends SelectionTransferDropAdapter {
 			super.drop(target, event);
 			return;
 		}	
-		IMethod input= getInputElement(getSelection());
+		IFunction input= getInputElement(getSelection());
 		fCallHierarchyViewPart.setMethod(input);
 	}
 	
-	private static IMethod getInputElement(ISelection selection) {
+	private static IFunction getInputElement(ISelection selection) {
 		Object single= SelectionUtil.getSingleElement(selection);
 		if (single == null)
 			return null;
@@ -67,10 +67,10 @@ class CallHierarchyTransferDropAdapter extends SelectionTransferDropAdapter {
     /**
      * Converts the input to a possible input candidates
      */ 
-    public static IMethod getCandidate(Object input) {
-        if (!(input instanceof IMethod)) {
+    public static IFunction getCandidate(Object input) {
+        if (!(input instanceof IFunction)) {
             return null;
         }
-        return (IMethod) input;
+        return (IFunction) input;
     }
 }

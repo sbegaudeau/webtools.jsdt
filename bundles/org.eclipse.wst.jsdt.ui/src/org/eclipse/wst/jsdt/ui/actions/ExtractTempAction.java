@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractTempRefactoring;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -75,7 +75,7 @@ public class ExtractTempAction extends SelectionDispatchAction {
 		try{
 			final ExtractTempRefactoring refactoring= new ExtractTempRefactoring(SelectionConverter.getInputAsCompilationUnit(fEditor), selection.getOffset(), selection.getLength());
 			new RefactoringStarter().activate(refactoring, new ExtractTempWizard(refactoring), getShell(), RefactoringMessages.ExtractTempAction_extract_temp, RefactoringSaveHelper.SAVE_NOTHING);
-		} catch (JavaModelException e){
+		} catch (JavaScriptModelException e){
 			ExceptionHandler.handle(e, RefactoringMessages.ExtractTempAction_extract_temp, RefactoringMessages.NewTextRefactoringAction_exception); 
 		}	
 	}

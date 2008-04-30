@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 
 /**
@@ -37,7 +37,7 @@ public String getElementName() {
 	return this.name;
 }
 /**
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public int getElementType() {
 	return PACKAGE_DECLARATION;
@@ -51,8 +51,8 @@ protected char getHandleMementoDelimiter() {
 /*
  * @see JavaElement#getPrimaryElement(boolean)
  */
-public IJavaElement getPrimaryElement(boolean checkOwner) {
-	CompilationUnit cu = (CompilationUnit)getAncestor(COMPILATION_UNIT);
+public IJavaScriptElement getPrimaryElement(boolean checkOwner) {
+	CompilationUnit cu = (CompilationUnit)getAncestor(JAVASCRIPT_UNIT);
 	if (checkOwner && cu.isPrimary()) return this;
 	return cu.getPackageDeclaration(this.name);
 }

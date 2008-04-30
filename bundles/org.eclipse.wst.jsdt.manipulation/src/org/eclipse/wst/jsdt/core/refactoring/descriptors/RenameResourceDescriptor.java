@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 import org.eclipse.wst.jsdt.internal.core.refactoring.descriptors.DescriptorMessages;
 
 /**
@@ -32,7 +32,7 @@ import org.eclipse.wst.jsdt.internal.core.refactoring.descriptors.DescriptorMess
  * 
  * @since 3.3
  */
-public final class RenameResourceDescriptor extends JavaRefactoringDescriptor {
+public final class RenameResourceDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/** The name attribute */
 	private String fName= null;
@@ -44,7 +44,7 @@ public final class RenameResourceDescriptor extends JavaRefactoringDescriptor {
 	 * Creates a new refactoring descriptor.
 	 */
 	public RenameResourceDescriptor() {
-		super(IJavaRefactorings.RENAME_RESOURCE);
+		super(IJavaScriptRefactorings.RENAME_RESOURCE);
 	}
 
 	/**
@@ -52,8 +52,8 @@ public final class RenameResourceDescriptor extends JavaRefactoringDescriptor {
 	 */
 	protected void populateArgumentMap() {
 		super.populateArgumentMap();
-		fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_INPUT, resourceToHandle(getProject(), fResource));
-		fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_NAME, fName);
+		fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_INPUT, resourceToHandle(getProject(), fResource));
+		fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_NAME, fName);
 	}
 
 	/**

@@ -184,7 +184,7 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 	 */
 	public boolean isPackageMemberTypeDeclaration() {
 		ASTNode parent = getParent();
-		return (parent instanceof CompilationUnit);
+		return (parent instanceof JavaScriptUnit);
 	}
 
 	/**

@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
 import org.eclipse.wst.jsdt.core.dom.TryStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
@@ -40,7 +40,7 @@ public abstract class AbstractExceptionAnalyzer extends ASTVisitor {
 
 	public abstract boolean visit(ThrowStatement node);
 	
-	public abstract boolean visit(MethodInvocation node);
+	public abstract boolean visit(FunctionInvocation node);
 	
 	public abstract boolean visit(ClassInstanceCreation node);
 	

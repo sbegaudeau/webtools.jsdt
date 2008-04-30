@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.text.java;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 
 /**
  * Context information for quick fix and quick assist processors.
@@ -27,7 +27,7 @@ public interface IInvocationContext {
 	/**
 	 * @return Returns the current compilation unit.
 	 */
-	ICompilationUnit getCompilationUnit();
+	IJavaScriptUnit getCompilationUnit();
 
 	/**
 	 * @return Returns the offset of the current selection
@@ -47,7 +47,7 @@ public interface IInvocationContext {
 	 * they can't handle. (see {@link org.eclipse.wst.jsdt.core.dom.AST#apiLevel()}).
 	 * @return Returns the root of the AST corresponding to the current compilation unit.
 	 */
-	CompilationUnit getASTRoot();
+	JavaScriptUnit getASTRoot();
 
 	/**
 	 * Convenience method to evaluate the AST node covering the current selection.

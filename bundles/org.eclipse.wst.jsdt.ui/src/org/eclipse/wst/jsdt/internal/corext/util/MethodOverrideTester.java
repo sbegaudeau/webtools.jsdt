@@ -17,11 +17,11 @@ import java.util.Map;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 
 
@@ -70,7 +70,7 @@ public class MethodOverrideTester {
 	private final IType fFocusType;
 	private final ITypeHierarchy fHierarchy;
 	
-	private Map /* <IMethod, Substitutions> */ fMethodSubstitutions;
+	private Map /* <IFunction, Substitutions> */ fMethodSubstitutions;
 	private Map /* <IType, Substitutions> */ fTypeVariableSubstitutions;
 			
 	public MethodOverrideTester(IType focusType, ITypeHierarchy hierarchy) {
@@ -96,11 +96,11 @@ public class MethodOverrideTester {
 	 * not override nor implement a method. <code>null</code> is returned it the given method does not override
 	 * a method. When searching, super class are examined before implemented interfaces.
 	 * @param testVisibility If true the result is tested on visibility. Null is returned if the method is not visible.
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public IMethod findDeclaringMethod(IMethod overriding, boolean testVisibility) throws JavaModelException {
-		IMethod result= null;
-		IMethod overridden= findOverriddenMethod(overriding, testVisibility);
+	public IFunction findDeclaringMethod(IFunction overriding, boolean testVisibility) throws JavaScriptModelException {
+		IFunction result= null;
+		IFunction overridden= findOverriddenMethod(overriding, testVisibility);
 		while (overridden != null) {
 			result= overridden;
 			overridden= findOverriddenMethod(result, testVisibility);
@@ -112,9 +112,9 @@ public class MethodOverrideTester {
 	 * Finds the method that is overridden by the given method.
 	 * First the super class is examined and then the implemented interfaces.
 	 * @param testVisibility If true the result is tested on visibility. Null is returned if the method is not visible.
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public IMethod findOverriddenMethod(IMethod overriding, boolean testVisibility) throws JavaModelException {
+	public IFunction findOverriddenMethod(IFunction overriding, boolean testVisibility) throws JavaScriptModelException {
 		int flags= overriding.getFlags();
 		if (Flags.isPrivate(flags) || Flags.isStatic(flags) || overriding.isConstructor()) {
 			return null;
@@ -125,7 +125,7 @@ public class MethodOverrideTester {
 			return null;
 		IType superClass= fHierarchy.getSuperclass(type);
 		if (superClass != null) {
-			IMethod res= findOverriddenMethodInHierarchy(superClass, overriding);
+			IFunction res= findOverriddenMethodInHierarchy(superClass, overriding);
 			if (res != null && !Flags.isPrivate(res.getFlags())) {
 				if (!testVisibility || JavaModelUtil.isVisibleInHierarchy(res, type.getPackageFragment())) {
 					return res;
@@ -135,7 +135,7 @@ public class MethodOverrideTester {
 		if (!overriding.isConstructor()) {
 			IType[] interfaces= fHierarchy.getSuperInterfaces(type);
 			for (int i= 0; i < interfaces.length; i++) {
-				IMethod res= findOverriddenMethodInHierarchy(interfaces[i], overriding);
+				IFunction res= findOverriddenMethodInHierarchy(interfaces[i], overriding);
 				if (res != null) {
 					return res; // methods from interfaces are always public and therefore visible
 				}
@@ -150,16 +150,16 @@ public class MethodOverrideTester {
 	 * 	@param type The type to find methods in
 	 * @param overriding The overriding method
 	 * @return The first overridden method or <code>null</code> if no method is overridden
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public IMethod findOverriddenMethodInHierarchy(IType type, IMethod overriding) throws JavaModelException {
-		IMethod method= findOverriddenMethodInType(type, overriding);
+	public IFunction findOverriddenMethodInHierarchy(IType type, IFunction overriding) throws JavaScriptModelException {
+		IFunction method= findOverriddenMethodInType(type, overriding);
 		if (method != null) {
 			return method;
 		}
 		IType superClass= fHierarchy.getSuperclass(type);
 		if (superClass != null) {
-			IMethod res=  findOverriddenMethodInHierarchy(superClass, overriding);
+			IFunction res=  findOverriddenMethodInHierarchy(superClass, overriding);
 			if (res != null) {
 				return res;
 			}
@@ -167,7 +167,7 @@ public class MethodOverrideTester {
 		if (!overriding.isConstructor()) {
 			IType[] superInterfaces= fHierarchy.getSuperInterfaces(type);
 			for (int i= 0; i < superInterfaces.length; i++) {
-				IMethod res= findOverriddenMethodInHierarchy(superInterfaces[i], overriding);
+				IFunction res= findOverriddenMethodInHierarchy(superInterfaces[i], overriding);
 				if (res != null) {
 					return res;
 				}
@@ -182,10 +182,10 @@ public class MethodOverrideTester {
 	 * @param overriddenType The type to find methods in
 	 * @param overriding The overriding method
 	 * @return The first overridden method or <code>null</code> if no method is overridden
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public IMethod findOverriddenMethodInType(IType overriddenType, IMethod overriding) throws JavaModelException {
-		IMethod[] overriddenMethods= overriddenType.getMethods();
+	public IFunction findOverriddenMethodInType(IType overriddenType, IFunction overriding) throws JavaScriptModelException {
+		IFunction[] overriddenMethods= overriddenType.getFunctions();
 		for (int i= 0; i < overriddenMethods.length; i++) {
 			if (isSubsignature(overriding, overriddenMethods[i])) {
 				return overriddenMethods[i];
@@ -199,10 +199,10 @@ public class MethodOverrideTester {
 	 * @param overridingType The type to find methods in
 	 * @param overridden The overridden method
 	 * @return The overriding method or <code>null</code> if no method is overriding.
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public IMethod findOverridingMethodInType(IType overridingType, IMethod overridden) throws JavaModelException {
-		IMethod[] overridingMethods= overridingType.getMethods();
+	public IFunction findOverridingMethodInType(IType overridingType, IFunction overridden) throws JavaScriptModelException {
+		IFunction[] overridingMethods= overridingType.getFunctions();
 		for (int i= 0; i < overridingMethods.length; i++) {
 			if (isSubsignature(overridingMethods[i], overridden)) {
 				return overridingMethods[i];
@@ -219,9 +219,9 @@ public class MethodOverrideTester {
 	 * 		This is one of the requirements for m1 to override m2.
 	 * 		Accessibility and return types are not taken into account.
 	 * 		Note that subsignature is <em>not</em> symmetric!
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public boolean isSubsignature(IMethod overriding, IMethod overridden) throws JavaModelException {
+	public boolean isSubsignature(IFunction overriding, IFunction overridden) throws JavaScriptModelException {
 		if (!overridden.getElementName().equals(overriding.getElementName())) {
 			return false;
 		}
@@ -237,7 +237,7 @@ public class MethodOverrideTester {
 		return nParameters == 0 || hasCompatibleParameterTypes(overriding, overridden);
 	}
 
-	private boolean hasCompatibleTypeParameters(IMethod overriding, IMethod overridden) throws JavaModelException {
+	private boolean hasCompatibleTypeParameters(IFunction overriding, IFunction overridden) throws JavaScriptModelException {
 		ITypeParameter[] overriddenTypeParameters= overridden.getTypeParameters();
 		ITypeParameter[] overridingTypeParameters= overriding.getTypeParameters();
 		int nOverridingTypeParameters= overridingTypeParameters.length;
@@ -261,7 +261,7 @@ public class MethodOverrideTester {
 		return true;
 	}
 
-	private boolean hasCompatibleParameterTypes(IMethod overriding, IMethod overridden) throws JavaModelException {
+	private boolean hasCompatibleParameterTypes(IFunction overriding, IFunction overridden) throws JavaScriptModelException {
 		String[] overriddenParamTypes= overridden.getParameterTypes();
 		String[] overridingParamTypes= overriding.getParameterTypes();
 		
@@ -293,10 +293,10 @@ public class MethodOverrideTester {
 		return true;
 	}
 	
-	private String getVariableSubstitution(IMember context, String variableName) throws JavaModelException {
+	private String getVariableSubstitution(IMember context, String variableName) throws JavaScriptModelException {
 		IType type;
-		if (context instanceof IMethod) {
-			String subst= getMethodSubstitions((IMethod) context).getSubstitution(variableName);
+		if (context instanceof IFunction) {
+			String subst= getMethodSubstitions((IFunction) context).getSubstitution(variableName);
 			if (subst != null) {
 				return subst;
 			}
@@ -311,10 +311,10 @@ public class MethodOverrideTester {
 		return variableName; // not a type variable
 	}
 	
-	private String getVariableErasure(IMember context, String variableName) throws JavaModelException {
+	private String getVariableErasure(IMember context, String variableName) throws JavaScriptModelException {
 		IType type;
-		if (context instanceof IMethod) {
-			String subst= getMethodSubstitions((IMethod) context).getErasure(variableName);
+		if (context instanceof IFunction) {
+			String subst= getMethodSubstitions((IFunction) context).getErasure(variableName);
 			if (subst != null) {
 				return subst;
 			}
@@ -332,7 +332,7 @@ public class MethodOverrideTester {
 	/*
 	 * Returns the substitutions for a method's type parameters
 	 */
-	private Substitutions getMethodSubstitions(IMethod method) throws JavaModelException {
+	private Substitutions getMethodSubstitions(IFunction method) throws JavaScriptModelException {
 		if (fMethodSubstitutions == null) {
 			fMethodSubstitutions= new LRUMap(3);
 		}
@@ -358,7 +358,7 @@ public class MethodOverrideTester {
 	/*
 	 * Returns the substitutions for a type's type parameters
 	 */
-	private Substitutions getTypeSubstitions(IType type) throws JavaModelException {
+	private Substitutions getTypeSubstitions(IType type) throws JavaScriptModelException {
 		if (fTypeVariableSubstitutions == null) {
 			fTypeVariableSubstitutions= new HashMap();
 			computeSubstitutions(fFocusType, null, null);
@@ -370,7 +370,7 @@ public class MethodOverrideTester {
 		return subst;
 	}
 	
-	private void computeSubstitutions(IType instantiatedType, IType instantiatingType, String[] typeArguments) throws JavaModelException {
+	private void computeSubstitutions(IType instantiatedType, IType instantiatingType, String[] typeArguments) throws JavaScriptModelException {
 		Substitutions s= new Substitutions();
 		fTypeVariableSubstitutions.put(instantiatedType, s);
 		
@@ -424,7 +424,7 @@ public class MethodOverrideTester {
 		}
 	}
 	
-	private String getTypeParameterErasure(ITypeParameter typeParameter, IType context) throws JavaModelException {
+	private String getTypeParameterErasure(ITypeParameter typeParameter, IType context) throws JavaScriptModelException {
 		String[] bounds= typeParameter.getBounds();
 		if (bounds.length > 0) {
 			return getSubstitutedTypeName(Signature.createTypeSignature(bounds[0], false), context);
@@ -439,17 +439,17 @@ public class MethodOverrideTester {
 	 * @param typeSig The type signature to translate
 	 * @param context The context for the substitution
 	 * @return a type name
-	 * @throws JavaModelException 
+	 * @throws JavaScriptModelException 
 	 */
-	private String getSubstitutedTypeName(String typeSig, IMember context) throws JavaModelException {
+	private String getSubstitutedTypeName(String typeSig, IMember context) throws JavaScriptModelException {
 		return internalGetSubstitutedTypeName(typeSig, context, false, new StringBuffer()).toString();
 	}
 	
-	private String getErasedTypeName(String typeSig, IMember context) throws JavaModelException {
+	private String getErasedTypeName(String typeSig, IMember context) throws JavaScriptModelException {
 		return internalGetSubstitutedTypeName(typeSig, context, true, new StringBuffer()).toString();
 	}
 		
-	private StringBuffer internalGetSubstitutedTypeName(String typeSig, IMember context, boolean erasure, StringBuffer buf) throws JavaModelException {
+	private StringBuffer internalGetSubstitutedTypeName(String typeSig, IMember context, boolean erasure, StringBuffer buf) throws JavaScriptModelException {
 		int sigKind= Signature.getTypeSignatureKind(typeSig);
 		switch (sigKind) {
 			case Signature.BASE_TYPE_SIGNATURE:

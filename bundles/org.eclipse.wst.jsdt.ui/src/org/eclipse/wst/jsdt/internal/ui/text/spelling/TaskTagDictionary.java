@@ -17,7 +17,7 @@ import java.util.StringTokenizer;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.AbstractSpellDictionary;
 
 /**
@@ -39,7 +39,7 @@ public class TaskTagDictionary extends AbstractSpellDictionary implements IPrope
 	 */
 	protected synchronized boolean load(final URL url) {
 
-		final Plugin plugin= JavaCore.getPlugin();
+		final Plugin plugin= JavaScriptCore.getPlugin();
 		if (plugin != null) {
 
 			plugin.getPluginPreferences().addPropertyChangeListener(this);
@@ -53,7 +53,7 @@ public class TaskTagDictionary extends AbstractSpellDictionary implements IPrope
 	 */
 	public void propertyChange(final PropertyChangeEvent event) {
 
-		if (JavaCore.COMPILER_TASK_TAGS.equals(event.getProperty()))
+		if (JavaScriptCore.COMPILER_TASK_TAGS.equals(event.getProperty()))
 			updateTaskTags();
 	}
 
@@ -62,7 +62,7 @@ public class TaskTagDictionary extends AbstractSpellDictionary implements IPrope
 	 */
 	public synchronized void unload() {
 
-		final Plugin plugin= JavaCore.getPlugin();
+		final Plugin plugin= JavaScriptCore.getPlugin();
 		if (plugin != null)
 			plugin.getPluginPreferences().removePropertyChangeListener(this);
 
@@ -76,7 +76,7 @@ public class TaskTagDictionary extends AbstractSpellDictionary implements IPrope
 	 */
 	protected boolean updateTaskTags() {
 
-		final String tags= JavaCore.getOption(JavaCore.COMPILER_TASK_TAGS);
+		final String tags= JavaScriptCore.getOption(JavaScriptCore.COMPILER_TASK_TAGS);
 		if (tags != null) {
 
 			unload();

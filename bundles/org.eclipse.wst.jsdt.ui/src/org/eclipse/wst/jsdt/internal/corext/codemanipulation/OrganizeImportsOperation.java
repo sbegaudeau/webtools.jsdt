@@ -29,17 +29,17 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
@@ -48,8 +48,8 @@ import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
@@ -120,13 +120,13 @@ public class OrganizeImportsOperation implements IWorkspaceRunnable {
 		private SourceRange[] fSourceRanges;
 		
 		
-		public TypeReferenceProcessor(Set oldSingleImports, Set oldDemandImports, CompilationUnit root, ImportRewrite impStructure, boolean ignoreLowerCaseNames) {
+		public TypeReferenceProcessor(Set oldSingleImports, Set oldDemandImports, JavaScriptUnit root, ImportRewrite impStructure, boolean ignoreLowerCaseNames) {
 			fOldSingleImports= oldSingleImports;
 			fOldDemandImports= oldDemandImports;
 			fImpStructure= impStructure;
 			fDoIgnoreLowerCaseNames= ignoreLowerCaseNames;
 			
-			ICompilationUnit cu= impStructure.getCompilationUnit();
+			IJavaScriptUnit cu= impStructure.getCompilationUnit();
 			
 			fImplicitImports= new HashSet(3);
 			fImplicitImports.add(""); //$NON-NLS-1$
@@ -137,7 +137,7 @@ public class OrganizeImportsOperation implements IWorkspaceRunnable {
 			
 			fCurrPackage= (IPackageFragment) cu.getParent();
 			
-			fAllowDefaultPackageImports= cu.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true).equals(JavaCore.VERSION_1_3);
+			fAllowDefaultPackageImports= cu.getJavaScriptProject().getOption(JavaScriptCore.COMPILER_COMPLIANCE, true).equals(JavaScriptCore.VERSION_1_3);
 			
 			fImportsAdded= new HashSet();
 			fUnresolvedTypes= new HashMap();
@@ -165,7 +165,7 @@ public class OrganizeImportsOperation implements IWorkspaceRunnable {
 			while (parent instanceof Type) {
 				parent= parent.getParent();
 			}
-			if (parent instanceof AbstractTypeDeclaration && parent.getParent() instanceof CompilationUnit) {
+			if (parent instanceof AbstractTypeDeclaration && parent.getParent() instanceof JavaScriptUnit) {
 				return true;
 			}
 			
@@ -217,7 +217,7 @@ public class OrganizeImportsOperation implements IWorkspaceRunnable {
 			fUnresolvedTypes.put(typeName, new UnresolvedTypeData(ref));
 		}
 			
-		public boolean process(IProgressMonitor monitor) throws JavaModelException {
+		public boolean process(IProgressMonitor monitor) throws JavaScriptModelException {
 			try {
 				int nUnresolved= fUnresolvedTypes.size();
 				if (nUnresolved == 0) {
@@ -229,10 +229,10 @@ public class OrganizeImportsOperation implements IWorkspaceRunnable {
 					allTypes[i++]= ((String) iter.next()).toCharArray();
 				}
 				final ArrayList typesFound= new ArrayList();
-				final IJavaProject project= fCurrPackage.getJavaProject();
-				IJavaSearchScope scope= SearchEngine.createJavaSearchScope(new IJavaElement[] { project });
+				final IJavaScriptProject project= fCurrPackage.getJavaScriptProject();
+				IJavaScriptSearchScope scope= SearchEngine.createJavaSearchScope(new IJavaScriptElement[] { project });
 				TypeNameMatchCollector collector= new TypeNameMatchCollector(typesFound);
-				new SearchEngine().searchAllTypeNames(null, allTypes, scope, collector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, monitor);
+				new SearchEngine().searchAllTypeNames(null, allTypes, scope, collector, IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, monitor);
 
 				boolean is50OrHigher= 	JavaModelUtil.is50OrHigher(project);
 				
@@ -351,13 +351,13 @@ public class OrganizeImportsOperation implements IWorkspaceRunnable {
 	private int fNumberOfImportsRemoved;
 
 	private IProblem fParsingError;
-	private ICompilationUnit fCompilationUnit;
+	private IJavaScriptUnit fCompilationUnit;
 	
-	private CompilationUnit fASTRoot;
+	private JavaScriptUnit fASTRoot;
 
 	private final boolean fAllowSyntaxErrors;
 	
-	public OrganizeImportsOperation(ICompilationUnit cu, CompilationUnit astRoot, boolean ignoreLowerCaseNames, boolean save, boolean allowSyntaxErrors, IChooseImportQuery chooseImportQuery) throws CoreException {
+	public OrganizeImportsOperation(IJavaScriptUnit cu, JavaScriptUnit astRoot, boolean ignoreLowerCaseNames, boolean save, boolean allowSyntaxErrors, IChooseImportQuery chooseImportQuery) throws CoreException {
 		fCompilationUnit= cu;
 		fASTRoot= astRoot;
 
@@ -405,7 +405,7 @@ public class OrganizeImportsOperation implements IWorkspaceRunnable {
 			
 			monitor.beginTask(Messages.format(CodeGenerationMessages.OrganizeImportsOperation_description, fCompilationUnit.getElementName()), 9);
 			
-			CompilationUnit astRoot= fASTRoot;
+			JavaScriptUnit astRoot= fASTRoot;
 			if (astRoot == null) {
 				astRoot= ASTProvider.getASTProvider().getAST(fCompilationUnit, ASTProvider.WAIT_YES, new SubProgressMonitor(monitor, 2));
 				if (monitor.isCanceled())
@@ -495,7 +495,7 @@ public class OrganizeImportsOperation implements IWorkspaceRunnable {
 
 	
 	// find type references in a compilation unit
-	private boolean collectReferences(CompilationUnit astRoot, List typeReferences, List staticReferences, Set oldSingleImports, Set oldDemandImports) {
+	private boolean collectReferences(JavaScriptUnit astRoot, List typeReferences, List staticReferences, Set oldSingleImports, Set oldDemandImports) {
 		if (!fAllowSyntaxErrors) {
 			IProblem[] problems= astRoot.getProblems();
 			for (int i= 0; i < problems.length; i++) {
@@ -517,7 +517,7 @@ public class OrganizeImportsOperation implements IWorkspaceRunnable {
 			}
 		}
 		
-		IJavaProject project= fCompilationUnit.getJavaProject();
+		IJavaScriptProject project= fCompilationUnit.getJavaScriptProject();
 		ImportReferencesCollector.collect(astRoot, project, null, typeReferences, staticReferences);
 
 		return true;

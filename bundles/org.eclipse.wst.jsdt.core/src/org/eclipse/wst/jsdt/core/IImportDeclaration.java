@@ -17,7 +17,7 @@ package org.eclipse.wst.jsdt.core;
  * This interface is not intended to be implemented by clients.
  * </p>
  */
-public interface IImportDeclaration extends IJavaElement, ISourceReference, ISourceManipulation {
+public interface IImportDeclaration extends IJavaScriptElement, ISourceReference, ISourceManipulation {
 /**
  * Returns the name that has been imported.
  * For an on-demand import, this includes the trailing <code>".*"</code>.
@@ -34,12 +34,12 @@ String getElementName();
  * <code>Flags</code>. Only the static flag is meaningful for import declarations.
  *
  * @return the modifier flags for this import
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource.
  * @see Flags
  * @since 3.0
  */
-int getFlags() throws JavaModelException;
+int getFlags() throws JavaScriptModelException;
 
 /**
  * Returns whether the import is on-demand. An import is on-demand if it ends

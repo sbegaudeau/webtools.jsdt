@@ -20,12 +20,12 @@ import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;
 import org.eclipse.wst.jsdt.internal.core.dom.rewrite.LineInformation;
@@ -46,7 +46,7 @@ import org.eclipse.wst.jsdt.internal.core.dom.rewrite.RewriteEventStore.CopySour
  * text changes, preserve existing comments and indentation, and follow code
  * formatter settings. If the freedom to explore multiple alternate changes is
  * not required, consider using the AST's built-in rewriter
- * (see {@link org.eclipse.wst.jsdt.core.dom.CompilationUnit#rewrite(IDocument, Map)}).
+ * (see {@link org.eclipse.wst.jsdt.core.dom.JavaScriptUnit#rewrite(IDocument, Map)}).
  * <p>
  * The following code snippet illustrated usage of this class:
  * </p>
@@ -54,14 +54,14 @@ import org.eclipse.wst.jsdt.internal.core.dom.rewrite.RewriteEventStore.CopySour
  * Document document = new Document("import java.util.List;\nclass X {}\n");
  * ASTParser parser = ASTParser.newParser(AST.JLS3);
  * parser.setSource(doc.get().toCharArray());
- * CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+ * JavaScriptUnit cu = (JavaScriptUnit) parser.createAST(null);
  * AST ast = cu.getAST();
  * ImportDeclaration id = ast.newImportDeclaration();
  * id.setName(ast.newName(new String[] {"java", "util", "Set"}));
  * ASTRewrite rewriter = ASTRewrite.create(ast);
  * TypeDeclaration td = (TypeDeclaration) cu.types().get(0);
  * ITrackedNodePosition tdLocation = rewriter.track(td);
- * ListRewrite lrw = rewriter.getListRewrite(cu, CompilationUnit.IMPORTS_PROPERTY);
+ * ListRewrite lrw = rewriter.getListRewrite(cu, JavaScriptUnit.IMPORTS_PROPERTY);
  * lrw.insertLast(id, null);
  * TextEdit edits = rewriter.rewriteAST(document, null);
  * UndoEdit undo = edits.apply(document);
@@ -161,7 +161,7 @@ public class ASTRewrite {
 	 * @param options the table of formatter options
 	 * (key type: <code>String</code>; value type: <code>String</code>);
 	 * or <code>null</code> to use the standard global options
-	 * {@link org.eclipse.wst.jsdt.core.JavaCore#getOptions() org.eclipse.wst.jsdt.core.JavaCore.getOptions()}
+	 * {@link org.eclipse.wst.jsdt.core.JavaScriptCore#getOptions() org.eclipse.wst.jsdt.core.JavaScriptCore.getOptions()}
 	 * @return text edit object describing the changes to the
 	 * document corresponding to the changes recorded by this rewriter
 	 * @throws IllegalArgumentException An <code>IllegalArgumentException</code>
@@ -182,7 +182,7 @@ public class ASTRewrite {
 		String lineDelim= TextUtilities.getDefaultLineDelimiter(document);
 
 		ASTNode astRoot= rootNode.getRoot();
-		List commentNodes= astRoot instanceof CompilationUnit ? ((CompilationUnit) astRoot).getCommentList() : null;
+		List commentNodes= astRoot instanceof JavaScriptUnit ? ((JavaScriptUnit) astRoot).getCommentList() : null;
 		return internalRewriteAST(content, lineInfo, lineDelim, commentNodes, options, rootNode);
 	}
 
@@ -192,7 +192,7 @@ public class ASTRewrite {
 	 * The type root's source itself is not modified by this method call.
 	 * <p>
 	 * Important: This API can only be used if the modified AST has been created from a
-	 * {@link ITypeRoot} with source. That means {@link org.eclipse.wst.jsdt.core.dom.ASTParser#setSource(org.eclipse.wst.jsdt.core.ICompilationUnit)},
+	 * {@link ITypeRoot} with source. That means {@link org.eclipse.wst.jsdt.core.dom.ASTParser#setSource(org.eclipse.wst.jsdt.core.IJavaScriptUnit)},
 	 * {@link org.eclipse.wst.jsdt.core.dom.ASTParser#setSource(org.eclipse.wst.jsdt.core.IClassFile)} or {@link org.eclipse.wst.jsdt.core.dom.ASTParser#setSource(ITypeRoot)}
 	 * has been used when initializing the {@link org.eclipse.wst.jsdt.core.dom.ASTParser}. A {@link IllegalArgumentException} is thrown
 	 * otherwise. An {@link IllegalArgumentException} is also thrown when the type roots buffer does not correspond
@@ -213,24 +213,24 @@ public class ASTRewrite {
 	 *
 	 * @return text edit object describing the changes to the
 	 * document corresponding to the changes recorded by this rewriter
-	 * @throws JavaModelException A {@link JavaModelException} is thrown when
+	 * @throws JavaScriptModelException A {@link JavaScriptModelException} is thrown when
 	 * the underlying compilation units buffer could not be accessed.
 	 * @throws IllegalArgumentException An {@link IllegalArgumentException}
 	 * is thrown if the document passed does not correspond to the AST that is rewritten.
 	 *
 	 * @since 3.2
 	 */
-	public TextEdit rewriteAST() throws JavaModelException, IllegalArgumentException {
+	public TextEdit rewriteAST() throws JavaScriptModelException, IllegalArgumentException {
 		ASTNode rootNode= getRootNode();
 		if (rootNode == null) {
 			return new MultiTextEdit(); // no changes
 		}
 
 		ASTNode root= rootNode.getRoot();
-		if (!(root instanceof CompilationUnit)) {
+		if (!(root instanceof JavaScriptUnit)) {
 			throw new IllegalArgumentException("This API can only be used if the AST is created from a compilation unit or class file"); //$NON-NLS-1$
 		}
-		CompilationUnit astRoot= (CompilationUnit) root;
+		JavaScriptUnit astRoot= (JavaScriptUnit) root;
 		ITypeRoot typeRoot = astRoot.getTypeRoot();
 		if (typeRoot == null || typeRoot.getBuffer() == null) {
 			throw new IllegalArgumentException("This API can only be used if the AST is created from a compilation unit or class file"); //$NON-NLS-1$
@@ -239,7 +239,7 @@ public class ASTRewrite {
 		char[] content= typeRoot.getBuffer().getCharacters();
 		LineInformation lineInfo= LineInformation.create(astRoot);
 		String lineDelim= typeRoot.findRecommendedLineSeparator();
-		Map options= typeRoot.getJavaProject().getOptions(true);
+		Map options= typeRoot.getJavaScriptProject().getOptions(true);
 
 		return internalRewriteAST(content, lineInfo, lineDelim, astRoot.getCommentList(), options, rootNode);
 	}

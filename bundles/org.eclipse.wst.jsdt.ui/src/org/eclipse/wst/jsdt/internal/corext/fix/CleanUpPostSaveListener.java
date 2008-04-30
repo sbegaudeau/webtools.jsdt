@@ -54,10 +54,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.UndoEdit;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpRefactoring.CleanUpChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -65,7 +65,7 @@ import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.IPostSaveListener;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class CleanUpPostSaveListener implements IPostSaveListener {
 	
@@ -134,7 +134,7 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
 						String message= e.getMessage();
                         if (message == null)
                         	message= "BadLocationException"; //$NON-NLS-1$
-						throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IRefactoringCoreStatusCodes.BAD_LOCATION, message, e));
+						throw new CoreException(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IRefactoringCoreStatusCodes.BAD_LOCATION, message, e));
 					}
 				}
 				
@@ -148,7 +148,7 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
 				String message= e.getMessage();
                 if (message == null)
                 	message= "BadLocationException"; //$NON-NLS-1$
-				throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IRefactoringCoreStatusCodes.BAD_LOCATION, message, e));
+				throw new CoreException(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IRefactoringCoreStatusCodes.BAD_LOCATION, message, e));
 			} finally {
 				if (buffer != null)
 					manager.disconnect(fFile.getFullPath(), LocationKind.IFILE, new SubProgressMonitor(pm, 1));
@@ -163,7 +163,7 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void saved(ICompilationUnit unit, IProgressMonitor monitor) throws CoreException {
+	public void saved(IJavaScriptUnit unit, IProgressMonitor monitor) throws CoreException {
 		if (monitor == null)
 			monitor= new NullProgressMonitor();
 		
@@ -173,15 +173,15 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
 			if (!ActionUtil.isOnBuildPath(unit))
 				return;
 			
-			IProject project= unit.getJavaProject().getProject();
+			IProject project= unit.getJavaScriptProject().getProject();
 			Map settings= CleanUpPreferenceUtil.loadSaveParticipantOptions(new ProjectScope(project));
 			if (settings == null) {
-				IEclipsePreferences contextNode= new InstanceScope().getNode(JavaUI.ID_PLUGIN);
+				IEclipsePreferences contextNode= new InstanceScope().getNode(JavaScriptUI.ID_PLUGIN);
 				String id= contextNode.get(CleanUpConstants.CLEANUP_ON_SAVE_PROFILE, null);
 				if (id == null) {
-					id= new DefaultScope().getNode(JavaUI.ID_PLUGIN).get(CleanUpConstants.CLEANUP_ON_SAVE_PROFILE, CleanUpConstants.DEFAULT_SAVE_PARTICIPANT_PROFILE);
+					id= new DefaultScope().getNode(JavaScriptUI.ID_PLUGIN).get(CleanUpConstants.CLEANUP_ON_SAVE_PROFILE, CleanUpConstants.DEFAULT_SAVE_PARTICIPANT_PROFILE);
 				}
-				throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, Messages.format(FixMessages.CleanUpPostSaveListener_unknown_profile_error_message, id)));
+				throw new CoreException(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, Messages.format(FixMessages.CleanUpPostSaveListener_unknown_profile_error_message, id)));
 			}
 			
 			ICleanUp[] cleanUps;
@@ -208,7 +208,7 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
     			do {
     				RefactoringStatus preCondition= new RefactoringStatus();
     				for (int i= 0; i < cleanUps.length; i++) {
-    					RefactoringStatus conditions= cleanUps[i].checkPreConditions(unit.getJavaProject(), new ICompilationUnit[] {unit}, new SubProgressMonitor(monitor, 5));
+    					RefactoringStatus conditions= cleanUps[i].checkPreConditions(unit.getJavaScriptProject(), new IJavaScriptUnit[] {unit}, new SubProgressMonitor(monitor, 5));
     					preCondition.merge(conditions);
     				}
     				if (showStatus(preCondition) != Window.OK)
@@ -222,7 +222,7 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
     					}
     				}
     					
-    				CompilationUnit ast= null;
+    				JavaScriptUnit ast= null;
     				if (requiresAST(cleanUps, unit)) {
     					ast= createAst(unit, options, new SubProgressMonitor(monitor, 10));
     				}
@@ -304,7 +304,7 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
 	    }
     }
 
-	private boolean requiresAST(ICleanUp[] cleanUps, ICompilationUnit unit) throws CoreException {
+	private boolean requiresAST(ICleanUp[] cleanUps, IJavaScriptUnit unit) throws CoreException {
 		for (int i= 0; i < cleanUps.length; i++) {
 	        if (cleanUps[i].requireAST(unit))
 	        	return true;
@@ -313,10 +313,10 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
 	    return false;
     }
 
-	private CompilationUnit createAst(ICompilationUnit unit, Map cleanUpOptions, IProgressMonitor monitor) {
-		IJavaProject project= unit.getJavaProject();
+	private JavaScriptUnit createAst(IJavaScriptUnit unit, Map cleanUpOptions, IProgressMonitor monitor) {
+		IJavaScriptProject project= unit.getJavaScriptProject();
 		if (compatibleOptions(project, cleanUpOptions)) {
-			CompilationUnit ast= ASTProvider.getASTProvider().getAST(unit, ASTProvider.WAIT_NO, monitor);
+			JavaScriptUnit ast= ASTProvider.getASTProvider().getAST(unit, ASTProvider.WAIT_NO, monitor);
 			if (ast != null)
 				return ast;
 		}
@@ -325,14 +325,14 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
 		parser.setResolveBindings(true);
 		parser.setProject(project);
 		parser.setSource(unit);
-		Map compilerOptions= RefactoringASTParser.getCompilerOptions(unit.getJavaProject());
+		Map compilerOptions= RefactoringASTParser.getCompilerOptions(unit.getJavaScriptProject());
 		compilerOptions.putAll(cleanUpOptions);
 		parser.setCompilerOptions(compilerOptions);
 		
-		return (CompilationUnit)parser.createAST(monitor);
+		return (JavaScriptUnit)parser.createAST(monitor);
 	}
 	
-	private boolean compatibleOptions(IJavaProject project, Map cleanUpOptions) {
+	private boolean compatibleOptions(IJavaScriptProject project, Map cleanUpOptions) {
 		if (cleanUpOptions.size() == 0)
 			return true;
 		

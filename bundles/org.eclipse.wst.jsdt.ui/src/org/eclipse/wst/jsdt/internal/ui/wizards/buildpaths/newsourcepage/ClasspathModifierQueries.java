@@ -21,11 +21,11 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.NewFolderDialog;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.ExclusionInclusionDialog;
@@ -45,7 +45,7 @@ public class ClasspathModifierQueries {
      * used for an output folder or not.
      */
     public static abstract class OutputFolderValidator {
-        protected IClasspathEntry[] fEntries;
+        protected IIncludePathEntry[] fEntries;
         protected List fElements;
         
         /**
@@ -53,14 +53,14 @@ public class ClasspathModifierQueries {
          * 
          * @param newElements a list of elements that will be added 
          * to the buildpath. The list's items can be of type:
-         * <li><code>IJavaProject</code></li>
+         * <li><code>IJavaScriptProject</code></li>
          * <li><code>IPackageFragment</code></li>
          * <li><code>IFolder</code></li>
          * @param project the Java project
-         * @throws JavaModelException
+         * @throws JavaScriptModelException
          */
-        public OutputFolderValidator(List newElements, IJavaProject project) throws JavaModelException {
-            fEntries= project.getRawClasspath();
+        public OutputFolderValidator(List newElements, IJavaScriptProject project) throws JavaScriptModelException {
+            fEntries= project.getRawIncludepath();
             fElements= newElements;
         }
         
@@ -193,9 +193,9 @@ public class ClasspathModifierQueries {
          * @return <code>true</code> if the execution was successfull (e.g. not aborted) and 
          * the caller should execute additional steps as setting the output location for the project or (optionally) 
          * removing the project from the classpath, <code>false</code> otherwise.
-         * @throws JavaModelException if the output location of the project could not be retrieved
+         * @throws JavaScriptModelException if the output location of the project could not be retrieved
          */
-        public abstract boolean doQuery(final boolean editingOutputFolder, final OutputFolderValidator validator, final IJavaProject project) throws JavaModelException;
+        public abstract boolean doQuery(final boolean editingOutputFolder, final OutputFolderValidator validator, final IJavaScriptProject project) throws JavaScriptModelException;
         
     }
     
@@ -282,10 +282,10 @@ public class ClasspathModifierQueries {
          * @param outputLocation desired output location for the
          * project
          * @return query giving information about output and source folders
-         * @throws JavaModelException
+         * @throws JavaScriptModelException
          * 
          */
-        public OutputFolderQuery getOutputFolderQuery(IPath outputLocation) throws JavaModelException;
+        public OutputFolderQuery getOutputFolderQuery(IPath outputLocation) throws JavaScriptModelException;
     }
 
     /**
@@ -377,7 +377,7 @@ public class ClasspathModifierQueries {
          * @return Returns the selected classpath container entries or an empty if the query has
          * been cancelled by the user.
          */
-        public IClasspathEntry[] doQuery(final IJavaProject project, final IClasspathEntry[] entries);
+        public IIncludePathEntry[] doQuery(final IJavaScriptProject project, final IIncludePathEntry[] entries);
     }
     
     /**
@@ -396,13 +396,13 @@ public class ClasspathModifierQueries {
 			protected IPath fOutputLocation;
 			protected boolean fRemoveProject;
 			
-            public boolean doQuery(final boolean editingOutputFolder,  final OutputFolderValidator validator, final IJavaProject project) throws JavaModelException {
+            public boolean doQuery(final boolean editingOutputFolder,  final OutputFolderValidator validator, final IJavaScriptProject project) throws JavaScriptModelException {
                 final boolean[] result= { false };
                 fRemoveProject= false;
                 fOutputLocation= project.getOutputLocation();
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {                        
-						Shell sh= shell != null ? shell : JavaPlugin.getActiveWorkbenchShell();
+						Shell sh= shell != null ? shell : JavaScriptPlugin.getActiveWorkbenchShell();
 						
 						String title= NewWizardMessages.ClasspathModifier_ChangeOutputLocationDialog_title; 
 						
@@ -476,7 +476,7 @@ public class ClasspathModifierQueries {
 				final boolean[] result= { false };
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
-						Shell sh= shell != null ? shell : JavaPlugin.getActiveWorkbenchShell();
+						Shell sh= shell != null ? shell : JavaScriptPlugin.getActiveWorkbenchShell();
 						ExclusionInclusionDialog dialog= new ExclusionInclusionDialog(sh, element, focusOnExcluded);
 						result[0]= dialog.open() == Window.OK;
 						fInclusionPattern= dialog.getInclusionPattern();
@@ -511,7 +511,7 @@ public class ClasspathModifierQueries {
      * @see ClasspathModifierQueries.ICreateFolderQuery
      * @see LinkFolderDialog
      */
-    public static ILinkToQuery getDefaultLinkQuery(final Shell shell, final IJavaProject project, final IPath desiredOutputLocation) {
+    public static ILinkToQuery getDefaultLinkQuery(final Shell shell, final IJavaScriptProject project, final IPath desiredOutputLocation) {
         return new ILinkToQuery() {
             protected IFolder fFolder;
             
@@ -519,7 +519,7 @@ public class ClasspathModifierQueries {
                 final boolean[] isOK= {false};
                 Display.getDefault().syncExec(new Runnable() {
                     public void run() {
-                        Shell sh= shell != null ? shell : JavaPlugin.getActiveWorkbenchShell();
+                        Shell sh= shell != null ? shell : JavaScriptPlugin.getActiveWorkbenchShell();
 
                         LinkFolderDialog dialog= new LinkFolderDialog(sh, project.getProject());
                         isOK[0]= dialog.open() == Window.OK;
@@ -558,7 +558,7 @@ public class ClasspathModifierQueries {
                 final IPath[][] selected= {null};
                 Display.getDefault().syncExec(new Runnable() {
                     public void run() {
-                        Shell sh= shell != null ? shell : JavaPlugin.getActiveWorkbenchShell();
+                        Shell sh= shell != null ? shell : JavaScriptPlugin.getActiveWorkbenchShell();
                         selected[0]= BuildPathDialogAccess.chooseExternalJAREntries(sh);
                     }
                 });
@@ -585,7 +585,7 @@ public class ClasspathModifierQueries {
 				Display.getDefault().syncExec(new Runnable() {
 
 					public final void run() {
-						final RemoveLinkedFolderDialog dialog= new RemoveLinkedFolderDialog((shell != null ? shell : JavaPlugin.getActiveWorkbenchShell()), folder);
+						final RemoveLinkedFolderDialog dialog= new RemoveLinkedFolderDialog((shell != null ? shell : JavaScriptPlugin.getActiveWorkbenchShell()), folder);
 						final int status= dialog.open();
 						if (status == 0)
 							result[0]= dialog.getRemoveStatus();
@@ -599,7 +599,7 @@ public class ClasspathModifierQueries {
 	}
 
     /**
-     * Shows the UI to choose new classpath container classpath entries. See {@link IClasspathEntry#CPE_CONTAINER} for
+     * Shows the UI to choose new classpath container classpath entries. See {@link IIncludePathEntry#CPE_CONTAINER} for
      * details about container classpath entries.
      * The query returns the selected classpath entries or an empty array if the query has
      * been cancelled.
@@ -611,16 +611,16 @@ public class ClasspathModifierQueries {
     public static IAddLibrariesQuery getDefaultLibrariesQuery(final Shell shell) {
         return new IAddLibrariesQuery() {
 
-            public IClasspathEntry[] doQuery(final IJavaProject project, final IClasspathEntry[] entries) {
-                final IClasspathEntry[][] selected= {null};
+            public IIncludePathEntry[] doQuery(final IJavaScriptProject project, final IIncludePathEntry[] entries) {
+                final IIncludePathEntry[][] selected= {null};
                 Display.getDefault().syncExec(new Runnable() {
                     public void run() {
-                        Shell sh= shell != null ? shell : JavaPlugin.getActiveWorkbenchShell();
+                        Shell sh= shell != null ? shell : JavaScriptPlugin.getActiveWorkbenchShell();
                         selected[0]= BuildPathDialogAccess.chooseContainerEntries(sh, project, entries);
                     }
                 });
                 if(selected[0] == null)
-                    return new IClasspathEntry[0];
+                    return new IIncludePathEntry[0];
                 return selected[0];
             }  
         };
@@ -633,7 +633,7 @@ public class ClasspathModifierQueries {
      * @param project the Java project to create the source folder for
      * @return returns the query
      */
-	public static ICreateFolderQuery getDefaultCreateFolderQuery(final Shell shell, final IJavaProject project) {
+	public static ICreateFolderQuery getDefaultCreateFolderQuery(final Shell shell, final IJavaScriptProject project) {
 		return new ICreateFolderQuery() {
 
 			private IFolder fNewFolder;
@@ -642,7 +642,7 @@ public class ClasspathModifierQueries {
 				final boolean[] isOK= {false};
                 Display.getDefault().syncExec(new Runnable() {
                     public void run() {
-                        Shell sh= shell != null ? shell : JavaPlugin.getActiveWorkbenchShell();
+                        Shell sh= shell != null ? shell : JavaScriptPlugin.getActiveWorkbenchShell();
                         
                         NewFolderDialog dialog= new NewFolderDialog(sh, project.getProject());
                         isOK[0]= dialog.open() == Window.OK;

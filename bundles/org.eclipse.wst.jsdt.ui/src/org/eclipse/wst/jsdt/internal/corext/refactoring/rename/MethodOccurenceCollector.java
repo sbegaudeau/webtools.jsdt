@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.rename;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
@@ -27,7 +27,7 @@ class MethodOccurenceCollector extends CuCollectingSearchRequestor {
 		fName= methodName;
 	}
 
-	public void acceptSearchMatch(ICompilationUnit unit, SearchMatch match) throws CoreException {
+	public void acceptSearchMatch(IJavaScriptUnit unit, SearchMatch match) throws CoreException {
 		if (match instanceof MethodReferenceMatch
 				&& ((MethodReferenceMatch) match).isSuperInvocation()
 				&& match.getAccuracy() == SearchMatch.A_INACCURATE) {

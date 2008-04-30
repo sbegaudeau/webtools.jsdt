@@ -17,19 +17,19 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Annotation;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -106,7 +106,7 @@ public class Java50Fix extends LinkedFix {
 			InferTypeArgumentsTCModel model= new InferTypeArgumentsTCModel();
 			InferTypeArgumentsConstraintCreator creator= new InferTypeArgumentsConstraintCreator(model, true);
 			
-			CompilationUnit root= cuRewrite.getRoot();
+			JavaScriptUnit root= cuRewrite.getRoot();
 			root.accept(creator);
 			
 			InferTypeArgumentsConstraintsSolver solver= new InferTypeArgumentsConstraintsSolver(model);
@@ -144,14 +144,14 @@ public class Java50Fix extends LinkedFix {
 		}
 	}
 	
-	public static Java50Fix createAddOverrideAnnotationFix(CompilationUnit compilationUnit, IProblemLocation problem) {
+	public static Java50Fix createAddOverrideAnnotationFix(JavaScriptUnit compilationUnit, IProblemLocation problem) {
 		if (problem.getProblemId() != IProblem.MissingOverrideAnnotation)
 			return null;
 		
 		return createFix(compilationUnit, problem, OVERRIDE, FixMessages.Java50Fix_AddOverride_description);
 	}
 	
-	public static Java50Fix createAddDeprectatedAnnotation(CompilationUnit compilationUnit, IProblemLocation problem) {
+	public static Java50Fix createAddDeprectatedAnnotation(JavaScriptUnit compilationUnit, IProblemLocation problem) {
 		int id= problem.getProblemId();
 		if (id != IProblem.FieldMissingDeprecatedAnnotation && 
 			id != IProblem.MethodMissingDeprecatedAnnotation && 
@@ -162,9 +162,9 @@ public class Java50Fix extends LinkedFix {
 		return createFix(compilationUnit, problem, DEPRECATED, FixMessages.Java50Fix_AddDeprecated_description);
 	}
 	
-	private static Java50Fix createFix(CompilationUnit compilationUnit, IProblemLocation problem, String annotation, String label) {
-		ICompilationUnit cu= (ICompilationUnit)compilationUnit.getJavaElement();
-		if (!JavaModelUtil.is50OrHigher(cu.getJavaProject()))
+	private static Java50Fix createFix(JavaScriptUnit compilationUnit, IProblemLocation problem, String annotation, String label) {
+		IJavaScriptUnit cu= (IJavaScriptUnit)compilationUnit.getJavaElement();
+		if (!JavaModelUtil.is50OrHigher(cu.getJavaScriptProject()))
 			return null;
 		
 		ASTNode selectedNode= problem.getCoveringNode(compilationUnit);
@@ -182,7 +182,7 @@ public class Java50Fix extends LinkedFix {
 		return new Java50Fix(label, compilationUnit, new IFixRewriteOperation[] {operation});
 	}
 	
-	public static Java50Fix createRawTypeReferenceFix(CompilationUnit compilationUnit, IProblemLocation problem) {
+	public static Java50Fix createRawTypeReferenceFix(JavaScriptUnit compilationUnit, IProblemLocation problem) {
 		List operations= new ArrayList();
 		SimpleType node= createRawTypeReferenceOperations(compilationUnit, new IProblemLocation[] {problem}, operations);
 		if (operations.size() == 0)
@@ -191,13 +191,13 @@ public class Java50Fix extends LinkedFix {
 		return new Java50Fix(Messages.format(FixMessages.Java50Fix_AddTypeParameters_description, node.getName()), compilationUnit, (IFixRewriteOperation[])operations.toArray(new IFixRewriteOperation[operations.size()]));
 	}
 		
-	public static IFix createCleanUp(CompilationUnit compilationUnit, 
+	public static IFix createCleanUp(JavaScriptUnit compilationUnit, 
 			boolean addOverrideAnnotation, 
 			boolean addDeprecatedAnnotation, 
 			boolean rawTypeReference) {
 		
-		ICompilationUnit cu= (ICompilationUnit)compilationUnit.getJavaElement();
-		if (!JavaModelUtil.is50OrHigher(cu.getJavaProject()))
+		IJavaScriptUnit cu= (IJavaScriptUnit)compilationUnit.getJavaElement();
+		if (!JavaModelUtil.is50OrHigher(cu.getJavaScriptProject()))
 			return null;
 		
 		if (!addOverrideAnnotation && !addDeprecatedAnnotation && !rawTypeReference)
@@ -227,13 +227,13 @@ public class Java50Fix extends LinkedFix {
 		return new Java50Fix(FixMessages.Java50Fix_add_annotations_change_name, compilationUnit, operationsArray);
 	}
 
-	public static IFix createCleanUp(CompilationUnit compilationUnit, IProblemLocation[] problems,
+	public static IFix createCleanUp(JavaScriptUnit compilationUnit, IProblemLocation[] problems,
 			boolean addOverrideAnnotation, 
 			boolean addDeprecatedAnnotation,
 			boolean rawTypeReferences) {
 		
-		ICompilationUnit cu= (ICompilationUnit)compilationUnit.getJavaElement();
-		if (!JavaModelUtil.is50OrHigher(cu.getJavaProject()))
+		IJavaScriptUnit cu= (IJavaScriptUnit)compilationUnit.getJavaElement();
+		if (!JavaModelUtil.is50OrHigher(cu.getJavaScriptProject()))
 			return null;
 		
 		if (!addOverrideAnnotation && !addDeprecatedAnnotation && !rawTypeReferences)
@@ -258,7 +258,7 @@ public class Java50Fix extends LinkedFix {
 		return new Java50Fix(FixMessages.Java50Fix_add_annotations_change_name, compilationUnit, operationsArray);
 	}
 	
-	private static void createAddDeprecatedAnnotationOperations(CompilationUnit compilationUnit, IProblemLocation[] locations, List result) {
+	private static void createAddDeprecatedAnnotationOperations(JavaScriptUnit compilationUnit, IProblemLocation[] locations, List result) {
 		for (int i= 0; i < locations.length; i++) {
 			int id= locations[i].getProblemId();
 			
@@ -282,7 +282,7 @@ public class Java50Fix extends LinkedFix {
 		}
 	}
 
-	private static void createAddOverrideAnnotationOperations(CompilationUnit compilationUnit, IProblemLocation[] locations, List result) {
+	private static void createAddOverrideAnnotationOperations(JavaScriptUnit compilationUnit, IProblemLocation[] locations, List result) {
 		for (int i= 0; i < locations.length; i++) {
 			
 			if (locations[i].getProblemId() == IProblem.MissingOverrideAnnotation) {
@@ -303,7 +303,7 @@ public class Java50Fix extends LinkedFix {
 		}
 	}
 	
-	private static SimpleType createRawTypeReferenceOperations(CompilationUnit compilationUnit, IProblemLocation[] locations, List operations) {
+	private static SimpleType createRawTypeReferenceOperations(JavaScriptUnit compilationUnit, IProblemLocation[] locations, List operations) {
 		List/*<SimpleType>*/ result= new ArrayList();
 		for (int i= 0; i < locations.length; i++) {
 			IProblemLocation problem= locations[i];
@@ -321,8 +321,8 @@ public class Java50Fix extends LinkedFix {
 					if (isRawTypeReference(rawReference)) {
 						result.add(rawReference);
 					}
-				} else if (node instanceof MethodInvocation) {
-					MethodInvocation invocation= (MethodInvocation)node;
+				} else if (node instanceof FunctionInvocation) {
+					FunctionInvocation invocation= (FunctionInvocation)node;
 					
 					ASTNode rawReference= getRawReference(invocation, compilationUnit);
 					if (rawReference != null) {
@@ -340,8 +340,8 @@ public class Java50Fix extends LinkedFix {
 		return types[0];
 	}
 
-	private static ASTNode getRawReference(MethodInvocation invocation, CompilationUnit compilationUnit) {
-		Name name1= (Name)invocation.getStructuralProperty(MethodInvocation.NAME_PROPERTY);
+	private static ASTNode getRawReference(FunctionInvocation invocation, JavaScriptUnit compilationUnit) {
+		Name name1= (Name)invocation.getStructuralProperty(FunctionInvocation.NAME_PROPERTY);
 		if (name1 instanceof SimpleName) {
 			ASTNode rawReference= getRawReference((SimpleName)name1, compilationUnit);
 			if (rawReference != null) {
@@ -349,7 +349,7 @@ public class Java50Fix extends LinkedFix {
 			}
 		}
 		
-		Expression expr= (Expression)invocation.getStructuralProperty(MethodInvocation.EXPRESSION_PROPERTY);
+		Expression expr= (Expression)invocation.getStructuralProperty(FunctionInvocation.EXPRESSION_PROPERTY);
 		if (expr instanceof SimpleName) {
 			ASTNode rawReference= getRawReference((SimpleName)expr, compilationUnit);
 			if (rawReference != null) {
@@ -371,8 +371,8 @@ public class Java50Fix extends LinkedFix {
 					return rawReference;
 				}
 			}
-		} else if (expr instanceof MethodInvocation) {
-			ASTNode rawReference= getRawReference((MethodInvocation)expr, compilationUnit);
+		} else if (expr instanceof FunctionInvocation) {
+			ASTNode rawReference= getRawReference((FunctionInvocation)expr, compilationUnit);
 			if (rawReference != null) {
 				return rawReference;
 			}
@@ -380,7 +380,7 @@ public class Java50Fix extends LinkedFix {
 		return null;
 	}
 
-	private static ASTNode getRawReference(SimpleName name, CompilationUnit compilationUnit) {
+	private static ASTNode getRawReference(SimpleName name, JavaScriptUnit compilationUnit) {
 		SimpleName[] names= LinkedNodeFinder.findByNode(compilationUnit, name);
 		for (int j= 0; j < names.length; j++) {
 			if (names[j].getParent() instanceof VariableDeclarationFragment) {
@@ -401,9 +401,9 @@ public class Java50Fix extends LinkedFix {
 				ASTNode result= (ASTNode)declaration.getStructuralProperty(SingleVariableDeclaration.TYPE_PROPERTY);
 				if (isRawTypeReference(result))
 					return result;
-			} else if (names[j].getParent() instanceof MethodDeclaration) {
-				MethodDeclaration methodDecl= (MethodDeclaration)names[j].getParent();
-				ASTNode result= (ASTNode)methodDecl.getStructuralProperty(MethodDeclaration.RETURN_TYPE2_PROPERTY);
+			} else if (names[j].getParent() instanceof FunctionDeclaration) {
+				FunctionDeclaration methodDecl= (FunctionDeclaration)names[j].getParent();
+				ASTNode result= (ASTNode)methodDecl.getStructuralProperty(FunctionDeclaration.RETURN_TYPE2_PROPERTY);
 				if (isRawTypeReference(result))
 					return result;
 			}
@@ -425,11 +425,11 @@ public class Java50Fix extends LinkedFix {
 
 	private static ASTNode getDeclaringNode(ASTNode selectedNode) {
 		ASTNode declaringNode= null;		
-		if (selectedNode instanceof MethodDeclaration) {
+		if (selectedNode instanceof FunctionDeclaration) {
 			declaringNode= selectedNode;
 		} else if (selectedNode instanceof SimpleName) {
 			StructuralPropertyDescriptor locationInParent= selectedNode.getLocationInParent();
-			if (locationInParent == MethodDeclaration.NAME_PROPERTY || locationInParent == TypeDeclaration.NAME_PROPERTY) {
+			if (locationInParent == FunctionDeclaration.NAME_PROPERTY || locationInParent == TypeDeclaration.NAME_PROPERTY) {
 				declaringNode= selectedNode.getParent();
 			} else if (locationInParent == VariableDeclarationFragment.NAME_PROPERTY) {
 				declaringNode= selectedNode.getParent().getParent();
@@ -438,7 +438,7 @@ public class Java50Fix extends LinkedFix {
 		return declaringNode;
 	}
 		
-	private Java50Fix(String name, CompilationUnit compilationUnit, IFixRewriteOperation[] fixRewrites) {
+	private Java50Fix(String name, JavaScriptUnit compilationUnit, IFixRewriteOperation[] fixRewrites) {
 		super(name, compilationUnit, fixRewrites);
 	}
 	

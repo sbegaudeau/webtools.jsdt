@@ -18,7 +18,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageImageDescriptor;
 
 /**
@@ -50,7 +50,7 @@ public class CallHierarchyLabelDecorator implements ILabelDecorator {
         if (adornmentFlags != 0) {
             ImageDescriptor baseImage= new ImageImageDescriptor(image);
             Rectangle bounds= image.getBounds();
-            return JavaPlugin.getImageDescriptorRegistry().get(new CallHierarchyImageDescriptor(baseImage, adornmentFlags, new Point(bounds.width, bounds.height)));
+            return JavaScriptPlugin.getImageDescriptorRegistry().get(new CallHierarchyImageDescriptor(baseImage, adornmentFlags, new Point(bounds.width, bounds.height)));
         }
         return image;
     }

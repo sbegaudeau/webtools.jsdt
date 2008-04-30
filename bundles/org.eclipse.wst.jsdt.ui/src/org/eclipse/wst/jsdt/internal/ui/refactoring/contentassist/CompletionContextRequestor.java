@@ -11,7 +11,7 @@
 
 package org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.StubTypeContext;
 
 
@@ -19,7 +19,7 @@ public abstract class CompletionContextRequestor {
 	
 	public abstract StubTypeContext getStubTypeContext();
 	
-	public ICompilationUnit getOriginalCu() {
+	public IJavaScriptUnit getOriginalCu() {
 		return getStubTypeContext().getCuHandle();
 	}
 

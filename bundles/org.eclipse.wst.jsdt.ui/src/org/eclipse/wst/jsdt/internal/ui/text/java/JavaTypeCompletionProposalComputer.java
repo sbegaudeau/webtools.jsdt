@@ -19,13 +19,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaHeuristicScanner;
 import org.eclipse.wst.jsdt.internal.ui.text.Symbols;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalCollector;
@@ -56,13 +56,13 @@ public class JavaTypeCompletionProposalComputer extends JavaCompletionProposalCo
 		collector.setIgnored(CompletionProposal.POTENTIAL_METHOD_DECLARATION, true);
 		collector.setIgnored(CompletionProposal.VARIABLE_DECLARATION, true);
 		
-		collector.setIgnored(CompletionProposal.JAVADOC_BLOCK_TAG, true);
-		collector.setIgnored(CompletionProposal.JAVADOC_FIELD_REF, true);
-		collector.setIgnored(CompletionProposal.JAVADOC_INLINE_TAG, true);
-		collector.setIgnored(CompletionProposal.JAVADOC_METHOD_REF, true);
-		collector.setIgnored(CompletionProposal.JAVADOC_PARAM_REF, true);
-		collector.setIgnored(CompletionProposal.JAVADOC_TYPE_REF, true);
-		collector.setIgnored(CompletionProposal.JAVADOC_VALUE_REF, true);
+		collector.setIgnored(CompletionProposal.JSDOC_BLOCK_TAG, true);
+		collector.setIgnored(CompletionProposal.JSDOC_FIELD_REF, true);
+		collector.setIgnored(CompletionProposal.JSDOC_INLINE_TAG, true);
+		collector.setIgnored(CompletionProposal.JSDOC_METHOD_REF, true);
+		collector.setIgnored(CompletionProposal.JSDOC_PARAM_REF, true);
+		collector.setIgnored(CompletionProposal.JSDOC_TYPE_REF, true);
+		collector.setIgnored(CompletionProposal.JSDOC_VALUE_REF, true);
 		
 		collector.setIgnored(CompletionProposal.TYPE_REF, false);
 		return collector;
@@ -86,14 +86,14 @@ public class JavaTypeCompletionProposalComputer extends JavaCompletionProposalCo
 						Set proposed= new HashSet();
 						for (Iterator it= types.iterator(); it.hasNext();) {
 							AbstractJavaCompletionProposal p= (AbstractJavaCompletionProposal) it.next();
-							IJavaElement element= p.getJavaElement();
+							IJavaScriptElement element= p.getJavaElement();
 							if (element instanceof IType)
 								proposed.add(((IType) element).getFullyQualifiedName());
 							relevance= Math.min(relevance, p.getRelevance());
 						}
 
 						// insert history types
-						List history= JavaPlugin.getDefault().getContentAssistHistory().getHistory(expectedType.getFullyQualifiedName()).getTypes();
+						List history= JavaScriptPlugin.getDefault().getContentAssistHistory().getHistory(expectedType.getFullyQualifiedName()).getTypes();
 						relevance-= history.size() + 1;
 						for (Iterator it= history.iterator(); it.hasNext();) {
 							String type= (String) it.next();
@@ -110,17 +110,17 @@ public class JavaTypeCompletionProposalComputer extends JavaCompletionProposalCo
 				}
 			} catch (BadLocationException x) {
 				// log & ignore
-				JavaPlugin.log(x);
-			} catch (JavaModelException x) {
+				JavaScriptPlugin.log(x);
+			} catch (JavaScriptModelException x) {
 				// log & ignore
-				JavaPlugin.log(x);
+				JavaScriptPlugin.log(x);
 			}
 		}
 		return types;
 	}
 
-	private IJavaCompletionProposal createTypeProposal(int relevance, String fullyQualifiedType, JavaContentAssistInvocationContext context) throws JavaModelException {
-		IType type= context.getCompilationUnit().getJavaProject().findType(fullyQualifiedType);
+	private IJavaCompletionProposal createTypeProposal(int relevance, String fullyQualifiedType, JavaContentAssistInvocationContext context) throws JavaScriptModelException {
+		IType type= context.getCompilationUnit().getJavaScriptProject().findType(fullyQualifiedType);
 		if (type == null)
 			return null;
 		
@@ -148,14 +148,14 @@ public class JavaTypeCompletionProposalComputer extends JavaCompletionProposalCo
 	 * @return <code>true</code> if the generic proposals should be allowed,
 	 *         <code>false</code> if not
 	 */
-	private final boolean shouldProposeGenerics(IJavaProject project) {
+	private final boolean shouldProposeGenerics(IJavaScriptProject project) {
 		String sourceVersion;
 		if (project != null)
-			sourceVersion= project.getOption(JavaCore.COMPILER_SOURCE, true);
+			sourceVersion= project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
 		else
-			sourceVersion= JavaCore.getOption(JavaCore.COMPILER_SOURCE);
+			sourceVersion= JavaScriptCore.getOption(JavaScriptCore.COMPILER_SOURCE);
 
-		return sourceVersion != null && JavaCore.VERSION_1_5.compareTo(sourceVersion) <= 0;
+		return sourceVersion != null && JavaScriptCore.VERSION_1_5.compareTo(sourceVersion) <= 0;
 	}
 	
 	protected int guessContextInformationPosition(ContentAssistInvocationContext context) {

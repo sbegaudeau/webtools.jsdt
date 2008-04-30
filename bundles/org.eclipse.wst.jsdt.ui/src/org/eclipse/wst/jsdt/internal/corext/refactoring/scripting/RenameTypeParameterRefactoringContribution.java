@@ -12,8 +12,8 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.scripting;
 
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaScriptElementDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringContribution;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameTypeParameterProcessor;
@@ -36,6 +36,6 @@ public final class RenameTypeParameterRefactoringContribution extends JDTRefacto
 	 * {@inheritDoc}
 	 */
 	public RefactoringDescriptor createDescriptor() {
-		return new RenameJavaElementDescriptor(IJavaRefactorings.RENAME_TYPE_PARAMETER);
+		return new RenameJavaScriptElementDescriptor(IJavaScriptRefactorings.RENAME_TYPE_PARAMETER);
 	}
 }

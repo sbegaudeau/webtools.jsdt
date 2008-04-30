@@ -37,10 +37,10 @@ import org.eclipse.ui.IMarkerHelpRegistry;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.SimpleMarkerAnnotation;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IJavaAnnotation;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalComparator;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
@@ -58,7 +58,7 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 	private static ContributedProcessorDescriptor[] fgContributedCorrectionProcessors= null;
 
 	private static ContributedProcessorDescriptor[] getProcessorDescriptors(String contributionId, boolean testMarkerTypes) {
-		IConfigurationElement[] elements= Platform.getExtensionRegistry().getConfigurationElementsFor(JavaUI.ID_PLUGIN, contributionId);
+		IConfigurationElement[] elements= Platform.getExtensionRegistry().getConfigurationElementsFor(JavaScriptUI.ID_PLUGIN, contributionId);
 		ArrayList res= new ArrayList(elements.length);
 
 		for (int i= 0; i < elements.length; i++) {
@@ -67,7 +67,7 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 			if (status.isOK()) {
 				res.add(desc);
 			} else {
-				JavaPlugin.log(status);
+				JavaScriptPlugin.log(status);
 			}
 		}
 		return (ContributedProcessorDescriptor[]) res.toArray(new ContributedProcessorDescriptor[res.size()]);
@@ -87,7 +87,7 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 		return fgContributedAssistProcessors;
 	}
 
-	public static boolean hasCorrections(ICompilationUnit cu, int problemId, String markerType) {
+	public static boolean hasCorrections(IJavaScriptUnit cu, int problemId, String markerType) {
 		ContributedProcessorDescriptor[] processors= getCorrectionProcessors();
 		SafeHasCorrections collector= new SafeHasCorrections(cu, problemId);
 		for (int i= 0; i < processors.length; i++) {
@@ -111,7 +111,7 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 			IJavaAnnotation javaAnnotation= (IJavaAnnotation) annotation;
 			int problemId= javaAnnotation.getId();
 			if (problemId != -1) {
-				ICompilationUnit cu= javaAnnotation.getCompilationUnit();
+				IJavaScriptUnit cu= javaAnnotation.getCompilationUnit();
 				if (cu != null) {
 					return hasCorrections(cu, problemId, javaAnnotation.getMarkerType());
 				}
@@ -187,8 +187,8 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 		
 		IEditorPart part= fAssistant.getEditor();
 
-		ICompilationUnit cu= JavaUI.getWorkingCopyManager().getWorkingCopy(part.getEditorInput());
-		IAnnotationModel model= JavaUI.getDocumentProvider().getAnnotationModel(part.getEditorInput());
+		IJavaScriptUnit cu= JavaScriptUI.getWorkingCopyManager().getWorkingCopy(part.getEditorInput());
+		IAnnotationModel model= JavaScriptUI.getDocumentProvider().getAnnotationModel(part.getEditorInput());
 		
 		int length= viewer != null ? viewer.getSelectedRange().y : 0;
 		AssistContext context= new AssistContext(cu, documentOffset, length);
@@ -204,7 +204,7 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 			res= (ICompletionProposal[]) proposals.toArray(new ICompletionProposal[proposals.size()]);
 			if (!status.isOK()) {
 				fErrorMessage= status.getMessage();
-				JavaPlugin.log(status);
+				JavaScriptPlugin.log(status);
 			}
 		}
 		
@@ -239,7 +239,7 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 		if (addQuickFixes) {
 			IStatus status= collectCorrections(context, problemLocations, proposals);
 			if (!status.isOK()) {
-				resStatus= new MultiStatus(JavaUI.ID_PLUGIN, IStatus.ERROR, CorrectionMessages.JavaCorrectionProcessor_error_quickfix_message, null);
+				resStatus= new MultiStatus(JavaScriptUI.ID_PLUGIN, IStatus.ERROR, CorrectionMessages.JavaCorrectionProcessor_error_quickfix_message, null);
 				resStatus.add(status);
 			}
 		}
@@ -247,7 +247,7 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 			IStatus status= collectAssists(context, problemLocations, proposals);
 			if (!status.isOK()) {
 				if (resStatus == null) {
-					resStatus= new MultiStatus(JavaUI.ID_PLUGIN, IStatus.ERROR, CorrectionMessages.JavaCorrectionProcessor_error_quickassist_message, null);
+					resStatus= new MultiStatus(JavaScriptUI.ID_PLUGIN, IStatus.ERROR, CorrectionMessages.JavaCorrectionProcessor_error_quickassist_message, null);
 				}
 				resStatus.add(status);
 			}
@@ -303,9 +303,9 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 
 		public void handleException(Throwable exception) {
 			if (fMulti == null) {
-				fMulti= new MultiStatus(JavaUI.ID_PLUGIN, IStatus.OK, CorrectionMessages.JavaCorrectionProcessor_error_status, null);
+				fMulti= new MultiStatus(JavaScriptUI.ID_PLUGIN, IStatus.OK, CorrectionMessages.JavaCorrectionProcessor_error_status, null);
 			}
-			fMulti.merge(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.ERROR, CorrectionMessages.JavaCorrectionProcessor_error_status, exception));
+			fMulti.merge(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.ERROR, CorrectionMessages.JavaCorrectionProcessor_error_status, exception));
 		}
 
 		public IStatus getStatus() {
@@ -390,11 +390,11 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 	}
 
 	private static class SafeHasCorrections extends SafeCorrectionProcessorAccess {
-		private final ICompilationUnit fCu;
+		private final IJavaScriptUnit fCu;
 		private final int fProblemId;
 		private boolean fHasCorrections;
 
-		public SafeHasCorrections(ICompilationUnit cu, int problemId) {
+		public SafeHasCorrections(IJavaScriptUnit cu, int problemId) {
 			fCu= cu;
 			fProblemId= problemId;
 			fHasCorrections= false;

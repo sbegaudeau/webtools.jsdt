@@ -15,8 +15,8 @@ import org.eclipse.compare.structuremergeviewer.DocumentRangeNode;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Comparable Java elements are represented as JavaNodes.
@@ -126,16 +126,16 @@ public class JavaNode extends DocumentRangeNode implements ITypedElement {
 					
 		switch (getTypeCode()) {
 		case CU:
-			id= JavaCompareUtilities.getImageDescriptor(IJavaElement.COMPILATION_UNIT);
+			id= JavaCompareUtilities.getImageDescriptor(IJavaScriptElement.JAVASCRIPT_UNIT);
 			break;
 		case PACKAGE:
-			id= JavaCompareUtilities.getImageDescriptor(IJavaElement.PACKAGE_DECLARATION);
+			id= JavaCompareUtilities.getImageDescriptor(IJavaScriptElement.PACKAGE_DECLARATION);
 			break;
 		case IMPORT:
-			id= JavaCompareUtilities.getImageDescriptor(IJavaElement.IMPORT_DECLARATION);
+			id= JavaCompareUtilities.getImageDescriptor(IJavaScriptElement.IMPORT_DECLARATION);
 			break;
 		case IMPORT_CONTAINER:
-			id= JavaCompareUtilities.getImageDescriptor(IJavaElement.IMPORT_CONTAINER);
+			id= JavaCompareUtilities.getImageDescriptor(IJavaScriptElement.IMPORT_CONTAINER);
 			break;
 		case CLASS:
 			id= JavaCompareUtilities.getTypeImageDescriptor(true);
@@ -144,14 +144,14 @@ public class JavaNode extends DocumentRangeNode implements ITypedElement {
 			id= JavaCompareUtilities.getTypeImageDescriptor(false);
 			break;
 		case INIT:
-			id= JavaCompareUtilities.getImageDescriptor(IJavaElement.INITIALIZER);
+			id= JavaCompareUtilities.getImageDescriptor(IJavaScriptElement.INITIALIZER);
 			break;
 		case CONSTRUCTOR:
 		case METHOD:
-			id= JavaCompareUtilities.getImageDescriptor(IJavaElement.METHOD);
+			id= JavaCompareUtilities.getImageDescriptor(IJavaScriptElement.METHOD);
 			break;
 		case FIELD:
-			id= JavaCompareUtilities.getImageDescriptor(IJavaElement.FIELD);
+			id= JavaCompareUtilities.getImageDescriptor(IJavaScriptElement.FIELD);
 			break;					
 		case ENUM:
 			id= JavaCompareUtilities.getEnumImageDescriptor();
@@ -160,7 +160,7 @@ public class JavaNode extends DocumentRangeNode implements ITypedElement {
 			id= JavaCompareUtilities.getAnnotationImageDescriptor();
 			break;
 		}
-		return JavaPlugin.getImageDescriptorRegistry().get(id);
+		return JavaScriptPlugin.getImageDescriptorRegistry().get(id);
 	}
 	
 	/*

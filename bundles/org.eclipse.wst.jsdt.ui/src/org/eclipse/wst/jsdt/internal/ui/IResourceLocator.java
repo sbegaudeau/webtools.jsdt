@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * This interface allows to locate different
@@ -26,17 +26,17 @@ public interface IResourceLocator {
 	 *
 	 * @param	element	the element for which the resource is located
 	 * @return the underlying resource
-	 * @exception JavaModelException if the element does not exist or if an
+	 * @exception JavaScriptModelException if the element does not exist or if an
 	 *		exception occurs while accessing its underlying resource
-	 * @see org.eclipse.wst.jsdt.core.IJavaElement#getUnderlyingResource()
+	 * @see org.eclipse.wst.jsdt.core.IJavaScriptElement#getUnderlyingResource()
 	 */
-	IResource getUnderlyingResource(Object element) throws JavaModelException;
+	IResource getUnderlyingResource(Object element) throws JavaScriptModelException;
 	/**
 	 * Returns the resource that corresponds directly to the element,
 	 * or <code>null</code> if there is no resource that corresponds to
 	 * the element.
 	 *
-	 * <p>For example, the corresponding resource for an <code>ICompilationUnit</code>
+	 * <p>For example, the corresponding resource for an <code>IJavaScriptUnit</code>
 	 * is its underlying <code>IFile</code>. The corresponding resource for
 	 * an <code>IPackageFragment</code> that is not contained in an archive 
 	 * is its underlying <code>IFolder</code>. An <code>IPackageFragment</code>
@@ -46,11 +46,11 @@ public interface IResourceLocator {
 	 *
 	 * @param	element	the element for which the resource is located
 	 * @return the corresponding resource
-	 * @exception JavaModelException if the element does not exist or if an
+	 * @exception JavaScriptModelException if the element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
-	 * @see org.eclipse.wst.jsdt.core.IJavaElement#getCorrespondingResource()
+	 * @see org.eclipse.wst.jsdt.core.IJavaScriptElement#getCorrespondingResource()
 	 */
-	IResource getCorrespondingResource(Object element) throws JavaModelException;
+	IResource getCorrespondingResource(Object element) throws JavaScriptModelException;
 	/**
 	 * Returns the resource that contains the element. If the element is not
 	 * directly contained by a resource then a helper resource or <code>null</code>
@@ -58,8 +58,8 @@ public interface IResourceLocator {
 	 *
 	 * @param	element	the element for which the resource is located
 	 * @return the containing resource
-	 * @exception JavaModelException if the element does not exist or if an
+	 * @exception JavaScriptModelException if the element does not exist or if an
 	 *		exception occurs while accessing its containing resource
 	 */
-	IResource getContainingResource(Object element) throws JavaModelException;
+	IResource getContainingResource(Object element) throws JavaScriptModelException;
 }

@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.reorg;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.ltk.core.refactoring.participants.ReorgExecutionLog;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 
@@ -65,7 +65,7 @@ public final class LoggedNewNameQueries implements INewNameQueries {
 		 */
 		public String getNewName() {
 			String name= null;
-			if (fObject instanceof ICompilationUnit)
+			if (fObject instanceof IJavaScriptUnit)
 				name= getCompilationUnitName();
 			else
 				name= fLog.getNewName(fObject);
@@ -102,7 +102,7 @@ public final class LoggedNewNameQueries implements INewNameQueries {
 	/**
 	 * {@inheritDoc}
 	 */
-	public INewNameQuery createNewCompilationUnitNameQuery(final ICompilationUnit unit, final String initialSuggestedName) {
+	public INewNameQuery createNewCompilationUnitNameQuery(final IJavaScriptUnit unit, final String initialSuggestedName) {
 		return new NewNameQuery(unit, initialSuggestedName);
 	}
 

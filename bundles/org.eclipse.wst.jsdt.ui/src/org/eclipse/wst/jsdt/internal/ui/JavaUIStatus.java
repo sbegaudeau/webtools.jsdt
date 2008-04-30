@@ -14,12 +14,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
 /**
- * Convenience class for error exceptions thrown inside JavaUI plugin.
+ * Convenience class for error exceptions thrown inside JavaScriptUI plugin.
  */
 public class JavaUIStatus extends Status {
 
 	private JavaUIStatus(int severity, int code, String message, Throwable throwable) {
-		super(severity, JavaPlugin.getPluginId(), code, message, throwable);
+		super(severity, JavaScriptPlugin.getPluginId(), code, message, throwable);
 	}
 	
 	public static IStatus createError(int code, Throwable throwable) {

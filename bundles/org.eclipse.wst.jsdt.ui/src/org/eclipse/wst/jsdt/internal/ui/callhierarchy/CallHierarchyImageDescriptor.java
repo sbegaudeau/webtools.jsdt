@@ -16,7 +16,7 @@ import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
 
@@ -131,7 +131,7 @@ public class CallHierarchyImageDescriptor extends CompositeImageDescriptor {
 		ImageData data= descriptor.getImageData(); // see bug 51965: getImageData can return null
 		if (data == null) {
 			data= DEFAULT_IMAGE_DATA;
-			JavaPlugin.logErrorMessage("Image data not available: " + descriptor.toString()); //$NON-NLS-1$
+			JavaScriptPlugin.logErrorMessage("Image data not available: " + descriptor.toString()); //$NON-NLS-1$
 		}
 		return data;
 	}

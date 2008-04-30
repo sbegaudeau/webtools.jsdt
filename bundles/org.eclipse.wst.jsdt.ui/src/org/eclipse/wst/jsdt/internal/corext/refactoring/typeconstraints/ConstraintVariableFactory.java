@@ -17,10 +17,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
@@ -61,7 +61,7 @@ public class ConstraintVariableFactory implements IConstraintVariableFactory {
 		IBinding binding= ExpressionVariable.resolveBinding(expression);
 		
 		if (binding instanceof ITypeBinding){
-			ICompilationUnit cu= ASTCreator.getCu(expression);
+			IJavaScriptUnit cu= ASTCreator.getCu(expression);
 			Assert.isNotNull(cu);
 			CompilationUnitRange range= new CompilationUnitRange(cu, expression);
 			return makeTypeVariable((ITypeBinding)getKey(binding), expression.toString(), range);
@@ -153,9 +153,9 @@ public class ConstraintVariableFactory implements IConstraintVariableFactory {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.IConstraintVariableFactory#makeDeclaringTypeVariable(org.eclipse.wst.jsdt.core.dom.IMethodBinding)
+	 * @see org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.IConstraintVariableFactory#makeDeclaringTypeVariable(org.eclipse.wst.jsdt.core.dom.IFunctionBinding)
 	 */
-	public DeclaringTypeVariable makeDeclaringTypeVariable(IMethodBinding methodBinding) {
+	public DeclaringTypeVariable makeDeclaringTypeVariable(IFunctionBinding methodBinding) {
 		String key= methodBinding.getKey();
 		if (! fDeclaringTypeVariableMap.containsKey(key)){
 			fDeclaringTypeVariableMap.put(key, new DeclaringTypeVariable(methodBinding));
@@ -168,9 +168,9 @@ public class ConstraintVariableFactory implements IConstraintVariableFactory {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.IConstraintVariableFactory#makeParameterTypeVariable(org.eclipse.wst.jsdt.core.dom.IMethodBinding, int)
+	 * @see org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.IConstraintVariableFactory#makeParameterTypeVariable(org.eclipse.wst.jsdt.core.dom.IFunctionBinding, int)
 	 */
-	public ParameterTypeVariable makeParameterTypeVariable(IMethodBinding methodBinding,
+	public ParameterTypeVariable makeParameterTypeVariable(IFunctionBinding methodBinding,
 														   int parameterIndex) {
 		String key= methodBinding.getKey() + parameterIndex;
 		if (! fParameterMap.containsKey(key)){
@@ -206,9 +206,9 @@ public class ConstraintVariableFactory implements IConstraintVariableFactory {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.IConstraintVariableFactory#makeReturnTypeVariable(org.eclipse.wst.jsdt.core.dom.IMethodBinding)
+	 * @see org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.IConstraintVariableFactory#makeReturnTypeVariable(org.eclipse.wst.jsdt.core.dom.IFunctionBinding)
 	 */
-	public ReturnTypeVariable makeReturnTypeVariable(IMethodBinding methodBinding) {
+	public ReturnTypeVariable makeReturnTypeVariable(IFunctionBinding methodBinding) {
 		String key= methodBinding.getKey();
 		if (!fReturnVariableMap.containsKey(key)){
 			fReturnVariableMap.put(key, new ReturnTypeVariable(methodBinding));
@@ -224,7 +224,7 @@ public class ConstraintVariableFactory implements IConstraintVariableFactory {
 	 * @see org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.IConstraintVariableFactory#makeTypeVariable(org.eclipse.wst.jsdt.core.dom.Type)
 	 */
 	public TypeVariable makeTypeVariable(Type type) {
-		ICompilationUnit cu= ASTCreator.getCu(type);
+		IJavaScriptUnit cu= ASTCreator.getCu(type);
 		Assert.isNotNull(cu);
 		CompilationUnitRange range= new CompilationUnitRange(cu, type);
 		if (! fTypeVariableMap.containsKey(range)){

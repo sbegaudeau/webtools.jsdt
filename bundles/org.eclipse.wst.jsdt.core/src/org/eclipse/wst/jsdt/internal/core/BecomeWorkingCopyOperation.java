@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
 import org.eclipse.wst.jsdt.core.IProblemRequestor;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
- * Switch and ICompilationUnit to working copy mode
+ * Switch and IJavaScriptUnit to working copy mode
  * and signal the working copy addition through a delta.
  */
 public class BecomeWorkingCopyOperation extends JavaModelOperation {
@@ -28,10 +28,10 @@ public class BecomeWorkingCopyOperation extends JavaModelOperation {
 	 * perOwnerWorkingCopies map is not null if the working copy is a shared working copy.
 	 */
 	public BecomeWorkingCopyOperation(CompilationUnit workingCopy, IProblemRequestor problemRequestor) {
-		super(new IJavaElement[] {workingCopy});
+		super(new IJavaScriptElement[] {workingCopy});
 		this.problemRequestor = problemRequestor;
 	}
-	protected void executeOperation() throws JavaModelException {
+	protected void executeOperation() throws JavaScriptModelException {
 
 		// open the working copy now to ensure contents are that of the current state of this element
 		CompilationUnit workingCopy = getWorkingCopy();
@@ -47,17 +47,17 @@ public class BecomeWorkingCopyOperation extends JavaModelOperation {
 			if (workingCopy.getResource().isAccessible()) {
 				// report a F_PRIMARY_WORKING_COPY change delta for a primary working copy
 				JavaElementDelta delta = new JavaElementDelta(getJavaModel());
-				delta.changed(workingCopy, IJavaElementDelta.F_PRIMARY_WORKING_COPY);
+				delta.changed(workingCopy, IJavaScriptElementDelta.F_PRIMARY_WORKING_COPY);
 				addDelta(delta);
 			} else {
 				// report an ADDED delta
 				JavaElementDelta delta = new JavaElementDelta(this.getJavaModel());
-				delta.added(workingCopy, IJavaElementDelta.F_PRIMARY_WORKING_COPY);
+				delta.added(workingCopy, IJavaScriptElementDelta.F_PRIMARY_WORKING_COPY);
 				addDelta(delta);
 			}
 		}
 
-		this.resultElements = new IJavaElement[] {workingCopy};
+		this.resultElements = new IJavaScriptElement[] {workingCopy};
 	}
 	/*
 	 * Returns the working copy this operation is working on.

@@ -30,10 +30,10 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.PackageSelectionDialog;
 import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.CheckedListDialogField;
@@ -108,7 +108,7 @@ public class TypeFilterPreferencePage extends PreferencePage implements IWorkben
 	
 	public TypeFilterPreferencePage() {
 		super();
-		setPreferenceStore(JavaPlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(JavaScriptPlugin.getDefault().getPreferenceStore());
 		setDescription(PreferencesMessages.TypeFilterPreferencePage_description); 
 	
 		String[] buttonLabels= new String[] { 
@@ -226,7 +226,7 @@ public class TypeFilterPreferencePage extends PreferencePage implements IWorkben
 	}
 	
 	private String[] choosePackage() {
-		IJavaSearchScope scope= SearchEngine.createWorkspaceScope();
+		IJavaScriptSearchScope scope= SearchEngine.createWorkspaceScope();
 		BusyIndicatorRunnableContext context= new BusyIndicatorRunnableContext();
 		int flags= PackageSelectionDialog.F_SHOW_PARENTS | PackageSelectionDialog.F_HIDE_DEFAULT_PACKAGE | PackageSelectionDialog.F_REMOVE_DUPLICATES;
 		PackageSelectionDialog dialog = new PackageSelectionDialog(getShell(), context, flags , scope);
@@ -262,7 +262,7 @@ public class TypeFilterPreferencePage extends PreferencePage implements IWorkben
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
      */
     public boolean performOk() {
-  		IPreferenceStore prefs= JavaPlugin.getDefault().getPreferenceStore();
+  		IPreferenceStore prefs= JavaScriptPlugin.getDefault().getPreferenceStore();
   		
   		List checked= fFilterListField.getCheckedElements();
   		List unchecked= fFilterListField.getElements();
@@ -270,7 +270,7 @@ public class TypeFilterPreferencePage extends PreferencePage implements IWorkben
   		
   		prefs.setValue(PREF_FILTER_ENABLED, packOrderList(checked));
   		prefs.setValue(PREF_FILTER_DISABLED, packOrderList(unchecked));
-  		JavaPlugin.getDefault().savePluginPreferences();
+  		JavaScriptPlugin.getDefault().savePluginPreferences();
         return true;
     }
 

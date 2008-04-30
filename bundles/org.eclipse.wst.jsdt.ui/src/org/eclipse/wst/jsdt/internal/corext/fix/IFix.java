@@ -13,11 +13,11 @@ package org.eclipse.wst.jsdt.internal.corext.fix;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ltk.core.refactoring.TextChange;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 /**
  * An <code>IFix</code> can calculate a <code>TextChange</code>
- * which applied to a <code>ICompilationUnit</code> will fix
+ * which applied to a <code>IJavaScriptUnit</code> will fix
  * one or several problems.
  * 
  * @since 3.2
@@ -42,12 +42,12 @@ public interface IFix {
 	public abstract TextChange createChange() throws CoreException;
 	
 	/**
-	 * The <code>ICompilationUnit</code> on which <code>createChange</code> should
+	 * The <code>IJavaScriptUnit</code> on which <code>createChange</code> should
 	 * be applied to fix a problem.
 	 * 
-	 * @return The ICompilationUnit, not null
+	 * @return The IJavaScriptUnit, not null
 	 */
-	public abstract ICompilationUnit getCompilationUnit();
+	public abstract IJavaScriptUnit getCompilationUnit();
 	
 	/**
 	 * A status to inform about issues with this fix

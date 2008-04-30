@@ -22,9 +22,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerPart;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
@@ -41,7 +41,7 @@ public class JavaProjectWizard extends NewElementWizard implements IExecutableEx
     
     public JavaProjectWizard() {
         setDefaultPageImageDescriptor(JavaPluginImages.DESC_WIZBAN_NEWJPRJ);
-        setDialogSettings(JavaPlugin.getDefault().getDialogSettings());
+        setDialogSettings(JavaScriptPlugin.getDefault().getDialogSettings());
         setWindowTitle(NewWizardMessages.JavaProjectWizard_title); 
     }
 
@@ -70,7 +70,7 @@ public class JavaProjectWizard extends NewElementWizard implements IExecutableEx
 	public boolean performFinish() {
 		boolean res= super.performFinish();
 		if (res) {
-			final IJavaElement newElement= getCreatedElement();
+			final IJavaScriptElement newElement= getCreatedElement();
 			
 			IWorkingSet[] workingSets= fFirstPage.getWorkingSets();
 			WorkingSetConfigurationBlock.addToWorkingSets(newElement, workingSets);
@@ -115,8 +115,8 @@ public class JavaProjectWizard extends NewElementWizard implements IExecutableEx
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.ui.wizards.NewElementWizard#getCreatedElement()
 	 */
-	public IJavaElement getCreatedElement() {
-		return JavaCore.create(fFirstPage.getProjectHandle());
+	public IJavaScriptElement getCreatedElement() {
+		return JavaScriptCore.create(fFirstPage.getProjectHandle());
 	}
 	
 	private IWorkingSet[] getWorkingSets(IStructuredSelection selection) {

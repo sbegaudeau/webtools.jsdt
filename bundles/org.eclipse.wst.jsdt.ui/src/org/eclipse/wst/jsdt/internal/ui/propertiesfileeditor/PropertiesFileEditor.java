@@ -17,11 +17,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.IShowInTargetList;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 /**
  * Properties file editor.
@@ -39,10 +39,10 @@ public class PropertiesFileEditor extends TextEditor {
 	 * Creates a new properties file editor.
 	 */
 	public PropertiesFileEditor() {
-		setDocumentProvider(JavaPlugin.getDefault().getPropertiesFileDocumentProvider());
-		IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
+		setDocumentProvider(JavaScriptPlugin.getDefault().getPropertiesFileDocumentProvider());
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 		setPreferenceStore(store);
-		JavaTextTools textTools= JavaPlugin.getDefault().getJavaTextTools();
+		JavaScriptTextTools textTools= JavaScriptPlugin.getDefault().getJavaTextTools();
 		setSourceViewerConfiguration(new PropertiesFileSourceViewerConfiguration(textTools.getColorManager(), store, this, IPropertiesFilePartitions.PROPERTIES_FILE_PARTITIONING));
 	}
 
@@ -91,7 +91,7 @@ public class PropertiesFileEditor extends TextEditor {
 		if (adapter == IShowInTargetList.class) {
 			return new IShowInTargetList() {
 				public String[] getShowInTargetIds() {
-					return new String[] { JavaUI.ID_PACKAGES, IPageLayout.ID_RES_NAV };
+					return new String[] { JavaScriptUI.ID_PACKAGES, IPageLayout.ID_RES_NAV };
 				}
 
 			};

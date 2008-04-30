@@ -37,13 +37,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
@@ -89,7 +89,7 @@ public class DeltaProcessingState implements IResourceChangeListener {
 	/* A table from IPath (a source attachment path from a classpath entry) to IPath (a root path) */
 	public HashMap sourceAttachments = new HashMap();
 
-	/* A table from IJavaProject to IJavaProject[] (the list of direct dependent of the key) */
+	/* A table from IJavaScriptProject to IJavaScriptProject[] (the list of direct dependent of the key) */
 	public HashMap projectDependencies = new HashMap();
 
 	/* Whether the roots tables should be recomputed */
@@ -175,7 +175,7 @@ public class DeltaProcessingState implements IResourceChangeListener {
 		return validation;
 	}
 
-	public synchronized void addProjectReferenceChange(JavaProject project, IClasspathEntry[] oldResolvedClasspath) {
+	public synchronized void addProjectReferenceChange(JavaProject project, IIncludePathEntry[] oldResolvedClasspath) {
 		ProjectReferenceChange change = (ProjectReferenceChange) this.projectReferenceChanges.get(project);
 		if (change == null) {
 			change = new ProjectReferenceChange(project, oldResolvedClasspath);
@@ -208,33 +208,33 @@ public class DeltaProcessingState implements IResourceChangeListener {
 				newSourceAttachments = new HashMap();
 				newProjectDependencies = new HashMap();
 
-				IJavaModel model = JavaModelManager.getJavaModelManager().getJavaModel();
-				IJavaProject[] projects;
+				IJavaScriptModel model = JavaModelManager.getJavaModelManager().getJavaModel();
+				IJavaScriptProject[] projects;
 				try {
-					projects = model.getJavaProjects();
-				} catch (JavaModelException e) {
+					projects = model.getJavaScriptProjects();
+				} catch (JavaScriptModelException e) {
 					// nothing can be done
 					return;
 				}
 				for (int i = 0, length = projects.length; i < length; i++) {
 					JavaProject project = (JavaProject) projects[i];
-					IClasspathEntry[] classpath;
+					IIncludePathEntry[] classpath;
 					try {
 						classpath = project.getResolvedClasspath();
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						// continue with next project
 						continue;
 					}
 					for (int j= 0, classpathLength = classpath.length; j < classpathLength; j++) {
-						IClasspathEntry entry = classpath[j];
-						if (entry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
-							IJavaProject key = model.getJavaProject(entry.getPath().segment(0)); // TODO (jerome) reuse handle
-							IJavaProject[] dependents = (IJavaProject[]) newProjectDependencies.get(key);
+						IIncludePathEntry entry = classpath[j];
+						if (entry.getEntryKind() == IIncludePathEntry.CPE_PROJECT) {
+							IJavaScriptProject key = model.getJavaScriptProject(entry.getPath().segment(0)); // TODO (jerome) reuse handle
+							IJavaScriptProject[] dependents = (IJavaScriptProject[]) newProjectDependencies.get(key);
 							if (dependents == null) {
-								dependents = new IJavaProject[] {project};
+								dependents = new IJavaScriptProject[] {project};
 							} else {
 								int dependentsLength = dependents.length;
-								System.arraycopy(dependents, 0, dependents = new IJavaProject[dependentsLength+1], 0, dependentsLength);
+								System.arraycopy(dependents, 0, dependents = new IJavaScriptProject[dependentsLength+1], 0, dependentsLength);
 								dependents[dependentsLength] = project;
 							}
 							newProjectDependencies.put(key, dependents);
@@ -255,11 +255,11 @@ public class DeltaProcessingState implements IResourceChangeListener {
 						}
 
 						// source attachment path
-						if (entry.getEntryKind() != IClasspathEntry.CPE_LIBRARY) continue;
+						if (entry.getEntryKind() != IIncludePathEntry.CPE_LIBRARY) continue;
 						String propertyString = null;
 						try {
 							propertyString = Util.getSourceAttachmentProperty(path);
-						} catch (JavaModelException e) {
+						} catch (JavaScriptModelException e) {
 							e.printStackTrace();
 						}
 						IPath sourceAttachmentPath;
@@ -426,9 +426,9 @@ public class DeltaProcessingState implements IResourceChangeListener {
 		return this.externalTimeStamps;
 	}
 
-	public IJavaProject findJavaProject(String name) {
+	public IJavaScriptProject findJavaProject(String name) {
 		if (getOldJavaProjecNames().contains(name))
-			return JavaModelManager.getJavaModelManager().getJavaModel().getJavaProject(name);
+			return JavaModelManager.getJavaModelManager().getJavaModel().getJavaScriptProject(name);
 		return null;
 	}
 
@@ -440,14 +440,14 @@ public class DeltaProcessingState implements IResourceChangeListener {
 	public synchronized HashSet getOldJavaProjecNames() {
 		if (this.javaProjectNamesCache == null) {
 			HashSet result = new HashSet();
-			IJavaProject[] projects;
+			IJavaScriptProject[] projects;
 			try {
-				projects = JavaModelManager.getJavaModelManager().getJavaModel().getJavaProjects();
-			} catch (JavaModelException e) {
+				projects = JavaModelManager.getJavaModelManager().getJavaModel().getJavaScriptProjects();
+			} catch (JavaScriptModelException e) {
 				return this.javaProjectNamesCache;
 			}
 			for (int i = 0, length = projects.length; i < length; i++) {
-				IJavaProject project = projects[i];
+				IJavaScriptProject project = projects[i];
 				result.add(project.getElementName());
 			}
 			return this.javaProjectNamesCache = result;
@@ -460,7 +460,7 @@ public class DeltaProcessingState implements IResourceChangeListener {
 	}
 
 	private File getTimeStampsFile() {
-		return JavaCore.getPlugin().getStateLocation().append("externalLibsTimeStamps").toFile(); //$NON-NLS-1$
+		return JavaScriptCore.getPlugin().getStateLocation().append("externalLibsTimeStamps").toFile(); //$NON-NLS-1$
 	}
 
 	public void saveExternalLibTimeStamps() throws CoreException {
@@ -479,7 +479,7 @@ public class DeltaProcessingState implements IResourceChangeListener {
 				out.writeLong(timestamp.longValue());
 			}
 		} catch (IOException e) {
-			IStatus status = new Status(IStatus.ERROR, JavaCore.PLUGIN_ID, IStatus.ERROR, "Problems while saving timestamps", e); //$NON-NLS-1$
+			IStatus status = new Status(IStatus.ERROR, JavaScriptCore.PLUGIN_ID, IStatus.ERROR, "Problems while saving timestamps", e); //$NON-NLS-1$
 			throw new CoreException(status);
 		} finally {
 			if (out != null) {
@@ -518,7 +518,7 @@ public class DeltaProcessingState implements IResourceChangeListener {
 
 				if (!containerIsProject
 						|| !rootInfo.project.getPath().isPrefixOf(path)) { // only consider folder roots that are not included in the container
-					deltaProcessor.updateCurrentDeltaAndIndex(rootDelta, IJavaElement.PACKAGE_FRAGMENT_ROOT, rootInfo);
+					deltaProcessor.updateCurrentDeltaAndIndex(rootDelta, IJavaScriptElement.PACKAGE_FRAGMENT_ROOT, rootInfo);
 				}
 
 				ArrayList rootList = (ArrayList)otherUpdatedRoots.get(path);
@@ -528,7 +528,7 @@ public class DeltaProcessingState implements IResourceChangeListener {
 						rootInfo = (DeltaProcessor.RootInfo)otherProjects.next();
 						if (!containerIsProject
 								|| !rootInfo.project.getPath().isPrefixOf(path)) { // only consider folder roots that are not included in the container
-							deltaProcessor.updateCurrentDeltaAndIndex(rootDelta, IJavaElement.PACKAGE_FRAGMENT_ROOT, rootInfo);
+							deltaProcessor.updateCurrentDeltaAndIndex(rootDelta, IJavaScriptElement.PACKAGE_FRAGMENT_ROOT, rootInfo);
 						}
 					}
 				}

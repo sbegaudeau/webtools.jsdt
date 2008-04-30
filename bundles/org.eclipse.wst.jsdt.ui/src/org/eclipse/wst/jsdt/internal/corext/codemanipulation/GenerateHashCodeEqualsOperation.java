@@ -32,9 +32,9 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
@@ -43,20 +43,20 @@ import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
@@ -83,7 +83,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitC
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringFileBuffers;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.CodeGeneration;
 
 /**
@@ -172,7 +172,7 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 	private TextEdit fEdit= null;
 
 	/** The insertion point, or <code>null</code> */
-	private final IJavaElement fInsert;
+	private final IJavaScriptElement fInsert;
 
 	/** The variable binding keys to implement */
 	private final IVariableBinding[] fFields;
@@ -190,7 +190,7 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 	private final ITypeBinding fType;
 
 	/** The compilation unit ast node */
-	private final CompilationUnit fUnit;
+	private final JavaScriptUnit fUnit;
 
 	/** The CURewrite to be used */
 	private final CompilationUnitRewrite fRewrite;
@@ -223,8 +223,8 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 	 * @param save <code>true</code> if the changed compilation unit should be
 	 *            saved, <code>false</code> otherwise
 	 */
-	public GenerateHashCodeEqualsOperation(final ITypeBinding type, final IVariableBinding[] fields, final CompilationUnit unit,
-			final IJavaElement insert, final CodeGenerationSettings settings, final boolean useInstanceof, final boolean force, final boolean apply, final boolean save) {
+	public GenerateHashCodeEqualsOperation(final ITypeBinding type, final IVariableBinding[] fields, final JavaScriptUnit unit,
+			final IJavaScriptElement insert, final CodeGenerationSettings settings, final boolean useInstanceof, final boolean force, final boolean apply, final boolean save) {
 		Assert.isNotNull(type);
 		Assert.isNotNull(fields);
 		Assert.isNotNull(unit);
@@ -238,7 +238,7 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 		fSave= save;
 		fApply= apply;
 		fDoubleCount= 0;
-		fRewrite= new CompilationUnitRewrite((ICompilationUnit) fUnit.getJavaElement(), fUnit);
+		fRewrite= new CompilationUnitRewrite((IJavaScriptUnit) fUnit.getJavaElement(), fUnit);
 		fForce= force;
 		fAst= fRewrite.getAST();
 	}
@@ -279,7 +279,7 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 
 			if (fType != null && rewriter != null) {
 
-				ICompilationUnit cu= (ICompilationUnit) fUnit.getJavaElement();
+				IJavaScriptUnit cu= (IJavaScriptUnit) fUnit.getJavaElement();
 
 				ITextFileBuffer buffer= null;
 				IDocument document= null;
@@ -291,18 +291,18 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 						document= buffer.getDocument();
 					}
 					ASTNode insertion= null;
-					if (fInsert instanceof IMethod)
-						insertion= ASTNodes.getParent(NodeFinder.perform(fRewrite.getRoot(), ((IMethod) fInsert).getNameRange()),
-								MethodDeclaration.class);
+					if (fInsert instanceof IFunction)
+						insertion= ASTNodes.getParent(NodeFinder.perform(fRewrite.getRoot(), ((IFunction) fInsert).getNameRange()),
+								FunctionDeclaration.class);
 
 					BodyDeclaration toReplace= null;
 					if (fForce) {
 						final List list= (List) declaration.getStructuralProperty(declaration.getBodyDeclarationsProperty());
 						for (final Iterator iterator= list.iterator(); iterator.hasNext();) {
 							final BodyDeclaration bodyDecl= (BodyDeclaration) iterator.next();
-							if (bodyDecl instanceof MethodDeclaration) {
-								final MethodDeclaration method= (MethodDeclaration) bodyDecl;
-								final IMethodBinding binding= method.resolveBinding();
+							if (bodyDecl instanceof FunctionDeclaration) {
+								final FunctionDeclaration method= (FunctionDeclaration) bodyDecl;
+								final IFunctionBinding binding= method.resolveBinding();
 								if (binding != null && binding.getName().equals(METHODNAME_EQUALS)) {
 									final ITypeBinding[] bindings= binding.getParameterTypes();
 									if (bindings.length == 1 && bindings[0].getQualifiedName().equals(JAVA_LANG_OBJECT)) {
@@ -314,7 +314,7 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 						}
 					}
 					// equals(..)
-					MethodDeclaration equalsMethod= createEqualsMethod();
+					FunctionDeclaration equalsMethod= createEqualsMethod();
 					addMethod(rewriter, insertion, equalsMethod, toReplace);
 
 					if (monitor.isCanceled())
@@ -325,9 +325,9 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 						final List list= (List) declaration.getStructuralProperty(declaration.getBodyDeclarationsProperty());
 						for (final Iterator iterator= list.iterator(); iterator.hasNext();) {
 							final BodyDeclaration bodyDecl= (BodyDeclaration) iterator.next();
-							if (bodyDecl instanceof MethodDeclaration) {
-								final MethodDeclaration method= (MethodDeclaration) bodyDecl;
-								final IMethodBinding binding= method.resolveBinding();
+							if (bodyDecl instanceof FunctionDeclaration) {
+								final FunctionDeclaration method= (FunctionDeclaration) bodyDecl;
+								final IFunctionBinding binding= method.resolveBinding();
 								if (binding != null && binding.getName().equals(METHODNAME_HASH_CODE)) {
 									final ITypeBinding[] bindings= binding.getParameterTypes();
 									if (bindings.length == 0) {
@@ -339,19 +339,19 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 						}
 					}
 					// hashCode()
-					MethodDeclaration hashCodeMethod= createHashCodeMethod();
+					FunctionDeclaration hashCodeMethod= createHashCodeMethod();
 					addMethod(rewriter, equalsMethod, hashCodeMethod, toReplace);
 
 					// helpers
-					MethodDeclaration previous= null;
+					FunctionDeclaration previous= null;
 					for (final Iterator iterator= fCustomHashCodeTypes.iterator(); iterator.hasNext();) {
 						boolean found= false;
 						final ITypeBinding binding= (ITypeBinding) iterator.next();
 						final ITypeBinding typeBinding= declaration.resolveBinding();
 						if (typeBinding != null) {
-							final IMethodBinding[] bindings= typeBinding.getDeclaredMethods();
+							final IFunctionBinding[] bindings= typeBinding.getDeclaredMethods();
 							for (int index= 0; index < bindings.length; index++) {
-								final IMethodBinding method= bindings[index];
+								final IFunctionBinding method= bindings[index];
 								final ITypeBinding[] parameters= method.getParameterTypes();
 								if (method.getName().equals(METHODNAME_HASH_CODE) && parameters.length == 1) {
 									final ITypeBinding parameter= parameters[0];
@@ -365,7 +365,7 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 							}
 						}
 						if (!found) {
-							final MethodDeclaration helperDecl= createHashCodeHelper(binding);
+							final FunctionDeclaration helperDecl= createHashCodeHelper(binding);
 							addHelper(rewriter, previous, helperDecl);
 						}
 					}
@@ -387,7 +387,7 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 										cu.getBuffer().setContents(document.get());
 								}
 							} catch (Exception exception) {
-								throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), 0, exception.getLocalizedMessage(),
+								throw new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), 0, exception.getLocalizedMessage(),
 										exception));
 							}
 						}
@@ -402,14 +402,14 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 		}
 	}
 
-	private void addHelper(ListRewrite rewriter, ASTNode insertion, MethodDeclaration stub) {
+	private void addHelper(ListRewrite rewriter, ASTNode insertion, FunctionDeclaration stub) {
 		if (insertion != null)
 			rewriter.insertBefore(stub, insertion, null);
 		else
 			rewriter.insertFirst(stub, null);
 	}
 
-	private void addMethod(ListRewrite rewriter, ASTNode insertion, MethodDeclaration stub, BodyDeclaration replace) {
+	private void addMethod(ListRewrite rewriter, ASTNode insertion, FunctionDeclaration stub, BodyDeclaration replace) {
 		if (replace != null) {
 			rewriter.replace(replace, stub, null);
 		} else {
@@ -422,9 +422,9 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 
 	// ******************* HASHCODE *******************
 
-	private MethodDeclaration createHashCodeMethod() throws CoreException {
+	private FunctionDeclaration createHashCodeMethod() throws CoreException {
 
-		MethodDeclaration hashCodeMethod= fAst.newMethodDeclaration();
+		FunctionDeclaration hashCodeMethod= fAst.newFunctionDeclaration();
 		hashCodeMethod.modifiers().addAll(ASTNodeFactory.newModifiers(fAst, Modifier.PUBLIC));
 		hashCodeMethod.setName(fAst.newSimpleName(METHODNAME_HASH_CODE));
 		hashCodeMethod.setConstructor(false);
@@ -485,8 +485,8 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 		// method comment
 		if (fSettings != null) {
 			ITypeBinding object= fAst.resolveWellKnownType(JAVA_LANG_OBJECT);
-			IMethodBinding[] objms= object.getDeclaredMethods();
-			IMethodBinding objectMethod= null;
+			IFunctionBinding[] objms= object.getDeclaredMethods();
+			IFunctionBinding objectMethod= null;
 			for (int i= 0; i < objms.length; i++) {
 				if (objms[i].getName().equals(METHODNAME_HASH_CODE) && objms[i].getParameterTypes().length == 0)
 					objectMethod= objms[i];
@@ -514,7 +514,7 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 			exp.setRightOperand(fAst.newNullLiteral());
 			ce.setExpression(exp);
 			ce.setThenExpression(fAst.newNumberLiteral("0")); //$NON-NLS-1$
-			MethodInvocation invoc= fAst.newMethodInvocation();
+			FunctionInvocation invoc= fAst.newFunctionInvocation();
 			access= fAst.newArrayAccess();
 			access.setArray(fAst.newSimpleName(VARIABLE_NAME_HASHCODE_PARAM));
 			access.setIndex(fAst.newSimpleName(VARIABLE_NAME_INDEX));
@@ -567,14 +567,14 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 	}
 
 	private Statement createAddArrayHashCode(IVariableBinding binding) {
-		MethodInvocation invoc= fAst.newMethodInvocation();
-		if (JavaModelUtil.is50OrHigher(fRewrite.getCu().getJavaProject())) {
+		FunctionInvocation invoc= fAst.newFunctionInvocation();
+		if (JavaModelUtil.is50OrHigher(fRewrite.getCu().getJavaScriptProject())) {
 			invoc.setName(fAst.newSimpleName(METHODNAME_HASH_CODE));
 			invoc.setExpression(getQualifiedName(JAVA_UTIL_ARRAYS));
 			invoc.arguments().add(getThisAccessForHashCode(binding.getName()));
 		} else {
 			invoc.setName(fAst.newSimpleName(METHODNAME_HASH_CODE));
-			final IJavaElement element= fType.getJavaElement();
+			final IJavaScriptElement element= fType.getJavaElement();
 			if (element != null && !"".equals(element.getElementName())) //$NON-NLS-1$
 				invoc.setExpression(fAst.newSimpleName(element.getElementName()));
 			invoc.arguments().add(getThisAccessForHashCode(binding.getName()));
@@ -589,10 +589,10 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 		return prepareAssignment(invoc);
 	}
 
-	private MethodDeclaration createHashCodeHelper(ITypeBinding binding) {
+	private FunctionDeclaration createHashCodeHelper(ITypeBinding binding) {
 		Assert.isTrue(!binding.isArray());
 
-		MethodDeclaration hashCodeMethod= fAst.newMethodDeclaration();
+		FunctionDeclaration hashCodeMethod= fAst.newFunctionDeclaration();
 		hashCodeMethod.modifiers().addAll(ASTNodeFactory.newModifiers(fAst, Modifier.PRIVATE | Modifier.STATIC));
 		hashCodeMethod.setName(fAst.newSimpleName(METHODNAME_HASH_CODE));
 		hashCodeMethod.setConstructor(false);
@@ -686,7 +686,7 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 
 		// COMMENT
 		if (fSettings != null && fSettings.createComments) {
-			Javadoc javadoc= fAst.newJavadoc();
+			JSdoc javadoc= fAst.newJSdoc();
 			final TagElement tagComment= fAst.newTagElement();
 			TextElement text= fAst.newTextElement();
 			text.setText(CodeGenerationMessages.GenerateHashCodeEqualsOperation_hash_code_comment);
@@ -712,7 +712,7 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 
 	private Statement createAddQualifiedHashCode(IVariableBinding binding) {
 
-		MethodInvocation invoc= fAst.newMethodInvocation();
+		FunctionInvocation invoc= fAst.newFunctionInvocation();
 		invoc.setExpression(getThisAccessForHashCode(binding.getName()));
 		invoc.setName(fAst.newSimpleName(METHODNAME_HASH_CODE));
 
@@ -772,9 +772,9 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 
 	// *************** EQUALS ***************
 
-	private MethodDeclaration createEqualsMethod() throws CoreException {
+	private FunctionDeclaration createEqualsMethod() throws CoreException {
 
-		MethodDeclaration equalsMethodDeclaration= fAst.newMethodDeclaration();
+		FunctionDeclaration equalsMethodDeclaration= fAst.newFunctionDeclaration();
 		equalsMethodDeclaration.modifiers().addAll(ASTNodeFactory.newModifiers(fAst, Modifier.PUBLIC));
 		equalsMethodDeclaration.setName(fAst.newSimpleName(METHODNAME_EQUALS));
 		equalsMethodDeclaration.setConstructor(false);
@@ -832,10 +832,10 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 			body.statements().add(createReturningIfStatement(false, notExpression));
 		} else {
 			// if (getClass() != obj.getClass()) return false;
-			MethodInvocation thisClass= fAst.newMethodInvocation();
+			FunctionInvocation thisClass= fAst.newFunctionInvocation();
 			thisClass.setName(fAst.newSimpleName(METHODNAME_GETCLASS));
 
-			MethodInvocation objGetClass= fAst.newMethodInvocation();
+			FunctionInvocation objGetClass= fAst.newFunctionInvocation();
 			objGetClass.setExpression(fAst.newSimpleName(VARIABLE_NAME_EQUALS_PARAM));
 			objGetClass.setName(fAst.newSimpleName(METHODNAME_GETCLASS));
 
@@ -875,8 +875,8 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 		// method comment
 		if (fSettings != null) {
 			ITypeBinding object= fAst.resolveWellKnownType(JAVA_LANG_OBJECT);
-			IMethodBinding[] objms= object.getDeclaredMethods();
-			IMethodBinding objectMethod= null;
+			IFunctionBinding[] objms= object.getDeclaredMethods();
+			IFunctionBinding objectMethod= null;
 			for (int i= 0; i < objms.length; i++) {
 				if (objms[i].getName().equals(METHODNAME_EQUALS) && objms[i].getParameterTypes().length == 1
 						&& objms[i].getParameterTypes()[0].getQualifiedName().equals(JAVA_LANG_OBJECT))
@@ -900,7 +900,7 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 	}
 
 	private Statement createArrayComparison(String name) {
-		MethodInvocation invoc= fAst.newMethodInvocation();
+		FunctionInvocation invoc= fAst.newFunctionInvocation();
 		invoc.setName(fAst.newSimpleName(METHODNAME_EQUALS));
 		invoc.setExpression(getQualifiedName(JAVA_UTIL_ARRAYS));
 		invoc.arguments().add(getThisAccessForEquals(name));
@@ -950,7 +950,7 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 		thenPart2.statements().add(thenPart);
 
 		// ELSE
-		MethodInvocation invoc= fAst.newMethodInvocation();
+		FunctionInvocation invoc= fAst.newFunctionInvocation();
 		invoc.setName(fAst.newSimpleName(METHODNAME_EQUALS));
 		invoc.setExpression(getThisAccessForEquals(name));
 		invoc.arguments().add(getOtherAccess(name));
@@ -992,21 +992,21 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 		return firstIf;
 	}
 
-	private void createMethodComment(MethodDeclaration newDeclaration, IMethodBinding copyFrom) throws CoreException {
+	private void createMethodComment(FunctionDeclaration newDeclaration, IFunctionBinding copyFrom) throws CoreException {
 		if (fSettings.createComments) {
 			String string= CodeGeneration.getMethodComment(fRewrite.getCu(), fType.getQualifiedName(), newDeclaration, copyFrom, StubUtility.getLineDelimiterUsed(fRewrite.getCu()));
 			if (string != null) {
-				Javadoc javadoc= (Javadoc) fRewrite.getASTRewrite().createStringPlaceholder(string, ASTNode.JAVADOC);
+				JSdoc javadoc= (JSdoc) fRewrite.getASTRewrite().createStringPlaceholder(string, ASTNode.JSDOC);
 				newDeclaration.setJavadoc(javadoc);
 			}
 		}
-		if (fSettings.overrideAnnotation && JavaModelUtil.is50OrHigher(fUnit.getJavaElement().getJavaProject()))
+		if (fSettings.overrideAnnotation && JavaModelUtil.is50OrHigher(fUnit.getJavaElement().getJavaScriptProject()))
 			StubUtility2.addOverrideAnnotation(fRewrite.getASTRewrite(), newDeclaration, copyFrom);
 	}
 
 	private boolean needsNoSuperCall(ITypeBinding typeBinding, String name, ITypeBinding[] parameters) {
 		Assert.isNotNull(typeBinding);
-		IMethodBinding binding= findMethodInHierarchy(typeBinding, name, parameters);
+		IFunctionBinding binding= findMethodInHierarchy(typeBinding, name, parameters);
 		if (binding != null) {
 			final ITypeBinding declaring= binding.getDeclaringClass();
 			if (Bindings.equals(typeBinding, declaring))
@@ -1017,10 +1017,10 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 	}
 
 	// Adapted from Bindings
-	public static IMethodBinding findMethodInType(ITypeBinding type, String methodName, ITypeBinding[] parameters) {
+	public static IFunctionBinding findMethodInType(ITypeBinding type, String methodName, ITypeBinding[] parameters) {
 		if (type.isPrimitive())
 			return null;
-		IMethodBinding[] methods= type.getDeclaredMethods();
+		IFunctionBinding[] methods= type.getDeclaredMethods();
 		for (int i= 0; i < methods.length; i++) {
 			if (parameters == null) {
 				if (methodName.equals(methods[i].getName()) && !Modifier.isAbstract(methods[i].getModifiers()))
@@ -1034,8 +1034,8 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 	}
 
 	// Adapted from Bindings
-	public static IMethodBinding findMethodInHierarchy(ITypeBinding type, String methodName, ITypeBinding[] parameters) {
-		IMethodBinding method= findMethodInType(type, methodName, parameters);
+	public static IFunctionBinding findMethodInHierarchy(ITypeBinding type, String methodName, ITypeBinding[] parameters) {
+		IFunctionBinding method= findMethodInType(type, methodName, parameters);
 		if (method != null)
 			return method;
 		ITypeBinding superClass= type.getSuperclass();
@@ -1114,7 +1114,7 @@ public final class GenerateHashCodeEqualsOperation implements IWorkspaceRunnable
 	}
 
 	private Expression createMethodInvocation(Expression access, String qualifiedClassName, String methodName) {
-		MethodInvocation invoc= fAst.newMethodInvocation();
+		FunctionInvocation invoc= fAst.newFunctionInvocation();
 		invoc.setExpression(getQualifiedName(qualifiedClassName));
 		invoc.setName(fAst.newSimpleName(methodName));
 		invoc.arguments().add(access);

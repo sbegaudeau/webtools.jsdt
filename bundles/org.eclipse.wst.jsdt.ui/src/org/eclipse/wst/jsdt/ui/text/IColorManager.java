@@ -32,7 +32,7 @@ import org.eclipse.swt.graphics.Color;
  * </p>
  *
  * @see org.eclipse.wst.jsdt.ui.text.IColorManagerExtension
- * @see org.eclipse.wst.jsdt.ui.text.IJavaColorConstants
+ * @see org.eclipse.wst.jsdt.ui.text.IJavaScriptColorConstants
  */
 public interface IColorManager extends ISharedTextColors {
 

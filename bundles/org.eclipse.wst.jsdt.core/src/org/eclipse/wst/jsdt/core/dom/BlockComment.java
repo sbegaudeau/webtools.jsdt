@@ -21,7 +21,7 @@ import java.util.List;
  * with "&#42;/". Following the definition in the JLS (first edition
  * but not second edition), block comment normally exclude comments
  * that begin with "/&#42;#42;", which are instead classified as doc
- * comments ({@link Javadoc}).
+ * comments ({@link JSdoc}).
  * </p>
  * <p>
  * Note that this node type is a comment placeholder, and is

@@ -15,7 +15,7 @@ import java.util.Map;
 
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
@@ -44,7 +44,7 @@ public class MultiOrganizeImportAction extends CleanUpAction {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.ORGANIZE_IMPORTS_ACTION);
 	}
 
-	protected ICleanUp[] createCleanUps(ICompilationUnit[] units) {
+	protected ICleanUp[] createCleanUps(IJavaScriptUnit[] units) {
 		Map settings= new Hashtable();
 		settings.put(CleanUpConstants.ORGANIZE_IMPORTS, CleanUpConstants.TRUE);
 		ImportsCleanUp importsCleanUp= new ImportsCleanUp(settings);

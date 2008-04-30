@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * </p>
  * <p>
  * The children are of type <code>IMember</code>, which includes <code>IField</code>,
- * <code>IMethod</code>, <code>IInitializer</code> and <code>IType</code>.
+ * <code>IFunction</code>, <code>IInitializer</code> and <code>IType</code>.
  * The children are listed in the order in which they appear in the source file.
  * </p>
  * <p>
@@ -35,7 +35,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * </p>
  *  
  */
-public interface IType extends IMember, IMethodContainer {
+public interface IType extends IMember, IFunctionContainer {
 	/**
 	 * Do code completion inside a code snippet in the context of the current type.
 	 *
@@ -57,7 +57,7 @@ public interface IType extends IMember, IMethodContainer {
 	 * local variables
 	 * @param isStatic whether the current scope is in a static context
 	 * @param requestor the completion requestor
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @since 2.0
 	 * @deprecated Use {@link #codeComplete(char[],int,int,char[][],char[][],int[],boolean,CompletionRequestor)} instead.
@@ -71,7 +71,7 @@ public interface IType extends IMember, IMethodContainer {
 		int[] localVariableModifiers,
 		boolean isStatic,
 		ICompletionRequestor requestor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 
 	/**
 	 * Do code completion inside a code snippet in the context of the current type.
@@ -102,7 +102,7 @@ public interface IType extends IMember, IMethodContainer {
 	 * @param isStatic whether the current scope is in a static context
 	 * @param requestor the completion requestor
 	 * @param owner the owner of working copies that take precedence over their original compilation units
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @since 3.0
 	 * @deprecated Use {@link #codeComplete(char[],int,int,char[][],char[][],int[],boolean,CompletionRequestor,WorkingCopyOwner)} instead.
@@ -117,7 +117,7 @@ public interface IType extends IMember, IMethodContainer {
 		boolean isStatic,
 		ICompletionRequestor requestor,
 		WorkingCopyOwner owner)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 
 	/**
 	 * Do code completion inside a code snippet in the context of the current type.
@@ -140,7 +140,7 @@ public interface IType extends IMember, IMethodContainer {
 	 * local variables
 	 * @param isStatic whether the current scope is in a static context
 	 * @param requestor the completion requestor
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @since 3.1
 	 */
@@ -153,7 +153,7 @@ public interface IType extends IMember, IMethodContainer {
 		int[] localVariableModifiers,
 		boolean isStatic,
 		CompletionRequestor requestor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 
 	/**
 	 * Do code completion inside a code snippet in the context of the current type.
@@ -184,7 +184,7 @@ public interface IType extends IMember, IMethodContainer {
 	 * @param isStatic whether the current scope is in a static context
 	 * @param requestor the completion requestor
 	 * @param owner the owner of working copies that take precedence over their original compilation units
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @since 3.1
 	 */
@@ -198,7 +198,7 @@ public interface IType extends IMember, IMethodContainer {
 		boolean isStatic,
 		CompletionRequestor requestor,
 		WorkingCopyOwner owner)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 
 
 	/**
@@ -213,14 +213,14 @@ public interface IType extends IMember, IMethodContainer {
 	 * The value of the <code>force</code> parameter effects the resolution of
 	 * such a conflict:<ul>
 	 * <li> <code>true</code> - in this case the field is created with the new contents</li>
-	 * <li> <code>false</code> - in this case a <code>JavaModelException</code> is thrown</li>
+	 * <li> <code>false</code> - in this case a <code>JavaScriptModelException</code> is thrown</li>
 	 * </ul></p>
 	 *
 	 * @param contents the given contents
 	 * @param sibling the given sibling
 	 * @param force a flag in case the same name already exists in this type
 	 * @param monitor the given progress monitor
-	 * @exception JavaModelException if the element could not be created. Reasons include:
+	 * @exception JavaScriptModelException if the element could not be created. Reasons include:
 	 * <ul>
 	 * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * <li> A <code>CoreException</code> occurred while updating an underlying resource
@@ -231,8 +231,8 @@ public interface IType extends IMember, IMethodContainer {
 	 * </ul>
 	 * @return a field in this type with the given contents
 	 */
-	IField createField(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor)
-		throws JavaModelException;
+	IField createField(String contents, IJavaScriptElement sibling, boolean force, IProgressMonitor monitor)
+		throws JavaScriptModelException;
 
 	/**
 	 * Creates and returns a static initializer in this type with the
@@ -246,7 +246,7 @@ public interface IType extends IMember, IMethodContainer {
 	 * @param contents the given contents
 	 * @param sibling the given sibling
 	 * @param monitor the given progress monitor
-	 * @exception JavaModelException if the element could not be created. Reasons include:
+	 * @exception JavaScriptModelException if the element could not be created. Reasons include:
 	 * <ul>
 	 * <li> This element does not exist
 	 * <li> A <code>CoreException</code> occurred while updating an underlying resource
@@ -256,8 +256,8 @@ public interface IType extends IMember, IMethodContainer {
 	 * </ul>
 	 * @return a static initializer in this type with the given contents
 	 */
-	IInitializer createInitializer(String contents, IJavaElement sibling, IProgressMonitor monitor)
-		throws JavaModelException;
+	IInitializer createInitializer(String contents, IJavaScriptElement sibling, IProgressMonitor monitor)
+		throws JavaScriptModelException;
 
 	/**
 	 * Creates and returns a method or constructor in this type with the
@@ -271,14 +271,14 @@ public interface IType extends IMember, IMethodContainer {
 	 * The value of the <code>force</code> parameter effects the resolution of
 	 * such a conflict:<ul>
 	 * <li> <code>true</code> - in this case the method is created with the new contents</li>
-	 * <li> <code>false</code> - in this case a <code>JavaModelException</code> is thrown</li>
+	 * <li> <code>false</code> - in this case a <code>JavaScriptModelException</code> is thrown</li>
 	 * </ul></p>
 	 *
 	 * @param contents the given contents
 	 * @param sibling the given sibling
 	 * @param force a flag in case the same name already exists in this type
 	 * @param monitor the given progress monitor
-	 * @exception JavaModelException if the element could not be created. Reasons include:
+	 * @exception JavaScriptModelException if the element could not be created. Reasons include:
 	 * <ul>
 	 * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * <li> A <code>CoreException</code> occurred while updating an underlying resource
@@ -290,8 +290,8 @@ public interface IType extends IMember, IMethodContainer {
 	 * </ul>
 	 * @return a method or constructor in this type with the given contents
 	 */
-	IMethod createMethod(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor)
-		throws JavaModelException;
+	IFunction createMethod(String contents, IJavaScriptElement sibling, boolean force, IProgressMonitor monitor)
+		throws JavaScriptModelException;
 
 	/**
 	 * Creates and returns a type in this type with the
@@ -305,14 +305,14 @@ public interface IType extends IMember, IMethodContainer {
 	 * The value of the <code>force</code> parameter effects the resolution of
 	 * such a conflict:<ul>
 	 * <li> <code>true</code> - in this case the type is created with the new contents</li>
-	 * <li> <code>false</code> - in this case a <code>JavaModelException</code> is thrown</li>
+	 * <li> <code>false</code> - in this case a <code>JavaScriptModelException</code> is thrown</li>
 	 * </ul></p>
 	 *
 	 * @param contents the given contents
 	 * @param sibling the given sibling
 	 * @param force a flag in case the same name already exists in this type
 	 * @param monitor the given progress monitor
-	 * @exception JavaModelException if the element could not be created. Reasons include:
+	 * @exception JavaScriptModelException if the element could not be created. Reasons include:
 	 * <ul>
 	 * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * <li> A <code>CoreException</code> occurred while updating an underlying resource
@@ -323,8 +323,8 @@ public interface IType extends IMember, IMethodContainer {
 	 * </ul>
 	 * @return a type in this type with the given contents
 	 */
-	IType createType(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor)
-		throws JavaModelException;
+	IType createType(String contents, IJavaScriptElement sibling, boolean force, IProgressMonitor monitor)
+		throws JavaScriptModelException;
 
 	/**
 	 * Finds the methods in this type that correspond to
@@ -341,18 +341,18 @@ public interface IType extends IMember, IMethodContainer {
 	 *
 	 * @since 2.0
 	 */
-	IMethod[] findMethods(IMethod method);
+	IFunction[] findMethods(IFunction method);
 
 	/**
 	 * Returns the children of this type that have the given category as a <code>@category</code> tag.
 	 * Returns an empty array if no children with this category exist.
 	 *
 	 * @return the children for the given category.
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *      exception occurs while accessing its corresponding resource.
 	 *  @since 3.2
 	 */
-	IJavaElement[] getChildrenForCategory(String category) throws JavaModelException;
+	IJavaScriptElement[] getChildrenForCategory(String category) throws JavaScriptModelException;
 
 	/**
 	 * Returns the simple name of this type, unqualified by package or enclosing type.
@@ -378,11 +378,11 @@ public interface IType extends IMember, IMethodContainer {
 	 * in which they appear in the source, otherwise, the results are
 	 * in no particular order.  For binary types, this includes synthetic fields.
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return the fields declared by this type
 	 */
-	IField[] getFields() throws JavaModelException;
+	IField[] getFields() throws JavaScriptModelException;
 
 	/**
 	 * Returns the fully qualified name of this type,
@@ -429,12 +429,12 @@ public interface IType extends IMember, IMethodContainer {
 	 * Returns this type's fully qualified name followed by its type parameters between angle brakets if it is a generic type.
 	 * For example, "p.X&lt;T&gt;", "java.util.Map&lt;java.lang.String, p.X&gt;"
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *      exception occurs while accessing its corresponding resource.
 	 * @return the fully qualified parameterized representation of this type
 	 * @since 3.1
 	 */
-	String getFullyQualifiedParameterizedName() throws JavaModelException;
+	String getFullyQualifiedParameterizedName() throws JavaScriptModelException;
 
 	/**
 	 * Returns the initializer with the specified position relative to
@@ -453,11 +453,11 @@ public interface IType extends IMember, IMethodContainer {
 	 * If this is a source type, the results are listed in the order
 	 * in which they appear in the source.
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return the initializers declared by this type
 	 */
-	IInitializer[] getInitializers() throws JavaModelException;
+	IInitializer[] getInitializers() throws JavaScriptModelException;
 
 	/**
 	 * Returns the binding key for this type. A binding key is a key that uniquely
@@ -486,8 +486,27 @@ public interface IType extends IMember, IMethodContainer {
 	 * @param name the given name
 	 * @param parameterTypeSignatures the given parameter types
 	 * @return the method with the specified name and parameter types in this type
+	 * @deprecated Use {@link #getFunction(String,String[])} instead
 	 */
-	IMethod getMethod(String name, String[] parameterTypeSignatures);
+	IFunction getMethod(String name, String[] parameterTypeSignatures);
+
+	/**
+	 * Returns the method with the specified name and parameter types
+	 * in this type (for example, <code>"foo", {"I", "QString;"}</code>).
+	 * To get the handle for a constructor, the name specified must be the
+	 * simple name of the enclosing type.
+	 * This is a handle-only method.  The method may or may not be present.
+	 * <p>
+	 * The type signatures may be either unresolved (for source types)
+	 * or resolved (for binary types), and either basic (for basic types)
+	 * or rich (for parameterized types). See {@link Signature} for details.
+	 * </p>
+	 *
+	 * @param name the given name
+	 * @param parameterTypeSignatures the given parameter types
+	 * @return the method with the specified name and parameter types in this type
+	 */
+	IFunction getFunction(String name, String[] parameterTypeSignatures);
 
 	/**
 	 * Returns the methods and constructors declared by this type.
@@ -497,11 +516,26 @@ public interface IType extends IMember, IMethodContainer {
 	 * in which they appear in the source, otherwise, the results are
 	 * in no particular order.
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
+	 *		exception occurs while accessing its corresponding resource.
+	 * @return the methods and constructors declared by this type
+	 * @deprecated Use {@link #getFunctions()} instead
+	 */
+	IFunction[] getMethods() throws JavaScriptModelException;
+
+	/**
+	 * Returns the methods and constructors declared by this type.
+	 * For binary types, this may include the special <code>&lt;clinit&gt;</code>; method
+	 * and synthetic methods.
+	 * If this is a source type, the results are listed in the order
+	 * in which they appear in the source, otherwise, the results are
+	 * in no particular order.
+	 *
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return the methods and constructors declared by this type
 	 */
-	IMethod[] getMethods() throws JavaModelException;
+	IFunction[] getFunctions() throws JavaScriptModelException;
 
 	/**
 	 * Returns the package fragment in which this element is defined.
@@ -526,11 +560,11 @@ public interface IType extends IMember, IMethodContainer {
 	 * a structured type signature string containing more precise information.
 	 * </p>
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return the name of this type's superclass, or <code>null</code> for source types that do not specify a superclass
 	 */
-	String getSuperclassName() throws JavaModelException;
+	String getSuperclassName() throws JavaScriptModelException;
 
 	/**
 	 * Returns the type signature of this type's superclass, or
@@ -541,13 +575,13 @@ public interface IType extends IMember, IMethodContainer {
 	 * or rich (for parameterized types). See {@link Signature} for details.
 	 * </p>
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return the type signature of this type's superclass, or
 	 * <code>null</code> if none
 	 * @since 3.0
 	 */
-	String getSuperclassTypeSignature() throws JavaModelException;
+	String getSuperclassTypeSignature() throws JavaScriptModelException;
 
 	/**
 	 * Returns the type signatures of the interfaces that this type
@@ -567,14 +601,14 @@ public interface IType extends IMember, IMethodContainer {
 	 * or rich (for parameterized types). See {@link Signature} for details.
 	 * </p>
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return  the type signatures of interfaces that this type implements
 	 * or extends, in the order in which they are listed in the source,
 	 * an empty collection if none
 	 * @since 3.0
 	 */
-	String[] getSuperInterfaceTypeSignatures() throws JavaModelException;
+	String[] getSuperInterfaceTypeSignatures() throws JavaScriptModelException;
 
 	/**
 	 * Returns the names of interfaces that this type implements or extends,
@@ -593,12 +627,12 @@ public interface IType extends IMember, IMethodContainer {
 	 * structured signature strings containing more precise information.
 	 * </p>
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return  the names of interfaces that this type implements or extends, in the order in which they are listed in the source,
 	 * an empty collection if none
 	 */
-	String[] getSuperInterfaceNames() throws JavaModelException;
+	String[] getSuperInterfaceNames() throws JavaScriptModelException;
 
 	/**
 	 * Returns the formal type parameter signatures for this type.
@@ -608,26 +642,26 @@ public interface IType extends IMember, IMethodContainer {
 	 * types) or resolved (for binary types). See {@link Signature} for details.
 	 * </p>
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *      exception occurs while accessing its corresponding resource.
 	 * @return the formal type parameter signatures of this type,
 	 * in the order declared in the source, an empty array if none
 	 * @see Signature
 	 * @since 3.0
 	 */
-	String[] getTypeParameterSignatures() throws JavaModelException;
+	String[] getTypeParameterSignatures() throws JavaScriptModelException;
 
 	/**
 	 * Returns the formal type parameters for this type.
 	 * Returns an empty array if this type has no formal type parameters.
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *      exception occurs while accessing its corresponding resource.
 	 * @return the formal type parameters of this type,
 	 * in the order declared in the source, an empty array if none
 	 * @since 3.1
 	 */
-	ITypeParameter[] getTypeParameters() throws JavaModelException;
+	ITypeParameter[] getTypeParameters() throws JavaScriptModelException;
 
 	/**
 	 * Returns the member type declared in this type with the given simple name.
@@ -697,21 +731,21 @@ public interface IType extends IMember, IMethodContainer {
 	 * Returns the immediate member types declared by this type.
 	 * The results are listed in the order in which they appear in the source or class file.
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return the immediate member types declared by this type
 	 */
-	IType[] getTypes() throws JavaModelException;
+	IType[] getTypes() throws JavaScriptModelException;
 
 	/**
 	 * Returns whether this type represents an anonymous type.
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return true if this type represents an anonymous type, false otherwise
 	 * @since 2.0
 	 */
-	boolean isAnonymous() throws JavaModelException;
+	boolean isAnonymous() throws JavaScriptModelException;
 
 	/**
 	 * Returns whether this type represents a class.
@@ -719,11 +753,11 @@ public interface IType extends IMember, IMethodContainer {
 	 * Note that a class can neither be an interface, an enumeration class, nor an annotation type.
 	 * </p>
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return true if this type represents a class, false otherwise
 	 */
-	boolean isClass() throws JavaModelException;
+	boolean isClass() throws JavaScriptModelException;
 
 	/**
 	 * Returns whether this type represents an enumeration class.
@@ -731,13 +765,13 @@ public interface IType extends IMember, IMethodContainer {
 	 * Note that an enumeration class can neither be a class, an interface, nor an annotation type.
 	 * </p>
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return true if this type represents an enumeration class,
 	 * false otherwise
 	 * @since 3.0
 	 */
-	boolean isEnum() throws JavaModelException;
+	boolean isEnum() throws JavaScriptModelException;
 
 	/**
 	 * Returns whether this type represents an interface.
@@ -745,11 +779,11 @@ public interface IType extends IMember, IMethodContainer {
 	 * Note that an interface can also be an annotation type, but it can neither be a class nor an enumeration class.
 	 * </p>
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return true if this type represents an interface, false otherwise
 	 */
-	boolean isInterface() throws JavaModelException;
+	boolean isInterface() throws JavaScriptModelException;
 
 	/**
 	 * Returns whether this type represents an annotation type.
@@ -757,33 +791,33 @@ public interface IType extends IMember, IMethodContainer {
 	 * Note that an annotation type is also an interface, but it can neither be a class nor an enumeration class.
 	 * </p>
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return true if this type represents an annotation type,
 	 * false otherwise
 	 * @since 3.0
 	 */
-	boolean isAnnotation() throws JavaModelException;
+	boolean isAnnotation() throws JavaScriptModelException;
 
 	/**
 	 * Returns whether this type represents a local type.
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return true if this type represents a local type, false otherwise
 	 * @since 2.0
 	 */
-	boolean isLocal() throws JavaModelException;
+	boolean isLocal() throws JavaScriptModelException;
 
 	/**
 	 * Returns whether this type represents a member type.
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return true if this type represents a member type, false otherwise
 	 * @since 2.0
 	 */
-	boolean isMember() throws JavaModelException;
+	boolean isMember() throws JavaScriptModelException;
 	/**
 	 * Returns whether this type represents a resolved type.
 	 * If a type is resolved, its key contains resolved information.
@@ -799,30 +833,30 @@ public interface IType extends IMember, IMethodContainer {
 	 * Only hierarchies originally created by the following methods can be loaded:
 	 * <ul>
 	 * <li>IType#newSupertypeHierarchy(IProgressMonitor)</li>
-	 * <li>IType#newTypeHierarchy(IJavaProject, IProgressMonitor)</li>
+	 * <li>IType#newTypeHierarchy(IJavaScriptProject, IProgressMonitor)</li>
 	 * <li>IType#newTypeHierarchy(IProgressMonitor)</li>
 	 * </ul>
 	 *
 	 * @param input stream where hierarchy will be read
 	 * @param monitor the given progress monitor
 	 * @return the stored hierarchy
-	 * @exception JavaModelException if the hierarchy could not be restored, reasons include:
+	 * @exception JavaScriptModelException if the hierarchy could not be restored, reasons include:
 	 *      - type is not the focus of the hierarchy or
 	 *		- unable to read the input stream (wrong format, IOException during reading, ...)
 	 * @see ITypeHierarchy#store(java.io.OutputStream, IProgressMonitor)
 	 * @since 2.1
 	 */
-	ITypeHierarchy loadTypeHierachy(InputStream input, IProgressMonitor monitor) throws JavaModelException;
+	ITypeHierarchy loadTypeHierachy(InputStream input, IProgressMonitor monitor) throws JavaScriptModelException;
 	/**
 	 * Creates and returns a type hierarchy for this type containing
 	 * this type and all of its supertypes.
 	 *
 	 * @param monitor the given progress monitor
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return a type hierarchy for this type containing this type and all of its supertypes
 	 */
-	ITypeHierarchy newSupertypeHierarchy(IProgressMonitor monitor) throws JavaModelException;
+	ITypeHierarchy newSupertypeHierarchy(IProgressMonitor monitor) throws JavaScriptModelException;
 
 	/**
 	 * Creates and returns a type hierarchy for this type containing
@@ -837,12 +871,12 @@ public interface IType extends IMember, IMethodContainer {
 	 * @param workingCopies the working copies that take precedence over their original compilation units
 	 * @param monitor the given progress monitor
 	 * @return a type hierarchy for this type containing this type and all of its supertypes
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @since 3.0
 	 */
-	ITypeHierarchy newSupertypeHierarchy(ICompilationUnit[] workingCopies, IProgressMonitor monitor)
-		throws JavaModelException;
+	ITypeHierarchy newSupertypeHierarchy(IJavaScriptUnit[] workingCopies, IProgressMonitor monitor)
+		throws JavaScriptModelException;
 
 	/**
 	 * Creates and returns a type hierarchy for this type containing
@@ -857,13 +891,13 @@ public interface IType extends IMember, IMethodContainer {
 	 * @param workingCopies the working copies that take precedence over their original compilation units
 	 * @param monitor the given progress monitor
 	 * @return a type hierarchy for this type containing this type and all of its supertypes
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @since 2.0
-	 * @deprecated Use {@link #newSupertypeHierarchy(ICompilationUnit[], IProgressMonitor)} instead
+	 * @deprecated Use {@link #newSupertypeHierarchy(IJavaScriptUnit[], IProgressMonitor)} instead
 	 */
 	ITypeHierarchy newSupertypeHierarchy(IWorkingCopy[] workingCopies, IProgressMonitor monitor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 
 	/**
 	 * Creates and returns a type hierarchy for this type containing
@@ -879,12 +913,12 @@ public interface IType extends IMember, IMethodContainer {
 	 * @param owner the owner of working copies that take precedence over their original compilation units
 	 * @param monitor the given progress monitor
 	 * @return a type hierarchy for this type containing this type and all of its supertypes
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @since 3.0
 	 */
 	ITypeHierarchy newSupertypeHierarchy(WorkingCopyOwner owner, IProgressMonitor monitor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 
 	/**
 	 * Creates and returns a type hierarchy for this type containing
@@ -893,13 +927,13 @@ public interface IType extends IMember, IMethodContainer {
 	 *
 	 * @param project the given project
 	 * @param monitor the given progress monitor
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return a type hierarchy for this type containing
 	 * this type, all of its supertypes, and all its subtypes
 	 * in the context of the given project
 	 */
-	ITypeHierarchy newTypeHierarchy(IJavaProject project, IProgressMonitor monitor) throws JavaModelException;
+	ITypeHierarchy newTypeHierarchy(IJavaScriptProject project, IProgressMonitor monitor) throws JavaScriptModelException;
 
 	/**
 	 * Creates and returns a type hierarchy for this type containing
@@ -916,26 +950,26 @@ public interface IType extends IMember, IMethodContainer {
 	 * @param project the given project
 	 * @param owner the owner of working copies that take precedence over their original compilation units
 	 * @param monitor the given progress monitor
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return a type hierarchy for this type containing
 	 * this type, all of its supertypes, and all its subtypes
 	 * in the context of the given project
 	 * @since 3.0
 	 */
-	ITypeHierarchy newTypeHierarchy(IJavaProject project, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException;
+	ITypeHierarchy newTypeHierarchy(IJavaScriptProject project, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException;
 
 	/**
 	 * Creates and returns a type hierarchy for this type containing
 	 * this type, all of its supertypes, and all its subtypes in the workspace.
 	 *
 	 * @param monitor the given progress monitor
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return a type hierarchy for this type containing
 	 * this type, all of its supertypes, and all its subtypes in the workspace
 	 */
-	ITypeHierarchy newTypeHierarchy(IProgressMonitor monitor) throws JavaModelException;
+	ITypeHierarchy newTypeHierarchy(IProgressMonitor monitor) throws JavaScriptModelException;
 
 	/**
 	 * Creates and returns a type hierarchy for this type containing
@@ -950,11 +984,11 @@ public interface IType extends IMember, IMethodContainer {
 	 * @param monitor the given progress monitor
 	 * @return a type hierarchy for this type containing
 	 * this type, all of its supertypes, and all its subtypes in the workspace
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @since 3.0
 	 */
-	ITypeHierarchy newTypeHierarchy(ICompilationUnit[] workingCopies, IProgressMonitor monitor) throws JavaModelException;
+	ITypeHierarchy newTypeHierarchy(IJavaScriptUnit[] workingCopies, IProgressMonitor monitor) throws JavaScriptModelException;
 
 	/**
 	 * Creates and returns a type hierarchy for this type containing
@@ -969,12 +1003,12 @@ public interface IType extends IMember, IMethodContainer {
 	 * @param monitor the given progress monitor
 	 * @return a type hierarchy for this type containing
 	 * this type, all of its supertypes, and all its subtypes in the workspace
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @since 2.0
-	 * @deprecated Use {@link #newTypeHierarchy(ICompilationUnit[], IProgressMonitor)} instead
+	 * @deprecated Use {@link #newTypeHierarchy(IJavaScriptUnit[], IProgressMonitor)} instead
 	 */
-	ITypeHierarchy newTypeHierarchy(IWorkingCopy[] workingCopies, IProgressMonitor monitor) throws JavaModelException;
+	ITypeHierarchy newTypeHierarchy(IWorkingCopy[] workingCopies, IProgressMonitor monitor) throws JavaScriptModelException;
 
 	/**
 	 * Creates and returns a type hierarchy for this type containing
@@ -991,11 +1025,11 @@ public interface IType extends IMember, IMethodContainer {
 	 * @param monitor the given progress monitor
 	 * @return a type hierarchy for this type containing
 	 * this type, all of its supertypes, and all its subtypes in the workspace
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @since 3.0
 	 */
-	ITypeHierarchy newTypeHierarchy(WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException;
+	ITypeHierarchy newTypeHierarchy(WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException;
 
 	/**
 	 * Resolves the given type name within the context of this type (depending on the type hierarchy
@@ -1019,11 +1053,11 @@ public interface IType extends IMember, IMethodContainer {
 	 * </p>
 	 *
 	 * @param typeName the given type name
-	 * @exception JavaModelException if code resolve could not be performed.
+	 * @exception JavaScriptModelException if code resolve could not be performed.
 	 * @return the resolved type names or <code>null</code> if unable to find any matching type
 	 * @see #getTypeQualifiedName(char)
 	 */
-	String[][] resolveType(String typeName) throws JavaModelException;
+	String[][] resolveType(String typeName) throws JavaScriptModelException;
 
 	/**
 	 * Resolves the given type name within the context of this type (depending on the type hierarchy
@@ -1053,10 +1087,10 @@ public interface IType extends IMember, IMethodContainer {
 	 *
 	 * @param typeName the given type name
 	 * @param owner the owner of working copies that take precedence over their original compilation units
-	 * @exception JavaModelException if code resolve could not be performed.
+	 * @exception JavaScriptModelException if code resolve could not be performed.
 	 * @return the resolved type names or <code>null</code> if unable to find any matching type
 	 * @see #getTypeQualifiedName(char)
 	 * @since 3.0
 	 */
-	String[][] resolveType(String typeName, WorkingCopyOwner owner) throws JavaModelException;
+	String[][] resolveType(String typeName, WorkingCopyOwner owner) throws JavaScriptModelException;
 }

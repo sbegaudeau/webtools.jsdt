@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
@@ -32,7 +32,7 @@ public TypeDeclarationLocator(TypeDeclarationPattern pattern) {
 //public int match(ConstructorDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(Expression node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(FieldDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
-//public int match(MethodDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
+//public int match(FunctionDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(MessageSend node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(Reference node, MatchingNodeSet nodeSet) - SKIP IT
 public int match(TypeDeclaration node, MatchingNodeSet nodeSet) {
@@ -132,7 +132,7 @@ public String toString() {
 }
 
 
-public int matchMetadataElement(IJavaElement element) {
+public int matchMetadataElement(IJavaScriptElement element) {
 	String elementName = element.getElementName();
 	char[] typeName = elementName.toCharArray();
 	char [] pkg=(this.pattern instanceof QualifiedTypeDeclarationPattern)? ((QualifiedTypeDeclarationPattern)this.pattern).qualification : this.pattern.pkg;

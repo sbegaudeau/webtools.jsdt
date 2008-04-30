@@ -14,8 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
@@ -64,7 +64,7 @@ public class RefactoringScanner {
 		fQualifier= qualifier;
 	}
 	
-	public void scan(ICompilationUnit cu)	throws JavaModelException {
+	public void scan(IJavaScriptUnit cu)	throws JavaScriptModelException {
 		char[] chars= cu.getBuffer().getCharacters();
 		fMatches= new HashSet();
 		fScanner= ToolFactory.createScanner(true, true, false, true);

@@ -12,10 +12,10 @@ package org.eclipse.wst.jsdt.internal.ui.text.java;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * Proposal info that computes the javadoc lazily when it is queried.
@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
  */
 public abstract class MemberProposalInfo extends ProposalInfo {
 	/* configuration */
-	protected final IJavaProject fJavaProject;
+	protected final IJavaScriptProject fJavaProject;
 	protected final CompletionProposal fProposal;
 
 	/* cache filled lazily */
@@ -36,7 +36,7 @@ public abstract class MemberProposalInfo extends ProposalInfo {
 	 * @param project the java project to reference when resolving types
 	 * @param proposal the proposal to generate information for
 	 */
-	public MemberProposalInfo(IJavaProject project, CompletionProposal proposal) {
+	public MemberProposalInfo(IJavaScriptProject project, CompletionProposal proposal) {
 		Assert.isNotNull(project);
 		Assert.isNotNull(proposal);
 		fJavaProject= project;
@@ -47,9 +47,9 @@ public abstract class MemberProposalInfo extends ProposalInfo {
 	 * Returns the java element that this computer corresponds to, possibly <code>null</code>.
 	 * 
 	 * @return the java element that this computer corresponds to, possibly <code>null</code>
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public IJavaElement getJavaElement() throws JavaModelException {
+	public IJavaScriptElement getJavaElement() throws JavaScriptModelException {
 		if (!fJavaElementResolved) {
 			fJavaElementResolved= true;
 			fElement= resolveMember();
@@ -62,9 +62,9 @@ public abstract class MemberProposalInfo extends ProposalInfo {
 	 * Returns <code>null</code> if no corresponding member can be found.
 	 *
 	 * @return the resolved member or <code>null</code> if none is found
-	 * @throws JavaModelException if accessing the java model fails
+	 * @throws JavaScriptModelException if accessing the java model fails
 	 */
-	protected abstract IMember resolveMember() throws JavaModelException;
+	protected abstract IMember resolveMember() throws JavaScriptModelException;
 
 
 }

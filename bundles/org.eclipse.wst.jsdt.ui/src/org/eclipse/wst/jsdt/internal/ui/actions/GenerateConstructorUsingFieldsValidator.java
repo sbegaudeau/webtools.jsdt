@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -52,7 +52,7 @@ public class GenerateConstructorUsingFieldsValidator implements ISelectionStatus
 		return count;
 	}
 
-	private void createSignature(final IMethodBinding constructor, StringBuffer buffer, Object[] selection) {
+	private void createSignature(final IFunctionBinding constructor, StringBuffer buffer, Object[] selection) {
 		ITypeBinding types[]= constructor.getParameterTypes();
 		for (int index= 0; index < types.length; index++)
 			buffer.append(types[index].getName());
@@ -65,7 +65,7 @@ public class GenerateConstructorUsingFieldsValidator implements ISelectionStatus
 
 	private List getExistingConstructorSignatures() {
 		List existing= new ArrayList();
-		IMethodBinding[] methods= fType.getDeclaredMethods();
+		IFunctionBinding[] methods= fType.getDeclaredMethods();
 		for (int index= 0; index < methods.length; index++) {
 			if (methods[index].isConstructor()) {
 				StringBuffer buffer= new StringBuffer();
@@ -78,7 +78,7 @@ public class GenerateConstructorUsingFieldsValidator implements ISelectionStatus
 
 	public IStatus validate(Object[] selection) {
 		StringBuffer buffer= new StringBuffer();
-		final IMethodBinding constructor= fDialog.getSuperConstructorChoice();
+		final IFunctionBinding constructor= fDialog.getSuperConstructorChoice();
 		createSignature(constructor, buffer, selection);
 		if (fSignatures.contains(buffer.toString()))
 			return new StatusInfo(IStatus.WARNING, ActionMessages.GenerateConstructorUsingFieldsAction_error_duplicate_constructor); 

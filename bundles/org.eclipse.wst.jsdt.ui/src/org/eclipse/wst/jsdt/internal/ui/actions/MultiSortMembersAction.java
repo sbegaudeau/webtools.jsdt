@@ -16,13 +16,13 @@ import java.util.Hashtable;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IParent;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.SortMembersMessageDialog;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.SortMembersCleanUp;
@@ -53,12 +53,12 @@ public class MultiSortMembersAction extends CleanUpAction {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected ICleanUp[] createCleanUps(ICompilationUnit[] units) {
+	protected ICleanUp[] createCleanUps(IJavaScriptUnit[] units) {
 		try {
 	        if (!hasMembersToSort(units))
 	        	return null;
-        } catch (JavaModelException e) {
-        	JavaPlugin.log(e);
+        } catch (JavaScriptModelException e) {
+        	JavaScriptPlugin.log(e);
 	        return null;
         }
 
@@ -82,7 +82,7 @@ public class MultiSortMembersAction extends CleanUpAction {
 		return ActionMessages.SortMembersAction_dialog_title; 
 	}
 
-	private boolean hasMembersToSort(ICompilationUnit[] units) throws JavaModelException {
+	private boolean hasMembersToSort(IJavaScriptUnit[] units) throws JavaScriptModelException {
 		for (int i= 0; i < units.length; i++) {
 			if (hasMembersToSort(units[i].getChildren()))
 				return true;
@@ -91,14 +91,14 @@ public class MultiSortMembersAction extends CleanUpAction {
 		return false;
 	}
 
-	private boolean hasMembersToSort(IJavaElement[] members) throws JavaModelException {
+	private boolean hasMembersToSort(IJavaScriptElement[] members) throws JavaScriptModelException {
 		if (members.length > 1)
 			return true;
 
 		if (members.length == 0)
 			return false;
 
-		IJavaElement elem= members[0];
+		IJavaScriptElement elem= members[0];
 		if (!(elem instanceof IParent))
 			return false;
 

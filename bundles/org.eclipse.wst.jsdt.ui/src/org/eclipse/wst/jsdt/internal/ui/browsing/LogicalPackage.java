@@ -16,9 +16,9 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.PlatformObject;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * Contains a list of package fragments with the same name
@@ -28,18 +28,18 @@ public class LogicalPackage extends PlatformObject {
 
 	private Set fPackages;
 	private String fName;
-	private IJavaProject fJavaProject;
+	private IJavaScriptProject fJavaProject;
 
 	public LogicalPackage(IPackageFragment fragment){
 		Assert.isNotNull(fragment);
 		fPackages= new HashSet();
-		fJavaProject= fragment.getJavaProject();
+		fJavaProject= fragment.getJavaScriptProject();
 		Assert.isNotNull(fJavaProject);
 		add(fragment);
 		fName= fragment.getElementName();
 	}
 
-	public IJavaProject getJavaProject(){
+	public IJavaScriptProject getJavaProject(){
 		return fJavaProject;
 	}
 
@@ -48,7 +48,7 @@ public class LogicalPackage extends PlatformObject {
 	}
 
 	public void add(IPackageFragment fragment){
-		Assert.isTrue(fragment != null && fJavaProject.equals(fragment.getJavaProject()));
+		Assert.isTrue(fragment != null && fJavaProject.equals(fragment.getJavaScriptProject()));
 		fPackages.add(fragment);
 	}
 
@@ -81,14 +81,14 @@ public class LogicalPackage extends PlatformObject {
 		if(fragment==null)
 			return false;
 
-		if(fJavaProject.equals(fragment.getJavaProject())){
+		if(fJavaProject.equals(fragment.getJavaScriptProject())){
 			return fName.equals(fragment.getElementName());
 		}
 
 		return false;
 	}
 	
-	public boolean hasSubpackages() throws JavaModelException {
+	public boolean hasSubpackages() throws JavaScriptModelException {
 		for (Iterator iter= fPackages.iterator(); iter.hasNext();) {
 			IPackageFragment pack= (IPackageFragment) iter.next();
 			if (pack.hasSubpackages()) {

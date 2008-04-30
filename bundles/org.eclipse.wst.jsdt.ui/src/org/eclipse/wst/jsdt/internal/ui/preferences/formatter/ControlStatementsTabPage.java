@@ -19,7 +19,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 
 
@@ -37,8 +37,8 @@ public class ControlStatementsTabPage extends FormatterTabPage {
      * Constant array for insert / not_insert. 
      */
     private static String[] DO_NOT_INSERT_INSERT = {
-        JavaCore.DO_NOT_INSERT,
-        JavaCore.INSERT
+        JavaScriptCore.DO_NOT_INSERT,
+        JavaScriptCore.INSERT
     };
 	
 	

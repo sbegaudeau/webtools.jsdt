@@ -32,7 +32,7 @@ public class ResolvedBinaryMethod extends BinaryMethod {
 		return this.uniqueKey;
 	}
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IMethod#isResolved()
+	 * @see org.eclipse.wst.jsdt.core.IFunction#isResolved()
 	 */
 	public boolean isResolved() {
 		return true;

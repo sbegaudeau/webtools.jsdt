@@ -23,7 +23,7 @@ import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
@@ -44,7 +44,7 @@ public class NLSSourceModifier {
 		fIsEclipseNLS= isEclipseNLS;
 	}
 
-	public static Change create(ICompilationUnit cu, NLSSubstitution[] subs, String substitutionPattern, IPackageFragment accessorPackage, String accessorClassName, boolean isEclipseNLS) throws CoreException {
+	public static Change create(IJavaScriptUnit cu, NLSSubstitution[] subs, String substitutionPattern, IPackageFragment accessorPackage, String accessorClassName, boolean isEclipseNLS) throws CoreException {
 
 		NLSSourceModifier sourceModification= new NLSSourceModifier(substitutionPattern, isEclipseNLS);
 
@@ -144,7 +144,7 @@ public class NLSSourceModifier {
 				new ReplaceEdit(region.getOffset(), region.getLength(), '\"' + unwindEscapeChars(substitution.getValueNonEmpty()) + '\"')); // 
 	}
 
-	private void deleteAccessor(NLSSubstitution substitution, TextChange change, ICompilationUnit cu) throws CoreException {
+	private void deleteAccessor(NLSSubstitution substitution, TextChange change, IJavaScriptUnit cu) throws CoreException {
 		AccessorClassReference accessorClassRef= substitution.getAccessorClassReference();
 		if (accessorClassRef != null) {
 			Region region= accessorClassRef.getRegion();
@@ -257,8 +257,8 @@ public class NLSSourceModifier {
 				new DeleteEdit(textRegion.getOffset(), textRegion.getLength()));
 	}
 
-	private String createImportForAccessor(MultiTextEdit parent, String accessorClassName, IPackageFragment accessorPackage, ICompilationUnit cu) throws CoreException {
-		IType type= accessorPackage.getCompilationUnit(accessorClassName + JavaModelUtil.DEFAULT_CU_SUFFIX).getType(accessorClassName);
+	private String createImportForAccessor(MultiTextEdit parent, String accessorClassName, IPackageFragment accessorPackage, IJavaScriptUnit cu) throws CoreException {
+		IType type= accessorPackage.getJavaScriptUnit(accessorClassName + JavaModelUtil.DEFAULT_CU_SUFFIX).getType(accessorClassName);
 		String fullyQualifiedName= type.getFullyQualifiedName();
 
 		ImportRewrite importRewrite= StubUtility.createImportRewrite(cu, true);

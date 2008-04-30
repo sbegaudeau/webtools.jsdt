@@ -24,8 +24,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
@@ -59,19 +59,19 @@ public class IndexAllProject extends IndexRequest {
 		ReadWriteMonitor monitor = null;
 		try {
 			// Get source folder entries. Libraries are done as a separate job
-			JavaProject javaProject = (JavaProject)JavaCore.create(this.project);
+			JavaProject javaProject = (JavaProject)JavaScriptCore.create(this.project);
 			// Do not create marker while getting raw classpath (see bug 41859)
-			IClasspathEntry[] entries = javaProject.getRawClasspath();
+			IIncludePathEntry[] entries = javaProject.getRawIncludepath();
 			int length = entries.length;
-			IClasspathEntry[] sourceEntries = new IClasspathEntry[length+1];
+			IIncludePathEntry[] sourceEntries = new IIncludePathEntry[length+1];
 			int sourceEntriesNumber = 0;
 
-			IClasspathEntry projectRoot = JavaCore.newSourceEntry( javaProject.getPath());
+			IIncludePathEntry projectRoot = JavaScriptCore.newSourceEntry( javaProject.getPath());
 
 
 			for (int i = 0; i < length; i++) {
-				IClasspathEntry entry = entries[i];
-				if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE && 
+				IIncludePathEntry entry = entries[i];
+				if (entry.getEntryKind() == IIncludePathEntry.CPE_SOURCE && 
 						(! javaProject.getPath().isPrefixOf(entry.getPath())|| ! JavaProject.hasJavaNature(project) ))
 					sourceEntries[sourceEntriesNumber++] = entry;
 			}
@@ -81,8 +81,8 @@ public class IndexAllProject extends IndexRequest {
 			if (sourceEntriesNumber == 0) {
 				IPath projectPath = javaProject.getPath();
 				for (int i = 0; i < length; i++) {
-					IClasspathEntry entry = entries[i];
-					if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY && entry.getPath().equals(projectPath)) {
+					IIncludePathEntry entry = entries[i];
+					if (entry.getEntryKind() == IIncludePathEntry.CPE_LIBRARY && entry.getPath().equals(projectPath)) {
 						// the project is also a library folder (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=89815)
 						// ensure a job exists to index it as a binary folder
 						this.manager.indexLibrary(entry, this.project);
@@ -97,7 +97,7 @@ public class IndexAllProject extends IndexRequest {
 				return true;
 			}
 			if (sourceEntriesNumber != length)
-				System.arraycopy(sourceEntries, 0, sourceEntries = new IClasspathEntry[sourceEntriesNumber], 0, sourceEntriesNumber);
+				System.arraycopy(sourceEntries, 0, sourceEntries = new IIncludePathEntry[sourceEntriesNumber], 0, sourceEntriesNumber);
 
 			Index index = this.manager.getIndexForUpdate(this.containerPath, true, /*reuse index file*/ true /*create if none*/);
 			if (index == null) return true;
@@ -121,7 +121,7 @@ public class IndexAllProject extends IndexRequest {
 			for (int i = 0; i < sourceEntriesNumber; i++) {
 				if (this.isCancelled) return false;
 
-				IClasspathEntry entry = sourceEntries[i];
+				IIncludePathEntry entry = sourceEntries[i];
 				IResource sourceFolder = root.findMember(entry.getPath());
 				if (sourceFolder != null) {
 

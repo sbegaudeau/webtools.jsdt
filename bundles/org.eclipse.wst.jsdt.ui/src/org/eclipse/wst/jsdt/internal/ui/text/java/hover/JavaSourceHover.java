@@ -24,15 +24,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.part.IWorkbenchPartOrientation;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaCodeReader;
 
 /**
@@ -43,13 +43,13 @@ public class JavaSourceHover extends AbstractJavaEditorTextHover implements ITex
 	/*
 	 * @see JavaElementHover
 	 */
-	protected String getHoverInfo(IJavaElement[] result) {
+	protected String getHoverInfo(IJavaScriptElement[] result) {
 		int nResults= result.length;
 
 		if (nResults > 1)
 			return null;
 
-		IJavaElement curr= result[0];
+		IJavaScriptElement curr= result[0];
 		if ((curr instanceof IMember || curr instanceof ILocalVariable || curr instanceof ITypeParameter) && curr instanceof ISourceReference) {
 			try {
 				String source= ((ISourceReference) curr).getSource();
@@ -63,7 +63,7 @@ public class JavaSourceHover extends AbstractJavaEditorTextHover implements ITex
 				String firstLine= sourceLines[0];
 				if (!Character.isWhitespace(firstLine.charAt(0)))
 					sourceLines[0]= ""; //$NON-NLS-1$
-				Strings.trimIndentation(sourceLines, curr.getJavaProject());
+				Strings.trimIndentation(sourceLines, curr.getJavaScriptProject());
 
 				if (!Character.isWhitespace(firstLine.charAt(0)))
 					sourceLines[0]= firstLine;
@@ -72,7 +72,7 @@ public class JavaSourceHover extends AbstractJavaEditorTextHover implements ITex
 
 				return source;
 
-			} catch (JavaModelException ex) {
+			} catch (JavaScriptModelException ex) {
 			}
 		}
 
@@ -98,7 +98,7 @@ public class JavaSourceHover extends AbstractJavaEditorTextHover implements ITex
 				if (reader != null)
 					reader.close();
 			} catch (IOException ex) {
-				JavaPlugin.log(ex);
+				JavaScriptPlugin.log(ex);
 			}
 		}
 

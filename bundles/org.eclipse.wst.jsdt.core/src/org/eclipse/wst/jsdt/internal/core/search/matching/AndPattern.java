@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
@@ -30,7 +30,7 @@ public abstract class AndPattern extends JavaSearchPattern { // TODO should rena
 public AndPattern(int patternKind, int matchRule) {
 	super(patternKind, matchRule);
 }
-public void findIndexMatches(Index index, IndexQueryRequestor requestor, SearchParticipant participant, IJavaSearchScope scope, IProgressMonitor progressMonitor) throws IOException {
+public void findIndexMatches(Index index, IndexQueryRequestor requestor, SearchParticipant participant, IJavaScriptSearchScope scope, IProgressMonitor progressMonitor) throws IOException {
 	if (progressMonitor != null && progressMonitor.isCanceled()) throw new OperationCanceledException();
 
 	this.resetQuery();

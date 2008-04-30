@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
@@ -79,7 +79,7 @@ public class InOutFlowAnalyzer extends FlowAnalyzer {
 			clearAccessMode(accessFlowInfo(node), (VariableDeclarationStatement)node.getIterationVariable());
 	}
 	
-	public void endVisit(MethodDeclaration node) {
+	public void endVisit(FunctionDeclaration node) {
 		super.endVisit(node);
 		FlowInfo info= accessFlowInfo(node);
 		for (Iterator iter= node.parameters().iterator(); iter.hasNext();) {

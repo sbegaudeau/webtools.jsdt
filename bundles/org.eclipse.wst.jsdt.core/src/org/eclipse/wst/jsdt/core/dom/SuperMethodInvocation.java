@@ -369,7 +369,7 @@ public class SuperMethodInvocation extends Expression {
 	 * be resolved
 	 * @since 2.1
 	 */
-	public IMethodBinding resolveMethodBinding() {
+	public IFunctionBinding resolveMethodBinding() {
 		return this.ast.getBindingResolver().resolveMethod(this);
 	}
 

@@ -46,21 +46,21 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 import org.eclipse.wst.jsdt.launching.JavaRuntime;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 public class JavadocTreeWizardPage extends JavadocWizardPage {
 
@@ -186,19 +186,19 @@ public class JavadocTreeWizardPage extends JavadocWizardPage {
 		
 		ITreeContentProvider treeContentProvider= new JavadocProjectContentProvider();
 		ITreeContentProvider listContentProvider= new JavadocMemberContentProvider();
-		fInputGroup= new CheckboxTreeAndListGroup(c, this, treeContentProvider, new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT), listContentProvider, new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT), SWT.NONE, convertWidthInCharsToPixels(60), convertHeightInCharsToPixels(10));
+		fInputGroup= new CheckboxTreeAndListGroup(c, this, treeContentProvider, new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_DEFAULT), listContentProvider, new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_DEFAULT), SWT.NONE, convertWidthInCharsToPixels(60), convertHeightInCharsToPixels(10));
 
 		fInputGroup.addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent e) {
 				doValidation(TREESTATUS);
 			}
 		});
-		fInputGroup.setTreeComparator(new JavaElementComparator());
+		fInputGroup.setTreeComparator(new JavaScriptElementComparator());
 		
-		IJavaElement[] elements= fStore.getInitialElements();
+		IJavaScriptElement[] elements= fStore.getInitialElements();
 		setTreeChecked(elements);
 		if (elements.length > 0) {
-			fInputGroup.setTreeSelection(new StructuredSelection(elements[0].getJavaProject()));
+			fInputGroup.setTreeSelection(new StructuredSelection(elements[0].getJavaScriptProject()));
 		}
 
 		fInputGroup.aboutToOpen();
@@ -390,14 +390,14 @@ public class JavadocTreeWizardPage extends JavadocWizardPage {
 	 * different projects. If the list of seletected elements is empty a default
 	 * project is selected.
 	 */
-	private void setTreeChecked(IJavaElement[] sourceElements) {
+	private void setTreeChecked(IJavaScriptElement[] sourceElements) {
 		for (int i= 0; i < sourceElements.length; i++) {
-			IJavaElement curr= sourceElements[i];
-			if (curr instanceof ICompilationUnit) {
+			IJavaScriptElement curr= sourceElements[i];
+			if (curr instanceof IJavaScriptUnit) {
 				fInputGroup.initialCheckListItem(curr);
 			} else if (curr instanceof IPackageFragment) {
 				fInputGroup.initialCheckTreeItem(curr);
-			} else if (curr instanceof IJavaProject) {
+			} else if (curr instanceof IJavaScriptProject) {
 				fInputGroup.initialCheckTreeItem(curr);
 			} else if (curr instanceof IPackageFragmentRoot) {
 				IPackageFragmentRoot root= (IPackageFragmentRoot) curr;
@@ -407,11 +407,11 @@ public class JavadocTreeWizardPage extends JavadocWizardPage {
 		}
 	}
 
-	private IPath[] getSourcePath(IJavaProject[] projects) {
+	private IPath[] getSourcePath(IJavaScriptProject[] projects) {
 		HashSet res= new HashSet();
 		//loops through all projects and gets a list if of their source paths
 		for (int k= 0; k < projects.length; k++) {
-			IJavaProject iJavaProject= projects[k];
+			IJavaScriptProject iJavaProject= projects[k];
 
 			try {
 				IPackageFragmentRoot[] roots= iJavaProject.getPackageFragmentRoots();
@@ -429,19 +429,19 @@ public class JavadocTreeWizardPage extends JavadocWizardPage {
 						}
 					}
 				}
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 			}
 		}
 		return (IPath[]) res.toArray(new IPath[res.size()]);
 	}
 
-	private IPath[] getClassPath(IJavaProject[] javaProjects) {
+	private IPath[] getClassPath(IJavaScriptProject[] javaProjects) {
 		HashSet res= new HashSet();
 
 		IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();
 		for (int j= 0; j < javaProjects.length; j++) {
-			IJavaProject curr= javaProjects[j];
+			IJavaScriptProject curr= javaProjects[j];
 			try {
 				IPath outputLocation= null;
 				
@@ -464,7 +464,7 @@ public class JavadocTreeWizardPage extends JavadocWizardPage {
 					}
 				}
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 		return (IPath[]) res.toArray(new IPath[res.size()]);
@@ -472,26 +472,26 @@ public class JavadocTreeWizardPage extends JavadocWizardPage {
 
 	/**
 	 * Gets a list of elements to generated javadoc for from each project. 
-	 * Javadoc can be generated for either a IPackageFragment or a ICompilationUnit.
+	 * Javadoc can be generated for either a IPackageFragment or a IJavaScriptUnit.
 	 */
-	private IJavaElement[] getSourceElements(IJavaProject[] projects) {
+	private IJavaScriptElement[] getSourceElements(IJavaScriptProject[] projects) {
 		ArrayList res= new ArrayList();
 		try {
 			Set allChecked= fInputGroup.getAllCheckedTreeItems();
 
 			Set incompletePackages= new HashSet();
 			for (int h= 0; h < projects.length; h++) {
-				IJavaProject iJavaProject= projects[h];
+				IJavaScriptProject iJavaProject= projects[h];
 
 				IPackageFragmentRoot[] roots= iJavaProject.getPackageFragmentRoots();
 				for (int i= 0; i < roots.length; i++) {
 					IPackageFragmentRoot root= roots[i];
 					if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
 						IPath rootLocation= root.getResource().getLocation();
-						IJavaElement[] packs= root.getChildren();
+						IJavaScriptElement[] packs= root.getChildren();
 						for (int k= 0; k < packs.length; k++) {
-							IJavaElement curr= packs[k];
-							if (curr.getElementType() == IJavaElement.PACKAGE_FRAGMENT) {
+							IJavaScriptElement curr= packs[k];
+							if (curr.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT) {
 								// default packages are always incomplete
 								if (curr.getElementName().length() == 0 || !allChecked.contains(curr)
 										|| fInputGroup.isTreeItemGreyChecked(curr) || !isAccessibleLocation(curr.getResource().getLocation(), rootLocation)) {
@@ -506,8 +506,8 @@ public class JavadocTreeWizardPage extends JavadocWizardPage {
 			Iterator checkedElements= fInputGroup.getAllCheckedListItems();
 			while (checkedElements.hasNext()) {
 				Object element= checkedElements.next();
-				if (element instanceof ICompilationUnit) {
-					ICompilationUnit unit= (ICompilationUnit) element;
+				if (element instanceof IJavaScriptUnit) {
+					IJavaScriptUnit unit= (IJavaScriptUnit) element;
 					if (incompletePackages.contains(unit.getParent().getElementName())) {
 						res.add(unit);
 					}
@@ -529,17 +529,17 @@ public class JavadocTreeWizardPage extends JavadocWizardPage {
 				}
 			}
 
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 		}
-		return (IJavaElement[]) res.toArray(new IJavaElement[res.size()]);
+		return (IJavaScriptElement[]) res.toArray(new IJavaScriptElement[res.size()]);
 	}
 
 	private boolean isAccessibleLocation(IPath packageLocation, IPath rootLocation) {
 		return rootLocation != null && packageLocation != null && rootLocation.isPrefixOf(packageLocation);
 	}
 
-	protected void updateStore(IJavaProject[] checkedProjects) {
+	protected void updateStore(IJavaScriptProject[] checkedProjects) {
 
 		if (fCustomButton.getSelection()) {
 			fStore.setDocletName(fDocletTypeText.getText());
@@ -569,18 +569,18 @@ public class JavadocTreeWizardPage extends JavadocWizardPage {
 		fStore.setJavadocCommandHistory((String[]) commands.toArray(new String[commands.size()]));
 	}
 
-	public IJavaProject[] getCheckedProjects() {
+	public IJavaScriptProject[] getCheckedProjects() {
 		ArrayList res= new ArrayList();
 		TreeItem[] treeItems= fInputGroup.getTree().getItems();
 		for (int i= 0; i < treeItems.length; i++) {
 			if (treeItems[i].getChecked()) {
 				Object curr= treeItems[i].getData();
-				if (curr instanceof IJavaProject) {
+				if (curr instanceof IJavaScriptProject) {
 					res.add(curr);
 				}
 			}
 		}
-		return (IJavaProject[]) res.toArray(new IJavaProject[res.size()]);
+		return (IJavaScriptProject[]) res.toArray(new IJavaScriptProject[res.size()]);
 	}
 	
 	protected void doValidation(int validate) {
@@ -602,7 +602,7 @@ public class JavadocTreeWizardPage extends JavadocWizardPage {
 					if (doclet.length() == 0) {
 						fDocletStatus.setError(JavadocExportMessages.JavadocTreeWizardPage_nodocletname_error); 
 
-					} else if (JavaConventions.validateJavaTypeName(doclet).matches(IStatus.ERROR)) {
+					} else if (JavaScriptConventions.validateJavaScriptTypeName(doclet).matches(IStatus.ERROR)) {
 						fDocletStatus.setError(JavadocExportMessages.JavadocTreeWizardPage_invaliddocletname_error); 
 					} else if ((docletPath.length() == 0) || !validDocletPath(docletPath)) {
 						fDocletStatus.setError(JavadocExportMessages.JavadocTreeWizardPage_invaliddocletpath_error); 

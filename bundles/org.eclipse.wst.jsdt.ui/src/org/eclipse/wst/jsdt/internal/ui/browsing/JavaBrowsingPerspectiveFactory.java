@@ -18,8 +18,8 @@ import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IPlaceholderFolderLayout;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 
@@ -28,7 +28,7 @@ public class JavaBrowsingPerspectiveFactory implements IPerspectiveFactory {
 	/*
 	 * XXX: This is a workaround for: http://dev.eclipse.org/bugs/show_bug.cgi?id=13070
 	 */
-	static IJavaElement fgJavaElementFromAction;
+	static IJavaScriptElement fgJavaElementFromAction;
 
 	/**
 	 * Constructs a new Default layout engine.
@@ -45,19 +45,19 @@ public class JavaBrowsingPerspectiveFactory implements IPerspectiveFactory {
 
 		// action sets
 		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
-		layout.addActionSet(JavaUI.ID_ACTION_SET);
-		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
+		layout.addActionSet(JavaScriptUI.ID_ACTION_SET);
+		layout.addActionSet(JavaScriptUI.ID_ELEMENT_CREATION_ACTION_SET);
 		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 
 		// views - java
-		layout.addShowViewShortcut(JavaUI.ID_TYPE_HIERARCHY);
-		layout.addShowViewShortcut(JavaUI.ID_PACKAGES);
-		layout.addShowViewShortcut(JavaUI.ID_PROJECTS_VIEW);
-		layout.addShowViewShortcut(JavaUI.ID_PACKAGES_VIEW);
-		layout.addShowViewShortcut(JavaUI.ID_TYPES_VIEW);
-		layout.addShowViewShortcut(JavaUI.ID_MEMBERS_VIEW);
-		layout.addShowViewShortcut(JavaUI.ID_SOURCE_VIEW);
-		layout.addShowViewShortcut(JavaUI.ID_JAVADOC_VIEW);
+		layout.addShowViewShortcut(JavaScriptUI.ID_TYPE_HIERARCHY);
+		layout.addShowViewShortcut(JavaScriptUI.ID_PACKAGES);
+		layout.addShowViewShortcut(JavaScriptUI.ID_PROJECTS_VIEW);
+		layout.addShowViewShortcut(JavaScriptUI.ID_PACKAGES_VIEW);
+		layout.addShowViewShortcut(JavaScriptUI.ID_TYPES_VIEW);
+		layout.addShowViewShortcut(JavaScriptUI.ID_MEMBERS_VIEW);
+		layout.addShowViewShortcut(JavaScriptUI.ID_SOURCE_VIEW);
+		layout.addShowViewShortcut(JavaScriptUI.ID_JAVADOC_VIEW);
 
 		// views - search
 		layout.addShowViewShortcut(NewSearchUI.SEARCH_VIEW_ID);
@@ -91,31 +91,31 @@ public class JavaBrowsingPerspectiveFactory implements IPerspectiveFactory {
 		int relativePos= IPageLayout.LEFT;
 
 		IPlaceholderFolderLayout placeHolderLeft= layout.createPlaceholderFolder("left", IPageLayout.LEFT, (float)0.25, IPageLayout.ID_EDITOR_AREA); //$NON-NLS-1$
-		placeHolderLeft.addPlaceholder(JavaUI.ID_TYPE_HIERARCHY);
+		placeHolderLeft.addPlaceholder(JavaScriptUI.ID_TYPE_HIERARCHY);
 		placeHolderLeft.addPlaceholder(IPageLayout.ID_OUTLINE);
-		placeHolderLeft.addPlaceholder(JavaUI.ID_PACKAGES);
+		placeHolderLeft.addPlaceholder(JavaScriptUI.ID_PACKAGES);
 		placeHolderLeft.addPlaceholder(IPageLayout.ID_RES_NAV);
 
 		if (shouldShowProjectsView()) {
-			layout.addView(JavaUI.ID_PROJECTS_VIEW, IPageLayout.LEFT, (float)0.25, IPageLayout.ID_EDITOR_AREA);
-			relativePartId= JavaUI.ID_PROJECTS_VIEW;
+			layout.addView(JavaScriptUI.ID_PROJECTS_VIEW, IPageLayout.LEFT, (float)0.25, IPageLayout.ID_EDITOR_AREA);
+			relativePartId= JavaScriptUI.ID_PROJECTS_VIEW;
 			relativePos= IPageLayout.BOTTOM;
 		}
 		if (shouldShowPackagesView()) {
-			layout.addView(JavaUI.ID_PACKAGES_VIEW, relativePos, (float)0.25, relativePartId);
-			relativePartId= JavaUI.ID_PACKAGES_VIEW;
+			layout.addView(JavaScriptUI.ID_PACKAGES_VIEW, relativePos, (float)0.25, relativePartId);
+			relativePartId= JavaScriptUI.ID_PACKAGES_VIEW;
 			relativePos= IPageLayout.BOTTOM;
 		}
-		layout.addView(JavaUI.ID_TYPES_VIEW, relativePos, (float)0.33, relativePartId);
-		layout.addView(JavaUI.ID_MEMBERS_VIEW, IPageLayout.BOTTOM, (float)0.50, JavaUI.ID_TYPES_VIEW);
+		layout.addView(JavaScriptUI.ID_TYPES_VIEW, relativePos, (float)0.33, relativePartId);
+		layout.addView(JavaScriptUI.ID_MEMBERS_VIEW, IPageLayout.BOTTOM, (float)0.50, JavaScriptUI.ID_TYPES_VIEW);
 
 		IPlaceholderFolderLayout placeHolderBottom= layout.createPlaceholderFolder("bottom", IPageLayout.BOTTOM, (float)0.75, IPageLayout.ID_EDITOR_AREA); //$NON-NLS-1$
 		placeHolderBottom.addPlaceholder(IPageLayout.ID_PROBLEM_VIEW);
 		placeHolderBottom.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
 		placeHolderBottom.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
 		placeHolderBottom.addPlaceholder(IPageLayout.ID_BOOKMARKS);
-		placeHolderBottom.addPlaceholder(JavaUI.ID_SOURCE_VIEW);
-		placeHolderBottom.addPlaceholder(JavaUI.ID_JAVADOC_VIEW);
+		placeHolderBottom.addPlaceholder(JavaScriptUI.ID_SOURCE_VIEW);
+		placeHolderBottom.addPlaceholder(JavaScriptUI.ID_JAVADOC_VIEW);
 		placeHolderBottom.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
 	}
 
@@ -124,22 +124,22 @@ public class JavaBrowsingPerspectiveFactory implements IPerspectiveFactory {
 		int relativePos= IPageLayout.TOP;
 
 		if (shouldShowProjectsView()) {
-			layout.addView(JavaUI.ID_PROJECTS_VIEW, IPageLayout.TOP, (float)0.25, IPageLayout.ID_EDITOR_AREA);
-			relativePartId= JavaUI.ID_PROJECTS_VIEW;
+			layout.addView(JavaScriptUI.ID_PROJECTS_VIEW, IPageLayout.TOP, (float)0.25, IPageLayout.ID_EDITOR_AREA);
+			relativePartId= JavaScriptUI.ID_PROJECTS_VIEW;
 			relativePos= IPageLayout.RIGHT;
 		}
 		if (shouldShowPackagesView()) {
-			layout.addView(JavaUI.ID_PACKAGES_VIEW, relativePos, (float)0.25, relativePartId);
-			relativePartId= JavaUI.ID_PACKAGES_VIEW;
+			layout.addView(JavaScriptUI.ID_PACKAGES_VIEW, relativePos, (float)0.25, relativePartId);
+			relativePartId= JavaScriptUI.ID_PACKAGES_VIEW;
 			relativePos= IPageLayout.RIGHT;
 		}
-		layout.addView(JavaUI.ID_TYPES_VIEW, relativePos, (float)0.33, relativePartId);
-		layout.addView(JavaUI.ID_MEMBERS_VIEW, IPageLayout.RIGHT, (float)0.50, JavaUI.ID_TYPES_VIEW);
+		layout.addView(JavaScriptUI.ID_TYPES_VIEW, relativePos, (float)0.33, relativePartId);
+		layout.addView(JavaScriptUI.ID_MEMBERS_VIEW, IPageLayout.RIGHT, (float)0.50, JavaScriptUI.ID_TYPES_VIEW);
 
 		IPlaceholderFolderLayout placeHolderLeft= layout.createPlaceholderFolder("left", IPageLayout.LEFT, (float)0.25, IPageLayout.ID_EDITOR_AREA); //$NON-NLS-1$
-		placeHolderLeft.addPlaceholder(JavaUI.ID_TYPE_HIERARCHY);
+		placeHolderLeft.addPlaceholder(JavaScriptUI.ID_TYPE_HIERARCHY);
 		placeHolderLeft.addPlaceholder(IPageLayout.ID_OUTLINE);
-		placeHolderLeft.addPlaceholder(JavaUI.ID_PACKAGES);
+		placeHolderLeft.addPlaceholder(JavaScriptUI.ID_PACKAGES);
 		placeHolderLeft.addPlaceholder(IPageLayout.ID_RES_NAV);
 
 
@@ -148,20 +148,20 @@ public class JavaBrowsingPerspectiveFactory implements IPerspectiveFactory {
 		placeHolderBottom.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
 		placeHolderBottom.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
 		placeHolderBottom.addPlaceholder(IPageLayout.ID_BOOKMARKS);
-		placeHolderBottom.addPlaceholder(JavaUI.ID_SOURCE_VIEW);
-		placeHolderBottom.addPlaceholder(JavaUI.ID_JAVADOC_VIEW);
+		placeHolderBottom.addPlaceholder(JavaScriptUI.ID_SOURCE_VIEW);
+		placeHolderBottom.addPlaceholder(JavaScriptUI.ID_JAVADOC_VIEW);
 		placeHolderBottom.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
 	}
 
 	private boolean shouldShowProjectsView() {
-		return fgJavaElementFromAction == null || fgJavaElementFromAction.getElementType() == IJavaElement.JAVA_MODEL;
+		return fgJavaElementFromAction == null || fgJavaElementFromAction.getElementType() == IJavaScriptElement.JAVASCRIPT_MODEL;
 	}
 
 	private boolean shouldShowPackagesView() {
 		if (fgJavaElementFromAction == null)
 			return true;
 		int type= fgJavaElementFromAction.getElementType();
-		return type == IJavaElement.JAVA_MODEL || type == IJavaElement.JAVA_PROJECT || type == IJavaElement.PACKAGE_FRAGMENT_ROOT;
+		return type == IJavaScriptElement.JAVASCRIPT_MODEL || type == IJavaScriptElement.JAVASCRIPT_PROJECT || type == IJavaScriptElement.PACKAGE_FRAGMENT_ROOT;
 	}
 
 	private boolean stackBrowsingViewsVertically() {
@@ -172,8 +172,8 @@ public class JavaBrowsingPerspectiveFactory implements IPerspectiveFactory {
 	 * XXX: This is a workaround for: http://dev.eclipse.org/bugs/show_bug.cgi?id=13070
 	 */
 	static void setInputFromAction(IAdaptable input) {
-		if (input instanceof IJavaElement)
-			fgJavaElementFromAction= (IJavaElement)input;
+		if (input instanceof IJavaScriptElement)
+			fgJavaElementFromAction= (IJavaScriptElement)input;
 		else
 			fgJavaElementFromAction= null;
 	}

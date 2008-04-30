@@ -15,17 +15,17 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.IPackageBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Label provider to render bindings in viewers.
@@ -37,24 +37,24 @@ public class BindingLabelProvider extends LabelProvider {
 
 	private static int getAdornmentFlags(IBinding binding, int flags) {
 		int adornments= 0;
-		if (binding instanceof IMethodBinding && ((IMethodBinding) binding).isConstructor())
-			adornments|= JavaElementImageDescriptor.CONSTRUCTOR;
+		if (binding instanceof IFunctionBinding && ((IFunctionBinding) binding).isConstructor())
+			adornments|= JavaScriptElementImageDescriptor.CONSTRUCTOR;
 		final int modifiers= binding.getModifiers();
 		if (Modifier.isAbstract(modifiers))
-			adornments|= JavaElementImageDescriptor.ABSTRACT;
+			adornments|= JavaScriptElementImageDescriptor.ABSTRACT;
 		if (Modifier.isFinal(modifiers))
-			adornments|= JavaElementImageDescriptor.FINAL;
+			adornments|= JavaScriptElementImageDescriptor.FINAL;
 		if (Modifier.isSynchronized(modifiers))
-			adornments|= JavaElementImageDescriptor.SYNCHRONIZED;
+			adornments|= JavaScriptElementImageDescriptor.SYNCHRONIZED;
 		if (Modifier.isStatic(modifiers))
-			adornments|= JavaElementImageDescriptor.STATIC;
+			adornments|= JavaScriptElementImageDescriptor.STATIC;
 		if (binding.isDeprecated())
-			adornments|= JavaElementImageDescriptor.DEPRECATED;
+			adornments|= JavaScriptElementImageDescriptor.DEPRECATED;
 		if (binding instanceof IVariableBinding && ((IVariableBinding) binding).isField()) {
 			if (Modifier.isTransient(modifiers))
-				adornments|= JavaElementImageDescriptor.TRANSIENT;
+				adornments|= JavaScriptElementImageDescriptor.TRANSIENT;
 			if (Modifier.isVolatile(modifiers))
-				adornments|= JavaElementImageDescriptor.VOLATILE;
+				adornments|= JavaScriptElementImageDescriptor.VOLATILE;
 		}
 		return adornments;
 	}
@@ -69,10 +69,10 @@ public class BindingLabelProvider extends LabelProvider {
 				typeBinding.getWildcard();
 			}
 			return getTypeImageDescriptor(typeBinding.getDeclaringClass() != null, typeBinding, flags);
-		} else if (binding instanceof IMethodBinding) {
-			ITypeBinding type= ((IMethodBinding) binding).getDeclaringClass();
+		} else if (binding instanceof IFunctionBinding) {
+			ITypeBinding type= ((IFunctionBinding) binding).getDeclaringClass();
 			int modifiers= binding.getModifiers();
-			if (type.isEnum() && (!Modifier.isPublic(modifiers) && !Modifier.isProtected(modifiers) && !Modifier.isPrivate(modifiers)) && ((IMethodBinding) binding).isConstructor())
+			if (type.isEnum() && (!Modifier.isPublic(modifiers) && !Modifier.isProtected(modifiers) && !Modifier.isPrivate(modifiers)) && ((IFunctionBinding) binding).isConstructor())
 				return JavaPluginImages.DESC_MISC_PRIVATE;
 			return getMethodImageDescriptor(binding.getModifiers());
 		} else if (binding instanceof IVariableBinding)
@@ -100,50 +100,50 @@ public class BindingLabelProvider extends LabelProvider {
 	}
 
 	private static void getFieldLabel(IVariableBinding binding, long flags, StringBuffer buffer) {
-		if (((flags & JavaElementLabels.F_PRE_TYPE_SIGNATURE) != 0) && !binding.isEnumConstant()) {
-			getTypeLabel(binding.getType(), (flags & JavaElementLabels.T_TYPE_PARAMETERS), buffer);
+		if (((flags & JavaScriptElementLabels.F_PRE_TYPE_SIGNATURE) != 0) && !binding.isEnumConstant()) {
+			getTypeLabel(binding.getType(), (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 			buffer.append(' ');
 		}
 		// qualification
 
-		if ((flags & JavaElementLabels.F_FULLY_QUALIFIED) != 0) {
+		if ((flags & JavaScriptElementLabels.F_FULLY_QUALIFIED) != 0) {
 			ITypeBinding declaringClass= binding.getDeclaringClass();
 			if (declaringClass != null) { // test for array.length
-				getTypeLabel(declaringClass, JavaElementLabels.T_FULLY_QUALIFIED | (flags & JavaElementLabels.P_COMPRESSED), buffer);
+				getTypeLabel(declaringClass, JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & JavaScriptElementLabels.P_COMPRESSED), buffer);
 				buffer.append('.');
 			}
 		}
 		buffer.append(binding.getName());
-		if (((flags & JavaElementLabels.F_APP_TYPE_SIGNATURE) != 0) && !binding.isEnumConstant()) {
-			buffer.append(JavaElementLabels.DECL_STRING);
-			getTypeLabel(binding.getType(), (flags & JavaElementLabels.T_TYPE_PARAMETERS), buffer);
+		if (((flags & JavaScriptElementLabels.F_APP_TYPE_SIGNATURE) != 0) && !binding.isEnumConstant()) {
+			buffer.append(JavaScriptElementLabels.DECL_STRING);
+			getTypeLabel(binding.getType(), (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 		}
 		// post qualification
-		if ((flags & JavaElementLabels.F_POST_QUALIFIED) != 0) {
+		if ((flags & JavaScriptElementLabels.F_POST_QUALIFIED) != 0) {
 			ITypeBinding declaringClass= binding.getDeclaringClass();
 			if (declaringClass != null) { // test for array.length
-				buffer.append(JavaElementLabels.CONCAT_STRING);
-				getTypeLabel(declaringClass, JavaElementLabels.T_FULLY_QUALIFIED | (flags & JavaElementLabels.P_COMPRESSED), buffer);
+				buffer.append(JavaScriptElementLabels.CONCAT_STRING);
+				getTypeLabel(declaringClass, JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & JavaScriptElementLabels.P_COMPRESSED), buffer);
 			}
 		}
 	}
 
 	private static void getLocalVariableLabel(IVariableBinding binding, long flags, StringBuffer buffer) {
-		if (((flags & JavaElementLabels.F_PRE_TYPE_SIGNATURE) != 0)) {
-			getTypeLabel(binding.getType(), (flags & JavaElementLabels.T_TYPE_PARAMETERS), buffer);
+		if (((flags & JavaScriptElementLabels.F_PRE_TYPE_SIGNATURE) != 0)) {
+			getTypeLabel(binding.getType(), (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 			buffer.append(' ');
 		}
-		if (((flags & JavaElementLabels.F_FULLY_QUALIFIED) != 0)) {
-			IMethodBinding declaringMethod= binding.getDeclaringMethod();
+		if (((flags & JavaScriptElementLabels.F_FULLY_QUALIFIED) != 0)) {
+			IFunctionBinding declaringMethod= binding.getDeclaringMethod();
 			if (declaringMethod != null) {
 				getMethodLabel(declaringMethod, flags, buffer);
 				buffer.append('.');
 			}
 		}
 		buffer.append(binding.getName());
-		if (((flags & JavaElementLabels.F_APP_TYPE_SIGNATURE) != 0)) {
-			buffer.append(JavaElementLabels.DECL_STRING);
-			getTypeLabel(binding.getType(), (flags & JavaElementLabels.T_TYPE_PARAMETERS), buffer);
+		if (((flags & JavaScriptElementLabels.F_APP_TYPE_SIGNATURE) != 0)) {
+			buffer.append(JavaScriptElementLabels.DECL_STRING);
+			getTypeLabel(binding.getType(), (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 		}
 	}
 
@@ -194,34 +194,34 @@ public class BindingLabelProvider extends LabelProvider {
 	}
 	
 
-	private static void getMethodLabel(IMethodBinding binding, long flags, StringBuffer buffer) {
+	private static void getMethodLabel(IFunctionBinding binding, long flags, StringBuffer buffer) {
 		// return type
-		if ((flags & JavaElementLabels.M_PRE_TYPE_PARAMETERS) != 0) {
+		if ((flags & JavaScriptElementLabels.M_PRE_TYPE_PARAMETERS) != 0) {
 			if (binding.isGenericMethod()) {
 				ITypeBinding[] typeParameters= binding.getTypeParameters();
 				if (typeParameters.length > 0) {
-					getTypeParametersLabel(typeParameters, (flags & JavaElementLabels.T_TYPE_PARAMETERS), buffer);
+					getTypeParametersLabel(typeParameters, (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 					buffer.append(' ');
 				}
 			}
 		}
 		// return type
-		if (((flags & JavaElementLabels.M_PRE_RETURNTYPE) != 0) && !binding.isConstructor()) {
-			getTypeLabel(binding.getReturnType(), (flags & JavaElementLabels.T_TYPE_PARAMETERS), buffer);
+		if (((flags & JavaScriptElementLabels.M_PRE_RETURNTYPE) != 0) && !binding.isConstructor()) {
+			getTypeLabel(binding.getReturnType(), (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 			buffer.append(' ');
 		}
 		// qualification
-		if ((flags & JavaElementLabels.M_FULLY_QUALIFIED) != 0) {
-			getTypeLabel(binding.getDeclaringClass(), JavaElementLabels.T_FULLY_QUALIFIED | (flags & JavaElementLabels.P_COMPRESSED), buffer);
+		if ((flags & JavaScriptElementLabels.M_FULLY_QUALIFIED) != 0) {
+			getTypeLabel(binding.getDeclaringClass(), JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & JavaScriptElementLabels.P_COMPRESSED), buffer);
 			buffer.append('.');
 		}
 		buffer.append(binding.getName());
-		if ((flags & JavaElementLabels.M_APP_TYPE_PARAMETERS) != 0) {
+		if ((flags & JavaScriptElementLabels.M_APP_TYPE_PARAMETERS) != 0) {
 			if (binding.isParameterizedMethod()) {
 				ITypeBinding[] typeArguments= binding.getTypeArguments();
 				if (typeArguments.length > 0) {
 					buffer.append(' ');
-					getTypeArgumentsLabel(typeArguments, (flags & JavaElementLabels.T_TYPE_PARAMETERS), buffer);
+					getTypeArgumentsLabel(typeArguments, (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 				}				
 			}
 		}
@@ -229,59 +229,59 @@ public class BindingLabelProvider extends LabelProvider {
 		
 		// parameters
 		buffer.append('(');
-		if ((flags & JavaElementLabels.M_PARAMETER_TYPES | JavaElementLabels.M_PARAMETER_NAMES) != 0) {
-			ITypeBinding[] parameters= ((flags & JavaElementLabels.M_PARAMETER_TYPES) != 0) ? binding.getParameterTypes() : null;
+		if ((flags & JavaScriptElementLabels.M_PARAMETER_TYPES | JavaScriptElementLabels.M_PARAMETER_NAMES) != 0) {
+			ITypeBinding[] parameters= ((flags & JavaScriptElementLabels.M_PARAMETER_TYPES) != 0) ? binding.getParameterTypes() : null;
 			if (parameters != null) {
 				for (int index= 0; index < parameters.length; index++) {
 					if (index > 0) {
-						buffer.append(JavaElementLabels.COMMA_STRING); 
+						buffer.append(JavaScriptElementLabels.COMMA_STRING); 
 					}
 					ITypeBinding paramType= parameters[index];
 					if (binding.isVarargs() && (index == parameters.length - 1)) {
-						getTypeLabel(paramType.getElementType(), (flags & JavaElementLabels.T_TYPE_PARAMETERS), buffer);
+						getTypeLabel(paramType.getElementType(), (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 						appendDimensions(paramType.getDimensions() - 1, buffer);
-						buffer.append(JavaElementLabels.ELLIPSIS_STRING);
+						buffer.append(JavaScriptElementLabels.ELLIPSIS_STRING);
 					} else {
-						getTypeLabel(paramType, (flags & JavaElementLabels.T_TYPE_PARAMETERS), buffer);
+						getTypeLabel(paramType, (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 					}
 				}
 			}
 		} else {
 			if (binding.getParameterTypes().length > 0) {
-				buffer.append(JavaElementLabels.ELLIPSIS_STRING);
+				buffer.append(JavaScriptElementLabels.ELLIPSIS_STRING);
 			}
 		}
 		buffer.append(')');
 		
-		if ((flags & JavaElementLabels.M_EXCEPTIONS) != 0) {
+		if ((flags & JavaScriptElementLabels.M_EXCEPTIONS) != 0) {
 			ITypeBinding[] exceptions= binding.getExceptionTypes();
 			if (exceptions.length > 0) {
 				buffer.append(" throws "); //$NON-NLS-1$
 				for (int index= 0; index < exceptions.length; index++) {
 					if (index > 0) {
-						buffer.append(JavaElementLabels.COMMA_STRING);
+						buffer.append(JavaScriptElementLabels.COMMA_STRING);
 					}
-					getTypeLabel(exceptions[index], (flags & JavaElementLabels.T_TYPE_PARAMETERS), buffer);
+					getTypeLabel(exceptions[index], (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 				}
 			}
 		}
-		if ((flags & JavaElementLabels.M_APP_TYPE_PARAMETERS) != 0) {
+		if ((flags & JavaScriptElementLabels.M_APP_TYPE_PARAMETERS) != 0) {
 			if (binding.isGenericMethod()) {
 				ITypeBinding[] typeParameters= binding.getTypeParameters();
 				if (typeParameters.length > 0) {
 					buffer.append(' ');
-					getTypeParametersLabel(typeParameters, (flags & JavaElementLabels.T_TYPE_PARAMETERS), buffer);
+					getTypeParametersLabel(typeParameters, (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 				}
 			}
 		}
-		if (((flags & JavaElementLabels.M_APP_RETURNTYPE) != 0) && !binding.isConstructor()) {
-			buffer.append(JavaElementLabels.DECL_STRING);
-			getTypeLabel(binding.getReturnType(), (flags & JavaElementLabels.T_TYPE_PARAMETERS), buffer);
+		if (((flags & JavaScriptElementLabels.M_APP_RETURNTYPE) != 0) && !binding.isConstructor()) {
+			buffer.append(JavaScriptElementLabels.DECL_STRING);
+			getTypeLabel(binding.getReturnType(), (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 		}
 		// post qualification
-		if ((flags & JavaElementLabels.M_POST_QUALIFIED) != 0) {
-			buffer.append(JavaElementLabels.CONCAT_STRING);
-			getTypeLabel(binding.getDeclaringClass(), JavaElementLabels.T_FULLY_QUALIFIED | (flags & JavaElementLabels.P_COMPRESSED), buffer);
+		if ((flags & JavaScriptElementLabels.M_POST_QUALIFIED) != 0) {
+			buffer.append(JavaScriptElementLabels.CONCAT_STRING);
+			getTypeLabel(binding.getDeclaringClass(), JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & JavaScriptElementLabels.P_COMPRESSED), buffer);
 		}
 	}
 
@@ -311,20 +311,20 @@ public class BindingLabelProvider extends LabelProvider {
 		
 
 	private static void getTypeLabel(ITypeBinding binding, long flags, StringBuffer buffer) {
-		if ((flags & JavaElementLabels.T_FULLY_QUALIFIED) != 0) {
+		if ((flags & JavaScriptElementLabels.T_FULLY_QUALIFIED) != 0) {
 			final IPackageBinding pack= binding.getPackage();
 			if (pack != null && !pack.isUnnamed()) {
 				buffer.append(pack.getName());
 				buffer.append('.');
 			}
 		}
-		if ((flags & (JavaElementLabels.T_FULLY_QUALIFIED | JavaElementLabels.T_CONTAINER_QUALIFIED)) != 0) {
+		if ((flags & (JavaScriptElementLabels.T_FULLY_QUALIFIED | JavaScriptElementLabels.T_CONTAINER_QUALIFIED)) != 0) {
 			final ITypeBinding declaring= binding.getDeclaringClass();
 			if (declaring != null) {
-				getTypeLabel(declaring, JavaElementLabels.T_CONTAINER_QUALIFIED | (flags & JavaElementLabels.P_COMPRESSED), buffer);
+				getTypeLabel(declaring, JavaScriptElementLabels.T_CONTAINER_QUALIFIED | (flags & JavaScriptElementLabels.P_COMPRESSED), buffer);
 				buffer.append('.');
 			}
-			final IMethodBinding declaringMethod= binding.getDeclaringMethod();
+			final IFunctionBinding declaringMethod= binding.getDeclaringMethod();
 			if (declaringMethod != null) {
 				getMethodLabel(declaringMethod, 0, buffer);
 				buffer.append('.');
@@ -332,7 +332,7 @@ public class BindingLabelProvider extends LabelProvider {
 		}
 		
 		if (binding.isCapture()) {
-			getTypeLabel(binding.getWildcard(), flags & JavaElementLabels.T_TYPE_PARAMETERS, buffer);
+			getTypeLabel(binding.getWildcard(), flags & JavaScriptElementLabels.T_TYPE_PARAMETERS, buffer);
 		} else if (binding.isWildcardType()) {
 			buffer.append('?');
 			ITypeBinding bound= binding.getBound();
@@ -342,16 +342,16 @@ public class BindingLabelProvider extends LabelProvider {
 				} else {
 					buffer.append(" super "); //$NON-NLS-1$
 				}
-				getTypeLabel(bound, flags & JavaElementLabels.T_TYPE_PARAMETERS, buffer);
+				getTypeLabel(bound, flags & JavaScriptElementLabels.T_TYPE_PARAMETERS, buffer);
 			}
 		} else if (binding.isArray()) {
-			getTypeLabel(binding.getElementType(), flags & JavaElementLabels.T_TYPE_PARAMETERS, buffer);
+			getTypeLabel(binding.getElementType(), flags & JavaScriptElementLabels.T_TYPE_PARAMETERS, buffer);
 			appendDimensions(binding.getDimensions(), buffer);
 		} else { // type variables, primitive, reftype
 			String name= binding.getTypeDeclaration().getName();
 			if (name.length() == 0) {
 				if (binding.isEnum()) {
-					buffer.append('{' + JavaElementLabels.ELLIPSIS_STRING + '}');
+					buffer.append('{' + JavaScriptElementLabels.ELLIPSIS_STRING + '}');
 				} else if (binding.isAnonymous()) {
 					ITypeBinding[] superInterfaces= binding.getInterfaces();
 					ITypeBinding baseType;
@@ -362,7 +362,7 @@ public class BindingLabelProvider extends LabelProvider {
 					}
 					if (baseType != null) {
 						StringBuffer anonymBaseType= new StringBuffer();
-						getTypeLabel(baseType, flags & JavaElementLabels.T_TYPE_PARAMETERS, anonymBaseType);
+						getTypeLabel(baseType, flags & JavaScriptElementLabels.T_TYPE_PARAMETERS, anonymBaseType);
 						buffer.append(Messages.format(JavaUIMessages.JavaElementLabels_anonym_type, anonymBaseType.toString()));
 					} else {
 						buffer.append(JavaUIMessages.JavaElementLabels_anonym);
@@ -374,7 +374,7 @@ public class BindingLabelProvider extends LabelProvider {
 				buffer.append(name);
 			}
 			
-			if ((flags & JavaElementLabels.T_TYPE_PARAMETERS) != 0) {
+			if ((flags & JavaScriptElementLabels.T_TYPE_PARAMETERS) != 0) {
 				if (binding.isGenericType()) {
 					getTypeParametersLabel(binding.getTypeParameters(), flags, buffer);
 				} else if (binding.isParameterizedType()) {
@@ -384,19 +384,19 @@ public class BindingLabelProvider extends LabelProvider {
 		}
 
 
-		if ((flags & JavaElementLabels.T_POST_QUALIFIED) != 0) {
-			final IMethodBinding declaringMethod= binding.getDeclaringMethod();
+		if ((flags & JavaScriptElementLabels.T_POST_QUALIFIED) != 0) {
+			final IFunctionBinding declaringMethod= binding.getDeclaringMethod();
 			final ITypeBinding declaringType= binding.getDeclaringClass();
 			if (declaringMethod != null) {
-				buffer.append(JavaElementLabels.CONCAT_STRING);
-				getMethodLabel(declaringMethod, JavaElementLabels.T_FULLY_QUALIFIED | (flags & JavaElementLabels.P_COMPRESSED), buffer);
+				buffer.append(JavaScriptElementLabels.CONCAT_STRING);
+				getMethodLabel(declaringMethod, JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & JavaScriptElementLabels.P_COMPRESSED), buffer);
 			} else if (declaringType != null) {
-				buffer.append(JavaElementLabels.CONCAT_STRING);
-				getTypeLabel(declaringType, JavaElementLabels.T_FULLY_QUALIFIED | (flags & JavaElementLabels.P_COMPRESSED), buffer);
+				buffer.append(JavaScriptElementLabels.CONCAT_STRING);
+				getTypeLabel(declaringType, JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & JavaScriptElementLabels.P_COMPRESSED), buffer);
 			} else {
 				final IPackageBinding pack= binding.getPackage();
 				if (pack != null && !pack.isUnnamed()) {
-					buffer.append(JavaElementLabels.CONCAT_STRING);
+					buffer.append(JavaScriptElementLabels.CONCAT_STRING);
 					buffer.append(pack.getName());
 				}
 			}
@@ -408,9 +408,9 @@ public class BindingLabelProvider extends LabelProvider {
 			buf.append('<');
 			for (int i = 0; i < typeArgs.length; i++) {
 				if (i > 0) {
-					buf.append(JavaElementLabels.COMMA_STRING);
+					buf.append(JavaScriptElementLabels.COMMA_STRING);
 				}
-				getTypeLabel(typeArgs[i], flags & JavaElementLabels.T_TYPE_PARAMETERS, buf);
+				getTypeLabel(typeArgs[i], flags & JavaScriptElementLabels.T_TYPE_PARAMETERS, buf);
 			}
 			buf.append('>');
 		}
@@ -422,7 +422,7 @@ public class BindingLabelProvider extends LabelProvider {
 			buffer.append('<');
 			for (int index= 0; index < typeParameters.length; index++) {
 				if (index > 0) {
-					buffer.append(JavaElementLabels.COMMA_STRING);
+					buffer.append(JavaScriptElementLabels.COMMA_STRING);
 				}
 				buffer.append(typeParameters[index].getName());
 			}
@@ -431,17 +431,17 @@ public class BindingLabelProvider extends LabelProvider {
 	}
 
 	/**
-	 * Returns the label for a Java element with the flags as defined by {@link JavaElementLabels}.
+	 * Returns the label for a Java element with the flags as defined by {@link JavaScriptElementLabels}.
 	 * @param binding The binding to render.
-	 * @param flags The text flags as defined in {@link JavaElementLabels}
+	 * @param flags The text flags as defined in {@link JavaScriptElementLabels}
 	 * @return the label of the binding
 	 */
 	public static String getBindingLabel(IBinding binding, long flags) {
 		StringBuffer buffer= new StringBuffer(60);
 		if (binding instanceof ITypeBinding) {
 			getTypeLabel(((ITypeBinding) binding), flags, buffer);
-		} else if (binding instanceof IMethodBinding) {
-			getMethodLabel(((IMethodBinding) binding), flags, buffer);
+		} else if (binding instanceof IFunctionBinding) {
+			getMethodLabel(((IFunctionBinding) binding), flags, buffer);
 		} else if (binding instanceof IVariableBinding) {
 			final IVariableBinding variable= (IVariableBinding) binding;
 			if (variable.isField())
@@ -463,13 +463,13 @@ public class BindingLabelProvider extends LabelProvider {
 		if (baseImage != null) {
 			int adornmentFlags= getAdornmentFlags(binding, imageFlags);
 			Point size= ((imageFlags & JavaElementImageProvider.SMALL_ICONS) != 0) ? JavaElementImageProvider.SMALL_SIZE : JavaElementImageProvider.BIG_SIZE;
-			return new JavaElementImageDescriptor(baseImage, adornmentFlags, size);
+			return new JavaScriptElementImageDescriptor(baseImage, adornmentFlags, size);
 		}
 		return null;
 	}
 	
 
-	public static final long DEFAULT_TEXTFLAGS= JavaElementLabels.ALL_DEFAULT;
+	public static final long DEFAULT_TEXTFLAGS= JavaScriptElementLabels.ALL_DEFAULT;
 	public static final int DEFAULT_IMAGEFLAGS= JavaElementImageProvider.OVERLAY_ICONS;
 	
 
@@ -486,7 +486,7 @@ public class BindingLabelProvider extends LabelProvider {
 	}
 
 	/**
-	 * @param textFlags Flags defined in {@link JavaElementLabels}.
+	 * @param textFlags Flags defined in {@link JavaScriptElementLabels}.
 	 * @param imageFlags Flags defined in {@link JavaElementImageProvider}.
 	 */
 	public BindingLabelProvider(final long textFlags, final int imageFlags) {
@@ -510,7 +510,7 @@ public class BindingLabelProvider extends LabelProvider {
 
 	private ImageDescriptorRegistry getRegistry() {
 		if (fRegistry == null)
-			fRegistry= JavaPlugin.getImageDescriptorRegistry();
+			fRegistry= JavaScriptPlugin.getImageDescriptorRegistry();
 		return fRegistry;
 	}
 

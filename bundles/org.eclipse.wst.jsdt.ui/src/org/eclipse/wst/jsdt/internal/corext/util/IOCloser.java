@@ -14,14 +14,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 public class IOCloser {
 	public static void perform(Reader reader, InputStream stream) {
 		try {
 			rethrows(reader, stream);
 		} catch (IOException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 	}
 	

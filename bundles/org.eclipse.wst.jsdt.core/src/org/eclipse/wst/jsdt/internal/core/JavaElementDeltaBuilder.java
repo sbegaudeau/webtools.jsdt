@@ -17,10 +17,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
 import org.eclipse.wst.jsdt.core.IParent;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -39,7 +39,7 @@ public class JavaElementDeltaBuilder {
 	/**
 	 * The java element handle
 	 */
-	IJavaElement javaElement;
+	IJavaScriptElement javaElement;
 
 	/**
 	 * The maximum depth in the java element children we should look into
@@ -80,10 +80,10 @@ public class JavaElementDeltaBuilder {
 	 * Doubly linked list item
 	 */
 	static class ListItem {
-		public IJavaElement previous;
-		public IJavaElement next;
+		public IJavaScriptElement previous;
+		public IJavaScriptElement next;
 
-		public ListItem(IJavaElement previous, IJavaElement next) {
+		public ListItem(IJavaScriptElement previous, IJavaScriptElement next) {
 			this.previous = previous;
 			this.next = next;
 		}
@@ -92,32 +92,32 @@ public class JavaElementDeltaBuilder {
  * Creates a java element comparator on a java element
  * looking as deep as necessary.
  */
-public JavaElementDeltaBuilder(IJavaElement javaElement) {
+public JavaElementDeltaBuilder(IJavaScriptElement javaElement) {
 	this.javaElement = javaElement;
 	this.initialize();
 	this.recordElementInfo(
 		javaElement,
-		(JavaModel)this.javaElement.getJavaModel(),
+		(JavaModel)this.javaElement.getJavaScriptModel(),
 		0);
 }
 /**
  * Creates a java element comparator on a java element
  * looking only 'maxDepth' levels deep.
  */
-public JavaElementDeltaBuilder(IJavaElement javaElement, int maxDepth) {
+public JavaElementDeltaBuilder(IJavaScriptElement javaElement, int maxDepth) {
 	this.javaElement = javaElement;
 	this.maxDepth = maxDepth;
 	this.initialize();
 	this.recordElementInfo(
 		javaElement,
-		(JavaModel)this.javaElement.getJavaModel(),
+		(JavaModel)this.javaElement.getJavaScriptModel(),
 		0);
 }
 /**
  * Repairs the positioning information
  * after an element has been added
  */
-private void added(IJavaElement element) {
+private void added(IJavaScriptElement element) {
 	this.added.add(element);
 	ListItem current = this.getNewPosition(element);
 	ListItem previous = null, next = null;
@@ -138,7 +138,7 @@ public void buildDeltas() {
 	this.delta = new JavaElementDelta(this.javaElement);
 	// if building a delta on a compilation unit or below,
 	// it's a fine grained delta
-	if (this.javaElement.getElementType() >= IJavaElement.COMPILATION_UNIT) {
+	if (this.javaElement.getElementType() >= IJavaScriptElement.JAVASCRIPT_UNIT) {
 		this.delta.fineGrained();
 	}
 	this.recordNewPositions(this.javaElement, 0);
@@ -167,7 +167,7 @@ private boolean equals(char[][][] first, char[][][] second) {
 /**
  * Finds elements which have been added or changed.
  */
-private void findAdditions(IJavaElement newElement, int depth) {
+private void findAdditions(IJavaScriptElement newElement, int depth) {
 	JavaElementInfo oldInfo = this.getElementInfo(newElement);
 	if (oldInfo == null && depth < this.maxDepth) {
 		this.delta.added(newElement);
@@ -178,14 +178,14 @@ private void findAdditions(IJavaElement newElement, int depth) {
 
 	if (depth >= this.maxDepth) {
 		// mark element as changed
-		this.delta.changed(newElement, IJavaElementDelta.F_CONTENT);
+		this.delta.changed(newElement, IJavaScriptElementDelta.F_CONTENT);
 		return;
 	}
 
 	JavaElementInfo newInfo = null;
 	try {
 		newInfo = (JavaElementInfo)((JavaElement)newElement).getElementInfo();
-	} catch (JavaModelException npe) {
+	} catch (JavaScriptModelException npe) {
 		return;
 	}
 
@@ -193,7 +193,7 @@ private void findAdditions(IJavaElement newElement, int depth) {
 
 	if (oldInfo != null && newElement instanceof IParent) {
 
-		IJavaElement[] children = newInfo.getChildren();
+		IJavaScriptElement[] children = newInfo.getChildren();
 		if (children != null) {
 			int length = children.length;
 			for(int i = 0; i < length; i++) {
@@ -205,23 +205,23 @@ private void findAdditions(IJavaElement newElement, int depth) {
 /**
  * Looks for changed positioning of elements.
  */
-private void findChangesInPositioning(IJavaElement element, int depth) {
+private void findChangesInPositioning(IJavaScriptElement element, int depth) {
 	if (depth >= this.maxDepth || this.added.contains(element) || this.removed.contains(element))
 		return;
 
 	if (!isPositionedCorrectly(element)) {
-		this.delta.changed(element, IJavaElementDelta.F_REORDER);
+		this.delta.changed(element, IJavaScriptElementDelta.F_REORDER);
 	}
 
 	if (element instanceof IParent) {
 		JavaElementInfo info = null;
 		try {
 			info = (JavaElementInfo)((JavaElement)element).getElementInfo();
-		} catch (JavaModelException npe) {
+		} catch (JavaScriptModelException npe) {
 			return;
 		}
 
-		IJavaElement[] children = info.getChildren();
+		IJavaScriptElement[] children = info.getChildren();
 		if (children != null) {
 			int length = children.length;
 			for(int i = 0; i < length; i++) {
@@ -233,23 +233,23 @@ private void findChangesInPositioning(IJavaElement element, int depth) {
 /**
  * The elements are equivalent, but might have content changes.
  */
-private void findContentChange(JavaElementInfo oldInfo, JavaElementInfo newInfo, IJavaElement newElement) {
+private void findContentChange(JavaElementInfo oldInfo, JavaElementInfo newInfo, IJavaScriptElement newElement) {
 	if (oldInfo instanceof MemberElementInfo && newInfo instanceof MemberElementInfo) {
 		if (((MemberElementInfo)oldInfo).getModifiers() != ((MemberElementInfo)newInfo).getModifiers()) {
-			this.delta.changed(newElement, IJavaElementDelta.F_MODIFIERS);
+			this.delta.changed(newElement, IJavaScriptElementDelta.F_MODIFIERS);
 		} else if (oldInfo instanceof SourceMethodElementInfo && newInfo instanceof SourceMethodElementInfo) {
 			SourceMethodElementInfo oldSourceMethodInfo = (SourceMethodElementInfo)oldInfo;
 			SourceMethodElementInfo newSourceMethodInfo = (SourceMethodElementInfo)newInfo;
 			if (!CharOperation.equals(oldSourceMethodInfo.getReturnTypeName(), newSourceMethodInfo.getReturnTypeName())
 					|| !CharOperation.equals(oldSourceMethodInfo.getTypeParameterNames(), newSourceMethodInfo.getTypeParameterNames())
 					|| !equals(oldSourceMethodInfo.getTypeParameterBounds(), newSourceMethodInfo.getTypeParameterBounds())) {
-				this.delta.changed(newElement, IJavaElementDelta.F_CONTENT);
+				this.delta.changed(newElement, IJavaScriptElementDelta.F_CONTENT);
 			}
 		} else if (oldInfo instanceof SourceFieldElementInfo && newInfo instanceof SourceFieldElementInfo) {
 			if (!CharOperation.equals(
 					((SourceFieldElementInfo)oldInfo).getTypeName(),
 					((SourceFieldElementInfo)newInfo).getTypeName())) {
-				this.delta.changed(newElement, IJavaElementDelta.F_CONTENT);
+				this.delta.changed(newElement, IJavaScriptElementDelta.F_CONTENT);
 			}
 		}
 	}
@@ -258,11 +258,11 @@ private void findContentChange(JavaElementInfo oldInfo, JavaElementInfo newInfo,
 		SourceTypeElementInfo newSourceTypeInfo = (SourceTypeElementInfo)newInfo;
 		if (!CharOperation.equals(oldSourceTypeInfo.getSuperclassName(), newSourceTypeInfo.getSuperclassName())
 				|| !CharOperation.equals(oldSourceTypeInfo.getInterfaceNames(), newSourceTypeInfo.getInterfaceNames())) {
-			this.delta.changed(newElement, IJavaElementDelta.F_SUPER_TYPES);
+			this.delta.changed(newElement, IJavaScriptElementDelta.F_SUPER_TYPES);
 		}
 		if (!CharOperation.equals(oldSourceTypeInfo.getTypeParameterNames(), newSourceTypeInfo.getTypeParameterNames())
 				|| !equals(oldSourceTypeInfo.getTypeParameterBounds(), newSourceTypeInfo.getTypeParameterBounds())) {
-			this.delta.changed(newElement, IJavaElementDelta.F_CONTENT);
+			this.delta.changed(newElement, IJavaScriptElementDelta.F_CONTENT);
 		}
 		HashMap oldTypeCategories = oldSourceTypeInfo.categories;
 		HashMap newTypeCategories = newSourceTypeInfo.categories;
@@ -276,18 +276,18 @@ private void findContentChange(JavaElementInfo oldInfo, JavaElementInfo newInfo,
 				elements = oldTypeCategories.keySet();
 			Iterator iterator = elements.iterator();
 			while (iterator.hasNext()) {
-				IJavaElement element = (IJavaElement) iterator.next();
+				IJavaScriptElement element = (IJavaScriptElement) iterator.next();
 				String[] oldCategories = (String[]) oldTypeCategories.get(element);
 				String[] newCategories = newTypeCategories == null ? null : (String[]) newTypeCategories.get(element);
 				if (!Util.equalArraysOrNull(oldCategories, newCategories)) {
-					this.delta.changed(element, IJavaElementDelta.F_CATEGORIES);
+					this.delta.changed(element, IJavaScriptElementDelta.F_CATEGORIES);
 				}
 			}
 		} else if (newTypeCategories != null) {
 			Iterator elements = newTypeCategories.keySet().iterator();
 			while (elements.hasNext()) {
-				IJavaElement element = (IJavaElement) elements.next();
-				this.delta.changed(element, IJavaElementDelta.F_CATEGORIES); // all categories for this element were removed
+				IJavaScriptElement element = (IJavaScriptElement) elements.next();
+				this.delta.changed(element, IJavaScriptElementDelta.F_CATEGORIES); // all categories for this element were removed
 			}
 		}
 	}
@@ -298,18 +298,18 @@ private void findContentChange(JavaElementInfo oldInfo, JavaElementInfo newInfo,
 private void findDeletions() {
 	Iterator iter = this.infos.keySet().iterator();
 	while(iter.hasNext()) {
-		IJavaElement element = (IJavaElement)iter.next();
+		IJavaScriptElement element = (IJavaScriptElement)iter.next();
 		this.delta.removed(element);
 		this.removed(element);
 	}
 }
-private JavaElementInfo getElementInfo(IJavaElement element) {
+private JavaElementInfo getElementInfo(IJavaScriptElement element) {
 	return (JavaElementInfo)this.infos.get(element);
 }
-private ListItem getNewPosition(IJavaElement element) {
+private ListItem getNewPosition(IJavaScriptElement element) {
 	return (ListItem)this.newPositions.get(element);
 }
-private ListItem getOldPosition(IJavaElement element) {
+private ListItem getOldPosition(IJavaScriptElement element) {
 	return (ListItem)this.oldPositions.get(element);
 }
 private void initialize() {
@@ -324,9 +324,9 @@ private void initialize() {
 /**
  * Inserts position information for the elements into the new or old positions table
  */
-private void insertPositions(IJavaElement[] elements, boolean isNew) {
+private void insertPositions(IJavaScriptElement[] elements, boolean isNew) {
 	int length = elements.length;
-	IJavaElement previous = null, current = null, next = (length > 0) ? elements[0] : null;
+	IJavaScriptElement previous = null, current = null, next = (length > 0) ? elements[0] : null;
 	for(int i = 0; i < length; i++) {
 		previous = current;
 		current = next;
@@ -341,35 +341,35 @@ private void insertPositions(IJavaElement[] elements, boolean isNew) {
 /**
  * Returns whether the elements position has not changed.
  */
-private boolean isPositionedCorrectly(IJavaElement element) {
+private boolean isPositionedCorrectly(IJavaScriptElement element) {
 	ListItem oldListItem = this.getOldPosition(element);
 	if (oldListItem == null) return false;
 
 	ListItem newListItem = this.getNewPosition(element);
 	if (newListItem == null) return false;
 
-	IJavaElement oldPrevious = oldListItem.previous;
-	IJavaElement newPrevious = newListItem.previous;
+	IJavaScriptElement oldPrevious = oldListItem.previous;
+	IJavaScriptElement newPrevious = newListItem.previous;
 	if (oldPrevious == null) {
 		return newPrevious == null;
 	} else {
 		return oldPrevious.equals(newPrevious);
 	}
 }
-private void putElementInfo(IJavaElement element, JavaElementInfo info) {
+private void putElementInfo(IJavaScriptElement element, JavaElementInfo info) {
 	this.infos.put(element, info);
 }
-private void putNewPosition(IJavaElement element, ListItem position) {
+private void putNewPosition(IJavaScriptElement element, ListItem position) {
 	this.newPositions.put(element, position);
 }
-private void putOldPosition(IJavaElement element, ListItem position) {
+private void putOldPosition(IJavaScriptElement element, ListItem position) {
 	this.oldPositions.put(element, position);
 }
 /**
  * Records this elements info, and attempts
  * to record the info for the children.
  */
-private void recordElementInfo(IJavaElement element, JavaModel model, int depth) {
+private void recordElementInfo(IJavaScriptElement element, JavaModel model, int depth) {
 	if (depth >= this.maxDepth) {
 		return;
 	}
@@ -379,7 +379,7 @@ private void recordElementInfo(IJavaElement element, JavaModel model, int depth)
 	this.putElementInfo(element, info);
 
 	if (element instanceof IParent) {
-		IJavaElement[] children = info.getChildren();
+		IJavaScriptElement[] children = info.getChildren();
 		if (children != null) {
 			insertPositions(children, false);
 			for(int i = 0, length = children.length; i < length; i++)
@@ -390,16 +390,16 @@ private void recordElementInfo(IJavaElement element, JavaModel model, int depth)
 /**
  * Fills the newPositions hashtable with the new position information
  */
-private void recordNewPositions(IJavaElement newElement, int depth) {
+private void recordNewPositions(IJavaScriptElement newElement, int depth) {
 	if (depth < this.maxDepth && newElement instanceof IParent) {
 		JavaElementInfo info = null;
 		try {
 			info = (JavaElementInfo)((JavaElement)newElement).getElementInfo();
-		} catch (JavaModelException npe) {
+		} catch (JavaScriptModelException npe) {
 			return;
 		}
 
-		IJavaElement[] children = info.getChildren();
+		IJavaScriptElement[] children = info.getChildren();
 		if (children != null) {
 			insertPositions(children, true);
 			for(int i = 0, length = children.length; i < length; i++) {
@@ -412,7 +412,7 @@ private void recordNewPositions(IJavaElement newElement, int depth) {
  * Repairs the positioning information
  * after an element has been removed
  */
-private void removed(IJavaElement element) {
+private void removed(IJavaScriptElement element) {
 	this.removed.add(element);
 	ListItem current = this.getOldPosition(element);
 	ListItem previous = null, next = null;
@@ -426,7 +426,7 @@ private void removed(IJavaElement element) {
 		next.previous = current.previous;
 
 }
-private void removeElementInfo(IJavaElement element) {
+private void removeElementInfo(IJavaScriptElement element) {
 	this.infos.remove(element);
 }
 public String toString() {
@@ -439,13 +439,13 @@ public String toString() {
  * Trims deletion deltas to only report the highest level of deletion
  */
 private void trimDelta(JavaElementDelta elementDelta) {
-	if (elementDelta.getKind() == IJavaElementDelta.REMOVED) {
-		IJavaElementDelta[] children = elementDelta.getAffectedChildren();
+	if (elementDelta.getKind() == IJavaScriptElementDelta.REMOVED) {
+		IJavaScriptElementDelta[] children = elementDelta.getAffectedChildren();
 		for(int i = 0, length = children.length; i < length; i++) {
 			elementDelta.removeAffectedChild((JavaElementDelta)children[i]);
 		}
 	} else {
-		IJavaElementDelta[] children = elementDelta.getAffectedChildren();
+		IJavaScriptElementDelta[] children = elementDelta.getAffectedChildren();
 		for(int i = 0, length = children.length; i < length; i++) {
 			trimDelta((JavaElementDelta)children[i]);
 		}

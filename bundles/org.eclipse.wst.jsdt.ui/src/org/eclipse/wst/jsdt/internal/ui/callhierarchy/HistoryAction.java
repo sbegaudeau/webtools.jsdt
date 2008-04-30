@@ -15,24 +15,24 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 /**
  * Action used for the type hierarchy forward / backward buttons
  */
 class HistoryAction extends Action {
-    private static JavaElementLabelProvider fLabelProvider = new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_POST_QUALIFIED |
-            JavaElementLabelProvider.SHOW_PARAMETERS |
-            JavaElementLabelProvider.SHOW_RETURN_TYPE);
+    private static JavaScriptElementLabelProvider fLabelProvider = new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_POST_QUALIFIED |
+            JavaScriptElementLabelProvider.SHOW_PARAMETERS |
+            JavaScriptElementLabelProvider.SHOW_RETURN_TYPE);
     private CallHierarchyViewPart fView;
-    private IMethod fMethod;
+    private IFunction fMethod;
 
-    public HistoryAction(CallHierarchyViewPart viewPart, IMethod element) {
+    public HistoryAction(CallHierarchyViewPart viewPart, IFunction element) {
         super("", AS_RADIO_BUTTON); //$NON-NLS-1$
         fView = viewPart;
         fMethod = element;
@@ -47,7 +47,7 @@ class HistoryAction extends Action {
         PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.CALL_HIERARCHY_HISTORY_ACTION);
     }
 
-    private ImageDescriptor getImageDescriptor(IJavaElement elem) {
+    private ImageDescriptor getImageDescriptor(IJavaScriptElement elem) {
         JavaElementImageProvider imageProvider = new JavaElementImageProvider();
         ImageDescriptor desc = imageProvider.getBaseImageDescriptor(elem, 0);
         imageProvider.dispose();
@@ -66,7 +66,7 @@ class HistoryAction extends Action {
      * @param element
      * @return String
      */
-    private String getElementLabel(IJavaElement element) {
+    private String getElementLabel(IJavaScriptElement element) {
         Assert.isNotNull(element);
         return fLabelProvider.getText(element);
     }

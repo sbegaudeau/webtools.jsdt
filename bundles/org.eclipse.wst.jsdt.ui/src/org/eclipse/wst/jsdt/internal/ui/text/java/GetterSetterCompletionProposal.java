@@ -22,9 +22,9 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension4;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
@@ -45,7 +45,7 @@ public class GetterSetterCompletionProposal extends JavaTypeCompletionProposal i
 		}
 
 		IField[] fields= type.getFields();
-		IMethod[] methods= type.getMethods();
+		IFunction[] methods= type.getFunctions();
 		for (int i= 0; i < fields.length; i++) {
 			IField curr= fields[i];
 			if (!JdtFlags.isEnum(curr)) {
@@ -62,7 +62,7 @@ public class GetterSetterCompletionProposal extends JavaTypeCompletionProposal i
 		}
 	}
 
-	private static boolean hasMethod(IMethod[] methods, String name) {
+	private static boolean hasMethod(IFunction[] methods, String name) {
 		for (int i= 0; i < methods.length; i++) {
 			if (methods[i].getElementName().equals(name)) {
 				return true;
@@ -74,8 +74,8 @@ public class GetterSetterCompletionProposal extends JavaTypeCompletionProposal i
 	private final IField fField;
 	private final boolean fIsGetter;
 
-	public GetterSetterCompletionProposal(IField field, int start, int length, boolean isGetter, int relevance) throws JavaModelException {
-		super("", field.getCompilationUnit(), start, length, JavaPluginImages.get(JavaPluginImages.IMG_MISC_PUBLIC), getDisplayName(field, isGetter), relevance); //$NON-NLS-1$
+	public GetterSetterCompletionProposal(IField field, int start, int length, boolean isGetter, int relevance) throws JavaScriptModelException {
+		super("", field.getJavaScriptUnit(), start, length, JavaPluginImages.get(JavaPluginImages.IMG_MISC_PUBLIC), getDisplayName(field, isGetter), relevance); //$NON-NLS-1$
 		Assert.isNotNull(field);
 
 		fField= field;
@@ -83,7 +83,7 @@ public class GetterSetterCompletionProposal extends JavaTypeCompletionProposal i
 		setProposalInfo(new ProposalInfo(field));
 	}
 
-	private static String getDisplayName(IField field, boolean isGetter) throws JavaModelException {
+	private static String getDisplayName(IField field, boolean isGetter) throws JavaScriptModelException {
 		StringBuffer buf= new StringBuffer();
 		if (isGetter) {
 			buf.append(GetterSetterUtil.getGetterName(field, null));
@@ -107,7 +107,7 @@ public class GetterSetterCompletionProposal extends JavaTypeCompletionProposal i
 	 */
 	protected boolean updateReplacementString(IDocument document, char trigger, int offset, ImportRewrite impRewrite) throws CoreException, BadLocationException {
 
-		CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(fField.getJavaProject());
+		CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(fField.getJavaScriptProject());
 		boolean addComments= settings.createComments;
 		int flags= Flags.AccPublic | (fField.getFlags() & Flags.AccStatic);
 
@@ -127,7 +127,7 @@ public class GetterSetterCompletionProposal extends JavaTypeCompletionProposal i
 		int lineStart= region.getOffset();
 		int indent= Strings.computeIndentUnits(document.get(lineStart, getReplacementOffset() - lineStart), settings.tabWidth, settings.indentWidth);
 
-		String replacement= CodeFormatterUtil.format(CodeFormatter.K_CLASS_BODY_DECLARATIONS, stub, indent, null, lineDelim, fField.getJavaProject());
+		String replacement= CodeFormatterUtil.format(CodeFormatter.K_CLASS_BODY_DECLARATIONS, stub, indent, null, lineDelim, fField.getJavaScriptProject());
 
 		if (replacement.endsWith(lineDelim)) {
 			replacement= replacement.substring(0, replacement.length() - lineDelim.length());

@@ -11,8 +11,8 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TType;
 
 /**
@@ -23,9 +23,9 @@ public final class ParameterTypeVariable2 extends ConstraintVariable2 implements
 
 	private final int fParameterIndex;
 	private final String fKey;
-	private ICompilationUnit fCompilationUnit;
+	private IJavaScriptUnit fCompilationUnit;
 	
-	public ParameterTypeVariable2(TType type, int index, IMethodBinding binding) {
+	public ParameterTypeVariable2(TType type, int index, IFunctionBinding binding) {
 		super(type);
 		Assert.isNotNull(binding);
 		Assert.isTrue(0 <= index);
@@ -33,11 +33,11 @@ public final class ParameterTypeVariable2 extends ConstraintVariable2 implements
 		fKey= binding.getKey();
 	}
 	
-	public void setCompilationUnit(ICompilationUnit cu) {
+	public void setCompilationUnit(IJavaScriptUnit cu) {
 		fCompilationUnit= cu;
 	}
 	
-	public ICompilationUnit getCompilationUnit() {
+	public IJavaScriptUnit getCompilationUnit() {
 		return fCompilationUnit;
 	}
 

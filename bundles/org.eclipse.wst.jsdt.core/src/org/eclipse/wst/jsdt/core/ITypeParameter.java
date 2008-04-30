@@ -16,11 +16,11 @@ package org.eclipse.wst.jsdt.core;
  * in a compilation unit or a class file.
  * <p>
  * Type parameters are obtained using {@link IType#getTypeParameter(String)} and
- * {@link IMethod#getTypeParameter(String)}.
+ * {@link IFunction#getTypeParameter(String)}.
  * </p><p>
  * Note that type parameters are not children of their declaring type or method. To get a list
  * of the type parameters use {@link IType#getTypeParameters()} for a type and use
- * {@link IMethod#getTypeParameters()} for a method.
+ * {@link IFunction#getTypeParameters()} for a method.
  * </p>
  * <p>
  * This interface is not intended to be implemented by clients.
@@ -28,7 +28,7 @@ package org.eclipse.wst.jsdt.core;
  *
  * @since 3.1
  */
-public interface ITypeParameter extends IJavaElement, ISourceReference {
+public interface ITypeParameter extends IJavaScriptElement, ISourceReference {
 
 	/**
 	 * Returns the names of the class and interface bounds of this type parameter. Returns an empty
@@ -38,14 +38,14 @@ public interface ITypeParameter extends IJavaElement, ISourceReference {
 	 * parameter comes from a class file.
 	 *
 	 * @return the names of the bounds
-	 * @throws JavaModelException if this element does not exist or if an
+	 * @throws JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
 	 */
-	String[] getBounds() throws JavaModelException;
+	String[] getBounds() throws JavaScriptModelException;
 
 	/**
 	 * Returns the declaring member of this type parameter. This can be either an <code>IType</code>
-	 * or an <code>IMethod</code>.
+	 * or an <code>IFunction</code>.
 	 * <p>
 	 * This is a handle-only method.
 	 * </p>
@@ -59,11 +59,11 @@ public interface ITypeParameter extends IJavaElement, ISourceReference {
 	 * or <code>null</code> if this type parameter does not have
 	 * associated source code (for example, in a binary type).
 	 *
-	 * @exception JavaModelException if this element does not exist or if an
+	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *      exception occurs while accessing its corresponding resource.
 	 * @return the source range of this type parameter's name,
 	 * or <code>null</code> if this type parameter does not have
 	 * associated source code (for example, in a binary type)
 	 */
-	ISourceRange getNameRange() throws JavaModelException;
+	ISourceRange getNameRange() throws JavaScriptModelException;
 }

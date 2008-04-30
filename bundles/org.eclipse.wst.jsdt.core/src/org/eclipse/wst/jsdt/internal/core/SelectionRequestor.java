@@ -14,16 +14,16 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -62,7 +62,7 @@ public class SelectionRequestor implements ISelectionRequestor {
 	/*
 	 * The collection of resolved elements.
 	 */
-	protected IJavaElement[] elements = JavaElement.NO_ELEMENTS;
+	protected IJavaScriptElement[] elements = JavaElement.NO_ELEMENTS;
 	protected int elementIndex = -1;
 
 	protected HandleFactory handleFactory = new HandleFactory();
@@ -80,7 +80,7 @@ public SelectionRequestor(NameLookup nameLookup, Openable openable) {
 }
 private void acceptBinaryMethod(
 		IType type,
-		IMethod method,
+		IFunction method,
 		char[] uniqueKey,
 		boolean isConstructor) {
 	try {
@@ -129,7 +129,7 @@ private void acceptBinaryMethod(
 				}
 			}
 		}
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// an exception occurs, return nothing
 	}
 }
@@ -148,11 +148,11 @@ protected void acceptBinaryMethod(
 		char[][][] typeParameterBoundNames,
 		char[] uniqueKey,
 		boolean isConstructor) {
-	IMethod method= type.getMethod(new String(selector), parameterSignatures);
+	IFunction method= type.getFunction(new String(selector), parameterSignatures);
 
 	if (method.exists()) {
 		if (typeParameterNames != null && typeParameterNames.length != 0) {
-			IMethod[] methods = type.findMethods(method);
+			IFunction[] methods = type.findMethods(method);
 			if (methods.length > 1) {
 				for (int i = 0; i < methods.length; i++) {
 					if (areTypeParametersCompatible(methods[i], typeParameterNames, typeParameterBoundNames)) {
@@ -246,7 +246,7 @@ public void acceptField(char[] declaringTypePackageName, char[] fileName, char[]
 						return; // only one method is possible
 					}
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return;
 			}
 		}
@@ -283,7 +283,7 @@ public void acceptField(char[] declaringTypePackageName, char[] fileName, char[]
 	}
 }
 public void acceptLocalField(FieldBinding fieldBinding) {
-	IJavaElement res;
+	IJavaScriptElement res;
 	if(fieldBinding.declaringClass instanceof ParameterizedTypeBinding) {
 		LocalTypeBinding localTypeBinding = (LocalTypeBinding)((ParameterizedTypeBinding)fieldBinding.declaringClass).genericType();
 		res = findLocalElement(localTypeBinding.sourceStart());
@@ -291,7 +291,7 @@ public void acceptLocalField(FieldBinding fieldBinding) {
 		SourceTypeBinding typeBinding = (SourceTypeBinding)fieldBinding.declaringClass;
 		res = findLocalElement(typeBinding.sourceStart());
 	}
-	if (res != null && res.getElementType() == IJavaElement.TYPE) {
+	if (res != null && res.getElementType() == IJavaScriptElement.TYPE) {
 		IType type = (IType) res;
 		IField field= type.getField(new String(fieldBinding.name));
 		if (field.exists()) {
@@ -321,10 +321,10 @@ public void acceptLocalField(FieldBinding fieldBinding) {
 	}
 }
 public void acceptLocalMethod(MethodBinding methodBinding) {
-	IJavaElement res = findLocalElement(methodBinding.sourceStart());
+	IJavaScriptElement res = findLocalElement(methodBinding.sourceStart());
 	if(res != null) {
-		if(res.getElementType() == IJavaElement.METHOD) {
-			IMethod method = (IMethod) res;
+		if(res.getElementType() == IJavaScriptElement.METHOD) {
+			IFunction method = (IFunction) res;
 
 			char[] uniqueKey = methodBinding.computeUniqueKey();
 			if(method.isBinary()) {
@@ -350,7 +350,7 @@ public void acceptLocalMethod(MethodBinding methodBinding) {
 				System.out.print(res.toString());
 				System.out.println(")"); //$NON-NLS-1$
 			}
-		} else if(methodBinding.selector == TypeConstants.INIT && res.getElementType() == IJavaElement.TYPE) {
+		} else if(methodBinding.selector == TypeConstants.INIT && res.getElementType() == IJavaScriptElement.TYPE) {
 			// it's a default constructor
 			res = ((JavaElement)res).resolved(methodBinding.declaringClass);
 			addElement(res);
@@ -363,14 +363,14 @@ public void acceptLocalMethod(MethodBinding methodBinding) {
 	}
 }
 public void acceptLocalType(TypeBinding typeBinding) {
-	IJavaElement res =  null;
+	IJavaScriptElement res =  null;
 	if(typeBinding instanceof ParameterizedTypeBinding) {
 		LocalTypeBinding localTypeBinding = (LocalTypeBinding)((ParameterizedTypeBinding)typeBinding).genericType();
 		res = findLocalElement(localTypeBinding.sourceStart());
 	} else if(typeBinding instanceof SourceTypeBinding) {
 		res = findLocalElement(((SourceTypeBinding)typeBinding).sourceStart());
 	}
-	if(res != null && res.getElementType() == IJavaElement.TYPE) {
+	if(res != null && res.getElementType() == IJavaScriptElement.TYPE) {
 		res = ((JavaElement)res).resolved(typeBinding);
 		addElement(res);
 		if(SelectionEngine.DEBUG){
@@ -381,7 +381,7 @@ public void acceptLocalType(TypeBinding typeBinding) {
 	}
 }
 public void acceptLocalTypeParameter(TypeVariableBinding typeVariableBinding) {
-	IJavaElement res;
+	IJavaScriptElement res;
 	if(typeVariableBinding.declaringElement instanceof ParameterizedTypeBinding) {
 		LocalTypeBinding localTypeBinding = (LocalTypeBinding)((ParameterizedTypeBinding)typeVariableBinding.declaringElement).genericType();
 		res = findLocalElement(localTypeBinding.sourceStart());
@@ -389,7 +389,7 @@ public void acceptLocalTypeParameter(TypeVariableBinding typeVariableBinding) {
 		SourceTypeBinding typeBinding = (SourceTypeBinding)typeVariableBinding.declaringElement;
 		res = findLocalElement(typeBinding.sourceStart());
 	}
-	if (res != null && res.getElementType() == IJavaElement.TYPE) {
+	if (res != null && res.getElementType() == IJavaScriptElement.TYPE) {
 		IType type = (IType) res;
 		ITypeParameter typeParameter = type.getTypeParameter(new String(typeVariableBinding.sourceName));
 		if (typeParameter.exists()) {
@@ -404,9 +404,9 @@ public void acceptLocalTypeParameter(TypeVariableBinding typeVariableBinding) {
 }
 public void acceptLocalMethodTypeParameter(TypeVariableBinding typeVariableBinding) {
 	MethodBinding methodBinding = (MethodBinding)typeVariableBinding.declaringElement;
-	IJavaElement res = findLocalElement(methodBinding.sourceStart());
-	if(res != null && res.getElementType() == IJavaElement.METHOD) {
-		IMethod method = (IMethod) res;
+	IJavaScriptElement res = findLocalElement(methodBinding.sourceStart());
+	if(res != null && res.getElementType() == IJavaScriptElement.METHOD) {
+		IFunction method = (IFunction) res;
 
 		ITypeParameter typeParameter = method.getTypeParameter(new String(typeVariableBinding.sourceName));
 		if (typeParameter.exists()) {
@@ -423,7 +423,7 @@ public void acceptLocalVariable(LocalVariableBinding binding) {
 	LocalDeclaration local = binding.declaration;
 	if (local==null)
 		return;
-	IJavaElement parent =null;
+	IJavaScriptElement parent =null;
 	if (binding.declaringScope instanceof CompilationUnitScope) {
 		CompilationUnitScope compilationUnitScope = (CompilationUnitScope) binding.declaringScope;
 		char [] packageName=CharOperation.concatWith(compilationUnitScope.currentPackageName, '.');
@@ -435,7 +435,7 @@ public void acceptLocalVariable(LocalVariableBinding binding) {
 		}
 	} else
 	 parent = findLocalElement(local.sourceStart); // findLocalElement() cannot find local variable
-	IJavaElement localVar = null;
+	IJavaScriptElement localVar = null;
 	if(parent != null) {
 		String localName=new String(local.name);
 			// this may have been put in model as Source Field
@@ -482,7 +482,7 @@ public void acceptMethod(
 		char[] uniqueKey,
 		int start,
 		int end) {
-	IJavaElement[] previousElement = this.elements;
+	IJavaScriptElement[] previousElement = this.elements;
 	int previousElementIndex = this.elementIndex;
 	this.elements = JavaElement.NO_ELEMENTS;
 	this.elementIndex = -1;
@@ -498,7 +498,7 @@ public void acceptMethod(
 			this.acceptMethodDeclaration(type, selector, start, end);
 //		}
 	} else {
-		IJavaElement parent = (!isFileName) ?
+		IJavaScriptElement parent = (!isFileName) ?
 				resolveType(declaringTypePackageName, fileName,declaringTypeName,NameLookup.ACCEPT_ALL)
 			:
 				resolveCompilationUnit(declaringTypePackageName, declaringTypeName);		// fix for 1FWFT6Q
@@ -511,7 +511,7 @@ public void acceptMethod(
 //				boolean isStatic = false;
 //				try {
 //					isStatic = Flags.isStatic(type.getFlags());
-//				} catch (JavaModelException e) {
+//				} catch (JavaScriptModelException e) {
 //					// isStatic == false
 //				}
 //
@@ -536,7 +536,7 @@ public void acceptMethod(
 	if(previousElementIndex > -1) {
 		int elementsLength = this.elementIndex + previousElementIndex + 2;
 		if(elementsLength > this.elements.length) {
-			System.arraycopy(this.elements, 0, this.elements = new IJavaElement[elementsLength * 2 + 1], 0, this.elementIndex + 1);
+			System.arraycopy(this.elements, 0, this.elements = new IJavaScriptElement[elementsLength * 2 + 1], 0, this.elementIndex + 1);
 		}
 		System.arraycopy(previousElement, 0, this.elements, this.elementIndex + 1, previousElementIndex + 1);
 		this.elementIndex += previousElementIndex + 1;
@@ -570,7 +570,7 @@ public void acceptPackage(char[] packageName) {
  * fix for 1FWFT6Q
  */
 protected void acceptSourceMethod(
-		IJavaElement parent,
+		IJavaScriptElement parent,
 		char[] selector,
 		char[][] parameterPackageNames,
 		char[][] parameterTypeNames,
@@ -580,22 +580,22 @@ protected void acceptSourceMethod(
 		char[] uniqueKey) {
 
 	String name = new String(selector);
-	IMethod[] methods = null;
+	IFunction[] methods = null;
 	try {
 		if (parent instanceof IType)
-			methods = ((IType)parent).getMethods();
-		else if (parent instanceof ICompilationUnit)
-			methods=((ICompilationUnit)parent).getMethods();
+			methods = ((IType)parent).getFunctions();
+		else if (parent instanceof IJavaScriptUnit)
+			methods=((IJavaScriptUnit)parent).getFunctions();
 		else if (parent instanceof IClassFile)
 		{
-			methods=((IClassFile)parent).getMethods();
+			methods=((IClassFile)parent).getFunctions();
 		}
 		if (methods!=null)
 			for (int i = 0; i < methods.length; i++) {
 			if (methods[i].getElementName().equals(name)
 //					&& methods[i].getParameterTypes().length == parameterTypeNames.length
 					) {
-				IMethod method = methods[i];
+				IFunction method = methods[i];
 				if (uniqueKey != null) {
 					ResolvedSourceMethod resolvedMethod = new ResolvedSourceMethod(
 						(JavaElement)method.getParent(),
@@ -608,7 +608,7 @@ protected void acceptSourceMethod(
 				addElement(method);
 			}
 		}
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		return;
 	}
 
@@ -635,12 +635,12 @@ protected void acceptSourceMethod(
 	}
 
 	// more than one match - must match simple parameter types
-	IJavaElement[] matches = this.elements;
+	IJavaScriptElement[] matches = this.elements;
 	int matchesIndex = this.elementIndex;
 	this.elements = JavaElement.NO_ELEMENTS;
 	this.elementIndex = -1;
 	for (int i = 0; i <= matchesIndex; i++) {
-		IMethod method= (IMethod)matches[i];
+		IFunction method= (IFunction)matches[i];
 		String[] signatures = method.getParameterTypes();
 		boolean match= true;
 		for (int p = 0; p < signatures.length; p++) {
@@ -669,15 +669,15 @@ protected void acceptSourceMethod(
 }
 protected void acceptMethodDeclaration(IType type, char[] selector, int start, int end) {
 	String name = new String(selector);
-	IMethod[] methods = null;
+	IFunction[] methods = null;
 	try {
 		if (type!=null)
-			methods = type.getMethods();
+			methods = type.getFunctions();
 			else
 				if (this.openable instanceof CompilationUnit)
-					methods=((CompilationUnit)this.openable).getMethods();
+					methods=((CompilationUnit)this.openable).getFunctions();
 				else if (this.openable instanceof ClassFile)
-				methods=((ClassFile)this.openable).getMethods();
+				methods=((ClassFile)this.openable).getFunctions();
 		for (int i = 0; i < methods.length; i++) {
 			ISourceRange range = methods[i].getNameRange();
 			if(range.getOffset() <= start
@@ -692,7 +692,7 @@ protected void acceptMethodDeclaration(IType type, char[] selector, int start, i
 				return; // only one method is possible
 			}
 		}
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		return;
 	}
 
@@ -741,13 +741,13 @@ public void acceptMethodTypeParameter(char[] declaringTypePackageName, char[] fi
 			selectorStart, selectorEnd);
 
 	if(type != null) {
-		IMethod method = null;
+		IFunction method = null;
 
 		String name = new String(selector);
-		IMethod[] methods = null;
+		IFunction[] methods = null;
 
 		try {
-			methods = type.getMethods();
+			methods = type.getFunctions();
 			done : for (int i = 0; i < methods.length; i++) {
 				ISourceRange range = methods[i].getNameRange();
 				if(range.getOffset() >= selectorStart
@@ -757,7 +757,7 @@ public void acceptMethodTypeParameter(char[] declaringTypePackageName, char[] fi
 					break done;
 				}
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			//nothing to do
 		}
 
@@ -791,14 +791,14 @@ public void acceptMethodTypeParameter(char[] declaringTypePackageName, char[] fi
 /*
  * Adds the given element to the list of resolved elements.
  */
-protected void addElement(IJavaElement element) {
+protected void addElement(IJavaScriptElement element) {
 	int elementLength = this.elementIndex + 1;
 	if (elementLength == this.elements.length) {
-		System.arraycopy(this.elements, 0, this.elements = new IJavaElement[(elementLength*2) + 1], 0, elementLength);
+		System.arraycopy(this.elements, 0, this.elements = new IJavaScriptElement[(elementLength*2) + 1], 0, elementLength);
 	}
 	this.elements[++this.elementIndex] = element;
 }
-private boolean areTypeParametersCompatible(IMethod method, char[][] typeParameterNames, char[][][] typeParameterBoundNames) {
+private boolean areTypeParametersCompatible(IFunction method, char[][] typeParameterNames, char[][][] typeParameterBoundNames) {
 	try {
 		ITypeParameter[] typeParameters = method.getTypeParameters();
 		int length1 = typeParameters == null ? 0 : typeParameters.length;
@@ -832,7 +832,7 @@ private boolean areTypeParametersCompatible(IMethod method, char[][] typeParamet
 				}
 			}
 		}
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		return false;
 	}
 	return true;
@@ -840,20 +840,20 @@ private boolean areTypeParametersCompatible(IMethod method, char[][] typeParamet
 /*
  * findLocalElement() cannot find local variable
  */
-protected IJavaElement findLocalElement(int pos) {
-	IJavaElement res = null;
-	if(this.openable instanceof ICompilationUnit) {
-		ICompilationUnit cu = (ICompilationUnit) this.openable;
+protected IJavaScriptElement findLocalElement(int pos) {
+	IJavaScriptElement res = null;
+	if(this.openable instanceof IJavaScriptUnit) {
+		IJavaScriptUnit cu = (IJavaScriptUnit) this.openable;
 		try {
 			res = cu.getElementAt(pos);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// do nothing
 		}
 	} else if (this.openable instanceof ClassFile) {
 		ClassFile cf = (ClassFile) this.openable;
 		try {
 			 res = cf.getElementAtConsideringSibling(pos);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// do nothing
 		}
 	}
@@ -862,10 +862,10 @@ protected IJavaElement findLocalElement(int pos) {
 /**
  * Returns the resolved elements.
  */
-public IJavaElement[] getElements() {
+public IJavaScriptElement[] getElements() {
 	int elementLength = this.elementIndex + 1;
 	if (this.elements.length != elementLength) {
-		System.arraycopy(this.elements, 0, this.elements = new IJavaElement[elementLength], 0, elementLength);
+		System.arraycopy(this.elements, 0, this.elements = new IJavaScriptElement[elementLength], 0, elementLength);
 	}
 	return this.elements;
 }
@@ -912,7 +912,7 @@ protected IType resolveType(char[] packageName, char[] fileName, char[] typeName
 					type = null;
 				}
 			}
-		}catch (JavaModelException e) {
+		}catch (JavaScriptModelException e) {
 			// type is null
 		}
 	}
@@ -937,10 +937,10 @@ protected IType resolveType(char[] packageName, char[] fileName, char[] typeName
 				tName = tName.replace('.','$');
 				IType[] allTypes= null;
 				try {
-					ArrayList list = this.openable.getChildrenOfType(IJavaElement.TYPE);
+					ArrayList list = this.openable.getChildrenOfType(IJavaScriptElement.TYPE);
 					allTypes = new IType[list.size()];
 					list.toArray(allTypes);
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					return null;
 				}
 				for (int i= 0; i < allTypes.length; i++) {
@@ -955,9 +955,9 @@ protected IType resolveType(char[] packageName, char[] fileName, char[] typeName
 }
 
 
-protected IJavaElement resolveCompilationUnit(char[] packageName, char[] compilationUnitName) {
+protected IJavaScriptElement resolveCompilationUnit(char[] packageName, char[] compilationUnitName) {
 
-	ICompilationUnit compilationUnit= null;
+	IJavaScriptUnit compilationUnit= null;
 
 	String fullCUName=new String(compilationUnitName);
 	Path cuPath = new Path(fullCUName);
@@ -981,7 +981,7 @@ protected IJavaElement resolveCompilationUnit(char[] packageName, char[] compila
 			false);
 		// iterate type lookup in each package fragment
 		for (int i = 0, length = pkgs == null ? 0 : pkgs.length; i < length; i++) {
-			ICompilationUnit compUnit=pkgs[i].getCompilationUnit(cuName);
+			IJavaScriptUnit compUnit=pkgs[i].getJavaScriptUnit(cuName);
 			if (compUnit.exists())
 				return compUnit;
 			IClassFile classFile=pkgs[i].getClassFile(cuName);
@@ -1005,10 +1005,10 @@ protected IJavaElement resolveCompilationUnit(char[] packageName, char[] compila
 //				tName = tName.replace('.','$');
 //				IType[] allTypes= null;
 //				try {
-//					ArrayList list = this.openable.getChildrenOfType(IJavaElement.TYPE);
+//					ArrayList list = this.openable.getChildrenOfType(IJavaScriptElement.TYPE);
 //					allTypes = new IType[list.size()];
 //					list.toArray(allTypes);
-//				} catch (JavaModelException e) {
+//				} catch (JavaScriptModelException e) {
 //					return null;
 //				}
 //				for (int i= 0; i < allTypes.length; i++) {
@@ -1026,7 +1026,7 @@ protected IType resolveTypeByLocation(char[] packageName, char[] typeName, int a
 
 	IType type= null;
 
-	// TODO (david) post 3.0 should remove isOpen check, and investigate reusing ICompilationUnit#getElementAt. may need to optimize #getElementAt to remove recursions
+	// TODO (david) post 3.0 should remove isOpen check, and investigate reusing IJavaScriptUnit#getElementAt. may need to optimize #getElementAt to remove recursions
 	if (this.openable instanceof CompilationUnit && ((CompilationUnit)this.openable).isOpen()) {
 		CompilationUnit wc = (CompilationUnit) this.openable;
 		try {
@@ -1061,7 +1061,7 @@ protected IType resolveTypeByLocation(char[] packageName, char[] typeName, int a
 					type = null;
 				}
 			}
-		}catch (JavaModelException e) {
+		}catch (JavaScriptModelException e) {
 			// type is null
 		}
 	}
@@ -1087,10 +1087,10 @@ protected IType resolveTypeByLocation(char[] packageName, char[] typeName, int a
 				tName = tName.replace('.','$');
 				IType[] allTypes= null;
 				try {
-					ArrayList list = this.openable.getChildrenOfType(IJavaElement.TYPE);
+					ArrayList list = this.openable.getChildrenOfType(IJavaScriptElement.TYPE);
 					allTypes = new IType[list.size()];
 					list.toArray(allTypes);
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					return null;
 				}
 				for (int i= 0; i < allTypes.length; i++) {

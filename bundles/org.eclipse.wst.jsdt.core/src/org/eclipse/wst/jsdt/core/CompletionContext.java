@@ -50,8 +50,19 @@ public final class CompletionContext extends InternalCompletionContext {
 	 *
 	 * @return boolean true if completion takes place in a javadoc comment, false otherwise.
 	 * @since 3.2
+	 * @deprecated Use {@link #isInJsdoc()} instead
 	 */
 	public boolean isInJavadoc() {
+		return isInJsdoc();
+	}
+
+	/**
+	 * Tell user whether completion takes place in a javadoc comment or not.
+	 *
+	 * @return boolean true if completion takes place in a javadoc comment, false otherwise.
+	 * @since 3.2
+	 */
+	public boolean isInJsdoc() {
 		return this.javadoc != 0;
 	}
 
@@ -60,8 +71,19 @@ public final class CompletionContext extends InternalCompletionContext {
 	 *
 	 * @return boolean true if completion takes place in a text area of a javadoc comment, false otherwise.
 	 * @since 3.2
+	 * @deprecated Use {@link #isInJsdocText()} instead
 	 */
 	public boolean isInJavadocText() {
+		return isInJsdocText();
+	}
+
+	/**
+	 * Tell user whether completion takes place in text area of a javadoc comment or not.
+	 *
+	 * @return boolean true if completion takes place in a text area of a javadoc comment, false otherwise.
+	 * @since 3.2
+	 */
+	public boolean isInJsdocText() {
 		return (this.javadoc & CompletionOnJavadoc.TEXT) != 0;
 	}
 
@@ -79,8 +101,28 @@ public final class CompletionContext extends InternalCompletionContext {
 	 *
 	 * @return boolean true if completion takes place in formal reference of a javadoc tag, false otherwise.
 	 * @since 3.2
+	 * @deprecated Use {@link #isInJsdocFormalReference()} instead
 	 */
 	public boolean isInJavadocFormalReference() {
+		return isInJsdocFormalReference();
+	}
+
+	/**
+	 * Tell user whether completion takes place in a formal reference of a javadoc tag or not.
+	 * Tags with formal reference are:
+	 * <ul>
+	 * 	<li>&#64;see</li>
+	 * 	<li>&#64;throws</li>
+	 * 	<li>&#64;exception</li>
+	 * 	<li>{&#64;link Object}</li>
+	 * 	<li>{&#64;linkplain Object}</li>
+	 * 	<li>{&#64;value} when compiler compliance is set at leats to 1.5</li>
+	 * </ul>
+	 *
+	 * @return boolean true if completion takes place in formal reference of a javadoc tag, false otherwise.
+	 * @since 3.2
+	 */
+	public boolean isInJsdocFormalReference() {
 		return (this.javadoc & CompletionOnJavadoc.FORMAL_REFERENCE) != 0;
 	}
 
@@ -105,7 +147,7 @@ public final class CompletionContext extends InternalCompletionContext {
 	 * @return keys of expected types of a potential completion proposal at the completion position or
 	 * <code>null</code> if there is no expected types.
 	 *
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTParser#createASTs(ICompilationUnit[], String[], org.eclipse.wst.jsdt.core.dom.ASTRequestor, org.eclipse.core.runtime.IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTParser#createASTs(IJavaScriptUnit[], String[], org.eclipse.wst.jsdt.core.dom.ASTRequestor, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public char[][] getExpectedTypesKeys() {
 		return this.expectedTypesKeys;

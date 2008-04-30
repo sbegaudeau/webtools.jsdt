@@ -26,15 +26,15 @@ import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavadocContentAccess;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
+import org.eclipse.wst.jsdt.ui.JSdocContentAccess;
 
 /**
  * Provides Javadoc as hover info for Java elements.
@@ -94,11 +94,11 @@ public class JavadocHover extends AbstractJavaEditorTextHover implements IInform
 		}
 	}
 
-	private final long LABEL_FLAGS=  JavaElementLabels.ALL_FULLY_QUALIFIED
-		| JavaElementLabels.M_PRE_RETURNTYPE | JavaElementLabels.M_PARAMETER_TYPES | JavaElementLabels.M_PARAMETER_NAMES | JavaElementLabels.M_EXCEPTIONS
-		| JavaElementLabels.F_PRE_TYPE_SIGNATURE | JavaElementLabels.M_PRE_TYPE_PARAMETERS | JavaElementLabels.T_TYPE_PARAMETERS
-		| JavaElementLabels.USE_RESOLVED;
-	private final long LOCAL_VARIABLE_FLAGS= LABEL_FLAGS & ~JavaElementLabels.F_FULLY_QUALIFIED | JavaElementLabels.F_POST_QUALIFIED;
+	private final long LABEL_FLAGS=  JavaScriptElementLabels.ALL_FULLY_QUALIFIED
+		| JavaScriptElementLabels.M_PRE_RETURNTYPE | JavaScriptElementLabels.M_PARAMETER_TYPES | JavaScriptElementLabels.M_PARAMETER_NAMES | JavaScriptElementLabels.M_EXCEPTIONS
+		| JavaScriptElementLabels.F_PRE_TYPE_SIGNATURE | JavaScriptElementLabels.M_PRE_TYPE_PARAMETERS | JavaScriptElementLabels.T_TYPE_PARAMETERS
+		| JavaScriptElementLabels.USE_RESOLVED;
+	private final long LOCAL_VARIABLE_FLAGS= LABEL_FLAGS & ~JavaScriptElementLabels.F_FULLY_QUALIFIED | JavaScriptElementLabels.F_POST_QUALIFIED;
 
 	
 	/**
@@ -138,7 +138,7 @@ public class JavadocHover extends AbstractJavaEditorTextHover implements IInform
 	/*
 	 * @see JavaElementHover
 	 */
-	protected String getHoverInfo(IJavaElement[] result) {
+	protected String getHoverInfo(IJavaScriptElement[] result) {
 
 		StringBuffer buffer= new StringBuffer();
 		int nResults= result.length;
@@ -150,8 +150,8 @@ public class JavadocHover extends AbstractJavaEditorTextHover implements IInform
 
 			for (int i= 0; i < result.length; i++) {
 				HTMLPrinter.startBulletList(buffer);
-				IJavaElement curr= result[i];
-				if (curr instanceof IMember || curr.getElementType() == IJavaElement.LOCAL_VARIABLE) {
+				IJavaScriptElement curr= result[i];
+				if (curr instanceof IMember || curr.getElementType() == IJavaScriptElement.LOCAL_VARIABLE) {
 					HTMLPrinter.addBullet(buffer, getInfoText(curr));
 					hasContents= true;
 				}
@@ -160,18 +160,18 @@ public class JavadocHover extends AbstractJavaEditorTextHover implements IInform
 
 		} else {
 
-			IJavaElement curr= result[0];
+			IJavaScriptElement curr= result[0];
 			if (curr instanceof IMember) {
 				IMember member= (IMember) curr;
 				HTMLPrinter.addSmallHeader(buffer, getInfoText(member));
 				Reader reader;
 				try {
-					reader= JavadocContentAccess.getHTMLContentReader(member, true, true);
+					reader= JSdocContentAccess.getHTMLContentReader(member, true, true);
 					
 					// Provide hint why there's no Javadoc
 					if (reader == null && member.isBinary()) {
 						boolean hasAttachedJavadoc= JavaDocLocations.getJavadocBaseLocation(member) != null;
-						IPackageFragmentRoot root= (IPackageFragmentRoot)member.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+						IPackageFragmentRoot root= (IPackageFragmentRoot)member.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 						boolean hasAttachedSource= root != null && root.getSourceAttachmentPath() != null;
 						IOpenable openable= member.getOpenable();
 						boolean hasSource= openable.getBuffer() != null;
@@ -186,16 +186,16 @@ public class JavadocHover extends AbstractJavaEditorTextHover implements IInform
 							reader= new StringReader(JavaHoverMessages.JavadocHover_noInformation);
 					}
 					
-				} catch (JavaModelException ex) {
+				} catch (JavaScriptModelException ex) {
 					reader= new StringReader(JavaHoverMessages.JavadocHover_error_gettingJavadoc);
-					JavaPlugin.log(ex.getStatus());
+					JavaScriptPlugin.log(ex.getStatus());
 				}
 				
 				if (reader != null) {
 					HTMLPrinter.addParagraph(buffer, reader);
 				}
 				hasContents= true;
-			} else if (curr.getElementType() == IJavaElement.LOCAL_VARIABLE || curr.getElementType() == IJavaElement.TYPE_PARAMETER) {
+			} else if (curr.getElementType() == IJavaScriptElement.LOCAL_VARIABLE || curr.getElementType() == IJavaScriptElement.TYPE_PARAMETER) {
 				HTMLPrinter.addSmallHeader(buffer, getInfoText(curr));
 				hasContents= true;
 			}
@@ -213,9 +213,9 @@ public class JavadocHover extends AbstractJavaEditorTextHover implements IInform
 		return null;
 	}
 
-	private String getInfoText(IJavaElement member) {
-		long flags= member.getElementType() == IJavaElement.LOCAL_VARIABLE ? LOCAL_VARIABLE_FLAGS : LABEL_FLAGS;
-		String label= JavaElementLabels.getElementLabel(member, flags);
+	private String getInfoText(IJavaScriptElement member) {
+		long flags= member.getElementType() == IJavaScriptElement.LOCAL_VARIABLE ? LOCAL_VARIABLE_FLAGS : LABEL_FLAGS;
+		String label= JavaScriptElementLabels.getElementLabel(member, flags);
 		StringBuffer buf= new StringBuffer();
 		for (int i= 0; i < label.length(); i++) {
 			char ch= label.charAt(i);

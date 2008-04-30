@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.LRUCache;
 
 /**
@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.core.util.LRUCache;
  */
 public class ElementCache extends OverflowingLRUCache {
 
-	IJavaElement spaceLimitParent = null;
+	IJavaScriptElement spaceLimitParent = null;
 
 /**
  * Constructs a new element cache of the given size.
@@ -56,7 +56,7 @@ protected boolean close(LRUCacheEntry entry) {
 			}
 			return true;
 		}
-	} catch (JavaModelException npe) {
+	} catch (JavaScriptModelException npe) {
 		return false;
 	}
 }
@@ -65,7 +65,7 @@ protected boolean close(LRUCacheEntry entry) {
  * Ensures that there is enough room for adding the given number of children.
  * If the space limit must be increased, record the parent that needed this space limit.
  */
-protected void ensureSpaceLimit(int childrenSize, IJavaElement parent) {
+protected void ensureSpaceLimit(int childrenSize, IJavaScriptElement parent) {
 	// ensure the children can be put without closing other elements
 	int spaceNeeded = 1 + (int)((1 + fLoadFactor) * (childrenSize + fOverflow));
 	if (fSpaceLimit < spaceNeeded) {
@@ -87,7 +87,7 @@ protected LRUCache newInstance(int size, int overflow) {
  * If the given parent was the one that increased the space limit, reset
  * the space limit to the given default value.
  */
-protected void resetSpaceLimit(int defaultLimit, IJavaElement parent) {
+protected void resetSpaceLimit(int defaultLimit, IJavaScriptElement parent) {
 	if (parent.equals(this.spaceLimitParent)) {
 		setSpaceLimit(defaultLimit);
 		this.spaceLimitParent = null;

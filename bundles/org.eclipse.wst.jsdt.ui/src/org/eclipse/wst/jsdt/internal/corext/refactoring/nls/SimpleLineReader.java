@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.nls;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Simple LineReader Helper. Returns lines including "line-break" characters.
@@ -59,7 +59,7 @@ public class SimpleLineReader {
 			return fInput.get(start, end - start);
 		} catch (BadLocationException e) {
 			// should not happen
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		return null;
      }

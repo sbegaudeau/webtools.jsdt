@@ -12,10 +12,10 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import java.util.HashMap;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceField;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceImport;
@@ -59,7 +59,7 @@ public class SourceTypeElementInfo extends MemberElementInfo implements ISourceT
 	protected ITypeParameter[] typeParameters = TypeParameter.NO_TYPE_PARAMETERS;
 
 	/*
-	 * A map from an IJavaElement (this type or a child of this type) to a String[] (the categories of this element)
+	 * A map from an IJavaScriptElement (this type or a child of this type) to a String[] (the categories of this element)
 	 */
 	protected HashMap categories;
 
@@ -77,7 +77,7 @@ public class SourceTypeElementInfo extends MemberElementInfo implements ISourceT
 		this(isBinary,false);
 	}
 
-protected void addCategories(IJavaElement element, char[][] elementCategories) {
+protected void addCategories(IJavaScriptElement element, char[][] elementCategories) {
 	if (elementCategories == null) return;
 	if (this.categories == null)
 		this.categories = new HashMap();
@@ -85,7 +85,7 @@ protected void addCategories(IJavaElement element, char[][] elementCategories) {
 }
 
 /*
- * Return a map from an IJavaElement (this type or a child of this type) to a String[] (the categories of this element)
+ * Return a map from an IJavaScriptElement (this type or a child of this type) to a String[] (the categories of this element)
  */
 public HashMap getCategories() {
 	return this.categories;
@@ -96,11 +96,11 @@ public HashMap getCategories() {
  * type, or <code>null</code> if this type is a top level type.
  */
 public ISourceType getEnclosingType() {
-	IJavaElement parent= this.handle.getParent();
-	if (parent != null && parent.getElementType() == IJavaElement.TYPE) {
+	IJavaScriptElement parent= this.handle.getParent();
+	if (parent != null && parent.getElementType() == IJavaScriptElement.TYPE) {
 		try {
 			return (ISourceType)((JavaElement)parent).getElementInfo();
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return null;
 		}
 	} else {
@@ -118,7 +118,7 @@ public ISourceField[] getFields() {
 		try {
 			ISourceField field = (ISourceField) fieldHandles[i].getElementInfo();
 			fields[i] = field;
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignore
 		}
 	}
@@ -130,7 +130,7 @@ public SourceField[] getFieldHandles() {
 	SourceField[] fields = new SourceField[length];
 	int fieldIndex = 0;
 	for (int i = 0; i < length; i++) {
-		IJavaElement child = this.children[i];
+		IJavaScriptElement child = this.children[i];
 		if (child instanceof SourceField)
 			fields[fieldIndex++] = (SourceField) child;
 	}
@@ -161,12 +161,12 @@ public InitializerElementInfo[] getInitializers() {
 	InitializerElementInfo[] initializers = new InitializerElementInfo[length];
 	int initializerIndex = 0;
 	for (int i = 0; i < length; i++) {
-		IJavaElement child = this.children[i];
+		IJavaScriptElement child = this.children[i];
 		if (child instanceof Initializer) {
 			try {
 				InitializerElementInfo initializer = (InitializerElementInfo)((Initializer)child).getElementInfo();
 				initializers[initializerIndex++] = initializer;
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore
 			}
 		}
@@ -196,7 +196,7 @@ public ISourceType[] getMemberTypes() {
 		try {
 			ISourceType type = (ISourceType) memberTypeHandles[i].getElementInfo();
 			memberTypes[i] = type;
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignore
 		}
 	}
@@ -208,7 +208,7 @@ public SourceType[] getMemberTypeHandles() {
 	SourceType[] memberTypes = new SourceType[length];
 	int typeIndex = 0;
 	for (int i = 0; i < length; i++) {
-		IJavaElement child = this.children[i];
+		IJavaScriptElement child = this.children[i];
 		if (child instanceof SourceType)
 			memberTypes[typeIndex++] = (SourceType)child;
 	}
@@ -229,7 +229,7 @@ public ISourceMethod[] getMethods() {
 		try {
 			ISourceMethod method = (ISourceMethod) methodHandles[i].getElementInfo();
 			methods[methodIndex++] = method;
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignore
 		}
 	}
@@ -241,7 +241,7 @@ public SourceMethod[] getMethodHandles() {
 	SourceMethod[] methods = new SourceMethod[length];
 	int methodIndex = 0;
 	for (int i = 0; i < length; i++) {
-		IJavaElement child = this.children[i];
+		IJavaScriptElement child = this.children[i];
 		if (child instanceof SourceMethod)
 			methods[methodIndex++] = (SourceMethod) child;
 	}
@@ -275,7 +275,7 @@ public char[][][] getTypeParameterBounds() {
 		try {
 			TypeParameterElementInfo info = (TypeParameterElementInfo) ((JavaElement)this.typeParameters[i]).getElementInfo();
 			typeParameterBounds[i] = info.bounds;
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// type parameter does not exist: ignore
 		}
 	}

@@ -47,10 +47,10 @@ import org.eclipse.ui.views.framelist.GoIntoAction;
 import org.eclipse.ui.views.framelist.TreeFrame;
 import org.eclipse.ui.views.framelist.UpAction;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IOpenable;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.actions.NewWizardsActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectAllAction;
@@ -240,11 +240,11 @@ class PackageExplorerActionGroup extends CompositeActionGroup {
 	private boolean isGoIntoTarget(Object element) {
 		if (element == null)
 			return false;
-		if (element instanceof IJavaElement) {
-			int type= ((IJavaElement)element).getElementType();
-			return type == IJavaElement.JAVA_PROJECT || 
-				type == IJavaElement.PACKAGE_FRAGMENT_ROOT || 
-				type == IJavaElement.PACKAGE_FRAGMENT;
+		if (element instanceof IJavaScriptElement) {
+			int type= ((IJavaScriptElement)element).getElementType();
+			return type == IJavaScriptElement.JAVASCRIPT_PROJECT || 
+				type == IJavaScriptElement.PACKAGE_FRAGMENT_ROOT || 
+				type == IJavaScriptElement.PACKAGE_FRAGMENT;
 		}
 		if (element instanceof IWorkingSet) {
 			return true;
@@ -253,8 +253,8 @@ class PackageExplorerActionGroup extends CompositeActionGroup {
 	}
 
 	private void addOpenNewWindowAction(IMenuManager menu, Object element) {
-		if (element instanceof IJavaElement) {
-			element= ((IJavaElement)element).getResource();
+		if (element instanceof IJavaScriptElement) {
+			element= ((IJavaScriptElement)element).getResource();
 			
 		}
 		// fix for 64890 Package explorer out of sync when open/closing projects [package explorer] 64890  
@@ -277,7 +277,7 @@ class PackageExplorerActionGroup extends CompositeActionGroup {
 		if (viewer.isExpandable(element)) {
 			if (doubleClickGoesInto()) {
 				// don't zoom into compilation units and class files
-				if (element instanceof ICompilationUnit || element instanceof IClassFile)
+				if (element instanceof IJavaScriptUnit || element instanceof IClassFile)
 					return;
 				if (element instanceof IOpenable || element instanceof IContainer || element instanceof IWorkingSet) {
 					fZoomInAction.run();
@@ -330,9 +330,9 @@ class PackageExplorerActionGroup extends CompositeActionGroup {
 			Object newInput= null;
 			if (fPart.showProjects()) {
 				oldInput= fPart.getWorkingSetModel();
-				newInput= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
+				newInput= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
 			} else if (fPart.showWorkingSets()) {
-				oldInput= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
+				oldInput= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
 				newInput= fPart.getWorkingSetModel();
 			}
 			if (oldInput != null && newInput != null) {

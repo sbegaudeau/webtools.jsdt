@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
@@ -133,7 +133,7 @@ public class SourceTypeConverter {
 		SourceTypeConverter converter = new SourceTypeConverter(flags, problemReporter);
 		try {
 			return converter.convert(sourceTypes, compilationResult);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return null;
 /*		} finally {
 			System.out.println("Spent " + (System.currentTimeMillis() - start) + "ms to convert " + ((JavaElement) converter.cu).toStringWithAncestors());
@@ -145,13 +145,13 @@ public class SourceTypeConverter {
 	 * The argument types are then all grouped in the same unit. The argument types must
 	 * at least contain one type.
 	 */
-	private CompilationUnitDeclaration convert(ISourceType[] sourceTypes, CompilationResult compilationResult) throws JavaModelException {
+	private CompilationUnitDeclaration convert(ISourceType[] sourceTypes, CompilationResult compilationResult) throws JavaScriptModelException {
 		this.unit = new CompilationUnitDeclaration(this.problemReporter, compilationResult, 0);
 		// not filled at this point
 
 		if (sourceTypes.length == 0) return this.unit;
 		SourceTypeElementInfo topLevelTypeInfo = (SourceTypeElementInfo) sourceTypes[0];
-		org.eclipse.wst.jsdt.core.ICompilationUnit cuHandle = topLevelTypeInfo.getHandle().getCompilationUnit();
+		org.eclipse.wst.jsdt.core.IJavaScriptUnit cuHandle = topLevelTypeInfo.getHandle().getJavaScriptUnit();
 		this.cu = (ICompilationUnit) cuHandle;
 		this.annotationPositions = ((CompilationUnitElementInfo) ((JavaElement) this.cu).getElementInfo()).annotationPositions;
 
@@ -170,7 +170,7 @@ public class SourceTypeConverter {
 			// if its null then it is defined in the default package
 			this.unit.currentPackage =
 				createImportReference(packageName, start, end, false, ClassFileConstants.AccDefault);
-		IImportDeclaration[] importDeclarations = topLevelTypeInfo.getHandle().getCompilationUnit().getImports();
+		IImportDeclaration[] importDeclarations = topLevelTypeInfo.getHandle().getJavaScriptUnit().getImports();
 		int importCount = importDeclarations.length;
 		this.unit.imports = new ImportReference[importCount];
 		for (int i = 0; i < importCount; i++) {
@@ -216,7 +216,7 @@ public class SourceTypeConverter {
 	/*
 	 * Convert an initializerinfo into a parsed initializer declaration
 	 */
-	private Initializer convert(InitializerElementInfo initializerInfo, CompilationResult compilationResult) throws JavaModelException {
+	private Initializer convert(InitializerElementInfo initializerInfo, CompilationResult compilationResult) throws JavaScriptModelException {
 
 		Block block = new Block(0);
 		Initializer initializer = new Initializer(block, ClassFileConstants.AccDefault);
@@ -229,7 +229,7 @@ public class SourceTypeConverter {
 		initializer.modifiers = initializerInfo.getModifiers();
 
 		/* convert local and anonymous types */
-		IJavaElement[] children = initializerInfo.getChildren();
+		IJavaScriptElement[] children = initializerInfo.getChildren();
 		int typesLength = children.length;
 		if (typesLength > 0) {
 			Statement[] statements = new Statement[typesLength];
@@ -256,7 +256,7 @@ public class SourceTypeConverter {
 	/*
 	 * Convert a field source element into a parsed field declaration
 	 */
-	private FieldDeclaration convert(SourceField fieldHandle, TypeDeclaration type, CompilationResult compilationResult) throws JavaModelException {
+	private FieldDeclaration convert(SourceField fieldHandle, TypeDeclaration type, CompilationResult compilationResult) throws JavaScriptModelException {
 
 		SourceFieldElementInfo fieldInfo = (SourceFieldElementInfo) fieldHandle.getElementInfo();
 		FieldDeclaration field = new FieldDeclaration();
@@ -297,7 +297,7 @@ public class SourceTypeConverter {
 
 		/* conversion of local and anonymous types */
 		if ((this.flags & LOCAL_TYPE) != 0) {
-			IJavaElement[] children = fieldInfo.getChildren();
+			IJavaScriptElement[] children = fieldInfo.getChildren();
 			int childrenLength = children.length;
 			if (childrenLength == 1) {
 				field.initialization = convert(children[0], isEnumConstant ? field : null, compilationResult);
@@ -314,7 +314,7 @@ public class SourceTypeConverter {
 		return field;
 	}
 
-	private QualifiedAllocationExpression convert(IJavaElement localType, FieldDeclaration enumConstant, CompilationResult compilationResult) throws JavaModelException {
+	private QualifiedAllocationExpression convert(IJavaScriptElement localType, FieldDeclaration enumConstant, CompilationResult compilationResult) throws JavaScriptModelException {
 		TypeDeclaration anonymousLocalTypeDeclaration = convert((SourceType) localType, compilationResult);
 		QualifiedAllocationExpression expression = new QualifiedAllocationExpression(anonymousLocalTypeDeclaration);
 		expression.type = anonymousLocalTypeDeclaration.superclass;
@@ -332,7 +332,7 @@ public class SourceTypeConverter {
 	/*
 	 * Convert a method source element into a parsed method/constructor declaration
 	 */
-	private AbstractMethodDeclaration convert(SourceMethod methodHandle, SourceMethodElementInfo methodInfo, CompilationResult compilationResult) throws JavaModelException {
+	private AbstractMethodDeclaration convert(SourceMethod methodHandle, SourceMethodElementInfo methodInfo, CompilationResult compilationResult) throws JavaScriptModelException {
 		AbstractMethodDeclaration method;
 
 		/* only source positions available */
@@ -448,7 +448,7 @@ public class SourceTypeConverter {
 
 		/* convert local and anonymous types */
 		if ((this.flags & LOCAL_TYPE) != 0) {
-			IJavaElement[] children = methodInfo.getChildren();
+			IJavaScriptElement[] children = methodInfo.getChildren();
 			int typesLength = children.length;
 			if (typesLength != 0) {
 				Statement[] statements = new Statement[typesLength];
@@ -476,7 +476,7 @@ public class SourceTypeConverter {
 	/*
 	 * Convert a source element type into a parsed type declaration
 	 */
-	private TypeDeclaration convert(SourceType typeHandle, CompilationResult compilationResult) throws JavaModelException {
+	private TypeDeclaration convert(SourceType typeHandle, CompilationResult compilationResult) throws JavaScriptModelException {
 		SourceTypeElementInfo typeInfo = (SourceTypeElementInfo) typeHandle.getElementInfo();
 		if (typeInfo.isAnonymousMember())
 			throw new AnonymousMemberFound();

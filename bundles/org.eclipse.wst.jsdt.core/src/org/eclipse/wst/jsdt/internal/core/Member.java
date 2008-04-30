@@ -16,14 +16,14 @@ import java.util.HashMap;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
@@ -103,7 +103,7 @@ protected static Object convertConstant(Constant constant) {
 /*
  * Helper method for SourceType.findMethods and BinaryType.findMethods
  */
-public static IMethod[] findMethods(IMethod method, IMethod[] methods) {
+public static IFunction[] findMethods(IFunction method, IFunction[] methods) {
 	String elementName = method.getElementName();
 	String[] parameters = method.getParameterTypes();
 	int paramLength = parameters.length;
@@ -114,7 +114,7 @@ public static IMethod[] findMethods(IMethod method, IMethod[] methods) {
 	}
 	ArrayList list = new ArrayList();
 	for (int i = 0, length = methods.length; i < length; i++) {
-		IMethod existingMethod = methods[i];
+		IFunction existingMethod = methods[i];
 		if (areSimilarMethods(
 				elementName,
 				parameters,
@@ -128,13 +128,13 @@ public static IMethod[] findMethods(IMethod method, IMethod[] methods) {
 	if (size == 0) {
 		return null;
 	} else {
-		IMethod[] result = new IMethod[size];
+		IFunction[] result = new IFunction[size];
 		list.toArray(result);
 		return result;
 	}
 }
-public String[] getCategories() throws JavaModelException {
-	IType type = (IType) getAncestor(IJavaElement.TYPE);
+public String[] getCategories() throws JavaScriptModelException {
+	IType type = (IType) getAncestor(IJavaScriptElement.TYPE);
 	if (type == null) return CharOperation.NO_STRINGS;
 	if (type.isBinary()) {
 		return CharOperation.NO_STRINGS;
@@ -151,7 +151,7 @@ public String[] getCategories() throws JavaModelException {
  * @see IMember
  */
 public IClassFile getClassFile() {
-	IJavaElement element = getParent();
+	IJavaScriptElement element = getParent();
 	while (element instanceof IMember) {
 		element= element.getParent();
 	}
@@ -173,14 +173,14 @@ public IType getDeclaringType() {
 /**
  * @see IMember
  */
-public int getFlags() throws JavaModelException {
+public int getFlags() throws JavaScriptModelException {
 	MemberElementInfo info = (MemberElementInfo) getElementInfo();
 	return info.getModifiers();
 }
 /*
  * @see JavaElement
  */
-public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner workingCopyOwner) {
+public IJavaScriptElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner workingCopyOwner) {
 	switch (token.charAt(0)) {
 		case JEM_COUNT:
 			return getHandleUpdatingCountFromMemento(memento, workingCopyOwner);
@@ -249,12 +249,12 @@ protected char getHandleMementoDelimiter() {
  * e.g for X.js/X/Y/foo()/Z/bar()/T, it will return X.js/X/Y/foo()
  */
 public Member getOuterMostLocalContext() {
-	IJavaElement current = this;
+	IJavaScriptElement current = this;
 	Member lastLocalContext = null;
 	parentLoop: while (true) {
 		switch (current.getElementType()) {
 			case CLASS_FILE:
-			case COMPILATION_UNIT:
+			case JAVASCRIPT_UNIT:
 				break parentLoop; // done recursing
 			case TYPE:
 				// cannot be a local context
@@ -270,14 +270,14 @@ public Member getOuterMostLocalContext() {
 	}
 	return lastLocalContext;
 }
-public ISourceRange getJavadocRange() throws JavaModelException {
+public ISourceRange getJSdocRange() throws JavaScriptModelException {
 	ISourceRange range= this.getSourceRange();
 	if (range == null) return null;
 	IBuffer buf= null;
 	if (this.isBinary()) {
 		buf = this.getClassFile().getBuffer();
 	} else {
-		ICompilationUnit compilationUnit = this.getCompilationUnit();
+		IJavaScriptUnit compilationUnit = this.getJavaScriptUnit();
 		if (!compilationUnit.isConsistent()) {
 			return null;
 		}
@@ -320,7 +320,7 @@ public ISourceRange getJavadocRange() throws JavaModelException {
 /**
  * @see IMember
  */
-public ISourceRange getNameRange() throws JavaModelException {
+public ISourceRange getNameRange() throws JavaScriptModelException {
 	MemberElementInfo info= (MemberElementInfo)getElementInfo();
 	return new SourceRange(info.getNameSourceStart(), info.getNameSourceEnd() - info.getNameSourceStart() + 1);
 }
@@ -340,7 +340,7 @@ public IType getType(String typeName, int count) {
  * @see IMember#getTypeRoot()
  */
 public ITypeRoot getTypeRoot() {
-	IJavaElement element = getParent();
+	IJavaScriptElement element = getParent();
 	while (element instanceof IMember) {
 		element= element.getParent();
 	}
@@ -354,7 +354,7 @@ public boolean isBinary() {
 		return true;
 	return false;
 }
-protected boolean isMainMethod(IMethod method) throws JavaModelException {
+protected boolean isMainMethod(IFunction method) throws JavaScriptModelException {
 	if ("main".equals(method.getElementName()) && Signature.SIG_VOID.equals(method.getReturnType())) { //$NON-NLS-1$
 		int flags= method.getFlags();
 		if (Flags.isStatic(flags) && Flags.isPublic(flags)) {
@@ -368,7 +368,7 @@ protected boolean isMainMethod(IMethod method) throws JavaModelException {
 	return false;
 }
 /**
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public boolean isReadOnly() {
 	return getClassFile() != null;
@@ -377,7 +377,7 @@ public boolean isReadOnly() {
  */
 public String readableName() {
 
-	IJavaElement declaringType = getDeclaringType();
+	IJavaScriptElement declaringType = getDeclaringType();
 	if (declaringType != null) {
 		String declaringName = ((JavaElement) getDeclaringType()).readableName();
 		StringBuffer buffer = new StringBuffer(declaringName);
@@ -396,7 +396,7 @@ protected void updateNameRange(int nameStart, int nameEnd) {
 		MemberElementInfo info = (MemberElementInfo) getElementInfo();
 		info.setNameSourceStart(nameStart);
 		info.setNameSourceEnd(nameEnd);
-	} catch (JavaModelException npe) {
+	} catch (JavaScriptModelException npe) {
 		return;
 	}
 }

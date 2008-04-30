@@ -33,7 +33,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.IUIConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.OptionalMessageDialog;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSavePreferences;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
@@ -61,7 +61,7 @@ public class JavaBasePreferencePage extends PreferencePage implements IWorkbench
 	
 	public JavaBasePreferencePage() {
 		super();
-		setPreferenceStore(JavaPlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(JavaScriptPlugin.getDefault().getPreferenceStore());
 		setDescription(PreferencesMessages.JavaBasePreferencePage_description); 
 	
 		fRadioButtons= new ArrayList();
@@ -253,7 +253,7 @@ public class JavaBasePreferencePage extends PreferencePage implements IWorkbench
 			store.setValue(key, text.getText());
 		}
 		
-		JavaPlugin.getDefault().savePluginPreferences();
+		JavaScriptPlugin.getDefault().savePluginPreferences();
 		return super.performOk();
 	}
 

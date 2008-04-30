@@ -27,8 +27,8 @@ import org.eclipse.ui.views.properties.FilePropertySource;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.ResourcePropertySource;
 import org.eclipse.ui.views.tasklist.ITaskListResourceAdapter;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;
 import org.eclipse.wst.jsdt.internal.ui.compare.JavaElementHistoryPageSource;
@@ -72,7 +72,7 @@ public class JavaElementAdapterFactory implements IAdapterFactory, IContributorR
 	
 	public Object getAdapter(Object element, Class key) {
 		updateLazyLoadedAdapters();
-		IJavaElement java= getJavaElement(element);
+		IJavaScriptElement java= getJavaElement(element);
 		
 		if (IPropertySource.class.equals(key)) {
 			return getProperties(java);
@@ -101,30 +101,30 @@ public class JavaElementAdapterFactory implements IAdapterFactory, IContributorR
 		return null; 
 	}
 	
-	private IResource getResource(IJavaElement element) {
-		// can't use IJavaElement.getResource directly as we are interested in the
+	private IResource getResource(IJavaScriptElement element) {
+		// can't use IJavaScriptElement.getResource directly as we are interested in the
 		// corresponding resource
 		switch (element.getElementType()) {
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				// top level types behave like the CU
-				IJavaElement parent= element.getParent();
-				if (parent instanceof ICompilationUnit) {
-					return ((ICompilationUnit) parent).getPrimary().getResource();
+				IJavaScriptElement parent= element.getParent();
+				if (parent instanceof IJavaScriptUnit) {
+					return ((IJavaScriptUnit) parent).getPrimary().getResource();
 				}
 				return null;
-			case IJavaElement.COMPILATION_UNIT:
-				return ((ICompilationUnit) element).getPrimary().getResource();
-			case IJavaElement.CLASS_FILE:
-			case IJavaElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
+				return ((IJavaScriptUnit) element).getPrimary().getResource();
+			case IJavaScriptElement.CLASS_FILE:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				// test if in a archive
-				IPackageFragmentRoot root= (IPackageFragmentRoot) element.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+				IPackageFragmentRoot root= (IPackageFragmentRoot) element.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 				if (!root.isArchive()) {
 					return element.getResource();
 				}
 				return null;
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
-			case IJavaElement.JAVA_PROJECT:
-			case IJavaElement.JAVA_MODEL:
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.JAVASCRIPT_PROJECT:
+			case IJavaScriptElement.JAVASCRIPT_MODEL:
 				return element.getResource();
 			default:
 				return null;
@@ -132,7 +132,7 @@ public class JavaElementAdapterFactory implements IAdapterFactory, IContributorR
     }
 
     public IResource getAdaptedResource(IAdaptable adaptable) {
-    	IJavaElement je= getJavaElement(adaptable);
+    	IJavaScriptElement je= getJavaElement(adaptable);
     	if (je != null)
     		return getResource(je);
 
@@ -140,23 +140,23 @@ public class JavaElementAdapterFactory implements IAdapterFactory, IContributorR
     }
     
     public ResourceMapping getAdaptedResourceMapping(IAdaptable adaptable) {
-    	IJavaElement je= getJavaElement(adaptable);
+    	IJavaScriptElement je= getJavaElement(adaptable);
     	if (je != null)
     		return JavaElementResourceMapping.create(je);
 
     	return null;
     }
     
-	private IJavaElement getJavaElement(Object element) {
-		if (element instanceof IJavaElement)
-			return (IJavaElement)element;
+	private IJavaScriptElement getJavaElement(Object element) {
+		if (element instanceof IJavaScriptElement)
+			return (IJavaScriptElement)element;
 		if (element instanceof IClassFileEditorInput)
 			return ((IClassFileEditorInput)element).getClassFile().getPrimaryElement();
 
 		return null;
 	}
 	
-	private IPropertySource getProperties(IJavaElement element) {
+	private IPropertySource getProperties(IJavaScriptElement element) {
 		IResource resource= getResource(element);
 		if (resource == null)
 			return new JavaElementProperties(element);

@@ -22,7 +22,7 @@ import java.util.EventObject;
  * </p>
  *
  * @see IElementChangedListener
- * @see IJavaElementDelta
+ * @see IJavaScriptElementDelta
  */
 public class ElementChangedEvent extends EventObject {
 
@@ -36,7 +36,7 @@ public class ElementChangedEvent extends EventObject {
 	 * resource change notification, and contains a full delta accounting for
 	 * any JavaModel operation  and/or resource change.
 	 *
-	 * @see IJavaElementDelta
+	 * @see IJavaScriptElementDelta
 	 * @see org.eclipse.core.resources.IResourceChangeEvent
 	 * @see #getDelta()
 	 * @since 2.0
@@ -57,7 +57,7 @@ public class ElementChangedEvent extends EventObject {
 	 * resources, which got modified outside JavaModel operations (it will only be
 	 * fully consistent once the POST_CHANGE notification has occurred).
 	 *
-	 * @see IJavaElementDelta
+	 * @see IJavaScriptElementDelta
 	 * @see org.eclipse.core.resources.IResourceChangeEvent
 	 * @see #getDelta()
 	 * @since 2.0
@@ -74,7 +74,7 @@ public class ElementChangedEvent extends EventObject {
 	 * Note: this notification occurs as a result of a working copy reconcile
 	 * operation.
 	 *
-	 * @see IJavaElementDelta
+	 * @see IJavaScriptElementDelta
 	 * @see org.eclipse.core.resources.IResourceChangeEvent
 	 * @see #getDelta()
 	 * @since 2.0
@@ -93,12 +93,12 @@ public class ElementChangedEvent extends EventObject {
 	private int type;
 
 	/**
-	 * Creates an new element changed event (based on a <code>IJavaElementDelta</code>).
+	 * Creates an new element changed event (based on a <code>IJavaScriptElementDelta</code>).
 	 *
 	 * @param delta the Java element delta.
 	 * @param type the type of delta (ADDED, REMOVED, CHANGED) this event contains
 	 */
-	public ElementChangedEvent(IJavaElementDelta delta, int type) {
+	public ElementChangedEvent(IJavaScriptElementDelta delta, int type) {
 		super(delta);
 		this.type = type;
 	}
@@ -107,8 +107,8 @@ public class ElementChangedEvent extends EventObject {
 	 *
 	 * @return the delta describing the change
 	 */
-	public IJavaElementDelta getDelta() {
-		return (IJavaElementDelta) this.source;
+	public IJavaScriptElementDelta getDelta() {
+		return (IJavaScriptElementDelta) this.source;
 	}
 
 	/**

@@ -32,9 +32,9 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 class JavaStructureDiffViewer extends StructureDiffViewer {
 	
@@ -147,9 +147,9 @@ class JavaStructureDiffViewer extends StructureDiffViewer {
 		if (input instanceof IResourceProvider) {
 			IResource resource= ((IResourceProvider) input).getResource();
 			if (resource != null) {
-				IJavaElement element= JavaCore.create(resource);
+				IJavaScriptElement element= JavaScriptCore.create(resource);
 				if (element != null) {
-					IJavaProject javaProject= element.getJavaProject();
+					IJavaScriptProject javaProject= element.getJavaScriptProject();
 					if (javaProject != null)
 						return javaProject.getOptions(true);
 				}

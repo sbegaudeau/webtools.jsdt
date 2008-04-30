@@ -19,19 +19,19 @@ import java.util.Set;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
@@ -43,10 +43,10 @@ public class JavaElementUtil {
 	private JavaElementUtil(){
 	}
 	
-	public static String createMethodSignature(IMethod method){
+	public static String createMethodSignature(IFunction method){
 		try {
 			return Signature.toString(method.getSignature(), method.getElementName(), method.getParameterNames(), false, ! method.isConstructor());
-		} catch(JavaModelException e) {
+		} catch(JavaScriptModelException e) {
 			return method.getElementName(); //fallback
 		}
 	}
@@ -57,31 +57,31 @@ public class JavaElementUtil {
 	
 	public static String createSignature(IMember member){
 		switch (member.getElementType()){
-			case IJavaElement.FIELD:
+			case IJavaScriptElement.FIELD:
 				return createFieldSignature((IField)member);
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				return JavaModelUtil.getFullyQualifiedName(((IType)member));
-			case IJavaElement.INITIALIZER:
+			case IJavaScriptElement.INITIALIZER:
 				return RefactoringCoreMessages.JavaElementUtil_initializer; 
-			case IJavaElement.METHOD:
-				return createMethodSignature((IMethod)member);				
+			case IJavaScriptElement.METHOD:
+				return createMethodSignature((IFunction)member);				
 			default:
 				Assert.isTrue(false);
 				return null;	
 		}
 	}
 	
-	public static IJavaElement[] getElementsOfType(IJavaElement[] elements, int type){
+	public static IJavaScriptElement[] getElementsOfType(IJavaScriptElement[] elements, int type){
 		Set result= new HashSet(elements.length);
 		for (int i= 0; i < elements.length; i++) {
-			IJavaElement element= elements[i];
+			IJavaScriptElement element= elements[i];
 			if (element.getElementType() == type)
 				result.add(element);
 		}
-		return (IJavaElement[]) result.toArray(new IJavaElement[result.size()]);
+		return (IJavaScriptElement[]) result.toArray(new IJavaScriptElement[result.size()]);
 	}
 
-	public static IType getMainType(ICompilationUnit cu) throws JavaModelException{
+	public static IType getMainType(IJavaScriptUnit cu) throws JavaScriptModelException{
 		IType[] types= cu.getTypes();
 		for (int i = 0; i < types.length; i++) {
 			if (isMainType(types[i]))
@@ -90,14 +90,14 @@ public class JavaElementUtil {
 		return null;
 	}
 	
-	public static boolean isMainType(IType type) throws JavaModelException{
+	public static boolean isMainType(IType type) throws JavaScriptModelException{
 		if (! type.exists())	
 			return false;
 
 		if (type.isBinary())
 			return false;
 			
-		if (type.getCompilationUnit() == null)
+		if (type.getJavaScriptUnit() == null)
 			return false;
 		
 		if (type.getDeclaringType() != null)
@@ -108,51 +108,51 @@ public class JavaElementUtil {
 
 
 	private static boolean isPrimaryType(IType type){
-		return type.equals(type.getCompilationUnit().findPrimaryType());
+		return type.equals(type.getJavaScriptUnit().findPrimaryType());
 	}
 
 
-	private static boolean isCuOnlyType(IType type) throws JavaModelException{
-		return type.getCompilationUnit().getTypes().length == 1;
+	private static boolean isCuOnlyType(IType type) throws JavaScriptModelException{
+		return type.getJavaScriptUnit().getTypes().length == 1;
 	}
 
-	/** see org.eclipse.wst.jsdt.internal.core.JavaElement#isAncestorOf(org.eclipse.wst.jsdt.core.IJavaElement) */
-	public static boolean isAncestorOf(IJavaElement ancestor, IJavaElement child) {
-		IJavaElement parent= child.getParent();
+	/** see org.eclipse.wst.jsdt.internal.core.JavaElement#isAncestorOf(org.eclipse.wst.jsdt.core.IJavaScriptElement) */
+	public static boolean isAncestorOf(IJavaScriptElement ancestor, IJavaScriptElement child) {
+		IJavaScriptElement parent= child.getParent();
 		while (parent != null && !parent.equals(ancestor)) {
 			parent= parent.getParent();
 		}
 		return parent != null;
 	}
 	
-	public static IMethod[] getAllConstructors(IType type) throws JavaModelException {
+	public static IFunction[] getAllConstructors(IType type) throws JavaScriptModelException {
 		if (JavaModelUtil.isInterfaceOrAnnotation(type))
-			return new IMethod[0];
+			return new IFunction[0];
 		List result= new ArrayList();
-		IMethod[] methods= type.getMethods();
+		IFunction[] methods= type.getFunctions();
 		for (int i= 0; i < methods.length; i++) {
-			IMethod iMethod= methods[i];
+			IFunction iMethod= methods[i];
 			if (iMethod.isConstructor())
 				result.add(iMethod);
 		}
-		return (IMethod[]) result.toArray(new IMethod[result.size()]);
+		return (IFunction[]) result.toArray(new IFunction[result.size()]);
 	}
 
 	/**
 	 * Returns an array of projects that have the specified root on their
 	 * classpaths.
 	 */
-	public static IJavaProject[] getReferencingProjects(IPackageFragmentRoot root) throws JavaModelException {
-		IClasspathEntry cpe= root.getRawClasspathEntry();
-		IJavaProject[] allJavaProjects= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
+	public static IJavaScriptProject[] getReferencingProjects(IPackageFragmentRoot root) throws JavaScriptModelException {
+		IIncludePathEntry cpe= root.getRawIncludepathEntry();
+		IJavaScriptProject[] allJavaProjects= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaScriptProjects();
 		List result= new ArrayList(allJavaProjects.length);
 		for (int i= 0; i < allJavaProjects.length; i++) {
-			IJavaProject project= allJavaProjects[i];
+			IJavaScriptProject project= allJavaProjects[i];
 			IPackageFragmentRoot[] roots= project.findPackageFragmentRoots(cpe);
 			if (roots.length > 0)
 				result.add(project);
 		}
-		return (IJavaProject[]) result.toArray(new IJavaProject[result.size()]);
+		return (IJavaScriptProject[]) result.toArray(new IJavaScriptProject[result.size()]);
 	}	
 	
 	public static IMember[] merge(IMember[] a1, IMember[] a2) {
@@ -178,14 +178,14 @@ public class JavaElementUtil {
 	/**
 	 * @param pack a package fragment
 	 * @return an array containing the given package and all subpackages 
-	 * @throws JavaModelException 
+	 * @throws JavaScriptModelException 
 	 */
-	public static IPackageFragment[] getPackageAndSubpackages(IPackageFragment pack) throws JavaModelException {
+	public static IPackageFragment[] getPackageAndSubpackages(IPackageFragment pack) throws JavaScriptModelException {
 		if (pack.isDefaultPackage())
 			return new IPackageFragment[] { pack };
 		
 		IPackageFragmentRoot root= (IPackageFragmentRoot) pack.getParent();
-		IJavaElement[] allPackages= root.getChildren();
+		IJavaScriptElement[] allPackages= root.getChildren();
 		ArrayList subpackages= new ArrayList();
 		subpackages.add(pack);
 		String prefix= pack.getElementName() + '.';
@@ -223,7 +223,7 @@ public class JavaElementUtil {
 			public int compare(Object o1, Object o2){
 				try{
 					return ((IMember) o1).getNameRange().getOffset() - ((IMember) o2).getNameRange().getOffset();
-				} catch (JavaModelException e){
+				} catch (JavaScriptModelException e){
 					return 0;
 				}	
 			}
@@ -235,7 +235,7 @@ public class JavaElementUtil {
 	public static boolean isSourceAvailable(ISourceReference sourceReference) {
 		try {
 			return SourceRange.isAvailable(sourceReference.getSourceRange());
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return false;
 		}
 	}

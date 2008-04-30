@@ -38,22 +38,22 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.wst.jsdt.internal.ui.preferences.CodeTemplatePreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.JavaPreferencesSettings;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.IVisibilityChangeListener;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * An advanced version of CheckedTreeSelectionDialog with right-side button layout and
@@ -88,7 +88,7 @@ public class SourceActionDialog extends CheckedTreeSelectionDialog {
 	protected final String SETTINGS_COMMENTS= "Comments"; //$NON-NLS-1$
 	protected Composite fInsertPositionComposite;
 	
-	public SourceActionDialog(Shell parent, ILabelProvider labelProvider, ITreeContentProvider contentProvider, CompilationUnitEditor editor, IType type, boolean isConstructor) throws JavaModelException {
+	public SourceActionDialog(Shell parent, ILabelProvider labelProvider, ITreeContentProvider contentProvider, CompilationUnitEditor editor, IType type, boolean isConstructor) throws JavaScriptModelException {
 		super(parent, labelProvider, contentProvider);
 		fEditor= editor;
 		fContentProvider= contentProvider;		
@@ -100,9 +100,9 @@ public class SourceActionDialog extends CheckedTreeSelectionDialog {
 		fHeight= 18;
 		
 		int insertionDefault= isConstructor ? 0 : 1;
-		boolean generateCommentsDefault= JavaPreferencesSettings.getCodeGenerationSettings(type.getJavaProject()).createComments;
+		boolean generateCommentsDefault= JavaPreferencesSettings.getCodeGenerationSettings(type.getJavaScriptProject()).createComments;
 		
-		IDialogSettings dialogSettings= JavaPlugin.getDefault().getDialogSettings();
+		IDialogSettings dialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();
 		String sectionId= isConstructor ? SETTINGS_SECTION_CONSTRUCTORS : SETTINGS_SECTION_METHODS;
 		fSettings= dialogSettings.getSection(sectionId);		
 		if (fSettings == null)  {
@@ -121,12 +121,12 @@ public class SourceActionDialog extends CheckedTreeSelectionDialog {
 		fInsertPositions= new ArrayList();
 		fLabels= new ArrayList(); 
 		
-		IJavaElement[] members = new IJavaElement[0];
-		IMethod[] methods = new IMethod[0];
+		IJavaScriptElement[] members = new IJavaScriptElement[0];
+		IFunction[] methods = new IFunction[0];
 		try {
 			members = fType.getChildren();
 			methods= fType.getMethods();
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -147,18 +147,18 @@ public class SourceActionDialog extends CheckedTreeSelectionDialog {
 				fCurrentPositionIndex= Math.max(fCurrentPositionIndex, 0);
 				fCurrentPositionIndex= Math.min(fCurrentPositionIndex, 1);
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		for (int i = 0; i < methods.length; i++) {
-			IMethod curr= methods[i];
-			String methodLabel= JavaElementLabels.getElementLabel(curr, JavaElementLabels.M_PARAMETER_TYPES);
+			IFunction curr= methods[i];
+			String methodLabel= JavaScriptElementLabels.getElementLabel(curr, JavaScriptElementLabels.M_PARAMETER_TYPES);
 			fLabels.add(Messages.format(ActionMessages.SourceActionDialog_after, methodLabel)); 
 			try {
 				fInsertPositions.add(findSibling(curr, members));
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -184,8 +184,8 @@ public class SourceActionDialog extends CheckedTreeSelectionDialog {
 		return defaultValue;
 	}
 
-	private IJavaElement findSibling(IMethod curr, IJavaElement[] members) throws JavaModelException {
-		IJavaElement res= null;
+	private IJavaScriptElement findSibling(IFunction curr, IJavaScriptElement[] members) throws JavaScriptModelException {
+		IJavaScriptElement res= null;
 		int methodStart= curr.getSourceRange().getOffset();
 		for (int i= members.length-1; i >= 0; i--) {
 			IMember member= (IMember) members[i];
@@ -197,7 +197,7 @@ public class SourceActionDialog extends CheckedTreeSelectionDialog {
 		return null;
 	}
 
-	protected boolean hasCursorPositionElement(CompilationUnitEditor editor, IJavaElement[] members, List insertPositions) throws JavaModelException {
+	protected boolean hasCursorPositionElement(CompilationUnitEditor editor, IJavaScriptElement[] members, List insertPositions) throws JavaScriptModelException {
 		if (editor == null) {
 			return false;
 		}
@@ -391,7 +391,7 @@ public class SourceActionDialog extends CheckedTreeSelectionDialog {
 	protected void openCodeTempatePage(String id) {
 		HashMap arg= new HashMap();
 		arg.put(CodeTemplatePreferencePage.DATA_SELECT_TEMPLATE, id);
-		PreferencesUtil.createPropertyDialogOn(getShell(), fType.getJavaProject().getProject(), CodeTemplatePreferencePage.PROP_ID, null, arg).open();
+		PreferencesUtil.createPropertyDialogOn(getShell(), fType.getJavaScriptProject().getProject(), CodeTemplatePreferencePage.PROP_ID, null, arg).open();
 	}
 	
 
@@ -637,12 +637,12 @@ public class SourceActionDialog extends CheckedTreeSelectionDialog {
 	/*
 	 * Determine where in the file to enter the newly created methods.
 	 */
-	public IJavaElement getElementPosition() {
-		return (IJavaElement) fInsertPositions.get(fCurrentPositionIndex);	
+	public IJavaScriptElement getElementPosition() {
+		return (IJavaScriptElement) fInsertPositions.get(fCurrentPositionIndex);	
 	}
 	
-	public int getInsertOffset() throws JavaModelException {
-		IJavaElement elementPosition= getElementPosition();
+	public int getInsertOffset() throws JavaScriptModelException {
+		IJavaScriptElement elementPosition= getElementPosition();
 		if (elementPosition instanceof ISourceReference) {
 			return ((ISourceReference) elementPosition).getSourceRange().getOffset();
 		}

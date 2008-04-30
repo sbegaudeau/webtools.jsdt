@@ -43,12 +43,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIException;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.CustomProfile;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Profile;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
@@ -155,7 +155,7 @@ public class ProfileStore {
 	 * @throws CoreException
 	 */
 	public List readProfiles(IScopeContext scope) throws CoreException {
-		return readProfilesFromString(scope.getNode(JavaUI.ID_PLUGIN).get(fProfilesKey, null));
+		return readProfilesFromString(scope.getNode(JavaScriptUI.ID_PLUGIN).get(fProfilesKey, null));
 	}
 	
 	public void writeProfiles(Collection profiles, IScopeContext instanceScope) throws CoreException {
@@ -168,7 +168,7 @@ public class ProfileStore {
 			} catch (UnsupportedEncodingException e) {
 				val= stream.toString(); 
 			}
-			IEclipsePreferences uiPreferences = instanceScope.getNode(JavaUI.ID_PLUGIN);
+			IEclipsePreferences uiPreferences = instanceScope.getNode(JavaScriptUI.ID_PLUGIN);
 			uiPreferences.put(fProfilesKey, val);
 			uiPreferences.putInt(fProfilesVersionKey, fProfileVersioner.getCurrentVersion());
 		} finally {
@@ -326,7 +326,7 @@ public class ProfileStore {
 				setting.setAttribute(XML_ATTRIBUTE_VALUE, value);
 				element.appendChild(setting);
 			} else {
-				JavaPlugin.logErrorMessage("ProfileStore: Profile does not contain value for key " + key); //$NON-NLS-1$
+				JavaScriptPlugin.logErrorMessage("ProfileStore: Profile does not contain value for key " + key); //$NON-NLS-1$
 			}
 		}
 		return element;

@@ -24,17 +24,17 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSHintHelper;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSRefactoring;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.browsing.LogicalPackage;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.nls.search.SearchBrokenNLSKeysUtil;
@@ -105,8 +105,8 @@ public class FindBrokenNLSKeysAction extends SelectionDispatchAction {
 	public void run(IStructuredSelection selection) {
 		if (selection.size() == 1) {
 			Object firstElement= selection.getFirstElement();
-			if (firstElement instanceof IJavaElement) {
-				IJavaElement javaElement= (IJavaElement) firstElement;
+			if (firstElement instanceof IJavaScriptElement) {
+				IJavaScriptElement javaElement= (IJavaScriptElement) firstElement;
 				if (!ActionUtil.isProcessable(getShell(), javaElement)) {
 					return;
 				}
@@ -122,8 +122,8 @@ public class FindBrokenNLSKeysAction extends SelectionDispatchAction {
 		String scope= "workspace"; //$NON-NLS-1$
 		if (selection.size() == 1) {
 			Object firstElement= selection.getFirstElement();
-			if (firstElement instanceof IJavaElement) {
-				scope= ((IJavaElement)firstElement).getElementName();
+			if (firstElement instanceof IJavaScriptElement) {
+				scope= ((IJavaScriptElement)firstElement).getElementName();
 			} else if (firstElement instanceof IFile) {
 				scope= ((IFile)firstElement).getName();
 			} else if (firstElement instanceof IFolder) {
@@ -178,24 +178,24 @@ public class FindBrokenNLSKeysAction extends SelectionDispatchAction {
 		Object[] selected= selection.toArray();
 		for (int i= 0; i < selected.length; i++) {
 			try {
-				if (selected[i] instanceof IJavaElement) {
-					IJavaElement elem= (IJavaElement) selected[i];
+				if (selected[i] instanceof IJavaScriptElement) {
+					IJavaScriptElement elem= (IJavaScriptElement) selected[i];
 					if (elem.exists()) {
 						switch (elem.getElementType()) {
-							case IJavaElement.TYPE:
-								if (elem.getParent().getElementType() == IJavaElement.COMPILATION_UNIT) {
+							case IJavaScriptElement.TYPE:
+								if (elem.getParent().getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT) {
 									return true;
 								}
 								return false;
-							case IJavaElement.COMPILATION_UNIT:
+							case IJavaScriptElement.JAVASCRIPT_UNIT:
 								return true;
-							case IJavaElement.IMPORT_CONTAINER:
+							case IJavaScriptElement.IMPORT_CONTAINER:
 								return false;
-							case IJavaElement.PACKAGE_FRAGMENT:
-							case IJavaElement.PACKAGE_FRAGMENT_ROOT:
-								IPackageFragmentRoot root= (IPackageFragmentRoot) elem.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+							case IJavaScriptElement.PACKAGE_FRAGMENT:
+							case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
+								IPackageFragmentRoot root= (IPackageFragmentRoot) elem.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 								return (root.getKind() == IPackageFragmentRoot.K_SOURCE);
-							case IJavaElement.JAVA_PROJECT:
+							case IJavaScriptElement.JAVASCRIPT_PROJECT:
 								return true;
 						}
 					}
@@ -206,9 +206,9 @@ public class FindBrokenNLSKeysAction extends SelectionDispatchAction {
 					if ("properties".equalsIgnoreCase(file.getFileExtension())) //$NON-NLS-1$
 						return true;
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				if (!e.isDoesNotExist()) {
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 				}
 			}
 		}
@@ -218,46 +218,46 @@ public class FindBrokenNLSKeysAction extends SelectionDispatchAction {
 	private void collectNLSFiles(Object[] objects, List result) {
 		try {
 			for (int i= 0; i < objects.length; i++) {
-				if (objects[i] instanceof IJavaElement) {
-					IJavaElement elem= (IJavaElement) objects[i];
+				if (objects[i] instanceof IJavaScriptElement) {
+					IJavaScriptElement elem= (IJavaScriptElement) objects[i];
 					if (elem.exists()) {
 						switch (elem.getElementType()) {
-							case IJavaElement.TYPE:
-								if (elem.getParent().getElementType() == IJavaElement.COMPILATION_UNIT) {
-									SearchPatternData data= tryIfPropertyCuSelected((ICompilationUnit)elem.getParent());
+							case IJavaScriptElement.TYPE:
+								if (elem.getParent().getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT) {
+									SearchPatternData data= tryIfPropertyCuSelected((IJavaScriptUnit)elem.getParent());
 									if (data != null) {
 										result.add(data);
 									}
 								}
 								break;
-							case IJavaElement.COMPILATION_UNIT:
-								SearchPatternData data= tryIfPropertyCuSelected((ICompilationUnit)elem);
+							case IJavaScriptElement.JAVASCRIPT_UNIT:
+								SearchPatternData data= tryIfPropertyCuSelected((IJavaScriptUnit)elem);
 								if (data != null) {
 									result.add(data);
 								}
 								break;
-							case IJavaElement.IMPORT_CONTAINER:
+							case IJavaScriptElement.IMPORT_CONTAINER:
 								break;
-							case IJavaElement.PACKAGE_FRAGMENT:
+							case IJavaScriptElement.PACKAGE_FRAGMENT:
 								IPackageFragment fragment= (IPackageFragment)elem;
 								if (fragment.getKind() == IPackageFragmentRoot.K_SOURCE)
 									collectNLSFiles(new Object[] {fragment.getCorrespondingResource()}, result);
 								break;
-							case IJavaElement.PACKAGE_FRAGMENT_ROOT: 
+							case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT: 
 							{
 								IPackageFragmentRoot root= (IPackageFragmentRoot) elem;
 								if (root.getKind() == IPackageFragmentRoot.K_SOURCE)
 									collectNLSFiles(new Object[] {root.getCorrespondingResource()}, result);
 								break;
 							}
-							case IJavaElement.JAVA_PROJECT: 
+							case IJavaScriptElement.JAVASCRIPT_PROJECT: 
 							{
-								IJavaProject javaProject= (IJavaProject)elem;
+								IJavaScriptProject javaProject= (IJavaScriptProject)elem;
 								IPackageFragmentRoot[] allPackageFragmentRoots= javaProject.getAllPackageFragmentRoots();
 								for (int j= 0; j < allPackageFragmentRoots.length; j++) {
 									IPackageFragmentRoot root= allPackageFragmentRoots[j];
 									if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
-										if (javaProject.equals(root.getJavaProject())) {
+										if (javaProject.equals(root.getJavaScriptProject())) {
 											collectNLSFiles(new Object[] {root.getCorrespondingResource()}, result);
 										}
 									}
@@ -278,16 +278,16 @@ public class FindBrokenNLSKeysAction extends SelectionDispatchAction {
 					}
 				}
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			if (!e.isDoesNotExist()) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 	}
 	
-	private SearchPatternData tryIfPropertyCuSelected(ICompilationUnit compilationUnit) throws JavaModelException {
+	private SearchPatternData tryIfPropertyCuSelected(IJavaScriptUnit compilationUnit) throws JavaScriptModelException {
 		if (compilationUnit == null)
 			return null;
 		
@@ -305,17 +305,17 @@ public class FindBrokenNLSKeysAction extends SelectionDispatchAction {
 		return new SearchPatternData(types[0], (IFile)bundle);
 	}
 	
-	private SearchPatternData tryIfPropertyFileSelected(IFile file) throws JavaModelException {
+	private SearchPatternData tryIfPropertyFileSelected(IFile file) throws JavaScriptModelException {
 		if (!"properties".equalsIgnoreCase(file.getFileExtension())) //$NON-NLS-1$
 			return null;
 		
 		IPath propertyFullPath= file.getFullPath();
 		// Try to find a corresponding CU
-		String[] javaExtensions= JavaCore.getJavaLikeExtensions();
+		String[] javaExtensions= JavaScriptCore.getJavaScriptLikeExtensions();
 		for (int i= 0; i < javaExtensions.length; i++) { 
 			String extension= javaExtensions[i];
 			IPath cuPath= propertyFullPath.removeFileExtension().addFileExtension(extension);
-			IFile cuFile= (IFile)JavaPlugin.getWorkspace().getRoot().findMember(cuPath);
+			IFile cuFile= (IFile)JavaScriptPlugin.getWorkspace().getRoot().findMember(cuPath);
 			
 			if (cuFile == null) { //try with uppercase first char
 				String filename= cuPath.removeFileExtension().lastSegment();
@@ -323,14 +323,14 @@ public class FindBrokenNLSKeysAction extends SelectionDispatchAction {
 					filename= Character.toUpperCase(filename.charAt(0)) + filename.substring(1);
 					IPath dirPath= propertyFullPath.removeLastSegments(1).addTrailingSeparator();
 					cuPath= dirPath.append(filename).addFileExtension(extension);
-					cuFile= (IFile)JavaPlugin.getWorkspace().getRoot().findMember(cuPath);
+					cuFile= (IFile)JavaScriptPlugin.getWorkspace().getRoot().findMember(cuPath);
 				}
 			}
 
 			if (cuFile != null && cuFile.exists()) {
-				IJavaElement  element= JavaCore.create(cuFile);
-				if (element != null && element.exists() && element.getElementType() == IJavaElement.COMPILATION_UNIT && ActionUtil.isOnBuildPath(element)) {
-					ICompilationUnit compilationUnit= (ICompilationUnit)element;
+				IJavaScriptElement  element= JavaScriptCore.create(cuFile);
+				if (element != null && element.exists() && element.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT && ActionUtil.isOnBuildPath(element)) {
+					IJavaScriptUnit compilationUnit= (IJavaScriptUnit)element;
 					IType type= (compilationUnit).findPrimaryType();
 					if (type != null) {
 						String resourceBundleName= NLSHintHelper.getResourceBundleName(compilationUnit);
@@ -349,9 +349,9 @@ public class FindBrokenNLSKeysAction extends SelectionDispatchAction {
 		return null;
 	}
 	
-	private static ICompilationUnit getCompilationUnit(JavaEditor editor) {
-		IWorkingCopyManager manager= JavaPlugin.getDefault().getWorkingCopyManager();
-		ICompilationUnit cu= manager.getWorkingCopy(editor.getEditorInput());
+	private static IJavaScriptUnit getCompilationUnit(JavaEditor editor) {
+		IWorkingCopyManager manager= JavaScriptPlugin.getDefault().getWorkingCopyManager();
+		IJavaScriptUnit cu= manager.getWorkingCopy(editor.getEditorInput());
 		return cu;
 	}
 

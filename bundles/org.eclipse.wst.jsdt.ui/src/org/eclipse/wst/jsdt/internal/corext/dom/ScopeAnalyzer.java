@@ -15,9 +15,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
@@ -26,19 +26,19 @@ import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -135,9 +135,9 @@ public class ScopeAnalyzer {
 
 	private HashSet fTypesVisited;
 	
-	private CompilationUnit fRoot;
+	private JavaScriptUnit fRoot;
 	
-	public ScopeAnalyzer(CompilationUnit root) {
+	public ScopeAnalyzer(JavaScriptUnit root) {
 		fTypesVisited= new HashSet();
 		fRoot= root;
 	}
@@ -153,7 +153,7 @@ public class ScopeAnalyzer {
 					StringBuffer buf= new StringBuffer();
 					buf.append('M');
 					buf.append(binding.getName()).append('(');
-					ITypeBinding[] parameters= ((IMethodBinding) binding).getParameterTypes();
+					ITypeBinding[] parameters= ((IFunctionBinding) binding).getParameterTypes();
 					for (int i= 0; i < parameters.length; i++) {
 						if (i > 0) {
 							buf.append(',');
@@ -196,9 +196,9 @@ public class ScopeAnalyzer {
 		}
 		
 		if (hasFlag(METHODS, flags)) {
-			IMethodBinding[] methodBindings= binding.getDeclaredMethods();
+			IFunctionBinding[] methodBindings= binding.getDeclaredMethods();
 			for (int i= 0; i < methodBindings.length; i++) {
-				IMethodBinding curr= methodBindings[i];
+				IFunctionBinding curr= methodBindings[i];
 				if (!curr.isSynthetic() && !curr.isConstructor()) {
 					if (requestor.acceptBinding(curr))
 						return true;
@@ -291,7 +291,7 @@ public class ScopeAnalyzer {
 					return true;
 			}
 			
-		}else if (node instanceof CompilationUnit) {
+		}else if (node instanceof JavaScriptUnit) {
 			addLocalDeclarations(node, flags, requestor);
 			ITypeBinding parentTypeBinding= Bindings.getBindingOfParentType(node.getParent());
 			if (parentTypeBinding != null) {
@@ -299,14 +299,14 @@ public class ScopeAnalyzer {
 					return true;
 			}
 			
-			IJavaElement element = ((CompilationUnit) node).getJavaElement();
+			IJavaScriptElement element = ((JavaScriptUnit) node).getJavaElement();
 			try {
-				SearchableEnvironment env = element.newSearchableNameEnvironment(new ICompilationUnit[]{});
+				SearchableEnvironment env = element.newSearchableNameEnvironment(new IJavaScriptUnit[]{});
 				if(env!=null) {
 					//SearchRequestor searchReq = new SearchRequestor(localBinding,);
 					//env.findTypes(new char[] {}, true, false,flags, );
 				}
-				} catch (JavaModelException ex) {
+				} catch (JavaScriptModelException ex) {
 				// TODO Auto-generated catch block
 				ex.printStackTrace();
 			}
@@ -325,8 +325,8 @@ public class ScopeAnalyzer {
 	private static ITypeBinding getQualifier(SimpleName selector) {
 		ASTNode parent= selector.getParent();
 		switch (parent.getNodeType()) {
-			case ASTNode.METHOD_INVOCATION:
-				MethodInvocation decl= (MethodInvocation) parent;
+			case ASTNode.FUNCTION_INVOCATION:
+				FunctionInvocation decl= (FunctionInvocation) parent;
 				if (selector == decl.getName()) {
 					return getBinding(decl.getExpression());
 				}
@@ -544,7 +544,7 @@ public class ScopeAnalyzer {
 			case IBinding.VARIABLE:
 				return ((IVariableBinding) binding).getDeclaringClass();
 			case IBinding.METHOD:
-				return ((IMethodBinding) binding).getDeclaringClass();
+				return ((IFunctionBinding) binding).getDeclaringClass();
 			case IBinding.TYPE:
 				ITypeBinding typeBinding= (ITypeBinding) binding;
 				if (typeBinding.getDeclaringClass() != null) {
@@ -644,7 +644,7 @@ public class ScopeAnalyzer {
 			return start <= fPosition && fPosition < end;
 		}
 		
-		public boolean visit(MethodDeclaration node) {
+		public boolean visit(FunctionDeclaration node) {
 			if (isInside(node)) {
 				Block body= node.getBody();
 				if (body != null) {
@@ -818,7 +818,7 @@ public class ScopeAnalyzer {
 	private boolean addLocalDeclarations(ASTNode node, int offset, int flags, IBindingRequestor requestor) {
 		if (hasFlag(VARIABLES, flags) || hasFlag(TYPES, flags)) {
 			BodyDeclaration declaration= ASTResolving.findParentBodyDeclaration(node);
-			if (declaration instanceof MethodDeclaration || declaration instanceof Initializer) {		
+			if (declaration instanceof FunctionDeclaration || declaration instanceof Initializer) {		
 				ScopeAnalyzerVisitor visitor= new ScopeAnalyzerVisitor(offset, flags, requestor);
 				declaration.accept(visitor);
 				return visitor.fBreak;

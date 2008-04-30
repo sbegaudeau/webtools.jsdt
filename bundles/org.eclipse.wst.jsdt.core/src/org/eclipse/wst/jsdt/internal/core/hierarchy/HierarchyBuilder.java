@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.IGenericType;
@@ -61,22 +61,22 @@ public abstract class HierarchyBuilder {
 	 */
 	protected String focusQualifiedName;
 
-	public HierarchyBuilder(TypeHierarchy hierarchy) throws JavaModelException {
+	public HierarchyBuilder(TypeHierarchy hierarchy) throws JavaScriptModelException {
 
 		this.hierarchy = hierarchy;
 		JavaProject project = (JavaProject) hierarchy.javaProject();
 
 		IType focusType = hierarchy.getType();
-		org.eclipse.wst.jsdt.core.ICompilationUnit unitToLookInside = focusType == null ? null : focusType.getCompilationUnit();
-		org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies = this.hierarchy.workingCopies;
-		org.eclipse.wst.jsdt.core.ICompilationUnit[] unitsToLookInside;
+		org.eclipse.wst.jsdt.core.IJavaScriptUnit unitToLookInside = focusType == null ? null : focusType.getJavaScriptUnit();
+		org.eclipse.wst.jsdt.core.IJavaScriptUnit[] workingCopies = this.hierarchy.workingCopies;
+		org.eclipse.wst.jsdt.core.IJavaScriptUnit[] unitsToLookInside;
 		ICompilationUnit mainFile=null;
 		if (unitToLookInside != null) {
 			int wcLength = workingCopies == null ? 0 : workingCopies.length;
 			if (wcLength == 0) {
-				unitsToLookInside = new org.eclipse.wst.jsdt.core.ICompilationUnit[] {unitToLookInside};
+				unitsToLookInside = new org.eclipse.wst.jsdt.core.IJavaScriptUnit[] {unitToLookInside};
 			} else {
-				unitsToLookInside = new org.eclipse.wst.jsdt.core.ICompilationUnit[wcLength+1];
+				unitsToLookInside = new org.eclipse.wst.jsdt.core.IJavaScriptUnit[wcLength+1];
 				unitsToLookInside[0] = unitToLookInside;
 				System.arraycopy(workingCopies, 0, unitsToLookInside, 1, wcLength);
 			}
@@ -103,7 +103,7 @@ public abstract class HierarchyBuilder {
 	}
 
 	public abstract void build(boolean computeSubtypes)
-		throws JavaModelException, CoreException;
+		throws JavaScriptModelException, CoreException;
 	/**
 	 * Configure this type hierarchy by computing the supertypes only.
 	 */
@@ -115,7 +115,7 @@ public abstract class HierarchyBuilder {
 		IGenericType type;
 		try {
 			type = (IGenericType) ((JavaElement) focusType).getElementInfo();
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// if the focus type is not present, or if cannot get workbench path
 			// we cannot create the hierarchy
 			return;
@@ -269,7 +269,7 @@ public abstract class HierarchyBuilder {
 		}
 	}
 /**
- * Create an ICompilationUnit info from the given compilation unit on disk.
+ * Create an IJavaScriptUnit info from the given compilation unit on disk.
  */
 protected ICompilationUnit createCompilationUnitFromPath(Openable handle, IFile file) {
 	final char[] elementName = handle.getElementName().toCharArray();

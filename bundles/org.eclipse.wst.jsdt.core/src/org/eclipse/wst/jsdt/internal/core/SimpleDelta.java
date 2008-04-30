@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
 
 /**
  * A simple Java element delta that remembers the kind of changes only.
@@ -18,12 +18,12 @@ import org.eclipse.wst.jsdt.core.IJavaElementDelta;
 public class SimpleDelta {
 
 	/*
-	 * @see IJavaElementDelta#getKind()
+	 * @see IJavaScriptElementDelta#getKind()
 	 */
 	protected int kind = 0;
 
 	/*
-	 * @see IJavaElementDelta#getFlags()
+	 * @see IJavaScriptElementDelta#getFlags()
 	 */
 	protected int changeFlags = 0;
 
@@ -31,26 +31,26 @@ public class SimpleDelta {
 	 * Marks this delta as added
 	 */
 	public void added() {
-		this.kind = IJavaElementDelta.ADDED;
+		this.kind = IJavaScriptElementDelta.ADDED;
 	}
 
 	/*
 	 * Marks this delta as changed with the given change flag
 	 */
 	public void changed(int flags) {
-		this.kind = IJavaElementDelta.CHANGED;
+		this.kind = IJavaScriptElementDelta.CHANGED;
 		this.changeFlags |= flags;
 	}
 
 	/*
-	 * @see IJavaElementDelta#getFlags()
+	 * @see IJavaScriptElementDelta#getFlags()
 	 */
 	public int getFlags() {
 		return this.changeFlags;
 	}
 
 	/*
-	 * @see IJavaElementDelta#getKind()
+	 * @see IJavaScriptElementDelta#getKind()
 	 */
 	public int getKind() {
 		return this.kind;
@@ -60,14 +60,14 @@ public class SimpleDelta {
 	 * Mark this delta has a having a modifiers change
 	 */
 	public void modifiers() {
-		changed(IJavaElementDelta.F_MODIFIERS);
+		changed(IJavaScriptElementDelta.F_MODIFIERS);
 	}
 
 	/*
 	 * Marks this delta as removed
 	 */
 	public void removed() {
-		this.kind = IJavaElementDelta.REMOVED;
+		this.kind = IJavaScriptElementDelta.REMOVED;
 		this.changeFlags = 0;
 	}
 
@@ -75,19 +75,19 @@ public class SimpleDelta {
 	 * Mark this delta has a having a super type change
 	 */
 	public void superTypes() {
-		changed(IJavaElementDelta.F_SUPER_TYPES);
+		changed(IJavaScriptElementDelta.F_SUPER_TYPES);
 	}
 
 	protected void toDebugString(StringBuffer buffer) {
 		buffer.append("["); //$NON-NLS-1$
 		switch (getKind()) {
-			case IJavaElementDelta.ADDED :
+			case IJavaScriptElementDelta.ADDED :
 				buffer.append('+');
 				break;
-			case IJavaElementDelta.REMOVED :
+			case IJavaScriptElementDelta.REMOVED :
 				buffer.append('-');
 				break;
-			case IJavaElementDelta.CHANGED :
+			case IJavaScriptElementDelta.CHANGED :
 				buffer.append('*');
 				break;
 			default :
@@ -101,13 +101,13 @@ public class SimpleDelta {
 
 	protected boolean toDebugString(StringBuffer buffer, int flags) {
 		boolean prev = false;
-		if ((flags & IJavaElementDelta.F_MODIFIERS) != 0) {
+		if ((flags & IJavaScriptElementDelta.F_MODIFIERS) != 0) {
 			if (prev)
 				buffer.append(" | "); //$NON-NLS-1$
 			buffer.append("MODIFIERS CHANGED"); //$NON-NLS-1$
 			prev = true;
 		}
-		if ((flags & IJavaElementDelta.F_SUPER_TYPES) != 0) {
+		if ((flags & IJavaScriptElementDelta.F_SUPER_TYPES) != 0) {
 			if (prev)
 				buffer.append(" | "); //$NON-NLS-1$
 			buffer.append("SUPER TYPES CHANGED"); //$NON-NLS-1$

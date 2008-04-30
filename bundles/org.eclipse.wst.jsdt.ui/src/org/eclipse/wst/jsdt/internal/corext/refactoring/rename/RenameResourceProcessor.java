@@ -27,8 +27,8 @@ import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
 import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
 import org.eclipse.ltk.core.refactoring.participants.ResourceChangeChecker;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameResourceDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptorComment;
@@ -74,7 +74,7 @@ public class RenameResourceProcessor extends RenameProcessor implements IScripta
 		return true;
 	}
 
-	public RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context) throws JavaModelException {
+	public RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context) throws JavaScriptModelException {
 		pm.beginTask("", 1); //$NON-NLS-1$
 		try {
 			fRenameModifications= new RenameModifications();
@@ -94,7 +94,7 @@ public class RenameResourceProcessor extends RenameProcessor implements IScripta
 		return RefactoringStatus.create(Resources.checkInSync(fResource));
 	}
 
-	public RefactoringStatus checkNewElementName(String newName) throws JavaModelException {
+	public RefactoringStatus checkNewElementName(String newName) throws JavaScriptModelException {
 		Assert.isNotNull(newName, "new name"); //$NON-NLS-1$
 		IContainer c= fResource.getParent();
 		if (c == null)
@@ -112,7 +112,7 @@ public class RenameResourceProcessor extends RenameProcessor implements IScripta
 		return result;
 	}
 
-	public Change createChange(IProgressMonitor pm) throws JavaModelException {
+	public Change createChange(IProgressMonitor pm) throws JavaScriptModelException {
 		pm.beginTask("", 1); //$NON-NLS-1$
 		try {
 			String project= null;
@@ -182,7 +182,7 @@ public class RenameResourceProcessor extends RenameProcessor implements IScripta
 			if (handle != null) {
 				fResource= JDTRefactoringDescriptor.handleToResource(extended.getProject(), handle);
 				if (fResource == null || !fResource.exists())
-					return ScriptableRefactoring.createInputFatalStatus(fResource, getRefactoring().getName(), IJavaRefactorings.RENAME_RESOURCE);
+					return ScriptableRefactoring.createInputFatalStatus(fResource, getRefactoring().getName(), IJavaScriptRefactorings.RENAME_RESOURCE);
 			} else
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));
 			final String name= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_NAME);
@@ -195,7 +195,7 @@ public class RenameResourceProcessor extends RenameProcessor implements IScripta
 		return new RefactoringStatus();
 	}
 
-	public boolean isApplicable() throws JavaModelException {
+	public boolean isApplicable() throws JavaScriptModelException {
 		return RefactoringAvailabilityTester.isRenameAvailable(fResource);
 	}
 

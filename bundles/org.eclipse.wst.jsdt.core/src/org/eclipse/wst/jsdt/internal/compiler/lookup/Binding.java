@@ -53,14 +53,14 @@ public abstract class Binding {
 	public abstract int kind();
 	/*
 	 * Computes a key that uniquely identifies this binding.
-	 * Returns null if binding is not a TypeBinding, a MethodBinding, a FieldBinding or a PackageBinding.
+	 * Returns null if binding is not a TypeBinding, a FunctionBinding, a FieldBinding or a PackageBinding.
 	 */
 	public char[] computeUniqueKey() {
 		return computeUniqueKey(true/*leaf*/);
 	}
 	/*
 	 * Computes a key that uniquely identifies this binding. Optinaly include access flags.
-	 * Returns null if binding is not a TypeBinding, a MethodBinding, a FieldBinding or a PackageBinding.
+	 * Returns null if binding is not a TypeBinding, a FunctionBinding, a FieldBinding or a PackageBinding.
 	 */
 	public char[] computeUniqueKey(boolean isLeaf) {
 		return null;

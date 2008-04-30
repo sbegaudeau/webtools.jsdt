@@ -19,15 +19,15 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.TypedElementSelectionValidator;
 import org.eclipse.wst.jsdt.internal.ui.wizards.TypedViewerFilter;
@@ -35,9 +35,9 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
-import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.StandardJavaScriptElementContentProvider;
 
 class SourceFirstPackageSelectionDialogField {
 
@@ -47,7 +47,7 @@ class SourceFirstPackageSelectionDialogField {
 
 	public SourceFirstPackageSelectionDialogField(String sourceLabel, String packageLabel, String browseLabel1,
 		String browseLabel2, String statusHint, String dialogTitle, String dialogMessage, String dialogEmptyMessage,
-		ICompilationUnit cu, IDialogFieldListener updateListener, IPackageFragment fragment) {
+		IJavaScriptUnit cu, IDialogFieldListener updateListener, IPackageFragment fragment) {
 		fSourceFolderSelection= new SourceFolderSelectionDialogButtonField(sourceLabel, browseLabel1, 	new SFStringButtonAdapter());
 
 		fPackageSelection= new PackageFragmentSelection(this, packageLabel, browseLabel2, statusHint,
@@ -62,8 +62,8 @@ class SourceFirstPackageSelectionDialogField {
 		fSourceFolderSelection.setUpdateListener(updateListener);
 	}
 
-	private void setDefaults(IPackageFragment fragment, ICompilationUnit cu) {
-		IJavaElement element= fragment;
+	private void setDefaults(IPackageFragment fragment, IJavaScriptUnit cu) {
+		IJavaScriptElement element= fragment;
 		if (element == null) {
 			element= cu;
 		}
@@ -72,12 +72,12 @@ class SourceFirstPackageSelectionDialogField {
 		fPackageSelection.setPackageFragment(searchPackageFragment(element));
 	}
 
-	private IPackageFragment searchPackageFragment(IJavaElement jElement) {
-		return (IPackageFragment)jElement.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
+	private IPackageFragment searchPackageFragment(IJavaScriptElement jElement) {
+		return (IPackageFragment)jElement.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT);
 	}
 
-	private IPackageFragmentRoot searchSourcePackageFragmentRoot(IJavaElement jElement) {
-		IJavaElement parent= jElement.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+	private IPackageFragmentRoot searchSourcePackageFragmentRoot(IJavaScriptElement jElement) {
+		IJavaScriptElement parent= jElement.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 		if (parent == null) {
 			return null;
 		}
@@ -87,7 +87,7 @@ class SourceFirstPackageSelectionDialogField {
 			if (res.getKind() == IPackageFragmentRoot.K_SOURCE) {
 				return res;
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// nothing to do
 		}
 
@@ -115,34 +115,34 @@ class SourceFirstPackageSelectionDialogField {
 		}
 	}
 	
-	private IPackageFragmentRoot chooseSourceContainer(IJavaElement initElement) {
-		Class[] acceptedClasses= new Class[] { IPackageFragmentRoot.class, IJavaProject.class };
+	private IPackageFragmentRoot chooseSourceContainer(IJavaScriptElement initElement) {
+		Class[] acceptedClasses= new Class[] { IPackageFragmentRoot.class, IJavaScriptProject.class };
 		TypedElementSelectionValidator validator= new TypedElementSelectionValidator(acceptedClasses, false) {
 			public boolean isSelectedValid(Object element) {
 				try {
-					if (element instanceof IJavaProject) {
-						IJavaProject jproject= (IJavaProject)element;
+					if (element instanceof IJavaScriptProject) {
+						IJavaScriptProject jproject= (IJavaScriptProject)element;
 						IPath path= jproject.getProject().getFullPath();
 						return (jproject.findPackageFragmentRoot(path) != null);
 					} else if (element instanceof IPackageFragmentRoot) {
 						return (((IPackageFragmentRoot)element).getKind() == IPackageFragmentRoot.K_SOURCE);
 					}
 					return true;
-				} catch (JavaModelException e) {
-					JavaPlugin.log(e.getStatus()); // just log, no ui in validation
+				} catch (JavaScriptModelException e) {
+					JavaScriptPlugin.log(e.getStatus()); // just log, no ui in validation
 				}
 				return false;
 			}
 		};
 		
-		acceptedClasses= new Class[] { IJavaModel.class, IPackageFragmentRoot.class, IJavaProject.class };
+		acceptedClasses= new Class[] { IJavaScriptModel.class, IPackageFragmentRoot.class, IJavaScriptProject.class };
 		ViewerFilter filter= new TypedViewerFilter(acceptedClasses) {
 			public boolean select(Viewer viewer, Object parent, Object element) {
 				if (element instanceof IPackageFragmentRoot) {
 					try {
 						return (((IPackageFragmentRoot)element).getKind() == IPackageFragmentRoot.K_SOURCE);
-					} catch (JavaModelException e) {
-						JavaPlugin.log(e.getStatus()); // just log, no ui in validation
+					} catch (JavaScriptModelException e) {
+						JavaScriptPlugin.log(e.getStatus()); // just log, no ui in validation
 						return false;
 					}
 				}
@@ -150,21 +150,21 @@ class SourceFirstPackageSelectionDialogField {
 			}
 		};		
 
-		StandardJavaElementContentProvider provider= new StandardJavaElementContentProvider();
-		ILabelProvider labelProvider= new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT); 
+		StandardJavaScriptElementContentProvider provider= new StandardJavaScriptElementContentProvider();
+		ILabelProvider labelProvider= new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_DEFAULT); 
 		ElementTreeSelectionDialog dialog= new ElementTreeSelectionDialog(fShell, labelProvider, provider);
 		dialog.setValidator(validator);
-		dialog.setComparator(new JavaElementComparator());
+		dialog.setComparator(new JavaScriptElementComparator());
 		dialog.setTitle(NLSUIMessages.SourceFirstPackageSelectionDialogField_ChooseSourceContainerDialog_title); 
 		dialog.setMessage(NLSUIMessages.SourceFirstPackageSelectionDialogField_ChooseSourceContainerDialog_description); 
 		dialog.addFilter(filter);
-		dialog.setInput(JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()));
+		dialog.setInput(JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot()));
 		dialog.setInitialSelection(initElement);
 		
 		if (dialog.open() == Window.OK) {
 			Object element= dialog.getFirstResult();
-			if (element instanceof IJavaProject) {
-				IJavaProject jproject= (IJavaProject)element;
+			if (element instanceof IJavaScriptProject) {
+				IJavaScriptProject jproject= (IJavaScriptProject)element;
 				return jproject.getPackageFragmentRoot(jproject.getProject());
 			} else if (element instanceof IPackageFragmentRoot) {
 				return (IPackageFragmentRoot)element;

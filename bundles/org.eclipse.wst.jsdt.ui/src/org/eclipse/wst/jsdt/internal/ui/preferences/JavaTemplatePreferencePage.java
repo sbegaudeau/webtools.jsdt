@@ -30,22 +30,22 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.templates.TemplatePreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.wst.jsdt.internal.ui.text.SimpleJavaSourceViewerConfiguration;
 import org.eclipse.wst.jsdt.internal.ui.text.template.preferences.TemplateVariableProcessor;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 public class JavaTemplatePreferencePage extends TemplatePreferencePage implements IWorkbenchPreferencePage {
 
 	private TemplateVariableProcessor fTemplateProcessor;
 	
 	public JavaTemplatePreferencePage() {
-		setPreferenceStore(JavaPlugin.getDefault().getPreferenceStore());
-		setTemplateStore(JavaPlugin.getDefault().getTemplateStore());
-		setContextTypeRegistry(JavaPlugin.getDefault().getTemplateContextRegistry());
+		setPreferenceStore(JavaScriptPlugin.getDefault().getPreferenceStore());
+		setTemplateStore(JavaScriptPlugin.getDefault().getTemplateStore());
+		setContextTypeRegistry(JavaScriptPlugin.getDefault().getTemplateContextRegistry());
 		fTemplateProcessor= new TemplateVariableProcessor();
 	}
 	
@@ -82,7 +82,7 @@ public class JavaTemplatePreferencePage extends TemplatePreferencePage implement
 	public boolean performOk() {
 		boolean ok= super.performOk();
 
-		JavaPlugin.getDefault().savePluginPreferences();
+		JavaScriptPlugin.getDefault().savePluginPreferences();
 		
 		return ok;
 	}
@@ -110,11 +110,11 @@ public class JavaTemplatePreferencePage extends TemplatePreferencePage implement
 	 */
 	protected SourceViewer createViewer(Composite parent) {
 		IDocument document= new Document();
-		JavaTextTools tools= JavaPlugin.getDefault().getJavaTextTools();
-		tools.setupJavaDocumentPartitioner(document, IJavaPartitions.JAVA_PARTITIONING);
-		IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
+		JavaScriptTextTools tools= JavaScriptPlugin.getDefault().getJavaTextTools();
+		tools.setupJavaDocumentPartitioner(document, IJavaScriptPartitions.JAVA_PARTITIONING);
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 		SourceViewer viewer= new JavaSourceViewer(parent, null, null, false, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, store);
-		SimpleJavaSourceViewerConfiguration configuration= new SimpleJavaSourceViewerConfiguration(tools.getColorManager(), store, null, IJavaPartitions.JAVA_PARTITIONING, false);
+		SimpleJavaSourceViewerConfiguration configuration= new SimpleJavaSourceViewerConfiguration(tools.getColorManager(), store, null, IJavaScriptPartitions.JAVA_PARTITIONING, false);
 		viewer.configure(configuration);
 		viewer.setEditable(false);
 		viewer.setDocument(document);
@@ -142,7 +142,7 @@ public class JavaTemplatePreferencePage extends TemplatePreferencePage implement
 			TemplatePersistenceData data= (TemplatePersistenceData) selection.getFirstElement();
 			Template template= data.getTemplate();
 			String contextId= template.getContextTypeId();
-			TemplateContextType type= JavaPlugin.getDefault().getTemplateContextRegistry().getContextType(contextId);
+			TemplateContextType type= JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(contextId);
 			fTemplateProcessor.setContextType(type);
 			
 			IDocument doc= viewer.getDocument();

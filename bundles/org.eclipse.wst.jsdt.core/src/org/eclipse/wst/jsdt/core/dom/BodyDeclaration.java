@@ -25,7 +25,7 @@ import java.util.List;
  * BodyDeclaration:
  *		ClassDeclaration
  *		InterfaceDeclaration
- *		MethodDeclaration
+ *		FunctionDeclaration
  * 		ConstructorDeclaration
  * 		FieldDeclaration
  * 		Initializer
@@ -36,7 +36,7 @@ import java.util.List;
  *		ClassDeclaration
  *		InterfaceDeclaration
  *		EnumDeclaration
- *		MethodDeclaration
+ *		FunctionDeclaration
  * 		ConstructorDeclaration
  * 		FieldDeclaration
  * 		Initializer
@@ -60,7 +60,7 @@ public abstract class BodyDeclaration extends ProgramElement {
 	 * The doc comment, or <code>null</code> if none.
 	 * Defaults to none.
 	 */
-	Javadoc optionalDocComment = null;
+	JSdoc optionalDocComment = null;
 
 	/**
 	 * The modifier flags; bit-wise or of Modifier flags.
@@ -132,7 +132,7 @@ public abstract class BodyDeclaration extends ProgramElement {
 	 * @return the property descriptor
 	 */
 	static final ChildPropertyDescriptor internalJavadocPropertyFactory(Class nodeClass) {
-		return new ChildPropertyDescriptor(nodeClass, "javadoc", Javadoc.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
+		return new ChildPropertyDescriptor(nodeClass, "javadoc", JSdoc.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 	}
 
 	/**
@@ -176,7 +176,7 @@ public abstract class BodyDeclaration extends ProgramElement {
 	 *
 	 * @return the doc comment node, or <code>null</code> if none
 	 */
-	public Javadoc getJavadoc() {
+	public JSdoc getJavadoc() {
 		return this.optionalDocComment;
 	}
 
@@ -186,7 +186,7 @@ public abstract class BodyDeclaration extends ProgramElement {
 	 * @param docComment the doc comment node, or <code>null</code> if none
 	 * @exception IllegalArgumentException if the doc comment string is invalid
 	 */
-	public void setJavadoc(Javadoc docComment) {
+	public void setJavadoc(JSdoc docComment) {
 		ChildPropertyDescriptor p = internalJavadocProperty();
 		ASTNode oldChild = this.optionalDocComment;
 		preReplaceChild(oldChild, docComment, p);

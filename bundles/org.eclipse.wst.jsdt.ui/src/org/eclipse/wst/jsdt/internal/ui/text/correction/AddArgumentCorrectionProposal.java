@@ -13,11 +13,11 @@ package org.eclipse.wst.jsdt.internal.ui.text.correction;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
@@ -36,7 +36,7 @@ public class AddArgumentCorrectionProposal extends LinkedCorrectionProposal {
 	private ITypeBinding[] fParamTypes;
 	private ASTNode fCallerNode;
 
-	public AddArgumentCorrectionProposal(String label, ICompilationUnit cu, ASTNode callerNode, int[] insertIdx, ITypeBinding[] expectedTypes, int relevance) {
+	public AddArgumentCorrectionProposal(String label, IJavaScriptUnit cu, ASTNode callerNode, int[] insertIdx, ITypeBinding[] expectedTypes, int relevance) {
 		super(label, cu, null, relevance, JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE)); 
 		fCallerNode= callerNode;
 		fInsertIndexes= insertIdx;
@@ -77,7 +77,7 @@ public class AddArgumentCorrectionProposal extends LinkedCorrectionProposal {
 
 
 	private Expression evaluateArgumentExpressions(AST ast, ITypeBinding requiredType, String key) {
-		CompilationUnit root= (CompilationUnit) fCallerNode.getRoot();
+		JavaScriptUnit root= (JavaScriptUnit) fCallerNode.getRoot();
 
 		int offset= fCallerNode.getStartPosition();
 		Expression best= null;

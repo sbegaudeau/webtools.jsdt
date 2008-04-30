@@ -22,12 +22,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
@@ -57,10 +57,10 @@ NameEnvironment(IWorkspaceRoot root, JavaProject javaProject, SimpleLookupTable 
 	this.notifier = notifier;
 	computeClasspathLocations(root, javaProject, binaryLocationsPerProject);
 //	setNames(null, null);
-	this.searchableEnvironment=javaProject.newSearchableNameEnvironment(new ICompilationUnit[0]);
+	this.searchableEnvironment=javaProject.newSearchableNameEnvironment(new IJavaScriptUnit[0]);
 }
 
-public NameEnvironment(IJavaProject javaProject) {
+public NameEnvironment(IJavaScriptProject javaProject) {
 	this.isIncrementalBuild = false;
 	try {
 		computeClasspathLocations(javaProject.getProject().getWorkspace().getRoot(), (JavaProject) javaProject, null);
@@ -70,8 +70,8 @@ public NameEnvironment(IJavaProject javaProject) {
 	}
 //	setNames(null, null);
 	try {
-		this.searchableEnvironment=javaProject.newSearchableNameEnvironment(new ICompilationUnit[0]);
-	} catch (JavaModelException e) {
+		this.searchableEnvironment=javaProject.newSearchableNameEnvironment(new IJavaScriptUnit[0]);
+	} catch (JavaScriptModelException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
@@ -107,14 +107,14 @@ private void computeClasspathLocations(
 	/* Update cycle marker */
 	IMarker cycleMarker = javaProject.getCycleMarker();
 	if (cycleMarker != null) {
-		int severity = JavaCore.ERROR.equals(javaProject.getOption(JavaCore.CORE_CIRCULAR_CLASSPATH, true))
+		int severity = JavaScriptCore.ERROR.equals(javaProject.getOption(JavaScriptCore.CORE_CIRCULAR_CLASSPATH, true))
 			? IMarker.SEVERITY_ERROR
 			: IMarker.SEVERITY_WARNING;
 		if (severity != cycleMarker.getAttribute(IMarker.SEVERITY, severity))
 			cycleMarker.setAttribute(IMarker.SEVERITY, severity);
 	}
 
-	IClasspathEntry[] classpathEntries = javaProject.getExpandedClasspath();
+	IIncludePathEntry[] classpathEntries = javaProject.getExpandedClasspath();
 	ArrayList sLocations = new ArrayList(classpathEntries.length);
 	ArrayList bLocations = new ArrayList(classpathEntries.length);
 	nextEntry : for (int i = 0, l = classpathEntries.length; i < l; i++) {
@@ -123,14 +123,14 @@ private void computeClasspathLocations(
 		Object target = JavaModel.getTarget(root, path, true);
 		if (target == null) continue nextEntry;
 
-		IClasspathAttribute[] attribs = entry.getExtraAttributes();
+		IIncludePathAttribute[] attribs = entry.getExtraAttributes();
 
 		for(int k=0;attribs!=null && k<attribs.length;k++) {
 			if(attribs[k].getName().equalsIgnoreCase("validate") && attribs[k].getValue().equalsIgnoreCase("false")) continue nextEntry; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		switch(entry.getEntryKind()) {
-			case IClasspathEntry.CPE_SOURCE :
+			case IIncludePathEntry.CPE_SOURCE :
 				if (!(target instanceof IContainer)) continue nextEntry;
 
 				IPath outputPath = entry.getOutputLocation() != null
@@ -148,17 +148,17 @@ private void computeClasspathLocations(
 					ClasspathLocation.forSourceFolder((IContainer) target, outputFolder, entry.fullInclusionPatternChars(), entry.fullExclusionPatternChars()));
 				continue nextEntry;
 
-			case IClasspathEntry.CPE_PROJECT :
+			case IIncludePathEntry.CPE_PROJECT :
 				if (!(target instanceof IProject)) continue nextEntry;
 				IProject prereqProject = (IProject) target;
 				if (!JavaProject.hasJavaNature(prereqProject)) continue nextEntry; // if project doesn't have java nature or is not accessible
 
-				JavaProject prereqJavaProject = (JavaProject) JavaCore.create(prereqProject);
-				IClasspathEntry[] prereqClasspathEntries = prereqJavaProject.getRawClasspath();
+				JavaProject prereqJavaProject = (JavaProject) JavaScriptCore.create(prereqProject);
+				IIncludePathEntry[] prereqClasspathEntries = prereqJavaProject.getRawIncludepath();
 				ArrayList seen = new ArrayList();
 				nextPrereqEntry: for (int j = 0, m = prereqClasspathEntries.length; j < m; j++) {
-					IClasspathEntry prereqEntry = prereqClasspathEntries[j];
-					if (prereqEntry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+					IIncludePathEntry prereqEntry = prereqClasspathEntries[j];
+					if (prereqEntry.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 						Object prereqTarget = JavaModel.getTarget(root, prereqEntry.getPath(), true);
 						if (!(prereqTarget instanceof IContainer)) continue nextPrereqEntry;
 						IPath prereqOutputPath = prereqEntry.getOutputLocation() != null
@@ -187,7 +187,7 @@ private void computeClasspathLocations(
 				}
 				continue nextEntry;
 
-			case IClasspathEntry.CPE_LIBRARY :
+			case IIncludePathEntry.CPE_LIBRARY :
 				if(true) continue nextEntry;
 				if (target instanceof IResource) {
 					IResource resource = (IResource) target;
@@ -196,15 +196,15 @@ private void computeClasspathLocations(
 //						if (!(org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment())))
 //							continue nextEntry;
 //						AccessRuleSet accessRuleSet =
-//							(JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
-//							&& JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true)))
+//							(JavaScriptCore.IGNORE.equals(javaProject.getOption(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
+//							&& JavaScriptCore.IGNORE.equals(javaProject.getOption(JavaScriptCore.COMPILER_PB_DISCOURAGED_REFERENCE, true)))
 //								? null
 //								: entry.getAccessRuleSet();
 //						bLocation = ClasspathLocation.forLibrary((IFile) resource, accessRuleSet);
 //					} else if (resource instanceof IContainer) {
 //						AccessRuleSet accessRuleSet =
-//							(JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
-//							&& JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true)))
+//							(JavaScriptCore.IGNORE.equals(javaProject.getOption(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
+//							&& JavaScriptCore.IGNORE.equals(javaProject.getOption(JavaScriptCore.COMPILER_PB_DISCOURAGED_REFERENCE, true)))
 //								? null
 //								: entry.getAccessRuleSet();
 //						bLocation = ClasspathLocation.forBinaryFolder((IContainer) target, false, accessRuleSet);	 // is library folder not output folder
@@ -226,8 +226,8 @@ private void computeClasspathLocations(
 					if (!(org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment())))
 						continue nextEntry;
 					AccessRuleSet accessRuleSet =
-						(JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
-							&& JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true)))
+						(JavaScriptCore.IGNORE.equals(javaProject.getOption(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
+							&& JavaScriptCore.IGNORE.equals(javaProject.getOption(JavaScriptCore.COMPILER_PB_DISCOURAGED_REFERENCE, true)))
 								? null
 								: entry.getAccessRuleSet();
 					bLocations.add(ClasspathLocation.forLibrary(path.toString(), accessRuleSet));

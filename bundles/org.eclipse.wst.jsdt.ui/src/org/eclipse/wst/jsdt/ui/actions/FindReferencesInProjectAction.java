@@ -12,18 +12,18 @@ package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -65,7 +65,7 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
 	}
 	
 	Class[] getValidTypes() {
-		return new Class[] { IField.class, IMethod.class, IType.class, ICompilationUnit.class, IPackageDeclaration.class, IImportDeclaration.class, IPackageFragment.class, ILocalVariable.class, ITypeParameter.class };
+		return new Class[] { IField.class, IFunction.class, IType.class, IJavaScriptUnit.class, IPackageDeclaration.class, IImportDeclaration.class, IPackageFragment.class, ILocalVariable.class, ITypeParameter.class };
 	}
 	
 	void init() {
@@ -75,19 +75,19 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.FIND_REFERENCES_IN_PROJECT_ACTION);
 	}
 
-	QuerySpecification createQuery(IJavaElement element) throws JavaModelException {
+	QuerySpecification createQuery(IJavaScriptElement element) throws JavaScriptModelException {
 		JavaSearchScopeFactory factory= JavaSearchScopeFactory.getInstance();
 		JavaEditor editor= getEditor();
 		
-		IJavaSearchScope scope;
+		IJavaScriptSearchScope scope;
 		String description;
 		boolean isInsideJRE= factory.isInsideJRE(element);
 		if (editor != null) {
 			scope= factory.createJavaProjectSearchScope(editor.getEditorInput(), isInsideJRE);
 			description= factory.getProjectScopeDescription(editor.getEditorInput(), isInsideJRE);
 		} else {
-			scope= factory.createJavaProjectSearchScope(element.getJavaProject(), isInsideJRE);
-			description=  factory.getProjectScopeDescription(element.getJavaProject(), isInsideJRE);
+			scope= factory.createJavaProjectSearchScope(element.getJavaScriptProject(), isInsideJRE);
+			description=  factory.getProjectScopeDescription(element.getJavaScriptProject(), isInsideJRE);
 		}
 		return new ElementQuerySpecification(element, getLimitTo(), scope, description);
 	}

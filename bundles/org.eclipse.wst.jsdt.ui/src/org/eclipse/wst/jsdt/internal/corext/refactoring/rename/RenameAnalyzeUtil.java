@@ -32,17 +32,17 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.ltk.core.refactoring.TextEditChangeGroup;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Name;
@@ -149,7 +149,7 @@ class RenameAnalyzeUtil {
 		for (int i= 0; i < oldOccurrences.length; i++) {
 			SearchResultGroup oldGroup= oldOccurrences[i];
 			SearchMatch[] oldSearchResults= oldGroup.getSearchResults();
-			ICompilationUnit cunit= oldGroup.getCompilationUnit();
+			IJavaScriptUnit cunit= oldGroup.getCompilationUnit();
 			if (cunit == null)
 				continue;
 			for (int j= 0; j < oldSearchResults.length; j++) {
@@ -162,8 +162,8 @@ class RenameAnalyzeUtil {
 		return result;
 	}
 
-	static ICompilationUnit findWorkingCopyForCu(ICompilationUnit[] newWorkingCopies, ICompilationUnit cu){
-		ICompilationUnit original= cu == null ? null : cu.getPrimary();
+	static IJavaScriptUnit findWorkingCopyForCu(IJavaScriptUnit[] newWorkingCopies, IJavaScriptUnit cu){
+		IJavaScriptUnit original= cu == null ? null : cu.getPrimary();
 		for (int i= 0; i < newWorkingCopies.length; i++) {
 			if (newWorkingCopies[i].getPrimary().equals(original))
 				return newWorkingCopies[i];
@@ -171,23 +171,23 @@ class RenameAnalyzeUtil {
 		return null;
 	}
 
-	static ICompilationUnit[] createNewWorkingCopies(ICompilationUnit[] compilationUnitsToModify, TextChangeManager manager, WorkingCopyOwner owner, SubProgressMonitor pm) throws CoreException {
+	static IJavaScriptUnit[] createNewWorkingCopies(IJavaScriptUnit[] compilationUnitsToModify, TextChangeManager manager, WorkingCopyOwner owner, SubProgressMonitor pm) throws CoreException {
 		pm.beginTask("", compilationUnitsToModify.length); //$NON-NLS-1$
-		ICompilationUnit[] newWorkingCopies= new ICompilationUnit[compilationUnitsToModify.length];
+		IJavaScriptUnit[] newWorkingCopies= new IJavaScriptUnit[compilationUnitsToModify.length];
 		for (int i= 0; i < compilationUnitsToModify.length; i++) {
-			ICompilationUnit cu= compilationUnitsToModify[i];
+			IJavaScriptUnit cu= compilationUnitsToModify[i];
 			newWorkingCopies[i]= createNewWorkingCopy(cu, manager, owner, new SubProgressMonitor(pm, 1));
 		}
 		pm.done();
 		return newWorkingCopies;
 	}
 	
-	static ICompilationUnit createNewWorkingCopy(ICompilationUnit cu, TextChangeManager manager,
+	static IJavaScriptUnit createNewWorkingCopy(IJavaScriptUnit cu, TextChangeManager manager,
 			WorkingCopyOwner owner, SubProgressMonitor pm) throws CoreException {
-		ICompilationUnit newWc= cu.getWorkingCopy(owner, null, null);
+		IJavaScriptUnit newWc= cu.getWorkingCopy(owner, null, null);
 		String previewContent= manager.get(cu).getPreviewContent(new NullProgressMonitor());
 		newWc.getBuffer().setContents(previewContent);
-		newWc.reconcile(ICompilationUnit.NO_AST, false, owner, pm);
+		newWc.reconcile(IJavaScriptUnit.NO_AST, false, owner, pm);
 		return newWc;
 	}
 	
@@ -224,7 +224,7 @@ class RenameAnalyzeUtil {
 	}
 	
 	private static TextChange getTextChange(SearchMatch searchResult, TextChangeManager manager) {
-		ICompilationUnit cu= SearchUtils.getCompilationUnit(searchResult);
+		IJavaScriptUnit cu= SearchUtils.getCompilationUnit(searchResult);
 		if (cu == null)
 			return null;
 		return manager.get(cu);
@@ -252,7 +252,7 @@ class RenameAnalyzeUtil {
 		
 		HashMap cuToNewResults= new HashMap(newReferences.length);
 		for (int i1= 0; i1 < newReferences.length; i1++) {
-			ICompilationUnit cu= newReferences[i1].getCompilationUnit();
+			IJavaScriptUnit cu= newReferences[i1].getCompilationUnit();
 			if (cu != null)
 				cuToNewResults.put(cu.getPrimary(), newReferences[i1].getSearchResults());
 		}
@@ -260,7 +260,7 @@ class RenameAnalyzeUtil {
 		for (int i= 0; i < oldReferences.length; i++) {
 			SearchResultGroup oldGroup= oldReferences[i];
 			SearchMatch[] oldMatches= oldGroup.getSearchResults();
-			ICompilationUnit cu= oldGroup.getCompilationUnit();
+			IJavaScriptUnit cu= oldGroup.getCompilationUnit();
 			if (cu == null)
 				continue;
 			
@@ -277,7 +277,7 @@ class RenameAnalyzeUtil {
 		
 		for (Iterator iter= cuToNewResults.entrySet().iterator(); iter.hasNext();) {
 			Map.Entry entry= (Entry) iter.next();
-			ICompilationUnit cu= (ICompilationUnit) entry.getKey();
+			IJavaScriptUnit cu= (IJavaScriptUnit) entry.getKey();
 			SearchMatch[] newSearchMatches= (SearchMatch[]) entry.getValue();
 			for (int i= 0; i < newSearchMatches.length; i++) {
 				SearchMatch newMatch= newSearchMatches[i];
@@ -287,7 +287,7 @@ class RenameAnalyzeUtil {
 		return result;
 	}
 
-	private static void analyzeChanges(ICompilationUnit cu, TextChange change,
+	private static void analyzeChanges(IJavaScriptUnit cu, TextChange change,
 			SearchMatch[] oldMatches, SearchMatch[] newMatches, String newElementName, RefactoringStatus result) {
 		Map updatedOldOffsets= getUpdatedChangeOffsets(change, oldMatches);
 		for (int i= 0; i < newMatches.length; i++) {
@@ -337,7 +337,7 @@ class RenameAnalyzeUtil {
 		return offsetUpdates;
 	}
 
-	private static void addReferenceShadowedError(ICompilationUnit cu, SearchMatch newMatch, String newElementName, RefactoringStatus result) {
+	private static void addReferenceShadowedError(IJavaScriptUnit cu, SearchMatch newMatch, String newElementName, RefactoringStatus result) {
 		//Found a new match with no corresponding old match.
 		//-> The new match is a reference which was pointing to another element,
 		//but that other element has been shadowed
@@ -355,20 +355,20 @@ class RenameAnalyzeUtil {
 
 	private static ISourceRange getOldSourceRange(SearchMatch newMatch) {
 		// cannot transfom offset in preview to offset in original -> just show enclosing method
-		IJavaElement newMatchElement= (IJavaElement) newMatch.getElement();
-		IJavaElement primaryElement= newMatchElement.getPrimaryElement();
+		IJavaScriptElement newMatchElement= (IJavaScriptElement) newMatch.getElement();
+		IJavaScriptElement primaryElement= newMatchElement.getPrimaryElement();
 		ISourceRange range= null;
 		if (primaryElement.exists() && primaryElement instanceof ISourceReference) {
 			try {
 				range= ((ISourceReference) primaryElement).getSourceRange();
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// can live without source range
 			}
 		}
 		return range;
 	}
 
-	private static void addShadowsError(ICompilationUnit cu, SearchMatch oldMatch, RefactoringStatus result) {
+	private static void addShadowsError(IJavaScriptUnit cu, SearchMatch oldMatch, RefactoringStatus result) {
 		// Old match not found in new matches -> reference has been shadowed
 		
 		//TODO: should not have to filter declarations:
@@ -392,13 +392,13 @@ class RenameAnalyzeUtil {
 	 * @return a RefactoringStatus containing errors if compile errors or wrongly renamed nodes are found
 	 * @throws CoreException thrown if there was an error greating the preview content of the change
 	 */
-	public static RefactoringStatus analyzeLocalRenames(LocalAnalyzePackage[] analyzePackages, TextChange cuChange, CompilationUnit oldCUNode, boolean statementsRecovery) throws CoreException {
+	public static RefactoringStatus analyzeLocalRenames(LocalAnalyzePackage[] analyzePackages, TextChange cuChange, JavaScriptUnit oldCUNode, boolean statementsRecovery) throws CoreException {
 
 		RefactoringStatus result= new RefactoringStatus();
-		ICompilationUnit compilationUnit= (ICompilationUnit) oldCUNode.getJavaElement();
+		IJavaScriptUnit compilationUnit= (IJavaScriptUnit) oldCUNode.getJavaElement();
 
 		String newCuSource= cuChange.getPreviewContent(new NullProgressMonitor());
-		CompilationUnit newCUNode= new RefactoringASTParser(AST.JLS3).parse(newCuSource, compilationUnit, true, statementsRecovery, null);
+		JavaScriptUnit newCUNode= new RefactoringASTParser(AST.JLS3).parse(newCuSource, compilationUnit, true, statementsRecovery, null);
 
 		result.merge(analyzeCompileErrors(newCuSource, newCUNode, oldCUNode));
 		if (result.hasError())
@@ -427,20 +427,20 @@ class RenameAnalyzeUtil {
 			return (VariableDeclaration) node.getParent();
 
 		if (binding != null && binding.getKind() == IBinding.VARIABLE) {
-			CompilationUnit cu= (CompilationUnit) ASTNodes.getParent(node, CompilationUnit.class);
+			JavaScriptUnit cu= (JavaScriptUnit) ASTNodes.getParent(node, JavaScriptUnit.class);
 			return ASTNodes.findVariableDeclaration( ((IVariableBinding) binding), cu);
 		}
 		return null;
 	}
 
-	private static ASTNode getEnclosingBlockOrMethod(TextEdit declarationEdit, TextChange change, CompilationUnit newCUNode) {
+	private static ASTNode getEnclosingBlockOrMethod(TextEdit declarationEdit, TextChange change, JavaScriptUnit newCUNode) {
 		ASTNode enclosing= RefactoringAnalyzeUtil.getBlock(declarationEdit, change, newCUNode);
 		if (enclosing == null)
 			enclosing= RefactoringAnalyzeUtil.getMethodDeclaration(declarationEdit, change, newCUNode);
 		return enclosing;
 	}
 
-	private static RefactoringStatus analyzeCompileErrors(String newCuSource, CompilationUnit newCUNode, CompilationUnit oldCUNode) {
+	private static RefactoringStatus analyzeCompileErrors(String newCuSource, JavaScriptUnit newCUNode, JavaScriptUnit oldCUNode) {
 		RefactoringStatus result= new RefactoringStatus();
 		IProblem[] newProblems= RefactoringAnalyzeUtil.getIntroducedCompileProblems(newCUNode, oldCUNode);
 		for (int i= 0; i < newProblems.length; i++) {

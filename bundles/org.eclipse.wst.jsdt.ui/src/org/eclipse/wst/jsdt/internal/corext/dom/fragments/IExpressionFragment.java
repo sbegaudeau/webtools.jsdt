@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.dom.fragments;
 
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 
@@ -36,7 +36,7 @@ public interface IExpressionFragment extends IASTFragment {
 	 * @param rewrite an ASTRewrite
 	 * @return a copy of this IExpressionFragment, ready for use in the given
 	 *         rewrite
-	 * @throws JavaModelException 
+	 * @throws JavaScriptModelException 
 	 */
-	public Expression createCopyTarget(ASTRewrite rewrite) throws JavaModelException;
+	public Expression createCopyTarget(ASTRewrite rewrite) throws JavaScriptModelException;
 }

@@ -89,14 +89,14 @@ public char[][] getPackageName() {
 	return packageName;
 }
 public String toString() {
-	return "CompilationUnit[" + new String(this.fileName) + "]";  //$NON-NLS-2$ //$NON-NLS-1$
+	return "JavaScriptUnit[" + new String(this.fileName) + "]";  //$NON-NLS-2$ //$NON-NLS-1$
 }
 /* (non-Javadoc)
  * @see org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit#getCommonSuperType()
  */
 public LibrarySuperType getCommonSuperType() {
 	// TODO Auto-generated method stub
-//	System.out.println("Unimplemented method:CompilationUnit.getCommonSuperType"); //$NON-NLS-1$
+//	System.out.println("Unimplemented method:JavaScriptUnit.getCommonSuperType"); //$NON-NLS-1$
 	return null;
 }
 public String getInferenceID() {

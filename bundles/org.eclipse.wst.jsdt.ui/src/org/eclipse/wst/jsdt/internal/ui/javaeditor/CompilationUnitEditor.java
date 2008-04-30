@@ -90,20 +90,20 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.AddBlockCommentAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.actions.IndentAction;
@@ -118,12 +118,12 @@ import org.eclipse.wst.jsdt.internal.ui.text.comment.CommentFormattingContext;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.CorrectionCommandInstaller;
 import org.eclipse.wst.jsdt.internal.ui.text.java.IJavaReconcilingListener;
 import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.actions.GenerateActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 
 
@@ -211,10 +211,10 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 			IFormattingContext context= new CommentFormattingContext();
 
 			Map preferences;
-			IJavaElement inputJavaElement= getInputJavaElement();
-			IJavaProject javaProject= inputJavaElement != null ? inputJavaElement.getJavaProject() : null;
+			IJavaScriptElement inputJavaElement= getInputJavaElement();
+			IJavaScriptProject javaProject= inputJavaElement != null ? inputJavaElement.getJavaScriptProject() : null;
 			if (javaProject == null)
-				preferences= new HashMap(JavaCore.getOptions());
+				preferences= new HashMap(JavaScriptCore.getOptions());
 			else
 				preferences= new HashMap(javaProject.getOptions(true));
 
@@ -481,7 +481,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 						return;
 				}
 
-				ITypedRegion partition= TextUtilities.getPartition(document, IJavaPartitions.JAVA_PARTITIONING, offset, true);
+				ITypedRegion partition= TextUtilities.getPartition(document, IJavaScriptPartitions.JAVA_PARTITIONING, offset, true);
 				if (!IDocument.DEFAULT_CONTENT_TYPE.equals(partition.getType()))
 					return;
 
@@ -535,9 +535,9 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 				event.doit= false;
 
 			} catch (BadLocationException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			} catch (BadPositionCategoryException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 
@@ -568,7 +568,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 												 level.fSecondPosition.length,
 												 ""); //$NON-NLS-1$
 							} catch (BadLocationException e) {
-								JavaPlugin.log(e);
+								JavaScriptPlugin.log(e);
 							}
 						}
 
@@ -577,7 +577,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 							try {
 								document.removePositionCategory(CATEGORY);
 							} catch (BadPositionCategoryException e) {
-								JavaPlugin.log(e);
+								JavaScriptPlugin.log(e);
 							}
 						}
 					}
@@ -649,13 +649,13 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 				int startOffset, endOffset;
 				int revealStartOffset, revealEndOffset;
 				if (showsHighlightRangeOnly()) {
-					IJavaElement newStartElement= fStartOffset.getElement();
+					IJavaScriptElement newStartElement= fStartOffset.getElement();
 					startOffset= fStartOffset.getRememberedOffset(newStartElement);
 					revealStartOffset= fStartOffset.getRevealOffset(newStartElement, startOffset);
 					if (revealStartOffset == -1)
 						startOffset= -1;
 
-					IJavaElement newEndElement= fEndOffset.getElement();
+					IJavaScriptElement newEndElement= fEndOffset.getElement();
 					endOffset= fEndOffset.getRememberedOffset(newEndElement);
 					revealEndOffset= fEndOffset.getRevealOffset(newEndElement, endOffset);
 					if (revealEndOffset == -1)
@@ -677,7 +677,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 					revealEndOffset= revealStartOffset;
 				}
 
-				IJavaElement element;
+				IJavaScriptElement element;
 				if (endOffset == -1) {
 					 // fallback to element selection
 					element= fEndOffset.getElement();
@@ -723,7 +723,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 		/** Remembered column for the given offset*/
 		private int fColumn;
 		/** Remembered Java element for the given offset*/
-		private IJavaElement fElement;
+		private IJavaScriptElement fElement;
 		/** Remembered Java element line for the given offset*/
 		private int fElementLine;
 
@@ -741,11 +741,11 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 				fElementLine= getElementLine(document, fElement);
 			} catch (BadLocationException e) {
 				// should not happen
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 				clear();
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// should not happen
-				JavaPlugin.log(e.getStatus());
+				JavaScriptPlugin.log(e.getStatus());
 				clear();
 			}
 		}
@@ -758,10 +758,10 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 		 * @param element the java element, may be <code>null</code>
 		 * @return the element's start line, or -1
 		 * @throws BadLocationException
-		 * @throws JavaModelException
+		 * @throws JavaScriptModelException
 		 * @since 3.2
 		 */
-		private int getElementLine(IDocument document, IJavaElement element) throws BadLocationException, JavaModelException {
+		private int getElementLine(IDocument document, IJavaScriptElement element) throws BadLocationException, JavaScriptModelException {
 			if (element instanceof IMember) {
 				ISourceRange range= ((IMember) element).getNameRange();
 				if (range != null)
@@ -779,7 +779,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 		 * @return Offset in the document
 		 */
 		public int getOffset() {
-			IJavaElement newElement= getElement();
+			IJavaScriptElement newElement= getElement();
 
 			int offset= getRememberedOffset(newElement);
 
@@ -795,7 +795,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 		 * @param newElement Enclosing element
 		 * @return Offset in the document
 		 */
-		public int getRememberedOffset(IJavaElement newElement) {
+		public int getRememberedOffset(IJavaScriptElement newElement) {
 			try {
 				IDocument document= getSourceViewer().getDocument();
 				int newElementLine= getElementLine(document, newElement);
@@ -818,11 +818,11 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 				return offset;
 			} catch (BadLocationException e) {
 				// should not happen
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 				return -1;
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// should not happen
-				JavaPlugin.log(e.getStatus());
+				JavaScriptPlugin.log(e.getStatus());
 				return -1;
 			}
 		}
@@ -833,13 +833,13 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 		 * @param offset the selection offset
 		 * @return the offset to reveal the given element based on the given selection offset
 		 */
-		public int getRevealOffset(IJavaElement element, int offset) {
+		public int getRevealOffset(IJavaScriptElement element, int offset) {
 			if (element == null || offset == -1)
 				return -1;
 
 			if (containsOffset(element, offset)) {
 				if (offset > 0) {
-					IJavaElement alternateElement= getElementAt(offset, false);
+					IJavaScriptElement alternateElement= getElementAt(offset, false);
 					if (element.getHandleIdentifier().equals(alternateElement.getParent().getHandleIdentifier()))
 						return offset - 1; // Solves test case 2 from https://bugs.eclipse.org/bugs/show_bug.cgi?id=47727#c3
 				}
@@ -855,7 +855,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 		 *
 		 * @return Java element
 		 */
-		public IJavaElement getElement() {
+		public IJavaScriptElement getElement() {
 			if (fElement == null)
 				return null;
 
@@ -878,7 +878,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 		 * @param offset Offset
 		 * @return <code>true</code> iff the Java element contains the offset
 		 */
-		private boolean containsOffset(IJavaElement element, int offset) {
+		private boolean containsOffset(IJavaScriptElement element, int offset) {
 			int elementOffset= getOffset(element);
 			int elementLength= getLength(element);
 			return (elementOffset > -1 && elementLength > -1) ? (offset >= elementOffset && offset < elementOffset + elementLength) : false;
@@ -889,14 +889,14 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 		 * @param element	Java element
 		 * @return Offset of the given Java element
 		 */
-		private int getOffset(IJavaElement element) {
+		private int getOffset(IJavaScriptElement element) {
 			if (element instanceof ISourceReference) {
 				ISourceReference sr= (ISourceReference) element;
 				try {
 					ISourceRange srcRange= sr.getSourceRange();
 					if (srcRange != null)
 						return srcRange.getOffset();
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 				}
 			}
 			return -1;
@@ -908,14 +908,14 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 		 * @param element	Java element
 		 * @return Length of the given Java element
 		 */
-		private int getLength(IJavaElement element) {
+		private int getLength(IJavaScriptElement element) {
 			if (element instanceof ISourceReference) {
 				ISourceReference sr= (ISourceReference) element;
 				try {
 					ISourceRange srcRange= sr.getSourceRange();
 					if (srcRange != null)
 						return srcRange.getLength();
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 				}
 			}
 			return -1;
@@ -927,23 +927,23 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 		 * @param element Old Java element
 		 * @return Updated Java element
 		 */
-		private IJavaElement findElement(IJavaElement element) {
+		private IJavaScriptElement findElement(IJavaScriptElement element) {
 
 			if (element == null)
 				return null;
 
-			IWorkingCopyManager manager= JavaPlugin.getDefault().getWorkingCopyManager();
-			ICompilationUnit unit= manager.getWorkingCopy(getEditorInput());
+			IWorkingCopyManager manager= JavaScriptPlugin.getDefault().getWorkingCopyManager();
+			IJavaScriptUnit unit= manager.getWorkingCopy(getEditorInput());
 
 			if (unit != null) {
 				try {
 					JavaModelUtil.reconcile(unit);
-					IJavaElement[] findings= unit.findElements(element);
+					IJavaScriptElement[] findings= unit.findElements(element);
 					if (findings != null && findings.length > 0)
 						return findings[0];
 
-				} catch (JavaModelException x) {
-					JavaPlugin.log(x.getStatus());
+				} catch (JavaScriptModelException x) {
+					JavaScriptPlugin.log(x.getStatus());
 					// nothing found, be tolerant and go on
 				}
 			}
@@ -1005,7 +1005,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	 */
 	public CompilationUnitEditor() {
 		super();
-		setDocumentProvider(JavaPlugin.getDefault().getCompilationUnitDocumentProvider());
+		setDocumentProvider(JavaScriptPlugin.getDefault().getCompilationUnitDocumentProvider());
 		setEditorContextMenuId("#JavaScriptEditorContext"); //$NON-NLS-1$
 		setRulerContextMenuId("#JavaScriptRulerContext"); //$NON-NLS-1$
 		setOutlinerContextMenuId("#JavaScriptOutlinerContext"); //$NON-NLS-1$
@@ -1137,7 +1137,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	/*
 	 * @see JavaEditor#getElementAt(int)
 	 */
-	protected IJavaElement getElementAt(int offset) {
+	protected IJavaScriptElement getElementAt(int offset) {
 		return getElementAt(offset, true);
 	}
 
@@ -1151,8 +1151,8 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	 * @param reconcile <code>true</code> if working copy should be reconciled
 	 * @return the most narrow element which includes the given offset
 	 */
-	protected IJavaElement getElementAt(int offset, boolean reconcile) {
-		ICompilationUnit unit= (ICompilationUnit)getInputJavaElement();
+	protected IJavaScriptElement getElementAt(int offset, boolean reconcile) {
+		IJavaScriptUnit unit= (IJavaScriptUnit)getInputJavaElement();
 
 		if (unit != null) {
 			try {
@@ -1162,9 +1162,9 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 				} else if (unit.isConsistent())
 					return unit.getElementAt(offset);
 
-			} catch (JavaModelException x) {
+			} catch (JavaScriptModelException x) {
 				if (!x.isDoesNotExist())
-				JavaPlugin.log(x.getStatus());
+				JavaScriptPlugin.log(x.getStatus());
 				// nothing found, be tolerant and go on
 			}
 		}
@@ -1173,9 +1173,9 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	}
 
 	/*
-	 * @see JavaEditor#getCorrespondingElement(IJavaElement)
+	 * @see JavaEditor#getCorrespondingElement(IJavaScriptElement)
 	 */
-	protected IJavaElement getCorrespondingElement(IJavaElement element) {
+	protected IJavaScriptElement getCorrespondingElement(IJavaScriptElement element) {
 		// XXX: With new working copy story: original == working copy.
 		// Note that the previous code could result in a reconcile as side effect. Should check if that
 		// is still required.
@@ -1252,8 +1252,8 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 			updateState(getEditorInput());
 			validateState(getEditorInput());
 
-			IWorkingCopyManager manager= JavaPlugin.getDefault().getWorkingCopyManager();
-			ICompilationUnit unit= manager.getWorkingCopy(getEditorInput());
+			IWorkingCopyManager manager= JavaScriptPlugin.getDefault().getWorkingCopyManager();
+			IJavaScriptUnit unit= manager.getWorkingCopy(getEditorInput());
 
 			if (unit != null) {
 				synchronized (unit) {
@@ -1270,7 +1270,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	 */
 	protected void openSaveErrorDialog(String title, String message, CoreException exception) {
 		IStatus status= exception.getStatus();
-		if (JavaUI.ID_PLUGIN.equals(status.getPlugin()) && status.getCode() == IJavaStatusConstants.EDITOR_POST_SAVE_NOTIFICATION) {
+		if (JavaScriptUI.ID_PLUGIN.equals(status.getPlugin()) && status.getCode() == IJavaStatusConstants.EDITOR_POST_SAVE_NOTIFICATION) {
 			int mask= IStatus.OK | IStatus.INFO | IStatus.WARNING | IStatus.ERROR;
 			ErrorDialog dialog = new ErrorDialog(getSite().getShell(), title, message, status, mask) {
 				protected Control createDialogArea(Composite parent) {
@@ -1370,14 +1370,14 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	 * @since 3.3
 	 */
 	protected boolean isTabsToSpacesConversionEnabled() {
-		IJavaElement element= getInputJavaElement();
-		IJavaProject project= element == null ? null : element.getJavaProject();
+		IJavaScriptElement element= getInputJavaElement();
+		IJavaScriptProject project= element == null ? null : element.getJavaScriptProject();
 		String option;
 		if (project == null)
-			option= JavaCore.getOption(SPACES_FOR_TABS);
+			option= JavaScriptCore.getOption(SPACES_FOR_TABS);
 		else
 			option= project.getOption(SPACES_FOR_TABS, true);
-		return JavaCore.SPACE.equals(option);
+		return JavaScriptCore.SPACE.equals(option);
 	}
 
 	public void dispose() {
@@ -1409,7 +1409,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 		IPreferenceStore preferenceStore= getPreferenceStore();
 		boolean closeBrackets= preferenceStore.getBoolean(CLOSE_BRACKETS);
 		boolean closeStrings= preferenceStore.getBoolean(CLOSE_STRINGS);
-		boolean closeAngularBrackets= JavaCore.VERSION_1_5.compareTo(preferenceStore.getString(JavaCore.COMPILER_SOURCE)) <= 0;
+		boolean closeAngularBrackets= JavaScriptCore.VERSION_1_5.compareTo(preferenceStore.getString(JavaScriptCore.COMPILER_SOURCE)) <= 0;
 
 		fBracketInserter.setCloseBracketsEnabled(closeBrackets);
 		fBracketInserter.setCloseStringsEnabled(closeStrings);
@@ -1486,8 +1486,8 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 					return;
 				}
 
-				if (JavaCore.COMPILER_SOURCE.equals(p)) {
-					boolean closeAngularBrackets= JavaCore.VERSION_1_5.compareTo(getPreferenceStore().getString(p)) <= 0;
+				if (JavaScriptCore.COMPILER_SOURCE.equals(p)) {
+					boolean closeAngularBrackets= JavaScriptCore.VERSION_1_5.compareTo(getPreferenceStore().getString(p)) <= 0;
 					fBracketInserter.setCloseAngularBracketsEnabled(closeAngularBrackets);
 				}
 
@@ -1536,7 +1536,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	public void aboutToBeReconciled() {
 
 		// Notify AST provider
-		JavaPlugin.getDefault().getASTProvider().aboutToBeReconciled(getInputJavaElement());
+		JavaScriptPlugin.getDefault().getASTProvider().aboutToBeReconciled(getInputJavaElement());
 
 		// Notify listeners
 		Object[] listeners = fReconcilingListeners.getListeners();
@@ -1545,13 +1545,13 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	}
 
 	/*
-	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.IJavaReconcilingListener#reconciled(CompilationUnit, boolean, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.IJavaReconcilingListener#reconciled(JavaScriptUnit, boolean, IProgressMonitor)
 	 * @since 3.0
 	 */
-	public void reconciled(CompilationUnit ast, boolean forced, IProgressMonitor progressMonitor) {
+	public void reconciled(JavaScriptUnit ast, boolean forced, IProgressMonitor progressMonitor) {
 		
 		// see: https://bugs.eclipse.org/bugs/show_bug.cgi?id=58245
-		JavaPlugin javaPlugin= JavaPlugin.getDefault();
+		JavaScriptPlugin javaPlugin= JavaScriptPlugin.getDefault();
 		if (javaPlugin == null)
 			return;
 		

@@ -46,13 +46,13 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate2;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.AssistContext;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.QuickTemplateProcessor;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.wst.jsdt.ui.actions.SurroundWithTryCatchAction;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
@@ -83,7 +83,7 @@ public class SurroundWithTemplateMenuAction implements IWorkbenchWindowPulldownD
 		}
 
 		private Shell getShell() {
-			return JavaPlugin.getActiveWorkbenchWindow().getShell();
+			return JavaScriptPlugin.getActiveWorkbenchWindow().getShell();
 		}
 	}
 	
@@ -207,7 +207,7 @@ public class SurroundWithTemplateMenuAction implements IWorkbenchWindowPulldownD
 	 * {@inheritDoc}
 	 */
 	public void run(IAction action) {
-		IWorkbenchPart activePart= JavaPlugin.getActivePage().getActivePart();
+		IWorkbenchPart activePart= JavaScriptPlugin.getActivePage().getActivePart();
 		if (!(activePart instanceof CompilationUnitEditor))
 			return;
 		
@@ -233,7 +233,7 @@ public class SurroundWithTemplateMenuAction implements IWorkbenchWindowPulldownD
 	 */
 	protected void fillMenu(Menu menu) {
 		
-		IWorkbenchPart activePart= JavaPlugin.getActivePage().getActivePart();
+		IWorkbenchPart activePart= JavaScriptPlugin.getActivePage().getActivePart();
 		if (!(activePart instanceof CompilationUnitEditor)) {
 			ActionContributionItem item= new ActionContributionItem(NONE_APPLICABLE_ACTION);
 			item.fill(menu, -1);
@@ -310,7 +310,7 @@ public class SurroundWithTemplateMenuAction implements IWorkbenchWindowPulldownD
 		if (textSelection.getLength() == 0)
 			return null;
 		
-		ICompilationUnit cu= JavaUI.getWorkingCopyManager().getWorkingCopy(editor.getEditorInput());
+		IJavaScriptUnit cu= JavaScriptUI.getWorkingCopyManager().getWorkingCopy(editor.getEditorInput());
 		if (cu == null)
 			return null;
 		
@@ -324,7 +324,7 @@ public class SurroundWithTemplateMenuAction implements IWorkbenchWindowPulldownD
 			
 			return getActionsFromProposals(proposals, context.getSelectionOffset(), editor.getViewer());
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		return null;
 	}

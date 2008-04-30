@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public abstract class AbstractSaveParticipantPreferenceConfiguration implements ISaveParticipantPreferenceConfiguration {
 	
@@ -112,8 +112,8 @@ public abstract class AbstractSaveParticipantPreferenceConfiguration implements 
 	 */
 	public void performDefaults() {
 		String key= getPreferenceKey();
-		boolean defaultEnabled= new DefaultScope().getNode(JavaUI.ID_PLUGIN).getBoolean(key, false);
-		fContext.getNode(JavaUI.ID_PLUGIN).putBoolean(key, defaultEnabled);
+		boolean defaultEnabled= new DefaultScope().getNode(JavaScriptUI.ID_PLUGIN).getBoolean(key, false);
+		fContext.getNode(JavaScriptUI.ID_PLUGIN).putBoolean(key, defaultEnabled);
 		fEnableField.setSelection(defaultEnabled);
 	}
 	
@@ -126,21 +126,21 @@ public abstract class AbstractSaveParticipantPreferenceConfiguration implements 
 	 * {@inheritDoc}
 	 */
 	public void enableProjectSettings() {
-		fContext.getNode(JavaUI.ID_PLUGIN).putBoolean(getPreferenceKey(), fEnableField.isSelected());
+		fContext.getNode(JavaScriptUI.ID_PLUGIN).putBoolean(getPreferenceKey(), fEnableField.isSelected());
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	public void disableProjectSettings() {
-		fContext.getNode(JavaUI.ID_PLUGIN).remove(getPreferenceKey());
+		fContext.getNode(JavaScriptUI.ID_PLUGIN).remove(getPreferenceKey());
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	public boolean hasSettingsInScope(IScopeContext context) {
-    	return context.getNode(JavaUI.ID_PLUGIN).get(getPreferenceKey(), null) != null;
+    	return context.getNode(JavaScriptUI.ID_PLUGIN).get(getPreferenceKey(), null) != null;
 	}
 	
 	/**
@@ -149,18 +149,18 @@ public abstract class AbstractSaveParticipantPreferenceConfiguration implements 
 	public boolean isEnabled(IScopeContext context) {
 		IEclipsePreferences node;
 		if (hasSettingsInScope(context)) {
-			node= context.getNode(JavaUI.ID_PLUGIN);
+			node= context.getNode(JavaScriptUI.ID_PLUGIN);
 		} else {
-			node= new InstanceScope().getNode(JavaUI.ID_PLUGIN);
+			node= new InstanceScope().getNode(JavaScriptUI.ID_PLUGIN);
 		}
-		IEclipsePreferences defaultNode= new DefaultScope().getNode(JavaUI.ID_PLUGIN);
+		IEclipsePreferences defaultNode= new DefaultScope().getNode(JavaScriptUI.ID_PLUGIN);
 		
 		String key= getPreferenceKey();
 		return node.getBoolean(key, defaultNode.getBoolean(key, false));
 	}
 	
 	protected void enableConfigControl(boolean isEnabled) {
-		fContext.getNode(JavaUI.ID_PLUGIN).putBoolean(getPreferenceKey(), isEnabled);
+		fContext.getNode(JavaScriptUI.ID_PLUGIN).putBoolean(getPreferenceKey(), isEnabled);
 		if (fConfigControl != null) {
 			if (fConfigControlEnabledState != null) {
 				fConfigControlEnabledState.restore();

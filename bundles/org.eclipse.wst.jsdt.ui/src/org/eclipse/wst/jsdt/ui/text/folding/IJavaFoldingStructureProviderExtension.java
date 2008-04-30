@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.text.folding;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
  * Extends {@link IJavaFoldingStructureProvider} with the following
@@ -39,12 +39,12 @@ public interface IJavaFoldingStructureProviderExtension {
 	 * @param elements the java elements to collapse (the array and its elements must not be
 	 *        modified)
 	 */
-	void collapseElements(IJavaElement[] elements);
+	void collapseElements(IJavaScriptElement[] elements);
 
 	/**
 	 * Expands the given elements.
 	 * 
 	 * @param elements the java elements to expand (the array and its elements must not be modified)
 	 */
-	void expandElements(IJavaElement[] elements);
+	void expandElements(IJavaScriptElement[] elements);
 }

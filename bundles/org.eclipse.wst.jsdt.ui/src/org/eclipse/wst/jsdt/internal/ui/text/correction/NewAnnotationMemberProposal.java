@@ -15,13 +15,13 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
@@ -43,14 +43,14 @@ public class NewAnnotationMemberProposal extends LinkedCorrectionProposal {
 	private final ASTNode fInvocationNode;
 	private final ITypeBinding fSenderBinding;
 
-	public NewAnnotationMemberProposal(String label, ICompilationUnit targetCU, ASTNode invocationNode, ITypeBinding binding, int relevance, Image image) {
+	public NewAnnotationMemberProposal(String label, IJavaScriptUnit targetCU, ASTNode invocationNode, ITypeBinding binding, int relevance, Image image) {
 		super(label, targetCU, null, relevance, image);
 		fInvocationNode= invocationNode;
 		fSenderBinding= binding;
 	}
 	
 	protected ASTRewrite getRewrite() throws CoreException {
-		CompilationUnit astRoot= ASTResolving.findParentCompilationUnit(fInvocationNode);
+		JavaScriptUnit astRoot= ASTResolving.findParentCompilationUnit(fInvocationNode);
 		ASTNode typeDecl= astRoot.findDeclaringNode(fSenderBinding);
 		ASTNode newTypeDecl= null;
 		if (typeDecl != null) {

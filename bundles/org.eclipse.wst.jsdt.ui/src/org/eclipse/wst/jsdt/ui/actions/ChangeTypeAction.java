@@ -17,9 +17,9 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStar
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -80,9 +80,9 @@ public class ChangeTypeAction extends SelectionDispatchAction {
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isGeneralizeTypeAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			setEnabled(false);
 		}
 	}
@@ -93,13 +93,13 @@ public class ChangeTypeAction extends SelectionDispatchAction {
 			if (member == null || !ActionUtil.isEditable(getShell(), member))
 				return;
 			ISourceRange range= member.getNameRange();
-			RefactoringExecutionStarter.startChangeTypeRefactoring(member.getCompilationUnit(), getShell(), range.getOffset(), range.getLength());
+			RefactoringExecutionStarter.startChangeTypeRefactoring(member.getJavaScriptUnit(), getShell(), range.getOffset(), range.getLength());
 		} catch (CoreException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.ChangeTypeAction_dialog_title, RefactoringMessages.ChangeTypeAction_exception); 
 		}
 	}
 
-	private static IMember getMember(IStructuredSelection selection) throws JavaModelException {
+	private static IMember getMember(IStructuredSelection selection) throws JavaScriptModelException {
 		if (selection.size() != 1)
 			return null;
 		
@@ -107,8 +107,8 @@ public class ChangeTypeAction extends SelectionDispatchAction {
 		if (!(element instanceof IMember))
 			return null;
 		
-		if (element instanceof IMethod) {
-			IMethod method= (IMethod)element;
+		if (element instanceof IFunction) {
+			IFunction method= (IFunction)element;
 			String returnType= method.getReturnType();
 			if (PrimitiveType.toCode(Signature.toString(returnType)) != null)
 				return null;
@@ -135,7 +135,7 @@ public class ChangeTypeAction extends SelectionDispatchAction {
 	public void selectionChanged(JavaTextSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isGeneralizeTypeAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			setEnabled(false);
 		}
 	}

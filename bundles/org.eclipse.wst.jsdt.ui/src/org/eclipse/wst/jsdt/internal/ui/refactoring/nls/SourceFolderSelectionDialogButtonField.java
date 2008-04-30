@@ -19,9 +19,9 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.JavaSourcePackageFragmentRootCompletionProcessor;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
@@ -91,7 +91,7 @@ class SourceFolderSelectionDialogButtonField extends StringButtonDialogField imp
 			if (!proj.isOpen()) {
 				return null;
 			}				
-			IJavaProject jproject= JavaCore.create(proj);
+			IJavaScriptProject jproject= JavaScriptCore.create(proj);
 			IPackageFragmentRoot root= jproject.getPackageFragmentRoot(res);
 			if (root.exists()) {
 				return root;

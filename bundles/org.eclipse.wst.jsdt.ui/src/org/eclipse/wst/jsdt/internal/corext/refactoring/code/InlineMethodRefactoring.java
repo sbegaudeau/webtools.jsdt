@@ -38,29 +38,29 @@ import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
@@ -76,7 +76,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParse
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TextChangeManager;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /*
  * Open items:
@@ -123,28 +123,28 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 		fSelectionLength= length;
 	}
 
-	private InlineMethodRefactoring(ICompilationUnit unit, MethodInvocation node, int offset, int length) {
+	private InlineMethodRefactoring(IJavaScriptUnit unit, FunctionInvocation node, int offset, int length) {
 		this(unit, (ASTNode)node, offset, length);
 		fTargetProvider= TargetProvider.create(unit, node);
 		fInitialMode= fCurrentMode= Mode.INLINE_SINGLE;
 		fDeleteSource= false;
 	}
 
-	private InlineMethodRefactoring(ICompilationUnit unit, SuperMethodInvocation node, int offset, int length) {
+	private InlineMethodRefactoring(IJavaScriptUnit unit, SuperMethodInvocation node, int offset, int length) {
 		this(unit, (ASTNode)node, offset, length);
 		fTargetProvider= TargetProvider.create(unit, node);
 		fInitialMode= fCurrentMode= Mode.INLINE_SINGLE;
 		fDeleteSource= false;
 	}
 
-	private InlineMethodRefactoring(ICompilationUnit unit, ConstructorInvocation node, int offset, int length) {
+	private InlineMethodRefactoring(IJavaScriptUnit unit, ConstructorInvocation node, int offset, int length) {
 		this(unit, (ASTNode)node, offset, length);
 		fTargetProvider= TargetProvider.create(unit, node);
 		fInitialMode= fCurrentMode= Mode.INLINE_SINGLE;
 		fDeleteSource= false;
 	}
 
-	private InlineMethodRefactoring(ITypeRoot typeRoot, MethodDeclaration node, int offset, int length) {
+	private InlineMethodRefactoring(ITypeRoot typeRoot, FunctionDeclaration node, int offset, int length) {
 		this(typeRoot, (ASTNode)node, offset, length);
 		fSourceProvider= new SourceProvider(typeRoot, node);
 		fTargetProvider= TargetProvider.create(node);
@@ -159,17 +159,17 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 	 * @param selectionStart
 	 * @param selectionLength
 	 */
-	public static InlineMethodRefactoring create(ITypeRoot unit, CompilationUnit node, int selectionStart, int selectionLength) {
+	public static InlineMethodRefactoring create(ITypeRoot unit, JavaScriptUnit node, int selectionStart, int selectionLength) {
 		ASTNode target= getTargetNode(unit, node, selectionStart, selectionLength);
 		if (target == null)
 			return null;
-		if (target.getNodeType() == ASTNode.METHOD_DECLARATION) {
+		if (target.getNodeType() == ASTNode.FUNCTION_DECLARATION) {
 			
-			return new InlineMethodRefactoring(unit, (MethodDeclaration)target, selectionStart, selectionLength);
+			return new InlineMethodRefactoring(unit, (FunctionDeclaration)target, selectionStart, selectionLength);
 		} else {
-			ICompilationUnit cu= (ICompilationUnit) unit;
-			if (target.getNodeType() == ASTNode.METHOD_INVOCATION) {
-				return new InlineMethodRefactoring(cu, (MethodInvocation)target, selectionStart, selectionLength);
+			IJavaScriptUnit cu= (IJavaScriptUnit) unit;
+			if (target.getNodeType() == ASTNode.FUNCTION_INVOCATION) {
+				return new InlineMethodRefactoring(cu, (FunctionInvocation)target, selectionStart, selectionLength);
 			} else if (target.getNodeType() == ASTNode.SUPER_METHOD_INVOCATION) {
 				return new InlineMethodRefactoring(cu, (SuperMethodInvocation)target, selectionStart, selectionLength);
 			} else if (target.getNodeType() == ASTNode.CONSTRUCTOR_INVOCATION) {
@@ -201,18 +201,18 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 		return fInitialMode;
 	}
 	
-	public RefactoringStatus setCurrentMode(Mode mode) throws JavaModelException {
+	public RefactoringStatus setCurrentMode(Mode mode) throws JavaScriptModelException {
 		if (fCurrentMode == mode)
 			return new RefactoringStatus();
 		Assert.isTrue(getInitialMode() == Mode.INLINE_SINGLE);
 		fCurrentMode= mode;
 		if (mode == Mode.INLINE_SINGLE) {
-			if (fInitialNode instanceof MethodInvocation)
-				fTargetProvider= TargetProvider.create((ICompilationUnit) fInitialTypeRoot, (MethodInvocation)fInitialNode);
+			if (fInitialNode instanceof FunctionInvocation)
+				fTargetProvider= TargetProvider.create((IJavaScriptUnit) fInitialTypeRoot, (FunctionInvocation)fInitialNode);
 			else if (fInitialNode instanceof SuperMethodInvocation)
-				fTargetProvider= TargetProvider.create((ICompilationUnit) fInitialTypeRoot, (SuperMethodInvocation)fInitialNode);
+				fTargetProvider= TargetProvider.create((IJavaScriptUnit) fInitialTypeRoot, (SuperMethodInvocation)fInitialNode);
 			else if (fInitialNode instanceof ConstructorInvocation)
-				fTargetProvider= TargetProvider.create((ICompilationUnit) fInitialTypeRoot, (ConstructorInvocation)fInitialNode);
+				fTargetProvider= TargetProvider.create((IJavaScriptUnit) fInitialTypeRoot, (ConstructorInvocation)fInitialNode);
 			else
 				throw new IllegalStateException(String.valueOf(fInitialNode));
 		} else {
@@ -242,7 +242,7 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 		fTargetProvider.initialize();
 		pm.setTaskName(RefactoringCoreMessages.InlineMethodRefactoring_searching);
 		RefactoringStatus searchStatus= new RefactoringStatus();
-		ICompilationUnit[] units= fTargetProvider.getAffectedCompilationUnits(searchStatus, new SubProgressMonitor(pm, 1));
+		IJavaScriptUnit[] units= fTargetProvider.getAffectedCompilationUnits(searchStatus, new SubProgressMonitor(pm, 1));
 		if (searchStatus.hasFatalError()) {
 			result.merge(searchStatus);
 			return result;
@@ -256,7 +256,7 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 		IProgressMonitor sub= new SubProgressMonitor(pm, 15);
 		sub.beginTask("", units.length * 3); //$NON-NLS-1$
 		for (int c= 0; c < units.length; c++) {
-			ICompilationUnit unit= units[c];
+			IJavaScriptUnit unit= units[c];
 			sub.subTask(Messages.format(RefactoringCoreMessages.InlineMethodRefactoring_processing,  unit.getElementName())); 
 			CallInliner inliner= null;
 			try {
@@ -267,7 +267,7 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 				BodyDeclaration[] bodies= fTargetProvider.getAffectedBodyDeclarations(unit, new SubProgressMonitor(pm, 1));
 				if (bodies.length == 0)
 					continue;
-				inliner= new CallInliner(unit, (CompilationUnit) bodies[0].getRoot(), fSourceProvider);
+				inliner= new CallInliner(unit, (JavaScriptUnit) bodies[0].getRoot(), fSourceProvider);
 				for (int b= 0; b < bodies.length; b++) {
 					BodyDeclaration body= bodies[b];
 					inliner.initialize(body);
@@ -325,7 +325,7 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 
 	public Change createChange(IProgressMonitor pm) throws CoreException {
 		if (fDeleteSource && fCurrentMode == Mode.INLINE_ALL) {
-			TextChange change= fChangeManager.get((ICompilationUnit) fSourceProvider.getTypeRoot());
+			TextChange change= fChangeManager.get((IJavaScriptUnit) fSourceProvider.getTypeRoot());
 			TextEdit delete= fSourceProvider.getDeleteEdit();
 			TextEditGroup description= new TextEditGroup(
 				RefactoringCoreMessages.InlineMethodRefactoring_edit_delete, new TextEdit[] { delete }); 
@@ -344,23 +344,23 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 		}
 		final Map arguments= new HashMap();
 		String project= null;
-		IJavaProject javaProject= fInitialTypeRoot.getJavaProject();
+		IJavaScriptProject javaProject= fInitialTypeRoot.getJavaScriptProject();
 		if (javaProject != null)
 			project= javaProject.getElementName();
-		int flags= RefactoringDescriptor.STRUCTURAL_CHANGE | JavaRefactoringDescriptor.JAR_REFACTORING | JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
-		final IMethodBinding binding= fSourceProvider.getDeclaration().resolveBinding();
+		int flags= RefactoringDescriptor.STRUCTURAL_CHANGE | JavaScriptRefactoringDescriptor.JAR_REFACTORING | JavaScriptRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
+		final IFunctionBinding binding= fSourceProvider.getDeclaration().resolveBinding();
 		final ITypeBinding declaring= binding.getDeclaringClass();
 		if (!Modifier.isPrivate(binding.getModifiers()))
 			flags|= RefactoringDescriptor.MULTI_CHANGE;
 		final String description= Messages.format(RefactoringCoreMessages.InlineMethodRefactoring_descriptor_description_short, binding.getName());
-		final String header= Messages.format(RefactoringCoreMessages.InlineMethodRefactoring_descriptor_description, new String[] { BindingLabelProvider.getBindingLabel(binding, JavaElementLabels.ALL_FULLY_QUALIFIED), BindingLabelProvider.getBindingLabel(declaring, JavaElementLabels.ALL_FULLY_QUALIFIED)});
+		final String header= Messages.format(RefactoringCoreMessages.InlineMethodRefactoring_descriptor_description, new String[] { BindingLabelProvider.getBindingLabel(binding, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), BindingLabelProvider.getBindingLabel(declaring, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)});
 		final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
-		comment.addSetting(Messages.format(RefactoringCoreMessages.InlineMethodRefactoring_original_pattern, BindingLabelProvider.getBindingLabel(binding, JavaElementLabels.ALL_FULLY_QUALIFIED)));
+		comment.addSetting(Messages.format(RefactoringCoreMessages.InlineMethodRefactoring_original_pattern, BindingLabelProvider.getBindingLabel(binding, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
 		if (fDeleteSource)
 			comment.addSetting(RefactoringCoreMessages.InlineMethodRefactoring_remove_method);
 		if (fCurrentMode == Mode.INLINE_ALL)
 			comment.addSetting(RefactoringCoreMessages.InlineMethodRefactoring_replace_references);
-		final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaRefactorings.INLINE_METHOD, project, description, comment.asString(), arguments, flags);
+		final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaScriptRefactorings.INLINE_METHOD, project, description, comment.asString(), arguments, flags);
 		arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_INPUT, descriptor.elementToHandle(fInitialTypeRoot));
 		arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_SELECTION, new Integer(fSelectionStart).toString() + " " + new Integer(fSelectionLength).toString()); //$NON-NLS-1$
 		arguments.put(ATTRIBUTE_DELETE, Boolean.valueOf(fDeleteSource).toString());
@@ -368,46 +368,46 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 		return new DynamicValidationRefactoringChange(descriptor, RefactoringCoreMessages.InlineMethodRefactoring_edit_inlineCall, fChangeManager.getAllChanges());
 	}
 	
-	private static SourceProvider resolveSourceProvider(RefactoringStatus status, ITypeRoot typeRoot, ASTNode invocation) throws JavaModelException {
-		CompilationUnit root= (CompilationUnit)invocation.getRoot();
-		IMethodBinding methodBinding= Invocations.resolveBinding(invocation);
+	private static SourceProvider resolveSourceProvider(RefactoringStatus status, ITypeRoot typeRoot, ASTNode invocation) throws JavaScriptModelException {
+		JavaScriptUnit root= (JavaScriptUnit)invocation.getRoot();
+		IFunctionBinding methodBinding= Invocations.resolveBinding(invocation);
 		if (methodBinding == null) {
 			status.addFatalError(RefactoringCoreMessages.InlineMethodRefactoring_error_noMethodDeclaration); 
 			return null;
 		}
-		MethodDeclaration declaration= (MethodDeclaration)root.findDeclaringNode(methodBinding);
+		FunctionDeclaration declaration= (FunctionDeclaration)root.findDeclaringNode(methodBinding);
 		if (declaration != null) {
 			return new SourceProvider(typeRoot, declaration);
 		}
-		IMethod method= (IMethod)methodBinding.getJavaElement();
+		IFunction method= (IFunction)methodBinding.getJavaElement();
 		if (method != null) {
-			CompilationUnit methodDeclarationAstRoot;
-			ICompilationUnit methodCu= method.getCompilationUnit();
+			JavaScriptUnit methodDeclarationAstRoot;
+			IJavaScriptUnit methodCu= method.getJavaScriptUnit();
 			if (methodCu != null) {
 				methodDeclarationAstRoot= new RefactoringASTParser(AST.JLS3).parse(methodCu, true);
 			} else {
 				IClassFile classFile= method.getClassFile();
 				if (! JavaElementUtil.isSourceAvailable(classFile)) {
-					String methodLabel= JavaElementLabels.getTextLabel(method, JavaElementLabels.M_FULLY_QUALIFIED | JavaElementLabels.M_PARAMETER_TYPES);
+					String methodLabel= JavaScriptElementLabels.getTextLabel(method, JavaScriptElementLabels.M_FULLY_QUALIFIED | JavaScriptElementLabels.M_PARAMETER_TYPES);
 					status.addFatalError(Messages.format(RefactoringCoreMessages.InlineMethodRefactoring_error_classFile, methodLabel)); 
 					return null;
 				}				
 				methodDeclarationAstRoot= new RefactoringASTParser(AST.JLS3).parse(classFile, true);
 			}
 			ASTNode node= methodDeclarationAstRoot.findDeclaringNode(methodBinding.getMethodDeclaration().getKey());
-			if (node instanceof MethodDeclaration) {
-				return new SourceProvider(methodDeclarationAstRoot.getTypeRoot(), (MethodDeclaration) node);
+			if (node instanceof FunctionDeclaration) {
+				return new SourceProvider(methodDeclarationAstRoot.getTypeRoot(), (FunctionDeclaration) node);
 			}
 		}
 		status.addFatalError(RefactoringCoreMessages.InlineMethodRefactoring_error_noMethodDeclaration); 
 		return null;
 	}
 	
-	private static ASTNode getTargetNode(ITypeRoot typeRoot, CompilationUnit root, int offset, int length) {
+	private static ASTNode getTargetNode(ITypeRoot typeRoot, JavaScriptUnit root, int offset, int length) {
 		ASTNode node= null;
 		try {
 			node= checkNode(NodeFinder.perform(root, offset, length, typeRoot), typeRoot);
-		} catch(JavaModelException e) {
+		} catch(JavaScriptModelException e) {
 			// Do nothing
 		}
 		if (node != null)
@@ -415,7 +415,7 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 		return checkNode(NodeFinder.perform(root, offset, length), typeRoot);
 	}
 
-	private static ASTNode checkNode(ASTNode node, IJavaElement unit) {
+	private static ASTNode checkNode(ASTNode node, IJavaScriptElement unit) {
 		if (node == null)
 			return null;
 		if (node.getNodeType() == ASTNode.SIMPLE_NAME) {
@@ -424,17 +424,17 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 			node= ((ExpressionStatement)node).getExpression();
 		}
 		switch(node.getNodeType()) {
-			case ASTNode.METHOD_DECLARATION:
+			case ASTNode.FUNCTION_DECLARATION:
 					return node;
-			case ASTNode.METHOD_INVOCATION:
+			case ASTNode.FUNCTION_INVOCATION:
 			case ASTNode.SUPER_METHOD_INVOCATION:
 			case ASTNode.CONSTRUCTOR_INVOCATION:
-				return unit instanceof ICompilationUnit ? node : null; // don't start on invocations in binary
+				return unit instanceof IJavaScriptUnit ? node : null; // don't start on invocations in binary
 		}
 		return null;
 	}
 	
-	private IFile[] getFilesToBeModified(ICompilationUnit[] units) {
+	private IFile[] getFilesToBeModified(IJavaScriptUnit[] units) {
 		List result= new ArrayList(units.length + 1);
 		IFile file;
 		for (int i= 0; i < units.length; i++) {
@@ -443,14 +443,14 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 				result.add(file);
 		}
 		if (fDeleteSource) {
-			file= getFile((ICompilationUnit) fSourceProvider.getTypeRoot());
+			file= getFile((IJavaScriptUnit) fSourceProvider.getTypeRoot());
 			if (file != null && !result.contains(file))
 				result.add(file);
 		}
 		return (IFile[])result.toArray(new IFile[result.size()]);
 	}
 	
-	private IFile getFile(ICompilationUnit unit) {
+	private IFile getFile(IJavaScriptUnit unit) {
 		unit= unit.getPrimary();
 		IResource resource= unit.getResource();
 		if (resource != null && resource.getType() == IResource.FILE)
@@ -458,11 +458,11 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 		return null;
 	}
 	
-	private void checkOverridden(RefactoringStatus status, IProgressMonitor pm) throws JavaModelException {
+	private void checkOverridden(RefactoringStatus status, IProgressMonitor pm) throws JavaScriptModelException {
 		pm.beginTask("", 9); //$NON-NLS-1$
 		pm.setTaskName(RefactoringCoreMessages.InlineMethodRefactoring_checking_overridden); 
-		MethodDeclaration decl= fSourceProvider.getDeclaration();
-		IMethod method= (IMethod) decl.resolveBinding().getJavaElement();
+		FunctionDeclaration decl= fSourceProvider.getDeclaration();
+		IFunction method= (IFunction) decl.resolveBinding().getJavaElement();
 		if (method == null || Flags.isPrivate(method.getFlags())) {
 			pm.worked(8);
 			return;
@@ -479,31 +479,31 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 		pm.setTaskName(""); //$NON-NLS-1$
 	}
 
-	private void checkSubTypes(RefactoringStatus result, IMethod method, IType[] types, IProgressMonitor pm) {
+	private void checkSubTypes(RefactoringStatus result, IFunction method, IType[] types, IProgressMonitor pm) {
 		checkTypes(
 			result, method, types, 
 			RefactoringCoreMessages.InlineMethodRefactoring_checking_overridden_error,
 			pm);
 	}
 	
-	private void checkSuperClasses(RefactoringStatus result, IMethod method, IType[] types, IProgressMonitor pm) {
+	private void checkSuperClasses(RefactoringStatus result, IFunction method, IType[] types, IProgressMonitor pm) {
 		checkTypes(
 			result, method, types, 
 			RefactoringCoreMessages.InlineMethodRefactoring_checking_overrides_error,
 			pm);
 	}
 
-	private void checkSuperInterfaces(RefactoringStatus result, IMethod method, IType[] types, IProgressMonitor pm) {
+	private void checkSuperInterfaces(RefactoringStatus result, IFunction method, IType[] types, IProgressMonitor pm) {
 		checkTypes(
 			result, method, types, 
 			RefactoringCoreMessages.InlineMethodRefactoring_checking_implements_error,
 			pm);
 	}
-	private void checkTypes(RefactoringStatus result, IMethod method, IType[] types, String key, IProgressMonitor pm) {
+	private void checkTypes(RefactoringStatus result, IFunction method, IType[] types, String key, IProgressMonitor pm) {
 		pm.beginTask("", types.length); //$NON-NLS-1$
 		for (int i= 0; i < types.length; i++) {
 			pm.worked(1);
-			IMethod[] overridden= types[i].findMethods(method);
+			IFunction[] overridden= types[i].findMethods(method);
 			if (overridden != null && overridden.length > 0) {
 				result.addError(
 					Messages.format(key, types[i].getElementName()), 
@@ -512,7 +512,7 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 		}
 	}
 	
-	private ASTNode[] removeNestedCalls(RefactoringStatus status, ICompilationUnit unit, ASTNode[] invocations) {
+	private ASTNode[] removeNestedCalls(RefactoringStatus status, IJavaScriptUnit unit, ASTNode[] invocations) {
 		if (invocations.length <= 1)
 			return invocations;
 		ASTNode[] parents= new ASTNode[invocations.length];
@@ -530,7 +530,7 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 		return (ASTNode[])result.toArray(new ASTNode[result.size()]);
 	}
 	
-	private void removeNestedCalls(RefactoringStatus status, ICompilationUnit unit, ASTNode[] parents, ASTNode[] invocations, int index) {
+	private void removeNestedCalls(RefactoringStatus status, IJavaScriptUnit unit, ASTNode[] parents, ASTNode[] invocations, int index) {
 		ASTNode invocation= invocations[index];
 		for (int i= 0; i < parents.length; i++) {
 			ASTNode parent= parents[i];
@@ -563,7 +563,7 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 				}
 				try {
 					setCurrentMode(mode == 1 ? Mode.INLINE_ALL : Mode.INLINE_SINGLE);
-				} catch (JavaModelException exception) {
+				} catch (JavaScriptModelException exception) {
 					return RefactoringStatus.createFatalErrorStatus(exception.getLocalizedMessage());
 				}
 			}

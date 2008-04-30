@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
@@ -53,7 +53,7 @@ public class ExclusionInclusionDialog extends StatusDialog {
 		private Image fElementImage;
 
 		public ExclusionInclusionLabelProvider(ImageDescriptor descriptor) {
-			ImageDescriptorRegistry registry= JavaPlugin.getImageDescriptorRegistry();
+			ImageDescriptorRegistry registry= JavaScriptPlugin.getImageDescriptorRegistry();
 			fElementImage= registry.get(descriptor);
 		}
 		

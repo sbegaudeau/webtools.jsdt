@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class JavaUILabelProvider implements ILabelProvider, IColorProvider, IRichLabelProvider {
 	
@@ -41,11 +41,11 @@ public class JavaUILabelProvider implements ILabelProvider, IColorProvider, IRic
 	 * Creates a new label provider with default flags.
 	 */
 	public JavaUILabelProvider() {
-		this(JavaElementLabels.ALL_DEFAULT, JavaElementImageProvider.OVERLAY_ICONS);
+		this(JavaScriptElementLabels.ALL_DEFAULT, JavaElementImageProvider.OVERLAY_ICONS);
 	}
 
 	/**
-	 * @param textFlags Flags defined in <code>JavaElementLabels</code>.
+	 * @param textFlags Flags defined in <code>JavaScriptElementLabels</code>.
 	 * @param imageFlags Flags defined in <code>JavaElementImageProvider</code>.
 	 */
 	public JavaUILabelProvider(long textFlags, int imageFlags) {
@@ -160,7 +160,7 @@ public class JavaUILabelProvider implements ILabelProvider, IColorProvider, IRic
 	 * @see ILabelProvider#getText
 	 */
 	public String getText(Object element) {
-		String result= JavaElementLabels.getTextLabel(element, evaluateTextFlags(element));
+		String result= JavaScriptElementLabels.getTextLabel(element, evaluateTextFlags(element));
 		if (result.length() == 0 && (element instanceof IStorage)) {
 			result= fStorageLabelProvider.getText(element);
 		}

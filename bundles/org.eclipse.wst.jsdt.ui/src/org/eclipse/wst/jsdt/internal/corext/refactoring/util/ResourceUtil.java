@@ -15,8 +15,8 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IOpenable;
 
 
@@ -25,7 +25,7 @@ public class ResourceUtil {
 	private ResourceUtil(){
 	}
 	
-	public static IFile[] getFiles(ICompilationUnit[] cus) {
+	public static IFile[] getFiles(IJavaScriptUnit[] cus) {
 		List files= new ArrayList(cus.length);
 		for (int i= 0; i < cus.length; i++) {
 			IResource resource= cus[i].getResource();
@@ -35,7 +35,7 @@ public class ResourceUtil {
 		return (IFile[]) files.toArray(new IFile[files.size()]);
 	}
 
-	public static IFile getFile(ICompilationUnit cu) {
+	public static IFile getFile(IJavaScriptUnit cu) {
 		IResource resource= cu.getResource();
 		if (resource != null && resource.getType() == IResource.FILE)
 			return (IFile)resource;
@@ -48,14 +48,14 @@ public class ResourceUtil {
 	public static IResource getResource(Object o){
 		if (o instanceof IResource)
 			return (IResource)o;
-		if (o instanceof IJavaElement)
-			return getResource((IJavaElement)o);
+		if (o instanceof IJavaScriptElement)
+			return getResource((IJavaScriptElement)o);
 		return null;	
 	}
 
-	private static IResource getResource(IJavaElement element){
-		if (element.getElementType() == IJavaElement.COMPILATION_UNIT)
-			return ((ICompilationUnit) element).getResource();
+	private static IResource getResource(IJavaScriptElement element){
+		if (element.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT)
+			return ((IJavaScriptUnit) element).getResource();
 		else if (element instanceof IOpenable) 
 			return element.getResource();
 		else	

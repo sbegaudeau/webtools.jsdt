@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.reorg;
 
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 
 /**
@@ -21,5 +21,5 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
  */
 public interface IPackageFragmentRootManipulationQuery {
 	
-	public boolean confirmManipulation(IPackageFragmentRoot root, IJavaProject[] referencingProjects);
+	public boolean confirmManipulation(IPackageFragmentRoot root, IJavaScriptProject[] referencingProjects);
 }

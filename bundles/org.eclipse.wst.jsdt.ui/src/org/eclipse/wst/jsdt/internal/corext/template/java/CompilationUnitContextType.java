@@ -18,11 +18,11 @@ import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.jface.text.templates.TemplateVariable;
 import org.eclipse.jface.text.templates.TemplateVariableResolver;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 
 
@@ -36,13 +36,13 @@ public abstract class CompilationUnitContextType extends TemplateContextType {
 	 	 	super("return_type", JavaTemplateMessages.CompilationUnitContextType_variable_description_return_type);  //$NON-NLS-1$
 	 	}
 	 	protected String resolve(TemplateContext context) {
-			IJavaElement element= ((CompilationUnitContext) context).findEnclosingElement(IJavaElement.METHOD);
+			IJavaScriptElement element= ((CompilationUnitContext) context).findEnclosingElement(IJavaScriptElement.METHOD);
 			if (element == null)
 				return null;
 
 			try {
-				return Signature.toString(((IMethod) element).getReturnType());
-			} catch (JavaModelException e) {
+				return Signature.toString(((IFunction) element).getReturnType());
+			} catch (JavaScriptModelException e) {
 				return null;
 			}
 		}
@@ -53,7 +53,7 @@ public abstract class CompilationUnitContextType extends TemplateContextType {
 			super("file", JavaTemplateMessages.CompilationUnitContextType_variable_description_file);  //$NON-NLS-1$
 		}
 		protected String resolve(TemplateContext context) {
-			ICompilationUnit unit= ((CompilationUnitContext) context).getCompilationUnit();
+			IJavaScriptUnit unit= ((CompilationUnitContext) context).getCompilationUnit();
 			
 			return (unit == null) ? null : unit.getElementName();
 		}
@@ -72,10 +72,10 @@ public abstract class CompilationUnitContextType extends TemplateContextType {
 			
 		}
 		protected String resolve(TemplateContext context) {
-			ICompilationUnit unit= ((CompilationUnitContext) context).getCompilationUnit();
+			IJavaScriptUnit unit= ((CompilationUnitContext) context).getCompilationUnit();
 			if (unit == null) 
 				return null;
-			return JavaCore.removeJavaLikeExtension(unit.getElementName());
+			return JavaScriptCore.removeJavaScriptLikeExtension(unit.getElementName());
 		}
 	 	
 		/*
@@ -94,7 +94,7 @@ public abstract class CompilationUnitContextType extends TemplateContextType {
 			fElementType= elementType;
 		}
 		protected String resolve(TemplateContext context) {
-			IJavaElement element= ((CompilationUnitContext) context).findEnclosingElement(fElementType);
+			IJavaScriptElement element= ((CompilationUnitContext) context).findEnclosingElement(fElementType);
 			return (element == null) ? null : element.getElementName();			
 		}
 	 	
@@ -108,31 +108,31 @@ public abstract class CompilationUnitContextType extends TemplateContextType {
 	
 	protected static class Method extends EnclosingJavaElement {
 		public Method() {
-			super("enclosing_method", JavaTemplateMessages.CompilationUnitContextType_variable_description_enclosing_method, IJavaElement.METHOD);  //$NON-NLS-1$
+			super("enclosing_method", JavaTemplateMessages.CompilationUnitContextType_variable_description_enclosing_method, IJavaScriptElement.METHOD);  //$NON-NLS-1$
 		}
 	}
 
 	protected static class Type extends EnclosingJavaElement {
 		public Type() {
-			super("enclosing_type", JavaTemplateMessages.CompilationUnitContextType_variable_description_enclosing_type, IJavaElement.TYPE);  //$NON-NLS-1$
+			super("enclosing_type", JavaTemplateMessages.CompilationUnitContextType_variable_description_enclosing_type, IJavaScriptElement.TYPE);  //$NON-NLS-1$
 		}
 	}
 /*
 	protected static class SuperClass extends EnclosingJavaElement {
 		public Type() {
-			super("super_class", TemplateMessages.getString("JavaContextType.variable.description.type"), IJavaElement.TYPE);
+			super("super_class", TemplateMessages.getString("JavaContextType.variable.description.type"), IJavaScriptElement.TYPE);
 		}
 	}
 */
 	protected static class Package extends EnclosingJavaElement {
 		public Package() {
-			super("enclosing_package", JavaTemplateMessages.CompilationUnitContextType_variable_description_enclosing_package, IJavaElement.PACKAGE_FRAGMENT);  //$NON-NLS-1$
+			super("enclosing_package", JavaTemplateMessages.CompilationUnitContextType_variable_description_enclosing_package, IJavaScriptElement.PACKAGE_FRAGMENT);  //$NON-NLS-1$
 		}
 	}	
 
 	protected static class Project extends EnclosingJavaElement {
 		public Project() {
-			super("enclosing_project", JavaTemplateMessages.CompilationUnitContextType_variable_description_enclosing_project, IJavaElement.JAVA_PROJECT);  //$NON-NLS-1$
+			super("enclosing_project", JavaTemplateMessages.CompilationUnitContextType_variable_description_enclosing_project, IJavaScriptElement.JAVASCRIPT_PROJECT);  //$NON-NLS-1$
 		}
 	}	
 /*
@@ -141,7 +141,7 @@ public abstract class CompilationUnitContextType extends TemplateContextType {
 			super("project", TemplateMessages.getString("JavaContextType.variable.description.project"));
 		}
 		public String evaluate(TemplateContext context) {
-			ICompilationUnit unit= ((JavaContext) context).getUnit();
+			IJavaScriptUnit unit= ((JavaContext) context).getUnit();
 			return (unit == null) ? null : unit.getJavaProject().getElementName();
 		}
 	}	
@@ -151,11 +151,11 @@ public abstract class CompilationUnitContextType extends TemplateContextType {
 			super("enclosing_method_arguments", JavaTemplateMessages.CompilationUnitContextType_variable_description_enclosing_method_arguments);  //$NON-NLS-1$
 		}
 		protected String resolve(TemplateContext context) {
-			IJavaElement element= ((CompilationUnitContext) context).findEnclosingElement(IJavaElement.METHOD);
+			IJavaScriptElement element= ((CompilationUnitContext) context).findEnclosingElement(IJavaScriptElement.METHOD);
 			if (element == null)
 				return null;
 				
-			IMethod method= (IMethod) element;
+			IFunction method= (IFunction) element;
 			
 			try {
 				String[] arguments= method.getParameterNames();
@@ -169,7 +169,7 @@ public abstract class CompilationUnitContextType extends TemplateContextType {
 				
 				return buffer.toString();
 
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return null;
 			}
 		}
@@ -193,8 +193,8 @@ public abstract class CompilationUnitContextType extends TemplateContextType {
 		super(name);	
 	}
 
-	public abstract CompilationUnitContext createContext(IDocument document, int completionPosition, int length, ICompilationUnit compilationUnit);
-	public abstract CompilationUnitContext createContext(IDocument document, Position completionPosition, ICompilationUnit compilationUnit);
+	public abstract CompilationUnitContext createContext(IDocument document, int completionPosition, int length, IJavaScriptUnit compilationUnit);
+	public abstract CompilationUnitContext createContext(IDocument document, Position completionPosition, IJavaScriptUnit compilationUnit);
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.corext.template.ContextType#validateVariables(org.eclipse.wst.jsdt.internal.corext.template.TemplateVariable[])

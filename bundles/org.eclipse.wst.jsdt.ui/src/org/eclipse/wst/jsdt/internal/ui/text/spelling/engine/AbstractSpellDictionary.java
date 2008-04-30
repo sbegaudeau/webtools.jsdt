@@ -33,9 +33,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
@@ -500,8 +500,8 @@ public abstract class AbstractSpellDictionary implements ISpellDictionary {
 							decoder.onMalformedInput(CodingErrorAction.REPORT);
 							
 							String message= Messages.format(JavaUIMessages.AbstractSpellingDictionary_encodingError, new String[] { word, decoder.replacement(), url.toString() });
-							IStatus status= new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.OK, message, ex);
-							JavaPlugin.log(status);
+							IStatus status= new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.OK, message, ex);
+							JavaScriptPlugin.log(status);
 							
 							doRead= word != null;
 							continue;
@@ -516,20 +516,20 @@ public abstract class AbstractSpellDictionary implements ISpellDictionary {
 				String urlString= url.toString();
 				String lowercaseUrlString= urlString.toLowerCase();
 				if (urlString.equals(lowercaseUrlString))
-					JavaPlugin.log(ex);
+					JavaScriptPlugin.log(ex);
 				else
 					try {
 						return load(new URL(lowercaseUrlString));
 					} catch (MalformedURLException e) {
-						JavaPlugin.log(e);
+						JavaScriptPlugin.log(e);
 					}
 			} catch (IOException exception) {
 				if (line > 0) {
 					String message= Messages.format(JavaUIMessages.AbstractSpellingDictionary_encodingError, new Object[] { new Integer(line), url.toString() });
-					IStatus status= new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.OK, message, exception);
-					JavaPlugin.log(status);
+					IStatus status= new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.OK, message, exception);
+					JavaScriptPlugin.log(status);
 				} else
-					JavaPlugin.log(exception);
+					JavaScriptPlugin.log(exception);
 			} finally {
 				fMustLoad= false;
 				try {
@@ -606,7 +606,7 @@ public abstract class AbstractSpellDictionary implements ISpellDictionary {
 	 * @since 3.3
 	 */
 	protected String getEncoding() {
-		String encoding= JavaPlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.SPELLING_USER_DICTIONARY_ENCODING);
+		String encoding= JavaScriptPlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.SPELLING_USER_DICTIONARY_ENCODING);
 		if (encoding == null || encoding.length() == 0)
 			encoding= ResourcesPlugin.getEncoding();
 		return encoding;

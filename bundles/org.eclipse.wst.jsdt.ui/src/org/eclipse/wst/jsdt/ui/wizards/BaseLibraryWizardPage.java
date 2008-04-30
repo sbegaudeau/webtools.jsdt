@@ -6,9 +6,9 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
@@ -18,8 +18,8 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
  */
 public class BaseLibraryWizardPage extends NewElementWizardPage implements IJsGlobalScopeContainerPage, IJsGlobalScopeContainerPageExtension, IJsGlobalScopeContainerPageExtension2  {
 	
-//	private IJavaProject fCurrentProject;
-//	private IClasspathEntry[] fCurrentEntries;
+//	private IJavaScriptProject fCurrentProject;
+//	private IIncludePathEntry[] fCurrentEntries;
 //	private static final String LIBRARY_FILE_NAME = "baseBrowserLibrary.js";
 	//private static final String MY_PLUGIN_ID="org.eclipse.wst.jsdt.base.library";
 	private static final String CONTAINER_ID="org.eclipse.wst.jsdt.launching.baseBrowserLibrary"; //$NON-NLS-1$
@@ -32,13 +32,13 @@ public class BaseLibraryWizardPage extends NewElementWizardPage implements IJsGl
 		return true;
 	}
 
-	public IClasspathEntry getSelection() {
+	public IIncludePathEntry getSelection() {
 		// TODO Auto-generated method stub
 		System.out.println("Unimplemented method:BaseLibraryWizardPage.getSelection"); //$NON-NLS-1$
 		return null;
 	}
 
-	public void setSelection(IClasspathEntry containerEntry) {}
+	public void setSelection(IIncludePathEntry containerEntry) {}
 
 	public void createControl(Composite parent) {
 		Composite composite= new Composite(parent, SWT.NONE);
@@ -56,14 +56,14 @@ public class BaseLibraryWizardPage extends NewElementWizardPage implements IJsGl
 		
 	}
 
-	public void initialize(IJavaProject project, IClasspathEntry[] currentEntries) {
+	public void initialize(IJavaScriptProject project, IIncludePathEntry[] currentEntries) {
 //		fCurrentProject = project;
 //		fCurrentEntries = currentEntries;
 		
 		
 	}
 
-	public IClasspathEntry[] getNewContainers() {
+	public IIncludePathEntry[] getNewContainers() {
 //		IPath workingLocationFile = fCurrentProject.getProject().getWorkingLocation(MY_PLUGIN_ID).append(LIBRARY_FILE_NAME);
 //		String fileLocation = workingLocationFile.makeAbsolute().toOSString();
 //		File newLibFile = new File(fileLocation);
@@ -84,19 +84,19 @@ public class BaseLibraryWizardPage extends NewElementWizardPage implements IJsGl
 //				ex.printStackTrace();
 //			}
 		
-		//if(url==null) return new IClasspathEntry[] {};
+		//if(url==null) return new IIncludePathEntry[] {};
 		
-		//IClasspathEntry library = JavaCore.newLibraryEntry(workingLocationFile,null,null);
-			//IClasspathEntry library = JavaCore.newLibraryEntry(workingLocationFile.makeAbsolute(), null, null, new IAccessRule[0], new IClasspathAttribute[0], true);
-			IClasspathEntry library = JavaCore.newContainerEntry( new Path(CONTAINER_ID));
+		//IIncludePathEntry library = JavaScriptCore.newLibraryEntry(workingLocationFile,null,null);
+			//IIncludePathEntry library = JavaScriptCore.newLibraryEntry(workingLocationFile.makeAbsolute(), null, null, new IAccessRule[0], new IIncludePathAttribute[0], true);
+			IIncludePathEntry library = JavaScriptCore.newContainerEntry( new Path(CONTAINER_ID));
 //		try {
-//			//library = JavaCore.newLibraryEntry(new Path("Base Browser Support Library"), fCurrentProject.getProject().getWorkingLocation(MY_PLUGIN_ID), new Path(LIBRARY_FILE_NAME), new IAccessRule[0], new IClasspathAttribute[0], true);
-//			library = JavaCore.newContainerEntry(workingLocationFile.makeAbsolute(),new IAccessRule[0], new IClasspathAttribute[0], false);
-//			//library = JavaCore.newLibraryEntry(workingLocationFile.makeAbsolute(), null, null, new IAccessRule[0], new IClasspathAttribute[0], true);
+//			//library = JavaScriptCore.newLibraryEntry(new Path("Base Browser Support Library"), fCurrentProject.getProject().getWorkingLocation(MY_PLUGIN_ID), new Path(LIBRARY_FILE_NAME), new IAccessRule[0], new IIncludePathAttribute[0], true);
+//			library = JavaScriptCore.newContainerEntry(workingLocationFile.makeAbsolute(),new IAccessRule[0], new IIncludePathAttribute[0], false);
+//			//library = JavaScriptCore.newLibraryEntry(workingLocationFile.makeAbsolute(), null, null, new IAccessRule[0], new IIncludePathAttribute[0], true);
 //		}catch(Exception ex) {
 //			System.out.println(ex);
 //		}
-			return new IClasspathEntry[] {library};
+			return new IIncludePathEntry[] {library};
 	}
 //	public static void copyFile(InputStream src, File dst) throws IOException {
 //		InputStream in=null;

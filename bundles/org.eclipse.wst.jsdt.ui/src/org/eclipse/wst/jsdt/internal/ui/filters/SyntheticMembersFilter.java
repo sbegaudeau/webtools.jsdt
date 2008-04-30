@@ -14,7 +14,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * Filters synthetic members
@@ -30,7 +30,7 @@ public class SyntheticMembersFilter extends ViewerFilter {
 			return true;
 		try {
 			return !Flags.isSynthetic(member.getFlags());
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return true;
 		}
 	}

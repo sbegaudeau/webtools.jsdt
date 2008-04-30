@@ -26,10 +26,10 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.text.CombinedWordRule.WordMatcher;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
-import org.eclipse.wst.jsdt.ui.text.IJavaColorConstants;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptColorConstants;
 
 /**
  * AbstractJavaCommentScanner.java
@@ -149,18 +149,18 @@ public class JavaCommentScanner extends AbstractJavaScanner{
 		}
 	}
 
-	private static final String COMPILER_TASK_TAGS= JavaCore.COMPILER_TASK_TAGS;
-	protected static final String TASK_TAG= IJavaColorConstants.TASK_TAG;
+	private static final String COMPILER_TASK_TAGS= JavaScriptCore.COMPILER_TASK_TAGS;
+	protected static final String TASK_TAG= IJavaScriptColorConstants.TASK_TAG;
 	/**
 	 * Preference key of a string preference, specifying if task tag detection is case-sensitive.
 	 * @since 3.0
 	 */
-	private static final String COMPILER_TASK_CASE_SENSITIVE= JavaCore.COMPILER_TASK_CASE_SENSITIVE;
+	private static final String COMPILER_TASK_CASE_SENSITIVE= JavaScriptCore.COMPILER_TASK_CASE_SENSITIVE;
 	/**
 	 * Preference value of enabled preferences.
 	 * @since 3.0
 	 */
-	private static final String ENABLED= JavaCore.ENABLED;
+	private static final String ENABLED= JavaScriptCore.ENABLED;
 
 	private TaskTagMatcher fTaskTagMatcher;
 	private Preferences fCorePreferenceStore;

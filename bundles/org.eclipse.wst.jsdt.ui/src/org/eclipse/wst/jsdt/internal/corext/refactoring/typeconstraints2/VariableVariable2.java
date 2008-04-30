@@ -11,7 +11,7 @@
 
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TType;
 
@@ -23,18 +23,18 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TT
 public final class VariableVariable2 extends ConstraintVariable2 implements ISourceConstraintVariable {
 
 	private final String fKey;
-	private ICompilationUnit fCompilationUnit;
+	private IJavaScriptUnit fCompilationUnit;
 	
 	public VariableVariable2(TType type, IVariableBinding binding) {
 		super(type);
 		fKey= binding.getKey();
 	}
 
-	public void setCompilationUnit(ICompilationUnit unit) {
+	public void setCompilationUnit(IJavaScriptUnit unit) {
 		fCompilationUnit= unit;
 	}
 	
-	public ICompilationUnit getCompilationUnit() {
+	public IJavaScriptUnit getCompilationUnit() {
 		return fCompilationUnit;
 	}
 

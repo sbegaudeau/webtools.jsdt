@@ -30,21 +30,21 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.ASTRequestor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.UseSupertypeDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
@@ -64,8 +64,8 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParse
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TextEditBasedChangeManager;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Refactoring processor to replace type occurrences by a super type.
@@ -198,21 +198,21 @@ public final class UseSuperTypeProcessor extends SuperTypeRefactoringProcessor {
 			final TextEditBasedChange[] changes= fChangeManager.getAllChanges();
 			if (changes != null && changes.length != 0) {
 				fChanges= changes.length;
-				IJavaProject project= null;
+				IJavaScriptProject project= null;
 				if (!fSubType.isBinary())
-					project= fSubType.getJavaProject();
-				int flags= JavaRefactoringDescriptor.JAR_MIGRATION | JavaRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
+					project= fSubType.getJavaScriptProject();
+				int flags= JavaScriptRefactoringDescriptor.JAR_MIGRATION | JavaScriptRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
 				try {
 					if (fSubType.isLocal() || fSubType.isAnonymous())
-						flags|= JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
-				} catch (JavaModelException exception) {
-					JavaPlugin.log(exception);
+						flags|= JavaScriptRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
+				} catch (JavaScriptModelException exception) {
+					JavaScriptPlugin.log(exception);
 				}
 				final String name= project != null ? project.getElementName() : null;
 				final String description= Messages.format(RefactoringCoreMessages.UseSuperTypeProcessor_descriptor_description_short, fSuperType.getElementName());
-				final String header= Messages.format(RefactoringCoreMessages.UseSuperTypeProcessor_descriptor_description, new String[] { JavaElementLabels.getElementLabel(fSuperType, JavaElementLabels.ALL_FULLY_QUALIFIED), JavaElementLabels.getElementLabel(fSubType, JavaElementLabels.ALL_FULLY_QUALIFIED) });
+				final String header= Messages.format(RefactoringCoreMessages.UseSuperTypeProcessor_descriptor_description, new String[] { JavaScriptElementLabels.getElementLabel(fSuperType, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), JavaScriptElementLabels.getElementLabel(fSubType, JavaScriptElementLabels.ALL_FULLY_QUALIFIED) });
 				final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(name, this, header);
-				comment.addSetting(Messages.format(RefactoringCoreMessages.UseSuperTypeProcessor_refactored_element_pattern, JavaElementLabels.getElementLabel(fSuperType, JavaElementLabels.ALL_FULLY_QUALIFIED)));
+				comment.addSetting(Messages.format(RefactoringCoreMessages.UseSuperTypeProcessor_refactored_element_pattern, JavaScriptElementLabels.getElementLabel(fSuperType, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
 				addSuperTypeSettings(comment, false);
 				final UseSupertypeDescriptor descriptor= new UseSupertypeDescriptor();
 				descriptor.setProject(name);
@@ -239,35 +239,35 @@ public final class UseSuperTypeProcessor extends SuperTypeRefactoringProcessor {
 	 * @param status
 	 *            the refactoring status
 	 * @return the created text change manager
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *             if the method declaration could not be found
 	 * @throws CoreException
 	 *             if the changes could not be generated
 	 */
-	protected final TextEditBasedChangeManager createChangeManager(final IProgressMonitor monitor, final RefactoringStatus status) throws JavaModelException, CoreException {
+	protected final TextEditBasedChangeManager createChangeManager(final IProgressMonitor monitor, final RefactoringStatus status) throws JavaScriptModelException, CoreException {
 		Assert.isNotNull(status);
 		Assert.isNotNull(monitor);
 		try {
 			monitor.beginTask("", 300); //$NON-NLS-1$
 			monitor.setTaskName(RefactoringCoreMessages.UseSuperTypeProcessor_creating);
 			final TextEditBasedChangeManager manager= new TextEditBasedChangeManager();
-			final IJavaProject project= fSubType.getJavaProject();
+			final IJavaScriptProject project= fSubType.getJavaScriptProject();
 			final ASTParser parser= ASTParser.newParser(AST.JLS3);
 			parser.setWorkingCopyOwner(fOwner);
 			parser.setResolveBindings(true);
 			parser.setProject(project);
 			parser.setCompilerOptions(RefactoringASTParser.getCompilerOptions(project));
 			if (fSubType.isBinary() || fSubType.isReadOnly()) {
-				final IBinding[] bindings= parser.createBindings(new IJavaElement[] { fSubType, fSuperType }, new SubProgressMonitor(monitor, 50));
+				final IBinding[] bindings= parser.createBindings(new IJavaScriptElement[] { fSubType, fSuperType }, new SubProgressMonitor(monitor, 50));
 				if (bindings != null && bindings.length == 2 && bindings[0] instanceof ITypeBinding && bindings[1] instanceof ITypeBinding) {
 					solveSuperTypeConstraints(null, null, fSubType, (ITypeBinding) bindings[0], (ITypeBinding) bindings[1], new SubProgressMonitor(monitor, 100), status);
 					if (!status.hasFatalError())
 						rewriteTypeOccurrences(manager, null, null, null, null, new HashSet(), status, new SubProgressMonitor(monitor, 150));
 				}
 			} else {
-				parser.createASTs(new ICompilationUnit[] { fSubType.getCompilationUnit() }, new String[0], new ASTRequestor() {
+				parser.createASTs(new IJavaScriptUnit[] { fSubType.getJavaScriptUnit() }, new String[0], new ASTRequestor() {
 
-					public final void acceptAST(final ICompilationUnit unit, final CompilationUnit node) {
+					public final void acceptAST(final IJavaScriptUnit unit, final JavaScriptUnit node) {
 						try {
 							final CompilationUnitRewrite subRewrite= new CompilationUnitRewrite(fOwner, unit, node);
 							final AbstractTypeDeclaration subDeclaration= ASTNodeSearchUtil.getAbstractTypeDeclarationNode(fSubType, subRewrite.getRoot());
@@ -287,7 +287,7 @@ public final class UseSuperTypeProcessor extends SuperTypeRefactoringProcessor {
 								}
 							}
 						} catch (CoreException exception) {
-							JavaPlugin.log(exception);
+							JavaScriptPlugin.log(exception);
 							status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.UseSuperTypeProcessor_internal_error));
 						}
 					}
@@ -367,18 +367,18 @@ public final class UseSuperTypeProcessor extends SuperTypeRefactoringProcessor {
 			final JavaRefactoringArguments extended= (JavaRefactoringArguments) arguments;
 			String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-				if (element == null || !element.exists() || element.getElementType() != IJavaElement.TYPE)
-					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaRefactorings.USE_SUPER_TYPE);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.TYPE)
+					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.USE_SUPER_TYPE);
 				else
 					fSubType= (IType) element;
 			} else
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));
 			handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_ELEMENT + 1);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-				if (element == null || !element.exists() || element.getElementType() != IJavaElement.TYPE)
-					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaRefactorings.USE_SUPER_TYPE);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.TYPE)
+					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.USE_SUPER_TYPE);
 				else
 					fSuperType= (IType) element;
 			} else
@@ -410,7 +410,7 @@ public final class UseSuperTypeProcessor extends SuperTypeRefactoringProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected final void rewriteTypeOccurrences(final TextEditBasedChangeManager manager, final ASTRequestor requestor, final CompilationUnitRewrite rewrite, final ICompilationUnit unit, final CompilationUnit node, final Set replacements, final IProgressMonitor monitor) throws CoreException {
+	protected final void rewriteTypeOccurrences(final TextEditBasedChangeManager manager, final ASTRequestor requestor, final CompilationUnitRewrite rewrite, final IJavaScriptUnit unit, final JavaScriptUnit node, final Set replacements, final IProgressMonitor monitor) throws CoreException {
 		try {
 			monitor.beginTask("", 100); //$NON-NLS-1$
 			monitor.setTaskName(RefactoringCoreMessages.ExtractInterfaceProcessor_creating);
@@ -423,7 +423,7 @@ public final class UseSuperTypeProcessor extends SuperTypeRefactoringProcessor {
 					TType estimate= null;
 					ISourceConstraintVariable variable= null;
 					CompilationUnitRewrite currentRewrite= null;
-					final ICompilationUnit sourceUnit= rewrite.getCu();
+					final IJavaScriptUnit sourceUnit= rewrite.getCu();
 					if (sourceUnit.equals(unit))
 						currentRewrite= rewrite;
 					else

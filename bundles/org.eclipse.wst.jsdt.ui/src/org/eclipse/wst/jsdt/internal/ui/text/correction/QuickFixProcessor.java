@@ -16,8 +16,8 @@ import java.util.HashSet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
@@ -30,7 +30,7 @@ import org.eclipse.wst.jsdt.ui.text.java.IQuickFixProcessor;
 public class QuickFixProcessor implements IQuickFixProcessor {
 
 
-	public boolean hasCorrections(ICompilationUnit cu, int problemId) {
+	public boolean hasCorrections(IJavaScriptUnit cu, int problemId) {
 		switch (problemId) {
 			case IProblem.UnterminatedString:
 //			case IProblem.UnusedImport:
@@ -187,14 +187,14 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.UnhandledWarningToken:
 				return true;
 			default:
-				if (JavaModelUtil.is50OrHigher(cu.getJavaProject())) {
+				if (JavaModelUtil.is50OrHigher(cu.getJavaScriptProject())) {
 					return SuppressWarningsSubProcessor.hasSuppressWarningsProposal(problemId);
 				}
 				return false;
 		}
 	}
 
-	private static int moveBack(int offset, int start, String ignoreCharacters, ICompilationUnit cu) {
+	private static int moveBack(int offset, int start, String ignoreCharacters, IJavaScriptUnit cu) {
 		try {
 			IBuffer buf= cu.getBuffer();
 			while (offset >= start) {
@@ -203,7 +203,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				}
 				offset--;
 			}
-		} catch(JavaModelException e) {
+		} catch(JavaScriptModelException e) {
 		}
 		return start;
 	}
@@ -541,7 +541,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				break;
 			default:
 		}
-		if (JavaModelUtil.is50OrHigher(context.getCompilationUnit().getJavaProject())) {
+		if (JavaModelUtil.is50OrHigher(context.getCompilationUnit().getJavaScriptProject())) {
 			SuppressWarningsSubProcessor.addSuppressWarningsProposals(context, problem, proposals);
 		}
 	}

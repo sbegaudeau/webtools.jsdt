@@ -13,8 +13,8 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.launching.JavaRuntime;
@@ -65,10 +65,10 @@ public class NativeLibAttributeConfiguration extends ClasspathAttributeConfigura
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration#performEdit(org.eclipse.swt.widgets.Shell, org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration.ClasspathAttributeAccess)
 	 */
-	public IClasspathAttribute performEdit(Shell shell, ClasspathAttributeAccess attribute) {
+	public IIncludePathAttribute performEdit(Shell shell, ClasspathAttributeAccess attribute) {
 		NativeLibrariesDialog dialog= new NativeLibrariesDialog(shell, attribute.getClasspathAttribute().getValue(), attribute.getParentClasspassEntry());
 		if (dialog.open() == Window.OK) {
-			return JavaCore.newClasspathAttribute(JavaRuntime.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY, dialog.getNativeLibraryPath());
+			return JavaScriptCore.newIncludepathAttribute(JavaRuntime.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY, dialog.getNativeLibraryPath());
 		}
 		return null;
 	}
@@ -76,8 +76,8 @@ public class NativeLibAttributeConfiguration extends ClasspathAttributeConfigura
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration#performRemove(org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration.ClasspathAttributeAccess)
 	 */
-	public IClasspathAttribute performRemove(ClasspathAttributeAccess attribute) {
-		return JavaCore.newClasspathAttribute(JavaRuntime.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY, null);
+	public IIncludePathAttribute performRemove(ClasspathAttributeAccess attribute) {
+		return JavaScriptCore.newIncludepathAttribute(JavaRuntime.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY, null);
 	}
 
 }

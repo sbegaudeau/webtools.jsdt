@@ -23,7 +23,7 @@ public class DefaultProblem extends CategorizedProblem {
 	private String[] arguments;
 	private String message;
 
-	// cannot directly point to IJavaModelMarker constants from within batch compiler
+	// cannot directly point to IJavaScriptModelMarker constants from within batch compiler
 	private static final String MARKER_TYPE_PROBLEM = "org.eclipse.wst.jsdt.core.problem"; //$NON-NLS-1$
 	private static final String MARKER_TYPE_TASK = "org.eclipse.wst.jsdt.core.task"; //$NON-NLS-1$
 

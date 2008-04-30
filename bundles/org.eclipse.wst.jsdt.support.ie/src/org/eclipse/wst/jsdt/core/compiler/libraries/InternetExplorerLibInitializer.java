@@ -3,7 +3,7 @@ package org.eclipse.wst.jsdt.core.compiler.libraries;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
@@ -37,7 +37,7 @@ public class InternetExplorerLibInitializer extends JsGlobalScopeContainerInitia
 	}
 
 
-	public String getDescription(IPath containerPath, IJavaProject project) {
+	public String getDescription(IPath containerPath, IJavaScriptProject project) {
 		return InternetExplorerLibInitializer.ContainerDescription;
 	}
 
@@ -45,7 +45,7 @@ public class InternetExplorerLibInitializer extends JsGlobalScopeContainerInitia
 		return InternetExplorerLibInitializer.ContainerDescription;
 	}
 
-	public ImageDescriptor getImage(IPath containerPath, String element, IJavaProject project) {
+	public ImageDescriptor getImage(IPath containerPath, String element, IJavaScriptProject project) {
 
 		if(containerPath==null) return null;
 		/* Dont use the rino image for the individual files */
@@ -79,7 +79,7 @@ public class InternetExplorerLibInitializer extends JsGlobalScopeContainerInitia
 		return  IJsGlobalScopeContainer.K_SYSTEM;	}
 
 
-	public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaProject project) {
+	public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaScriptProject project) {
 		return true;
 
 

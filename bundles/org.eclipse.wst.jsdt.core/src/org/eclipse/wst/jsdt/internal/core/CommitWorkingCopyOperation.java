@@ -19,13 +19,13 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -39,7 +39,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * original resource have changed since the working copy was created,
  * in which case there is an update conflict. This operation allows
  * for two settings to resolve conflict set by the <code>fForce</code> flag:<ul>
- * <li>force flag is <code>false</code> - in this case an <code>JavaModelException</code>
+ * <li>force flag is <code>false</code> - in this case an <code>JavaScriptModelException</code>
  * 	is thrown</li>
  * <li>force flag is <code>true</code> - in this case the contents of
  * 	the working copy are applied to the underlying resource even though
@@ -59,33 +59,33 @@ public class CommitWorkingCopyOperation extends JavaModelOperation {
 	 * Constructs an operation to commit the contents of a working copy
 	 * to its original compilation unit.
 	 */
-	public CommitWorkingCopyOperation(ICompilationUnit element, boolean force) {
-		super(new IJavaElement[] {element}, force);
+	public CommitWorkingCopyOperation(IJavaScriptUnit element, boolean force) {
+		super(new IJavaScriptElement[] {element}, force);
 	}
 	/**
-	 * @exception JavaModelException if setting the source
+	 * @exception JavaScriptModelException if setting the source
 	 * 	of the original compilation unit fails
 	 */
-	protected void executeOperation() throws JavaModelException {
+	protected void executeOperation() throws JavaScriptModelException {
 		try {
 			beginTask(Messages.workingCopy_commit, 2);
 			CompilationUnit workingCopy = getCompilationUnit();
 
-			if (ExternalJavaProject.EXTERNAL_PROJECT_NAME.equals(workingCopy.getJavaProject().getElementName())) {
+			if (ExternalJavaProject.EXTERNAL_PROJECT_NAME.equals(workingCopy.getJavaScriptProject().getElementName())) {
 				// case of a working copy without a resource
 				workingCopy.getBuffer().save(this.progressMonitor, this.force);
 				return;
 			}
 
-			ICompilationUnit primary = workingCopy.getPrimary();
+			IJavaScriptUnit primary = workingCopy.getPrimary();
 			boolean isPrimary = workingCopy.isPrimary();
 
 			JavaElementDeltaBuilder deltaBuilder = null;
-			PackageFragmentRoot root = (PackageFragmentRoot)workingCopy.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+			PackageFragmentRoot root = (PackageFragmentRoot)workingCopy.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 			boolean isIncluded = !Util.isExcluded(workingCopy);
 			IFile resource = (IFile)workingCopy.getResource();
-			IJavaProject project = root.getJavaProject();
-			if (isPrimary || (root.validateOnClasspath().isOK() && isIncluded && resource.isAccessible() && Util.isValidCompilationUnitName(workingCopy.getElementName(), project.getOption(JavaCore.COMPILER_SOURCE, true), project.getOption(JavaCore.COMPILER_COMPLIANCE, true)))) {
+			IJavaScriptProject project = root.getJavaScriptProject();
+			if (isPrimary || (root.validateOnClasspath().isOK() && isIncluded && resource.isAccessible() && Util.isValidCompilationUnitName(workingCopy.getElementName(), project.getOption(JavaScriptCore.COMPILER_SOURCE, true), project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true)))) {
 
 				// force opening so that the delta builder can get the old info
 				if (!isPrimary && !primary.isOpen()) {
@@ -151,9 +151,9 @@ public class CommitWorkingCopyOperation extends JavaModelOperation {
 							this.progressMonitor);
 					}
 				} catch (CoreException e) {
-					throw new JavaModelException(e);
+					throw new JavaScriptModelException(e);
 				} catch (UnsupportedEncodingException e) {
-					throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
+					throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.IO_EXCEPTION);
 				}
 
 			}
@@ -206,13 +206,13 @@ public class CommitWorkingCopyOperation extends JavaModelOperation {
 	 *  <li>READ_ONLY - the original compilation unit is in read-only mode
 	 *  </ul>
 	 */
-	public IJavaModelStatus verify() {
+	public IJavaScriptModelStatus verify() {
 		CompilationUnit cu = getCompilationUnit();
 		if (!cu.isWorkingCopy()) {
-			return new JavaModelStatus(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, cu);
+			return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, cu);
 		}
 		if (cu.hasResourceChanged() && !this.force) {
-			return new JavaModelStatus(IJavaModelStatusConstants.UPDATE_CONFLICT);
+			return new JavaModelStatus(IJavaScriptModelStatusConstants.UPDATE_CONFLICT);
 		}
 		// no read-only check, since some repository adapters can change the flag on save
 		// operation.

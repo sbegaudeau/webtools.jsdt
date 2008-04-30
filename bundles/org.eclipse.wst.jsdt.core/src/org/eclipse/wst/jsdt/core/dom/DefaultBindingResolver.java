@@ -158,8 +158,8 @@ class DefaultBindingResolver extends BindingResolver {
 		if (binding == null) {
 			return null;
 		}
-		if (binding instanceof IMethodBinding) {
-			IMethodBinding methodBinding = (IMethodBinding) binding;
+		if (binding instanceof IFunctionBinding) {
+			IFunctionBinding methodBinding = (IFunctionBinding) binding;
 			return (ASTNode) this.bindingsToAstNodes.get(methodBinding.getMethodDeclaration());
 		} else if (binding instanceof ITypeBinding) {
 			ITypeBinding typeBinding = (ITypeBinding) binding;
@@ -210,7 +210,7 @@ class DefaultBindingResolver extends BindingResolver {
 	/*
 	 * Method declared on BindingResolver.
 	 */
-	synchronized IMethodBinding getMethodBinding(org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding methodBinding) {
+	synchronized IFunctionBinding getMethodBinding(org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding methodBinding) {
  		if (methodBinding != null && !methodBinding.isValidBinding()) {
 			org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding problemMethodBinding =
 				(org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding) methodBinding;
@@ -218,11 +218,11 @@ class DefaultBindingResolver extends BindingResolver {
  		}
 
 		if (methodBinding != null) {
-			IMethodBinding binding = (IMethodBinding) this.bindingTables.compilerBindingsToASTBindings.get(methodBinding);
+			IFunctionBinding binding = (IFunctionBinding) this.bindingTables.compilerBindingsToASTBindings.get(methodBinding);
 			if (binding != null) {
 				return binding;
 			}
-			binding = new MethodBinding(this, methodBinding);
+			binding = new FunctionBinding(this, methodBinding);
 			this.bindingTables.compilerBindingsToASTBindings.put(methodBinding, binding);
 			return binding;
 		}
@@ -349,7 +349,7 @@ class DefaultBindingResolver extends BindingResolver {
 				return binding;
 			}
 			if (referenceBinding instanceof CompilationUnitBinding)
-				binding = new org.eclipse.wst.jsdt.core.dom.CompilationUnitBinding(this, referenceBinding);
+				binding = new org.eclipse.wst.jsdt.core.dom.JavaScriptUnitBinding(this, referenceBinding);
 			else
 				binding = new TypeBinding(this, referenceBinding);
 			this.bindingTables.compilerBindingsToASTBindings.put(referenceBinding, binding);
@@ -458,7 +458,7 @@ class DefaultBindingResolver extends BindingResolver {
 		return null;
 	}
 
-	boolean isResolvedTypeInferredFromExpectedType(MethodInvocation methodInvocation) {
+	boolean isResolvedTypeInferredFromExpectedType(FunctionInvocation methodInvocation) {
 		Object oldNode = this.newAstToOldAst.get(methodInvocation);
 		if (oldNode instanceof MessageSend) {
 //			MessageSend messageSend = (MessageSend) oldNode;
@@ -563,7 +563,7 @@ class DefaultBindingResolver extends BindingResolver {
 	/*
 	 * @see BindingResolver#resolveConstructor(ClassInstanceCreation)
 	 */
-	synchronized IMethodBinding resolveConstructor(ClassInstanceCreation expression) {
+	synchronized IFunctionBinding resolveConstructor(ClassInstanceCreation expression) {
 		org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode node = (org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode) this.newAstToOldAst.get(expression);
 		if (node != null && (node.bits & org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode.IsAnonymousType) != 0) {
 			org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration anonymousLocalTypeDeclaration = (org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration) node;
@@ -577,7 +577,7 @@ class DefaultBindingResolver extends BindingResolver {
 	/*
 	 * @see BindingResolver#resolveConstructor(ConstructorInvocation)
 	 */
-	synchronized IMethodBinding resolveConstructor(ConstructorInvocation expression) {
+	synchronized IFunctionBinding resolveConstructor(ConstructorInvocation expression) {
 		org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode node = (org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode) this.newAstToOldAst.get(expression);
 		if (node instanceof ExplicitConstructorCall) {
 			ExplicitConstructorCall explicitConstructorCall = (ExplicitConstructorCall) node;
@@ -589,7 +589,7 @@ class DefaultBindingResolver extends BindingResolver {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.BindingResolver#resolveConstructor(org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration)
 	 */
-	IMethodBinding resolveConstructor(EnumConstantDeclaration enumConstantDeclaration) {
+	IFunctionBinding resolveConstructor(EnumConstantDeclaration enumConstantDeclaration) {
 		org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode node = (org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode) this.newAstToOldAst.get(enumConstantDeclaration);
 		if (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration) {
 			org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration fieldDeclaration = (org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration) node;
@@ -604,7 +604,7 @@ class DefaultBindingResolver extends BindingResolver {
 	/*
 	 * @see BindingResolver#resolveConstructor(SuperConstructorInvocation)
 	 */
-	synchronized IMethodBinding resolveConstructor(SuperConstructorInvocation expression) {
+	synchronized IFunctionBinding resolveConstructor(SuperConstructorInvocation expression) {
 		org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode node = (org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode) this.newAstToOldAst.get(expression);
 		if (node instanceof ExplicitConstructorCall) {
 			ExplicitConstructorCall explicitConstructorCall = (ExplicitConstructorCall) node;
@@ -648,7 +648,7 @@ class DefaultBindingResolver extends BindingResolver {
 				case ASTNode.FIELD_ACCESS :
 				case ASTNode.SUPER_FIELD_ACCESS :
 				case ASTNode.ARRAY_ACCESS :
-				case ASTNode.METHOD_INVOCATION :
+				case ASTNode.FUNCTION_INVOCATION :
 				case ASTNode.SUPER_METHOD_INVOCATION :
 				case ASTNode.CONDITIONAL_EXPRESSION :
 				case ASTNode.MARKER_ANNOTATION :
@@ -789,11 +789,11 @@ class DefaultBindingResolver extends BindingResolver {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.BindingResolver#resolveMember(org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration)
 	 */
-	IMethodBinding resolveMember(AnnotationTypeMemberDeclaration declaration) {
+	IFunctionBinding resolveMember(AnnotationTypeMemberDeclaration declaration) {
 		Object oldNode = this.newAstToOldAst.get(declaration);
 		if (oldNode instanceof AbstractMethodDeclaration) {
 			AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) oldNode;
-			IMethodBinding methodBinding = this.getMethodBinding(methodDeclaration.binding);
+			IFunctionBinding methodBinding = this.getMethodBinding(methodDeclaration.binding);
 			if (methodBinding == null) {
 				return null;
 			}
@@ -810,11 +810,11 @@ class DefaultBindingResolver extends BindingResolver {
 	/*
 	 * Method declared on BindingResolver.
 	 */
-	synchronized IMethodBinding resolveMethod(MethodDeclaration method) {
+	synchronized IFunctionBinding resolveMethod(FunctionDeclaration method) {
 		Object oldNode = this.newAstToOldAst.get(method);
 		if (oldNode instanceof AbstractMethodDeclaration) {
 			AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) oldNode;
-			IMethodBinding methodBinding = this.getMethodBinding(methodDeclaration.binding);
+			IFunctionBinding methodBinding = this.getMethodBinding(methodDeclaration.binding);
 			if (methodBinding == null) {
 				return null;
 			}
@@ -830,7 +830,7 @@ class DefaultBindingResolver extends BindingResolver {
 	/*
 	 * Method declared on BindingResolver.
 	 */
-	synchronized IMethodBinding resolveMethod(MethodInvocation method) {
+	synchronized IFunctionBinding resolveMethod(FunctionInvocation method) {
 		Object oldNode = this.newAstToOldAst.get(method);
 		if (oldNode instanceof MessageSend) {
 			MessageSend messageSend = (MessageSend) oldNode;
@@ -841,7 +841,7 @@ class DefaultBindingResolver extends BindingResolver {
 	/*
 	 * Method declared on BindingResolver.
 	 */
-	synchronized IMethodBinding resolveMethod(SuperMethodInvocation method) {
+	synchronized IFunctionBinding resolveMethod(SuperMethodInvocation method) {
 		Object oldNode = this.newAstToOldAst.get(method);
 		if (oldNode instanceof MessageSend) {
 			MessageSend messageSend = (MessageSend) oldNode;
@@ -992,7 +992,7 @@ class DefaultBindingResolver extends BindingResolver {
 			}
 		} else if (node instanceof AbstractMethodDeclaration) {
 			AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) node;
-			IMethodBinding method = this.getMethodBinding(methodDeclaration.binding);
+			IFunctionBinding method = this.getMethodBinding(methodDeclaration.binding);
 			if (method == null) return null;
 			return method.getReturnType();
 		} else if (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration) {
@@ -1038,7 +1038,7 @@ class DefaultBindingResolver extends BindingResolver {
 			return field.getType();
 		} else if (node instanceof MessageSend) {
 			MessageSend messageSend = (MessageSend) node;
-			IMethodBinding method = getMethodBinding(messageSend.binding);
+			IFunctionBinding method = getMethodBinding(messageSend.binding);
 			if (method == null) return null;
 			return method.getReturnType();
 		} else if (node instanceof AllocationExpression) {
@@ -1052,7 +1052,7 @@ class DefaultBindingResolver extends BindingResolver {
 			return this.getTypeBinding(typeParameter.binding);
 		} else if (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair) {
 			org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair memberValuePair = (org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair) node;
-			IMethodBinding method = getMethodBinding(memberValuePair.binding);
+			IFunctionBinding method = getMethodBinding(memberValuePair.binding);
 			if (method == null) return null;
 			return method.getReturnType();
 		}
@@ -1222,7 +1222,7 @@ class DefaultBindingResolver extends BindingResolver {
 			}
 		} else if (node instanceof AbstractMethodDeclaration) {
 			AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) node;
-			IMethodBinding methodBinding = this.getMethodBinding(methodDeclaration.binding);
+			IFunctionBinding methodBinding = this.getMethodBinding(methodDeclaration.binding);
 			if (methodBinding != null) {
 				return methodBinding;
 			}
@@ -1381,10 +1381,10 @@ class DefaultBindingResolver extends BindingResolver {
 	}
 
 	/* (non-Javadoc)
-	 * @see BindingResolver#resolveReference(MethodRef)
+	 * @see BindingResolver#resolveReference(FunctionRef)
      * @since 3.0
 	 */
-	synchronized IBinding resolveReference(MethodRef ref) {
+	synchronized IBinding resolveReference(FunctionRef ref) {
 		org.eclipse.wst.jsdt.internal.compiler.ast.Expression expression = (org.eclipse.wst.jsdt.internal.compiler.ast.Expression) this.newAstToOldAst.get(ref);
 		if (expression instanceof JavadocMessageSend) {
 			return this.getMethodBinding(((JavadocMessageSend)expression).binding);
@@ -1548,7 +1548,7 @@ class DefaultBindingResolver extends BindingResolver {
 		return null;
 	}
 
-	ITypeBinding resolveType(CompilationUnit compilationUnit) {
+	ITypeBinding resolveType(JavaScriptUnit compilationUnit) {
 		final Object node = this.newAstToOldAst.get(compilationUnit);
 		if (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration) {
 			org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration compilationUnitDeclaration =

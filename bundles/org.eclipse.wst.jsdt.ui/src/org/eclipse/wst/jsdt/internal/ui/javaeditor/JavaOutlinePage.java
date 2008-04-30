@@ -77,24 +77,24 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IInitializer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.actions.AbstractToggleLinkingAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.CategoryFilterActionGroup;
@@ -109,9 +109,9 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.SourcePositionComparator;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.StatusBarUpdater;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator.ProblemsLabelChangedEvent;
 import org.eclipse.wst.jsdt.ui.actions.CCPActionGroup;
@@ -127,7 +127,7 @@ import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
  * The content outline page of the Java editor. The viewer implements a proprietary
  * update mechanism based on Java model deltas. It does not react on domain changes.
  * It is specified to show the content of ICompilationUnits and IClassFiles.
- * Publishes its context menu under <code>JavaPlugin.getDefault().getPluginId() + ".outline"</code>.
+ * Publishes its context menu under <code>JavaScriptPlugin.getDefault().getPluginId() + ".outline"</code>.
  */
 public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdaptable , IPostSelectionProvider {
 
@@ -148,8 +148,8 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 					if (d != null) {
 						d.asyncExec(new Runnable() {
 							public void run() {
-								ICompilationUnit cu= (ICompilationUnit) fInput;
-								IJavaElement base= cu;
+								IJavaScriptUnit cu= (IJavaScriptUnit) fInput;
+								IJavaScriptElement base= cu;
 								if (fTopLevelTypeOnly) {
 									base= cu.findPrimaryType();
 									if (base == null) {
@@ -158,7 +158,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 										return;
 									}
 								}
-								IJavaElementDelta delta= findElement(base, e.getDelta());
+								IJavaScriptElementDelta delta= findElement(base, e.getDelta());
 								if (delta != null && fOutlineViewer != null) {
 									fOutlineViewer.reconcile(delta);
 								}
@@ -167,23 +167,23 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 					}
 				}
 
-				private boolean isPossibleStructuralChange(IJavaElementDelta cuDelta) {
-					if (cuDelta.getKind() != IJavaElementDelta.CHANGED) {
+				private boolean isPossibleStructuralChange(IJavaScriptElementDelta cuDelta) {
+					if (cuDelta.getKind() != IJavaScriptElementDelta.CHANGED) {
 						return true; // add or remove
 					}
 					int flags= cuDelta.getFlags();
-					if ((flags & IJavaElementDelta.F_CHILDREN) != 0) {
+					if ((flags & IJavaScriptElementDelta.F_CHILDREN) != 0) {
 						return true;
 					}
-					return (flags & (IJavaElementDelta.F_CONTENT | IJavaElementDelta.F_FINE_GRAINED)) == IJavaElementDelta.F_CONTENT;
+					return (flags & (IJavaScriptElementDelta.F_CONTENT | IJavaScriptElementDelta.F_FINE_GRAINED)) == IJavaScriptElementDelta.F_CONTENT;
 				}
 
-				protected IJavaElementDelta findElement(IJavaElement unit, IJavaElementDelta delta) {
+				protected IJavaScriptElementDelta findElement(IJavaScriptElement unit, IJavaScriptElementDelta delta) {
 
 					if (delta == null || unit == null)
 						return null;
 
-					IJavaElement element= delta.getElement();
+					IJavaScriptElement element= delta.getElement();
 
 					if (unit.equals(element)) {
 						if (isPossibleStructuralChange(delta)) {
@@ -193,15 +193,15 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 					}
 
 
-					if (element.getElementType() > IJavaElement.CLASS_FILE)
+					if (element.getElementType() > IJavaScriptElement.CLASS_FILE)
 						return null;
 
-					IJavaElementDelta[] children= delta.getAffectedChildren();
+					IJavaScriptElementDelta[] children= delta.getAffectedChildren();
 					if (children == null || children.length == 0)
 						return null;
 
 					for (int i= 0; i < children.length; i++) {
-						IJavaElementDelta d= findElement(unit, children[i]);
+						IJavaScriptElementDelta d= findElement(unit, children[i]);
 						if (d != null)
 							return d;
 					}
@@ -229,7 +229,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 			}
 
 			/**
-			 * Content provider for the children of an ICompilationUnit or
+			 * Content provider for the children of an IJavaScriptUnit or
 			 * an IClassFile
 			 * @see ITreeContentProvider
 			 */
@@ -238,21 +238,21 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 				private Object[] NO_CLASS= new Object[] {new NoClassElement()};
 				private ElementChangedListener fListener;
 
-				protected boolean matches(IJavaElement element) {
-					if (element.getElementType() == IJavaElement.PACKAGE_DECLARATION)
+				protected boolean matches(IJavaScriptElement element) {
+					if (element.getElementType() == IJavaScriptElement.PACKAGE_DECLARATION)
 						return true;
-					if (element.getElementType() == IJavaElement.METHOD) {
+					if (element.getElementType() == IJavaScriptElement.METHOD) {
 						String name= element.getElementName();
 						return (name != null && name.indexOf('<') >= 0);
 					}
 					
 					//@GINO: Anonymous Filter top level anonymous
-					if (element.getElementType() == IJavaElement.TYPE && element.getParent().getElementType() == IJavaElement.COMPILATION_UNIT ) {
+					if (element.getElementType() == IJavaScriptElement.TYPE && element.getParent().getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT ) {
 						
 						IType type = (IType)element;
 						try {
 							return type.isAnonymous();
-						} catch (JavaModelException e) {
+						} catch (JavaScriptModelException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
@@ -261,7 +261,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 					return false;
 				}
 
-				protected IJavaElement[] filter(IJavaElement[] children) {
+				protected IJavaScriptElement[] filter(IJavaScriptElement[] children) {
 					boolean initializers= false;
 					for (int i= 0; i < children.length; i++) {
 						if (matches(children[i])) {
@@ -280,7 +280,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 						v.addElement(children[i]);
 					}
 
-					IJavaElement[] result= new IJavaElement[v.size()];
+					IJavaScriptElement[] result= new IJavaScriptElement[v.size()];
 					v.copyInto(result);
 					return result;
 				}
@@ -290,13 +290,13 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 						IParent c= (IParent) parent;
 						try {
 							return filter(c.getChildren());
-						} catch (JavaModelException x) {
+						} catch (JavaScriptModelException x) {
 							// https://bugs.eclipse.org/bugs/show_bug.cgi?id=38341
 							// don't log NotExist exceptions as this is a valid case
 							// since we might have been posted and the element
 							// removed in the meantime.
-							if (JavaPlugin.isDebug() || !x.isDoesNotExist())
-								JavaPlugin.log(x);
+							if (JavaScriptPlugin.isDebug() || !x.isDoesNotExist())
+								JavaScriptPlugin.log(x);
 						}
 					}
 					return NO_CHILDREN;
@@ -308,8 +308,8 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 							try {
 								IType type= ((ITypeRoot) parent).findPrimaryType();
 								return type != null ? type.getChildren() : NO_CLASS;
-							} catch (JavaModelException e) {
-								JavaPlugin.log(e);
+							} catch (JavaScriptModelException e) {
+								JavaScriptPlugin.log(e);
 							}
 						}
 					}
@@ -317,8 +317,8 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 				}
 
 				public Object getParent(Object child) {
-					if (child instanceof IJavaElement) {
-						IJavaElement e= (IJavaElement) child;
+					if (child instanceof IJavaScriptElement) {
+						IJavaScriptElement e= (IJavaScriptElement) child;
 						return e.getParent();
 					}
 					return null;
@@ -328,15 +328,15 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 					if (parent instanceof IParent) {
 						IParent c= (IParent) parent;
 						try {
-							IJavaElement[] children= filter(c.getChildren());
+							IJavaScriptElement[] children= filter(c.getChildren());
 							return (children != null && children.length > 0);
-						} catch (JavaModelException x) {
+						} catch (JavaScriptModelException x) {
 							// https://bugs.eclipse.org/bugs/show_bug.cgi?id=38341
 							// don't log NotExist exceptions as this is a valid case
 							// since we might have been posted and the element
 							// removed in the meantime.
-							if (JavaPlugin.isDebug() || !x.isDoesNotExist())
-								JavaPlugin.log(x);
+							if (JavaScriptPlugin.isDebug() || !x.isDoesNotExist())
+								JavaScriptPlugin.log(x);
 						}
 					}
 					return false;
@@ -348,7 +348,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 
 				public void dispose() {
 					if (fListener != null) {
-						JavaCore.removeElementChangedListener(fListener);
+						JavaScriptCore.removeElementChangedListener(fListener);
 						fListener= null;
 					}
 				}
@@ -357,13 +357,13 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 				 * @see IContentProvider#inputChanged(Viewer, Object, Object)
 				 */
 				public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-					boolean isCU= (newInput instanceof ICompilationUnit);
+					boolean isCU= (newInput instanceof IJavaScriptUnit);
 
 					if (isCU && fListener == null) {
 						fListener= new ElementChangedListener();
-						JavaCore.addElementChangedListener(fListener);
+						JavaScriptCore.addElementChangedListener(fListener);
 					} else if (!isCU && fListener != null) {
-						JavaCore.removeElementChangedListener(fListener);
+						JavaScriptCore.removeElementChangedListener(fListener);
 						fListener= null;
 					}
 				}
@@ -398,13 +398,13 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 				 *
 				 * @param delta the Java element delta used to reconcile the Java outline
 				 */
-				public void reconcile(IJavaElementDelta delta) {
+				public void reconcile(IJavaScriptElementDelta delta) {
 					fReorderedMembers= false;
 					fForceFireSelectionChanged= false;
 					if (getComparator() == null) {
 						if (fTopLevelTypeOnly
 							&& delta.getElement() instanceof IType
-							&& (delta.getKind() & IJavaElementDelta.ADDED) != 0)
+							&& (delta.getKind() & IJavaScriptElementDelta.ADDED) != 0)
 						{
 							refresh(true);
 
@@ -431,9 +431,9 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 				protected void internalExpandToLevel(Widget node, int level) {
 					if (node instanceof Item) {
 						Item i= (Item) node;
-						if (i.getData() instanceof IJavaElement) {
-							IJavaElement je= (IJavaElement) i.getData();
-							if (je.getElementType() == IJavaElement.IMPORT_CONTAINER || isInnerType(je)) {
+						if (i.getData() instanceof IJavaScriptElement) {
+							IJavaScriptElement je= (IJavaScriptElement) i.getData();
+							if (je.getElementType() == IJavaScriptElement.IMPORT_CONTAINER || isInnerType(je)) {
 								if (i != fReusedExpandedItem) {
 									setExpanded(i, false);
 									return;
@@ -468,13 +468,13 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 					fForceFireSelectionChanged= true;
 				}
 
-				protected boolean mustUpdateParent(IJavaElementDelta delta, IJavaElement element) {
-					if (element instanceof IMethod) {
-						if ((delta.getKind() & IJavaElementDelta.ADDED) != 0) {
+				protected boolean mustUpdateParent(IJavaScriptElementDelta delta, IJavaScriptElement element) {
+					if (element instanceof IFunction) {
+						if ((delta.getKind() & IJavaScriptElementDelta.ADDED) != 0) {
 							try {
-								return ((IMethod)element).isMainMethod();
-							} catch (JavaModelException e) {
-								JavaPlugin.log(e.getStatus());
+								return ((IFunction)element).isMainMethod();
+							} catch (JavaScriptModelException e) {
+								JavaScriptPlugin.log(e.getStatus());
 							}
 						}
 						return "main".equals(element.getElementName()); //$NON-NLS-1$
@@ -492,7 +492,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 					return super.isExpandable(element);
 				}
 
-				protected ISourceRange getSourceRange(IJavaElement element) throws JavaModelException {
+				protected ISourceRange getSourceRange(IJavaScriptElement element) throws JavaScriptModelException {
 					if (element instanceof ISourceReference)
 						return ((ISourceReference) element).getSourceRange();
 					if (element instanceof IMember && !(element instanceof IInitializer))
@@ -504,7 +504,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 					return start <= (range.getOffset() + range.getLength() - 1) && range.getOffset() <= end;
 				}
 
-				protected boolean filtered(IJavaElement parent, IJavaElement child) {
+				protected boolean filtered(IJavaScriptElement parent, IJavaScriptElement child) {
 
 					Object[] result= new Object[] { child };
 					ViewerFilter[] filters= getFilters();
@@ -517,12 +517,12 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 					return false;
 				}
 
-				protected void update(Widget w, IJavaElementDelta delta) {
+				protected void update(Widget w, IJavaScriptElementDelta delta) {
 
 					Item item;
 
-					IJavaElement parent= delta.getElement();
-					IJavaElementDelta[] affected= delta.getAffectedChildren();
+					IJavaScriptElement parent= delta.getElement();
+					IJavaScriptElementDelta[] affected= delta.getAffectedChildren();
 					Item[] children= getChildren(w);
 
 					boolean doUpdateParent= false;
@@ -532,8 +532,8 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 					Vector additions= new Vector();
 
 					for (int i= 0; i < affected.length; i++) {
-					    IJavaElementDelta affectedDelta= affected[i];
-						IJavaElement affectedElement= affectedDelta.getElement();
+					    IJavaScriptElementDelta affectedDelta= affected[i];
+						IJavaScriptElement affectedElement= affectedDelta.getElement();
 						int status= affected[i].getKind();
 
 						// find tree item with affected element
@@ -544,13 +544,13 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 
 						if (j == children.length) {
 							// remove from collapsed parent
-							if ((status & IJavaElementDelta.REMOVED) != 0) {
+							if ((status & IJavaScriptElementDelta.REMOVED) != 0) {
 								doUpdateParentsPlus= true;
 								continue;
 							}
 							// addition
-							if ((status & IJavaElementDelta.CHANGED) != 0 &&
-								(affectedDelta.getFlags() & IJavaElementDelta.F_MODIFIERS) != 0 &&
+							if ((status & IJavaScriptElementDelta.CHANGED) != 0 &&
+								(affectedDelta.getFlags() & IJavaScriptElementDelta.F_MODIFIERS) != 0 &&
 								!filtered(parent, affectedElement))
 							{
 								additions.addElement(affectedDelta);
@@ -561,43 +561,43 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 						item= children[j];
 
 						// removed
-						if ((status & IJavaElementDelta.REMOVED) != 0) {
+						if ((status & IJavaScriptElementDelta.REMOVED) != 0) {
 							deletions.addElement(item);
 							doUpdateParent= doUpdateParent || mustUpdateParent(affectedDelta, affectedElement);
 
 						// changed
-						} else if ((status & IJavaElementDelta.CHANGED) != 0) {
+						} else if ((status & IJavaScriptElementDelta.CHANGED) != 0) {
 							int change= affectedDelta.getFlags();
 							doUpdateParent= doUpdateParent || mustUpdateParent(affectedDelta, affectedElement);
 
-							if ((change & IJavaElementDelta.F_MODIFIERS) != 0) {
+							if ((change & IJavaScriptElementDelta.F_MODIFIERS) != 0) {
 								if (filtered(parent, affectedElement))
 									deletions.addElement(item);
 								else
 									updateItem(item, affectedElement);
 							}
 
-							if ((change & IJavaElementDelta.F_CONTENT) != 0)
+							if ((change & IJavaScriptElementDelta.F_CONTENT) != 0)
 								updateItem(item, affectedElement);
 
-							if ((change & IJavaElementDelta.F_CATEGORIES) != 0)
+							if ((change & IJavaScriptElementDelta.F_CATEGORIES) != 0)
 								updateItem(item, affectedElement);
 
-							if ((change & IJavaElementDelta.F_CHILDREN) != 0)
+							if ((change & IJavaScriptElementDelta.F_CHILDREN) != 0)
 								update(item, affectedDelta);
 
-							if ((change & IJavaElementDelta.F_REORDER) != 0)
+							if ((change & IJavaScriptElementDelta.F_REORDER) != 0)
 								fReorderedMembers= true;
 						}
 					}
 
 					// find all elements to add
-					IJavaElementDelta[] add= delta.getAddedChildren();
+					IJavaScriptElementDelta[] add= delta.getAddedChildren();
 					if (additions.size() > 0) {
-						IJavaElementDelta[] tmp= new IJavaElementDelta[add.length + additions.size()];
+						IJavaScriptElementDelta[] tmp= new IJavaScriptElementDelta[add.length + additions.size()];
 						System.arraycopy(add, 0, tmp, 0, add.length);
 						for (int i= 0; i < additions.size(); i++)
-							tmp[i + add.length]= (IJavaElementDelta) additions.elementAt(i);
+							tmp[i + add.length]= (IJavaScriptElementDelta) additions.elementAt(i);
 						add= tmp;
 					}
 
@@ -606,7 +606,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 
 						try {
 
-							IJavaElement e= add[i].getElement();
+							IJavaScriptElement e= add[i].getElement();
 							if (filtered(parent, e))
 								continue go2;
 
@@ -627,7 +627,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 
 							for (int j= 0; j < children.length; j++) {
 								item= children[j];
-								IJavaElement r= (IJavaElement) item.getData();
+								IJavaScriptElement r= (IJavaScriptElement) item.getData();
 
 								if (r == null) {
 									// parent node collapsed and not be opened before -> do nothing
@@ -645,8 +645,8 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 									// ends behind the identifier / initializer
 									// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=51851
 									boolean multiFieldDeclaration=
-										r.getElementType() == IJavaElement.FIELD
-											&& e.getElementType() == IJavaElement.FIELD
+										r.getElementType() == IJavaScriptElement.FIELD
+											&& e.getElementType() == IJavaScriptElement.FIELD
 											&& rng.getOffset() == start;
 
 									// elements are inserted by occurrence
@@ -684,7 +684,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 										continue go2;
 									}
 
-								} catch (JavaModelException x) {
+								} catch (JavaScriptModelException x) {
 									// stumbled over deleted element
 								}
 
@@ -701,7 +701,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 								createTreeItem(w, e, -1);
 							}
 
-						} catch (JavaModelException x) {
+						} catch (JavaScriptModelException x) {
 							// the element to be added is not present -> don't add it
 						}
 					}
@@ -730,7 +730,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 					Object input= getInput();
 					if (event instanceof ProblemsLabelChangedEvent) {
 						ProblemsLabelChangedEvent e= (ProblemsLabelChangedEvent) event;
-						if (e.isMarkerChange() && input instanceof ICompilationUnit) {
+						if (e.isMarkerChange() && input instanceof IJavaScriptUnit) {
 							return; // marker changes can be ignored
 						}
 					}
@@ -753,8 +753,8 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 
 				private IResource getUnderlyingResource() {
 					Object input= getInput();
-					if (input instanceof ICompilationUnit) {
-						ICompilationUnit cu= (ICompilationUnit) input;
+					if (input instanceof IJavaScriptUnit) {
+						IJavaScriptUnit cu= (IJavaScriptUnit) input;
 						cu= cu.getPrimary();
 						return cu.getResource();
 					} else if (input instanceof IClassFile) {
@@ -768,7 +768,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 
 			class LexicalSortingAction extends Action {
 
-				private JavaElementComparator fComparator= new JavaElementComparator();
+				private JavaScriptElementComparator fComparator= new JavaScriptElementComparator();
 				private SourcePositionComparator fSourcePositonComparator= new SourcePositionComparator();
 
 				public LexicalSortingAction() {
@@ -779,7 +779,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 					setToolTipText(JavaEditorMessages.JavaOutlinePage_Sort_tooltip);
 					setDescription(JavaEditorMessages.JavaOutlinePage_Sort_description);
 
-					boolean checked= JavaPlugin.getDefault().getPreferenceStore().getBoolean("LexicalSortingAction.isChecked"); //$NON-NLS-1$
+					boolean checked= JavaScriptPlugin.getDefault().getPreferenceStore().getBoolean("LexicalSortingAction.isChecked"); //$NON-NLS-1$
 					valueChanged(checked, false);
 				}
 
@@ -799,7 +799,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 					});
 
 					if (store)
-						JavaPlugin.getDefault().getPreferenceStore().setValue("LexicalSortingAction.isChecked", on); //$NON-NLS-1$
+						JavaScriptPlugin.getDefault().getPreferenceStore().setValue("LexicalSortingAction.isChecked", on); //$NON-NLS-1$
 				}
 			}
 
@@ -813,7 +813,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 				setDescription(JavaEditorMessages.JavaOutlinePage_GoIntoTopLevelType_description);
 				JavaPluginImages.setLocalImageDescriptors(this, "gointo_toplevel_type.gif"); //$NON-NLS-1$
 
-				IPreferenceStore preferenceStore= JavaPlugin.getDefault().getPreferenceStore();
+				IPreferenceStore preferenceStore= JavaScriptPlugin.getDefault().getPreferenceStore();
 				boolean showclass= preferenceStore.getBoolean("GoIntoTopLevelTypeAction.isChecked"); //$NON-NLS-1$
 				setTopLevelTypeOnly(showclass);
 			}
@@ -830,7 +830,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 				setChecked(show);
 				fOutlineViewer.refresh(false);
 
-				IPreferenceStore preferenceStore= JavaPlugin.getDefault().getPreferenceStore();
+				IPreferenceStore preferenceStore= JavaScriptPlugin.getDefault().getPreferenceStore();
 				preferenceStore.setValue("GoIntoTopLevelTypeAction.isChecked", show); //$NON-NLS-1$
 			}
 		}
@@ -888,7 +888,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 	/** A flag to show contents of top level type only */
 	private boolean fTopLevelTypeOnly;
 
-	private IJavaElement fInput;
+	private IJavaScriptElement fInput;
 	private String fContextMenuID;
 	private Menu fMenu;
 	private JavaOutlineViewer fOutlineViewer;
@@ -934,7 +934,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 				doPropertyChange(event);
 			}
 		};
-		JavaPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(fPropertyChangeListener);
+		JavaScriptPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(fPropertyChangeListener);
 	}
 
 	/* (non-Javadoc)
@@ -1025,7 +1025,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 	//	viewMenuManager.add(new ClassOnlyAction());
 		viewMenuManager.add(fToggleLinkingAction);
 
-		fCategoryFilterActionGroup= new CategoryFilterActionGroup(fOutlineViewer, "org.eclipse.wst.jsdt.ui.JavaOutlinePage", new IJavaElement[] {fInput}); //$NON-NLS-1$
+		fCategoryFilterActionGroup= new CategoryFilterActionGroup(fOutlineViewer, "org.eclipse.wst.jsdt.ui.JavaOutlinePage", new IJavaScriptElement[] {fInput}); //$NON-NLS-1$
 		fCategoryFilterActionGroup.contributeToViewMenu(viewMenuManager);
 	}
 
@@ -1037,7 +1037,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 		Tree tree= new Tree(parent, SWT.MULTI);
 
 		AppearanceAwareLabelProvider lprovider= new AppearanceAwareLabelProvider(
-			AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS |  JavaElementLabels.F_APP_TYPE_SIGNATURE | JavaElementLabels.ALL_CATEGORY,
+			AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS |  JavaScriptElementLabels.F_APP_TYPE_SIGNATURE | JavaScriptElementLabels.ALL_CATEGORY,
 			AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS
 		);
 
@@ -1070,7 +1070,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 		tree.setMenu(fMenu);
 
 		IPageSite site= getSite();
-		site.registerContextMenu(JavaPlugin.getPluginId() + ".outline", manager, fOutlineViewer); //$NON-NLS-1$
+		site.registerContextMenu(JavaScriptPlugin.getPluginId() + ".outline", manager, fOutlineViewer); //$NON-NLS-1$
 		
 		updateSelectionProvider(site);
 		
@@ -1117,7 +1117,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 	private void updateSelectionProvider(IPageSite site) {
 		ISelectionProvider provider= fOutlineViewer;
 		if (fInput != null) {
-			ICompilationUnit cu= (ICompilationUnit)fInput.getAncestor(IJavaElement.COMPILATION_UNIT);
+			IJavaScriptUnit cu= (IJavaScriptUnit)fInput.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 			if (cu != null && !JavaModelUtil.isPrimary(cu))
 				provider= new EmptySelectionProvider();
 		}
@@ -1155,7 +1155,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 		fPostSelectionChangedListeners= null;
 
 		if (fPropertyChangeListener != null) {
-			JavaPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(fPropertyChangeListener);
+			JavaScriptPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(fPropertyChangeListener);
 			fPropertyChangeListener= null;
 		}
 
@@ -1180,14 +1180,14 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 		return null;
 	}
 
-	public void setInput(IJavaElement inputElement) {
+	public void setInput(IJavaScriptElement inputElement) {
 		fInput= inputElement;
 		if (fOutlineViewer != null) {
 			fOutlineViewer.setInput(fInput);
 			updateSelectionProvider(getSite());
 		}
 		if (fCategoryFilterActionGroup != null) 
-			fCategoryFilterActionGroup.setInput(new IJavaElement[] {fInput});
+			fCategoryFilterActionGroup.setInput(new IJavaScriptElement[] {fInput});
 	}
 
 	public void select(ISourceReference reference) {
@@ -1228,7 +1228,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 		if (key == IShowInTargetList.class) {
 			return new IShowInTargetList() {
 				public String[] getShowInTargetIds() {
-					return new String[] { JavaUI.ID_PACKAGES };
+					return new String[] { JavaScriptUI.ID_PACKAGES };
 				}
 
 			};
@@ -1266,7 +1266,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 
 	protected void contextMenuAboutToShow(IMenuManager menu) {
 
-		JavaPlugin.createStandardGroups(menu);
+		JavaScriptPlugin.createStandardGroups(menu);
 
 		IStructuredSelection selection= (IStructuredSelection)getSelection();
 		fActionGroups.setContext(new ActionContext(selection));
@@ -1287,17 +1287,17 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 	 * @param element the java element
 	 * @return <code>true</code> iff the given element is an inner type
 	 */
-	private boolean isInnerType(IJavaElement element) {
+	private boolean isInnerType(IJavaScriptElement element) {
 
-		if (element != null && element.getElementType() == IJavaElement.TYPE) {
+		if (element != null && element.getElementType() == IJavaScriptElement.TYPE) {
 			IType type= (IType)element;
 			try {
 				return type.isMember();
-			} catch (JavaModelException e) {
-				IJavaElement parent= type.getParent();
+			} catch (JavaScriptModelException e) {
+				IJavaScriptElement parent= type.getParent();
 				if (parent != null) {
 					int parentElementType= parent.getElementType();
-					return (parentElementType != IJavaElement.COMPILATION_UNIT && parentElementType != IJavaElement.CLASS_FILE);
+					return (parentElementType != IJavaScriptElement.JAVASCRIPT_UNIT && parentElementType != IJavaScriptElement.CLASS_FILE);
 				}
 			}
 		}
@@ -1332,7 +1332,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 				if (sel instanceof ITextSelection) {
 					ITextSelection tsel= (ITextSelection) sel;
 					int offset= tsel.getOffset();
-					IJavaElement element= fEditor.getElementAt(offset);
+					IJavaScriptElement element= fEditor.getElementAt(offset);
 					if (element != null) {
 						setSelection(new StructuredSelection(element));
 						return true;

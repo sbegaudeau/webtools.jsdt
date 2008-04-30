@@ -50,8 +50,8 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 		this.endingTokens.put(FieldDeclaration.class, new int[]{TerminalTokens.TokenNameSEMICOLON});
 		this.endingTokens.put(ImportDeclaration.class, new int[]{TerminalTokens.TokenNameSEMICOLON});
 		this.endingTokens.put(Initializer.class, new int[]{TerminalTokens.TokenNameRBRACE});
-		this.endingTokens.put(MethodDeclaration.class, new int[]{NOTHING, TerminalTokens.TokenNameSEMICOLON});
-		this.endingTokens.put(MethodInvocation.class, new int[]{TerminalTokens.TokenNameRPAREN});
+		this.endingTokens.put(FunctionDeclaration.class, new int[]{NOTHING, TerminalTokens.TokenNameSEMICOLON});
+		this.endingTokens.put(FunctionInvocation.class, new int[]{TerminalTokens.TokenNameRPAREN});
 		this.endingTokens.put(NullLiteral.class, new int[]{TerminalTokens.TokenNamenull});
 		this.endingTokens.put(UndefinedLiteral.class, new int[]{TerminalTokens.TokenNameundefined});
 		this.endingTokens.put(NumberLiteral.class, new int[]{TerminalTokens.TokenNameIntegerLiteral, TerminalTokens.TokenNameLongLiteral, TerminalTokens.TokenNameFloatingPointLiteral, TerminalTokens.TokenNameDoubleLiteral});

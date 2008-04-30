@@ -24,10 +24,10 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
@@ -40,7 +40,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 	
-	private IMethod fOriginalMethod;
+	private IFunction fOriginalMethod;
 	private boolean fActivationChecked;
 	private ITypeHierarchy fCachedHierarchy= null;
 	
@@ -48,7 +48,7 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 	 * Creates a new rename method processor.
 	 * @param method the method, or <code>null</code> if invoked by scripting
 	 */
-	public RenameVirtualMethodProcessor(IMethod method) {
+	public RenameVirtualMethodProcessor(IFunction method) {
 		super(method);
 		fOriginalMethod= getMethod();
 	}
@@ -61,7 +61,7 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 	 * methods.
 	 * 
 	 */
-	RenameVirtualMethodProcessor(IMethod topLevel, IMethod[] ripples, TextChangeManager changeManager, ITypeHierarchy hierarchy, GroupCategorySet categorySet) {
+	RenameVirtualMethodProcessor(IFunction topLevel, IFunction[] ripples, TextChangeManager changeManager, ITypeHierarchy hierarchy, GroupCategorySet categorySet) {
 		super(topLevel, changeManager, categorySet);
 		fOriginalMethod= getMethod();
 		fActivationChecked= true; // is top level
@@ -69,11 +69,11 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 		setMethodsToRename(ripples);
 	}
 
-	public IMethod getOriginalMethod() {
+	public IFunction getOriginalMethod() {
 		return fOriginalMethod;
 	}
 
-	private ITypeHierarchy getCachedHierarchy(IType declaring, IProgressMonitor monitor) throws JavaModelException {
+	private ITypeHierarchy getCachedHierarchy(IType declaring, IProgressMonitor monitor) throws JavaScriptModelException {
 		if (fCachedHierarchy != null && declaring.equals(fCachedHierarchy.getType()))
 			return fCachedHierarchy;
 		fCachedHierarchy= declaring.newTypeHierarchy(new SubProgressMonitor(monitor, 1));
@@ -94,7 +94,7 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 			monitor.beginTask("", 3); //$NON-NLS-1$
 			if (!fActivationChecked) {
 				// the following code may change the method to be changed.
-				IMethod method= getMethod();
+				IFunction method= getMethod();
 				fOriginalMethod= method;
 				
 				ITypeHierarchy hierarchy= null;
@@ -102,7 +102,7 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 				if (declaringType!=null && !declaringType.isInterface())
 					hierarchy= getCachedHierarchy(declaringType, new SubProgressMonitor(monitor, 1));
 
-				IMethod topmost= getMethod();
+				IFunction topmost= getMethod();
 				if (MethodChecks.isVirtual(topmost))
 					topmost= MethodChecks.getTopmostMethod(getMethod(), hierarchy, monitor);
 				if (topmost != null)
@@ -124,7 +124,7 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 			if (result.hasFatalError())
 				return result;
 
-			final IMethod method= getMethod();
+			final IFunction method= getMethod();
 			final IType declaring= method.getDeclaringType();
 			final ITypeHierarchy hierarchy= getCachedHierarchy(declaring, new SubProgressMonitor(pm, 1));
 			final String name= getNewElementName();
@@ -132,9 +132,9 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 				if (isSpecialCase())
 					result.addError(RefactoringCoreMessages.RenameMethodInInterfaceRefactoring_special_case); 
 				pm.worked(1);
-				IMethod[] relatedMethods= relatedTypeDeclaresMethodName(new SubProgressMonitor(pm, 1), method, name);
+				IFunction[] relatedMethods= relatedTypeDeclaresMethodName(new SubProgressMonitor(pm, 1), method, name);
 				for (int i= 0; i < relatedMethods.length; i++) {
-					IMethod relatedMethod= relatedMethods[i];
+					IFunction relatedMethod= relatedMethods[i];
 					RefactoringStatusContext context= JavaStatusContext.create(relatedMethod);
 					result.addError(RefactoringCoreMessages.RenameMethodInInterfaceRefactoring_already_defined, context); 
 				}
@@ -145,9 +145,9 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 						new String[]{method.getElementName(), "UnsatisfiedLinkError"})); //$NON-NLS-1$
 				}
 	
-				IMethod[] hierarchyMethods= hierarchyDeclaresMethodName(new SubProgressMonitor(pm, 1), hierarchy, method, name);
+				IFunction[] hierarchyMethods= hierarchyDeclaresMethodName(new SubProgressMonitor(pm, 1), hierarchy, method, name);
 				for (int i= 0; i < hierarchyMethods.length; i++) {
-					IMethod hierarchyMethod= hierarchyMethods[i];
+					IFunction hierarchyMethod= hierarchyMethods[i];
 					RefactoringStatusContext context= JavaStatusContext.create(hierarchyMethod);
 					if (Checks.compareParamTypes(method.getParameterTypes(), hierarchyMethod.getParameterTypes())) {
 						result.addError(Messages.format(
@@ -169,17 +169,17 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 	
 	//---- Interface checks -------------------------------------
 	
-	private IMethod[] relatedTypeDeclaresMethodName(IProgressMonitor pm, IMethod method, String newName) throws CoreException {
+	private IFunction[] relatedTypeDeclaresMethodName(IProgressMonitor pm, IFunction method, String newName) throws CoreException {
 		try{
 			Set result= new HashSet();
 			Set types= getRelatedTypes();
 			pm.beginTask("", types.size()); //$NON-NLS-1$
 			for (Iterator iter= types.iterator(); iter.hasNext(); ) {
-				final IMethod found= Checks.findMethod(method, (IType)iter.next());
+				final IFunction found= Checks.findMethod(method, (IType)iter.next());
 				final IType declaring= found.getDeclaringType();
 				result.addAll(Arrays.asList(hierarchyDeclaresMethodName(new SubProgressMonitor(pm, 1), declaring.newTypeHierarchy(new SubProgressMonitor(pm, 1)), found, newName)));
 			}
-			return (IMethod[]) result.toArray(new IMethod[result.size()]);
+			return (IFunction[]) result.toArray(new IFunction[result.size()]);
 		} finally {
 			pm.done();
 		}	
@@ -213,7 +213,7 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 		Set methods= getMethodsToRename();
 		Set result= new HashSet(methods.size());
 		for (Iterator iter= methods.iterator(); iter.hasNext(); ){
-			result.add(((IMethod)iter.next()).getDeclaringType());
+			result.add(((IFunction)iter.next()).getDeclaringType());
 		}
 		return result;
 	}
@@ -222,11 +222,11 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 	
 	private boolean classesDeclareOverridingNativeMethod(IType[] classes) throws CoreException {
 		for (int i= 0; i < classes.length; i++){
-			IMethod[] methods= classes[i].getMethods();
+			IFunction[] methods= classes[i].getFunctions();
 			for (int j= 0; j < methods.length; j++){
 				if ((!methods[j].equals(getMethod()))
 					&& (JdtFlags.isNative(methods[j]))
-					&& (null != Checks.findSimilarMethod(getMethod(), new IMethod[]{methods[j]})))
+					&& (null != Checks.findSimilarMethod(getMethod(), new IFunction[]{methods[j]})))
 						return true;
 			}
 		}

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.launching;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
  
 /**
@@ -26,25 +26,25 @@ public interface IJavaLaunchConfigurationConstants {
 	 * Identifier for the Local Java Application launch configuration type
 	 * (value <code>"org.eclipse.wst.jsdt.launching.localJavaApplication"</code>).
 	 */
-	public static final String ID_JAVA_APPLICATION = JavaCore.PLUGIN_ID + ".localJavaApplication"; //$NON-NLS-1$
+	public static final String ID_JAVA_APPLICATION = JavaScriptCore.PLUGIN_ID + ".localJavaApplication"; //$NON-NLS-1$
 	
 	/**
 	 * Identifier for the Remote Java Application launch configuration type
 	 * (value <code>"org.eclipse.wst.jsdt.launching.remoteJavaApplication"</code>).
 	 */
-	public static final String ID_REMOTE_JAVA_APPLICATION = JavaCore.PLUGIN_ID + ".remoteJavaApplication"; //$NON-NLS-1$	
+	public static final String ID_REMOTE_JAVA_APPLICATION = JavaScriptCore.PLUGIN_ID + ".remoteJavaApplication"; //$NON-NLS-1$	
 
 	/**
 	 * Identifier for the Java Applet launch configuration type
 	 * (value <code>"org.eclipse.wst.jsdt.launching.javaApplet"</code>).
 	 */
-	public static final String ID_JAVA_APPLET = JavaCore.PLUGIN_ID + ".javaApplet"; //$NON-NLS-1$	
+	public static final String ID_JAVA_APPLET = JavaScriptCore.PLUGIN_ID + ".javaApplet"; //$NON-NLS-1$	
 
 	/**
 	 * Identifier for the standard Socket Attaching VM connector
 	 * (value <code>"org.eclipse.wst.jsdt.launching.socketAttachConnector"</code>).
 	 */
-	public static final String ID_SOCKET_ATTACH_VM_CONNECTOR = JavaCore.PLUGIN_ID + ".socketAttachConnector"; //$NON-NLS-1$	
+	public static final String ID_SOCKET_ATTACH_VM_CONNECTOR = JavaScriptCore.PLUGIN_ID + ".socketAttachConnector"; //$NON-NLS-1$	
 	
 	/**
 	 * Identifier for the java process type, which is annotated on processes created
@@ -58,13 +58,13 @@ public interface IJavaLaunchConfigurationConstants {
 	 * Launch configuration attribute key. The value is a name of
 	 * a Java project associated with a Java launch configuration.
 	 */
-	public static final String ATTR_PROJECT_NAME = JavaCore.PLUGIN_ID + ".PROJECT_ATTR"; //$NON-NLS-1$
+	public static final String ATTR_PROJECT_NAME = JavaScriptCore.PLUGIN_ID + ".PROJECT_ATTR"; //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is a fully qualified name
 	 * of a main type to launch.
 	 */
-	public static final String ATTR_MAIN_TYPE_NAME = JavaCore.PLUGIN_ID + ".MAIN_TYPE";	 //$NON-NLS-1$
+	public static final String ATTR_MAIN_TYPE_NAME = JavaScriptCore.PLUGIN_ID + ".MAIN_TYPE";	 //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is a boolean specifying
@@ -73,21 +73,21 @@ public interface IJavaLaunchConfigurationConstants {
 	 * 
 	 * @since 2.1
 	 */
-	public static final String ATTR_STOP_IN_MAIN = JavaCore.PLUGIN_ID + ".STOP_IN_MAIN";	 //$NON-NLS-1$
+	public static final String ATTR_STOP_IN_MAIN = JavaScriptCore.PLUGIN_ID + ".STOP_IN_MAIN";	 //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is a string specifying
 	 * program arguments for a Java launch configuration, as they should appear
 	 * on the command line.
 	 */
-	public static final String ATTR_PROGRAM_ARGUMENTS = JavaCore.PLUGIN_ID + ".PROGRAM_ARGUMENTS"; //$NON-NLS-1$
+	public static final String ATTR_PROGRAM_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".PROGRAM_ARGUMENTS"; //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is a string specifying
 	 * VM arguments for a Java launch configuration, as they should appear
 	 * on the command line.
 	 */
-	public static final String ATTR_VM_ARGUMENTS = JavaCore.PLUGIN_ID + ".VM_ARGUMENTS";	 //$NON-NLS-1$
+	public static final String ATTR_VM_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".VM_ARGUMENTS";	 //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is a string specifying a
@@ -99,7 +99,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * launch configuration, the working directory is inherited from the current
 	 * process.
 	 */
-	public static final String ATTR_WORKING_DIRECTORY = JavaCore.PLUGIN_ID + ".WORKING_DIRECTORY";	 //$NON-NLS-1$
+	public static final String ATTR_WORKING_DIRECTORY = JavaScriptCore.PLUGIN_ID + ".WORKING_DIRECTORY";	 //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is a path identifying the JRE used
@@ -123,7 +123,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * 
 	 * @deprecated use <code>ATTR_JRE_CONTAINER_PATH</code>
 	 */
-	public static final String ATTR_VM_INSTALL_NAME = JavaCore.PLUGIN_ID + ".VM_INSTALL_NAME"; //$NON-NLS-1$
+	public static final String ATTR_VM_INSTALL_NAME = JavaScriptCore.PLUGIN_ID + ".VM_INSTALL_NAME"; //$NON-NLS-1$
 		
 	/**
 	 * Launch configuration attribute key. The value is an identifier of
@@ -134,7 +134,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * 
 	 * @deprecated use <code>ATTR_JRE_CONTAINER_PATH</code>
 	 */
-	public static final String ATTR_VM_INSTALL_TYPE = JavaCore.PLUGIN_ID + ".VM_INSTALL_TYPE_ID"; //$NON-NLS-1$
+	public static final String ATTR_VM_INSTALL_TYPE = JavaScriptCore.PLUGIN_ID + ".VM_INSTALL_TYPE_ID"; //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is a Map of attributes specific
@@ -143,14 +143,14 @@ public interface IJavaLaunchConfigurationConstants {
 	 * when launching a VM. The attributes in the map are implementation dependent
 	 * and are limited to String keys and values.
 	 */
-	public static final String ATTR_VM_INSTALL_TYPE_SPECIFIC_ATTRS_MAP = JavaCore.PLUGIN_ID + "VM_INSTALL_TYPE_SPECIFIC_ATTRS_MAP"; //$NON-NLS-1$
+	public static final String ATTR_VM_INSTALL_TYPE_SPECIFIC_ATTRS_MAP = JavaScriptCore.PLUGIN_ID + "VM_INSTALL_TYPE_SPECIFIC_ATTRS_MAP"; //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is an identifier of
 	 * a VM connector, specifying a connector to use when attaching to
 	 * a remote VM.
 	 */
-	public static final String ATTR_VM_CONNECTOR= JavaCore.PLUGIN_ID + ".VM_CONNECTOR_ID"; //$NON-NLS-1$
+	public static final String ATTR_VM_CONNECTOR= JavaScriptCore.PLUGIN_ID + ".VM_CONNECTOR_ID"; //$NON-NLS-1$
 		
 	/**
 	 * Launch configuration attribute key. The attribute value is an ordered list of strings
@@ -158,7 +158,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * classpath is generated by the classpath provider associated with a launch
 	 * configuration (via the <code>ATTR_CLASSPATH_PROVIDER</code> attribute).
 	 */
-	public static final String ATTR_CLASSPATH = JavaCore.PLUGIN_ID + ".CLASSPATH";	 //$NON-NLS-1$
+	public static final String ATTR_CLASSPATH = JavaScriptCore.PLUGIN_ID + ".CLASSPATH";	 //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is a boolean specifying
@@ -168,7 +168,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * unspecified, a classpath is computed by the classpath provider associated
 	 * with a launch configuration.
 	 */
-	public static final String ATTR_DEFAULT_CLASSPATH = JavaCore.PLUGIN_ID + ".DEFAULT_CLASSPATH"; //$NON-NLS-1$
+	public static final String ATTR_DEFAULT_CLASSPATH = JavaScriptCore.PLUGIN_ID + ".DEFAULT_CLASSPATH"; //$NON-NLS-1$
 
 	/**
 	 * Launch configuration attribute key. The value is an identifier of a
@@ -176,7 +176,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * for a launch configuration. When unspecified, the default classpath
 	 * provider is used - <code>StandardClasspathProvider</code>.
 	 */
-	public static final String ATTR_CLASSPATH_PROVIDER = JavaCore.PLUGIN_ID + ".CLASSPATH_PROVIDER";	 //$NON-NLS-1$
+	public static final String ATTR_CLASSPATH_PROVIDER = JavaScriptCore.PLUGIN_ID + ".CLASSPATH_PROVIDER";	 //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is an ordered list of
@@ -186,7 +186,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * associated with a launch configurations (via the
 	 * <code>ATTR_SOURCE_PATH_PROVIDER</code> attribute).
 	 */
-	public static final String ATTR_SOURCE_PATH = JavaCore.PLUGIN_ID + ".SOURCE_PATH";	 //$NON-NLS-1$
+	public static final String ATTR_SOURCE_PATH = JavaScriptCore.PLUGIN_ID + ".SOURCE_PATH";	 //$NON-NLS-1$
 		
 	/**
 	 * Launch configuration attribute key. The value is a boolean specifying
@@ -196,7 +196,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * unspecified, a source lookup path is computed by the source path
 	 * provider associated with a launch configuration.
 	 */
-	public static final String ATTR_DEFAULT_SOURCE_PATH = JavaCore.PLUGIN_ID + ".DEFAULT_SOURCE_PATH"; //$NON-NLS-1$
+	public static final String ATTR_DEFAULT_SOURCE_PATH = JavaScriptCore.PLUGIN_ID + ".DEFAULT_SOURCE_PATH"; //$NON-NLS-1$
 
 	/**
 	 * Launch configuration attribute key. The value is an identifier of a
@@ -204,21 +204,21 @@ public interface IJavaLaunchConfigurationConstants {
 	 * for a launch configuration. When unspecified, the default source lookup
 	 * path provider is used - <code>StandardSourcePathProvider</code>.
 	 */
-	public static final String ATTR_SOURCE_PATH_PROVIDER = JavaCore.PLUGIN_ID + ".SOURCE_PATH_PROVIDER";	 //$NON-NLS-1$
+	public static final String ATTR_SOURCE_PATH_PROVIDER = JavaScriptCore.PLUGIN_ID + ".SOURCE_PATH_PROVIDER";	 //$NON-NLS-1$
 			
 	/**
 	 * Launch configuration attribute key. The value is a boolean, indicating
 	 * whether a VM will support/allow the terminate action.
 	 * This attribute is used for remote debugging.
 	 */
-	public static final String ATTR_ALLOW_TERMINATE = JavaCore.PLUGIN_ID + ".ALLOW_TERMINATE";	 //$NON-NLS-1$
+	public static final String ATTR_ALLOW_TERMINATE = JavaScriptCore.PLUGIN_ID + ".ALLOW_TERMINATE";	 //$NON-NLS-1$
 	
 	/**
 	 * Attribute key for VM specific attributes found in the
 	 * <code>ATTR_VM_INSTALL_TYPE_SPECIFIC_ATTRS_MAP</code>. The value is a String,
 	 * indicating the String to use to invoke the JRE.
 	 */
-	public static final String ATTR_JAVA_COMMAND = JavaCore.PLUGIN_ID + ".JAVA_COMMAND";	 //$NON-NLS-1$
+	public static final String ATTR_JAVA_COMMAND = JavaScriptCore.PLUGIN_ID + ".JAVA_COMMAND";	 //$NON-NLS-1$
 
 	/**
 	 * Launch configuration attribute key. The value is 
@@ -227,7 +227,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * Values are strings corresponding to the values to use when
 	 * establishing a connection to a remote VM.
 	 */
-	public static final String ATTR_CONNECT_MAP = JavaCore.PLUGIN_ID + ".CONNECT_MAP";	 //$NON-NLS-1$
+	public static final String ATTR_CONNECT_MAP = JavaScriptCore.PLUGIN_ID + ".CONNECT_MAP";	 //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is an integer
@@ -235,7 +235,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * 
 	 * @since 2.1
 	 */
-	public static final String ATTR_APPLET_WIDTH = JavaCore.PLUGIN_ID + ".APPLET_WIDTH";	 //$NON-NLS-1$
+	public static final String ATTR_APPLET_WIDTH = JavaScriptCore.PLUGIN_ID + ".APPLET_WIDTH";	 //$NON-NLS-1$
 
 	/**
 	 * Launch configuration attribute key. The value is an integer
@@ -243,7 +243,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * 
 	 * @since 2.1
 	 */
-	public static final String ATTR_APPLET_HEIGHT = JavaCore.PLUGIN_ID + ".APPLET_HEIGHT";	 //$NON-NLS-1$
+	public static final String ATTR_APPLET_HEIGHT = JavaScriptCore.PLUGIN_ID + ".APPLET_HEIGHT";	 //$NON-NLS-1$
 
 	/**
 	 * Launch configuration attribute key. The value is a String indicating the
@@ -251,7 +251,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * 
 	 * @since 2.1
 	 */
-	public static final String ATTR_APPLET_NAME = JavaCore.PLUGIN_ID + ".APPLET_NAME";	 //$NON-NLS-1$
+	public static final String ATTR_APPLET_NAME = JavaScriptCore.PLUGIN_ID + ".APPLET_NAME";	 //$NON-NLS-1$
 
 	/**
 	 * Launch configuration attribute key. The value is a Map. Keys in the map
@@ -260,7 +260,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * 
 	 * @since 2.1
 	 */
-	public static final String ATTR_APPLET_PARAMETERS = JavaCore.PLUGIN_ID + ".APPLET_PARAMETERS";	 //$NON-NLS-1$
+	public static final String ATTR_APPLET_PARAMETERS = JavaScriptCore.PLUGIN_ID + ".APPLET_PARAMETERS";	 //$NON-NLS-1$
 
 	/**
 	 * Launch configuration attribute key. The value is a String indicating the
@@ -268,7 +268,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * 
 	 * @since 2.1
 	 */
-	public static final String ATTR_APPLET_APPLETVIEWER_CLASS = JavaCore.PLUGIN_ID + ".APPLET_APPLETVIEWER_CLASS";	 //$NON-NLS-1$
+	public static final String ATTR_APPLET_APPLETVIEWER_CLASS = JavaScriptCore.PLUGIN_ID + ".APPLET_APPLETVIEWER_CLASS";	 //$NON-NLS-1$
 	
 	/**
 	 * Attribute key for a VM specific argument. Value is an array
@@ -280,7 +280,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public static final String ATTR_BOOTPATH_PREPEND = JavaCore.PLUGIN_ID + ".-Xbootclasspath/p:";	 //$NON-NLS-1$
+	public static final String ATTR_BOOTPATH_PREPEND = JavaScriptCore.PLUGIN_ID + ".-Xbootclasspath/p:";	 //$NON-NLS-1$
 
 	/**
 	 * Attribute key for a VM specific argument. Value is an array
@@ -292,7 +292,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public static final String ATTR_BOOTPATH = JavaCore.PLUGIN_ID + ".-Xbootclasspath:";	 //$NON-NLS-1$
+	public static final String ATTR_BOOTPATH = JavaScriptCore.PLUGIN_ID + ".-Xbootclasspath:";	 //$NON-NLS-1$
 	
 	/**
 	 * Attribute key for a VM specific argument. Value is an array
@@ -304,7 +304,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * 
 	 * @since 3.0
 	 */	
-	public static final String ATTR_BOOTPATH_APPEND = JavaCore.PLUGIN_ID + ".-Xbootclasspath/a:";	 //$NON-NLS-1$
+	public static final String ATTR_BOOTPATH_APPEND = JavaScriptCore.PLUGIN_ID + ".-Xbootclasspath/a:";	 //$NON-NLS-1$
 
 	/**
 	 * Status code indicating a launch configuration does not

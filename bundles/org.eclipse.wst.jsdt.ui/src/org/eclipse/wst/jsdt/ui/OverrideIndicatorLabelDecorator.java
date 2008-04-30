@@ -19,15 +19,15 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
@@ -35,7 +35,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
 import org.eclipse.wst.jsdt.internal.corext.util.SuperTypeHierarchyCache;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
@@ -81,7 +81,7 @@ public class OverrideIndicatorLabelDecorator implements ILabelDecorator, ILightw
 	
 	private ImageDescriptorRegistry getRegistry() {
 		if (fRegistry == null) {
-			fRegistry= fUseNewRegistry ? new ImageDescriptorRegistry() : JavaPlugin.getImageDescriptorRegistry();
+			fRegistry= fUseNewRegistry ? new ImageDescriptorRegistry() : JavaScriptPlugin.getImageDescriptorRegistry();
 		}
 		return fRegistry;
 	}	
@@ -102,7 +102,7 @@ public class OverrideIndicatorLabelDecorator implements ILabelDecorator, ILightw
 		if (adornmentFlags != 0) {
 			ImageDescriptor baseImage= new ImageImageDescriptor(image);
 			Rectangle bounds= image.getBounds();
-			return getRegistry().get(new JavaElementImageDescriptor(baseImage, adornmentFlags, new Point(bounds.width, bounds.height)));
+			return getRegistry().get(new JavaScriptElementImageDescriptor(baseImage, adornmentFlags, new Point(bounds.width, bounds.height)));
 		}
 		return image;
 	}
@@ -110,27 +110,27 @@ public class OverrideIndicatorLabelDecorator implements ILabelDecorator, ILightw
 	/**
 	 * Note: This method is for internal use only. Clients should not call this method.
 	 * @param element The element to decorate
-	 * @return Resulting decorations (combination of JavaElementImageDescriptor.IMPLEMENTS
-	 * and JavaElementImageDescriptor.OVERRIDES)
+	 * @return Resulting decorations (combination of JavaScriptElementImageDescriptor.IMPLEMENTS
+	 * and JavaScriptElementImageDescriptor.OVERRIDES)
 	 */
 	public int computeAdornmentFlags(Object element) {
-		if (element instanceof IMethod) {
+		if (element instanceof IFunction) {
 			try {
-				IMethod method= (IMethod) element;
-				if (!method.getJavaProject().isOnClasspath(method)) {
+				IFunction method= (IFunction) element;
+				if (!method.getJavaScriptProject().isOnIncludepath(method)) {
 					return 0;
 				}
 				int flags= method.getFlags();
 				if (!method.isConstructor() && !Flags.isPrivate(flags) && !Flags.isStatic(flags)) {
 					int res= getOverrideIndicators(method);
 					if (res != 0 && Flags.isSynchronized(flags)) {
-						return res | JavaElementImageDescriptor.SYNCHRONIZED;
+						return res | JavaScriptElementImageDescriptor.SYNCHRONIZED;
 					}
 					return res;
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				if (!e.isDoesNotExist()) {
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 				}
 			}
 		}
@@ -140,12 +140,12 @@ public class OverrideIndicatorLabelDecorator implements ILabelDecorator, ILightw
 	/**
 	 * Note: This method is for internal use only. Clients should not call this method.
 	 * @param method The element to decorate
-	 * @return Resulting decorations (combination of JavaElementImageDescriptor.IMPLEMENTS
-	 * and JavaElementImageDescriptor.OVERRIDES)
-	 * @throws JavaModelException
+	 * @return Resulting decorations (combination of JavaScriptElementImageDescriptor.IMPLEMENTS
+	 * and JavaScriptElementImageDescriptor.OVERRIDES)
+	 * @throws JavaScriptModelException
 	 */
-	protected int getOverrideIndicators(IMethod method) throws JavaModelException {
-		CompilationUnit astRoot= JavaPlugin.getDefault().getASTProvider().getAST((IJavaElement) method.getOpenable(), ASTProvider.WAIT_ACTIVE_ONLY, null);
+	protected int getOverrideIndicators(IFunction method) throws JavaScriptModelException {
+		JavaScriptUnit astRoot= JavaScriptPlugin.getDefault().getASTProvider().getAST((IJavaScriptElement) method.getOpenable(), ASTProvider.WAIT_ACTIVE_ONLY, null);
 		if (astRoot != null) {
 			int res= findInHierarchyWithAST(astRoot, method);
 			if (res != -1) {
@@ -158,28 +158,28 @@ public class OverrideIndicatorLabelDecorator implements ILabelDecorator, ILightw
 			return 0;
 		
 		MethodOverrideTester methodOverrideTester= SuperTypeHierarchyCache.getMethodOverrideTester(type);
-		IMethod defining= methodOverrideTester.findOverriddenMethod(method, true);
+		IFunction defining= methodOverrideTester.findOverriddenMethod(method, true);
 		if (defining != null) {
 			if (JdtFlags.isAbstract(defining)) {
-				return JavaElementImageDescriptor.IMPLEMENTS;
+				return JavaScriptElementImageDescriptor.IMPLEMENTS;
 			} else {
-				return JavaElementImageDescriptor.OVERRIDES;
+				return JavaScriptElementImageDescriptor.OVERRIDES;
 			}
 		}
 		return 0;
 	}
 	
-	private int findInHierarchyWithAST(CompilationUnit astRoot, IMethod method) throws JavaModelException {
+	private int findInHierarchyWithAST(JavaScriptUnit astRoot, IFunction method) throws JavaScriptModelException {
 		ASTNode node= NodeFinder.perform(astRoot, method.getNameRange());
-		if (node instanceof SimpleName && node.getParent() instanceof MethodDeclaration) {
-			IMethodBinding binding= ((MethodDeclaration) node.getParent()).resolveBinding();
+		if (node instanceof SimpleName && node.getParent() instanceof FunctionDeclaration) {
+			IFunctionBinding binding= ((FunctionDeclaration) node.getParent()).resolveBinding();
 			if (binding != null) {
-				IMethodBinding defining= Bindings.findOverriddenMethod(binding, true);
+				IFunctionBinding defining= Bindings.findOverriddenMethod(binding, true);
 				if (defining != null) {
 					if (JdtFlags.isAbstract(defining)) {
-						return JavaElementImageDescriptor.IMPLEMENTS;
+						return JavaScriptElementImageDescriptor.IMPLEMENTS;
 					} else {
-						return JavaElementImageDescriptor.OVERRIDES;
+						return JavaScriptElementImageDescriptor.OVERRIDES;
 					}
 				}
 				return 0;
@@ -195,29 +195,29 @@ public class OverrideIndicatorLabelDecorator implements ILabelDecorator, ILightw
 	 * @param name The name of the method to find.
 	 * @param paramTypes The parameter types of the method to find.
 	 * @return The resulting decoration.
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 * @deprecated Not used anymore. This method is not accurate for methods in generic types.
 	 */
-	protected int findInHierarchy(IType type, ITypeHierarchy hierarchy, String name, String[] paramTypes) throws JavaModelException {
+	protected int findInHierarchy(IType type, ITypeHierarchy hierarchy, String name, String[] paramTypes) throws JavaScriptModelException {
 		IType superClass= hierarchy.getSuperclass(type);
 		if (superClass != null) {
-			IMethod res= JavaModelUtil.findMethodInHierarchy(hierarchy, superClass, name, paramTypes, false);
+			IFunction res= JavaModelUtil.findMethodInHierarchy(hierarchy, superClass, name, paramTypes, false);
 			if (res != null && !Flags.isPrivate(res.getFlags()) && JavaModelUtil.isVisibleInHierarchy(res, type.getPackageFragment())) {
 				if (JdtFlags.isAbstract(res)) {
-					return JavaElementImageDescriptor.IMPLEMENTS;
+					return JavaScriptElementImageDescriptor.IMPLEMENTS;
 				} else {
-					return JavaElementImageDescriptor.OVERRIDES;
+					return JavaScriptElementImageDescriptor.OVERRIDES;
 				}
 			}
 		}
 		IType[] interfaces= hierarchy.getSuperInterfaces(type);
 		for (int i= 0; i < interfaces.length; i++) {
-			IMethod res= JavaModelUtil.findMethodInHierarchy(hierarchy, interfaces[i], name, paramTypes, false);
+			IFunction res= JavaModelUtil.findMethodInHierarchy(hierarchy, interfaces[i], name, paramTypes, false);
 			if (res != null) {
 				if (JdtFlags.isAbstract(res)) {
-					return JavaElementImageDescriptor.IMPLEMENTS;
+					return JavaScriptElementImageDescriptor.IMPLEMENTS;
 				} else {
-					return JavaElementImageDescriptor.OVERRIDES;
+					return JavaScriptElementImageDescriptor.OVERRIDES;
 				}
 			}
 		}
@@ -257,14 +257,14 @@ public class OverrideIndicatorLabelDecorator implements ILabelDecorator, ILightw
 	 */
 	public void decorate(Object element, IDecoration decoration) { 
 		int adornmentFlags= computeAdornmentFlags(element);
-		if ((adornmentFlags & JavaElementImageDescriptor.IMPLEMENTS) != 0) {
-			if ((adornmentFlags & JavaElementImageDescriptor.SYNCHRONIZED) != 0) {
+		if ((adornmentFlags & JavaScriptElementImageDescriptor.IMPLEMENTS) != 0) {
+			if ((adornmentFlags & JavaScriptElementImageDescriptor.SYNCHRONIZED) != 0) {
 				decoration.addOverlay(JavaPluginImages.DESC_OVR_SYNCH_AND_IMPLEMENTS);
 			} else {
 				decoration.addOverlay(JavaPluginImages.DESC_OVR_IMPLEMENTS);
 			}
-		} else if ((adornmentFlags & JavaElementImageDescriptor.OVERRIDES) != 0) {
-			if ((adornmentFlags & JavaElementImageDescriptor.SYNCHRONIZED) != 0) {
+		} else if ((adornmentFlags & JavaScriptElementImageDescriptor.OVERRIDES) != 0) {
+			if ((adornmentFlags & JavaScriptElementImageDescriptor.SYNCHRONIZED) != 0) {
 				decoration.addOverlay(JavaPluginImages.DESC_OVR_SYNCH_AND_OVERRIDES);
 			} else {
 				decoration.addOverlay(JavaPluginImages.DESC_OVR_OVERRIDES);

@@ -17,13 +17,13 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.Annotation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
@@ -38,7 +38,7 @@ public class MissingAnnotationAttributesProposal extends LinkedCorrectionProposa
 
 	private Annotation fAnnotation;
 
-	public MissingAnnotationAttributesProposal(ICompilationUnit cu, Annotation annotation, int relevance) {
+	public MissingAnnotationAttributesProposal(IJavaScriptUnit cu, Annotation annotation, int relevance) {
 		super(CorrectionMessages.MissingAnnotationAttributesProposal_add_missing_attributes_label, cu, null, relevance, null);
 		setImage(JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE));
 
@@ -53,7 +53,7 @@ public class MissingAnnotationAttributesProposal extends LinkedCorrectionProposa
 		AST ast= fAnnotation.getAST();
 
 		ASTRewrite rewrite= ASTRewrite.create(ast);
-		createImportRewrite((CompilationUnit) fAnnotation.getRoot());
+		createImportRewrite((JavaScriptUnit) fAnnotation.getRoot());
 		
 		ListRewrite listRewrite;
 		if (fAnnotation instanceof NormalAnnotation) {
@@ -84,9 +84,9 @@ public class MissingAnnotationAttributesProposal extends LinkedCorrectionProposa
 		ASTRewrite rewriter= listRewriter.getASTRewrite();
 		AST ast= rewriter.getAST();
 		
-		IMethodBinding[] declaredMethods= binding.getDeclaredMethods();
+		IFunctionBinding[] declaredMethods= binding.getDeclaredMethods();
 		for (int i= 0; i < declaredMethods.length; i++) {
-			IMethodBinding curr= declaredMethods[i];
+			IFunctionBinding curr= declaredMethods[i];
 			if (!implementedAttribs.contains(curr.getName()) && curr.getDefaultValue() == null) {
 				MemberValuePair pair= ast.newMemberValuePair();
 				pair.setName(ast.newSimpleName(curr.getName()));

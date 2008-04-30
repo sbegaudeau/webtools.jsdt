@@ -24,15 +24,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
@@ -42,7 +42,7 @@ import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.core.search.FieldDeclarationMatch;
 import org.eclipse.wst.jsdt.core.search.FieldReferenceMatch;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.LocalVariableDeclarationMatch;
 import org.eclipse.wst.jsdt.core.search.LocalVariableReferenceMatch;
 import org.eclipse.wst.jsdt.core.search.MethodDeclarationMatch;
@@ -177,10 +177,10 @@ public SearchPattern pattern;
 public PatternLocator patternLocator;
 public int matchContainer;
 public SearchRequestor requestor;
-public IJavaSearchScope scope;
+public IJavaScriptSearchScope scope;
 public IProgressMonitor progressMonitor;
 
-public org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies;
+public org.eclipse.wst.jsdt.core.IJavaScriptUnit[] workingCopies;
 public HandleFactory handleFactory;
 
 // cache of all super type names if scope is hierarchy scope
@@ -202,7 +202,7 @@ public PossibleMatch[] matchesToProcess;
 public PossibleMatch currentPossibleMatch;
 
 /*
- * Time spent in the IJavaSearchResultCollector
+ * Time spent in the IJavaScriptSearchResultCollector
  */
 public long resultCollectorTime = 0;
 
@@ -222,11 +222,11 @@ class ReportMatchingVisitor extends ASTVisitor
 {
 	MatchingNodeSet nodeSet;
 	boolean matchedClassContainer;
-	IJavaElement enclosingElement;
+	IJavaScriptElement enclosingElement;
 	boolean typeInHierarchy;
 	CoreException exception;
 
-	public ReportMatchingVisitor(MatchingNodeSet nodeSet, boolean matchedClassContainer, IJavaElement enclosingElement, boolean typeInHierarchy) {
+	public ReportMatchingVisitor(MatchingNodeSet nodeSet, boolean matchedClassContainer, IJavaScriptElement enclosingElement, boolean typeInHierarchy) {
 		super();
 		this.nodeSet = nodeSet;
 		this.matchedClassContainer = matchedClassContainer;
@@ -264,11 +264,11 @@ class ReportMatchingVisitor extends ASTVisitor
  * An ast visitor that visits local type declarations.
  */
 public class LocalDeclarationVisitor extends ASTVisitor {
-	IJavaElement enclosingElement;
+	IJavaScriptElement enclosingElement;
 	Binding enclosingElementBinding;
 	MatchingNodeSet nodeSet;
 	HashtableOfIntValues occurrencesCounts = new HashtableOfIntValues(); // key = class name (char[]), value = occurrenceCount (int)
-	public LocalDeclarationVisitor(IJavaElement enclosingElement, Binding enclosingElementBinding, MatchingNodeSet nodeSet) {
+	public LocalDeclarationVisitor(IJavaScriptElement enclosingElement, Binding enclosingElementBinding, MatchingNodeSet nodeSet) {
 		this.enclosingElement = enclosingElement;
 		this.enclosingElementBinding = enclosingElementBinding;
 		this.nodeSet = nodeSet;
@@ -302,8 +302,8 @@ public class LocalDeclarationVisitor extends ASTVisitor {
 }
 
 public static class WorkingCopyDocument extends JavaSearchDocument {
-	public org.eclipse.wst.jsdt.core.ICompilationUnit workingCopy;
-	WorkingCopyDocument(org.eclipse.wst.jsdt.core.ICompilationUnit workingCopy, SearchParticipant participant) {
+	public org.eclipse.wst.jsdt.core.IJavaScriptUnit workingCopy;
+	WorkingCopyDocument(org.eclipse.wst.jsdt.core.IJavaScriptUnit workingCopy, SearchParticipant participant) {
 		super(workingCopy.getPath().toString(), participant);
 		this.charContents = ((CompilationUnit)workingCopy).getContents();
 		this.workingCopy = workingCopy;
@@ -321,7 +321,7 @@ public static class WrappedCoreException extends RuntimeException {
 	}
 }
 
-public static SearchDocument[] addWorkingCopies(InternalSearchPattern pattern, SearchDocument[] indexMatches, org.eclipse.wst.jsdt.core.ICompilationUnit[] copies, SearchParticipant participant) {
+public static SearchDocument[] addWorkingCopies(InternalSearchPattern pattern, SearchDocument[] indexMatches, org.eclipse.wst.jsdt.core.IJavaScriptUnit[] copies, SearchParticipant participant) {
 	// working copies take precedence over corresponding compilation units
 	HashMap workingCopyDocuments = workingCopiesThatCanSeeFocus(copies, pattern.focus, pattern.isPolymorphicSearch(), participant);
 	SearchDocument[] matches = null;
@@ -353,23 +353,23 @@ public static SearchDocument[] addWorkingCopies(InternalSearchPattern pattern, S
 	return matches;
 }
 
-public static void setFocus(InternalSearchPattern pattern, IJavaElement focus) {
+public static void setFocus(InternalSearchPattern pattern, IJavaScriptElement focus) {
 	pattern.focus = focus;
 }
 
 /*
  * Returns the working copies that can see the given focus.
  */
-private static HashMap workingCopiesThatCanSeeFocus(org.eclipse.wst.jsdt.core.ICompilationUnit[] copies, IJavaElement focus, boolean isPolymorphicSearch, SearchParticipant participant) {
+private static HashMap workingCopiesThatCanSeeFocus(org.eclipse.wst.jsdt.core.IJavaScriptUnit[] copies, IJavaScriptElement focus, boolean isPolymorphicSearch, SearchParticipant participant) {
 	if (copies == null) return new HashMap();
 	if (focus != null) {
-		while (!(focus instanceof IJavaProject) && !(focus instanceof JarPackageFragmentRoot)) {
+		while (!(focus instanceof IJavaScriptProject) && !(focus instanceof JarPackageFragmentRoot)) {
 			focus = focus.getParent();
 		}
 	}
 	HashMap result = new HashMap();
 	for (int i=0, length = copies.length; i<length; i++) {
-		org.eclipse.wst.jsdt.core.ICompilationUnit workingCopy = copies[i];
+		org.eclipse.wst.jsdt.core.IJavaScriptUnit workingCopy = copies[i];
 		IPath projectOrJar = MatchLocator.getProjectOrJar(workingCopy).getPath();
 		if (focus == null || IndexSelector.canSeeFocus(focus, isPolymorphicSearch, projectOrJar)) {
 			result.put(
@@ -404,26 +404,26 @@ public static SearchPattern createAndPattern(final SearchPattern leftPattern, fi
 /**
  * Query a given index for matching entries. Assumes the sender has opened the index and will close when finished.
  */
-public static void findIndexMatches(InternalSearchPattern pattern, Index index, IndexQueryRequestor requestor, SearchParticipant participant, IJavaSearchScope scope, IProgressMonitor monitor) throws IOException {
+public static void findIndexMatches(InternalSearchPattern pattern, Index index, IndexQueryRequestor requestor, SearchParticipant participant, IJavaScriptSearchScope scope, IProgressMonitor monitor) throws IOException {
 	pattern.findIndexMatches(index, requestor, participant, scope, monitor);
 }
 
-public static IJavaElement getProjectOrJar(IJavaElement element) {
-	while (!(element instanceof IJavaProject) &&
+public static IJavaScriptElement getProjectOrJar(IJavaScriptElement element) {
+	while (!(element instanceof IJavaScriptProject) &&
 			!(element instanceof JarPackageFragmentRoot || element instanceof LibraryFragmentRoot)) {
 		element = element.getParent();
 	}
 	return element;
 }
 
-public static IJavaElement projectOrJarFocus(InternalSearchPattern pattern) {
+public static IJavaScriptElement projectOrJarFocus(InternalSearchPattern pattern) {
 	return pattern == null || pattern.focus == null ? null : getProjectOrJar(pattern.focus);
 }
 
 public MatchLocator(
 	SearchPattern pattern,
 	SearchRequestor requestor,
-	IJavaSearchScope scope,
+	IJavaScriptSearchScope scope,
 	IProgressMonitor progressMonitor) {
 
 	this.pattern = pattern;
@@ -481,7 +481,7 @@ public void accept(LibraryAPIs libraryMetaData)
  * Add additional source types
  */
 public void accept(ISourceType[] sourceTypes, PackageBinding packageBinding, AccessRestriction accessRestriction) {
-	// case of SearchableEnvironment of an IJavaProject is used
+	// case of SearchableEnvironment of an IJavaScriptProject is used
 	ISourceType sourceType = sourceTypes[0];
 	while (sourceType.getEnclosingType() != null)
 		sourceType = sourceType.getEnclosingType();
@@ -489,7 +489,7 @@ public void accept(ISourceType[] sourceTypes, PackageBinding packageBinding, Acc
 		// get source
 		SourceTypeElementInfo elementInfo = (SourceTypeElementInfo) sourceType;
 		IType type = elementInfo.getHandle();
-		ICompilationUnit sourceUnit = (ICompilationUnit) type.getCompilationUnit();
+		ICompilationUnit sourceUnit = (ICompilationUnit) type.getJavaScriptUnit();
 		accept(sourceUnit, accessRestriction);
 	} else {
 		CompilationResult result = new CompilationResult(sourceType.getFileName(), sourceType.getPackageName(), 1, 1, 0);
@@ -522,7 +522,7 @@ protected Parser basicParser() {
  * Returns the existing one if already cached.
  * Returns null if source type binding was cached.
  */
-protected BinaryTypeBinding cacheBinaryType(IType type, IBinaryType binaryType) throws JavaModelException {
+protected BinaryTypeBinding cacheBinaryType(IType type, IBinaryType binaryType) throws JavaScriptModelException {
 	IType enclosingType = type.getDeclaringType();
 	if (enclosingType != null)
 		cacheBinaryType(enclosingType, null); // cache enclosing types first, so that binary type can be found in lookup enviroment
@@ -531,10 +531,10 @@ protected BinaryTypeBinding cacheBinaryType(IType type, IBinaryType binaryType) 
 		try {
 			binaryType = getBinaryInfo(classFile, classFile.getResource());
 		} catch (CoreException e) {
-			if (e instanceof JavaModelException) {
-				throw (JavaModelException) e;
+			if (e instanceof JavaScriptModelException) {
+				throw (JavaScriptModelException) e;
 			} else {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			}
 		}
 	}
@@ -567,17 +567,17 @@ protected char[][][] computeSuperTypeNames(IType focusType) {
 			this.progressMonitor);
 	try {
 		this.allSuperTypeNames = superTypeNamesCollector.collect();
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// problem collecting super type names: leave it null
 	}
 	return this.allSuperTypeNames;
 }
 /**
- * Creates an IMethod from the given method declaration and type.
+ * Creates an IFunction from the given method declaration and type.
  */
-protected IJavaElement createHandle(AbstractMethodDeclaration method, IJavaElement parent) {
+protected IJavaScriptElement createHandle(AbstractMethodDeclaration method, IJavaScriptElement parent) {
 	if (!(parent instanceof IType ||
-			parent instanceof org.eclipse.wst.jsdt.core.ICompilationUnit ||
+			parent instanceof org.eclipse.wst.jsdt.core.IJavaScriptUnit ||
 			parent instanceof org.eclipse.wst.jsdt.core.IClassFile
 			)) return parent;
 
@@ -641,21 +641,21 @@ protected IJavaElement createHandle(AbstractMethodDeclaration method, IJavaEleme
  * Create method handle.
  * Store occurences for create handle to retrieve possible duplicate ones.
  */
-private IJavaElement createMethodHandle(IJavaElement parent, String methodName, String[] parameterTypeSignatures) {
-	IMethod methodHandle = null;
-	if (parent instanceof org.eclipse.wst.jsdt.core.ICompilationUnit) {
-		org.eclipse.wst.jsdt.core.ICompilationUnit compUnit = (org.eclipse.wst.jsdt.core.ICompilationUnit ) parent;
-		 methodHandle = compUnit.getMethod(methodName, parameterTypeSignatures);
+private IJavaScriptElement createMethodHandle(IJavaScriptElement parent, String methodName, String[] parameterTypeSignatures) {
+	IFunction methodHandle = null;
+	if (parent instanceof org.eclipse.wst.jsdt.core.IJavaScriptUnit) {
+		org.eclipse.wst.jsdt.core.IJavaScriptUnit compUnit = (org.eclipse.wst.jsdt.core.IJavaScriptUnit ) parent;
+		 methodHandle = compUnit.getFunction(methodName, parameterTypeSignatures);
 
 	}
 	else if (parent instanceof ICompilationUnit) {
 		org.eclipse.wst.jsdt.core.IClassFile classFile = (org.eclipse.wst.jsdt.core.IClassFile ) parent;
-		 methodHandle = classFile.getMethod(methodName, parameterTypeSignatures);
+		 methodHandle = classFile.getFunction(methodName, parameterTypeSignatures);
 
 	}
 	else if (parent instanceof IType) {
 		IType type = (IType) parent;
-		 methodHandle = type.getMethod(methodName, parameterTypeSignatures);
+		 methodHandle = type.getFunction(methodName, parameterTypeSignatures);
 
 	}
 	if (methodHandle instanceof SourceMethod) {
@@ -666,7 +666,7 @@ private IJavaElement createMethodHandle(IJavaElement parent, String methodName, 
 	this.methodHandles.add(methodHandle);
 	return methodHandle;
 }
-protected IJavaElement createHandle(InferredAttribute fieldDeclaration, InferredType typeDeclaration, IJavaElement parent) {
+protected IJavaScriptElement createHandle(InferredAttribute fieldDeclaration, InferredType typeDeclaration, IJavaScriptElement parent) {
 	if (parent instanceof ITypeRoot) {
 		ITypeRoot typeRoot = (ITypeRoot) parent;
 		parent=typeRoot.getType(new String(typeDeclaration.getName()));
@@ -680,7 +680,7 @@ protected IJavaElement createHandle(InferredAttribute fieldDeclaration, Inferred
 /**
  * Creates an IField from the given field declaration and type.
  */
-protected IJavaElement createHandle(FieldDeclaration fieldDeclaration, TypeDeclaration typeDeclaration, IJavaElement parent) {
+protected IJavaScriptElement createHandle(FieldDeclaration fieldDeclaration, TypeDeclaration typeDeclaration, IJavaScriptElement parent) {
 	if (!(parent instanceof IType)) return parent;
 	IType type = (IType) parent;
 
@@ -708,7 +708,7 @@ protected IJavaElement createHandle(FieldDeclaration fieldDeclaration, TypeDecla
 /**
  * Create an handle for a local variable declartion (may be a local variable or type parameter).
  */
-protected IJavaElement createHandle(AbstractVariableDeclaration variableDeclaration, IJavaElement parent) {
+protected IJavaScriptElement createHandle(AbstractVariableDeclaration variableDeclaration, IJavaScriptElement parent) {
 	switch (variableDeclaration.getKind()) {
 		case AbstractVariableDeclaration.LOCAL_VARIABLE:
 			String signature = (variableDeclaration.type!=null) ?
@@ -753,12 +753,12 @@ protected boolean createHierarchyResolver(IType focusType, PossibleMatch[] possi
 		if (focusType.isBinary()) {
 			try {
 				cacheBinaryType(focusType, null);
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return false;
 			}
 		} else {
 			// cache all types in the focus' compilation unit (even secondary types)
-			accept((ICompilationUnit) focusType.getCompilationUnit(), null /*TODO no access restriction*/);
+			accept((ICompilationUnit) focusType.getJavaScriptUnit(), null /*TODO no access restriction*/);
 		}
 	}
 
@@ -770,7 +770,7 @@ protected boolean createHierarchyResolver(IType focusType, PossibleMatch[] possi
 /**
  * Creates an IImportDeclaration from the given import statement
  */
-protected IJavaElement createImportHandle(ImportReference importRef) {
+protected IJavaScriptElement createImportHandle(ImportReference importRef) {
 	char[] importName = CharOperation.concatWith(importRef.getImportName(), '.');
 	if ((importRef.bits & ASTNode.OnDemand) != 0)
 		importName = CharOperation.concat(importName, ".*" .toCharArray()); //$NON-NLS-1$
@@ -788,7 +788,7 @@ protected IJavaElement createImportHandle(ImportReference importRef) {
 /**
  * Creates an IImportDeclaration from the given import statement
  */
-protected IJavaElement createPackageDeclarationHandle(CompilationUnitDeclaration unit) {
+protected IJavaScriptElement createPackageDeclarationHandle(CompilationUnitDeclaration unit) {
 	if (unit.isPackageInfo()) {
 		char[] packName = CharOperation.concatWith(unit.currentPackage.getImportName(), '.');
 		Openable openable = this.currentPossibleMatch.openable;
@@ -816,7 +816,7 @@ protected IType createTypeHandle(String simpleTypeName) {
 //		IClassFile classFile = binaryType.getPackageFragment().getClassFile(classFileName + SuffixConstants.SUFFIX_STRING_class);
 //		return classFile.getType();
 }
-protected boolean encloses(IJavaElement element) {
+protected boolean encloses(IJavaScriptElement element) {
 	return element != null && this.scope.encloses(element);
 }
 /* (non-Javadoc)
@@ -888,7 +888,7 @@ protected IBinaryType getBinaryInfo(ClassFile classFile, IResource resource) thr
 //		//e.printStackTrace();
 //		return null;
 //	} catch (java.io.IOException e) {
-//		throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
+//		throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.IO_EXCEPTION);
 //	}
 	return null;
 }
@@ -1025,7 +1025,7 @@ protected boolean hasAlreadyDefinedType(CompilationUnitDeclaration parsedUnit) {
 /**
  * Create a new parser for the given project, as well as a lookup environment.
  */
-public void initialize(JavaProject project, int possibleMatchSize) throws JavaModelException {
+public void initialize(JavaProject project, int possibleMatchSize) throws JavaScriptModelException {
 	// clean up name environment only if there are several possible match as it is reused
 	// when only one possible match (bug 58581)
 	if (this.nameEnvironment != null && possibleMatchSize != 1)
@@ -1147,7 +1147,7 @@ protected void locateMatches(JavaProject javaProject, PossibleMatch[] possibleMa
 			// problem with class path: it could not find base classes
 			// continue and try next matching openable reporting innacurate matches (since bindings will be null)
 			bindingsWereCreated = false;
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// problem with class path: it could not find base classes
 			// continue and try next matching openable reporting innacurate matches (since bindings will be null)
 			bindingsWereCreated = false;
@@ -1178,9 +1178,9 @@ private void processMetadata(MetadataFile metadataFile) throws CoreException{
 			matchLevel=this.patternLocator.matchMetadataElement(type);
 			if (matchLevel>=PatternLocator.POSSIBLE_MATCH)
 				reportMatching(type, matchLevel, null, 1);
-			IMethod[] methods = type.getMethods();
+			IFunction[] methods = type.getFunctions();
 			for (int methodIndex = 0; methodIndex < methods.length; methodIndex++) {
-				IMethod method=methods[methodIndex];
+				IFunction method=methods[methodIndex];
 				matchLevel=this.patternLocator.matchMetadataElement(method);
 				if (matchLevel>=PatternLocator.POSSIBLE_MATCH)
 					reportMatching(method, matchLevel, null, 1);
@@ -1193,9 +1193,9 @@ private void processMetadata(MetadataFile metadataFile) throws CoreException{
 					reportMatching(field, matchLevel, null, 1);
 			}
 		}
-		IMethod[] methods = metadataFile.getMethods();
+		IFunction[] methods = metadataFile.getFunctions();
 		for (int methodIndex = 0; methodIndex < methods.length; methodIndex++) {
-			IMethod method=methods[methodIndex];
+			IFunction method=methods[methodIndex];
 			matchLevel=this.patternLocator.matchMetadataElement(method);
 			if (matchLevel>=PatternLocator.POSSIBLE_MATCH)
 				reportMatching(method, matchLevel, null, 1);
@@ -1255,7 +1255,7 @@ public void locateMatches(SearchDocument[] searchDocuments) throws CoreException
 		}
 	}
 	int copiesLength = copies.size();
-	this.workingCopies = new org.eclipse.wst.jsdt.core.ICompilationUnit[copiesLength];
+	this.workingCopies = new org.eclipse.wst.jsdt.core.IJavaScriptUnit[copiesLength];
 	copies.toArray(this.workingCopies);
 
 	JavaModelManager manager = JavaModelManager.getJavaModelManager();
@@ -1304,7 +1304,7 @@ public void locateMatches(SearchDocument[] searchDocuments) throws CoreException
 			previousPath = pathString;
 
 			Openable openable;
-			org.eclipse.wst.jsdt.core.ICompilationUnit workingCopy = null;
+			org.eclipse.wst.jsdt.core.IJavaScriptUnit workingCopy = null;
 			if (searchDocument instanceof WorkingCopyDocument) {
 				workingCopy = ((WorkingCopyDocument)searchDocument).workingCopy;
 				openable = (Openable) workingCopy;
@@ -1324,7 +1324,7 @@ public void locateMatches(SearchDocument[] searchDocuments) throws CoreException
 
 			// create new parser and lookup environment if this is a new project
 			IResource resource = null;
-			JavaProject javaProject = (JavaProject) openable.getJavaProject();
+			JavaProject javaProject = (JavaProject) openable.getJavaScriptProject();
 			resource = workingCopy != null ? workingCopy.getResource() : openable.getResource();
 			if (resource == null)
 				resource = javaProject.getProject(); // case of a file in an external jar
@@ -1334,7 +1334,7 @@ public void locateMatches(SearchDocument[] searchDocuments) throws CoreException
 					try {
 						locateMatches(previousJavaProject, matchSet, i-displayed);
 						displayed = i;
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						// problem with classpath in this project -> skip it
 					}
 					matchSet.reset();
@@ -1348,7 +1348,7 @@ public void locateMatches(SearchDocument[] searchDocuments) throws CoreException
 		if (previousJavaProject != null) {
 			try {
 				locateMatches(previousJavaProject, matchSet, docsLength-displayed);
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// problem with classpath in last project -> ignore
 			}
 		}
@@ -1377,10 +1377,10 @@ protected void locatePackageDeclarations(SearchPattern searchPattern, SearchPart
 		for (int i = 0, length = patterns.length; i < length; i++)
 			locatePackageDeclarations(patterns[i], participant);
 	} else if (searchPattern instanceof PackageDeclarationPattern) {
-		IJavaElement focus = ((InternalSearchPattern) searchPattern).focus;
+		IJavaScriptElement focus = ((InternalSearchPattern) searchPattern).focus;
 		if (focus != null) {
 			if (encloses(focus)) {
-				SearchMatch match = new PackageDeclarationMatch(focus.getAncestor(IJavaElement.PACKAGE_FRAGMENT), SearchMatch.A_ACCURATE, -1, -1, participant, focus.getResource());
+				SearchMatch match = new PackageDeclarationMatch(focus.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT), SearchMatch.A_ACCURATE, -1, -1, participant, focus.getResource());
 				report(match);
 			}
 			return;
@@ -1389,10 +1389,10 @@ protected void locatePackageDeclarations(SearchPattern searchPattern, SearchPart
 		boolean isWorkspaceScope = this.scope == JavaModelManager.getJavaModelManager().getWorkspaceScope();
 		IPath[] scopeProjectsAndJars =  isWorkspaceScope ? null : this.scope.enclosingProjectsAndJars();
 		int scopeLength = isWorkspaceScope ? 0 : scopeProjectsAndJars.length;
-		IJavaProject[] projects = JavaModelManager.getJavaModelManager().getJavaModel().getJavaProjects();
+		IJavaScriptProject[] projects = JavaModelManager.getJavaModelManager().getJavaModel().getJavaScriptProjects();
 		SimpleSet packages = new SimpleSet();
 		for (int i = 0, length = projects.length; i < length; i++) {
-			IJavaProject javaProject = projects[i];
+			IJavaScriptProject javaProject = projects[i];
 			// Verify that project belongs to the scope
 			if (!isWorkspaceScope) {
 				boolean found = false;
@@ -1421,10 +1421,10 @@ protected void locatePackageDeclarations(SearchPattern searchPattern, SearchPart
 							SearchMatch match = new PackageDeclarationMatch(fragment, SearchMatch.A_ACCURATE, -1, -1, participant, resource);
 							report(match);
 						}
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						throw e;
 					} catch (CoreException e) {
-						throw new JavaModelException(e);
+						throw new JavaScriptModelException(e);
 					}
 				}
 			}
@@ -1478,7 +1478,7 @@ protected IType lookupType(ReferenceBinding typeBinding) {
 	return null;
 }
 public SearchMatch newDeclarationMatch(
-		IJavaElement element,
+		IJavaScriptElement element,
 		Binding binding,
 		int accuracy,
 		int offset,
@@ -1489,7 +1489,7 @@ public SearchMatch newDeclarationMatch(
 }
 
 public SearchMatch newDeclarationMatch(
-		IJavaElement element,
+		IJavaScriptElement element,
 		Binding binding,
 		int accuracy,
 		int offset,
@@ -1497,19 +1497,19 @@ public SearchMatch newDeclarationMatch(
 		SearchParticipant participant,
 		IResource resource) {
 	switch (element.getElementType()) {
-		case IJavaElement.PACKAGE_FRAGMENT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT:
 			return new PackageDeclarationMatch(element, accuracy, offset, length, participant, resource);
-		case IJavaElement.TYPE:
+		case IJavaScriptElement.TYPE:
 			return new TypeDeclarationMatch(binding == null ? element : ((JavaElement) element).resolved(binding), accuracy, offset, length, participant, resource);
-		case IJavaElement.FIELD:
+		case IJavaScriptElement.FIELD:
 			return new FieldDeclarationMatch(binding == null ? element : ((JavaElement) element).resolved(binding), accuracy, offset, length, participant, resource);
-		case IJavaElement.METHOD:
+		case IJavaScriptElement.METHOD:
 			return new MethodDeclarationMatch(binding == null ? element : ((JavaElement) element).resolved(binding), accuracy, offset, length, participant, resource);
-		case IJavaElement.LOCAL_VARIABLE:
+		case IJavaScriptElement.LOCAL_VARIABLE:
 			return new LocalVariableDeclarationMatch(element, accuracy, offset, length, participant, resource);
-		case IJavaElement.PACKAGE_DECLARATION:
+		case IJavaScriptElement.PACKAGE_DECLARATION:
 			return new PackageDeclarationMatch(element, accuracy, offset, length, participant, resource);
-		case IJavaElement.TYPE_PARAMETER:
+		case IJavaScriptElement.TYPE_PARAMETER:
 			return new TypeParameterDeclarationMatch(element, accuracy, offset, length, participant, resource);
 		default:
 			return null;
@@ -1517,7 +1517,7 @@ public SearchMatch newDeclarationMatch(
 }
 
 public SearchMatch newFieldReferenceMatch(
-		IJavaElement enclosingElement,
+		IJavaScriptElement enclosingElement,
 		Binding enclosingBinding,
 		int accuracy,
 		int offset,
@@ -1536,7 +1536,7 @@ public SearchMatch newFieldReferenceMatch(
 }
 
 public SearchMatch newLocalVariableReferenceMatch(
-		IJavaElement enclosingElement,
+		IJavaScriptElement enclosingElement,
 		int accuracy,
 		int offset,
 		int length,
@@ -1552,7 +1552,7 @@ public SearchMatch newLocalVariableReferenceMatch(
 }
 
 public SearchMatch newMethodReferenceMatch(
-		IJavaElement enclosingElement,
+		IJavaScriptElement enclosingElement,
 		Binding enclosingBinding,
 		int accuracy,
 		int offset,
@@ -1570,7 +1570,7 @@ public SearchMatch newMethodReferenceMatch(
 }
 
 public SearchMatch newPackageReferenceMatch(
-		IJavaElement enclosingElement,
+		IJavaScriptElement enclosingElement,
 		int accuracy,
 		int offset,
 		int length,
@@ -1582,7 +1582,7 @@ public SearchMatch newPackageReferenceMatch(
 }
 
 public SearchMatch newTypeParameterReferenceMatch(
-		IJavaElement enclosingElement,
+		IJavaScriptElement enclosingElement,
 		int accuracy,
 		int offset,
 		int length,
@@ -1595,7 +1595,7 @@ public SearchMatch newTypeParameterReferenceMatch(
 }
 
 public TypeReferenceMatch newTypeReferenceMatch(
-		IJavaElement enclosingElement,
+		IJavaScriptElement enclosingElement,
 		Binding enclosingBinding,
 		int accuracy,
 		int offset,
@@ -1610,7 +1610,7 @@ public TypeReferenceMatch newTypeReferenceMatch(
 }
 
 public TypeReferenceMatch newTypeReferenceMatch(
-		IJavaElement enclosingElement,
+		IJavaScriptElement enclosingElement,
 		Binding enclosingBinding,
 		int accuracy,
 		ASTNode reference) {
@@ -1805,7 +1805,7 @@ protected void report(SearchMatch match) throws CoreException {
 				if (local != null) {
 					System.out.println("\tLocal element: "+ local.toStringWithAncestors()); //$NON-NLS-1$
 				}
-				IJavaElement[] others = typeRefMatch.getOtherElements();
+				IJavaScriptElement[] others = typeRefMatch.getOtherElements();
 				if (others != null) {
 					int length = others.length;
 					if (length > 0) {
@@ -1858,7 +1858,7 @@ protected void report(SearchMatch match) throws CoreException {
  */
 protected void reportAccurateTypeReference(SearchMatch match, ASTNode typeRef, char[] name) throws CoreException {
 	if (match.getRule() == 0) return;
-	if (!encloses((IJavaElement)match.getElement())) return;
+	if (!encloses((IJavaScriptElement)match.getElement())) return;
 
 	// Compute source positions of the qualified reference
 	int sourceStart = typeRef.sourceStart;
@@ -1899,7 +1899,7 @@ protected void reportAccurateTypeReference(SearchMatch match, ASTNode typeRef, c
  */
 protected void reportAccurateParameterizedMethodReference(SearchMatch match, ASTNode statement, TypeReference[] typeArguments) throws CoreException {
 	if (match.getRule() == 0) return;
-	if (!encloses((IJavaElement)match.getElement())) return;
+	if (!encloses((IJavaScriptElement)match.getElement())) return;
 
 	// If there's type arguments, look for end (ie. char '>') of last one.
 	int start = match.getOffset();
@@ -1955,7 +1955,7 @@ protected void reportAccurateParameterizedMethodReference(SearchMatch match, AST
  */
 protected void reportAccurateParameterizedTypeReference(SearchMatch match, TypeReference typeRef, int index, TypeReference[] typeArguments) throws CoreException {
 	if (match.getRule() == 0) return;
-	if (!encloses((IJavaElement)match.getElement())) return;
+	if (!encloses((IJavaScriptElement)match.getElement())) return;
 
 	// If there's type arguments, look for end (ie. char '>') of last one.
 	int end = typeRef.sourceEnd;
@@ -2106,7 +2106,7 @@ protected void reportAccurateFieldReference(SearchMatch[] matches, QualifiedName
 		}
 		SearchMatch match = matches[index];
 		if (match != null && match.getRule() != 0) {
-			if (!encloses((IJavaElement)match.getElement())) return;
+			if (!encloses((IJavaScriptElement)match.getElement())) return;
 			// accept reference
 			if (refSourceStart != -1) {
 				match.setOffset(refSourceStart);
@@ -2151,8 +2151,8 @@ protected void reportBinaryMemberDeclaration(IResource resource, IMember binaryM
  * search pattern (ie. the ones in the matching nodes set)
  * Note that the method declaration has already been checked.
  */
-protected void reportMatching(TypeDeclaration type, AbstractMethodDeclaration method, IJavaElement parent, int accuracy, boolean typeInHierarchy, MatchingNodeSet nodeSet) throws CoreException {
-	IJavaElement enclosingElement = null;
+protected void reportMatching(TypeDeclaration type, AbstractMethodDeclaration method, IJavaScriptElement parent, int accuracy, boolean typeInHierarchy, MatchingNodeSet nodeSet) throws CoreException {
+	IJavaScriptElement enclosingElement = null;
 	if (accuracy > -1) {
 		enclosingElement = createHandle(method, parent);
 		if (enclosingElement != null) { // skip if unable to find method
@@ -2236,7 +2236,7 @@ protected void reportMatching(TypeDeclaration type, AbstractMethodDeclaration me
 /**
  * Report matching in annotations.
  */
-protected void reportMatching(Annotation[] annotations, IJavaElement enclosingElement, Binding elementBinding, MatchingNodeSet nodeSet, boolean matchedContainer, boolean enclosesElement) throws CoreException {
+protected void reportMatching(Annotation[] annotations, IJavaScriptElement enclosingElement, Binding elementBinding, MatchingNodeSet nodeSet, boolean matchedContainer, boolean enclosesElement) throws CoreException {
 	for (int i=0, al=annotations.length; i<al; i++) {
 		Annotation annotationType = annotations[i];
 
@@ -2338,7 +2338,7 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 				for (int i = 0, l = nodes.length; i < l; i++)
 					nodeSet.matchingNodes.removeKey(nodes[i]);
 			} else {
-				IJavaElement element = createPackageDeclarationHandle(unit);
+				IJavaScriptElement element = createPackageDeclarationHandle(unit);
 				for (int i = 0, l = nodes.length; i < l; i++) {
 					ASTNode node = nodes[i];
 					Integer level = (Integer) nodeSet.matchingNodes.removeKey(node);
@@ -2352,7 +2352,7 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 	if (matchedUnitContainer) {
 		ImportReference pkg = unit.currentPackage;
 		if (pkg != null && pkg.annotations != null) {
-			IJavaElement element = createPackageDeclarationHandle(unit);
+			IJavaScriptElement element = createPackageDeclarationHandle(unit);
 			if (element != null) {
 				reportMatching(pkg.annotations, element, null, nodeSet, true, encloses(element));
 			}
@@ -2383,7 +2383,7 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 
 	if (statements!=null)
 	{
-		IJavaElement enclosingElement = this.currentPossibleMatch.openable;
+		IJavaScriptElement enclosingElement = this.currentPossibleMatch.openable;
 		if (enclosingElement == null) return;
 
 		boolean typeInHierarchy = true;
@@ -2420,7 +2420,7 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 	}
 	for (int i=0;i<unit.numberInferredTypes;i++) {
 		InferredType inferredType = unit.inferredTypes[i];
-			IJavaElement enclosingElement = this.currentPossibleMatch.openable;
+			IJavaScriptElement enclosingElement = this.currentPossibleMatch.openable;
 			if (enclosingElement == null) return;
 			boolean typeInHierarchy = true;
 			boolean matchedClassContainer=true;
@@ -2459,8 +2459,8 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
  * Visit the given field declaration and report the nodes that match exactly the
  * search pattern (ie. the ones in the matching nodes set)
  */
-protected void reportMatching(FieldDeclaration field, FieldDeclaration[] otherFields, TypeDeclaration type, IJavaElement parent, int accuracy, boolean typeInHierarchy, MatchingNodeSet nodeSet) throws CoreException {
-	IJavaElement enclosingElement = null;
+protected void reportMatching(FieldDeclaration field, FieldDeclaration[] otherFields, TypeDeclaration type, IJavaScriptElement parent, int accuracy, boolean typeInHierarchy, MatchingNodeSet nodeSet) throws CoreException {
+	IJavaScriptElement enclosingElement = null;
 	if (accuracy > -1) {
 		enclosingElement = createHandle(field, type, parent);
 		if (encloses(enclosingElement)) {
@@ -2509,14 +2509,14 @@ protected void reportMatching(FieldDeclaration field, FieldDeclaration[] otherFi
 						for (int i = 0, l = nodes.length; i < l; i++) {
 							ASTNode node = nodes[i];
 							Integer level = (Integer) nodeSet.matchingNodes.removeKey(node);
-							IJavaElement[] otherElements = null;
+							IJavaScriptElement[] otherElements = null;
 							if (otherFields != null) {
 								int length = otherFields.length;
 								int size = 0;
 								while (size<length && otherFields[size] != null) {
 									size++;
 								}
-								otherElements = new IJavaElement[size];
+								otherElements = new IJavaScriptElement[size];
 								for (int j=0; j<size; j++) {
 									otherElements[j] = createHandle(otherFields[j], type, parent);
 								}
@@ -2565,8 +2565,8 @@ protected void reportMatching(FieldDeclaration field, FieldDeclaration[] otherFi
 }
 
 
-protected void reportMatching(InferredAttribute field,   InferredType type, IJavaElement parent, int accuracy, boolean typeInHierarchy, MatchingNodeSet nodeSet) throws CoreException {
-	IJavaElement enclosingElement = null;
+protected void reportMatching(InferredAttribute field,   InferredType type, IJavaScriptElement parent, int accuracy, boolean typeInHierarchy, MatchingNodeSet nodeSet) throws CoreException {
+	IJavaScriptElement enclosingElement = null;
 	if (accuracy > -1) {
 		enclosingElement = createHandle(field, type, parent);
 		if (encloses(enclosingElement)) {
@@ -2579,9 +2579,9 @@ protected void reportMatching(InferredAttribute field,   InferredType type, IJav
 
 }
 
-protected void reportMatching(InferredType type, IJavaElement parent, int accuracy, MatchingNodeSet nodeSet, int occurrenceCount) throws CoreException {
+protected void reportMatching(InferredType type, IJavaScriptElement parent, int accuracy, MatchingNodeSet nodeSet, int occurrenceCount) throws CoreException {
 	// create type handle
-	IJavaElement enclosingElement = parent;
+	IJavaScriptElement enclosingElement = parent;
 	if (enclosingElement == null) {
 		enclosingElement = createTypeHandle(new String(type.getName()));
 	} else if (enclosingElement instanceof IType) {
@@ -2609,7 +2609,7 @@ protected void reportMatching(InferredType type, IJavaElement parent, int accura
 }
 
 
-protected void reportMatching( IJavaElement enclosingElement, int accuracy, MatchingNodeSet nodeSet, int occurrenceCount) throws CoreException {
+protected void reportMatching( IJavaScriptElement enclosingElement, int accuracy, MatchingNodeSet nodeSet, int occurrenceCount) throws CoreException {
 	// create type handle
 	if (enclosingElement == null) return;
 	boolean enclosesElement = encloses(enclosingElement);
@@ -2627,8 +2627,8 @@ protected void reportMatching( IJavaElement enclosingElement, int accuracy, Matc
 }
 
 
-protected void reportMatching(LocalDeclaration field, LocalDeclaration[] otherFields, TypeDeclaration type, IJavaElement parent, int accuracy, boolean typeInHierarchy, MatchingNodeSet nodeSet) throws CoreException {
-	IJavaElement enclosingElement = null;
+protected void reportMatching(LocalDeclaration field, LocalDeclaration[] otherFields, TypeDeclaration type, IJavaScriptElement parent, int accuracy, boolean typeInHierarchy, MatchingNodeSet nodeSet) throws CoreException {
+	IJavaScriptElement enclosingElement = null;
 	if (accuracy > -1) {
 		enclosingElement = createHandle(field,   parent);
 		if (encloses(enclosingElement)) {
@@ -2676,9 +2676,9 @@ protected void reportMatching(LocalDeclaration field, LocalDeclaration[] otherFi
  * Visit the given type declaration and report the nodes that match exactly the
  * search pattern (ie. the ones in the matching nodes set)
  */
-protected void reportMatching(TypeDeclaration type, IJavaElement parent, int accuracy, MatchingNodeSet nodeSet, int occurrenceCount) throws CoreException {
+protected void reportMatching(TypeDeclaration type, IJavaScriptElement parent, int accuracy, MatchingNodeSet nodeSet, int occurrenceCount) throws CoreException {
 	// create type handle
-	IJavaElement enclosingElement = parent;
+	IJavaScriptElement enclosingElement = parent;
 	if (enclosingElement == null) {
 		enclosingElement = createTypeHandle(new String(type.name));
 	} else if (enclosingElement instanceof IType) {
@@ -2827,7 +2827,7 @@ protected void reportMatching(TypeDeclaration type, IJavaElement parent, int acc
 /**
  * Report matches in type parameters.
  */
-protected void reportMatching(TypeParameter[] typeParameters, IJavaElement enclosingElement, IJavaElement parent, Binding binding, MatchingNodeSet nodeSet) throws CoreException {
+protected void reportMatching(TypeParameter[] typeParameters, IJavaScriptElement enclosingElement, IJavaScriptElement parent, Binding binding, MatchingNodeSet nodeSet) throws CoreException {
 	if (typeParameters == null) return;
 	for (int i=0, l=typeParameters.length; i<l; i++) {
 		TypeParameter typeParameter = typeParameters[i];
@@ -2843,7 +2843,7 @@ protected void reportMatching(TypeParameter[] typeParameters, IJavaElement enclo
 			if (typeParameter.type != null) {
 				level = (Integer) nodeSet.matchingNodes.removeKey(typeParameter.type);
 				if (level != null) {
-					IJavaElement localElement = createHandle(typeParameter, enclosingElement);
+					IJavaScriptElement localElement = createHandle(typeParameter, enclosingElement);
 					this.patternLocator.matchReportReference(typeParameter.type, enclosingElement, localElement, null, binding, level.intValue(), this);
 				}
 			}
@@ -2851,7 +2851,7 @@ protected void reportMatching(TypeParameter[] typeParameters, IJavaElement enclo
 				for (int j=0, b=typeParameter.bounds.length; j<b; j++) {
 					level = (Integer) nodeSet.matchingNodes.removeKey(typeParameter.bounds[j]);
 					if (level != null) {
-						IJavaElement localElement = createHandle(typeParameter, enclosingElement);
+						IJavaScriptElement localElement = createHandle(typeParameter, enclosingElement);
 						this.patternLocator.matchReportReference(typeParameter.bounds[j], enclosingElement, localElement, null, binding, level.intValue(), this);
 					}
 				}
@@ -2859,7 +2859,7 @@ protected void reportMatching(TypeParameter[] typeParameters, IJavaElement enclo
 		}
 	}
 }
-protected void reportMatchingSuper(TypeReference superReference, IJavaElement enclosingElement, Binding elementBinding, MatchingNodeSet nodeSet, boolean matchedClassContainer) throws CoreException {
+protected void reportMatchingSuper(TypeReference superReference, IJavaScriptElement enclosingElement, Binding elementBinding, MatchingNodeSet nodeSet, boolean matchedClassContainer) throws CoreException {
 	ASTNode[] nodes = null;
 	if (superReference instanceof ParameterizedSingleTypeReference || superReference instanceof ParameterizedQualifiedTypeReference) {
 		long lastTypeArgumentInfo = findLastTypeArgumentInfo(superReference);

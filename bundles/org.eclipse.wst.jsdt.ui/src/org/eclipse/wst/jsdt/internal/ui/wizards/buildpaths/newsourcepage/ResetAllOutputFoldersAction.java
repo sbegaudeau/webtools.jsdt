@@ -23,14 +23,14 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElementAttribute;
@@ -38,14 +38,14 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElementAttribut
 public class ResetAllOutputFoldersAction extends BuildpathModifierAction {
 	
 	private final IRunnableContext fContext;
-	private final IJavaProject fJavaProject;
+	private final IJavaScriptProject fJavaProject;
 
 	
-	public ResetAllOutputFoldersAction(IRunnableContext context, IJavaProject project, ISetSelectionTarget selectionTarget) {
+	public ResetAllOutputFoldersAction(IRunnableContext context, IJavaScriptProject project, ISetSelectionTarget selectionTarget) {
 		this(null, selectionTarget, context, project);
     }
 
-	public ResetAllOutputFoldersAction(IWorkbenchSite site, ISetSelectionTarget selectionTarget, IRunnableContext context, IJavaProject javaProject) {
+	public ResetAllOutputFoldersAction(IWorkbenchSite site, ISetSelectionTarget selectionTarget, IRunnableContext context, IJavaScriptProject javaProject) {
 		super(site, selectionTarget, BuildpathModifierAction.RESET_ALL_OUTPUT_FOLDERS);
 		
 		fContext= context;
@@ -81,13 +81,13 @@ public class ResetAllOutputFoldersAction extends BuildpathModifierAction {
         	if (e.getCause() instanceof CoreException) {
 				showExceptionDialog((CoreException)e.getCause(), NewWizardMessages.RemoveFromBuildpathAction_ErrorTitle);
 			} else {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
         } catch (InterruptedException e) {
         }
 	}
 	
-	private List resetOutputFolders(IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
+	private List resetOutputFolders(IJavaScriptProject project, IProgressMonitor monitor) throws JavaScriptModelException {
 		if (monitor == null)
 			monitor= new NullProgressMonitor();
 		try {
@@ -98,7 +98,7 @@ public class ResetAllOutputFoldersAction extends BuildpathModifierAction {
 				monitor.worked(1);
 				if (roots[i].isArchive())
 					continue;
-				IClasspathEntry entry= roots[i].getRawClasspathEntry();
+				IIncludePathEntry entry= roots[i].getRawIncludepathEntry();
 				CPListElement element= CPListElement.createFromExisting(entry, project);
 				CPListElementAttribute outputFolder= new CPListElementAttribute(element, CPListElement.OUTPUT, element.getAttribute(CPListElement.OUTPUT), true);
 				entries.add(outputFolder);
@@ -109,7 +109,7 @@ public class ResetAllOutputFoldersAction extends BuildpathModifierAction {
 		}
 	}
 	
-	private List reset(List selection, IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
+	private List reset(List selection, IJavaScriptProject project, IProgressMonitor monitor) throws JavaScriptModelException {
 	    if (monitor == null)
         	monitor= new NullProgressMonitor();
         try {
@@ -118,10 +118,10 @@ public class ResetAllOutputFoldersAction extends BuildpathModifierAction {
         	List result= new ArrayList();
         	for (int i= 0; i < selection.size(); i++) {
         		Object element= selection.get(i);
-        		if (element instanceof IJavaElement) {
-        			IJavaElement javaElement= (IJavaElement) element;
+        		if (element instanceof IJavaScriptElement) {
+        			IJavaScriptElement javaElement= (IJavaScriptElement) element;
         			IPackageFragmentRoot root;
-        			if (element instanceof IJavaProject)
+        			if (element instanceof IJavaScriptProject)
         				root= project.getPackageFragmentRoot(project.getResource());
         			else
         				root= (IPackageFragmentRoot) element;

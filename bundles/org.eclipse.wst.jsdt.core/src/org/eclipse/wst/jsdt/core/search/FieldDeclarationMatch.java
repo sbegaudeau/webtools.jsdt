@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.core.search;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
  * A Java search match that represents a field declaration.
@@ -34,7 +34,7 @@ public class FieldDeclarationMatch extends SearchMatch {
 	 * @param participant the search participant that created the match
 	 * @param resource the resource of the element
 	 */
-	public FieldDeclarationMatch(IJavaElement element, int accuracy, int offset, int length, SearchParticipant participant, IResource resource) {
+	public FieldDeclarationMatch(IJavaScriptElement element, int accuracy, int offset, int length, SearchParticipant participant, IResource resource) {
 		super(element, accuracy, offset, length, participant, resource);
 	}
 }

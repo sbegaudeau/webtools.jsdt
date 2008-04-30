@@ -20,9 +20,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
@@ -41,7 +41,7 @@ public class ClasspathOrderingWorkbookPage extends BuildPathBasePage {
 	
 	private static final boolean HIDE_ALL_READONLY_CONTAINERS = true;
 	private ObjectStringStatusButtonDialogField superTypeField;
-	private IJavaProject fJavaProject;
+	private IJavaScriptProject fJavaProject;
 	private Control fSWTControl;
 	
 	
@@ -167,9 +167,9 @@ public class ClasspathOrderingWorkbookPage extends BuildPathBasePage {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathBasePage#init(org.eclipse.wst.jsdt.core.IJavaProject)
+	 * @see org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathBasePage#init(org.eclipse.wst.jsdt.core.IJavaScriptProject)
 	 */
-	public void init(IJavaProject javaProject) {
+	public void init(IJavaScriptProject javaProject) {
 		fJavaProject = javaProject;
 	}
 
@@ -204,19 +204,19 @@ public class ClasspathOrderingWorkbookPage extends BuildPathBasePage {
 	
 //	private CPListElement[] openContainerSelectionDialog(CPListElement existing) {
 //		if (existing == null) {
-//			IClasspathEntry[] created= BuildPathDialogAccess.chooseContainerEntries(getShell(), fCurrJProject, getRawClasspath());
+//			IIncludePathEntry[] created= BuildPathDialogAccess.chooseContainerEntries(getShell(), fCurrJProject, getRawClasspath());
 //			if (created != null) {
 //				CPListElement[] res= new CPListElement[created.length];
 //				for (int i= 0; i < res.length; i++) {
-//					//res[i]= new CPListElement(fCurrJProject, IClasspathEntry.CPE_CONTAINER, created[i].getPath(), null);
+//					//res[i]= new CPListElement(fCurrJProject, IIncludePathEntry.CPE_CONTAINER, created[i].getPath(), null);
 //					res[i]= new CPListElement(fCurrJProject, created[i].getEntryKind(), created[i].getPath(), null);
 //				}
 //				return res;
 //			}
 //		} else {
-//			IClasspathEntry created= BuildPathDialogAccess.configureContainerEntry(getShell(), existing.getClasspathEntry(), fCurrJProject, getRawClasspath());
+//			IIncludePathEntry created= BuildPathDialogAccess.configureContainerEntry(getShell(), existing.getClasspathEntry(), fCurrJProject, getRawClasspath());
 //			if (created != null) {
-//				//CPListElement elem= new CPListElement(fCurrJProject, IClasspathEntry.CPE_CONTAINER, created.getPath(), null);
+//				//CPListElement elem= new CPListElement(fCurrJProject, IIncludePathEntry.CPE_CONTAINER, created.getPath(), null);
 //				CPListElement elem= new CPListElement(fCurrJProject, created.getEntryKind(), created.getPath(), null);
 //				return new CPListElement[] { elem };
 //			}
@@ -228,6 +228,6 @@ public class ClasspathOrderingWorkbookPage extends BuildPathBasePage {
 		if (fSWTControl != null) {
 			return fSWTControl.getShell();
 		}
-		return JavaPlugin.getActiveWorkbenchShell();
+		return JavaScriptPlugin.getActiveWorkbenchShell();
 	}
 }

@@ -44,8 +44,8 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIException;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 import org.w3c.dom.Document;
@@ -374,8 +374,8 @@ public final class ContentAssistHistory {
 					rememberInternal(allLHSides[i], rhs);
 				rememberInternal(lhs, rhs);
 			}
-		} catch (JavaModelException x) {
-			JavaPlugin.log(x);
+		} catch (JavaScriptModelException x) {
+			JavaScriptPlugin.log(x);
 		}
 	}
 	
@@ -418,16 +418,16 @@ public final class ContentAssistHistory {
 		return Collections.unmodifiableMap(map);
 	}
 	
-	private void rememberInternal(IType lhs, IType rhs) throws JavaModelException {
+	private void rememberInternal(IType lhs, IType rhs) throws JavaScriptModelException {
 		if (isCacheableLHS(lhs))
 			getCache(lhs.getFullyQualifiedName()).add(rhs.getFullyQualifiedName());
 	}
 
-	private boolean isCacheableLHS(IType type) throws JavaModelException {
+	private boolean isCacheableLHS(IType type) throws JavaScriptModelException {
 		return !Flags.isFinal(type.getFlags()) && !UNCACHEABLE.contains(type.getFullyQualifiedName());
 	}
 	
-	private boolean isCacheableRHS(IType type) throws JavaModelException {
+	private boolean isCacheableRHS(IType type) throws JavaScriptModelException {
 		return !type.isInterface() && !Flags.isAbstract(type.getFlags());
 	}
 

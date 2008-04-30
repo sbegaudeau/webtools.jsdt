@@ -27,20 +27,20 @@ import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -97,7 +97,7 @@ public class UnusedCodeFix extends AbstractFix {
 			return false;
 		}
 
-		public boolean visit(MethodInvocation node) {
+		public boolean visit(FunctionInvocation node) {
 			fSideEffectNodes.add(node);
 			return false;
 		}
@@ -154,14 +154,14 @@ public class UnusedCodeFix extends AbstractFix {
 			}
 		}
 		
-		private void removeUnusedName(ASTRewrite rewrite, SimpleName simpleName, CompilationUnit completeRoot, List groups) {
+		private void removeUnusedName(ASTRewrite rewrite, SimpleName simpleName, JavaScriptUnit completeRoot, List groups) {
 			IBinding binding= simpleName.resolveBinding();
-			CompilationUnit root= (CompilationUnit) simpleName.getRoot();
+			JavaScriptUnit root= (JavaScriptUnit) simpleName.getRoot();
 			String displayString= getDisplayString(binding);
 			TextEditGroup group= createTextEditGroup(displayString);
 			groups.add(group);
 			if (binding.getKind() == IBinding.METHOD) {
-				IMethodBinding decl= ((IMethodBinding) binding).getMethodDeclaration();
+				IFunctionBinding decl= ((IFunctionBinding) binding).getMethodDeclaration();
 				ASTNode declaration= root.findDeclaringNode(decl);
 				rewrite.remove(declaration, group);
 			} else if (binding.getKind() == IBinding.TYPE) {
@@ -193,7 +193,7 @@ public class UnusedCodeFix extends AbstractFix {
 				case IBinding.TYPE:
 					return FixMessages.UnusedCodeFix_RemoveUnusedType_description;
 				case IBinding.METHOD:
-					if (((IMethodBinding) binding).isConstructor()) {
+					if (((IFunctionBinding) binding).isConstructor()) {
 						return FixMessages.UnusedCodeFix_RemoveUnusedConstructor_description;
 					} else {
 						return FixMessages.UnusedCodeFix_RemoveUnusedPrivateMethod_description;
@@ -210,8 +210,8 @@ public class UnusedCodeFix extends AbstractFix {
 		}
 
 		private void removeParamTag(ASTRewrite rewrite, SingleVariableDeclaration varDecl, TextEditGroup group) {
-			if (varDecl.getParent() instanceof MethodDeclaration) {
-				Javadoc javadoc= ((MethodDeclaration) varDecl.getParent()).getJavadoc();
+			if (varDecl.getParent() instanceof FunctionDeclaration) {
+				JSdoc javadoc= ((FunctionDeclaration) varDecl.getParent()).getJavadoc();
 				if (javadoc != null) {
 					TagElement tagElement= JavadocTagsSubProcessor.findParamTag(javadoc, varDecl.getName().getIdentifier());
 					if (tagElement != null) {
@@ -261,7 +261,7 @@ public class UnusedCodeFix extends AbstractFix {
 					fragments= ((VariableDeclarationStatement) varDecl).fragments();
 				}
 				Expression initializer = frag.getInitializer();
-				boolean sideEffectInitializer = initializer instanceof MethodInvocation || initializer instanceof ClassInstanceCreation;
+				boolean sideEffectInitializer = initializer instanceof FunctionInvocation || initializer instanceof ClassInstanceCreation;
 				if (fragments.size() == fUnusedNames.length) {
 					if (fForceRemove) {
 						rewrite.remove(varDecl, group);
@@ -309,7 +309,7 @@ public class UnusedCodeFix extends AbstractFix {
 		private void splitUpDeclarations(ASTRewrite rewrite, TextEditGroup group, VariableDeclarationFragment frag, ASTNode block, VariableDeclarationStatement originalStatement) {
 			Expression initializer = frag.getInitializer();
 			//keep constructors and method invocations
-			if (initializer instanceof MethodInvocation || initializer instanceof ClassInstanceCreation){
+			if (initializer instanceof FunctionInvocation || initializer instanceof ClassInstanceCreation){
 				Expression movedInitializer= (Expression) rewrite.createMoveTarget(initializer);
 				ListRewrite statementRewrite= rewrite.getListRewrite(block, Block.STATEMENTS_PROPERTY);
 				ExpressionStatement newInitializer= rewrite.getAST().newExpressionStatement( movedInitializer);
@@ -446,7 +446,7 @@ public class UnusedCodeFix extends AbstractFix {
 		}
 	}
 	
-	public static UnusedCodeFix createRemoveUnusedImportFix(CompilationUnit compilationUnit, IProblemLocation problem) {
+	public static UnusedCodeFix createRemoveUnusedImportFix(JavaScriptUnit compilationUnit, IProblemLocation problem) {
 		int id= problem.getProblemId();
 		if (id == IProblem.UnusedImport || id == IProblem.DuplicateImport || id == IProblem.ConflictingImport ||
 		    id == IProblem.CannotImportPackage || id == IProblem.ImportNotFound) {
@@ -463,7 +463,7 @@ public class UnusedCodeFix extends AbstractFix {
 		return null;
 	}
 	
-	public static UnusedCodeFix createUnusedMemberFix(CompilationUnit compilationUnit, IProblemLocation problem, boolean forceInitializerRemoval) {
+	public static UnusedCodeFix createUnusedMemberFix(JavaScriptUnit compilationUnit, IProblemLocation problem, boolean forceInitializerRemoval) {
 		int id= problem.getProblemId();
 		if (id == IProblem.UnusedPrivateMethod || id == IProblem.UnusedPrivateConstructor || id == IProblem.UnusedPrivateField ||
 		    id == IProblem.UnusedPrivateType || id == IProblem.LocalVariableIsNeverUsed || id == IProblem.ArgumentIsNeverUsed) {
@@ -484,7 +484,7 @@ public class UnusedCodeFix extends AbstractFix {
 		return null;
 	}
 	
-	public static IFix createRemoveUnusedCastFix(CompilationUnit compilationUnit, IProblemLocation problem) {
+	public static IFix createRemoveUnusedCastFix(JavaScriptUnit compilationUnit, IProblemLocation problem) {
 		if (problem.getProblemId() != IProblem.UnnecessaryCast)
 			return null;
 		
@@ -501,7 +501,7 @@ public class UnusedCodeFix extends AbstractFix {
 		return new UnusedCodeFix(FixMessages.UnusedCodeFix_RemoveCast_description, compilationUnit, new IFixRewriteOperation[] {new RemoveCastOperation((CastExpression)curr, selectedNode)});
 	}
 	
-	public static IFix createCleanUp(CompilationUnit compilationUnit, 
+	public static IFix createCleanUp(JavaScriptUnit compilationUnit, 
 			boolean removeUnusedPrivateMethods, 
 			boolean removeUnusedPrivateConstructors, 
 			boolean removeUnusedPrivateFields, 
@@ -526,7 +526,7 @@ public class UnusedCodeFix extends AbstractFix {
 				removeUnusedCast);
 	}
 	
-	public static IFix createCleanUp(CompilationUnit compilationUnit, IProblemLocation[] problems, 
+	public static IFix createCleanUp(JavaScriptUnit compilationUnit, IProblemLocation[] problems, 
 			boolean removeUnusedPrivateMethods, 
 			boolean removeUnusedPrivateConstructors, 
 			boolean removeUnusedPrivateFields, 
@@ -613,7 +613,7 @@ public class UnusedCodeFix extends AbstractFix {
 		return name.getParent() instanceof SingleVariableDeclaration && name.getParent().getLocationInParent() == EnhancedForStatement.PARAMETER_PROPERTY;
 	}
 	
-	private static boolean isSideEffectFree(SimpleName simpleName, CompilationUnit completeRoot) {
+	private static boolean isSideEffectFree(SimpleName simpleName, JavaScriptUnit completeRoot) {
 		SimpleName nameNode= (SimpleName) NodeFinder.perform(completeRoot, simpleName.getStartPosition(), simpleName.getLength());
 		SimpleName[] references= LinkedNodeFinder.findByBinding(completeRoot, nameNode.resolveBinding());
 		for (int i= 0; i < references.length; i++) {
@@ -653,11 +653,11 @@ public class UnusedCodeFix extends AbstractFix {
 		return sideEffects.size() > 0;
 	}
 
-	private static SimpleName getUnusedName(CompilationUnit compilationUnit, IProblemLocation problem) {
+	private static SimpleName getUnusedName(JavaScriptUnit compilationUnit, IProblemLocation problem) {
 		ASTNode selectedNode= problem.getCoveringNode(compilationUnit);
 
-		if (selectedNode instanceof MethodDeclaration) {
-			return ((MethodDeclaration) selectedNode).getName();
+		if (selectedNode instanceof FunctionDeclaration) {
+			return ((FunctionDeclaration) selectedNode).getName();
 		} else if (selectedNode instanceof SimpleName) {
 			return (SimpleName) selectedNode;
 		}
@@ -671,7 +671,7 @@ public class UnusedCodeFix extends AbstractFix {
 			case IBinding.TYPE:
 				return Messages.format(FixMessages.UnusedCodeFix_RemoveType_description, name);
 			case IBinding.METHOD:
-				if (((IMethodBinding) binding).isConstructor()) {
+				if (((IFunctionBinding) binding).isConstructor()) {
 					return Messages.format(FixMessages.UnusedCodeFix_RemoveConstructor_description, name);
 				} else {
 					return Messages.format(FixMessages.UnusedCodeFix_RemoveMethod_description, name);
@@ -696,7 +696,7 @@ public class UnusedCodeFix extends AbstractFix {
 				result.put(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_TYPES, CleanUpConstants.TRUE);
 				break;
 			case IBinding.METHOD:
-				if (((IMethodBinding) binding).isConstructor()) {
+				if (((IFunctionBinding) binding).isConstructor()) {
 					result.put(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_CONSTRUCTORS, CleanUpConstants.TRUE);
 				} else {
 					result.put(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_METHODS, CleanUpConstants.TRUE);
@@ -711,7 +711,7 @@ public class UnusedCodeFix extends AbstractFix {
 		return result;
 	}
 	
-	private static ImportDeclaration getImportDeclaration(IProblemLocation problem, CompilationUnit compilationUnit) {
+	private static ImportDeclaration getImportDeclaration(IProblemLocation problem, JavaScriptUnit compilationUnit) {
 		ASTNode selectedNode= problem.getCoveringNode(compilationUnit);
 		if (selectedNode != null) {
 			ASTNode node= ASTNodes.getParent(selectedNode, ASTNode.IMPORT_DECLARATION);
@@ -724,11 +724,11 @@ public class UnusedCodeFix extends AbstractFix {
 	
 	private final Map fCleanUpOptions;
 	
-	private UnusedCodeFix(String name, CompilationUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations) {
+	private UnusedCodeFix(String name, JavaScriptUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations) {
 		this(name, compilationUnit, fixRewriteOperations, null);
 	}
 	
-	private UnusedCodeFix(String name, CompilationUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations, Map options) {
+	private UnusedCodeFix(String name, JavaScriptUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations, Map options) {
 		super(name, compilationUnit, fixRewriteOperations);
 		if (options == null) {
 			fCleanUpOptions= new Hashtable();			

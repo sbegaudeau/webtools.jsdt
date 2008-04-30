@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the inline local variable refactoring.
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class InlineLocalVariableDescriptor extends JavaRefactoringDescriptor {
+public final class InlineLocalVariableDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public InlineLocalVariableDescriptor() {
-		super(IJavaRefactorings.INLINE_LOCAL_VARIABLE);
+		super(IJavaScriptRefactorings.INLINE_LOCAL_VARIABLE);
 	}
 }

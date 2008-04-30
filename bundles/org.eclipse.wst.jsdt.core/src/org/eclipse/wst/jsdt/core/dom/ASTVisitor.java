@@ -23,7 +23,7 @@ package org.eclipse.wst.jsdt.core.dom;
  * if <code>false</code> is returned, the given node's child nodes will
  * not be visited. The default implementation provided by this class does
  * nothing and returns <code>true</code> (with the exception of
- * {@link #visit(Javadoc) ASTVisitor.visit(Javadoc)}).
+ * {@link #visit(JSdoc) ASTVisitor.visit(Javadoc)}).
  * Subclasses may reimplement this method as needed.</li>
  * <li><code>public void endVisit(<i>T</i> node)</code> - Visits
  * the given node to perform some arbitrary operation. When used in the
@@ -95,7 +95,7 @@ package org.eclipse.wst.jsdt.core.dom;
  * <p>Note that {@link LineComment} and {@link BlockComment} nodes are
  * not normally visited in an AST because they are not considered
  * part of main structure of the AST. Use
- * {@link CompilationUnit#getCommentList()} to find these additional
+ * {@link JavaScriptUnit#getCommentList()} to find these additional
  * comments nodes.
  * </p>
  *
@@ -127,8 +127,8 @@ public abstract class ASTVisitor {
 	 *
 	 * @param visitDocTags <code>true</code> if doc comment tags are
 	 * to be visited by default, and <code>false</code> otherwise
-	 * @see Javadoc#tags()
-	 * @see #visit(Javadoc)
+	 * @see JSdoc#tags()
+	 * @see #visit(JSdoc)
 	 * @since 3.0
 	 */
 	public ASTVisitor(boolean visitDocTags) {
@@ -460,7 +460,7 @@ public abstract class ASTVisitor {
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
 	 */
-	public boolean visit(CompilationUnit node) {
+	public boolean visit(JavaScriptUnit node) {
 		return true;
 	}
 
@@ -766,7 +766,7 @@ public abstract class ASTVisitor {
 	 * @see #ASTVisitor()
 	 * @see #ASTVisitor(boolean)
 	 */
-	public boolean visit(Javadoc node) {
+	public boolean visit(JSdoc node) {
 		// visit tag elements inside doc comments only if requested
 		return this.visitDocTags;
 	}
@@ -882,7 +882,7 @@ public abstract class ASTVisitor {
 	 * be skipped
 	 * @since 3.0
 	 */
-	public boolean visit(MethodRef node) {
+	public boolean visit(FunctionRef node) {
 		return true;
 	}
 
@@ -900,7 +900,7 @@ public abstract class ASTVisitor {
 	 * be skipped
 	 * @since 3.0
 	 */
-	public boolean visit(MethodRefParameter node) {
+	public boolean visit(FunctionRefParameter node) {
 		return true;
 	}
 
@@ -917,7 +917,7 @@ public abstract class ASTVisitor {
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
 	 */
-	public boolean visit(MethodDeclaration node) {
+	public boolean visit(FunctionDeclaration node) {
 		return true;
 	}
 
@@ -933,7 +933,7 @@ public abstract class ASTVisitor {
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
 	 */
-	public boolean visit(MethodInvocation node) {
+	public boolean visit(FunctionInvocation node) {
 		return true;
 	}
 
@@ -1786,7 +1786,7 @@ public abstract class ASTVisitor {
 	 *
 	 * @param node the node to visit
 	 */
-	public void endVisit(CompilationUnit node) {
+	public void endVisit(JavaScriptUnit node) {
 		// default implementation: do nothing
 	}
 
@@ -2014,7 +2014,7 @@ public abstract class ASTVisitor {
 	 *
 	 * @param node the node to visit
 	 */
-	public void endVisit(Javadoc node) {
+	public void endVisit(JSdoc node) {
 		// default implementation: do nothing
 	}
 
@@ -2101,7 +2101,7 @@ public abstract class ASTVisitor {
 	 * @param node the node to visit
 	 * @since 3.0
 	 */
-	public void endVisit(MethodRef node) {
+	public void endVisit(FunctionRef node) {
 		// default implementation: do nothing
 	}
 
@@ -2114,7 +2114,7 @@ public abstract class ASTVisitor {
 	 * @param node the node to visit
 	 * @since 3.0
 	 */
-	public void endVisit(MethodRefParameter node) {
+	public void endVisit(FunctionRefParameter node) {
 		// default implementation: do nothing
 	}
 
@@ -2126,7 +2126,7 @@ public abstract class ASTVisitor {
 	 *
 	 * @param node the node to visit
 	 */
-	public void endVisit(MethodDeclaration node) {
+	public void endVisit(FunctionDeclaration node) {
 		// default implementation: do nothing
 	}
 
@@ -2138,7 +2138,7 @@ public abstract class ASTVisitor {
 	 *
 	 * @param node the node to visit
 	 */
-	public void endVisit(MethodInvocation node) {
+	public void endVisit(FunctionInvocation node) {
 		// default implementation: do nothing
 	}
 

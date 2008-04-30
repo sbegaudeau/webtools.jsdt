@@ -30,8 +30,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
@@ -55,7 +55,7 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 
 	private static final String PAGE_NAME= "JavaCapabilityConfigurationPage"; //$NON-NLS-1$
 	
-	private IJavaProject fJavaProject;
+	private IJavaScriptProject fJavaProject;
 	private BuildPathsBlock fBuildPathsBlock;
 	
 	/**
@@ -63,7 +63,7 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 	 * It contains UI to configure a the classpath and the output folder.
 	 * 
 	 * <p>
-	 * After constructing, a call to {@link #init(IJavaProject, IPath, IClasspathEntry[], boolean)} is required.
+	 * After constructing, a call to {@link #init(IJavaScriptProject, IPath, IIncludePathEntry[], boolean)} is required.
 	 * </p>
 	 */	
 	public JavaCapabilityConfigurationPage() {
@@ -131,7 +131,7 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 	 * @param defaultsOverrideExistingClasspath If set to <code>true</code>, an existing '.classpath' file is ignored. If set to <code>false</code>
 	 * the given default classpath and output location is only used if no '.classpath' exists.
 	 */
-	public void init(IJavaProject jproject,  IClasspathEntry[] defaultEntries, boolean defaultsOverrideExistingClasspath) {
+	public void init(IJavaScriptProject jproject,  IIncludePathEntry[] defaultEntries, boolean defaultsOverrideExistingClasspath) {
 		if (!defaultsOverrideExistingClasspath && jproject.exists() && jproject.getJSDTScopeFile().exists()) { //$NON-NLS-1$
 			
 			defaultEntries= null;
@@ -170,17 +170,17 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 	 * 
 	 * @return the currently configured classpath
 	 */	
-	public IClasspathEntry[] getRawClassPath() {
+	public IIncludePathEntry[] getRawClassPath() {
 		return getBuildPathsBlock().getRawClassPath();
 	}
 	
 	/**
-	 * Returns the Java project that was passed in {@link #init(IJavaProject, IPath, IClasspathEntry[], boolean)} or <code>null</code> if the 
+	 * Returns the Java project that was passed in {@link #init(IJavaScriptProject, IPath, IIncludePathEntry[], boolean)} or <code>null</code> if the 
 	 * page has not been initialized yet.
 	 * 
 	 * @return the managed Java project or <code>null</code>
 	 */	
-	public IJavaProject getJavaProject() {
+	public IJavaScriptProject getJavaProject() {
 		return fJavaProject;
 	}	
 	

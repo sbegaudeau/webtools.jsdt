@@ -17,12 +17,12 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
@@ -30,18 +30,18 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
   */
 public class JavaTypeCompletionProposal extends JavaCompletionProposal {
 
-	protected final ICompilationUnit fCompilationUnit;
+	protected final IJavaScriptUnit fCompilationUnit;
 
 	/** The unqualified type name. */
 	private final String fUnqualifiedTypeName;
 	/** The fully qualified type name. */
 	private final String fFullyQualifiedTypeName;
 
-	public JavaTypeCompletionProposal(String replacementString, ICompilationUnit cu, int replacementOffset, int replacementLength, Image image, String displayString, int relevance) {
+	public JavaTypeCompletionProposal(String replacementString, IJavaScriptUnit cu, int replacementOffset, int replacementLength, Image image, String displayString, int relevance) {
 		this(replacementString, cu, replacementOffset, replacementLength, image, displayString, relevance, null);
 	}
 
-	public JavaTypeCompletionProposal(String replacementString, ICompilationUnit cu, int replacementOffset, int replacementLength, Image image, String displayString, int relevance,
+	public JavaTypeCompletionProposal(String replacementString, IJavaScriptUnit cu, int replacementOffset, int replacementLength, Image image, String displayString, int relevance,
 		String fullyQualifiedTypeName)
 	{
 		super(replacementString, replacementOffset, replacementLength, image, displayString, relevance);
@@ -92,14 +92,14 @@ public class JavaTypeCompletionProposal extends JavaCompletionProposal {
 				setReplacementOffset(getReplacementOffset() + document.getLength() - oldLen);
 			}
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 	}
 
 	private boolean allowAddingImports() {
-		IPreferenceStore preferenceStore= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferenceStore= JavaScriptPlugin.getDefault().getPreferenceStore();
 		return preferenceStore.getBoolean(PreferenceConstants.CODEASSIST_ADDIMPORT);
 	}
 

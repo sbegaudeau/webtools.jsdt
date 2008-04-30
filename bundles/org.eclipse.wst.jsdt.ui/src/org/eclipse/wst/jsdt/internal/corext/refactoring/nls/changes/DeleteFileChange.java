@@ -22,8 +22,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JDTChange;
 import org.eclipse.wst.jsdt.internal.corext.util.IOCloser;
 
@@ -78,12 +78,12 @@ public class DeleteFileChange extends JDTChange {
 			while ((read= br.read()) != -1)
 				sb.append((char) read);
 		} catch (IOException e){
-			throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
+			throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.IO_EXCEPTION);
 		} finally {
 			try{
 				IOCloser.rethrows(br, in);
 			} catch (IOException e){
-				throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
+				throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.IO_EXCEPTION);
 			}	
 		}
 		return sb.toString();

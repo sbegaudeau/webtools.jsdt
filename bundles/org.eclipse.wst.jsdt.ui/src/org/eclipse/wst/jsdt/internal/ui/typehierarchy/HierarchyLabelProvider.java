@@ -21,17 +21,17 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Label provider for the hierarchy viewers. Types in the hierarchy that are not belonging to the
@@ -53,7 +53,7 @@ public class HierarchyLabelProvider extends AppearanceAwareLabelProvider {
 			ImageData data= descriptor.getImageData(); // see bug 51965: getImageData can return null
 			if (data == null) {
 				data= DEFAULT_IMAGE_DATA;
-				JavaPlugin.logErrorMessage("Image data not available: " + descriptor.toString()); //$NON-NLS-1$
+				JavaScriptPlugin.logErrorMessage("Image data not available: " + descriptor.toString()); //$NON-NLS-1$
 			}
 			return data;
 		}
@@ -76,7 +76,7 @@ public class HierarchyLabelProvider extends AppearanceAwareLabelProvider {
 	private TypeHierarchyLifeCycle fHierarchy;
 	
 	public HierarchyLabelProvider(TypeHierarchyLifeCycle lifeCycle) {
-		super(DEFAULT_TEXTFLAGS | JavaElementLabels.USE_RESOLVED, DEFAULT_IMAGEFLAGS);
+		super(DEFAULT_TEXTFLAGS | JavaScriptElementLabels.USE_RESOLVED, DEFAULT_IMAGEFLAGS);
 		
 		fHierarchy= lifeCycle;
 		fFilter= null;
@@ -101,13 +101,13 @@ public class HierarchyLabelProvider extends AppearanceAwareLabelProvider {
 			return true;
 		}
 		
-		IJavaElement input= fHierarchy.getInputElement();
-		if (input == null || input.getElementType() == IJavaElement.TYPE) {
+		IJavaScriptElement input= fHierarchy.getInputElement();
+		if (input == null || input.getElementType() == IJavaScriptElement.TYPE) {
 			return false;
 		}
 			
-		IJavaElement parent= type.getAncestor(input.getElementType());
-		if (input.getElementType() == IJavaElement.PACKAGE_FRAGMENT) {
+		IJavaScriptElement parent= type.getAncestor(input.getElementType());
+		if (input.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT) {
 			if (parent == null || parent.getElementName().equals(input.getElementName())) {
 				return false;
 			}
@@ -128,7 +128,7 @@ public class HierarchyLabelProvider extends AppearanceAwareLabelProvider {
 				if (element.equals(fHierarchy.getInputElement())) {
 					desc= new FocusDescriptor(desc);
 				}
-				result= JavaPlugin.getImageDescriptorRegistry().get(desc);
+				result= JavaScriptPlugin.getImageDescriptorRegistry().get(desc);
 			}
 		} else {
 			result= fImageLabelProvider.getImageLabel(element, evaluateImageFlags(element));
@@ -139,12 +139,12 @@ public class HierarchyLabelProvider extends AppearanceAwareLabelProvider {
 	private ImageDescriptor getTypeImageDescriptor(IType type) {
 		ITypeHierarchy hierarchy= fHierarchy.getHierarchy();
 		if (hierarchy == null) {
-			return new JavaElementImageDescriptor(JavaPluginImages.DESC_OBJS_CLASS, 0, JavaElementImageProvider.BIG_SIZE);
+			return new JavaScriptElementImageDescriptor(JavaPluginImages.DESC_OBJS_CLASS, 0, JavaElementImageProvider.BIG_SIZE);
 		}
 		
 		int flags= hierarchy.getCachedFlags(type);
 		if (flags == -1) {
-			return new JavaElementImageDescriptor(JavaPluginImages.DESC_OBJS_CLASS, 0, JavaElementImageProvider.BIG_SIZE);
+			return new JavaScriptElementImageDescriptor(JavaPluginImages.DESC_OBJS_CLASS, 0, JavaElementImageProvider.BIG_SIZE);
 		}
 		
 		boolean isInterface= Flags.isInterface(flags);
@@ -154,23 +154,23 @@ public class HierarchyLabelProvider extends AppearanceAwareLabelProvider {
 
 		int adornmentFlags= 0;
 		if (Flags.isFinal(flags)) {
-			adornmentFlags |= JavaElementImageDescriptor.FINAL;
+			adornmentFlags |= JavaScriptElementImageDescriptor.FINAL;
 		}
 		if (Flags.isAbstract(flags) && !isInterface) {
-			adornmentFlags |= JavaElementImageDescriptor.ABSTRACT;
+			adornmentFlags |= JavaScriptElementImageDescriptor.ABSTRACT;
 		}
 		if (Flags.isStatic(flags)) {
-			adornmentFlags |= JavaElementImageDescriptor.STATIC;
+			adornmentFlags |= JavaScriptElementImageDescriptor.STATIC;
 		}
 		
-		return new JavaElementImageDescriptor(desc, adornmentFlags, JavaElementImageProvider.BIG_SIZE);
+		return new JavaScriptElementImageDescriptor(desc, adornmentFlags, JavaElementImageProvider.BIG_SIZE);
 	}
 		
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
 	 */
 	public Color getForeground(Object element) {
-		if (element instanceof IMethod) {
+		if (element instanceof IFunction) {
 			if (fSpecialColor == null) {
 				fSpecialColor= Display.getCurrent().getSystemColor(SWT.COLOR_DARK_BLUE);
 			}

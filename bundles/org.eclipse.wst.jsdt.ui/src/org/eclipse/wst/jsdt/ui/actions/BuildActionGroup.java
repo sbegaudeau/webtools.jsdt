@@ -25,7 +25,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.BuildAction;
 import org.eclipse.ui.ide.IDEActionFactory;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
@@ -125,6 +125,6 @@ public class BuildActionGroup extends ActionGroup {
 		IStructuredSelection selection= (IStructuredSelection)s;
 		if (selection.size() != 1)
 			return false;
-		return selection.getFirstElement() instanceof IJavaProject;
+		return selection.getFirstElement() instanceof IJavaScriptProject;
 	}
 }

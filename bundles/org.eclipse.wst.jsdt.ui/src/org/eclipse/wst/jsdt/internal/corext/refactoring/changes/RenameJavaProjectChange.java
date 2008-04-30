@@ -20,10 +20,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.AbstractJavaElementRenameChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -32,7 +32,7 @@ public final class RenameJavaProjectChange extends AbstractJavaElementRenameChan
 
 	private boolean fUpdateReferences;
 
-	public RenameJavaProjectChange(IJavaProject project, String newName, boolean updateReferences) {
+	public RenameJavaProjectChange(IJavaScriptProject project, String newName, boolean updateReferences) {
 		this(project.getPath(), project.getElementName(), newName, IResource.NULL_STAMP, updateReferences);
 		Assert.isTrue(!project.isReadOnly(), "should not be read only"); //$NON-NLS-1$
 	}
@@ -42,15 +42,15 @@ public final class RenameJavaProjectChange extends AbstractJavaElementRenameChan
 		fUpdateReferences= updateReferences;
 	}
 
-	private IClasspathEntry createModifiedEntry(IClasspathEntry oldEntry) {
-		return JavaCore.newProjectEntry(createNewPath(), oldEntry.getAccessRules(), oldEntry.combineAccessRules(), oldEntry.getExtraAttributes(), oldEntry.isExported());
+	private IIncludePathEntry createModifiedEntry(IIncludePathEntry oldEntry) {
+		return JavaScriptCore.newProjectEntry(createNewPath(), oldEntry.getAccessRules(), oldEntry.combineAccessRules(), oldEntry.getExtraAttributes(), oldEntry.isExported());
 	}
 
 	protected IPath createNewPath() {
 		return getResourcePath().removeLastSegments(1).append(getNewName());
 	}
 
-	protected Change createUndoChange(long stampToRestore) throws JavaModelException {
+	protected Change createUndoChange(long stampToRestore) throws JavaScriptModelException {
 		return new RenameJavaProjectChange(createNewPath(), getNewName(), getOldName(), stampToRestore, fUpdateReferences);
 	}
 
@@ -70,8 +70,8 @@ public final class RenameJavaProjectChange extends AbstractJavaElementRenameChan
 		}
 	}
 
-	private IJavaProject getJavaProject() {
-		return (IJavaProject) getModifiedElement();
+	private IJavaScriptProject getJavaProject() {
+		return (IJavaScriptProject) getModifiedElement();
 	}
 
 	public String getName() {
@@ -79,14 +79,14 @@ public final class RenameJavaProjectChange extends AbstractJavaElementRenameChan
 	}
 
 	private IProject getProject() {
-		IJavaProject jp= getJavaProject();
+		IJavaScriptProject jp= getJavaProject();
 		if (jp == null)
 			return null;
 		return jp.getProject();
 	}
 
-	private boolean isOurEntry(IClasspathEntry cpe) {
-		if (cpe.getEntryKind() != IClasspathEntry.CPE_PROJECT)
+	private boolean isOurEntry(IIncludePathEntry cpe) {
+		if (cpe.getEntryKind() != IIncludePathEntry.CPE_PROJECT)
 			return false;
 		if (!cpe.getPath().equals(getResourcePath()))
 			return false;
@@ -97,25 +97,25 @@ public final class RenameJavaProjectChange extends AbstractJavaElementRenameChan
 		return isValid(pm, DIRTY);
 	}
 
-	private void modifyClassPath(IJavaProject referencingProject, IProgressMonitor pm) throws JavaModelException {
+	private void modifyClassPath(IJavaScriptProject referencingProject, IProgressMonitor pm) throws JavaScriptModelException {
 		pm.beginTask("", 1); //$NON-NLS-1$
-		IClasspathEntry[] oldEntries= referencingProject.getRawClasspath();
-		IClasspathEntry[] newEntries= new IClasspathEntry[oldEntries.length];
+		IIncludePathEntry[] oldEntries= referencingProject.getRawIncludepath();
+		IIncludePathEntry[] newEntries= new IIncludePathEntry[oldEntries.length];
 		for (int i= 0; i < newEntries.length; i++) {
 			if (isOurEntry(oldEntries[i]))
 				newEntries[i]= createModifiedEntry(oldEntries[i]);
 			else
 				newEntries[i]= oldEntries[i];
 		}
-		referencingProject.setRawClasspath(newEntries, pm);
+		referencingProject.setRawIncludepath(newEntries, pm);
 		pm.done();
 	}
 
-	private void modifyClassPaths(IProgressMonitor pm) throws JavaModelException {
+	private void modifyClassPaths(IProgressMonitor pm) throws JavaScriptModelException {
 		IProject[] referencing= getProject().getReferencingProjects();
 		pm.beginTask(RefactoringCoreMessages.RenameJavaProjectChange_update, referencing.length);
 		for (int i= 0; i < referencing.length; i++) {
-			IJavaProject jp= JavaCore.create(referencing[i]);
+			IJavaScriptProject jp= JavaScriptCore.create(referencing[i]);
 			if (jp != null && jp.exists()) {
 				modifyClassPath(jp, new SubProgressMonitor(pm, 1));
 			} else {

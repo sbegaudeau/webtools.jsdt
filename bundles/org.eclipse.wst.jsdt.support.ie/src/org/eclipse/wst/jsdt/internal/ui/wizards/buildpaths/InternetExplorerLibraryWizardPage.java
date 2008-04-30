@@ -6,9 +6,9 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPage;
@@ -34,13 +34,13 @@ public class InternetExplorerLibraryWizardPage extends NewElementWizardPage impl
 		return true;
 	}
 
-	public IClasspathEntry getSelection() {
+	public IIncludePathEntry getSelection() {
 		// TODO Auto-generated method stub
 		System.out.println("Unimplemented method:BaseLibraryWizardPage.getSelection");
 		return null;
 	}
 
-	public void setSelection(IClasspathEntry containerEntry) {}
+	public void setSelection(IIncludePathEntry containerEntry) {}
 
 	public void createControl(Composite parent) {
 		Composite composite= new Composite(parent, SWT.NONE);
@@ -58,13 +58,13 @@ public class InternetExplorerLibraryWizardPage extends NewElementWizardPage impl
 
 	}
 
-	public void initialize(IJavaProject project, IClasspathEntry[] currentEntries) {
+	public void initialize(IJavaScriptProject project, IIncludePathEntry[] currentEntries) {
 
 	}
 
-	public IClasspathEntry[] getNewContainers() {
-			IClasspathEntry library = JavaCore.newContainerEntry( new Path(CONTAINER_ID));
-			return new IClasspathEntry[] {library};
+	public IIncludePathEntry[] getNewContainers() {
+			IIncludePathEntry library = JavaScriptCore.newContainerEntry( new Path(CONTAINER_ID));
+			return new IIncludePathEntry[] {library};
 	}
 
 }

@@ -17,9 +17,9 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 public class CPUserLibraryElement {
 	
@@ -28,9 +28,19 @@ public class CPUserLibraryElement {
 		/* (non-Javadoc)
 		 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#getClasspathEntries()
 		 */
-		public IClasspathEntry[] getClasspathEntries() {
+		/**
+		 * @deprecated Use {@link #getIncludepathEntries()} instead
+		 */
+		public IIncludePathEntry[] getClasspathEntries() {
+			return getIncludepathEntries();
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#getClasspathEntries()
+		 */
+		public IIncludePathEntry[] getIncludepathEntries() {
 			CPListElement[] children= getChildren();
-			IClasspathEntry[] entries= new IClasspathEntry[children.length];
+			IIncludePathEntry[] entries= new IIncludePathEntry[children.length];
 			for (int i= 0; i < entries.length; i++) {
 				entries[i]= children[i].getClasspathEntry();
 			}
@@ -72,17 +82,17 @@ public class CPUserLibraryElement {
 	private List fChildren;
 	private boolean fIsSystemLibrary;
 
-	public CPUserLibraryElement(String name, IJsGlobalScopeContainer container, IJavaProject project) {
+	public CPUserLibraryElement(String name, IJsGlobalScopeContainer container, IJavaScriptProject project) {
 		fName= name;
 		fChildren= new ArrayList();
 		if (container != null) {
-			IClasspathEntry[] entries= container.getClasspathEntries();
+			IIncludePathEntry[] entries= container.getIncludepathEntries();
 			CPListElement[] res= new CPListElement[entries.length];
 			for (int i= 0; i < res.length; i++) {
-				IClasspathEntry curr= entries[i];
+				IIncludePathEntry curr= entries[i];
 				CPListElement elem= CPListElement.createFromExisting(this, curr, project);
 				//elem.setAttribute(CPListElement.SOURCEATTACHMENT, curr.getSourceAttachmentPath());
-				//elem.setAttribute(CPListElement.JAVADOC, JavaUI.getLibraryJavadocLocation(curr.getPath()));
+				//elem.setAttribute(CPListElement.JAVADOC, JavaScriptUI.getLibraryJavadocLocation(curr.getPath()));
 				fChildren.add(elem);
 			}
 			fIsSystemLibrary= container.getKind() == IJsGlobalScopeContainer.K_SYSTEM;
@@ -111,7 +121,7 @@ public class CPUserLibraryElement {
 	}
 	
 	public IPath getPath() {
-		return new Path(JavaCore.USER_LIBRARY_CONTAINER_ID).append(fName);
+		return new Path(JavaScriptCore.USER_LIBRARY_CONTAINER_ID).append(fName);
 	}
 
 	public boolean isSystemLibrary() {
@@ -186,7 +196,7 @@ public class CPUserLibraryElement {
 		if (oldContainer == null || (oldContainer.getKind() == IJsGlobalScopeContainer.K_SYSTEM) != fIsSystemLibrary) {
 			return true;
 		}
-		IClasspathEntry[] oldEntries= oldContainer.getClasspathEntries();
+		IIncludePathEntry[] oldEntries= oldContainer.getIncludepathEntries();
 		if (fChildren.size() != oldEntries.length) {
 			return true;
 		}

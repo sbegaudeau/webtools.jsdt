@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring.sef;
 
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.sef.SelfEncapsulateFieldRefactoring;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 
 public class SelfEncapsulateFieldWizard extends RefactoringWizard {
@@ -22,7 +22,7 @@ public class SelfEncapsulateFieldWizard extends RefactoringWizard {
 	public SelfEncapsulateFieldWizard(SelfEncapsulateFieldRefactoring refactoring) {
 		super(refactoring, DIALOG_BASED_USER_INTERFACE);
 		setDefaultPageTitle(RefactoringMessages.SelfEncapsulateField_sef); 
-		setDialogSettings(JavaPlugin.getDefault().getDialogSettings());
+		setDialogSettings(JavaScriptPlugin.getDefault().getDialogSettings());
 	}
 
 	protected void addUserInputPages() {

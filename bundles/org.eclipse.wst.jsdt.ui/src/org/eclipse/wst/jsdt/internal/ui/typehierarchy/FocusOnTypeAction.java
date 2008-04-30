@@ -15,7 +15,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.FilteredTypesSelectionDialog;
@@ -44,7 +44,7 @@ public class FocusOnTypeAction extends Action {
 		Shell parent= fViewPart.getSite().getShell();
 		FilteredTypesSelectionDialog dialog= new FilteredTypesSelectionDialog(parent, false, 
 			PlatformUI.getWorkbench().getProgressService(), 
-			SearchEngine.createWorkspaceScope(), IJavaSearchConstants.TYPE);
+			SearchEngine.createWorkspaceScope(), IJavaScriptSearchConstants.TYPE);
 	
 		dialog.setTitle(TypeHierarchyMessages.FocusOnTypeAction_dialog_title); 
 		dialog.setMessage(TypeHierarchyMessages.FocusOnTypeAction_dialog_message); 

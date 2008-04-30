@@ -69,15 +69,15 @@ import org.eclipse.ui.part.ResourceTransfer;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.CallHierarchy;
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.CallLocation;
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.dnd.DelegatingDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.dnd.JdtViewerDragAdapter;
@@ -88,8 +88,8 @@ import org.eclipse.wst.jsdt.internal.ui.util.JavaUIHelp;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.SelectionProviderMediator;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.StatusBarUpdater;
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.actions.CCPActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.GenerateActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
@@ -150,7 +150,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
     private MethodWrapper fCalleeRoot;
     private MethodWrapper fCallerRoot;
     private IMemento fMemento;
-    private IMethod fShownMethod;
+    private IFunction fShownMethod;
     private CallHierarchySelectionProvider fSelectionProviderMediator;
     private List fMethodHistory;
     private LocationViewer fLocationViewer;
@@ -176,7 +176,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
     public CallHierarchyViewPart() {
         super();
 
-        fDialogSettings = JavaPlugin.getDefault().getDialogSettings();
+        fDialogSettings = JavaScriptPlugin.getDefault().getDialogSettings();
 
         fMethodHistory = new ArrayList();
     }
@@ -188,7 +188,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
     /**
      * Sets the history entries
      */
-    public void setHistoryEntries(IMethod[] elems) {
+    public void setHistoryEntries(IFunction[] elems) {
         fMethodHistory.clear();
 
         for (int i = 0; i < elems.length; i++) {
@@ -201,19 +201,19 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
     /**
      * Gets all history entries.
      */
-    public IMethod[] getHistoryEntries() {
+    public IFunction[] getHistoryEntries() {
         if (fMethodHistory.size() > 0) {
             updateHistoryEntries();
         }
 
-        return (IMethod[]) fMethodHistory.toArray(new IMethod[fMethodHistory.size()]);
+        return (IFunction[]) fMethodHistory.toArray(new IFunction[fMethodHistory.size()]);
     }
 
     /**
      * Method setMethod.
      * @param method
      */
-    public void setMethod(IMethod method) {
+    public void setMethod(IFunction method) {
         if (method == null) {
             showPage(PAGE_EMPTY);
 
@@ -228,7 +228,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
         refresh();
     }
 
-    public IMethod getMethod() {
+    public IFunction getMethod() {
         return fShownMethod;
     }
 
@@ -295,7 +295,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
         }
     }
 
-    public IJavaSearchScope getSearchScope() {
+    public IJavaScriptSearchScope getSearchScope() {
         return fSearchScopeActions.getSearchScope();
     }
 
@@ -550,7 +550,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
     /**
      * Goes to the selected entry, without updating the order of history entries.
      */
-    public void gotoHistoryEntry(IMethod entry) {
+    public void gotoHistoryEntry(IFunction entry) {
         if (fMethodHistory.contains(entry)) {
             setMethod(entry);
         }
@@ -646,13 +646,13 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
                 EditorUtility.revealInEditor(editorPart,
                     ((MethodWrapper) elem).getMember());
             }
-        } else if (elem instanceof IJavaElement) {
+        } else if (elem instanceof IJavaScriptElement) {
             IEditorPart editorPart = EditorUtility.isOpenInEditor(elem);
 
             if (editorPart != null) {
                 //            getSite().getPage().removePartListener(fPartListener);
                 getSite().getPage().bringToTop(editorPart);
-                EditorUtility.revealInEditor(editorPart, (IJavaElement) elem);
+                EditorUtility.revealInEditor(editorPart, (IJavaScriptElement) elem);
 
                 //            getSite().getPage().addPartListener(fPartListener);
             }
@@ -669,7 +669,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
 		if (adapter == IShowInTargetList.class) {
 			return new IShowInTargetList() {
 				public String[] getShowInTargetIds() {
-					return new String[] { JavaUI.ID_PACKAGES, IPageLayout.ID_RES_NAV  };
+					return new String[] { JavaScriptUI.ID_PACKAGES, IPageLayout.ID_RES_NAV  };
 				}
 			};
 		}
@@ -688,7 +688,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
     }
 
     protected void fillLocationViewerContextMenu(IMenuManager menu) {
-        JavaPlugin.createStandardGroups(menu);
+        JavaScriptPlugin.createStandardGroups(menu);
 
         menu.appendToGroup(IContextMenuConstants.GROUP_SHOW, fOpenLocationAction);
         menu.appendToGroup(IContextMenuConstants.GROUP_SHOW, fRefreshAction);
@@ -738,7 +738,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
     /**
      * Adds the entry if new. Inserted at the beginning of the history entries list.
      */
-    private void addHistoryEntry(IJavaElement entry) {
+    private void addHistoryEntry(IJavaScriptElement entry) {
         if (fMethodHistory.contains(entry)) {
             fMethodHistory.remove(entry);
         }
@@ -779,7 +779,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
      * @param menu
      */
     protected void fillCallHierarchyViewerContextMenu(IMenuManager menu) {
-        JavaPlugin.createStandardGroups(menu);
+        JavaScriptPlugin.createStandardGroups(menu);
 
         menu.appendToGroup(IContextMenuConstants.GROUP_SHOW, fRefreshAction);
         menu.appendToGroup(IContextMenuConstants.GROUP_SHOW, new Separator(GROUP_FOCUS));
@@ -882,7 +882,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
 
     private void updateHistoryEntries() {
         for (int i = fMethodHistory.size() - 1; i >= 0; i--) {
-            IMethod method = (IMethod) fMethodHistory.get(i);
+            IFunction method = (IFunction) fMethodHistory.get(i);
 
             if (!method.exists()) {
                 fMethodHistory.remove(i);
@@ -901,7 +901,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
 
 			CallHierarchy.getDefault().setSearchScope(getSearchScope());
 
-			String elementName= JavaElementLabels.getElementLabel(fShownMethod, JavaElementLabels.ALL_DEFAULT);
+			String elementName= JavaScriptElementLabels.getElementLabel(fShownMethod, JavaScriptElementLabels.ALL_DEFAULT);
 			String scopeDescription= fSearchScopeActions.getFullDescription();
 			String[] args= new String[] { elementName, scopeDescription };
 			// set input to null so that setSorter does not cause a refresh on the old contents:
@@ -925,7 +925,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
         try {
             callersView = (CallHierarchyViewPart) workbenchPage.showView(CallHierarchyViewPart.ID_CALL_HIERARCHY);
         } catch (PartInitException e) {
-            JavaPlugin.log(e);
+            JavaScriptPlugin.log(e);
         }
 
         return callersView;

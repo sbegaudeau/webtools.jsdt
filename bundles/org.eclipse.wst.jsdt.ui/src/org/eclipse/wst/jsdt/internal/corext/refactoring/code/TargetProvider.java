@@ -24,11 +24,11 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
@@ -40,14 +40,14 @@ import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
@@ -77,14 +77,14 @@ abstract class TargetProvider {
 
 	public abstract void initialize();
 
-	public abstract ICompilationUnit[] getAffectedCompilationUnits(RefactoringStatus status, IProgressMonitor pm)  throws JavaModelException;
+	public abstract IJavaScriptUnit[] getAffectedCompilationUnits(RefactoringStatus status, IProgressMonitor pm)  throws JavaScriptModelException;
 	
-	public abstract BodyDeclaration[] getAffectedBodyDeclarations(ICompilationUnit unit, IProgressMonitor pm);
+	public abstract BodyDeclaration[] getAffectedBodyDeclarations(IJavaScriptUnit unit, IProgressMonitor pm);
 	
 	// constructor invocation is not an expression but a statement
 	public abstract ASTNode[] getInvocations(BodyDeclaration declaration, IProgressMonitor pm);
 	
-	public abstract RefactoringStatus checkActivation() throws JavaModelException;
+	public abstract RefactoringStatus checkActivation() throws JavaScriptModelException;
 	
 	public abstract int getStatusSeverity();
 	
@@ -92,20 +92,20 @@ abstract class TargetProvider {
 		return false;
 	}
 	
-	public static TargetProvider create(ICompilationUnit cu, MethodInvocation invocation) {
+	public static TargetProvider create(IJavaScriptUnit cu, FunctionInvocation invocation) {
 		return new SingleCallTargetProvider(cu, invocation);
 	}
 
-	public static TargetProvider create(ICompilationUnit cu, SuperMethodInvocation invocation) {
+	public static TargetProvider create(IJavaScriptUnit cu, SuperMethodInvocation invocation) {
 		return new SingleCallTargetProvider(cu, invocation);
 	}
 
-	public static TargetProvider create(ICompilationUnit cu, ConstructorInvocation invocation) {
+	public static TargetProvider create(IJavaScriptUnit cu, ConstructorInvocation invocation) {
 		return new SingleCallTargetProvider(cu, invocation);
 	}
 
-	public static TargetProvider create(MethodDeclaration declaration) {
-		IMethodBinding method= declaration.resolveBinding();
+	public static TargetProvider create(FunctionDeclaration declaration) {
+		IFunctionBinding method= declaration.resolveBinding();
 		if (method == null)
 			return new ErrorTargetProvider(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.TargetProvider_method_declaration_not_unique));
 		ITypeBinding type= method.getDeclaringClass();
@@ -114,14 +114,14 @@ abstract class TargetProvider {
 				return new ErrorTargetProvider(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.TargetProvider_cannot_local_method_in_binary));
 			} else {
 				IType declaringClassOfLocal= (IType) type.getDeclaringClass().getJavaElement();
-				return new LocalTypeTargetProvider(declaringClassOfLocal.getCompilationUnit(), declaration);
+				return new LocalTypeTargetProvider(declaringClassOfLocal.getJavaScriptUnit(), declaration);
 			}
 		} else {
 			return new MemberTypeTargetProvider(declaration.resolveBinding());
 		}
 	}
 
-	public static TargetProvider create(IMethodBinding methodBinding) {
+	public static TargetProvider create(IFunctionBinding methodBinding) {
 		return new MemberTypeTargetProvider(methodBinding);
 	}
 	
@@ -138,15 +138,15 @@ abstract class TargetProvider {
 		public ErrorTargetProvider(RefactoringStatus status) {
 			fErrorStatus= status;
 		}
-		public RefactoringStatus checkActivation() throws JavaModelException {
+		public RefactoringStatus checkActivation() throws JavaScriptModelException {
 			return fErrorStatus;
 		}
 		public void initialize() {
 		}
-		public ICompilationUnit[] getAffectedCompilationUnits(RefactoringStatus status, IProgressMonitor pm) throws JavaModelException {
+		public IJavaScriptUnit[] getAffectedCompilationUnits(RefactoringStatus status, IProgressMonitor pm) throws JavaScriptModelException {
 			return null;
 		}
-		public BodyDeclaration[] getAffectedBodyDeclarations(ICompilationUnit unit, IProgressMonitor pm) {
+		public BodyDeclaration[] getAffectedBodyDeclarations(IJavaScriptUnit unit, IProgressMonitor pm) {
 			return null;
 		}
 		public ASTNode[] getInvocations(BodyDeclaration declaration, IProgressMonitor pm) {
@@ -158,10 +158,10 @@ abstract class TargetProvider {
 	}
 	
 	static class SingleCallTargetProvider extends TargetProvider {
-		private ICompilationUnit fCUnit;
+		private IJavaScriptUnit fCUnit;
 		private ASTNode fInvocation;
 		private boolean fIterated;
-		public SingleCallTargetProvider(ICompilationUnit cu, ASTNode invocation) {
+		public SingleCallTargetProvider(IJavaScriptUnit cu, ASTNode invocation) {
 			Assert.isNotNull(cu);
 			Assert.isNotNull(invocation);
 			Assert.isTrue(Invocations.isInvocation(invocation));
@@ -171,10 +171,10 @@ abstract class TargetProvider {
 		public void initialize() {
 			fIterated= false;
 		}
-		public ICompilationUnit[] getAffectedCompilationUnits(RefactoringStatus status, IProgressMonitor pm) {
-			return new ICompilationUnit[] { fCUnit };
+		public IJavaScriptUnit[] getAffectedCompilationUnits(RefactoringStatus status, IProgressMonitor pm) {
+			return new IJavaScriptUnit[] { fCUnit };
 		}
-		public BodyDeclaration[] getAffectedBodyDeclarations(ICompilationUnit unit, IProgressMonitor pm) {
+		public BodyDeclaration[] getAffectedBodyDeclarations(IJavaScriptUnit unit, IProgressMonitor pm) {
 			Assert.isTrue(unit == fCUnit);
 			if (fIterated)
 				return new BodyDeclaration[0];
@@ -191,7 +191,7 @@ abstract class TargetProvider {
 			fIterated= true;
 			return new ASTNode[] { fInvocation };
 		}
-		public RefactoringStatus checkActivation() throws JavaModelException {
+		public RefactoringStatus checkActivation() throws JavaScriptModelException {
 			return new RefactoringStatus();
 		}
 		public int getStatusSeverity() {
@@ -228,13 +228,13 @@ abstract class TargetProvider {
 		Map/*<BodyDeclaration, BodyData>*/ result= new HashMap(2);
 		Stack/*<BodyData>*/ fBodies= new Stack();
 		BodyData fCurrent;
-		private IMethodBinding fBinding;
-		public InvocationFinder(IMethodBinding binding) {
+		private IFunctionBinding fBinding;
+		public InvocationFinder(IFunctionBinding binding) {
 			Assert.isNotNull(binding);
 			fBinding= binding.getMethodDeclaration();
 			Assert.isNotNull(fBinding);
 		}
-		public boolean visit(MethodInvocation node) {
+		public boolean visit(FunctionInvocation node) {
 			if (matches(node.getName().resolveBinding()) && fCurrent != null) {
 				fCurrent.addInvocation(node);
 			}
@@ -295,12 +295,12 @@ abstract class TargetProvider {
 			}
 			endVisitType();
 		}
-		public boolean visit(MethodDeclaration node) {
+		public boolean visit(FunctionDeclaration node) {
 			fBodies.add(fCurrent);
 			fCurrent= new BodyData(node);
 			return true;
 		}
-		public void endVisit(MethodDeclaration node) {
+		public void endVisit(FunctionDeclaration node) {
 			if (fCurrent.hasInvocations()) {
 				result.put(node, fCurrent);
 			}
@@ -319,20 +319,20 @@ abstract class TargetProvider {
 			endVisitType();
 		}
 		private boolean matches(IBinding binding) {
-			if (!(binding instanceof IMethodBinding))
+			if (!(binding instanceof IFunctionBinding))
 				return false;
 			if (BUG_CORE_130317)
-				return fBinding.getKey().equals(((IMethodBinding)binding).getMethodDeclaration().getKey());
+				return fBinding.getKey().equals(((IFunctionBinding)binding).getMethodDeclaration().getKey());
 			else
-				return fBinding.isEqualTo(((IMethodBinding)binding).getMethodDeclaration());
+				return fBinding.isEqualTo(((IFunctionBinding)binding).getMethodDeclaration());
 		}
 	}
 	
 	private static class LocalTypeTargetProvider extends TargetProvider {
-		private ICompilationUnit fCUnit;
-		private MethodDeclaration fDeclaration;
+		private IJavaScriptUnit fCUnit;
+		private FunctionDeclaration fDeclaration;
 		private Map fBodies;
-		public LocalTypeTargetProvider(ICompilationUnit unit, MethodDeclaration declaration) {
+		public LocalTypeTargetProvider(IJavaScriptUnit unit, FunctionDeclaration declaration) {
 			Assert.isNotNull(unit);
 			Assert.isNotNull(declaration);
 			fCUnit= unit;
@@ -344,12 +344,12 @@ abstract class TargetProvider {
 			type.accept(finder);
 			fBodies= finder.result;
 		}
-		public ICompilationUnit[] getAffectedCompilationUnits(RefactoringStatus status, IProgressMonitor pm) {
+		public IJavaScriptUnit[] getAffectedCompilationUnits(RefactoringStatus status, IProgressMonitor pm) {
 			fastDone(pm);
-			return new ICompilationUnit[] { fCUnit };
+			return new IJavaScriptUnit[] { fCUnit };
 		}
 	
-		public BodyDeclaration[] getAffectedBodyDeclarations(ICompilationUnit unit, IProgressMonitor pm) {
+		public BodyDeclaration[] getAffectedBodyDeclarations(IJavaScriptUnit unit, IProgressMonitor pm) {
 			Assert.isTrue(unit == fCUnit);
 			Set result= fBodies.keySet();
 			fastDone(pm);
@@ -363,7 +363,7 @@ abstract class TargetProvider {
 			return data.getInvocations();
 		}
 	
-		public RefactoringStatus checkActivation() throws JavaModelException {
+		public RefactoringStatus checkActivation() throws JavaScriptModelException {
 			return new RefactoringStatus();
 		}
 		
@@ -373,9 +373,9 @@ abstract class TargetProvider {
 	}
 	
 	private static class MemberTypeTargetProvider extends TargetProvider {
-		private final IMethodBinding fMethodBinding;
+		private final IFunctionBinding fMethodBinding;
 		private Map fCurrentBodies;
-		public MemberTypeTargetProvider(IMethodBinding methodBinding) {
+		public MemberTypeTargetProvider(IFunctionBinding methodBinding) {
 			Assert.isNotNull(methodBinding);
 			fMethodBinding= methodBinding;
 		}
@@ -383,10 +383,10 @@ abstract class TargetProvider {
 			// do nothing.
 		}
 
-		public ICompilationUnit[] getAffectedCompilationUnits(final RefactoringStatus status, IProgressMonitor pm) throws JavaModelException {
-			IMethod method= (IMethod)fMethodBinding.getJavaElement();
+		public IJavaScriptUnit[] getAffectedCompilationUnits(final RefactoringStatus status, IProgressMonitor pm) throws JavaScriptModelException {
+			IFunction method= (IFunction)fMethodBinding.getJavaElement();
 			Assert.isTrue(method != null);
-			final RefactoringSearchEngine2 engine= new RefactoringSearchEngine2(SearchPattern.createPattern(method, IJavaSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE));
+			final RefactoringSearchEngine2 engine= new RefactoringSearchEngine2(SearchPattern.createPattern(method, IJavaScriptSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE));
 			engine.setGranularity(RefactoringSearchEngine2.GRANULARITY_COMPILATION_UNIT);
 			engine.setFiltering(true, true);
 			engine.setScope(RefactoringScopeFactory.create(method));
@@ -396,9 +396,9 @@ abstract class TargetProvider {
 						return null;
 					if (match.getAccuracy() == SearchMatch.A_INACCURATE) {
 						Object element= match.getElement();
-						if (element instanceof IJavaElement) {
-							IJavaElement jElement= (IJavaElement)element;
-							ICompilationUnit unit= (ICompilationUnit)jElement.getAncestor(IJavaElement.COMPILATION_UNIT);
+						if (element instanceof IJavaScriptElement) {
+							IJavaScriptElement jElement= (IJavaScriptElement)element;
+							IJavaScriptUnit unit= (IJavaScriptUnit)jElement.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 							if (unit != null) {
 								status.addError(RefactoringCoreMessages.TargetProvider_inaccurate_match,
 									JavaStatusContext.create(unit, new SourceRange(match.getOffset(), match.getLength())));
@@ -416,7 +416,7 @@ abstract class TargetProvider {
 			return engine.getAffectedCompilationUnits();
 		}
 
-		public BodyDeclaration[] getAffectedBodyDeclarations(ICompilationUnit unit, IProgressMonitor pm) {
+		public BodyDeclaration[] getAffectedBodyDeclarations(IJavaScriptUnit unit, IProgressMonitor pm) {
 			ASTNode root= new RefactoringASTParser(AST.JLS3).parse(unit, true);
 			InvocationFinder finder= new InvocationFinder(fMethodBinding);
 			root.accept(finder);
@@ -433,7 +433,7 @@ abstract class TargetProvider {
 			return data.getInvocations();
 		}
 	
-		public RefactoringStatus checkActivation() throws JavaModelException {
+		public RefactoringStatus checkActivation() throws JavaScriptModelException {
 			return new RefactoringStatus();
 		}
 		

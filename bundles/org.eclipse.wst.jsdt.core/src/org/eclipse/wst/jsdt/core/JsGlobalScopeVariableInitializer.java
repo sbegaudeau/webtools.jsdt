@@ -20,7 +20,7 @@ package org.eclipse.wst.jsdt.core;
  * variable initializer. The subclass must have a public 0-argument
  * constructor and a concrete implementation of <code>initialize</code>.
  *
- * @see IClasspathEntry
+ * @see IIncludePathEntry
  * @since 2.0
  */
 public abstract class JsGlobalScopeVariableInitializer {
@@ -39,14 +39,14 @@ public abstract class JsGlobalScopeVariableInitializer {
      * A variable initializer is automatically activated whenever a variable value
      * is needed and none has been recorded so far. The implementation of
      * the initializer can set the corresponding variable using
-     * <code>JavaCore#setClasspathVariable</code>.
+     * <code>JavaScriptCore#setClasspathVariable</code>.
      *
      * @param variable the name of the workspace classpath variable
      *    that requires a binding
      *
-     * @see JavaCore#getClasspathVariable(String)
-     * @see JavaCore#setClasspathVariable(String, org.eclipse.core.runtime.IPath, org.eclipse.core.runtime.IProgressMonitor)
-     * @see JavaCore#setClasspathVariables(String[], org.eclipse.core.runtime.IPath[], org.eclipse.core.runtime.IProgressMonitor)
+     * @see JavaScriptCore#getIncludepathVariable(String)
+     * @see JavaScriptCore#setIncludepathVariable(String, org.eclipse.core.runtime.IPath, org.eclipse.core.runtime.IProgressMonitor)
+     * @see JavaScriptCore#setIncludepathVariables(String[], org.eclipse.core.runtime.IPath[], org.eclipse.core.runtime.IProgressMonitor)
      */
     public abstract void initialize(String variable);
 }

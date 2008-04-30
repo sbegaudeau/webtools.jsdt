@@ -48,9 +48,9 @@ public abstract class ClasspathLocation implements FileSystem.Classpath,
 	 *
 	 * @param qualifiedBinaryFileName
 	 *            tested type specification, formed as:
-	 *            "org/eclipse/jdt/core/JavaCore.class"; on systems that
+	 *            "org/eclipse/jdt/core/JavaScriptCore.class"; on systems that
 	 *            use \ as File.separator, the
-	 *            "org\eclipse\jdt\core\JavaCore.class" is accepted as well
+	 *            "org\eclipse\jdt\core\JavaScriptCore.class" is accepted as well
 	 * @return the first access rule which is violated when accessing a given
 	 *         type, or null if none applies
 	 */

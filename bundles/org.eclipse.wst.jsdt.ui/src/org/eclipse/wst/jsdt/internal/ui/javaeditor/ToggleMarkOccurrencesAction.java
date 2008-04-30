@@ -19,7 +19,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
@@ -74,7 +74,7 @@ public class ToggleMarkOccurrencesAction extends TextEditorAction implements IPr
 		if (editor != null) {
 
 			if (fStore == null) {
-				fStore= JavaPlugin.getDefault().getPreferenceStore();
+				fStore= JavaScriptPlugin.getDefault().getPreferenceStore();
 				fStore.addPropertyChangeListener(this);
 			}
 

@@ -252,7 +252,7 @@ void setSourceStart(int sourceStart);
 	 */
 
 	/**
-	 * ID reserved for referencing an internal error inside the JavaCore implementation which
+	 * ID reserved for referencing an internal error inside the JavaScriptCore implementation which
 	 * may be surfaced as a problem associated with the compilation unit which caused it to occur.
 	 */
 	int Unclassified = 0;

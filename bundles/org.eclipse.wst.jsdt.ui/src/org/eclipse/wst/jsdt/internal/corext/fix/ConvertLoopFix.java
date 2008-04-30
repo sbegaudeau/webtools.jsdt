@@ -19,7 +19,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
@@ -105,8 +105,8 @@ public class ConvertLoopFix extends LinkedFix {
 		
 	}
 	
-	public static IFix createCleanUp(CompilationUnit compilationUnit, boolean convertForLoops, boolean convertIterableForLoops, boolean makeFinal) {
-		if (!JavaModelUtil.is50OrHigher(compilationUnit.getJavaElement().getJavaProject()))
+	public static IFix createCleanUp(JavaScriptUnit compilationUnit, boolean convertForLoops, boolean convertIterableForLoops, boolean makeFinal) {
+		if (!JavaModelUtil.is50OrHigher(compilationUnit.getJavaElement().getJavaScriptProject()))
 			return null;
 		
 		if (!convertForLoops && !convertIterableForLoops)
@@ -123,7 +123,7 @@ public class ConvertLoopFix extends LinkedFix {
 		return new ConvertLoopFix(FixMessages.ControlStatementsFix_change_name, compilationUnit, ops);
 	}
 	
-	public static IFix createConvertForLoopToEnhancedFix(CompilationUnit compilationUnit, ForStatement loop) {
+	public static IFix createConvertForLoopToEnhancedFix(JavaScriptUnit compilationUnit, ForStatement loop) {
 		ConvertLoopOperation convertForLoopOperation= new ConvertForLoopOperation(loop);
 		if (!convertForLoopOperation.satisfiesPreconditions().isOK())
 			return null;
@@ -131,7 +131,7 @@ public class ConvertLoopFix extends LinkedFix {
 		return new ConvertLoopFix(FixMessages.Java50Fix_ConvertToEnhancedForLoop_description, compilationUnit, new ILinkedFixRewriteOperation[] {convertForLoopOperation});
 	}
 	
-	public static IFix createConvertIterableLoopToEnhancedFix(CompilationUnit compilationUnit, ForStatement loop) {
+	public static IFix createConvertIterableLoopToEnhancedFix(JavaScriptUnit compilationUnit, ForStatement loop) {
 		ConvertIterableLoopOperation loopConverter= new ConvertIterableLoopOperation(loop);
 		IStatus status= loopConverter.satisfiesPreconditions();
 		if (status.getSeverity() == IStatus.ERROR)
@@ -142,7 +142,7 @@ public class ConvertLoopFix extends LinkedFix {
 		return result;
 	}
 	
-	protected ConvertLoopFix(String name, CompilationUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations) {
+	protected ConvertLoopFix(String name, JavaScriptUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations) {
 		super(name, compilationUnit, fixRewriteOperations);
 	}
 	

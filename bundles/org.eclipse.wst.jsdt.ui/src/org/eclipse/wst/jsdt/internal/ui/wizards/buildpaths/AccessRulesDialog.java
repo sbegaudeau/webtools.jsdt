@@ -35,13 +35,13 @@ import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.ProblemSeveritiesPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
@@ -50,7 +50,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class AccessRulesDialog extends StatusDialog {
 	
@@ -60,7 +60,7 @@ public class AccessRulesDialog extends StatusDialog {
 	private final SelectionButtonDialogField fCombineRulesCheckbox;
 	private final CPListElement fCurrElement;
 	
-	private final IJavaProject fProject;
+	private final IJavaScriptProject fProject;
 	private final boolean fParentCanSwitchPage;
 	
 	private static final int IDX_ADD= 0;
@@ -70,7 +70,7 @@ public class AccessRulesDialog extends StatusDialog {
 	private static final int IDX_REMOVE= 6;
 
 	
-	public AccessRulesDialog(Shell parent, CPListElement entryToEdit, IJavaProject project, boolean parentCanSwitchPage) {
+	public AccessRulesDialog(Shell parent, CPListElement entryToEdit, IJavaScriptProject project, boolean parentCanSwitchPage) {
 		super(parent);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		
@@ -176,13 +176,13 @@ public class AccessRulesDialog extends StatusDialog {
 		data.grabExcessHorizontalSpace= true;
 		data.heightHint= SWT.DEFAULT;
 		
-		if (fCurrElement.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+		if (fCurrElement.getEntryKind() == IIncludePathEntry.CPE_PROJECT) {
 			fCombineRulesCheckbox.doFillIntoGrid(inner, 2);
 		}
 		
 		if (fProject != null) {
-			String forbiddenSeverity=  fProject.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true);
-			String discouragedSeverity= fProject.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true);
+			String forbiddenSeverity=  fProject.getOption(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, true);
+			String discouragedSeverity= fProject.getOption(JavaScriptCore.COMPILER_PB_DISCOURAGED_REFERENCE, true);
 			String[] args= { getLocalizedString(discouragedSeverity), getLocalizedString(forbiddenSeverity) };
 			
 			FormToolkit toolkit= new FormToolkit(parent.getDisplay());
@@ -206,7 +206,7 @@ public class AccessRulesDialog extends StatusDialog {
 				data.widthHint= convertWidthInCharsToPixels(70);
 				text.setLayoutData(data);				
 			} catch (IllegalArgumentException e) {
-				JavaPlugin.log(e); // invalid string
+				JavaScriptPlugin.log(e); // invalid string
 			} finally {
 				toolkit.dispose();
 			}
@@ -223,9 +223,9 @@ public class AccessRulesDialog extends StatusDialog {
 	}
 
 	private String getLocalizedString(String severity) {
-		if (JavaCore.ERROR.equals(severity)) {
+		if (JavaScriptCore.ERROR.equals(severity)) {
 			return NewWizardMessages.AccessRulesDialog_severity_error;
-		} else if (JavaCore.WARNING.equals(severity)) {
+		} else if (JavaScriptCore.WARNING.equals(severity)) {
 			return NewWizardMessages.AccessRulesDialog_severity_warning;
 		} else {
 			return NewWizardMessages.AccessRulesDialog_severity_ignore;
@@ -236,14 +236,14 @@ public class AccessRulesDialog extends StatusDialog {
 		String desc;
 		String name= fCurrElement.getPath().lastSegment();
 		switch (fCurrElement.getEntryKind()) {
-			case IClasspathEntry.CPE_CONTAINER:
+			case IIncludePathEntry.CPE_CONTAINER:
 				try {
-					name= JavaElementLabels.getContainerEntryLabel(fCurrElement.getPath(), fCurrElement.getJavaProject());
-				} catch (JavaModelException e) {
+					name= JavaScriptElementLabels.getContainerEntryLabel(fCurrElement.getPath(), fCurrElement.getJavaProject());
+				} catch (JavaScriptModelException e) {
 				}
 				desc= NewWizardMessages.AccessRulesDialog_container_description;
 				break;
-			case IClasspathEntry.CPE_PROJECT:
+			case IIncludePathEntry.CPE_PROJECT:
 				desc=  NewWizardMessages.AccessRulesDialog_project_description;
 				break;
 			default:
@@ -354,8 +354,8 @@ public class AccessRulesDialog extends StatusDialog {
 
 	public void performPageSwitch(IWorkbenchPreferenceContainer pageContainer) {
 		HashMap data= new HashMap();
-		data.put(ProblemSeveritiesPreferencePage.DATA_SELECT_OPTION_KEY, JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE);
-		data.put(ProblemSeveritiesPreferencePage.DATA_SELECT_OPTION_QUALIFIER, JavaCore.PLUGIN_ID);
+		data.put(ProblemSeveritiesPreferencePage.DATA_SELECT_OPTION_KEY, JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE);
+		data.put(ProblemSeveritiesPreferencePage.DATA_SELECT_OPTION_QUALIFIER, JavaScriptCore.PLUGIN_ID);
 		pageContainer.openPage(ProblemSeveritiesPreferencePage.PROP_ID, data);
 	}
 }

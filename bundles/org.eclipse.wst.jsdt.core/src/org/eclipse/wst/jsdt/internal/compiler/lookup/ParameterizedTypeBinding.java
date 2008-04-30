@@ -575,7 +575,7 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 	}
 
 	/**
-	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#implementsMethod(MethodBinding)
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#implementsMethod(FunctionBinding)
 	 */
 	public boolean implementsMethod(MethodBinding method) {
 		return this.type.implementsMethod(method); // erasure

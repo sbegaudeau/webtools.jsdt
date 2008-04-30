@@ -15,20 +15,20 @@ import java.util.Iterator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
@@ -68,15 +68,15 @@ public class CreateImportOperation extends CreateElementInCUOperation {
 /**
  * When executed, this operation will add an import to the given compilation unit.
  */
-public CreateImportOperation(String importName, ICompilationUnit parentElement, int flags) {
+public CreateImportOperation(String importName, IJavaScriptUnit parentElement, int flags) {
 	super(parentElement);
 	this.importName = importName;
 	this.flags = flags;
 }
 protected StructuralPropertyDescriptor getChildPropertyDescriptor(ASTNode parent) {
-	return CompilationUnit.IMPORTS_PROPERTY;
+	return JavaScriptUnit.IMPORTS_PROPERTY;
 }
-protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, ICompilationUnit cu) throws JavaModelException {
+protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IJavaScriptUnit cu) throws JavaScriptModelException {
 	// ensure no duplicate
 	Iterator imports = this.cuAST.imports().iterator();
 	boolean onDemand = this.importName.endsWith(".*"); //$NON-NLS-1$
@@ -112,7 +112,7 @@ protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IC
 /**
  * @see CreateElementInCUOperation#generateResultHandle
  */
-protected IJavaElement generateResultHandle() {
+protected IJavaScriptElement generateResultHandle() {
 	return getCompilationUnit().getImport(this.importName);
 }
 /**
@@ -130,7 +130,7 @@ public String getMainTaskName(){
  */
 protected void initializeDefaultPosition() {
 	try {
-		ICompilationUnit cu = getCompilationUnit();
+		IJavaScriptUnit cu = getCompilationUnit();
 		IImportDeclaration[] imports = cu.getImports();
 		if (imports.length > 0) {
 			createAfter(imports[imports.length - 1]);
@@ -141,15 +141,15 @@ protected void initializeDefaultPosition() {
 			createBefore(types[0]);
 			return;
 		}
-		IJavaElement[] children = cu.getChildren();
+		IJavaScriptElement[] children = cu.getChildren();
 		//look for the package declaration
 		for (int i = 0; i < children.length; i++) {
-			if (children[i].getElementType() == IJavaElement.PACKAGE_DECLARATION) {
+			if (children[i].getElementType() == IJavaScriptElement.PACKAGE_DECLARATION) {
 				createAfter(children[i]);
 				return;
 			}
 		}
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// cu doesn't exit: ignore
 	}
 }
@@ -159,17 +159,17 @@ protected void initializeDefaultPosition() {
  * 		<code>null</code>.
  *  <li>INVALID_NAME - not a valid import declaration name.
  * </ul>
- * @see IJavaModelStatus
- * @see JavaConventions
+ * @see IJavaScriptModelStatus
+ * @see JavaScriptConventions
  */
-public IJavaModelStatus verify() {
-	IJavaModelStatus status = super.verify();
+public IJavaScriptModelStatus verify() {
+	IJavaScriptModelStatus status = super.verify();
 	if (!status.isOK()) {
 		return status;
 	}
-	IJavaProject project = getParentElement().getJavaProject();
-	if (JavaConventions.validateImportDeclaration(this.importName, project.getOption(JavaCore.COMPILER_SOURCE, true), project.getOption(JavaCore.COMPILER_COMPLIANCE, true)).getSeverity() == IStatus.ERROR) {
-		return new JavaModelStatus(IJavaModelStatusConstants.INVALID_NAME, this.importName);
+	IJavaScriptProject project = getParentElement().getJavaScriptProject();
+	if (JavaScriptConventions.validateImportDeclaration(this.importName, project.getOption(JavaScriptCore.COMPILER_SOURCE, true), project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true)).getSeverity() == IStatus.ERROR) {
+		return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_NAME, this.importName);
 	}
 	return JavaModelStatus.VERIFIED_OK;
 }

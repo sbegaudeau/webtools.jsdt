@@ -37,14 +37,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 
 public class JavaCorrectionAssistant extends QuickAssistAssistant {
@@ -71,10 +71,10 @@ public class JavaCorrectionAssistant extends QuickAssistAssistant {
 
 		setInformationControlCreator(getInformationControlCreator());
 
-		JavaTextTools textTools= JavaPlugin.getDefault().getJavaTextTools();
+		JavaScriptTextTools textTools= JavaScriptPlugin.getDefault().getJavaTextTools();
 		IColorManager manager= textTools.getColorManager();
 
-		IPreferenceStore store=  JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore store=  JavaScriptPlugin.getDefault().getPreferenceStore();
 
 		Color c= getColor(store, PreferenceConstants.CODEASSIST_PROPOSALS_FOREGROUND, manager);
 		setProposalSelectorForeground(c);
@@ -162,7 +162,7 @@ public class JavaCorrectionAssistant extends QuickAssistAssistant {
 				fViewer.revealRange(newOffset, 0);
 			}
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		fCurrentAnnotations= (Annotation[]) resultingAnnotations.toArray(new Annotation[resultingAnnotations.size()]);
 
@@ -183,7 +183,7 @@ public class JavaCorrectionAssistant extends QuickAssistAssistant {
 	}
 	
 	public static int collectQuickFixableAnnotations(ITextEditor editor, int invocationLocation, boolean goToClosest, ArrayList resultingAnnotations) throws BadLocationException {
-		IAnnotationModel model= JavaUI.getDocumentProvider().getAnnotationModel(editor.getEditorInput());
+		IAnnotationModel model= JavaScriptUI.getDocumentProvider().getAnnotationModel(editor.getEditorInput());
 		if (model == null) {
 			return invocationLocation;
 		}
@@ -238,9 +238,9 @@ public class JavaCorrectionAssistant extends QuickAssistAssistant {
 	}
 
 	private static void ensureUpdatedAnnotations(ITextEditor editor) {
-		Object inputElement= editor.getEditorInput().getAdapter(IJavaElement.class);
-		if (inputElement instanceof ICompilationUnit) {
-			JavaPlugin.getDefault().getASTProvider().getAST((ICompilationUnit) inputElement, ASTProvider.WAIT_ACTIVE_ONLY, null);
+		Object inputElement= editor.getEditorInput().getAdapter(IJavaScriptElement.class);
+		if (inputElement instanceof IJavaScriptUnit) {
+			JavaScriptPlugin.getDefault().getASTProvider().getAST((IJavaScriptUnit) inputElement, ASTProvider.WAIT_ACTIVE_ONLY, null);
 		}
 	}
 

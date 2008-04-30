@@ -24,8 +24,8 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 
@@ -73,7 +73,7 @@ public class NLSUtil {
 	 * or the edit could not be created for some other reason.
 	 * @throws CoreException 
 	 */
-	public static TextEdit createNLSEdit(ICompilationUnit cu, int position) throws CoreException {
+	public static TextEdit createNLSEdit(IJavaScriptUnit cu, int position) throws CoreException {
 		NLSLine nlsLine= scanCurrentLine(cu, position);
 		if (nlsLine == null)
 			return null;
@@ -93,7 +93,7 @@ public class NLSUtil {
 	 * or the edits could not be created for some other reason.
 	 * @throws CoreException 
 	 */
-	public static TextEdit[] createNLSEdits(ICompilationUnit cu, int[] positions) throws CoreException {
+	public static TextEdit[] createNLSEdits(IJavaScriptUnit cu, int[] positions) throws CoreException {
 		List result= new ArrayList();
 		try {
 			NLSLine[] allLines= NLSScanner.scan(cu);
@@ -132,7 +132,7 @@ public class NLSUtil {
 		return (TextEdit[])result.toArray(new TextEdit[result.size()]);
 	}
 
-	private static NLSLine scanCurrentLine(ICompilationUnit cu, int position) throws JavaModelException {
+	private static NLSLine scanCurrentLine(IJavaScriptUnit cu, int position) throws JavaScriptModelException {
 		try {
 			Assert.isTrue(position >= 0 && position <= cu.getBuffer().getLength());
 			NLSLine[] allLines= NLSScanner.scan(cu);
@@ -166,7 +166,7 @@ public class NLSUtil {
 	//first, try to find the previous nlsed-string and try putting after its tag
 	//if no such string exists, try finding the next nlsed-string try putting before its tag
 	//otherwise, find the line end and put the tag there
-	private static int computeInsertOffset(NLSElement[] elements, int index, ICompilationUnit cu) throws CoreException {
+	private static int computeInsertOffset(NLSElement[] elements, int index, IJavaScriptUnit cu) throws CoreException {
 		NLSElement previousTagged= findPreviousTagged(index, elements);
 		if (previousTagged != null)
 			return previousTagged.getTagPosition().getOffset() + previousTagged.getTagPosition().getLength();
@@ -196,7 +196,7 @@ public class NLSUtil {
 		return null;
 	}
 
-	private static int findLineEnd(ICompilationUnit cu, int position) throws JavaModelException {
+	private static int findLineEnd(IJavaScriptUnit cu, int position) throws JavaScriptModelException {
 		IBuffer buffer= cu.getBuffer();
 		int length= buffer.getLength();
 		for (int i= position; i < length; i++) {

@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.core.dom.rewrite;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
@@ -232,7 +232,7 @@ public class TokenScanner {
 	}
 
 	public static IStatus createError(int code, String message, Throwable throwable) {
-		return new Status(IStatus.ERROR, JavaCore.PLUGIN_ID, code, message, throwable);
+		return new Status(IStatus.ERROR, JavaScriptCore.PLUGIN_ID, code, message, throwable);
 	}
 
 }

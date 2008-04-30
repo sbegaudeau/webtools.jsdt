@@ -15,9 +15,9 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.IProblemChangedListener;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaUILabelProvider;
@@ -38,7 +38,7 @@ public class JavaEditorErrorTickUpdater implements IProblemChangedListener {
 		fJavaEditor= editor;
 		fLabelProvider=  new JavaUILabelProvider(0, JavaElementImageProvider.SMALL_ICONS);
 		fLabelProvider.addLabelDecorator(new ProblemsLabelDecorator(null));
-		JavaPlugin.getDefault().getProblemMarkerManager().addListener(this);
+		JavaScriptPlugin.getDefault().getProblemMarkerManager().addListener(this);
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +50,7 @@ public class JavaEditorErrorTickUpdater implements IProblemChangedListener {
 
 		IEditorInput input= fJavaEditor.getEditorInput();
 		if (input != null) { // might run async, tests needed
-			IJavaElement jelement= (IJavaElement) input.getAdapter(IJavaElement.class);
+			IJavaScriptElement jelement= (IJavaScriptElement) input.getAdapter(IJavaScriptElement.class);
 			if (jelement != null) {
 				IResource resource= jelement.getResource();
 				for (int i = 0; i < changedResources.length; i++) {
@@ -62,13 +62,13 @@ public class JavaEditorErrorTickUpdater implements IProblemChangedListener {
 		}
 	}
 
-	public void updateEditorImage(IJavaElement jelement) {
+	public void updateEditorImage(IJavaScriptElement jelement) {
 		Image titleImage= fJavaEditor.getTitleImage();
 		if (titleImage == null) {
 			return;
 		}
 		Image newImage;
-		if (jelement instanceof ICompilationUnit && !jelement.getJavaProject().isOnClasspath(jelement))
+		if (jelement instanceof IJavaScriptUnit && !jelement.getJavaScriptProject().isOnIncludepath(jelement))
 			newImage= fLabelProvider.getImage(jelement.getResource());
 		else
 			newImage= fLabelProvider.getImage(jelement);
@@ -90,7 +90,7 @@ public class JavaEditorErrorTickUpdater implements IProblemChangedListener {
 
 	public void dispose() {
 		fLabelProvider.dispose();
-		JavaPlugin.getDefault().getProblemMarkerManager().removeListener(this);
+		JavaScriptPlugin.getDefault().getProblemMarkerManager().removeListener(this);
 	}
 
 

@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
@@ -35,7 +35,7 @@ public class DeclaringTypeVariable extends ConstraintVariable{
 		fMemberBinding= fieldBinding;
 	}
 
-	protected DeclaringTypeVariable(IMethodBinding methodBinding) {
+	protected DeclaringTypeVariable(IFunctionBinding methodBinding) {
 		super(methodBinding.getDeclaringClass());
 		fMemberBinding= methodBinding;
 	}

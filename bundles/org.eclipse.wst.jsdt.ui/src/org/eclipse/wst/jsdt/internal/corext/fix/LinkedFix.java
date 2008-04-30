@@ -17,8 +17,8 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite;
 
@@ -36,10 +36,10 @@ public class LinkedFix extends AbstractFix {
 	}
 	
 	private final IFixRewriteOperation[] fFixRewrites;
-	private final CompilationUnit fCompilationUnit;
+	private final JavaScriptUnit fCompilationUnit;
 	private final LinkedProposalModel fLinkedProposalModel;
 
-	protected LinkedFix(String name, CompilationUnit compilationUnit, IFixRewriteOperation[] fixRewrites) {
+	protected LinkedFix(String name, JavaScriptUnit compilationUnit, IFixRewriteOperation[] fixRewrites) {
 		super(name, compilationUnit, fixRewrites);
 		fCompilationUnit= compilationUnit;
 		fFixRewrites= fixRewrites;
@@ -57,7 +57,7 @@ public class LinkedFix extends AbstractFix {
 		if (fFixRewrites == null || fFixRewrites.length == 0)
 			return null;
 
-		CompilationUnitRewrite cuRewrite= new CompilationUnitRewrite((ICompilationUnit)fCompilationUnit.getJavaElement(), fCompilationUnit);
+		CompilationUnitRewrite cuRewrite= new CompilationUnitRewrite((IJavaScriptUnit)fCompilationUnit.getJavaElement(), fCompilationUnit);
 	
 		List/*<TextEditGroup>*/ groups= new ArrayList();
 

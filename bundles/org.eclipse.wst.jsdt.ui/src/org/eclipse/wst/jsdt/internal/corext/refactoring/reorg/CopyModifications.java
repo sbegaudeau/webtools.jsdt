@@ -29,8 +29,8 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.participants.ResourceModifications;
@@ -52,16 +52,16 @@ public class CopyModifications extends RefactoringModifications {
 		add(resource, args, null);
 	}
 	
-	public void copy(IJavaElement element, CopyArguments javaArgs, CopyArguments resourceArgs) throws CoreException {
+	public void copy(IJavaScriptElement element, CopyArguments javaArgs, CopyArguments resourceArgs) throws CoreException {
 		switch(element.getElementType()) {
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 				copy((IPackageFragmentRoot)element, javaArgs, resourceArgs);
 				break;
-			case IJavaElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				copy((IPackageFragment)element, javaArgs, resourceArgs);
 				break;
-			case IJavaElement.COMPILATION_UNIT:
-				copy((ICompilationUnit)element, javaArgs, resourceArgs);
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
+				copy((IJavaScriptUnit)element, javaArgs, resourceArgs);
 				break;
 			default:
 				add(element, javaArgs, null);
@@ -115,7 +115,7 @@ public class CopyModifications extends RefactoringModifications {
 		}
 	}
 
-	public void copy(ICompilationUnit unit, CopyArguments javaArgs, CopyArguments resourceArgs) throws CoreException {
+	public void copy(IJavaScriptUnit unit, CopyArguments javaArgs, CopyArguments resourceArgs) throws CoreException {
 		add(unit, javaArgs, null);
 		ResourceMapping mapping= JavaElementResourceMapping.create(unit);
 		if (mapping != null) {

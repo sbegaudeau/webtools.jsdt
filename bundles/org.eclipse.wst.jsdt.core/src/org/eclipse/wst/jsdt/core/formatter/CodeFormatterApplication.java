@@ -213,7 +213,7 @@ public class CodeFormatterApplication implements IApplication {
 			String contents = new String(org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileCharContent(file, null));
 			// format the file (the meat and potatoes)
 			doc.set(contents);
-			TextEdit edit = codeFormatter.format(CodeFormatter.K_COMPILATION_UNIT, contents, 0, contents.length(), 0, null);
+			TextEdit edit = codeFormatter.format(CodeFormatter.K_JAVASCRIPT_UNIT, contents, 0, contents.length(), 0, null);
 			if (edit != null) {
 				edit.apply(doc);
 			} else {

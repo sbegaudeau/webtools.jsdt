@@ -15,11 +15,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
 /**
@@ -33,7 +33,7 @@ public class DeleteResourceElementsOperation extends MultiOperation {
  * to delete cannot be <code>null</code> or empty, and must have a corresponding
  * resource.
  */
-protected DeleteResourceElementsOperation(IJavaElement[] elementsToProcess, boolean force) {
+protected DeleteResourceElementsOperation(IJavaScriptElement[] elementsToProcess, boolean force) {
 	super(elementsToProcess, force);
 }
 /**
@@ -42,11 +42,11 @@ protected DeleteResourceElementsOperation(IJavaElement[] elementsToProcess, bool
  * empty.
  */
 private void deletePackageFragment(IPackageFragment frag)
-	throws JavaModelException {
+	throws JavaScriptModelException {
 	IResource res = frag.getResource();
 	if (res != null) {
 		// collect the children to remove
-		IJavaElement[] childrenOfInterest = frag.getChildren();
+		IJavaScriptElement[] childrenOfInterest = frag.getChildren();
 		if (childrenOfInterest.length > 0) {
 			IResource[] resources = new IResource[childrenOfInterest.length];
 			// remove the children
@@ -57,7 +57,7 @@ private void deletePackageFragment(IPackageFragment frag)
 		}
 
 		// Discard non-java resources
-		Object[] nonJavaResources = frag.getNonJavaResources();
+		Object[] nonJavaResources = frag.getNonJavaScriptResources();
 		int actualResourceCount = 0;
 		for (int i = 0, max = nonJavaResources.length; i < max; i++){
 			if (nonJavaResources[i] instanceof IResource) actualResourceCount++;
@@ -73,7 +73,7 @@ private void deletePackageFragment(IPackageFragment frag)
 		try {
 			remainingFiles = ((IContainer) res).members();
 		} catch (CoreException ce) {
-			throw new JavaModelException(ce);
+			throw new JavaScriptModelException(ce);
 		}
 		boolean isEmpty = true;
 		for (int i = 0, length = remainingFiles.length; i < length; i++) {
@@ -103,17 +103,17 @@ protected String getMainTaskName() {
  * @see MultiOperation This method delegate to <code>deleteResource</code> or
  * <code>deletePackageFragment</code> depending on the type of <code>element</code>.
  */
-protected void processElement(IJavaElement element) throws JavaModelException {
+protected void processElement(IJavaScriptElement element) throws JavaScriptModelException {
 	switch (element.getElementType()) {
-		case IJavaElement.CLASS_FILE :
-		case IJavaElement.COMPILATION_UNIT :
+		case IJavaScriptElement.CLASS_FILE :
+		case IJavaScriptElement.JAVASCRIPT_UNIT :
 			deleteResource(element.getResource(), force ? IResource.FORCE | IResource.KEEP_HISTORY : IResource.KEEP_HISTORY);
 			break;
-		case IJavaElement.PACKAGE_FRAGMENT :
+		case IJavaScriptElement.PACKAGE_FRAGMENT :
 			deletePackageFragment((IPackageFragment) element);
 			break;
 		default :
-			throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, element));
+			throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, element));
 	}
 	// ensure the element is closed
 	if (element instanceof IOpenable) {
@@ -123,19 +123,19 @@ protected void processElement(IJavaElement element) throws JavaModelException {
 /**
  * @see MultiOperation
  */
-protected void verify(IJavaElement element) throws JavaModelException {
+protected void verify(IJavaScriptElement element) throws JavaScriptModelException {
 	if (element == null || !element.exists())
-		error(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, element);
+		error(IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST, element);
 
 	int type = element.getElementType();
-	if (type <= IJavaElement.PACKAGE_FRAGMENT_ROOT || type > IJavaElement.COMPILATION_UNIT)
-		error(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, element);
-	else if (type == IJavaElement.PACKAGE_FRAGMENT && element instanceof JarPackageFragment)
-		error(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, element);
+	if (type <= IJavaScriptElement.PACKAGE_FRAGMENT_ROOT || type > IJavaScriptElement.JAVASCRIPT_UNIT)
+		error(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, element);
+	else if (type == IJavaScriptElement.PACKAGE_FRAGMENT && element instanceof JarPackageFragment)
+		error(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, element);
 	IResource resource = element.getResource();
 	if (resource instanceof IFolder) {
 		if (resource.isLinked()) {
-			error(IJavaModelStatusConstants.INVALID_RESOURCE, element);
+			error(IJavaScriptModelStatusConstants.INVALID_RESOURCE, element);
 		}
 	}
 }

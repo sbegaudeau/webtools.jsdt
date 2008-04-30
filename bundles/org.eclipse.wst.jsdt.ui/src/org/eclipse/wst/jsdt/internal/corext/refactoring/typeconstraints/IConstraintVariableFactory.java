@@ -12,7 +12,7 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints;
 
 import org.eclipse.wst.jsdt.core.dom.Expression;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
@@ -22,11 +22,11 @@ public interface IConstraintVariableFactory {
 	ConstraintVariable makeExpressionOrTypeVariable(Expression expression, IContext context);
 	DeclaringTypeVariable makeDeclaringTypeVariable(ITypeBinding memberTypeBinding);
 	DeclaringTypeVariable makeDeclaringTypeVariable(IVariableBinding fieldBinding);
-	DeclaringTypeVariable makeDeclaringTypeVariable(IMethodBinding methodBinding);
-	ParameterTypeVariable makeParameterTypeVariable(IMethodBinding methodBinding, int parameterIndex);
+	DeclaringTypeVariable makeDeclaringTypeVariable(IFunctionBinding methodBinding);
+	ParameterTypeVariable makeParameterTypeVariable(IFunctionBinding methodBinding, int parameterIndex);
 	RawBindingVariable makeRawBindingVariable(ITypeBinding binding);
 	ReturnTypeVariable makeReturnTypeVariable(ReturnStatement returnStatement);
-	ReturnTypeVariable makeReturnTypeVariable(IMethodBinding methodBinding);		
+	ReturnTypeVariable makeReturnTypeVariable(IFunctionBinding methodBinding);		
 	TypeVariable makeTypeVariable(Type type);
 	TypeVariable makeTypeVariable(ITypeBinding binding, String source, CompilationUnitRange range);	
 }

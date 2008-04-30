@@ -20,20 +20,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ICompletionRequestor;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IInitializer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.IWorkingCopy;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -58,7 +58,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 public class BinaryType extends BinaryMember implements IType, SuffixConstants {
 
 	private static final IField[] NO_FIELDS = new IField[0];
-	private static final IMethod[] NO_METHODS = new IMethod[0];
+	private static final IFunction[] NO_METHODS = new IFunction[0];
 	private static final IType[] NO_TYPES = new IType[0];
 	private static final IInitializer[] NO_INITIALIZERS = new IInitializer[0];
 	public static final String EMPTY_JAVADOC = org.eclipse.wst.jsdt.internal.compiler.util.Util.EMPTY_STRING;
@@ -69,7 +69,7 @@ protected BinaryType(JavaElement parent, String name) {
 /*
  * Remove my cached children from the Java Model
  */
-protected void closing(Object info) throws JavaModelException {
+protected void closing(Object info) throws JavaScriptModelException {
 	ClassFileInfo cfi = getClassFileInfo();
 	cfi.removeBinaryChildren();
 }
@@ -78,7 +78,7 @@ protected void closing(Object info) throws JavaModelException {
  * @see IType#codeComplete(char[], int, int, char[][], char[][], int[], boolean, ICompletionRequestor)
  * @deprecated
  */
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,ICompletionRequestor requestor) throws JavaModelException {
+public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,ICompletionRequestor requestor) throws JavaScriptModelException {
 	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, requestor, DefaultWorkingCopyOwner.PRIMARY);
 }
 
@@ -86,7 +86,7 @@ public void codeComplete(char[] snippet,int insertion,int position,char[][] loca
  * @see IType#codeComplete(char[], int, int, char[][], char[][], int[], boolean, ICompletionRequestor, WorkingCopyOwner)
  * @deprecated
  */
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,ICompletionRequestor requestor, WorkingCopyOwner owner) throws JavaModelException {
+public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,ICompletionRequestor requestor, WorkingCopyOwner owner) throws JavaScriptModelException {
 	if (requestor == null) {
 		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
 	}
@@ -95,18 +95,18 @@ public void codeComplete(char[] snippet,int insertion,int position,char[][] loca
 /*
  * @see IType#codeComplete(char[], int, int, char[][], char[][], int[], boolean, ICompletionRequestor)
  */
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,CompletionRequestor requestor) throws JavaModelException {
+public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,CompletionRequestor requestor) throws JavaScriptModelException {
 	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, requestor, DefaultWorkingCopyOwner.PRIMARY);
 }
 
 /*
  * @see IType#codeComplete(char[], int, int, char[][], char[][], int[], boolean, ICompletionRequestor, WorkingCopyOwner)
  */
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,CompletionRequestor requestor, WorkingCopyOwner owner) throws JavaModelException {
+public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,CompletionRequestor requestor, WorkingCopyOwner owner) throws JavaScriptModelException {
 	if (requestor == null) {
 		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
 	}
-	JavaProject project = (JavaProject) getJavaProject();
+	JavaProject project = (JavaProject) getJavaScriptProject();
 	SearchableEnvironment environment = newSearchableNameEnvironment(owner);
 	CompletionEngine engine = new CompletionEngine(environment, requestor, project.getOptions(true), project);
 
@@ -136,40 +136,40 @@ public void codeComplete(char[] snippet,int insertion,int position,char[][] loca
 }
 
 /*
- * @see IType#createField(String, IJavaElement, boolean, IProgressMonitor)
+ * @see IType#createField(String, IJavaScriptElement, boolean, IProgressMonitor)
  */
-public IField createField(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
+public IField createField(String contents, IJavaScriptElement sibling, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
+	throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.READ_ONLY, this));
 }
 /*
- * @see IType#createInitializer(String, IJavaElement, IProgressMonitor)
+ * @see IType#createInitializer(String, IJavaScriptElement, IProgressMonitor)
  */
-public IInitializer createInitializer(String contents, IJavaElement sibling, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
+public IInitializer createInitializer(String contents, IJavaScriptElement sibling, IProgressMonitor monitor) throws JavaScriptModelException {
+	throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.READ_ONLY, this));
 }
 /*
- * @see IType#createMethod(String, IJavaElement, boolean, IProgressMonitor)
+ * @see IType#createMethod(String, IJavaScriptElement, boolean, IProgressMonitor)
  */
-public IMethod createMethod(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
+public IFunction createMethod(String contents, IJavaScriptElement sibling, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
+	throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.READ_ONLY, this));
 }
 /*
- * @see IType#createType(String, IJavaElement, boolean, IProgressMonitor)
+ * @see IType#createType(String, IJavaScriptElement, boolean, IProgressMonitor)
  */
-public IType createType(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
+public IType createType(String contents, IJavaScriptElement sibling, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
+	throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.READ_ONLY, this));
 }
 public boolean equals(Object o) {
 	if (!(o instanceof BinaryType)) return false;
 	return super.equals(o);
 }
 /*
- * @see IType#findMethods(IMethod)
+ * @see IType#findMethods(IFunction)
  */
-public IMethod[] findMethods(IMethod method) {
+public IFunction[] findMethods(IFunction method) {
 	try {
-		return findMethods(method, getMethods());
-	} catch (JavaModelException e) {
+		return findMethods(method, getFunctions());
+	} catch (JavaScriptModelException e) {
 		// if type doesn't exist, no matching method can exist
 		return null;
 	}
@@ -177,12 +177,12 @@ public IMethod[] findMethods(IMethod method) {
 /*
  * @see IParent#getChildren()
  */
-public IJavaElement[] getChildren() throws JavaModelException {
+public IJavaScriptElement[] getChildren() throws JavaScriptModelException {
 	ClassFileInfo cfi = getClassFileInfo();
 	return cfi.binaryChildren;
 }
-public IJavaElement[] getChildrenForCategory(String category) throws JavaModelException {
-	IJavaElement[] children = getChildren();
+public IJavaScriptElement[] getChildrenForCategory(String category) throws JavaScriptModelException {
+	IJavaScriptElement[] children = getChildren();
 	int length = children.length;
 	if (length == 0) return children;
 	SourceMapper mapper= getSourceMapper();
@@ -191,11 +191,11 @@ public IJavaElement[] getChildrenForCategory(String category) throws JavaModelEx
 		((ClassFile)getClassFile()).getBuffer();
 
 		HashMap categories = mapper.categories;
-		IJavaElement[] result = new IJavaElement[length];
+		IJavaScriptElement[] result = new IJavaScriptElement[length];
 		int index = 0;
 		if (categories != null) {
 			for (int i = 0; i < length; i++) {
-				IJavaElement child = children[i];
+				IJavaScriptElement child = children[i];
 				String[] cats = (String[]) categories.get(child);
 				if (cats != null) {
 					for (int j = 0, length2 = cats.length; j < length2; j++) {
@@ -208,12 +208,12 @@ public IJavaElement[] getChildrenForCategory(String category) throws JavaModelEx
 			}
 		}
 		if (index < length)
-			System.arraycopy(result, 0, result = new IJavaElement[index], 0, index);
+			System.arraycopy(result, 0, result = new IJavaScriptElement[index], 0, index);
 		return result;
 	}
 	return NO_ELEMENTS;
 }
-protected ClassFileInfo getClassFileInfo() throws JavaModelException {
+protected ClassFileInfo getClassFileInfo() throws JavaScriptModelException {
 	ClassFile cf = (ClassFile)this.parent;
 	return (ClassFileInfo) cf.getElementInfo();
 }
@@ -238,7 +238,7 @@ public IType getDeclaringType() {
 			}
 
 			return getPackageFragment().getClassFile(new String(enclosingTypeName) + SUFFIX_STRING_java).getType();
-		} catch (JavaModelException npe) {
+		} catch (JavaScriptModelException npe) {
 			return null;
 		}
 	} else {
@@ -268,14 +268,14 @@ public IType getDeclaringType() {
 		}
 	}
 }
-public Object getElementInfo(IProgressMonitor monitor) throws JavaModelException {
+public Object getElementInfo(IProgressMonitor monitor) throws JavaScriptModelException {
 	JavaModelManager manager = JavaModelManager.getJavaModelManager();
 	Object info = manager.getInfo(this);
 	if (info != null && info != JavaModelCache.NON_EXISTING_JAR_TYPE_INFO) return info;
 	return openWhenClosed(createElementInfo(), monitor);
 }
 /*
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public int getElementType() {
 	return TYPE;
@@ -289,7 +289,7 @@ public IField getField(String fieldName) {
 /*
  * @see IType#getFields()
  */
-public IField[] getFields() throws JavaModelException {
+public IField[] getFields() throws JavaScriptModelException {
 	ArrayList list = getChildrenOfType(FIELD);
 	int size;
 	if ((size = list.size()) == 0) {
@@ -303,7 +303,7 @@ public IField[] getFields() throws JavaModelException {
 /*
  * @see IMember#getFlags()
  */
-public int getFlags() throws JavaModelException {
+public int getFlags() throws JavaScriptModelException {
 	IBinaryType info = (IBinaryType) getElementInfo();
 	return info.getModifiers();
 }
@@ -319,7 +319,7 @@ public String getFullyQualifiedName() {
 public String getFullyQualifiedName(char enclosingTypeSeparator) {
 	try {
 		return getFullyQualifiedName(enclosingTypeSeparator, false/*don't show parameters*/);
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// exception thrown only when showing parameters
 		return null;
 	}
@@ -328,14 +328,14 @@ public String getFullyQualifiedName(char enclosingTypeSeparator) {
 /*
  * @see IType#getFullyQualifiedParameterizedName()
  */
-public String getFullyQualifiedParameterizedName() throws JavaModelException {
+public String getFullyQualifiedParameterizedName() throws JavaScriptModelException {
 	return getFullyQualifiedName('.', true/*show parameters*/);
 }
 
 /*
  * @see JavaElement
  */
-public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner workingCopyOwner) {
+public IJavaScriptElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner workingCopyOwner) {
 	switch (token.charAt(0)) {
 		case JEM_COUNT:
 			return getHandleUpdatingCountFromMemento(memento, workingCopyOwner);
@@ -376,7 +376,7 @@ public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento,
 			}
 			String[] parameters = new String[params.size()];
 			params.toArray(parameters);
-			JavaElement method = (JavaElement)getMethod(selector, parameters);
+			JavaElement method = (JavaElement)getFunction(selector, parameters);
 			switch (token.charAt(0)) {
 				case JEM_TYPE:
 				case JEM_TYPE_PARAMETER:
@@ -426,25 +426,43 @@ public IInitializer getInitializer(int count) {
 public IInitializer[] getInitializers() {
 	return NO_INITIALIZERS;
 }
-public String getKey(boolean forceOpen) throws JavaModelException {
+public String getKey(boolean forceOpen) throws JavaScriptModelException {
 	return getKey(this, forceOpen);
 }
 /*
  * @see IType#getMethod(String name, String[] parameterTypeSignatures)
  */
-public IMethod getMethod(String selector, String[] parameterTypeSignatures) {
+/**
+ * @deprecated Use {@link #getFunction(String,String[])} instead
+ */
+public IFunction getMethod(String selector, String[] parameterTypeSignatures) {
+	return getFunction(selector, parameterTypeSignatures);
+}
+/*
+ * @see IType#getMethod(String name, String[] parameterTypeSignatures)
+ */
+public IFunction getFunction(String selector, String[] parameterTypeSignatures) {
 	return new BinaryMethod(this, selector, parameterTypeSignatures);
 }
 /*
  * @see IType#getMethods()
  */
-public IMethod[] getMethods() throws JavaModelException {
+/**
+ * @deprecated Use {@link #getFunctions()} instead
+ */
+public IFunction[] getMethods() throws JavaScriptModelException {
+	return getFunctions();
+}
+/*
+ * @see IType#getMethods()
+ */
+public IFunction[] getFunctions() throws JavaScriptModelException {
 	ArrayList list = getChildrenOfType(METHOD);
 	int size;
 	if ((size = list.size()) == 0) {
 		return NO_METHODS;
 	} else {
-		IMethod[] array= new IMethod[size];
+		IFunction[] array= new IFunction[size];
 		list.toArray(array);
 		return array;
 	}
@@ -453,9 +471,9 @@ public IMethod[] getMethods() throws JavaModelException {
  * @see IType#getPackageFragment()
  */
 public IPackageFragment getPackageFragment() {
-	IJavaElement parentElement = this.parent;
+	IJavaScriptElement parentElement = this.parent;
 	while (parentElement != null) {
-		if (parentElement.getElementType() == IJavaElement.PACKAGE_FRAGMENT) {
+		if (parentElement.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT) {
 			return (IPackageFragment)parentElement;
 		}
 		else {
@@ -470,7 +488,7 @@ public IPackageFragment getPackageFragment() {
  * @see IType#getSuperclassTypeSignature()
  * @since 3.0
  */
-public String getSuperclassTypeSignature() throws JavaModelException {
+public String getSuperclassTypeSignature() throws JavaScriptModelException {
 	IBinaryType info = (IBinaryType) getElementInfo();
 	char[] genericSignature = info.getGenericSignature();
 	if (genericSignature != null) {
@@ -508,7 +526,7 @@ public String getSourceFileName(IBinaryType info) {
 	if (info == null) {
 		try {
 			info = (IBinaryType) getElementInfo();
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// default to using the outer most declaring type name
 			IType type = this;
 			IType enclosingType = getDeclaringType();
@@ -525,7 +543,7 @@ public String getSourceFileName(IBinaryType info) {
 /*
  * @see IType#getSuperclassName()
  */
-public String getSuperclassName() throws JavaModelException {
+public String getSuperclassName() throws JavaScriptModelException {
 	IBinaryType info = (IBinaryType) getElementInfo();
 	char[] superclassName = info.getSuperclassName();
 	if (superclassName == null) {
@@ -536,7 +554,7 @@ public String getSuperclassName() throws JavaModelException {
 /*
  * @see IType#getSuperInterfaceNames()
  */
-public String[] getSuperInterfaceNames() throws JavaModelException {
+public String[] getSuperInterfaceNames() throws JavaScriptModelException {
 	IBinaryType info = (IBinaryType) getElementInfo();
 	char[][] names= info.getInterfaceNames();
 	int length;
@@ -555,7 +573,7 @@ public String[] getSuperInterfaceNames() throws JavaModelException {
  * @see IType#getSuperInterfaceTypeSignatures()
  * @since 3.0
  */
-public String[] getSuperInterfaceTypeSignatures() throws JavaModelException {
+public String[] getSuperInterfaceTypeSignatures() throws JavaScriptModelException {
 	IBinaryType info = (IBinaryType) getElementInfo();
 	char[] genericSignature = info.getGenericSignature();
 	if (genericSignature != null) {
@@ -604,7 +622,7 @@ public String[] getSuperInterfaceTypeSignatures() throws JavaModelException {
 	}
 }
 
-public ITypeParameter[] getTypeParameters() throws JavaModelException {
+public ITypeParameter[] getTypeParameters() throws JavaScriptModelException {
 	String[] typeParameterSignatures = getTypeParameterSignatures();
 	int length = typeParameterSignatures.length;
 	if (length == 0) return TypeParameter.NO_TYPE_PARAMETERS;
@@ -620,7 +638,7 @@ public ITypeParameter[] getTypeParameters() throws JavaModelException {
  * @see IType#getTypeParameterSignatures()
  * @since 3.0
  */
-public String[] getTypeParameterSignatures() throws JavaModelException {
+public String[] getTypeParameterSignatures() throws JavaScriptModelException {
 	IBinaryType info = (IBinaryType) getElementInfo();
 	char[] genericSignature = info.getGenericSignature();
 	if (genericSignature == null)
@@ -653,7 +671,7 @@ public String getTypeQualifiedName() {
 public String getTypeQualifiedName(char enclosingTypeSeparator) {
 	try {
 		return getTypeQualifiedName(enclosingTypeSeparator, false/*don't show parameters*/);
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// exception thrown only when showing parameters
 		return null;
 	}
@@ -661,7 +679,7 @@ public String getTypeQualifiedName(char enclosingTypeSeparator) {
 /*
  * @see IType#getTypes()
  */
-public IType[] getTypes() throws JavaModelException {
+public IType[] getTypes() throws JavaScriptModelException {
 	ArrayList list = getChildrenOfType(TYPE);
 	int size;
 	if ((size = list.size()) == 0) {
@@ -676,14 +694,14 @@ public IType[] getTypes() throws JavaModelException {
 /*
  * @see IType#isAnonymous()
  */
-public boolean isAnonymous() throws JavaModelException {
+public boolean isAnonymous() throws JavaScriptModelException {
 	IBinaryType info = (IBinaryType) getElementInfo();
 	return info.isAnonymous();
 }
 /*
  * @see IType#isClass()
  */
-public boolean isClass() throws JavaModelException {
+public boolean isClass() throws JavaScriptModelException {
 	IBinaryType info = (IBinaryType) getElementInfo();
 	return TypeDeclaration.kind(info.getModifiers()) == TypeDeclaration.CLASS_DECL;
 
@@ -693,7 +711,7 @@ public boolean isClass() throws JavaModelException {
  * @see IType#isEnum()
  * @since 3.0
  */
-public boolean isEnum() throws JavaModelException {
+public boolean isEnum() throws JavaScriptModelException {
 	IBinaryType info = (IBinaryType) getElementInfo();
 	return TypeDeclaration.kind(info.getModifiers()) == TypeDeclaration.ENUM_DECL;
 }
@@ -701,7 +719,7 @@ public boolean isEnum() throws JavaModelException {
 /*
  * @see IType#isInterface()
  */
-public boolean isInterface() throws JavaModelException {
+public boolean isInterface() throws JavaScriptModelException {
 	IBinaryType info = (IBinaryType) getElementInfo();
 	switch (TypeDeclaration.kind(info.getModifiers())) {
 		case TypeDeclaration.INTERFACE_DECL:
@@ -714,7 +732,7 @@ public boolean isInterface() throws JavaModelException {
  * @see IType#isAnnotation()
  * @since 3.0
  */
-public boolean isAnnotation() throws JavaModelException {
+public boolean isAnnotation() throws JavaScriptModelException {
 	IBinaryType info = (IBinaryType) getElementInfo();
 	return TypeDeclaration.kind(info.getModifiers()) == TypeDeclaration.ANNOTATION_TYPE_DECL;
 }
@@ -722,14 +740,14 @@ public boolean isAnnotation() throws JavaModelException {
 /*
  * @see IType#isLocal()
  */
-public boolean isLocal() throws JavaModelException {
+public boolean isLocal() throws JavaScriptModelException {
 	IBinaryType info = (IBinaryType) getElementInfo();
 	return info.isLocal();
 }
 /*
  * @see IType#isMember()
  */
-public boolean isMember() throws JavaModelException {
+public boolean isMember() throws JavaScriptModelException {
 	IBinaryType info = (IBinaryType) getElementInfo();
 	return info.isMember();
 }
@@ -742,28 +760,28 @@ public boolean isResolved() {
 /*
  * @see IType
  */
-public ITypeHierarchy loadTypeHierachy(InputStream input, IProgressMonitor monitor) throws JavaModelException {
+public ITypeHierarchy loadTypeHierachy(InputStream input, IProgressMonitor monitor) throws JavaScriptModelException {
 	return loadTypeHierachy(input, DefaultWorkingCopyOwner.PRIMARY, monitor);
 }
 /*
  * @see IType
  */
-public ITypeHierarchy loadTypeHierachy(InputStream input, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException {
+public ITypeHierarchy loadTypeHierachy(InputStream input, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException {
 	return TypeHierarchy.load(this, input, owner);
 }
 /*
  * @see IType#newSupertypeHierarchy(IProgressMonitor monitor)
  */
-public ITypeHierarchy newSupertypeHierarchy(IProgressMonitor monitor) throws JavaModelException {
+public ITypeHierarchy newSupertypeHierarchy(IProgressMonitor monitor) throws JavaScriptModelException {
 	return this.newSupertypeHierarchy(DefaultWorkingCopyOwner.PRIMARY, monitor);
 }
 /*
- *@see IType#newSupertypeHierarchy(ICompilationUnit[], IProgressMonitor monitor)
+ *@see IType#newSupertypeHierarchy(IJavaScriptUnit[], IProgressMonitor monitor)
  */
 public ITypeHierarchy newSupertypeHierarchy(
-	ICompilationUnit[] workingCopies,
+	IJavaScriptUnit[] workingCopies,
 	IProgressMonitor monitor)
-	throws JavaModelException {
+	throws JavaScriptModelException {
 
 	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), false);
 	op.runOperation(monitor);
@@ -773,7 +791,7 @@ public ITypeHierarchy newSupertypeHierarchy(
  * @param workingCopies the working copies that take precedence over their original compilation units
  * @param monitor the given progress monitor
  * @return a type hierarchy for this type containing this type and all of its supertypes
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *		exception occurs while accessing its corresponding resource.
  *
  * @see IType#newSupertypeHierarchy(IWorkingCopy[], IProgressMonitor)
@@ -782,14 +800,14 @@ public ITypeHierarchy newSupertypeHierarchy(
 public ITypeHierarchy newSupertypeHierarchy(
 	IWorkingCopy[] workingCopies,
 	IProgressMonitor monitor)
-	throws JavaModelException {
+	throws JavaScriptModelException {
 
-	ICompilationUnit[] copies;
+	IJavaScriptUnit[] copies;
 	if (workingCopies == null) {
 		copies = null;
 	} else {
 		int length = workingCopies.length;
-		System.arraycopy(workingCopies, 0, copies = new ICompilationUnit[length], 0, length);
+		System.arraycopy(workingCopies, 0, copies = new IJavaScriptUnit[length], 0, length);
 	}
 	return newSupertypeHierarchy(copies, monitor);
 }
@@ -799,40 +817,40 @@ public ITypeHierarchy newSupertypeHierarchy(
 public ITypeHierarchy newSupertypeHierarchy(
 	WorkingCopyOwner owner,
 	IProgressMonitor monitor)
-	throws JavaModelException {
+	throws JavaScriptModelException {
 
-	ICompilationUnit[] workingCopies = JavaModelManager.getJavaModelManager().getWorkingCopies(owner, true/*add primary working copies*/);
+	IJavaScriptUnit[] workingCopies = JavaModelManager.getJavaModelManager().getWorkingCopies(owner, true/*add primary working copies*/);
 	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), false);
 	op.runOperation(monitor);
 	return op.getResult();
 }
 /*
- * @see IType#newTypeHierarchy(IJavaProject, IProgressMonitor)
+ * @see IType#newTypeHierarchy(IJavaScriptProject, IProgressMonitor)
  */
-public ITypeHierarchy newTypeHierarchy(IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
+public ITypeHierarchy newTypeHierarchy(IJavaScriptProject project, IProgressMonitor monitor) throws JavaScriptModelException {
 	return newTypeHierarchy(project, DefaultWorkingCopyOwner.PRIMARY, monitor);
 }
 /*
- * @see IType#newTypeHierarchy(IJavaProject, WorkingCopyOwner, IProgressMonitor)
+ * @see IType#newTypeHierarchy(IJavaScriptProject, WorkingCopyOwner, IProgressMonitor)
  */
-public ITypeHierarchy newTypeHierarchy(IJavaProject project, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException {
+public ITypeHierarchy newTypeHierarchy(IJavaScriptProject project, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException {
 	if (project == null) {
 		throw new IllegalArgumentException(Messages.hierarchy_nullProject);
 	}
-	ICompilationUnit[] workingCopies = JavaModelManager.getJavaModelManager().getWorkingCopies(owner, true/*add primary working copies*/);
-	ICompilationUnit[] projectWCs = null;
+	IJavaScriptUnit[] workingCopies = JavaModelManager.getJavaModelManager().getWorkingCopies(owner, true/*add primary working copies*/);
+	IJavaScriptUnit[] projectWCs = null;
 	if (workingCopies != null) {
 		int length = workingCopies.length;
-		projectWCs = new ICompilationUnit[length];
+		projectWCs = new IJavaScriptUnit[length];
 		int index = 0;
 		for (int i = 0; i < length; i++) {
-			ICompilationUnit wc = workingCopies[i];
-			if (project.equals(wc.getJavaProject())) {
+			IJavaScriptUnit wc = workingCopies[i];
+			if (project.equals(wc.getJavaScriptProject())) {
 				projectWCs[index++] = wc;
 			}
 		}
 		if (index != length) {
-			System.arraycopy(projectWCs, 0, projectWCs = new ICompilationUnit[index], 0, index);
+			System.arraycopy(projectWCs, 0, projectWCs = new IJavaScriptUnit[index], 0, index);
 		}
 	}
 	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(
@@ -845,23 +863,23 @@ public ITypeHierarchy newTypeHierarchy(IJavaProject project, WorkingCopyOwner ow
 }
 /**
  * @param monitor the given progress monitor
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *		exception occurs while accessing its corresponding resource.
  * @return a type hierarchy for this type containing
  *
  * @see IType#newTypeHierarchy(IProgressMonitor monitor)
  * @deprecated
  */
-public ITypeHierarchy newTypeHierarchy(IProgressMonitor monitor) throws JavaModelException {
+public ITypeHierarchy newTypeHierarchy(IProgressMonitor monitor) throws JavaScriptModelException {
 	return newTypeHierarchy((IWorkingCopy[])null, monitor);
 }
 /*
- * @see IType#newTypeHierarchy(ICompilationUnit[], IProgressMonitor)
+ * @see IType#newTypeHierarchy(IJavaScriptUnit[], IProgressMonitor)
  */
 public ITypeHierarchy newTypeHierarchy(
-	ICompilationUnit[] workingCopies,
+	IJavaScriptUnit[] workingCopies,
 	IProgressMonitor monitor)
-	throws JavaModelException {
+	throws JavaScriptModelException {
 
 	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), true);
 	op.runOperation(monitor);
@@ -874,14 +892,14 @@ public ITypeHierarchy newTypeHierarchy(
 public ITypeHierarchy newTypeHierarchy(
 	IWorkingCopy[] workingCopies,
 	IProgressMonitor monitor)
-	throws JavaModelException {
+	throws JavaScriptModelException {
 
-	ICompilationUnit[] copies;
+	IJavaScriptUnit[] copies;
 	if (workingCopies == null) {
 		copies = null;
 	} else {
 		int length = workingCopies.length;
-		System.arraycopy(workingCopies, 0, copies = new ICompilationUnit[length], 0, length);
+		System.arraycopy(workingCopies, 0, copies = new IJavaScriptUnit[length], 0, length);
 	}
 	return newTypeHierarchy(copies, monitor);
 }
@@ -891,9 +909,9 @@ public ITypeHierarchy newTypeHierarchy(
 public ITypeHierarchy newTypeHierarchy(
 	WorkingCopyOwner owner,
 	IProgressMonitor monitor)
-	throws JavaModelException {
+	throws JavaScriptModelException {
 
-	ICompilationUnit[] workingCopies = JavaModelManager.getJavaModelManager().getWorkingCopies(owner, true/*add primary working copies*/);
+	IJavaScriptUnit[] workingCopies = JavaModelManager.getJavaModelManager().getWorkingCopies(owner, true/*add primary working copies*/);
 	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), true);
 	op.runOperation(monitor);
 	return op.getResult();
@@ -973,8 +991,8 @@ protected void toStringInfo(int tab, StringBuffer buffer, Object info, boolean s
 				buffer.append("class "); //$NON-NLS-1$
 			}
 			toStringName(buffer);
-		} catch (JavaModelException e) {
-			buffer.append("<JavaModelException in toString of " + getElementName()); //$NON-NLS-1$
+		} catch (JavaScriptModelException e) {
+			buffer.append("<JavaScriptModelException in toString of " + getElementName()); //$NON-NLS-1$
 		}
 	}
 }
@@ -984,11 +1002,11 @@ protected void toStringName(StringBuffer buffer) {
 	else
 		buffer.append("<anonymous>"); //$NON-NLS-1$
 }
-public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelException {
+public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaScriptModelException {
 	final String contents = getJavadocContents(monitor);
 	if (contents == null) return null;
 	final int indexOfStartOfClassData = contents.indexOf(JavadocConstants.START_OF_CLASS_DATA);
-	if (indexOfStartOfClassData == -1) throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.UNKNOWN_JAVADOC_FORMAT, this));
+	if (indexOfStartOfClassData == -1) throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.UNKNOWN_JSDOC_FORMAT, this));
 	int indexOfNextSummary = contents.indexOf(JavadocConstants.NESTED_CLASS_SUMMARY);
 	if (this.isEnum() && indexOfNextSummary == -1) {
 		// try to find enum constant summary start
@@ -1019,7 +1037,7 @@ public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelExcep
 		indexOfNextSummary = contents.indexOf(JavadocConstants.END_OF_CLASS_DATA);
 	}
 	if (indexOfNextSummary == -1) {
-		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.UNKNOWN_JAVADOC_FORMAT, this));
+		throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.UNKNOWN_JSDOC_FORMAT, this));
 	}
 	/*
 	 * Check out to cut off the hierarchy see 119844
@@ -1035,8 +1053,8 @@ public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelExcep
 	}
 	return contents.substring(start, indexOfNextSummary);
 }
-public String getJavadocContents(IProgressMonitor monitor) throws JavaModelException {
-	PerProjectInfo projectInfo = JavaModelManager.getJavaModelManager().getPerProjectInfoCheckExistence(this.getJavaProject().getProject());
+public String getJavadocContents(IProgressMonitor monitor) throws JavaScriptModelException {
+	PerProjectInfo projectInfo = JavaModelManager.getJavaModelManager().getPerProjectInfoCheckExistence(this.getJavaScriptProject().getProject());
 	String cachedJavadoc = null;
 	synchronized (projectInfo.javadocCache) {
 		cachedJavadoc = (String) projectInfo.javadocCache.get(this);

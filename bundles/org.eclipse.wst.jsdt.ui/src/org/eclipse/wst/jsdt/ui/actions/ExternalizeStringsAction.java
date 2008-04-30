@@ -44,13 +44,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSElement;
@@ -61,7 +61,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
@@ -71,7 +71,7 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.ListDialog;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.RefactoringStarter;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.nls.ExternalizeWizard;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 /**
  * Externalizes the strings of a compilation unit or find all strings
@@ -79,7 +79,7 @@ import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
  * gathers additional information to externalize the strings.
  * <p>
  * The action is applicable to structured selections containing elements
- * of type <code>ICompilationUnit</code>, <code>IType</code>, <code>IJavaProject</code>,
+ * of type <code>IJavaScriptUnit</code>, <code>IType</code>, <code>IJavaScriptProject</code>,
  * <code>IPackageFragment</code>, and <code>IPackageFragmentRoot</code>
  * 
  * <p>
@@ -129,9 +129,9 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isExternalizeStringsAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			setEnabled(false);//no UI - happens on selection changes
 		}
 	}
@@ -140,17 +140,17 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 	 * Method declared on SelectionDispatchAction.
 	 */
 	public void run(ITextSelection selection) {
-		IJavaElement element= SelectionConverter.getInput(fEditor);
-		if (!(element instanceof ICompilationUnit))
+		IJavaScriptElement element= SelectionConverter.getInput(fEditor);
+		if (!(element instanceof IJavaScriptUnit))
 			return;
-		run((ICompilationUnit)element);
+		run((IJavaScriptUnit)element);
 	}
 	
 	/* (non-Javadoc)
 	 * Method declared on SelectionDispatchAction.
 	 */
 	public void run(IStructuredSelection selection) {
-		ICompilationUnit unit= getCompilationUnit(selection);
+		IJavaScriptUnit unit= getCompilationUnit(selection);
 		if (unit != null) {//run on cu 
 			run(unit);
 		} else {
@@ -173,7 +173,7 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 	/**
 	 * Note: this method is for internal use only. Clients should not call this method.
 	 */
-	public void run(final ICompilationUnit unit) {
+	public void run(final IJavaScriptUnit unit) {
 		if (!ActionUtil.isEditable(fEditor, getShell(), unit))
 			return;
 		
@@ -185,21 +185,21 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 						if (refactoring != null)
 							new RefactoringStarter().activate(refactoring, new ExternalizeWizard(refactoring), getShell(), ActionMessages.ExternalizeStringsAction_dialog_title, RefactoringSaveHelper.SAVE_NON_JAVA_UPDATES); 
 					}
-				} catch(JavaModelException e) {
+				} catch(JavaScriptModelException e) {
 					ExceptionHandler.handle(e, getShell(), ActionMessages.ExternalizeStringsAction_dialog_title, ActionMessages.ExternalizeStringsAction_dialog_message); 
 				}
 			}
 		});
 	}
 
-	private static ICompilationUnit getCompilationUnit(IStructuredSelection selection) {
+	private static IJavaScriptUnit getCompilationUnit(IStructuredSelection selection) {
 		if (selection.isEmpty() || selection.size() != 1)
 			return null;
 		Object first= selection.getFirstElement();
-		if (first instanceof ICompilationUnit) 
-			return (ICompilationUnit) first;
+		if (first instanceof IJavaScriptUnit) 
+			return (IJavaScriptUnit) first;
 		if (first instanceof IType)
-			return ((IType) first).getCompilationUnit();
+			return ((IType) first).getJavaScriptUnit();
 		return null;
 	}
 	
@@ -226,23 +226,23 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 			List result= new ArrayList();	
 			for (Iterator iter= elements.iterator(); iter.hasNext();) {
 				Object obj= iter.next();
-				if (obj instanceof IJavaElement) {
-					IJavaElement element= (IJavaElement) obj;
+				if (obj instanceof IJavaScriptElement) {
+					IJavaScriptElement element= (IJavaScriptElement) obj;
 					int elementType= element.getElementType();
 					
-					if (elementType == IJavaElement.PACKAGE_FRAGMENT) {
+					if (elementType == IJavaScriptElement.PACKAGE_FRAGMENT) {
 						result.addAll(analyze((IPackageFragment) element, new SubProgressMonitor(pm, 1)));
-					} else if (elementType == IJavaElement.PACKAGE_FRAGMENT_ROOT) {
+					} else if (elementType == IJavaScriptElement.PACKAGE_FRAGMENT_ROOT) {
 						IPackageFragmentRoot root= (IPackageFragmentRoot)element;
 						if (!root.isExternal() && !ReorgUtils.isClassFolder(root)) {
 							result.addAll(analyze((IPackageFragmentRoot) element, new SubProgressMonitor(pm, 1)));
 						} else {
 							pm.worked(1);
 						}
-					} else if (elementType == IJavaElement.JAVA_PROJECT) {
-						result.addAll(analyze((IJavaProject) element, new SubProgressMonitor(pm, 1)));
-					} else if (elementType == IJavaElement.COMPILATION_UNIT) {
-						ICompilationUnit cu= (ICompilationUnit)element;
+					} else if (elementType == IJavaScriptElement.JAVASCRIPT_PROJECT) {
+						result.addAll(analyze((IJavaScriptProject) element, new SubProgressMonitor(pm, 1)));
+					} else if (elementType == IJavaScriptElement.JAVASCRIPT_UNIT) {
+						IJavaScriptUnit cu= (IJavaScriptUnit)element;
 						if (cu.exists()) {
 							NonNLSElement nlsElement= analyze(cu);
 							if (nlsElement != null) {
@@ -250,9 +250,9 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 							}							
 						}
 						pm.worked(1);
-					} else if (elementType == IJavaElement.TYPE) {
+					} else if (elementType == IJavaScriptElement.TYPE) {
 						IType type= (IType)element;
-						ICompilationUnit cu= type.getCompilationUnit();
+						IJavaScriptUnit cu= type.getJavaScriptUnit();
 						if (cu != null && cu.exists()) {
 							NonNLSElement nlsElement= analyze(cu);
 							if (nlsElement != null) {
@@ -298,7 +298,7 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 			if (pack == null)
 				return new ArrayList(0);
 				
-			ICompilationUnit[] cus= pack.getCompilationUnits();
+			IJavaScriptUnit[] cus= pack.getJavaScriptUnits();
 	
 			pm.beginTask("", cus.length); //$NON-NLS-1$
 			pm.setTaskName(pack.getElementName());
@@ -324,13 +324,13 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 	 */	
 	private List analyze(IPackageFragmentRoot sourceFolder, IProgressMonitor pm) throws CoreException {
 		try{
-			IJavaElement[] children= sourceFolder.getChildren();
+			IJavaScriptElement[] children= sourceFolder.getChildren();
 			pm.beginTask("", children.length); //$NON-NLS-1$
 			pm.setTaskName(sourceFolder.getElementName());
 			List result= new ArrayList();
 			for (int i= 0; i < children.length; i++) {
-				IJavaElement iJavaElement= children[i];
-				if (iJavaElement.getElementType() == IJavaElement.PACKAGE_FRAGMENT){
+				IJavaScriptElement iJavaElement= children[i];
+				if (iJavaElement.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT){
 					IPackageFragment pack= (IPackageFragment)iJavaElement;
 					if (! pack.isReadOnly())
 						result.addAll(analyze(pack, new SubProgressMonitor(pm, 1)));
@@ -348,7 +348,7 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 	/*
 	 * returns List of Strings
 	 */
-	private List analyze(IJavaProject project, IProgressMonitor pm) throws CoreException {
+	private List analyze(IJavaScriptProject project, IProgressMonitor pm) throws CoreException {
 		try{
 			IPackageFragment[] packs= project.getPackageFragments();
 			pm.beginTask("", packs.length); //$NON-NLS-1$
@@ -374,7 +374,7 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 		return found;
 	} 
 
-	private NonNLSElement analyze(ICompilationUnit cu) throws CoreException {
+	private NonNLSElement analyze(IJavaScriptUnit cu) throws CoreException {
 		int count= countNonExternalizedStrings(cu);
 		if (count == 0)
 			return null;
@@ -382,7 +382,7 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 			return new NonNLSElement(cu, count);
 	}
 	
-	private int countNonExternalizedStrings(ICompilationUnit cu) throws CoreException {
+	private int countNonExternalizedStrings(IJavaScriptUnit cu) throws CoreException {
 		try{
 			NLSLine[] lines= NLSScanner.scan(cu);
 			int result= 0;
@@ -391,7 +391,7 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 			}
 			return result;
 		} catch (InvalidInputException e) {
-			throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR,
+			throw new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.ERROR,
 				Messages.format(ActionMessages.FindStringsToExternalizeAction_error_cannotBeParsed, cu.getElementName()), 
 				e));
 		}	
@@ -485,14 +485,14 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 			}
 		}
 
-		private void openWizard(ICompilationUnit unit) {
+		private void openWizard(IJavaScriptUnit unit) {
 			try {
 				if (unit != null && unit.exists()) {
 					NLSRefactoring refactoring= NLSRefactoring.create(unit);
 					if (refactoring != null)
 						new RefactoringStarter().activate(refactoring, new ExternalizeWizard(refactoring), getShell(), ActionMessages.ExternalizeStringsAction_dialog_title, RefactoringSaveHelper.SAVE_NON_JAVA_UPDATES); 
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				ExceptionHandler.handle(e, 
 					ActionMessages.ExternalizeStringsAction_dialog_title, 
 					ActionMessages.FindStringsToExternalizeAction_error_message); 
@@ -500,7 +500,7 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 		}
 		
 		private static LabelProvider createLabelProvider() {
-			return new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT){ 
+			return new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_DEFAULT){ 
 				public String getText(Object element) {
 					NonNLSElement nlsel= (NonNLSElement)element;
 					String elementName= nlsel.cu.getResource().getFullPath().toString();
@@ -526,9 +526,9 @@ public class ExternalizeStringsAction extends SelectionDispatchAction {
 	}
 		
 	private static class NonNLSElement{
-		ICompilationUnit cu;
+		IJavaScriptUnit cu;
 		int count;
-		NonNLSElement(ICompilationUnit cu, int count){
+		NonNLSElement(IJavaScriptUnit cu, int count){
 			this.cu= cu;
 			this.count= count;
 		}

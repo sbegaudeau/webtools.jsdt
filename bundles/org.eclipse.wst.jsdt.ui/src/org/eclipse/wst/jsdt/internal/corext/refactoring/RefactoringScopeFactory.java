@@ -21,29 +21,29 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 
 public class RefactoringScopeFactory {
 
 	/*
-	 * Adds to <code> projects </code> IJavaProject objects for all projects directly or indirectly referencing focus. @param projects IJavaProjects will be added to this set
+	 * Adds to <code> projects </code> IJavaScriptProject objects for all projects directly or indirectly referencing focus. @param projects IJavaProjects will be added to this set
 	 */
-	private static void addReferencingProjects(IJavaProject focus, Set projects) throws JavaModelException {
+	private static void addReferencingProjects(IJavaScriptProject focus, Set projects) throws JavaScriptModelException {
 		IProject[] referencingProjects= focus.getProject().getReferencingProjects();
 		for (int i= 0; i < referencingProjects.length; i++) {
-			IJavaProject candidate= JavaCore.create(referencingProjects[i]);
+			IJavaScriptProject candidate= JavaScriptCore.create(referencingProjects[i]);
 			if (candidate == null || projects.contains(candidate) || !candidate.exists())
 				continue; // break cycle
-			IClasspathEntry entry= getReferencingClassPathEntry(candidate, focus);
+			IIncludePathEntry entry= getReferencingClassPathEntry(candidate, focus);
 			if (entry != null) {
 				projects.add(candidate);
 				if (entry.isExported())
@@ -52,13 +52,13 @@ public class RefactoringScopeFactory {
 		}
 	}
 
-	private static void addRelatedReferencing(IJavaProject focus, Set projects) throws CoreException {
+	private static void addRelatedReferencing(IJavaScriptProject focus, Set projects) throws CoreException {
 		IProject[] referencingProjects= focus.getProject().getReferencingProjects();
 		for (int i= 0; i < referencingProjects.length; i++) {
-			IJavaProject candidate= JavaCore.create(referencingProjects[i]);
+			IJavaScriptProject candidate= JavaScriptCore.create(referencingProjects[i]);
 			if (candidate == null || projects.contains(candidate) || !candidate.exists())
 				continue; // break cycle
-			IClasspathEntry entry= getReferencingClassPathEntry(candidate, focus);
+			IIncludePathEntry entry= getReferencingClassPathEntry(candidate, focus);
 			if (entry != null) {
 				projects.add(candidate);
 				if (entry.isExported()) {
@@ -69,13 +69,13 @@ public class RefactoringScopeFactory {
 		}
 	}
 
-	private static void addRelatedReferenced(IJavaProject focus, Set projects) throws CoreException {
+	private static void addRelatedReferenced(IJavaScriptProject focus, Set projects) throws CoreException {
 		IProject[] referencedProjects= focus.getProject().getReferencedProjects();
 		for (int i= 0; i < referencedProjects.length; i++) {
-			IJavaProject candidate= JavaCore.create(referencedProjects[i]);
+			IJavaScriptProject candidate= JavaScriptCore.create(referencedProjects[i]);
 			if (candidate == null || projects.contains(candidate) || !candidate.exists())
 				continue; // break cycle
-			IClasspathEntry entry= getReferencingClassPathEntry(focus, candidate);
+			IIncludePathEntry entry= getReferencingClassPathEntry(focus, candidate);
 			if (entry != null) {
 				projects.add(candidate);
 				if (entry.isExported()) {
@@ -92,9 +92,9 @@ public class RefactoringScopeFactory {
 	 * 
 	 * @param javaElement the java element
 	 * @return the search scope
-	 * @throws JavaModelException if an error occurs
+	 * @throws JavaScriptModelException if an error occurs
 	 */
-	public static IJavaSearchScope create(IJavaElement javaElement) throws JavaModelException {
+	public static IJavaScriptSearchScope create(IJavaScriptElement javaElement) throws JavaScriptModelException {
 		return RefactoringScopeFactory.create(javaElement, true);
 	}
 	
@@ -104,25 +104,25 @@ public class RefactoringScopeFactory {
 	 * @param javaElement the java element
 	 * @param considerVisibility consider visibility of javaElement iff <code>true</code>
 	 * @return the search scope
-	 * @throws JavaModelException if an error occurs
+	 * @throws JavaScriptModelException if an error occurs
 	 */
-	public static IJavaSearchScope create(IJavaElement javaElement, boolean considerVisibility) throws JavaModelException {
+	public static IJavaScriptSearchScope create(IJavaScriptElement javaElement, boolean considerVisibility) throws JavaScriptModelException {
 		if (considerVisibility & javaElement instanceof IMember) {
 			IMember member= (IMember) javaElement;
 			if (JdtFlags.isPrivate(member)) {
-				if (member.getCompilationUnit() != null)
-					return SearchEngine.createJavaSearchScope(new IJavaElement[] { member.getCompilationUnit()});
+				if (member.getJavaScriptUnit() != null)
+					return SearchEngine.createJavaSearchScope(new IJavaScriptElement[] { member.getJavaScriptUnit()});
 				else
-					return SearchEngine.createJavaSearchScope(new IJavaElement[] { member});
+					return SearchEngine.createJavaSearchScope(new IJavaScriptElement[] { member});
 			}
 			// Removed code that does some optimizations regarding package visible members. The problem is that
 			// there can be a package fragment with the same name in a different source folder or project. So we
 			// have to treat package visible members like public or protected members.
 		}
-		return create(javaElement.getJavaProject());
+		return create(javaElement.getJavaScriptProject());
 	}
 
-	private static IJavaSearchScope create(IJavaProject javaProject) throws JavaModelException {
+	private static IJavaScriptSearchScope create(IJavaScriptProject javaProject) throws JavaScriptModelException {
 		return SearchEngine.createJavaSearchScope(getAllScopeElements(javaProject), false);
 	}
 
@@ -131,9 +131,9 @@ public class RefactoringScopeFactory {
 	 * 
 	 * @param members the members
 	 * @return the search scope
-	 * @throws JavaModelException if an error occurs
+	 * @throws JavaScriptModelException if an error occurs
 	 */
-	public static IJavaSearchScope create(IMember[] members) throws JavaModelException {
+	public static IJavaScriptSearchScope create(IMember[] members) throws JavaScriptModelException {
 		Assert.isTrue(members != null && members.length > 0);
 		IMember candidate= members[0];
 		int visibility= getVisibility(candidate);
@@ -154,12 +154,12 @@ public class RefactoringScopeFactory {
 	 * @param javaElements the java elements
 	 * @return the search scope
 	 */
-	public static IJavaSearchScope createReferencedScope(IJavaElement[] javaElements) {
+	public static IJavaScriptSearchScope createReferencedScope(IJavaScriptElement[] javaElements) {
 		Set projects= new HashSet();
 		for (int i= 0; i < javaElements.length; i++) {
-			projects.add(javaElements[i].getJavaProject());
+			projects.add(javaElements[i].getJavaScriptProject());
 		}
-		IJavaProject[] prj= (IJavaProject[]) projects.toArray(new IJavaProject[projects.size()]);
+		IJavaScriptProject[] prj= (IJavaScriptProject[]) projects.toArray(new IJavaScriptProject[projects.size()]);
 		return SearchEngine.createJavaSearchScope(prj, true);
 	}
 
@@ -171,12 +171,12 @@ public class RefactoringScopeFactory {
 	 * @param includeMask the include mask
 	 * @return the search scope
 	 */
-	public static IJavaSearchScope createReferencedScope(IJavaElement[] javaElements, int includeMask) {
+	public static IJavaScriptSearchScope createReferencedScope(IJavaScriptElement[] javaElements, int includeMask) {
 		Set projects= new HashSet();
 		for (int i= 0; i < javaElements.length; i++) {
-			projects.add(javaElements[i].getJavaProject());
+			projects.add(javaElements[i].getJavaScriptProject());
 		}
-		IJavaProject[] prj= (IJavaProject[]) projects.toArray(new IJavaProject[projects.size()]);
+		IJavaScriptProject[] prj= (IJavaScriptProject[]) projects.toArray(new IJavaScriptProject[projects.size()]);
 		return SearchEngine.createJavaSearchScope(prj, includeMask);
 	}
 
@@ -188,36 +188,36 @@ public class RefactoringScopeFactory {
 	 * @return the search scope
 	 * @throws CoreException if a referenced project could not be determined
 	 */
-	public static IJavaSearchScope createRelatedProjectsScope(IJavaProject project, int includeMask) throws CoreException {
-		IJavaProject[] projects= getRelatedProjects(project);
+	public static IJavaScriptSearchScope createRelatedProjectsScope(IJavaScriptProject project, int includeMask) throws CoreException {
+		IJavaScriptProject[] projects= getRelatedProjects(project);
 		return SearchEngine.createJavaSearchScope(projects, includeMask);
 	}
 
-	private static IJavaElement[] getAllScopeElements(IJavaProject project) throws JavaModelException {
+	private static IJavaScriptElement[] getAllScopeElements(IJavaScriptProject project) throws JavaScriptModelException {
 		Collection sourceRoots= getAllSourceRootsInProjects(getReferencingProjects(project));
 		return (IPackageFragmentRoot[]) sourceRoots.toArray(new IPackageFragmentRoot[sourceRoots.size()]);
 	}
 
 	/*
-	 * @param projects a collection of IJavaProject @return Collection a collection of IPackageFragmentRoot, one element for each packageFragmentRoot which lies within a project in <code> projects </code> .
+	 * @param projects a collection of IJavaScriptProject @return Collection a collection of IPackageFragmentRoot, one element for each packageFragmentRoot which lies within a project in <code> projects </code> .
 	 */
-	private static Collection getAllSourceRootsInProjects(Collection projects) throws JavaModelException {
+	private static Collection getAllSourceRootsInProjects(Collection projects) throws JavaScriptModelException {
 		List result= new ArrayList();
 		for (Iterator it= projects.iterator(); it.hasNext();)
-			result.addAll(getSourceRoots((IJavaProject) it.next()));
+			result.addAll(getSourceRoots((IJavaScriptProject) it.next()));
 		return result;
 	}
 
 	/*
 	 * Finds, if possible, a classpathEntry in one given project such that this classpath entry references another given project. If more than one entry exists for the referenced project and at least one is exported, then an exported entry will be returned.
 	 */
-	private static IClasspathEntry getReferencingClassPathEntry(IJavaProject referencingProject, IJavaProject referencedProject) throws JavaModelException {
-		IClasspathEntry result= null;
+	private static IIncludePathEntry getReferencingClassPathEntry(IJavaScriptProject referencingProject, IJavaScriptProject referencedProject) throws JavaScriptModelException {
+		IIncludePathEntry result= null;
 		IPath path= referencedProject.getProject().getFullPath();
-		IClasspathEntry[] classpath= referencingProject.getResolvedClasspath(true);
+		IIncludePathEntry[] classpath= referencingProject.getResolvedIncludepath(true);
 		for (int i= 0; i < classpath.length; i++) {
-			IClasspathEntry entry= classpath[i];
-			if (entry.getEntryKind() == IClasspathEntry.CPE_PROJECT && path.equals(entry.getPath())) {
+			IIncludePathEntry entry= classpath[i];
+			if (entry.getEntryKind() == IIncludePathEntry.CPE_PROJECT && path.equals(entry.getPath())) {
 				if (entry.isExported())
 					return entry;
 				// Consider it as a candidate. May be there is another entry that is
@@ -228,17 +228,17 @@ public class RefactoringScopeFactory {
 		return result;
 	}
 
-	private static IJavaProject[] getRelatedProjects(IJavaProject focus) throws CoreException {
+	private static IJavaScriptProject[] getRelatedProjects(IJavaScriptProject focus) throws CoreException {
 		final Set projects= new HashSet();
 
 		addRelatedReferencing(focus, projects);
 		addRelatedReferenced(focus, projects);
 
 		projects.add(focus);
-		return (IJavaProject[]) projects.toArray(new IJavaProject[projects.size()]);
+		return (IJavaScriptProject[]) projects.toArray(new IJavaScriptProject[projects.size()]);
 	}
 
-	private static Collection getReferencingProjects(IJavaProject focus) throws JavaModelException {
+	private static Collection getReferencingProjects(IJavaScriptProject focus) throws JavaScriptModelException {
 		Set projects= new HashSet();
 
 		addReferencingProjects(focus, projects);
@@ -246,7 +246,7 @@ public class RefactoringScopeFactory {
 		return projects;
 	}
 
-	private static List getSourceRoots(IJavaProject javaProject) throws JavaModelException {
+	private static List getSourceRoots(IJavaScriptProject javaProject) throws JavaScriptModelException {
 		List elements= new ArrayList();
 		IPackageFragmentRoot[] roots= javaProject.getPackageFragmentRoots();
 		// Add all package fragment roots except archives
@@ -258,7 +258,7 @@ public class RefactoringScopeFactory {
 		return elements;
 	}
 
-	private static int getVisibility(IMember member) throws JavaModelException {
+	private static int getVisibility(IMember member) throws JavaScriptModelException {
 		if (JdtFlags.isPrivate(member))
 			return 0;
 		if (JdtFlags.isPackageVisible(member))

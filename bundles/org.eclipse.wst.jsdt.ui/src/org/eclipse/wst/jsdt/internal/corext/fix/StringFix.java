@@ -24,10 +24,10 @@ import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.TextChangeCompatibility;
@@ -47,11 +47,11 @@ public class StringFix implements IFix {
 	
 	private final TextEditGroup[] fEditGroups;
 	private final String fName;
-	private final ICompilationUnit fCompilationUnit;
+	private final IJavaScriptUnit fCompilationUnit;
 
-	public static StringFix createFix(CompilationUnit compilationUnit, IProblemLocation problem, boolean removeNLSTag, boolean addNLSTag) throws CoreException {
+	public static StringFix createFix(JavaScriptUnit compilationUnit, IProblemLocation problem, boolean removeNLSTag, boolean addNLSTag) throws CoreException {
 		TextEdit addEdit= null;
-		ICompilationUnit cu= (ICompilationUnit)compilationUnit.getJavaElement();
+		IJavaScriptUnit cu= (IJavaScriptUnit)compilationUnit.getJavaElement();
 		if (addNLSTag) {
 			addEdit= NLSUtil.createNLSEdit(cu, problem.getOffset());
 		}
@@ -77,7 +77,7 @@ public class StringFix implements IFix {
 		}
 	}
 	
-	public static IFix createCleanUp(CompilationUnit compilationUnit, boolean addNLSTag, boolean removeNLSTag) throws CoreException, JavaModelException {
+	public static IFix createCleanUp(JavaScriptUnit compilationUnit, boolean addNLSTag, boolean removeNLSTag) throws CoreException, JavaScriptModelException {
 		if (!addNLSTag && !removeNLSTag)
 			return null;
 		
@@ -89,15 +89,15 @@ public class StringFix implements IFix {
 		return createCleanUp(compilationUnit, addNLSTag, removeNLSTag, locations);
 	}
 	
-	public static IFix createCleanUp(CompilationUnit compilationUnit, IProblemLocation[] problems, boolean addNLSTag, boolean removeNLSTag) throws CoreException, JavaModelException {
+	public static IFix createCleanUp(JavaScriptUnit compilationUnit, IProblemLocation[] problems, boolean addNLSTag, boolean removeNLSTag) throws CoreException, JavaScriptModelException {
 		if (!addNLSTag && !removeNLSTag)
 			return null;
 		
 		return createCleanUp(compilationUnit, addNLSTag, removeNLSTag, problems);
 	}
 
-	private static IFix createCleanUp(CompilationUnit compilationUnit, boolean addNLSTag, boolean removeNLSTag, IProblemLocation[] problems) throws CoreException, JavaModelException {
-		ICompilationUnit cu= (ICompilationUnit)compilationUnit.getJavaElement();
+	private static IFix createCleanUp(JavaScriptUnit compilationUnit, boolean addNLSTag, boolean removeNLSTag, IProblemLocation[] problems) throws CoreException, JavaScriptModelException {
+		IJavaScriptUnit cu= (IJavaScriptUnit)compilationUnit.getJavaElement();
 		List result= new ArrayList();
 		
 		List missingNLSProblems= new ArrayList();
@@ -182,9 +182,9 @@ public class StringFix implements IFix {
 		}
 	}
 	
-	private StringFix(String name, CompilationUnit compilationUnit, TextEditGroup[] groups) {
+	private StringFix(String name, JavaScriptUnit compilationUnit, TextEditGroup[] groups) {
 		fName= name;
-		fCompilationUnit= (ICompilationUnit)compilationUnit.getJavaElement();
+		fCompilationUnit= (IJavaScriptUnit)compilationUnit.getJavaElement();
 		fEditGroups= groups;
 	}
 
@@ -216,7 +216,7 @@ public class StringFix implements IFix {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.corext.fix.IFix#getCompilationUnit()
 	 */
-	public ICompilationUnit getCompilationUnit() {
+	public IJavaScriptUnit getCompilationUnit() {
 		return fCompilationUnit;
 	}
 

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the generalize declared type refactoring.
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class GeneralizeTypeDescriptor extends JavaRefactoringDescriptor {
+public final class GeneralizeTypeDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public GeneralizeTypeDescriptor() {
-		super(IJavaRefactorings.GENERALIZE_TYPE);
+		super(IJavaScriptRefactorings.GENERALIZE_TYPE);
 	}
 }

@@ -12,7 +12,7 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.CompilationUnitRange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TType;
 
@@ -56,11 +56,11 @@ public final class TypeVariable2 extends ConstraintVariable2 implements ITypeCon
 				&& getType() == otherTypeVariable.getType();
 	}
 
-	public void setCompilationUnit(ICompilationUnit unit) {
+	public void setCompilationUnit(IJavaScriptUnit unit) {
 		throw new UnsupportedOperationException();
 	}
 
-	public ICompilationUnit getCompilationUnit() {
+	public IJavaScriptUnit getCompilationUnit() {
 		return fRange.getCompilationUnit();
 	}
 	

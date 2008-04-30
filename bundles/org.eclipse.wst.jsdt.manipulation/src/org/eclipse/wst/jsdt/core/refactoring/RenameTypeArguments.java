@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Assert;
 
 import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
  * Rename type arguments describe the data that a rename type processor
@@ -28,7 +28,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 public class RenameTypeArguments extends RenameArguments {
 
 	private boolean updateSimilarDeclarations;
-	private IJavaElement[] similarDeclarations;
+	private IJavaScriptElement[] similarDeclarations;
 	
 	/**
 	 * Creates new rename type arguments.
@@ -43,7 +43,7 @@ public class RenameTypeArguments extends RenameArguments {
 	 *  not requested
 	 */
 	public RenameTypeArguments(String newName, boolean updateReferences, boolean updateSimilarDeclarations,
-			IJavaElement[] similarDeclarations) {
+			IJavaScriptElement[] similarDeclarations) {
 		super(newName, updateReferences);
 		if (updateSimilarDeclarations) {
 			Assert.isNotNull(similarDeclarations);
@@ -69,7 +69,7 @@ public class RenameTypeArguments extends RenameArguments {
 	 * 
 	 * @return the similar elements that get updated
 	 */
-	public IJavaElement[] getSimilarDeclarations() {
+	public IJavaScriptElement[] getSimilarDeclarations() {
 		return similarDeclarations;
 	}
 	

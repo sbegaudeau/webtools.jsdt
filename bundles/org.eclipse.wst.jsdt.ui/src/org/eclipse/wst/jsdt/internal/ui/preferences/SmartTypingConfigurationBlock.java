@@ -28,11 +28,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
@@ -190,8 +190,8 @@ class SmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 		// current profile automatically.
 		String linkTooltip= PreferencesMessages.SmartTypingConfigurationBlock_tabs_message_tooltip; 
 		String text;
-		String indentMode= JavaPlugin.getDefault().getCombinedPreferenceStore().getString(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR);
-		if (JavaCore.TAB.equals(indentMode))
+		String indentMode= JavaScriptPlugin.getDefault().getCombinedPreferenceStore().getString(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR);
+		if (JavaScriptCore.TAB.equals(indentMode))
 			text= Messages.format(PreferencesMessages.SmartTypingConfigurationBlock_tabs_message_tab_text, new String[] {Integer.toString(getTabDisplaySize())});
 		else
 			text= Messages.format(PreferencesMessages.SmartTypingConfigurationBlock_tabs_message_others_text, new String[] {Integer.toString(getTabDisplaySize()), Integer.toString(getIndentSize()), getIndentMode()}); 
@@ -208,7 +208,7 @@ class SmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 			}
 		});
 		
-		final IPreferenceStore combinedStore= JavaPlugin.getDefault().getCombinedPreferenceStore();
+		final IPreferenceStore combinedStore= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 		final IPropertyChangeListener propertyChangeListener= new IPropertyChangeListener() {
 			private boolean fHasRun= false;
 			public void propertyChange(PropertyChangeEvent event) {
@@ -237,12 +237,12 @@ class SmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 	}
 
 	private String getIndentMode() {
-		String indentMode= JavaPlugin.getDefault().getCombinedPreferenceStore().getString(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR);
+		String indentMode= JavaScriptPlugin.getDefault().getCombinedPreferenceStore().getString(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR);
 		
-		if (JavaCore.SPACE.equals(indentMode))
+		if (JavaScriptCore.SPACE.equals(indentMode))
 			return PreferencesMessages.SmartTypingConfigurationBlock_tabs_message_spaces; 
 		
-		if (JavaCore.TAB.equals(indentMode))
+		if (JavaScriptCore.TAB.equals(indentMode))
 			return PreferencesMessages.SmartTypingConfigurationBlock_tabs_message_tabs;
 		
 		if (DefaultCodeFormatterConstants.MIXED.equals(indentMode))

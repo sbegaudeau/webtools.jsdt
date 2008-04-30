@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * AST node for a member reference within a doc comment
- * ({@link Javadoc}). The principal uses of these are in "@see" and "@link"
+ * ({@link JSdoc}). The principal uses of these are in "@see" and "@link"
  * tag elements, for references to field members (and occasionally to method
  * and constructor members).
  * <pre>
@@ -24,7 +24,7 @@ import java.util.List;
  * 		[ Name ] <b>#</b> Identifier
  * </pre>
  *
- * @see Javadoc
+ * @see JSdoc
  * @since 3.0
  */
 public class MemberRef extends ASTNode implements IDocElement {

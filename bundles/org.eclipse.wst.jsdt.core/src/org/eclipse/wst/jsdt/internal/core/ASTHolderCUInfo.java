@@ -12,12 +12,12 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import java.util.HashMap;
 
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 
 public class ASTHolderCUInfo extends CompilationUnitElementInfo {
 	int astLevel;
 	boolean resolveBindings;
 	int reconcileFlags;
 	HashMap problems = null;
-	CompilationUnit ast;
+	JavaScriptUnit ast;
 }

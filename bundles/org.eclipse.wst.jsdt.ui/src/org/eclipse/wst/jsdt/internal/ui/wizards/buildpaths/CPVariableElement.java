@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 
 public class CPVariableElement {
@@ -87,14 +87,14 @@ public class CPVariableElement {
 	 * @return <code>true</code> iff variable is read-only
 	 */
 	public boolean isReadOnly() {
-		return JavaCore.isClasspathVariableReadOnly(fName);
+		return JavaScriptCore.isIncludepathVariableReadOnly(fName);
 	}
 
 	/**
 	 * @return whether this variable is deprecated
 	 */
 	public boolean isDeprecated() {
-		return JavaCore.getClasspathVariableDeprecationMessage(fName) != null;
+		return JavaScriptCore.getIncludepathVariableDeprecationMessage(fName) != null;
 	}
 
 	/**

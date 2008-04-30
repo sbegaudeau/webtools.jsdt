@@ -14,30 +14,30 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IContainmentAdapter;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 public class JavaElementContainmentAdapter implements IContainmentAdapter {
 	
-	private IJavaModel fJavaModel= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
+	private IJavaScriptModel fJavaModel= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
 
 	public boolean contains(Object workingSetElement, Object element, int flags) {
-		if (!(workingSetElement instanceof IJavaElement) || element == null)
+		if (!(workingSetElement instanceof IJavaScriptElement) || element == null)
 			return false;
 						
-		IJavaElement workingSetJavaElement= (IJavaElement)workingSetElement;
+		IJavaScriptElement workingSetJavaElement= (IJavaScriptElement)workingSetElement;
 		IResource resource= null;		
-		IJavaElement jElement= null;
-		if (element instanceof IJavaElement) {
-			jElement= (IJavaElement)element;	
+		IJavaScriptElement jElement= null;
+		if (element instanceof IJavaScriptElement) {
+			jElement= (IJavaScriptElement)element;	
 			resource= jElement.getResource(); 
 		} else {
 			if (element instanceof IAdaptable) {
 				resource= (IResource)((IAdaptable)element).getAdapter(IResource.class);
 				if (resource != null) {
 					if (fJavaModel.contains(resource)) {
-						jElement= JavaCore.create(resource);
+						jElement= JavaScriptCore.create(resource);
 						if (jElement != null && !jElement.exists())
 							jElement= null;		
 					}
@@ -48,7 +48,7 @@ public class JavaElementContainmentAdapter implements IContainmentAdapter {
 		if (jElement != null) {
 			if (contains(workingSetJavaElement, jElement, flags))
 				return true;
-			if (workingSetJavaElement.getElementType() == IJavaElement.PACKAGE_FRAGMENT && 
+			if (workingSetJavaElement.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT && 
 				resource.getType() == IResource.FOLDER && checkIfDescendant(flags))
 				return isChild(workingSetJavaElement, resource);
 		} else if (resource != null) {
@@ -57,7 +57,7 @@ public class JavaElementContainmentAdapter implements IContainmentAdapter {
 		return false;
 	}
 	
-	private boolean contains(IJavaElement workingSetElement, IJavaElement element, int flags) {
+	private boolean contains(IJavaScriptElement workingSetElement, IJavaScriptElement element, int flags) {
 		if (checkContext(flags) && workingSetElement.equals(element)) {
 			return true;
 		}
@@ -73,7 +73,7 @@ public class JavaElementContainmentAdapter implements IContainmentAdapter {
 		return false;
 	}
 	
-	private boolean check(IJavaElement ancestor, IJavaElement descendent) {
+	private boolean check(IJavaScriptElement ancestor, IJavaScriptElement descendent) {
 		descendent= descendent.getParent();
 		while (descendent != null) {
 			if (ancestor.equals(descendent))
@@ -83,14 +83,14 @@ public class JavaElementContainmentAdapter implements IContainmentAdapter {
 		return false;
 	}
 	
-	private boolean isChild(IJavaElement workingSetElement, IResource element) {
+	private boolean isChild(IJavaScriptElement workingSetElement, IResource element) {
 		IResource resource= workingSetElement.getResource();
 		if (resource == null)
 			return false;
 		return check(element, resource);
 	}
 	
-	private boolean contains(IJavaElement workingSetElement, IResource element, int flags) {
+	private boolean contains(IJavaScriptElement workingSetElement, IResource element, int flags) {
 		IResource workingSetResource= workingSetElement.getResource();
 		if (workingSetResource == null)
 			return false;

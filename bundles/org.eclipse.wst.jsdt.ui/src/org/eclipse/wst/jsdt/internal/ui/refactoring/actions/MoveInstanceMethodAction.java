@@ -17,15 +17,15 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -60,10 +60,10 @@ public final class MoveInstanceMethodAction extends SelectionDispatchAction {
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isMoveMethodAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			setEnabled(false);//no ui
 		}
 	}
@@ -83,14 +83,14 @@ public final class MoveInstanceMethodAction extends SelectionDispatchAction {
 		}
 	}
 	
-	private static IMethod getSingleSelectedMethod(IStructuredSelection selection) {
+	private static IFunction getSingleSelectedMethod(IStructuredSelection selection) {
 		if (selection.isEmpty() || selection.size() != 1) 
 			return null;
 		
 		Object first= selection.getFirstElement();
-		if (! (first instanceof IMethod))
+		if (! (first instanceof IFunction))
 			return null;
-		return (IMethod) first;
+		return (IFunction) first;
 	}
 	/*
 	 * @see SelectionDispatchAction#run(IStructuredSelection)
@@ -98,12 +98,12 @@ public final class MoveInstanceMethodAction extends SelectionDispatchAction {
 	public void run(IStructuredSelection selection) {		
 		try {
 			Assert.isTrue(RefactoringAvailabilityTester.isMoveMethodAvailable(selection));
-			IMethod method= getSingleSelectedMethod(selection);
+			IFunction method= getSingleSelectedMethod(selection);
 			Assert.isNotNull(method);
 			if (!ActionUtil.isEditable(fEditor, getShell(), method))
 				return;
 			RefactoringExecutionStarter.startMoveMethodRefactoring(method, getShell());
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, getShell(), RefactoringMessages.MoveInstanceMethodAction_dialog_title, RefactoringMessages.MoveInstanceMethodAction_unexpected_exception);	 
 		}
  	}	
@@ -114,12 +114,12 @@ public final class MoveInstanceMethodAction extends SelectionDispatchAction {
 	public void run(ITextSelection selection) {
 		try {
 			run(selection, SelectionConverter.getInputAsCompilationUnit(fEditor));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, getShell(), RefactoringMessages.MoveInstanceMethodAction_dialog_title, RefactoringMessages.MoveInstanceMethodAction_unexpected_exception);	 
 		}
 	}
 
-	private void run(ITextSelection selection, ICompilationUnit cu) throws JavaModelException {
+	private void run(ITextSelection selection, IJavaScriptUnit cu) throws JavaScriptModelException {
 		Assert.isNotNull(cu);
 		Assert.isTrue(selection.getOffset() >= 0);
 		Assert.isTrue(selection.getLength() >= 0);
@@ -127,7 +127,7 @@ public final class MoveInstanceMethodAction extends SelectionDispatchAction {
 		if (!ActionUtil.isEditable(fEditor, getShell(), cu))
 			return;
 
-		IMethod method= getMethod(cu, selection);
+		IFunction method= getMethod(cu, selection);
 		if (method != null) {
 			RefactoringExecutionStarter.startMoveMethodRefactoring(method, getShell());
 		} else {
@@ -135,10 +135,10 @@ public final class MoveInstanceMethodAction extends SelectionDispatchAction {
 		}
 	}
 
-	private static IMethod getMethod(ICompilationUnit cu, ITextSelection selection) throws JavaModelException {
-		IJavaElement element= SelectionConverter.getElementAtOffset(cu, selection);
-		if (element instanceof IMethod)
-			return (IMethod) element;
+	private static IFunction getMethod(IJavaScriptUnit cu, ITextSelection selection) throws JavaScriptModelException {
+		IJavaScriptElement element= SelectionConverter.getElementAtOffset(cu, selection);
+		if (element instanceof IFunction)
+			return (IFunction) element;
 		return null;
 	}
 }

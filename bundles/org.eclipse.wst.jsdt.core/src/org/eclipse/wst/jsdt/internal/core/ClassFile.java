@@ -32,14 +32,14 @@ import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ICompletionRequestor;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IParent;
@@ -47,9 +47,9 @@ import org.eclipse.wst.jsdt.core.IProblemRequestor;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
@@ -73,7 +73,7 @@ public class ClassFile extends Openable implements IClassFile, SuffixConstants, 
 	protected IPath filePath;
 	protected BinaryType binaryType = null;
 	private static final IField[] NO_FIELDS = new IField[0];
-	private static final IMethod[] NO_METHODS = new IMethod[0];
+	private static final IFunction[] NO_METHODS = new IFunction[0];
 
 /*
  * Creates a handle to a class file.
@@ -93,7 +93,7 @@ protected ClassFile(PackageFragment parent, String path) {
 /*
  * @see IClassFile#becomeWorkingCopy(IProblemRequestor, WorkingCopyOwner, IProgressMonitor)
  */
-public ICompilationUnit becomeWorkingCopy(IProblemRequestor problemRequestor, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException {
+public IJavaScriptUnit becomeWorkingCopy(IProblemRequestor problemRequestor, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException {
 	JavaModelManager manager = JavaModelManager.getJavaModelManager();
 	CompilationUnit workingCopy = new ClassFileWorkingCopy(this, owner == null ? DefaultWorkingCopyOwner.PRIMARY : owner);
 	JavaModelManager.PerWorkingCopyInfo perWorkingCopyInfo = manager.getPerWorkingCopyInfo(workingCopy, false/*don't create*/, true /*record usage*/, null/*no problem requestor needed*/);
@@ -119,7 +119,7 @@ public ICompilationUnit becomeWorkingCopy(IProblemRequestor problemRequestor, Wo
  * @see Openable
  * @see org.eclipse.wst.jsdt.core.Signature
  */
-protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
+protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaScriptModelException {
 	// check whether the class file can be opened
 	IStatus status = validateClassFile();
 	if (!status.isOK()) throw newJavaModelException(status);
@@ -135,7 +135,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 
 	// generate structure and compute syntax problems if needed
 	CompilationUnitStructureRequestor requestor = new CompilationUnitStructureRequestor(this, unitInfo, newElements);
-	IJavaProject project = getJavaProject();
+	IJavaScriptProject project = getJavaScriptProject();
 
 	boolean createAST;
 	boolean resolveBindings;
@@ -143,7 +143,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 //	HashMap problems;
 	if (info instanceof ASTHolderCUInfo) {
 		ASTHolderCUInfo astHolder = (ASTHolderCUInfo) info;
-		createAST = astHolder.astLevel != ICompilationUnit.NO_AST;
+		createAST = astHolder.astLevel != IJavaScriptUnit.NO_AST;
 		resolveBindings = astHolder.resolveBindings;
 		reconcileFlags = astHolder.reconcileFlags;
 //		problems = astHolder.problems;
@@ -156,10 +156,10 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 
 	boolean computeProblems = false;//perWorkingCopyInfo != null && perWorkingCopyInfo.isActive() && project != null && JavaProject.hasJavaNature(project.getProject());
 	IProblemFactory problemFactory = new DefaultProblemFactory();
-	Map options = project == null ? JavaCore.getOptions() : project.getOptions(true);
+	Map options = project == null ? JavaScriptCore.getOptions() : project.getOptions(true);
 	if (!computeProblems) {
 		// disable task tags checking to speed up parsing
-		options.put(JavaCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
+		options.put(JavaScriptCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
 	}
 	SourceElementParser parser = new SourceElementParser(
 		requestor,
@@ -168,7 +168,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 		true/*report local declarations*/,
 		!createAST /*optimize string literals only if not creating a DOM AST*/);
 	parser.reportOnlyOneSyntaxError = !computeProblems;
-	parser.setStatementsRecovery((reconcileFlags & ICompilationUnit.ENABLE_STATEMENTS_RECOVERY) != 0);
+	parser.setStatementsRecovery((reconcileFlags & IJavaScriptUnit.ENABLE_STATEMENTS_RECOVERY) != 0);
 
 //	if (!computeProblems && !resolveBindings && !createAST) // disable javadoc parsing if not computing problems, not resolving and not creating ast
 //		parser.javadocParser.checkDocComment = false;
@@ -193,7 +193,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 
 		if (createAST) {
 //			int astLevel = ((ASTHolderCUInfo) info).astLevel;
-//			org.eclipse.wst.jsdt.core.dom.CompilationUnit cu = AST.convertCompilationUnit(astLevel, unit, contents, options, computeProblems, this, pm);
+//			org.eclipse.wst.jsdt.core.dom.JavaScriptUnit cu = AST.convertCompilationUnit(astLevel, unit, contents, options, computeProblems, this, pm);
 //			((ASTHolderCUInfo) info).ast = cu;
 			throw new RuntimeException("Implement this"); //$NON-NLS-1$
 		}
@@ -210,13 +210,13 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 //	if (typeInfo == null) {
 //		// The structure of a class file is unknown if a class file format errors occurred
 //		//during the creation of the diet class file representative of this ClassFile.
-//		info.setChildren(new IJavaElement[] {});
+//		info.setChildren(new IJavaScriptElement[] {});
 //		return false;
 //	}
 //
 //	// Make the type
 //	IType type = getType();
-//	info.setChildren(new IJavaElement[] {type});
+//	info.setChildren(new IJavaScriptElement[] {type});
 //	newElements.put(type, typeInfo);
 //	// Read children
 //	((ClassFileInfo) info).readBinaryChildren(this, (HashMap) newElements, typeInfo);
@@ -226,14 +226,14 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
  * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, ICompletionRequestor)
  * @deprecated
  */
-public void codeComplete(int offset, ICompletionRequestor requestor) throws JavaModelException {
+public void codeComplete(int offset, ICompletionRequestor requestor) throws JavaScriptModelException {
 	codeComplete(offset, requestor, DefaultWorkingCopyOwner.PRIMARY);
 }
 /**
  * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, ICompletionRequestor, WorkingCopyOwner)
  * @deprecated
  */
-public void codeComplete(int offset, ICompletionRequestor requestor, WorkingCopyOwner owner) throws JavaModelException {
+public void codeComplete(int offset, ICompletionRequestor requestor, WorkingCopyOwner owner) throws JavaScriptModelException {
 	if (requestor == null) {
 		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
 	}
@@ -243,14 +243,14 @@ public void codeComplete(int offset, ICompletionRequestor requestor, WorkingCopy
 /* (non-Javadoc)
  * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, org.eclipse.wst.jsdt.core.CompletionRequestor)
  */
-public void codeComplete(int offset, CompletionRequestor requestor) throws JavaModelException {
+public void codeComplete(int offset, CompletionRequestor requestor) throws JavaScriptModelException {
 	codeComplete(offset, requestor, DefaultWorkingCopyOwner.PRIMARY);
 }
 
 /* (non-Javadoc)
  * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, org.eclipse.wst.jsdt.core.CompletionRequestor, org.eclipse.wst.jsdt.core.WorkingCopyOwner)
  */
-public void codeComplete(int offset, CompletionRequestor requestor, WorkingCopyOwner owner) throws JavaModelException {
+public void codeComplete(int offset, CompletionRequestor requestor, WorkingCopyOwner owner) throws JavaScriptModelException {
 	String source = getSource();
 	if (source != null) {
 		BinaryType type = (BinaryType) getType();
@@ -259,7 +259,7 @@ public void codeComplete(int offset, CompletionRequestor requestor, WorkingCopyO
 				getSource().toCharArray(),
 				null,
 				type.sourceFileName((IBinaryType) type.getElementInfo()),
-				getJavaProject()); // use project to retrieve corresponding .js IFile
+				getJavaScriptProject()); // use project to retrieve corresponding .js IFile
 		codeComplete(cu, cu, offset, requestor, owner);
 	}
 }
@@ -267,13 +267,13 @@ public void codeComplete(int offset, CompletionRequestor requestor, WorkingCopyO
 /**
  * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeSelect(int, int)
  */
-public IJavaElement[] codeSelect(int offset, int length) throws JavaModelException {
+public IJavaScriptElement[] codeSelect(int offset, int length) throws JavaScriptModelException {
 	return codeSelect(offset, length, DefaultWorkingCopyOwner.PRIMARY);
 }
 /**
  * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeSelect(int, int, WorkingCopyOwner)
  */
-public IJavaElement[] codeSelect(int offset, int length, WorkingCopyOwner owner) throws JavaModelException {
+public IJavaScriptElement[] codeSelect(int offset, int length, WorkingCopyOwner owner) throws JavaScriptModelException {
 	IBuffer buffer = getBuffer();
 	char[] contents;
 	if (buffer != null && (contents = buffer.getCharacters()) != null) {
@@ -289,7 +289,7 @@ public IJavaElement[] codeSelect(int offset, int length, WorkingCopyOwner owner)
 		return super.codeSelect(cu, offset, length, owner);
 	} else {
 		//has no associated souce
-		return new IJavaElement[] {};
+		return new IJavaScriptElement[] {};
 	}
 }
 /**
@@ -308,26 +308,26 @@ public boolean exists() {
 }
 
 /**
- * Finds the deepest <code>IJavaElement</code> in the hierarchy of
+ * Finds the deepest <code>IJavaScriptElement</code> in the hierarchy of
  * <code>elt</elt>'s children (including <code>elt</code> itself)
  * which has a source range that encloses <code>position</code>
  * according to <code>mapper</code>.
  */
-protected IJavaElement findElement(IJavaElement elt, int position, SourceMapper mapper) {
+protected IJavaScriptElement findElement(IJavaScriptElement elt, int position, SourceMapper mapper) {
 	SourceRange range = mapper.getSourceRange(elt);
 	if (range == null || position < range.getOffset() || range.getOffset() + range.getLength() - 1 < position) {
 		return null;
 	}
 	if (elt instanceof IParent) {
 		try {
-			IJavaElement[] children = ((IParent) elt).getChildren();
+			IJavaScriptElement[] children = ((IParent) elt).getChildren();
 			for (int i = 0; i < children.length; i++) {
-				IJavaElement match = findElement(children[i], position, mapper);
+				IJavaScriptElement match = findElement(children[i], position, mapper);
 				if (match != null) {
 					return match;
 				}
 			}
-		} catch (JavaModelException npe) {
+		} catch (JavaScriptModelException npe) {
 			// elt doesn't exist: return the element
 		}
 	}
@@ -343,12 +343,12 @@ public IType findPrimaryType() {
 	}
 	return null;
 }
-public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelException {
+public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaScriptModelException {
 	return this.getType().getAttachedJavadoc(monitor);
 }
 
 
-public byte[] getBytes() throws JavaModelException {
+public byte[] getBytes() throws JavaScriptModelException {
 	JavaElement pkg = (JavaElement) getParent();
 	if (pkg instanceof JarPackageFragment) {
 		JarPackageFragmentRoot root = (JarPackageFragmentRoot) pkg.getParent();
@@ -360,14 +360,14 @@ public byte[] getBytes() throws JavaModelException {
 			if (ze != null) {
 				return org.eclipse.wst.jsdt.internal.compiler.util.Util.getZipEntryByteContent(ze, zip);
 			}
-			throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
+			throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
 		} catch (IOException ioe) {
-			throw new JavaModelException(ioe, IJavaModelStatusConstants.IO_EXCEPTION);
+			throw new JavaScriptModelException(ioe, IJavaScriptModelStatusConstants.IO_EXCEPTION);
 		} catch (CoreException e) {
-			if (e instanceof JavaModelException) {
-				throw (JavaModelException)e;
+			if (e instanceof JavaScriptModelException) {
+				throw (JavaScriptModelException)e;
 			} else {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			}
 		} finally {
 			JavaModelManager.getJavaModelManager().closeZipFile(zip);
@@ -377,12 +377,12 @@ public byte[] getBytes() throws JavaModelException {
 		return Util.getResourceContentsAsByteArray(file);
 	}
 }
-public IBuffer getBuffer() throws JavaModelException {
+public IBuffer getBuffer() throws JavaScriptModelException {
 	IStatus status = validateClassFile();
 	if (status.isOK()) {
 		return super.getBuffer();
 	} else {
-		throw new JavaModelException((IJavaModelStatus) status);
+		throw new JavaScriptModelException((IJavaScriptModelStatus) status);
 	}
 }
 /**
@@ -401,9 +401,9 @@ public ITypeRoot getTypeRoot() {
  * A class file has a corresponding resource unless it is contained
  * in a jar.
  *
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
-public IResource getCorrespondingResource() throws JavaModelException {
+public IResource getCorrespondingResource() throws JavaScriptModelException {
 	IPackageFragmentRoot root= (IPackageFragmentRoot)getParent().getParent();
 	if (root.isArchive()) {
 		return null;
@@ -414,9 +414,9 @@ public IResource getCorrespondingResource() throws JavaModelException {
 /**
  * @see IClassFile
  */
-public IJavaElement getElementAt(int position) throws JavaModelException {
-	IJavaElement parentElement = getParent();
-	while (parentElement.getElementType() != IJavaElement.PACKAGE_FRAGMENT_ROOT) {
+public IJavaScriptElement getElementAt(int position) throws JavaScriptModelException {
+	IJavaScriptElement parentElement = getParent();
+	while (parentElement.getElementType() != IJavaScriptElement.PACKAGE_FRAGMENT_ROOT) {
 		parentElement = parentElement.getParent();
 	}
 	PackageFragmentRoot root = (PackageFragmentRoot) parentElement;
@@ -431,9 +431,9 @@ public IJavaElement getElementAt(int position) throws JavaModelException {
 		return findElement(this, position, mapper);
 	}
 }
-public IJavaElement getElementAtConsideringSibling(int position) throws JavaModelException {
+public IJavaScriptElement getElementAtConsideringSibling(int position) throws JavaScriptModelException {
 	IPackageFragment fragment = (IPackageFragment)getParent();
-	PackageFragmentRoot root = (PackageFragmentRoot) fragment.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+	PackageFragmentRoot root = (PackageFragmentRoot) fragment.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 	SourceMapper mapper = root.getSourceMapper();
 	if (mapper == null) {
 		return null;
@@ -444,7 +444,7 @@ public IJavaElement getElementAtConsideringSibling(int position) throws JavaMode
 		IType type = null;
 		int start = -1;
 		int end = Integer.MAX_VALUE;
-		IJavaElement[] children = fragment.getChildren();
+		IJavaScriptElement[] children = fragment.getChildren();
 		for (int i = 0; i < children.length; i++) {
 			String childName = children[i].getElementName();
 
@@ -483,7 +483,7 @@ public String getElementName() {
 	return this.name + SuffixConstants.SUFFIX_STRING_java;
 }
 /**
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public int getElementType() {
 	return CLASS_FILE;
@@ -491,7 +491,7 @@ public int getElementType() {
 /*
  * @see JavaElement
  */
-public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner owner) {
+public IJavaScriptElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner owner) {
 	switch (token.charAt(0)) {
 		case JEM_TYPE:
 			if (!memento.hasMoreTokens()) return this;
@@ -514,7 +514,7 @@ protected void getHandleMemento(StringBuffer buff) {
 	escapeMementoName(buff, getPath().toPortableString());
 }
 /*
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 
 protected boolean resourceExists() {
@@ -535,7 +535,7 @@ public IPath getPath() {
 	}
 }
 /*
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public IResource getResource() {
 	PackageFragmentRoot root = this.getPackageFragmentRoot();
@@ -548,7 +548,7 @@ public IResource getResource() {
 /**
  * @see org.eclipse.wst.jsdt.core.ISourceReference
  */
-public String getSource() throws JavaModelException {
+public String getSource() throws JavaScriptModelException {
 	IBuffer buffer = getBuffer();
 	if (buffer == null) {
 		return null;
@@ -558,7 +558,7 @@ public String getSource() throws JavaModelException {
 /**
  * @see org.eclipse.wst.jsdt.core.ISourceReference
  */
-public ISourceRange getSourceRange() throws JavaModelException {
+public ISourceRange getSourceRange() throws JavaScriptModelException {
 	IBuffer buffer = getBuffer();
 	if (buffer != null) {
 		String contents = buffer.getContents();
@@ -598,7 +598,7 @@ public String getTypeName() {
 /*
  * @see IClassFile
  */
-public ICompilationUnit getWorkingCopy(WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException {
+public IJavaScriptUnit getWorkingCopy(WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException {
 	CompilationUnit workingCopy = new ClassFileWorkingCopy(this, owner == null ? DefaultWorkingCopyOwner.PRIMARY : owner);
 	JavaModelManager manager = JavaModelManager.getJavaModelManager();
 	JavaModelManager.PerWorkingCopyInfo perWorkingCopyInfo =
@@ -614,7 +614,7 @@ public ICompilationUnit getWorkingCopy(WorkingCopyOwner owner, IProgressMonitor 
  * @see IClassFile
  * @deprecated
  */
-public IJavaElement getWorkingCopy(IProgressMonitor monitor, org.eclipse.wst.jsdt.core.IBufferFactory factory) throws JavaModelException {
+public IJavaScriptElement getWorkingCopy(IProgressMonitor monitor, org.eclipse.wst.jsdt.core.IBufferFactory factory) throws JavaScriptModelException {
 	return getWorkingCopy(BufferFactoryWrapper.create(factory), monitor);
 }
 /**
@@ -629,13 +629,13 @@ public int hashCode() {
 /**
  * @see IClassFile
  */
-public boolean isClass() throws JavaModelException {
+public boolean isClass() throws JavaScriptModelException {
 	return getType().isClass();
 }
 /**
  * @see IClassFile
  */
-public boolean isInterface() throws JavaModelException {
+public boolean isInterface() throws JavaScriptModelException {
 	return getType().isInterface();
 }
 /**
@@ -648,12 +648,12 @@ private IStatus validateClassFile() {
 	IPackageFragmentRoot root = getPackageFragmentRoot();
 	try {
 		if (root.getKind() != IPackageFragmentRoot.K_BINARY)
-			return new JavaModelStatus(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, root);
-	} catch (JavaModelException e) {
-		return e.getJavaModelStatus();
+			return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, root);
+	} catch (JavaScriptModelException e) {
+		return e.getJavaScriptModelStatus();
 	}
-	IJavaProject project = getJavaProject();
-	return JavaConventions.validateClassFileName(getElementName(), project.getOption(JavaCore.COMPILER_SOURCE, true), project.getOption(JavaCore.COMPILER_COMPLIANCE, true));
+	IJavaScriptProject project = getJavaScriptProject();
+	return JavaScriptConventions.validateClassFileName(getElementName(), project.getOption(JavaScriptCore.COMPILER_SOURCE, true), project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true));
 }
 /**
  * Opens and returns buffer on the source code associated with this class file.
@@ -663,7 +663,7 @@ private IStatus validateClassFile() {
  *
  * @see Openable
  */
-protected IBuffer openBuffer(IProgressMonitor pm, Object info) throws JavaModelException {
+protected IBuffer openBuffer(IProgressMonitor pm, Object info) throws JavaScriptModelException {
 	SourceMapper mapper = getSourceMapper();
 	if (mapper != null) {
 		return mapSource(mapper, info instanceof IBinaryType ? (IBinaryType) info : null);
@@ -788,7 +788,7 @@ public static char[] translatedName(char[] name) {
  * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, org.eclipse.wst.jsdt.core.ICodeCompletionRequestor)
  * @deprecated - should use codeComplete(int, ICompletionRequestor) instead
  */
-public void codeComplete(int offset, final org.eclipse.wst.jsdt.core.ICodeCompletionRequestor requestor) throws JavaModelException {
+public void codeComplete(int offset, final org.eclipse.wst.jsdt.core.ICodeCompletionRequestor requestor) throws JavaScriptModelException {
 
 	if (requestor == null){
 		codeComplete(offset, (ICompletionRequestor)null);
@@ -853,7 +853,7 @@ public IField getField(String fieldName) {
 /*
  * @see IType#getFields()
  */
-public IField[] getFields() throws JavaModelException {
+public IField[] getFields() throws JavaScriptModelException {
 	ArrayList list = getChildrenOfType(FIELD);
 	int size;
 	if ((size = list.size()) == 0) {
@@ -864,7 +864,14 @@ public IField[] getFields() throws JavaModelException {
 		return array;
 	}
 }
-public IMethod getMethod(String selector, String[] parameterTypeSignatures) {
+/**
+ * @deprecated Use {@link #getFunction(String,String[])} instead
+ */
+public IFunction getMethod(String selector, String[] parameterTypeSignatures) {
+	return getFunction(selector, parameterTypeSignatures);
+}
+
+public IFunction getFunction(String selector, String[] parameterTypeSignatures) {
 	return new SourceMethod(this, selector, parameterTypeSignatures);
 }
 
@@ -875,19 +882,29 @@ public IType getType(String typeName) {
 /*
  * @see IType#getMethods()
  */
-public IMethod[] getMethods() throws JavaModelException {
+/**
+ * @deprecated Use {@link #getFunctions()} instead
+ */
+public IFunction[] getMethods() throws JavaScriptModelException {
+	return getFunctions();
+}
+
+/*
+ * @see IType#getMethods()
+ */
+public IFunction[] getFunctions() throws JavaScriptModelException {
 	ArrayList list = getChildrenOfType(METHOD);
 	int size;
 	if ((size = list.size()) == 0) {
 		return NO_METHODS;
 	} else {
-		IMethod[] array= new IMethod[size];
+		IFunction[] array= new IFunction[size];
 		list.toArray(array);
 		return array;
 	}
 }
 
-public IType[] getTypes() throws JavaModelException {
+public IType[] getTypes() throws JavaScriptModelException {
 	ArrayList list = getChildrenOfType(TYPE);
 	IType[] array= new IType[list.size()];
 	list.toArray(array);
@@ -922,7 +939,7 @@ public IType[] getTypes() throws JavaModelException {
 
 			JsGlobalScopeContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
 			if(init==null) return super.getDisplayName();
-			return init.getDescription(new Path(getElementName()), getJavaProject());
+			return init.getDescription(new Path(getElementName()), getJavaScriptProject());
 		}
 		return super.getDisplayName();
 	}
@@ -930,7 +947,7 @@ public IType[] getTypes() throws JavaModelException {
 	public URI getHostPath() {
 		if(isVirtual()) {
 			JsGlobalScopeContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
-			if(init!=null) return init.getHostPath(new Path(getElementName()), getJavaProject());
+			if(init!=null) return init.getHostPath(new Path(getElementName()), getJavaScriptProject());
 		}
 		return null;
 	}
@@ -950,7 +967,7 @@ public IType[] getTypes() throws JavaModelException {
 		return null;
 	}
 
-	public SearchableEnvironment newSearchableNameEnvironment(WorkingCopyOwner owner) throws JavaModelException {
+	public SearchableEnvironment newSearchableNameEnvironment(WorkingCopyOwner owner) throws JavaScriptModelException {
 		SearchableEnvironment env=super.newSearchableNameEnvironment(owner);
 		env.setCompilationUnit(this);
 		return env;

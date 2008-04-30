@@ -14,8 +14,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CopyRefactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgDestinationValidator;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaCopyProcessor;
 
@@ -50,7 +50,7 @@ public class ReorgCopyWizard extends RefactoringWizard {
 			return getCopyProcessor().getCommonParentForInputElements();
 		}
 
-		protected IJavaElement[] getJavaElements() {
+		protected IJavaScriptElement[] getJavaElements() {
 			return getCopyProcessor().getJavaElements();
 		}
 
@@ -62,9 +62,9 @@ public class ReorgCopyWizard extends RefactoringWizard {
 			return getCopyProcessor();
 		}
 		
-		protected RefactoringStatus verifyDestination(Object selected) throws JavaModelException{
-			if (selected instanceof IJavaElement)
-				return getCopyProcessor().setDestination((IJavaElement)selected);
+		protected RefactoringStatus verifyDestination(Object selected) throws JavaScriptModelException{
+			if (selected instanceof IJavaScriptElement)
+				return getCopyProcessor().setDestination((IJavaScriptElement)selected);
 			if (selected instanceof IResource)
 				return getCopyProcessor().setDestination((IResource)selected);
 			return RefactoringStatus.createFatalErrorStatus(ReorgMessages.ReorgCopyWizard_2); 

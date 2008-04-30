@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.ide.dialogs.PathVariableSelectionDialog;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
@@ -55,7 +55,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class LinkFolderDialog extends StatusDialog {
     private final class FolderNameField extends Observable implements IDialogFieldListener {
@@ -102,7 +102,7 @@ public class LinkFolderDialog extends StatusDialog {
     private final class LinkFields extends Observable implements IStringButtonAdapter, IDialogFieldListener{
         private StringButtonDialogField fLinkLocation;
         
-        private static final String DIALOGSTORE_LAST_EXTERNAL_LOC= JavaUI.ID_PLUGIN + ".last.external.project"; //$NON-NLS-1$
+        private static final String DIALOGSTORE_LAST_EXTERNAL_LOC= JavaScriptUI.ID_PLUGIN + ".last.external.project"; //$NON-NLS-1$
         
         public LinkFields(Composite parent, int numColumns) {
             createControls(parent, numColumns);
@@ -147,7 +147,7 @@ public class LinkFolderDialog extends StatusDialog {
             dialog.setMessage(NewWizardMessages.JavaProjectWizardFirstPage_directory_message); 
             String directoryName = getLinkTarget().trim();
             if (directoryName.length() == 0) {
-                String prevLocation= JavaPlugin.getDefault().getDialogSettings().get(DIALOGSTORE_LAST_EXTERNAL_LOC);
+                String prevLocation= JavaScriptPlugin.getDefault().getDialogSettings().get(DIALOGSTORE_LAST_EXTERNAL_LOC);
                 if (prevLocation != null) {
                     directoryName= prevLocation;
                 }
@@ -164,7 +164,7 @@ public class LinkFolderDialog extends StatusDialog {
                 if (fName == null) {
                 	fFolderNameField.setText(selectedDirectory.substring(selectedDirectory.lastIndexOf(File.separatorChar) + 1));
                 }
-                JavaPlugin.getDefault().getDialogSettings().put(DIALOGSTORE_LAST_EXTERNAL_LOC, selectedDirectory);
+                JavaScriptPlugin.getDefault().getDialogSettings().put(DIALOGSTORE_LAST_EXTERNAL_LOC, selectedDirectory);
             }
         }
         
@@ -224,7 +224,7 @@ public class LinkFolderDialog extends StatusDialog {
 		 *  specified link target is valid given the linkHandle.
 		 */
 		private IStatus validateLinkLocation(String name) {
-			IWorkspace workspace= JavaPlugin.getWorkspace();
+			IWorkspace workspace= JavaScriptPlugin.getWorkspace();
 			IPath path= Path.fromOSString(fDependenciesGroup.getLinkTarget());
 
 			IStatus locationStatus= workspace.validateLinkLocation(fContainer.getFolder(new Path(name)), path);
@@ -460,7 +460,7 @@ public class LinkFolderDialog extends StatusDialog {
                                 .getStatus());
             } else {
                 // CoreExceptions are handled above, but unexpected runtime exceptions and errors may still occur.
-                JavaPlugin.log(new Exception(Messages.format(
+                JavaScriptPlugin.log(new Exception(Messages.format(
                         "Exception in {0}.createNewFolder(): {1}", //$NON-NLS-1$
                         new Object[] { getClass().getName(),
                                 exception.getTargetException() })));

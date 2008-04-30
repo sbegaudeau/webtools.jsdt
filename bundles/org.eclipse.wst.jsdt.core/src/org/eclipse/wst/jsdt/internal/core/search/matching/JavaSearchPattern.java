@@ -11,11 +11,11 @@
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.wst.jsdt.core.BindingKey;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
@@ -108,7 +108,7 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 	 * Extract method arguments using unique key for parameterized methods
 	 * and type parameters for non-generic ones.
 	 */
-	char[][] extractMethodArguments(IMethod method) {
+	char[][] extractMethodArguments(IFunction method) {
 		String[] argumentsSignatures = null;
 		BindingKey key;
 		if (method.isResolved() && (key = new BindingKey(method.getKey())).isParameterizedType()) {
@@ -127,7 +127,7 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 					}
 				}
 			}
-			catch (JavaModelException jme) {
+			catch (JavaScriptModelException jme) {
 				// do nothing
 			}
 			return null;
@@ -314,9 +314,9 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 			int ptr = -1;
 			boolean hasParameters = false;
 			try {
-				IJavaElement parent = type;
+				IJavaScriptElement parent = type;
 				ITypeParameter[] parameters = null;
-				while (parent != null && parent.getElementType() == IJavaElement.TYPE) {
+				while (parent != null && parent.getElementType() == IJavaScriptElement.TYPE) {
 					if (++ptr > typeParameters.length) {
 						System.arraycopy(typeParameters, 0, typeParameters = new char[typeParameters.length+10][][], 0, ptr);
 					}
@@ -334,7 +334,7 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 					parent = parent.getParent();
 				}
 			}
-			catch (JavaModelException jme) {
+			catch (JavaScriptModelException jme) {
 				return;
 			}
 			// Store type arguments if any

@@ -13,12 +13,12 @@ package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Block;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
@@ -35,7 +35,7 @@ public class ModifierChangeCompletionProposal extends LinkedCorrectionProposal {
 	private int fIncludedModifiers;
 	private int fExcludedModifiers;
 
-	public ModifierChangeCompletionProposal(String label, ICompilationUnit targetCU, IBinding binding, ASTNode node, int includedModifiers, int excludedModifiers, int relevance, Image image) {
+	public ModifierChangeCompletionProposal(String label, IJavaScriptUnit targetCU, IBinding binding, ASTNode node, int includedModifiers, int excludedModifiers, int relevance, Image image) {
 		super(label, targetCU, null, relevance, image);
 		fBinding= binding;
 		fNode= node;
@@ -44,7 +44,7 @@ public class ModifierChangeCompletionProposal extends LinkedCorrectionProposal {
 	}
 
 	protected ASTRewrite getRewrite() {
-		CompilationUnit astRoot= ASTResolving.findParentCompilationUnit(fNode);
+		JavaScriptUnit astRoot= ASTResolving.findParentCompilationUnit(fNode);
 		ASTNode boundNode= astRoot.findDeclaringNode(fBinding);
 		ASTNode declNode= null;
 
@@ -55,7 +55,7 @@ public class ModifierChangeCompletionProposal extends LinkedCorrectionProposal {
 		} else {
 			selectionDescription= new TextEditGroup("selection"); // in different CU, needs selection //$NON-NLS-1$
 			//setSelectionDescription(selectionDescription);
-			CompilationUnit newRoot= ASTResolving.createQuickFixAST(getCompilationUnit(), null);
+			JavaScriptUnit newRoot= ASTResolving.createQuickFixAST(getCompilationUnit(), null);
 			declNode= newRoot.findDeclaringNode(fBinding.getKey());
 		}
 		if (declNode != null) {

@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.IThreadListener;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 
 /**
@@ -80,7 +80,7 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress, IThreadL
 	 */
 	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		try {
-			JavaCore.run(fWorkspaceRunnable, fRule, monitor);
+			JavaScriptCore.run(fWorkspaceRunnable, fRule, monitor);
 		} catch (OperationCanceledException e) {
 			throw new InterruptedException(e.getMessage());
 		} catch (CoreException e) {

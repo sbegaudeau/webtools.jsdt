@@ -34,7 +34,7 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.CloseResourceAction;
 import org.eclipse.ui.actions.CloseUnrelatedProjectsAction;
 import org.eclipse.ui.ide.IDEActionFactory;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
 /**
@@ -118,8 +118,8 @@ public class ProjectActionGroup extends ActionGroup {
 		int status= 0;
 		for (int i= 0; i < array.length; i++) {
 			Object curr= array[i];
-			if (curr instanceof IJavaProject) {
-				curr= ((IJavaProject) curr).getProject();
+			if (curr instanceof IJavaScriptProject) {
+				curr= ((IJavaScriptProject) curr).getProject();
 			}
 			if (curr instanceof IProject) {
 				IProject project= (IProject) curr;

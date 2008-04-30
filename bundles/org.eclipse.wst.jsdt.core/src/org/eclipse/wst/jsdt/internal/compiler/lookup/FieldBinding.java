@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
@@ -66,7 +66,7 @@ public final boolean canBeSeenBy(PackageBinding invocationPackage) {
 */
 
 public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invocationSite, Scope scope) {
-	if (isPublic() || !JavaCore.IS_ECMASCRIPT4) return true;
+	if (isPublic() || !JavaScriptCore.IS_ECMASCRIPT4) return true;
 
 	SourceTypeBinding invocationType = scope.enclosingSourceType();
 	if (invocationType == declaringClass && invocationType == receiverType) return true;

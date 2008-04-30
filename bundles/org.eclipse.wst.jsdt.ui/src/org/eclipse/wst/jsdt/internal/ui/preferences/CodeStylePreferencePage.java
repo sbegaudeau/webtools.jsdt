@@ -17,7 +17,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /*
  * The page to configure the naming style options.
@@ -30,7 +30,7 @@ public class CodeStylePreferencePage extends PropertyAndPreferencePage implement
 	private NameConventionConfigurationBlock fConfigurationBlock;
 
 	public CodeStylePreferencePage() {
-		setPreferenceStore(JavaPlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(JavaScriptPlugin.getDefault().getPreferenceStore());
 		//setDescription(PreferencesMessages.getString("CodeStylePreferencePage.description")); //$NON-NLS-1$
 		
 		// only used when page is shown programatically

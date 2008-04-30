@@ -19,12 +19,12 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public abstract class FormatterTabPage extends ModifyDialogTabPage {
 	
-	private final static String SHOW_INVISIBLE_PREFERENCE_KEY= JavaUI.ID_PLUGIN + ".formatter_page.show_invisible_characters"; //$NON-NLS-1$
+	private final static String SHOW_INVISIBLE_PREFERENCE_KEY= JavaScriptUI.ID_PLUGIN + ".formatter_page.show_invisible_characters"; //$NON-NLS-1$
 	
 	private JavaPreview fPreview;
 	private final IDialogSettings fDialogSettings;
@@ -33,7 +33,7 @@ public abstract class FormatterTabPage extends ModifyDialogTabPage {
 	public FormatterTabPage(IModificationListener modifyListener, Map workingValues) {
 		super(modifyListener, workingValues);
 		
-		fDialogSettings= JavaPlugin.getDefault().getDialogSettings();
+		fDialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();
 	}
 
 	protected Composite doCreatePreviewPane(Composite composite, int numColumns) {

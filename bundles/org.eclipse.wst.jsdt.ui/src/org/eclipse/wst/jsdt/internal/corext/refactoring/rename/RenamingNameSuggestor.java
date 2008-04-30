@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaWordIterator;
 
 import com.ibm.icu.text.BreakIterator;
@@ -106,10 +106,10 @@ public class RenamingNameSuggestor {
 	 * better matching of special cases:
 	 * 
 	 * a) Special treatment of leading "I"s in type names, i.e. interface names
-	 * 	  like "IJavaElement". If the corresponding flag is set, leading "I"s are
+	 * 	  like "IJavaScriptElement". If the corresponding flag is set, leading "I"s are
 	 * 	  stripped from type names if the second char is also uppercase to allow
 	 * 	  exact matching of variable names like "javaElement" for type
-	 * 	  "IJavaElement". Note that embedded matching already matches cases like
+	 * 	  "IJavaScriptElement". Note that embedded matching already matches cases like
 	 * 	  this.
 	 * 
 	 * b) Special treatment of all-uppercase type names or all-uppercase type
@@ -172,7 +172,7 @@ public class RenamingNameSuggestor {
 		resetPrefixes();
 	}
 
-	public String suggestNewFieldName(IJavaProject project, String oldFieldName, boolean isStatic, String oldTypeName, String newTypeName) {
+	public String suggestNewFieldName(IJavaScriptProject project, String oldFieldName, boolean isStatic, String oldTypeName, String newTypeName) {
 
 		initializePrefixesAndSuffixes(project);
 
@@ -182,7 +182,7 @@ public class RenamingNameSuggestor {
 			return suggestNewVariableName(fFieldPrefixes, fFieldSuffixes, oldFieldName, oldTypeName, newTypeName);
 	}
 
-	public String suggestNewLocalName(IJavaProject project, String oldLocalName, boolean isArgument, String oldTypeName, String newTypeName) {
+	public String suggestNewLocalName(IJavaScriptProject project, String oldLocalName, boolean isArgument, String oldTypeName, String newTypeName) {
 
 		initializePrefixesAndSuffixes(project);
 
@@ -551,18 +551,18 @@ public class RenamingNameSuggestor {
 		fArgumentSuffixes= empty;
 	}
 
-	private void initializePrefixesAndSuffixes(IJavaProject project) {
-		fFieldPrefixes= readCommaSeparatedPreference(project, JavaCore.CODEASSIST_FIELD_PREFIXES);
-		fFieldSuffixes= readCommaSeparatedPreference(project, JavaCore.CODEASSIST_FIELD_SUFFIXES);
-		fStaticFieldPrefixes= readCommaSeparatedPreference(project, JavaCore.CODEASSIST_STATIC_FIELD_PREFIXES);
-		fStaticFieldSuffixes= readCommaSeparatedPreference(project, JavaCore.CODEASSIST_STATIC_FIELD_SUFFIXES);
-		fLocalPrefixes= readCommaSeparatedPreference(project, JavaCore.CODEASSIST_LOCAL_PREFIXES);
-		fLocalSuffixes= readCommaSeparatedPreference(project, JavaCore.CODEASSIST_LOCAL_SUFFIXES);
-		fArgumentPrefixes= readCommaSeparatedPreference(project, JavaCore.CODEASSIST_ARGUMENT_PREFIXES);
-		fArgumentSuffixes= readCommaSeparatedPreference(project, JavaCore.CODEASSIST_ARGUMENT_SUFFIXES);
+	private void initializePrefixesAndSuffixes(IJavaScriptProject project) {
+		fFieldPrefixes= readCommaSeparatedPreference(project, JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+		fFieldSuffixes= readCommaSeparatedPreference(project, JavaScriptCore.CODEASSIST_FIELD_SUFFIXES);
+		fStaticFieldPrefixes= readCommaSeparatedPreference(project, JavaScriptCore.CODEASSIST_STATIC_FIELD_PREFIXES);
+		fStaticFieldSuffixes= readCommaSeparatedPreference(project, JavaScriptCore.CODEASSIST_STATIC_FIELD_SUFFIXES);
+		fLocalPrefixes= readCommaSeparatedPreference(project, JavaScriptCore.CODEASSIST_LOCAL_PREFIXES);
+		fLocalSuffixes= readCommaSeparatedPreference(project, JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES);
+		fArgumentPrefixes= readCommaSeparatedPreference(project, JavaScriptCore.CODEASSIST_ARGUMENT_PREFIXES);
+		fArgumentSuffixes= readCommaSeparatedPreference(project, JavaScriptCore.CODEASSIST_ARGUMENT_SUFFIXES);
 	}
 
-	private String[] readCommaSeparatedPreference(IJavaProject project, String option) {
+	private String[] readCommaSeparatedPreference(IJavaScriptProject project, String option) {
 		String list= project.getOption(option, true);
 		return list == null ? new String[0] : list.split(","); //$NON-NLS-1$
 	}

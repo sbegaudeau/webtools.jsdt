@@ -28,22 +28,22 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.ITypeHierarchyChangedListener;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.core.ClassFile;
 import org.eclipse.wst.jsdt.internal.core.CompilationUnit;
@@ -88,7 +88,7 @@ public class TypeHierarchy implements ITypeHierarchy, IElementChangedListener {
 	 * provides the context for determining a classpath and namelookup rules.
 	 * Possibly null.
 	 */
-	protected IJavaProject project;
+	protected IJavaScriptProject project;
 	/**
 	 * The type the hierarchy was specifically computed for,
 	 * possibly null.
@@ -98,7 +98,7 @@ public class TypeHierarchy implements ITypeHierarchy, IElementChangedListener {
 	/*
 	 * The working copies that take precedence over original compilation units
 	 */
-	protected ICompilationUnit[] workingCopies;
+	protected IJavaScriptUnit[] workingCopies;
 
 	protected Map classToSuperclass;
 	protected Map typeToSuperInterfaces;
@@ -145,7 +145,7 @@ public class TypeHierarchy implements ITypeHierarchy, IElementChangedListener {
 	/**
 	 * The scope this hierarchy should restrain itsef in.
 	 */
-	IJavaSearchScope scope;
+	IJavaScriptSearchScope scope;
 
 	/*
 	 * Whether this hierarchy needs refresh
@@ -166,14 +166,14 @@ public TypeHierarchy() {
 /**
  * Creates a TypeHierarchy on the given type.
  */
-public TypeHierarchy(IType type, ICompilationUnit[] workingCopies, IJavaProject project, boolean computeSubtypes) {
-	this(type, workingCopies, SearchEngine.createJavaSearchScope(new IJavaElement[] {project}), computeSubtypes);
+public TypeHierarchy(IType type, IJavaScriptUnit[] workingCopies, IJavaScriptProject project, boolean computeSubtypes) {
+	this(type, workingCopies, SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {project}), computeSubtypes);
 	this.project = project;
 }
 /**
  * Creates a TypeHierarchy on the given type.
  */
-public TypeHierarchy(IType type, ICompilationUnit[] workingCopies, IJavaSearchScope scope, boolean computeSubtypes) {
+public TypeHierarchy(IType type, IJavaScriptUnit[] workingCopies, IJavaScriptSearchScope scope, boolean computeSubtypes) {
 	this.focusType = type == null ? null : (IType) ((JavaElement) type).unresolved(); // unsure the focus type is unresolved (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=92357)
 	this.workingCopies = workingCopies;
 	this.computeSubtypes = computeSubtypes;
@@ -198,7 +198,7 @@ protected void initializeRegions() {
 		}
 		IPackageFragment pkg = type.getPackageFragment();
 		this.packageRegion.add(pkg);
-		IJavaProject declaringProject = type.getJavaProject();
+		IJavaScriptProject declaringProject = type.getJavaScriptProject();
 		if (declaringProject != null) {
 			this.projectRegion.add(declaringProject);
 		}
@@ -253,9 +253,9 @@ public synchronized void addTypeHierarchyChangedListener(ITypeHierarchyChangedLi
 		this.changeListeners = listeners = new ArrayList();
 	}
 
-	// register with JavaCore to get Java element delta on first listener added
+	// register with JavaScriptCore to get Java element delta on first listener added
 	if (listeners.size() == 0) {
-		JavaCore.addElementChangedListener(this);
+		JavaScriptCore.addElementChangedListener(this);
 	}
 
 	// add listener only if it is not already present
@@ -316,7 +316,7 @@ protected void checkCanceled() {
 /**
  * Compute this type hierarchy.
  */
-protected void compute() throws JavaModelException, CoreException {
+protected void compute() throws JavaScriptModelException, CoreException {
 	if (this.focusType != null) {
 		HierarchyBuilder builder =
 			new IndexBasedHierarchyBuilder(
@@ -326,10 +326,10 @@ protected void compute() throws JavaModelException, CoreException {
 	} // else a RegionBasedTypeHierarchy should be used
 }
 
-//private String typehash(IJavaElement type)
+//private String typehash(IJavaScriptElement type)
 //{
 //	StringBuffer sb=new StringBuffer();
-//	while (type !=null && type.getElementType()!=IJavaElement.JAVA_MODEL)
+//	while (type !=null && type.getElementType()!=IJavaScriptElement.JAVASCRIPT_MODEL)
 //	{
 //		sb.append(type.getElementName());
 //		sb.append(" - ");
@@ -804,7 +804,7 @@ boolean includesTypeOrSupertype(IType type) {
 				if (hasTypeNamed(simpleName)) return true;
 			}
 		}
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// ignore
 	}
 	return false;
@@ -832,19 +832,19 @@ protected void initialize(int size) {
 /**
  * Returns true if the given delta could change this type hierarchy
  */
-public synchronized boolean isAffected(IJavaElementDelta delta) {
-	IJavaElement element= delta.getElement();
+public synchronized boolean isAffected(IJavaScriptElementDelta delta) {
+	IJavaScriptElement element= delta.getElement();
 	switch (element.getElementType()) {
-		case IJavaElement.JAVA_MODEL:
+		case IJavaScriptElement.JAVASCRIPT_MODEL:
 			return isAffectedByJavaModel(delta, element);
-		case IJavaElement.JAVA_PROJECT:
+		case IJavaScriptElement.JAVASCRIPT_PROJECT:
 			return isAffectedByJavaProject(delta, element);
-		case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 			return isAffectedByPackageFragmentRoot(delta, element);
-		case IJavaElement.PACKAGE_FRAGMENT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT:
 			return isAffectedByPackageFragment(delta, (PackageFragment) element);
-		case IJavaElement.CLASS_FILE:
-		case IJavaElement.COMPILATION_UNIT:
+		case IJavaScriptElement.CLASS_FILE:
+		case IJavaScriptElement.JAVASCRIPT_UNIT:
 			return isAffectedByOpenable(delta, element);
 	}
 	return false;
@@ -854,9 +854,9 @@ public synchronized boolean isAffected(IJavaElementDelta delta) {
  * fragment root, or package fragment have changed in a way that
  * effects this type hierarchy.
  */
-private boolean isAffectedByChildren(IJavaElementDelta delta) {
-	if ((delta.getFlags() & IJavaElementDelta.F_CHILDREN) > 0) {
-		IJavaElementDelta[] children= delta.getAffectedChildren();
+private boolean isAffectedByChildren(IJavaScriptElementDelta delta) {
+	if ((delta.getFlags() & IJavaScriptElementDelta.F_CHILDREN) > 0) {
+		IJavaScriptElementDelta[] children= delta.getAffectedChildren();
 		for (int i= 0; i < children.length; i++) {
 			if (isAffected(children[i])) {
 				return true;
@@ -868,12 +868,12 @@ private boolean isAffectedByChildren(IJavaElementDelta delta) {
 /**
  * Returns true if the given java model delta could affect this type hierarchy
  */
-private boolean isAffectedByJavaModel(IJavaElementDelta delta, IJavaElement element) {
+private boolean isAffectedByJavaModel(IJavaScriptElementDelta delta, IJavaScriptElement element) {
 	switch (delta.getKind()) {
-		case IJavaElementDelta.ADDED :
-		case IJavaElementDelta.REMOVED :
-			return element.equals(this.javaProject().getJavaModel());
-		case IJavaElementDelta.CHANGED :
+		case IJavaScriptElementDelta.ADDED :
+		case IJavaScriptElementDelta.REMOVED :
+			return element.equals(this.javaProject().getJavaScriptModel());
+		case IJavaScriptElementDelta.CHANGED :
 			return isAffectedByChildren(delta);
 	}
 	return false;
@@ -881,22 +881,22 @@ private boolean isAffectedByJavaModel(IJavaElementDelta delta, IJavaElement elem
 /**
  * Returns true if the given java project delta could affect this type hierarchy
  */
-private boolean isAffectedByJavaProject(IJavaElementDelta delta, IJavaElement element) {
+private boolean isAffectedByJavaProject(IJavaScriptElementDelta delta, IJavaScriptElement element) {
     int kind = delta.getKind();
     int flags = delta.getFlags();
-    if ((flags & IJavaElementDelta.F_OPENED) != 0) {
-        kind = IJavaElementDelta.ADDED; // affected in the same way
+    if ((flags & IJavaScriptElementDelta.F_OPENED) != 0) {
+        kind = IJavaScriptElementDelta.ADDED; // affected in the same way
     }
-    if ((flags & IJavaElementDelta.F_CLOSED) != 0) {
-        kind = IJavaElementDelta.REMOVED; // affected in the same way
+    if ((flags & IJavaScriptElementDelta.F_CLOSED) != 0) {
+        kind = IJavaScriptElementDelta.REMOVED; // affected in the same way
     }
 	switch (kind) {
-		case IJavaElementDelta.ADDED :
+		case IJavaScriptElementDelta.ADDED :
 			try {
 				// if the added project is on the classpath, then the hierarchy has changed
-				IClasspathEntry[] classpath = ((JavaProject)this.javaProject()).getExpandedClasspath();
+				IIncludePathEntry[] classpath = ((JavaProject)this.javaProject()).getExpandedClasspath();
 				for (int i = 0; i < classpath.length; i++) {
-					if (classpath[i].getEntryKind() == IClasspathEntry.CPE_PROJECT
+					if (classpath[i].getEntryKind() == IIncludePathEntry.CPE_PROJECT
 							&& classpath[i].getPath().equals(element.getPath())) {
 						return true;
 					}
@@ -906,28 +906,28 @@ private boolean isAffectedByJavaProject(IJavaElementDelta delta, IJavaElement el
 					classpath = ((JavaProject)element).getExpandedClasspath();
 					IPath hierarchyProject = javaProject().getPath();
 					for (int i = 0; i < classpath.length; i++) {
-						if (classpath[i].getEntryKind() == IClasspathEntry.CPE_PROJECT
+						if (classpath[i].getEntryKind() == IIncludePathEntry.CPE_PROJECT
 								&& classpath[i].getPath().equals(hierarchyProject)) {
 							return true;
 						}
 					}
 				}
 				return false;
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return false;
 			}
-		case IJavaElementDelta.REMOVED :
+		case IJavaScriptElementDelta.REMOVED :
 			// removed project - if it contains packages we are interested in
 			// then the type hierarchy has changed
-			IJavaElement[] pkgs = this.packageRegion.getElements();
+			IJavaScriptElement[] pkgs = this.packageRegion.getElements();
 			for (int i = 0; i < pkgs.length; i++) {
-				IJavaProject javaProject = pkgs[i].getJavaProject();
+				IJavaScriptProject javaProject = pkgs[i].getJavaScriptProject();
 				if (javaProject != null && javaProject.equals(element)) {
 					return true;
 				}
 			}
 			return false;
-		case IJavaElementDelta.CHANGED :
+		case IJavaScriptElementDelta.CHANGED :
 			return isAffectedByChildren(delta);
 	}
 	return false;
@@ -935,16 +935,16 @@ private boolean isAffectedByJavaProject(IJavaElementDelta delta, IJavaElement el
 /**
  * Returns true if the given package fragment delta could affect this type hierarchy
  */
-private boolean isAffectedByPackageFragment(IJavaElementDelta delta, PackageFragment element) {
+private boolean isAffectedByPackageFragment(IJavaScriptElementDelta delta, PackageFragment element) {
 	switch (delta.getKind()) {
-		case IJavaElementDelta.ADDED :
+		case IJavaScriptElementDelta.ADDED :
 			// if the package fragment is in the projects being considered, this could
 			// introduce new types, changing the hierarchy
 			return this.projectRegion.contains(element);
-		case IJavaElementDelta.REMOVED :
+		case IJavaScriptElementDelta.REMOVED :
 			// is a change if the package fragment contains types in this hierarchy
 			return packageRegionContainsSamePackageFragment(element);
-		case IJavaElementDelta.CHANGED :
+		case IJavaScriptElementDelta.CHANGED :
 			// look at the files in the package fragment
 			return isAffectedByChildren(delta);
 	}
@@ -953,38 +953,38 @@ private boolean isAffectedByPackageFragment(IJavaElementDelta delta, PackageFrag
 /**
  * Returns true if the given package fragment root delta could affect this type hierarchy
  */
-private boolean isAffectedByPackageFragmentRoot(IJavaElementDelta delta, IJavaElement element) {
+private boolean isAffectedByPackageFragmentRoot(IJavaScriptElementDelta delta, IJavaScriptElement element) {
 	switch (delta.getKind()) {
-		case IJavaElementDelta.ADDED :
+		case IJavaScriptElementDelta.ADDED :
 			return this.projectRegion.contains(element);
-		case IJavaElementDelta.REMOVED :
-		case IJavaElementDelta.CHANGED :
+		case IJavaScriptElementDelta.REMOVED :
+		case IJavaScriptElementDelta.CHANGED :
 			int flags = delta.getFlags();
-			if ((flags & IJavaElementDelta.F_ADDED_TO_CLASSPATH) > 0) {
+			if ((flags & IJavaScriptElementDelta.F_ADDED_TO_CLASSPATH) > 0) {
 				// check if the root is in the classpath of one of the projects of this hierarchy
 				if (this.projectRegion != null) {
 					IPackageFragmentRoot root = (IPackageFragmentRoot)element;
 					IPath rootPath = root.getPath();
-					IJavaElement[] elements = this.projectRegion.getElements();
+					IJavaScriptElement[] elements = this.projectRegion.getElements();
 					for (int i = 0; i < elements.length; i++) {
 						JavaProject javaProject = (JavaProject)elements[i];
 						try {
-							IClasspathEntry entry = javaProject.getClasspathEntryFor(rootPath);
+							IIncludePathEntry entry = javaProject.getClasspathEntryFor(rootPath);
 							if (entry != null) {
 								return true;
 							}
-						} catch (JavaModelException e) {
+						} catch (JavaScriptModelException e) {
 							// igmore this project
 						}
 					}
 				}
 			}
-			if ((flags & IJavaElementDelta.F_REMOVED_FROM_CLASSPATH) > 0 || (flags & IJavaElementDelta.F_CONTENT) > 0) {
+			if ((flags & IJavaScriptElementDelta.F_REMOVED_FROM_CLASSPATH) > 0 || (flags & IJavaScriptElementDelta.F_CONTENT) > 0) {
 				// 1. removed from classpath - if it contains packages we are interested in
 				// the the type hierarchy has changed
 				// 2. content of a jar changed - if it contains packages we are interested in
 				// the the type hierarchy has changed
-				IJavaElement[] pkgs = this.packageRegion.getElements();
+				IJavaScriptElement[] pkgs = this.packageRegion.getElements();
 				for (int i = 0; i < pkgs.length; i++) {
 					if (pkgs[i].getParent().equals(element)) {
 						return true;
@@ -999,7 +999,7 @@ private boolean isAffectedByPackageFragmentRoot(IJavaElementDelta delta, IJavaEl
  * Returns true if the given type delta (a compilation unit delta or a class file delta)
  * could affect this type hierarchy.
  */
-protected boolean isAffectedByOpenable(IJavaElementDelta delta, IJavaElement element) {
+protected boolean isAffectedByOpenable(IJavaScriptElementDelta delta, IJavaScriptElement element) {
 	if (element instanceof CompilationUnit) {
 		CompilationUnit cu = (CompilationUnit)element;
 		ChangeCollector collector = this.changeCollector;
@@ -1008,7 +1008,7 @@ protected boolean isAffectedByOpenable(IJavaElementDelta delta, IJavaElement ele
 		}
 		try {
 			collector.addChange(cu, delta);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			if (DEBUG)
 				e.printStackTrace();
 		}
@@ -1021,9 +1021,9 @@ protected boolean isAffectedByOpenable(IJavaElementDelta delta, IJavaElement ele
 		}
 	} else if (element instanceof ClassFile) {
 		switch (delta.getKind()) {
-			case IJavaElementDelta.REMOVED:
+			case IJavaScriptElementDelta.REMOVED:
 				return this.files.get(element) != null;
-			case IJavaElementDelta.ADDED:
+			case IJavaScriptElementDelta.ADDED:
 				IType type = ((ClassFile)element).getType();
 				String typeName = type.getElementName();
 				if (hasSupertype(typeName)
@@ -1033,15 +1033,15 @@ protected boolean isAffectedByOpenable(IJavaElementDelta delta, IJavaElement ele
 					return true;
 				}
 				break;
-			case IJavaElementDelta.CHANGED:
-				IJavaElementDelta[] children = delta.getAffectedChildren();
+			case IJavaScriptElementDelta.CHANGED:
+				IJavaScriptElementDelta[] children = delta.getAffectedChildren();
 				for (int i = 0, length = children.length; i < length; i++) {
-					IJavaElementDelta child = children[i];
-					IJavaElement childElement = child.getElement();
+					IJavaScriptElementDelta child = children[i];
+					IJavaScriptElement childElement = child.getElement();
 					if (childElement instanceof IType) {
 						type = (IType)childElement;
-						boolean hasVisibilityChange = (delta.getFlags() & IJavaElementDelta.F_MODIFIERS) > 0;
-						boolean hasSupertypeChange = (delta.getFlags() & IJavaElementDelta.F_SUPER_TYPES) > 0;
+						boolean hasVisibilityChange = (delta.getFlags() & IJavaScriptElementDelta.F_MODIFIERS) > 0;
+						boolean hasSupertypeChange = (delta.getFlags() & IJavaScriptElementDelta.F_SUPER_TYPES) > 0;
 						if ((hasVisibilityChange && hasSupertype(type.getElementName()))
 								|| (hasSupertypeChange && includesTypeOrSupertype(type))) {
 							return true;
@@ -1058,7 +1058,7 @@ private boolean isInterface(IType type) {
 	if (flags == -1) {
 		try {
 			return type.isInterface();
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return false;
 		}
 	} else {
@@ -1068,13 +1068,13 @@ private boolean isInterface(IType type) {
 /**
  * Returns the java project this hierarchy was created in.
  */
-public IJavaProject javaProject() {
-	return this.focusType.getJavaProject();
+public IJavaScriptProject javaProject() {
+	return this.focusType.getJavaScriptProject();
 }
-protected static byte[] readUntil(InputStream input, byte separator) throws JavaModelException, IOException{
+protected static byte[] readUntil(InputStream input, byte separator) throws JavaScriptModelException, IOException{
 	return readUntil(input, separator, 0);
 }
-protected static byte[] readUntil(InputStream input, byte separator, int offset) throws IOException, JavaModelException{
+protected static byte[] readUntil(InputStream input, byte separator, int offset) throws IOException, JavaScriptModelException{
 	int length = 0;
 	byte[] bytes = new byte[SIZE];
 	byte b;
@@ -1085,12 +1085,12 @@ protected static byte[] readUntil(InputStream input, byte separator, int offset)
 		bytes[length++] = b;
 	}
 	if(b == -1) {
-		throw new JavaModelException(new JavaModelStatus(IStatus.ERROR));
+		throw new JavaScriptModelException(new JavaModelStatus(IStatus.ERROR));
 	}
 	System.arraycopy(bytes, 0, bytes = new byte[length + offset], offset, length);
 	return bytes;
 }
-public static ITypeHierarchy load(IType type, InputStream input, WorkingCopyOwner owner) throws JavaModelException {
+public static ITypeHierarchy load(IType type, InputStream input, WorkingCopyOwner owner) throws JavaScriptModelException {
 	try {
 		TypeHierarchy typeHierarchy = new TypeHierarchy();
 		typeHierarchy.initialize(1);
@@ -1101,7 +1101,7 @@ public static ITypeHierarchy load(IType type, InputStream input, WorkingCopyOwne
 		byte version = (byte)input.read();
 
 		if(version != VERSION) {
-			throw new JavaModelException(new JavaModelStatus(IStatus.ERROR));
+			throw new JavaScriptModelException(new JavaModelStatus(IStatus.ERROR));
 		}
 		byte generalInfo = (byte)input.read();
 		if((generalInfo & COMPUTE_SUBTYPES) != 0) {
@@ -1114,8 +1114,8 @@ public static ITypeHierarchy load(IType type, InputStream input, WorkingCopyOwne
 		// read project
 		bytes = readUntil(input, SEPARATOR1);
 		if(bytes.length > 0) {
-			typeHierarchy.project = (IJavaProject)JavaCore.create(new String(bytes));
-			typeHierarchy.scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {typeHierarchy.project});
+			typeHierarchy.project = (IJavaScriptProject)JavaScriptCore.create(new String(bytes));
+			typeHierarchy.scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {typeHierarchy.project});
 		} else {
 			typeHierarchy.project = null;
 			typeHierarchy.scope = SearchEngine.createWorkspaceScope();
@@ -1144,7 +1144,7 @@ public static ITypeHierarchy load(IType type, InputStream input, WorkingCopyOwne
 		while((b = (byte)input.read()) != SEPARATOR1 && b != -1) {
 			bytes = readUntil(input, SEPARATOR4, 1);
 			bytes[0] = b;
-			IType element = (IType)JavaCore.create(new String(bytes), owner);
+			IType element = (IType)JavaScriptCore.create(new String(bytes), owner);
 
 			if(types.length == typeCount) {
 				System.arraycopy(types, 0, types = new IType[typeCount * 2], 0, typeCount);
@@ -1166,7 +1166,7 @@ public static ITypeHierarchy load(IType type, InputStream input, WorkingCopyOwne
 			}
 			if((info & COMPUTED_FOR) != 0) {
 				if(!element.equals(type)) {
-					throw new JavaModelException(new JavaModelStatus(IStatus.ERROR));
+					throw new JavaScriptModelException(new JavaModelStatus(IStatus.ERROR));
 				}
 				typeHierarchy.focusType = element;
 			}
@@ -1221,11 +1221,11 @@ public static ITypeHierarchy load(IType type, InputStream input, WorkingCopyOwne
 				superInterfaces);
 		}
 		if(b == -1) {
-			throw new JavaModelException(new JavaModelStatus(IStatus.ERROR));
+			throw new JavaScriptModelException(new JavaModelStatus(IStatus.ERROR));
 		}
 		return typeHierarchy;
 	} catch(IOException e){
-		throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
+		throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.IO_EXCEPTION);
 	}
 }
 /**
@@ -1233,7 +1233,7 @@ public static ITypeHierarchy load(IType type, InputStream input, WorkingCopyOwne
  * region. Package fragments are equivalent if they both have the same name.
  */
 protected boolean packageRegionContainsSamePackageFragment(PackageFragment element) {
-	IJavaElement[] pkgs = this.packageRegion.getElements();
+	IJavaScriptElement[] pkgs = this.packageRegion.getElements();
 	for (int i = 0; i < pkgs.length; i++) {
 		PackageFragment pkg = (PackageFragment) pkgs[i];
 		if (Util.equalArraysOrNull(pkg.names, element.names))
@@ -1245,9 +1245,9 @@ protected boolean packageRegionContainsSamePackageFragment(PackageFragment eleme
 /**
  * @see ITypeHierarchy
  * TODO (jerome) should use a PerThreadObject to build the hierarchy instead of synchronizing
- * (see also isAffected(IJavaElementDelta))
+ * (see also isAffected(IJavaScriptElementDelta))
  */
-public synchronized void refresh(IProgressMonitor monitor) throws JavaModelException {
+public synchronized void refresh(IProgressMonitor monitor) throws JavaScriptModelException {
 	try {
 		this.progressMonitor = monitor;
 		if (monitor != null) {
@@ -1283,10 +1283,10 @@ public synchronized void refresh(IProgressMonitor monitor) throws JavaModelExcep
 			}
 			System.out.println(this.toString());
 		}
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		throw e;
 	} catch (CoreException e) {
-		throw new JavaModelException(e);
+		throw new JavaScriptModelException(e);
 	} finally {
 		if (monitor != null) {
 			monitor.done();
@@ -1305,15 +1305,15 @@ public synchronized void removeTypeHierarchyChangedListener(ITypeHierarchyChange
 	}
 	listeners.remove(listener);
 
-	// deregister from JavaCore on last listener removed
+	// deregister from JavaScriptCore on last listener removed
 	if (listeners.isEmpty()) {
-		JavaCore.removeElementChangedListener(this);
+		JavaScriptCore.removeElementChangedListener(this);
 	}
 }
 /**
  * @see ITypeHierarchy
  */
-public void store(OutputStream output, IProgressMonitor monitor) throws JavaModelException {
+public void store(OutputStream output, IProgressMonitor monitor) throws JavaScriptModelException {
 	try {
 		// compute types in hierarchy
 		Hashtable hashtable = new Hashtable();
@@ -1415,8 +1415,8 @@ public void store(OutputStream output, IProgressMonitor monitor) throws JavaMode
 		types = this.classToSuperclass.entrySet().toArray();
 		for (int i = 0; i < types.length; i++) {
 			Map.Entry entry = (Map.Entry) types[i];
-			IJavaElement key = (IJavaElement) entry.getKey();
-			IJavaElement value = (IJavaElement) entry.getValue();
+			IJavaScriptElement key = (IJavaScriptElement) entry.getKey();
+			IJavaScriptElement value = (IJavaScriptElement) entry.getValue();
 
 			output.write(((Integer)hashtable.get(key)).toString().getBytes());
 			output.write('>');
@@ -1429,14 +1429,14 @@ public void store(OutputStream output, IProgressMonitor monitor) throws JavaMode
 		types = this.typeToSuperInterfaces.entrySet().toArray();
 		for (int i = 0; i < types.length; i++) {
 			Map.Entry entry = (Map.Entry) types[i];
-			IJavaElement key = (IJavaElement) entry.getKey();
-			IJavaElement[] values = (IJavaElement[]) entry.getValue();
+			IJavaScriptElement key = (IJavaScriptElement) entry.getKey();
+			IJavaScriptElement[] values = (IJavaScriptElement[]) entry.getValue();
 
 			if(values.length > 0) {
 				output.write(((Integer)hashtable.get(key)).toString().getBytes());
 				output.write(SEPARATOR3);
 				for (int j = 0; j < values.length; j++) {
-					IJavaElement value = values[j];
+					IJavaScriptElement value = values[j];
 					if(j != 0) output.write(SEPARATOR2);
 					output.write(((Integer)hashtable.get(value)).toString().getBytes());
 				}
@@ -1445,7 +1445,7 @@ public void store(OutputStream output, IProgressMonitor monitor) throws JavaMode
 		}
 		output.write(SEPARATOR1);
 	} catch(IOException e) {
-		throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
+		throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.IO_EXCEPTION);
 	}
 }
 /**
@@ -1458,7 +1458,7 @@ boolean subtypesIncludeSupertypeOf(IType type) {
 	String superclassName = null;
 	try {
 		superclassName = type.getSuperclassName();
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		if (DEBUG) {
 			e.printStackTrace();
 		}
@@ -1479,7 +1479,7 @@ boolean subtypesIncludeSupertypeOf(IType type) {
 	String[] interfaceNames = null;
 	try {
 		interfaceNames = type.getSuperInterfaceNames();
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		if (DEBUG)
 			e.printStackTrace();
 		return false;
@@ -1513,14 +1513,14 @@ public String toString() {
 			toString(buffer, this.focusType, 1, false);
 		} else {
 			buffer.append("Sub types of root classes:\n"); //$NON-NLS-1$
-			IJavaElement[] roots = Util.sortCopy(getRootClasses());
+			IJavaScriptElement[] roots = Util.sortCopy(getRootClasses());
 			for (int i= 0; i < roots.length; i++) {
 				toString(buffer, (IType) roots[i], 1, false);
 			}
 		}
 		if (this.rootClasses.size > 1) {
 			buffer.append("Root classes:\n"); //$NON-NLS-1$
-			IJavaElement[] roots = Util.sortCopy(getRootClasses());
+			IJavaScriptElement[] roots = Util.sortCopy(getRootClasses());
 			for (int i = 0, length = roots.length; i < length; i++) {
 				toString(buffer, (IType) roots[i], 1, false);
 			}
@@ -1540,7 +1540,7 @@ public String toString() {
  */
 private void toString(StringBuffer buffer, IType type, int indent, boolean ascendant) {
 	IType[] types= ascendant ? getSupertypes(type) : getSubtypes(type);
-	IJavaElement[] sortedTypes = Util.sortCopy(types);
+	IJavaScriptElement[] sortedTypes = Util.sortCopy(types);
 	for (int i= 0; i < sortedTypes.length; i++) {
 		for (int j= 0; j < indent; j++) {
 			buffer.append("  "); //$NON-NLS-1$

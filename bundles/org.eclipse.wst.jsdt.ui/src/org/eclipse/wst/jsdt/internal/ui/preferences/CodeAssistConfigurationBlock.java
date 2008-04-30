@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.text.java.ProposalSorterHandle;
@@ -56,15 +56,15 @@ class CodeAssistConfigurationBlock extends OptionsConfigurationBlock {
 	private static final Key PREF_CODEASSIST_SORTER= getJDTUIKey(PreferenceConstants.CODEASSIST_SORTER);
 	private static final Key PREF_CODEASSIST_CASE_SENSITIVITY= getJDTUIKey(PreferenceConstants.CODEASSIST_CASE_SENSITIVITY);
 	private static final Key PREF_CODEASSIST_ADDIMPORT= getJDTUIKey(PreferenceConstants.CODEASSIST_ADDIMPORT);
-	private static final Key PREF_CODEASSIST_SUGGEST_STATIC_IMPORTS= getJDTCoreKey(JavaCore.CODEASSIST_SUGGEST_STATIC_IMPORTS);
+	private static final Key PREF_CODEASSIST_SUGGEST_STATIC_IMPORTS= getJDTCoreKey(JavaScriptCore.CODEASSIST_SUGGEST_STATIC_IMPORTS);
 	private static final Key PREF_CODEASSIST_INSERT_COMPLETION= getJDTUIKey(PreferenceConstants.CODEASSIST_INSERT_COMPLETION);
 	private static final Key PREF_CODEASSIST_FILL_ARGUMENT_NAMES= getJDTUIKey(PreferenceConstants.CODEASSIST_FILL_ARGUMENT_NAMES);
 	private static final Key PREF_CODEASSIST_GUESS_METHOD_ARGUMENTS= getJDTUIKey(PreferenceConstants.CODEASSIST_GUESS_METHOD_ARGUMENTS);
 	private static final Key PREF_CODEASSIST_PREFIX_COMPLETION= getJDTUIKey(PreferenceConstants.CODEASSIST_PREFIX_COMPLETION);
-	private static final Key PREF_CODEASSIST_FORBIDDEN_REFERENCE_CHECK= getJDTCoreKey(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK);
-	private static final Key PREF_CODEASSIST_DISCOURAGED_REFERENCE_CHECK= getJDTCoreKey(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK);
-	private static final Key PREF_CODEASSIST_DEPRECATION_CHECK= getJDTCoreKey(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	private static final Key PREF_CODEASSIST_CAMEL_CASE_MATCH= getJDTCoreKey(JavaCore.CODEASSIST_CAMEL_CASE_MATCH);
+	private static final Key PREF_CODEASSIST_FORBIDDEN_REFERENCE_CHECK= getJDTCoreKey(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK);
+	private static final Key PREF_CODEASSIST_DISCOURAGED_REFERENCE_CHECK= getJDTCoreKey(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK);
+	private static final Key PREF_CODEASSIST_DEPRECATION_CHECK= getJDTCoreKey(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	private static final Key PREF_CODEASSIST_CAMEL_CASE_MATCH= getJDTCoreKey(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH);
 
 	private static Key[] getAllKeys() {
 		return new Key[] {
@@ -90,7 +90,7 @@ class CodeAssistConfigurationBlock extends OptionsConfigurationBlock {
 	}
 	
 	private static final String[] trueFalse= new String[] { IPreferenceStore.TRUE, IPreferenceStore.FALSE };
-	private static final String[] enabledDisabled= new String[] { JavaCore.ENABLED, JavaCore.DISABLED };
+	private static final String[] enabledDisabled= new String[] { JavaScriptCore.ENABLED, JavaScriptCore.DISABLED };
 
 	private Button fCompletionInsertsRadioButton;
 	private Button fCompletionOverwritesRadioButton;
@@ -213,8 +213,8 @@ class CodeAssistConfigurationBlock extends OptionsConfigurationBlock {
 
 		label= PreferencesMessages.CodeAssistConfigurationBlock_restricted_link;
 		Map targetInfo= new java.util.HashMap(2);
-		targetInfo.put(ProblemSeveritiesPreferencePage.DATA_SELECT_OPTION_KEY,	JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE);
-		targetInfo.put(ProblemSeveritiesPreferencePage.DATA_SELECT_OPTION_QUALIFIER, JavaCore.PLUGIN_ID);
+		targetInfo.put(ProblemSeveritiesPreferencePage.DATA_SELECT_OPTION_KEY,	JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE);
+		targetInfo.put(ProblemSeveritiesPreferencePage.DATA_SELECT_OPTION_QUALIFIER, JavaScriptCore.PLUGIN_ID);
 		createPreferencePageLink(composite, label, targetInfo);
 		
 		

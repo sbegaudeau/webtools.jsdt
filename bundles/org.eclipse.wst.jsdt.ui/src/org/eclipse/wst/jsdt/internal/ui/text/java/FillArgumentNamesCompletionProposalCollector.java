@@ -12,11 +12,11 @@ package org.eclipse.wst.jsdt.internal.ui.text.java;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalCollector;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
@@ -37,7 +37,7 @@ public final class FillArgumentNamesCompletionProposalCollector extends Completi
 	public FillArgumentNamesCompletionProposalCollector(JavaContentAssistInvocationContext context) {
 		super(context.getCompilationUnit());
 		setInvocationContext(context);
-		IPreferenceStore preferenceStore= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferenceStore= JavaScriptPlugin.getDefault().getPreferenceStore();
 		fIsGuessArguments= preferenceStore.getBoolean(PreferenceConstants.CODEASSIST_GUESS_METHOD_ARGUMENTS);
 	}
 
@@ -59,11 +59,11 @@ public final class FillArgumentNamesCompletionProposalCollector extends Completi
 		String completion= String.valueOf(methodProposal.getCompletion());
 		// super class' behavior if this is not a normal completion or has no
 		// parameters
-		if ((completion.length() == 0) || ((completion.length() == 1) && completion.charAt(0) == ')') || Signature.getParameterCount(methodProposal.getSignature()) == 0 || getContext().isInJavadoc())
+		if ((completion.length() == 0) || ((completion.length() == 1) && completion.charAt(0) == ')') || Signature.getParameterCount(methodProposal.getSignature()) == 0 || getContext().isInJsdoc())
 			return super.createJavaCompletionProposal(methodProposal);
 
 		LazyJavaCompletionProposal proposal;
-		ICompilationUnit compilationUnit= getCompilationUnit();
+		IJavaScriptUnit compilationUnit= getCompilationUnit();
 		if (compilationUnit != null && fIsGuessArguments)
 			proposal= new ParameterGuessingProposal(methodProposal, getInvocationContext());
 		else
@@ -75,11 +75,11 @@ public final class FillArgumentNamesCompletionProposalCollector extends Completi
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.ResultCollector#createTypeCompletion(org.eclipse.wst.jsdt.core.CompletionProposal)
 	 */
 	private IJavaCompletionProposal createTypeProposal(CompletionProposal typeProposal) {
-		final ICompilationUnit cu= getCompilationUnit();
-		if (cu == null || getContext().isInJavadoc())
+		final IJavaScriptUnit cu= getCompilationUnit();
+		if (cu == null || getContext().isInJsdoc())
 			return super.createJavaCompletionProposal(typeProposal);
 
-		IJavaProject project= cu.getJavaProject();
+		IJavaScriptProject project= cu.getJavaScriptProject();
 		if (!shouldProposeGenerics(project))
 			return super.createJavaCompletionProposal(typeProposal);
 
@@ -102,13 +102,13 @@ public final class FillArgumentNamesCompletionProposalCollector extends Completi
 	 * @return <code>true</code> if the generic proposals should be allowed,
 	 *         <code>false</code> if not
 	 */
-	private final boolean shouldProposeGenerics(IJavaProject project) {
+	private final boolean shouldProposeGenerics(IJavaScriptProject project) {
 		String sourceVersion;
 		if (project != null)
-			sourceVersion= project.getOption(JavaCore.COMPILER_SOURCE, true);
+			sourceVersion= project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
 		else
-			sourceVersion= JavaCore.getOption(JavaCore.COMPILER_SOURCE);
+			sourceVersion= JavaScriptCore.getOption(JavaScriptCore.COMPILER_SOURCE);
 
-		return sourceVersion != null && JavaCore.VERSION_1_5.compareTo(sourceVersion) <= 0;
+		return sourceVersion != null && JavaScriptCore.VERSION_1_5.compareTo(sourceVersion) <= 0;
 	}
 }

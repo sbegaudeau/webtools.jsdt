@@ -29,13 +29,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
@@ -72,8 +72,8 @@ public final class RefactoringSearchEngine2 {
 			if (accepted != null) {
 				final IResource resource= accepted.getResource();
 				if (!resource.equals(fLastResource)) {
-					final IJavaElement element= JavaCore.create(resource);
-					if (element instanceof ICompilationUnit)
+					final IJavaScriptElement element= JavaScriptCore.create(resource);
+					if (element instanceof IJavaScriptUnit)
 						fCollectedUnits.add(element);
 				}
 				if (fInaccurate && accepted.getAccuracy() == SearchMatch.A_INACCURATE && !fInaccurateMatches.contains(accepted)) {
@@ -136,8 +136,8 @@ public final class RefactoringSearchEngine2 {
 				final IResource resource= accepted.getResource();
 				if (!resource.equals(fLastResource)) {
 					if (fBinary) {
-						final IJavaElement element= JavaCore.create(resource);
-						if (!(element instanceof ICompilationUnit)) {
+						final IJavaScriptElement element= JavaScriptCore.create(resource);
+						if (!(element instanceof IJavaScriptUnit)) {
 							final IProject project= resource.getProject();
 							if (!fGrouping)
 								fStatus.addEntry(fSeverity, Messages.format(RefactoringCoreMessages.RefactoringSearchEngine_binary_match_ungrouped, project.getName()), null, null, RefactoringStatusEntry.NO_CODE); 
@@ -205,7 +205,7 @@ public final class RefactoringSearchEngine2 {
 	private IRefactoringSearchRequestor fRequestor= new DefaultSearchRequestor();
 
 	/** The search scope */
-	private IJavaSearchScope fScope= SearchEngine.createWorkspaceScope();
+	private IJavaScriptSearchScope fScope= SearchEngine.createWorkspaceScope();
 
 	/** The severity */
 	private int fSeverity= RefactoringStatus.WARNING;
@@ -214,7 +214,7 @@ public final class RefactoringSearchEngine2 {
 	private RefactoringStatus fStatus= new RefactoringStatus();
 
 	/** The working copies */
-	private ICompilationUnit[] fWorkingCopies= {};
+	private IJavaScriptUnit[] fWorkingCopies= {};
 	
 	/**
 	 * Creates a new refactoring search engine.
@@ -248,17 +248,17 @@ public final class RefactoringSearchEngine2 {
 	 * 
 	 * @return the compilation units of the previous queries
 	 */
-	public final ICompilationUnit[] getAffectedCompilationUnits() {
+	public final IJavaScriptUnit[] getAffectedCompilationUnits() {
 		if (fGranularity == GRANULARITY_COMPILATION_UNIT) {
 			final Collection collection= getCollector().getCollectedMatches();
-			final ICompilationUnit[] units= new ICompilationUnit[collection.size()];
+			final IJavaScriptUnit[] units= new IJavaScriptUnit[collection.size()];
 			int index= 0;
 			for (final Iterator iterator= collection.iterator(); iterator.hasNext(); index++)
-				units[index]= (ICompilationUnit) iterator.next();
+				units[index]= (IJavaScriptUnit) iterator.next();
 			return units;
 		} else {
 			final SearchResultGroup[] groups= getGroupedMatches();
-			final ICompilationUnit[] units= new ICompilationUnit[groups.length];
+			final IJavaScriptUnit[] units= new IJavaScriptUnit[groups.length];
 			for (int index= 0; index < groups.length; index++)
 				units[index]= groups[index].getCompilationUnit();
 			return units;
@@ -274,13 +274,13 @@ public final class RefactoringSearchEngine2 {
 	 */
 	public final Map getAffectedProjects() {
 		final Map map= new HashMap();
-		IJavaProject project= null;
-		ICompilationUnit unit= null;
+		IJavaScriptProject project= null;
+		IJavaScriptUnit unit= null;
 		if (fGranularity == GRANULARITY_COMPILATION_UNIT) {
-			final ICompilationUnit[] units= getAffectedCompilationUnits();
+			final IJavaScriptUnit[] units= getAffectedCompilationUnits();
 			for (int index= 0; index < units.length; index++) {
 				unit= units[index];
-				project= unit.getJavaProject();
+				project= unit.getJavaScriptProject();
 				if (project != null) {
 					Set set= (Set) map.get(project);
 					if (set == null) {
@@ -297,7 +297,7 @@ public final class RefactoringSearchEngine2 {
 				group= groups[index];
 				unit= group.getCompilationUnit();
 				if (unit != null) {
-					project= unit.getJavaProject();
+					project= unit.getJavaScriptProject();
 					if (project != null) {
 						Set set= (Set) map.get(project);
 						if (set == null) {
@@ -379,7 +379,7 @@ public final class RefactoringSearchEngine2 {
 	 * <p>
 	 * The result depends on the following conditions:
 	 * <ul>
-	 * <li>If the search granularity is {@link #GRANULARITY_COMPILATION_UNIT}, the results are elements of type {@link ICompilationUnit}.</li>
+	 * <li>If the search granularity is {@link #GRANULARITY_COMPILATION_UNIT}, the results are elements of type {@link IJavaScriptUnit}.</li>
 	 * <li>If grouping by resource is enabled, the results are elements of type {@link SearchResultGroup}, otherwise the elements are of type {@link SearchMatch}.</li>
 	 * </ul>
 	 * 
@@ -453,9 +453,9 @@ public final class RefactoringSearchEngine2 {
 	 * Performs the search according to the specified pattern.
 	 * 
 	 * @param monitor the progress monitor, or <code>null</code>
-	 * @throws JavaModelException if an error occurs during search
+	 * @throws JavaScriptModelException if an error occurs during search
 	 */
-	public final void searchPattern(final IProgressMonitor monitor) throws JavaModelException {
+	public final void searchPattern(final IProgressMonitor monitor) throws JavaScriptModelException {
 		Assert.isNotNull(fPattern);
 		try {
 			monitor.beginTask("", 1); //$NON-NLS-1$
@@ -468,7 +468,7 @@ public final class RefactoringSearchEngine2 {
 					engine= new SearchEngine(fWorkingCopies);
 				engine.search(fPattern, SearchUtils.getDefaultSearchParticipants(), fScope, getCollector(), new SubProgressMonitor(monitor, 1, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
 			} catch (CoreException exception) {
-				throw new JavaModelException(exception);
+				throw new JavaScriptModelException(exception);
 			}
 		} finally {
 			monitor.done();
@@ -480,9 +480,9 @@ public final class RefactoringSearchEngine2 {
 	 * 
 	 * @param element the java element whose referenced fields have to be found
 	 * @param monitor the progress monitor, or <code>null</code>
-	 * @throws JavaModelException if an error occurs during search
+	 * @throws JavaScriptModelException if an error occurs during search
 	 */
-	public final void searchReferencedFields(final IJavaElement element, final IProgressMonitor monitor) throws JavaModelException {
+	public final void searchReferencedFields(final IJavaScriptElement element, final IProgressMonitor monitor) throws JavaScriptModelException {
 		Assert.isNotNull(element);
 		try {
 			monitor.beginTask("", 1); //$NON-NLS-1$
@@ -495,7 +495,7 @@ public final class RefactoringSearchEngine2 {
 					engine= new SearchEngine(fWorkingCopies);
 				engine.searchDeclarationsOfAccessedFields(element, getCollector(), new SubProgressMonitor(monitor, 1, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
 			} catch (CoreException exception) {
-				throw new JavaModelException(exception);
+				throw new JavaScriptModelException(exception);
 			}
 		} finally {
 			monitor.done();
@@ -507,9 +507,9 @@ public final class RefactoringSearchEngine2 {
 	 * 
 	 * @param element the java element whose referenced methods have to be found
 	 * @param monitor the progress monitor, or <code>null</code>
-	 * @throws JavaModelException if an error occurs during search
+	 * @throws JavaScriptModelException if an error occurs during search
 	 */
-	public final void searchReferencedMethods(final IJavaElement element, final IProgressMonitor monitor) throws JavaModelException {
+	public final void searchReferencedMethods(final IJavaScriptElement element, final IProgressMonitor monitor) throws JavaScriptModelException {
 		Assert.isNotNull(element);
 		try {
 			monitor.beginTask("", 1); //$NON-NLS-1$
@@ -522,7 +522,7 @@ public final class RefactoringSearchEngine2 {
 					engine= new SearchEngine(fWorkingCopies);
 				engine.searchDeclarationsOfSentMessages(element, getCollector(), new SubProgressMonitor(monitor, 1, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
 			} catch (CoreException exception) {
-				throw new JavaModelException(exception);
+				throw new JavaScriptModelException(exception);
 			}
 		} finally {
 			monitor.done();
@@ -534,9 +534,9 @@ public final class RefactoringSearchEngine2 {
 	 * 
 	 * @param element the java element whose referenced types have to be found
 	 * @param monitor the progress monitor, or <code>null</code>
-	 * @throws JavaModelException if an error occurs during search
+	 * @throws JavaScriptModelException if an error occurs during search
 	 */
-	public final void searchReferencedTypes(final IJavaElement element, final IProgressMonitor monitor) throws JavaModelException {
+	public final void searchReferencedTypes(final IJavaScriptElement element, final IProgressMonitor monitor) throws JavaScriptModelException {
 		Assert.isNotNull(element);
 		try {
 			monitor.beginTask("", 1); //$NON-NLS-1$
@@ -549,7 +549,7 @@ public final class RefactoringSearchEngine2 {
 					engine= new SearchEngine(fWorkingCopies);
 				engine.searchDeclarationsOfReferencedTypes(element, getCollector(), new SubProgressMonitor(monitor, 1, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
 			} catch (CoreException exception) {
-				throw new JavaModelException(exception);
+				throw new JavaScriptModelException(exception);
 			}
 		} finally {
 			monitor.done();
@@ -602,9 +602,9 @@ public final class RefactoringSearchEngine2 {
 	 * 
 	 * @param copies the working copies to use
 	 */
-	public final void setWorkingCopies(final ICompilationUnit[] copies) {
+	public final void setWorkingCopies(final IJavaScriptUnit[] copies) {
 		Assert.isNotNull(copies);
-		fWorkingCopies= new ICompilationUnit[copies.length];
+		fWorkingCopies= new IJavaScriptUnit[copies.length];
 		System.arraycopy(copies, 0, fWorkingCopies, 0, copies.length);
 	}
 
@@ -650,13 +650,13 @@ public final class RefactoringSearchEngine2 {
 	 * This method must be called before {@link RefactoringSearchEngine2#searchPattern(IProgressMonitor)}
 	 * 
 	 * @param elements the set of elements
-	 * @param limitTo determines the nature of the expected matches. This is a combination of {@link org.eclipse.wst.jsdt.core.search.IJavaSearchConstants}.
+	 * @param limitTo determines the nature of the expected matches. This is a combination of {@link org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants}.
 	 */
-	public final void setPattern(final IJavaElement[] elements, final int limitTo) {
+	public final void setPattern(final IJavaScriptElement[] elements, final int limitTo) {
 		Assert.isNotNull(elements);
 		Assert.isTrue(elements.length > 0);
 		SearchPattern pattern= SearchPattern.createPattern(elements[0], limitTo, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
-		IJavaElement element= null;
+		IJavaScriptElement element= null;
 		for (int index= 1; index < elements.length; index++) {
 			element= elements[index];
 			pattern= SearchPattern.createOrPattern(pattern, SearchPattern.createPattern(element, limitTo, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE));
@@ -695,7 +695,7 @@ public final class RefactoringSearchEngine2 {
 	 * 
 	 * @param scope the search scope to set
 	 */
-	public final void setScope(final IJavaSearchScope scope) {
+	public final void setScope(final IJavaScriptSearchScope scope) {
 		Assert.isNotNull(scope);
 		fScope= scope;
 	}

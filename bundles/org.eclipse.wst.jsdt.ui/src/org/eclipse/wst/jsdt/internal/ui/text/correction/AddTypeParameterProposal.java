@@ -15,15 +15,15 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TagElement;
 import org.eclipse.wst.jsdt.core.dom.TextElement;
 import org.eclipse.wst.jsdt.core.dom.Type;
@@ -41,25 +41,25 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 public class AddTypeParameterProposal extends LinkedCorrectionProposal {
 
 	private IBinding fBinding;
-	private CompilationUnit fAstRoot;
+	private JavaScriptUnit fAstRoot;
 
 	private final String fTypeParamName;
 	private final ITypeBinding[] fBounds;
 
-	public AddTypeParameterProposal(ICompilationUnit targetCU, IBinding binding, CompilationUnit astRoot, String name, ITypeBinding[] bounds, int relevance) {
+	public AddTypeParameterProposal(IJavaScriptUnit targetCU, IBinding binding, JavaScriptUnit astRoot, String name, ITypeBinding[] bounds, int relevance) {
 		super("", targetCU, null, relevance, JavaPluginImages.get(JavaPluginImages.IMG_FIELD_PUBLIC)); //$NON-NLS-1$
 
 		Assert.isTrue(binding != null && Bindings.isDeclarationBinding(binding));
-		Assert.isTrue(binding instanceof IMethodBinding || binding instanceof ITypeBinding);
+		Assert.isTrue(binding instanceof IFunctionBinding || binding instanceof ITypeBinding);
 
 		fBinding= binding;
 		fAstRoot= astRoot;
 		fTypeParamName= name;
 		fBounds= bounds;
 
-		if (binding instanceof IMethodBinding) {
+		if (binding instanceof IFunctionBinding) {
 			boolean isSameCU= fAstRoot.findDeclaringNode(binding) != null;
-			String[] args= { fTypeParamName, ASTResolving.getMethodSignature((IMethodBinding) binding, isSameCU) };
+			String[] args= { fTypeParamName, ASTResolving.getMethodSignature((IFunctionBinding) binding, isSameCU) };
 			setDisplayName(Messages.format(CorrectionMessages.AddTypeParameterProposal_method_label, args));
 		} else {
 			String[] args= { fTypeParamName, ASTResolving.getTypeSignature((ITypeBinding) binding) };
@@ -75,7 +75,7 @@ public class AddTypeParameterProposal extends LinkedCorrectionProposal {
 			declNode= boundNode; // is same CU
 			createImportRewrite(fAstRoot);
 		} else {
-			CompilationUnit newRoot= ASTResolving.createQuickFixAST(getCompilationUnit(), null);
+			JavaScriptUnit newRoot= ASTResolving.createQuickFixAST(getCompilationUnit(), null);
 			declNode= newRoot.findDeclaringNode(fBinding.getKey());
 			createImportRewrite(newRoot);
 		}
@@ -91,7 +91,7 @@ public class AddTypeParameterProposal extends LinkedCorrectionProposal {
 		}
 		ASTRewrite rewrite= ASTRewrite.create(ast);
 		ListRewrite listRewrite;
-		Javadoc javadoc;
+		JSdoc javadoc;
 		List otherTypeParams;
 		if (declNode instanceof TypeDeclaration) {
 			TypeDeclaration declaration= (TypeDeclaration) declNode;
@@ -99,15 +99,15 @@ public class AddTypeParameterProposal extends LinkedCorrectionProposal {
 			otherTypeParams= declaration.typeParameters();
 			javadoc= declaration.getJavadoc();
 		} else {
-			MethodDeclaration declaration= (MethodDeclaration) declNode;
-			listRewrite= rewrite.getListRewrite(declNode, MethodDeclaration.TYPE_PARAMETERS_PROPERTY);
+			FunctionDeclaration declaration= (FunctionDeclaration) declNode;
+			listRewrite= rewrite.getListRewrite(declNode, FunctionDeclaration.TYPE_PARAMETERS_PROPERTY);
 			otherTypeParams= declaration.typeParameters();
 			javadoc= declaration.getJavadoc();
 		}
 		listRewrite.insertLast(newTypeParam, null);
 
 		if (javadoc != null && otherTypeParams != null) {
-			ListRewrite tagsRewriter= rewrite.getListRewrite(javadoc, Javadoc.TAGS_PROPERTY);
+			ListRewrite tagsRewriter= rewrite.getListRewrite(javadoc, JSdoc.TAGS_PROPERTY);
 			Set previousNames= JavadocTagsSubProcessor.getPreviousTypeParamNames(otherTypeParams, null);
 
 			String name= '<' + fTypeParamName + '>';

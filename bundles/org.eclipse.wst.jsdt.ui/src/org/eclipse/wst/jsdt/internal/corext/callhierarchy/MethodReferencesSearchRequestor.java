@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.callhierarchy;
 
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchRequestor;
@@ -45,10 +45,10 @@ class MethodReferencesSearchRequestor extends SearchRequestor {
         if (match.getElement() != null && match.getElement() instanceof IMember) {
             IMember member= (IMember) match.getElement();
             switch (member.getElementType()) {
-                case IJavaElement.METHOD:
-                case IJavaElement.TYPE:
-                case IJavaElement.FIELD:
-                case IJavaElement.INITIALIZER:
+                case IJavaScriptElement.METHOD:
+                case IJavaScriptElement.TYPE:
+                case IJavaScriptElement.FIELD:
+                case IJavaScriptElement.INITIALIZER:
                     fSearchResults.addMember(member, member, match.getOffset(), match.getOffset()+match.getLength());
                     break;
             }

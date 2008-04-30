@@ -16,8 +16,8 @@ import java.util.Iterator;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
@@ -26,12 +26,12 @@ import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.TagElement;
@@ -106,14 +106,14 @@ public class ReturnTypeSubProcessor {
 
 
 	public static void addMethodWithConstrNameProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
-		if (selectedNode instanceof MethodDeclaration) {
-			MethodDeclaration declaration= (MethodDeclaration) selectedNode;
+		if (selectedNode instanceof FunctionDeclaration) {
+			FunctionDeclaration declaration= (FunctionDeclaration) selectedNode;
 
 			ASTRewrite rewrite= ASTRewrite.create(declaration.getAST());
-			rewrite.set(declaration, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(declaration, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
 
 			String label= CorrectionMessages.ReturnTypeSubProcessor_constrnamemethod_description;
 			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
@@ -124,16 +124,16 @@ public class ReturnTypeSubProcessor {
 	}
 
 	public static void addVoidMethodReturnsProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
-		CompilationUnit astRoot= context.getASTRoot();
+		JavaScriptUnit astRoot= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveringNode(astRoot);
 		if (selectedNode == null) {
 			return;
 		}
 
 		BodyDeclaration decl= ASTResolving.findParentBodyDeclaration(selectedNode);
-		if (decl instanceof MethodDeclaration && selectedNode.getNodeType() == ASTNode.RETURN_STATEMENT) {
+		if (decl instanceof FunctionDeclaration && selectedNode.getNodeType() == ASTNode.RETURN_STATEMENT) {
 			ReturnStatement returnStatement= (ReturnStatement) selectedNode;
 			Expression expr= returnStatement.getExpression();
 			if (expr != null) {
@@ -147,7 +147,7 @@ public class ReturnTypeSubProcessor {
 					binding= ASTResolving.normalizeWildcardType(binding, true, ast);
 				}
 				
-				MethodDeclaration methodDeclaration= (MethodDeclaration) decl;
+				FunctionDeclaration methodDeclaration= (FunctionDeclaration) decl;
 
 				ASTRewrite rewrite= ASTRewrite.create(ast);
 
@@ -158,8 +158,8 @@ public class ReturnTypeSubProcessor {
 				Type newReturnType= imports.addImport(binding, ast);
 
 				if (methodDeclaration.isConstructor()) {
-					rewrite.set(methodDeclaration, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
-					rewrite.set(methodDeclaration, MethodDeclaration.RETURN_TYPE2_PROPERTY, newReturnType, null);
+					rewrite.set(methodDeclaration, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+					rewrite.set(methodDeclaration, FunctionDeclaration.RETURN_TYPE2_PROPERTY, newReturnType, null);
 				} else {
 					rewrite.replace(methodDeclaration.getReturnType2(), newReturnType, null);
 				}
@@ -170,14 +170,14 @@ public class ReturnTypeSubProcessor {
 					proposal.addLinkedPositionProposal(key, bindings[i]);
 				}
 
-				Javadoc javadoc= methodDeclaration.getJavadoc();
+				JSdoc javadoc= methodDeclaration.getJavadoc();
 				if (javadoc != null) {
 					TagElement newTag= ast.newTagElement();
 					newTag.setTagName(TagElement.TAG_RETURN);
 					TextElement commentStart= ast.newTextElement();
 					newTag.fragments().add(commentStart);
 
-					JavadocTagsSubProcessor.insertTag(rewrite.getListRewrite(javadoc, Javadoc.TAGS_PROPERTY), newTag, null);
+					JavadocTagsSubProcessor.insertTag(rewrite.getListRewrite(javadoc, JSdoc.TAGS_PROPERTY), newTag, null);
 					proposal.addLinkedPosition(rewrite.track(commentStart), false, "comment_start"); //$NON-NLS-1$
 
 				}
@@ -196,16 +196,16 @@ public class ReturnTypeSubProcessor {
 
 
 	public static void addMissingReturnTypeProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
-		CompilationUnit astRoot= context.getASTRoot();
+		JavaScriptUnit astRoot= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveringNode(astRoot);
 		if (selectedNode == null) {
 			return;
 		}
 		BodyDeclaration decl= ASTResolving.findParentBodyDeclaration(selectedNode);
-		if (decl instanceof MethodDeclaration) {
-			MethodDeclaration methodDeclaration= (MethodDeclaration) decl;
+		if (decl instanceof FunctionDeclaration) {
+			FunctionDeclaration methodDeclaration= (FunctionDeclaration) decl;
 
 			ReturnStatementCollector eval= new ReturnStatementCollector();
 			decl.accept(eval);
@@ -231,17 +231,17 @@ public class ReturnTypeSubProcessor {
 
 			Type type= imports.addImport(typeBinding, ast);
 
-			rewrite.set(methodDeclaration, MethodDeclaration.RETURN_TYPE2_PROPERTY, type, null);
-			rewrite.set(methodDeclaration, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+			rewrite.set(methodDeclaration, FunctionDeclaration.RETURN_TYPE2_PROPERTY, type, null);
+			rewrite.set(methodDeclaration, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
 
-			Javadoc javadoc= methodDeclaration.getJavadoc();
+			JSdoc javadoc= methodDeclaration.getJavadoc();
 			if (javadoc != null && typeBinding != null) {
 				TagElement newTag= ast.newTagElement();
 				newTag.setTagName(TagElement.TAG_RETURN);
 				TextElement commentStart= ast.newTextElement();
 				newTag.fragments().add(commentStart);
 
-				JavadocTagsSubProcessor.insertTag(rewrite.getListRewrite(javadoc, Javadoc.TAGS_PROPERTY), newTag, null);
+				JavadocTagsSubProcessor.insertTag(rewrite.getListRewrite(javadoc, JSdoc.TAGS_PROPERTY), newTag, null);
 				proposal.addLinkedPosition(rewrite.track(commentStart), false, "comment_start"); //$NON-NLS-1$
 			}
 
@@ -271,15 +271,15 @@ public class ReturnTypeSubProcessor {
 	}
 
 	public static void addMissingReturnStatementProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
 		if (selectedNode == null) {
 			return;
 		}
 		BodyDeclaration decl= ASTResolving.findParentBodyDeclaration(selectedNode);
-		if (decl instanceof MethodDeclaration) {
-			MethodDeclaration methodDecl= (MethodDeclaration) decl;
+		if (decl instanceof FunctionDeclaration) {
+			FunctionDeclaration methodDecl= (FunctionDeclaration) decl;
 			Block block= methodDecl.getBody();
 			if (block == null) {
 				return;
@@ -292,7 +292,7 @@ public class ReturnTypeSubProcessor {
 				AST ast= methodDecl.getAST();
 				ASTRewrite rewrite= ASTRewrite.create(ast);
 				rewrite.replace(returnType, ast.newPrimitiveType(PrimitiveType.VOID), null);
-				Javadoc javadoc= methodDecl.getJavadoc();
+				JSdoc javadoc= methodDecl.getJavadoc();
 				if (javadoc != null) {
 					TagElement tagElement= JavadocTagsSubProcessor.findTag(javadoc, TagElement.TAG_RETURN, null);
 					if (tagElement != null) {
@@ -308,8 +308,8 @@ public class ReturnTypeSubProcessor {
 		}
 	}
 
-	public static void addMethodRetunsVoidProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws JavaModelException {
-		CompilationUnit astRoot= context.getASTRoot();
+	public static void addMethodRetunsVoidProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws JavaScriptModelException {
+		JavaScriptUnit astRoot= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveringNode(astRoot);
 		if (!(selectedNode instanceof ReturnStatement)) {
 			return;
@@ -320,8 +320,8 @@ public class ReturnTypeSubProcessor {
 			return;
 		}
 		BodyDeclaration decl= ASTResolving.findParentBodyDeclaration(selectedNode);
-		if (decl instanceof MethodDeclaration) {
-			MethodDeclaration methDecl= (MethodDeclaration) decl;
+		if (decl instanceof FunctionDeclaration) {
+			FunctionDeclaration methDecl= (FunctionDeclaration) decl;
 			Type retType= methDecl.getReturnType2();
 			if (retType == null || retType.resolveBinding() == null) {
 				return;

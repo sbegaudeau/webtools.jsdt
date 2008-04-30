@@ -17,7 +17,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationExtension;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalLabelProvider;
 
 
@@ -41,7 +41,7 @@ public final class ProposalContextInformation implements IContextInformation, IC
 		fInformationDisplayString= labelProvider.createParameterList(proposal);
 		ImageDescriptor descriptor= labelProvider.createImageDescriptor(proposal);
 		if (descriptor != null)
-			fImage= JavaPlugin.getImageDescriptorRegistry().get(descriptor);
+			fImage= JavaScriptPlugin.getImageDescriptorRegistry().get(descriptor);
 		else
 			fImage= null;
 		if (proposal.getCompletion().length == 0)

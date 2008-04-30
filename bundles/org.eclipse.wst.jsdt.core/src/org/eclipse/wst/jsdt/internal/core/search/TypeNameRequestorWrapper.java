@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
  * 	char[] typeName,
  * 	int typeMatchRule,
  * 	int searchFor,
- * 	org.eclipse.wst.jsdt.core.search.IJavaSearchScope scope,
+ * 	org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope scope,
  * 	IRestrictedAccessTypeRequestor nameRequestor,
  * 	int waitingPolicy,
  * 	org.eclipse.core.runtime.IProgressMonitor monitor) }.
@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
  * 	char[] typeName,
  * 	int matchRule,
  * 	int searchFor,
- * 	org.eclipse.wst.jsdt.core.search.IJavaSearchScope scope,
+ * 	org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope scope,
  * 	TypeNameRequestor nameRequestor,
  * 	int waitingPolicy,
  * 	org.eclipse.core.runtime.IProgressMonitor monitor) }.

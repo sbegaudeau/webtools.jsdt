@@ -11,19 +11,19 @@
 package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
- * This operation sets an <code>IJavaProject</code>'s classpath.
+ * This operation sets an <code>IJavaScriptProject</code>'s classpath.
  *
- * @see org.eclipse.wst.jsdt.core.IJavaProject
+ * @see org.eclipse.wst.jsdt.core.IJavaScriptProject
  */
 public class SetClasspathOperation extends ChangeClasspathOperation {
 
-	IClasspathEntry[] newRawClasspath;
+	IIncludePathEntry[] newRawClasspath;
 	IPath newOutputLocation;
 	JavaProject project;
 
@@ -32,11 +32,11 @@ public class SetClasspathOperation extends ChangeClasspathOperation {
 	 */
 	public SetClasspathOperation(
 		JavaProject project,
-		IClasspathEntry[] newRawClasspath,
+		IIncludePathEntry[] newRawClasspath,
 		IPath newOutputLocation,
 		boolean canChangeResource) {
 
-		super(new IJavaElement[] { project }, canChangeResource);
+		super(new IJavaScriptElement[] { project }, canChangeResource);
 		this.project = project;
 		this.newRawClasspath = newRawClasspath;
 		this.newOutputLocation = newOutputLocation;
@@ -45,7 +45,7 @@ public class SetClasspathOperation extends ChangeClasspathOperation {
 	/**
 	 * Sets the classpath of the pre-specified project.
 	 */
-	protected void executeOperation() throws JavaModelException {
+	protected void executeOperation() throws JavaScriptModelException {
 		checkCanceled();
 		try {
 			// set raw classpath and null out resolved info
@@ -69,7 +69,7 @@ public class SetClasspathOperation extends ChangeClasspathOperation {
 		buffer.append("{"); //$NON-NLS-1$
 		for (int i = 0; i < this.newRawClasspath.length; i++) {
 			if (i > 0) buffer.append(","); //$NON-NLS-1$
-			IClasspathEntry element = this.newRawClasspath[i];
+			IIncludePathEntry element = this.newRawClasspath[i];
 			buffer.append(" ").append(element.toString()); //$NON-NLS-1$
 		}
 		buffer.append("\n - output location : ");  //$NON-NLS-1$
@@ -77,8 +77,8 @@ public class SetClasspathOperation extends ChangeClasspathOperation {
 		return buffer.toString();
 	}
 
-	public IJavaModelStatus verify() {
-		IJavaModelStatus status = super.verify();
+	public IJavaScriptModelStatus verify() {
+		IJavaScriptModelStatus status = super.verify();
 		if (!status.isOK())
 			return status;
 		return ClasspathEntry.validateClasspath(	this.project, this.newRawClasspath, this.newOutputLocation);

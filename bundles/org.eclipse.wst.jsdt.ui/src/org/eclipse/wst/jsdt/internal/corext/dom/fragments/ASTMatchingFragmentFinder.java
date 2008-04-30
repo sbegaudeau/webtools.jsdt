@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 
 class ASTMatchingFragmentFinder extends GenericVisitor {
@@ -39,7 +39,7 @@ class ASTMatchingFragmentFinder extends GenericVisitor {
 		return (IASTFragment[]) fMatches.toArray(new IASTFragment[fMatches.size()]);
 	}
 	
-	public boolean visit(Javadoc node) {
+	public boolean visit(JSdoc node) {
 		return false;
 	}
 	

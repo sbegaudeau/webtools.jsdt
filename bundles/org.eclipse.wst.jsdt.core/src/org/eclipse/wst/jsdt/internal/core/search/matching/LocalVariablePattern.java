@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
@@ -42,17 +42,17 @@ public LocalVariablePattern(boolean findDeclarations, boolean readAccess, boolea
 }
 
 
-public void findIndexMatches(Index index, IndexQueryRequestor requestor, SearchParticipant participant, IJavaSearchScope scope, IProgressMonitor progressMonitor) throws IOException {
+public void findIndexMatches(Index index, IndexQueryRequestor requestor, SearchParticipant participant, IJavaScriptSearchScope scope, IProgressMonitor progressMonitor) throws IOException {
 	if (this.localVariable!=null)
 	{
 
-//    IPackageFragmentRoot root = (IPackageFragmentRoot)this.localVariable.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+//    IPackageFragmentRoot root = (IPackageFragmentRoot)this.localVariable.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 	String documentPath;
 	String relativePath;
 //    if (root.isArchive()) {
-//        IType type = (IType)this.localVariable.getAncestor(IJavaElement.TYPE);
+//        IType type = (IType)this.localVariable.getAncestor(IJavaScriptElement.TYPE);
 //        relativePath = (type.getFullyQualifiedName('/')).replace('.', '/') + SuffixConstants.SUFFIX_STRING_java;
-//        documentPath = root.getPath() + IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR + relativePath;
+//        documentPath = root.getPath() + IJavaScriptSearchScope.JAR_FILE_ENTRY_SEPARATOR + relativePath;
 //    } else 
     {
 		IPath path = this.localVariable.getPath();

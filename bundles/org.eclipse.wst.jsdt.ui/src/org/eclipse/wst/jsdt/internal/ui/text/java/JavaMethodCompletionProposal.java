@@ -14,9 +14,9 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
@@ -114,7 +114,7 @@ public class JavaMethodCompletionProposal extends LazyJavaCompletionProposal {
 	protected boolean hasArgumentList() {
 		if (CompletionProposal.METHOD_NAME_REFERENCE == fProposal.getKind())
 			return false;
-		IPreferenceStore preferenceStore= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferenceStore= JavaScriptPlugin.getDefault().getPreferenceStore();
 		boolean noOverwrite= preferenceStore.getBoolean(PreferenceConstants.CODEASSIST_INSERT_COMPLETION) ^ isToggleEating();
 		char[] completion= fProposal.getCompletion();
 		return !isInJavadoc() && completion.length > 0 && (noOverwrite  || completion[completion.length - 1] == ')');
@@ -169,7 +169,7 @@ public class JavaMethodCompletionProposal extends LazyJavaCompletionProposal {
 	}
 	
 	protected ProposalInfo computeProposalInfo() {
-		IJavaProject project= fInvocationContext.getProject();
+		IJavaScriptProject project= fInvocationContext.getProject();
 		if (project != null)
 			return new MethodProposalInfo(project, fProposal);
 		return super.computeProposalInfo();

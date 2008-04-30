@@ -13,18 +13,18 @@ package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Block;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
@@ -37,16 +37,16 @@ import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class TypeChangeCompletionProposal extends LinkedCorrectionProposal {
 
 	private IBinding fBinding;
-	private CompilationUnit fAstRoot;
+	private JavaScriptUnit fAstRoot;
 	private ITypeBinding fNewType;
 	private boolean fOfferSuperTypeProposals;
 
-	public TypeChangeCompletionProposal(ICompilationUnit targetCU, IBinding binding, CompilationUnit astRoot, ITypeBinding newType, boolean offerSuperTypeProposals, int relevance) {
+	public TypeChangeCompletionProposal(IJavaScriptUnit targetCU, IBinding binding, JavaScriptUnit astRoot, ITypeBinding newType, boolean offerSuperTypeProposals, int relevance) {
 		super("", targetCU, null, relevance, JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE)); //$NON-NLS-1$
 
 		Assert.isTrue(binding != null && (binding.getKind() == IBinding.METHOD || binding.getKind() == IBinding.VARIABLE) && Bindings.isDeclarationBinding(binding));
@@ -56,7 +56,7 @@ public class TypeChangeCompletionProposal extends LinkedCorrectionProposal {
 		fNewType= newType;
 		fOfferSuperTypeProposals= offerSuperTypeProposals;
 
-		String typeName= BindingLabelProvider.getBindingLabel(newType, JavaElementLabels.ALL_DEFAULT);
+		String typeName= BindingLabelProvider.getBindingLabel(newType, JavaScriptElementLabels.ALL_DEFAULT);
 		if (binding.getKind() == IBinding.VARIABLE) {
 			IVariableBinding varBinding= (IVariableBinding) binding;
 
@@ -77,7 +77,7 @@ public class TypeChangeCompletionProposal extends LinkedCorrectionProposal {
 	protected ASTRewrite getRewrite() throws CoreException {
 		ASTNode boundNode= fAstRoot.findDeclaringNode(fBinding);
 		ASTNode declNode= null;
-		CompilationUnit newRoot= fAstRoot;
+		JavaScriptUnit newRoot= fAstRoot;
 		if (boundNode != null) {
 			declNode= boundNode; // is same CU
 		} else {
@@ -91,10 +91,10 @@ public class TypeChangeCompletionProposal extends LinkedCorrectionProposal {
 
 			Type type= imports.addImport(fNewType, ast);
 
-			if (declNode instanceof MethodDeclaration) {
-				MethodDeclaration methodDecl= (MethodDeclaration) declNode;
-				rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE2_PROPERTY, type, null);
-				rewrite.set(methodDecl, MethodDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(0), null);
+			if (declNode instanceof FunctionDeclaration) {
+				FunctionDeclaration methodDecl= (FunctionDeclaration) declNode;
+				rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE2_PROPERTY, type, null);
+				rewrite.set(methodDecl, FunctionDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(0), null);
 			} else if (declNode instanceof AnnotationTypeMemberDeclaration) {
 				AnnotationTypeMemberDeclaration methodDecl= (AnnotationTypeMemberDeclaration) declNode;
 				rewrite.set(methodDecl, AnnotationTypeMemberDeclaration.TYPE_PROPERTY, type, null);

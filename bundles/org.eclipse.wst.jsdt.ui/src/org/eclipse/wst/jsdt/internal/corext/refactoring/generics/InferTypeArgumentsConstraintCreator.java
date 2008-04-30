@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
@@ -29,18 +29,18 @@ import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -85,7 +85,7 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 	private static final String CV_PROP= "org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.CONSTRAINT_VARIABLE"; //$NON-NLS-1$
 	
 	private InferTypeArgumentsTCModel fTCModel;
-	private ICompilationUnit fCU;
+	private IJavaScriptUnit fCU;
 
 	private final boolean fAssumeCloneReturnsSameType;
 	
@@ -95,13 +95,13 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 		fAssumeCloneReturnsSameType= assumeCloneReturnsSameType;
 	}
 	
-	public boolean visit(CompilationUnit node) {
+	public boolean visit(JavaScriptUnit node) {
 		fTCModel.newCu(); //TODO: make sure that accumulators are reset after last CU!
-		fCU= (ICompilationUnit) node.getJavaElement();
+		fCU= (IJavaScriptUnit) node.getJavaElement();
 		return super.visit(node);
 	}
 	
-	public boolean visit(Javadoc node) {
+	public boolean visit(JSdoc node) {
 		return false;
 	}
 	
@@ -282,8 +282,8 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 		
 		fTCModel.createAssignmentElementConstraints(typeCv, expressionCv);
 		
-		if (expression instanceof MethodInvocation) {
-			MethodInvocation invoc= (MethodInvocation) expression;
+		if (expression instanceof FunctionInvocation) {
+			FunctionInvocation invoc= (FunctionInvocation) expression;
 			if (! isSpecialCloneInvocation(invoc.resolveMethodBinding(), invoc.getExpression())) {
 				fTCModel.makeCastVariable(node, expressionCv);
 			}
@@ -364,8 +364,8 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 		setConstraintVariable(node, cv);
 	}
 	
-	public void endVisit(MethodDeclaration node) {
-		IMethodBinding methodBinding= node.resolveBinding();
+	public void endVisit(FunctionDeclaration node) {
+		IFunctionBinding methodBinding= node.resolveBinding();
 	
 		if (methodBinding == null)
 			return; //TODO: emit error?
@@ -404,7 +404,7 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 		}
 	}
 	
-	private void addConstraintsForOverriding(IMethodBinding methodBinding, ConstraintVariable2 returnTypeCv, ConstraintVariable2[] parameterTypeCvs) {
+	private void addConstraintsForOverriding(IFunctionBinding methodBinding, ConstraintVariable2 returnTypeCv, ConstraintVariable2[] parameterTypeCvs) {
 		boolean hasParameterElementCvs= false;
 		for (int i= 0; i < parameterTypeCvs.length; i++)
 			if (parameterTypeCvs[i] != null)
@@ -416,7 +416,7 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 		ITypeBinding[] allSuperTypes= Bindings.getAllSuperTypes(methodBinding.getDeclaringClass());
 		for (int i= 0; i < allSuperTypes.length; i++) {
 			ITypeBinding superType= allSuperTypes[i];
-			IMethodBinding superMethod= Bindings.findOverriddenMethodInType(superType, methodBinding);
+			IFunctionBinding superMethod= Bindings.findOverriddenMethodInType(superType, methodBinding);
 			if (superMethod == null)
 				continue;
 			
@@ -434,8 +434,8 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 		}
 	}
 	
-	public void endVisit(MethodInvocation node) {
-		IMethodBinding methodBinding= node.resolveMethodBinding();
+	public void endVisit(FunctionInvocation node) {
+		IFunctionBinding methodBinding= node.resolveMethodBinding();
 		if (methodBinding == null)
 			return;
 		
@@ -482,7 +482,7 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 	/**
 	 * @return a map from type variable key to type variable constraint variable
 	 */
-	private Map/*<String, IndependentTypeVariable2>*/ createMethodTypeArguments(IMethodBinding methodBinding) {
+	private Map/*<String, IndependentTypeVariable2>*/ createMethodTypeArguments(IFunctionBinding methodBinding) {
 		ITypeBinding[] methodTypeParameters= methodBinding.getMethodDeclaration().getTypeParameters();
 		Map methodTypeVariables;
 		if (methodTypeParameters.length == 0) {
@@ -500,7 +500,7 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 		return methodTypeVariables;
 	}
 	
-	private void doVisitMethodInvocationReturnType(MethodInvocation node, IMethodBinding methodBinding, Expression receiver, Map/*<String, IndependentTypeVariable2>*/ methodTypeVariables) {
+	private void doVisitMethodInvocationReturnType(FunctionInvocation node, IFunctionBinding methodBinding, Expression receiver, Map/*<String, IndependentTypeVariable2>*/ methodTypeVariables) {
 		ITypeBinding declaredReturnType= methodBinding.getMethodDeclaration().getReturnType();
 		
 		if (declaredReturnType.isPrimitive()) {
@@ -568,7 +568,7 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 		}
 	}
 
-	private boolean isSpecialCloneInvocation(IMethodBinding methodBinding, Expression receiver) {
+	private boolean isSpecialCloneInvocation(IFunctionBinding methodBinding, Expression receiver) {
 		return fAssumeCloneReturnsSameType
 				&& "clone".equals(methodBinding.getName()) //$NON-NLS-1$
 				&& methodBinding.getParameterTypes().length == 0
@@ -576,7 +576,7 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 				&& receiver.resolveTypeBinding() != methodBinding.getMethodDeclaration().getReturnType();
 	}
 
-	private void doVisitMethodInvocationArguments(IMethodBinding methodBinding, List arguments, Expression receiver, Map methodTypeVariables, Type createdType) {
+	private void doVisitMethodInvocationArguments(IFunctionBinding methodBinding, List arguments, Expression receiver, Map methodTypeVariables, Type createdType) {
 		//TODO: connect generic method type parameters, e.g. <T> void take(T t, List<T> ts)
 		ITypeBinding[] declaredParameterTypes= methodBinding.getMethodDeclaration().getParameterTypes();
 		int lastParamIdx= declaredParameterTypes.length - 1;
@@ -748,7 +748,7 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 		}
 		setConstraintVariable(node, typeCv);
 		
-		IMethodBinding methodBinding= node.resolveConstructorBinding();
+		IFunctionBinding methodBinding= node.resolveConstructorBinding();
 		Map methodTypeVariables= createMethodTypeArguments(methodBinding);
 		List arguments= node.arguments();
 		doVisitMethodInvocationArguments(methodBinding, arguments, receiver, methodTypeVariables, createdType);
@@ -771,10 +771,10 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 		if (expressionCv == null)
 			return;
 		
-		MethodDeclaration methodDeclaration= (MethodDeclaration) ASTNodes.getParent(node, ASTNode.METHOD_DECLARATION);
+		FunctionDeclaration methodDeclaration= (FunctionDeclaration) ASTNodes.getParent(node, ASTNode.FUNCTION_DECLARATION);
 		if (methodDeclaration == null)
 			return;
-		IMethodBinding methodBinding= methodDeclaration.resolveBinding();
+		IFunctionBinding methodBinding= methodDeclaration.resolveBinding();
 		if (methodBinding == null)
 			return;
 		ReturnTypeVariable2 returnTypeCv= fTCModel.makeReturnTypeVariable(methodBinding);
@@ -837,11 +837,11 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 		
 //		ConstraintVariable2 nameCv;
 //		switch (node.getParent().getNodeType()) {
-//			case ASTNode.METHOD_DECLARATION :
-//				MethodDeclaration parent= (MethodDeclaration) node.getParent();
+//			case ASTNode.FUNCTION_DECLARATION :
+//				FunctionDeclaration parent= (FunctionDeclaration) node.getParent();
 //				int index= parent.parameters().indexOf(node);
 //				nameCv= fTCFactory.makeParameterTypeVariable(parent.resolveBinding(), index, node.getType());
-//				//store source range even if variable not used in constraint here. TODO: move to visit(MethodDeclaration)?
+//				//store source range even if variable not used in constraint here. TODO: move to visit(FunctionDeclaration)?
 //				break;
 //			case ASTNode.CATCH_CLAUSE :
 //				nameCv= fTCFactory.makeVariableVariable(node.resolveBinding());
@@ -865,7 +865,7 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 		
 //		ConstraintVariable2 initializerCv= getConstraintVariable(initializer);
 //		ConstraintVariable2 nameCv= getConstraintVariable(node);
-		//TODO: check: property has been set in visit(CatchClause), visit(MethodDeclaration), visit(EnhancedForStatament)
+		//TODO: check: property has been set in visit(CatchClause), visit(FunctionDeclaration), visit(EnhancedForStatament)
 		//fTCFactory.createSubtypeConstraint(initializerCv, nameCv); //TODO: not for augment raw container clients
 	}
 	
@@ -922,7 +922,7 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 //		} else {
 //			message+= "Found unexpected node (type: " + node.getNodeType() + "):\n" + node.toString(); //$NON-NLS-1$ //$NON-NLS-2$
 //		}
-//		JavaPlugin.log(new Exception(message).fillInStackTrace());
+//		JavaScriptPlugin.log(new Exception(message).fillInStackTrace());
 //	}
 
 }

@@ -41,7 +41,7 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 	public static final int READ = 0;
 	public static final int WRITE = 1;
 	public char[] token;
-//	public MethodBinding[] syntheticAccessors; // [0]=read accessor [1]=write accessor
+//	public FunctionBinding[] syntheticAccessors; // [0]=read accessor [1]=write accessor
 // 	public TypeBinding genericCast;
 
 	public SingleNameReference(char[] source, long pos) {
@@ -310,7 +310,7 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 //					|| (codegenField.isProtected() // implicit protected access
 //							&& codegenField.declaringClass.getPackage() != currentScope.enclosingSourceType().getPackage()))) {
 //				if (syntheticAccessors == null)
-//					syntheticAccessors = new MethodBinding[2];
+//					syntheticAccessors = new FunctionBinding[2];
 //				syntheticAccessors[isReadAccess ? READ : WRITE] =
 //				    ((SourceTypeBinding)currentScope.enclosingSourceType().
 //						enclosingTypeAt((bits & DepthMASK) >> DepthSHIFT)).addSyntheticMethod(codegenField, isReadAccess);

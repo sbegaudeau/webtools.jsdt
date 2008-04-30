@@ -23,11 +23,11 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.console.IHyperlink;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class JavadocConsoleLineTracker implements IConsoleLineTracker {
 	
@@ -62,9 +62,9 @@ public class JavadocConsoleLineTracker implements IConsoleLineTracker {
 				if (files.length > 0) {
 					for (int i = 0; i < files.length; i++) {
 						IFile curr= files[0];
-						IJavaElement element= JavaCore.create(curr);
+						IJavaScriptElement element= JavaScriptCore.create(curr);
 						if (element != null && element.exists()) {
-							IEditorPart part= JavaUI.openInEditor(element, true, false);
+							IEditorPart part= JavaScriptUI.openInEditor(element, true, false);
 							if (part instanceof ITextEditor) {
 								revealLine((ITextEditor) part, fLineNumber);
 							}
@@ -73,11 +73,11 @@ public class JavadocConsoleLineTracker implements IConsoleLineTracker {
 					}
 				}	
 			} catch (BadLocationException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			} catch (PartInitException e) {
-				JavaPlugin.log(e);
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 			}
 		}
 		

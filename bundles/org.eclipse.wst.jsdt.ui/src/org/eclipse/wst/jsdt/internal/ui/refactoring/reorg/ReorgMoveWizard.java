@@ -28,8 +28,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ICreateTargetQuery;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgDestinationValidator;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaMoveProcessor;
@@ -86,7 +86,7 @@ public class ReorgMoveWizard extends RefactoringWizard {
 			return getJavaMoveProcessor().getCommonParentForInputElements();
 		}
 		
-		protected IJavaElement[] getJavaElements() {
+		protected IJavaScriptElement[] getJavaElements() {
 			return getJavaMoveProcessor().getJavaElements();
 		}
 
@@ -102,11 +102,11 @@ public class ReorgMoveWizard extends RefactoringWizard {
 			return super.performFinish() || getJavaMoveProcessor().wasCanceled(); //close the dialog if canceled
 		}
 		
-		protected RefactoringStatus verifyDestination(Object selected) throws JavaModelException{
+		protected RefactoringStatus verifyDestination(Object selected) throws JavaScriptModelException{
 			JavaMoveProcessor processor= getJavaMoveProcessor();
 			final RefactoringStatus refactoringStatus;
-			if (selected instanceof IJavaElement)
-				refactoringStatus= processor.setDestination((IJavaElement)selected);
+			if (selected instanceof IJavaScriptElement)
+				refactoringStatus= processor.setDestination((IJavaScriptElement)selected);
 			else if (selected instanceof IResource)
 				refactoringStatus= processor.setDestination((IResource)selected);
 			else refactoringStatus= RefactoringStatus.createFatalErrorStatus(ReorgMessages.ReorgMoveWizard_4); 

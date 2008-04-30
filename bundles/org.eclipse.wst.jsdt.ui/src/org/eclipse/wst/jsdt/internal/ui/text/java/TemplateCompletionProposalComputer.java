@@ -21,13 +21,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.templates.TemplateContextType;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.template.java.JavaContextType;
 import org.eclipse.wst.jsdt.internal.corext.template.java.JavaDocContextType;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.TemplateEngine;
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.TemplateProposal;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
@@ -43,19 +43,19 @@ public final class TemplateCompletionProposalComputer implements IJavaCompletion
 	private final TemplateEngine fJavadocTemplateEngine;
 
 	public TemplateCompletionProposalComputer() {
-		TemplateContextType contextType= JavaPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
+		TemplateContextType contextType= JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
 		if (contextType == null) {
 			contextType= new JavaContextType();
-			JavaPlugin.getDefault().getTemplateContextRegistry().addContextType(contextType);
+			JavaScriptPlugin.getDefault().getTemplateContextRegistry().addContextType(contextType);
 		}
 		if (contextType != null)
 			fJavaTemplateEngine= new TemplateEngine(contextType);
 		else
 			fJavaTemplateEngine= null;
-		contextType= JavaPlugin.getDefault().getTemplateContextRegistry().getContextType("javadoc"); //$NON-NLS-1$
+		contextType= JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType("javadoc"); //$NON-NLS-1$
 		if (contextType == null) {
 			contextType= new JavaDocContextType();
-			JavaPlugin.getDefault().getTemplateContextRegistry().addContextType(contextType);
+			JavaScriptPlugin.getDefault().getTemplateContextRegistry().addContextType(contextType);
 		}
 		if (contextType != null)
 			fJavadocTemplateEngine= new TemplateEngine(contextType);
@@ -69,8 +69,8 @@ public final class TemplateCompletionProposalComputer implements IJavaCompletion
 	public List computeCompletionProposals(ContentAssistInvocationContext context, IProgressMonitor monitor) {
 		TemplateEngine engine;
 		try {
-			String partition= TextUtilities.getContentType(context.getDocument(), IJavaPartitions.JAVA_PARTITIONING, context.getInvocationOffset(), true);
-			if (partition.equals(IJavaPartitions.JAVA_DOC))
+			String partition= TextUtilities.getContentType(context.getDocument(), IJavaScriptPartitions.JAVA_PARTITIONING, context.getInvocationOffset(), true);
+			if (partition.equals(IJavaScriptPartitions.JAVA_DOC))
 				engine= fJavadocTemplateEngine;
 			else
 				engine= fJavaTemplateEngine;
@@ -83,7 +83,7 @@ public final class TemplateCompletionProposalComputer implements IJavaCompletion
 				return Collections.EMPTY_LIST;
 
 			JavaContentAssistInvocationContext javaContext= (JavaContentAssistInvocationContext) context;
-			ICompilationUnit unit= javaContext.getCompilationUnit();
+			IJavaScriptUnit unit= javaContext.getCompilationUnit();
 			if (unit == null)
 				return Collections.EMPTY_LIST;
 			

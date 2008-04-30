@@ -19,7 +19,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
@@ -71,11 +71,11 @@ class ASTConverter {
 
 	public ASTConverter(Map options, boolean resolveBindings, IProgressMonitor monitor) {
 		this.resolveBindings = resolveBindings;
-		Object sourceModeSetting = options.get(JavaCore.COMPILER_SOURCE);
+		Object sourceModeSetting = options.get(JavaScriptCore.COMPILER_SOURCE);
 		long sourceLevel = ClassFileConstants.JDK1_3;
-		if (JavaCore.VERSION_1_4.equals(sourceModeSetting)) {
+		if (JavaScriptCore.VERSION_1_4.equals(sourceModeSetting)) {
 			sourceLevel = ClassFileConstants.JDK1_4;
-		} else if (JavaCore.VERSION_1_5.equals(sourceModeSetting)) {
+		} else if (JavaScriptCore.VERSION_1_5.equals(sourceModeSetting)) {
 			sourceLevel = ClassFileConstants.JDK1_5;
 		}
 
@@ -88,7 +88,7 @@ class ASTConverter {
 			null/*taskPriorities*/,
 			true/*taskCaseSensitive*/);
 		this.monitor = monitor;
-		this.insideComments = JavaCore.ENABLED.equals(options.get(JavaCore.COMPILER_DOC_COMMENT_SUPPORT));
+		this.insideComments = JavaScriptCore.ENABLED.equals(options.get(JavaScriptCore.COMPILER_DOC_COMMENT_SUPPORT));
 	}
 
 	protected void adjustSourcePositionsForParent(org.eclipse.wst.jsdt.internal.compiler.ast.Expression expression) {
@@ -333,7 +333,7 @@ class ASTConverter {
 	 * @param compilationUnit
 	 * @param comments
 	 */
-	void buildCommentsTable(CompilationUnit compilationUnit, int[][] comments) {
+	void buildCommentsTable(JavaScriptUnit compilationUnit, int[][] comments) {
 		// Build comment table
 		this.commentsTable = new Comment[comments.length];
 		int nbr = 0;
@@ -422,7 +422,7 @@ class ASTConverter {
 		if (methodDeclaration instanceof org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration) methodDeclaration);
 		}
-		MethodDeclaration methodDecl = new MethodDeclaration(this.ast);
+		FunctionDeclaration methodDecl = new FunctionDeclaration(this.ast);
 		setModifiers(methodDecl, methodDeclaration);
 		boolean isConstructor = methodDeclaration.isConstructor();
 		methodDecl.setConstructor(isConstructor);
@@ -937,7 +937,7 @@ class ASTConverter {
 	 * Internal use only
 	 * Used to convert class body declarations
 	 */
-	public CompilationUnit convert(org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode[] nodes, CompilationUnit compilationUnit) {
+	public JavaScriptUnit convert(org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode[] nodes, JavaScriptUnit compilationUnit) {
 //		typeDecl.setInterface(false);
 		int nodesLength = nodes.length;
 		for (int i = 0; i < nodesLength; i++) {
@@ -1225,7 +1225,7 @@ class ASTConverter {
 		FunctionExpression functionExpression = new FunctionExpression(this.ast);
 		functionExpression.setSourceRange(expression.sourceStart, expression.sourceEnd - expression.sourceStart + 1);
 
-		functionExpression.setMethod((MethodDeclaration)convert(expression.methodDeclaration));
+		functionExpression.setMethod((FunctionDeclaration)convert(expression.methodDeclaration));
 		if (this.resolveBindings) {
 			recordNodes(functionExpression, expression);
 		}
@@ -1300,7 +1300,7 @@ class ASTConverter {
 		return typeLiteral;
 	}
 
-	public CompilationUnit convert(org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration unit, char[] source) {
+	public JavaScriptUnit convert(org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration unit, char[] source) {
 		if(unit.compilationResult.recoveryScannerData != null) {
 			RecoveryScanner recoveryScanner = new RecoveryScanner(this.scanner, unit.compilationResult.recoveryScannerData.removeUnused());
 			this.scanner = recoveryScanner;
@@ -1309,7 +1309,7 @@ class ASTConverter {
 		this.compilationUnitSource = source;
 		this.compilationUnitSourceLength = source.length;
 		this.scanner.setSource(source, unit.compilationResult);
-		CompilationUnit compilationUnit = new CompilationUnit(this.ast);
+		JavaScriptUnit compilationUnit = new JavaScriptUnit(this.ast);
 
 		// Parse comments
 		int[][] comments = unit.comments;
@@ -2018,7 +2018,7 @@ class ASTConverter {
 				}
 				Comment comment = this.commentMapper.getComment(javadoc.sourceStart);
 				if (comment != null && comment.isDocComment() && comment.getParent() == null) {
-					Javadoc docComment = (Javadoc) comment;
+					JSdoc docComment = (JSdoc) comment;
 					if (this.resolveBindings) {
 						recordNodes(docComment, javadoc);
 						// resolve member and method references binding
@@ -2041,7 +2041,7 @@ class ASTConverter {
 				}
 				Comment comment = this.commentMapper.getComment(javadoc.sourceStart);
 				if (comment != null && comment.isDocComment() && comment.getParent() == null) {
-					Javadoc docComment = (Javadoc) comment;
+					JSdoc docComment = (JSdoc) comment;
 					if (this.resolveBindings) {
 						recordNodes(docComment, javadoc);
 						// resolve member and method references binding
@@ -2064,7 +2064,7 @@ class ASTConverter {
 				}
 				Comment comment = this.commentMapper.getComment(javadoc.sourceStart);
 				if (comment != null && comment.isDocComment() && comment.getParent() == null) {
-					Javadoc docComment = (Javadoc) comment;
+					JSdoc docComment = (JSdoc) comment;
 					if (this.resolveBindings) {
 						recordNodes(docComment, javadoc);
 						// resolve member and method references binding
@@ -2141,7 +2141,7 @@ class ASTConverter {
 	}
 
 	public Expression convert(MessageSend expression) {
-		// will return a MethodInvocation or a SuperMethodInvocation or
+		// will return a FunctionInvocation or a SuperMethodInvocation or
 		Expression expr;
 		int sourceStart = expression.sourceStart;
 		if (expression.isSuperAccess()) {
@@ -2197,8 +2197,8 @@ class ASTConverter {
 			}
 			expr = superMethodInvocation;
 		} else {
-			// returns a MethodInvocation
-			final MethodInvocation methodInvocation = new MethodInvocation(this.ast);
+			// returns a FunctionInvocation
+			final FunctionInvocation methodInvocation = new FunctionInvocation(this.ast);
 			if (this.resolveBindings) {
 				recordNodes(methodInvocation, expression);
 			}
@@ -3597,7 +3597,7 @@ class ASTConverter {
 		int start = positions[0];
 		int end = positions[1];
 		if (positions[1]>0) { // Javadoc comments have positive end position
-			Javadoc docComment = this.docParser.parse(positions);
+			JSdoc docComment = this.docParser.parse(positions);
 			if (docComment == null) return null;
 			comment = docComment;
 		} else {
@@ -3863,7 +3863,7 @@ class ASTConverter {
 	private BlockScope lookupScope(ASTNode node) {
 		ASTNode currentNode = node;
 		while(currentNode != null
-			&&!(currentNode instanceof MethodDeclaration)
+			&&!(currentNode instanceof FunctionDeclaration)
 			&& !(currentNode instanceof Initializer)
 			&& !(currentNode instanceof FieldDeclaration)) {
 			currentNode = currentNode.getParent();
@@ -3961,8 +3961,8 @@ class ASTConverter {
 						recordName(memberRef.getQualifier(), typeRef);
 					}
 				}
-			} else if (node.getNodeType() == ASTNode.METHOD_REF) {
-				MethodRef methodRef = (MethodRef) node;
+			} else if (node.getNodeType() == ASTNode.FUNCTION_REF) {
+				FunctionRef methodRef = (FunctionRef) node;
 				Name name = methodRef.getName();
 				// get method name start position
 				int start = methodRef.getStartPosition();
@@ -4005,7 +4005,7 @@ class ASTConverter {
 				// Resolve parameters
 				Iterator parameters = methodRef.parameters().listIterator();
 				while (parameters.hasNext()) {
-					MethodRefParameter param = (MethodRefParameter) parameters.next();
+					FunctionRefParameter param = (FunctionRefParameter) parameters.next();
 					org.eclipse.wst.jsdt.internal.compiler.ast.Expression expression = (org.eclipse.wst.jsdt.internal.compiler.ast.Expression) javadoc.getNodeStartingAt(param.getStartPosition());
 					if (expression != null) {
 						recordNodes(param, expression);
@@ -4714,7 +4714,7 @@ class ASTConverter {
 	 * @param methodDecl
 	 * @param methodDeclaration
 	 */
-	protected void setModifiers(MethodDeclaration methodDecl, AbstractMethodDeclaration methodDeclaration) {
+	protected void setModifiers(FunctionDeclaration methodDecl, AbstractMethodDeclaration methodDeclaration) {
 		switch(this.ast.apiLevel) {
 			case AST.JLS2_INTERNAL :
 				methodDecl.internalSetModifiers(methodDeclaration.modifiers & ExtraCompilerModifiers.AccJustFlag);
@@ -5245,7 +5245,7 @@ class ASTConverter {
 		}
 	}
 
-	protected void setTypeForMethodDeclaration(MethodDeclaration methodDeclaration, Type type, int extraDimension) {
+	protected void setTypeForMethodDeclaration(FunctionDeclaration methodDeclaration, Type type, int extraDimension) {
 		if (extraDimension != 0) {
 			if (type.isArrayType()) {
 				ArrayType arrayType = (ArrayType) type;

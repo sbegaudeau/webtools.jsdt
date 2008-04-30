@@ -18,12 +18,12 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * Table content provider for the hierarchical layout in the packages view.
@@ -43,15 +43,15 @@ class PackagesViewFlatContentProvider extends LogicalPackagesProvider implements
 	 */
 	public Object[] getChildren(Object parentElement) {
 
-		if(parentElement instanceof IJavaElement){
-			IJavaElement element= (IJavaElement) parentElement;
+		if(parentElement instanceof IJavaScriptElement){
+			IJavaScriptElement element= (IJavaScriptElement) parentElement;
 
 			int type= element.getElementType();
 
 			try {
 				switch (type) {
-					case IJavaElement.JAVA_PROJECT :
-						IJavaProject project= (IJavaProject) element;
+					case IJavaScriptElement.JAVASCRIPT_PROJECT :
+						IJavaScriptProject project= (IJavaScriptProject) element;
 						IPackageFragment[] children= getPackageFragments(project.getPackageFragments());
 						if(isInCompoundState()) {
 							fMapToLogicalPackage.clear();
@@ -60,20 +60,20 @@ class PackagesViewFlatContentProvider extends LogicalPackagesProvider implements
 						} else
 							return children;
 
-					case IJavaElement.PACKAGE_FRAGMENT_ROOT :
+					case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT :
 						fMapToLogicalPackage.clear();
 						fMapToPackageFragments.clear();
 						IPackageFragmentRoot root= (IPackageFragmentRoot) element;
 						return root.getChildren();
 
-					case IJavaElement.PACKAGE_FRAGMENT :
+					case IJavaScriptElement.PACKAGE_FRAGMENT :
 						//no children in flat view
 						break;
 
 					default :
 						//do nothing, empty array returned
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return NO_CHILDREN;
 			}
 
@@ -88,7 +88,7 @@ class PackagesViewFlatContentProvider extends LogicalPackagesProvider implements
 		List list= new ArrayList();
 		for (int i= 0; i < iPackageFragments.length; i++) {
 			IPackageFragment fragment= iPackageFragments[i];
-			IJavaElement el= fragment.getParent();
+			IJavaScriptElement el= fragment.getParent();
 			if (el instanceof IPackageFragmentRoot) {
 				IPackageFragmentRoot root= (IPackageFragmentRoot) el;
 				if(root.isArchive() && root.isExternal())
@@ -106,15 +106,15 @@ class PackagesViewFlatContentProvider extends LogicalPackagesProvider implements
 		return getChildren(inputElement);
 	}
 
-	protected void processDelta(IJavaElementDelta delta) throws JavaModelException {
+	protected void processDelta(IJavaScriptElementDelta delta) throws JavaScriptModelException {
 
 		int kind= delta.getKind();
-		final IJavaElement element= delta.getElement();
+		final IJavaScriptElement element= delta.getElement();
 
 		if (isClassPathChange(delta)) {
 			Object input= fViewer.getInput();
 			if (input != null) {
-				if (fInputIsProject && input.equals(element.getJavaProject())) {
+				if (fInputIsProject && input.equals(element.getJavaScriptProject())) {
 					postRefresh(input);
 					return;
 				} else if (!fInputIsProject && input.equals(element)) {
@@ -127,7 +127,7 @@ class PackagesViewFlatContentProvider extends LogicalPackagesProvider implements
 			}
 		}
 
-		if (kind == IJavaElementDelta.REMOVED) {
+		if (kind == IJavaScriptElementDelta.REMOVED) {
 			Object input= fViewer.getInput();
 			if (input != null && input.equals(element)) {
 					postRemove(input);
@@ -138,13 +138,13 @@ class PackagesViewFlatContentProvider extends LogicalPackagesProvider implements
 		if (element instanceof IPackageFragment) {
 			final IPackageFragment frag= (IPackageFragment) element;
 
-			if (kind == IJavaElementDelta.REMOVED) {
+			if (kind == IJavaScriptElementDelta.REMOVED) {
 				removeElement(frag);
 
-			} else if (kind == IJavaElementDelta.ADDED) {
+			} else if (kind == IJavaScriptElementDelta.ADDED) {
 				addElement(frag);
 
-			} else if (kind == IJavaElementDelta.CHANGED) {
+			} else if (kind == IJavaScriptElementDelta.CHANGED) {
 				//just refresh
 				Object toBeRefreshed= element;
 
@@ -169,7 +169,7 @@ class PackagesViewFlatContentProvider extends LogicalPackagesProvider implements
 	private Object findElementToRefresh(IPackageFragment fragment) {
 		if (fViewer.testFindItem(fragment) == null) {
 			if(fInputIsProject)
-				return fragment.getJavaProject();
+				return fragment.getJavaScriptProject();
 			else return fragment.getParent();
 		}
 		return fragment;
@@ -180,16 +180,16 @@ class PackagesViewFlatContentProvider extends LogicalPackagesProvider implements
 	private Object findElementToRefresh(LogicalPackage logicalPackage) {
 		if (fViewer.testFindItem(logicalPackage) == null) {
 			IPackageFragment fragment= logicalPackage.getFragments()[0];
-			return fragment.getJavaProject();
+			return fragment.getJavaScriptProject();
 		}
 		return logicalPackage;
 	}
 
 
-	private void processAffectedChildren(IJavaElementDelta delta) throws JavaModelException {
-		IJavaElementDelta[] children= delta.getAffectedChildren();
+	private void processAffectedChildren(IJavaScriptElementDelta delta) throws JavaScriptModelException {
+		IJavaScriptElementDelta[] children= delta.getAffectedChildren();
 		for (int i= 0; i < children.length; i++) {
-			IJavaElementDelta elementDelta= children[i];
+			IJavaScriptElementDelta elementDelta= children[i];
 			processDelta(elementDelta);
 		}
 	}

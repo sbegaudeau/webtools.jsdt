@@ -17,14 +17,14 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -77,9 +77,9 @@ public class IntroduceIndirectionAction extends SelectionDispatchAction {
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isIntroduceIndirectionAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 		}
 	}
 
@@ -96,7 +96,7 @@ public class IntroduceIndirectionAction extends SelectionDispatchAction {
 	public void selectionChanged(JavaTextSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isIntroduceIndirectionAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			setEnabled(false);
 		}
 	}
@@ -108,8 +108,8 @@ public class IntroduceIndirectionAction extends SelectionDispatchAction {
 		try {
 			Assert.isTrue(RefactoringAvailabilityTester.isIntroduceIndirectionAvailable(selection));
 			Object first= selection.getFirstElement();
-			Assert.isTrue(first instanceof IMethod);
-			run((IMethod) first);
+			Assert.isTrue(first instanceof IFunction);
+			run((IFunction) first);
 		} catch (CoreException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.IntroduceIndirectionAction_dialog_title, RefactoringMessages.IntroduceIndirectionAction_unknown_exception);
 		}
@@ -121,28 +121,28 @@ public class IntroduceIndirectionAction extends SelectionDispatchAction {
 	public void run(ITextSelection selection) {
 		try {
 			Object editorInput= SelectionConverter.getInput(fEditor);
-			if (editorInput instanceof ICompilationUnit)
-				run(selection.getOffset(), selection.getLength(), (ICompilationUnit) editorInput);
+			if (editorInput instanceof IJavaScriptUnit)
+				run(selection.getOffset(), selection.getLength(), (IJavaScriptUnit) editorInput);
 			else if (editorInput instanceof IClassFile)
 				run(selection.getOffset(), selection.getLength(), (IClassFile) editorInput);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, getShell(), RefactoringMessages.IntroduceIndirectionAction_dialog_title, RefactoringMessages.IntroduceIndirectionAction_unknown_exception);
 		}
 	}
 
-	private void run(int offset, int length, ICompilationUnit unit) throws JavaModelException {
+	private void run(int offset, int length, IJavaScriptUnit unit) throws JavaScriptModelException {
 		if (!ActionUtil.isEditable(fEditor, getShell(), unit))
 			return;
 		RefactoringExecutionStarter.startIntroduceIndirectionRefactoring(unit, offset, length, getShell());
 	}
 
-	private void run(int offset, int length, IClassFile file) throws JavaModelException {
+	private void run(int offset, int length, IClassFile file) throws JavaScriptModelException {
 		if (!ActionUtil.isEditable(fEditor, getShell(), file))
 			return;
 		RefactoringExecutionStarter.startIntroduceIndirectionRefactoring(file, offset, length, getShell());
 	}
 
-	private void run(IMethod method) throws JavaModelException {
+	private void run(IFunction method) throws JavaScriptModelException {
 		if (!ActionUtil.isEditable(fEditor, getShell(), method))
 			return;
 		RefactoringExecutionStarter.startIntroduceIndirectionRefactoring(method, getShell());

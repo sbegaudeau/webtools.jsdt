@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
@@ -142,7 +142,7 @@ public int match(InferredAttribute node, MatchingNodeSet nodeSet) {
 	}
 	return nodeSet.addMatch(node, referencesLevel >= declarationsLevel ? referencesLevel : declarationsLevel); // use the stronger match
 }
-//public int match(MethodDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
+//public int match(FunctionDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(MessageSend node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(TypeDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(TypeReference node, MatchingNodeSet nodeSet) - SKIP IT
@@ -213,7 +213,7 @@ protected int matchReference(Reference node, MatchingNodeSet nodeSet, boolean wr
 	}
 	return super.matchReference(node, nodeSet, writeOnlyAccess);
 }
-protected void matchReportReference(ASTNode reference, IJavaElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportReference(ASTNode reference, IJavaScriptElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
 	if (this.isDeclarationOfAccessedFieldsPattern) {
 		// need exact match to be able to open on type ref
 		if (accuracy != SearchMatch.A_ACCURATE) return;
@@ -341,7 +341,7 @@ protected void reportDeclaration(FieldBinding fieldBinding, MatchLocator locator
 	IBinaryType info = null;
 	if (isBinary) {
 		if (resource == null)
-			resource = type.getJavaProject().getProject();
+			resource = type.getJavaScriptProject().getProject();
 		info = locator.getBinaryInfo((org.eclipse.wst.jsdt.internal.core.ClassFile) type.getClassFile(), resource);
 		locator.reportBinaryMemberDeclaration(resource, field, fieldBinding, info, SearchMatch.A_ACCURATE);
 	} else {
@@ -397,7 +397,7 @@ protected void reportDeclaration(FieldBinding fieldBinding, MatchLocator locator
 	}
 }
 protected int referenceType() {
-	return IJavaElement.FIELD;
+	return IJavaScriptElement.FIELD;
 }
 public int resolveLevel(ASTNode possiblelMatchingNode) {
 	if (this.pattern.findReferences) {

@@ -43,15 +43,15 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
 import org.eclipse.wst.jsdt.core.ICodeAssist;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaCodeReader;
 import org.eclipse.wst.jsdt.internal.ui.text.SimpleJavaSourceViewerConfiguration;
@@ -59,8 +59,8 @@ import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
 import org.eclipse.wst.jsdt.ui.actions.OpenAction;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
 
 /**
  * View which shows source for a given Java element.
@@ -146,7 +146,7 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 	/** This view's source viewer */
 	private SourceViewer fViewer;
 	/** The viewers configuration */
-	private JavaSourceViewerConfiguration fViewerConfiguration;
+	private JavaScriptSourceViewerConfiguration fViewerConfiguration;
 	/** The viewer's font properties change listener. */
 	private IPropertyChangeListener fFontPropertyChangeListener= new FontPropertyChangeListener();
 	/**
@@ -161,16 +161,16 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 	/** The select all action. */
 	private SelectAllAction fSelectAllAction;
 	/** Element opened by the open action. */
-	private IJavaElement fLastOpenedElement;
+	private IJavaScriptElement fLastOpenedElement;
 
 
 	/*
 	 * @see AbstractInfoView#internalCreatePartControl(Composite)
 	 */
 	protected void internalCreatePartControl(Composite parent) {
-		IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 		fViewer= new JavaSourceViewer(parent, null, null, false, SWT.V_SCROLL | SWT.H_SCROLL, store);
-		fViewerConfiguration= new SimpleJavaSourceViewerConfiguration(JavaPlugin.getDefault().getJavaTextTools().getColorManager(), store, null, IJavaPartitions.JAVA_PARTITIONING, false);
+		fViewerConfiguration= new SimpleJavaSourceViewerConfiguration(JavaScriptPlugin.getDefault().getJavaTextTools().getColorManager(), store, null, IJavaScriptPartitions.JAVA_PARTITIONING, false);
 		fViewer.configure(fViewerConfiguration);
 		fViewer.setEditable(false);
 
@@ -213,9 +213,9 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 			/*
 			 * @see org.eclipse.wst.jsdt.ui.actions.OpenAction#getElementToOpen(Object)
 			 */
-			public Object getElementToOpen(Object object) throws JavaModelException {
-				if (object instanceof IJavaElement)
-					fLastOpenedElement= (IJavaElement)object;
+			public Object getElementToOpen(Object object) throws JavaScriptModelException {
+				if (object instanceof IJavaScriptElement)
+					fLastOpenedElement= (IJavaScriptElement)object;
 				else
 					fLastOpenedElement= null;
 				return super.getElementToOpen(object);
@@ -301,16 +301,16 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 
 		ITextSelection textSelection= (ITextSelection)selection;
 
-		Object codeAssist= fCurrentViewInput.getAncestor(IJavaElement.COMPILATION_UNIT);
+		Object codeAssist= fCurrentViewInput.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 		if (codeAssist == null)
-			codeAssist= fCurrentViewInput.getAncestor(IJavaElement.CLASS_FILE);
+			codeAssist= fCurrentViewInput.getAncestor(IJavaScriptElement.CLASS_FILE);
 
 		if (codeAssist instanceof ICodeAssist) {
-			IJavaElement[] elements= null;
+			IJavaScriptElement[] elements= null;
 			try {
 				ISourceRange range= ((ISourceReference)fCurrentViewInput).getSourceRange();
 				elements= ((ICodeAssist)codeAssist).codeSelect(range.getOffset() + getOffsetInUnclippedDocument(textSelection), textSelection.getLength());
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return StructuredSelection.EMPTY;
 			}
 			if (elements != null && elements.length > 0) {
@@ -334,7 +334,7 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 		IDocument unclippedDocument= null;
 		try {
 			unclippedDocument= new Document(((ISourceReference)fCurrentViewInput).getSource());
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return -1;
 		}
 		IDocument clippedDoc= (IDocument)fViewer.getInput();
@@ -356,7 +356,7 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 		fViewer= null;
 		fViewerConfiguration= null;
 		JFaceResources.getFontRegistry().removeListener(fFontPropertyChangeListener);
-		JavaPlugin.getDefault().getCombinedPreferenceStore().removePropertyChangeListener(fPropertyChangeListener);
+		JavaScriptPlugin.getDefault().getCombinedPreferenceStore().removePropertyChangeListener(fPropertyChangeListener);
 	}
 
 	/*
@@ -376,7 +376,7 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 
 		ISourceReference sourceRef= (ISourceReference)input;
 
-		if (fLastOpenedElement != null && input instanceof IJavaElement && ((IJavaElement)input).getHandleIdentifier().equals(fLastOpenedElement.getHandleIdentifier())) {
+		if (fLastOpenedElement != null && input instanceof IJavaScriptElement && ((IJavaScriptElement)input).getHandleIdentifier().equals(fLastOpenedElement.getHandleIdentifier())) {
 			fLastOpenedElement= null;
 			return null;
 		} else {
@@ -386,7 +386,7 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 		String source;
 		try {
 			source= sourceRef.getSource();
-		} catch (JavaModelException ex) {
+		} catch (JavaScriptModelException ex) {
 			return ""; //$NON-NLS-1$
 		}
 
@@ -394,7 +394,7 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 			return ""; //$NON-NLS-1$
 
 		source= removeLeadingComments(source);
-		String delim= StubUtility.getLineDelimiterUsed((IJavaElement) input);
+		String delim= StubUtility.getLineDelimiterUsed((IJavaScriptElement) input);
 
 		String[] sourceLines= Strings.convertIntoLines(source);
 		if (sourceLines == null || sourceLines.length == 0)
@@ -404,9 +404,9 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 		boolean firstCharNotWhitespace= firstLine != null && firstLine.length() > 0 && !Character.isWhitespace(firstLine.charAt(0));
 		if (firstCharNotWhitespace)
 			sourceLines[0]= ""; //$NON-NLS-1$
-		IJavaProject project;
-		if (input instanceof IJavaElement)
-			project= ((IJavaElement) input).getJavaProject();
+		IJavaScriptProject project;
+		if (input instanceof IJavaScriptElement)
+			project= ((IJavaScriptElement) input).getJavaScriptProject();
 		else
 			project= null;
 		Strings.trimIndentation(sourceLines, project);
@@ -427,7 +427,7 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 			fViewer.setInput(new Document("")); //$NON-NLS-1$
 		else {
 			IDocument document= new Document(input.toString());
-			JavaPlugin.getDefault().getJavaTextTools().setupJavaDocumentPartitioner(document, IJavaPartitions.JAVA_PARTITIONING);			
+			JavaScriptPlugin.getDefault().getJavaTextTools().setupJavaDocumentPartitioner(document, IJavaScriptPartitions.JAVA_PARTITIONING);			
 			fViewer.setInput(document);
 		}
 	}
@@ -457,7 +457,7 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 				if (reader != null)
 					reader.close();
 			} catch (IOException ex) {
-				JavaPlugin.log(ex);
+				JavaScriptPlugin.log(ex);
 			}
 		}
 

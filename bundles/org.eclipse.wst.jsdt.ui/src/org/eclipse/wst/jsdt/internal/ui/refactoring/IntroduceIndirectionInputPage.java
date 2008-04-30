@@ -30,11 +30,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.IntroduceIndirectionRefactoring;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -179,15 +179,15 @@ public class IntroduceIndirectionInputPage extends UserInputWizardPage {
 	}
 
 	private IType chooseIntermediaryClass() {
-		IJavaProject proj= getIntroduceIndirectionRefactoring().getProject();
+		IJavaScriptProject proj= getIntroduceIndirectionRefactoring().getProject();
 
 		if (proj == null)
 			return null;
 
-		IJavaElement[] elements= new IJavaElement[] { proj };
-		IJavaSearchScope scope= SearchEngine.createJavaSearchScope(elements);
+		IJavaScriptElement[] elements= new IJavaScriptElement[] { proj };
+		IJavaScriptSearchScope scope= SearchEngine.createJavaSearchScope(elements);
 
-		FilteredTypesSelectionDialog dialog= new FilteredTypesSelectionDialog(getShell(), false, getWizard().getContainer(), scope, IJavaSearchConstants.CLASS);
+		FilteredTypesSelectionDialog dialog= new FilteredTypesSelectionDialog(getShell(), false, getWizard().getContainer(), scope, IJavaScriptSearchConstants.CLASS);
 
 		dialog.setTitle(RefactoringMessages.IntroduceIndirectionInputPage_dialog_choose_declaring_class);
 		dialog.setMessage(RefactoringMessages.IntroduceIndirectionInputPage_dialog_choose_declaring_class_long);

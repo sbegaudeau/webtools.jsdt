@@ -34,7 +34,7 @@ public interface ITypeNameRequestor {
  * @param path the full path to the resource containing the class. If the resource is a .class file
  *          or a source file, this is the full path in the workspace to this resource. If the
  *          resource is an archive (that is, a .zip or .jar file), the path is composed of 2 paths separated
- *		 	 by <code>IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR</code>:
+ *		 	 by <code>IJavaScriptSearchScope.JAR_FILE_ENTRY_SEPARATOR</code>:
  *			 the first path is the full OS path to the archive (if it is an external archive),
  *			 or the workspace relative <code>IPath</code> to the archive (if it is an internal archive),
  * 		 the second path is the path to the resource inside the archive.
@@ -53,7 +53,7 @@ void acceptClass(char[] packageName, char[] simpleTypeName, char[][] enclosingTy
  * @param path the full path to the resource containing the interface. If the resource is a .class file
  *          or a source file, this is the full path in the workspace to this resource. If the
  *          resource is an archive (that is, a .zip or .jar file), the path is composed of 2 paths separated
- *		 	 by <code>IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR</code>:
+ *		 	 by <code>IJavaScriptSearchScope.JAR_FILE_ENTRY_SEPARATOR</code>:
  *			 the first path is the full OS path to the archive (if it is an external archive),
  *			 or the workspace relative <code>IPath</code> to the archive (if it is an internal archive),
  * 		 the second path is the path to the resource inside the archive.

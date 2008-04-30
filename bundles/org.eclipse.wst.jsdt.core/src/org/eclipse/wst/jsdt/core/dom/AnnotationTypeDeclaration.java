@@ -132,7 +132,7 @@ public class AnnotationTypeDeclaration extends AbstractTypeDeclaration {
 			if (get) {
 				return getJavadoc();
 			} else {
-				setJavadoc((Javadoc) child);
+				setJavadoc((JSdoc) child);
 				return null;
 			}
 		}
@@ -212,7 +212,7 @@ public class AnnotationTypeDeclaration extends AbstractTypeDeclaration {
 		AnnotationTypeDeclaration result = new AnnotationTypeDeclaration(target);
 		result.setSourceRange(this.getStartPosition(), this.getLength());
 		result.setJavadoc(
-			(Javadoc) ASTNode.copySubtree(target, getJavadoc()));
+			(JSdoc) ASTNode.copySubtree(target, getJavadoc()));
 		result.modifiers().addAll(ASTNode.copySubtrees(target, modifiers()));
 		result.setName((SimpleName) getName().clone(target));
 		result.bodyDeclarations().addAll(ASTNode.copySubtrees(target, bodyDeclarations()));

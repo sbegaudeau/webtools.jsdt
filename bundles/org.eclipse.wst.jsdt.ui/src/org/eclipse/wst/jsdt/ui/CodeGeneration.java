@@ -12,10 +12,10 @@
 package org.eclipse.wst.jsdt.ui;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CodeTemplateContextType;
 
@@ -28,28 +28,28 @@ public class CodeGeneration {
 
 	
 	/**
-	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, ICompilationUnit, String, String)} to get the code template used
+	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, IJavaScriptUnit, String, String)} to get the code template used
 	 * for a new class type body.
 	 * @since 3.2
 	 */
 	public static final String CLASS_BODY_TEMPLATE_ID= CodeTemplateContextType.CLASSBODY_ID;
 	
 	/**
-	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, ICompilationUnit, String, String)} to get the code template used
+	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, IJavaScriptUnit, String, String)} to get the code template used
 	 * for a new interface type body.
 	 * @since 3.2
 	 */
 	public static final String INTERFACE_BODY_TEMPLATE_ID= CodeTemplateContextType.INTERFACEBODY_ID;
 	
 	/**
-	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, ICompilationUnit, String, String)} to get the code template used
+	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, IJavaScriptUnit, String, String)} to get the code template used
 	 * for a new enum type body.
 	 * @since 3.2
 	 */
 	public static final String ENUM_BODY_TEMPLATE_ID= CodeTemplateContextType.ENUMBODY_ID;
 	
 	/**
-	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, ICompilationUnit, String, String)} to get the code template used
+	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, IJavaScriptUnit, String, String)} to get the code template used
 	 * for a new annotation type body.
 	 * @since 3.2
 	 */
@@ -70,7 +70,7 @@ public class CodeGeneration {
 	 * @return Returns the new content or <code>null</code> if the template is undefined or empty.
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 */
-	public static String getCompilationUnitContent(ICompilationUnit cu, String typeComment, String typeContent, String lineDelimiter) throws CoreException {	
+	public static String getCompilationUnitContent(IJavaScriptUnit cu, String typeComment, String typeContent, String lineDelimiter) throws CoreException {	
 		return getCompilationUnitContent(cu, getFileComment(cu, lineDelimiter), typeComment, typeContent, lineDelimiter);
 	}
 	
@@ -87,7 +87,7 @@ public class CodeGeneration {
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 * @since 3.1
 	 */
-	public static String getCompilationUnitContent(ICompilationUnit cu, String fileComment, String typeComment, String typeContent, String lineDelimiter) throws CoreException {	
+	public static String getCompilationUnitContent(IJavaScriptUnit cu, String fileComment, String typeComment, String typeContent, String lineDelimiter) throws CoreException {	
 		return StubUtility.getCompilationUnitContent(cu, fileComment, typeComment, typeContent, lineDelimiter);
 	}
 	
@@ -99,7 +99,7 @@ public class CodeGeneration {
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 * @since 3.1
 	 */	
-	public static String getFileComment(ICompilationUnit cu, String lineDelimiter) throws CoreException {
+	public static String getFileComment(IJavaScriptUnit cu, String lineDelimiter) throws CoreException {
 		return StubUtility.getFileComment(cu, lineDelimiter);
 	}
 	
@@ -112,7 +112,7 @@ public class CodeGeneration {
 	 * @return Returns the new content or <code>null</code> if the code template is undefined or empty. The returned content is unformatted and is not indented.
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 */	
-	public static String getTypeComment(ICompilationUnit cu, String typeQualifiedName, String lineDelimiter) throws CoreException {
+	public static String getTypeComment(IJavaScriptUnit cu, String typeQualifiedName, String lineDelimiter) throws CoreException {
 		return StubUtility.getTypeComment(cu, typeQualifiedName, EMPTY, lineDelimiter);
 	}
 	
@@ -127,7 +127,7 @@ public class CodeGeneration {
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 * @since 3.1
 	 */	
-	public static String getTypeComment(ICompilationUnit cu, String typeQualifiedName, String[] typeParameterNames, String lineDelimiter) throws CoreException {
+	public static String getTypeComment(IJavaScriptUnit cu, String typeQualifiedName, String[] typeParameterNames, String lineDelimiter) throws CoreException {
 		return StubUtility.getTypeComment(cu, typeQualifiedName, typeParameterNames, lineDelimiter);
 	}
 		
@@ -142,7 +142,7 @@ public class CodeGeneration {
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 * @since 3.2
 	 */	
-	public static String getTypeBody(String typeKind, ICompilationUnit cu, String typeName, String lineDelim) throws CoreException {
+	public static String getTypeBody(String typeKind, IJavaScriptUnit cu, String typeName, String lineDelim) throws CoreException {
 		return StubUtility.getTypeBody(typeKind, cu, typeName, lineDelim);
 	}
 
@@ -156,7 +156,7 @@ public class CodeGeneration {
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 * @since 3.0
 	 */	
-	public static String getFieldComment(ICompilationUnit cu, String typeName, String fieldName, String lineDelimiter) throws CoreException {
+	public static String getFieldComment(IJavaScriptUnit cu, String typeName, String fieldName, String lineDelimiter) throws CoreException {
 		return StubUtility.getFieldComment(cu, typeName, fieldName, lineDelimiter);
 	}	
 	
@@ -166,9 +166,9 @@ public class CodeGeneration {
 	 * @param cu The compilation unit to which the method belongs. The compilation unit does not need to exist.
 	 * @param declaringTypeName Name of the type to which the method belongs. For inner types the name must be qualified and include the outer
 	 * types names (dot separated). See {@link org.eclipse.wst.jsdt.core.IType#getTypeQualifiedName(char)}.
-	 * @param decl The MethodDeclaration AST node that will be added as new
+	 * @param decl The FunctionDeclaration AST node that will be added as new
 	 * method. The node does not need to exist in an AST (no parent needed) and does not need to resolve.
-	 * See {@link org.eclipse.wst.jsdt.core.dom.AST#newMethodDeclaration()} for how to create such a node.
+	 * See {@link org.eclipse.wst.jsdt.core.dom.AST#newFunctionDeclaration()} for how to create such a node.
 	 * @param overridden The binding of the method to which to add an "@see" link or 
 	 * <code>null</code> if no link should be created.
 	 * @param lineDelimiter The line delimiter to be used.
@@ -176,7 +176,7 @@ public class CodeGeneration {
 	 * code template is empty. The returned content is unformatted and not indented (formatting required).
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 */
-	public static String getMethodComment(ICompilationUnit cu, String declaringTypeName, MethodDeclaration decl, IMethodBinding overridden, String lineDelimiter) throws CoreException {
+	public static String getMethodComment(IJavaScriptUnit cu, String declaringTypeName, FunctionDeclaration decl, IFunctionBinding overridden, String lineDelimiter) throws CoreException {
 		if (overridden != null) {
 			overridden= overridden.getMethodDeclaration();
 			String declaringClassQualifiedName= overridden.getDeclaringClass().getQualifiedName();
@@ -210,7 +210,7 @@ public class CodeGeneration {
 	 * the comment code template is empty. The returned content is unformatted and not indented (formatting required).
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 */
-	public static String getMethodComment(ICompilationUnit cu, String declaringTypeName, String methodName, String[] paramNames, String[] excTypeSig, String retTypeSig, IMethod overridden, String lineDelimiter) throws CoreException {
+	public static String getMethodComment(IJavaScriptUnit cu, String declaringTypeName, String methodName, String[] paramNames, String[] excTypeSig, String retTypeSig, IFunction overridden, String lineDelimiter) throws CoreException {
 		return StubUtility.getMethodComment(cu, declaringTypeName, methodName, paramNames, excTypeSig, retTypeSig, EMPTY, overridden, false, lineDelimiter);
 	}
 	
@@ -238,7 +238,7 @@ public class CodeGeneration {
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 * @since 3.1
 	 */
-	public static String getMethodComment(ICompilationUnit cu, String declaringTypeName, String methodName, String[] paramNames, String[] excTypeSig, String retTypeSig, String[] typeParameterNames, IMethod overridden, String lineDelimiter) throws CoreException {
+	public static String getMethodComment(IJavaScriptUnit cu, String declaringTypeName, String methodName, String[] paramNames, String[] excTypeSig, String retTypeSig, String[] typeParameterNames, IFunction overridden, String lineDelimiter) throws CoreException {
 		return StubUtility.getMethodComment(cu, declaringTypeName, methodName, paramNames, excTypeSig, retTypeSig, typeParameterNames, overridden, false, lineDelimiter);
 	}
 		
@@ -255,13 +255,13 @@ public class CodeGeneration {
 	 * the comment code template is empty. The returned string is unformatted and and has no indent (formatting required).
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 */
-	public static String getMethodComment(IMethod method, IMethod overridden, String lineDelimiter) throws CoreException {
+	public static String getMethodComment(IFunction method, IFunction overridden, String lineDelimiter) throws CoreException {
 		String retType= method.isConstructor() ? null : method.getReturnType();
 		String[] paramNames= method.getParameterNames();
 		String[] typeParameterNames= StubUtility.getTypeParameterNames(method.getTypeParameters());
 		
 		String typeName = (method.getDeclaringType()!=null) ? method.getDeclaringType().getElementName() : ""; //$NON-NLS-1$
-		return StubUtility.getMethodComment(method.getCompilationUnit(), typeName,
+		return StubUtility.getMethodComment(method.getJavaScriptUnit(), typeName,
 			method.getElementName(), paramNames, method.getExceptionTypes(), retType, typeParameterNames, overridden, false, lineDelimiter);
 	}
 	
@@ -274,9 +274,9 @@ public class CodeGeneration {
 	 * @param declaringTypeName Name of the type to which the method belongs. For inner types the name must be qualified and include the outer
 	 * types names (dot separated). See {@link org.eclipse.wst.jsdt.core.IType#getTypeQualifiedName(char)}.
 
-	 * @param decl The MethodDeclaration AST node that will be added as new
+	 * @param decl The FunctionDeclaration AST node that will be added as new
 	 * method. The node does not need to exist in an AST (no parent needed) and does not need to resolve.
-	 * See {@link org.eclipse.wst.jsdt.core.dom.AST#newMethodDeclaration()} for how to create such a node.
+	 * See {@link org.eclipse.wst.jsdt.core.dom.AST#newFunctionDeclaration()} for how to create such a node.
 	 * @param isDeprecated If set, the method is deprecated
 	 * @param overriddenMethodName If a method is overridden, the simple name of the overridden method, or <code>null</code> if no method is overridden.
 	 * @param overriddenMethodDeclaringTypeName If a method is overridden, the fully qualified type name of the overridden method's declaring type,
@@ -290,7 +290,7 @@ public class CodeGeneration {
 	 * @since 3.2
 	 */
 
-	public static String getMethodComment(ICompilationUnit cu, String declaringTypeName, MethodDeclaration decl, boolean isDeprecated, String overriddenMethodName, String overriddenMethodDeclaringTypeName, String[] overriddenMethodParameterTypeNames, String lineDelimiter) throws CoreException {
+	public static String getMethodComment(IJavaScriptUnit cu, String declaringTypeName, FunctionDeclaration decl, boolean isDeprecated, String overriddenMethodName, String overriddenMethodDeclaringTypeName, String[] overriddenMethodParameterTypeNames, String lineDelimiter) throws CoreException {
 		return StubUtility.getMethodComment(cu, declaringTypeName, decl, isDeprecated, overriddenMethodName, overriddenMethodDeclaringTypeName, overriddenMethodParameterTypeNames, false, lineDelimiter);
 	}
 
@@ -310,8 +310,8 @@ public class CodeGeneration {
 	 * the comment code template is empty. The returned string is unformatted and and has no indent (formatting required).
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 */	
-	public static String getMethodBodyContent(ICompilationUnit cu, String declaringTypeName, String methodName, boolean isConstructor, String bodyStatement, String lineDelimiter) throws CoreException {
-		return StubUtility.getMethodBodyContent(isConstructor, cu.getJavaProject(), declaringTypeName, methodName, bodyStatement, lineDelimiter);
+	public static String getMethodBodyContent(IJavaScriptUnit cu, String declaringTypeName, String methodName, boolean isConstructor, String bodyStatement, String lineDelimiter) throws CoreException {
+		return StubUtility.getMethodBodyContent(isConstructor, cu.getJavaScriptProject(), declaringTypeName, methodName, bodyStatement, lineDelimiter);
 	}
 	
 	/**
@@ -330,8 +330,8 @@ public class CodeGeneration {
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 * @since 3.0
 	 */	
-	public static String getGetterMethodBodyContent(ICompilationUnit cu, String declaringTypeName, String methodName, String fieldName, String lineDelimiter) throws CoreException {
-		return StubUtility.getGetterMethodBodyContent(cu.getJavaProject(), declaringTypeName, methodName, fieldName, lineDelimiter);
+	public static String getGetterMethodBodyContent(IJavaScriptUnit cu, String declaringTypeName, String methodName, String fieldName, String lineDelimiter) throws CoreException {
+		return StubUtility.getGetterMethodBodyContent(cu.getJavaScriptProject(), declaringTypeName, methodName, fieldName, lineDelimiter);
 	}
 	
 	/**
@@ -351,8 +351,8 @@ public class CodeGeneration {
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 * @since 3.0
 	 */	
-	public static String getSetterMethodBodyContent(ICompilationUnit cu, String declaringTypeName, String methodName, String fieldName, String paramName, String lineDelimiter) throws CoreException {
-		return StubUtility.getSetterMethodBodyContent(cu.getJavaProject(), declaringTypeName, methodName, fieldName, paramName, lineDelimiter);
+	public static String getSetterMethodBodyContent(IJavaScriptUnit cu, String declaringTypeName, String methodName, String fieldName, String paramName, String lineDelimiter) throws CoreException {
+		return StubUtility.getSetterMethodBodyContent(cu.getJavaScriptProject(), declaringTypeName, methodName, fieldName, paramName, lineDelimiter);
 	}
 	
 	/**
@@ -373,7 +373,7 @@ public class CodeGeneration {
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 * @since 3.0
 	 */
-	public static String getGetterComment(ICompilationUnit cu, String declaringTypeName, String methodName, String fieldName, String fieldType, String bareFieldName, String lineDelimiter) throws CoreException {
+	public static String getGetterComment(IJavaScriptUnit cu, String declaringTypeName, String methodName, String fieldName, String fieldType, String bareFieldName, String lineDelimiter) throws CoreException {
 		return StubUtility.getGetterComment(cu, declaringTypeName, methodName, fieldName, fieldType, bareFieldName, lineDelimiter);
 	}
 	
@@ -396,7 +396,7 @@ public class CodeGeneration {
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 * @since 3.0
 	 */
-	public static String getSetterComment(ICompilationUnit cu, String declaringTypeName, String methodName, String fieldName, String fieldType, String paramName, String bareFieldName, String lineDelimiter) throws CoreException {
+	public static String getSetterComment(IJavaScriptUnit cu, String declaringTypeName, String methodName, String fieldName, String fieldType, String paramName, String bareFieldName, String lineDelimiter) throws CoreException {
 		return StubUtility.getSetterComment(cu, declaringTypeName, methodName, fieldName, fieldType, paramName, bareFieldName, lineDelimiter);
 	}		
 }

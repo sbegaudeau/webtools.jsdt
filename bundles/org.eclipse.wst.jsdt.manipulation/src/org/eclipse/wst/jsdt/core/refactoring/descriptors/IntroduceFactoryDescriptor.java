@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the introduce factory refactoring.
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class IntroduceFactoryDescriptor extends JavaRefactoringDescriptor {
+public final class IntroduceFactoryDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public IntroduceFactoryDescriptor() {
-		super(IJavaRefactorings.INTRODUCE_FACTORY);
+		super(IJavaScriptRefactorings.INTRODUCE_FACTORY);
 	}
 }

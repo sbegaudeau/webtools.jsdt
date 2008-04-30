@@ -26,8 +26,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
@@ -37,7 +37,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.AddSourceFolderWizard
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
-//SelectedElements iff enabled: IJavaProject && size == 1
+//SelectedElements iff enabled: IJavaScriptProject && size == 1
 public class CreateLinkedSourceFolderAction extends BuildpathModifierAction {
 
 	public CreateLinkedSourceFolderAction(IWorkbenchSite site) {
@@ -71,9 +71,9 @@ public class CreateLinkedSourceFolderAction extends BuildpathModifierAction {
 		Shell shell= getShell();
 	
 		try {
-			IJavaProject javaProject= (IJavaProject)getSelectedElements().get(0);
+			IJavaScriptProject javaProject= (IJavaScriptProject)getSelectedElements().get(0);
             
-			CPListElement newEntrie= new CPListElement(javaProject, IClasspathEntry.CPE_SOURCE);
+			CPListElement newEntrie= new CPListElement(javaProject, IIncludePathEntry.CPE_SOURCE);
             CPListElement[] existing= CPListElement.createFromExisting(javaProject);
             boolean isProjectSrcFolder= CPListElement.isProjectSourceFolder(existing, javaProject);
             
@@ -110,7 +110,7 @@ public class CreateLinkedSourceFolderAction extends BuildpathModifierAction {
 		}
 	}
 	
-    private IPath getOutputLocation(IJavaProject javaProject) {
+    private IPath getOutputLocation(IJavaScriptProject javaProject) {
     	try {
 			return javaProject.getOutputLocation();		
 		} catch (CoreException e) {
@@ -124,7 +124,7 @@ public class CreateLinkedSourceFolderAction extends BuildpathModifierAction {
     	if (selection.size() != 1)
     		return false;
     	
-    	if (!(selection.getFirstElement() instanceof IJavaProject))
+    	if (!(selection.getFirstElement() instanceof IJavaScriptProject))
     		return false;
     	
     	return true;

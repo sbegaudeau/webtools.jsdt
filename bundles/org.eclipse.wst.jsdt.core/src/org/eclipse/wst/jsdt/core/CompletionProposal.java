@@ -441,7 +441,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * @see #getKind()
 	 * @since 3.2
 	 */
-	public static final int JAVADOC_FIELD_REF = 14;
+	public static final int JSDOC_FIELD_REF = 14;
 
 	/**
 	 * Completion is a link reference to a method in a javadoc text.
@@ -470,7 +470,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * @see #getKind()
 	 * @since 3.2
 	 */
-	public static final int JAVADOC_METHOD_REF = 15;
+	public static final int JSDOC_METHOD_REF = 15;
 
 	/**
 	 * Completion is a link reference to a type in a javadoc text.
@@ -500,7 +500,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * @see #getKind()
 	 * @since 3.2
 	 */
-	public static final int JAVADOC_TYPE_REF = 16;
+	public static final int JSDOC_TYPE_REF = 16;
 
 	/**
 	 * Completion is a value reference to a static field in a javadoc text.
@@ -531,7 +531,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * @see #getKind()
 	 * @since 3.2
 	 */
-	public static final int JAVADOC_VALUE_REF = 17;
+	public static final int JSDOC_VALUE_REF = 17;
 
 	/**
 	 * Completion is a method argument or a class/method type parameter
@@ -566,7 +566,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * @see #getKind()
 	 * @since 3.2
 	 */
-	public static final int JAVADOC_PARAM_REF = 18;
+	public static final int JSDOC_PARAM_REF = 18;
 
 	/**
 	 * Completion is a javadoc block tag.
@@ -597,7 +597,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * @see #getKind()
 	 * @since 3.2
 	 */
-	public static final int JAVADOC_BLOCK_TAG = 19;
+	public static final int JSDOC_BLOCK_TAG = 19;
 
 	/**
 	 * Completion is a javadoc inline tag.
@@ -628,7 +628,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * @see #getKind()
 	 * @since 3.2
 	 */
-	public static final int JAVADOC_INLINE_TAG = 20;
+	public static final int JSDOC_INLINE_TAG = 20;
 
 	/**
 	 * Completion is an import of reference to a static field.
@@ -1215,9 +1215,9 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * of the type that declares the field that is referenced</li>
 	 * 	<li><code>METHOD_IMPORT</code> - type signature
 	 * of the type that declares the method that is imported</li>
-	 *  <li><code>METHOD_REF</code> - type signature
+	 *  <li><code>FUNCTION_REF</code> - type signature
 	 * of the type that declares the method that is referenced</li>
-	 * 	<li><code>METHOD_DECLARATION</code> - type signature
+	 * 	<li><code>FUNCTION_DECLARATION</code> - type signature
 	 * of the type that declares the method that is being
 	 * implemented or overridden</li>
 	 * 	<li><code>PACKAGE_REF</code> - dot-based package
@@ -1251,7 +1251,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * <ul>
 	 * <li><code>ANONYMOUS_CLASS_DECLARATION</code> - key
 	 * of the type that is being subclassed or implemented</li>
-	 * 	<li><code>METHOD_DECLARATION</code> - key
+	 * 	<li><code>FUNCTION_DECLARATION</code> - key
 	 * of the type that declares the method that is being
 	 * implemented or overridden</li>
 	 * </ul>
@@ -1261,7 +1261,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </p>
 	 *
 	 * @return a key, or <code>null</code> if none
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTParser#createASTs(ICompilationUnit[], String[], org.eclipse.wst.jsdt.core.dom.ASTRequestor, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTParser#createASTs(IJavaScriptUnit[], String[], org.eclipse.wst.jsdt.core.dom.ASTRequestor, IProgressMonitor)
      * @since 3.1
 	 */
 	public char[] getDeclarationKey() {
@@ -1320,8 +1320,8 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * 	<li><code>LABEL_REF</code> - the name of the label</li>
 	 * 	<li><code>LOCAL_VARIABLE_REF</code> - the name of the local variable</li>
 	 * 	<li><code>METHOD_IMPORT</code> - the name of the method</li>
-	 *  <li><code>METHOD_REF</code> - the name of the method (the type simple name for constructor)</li>
-	 * 	<li><code>METHOD_DECLARATION</code> - the name of the method (the type simple name for constructor)</li>
+	 *  <li><code>FUNCTION_REF</code> - the name of the method (the type simple name for constructor)</li>
+	 * 	<li><code>FUNCTION_DECLARATION</code> - the name of the method (the type simple name for constructor)</li>
 	 * 	<li><code>VARIABLE_DECLARATION</code> - the name of the variable</li>
 	 *  <li><code>POTENTIAL_METHOD_DECLARATION</code> - the name of the method</li>
 	 * </ul>
@@ -1376,9 +1376,9 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * of the referenced local variable's type</li>
 	 * 	<li><code>METHOD_IMPORT</code> - method signature
 	 * of the method that is imported</li>
-	 *  <li><code>METHOD_REF</code> - method signature
+	 *  <li><code>FUNCTION_REF</code> - method signature
 	 * of the method that is referenced</li>
-	 * 	<li><code>METHOD_DECLARATION</code> - method signature
+	 * 	<li><code>FUNCTION_DECLARATION</code> - method signature
 	 * of the method that is being implemented or overridden</li>
 	 * 	<li><code>TYPE_IMPORT</code> - type signature
 	 * of the type that is imported</li>
@@ -1411,7 +1411,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * <li><code>ANONYMOUS_CLASS_DECLARATION</code> - method key
 	 * of the constructor that is being invoked, or <code>null</code> if
 	 * the declaring type is an interface</li>
-	 * 	<li><code>METHOD_DECLARATION</code> - method key
+	 * 	<li><code>FUNCTION_DECLARATION</code> - method key
 	 * of the method that is being implemented or overridden</li>
 	 * </ul>
 	 * For kinds of completion proposals, this method returns
@@ -1420,7 +1420,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </p>
 	 *
 	 * @return the key, or <code>null</code> if none
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTParser#createASTs(ICompilationUnit[], String[], org.eclipse.wst.jsdt.core.dom.ASTRequestor, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTParser#createASTs(IJavaScriptUnit[], String[], org.eclipse.wst.jsdt.core.dom.ASTRequestor, IProgressMonitor)
      * @since 3.1
 	 */
 	public char[] getKey() {
@@ -1438,9 +1438,9 @@ public final class CompletionProposal extends InternalCompletionProposal {
 //	 * of the type that is being subclassed or implemented</li>
 //	 * 	<li><code>FIELD_REF</code> - the dot-based package name
 //	 * of the type that declares the field that is referenced</li>
-//	 * 	<li><code>METHOD_REF</code> - the dot-based package name
+//	 * 	<li><code>FUNCTION_REF</code> - the dot-based package name
 //	 * of the type that declares the method that is referenced</li>
-//	 * 	<li><code>METHOD_DECLARATION</code> - the dot-based package name
+//	 * 	<li><code>FUNCTION_DECLARATION</code> - the dot-based package name
 //	 * of the type that declares the method that is being
 //	 * implemented or overridden</li>
 //	 * </ul>
@@ -1473,10 +1473,10 @@ public final class CompletionProposal extends InternalCompletionProposal {
 //	 * 	<li><code>FIELD_REF</code> - the dot-based type name
 //	 * of the type that declares the field that is referenced
 //	 * or an anonymous type instantiation ("new X(){}") if it is an anonymous type</li>
-//	 * 	<li><code>METHOD_REF</code> - the dot-based type name
+//	 * 	<li><code>FUNCTION_REF</code> - the dot-based type name
 //	 * of the type that declares the method that is referenced
 //	 * or an anonymous type instantiation ("new X(){}") if it is an anonymous type</li>
-//	 * 	<li><code>METHOD_DECLARATION</code> - the dot-based type name
+//	 * 	<li><code>FUNCTION_DECLARATION</code> - the dot-based type name
 //	 * of the type that declares the method that is being
 //	 * implemented or overridden</li>
 //	 * </ul>
@@ -1507,9 +1507,9 @@ public final class CompletionProposal extends InternalCompletionProposal {
 //	 * of the referenced field's type</li>
 //	 * 	<li><code>LOCAL_VARIABLE_REF</code> - the dot-based package name
 //	 * of the referenced local variable's type</li>
-//	 * 	<li><code>METHOD_REF</code> -  the dot-based package name
+//	 * 	<li><code>FUNCTION_REF</code> -  the dot-based package name
 //	 * of the return type of the method that is referenced</li>
-//	 * 	<li><code>METHOD_DECLARATION</code> - the dot-based package name
+//	 * 	<li><code>FUNCTION_DECLARATION</code> - the dot-based package name
 //	 * of the return type of the method that is being implemented
 //	 * or overridden</li>
 //	 * 	<li><code>PACKAGE_REF</code> - the dot-based package name
@@ -1546,9 +1546,9 @@ public final class CompletionProposal extends InternalCompletionProposal {
 //	 * of the referenced field's type</li>
 //	 * 	<li><code>LOCAL_VARIABLE_REF</code> - the dot-based type name
 //	 * of the referenced local variable's type</li>
-//	 * 	<li><code>METHOD_REF</code> -  the dot-based type name
+//	 * 	<li><code>FUNCTION_REF</code> -  the dot-based type name
 //	 * of the return type of the method that is referenced</li>
-//	 * 	<li><code>METHOD_DECLARATION</code> - the dot-based type name
+//	 * 	<li><code>FUNCTION_DECLARATION</code> - the dot-based type name
 //	 * of the return type of the method that is being implemented
 //	 * or overridden</li>
 //	 * 	<li><code>TYPE_REF</code> - the dot-based type name
@@ -1581,9 +1581,9 @@ public final class CompletionProposal extends InternalCompletionProposal {
 //	 * <ul>
 //	 * 	<li><code>ANONYMOUS_CLASS_DECLARATION</code> - parameter package names
 //	 * of the constructor that is being invoked</li>
-//	 * 	<li><code>METHOD_REF</code> - parameter package names
+//	 * 	<li><code>FUNCTION_REF</code> - parameter package names
 //	 * of the method that is referenced</li>
-//	 * 	<li><code>METHOD_DECLARATION</code> - parameter package names
+//	 * 	<li><code>FUNCTION_DECLARATION</code> - parameter package names
 //	 * of the method that is being implemented or overridden</li>
 //	 * </ul>
 //	 * For kinds of completion proposals, this method returns
@@ -1611,9 +1611,9 @@ public final class CompletionProposal extends InternalCompletionProposal {
 //	 * <ul>
 //	 * 	<li><code>ANONYMOUS_CLASS_DECLARATION</code> - parameter type names
 //	 * of the constructor that is being invoked</li>
-//	 * 	<li><code>METHOD_REF</code> - parameter type names
+//	 * 	<li><code>FUNCTION_REF</code> - parameter type names
 //	 * of the method that is referenced</li>
-//	 * 	<li><code>METHOD_DECLARATION</code> - parameter type names
+//	 * 	<li><code>FUNCTION_DECLARATION</code> - parameter type names
 //	 * of the method that is being implemented or overridden</li>
 //	 * </ul>
 //	 * For kinds of completion proposals, this method returns
@@ -1692,12 +1692,12 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 *  <li><code>METHOD_IMPORT</code> - modifier flags
 	 * of the method that is imported;
 	 *  </li>
-	 * 	<li><code>METHOD_REF</code> - modifier flags
+	 * 	<li><code>FUNCTION_REF</code> - modifier flags
 	 * of the method that is referenced;
 	 * <code>Flags.AccAnnotation</code> can be used to recognize
 	 * references to annotation type members
 	 * </li>
-	 * <li><code>METHOD_DECLARATION</code> - modifier flags
+	 * <li><code>FUNCTION_DECLARATION</code> - modifier flags
 	 * for the method that is being implemented or overridden</li>
 	 * <li><code>TYPE_IMPORT</code> - modifier flags
 	 * of the type that is imported; <code>Flags.AccInterface</code>
@@ -1760,7 +1760,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 *    <li><code>FIELD_IMPORT</code></li>
 	 *   </ul>
 	 * </li>
-	 * 	<li><code>METHOD_REF</code> - The allowed required proposals for this kind are:
+	 * 	<li><code>FUNCTION_REF</code> - The allowed required proposals for this kind are:
 	 *   <ul>
 	 *    <li><code>TYPE_REF</code></li>
 	 *    <li><code>TYPE_IMPORT</code></li>
@@ -1931,9 +1931,9 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * This field is available for the following kinds of
 	 * completion proposals:
 	 * <ul>
-	 * <li><code>METHOD_REF</code> - return <code>true</code>
+	 * <li><code>FUNCTION_REF</code> - return <code>true</code>
 	 * if the referenced method is a constructor</li>
-	 * 	<li><code>METHOD_DECLARATION</code> - return <code>true</code>
+	 * 	<li><code>FUNCTION_DECLARATION</code> - return <code>true</code>
 	 * if the declared method is a constructor</li>
 	 * </ul>
 	 * For kinds of completion proposals, this method returns
@@ -1967,13 +1967,13 @@ public final class CompletionProposal extends InternalCompletionProposal {
 				buffer.append("LOCAL_VARIABLE_REF"); //$NON-NLS-1$
 				break;
 			case CompletionProposal.METHOD_DECLARATION :
-				buffer.append("METHOD_DECLARATION"); //$NON-NLS-1$
+				buffer.append("FUNCTION_DECLARATION"); //$NON-NLS-1$
 				if(this.isConstructor) {
 					buffer.append("<CONSTRUCTOR>"); //$NON-NLS-1$
 				}
 				break;
 			case CompletionProposal.METHOD_REF :
-				buffer.append("METHOD_REF"); //$NON-NLS-1$
+				buffer.append("FUNCTION_REF"); //$NON-NLS-1$
 				if(this.isConstructor) {
 					buffer.append("<CONSTRUCTOR>"); //$NON-NLS-1$
 				}
@@ -1996,26 +1996,26 @@ public final class CompletionProposal extends InternalCompletionProposal {
 			case CompletionProposal.ANNOTATION_ATTRIBUTE_REF :
 				buffer.append("ANNOTATION_ATTRIBUTE_REF"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JAVADOC_BLOCK_TAG :
-				buffer.append("JAVADOC_BLOCK_TAG"); //$NON-NLS-1$
+			case CompletionProposal.JSDOC_BLOCK_TAG :
+				buffer.append("JSDOC_BLOCK_TAG"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JAVADOC_INLINE_TAG :
-				buffer.append("JAVADOC_INLINE_TAG"); //$NON-NLS-1$
+			case CompletionProposal.JSDOC_INLINE_TAG :
+				buffer.append("JSDOC_INLINE_TAG"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JAVADOC_FIELD_REF:
-				buffer.append("JAVADOC_FIELD_REF"); //$NON-NLS-1$
+			case CompletionProposal.JSDOC_FIELD_REF:
+				buffer.append("JSDOC_FIELD_REF"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JAVADOC_METHOD_REF :
-				buffer.append("JAVADOC_METHOD_REF"); //$NON-NLS-1$
+			case CompletionProposal.JSDOC_METHOD_REF :
+				buffer.append("JSDOC_METHOD_REF"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JAVADOC_TYPE_REF :
-				buffer.append("JAVADOC_TYPE_REF"); //$NON-NLS-1$
+			case CompletionProposal.JSDOC_TYPE_REF :
+				buffer.append("JSDOC_TYPE_REF"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JAVADOC_PARAM_REF :
-				buffer.append("JAVADOC_PARAM_REF"); //$NON-NLS-1$
+			case CompletionProposal.JSDOC_PARAM_REF :
+				buffer.append("JSDOC_PARAM_REF"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JAVADOC_VALUE_REF :
-				buffer.append("JAVADOC_VALUE_REF"); //$NON-NLS-1$
+			case CompletionProposal.JSDOC_VALUE_REF :
+				buffer.append("JSDOC_VALUE_REF"); //$NON-NLS-1$
 				break;
 			case CompletionProposal.FIELD_IMPORT :
 				buffer.append("FIELD_IMPORT"); //$NON-NLS-1$

@@ -44,10 +44,10 @@ import org.eclipse.ltk.core.refactoring.participants.ResourceChangeChecker;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
@@ -58,17 +58,17 @@ import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
@@ -83,8 +83,8 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTFlattener;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
@@ -105,10 +105,10 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParse
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.SelectionAwareSourceRangeComputer;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
 import org.eclipse.wst.jsdt.ui.CodeGeneration;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Extracts a method in a compilation unit based on a text selection range.
@@ -121,8 +121,8 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 	private static final String ATTRIBUTE_REPLACE= "replace"; //$NON-NLS-1$
 	private static final String ATTRIBUTE_EXCEPTIONS= "exceptions"; //$NON-NLS-1$
 
-	private ICompilationUnit fCUnit;
-	private CompilationUnit fRoot;
+	private IJavaScriptUnit fCUnit;
+	private JavaScriptUnit fRoot;
 	private ImportRewrite fImportRewriter;
 	private int fSelectionStart;
 	private int fSelectionLength;
@@ -165,7 +165,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		public void endVisit(FieldAccess node) {
 			fIgnore.remove(node.getName());
 		}
-		public boolean visit(MethodInvocation node) {
+		public boolean visit(FunctionInvocation node) {
 			Expression exp= node.getExpression();
 			if (exp != null) {
 				SimpleName name = node.getName();
@@ -174,7 +174,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 			}
 			return true;
 		}
-		public void endVisit(MethodInvocation node) {
+		public void endVisit(FunctionInvocation node) {
 			SimpleName name = node.getName();
 			if (name!=null)
 				fIgnore.remove(name);
@@ -214,7 +214,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 	 * @param selectionStart
 	 * @param selectionLength
 	 */
-	public ExtractMethodRefactoring(ICompilationUnit unit, int selectionStart, int selectionLength) throws CoreException {
+	public ExtractMethodRefactoring(IJavaScriptUnit unit, int selectionStart, int selectionLength) throws CoreException {
 		fCUnit= unit;
 		fMethodName= "extracted"; //$NON-NLS-1$
 		fSelectionStart= selectionStart;
@@ -224,7 +224,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 			initialize(unit);
 	}
 
-	private void initialize(ICompilationUnit cu) throws CoreException {
+	private void initialize(IJavaScriptUnit cu) throws CoreException {
 		fImportRewriter= StubUtility.createImportRewrite(cu, true);
 	}
 
@@ -246,7 +246,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		if (fSelectionStart < 0 || fSelectionLength == 0)
 			return mergeTextSelectionStatus(result);
 		
-		IFile[] changedFiles= ResourceUtil.getFiles(new ICompilationUnit[]{fCUnit});
+		IFile[] changedFiles= ResourceUtil.getFiles(new IJavaScriptUnit[]{fCUnit});
 		result.merge(Checks.validateModifiesFiles(changedFiles, getValidationContext()));
 		if (result.hasFatalError())
 			return result;
@@ -270,7 +270,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		return result;
 	}
 	
-	private ASTVisitor createVisitor() throws JavaModelException {
+	private ASTVisitor createVisitor() throws JavaScriptModelException {
 		fAnalyzer= new ExtractMethodAnalyzer(fCUnit, Selection.createFromStartLength(fSelectionStart, fSelectionLength));
 		return fAnalyzer;
 	}
@@ -433,7 +433,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		fRewriter= ASTRewrite.create(declaration.getAST());
 		final Map arguments= new HashMap();
 		String project= null;
-		IJavaProject javaProject= fCUnit.getJavaProject();
+		IJavaScriptProject javaProject= fCUnit.getJavaScriptProject();
 		if (javaProject != null)
 			project= javaProject.getElementName();
 		ITypeBinding type= null;
@@ -444,19 +444,19 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 			final AnonymousClassDeclaration decl= (AnonymousClassDeclaration) fDestination;
 			type= decl.resolveBinding();
 		}
-		IMethodBinding method= null;
+		IFunctionBinding method= null;
 		final BodyDeclaration enclosing= fAnalyzer.getEnclosingBodyDeclaration();
-		if (enclosing instanceof MethodDeclaration) {
-			final MethodDeclaration node= (MethodDeclaration) enclosing;
+		if (enclosing instanceof FunctionDeclaration) {
+			final FunctionDeclaration node= (FunctionDeclaration) enclosing;
 			method= node.resolveBinding();
 		}
-		final int flags= RefactoringDescriptor.STRUCTURAL_CHANGE | JavaRefactoringDescriptor.JAR_REFACTORING | JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
+		final int flags= RefactoringDescriptor.STRUCTURAL_CHANGE | JavaScriptRefactoringDescriptor.JAR_REFACTORING | JavaScriptRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
 		final String description= Messages.format(RefactoringCoreMessages.ExtractMethodRefactoring_descriptor_description_short, fMethodName);
-		final String label= method != null ? BindingLabelProvider.getBindingLabel(method, JavaElementLabels.ALL_FULLY_QUALIFIED) : '{' + JavaElementLabels.ELLIPSIS_STRING + '}';
-		final String header= Messages.format(RefactoringCoreMessages.ExtractMethodRefactoring_descriptor_description, new String[] { getSignature(), label, BindingLabelProvider.getBindingLabel(type, JavaElementLabels.ALL_FULLY_QUALIFIED)});
+		final String label= method != null ? BindingLabelProvider.getBindingLabel(method, JavaScriptElementLabels.ALL_FULLY_QUALIFIED) : '{' + JavaScriptElementLabels.ELLIPSIS_STRING + '}';
+		final String header= Messages.format(RefactoringCoreMessages.ExtractMethodRefactoring_descriptor_description, new String[] { getSignature(), label, BindingLabelProvider.getBindingLabel(type, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)});
 		final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
 		comment.addSetting(Messages.format(RefactoringCoreMessages.ExtractMethodRefactoring_name_pattern, fMethodName));
-		comment.addSetting(Messages.format(RefactoringCoreMessages.ExtractMethodRefactoring_destination_pattern, BindingLabelProvider.getBindingLabel(type, JavaElementLabels.ALL_FULLY_QUALIFIED)));
+		comment.addSetting(Messages.format(RefactoringCoreMessages.ExtractMethodRefactoring_destination_pattern, BindingLabelProvider.getBindingLabel(type, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
 //		String visibility= JdtFlags.getVisibilityString(fVisibility);
 //		if ("".equals(visibility)) //$NON-NLS-1$
 //			visibility= RefactoringCoreMessages.ExtractMethodRefactoring_default_visibility;
@@ -467,7 +467,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 			comment.addSetting(RefactoringCoreMessages.ExtractMethodRefactoring_replace_occurrences);
 		if (fGenerateJavadoc)
 			comment.addSetting(RefactoringCoreMessages.ExtractMethodRefactoring_generate_comment);
-		final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaRefactorings.EXTRACT_METHOD, project, description, comment.asString(), arguments, flags);
+		final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaScriptRefactorings.EXTRACT_METHOD, project, description, comment.asString(), arguments, flags);
 		arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_INPUT, descriptor.elementToHandle(fCUnit));
 		arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_NAME, fMethodName);
 		arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_SELECTION, new Integer(fSelectionStart).toString() + " " + new Integer(fSelectionLength).toString()); //$NON-NLS-1$
@@ -496,7 +496,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 			TextEditGroup substituteDesc= new TextEditGroup(Messages.format(RefactoringCoreMessages.ExtractMethodRefactoring_substitute_with_call, fMethodName)); 
 			result.addTextEditGroup(substituteDesc);
 			
-			MethodDeclaration mm= createNewMethod(fMethodName, true, selectedNodes, fDocument.getLineDelimiter(0), substituteDesc);
+			FunctionDeclaration mm= createNewMethod(fMethodName, true, selectedNodes, fDocument.getLineDelimiter(0), substituteDesc);
 
 			TextEditGroup insertDesc= new TextEditGroup(Messages.format(RefactoringCoreMessages.ExtractMethodRefactoring_add_method, fMethodName)); 
 			result.addTextEditGroup(insertDesc);
@@ -520,9 +520,9 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 					new TextEdit[] {edit}
 				));
 			}
-			root.addChild(fRewriter.rewriteAST(fDocument, fCUnit.getJavaProject().getOptions(true)));
+			root.addChild(fRewriter.rewriteAST(fDocument, fCUnit.getJavaScriptProject().getOptions(true)));
 		} catch (BadLocationException e) {
-			throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR,
+			throw new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.ERROR,
 				e.getMessage(), e));
 		} finally {
 			bufferManager.disconnect(path, LocationKind.IFILE, new SubProgressMonitor(pm, 1));
@@ -547,7 +547,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 	 * @return the signature of the extracted method
 	 */
 	public String getSignature(String methodName) {
-		MethodDeclaration method= null;
+		FunctionDeclaration method= null;
 		try {
 			method= createNewMethod(methodName, false, null, StubUtility.getLineDelimiterUsed(fCUnit), null);
 		} catch (CoreException cannotHappen) {
@@ -636,7 +636,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 	
 	private void initializeDuplicates() {
 		ASTNode start= fAnalyzer.getEnclosingBodyDeclaration();
-		while(!(start instanceof CompilationUnit) &&
+		while(!(start instanceof JavaScriptUnit) &&
 				!(start instanceof AbstractTypeDeclaration) &&
 				!(start instanceof AnonymousClassDeclaration)) {
 			start= start.getParent();
@@ -651,7 +651,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		BodyDeclaration decl= fAnalyzer.getEnclosingBodyDeclaration();
 		ASTNode current= getNextParent(decl);
 		result.add(current);
-		if (decl instanceof MethodDeclaration) {
+		if (decl instanceof FunctionDeclaration) {
 			ITypeBinding binding= ASTNodes.getEnclosingType(current);
 			ASTNode next= getNextParent(current);
 			while (next != null && binding != null && binding.isNested() && !Modifier.isStatic(binding.getDeclaredModifiers())) {
@@ -669,7 +669,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		do {
 			node= node.getParent();
 		} while (node != null && !(
-				(node instanceof CompilationUnit) ||(node instanceof AbstractTypeDeclaration) || (node instanceof AnonymousClassDeclaration)));
+				(node instanceof JavaScriptUnit) ||(node instanceof AbstractTypeDeclaration) || (node instanceof AnonymousClassDeclaration)));
 		return node;
 	}
 		
@@ -696,7 +696,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 			result.add(createDeclaration(locals[i], null));
 		}
 		
-		MethodInvocation invocation= fAST.newMethodInvocation();
+		FunctionInvocation invocation= fAST.newFunctionInvocation();
 		invocation.setName(fAST.newSimpleName(fMethodName));
 		List arguments= invocation.arguments();
 		for (int i= 0; i < fParameterInfos.size(); i++) {
@@ -777,8 +777,8 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		}		
 	}
 	
-	private MethodDeclaration createNewMethod(String name, boolean code, ASTNode[] selectedNodes, String lineDelimiter, TextEditGroup substitute) throws CoreException, BadLocationException {
-		MethodDeclaration result= fAST.newMethodDeclaration();
+	private FunctionDeclaration createNewMethod(String name, boolean code, ASTNode[] selectedNodes, String lineDelimiter, TextEditGroup substitute) throws CoreException, BadLocationException {
+		FunctionDeclaration result= fAST.newFunctionDeclaration();
 		int modifiers= fVisibility;
 		if (Modifier.isStatic(fAnalyzer.getEnclosingBodyDeclaration().getModifiers()) || fAnalyzer.getForceStatic()) {
 			modifiers|= Modifier.STATIC;
@@ -822,7 +822,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 				String typeName = (enclosingType!=null)?enclosingType.getName().getIdentifier():null;
 				String string= CodeGeneration.getMethodComment(fCUnit, typeName, result, null, lineDelimiter);
 				if (string != null) {
-					Javadoc javadoc= (Javadoc)fRewriter.createStringPlaceholder(string, ASTNode.JAVADOC);
+					JSdoc javadoc= (JSdoc)fRewriter.createStringPlaceholder(string, ASTNode.JSDOC);
 					result.setJavadoc(javadoc);
 				}
 			}
@@ -854,7 +854,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 				ITypeBinding arg= typeArgs[args];
 				if (arg.isTypeVariable() && !result.contains(arg)) {
 					ASTNode decl= fRoot.findDeclaringNode(arg);
-					if (decl != null && decl.getParent() instanceof MethodDeclaration) {
+					if (decl != null && decl.getParent() instanceof FunctionDeclaration) {
 						result.add(arg);
 					}
 				}
@@ -862,7 +862,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		}
 	}
 	
-	private Block createMethodBody(MethodDeclaration method, ASTNode[] selectedNodes, TextEditGroup substitute) throws BadLocationException, CoreException {
+	private Block createMethodBody(FunctionDeclaration method, ASTNode[] selectedNodes, TextEditGroup substitute) throws BadLocationException, CoreException {
 		Block result= fAST.newBlock();
 		ListRewrite statements= fRewriter.getListRewrite(result, Block.STATEMENTS_PROPERTY);
 		
@@ -955,7 +955,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		return result;
 	}	
 
-	public ICompilationUnit getCompilationUnit() {
+	public IJavaScriptUnit getCompilationUnit() {
 		return fCUnit;
 	}
 
@@ -980,15 +980,15 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_SELECTION));
 			final String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-				if (element == null || !element.exists() || element.getElementType() != IJavaElement.COMPILATION_UNIT)
-					return createInputFatalStatus(element, IJavaRefactorings.EXTRACT_METHOD);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.JAVASCRIPT_UNIT)
+					return createInputFatalStatus(element, IJavaScriptRefactorings.EXTRACT_METHOD);
 				else {
-					fCUnit= (ICompilationUnit) element;
+					fCUnit= (IJavaScriptUnit) element;
 		        	try {
 						initialize(fCUnit);
 					} catch (CoreException exception) {
-						JavaPlugin.log(exception);
+						JavaScriptPlugin.log(exception);
 					}
 				}
 			} else

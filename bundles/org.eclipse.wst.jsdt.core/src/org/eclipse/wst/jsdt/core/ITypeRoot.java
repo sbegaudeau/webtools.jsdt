@@ -14,20 +14,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 
 /**
- * Represents an entire Java type root (either an <code>ICompilationUnit</code>
+ * Represents an entire Java type root (either an <code>IJavaScriptUnit</code>
  * or an <code>IClassFile</code>).
  *
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
  *
- * @see ICompilationUnit Note that methods {@link #findPrimaryType()} and {@link #getElementAt(int)}
+ * @see IJavaScriptUnit Note that methods {@link #findPrimaryType()} and {@link #getElementAt(int)}
  * 	were already implemented in this interface respectively since version 3.0 and version 1.0.
  * @see IClassFile Note that method {@link #getWorkingCopy(WorkingCopyOwner, IProgressMonitor)}
  * 	was already implemented in this interface since version 3.0.
  * @since 3.3
  */
-public interface ITypeRoot extends IJavaElement, IParent, IOpenable, ISourceReference, ICodeAssist, IMethodContainer {
+public interface ITypeRoot extends IJavaScriptElement, IParent, IOpenable, ISourceReference, ICodeAssist, IFunctionContainer {
 
 /**
  * Finds the primary type of this Java type root (that is, the type with the same name as the
@@ -47,10 +47,10 @@ IType findPrimaryType();
  * @param position a source position inside the Java type root
  * @return the innermost Java element enclosing a given source position or <code>null</code>
  *	if none (excluding the Java type root).
- * @throws JavaModelException if the Java type root does not exist or if an
+ * @throws JavaScriptModelException if the Java type root does not exist or if an
  *	exception occurs while accessing its corresponding resource
  */
-IJavaElement getElementAt(int position) throws JavaModelException;
+IJavaScriptElement getElementAt(int position) throws JavaScriptModelException;
 
 /**
  * Returns a shared working copy on this compilation unit or class file using the given working copy owner to create
@@ -63,7 +63,7 @@ IJavaElement getElementAt(int position) throws JavaModelException;
  * <li>The first call to {@link #getWorkingCopy(WorkingCopyOwner, IProgressMonitor)}
  * 	creates a new working copy for this element</li>
  * <li>Subsequent calls increment an internal counter.</li>
- * <li>A call to {@link ICompilationUnit#discardWorkingCopy()} decrements the internal counter.</li>
+ * <li>A call to {@link IJavaScriptUnit#discardWorkingCopy()} decrements the internal counter.</li>
  * <li>When this counter is 0, the working copy is discarded.
  * </ul>
  * So users of this method must discard exactly once the working copy.
@@ -72,7 +72,7 @@ IJavaElement getElementAt(int position) throws JavaModelException;
  * working copy is closed then reopened, this owner will be used.
  * The buffer will be automatically initialized with the original's Java type root content upon creation.
  * <p>
- * When the shared working copy instance is created, an ADDED IJavaElementDelta is reported on this
+ * When the shared working copy instance is created, an ADDED IJavaScriptElementDelta is reported on this
  * working copy.
  * </p><p>
  * A working copy can be created on a not-yet existing compilation unit.
@@ -81,19 +81,19 @@ IJavaElement getElementAt(int position) throws JavaModelException;
  * </p><p>
  * Note that possible problems of this working copy are reported using this method. only
  * if the given working copy owner returns a problem requestor for this working copy
- * (see {@link WorkingCopyOwner#getProblemRequestor(ICompilationUnit)}).
+ * (see {@link WorkingCopyOwner#getProblemRequestor(IJavaScriptUnit)}).
  * </p>
  *
  * @param owner the working copy owner that creates a buffer that is used to get the content
  * 				of the working copy
  * @param monitor a progress monitor used to report progress while opening this compilation unit
  *                 or <code>null</code> if no progress should be reported
- * @throws JavaModelException if the contents of this element can
+ * @throws JavaScriptModelException if the contents of this element can
  *   	not be determined.
  * @return a new working copy of this Java type root using the given owner to create
  *		the buffer, or this Java type root if it is already a working copy
  */
-ICompilationUnit getWorkingCopy(WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException;
+IJavaScriptUnit getWorkingCopy(WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException;
 
 
 }

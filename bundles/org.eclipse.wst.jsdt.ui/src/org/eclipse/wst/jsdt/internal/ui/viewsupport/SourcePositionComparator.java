@@ -14,13 +14,13 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 
 /**
@@ -40,8 +40,8 @@ public class SourcePositionComparator extends ViewerComparator {
 		if (!(e2 instanceof ISourceReference))
 			return 0;
 		
-		IJavaElement parent1= ((IJavaElement)e1).getParent();
-		if (parent1 == null || !parent1.equals(((IJavaElement)e2).getParent())) {
+		IJavaScriptElement parent1= ((IJavaScriptElement)e1).getParent();
+		if (parent1 == null || !parent1.equals(((IJavaScriptElement)e2).getParent())) {
 				IType t1= getOutermostDeclaringType(e1);
 				if (t1 == null)
 					return 0;
@@ -58,21 +58,21 @@ public class SourcePositionComparator extends ViewerComparator {
 						if (!t1.getPackageFragment().equals(t2.getPackageFragment()))
 							return 0;
 
-						ICompilationUnit cu1= (ICompilationUnit)((IJavaElement)e1).getAncestor(IJavaElement.COMPILATION_UNIT);
+						IJavaScriptUnit cu1= (IJavaScriptUnit)((IJavaScriptElement)e1).getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 						if (cu1 != null) {
-							if (!cu1.equals(((IJavaElement)e2).getAncestor(IJavaElement.COMPILATION_UNIT)))
+							if (!cu1.equals(((IJavaScriptElement)e2).getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT)))
 								return 0;
 						} else {
-							IClassFile cf1= (IClassFile)((IJavaElement)e1).getAncestor(IJavaElement.CLASS_FILE);
+							IClassFile cf1= (IClassFile)((IJavaScriptElement)e1).getAncestor(IJavaScriptElement.CLASS_FILE);
 							if (cf1 == null)
 								return 0;
-							IClassFile cf2= (IClassFile)((IJavaElement)e2).getAncestor(IJavaElement.CLASS_FILE);
+							IClassFile cf2= (IClassFile)((IJavaScriptElement)e2).getAncestor(IJavaScriptElement.CLASS_FILE);
 							String source1= cf1.getSource();
 							if (source1 != null && !source1.equals(cf2.getSource()))
 								return 0;
 						}
 					}
-				} catch (JavaModelException e3) {
+				} catch (JavaScriptModelException e3) {
 					return 0;
 				}
 		}
@@ -85,7 +85,7 @@ public class SourcePositionComparator extends ViewerComparator {
 			
 			return sr1.getOffset() - sr2.getOffset();
 			
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return 0;
 		}
 	}

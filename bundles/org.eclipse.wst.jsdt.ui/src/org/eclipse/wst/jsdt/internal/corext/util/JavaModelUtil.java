@@ -38,21 +38,21 @@ import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJarEntryResource;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -71,16 +71,16 @@ public final class JavaModelUtil {
 	
 	/**
 	 * Only use this suffix for creating new .java files.
-	 * In general, use one of the three *JavaLike*(..) methods in JavaCore or create
-	 * a name from an existing compilation unit with {@link #getRenamedCUName(ICompilationUnit, String)}
+	 * In general, use one of the three *JavaLike*(..) methods in JavaScriptCore or create
+	 * a name from an existing compilation unit with {@link #getRenamedCUName(IJavaScriptUnit, String)}
 	 * <p> 
-	 * Note: Unlike {@link JavaCore#getJavaLikeExtensions()}, this suffix includes a leading ".".
+	 * Note: Unlike {@link JavaScriptCore#getJavaScriptLikeExtensions()}, this suffix includes a leading ".".
 	 * </p>
 	 * 
-	 * @see JavaCore#getJavaLikeExtensions() 
-	 * @see JavaCore#isJavaLikeFileName(String)
-	 * @see JavaCore#removeJavaLikeExtension(String)
-	 * @see #getRenamedCUName(ICompilationUnit, String)
+	 * @see JavaScriptCore#getJavaScriptLikeExtensions() 
+	 * @see JavaScriptCore#isJavaScriptLikeFileName(String)
+	 * @see JavaScriptCore#removeJavaScriptLikeExtension(String)
+	 * @see #getRenamedCUName(IJavaScriptUnit, String)
 	 */
 	public static final String DEFAULT_CU_SUFFIX= ".js"; //$NON-NLS-1$
 	
@@ -90,7 +90,7 @@ public final class JavaModelUtil {
 	 * @param fullyQualifiedName The fully qualified name (type name with enclosing type names and package (all separated by dots))
 	 * @return The type found, or null if not existing
 	 */	
-	public static IType findType(IJavaProject jproject, String fullyQualifiedName) throws JavaModelException {
+	public static IType findType(IJavaScriptProject jproject, String fullyQualifiedName) throws JavaScriptModelException {
 		//workaround for bug 22883
 		IType type= jproject.findType(fullyQualifiedName);
 		if (type != null)
@@ -112,7 +112,7 @@ public final class JavaModelUtil {
 	 * @param owner the working copy owner
 	 * @return The type found, or null if not existing
 	 */	
-	public static IType findType(IJavaProject jproject, String fullyQualifiedName, WorkingCopyOwner owner) throws JavaModelException {
+	public static IType findType(IJavaScriptProject jproject, String fullyQualifiedName, WorkingCopyOwner owner) throws JavaScriptModelException {
 		//workaround for bug 22883
 		IType type= jproject.findType(fullyQualifiedName, owner);
 		if (type != null)
@@ -129,11 +129,11 @@ public final class JavaModelUtil {
 	
 
 	
-	private static IType findType(IPackageFragmentRoot root, String fullyQualifiedName) throws JavaModelException{
-		IJavaElement[] children= root.getChildren();
+	private static IType findType(IPackageFragmentRoot root, String fullyQualifiedName) throws JavaScriptModelException{
+		IJavaScriptElement[] children= root.getChildren();
 		for (int i= 0; i < children.length; i++) {
-			IJavaElement element= children[i];
-			if (element.getElementType() == IJavaElement.PACKAGE_FRAGMENT){
+			IJavaScriptElement element= children[i];
+			if (element.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT){
 				IPackageFragment pack= (IPackageFragment)element;
 				if (! fullyQualifiedName.startsWith(pack.getElementName()))
 					continue;
@@ -145,10 +145,10 @@ public final class JavaModelUtil {
 		return null;
 	}
 	
-	private static IType findType(IPackageFragment pack, String fullyQualifiedName) throws JavaModelException{
-		ICompilationUnit[] cus= pack.getCompilationUnits();
+	private static IType findType(IPackageFragment pack, String fullyQualifiedName) throws JavaScriptModelException{
+		IJavaScriptUnit[] cus= pack.getJavaScriptUnits();
 		for (int i= 0; i < cus.length; i++) {
-			ICompilationUnit unit= cus[i];
+			IJavaScriptUnit unit= cus[i];
 			IType type= findType(unit, fullyQualifiedName);
 			if (type != null && type.exists())
 				return type;
@@ -156,7 +156,7 @@ public final class JavaModelUtil {
 		return null;
 	}
 	
-	private static IType findType(ICompilationUnit cu, String fullyQualifiedName) throws JavaModelException{
+	private static IType findType(IJavaScriptUnit cu, String fullyQualifiedName) throws JavaScriptModelException{
 		IType[] types= cu.getAllTypes();
 		for (int i= 0; i < types.length; i++) {
 			IType type= types[i];
@@ -174,9 +174,9 @@ public final class JavaModelUtil {
 	 * @param typeContainerName A dot separated name of the type container
 	 * @see #getTypeContainerName(IType)
 	 */
-	public static IJavaElement findTypeContainer(IJavaProject jproject, String typeContainerName) throws JavaModelException {
+	public static IJavaScriptElement findTypeContainer(IJavaScriptProject jproject, String typeContainerName) throws JavaScriptModelException {
 		// try to find it as type
-		IJavaElement result= jproject.findType(typeContainerName);
+		IJavaScriptElement result= jproject.findType(typeContainerName);
 		if (result == null) {
 			// find it as package
 			IPath path= new Path(typeContainerName.replace('.', '/'));
@@ -196,7 +196,7 @@ public final class JavaModelUtil {
 	 * @param typeQualifiedName the type qualified name (type name with enclosing type names (separated by dots))
 	 * @return the type found, or null if not existing
 	 */		
-	public static IType findTypeInCompilationUnit(ICompilationUnit cu, String typeQualifiedName) throws JavaModelException {
+	public static IType findTypeInCompilationUnit(IJavaScriptUnit cu, String typeQualifiedName) throws JavaScriptModelException {
 		IType[] types= cu.getAllTypes();
 		for (int i= 0; i < types.length; i++) {
 			String currName= getTypeQualifiedName(types[i]);
@@ -216,8 +216,8 @@ public final class JavaModelUtil {
 	 * @param element the element to look for
 	 * @return an element of the given cu "equal" to the given element
 	 */		
-	public static IJavaElement findInCompilationUnit(ICompilationUnit cu, IJavaElement element) {
-		IJavaElement[] elements= cu.findElements(element);
+	public static IJavaScriptElement findInCompilationUnit(IJavaScriptUnit cu, IJavaScriptElement element) {
+		IJavaScriptElement[] elements= cu.findElements(element);
 		if (elements != null && elements.length > 0) {
 			return elements[0];
 		}
@@ -228,7 +228,7 @@ public final class JavaModelUtil {
 	 * Returns the qualified type name of the given type using '.' as separators.
 	 * This is a replace for IType.getTypeQualifiedName()
 	 * which uses '$' as separators. As '$' is also a valid character in an id
-	 * this is ambiguous. JavaCore PR: 1GCFUNT
+	 * this is ambiguous. JavaScriptCore PR: 1GCFUNT
 	 */
 	public static String getTypeQualifiedName(IType type) {
 		try {
@@ -238,7 +238,7 @@ public final class JavaModelUtil {
 					return getTypeQualifiedName(declaringType) + '.' + type.getElementName();
 				}
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignore
 		}	
 		return type.getTypeQualifiedName('.');
@@ -248,7 +248,7 @@ public final class JavaModelUtil {
 	 * Returns the fully qualified name of the given type using '.' as separators.
 	 * This is a replace for IType.getFullyQualifiedTypeName
 	 * which uses '$' as separators. As '$' is also a valid character in an id
-	 * this is ambiguous. JavaCore PR: 1GCFUNT
+	 * this is ambiguous. JavaScriptCore PR: 1GCFUNT
 	 */
 	public static String getFullyQualifiedName(IType type) {
 		try {
@@ -258,7 +258,7 @@ public final class JavaModelUtil {
 					return getFullyQualifiedName(declaringType) + '.' + type.getElementName();
 				}
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignore
 		}		
 		return type.getFullyQualifiedName('.');
@@ -319,10 +319,10 @@ public final class JavaModelUtil {
 	 * @param member The member to test the visibility for
 	 * @param pack The package in focus
 	 */
-	public static boolean isVisible(IMember member, IPackageFragment pack) throws JavaModelException {
+	public static boolean isVisible(IMember member, IPackageFragment pack) throws JavaScriptModelException {
 		
 		int type= member.getElementType();
-		if  (type == IJavaElement.INITIALIZER ||  (type == IJavaElement.METHOD && member.getElementName().startsWith("<"))) { //$NON-NLS-1$
+		if  (type == IJavaScriptElement.INITIALIZER ||  (type == IJavaScriptElement.METHOD && member.getElementName().startsWith("<"))) { //$NON-NLS-1$
 			return false;
 		}
 		
@@ -334,7 +334,7 @@ public final class JavaModelUtil {
 			return false;
 		}		
 		
-		IPackageFragment otherpack= (IPackageFragment) member.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
+		IPackageFragment otherpack= (IPackageFragment) member.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT);
 		return (pack != null && otherpack != null && isSamePackage(pack, otherpack));
 	}
 	
@@ -344,9 +344,9 @@ public final class JavaModelUtil {
 	 * @param member The member to test the visibility for
 	 * @param pack The package of the focus element focus
 	 */
-	public static boolean isVisibleInHierarchy(IMember member, IPackageFragment pack) throws JavaModelException {
+	public static boolean isVisibleInHierarchy(IMember member, IPackageFragment pack) throws JavaScriptModelException {
 		int type= member.getElementType();
-		if  (type == IJavaElement.INITIALIZER ||  (type == IJavaElement.METHOD && member.getElementName().startsWith("<"))) { //$NON-NLS-1$
+		if  (type == IJavaScriptElement.INITIALIZER ||  (type == IJavaScriptElement.METHOD && member.getElementName().startsWith("<"))) { //$NON-NLS-1$
 			return false;
 		}
 		
@@ -359,17 +359,17 @@ public final class JavaModelUtil {
 			return false;
 		}		
 		
-		IPackageFragment otherpack= (IPackageFragment) member.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
+		IPackageFragment otherpack= (IPackageFragment) member.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT);
 		return (pack != null && pack.equals(otherpack));
 	}
 			
 		
 	/**
-	 * Returns the package fragment root of <code>IJavaElement</code>. If the given
+	 * Returns the package fragment root of <code>IJavaScriptElement</code>. If the given
 	 * element is already a package fragment root, the element itself is returned.
 	 */
-	public static IPackageFragmentRoot getPackageFragmentRoot(IJavaElement element) {
-		return (IPackageFragmentRoot) element.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+	public static IPackageFragmentRoot getPackageFragmentRoot(IJavaScriptElement element) {
+		return (IPackageFragmentRoot) element.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 	}
 	
 	/**
@@ -382,8 +382,8 @@ public final class JavaModelUtil {
 	 * @param isConstructor If the method is a constructor
 	 * @return The first found method or <code>null</code>, if nothing found
 	 */
-	public static IMethod findMethod(String name, String[] paramTypes, boolean isConstructor, IType type) throws JavaModelException {
-		IMethod[] methods= type.getMethods();
+	public static IFunction findMethod(String name, String[] paramTypes, boolean isConstructor, IType type) throws JavaScriptModelException {
+		IFunction[] methods= type.getFunctions();
 		for (int i= 0; i < methods.length; i++) {
 			if (isSameMethodSignature(name, paramTypes, isConstructor, methods[i])) {
 				return methods[i];
@@ -405,14 +405,14 @@ public final class JavaModelUtil {
 	 * @param isConstructor If the method is a constructor
 	 * @return The first found method or <code>null</code>, if nothing found
 	 */
-	public static IMethod findMethodInHierarchy(ITypeHierarchy hierarchy, IType type, String name, String[] paramTypes, boolean isConstructor) throws JavaModelException {
-		IMethod method= findMethod(name, paramTypes, isConstructor, type);
+	public static IFunction findMethodInHierarchy(ITypeHierarchy hierarchy, IType type, String name, String[] paramTypes, boolean isConstructor) throws JavaScriptModelException {
+		IFunction method= findMethod(name, paramTypes, isConstructor, type);
 		if (method != null) {
 			return method;
 		}
 		IType superClass= hierarchy.getSuperclass(type);
 		if (superClass != null) {
-			IMethod res=  findMethodInHierarchy(hierarchy, superClass, name, paramTypes, isConstructor);
+			IFunction res=  findMethodInHierarchy(hierarchy, superClass, name, paramTypes, isConstructor);
 			if (res != null) {
 				return res;
 			}
@@ -420,7 +420,7 @@ public final class JavaModelUtil {
 		if (!isConstructor) {
 			IType[] superInterfaces= hierarchy.getSuperInterfaces(type);
 			for (int i= 0; i < superInterfaces.length; i++) {
-				IMethod res= findMethodInHierarchy(hierarchy, superInterfaces[i], name, paramTypes, false);
+				IFunction res= findMethodInHierarchy(hierarchy, superInterfaces[i], name, paramTypes, false);
 				if (res != null) {
 					return res;
 				}
@@ -440,7 +440,7 @@ public final class JavaModelUtil {
 	 * @param isConstructor Specifies if the method is a constructor
 	 * @return Returns <code>true</code> if the method has the given name and parameter types and constructor state.
 	 */
-	public static boolean isSameMethodSignature(String name, String[] paramTypes, boolean isConstructor, IMethod curr) throws JavaModelException {
+	public static boolean isSameMethodSignature(String name, String[] paramTypes, boolean isConstructor, IFunction curr) throws JavaScriptModelException {
 		if (isConstructor || name.equals(curr.getElementName())) {
 			if (isConstructor == curr.isConstructor()) {
 				String[] currParamTypes= curr.getParameterTypes();
@@ -470,8 +470,8 @@ public final class JavaModelUtil {
 	/**
 	 * Checks whether the given type has a valid main method or not.
 	 */
-	public static boolean hasMainMethod(IType type) throws JavaModelException {
-		IMethod[] methods= type.getMethods();
+	public static boolean hasMainMethod(IType type) throws JavaScriptModelException {
+		IFunction[] methods= type.getFunctions();
 		for (int i= 0; i < methods.length; i++) {
 			if (methods[i].isMainMethod()) {
 				return true;
@@ -483,14 +483,14 @@ public final class JavaModelUtil {
 	/**
 	 * Checks if the field is boolean.
 	 */
-	public static boolean isBoolean(IField field) throws JavaModelException{
+	public static boolean isBoolean(IField field) throws JavaScriptModelException{
 		return field.getTypeSignature().equals(Signature.SIG_BOOLEAN);
 	}
 	
 	/**
 	 * @return <code>true</code> iff the type is an interface or an annotation
 	 */
-	public static boolean isInterfaceOrAnnotation(IType type) throws JavaModelException {
+	public static boolean isInterfaceOrAnnotation(IType type) throws JavaScriptModelException {
 //		return type.isInterface();
 		return false;
 	}
@@ -502,7 +502,7 @@ public final class JavaModelUtil {
 	 * @param declaringType the context for resolving (type where the reference was made in)
 	 * @return returns the fully qualified type name or build-in-type name. if a unresolved type couldn't be resolved null is returned
 	 */
-	public static String getResolvedTypeName(String refTypeSig, IType declaringType) throws JavaModelException {
+	public static String getResolvedTypeName(String refTypeSig, IType declaringType) throws JavaScriptModelException {
 		int arrayCount= Signature.getArrayCount(refTypeSig);
 		char type= refTypeSig.charAt(arrayCount);
 		if (type == Signature.C_UNRESOLVED) {
@@ -530,7 +530,7 @@ public final class JavaModelUtil {
 	/**
 	 * Returns if a CU can be edited.
 	 */
-	public static boolean isEditable(ICompilationUnit cu)  {
+	public static boolean isEditable(IJavaScriptUnit cu)  {
 		Assert.isNotNull(cu);
 		IResource resource= cu.getPrimary().getResource();
 		return (resource.exists() && !resource.getResourceAttributes().isReadOnly());
@@ -544,13 +544,13 @@ public final class JavaModelUtil {
 	 * of a shared working copy owner. Also have a look at http://bugs.eclipse.org/bugs/show_bug.cgi?id=18568
 	 */
 	public static IMember toOriginal(IMember member) {
-		if (member instanceof IMethod)
-			return toOriginalMethod((IMethod)member);
+		if (member instanceof IFunction)
+			return toOriginalMethod((IFunction)member);
 
-		// TODO: remove toOriginalMethod(IMethod)
+		// TODO: remove toOriginalMethod(IFunction)
 
 		return (IMember) member.getPrimaryElement();
-		/*ICompilationUnit cu= member.getCompilationUnit();
+		/*IJavaScriptUnit cu= member.getCompilationUnit();
 		if (cu != null && cu.isWorkingCopy())
 			return (IMember)cu.getOriginal(member);
 		return member;*/
@@ -562,25 +562,25 @@ public final class JavaModelUtil {
 	 * http://bugs.eclipse.org/bugs/show_bug.cgi?id=18568
 	 * to be removed once the bug is fixed
 	 */
-	private static IMethod toOriginalMethod(IMethod method) {
-		ICompilationUnit cu= method.getCompilationUnit();
+	private static IFunction toOriginalMethod(IFunction method) {
+		IJavaScriptUnit cu= method.getJavaScriptUnit();
 		if (cu == null || isPrimary(cu)) {
 			return method;
 		}
 		try{
 			//use the workaround only if needed	
 			if (method.getDeclaringType()==null || ! method.getElementName().equals(method.getDeclaringType().getElementName()))
-				return (IMethod) method.getPrimaryElement();
+				return (IFunction) method.getPrimaryElement();
 			
 			IType originalType = (IType) toOriginal(method.getDeclaringType());
-			IMethod[] methods = originalType.findMethods(method);
+			IFunction[] methods = originalType.findMethods(method);
 			boolean isConstructor = method.isConstructor();
 			for (int i=0; i < methods.length; i++) {
 			  if (methods[i].isConstructor() == isConstructor) 
 				return methods[i];
 			}
 			return null;
-		} catch (JavaModelException e){
+		} catch (JavaScriptModelException e){
 			return null;
 		}	
 	}
@@ -588,7 +588,7 @@ public final class JavaModelUtil {
 	/**
 	 * Returns true if a cu is a primary cu (original or shared working copy)
 	 */
-	public static boolean isPrimary(ICompilationUnit cu) {
+	public static boolean isPrimary(IJavaScriptUnit cu) {
 		return cu.getOwner() == null;
 	}
 
@@ -600,21 +600,21 @@ public final class JavaModelUtil {
 	 * log not present exceptions when they happen in working copies.
 	 */
 	public static boolean isExceptionToBeLogged(CoreException exception) {
-		if (!(exception instanceof JavaModelException))
+		if (!(exception instanceof JavaScriptModelException))
 			return true;
-		JavaModelException je= (JavaModelException)exception;
+		JavaScriptModelException je= (JavaScriptModelException)exception;
 		if (!je.isDoesNotExist())
 			return true;
-		IJavaElement[] elements= je.getJavaModelStatus().getElements();
+		IJavaScriptElement[] elements= je.getJavaScriptModelStatus().getElements();
 		for (int i= 0; i < elements.length; i++) {
-			IJavaElement element= elements[i];
+			IJavaScriptElement element= elements[i];
 			// if the element is already a compilation unit don't log
 			// does not exist exceptions. See bug 
 			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=75894
 			// for more details
-			if (element.getElementType() == IJavaElement.COMPILATION_UNIT)
+			if (element.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT)
 				continue;
-			ICompilationUnit unit= (ICompilationUnit)element.getAncestor(IJavaElement.COMPILATION_UNIT);
+			IJavaScriptUnit unit= (IJavaScriptUnit)element.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 			if (unit == null)
 				return true;
 			if (!unit.isWorkingCopy())
@@ -623,11 +623,11 @@ public final class JavaModelUtil {
 		return false;		
 	}
 
-	public static IType[] getAllSuperTypes(IType type, IProgressMonitor pm) throws JavaModelException {
+	public static IType[] getAllSuperTypes(IType type, IProgressMonitor pm) throws JavaScriptModelException {
 		// workaround for 23656
 		IType[] superTypes= SuperTypeHierarchyCache.getTypeHierarchy(type).getAllSupertypes(type);
 		if (type.isInterface()) {
-			IType objekt= type.getJavaProject().findType("java.lang.Object");//$NON-NLS-1$
+			IType objekt= type.getJavaScriptProject().findType("java.lang.Object");//$NON-NLS-1$
 			if (objekt != null) {
 				IType[] superInterfacesAndObject= new IType[superTypes.length + 1];
 				System.arraycopy(superTypes, 0, superInterfacesAndObject, 0, superTypes.length);
@@ -672,7 +672,7 @@ public final class JavaModelUtil {
 	 * Returns whether the given resource path matches one of the exclusion
 	 * patterns.
 	 * 
-	 * @see IClasspathEntry#getExclusionPatterns
+	 * @see IIncludePathEntry#getExclusionPatterns
 	 */
 	public final static boolean isExcluded(IPath resourcePath, char[][] exclusionPatterns) {
 		if (exclusionPatterns == null) return false;
@@ -688,9 +688,9 @@ public final class JavaModelUtil {
 	 * Force a reconcile of a compilation unit.
 	 * @param unit
 	 */
-	public static void reconcile(ICompilationUnit unit) throws JavaModelException {
+	public static void reconcile(IJavaScriptUnit unit) throws JavaScriptModelException {
 		unit.reconcile(
-				ICompilationUnit.NO_AST, 
+				IJavaScriptUnit.NO_AST, 
 				false /* don't force problem detection */, 
 				null /* use primary owner */, 
 				null /* no progress monitor */);
@@ -704,13 +704,13 @@ public final class JavaModelUtil {
 	 * @param jproject The container's parent project
 	 * @param containerPath The path of the container
 	 * @param libPath The path of the library to be found
-	 * @return IClasspathEntry A classpath entry from the container of
+	 * @return IIncludePathEntry A classpath entry from the container of
 	 * <code>null</code> if the container can not be modified.
-	 * @throws JavaModelException thrown if accessing the container failed
+	 * @throws JavaScriptModelException thrown if accessing the container failed
 	 */
-	public static IClasspathEntry getClasspathEntryToEdit(IJavaProject jproject, IPath containerPath, IPath libPath) throws JavaModelException {
-		IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(containerPath, jproject);
-		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
+	public static IIncludePathEntry getClasspathEntryToEdit(IJavaScriptProject jproject, IPath containerPath, IPath libPath) throws JavaScriptModelException {
+		IJsGlobalScopeContainer container= JavaScriptCore.getJsGlobalScopeContainer(containerPath, jproject);
+		JsGlobalScopeContainerInitializer initializer= JavaScriptCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
 		if (container != null && initializer != null && initializer.canUpdateJsGlobalScopeContainer(containerPath, jproject)) {
 			return findEntryInContainer(container, libPath);
 		}
@@ -721,14 +721,14 @@ public final class JavaModelUtil {
 	 * Finds an entry in a container. <code>null</code> is returned if the entry can not be found
 	 * @param container The container
 	 * @param libPath The path of the library to be found
-	 * @return IClasspathEntry A classpath entry from the container of
+	 * @return IIncludePathEntry A classpath entry from the container of
 	 * <code>null</code> if the container can not be modified.
 	 */
-	public static IClasspathEntry findEntryInContainer(IJsGlobalScopeContainer container, IPath libPath) {
-		IClasspathEntry[] entries= container.getClasspathEntries();
+	public static IIncludePathEntry findEntryInContainer(IJsGlobalScopeContainer container, IPath libPath) {
+		IIncludePathEntry[] entries= container.getIncludepathEntries();
 		for (int i= 0; i < entries.length; i++) {
-			IClasspathEntry curr= entries[i];
-			IClasspathEntry resolved= JavaCore.getResolvedClasspathEntry(curr);
+			IIncludePathEntry curr= entries[i];
+			IIncludePathEntry resolved= JavaScriptCore.getResolvedIncludepathEntry(curr);
 			if (resolved != null && libPath.equals(resolved.getPath())) {
 				return curr; // return the real entry
 			}
@@ -740,45 +740,45 @@ public final class JavaModelUtil {
 	 * Get all compilation units of a selection.
 	 * @param javaElements the selected java elements
 	 * @return all compilation units containing and contained in elements from javaElements
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public static ICompilationUnit[] getAllCompilationUnits(IJavaElement[] javaElements) throws JavaModelException {
+	public static IJavaScriptUnit[] getAllCompilationUnits(IJavaScriptElement[] javaElements) throws JavaScriptModelException {
 		HashSet result= new HashSet();
 		for (int i= 0; i < javaElements.length; i++) {
 			addAllCus(result, javaElements[i]);
 		}
-		return (ICompilationUnit[]) result.toArray(new ICompilationUnit[result.size()]);
+		return (IJavaScriptUnit[]) result.toArray(new IJavaScriptUnit[result.size()]);
 	}
 
-	private static void addAllCus(HashSet/*<ICompilationUnit>*/ collector, IJavaElement javaElement) throws JavaModelException {
+	private static void addAllCus(HashSet/*<IJavaScriptUnit>*/ collector, IJavaScriptElement javaElement) throws JavaScriptModelException {
 		switch (javaElement.getElementType()) {
-			case IJavaElement.JAVA_PROJECT:
-				IJavaProject javaProject= (IJavaProject) javaElement;
+			case IJavaScriptElement.JAVASCRIPT_PROJECT:
+				IJavaScriptProject javaProject= (IJavaScriptProject) javaElement;
 				IPackageFragmentRoot[] packageFragmentRoots= javaProject.getPackageFragmentRoots();
 				for (int i= 0; i < packageFragmentRoots.length; i++)
 					addAllCus(collector, packageFragmentRoots[i]);
 				return;
 		
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 				IPackageFragmentRoot packageFragmentRoot= (IPackageFragmentRoot) javaElement;
 				if (packageFragmentRoot.getKind() != IPackageFragmentRoot.K_SOURCE)
 					return;
-				IJavaElement[] packageFragments= packageFragmentRoot.getChildren();
+				IJavaScriptElement[] packageFragments= packageFragmentRoot.getChildren();
 				for (int j= 0; j < packageFragments.length; j++)
 					addAllCus(collector, packageFragments[j]);
 				return;
 		
-			case IJavaElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				IPackageFragment packageFragment= (IPackageFragment) javaElement;
-				collector.addAll(Arrays.asList(packageFragment.getCompilationUnits()));
+				collector.addAll(Arrays.asList(packageFragment.getJavaScriptUnits()));
 				return;
 			
-			case IJavaElement.COMPILATION_UNIT:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
 				collector.add(javaElement);
 				return;
 				
 			default:
-				IJavaElement cu= javaElement.getAncestor(IJavaElement.COMPILATION_UNIT);
+				IJavaScriptElement cu= javaElement.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 				if (cu != null)
 					collector.add(cu);
 		}
@@ -789,45 +789,45 @@ public final class JavaModelUtil {
 	 * Sets all compliance settings in the given map to 5.0
 	 */
 	public static void set50CompilanceOptions(Map map) {
-		setCompilanceOptions(map, JavaCore.VERSION_1_5);
+		setCompilanceOptions(map, JavaScriptCore.VERSION_1_5);
 	}
 	
 	public static void setCompilanceOptions(Map map, String compliance) {
-		if (JavaCore.VERSION_1_6.equals(compliance)) {
-			map.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_6);
-			map.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_6);
-			map.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_6);
-			map.put(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaCore.ERROR);
-			map.put(JavaCore.COMPILER_PB_ENUM_IDENTIFIER, JavaCore.ERROR);
-		} else if (JavaCore.VERSION_1_5.equals(compliance)) {
-			map.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
-			map.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
-			map.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);
-			map.put(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaCore.ERROR);
-			map.put(JavaCore.COMPILER_PB_ENUM_IDENTIFIER, JavaCore.ERROR);
-		} else if (JavaCore.VERSION_1_4.equals(compliance)) {
-			map.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_4);
-			map.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_3);
-			map.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_2);
-			map.put(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaCore.WARNING);
-			map.put(JavaCore.COMPILER_PB_ENUM_IDENTIFIER, JavaCore.WARNING);
-		} else if (JavaCore.VERSION_1_3.equals(compliance)) {
-			map.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_3);
-			map.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_3);
-			map.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_1);
-			map.put(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaCore.IGNORE);
-			map.put(JavaCore.COMPILER_PB_ENUM_IDENTIFIER, JavaCore.IGNORE);
+		if (JavaScriptCore.VERSION_1_6.equals(compliance)) {
+			map.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_6);
+			map.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_6);
+			map.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_6);
+			map.put(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.ERROR);
+			map.put(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, JavaScriptCore.ERROR);
+		} else if (JavaScriptCore.VERSION_1_5.equals(compliance)) {
+			map.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_5);
+			map.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_5);
+			map.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_5);
+			map.put(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.ERROR);
+			map.put(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, JavaScriptCore.ERROR);
+		} else if (JavaScriptCore.VERSION_1_4.equals(compliance)) {
+			map.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_4);
+			map.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_3);
+			map.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_2);
+			map.put(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.WARNING);
+			map.put(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, JavaScriptCore.WARNING);
+		} else if (JavaScriptCore.VERSION_1_3.equals(compliance)) {
+			map.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_3);
+			map.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_3);
+			map.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_1);
+			map.put(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.IGNORE);
+			map.put(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, JavaScriptCore.IGNORE);
 		} else {
 			throw new IllegalArgumentException("Unsupported compliance: " + compliance); //$NON-NLS-1$
 		}
 	}
 	
 	public static void setDefaultClassfileOptions(Map map, String compliance) {
-		map.put(JavaCore.COMPILER_CODEGEN_INLINE_JSR_BYTECODE, is50OrHigher(compliance) ? JavaCore.ENABLED : JavaCore.DISABLED);
-		map.put(JavaCore.COMPILER_LOCAL_VARIABLE_ATTR, JavaCore.GENERATE);
-		map.put(JavaCore.COMPILER_LINE_NUMBER_ATTR, JavaCore.GENERATE);
-		map.put(JavaCore.COMPILER_SOURCE_FILE_ATTR, JavaCore.GENERATE);
-		map.put(JavaCore.COMPILER_CODEGEN_UNUSED_LOCAL, JavaCore.PRESERVE);
+		map.put(JavaScriptCore.COMPILER_CODEGEN_INLINE_JSR_BYTECODE, is50OrHigher(compliance) ? JavaScriptCore.ENABLED : JavaScriptCore.DISABLED);
+		map.put(JavaScriptCore.COMPILER_LOCAL_VARIABLE_ATTR, JavaScriptCore.GENERATE);
+		map.put(JavaScriptCore.COMPILER_LINE_NUMBER_ATTR, JavaScriptCore.GENERATE);
+		map.put(JavaScriptCore.COMPILER_SOURCE_FILE_ATTR, JavaScriptCore.GENERATE);
+		map.put(JavaScriptCore.COMPILER_CODEGEN_UNUSED_LOCAL, JavaScriptCore.PRESERVE);
 	}
 	
 	/**
@@ -838,14 +838,14 @@ public final class JavaModelUtil {
 	}
 	
 	public static boolean is50OrHigher(String compliance) {
-		return !isVersionLessThan(compliance, JavaCore.VERSION_1_5);
+		return !isVersionLessThan(compliance, JavaScriptCore.VERSION_1_5);
 	}
 	
-	public static boolean is50OrHigher(IJavaProject project) {
-		return is50OrHigher(project.getOption(JavaCore.COMPILER_COMPLIANCE, true));
+	public static boolean is50OrHigher(IJavaScriptProject project) {
+		return is50OrHigher(project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true));
 	}
 	
-	public static boolean is50OrHigherJRE(IJavaProject project) throws CoreException {
+	public static boolean is50OrHigherJRE(IJavaScriptProject project) throws CoreException {
 		IVMInstall vmInstall= JavaRuntime.getVMInstall(project);
 		if (!(vmInstall instanceof IVMInstall2))
 			return true; // assume 5.0.
@@ -853,25 +853,25 @@ public final class JavaModelUtil {
 		String compliance= getCompilerCompliance((IVMInstall2) vmInstall, null);
 		if (compliance == null)
 			return true; // assume 5.0
-		return compliance.startsWith(JavaCore.VERSION_1_5) || compliance.startsWith(JavaCore.VERSION_1_6);
+		return compliance.startsWith(JavaScriptCore.VERSION_1_5) || compliance.startsWith(JavaScriptCore.VERSION_1_6);
 	}
 	
 	public static String getCompilerCompliance(IVMInstall2 vMInstall, String defaultCompliance) {
 		String version= vMInstall.getJavaVersion();
 		if (version == null) {
 			return defaultCompliance;
-		} else if (version.startsWith(JavaCore.VERSION_1_6)) {
-			return JavaCore.VERSION_1_6;
-		} else if (version.startsWith(JavaCore.VERSION_1_5)) {
-			return JavaCore.VERSION_1_5;
-		} else if (version.startsWith(JavaCore.VERSION_1_4)) {
-			return JavaCore.VERSION_1_4;
-		} else if (version.startsWith(JavaCore.VERSION_1_3)) {
-			return JavaCore.VERSION_1_3;
-		} else if (version.startsWith(JavaCore.VERSION_1_2)) {
-			return JavaCore.VERSION_1_3;
-		} else if (version.startsWith(JavaCore.VERSION_1_1)) {
-			return JavaCore.VERSION_1_3;
+		} else if (version.startsWith(JavaScriptCore.VERSION_1_6)) {
+			return JavaScriptCore.VERSION_1_6;
+		} else if (version.startsWith(JavaScriptCore.VERSION_1_5)) {
+			return JavaScriptCore.VERSION_1_5;
+		} else if (version.startsWith(JavaScriptCore.VERSION_1_4)) {
+			return JavaScriptCore.VERSION_1_4;
+		} else if (version.startsWith(JavaScriptCore.VERSION_1_3)) {
+			return JavaScriptCore.VERSION_1_3;
+		} else if (version.startsWith(JavaScriptCore.VERSION_1_2)) {
+			return JavaScriptCore.VERSION_1_3;
+		} else if (version.startsWith(JavaScriptCore.VERSION_1_1)) {
+			return JavaScriptCore.VERSION_1_3;
 		}
 		return defaultCompliance;
 	}
@@ -879,13 +879,13 @@ public final class JavaModelUtil {
 //	public static String getExecutionEnvironmentCompliance(IExecutionEnvironment executionEnvironment) {
 //		String desc= executionEnvironment.getId();
 //		if (desc.indexOf("1.6") != -1) { //$NON-NLS-1$
-//			return JavaCore.VERSION_1_6;
+//			return JavaScriptCore.VERSION_1_6;
 //		} else if (desc.indexOf("1.5") != -1) { //$NON-NLS-1$
-//			return JavaCore.VERSION_1_5;
+//			return JavaScriptCore.VERSION_1_5;
 //		} else if (desc.indexOf("1.4") != -1) { //$NON-NLS-1$
-//			return JavaCore.VERSION_1_4;
+//			return JavaScriptCore.VERSION_1_4;
 //		}
-//		return JavaCore.VERSION_1_3;
+//		return JavaScriptCore.VERSION_1_3;
 //	}
 
 	/**
@@ -896,7 +896,7 @@ public final class JavaModelUtil {
 	 * @param newMainName the new name of the cu's main type (without extension)
 	 * @return the new name for the compilation unit  
 	 */
-	public static String getRenamedCUName(ICompilationUnit cu, String newMainName) {
+	public static String getRenamedCUName(IJavaScriptUnit cu, String newMainName) {
 		String oldName = cu.getElementName();
 		int i = oldName.lastIndexOf('.');
 		if (i != -1) {
@@ -915,7 +915,7 @@ public final class JavaModelUtil {
 	 * @throws CoreException Thrown when the access to the CU failed
 	 * @throws ValidateEditException if validate edit fails
 	 */	
-	public static void applyEdit(ICompilationUnit cu, TextEdit edit, boolean save, IProgressMonitor monitor) throws CoreException, ValidateEditException {
+	public static void applyEdit(IJavaScriptUnit cu, TextEdit edit, boolean save, IProgressMonitor monitor) throws CoreException, ValidateEditException {
 		if (monitor == null) {
 			monitor= new NullProgressMonitor();
 		}
@@ -940,7 +940,7 @@ public final class JavaModelUtil {
 		}		
 	}
 
-	private static IDocument aquireDocument(ICompilationUnit cu, IProgressMonitor monitor) throws CoreException {
+	private static IDocument aquireDocument(IJavaScriptUnit cu, IProgressMonitor monitor) throws CoreException {
 		if (JavaModelUtil.isPrimary(cu)) {
 			IFile file= (IFile) cu.getResource();
 			if (file.exists()) {
@@ -954,7 +954,7 @@ public final class JavaModelUtil {
 		return new Document(cu.getSource());
 	}
 	
-	private static void commitDocument(ICompilationUnit cu, IDocument document, TextEdit edit, IProgressMonitor monitor) throws CoreException, MalformedTreeException, BadLocationException {
+	private static void commitDocument(IJavaScriptUnit cu, IDocument document, TextEdit edit, IProgressMonitor monitor) throws CoreException, MalformedTreeException, BadLocationException {
 		if (JavaModelUtil.isPrimary(cu)) {
 			IFile file= (IFile) cu.getResource();
 			if (file.exists()) {
@@ -974,7 +974,7 @@ public final class JavaModelUtil {
 	}
 
 	
-	private static void releaseDocument(ICompilationUnit cu, IDocument document, IProgressMonitor monitor) throws CoreException {
+	private static void releaseDocument(IJavaScriptUnit cu, IDocument document, IProgressMonitor monitor) throws CoreException {
 		if (JavaModelUtil.isPrimary(cu)) {
 			IFile file= (IFile) cu.getResource();
 			if (file.exists()) {
@@ -987,7 +987,7 @@ public final class JavaModelUtil {
 		monitor.done();
 	}
 	
-	public static boolean isImplicitImport(String qualifier, ICompilationUnit cu) {
+	public static boolean isImplicitImport(String qualifier, IJavaScriptUnit cu) {
 		if ("java.lang".equals(qualifier)) {  //$NON-NLS-1$
 			return true;
 		}
@@ -995,7 +995,7 @@ public final class JavaModelUtil {
 		if (qualifier.equals(packageName)) {
 			return true;
 		}
-		String typeName= JavaCore.removeJavaLikeExtension(cu.getElementName());
+		String typeName= JavaScriptCore.removeJavaScriptLikeExtension(cu.getElementName());
 		String mainTypeName= JavaModelUtil.concatenateName(packageName, typeName);
 		return qualifier.equals(mainTypeName);
 	}
@@ -1017,13 +1017,13 @@ public final class JavaModelUtil {
 	 * @param currentLocal the local variable to test
 	 * 
 	 * @return returns true if the variable is a parameter
-	 * @throws JavaModelException 
+	 * @throws JavaScriptModelException 
 	 */
-	public static boolean isParameter(ILocalVariable currentLocal) throws JavaModelException {
+	public static boolean isParameter(ILocalVariable currentLocal) throws JavaScriptModelException {
 
-		final IJavaElement parent= currentLocal.getParent();
-		if (parent instanceof IMethod) {
-			final String[] params= ((IMethod) parent).getParameterNames();
+		final IJavaScriptElement parent= currentLocal.getParent();
+		if (parent instanceof IFunction) {
+			final String[] params= ((IFunction) parent).getParameterNames();
 			for (int i= 0; i < params.length; i++) {
 				if (params[i].equals(currentLocal.getElementName()))
 					return true;
@@ -1033,13 +1033,13 @@ public final class JavaModelUtil {
 	}
 	
 	
-	public static String getFilePackage(IJavaElement javaElement)
+	public static String getFilePackage(IJavaScriptElement javaElement)
 	{
-		IJavaElement fileAncestor = javaElement.getAncestor(IJavaElement.COMPILATION_UNIT);
+		IJavaScriptElement fileAncestor = javaElement.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 		if (fileAncestor==null)
-			fileAncestor=javaElement.getAncestor(IJavaElement.CLASS_FILE);
+			fileAncestor=javaElement.getAncestor(IJavaScriptElement.CLASS_FILE);
 		IPath filePath= fileAncestor.getResource().getFullPath();
-		IJavaElement rootElement=fileAncestor.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+		IJavaScriptElement rootElement=fileAncestor.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 		IPath rootPath = rootElement.getResource().getFullPath();
 		String relativePath = filePath.removeFirstSegments(rootPath.segmentCount()).toPortableString();
 		int index=Util.indexOfJavaLikeExtension(relativePath);

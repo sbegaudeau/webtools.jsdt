@@ -15,15 +15,15 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
 /**
  * A clean up can solve several different problems in a given
- * <code>CompilationUnit</code>. The <code>CompilationUnit</code> is
+ * <code>JavaScriptUnit</code>. The <code>JavaScriptUnit</code> is
  * compiled by using the compiler options returned by
  * <code>getRequiredOptions</code>.
  * 
@@ -34,8 +34,8 @@ public interface ICleanUp {
 	/**
 	 * Does this clean up require an AST for the given <code>unit</code>. If
 	 * true is returned an AST for unit is created by the clean up
-	 * infrastructure and {@link #createFix(CompilationUnit)} is executed,
-	 * otherwise {@link #createFix(ICompilationUnit)} is executed. The source
+	 * infrastructure and {@link #createFix(JavaScriptUnit)} is executed,
+	 * otherwise {@link #createFix(IJavaScriptUnit)} is executed. The source
 	 * from which the AST is created may be differ from the source of
 	 * <code>unit</code>.
 	 * <p>
@@ -44,29 +44,29 @@ public interface ICleanUp {
 	 * 
 	 * @param unit
 	 *            the unit to create an ast for
-	 * @return true if {@link #createFix(CompilationUnit)} must be executed,
-	 *         false if {@link #createFix(ICompilationUnit)} must be executed
+	 * @return true if {@link #createFix(JavaScriptUnit)} must be executed,
+	 *         false if {@link #createFix(IJavaScriptUnit)} must be executed
 	 */
-	public abstract boolean requireAST(ICompilationUnit unit) throws CoreException;
+	public abstract boolean requireAST(IJavaScriptUnit unit) throws CoreException;
 	
 	/**
 	 * Create an <code>IFix</code> which fixes all problems in
 	 * <code>unit</code> or <code>null</code> if nothing to fix.
 	 * <p>
-	 * This is called iff {@link #requireAST(ICompilationUnit)} returns
+	 * This is called iff {@link #requireAST(IJavaScriptUnit)} returns
 	 * <code>false</code>.
 	 * 
 	 * @param unit
-	 *            the ICompilationUnit to fix, not null
+	 *            the IJavaScriptUnit to fix, not null
 	 * @return the fix for the problems or <code>null</code> if nothing to fix
 	 */
-	public abstract IFix createFix(ICompilationUnit unit) throws CoreException;
+	public abstract IFix createFix(IJavaScriptUnit unit) throws CoreException;
 	
 	/**
 	 * Create an <code>IFix</code> which fixes all problems in
 	 * <code>compilationUnit</code> or <code>null</code> if nothing to fix.
 	 * <p>
-	 * This is called iff {@link #requireAST(ICompilationUnit)} returns
+	 * This is called iff {@link #requireAST(IJavaScriptUnit)} returns
 	 * <code>true</code>.
 	 * 
 	 * @param compilationUnit
@@ -74,11 +74,11 @@ public interface ICleanUp {
 	 * @return The fix or null if no fixes possible
 	 * @throws CoreException
 	 */
-	public abstract IFix createFix(CompilationUnit compilationUnit) throws CoreException;
+	public abstract IFix createFix(JavaScriptUnit compilationUnit) throws CoreException;
 	
 	/**
 	 * Create a <code>IFix</code> which fixes all <code>problems</code> in
-	 * <code>CompilationUnit</code>
+	 * <code>JavaScriptUnit</code>
 	 * 
 	 * @param compilationUnit
 	 *            The compilation unit to fix, may be null
@@ -87,7 +87,7 @@ public interface ICleanUp {
 	 * @return The fix or null if no fixes possible
 	 * @throws CoreException
 	 */
-	public abstract IFix createFix(CompilationUnit compilationUnit, IProblemLocation[] problems) throws CoreException;
+	public abstract IFix createFix(JavaScriptUnit compilationUnit, IProblemLocation[] problems) throws CoreException;
 	
 	/**
 	 * Required compiler options to allow <code>createFix</code> to work
@@ -105,7 +105,7 @@ public interface ICleanUp {
 	 *            The current available AST
 	 * @return true if the caller needs an up to date AST
 	 */
-	public abstract boolean needsFreshAST(CompilationUnit compilationUnit);
+	public abstract boolean needsFreshAST(JavaScriptUnit compilationUnit);
 	
 	/**
 	 * Description for each operation this clean up will execute
@@ -129,7 +129,7 @@ public interface ICleanUp {
 	 *            the monitor to show progress
 	 * @return the result of the precondition check, not null
 	 */
-	public abstract RefactoringStatus checkPreConditions(IJavaProject project, ICompilationUnit[] compilationUnits, IProgressMonitor monitor) throws CoreException;
+	public abstract RefactoringStatus checkPreConditions(IJavaScriptProject project, IJavaScriptUnit[] compilationUnits, IProgressMonitor monitor) throws CoreException;
 	
 	/**
 	 * Called when done cleaning up.
@@ -141,7 +141,7 @@ public interface ICleanUp {
 	public abstract RefactoringStatus checkPostConditions(IProgressMonitor monitor) throws CoreException;
 	
 	/**
-	 * True if <code>problem</code> in <code>CompilationUnit</code> can be
+	 * True if <code>problem</code> in <code>JavaScriptUnit</code> can be
 	 * fixed by this CleanUp. If true
 	 * <code>createFix(compilationUnit, new IProblemLocation[] {problem})</code>
 	 * does not return null.
@@ -153,7 +153,7 @@ public interface ICleanUp {
 	 * @return True if problem can be fixed
 	 * @throws CoreException
 	 */
-	public boolean canFix(CompilationUnit compilationUnit, IProblemLocation problem) throws CoreException;
+	public boolean canFix(JavaScriptUnit compilationUnit, IProblemLocation problem) throws CoreException;
 	
 	/**
 	 * Maximal number of problems this clean up will fix in compilation unit.
@@ -163,7 +163,7 @@ public interface ICleanUp {
 	 *            The compilation unit to fix, not null
 	 * @return The maximal number of fixes or -1 if unknown.
 	 */
-	public abstract int maximalNumberOfFixes(CompilationUnit compilationUnit);
+	public abstract int maximalNumberOfFixes(JavaScriptUnit compilationUnit);
 	
 	/**
 	 * A code snippet which complies to the current settings.

@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.DefaultSpellChecker;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellCheckEngine;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellChecker;
@@ -75,7 +75,7 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 			if (location == null)
 				return fgLocalesWithInstalledDictionaries= Collections.EMPTY_SET;
 		} catch (MalformedURLException ex) {
-			JavaPlugin.log(ex);
+			JavaScriptPlugin.log(ex);
 			return fgLocalesWithInstalledDictionaries= Collections.EMPTY_SET;
 		}
 		
@@ -89,7 +89,7 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 			if (fileNames == null)
 				return fgLocalesWithInstalledDictionaries= Collections.EMPTY_SET;
 		} catch (IOException ex) {
-			JavaPlugin.log(ex);
+			JavaScriptPlugin.log(ex);
 			return fgLocalesWithInstalledDictionaries= Collections.EMPTY_SET;
 		}
 		
@@ -188,7 +188,7 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 	 */
 	public static URL getDictionaryLocation() throws MalformedURLException {
 
-		final JavaPlugin plugin= JavaPlugin.getDefault();
+		final JavaScriptPlugin plugin= JavaScriptPlugin.getDefault();
 		if (plugin != null)
 			return plugin.getBundle().getEntry("/" + DICTIONARY_LOCATION); //$NON-NLS-1$
 
@@ -254,7 +254,7 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 			// Do nothing
 		}
 		
-		JavaPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
+		JavaScriptPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	}
 
 	/*
@@ -264,7 +264,7 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 		if (fGlobalDictionaries == null)
 			throw new IllegalStateException("spell checker has been shut down"); //$NON-NLS-1$
 		
-		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 		Locale locale= getCurrentLocale(store);
 		if (fUserDictionary == null && "".equals(locale.toString())) //$NON-NLS-1$
 			return null;
@@ -354,7 +354,7 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 			fUserDictionary= null;
 		}
 
-		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 		final String filePath= store.getString(PreferenceConstants.SPELLING_USER_DICTIONARY);
 		if (filePath.length() > 0) {
 			try {
@@ -401,7 +401,7 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 	 */
 	public synchronized final void shutdown() {
 		
-		JavaPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
+		JavaScriptPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 
 		ISpellDictionary dictionary= null;
 		for (final Iterator iterator= fGlobalDictionaries.iterator(); iterator.hasNext();) {

@@ -23,8 +23,8 @@ import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
@@ -32,7 +32,7 @@ import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 public class CodeFormatterUtil {
 				
@@ -46,8 +46,8 @@ public class CodeFormatterUtil {
 	 *        <code>null</code> if the workspace default should be used
 	 * @return the indent string
 	 */
-	public static String createIndentString(int indentationUnits, IJavaProject project) {
-		Map options= project != null ? project.getOptions(true) : JavaCore.getOptions();		
+	public static String createIndentString(int indentationUnits, IJavaScriptProject project) {
+		Map options= project != null ? project.getOptions(true) : JavaScriptCore.getOptions();		
 		return ToolFactory.createCodeFormatter(options).createIndentationString(indentationUnits);
 	} 
 		
@@ -59,7 +59,7 @@ public class CodeFormatterUtil {
 	 *        and the workspace default should be used
 	 * @return The tab width
 	 */
-	public static int getTabWidth(IJavaProject project) {
+	public static int getTabWidth(IJavaScriptProject project) {
 		/*
 		 * If the tab-char is SPACE, FORMATTER_INDENTATION_SIZE is not used
 		 * by the core formatter.
@@ -67,7 +67,7 @@ public class CodeFormatterUtil {
 		 * that case.
 		 */
 		String key;
-		if (JavaCore.SPACE.equals(getCoreOption(project, DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR)))
+		if (JavaScriptCore.SPACE.equals(getCoreOption(project, DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR)))
 			key= DefaultCodeFormatterConstants.FORMATTER_INDENTATION_SIZE;
 		else
 			key= DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE;
@@ -83,7 +83,7 @@ public class CodeFormatterUtil {
 	 * @return the indent width
 	 * @since 3.1
 	 */
-	public static int getIndentWidth(IJavaProject project) {
+	public static int getIndentWidth(IJavaScriptProject project) {
 		String key;
 		if (DefaultCodeFormatterConstants.MIXED.equals(getCoreOption(project, DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR)))
 			key= DefaultCodeFormatterConstants.FORMATTER_INDENTATION_SIZE;
@@ -103,9 +103,9 @@ public class CodeFormatterUtil {
 	 * @return the value of the preference
 	 * @since 3.1
 	 */
-	private static String getCoreOption(IJavaProject project, String key) {
+	private static String getCoreOption(IJavaScriptProject project, String key) {
 		if (project == null)
-			return JavaCore.getOption(key);
+			return JavaScriptCore.getOption(key);
 		return project.getOption(key, true);
 	}
 
@@ -121,7 +121,7 @@ public class CodeFormatterUtil {
 	 * @return the value of the preference
 	 * @since 3.1
 	 */
-	private static int getCoreOption(IJavaProject project, String key, int def) {
+	private static int getCoreOption(IJavaScriptProject project, String key, int def) {
 		try {
 			return Integer.parseInt(getCoreOption(project, key));
 		} catch (NumberFormatException e) {
@@ -138,7 +138,7 @@ public class CodeFormatterUtil {
 		return format(kind, string, 0, string.length(), indentationLevel, positions, lineSeparator, options);
 	}
 	
-	public static String format(int kind, String string, int indentationLevel, int[] positions, String lineSeparator, IJavaProject project) {
+	public static String format(int kind, String string, int indentationLevel, int[] positions, String lineSeparator, IJavaScriptProject project) {
 		Map options= project != null ? project.getOptions(true) : null;
 		return format(kind, string, 0, string.length(), indentationLevel, positions, lineSeparator, options);
 	}
@@ -150,7 +150,7 @@ public class CodeFormatterUtil {
 	public static String format(int kind, String string, int offset, int length, int indentationLevel, int[] positions, String lineSeparator, Map options) {
 		TextEdit edit= format2(kind, string, offset, length, indentationLevel, lineSeparator, options);
 		if (edit == null) {
-			//JavaPlugin.logErrorMessage("formatter failed to format (no edit returned). Will use unformatted text instead. kind: " + kind + ", string: " + string); //$NON-NLS-1$ //$NON-NLS-2$
+			//JavaScriptPlugin.logErrorMessage("formatter failed to format (no edit returned). Will use unformatted text instead. kind: " + kind + ", string: " + string); //$NON-NLS-1$ //$NON-NLS-2$
 			return string.substring(offset, offset + length);
 		}
 		String formatted= getOldAPICompatibleResult(string, edit, indentationLevel, positions, lineSeparator, options);
@@ -164,7 +164,7 @@ public class CodeFormatterUtil {
 		
 		TextEdit edit= format2(node, string, indentationLevel, lineSeparator, options);
 		if (edit == null) {
-			//JavaPlugin.logErrorMessage("formatter failed to format (no edit returned). Will use unformatted text instead. node: " + node.getNodeType() + ", string: " + string); //$NON-NLS-1$ //$NON-NLS-2$
+			//JavaScriptPlugin.logErrorMessage("formatter failed to format (no edit returned). Will use unformatted text instead. node: " + node.getNodeType() + ", string: " + string); //$NON-NLS-1$ //$NON-NLS-2$
 			return string;
 		}
 		return getOldAPICompatibleResult(string, edit, indentationLevel, positions, lineSeparator, options);
@@ -206,7 +206,7 @@ public class CodeFormatterUtil {
 			}
 			return doc.get();
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e); // bug in the formatter
+			JavaScriptPlugin.log(e); // bug in the formatter
 			Assert.isTrue(false, "Formatter created edits with wrong positions: " + e.getMessage()); //$NON-NLS-1$
 		}
 		return null;
@@ -274,8 +274,8 @@ public class CodeFormatterUtil {
 					suffix= "> x;"; //$NON-NLS-1$
 					code= CodeFormatter.K_CLASS_BODY_DECLARATIONS;
 					break;
-				case ASTNode.COMPILATION_UNIT:
-					code= CodeFormatter.K_COMPILATION_UNIT;
+				case ASTNode.JAVASCRIPT_UNIT:
+					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
 				case ASTNode.VARIABLE_DECLARATION_EXPRESSION:
 				case ASTNode.SINGLE_VARIABLE_DECLARATION:
@@ -290,9 +290,9 @@ public class CodeFormatterUtil {
 				case ASTNode.PACKAGE_DECLARATION:
 				case ASTNode.IMPORT_DECLARATION:
 					suffix= "\nclass A {}"; //$NON-NLS-1$
-					code= CodeFormatter.K_COMPILATION_UNIT;
+					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
-				case ASTNode.JAVADOC:
+				case ASTNode.JSDOC:
 					suffix= "void foo();"; //$NON-NLS-1$
 					code= CodeFormatter.K_CLASS_BODY_DECLARATIONS;
 					break;
@@ -308,20 +308,20 @@ public class CodeFormatterUtil {
 				case ASTNode.MEMBER_VALUE_PAIR:
 					prefix= "@Author("; //$NON-NLS-1$
 					suffix= ") class x {}"; //$NON-NLS-1$
-					code= CodeFormatter.K_COMPILATION_UNIT;
+					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
 				case ASTNode.MODIFIER:
 					suffix= " class x {}"; //$NON-NLS-1$
-					code= CodeFormatter.K_COMPILATION_UNIT;				
+					code= CodeFormatter.K_JAVASCRIPT_UNIT;				
 					break;
 				case ASTNode.TYPE_PARAMETER:
 					prefix= "class X<"; //$NON-NLS-1$
 					suffix= "> {}"; //$NON-NLS-1$
-					code= CodeFormatter.K_COMPILATION_UNIT;
+					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
 				case ASTNode.MEMBER_REF:
-				case ASTNode.METHOD_REF:
-				case ASTNode.METHOD_REF_PARAMETER:
+				case ASTNode.FUNCTION_REF:
+				case ASTNode.FUNCTION_REF_PARAMETER:
 				case ASTNode.TAG_ELEMENT:
 				case ASTNode.TEXT_ELEMENT:
 					// Javadoc formatting not yet supported:

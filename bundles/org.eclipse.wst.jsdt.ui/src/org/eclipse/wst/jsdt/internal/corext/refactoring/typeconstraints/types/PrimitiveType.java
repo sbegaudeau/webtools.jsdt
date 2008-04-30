@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types;
 
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 
 
 public final class PrimitiveType extends TType {
@@ -64,7 +64,7 @@ public final class PrimitiveType extends TType {
 	protected boolean doCanAssignTo(TType lhs) {
 		if (lhs.getKind() != PRIMITIVE_TYPE) {
 			if (lhs.getKind() == STANDARD_TYPE) {
-				IJavaProject javaProject= ((StandardType)lhs).getJavaElementType().getJavaProject();
+				IJavaScriptProject javaProject= ((StandardType)lhs).getJavaElementType().getJavaScriptProject();
 				return getEnvironment().createBoxed(this, javaProject).canAssignTo(lhs);
 			}
 			return false;

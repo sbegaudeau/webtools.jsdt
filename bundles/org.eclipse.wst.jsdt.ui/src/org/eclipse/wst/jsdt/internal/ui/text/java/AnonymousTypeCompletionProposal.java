@@ -27,20 +27,20 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
@@ -54,7 +54,7 @@ import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.OverrideMethodDialog;
 import org.eclipse.wst.jsdt.internal.ui.preferences.JavaPreferencesSettings;
@@ -64,7 +64,7 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 	private String fDeclarationSignature;
 	private IType fSuperType;
 
-	public AnonymousTypeCompletionProposal(IJavaProject jproject, ICompilationUnit cu, int start, int length, String constructorCompletion, String displayName, String declarationSignature, int relevance) {
+	public AnonymousTypeCompletionProposal(IJavaScriptProject jproject, IJavaScriptUnit cu, int start, int length, String constructorCompletion, String displayName, String declarationSignature, int relevance) {
 		super(constructorCompletion, cu, start, length, null, displayName, relevance);
 		Assert.isNotNull(declarationSignature);
 		Assert.isNotNull(jproject);
@@ -77,7 +77,7 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 		setCursorPosition(constructorCompletion.indexOf('(') + 1);
 	}
 
-	private int createDummy(String name, StringBuffer buffer) throws JavaModelException {
+	private int createDummy(String name, StringBuffer buffer) throws JavaScriptModelException {
 		String lineDelim= "\n"; // Using newline is ok since source is used in dummy compilation unit //$NON-NLS-1$
 		buffer.append("class "); //$NON-NLS-1$
 		buffer.append(name);
@@ -102,7 +102,7 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 			return false;
 		if (fSuperType == null)
 			return true;
-		ICompilationUnit copy= null;
+		IJavaScriptUnit copy= null;
 		try {
 			final String name= "Type" + System.currentTimeMillis(); //$NON-NLS-1$
 			copy= fCompilationUnit.getPrimary().getWorkingCopy(null);
@@ -110,7 +110,7 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 			int start= 0;
 			int end= 0;
 			ISourceRange range= fSuperType.getSourceRange();
-			final boolean sameUnit= range != null && fCompilationUnit.equals(fSuperType.getCompilationUnit());
+			final boolean sameUnit= range != null && fCompilationUnit.equals(fSuperType.getJavaScriptUnit());
 			final StringBuffer dummy= new StringBuffer();
 			final int length= createDummy(name, dummy);
 			contents.append(fCompilationUnit.getBuffer().getContents());
@@ -130,7 +130,7 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 			final ASTParser parser= ASTParser.newParser(AST.JLS3);
 			parser.setResolveBindings(true);
 			parser.setSource(copy);
-			final CompilationUnit unit= (CompilationUnit) parser.createAST(new NullProgressMonitor());
+			final JavaScriptUnit unit= (JavaScriptUnit) parser.createAST(new NullProgressMonitor());
 			IType type= null;
 			IType[] types= copy.getAllTypes();
 			for (int index= 0; index < types.length; index++) {
@@ -146,11 +146,11 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 				if (declaration != null) {
 					binding= declaration.resolveBinding();
 					if (binding != null) {
-						IMethodBinding[] bindings= StubUtility2.getOverridableMethods(unit.getAST(), binding, true);
-						CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(fSuperType.getJavaProject());
+						IFunctionBinding[] bindings= StubUtility2.getOverridableMethods(unit.getAST(), binding, true);
+						CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(fSuperType.getJavaScriptProject());
 						String[] keys= null;
 						if (!fSuperType.isInterface() && !fSuperType.isAnnotation()) {
-							OverrideMethodDialog dialog= new OverrideMethodDialog(JavaPlugin.getActiveWorkbenchShell(), null, type, true);
+							OverrideMethodDialog dialog= new OverrideMethodDialog(JavaScriptPlugin.getActiveWorkbenchShell(), null, type, true);
 							dialog.setGenerateComment(false);
 							dialog.setElementPositionEnabled(false);
 							if (dialog.open() == Window.OK) {
@@ -158,7 +158,7 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 								if (selection != null) {
 									ArrayList result= new ArrayList(selection.length);
 									for (int index= 0; index < selection.length; index++) {
-										if (selection[index] instanceof IMethodBinding)
+										if (selection[index] instanceof IFunctionBinding)
 											result.add(((IBinding) selection[index]).getKey());
 									}
 									keys= (String[]) result.toArray(new String[result.size()]);
@@ -182,7 +182,7 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 						ASTRewrite rewrite= ASTRewrite.create(unit.getAST());
 						ListRewrite rewriter= rewrite.getListRewrite(declaration, declaration.getBodyDeclarationsProperty());
 						String key= null;
-						MethodDeclaration stub= null;
+						FunctionDeclaration stub= null;
 						for (int index= 0; index < keys.length; index++) {
 							key= keys[index];
 							for (int offset= 0; offset < bindings.length; offset++) {
@@ -196,12 +196,12 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 						}
 						IDocument document= new Document(copy.getBuffer().getContents());
 						try {
-							rewrite.rewriteAST(document, fCompilationUnit.getJavaProject().getOptions(true)).apply(document, TextEdit.UPDATE_REGIONS);
+							rewrite.rewriteAST(document, fCompilationUnit.getJavaScriptProject().getOptions(true)).apply(document, TextEdit.UPDATE_REGIONS);
 							buffer.append(document.get(start, document.getLength() - start - end));
 						} catch (MalformedTreeException exception) {
-							JavaPlugin.log(exception);
+							JavaScriptPlugin.log(exception);
 						} catch (BadLocationException exception) {
-							JavaPlugin.log(exception);
+							JavaScriptPlugin.log(exception);
 						}
 					}
 				}
@@ -213,11 +213,11 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 		}
 	}
 
-	private IType getDeclaringType(IJavaProject project, String typeName) {
+	private IType getDeclaringType(IJavaScriptProject project, String typeName) {
 		try {
 			return project.findType(typeName, (IProgressMonitor) null);
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 		}
 		return null;
 	}
@@ -231,8 +231,8 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 				} else if (type.isInterface()) {
 					imageName= JavaPluginImages.IMG_OBJS_INTERFACE;
 				}
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 			}
 		}
 		return JavaPluginImages.get(imageName);
@@ -264,7 +264,7 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 
 		// use the code formatter
 		String lineDelim= TextUtilities.getDefaultLineDelimiter(document);
-		final IJavaProject project= fCompilationUnit.getJavaProject();
+		final IJavaScriptProject project= fCompilationUnit.getJavaScriptProject();
 		IRegion region= document.getLineInformationOfOffset(getReplacementOffset());
 		int indent= Strings.computeIndentUnits(document.get(region.getOffset(), region.getLength()), project);
 

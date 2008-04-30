@@ -15,7 +15,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IBufferFactory;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IOpenable;
 
 
@@ -29,9 +29,9 @@ public class CustomBufferFactory implements IBufferFactory {
 	 * @see org.eclipse.wst.jsdt.core.IBufferFactory#createBuffer(org.eclipse.wst.jsdt.core.IOpenable)
 	 */
 	public IBuffer createBuffer(IOpenable owner) {
-		if (owner instanceof ICompilationUnit) {
-			ICompilationUnit unit= (ICompilationUnit) owner;
-			ICompilationUnit original= unit.getPrimary();
+		if (owner instanceof IJavaScriptUnit) {
+			IJavaScriptUnit unit= (IJavaScriptUnit) owner;
+			IJavaScriptUnit original= unit.getPrimary();
 			IResource resource= original.getResource();
 			if (resource instanceof IFile) {
 				return new DocumentAdapter(unit, (IFile) resource);

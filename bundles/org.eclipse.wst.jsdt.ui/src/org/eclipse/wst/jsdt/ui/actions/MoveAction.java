@@ -23,10 +23,10 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
@@ -121,7 +121,7 @@ public class MoveAction extends SelectionDispatchAction{
 			if (fReorgMoveAction.isEnabled())
 				fReorgMoveAction.run();
 		
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringMessages.OpenRefactoringWizardAction_exception); 
 		}
 
@@ -144,13 +144,13 @@ public class MoveAction extends SelectionDispatchAction{
 				return;
 			
 			MessageDialog.openInformation(getShell(), RefactoringMessages.MoveAction_Move, RefactoringMessages.MoveAction_select); 
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringMessages.OpenRefactoringWizardAction_exception); 
 		}
 	}
 
-	private boolean tryMoveStaticMembers(ITextSelection selection) throws JavaModelException {
-		IJavaElement element= SelectionConverter.getElementAtOffset(fEditor);
+	private boolean tryMoveStaticMembers(ITextSelection selection) throws JavaScriptModelException {
+		IJavaScriptElement element= SelectionConverter.getElementAtOffset(fEditor);
 		if (element == null || !(element instanceof IMember))
 			return false;
 		IMember[] array= new IMember[] { (IMember) element};
@@ -179,7 +179,7 @@ public class MoveAction extends SelectionDispatchAction{
 		return (IMember[]) memberSet.toArray(new IMember[memberSet.size()]);
 	}
 
-	private boolean tryMoveStaticMembers(IStructuredSelection selection) throws JavaModelException {
+	private boolean tryMoveStaticMembers(IStructuredSelection selection) throws JavaScriptModelException {
 		IMember[] array= getSelectedMembers(selection);
 		if (!RefactoringAvailabilityTester.isMoveStaticMembersAvailable(array))
 			return false;
@@ -187,20 +187,20 @@ public class MoveAction extends SelectionDispatchAction{
 		return true;
 	}
 
-	private boolean tryMoveInstanceMethod(ITextSelection selection) throws JavaModelException {
-		IJavaElement element= SelectionConverter.getElementAtOffset(fEditor);
-		if (element == null || !(element instanceof IMethod))
+	private boolean tryMoveInstanceMethod(ITextSelection selection) throws JavaScriptModelException {
+		IJavaScriptElement element= SelectionConverter.getElementAtOffset(fEditor);
+		if (element == null || !(element instanceof IFunction))
 			return false;
 
-		IMethod method= (IMethod) element;
+		IFunction method= (IFunction) element;
 		if (!RefactoringAvailabilityTester.isMoveMethodAvailable(method))
 			return false;
 		fMoveInstanceMethodAction.run(selection);
 		return true;
 	}
 
-	private boolean tryMoveInstanceMethod(IStructuredSelection selection) throws JavaModelException {
-		IMethod method= getSingleSelectedMethod(selection);
+	private boolean tryMoveInstanceMethod(IStructuredSelection selection) throws JavaScriptModelException {
+		IFunction method= getSingleSelectedMethod(selection);
 		if (method == null)
 			return false;
 		if (!RefactoringAvailabilityTester.isMoveMethodAvailable(method))
@@ -209,19 +209,19 @@ public class MoveAction extends SelectionDispatchAction{
 		return true;
 	}
 
-	private static IMethod getSingleSelectedMethod(IStructuredSelection selection) {
+	private static IFunction getSingleSelectedMethod(IStructuredSelection selection) {
 		if (selection.isEmpty() || selection.size() != 1) 
 			return null;
 		
 		Object first= selection.getFirstElement();
-		if (! (first instanceof IMethod))
+		if (! (first instanceof IFunction))
 			return null;
-		return (IMethod) first;
+		return (IFunction) first;
 	}
 	
 
-	private boolean tryReorgMove(ITextSelection selection) throws JavaModelException{
-		IJavaElement element= SelectionConverter.getElementAtOffset(fEditor);
+	private boolean tryReorgMove(ITextSelection selection) throws JavaScriptModelException{
+		IJavaScriptElement element= SelectionConverter.getElementAtOffset(fEditor);
 		if (element == null)
 			return false;
 		StructuredSelection mockStructuredSelection= new StructuredSelection(element);

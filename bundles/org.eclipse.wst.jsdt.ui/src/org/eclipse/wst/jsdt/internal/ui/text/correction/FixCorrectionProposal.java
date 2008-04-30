@@ -27,19 +27,19 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.fix.AbstractFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.LinkedFix;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringExecutionHelper;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageImageDescriptor;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 
 /**
@@ -51,7 +51,7 @@ public class FixCorrectionProposal extends LinkedCorrectionProposal implements I
 	
 	private final IFix fFix;
 	private final ICleanUp fCleanUp;
-	private CompilationUnit fCompilationUnit;
+	private JavaScriptUnit fCompilationUnit;
 	
 	public FixCorrectionProposal(IFix fix, ICleanUp cleanUp, int relevance, Image image, IInvocationContext context) {
 		super(fix.getDescription(), fix.getCompilationUnit(), null, relevance, image);
@@ -72,12 +72,12 @@ public class FixCorrectionProposal extends LinkedCorrectionProposal implements I
 		if (!status.isOK()) {
 			ImageImageDescriptor image= new ImageImageDescriptor(super.getImage());
 			
-			int flag= JavaElementImageDescriptor.WARNING;
+			int flag= JavaScriptElementImageDescriptor.WARNING;
 			if (status.getSeverity() == IStatus.ERROR) {
-				flag= JavaElementImageDescriptor.ERROR;
+				flag= JavaScriptElementImageDescriptor.ERROR;
 			}
 			
-			ImageDescriptor composite= new JavaElementImageDescriptor(image, flag, new Point(image.getImageData().width, image.getImageData().height));
+			ImageDescriptor composite= new JavaScriptElementImageDescriptor(image, flag, new Point(image.getImageData().width, image.getImageData().height));
 			return composite.createImage();		
 		} else {
 			return super.getImage();
@@ -157,14 +157,14 @@ public class FixCorrectionProposal extends LinkedCorrectionProposal implements I
 			refactoring.setLeaveFilesDirty(true);
 			
 			int stopSeverity= RefactoringCore.getConditionCheckingFailedSeverity();
-			Shell shell= JavaPlugin.getActiveWorkbenchShell();
+			Shell shell= JavaScriptPlugin.getActiveWorkbenchShell();
 			ProgressMonitorDialog context= new ProgressMonitorDialog(shell);
 			RefactoringExecutionHelper executer= new RefactoringExecutionHelper(refactoring, stopSeverity, RefactoringSaveHelper.SAVE_NOTHING, shell, context);
 			try {
 				executer.perform(true, true);
 			} catch (InterruptedException e) {
 			} catch (InvocationTargetException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 			return;
 		}

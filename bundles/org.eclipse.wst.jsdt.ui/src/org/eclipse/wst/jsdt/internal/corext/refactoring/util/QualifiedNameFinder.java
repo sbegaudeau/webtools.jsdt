@@ -32,8 +32,8 @@ import org.eclipse.search.core.text.TextSearchMatchAccess;
 import org.eclipse.search.core.text.TextSearchRequestor;
 import org.eclipse.search.core.text.TextSearchScope;
 import org.eclipse.text.edits.ReplaceEdit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.TextChangeCompatibility;
 import org.eclipse.wst.jsdt.internal.ui.util.PatternConstructor;
@@ -56,7 +56,7 @@ public class QualifiedNameFinder {
 		}
 		
 		public boolean acceptFile(IFile file) throws CoreException {			
-			IJavaElement element= JavaCore.create(file);
+			IJavaScriptElement element= JavaScriptCore.create(file);
 			if ((element != null && element.exists()))
 				return false;
 			

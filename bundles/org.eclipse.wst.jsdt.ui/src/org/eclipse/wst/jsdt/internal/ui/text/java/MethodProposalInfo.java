@@ -15,13 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 
@@ -37,7 +37,7 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 	 * Fallback in case we can't match a generic method. The fall back is only based
 	 * on method name and number of parameters.
 	 */
-	private IMethod fFallbackMatch;
+	private IFunction fFallbackMatch;
 
 	/**
 	 * Creates a new proposal info.
@@ -45,7 +45,7 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 	 * @param project the java project to reference when resolving types
 	 * @param proposal the proposal to generate information for
 	 */
-	public MethodProposalInfo(IJavaProject project, CompletionProposal proposal) {
+	public MethodProposalInfo(IJavaScriptProject project, CompletionProposal proposal) {
 		super(project, proposal);
 	}
 
@@ -54,9 +54,9 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 	 * Returns <code>null</code> if no corresponding member can be found.
 	 *
 	 * @return the resolved member or <code>null</code> if none is found
-	 * @throws JavaModelException if accessing the java model fails
+	 * @throws JavaScriptModelException if accessing the java model fails
 	 */
-	protected IMember resolveMember() throws JavaModelException {
+	protected IMember resolveMember() throws JavaScriptModelException {
 		char[] declarationSignature= fProposal.getDeclarationSignature();
 		
 		if (declarationSignature!=null) {
@@ -78,7 +78,7 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 			else
 			{
 				ITypeRoot typeRoot=fJavaProject.findTypeRoot(typeName);
-				return typeRoot.getMethod(name, parameters);
+				return typeRoot.getFunction(name, parameters);
 			}
 		}		
 		return null;
@@ -98,16 +98,16 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 	 * @param isConstructor If the method is a constructor
 	 * @return The first found method or <code>null</code>, if nothing found
 	 */
-	private IMethod findMethod(String name, String[] paramTypes, boolean isConstructor, IType type) throws JavaModelException {
+	private IFunction findMethod(String name, String[] paramTypes, boolean isConstructor, IType type) throws JavaScriptModelException {
 		Map typeVariables= computeTypeVariables(type);
-		return findMethod(name, paramTypes, isConstructor, type.getMethods(), typeVariables);
+		return findMethod(name, paramTypes, isConstructor, type.getFunctions(), typeVariables);
 	}
 
 	/**
 	 * The type and method signatures received in
-	 * <code>CompletionProposals</code> of type <code>METHOD_REF</code>
+	 * <code>CompletionProposals</code> of type <code>FUNCTION_REF</code>
 	 * contain concrete type bounds. When comparing parameters of the signature
-	 * with an <code>IMethod</code>, we have to make sure that we match the
+	 * with an <code>IFunction</code>, we have to make sure that we match the
 	 * case where the formal method declaration uses a type variable which in
 	 * the signature is already substituted with a concrete type (bound).
 	 * <p>
@@ -119,9 +119,9 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 	 *
 	 * @param type the type to get the variables from
 	 * @return a map from type variables to concrete type signatures
-	 * @throws JavaModelException if accessing the java model fails
+	 * @throws JavaScriptModelException if accessing the java model fails
 	 */
-	private Map computeTypeVariables(IType type) throws JavaModelException {
+	private Map computeTypeVariables(IType type) throws JavaScriptModelException {
 		Map map= new HashMap();
 		char[] declarationSignature= fProposal.getDeclarationSignature();
 		if (declarationSignature == null) // array methods don't contain a declaration signature
@@ -156,7 +156,7 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 	 * @param typeVariables a map from type variables to concretely used types
 	 * @return The found method or <code>null</code>, if nothing found
 	 */
-	private IMethod findMethod(String name, String[] paramTypes, boolean isConstructor, IMethod[] methods, Map typeVariables) throws JavaModelException {
+	private IFunction findMethod(String name, String[] paramTypes, boolean isConstructor, IFunction[] methods, Map typeVariables) throws JavaScriptModelException {
 		for (int i= methods.length - 1; i >= 0; i--) {
 			if (isSameMethodSignature(name, paramTypes, isConstructor, methods[i], typeVariables)) {
 				return methods[i];
@@ -179,7 +179,7 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 	 * @return Returns <code>true</code> if the method has the given name and
 	 *         parameter types and constructor state.
 	 */
-	private boolean isSameMethodSignature(String name, String[] paramTypes, boolean isConstructor, IMethod method, Map typeVariables) throws JavaModelException {
+	private boolean isSameMethodSignature(String name, String[] paramTypes, boolean isConstructor, IFunction method, Map typeVariables) throws JavaScriptModelException {
 		if (isConstructor || name.equals(method.getElementName())) {
 			if (isConstructor == method.isConstructor()) {
 				String[] otherParams= method.getParameterTypes(); // types may be type variables

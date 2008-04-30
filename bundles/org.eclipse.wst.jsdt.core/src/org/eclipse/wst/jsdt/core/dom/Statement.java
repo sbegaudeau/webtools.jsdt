@@ -113,7 +113,7 @@ public abstract class Statement extends ProgramElement  {
 	 * comments with statements. Furthermore, AST.parseCompilationUnit did not
 	 * associate leading comments, making this moot. Clients that need to access
 	 * comments preceding a statement should either consult the compilation
-	 * unit's {@linkplain CompilationUnit#getCommentList() comment table}
+	 * unit's {@linkplain JavaScriptUnit#getCommentList() comment table}
 	 * or use a scanner to reanalyze the source text immediately preceding
 	 * the statement's source range.
 	 */

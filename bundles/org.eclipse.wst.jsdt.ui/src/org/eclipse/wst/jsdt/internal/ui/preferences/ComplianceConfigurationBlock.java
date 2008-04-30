@@ -29,10 +29,10 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathSupport;
@@ -44,41 +44,41 @@ import org.eclipse.wst.jsdt.launching.JavaRuntime;
   */
 public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 
-	// Preference store keys, see JavaCore.getOptions
-	private static final Key PREF_LOCAL_VARIABLE_ATTR=  getJDTCoreKey(JavaCore.COMPILER_LOCAL_VARIABLE_ATTR);
-	private static final Key PREF_LINE_NUMBER_ATTR= getJDTCoreKey(JavaCore.COMPILER_LINE_NUMBER_ATTR);
-	private static final Key PREF_SOURCE_FILE_ATTR= getJDTCoreKey(JavaCore.COMPILER_SOURCE_FILE_ATTR);
-	private static final Key PREF_CODEGEN_UNUSED_LOCAL= getJDTCoreKey(JavaCore.COMPILER_CODEGEN_UNUSED_LOCAL);
-	private static final Key PREF_CODEGEN_TARGET_PLATFORM= getJDTCoreKey(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM);
-	private static final Key PREF_CODEGEN_INLINE_JSR_BYTECODE= getJDTCoreKey(JavaCore.COMPILER_CODEGEN_INLINE_JSR_BYTECODE);
+	// Preference store keys, see JavaScriptCore.getOptions
+	private static final Key PREF_LOCAL_VARIABLE_ATTR=  getJDTCoreKey(JavaScriptCore.COMPILER_LOCAL_VARIABLE_ATTR);
+	private static final Key PREF_LINE_NUMBER_ATTR= getJDTCoreKey(JavaScriptCore.COMPILER_LINE_NUMBER_ATTR);
+	private static final Key PREF_SOURCE_FILE_ATTR= getJDTCoreKey(JavaScriptCore.COMPILER_SOURCE_FILE_ATTR);
+	private static final Key PREF_CODEGEN_UNUSED_LOCAL= getJDTCoreKey(JavaScriptCore.COMPILER_CODEGEN_UNUSED_LOCAL);
+	private static final Key PREF_CODEGEN_TARGET_PLATFORM= getJDTCoreKey(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM);
+	private static final Key PREF_CODEGEN_INLINE_JSR_BYTECODE= getJDTCoreKey(JavaScriptCore.COMPILER_CODEGEN_INLINE_JSR_BYTECODE);
 	
-	private static final Key PREF_SOURCE_COMPATIBILITY= getJDTCoreKey(JavaCore.COMPILER_SOURCE);
-	private static final Key PREF_COMPLIANCE= getJDTCoreKey(JavaCore.COMPILER_COMPLIANCE);
-	private static final Key PREF_PB_ASSERT_AS_IDENTIFIER= getJDTCoreKey(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER);
-	private static final Key PREF_PB_ENUM_AS_IDENTIFIER= getJDTCoreKey(JavaCore.COMPILER_PB_ENUM_IDENTIFIER);
+	private static final Key PREF_SOURCE_COMPATIBILITY= getJDTCoreKey(JavaScriptCore.COMPILER_SOURCE);
+	private static final Key PREF_COMPLIANCE= getJDTCoreKey(JavaScriptCore.COMPILER_COMPLIANCE);
+	private static final Key PREF_PB_ASSERT_AS_IDENTIFIER= getJDTCoreKey(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER);
+	private static final Key PREF_PB_ENUM_AS_IDENTIFIER= getJDTCoreKey(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER);
 	
 	private static final Key INTR_DEFAULT_COMPLIANCE= getJDTUIKey("internal.default.compliance"); //$NON-NLS-1$
 
 	// values
-//	private static final String GENERATE= JavaCore.GENERATE;
-//	private static final String DO_NOT_GENERATE= JavaCore.DO_NOT_GENERATE;
+//	private static final String GENERATE= JavaScriptCore.GENERATE;
+//	private static final String DO_NOT_GENERATE= JavaScriptCore.DO_NOT_GENERATE;
 //	
-//	private static final String PRESERVE= JavaCore.PRESERVE;
-//	private static final String OPTIMIZE_OUT= JavaCore.OPTIMIZE_OUT;
+//	private static final String PRESERVE= JavaScriptCore.PRESERVE;
+//	private static final String OPTIMIZE_OUT= JavaScriptCore.OPTIMIZE_OUT;
 	
-	private static final String VERSION_1_1= JavaCore.VERSION_1_1;
-	private static final String VERSION_1_2= JavaCore.VERSION_1_2;
-	private static final String VERSION_1_3= JavaCore.VERSION_1_3;
-	private static final String VERSION_1_4= JavaCore.VERSION_1_4;
-	private static final String VERSION_1_5= JavaCore.VERSION_1_5;
-	private static final String VERSION_1_6= JavaCore.VERSION_1_6;
+	private static final String VERSION_1_1= JavaScriptCore.VERSION_1_1;
+	private static final String VERSION_1_2= JavaScriptCore.VERSION_1_2;
+	private static final String VERSION_1_3= JavaScriptCore.VERSION_1_3;
+	private static final String VERSION_1_4= JavaScriptCore.VERSION_1_4;
+	private static final String VERSION_1_5= JavaScriptCore.VERSION_1_5;
+	private static final String VERSION_1_6= JavaScriptCore.VERSION_1_6;
 	
-	private static final String ERROR= JavaCore.ERROR;
-	private static final String WARNING= JavaCore.WARNING;
-	private static final String IGNORE= JavaCore.IGNORE;
+	private static final String ERROR= JavaScriptCore.ERROR;
+	private static final String WARNING= JavaScriptCore.WARNING;
+	private static final String IGNORE= JavaScriptCore.IGNORE;
 
-	private static final String ENABLED= JavaCore.ENABLED;
-//	private static final String DISABLED= JavaCore.DISABLED;
+	private static final String ENABLED= JavaScriptCore.ENABLED;
+//	private static final String DISABLED= JavaScriptCore.DISABLED;
 	
 	
 	private static final String DEFAULT_CONF= "default"; //$NON-NLS-1$
@@ -371,9 +371,9 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 			IVMInstall install= null;
 			if (fProject != null) { // project specific settings: only test if a 50 JRE is installed
 				try {
-					install= JavaRuntime.getVMInstall(JavaCore.create(fProject));
+					install= JavaRuntime.getVMInstall(JavaScriptCore.create(fProject));
 				} catch (CoreException e) {
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 				}
 			} else {
 				install= JavaRuntime.getDefaultVMInstall();

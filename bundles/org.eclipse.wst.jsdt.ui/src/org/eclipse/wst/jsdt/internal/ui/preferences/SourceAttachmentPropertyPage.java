@@ -32,15 +32,15 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
@@ -54,7 +54,7 @@ public class SourceAttachmentPropertyPage extends PropertyPage implements IStatu
 	private SourceAttachmentBlock fSourceAttachmentBlock;
 	private IPackageFragmentRoot fRoot;
 	private IPath fContainerPath;
-	private IClasspathEntry fEntry;
+	private IIncludePathEntry fEntry;
 	public static final String PROP_ID= "org.eclipse.wst.jsdt.ui.propertyPages.SourceAttachmentPage" ; //$NON-NLS-1$
 	
 	public SourceAttachmentPropertyPage() {
@@ -88,16 +88,16 @@ public class SourceAttachmentPropertyPage extends PropertyPage implements IStatu
 			}
 	
 			IPath containerPath= null;
-			IJavaProject jproject= fRoot.getJavaProject();
-			IClasspathEntry entry= fRoot.getRawClasspathEntry();
+			IJavaScriptProject jproject= fRoot.getJavaScriptProject();
+			IIncludePathEntry entry= fRoot.getRawIncludepathEntry();
 			if (entry == null) {
 				// use a dummy entry to use for initialization
-				entry= JavaCore.newLibraryEntry(fRoot.getPath(), null, null);
+				entry= JavaScriptCore.newLibraryEntry(fRoot.getPath(), null, null);
 			} else {
-				if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+				if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
 					containerPath= entry.getPath();
-					JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
-					IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(containerPath, jproject);
+					JsGlobalScopeContainerInitializer initializer= JavaScriptCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
+					IJsGlobalScopeContainer container= JavaScriptCore.getJsGlobalScopeContainer(containerPath, jproject);
 					if (initializer == null || container == null) {
 						return createMessageContent(composite, Messages.format(PreferencesMessages.SourceAttachmentPropertyPage_invalid_container, containerPath.toString()));  
 					}
@@ -120,7 +120,7 @@ public class SourceAttachmentPropertyPage extends PropertyPage implements IStatu
 			fSourceAttachmentBlock= new SourceAttachmentBlock(this, entry);
 			return fSourceAttachmentBlock.createControl(composite);				
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			return createMessageContent(composite, PreferencesMessages.SourceAttachmentPropertyPage_noarchive_message);  
 		}
 	}
@@ -149,12 +149,12 @@ public class SourceAttachmentPropertyPage extends PropertyPage implements IStatu
 	public boolean performOk() {
 		if (fSourceAttachmentBlock != null) {
 			try {
-				IClasspathEntry entry= fSourceAttachmentBlock.getNewEntry();
+				IIncludePathEntry entry= fSourceAttachmentBlock.getNewEntry();
 				if (entry.equals(fEntry)) {
 					return true; // no change
 				}
 				
-				IRunnableWithProgress runnable= SourceAttachmentBlock.getRunnable(getShell(), entry, fRoot.getJavaProject(), fContainerPath);		
+				IRunnableWithProgress runnable= SourceAttachmentBlock.getRunnable(getShell(), entry, fRoot.getJavaScriptProject(), fContainerPath);		
 				PlatformUI.getWorkbench().getProgressService().run(true, true, runnable);						
 			} catch (InvocationTargetException e) {
 				String title= PreferencesMessages.SourceAttachmentPropertyPage_error_title; 
@@ -182,7 +182,7 @@ public class SourceAttachmentPropertyPage extends PropertyPage implements IStatu
 	private IPackageFragmentRoot getJARPackageFragmentRoot() throws CoreException {
 		// try to find it as Java element (needed for external jars)
 		IAdaptable adaptable= getElement();
-		IJavaElement elem= (IJavaElement) adaptable.getAdapter(IJavaElement.class);
+		IJavaScriptElement elem= (IJavaScriptElement) adaptable.getAdapter(IJavaScriptElement.class);
 		if (elem instanceof IPackageFragmentRoot) {
 			return (IPackageFragmentRoot) elem;
 		}
@@ -190,8 +190,8 @@ public class SourceAttachmentPropertyPage extends PropertyPage implements IStatu
 		IResource resource= (IResource) adaptable.getAdapter(IResource.class);
 		if (resource instanceof IFile) {
 			IProject proj= resource.getProject();
-			if (proj.hasNature(JavaCore.NATURE_ID)) {
-				IJavaProject jproject= JavaCore.create(proj);
+			if (proj.hasNature(JavaScriptCore.NATURE_ID)) {
+				IJavaScriptProject jproject= JavaScriptCore.create(proj);
 				return jproject.getPackageFragmentRoot(resource);
 			}
 		}

@@ -18,12 +18,12 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
@@ -50,11 +50,11 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStatusContext;
  */
 public class StatementAnalyzer extends SelectionAnalyzer {
 
-	protected ICompilationUnit fCUnit;
+	protected IJavaScriptUnit fCUnit;
 	private TokenScanner fScanner;
 	private RefactoringStatus fStatus;
 
-	public StatementAnalyzer(ICompilationUnit cunit, Selection selection, boolean traverseSelectedNode) throws JavaModelException {
+	public StatementAnalyzer(IJavaScriptUnit cunit, Selection selection, boolean traverseSelectedNode) throws JavaScriptModelException {
 		super(selection, traverseSelectedNode);
 		Assert.isNotNull(cunit);
 		fCUnit= cunit;
@@ -93,7 +93,7 @@ public class StatementAnalyzer extends SelectionAnalyzer {
 		return fStatus;
 	}
 	
-	protected ICompilationUnit getCompilationUnit() {
+	protected IJavaScriptUnit getCompilationUnit() {
 		return fCUnit;
 	}
 	
@@ -104,7 +104,7 @@ public class StatementAnalyzer extends SelectionAnalyzer {
 	/* (non-Javadoc)
 	 * Method declared in ASTVisitor
 	 */
-	public void endVisit(CompilationUnit node) {
+	public void endVisit(JavaScriptUnit node) {
 		if (!hasSelectedNodes()) {
 			super.endVisit(node);
 			return;

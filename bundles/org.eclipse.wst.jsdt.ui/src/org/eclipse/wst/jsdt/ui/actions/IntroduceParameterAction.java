@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.ui.actions;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -70,7 +70,7 @@ public class IntroduceParameterAction extends SelectionDispatchAction {
 		if (!ActionUtil.isEditable(fEditor))
 			return;
 		try{
-			ICompilationUnit unit= SelectionConverter.getInputAsCompilationUnit(fEditor);
+			IJavaScriptUnit unit= SelectionConverter.getInputAsCompilationUnit(fEditor);
 			RefactoringExecutionStarter.startIntroduceParameter(unit, selection.getOffset(), selection.getLength(), getShell());
 		} catch (CoreException e){
 			ExceptionHandler.handle(e, RefactoringMessages.IntroduceParameterAction_dialog_title, RefactoringMessages.NewTextRefactoringAction_exception); 

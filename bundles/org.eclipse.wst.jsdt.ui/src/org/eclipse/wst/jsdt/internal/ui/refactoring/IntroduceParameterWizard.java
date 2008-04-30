@@ -28,16 +28,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.ParameterInfo;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.IntroduceParameterRefactoring;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
 
 public class IntroduceParameterWizard extends RefactoringWizard {
 
@@ -148,9 +148,9 @@ public class IntroduceParameterWizard extends RefactoringWizard {
 			Label previewLabel= new Label(composite, SWT.NONE);
 			previewLabel.setText(RefactoringMessages.ChangeSignatureInputPage_method_Signature_Preview); 
 			
-			IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
+			IPreferenceStore store= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 			fSignaturePreview= new JavaSourceViewer(composite, null, null, false, SWT.READ_ONLY | SWT.V_SCROLL | SWT.WRAP /*| SWT.BORDER*/, store);
-			fSignaturePreview.configure(new JavaSourceViewerConfiguration(JavaPlugin.getDefault().getJavaTextTools().getColorManager(), store, null, null));
+			fSignaturePreview.configure(new JavaScriptSourceViewerConfiguration(JavaScriptPlugin.getDefault().getJavaTextTools().getColorManager(), store, null, null));
 			fSignaturePreview.getTextWidget().setFont(JFaceResources.getFont(PreferenceConstants.EDITOR_TEXT_FONT));
 			fSignaturePreview.getTextWidget().setBackground(composite.getBackground());
 			fSignaturePreview.setDocument(fSignaturePreviewDocument);
@@ -185,7 +185,7 @@ public class IntroduceParameterWizard extends RefactoringWizard {
 				int top= fSignaturePreview.getTextWidget().getTopPixel();
 				fSignaturePreviewDocument.set(getIntroduceParameterRefactoring().getMethodSignaturePreview()); 
 				fSignaturePreview.getTextWidget().setTopPixel(top);
-			} catch (JavaModelException e){
+			} catch (JavaScriptModelException e){
 				ExceptionHandler.handle(e, RefactoringMessages.IntroduceParameterWizard_defaultPageTitle, RefactoringMessages.ChangeSignatureInputPage_exception); 
 			}	
 		}

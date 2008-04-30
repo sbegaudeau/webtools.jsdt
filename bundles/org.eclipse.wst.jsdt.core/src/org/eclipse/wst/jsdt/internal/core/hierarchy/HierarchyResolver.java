@@ -31,7 +31,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
@@ -145,7 +145,7 @@ public void accept(ICompilationUnit sourceUnit, AccessRestriction accessRestrict
 		try {
 			this.lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
 			this.processedUnits.add(sourceUnit);
-//			org.eclipse.wst.jsdt.core.ICompilationUnit cu = ((SourceTypeElementInfo)sourceType).getHandle().getCompilationUnit();
+//			org.eclipse.wst.jsdt.core.IJavaScriptUnit cu = ((SourceTypeElementInfo)sourceType).getHandle().getCompilationUnit();
 			rememberAllTypes(parsedUnit, sourceUnit, false);
 
 			this.lookupEnvironment.completeTypeBindings(parsedUnit, true/*build constructor only*/);
@@ -193,7 +193,7 @@ public void accept(ISourceType[] sourceTypes, PackageBinding packageBinding, Acc
 		try {
 			this.lookupEnvironment.buildTypeBindings(unit, accessRestriction);
 
-			org.eclipse.wst.jsdt.core.ICompilationUnit cu = ((SourceTypeElementInfo)sourceType).getHandle().getCompilationUnit();
+			org.eclipse.wst.jsdt.core.IJavaScriptUnit cu = ((SourceTypeElementInfo)sourceType).getHandle().getJavaScriptUnit();
 			rememberAllTypes(unit, cu, false);
 
 			this.lookupEnvironment.completeTypeBindings(unit, true/*build constructor only*/);
@@ -404,11 +404,11 @@ private void remember(IGenericType suppliedType, ReferenceBinding typeBinding) {
 	this.typeBindings[this.typeIndex] = typeBinding;
 }
 private void remember(IType type, ReferenceBinding typeBinding) {
-	if (((CompilationUnit)type.getCompilationUnit()).isOpen()) {
+	if (((CompilationUnit)type.getJavaScriptUnit()).isOpen()) {
 		try {
 			IGenericType genericType = (IGenericType)((JavaElement)type).getElementInfo();
 			remember(genericType, typeBinding);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// cannot happen since element is open
 			return;
 		}
@@ -455,11 +455,11 @@ private void remember(IType type, ReferenceBinding typeBinding) {
 }
 
 private void rememberInferredType(InferredType inferredType, IType type, ReferenceBinding typeBinding) {
-	if (type.getCompilationUnit()!=null && ((CompilationUnit)type.getCompilationUnit()).isOpen()) {
+	if (type.getJavaScriptUnit()!=null && ((CompilationUnit)type.getJavaScriptUnit()).isOpen()) {
 		try {
 			IGenericType genericType = (IGenericType)((JavaElement)type).getElementInfo();
 			remember(genericType, typeBinding);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// cannot happen since element is open
 			return;
 		}
@@ -508,7 +508,7 @@ private void rememberInferredType(InferredType inferredType, IType type, Referen
  * Remembers all type bindings defined in the given parsed unit, adding local/anonymous types if specified.
  */
 private void rememberAllTypes(CompilationUnitDeclaration parsedUnit, Object container, boolean includeLocalTypes) {
-	org.eclipse.wst.jsdt.core.ICompilationUnit cu=(container instanceof org.eclipse.wst.jsdt.core.ICompilationUnit)? (org.eclipse.wst.jsdt.core.ICompilationUnit)container:null;
+	org.eclipse.wst.jsdt.core.IJavaScriptUnit cu=(container instanceof org.eclipse.wst.jsdt.core.IJavaScriptUnit)? (org.eclipse.wst.jsdt.core.IJavaScriptUnit)container:null;
 	org.eclipse.wst.jsdt.core.IClassFile classFile=(container instanceof org.eclipse.wst.jsdt.core.IClassFile)? (org.eclipse.wst.jsdt.core.IClassFile)container:null;
 	TypeDeclaration[] types = parsedUnit.types;
 	if (types != null) {
@@ -659,7 +659,7 @@ public void resolve(IGenericType suppliedType) {
 			this.superTypesOnly = true;
 			reportHierarchy(this.builder.getType(), null, binaryTypeBinding);
 		} else {
-			org.eclipse.wst.jsdt.core.ICompilationUnit cu = ((SourceTypeElementInfo)suppliedType).getHandle().getCompilationUnit();
+			org.eclipse.wst.jsdt.core.IJavaScriptUnit cu = ((SourceTypeElementInfo)suppliedType).getHandle().getJavaScriptUnit();
 			HashSet localTypes = new HashSet();
 			localTypes.add(cu.getPath().toString());
 			this.superTypesOnly = true;
@@ -689,7 +689,7 @@ public void resolve(Openable[] openables, HashSet localTypes, IProgressMonitor m
 		int openablesLength = openables.length;
 		CompilationUnitDeclaration[] parsedUnits = new CompilationUnitDeclaration[openablesLength];
 		boolean[] hasLocalType = new boolean[openablesLength];
-		org.eclipse.wst.jsdt.core.ICompilationUnit[] cus = new org.eclipse.wst.jsdt.core.ICompilationUnit[openablesLength];
+		org.eclipse.wst.jsdt.core.IJavaScriptUnit[] cus = new org.eclipse.wst.jsdt.core.IJavaScriptUnit[openablesLength];
 		int unitsIndex = 0;
 
 		CompilationUnitDeclaration focusUnit = null;
@@ -700,7 +700,7 @@ public void resolve(Openable[] openables, HashSet localTypes, IProgressMonitor m
 			if (focus.isBinary()) {
 				focusOpenable = (Openable)focus.getClassFile();
 			} else {
-				focusOpenable = (Openable)focus.getCompilationUnit();
+				focusOpenable = (Openable)focus.getJavaScriptUnit();
 			}
 		}
 
@@ -709,8 +709,8 @@ public void resolve(Openable[] openables, HashSet localTypes, IProgressMonitor m
 		Parser parser = new Parser(this.lookupEnvironment.problemReporter, true);
 		for (int i = 0; i < openablesLength; i++) {
 			Openable openable = openables[i];
-			if (openable instanceof org.eclipse.wst.jsdt.core.ICompilationUnit) {
-				org.eclipse.wst.jsdt.core.ICompilationUnit cu = (org.eclipse.wst.jsdt.core.ICompilationUnit)openable;
+			if (openable instanceof org.eclipse.wst.jsdt.core.IJavaScriptUnit) {
+				org.eclipse.wst.jsdt.core.IJavaScriptUnit cu = (org.eclipse.wst.jsdt.core.IJavaScriptUnit)openable;
 
 				// contains a potential subtype as a local or anonymous type?
 				boolean containsLocalType = false;
@@ -736,7 +736,7 @@ public void resolve(Openable[] openables, HashSet localTypes, IProgressMonitor m
 							IType topLevelType = topLevelTypes[j];
 							typeInfos[j] = (SourceTypeElementInfo)((JavaElement)topLevelType).getElementInfo();
 						}
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						// types/cu exist since cu is opened
 					}
 					int flags = !containsLocalType
@@ -803,7 +803,7 @@ public void resolve(Openable[] openables, HashSet localTypes, IProgressMonitor m
 //					IType type = classFile.getType();
 //					try {
 //						binaryType = (ISourceType)((JavaElement)type).getElementInfo();
-//					} catch (JavaModelException e) {
+//					} catch (JavaScriptModelException e) {
 //						// type exists since class file is opened
 //					}
 //				} else {

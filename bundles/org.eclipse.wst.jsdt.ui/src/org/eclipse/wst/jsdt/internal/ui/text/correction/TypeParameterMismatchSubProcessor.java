@@ -13,9 +13,9 @@ package org.eclipse.wst.jsdt.internal.ui.text.correction;
 import java.util.Collection;
 
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
@@ -28,7 +28,7 @@ import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 public class TypeParameterMismatchSubProcessor {
 
 	public static void getTypeParameterMismatchProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		CompilationUnit astRoot= context.getASTRoot();
+		JavaScriptUnit astRoot= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveredNode(astRoot);
 		if (!(selectedNode instanceof SimpleName)) {
 			return;
@@ -44,7 +44,7 @@ public class TypeParameterMismatchSubProcessor {
 	}
 	
 	public static void removeMismatchedParameters(IInvocationContext context, IProblemLocation problem, Collection proposals){
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 		ASTNode selectedNode= problem.getCoveredNode(context.getASTRoot());
 		if (!(selectedNode instanceof SimpleName)) {
 			return;

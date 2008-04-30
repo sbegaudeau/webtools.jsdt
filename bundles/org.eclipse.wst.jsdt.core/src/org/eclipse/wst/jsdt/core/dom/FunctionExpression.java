@@ -31,7 +31,7 @@ public class FunctionExpression extends Expression {
 	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor METHOD_PROPERTY =
-		new ChildPropertyDescriptor(FunctionExpression.class, "method", MethodDeclaration.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
+		new ChildPropertyDescriptor(FunctionExpression.class, "method", FunctionDeclaration.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 
 	/**
@@ -66,7 +66,7 @@ public class FunctionExpression extends Expression {
 	 * The type; lazily initialized; defaults to a unspecified,
 	 * legal type.
 	 */
-	private MethodDeclaration methodDeclaration = null;
+	private FunctionDeclaration methodDeclaration = null;
 
 
 	/**
@@ -97,7 +97,7 @@ public class FunctionExpression extends Expression {
 			if (get) {
 				return getMethod();
 			} else {
-				setMethod((MethodDeclaration) child);
+				setMethod((FunctionDeclaration) child);
 				return null;
 			}
 		}
@@ -118,7 +118,7 @@ public class FunctionExpression extends Expression {
 	ASTNode clone0(AST target) {
 		FunctionExpression result = new FunctionExpression(target);
 		result.setSourceRange(this.getStartPosition(), this.getLength());
-		result.setMethod((MethodDeclaration) getMethod().clone(target));
+		result.setMethod((FunctionDeclaration) getMethod().clone(target));
 		return result;
 	}
 
@@ -147,13 +147,13 @@ public class FunctionExpression extends Expression {
 	 *
 	 * @return the type
 	 */
-	public MethodDeclaration getMethod() {
+	public FunctionDeclaration getMethod() {
 		if (this.methodDeclaration == null) {
 			// lazy init must be thread-safe for readers
 			synchronized (this) {
 				if (this.methodDeclaration == null) {
 					preLazyInit();
-					this.methodDeclaration = this.ast.newMethodDeclaration();
+					this.methodDeclaration = this.ast.newFunctionDeclaration();
 					postLazyInit(this.methodDeclaration, METHOD_PROPERTY);
 				}
 			}
@@ -171,7 +171,7 @@ public class FunctionExpression extends Expression {
 	 * <li>the node already has a parent</li>
 	 * </ul>
 	 */
-	public void setMethod(MethodDeclaration method) {
+	public void setMethod(FunctionDeclaration method) {
 		if (method == null) {
 			throw new IllegalArgumentException();
 		}

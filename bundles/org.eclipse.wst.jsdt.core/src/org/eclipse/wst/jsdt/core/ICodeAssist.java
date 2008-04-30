@@ -29,7 +29,7 @@ public interface ICodeAssist {
 	 * @param offset the given offset position
 	 * @param requestor the given completion requestor
 	 *
-	 * @exception JavaModelException if code assist could not be performed. Reasons include:<ul>
+	 * @exception JavaScriptModelException if code assist could not be performed. Reasons include:<ul>
 	 *  <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 *  <li> The position specified is < -1 or is greater than this compilation unit's
 	 *      source length (INDEX_OUT_OF_BOUNDS)
@@ -39,7 +39,7 @@ public interface ICodeAssist {
 	 * @deprecated Use {@link #codeComplete(int, ICompletionRequestor)} instead.
 	 */
 	void codeComplete(int offset, ICodeCompletionRequestor requestor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 	/**
 	 * Performs code completion at the given offset position in this compilation unit,
 	 * reporting results to the given completion requestor. The <code>offset</code>
@@ -49,7 +49,7 @@ public interface ICodeAssist {
 	 *
 	 * @param offset the given offset position
 	 * @param requestor the given completion requestor
-	 * @exception JavaModelException if code assist could not be performed. Reasons include:<ul>
+	 * @exception JavaScriptModelException if code assist could not be performed. Reasons include:<ul>
 	 *  <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 *  <li> The position specified is < -1 or is greater than this compilation unit's
 	 *      source length (INDEX_OUT_OF_BOUNDS)
@@ -60,7 +60,7 @@ public interface ICodeAssist {
 	 * @deprecated Use {@link #codeComplete(int, CompletionRequestor)} instead.
  	 */
 	void codeComplete(int offset, ICompletionRequestor requestor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 
 	/**
 	 * Performs code completion at the given offset position in this compilation unit,
@@ -72,7 +72,7 @@ public interface ICodeAssist {
 	 *
 	 * @param offset the given offset position
 	 * @param requestor the given completion requestor
-	 * @exception JavaModelException if code assist could not be performed. Reasons include:<ul>
+	 * @exception JavaScriptModelException if code assist could not be performed. Reasons include:<ul>
 	 *  <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 *  <li> The position specified is < -1 or is greater than this compilation unit's
 	 *      source length (INDEX_OUT_OF_BOUNDS)
@@ -82,7 +82,7 @@ public interface ICodeAssist {
 	 * @since 3.0
  	 */
 	void codeComplete(int offset, CompletionRequestor requestor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 
 	/**
 	 * Performs code completion at the given offset position in this compilation unit,
@@ -101,7 +101,7 @@ public interface ICodeAssist {
 	 * @param offset the given offset position
 	 * @param requestor the given completion requestor
 	 * @param owner the owner of working copies that take precedence over their original compilation units
-	 * @exception JavaModelException if code assist could not be performed. Reasons include:<ul>
+	 * @exception JavaScriptModelException if code assist could not be performed. Reasons include:<ul>
 	 *  <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 *  <li> The position specified is < -1 or is greater than this compilation unit's
 	 *      source length (INDEX_OUT_OF_BOUNDS)
@@ -112,7 +112,7 @@ public interface ICodeAssist {
 	 * @deprecated Use {@link #codeComplete(int, CompletionRequestor, WorkingCopyOwner)} instead.
 	 */
 	void codeComplete(int offset, ICompletionRequestor requestor, WorkingCopyOwner owner)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 
 	/**
 	 * Performs code completion at the given offset position in this compilation unit,
@@ -131,7 +131,7 @@ public interface ICodeAssist {
 	 * @param offset the given offset position
 	 * @param requestor the given completion requestor
 	 * @param owner the owner of working copies that take precedence over their original compilation units
-	 * @exception JavaModelException if code assist could not be performed. Reasons include:<ul>
+	 * @exception JavaScriptModelException if code assist could not be performed. Reasons include:<ul>
 	 *  <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 *  <li> The position specified is < -1 or is greater than this compilation unit's
 	 *      source length (INDEX_OUT_OF_BOUNDS)
@@ -141,7 +141,7 @@ public interface ICodeAssist {
 	 * @since 3.0
 	 */
 	void codeComplete(int offset, CompletionRequestor requestor, WorkingCopyOwner owner)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 
 	/**
 	 * Returns the Java elements corresponding to the given selected text in this compilation unit.
@@ -156,7 +156,7 @@ public interface ICodeAssist {
 	 * @param length the number of selected characters
 	 * @return the Java elements corresponding to the given selected text
 	 *
-	 * @exception JavaModelException if code resolve could not be performed. Reasons include:
+	 * @exception JavaScriptModelException if code resolve could not be performed. Reasons include:
 	 * <ul>
 	 *  <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 *  <li> The range specified is not within this element's
@@ -164,7 +164,7 @@ public interface ICodeAssist {
 	 * </ul>
 	 *
 	 */
-	IJavaElement[] codeSelect(int offset, int length) throws JavaModelException;
+	IJavaScriptElement[] codeSelect(int offset, int length) throws JavaScriptModelException;
 	/**
 	 * Returns the Java elements corresponding to the given selected text in this compilation unit.
 	 * The <code>offset</code> is the 0-based index of the first selected character.
@@ -186,7 +186,7 @@ public interface ICodeAssist {
 	 * @param owner the owner of working copies that take precedence over their original compilation units
 	 * @return the Java elements corresponding to the given selected text
 	 *
-	 * @exception JavaModelException if code resolve could not be performed. Reasons include:
+	 * @exception JavaScriptModelException if code resolve could not be performed. Reasons include:
 	 * <ul>
 	 *  <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 *  <li> The range specified is not within this element's
@@ -194,5 +194,5 @@ public interface ICodeAssist {
 	 * </ul>
 	 * @since 3.0
 	 */
-	IJavaElement[] codeSelect(int offset, int length, WorkingCopyOwner owner) throws JavaModelException;
+	IJavaScriptElement[] codeSelect(int offset, int length, WorkingCopyOwner owner) throws JavaScriptModelException;
 }

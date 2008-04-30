@@ -42,9 +42,9 @@ import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.operations.UndoRedoActionGroup;
 import org.eclipse.ui.part.Page;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.ui.IUIConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.ExtractSuperClassAction;
@@ -546,7 +546,7 @@ public class RefactorActionGroup extends ActionGroup {
 		}
 		IMenuManager refactorSubmenu= new MenuManager(menuText, MENU_ID);  
 		if (fEditor != null) {
-			IJavaElement element= SelectionConverter.getInput(fEditor);
+			IJavaScriptElement element= SelectionConverter.getInput(fEditor);
 			if (element != null && ActionUtil.isOnBuildPath(element)) {
 				refactorSubmenu.addMenuListener(new IMenuListener() {
 					public void menuAboutToShow(IMenuManager manager) {
@@ -644,23 +644,23 @@ public class RefactorActionGroup extends ActionGroup {
 		}
 	}
 	
-	private IJavaElement getEditorInput() {
+	private IJavaScriptElement getEditorInput() {
 		final IEditorInput input= fEditor.getEditorInput();
 		if (input instanceof IClassFileEditorInput) {
 			IClassFileEditorInput extended= (IClassFileEditorInput) input;
 			return extended.getClassFile();
 		}
-		return JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(input);
+		return JavaScriptPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(input);
 	}
 	
 	private IDocument getDocument() {
-		return JavaPlugin.getDefault().getCompilationUnitDocumentProvider().
+		return JavaScriptPlugin.getDefault().getCompilationUnitDocumentProvider().
 			getDocument(fEditor.getEditorInput());
 	}
 	
 	private void fillQuickMenu(IMenuManager menu) {
 		if (fEditor != null) {
-			IJavaElement element= SelectionConverter.getInput(fEditor);
+			IJavaScriptElement element= SelectionConverter.getInput(fEditor);
 			if (element == null || !ActionUtil.isOnBuildPath(element)) {
 				menu.add(fNoActionAvailable);
 				return;

@@ -16,17 +16,17 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.TypedElementSelectionValidator;
 import org.eclipse.wst.jsdt.internal.ui.wizards.TypedViewerFilter;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
-import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.StandardJavaScriptElementContentProvider;
 
 public class SourceContainerDialog extends ElementTreeSelectionDialog {
 
@@ -38,8 +38,8 @@ public class SourceContainerDialog extends ElementTreeSelectionDialog {
 
 		public boolean isSelectedValid(Object element) {
 			try {
-				if (element instanceof IJavaProject) {
-					IJavaProject jproject= (IJavaProject) element;
+				if (element instanceof IJavaScriptProject) {
+					IJavaScriptProject jproject= (IJavaScriptProject) element;
 					IPath path= jproject.getProject().getFullPath();
 					return (jproject.findPackageFragmentRoot(path) != null);
 				} else
@@ -47,7 +47,7 @@ public class SourceContainerDialog extends ElementTreeSelectionDialog {
 						return (((IPackageFragmentRoot) element).getKind() == IPackageFragmentRoot.K_SOURCE);
 					}
 				return true;
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// fall through returning false
 			}
 			return false;
@@ -61,7 +61,7 @@ public class SourceContainerDialog extends ElementTreeSelectionDialog {
 	private class JavaTypedViewerFilter extends TypedViewerFilter {
 
 		public JavaTypedViewerFilter() {
-			super(new Class[]{IPackageFragmentRoot.class, IJavaProject.class});
+			super(new Class[]{IPackageFragmentRoot.class, IJavaScriptProject.class});
 		}
 
 		public boolean select(Viewer viewer, Object parent, Object element) {
@@ -69,7 +69,7 @@ public class SourceContainerDialog extends ElementTreeSelectionDialog {
 				IPackageFragmentRoot fragmentRoot= (IPackageFragmentRoot)element;
 				try {
 					return (fragmentRoot.getKind() == IPackageFragmentRoot.K_SOURCE);
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					return false;
 				}
 			}
@@ -78,23 +78,23 @@ public class SourceContainerDialog extends ElementTreeSelectionDialog {
 	}
 
 	private SourceContainerDialog(Shell shell) {
-		super(shell,new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT),new StandardJavaElementContentProvider());
+		super(shell,new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_DEFAULT),new StandardJavaScriptElementContentProvider());
 		setValidator(new PackageAndProjectSelectionValidator());
-		setComparator(new JavaElementComparator());
+		setComparator(new JavaScriptElementComparator());
 		setTitle(NewWizardMessages.NewContainerWizardPage_ChooseSourceContainerDialog_title); 
 		setMessage(NewWizardMessages.NewContainerWizardPage_ChooseSourceContainerDialog_description); 
 		addFilter(new JavaTypedViewerFilter());
 	}
 
-	public static IPackageFragmentRoot getSourceContainer(Shell shell, IWorkspaceRoot workspaceRoot, IJavaElement initElement) {
+	public static IPackageFragmentRoot getSourceContainer(Shell shell, IWorkspaceRoot workspaceRoot, IJavaScriptElement initElement) {
 		SourceContainerDialog dialog= new SourceContainerDialog(shell);
-		dialog.setInput(JavaCore.create(workspaceRoot));
+		dialog.setInput(JavaScriptCore.create(workspaceRoot));
 		dialog.setInitialSelection(initElement);
 
 		if (dialog.open() == Window.OK) {
 			Object element= dialog.getFirstResult();
-			if (element instanceof IJavaProject) {
-				IJavaProject jproject= (IJavaProject) element;
+			if (element instanceof IJavaScriptProject) {
+				IJavaScriptProject jproject= (IJavaScriptProject) element;
 				return jproject.getPackageFragmentRoot(jproject.getProject());
 			} else
 				if (element instanceof IPackageFragmentRoot) {

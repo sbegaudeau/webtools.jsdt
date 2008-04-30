@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui;
 
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 
 /**
@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.ui.JavaUI;
  * 
  */
 public interface IJavaHelpContextIds {
-	public static final String PREFIX= JavaUI.ID_PLUGIN + '.';
+	public static final String PREFIX= JavaScriptUI.ID_PLUGIN + '.';
 
 	// Actions
 	public static final String GETTERSETTER_ACTION= 											PREFIX + "getter_setter_action_context"; //$NON-NLS-1$

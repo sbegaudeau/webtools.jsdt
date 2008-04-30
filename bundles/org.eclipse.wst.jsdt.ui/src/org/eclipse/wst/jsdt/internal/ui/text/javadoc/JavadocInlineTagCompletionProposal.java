@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.java.LazyJavaCompletionProposal;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
 /**
- * Completions of inline tags such as &#x7b;&#x40;link &#x7d;. See {@link CompletionProposal#JAVADOC_INLINE_TAG}.
+ * Completions of inline tags such as &#x7b;&#x40;link &#x7d;. See {@link CompletionProposal#JSDOC_INLINE_TAG}.
  * 
  * @since 3.2
  */

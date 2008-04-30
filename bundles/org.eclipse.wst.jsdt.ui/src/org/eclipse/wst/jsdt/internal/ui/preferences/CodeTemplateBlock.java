@@ -54,7 +54,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CodeTemplateContextType;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.wst.jsdt.internal.ui.text.template.preferences.TemplateVariableProcessor;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
@@ -65,8 +65,8 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ITreeListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.TreeListDialogField;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 /**
   */
@@ -268,7 +268,7 @@ public class CodeTemplateBlock {
 		try {
 			fTemplateStore.load();
 		} catch (IOException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		
 		fTemplateProcessor= new TemplateVariableProcessor();
@@ -334,7 +334,7 @@ public class CodeTemplateBlock {
 		if (fSWTWidget != null) {
 			return fSWTWidget.getShell();
 		}
-		return JavaPlugin.getActiveWorkbenchShell();			
+		return JavaScriptPlugin.getActiveWorkbenchShell();			
 	}	
 	
 	private SourceViewer createViewer(Composite parent, int nColumns) {
@@ -345,9 +345,9 @@ public class CodeTemplateBlock {
 		label.setLayoutData(data);
 		
 		IDocument document= new Document();
-		JavaTextTools tools= JavaPlugin.getDefault().getJavaTextTools();
-		tools.setupJavaDocumentPartitioner(document, IJavaPartitions.JAVA_PARTITIONING);
-		IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
+		JavaScriptTextTools tools= JavaScriptPlugin.getDefault().getJavaTextTools();
+		tools.setupJavaDocumentPartitioner(document, IJavaScriptPartitions.JAVA_PARTITIONING);
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 		SourceViewer viewer= new JavaSourceViewer(parent, null, null, false, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, store);
 		CodeTemplateSourceViewerConfiguration configuration= new CodeTemplateSourceViewerConfiguration(tools.getColorManager(), store, null, fTemplateProcessor);
 		viewer.configure(configuration);
@@ -390,7 +390,7 @@ public class CodeTemplateBlock {
 		if (selection.size() == 1 && selection.get(0) instanceof TemplatePersistenceData) {
 			TemplatePersistenceData data= (TemplatePersistenceData) selection.get(0);
 			Template template= data.getTemplate();
-			TemplateContextType type= JavaPlugin.getDefault().getCodeTemplateContextRegistry().getContextType(template.getContextTypeId());
+			TemplateContextType type= JavaScriptPlugin.getDefault().getCodeTemplateContextRegistry().getContextType(template.getContextTypeId());
 			fTemplateProcessor.setContextType(type);
 			fPatternViewer.getDocument().set(template.getPattern());
 		} else {
@@ -412,7 +412,7 @@ public class CodeTemplateBlock {
 	
 	private void edit(TemplatePersistenceData data) {
 		Template newTemplate= new Template(data.getTemplate());
-		EditTemplateDialog dialog= new EditTemplateDialog(getShell(), newTemplate, true, false, JavaPlugin.getDefault().getCodeTemplateContextRegistry());
+		EditTemplateDialog dialog= new EditTemplateDialog(getShell(), newTemplate, true, false, JavaScriptPlugin.getDefault().getCodeTemplateContextRegistry());
 		if (dialog.open() == Window.OK) {
 			// changed
 			data.setTemplate(dialog.getTemplate());
@@ -559,7 +559,7 @@ public class CodeTemplateBlock {
 		try {
 			fTemplateStore.save();
 		} catch (IOException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 			openWriteErrorDialog(e);
 		}
 		return true;

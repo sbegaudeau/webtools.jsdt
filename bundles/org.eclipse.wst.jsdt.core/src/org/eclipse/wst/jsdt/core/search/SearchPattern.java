@@ -12,12 +12,12 @@ package org.eclipse.wst.jsdt.core.search;
 
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
@@ -61,7 +61,7 @@ import org.eclipse.wst.jsdt.internal.core.search.matching.TypeReferencePattern;
  * This class is intended to be subclassed by clients. A default behavior is provided for each of the methods above, that
  * clients can ovveride if they wish.
  * </p>
- * @see #createPattern(org.eclipse.wst.jsdt.core.IJavaElement, int)
+ * @see #createPattern(org.eclipse.wst.jsdt.core.IJavaScriptElement, int)
  * @see #createPattern(String, int, int, int)
  * @since 3.0
  */
@@ -574,20 +574,20 @@ private static SearchPattern createFieldPattern(String patternString, int limitT
 	boolean readAccess = false;
 	boolean writeAccess = false;
 	switch (limitTo) {
-		case IJavaSearchConstants.DECLARATIONS :
+		case IJavaScriptSearchConstants.DECLARATIONS :
 			findDeclarations = true;
 			break;
-		case IJavaSearchConstants.REFERENCES :
+		case IJavaScriptSearchConstants.REFERENCES :
 			readAccess = true;
 			writeAccess = true;
 			break;
-		case IJavaSearchConstants.READ_ACCESSES :
+		case IJavaScriptSearchConstants.READ_ACCESSES :
 			readAccess = true;
 			break;
-		case IJavaSearchConstants.WRITE_ACCESSES :
+		case IJavaScriptSearchConstants.WRITE_ACCESSES :
 			writeAccess = true;
 			break;
-		case IJavaSearchConstants.ALL_OCCURRENCES :
+		case IJavaScriptSearchConstants.ALL_OCCURRENCES :
 			findDeclarations = true;
 			readAccess = true;
 			writeAccess = true;
@@ -965,13 +965,13 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 	boolean findDeclarations = true;
 	boolean findReferences = true;
 	switch (limitTo) {
-		case IJavaSearchConstants.DECLARATIONS :
+		case IJavaScriptSearchConstants.DECLARATIONS :
 			findReferences = false;
 			break;
-		case IJavaSearchConstants.REFERENCES :
+		case IJavaScriptSearchConstants.REFERENCES :
 			findDeclarations = false;
 			break;
-		case IJavaSearchConstants.ALL_OCCURRENCES :
+		case IJavaScriptSearchConstants.ALL_OCCURRENCES :
 			break;
 	}
 	if (isConstructor) {
@@ -1021,11 +1021,11 @@ public static SearchPattern createOrPattern(SearchPattern leftPattern, SearchPat
 
 private static SearchPattern createPackagePattern(String patternString, int limitTo, int matchRule) {
 	switch (limitTo) {
-		case IJavaSearchConstants.DECLARATIONS :
+		case IJavaScriptSearchConstants.DECLARATIONS :
 			return new PackageDeclarationPattern(patternString.toCharArray(), matchRule);
-		case IJavaSearchConstants.REFERENCES :
+		case IJavaScriptSearchConstants.REFERENCES :
 			return new PackageReferencePattern(patternString.toCharArray(), matchRule);
-		case IJavaSearchConstants.ALL_OCCURRENCES :
+		case IJavaScriptSearchConstants.ALL_OCCURRENCES :
 			return new OrPattern(
 				new PackageDeclarationPattern(patternString.toCharArray(), matchRule),
 				new PackageReferencePattern(patternString.toCharArray(), matchRule)
@@ -1051,35 +1051,35 @@ private static SearchPattern createPackagePattern(String patternString, int limi
  * @param stringPattern the given pattern
  * @param searchFor determines the nature of the searched elements
  *	<ul>
- * 	<li>{@link IJavaSearchConstants#CLASS}: only look for classes</li>
- *		<li>{@link IJavaSearchConstants#INTERFACE}: only look for interfaces</li>
- * 	<li>{@link IJavaSearchConstants#ENUM}: only look for enumeration</li>
- *		<li>{@link IJavaSearchConstants#ANNOTATION_TYPE}: only look for annotation type</li>
- * 	<li>{@link IJavaSearchConstants#CLASS_AND_ENUM}: only look for classes and enumerations</li>
- *		<li>{@link IJavaSearchConstants#CLASS_AND_INTERFACE}: only look for classes and interfaces</li>
- * 	<li>{@link IJavaSearchConstants#TYPE}: look for all types (ie. classes, interfaces, enum and annotation types)</li>
- *		<li>{@link IJavaSearchConstants#FIELD}: look for fields</li>
- *		<li>{@link IJavaSearchConstants#METHOD}: look for methods</li>
- *		<li>{@link IJavaSearchConstants#CONSTRUCTOR}: look for constructors</li>
- *		<li>{@link IJavaSearchConstants#PACKAGE}: look for packages</li>
+ * 	<li>{@link IJavaScriptSearchConstants#CLASS}: only look for classes</li>
+ *		<li>{@link IJavaScriptSearchConstants#INTERFACE}: only look for interfaces</li>
+ * 	<li>{@link IJavaScriptSearchConstants#ENUM}: only look for enumeration</li>
+ *		<li>{@link IJavaScriptSearchConstants#ANNOTATION_TYPE}: only look for annotation type</li>
+ * 	<li>{@link IJavaScriptSearchConstants#CLASS_AND_ENUM}: only look for classes and enumerations</li>
+ *		<li>{@link IJavaScriptSearchConstants#CLASS_AND_INTERFACE}: only look for classes and interfaces</li>
+ * 	<li>{@link IJavaScriptSearchConstants#TYPE}: look for all types (ie. classes, interfaces, enum and annotation types)</li>
+ *		<li>{@link IJavaScriptSearchConstants#FIELD}: look for fields</li>
+ *		<li>{@link IJavaScriptSearchConstants#METHOD}: look for methods</li>
+ *		<li>{@link IJavaScriptSearchConstants#CONSTRUCTOR}: look for constructors</li>
+ *		<li>{@link IJavaScriptSearchConstants#PACKAGE}: look for packages</li>
  *	</ul>
  * @param limitTo determines the nature of the expected matches
  *	<ul>
- * 	<li>{@link IJavaSearchConstants#DECLARATIONS}: will search declarations matching
+ * 	<li>{@link IJavaScriptSearchConstants#DECLARATIONS}: will search declarations matching
  * 			with the corresponding element. In case the element is a method, declarations of matching
  * 			methods in subtypes will also be found, allowing to find declarations of abstract methods, etc.<br>
- * 			Note that additional flags {@link IJavaSearchConstants#IGNORE_DECLARING_TYPE} and
- * 			{@link IJavaSearchConstants#IGNORE_RETURN_TYPE} are ignored for string patterns.
+ * 			Note that additional flags {@link IJavaScriptSearchConstants#IGNORE_DECLARING_TYPE} and
+ * 			{@link IJavaScriptSearchConstants#IGNORE_RETURN_TYPE} are ignored for string patterns.
  * 			This is due to the fact that client may omit to define them in string pattern to have same behavior.
  * 	</li>
- *		 <li>{@link IJavaSearchConstants#REFERENCES}: will search references to the given element.</li>
- *		 <li>{@link IJavaSearchConstants#ALL_OCCURRENCES}: will search for either declarations or
+ *		 <li>{@link IJavaScriptSearchConstants#REFERENCES}: will search references to the given element.</li>
+ *		 <li>{@link IJavaScriptSearchConstants#ALL_OCCURRENCES}: will search for either declarations or
  *				references as specified above.
  *		</li>
- *		 <li>{@link IJavaSearchConstants#IMPLEMENTORS}: for types, will find all types
+ *		 <li>{@link IJavaScriptSearchConstants#IMPLEMENTORS}: for types, will find all types
  *				which directly implement/extend a given interface.
- *				Note that types may be only classes or only interfaces if {@link IJavaSearchConstants#CLASS } or
- *				{@link IJavaSearchConstants#INTERFACE} is respectively used instead of {@link IJavaSearchConstants#TYPE}.
+ *				Note that types may be only classes or only interfaces if {@link IJavaScriptSearchConstants#CLASS } or
+ *				{@link IJavaScriptSearchConstants#INTERFACE} is respectively used instead of {@link IJavaScriptSearchConstants#TYPE}.
  *		</li>
  *	</ul>
  * @param matchRule one of {@link #R_EXACT_MATCH}, {@link #R_PREFIX_MATCH}, {@link #R_PATTERN_MATCH},
@@ -1101,36 +1101,36 @@ public static SearchPattern createPattern(String stringPattern, int searchFor, i
 	}
 
 	// Ignore additional nature flags
-	limitTo &= ~(IJavaSearchConstants.IGNORE_DECLARING_TYPE+IJavaSearchConstants.IGNORE_RETURN_TYPE);
+	limitTo &= ~(IJavaScriptSearchConstants.IGNORE_DECLARING_TYPE+IJavaScriptSearchConstants.IGNORE_RETURN_TYPE);
 
 	switch (searchFor) {
-		case IJavaSearchConstants.CLASS:
+		case IJavaScriptSearchConstants.CLASS:
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.CLASS_SUFFIX);
-		case IJavaSearchConstants.CLASS_AND_INTERFACE:
+		case IJavaScriptSearchConstants.CLASS_AND_INTERFACE:
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.CLASS_AND_INTERFACE_SUFFIX);
-		case IJavaSearchConstants.CLASS_AND_ENUM:
+		case IJavaScriptSearchConstants.CLASS_AND_ENUM:
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.CLASS_AND_ENUM_SUFFIX);
-		case IJavaSearchConstants.INTERFACE:
+		case IJavaScriptSearchConstants.INTERFACE:
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.INTERFACE_SUFFIX);
-		case IJavaSearchConstants.INTERFACE_AND_ANNOTATION:
+		case IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION:
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.INTERFACE_AND_ANNOTATION_SUFFIX);
-		case IJavaSearchConstants.ENUM:
+		case IJavaScriptSearchConstants.ENUM:
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.ENUM_SUFFIX);
-		case IJavaSearchConstants.ANNOTATION_TYPE:
+		case IJavaScriptSearchConstants.ANNOTATION_TYPE:
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.ANNOTATION_TYPE_SUFFIX);
-		case IJavaSearchConstants.TYPE:
+		case IJavaScriptSearchConstants.TYPE:
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.TYPE_SUFFIX);
-		case IJavaSearchConstants.FUNCTION:
+		case IJavaScriptSearchConstants.FUNCTION:
 			return createMethodOrConstructorPattern(stringPattern, limitTo, matchRule, false/*not a constructor*/,true);
-		case IJavaSearchConstants.METHOD:
+		case IJavaScriptSearchConstants.METHOD:
 			return createMethodOrConstructorPattern(stringPattern, limitTo, matchRule, false/*not a constructor*/,false);
-		case IJavaSearchConstants.CONSTRUCTOR:
+		case IJavaScriptSearchConstants.CONSTRUCTOR:
 			return createMethodOrConstructorPattern(stringPattern, limitTo, matchRule, true/*constructor*/,false);
-		case IJavaSearchConstants.FIELD:
+		case IJavaScriptSearchConstants.FIELD:
 			return createFieldPattern(stringPattern, limitTo, matchRule,false);
-		case IJavaSearchConstants.VAR:
+		case IJavaScriptSearchConstants.VAR:
 			return createFieldPattern(stringPattern, limitTo, matchRule,true);
-		case IJavaSearchConstants.PACKAGE:
+		case IJavaScriptSearchConstants.PACKAGE:
 			return createPackagePattern(stringPattern, limitTo, matchRule);
 	}
 	return null;
@@ -1142,7 +1142,7 @@ public static SearchPattern createPattern(String stringPattern, int searchFor, i
  * <br>
  * Note that for generic searches, the returned pattern consider {@link #R_ERASURE_MATCH} matches.
  * If other kind of generic matches (ie. {@link #R_EXACT_MATCH} or {@link #R_EQUIVALENT_MATCH})
- * are expected, {@link #createPattern(IJavaElement, int, int)} method need to be used instead with
+ * are expected, {@link #createPattern(IJavaScriptElement, int, int)} method need to be used instead with
  * the explicit match rule specified.
  * <br>
  * The pattern can be parameterized as follows:
@@ -1150,12 +1150,12 @@ public static SearchPattern createPattern(String stringPattern, int searchFor, i
  * @param element the Java element the search pattern is based on
  * @param limitTo determines the nature of the expected matches
  *	<ul>
- * 	<li>{@link IJavaSearchConstants#DECLARATIONS}: will search declarations matching
+ * 	<li>{@link IJavaScriptSearchConstants#DECLARATIONS}: will search declarations matching
  * 			with the corresponding element. In case the element is a method, declarations of matching
  * 			methods in subtypes will also be found, allowing to find declarations of abstract methods, etc.
  *				Some additional flags may be specified while searching declaration:
  *				<ul>
- *					<li>{@link IJavaSearchConstants#IGNORE_DECLARING_TYPE}: declaring type will be ignored
+ *					<li>{@link IJavaScriptSearchConstants#IGNORE_DECLARING_TYPE}: declaring type will be ignored
  *							during the search.<br>
  *							For example using following test case:
  *					<pre>
@@ -1166,7 +1166,7 @@ public static SearchPattern createPattern(String stringPattern, int searchFor, i
  *							search for <code>method</code> declaration with this flag
  *							will return 2 matches: in A and in C
  *					</li>
- *					<li>{@link IJavaSearchConstants#IGNORE_RETURN_TYPE}: return type will be ignored
+ *					<li>{@link IJavaScriptSearchConstants#IGNORE_RETURN_TYPE}: return type will be ignored
  *							during the search.<br>
  *							Using same example, search for <code>method</code> declaration with this flag
  *							will return 2 matches: in A and in B.
@@ -1176,17 +1176,17 @@ public static SearchPattern createPattern(String stringPattern, int searchFor, i
  *				during the search. Then, using same example, search for <code>method</code> declaration
  *				with these 2 flags will return 3 matches: in A, in B  and in C
  * 	</li>
- *		 <li>{@link IJavaSearchConstants#REFERENCES}: will search references to the given element.</li>
- *		 <li>{@link IJavaSearchConstants#ALL_OCCURRENCES}: will search for either declarations or
+ *		 <li>{@link IJavaScriptSearchConstants#REFERENCES}: will search references to the given element.</li>
+ *		 <li>{@link IJavaScriptSearchConstants#ALL_OCCURRENCES}: will search for either declarations or
  *				references as specified above.
  *		</li>
- *		 <li>{@link IJavaSearchConstants#IMPLEMENTORS}: for types, will find all types
+ *		 <li>{@link IJavaScriptSearchConstants#IMPLEMENTORS}: for types, will find all types
  *				which directly implement/extend a given interface.
  *		</li>
  *	</ul>
  * @return a search pattern for a Java element or <code>null</code> if the given element is ill-formed
  */
-public static SearchPattern createPattern(IJavaElement element, int limitTo) {
+public static SearchPattern createPattern(IJavaScriptElement element, int limitTo) {
 	return createPattern(element, limitTo, R_EXACT_MATCH | R_CASE_SENSITIVE | R_ERASURE_MATCH);
 }
 
@@ -1197,12 +1197,12 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo) {
  * @param element the Java element the search pattern is based on
  * @param limitTo determines the nature of the expected matches
  *	<ul>
- * 	<li>{@link IJavaSearchConstants#DECLARATIONS}: will search declarations matching
+ * 	<li>{@link IJavaScriptSearchConstants#DECLARATIONS}: will search declarations matching
  * 			with the corresponding element. In case the element is a method, declarations of matching
  * 			methods in subtypes will also be found, allowing to find declarations of abstract methods, etc.
  *				Some additional flags may be specified while searching declaration:
  *				<ul>
- *					<li>{@link IJavaSearchConstants#IGNORE_DECLARING_TYPE}: declaring type will be ignored
+ *					<li>{@link IJavaScriptSearchConstants#IGNORE_DECLARING_TYPE}: declaring type will be ignored
  *							during the search.<br>
  *							For example using following test case:
  *					<pre>
@@ -1213,7 +1213,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo) {
  *							search for <code>method</code> declaration with this flag
  *							will return 2 matches: in A and in C
  *					</li>
- *					<li>{@link IJavaSearchConstants#IGNORE_RETURN_TYPE}: return type will be ignored
+ *					<li>{@link IJavaScriptSearchConstants#IGNORE_RETURN_TYPE}: return type will be ignored
  *							during the search.<br>
  *							Using same example, search for <code>method</code> declaration with this flag
  *							will return 2 matches: in A and in B.
@@ -1223,11 +1223,11 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo) {
  *				during the search. Then, using same example, search for <code>method</code> declaration
  *				with these 2 flags will return 3 matches: in A, in B  and in C
  * 	</li>
- *		 <li>{@link IJavaSearchConstants#REFERENCES}: will search references to the given element.</li>
- *		 <li>{@link IJavaSearchConstants#ALL_OCCURRENCES}: will search for either declarations or
+ *		 <li>{@link IJavaScriptSearchConstants#REFERENCES}: will search references to the given element.</li>
+ *		 <li>{@link IJavaScriptSearchConstants#ALL_OCCURRENCES}: will search for either declarations or
  *				references as specified above.
  *		</li>
- *		 <li>{@link IJavaSearchConstants#IMPLEMENTORS}: for types, will find all types
+ *		 <li>{@link IJavaScriptSearchConstants#IMPLEMENTORS}: for types, will find all types
  *				which directly implement/extend a given interface.
  *		</li>
  *	</ul>
@@ -1243,22 +1243,22 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo) {
  * @return a search pattern for a Java element or <code>null</code> if the given element is ill-formed
  * @since 3.1
  */
-public static SearchPattern createPattern(IJavaElement element, int limitTo, int matchRule) {
+public static SearchPattern createPattern(IJavaScriptElement element, int limitTo, int matchRule) {
 	SearchPattern searchPattern = null;
 	int lastDot;
 	boolean ignoreDeclaringType = false;
 	boolean ignoreReturnType = false;
-	int maskedLimitTo = limitTo & ~(IJavaSearchConstants.IGNORE_DECLARING_TYPE+IJavaSearchConstants.IGNORE_RETURN_TYPE);
-	if (maskedLimitTo == IJavaSearchConstants.DECLARATIONS || maskedLimitTo == IJavaSearchConstants.ALL_OCCURRENCES) {
-		ignoreDeclaringType = (limitTo & IJavaSearchConstants.IGNORE_DECLARING_TYPE) != 0;
-		ignoreReturnType = (limitTo & IJavaSearchConstants.IGNORE_RETURN_TYPE) != 0;
+	int maskedLimitTo = limitTo & ~(IJavaScriptSearchConstants.IGNORE_DECLARING_TYPE+IJavaScriptSearchConstants.IGNORE_RETURN_TYPE);
+	if (maskedLimitTo == IJavaScriptSearchConstants.DECLARATIONS || maskedLimitTo == IJavaScriptSearchConstants.ALL_OCCURRENCES) {
+		ignoreDeclaringType = (limitTo & IJavaScriptSearchConstants.IGNORE_DECLARING_TYPE) != 0;
+		ignoreReturnType = (limitTo & IJavaScriptSearchConstants.IGNORE_RETURN_TYPE) != 0;
 	}
 	char[] declaringSimpleName = null;
 	char[] declaringQualification = null;
 	boolean isVar=false;
 	boolean isFunction=false;
 	switch (element.getElementType()) {
-		case IJavaElement.FIELD :
+		case IJavaScriptElement.FIELD :
 			IField field = (IField) element;
 			IType declaringClassForField = field.getDeclaringType();
 			isVar=(declaringClassForField==null);
@@ -1293,7 +1293,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 							typeQualification = CharOperation.concat(IIndexConstants.ONE_STAR, typeQualification);
 						}
 					}
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					return null;
 				}
 			}
@@ -1303,20 +1303,20 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 			boolean readAccess = false;
 			boolean writeAccess = false;
 			switch (maskedLimitTo) {
-				case IJavaSearchConstants.DECLARATIONS :
+				case IJavaScriptSearchConstants.DECLARATIONS :
 					findDeclarations = true;
 					break;
-				case IJavaSearchConstants.REFERENCES :
+				case IJavaScriptSearchConstants.REFERENCES :
 					readAccess = true;
 					writeAccess = true;
 					break;
-				case IJavaSearchConstants.READ_ACCESSES :
+				case IJavaScriptSearchConstants.READ_ACCESSES :
 					readAccess = true;
 					break;
-				case IJavaSearchConstants.WRITE_ACCESSES :
+				case IJavaScriptSearchConstants.WRITE_ACCESSES :
 					writeAccess = true;
 					break;
-				case IJavaSearchConstants.ALL_OCCURRENCES :
+				case IJavaScriptSearchConstants.ALL_OCCURRENCES :
 					findDeclarations = true;
 					readAccess = true;
 					writeAccess = true;
@@ -1336,7 +1336,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 					typeSignature,
 					matchRule,field);
 			break;
-		case IJavaElement.IMPORT_DECLARATION :
+		case IJavaScriptElement.IMPORT_DECLARATION :
 			String elementName = element.getElementName();
 			lastDot = elementName.lastIndexOf('.');
 			if (lastDot == -1) return null; // invalid import declaration
@@ -1355,26 +1355,26 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 						matchRule);
 			}
 			break;
-		case IJavaElement.LOCAL_VARIABLE :
+		case IJavaScriptElement.LOCAL_VARIABLE :
 			LocalVariable localVar = (LocalVariable) element;
 			boolean findVarDeclarations = false;
 			boolean findVarReadAccess = false;
 			boolean findVarWriteAccess = false;
 			switch (maskedLimitTo) {
-				case IJavaSearchConstants.DECLARATIONS :
+				case IJavaScriptSearchConstants.DECLARATIONS :
 					findVarDeclarations = true;
 					break;
-				case IJavaSearchConstants.REFERENCES :
+				case IJavaScriptSearchConstants.REFERENCES :
 					findVarReadAccess = true;
 					findVarWriteAccess = true;
 					break;
-				case IJavaSearchConstants.READ_ACCESSES :
+				case IJavaScriptSearchConstants.READ_ACCESSES :
 					findVarReadAccess = true;
 					break;
-				case IJavaSearchConstants.WRITE_ACCESSES :
+				case IJavaScriptSearchConstants.WRITE_ACCESSES :
 					findVarWriteAccess = true;
 					break;
-				case IJavaSearchConstants.ALL_OCCURRENCES :
+				case IJavaScriptSearchConstants.ALL_OCCURRENCES :
 					findVarDeclarations = true;
 					findVarReadAccess = true;
 					findVarWriteAccess = true;
@@ -1388,15 +1388,15 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 					localVar,
 					matchRule);
 			break;
-		case IJavaElement.TYPE_PARAMETER:
+		case IJavaScriptElement.TYPE_PARAMETER:
 			ITypeParameter typeParam = (ITypeParameter) element;
 			boolean findParamDeclarations = true;
 			boolean findParamReferences = true;
 			switch (maskedLimitTo) {
-				case IJavaSearchConstants.DECLARATIONS :
+				case IJavaScriptSearchConstants.DECLARATIONS :
 					findParamReferences = false;
 					break;
-				case IJavaSearchConstants.REFERENCES :
+				case IJavaScriptSearchConstants.REFERENCES :
 					findParamDeclarations = false;
 					break;
 			}
@@ -1407,12 +1407,12 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 					typeParam,
 					matchRule);
 			break;
-		case IJavaElement.METHOD :
-			IMethod method = (IMethod) element;
+		case IJavaScriptElement.METHOD :
+			IFunction method = (IFunction) element;
 			boolean isConstructor;
 			try {
 				isConstructor = method.isConstructor();
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return null;
 			}
 			IType declaringClass = method.getDeclaringType();
@@ -1458,7 +1458,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 							CharOperation.concat(IIndexConstants.ONE_STAR, returnQualification);
 						}
 					}
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					return null;
 				}
 			}
@@ -1489,13 +1489,13 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 			boolean findMethodDeclarations = true;
 			boolean findMethodReferences = true;
 			switch (maskedLimitTo) {
-				case IJavaSearchConstants.DECLARATIONS :
+				case IJavaScriptSearchConstants.DECLARATIONS :
 					findMethodReferences = false;
 					break;
-				case IJavaSearchConstants.REFERENCES :
+				case IJavaScriptSearchConstants.REFERENCES :
 					findMethodDeclarations = false;
 					break;
-				case IJavaSearchConstants.ALL_OCCURRENCES :
+				case IJavaScriptSearchConstants.ALL_OCCURRENCES :
 					break;
 			}
 			if (isConstructor) {
@@ -1529,7 +1529,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 						matchRule);
 			}
 			break;
-		case IJavaElement.TYPE :
+		case IJavaScriptElement.TYPE :
 			IType type = (IType)element;
 			searchPattern = 	createTypePattern(
 						type.getElementName().toCharArray(),
@@ -1540,8 +1540,8 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 						maskedLimitTo,
 						matchRule);
 			break;
-		case IJavaElement.PACKAGE_DECLARATION :
-		case IJavaElement.PACKAGE_FRAGMENT :
+		case IJavaScriptElement.PACKAGE_DECLARATION :
+		case IJavaScriptElement.PACKAGE_FRAGMENT :
 			searchPattern = createPackagePattern(element.getElementName(), maskedLimitTo, matchRule);
 			break;
 	}
@@ -1552,14 +1552,14 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 
 private static SearchPattern createTypePattern(char[] simpleName, char[] packageName, char[][] enclosingTypeNames, String typeSignature, IType type, int limitTo, int matchRule) {
 	switch (limitTo) {
-		case IJavaSearchConstants.DECLARATIONS :
+		case IJavaScriptSearchConstants.DECLARATIONS :
 			return new TypeDeclarationPattern(
 				packageName,
 				enclosingTypeNames,
 				simpleName,
 				IIndexConstants.TYPE_SUFFIX,
 				matchRule);
-		case IJavaSearchConstants.REFERENCES :
+		case IJavaScriptSearchConstants.REFERENCES :
 			if (type != null) {
 				return new TypeReferencePattern(
 					CharOperation.concatWith(packageName, enclosingTypeNames, '.'),
@@ -1572,13 +1572,13 @@ private static SearchPattern createTypePattern(char[] simpleName, char[] package
 				simpleName,
 				typeSignature,
 				matchRule);
-		case IJavaSearchConstants.IMPLEMENTORS :
+		case IJavaScriptSearchConstants.IMPLEMENTORS :
 			return new SuperTypeReferencePattern(
 				CharOperation.concatWith(packageName, enclosingTypeNames, '.'),
 				simpleName,
 				SuperTypeReferencePattern.ONLY_SUPER_INTERFACES,
 				matchRule);
-		case IJavaSearchConstants.ALL_OCCURRENCES :
+		case IJavaScriptSearchConstants.ALL_OCCURRENCES :
 			return new OrPattern(
 				new TypeDeclarationPattern(
 					packageName,
@@ -1693,13 +1693,13 @@ private static SearchPattern createTypePattern(String patternString, int limitTo
 		typeChars = null;
 	}
 	switch (limitTo) {
-		case IJavaSearchConstants.DECLARATIONS : // cannot search for explicit member types
+		case IJavaScriptSearchConstants.DECLARATIONS : // cannot search for explicit member types
 			return new QualifiedTypeDeclarationPattern(qualificationChars, typeChars, indexSuffix, matchRule);
-		case IJavaSearchConstants.REFERENCES :
+		case IJavaScriptSearchConstants.REFERENCES :
 			return new TypeReferencePattern(qualificationChars, typeChars, typeSignature, matchRule);
-		case IJavaSearchConstants.IMPLEMENTORS :
+		case IJavaScriptSearchConstants.IMPLEMENTORS :
 			return new SuperTypeReferencePattern(qualificationChars, typeChars, SuperTypeReferencePattern.ONLY_SUPER_INTERFACES, indexSuffix, matchRule);
-		case IJavaSearchConstants.ALL_OCCURRENCES :
+		case IJavaScriptSearchConstants.ALL_OCCURRENCES :
 			return new OrPattern(
 				new QualifiedTypeDeclarationPattern(qualificationChars, typeChars, indexSuffix, matchRule),// cannot search for explicit member types
 				new TypeReferencePattern(qualificationChars, typeChars, matchRule));
@@ -1710,9 +1710,9 @@ private static SearchPattern createTypePattern(String patternString, int limitTo
  * Returns the enclosing type names of the given type.
  */
 private static char[][] enclosingTypeNames(IType type) {
-	IJavaElement parent = type.getParent();
+	IJavaScriptElement parent = type.getParent();
 	switch (parent.getElementType()) {
-		case IJavaElement.CLASS_FILE:
+		case IJavaScriptElement.CLASS_FILE:
 			// For a binary type, the parent is not the enclosing type, but the declaring type is.
 			// (see bug 20532  Declaration of member binary type not found)
 			IType declaringType = type.getDeclaringType();
@@ -1720,11 +1720,11 @@ private static char[][] enclosingTypeNames(IType type) {
 			return CharOperation.arrayConcat(
 				enclosingTypeNames(declaringType),
 				declaringType.getElementName().toCharArray());
-		case IJavaElement.COMPILATION_UNIT:
+		case IJavaScriptElement.JAVASCRIPT_UNIT:
 			return CharOperation.NO_CHAR_CHAR;
-		case IJavaElement.FIELD:
-		case IJavaElement.INITIALIZER:
-		case IJavaElement.METHOD:
+		case IJavaScriptElement.FIELD:
+		case IJavaScriptElement.INITIALIZER:
+		case IJavaScriptElement.METHOD:
 			IType declaringClass = ((IMember) parent).getDeclaringType();
 			if (declaringClass!=null)
 			return CharOperation.arrayConcat(
@@ -1732,7 +1732,7 @@ private static char[][] enclosingTypeNames(IType type) {
 				new char[][] {declaringClass.getElementName().toCharArray(), IIndexConstants.ONE_STAR});
 			else
 				return CharOperation.NO_CHAR_CHAR;
-		case IJavaElement.TYPE:
+		case IJavaScriptElement.TYPE:
 			return CharOperation.arrayConcat(
 				enclosingTypeNames((IType)parent),
 				parent.getElementName().toCharArray());

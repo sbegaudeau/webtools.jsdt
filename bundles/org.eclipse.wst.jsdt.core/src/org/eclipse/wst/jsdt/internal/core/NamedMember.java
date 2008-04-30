@@ -11,15 +11,15 @@
 package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.wst.jsdt.core.BindingKey;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 
@@ -36,7 +36,7 @@ public abstract class NamedMember extends Member {
 		this.name = name;
 	}
 
-	private void appendTypeParameters(StringBuffer buffer) throws JavaModelException {
+	private void appendTypeParameters(StringBuffer buffer) throws JavaScriptModelException {
 		ITypeParameter[] typeParameters = getTypeParameters();
 		int length = typeParameters.length;
 		if (length == 0) return;
@@ -64,15 +64,15 @@ public abstract class NamedMember extends Member {
 		return this.name;
 	}
 
-	protected String getKey(IField field, boolean forceOpen) throws JavaModelException {
+	protected String getKey(IField field, boolean forceOpen) throws JavaScriptModelException {
 		StringBuffer key = new StringBuffer();
 
 		// declaring class
 
-		IJavaElement parent = field.getParent();
+		IJavaScriptElement parent = field.getParent();
 		String declaringKey = "??"; //$NON-NLS-1$
-		if (parent instanceof ICompilationUnit)
-			 declaringKey = getKey((ICompilationUnit) parent, forceOpen);
+		if (parent instanceof IJavaScriptUnit)
+			 declaringKey = getKey((IJavaScriptUnit) parent, forceOpen);
 		else if (parent instanceof IType)
 		 declaringKey = getKey((IType) parent, forceOpen);
 		key.append(declaringKey);
@@ -84,14 +84,14 @@ public abstract class NamedMember extends Member {
 		return key.toString();
 	}
 
-	protected String getKey(IMethod method, boolean forceOpen) throws JavaModelException {
+	protected String getKey(IFunction method, boolean forceOpen) throws JavaScriptModelException {
 		StringBuffer key = new StringBuffer();
 
 		// declaring class
-		IJavaElement parent = method.getParent();
+		IJavaScriptElement parent = method.getParent();
 		String declaringKey = "??"; //$NON-NLS-1$
-		if (parent instanceof ICompilationUnit)
-			 declaringKey = getKey((ICompilationUnit) parent, forceOpen);
+		if (parent instanceof IJavaScriptUnit)
+			 declaringKey = getKey((IJavaScriptUnit) parent, forceOpen);
 		else if (parent instanceof IType)
 		 declaringKey = getKey((IType) parent, forceOpen);
 		key.append(declaringKey);
@@ -142,7 +142,7 @@ public abstract class NamedMember extends Member {
 		return key.toString();
 	}
 
-	protected String getKey(ICompilationUnit unit, boolean forceOpen) throws JavaModelException {
+	protected String getKey(IJavaScriptUnit unit, boolean forceOpen) throws JavaScriptModelException {
 		StringBuffer key = new StringBuffer();
 		key.append('U');
 		String packageName = unit.getParent().getElementName();
@@ -154,7 +154,7 @@ public abstract class NamedMember extends Member {
 		return key.toString();
 	}
 
-	protected String getKey(IType type, boolean forceOpen) throws JavaModelException {
+	protected String getKey(IType type, boolean forceOpen) throws JavaScriptModelException {
 		StringBuffer key = new StringBuffer();
 		key.append('L');
 		String packageName = type.getPackageFragment().getElementName();
@@ -162,7 +162,7 @@ public abstract class NamedMember extends Member {
 		if (packageName.length() > 0)
 			key.append('/');
 		String typeQualifiedName = type.getTypeQualifiedName('$');
-		ICompilationUnit cu = (ICompilationUnit) type.getAncestor(IJavaElement.COMPILATION_UNIT);
+		IJavaScriptUnit cu = (IJavaScriptUnit) type.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 		if (cu != null) {
 			String cuName = cu.getElementName();
 			String mainTypeName = cuName.substring(0, cuName.lastIndexOf('.'));
@@ -180,7 +180,7 @@ public abstract class NamedMember extends Member {
 		return key.toString();
 	}
 
-	protected String getFullyQualifiedParameterizedName(String fullyQualifiedName, String uniqueKey) throws JavaModelException {
+	protected String getFullyQualifiedParameterizedName(String fullyQualifiedName, String uniqueKey) throws JavaScriptModelException {
 		String[] typeArguments = new BindingKey(uniqueKey).getTypeArguments();
 		int length = typeArguments.length;
 		if (length == 0) return fullyQualifiedName;
@@ -201,7 +201,7 @@ public abstract class NamedMember extends Member {
 		return null;
 	}
 
-	public String getFullyQualifiedName(char enclosingTypeSeparator, boolean showParameters) throws JavaModelException {
+	public String getFullyQualifiedName(char enclosingTypeSeparator, boolean showParameters) throws JavaScriptModelException {
 		String packageName = getPackageFragment().getElementName();
 		if (packageName.equals(IPackageFragment.DEFAULT_PACKAGE_NAME)) {
 			return getTypeQualifiedName(enclosingTypeSeparator, showParameters);
@@ -209,17 +209,17 @@ public abstract class NamedMember extends Member {
 		return packageName + '.' + getTypeQualifiedName(enclosingTypeSeparator, showParameters);
 	}
 
-	public String getTypeQualifiedName(char enclosingTypeSeparator, boolean showParameters) throws JavaModelException {
+	public String getTypeQualifiedName(char enclosingTypeSeparator, boolean showParameters) throws JavaScriptModelException {
 		NamedMember declaringType;
 		switch (this.parent.getElementType()) {
-			case IJavaElement.COMPILATION_UNIT:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
 				if (showParameters) {
 					StringBuffer buffer = new StringBuffer(this.name);
 					appendTypeParameters(buffer);
 					return buffer.toString();
 				}
 				return this.name;
-			case IJavaElement.CLASS_FILE:
+			case IJavaScriptElement.CLASS_FILE:
 				String classFileName = this.parent.getElementName();
 				String typeName;
 				if (classFileName.indexOf('$') == -1) {
@@ -235,12 +235,12 @@ public abstract class NamedMember extends Member {
 					return buffer.toString();
 				}
 				return typeName;
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				declaringType = (NamedMember) this.parent;
 				break;
-			case IJavaElement.FIELD:
-			case IJavaElement.INITIALIZER:
-			case IJavaElement.METHOD:
+			case IJavaScriptElement.FIELD:
+			case IJavaScriptElement.INITIALIZER:
+			case IJavaScriptElement.METHOD:
 				declaringType = (NamedMember) ((IMember) this.parent).getDeclaringType();
 				break;
 			default:
@@ -258,7 +258,7 @@ public abstract class NamedMember extends Member {
 		return buffer.toString();
 	}
 
-	protected ITypeParameter[] getTypeParameters() throws JavaModelException {
+	protected ITypeParameter[] getTypeParameters() throws JavaScriptModelException {
 		return null;
 	}
 }

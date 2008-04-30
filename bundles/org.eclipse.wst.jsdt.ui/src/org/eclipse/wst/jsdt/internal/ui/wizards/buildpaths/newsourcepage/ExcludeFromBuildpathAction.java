@@ -27,21 +27,21 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 
-//SelectedElements iff enabled: IPackageFragment || ICompilationUnit
+//SelectedElements iff enabled: IPackageFragment || IJavaScriptUnit
 public class ExcludeFromBuildpathAction extends BuildpathModifierAction {
  
 	private final IRunnableContext fContext;
@@ -75,11 +75,11 @@ public class ExcludeFromBuildpathAction extends BuildpathModifierAction {
 		if (getSelectedElements().size() != 1)
 			return NewWizardMessages.PackageExplorerActionGroup_FormText_Default_Exclude;
 			
-		IJavaElement elem= (IJavaElement) getSelectedElements().get(0);
+		IJavaScriptElement elem= (IJavaScriptElement) getSelectedElements().get(0);
         String name= ClasspathModifier.escapeSpecialChars(elem.getElementName());
         if (elem instanceof IPackageFragment) {
         	return Messages.format(NewWizardMessages.PackageExplorerActionGroup_FormText_ExcludePackage, name);
-        } else if (elem instanceof ICompilationUnit) {
+        } else if (elem instanceof IJavaScriptUnit) {
         	return Messages.format(NewWizardMessages.PackageExplorerActionGroup_FormText_ExcludeFile, name); 
         }
         
@@ -90,12 +90,12 @@ public class ExcludeFromBuildpathAction extends BuildpathModifierAction {
 	 * {@inheritDoc}
 	 */
 	public void run() {
-        final IJavaProject project;
+        final IJavaScriptProject project;
         Object object= getSelectedElements().get(0);
-        if (object instanceof ICompilationUnit) {
-        	project= ((ICompilationUnit)object).getJavaProject();
+        if (object instanceof IJavaScriptUnit) {
+        	project= ((IJavaScriptUnit)object).getJavaScriptProject();
         } else {
-        	project= ((IPackageFragment)object).getJavaProject();
+        	project= ((IPackageFragment)object).getJavaScriptProject();
         }
         
         try {
@@ -114,13 +114,13 @@ public class ExcludeFromBuildpathAction extends BuildpathModifierAction {
 			if (e.getCause() instanceof CoreException) {
 				showExceptionDialog((CoreException)e.getCause(), NewWizardMessages.ExcludeFromBuildathAction_ErrorTitle);
 			} else {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		} catch (final InterruptedException e) {
 		}
 	}
 	
-	private List exclude(List javaElements, IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
+	private List exclude(List javaElements, IJavaScriptProject project, IProgressMonitor monitor) throws JavaScriptModelException {
 		if (monitor == null)
 			monitor= new NullProgressMonitor();
 		try {
@@ -129,8 +129,8 @@ public class ExcludeFromBuildpathAction extends BuildpathModifierAction {
 			List existingEntries= ClasspathModifier.getExistingEntries(project);
 			List resources= new ArrayList();
 			for (int i= 0; i < javaElements.size(); i++) {
-				IJavaElement javaElement= (IJavaElement) javaElements.get(i);
-				IPackageFragmentRoot root= (IPackageFragmentRoot) javaElement.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+				IJavaScriptElement javaElement= (IJavaScriptElement) javaElements.get(i);
+				IPackageFragmentRoot root= (IPackageFragmentRoot) javaElement.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 				CPListElement entry= ClasspathModifier.getClasspathEntry(existingEntries, root);
 
 				IResource resource= ClasspathModifier.exclude(javaElement, entry, project, new SubProgressMonitor(monitor, 1));
@@ -162,9 +162,9 @@ public class ExcludeFromBuildpathAction extends BuildpathModifierAction {
 				if (ClasspathModifier.isDefaultFragment(fragment))
                     return false;
                 
-                if (((IPackageFragmentRoot)fragment.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT)).isArchive())
+                if (((IPackageFragmentRoot)fragment.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT)).isArchive())
                     return false;
-			} else if (element instanceof ICompilationUnit) {
+			} else if (element instanceof IJavaScriptUnit) {
 			} else {
 				return false;
 			}	

@@ -26,7 +26,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.ui.IPluginContribution;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 import com.ibm.icu.text.Collator;
 
@@ -72,7 +72,7 @@ public class FilterDescriptor implements Comparable, IPluginContribution {
 	public static FilterDescriptor[] getFilterDescriptors() {
 		if (fgFilterDescriptors == null) {
 			IExtensionRegistry registry= Platform.getExtensionRegistry();
-			IConfigurationElement[] elements= registry.getConfigurationElementsFor(JavaUI.ID_PLUGIN, EXTENSION_POINT_NAME);
+			IConfigurationElement[] elements= registry.getConfigurationElementsFor(JavaScriptUI.ID_PLUGIN, EXTENSION_POINT_NAME);
 			fgFilterDescriptors= createFilterDescriptors(elements);
 		}	
 		return fgFilterDescriptors;

@@ -19,12 +19,12 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTMatcher;
@@ -35,18 +35,18 @@ import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.IPackageBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
@@ -77,7 +77,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.QualifiedTypeNameHistory;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeFilter;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.ChangeDescription;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.EditDescription;
@@ -86,8 +86,8 @@ import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignaturePro
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.SwapDescription;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
@@ -97,9 +97,9 @@ public class UnresolvedElementsSubProcessor {
 
 	public static void getVariableProposals(IInvocationContext context, IProblemLocation problem, IVariableBinding resolvedField, Collection proposals) throws CoreException {
 
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
-		CompilationUnit astRoot= context.getASTRoot();
+		JavaScriptUnit astRoot= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveredNode(astRoot);
 		if (selectedNode == null) {
 			return;
@@ -130,7 +130,7 @@ public class UnresolvedElementsSubProcessor {
 				node= (SimpleName) selectedNode;
 				ASTNode parent= node.getParent();
 				StructuralPropertyDescriptor locationInParent= node.getLocationInParent();
-				if (locationInParent == MethodInvocation.EXPRESSION_PROPERTY) {
+				if (locationInParent == FunctionInvocation.EXPRESSION_PROPERTY) {
 					typeKind= SimilarElementsRequestor.CLASSES;
 				} else if (locationInParent == FieldAccess.NAME_PROPERTY) {
 					Expression expression= ((FieldAccess) parent).getExpression();
@@ -207,7 +207,7 @@ public class UnresolvedElementsSubProcessor {
 
 		// add type proposals
 		if (typeKind != 0) {
-			if (!JavaModelUtil.is50OrHigher(cu.getJavaProject())) {
+			if (!JavaModelUtil.is50OrHigher(cu.getJavaScriptProject())) {
 				typeKind &= ~(SimilarElementsRequestor.ANNOTATIONS | SimilarElementsRequestor.ENUMS | SimilarElementsRequestor.VARIABLES);
 			}
 
@@ -240,19 +240,19 @@ public class UnresolvedElementsSubProcessor {
 		}
 	}
 
-	private static void addNewVariableProposals(ICompilationUnit cu, Name node, SimpleName simpleName, Collection proposals) {
+	private static void addNewVariableProposals(IJavaScriptUnit cu, Name node, SimpleName simpleName, Collection proposals) {
 		String name= simpleName.getIdentifier();
 		ASTNode bodyDeclaration= ASTResolving.findParentBodyDeclaration(node, true);
 		int type= bodyDeclaration.getNodeType(); 
-		if (type == ASTNode.METHOD_DECLARATION) {
-			int relevance= StubUtility.hasParameterName(cu.getJavaProject(), name) ? 8 : 5;
+		if (type == ASTNode.FUNCTION_DECLARATION) {
+			int relevance= StubUtility.hasParameterName(cu.getJavaScriptProject(), name) ? 8 : 5;
 			String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createparameter_description, simpleName.getIdentifier());
 			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_LOCAL);
 			proposals.add(new NewVariableCompletionProposal(label, cu, NewVariableCompletionProposal.PARAM, simpleName, null, relevance, image));
 		}
-		if (type == ASTNode.INITIALIZER || type == ASTNode.COMPILATION_UNIT ||
-				(type == ASTNode.METHOD_DECLARATION && !ASTResolving.isInsideConstructorInvocation((MethodDeclaration) bodyDeclaration, node))) {
-			int relevance= StubUtility.hasLocalVariableName(cu.getJavaProject(), name) ? 10 : 7;
+		if (type == ASTNode.INITIALIZER || type == ASTNode.JAVASCRIPT_UNIT ||
+				(type == ASTNode.FUNCTION_DECLARATION && !ASTResolving.isInsideConstructorInvocation((FunctionDeclaration) bodyDeclaration, node))) {
+			int relevance= StubUtility.hasLocalVariableName(cu.getJavaScriptProject(), name) ? 10 : 7;
 			String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createlocal_description, simpleName.getIdentifier());
 			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_LOCAL);
 			proposals.add(new NewVariableCompletionProposal(label, cu, NewVariableCompletionProposal.LOCAL, simpleName, null, relevance, image));
@@ -269,16 +269,16 @@ public class UnresolvedElementsSubProcessor {
 					rewrite.remove(statement, null);
 				}
 				String label= CorrectionMessages.UnresolvedElementsSubProcessor_removestatement_description;
-				Image image= JavaPlugin.getDefault().getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE);
+				Image image= JavaScriptPlugin.getDefault().getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE);
 				ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, cu, rewrite, 4, image);
 				proposals.add(proposal);
 			}
 		}
 	}
 
-	private static void addNewFieldProposals(ICompilationUnit cu, CompilationUnit astRoot, ITypeBinding binding, ITypeBinding declaringTypeBinding, SimpleName simpleName, boolean isWriteAccess, Collection proposals) throws JavaModelException {
+	private static void addNewFieldProposals(IJavaScriptUnit cu, JavaScriptUnit astRoot, ITypeBinding binding, ITypeBinding declaringTypeBinding, SimpleName simpleName, boolean isWriteAccess, Collection proposals) throws JavaScriptModelException {
 		// new variables
-		ICompilationUnit targetCU;
+		IJavaScriptUnit targetCU;
 		ITypeBinding senderDeclBinding;
 		if (binding != null) {
 			senderDeclBinding= binding.getTypeDeclaration();
@@ -307,7 +307,7 @@ public class UnresolvedElementsSubProcessor {
 		}
 	}
 
-	private static void addNewFieldForType(ICompilationUnit targetCU, ITypeBinding binding, ITypeBinding senderDeclBinding, SimpleName simpleName, boolean isWriteAccess, boolean mustBeConst, Collection proposals) {
+	private static void addNewFieldForType(IJavaScriptUnit targetCU, ITypeBinding binding, ITypeBinding senderDeclBinding, SimpleName simpleName, boolean isWriteAccess, boolean mustBeConst, Collection proposals) {
 		String name= simpleName.getIdentifier();
 		String label;
 		Image image;
@@ -324,7 +324,7 @@ public class UnresolvedElementsSubProcessor {
 					label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createfield_other_description, new Object[] { name, ASTResolving.getTypeSignature(senderDeclBinding) } );
 					image= JavaPluginImages.get(JavaPluginImages.IMG_FIELD_PUBLIC);
 				}
-				int fieldRelevance= StubUtility.hasFieldName(targetCU.getJavaProject(), name) ? 9 : 6;
+				int fieldRelevance= StubUtility.hasFieldName(targetCU.getJavaScriptProject(), name) ? 9 : 6;
 				proposals.add(new NewVariableCompletionProposal(label, targetCU, NewVariableCompletionProposal.FIELD, simpleName, senderDeclBinding, fieldRelevance, image));
 			}
 
@@ -342,7 +342,7 @@ public class UnresolvedElementsSubProcessor {
 		}
 	}
 
-	private static void addSimilarVariableProposals(ICompilationUnit cu, CompilationUnit astRoot, ITypeBinding binding, SimpleName node, boolean isWriteAccess, Collection proposals) {
+	private static void addSimilarVariableProposals(IJavaScriptUnit cu, JavaScriptUnit astRoot, ITypeBinding binding, SimpleName node, boolean isWriteAccess, Collection proposals) {
 		int kind= ScopeAnalyzer.VARIABLES | ScopeAnalyzer.CHECK_VISIBILITY;
 		if (!isWriteAccess) {
 			kind |= ScopeAnalyzer.METHODS; // also try to find similar methods
@@ -371,8 +371,8 @@ public class UnresolvedElementsSubProcessor {
 					otherNameInAssign= ((SimpleName) assignment.getLeftHandSide()).getIdentifier();
 				}
 				break;
-			case ASTNode.METHOD_INVOCATION:
-				MethodInvocation inv= (MethodInvocation) parent;
+			case ASTNode.FUNCTION_INVOCATION:
+				FunctionInvocation inv= (FunctionInvocation) parent;
 				if (inv.getExpression() == node) {
 					methodSenderName= inv.getName().getIdentifier();
 				}
@@ -443,8 +443,8 @@ public class UnresolvedElementsSubProcessor {
 							proposals.add(new RenameNodeCompletionProposal(label, cu, node.getStartPosition(), node.getLength(), currName, relevance));
 						}
 					}
-				} else if (varOrMeth instanceof IMethodBinding) {
-					IMethodBinding curr= (IMethodBinding) varOrMeth;
+				} else if (varOrMeth instanceof IFunctionBinding) {
+					IFunctionBinding curr= (IFunctionBinding) varOrMeth;
 					if (!curr.isConstructor() && guessedType != null && canAssign(curr.getReturnType(), guessedType)) {
 						if (NameMatcher.isSimilarName(curr.getName(), identifier)) {
 							AST ast= astRoot.getAST();
@@ -454,7 +454,7 @@ public class UnresolvedElementsSubProcessor {
 							LinkedCorrectionProposal proposal= new LinkedCorrectionProposal(label, cu, rewrite, 8, image);
 							proposals.add(proposal);
 
-							MethodInvocation newInv= ast.newMethodInvocation();
+							FunctionInvocation newInv= ast.newFunctionInvocation();
 							newInv.setName(ast.newSimpleName(curr.getName()));
 							ITypeBinding[] parameterTypes= curr.getParameterTypes();
 							for (int k= 0; k < parameterTypes.length; k++) {
@@ -494,7 +494,7 @@ public class UnresolvedElementsSubProcessor {
 	}
 
 	private static boolean hasFieldWithName(ITypeBinding typeBinding, String name) {
-		IMethodBinding[] methods= typeBinding.getDeclaredMethods();
+		IFunctionBinding[] methods= typeBinding.getDeclaredMethods();
 		for (int i= 0; i < methods.length; i++) {
 			if (methods[i].getName().equals(name)) {
 				return true;
@@ -507,21 +507,21 @@ public class UnresolvedElementsSubProcessor {
 		return false;
 	}
 
-	private static int evauateTypeKind(ASTNode node, IJavaProject project) {
+	private static int evauateTypeKind(ASTNode node, IJavaScriptProject project) {
 		int kind= ASTResolving.getPossibleTypeKinds(node, JavaModelUtil.is50OrHigher(project));
 		return kind;
 	}
 
 
 	public static void getTypeProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
 		if (selectedNode == null) {
 			return;
 		}
 
-		int kind= evauateTypeKind(selectedNode, cu.getJavaProject());
+		int kind= evauateTypeKind(selectedNode, cu.getJavaScriptProject());
 
 		while (selectedNode.getLocationInParent() == QualifiedName.NAME_PROPERTY) {
 			selectedNode= selectedNode.getParent();
@@ -551,7 +551,7 @@ public class UnresolvedElementsSubProcessor {
 		}
 		
 		if (selectedNode != node) {
-			kind= evauateTypeKind(node, cu.getJavaProject());
+			kind= evauateTypeKind(node, cu.getJavaScriptProject());
 		}
 		if ((kind & (SimilarElementsRequestor.CLASSES | SimilarElementsRequestor.INTERFACES)) != 0) {
 			kind &= ~SimilarElementsRequestor.ANNOTATIONS; // only propose annotations when there are no other suggestions
@@ -559,7 +559,7 @@ public class UnresolvedElementsSubProcessor {
 		addNewTypeProposals(cu, node, kind, 0, proposals);
 	}
 
-	private static void addSimilarTypeProposals(int kind, ICompilationUnit cu, Name node, int relevance, Collection proposals) throws CoreException {
+	private static void addSimilarTypeProposals(int kind, IJavaScriptUnit cu, Name node, int relevance, Collection proposals) throws CoreException {
 		SimilarElement[] elements= SimilarElementsRequestor.findSimilarElement(cu, node, kind);
 
 		// try to resolve type in context -> highest severity
@@ -603,12 +603,12 @@ public class UnresolvedElementsSubProcessor {
 		}
 	}
 		
-	private static CUCorrectionProposal createTypeRefChangeProposal(ICompilationUnit cu, String fullName, Name node, int relevance, int maxProposals) throws CoreException {
+	private static CUCorrectionProposal createTypeRefChangeProposal(IJavaScriptUnit cu, String fullName, Name node, int relevance, int maxProposals) throws CoreException {
 		ImportRewrite importRewrite= null;
 		String simpleName= fullName;
 		String packName= Signature.getQualifier(fullName);
 		if (packName.length() > 0) { // no imports for primitive types, type variables
-			importRewrite= StubUtility.createImportRewrite((CompilationUnit) node.getRoot(), true);
+			importRewrite= StubUtility.createImportRewrite((JavaScriptUnit) node.getRoot(), true);
 			simpleName= importRewrite.addImport(fullName);
 		}
 		
@@ -644,15 +644,15 @@ public class UnresolvedElementsSubProcessor {
 		return proposal;
 	}
 	
-	private static CUCorrectionProposal createTypeRefChangeFullProposal(ICompilationUnit cu, ITypeBinding binding, ASTNode node, int relevance) throws CoreException {
+	private static CUCorrectionProposal createTypeRefChangeFullProposal(IJavaScriptUnit cu, ITypeBinding binding, ASTNode node, int relevance) throws CoreException {
 		ASTRewrite rewrite= ASTRewrite.create(node.getAST());
-		String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_change_full_type_description, BindingLabelProvider.getBindingLabel(binding, JavaElementLabels.ALL_DEFAULT));
+		String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_change_full_type_description, BindingLabelProvider.getBindingLabel(binding, JavaScriptElementLabels.ALL_DEFAULT));
 		Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
 		
 
 		ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, cu, rewrite, relevance + 3, image);
 		
-		ImportRewrite imports= proposal.createImportRewrite((CompilationUnit) node.getRoot());
+		ImportRewrite imports= proposal.createImportRewrite((JavaScriptUnit) node.getRoot());
 		Type type= imports.addImport(binding, node.getAST());
 		
 		rewrite.replace(node, type, null);
@@ -680,7 +680,7 @@ public class UnresolvedElementsSubProcessor {
 		return name.length() == 1 && Character.isUpperCase(name.charAt(0));
 	}
 
-	public static void addNewTypeProposals(ICompilationUnit cu, Name refNode, int kind, int relevance, Collection proposals) throws JavaModelException {
+	public static void addNewTypeProposals(IJavaScriptUnit cu, Name refNode, int kind, int relevance, Collection proposals) throws JavaScriptModelException {
 		Name node= refNode;
 		do {
 			String typeName= ASTNodes.getSimpleNameIdentifier(node);
@@ -705,7 +705,7 @@ public class UnresolvedElementsSubProcessor {
 						qualifier= qualifierName;
 					 	enclosingPackage= (IPackageFragment) binding.getJavaElement();
 					 } else {
-					 	IJavaElement[] res= cu.codeSelect(qualifierName.getStartPosition(), qualifierName.getLength());
+					 	IJavaScriptElement[] res= cu.codeSelect(qualifierName.getStartPosition(), qualifierName.getLength());
 						if (res!= null && res.length > 0 && res[0] instanceof IType) {
 							enclosingType= (IType) res[0];
 						} else {
@@ -719,9 +719,9 @@ public class UnresolvedElementsSubProcessor {
 					rel += 3;
 				}
 
-				if ((enclosingPackage != null && !enclosingPackage.getCompilationUnit(typeName + JavaModelUtil.DEFAULT_CU_SUFFIX).exists()) // new top level type
+				if ((enclosingPackage != null && !enclosingPackage.getJavaScriptUnit(typeName + JavaModelUtil.DEFAULT_CU_SUFFIX).exists()) // new top level type
 						|| (enclosingType != null && !enclosingType.isReadOnly() && !enclosingType.getType(typeName).exists())) { // new member type
-					IJavaElement enclosing= enclosingPackage != null ? (IJavaElement) enclosingPackage : enclosingType;
+					IJavaScriptElement enclosing= enclosingPackage != null ? (IJavaScriptElement) enclosingPackage : enclosingType;
 
 					if ((kind & SimilarElementsRequestor.CLASSES) != 0) {
 			            proposals.add(new NewCUCompletionUsingWizardProposal(cu, node, NewCUCompletionUsingWizardProposal.K_CLASS, enclosing, rel+3));
@@ -742,7 +742,7 @@ public class UnresolvedElementsSubProcessor {
 
 		// type parameter proposals
 		if (refNode.isSimpleName() && ((kind & SimilarElementsRequestor.VARIABLES)  != 0)) {
-			CompilationUnit root= (CompilationUnit) refNode.getRoot();
+			JavaScriptUnit root= (JavaScriptUnit) refNode.getRoot();
 			String name= ((SimpleName) refNode).getIdentifier();
 			BodyDeclaration declaration= ASTResolving.findParentBodyDeclaration(refNode);
 			int baseRel= relevance;
@@ -752,8 +752,8 @@ public class UnresolvedElementsSubProcessor {
 			while (declaration != null) {
 				IBinding binding= null;
 				int rel= baseRel;
-				if (declaration instanceof MethodDeclaration) {
-					binding= ((MethodDeclaration) declaration).resolveBinding();
+				if (declaration instanceof FunctionDeclaration) {
+					binding= ((FunctionDeclaration) declaration).resolveBinding();
 				} else if (declaration instanceof TypeDeclaration) {
 					binding= ((TypeDeclaration) declaration).resolveBinding();
 					rel++;
@@ -773,9 +773,9 @@ public class UnresolvedElementsSubProcessor {
 
 	public static void getMethodProposals(IInvocationContext context, IProblemLocation problem, boolean isOnlyParameterMismatch, Collection proposals) throws CoreException {
 
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
-		CompilationUnit astRoot= context.getASTRoot();
+		JavaScriptUnit astRoot= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveringNode(astRoot);
 
 		if (!(selectedNode instanceof SimpleName)) {
@@ -788,8 +788,8 @@ public class UnresolvedElementsSubProcessor {
 		boolean isSuperInvocation;
 
 		ASTNode invocationNode= nameNode.getParent();
-		if (invocationNode instanceof MethodInvocation) {
-			MethodInvocation methodImpl= (MethodInvocation) invocationNode;
+		if (invocationNode instanceof FunctionInvocation) {
+			FunctionInvocation methodImpl= (FunctionInvocation) invocationNode;
 			arguments= methodImpl.arguments();
 			sender= methodImpl.getExpression();
 			isSuperInvocation= false;
@@ -810,7 +810,7 @@ public class UnresolvedElementsSubProcessor {
 
 		HashSet suggestedRenames= new HashSet();
 		for (int i= 0; i < bindings.length; i++) {
-			IMethodBinding binding= (IMethodBinding) bindings[i];
+			IFunctionBinding binding= (IFunctionBinding) bindings[i];
 			String curr= binding.getName();
 			if (!curr.equals(methodName) && binding.getParameterTypes().length == nArguments && NameMatcher.isSimilarName(methodName, curr) && suggestedRenames.add(curr)) {
 				String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_changemethod_description, curr);
@@ -822,7 +822,7 @@ public class UnresolvedElementsSubProcessor {
 		if (isOnlyParameterMismatch) {
 			ArrayList parameterMismatchs= new ArrayList();
 			for (int i= 0; i < bindings.length; i++) {
-				IMethodBinding binding= (IMethodBinding) bindings[i];
+				IFunctionBinding binding= (IFunctionBinding) bindings[i];
 				if (binding.getName().equals(methodName)) {
 					parameterMismatchs.add(binding);
 				}
@@ -834,7 +834,7 @@ public class UnresolvedElementsSubProcessor {
 		addNewMethodProposals(cu, astRoot, sender, arguments, isSuperInvocation, invocationNode, methodName, proposals);
 
 		if (!isOnlyParameterMismatch && !isSuperInvocation && sender != null) {
-			addMissingCastParentsProposal(cu, (MethodInvocation) invocationNode, proposals);
+			addMissingCastParentsProposal(cu, (FunctionInvocation) invocationNode, proposals);
 		}
 
 		if (!isSuperInvocation && sender == null && invocationNode.getParent() instanceof ThrowStatement) {
@@ -847,7 +847,7 @@ public class UnresolvedElementsSubProcessor {
 
 	}
 
-	private static void addNewMethodProposals(ICompilationUnit cu, CompilationUnit astRoot, Expression sender, List arguments, boolean isSuperInvocation, ASTNode invocationNode, String methodName, Collection proposals) throws JavaModelException {
+	private static void addNewMethodProposals(IJavaScriptUnit cu, JavaScriptUnit astRoot, Expression sender, List arguments, boolean isSuperInvocation, ASTNode invocationNode, String methodName, Collection proposals) throws JavaScriptModelException {
 		ITypeBinding nodeParentType= Bindings.getBindingOfParentType(invocationNode);
 		ITypeBinding binding= null;
 		if (sender != null) {
@@ -861,7 +861,7 @@ public class UnresolvedElementsSubProcessor {
 		if (binding != null && binding.isFromSource()) {
 			ITypeBinding senderDeclBinding= binding.getTypeDeclaration();
 
-			ICompilationUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, senderDeclBinding);
+			IJavaScriptUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, senderDeclBinding);
 			if (targetCU != null) {
 				String label;
 				Image image;
@@ -896,7 +896,7 @@ public class UnresolvedElementsSubProcessor {
 		}
 	}
 
-	private static void addMissingCastParentsProposal(ICompilationUnit cu, MethodInvocation invocationNode, Collection proposals) {
+	private static void addMissingCastParentsProposal(IJavaScriptUnit cu, FunctionInvocation invocationNode, Collection proposals) {
 		Expression sender= invocationNode.getExpression();
 		if (sender instanceof ThisExpression) {
 			return;
@@ -954,7 +954,7 @@ public class UnresolvedElementsSubProcessor {
 		}
 	}
 
-	private static boolean useExistingParentCastProposal(ICompilationUnit cu, CastExpression expression, Expression accessExpression, SimpleName accessSelector, ITypeBinding[] paramTypes, Collection proposals) {
+	private static boolean useExistingParentCastProposal(IJavaScriptUnit cu, CastExpression expression, Expression accessExpression, SimpleName accessSelector, ITypeBinding[] paramTypes, Collection proposals) {
 		ITypeBinding castType= expression.getType().resolveBinding();
 		if (castType == null) {
 			return false;
@@ -971,7 +971,7 @@ public class UnresolvedElementsSubProcessor {
 			return false;
 		}
 
-		IMethodBinding res= Bindings.findMethodInHierarchy(castType, accessSelector.getIdentifier(), paramTypes);
+		IFunctionBinding res= Bindings.findMethodInHierarchy(castType, accessSelector.getIdentifier(), paramTypes);
 		if (res != null) {
 			AST ast= expression.getAST();
 			ASTRewrite rewrite= ASTRewrite.create(ast);
@@ -1002,7 +1002,7 @@ public class UnresolvedElementsSubProcessor {
 		}
 
 		for (int i= 0; i < nSimilarElements; i++) {
-			IMethodBinding elem = (IMethodBinding) similarElements.get(i);
+			IFunctionBinding elem = (IFunctionBinding) similarElements.get(i);
 			int diff= elem.getParameterTypes().length - argTypes.length;
 			if (diff == 0) {
 				int nProposals= proposals.size();
@@ -1018,7 +1018,7 @@ public class UnresolvedElementsSubProcessor {
 		}
 	}
 
-	private static void doMoreParameters(IInvocationContext context, IProblemLocation problem, ASTNode invocationNode, List arguments, ITypeBinding[] argTypes, IMethodBinding methodBinding, Collection proposals) throws CoreException {
+	private static void doMoreParameters(IInvocationContext context, IProblemLocation problem, ASTNode invocationNode, List arguments, ITypeBinding[] argTypes, IFunctionBinding methodBinding, Collection proposals) throws CoreException {
 		ITypeBinding[] paramTypes= methodBinding.getParameterTypes();
 		int k= 0, nSkipped= 0;
 		int diff= paramTypes.length - argTypes.length;
@@ -1034,8 +1034,8 @@ public class UnresolvedElementsSubProcessor {
 			}
 		}
 		ITypeBinding declaringType= methodBinding.getDeclaringClass();
-		ICompilationUnit cu= context.getCompilationUnit();
-		CompilationUnit astRoot= context.getASTRoot();
+		IJavaScriptUnit cu= context.getCompilationUnit();
+		JavaScriptUnit astRoot= context.getASTRoot();
 
 		// add arguments
 		{
@@ -1056,9 +1056,9 @@ public class UnresolvedElementsSubProcessor {
 			return;
 		}
 
-		ICompilationUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, declaringType);
+		IJavaScriptUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, declaringType);
 		if (targetCU != null) {
-			IMethodBinding methodDecl= methodBinding.getMethodDeclaration();
+			IFunctionBinding methodDecl= methodBinding.getMethodDeclaration();
 			ITypeBinding[] declParameterTypes= methodDecl.getParameterTypes();
 
 			ChangeDescription[] changeDesc= new ChangeDescription[declParameterTypes.length];
@@ -1101,7 +1101,7 @@ public class UnresolvedElementsSubProcessor {
 		return buf.toString();
 	}
 
-	private static String getArgumentName(ICompilationUnit cu, List arguments, int index) {
+	private static String getArgumentName(IJavaScriptUnit cu, List arguments, int index) {
 		String def= String.valueOf(index + 1);
 
 		ASTNode expr= (ASTNode) arguments.get(index);
@@ -1117,7 +1117,7 @@ public class UnresolvedElementsSubProcessor {
 		return '\'' + ASTNodes.asString(expr) + '\'';
 	}
 
-	private static void doMoreArguments(IInvocationContext context, IProblemLocation problem, ASTNode invocationNode, List arguments, ITypeBinding[] argTypes, IMethodBinding methodRef, Collection proposals) throws CoreException {
+	private static void doMoreArguments(IInvocationContext context, IProblemLocation problem, ASTNode invocationNode, List arguments, ITypeBinding[] argTypes, IFunctionBinding methodRef, Collection proposals) throws CoreException {
 		ITypeBinding[] paramTypes= methodRef.getParameterTypes();
 		int k= 0, nSkipped= 0;
 		int diff= argTypes.length - paramTypes.length;
@@ -1133,8 +1133,8 @@ public class UnresolvedElementsSubProcessor {
 			}
 		}
 
-		ICompilationUnit cu= context.getCompilationUnit();
-		CompilationUnit astRoot= context.getASTRoot();
+		IJavaScriptUnit cu= context.getCompilationUnit();
+		JavaScriptUnit astRoot= context.getASTRoot();
 
 		// remove arguments
 		{
@@ -1155,14 +1155,14 @@ public class UnresolvedElementsSubProcessor {
 			proposals.add(proposal);
 		}
 
-		IMethodBinding methodDecl= methodRef.getMethodDeclaration();
+		IFunctionBinding methodDecl= methodRef.getMethodDeclaration();
 		ITypeBinding declaringType= methodDecl.getDeclaringClass();
 
 		// add parameters
 		if (!declaringType.isFromSource()) {
 			return;
 		}
-		ICompilationUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, declaringType);
+		IJavaScriptUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, declaringType);
 		if (targetCU != null) {
 			boolean isDifferentCU= !cu.equals(targetCU);
 
@@ -1210,7 +1210,7 @@ public class UnresolvedElementsSubProcessor {
 		}
 	}
 
-	private static boolean isImplicitConstructor(IMethodBinding meth, ICompilationUnit targetCU) {
+	private static boolean isImplicitConstructor(IFunctionBinding meth, IJavaScriptUnit targetCU) {
 		return meth.isDefaultConstructor();
 	}
 
@@ -1234,7 +1234,7 @@ public class UnresolvedElementsSubProcessor {
 
 
 
-	private static void doEqualNumberOfParameters(IInvocationContext context, ASTNode invocationNode, IProblemLocation problem, List arguments, ITypeBinding[] argTypes, IMethodBinding methodBinding, Collection proposals) throws CoreException {
+	private static void doEqualNumberOfParameters(IInvocationContext context, ASTNode invocationNode, IProblemLocation problem, List arguments, ITypeBinding[] argTypes, IFunctionBinding methodBinding, Collection proposals) throws CoreException {
 		ITypeBinding[] paramTypes= methodBinding.getParameterTypes();
 		int[] indexOfDiff= new int[paramTypes.length];
 		int nDiffs= 0;
@@ -1245,8 +1245,8 @@ public class UnresolvedElementsSubProcessor {
 		}
 		ITypeBinding declaringTypeDecl= methodBinding.getDeclaringClass().getTypeDeclaration();
 
-		ICompilationUnit cu= context.getCompilationUnit();
-		CompilationUnit astRoot= context.getASTRoot();
+		IJavaScriptUnit cu= context.getCompilationUnit();
+		JavaScriptUnit astRoot= context.getASTRoot();
 
 		ASTNode nameNode= problem.getCoveringNode(astRoot);
 		if (nameNode == null) {
@@ -1254,8 +1254,8 @@ public class UnresolvedElementsSubProcessor {
 		}
 
 		if (nDiffs == 0) {
-			if (nameNode.getParent() instanceof MethodInvocation) {
-				MethodInvocation inv= (MethodInvocation) nameNode.getParent();
+			if (nameNode.getParent() instanceof FunctionInvocation) {
+				FunctionInvocation inv= (FunctionInvocation) nameNode.getParent();
 				if (inv.getExpression() == null) {
 					addQualifierToOuterProposal(context, inv, methodBinding, proposals);
 				}
@@ -1275,7 +1275,7 @@ public class UnresolvedElementsSubProcessor {
 				ITypeBinding binding= nodeToCast.resolveTypeBinding();
 				if (binding == null || binding.isCastCompatible(castType)) {
 					ASTRewriteCorrectionProposal proposal= TypeMismatchSubProcessor.createCastProposal(context, castType, nodeToCast, 6);
-					String castTypeName= BindingLabelProvider.getBindingLabel(castType, JavaElementLabels.ALL_DEFAULT);
+					String castTypeName= BindingLabelProvider.getBindingLabel(castType, JavaScriptElementLabels.ALL_DEFAULT);
 					String[] arg= new String[] { getArgumentName(cu, arguments, idx), castTypeName};
 					proposal.setDisplayName(Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_addargumentcast_description, arg));
 					proposals.add(proposal);
@@ -1303,13 +1303,13 @@ public class UnresolvedElementsSubProcessor {
 				}
 
 				if (declaringTypeDecl.isFromSource()) {
-					ICompilationUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, declaringTypeDecl);
+					IJavaScriptUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, declaringTypeDecl);
 					if (targetCU != null) {
 						ChangeDescription[] changeDesc= new ChangeDescription[paramTypes.length];
 						for (int i= 0; i < nDiffs; i++) {
 							changeDesc[idx1]= new SwapDescription(idx2);
 						}
-						IMethodBinding methodDecl= methodBinding.getMethodDeclaration();
+						IFunctionBinding methodDecl= methodBinding.getMethodDeclaration();
 						ITypeBinding[] declParamTypes= methodDecl.getParameterTypes();
 
 						ITypeBinding[] swappedTypes= new ITypeBinding[] { declParamTypes[idx1], declParamTypes[idx2] };
@@ -1330,12 +1330,12 @@ public class UnresolvedElementsSubProcessor {
 		}
 
 		if (declaringTypeDecl.isFromSource()) {
-			ICompilationUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, declaringTypeDecl);
+			IJavaScriptUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, declaringTypeDecl);
 			if (targetCU != null) {
 				ChangeDescription[] changeDesc= createSignatureChangeDescription(indexOfDiff, nDiffs, paramTypes, arguments, argTypes);
 				if (changeDesc != null) {
 				
-					IMethodBinding methodDecl= methodBinding.getMethodDeclaration();
+					IFunctionBinding methodDecl= methodBinding.getMethodDeclaration();
 					ITypeBinding[] declParamTypes= methodDecl.getParameterTypes();
 	
 					ITypeBinding[] newParamTypes= new ITypeBinding[changeDesc.length];
@@ -1395,7 +1395,7 @@ public class UnresolvedElementsSubProcessor {
 		return res;
 	}
 
-	private static void addQualifierToOuterProposal(IInvocationContext context, MethodInvocation invocationNode, IMethodBinding binding, Collection proposals) throws CoreException {
+	private static void addQualifierToOuterProposal(IInvocationContext context, FunctionInvocation invocationNode, IFunctionBinding binding, Collection proposals) throws CoreException {
 		ITypeBinding declaringType= binding.getDeclaringClass();
 		ITypeBinding parentType= Bindings.getBindingOfParentType(invocationNode);
 		ITypeBinding currType= parentType;
@@ -1433,16 +1433,16 @@ public class UnresolvedElementsSubProcessor {
 			newExpression= name;
 		}
 
-		rewrite.set(invocationNode, MethodInvocation.EXPRESSION_PROPERTY, newExpression, null);
+		rewrite.set(invocationNode, FunctionInvocation.EXPRESSION_PROPERTY, newExpression, null);
 
 		proposals.add(proposal);
 	}
 
 
 	public static void getConstructorProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-		ICompilationUnit cu= context.getCompilationUnit();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 
-		CompilationUnit astRoot= context.getASTRoot();
+		JavaScriptUnit astRoot= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveringNode(astRoot);
 		if (selectedNode == null) {
 			return;
@@ -1450,7 +1450,7 @@ public class UnresolvedElementsSubProcessor {
 
 		ITypeBinding targetBinding= null;
 		List arguments= null;
-		IMethodBinding recursiveConstructor= null;
+		IFunctionBinding recursiveConstructor= null;
 
 		int type= selectedNode.getNodeType();
 		if (type == ASTNode.CLASS_INSTANCE_CREATION) {
@@ -1478,10 +1478,10 @@ public class UnresolvedElementsSubProcessor {
 		if (targetBinding == null) {
 			return;
 		}
-		IMethodBinding[] methods= targetBinding.getDeclaredMethods();
+		IFunctionBinding[] methods= targetBinding.getDeclaredMethods();
 		ArrayList similarElements= new ArrayList();
 		for (int i= 0; i < methods.length; i++) {
-			IMethodBinding curr= methods[i];
+			IFunctionBinding curr= methods[i];
 			if (curr.isConstructor() && recursiveConstructor != curr) {
 				similarElements.add(curr); // similar elements can contain a implicit default constructor
 			}
@@ -1492,28 +1492,28 @@ public class UnresolvedElementsSubProcessor {
 		if (targetBinding.isFromSource()) {
 			ITypeBinding targetDecl= targetBinding.getTypeDeclaration();
 
-			ICompilationUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, targetDecl);
+			IJavaScriptUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, targetDecl);
 			if (targetCU != null) {
 				String[] args= new String[] { ASTResolving.getMethodSignature( ASTResolving.getTypeSignature(targetDecl), getParameterTypes(arguments), false) };
 				String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createconstructor_description, args);
-				Image image= JavaElementImageProvider.getDecoratedImage(JavaPluginImages.DESC_MISC_PUBLIC, JavaElementImageDescriptor.CONSTRUCTOR, JavaElementImageProvider.SMALL_SIZE);
+				Image image= JavaElementImageProvider.getDecoratedImage(JavaPluginImages.DESC_MISC_PUBLIC, JavaScriptElementImageDescriptor.CONSTRUCTOR, JavaElementImageProvider.SMALL_SIZE);
 				proposals.add(new NewMethodCompletionProposal(label, targetCU, selectedNode, arguments, targetDecl, 5, image));
 			}
 		}
 	}
 
 	public static void getAmbiguosTypeReferenceProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-		final ICompilationUnit cu= context.getCompilationUnit();
+		final IJavaScriptUnit cu= context.getCompilationUnit();
 		int offset= problem.getOffset();
 		int len= problem.getLength();
 
-		IJavaElement[] elements= cu.codeSelect(offset, len);
+		IJavaScriptElement[] elements= cu.codeSelect(offset, len);
 		for (int i= 0; i < elements.length; i++) {
-			IJavaElement curr= elements[i];
+			IJavaScriptElement curr= elements[i];
 			if (curr instanceof IType && !TypeFilter.isFiltered((IType) curr)) {
 				String qualifiedTypeName= JavaModelUtil.getFullyQualifiedName((IType) curr);
 
-				CompilationUnit root= context.getASTRoot();
+				JavaScriptUnit root= context.getASTRoot();
 				
 				String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_importexplicit_description, qualifiedTypeName);
 				Image image= JavaPluginImages.get(JavaPluginImages.IMG_OBJS_IMPDECL);
@@ -1529,13 +1529,13 @@ public class UnresolvedElementsSubProcessor {
 
 	public static void getArrayAccessProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
 
-		CompilationUnit root= context.getASTRoot();
+		JavaScriptUnit root= context.getASTRoot();
 		ASTNode selectedNode= problem.getCoveringNode(root);
-		if (!(selectedNode instanceof MethodInvocation)) {
+		if (!(selectedNode instanceof FunctionInvocation)) {
 			return;
 		}
 
-		MethodInvocation decl= (MethodInvocation) selectedNode;
+		FunctionInvocation decl= (FunctionInvocation) selectedNode;
 		SimpleName nameNode= decl.getName();
 		String methodName= nameNode.getIdentifier();
 
@@ -1556,8 +1556,8 @@ public class UnresolvedElementsSubProcessor {
 	}
 
 	public static void getAnnotationMemberProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-		CompilationUnit astRoot= context.getASTRoot();
-		ICompilationUnit cu= context.getCompilationUnit();
+		JavaScriptUnit astRoot= context.getASTRoot();
+		IJavaScriptUnit cu= context.getCompilationUnit();
 		ASTNode selectedNode= problem.getCoveringNode(astRoot);
 
 		Annotation annotation;
@@ -1583,9 +1583,9 @@ public class UnresolvedElementsSubProcessor {
 		
 		if (annotation instanceof NormalAnnotation) {
 			// similar names
-			IMethodBinding[] otherMembers= annotBinding.getDeclaredMethods();
+			IFunctionBinding[] otherMembers= annotBinding.getDeclaredMethods();
 			for (int i= 0; i < otherMembers.length; i++) {
-				IMethodBinding binding= otherMembers[i];
+				IFunctionBinding binding= otherMembers[i];
 				String curr= binding.getName();
 				int relevance= NameMatcher.isSimilarName(memberName, curr) ? 6 : 3;
 				String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_UnresolvedElementsSubProcessor_changetoattribute_description, curr);
@@ -1594,7 +1594,7 @@ public class UnresolvedElementsSubProcessor {
 		}
 		
 		if (annotBinding.isFromSource()) {
-			ICompilationUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, annotBinding);
+			IJavaScriptUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, annotBinding);
 			if (targetCU != null) {
 				String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_UnresolvedElementsSubProcessor_createattribute_description, memberName);
 				Image image= JavaPluginImages.get(JavaPluginImages.IMG_MISC_PUBLIC);

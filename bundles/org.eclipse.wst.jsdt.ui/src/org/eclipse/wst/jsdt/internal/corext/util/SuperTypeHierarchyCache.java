@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.ITypeHierarchyChangedListener;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 public class SuperTypeHierarchyCache {
 	
@@ -75,11 +75,11 @@ public class SuperTypeHierarchyCache {
 	/**
 	 * Get a hierarchy for the given type
 	 */
-	public static ITypeHierarchy getTypeHierarchy(IType type) throws JavaModelException {
+	public static ITypeHierarchy getTypeHierarchy(IType type) throws JavaScriptModelException {
 		return getTypeHierarchy(type, null);
 	}
 
-	public static MethodOverrideTester getMethodOverrideTester(IType type) throws JavaModelException {
+	public static MethodOverrideTester getMethodOverrideTester(IType type) throws JavaScriptModelException {
 		MethodOverrideTester test= null;
 		synchronized (fgMethodOverrideTesterCache) {
 			test= (MethodOverrideTester) fgMethodOverrideTesterCache.get(type);
@@ -112,7 +112,7 @@ public class SuperTypeHierarchyCache {
 	/**
 	 * Get a hierarchy for the given type
 	 */
-	public static ITypeHierarchy getTypeHierarchy(IType type, IProgressMonitor progressMonitor) throws JavaModelException {
+	public static ITypeHierarchy getTypeHierarchy(IType type, IProgressMonitor progressMonitor) throws JavaScriptModelException {
 		ITypeHierarchy hierarchy= findTypeHierarchyInCache(type);
 		if (hierarchy == null) {
 			fgCacheMisses++;

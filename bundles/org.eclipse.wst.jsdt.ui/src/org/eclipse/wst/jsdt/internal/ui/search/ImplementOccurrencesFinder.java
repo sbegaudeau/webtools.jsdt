@@ -19,15 +19,15 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.search.ui.text.Match;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
@@ -47,12 +47,12 @@ public class ImplementOccurrencesFinder implements org.eclipse.wst.jsdt.internal
 	private class MethodVisitor extends ASTVisitor {
 		
 		/*
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.MethodDeclaration)
+		 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.FunctionDeclaration)
 		 */
-		public boolean visit(MethodDeclaration node) {
-			IMethodBinding binding= node.resolveBinding();
+		public boolean visit(FunctionDeclaration node) {
+			IFunctionBinding binding= node.resolveBinding();
 			if (binding != null) {
-				IMethodBinding method= Bindings.findOverriddenMethodInHierarchy(fSelectedType, binding);
+				IFunctionBinding method= Bindings.findOverriddenMethodInHierarchy(fSelectedType, binding);
 				if (method != null)
 					fResult.add(node.getName());
 			}
@@ -86,11 +86,11 @@ public class ImplementOccurrencesFinder implements org.eclipse.wst.jsdt.internal
 		fResult= new ArrayList();
 	}
 	
-	public String initialize(CompilationUnit root, int offset, int length) {
+	public String initialize(JavaScriptUnit root, int offset, int length) {
 		return initialize(root, NodeFinder.perform(root, offset, length));
 	}
 	
-	public String initialize(CompilationUnit root, ASTNode node) {
+	public String initialize(JavaScriptUnit root, ASTNode node) {
 		if (!(node instanceof Name))
 			return SearchMessages.ImplementOccurrencesFinder_invalidTarget;  
 		
@@ -121,7 +121,7 @@ public class ImplementOccurrencesFinder implements org.eclipse.wst.jsdt.internal
 		return fResult;
 	}
 	
-	public void collectOccurrenceMatches(IJavaElement element, IDocument document, Collection resultingMatches) {
+	public void collectOccurrenceMatches(IJavaScriptElement element, IDocument document, Collection resultingMatches) {
 		for (Iterator iter= fResult.iterator(); iter.hasNext();) {
 			ASTNode node= (ASTNode) iter.next();
 			int startPosition= node.getStartPosition();

@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CodeFormatingTabPage;
@@ -44,7 +44,7 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CodeStyleTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.UnnecessaryCodeTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialogTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialogTabPage.IModificationListener;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class CleanUpSaveParticipantConfigurationModifyDialog extends StatusDialog implements IModificationListener {
 	
@@ -75,7 +75,7 @@ public class CleanUpSaveParticipantConfigurationModifyDialog extends StatusDialo
 		fOrginalValues= new HashMap(settings);
 		setStatusLineAboveButtons(false);
 		fTabPages= new ArrayList();
-		fDialogSettings= JavaPlugin.getDefault().getDialogSettings();
+		fDialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();
 	}
 	
 	public void create() {
@@ -149,7 +149,7 @@ public class CleanUpSaveParticipantConfigurationModifyDialog extends StatusDialo
 			count+= fPages[i].getSelectedCleanUpCount();
 		}
 		if (count == 0) {
-			super.updateStatus(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_SelectAnAction_Error));
+			super.updateStatus(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_SelectAnAction_Error));
 		} else {
 			if (status == null) {
 				super.updateStatus(StatusInfo.OK_STATUS);

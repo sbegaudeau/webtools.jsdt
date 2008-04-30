@@ -49,26 +49,26 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.MarkerUtilities;
 import org.eclipse.ui.views.markers.WorkbenchMarkerResolution;
 import org.eclipse.wst.jsdt.core.CorrectionEngine;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelMarker;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelMarker;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.ASTRequestor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.MultiStateCompilationUnitChange;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaMarkerAnnotation;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalComparator;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
@@ -83,7 +83,7 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 		private static final IMarker[] NO_MARKERS= new IMarker[0];
 		private static final int BATCH_SIZE= 40;
 
-		private ICompilationUnit fCompilationUnit;
+		private IJavaScriptUnit fCompilationUnit;
 		private int fOffset;
 		private int fLength;
 		private IJavaCompletionProposal fProposal;
@@ -93,7 +93,7 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 		 * Constructor for CorrectionMarkerResolution.
 		 * @param marker 
 		 */
-		public CorrectionMarkerResolution(ICompilationUnit cu, int offset, int length, IJavaCompletionProposal proposal, IMarker marker) {
+		public CorrectionMarkerResolution(IJavaScriptUnit cu, int offset, int length, IJavaCompletionProposal proposal, IMarker marker) {
 			fCompilationUnit= cu;
 			fOffset= offset;
 			fLength= length;
@@ -115,18 +115,18 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 			try {
 				IEditorPart part= EditorUtility.isOpenInEditor(fCompilationUnit);
 				if (part == null) {
-					part= JavaUI.openInEditor(fCompilationUnit, true, false);
+					part= JavaScriptUI.openInEditor(fCompilationUnit, true, false);
 					if (part instanceof ITextEditor) {
 						((ITextEditor) part).selectAndReveal(fOffset, fLength);
 					}
 				}
 				if (part != null) {
 					IEditorInput input= part.getEditorInput();
-					IDocument doc= JavaPlugin.getDefault().getCompilationUnitDocumentProvider().getDocument(input);					
+					IDocument doc= JavaScriptPlugin.getDefault().getCompilationUnitDocumentProvider().getDocument(input);					
 					fProposal.apply(doc);
 				}
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 		
@@ -143,10 +143,10 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 				if (fProposal instanceof FixCorrectionProposal) {
 					ICleanUp cleanUp= ((FixCorrectionProposal)fProposal).getCleanUp();
 					if (cleanUp != null) {
-						Hashtable/*<ICompilationUnit, List<IProblemLocation>*/ problemLocations= new Hashtable();
+						Hashtable/*<IJavaScriptUnit, List<IProblemLocation>*/ problemLocations= new Hashtable();
 						for (int i= 0; i < markers.length; i++) {
 							IMarker marker= markers[i];
-							ICompilationUnit cu= getCompilationUnit(marker);
+							IJavaScriptUnit cu= getCompilationUnit(marker);
 							
 							if (cu != null) {
 								try {
@@ -159,8 +159,8 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 										List l= (List)problemLocations.get(cu.getPrimary());
 										l.add(location);
 									}
-								} catch (JavaModelException e) {
-									JavaPlugin.log(e);
+								} catch (JavaScriptModelException e) {
+									JavaScriptPlugin.log(e);
 								}
 							}
 						}
@@ -169,8 +169,8 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 							Set cus= problemLocations.keySet();
 							Hashtable projects= new Hashtable();
 							for (Iterator iter= cus.iterator(); iter.hasNext();) {
-								ICompilationUnit cu= (ICompilationUnit)iter.next();
-								IJavaProject project= cu.getJavaProject();
+								IJavaScriptUnit cu= (IJavaScriptUnit)iter.next();
+								IJavaScriptProject project= cu.getJavaScriptProject();
 								if (!projects.containsKey(project)) {
 									projects.put(project, new ArrayList());
 								}
@@ -187,14 +187,14 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 							CompositeChange allChanges= new CompositeChange(name);
 							
 							for (Iterator projectIter= projects.keySet().iterator(); projectIter.hasNext();) {
-								IJavaProject project= (IJavaProject)projectIter.next();
+								IJavaScriptProject project= (IJavaScriptProject)projectIter.next();
 								List compilationUnitsList= (List)projects.get(project);
-								ICompilationUnit[] compilationUnits= (ICompilationUnit[])compilationUnitsList.toArray(new ICompilationUnit[compilationUnitsList.size()]);
+								IJavaScriptUnit[] compilationUnits= (IJavaScriptUnit[])compilationUnitsList.toArray(new IJavaScriptUnit[compilationUnitsList.size()]);
 								
 								try {
 									cleanUpProject(project, compilationUnits, cleanUp, problemLocations, allChanges, pm);
 								} catch (CoreException e) {
-									JavaPlugin.log(e);
+									JavaScriptPlugin.log(e);
 								} finally {
 									pm.worked(1);
 								}
@@ -213,7 +213,7 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 							try {
 								op.run(new SubProgressMonitor(pm, 1));
 							} catch (CoreException e1) {
-								JavaPlugin.log(e1);
+								JavaScriptPlugin.log(e1);
 							} finally {
 								pm.worked(1);
 							}
@@ -235,30 +235,30 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 			List files= new ArrayList();
 			try {
 				findFilesToBeModified(change, files);
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 				return false;
 			}
-			result.merge(Checks.validateModifiesFiles((IFile[])files.toArray(new IFile[files.size()]), JavaPlugin.getActiveWorkbenchShell().getShell()));
+			result.merge(Checks.validateModifiesFiles((IFile[])files.toArray(new IFile[files.size()]), JavaScriptPlugin.getActiveWorkbenchShell().getShell()));
 			if (result.hasFatalError()) {
 				RefactoringStatusEntry[] entries= result.getEntries();
 				IStatus status;
 				if (entries.length > 1) {
-					status= new MultiStatus(JavaUI.ID_PLUGIN, 0, result.getMessageMatchingSeverity(RefactoringStatus.ERROR), null);
+					status= new MultiStatus(JavaScriptUI.ID_PLUGIN, 0, result.getMessageMatchingSeverity(RefactoringStatus.ERROR), null);
 					for (int i= 0; i < entries.length; i++) {
-						((MultiStatus)status).add(new Status(entries[i].getSeverity(), JavaUI.ID_PLUGIN, 0, entries[i].getMessage(), null));
+						((MultiStatus)status).add(new Status(entries[i].getSeverity(), JavaScriptUI.ID_PLUGIN, 0, entries[i].getMessage(), null));
 					}
 				} else {
 					RefactoringStatusEntry entry= entries[0];
-					status= new Status(entry.getSeverity(), JavaUI.ID_PLUGIN, 0, entry.getMessage(), null);
+					status= new Status(entry.getSeverity(), JavaScriptUI.ID_PLUGIN, 0, entry.getMessage(), null);
 				}
-				ErrorDialog.openError(JavaPlugin.getActiveWorkbenchShell().getShell(), CorrectionMessages.CorrectionMarkerResolutionGenerator__multiFixErrorDialog_Titel, CorrectionMessages.CorrectionMarkerResolutionGenerator_multiFixErrorDialog_description, status);
+				ErrorDialog.openError(JavaScriptPlugin.getActiveWorkbenchShell().getShell(), CorrectionMessages.CorrectionMarkerResolutionGenerator__multiFixErrorDialog_Titel, CorrectionMessages.CorrectionMarkerResolutionGenerator_multiFixErrorDialog_description, status);
 				return false;
 			}
 			return true;
 		}
 		
-		private void findFilesToBeModified(CompositeChange change, List result) throws JavaModelException {
+		private void findFilesToBeModified(CompositeChange change, List result) throws JavaScriptModelException {
 			Change[] children= change.getChildren();
 			for (int i=0;i < children.length;i++) {
 				Change child= children[i];
@@ -272,11 +272,11 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 			}
 		}
 
-		private void cleanUpProject(IJavaProject project, ICompilationUnit[] compilationUnits, ICleanUp cleanUp, Hashtable problemLocations, CompositeChange result, IProgressMonitor monitor) throws CoreException {
+		private void cleanUpProject(IJavaScriptProject project, IJavaScriptUnit[] compilationUnits, ICleanUp cleanUp, Hashtable problemLocations, CompositeChange result, IProgressMonitor monitor) throws CoreException {
 			cleanUp.checkPreConditions(project, compilationUnits, new SubProgressMonitor(monitor, 1));
 			for (int i= 0; i < compilationUnits.length; i++) {
-				ICompilationUnit cu= compilationUnits[i];
-				CompilationUnit root= getASTRoot(cu, new SubProgressMonitor(monitor, 1));
+				IJavaScriptUnit cu= compilationUnits[i];
+				JavaScriptUnit root= getASTRoot(cu, new SubProgressMonitor(monitor, 1));
 				List locationList= (List)problemLocations.get(cu);
 				IProblemLocation[] locations= (IProblemLocation[])locationList.toArray(new IProblemLocation[locationList.size()]);
 
@@ -336,7 +336,7 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 			final List result= new ArrayList();
 			
 			for (Iterator iter= projectICUTable.keySet().iterator(); iter.hasNext();) {
-				IJavaProject project= (IJavaProject)iter.next();
+				IJavaScriptProject project= (IJavaScriptProject)iter.next();
 				List cus= (List)projectICUTable.get(project);
 				ASTParser parser= getParser(project);
 				
@@ -346,12 +346,12 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 					end= Math.min(start + BATCH_SIZE, cus.size());
 				
 					List toParse= cus.subList(start, end);
-					ICompilationUnit[] units= (ICompilationUnit[])toParse.toArray(new ICompilationUnit[toParse.size()]);
+					IJavaScriptUnit[] units= (IJavaScriptUnit[])toParse.toArray(new IJavaScriptUnit[toParse.size()]);
 					parser.createASTs(units, new String[0], new ASTRequestor() {
 						/**
 						 * {@inheritDoc}
 						 */
-						public void acceptAST(ICompilationUnit cu, CompilationUnit root) {
+						public void acceptAST(IJavaScriptUnit cu, JavaScriptUnit root) {
 							try {
 								IEditorInput input= EditorUtility.getEditorInput(cu);
 								
@@ -367,7 +367,7 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 									}						
 								}
 							} catch (CoreException e) {
-								JavaPlugin.log(e);
+								JavaScriptPlugin.log(e);
 							}
 						}
 					}, new NullProgressMonitor());
@@ -391,7 +391,7 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 			try {
 				markerType= fMarker.getType();
 			} catch (CoreException e1) {
-				JavaPlugin.log(e1);
+				JavaScriptPlugin.log(e1);
 				return result;
 			}
 			
@@ -402,7 +402,7 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 					try {
 						currMarkerType= marker.getType();
 					} catch (CoreException e1) {
-						JavaPlugin.log(e1);
+						JavaScriptPlugin.log(e1);
 					}
 				
 					if (currMarkerType != null && currMarkerType.equals(markerType)) {
@@ -422,20 +422,20 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 		}
 		
 		/**
-		 * Returns the ICompilationUnits for each IJavaProject 
+		 * Returns the ICompilationUnits for each IJavaScriptProject 
 		 */
-		private Hashtable/*<IJavaProject, List<ICompilationUnit>>*/ getCompilationUnitsForProjects(final Hashtable/*<IFile, List<IMarker>>*/ fileMarkerTable) {
+		private Hashtable/*<IJavaScriptProject, List<IJavaScriptUnit>>*/ getCompilationUnitsForProjects(final Hashtable/*<IFile, List<IMarker>>*/ fileMarkerTable) {
 			Hashtable result= new Hashtable();
 			for (Iterator iter= fileMarkerTable.keySet().iterator(); iter.hasNext();) {
 				IFile res= (IFile)iter.next();
-				IJavaElement element= JavaCore.create(res);
+				IJavaScriptElement element= JavaScriptCore.create(res);
 				
-				if (element instanceof ICompilationUnit) {
-					ICompilationUnit cu= (ICompilationUnit)element;
-					List cus= (List)result.get(cu.getJavaProject());
+				if (element instanceof IJavaScriptUnit) {
+					IJavaScriptUnit cu= (IJavaScriptUnit)element;
+					List cus= (List)result.get(cu.getJavaScriptProject());
 					if (cus == null) {
 						cus= new ArrayList();
-						result.put(cu.getJavaProject(), cus);
+						result.put(cu.getJavaScriptProject(), cus);
 					}
 					cus.add(cu);
 				}
@@ -443,15 +443,15 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 			return result;
 		}
 
-		private static ASTParser getParser(IJavaProject javaProject) {
+		private static ASTParser getParser(IJavaScriptProject javaProject) {
 			ASTParser parser= ASTParser.newParser(ASTProvider.SHARED_AST_LEVEL);
 			parser.setResolveBindings(true);
 			parser.setProject(javaProject);
 			return parser;
 		}
 		
-		private static CompilationUnit getASTRoot(ICompilationUnit compilationUnit, IProgressMonitor monitor) {
-			CompilationUnit result= ASTProvider.getASTProvider().getAST(compilationUnit, ASTProvider.WAIT_YES, monitor);
+		private static JavaScriptUnit getASTRoot(IJavaScriptUnit compilationUnit, IProgressMonitor monitor) {
+			JavaScriptUnit result= ASTProvider.getASTProvider().getAST(compilationUnit, ASTProvider.WAIT_YES, monitor);
 			if (result == null) {
 				// see bug 63554
 				result= ASTResolving.createQuickFixAST(compilationUnit, monitor);
@@ -485,8 +485,8 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 	}
 	
 	private static boolean internalHasResolutions(IMarker marker) {
-		int id= marker.getAttribute(IJavaModelMarker.ID, -1);
-		ICompilationUnit cu= getCompilationUnit(marker);
+		int id= marker.getAttribute(IJavaScriptModelMarker.ID, -1);
+		IJavaScriptUnit cu= getCompilationUnit(marker);
 		return cu != null && JavaCorrectionProcessor.hasCorrections(cu, id, MarkerUtilities.getMarkerType(marker));
 	}
 	
@@ -496,7 +496,7 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 		}
 
 		try {
-			ICompilationUnit cu= getCompilationUnit(marker);
+			IJavaScriptUnit cu= getCompilationUnit(marker);
 			if (cu != null) {
 				IEditorInput input= EditorUtility.getEditorInput(cu);
 				if (input != null) {
@@ -520,8 +520,8 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 					}
 				}
 			}
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 		}
 		return NO_RESOLUTIONS;
 	}
@@ -535,18 +535,18 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 		return false;
 	}
 
-	private static ICompilationUnit getCompilationUnit(IMarker marker) {
+	private static IJavaScriptUnit getCompilationUnit(IMarker marker) {
 		IResource res= marker.getResource();
 		if (res instanceof IFile && res.isAccessible()) {
-			IJavaElement element= JavaCore.create((IFile) res);
-			if (element instanceof ICompilationUnit)
-				return (ICompilationUnit) element;
+			IJavaScriptElement element= JavaScriptCore.create((IFile) res);
+			if (element instanceof IJavaScriptUnit)
+				return (IJavaScriptUnit) element;
 		}
 		return null;
 	}
 
 	private static IProblemLocation findProblemLocation(IEditorInput input, IMarker marker) {
-		IAnnotationModel model= JavaPlugin.getDefault().getCompilationUnitDocumentProvider().getAnnotationModel(input);
+		IAnnotationModel model= JavaScriptPlugin.getDefault().getCompilationUnitDocumentProvider().getAnnotationModel(input);
 		if (model != null) { // open in editor
 			Iterator iter= model.getAnnotationIterator();
 			while (iter.hasNext()) {
@@ -562,15 +562,15 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 				}
 			}
 		} else { // not open in editor
-			ICompilationUnit cu= getCompilationUnit(marker);
+			IJavaScriptUnit cu= getCompilationUnit(marker);
 			return createFromMarker(marker, cu);
 		}
 		return null;
 	}
 
-	private static IProblemLocation createFromMarker(IMarker marker, ICompilationUnit cu) {
+	private static IProblemLocation createFromMarker(IMarker marker, IJavaScriptUnit cu) {
 		try {
-			int id= marker.getAttribute(IJavaModelMarker.ID, -1);
+			int id= marker.getAttribute(IJavaScriptModelMarker.ID, -1);
 			int start= marker.getAttribute(IMarker.CHAR_START, -1);
 			int end= marker.getAttribute(IMarker.CHAR_END, -1);
 			int severity= marker.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
@@ -581,7 +581,7 @@ public class CorrectionMarkerResolutionGenerator implements IMarkerResolutionGen
 				return new ProblemLocation(start, end - start, id, arguments, isError, markerType);
 			}
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		return null;
 	}

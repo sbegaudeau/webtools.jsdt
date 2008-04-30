@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.GlobalBuildAction;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.ListDialog;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
@@ -131,7 +131,7 @@ public class RefactoringSaveHelper {
 			try {
 				if (fSaveMode == SAVE_ALL_ALWAYS_ASK || fSaveMode == SAVE_ALL
 						|| RefactoringSavePreferences.getSaveAllEditors()) {
-					if (!JavaPlugin.getActiveWorkbenchWindow().getWorkbench().saveAllEditors(false))
+					if (!JavaScriptPlugin.getActiveWorkbenchWindow().getWorkbench().saveAllEditors(false))
 						return false;
 				} else {
 					IRunnableWithProgress runnable= new IRunnableWithProgress() {
@@ -148,7 +148,7 @@ public class RefactoringSaveHelper {
 						}
 					};
 					try {
-						PlatformUI.getWorkbench().getProgressService().runInUI(JavaPlugin.getActiveWorkbenchWindow(), runnable, null);
+						PlatformUI.getWorkbench().getProgressService().runInUI(JavaScriptPlugin.getActiveWorkbenchWindow(), runnable, null);
 					} catch (InterruptedException e) {
 						return false;
 					} catch (InvocationTargetException e) {
@@ -172,7 +172,7 @@ public class RefactoringSaveHelper {
 
 	public void triggerBuild() {
 		if (fFilesSaved && ResourcesPlugin.getWorkspace().getDescription().isAutoBuilding()) {
-			new GlobalBuildAction(JavaPlugin.getActiveWorkbenchWindow(), IncrementalProjectBuilder.INCREMENTAL_BUILD).run();
+			new GlobalBuildAction(JavaScriptPlugin.getActiveWorkbenchWindow(), IncrementalProjectBuilder.INCREMENTAL_BUILD).run();
 		}
 	}
 	

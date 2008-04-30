@@ -14,14 +14,14 @@ import org.eclipse.core.commands.AbstractParameterValueConverter;
 import org.eclipse.core.commands.ParameterValueConversionException;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -71,10 +71,10 @@ public class JavaElementReferenceConverter extends AbstractParameterValueConvert
 		String projectName= parameterValue.substring(0, projectEndPosition);
 		String javaElementRef= parameterValue.substring(projectEndPosition + 1);
 
-		IJavaModel javaModel= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
+		IJavaScriptModel javaModel= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
 		assertExists(javaModel);
 
-		IJavaProject javaProject= javaModel.getJavaProject(projectName);
+		IJavaScriptProject javaProject= javaModel.getJavaScriptProject(projectName);
 		assertExists(javaProject);
 
 		final int typeEndPosition= javaElementRef.indexOf(TYPE_END_CHAR);
@@ -90,7 +90,7 @@ public class JavaElementReferenceConverter extends AbstractParameterValueConvert
 			ITypeRoot typeRoot=null;
 			try {
 				 typeRoot=javaProject.findTypeRoot(typeName);
-			} catch (JavaModelException e) {	}
+			} catch (JavaScriptModelException e) {	}
 			assertExists(typeRoot);
 			if (typeEndPosition == -1) {
 				return typeRoot;
@@ -112,7 +112,7 @@ public class JavaElementReferenceConverter extends AbstractParameterValueConvert
 				// parameterTypes == null
 			}
 			assertWellFormed(parameterTypes != null);
-			IMethod method= typeRoot.getMethod(methodName, parameterTypes);
+			IFunction method= typeRoot.getFunction(methodName, parameterTypes);
 			assertExists(method);
 			return method;
 		}
@@ -120,7 +120,7 @@ public class JavaElementReferenceConverter extends AbstractParameterValueConvert
 		IType type= null;
 		try {
 			type= javaProject.findType(typeName);
-		} catch (JavaModelException ex) {
+		} catch (JavaScriptModelException ex) {
 			// type == null
 		}
 		assertExists(type);
@@ -146,7 +146,7 @@ public class JavaElementReferenceConverter extends AbstractParameterValueConvert
 			// parameterTypes == null
 		}
 		assertWellFormed(parameterTypes != null);
-		IMethod method= type.getMethod(methodName, parameterTypes);
+		IFunction method= type.getFunction(methodName, parameterTypes);
 		assertExists(method);
 		return method;
 	}
@@ -173,23 +173,23 @@ public class JavaElementReferenceConverter extends AbstractParameterValueConvert
 	 *            an element to check for existence
 	 * @throws ParameterValueConversionException
 	 */
-	private void assertExists(IJavaElement javaElement) throws ParameterValueConversionException {
+	private void assertExists(IJavaScriptElement javaElement) throws ParameterValueConversionException {
 		if ((javaElement == null) || (!javaElement.exists())) {
-			throw new ParameterValueConversionException("parameterValue must reference an existing IJavaElement"); //$NON-NLS-1$
+			throw new ParameterValueConversionException("parameterValue must reference an existing IJavaScriptElement"); //$NON-NLS-1$
 		}
 	}
 
 	public String convertToString(Object parameterValue) throws ParameterValueConversionException {
 
-		if (!(parameterValue instanceof IJavaElement)) {
-			throw new ParameterValueConversionException("parameterValue must be an IJavaElement"); //$NON-NLS-1$
+		if (!(parameterValue instanceof IJavaScriptElement)) {
+			throw new ParameterValueConversionException("parameterValue must be an IJavaScriptElement"); //$NON-NLS-1$
 		}
 
-		IJavaElement javaElement= (IJavaElement) parameterValue;
+		IJavaScriptElement javaElement= (IJavaScriptElement) parameterValue;
 
-		IJavaProject javaProject= javaElement.getJavaProject();
+		IJavaScriptProject javaProject= javaElement.getJavaScriptProject();
 		if (javaProject == null) {
-			throw new ParameterValueConversionException("Could not get IJavaProject for element"); //$NON-NLS-1$
+			throw new ParameterValueConversionException("Could not get IJavaScriptProject for element"); //$NON-NLS-1$
 		}
 
 		StringBuffer buffer;
@@ -198,8 +198,8 @@ public class JavaElementReferenceConverter extends AbstractParameterValueConvert
 			IType type= (IType) javaElement;
 			buffer= composeTypeReference(type);
 		} else
-			if (javaElement instanceof IMethod) {
-				IMethod method= (IMethod) javaElement;
+			if (javaElement instanceof IFunction) {
+				IFunction method= (IFunction) javaElement;
 				buffer= composeTypeReference(method.getDeclaringType());
 				buffer.append(TYPE_END_CHAR);
 				buffer.append(method.getElementName());
@@ -216,7 +216,7 @@ public class JavaElementReferenceConverter extends AbstractParameterValueConvert
 					buffer.append(TYPE_END_CHAR);
 					buffer.append(field.getElementName());
 				} else {
-					throw new ParameterValueConversionException("Unsupported IJavaElement type"); //$NON-NLS-1$
+					throw new ParameterValueConversionException("Unsupported IJavaScriptElement type"); //$NON-NLS-1$
 				}
 
 		return buffer.toString();
@@ -224,7 +224,7 @@ public class JavaElementReferenceConverter extends AbstractParameterValueConvert
 
 	private StringBuffer composeTypeReference(IType type) {
 		StringBuffer buffer= new StringBuffer();
-		buffer.append(type.getJavaProject().getElementName());
+		buffer.append(type.getJavaScriptProject().getElementName());
 		buffer.append(PROJECT_END_CHAR);
 		buffer.append(type.getFullyQualifiedName());
 		return buffer;

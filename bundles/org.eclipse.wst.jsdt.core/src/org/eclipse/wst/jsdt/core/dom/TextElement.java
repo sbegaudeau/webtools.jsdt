@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.Util;
  *     Sequence of characters not including a close comment delimiter <b>*</b><b>/</b>
  * </pre>
  *
- * @see Javadoc
+ * @see JSdoc
  * @since 3.0
  */
 public final class TextElement extends ASTNode implements IDocElement {

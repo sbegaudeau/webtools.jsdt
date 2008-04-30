@@ -40,7 +40,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * does not commit it to the model, it only frees up the memory occupied by
  * the element). After a working copy is destroyed, the working copy cannot
  * be accessed again. Non-handle methods will throw a
- * <code>JavaModelException</code> indicating the Java element does not exist.
+ * <code>JavaScriptModelException</code> indicating the Java element does not exist.
  * </p>
  * <p>
  * A working copy cannot be created from another working copy.
@@ -49,7 +49,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
- * @deprecated Use {@link ICompilationUnit} instead
+ * @deprecated Use {@link IJavaScriptUnit} instead
  */
 public interface IWorkingCopy {
 
@@ -65,7 +65,7 @@ public interface IWorkingCopy {
 	 * <li> <code>true</code> - in this case the contents of this working copy are applied to
 	 * 	the underlying resource even though this working copy was created before
 	 *	a subsequent change in the resource</li>
-	 * <li> <code>false</code> - in this case a <code>JavaModelException</code> is thrown</li>
+	 * <li> <code>false</code> - in this case a <code>JavaScriptModelException</code> is thrown</li>
 	 * </ul>
 	 * <p>
 	 * Since 2.1, a working copy can be created on a not-yet existing compilation
@@ -75,15 +75,15 @@ public interface IWorkingCopy {
 	 * @param force a flag to handle the cases when the contents of the original resource have changed
 	 * since this working copy was created
 	 * @param monitor the given progress monitor
-	 * @exception JavaModelException if this working copy could not commit. Reasons include:
+	 * @exception JavaScriptModelException if this working copy could not commit. Reasons include:
 	 * <ul>
 	 * <li> A <code>CoreException</code> occurred while updating an underlying resource
 	 * <li> This element is not a working copy (INVALID_ELEMENT_TYPES)
 	 * <li> A update conflict (described above) (UPDATE_CONFLICT)
 	 * </ul>
-	 * @deprecated Use {@link ICompilationUnit#commitWorkingCopy(boolean, IProgressMonitor)} instead.
+	 * @deprecated Use {@link IJavaScriptUnit#commitWorkingCopy(boolean, IProgressMonitor)} instead.
 	 */
-	void commit(boolean force, IProgressMonitor monitor) throws JavaModelException;
+	void commit(boolean force, IProgressMonitor monitor) throws JavaScriptModelException;
 
 	/**
 	 * Destroys this working copy, closing its buffer and discarding
@@ -95,10 +95,10 @@ public interface IWorkingCopy {
 	 * <code>destroy()</code> is the same as the number of calls to <code>
 	 * getSharedWorkingCopy(IProgressMonitor, IBufferFactory)</code>.
 	 * </p><p>
-	 * When it is destroyed, a REMOVED IJavaElementDelta is reported on this
+	 * When it is destroyed, a REMOVED IJavaScriptElementDelta is reported on this
 	 * working copy.
 	 * </p>
-	 * @deprecated Use {@link ICompilationUnit#discardWorkingCopy()} instead.
+	 * @deprecated Use {@link IJavaScriptUnit#discardWorkingCopy()} instead.
 	 */
 	void destroy();
 
@@ -114,9 +114,9 @@ public interface IWorkingCopy {
 	 * @see IBufferFactory
 	 * @since 2.0
 	 *
-	 * @deprecated Use {@link ICompilationUnit#findWorkingCopy(WorkingCopyOwner)} instead.
+	 * @deprecated Use {@link IJavaScriptUnit#findWorkingCopy(WorkingCopyOwner)} instead.
 	 */
-	IJavaElement findSharedWorkingCopy(IBufferFactory bufferFactory);
+	IJavaScriptElement findSharedWorkingCopy(IBufferFactory bufferFactory);
 
 	/**
 	 * Returns the original element the specified working copy element was created from,
@@ -127,9 +127,9 @@ public interface IWorkingCopy {
 	 * @return the original element the specified working copy element was created from,
 	 * or <code>null</code> if this is not a working copy element
 	 *
-	 * @deprecated Use {@link IJavaElement#getPrimaryElement()} instead.
+	 * @deprecated Use {@link IJavaScriptElement#getPrimaryElement()} instead.
 	 */
-	IJavaElement getOriginal(IJavaElement workingCopyElement);
+	IJavaScriptElement getOriginal(IJavaScriptElement workingCopyElement);
 
 	/**
 	 * Returns the original element this working copy was created from,
@@ -138,9 +138,9 @@ public interface IWorkingCopy {
 	 * @return the original element this working copy was created from,
 	 * or <code>null</code> if this is not a working copy
 	 *
-	 * @deprecated Use {@link ICompilationUnit#findPrimaryType()} instead.
+	 * @deprecated Use {@link IJavaScriptUnit#findPrimaryType()} instead.
 	 */
-	IJavaElement getOriginalElement();
+	IJavaScriptElement getOriginalElement();
 
 	/**
 	 * Finds the elements in this compilation unit that correspond to
@@ -161,9 +161,9 @@ public interface IWorkingCopy {
 	 * @return the found elements in this compilation unit that correspond to the given element
 	 * @since 2.0
 	 *
-	 * @deprecated Use {@link ICompilationUnit#findElements(IJavaElement)} instead.
+	 * @deprecated Use {@link IJavaScriptUnit#findElements(IJavaScriptElement)} instead.
 	 */
-	IJavaElement[] findElements(IJavaElement element);
+	IJavaScriptElement[] findElements(IJavaScriptElement element);
 
 	/**
 	 * Finds the primary type of this compilation unit (that is, the type with the same name as the
@@ -197,7 +197,7 @@ public interface IWorkingCopy {
 	 * The buffer will be automatically initialized with the original's compilation unit content
 	 * upon creation.
 	 * <p>
-	 * When the shared working copy instance is created, an ADDED IJavaElementDelta is reported on this
+	 * When the shared working copy instance is created, an ADDED IJavaScriptElementDelta is reported on this
 	 * working copy.
 	 *
 	 * @param monitor a progress monitor used to report progress while opening this compilation unit
@@ -207,7 +207,7 @@ public interface IWorkingCopy {
 	 * @param problemRequestor a requestor which will get notified of problems detected during
 	 * 	reconciling as they are discovered. The requestor can be set to <code>null</code> indicating
 	 * 	that the client is not interested in problems.
-	 * @exception JavaModelException if the contents of this element can
+	 * @exception JavaScriptModelException if the contents of this element can
 	 *   not be determined.
 	 * @return a shared working copy on this element using the given factory to create
 	 * the buffer, or this element if this element is already a working copy
@@ -215,13 +215,13 @@ public interface IWorkingCopy {
 	 * @see IProblemRequestor
 	 * @since 2.0
 	 *
-	 * @deprecated Use {@link ICompilationUnit#getWorkingCopy(WorkingCopyOwner, IProblemRequestor, IProgressMonitor)} instead.
+	 * @deprecated Use {@link IJavaScriptUnit#getWorkingCopy(WorkingCopyOwner, IProblemRequestor, IProgressMonitor)} instead.
 	 */
-	IJavaElement getSharedWorkingCopy(
+	IJavaScriptElement getSharedWorkingCopy(
 		IProgressMonitor monitor,
 		IBufferFactory factory,
 		IProblemRequestor problemRequestor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 
 	/**
 	 * Returns a new working copy of this element if this element is not
@@ -230,21 +230,21 @@ public interface IWorkingCopy {
 	 * Note: if intending to share a working copy amongst several clients, then
 	 * <code>#getSharedWorkingCopy</code> should be used instead.
 	 * </p><p>
-	 * When the working copy instance is created, an ADDED IJavaElementDelta is
+	 * When the working copy instance is created, an ADDED IJavaScriptElementDelta is
 	 * reported on this working copy.
 	 * </p><p>
 	 * Since 2.1, a working copy can be created on a not-yet existing compilation
 	 * unit. In particular, such a working copy can then be committed in order to create
 	 * the corresponding compilation unit.
 	 * </p>
-	 * @exception JavaModelException if the contents of this element can
+	 * @exception JavaScriptModelException if the contents of this element can
 	 *   not be determined.
 	 * @return a new working copy of this element if this element is not
 	 * a working copy, or this element if this element is already a working copy
 	 *
-	 * @deprecated Use {@link ICompilationUnit#getWorkingCopy(IProgressMonitor)} instead.
+	 * @deprecated Use {@link IJavaScriptUnit#getWorkingCopy(IProgressMonitor)} instead.
 	 */
-	IJavaElement getWorkingCopy() throws JavaModelException;
+	IJavaScriptElement getWorkingCopy() throws JavaScriptModelException;
 
 	/**
 	 * Returns a new working copy of this element using the given factory to create
@@ -257,7 +257,7 @@ public interface IWorkingCopy {
 	 * Note: if intending to share a working copy amongst several clients, then
 	 * <code>#getSharedWorkingCopy</code> should be used instead.
 	 * </p><p>
-	 * When the working copy instance is created, an ADDED IJavaElementDelta is
+	 * When the working copy instance is created, an ADDED IJavaScriptElementDelta is
 	 * reported on this working copy.
 	 * </p><p>
 	 * Since 2.1, a working copy can be created on a not-yet existing compilation
@@ -271,19 +271,19 @@ public interface IWorkingCopy {
 	 * @param problemRequestor a requestor which will get notified of problems detected during
 	 * 	reconciling as they are discovered. The requestor can be set to <code>null</code> indicating
 	 * 	that the client is not interested in problems.
-	 * @exception JavaModelException if the contents of this element can
+	 * @exception JavaScriptModelException if the contents of this element can
 	 *   not be determined.
 	 * @return a new working copy of this element using the given factory to create
 	 * the buffer, or this element if this element is already a working copy
 	 * @since 2.0
 	 *
-	 * @deprecated Use {@link ICompilationUnit#getWorkingCopy(WorkingCopyOwner, IProblemRequestor, IProgressMonitor)} instead.
+	 * @deprecated Use {@link IJavaScriptUnit#getWorkingCopy(WorkingCopyOwner, IProblemRequestor, IProgressMonitor)} instead.
 	 */
-	IJavaElement getWorkingCopy(
+	IJavaScriptElement getWorkingCopy(
 		IProgressMonitor monitor,
 		IBufferFactory factory,
 		IProblemRequestor problemRequestor)
-		throws JavaModelException;
+		throws JavaScriptModelException;
 
 	/**
 	 * Returns whether this working copy's original element's content
@@ -293,7 +293,7 @@ public interface IWorkingCopy {
 	 * @return true if this working copy's original element's content
 	 * has not changed since the inception of this working copy, false otherwise
 	 *
-	 * @deprecated Use {@link ICompilationUnit#hasResourceChanged()} instead.
+	 * @deprecated Use {@link IJavaScriptUnit#hasResourceChanged()} instead.
 	 */
 	boolean isBasedOn(IResource resource);
 
@@ -302,7 +302,7 @@ public interface IWorkingCopy {
 	 *
 	 * @return true if this element is a working copy, false otherwise
 	 *
-	 * @deprecated Use {@link ICompilationUnit#isWorkingCopy()} instead.
+	 * @deprecated Use {@link IJavaScriptUnit#isWorkingCopy()} instead.
 	 */
 	boolean isWorkingCopy();
 
@@ -323,16 +323,16 @@ public interface IWorkingCopy {
 	 * <p>
  	 * Note: Since 3.0 added/removed/changed inner types generate change deltas.</p>
 	 *
-	 * @exception JavaModelException if the contents of the original element
+	 * @exception JavaScriptModelException if the contents of the original element
 	 *		cannot be accessed. Reasons include:
 	 * <ul>
 	 * <li> The original Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * </ul>
 	 * @return <code>null</code>
 	 *
-	 * @deprecated Use {@link ICompilationUnit#reconcile(int, boolean, WorkingCopyOwner, IProgressMonitor)} instead.
+	 * @deprecated Use {@link IJavaScriptUnit#reconcile(int, boolean, WorkingCopyOwner, IProgressMonitor)} instead.
 	 */
-	IMarker[] reconcile() throws JavaModelException;
+	IMarker[] reconcile() throws JavaScriptModelException;
 
 	/**
 	 * Reconciles the contents of this working copy.
@@ -354,16 +354,16 @@ public interface IWorkingCopy {
 	 * @param forceProblemDetection boolean indicating whether problem should be recomputed
 	 *   even if the source hasn't changed.
 	 * @param monitor a progress monitor
-	 * @exception JavaModelException if the contents of the original element
+	 * @exception JavaScriptModelException if the contents of the original element
 	 *		cannot be accessed. Reasons include:
 	 * <ul>
 	 * <li> The original Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * </ul>
 	 * @since 2.0
 	 *
-	 * @deprecated Use {@link ICompilationUnit#reconcile(int, boolean, WorkingCopyOwner, IProgressMonitor)} instead.
+	 * @deprecated Use {@link IJavaScriptUnit#reconcile(int, boolean, WorkingCopyOwner, IProgressMonitor)} instead.
 	 */
-	void reconcile(boolean forceProblemDetection, IProgressMonitor monitor) throws JavaModelException;
+	void reconcile(boolean forceProblemDetection, IProgressMonitor monitor) throws JavaScriptModelException;
 
 	/**
 	 * Restores the contents of this working copy to the current contents of
@@ -373,12 +373,12 @@ public interface IWorkingCopy {
 	 * <p>Note: This is the inverse of committing the content of the
 	 * working copy to the original element with <code>commit(boolean, IProgressMonitor)</code>.
 	 *
-	 * @exception JavaModelException if the contents of the original element
+	 * @exception JavaScriptModelException if the contents of the original element
 	 *		cannot be accessed.  Reasons include:
 	 * <ul>
 	 * <li> The original Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * </ul>
-	 * @deprecated Use {@link ICompilationUnit#restore()} instead.
+	 * @deprecated Use {@link IJavaScriptUnit#restore()} instead.
 	 */
-	void restore() throws JavaModelException;
+	void restore() throws JavaScriptModelException;
 }

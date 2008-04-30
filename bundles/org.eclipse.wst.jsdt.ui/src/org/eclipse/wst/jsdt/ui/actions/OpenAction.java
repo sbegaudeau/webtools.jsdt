@@ -27,14 +27,14 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
@@ -42,13 +42,13 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaUILabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * This action opens a Java editor on a Java element or file.
  * <p>
  * The action is applicable to selections containing elements of
- * type <code>ICompilationUnit</code>, <code>IMember</code>
+ * type <code>IJavaScriptUnit</code>, <code>IMember</code>
  * or <code>IFile</code>.
  * 
  * <p>
@@ -123,7 +123,7 @@ public class OpenAction extends SelectionDispatchAction {
 		if (!isProcessable())
 			return;
 		try {
-			IJavaElement[] elements= SelectionConverter.codeResolveForked(fEditor, false);
+			IJavaScriptElement[] elements= SelectionConverter.codeResolveForked(fEditor, false);
 			if (elements == null || elements.length == 0) {
 				IEditorStatusLine statusLine= (IEditorStatusLine) fEditor.getAdapter(IEditorStatusLine.class);
 				if (statusLine != null)
@@ -131,7 +131,7 @@ public class OpenAction extends SelectionDispatchAction {
 				getShell().getDisplay().beep();
 				return;
 			}
-			IJavaElement element= elements[0];
+			IJavaScriptElement element= elements[0];
 			if (elements.length > 1) {
 				element= SelectionConverter.selectJavaElement(elements, getShell(), getDialogTitle(), ActionMessages.OpenAction_select_element);
 				if (element == null)
@@ -141,7 +141,7 @@ public class OpenAction extends SelectionDispatchAction {
 			if (element!=null)
 			{
 				int type= element.getElementType();
-				if (type == IJavaElement.JAVA_PROJECT || type == IJavaElement.PACKAGE_FRAGMENT_ROOT || type == IJavaElement.PACKAGE_FRAGMENT)
+				if (type == IJavaScriptElement.JAVASCRIPT_PROJECT || type == IJavaScriptElement.PACKAGE_FRAGMENT_ROOT || type == IJavaScriptElement.PACKAGE_FRAGMENT)
 					element= EditorUtility.getEditorInputJavaElement(fEditor, false);
 				run(new Object[] {element} );
 			}
@@ -154,8 +154,8 @@ public class OpenAction extends SelectionDispatchAction {
 
 	private boolean isProcessable() {
 		if (fEditor != null) {
-			IJavaElement je= EditorUtility.getEditorInputJavaElement(fEditor, false);
-			if (je instanceof ICompilationUnit && !JavaModelUtil.isPrimary((ICompilationUnit)je))
+			IJavaScriptElement je= EditorUtility.getEditorInputJavaElement(fEditor, false);
+			if (je instanceof IJavaScriptUnit && !JavaModelUtil.isPrimary((IJavaScriptUnit)je))
 				return true; // can process non-primary working copies
 		}
 		return ActionUtil.isProcessable(fEditor);
@@ -179,7 +179,7 @@ public class OpenAction extends SelectionDispatchAction {
 		if (elements == null)
 			return;
 		
-		MultiStatus status= new MultiStatus(JavaUI.ID_PLUGIN, IStatus.OK, ActionMessages.OpenAction_multistatus_message, null);
+		MultiStatus status= new MultiStatus(JavaScriptUI.ID_PLUGIN, IStatus.OK, ActionMessages.OpenAction_multistatus_message, null);
 		
 		for (int i= 0; i < elements.length; i++) {
 			Object element= elements[i];
@@ -187,15 +187,15 @@ public class OpenAction extends SelectionDispatchAction {
 				element= getElementToOpen(element);
 				boolean activateOnOpen= fEditor != null ? true : OpenStrategy.activateOnOpen();
 				IEditorPart part= EditorUtility.openInEditor(element, activateOnOpen);
-				if (part != null && element instanceof IJavaElement)
-					JavaUI.revealInEditor(part, (IJavaElement)element);
+				if (part != null && element instanceof IJavaScriptElement)
+					JavaScriptUI.revealInEditor(part, (IJavaScriptElement)element);
 			} catch (PartInitException e) {
 				String message= Messages.format(ActionMessages.OpenAction_error_problem_opening_editor, new String[] { new JavaUILabelProvider().getText(element), e.getStatus().getMessage() });
-				status.add(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.ERROR, message, null));
+				status.add(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.ERROR, message, null));
 			} catch (CoreException e) {
 				String message= Messages.format(ActionMessages.OpenAction_error_problem_opening_editor, new String[] { new JavaUILabelProvider().getText(element), e.getStatus().getMessage() });
-				status.add(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.ERROR, message, null));
-				JavaPlugin.log(e);
+				status.add(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.ERROR, message, null));
+				JavaScriptPlugin.log(e);
 			}
 		}
 		if (!status.isOK()) {
@@ -209,9 +209,9 @@ public class OpenAction extends SelectionDispatchAction {
 	 * 
 	 * @param object the element to open
 	 * @return the real element to open
-	 * @throws JavaModelException if an error occurs while accessing the Java model
+	 * @throws JavaScriptModelException if an error occurs while accessing the Java model
 	 */
-	public Object getElementToOpen(Object object) throws JavaModelException {
+	public Object getElementToOpen(Object object) throws JavaScriptModelException {
 		return object;
 	}	
 	

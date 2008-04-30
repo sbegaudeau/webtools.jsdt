@@ -15,14 +15,14 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -76,10 +76,10 @@ public class ModifyParametersAction extends SelectionDispatchAction {
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isChangeSignatureAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			setEnabled(false);//no UI here - happens on selection changes
 		}
 	}
@@ -97,7 +97,7 @@ public class ModifyParametersAction extends SelectionDispatchAction {
 	public void selectionChanged(JavaTextSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isChangeSignatureAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			setEnabled(false);
 		}
 	}
@@ -109,12 +109,12 @@ public class ModifyParametersAction extends SelectionDispatchAction {
 		try {
 			// we have to call this here - no selection changed event is sent after a refactoring but it may still invalidate enablement
 			if (RefactoringAvailabilityTester.isChangeSignatureAvailable(selection)) {
-				IMethod method= getSingleSelectedMethod(selection);
+				IFunction method= getSingleSelectedMethod(selection);
 				if (! ActionUtil.isEditable(getShell(), method))
 					return;
 				RefactoringExecutionStarter.startChangeSignatureRefactoring(method, this, getShell());
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringMessages.OpenRefactoringWizardAction_exception); 
 		}
 	}
@@ -126,38 +126,38 @@ public class ModifyParametersAction extends SelectionDispatchAction {
 		try {
 			if (! ActionUtil.isEditable(fEditor))
 				return;
-			IMethod method= getSingleSelectedMethod(selection);
+			IFunction method= getSingleSelectedMethod(selection);
 			if (RefactoringAvailabilityTester.isChangeSignatureAvailable(method)){
 				RefactoringExecutionStarter.startChangeSignatureRefactoring(method, this, getShell());
 			} else {
 				MessageDialog.openInformation(getShell(), RefactoringMessages.OpenRefactoringWizardAction_unavailable, RefactoringMessages.ModifyParametersAction_unavailable); 
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringMessages.OpenRefactoringWizardAction_exception); 
 		}
 	}
 
-	private static IMethod getSingleSelectedMethod(IStructuredSelection selection){
+	private static IFunction getSingleSelectedMethod(IStructuredSelection selection){
 		if (selection.isEmpty() || selection.size() != 1) 
 			return null;
-		if (selection.getFirstElement() instanceof IMethod)
-			return (IMethod)selection.getFirstElement();
+		if (selection.getFirstElement() instanceof IFunction)
+			return (IFunction)selection.getFirstElement();
 		return null;
 	}
 
-	private IMethod getSingleSelectedMethod(ITextSelection selection) throws JavaModelException{
+	private IFunction getSingleSelectedMethod(ITextSelection selection) throws JavaScriptModelException{
 		//- when caret/selection on method name (call or declaration) -> that method
 		//- otherwise: caret position's enclosing method declaration
 		//  - when caret inside argument list of method declaration -> enclosing method declaration
 		//  - when caret inside argument list of method call -> enclosing method declaration (and NOT method call)
-		IJavaElement[] elements= SelectionConverter.codeResolve(fEditor); 
+		IJavaScriptElement[] elements= SelectionConverter.codeResolve(fEditor); 
 		if (elements.length > 1)
 			return null;
-		if (elements.length == 1 && elements[0] instanceof IMethod)
-			return (IMethod)elements[0];
-		IJavaElement elementAt= SelectionConverter.getInputAsCompilationUnit(fEditor).getElementAt(selection.getOffset());
-		if (elementAt instanceof IMethod)
-			return (IMethod)elementAt;
+		if (elements.length == 1 && elements[0] instanceof IFunction)
+			return (IFunction)elements[0];
+		IJavaScriptElement elementAt= SelectionConverter.getInputAsCompilationUnit(fEditor).getElementAt(selection.getOffset());
+		if (elementAt instanceof IFunction)
+			return (IFunction)elementAt;
 		return null;
 	}
 }

@@ -18,13 +18,13 @@ import java.util.Set;
 
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
@@ -35,18 +35,18 @@ import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 
 public class ASTNodeDeleteUtil {
 
-	private static ASTNode[] getNodesToDelete(IJavaElement element, CompilationUnit cuNode) throws JavaModelException {
+	private static ASTNode[] getNodesToDelete(IJavaScriptElement element, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		// fields are different because you don't delete the whole declaration but only a fragment of it
-		if (element.getElementType() == IJavaElement.FIELD) {
+		if (element.getElementType() == IJavaScriptElement.FIELD) {
 			if (JdtFlags.isEnum((IField) element))
 				return new ASTNode[] { ASTNodeSearchUtil.getEnumConstantDeclaration((IField) element, cuNode)};
 			else
 				return new ASTNode[] { ASTNodeSearchUtil.getFieldDeclarationFragmentNode((IField) element, cuNode)};
 		}
-		if (element.getElementType() == IJavaElement.TYPE && ((IType) element).isLocal()) {
+		if (element.getElementType() == IJavaScriptElement.TYPE && ((IType) element).isLocal()) {
 			IType type= (IType) element;
 			if (type.isAnonymous()) {
-				if (type.getParent().getElementType() == IJavaElement.FIELD) {
+				if (type.getParent().getElementType() == IJavaScriptElement.FIELD) {
 					final ISourceRange range= type.getSourceRange();
 					if (range != null) {
 						final ASTNode node= ASTNodeSearchUtil.getAstNode(cuNode, range.getOffset(), range.getLength());
@@ -78,7 +78,7 @@ public class ASTNodeDeleteUtil {
 		return result;
 	}
 
-	public static void markAsDeleted(IJavaElement[] javaElements, CompilationUnitRewrite rewrite, TextEditGroup group) throws JavaModelException {
+	public static void markAsDeleted(IJavaScriptElement[] javaElements, CompilationUnitRewrite rewrite, TextEditGroup group) throws JavaScriptModelException {
 		final List removed= new ArrayList();
 		for (int i= 0; i < javaElements.length; i++) {
 			markAsDeleted(removed, javaElements[i], rewrite, group);
@@ -86,7 +86,7 @@ public class ASTNodeDeleteUtil {
 		propagateFieldDeclarationNodeDeletions(removed, rewrite, group);
 	}
 
-	private static void markAsDeleted(List list, IJavaElement element, CompilationUnitRewrite rewrite, TextEditGroup group) throws JavaModelException {
+	private static void markAsDeleted(List list, IJavaScriptElement element, CompilationUnitRewrite rewrite, TextEditGroup group) throws JavaScriptModelException {
 		ASTNode[] declarationNodes= getNodesToDelete(element, rewrite.getRoot());
 		for (int i= 0; i < declarationNodes.length; i++) {
 			ASTNode node= declarationNodes[i];

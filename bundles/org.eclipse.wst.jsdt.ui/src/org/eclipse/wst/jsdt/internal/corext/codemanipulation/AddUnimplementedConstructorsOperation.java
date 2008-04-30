@@ -22,16 +22,16 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
@@ -62,7 +62,7 @@ public final class AddUnimplementedConstructorsOperation implements IWorkspaceRu
 	private final int fInsertPos;
 
 	/** The method bindings to implement */
-	private final IMethodBinding[] fConstructorsToImplement;
+	private final IFunctionBinding[] fConstructorsToImplement;
 
 	/** Should the call to the super constructor be omitted? */
 	private boolean fOmitSuper;
@@ -77,7 +77,7 @@ public final class AddUnimplementedConstructorsOperation implements IWorkspaceRu
 	private final ITypeBinding fType;
 
 	/** The compilation unit AST node */
-	private final CompilationUnit fASTRoot;
+	private final JavaScriptUnit fASTRoot;
 
 	/** The visibility flags of the new constructor */
 	private int fVisibility;
@@ -93,9 +93,9 @@ public final class AddUnimplementedConstructorsOperation implements IWorkspaceRu
 	 * @param apply <code>true</code> if the resulting edit should be applied, <code>false</code> otherwise
 	 * @param save <code>true</code> if the changed compilation unit should be saved, <code>false</code> otherwise
 	 */
-	public AddUnimplementedConstructorsOperation(CompilationUnit astRoot, ITypeBinding type, IMethodBinding[] constructorsToImplement, int insertPos, final boolean imports, final boolean apply, final boolean save) {
-		if (astRoot == null || !(astRoot.getJavaElement() instanceof ICompilationUnit)) {
-			throw new IllegalArgumentException("AST must not be null and has to be created from a ICompilationUnit"); //$NON-NLS-1$
+	public AddUnimplementedConstructorsOperation(JavaScriptUnit astRoot, ITypeBinding type, IFunctionBinding[] constructorsToImplement, int insertPos, final boolean imports, final boolean apply, final boolean save) {
+		if (astRoot == null || !(astRoot.getJavaElement() instanceof IJavaScriptUnit)) {
+			throw new IllegalArgumentException("AST must not be null and has to be created from a IJavaScriptUnit"); //$NON-NLS-1$
 		}
 		if (type == null) {
 			throw new IllegalArgumentException("The type must not be null"); //$NON-NLS-1$
@@ -113,7 +113,7 @@ public final class AddUnimplementedConstructorsOperation implements IWorkspaceRu
 		fApply= apply;
 		fImports= imports;
 		
-		fCreateComments= StubUtility.doAddComments(astRoot.getJavaElement().getJavaProject());
+		fCreateComments= StubUtility.doAddComments(astRoot.getJavaElement().getJavaScriptProject());
 		fVisibility= Modifier.PUBLIC;
 		fOmitSuper= false;
 	}
@@ -183,7 +183,7 @@ public final class AddUnimplementedConstructorsOperation implements IWorkspaceRu
 			monitor.beginTask("", 2); //$NON-NLS-1$
 			monitor.setTaskName(CodeGenerationMessages.AddUnimplementedMethodsOperation_description);
 			fCreatedMethods.clear();
-			ICompilationUnit cu= (ICompilationUnit) fASTRoot.getJavaElement();
+			IJavaScriptUnit cu= (IJavaScriptUnit) fASTRoot.getJavaElement();
 			
 			AST ast= fASTRoot.getAST();
 			
@@ -204,12 +204,12 @@ public final class AddUnimplementedConstructorsOperation implements IWorkspaceRu
 				// not possible, we checked this in the constructor
 			}
 			
-			final CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(cu.getJavaProject());
+			final CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(cu.getJavaScriptProject());
 			settings.createComments= fCreateComments;
 
 			ASTNode insertion= getNodeToInsertBefore(memberRewriter);
 			
-			IMethodBinding[] toImplement= fConstructorsToImplement;
+			IFunctionBinding[] toImplement= fConstructorsToImplement;
 			if (toImplement == null) {
 				toImplement= StubUtility2.getVisibleConstructors(currTypeBinding, true, true);
 			}
@@ -221,9 +221,9 @@ public final class AddUnimplementedConstructorsOperation implements IWorkspaceRu
 			}
 			boolean createDeprecated= deprecationCount == toImplement.length;
 			for (int i= 0; i < toImplement.length; i++) {
-				IMethodBinding curr= toImplement[i];
+				IFunctionBinding curr= toImplement[i];
 				if (!curr.isDeprecated() || createDeprecated) {
-					MethodDeclaration stub= StubUtility2.createConstructorStub(cu, astRewrite, importRewrite, curr, currTypeBinding.getName(), fVisibility, fOmitSuper, true, settings);
+					FunctionDeclaration stub= StubUtility2.createConstructorStub(cu, astRewrite, importRewrite, curr, currTypeBinding.getName(), fVisibility, fOmitSuper, true, settings);
 					if (stub != null) {
 						fCreatedMethods.add(curr.getKey());
 						if (insertion != null)

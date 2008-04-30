@@ -23,11 +23,11 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposal;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
 import org.eclipse.wst.jsdt.ui.text.java.IJavadocCompletionProcessor;
@@ -125,11 +125,11 @@ public class HTMLTagCompletionProposalComputer implements IJavaCompletionProposa
 		fCurrentLength= docContext.getSelectionLength();
 		fRestrictToMatchingCase= (flags & IJavadocCompletionProcessor.RESTRICT_TO_MATCHING_CASE) != 0;
 
-		ICompilationUnit cu= docContext.getCompilationUnit();
+		IJavaScriptUnit cu= docContext.getCompilationUnit();
 		if (cu == null)
 			return Collections.EMPTY_LIST;
 		IEditorInput editorInput= new FileEditorInput((IFile) cu.getResource());
-		fDocument= JavaUI.getDocumentProvider().getDocument(editorInput);
+		fDocument= JavaScriptUI.getDocumentProvider().getDocument(editorInput);
 		if (fDocument == null) {
 			return null;
 		}
@@ -138,7 +138,7 @@ public class HTMLTagCompletionProposalComputer implements IJavaCompletionProposa
 			fResult= new ArrayList(100);
 			evalProposals();
 			return fResult;
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			fErrorMessage= e.getLocalizedMessage();
 		} finally {
 			fResult= null;
@@ -146,7 +146,7 @@ public class HTMLTagCompletionProposalComputer implements IJavaCompletionProposa
 		return null;
 	}
 
-	private void evalProposals() throws JavaModelException {
+	private void evalProposals() throws JavaScriptModelException {
 		try {
 
 			IRegion info= fDocument.getLineInformationOfOffset(fCurrentPos);

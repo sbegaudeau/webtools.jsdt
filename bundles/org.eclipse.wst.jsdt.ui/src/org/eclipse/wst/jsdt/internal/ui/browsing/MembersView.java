@@ -25,15 +25,15 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportContainer;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.CategoryFilterActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.actions.LexicalSortingAction;
 import org.eclipse.wst.jsdt.internal.ui.preferences.MembersOrderPreferenceCache;
@@ -41,8 +41,8 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaUILabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProblemTreeViewer;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.actions.MemberFilterActionGroup;
 
@@ -59,7 +59,7 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 	public MembersView() {
 		setHasWorkingSetFilter(false);
 		setHasCustomSetFilter(true);
-		JavaPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
+		JavaScriptPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	}
 
 	/* (non-Javadoc)
@@ -69,7 +69,7 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 		if (key == IShowInTargetList.class) {
 			return new IShowInTargetList() {
 				public String[] getShowInTargetIds() {
-					return new String[] { JavaUI.ID_PACKAGES };
+					return new String[] { JavaScriptUI.ID_PACKAGES };
 				}
 
 			};
@@ -85,7 +85,7 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 	 */
 	protected JavaUILabelProvider createLabelProvider() {
 		return new AppearanceAwareLabelProvider(
-						AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS | JavaElementLabels.F_APP_TYPE_SIGNATURE | JavaElementLabels.ALL_CATEGORY,
+						AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS | JavaScriptElementLabels.F_APP_TYPE_SIGNATURE | JavaScriptElementLabels.ALL_CATEGORY,
 						AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS
 						);
 	}
@@ -109,12 +109,12 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 	protected StructuredViewer createViewer(Composite parent) {
 		ProblemTreeViewer viewer= new ProblemTreeViewer(parent, SWT.MULTI);
 		ColoredViewersManager.install(viewer);
-		fMemberFilterActionGroup= new MemberFilterActionGroup(viewer, JavaUI.ID_MEMBERS_VIEW);
+		fMemberFilterActionGroup= new MemberFilterActionGroup(viewer, JavaScriptUI.ID_MEMBERS_VIEW);
 		return viewer;
 	}
 
 	protected void fillToolBar(IToolBarManager tbm) {
-		tbm.add(new LexicalSortingAction(getViewer(), JavaUI.ID_MEMBERS_VIEW));
+		tbm.add(new LexicalSortingAction(getViewer(), JavaScriptUI.ID_MEMBERS_VIEW));
 		fMemberFilterActionGroup.contributeToToolBar(tbm);
 		super.fillToolBar(tbm);
 	}
@@ -139,11 +139,11 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 			fCategoryFilterActionGroup.setInput(getCategoryFilterActionGroupInput());
 	}
 	
-	private IJavaElement[] getCategoryFilterActionGroupInput() {
+	private IJavaScriptElement[] getCategoryFilterActionGroupInput() {
 		Object input= getInput();
-		if (input instanceof IJavaElement)
-			return new IJavaElement[] { (IJavaElement)input };
-		return new IJavaElement[0];
+		if (input instanceof IJavaScriptElement)
+			return new IJavaScriptElement[] { (IJavaScriptElement)input };
+		return new IJavaScriptElement[0];
 	}
 
 	/**
@@ -172,17 +172,17 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 		if (element instanceof IMember)
 			return super.isValidElement(((IMember)element).getDeclaringType());
 		else if (element instanceof IImportDeclaration)
-			return isValidElement(((IJavaElement)element).getParent());
+			return isValidElement(((IJavaScriptElement)element).getParent());
 		else if (element instanceof IImportContainer) {
 			Object input= getViewer().getInput();
-			if (input instanceof IJavaElement) {
-				ICompilationUnit cu= (ICompilationUnit)((IJavaElement)input).getAncestor(IJavaElement.COMPILATION_UNIT);
+			if (input instanceof IJavaScriptElement) {
+				IJavaScriptUnit cu= (IJavaScriptUnit)((IJavaScriptElement)input).getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 				if (cu != null) {
-					ICompilationUnit importContainerCu= (ICompilationUnit)((IJavaElement)element).getAncestor(IJavaElement.COMPILATION_UNIT);
+					IJavaScriptUnit importContainerCu= (IJavaScriptUnit)((IJavaScriptElement)element).getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 					return cu.equals(importContainerCu);
 				} else {
-					IClassFile cf= (IClassFile)((IJavaElement)input).getAncestor(IJavaElement.CLASS_FILE);
-					IClassFile importContainerCf= (IClassFile)((IJavaElement)element).getAncestor(IJavaElement.CLASS_FILE);
+					IClassFile cf= (IClassFile)((IJavaScriptElement)input).getAncestor(IJavaScriptElement.CLASS_FILE);
+					IClassFile importContainerCf= (IClassFile)((IJavaScriptElement)element).getAncestor(IJavaScriptElement.CLASS_FILE);
 					return cf != null && cf.equals(importContainerCf);
 				}
 			}
@@ -196,30 +196,30 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 	 * @param je	the Java element which has the focus
 	 * @return the element to select
 	 */
-	protected IJavaElement findElementToSelect(IJavaElement je) {
+	protected IJavaScriptElement findElementToSelect(IJavaScriptElement je) {
 		if (je == null)
 			return null;
 
 		switch (je.getElementType()) {
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				if (((IType)je).getDeclaringType() == null)
 					return null;
 				return je;
-			case IJavaElement.METHOD:
-			case IJavaElement.INITIALIZER:
-			case IJavaElement.FIELD:
-			case IJavaElement.PACKAGE_DECLARATION:
-			case IJavaElement.IMPORT_CONTAINER:
+			case IJavaScriptElement.METHOD:
+			case IJavaScriptElement.INITIALIZER:
+			case IJavaScriptElement.FIELD:
+			case IJavaScriptElement.PACKAGE_DECLARATION:
+			case IJavaScriptElement.IMPORT_CONTAINER:
 				return je;
-			case IJavaElement.IMPORT_DECLARATION:
-				ICompilationUnit cu= (ICompilationUnit)je.getParent().getParent();
+			case IJavaScriptElement.IMPORT_DECLARATION:
+				IJavaScriptUnit cu= (IJavaScriptUnit)je.getParent().getParent();
 				try {
 					if (cu.getImports()[0].equals(je)) {
 						Object selectedElement= getSingleElementFromSelection(getViewer().getSelection());
 						if (selectedElement instanceof IImportContainer)
 							return (IImportContainer)selectedElement;
 					}
-				} catch (JavaModelException ex) {
+				} catch (JavaScriptModelException ex) {
 					// return je;
 				}
 				return je;
@@ -234,28 +234,28 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 	 * @param 	je 	the Java element for which to search the closest input
 	 * @return	the closest Java element used as input for this part, or <code>null</code>
 	 */
-	protected IJavaElement findInputForJavaElement(IJavaElement je) {
-		if (je == null || !je.exists() || (je.getJavaProject() != null && !je.getJavaProject().isOnClasspath(je)))
+	protected IJavaScriptElement findInputForJavaElement(IJavaScriptElement je) {
+		if (je == null || !je.exists() || (je.getJavaScriptProject() != null && !je.getJavaScriptProject().isOnIncludepath(je)))
 			return null;
 
 		switch (je.getElementType()) {
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				IType type= ((IType)je).getDeclaringType();
 				if (type == null)
 					return je;
 				else
 					return findInputForJavaElement(type);
-			case IJavaElement.COMPILATION_UNIT:
-				return getTypeForCU((ICompilationUnit)je);
-			case IJavaElement.CLASS_FILE:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
+				return getTypeForCU((IJavaScriptUnit)je);
+			case IJavaScriptElement.CLASS_FILE:
 				return findInputForJavaElement(((IClassFile)je).getType());
-			case IJavaElement.IMPORT_DECLARATION:
+			case IJavaScriptElement.IMPORT_DECLARATION:
 				return findInputForJavaElement(je.getParent());
-			case IJavaElement.PACKAGE_DECLARATION:
-			case IJavaElement.IMPORT_CONTAINER:
-				IJavaElement parent= je.getParent();
-				if (parent instanceof ICompilationUnit) {
-					return getTypeForCU((ICompilationUnit)parent);
+			case IJavaScriptElement.PACKAGE_DECLARATION:
+			case IJavaScriptElement.IMPORT_CONTAINER:
+				IJavaScriptElement parent= je.getParent();
+				if (parent instanceof IJavaScriptUnit) {
+					return getTypeForCU((IJavaScriptUnit)parent);
 				}
 				else if (parent instanceof IClassFile)
 					return findInputForJavaElement(parent);
@@ -297,8 +297,8 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 
 	boolean isInputAWorkingCopy() {
 		Object input= getViewer().getInput();
-		if (input instanceof IJavaElement) {
-			ICompilationUnit cu= (ICompilationUnit)((IJavaElement)input).getAncestor(IJavaElement.COMPILATION_UNIT);
+		if (input instanceof IJavaScriptElement) {
+			IJavaScriptUnit cu= (IJavaScriptUnit)((IJavaScriptElement)input).getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 			if (cu != null)
 				return cu.isWorkingCopy();
 		}
@@ -333,6 +333,6 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 			fCategoryFilterActionGroup= null;
 		}
 		super.dispose();
-		JavaPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
+		JavaScriptPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 	}
 }

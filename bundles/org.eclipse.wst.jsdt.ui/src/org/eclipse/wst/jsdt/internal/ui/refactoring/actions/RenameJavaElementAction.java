@@ -17,21 +17,21 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
@@ -65,34 +65,34 @@ public class RenameJavaElementAction extends SelectionDispatchAction {
 				setEnabled(canEnable(selection));
 				return;
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		setEnabled(false);
 	}
 	
 	private static boolean canEnable(IStructuredSelection selection) throws CoreException {
-		IJavaElement element= getJavaElement(selection);
+		IJavaScriptElement element= getJavaElement(selection);
 		if (element == null)
 			return false;
 		return isRenameAvailable(element);
 	} 
 
-	private static IJavaElement getJavaElement(IStructuredSelection selection) {
+	private static IJavaScriptElement getJavaElement(IStructuredSelection selection) {
 		if (selection.size() != 1)
 			return null;
 		Object first= selection.getFirstElement();
-		if (! (first instanceof IJavaElement))
+		if (! (first instanceof IJavaScriptElement))
 			return null;
-		return (IJavaElement)first;
+		return (IJavaScriptElement)first;
 	}
 	
 	public void run(IStructuredSelection selection) {
-		IJavaElement element= getJavaElement(selection);
+		IJavaScriptElement element= getJavaElement(selection);
 		if (element == null)
 			return;
 		try {
@@ -107,7 +107,7 @@ public class RenameJavaElementAction extends SelectionDispatchAction {
 	public void selectionChanged(ITextSelection selection) {
 		if (selection instanceof JavaTextSelection) {
 			try {
-				IJavaElement[] elements= ((JavaTextSelection)selection).resolveElementAtOffset();
+				IJavaScriptElement[] elements= ((JavaTextSelection)selection).resolveElementAtOffset();
 				if (elements.length == 1) {
 					setEnabled(isRenameAvailable(elements[0]));
 				} else {
@@ -133,9 +133,9 @@ public class RenameJavaElementAction extends SelectionDispatchAction {
 		}
 		
 		try {
-			IJavaElement element= getJavaElementFromEditor();
+			IJavaScriptElement element= getJavaElementFromEditor();
 			if (element != null && isRenameAvailable(element)) {
-				IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+				IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 				run(element, store.getBoolean(PreferenceConstants.REFACTOR_LIGHTWEIGHT));
 				return;
 			}
@@ -150,22 +150,22 @@ public class RenameJavaElementAction extends SelectionDispatchAction {
 			return true;
 		
 		try {
-			IJavaElement element= getJavaElementFromEditor();
+			IJavaScriptElement element= getJavaElementFromEditor();
 			if (element == null)
 				return false;
 
 			return isRenameAvailable(element);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		return false;
 	}
 	
-	private IJavaElement getJavaElementFromEditor() throws JavaModelException {
-		IJavaElement[] elements= SelectionConverter.codeResolve(fEditor); 
+	private IJavaScriptElement getJavaElementFromEditor() throws JavaScriptModelException {
+		IJavaScriptElement[] elements= SelectionConverter.codeResolve(fEditor); 
 		if (elements == null || elements.length != 1)
 			return null;
 		return elements[0];
@@ -173,7 +173,7 @@ public class RenameJavaElementAction extends SelectionDispatchAction {
 	
 	//---- helper methods -------------------------------------------------------------------
 
-	private void run(IJavaElement element, boolean lightweight) throws CoreException {
+	private void run(IJavaScriptElement element, boolean lightweight) throws CoreException {
 		// Work around for http://dev.eclipse.org/bugs/show_bug.cgi?id=19104		
 		if (! ActionUtil.isEditable(fEditor, getShell(), element))
 			return;		
@@ -188,33 +188,33 @@ public class RenameJavaElementAction extends SelectionDispatchAction {
 		}
 	}
 
-	private static boolean isRenameAvailable(IJavaElement element) throws CoreException {
+	private static boolean isRenameAvailable(IJavaScriptElement element) throws CoreException {
 		switch (element.getElementType()) {
-			case IJavaElement.JAVA_PROJECT:
-				return RefactoringAvailabilityTester.isRenameAvailable((IJavaProject) element);
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.JAVASCRIPT_PROJECT:
+				return RefactoringAvailabilityTester.isRenameAvailable((IJavaScriptProject) element);
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 				return RefactoringAvailabilityTester.isRenameAvailable((IPackageFragmentRoot) element);
-			case IJavaElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				return RefactoringAvailabilityTester.isRenameAvailable((IPackageFragment) element);
-			case IJavaElement.COMPILATION_UNIT:
-				return RefactoringAvailabilityTester.isRenameAvailable((ICompilationUnit) element);
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
+				return RefactoringAvailabilityTester.isRenameAvailable((IJavaScriptUnit) element);
+			case IJavaScriptElement.TYPE:
 				return RefactoringAvailabilityTester.isRenameAvailable((IType) element);
-			case IJavaElement.METHOD:
-				final IMethod method= (IMethod) element;
+			case IJavaScriptElement.METHOD:
+				final IFunction method= (IFunction) element;
 				if (method.isConstructor())
 					return RefactoringAvailabilityTester.isRenameAvailable(method.getDeclaringType());
 				else
 					return RefactoringAvailabilityTester.isRenameAvailable(method);
-			case IJavaElement.FIELD:
+			case IJavaScriptElement.FIELD:
 				final IField field= (IField) element;
 				if (Flags.isEnum(field.getFlags()))
 				return RefactoringAvailabilityTester.isRenameEnumConstAvailable(field);
 				else
 					return RefactoringAvailabilityTester.isRenameFieldAvailable(field);
-			case IJavaElement.TYPE_PARAMETER:
+			case IJavaScriptElement.TYPE_PARAMETER:
 				return RefactoringAvailabilityTester.isRenameAvailable((ITypeParameter) element);
-			case IJavaElement.LOCAL_VARIABLE:
+			case IJavaScriptElement.LOCAL_VARIABLE:
 				return RefactoringAvailabilityTester.isRenameAvailable((ILocalVariable) element);
 		}
 		return false;

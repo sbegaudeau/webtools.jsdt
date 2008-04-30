@@ -23,19 +23,19 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
@@ -45,7 +45,7 @@ import org.eclipse.wst.jsdt.internal.corext.dom.ModifierRewrite;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * Workspace runnable to add accessor methods to fields.
@@ -70,7 +70,7 @@ public final class AddGetterSetterOperation implements IWorkspaceRunnable {
 	private final IField[] fGetterFields;
 
 	/** The insertion point, or <code>null</code> */
-	private final IJavaElement fInsert;
+	private final IJavaScriptElement fInsert;
 
 	/** Should the compilation unit content be saved? */
 	private final boolean fSave;
@@ -94,7 +94,7 @@ public final class AddGetterSetterOperation implements IWorkspaceRunnable {
 	private final IType fType;
 
 	/** The compilation unit ast node */
-	private final CompilationUnit fASTRoot;
+	private final JavaScriptUnit fASTRoot;
 
 	/** The visibility flags of the new accessors */
 	private int fVisibility= Modifier.PUBLIC;
@@ -113,7 +113,7 @@ public final class AddGetterSetterOperation implements IWorkspaceRunnable {
 	 * @param apply <code>true</code> if the resulting edit should be applied, <code>false</code> otherwise
 	 * @param save <code>true</code> if the changed compilation unit should be saved, <code>false</code> otherwise
 	 */
-	public AddGetterSetterOperation(final IType type, final IField[] getters, final IField[] setters, final IField[] accessors, final CompilationUnit unit, final IRequestQuery skipExistingQuery, final IJavaElement insert, final CodeGenerationSettings settings, final boolean apply, final boolean save) {
+	public AddGetterSetterOperation(final IType type, final IField[] getters, final IField[] setters, final IField[] accessors, final JavaScriptUnit unit, final IRequestQuery skipExistingQuery, final IJavaScriptElement insert, final CodeGenerationSettings settings, final boolean apply, final boolean save) {
 		Assert.isNotNull(type);
 		Assert.isNotNull(unit);
 		Assert.isNotNull(settings);
@@ -137,11 +137,11 @@ public final class AddGetterSetterOperation implements IWorkspaceRunnable {
 	 * @param contents the contents of the accessor method
 	 * @param rewrite the list rewrite to use
 	 * @param insertion the insertion point
-	 * @throws JavaModelException if an error occurs
+	 * @throws JavaScriptModelException if an error occurs
 	 */
-	private void addNewAccessor(final IType type, final IField field, final String contents, final ListRewrite rewrite, final ASTNode insertion) throws JavaModelException {
+	private void addNewAccessor(final IType type, final IField field, final String contents, final ListRewrite rewrite, final ASTNode insertion) throws JavaScriptModelException {
 		final String delimiter= StubUtility.getLineDelimiterUsed(type);
-		final MethodDeclaration declaration= (MethodDeclaration) rewrite.getASTRewrite().createStringPlaceholder(CodeFormatterUtil.format(CodeFormatter.K_CLASS_BODY_DECLARATIONS, contents, 0, null, delimiter, field.getJavaProject()), ASTNode.METHOD_DECLARATION);
+		final FunctionDeclaration declaration= (FunctionDeclaration) rewrite.getASTRewrite().createStringPlaceholder(CodeFormatterUtil.format(CodeFormatter.K_CLASS_BODY_DECLARATIONS, contents, 0, null, delimiter, field.getJavaScriptProject()), ASTNode.FUNCTION_DECLARATION);
 		if (insertion != null)
 			rewrite.insertBefore(declaration, insertion, null);
 		else
@@ -159,17 +159,17 @@ public final class AddGetterSetterOperation implements IWorkspaceRunnable {
 	private void generateGetterMethod(final IField field, final ListRewrite rewrite) throws CoreException, OperationCanceledException {
 		final IType type= field.getDeclaringType();
 		final String name= GetterSetterUtil.getGetterName(field, null);
-		final IMethod existing= JavaModelUtil.findMethod(name, EMPTY_STRINGS, false, type);
+		final IFunction existing= JavaModelUtil.findMethod(name, EMPTY_STRINGS, false, type);
 		if (existing == null || !querySkipExistingMethods(existing)) {
-			IJavaElement sibling= null;
+			IJavaScriptElement sibling= null;
 			if (existing != null) {
 				sibling= StubUtility.findNextSibling(existing);
 				removeExistingAccessor(existing, rewrite);
 			} else
 				sibling= fInsert;
 			ASTNode insertion= null;
-			if (sibling instanceof IMethod)
-				insertion= ASTNodes.getParent(NodeFinder.perform(rewrite.getParent().getRoot(), ((IMethod) fInsert).getNameRange()), MethodDeclaration.class);
+			if (sibling instanceof IFunction)
+				insertion= ASTNodes.getParent(NodeFinder.perform(rewrite.getParent().getRoot(), ((IFunction) fInsert).getNameRange()), FunctionDeclaration.class);
 			addNewAccessor(type, field, GetterSetterUtil.getGetterStub(field, name, fSettings.createComments, fVisibility | (field.getFlags() & Flags.AccStatic)), rewrite, insertion);
 		}
 	}
@@ -186,17 +186,17 @@ public final class AddGetterSetterOperation implements IWorkspaceRunnable {
 	private void generateSetterMethod(final IField field, ASTRewrite astRewrite, final ListRewrite rewrite) throws CoreException, OperationCanceledException {
 		final IType type= field.getDeclaringType();
 		final String name= GetterSetterUtil.getSetterName(field, null);
-		final IMethod existing= JavaModelUtil.findMethod(name, new String[] { field.getTypeSignature()}, false, type);
+		final IFunction existing= JavaModelUtil.findMethod(name, new String[] { field.getTypeSignature()}, false, type);
 		if (existing == null || querySkipExistingMethods(existing)) {
-			IJavaElement sibling= null;
+			IJavaScriptElement sibling= null;
 			if (existing != null) {
 				sibling= StubUtility.findNextSibling(existing);
 				removeExistingAccessor(existing, rewrite);
 			} else
 				sibling= fInsert;
 			ASTNode insertion= null;
-			if (sibling instanceof IMethod)
-				insertion= ASTNodes.getParent(NodeFinder.perform(fASTRoot, ((IMethod) fInsert).getNameRange()), MethodDeclaration.class);
+			if (sibling instanceof IFunction)
+				insertion= ASTNodes.getParent(NodeFinder.perform(fASTRoot, ((IFunction) fInsert).getNameRange()), FunctionDeclaration.class);
 			addNewAccessor(type, field, GetterSetterUtil.getSetterStub(field, name, fSettings.createComments, fVisibility | (field.getFlags() & Flags.AccStatic)), rewrite, insertion);
 			if (Flags.isFinal(field.getFlags())) {
 				ASTNode fieldDecl= ASTNodes.getParent(NodeFinder.perform(fASTRoot, field.getNameRange()), FieldDeclaration.class);
@@ -251,7 +251,7 @@ public final class AddGetterSetterOperation implements IWorkspaceRunnable {
 	 * @return <code>true</code> to skip existing methods, <code>false</code> otherwise
 	 * @throws OperationCanceledException if the operation has been cancelled
 	 */
-	private boolean querySkipExistingMethods(final IMethod method) throws OperationCanceledException {
+	private boolean querySkipExistingMethods(final IFunction method) throws OperationCanceledException {
 		if (!fSkipAllExisting) {
 			switch (fSkipExistingQuery.doQuery(method)) {
 				case IRequestQuery.CANCEL:
@@ -270,10 +270,10 @@ public final class AddGetterSetterOperation implements IWorkspaceRunnable {
 	 * 
 	 * @param accessor the accessor method to remove
 	 * @param rewrite the list rewrite to use
-	 * @throws JavaModelException if an error occurs
+	 * @throws JavaScriptModelException if an error occurs
 	 */
-	private void removeExistingAccessor(final IMethod accessor, final ListRewrite rewrite) throws JavaModelException {
-		final MethodDeclaration declaration= (MethodDeclaration) ASTNodes.getParent(NodeFinder.perform(rewrite.getParent().getRoot(), accessor.getNameRange()), MethodDeclaration.class);
+	private void removeExistingAccessor(final IFunction accessor, final ListRewrite rewrite) throws JavaScriptModelException {
+		final FunctionDeclaration declaration= (FunctionDeclaration) ASTNodes.getParent(NodeFinder.perform(rewrite.getParent().getRoot(), accessor.getNameRange()), FunctionDeclaration.class);
 		if (declaration != null)
 			rewrite.remove(declaration, null);
 	}
@@ -287,7 +287,7 @@ public final class AddGetterSetterOperation implements IWorkspaceRunnable {
 		try {
 			monitor.setTaskName(CodeGenerationMessages.AddGetterSetterOperation_description); 
 			monitor.beginTask("", fGetterFields.length + fSetterFields.length); //$NON-NLS-1$
-			final ICompilationUnit unit= fType.getCompilationUnit();
+			final IJavaScriptUnit unit= fType.getJavaScriptUnit();
 			final ASTRewrite astRewrite= ASTRewrite.create(fASTRoot.getAST());
 			ListRewrite listRewriter= null;
 			if (fType.isAnonymous()) {
@@ -303,7 +303,7 @@ public final class AddGetterSetterOperation implements IWorkspaceRunnable {
 					listRewriter= astRewrite.getListRewrite(declaration, declaration.getBodyDeclarationsProperty());
 			}
 			if (listRewriter == null) {
-				throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.ERROR, CodeGenerationMessages.AddGetterSetterOperation_error_input_type_not_found, null));
+				throw new CoreException(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.ERROR, CodeGenerationMessages.AddGetterSetterOperation_error_input_type_not_found, null));
 			}
 			
 			fSkipAllExisting= (fSkipExistingQuery == null);

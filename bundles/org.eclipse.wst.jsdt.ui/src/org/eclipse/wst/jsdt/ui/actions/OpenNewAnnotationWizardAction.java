@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewAnnotationCreationWizard;
@@ -47,7 +47,7 @@ public class OpenNewAnnotationWizardAction extends AbstractOpenWizardAction {
 		setToolTipText(ActionMessages.OpenNewAnnotationWizardAction_tooltip); 
 		setImageDescriptor(JavaPluginImages.DESC_WIZBAN_NEWANNOT);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.OPEN_ANNOTATION_WIZARD_ACTION);
-		setShell(JavaPlugin.getActiveWorkbenchShell());
+		setShell(JavaScriptPlugin.getActiveWorkbenchShell());
 		
 		fPage= null;
 		fOpenEditorOnFinish= true;

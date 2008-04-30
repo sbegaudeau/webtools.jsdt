@@ -18,8 +18,8 @@ import java.util.Stack;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Widget;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
  * Helper class for updating error markers and other decorators that work on resources.
@@ -159,11 +159,11 @@ public class ResourceToItemsMapper {
 	 * @return Returns the corresponding resource or null
 	 */	
 	private static IResource getCorrespondingResource(Object element) {
-		if (element instanceof IJavaElement) {
-			IJavaElement elem= (IJavaElement) element;
+		if (element instanceof IJavaScriptElement) {
+			IJavaScriptElement elem= (IJavaScriptElement) element;
 			IResource res= elem.getResource();
 			if (res == null) {
-				ICompilationUnit cu= (ICompilationUnit) elem.getAncestor(IJavaElement.COMPILATION_UNIT);
+				IJavaScriptUnit cu= (IJavaScriptUnit) elem.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 				if (cu != null) {
 					// elements in compilation units are mapped to the underlying resource of the original cu
 					res= cu.getResource();

@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.ui.util.StringMatcher;
 
 /**
@@ -60,8 +60,8 @@ public class NamePatternFilter extends ViewerFilter {
 			return true;
 		}
 		String matchName= null;
-		if (element instanceof IJavaElement) {
-			matchName= ((IJavaElement) element).getElementName();
+		if (element instanceof IJavaScriptElement) {
+			matchName= ((IJavaScriptElement) element).getElementName();
 		} else if (element instanceof IResource) {
 			matchName= ((IResource) element).getName();
 		} else if (element instanceof IStorage) {

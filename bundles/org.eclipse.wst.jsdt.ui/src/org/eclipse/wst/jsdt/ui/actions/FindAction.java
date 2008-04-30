@@ -24,17 +24,17 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -43,7 +43,7 @@ import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchScopeFactory;
 import org.eclipse.wst.jsdt.internal.ui.search.SearchMessages;
 import org.eclipse.wst.jsdt.internal.ui.search.SearchUtil;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 import org.eclipse.wst.jsdt.ui.search.ElementQuerySpecification;
 import org.eclipse.wst.jsdt.ui.search.QuerySpecification;
 
@@ -58,7 +58,7 @@ import org.eclipse.wst.jsdt.ui.search.QuerySpecification;
 public abstract class FindAction extends SelectionDispatchAction {
 
 	// A dummy which can't be selected in the UI
-	private static final IJavaElement RETURN_WITHOUT_BEEP= JavaCore.create(JavaPlugin.getWorkspace().getRoot());
+	private static final IJavaScriptElement RETURN_WITHOUT_BEEP= JavaScriptCore.create(JavaScriptPlugin.getWorkspace().getRoot());
 		
 	private Class[] fValidTypes;
 	private JavaEditor fEditor;	
@@ -93,13 +93,13 @@ public abstract class FindAction extends SelectionDispatchAction {
 		return sel != null && !sel.isEmpty() && canOperateOn(getJavaElement(sel, true));
 	}
 		
-	boolean canOperateOn(IJavaElement element) {
+	boolean canOperateOn(IJavaScriptElement element) {
 		if (element == null || fValidTypes == null || fValidTypes.length == 0 || !ActionUtil.isOnBuildPath(element))
 			return false;
 
 		for (int i= 0; i < fValidTypes.length; i++) {
 			if (fValidTypes[i].isInstance(element)) {
-				if (element.getElementType() == IJavaElement.PACKAGE_FRAGMENT)
+				if (element.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT)
 					return hasChildren((IPackageFragment)element);
 				else
 					return true;
@@ -111,33 +111,33 @@ public abstract class FindAction extends SelectionDispatchAction {
 	private boolean hasChildren(IPackageFragment packageFragment) {
 		try {
 			return packageFragment.hasChildren();
-		} catch (JavaModelException ex) {
+		} catch (JavaScriptModelException ex) {
 			return false;
 		}
 	}
 
-	private IJavaElement getTypeIfPossible(IJavaElement o, boolean silent) {
+	private IJavaScriptElement getTypeIfPossible(IJavaScriptElement o, boolean silent) {
 		switch (o.getElementType()) {
-			case IJavaElement.COMPILATION_UNIT:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
 				if (silent)
 					return o;
 				else
-					return findType((ICompilationUnit)o, silent);
-			case IJavaElement.CLASS_FILE:
+					return findType((IJavaScriptUnit)o, silent);
+			case IJavaScriptElement.CLASS_FILE:
 				return ((IClassFile)o).getType();
 			default:
 				return o;				
 		}
 	}
 
-	IJavaElement getJavaElement(IStructuredSelection selection, boolean silent) {
+	IJavaScriptElement getJavaElement(IStructuredSelection selection, boolean silent) {
 		if (selection.size() == 1) {
 			Object firstElement= selection.getFirstElement();
-			IJavaElement elem= null;
-			if (firstElement instanceof IJavaElement) 
-				elem= (IJavaElement) firstElement;
+			IJavaScriptElement elem= null;
+			if (firstElement instanceof IJavaScriptElement) 
+				elem= (IJavaScriptElement) firstElement;
 			else if (firstElement instanceof IAdaptable) 
-				elem= (IJavaElement) ((IAdaptable) firstElement).getAdapter(IJavaElement.class);
+				elem= (IJavaScriptElement) ((IAdaptable) firstElement).getAdapter(IJavaScriptElement.class);
 			if (elem != null) {
 				return getTypeIfPossible(elem, silent);
 			}
@@ -154,11 +154,11 @@ public abstract class FindAction extends SelectionDispatchAction {
 		return SearchMessages.JavaElementAction_operationUnavailable_generic; 
 	}
 
-	private IJavaElement findType(ICompilationUnit cu, boolean silent) {
+	private IJavaScriptElement findType(IJavaScriptUnit cu, boolean silent) {
 		IType[] types= null;
 		try {					
 			types= cu.getAllTypes();
-		} catch (JavaModelException ex) {
+		} catch (JavaScriptModelException ex) {
 			if (JavaModelUtil.isExceptionToBeLogged(ex))
 				ExceptionHandler.log(ex, SearchMessages.JavaElementAction_error_open_message); 
 			if (silent)
@@ -174,9 +174,9 @@ public abstract class FindAction extends SelectionDispatchAction {
 			return null;
 		String title= SearchMessages.JavaElementAction_typeSelectionDialog_title; 
 		String message = SearchMessages.JavaElementAction_typeSelectionDialog_message; 
-		int flags= (JavaElementLabelProvider.SHOW_DEFAULT);						
+		int flags= (JavaScriptElementLabelProvider.SHOW_DEFAULT);						
 
-		ElementListSelectionDialog dialog= new ElementListSelectionDialog(getShell(), new JavaElementLabelProvider(flags));
+		ElementListSelectionDialog dialog= new ElementListSelectionDialog(getShell(), new JavaScriptElementLabelProvider(flags));
 		dialog.setTitle(title);
 		dialog.setMessage(message);
 		dialog.setElements(types);
@@ -191,7 +191,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 	 * Method declared on SelectionChangedAction.
 	 */
 	public void run(IStructuredSelection selection) {
-		IJavaElement element= getJavaElement(selection, false);
+		IJavaScriptElement element= getJavaElement(selection, false);
 		if (element == null || !element.exists()) {
 			showOperationUnavailableDialog();
 			return;
@@ -212,9 +212,9 @@ public abstract class FindAction extends SelectionDispatchAction {
 			String title= SearchMessages.SearchElementSelectionDialog_title; 
 			String message= SearchMessages.SearchElementSelectionDialog_message; 
 			
-			IJavaElement[] elements= SelectionConverter.codeResolveForked(fEditor, true);
+			IJavaScriptElement[] elements= SelectionConverter.codeResolveForked(fEditor, true);
 			if (elements.length > 0 && canOperateOn(elements[0])) {
-				IJavaElement element= elements[0];
+				IJavaScriptElement element= elements[0];
 				if (elements.length > 1)
 					element= SelectionConverter.selectJavaElement(elements, getShell(), title, message);
 				if (element != null)
@@ -248,7 +248,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 	 * Executes this action for the given java element.
 	 * @param element The java element to be found.
 	 */
-	public void run(IJavaElement element) {
+	public void run(IJavaScriptElement element) {
 		
 		if (!ActionUtil.isProcessable(getShell(), element))
 			return;
@@ -256,14 +256,14 @@ public abstract class FindAction extends SelectionDispatchAction {
 		// will return true except for debugging purposes.
 		try {
 			performNewSearch(element);
-		} catch (JavaModelException ex) {
+		} catch (JavaScriptModelException ex) {
 			ExceptionHandler.handle(ex, getShell(), SearchMessages.Search_Error_search_notsuccessful_title, SearchMessages.Search_Error_search_notsuccessful_message); 
 		} catch (InterruptedException e) {
 			// cancelled
 		}
 	}
 
-	private void performNewSearch(IJavaElement element) throws JavaModelException, InterruptedException {
+	private void performNewSearch(IJavaScriptElement element) throws JavaScriptModelException, InterruptedException {
 		JavaSearchQuery query= new JavaSearchQuery(createQuery(element));
 		if (query.canRunInBackground()) {
 			/*
@@ -288,26 +288,26 @@ public abstract class FindAction extends SelectionDispatchAction {
 		}
 	}
 	
-	QuerySpecification createQuery(IJavaElement element) throws JavaModelException, InterruptedException {
+	QuerySpecification createQuery(IJavaScriptElement element) throws JavaScriptModelException, InterruptedException {
 		JavaSearchScopeFactory factory= JavaSearchScopeFactory.getInstance();
-		IJavaSearchScope scope= factory.createWorkspaceScope(true);
+		IJavaScriptSearchScope scope= factory.createWorkspaceScope(true);
 		String description= factory.getWorkspaceScopeDescription(true);
 		return new ElementQuerySpecification(element, getLimitTo(), scope, description);
 	}
 
 	abstract int getLimitTo();
 
-	IType getType(IJavaElement element) {
+	IType getType(IJavaScriptElement element) {
 		if (element == null)
 			return null;
 		
 		IType type= null;
-		if (element.getElementType() == IJavaElement.TYPE)
+		if (element.getElementType() == IJavaScriptElement.TYPE)
 			type= (IType)element;
 		else if (element instanceof IMember)
 			type= ((IMember)element).getDeclaringType();
 		else if (element instanceof ILocalVariable) {
-			type= (IType)element.getAncestor(IJavaElement.TYPE);
+			type= (IType)element.getAncestor(IJavaScriptElement.TYPE);
 		}
 		return type;
 	}

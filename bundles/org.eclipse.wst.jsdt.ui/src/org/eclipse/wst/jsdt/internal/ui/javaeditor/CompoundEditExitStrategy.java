@@ -27,7 +27,7 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Exit strategy for commands that want to fold repeated execution into one compound edit. See
@@ -213,7 +213,7 @@ public final class CompoundEditExitStrategy {
 			try {
 				listener.endCompoundEdit();
 			} catch (Exception e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 	}

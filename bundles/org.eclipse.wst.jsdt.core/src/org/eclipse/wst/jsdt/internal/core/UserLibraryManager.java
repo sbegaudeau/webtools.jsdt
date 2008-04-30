@@ -27,10 +27,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -39,7 +39,7 @@ import org.osgi.service.prefs.BackingStoreException;
  */
 public class UserLibraryManager {
 
-	public final static String CP_USERLIBRARY_PREFERENCES_PREFIX = JavaCore.PLUGIN_ID+".userLibrary."; //$NON-NLS-1$
+	public final static String CP_USERLIBRARY_PREFERENCES_PREFIX = JavaScriptCore.PLUGIN_ID+".userLibrary."; //$NON-NLS-1$
 	public final static String CP_ENTRY_IGNORE = "##<cp entry ignore>##"; //$NON-NLS-1$
 
 	private static Map UserLibraries;
@@ -52,7 +52,7 @@ public class UserLibraryManager {
 			if (key.startsWith(CP_USERLIBRARY_PREFERENCES_PREFIX)) {
 				try {
 					recreatePersistedUserLibraryEntry(key, (String) event.getNewValue(), false, true);
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					if (logProblems) {
 						Util.log(e, "Exception while rebinding user library '"+ key.substring(CP_USERLIBRARY_PREFERENCES_PREFIX.length()) +"'."); //$NON-NLS-1$ //$NON-NLS-2$
 					}
@@ -91,9 +91,9 @@ public class UserLibraryManager {
 	 * @param newNames The names to register the libraries for
 	 * @param newLibs The libraries to register
 	 * @param monitor A progress monitor used when rebinding the classpath containers
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public static void setUserLibraries(String[] newNames, UserLibrary[] newLibs, IProgressMonitor monitor) throws JavaModelException {
+	public static void setUserLibraries(String[] newNames, UserLibrary[] newLibs, IProgressMonitor monitor) throws JavaScriptModelException {
 		Assert.isTrue(newNames.length == newLibs.length, "names and libraries should have the same length"); //$NON-NLS-1$
 
 		if (monitor == null) {
@@ -117,9 +117,9 @@ public class UserLibraryManager {
 	 * @param name The name to register the library for
 	 * @param library The library to register
 	 * @param monitor A progress monitor used when rebinding the classpath containers
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public static void setUserLibrary(String name, UserLibrary library, IProgressMonitor monitor) throws JavaModelException {
+	public static void setUserLibrary(String name, UserLibrary library, IProgressMonitor monitor) throws JavaScriptModelException {
 		internalSetUserLibrary(name, library, true, true, monitor);
 	}
 
@@ -144,7 +144,7 @@ public class UserLibraryManager {
 								String propertyValue = instancePreferences.get(propertyName, null);
 								if (propertyValue != null)
 									recreatePersistedUserLibraryEntry(propertyName,propertyValue, false, false);
-							} catch (JavaModelException e) {
+							} catch (JavaScriptModelException e) {
 								// won't happen: no rebinding
 							}
 						}
@@ -160,7 +160,7 @@ public class UserLibraryManager {
 		return UserLibraries;
 	}
 
-	static void recreatePersistedUserLibraryEntry(String propertyName, String savedString, boolean save, boolean rebind) throws JavaModelException {
+	static void recreatePersistedUserLibraryEntry(String propertyName, String savedString, boolean save, boolean rebind) throws JavaScriptModelException {
 		String libName= propertyName.substring(CP_USERLIBRARY_PREFERENCES_PREFIX.length());
 		if (savedString == null || savedString.equals(CP_ENTRY_IGNORE)) {
 			internalSetUserLibrary(libName, null, save, rebind, null);
@@ -180,7 +180,7 @@ public class UserLibraryManager {
 
 
 
-	static void internalSetUserLibrary(String name, UserLibrary library, boolean save, boolean rebind, IProgressMonitor monitor) throws JavaModelException {
+	static void internalSetUserLibrary(String name, UserLibrary library, boolean save, boolean rebind, IProgressMonitor monitor) throws JavaScriptModelException {
 		if (library == null) {
 			Object previous= getLibraryMap().remove(name);
 			if (previous == null) {
@@ -222,23 +222,23 @@ public class UserLibraryManager {
 		}
 	}
 
-	private static void rebindClasspathEntries(String name, boolean remove, IProgressMonitor monitor) throws JavaModelException {
+	private static void rebindClasspathEntries(String name, boolean remove, IProgressMonitor monitor) throws JavaScriptModelException {
 		try {
 			if (monitor != null) {
 				monitor.beginTask("", 1); //$NON-NLS-1$
 			}
 			IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();
-			IJavaProject[] projects= JavaCore.create(root).getJavaProjects();
-			IPath containerPath= new Path(JavaCore.USER_LIBRARY_CONTAINER_ID).append(name);
+			IJavaScriptProject[] projects= JavaScriptCore.create(root).getJavaScriptProjects();
+			IPath containerPath= new Path(JavaScriptCore.USER_LIBRARY_CONTAINER_ID).append(name);
 
 			ArrayList affectedProjects= new ArrayList();
 
 			for (int i= 0; i < projects.length; i++) {
-				IJavaProject project= projects[i];
-				IClasspathEntry[] entries= project.getRawClasspath();
+				IJavaScriptProject project= projects[i];
+				IIncludePathEntry[] entries= project.getRawIncludepath();
 				for (int k= 0; k < entries.length; k++) {
-					IClasspathEntry curr= entries[k];
-					if (curr.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+					IIncludePathEntry curr= entries[k];
+					if (curr.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
 						if (containerPath.equals(curr.getPath())) {
 							affectedProjects.add(project);
 							break;
@@ -247,7 +247,7 @@ public class UserLibraryManager {
 				}
 			}
 			if (!affectedProjects.isEmpty()) {
-				IJavaProject[] affected= (IJavaProject[]) affectedProjects.toArray(new IJavaProject[affectedProjects.size()]);
+				IJavaScriptProject[] affected= (IJavaScriptProject[]) affectedProjects.toArray(new IJavaScriptProject[affectedProjects.size()]);
 				IJsGlobalScopeContainer[] containers= new IJsGlobalScopeContainer[affected.length];
 				if (!remove) {
 					// Previously, containers array only contained a null value. Then, user library classpath entry was first removed
@@ -258,11 +258,11 @@ public class UserLibraryManager {
 					// as there's no classpath entry removal...
 					// Note that it works because equals(Object) method is not overridden for UserLibraryJsGlobalScopeContainer.
 					// If it was, the update wouldn't happen while setting classpath container
-					// @see javaCore.setJsGlobalScopeContainer(IPath, IJavaProject[], IJsGlobalScopeContainer[], IProgressMonitor)
+					// @see javaCore.setJsGlobalScopeContainer(IPath, IJavaScriptProject[], IJsGlobalScopeContainer[], IProgressMonitor)
 					UserLibraryJsGlobalScopeContainer container= new UserLibraryJsGlobalScopeContainer(name);
 					containers[0] = container;
 				}
-				JavaCore.setJsGlobalScopeContainer(containerPath, affected, containers, monitor == null ? null : new SubProgressMonitor(monitor, 1));
+				JavaScriptCore.setJsGlobalScopeContainer(containerPath, affected, containers, monitor == null ? null : new SubProgressMonitor(monitor, 1));
 			}
 		} finally {
 			if (monitor != null) {

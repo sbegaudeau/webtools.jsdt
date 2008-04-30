@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.surround;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
@@ -25,7 +25,7 @@ public class SurroundWithTryCatchAnalyzer extends SurroundWithAnalyzer {
 	private ISurroundWithTryCatchQuery fQuery;
 	private ITypeBinding[] fExceptions;
 
-	public SurroundWithTryCatchAnalyzer(ICompilationUnit unit, Selection selection, ISurroundWithTryCatchQuery query) throws JavaModelException {
+	public SurroundWithTryCatchAnalyzer(IJavaScriptUnit unit, Selection selection, ISurroundWithTryCatchQuery query) throws JavaScriptModelException {
 		super(unit, selection);
 		fQuery= query;
 	}
@@ -34,7 +34,7 @@ public class SurroundWithTryCatchAnalyzer extends SurroundWithAnalyzer {
 		return fExceptions;
 	}
 
-	public void endVisit(CompilationUnit node) {
+	public void endVisit(JavaScriptUnit node) {
 		BodyDeclaration enclosingNode= null;
 		if (!getStatus().hasFatalError() && hasSelectedNodes())
 			enclosingNode= (BodyDeclaration)ASTNodes.getParent(getFirstSelectedNode(), BodyDeclaration.class);

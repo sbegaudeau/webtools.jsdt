@@ -11,9 +11,9 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
@@ -25,17 +25,17 @@ import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
  */
 public abstract class CuCollectingSearchRequestor extends CollectingSearchRequestor {
 
-	private ICompilationUnit fCuCache;
+	private IJavaScriptUnit fCuCache;
 	private IScanner fScannerCache;
 	
-	protected IScanner getScanner(ICompilationUnit unit) {
+	protected IScanner getScanner(IJavaScriptUnit unit) {
 		if (unit.equals(fCuCache))
 			return fScannerCache;
 		
 		fCuCache= unit;
-		IJavaProject project= unit.getJavaProject();
-		String sourceLevel= project.getOption(JavaCore.COMPILER_SOURCE, true);
-		String complianceLevel= project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+		IJavaScriptProject project= unit.getJavaScriptProject();
+		String sourceLevel= project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
+		String complianceLevel= project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true);
 		fScannerCache= ToolFactory.createScanner(false, false, false, sourceLevel, complianceLevel);
 		return fScannerCache;
 	}
@@ -48,7 +48,7 @@ public abstract class CuCollectingSearchRequestor extends CollectingSearchReques
 	 * @deprecated
 	 */
 	public final void acceptSearchMatch(SearchMatch match) throws CoreException {
-		ICompilationUnit unit= SearchUtils.getCompilationUnit(match);
+		IJavaScriptUnit unit= SearchUtils.getCompilationUnit(match);
 		if (unit == null)
 			return;
 		acceptSearchMatch(unit, match);
@@ -58,7 +58,7 @@ public abstract class CuCollectingSearchRequestor extends CollectingSearchReques
 		super.acceptSearchMatch(match);
 	}
 	
-	protected abstract void acceptSearchMatch(ICompilationUnit unit, SearchMatch match) throws CoreException;
+	protected abstract void acceptSearchMatch(IJavaScriptUnit unit, SearchMatch match) throws CoreException;
 
 	public void endReporting() {
 		fCuCache= null;

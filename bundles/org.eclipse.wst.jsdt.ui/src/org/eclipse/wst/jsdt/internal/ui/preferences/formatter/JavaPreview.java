@@ -32,14 +32,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.wst.jsdt.internal.ui.text.SimpleJavaSourceViewerConfiguration;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 
 public abstract class JavaPreview {
@@ -101,21 +101,21 @@ public abstract class JavaPreview {
 	 * @param parent
 	 */
 	public JavaPreview(Map workingValues, Composite parent) {
-		JavaTextTools tools= JavaPlugin.getDefault().getJavaTextTools();
+		JavaScriptTextTools tools= JavaScriptPlugin.getDefault().getJavaTextTools();
 		fPreviewDocument= new Document();
 		fWorkingValues= workingValues;
-		tools.setupJavaDocumentPartitioner( fPreviewDocument, IJavaPartitions.JAVA_PARTITIONING);	
+		tools.setupJavaDocumentPartitioner( fPreviewDocument, IJavaScriptPartitions.JAVA_PARTITIONING);	
 		
 		PreferenceStore prioritizedSettings= new PreferenceStore();
-		prioritizedSettings.setValue(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
-		prioritizedSettings.setValue(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
-		prioritizedSettings.setValue(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);
-		prioritizedSettings.setValue(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaCore.ERROR);
+		prioritizedSettings.setValue(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_5);
+		prioritizedSettings.setValue(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_5);
+		prioritizedSettings.setValue(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_5);
+		prioritizedSettings.setValue(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.ERROR);
 		
-		IPreferenceStore[] chain= { prioritizedSettings, JavaPlugin.getDefault().getCombinedPreferenceStore() };
+		IPreferenceStore[] chain= { prioritizedSettings, JavaScriptPlugin.getDefault().getCombinedPreferenceStore() };
 		fPreferenceStore= new ChainedPreferenceStore(chain);
 		fSourceViewer= new JavaSourceViewer(parent, null, null, false, SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER, fPreferenceStore);
-		fViewerConfiguration= new SimpleJavaSourceViewerConfiguration(tools.getColorManager(), fPreferenceStore, null, IJavaPartitions.JAVA_PARTITIONING, true);
+		fViewerConfiguration= new SimpleJavaSourceViewerConfiguration(tools.getColorManager(), fPreferenceStore, null, IJavaScriptPartitions.JAVA_PARTITIONING, true);
 		fSourceViewer.configure(fViewerConfiguration);
 		fSourceViewer.getTextWidget().setFont(JFaceResources.getFont(PreferenceConstants.EDITOR_TEXT_FONT));
 		

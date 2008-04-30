@@ -18,16 +18,16 @@ import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -87,11 +87,11 @@ public class ChangeMethodSignatureProposal extends LinkedCorrectionProposal {
 	}
 
 	private ASTNode fInvocationNode;
-	private IMethodBinding fSenderBinding;
+	private IFunctionBinding fSenderBinding;
 	private ChangeDescription[] fParameterChanges;
 	private ChangeDescription[] fExceptionChanges;
 
-	public ChangeMethodSignatureProposal(String label, ICompilationUnit targetCU, ASTNode invocationNode, IMethodBinding binding, ChangeDescription[] paramChanges, ChangeDescription[] exceptionChanges, int relevance, Image image) {
+	public ChangeMethodSignatureProposal(String label, IJavaScriptUnit targetCU, ASTNode invocationNode, IFunctionBinding binding, ChangeDescription[] paramChanges, ChangeDescription[] exceptionChanges, int relevance, Image image) {
 		super(label, targetCU, null, relevance, image);
 
 		Assert.isTrue(binding != null && Bindings.isDeclarationBinding(binding));
@@ -103,7 +103,7 @@ public class ChangeMethodSignatureProposal extends LinkedCorrectionProposal {
 	}
 
 	protected ASTRewrite getRewrite() throws CoreException {
-		CompilationUnit astRoot= (CompilationUnit) fInvocationNode.getRoot();
+		JavaScriptUnit astRoot= (JavaScriptUnit) fInvocationNode.getRoot();
 		ASTNode methodDecl= astRoot.findDeclaringNode(fSenderBinding);
 		ASTNode newMethodDecl= null;
 		boolean isInDifferentCU;
@@ -117,8 +117,8 @@ public class ChangeMethodSignatureProposal extends LinkedCorrectionProposal {
 		}
 		createImportRewrite(astRoot);
 		
-		if (newMethodDecl instanceof MethodDeclaration) {
-			MethodDeclaration decl= (MethodDeclaration) newMethodDecl;
+		if (newMethodDecl instanceof FunctionDeclaration) {
+			FunctionDeclaration decl= (FunctionDeclaration) newMethodDecl;
 
 			ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 			if (fParameterChanges != null) {
@@ -132,7 +132,7 @@ public class ChangeMethodSignatureProposal extends LinkedCorrectionProposal {
 		return null;
 	}
 
-	private void modifyParameters(ASTRewrite rewrite, MethodDeclaration methodDecl, boolean isInDifferentCU) throws CoreException {
+	private void modifyParameters(ASTRewrite rewrite, FunctionDeclaration methodDecl, boolean isInDifferentCU) throws CoreException {
 		AST ast= methodDecl.getAST();
 
 		ArrayList usedNames= new ArrayList();
@@ -144,7 +144,7 @@ public class ChangeMethodSignatureProposal extends LinkedCorrectionProposal {
 		}
 
 		ImportRewrite imports= getImportRewrite();
-		ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY);
 
 		List parameters= methodDecl.parameters(); // old parameters
 		int k= 0; // index over the oldParameters
@@ -169,14 +169,14 @@ public class ChangeMethodSignatureProposal extends LinkedCorrectionProposal {
 
 				listRewrite.insertAt(newNode, i, null);
 
-				Javadoc javadoc= methodDecl.getJavadoc();
+				JSdoc javadoc= methodDecl.getJavadoc();
 				if (javadoc != null) {
 					TagElement newTagElement= ast.newTagElement();
 					newTagElement.setTagName(TagElement.TAG_PARAM);
 					SimpleName arg= ast.newSimpleName("x"); //$NON-NLS-1$
 					newTagElement.fragments().add(arg);
 					insertTabStop(rewrite, newTagElement.fragments(), "param_tagcomment" + i); //$NON-NLS-1$
-					insertParamTag(rewrite.getListRewrite(javadoc, Javadoc.TAGS_PROPERTY), parameters, k, newTagElement);
+					insertParamTag(rewrite.getListRewrite(javadoc, JSdoc.TAGS_PROPERTY), parameters, k, newTagElement);
 					desc.resultingTagArg= arg; // set the name later
 				} else {
 					desc.resultingTagArg= null;
@@ -265,7 +265,7 @@ public class ChangeMethodSignatureProposal extends LinkedCorrectionProposal {
 
 		if (methodDecl.getBody() != null) {
 			// avoid take a name of a local variable inside
-			CompilationUnit root= (CompilationUnit) methodDecl.getRoot();
+			JavaScriptUnit root= (JavaScriptUnit) methodDecl.getRoot();
 			IBinding[] bindings= (new ScopeAnalyzer(root)).getDeclarationsAfter(methodDecl.getBody().getStartPosition(), ScopeAnalyzer.VARIABLES);
 			for (int i= 0; i < bindings.length; i++) {
 				usedNames.add(bindings[i].getName());
@@ -275,7 +275,7 @@ public class ChangeMethodSignatureProposal extends LinkedCorrectionProposal {
 		fixupNames(rewrite, usedNames, methodDecl, isInDifferentCU);
 	}
 
-	private void fixupNames(ASTRewrite rewrite, ArrayList usedNames, MethodDeclaration methodDecl, boolean isInDifferentCU) {
+	private void fixupNames(ASTRewrite rewrite, ArrayList usedNames, FunctionDeclaration methodDecl, boolean isInDifferentCU) {
 		AST ast= rewrite.getAST();
 		// set names for new parameters
 		for (int i= 0; i < fParameterChanges.length; i++) {
@@ -292,7 +292,7 @@ public class ChangeMethodSignatureProposal extends LinkedCorrectionProposal {
 				
 				String suggestedName= desc.name;
 				if (suggestedName != null) {
-					favourite= StubUtility.suggestArgumentName(getCompilationUnit().getJavaProject(), suggestedName, excludedNames);
+					favourite= StubUtility.suggestArgumentName(getCompilationUnit().getJavaScriptProject(), suggestedName, excludedNames);
 					addLinkedPositionProposal(nameKey, favourite, null);
 				}
 				
@@ -301,7 +301,7 @@ public class ChangeMethodSignatureProposal extends LinkedCorrectionProposal {
 				}
 				
 				Type type= desc.resultingParamType;
-				String[] suggestedNames= StubUtility.getArgumentNameSuggestions(getCompilationUnit().getJavaProject(), type, excludedNames);
+				String[] suggestedNames= StubUtility.getArgumentNameSuggestions(getCompilationUnit().getJavaScriptProject(), type, excludedNames);
 				for (int k= 0; k < suggestedNames.length; k++) {
 					addLinkedPositionProposal(nameKey, suggestedNames[k], null);
 				}
@@ -333,8 +333,8 @@ public class ChangeMethodSignatureProposal extends LinkedCorrectionProposal {
 		}
 	}
 
-	private TagElement findParamTag(MethodDeclaration decl, SingleVariableDeclaration param) {
-		Javadoc javadoc= decl.getJavadoc();
+	private TagElement findParamTag(FunctionDeclaration decl, SingleVariableDeclaration param) {
+		JSdoc javadoc= decl.getJavadoc();
 		if (javadoc != null) {
 			return JavadocTagsSubProcessor.findParamTag(javadoc, param.getName().getIdentifier());
 		}
@@ -352,11 +352,11 @@ public class ChangeMethodSignatureProposal extends LinkedCorrectionProposal {
 		return newTagElement;
 	}
 
-	private void modifyExceptions(ASTRewrite rewrite, MethodDeclaration methodDecl) throws CoreException {
+	private void modifyExceptions(ASTRewrite rewrite, FunctionDeclaration methodDecl) throws CoreException {
 		AST ast= methodDecl.getAST();
 
 		ImportRewrite imports= getImportRewrite();
-		ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY);
 
 		List exceptions= methodDecl.thrownExceptions(); // old exceptions
 		int k= 0; // index over the old exceptions
@@ -376,14 +376,14 @@ public class ChangeMethodSignatureProposal extends LinkedCorrectionProposal {
 				String key= getExceptionTypeGroupId(i);
 				addLinkedPosition(rewrite.track(newNode), false, key);
 
-				Javadoc javadoc= methodDecl.getJavadoc();
+				JSdoc javadoc= methodDecl.getJavadoc();
 				if (javadoc != null) {
 					TagElement newTagElement= ast.newTagElement();
 					newTagElement.setTagName(TagElement.TAG_THROWS);
 					ASTNode newRef= ASTNodeFactory.newName(ast, type);
 					newTagElement.fragments().add(newRef);
 					insertTabStop(rewrite, newTagElement.fragments(), "throws_tagcomment" + i); //$NON-NLS-1$
-					insertThrowsTag(rewrite.getListRewrite(javadoc, Javadoc.TAGS_PROPERTY), exceptions, k, newTagElement);
+					insertThrowsTag(rewrite.getListRewrite(javadoc, JSdoc.TAGS_PROPERTY), exceptions, k, newTagElement);
 
 					addLinkedPosition(rewrite.track(newRef), false, key);
 				}
@@ -445,8 +445,8 @@ public class ChangeMethodSignatureProposal extends LinkedCorrectionProposal {
 		addLinkedPosition(rewriter.track(textElement), false, linkedName);
 	}
 
-	private TagElement findThrowsTag(MethodDeclaration decl, Name exception) {
-		Javadoc javadoc= decl.getJavadoc();
+	private TagElement findThrowsTag(FunctionDeclaration decl, Name exception) {
+		JSdoc javadoc= decl.getJavadoc();
 		if (javadoc != null) {
 			String name= ASTNodes.getSimpleNameIdentifier(exception);
 			return JavadocTagsSubProcessor.findThrowsTag(javadoc, name);

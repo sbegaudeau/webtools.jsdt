@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 
 public class TypeParameter extends SourceRefElement implements ITypeParameter {
@@ -39,14 +39,14 @@ public class TypeParameter extends SourceRefElement implements ITypeParameter {
 	/*
 	 * @see JavaElement#generateInfos
 	 */
-	protected void generateInfos(Object info, HashMap newElements, IProgressMonitor pm) throws JavaModelException {
+	protected void generateInfos(Object info, HashMap newElements, IProgressMonitor pm) throws JavaScriptModelException {
 		Openable openableParent = (Openable)getOpenableParent();
 		if (JavaModelManager.getJavaModelManager().getInfo(openableParent) == null) {
 			openableParent.generateInfos(openableParent.createElementInfo(), newElements, pm);
 		}
 	}
 
-	public String[] getBounds() throws JavaModelException {
+	public String[] getBounds() throws JavaScriptModelException {
 		TypeParameterElementInfo info = (TypeParameterElementInfo) getElementInfo();
 		return CharOperation.toStrings(info.bounds);
 	}
@@ -67,7 +67,7 @@ public class TypeParameter extends SourceRefElement implements ITypeParameter {
 		return JavaElement.JEM_TYPE_PARAMETER;
 	}
 
-	public ISourceRange getNameRange() throws JavaModelException {
+	public ISourceRange getNameRange() throws JavaScriptModelException {
 		SourceMapper mapper= getSourceMapper();
 		if (mapper != null) {
 			// ensure the class file's buffer is open so that source ranges are computed
@@ -84,7 +84,7 @@ public class TypeParameter extends SourceRefElement implements ITypeParameter {
 	/*
 	 * @see ISourceReference
 	 */
-	public ISourceRange getSourceRange() throws JavaModelException {
+	public ISourceRange getSourceRange() throws JavaScriptModelException {
 		SourceMapper mapper= getSourceMapper();
 		if (mapper != null) {
 			// ensure the class file's buffer is open so that source ranges are computed

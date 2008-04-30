@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 
 /**
@@ -32,9 +32,9 @@ public class BufferFactoryWrapper extends WorkingCopyOwner {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.WorkingCopyOwner#createBuffer(org.eclipse.wst.jsdt.core.ICompilationUnit)
+	 * @see org.eclipse.wst.jsdt.core.WorkingCopyOwner#createBuffer(org.eclipse.wst.jsdt.core.IJavaScriptUnit)
 	 */
-	public IBuffer createBuffer(ICompilationUnit workingCopy) {
+	public IBuffer createBuffer(IJavaScriptUnit workingCopy) {
 		if (this.factory == null) return super.createBuffer(workingCopy);
 		return this.factory.createBuffer(workingCopy);
 	}

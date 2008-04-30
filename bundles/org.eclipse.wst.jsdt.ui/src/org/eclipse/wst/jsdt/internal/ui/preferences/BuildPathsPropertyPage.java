@@ -32,12 +32,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
 import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
@@ -95,7 +95,7 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 	}	
 	
 	private IDialogSettings getSettings() {
-		IDialogSettings javaSettings= JavaPlugin.getDefault().getDialogSettings();
+		IDialogSettings javaSettings= JavaScriptPlugin.getDefault().getDialogSettings();
 		IDialogSettings pageSettings= javaSettings.getSection(PAGE_SETTINGS);
 		if (pageSettings == null) {
 			pageSettings= javaSettings.addNewSection(PAGE_SETTINGS);
@@ -124,7 +124,7 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 					if (res == 0) {
 						performOk();
 					} else if (res == 1) {
-						fBuildPathsBlock.init(JavaCore.create(getProject()), null);
+						fBuildPathsBlock.init(JavaScriptCore.create(getProject()), null);
 					} else {
 						// keep unsaved
 					}
@@ -132,7 +132,7 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 			} else {
 				fBuildPathsBlock.aboutToShow();
 				if (!fBuildPathsBlock.hasChangesInDialog() && fBuildPathsBlock.hasChangesInClasspathFile()) {
-					fBuildPathsBlock.init(JavaCore.create(getProject()), null);
+					fBuildPathsBlock.init(JavaScriptCore.create(getProject()), null);
 				}
 			}
 		}
@@ -151,7 +151,7 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 		}
 		
 		fBuildPathsBlock= new BuildPathsBlock(new BusyIndicatorRunnableContext(), this, getSettings().getInt(INDEX), false, pageContainer);
-		fBuildPathsBlock.init(JavaCore.create(project), null);
+		fBuildPathsBlock.init(JavaScriptCore.create(project), null);
 		return fBuildPathsBlock.createControl(parent);
 	}
 
@@ -182,9 +182,9 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 	private IProject getProject() {
 		IAdaptable adaptable= getElement();
 		if (adaptable != null) {
-			IJavaElement elem= (IJavaElement) adaptable.getAdapter(IJavaElement.class);
-			if (elem instanceof IJavaProject) {
-				return ((IJavaProject) elem).getProject();
+			IJavaScriptElement elem= (IJavaScriptElement) adaptable.getAdapter(IJavaScriptElement.class);
+			if (elem instanceof IJavaScriptProject) {
+				return ((IJavaScriptProject) elem).getProject();
 			}
 		}
 		return null;
@@ -192,9 +192,9 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 	
 	private boolean isJavaProject(IProject proj) {
 		try {
-			return proj.hasNature(JavaCore.NATURE_ID);
+			return proj.hasNature(JavaScriptCore.NATURE_ID);
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		return false;
 	}
@@ -245,8 +245,8 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 		if (data instanceof Map) {
 			Map map= (Map) data;
 			Object selectedLibrary= map.get(DATA_REVEAL_ENTRY);
-			if (selectedLibrary instanceof IClasspathEntry) {
-				IClasspathEntry entry= (IClasspathEntry) selectedLibrary;
+			if (selectedLibrary instanceof IIncludePathEntry) {
+				IIncludePathEntry entry= (IIncludePathEntry) selectedLibrary;
 				Object attr= map.get(DATA_REVEAL_ATTRIBUTE_KEY);
 				String attributeKey= attr instanceof String ? (String) attr : null;
 				if (fBuildPathsBlock != null) {
@@ -254,9 +254,9 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 				}
 			}
 			Object entryToAdd= map.get(DATA_ADD_ENTRY);
-			if (entryToAdd instanceof IClasspathEntry) {
+			if (entryToAdd instanceof IIncludePathEntry) {
 				if (fBuildPathsBlock != null) {
-					fBuildPathsBlock.addElement((IClasspathEntry) entryToAdd);
+					fBuildPathsBlock.addElement((IIncludePathEntry) entryToAdd);
 				}
 			}
 			

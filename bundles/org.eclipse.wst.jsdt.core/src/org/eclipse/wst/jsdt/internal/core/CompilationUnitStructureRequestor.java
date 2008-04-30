@@ -17,8 +17,8 @@ import java.util.Stack;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
@@ -30,14 +30,14 @@ import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.core.util.ReferenceInfoAdapter;
 
 /**
- * A requestor for the fuzzy parser, used to compute the children of an ICompilationUnit.
+ * A requestor for the fuzzy parser, used to compute the children of an IJavaScriptUnit.
  */
 public class CompilationUnitStructureRequestor extends ReferenceInfoAdapter implements ISourceElementRequestor {
 
 	/**
 	 * The handle to the compilation unit being parsed
 	 */
-	protected IJavaElement unit;
+	protected IJavaScriptElement unit;
 
 	/**
 	 * The info object for the compilation unit being parsed
@@ -66,7 +66,7 @@ public class CompilationUnitStructureRequestor extends ReferenceInfoAdapter impl
 	protected Stack infoStack;
 
 	/*
-	 * Map from JavaElementInfo to of ArrayList of IJavaElement representing the children
+	 * Map from JavaElementInfo to of ArrayList of IJavaScriptElement representing the children
 	 * of the given info.
 	 */
 	protected HashMap children;
@@ -104,7 +104,7 @@ public class CompilationUnitStructureRequestor extends ReferenceInfoAdapter impl
 	protected HashtableOfObject typeRefCache;
 	protected HashtableOfObject unknownRefCache;
 
-protected CompilationUnitStructureRequestor(IJavaElement unit, CompilationUnitElementInfo unitInfo, Map newElements) {
+protected CompilationUnitStructureRequestor(IJavaScriptElement unit, CompilationUnitElementInfo unitInfo, Map newElements) {
 	this.unit = unit;
 	this.unitInfo = unitInfo;
 	this.newElements = newElements;
@@ -114,11 +114,11 @@ protected CompilationUnitStructureRequestor(IJavaElement unit, CompilationUnitEl
  */
 public void acceptImport(int declarationStart, int declarationEnd, char[][] tokens, boolean onDemand, int modifiers) {
 	JavaElement parentHandle= (JavaElement) this.handleStack.peek();
-	if (!(parentHandle.getElementType() == IJavaElement.COMPILATION_UNIT)) {
+	if (!(parentHandle.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT)) {
 		Assert.isTrue(false); // Should not happen
 	}
 
-	ICompilationUnit parentCU= (ICompilationUnit)parentHandle;
+	IJavaScriptUnit parentCU= (IJavaScriptUnit)parentHandle;
 	//create the import container and its info
 	ImportContainer importContainer= (ImportContainer)parentCU.getImportContainer();
 	if (this.importContainerInfo == null) {
@@ -159,10 +159,10 @@ public void acceptPackage(int declarationStart, int declarationEnd, char[] name)
 		JavaElement parentHandle= (JavaElement) this.handleStack.peek();
 		PackageDeclaration handle = null;
 
-		if (parentHandle.getElementType() == IJavaElement.COMPILATION_UNIT) {
+		if (parentHandle.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT) {
 			handle = new PackageDeclaration((CompilationUnit) parentHandle, new String(name));
 		}
-		else if (parentHandle.getElementType() == IJavaElement.CLASS_FILE) {
+		else if (parentHandle.getElementType() == IJavaScriptElement.CLASS_FILE) {
 			handle = new PackageDeclaration((ClassFile) parentHandle, new String(name));
 		}
 		else {
@@ -230,10 +230,10 @@ public void enterField(FieldInfo fieldInfo) {
 	JavaElementInfo parentInfo = (JavaElementInfo) this.infoStack.peek();
 	JavaElement parentHandle= (JavaElement) this.handleStack.peek();
 	SourceField handle = null;
-	if (parentHandle.getElementType() == IJavaElement.TYPE
-			|| parentHandle.getElementType() == IJavaElement.COMPILATION_UNIT
-			|| parentHandle.getElementType() == IJavaElement.CLASS_FILE
-			|| parentHandle.getElementType() == IJavaElement.METHOD
+	if (parentHandle.getElementType() == IJavaScriptElement.TYPE
+			|| parentHandle.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT
+			|| parentHandle.getElementType() == IJavaScriptElement.CLASS_FILE
+			|| parentHandle.getElementType() == IJavaScriptElement.METHOD
 			) {
 		String fieldName = JavaModelManager.getJavaModelManager().intern(new String(fieldInfo.name));
 		handle = new SourceField(parentHandle, fieldName);
@@ -276,7 +276,7 @@ public void enterInitializer(
 		JavaElement parentHandle= (JavaElement) this.handleStack.peek();
 		Initializer handle = null;
 
-		if (parentHandle.getElementType() == IJavaElement.TYPE) {
+		if (parentHandle.getElementType() == IJavaScriptElement.TYPE) {
 			handle = new Initializer(parentHandle, 1);
 		}
 		else {
@@ -315,10 +315,10 @@ public void enterMethod(MethodInfo methodInfo) {
 	}
 
 	String[] parameterTypeSigs = convertTypeNamesToSigs(methodInfo.parameterTypes);
-	if (parentHandle.getElementType() == IJavaElement.TYPE
-			|| parentHandle.getElementType() == IJavaElement.COMPILATION_UNIT
-			|| parentHandle.getElementType() == IJavaElement.CLASS_FILE
-			|| parentHandle.getElementType() == IJavaElement.METHOD
+	if (parentHandle.getElementType() == IJavaScriptElement.TYPE
+			|| parentHandle.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT
+			|| parentHandle.getElementType() == IJavaScriptElement.CLASS_FILE
+			|| parentHandle.getElementType() == IJavaScriptElement.METHOD
 			) {
 
 		char[] cs = methodInfo.name!=null ? methodInfo.name: CharOperation.NO_CHAR;
@@ -416,7 +416,7 @@ public void enterType(TypeInfo typeInfo) {
 		superinterfaces[i] = manager.intern(superinterfaces[i]);
 	info.setSuperInterfaceNames(superinterfaces);
 	info.addCategories(handle, typeInfo.categories);
-	if (parentHandle.getElementType() == IJavaElement.TYPE)
+	if (parentHandle.getElementType() == IJavaScriptElement.TYPE)
 		((SourceTypeElementInfo) parentInfo).addCategories(handle, typeInfo.categories);
 	addToChildren(parentInfo, handle);
 	this.unitInfo.addAnnotationPositions(handle, typeInfo.annotationPositions);
@@ -563,7 +563,7 @@ private void setChildren(JavaElementInfo info) {
 	ArrayList childrenList = (ArrayList) this.children.get(info);
 	if (childrenList != null) {
 		int length = childrenList.size();
-		IJavaElement[] elements = new IJavaElement[length];
+		IJavaScriptElement[] elements = new IJavaScriptElement[length];
 		childrenList.toArray(elements);
 		info.children = elements;
 	}

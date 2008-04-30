@@ -33,21 +33,21 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ExtractInterfaceProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ExtractInterfaceRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.constraints.SuperTypeRefactoringProcessor;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class ExtractInterfaceWizard extends RefactoringWizard {
 	
@@ -178,7 +178,7 @@ public class ExtractInterfaceWizard extends RefactoringWizard {
 			fTableViewer.setContentProvider(new ArrayContentProvider());
 			try {
 				fTableViewer.setInput(getExtractableMembers());
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				ExceptionHandler.handle(e, RefactoringMessages.ExtractInterfaceInputPage_Extract_Interface, RefactoringMessages.ExtractInterfaceInputPage_Internal_Error); 
 				fTableViewer.setInput(new IMember[0]);
 			}
@@ -187,13 +187,13 @@ public class ExtractInterfaceWizard extends RefactoringWizard {
 					ExtractInterfaceInputPage.this.updateUIElementEnablement();
 				}
 			});
-			fTableViewer.setComparator(new JavaElementComparator());
+			fTableViewer.setComparator(new JavaScriptElementComparator());
 			fTableViewer.getControl().setEnabled(anyMembersToExtract());
 
 			createButtonComposite(composite);
 		}
 
-		private IMember[] getExtractableMembers() throws JavaModelException {
+		private IMember[] getExtractableMembers() throws JavaScriptModelException {
 			return getExtractInterfaceRefactoring().getExtractInterfaceProcessor().getExtractableMembers();
 		}
 
@@ -202,9 +202,9 @@ public class ExtractInterfaceWizard extends RefactoringWizard {
 			IMember[] extractable;
 			try {
 				extractable= getExtractableMembers();
-			} catch (JavaModelException exception) {
+			} catch (JavaScriptModelException exception) {
 				extractable= new IMember[0];
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 			}
 			final boolean enabled= containsMethods(checked);
 			fDeclarePublicCheckbox.setEnabled(enabled);
@@ -217,7 +217,7 @@ public class ExtractInterfaceWizard extends RefactoringWizard {
 
 		private static boolean containsMethods(IMember[] members) {
 			for (int i= 0; i < members.length; i++) {
-				if (members[i].getElementType() == IJavaElement.METHOD)
+				if (members[i].getElementType() == IJavaScriptElement.METHOD)
 					return true;
 			}
 			return false;
@@ -225,7 +225,7 @@ public class ExtractInterfaceWizard extends RefactoringWizard {
 
 		private ILabelProvider createLabelProvider(){
 			AppearanceAwareLabelProvider lprovider= new AppearanceAwareLabelProvider(
-				AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS |  JavaElementLabels.F_APP_TYPE_SIGNATURE,
+				AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS |  JavaScriptElementLabels.F_APP_TYPE_SIGNATURE,
 				AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS
 			);
 		
@@ -270,7 +270,7 @@ public class ExtractInterfaceWizard extends RefactoringWizard {
 		private boolean anyMembersToExtract() {
 			try {
 				return getExtractableMembers().length > 0;
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return false;
 			}
 		}
@@ -348,8 +348,8 @@ public class ExtractInterfaceWizard extends RefactoringWizard {
 				initializeRefactoring();
 				storeDialogSettings();
 				return super.getNextPage();
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 				return null;
 			}
 		}
@@ -362,13 +362,13 @@ public class ExtractInterfaceWizard extends RefactoringWizard {
 				initializeRefactoring();
 				storeDialogSettings();
 				return super.performFinish();
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 				return false;
 			}
 		}
 
-		private void initializeRefactoring() throws JavaModelException {
+		private void initializeRefactoring() throws JavaScriptModelException {
 			final ExtractInterfaceProcessor processor= getExtractInterfaceRefactoring().getExtractInterfaceProcessor();
 			processor.setTypeName(getText());
 			processor.setReplace(fReplaceAllCheckbox.getSelection());
@@ -401,7 +401,7 @@ public class ExtractInterfaceWizard extends RefactoringWizard {
 		}
 
 		private void initializeCheckBox(Button checkbox, String property, boolean def) {
-			String s= JavaPlugin.getDefault().getDialogSettings().get(property);
+			String s= JavaScriptPlugin.getDefault().getDialogSettings().get(property);
 			if (s != null)
 				checkbox.setSelection(new Boolean(s).booleanValue());
 			else
@@ -409,7 +409,7 @@ public class ExtractInterfaceWizard extends RefactoringWizard {
 		}
 
 		private void storeDialogSettings() {
-			final IDialogSettings settings= JavaPlugin.getDefault().getDialogSettings();
+			final IDialogSettings settings= JavaScriptPlugin.getDefault().getDialogSettings();
 			settings.put(SETTING_PUBLIC, fDeclarePublicCheckbox.getSelection());
 			settings.put(SETTING_ABSTRACT, fDeclareAbstractCheckbox.getSelection());
 			settings.put(SETTING_REPLACE, fReplaceAllCheckbox.getSelection());

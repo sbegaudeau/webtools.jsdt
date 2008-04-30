@@ -13,8 +13,8 @@ package org.eclipse.wst.jsdt.launching;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 
 /**
  * Resolves variable and/or container runtime classpath entries in
@@ -83,7 +83,7 @@ public interface IRuntimeClasspathEntryResolver {
 	 * @return resolved entries (zero or more)
 	 * @exception CoreException if unable to resolve the entry  
 	 */
-	public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry, IJavaProject project) throws CoreException;	
+	public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry, IJavaScriptProject project) throws CoreException;	
 	
 	/**
 	 * Returns a VM install associated with the given classpath entry,
@@ -93,5 +93,5 @@ public interface IRuntimeClasspathEntryResolver {
 	 * @return vm install associated with entry or <code>null</code> if none
 	 * @exception CoreException if unable to resolve a VM
 	 */
-	public IVMInstall resolveVMInstall(IClasspathEntry entry) throws CoreException;
+	public IVMInstall resolveVMInstall(IIncludePathEntry entry) throws CoreException;
 }

@@ -31,23 +31,23 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
@@ -55,17 +55,17 @@ import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
 public class CopyQualifiedNameAction extends SelectionDispatchAction {
 	
-	private static final long LABEL_FLAGS= new Long(JavaElementLabels.F_FULLY_QUALIFIED | JavaElementLabels.M_FULLY_QUALIFIED | JavaElementLabels.I_FULLY_QUALIFIED | JavaElementLabels.T_FULLY_QUALIFIED | JavaElementLabels.M_PARAMETER_TYPES | JavaElementLabels.USE_RESOLVED | JavaElementLabels.T_TYPE_PARAMETERS | JavaElementLabels.CU_QUALIFIED | JavaElementLabels.CF_QUALIFIED).longValue();
+	private static final long LABEL_FLAGS= new Long(JavaScriptElementLabels.F_FULLY_QUALIFIED | JavaScriptElementLabels.M_FULLY_QUALIFIED | JavaScriptElementLabels.I_FULLY_QUALIFIED | JavaScriptElementLabels.T_FULLY_QUALIFIED | JavaScriptElementLabels.M_PARAMETER_TYPES | JavaScriptElementLabels.USE_RESOLVED | JavaScriptElementLabels.T_TYPE_PARAMETERS | JavaScriptElementLabels.CU_QUALIFIED | JavaScriptElementLabels.CF_QUALIFIED).longValue();
 
     //TODO: Make API
 	public static final String ACTION_DEFINITION_ID= "org.eclipse.wst.jsdt.ui.edit.text.java.copy.qualified.name"; //$NON-NLS-1$
@@ -118,7 +118,7 @@ public class CopyQualifiedNameAction extends SelectionDispatchAction {
 		if (element instanceof IClassFile)
 			return true;
 		
-		if (element instanceof ICompilationUnit)
+		if (element instanceof IJavaScriptUnit)
 			return true;
 		
 		if (element instanceof IPackageDeclaration)
@@ -139,7 +139,7 @@ public class CopyQualifiedNameAction extends SelectionDispatchAction {
     public void run() {
     	
     	try {
-			IJavaElement[] elements= getSelectedElements();
+			IJavaScriptElement[] elements= getSelectedElements();
 			if (elements == null) {
 				MessageDialog.openInformation(getShell(), ActionMessages.CopyQualifiedNameAction_InfoDialogTitel, ActionMessages.CopyQualifiedNameAction_NoElementToQualify);
 				return;
@@ -149,7 +149,7 @@ public class CopyQualifiedNameAction extends SelectionDispatchAction {
 			Transfer[] dataTypes= null;
 			
 			if (elements.length == 1) {
-				String qualifiedName= JavaElementLabels.getElementLabel(elements[0], LABEL_FLAGS);
+				String qualifiedName= JavaScriptElementLabels.getElementLabel(elements[0], LABEL_FLAGS);
 				IResource resource= elements[0].getCorrespondingResource();
 				
 				if (resource != null) {
@@ -167,11 +167,11 @@ public class CopyQualifiedNameAction extends SelectionDispatchAction {
 				}
 			} else {
 				StringBuffer buf= new StringBuffer();
-				buf.append(JavaElementLabels.getElementLabel(elements[0], LABEL_FLAGS));
+				buf.append(JavaScriptElementLabels.getElementLabel(elements[0], LABEL_FLAGS));
 				for (int i= 1; i < elements.length; i++) {
-					IJavaElement element= elements[i];
+					IJavaScriptElement element= elements[i];
 					
-					String qualifiedName= JavaElementLabels.getElementLabel(element, LABEL_FLAGS);
+					String qualifiedName= JavaScriptElementLabels.getElementLabel(element, LABEL_FLAGS);
 					buf.append('\r').append('\n').append(qualifiedName);
 				}
 				data= new Object[] {buf.toString()};
@@ -191,18 +191,18 @@ public class CopyQualifiedNameAction extends SelectionDispatchAction {
 			} finally {
 				clipboard.dispose();
 			}
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 		}
     }
 
-    private IJavaElement[] getSelectedElements() throws JavaModelException {
+    private IJavaScriptElement[] getSelectedElements() throws JavaScriptModelException {
     	if (fEditor != null) {
-    		IJavaElement element= getSelectedElement(fEditor);
+    		IJavaScriptElement element= getSelectedElement(fEditor);
     		if (element == null)
     			return null;
     		
-    		return new IJavaElement[] {element}; 
+    		return new IJavaScriptElement[] {element}; 
     	}
     	
     	ISelection selection= getSelection();
@@ -218,10 +218,10 @@ public class CopyQualifiedNameAction extends SelectionDispatchAction {
     	if (result.isEmpty())
     		return null;
     	
-		return (IJavaElement[])result.toArray(new IJavaElement[result.size()]);
+		return (IJavaScriptElement[])result.toArray(new IJavaScriptElement[result.size()]);
 	}
 
-	private IJavaElement getSelectedElement(JavaEditor editor) {
+	private IJavaScriptElement getSelectedElement(JavaEditor editor) {
 		ISourceViewer viewer= editor.getViewer();
 		if (viewer == null)
 			return null;
@@ -230,8 +230,8 @@ public class CopyQualifiedNameAction extends SelectionDispatchAction {
 		int length= selectedRange.y;
 		int offset= selectedRange.x;
 		
-		IJavaElement element= JavaUI.getEditorInputJavaElement(editor.getEditorInput());		
-		CompilationUnit ast= ASTProvider.getASTProvider().getAST(element, ASTProvider.WAIT_YES, null);
+		IJavaScriptElement element= JavaScriptUI.getEditorInputJavaElement(editor.getEditorInput());		
+		JavaScriptUnit ast= ASTProvider.getASTProvider().getAST(element, ASTProvider.WAIT_YES, null);
 		if (ast == null)
 			return null;
 
@@ -242,18 +242,18 @@ public class CopyQualifiedNameAction extends SelectionDispatchAction {
 		IBinding binding= null;
 		if (node instanceof Name) {
 			binding= ((Name)node).resolveBinding();
-		} else if (node instanceof MethodInvocation) {
-			binding= ((MethodInvocation)node).resolveMethodBinding();
-		} else if (node instanceof MethodDeclaration) {
-			binding= ((MethodDeclaration)node).resolveBinding();
+		} else if (node instanceof FunctionInvocation) {
+			binding= ((FunctionInvocation)node).resolveMethodBinding();
+		} else if (node instanceof FunctionDeclaration) {
+			binding= ((FunctionDeclaration)node).resolveBinding();
 		} else if (node instanceof Type) {
 			binding= ((Type)node).resolveBinding();
 		} else if (node instanceof AnonymousClassDeclaration) {
 			binding= ((AnonymousClassDeclaration)node).resolveBinding();
 		} else if (node instanceof TypeDeclaration) {
 			binding= ((TypeDeclaration)node).resolveBinding();
-		} else if (node instanceof CompilationUnit) {
-			return ((CompilationUnit)node).getJavaElement();
+		} else if (node instanceof JavaScriptUnit) {
+			return ((JavaScriptUnit)node).getJavaElement();
 		} else if (node instanceof Expression) {
 			binding= ((Expression)node).resolveTypeBinding();
 		} else if (node instanceof ImportDeclaration) {

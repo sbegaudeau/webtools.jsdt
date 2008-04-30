@@ -81,15 +81,15 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.actions.NewWizardsActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.dnd.DelegatingDropAdapter;
@@ -112,10 +112,10 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.StatusBarUpdater;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetFilterActionGroup;
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.actions.BuildActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.CCPActionGroup;
@@ -236,8 +236,8 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 			for (int i= 0; i < elements.length; i++) {
 				IMemento elementMem= selectionMem.createChild(TAG_SELECTED_ELEMENT);
 				Object o= elements[i];
-				if (o instanceof IJavaElement)
-					elementMem.putString(TAG_SELECTED_ELEMENT_PATH, ((IJavaElement) elements[i]).getHandleIdentifier());
+				if (o instanceof IJavaScriptElement)
+					elementMem.putString(TAG_SELECTED_ELEMENT_PATH, ((IJavaScriptElement) elements[i]).getHandleIdentifier());
 				else if (o instanceof LogicalPackage) {
 					IPackageFragment[] packages=((LogicalPackage)o).getFragments();
 					for (int j= 0; j < packages.length; j++) {
@@ -279,7 +279,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 					LogicalPackage lp= null;
 					for (int j= 0; j < packagesMem.length; j++) {
 						javaElementHandle= packagesMem[j].getString(TAG_SELECTED_ELEMENT_PATH);
-						Object pack= JavaCore.create(javaElementHandle);
+						Object pack= JavaScriptCore.create(javaElementHandle);
 						if (pack instanceof IPackageFragment && ((IPackageFragment)pack).exists()) {
 							if (lp == null)
 								lp= new LogicalPackage((IPackageFragment)pack);
@@ -290,7 +290,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 					if (lp != null)
 						list.add(lp);
 				} else {
-					IJavaElement element= JavaCore.create(javaElementHandle);
+					IJavaScriptElement element= JavaScriptCore.create(javaElementHandle);
 					if (element != null && element.exists())
 						list.add(element);
 				}
@@ -403,8 +403,8 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 		return new DecoratingJavaLabelProvider(provider);
 	}
 
-	protected JavaElementComparator createJavaElementComparator() {
-		return new JavaElementComparator();
+	protected JavaScriptElementComparator createJavaElementComparator() {
+		return new JavaScriptElementComparator();
 	}
 
 	protected StatusBarUpdater createStatusBarUpdater(IStatusLineManager slManager) {
@@ -516,7 +516,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 	 * @see org.eclipse.jface.action.IMenuListener#menuAboutToShow(org.eclipse.jface.action.IMenuManager)
 	 */
 	public void menuAboutToShow(IMenuManager menu) {
-		JavaPlugin.createStandardGroups(menu);
+		JavaScriptPlugin.createStandardGroups(menu);
 
 		IStructuredSelection selection= (IStructuredSelection) fViewer.getSelection();
 		int size= selection.size();
@@ -530,8 +530,8 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 	}
 
 	private void addOpenNewWindowAction(IMenuManager menu, Object element) {
-		if (element instanceof IJavaElement) {
-			element= ((IJavaElement)element).getResource();
+		if (element instanceof IJavaScriptElement) {
+			element= ((IJavaScriptElement)element).getResource();
 		}
 		if (!(element instanceof IContainer))
 			return;
@@ -624,7 +624,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 	 * @return	<code>true</code> if the given element is a valid element
 	 */
 	protected boolean isValidElement(Object element) {
-		if (!(element instanceof IJavaElement)) {
+		if (!(element instanceof IJavaScriptElement)) {
 			return false;
 		}
 		Object input= getViewer().getInput();
@@ -641,7 +641,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 		if (newInput == null)
 			return part == fPreviousSelectionProvider;
 
-		if (input instanceof IJavaElement && newInput instanceof IJavaElement)
+		if (input instanceof IJavaScriptElement && newInput instanceof IJavaScriptElement)
 			return getTypeComparator().compare(newInput, input)  > 0;
 
 		if((newInput instanceof List) && (part instanceof PackagesView))
@@ -663,19 +663,19 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 		if(partInput instanceof Collection)
 			partInput= ((Collection)partInput).iterator().next();
 
-		if (thisInput instanceof IJavaElement && partInput instanceof IJavaElement)
+		if (thisInput instanceof IJavaScriptElement && partInput instanceof IJavaScriptElement)
 			return getTypeComparator().compare(partInput, thisInput) > 0;
 		else
 			return true;
 	}
 
 	protected boolean isAncestorOf(Object ancestor, Object element) {
-		if (element instanceof IJavaElement && ancestor instanceof IJavaElement)
-			return !element.equals(ancestor) && internalIsAncestorOf((IJavaElement)ancestor, (IJavaElement)element);
+		if (element instanceof IJavaScriptElement && ancestor instanceof IJavaScriptElement)
+			return !element.equals(ancestor) && internalIsAncestorOf((IJavaScriptElement)ancestor, (IJavaScriptElement)element);
 		return false;
 	}
 
-	private boolean internalIsAncestorOf(IJavaElement ancestor, IJavaElement element) {
+	private boolean internalIsAncestorOf(IJavaScriptElement ancestor, IJavaScriptElement element) {
 		if (element != null)
 			return element.equals(ancestor) || internalIsAncestorOf(ancestor, element.getParent());
 		else
@@ -717,7 +717,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 
 		Object currentInput= getViewer().getInput();
 		if (selectedElement != null && selectedElement.equals(currentInput)) {
-			IJavaElement elementToSelect= findElementToSelect(selectedElement);
+			IJavaScriptElement elementToSelect= findElementToSelect(selectedElement);
 			if (elementToSelect != null && getTypeComparator().compare(selectedElement, elementToSelect) < 0)
 				setSelection(new StructuredSelection(elementToSelect), true);
 			else if (elementToSelect == null && (this instanceof MembersView)) {
@@ -792,7 +792,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 	String getToolTipText(Object element) {
 		String result;
 		if (!(element instanceof IResource)) {
-			result= JavaElementLabels.getTextLabel(element, AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS);
+			result= JavaScriptElementLabels.getTextLabel(element, AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS);
 		} else {
 			IPath path= ((IResource) element).getFullPath();
 			if (path.isRoot()) {
@@ -837,7 +837,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 	}
 
 	protected ILabelProvider createTitleProvider() {
-		return new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_BASICS | JavaElementLabelProvider.SHOW_SMALL_ICONS);
+		return new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_BASICS | JavaScriptElementLabelProvider.SHOW_SMALL_ICONS);
 	}
 
 	protected final ILabelProvider getLabelProvider() {
@@ -859,8 +859,8 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 	}
 
 	protected int getLabelProviderFlags() {
-		return JavaElementLabelProvider.SHOW_BASICS | JavaElementLabelProvider.SHOW_OVERLAY_ICONS |
-				JavaElementLabelProvider.SHOW_SMALL_ICONS | JavaElementLabelProvider.SHOW_VARIABLE | JavaElementLabelProvider.SHOW_PARAMETERS;
+		return JavaScriptElementLabelProvider.SHOW_BASICS | JavaScriptElementLabelProvider.SHOW_OVERLAY_ICONS |
+				JavaScriptElementLabelProvider.SHOW_SMALL_ICONS | JavaScriptElementLabelProvider.SHOW_VARIABLE | JavaScriptElementLabelProvider.SHOW_PARAMETERS;
 	}
 
 	/**
@@ -882,13 +882,13 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 		// Use the selection, if any
 		ISelection selection= getSite().getPage().getSelection();
 		Object input= getSingleElementFromSelection(selection);
-		if (!(input instanceof IJavaElement)) {
+		if (!(input instanceof IJavaScriptElement)) {
 			// Use the input of the page
 			input= getSite().getPage().getInput();
-			if (!(input instanceof IJavaElement) && input instanceof IAdaptable)
-				input= ((IAdaptable)input).getAdapter(IJavaElement.class);
+			if (!(input instanceof IJavaScriptElement) && input instanceof IAdaptable)
+				input= ((IAdaptable)input).getAdapter(IJavaScriptElement.class);
 		}
-		setInput(findInputForJavaElement((IJavaElement)input));
+		setInput(findInputForJavaElement((IJavaScriptElement)input));
 	}
 
 	protected void setInitialSelection() {
@@ -914,9 +914,9 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 		if (selection == null || selection.isEmpty()) {
 			// Use the input of the page
 			input= getSite().getPage().getInput();
-			if (!(input instanceof IJavaElement)) {
+			if (!(input instanceof IJavaScriptElement)) {
 				if (input instanceof IAdaptable)
-					input= ((IAdaptable)input).getAdapter(IJavaElement.class);
+					input= ((IAdaptable)input).getAdapter(IJavaScriptElement.class);
 				else
 					return;
 			}
@@ -960,7 +960,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 				if (page == null)
 					return;
 
-				if (page.equals(JavaPlugin.getActivePage()) && JavaBrowsingPart.this.equals(page.getActivePart())) {
+				if (page.equals(JavaScriptPlugin.getActivePage()) && JavaBrowsingPart.this.equals(page.getActivePart())) {
 					linkToEditor((IStructuredSelection)event.getSelection());
 				}
 			}
@@ -982,19 +982,19 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 	}
 
 	void adjustInputAndSetSelection(Object o) {
-		if (!(o instanceof IJavaElement)) {
+		if (!(o instanceof IJavaScriptElement)) {
 			if (o == null)
 				setInput(null);
 			setSelection(StructuredSelection.EMPTY, true);
 			return;
 		}
 
-		IJavaElement je= (IJavaElement)o;
-		IJavaElement elementToSelect= findElementToSelect(je);
-		IJavaElement newInput= findInputForJavaElement(je);
-		IJavaElement oldInput= null;
-		if (getInput() instanceof IJavaElement)
-			oldInput= (IJavaElement)getInput();
+		IJavaScriptElement je= (IJavaScriptElement)o;
+		IJavaScriptElement elementToSelect= findElementToSelect(je);
+		IJavaScriptElement newInput= findInputForJavaElement(je);
+		IJavaScriptElement oldInput= null;
+		if (getInput() instanceof IJavaScriptElement)
+			oldInput= (IJavaScriptElement)getInput();
 
 		if (elementToSelect == null && !isValidInput(newInput) && (newInput == null && !isAncestorOf(je, oldInput)))
 			// Clear input
@@ -1019,7 +1019,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 	 * @return	<code>true</code> if the input has to be set
 	 * @since 3.0
 	 */
-	private boolean mustSetNewInput(IJavaElement elementToSelect, IJavaElement oldInput, IJavaElement newInput) {
+	private boolean mustSetNewInput(IJavaScriptElement elementToSelect, IJavaScriptElement oldInput, IJavaScriptElement newInput) {
 		return (newInput == null || !newInput.equals(oldInput))
 			&& (elementToSelect == null
 				|| oldInput == null
@@ -1035,7 +1035,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 	 * @param 	je 	the Java element for which to search the closest input
 	 * @return	the closest Java element used as input for this part
 	 */
-	protected IJavaElement findInputForJavaElement(IJavaElement je) {
+	protected IJavaScriptElement findInputForJavaElement(IJavaScriptElement je) {
 		if (je == null || !je.exists())
 			return null;
 		if (isValidInput(je))
@@ -1043,9 +1043,9 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 		return findInputForJavaElement(je.getParent());
 	}
 
-	protected final IJavaElement findElementToSelect(Object obj) {
-		if (obj instanceof IJavaElement)
-			return findElementToSelect((IJavaElement)obj);
+	protected final IJavaScriptElement findElementToSelect(Object obj) {
+		if (obj instanceof IJavaScriptElement)
+			return findElementToSelect((IJavaScriptElement)obj);
 		return null;
 	}
 
@@ -1055,7 +1055,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 	 * @param je	the Java element which has the focus
 	 * @return returns the element to select
 	 */
-	abstract protected IJavaElement findElementToSelect(IJavaElement je);
+	abstract protected IJavaScriptElement findElementToSelect(IJavaScriptElement je);
 
 
 	protected final Object getSingleElementFromSelection(ISelection selection) {
@@ -1064,15 +1064,15 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 
 		Iterator iter= ((IStructuredSelection)selection).iterator();
 		Object firstElement= iter.next();
-		if (!(firstElement instanceof IJavaElement)) {
+		if (!(firstElement instanceof IJavaScriptElement)) {
 			if (firstElement instanceof IMarker)
 				firstElement= ((IMarker)firstElement).getResource();
 			if (firstElement instanceof IAdaptable) {
-				IJavaElement je= (IJavaElement)((IAdaptable)firstElement).getAdapter(IJavaElement.class);
+				IJavaScriptElement je= (IJavaScriptElement)((IAdaptable)firstElement).getAdapter(IJavaScriptElement.class);
 				if (je == null && firstElement instanceof IFile) {
 					IContainer parent= ((IFile)firstElement).getParent();
 					if (parent != null)
-						return parent.getAdapter(IJavaElement.class);
+						return parent.getAdapter(IJavaScriptElement.class);
 					else return null;
 				} else
 					return je;
@@ -1081,7 +1081,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 				return firstElement;
 		}
 		Object currentInput= getViewer().getInput();
-		if (currentInput == null || !currentInput.equals(findInputForJavaElement((IJavaElement)firstElement)))
+		if (currentInput == null || !currentInput.equals(findInputForJavaElement((IJavaScriptElement)firstElement)))
 			if (iter.hasNext())
 				// multi-selection and view is empty
 				return null;
@@ -1092,9 +1092,9 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 		// be nice to multi-selection
 		while (iter.hasNext()) {
 			Object element= iter.next();
-			if (!(element instanceof IJavaElement))
+			if (!(element instanceof IJavaScriptElement))
 				return null;
-			if (!currentInput.equals(findInputForJavaElement((IJavaElement)element)))
+			if (!currentInput.equals(findInputForJavaElement((IJavaScriptElement)element)))
 				return null;
 		}
 		return firstElement;
@@ -1120,8 +1120,8 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 			if (part != null) {
 				IWorkbenchPage page= getSite().getPage();
 				page.bringToTop(part);
-				if (obj instanceof IJavaElement)
-					EditorUtility.revealInEditor(part, (IJavaElement) obj);
+				if (obj instanceof IJavaScriptElement)
+					EditorUtility.revealInEditor(part, (IJavaScriptElement) obj);
 			}
 		}
 	}
@@ -1140,11 +1140,11 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 
 	private void setSelectionFromEditor(IWorkbenchPart part, ISelection selection) {
 		if (part instanceof IEditorPart) {
-			IJavaElement element= null;
+			IJavaScriptElement element= null;
 			if (selection instanceof IStructuredSelection) {
 				Object obj= getSingleElementFromSelection(selection);
-				if (obj instanceof IJavaElement)
-					element= (IJavaElement)obj;
+				if (obj instanceof IJavaScriptElement)
+					element= (IJavaScriptElement)obj;
 			}
 			IEditorInput ei= ((IEditorPart)part).getEditorInput();
 			if (selection instanceof ITextSelection) {
@@ -1157,11 +1157,11 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 			}
 			if (ei instanceof IFileEditorInput) {
 				IFile file= ((IFileEditorInput)ei).getFile();
-				IJavaElement je= (IJavaElement)file.getAdapter(IJavaElement.class);
+				IJavaScriptElement je= (IJavaScriptElement)file.getAdapter(IJavaScriptElement.class);
 				if (je == null) {
 					IContainer container= ((IFileEditorInput)ei).getFile().getParent();
 					if (container != null)
-						je= (IJavaElement)container.getAdapter(IJavaElement.class);
+						je= (IJavaScriptElement)container.getAdapter(IJavaScriptElement.class);
 				}
 				if (je == null) {
 					setSelection(null, false);
@@ -1184,7 +1184,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 		if (input instanceof IFileEditorInput)
 			return ((IFileEditorInput)input).getFile();
 		if (input != null)
-			return JavaUI.getEditorInputJavaElement(input);
+			return JavaScriptUI.getEditorInputJavaElement(input);
 		return null;
 	}
 
@@ -1201,17 +1201,17 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 	 * @param offset the offset in the file
 	 * @return the element at the given offset
 	 */
-	protected IJavaElement getElementAt(IEditorInput input, int offset) {
+	protected IJavaScriptElement getElementAt(IEditorInput input, int offset) {
 		if (input instanceof IClassFileEditorInput) {
 			try {
 				return ((IClassFileEditorInput)input).getClassFile().getElementAt(offset);
-			} catch (JavaModelException ex) {
+			} catch (JavaScriptModelException ex) {
 				return null;
 			}
 		}
 
-		IWorkingCopyManager manager= JavaPlugin.getDefault().getWorkingCopyManager();
-		ICompilationUnit unit= manager.getWorkingCopy(input);
+		IWorkingCopyManager manager= JavaScriptPlugin.getDefault().getWorkingCopyManager();
+		IJavaScriptUnit unit= manager.getWorkingCopy(input);
 		if (unit != null)
 			try {
 				if (unit.isConsistent())
@@ -1223,13 +1223,13 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 					 *      see https://bugs.eclipse.org/bugs/show_bug.cgi?id=51290
 					 */
 				}
-			} catch (JavaModelException ex) {
+			} catch (JavaScriptModelException ex) {
 				// fall through
 			}
 		return null;
 	}
 
-	protected IType getTypeForCU(ICompilationUnit cu) {
+	protected IType getTypeForCU(IJavaScriptUnit cu) {
 		// Use primary type if possible
 		IType primaryType= cu.findPrimaryType();
 		if (primaryType != null)
@@ -1242,7 +1242,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 				return types[0];
 			else
 				return null;
-		} catch (JavaModelException ex) {
+		} catch (JavaScriptModelException ex) {
 			return null;
 		}
 	}

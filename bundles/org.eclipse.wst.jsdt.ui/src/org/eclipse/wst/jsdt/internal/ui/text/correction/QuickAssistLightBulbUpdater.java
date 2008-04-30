@@ -35,14 +35,14 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ISelectionListenerWithAST;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.SelectionListenerWithASTManager;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 
@@ -116,7 +116,7 @@ public class QuickAssistLightBulbUpdater {
 
 	private void installSelectionListener() {
 		fListener= new ISelectionListenerWithAST() {
-			public void selectionChanged(IEditorPart part, ITextSelection selection, CompilationUnit astRoot) {
+			public void selectionChanged(IEditorPart part, ITextSelection selection, JavaScriptUnit astRoot) {
 				doSelectionChanged(selection.getOffset(), selection.getLength(), astRoot);
 			}
 		};
@@ -159,11 +159,11 @@ public class QuickAssistLightBulbUpdater {
 	protected void doPropertyChanged(String property) {
 		if (property.equals(PreferenceConstants.EDITOR_QUICKASSIST_LIGHTBULB)) {
 			if (isSetInPreferences()) {
-				ICompilationUnit cu= getCompilationUnit();
+				IJavaScriptUnit cu= getCompilationUnit();
 				if (cu != null) {
 					installSelectionListener();
 					Point point= fViewer.getSelectedRange();
-					CompilationUnit astRoot= ASTProvider.getASTProvider().getAST(cu, ASTProvider.WAIT_ACTIVE_ONLY, null);
+					JavaScriptUnit astRoot= ASTProvider.getASTProvider().getAST(cu, ASTProvider.WAIT_ACTIVE_ONLY, null);
 					if (astRoot != null) {
 						doSelectionChanged(point.x, point.y, astRoot);
 					}
@@ -174,27 +174,27 @@ public class QuickAssistLightBulbUpdater {
 		}
 	}
 
-	private ICompilationUnit getCompilationUnit() {
-		IJavaElement elem= JavaUI.getEditorInputJavaElement(fEditor.getEditorInput());
-		if (elem instanceof ICompilationUnit) {
-			return (ICompilationUnit) elem;
+	private IJavaScriptUnit getCompilationUnit() {
+		IJavaScriptElement elem= JavaScriptUI.getEditorInputJavaElement(fEditor.getEditorInput());
+		if (elem instanceof IJavaScriptUnit) {
+			return (IJavaScriptUnit) elem;
 		}
 		return null;
 	}
 
 	private IAnnotationModel getAnnotationModel() {
-		return JavaUI.getDocumentProvider().getAnnotationModel(fEditor.getEditorInput());
+		return JavaScriptUI.getDocumentProvider().getAnnotationModel(fEditor.getEditorInput());
 	}
 
 	private IDocument getDocument() {
-		return JavaUI.getDocumentProvider().getDocument(fEditor.getEditorInput());
+		return JavaScriptUI.getDocumentProvider().getDocument(fEditor.getEditorInput());
 	}
 
 
-	private void doSelectionChanged(int offset, int length, CompilationUnit astRoot) {
+	private void doSelectionChanged(int offset, int length, JavaScriptUnit astRoot) {
 
 		final IAnnotationModel model= getAnnotationModel();
-		final ICompilationUnit cu= getCompilationUnit();
+		final IJavaScriptUnit cu= getCompilationUnit();
 		if (model == null || cu == null) {
 			return;
 		}

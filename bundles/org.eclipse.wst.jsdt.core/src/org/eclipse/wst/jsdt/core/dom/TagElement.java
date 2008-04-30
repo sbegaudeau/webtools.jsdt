@@ -24,12 +24,12 @@ import java.util.List;
  * DocElement:
  *     TextElement
  *     Name
- *     MethodRef
+ *     FunctionRef
  *     MemberRef
  *     <b>{</b> TagElement <b>}</b>
  * </pre>
  *
- * @see Javadoc
+ * @see JSdoc
  * @since 3.0
  */
 public final class TagElement extends ASTNode implements IDocElement {
@@ -328,7 +328,7 @@ public final class TagElement extends ASTNode implements IDocElement {
 	 * Here are some typical examples:
 	 * <ul>
 	 * <li>"@see Foo#bar()" - TagElement with tag name "@see";
-	 * fragments() contains a single MethodRef node</li>
+	 * fragments() contains a single FunctionRef node</li>
 	 * <li>"@param args the program arguments" -
 	 * TagElement with tag name "@param";
 	 * 2 fragments: SimpleName ("args"), TextElement
@@ -339,7 +339,7 @@ public final class TagElement extends ASTNode implements IDocElement {
 	 * TagElement (for "&#64;link #foo foo"),
 	 * TextElement (" instead.")</li>
 	 * </ul>
-	 * The use of Name, MethodRef, and MemberRef nodes within
+	 * The use of Name, FunctionRef, and MemberRef nodes within
 	 * tag elements allows these fragments to be queried for
 	 * binding information.
 	 * </p>
@@ -348,7 +348,7 @@ public final class TagElement extends ASTNode implements IDocElement {
 	 * dynamically. The nodes in this list may be of various
 	 * types, including {@link TextElement},
 	 * {@link org.eclipse.wst.jsdt.core.dom.TagElement}, {@link Name},
-	 * {@link MemberRef}, and {@link MethodRef}.
+	 * {@link MemberRef}, and {@link FunctionRef}.
 	 * Clients should assume that the list of types may grow in
 	 * the future, and write their code to deal with unexpected
 	 * nodes types. However, attempts to add a non-proscribed type
@@ -376,7 +376,7 @@ public final class TagElement extends ASTNode implements IDocElement {
 	 *
 	 * @return <code>true</code> if this node is a nested tag element,
 	 * and false if this node is either parented by a doc comment node
-	 * ({@link Javadoc}), or is unparented
+	 * ({@link JSdoc}), or is unparented
 	 */
 	public boolean isNested() {
 		return (getParent() instanceof TagElement);

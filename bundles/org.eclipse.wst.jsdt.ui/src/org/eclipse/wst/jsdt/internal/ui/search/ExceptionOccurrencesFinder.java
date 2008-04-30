@@ -20,7 +20,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.search.ui.text.Match;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTMatcher;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -29,14 +29,14 @@ import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -65,18 +65,18 @@ public class ExceptionOccurrencesFinder extends ASTVisitor implements IOccurrenc
 		fResult= new ArrayList();
 	}
 	
-	public String initialize(CompilationUnit root, int offset, int length) {
+	public String initialize(JavaScriptUnit root, int offset, int length) {
 		return initialize(root, NodeFinder.perform(root, offset, length));
 	}
 	
-	public String initialize(CompilationUnit root, ASTNode node) {
+	public String initialize(JavaScriptUnit root, ASTNode node) {
 		fAST= root.getAST();
 		if (!(node instanceof Name)) {
 			return SearchMessages.ExceptionOccurrencesFinder_no_exception;  
 		}
 		fSelectedName= ASTNodes.getTopMostName((Name)node);
 		ASTNode parent= fSelectedName.getParent();
-		MethodDeclaration decl= resolveMethodDeclaration(parent);
+		FunctionDeclaration decl= resolveMethodDeclaration(parent);
 		if (decl != null && methodThrowsException(decl, fSelectedName)) {
 			fException= fSelectedName.resolveTypeBinding();
 			fStart= decl.getBody();
@@ -99,18 +99,18 @@ public class ExceptionOccurrencesFinder extends ASTVisitor implements IOccurrenc
 		return null;
 	}
 	
-	private MethodDeclaration resolveMethodDeclaration(ASTNode node) {
-		if (node instanceof MethodDeclaration)
-			return (MethodDeclaration)node;
-		Javadoc doc= (Javadoc) ASTNodes.getParent(node, ASTNode.JAVADOC);
+	private FunctionDeclaration resolveMethodDeclaration(ASTNode node) {
+		if (node instanceof FunctionDeclaration)
+			return (FunctionDeclaration)node;
+		JSdoc doc= (JSdoc) ASTNodes.getParent(node, ASTNode.JSDOC);
 		if (doc == null)
 			return null;
-		if (doc.getParent() instanceof MethodDeclaration)
-			return (MethodDeclaration) doc.getParent();
+		if (doc.getParent() instanceof FunctionDeclaration)
+			return (FunctionDeclaration) doc.getParent();
 		return null;
 	}
 	
-	private boolean methodThrowsException(MethodDeclaration method, Name exception) {
+	private boolean methodThrowsException(FunctionDeclaration method, Name exception) {
 		ASTMatcher matcher = new ASTMatcher();
 		for (Iterator iter = method.thrownExceptions().iterator(); iter.hasNext();) {
 			Name thrown = (Name)iter.next();
@@ -128,7 +128,7 @@ public class ExceptionOccurrencesFinder extends ASTVisitor implements IOccurrenc
 		return fResult;
 	}
 	
-	public void collectOccurrenceMatches(IJavaElement element, IDocument document, Collection resultingMatches) {
+	public void collectOccurrenceMatches(IJavaScriptElement element, IDocument document, Collection resultingMatches) {
 		HashMap lineToLineElement= new HashMap();
 		
 		for (Iterator iter= fResult.iterator(); iter.hasNext();) {
@@ -203,7 +203,7 @@ public class ExceptionOccurrencesFinder extends ASTVisitor implements IOccurrenc
 		return super.visit(node);
 	}
 	
-	public boolean visit(MethodInvocation node) {
+	public boolean visit(FunctionInvocation node) {
 		if (matches(node.resolveMethodBinding()))
 			fResult.add(node.getName());
 		return super.visit(node);
@@ -240,7 +240,7 @@ public class ExceptionOccurrencesFinder extends ASTVisitor implements IOccurrenc
 		return false;
 	}
 	
-	private boolean matches(IMethodBinding binding) {
+	private boolean matches(IFunctionBinding binding) {
 		if (binding == null)
 			return false;
 		ITypeBinding[] exceptions= binding.getExceptionTypes();

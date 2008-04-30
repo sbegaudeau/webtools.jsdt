@@ -22,26 +22,26 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JDTChange;
 
 public class AddToClasspathChange extends JDTChange {
 	
-	private IJavaProject fProjectHandle;
-	private IClasspathEntry fEntryToAdd;
+	private IJavaScriptProject fProjectHandle;
+	private IIncludePathEntry fEntryToAdd;
 	
-	public AddToClasspathChange(IJavaProject project, IClasspathEntry entryToAdd) {
+	public AddToClasspathChange(IJavaScriptProject project, IIncludePathEntry entryToAdd) {
 		fProjectHandle= project;
 		fEntryToAdd= entryToAdd;
 	}
 	
-	public AddToClasspathChange(IJavaProject project, String sourceFolderName){
-		this(project, JavaCore.newSourceEntry(project.getPath().append(sourceFolderName)));
+	public AddToClasspathChange(IJavaScriptProject project, String sourceFolderName){
+		this(project, JavaScriptCore.newSourceEntry(project.getPath().append(sourceFolderName)));
 	}
 	
 	/**
@@ -49,11 +49,11 @@ public class AddToClasspathChange extends JDTChange {
 	 * @param project
 	 * @param newProjectEntry (must be absolute <code>IPath</code>)
 	 */
-	public AddToClasspathChange(IJavaProject project, IPath newProjectEntry){
-		this(project, JavaCore.newProjectEntry(newProjectEntry));
+	public AddToClasspathChange(IJavaScriptProject project, IPath newProjectEntry){
+		this(project, JavaScriptCore.newProjectEntry(newProjectEntry));
 	}
 	
-	public AddToClasspathChange(IJavaProject project, int entryKind, IPath path, IPath sourceAttachmentPath, IPath sourceAttachmentRootPath){
+	public AddToClasspathChange(IJavaScriptProject project, int entryKind, IPath path, IPath sourceAttachmentPath, IPath sourceAttachmentRootPath){
 		this(project, createNewClasspathEntry(entryKind, path, sourceAttachmentPath, sourceAttachmentRootPath));
 	}
 
@@ -66,8 +66,8 @@ public class AddToClasspathChange extends JDTChange {
 		pm.beginTask(getName(), 1);
 		try {
 			if (validateClasspath()) {
-				getJavaProject().setRawClasspath(getNewClasspathEntries(), new SubProgressMonitor(pm, 1));
-				IPath classpathEntryPath= JavaCore.getResolvedClasspathEntry(fEntryToAdd).getPath();
+				getJavaProject().setRawIncludepath(getNewClasspathEntries(), new SubProgressMonitor(pm, 1));
+				IPath classpathEntryPath= JavaScriptCore.getResolvedIncludepathEntry(fEntryToAdd).getPath();
 				return new DeleteFromClasspathChange(classpathEntryPath, getJavaProject());
 			} else {
 				return new NullChange();
@@ -77,40 +77,40 @@ public class AddToClasspathChange extends JDTChange {
 		}		
 	}
 	
-	public boolean validateClasspath() throws JavaModelException {
-		IJavaProject javaProject= getJavaProject();
+	public boolean validateClasspath() throws JavaScriptModelException {
+		IJavaScriptProject javaProject= getJavaProject();
 		IPath outputLocation= javaProject.getOutputLocation();
-		IClasspathEntry[] newClasspathEntries= getNewClasspathEntries();
-		return JavaConventions.validateClasspath(javaProject, newClasspathEntries, outputLocation).isOK();
+		IIncludePathEntry[] newClasspathEntries= getNewClasspathEntries();
+		return JavaScriptConventions.validateClasspath(javaProject, newClasspathEntries, outputLocation).isOK();
 	}
 	
-	private IClasspathEntry[] getNewClasspathEntries() throws JavaModelException{
-		IClasspathEntry[] entries= getJavaProject().getRawClasspath();
+	private IIncludePathEntry[] getNewClasspathEntries() throws JavaScriptModelException{
+		IIncludePathEntry[] entries= getJavaProject().getRawIncludepath();
 		List cp= new ArrayList(entries.length + 1);
 		cp.addAll(Arrays.asList(entries));
 		cp.add(fEntryToAdd);
-		return (IClasspathEntry[])cp.toArray(new IClasspathEntry[cp.size()]);
+		return (IIncludePathEntry[])cp.toArray(new IIncludePathEntry[cp.size()]);
 	}
 	
-	private static IClasspathEntry createNewClasspathEntry(int kind, IPath path, IPath sourceAttach, IPath sourceAttachRoot){
+	private static IIncludePathEntry createNewClasspathEntry(int kind, IPath path, IPath sourceAttach, IPath sourceAttachRoot){
 		switch(kind){
-			case IClasspathEntry.CPE_LIBRARY:
-				return JavaCore.newLibraryEntry(path, sourceAttach, sourceAttachRoot);
-			case IClasspathEntry.CPE_PROJECT:
-				return JavaCore.newProjectEntry(path);
-			case IClasspathEntry.CPE_SOURCE:
-				return JavaCore.newSourceEntry(path);
-			case IClasspathEntry.CPE_VARIABLE:
-				return JavaCore.newVariableEntry(path, sourceAttach, sourceAttachRoot);	
-			case IClasspathEntry.CPE_CONTAINER:
-				return JavaCore.newContainerEntry(path);	
+			case IIncludePathEntry.CPE_LIBRARY:
+				return JavaScriptCore.newLibraryEntry(path, sourceAttach, sourceAttachRoot);
+			case IIncludePathEntry.CPE_PROJECT:
+				return JavaScriptCore.newProjectEntry(path);
+			case IIncludePathEntry.CPE_SOURCE:
+				return JavaScriptCore.newSourceEntry(path);
+			case IIncludePathEntry.CPE_VARIABLE:
+				return JavaScriptCore.newVariableEntry(path, sourceAttach, sourceAttachRoot);	
+			case IIncludePathEntry.CPE_CONTAINER:
+				return JavaScriptCore.newContainerEntry(path);	
 			default:
 				Assert.isTrue(false);
 				return null;	
 		}
 	}
 	
-	private IJavaProject getJavaProject(){
+	private IJavaScriptProject getJavaProject(){
 		return fProjectHandle;
 	}
 
@@ -123,7 +123,7 @@ public class AddToClasspathChange extends JDTChange {
 		return getJavaProject();
 	}
 	
-	public IClasspathEntry getClasspathEntry() {
+	public IIncludePathEntry getClasspathEntry() {
 		return fEntryToAdd;
 	}
 }

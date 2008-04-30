@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.PerformanceStats;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.text.java.AbstractProposalSorter;
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
 import org.osgi.framework.Bundle;
@@ -44,7 +44,7 @@ public final class ProposalSorterHandle {
 	/** The extension schema name of the activate attribute. */
 	private static final String ACTIVATE= "activate"; //$NON-NLS-1$
 	/** The name of the performance event used to trace extensions. */
-	private static final String PERFORMANCE_EVENT= JavaPlugin.getPluginId() + "/perf/content_assist_sorters/extensions"; //$NON-NLS-1$
+	private static final String PERFORMANCE_EVENT= JavaScriptPlugin.getPluginId() + "/perf/content_assist_sorters/extensions"; //$NON-NLS-1$
 	/**
 	 * If <code>true</code>, execution time of extensions is measured and extensions may be
 	 * disabled if execution takes too long.
@@ -103,8 +103,8 @@ public final class ProposalSorterHandle {
 		if (obj == null) {
 			Object[] args= { getId(), fElement.getContributor().getName(), attribute };
 			String message= Messages.format(JavaTextMessages.CompletionProposalComputerDescriptor_illegal_attribute_message, args);
-			IStatus status= new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, message, null);
-			JavaPlugin.log(status);
+			IStatus status= new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, message, null);
+			JavaScriptPlugin.log(status);
 			throw new InvalidRegistryObjectException();
 		}
 	}
@@ -203,7 +203,7 @@ public final class ProposalSorterHandle {
 			status= createExceptionStatus(x);
 		}
 
-		JavaPlugin.log(status);
+		JavaScriptPlugin.log(status);
 		return;
 	}
 
@@ -231,35 +231,35 @@ public final class ProposalSorterHandle {
 		// extension has become invalid - log & disable
 		String disable= createBlameMessage();
 		String reason= JavaTextMessages.CompletionProposalComputerDescriptor_reason_invalid;
-		return new Status(IStatus.INFO, JavaPlugin.getPluginId(), IStatus.OK, disable + " " + reason, x); //$NON-NLS-1$
+		return new Status(IStatus.INFO, JavaScriptPlugin.getPluginId(), IStatus.OK, disable + " " + reason, x); //$NON-NLS-1$
 	}
 
 	private Status createExceptionStatus(CoreException x) {
 		// unable to instantiate the extension - log & disable
 		String disable= createBlameMessage();
 		String reason= JavaTextMessages.CompletionProposalComputerDescriptor_reason_instantiation;
-		return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, disable + " " + reason, x); //$NON-NLS-1$
+		return new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, disable + " " + reason, x); //$NON-NLS-1$
 	}
 	
 	private Status createExceptionStatus(RuntimeException x) {
 		// misbehaving extension - log & disable
 		String disable= createBlameMessage();
 		String reason= JavaTextMessages.CompletionProposalComputerDescriptor_reason_runtime_ex;
-		return new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, disable + " " + reason, x); //$NON-NLS-1$
+		return new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, disable + " " + reason, x); //$NON-NLS-1$
 	}
 
 	private Status createAPIViolationStatus(String operation) {
 		String disable= createBlameMessage();
 		Object[] args= {operation};
 		String reason= Messages.format(JavaTextMessages.CompletionProposalComputerDescriptor_reason_API, args);
-		return new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, disable + " " + reason, null); //$NON-NLS-1$
+		return new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, disable + " " + reason, null); //$NON-NLS-1$
 	}
 
 	private Status createPerformanceStatus(String operation) {
 		String disable= createBlameMessage();
 		Object[] args= {operation};
 		String reason= Messages.format(JavaTextMessages.CompletionProposalComputerDescriptor_reason_performance, args);
-		return new Status(IStatus.WARNING, JavaPlugin.getPluginId(), IStatus.OK, disable + " " + reason, null); //$NON-NLS-1$
+		return new Status(IStatus.WARNING, JavaScriptPlugin.getPluginId(), IStatus.OK, disable + " " + reason, null); //$NON-NLS-1$
 	}
 
 	private String createBlameMessage() {

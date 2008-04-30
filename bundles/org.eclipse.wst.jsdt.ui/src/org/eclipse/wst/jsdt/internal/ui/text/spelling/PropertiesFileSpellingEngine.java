@@ -24,7 +24,7 @@ import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.TypedRegion;
 import org.eclipse.ui.texteditor.spelling.ISpellingProblemCollector;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.IPropertiesFilePartitions;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellChecker;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellEventListener;
@@ -73,7 +73,7 @@ public class PropertiesFileSpellingEngine extends SpellingEngine {
 				}
 			}
 		} catch (BadLocationException x) {
-			JavaPlugin.log(x);
+			JavaScriptPlugin.log(x);
 		} finally {
 			checker.removeListener(listener);
 		}
@@ -96,7 +96,7 @@ public class PropertiesFileSpellingEngine extends SpellingEngine {
 					return false;
 			return true;
 		} catch (BadLocationException x) {
-			JavaPlugin.log(x);
+			JavaScriptPlugin.log(x);
 			return false;
 		}
 	}

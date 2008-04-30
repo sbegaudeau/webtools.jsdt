@@ -15,7 +15,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.team.core.RepositoryProvider;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 
 /**
  * Filters non-shared projects and Java projects. Non-shared projects are
@@ -32,8 +32,8 @@ public class NonSharedProjectFilter extends ViewerFilter {
 		if (element instanceof IProject)
 			return isSharedProject((IProject)element);
 		
-		if (element instanceof IJavaProject)
-			return isSharedProject(((IJavaProject)element).getProject());
+		if (element instanceof IJavaScriptProject)
+			return isSharedProject(((IJavaScriptProject)element).getProject());
 
 		return true;
 	}

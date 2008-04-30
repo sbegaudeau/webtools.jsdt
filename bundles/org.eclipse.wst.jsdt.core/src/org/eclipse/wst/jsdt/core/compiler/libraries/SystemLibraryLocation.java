@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class SystemLibraryLocation implements LibraryLocation {
@@ -44,7 +44,7 @@ public class SystemLibraryLocation implements LibraryLocation {
 	}
 
 	protected String getPluginId() {
-		return JavaCore.PLUGIN_ID;
+		return JavaScriptCore.PLUGIN_ID;
 	}
 	public char[][] getAllFilesInPluginDirectory(String directory){
 		//InputStream is = null;
@@ -68,14 +68,14 @@ public class SystemLibraryLocation implements LibraryLocation {
 	}
 	public SystemLibraryLocation(){
 		try {
-			IPath libraryRuntimePath = Platform.getStateLocation(Platform.getBundle(JavaCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY));
+			IPath libraryRuntimePath = Platform.getStateLocation(Platform.getBundle(JavaScriptCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY));
 			if(!libraryRuntimePath.toFile().exists()) {
 				libraryRuntimePath.toFile().mkdir();
 			}
 
 			char[][] libFiles = getLibraryFileNames();
 			for(int i = 0;i<libFiles.length;i++) {
-				IPath workingLibLocation = Platform.getStateLocation(Platform.getBundle(JavaCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY)).append(new String(libFiles[i]));
+				IPath workingLibLocation = Platform.getStateLocation(Platform.getBundle(JavaScriptCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY)).append(new String(libFiles[i]));
 				File library = workingLibLocation.toFile();
 
 
@@ -124,7 +124,7 @@ public class SystemLibraryLocation implements LibraryLocation {
 	public String getLibraryPath(String name){
 
 		try {
-			return  Platform.getStateLocation(Platform.getBundle(JavaCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY) ).append( name).toString();
+			return  Platform.getStateLocation(Platform.getBundle(JavaScriptCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY) ).append( name).toString();
 		}
 		catch (Exception ex)
 		{return null;}

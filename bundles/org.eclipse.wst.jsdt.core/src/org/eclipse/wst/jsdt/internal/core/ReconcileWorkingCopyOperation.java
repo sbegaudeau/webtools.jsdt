@@ -17,13 +17,13 @@ import java.util.Map;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IProblemRequestor;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.ValidationParticipant;
@@ -57,22 +57,22 @@ public class ReconcileWorkingCopyOperation extends JavaModelOperation {
 	public HashMap problems;
 	public int reconcileFlags;
 	WorkingCopyOwner workingCopyOwner;
-	public org.eclipse.wst.jsdt.core.dom.CompilationUnit ast;
+	public org.eclipse.wst.jsdt.core.dom.JavaScriptUnit ast;
 	public JavaElementDeltaBuilder deltaBuilder;
 	public boolean requestorIsActive;
 
-	public ReconcileWorkingCopyOperation(IJavaElement workingCopy, int astLevel, int reconcileFlags, WorkingCopyOwner workingCopyOwner) {
-		super(new IJavaElement[] {workingCopy});
+	public ReconcileWorkingCopyOperation(IJavaScriptElement workingCopy, int astLevel, int reconcileFlags, WorkingCopyOwner workingCopyOwner) {
+		super(new IJavaScriptElement[] {workingCopy});
 		this.astLevel = astLevel;
 		this.reconcileFlags = reconcileFlags;
 		this.workingCopyOwner = workingCopyOwner;
 	}
 
 	/**
-	 * @exception JavaModelException if setting the source
+	 * @exception JavaScriptModelException if setting the source
 	 * 	of the original compilation unit fails
 	 */
-	protected void executeOperation() throws JavaModelException {
+	protected void executeOperation() throws JavaScriptModelException {
 		checkCanceled();
 		try {
 			beginTask(Messages.element_reconciling, 2);
@@ -97,7 +97,7 @@ public class ReconcileWorkingCopyOperation extends JavaModelOperation {
 
 			// notify reconcile participants only if working copy was not consistent or if forcing problem detection
 			// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=177319)
-			if (!wasConsistent || ((this.reconcileFlags & ICompilationUnit.FORCE_PROBLEM_DETECTION) != 0)) {
+			if (!wasConsistent || ((this.reconcileFlags & IJavaScriptUnit.FORCE_PROBLEM_DETECTION) != 0)) {
 				notifyParticipants(workingCopy);
 
 				// recreate ast if one participant reset it
@@ -106,7 +106,7 @@ public class ReconcileWorkingCopyOperation extends JavaModelOperation {
 			}
 
 			// report problems
-			if (this.problems != null && (((this.reconcileFlags & ICompilationUnit.FORCE_PROBLEM_DETECTION) != 0) || !wasConsistent)) {
+			if (this.problems != null && (((this.reconcileFlags & IJavaScriptUnit.FORCE_PROBLEM_DETECTION) != 0) || !wasConsistent)) {
 				if (defaultRequestorIsActive) {
 					reportProblems(workingCopy, problemRequestor);
 				}
@@ -169,7 +169,7 @@ public class ReconcileWorkingCopyOperation extends JavaModelOperation {
 	 * Makes the given working copy consistent, computes the delta and computes an AST if needed.
 	 * Returns the AST.
 	 */
-	public org.eclipse.wst.jsdt.core.dom.CompilationUnit makeConsistent(CompilationUnit workingCopy) throws JavaModelException {
+	public org.eclipse.wst.jsdt.core.dom.JavaScriptUnit makeConsistent(CompilationUnit workingCopy) throws JavaScriptModelException {
 		if (!workingCopy.isConsistent()) {
 			// make working copy consistent
 			if (this.problems == null) this.problems = new HashMap();
@@ -187,8 +187,8 @@ public class ReconcileWorkingCopyOperation extends JavaModelOperation {
 		char[] contents = null;
 		try {
 			// find problems if needed
-			if (JavaProject.hasJavaNature(workingCopy.getJavaProject().getProject())
-					&& (this.reconcileFlags & ICompilationUnit.FORCE_PROBLEM_DETECTION) != 0) {
+			if (JavaProject.hasJavaNature(workingCopy.getJavaScriptProject().getProject())
+					&& (this.reconcileFlags & IJavaScriptUnit.FORCE_PROBLEM_DETECTION) != 0) {
 				this.resolveBindings = this.requestorIsActive;
 				if (this.problems == null)
 					this.problems = new HashMap();
@@ -199,16 +199,16 @@ public class ReconcileWorkingCopyOperation extends JavaModelOperation {
 						contents,
 						this.workingCopyOwner,
 						this.problems,
-						this.astLevel != ICompilationUnit.NO_AST/*creating AST if level is not NO_AST */,
+						this.astLevel != IJavaScriptUnit.NO_AST/*creating AST if level is not NO_AST */,
 						reconcileFlags,
 						this.progressMonitor);
 				if (this.progressMonitor != null) this.progressMonitor.worked(1);
 			}
 
 			// create AST if needed
-			if (this.astLevel != ICompilationUnit.NO_AST
+			if (this.astLevel != IJavaScriptUnit.NO_AST
 					&& unit !=null/*unit is null if working copy is consistent && (problem detection not forced || non-Java project) -> don't create AST as per API*/) {
-				Map options = workingCopy.getJavaProject().getOptions(true);
+				Map options = workingCopy.getJavaScriptProject().getOptions(true);
 				// convert AST
 				this.ast =
 					AST.convertCompilationUnit(
@@ -226,8 +226,8 @@ public class ReconcileWorkingCopyOperation extends JavaModelOperation {
 				}
 				if (this.progressMonitor != null) this.progressMonitor.worked(1);
 			}
-	    } catch (JavaModelException e) {
-	    	if (JavaProject.hasJavaNature(workingCopy.getJavaProject().getProject()))
+	    } catch (JavaScriptModelException e) {
+	    	if (JavaProject.hasJavaNature(workingCopy.getJavaScriptProject().getProject()))
 	    		throw e;
 	    	// else JavaProject has lost its nature (or most likely was closed/deleted) while reconciling -> ignore
 	    	// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=100919)
@@ -242,7 +242,7 @@ public class ReconcileWorkingCopyOperation extends JavaModelOperation {
 	}
 
 	private void notifyParticipants(final CompilationUnit workingCopy) {
-		IJavaProject javaProject = getWorkingCopy().getJavaProject();
+		IJavaScriptProject javaProject = getWorkingCopy().getJavaScriptProject();
 		ValidationParticipant[] participants = JavaModelManager.getJavaModelManager().validationParticipants.getvalidationParticipants(javaProject);
 		if (participants == null) return;
 
@@ -268,14 +268,14 @@ public class ReconcileWorkingCopyOperation extends JavaModelOperation {
 		}
 	}
 
-	protected IJavaModelStatus verify() {
-		IJavaModelStatus status = super.verify();
+	protected IJavaScriptModelStatus verify() {
+		IJavaScriptModelStatus status = super.verify();
 		if (!status.isOK()) {
 			return status;
 		}
 		CompilationUnit workingCopy = getWorkingCopy();
 		if (!workingCopy.isWorkingCopy()) {
-			return new JavaModelStatus(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, workingCopy); //was destroyed
+			return new JavaModelStatus(IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST, workingCopy); //was destroyed
 		}
 		return status;
 	}

@@ -2660,7 +2660,7 @@ protected void consumeClassTypeList() {
 	optimizedConcatNodeLists();
 }
 protected void consumeCompilationUnit() {
-	// CompilationUnit ::= EnterCompilationUnit InternalCompilationUnit
+	// JavaScriptUnit ::= EnterCompilationUnit InternalCompilationUnit
 	// do nothing by default
 }
 protected void consumeConditionalExpression(int op) {
@@ -2703,10 +2703,10 @@ protected void consumeConstructorDeclaration() {
 	// ConstructorDeclaration ::= ConstructorHeader ConstructorBody
 
 	/*
-	this.astStack : MethodDeclaration statements
+	this.astStack : FunctionDeclaration statements
 	this.identifierStack : name
 	 ==>
-	this.astStack : MethodDeclaration
+	this.astStack : FunctionDeclaration
 	this.identifierStack :
 	*/
 
@@ -2989,7 +2989,7 @@ protected void consumeEmptyClassBodyDeclarationsopt() {
 protected void consumeEmptyMethodHeaderDefaultValue() {
 	// DefaultValueopt ::= $empty
 	AbstractMethodDeclaration method = (AbstractMethodDeclaration)this.astStack[this.astPtr];
-	if(method.isAnnotationMethod()) { //'method' can be a MethodDeclaration when recovery is started
+	if(method.isAnnotationMethod()) { //'method' can be a FunctionDeclaration when recovery is started
 		pushOnExpressionStackLengthStack(0);
 	}
 	this.recordStringLiterals = true;
@@ -4204,7 +4204,7 @@ protected void consumeInvalidConstructorDeclaration(boolean hasBody) {
 	this.astStack : modifiers arguments throws statements
 	this.identifierStack : name
 	 ==>
-	this.astStack : MethodDeclaration
+	this.astStack : FunctionDeclaration
 	this.identifierStack :
 	*/
 	if (hasBody) {
@@ -4255,7 +4255,7 @@ protected void consumeInvalidMethodDeclaration() {
 	this.identifierStack : type name
 	this.intStack : dim dim dim
 	 ==>
-	this.astStack : MethodDeclaration
+	this.astStack : FunctionDeclaration
 	this.identifierStack :
 	this.intStack :
 	*/
@@ -4383,7 +4383,7 @@ protected void consumeMethodBody() {
 	this.nestedMethod[this.nestedType] --;
 }
 protected void consumeMethodDeclaration(boolean isNotAbstract) {
-	// MethodDeclaration ::= MethodHeader MethodBody
+	// FunctionDeclaration ::= MethodHeader MethodBody
 	// AbstractMethodDeclaration ::= MethodHeader ';'
 
 	/*
@@ -4391,7 +4391,7 @@ protected void consumeMethodDeclaration(boolean isNotAbstract) {
 	this.identifierStack : type name
 	this.intStack : dim dim dim
 	 ==>
-	this.astStack : MethodDeclaration
+	this.astStack : FunctionDeclaration
 	this.identifierStack :
 	this.intStack :
 	*/
@@ -4720,7 +4720,7 @@ protected void consumeMethodHeaderThrowsClause() {
 	}
 }
 protected void consumeMethodInvocationName() {
-	// MethodInvocation ::= Name '(' ArgumentListopt ')'
+	// FunctionInvocation ::= Name '(' ArgumentListopt ')'
 
 	// when the name is only an identifier...we have a message send to "this" (implicit)
 
@@ -4740,7 +4740,7 @@ protected void consumeMethodInvocationName() {
 	pushOnExpressionStack(m);
 }
 protected void consumeMethodInvocationNameWithTypeArguments() {
-	// MethodInvocation ::= Name '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
+	// FunctionInvocation ::= Name '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
 
 	// when the name is only an identifier...we have a message send to "this" (implicit)
 
@@ -4763,7 +4763,7 @@ protected void consumeMethodInvocationNameWithTypeArguments() {
 }
 protected void consumeMethodInvocationPrimary() {
 	//optimize the push/pop
-	//MethodInvocation ::= Primary '.' 'Identifier' '(' ArgumentListopt ')'
+	//FunctionInvocation ::= Primary '.' 'Identifier' '(' ArgumentListopt ')'
 
 	MessageSend m = newMessageSend();
 //	m.sourceStart =
@@ -4794,7 +4794,7 @@ protected void consumeMethodInvocationPrimary() {
 }
 protected void consumeMethodInvocationPrimaryWithTypeArguments() {
 	//optimize the push/pop
-	//MethodInvocation ::= Primary '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
+	//FunctionInvocation ::= Primary '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
 
 	MessageSend m = newMessageSendWithTypeArguments();
 	m.sourceStart =
@@ -4814,7 +4814,7 @@ protected void consumeMethodInvocationPrimaryWithTypeArguments() {
 	this.expressionStack[this.expressionPtr] = m;
 }
 protected void consumeMethodInvocationSuper() {
-	// MethodInvocation ::= 'super' '.' 'Identifier' '(' ArgumentListopt ')'
+	// FunctionInvocation ::= 'super' '.' 'Identifier' '(' ArgumentListopt ')'
 
 	MessageSend m = newMessageSend();
 	m.sourceStart = this.intStack[this.intPtr--];
@@ -4826,7 +4826,7 @@ protected void consumeMethodInvocationSuper() {
 	pushOnExpressionStack(m);
 }
 protected void consumeMethodInvocationSuperWithTypeArguments() {
-	// MethodInvocation ::= 'super' '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
+	// FunctionInvocation ::= 'super' '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
 
 	MessageSend m = newMessageSendWithTypeArguments();
 	intPtr--; // start position of the typeArguments
@@ -5360,7 +5360,7 @@ protected void consumeRule(int act) {
 		    consumeQualifiedName();  
 			break;
  
-    case 26 : if (DEBUG) { System.out.println("CompilationUnit ::= EnterCompilationUnit..."); }  //$NON-NLS-1$
+    case 26 : if (DEBUG) { System.out.println("JavaScriptUnit ::= EnterCompilationUnit..."); }  //$NON-NLS-1$
 		    consumeCompilationUnit();  
 			break;
  
@@ -5437,7 +5437,7 @@ protected void consumeRule(int act) {
 		    consumeMethodHeaderName(true);  
 			break;
  
-    case 68 : if (DEBUG) { System.out.println("MethodDeclaration ::= MethodHeader MethodBody"); }  //$NON-NLS-1$
+    case 68 : if (DEBUG) { System.out.println("FunctionDeclaration ::= MethodHeader MethodBody"); }  //$NON-NLS-1$
 		    // set to true to consume a method with a body
   consumeMethodDeclaration(true);   
 			break;
@@ -5815,7 +5815,7 @@ protected void consumeRule(int act) {
 		    consumeFieldAccess(false);  
 			break;
  
-    case 233 : if (DEBUG) { System.out.println("MethodInvocation ::= FullPostfixExpression LPAREN..."); }  //$NON-NLS-1$
+    case 233 : if (DEBUG) { System.out.println("FunctionInvocation ::= FullPostfixExpression LPAREN..."); }  //$NON-NLS-1$
 		    consumeMethodInvocationPrimary();  
 			break;
  
@@ -5827,7 +5827,7 @@ protected void consumeRule(int act) {
 		    consumeFullPropertyOperator();  
 			break;
  
-    case 240 : if (DEBUG) { System.out.println("FullPostfixExpression ::= MethodInvocation"); }  //$NON-NLS-1$
+    case 240 : if (DEBUG) { System.out.println("FullPostfixExpression ::= FunctionInvocation"); }  //$NON-NLS-1$
 		    consumeMethodInvocation();  
 			break;
  
@@ -8064,7 +8064,7 @@ public int getFirstToken() {
 	// the first token is a virtual token that
 	// allows the parser to parse several goals
 	// even if they aren't LALR(1)....
-	// Goal ::= '++' CompilationUnit
+	// Goal ::= '++' JavaScriptUnit
 	// Goal ::= '--' MethodBody
 	// Goal ::= '==' ConstructorBody
 	// -- Initializer

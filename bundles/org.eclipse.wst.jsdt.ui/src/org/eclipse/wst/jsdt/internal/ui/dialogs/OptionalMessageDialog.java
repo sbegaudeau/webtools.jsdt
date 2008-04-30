@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 
 /**
@@ -88,10 +88,10 @@ public class OptionalMessageDialog extends MessageDialog {
 	 * @return the settings to be used
 	 */
 	private static IDialogSettings getDialogSettings() {
-		IDialogSettings settings= JavaPlugin.getDefault().getDialogSettings();
+		IDialogSettings settings= JavaScriptPlugin.getDefault().getDialogSettings();
 		settings= settings.getSection(STORE_ID);
 		if (settings == null)
-			settings= JavaPlugin.getDefault().getDialogSettings().addNewSection(STORE_ID);
+			settings= JavaScriptPlugin.getDefault().getDialogSettings().addNewSection(STORE_ID);
 		return settings;
 	}
 		
@@ -115,7 +115,7 @@ public class OptionalMessageDialog extends MessageDialog {
 	 * Clears all remembered information about hidden dialogs
 	 */
 	public static void clearAllRememberedStates() {
-		IDialogSettings settings= JavaPlugin.getDefault().getDialogSettings();
+		IDialogSettings settings= JavaScriptPlugin.getDefault().getDialogSettings();
 		settings.addNewSection(STORE_ID);
 	}
 }

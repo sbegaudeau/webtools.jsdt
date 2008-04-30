@@ -28,18 +28,18 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 
 /**
@@ -235,7 +235,7 @@ public final class ASTProvider {
 			String id= ref.getId();
 
 			// The instanceof check is not need but helps clients, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=84862
-			return JavaUI.ID_CF_EDITOR.equals(id) || JavaUI.ID_CU_EDITOR.equals(id) || ref.getPart(false) instanceof JavaEditor;
+			return JavaScriptUI.ID_CF_EDITOR.equals(id) || JavaScriptUI.ID_CU_EDITOR.equals(id) || ref.getPart(false) instanceof JavaEditor;
 		}
 	}
 
@@ -246,9 +246,9 @@ public final class ASTProvider {
 	private static final String DEBUG_PREFIX= "ASTProvider > "; //$NON-NLS-1$
 
 
-	private IJavaElement fReconcilingJavaElement;
-	private IJavaElement fActiveJavaElement;
-	private CompilationUnit fAST;
+	private IJavaScriptElement fReconcilingJavaElement;
+	private IJavaScriptElement fActiveJavaElement;
+	private JavaScriptUnit fAST;
 	private ActivationListener fActivationListener;
 	private Object fReconcileLock= new Object();
 	private Object fWaitLock= new Object();
@@ -263,7 +263,7 @@ public final class ASTProvider {
 	 * @since 3.2
 	 */
 	public static ASTProvider getASTProvider() {
-		return JavaPlugin.getDefault().getASTProvider();
+		return JavaScriptPlugin.getDefault().getASTProvider();
 	}
 	
 	/**
@@ -289,7 +289,7 @@ public final class ASTProvider {
 
 	private void activeJavaEditorChanged(IWorkbenchPart editor) {
 
-		IJavaElement javaElement= null;
+		IJavaScriptElement javaElement= null;
 		if (editor instanceof JavaEditor)
 			javaElement= ((JavaEditor)editor).getInputJavaElement();
 
@@ -320,7 +320,7 @@ public final class ASTProvider {
 	 * @param ast the compilation unit AST
 	 * @return <code>true</code> if the given AST is the cached one
 	 */
-	public boolean isCached(CompilationUnit ast) {
+	public boolean isCached(JavaScriptUnit ast) {
 		return ast != null && fAST == ast;
 	}
 
@@ -332,7 +332,7 @@ public final class ASTProvider {
 	 * @return <code>true</code> if the given compilation unit is the active one
 	 * @since 3.1
 	 */
-	public boolean isActive(ICompilationUnit cu) {
+	public boolean isActive(IJavaScriptUnit cu) {
 		return cu != null && cu.equals(fActiveJavaElement);
 	}
 
@@ -342,7 +342,7 @@ public final class ASTProvider {
 	 * @param javaElement the Java element
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.IJavaReconcilingListener#aboutToBeReconciled()
 	 */
-	void aboutToBeReconciled(IJavaElement javaElement) {
+	void aboutToBeReconciled(IJavaScriptElement javaElement) {
 
 		if (javaElement == null)
 			return;
@@ -379,7 +379,7 @@ public final class ASTProvider {
 	 * @param javaElement the compilation unit AST
 	 * @return a string used for debugging
 	 */
-	private String toString(IJavaElement javaElement) {
+	private String toString(IJavaScriptElement javaElement) {
 		if (javaElement == null)
 			return "null"; //$NON-NLS-1$
 		else
@@ -393,7 +393,7 @@ public final class ASTProvider {
 	 * @param ast the compilation unit AST
 	 * @return a string used for debugging
 	 */
-	private String toString(CompilationUnit ast) {
+	private String toString(JavaScriptUnit ast) {
 		if (ast == null)
 			return "null"; //$NON-NLS-1$
 
@@ -410,7 +410,7 @@ public final class ASTProvider {
 	 * @param ast
 	 * @param javaElement
 	 */
-	private synchronized void cache(CompilationUnit ast, IJavaElement javaElement) {
+	private synchronized void cache(JavaScriptUnit ast, IJavaScriptElement javaElement) {
 
 		if (fActiveJavaElement != null && !fActiveJavaElement.equals(javaElement)) {
 			if (DEBUG && javaElement != null) // don't report call from disposeAST()
@@ -445,11 +445,11 @@ public final class ASTProvider {
 	 * @param progressMonitor	the progress monitor or <code>null</code>
 	 * @return					the AST or <code>null</code> if the AST is not available
 	 */
-	public CompilationUnit getAST(IJavaElement je, WAIT_FLAG waitFlag, IProgressMonitor progressMonitor) {
+	public JavaScriptUnit getAST(IJavaScriptElement je, WAIT_FLAG waitFlag, IProgressMonitor progressMonitor) {
 		if (je == null)
 			return null;
 		
-		Assert.isTrue(je.getElementType() == IJavaElement.CLASS_FILE || je.getElementType() == IJavaElement.COMPILATION_UNIT);
+		Assert.isTrue(je.getElementType() == IJavaScriptElement.CLASS_FILE || je.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT);
 
 		if (progressMonitor != null && progressMonitor.isCanceled())
 			return null;
@@ -475,7 +475,7 @@ public final class ASTProvider {
 		}
 		if (isActiveElement && isReconciling(je)) {
 			try {
-				final IJavaElement activeElement= fReconcilingJavaElement;
+				final IJavaScriptElement activeElement= fReconcilingJavaElement;
 
 				// Wait for AST
 				synchronized (fWaitLock) {
@@ -504,7 +504,7 @@ public final class ASTProvider {
 		if (isActiveElement)
 			aboutToBeReconciled(je);
 
-		CompilationUnit ast= null;
+		JavaScriptUnit ast= null;
 		try {
 			ast= createAST(je, progressMonitor);
 			if (progressMonitor != null && progressMonitor.isCanceled()) {
@@ -540,9 +540,9 @@ public final class ASTProvider {
 	 * 								the client does not want to wait
 	 * @param progressMonitor	the progress monitor or <code>null</code>
 	 * @return					the AST or <code>null</code> if the AST is not available
-	 * @deprecated As of 3.1, use {@link #getAST(IJavaElement, WAIT_FLAG, IProgressMonitor)}
+	 * @deprecated As of 3.1, use {@link #getAST(IJavaScriptElement, WAIT_FLAG, IProgressMonitor)}
 	 */
-	public CompilationUnit getAST(IJavaElement je, boolean wait, IProgressMonitor progressMonitor) {
+	public JavaScriptUnit getAST(IJavaScriptElement je, boolean wait, IProgressMonitor progressMonitor) {
 		if (wait)
 			return getAST(je, WAIT_YES, progressMonitor);
 		else
@@ -556,7 +556,7 @@ public final class ASTProvider {
 	 * @param javaElement the Java element
 	 * @return <code>true</code> if reported as currently being reconciled
 	 */
-	private boolean isReconciling(IJavaElement javaElement) {
+	private boolean isReconciling(IJavaScriptElement javaElement) {
 		synchronized (fReconcileLock) {
 			return javaElement != null && javaElement.equals(fReconcilingJavaElement) && fIsReconciling;
 		}
@@ -569,7 +569,7 @@ public final class ASTProvider {
 	 * @param progressMonitor the progress monitor
 	 * @return AST
 	 */
-	private CompilationUnit createAST(final IJavaElement je, final IProgressMonitor progressMonitor) {
+	private JavaScriptUnit createAST(final IJavaScriptElement je, final IProgressMonitor progressMonitor) {
 		if (!hasSource(je))
 			return null;
 		
@@ -584,15 +584,15 @@ public final class ASTProvider {
 		if (progressMonitor != null && progressMonitor.isCanceled())
 			return null;
 		
-		if (je.getElementType() == IJavaElement.COMPILATION_UNIT)
-			parser.setSource((ICompilationUnit)je);
-		else if (je.getElementType() == IJavaElement.CLASS_FILE)
+		if (je.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT)
+			parser.setSource((IJavaScriptUnit)je);
+		else if (je.getElementType() == IJavaScriptElement.CLASS_FILE)
 			parser.setSource((IClassFile)je);
 
 		if (progressMonitor != null && progressMonitor.isCanceled())
 			return null;
 
-		final CompilationUnit root[]= new CompilationUnit[1]; 
+		final JavaScriptUnit root[]= new JavaScriptUnit[1]; 
 		
 		SafeRunner.run(new ISafeRunnable() {
 			public void run() {
@@ -601,14 +601,14 @@ public final class ASTProvider {
 						return;
 					if (DEBUG)
 						System.err.println(getThreadName() + " - " + DEBUG_PREFIX + "creating AST for: " + je.getElementName()); //$NON-NLS-1$ //$NON-NLS-2$
-					root[0]= (CompilationUnit)parser.createAST(progressMonitor);
+					root[0]= (JavaScriptUnit)parser.createAST(progressMonitor);
 				} catch (OperationCanceledException ex) {
 					return;
 				}
 			}
 			public void handleException(Throwable ex) {
-				IStatus status= new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.OK, "Error in JDT Core during AST creation", ex);  //$NON-NLS-1$
-				JavaPlugin.getDefault().getLog().log(status);
+				IStatus status= new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.OK, "Error in JDT Core during AST creation", ex);  //$NON-NLS-1$
+				JavaScriptPlugin.getDefault().getLog().log(status);
 			}
 		});
 		
@@ -626,15 +626,15 @@ public final class ASTProvider {
 	 * @return <code>true</code> if the element has source
 	 * @since 3.2
 	 */
-	private boolean hasSource(IJavaElement je) {
+	private boolean hasSource(IJavaScriptElement je) {
 		if (je == null || !je.exists())
 			return false;
 		
 		try {
 			return je instanceof ITypeRoot && ((ITypeRoot)je).getBuffer() != null;
-		} catch (JavaModelException ex) {
-			IStatus status= new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.OK, "Error in JDT Core during AST creation", ex);  //$NON-NLS-1$
-			JavaPlugin.getDefault().getLog().log(status);
+		} catch (JavaScriptModelException ex) {
+			IStatus status= new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.OK, "Error in JDT Core during AST creation", ex);  //$NON-NLS-1$
+			JavaScriptPlugin.getDefault().getLog().log(status);
 		}
 		return false;
 	}
@@ -656,9 +656,9 @@ public final class ASTProvider {
 	}
 
 	/*
-	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.IJavaReconcilingListener#reconciled(org.eclipse.wst.jsdt.core.dom.CompilationUnit)
+	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.IJavaReconcilingListener#reconciled(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit)
 	 */
-	void reconciled(CompilationUnit ast, IJavaElement javaElement, IProgressMonitor progressMonitor) {
+	void reconciled(JavaScriptUnit ast, IJavaScriptElement javaElement, IProgressMonitor progressMonitor) {
 
 		if (DEBUG)
 			System.out.println(getThreadName() + " - " + DEBUG_PREFIX + "reconciled: " + toString(javaElement) + ", AST: " + toString(ast)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

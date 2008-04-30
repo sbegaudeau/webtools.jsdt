@@ -12,11 +12,11 @@ package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -61,17 +61,17 @@ public class FindImplementorsAction extends FindAction {
 	}
 	
 	Class[] getValidTypes() {
-		return new Class[] { ICompilationUnit.class, IType.class};
+		return new Class[] { IJavaScriptUnit.class, IType.class};
 	}
 
-	boolean canOperateOn(IJavaElement element) {
+	boolean canOperateOn(IJavaScriptElement element) {
 		if (!super.canOperateOn(element))
 			return false;
 
-		if (element.getElementType() == IJavaElement.TYPE)
+		if (element.getElementType() == IJavaScriptElement.TYPE)
 			try {
 				return ((IType) element).isInterface();
-			} catch (JavaModelException ex) {
+			} catch (JavaScriptModelException ex) {
 				return false;
 			}
 		// should not happen: handled by super.canOperateOn
@@ -79,7 +79,7 @@ public class FindImplementorsAction extends FindAction {
 	}
 
 	int getLimitTo() {
-		return IJavaSearchConstants.IMPLEMENTORS;
+		return IJavaScriptSearchConstants.IMPLEMENTORS;
 	}
 
 	String getOperationUnavailableMessage() {

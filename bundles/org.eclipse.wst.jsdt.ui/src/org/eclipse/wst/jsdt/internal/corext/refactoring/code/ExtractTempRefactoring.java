@@ -34,10 +34,10 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -48,7 +48,7 @@ import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
@@ -58,12 +58,12 @@ import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
@@ -83,7 +83,7 @@ import org.eclipse.wst.jsdt.core.dom.WhileStatement;
 import org.eclipse.wst.jsdt.core.dom.WithStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 import org.eclipse.wst.jsdt.internal.corext.Corext;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
@@ -109,9 +109,9 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.NoCommentSourceRang
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Extract Local Variable (from selected expression inside method or initializer).
@@ -254,7 +254,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 	}
 
 	private static boolean isMethodParameter(ASTNode node) {
-		return (node instanceof SimpleName) && (node.getParent() instanceof SingleVariableDeclaration) && (node.getParent().getParent() instanceof MethodDeclaration);
+		return (node instanceof SimpleName) && (node.getParent() instanceof SingleVariableDeclaration) && (node.getParent().getParent() instanceof FunctionDeclaration);
 	}
 
 	private static boolean isReferringToLocalVariableFromFor(Expression expression) {
@@ -315,11 +315,11 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		return (IASTFragment[]) result.toArray(new IASTFragment[result.size()]);
 	}
 
-	private CompilationUnit fCompilationUnitNode;
+	private JavaScriptUnit fCompilationUnitNode;
 	
 	private CompilationUnitRewrite fCURewrite;
 
-	private ICompilationUnit fCu;
+	private IJavaScriptUnit fCu;
 
 	private boolean fDeclareFinal;
 
@@ -351,7 +351,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 	 * @param selectionStart
 	 * @param selectionLength
 	 */
-	public ExtractTempRefactoring(ICompilationUnit unit, int selectionStart, int selectionLength) {
+	public ExtractTempRefactoring(IJavaScriptUnit unit, int selectionStart, int selectionLength) {
 		Assert.isTrue(selectionStart >= 0);
 		Assert.isTrue(selectionLength >= 0);
 		fSelectionStart= selectionStart;
@@ -366,14 +366,14 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		fLinkedProposalModel= null;
 	}
 	
-	public ExtractTempRefactoring(CompilationUnit astRoot, int selectionStart, int selectionLength) {
+	public ExtractTempRefactoring(JavaScriptUnit astRoot, int selectionStart, int selectionLength) {
 		Assert.isTrue(selectionStart >= 0);
 		Assert.isTrue(selectionLength >= 0);
-		Assert.isTrue(astRoot.getTypeRoot() instanceof ICompilationUnit);
+		Assert.isTrue(astRoot.getTypeRoot() instanceof IJavaScriptUnit);
 		
 		fSelectionStart= selectionStart;
 		fSelectionLength= selectionLength;
-		fCu= (ICompilationUnit) astRoot.getTypeRoot();
+		fCu= (IJavaScriptUnit) astRoot.getTypeRoot();
 		fCompilationUnitNode= astRoot;
 
 		fReplaceAllOccurrences= true; // default
@@ -387,7 +387,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		fLinkedProposalModel= linkedProposalModel;
 	}
 
-	private void addReplaceExpressionWithTemp() throws JavaModelException {
+	private void addReplaceExpressionWithTemp() throws JavaScriptModelException {
 		IASTFragment[] fragmentsToReplace= retainOnlyReplacableMatches(getMatchingFragments());
 		//TODO: should not have to prune duplicates here...
 		ASTRewrite rewrite= fCURewrite.getASTRewrite();
@@ -405,7 +405,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		}
 	}
 
-	private RefactoringStatus checkExpression() throws JavaModelException {
+	private RefactoringStatus checkExpression() throws JavaScriptModelException {
 		Expression selectedExpression= getSelectedExpression().getAssociatedExpression();
 		if (selectedExpression != null) {
 			final ASTNode parent= selectedExpression.getParent();
@@ -431,7 +431,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 	}
 
 	// !! Same as in ExtractConstantRefactoring
-	private RefactoringStatus checkExpressionFragmentIsRValue() throws JavaModelException {
+	private RefactoringStatus checkExpressionFragmentIsRValue() throws JavaScriptModelException {
 		switch (Checks.checkExpressionIsRValue(getSelectedExpression().getAssociatedExpression())) {
 			case Checks.NOT_RVALUE_MISC:
 				return RefactoringStatus.createStatus(RefactoringStatus.FATAL, RefactoringCoreMessages.ExtractTempRefactoring_select_expression, null, Corext.getPluginId(), RefactoringStatusCodes.EXPRESSION_NOT_RVALUE, null); 
@@ -479,7 +479,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 	private final JDTRefactoringDescriptor createRefactoringDescriptor() {
 		final Map arguments= new HashMap();
 		String project= null;
-		IJavaProject javaProject= fCu.getJavaProject();
+		IJavaScriptProject javaProject= fCu.getJavaScriptProject();
 		if (javaProject != null)
 			project= javaProject.getElementName();
 		final String description= Messages.format(RefactoringCoreMessages.ExtractTempRefactoring_descriptor_description_short, fTempName);
@@ -488,9 +488,9 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
 		comment.addSetting(Messages.format(RefactoringCoreMessages.ExtractTempRefactoring_name_pattern, fTempName));
 		final BodyDeclaration decl= (BodyDeclaration) ASTNodes.getParent(fSelectedExpression.getAssociatedExpression(), BodyDeclaration.class);
-		if (decl instanceof MethodDeclaration) {
-			final IMethodBinding method= ((MethodDeclaration) decl).resolveBinding();
-			final String label= method != null ? BindingLabelProvider.getBindingLabel(method, JavaElementLabels.ALL_FULLY_QUALIFIED) : '{' + JavaElementLabels.ELLIPSIS_STRING + '}';
+		if (decl instanceof FunctionDeclaration) {
+			final IFunctionBinding method= ((FunctionDeclaration) decl).resolveBinding();
+			final String label= method != null ? BindingLabelProvider.getBindingLabel(method, JavaScriptElementLabels.ALL_FULLY_QUALIFIED) : '{' + JavaScriptElementLabels.ELLIPSIS_STRING + '}';
 			comment.addSetting(Messages.format(RefactoringCoreMessages.ExtractTempRefactoring_destination_pattern, label));
 		}
 		comment.addSetting(Messages.format(RefactoringCoreMessages.ExtractTempRefactoring_expression_pattern, expression));
@@ -498,7 +498,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 			comment.addSetting(RefactoringCoreMessages.ExtractTempRefactoring_replace_occurrences);
 		if (fDeclareFinal)
 			comment.addSetting(RefactoringCoreMessages.ExtractTempRefactoring_declare_final);
-		final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaRefactorings.EXTRACT_LOCAL_VARIABLE, project, description, comment.asString(), arguments, RefactoringDescriptor.NONE);
+		final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaScriptRefactorings.EXTRACT_LOCAL_VARIABLE, project, description, comment.asString(), arguments, RefactoringDescriptor.NONE);
 		arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_INPUT, descriptor.elementToHandle(fCu));
 		arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_NAME, fTempName);
 		arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_SELECTION, new Integer(fSelectionStart).toString() + " " + new Integer(fSelectionLength).toString()); //$NON-NLS-1$
@@ -513,7 +513,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 			try {
 				createTempDeclaration();
 			} catch (CoreException exception) {
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 			}
 			addReplaceExpressionWithTemp();
 		} finally {
@@ -523,7 +523,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 
 	private void checkNewSource(RefactoringStatus result) throws CoreException {
 		String newCuSource= fChange.getPreviewContent(new NullProgressMonitor());
-		CompilationUnit newCUNode= new RefactoringASTParser(AST.JLS3).parse(newCuSource, fCu, true, true, null);
+		JavaScriptUnit newCUNode= new RefactoringASTParser(AST.JLS3).parse(newCuSource, fCu, true, true, null);
 		IProblem[] newProblems= RefactoringAnalyzeUtil.getIntroducedCompileProblems(newCUNode, fCompilationUnitNode);
 		for (int i= 0; i < newProblems.length; i++) {
 			IProblem problem= newProblems[i];
@@ -536,7 +536,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		try {
 			pm.beginTask("", 6); //$NON-NLS-1$
 
-			RefactoringStatus result= Checks.validateModifiesFiles(ResourceUtil.getFiles(new ICompilationUnit[] { fCu}), getValidationContext());
+			RefactoringStatus result= Checks.validateModifiesFiles(ResourceUtil.getFiles(new IJavaScriptUnit[] { fCu}), getValidationContext());
 			if (result.hasFatalError())
 				return result;
 
@@ -556,7 +556,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		}
 	}
 
-	private RefactoringStatus checkMatchingFragments() throws JavaModelException {
+	private RefactoringStatus checkMatchingFragments() throws JavaScriptModelException {
 		RefactoringStatus result= new RefactoringStatus();
 		IASTFragment[] matchingFragments= getMatchingFragments();
 		for (int i= 0; i < matchingFragments.length; i++) {
@@ -569,7 +569,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		return result;
 	}
 
-	private RefactoringStatus checkSelection(IProgressMonitor pm) throws JavaModelException {
+	private RefactoringStatus checkSelection(IProgressMonitor pm) throws JavaScriptModelException {
 		try {
 			pm.beginTask("", 8); //$NON-NLS-1$
 
@@ -675,7 +675,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		return vds;
 	}
 
-	private void insertAt(ASTNode target, Statement declaration) throws JavaModelException {
+	private void insertAt(ASTNode target, Statement declaration) throws JavaScriptModelException {
 		ASTRewrite rewrite= fCURewrite.getASTRewrite();
 		TextEditGroup groupDescription= fCURewrite.createGroupDescription(RefactoringCoreMessages.ExtractTempRefactoring_declare_local_variable);
 		
@@ -726,7 +726,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		return fDeclareFinal;
 	}
 
-	private ASTNode[] findDeepestCommonSuperNodePathForReplacedNodes() throws JavaModelException {
+	private ASTNode[] findDeepestCommonSuperNodePathForReplacedNodes() throws JavaScriptModelException {
 		ASTNode[] matchNodes= getMatchNodes();
 
 		ASTNode[][] matchingNodesParents= new ASTNode[matchNodes.length][];
@@ -737,12 +737,12 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		return (ASTNode[]) l.toArray(new ASTNode[l.size()]);
 	}
 
-	private Block getEnclosingBodyNode() throws JavaModelException {
+	private Block getEnclosingBodyNode() throws JavaScriptModelException {
 		ASTNode node= getSelectedExpression().getAssociatedNode();
 		do {
 			switch (node.getNodeType()) {
-				case ASTNode.METHOD_DECLARATION:
-					return ((MethodDeclaration) node).getBody();
+				case ASTNode.FUNCTION_DECLARATION:
+					return ((FunctionDeclaration) node).getBody();
 				case ASTNode.INITIALIZER:
 					return ((Initializer) node).getBody();
 			}
@@ -759,14 +759,14 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 				for (int i= 0; i < bindings.length; i++) {
 					fExcludedVariableNames[i]= bindings[i].getName();
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				fExcludedVariableNames= new String[0];
 			}
 		}
 		return fExcludedVariableNames;
 	}
 
-	private IExpressionFragment getFirstReplacedExpression() throws JavaModelException {
+	private IExpressionFragment getFirstReplacedExpression() throws JavaScriptModelException {
 		if (!fReplaceAllOccurrences)
 			return getSelectedExpression();
 		IASTFragment[] nodesToReplace= retainOnlyReplacableMatches(getMatchingFragments());
@@ -782,7 +782,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		return (IExpressionFragment) nodesToReplace[0];
 	}
 
-	private IASTFragment[] getMatchingFragments() throws JavaModelException {
+	private IASTFragment[] getMatchingFragments() throws JavaScriptModelException {
 		if (fReplaceAllOccurrences) {
 			IASTFragment[] allMatches= ASTFragmentFactory.createFragmentForFullSubtree(getEnclosingBodyNode()).getSubFragmentsMatching(getSelectedExpression());
 			return allMatches;
@@ -790,7 +790,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 			return new IASTFragment[] { getSelectedExpression()};
 	}
 
-	private ASTNode[] getMatchNodes() throws JavaModelException {
+	private ASTNode[] getMatchNodes() throws JavaScriptModelException {
 		IASTFragment[] matches= retainOnlyReplacableMatches(getMatchingFragments());
 		ASTNode[] result= new ASTNode[matches.length];
 		for (int i= 0; i < matches.length; i++)
@@ -803,7 +803,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 	}
 
 
-	private IExpressionFragment getSelectedExpression() throws JavaModelException {
+	private IExpressionFragment getSelectedExpression() throws JavaScriptModelException {
 		if (fSelectedExpression != null)
 			return fSelectedExpression;
 		IASTFragment selectedFragment= ASTFragmentFactory.createFragmentForSourceRange(new SourceRange(fSelectionStart, fSelectionLength), fCompilationUnitNode, fCu);
@@ -882,9 +882,9 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 				Expression expression= getSelectedExpression().getAssociatedExpression();
 				if (expression != null) {
 					ITypeBinding binding= expression.resolveTypeBinding();
-					fGuessedTempNames= StubUtility.getVariableNameSuggestions(StubUtility.LOCAL, fCu.getJavaProject(), binding, expression, Arrays.asList(getExcludedVariableNames()));
+					fGuessedTempNames= StubUtility.getVariableNameSuggestions(StubUtility.LOCAL, fCu.getJavaScriptProject(), binding, expression, Arrays.asList(getExcludedVariableNames()));
 				} 
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 			}
 			if (fGuessedTempNames == null)
 				fGuessedTempNames= new String[0];
@@ -892,7 +892,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		return fGuessedTempNames;
 	}
 
-	private boolean isLiteralNodeSelected() throws JavaModelException {
+	private boolean isLiteralNodeSelected() throws JavaScriptModelException {
 		IExpressionFragment fragment= getSelectedExpression();
 		if (fragment == null)
 			return false;
@@ -913,7 +913,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		}
 	}
 
-	private boolean isUsedInExplicitConstructorCall() throws JavaModelException {
+	private boolean isUsedInExplicitConstructorCall() throws JavaScriptModelException {
 		Expression selectedExpression= getSelectedExpression().getAssociatedExpression();
 		if (ASTNodes.getParent(selectedExpression, ConstructorInvocation.class) != null)
 			return true;
@@ -955,7 +955,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		fTempName= newName;
 	}
 
-	private boolean shouldReplaceSelectedExpressionWithTempDeclaration() throws JavaModelException {
+	private boolean shouldReplaceSelectedExpressionWithTempDeclaration() throws JavaScriptModelException {
 		IExpressionFragment selectedFragment= getSelectedExpression();
 		return selectedFragment.getAssociatedNode().getParent() instanceof ExpressionStatement
 			&& selectedFragment.matches(ASTFragmentFactory.createFragmentForFullSubtree(selectedFragment.getAssociatedNode()));
@@ -982,11 +982,11 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_SELECTION));
 			final String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-				if (element == null || !element.exists() || element.getElementType() != IJavaElement.COMPILATION_UNIT)
-					return createInputFatalStatus(element, IJavaRefactorings.EXTRACT_LOCAL_VARIABLE);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.JAVASCRIPT_UNIT)
+					return createInputFatalStatus(element, IJavaScriptRefactorings.EXTRACT_LOCAL_VARIABLE);
 				else
-					fCu= (ICompilationUnit) element;
+					fCu= (IJavaScriptUnit) element;
 			} else
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));
 			final String name= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_NAME);

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * Handle representing a binary type that is resolved.
@@ -28,7 +28,7 @@ public class ResolvedBinaryType extends BinaryType {
 		this.uniqueKey = uniqueKey;
 	}
 
-	public String getFullyQualifiedParameterizedName() throws JavaModelException {
+	public String getFullyQualifiedParameterizedName() throws JavaScriptModelException {
 		return getFullyQualifiedParameterizedName(getFullyQualifiedName(), this.uniqueKey);
 	}
 

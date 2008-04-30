@@ -14,13 +14,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.internal.corext.dom.LinkedNodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 /**
@@ -32,7 +32,7 @@ public class RenameNodeCompletionProposal extends CUCorrectionProposal {
 	private int fOffset;
 	private int fLength;
 
-	public RenameNodeCompletionProposal(String name, ICompilationUnit cu, int offset, int length, String newName, int relevance) {
+	public RenameNodeCompletionProposal(String name, IJavaScriptUnit cu, int offset, int length, String newName, int relevance) {
 		super(name, cu, relevance, JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE));
 		fOffset= offset;
 		fLength= length;
@@ -46,7 +46,7 @@ public class RenameNodeCompletionProposal extends CUCorrectionProposal {
 		super.addEdits(doc, root);
 
 		// build a full AST
-		CompilationUnit unit= JavaPlugin.getDefault().getASTProvider().getAST(getCompilationUnit(), ASTProvider.WAIT_YES, null);
+		JavaScriptUnit unit= JavaScriptPlugin.getDefault().getASTProvider().getAST(getCompilationUnit(), ASTProvider.WAIT_YES, null);
 
 		ASTNode name= NodeFinder.perform(unit, fOffset, fLength);
 		if (name instanceof SimpleName) {

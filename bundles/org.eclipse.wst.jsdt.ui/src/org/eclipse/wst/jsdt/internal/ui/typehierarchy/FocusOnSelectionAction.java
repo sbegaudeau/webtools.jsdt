@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
 import org.eclipse.wst.jsdt.ui.ITypeHierarchyViewPart;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Refocuses the type hierarchy on the currently selection type.
@@ -62,7 +62,7 @@ public class FocusOnSelectionAction extends Action {
 			IType type= (IType)element;
 			setText(Messages.format(
 					TypeHierarchyMessages.FocusOnSelectionAction_label, 
-					JavaElementLabels.getTextLabel(type, 0))); 
+					JavaScriptElementLabels.getTextLabel(type, 0))); 
 			return true;
 		}
 		return false;

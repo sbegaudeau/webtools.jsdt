@@ -19,14 +19,14 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
@@ -35,8 +35,8 @@ import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -56,7 +56,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStatusContext;
  */
 class AccessAnalyzer extends ASTVisitor {
 
-	private ICompilationUnit fCUnit;
+	private IJavaScriptUnit fCUnit;
 	private IVariableBinding fFieldBinding;
 	private ITypeBinding fDeclaringClassBinding;	
 	private String fGetter;
@@ -78,7 +78,7 @@ class AccessAnalyzer extends ASTVisitor {
 	private static final String PREFIX_ACCESS= RefactoringCoreMessages.SelfEncapsulateField_AccessAnalyzer_encapsulate_prefix_access; 
 	private static final String POSTFIX_ACCESS= RefactoringCoreMessages.SelfEncapsulateField_AccessAnalyzer_encapsulate_postfix_access; 
 		
-	public AccessAnalyzer(SelfEncapsulateFieldRefactoring refactoring, ICompilationUnit unit, IVariableBinding field, ITypeBinding declaringClass, ASTRewrite rewriter, ImportRewrite importRewrite) {
+	public AccessAnalyzer(SelfEncapsulateFieldRefactoring refactoring, IJavaScriptUnit unit, IVariableBinding field, ITypeBinding declaringClass, ASTRewrite rewriter, ImportRewrite importRewrite) {
 		Assert.isNotNull(refactoring);
 		Assert.isNotNull(unit);
 		Assert.isNotNull(field);
@@ -96,7 +96,7 @@ class AccessAnalyzer extends ASTVisitor {
 		fEncapsulateDeclaringClass= refactoring.getEncapsulateDeclaringClass();
 		try {
 			fIsFieldFinal= Flags.isFinal(refactoring.getField().getFlags());
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// assume non final field
 		}
 		fStatus= new RefactoringStatus();
@@ -123,7 +123,7 @@ class AccessAnalyzer extends ASTVisitor {
 		if (!fIsFieldFinal) {
 			// Write access.
 			AST ast= node.getAST();
-			MethodInvocation invocation= ast.newMethodInvocation();
+			FunctionInvocation invocation= ast.newFunctionInvocation();
 			invocation.setName(ast.newSimpleName(fSetter));
 			fReferencingSetter= true;
 			Expression receiver= getReceiver(lhs);
@@ -137,7 +137,7 @@ class AccessAnalyzer extends ASTVisitor {
 				boolean needsParentheses= ASTNodes.needsParentheses(node.getRightHandSide());
 				InfixExpression exp= ast.newInfixExpression();
 				exp.setOperator(ASTNodes.convertToInfixOperator(node.getOperator()));
-				MethodInvocation getter= ast.newMethodInvocation();
+				FunctionInvocation getter= ast.newFunctionInvocation();
 				getter.setName(ast.newSimpleName(fGetter));
 				fReferencingGetter= true;
 				if (receiver != null)
@@ -163,7 +163,7 @@ class AccessAnalyzer extends ASTVisitor {
 			fReferencingGetter= true;
 			fRewriter.replace(
 				node, 
-				fRewriter.createStringPlaceholder(fGetter + "()", ASTNode.METHOD_INVOCATION), //$NON-NLS-1$
+				fRewriter.createStringPlaceholder(fGetter + "()", ASTNode.FUNCTION_INVOCATION), //$NON-NLS-1$
 				createGroupDescription(READ_ACCESS));
 		}
 		return true;
@@ -210,14 +210,14 @@ class AccessAnalyzer extends ASTVisitor {
 		return false;
 	}
 	
-	public boolean visit(MethodDeclaration node) {
+	public boolean visit(FunctionDeclaration node) {
 		String name= node.getName().getIdentifier();
 		if (name.equals(fGetter) || name.equals(fSetter))
 			return false;
 		return true;
 	}
 	
-	public void endVisit(CompilationUnit node) {
+	public void endVisit(JavaScriptUnit node) {
 		// If we don't had a static import to the field we don't
 		// have to add any, even if we generated a setter or 
 		// getter access.
@@ -284,9 +284,9 @@ class AccessAnalyzer extends ASTVisitor {
 		return null;
 	}
 		
-	private MethodInvocation createInvocation(AST ast, Expression operand, String operator) {
+	private FunctionInvocation createInvocation(AST ast, Expression operand, String operator) {
 		Expression receiver= getReceiver(operand);
-		MethodInvocation invocation= ast.newMethodInvocation();
+		FunctionInvocation invocation= ast.newFunctionInvocation();
 		invocation.setName(ast.newSimpleName(fSetter));
 		if (receiver != null)
 			invocation.setExpression((Expression)fRewriter.createCopyTarget(receiver));
@@ -299,7 +299,7 @@ class AccessAnalyzer extends ASTVisitor {
 		} else {
 			Assert.isTrue(false, "Should not happen"); //$NON-NLS-1$
 		}
-		MethodInvocation getter= ast.newMethodInvocation();
+		FunctionInvocation getter= ast.newFunctionInvocation();
 		getter.setName(ast.newSimpleName(fGetter));
 		if (receiver != null)
 			getter.setExpression((Expression)fRewriter.createCopyTarget(receiver));

@@ -13,14 +13,14 @@ package org.eclipse.wst.jsdt.internal.core;
 import java.util.Iterator;
 
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -50,24 +50,24 @@ public class CreateFieldOperation extends CreateTypeMemberOperation {
 	 * declaration, or as the first member in the type if there are no field
 	 * declarations.
 	 */
-	public CreateFieldOperation(IJavaElement parentElement, String source,
+	public CreateFieldOperation(IJavaScriptElement parentElement, String source,
 			boolean force) {
 		super(parentElement, source, force);
 	}
 
 	protected ASTNode generateElementAST(ASTRewrite rewriter,
-			IDocument document, ICompilationUnit cu) throws JavaModelException {
+			IDocument document, IJavaScriptUnit cu) throws JavaScriptModelException {
 		ASTNode node = super.generateElementAST(rewriter, document, cu);
 		if (node.getNodeType() != ASTNode.FIELD_DECLARATION)
-			throw new JavaModelException(new JavaModelStatus(
-					IJavaModelStatusConstants.INVALID_CONTENTS));
+			throw new JavaScriptModelException(new JavaModelStatus(
+					IJavaScriptModelStatusConstants.INVALID_CONTENTS));
 		return node;
 	}
 
 	/**
 	 * @see CreateElementInCUOperation#generateResultHandle
 	 */
-	protected IJavaElement generateResultHandle() {
+	protected IJavaScriptElement generateResultHandle() {
 		if (getType()!=null)
 			return getType().getField(getASTNodeName());
 		return getCompilationUnit().getField(getASTNodeName());
@@ -125,12 +125,12 @@ public class CreateFieldOperation extends CreateTypeMemberOperation {
 				createAfter(lastField);
 				// }
 			} else {
-				IJavaElement[] elements = parentElement.getChildren();
+				IJavaScriptElement[] elements = parentElement.getChildren();
 				if (elements != null && elements.length > 0) {
 					createBefore(elements[0]);
 				}
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// type doesn't exist: ignore
 		}
 	}
@@ -138,21 +138,21 @@ public class CreateFieldOperation extends CreateTypeMemberOperation {
 	/**
 	 * @see CreateTypeMemberOperation#verifyNameCollision
 	 */
-	protected IJavaModelStatus verifyNameCollision() {
+	protected IJavaScriptModelStatus verifyNameCollision() {
 		if (this.createdNode != null) {
 			IType type = getType();
 			String fieldName = getASTNodeName();
 			if (type != null) {
 				if (type.getField(fieldName).exists()) {
 					return new JavaModelStatus(
-							IJavaModelStatusConstants.NAME_COLLISION, Messages
+							IJavaScriptModelStatusConstants.NAME_COLLISION, Messages
 									.bind(Messages.status_nameCollision,
 											fieldName));
 				}
 			} else {
 				if (getCompilationUnit().getField(fieldName).exists()) {
 					return new JavaModelStatus(
-							IJavaModelStatusConstants.NAME_COLLISION, Messages
+							IJavaScriptModelStatusConstants.NAME_COLLISION, Messages
 									.bind(Messages.status_nameCollision,
 											fieldName));
 				}

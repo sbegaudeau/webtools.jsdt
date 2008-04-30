@@ -25,15 +25,15 @@ import org.eclipse.core.runtime.IPath;
  * file that is not accessible or discouraged can still be refered to but it is tagged as being not
  * accessible - the Java builder will create a problem marker for example.
  * The severity of the marker created from a non accessible rule is controled through
- * the {@link JavaCore#COMPILER_PB_FORBIDDEN_REFERENCE} compiler option.
+ * the {@link JavaScriptCore#COMPILER_PB_FORBIDDEN_REFERENCE} compiler option.
  * The severity of the marker created from a discouraged rule is controled through
- * the {@link JavaCore#COMPILER_PB_DISCOURAGED_REFERENCE} compiler option.
+ * the {@link JavaScriptCore#COMPILER_PB_DISCOURAGED_REFERENCE} compiler option.
  * Note this is different from inclusion and exclusion patterns on source classpath entries,
  * where a source file that is excluded is not even compiled.
  * Files patterns look like relative file paths with wildcards and are interpreted relative
  * to each entry's path.
  * File patterns are case-sensitive and they can contain '**', '*' or '?' wildcards (see
- * {@link IClasspathEntry#getExclusionPatterns()} for the full description
+ * {@link IIncludePathEntry#getExclusionPatterns()} for the full description
  * of their syntax and semantics).
  * Note that file patterns must not include the file extension.
  * <code>com/xyz/tests/MyClass</code> is a valid file pattern, whereas

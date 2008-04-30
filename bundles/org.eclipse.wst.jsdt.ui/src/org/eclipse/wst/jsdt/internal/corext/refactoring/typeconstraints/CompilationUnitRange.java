@@ -11,30 +11,30 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 
 public final class CompilationUnitRange {
 
-	private final ICompilationUnit fCompilationUnit;
+	private final IJavaScriptUnit fCompilationUnit;
 	private final ISourceRange fSourceRange;
 
-	public CompilationUnitRange(ICompilationUnit unit, ISourceRange range) {
+	public CompilationUnitRange(IJavaScriptUnit unit, ISourceRange range) {
 		Assert.isNotNull(unit);
 		Assert.isNotNull(range);
 		fCompilationUnit= unit;
 		fSourceRange= range;
 	}
 
-	public CompilationUnitRange(ICompilationUnit unit, ASTNode node) {
+	public CompilationUnitRange(IJavaScriptUnit unit, ASTNode node) {
 		this(unit, new SourceRange(node));
 	}
 
-	public ICompilationUnit getCompilationUnit() {
+	public IJavaScriptUnit getCompilationUnit() {
 		return fCompilationUnit;
 	}
 
@@ -43,7 +43,7 @@ public final class CompilationUnitRange {
 	}
 
 	//rootNode must be the ast root for fCompilationUnit
-	public ASTNode getNode(CompilationUnit rootNode) {
+	public ASTNode getNode(JavaScriptUnit rootNode) {
 		NodeFinder finder= new NodeFinder(fSourceRange.getOffset(), fSourceRange.getLength());
 		rootNode.accept(finder);
 		ASTNode result= finder.getCoveringNode();

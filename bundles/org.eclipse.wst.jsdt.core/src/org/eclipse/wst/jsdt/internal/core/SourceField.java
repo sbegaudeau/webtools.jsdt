@@ -11,11 +11,11 @@
 package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
@@ -36,7 +36,7 @@ public boolean equals(Object o) {
 	if (!(o instanceof SourceField)) return false;
 	return super.equals(o);
 }
-public ASTNode findNode(org.eclipse.wst.jsdt.core.dom.CompilationUnit ast) {
+public ASTNode findNode(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit ast) {
 	// For field declarations, a variable declaration fragment is returned
 	// Return the FieldDeclaration instead
 	// For enum constant declaration, we return the node directly
@@ -50,7 +50,7 @@ public ASTNode findNode(org.eclipse.wst.jsdt.core.dom.CompilationUnit ast) {
 /**
  * @see IField
  */
-public Object getConstant() throws JavaModelException {
+public Object getConstant() throws JavaScriptModelException {
 	Object constant = null;
 	SourceFieldElementInfo info = (SourceFieldElementInfo) getElementInfo();
 	final char[] constantSourceChars = info.initializationSource;
@@ -99,7 +99,7 @@ public Object getConstant() throws JavaModelException {
 	return constant;
 }
 /**
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public int getElementType() {
 	return FIELD;
@@ -110,7 +110,7 @@ public int getElementType() {
 public String getKey() {
 	try {
 		return getKey(this, false/*don't open*/);
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// happen only if force open is true
 		return null;
 	}
@@ -124,26 +124,26 @@ protected char getHandleMementoDelimiter() {
 /*
  * @see JavaElement#getPrimaryElement(boolean)
  */
-public IJavaElement getPrimaryElement(boolean checkOwner) {
+public IJavaScriptElement getPrimaryElement(boolean checkOwner) {
 	if (checkOwner) {
-		CompilationUnit cu = (CompilationUnit)getAncestor(COMPILATION_UNIT);
+		CompilationUnit cu = (CompilationUnit)getAncestor(JAVASCRIPT_UNIT);
 		if (cu.isPrimary()) return this;
 	}
-	IJavaElement primaryParent =this.parent.getPrimaryElement(false);
+	IJavaScriptElement primaryParent =this.parent.getPrimaryElement(false);
 	if (primaryParent instanceof IType)
 		return ((IType)primaryParent).getField(this.name);
-	return ((ICompilationUnit)primaryParent).getField(this.name);
+	return ((IJavaScriptUnit)primaryParent).getField(this.name);
 }
 /**
  * @see IField
  */
-public String getTypeSignature() throws JavaModelException {
+public String getTypeSignature() throws JavaScriptModelException {
 	SourceFieldElementInfo info = (SourceFieldElementInfo) getElementInfo();
 	return info.getTypeSignature();
 }
 /* (non-Javadoc)
  * @see org.eclipse.wst.jsdt.core.IField#isEnumConstant()
- */public boolean isEnumConstant() throws JavaModelException {
+ */public boolean isEnumConstant() throws JavaScriptModelException {
 	return Flags.isEnum(getFlags());
 }
 /* (non-Javadoc)
@@ -172,8 +172,8 @@ protected void toStringInfo(int tab, StringBuffer buffer, Object info, boolean s
 //			buffer.append(Signature.toString(this.getTypeSignature()));
 			buffer.append("var "); //$NON-NLS-1$
 			toStringName(buffer);
-//		} catch (JavaModelException e) {
-//			buffer.append("<JavaModelException in toString of " + getElementName()); //$NON-NLS-1$
+//		} catch (JavaScriptModelException e) {
+//			buffer.append("<JavaScriptModelException in toString of " + getElementName()); //$NON-NLS-1$
 //		}
 	}
 }

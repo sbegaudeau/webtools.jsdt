@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the convert anonymous to nested refactoring.
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class ConvertAnonymousDescriptor extends JavaRefactoringDescriptor {
+public final class ConvertAnonymousDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public ConvertAnonymousDescriptor() {
-		super(IJavaRefactorings.CONVERT_ANONYMOUS);
+		super(IJavaScriptRefactorings.CONVERT_ANONYMOUS);
 	}
 }

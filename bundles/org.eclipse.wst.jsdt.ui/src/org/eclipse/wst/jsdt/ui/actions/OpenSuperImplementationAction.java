@@ -18,27 +18,27 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
 import org.eclipse.wst.jsdt.internal.corext.util.SuperTypeHierarchyCache;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * The action opens a Java editor on the selected method's super implementation.
  * <p>
  * The action is applicable to selections containing elements of type <code>
- * IMethod</code>.
+ * IFunction</code>.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -106,7 +106,7 @@ public class OpenSuperImplementationAction extends SelectionDispatchAction {
 	 * Method declared on SelectionDispatchAction.
 	 */
 	public void selectionChanged(IStructuredSelection selection) {
-		IMethod method= getMethod(selection);
+		IFunction method= getMethod(selection);
 		
 		setEnabled(method != null && checkMethod(method));
 	}
@@ -117,12 +117,12 @@ public class OpenSuperImplementationAction extends SelectionDispatchAction {
 	public void run(ITextSelection selection) {
 		if (!ActionUtil.isProcessable(fEditor))
 			return;
-		IJavaElement element= elementAtOffset();
-		if (element == null || !(element instanceof IMethod)) {
+		IJavaScriptElement element= elementAtOffset();
+		if (element == null || !(element instanceof IFunction)) {
 			MessageDialog.openInformation(getShell(), getDialogTitle(), ActionMessages.OpenSuperImplementationAction_not_applicable); 
 			return;
 		}
-		run((IMethod) element);
+		run((IFunction) element);
 	}
 	
 	/* (non-Javadoc)
@@ -136,7 +136,7 @@ public class OpenSuperImplementationAction extends SelectionDispatchAction {
 	 * No Javadoc since the method isn't meant to be public but is
 	 * since the beginning
 	 */
-	public void run(IMethod method) {
+	public void run(IFunction method) {
 		if (method == null)
 			return;		
 		if (!ActionUtil.isProcessable(getShell(), method))
@@ -149,32 +149,32 @@ public class OpenSuperImplementationAction extends SelectionDispatchAction {
 		}		
 
 		try {
-			IMethod impl= findSuperImplementation(method);
+			IFunction impl= findSuperImplementation(method);
 			if (impl != null) {
-				JavaUI.openInEditor(impl, true, true);
+				JavaScriptUI.openInEditor(impl, true, true);
 			}
 		} catch (CoreException e) {
 			ExceptionHandler.handle(e, getDialogTitle(), ActionMessages.OpenSuperImplementationAction_error_message);
 		}
 	}
 	
-	private IMethod findSuperImplementation(IMethod method) throws JavaModelException {
+	private IFunction findSuperImplementation(IFunction method) throws JavaScriptModelException {
 		MethodOverrideTester tester= SuperTypeHierarchyCache.getMethodOverrideTester(method.getDeclaringType());
 		return tester.findOverriddenMethod(method, false);
 	}
 	
 	
-	private IMethod getMethod(IStructuredSelection selection) {
+	private IFunction getMethod(IStructuredSelection selection) {
 		if (selection.size() != 1)
 			return null;
 		Object element= selection.getFirstElement();
-		if (element instanceof IMethod) {
-			return (IMethod) element;
+		if (element instanceof IFunction) {
+			return (IFunction) element;
 		}
 		return null;
 	}
 	
-	private boolean checkMethod(IMethod method) {
+	private boolean checkMethod(IFunction method) {
 		try {
 			int flags= method.getFlags();
 			if (!Flags.isStatic(flags) && !Flags.isPrivate(flags)) {
@@ -188,18 +188,18 @@ public class OpenSuperImplementationAction extends SelectionDispatchAction {
 				}
 				return true;
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			if (!e.isDoesNotExist()) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 		return false;
 	}
 	
-	private IJavaElement elementAtOffset() {
+	private IJavaScriptElement elementAtOffset() {
 		try {
 			return SelectionConverter.getElementAtOffset(fEditor);
-		} catch(JavaModelException e) {
+		} catch(JavaScriptModelException e) {
 		}
 		return null;
 	}

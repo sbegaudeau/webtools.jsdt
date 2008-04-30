@@ -18,12 +18,12 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.BindingKey;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.ASTRequestor;
@@ -35,10 +35,10 @@ import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 public class TypeEnvironment {
 	
 	private static class ProjectKeyPair {
-		private final IJavaProject fProject;
+		private final IJavaScriptProject fProject;
 		private final String fBindingKey;
 		
-		public ProjectKeyPair(IJavaProject project, String bindingKey) {
+		public ProjectKeyPair(IJavaScriptProject project, String bindingKey) {
 			fProject= project;
 			fBindingKey= bindingKey;
 		}
@@ -94,11 +94,11 @@ public class TypeEnvironment {
 	private TType OBJECT_TYPE= null;
 	
 	private Map/*<TType, ArrayType>*/[]          fArrayTypes= new Map[] { new HashMap() };
-	private Map/*<IJavaElement, StandardType>*/  fStandardTypes= new HashMap();
-	private Map/*<IJavaElement, GenericType>*/   fGenericTypes= new HashMap();
+	private Map/*<IJavaScriptElement, StandardType>*/  fStandardTypes= new HashMap();
+	private Map/*<IJavaScriptElement, GenericType>*/   fGenericTypes= new HashMap();
 	private Map/*<ProjectKeyPair, ParameterizedType>*/ fParameterizedTypes= new HashMap();
-	private Map/*<IJavaElement, RawType>*/       fRawTypes= new HashMap();
-	private Map/*<IJavaElement, TypeVariable>*/  fTypeVariables= new HashMap();
+	private Map/*<IJavaScriptElement, RawType>*/       fRawTypes= new HashMap();
+	private Map/*<IJavaScriptElement, TypeVariable>*/  fTypeVariables= new HashMap();
 	private Map/*<ProjectKeyPair, CaptureType>*/ fCaptureTypes= new HashMap();
 	private Map/*<TType, ExtendsWildcardType>*/  fExtendsWildcardTypes= new HashMap();
 	private Map/*<TType, SuperWildcardType>*/    fSuperWildcardTypes= new HashMap();
@@ -118,7 +118,7 @@ public class TypeEnvironment {
 	 */
 	private Map/*<TType, List<TType>>*/ fSubTypes;
 	
-	public static ITypeBinding[] createTypeBindings(TType[] types, IJavaProject project) {
+	public static ITypeBinding[] createTypeBindings(TType[] types, IJavaScriptProject project) {
 		final Map mapping= new HashMap();
 		List keys= new ArrayList();
 		for (int i= 0; i < types.length; i++) {
@@ -130,7 +130,7 @@ public class TypeEnvironment {
 		ASTParser parser= ASTParser.newParser(AST.JLS3);
 		parser.setProject(project);
 		parser.setResolveBindings(true);
-		parser.createASTs(new ICompilationUnit[0], (String[])keys.toArray(new String[keys.size()]), 
+		parser.createASTs(new IJavaScriptUnit[0], (String[])keys.toArray(new String[keys.size()]), 
 			new ASTRequestor() {
 				public void acceptBinding(String bindingKey, IBinding binding) {
 					mapping.put(bindingKey, binding);
@@ -228,7 +228,7 @@ public class TypeEnvironment {
 		return null;
 	}
 	
-	StandardType createBoxed(PrimitiveType type, IJavaProject focus) {
+	StandardType createBoxed(PrimitiveType type, IJavaScriptProject focus) {
 		String fullyQualifiedName= BOXED_PRIMITIVE_NAMES[type.getId()];
 		try {
 			IType javaElementType= focus.findType(fullyQualifiedName);
@@ -237,9 +237,9 @@ public class TypeEnvironment {
 				return result;
 			ASTParser parser= ASTParser.newParser(AST.JLS3);
 			parser.setProject(focus);
-			IBinding[] bindings= parser.createBindings(new IJavaElement[] {javaElementType} , null);
+			IBinding[] bindings= parser.createBindings(new IJavaScriptElement[] {javaElementType} , null);
 			return createStandardType((ITypeBinding)bindings[0]);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// fall through
 		}
 		return null;
@@ -328,7 +328,7 @@ public class TypeEnvironment {
 	}
 	
 	private StandardType createStandardType(ITypeBinding binding) {
-		IJavaElement javaElement= binding.getJavaElement();
+		IJavaScriptElement javaElement= binding.getJavaElement();
 		StandardType result= (StandardType)fStandardTypes.get(javaElement);
 		if (result != null)
 			return result;
@@ -341,7 +341,7 @@ public class TypeEnvironment {
 	}
 	
 	private GenericType createGenericType(ITypeBinding binding) {
-		IJavaElement javaElement= binding.getJavaElement();
+		IJavaScriptElement javaElement= binding.getJavaElement();
 		GenericType result= (GenericType)fGenericTypes.get(javaElement);
 		if (result != null)
 			return result;
@@ -354,7 +354,7 @@ public class TypeEnvironment {
 	}
 	
 	private ParameterizedType createParameterizedType(ITypeBinding binding) {
-		IJavaProject javaProject= binding.getJavaElement().getJavaProject();
+		IJavaScriptProject javaProject= binding.getJavaElement().getJavaScriptProject();
 		String bindingKey= binding.getKey();
 		ProjectKeyPair pair= new ProjectKeyPair(javaProject, bindingKey);
 		ParameterizedType result= (ParameterizedType)fParameterizedTypes.get(pair);
@@ -369,7 +369,7 @@ public class TypeEnvironment {
 	}
 	
 	private RawType createRawType(ITypeBinding binding) {
-		IJavaElement javaElement= binding.getJavaElement();
+		IJavaScriptElement javaElement= binding.getJavaElement();
 		RawType result= (RawType)fRawTypes.get(javaElement);
 		if (result != null)
 			return result;
@@ -412,7 +412,7 @@ public class TypeEnvironment {
 	}	
 	
 	private TypeVariable createTypeVariable(ITypeBinding binding) {
-		IJavaElement javaElement= binding.getJavaElement();
+		IJavaScriptElement javaElement= binding.getJavaElement();
 		TypeVariable result= (TypeVariable)fTypeVariables.get(javaElement);
 		if (result != null)
 			return result;
@@ -423,7 +423,7 @@ public class TypeEnvironment {
 	}
 	
 	private CaptureType createCaptureType(ITypeBinding binding) {
-		IJavaProject javaProject= binding.getDeclaringClass().getJavaElement().getJavaProject();
+		IJavaScriptProject javaProject= binding.getDeclaringClass().getJavaElement().getJavaScriptProject();
 		String bindingKey= binding.getKey();
 		ProjectKeyPair pair= new ProjectKeyPair(javaProject, bindingKey);
 		CaptureType result= (CaptureType)fCaptureTypes.get(pair);

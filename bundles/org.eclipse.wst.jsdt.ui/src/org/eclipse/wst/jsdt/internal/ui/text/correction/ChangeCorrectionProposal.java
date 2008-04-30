@@ -28,7 +28,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 
@@ -73,7 +73,7 @@ public class ChangeCorrectionProposal implements IJavaCompletionProposal, IComma
 	 */
 	public void apply(IDocument document) {
 		try {
-			performChange(JavaPlugin.getActivePage().getActiveEditor(), document);
+			performChange(JavaScriptPlugin.getActivePage().getActiveEditor(), document);
 		} catch (CoreException e) {
 			ExceptionHandler.handle(e, CorrectionMessages.ChangeCorrectionProposal_error_title, CorrectionMessages.ChangeCorrectionProposal_error_message);
 		}
@@ -107,7 +107,7 @@ public class ChangeCorrectionProposal implements IJavaCompletionProposal, IComma
 				change.initializeValidationData(new NullProgressMonitor());
 				RefactoringStatus valid= change.isValid(new NullProgressMonitor());
 				if (valid.hasFatalError()) {
-					IStatus status= new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR,
+					IStatus status= new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.ERROR,
 						valid.getMessageMatchingSeverity(RefactoringStatus.FATAL), null);
 					throw new CoreException(status);
 				} else {

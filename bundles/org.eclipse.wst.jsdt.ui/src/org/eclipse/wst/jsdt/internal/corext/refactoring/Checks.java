@@ -26,25 +26,25 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelMarker;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelMarker;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Name;
@@ -84,7 +84,7 @@ public class Checks {
 	 * the give method will have a constructor name after renaming
 	 * <code>null</code> otherwise.
 	 */
-	public static RefactoringStatus checkIfConstructorName(IMethod method, String newMethodName, String newTypeName){
+	public static RefactoringStatus checkIfConstructorName(IFunction method, String newMethodName, String newTypeName){
 		if (! newMethodName.equals(newTypeName))
 			return null;
 		else
@@ -101,7 +101,7 @@ public class Checks {
 	 *  name is not a valid java field name.
 	 */
 	public static RefactoringStatus checkFieldName(String name) {
-		return checkName(name, JavaConventions.validateFieldName(name));
+		return checkName(name, JavaScriptConventions.validateFieldName(name));
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class Checks {
 	 *  name is not a valid java type parameter name.
 	 */
 	public static RefactoringStatus checkTypeParameterName(String name) {
-		return checkName(name, JavaConventions.validateTypeVariableName(name));
+		return checkName(name, JavaScriptConventions.validateTypeVariableName(name));
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class Checks {
 	 *  name is not a valid java identifier.
 	 */
 	public static RefactoringStatus checkIdentifier(String name) {
-		return checkName(name, JavaConventions.validateIdentifier(name));
+		return checkName(name, JavaScriptConventions.validateIdentifier(name));
 	}
 	
 	/**
@@ -134,7 +134,7 @@ public class Checks {
 	 *  name is not a valid java method name.
 	 */
 	public static RefactoringStatus checkMethodName(String name) {
-		RefactoringStatus status= checkName(name, JavaConventions.validateMethodName(name));
+		RefactoringStatus status= checkName(name, JavaScriptConventions.validateFunctionName(name));
 		if (status.isOK() && startsWithUpperCase(name))
 			return RefactoringStatus.createWarningStatus(RefactoringCoreMessages.Checks_method_names_lowercase); 
 		else	
@@ -153,7 +153,7 @@ public class Checks {
 //		if (name.indexOf(".") != -1) //$NON-NLS-1$
 //			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.Checks_no_dot);
 //		else	
-			return checkName(name, JavaConventions.validateJavaTypeName(name));
+			return checkName(name, JavaScriptConventions.validateJavaScriptTypeName(name));
 	}
 	
 	/**
@@ -164,7 +164,7 @@ public class Checks {
 	 *  name is not a valid java package name.
 	 */
 	public static RefactoringStatus checkPackageName(String name) {
-		return checkName(name, JavaConventions.validatePackageName(name));
+		return checkName(name, JavaScriptConventions.validatePackageName(name));
 	}
 	
 	/**
@@ -175,7 +175,7 @@ public class Checks {
 	 *  name is not a valid compilation unit name.
 	 */
 	public static RefactoringStatus checkCompilationUnitName(String name) {
-		return checkName(name, JavaConventions.validateCompilationUnitName(name));
+		return checkName(name, JavaScriptConventions.validateCompilationUnitName(name));
 	}
 
 	/**
@@ -184,7 +184,7 @@ public class Checks {
 	 * @param newName 
 	 * @return the status
 	 */
-	public static RefactoringStatus checkCompilationUnitNewName(ICompilationUnit cu, String newName) {
+	public static RefactoringStatus checkCompilationUnitNewName(IJavaScriptUnit cu, String newName) {
 		String newCUName= JavaModelUtil.getRenamedCUName(cu, newName);
 		if (resourceExists(RenameResourceChange.renamedResourcePath(cu.getResource().getFullPath(), newCUName)))
 			return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.Checks_cu_name_used, newName));
@@ -220,15 +220,15 @@ public class Checks {
 		return type.getDeclaringType() == null;
 	}
 
-	public static boolean isAnonymous(IType type) throws JavaModelException {
+	public static boolean isAnonymous(IType type) throws JavaScriptModelException {
 		return type.isAnonymous();
 	}
 
 	public static boolean isTopLevelType(IMember member){
-		return  member.getElementType() == IJavaElement.TYPE && isTopLevel((IType) member);
+		return  member.getElementType() == IJavaScriptElement.TYPE && isTopLevel((IType) member);
 	}
 	
-	public static boolean isInsideLocalType(IType type) throws JavaModelException {
+	public static boolean isInsideLocalType(IType type) throws JavaScriptModelException {
 		while (type != null) {
 			if (type.isLocal())
 				return true;
@@ -237,30 +237,30 @@ public class Checks {
 		return false;
 	}
 
-	public static boolean isAlreadyNamed(IJavaElement element, String name){
+	public static boolean isAlreadyNamed(IJavaScriptElement element, String name){
 		return name.equals(element.getElementName());
 	}
 
 //	//-------------- main and native method checks ------------------
-//	public static RefactoringStatus checkForMainAndNativeMethods(ICompilationUnit cu) throws JavaModelException {
+//	public static RefactoringStatus checkForMainAndNativeMethods(IJavaScriptUnit cu) throws JavaScriptModelException {
 //		return checkForMainAndNativeMethods(cu.getTypes());
 //	}
 //	
-//	public static RefactoringStatus checkForMainAndNativeMethods(IType[] types) throws JavaModelException {
+//	public static RefactoringStatus checkForMainAndNativeMethods(IType[] types) throws JavaScriptModelException {
 //		RefactoringStatus result= new RefactoringStatus();
 //		for (int i= 0; i < types.length; i++)
 //			result.merge(checkForMainAndNativeMethods(types[i]));
 //		return result;
 //	}
 //	
-//	public static RefactoringStatus checkForMainAndNativeMethods(IType type) throws JavaModelException {
+//	public static RefactoringStatus checkForMainAndNativeMethods(IType type) throws JavaScriptModelException {
 //		RefactoringStatus result= new RefactoringStatus();
 //		result.merge(checkForMainAndNativeMethods(type.getMethods()));
 //		result.merge(checkForMainAndNativeMethods(type.getTypes()));
 //		return result;
 //	}
 //	
-//	private static RefactoringStatus checkForMainAndNativeMethods(IMethod[] methods) throws JavaModelException {
+//	private static RefactoringStatus checkForMainAndNativeMethods(IFunction[] methods) throws JavaScriptModelException {
 //		RefactoringStatus result= new RefactoringStatus();
 //		for (int i= 0; i < methods.length; i++) {
 //			if (JdtFlags.isNative(methods[i])){
@@ -290,7 +290,7 @@ public class Checks {
 		RefactoringStatus result= new RefactoringStatus();
 		if (methodName.equals(type.getName()))
 			result.addWarning(RefactoringCoreMessages.Checks_methodName_constructor); 
-		IMethodBinding method= org.eclipse.wst.jsdt.internal.corext.dom.Bindings.findMethodInType(type, methodName, parameters);
+		IFunctionBinding method= org.eclipse.wst.jsdt.internal.corext.dom.Bindings.findMethodInType(type, methodName, parameters);
 		if (method != null) 
 			result.addError(Messages.format(RefactoringCoreMessages.Checks_methodName_exists,  
 				new Object[] {methodName, type.getName()}),
@@ -313,7 +313,7 @@ public class Checks {
 	 */
 	public static RefactoringStatus checkMethodInHierarchy(ITypeBinding type, String methodName, ITypeBinding returnType, ITypeBinding[] parameters) {
 		RefactoringStatus result= new RefactoringStatus();
-		IMethodBinding method= Bindings.findMethodInHierarchy(type, methodName, parameters);
+		IFunctionBinding method= Bindings.findMethodInHierarchy(type, methodName, parameters);
 		if (method != null) {
 			boolean returnTypeClash= false;
 			ITypeBinding methodReturnType= method.getReturnType();
@@ -379,7 +379,7 @@ public class Checks {
 
 	public static boolean isInsideJavadoc(ASTNode node) {
 		do {
-			if (node.getNodeType() == ASTNode.JAVADOC)
+			if (node.getNodeType() == ASTNode.JSDOC)
 				return true;
 			node= node.getParent();
 		} while (node != null);
@@ -424,10 +424,10 @@ public class Checks {
 	 * @param isConstructor
 	 * @param type
 	 * @return The first found method or null, if nothing found
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public static IMethod findMethod(String name, int parameterCount, boolean isConstructor, IType type) throws JavaModelException {
-		return findMethod(name, parameterCount, isConstructor, type.getMethods());
+	public static IFunction findMethod(String name, int parameterCount, boolean isConstructor, IType type) throws JavaScriptModelException {
+		return findMethod(name, parameterCount, isConstructor, type.getFunctions());
 	}
 	
 	/**
@@ -437,10 +437,10 @@ public class Checks {
 	 * @param method
 	 * @param type
 	 * @return The first found method or null, if nothing found
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public static IMethod findMethod(IMethod method, IType type) throws JavaModelException {
-		return findMethod(method.getElementName(), method.getParameterTypes().length, method.isConstructor(), type.getMethods());
+	public static IFunction findMethod(IFunction method, IType type) throws JavaScriptModelException {
+		return findMethod(method.getElementName(), method.getParameterTypes().length, method.isConstructor(), type.getFunctions());
 	}
 
 	/**
@@ -450,15 +450,15 @@ public class Checks {
 	 * @param method
 	 * @param methods
 	 * @return The first found method or null, if nothing found
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public static IMethod findMethod(IMethod method, IMethod[] methods) throws JavaModelException {
+	public static IFunction findMethod(IFunction method, IFunction[] methods) throws JavaScriptModelException {
 		return findMethod(method.getElementName(), method.getParameterTypes().length, method.isConstructor(), methods);
 	}
 	
-	public static IMethod findMethod(String name, int parameters, boolean isConstructor, IMethod[] methods) throws JavaModelException {	
+	public static IFunction findMethod(String name, int parameters, boolean isConstructor, IFunction[] methods) throws JavaScriptModelException {	
 		for (int i= methods.length-1; i >= 0; i--) {
-			IMethod curr= methods[i];
+			IFunction curr= methods[i];
 			if (name.equals(curr.getElementName())) {
 				if (isConstructor == curr.isConstructor()) {
 					if (parameters == curr.getParameterTypes().length) {
@@ -477,10 +477,10 @@ public class Checks {
 	 * @param method
 	 * @param type
 	 * @return The first found method or null, if nothing found
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public static IMethod findSimilarMethod(IMethod method, IType type) throws JavaModelException {
-		return findSimilarMethod(method, type.getMethods());
+	public static IFunction findSimilarMethod(IFunction method, IType type) throws JavaScriptModelException {
+		return findSimilarMethod(method, type.getFunctions());
 	}
 
 	/**
@@ -490,12 +490,12 @@ public class Checks {
 	 * @param method
 	 * @param methods
 	 * @return The first found method or null, if nothing found
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public static IMethod findSimilarMethod(IMethod method, IMethod[] methods) throws JavaModelException {
+	public static IFunction findSimilarMethod(IFunction method, IFunction[] methods) throws JavaScriptModelException {
 		boolean isConstructor= method.isConstructor();
 		for (int i= 0; i < methods.length; i++) {
-			IMethod otherMethod= methods[i];
+			IFunction otherMethod= methods[i];
 			if (otherMethod.isConstructor() == isConstructor && method.isSimilar(otherMethod))
 				return otherMethod;
 		}
@@ -523,8 +523,8 @@ public class Checks {
 	
 	//---------------------
 	
-	public static RefactoringStatus checkIfCuBroken(IMember member) throws JavaModelException{
-		ICompilationUnit cu= (ICompilationUnit)JavaCore.create(member.getCompilationUnit().getResource());
+	public static RefactoringStatus checkIfCuBroken(IMember member) throws JavaScriptModelException{
+		IJavaScriptUnit cu= (IJavaScriptUnit)JavaScriptCore.create(member.getJavaScriptUnit().getResource());
 		if (cu == null)
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.Checks_cu_not_created);	 
 		else if (! cu.isStructureKnown())
@@ -534,24 +534,24 @@ public class Checks {
 	
 	/**
 	 * From SearchResultGroup[] passed as the parameter
-	 * this method removes all those that correspond to a non-parsable ICompilationUnit
+	 * this method removes all those that correspond to a non-parsable IJavaScriptUnit
 	 * and returns it as a result.
 	 * @param grouped the array of search result groups from which non parsable compilation
 	 *  units are to be removed.
 	 * @param status a refactoring status to collect errors and problems
 	 * @return the array of search result groups 
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */	
-	public static SearchResultGroup[] excludeCompilationUnits(SearchResultGroup[] grouped, RefactoringStatus status) throws JavaModelException{
+	public static SearchResultGroup[] excludeCompilationUnits(SearchResultGroup[] grouped, RefactoringStatus status) throws JavaScriptModelException{
 		List result= new ArrayList();
 		boolean wasEmpty= grouped.length == 0;
 		for (int i= 0; i < grouped.length; i++){	
 			IResource resource= grouped[i].getResource();
-			IJavaElement element= JavaCore.create(resource);
-			if (! (element instanceof ICompilationUnit))
+			IJavaScriptElement element= JavaScriptCore.create(resource);
+			if (! (element instanceof IJavaScriptUnit))
 				continue;
 			//XXX this is a workaround 	for a jcore feature that shows errors in cus only when you get the original element
-			ICompilationUnit cu= (ICompilationUnit)JavaCore.create(resource);
+			IJavaScriptUnit cu= (IJavaScriptUnit)JavaScriptCore.create(resource);
 			if (! cu.isStructureKnown()){
 				String path= Checks.getFullPath(cu);
 				status.addError(Messages.format(RefactoringCoreMessages.Checks_cannot_be_parsed, path)); 
@@ -566,25 +566,25 @@ public class Checks {
 		return (SearchResultGroup[])result.toArray(new SearchResultGroup[result.size()]);
 	}
 	
-	private static final String getFullPath(ICompilationUnit cu) {
+	private static final String getFullPath(IJavaScriptUnit cu) {
 		Assert.isTrue(cu.exists());
 		return cu.getResource().getFullPath().toString();
 	}
 	
 	
-	public static RefactoringStatus checkCompileErrorsInAffectedFiles(SearchResultGroup[] grouped) throws JavaModelException {
+	public static RefactoringStatus checkCompileErrorsInAffectedFiles(SearchResultGroup[] grouped) throws JavaScriptModelException {
 		RefactoringStatus result= new RefactoringStatus();
 		for (int i= 0; i < grouped.length; i++)
 			checkCompileErrorsInAffectedFile(result, grouped[i].getResource());
 		return result;
 	}
 	
-	public static void checkCompileErrorsInAffectedFile(RefactoringStatus result, IResource resource) throws JavaModelException {
+	public static void checkCompileErrorsInAffectedFile(RefactoringStatus result, IResource resource) throws JavaScriptModelException {
 		if (hasCompileErrors(resource))
 			result.addWarning(Messages.format(RefactoringCoreMessages.Checks_cu_has_compile_errors, resource.getFullPath().makeRelative())); 
 	}
 	
-	public static RefactoringStatus checkCompileErrorsInAffectedFiles(SearchResultGroup[] references, IResource declaring) throws JavaModelException {
+	public static RefactoringStatus checkCompileErrorsInAffectedFiles(SearchResultGroup[] references, IResource declaring) throws JavaScriptModelException {
 		RefactoringStatus result= new RefactoringStatus();
 		for (int i= 0; i < references.length; i++){
 			IResource resource= references[i].getResource();
@@ -597,37 +597,37 @@ public class Checks {
 		return result;
 	}
 	
-	private static boolean hasCompileErrors(IResource resource) throws JavaModelException {
+	private static boolean hasCompileErrors(IResource resource) throws JavaScriptModelException {
 		try {
-			IMarker[] problemMarkers= resource.findMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
+			IMarker[] problemMarkers= resource.findMarkers(IJavaScriptModelMarker.JAVASCRIPT_MODEL_PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
 			for (int i= 0; i < problemMarkers.length; i++) {
 				if (problemMarkers[i].getAttribute(IMarker.SEVERITY, -1) == IMarker.SEVERITY_ERROR)
 					return true;
 			}
 			return false;
-		} catch (JavaModelException e){
+		} catch (JavaScriptModelException e){
 			throw e;		
 		} catch (CoreException e){
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		}
 	}
 	
 	//------
-	public static boolean isReadOnly(Object element) throws JavaModelException{
+	public static boolean isReadOnly(Object element) throws JavaScriptModelException{
 		if (element instanceof IResource)
 			return isReadOnly((IResource)element);
 		
-		if (element instanceof IJavaElement) {
+		if (element instanceof IJavaScriptElement) {
 			if ((element instanceof IPackageFragmentRoot) && isClasspathDelete((IPackageFragmentRoot)element)) 
 				return false;
-			return isReadOnly(((IJavaElement)element).getResource());
+			return isReadOnly(((IJavaScriptElement)element).getResource());
 		}
 		
 		Assert.isTrue(false, "not expected to get here");	 //$NON-NLS-1$
 		return false;
 	}
 	
-	public static boolean isReadOnly(IResource res) throws JavaModelException {
+	public static boolean isReadOnly(IResource res) throws JavaScriptModelException {
 		ResourceAttributes attributes= res.getResourceAttributes();
 		if (attributes != null && attributes.isReadOnly())
 			return true;
@@ -643,10 +643,10 @@ public class Checks {
 					return true;
 			}
 			return false;
-		} catch (JavaModelException e){
+		} catch (JavaScriptModelException e){
 			throw e;
 		} catch (CoreException e) {
-			throw new JavaModelException(e);
+			throw new JavaScriptModelException(e);
 		}
 	}
 	
@@ -658,7 +658,7 @@ public class Checks {
 		if (res.getParent() != null && pkgRoot.isArchive() && ! res.getParent().equals(definingProject))
 			return true;
 		
-		IProject occurringProject= pkgRoot.getJavaProject().getProject();
+		IProject occurringProject= pkgRoot.getJavaScriptProject().getProject();
 		return !definingProject.equals(occurringProject);
 	}
 	
@@ -679,7 +679,7 @@ public class Checks {
 		return result;
 	}
 	
-	public static RefactoringStatus validateEdit(ICompilationUnit unit, Object context) {
+	public static RefactoringStatus validateEdit(IJavaScriptUnit unit, Object context) {
 		IResource resource= unit.getPrimary().getResource();
 		RefactoringStatus result= new RefactoringStatus();
 		if (resource == null)
@@ -698,21 +698,21 @@ public class Checks {
 	}	
 
 	/**
-	 * Checks whether it is possible to modify the given <code>IJavaElement</code>.
-	 * The <code>IJavaElement</code> must exist and be non read-only to be modifiable.
+	 * Checks whether it is possible to modify the given <code>IJavaScriptElement</code>.
+	 * The <code>IJavaScriptElement</code> must exist and be non read-only to be modifiable.
 	 * Moreover, if it is a <code>IMember</code> it must not be binary.
 	 * The returned <code>RefactoringStatus</code> has <code>ERROR</code> severity if
 	 * it is not possible to modify the element.
 	 * @param javaElement
 	 * @return the status
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *
-	 * @see IJavaElement#exists
-	 * @see IJavaElement#isReadOnly
+	 * @see IJavaScriptElement#exists
+	 * @see IJavaScriptElement#isReadOnly
 	 * @see IMember#isBinary
 	 * @see RefactoringStatus
 	 */ 
-	public static RefactoringStatus checkAvailability(IJavaElement javaElement) throws JavaModelException{
+	public static RefactoringStatus checkAvailability(IJavaScriptElement javaElement) throws JavaScriptModelException{
 		RefactoringStatus result= new RefactoringStatus();
 		if (! javaElement.exists())
 			result.addFatalError(Messages.format(RefactoringCoreMessages.Refactoring_not_in_model, javaElement.getElementName())); 
@@ -725,7 +725,7 @@ public class Checks {
 		return result;
 	}
 	
-	public static boolean isAvailable(IJavaElement javaElement) throws JavaModelException {
+	public static boolean isAvailable(IJavaScriptElement javaElement) throws JavaScriptModelException {
 		if (javaElement == null)
 			return false;
 		if (! javaElement.exists())
@@ -736,21 +736,21 @@ public class Checks {
 		// the Java project is now cheating regarding its children so we shouldn't
 		// call isStructureKnown if the project isn't open.
 		// see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=52474
-		if (!(javaElement instanceof IJavaProject) && !(javaElement instanceof ILocalVariable) && !javaElement.isStructureKnown())
+		if (!(javaElement instanceof IJavaScriptProject) && !(javaElement instanceof ILocalVariable) && !javaElement.isStructureKnown())
 			return false;
 		if (javaElement instanceof IMember && ((IMember)javaElement).isBinary())
 			return false;
 		return true;
 	}
 
-	public static IType findTypeInPackage(IPackageFragment pack, String name) throws JavaModelException {
+	public static IType findTypeInPackage(IPackageFragment pack, String name) throws JavaScriptModelException {
 		Assert.isTrue(pack.exists());
 		Assert.isTrue(!pack.isReadOnly());
 		
-		/* ICompilationUnit.getType expects simple name*/  
+		/* IJavaScriptUnit.getType expects simple name*/  
 		if (name.indexOf(".") != -1) //$NON-NLS-1$
 			name= name.substring(0, name.indexOf(".")); //$NON-NLS-1$
-		ICompilationUnit[] cus= pack.getCompilationUnits();
+		IJavaScriptUnit[] cus= pack.getJavaScriptUnits();
 		for (int i= 0; i < cus.length; i++){
 			if (cus[i].getType(name).exists())
 				return cus[i].getType(name);
@@ -795,7 +795,7 @@ public class Checks {
 		return result;
 	}
 
-	public static boolean isException(IType iType, IProgressMonitor pm) throws JavaModelException {
+	public static boolean isException(IType iType, IProgressMonitor pm) throws JavaScriptModelException {
 		try{
 			if (! iType.isClass())
 				return false;

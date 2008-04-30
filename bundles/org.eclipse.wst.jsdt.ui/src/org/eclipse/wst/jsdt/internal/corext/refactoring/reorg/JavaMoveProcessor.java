@@ -31,8 +31,8 @@ import org.eclipse.ltk.core.refactoring.participants.MoveProcessor;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JavaRefactoringArguments;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.DynamicValidationStateChange;
@@ -62,7 +62,7 @@ public final class JavaMoveProcessor extends MoveProcessor implements IScriptabl
 		fMovePolicy= policy;
 	}
 
-	public boolean canChildrenBeDestinations(IJavaElement javaElement) {
+	public boolean canChildrenBeDestinations(IJavaScriptElement javaElement) {
 		return fMovePolicy.canChildrenBeDestinations(javaElement);
 	}
 
@@ -70,7 +70,7 @@ public final class JavaMoveProcessor extends MoveProcessor implements IScriptabl
 		return fMovePolicy.canChildrenBeDestinations(resource);
 	}
 
-	public boolean canElementBeDestination(IJavaElement javaElement) {
+	public boolean canElementBeDestination(IJavaScriptElement javaElement) {
 		return fMovePolicy.canElementBeDestination(javaElement);
 	}
 
@@ -186,7 +186,7 @@ public final class JavaMoveProcessor extends MoveProcessor implements IScriptabl
 	}
 
 	protected Object getDestination() {
-		IJavaElement je= fMovePolicy.getJavaElementDestination();
+		IJavaScriptElement je= fMovePolicy.getJavaElementDestination();
 		if (je != null)
 			return je;
 		return fMovePolicy.getResourceDestination();
@@ -207,7 +207,7 @@ public final class JavaMoveProcessor extends MoveProcessor implements IScriptabl
 		return IDENTIFIER;
 	}
 
-	public IJavaElement[] getJavaElements() {
+	public IJavaScriptElement[] getJavaElements() {
 		return fMovePolicy.getJavaElements();
 	}
 
@@ -281,11 +281,11 @@ public final class JavaMoveProcessor extends MoveProcessor implements IScriptabl
 		fCreateTargetQueries= new MonitoringCreateTargetQueries(queries, fMovePolicy.getCreateTargetExecutionLog());
 	}
 
-	public RefactoringStatus setDestination(IJavaElement destination) throws JavaModelException {
+	public RefactoringStatus setDestination(IJavaScriptElement destination) throws JavaScriptModelException {
 		return fMovePolicy.setDestination(destination);
 	}
 
-	public RefactoringStatus setDestination(IResource destination) throws JavaModelException {
+	public RefactoringStatus setDestination(IResource destination) throws JavaScriptModelException {
 		return fMovePolicy.setDestination(destination);
 	}
 

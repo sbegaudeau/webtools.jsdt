@@ -13,16 +13,16 @@ package org.eclipse.wst.jsdt.internal.core.hierarchy;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IRegion;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.internal.core.CompilationUnit;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.Openable;
@@ -42,26 +42,26 @@ public class RegionBasedTypeHierarchy extends TypeHierarchy {
  * type is also specified, the type hierarchy is pruned to only
  * contain the branch including the specified type.
  */
-public RegionBasedTypeHierarchy(IRegion region, ICompilationUnit[] workingCopies, IType type, boolean computeSubtypes) {
-	super(type, workingCopies, (IJavaSearchScope)null, computeSubtypes);
+public RegionBasedTypeHierarchy(IRegion region, IJavaScriptUnit[] workingCopies, IType type, boolean computeSubtypes) {
+	super(type, workingCopies, (IJavaScriptSearchScope)null, computeSubtypes);
 
 	Region newRegion = new Region() {
-		public void add(IJavaElement element) {
+		public void add(IJavaScriptElement element) {
 			if (!contains(element)) {
 				//"new" element added to region
 				removeAllChildren(element);
 				fRootElements.add(element);
-				if (element.getElementType() == IJavaElement.JAVA_PROJECT) {
+				if (element.getElementType() == IJavaScriptElement.JAVASCRIPT_PROJECT) {
 					// add jar roots as well so that jars don't rely on their parent to know
 					// if they are contained in the region
 					// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=146615)
 					try {
-						IPackageFragmentRoot[] roots = ((IJavaProject) element).getPackageFragmentRoots();
+						IPackageFragmentRoot[] roots = ((IJavaScriptProject) element).getPackageFragmentRoots();
 						for (int i = 0, length = roots.length; i < length; i++) {
 							if (roots[i].isArchive() && !fRootElements.contains(roots[i]))
 								fRootElements.add(roots[i]);
 						}
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						// project doesn't exist
 					}
 				}
@@ -69,23 +69,23 @@ public RegionBasedTypeHierarchy(IRegion region, ICompilationUnit[] workingCopies
 			}
 		}
 	};
-	IJavaElement[] elements = region.getElements();
+	IJavaScriptElement[] elements = region.getElements();
 	for (int i = 0, length = elements.length; i < length; i++) {
 		newRegion.add(elements[i]);
 
 	}
 	this.region = newRegion;
 	if (elements.length > 0)
-		this.project = elements[0].getJavaProject();
+		this.project = elements[0].getJavaScriptProject();
 }
 /*
  * @see TypeHierarchy#initializeRegions
  */
 protected void initializeRegions() {
 	super.initializeRegions();
-	IJavaElement[] roots = this.region.getElements();
+	IJavaScriptElement[] roots = this.region.getElements();
 	for (int i = 0; i < roots.length; i++) {
-		IJavaElement root = roots[i];
+		IJavaScriptElement root = roots[i];
 		if (root instanceof IOpenable) {
 			this.files.put(root, new ArrayList());
 		} else {
@@ -100,11 +100,11 @@ protected void initializeRegions() {
 /**
  * Compute this type hierarchy.
  */
-protected void compute() throws JavaModelException, CoreException {
+protected void compute() throws JavaScriptModelException, CoreException {
 	HierarchyBuilder builder = new RegionBasedHierarchyBuilder(this);
 	builder.build(this.computeSubtypes);
 }
-protected boolean isAffectedByOpenable(IJavaElementDelta delta, IJavaElement element) {
+protected boolean isAffectedByOpenable(IJavaScriptElementDelta delta, IJavaScriptElement element) {
 	// change to working copy
 	if (element instanceof CompilationUnit && ((CompilationUnit)element).isWorkingCopy()) {
 		return super.isAffectedByOpenable(delta, element);
@@ -120,7 +120,7 @@ protected boolean isAffectedByOpenable(IJavaElementDelta delta, IJavaElement ele
 /**
  * Returns the java project this hierarchy was created in.
  */
-public IJavaProject javaProject() {
+public IJavaScriptProject javaProject() {
 	return this.project;
 }
 public void pruneDeadBranches() {

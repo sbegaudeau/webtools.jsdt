@@ -18,11 +18,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration;
 
 public abstract class BuildPathBasePage {
@@ -30,13 +30,13 @@ public abstract class BuildPathBasePage {
 	private ClasspathAttributeConfigurationDescriptors fAttributeDescriptors;
 	
 	public BuildPathBasePage() {
-		fAttributeDescriptors= JavaPlugin.getDefault().getClasspathAttributeConfigurationDescriptors();
+		fAttributeDescriptors= JavaScriptPlugin.getDefault().getClasspathAttributeConfigurationDescriptors();
 	}
 		
 	protected boolean editCustomAttribute(Shell shell, CPListElementAttribute elem) {
 		ClasspathAttributeConfiguration config= fAttributeDescriptors.get(elem.getKey());
 		if (config != null) {
-			IClasspathAttribute result= config.performEdit(shell, elem.getClasspathAttributeAccess());
+			IIncludePathAttribute result= config.performEdit(shell, elem.getClasspathAttributeAccess());
 			if (result != null) {
 				elem.setValue(result.getValue());
 				return true;
@@ -48,7 +48,7 @@ public abstract class BuildPathBasePage {
 	protected boolean removeCustomAttribute(CPListElementAttribute elem) {
 		ClasspathAttributeConfiguration config= fAttributeDescriptors.get(elem.getKey());
 		if (config != null) {
-			IClasspathAttribute result= config.performRemove(elem.getClasspathAttributeAccess());
+			IIncludePathAttribute result= config.performRemove(elem.getClasspathAttributeAccess());
 			if (result != null) {
 				elem.setValue(result.getValue());
 				return true;
@@ -108,14 +108,14 @@ public abstract class BuildPathBasePage {
 		IPath entryPath= newEntry.getPath();
 		for (int i= 0; i < existing.length; i++) {
 			CPListElement curr= existing[i];
-			if (curr.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+			if (curr.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 				IPath currPath= curr.getPath();
 				if (!currPath.equals(entryPath)) {
 					if (currPath.isPrefixOf(entryPath)) {
 						if (addToExclusions(entryPath, curr)) {
 							modifiedEntries.add(curr);
 						}
-					} else if (entryPath.isPrefixOf(currPath) && newEntry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+					} else if (entryPath.isPrefixOf(currPath) && newEntry.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 						if (addToExclusions(currPath, newEntry)) {
 							modifiedEntries.add(curr);
 						}
@@ -155,7 +155,7 @@ public abstract class BuildPathBasePage {
 		return true;
 	}
 
-	public abstract void init(IJavaProject javaProject);
+	public abstract void init(IJavaScriptProject javaProject);
 
 	public abstract Control getControl(Composite parent);
 	

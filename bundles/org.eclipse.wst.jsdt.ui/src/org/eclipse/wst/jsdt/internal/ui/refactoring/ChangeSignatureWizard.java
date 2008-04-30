@@ -33,15 +33,15 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.ParameterInfo;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.StubTypeContext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ChangeSignatureRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.TextFieldNavigationHandler;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.ControlContentAssistHelper;
@@ -49,7 +49,7 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.JavaTypeComple
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
 
 public class ChangeSignatureWizard extends RefactoringWizard {
 
@@ -121,13 +121,13 @@ public class ChangeSignatureWizard extends RefactoringWizard {
 				update(false);
 				setControl(composite);
 				Dialog.applyDialogFont(composite);
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				ExceptionHandler.handle(e, RefactoringMessages.ChangeSignatureInputPage_Change_Signature, RefactoringMessages.ChangeSignatureInputPage_Internal_Error); 
 			}
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IJavaHelpContextIds.MODIFY_PARAMETERS_WIZARD_PAGE);
 		}
 
-		private void createHeadControls(Composite parent) throws JavaModelException {
+		private void createHeadControls(Composite parent) throws JavaScriptModelException {
 			//must create controls column-wise to get mnemonics working:
 			Composite composite= new Composite(parent, SWT.NONE);
 			composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -135,14 +135,14 @@ public class ChangeSignatureWizard extends RefactoringWizard {
 			layout.marginHeight= 0;
 			layout.marginWidth= 0;
 			composite.setLayout(layout);
-			if(JavaCore.IS_ECMASCRIPT4) { 
+			if(JavaScriptCore.IS_ECMASCRIPT4) { 
 				createAccessControl(composite);
 				createReturnTypeControl(composite);
 			}
 			createNameControl(composite);
 		}
 
-		private void createAccessControl(Composite parent) throws JavaModelException {
+		private void createAccessControl(Composite parent) throws JavaScriptModelException {
 			Composite access= new Composite(parent, SWT.NONE);
 			GridLayout layout= new GridLayout();
 			layout.marginHeight= 0;
@@ -264,7 +264,7 @@ public class ChangeSignatureWizard extends RefactoringWizard {
 			TabItem item= new TabItem(folder, SWT.NONE);
 			item.setText(RefactoringMessages.ChangeSignatureInputPage_parameters); 
 			item.setControl(createParameterTableControl(folder));
-			if(JavaCore.IS_ECMASCRIPT4) { 
+			if(JavaScriptCore.IS_ECMASCRIPT4) { 
 				TabItem itemEx= new TabItem(folder, SWT.NONE);
 				itemEx.setText(RefactoringMessages.ChangeSignatureInputPage_exceptions); 
 				itemEx.setControl(createExceptionsTableControl(folder));
@@ -306,7 +306,7 @@ public class ChangeSignatureWizard extends RefactoringWizard {
 				public void exceptionListChanged() {
 					update(true);
 				}
-			}, getChangeMethodSignatureRefactoring().getMethod().getJavaProject());
+			}, getChangeMethodSignatureRefactoring().getMethod().getJavaScriptProject());
 			cp.setLayoutData(new GridData(GridData.FILL_BOTH));
 			cp.setInput(getChangeMethodSignatureRefactoring().getExceptionInfos());
 			return border;
@@ -326,9 +326,9 @@ public class ChangeSignatureWizard extends RefactoringWizard {
 //			//inside GridLayout. GridData must be constrained to force wrapping. See bug 9866 et al.
 //			ViewForm border= new ViewForm(composite, SWT.BORDER | SWT.FLAT);
 			
-			IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
+			IPreferenceStore store= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 			fSignaturePreview= new JavaSourceViewer(composite, null, null, false, SWT.READ_ONLY | SWT.V_SCROLL | SWT.WRAP /*| SWT.BORDER*/, store);
-			fSignaturePreview.configure(new JavaSourceViewerConfiguration(JavaPlugin.getDefault().getJavaTextTools().getColorManager(), store, null, null));
+			fSignaturePreview.configure(new JavaScriptSourceViewerConfiguration(JavaScriptPlugin.getDefault().getJavaTextTools().getColorManager(), store, null, null));
 			fSignaturePreview.getTextWidget().setFont(JFaceResources.getFont(PreferenceConstants.EDITOR_TEXT_FONT));
 			fSignaturePreview.getTextWidget().setBackground(composite.getBackground());
 			fSignaturePreview.setDocument(fSignaturePreviewDocument);
@@ -376,10 +376,10 @@ public class ChangeSignatureWizard extends RefactoringWizard {
 					setErrorMessage(null);	
 					setPageComplete(true);
 				}	
-			} catch (JavaModelException e){
+			} catch (JavaScriptModelException e){
 				setErrorMessage(RefactoringMessages.ChangeSignatureInputPage_Internal_Error); 
 				setPageComplete(false);
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 
@@ -388,7 +388,7 @@ public class ChangeSignatureWizard extends RefactoringWizard {
 				int top= fSignaturePreview.getTextWidget().getTopPixel();
 				fSignaturePreviewDocument.set(getChangeMethodSignatureRefactoring().getNewMethodSignature()); 
 				fSignaturePreview.getTextWidget().setTopPixel(top);
-			} catch (JavaModelException e){
+			} catch (JavaScriptModelException e){
 				ExceptionHandler.handle(e, RefactoringMessages.ChangeSignatureRefactoring_modify_Parameters, RefactoringMessages.ChangeSignatureInputPage_exception); 
 			}	
 		}

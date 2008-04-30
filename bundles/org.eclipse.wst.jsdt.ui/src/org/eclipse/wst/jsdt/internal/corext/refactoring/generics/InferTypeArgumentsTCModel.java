@@ -24,10 +24,10 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.Expression;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
@@ -363,7 +363,7 @@ public class InferTypeArgumentsTCModel {
 		return storedCv;
 	}
 
-	public VariableVariable2 makeDeclaredVariableVariable(IVariableBinding variableBinding, ICompilationUnit cu) {
+	public VariableVariable2 makeDeclaredVariableVariable(IVariableBinding variableBinding, IJavaScriptUnit cu) {
 		VariableVariable2 cv= makeVariableVariable(variableBinding);
 		if (cv == null)
 			return null;
@@ -372,7 +372,7 @@ public class InferTypeArgumentsTCModel {
 	}
 	
 	public TypeVariable2 makeTypeVariable(Type type) {
-		ICompilationUnit cu= RefactoringASTParser.getCompilationUnit(type);
+		IJavaScriptUnit cu= RefactoringASTParser.getCompilationUnit(type);
 		TType ttype= getBoxedType(type.resolveBinding(), /*no boxing*/null);
 		if (ttype == null)
 			return null;
@@ -444,7 +444,7 @@ public class InferTypeArgumentsTCModel {
 		return storedCv;
 	}
 	
-	public ParameterTypeVariable2 makeParameterTypeVariable(IMethodBinding methodBinding, int parameterIndex) {
+	public ParameterTypeVariable2 makeParameterTypeVariable(IFunctionBinding methodBinding, int parameterIndex) {
 		if (methodBinding == null)
 			return null;
 		TType type= getBoxedType(methodBinding.getParameterTypes() [parameterIndex], /*no boxing*/null);
@@ -472,7 +472,7 @@ public class InferTypeArgumentsTCModel {
 	 * @param cu
 	 * @return the ParameterTypeVariable2, or <code>null</code> 
 	 */
-	public ParameterTypeVariable2 makeDeclaredParameterTypeVariable(IMethodBinding methodBinding, int parameterIndex, ICompilationUnit cu) {
+	public ParameterTypeVariable2 makeDeclaredParameterTypeVariable(IFunctionBinding methodBinding, int parameterIndex, IJavaScriptUnit cu) {
 		if (methodBinding == null)
 			return null;
 		ParameterTypeVariable2 cv= makeParameterTypeVariable(methodBinding, parameterIndex);
@@ -482,7 +482,7 @@ public class InferTypeArgumentsTCModel {
 		return cv;
 	}
 
-	public ReturnTypeVariable2 makeReturnTypeVariable(IMethodBinding methodBinding) {
+	public ReturnTypeVariable2 makeReturnTypeVariable(IFunctionBinding methodBinding) {
 		if (methodBinding == null)
 			return null;
 		TType returnType= getBoxedType(methodBinding.getReturnType(), /*no boxing*/null);
@@ -500,7 +500,7 @@ public class InferTypeArgumentsTCModel {
 		return storedCv;
 	}
 
-	public ReturnTypeVariable2 makeDeclaredReturnTypeVariable(IMethodBinding methodBinding, ICompilationUnit cu) {
+	public ReturnTypeVariable2 makeDeclaredReturnTypeVariable(IFunctionBinding methodBinding, IJavaScriptUnit cu) {
 		if (methodBinding == null)
 			return null;
 		ReturnTypeVariable2 cv= makeReturnTypeVariable(methodBinding);
@@ -545,7 +545,7 @@ public class InferTypeArgumentsTCModel {
 
 	public CastVariable2 makeCastVariable(CastExpression castExpression, ConstraintVariable2 expressionCv) {
 		ITypeBinding typeBinding= castExpression.resolveTypeBinding();
-		ICompilationUnit cu= RefactoringASTParser.getCompilationUnit(castExpression);
+		IJavaScriptUnit cu= RefactoringASTParser.getCompilationUnit(castExpression);
 		CompilationUnitRange range= new CompilationUnitRange(cu, castExpression);
 		CastVariable2 castCv= new CastVariable2(createTType(typeBinding), range, expressionCv);
 		fCastVariables.add(castCv);

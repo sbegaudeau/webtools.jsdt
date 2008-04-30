@@ -33,9 +33,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -46,7 +46,7 @@ public class JavadocWriter {
 	private static final char PATH_SEPARATOR= '/'; // use forward slash for all platforms
 	
 	private final OutputStream fOutputStream;
-	private final IJavaProject[] fJavaProjects;
+	private final IJavaScriptProject[] fJavaProjects;
 	private final IPath fBasePath;
 	private final String fEncoding;
 
@@ -56,7 +56,7 @@ public class JavadocWriter {
 	 * @param basePath The base path to which all path will be made relative (if
 	 * possible). If <code>null</code>, paths are not made relative.
 	 */
-	public JavadocWriter(OutputStream outputStream, String encoding, IPath basePath, IJavaProject[] projects) {
+	public JavadocWriter(OutputStream outputStream, String encoding, IPath basePath, IJavaScriptProject[] projects) {
 		Assert.isNotNull(outputStream);
 		Assert.isNotNull(encoding);
 		fOutputStream= new BufferedOutputStream(outputStream);
@@ -167,14 +167,14 @@ public class JavadocWriter {
 		}
 	}
 
-	private void sortSourceElement(IJavaElement[] iJavaElements, List sourcefiles, List packages) {
+	private void sortSourceElement(IJavaScriptElement[] iJavaElements, List sourcefiles, List packages) {
 		for (int i= 0; i < iJavaElements.length; i++) {
-			IJavaElement element= iJavaElements[i];
+			IJavaScriptElement element= iJavaElements[i];
 			IPath p= element.getResource().getLocation();
 			if (p == null)
 				continue;
 
-			if (element instanceof ICompilationUnit) {
+			if (element instanceof IJavaScriptUnit) {
 				String relative= getPathString(p);
 				sourcefiles.add(relative);
 			} else if (element instanceof IPackageFragment) {

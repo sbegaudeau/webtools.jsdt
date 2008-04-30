@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.wizards;
 
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 
 /**
  * Classpath container pages that implement {@link IJsGlobalScopeContainerPage} can 
@@ -29,8 +29,8 @@ public interface IJsGlobalScopeContainerPageExtension2 {
 	 * to get the newly added containers. {@link IJsGlobalScopeContainerPage#getSelection() } is still used
 	 * to get the edited elements.
 	 * @return the classpath entries created on the page. All returned entries must be on kind
-	 * {@link IClasspathEntry#CPE_CONTAINER}
+	 * {@link IIncludePathEntry#CPE_CONTAINER}
 	 */
-	public IClasspathEntry[] getNewContainers();
+	public IIncludePathEntry[] getNewContainers();
 
 }

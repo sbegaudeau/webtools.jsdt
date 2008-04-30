@@ -31,26 +31,26 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
@@ -64,10 +64,10 @@ import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
@@ -94,7 +94,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Refactoring class that permits the substitution of a factory method
@@ -109,19 +109,19 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	 * The handle for the compilation unit holding the selection that was
 	 * passed into this refactoring.
 	 */
-	private ICompilationUnit fCUHandle;
+	private IJavaScriptUnit fCUHandle;
 
 	/**
 	 * The AST for the compilation unit holding the selection that was
 	 * passed into this refactoring.
 	 */
-	private CompilationUnit fCU;
+	private JavaScriptUnit fCU;
 
 	/**
 	 * Handle for compilation unit in which the factory method/class/interface will be
 	 * generated.
 	 */
-	private ICompilationUnit fFactoryUnitHandle;
+	private IJavaScriptUnit fFactoryUnitHandle;
 
 	/**
 	 * The start of the original textual selection in effect when this refactoring
@@ -147,7 +147,7 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	/**
 	 * The method binding for the selected constructor.
 	 */
-	private IMethodBinding fCtorBinding;
+	private IFunctionBinding fCtorBinding;
 	
 	/**
 	 * <code>TypeDeclaration</code> for class containing the constructor to be
@@ -174,7 +174,7 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	/**
 	 * The newly-generated factory method.
 	 */
-	private MethodDeclaration fFactoryMethod= null;
+	private FunctionDeclaration fFactoryMethod= null;
 
 	/**
 	 * An array containing the names of the constructor's formal arguments,
@@ -201,7 +201,7 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 
 	/**
 	 * An <code>ImportRewrite</code> that manages imports needed to satisfy
-	 * newly-introduced type references in the <code>ICompilationUnit</code>
+	 * newly-introduced type references in the <code>IJavaScriptUnit</code>
 	 * currently being rewritten during <code>createChange()</code>.
 	 */
 	private ImportRewrite fImportRewriter;
@@ -213,9 +213,9 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	private boolean fCallSitesInBinaryUnits;
 
 	/**
-	 * <code>CompilationUnit</code> in which the factory is to be created.
+	 * <code>JavaScriptUnit</code> in which the factory is to be created.
 	 */
-	private CompilationUnit fFactoryCU;
+	private JavaScriptUnit fFactoryCU;
 
 	/**
 	 * The fully qualified name of the factory class. This is only used
@@ -228,11 +228,11 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	/**
 	 * Creates a new <code>IntroduceFactoryRefactoring</code> with the given selection
 	 * on the given compilation unit.
-	 * @param cu the <code>ICompilationUnit</code> in which the user selection was made, or <code>null</code> if invoked from scripting
+	 * @param cu the <code>IJavaScriptUnit</code> in which the user selection was made, or <code>null</code> if invoked from scripting
 	 * @param selectionStart the start of the textual selection in <code>cu</code>
 	 * @param selectionLength the length of the textual selection in <code>cu</code>
 	 */
-	public IntroduceFactoryRefactoring(ICompilationUnit cu, int selectionStart, int selectionLength) {
+	public IntroduceFactoryRefactoring(IJavaScriptUnit cu, int selectionStart, int selectionLength) {
 		Assert.isTrue(selectionStart  >= 0);
 		Assert.isTrue(selectionLength >= 0);
 		fSelectionStart= selectionStart;
@@ -253,20 +253,20 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	 * @param unit The compilation unit in which the selection was made 
 	 * @param offset The textual offset of the start of the selection
 	 * @param length The length of the selection in characters
-	 * @return ClassInstanceCreation or MethodDeclaration
+	 * @return ClassInstanceCreation or FunctionDeclaration
 	 */
-	private ASTNode getTargetNode(ICompilationUnit unit, int offset, int length) {
+	private ASTNode getTargetNode(IJavaScriptUnit unit, int offset, int length) {
 		ASTNode node= ASTNodes.getNormalizedNode(NodeFinder.perform(fCU, offset, length));
 		if (node.getNodeType() == ASTNode.CLASS_INSTANCE_CREATION)
 			return node;
-		if (node.getNodeType() == ASTNode.METHOD_DECLARATION && ((MethodDeclaration)node).isConstructor())
+		if (node.getNodeType() == ASTNode.FUNCTION_DECLARATION && ((FunctionDeclaration)node).isConstructor())
 			return node;
 		// we have some sub node. Make sure its the right child of the parent
 		StructuralPropertyDescriptor location= node.getLocationInParent();
 		ASTNode parent= node.getParent();
 		if (location == ClassInstanceCreation.TYPE_PROPERTY) {
 			return parent;
-		} else if (location == MethodDeclaration.NAME_PROPERTY && ((MethodDeclaration)parent).isConstructor()) {
+		} else if (location == FunctionDeclaration.NAME_PROPERTY && ((FunctionDeclaration)parent).isConstructor()) {
 			return parent;
 		}
 		return null;
@@ -277,9 +277,9 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	 * if the kind of node is inappropriate for this refactoring.
 	 * @param pm
 	 * @return a RefactoringStatus indicating whether the selection is valid
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	private RefactoringStatus checkSelection(IProgressMonitor pm) throws JavaModelException {
+	private RefactoringStatus checkSelection(IProgressMonitor pm) throws JavaScriptModelException {
 		try {
 			pm.beginTask(RefactoringCoreMessages.IntroduceFactory_examiningSelection, 2); 
 	
@@ -289,12 +289,12 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.IntroduceFactory_notAConstructorInvocation); 
 	
 			// getTargetNode() must return either a ClassInstanceCreation or a
-			// constructor MethodDeclaration; nothing else.
+			// constructor FunctionDeclaration; nothing else.
 			if (fSelectedNode instanceof ClassInstanceCreation) {
 				ClassInstanceCreation classInstanceCreation= (ClassInstanceCreation)fSelectedNode;
 				fCtorBinding= classInstanceCreation.resolveConstructorBinding();
-			} else if (fSelectedNode instanceof MethodDeclaration) {
-				MethodDeclaration methodDeclaration= (MethodDeclaration)fSelectedNode;
+			} else if (fSelectedNode instanceof FunctionDeclaration) {
+				FunctionDeclaration methodDeclaration= (FunctionDeclaration)fSelectedNode;
 				fCtorBinding= methodDeclaration.resolveBinding();
 			}
 	
@@ -325,7 +325,7 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.IntroduceFactory_constructorInEnum); 
 	
 			// Put the generated factory method inside the type that owns the constructor
-			fFactoryUnitHandle= ctorOwningType.getCompilationUnit();
+			fFactoryUnitHandle= ctorOwningType.getJavaScriptUnit();
 			fFactoryCU= getASTFor(fFactoryUnitHandle);
 	
 			Name	ctorOwnerName= (Name) NodeFinder.perform(fFactoryCU, ctorOwningType.getNameRange());
@@ -362,15 +362,15 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	 * particular invocation of this refactoring. This in general includes
 	 * the class containing the constructor in question, as well as all
 	 * call sites to the constructor.
-	 * @return ICompilationUnit[]
+	 * @return IJavaScriptUnit[]
 	 */
-	private ICompilationUnit[] collectAffectedUnits(SearchResultGroup[] searchHits) {
+	private IJavaScriptUnit[] collectAffectedUnits(SearchResultGroup[] searchHits) {
 		Collection	result= new ArrayList();
 		boolean hitInFactoryClass= false;
 
 		for(int i=0; i < searchHits.length; i++) {
 			SearchResultGroup	rg=  searchHits[i];
-			ICompilationUnit	icu= rg.getCompilationUnit();
+			IJavaScriptUnit	icu= rg.getCompilationUnit();
 
 			result.add(icu);
 			if (icu.equals(fFactoryUnitHandle))
@@ -378,21 +378,21 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 		}
 		if (!hitInFactoryClass)
 			result.add(fFactoryUnitHandle);
-		return (ICompilationUnit[]) result.toArray(new ICompilationUnit[result.size()]);
+		return (IJavaScriptUnit[]) result.toArray(new IJavaScriptUnit[result.size()]);
 	}
 
 	/**
 	 * Returns a <code>SearchPattern</code> that finds all calls to the constructor
 	 * identified by the argument <code>methodBinding</code>.
 	 */
-	private SearchPattern createSearchPattern(IMethod ctor, IMethodBinding methodBinding) {
+	private SearchPattern createSearchPattern(IFunction ctor, IFunctionBinding methodBinding) {
 		Assert.isNotNull(methodBinding,
 				RefactoringCoreMessages.IntroduceFactory_noBindingForSelectedConstructor); 
 		
 		if (ctor != null)
-			return SearchPattern.createPattern(ctor, IJavaSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
+			return SearchPattern.createPattern(ctor, IJavaScriptSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
 		else { // perhaps a synthetic method? (but apparently not always... hmmm...)
-			// Can't find an IMethod for this method, so build a string pattern instead
+			// Can't find an IFunction for this method, so build a string pattern instead
 			StringBuffer	buf= new StringBuffer();
 
 			buf.append(methodBinding.getDeclaringClass().getQualifiedName())
@@ -403,12 +403,12 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 				buf.append(fArgTypes[i].getQualifiedName());
 			}
 			buf.append(")"); //$NON-NLS-1$
-			return SearchPattern.createPattern(buf.toString(), IJavaSearchConstants.CONSTRUCTOR,
-					IJavaSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
+			return SearchPattern.createPattern(buf.toString(), IJavaScriptSearchConstants.CONSTRUCTOR,
+					IJavaScriptSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
 		}
 	}
 	
-	private IJavaSearchScope createSearchScope(IMethod ctor, IMethodBinding binding) throws JavaModelException {
+	private IJavaScriptSearchScope createSearchScope(IFunction ctor, IFunctionBinding binding) throws JavaScriptModelException {
 		if (ctor != null) {
 			return RefactoringScopeFactory.create(ctor);
 		} else {
@@ -427,7 +427,7 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 
 		for (int i = 0; i < groups.length; i++) {
 			SearchResultGroup	rg=   groups[i];
-			ICompilationUnit	unit= rg.getCompilationUnit();
+			IJavaScriptUnit	unit= rg.getCompilationUnit();
 
 			if (unit != null)	// Ignore hits within a binary unit
 				result.add(rg);
@@ -438,16 +438,16 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	}
 
 	/**
-	 * Search for all calls to the given <code>IMethodBinding</code> in the project
+	 * Search for all calls to the given <code>IFunctionBinding</code> in the project
 	 * that contains the compilation unit <code>fCUHandle</code>.
 	 * @param methodBinding
 	 * @param pm
 	 * @param status
 	 * @return an array of <code>SearchResultGroup</code>'s that identify the search matches
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	private SearchResultGroup[] searchForCallsTo(IMethodBinding methodBinding, IProgressMonitor pm, RefactoringStatus status) throws JavaModelException {
-		IMethod method= (IMethod) methodBinding.getJavaElement();
+	private SearchResultGroup[] searchForCallsTo(IFunctionBinding methodBinding, IProgressMonitor pm, RefactoringStatus status) throws JavaScriptModelException {
+		IFunction method= (IFunction) methodBinding.getJavaElement();
 		final RefactoringSearchEngine2 engine= new RefactoringSearchEngine2(createSearchPattern(method, methodBinding));
 		engine.setFiltering(true, true);
 		engine.setScope(createSearchScope(method, methodBinding));
@@ -459,8 +459,8 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	/**
 	 * Returns an array of <code>SearchResultGroup</code>'s containing all method
 	 * calls in the Java project that invoke the constructor identified by the given
-	 * <code>IMethodBinding</code>
-	 * @param ctorBinding an <code>IMethodBinding</code> identifying a particular
+	 * <code>IFunctionBinding</code>
+	 * @param ctorBinding an <code>IFunctionBinding</code> identifying a particular
 	 * constructor signature to search for
 	 * @param pm an <code>IProgressMonitor</code> to use during this potentially
 	 * lengthy operation
@@ -468,18 +468,18 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	 * @return an array of <code>SearchResultGroup</code>'s identifying all
 	 * calls to the given constructor signature
 	 */
-	private SearchResultGroup[] findAllCallsTo(IMethodBinding ctorBinding, IProgressMonitor pm, RefactoringStatus status) throws JavaModelException {
+	private SearchResultGroup[] findAllCallsTo(IFunctionBinding ctorBinding, IProgressMonitor pm, RefactoringStatus status) throws JavaScriptModelException {
 		SearchResultGroup[] groups= excludeBinaryUnits(searchForCallsTo(ctorBinding, pm, status));
 
 		return groups;
 	}
 
-	private IType findNonPrimaryType(String fullyQualifiedName, IProgressMonitor pm, RefactoringStatus status) throws JavaModelException {
-		SearchPattern p= SearchPattern.createPattern(fullyQualifiedName, IJavaSearchConstants.TYPE, IJavaSearchConstants.DECLARATIONS, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
+	private IType findNonPrimaryType(String fullyQualifiedName, IProgressMonitor pm, RefactoringStatus status) throws JavaScriptModelException {
+		SearchPattern p= SearchPattern.createPattern(fullyQualifiedName, IJavaScriptSearchConstants.TYPE, IJavaScriptSearchConstants.DECLARATIONS, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
 		final RefactoringSearchEngine2 engine= new RefactoringSearchEngine2(p);
 
 		engine.setFiltering(true, true);
-		engine.setScope(RefactoringScopeFactory.create(fCtorBinding.getJavaElement().getJavaProject()));
+		engine.setScope(RefactoringScopeFactory.create(fCtorBinding.getJavaElement().getJavaScriptProject()));
 		engine.setStatus(status);
 		engine.searchPattern(new SubProgressMonitor(pm, 1));
 
@@ -514,7 +514,7 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 			fAllCallsTo= findAllCallsTo(fCtorBinding, pm, result);
 			fFormalArgNames= findCtorArgNames();
  
-			ICompilationUnit[]	affectedFiles= collectAffectedUnits(fAllCallsTo);
+			IJavaScriptUnit[]	affectedFiles= collectAffectedUnits(fAllCallsTo);
 			result.merge(Checks.validateModifiesFiles(ResourceUtil.getFiles(affectedFiles), getValidationContext()));
 
 			if (fCallSitesInBinaryUnits)
@@ -535,8 +535,8 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 		int			numArgs= fCtorBinding.getParameterTypes().length;
 		String[]	names= new String[numArgs];
 
-		CompilationUnit		ctorUnit= (CompilationUnit) ASTNodes.getParent(fCtorOwningClass, CompilationUnit.class);
-		MethodDeclaration	ctorDecl= (MethodDeclaration) ctorUnit.findDeclaringNode(fCtorBinding.getKey());
+		JavaScriptUnit		ctorUnit= (JavaScriptUnit) ASTNodes.getParent(fCtorOwningClass, JavaScriptUnit.class);
+		FunctionDeclaration	ctorDecl= (FunctionDeclaration) ctorUnit.findDeclaringNode(fCtorBinding.getKey());
 
 		if (ctorDecl != null) {
 			List	formalArgs= ctorDecl.parameters();
@@ -558,14 +558,14 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	}
 
 	/**
-	 * Creates and returns a new MethodDeclaration that represents the factory
+	 * Creates and returns a new FunctionDeclaration that represents the factory
 	 * method to be used in place of direct calls to the constructor in question.
 	 * @param ast An AST used as a factory for various AST nodes
 	 * @param ctorBinding binding for the constructor being wrapped
 	 * @param unitRewriter the ASTRewrite to be used
 	 */
-	private MethodDeclaration createFactoryMethod(AST ast, IMethodBinding ctorBinding, ASTRewrite unitRewriter) {
-		MethodDeclaration		newMethod= ast.newMethodDeclaration();
+	private FunctionDeclaration createFactoryMethod(AST ast, IFunctionBinding ctorBinding, ASTRewrite unitRewriter) {
+		FunctionDeclaration		newMethod= ast.newFunctionDeclaration();
 		SimpleName				newMethodName= ast.newSimpleName(fNewMethodName);
 		ClassInstanceCreation	newCtorCall= ast.newClassInstanceCreation();
 		ReturnStatement			ret= ast.newReturnStatement();
@@ -631,7 +631,7 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	 * factory method instantiates (whose constructor is being encapsulated)
 	 * @param ast utility object used to create AST nodes
 	 */
-	private void setMethodReturnType(MethodDeclaration newMethod, String retTypeName, ITypeBinding[] ctorOwnerTypeParameters, AST ast) {
+	private void setMethodReturnType(FunctionDeclaration newMethod, String retTypeName, ITypeBinding[] ctorOwnerTypeParameters, AST ast) {
         if (ctorOwnerTypeParameters.length == 0)
             newMethod.setReturnType2(ast.newSimpleType(ast.newSimpleName(retTypeName)));
         else {
@@ -657,9 +657,9 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	 * or arguments that varied across the set of constructor calls).<br>
 	 * <code>fArgTypes</code> identifies such arguments by a <code>null</code> value.
 	 * @param ast utility object used to create AST nodes
-	 * @param newMethod the <code>MethodDeclaration</code> for the factory method
+	 * @param newMethod the <code>FunctionDeclaration</code> for the factory method
 	 */
-	private void createFactoryMethodSignature(AST ast, MethodDeclaration newMethod) {
+	private void createFactoryMethodSignature(AST ast, FunctionDeclaration newMethod) {
 		List argDecls= newMethod.parameters();
 
 		for(int i=0; i < fArgTypes.length; i++) {
@@ -709,7 +709,7 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	 * @param ast utility object needed to create ASTNode's for the new method
 	 * @param newMethod the method onto which to copy the type parameters
 	 */
-	private void copyTypeParameters(AST ast, MethodDeclaration newMethod) {
+	private void copyTypeParameters(AST ast, FunctionDeclaration newMethod) {
 		ITypeBinding[] ctorOwnerTypeParms= fCtorBinding.getDeclaringClass().getTypeParameters();
 		List/*<TypeParameter>*/ factoryMethodTypeParms= newMethod.typeParameters();
 		for(int i= 0; i < ctorOwnerTypeParms.length; i++) {
@@ -769,16 +769,16 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	}
 
 	/**
-	 * Creates and returns a new MethodInvocation node to represent a call to
+	 * Creates and returns a new FunctionInvocation node to represent a call to
 	 * the factory method that replaces a direct constructor call.<br>
 	 * The original constructor call is marked as replaced by the new method
 	 * call with the ASTRewrite instance fCtorCallRewriter.
 	 * @param ast utility object used to create AST nodes
 	 * @param ctorCall the ClassInstanceCreation to be marked as replaced
 	 */
-	private MethodInvocation createFactoryMethodCall(AST ast, ClassInstanceCreation ctorCall,
+	private FunctionInvocation createFactoryMethodCall(AST ast, ClassInstanceCreation ctorCall,
 													 ASTRewrite unitRewriter, TextEditGroup gd) {
-		MethodInvocation	factoryMethodCall= ast.newMethodInvocation();
+		FunctionInvocation	factoryMethodCall= ast.newFunctionInvocation();
 
 		List	actualFactoryArgs= factoryMethodCall.arguments();
 		List	actualCtorArgs= ctorCall.arguments();
@@ -812,11 +812,11 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	}
 
 	/**
-	 * Returns true iff the given <code>ICompilationUnit</code> is the unit
+	 * Returns true iff the given <code>IJavaScriptUnit</code> is the unit
 	 * containing the original constructor.
 	 * @param unit
 	 */
-	private boolean isConstructorUnit(ICompilationUnit unit) {
+	private boolean isConstructorUnit(IJavaScriptUnit unit) {
 		return unit.equals(ASTCreator.getCu(fCtorOwningClass));
 	}
 
@@ -834,8 +834,8 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	 * Creates and adds the necessary change to make the constructor method protected.
 	 * Returns false iff the constructor didn't exist (i.e. was implicit)
 	 */
-	private boolean protectConstructor(CompilationUnit unitAST, ASTRewrite unitRewriter, TextEditGroup declGD) {
-		MethodDeclaration constructor= (MethodDeclaration) unitAST.findDeclaringNode(fCtorBinding.getKey());
+	private boolean protectConstructor(JavaScriptUnit unitAST, ASTRewrite unitRewriter, TextEditGroup declGD) {
+		FunctionDeclaration constructor= (FunctionDeclaration) unitAST.findDeclaringNode(fCtorBinding.getKey());
 
 		// No need to rewrite the modifiers if the visibility is what we already want it to be.
 		if (constructor == null || (JdtFlags.getVisibilityCode(constructor)) == fConstructorVisibility)
@@ -845,17 +845,17 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	}
 
 	/**
-	 * Add all changes necessary on the <code>ICompilationUnit</code> in the given
+	 * Add all changes necessary on the <code>IJavaScriptUnit</code> in the given
 	 * <code>SearchResultGroup</code> to implement the refactoring transformation
 	 * to the given <code>CompilationUnitChange</code>.
 	 * @param rg the <code>SearchResultGroup</code> for which changes should be created
 	 * @param unitChange the CompilationUnitChange object for the compilation unit in question
 	 * @throws CoreException
 	 */
-	private boolean addAllChangesFor(SearchResultGroup rg, ICompilationUnit	unitHandle, CompilationUnitChange unitChange) throws CoreException {
-//		ICompilationUnit	unitHandle= rg.getCompilationUnit();
+	private boolean addAllChangesFor(SearchResultGroup rg, IJavaScriptUnit	unitHandle, CompilationUnitChange unitChange) throws CoreException {
+//		IJavaScriptUnit	unitHandle= rg.getCompilationUnit();
 		Assert.isTrue(rg == null || rg.getCompilationUnit() == unitHandle);
-		CompilationUnit		unit= getASTFor(unitHandle);
+		JavaScriptUnit		unit= getASTFor(unitHandle);
 		ASTRewrite			unitRewriter= ASTRewrite.create(unit.getAST());
 		MultiTextEdit		root= new MultiTextEdit();
 		boolean				someChange= false;
@@ -901,7 +901,7 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	 * is to reside, checks the appropriate field (<code>fCU</code> or <code>fFactoryCU</code>,
 	 * respectively) and initializes the field with a new AST only if not already done.
 	 */
-	private CompilationUnit getASTFor(ICompilationUnit unitHandle) {
+	private JavaScriptUnit getASTFor(IJavaScriptUnit unitHandle) {
 		if (unitHandle.equals(fCUHandle)) { // is this the unit containing the selection?
 			if (fCU == null) {
 				fCU= ASTCreator.createAST(unitHandle, null);
@@ -921,13 +921,13 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	 * Use the given <code>ASTRewrite</code> to replace direct calls to the constructor
 	 * with calls to the newly-created factory method.
 	 * @param rg the <code>SearchResultGroup</code> indicating all of the constructor references
-	 * @param unit the <code>CompilationUnit</code> to be rewritten
+	 * @param unit the <code>JavaScriptUnit</code> to be rewritten
 	 * @param unitRewriter the rewriter
 	 * @param unitChange the compilation unit change
 	 * @throws CoreException
 	 * @return true iff at least one constructor call site was rewritten.
 	 */
-	private boolean replaceConstructorCalls(SearchResultGroup rg, CompilationUnit unit,
+	private boolean replaceConstructorCalls(SearchResultGroup rg, JavaScriptUnit unit,
 											ASTRewrite unitRewriter, CompilationUnitChange unitChange)
 	throws CoreException {
 		Assert.isTrue(ASTCreator.getCu(unit).equals(rg.getCompilationUnit()));
@@ -958,8 +958,8 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	 * @param unitAST
 	 * @return may return null if this is really a constructor->constructor call (e.g. "this(...)")
 	 */
-	private ClassInstanceCreation getCtorCallAt(int start, int length, CompilationUnit unitAST) throws CoreException {
-		ICompilationUnit unitHandle= ASTCreator.getCu(unitAST);
+	private ClassInstanceCreation getCtorCallAt(int start, int length, JavaScriptUnit unitAST) throws CoreException {
+		IJavaScriptUnit unitHandle= ASTCreator.getCu(unitAST);
 		ASTNode node= NodeFinder.perform(unitAST, start, length);
 
 		if (node == null)
@@ -1006,7 +1006,7 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 						Messages.format(RefactoringCoreMessages.IntroduceFactory_unexpectedASTNodeTypeForConstructorSearchHit, 
 								new Object[] { expr.toString(), unitHandle.getElementName() }),
 						null));
-		} else if (node instanceof SimpleName && (node.getParent() instanceof MethodDeclaration || node.getParent() instanceof AbstractTypeDeclaration)) {
+		} else if (node instanceof SimpleName && (node.getParent() instanceof FunctionDeclaration || node.getParent() instanceof AbstractTypeDeclaration)) {
 			// We seem to have been given a hit for an implicit call to the base-class constructor.
 			// Do nothing with this (implicit) call, but have to make sure we make the derived class
 			// doesn't lose access to the base-class constructor (so make it 'protected', not 'private').
@@ -1020,14 +1020,14 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	}
 
 	/**
-	 * Perform the AST rewriting necessary on the given <code>CompilationUnit</code>
+	 * Perform the AST rewriting necessary on the given <code>JavaScriptUnit</code>
 	 * to create the factory method. The method will reside on the type identified by
 	 * <code>fFactoryOwningClass</code>.
 	 * @param unitRewriter
 	 * @param unit
 	 * @param gd the <code>GroupDescription</code> to associate with the changes made
 	 */
-	private void createFactoryChange(ASTRewrite unitRewriter, CompilationUnit unit, TextEditGroup gd) {
+	private void createFactoryChange(ASTRewrite unitRewriter, JavaScriptUnit unit, TextEditGroup gd) {
 		// ================================================================================
 		// First add the factory itself (method, class, and interface as needed/directed by user)
 		AST				ast= unit.getAST();
@@ -1049,21 +1049,21 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 			final ITypeBinding binding= fFactoryOwningClass.resolveBinding();
 			final Map arguments= new HashMap();
 			String project= null;
-			IJavaProject javaProject= fCUHandle.getJavaProject();
+			IJavaScriptProject javaProject= fCUHandle.getJavaScriptProject();
 			if (javaProject != null)
 				project= javaProject.getElementName();
-			int flags= JavaRefactoringDescriptor.JAR_MIGRATION | JavaRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
+			int flags= JavaScriptRefactoringDescriptor.JAR_MIGRATION | JavaScriptRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
 			if (binding.isNested() && !binding.isMember())
-				flags|= JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
+				flags|= JavaScriptRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
 			final String description= Messages.format(RefactoringCoreMessages.IntroduceFactoryRefactoring_descriptor_description_short, fCtorOwningClass.getName());
-			final String header= Messages.format(RefactoringCoreMessages.IntroduceFactory_descriptor_description, new String[] { fNewMethodName, BindingLabelProvider.getBindingLabel(binding, JavaElementLabels.ALL_FULLY_QUALIFIED), BindingLabelProvider.getBindingLabel(fCtorBinding, JavaElementLabels.ALL_FULLY_QUALIFIED)});
+			final String header= Messages.format(RefactoringCoreMessages.IntroduceFactory_descriptor_description, new String[] { fNewMethodName, BindingLabelProvider.getBindingLabel(binding, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), BindingLabelProvider.getBindingLabel(fCtorBinding, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)});
 			final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
-			comment.addSetting(Messages.format(RefactoringCoreMessages.IntroduceFactoryRefactoring_original_pattern, BindingLabelProvider.getBindingLabel(fCtorBinding, JavaElementLabels.ALL_FULLY_QUALIFIED)));
+			comment.addSetting(Messages.format(RefactoringCoreMessages.IntroduceFactoryRefactoring_original_pattern, BindingLabelProvider.getBindingLabel(fCtorBinding, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
 			comment.addSetting(Messages.format(RefactoringCoreMessages.IntroduceFactoryRefactoring_factory_pattern, fNewMethodName));
-			comment.addSetting(Messages.format(RefactoringCoreMessages.IntroduceFactoryRefactoring_owner_pattern, BindingLabelProvider.getBindingLabel(binding, JavaElementLabels.ALL_FULLY_QUALIFIED)));
+			comment.addSetting(Messages.format(RefactoringCoreMessages.IntroduceFactoryRefactoring_owner_pattern, BindingLabelProvider.getBindingLabel(binding, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
 			if (fProtectConstructor)
 				comment.addSetting(RefactoringCoreMessages.IntroduceFactoryRefactoring_declare_private);
-			final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaRefactorings.INTRODUCE_FACTORY, project, description, comment.asString(), arguments, flags);
+			final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaScriptRefactorings.INTRODUCE_FACTORY, project, description, comment.asString(), arguments, flags);
 			arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_INPUT, descriptor.elementToHandle(fCUHandle));
 			arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_NAME, fNewMethodName);
 			arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_ELEMENT + 1, descriptor.elementToHandle(binding.getJavaElement()));
@@ -1074,7 +1074,7 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 			boolean hitInCtorClass= false;
 			for (int i= 0; i < fAllCallsTo.length; i++) {
 				SearchResultGroup rg= fAllCallsTo[i];
-				ICompilationUnit unitHandle= rg.getCompilationUnit();
+				IJavaScriptUnit unitHandle= rg.getCompilationUnit();
 				CompilationUnitChange cuChange= new CompilationUnitChange(getName(), unitHandle);
 
 				if (addAllChangesFor(rg, unitHandle, cuChange))
@@ -1161,8 +1161,8 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 
 		for (Iterator iter = decls.iterator(); iter.hasNext();) {
 			BodyDeclaration decl = (BodyDeclaration) iter.next();
-			if (decl instanceof MethodDeclaration) {
-				if (((MethodDeclaration) decl).getName().getIdentifier().equals(name))
+			if (decl instanceof FunctionDeclaration) {
+				if (((FunctionDeclaration) decl).getName().getIdentifier().equals(name))
 					return true;
 			}
 		}
@@ -1188,8 +1188,8 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	/**
 	 * Returns the project on behalf of which this refactoring was invoked.
 	 */
-	public IJavaProject getProject() {
-		return fCUHandle.getJavaProject();
+	public IJavaScriptProject getProject() {
+		return fCUHandle.getJavaScriptProject();
 	}
 
 	/**
@@ -1208,11 +1208,11 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 				return RefactoringStatus.createErrorStatus(RefactoringCoreMessages.IntroduceFactory_cantPutFactoryMethodOnAnnotation); 
 			if (factoryType.isInterface())
 				return RefactoringStatus.createErrorStatus(RefactoringCoreMessages.IntroduceFactory_cantPutFactoryMethodOnInterface); 
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.IntroduceFactory_cantCheckForInterface); 
 		}
 
-		ICompilationUnit	factoryUnitHandle= factoryType.getCompilationUnit();
+		IJavaScriptUnit	factoryUnitHandle= factoryType.getJavaScriptUnit();
 
 		if (factoryType.isBinary())
 			return RefactoringStatus.createErrorStatus(RefactoringCoreMessages.IntroduceFactory_cantPutFactoryInBinaryClass); 
@@ -1236,7 +1236,7 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 				if (fFactoryOwningClass != fCtorOwningClass)
 					fConstructorVisibility= 0; // No such thing as Modifier.PACKAGE...
 
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return RefactoringStatus.createFatalErrorStatus(e.getMessage());
 			}
 			return new RefactoringStatus();
@@ -1247,9 +1247,9 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	 * Finds the factory class associated with the fully qualified name.
 	 * @param fullyQualifiedTypeName the fully qualified type name
 	 * @return the factory class, or <code>null</code> if not found
-	 * @throws JavaModelException if an error occurs while finding the factory class
+	 * @throws JavaScriptModelException if an error occurs while finding the factory class
 	 */
-	private IType findFactoryClass(String fullyQualifiedTypeName) throws JavaModelException {
+	private IType findFactoryClass(String fullyQualifiedTypeName) throws JavaScriptModelException {
 		IType factoryType= getProject().findType(fullyQualifiedTypeName);
 		if (factoryType == null) // presumably a non-primary type; try the search engine
 			factoryType= findNonPrimaryType(fullyQualifiedTypeName, new NullProgressMonitor(), new RefactoringStatus());
@@ -1285,20 +1285,20 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_SELECTION));
 			String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-				if (element == null || !element.exists() || element.getElementType() != IJavaElement.COMPILATION_UNIT)
-					return createInputFatalStatus(element, IJavaRefactorings.INTRODUCE_FACTORY);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.JAVASCRIPT_UNIT)
+					return createInputFatalStatus(element, IJavaScriptRefactorings.INTRODUCE_FACTORY);
 				else {
-					fCUHandle= (ICompilationUnit) element;
+					fCUHandle= (IJavaScriptUnit) element;
 		        	initialize();
 				}
 			} else
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));
 			handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_ELEMENT + 1);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-				if (element == null || !element.exists() || element.getElementType() != IJavaElement.TYPE)
-					return createInputFatalStatus(element, IJavaRefactorings.INTRODUCE_FACTORY);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.TYPE)
+					return createInputFatalStatus(element, IJavaScriptRefactorings.INTRODUCE_FACTORY);
 				else {
 					final IType type= (IType) element;
 					fFactoryClassName= type.getFullyQualifiedName();

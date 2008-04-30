@@ -30,12 +30,12 @@ import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
@@ -46,26 +46,26 @@ import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 import com.ibm.icu.text.Collator;
 
 public class AccessorClassModifier {
 
-	private CompilationUnit fRoot;
+	private JavaScriptUnit fRoot;
 	private AST fAst;
 	private ASTRewrite fASTRewrite;
 	private ListRewrite fListRewrite;
-	private ICompilationUnit fCU;
+	private IJavaScriptUnit fCU;
 	private List fFields;
 
-	private AccessorClassModifier(ICompilationUnit cu) throws CoreException {
+	private AccessorClassModifier(IJavaScriptUnit cu) throws CoreException {
 
 		fCU= cu;
 		
-		fRoot= JavaPlugin.getDefault().getASTProvider().getAST(cu, ASTProvider.WAIT_YES, null);
+		fRoot= JavaScriptPlugin.getDefault().getASTProvider().getAST(cu, ASTProvider.WAIT_YES, null);
 		fAst= fRoot.getAST();
 		fASTRewrite= ASTRewrite.create(fAst);
 		
@@ -99,7 +99,7 @@ public class AccessorClassModifier {
 			});
 			fListRewrite= fASTRewrite.getListRewrite(parent, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
 		} else {
-			IStatus status= new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IJavaStatusConstants.INTERNAL_ERROR, NLSMessages.AccessorClassModifier_missingType, null); 
+			IStatus status= new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IJavaStatusConstants.INTERNAL_ERROR, NLSMessages.AccessorClassModifier_missingType, null); 
 			throw new CoreException(status);
 		}
 	}
@@ -124,10 +124,10 @@ public class AccessorClassModifier {
 		if (document == null)
 			document= new Document(fCU.getSource());
 		 
-		return fASTRewrite.rewriteAST(document, fCU.getJavaProject().getOptions(true));
+		return fASTRewrite.rewriteAST(document, fCU.getJavaScriptProject().getOptions(true));
 	}
 
-	public static Change create(ICompilationUnit cu, NLSSubstitution[] substitutions) throws CoreException {
+	public static Change create(IJavaScriptUnit cu, NLSSubstitution[] substitutions) throws CoreException {
 		
 		Map newKeyToSubstMap= NLSPropertyFileModifier.getNewKeyToSubstitutionMap(substitutions);
 		Map oldKeyToSubstMap= NLSPropertyFileModifier.getOldKeyToSubstitutionMap(substitutions);

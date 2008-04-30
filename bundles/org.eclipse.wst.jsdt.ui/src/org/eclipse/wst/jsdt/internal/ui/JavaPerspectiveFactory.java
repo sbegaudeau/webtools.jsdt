@@ -17,7 +17,7 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class JavaPerspectiveFactory implements IPerspectiveFactory {
 	
@@ -32,14 +32,14 @@ public class JavaPerspectiveFactory implements IPerspectiveFactory {
  		String editorArea = layout.getEditorArea();
 		
 		IFolderLayout folder= layout.createFolder("left", IPageLayout.LEFT, (float)0.25, editorArea); //$NON-NLS-1$
-		folder.addView(JavaUI.ID_PACKAGES);
-		folder.addView(JavaUI.ID_TYPE_HIERARCHY);
+		folder.addView(JavaScriptUI.ID_PACKAGES);
+		folder.addView(JavaScriptUI.ID_TYPE_HIERARCHY);
 		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
 		
 		IFolderLayout outputfolder= layout.createFolder("bottom", IPageLayout.BOTTOM, (float)0.75, editorArea); //$NON-NLS-1$
 		outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
-		outputfolder.addView(JavaUI.ID_JAVADOC_VIEW);
-		outputfolder.addView(JavaUI.ID_SOURCE_VIEW);
+		outputfolder.addView(JavaScriptUI.ID_JAVADOC_VIEW);
+		outputfolder.addView(JavaScriptUI.ID_SOURCE_VIEW);
 		outputfolder.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
 		outputfolder.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
 		outputfolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
@@ -48,16 +48,16 @@ public class JavaPerspectiveFactory implements IPerspectiveFactory {
 		layout.addView(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, (float)0.75, editorArea);
 		
 		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
-		layout.addActionSet(JavaUI.ID_ACTION_SET);
-		layout.addActionSet(JavaUI.ID_ACTION_SET2);
-//		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
+		layout.addActionSet(JavaScriptUI.ID_ACTION_SET);
+		layout.addActionSet(JavaScriptUI.ID_ACTION_SET2);
+//		layout.addActionSet(JavaScriptUI.ID_ELEMENT_CREATION_ACTION_SET);
 		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 		
 		// views - java
-		layout.addShowViewShortcut(JavaUI.ID_PACKAGES);
-		layout.addShowViewShortcut(JavaUI.ID_TYPE_HIERARCHY);
-		layout.addShowViewShortcut(JavaUI.ID_SOURCE_VIEW);
-		layout.addShowViewShortcut(JavaUI.ID_JAVADOC_VIEW);
+		layout.addShowViewShortcut(JavaScriptUI.ID_PACKAGES);
+		layout.addShowViewShortcut(JavaScriptUI.ID_TYPE_HIERARCHY);
+		layout.addShowViewShortcut(JavaScriptUI.ID_SOURCE_VIEW);
+		layout.addShowViewShortcut(JavaScriptUI.ID_JAVADOC_VIEW);
 
 		// views - search
 		layout.addShowViewShortcut(NewSearchUI.SEARCH_VIEW_ID);

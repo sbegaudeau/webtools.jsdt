@@ -21,17 +21,17 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  *
@@ -54,7 +54,7 @@ public class BuildPathSupport {
 	 *         variable is not deprecated
 	 */
 	public static String getDeprecationMessage(String variableName) {
-		String deprecationMessage= JavaCore.getClasspathVariableDeprecationMessage(variableName);
+		String deprecationMessage= JavaScriptCore.getIncludepathVariableDeprecationMessage(variableName);
 		if (deprecationMessage == null	)
 			return null;
 		else
@@ -68,20 +68,20 @@ public class BuildPathSupport {
 	 * @return A path to be taken for the source attachment or <code>null</code>
 	 */
 	public static IPath guessSourceAttachment(CPListElement elem) {
-		if (elem.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+		if (elem.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
 			return null;
 		}
-		IJavaProject currProject= elem.getJavaProject(); // can be null
+		IJavaScriptProject currProject= elem.getJavaProject(); // can be null
 		try {
 			// try if the jar itself contains the source
-			IJavaModel jmodel= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
-			IJavaProject[] jprojects= jmodel.getJavaProjects();
+			IJavaScriptModel jmodel= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
+			IJavaScriptProject[] jprojects= jmodel.getJavaScriptProjects();
 			for (int i= 0; i < jprojects.length; i++) {
-				IJavaProject curr= jprojects[i];
+				IJavaScriptProject curr= jprojects[i];
 				if (!curr.equals(currProject)) {
-					IClasspathEntry[] entries= curr.getRawClasspath();
+					IIncludePathEntry[] entries= curr.getRawIncludepath();
 					for (int k= 0; k < entries.length; k++) {
-						IClasspathEntry entry= entries[k];
+						IIncludePathEntry entry= entries[k];
 						if (entry.getEntryKind() == elem.getEntryKind()
 							&& entry.getPath().equals(elem.getPath())) {
 							IPath attachPath= entry.getSourceAttachmentPath();
@@ -92,8 +92,8 @@ public class BuildPathSupport {
 					}
 				}
 			}
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e.getStatus());
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e.getStatus());
 		}
 		return null;
 	}
@@ -104,25 +104,25 @@ public class BuildPathSupport {
 	 * @return A javadoc location found in a similar classpath entry or <code>null</code>.
 	 */
 	public static String guessJavadocLocation(CPListElement elem) {
-		if (elem.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+		if (elem.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
 			return null;
 		}
-		IJavaProject currProject= elem.getJavaProject(); // can be null
+		IJavaScriptProject currProject= elem.getJavaProject(); // can be null
 		try {
 			// try if the jar itself contains the source
-			IJavaModel jmodel= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
-			IJavaProject[] jprojects= jmodel.getJavaProjects();
+			IJavaScriptModel jmodel= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
+			IJavaScriptProject[] jprojects= jmodel.getJavaScriptProjects();
 			for (int i= 0; i < jprojects.length; i++) {
-				IJavaProject curr= jprojects[i];
+				IJavaScriptProject curr= jprojects[i];
 				if (!curr.equals(currProject)) {
-					IClasspathEntry[] entries= curr.getRawClasspath();
+					IIncludePathEntry[] entries= curr.getRawIncludepath();
 					for (int k= 0; k < entries.length; k++) {
-						IClasspathEntry entry= entries[k];
+						IIncludePathEntry entry= entries[k];
 						if (entry.getEntryKind() == elem.getEntryKind() && entry.getPath().equals(elem.getPath())) {
-							IClasspathAttribute[] attributes= entry.getExtraAttributes();
+							IIncludePathAttribute[] attributes= entry.getExtraAttributes();
 							for (int n= 0; n < attributes.length; n++) {
-								IClasspathAttribute attrib= attributes[n];
-								if (IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME.equals(attrib.getName())) {
+								IIncludePathAttribute attrib= attributes[n];
+								if (IIncludePathAttribute.JSDOC_LOCATION_ATTRIBUTE_NAME.equals(attrib.getName())) {
 									return attrib.getValue();
 								}
 							}
@@ -130,23 +130,30 @@ public class BuildPathSupport {
 					}
 				}
 			}
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e.getStatus());
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e.getStatus());
 		}
 		return null;
 	}
 	
 	private static class UpdatedJsGlobalScopeContainer implements IJsGlobalScopeContainer {
 
-		private IClasspathEntry[] fNewEntries;
+		private IIncludePathEntry[] fNewEntries;
 		private IJsGlobalScopeContainer fOriginal;
 
-		public UpdatedJsGlobalScopeContainer(IJsGlobalScopeContainer original, IClasspathEntry[] newEntries) {
+		public UpdatedJsGlobalScopeContainer(IJsGlobalScopeContainer original, IIncludePathEntry[] newEntries) {
 			fNewEntries= newEntries;
 			fOriginal= original;
 		}
 
-		public IClasspathEntry[] getClasspathEntries() {
+		/**
+		 * @deprecated Use {@link #getIncludepathEntries()} instead
+		 */
+		public IIncludePathEntry[] getClasspathEntries() {
+			return getIncludepathEntries();
+		}
+
+		public IIncludePathEntry[] getIncludepathEntries() {
 			return fNewEntries;
 		}
 
@@ -180,7 +187,7 @@ public class BuildPathSupport {
 	 * @param monitor The progress monitor to use
 	 * @throws CoreException
 	 */
-	public static void modifyClasspathEntry(Shell shell, IClasspathEntry newEntry, String[] changedAttributes, IJavaProject jproject, IPath containerPath, IProgressMonitor monitor) throws CoreException {
+	public static void modifyClasspathEntry(Shell shell, IIncludePathEntry newEntry, String[] changedAttributes, IJavaScriptProject jproject, IPath containerPath, IProgressMonitor monitor) throws CoreException {
 		if (containerPath != null) {
 			updateContainerClasspath(jproject, containerPath, newEntry, changedAttributes, monitor);
 		} else {
@@ -198,19 +205,19 @@ public class BuildPathSupport {
 	 * @param monitor The progress monitor to use
 	 * @throws CoreException
 	 */
-	public static void modifyClasspathEntry(Shell shell, IClasspathEntry newEntry, IJavaProject jproject, IPath containerPath, IProgressMonitor monitor) throws CoreException {
+	public static void modifyClasspathEntry(Shell shell, IIncludePathEntry newEntry, IJavaScriptProject jproject, IPath containerPath, IProgressMonitor monitor) throws CoreException {
 		modifyClasspathEntry(shell, newEntry, null, jproject, containerPath, monitor);
 	}
 
-	private static void updateContainerClasspath(IJavaProject jproject, IPath containerPath, IClasspathEntry newEntry, String[] changedAttributes, IProgressMonitor monitor) throws CoreException {
-		IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(containerPath, jproject);
+	private static void updateContainerClasspath(IJavaScriptProject jproject, IPath containerPath, IIncludePathEntry newEntry, String[] changedAttributes, IProgressMonitor monitor) throws CoreException {
+		IJsGlobalScopeContainer container= JavaScriptCore.getJsGlobalScopeContainer(containerPath, jproject);
 		if (container == null) {
-			throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.ERROR, "Container " + containerPath + " cannot be resolved", null));  //$NON-NLS-1$//$NON-NLS-2$
+			throw new CoreException(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.ERROR, "Container " + containerPath + " cannot be resolved", null));  //$NON-NLS-1$//$NON-NLS-2$
 		}
-		IClasspathEntry[] entries= container.getClasspathEntries();
-		IClasspathEntry[] newEntries= new IClasspathEntry[entries.length];
+		IIncludePathEntry[] entries= container.getIncludepathEntries();
+		IIncludePathEntry[] newEntries= new IIncludePathEntry[entries.length];
 		for (int i= 0; i < entries.length; i++) {
-			IClasspathEntry curr= entries[i];
+			IIncludePathEntry curr= entries[i];
 			if (curr.getEntryKind() == newEntry.getEntryKind() && curr.getPath().equals(newEntry.getPath())) {
 				newEntries[i]= getUpdatedEntry(curr, newEntry, changedAttributes, jproject);
 			} else {
@@ -221,7 +228,7 @@ public class BuildPathSupport {
 		monitor.worked(1);
 	}
 
-	private static IClasspathEntry getUpdatedEntry(IClasspathEntry currEntry, IClasspathEntry updatedEntry, String[] updatedAttributes, IJavaProject jproject) {
+	private static IIncludePathEntry getUpdatedEntry(IIncludePathEntry currEntry, IIncludePathEntry updatedEntry, String[] updatedAttributes, IJavaScriptProject jproject) {
 		if (updatedAttributes == null) {
 			return updatedEntry; // used updated entry 'as is'
 		}
@@ -241,24 +248,24 @@ public class BuildPathSupport {
 	 * @param newEntries The updated entries
 	 * @throws CoreException
 	 */
-	public static void requestContainerUpdate(IJavaProject jproject, IJsGlobalScopeContainer container, IClasspathEntry[] newEntries) throws CoreException {
+	public static void requestContainerUpdate(IJavaScriptProject jproject, IJsGlobalScopeContainer container, IIncludePathEntry[] newEntries) throws CoreException {
 		IPath containerPath= container.getPath();
 		IJsGlobalScopeContainer updatedContainer= new UpdatedJsGlobalScopeContainer(container, newEntries);
-		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
+		JsGlobalScopeContainerInitializer initializer= JavaScriptCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
 		if (initializer != null) {
 			initializer.requestJsGlobalScopeContainerUpdate(containerPath, jproject, updatedContainer);
 		}
 	}
 
-	private static void updateProjectClasspath(Shell shell, IJavaProject jproject, IClasspathEntry newEntry, String[] changedAttributes, IProgressMonitor monitor) throws JavaModelException {
-		IClasspathEntry[] oldClasspath= jproject.getRawClasspath();
+	private static void updateProjectClasspath(Shell shell, IJavaScriptProject jproject, IIncludePathEntry newEntry, String[] changedAttributes, IProgressMonitor monitor) throws JavaScriptModelException {
+		IIncludePathEntry[] oldClasspath= jproject.getRawIncludepath();
 		int nEntries= oldClasspath.length;
 		ArrayList newEntries= new ArrayList(nEntries + 1);
 		int entryKind= newEntry.getEntryKind();
 		IPath jarPath= newEntry.getPath();
 		boolean found= false;
 		for (int i= 0; i < nEntries; i++) {
-			IClasspathEntry curr= oldClasspath[i];
+			IIncludePathEntry curr= oldClasspath[i];
 			if (curr.getEntryKind() == entryKind && curr.getPath().equals(jarPath)) {
 				// add modified entry
 				newEntries.add(getUpdatedEntry(curr, newEntry, changedAttributes, jproject));
@@ -274,8 +281,8 @@ public class BuildPathSupport {
 			// add new
 			newEntries.add(newEntry);			
 		}
-		IClasspathEntry[] newClasspath= (IClasspathEntry[]) newEntries.toArray(new IClasspathEntry[newEntries.size()]);
-		jproject.setRawClasspath(newClasspath, monitor);
+		IIncludePathEntry[] newClasspath= (IIncludePathEntry[]) newEntries.toArray(new IIncludePathEntry[newEntries.size()]);
+		jproject.setRawIncludepath(newClasspath, monitor);
 	}
 	
 	private static boolean putJarOnClasspathDialog(final Shell shell) {

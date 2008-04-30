@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.util;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
@@ -22,33 +22,33 @@ public class SearchUtils {
 
 	/**
 	 * @param match
-	 * @return the enclosing {@link IJavaElement}, or null iff none
+	 * @return the enclosing {@link IJavaScriptElement}, or null iff none
 	 */
-	public static IJavaElement getEnclosingJavaElement(SearchMatch match) {
+	public static IJavaScriptElement getEnclosingJavaElement(SearchMatch match) {
 		Object element = match.getElement();
-		if (element instanceof IJavaElement)
-			return (IJavaElement) element;
+		if (element instanceof IJavaScriptElement)
+			return (IJavaScriptElement) element;
 		else
 			return null;
 	}
 	
 	/**
 	 * @param match
-	 * @return the enclosing {@link ICompilationUnit} of the given match, or null iff none
+	 * @return the enclosing {@link IJavaScriptUnit} of the given match, or null iff none
 	 */
-	public static ICompilationUnit getCompilationUnit(SearchMatch match) {
-		IJavaElement enclosingElement = getEnclosingJavaElement(match);
+	public static IJavaScriptUnit getCompilationUnit(SearchMatch match) {
+		IJavaScriptElement enclosingElement = getEnclosingJavaElement(match);
 		if (enclosingElement != null){
-			if (enclosingElement instanceof ICompilationUnit)
-				return (ICompilationUnit) enclosingElement;
-			ICompilationUnit cu= (ICompilationUnit) enclosingElement.getAncestor(IJavaElement.COMPILATION_UNIT);
+			if (enclosingElement instanceof IJavaScriptUnit)
+				return (IJavaScriptUnit) enclosingElement;
+			IJavaScriptUnit cu= (IJavaScriptUnit) enclosingElement.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 			if (cu != null)
 				return cu;
 		}
 		
-		IJavaElement jElement= JavaCore.create(match.getResource());
-		if (jElement != null && jElement.exists() && jElement.getElementType() == IJavaElement.COMPILATION_UNIT)
-			return (ICompilationUnit) jElement;
+		IJavaScriptElement jElement= JavaScriptCore.create(match.getResource());
+		if (jElement != null && jElement.exists() && jElement.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT)
+			return (IJavaScriptUnit) jElement;
 		return null;
 	}
 	
@@ -57,7 +57,7 @@ public class SearchUtils {
 	}
 	
     /**
-     * Constant for use as matchRule in {@link SearchPattern#createPattern(IJavaElement, int, int)}
+     * Constant for use as matchRule in {@link SearchPattern#createPattern(IJavaScriptElement, int, int)}
      * to get search behavior as of 3.1M3 (all generic instantiations are found).
      */
     public final static int GENERICS_AGNOSTIC_MATCH_RULE= SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE | SearchPattern.R_ERASURE_MATCH;

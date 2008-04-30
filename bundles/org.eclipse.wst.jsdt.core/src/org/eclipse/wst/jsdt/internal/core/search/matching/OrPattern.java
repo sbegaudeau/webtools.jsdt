@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.core.index.Index;
@@ -60,7 +60,7 @@ public class OrPattern extends SearchPattern implements IIndexConstants {
 			matchCompatibility |= ((JavaSearchPattern) this.patterns[i]).matchCompatibility;
 		}
 	}
-	public void findIndexMatches(Index index, IndexQueryRequestor requestor, SearchParticipant participant, IJavaSearchScope scope, IProgressMonitor progressMonitor) throws IOException {
+	public void findIndexMatches(Index index, IndexQueryRequestor requestor, SearchParticipant participant, IJavaScriptSearchScope scope, IProgressMonitor progressMonitor) throws IOException {
 		// per construction, OR pattern can only be used with a PathCollector (which already gather results using a set)
 		try {
 			index.startQuery();

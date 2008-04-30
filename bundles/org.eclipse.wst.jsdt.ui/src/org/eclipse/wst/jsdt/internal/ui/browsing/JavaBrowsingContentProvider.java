@@ -27,12 +27,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
 import org.eclipse.wst.jsdt.core.IImportContainer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
@@ -40,12 +40,12 @@ import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.IWorkingCopy;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.StandardJavaScriptElementContentProvider;
 
-class JavaBrowsingContentProvider extends StandardJavaElementContentProvider implements IElementChangedListener {
+class JavaBrowsingContentProvider extends StandardJavaScriptElementContentProvider implements IElementChangedListener {
 
 	private StructuredViewer fViewer;
 	private Object fInput;
@@ -57,7 +57,7 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 		super(provideMembers);
 		fBrowsingPart= browsingPart;
 		fViewer= fBrowsingPart.getViewer();
-		JavaCore.addElementChangedListener(this);
+		JavaScriptCore.addElementChangedListener(this);
 	}
 
 	public boolean hasChildren(Object element) {
@@ -94,20 +94,20 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 				return getChildren((IType)element);
 			if (fProvideMembers && element instanceof ISourceReference && element instanceof IParent)
 				return removeImportAndPackageDeclarations(super.getChildren(element));
-			if (element instanceof IJavaProject)
-				return getPackageFragmentRoots((IJavaProject)element);
+			if (element instanceof IJavaScriptProject)
+				return getPackageFragmentRoots((IJavaScriptProject)element);
 			return super.getChildren(element);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return NO_CHILDREN;
 		} finally {
 			finishedReadInDisplayThread();
 		}
 	}
 
-	private Object[] getPackageContents(IPackageFragment fragment) throws JavaModelException {
+	private Object[] getPackageContents(IPackageFragment fragment) throws JavaScriptModelException {
 		ISourceReference[] sourceRefs;
 		if (fragment.getKind() == IPackageFragmentRoot.K_SOURCE) {
-			sourceRefs= fragment.getCompilationUnits();
+			sourceRefs= fragment.getJavaScriptUnits();
 		}
 		else {
 			IClassFile[] classFiles= fragment.getClassFiles();
@@ -123,7 +123,7 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 		Object[] result= new Object[0];
 		for (int i= 0; i < sourceRefs.length; i++)
 			result= concatenate(result, removeImportAndPackageDeclarations(getChildren(sourceRefs[i])));
-		return concatenate(result, fragment.getNonJavaResources());
+		return concatenate(result, fragment.getNonJavaScriptResources());
 	}
 
 	private Object[] removeImportAndPackageDeclarations(Object[] members) {
@@ -134,18 +134,18 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 		return tempResult.toArray();
 	}
 
-	private Object[] getChildren(IType type) throws JavaModelException{
+	private Object[] getChildren(IType type) throws JavaScriptModelException{
 		IParent parent;
 		if (type.isBinary())
 			parent= type.getClassFile();
 		else {
-			parent= type.getCompilationUnit();
+			parent= type.getJavaScriptUnit();
 		}
 		if (type.getDeclaringType() != null)
 			return type.getChildren();
 
 		// Add import declarations
-		IJavaElement[] members= parent.getChildren();
+		IJavaScriptElement[] members= parent.getChildren();
 		ArrayList tempResult= new ArrayList(members.length);
 		for (int i= 0; i < members.length; i++)
 			if ((members[i] instanceof IImportContainer))
@@ -154,7 +154,7 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 		return tempResult.toArray();
 	}
 
-	protected Object[] getPackageFragmentRoots(IJavaProject project) throws JavaModelException {
+	protected Object[] getPackageFragmentRoots(IJavaScriptProject project) throws JavaScriptModelException {
 		if (!project.getProject().isOpen())
 			return NO_CHILDREN;
 
@@ -173,7 +173,7 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 				list.add(root);
 			}
 		}
-		return concatenate(list.toArray(), project.getNonJavaResources());
+		return concatenate(list.toArray(), project.getNonJavaScriptResources());
 	}
 
 	// ---------------- Element change handling
@@ -200,7 +200,7 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 	 */
 	public void dispose() {
 		super.dispose();
-		JavaCore.removeElementChangedListener(this);
+		JavaScriptCore.removeElementChangedListener(this);
 	}
 
 	/* (non-Javadoc)
@@ -209,8 +209,8 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 	public void elementChanged(final ElementChangedEvent event) {
 		try {
 			processDelta(event.getDelta());
-		} catch(JavaModelException e) {
-			JavaPlugin.log(e.getStatus());
+		} catch(JavaScriptModelException e) {
+			JavaScriptPlugin.log(e.getStatus());
 		}
 	}
 
@@ -220,35 +220,35 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 	 * tree is fully refreshed starting at this node. The delta is processed in the
 	 * current thread but the viewer updates are posted to the UI thread.
 	 */
-	protected void processDelta(IJavaElementDelta delta) throws JavaModelException {
+	protected void processDelta(IJavaScriptElementDelta delta) throws JavaScriptModelException {
 		int kind= delta.getKind();
 		int flags= delta.getFlags();
-		final IJavaElement element= delta.getElement();
+		final IJavaScriptElement element= delta.getElement();
 		final boolean isElementValidForView= fBrowsingPart.isValidElement(element);
 
 		if (!getProvideWorkingCopy() && element instanceof IWorkingCopy && ((IWorkingCopy)element).isWorkingCopy())
 			return;
 
-		if (element != null && element.getElementType() == IJavaElement.COMPILATION_UNIT && !isOnClassPath((ICompilationUnit)element))
+		if (element != null && element.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT && !isOnClassPath((IJavaScriptUnit)element))
 			return;
 
 		// handle open and closing of a solution or project
-		if (((flags & IJavaElementDelta.F_CLOSED) != 0) || ((flags & IJavaElementDelta.F_OPENED) != 0)) {
+		if (((flags & IJavaScriptElementDelta.F_CLOSED) != 0) || ((flags & IJavaScriptElementDelta.F_OPENED) != 0)) {
 			postRefresh(null);
 			return;
 		}
 
-		if (kind == IJavaElementDelta.REMOVED) {
+		if (kind == IJavaScriptElementDelta.REMOVED) {
 			Object parent= internalGetParent(element);
 			if (isElementValidForView) {
 				if (element instanceof IClassFile) {
 					postRemove(((IClassFile)element).getType());
-				} else if (element instanceof ICompilationUnit && !((ICompilationUnit)element).isWorkingCopy()) {
+				} else if (element instanceof IJavaScriptUnit && !((IJavaScriptUnit)element).isWorkingCopy()) {
 						postRefresh(null);
-				} else if (element instanceof ICompilationUnit && ((ICompilationUnit)element).isWorkingCopy()) {
+				} else if (element instanceof IJavaScriptUnit && ((IJavaScriptUnit)element).isWorkingCopy()) {
 					if (getProvideWorkingCopy())
 						postRefresh(null);
-				} else if (parent instanceof ICompilationUnit && getProvideWorkingCopy() && !((ICompilationUnit)parent).isWorkingCopy()) {
+				} else if (parent instanceof IJavaScriptUnit && getProvideWorkingCopy() && !((IJavaScriptUnit)parent).isWorkingCopy()) {
 					if (element instanceof IWorkingCopy && ((IWorkingCopy)element).isWorkingCopy()) {
 						// working copy removed from system - refresh
 						postRefresh(null);
@@ -262,7 +262,7 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 
 			if (fBrowsingPart.isAncestorOf(element, fInput)) {
 				if (element instanceof IWorkingCopy && ((IWorkingCopy)element).isWorkingCopy()) {
-					postAdjustInputAndSetSelection(((IJavaElement) fInput).getPrimaryElement());
+					postAdjustInputAndSetSelection(((IJavaScriptElement) fInput).getPrimaryElement());
 				} else
 					postAdjustInputAndSetSelection(null);
 			}
@@ -278,17 +278,17 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 
 			return;
 		}
-		if (kind == IJavaElementDelta.ADDED && delta.getMovedFromElement() != null && element instanceof ICompilationUnit)
+		if (kind == IJavaScriptElementDelta.ADDED && delta.getMovedFromElement() != null && element instanceof IJavaScriptUnit)
 			return;
 
-		if (kind == IJavaElementDelta.ADDED) {
+		if (kind == IJavaScriptElementDelta.ADDED) {
 			if (isElementValidForView) {
 				Object parent= internalGetParent(element);
 				if (element instanceof IClassFile) {
 					postAdd(parent, ((IClassFile)element).getType());
-				} else if (element instanceof ICompilationUnit && !((ICompilationUnit)element).isWorkingCopy()) {
-						postAdd(parent, ((ICompilationUnit)element).getTypes());
-				} else if (parent instanceof ICompilationUnit && getProvideWorkingCopy() && !((ICompilationUnit)parent).isWorkingCopy()) {
+				} else if (element instanceof IJavaScriptUnit && !((IJavaScriptUnit)element).isWorkingCopy()) {
+						postAdd(parent, ((IJavaScriptUnit)element).getTypes());
+				} else if (parent instanceof IJavaScriptUnit && getProvideWorkingCopy() && !((IJavaScriptUnit)parent).isWorkingCopy()) {
 					//	do nothing
 				} else if (element instanceof IWorkingCopy && ((IWorkingCopy)element).isWorkingCopy()) {
 					// new working copy comes to live
@@ -296,24 +296,24 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 				} else
 					postAdd(parent, element);
 			} else	if (fInput == null) {
-				IJavaElement newInput= fBrowsingPart.findInputForJavaElement(element);
+				IJavaScriptElement newInput= fBrowsingPart.findInputForJavaElement(element);
 				if (newInput != null)
 					postAdjustInputAndSetSelection(element);
 			} else if (element instanceof IType && fBrowsingPart.isValidInput(element)) {
-				IJavaElement cu1= element.getAncestor(IJavaElement.COMPILATION_UNIT);
-				IJavaElement cu2= ((IJavaElement)fInput).getAncestor(IJavaElement.COMPILATION_UNIT);
+				IJavaScriptElement cu1= element.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
+				IJavaScriptElement cu2= ((IJavaScriptElement)fInput).getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 				if  (cu1 != null && cu2 != null && cu1.equals(cu2))
 					postAdjustInputAndSetSelection(element);
 			}
 			return;
 		}
 
-		if (kind == IJavaElementDelta.CHANGED) {
-			if (fInput != null && fInput.equals(element) && (flags & IJavaElementDelta.F_CHILDREN) != 0 && (flags & IJavaElementDelta.F_FINE_GRAINED) != 0) {
+		if (kind == IJavaScriptElementDelta.CHANGED) {
+			if (fInput != null && fInput.equals(element) && (flags & IJavaScriptElementDelta.F_CHILDREN) != 0 && (flags & IJavaScriptElementDelta.F_FINE_GRAINED) != 0) {
 				postRefresh(null, true);
 				return;
 			}
-			if (isElementValidForView && (flags & IJavaElementDelta.F_MODIFIERS) != 0) {
+			if (isElementValidForView && (flags & IJavaScriptElementDelta.F_MODIFIERS) != 0) {
 					postUpdateIcon(element);
 			}
 		}
@@ -322,22 +322,22 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 			 // throw the towel and do a full refresh
 			postRefresh(null);
 
-		if ((flags & IJavaElementDelta.F_ARCHIVE_CONTENT_CHANGED) != 0 && fInput instanceof IJavaElement) {
+		if ((flags & IJavaScriptElementDelta.F_ARCHIVE_CONTENT_CHANGED) != 0 && fInput instanceof IJavaScriptElement) {
 			IPackageFragmentRoot pkgRoot= (IPackageFragmentRoot)element;
-			IJavaElement inputsParent= ((IJavaElement)fInput).getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+			IJavaScriptElement inputsParent= ((IJavaScriptElement)fInput).getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 			if (pkgRoot.equals(inputsParent))
 				postRefresh(null);
 		}
 
 		// the source attachment of a JAR has changed
-		if (element instanceof IPackageFragmentRoot && (((flags & IJavaElementDelta.F_SOURCEATTACHED) != 0 || ((flags & IJavaElementDelta.F_SOURCEDETACHED)) != 0)))
+		if (element instanceof IPackageFragmentRoot && (((flags & IJavaScriptElementDelta.F_SOURCEATTACHED) != 0 || ((flags & IJavaScriptElementDelta.F_SOURCEDETACHED)) != 0)))
 			postUpdateIcon(element);
 
-		IJavaElementDelta[] affectedChildren= delta.getAffectedChildren();
+		IJavaScriptElementDelta[] affectedChildren= delta.getAffectedChildren();
 		if (affectedChildren.length > 1) {
 			// a package fragment might become non empty refresh from the parent
 			if (element instanceof IPackageFragment) {
-				IJavaElement parent= (IJavaElement)internalGetParent(element);
+				IJavaScriptElement parent= (IJavaScriptElement)internalGetParent(element);
 				// avoid posting a refresh to an invisible parent
 				if (element.equals(fInput)) {
 					postRefresh(element);
@@ -356,17 +356,17 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 		}
 	}
 
-	private boolean isOnClassPath(ICompilationUnit element) throws JavaModelException {
-		IJavaProject project= element.getJavaProject();
+	private boolean isOnClassPath(IJavaScriptUnit element) throws JavaScriptModelException {
+		IJavaScriptProject project= element.getJavaScriptProject();
 		if (project == null || !project.exists())
 			return false;
-		return project.isOnClasspath(element);
+		return project.isOnIncludepath(element);
 	}
 
 	/**
 	 * Updates the package icon
 	 */
-	 private void postUpdateIcon(final IJavaElement element) {
+	 private void postUpdateIcon(final IJavaScriptElement element) {
 	 	postRunnable(new Runnable() {
 			public void run() {
 				Control ctrl= fViewer.getControl();
@@ -513,13 +513,13 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 	 * </p>
 	 */
 	protected Object internalGetParent(Object element) {
-		if (element instanceof IJavaProject) {
-			return ((IJavaProject)element).getJavaModel();
+		if (element instanceof IJavaScriptProject) {
+			return ((IJavaScriptProject)element).getJavaScriptModel();
 		}
 		// try to map resources to the containing package fragment
 		if (element instanceof IResource) {
 			IResource parent= ((IResource)element).getParent();
-			Object jParent= JavaCore.create(parent);
+			Object jParent= JavaScriptCore.create(parent);
 			if (jParent != null)
 				return jParent;
 			return parent;
@@ -531,8 +531,8 @@ class JavaBrowsingContentProvider extends StandardJavaElementContentProvider imp
 			IPackageFragmentRoot parent= (IPackageFragmentRoot)((IPackageFragment)element).getParent();
 			return skipProjectPackageFragmentRoot(parent);
 		}
-		if (element instanceof IJavaElement)
-			return ((IJavaElement)element).getParent();
+		if (element instanceof IJavaScriptElement)
+			return ((IJavaScriptElement)element).getParent();
 
 		return null;
 	}

@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * Semantic highlighting
@@ -108,7 +108,7 @@ public abstract class SemanticHighlighting {
 	}
 	
 	private String getThemeColorKey() {
-		return JavaUI.ID_PLUGIN + "." + getPreferenceKey() + "Highlighting";  //$NON-NLS-1$//$NON-NLS-2$
+		return JavaScriptUI.ID_PLUGIN + "." + getPreferenceKey() + "Highlighting";  //$NON-NLS-1$//$NON-NLS-2$
 	}
 	
 	/**

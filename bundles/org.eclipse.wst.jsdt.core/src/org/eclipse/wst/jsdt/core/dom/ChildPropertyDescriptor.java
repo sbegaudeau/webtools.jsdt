@@ -23,7 +23,7 @@ public final class ChildPropertyDescriptor extends StructuralPropertyDescriptor 
 
 	/**
 	 * Child type. For example, for a node type like
-	 * CompilationUnit, the "package" property is PackageDeclaration.class
+	 * JavaScriptUnit, the "package" property is PackageDeclaration.class
 	 */
 	private final Class childClass;
 
@@ -67,7 +67,7 @@ public final class ChildPropertyDescriptor extends StructuralPropertyDescriptor 
 	/**
 	 * Returns the child type of this property.
 	 * <p>
-	 * For example, for a node type like CompilationUnit,
+	 * For example, for a node type like JavaScriptUnit,
 	 * the "package" property returns <code>PackageDeclaration.class</code>.
 	 * </p>
 	 *
@@ -95,12 +95,12 @@ public final class ChildPropertyDescriptor extends StructuralPropertyDescriptor 
 	 * type (that is, the type that owns this property) could legally
 	 * appear in the AST subtree below this property. For example,
 	 * the body property of a
-	 * {@link MethodDeclaration} node
+	 * {@link FunctionDeclaration} node
 	 * admits a body which might include statement that embeds
-	 * another {@link MethodDeclaration} node.
+	 * another {@link FunctionDeclaration} node.
 	 * On the other hand, the name property of a
-	 * MethodDeclaration node admits only names, and thereby excludes
-	 * another MethodDeclaration node.
+	 * FunctionDeclaration node admits only names, and thereby excludes
+	 * another FunctionDeclaration node.
 	 * </p>
 	 *
 	 * @return <code>true</code> if cycles are possible,

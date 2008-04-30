@@ -24,15 +24,15 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaElementMapper;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptElementMapper;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 import org.eclipse.wst.jsdt.core.refactoring.RenameTypeArguments;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaScriptElementDescriptor;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameResourceDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
@@ -52,14 +52,14 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ISimilarDeclarat
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ITextUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 
-public final class RenameCompilationUnitProcessor extends JavaRenameProcessor implements IReferenceUpdating, ITextUpdating, IQualifiedNameUpdating, ISimilarDeclarationUpdating, IResourceMapper, IJavaElementMapper {
+public final class RenameCompilationUnitProcessor extends JavaRenameProcessor implements IReferenceUpdating, ITextUpdating, IQualifiedNameUpdating, ISimilarDeclarationUpdating, IResourceMapper, IJavaScriptElementMapper {
 	
 	private RenameTypeProcessor fRenameTypeProcessor= null;
 	private boolean fWillRenameType= false;
-	private ICompilationUnit fCu;
+	private IJavaScriptUnit fCu;
 
 	public static final String IDENTIFIER= "org.eclipse.wst.jsdt.ui.renameCompilationUnitProcessor"; //$NON-NLS-1$
 	
@@ -68,7 +68,7 @@ public final class RenameCompilationUnitProcessor extends JavaRenameProcessor im
 	 * @param unit the compilation unit, or <code>null</code> if invoked by scripting
 	 * @throws CoreException
 	 */
-	public RenameCompilationUnitProcessor(ICompilationUnit unit) throws CoreException {
+	public RenameCompilationUnitProcessor(IJavaScriptUnit unit) throws CoreException {
 		fCu= unit;
 		if (fCu != null) {
 			computeRenameTypeRefactoring();
@@ -151,13 +151,13 @@ public final class RenameCompilationUnitProcessor extends JavaRenameProcessor im
 	}
 	
 	public Object getNewElement() {
-		IJavaElement parent= fCu.getParent();
-		if (parent.getElementType() != IJavaElement.PACKAGE_FRAGMENT)
+		IJavaScriptElement parent= fCu.getParent();
+		if (parent.getElementType() != IJavaScriptElement.PACKAGE_FRAGMENT)
 			return fCu; //??
 		IPackageFragment pack= (IPackageFragment)parent;
-		if (JavaConventions.validateCompilationUnitName(getNewElementName()).getSeverity() == IStatus.ERROR)
+		if (JavaScriptConventions.validateCompilationUnitName(getNewElementName()).getSeverity() == IStatus.ERROR)
 			return fCu; //??
-		return pack.getCompilationUnit(getNewElementName());
+		return pack.getJavaScriptUnit(getNewElementName());
 	}
 	
 	//---- ITextUpdating ---------------------------------------------
@@ -263,7 +263,7 @@ public final class RenameCompilationUnitProcessor extends JavaRenameProcessor im
 		fRenameTypeProcessor.setMatchStrategy(selectedStrategy);
 	}
 
-	public IJavaElement[] getSimilarElements() {
+	public IJavaScriptElement[] getSimilarElements() {
 		if (fRenameTypeProcessor == null)
 			return null;
 		return fRenameTypeProcessor.getSimilarElements();
@@ -275,10 +275,10 @@ public final class RenameCompilationUnitProcessor extends JavaRenameProcessor im
 		return fRenameTypeProcessor.getRefactoredResource(element);
 	}
 	
-	public IJavaElement getRefactoredJavaElement(IJavaElement element) {
+	public IJavaScriptElement getRefactoredJavaScriptElement(IJavaScriptElement element) {
 		if (fRenameTypeProcessor == null)
 			return element;
-		return fRenameTypeProcessor.getRefactoredJavaElement(element);
+		return fRenameTypeProcessor.getRefactoredJavaScriptElement(element);
 	}
 	
 	// --- preconditions ----------------------------------
@@ -397,12 +397,12 @@ public final class RenameCompilationUnitProcessor extends JavaRenameProcessor im
 			label= fragment.getElementName() + "." + fCu.getElementName(); //$NON-NLS-1$
 		else
 			label= fCu.getElementName();
-		final String name= fCu.getJavaProject().getElementName();
+		final String name= fCu.getJavaScriptProject().getElementName();
 		final String description= Messages.format(RefactoringCoreMessages.RenameCompilationUnitChange_descriptor_description_short, fCu.getElementName());
 		final String header= Messages.format(RefactoringCoreMessages.RenameCompilationUnitChange_descriptor_description, new String[] { label, newName});
 		final String comment= new JDTRefactoringDescriptorComment(name, this, header).asString();
 		final int flags= RefactoringDescriptor.STRUCTURAL_CHANGE;
-		final RenameJavaElementDescriptor descriptor= new RenameJavaElementDescriptor(IJavaRefactorings.RENAME_COMPILATION_UNIT);
+		final RenameJavaScriptElementDescriptor descriptor= new RenameJavaScriptElementDescriptor(IJavaScriptRefactorings.RENAME_JAVASCRIPT_UNIT);
 		descriptor.setProject(name);
 		descriptor.setDescription(description);
 		descriptor.setComment(comment);
@@ -432,21 +432,21 @@ public final class RenameCompilationUnitProcessor extends JavaRenameProcessor im
 			return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));
 		}
 			
-		final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-		if (element == null || !element.exists() || element.getElementType() != IJavaElement.COMPILATION_UNIT)
-			return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaRefactorings.RENAME_COMPILATION_UNIT);
+		final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+		if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.JAVASCRIPT_UNIT)
+			return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.RENAME_JAVASCRIPT_UNIT);
 		
 		final String name= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_NAME);
 		if (name == null || name.length() == 0)
 			return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_NAME));
 
-		fCu= (ICompilationUnit) element;
+		fCu= (IJavaScriptUnit) element;
 		try {
 			computeRenameTypeRefactoring();
 			setNewElementName(name);
 		} catch (CoreException exception) {
-			JavaPlugin.log(exception);
-			return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaRefactorings.RENAME_COMPILATION_UNIT);
+			JavaScriptPlugin.log(exception);
+			return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.RENAME_JAVASCRIPT_UNIT);
 		}
 		return new RefactoringStatus();
 	}

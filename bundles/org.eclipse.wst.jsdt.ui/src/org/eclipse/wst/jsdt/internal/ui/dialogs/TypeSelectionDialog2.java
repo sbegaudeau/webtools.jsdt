@@ -38,11 +38,11 @@ import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.dialogs.SelectionStatusDialog;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
@@ -50,11 +50,11 @@ import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.OpenTypeHistory;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.dialogs.TypeSelectionExtension;
 
 /**
@@ -66,7 +66,7 @@ public class TypeSelectionDialog2 extends SelectionStatusDialog {
 	
 	private boolean fMultipleSelection;
 	private IRunnableContext fRunnableContext;
-	private IJavaSearchScope fScope;
+	private IJavaScriptSearchScope fScope;
 	private int fElementKind;
 	
 	private String fInitialFilter;
@@ -94,12 +94,12 @@ public class TypeSelectionDialog2 extends SelectionStatusDialog {
 	}
 	
 	public TypeSelectionDialog2(Shell parent, boolean multi, IRunnableContext context, 
-			IJavaSearchScope scope, int elementKinds) {
+			IJavaScriptSearchScope scope, int elementKinds) {
 		this(parent, multi, context, scope, elementKinds, null);
 	}
 	
 	public TypeSelectionDialog2(Shell parent, boolean multi, IRunnableContext context, 
-			IJavaSearchScope scope, int elementKinds, TypeSelectionExtension extension) {
+			IJavaScriptSearchScope scope, int elementKinds, TypeSelectionExtension extension) {
 		super(parent);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		fMultipleSelection= multi;
@@ -170,7 +170,7 @@ public class TypeSelectionDialog2 extends SelectionStatusDialog {
 	protected void handleWidgetSelected(TypeNameMatch[] selection) {
 		IStatus status= null;
 		if (selection.length == 0) {
-	    	status= new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR, "",null); //$NON-NLS-1$
+	    	status= new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.ERROR, "",null); //$NON-NLS-1$
 	    } else {
 		    if (fValidator != null) {
 				List jElements= new ArrayList();
@@ -179,7 +179,7 @@ public class TypeSelectionDialog2 extends SelectionStatusDialog {
 					if (type != null) {
 						jElements.add(type);
 					} else {
-			    		status= new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR,
+			    		status= new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.ERROR,
 			    			Messages.format(JavaUIMessages.TypeSelectionDialog_error_type_doesnot_exist, selection[i].getFullyQualifiedName()),
 			    			null);
 			    		break;
@@ -189,7 +189,7 @@ public class TypeSelectionDialog2 extends SelectionStatusDialog {
 					status= fValidator.validate(jElements.toArray());
 				}
 			} else {
-				status= new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "",null); //$NON-NLS-1$
+				status= new Status(IStatus.OK, JavaScriptPlugin.getPluginId(), IStatus.OK, "",null); //$NON-NLS-1$
 			}
 	    }
     	updateStatus(status);
@@ -206,14 +206,14 @@ public class TypeSelectionDialog2 extends SelectionStatusDialog {
 			return CANCEL;
 		}
 		if (fInitialFilter == null) {
-			IWorkbenchWindow window= JavaPlugin.getActiveWorkbenchWindow();
+			IWorkbenchWindow window= JavaScriptPlugin.getActiveWorkbenchWindow();
 			if (window != null) {
 				ISelection selection= window.getSelectionService().getSelection();
 				if (selection instanceof ITextSelection) {
 					String text= ((ITextSelection)selection).getText();
 					if (text != null) {
 						text= text.trim();
-						if (text.length() > 0 && JavaConventions.validateJavaTypeName(text, JavaCore.VERSION_1_3, JavaCore.VERSION_1_3).isOK()) {
+						if (text.length() > 0 && JavaScriptConventions.validateJavaScriptTypeName(text, JavaScriptCore.VERSION_1_3, JavaScriptCore.VERSION_1_3).isOK()) {
 							fInitialFilter= text;
 							fSelectionMode= FULL_SELECTION;
 						}
@@ -261,7 +261,7 @@ public class TypeSelectionDialog2 extends SelectionStatusDialog {
 			if (!type.exists()) {
 				String title= JavaUIMessages.TypeSelectionDialog_errorTitle; 
 				IPackageFragmentRoot root= typeInfo.getPackageFragmentRoot();
-				String containerName= JavaElementLabels.getElementLabel(root, JavaElementLabels.ROOT_QUALIFIED);
+				String containerName= JavaScriptElementLabels.getElementLabel(root, JavaScriptElementLabels.ROOT_QUALIFIED);
 				String message= Messages.format(JavaUIMessages.TypeSelectionDialog_dialogMessage, new String[] { typeInfo.getFullyQualifiedName(), containerName }); 
 				MessageDialog.openError(getShell(), title, message);
 				history.remove(typeInfo);
@@ -282,7 +282,7 @@ public class TypeSelectionDialog2 extends SelectionStatusDialog {
 				if (fgFirstTime) {
 					// Join the initialize after load job.
 					IJobManager manager= Job.getJobManager();
-					manager.join(JavaUI.ID_PLUGIN, monitor);
+					manager.join(JavaScriptUI.ID_PLUGIN, monitor);
 				}
 				OpenTypeHistory history= OpenTypeHistory.getInstance();
 				if (fgFirstTime || history.isEmpty()) {
@@ -311,12 +311,12 @@ public class TypeSelectionDialog2 extends SelectionStatusDialog {
 						// make sure we search a concrete name. This is faster according to Kent  
 						"_______________".toCharArray(), //$NON-NLS-1$
 						SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE, 
-						IJavaSearchConstants.ENUM,
+						IJavaScriptSearchConstants.ENUM,
 						SearchEngine.createWorkspaceScope(), 
 						new TypeNameRequestor() {}, 
-						IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, 
+						IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, 
 						monitor);
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					throw new InvocationTargetException(e);
 				}
 			}

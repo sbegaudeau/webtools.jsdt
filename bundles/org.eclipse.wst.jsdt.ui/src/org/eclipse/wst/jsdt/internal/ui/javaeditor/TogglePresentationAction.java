@@ -23,7 +23,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
@@ -80,7 +80,7 @@ public class TogglePresentationAction extends TextEditorAction implements IPrope
 		boolean checked= (editor != null && editor.showsHighlightRangeOnly());
 		setChecked(checked);
 		if (editor instanceof CompilationUnitEditor) {
-			IWorkingCopyManager manager= JavaPlugin.getDefault().getWorkingCopyManager();
+			IWorkingCopyManager manager= JavaScriptPlugin.getDefault().getWorkingCopyManager();
 			setEnabled(manager.getWorkingCopy(editor.getEditorInput()) != null);
 		} else if (editor instanceof ClassFileEditor) {
 			IEditorInput input= editor.getEditorInput();
@@ -104,7 +104,7 @@ public class TogglePresentationAction extends TextEditorAction implements IPrope
 		if (editor != null) {
 
 			if (fStore == null) {
-				fStore= JavaPlugin.getDefault().getPreferenceStore();
+				fStore= JavaScriptPlugin.getDefault().getPreferenceStore();
 				fStore.addPropertyChangeListener(this);
 			}
 			synchronizeWithPreference(editor);

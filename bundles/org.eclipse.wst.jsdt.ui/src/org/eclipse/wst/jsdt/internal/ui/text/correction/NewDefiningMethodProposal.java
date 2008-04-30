@@ -14,11 +14,11 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
@@ -29,7 +29,7 @@ import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 
 /**
@@ -37,16 +37,16 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
  */
 public class NewDefiningMethodProposal extends AbstractMethodCompletionProposal {
 
-	private final IMethodBinding fMethod;
+	private final IFunctionBinding fMethod;
 	private final String[] fParamNames;
 
-	public NewDefiningMethodProposal(String label, ICompilationUnit targetCU, ASTNode invocationNode, ITypeBinding binding, IMethodBinding method, String[] paramNames, int relevance) {
+	public NewDefiningMethodProposal(String label, IJavaScriptUnit targetCU, ASTNode invocationNode, ITypeBinding binding, IFunctionBinding method, String[] paramNames, int relevance) {
 		super(label,targetCU,invocationNode,binding,relevance,null);
 		fMethod= method;
 		fParamNames= paramNames;
 
 		ImageDescriptor desc= JavaElementImageProvider.getMethodImageDescriptor(binding.isInterface() || binding.isAnnotation(), method.getModifiers());
-		setImage(JavaPlugin.getImageDescriptorRegistry().get(desc));
+		setImage(JavaScriptPlugin.getImageDescriptorRegistry().get(desc));
 	}
 
 	/* (non-Javadoc)
@@ -64,7 +64,7 @@ public class NewDefiningMethodProposal extends AbstractMethodCompletionProposal 
 		ImportRewrite importRewrite= getImportRewrite();
 		ITypeBinding[] bindings= fMethod.getParameterTypes();
 
-		IJavaProject project= getCompilationUnit().getJavaProject();
+		IJavaScriptProject project= getCompilationUnit().getJavaScriptProject();
 		String[][] paramNames= StubUtility.suggestArgumentNamesWithProposals(project, fParamNames);
 
 		for (int i= 0; i < bindings.length; i++) {

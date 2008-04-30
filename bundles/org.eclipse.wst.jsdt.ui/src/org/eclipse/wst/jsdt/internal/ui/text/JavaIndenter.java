@@ -14,8 +14,8 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 
@@ -68,7 +68,7 @@ public final class JavaIndenter {
 		final boolean prefHasGenerics;
 		final String prefTabChar;
 		
-		private final IJavaProject fProject;
+		private final IJavaScriptProject fProject;
 
 		/**
 		 * Returns <code>true</code> if the class is used outside the workbench,
@@ -77,7 +77,7 @@ public final class JavaIndenter {
 		 * @return <code>true</code> if the plug-ins are not available
 		 */
 		private boolean isStandalone() {
-			return JavaCore.getPlugin() == null;
+			return JavaScriptCore.getPlugin() == null;
 		}
 		
 		/**
@@ -89,11 +89,11 @@ public final class JavaIndenter {
 		 */
 		private String getCoreFormatterOption(String key) {
 			if (fProject == null)
-				return JavaCore.getOption(key);
+				return JavaScriptCore.getOption(key);
 			return fProject.getOption(key, true);
 		}
 		
-		CorePrefs(IJavaProject project) {
+		CorePrefs(IJavaScriptProject project) {
 			fProject= project;
 			if (isStandalone()) {
 				prefUseTabs= true;
@@ -124,7 +124,7 @@ public final class JavaIndenter {
 				prefIndentBracesForMethods= false;
 				prefIndentBracesForTypes= false;
 				prefHasGenerics= false;
-				prefTabChar= JavaCore.TAB;
+				prefTabChar= JavaScriptCore.TAB;
 			} else {
 				prefUseTabs= prefUseTabs();
 				prefTabSize= prefTabSize();
@@ -159,7 +159,7 @@ public final class JavaIndenter {
 		}
 		
 		private boolean prefUseTabs() {
-			return !JavaCore.SPACE.equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR));
+			return !JavaScriptCore.SPACE.equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR));
 		}
 
 		private int prefTabSize() {
@@ -367,7 +367,7 @@ public final class JavaIndenter {
 			return 2; // sensible default
 		}
 		private boolean hasGenerics() {
-			return JavaCore.VERSION_1_5.compareTo(getCoreFormatterOption(JavaCore.COMPILER_SOURCE)) <= 0;
+			return JavaScriptCore.VERSION_1_5.compareTo(getCoreFormatterOption(JavaScriptCore.COMPILER_SOURCE)) <= 0;
 		}
 	}
 
@@ -421,7 +421,7 @@ public final class JavaIndenter {
 	 *        <code>null</code> to use the workspace settings
 	 * @since 3.1
 	 */
-	public JavaIndenter(IDocument document, JavaHeuristicScanner scanner, IJavaProject project) {
+	public JavaIndenter(IDocument document, JavaHeuristicScanner scanner, IJavaScriptProject project) {
 		Assert.isNotNull(document);
 		Assert.isNotNull(scanner);
 		fDocument= document;
@@ -673,10 +673,10 @@ public final class JavaIndenter {
 		// add additional indent
 		int missing= totalLength - maxCopyLength;
 		final int tabs, spaces;
-		if (JavaCore.SPACE.equals(fPrefs.prefTabChar)) {
+		if (JavaScriptCore.SPACE.equals(fPrefs.prefTabChar)) {
 			tabs= 0;
 			spaces= missing;
-		} else if (JavaCore.TAB.equals(fPrefs.prefTabChar)) {
+		} else if (JavaScriptCore.TAB.equals(fPrefs.prefTabChar)) {
 			tabs= tabSize > 0 ? missing / tabSize : 0;
 			spaces= tabSize > 0 ? missing % tabSize : missing;
 		} else if (DefaultCodeFormatterConstants.MIXED.equals(fPrefs.prefTabChar)) {

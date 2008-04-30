@@ -26,7 +26,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 
 public class RenameSelectionState {
@@ -40,7 +40,7 @@ public class RenameSelectionState {
 		fParts= new ArrayList();
 		fSelections= new ArrayList();
 		
-		IWorkbenchWindow dw = JavaPlugin.getActiveWorkbenchWindow();
+		IWorkbenchWindow dw = JavaScriptPlugin.getActiveWorkbenchWindow();
 		if (dw ==  null) {
 			fDisplay= null;
 			return;

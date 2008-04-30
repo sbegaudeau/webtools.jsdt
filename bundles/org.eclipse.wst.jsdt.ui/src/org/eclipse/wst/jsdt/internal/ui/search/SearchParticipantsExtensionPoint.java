@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 public class SearchParticipantsExtensionPoint {
 
@@ -47,7 +47,7 @@ public class SearchParticipantsExtensionPoint {
 			if (status.isOK()) {
 				fActiveParticipants.add(descriptor); 
 			} else {
-				JavaPlugin.log(status);
+				JavaScriptPlugin.log(status);
 			}
 		}
 		return fActiveParticipants;
@@ -69,7 +69,7 @@ public class SearchParticipantsExtensionPoint {
 							seenParticipants.add(id);
 						}
 					} catch (CoreException e) {
-						JavaPlugin.log(e.getStatus());
+						JavaScriptPlugin.log(e.getStatus());
 						participant.disable();
 					}
 				}

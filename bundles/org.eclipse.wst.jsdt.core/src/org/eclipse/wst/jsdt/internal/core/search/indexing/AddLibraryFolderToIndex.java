@@ -66,7 +66,7 @@ class AddLibraryFolderToIndex extends IndexRequest {
 
 //			final IPath container = this.containerPath;
 //			final IndexManager indexManager = this.manager;
-//			final SourceElementParser parser = indexManager.getSourceElementParser(JavaCore.create(this.project), null/*requestor will be set by indexer*/);
+//			final SourceElementParser parser = indexManager.getSourceElementParser(JavaScriptCore.create(this.project), null/*requestor will be set by indexer*/);
 			if (this.exclusionPatterns == null && this.inclusionPatterns == null) {
 				folder.accept(
 					new IResourceProxyVisitor() {

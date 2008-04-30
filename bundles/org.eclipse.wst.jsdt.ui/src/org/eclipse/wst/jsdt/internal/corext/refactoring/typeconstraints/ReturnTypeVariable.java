@@ -11,28 +11,28 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 
 public class ReturnTypeVariable extends ConstraintVariable{
 	
-	private final IMethodBinding fMethodBinding;
+	private final IFunctionBinding fMethodBinding;
 
 	public ReturnTypeVariable(ReturnStatement returnStatement) {
 		this(getMethod(returnStatement).resolveBinding());
 		Assert.isNotNull(returnStatement);
 	}
 
-	public ReturnTypeVariable(IMethodBinding methodBinding) {
+	public ReturnTypeVariable(IFunctionBinding methodBinding) {
 		super(methodBinding.getReturnType());
 		fMethodBinding= methodBinding;
 	}
 	
-	public static MethodDeclaration getMethod(ReturnStatement returnStatement) {
-		return (MethodDeclaration)ASTNodes.getParent(returnStatement, MethodDeclaration.class);
+	public static FunctionDeclaration getMethod(ReturnStatement returnStatement) {
+		return (FunctionDeclaration)ASTNodes.getParent(returnStatement, FunctionDeclaration.class);
 	}
 
 	/* (non-Javadoc)
@@ -42,7 +42,7 @@ public class ReturnTypeVariable extends ConstraintVariable{
 		return "[" + Bindings.asString(fMethodBinding) + "]_returnType"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
-	public IMethodBinding getMethodBinding() {
+	public IFunctionBinding getMethodBinding() {
 		return fMethodBinding;
 	}
 

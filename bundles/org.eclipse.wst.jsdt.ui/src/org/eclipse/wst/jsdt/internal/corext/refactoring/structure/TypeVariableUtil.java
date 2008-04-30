@@ -19,12 +19,12 @@ import java.util.Set;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Utilities to create mappings between type variables of different types in a type hierarchy.
@@ -95,10 +95,10 @@ public final class TypeVariableUtil {
 	 * @param member
 	 *        the member to get its type variables. Can be a type, field or a method.
 	 * @return a possibly empty array of type variable candidates
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *         if the signature of the specified member could not be resolved
 	 */
-	private static String[] getReferencedVariables(final IType declaring, final IMember member) throws JavaModelException {
+	private static String[] getReferencedVariables(final IType declaring, final IMember member) throws JavaScriptModelException {
 
 		Assert.isNotNull(declaring);
 		Assert.isNotNull(member);
@@ -121,14 +121,14 @@ public final class TypeVariableUtil {
 				for (int index= 0; index < result.length; index++)
 					result[index]= Signature.toString(signatures[index]);
 			}
-		} else if (member instanceof IMethod) {
-			final IMethod method= (IMethod) member;
+		} else if (member instanceof IFunction) {
+			final IFunction method= (IFunction) member;
 			final HashSet set= new HashSet();
 			final String[] types= method.getParameterTypes();
 			for (int index= 0; index < types.length; index++)
 				extractTypeVariables(types[index], set);
 			extractTypeVariables(method.getReturnType(), set);
-			final String[] arguments= parametersToVariables(((IMethod) member).getTypeParameters());
+			final String[] arguments= parametersToVariables(((IFunction) member).getTypeParameters());
 			for (int index= 0; index < arguments.length; index++)
 				set.add(arguments[index]);
 			result= new String[set.size()];
@@ -136,7 +136,7 @@ public final class TypeVariableUtil {
 		} else if (member instanceof IType)
 			result= parametersToVariables(((IType) member).getTypeParameters());
 		else {
-			JavaPlugin.logErrorMessage("Unexpected sub-type of IMember: " + member.getClass().getName()); //$NON-NLS-1$
+			JavaScriptPlugin.logErrorMessage("Unexpected sub-type of IMember: " + member.getClass().getName()); //$NON-NLS-1$
 			Assert.isTrue(false);
 		}
 
@@ -163,10 +163,10 @@ public final class TypeVariableUtil {
 	 * @param member
 	 *        the member to determine its unmapped type variable names
 	 * @return a possibly empty array of unmapped type variable names
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *         if the type parameters of the member could not be determined
 	 */
-	public static String[] getUnmappedVariables(final TypeVariableMaplet[] mapping, final IType declaring, final IMember member) throws JavaModelException {
+	public static String[] getUnmappedVariables(final TypeVariableMaplet[] mapping, final IType declaring, final IMember member) throws JavaScriptModelException {
 
 		Assert.isNotNull(mapping);
 		Assert.isNotNull(declaring);
@@ -329,10 +329,10 @@ public final class TypeVariableUtil {
 	 * @param type
 	 *        the type representing the subclass class
 	 * @return a type variable mapping. The mapping entries consist of simple type variable names.
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *         if the signature of one of the types involved could not be retrieved
 	 */
-	public static TypeVariableMaplet[] subTypeToInheritedType(final IType type) throws JavaModelException {
+	public static TypeVariableMaplet[] subTypeToInheritedType(final IType type) throws JavaScriptModelException {
 		Assert.isNotNull(type);
 
 		final ITypeParameter[] domain= type.getTypeParameters();
@@ -355,10 +355,10 @@ public final class TypeVariableUtil {
 	 * @param supertype
 	 *        the type representing the superclass
 	 * @return a type variable mapping. The mapping entries consist of simple type variable names.
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *         if the signature of one of the types involved could not be retrieved
 	 */
-	public static TypeVariableMaplet[] subTypeToSuperType(final IType subtype, final IType supertype) throws JavaModelException {
+	public static TypeVariableMaplet[] subTypeToSuperType(final IType subtype, final IType supertype) throws JavaScriptModelException {
 		Assert.isNotNull(subtype);
 		Assert.isNotNull(supertype);
 
@@ -385,10 +385,10 @@ public final class TypeVariableUtil {
 	 * @param subtype
 	 *        the type representing the subclass
 	 * @return a type variable mapping. The mapping entries consist of simple type variable names.
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *         if the signature of one of the types involved could not be retrieved
 	 */
-	public static TypeVariableMaplet[] superTypeToInheritedType(final IType supertype, final IType subtype) throws JavaModelException {
+	public static TypeVariableMaplet[] superTypeToInheritedType(final IType supertype, final IType subtype) throws JavaScriptModelException {
 		Assert.isNotNull(subtype);
 		Assert.isNotNull(supertype);
 
@@ -412,10 +412,10 @@ public final class TypeVariableUtil {
 	 * @param subtype
 	 *        the type representing the subclass
 	 * @return a type variable mapping. The mapping entries consist of simple type variable names.
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *         if the signature of one of the types involved could not be retrieved
 	 */
-	public static TypeVariableMaplet[] superTypeToSubType(final IType supertype, final IType subtype) throws JavaModelException {
+	public static TypeVariableMaplet[] superTypeToSubType(final IType supertype, final IType subtype) throws JavaScriptModelException {
 		Assert.isNotNull(supertype);
 		Assert.isNotNull(subtype);
 

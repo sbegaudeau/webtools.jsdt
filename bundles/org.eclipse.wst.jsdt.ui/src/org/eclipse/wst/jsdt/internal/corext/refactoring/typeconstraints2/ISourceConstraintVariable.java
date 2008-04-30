@@ -10,17 +10,17 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 public interface ISourceConstraintVariable {
 
-	public ICompilationUnit getCompilationUnit();
+	public IJavaScriptUnit getCompilationUnit();
 
 	public Object getData(String name);
 
 	public ITypeSet getTypeEstimate();
 
-	public void setCompilationUnit(ICompilationUnit cu);
+	public void setCompilationUnit(IJavaScriptUnit cu);
 
 	public void setData(String name, Object data);
 }

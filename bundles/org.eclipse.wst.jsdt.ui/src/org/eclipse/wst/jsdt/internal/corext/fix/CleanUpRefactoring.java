@@ -44,14 +44,14 @@ import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.text.edits.TextEditVisitor;
 import org.eclipse.text.edits.UndoEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.ASTRequestor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.DynamicValidationStateChange;
@@ -59,7 +59,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.MultiStateCompil
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.TextChangeCompatibility;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.CodeFormatCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.CommentFormatCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ControlStatementsCleanUp;
@@ -71,7 +71,7 @@ import org.eclipse.wst.jsdt.internal.ui.fix.StringCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.UnusedCodeCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.IScheduledRefactoring;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class CleanUpRefactoring extends Refactoring implements IScheduledRefactoring {
 	
@@ -79,7 +79,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 
 		private UndoEdit fUndoEdit;
 
-		public CleanUpChange(String name, ICompilationUnit cunit) {
+		public CleanUpChange(String name, IJavaScriptUnit cunit) {
 	        super(name, cunit);
         }
 		
@@ -113,20 +113,20 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 	
 	private static class ParseListElement {
 		
-		private final ICompilationUnit fUnit;
+		private final IJavaScriptUnit fUnit;
 		private final ICleanUp[] fCleanUpsArray;
 		
-		public ParseListElement(ICompilationUnit unit) {
+		public ParseListElement(IJavaScriptUnit unit) {
 			fUnit= unit;
 			fCleanUpsArray= new ICleanUp[0];
 		}
 		
-		public ParseListElement(ICompilationUnit unit, ICleanUp[] cleanUps) {
+		public ParseListElement(IJavaScriptUnit unit, ICleanUp[] cleanUps) {
 			fUnit= unit;
 			fCleanUpsArray= cleanUps;
 		}
 		
-		public ICompilationUnit getCompilationUnit() {
+		public IJavaScriptUnit getCompilationUnit() {
 			return fUnit;
 		}
 		
@@ -172,7 +172,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 			return fIndex + fFlushCount;
 		}
 		
-		public String getSubTaskMessage(ICompilationUnit source) {
+		public String getSubTaskMessage(IJavaScriptUnit source) {
 			String typeName= source.getElementName();
 			return Messages.format(FixMessages.CleanUpRefactoring_ProcessingCompilationUnit_message, new Object[] {new Integer(getIndex()), new Integer(fSize), typeName});
 		}
@@ -181,8 +181,8 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 	private static class CleanUpASTRequestor extends ASTRequestor {
 		
 		private final List/*<ParseListElement>*/fUndoneElements;
-		private final Hashtable/*<ICompilationUnit, Change>*/fSolutions;
-		private final Hashtable/*<ICompilationUnit, ICleanUp[]>*/fCompilationUnitCleanUpMap;
+		private final Hashtable/*<IJavaScriptUnit, Change>*/fSolutions;
+		private final Hashtable/*<IJavaScriptUnit, ICleanUp[]>*/fCompilationUnitCleanUpMap;
 		private final CleanUpRefactoringProgressMonitor fMonitor;
 		
 		public CleanUpASTRequestor(List parseList, Hashtable solutions, CleanUpRefactoringProgressMonitor monitor) {
@@ -199,11 +199,11 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 		/**
 		 * {@inheritDoc}
 		 */
-		public void acceptAST(ICompilationUnit source, CompilationUnit ast) {
+		public void acceptAST(IJavaScriptUnit source, JavaScriptUnit ast) {
 			
 			fMonitor.subTask(fMonitor.getSubTaskMessage(source));
 			
-			ICompilationUnit primary= (ICompilationUnit)source.getPrimaryElement();
+			IJavaScriptUnit primary= (IJavaScriptUnit)source.getPrimaryElement();
 			ICleanUp[] cleanUps= (ICleanUp[])fCompilationUnitCleanUpMap.get(primary);
 			
 			ICleanUp[] rejectedCleanUps= calculateSolutions(source, ast, cleanUps);
@@ -216,7 +216,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 			}
 		}
 		
-		public void acceptSource(ICompilationUnit source) {
+		public void acceptSource(IJavaScriptUnit source) {
 			acceptAST(source, null);
 		}
 		
@@ -224,7 +224,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 			return fUndoneElements;
 		}
 		
-		private ICleanUp[] calculateSolutions(ICompilationUnit source, CompilationUnit ast, ICleanUp[] cleanUps) {
+		private ICleanUp[] calculateSolutions(IJavaScriptUnit source, JavaScriptUnit ast, ICleanUp[] cleanUps) {
 			List/*<ICleanUp>*/result= new ArrayList();
 			CleanUpChange solution;
 			try {
@@ -236,7 +236,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 			if (solution != null) {
 				try {
 					integrateSolution(solution, source);
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					throw new FixCalculationException(e);
 				}
 			}
@@ -244,8 +244,8 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 			return (ICleanUp[])result.toArray(new ICleanUp[result.size()]);
 		}
 		
-		private void integrateSolution(CleanUpChange solution, ICompilationUnit source) throws JavaModelException {
-			ICompilationUnit primary= source.getPrimary();
+		private void integrateSolution(CleanUpChange solution, IJavaScriptUnit source) throws JavaScriptModelException {
+			IJavaScriptUnit primary= source.getPrimary();
 			
 			List changes= (List)fSolutions.get(primary);
 			if (changes == null) {
@@ -284,7 +284,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 			}
 		}
 		
-		public void createASTs(ICompilationUnit[] units, String[] bindingKeys, CleanUpASTRequestor requestor, IProgressMonitor monitor) {
+		public void createASTs(IJavaScriptUnit[] units, String[] bindingKeys, CleanUpASTRequestor requestor, IProgressMonitor monitor) {
 			if (monitor == null)
 				monitor= new NullProgressMonitor();
 			
@@ -298,7 +298,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 					end= Math.min(end + MAX_AT_ONCE, units.length);
 					List toParse= list.subList(cursor, end);
 					
-					createParser().createASTs((ICompilationUnit[])toParse.toArray(new ICompilationUnit[toParse.size()]), bindingKeys, requestor, new SubProgressMonitor(monitor, toParse.size()));
+					createParser().createASTs((IJavaScriptUnit[])toParse.toArray(new IJavaScriptUnit[toParse.size()]), bindingKeys, requestor, new SubProgressMonitor(monitor, toParse.size()));
 					cursor= end;
 				}
 			} finally {
@@ -312,14 +312,14 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 	private class CleanUpFixpointIterator {
 		
 		private List/*<ParseListElement>*/fParseList;
-		private final Hashtable/*<ICompilationUnit, List<CleanUpChange>>*/fSolutions;
-		private final Hashtable/*<ICompilationUnit (primary), ICompilationUnit (working copy)>*/fWorkingCopies;
-		private final IJavaProject fProject;
+		private final Hashtable/*<IJavaScriptUnit, List<CleanUpChange>>*/fSolutions;
+		private final Hashtable/*<IJavaScriptUnit (primary), IJavaScriptUnit (working copy)>*/fWorkingCopies;
+		private final IJavaScriptProject fProject;
 		private final Map fCleanUpOptions;
 		private final int fSize;
 		private int fIndex;
 		
-		public CleanUpFixpointIterator(IJavaProject project, ICompilationUnit[] units, ICleanUp[] cleanUps) {
+		public CleanUpFixpointIterator(IJavaScriptProject project, IJavaScriptUnit[] units, ICleanUp[] cleanUps) {
 			fProject= project;
 			fSolutions= new Hashtable(units.length);
 			fWorkingCopies= new Hashtable();
@@ -353,10 +353,10 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 				for (Iterator iter= fParseList.iterator(); iter.hasNext();) {
 					ParseListElement element= (ParseListElement)iter.next();
 					
-					ICompilationUnit compilationUnit= element.getCompilationUnit();
+					IJavaScriptUnit compilationUnit= element.getCompilationUnit();
 					if (fSolutions.containsKey(compilationUnit)) {
 						if (fWorkingCopies.containsKey(compilationUnit)) {
-							compilationUnit= (ICompilationUnit)fWorkingCopies.get(compilationUnit);
+							compilationUnit= (IJavaScriptUnit)fWorkingCopies.get(compilationUnit);
 						} else {
 							compilationUnit= compilationUnit.getWorkingCopy(new WorkingCopyOwner() {}, null);
 							fWorkingCopies.put(compilationUnit.getPrimary(), compilationUnit);
@@ -386,14 +386,14 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 					}
 				};
 				try {
-					ICompilationUnit[] units= (ICompilationUnit[])parseList.toArray(new ICompilationUnit[parseList.size()]);
+					IJavaScriptUnit[] units= (IJavaScriptUnit[])parseList.toArray(new IJavaScriptUnit[parseList.size()]);
 					parser.createASTs(units, new String[0], requestor, cuMonitor);
 				} catch (FixCalculationException e) {
 					throw e.getException();
 				}
 				
 				for (Iterator iterator= sourceList.iterator(); iterator.hasNext();) {
-					ICompilationUnit cu= (ICompilationUnit)iterator.next();
+					IJavaScriptUnit cu= (IJavaScriptUnit)iterator.next();
 					requestor.acceptSource(cu);
 				}
 				
@@ -405,16 +405,16 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 		
 		public void dispose() {
 			for (Iterator iterator= fWorkingCopies.values().iterator(); iterator.hasNext();) {
-				ICompilationUnit cu= (ICompilationUnit)iterator.next();
+				IJavaScriptUnit cu= (IJavaScriptUnit)iterator.next();
 				try {
 					cu.discardWorkingCopy();
-				} catch (JavaModelException e) {
-					JavaPlugin.log(e);
+				} catch (JavaScriptModelException e) {
+					JavaScriptPlugin.log(e);
 				}
 			}
 		}
 		
-		private boolean requiresAST(ICompilationUnit compilationUnit, ICleanUp[] cleanUps) throws CoreException {
+		private boolean requiresAST(IJavaScriptUnit compilationUnit, ICleanUp[] cleanUps) throws CoreException {
 			for (int i= 0; i < cleanUps.length; i++) {
 				if (cleanUps[i].requireAST(compilationUnit))
 					return true;
@@ -430,7 +430,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 				Map.Entry entry= (Map.Entry)iterator.next();
 				
 				List changes= (List)entry.getValue();
-				ICompilationUnit unit= (ICompilationUnit)entry.getKey();
+				IJavaScriptUnit unit= (IJavaScriptUnit)entry.getKey();
 				
 				int saveMode;
 				try {
@@ -439,9 +439,9 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 					} else {
 						saveMode= TextFileChange.FORCE_SAVE;
 					}
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					saveMode= TextFileChange.LEAVE_DIRTY;
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 				}
 				
 				if (changes.size() == 1) {
@@ -470,7 +470,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 	        return result;
         }
 		
-		private void applyChange(ICompilationUnit compilationUnit, List changes) throws JavaModelException, CoreException {
+		private void applyChange(IJavaScriptUnit compilationUnit, List changes) throws JavaScriptModelException, CoreException {
 			if (changes.size() == 1) {
 				CleanUpChange change= (CleanUpChange)changes.get(changes.size() - 1);
 				compilationUnit.getBuffer().setContents(change.getPreviewContent(null));
@@ -487,7 +487,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 	private static final RefactoringTickProvider CLEAN_UP_REFACTORING_TICK_PROVIDER= new RefactoringTickProvider(0, 1, 0, 0);
 	
 	private final List/*<ICleanUp>*/fCleanUps;
-	private final Hashtable/*<IJavaProject, List<ICompilationUnit>*/fProjects;
+	private final Hashtable/*<IJavaScriptProject, List<IJavaScriptUnit>*/fProjects;
 	private Change fChange;
 	private boolean fLeaveFilesDirty;
 	private final String fName;
@@ -502,8 +502,8 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 		fProjects= new Hashtable();
 	}
 	
-	public void addCompilationUnit(ICompilationUnit unit) {
-		IJavaProject javaProject= unit.getJavaProject();
+	public void addCompilationUnit(IJavaScriptUnit unit) {
+		IJavaScriptProject javaProject= unit.getJavaScriptProject();
 		if (!fProjects.containsKey(javaProject))
 			fProjects.put(javaProject, new ArrayList());
 		
@@ -519,13 +519,13 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 		return !fProjects.isEmpty();
 	}
 	
-	public ICompilationUnit[] getCompilationUnits() {
+	public IJavaScriptUnit[] getCompilationUnits() {
 		List cus= new ArrayList();
 		for (Iterator iter= fProjects.values().iterator(); iter.hasNext();) {
 			List pcus= (List)iter.next();
 			cus.addAll(pcus);
 		}
-		return (ICompilationUnit[])cus.toArray(new ICompilationUnit[cus.size()]);
+		return (IJavaScriptUnit[])cus.toArray(new IJavaScriptUnit[cus.size()]);
 	}
 	
 	public void addCleanUp(ICleanUp fix) {
@@ -544,8 +544,8 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 		return (ICleanUp[])fCleanUps.toArray(new ICleanUp[fCleanUps.size()]);
 	}
 	
-	public IJavaProject[] getProjects() {
-		return (IJavaProject[])fProjects.keySet().toArray(new IJavaProject[fProjects.keySet().size()]);
+	public IJavaScriptProject[] getProjects() {
+		return (IJavaScriptProject[])fProjects.keySet().toArray(new IJavaScriptProject[fProjects.keySet().size()]);
 	}
 	
 	public void setLeaveFilesDirty(boolean leaveFilesDirty) {
@@ -602,7 +602,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 		
 		int cuCount= 0;
 		for (Iterator iter= fProjects.keySet().iterator(); iter.hasNext();) {
-			IJavaProject project= (IJavaProject)iter.next();
+			IJavaScriptProject project= (IJavaScriptProject)iter.next();
 			cuCount+= ((List)fProjects.get(project)).size();
 		}
 		
@@ -613,10 +613,10 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 			DynamicValidationStateChange change= new DynamicValidationStateChange(getName());
 			change.setSchedulingRule(getSchedulingRule());
 			for (Iterator projectIter= fProjects.keySet().iterator(); projectIter.hasNext();) {
-				IJavaProject project= (IJavaProject)projectIter.next();
+				IJavaScriptProject project= (IJavaScriptProject)projectIter.next();
 				
 				List compilationUnits= (List)fProjects.get(project);
-				ICompilationUnit[] cus= (ICompilationUnit[])compilationUnits.toArray(new ICompilationUnit[compilationUnits.size()]);
+				IJavaScriptUnit[] cus= (IJavaScriptUnit[])compilationUnits.toArray(new IJavaScriptUnit[compilationUnits.size()]);
 				
 				ICleanUp[] cleanUps= (ICleanUp[])fCleanUps.toArray(new ICleanUp[fCleanUps.size()]);
 				result.merge(initialize(project));
@@ -651,7 +651,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 		return result;
 	}
 	
-	private void findFilesToBeModified(CompositeChange change, List result) throws JavaModelException {
+	private void findFilesToBeModified(CompositeChange change, List result) throws JavaScriptModelException {
 		Change[] children= change.getChildren();
 		for (int i= 0; i < children.length; i++) {
 			Change child= children[i];
@@ -665,7 +665,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 		}
 	}
 	
-	private Change[] cleanUpProject(IJavaProject project, ICompilationUnit[] compilationUnits, ICleanUp[] cleanUps, IProgressMonitor monitor) throws CoreException {
+	private Change[] cleanUpProject(IJavaScriptProject project, IJavaScriptUnit[] compilationUnits, ICleanUp[] cleanUps, IProgressMonitor monitor) throws CoreException {
 		CleanUpFixpointIterator iter= new CleanUpFixpointIterator(project, compilationUnits, cleanUps);
 		
 		SubProgressMonitor subMonitor= new SubProgressMonitor(monitor, 2 * compilationUnits.length * cleanUps.length);
@@ -683,7 +683,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 		}
 	}
 	
-	private RefactoringStatus initialize(IJavaProject javaProject) throws CoreException {
+	private RefactoringStatus initialize(IJavaScriptProject javaProject) throws CoreException {
 		Map options= CleanUpPreferenceUtil.loadOptions(new ProjectScope(javaProject.getProject()));
 		if (options == null) {
 			return RefactoringStatus.createFatalErrorStatus(Messages.format(FixMessages.CleanUpRefactoring_could_not_retrive_profile, javaProject.getElementName()));
@@ -697,7 +697,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 		return new RefactoringStatus();
 	}
 	
-	private RefactoringStatus checkPreConditions(IJavaProject javaProject, ICompilationUnit[] compilationUnits, IProgressMonitor monitor) throws CoreException {
+	private RefactoringStatus checkPreConditions(IJavaScriptProject javaProject, IJavaScriptUnit[] compilationUnits, IProgressMonitor monitor) throws CoreException {
 		RefactoringStatus result= new RefactoringStatus();
 		
 		ICleanUp[] cleanUps= getCleanUps();
@@ -734,19 +734,19 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 		return result;
 	}
 	
-	private static String getChangeName(ICompilationUnit compilationUnit) {
+	private static String getChangeName(IJavaScriptUnit compilationUnit) {
 		StringBuffer buf= new StringBuffer();
-		JavaElementLabels.getCompilationUnitLabel(compilationUnit, JavaElementLabels.ALL_DEFAULT, buf);
-		buf.append(JavaElementLabels.CONCAT_STRING);
+		JavaScriptElementLabels.getCompilationUnitLabel(compilationUnit, JavaScriptElementLabels.ALL_DEFAULT, buf);
+		buf.append(JavaScriptElementLabels.CONCAT_STRING);
 		
 		StringBuffer buf2= new StringBuffer();
-		JavaElementLabels.getPackageFragmentLabel((IPackageFragment)compilationUnit.getParent(), JavaElementLabels.P_QUALIFIED, buf2);
+		JavaScriptElementLabels.getPackageFragmentLabel((IPackageFragment)compilationUnit.getParent(), JavaScriptElementLabels.P_QUALIFIED, buf2);
 		buf.append(buf2.toString().replace('.', '/'));
 		
 		return buf.toString();
 	}
 	
-	public static CleanUpChange calculateChange(CompilationUnit ast, ICompilationUnit source, ICleanUp[] cleanUps, List undoneCleanUps) throws CoreException {
+	public static CleanUpChange calculateChange(JavaScriptUnit ast, IJavaScriptUnit source, ICleanUp[] cleanUps, List undoneCleanUps) throws CoreException {
 		if (cleanUps.length == 0)
 			return null;
 		

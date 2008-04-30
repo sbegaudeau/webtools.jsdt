@@ -15,8 +15,8 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameCompilationUnitProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.INameUpdating;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
@@ -39,8 +39,8 @@ public class RenameCuWizard extends RenameTypeWizard {
 		return super.validateNewName(fullName);
 	}
 
-	private ICompilationUnit getCompilationUnit() {
-		return (ICompilationUnit) getCompilationUnitProcessor().getElements()[0];
+	private IJavaScriptUnit getCompilationUnit() {
+		return (IJavaScriptUnit) getCompilationUnitProcessor().getElements()[0];
 	}
 
 	protected RenameInputWizardPage createInputPage(String message, String initialSetting) {
@@ -51,7 +51,7 @@ public class RenameCuWizard extends RenameTypeWizard {
 			protected String getNewName(INameUpdating nameUpdating) {
 				String result= nameUpdating.getNewElementName();
 				// If renaming a CU we have to remove the java file extension
-				return JavaCore.removeJavaLikeExtension(result);
+				return JavaScriptCore.removeJavaScriptLikeExtension(result);
 			}
 		};
 	}

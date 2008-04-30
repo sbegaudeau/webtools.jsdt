@@ -32,22 +32,22 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.util.SuperTypeHierarchyCache;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.PositionBasedCompletionProposal;
 import org.eclipse.wst.jsdt.internal.ui.util.StringMatcher;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
 
 /**
  * This class triggers a code-completion that will track all local ane member variables for later
@@ -137,7 +137,7 @@ public class ParameterGuesser {
 		}
 
 
-		IType getType(IJavaProject project) throws JavaModelException {
+		IType getType(IJavaScriptProject project) throws JavaScriptModelException {
 			if (!fTypeResolved) {
 				fTypeResolved= true;
 				if (typePackage.length() > 0)
@@ -155,8 +155,8 @@ public class ParameterGuesser {
 			return getFQN().endsWith("[]"); //$NON-NLS-1$
 		}
 
-		boolean isHierarchyAssignable(Variable rhs) throws JavaModelException {
-			IJavaProject project= fCompilationUnit.getJavaProject();
+		boolean isHierarchyAssignable(Variable rhs) throws JavaScriptModelException {
+			IJavaScriptProject project= fCompilationUnit.getJavaScriptProject();
 			IType paramType= getType(project);
 			IType varType= rhs.getType(project);
 			if (varType == null || paramType == null)
@@ -185,7 +185,7 @@ public class ParameterGuesser {
 		/**
 		 * Return true if <code>rhs</code> is assignable to the receiver
 		 */
-		boolean isAssignable(Variable rhs) throws JavaModelException {
+		boolean isAssignable(Variable rhs) throws JavaScriptModelException {
 		
 			// if there is no package specified, do the check on type name only.  This will work for primitives
 			// and for local variables that cannot be resolved.
@@ -248,7 +248,7 @@ public class ParameterGuesser {
 			setIgnored(CompletionProposal.LOCAL_VARIABLE_REF, false);
 		}
 
-		public List collect(int codeAssistOffset, ICompilationUnit compilationUnit) throws JavaModelException {
+		public List collect(int codeAssistOffset, IJavaScriptUnit compilationUnit) throws JavaScriptModelException {
 			Assert.isTrue(codeAssistOffset >= 0);
 			Assert.isNotNull(compilationUnit);
 
@@ -284,13 +284,13 @@ public class ParameterGuesser {
 			return fVars;
 		}
 
-		private String getEnclosingTypeName(int codeAssistOffset, ICompilationUnit compilationUnit) throws JavaModelException {
+		private String getEnclosingTypeName(int codeAssistOffset, IJavaScriptUnit compilationUnit) throws JavaScriptModelException {
 
-			IJavaElement element= compilationUnit.getElementAt(codeAssistOffset);
+			IJavaScriptElement element= compilationUnit.getElementAt(codeAssistOffset);
 			if (element == null)
 				return null;
 
-			element= element.getAncestor(IJavaElement.TYPE);
+			element= element.getAncestor(IJavaScriptElement.TYPE);
 			if (element == null)
 				return null;
 
@@ -342,29 +342,29 @@ public class ParameterGuesser {
 			int flags= 0;
 
 			if (Flags.isDeprecated(modifiers))
-				flags |= JavaElementImageDescriptor.DEPRECATED;
+				flags |= JavaScriptElementImageDescriptor.DEPRECATED;
 
 			if (Flags.isStatic(modifiers))
-				flags |= JavaElementImageDescriptor.STATIC;
+				flags |= JavaScriptElementImageDescriptor.STATIC;
 
 			if (Flags.isFinal(modifiers))
-				flags |= JavaElementImageDescriptor.FINAL;
+				flags |= JavaScriptElementImageDescriptor.FINAL;
 
 			if (Flags.isSynchronized(modifiers))
-				flags |= JavaElementImageDescriptor.SYNCHRONIZED;
+				flags |= JavaScriptElementImageDescriptor.SYNCHRONIZED;
 
 			if (Flags.isAbstract(modifiers))
-				flags |= JavaElementImageDescriptor.ABSTRACT;
+				flags |= JavaScriptElementImageDescriptor.ABSTRACT;
 			
 			if (isField) {
 				if (Flags.isVolatile(modifiers))
-					flags |= JavaElementImageDescriptor.VOLATILE;
+					flags |= JavaScriptElementImageDescriptor.VOLATILE;
 	
 				if (Flags.isTransient(modifiers))
-					flags |= JavaElementImageDescriptor.TRANSIENT;
+					flags |= JavaScriptElementImageDescriptor.TRANSIENT;
 			}
 			
-			return new JavaElementImageDescriptor(descriptor, flags, JavaElementImageProvider.SMALL_SIZE);
+			return new JavaScriptElementImageDescriptor(descriptor, flags, JavaElementImageProvider.SMALL_SIZE);
 
 		}
 
@@ -446,12 +446,12 @@ public class ParameterGuesser {
 	}
 
 	/** The compilation unit we are computing the completion for */
-	private final ICompilationUnit fCompilationUnit;
+	private final IJavaScriptUnit fCompilationUnit;
 	/** The code assist offset. */
 	private final int fCodeAssistOffset;
 	/** Local and member variables of the compilation unit */
 	private List fVariables;
-	private ImageDescriptorRegistry fRegistry= JavaPlugin.getImageDescriptorRegistry();
+	private ImageDescriptorRegistry fRegistry= JavaScriptPlugin.getImageDescriptorRegistry();
 	private boolean fAllowAutoBoxing;
 
 	/**
@@ -460,7 +460,7 @@ public class ParameterGuesser {
 	 * @param codeAssistOffset the offset at which to perform code assist
 	 * @param compilationUnit the compilation unit in which code assist is performed
 	 */
-	public ParameterGuesser(int codeAssistOffset, ICompilationUnit compilationUnit) {
+	public ParameterGuesser(int codeAssistOffset, IJavaScriptUnit compilationUnit) {
 		Assert.isTrue(codeAssistOffset >= 0);
 		Assert.isNotNull(compilationUnit);
 
@@ -468,12 +468,12 @@ public class ParameterGuesser {
 		fCompilationUnit= compilationUnit;
 
 
-		IJavaProject project= fCompilationUnit.getJavaProject();
+		IJavaScriptProject project= fCompilationUnit.getJavaScriptProject();
 		String sourceVersion= project == null
-				? JavaCore.getOption(JavaCore.COMPILER_SOURCE)
-				: project.getOption(JavaCore.COMPILER_SOURCE, true);
+				? JavaScriptCore.getOption(JavaScriptCore.COMPILER_SOURCE)
+				: project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
 
-		fAllowAutoBoxing= JavaCore.VERSION_1_5.compareTo(sourceVersion) <= 0;
+		fAllowAutoBoxing= JavaScriptCore.VERSION_1_5.compareTo(sourceVersion) <= 0;
 	}
 
 	/**
@@ -486,7 +486,7 @@ public class ParameterGuesser {
 	/**
 	 * Returns the compilation unit in which code assist is performed.
 	 */
-	public ICompilationUnit getCompilationUnit() {
+	public IJavaScriptUnit getCompilationUnit() {
 		return fCompilationUnit;
 	}
 
@@ -499,9 +499,9 @@ public class ParameterGuesser {
 	 * @param pos
 	 * @param document
 	 * @return returns the name of the best match, or <code>null</code> if no match found
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public ICompletionProposal[] parameterProposals(String paramPackage, String paramType, String paramName, Position pos, IDocument document) throws JavaModelException {
+	public ICompletionProposal[] parameterProposals(String paramPackage, String paramType, String paramName, Position pos, IDocument document) throws JavaScriptModelException {
 
 		if (fVariables == null) {
 			VariableCollector variableCollector= new VariableCollector();
@@ -600,7 +600,7 @@ public class ParameterGuesser {
 	/**
 	 * Finds a local or member variable that matched the type of the parameter
 	 */
-	private List findProposalsMatchingType(List proposals, Variable parameter) throws JavaModelException {
+	private List findProposalsMatchingType(List proposals, Variable parameter) throws JavaScriptModelException {
 
 		if (parameter.getFQN().length() == 0)
 			return null;

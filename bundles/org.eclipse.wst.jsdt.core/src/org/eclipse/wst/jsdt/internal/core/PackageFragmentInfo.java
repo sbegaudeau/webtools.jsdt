@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * Element info for PackageFragments.
@@ -43,11 +43,11 @@ Object[] getNonJavaResources(IResource underlyingResource, PackageFragmentRoot r
 		try {
 			this.nonJavaResources =
 				PackageFragmentRootInfo.computeFolderNonJavaResources(
-					(JavaProject)rootHandle.getJavaProject(),
+					(JavaProject)rootHandle.getJavaScriptProject(),
 					(IContainer)underlyingResource,
 					rootHandle.fullInclusionPatternChars(),
 					rootHandle.fullExclusionPatternChars());
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// root doesn't exist: consider package has no nonJavaResources
 			this.nonJavaResources = NO_NON_JAVA_RESOURCES;
 		}

@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.ui.wizards;
 
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 
 /**
  * A classpath container page allows the user to create a new or edit an 
@@ -48,12 +48,12 @@ public interface IJsGlobalScopeContainerPage extends IWizardPage {
 	/**
 	 * Returns the edited or created classpath container entry. This method
 	 * may return <code>null</code> if no classpath container entry exists.
-	 * The returned classpath entry is of kind <code>IClasspathEntry.CPE_CONTAINER
+	 * The returned classpath entry is of kind <code>IIncludePathEntry.CPE_CONTAINER
 	 * </code>.
 	 * 
 	 * @return the classpath entry edited or created on the page.
 	 */
-	public IClasspathEntry getSelection();
+	public IIncludePathEntry getSelection();
 	
 	/**
 	 * Sets the classpath container entry to be edited or <code>null</code> 
@@ -61,8 +61,8 @@ public interface IJsGlobalScopeContainerPage extends IWizardPage {
 	 * 
 	 * @param containerEntry the classpath entry to edit or <code>null</code>.
 	 * If not <code>null</code> then the classpath entry must be of
-	 * kind <code>IClasspathEntry.CPE_CONTAINER</code>
+	 * kind <code>IIncludePathEntry.CPE_CONTAINER</code>
 	 */
-	public void setSelection(IClasspathEntry containerEntry);
+	public void setSelection(IIncludePathEntry containerEntry);
 		
 }

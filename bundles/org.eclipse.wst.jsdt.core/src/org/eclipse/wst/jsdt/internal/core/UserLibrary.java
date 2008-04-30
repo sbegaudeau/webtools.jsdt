@@ -25,9 +25,9 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IAccessRule;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -51,15 +51,15 @@ public class UserLibrary {
 	private static final String TAG_SYSTEMLIBRARY= "systemlibrary"; //$NON-NLS-1$
 
 	private boolean isSystemLibrary;
-	private IClasspathEntry[] entries;
+	private IIncludePathEntry[] entries;
 
-	public UserLibrary(IClasspathEntry[] entries, boolean isSystemLibrary) {
+	public UserLibrary(IIncludePathEntry[] entries, boolean isSystemLibrary) {
 		Assert.isNotNull(entries);
 		this.entries= entries;
 		this.isSystemLibrary= isSystemLibrary;
 	}
 
-	public IClasspathEntry[] getEntries() {
+	public IIncludePathEntry[] getEntries() {
 		return this.entries;
 	}
 
@@ -183,16 +183,16 @@ public class UserLibrary {
 					NodeList children = element.getElementsByTagName("*"); //$NON-NLS-1$
 					boolean[] foundChildren = new boolean[children.getLength()];
 					NodeList attributeList = ClasspathEntry.getChildAttributes(ClasspathEntry.TAG_ATTRIBUTES, children, foundChildren);
-					IClasspathAttribute[] extraAttributes = ClasspathEntry.decodeExtraAttributes(attributeList);
+					IIncludePathAttribute[] extraAttributes = ClasspathEntry.decodeExtraAttributes(attributeList);
 					attributeList = ClasspathEntry.getChildAttributes(ClasspathEntry.TAG_ACCESS_RULES, children, foundChildren);
 					IAccessRule[] accessRules = ClasspathEntry.decodeAccessRules(attributeList);
-					IClasspathEntry entry = JavaCore.newLibraryEntry(new Path(path), sourceAttach, sourceAttachRoot, accessRules, extraAttributes, false/*not exported*/);
+					IIncludePathEntry entry = JavaScriptCore.newLibraryEntry(new Path(path), sourceAttach, sourceAttachRoot, accessRules, extraAttributes, false/*not exported*/);
 					res.add(entry);
 				}
 			}
 		}
 
-		IClasspathEntry[] entries= (IClasspathEntry[]) res.toArray(new IClasspathEntry[res.size()]);
+		IIncludePathEntry[] entries= (IIncludePathEntry[]) res.toArray(new IIncludePathEntry[res.size()]);
 
 		return new UserLibrary(entries, isSystem);
 	}

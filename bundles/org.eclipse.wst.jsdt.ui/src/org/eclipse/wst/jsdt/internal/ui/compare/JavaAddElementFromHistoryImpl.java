@@ -35,15 +35,15 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
@@ -54,7 +54,7 @@ import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.util.Resources;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
@@ -74,7 +74,7 @@ class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {
 		String errorMessage= CompareMessages.AddFromHistory_internalErrorMessage; 
 		Shell shell= getShell();
 		
-		ICompilationUnit cu= null;
+		IJavaScriptUnit cu= null;
 		IParent parent= null;
 		IMember input= null;
 		
@@ -84,7 +84,7 @@ class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {
 			JavaEditor editor= getEditor();
 			if (editor != null) {
 				IEditorInput editorInput= editor.getEditorInput();
-				IWorkingCopyManager manager= JavaPlugin.getDefault().getWorkingCopyManager();
+				IWorkingCopyManager manager= JavaScriptPlugin.getDefault().getWorkingCopyManager();
 				if (manager != null) {
 					cu= manager.getWorkingCopy(editorInput);
 					parent= cu;
@@ -93,15 +93,15 @@ class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {
 		} else {
 			input= getEditionElement(selection);
 			if (input != null) {
-				cu= input.getCompilationUnit();
+				cu= input.getJavaScriptUnit();
 				parent= input;
 				input= null;
 
 			} else {
 				if (selection instanceof IStructuredSelection) {
 					Object o= ((IStructuredSelection)selection).getFirstElement();
-					if (o instanceof ICompilationUnit) {
-						cu= (ICompilationUnit) o;
+					if (o instanceof IJavaScriptUnit) {
+						cu= (IJavaScriptUnit) o;
 						parent= cu;
 					}
 				}
@@ -148,18 +148,18 @@ class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {
 			if (selected == null)
 				return;	// user cancel
 								
-			ICompilationUnit cu2= cu;
+			IJavaScriptUnit cu2= cu;
 			if (parent instanceof IMember)
-				cu2= ((IMember)parent).getCompilationUnit();
+				cu2= ((IMember)parent).getJavaScriptUnit();
 			
-			CompilationUnit root= parsePartialCompilationUnit(cu2);
+			JavaScriptUnit root= parsePartialCompilationUnit(cu2);
 			ASTRewrite rewriter= ASTRewrite.create(root.getAST());
 			
 			ITypedElement[] results= d.getSelection();
 			for (int i= 0; i < results.length; i++) {
 				
 			    // create an AST node
-				ASTNode newNode= createASTNode(rewriter, results[i], TextUtilities.getDefaultLineDelimiter(document), cu.getJavaProject());
+				ASTNode newNode= createASTNode(rewriter, results[i], TextUtilities.getDefaultLineDelimiter(document), cu.getJavaScriptProject());
 				if (newNode == null) {
 					MessageDialog.openError(shell, errorTitle, errorMessage);
 					return;	
@@ -167,16 +167,16 @@ class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {
 				
 				// now determine where to put the new node
 				if (newNode instanceof PackageDeclaration) {
-				    rewriter.set(root, CompilationUnit.PACKAGE_PROPERTY, newNode, null);
+				    rewriter.set(root, JavaScriptUnit.PACKAGE_PROPERTY, newNode, null);
 				    
 				} else if (newNode instanceof ImportDeclaration) {
-					ListRewrite lw= rewriter.getListRewrite(root, CompilationUnit.IMPORTS_PROPERTY);
+					ListRewrite lw= rewriter.getListRewrite(root, JavaScriptUnit.IMPORTS_PROPERTY);
 					lw.insertFirst(newNode, null);
 					
 				} else {	// class, interface, enum, annotation, method, field
 					
-					if (parent instanceof ICompilationUnit) {	// top level
-						ListRewrite lw= rewriter.getListRewrite(root, CompilationUnit.TYPES_PROPERTY);
+					if (parent instanceof IJavaScriptUnit) {	// top level
+						ListRewrite lw= rewriter.getListRewrite(root, JavaScriptUnit.TYPES_PROPERTY);
 						int index= ASTNodes.getInsertionIndex((BodyDeclaration)newNode, root.types());
 						lw.insertAt(newNode, index, null);
 						
@@ -194,14 +194,14 @@ class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {
 							lw.insertAt(newNode, index, null);
 						}
 					} else {
-						JavaPlugin.logErrorMessage("JavaAddElementFromHistoryImpl: unknown container " + parent); //$NON-NLS-1$
+						JavaScriptPlugin.logErrorMessage("JavaAddElementFromHistoryImpl: unknown container " + parent); //$NON-NLS-1$
 					}
 					
 				}
 			}
 			
 			Map options= null;
-			IJavaProject javaProject= cu2.getJavaProject();
+			IJavaScriptProject javaProject= cu2.getJavaScriptProject();
 			if (javaProject != null)
 				options= javaProject.getOptions(true);
 			applyChanges(rewriter, document, textFileBuffer, shell, inEditor, options);
@@ -221,7 +221,7 @@ class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {
 				if (textFileBuffer != null)
 					bufferManager.disconnect(path, LocationKind.IFILE, null);
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 	}
@@ -235,7 +235,7 @@ class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {
 	 * @return a ASTNode or null
 	 * @throws CoreException
 	 */
-	private ASTNode createASTNode(ASTRewrite rewriter, ITypedElement element, String delimiter, IJavaProject project) throws CoreException {
+	private ASTNode createASTNode(ASTRewrite rewriter, ITypedElement element, String delimiter, IJavaScriptProject project) throws CoreException {
 		if (element instanceof IStreamContentAccessor) {
 			String content= JavaCompareUtilities.readString((IStreamContentAccessor)element);
 			if (content != null) {
@@ -275,7 +275,7 @@ class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {
 				
 			case JavaNode.CONSTRUCTOR:
 			case JavaNode.METHOD:
-				return ASTNode.METHOD_DECLARATION;
+				return ASTNode.FUNCTION_DECLARATION;
 				
 			case JavaNode.FIELD:
 				return ASTNode.FIELD_DECLARATION;
@@ -288,7 +288,7 @@ class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {
 				return ASTNode.IMPORT_DECLARATION;
 
 			case JavaNode.CU:
-			    return ASTNode.COMPILATION_UNIT;
+			    return ASTNode.JAVASCRIPT_UNIT;
 			}
 		}
 		return -1;
@@ -299,9 +299,9 @@ class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {
 		if (selection.isEmpty()) {
 			JavaEditor editor= getEditor();
 			if (editor != null) {
-				// we check whether editor shows CompilationUnit
+				// we check whether editor shows JavaScriptUnit
 				IEditorInput editorInput= editor.getEditorInput();
-				IWorkingCopyManager manager= JavaPlugin.getDefault().getWorkingCopyManager();
+				IWorkingCopyManager manager= JavaScriptPlugin.getDefault().getWorkingCopyManager();
 				return manager.getWorkingCopy(editorInput) != null;
 			}
 			return false;
@@ -309,7 +309,7 @@ class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {
 		
 		if (selection instanceof IStructuredSelection) {
 			Object o= ((IStructuredSelection)selection).getFirstElement();
-			if (o instanceof ICompilationUnit)
+			if (o instanceof IJavaScriptUnit)
 				return true;
 		}
 		

@@ -21,11 +21,11 @@ import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
-import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
 
 
 /**
- * A simple {@linkplain org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration Java source viewer configuration}.
+ * A simple {@linkplain org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration Java source viewer configuration}.
  * <p>
  * This simple source viewer configuration basically provides syntax coloring
  * and disables all other features like code assist, quick outlines, hyperlinking, etc.
@@ -33,7 +33,7 @@ import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
  * 
  * @since 3.1
  */
-public class SimpleJavaSourceViewerConfiguration extends JavaSourceViewerConfiguration {
+public class SimpleJavaSourceViewerConfiguration extends JavaScriptSourceViewerConfiguration {
 
 
 	private boolean fConfigureFormatter;
@@ -120,14 +120,14 @@ public class SimpleJavaSourceViewerConfiguration extends JavaSourceViewerConfigu
 	}
 
 	/*
-	 * @see org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration#getOutlinePresenter(org.eclipse.jface.text.source.ISourceViewer, boolean)
+	 * @see org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration#getOutlinePresenter(org.eclipse.jface.text.source.ISourceViewer, boolean)
 	 */
 	public IInformationPresenter getOutlinePresenter(ISourceViewer sourceViewer, boolean doCodeResolve) {
 		return null;
 	}
 
 	/*
-	 * @see org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration#getHierarchyPresenter(org.eclipse.jface.text.source.ISourceViewer, boolean)
+	 * @see org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration#getHierarchyPresenter(org.eclipse.jface.text.source.ISourceViewer, boolean)
 	 */
 	public IInformationPresenter getHierarchyPresenter(ISourceViewer sourceViewer, boolean doCodeResolve) {
 		return null;

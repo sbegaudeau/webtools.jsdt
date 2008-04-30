@@ -35,13 +35,13 @@ import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.RangeMarker;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IndentUtil;
 import org.eclipse.wst.jsdt.internal.ui.text.FastJavaPartitionScanner;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 /**
  * A template editor using the Java formatter to format a template buffer.
@@ -58,7 +58,7 @@ public class JavaFormatter {
 
 	/** The java partitioner */
 	private boolean fUseCodeFormatter;
-	private final IJavaProject fProject;
+	private final IJavaScriptProject fProject;
 	
 	/**
 	 * Wraps a {@link TemplateBuffer} and tracks the variable offsets while changes to the buffer
@@ -94,16 +94,16 @@ public class JavaFormatter {
 		 */
 		private static void installJavaStuff(Document document) {
 			String[] types= new String[] {
-										  IJavaPartitions.JAVA_DOC,
-										  IJavaPartitions.JAVA_MULTI_LINE_COMMENT,
-										  IJavaPartitions.JAVA_SINGLE_LINE_COMMENT,
-										  IJavaPartitions.JAVA_STRING,
-										  IJavaPartitions.JAVA_CHARACTER,
+										  IJavaScriptPartitions.JAVA_DOC,
+										  IJavaScriptPartitions.JAVA_MULTI_LINE_COMMENT,
+										  IJavaScriptPartitions.JAVA_SINGLE_LINE_COMMENT,
+										  IJavaScriptPartitions.JAVA_STRING,
+										  IJavaScriptPartitions.JAVA_CHARACTER,
 										  IDocument.DEFAULT_CONTENT_TYPE
 			};
 			FastPartitioner partitioner= new FastPartitioner(new FastJavaPartitionScanner(), types);
 			partitioner.connect(document);
-			document.setDocumentPartitioner(IJavaPartitions.JAVA_PARTITIONING, partitioner);
+			document.setDocumentPartitioner(IJavaScriptPartitions.JAVA_PARTITIONING, partitioner);
 		}
 		
 		/**
@@ -236,7 +236,7 @@ public class JavaFormatter {
 	 * @param useCodeFormatter <code>true</code> if the core code formatter should be used
 	 * @param project the java project from which to get the preferences, or <code>null</code> for workbench settings
 	 */
-	public JavaFormatter(String lineDelimiter, int initialIndentLevel, boolean useCodeFormatter, IJavaProject project) {
+	public JavaFormatter(String lineDelimiter, int initialIndentLevel, boolean useCodeFormatter, IJavaScriptProject project) {
 		fLineDelimiter= lineDelimiter;
 		fUseCodeFormatter= useCodeFormatter;
 		fInitialIndentLevel= initialIndentLevel;
@@ -323,11 +323,11 @@ public class JavaFormatter {
 
 	private void format(IDocument doc, CompilationUnitContext context) throws BadLocationException {
 		Map options;
-		IJavaProject project= context.getJavaProject();
+		IJavaScriptProject project= context.getJavaProject();
 		if (project != null)
 			options= project.getOptions(true); 
 		else
-			options= JavaCore.getOptions();
+			options= JavaScriptCore.getOptions();
 
 		String contents= doc.get();
 		int[] kinds= { CodeFormatter.K_EXPRESSION, CodeFormatter.K_STATEMENTS, CodeFormatter.K_UNKNOWN};

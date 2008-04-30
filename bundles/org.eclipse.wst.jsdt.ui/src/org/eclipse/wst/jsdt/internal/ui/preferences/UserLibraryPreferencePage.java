@@ -71,16 +71,16 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.IUIConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.AccessRulesDialog;
@@ -103,7 +103,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.TreeListDialogField;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
 import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration;
 import org.w3c.dom.Document;
@@ -227,7 +227,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 		private static final String TAG_RULE_KIND= "kind"; //$NON-NLS-1$
 		private static final String TAG_RULE_PATTERN= "pattern"; //$NON-NLS-1$
 
-		private static final String PREF_LASTPATH= JavaUI.ID_PLUGIN + ".lastuserlibrary"; //$NON-NLS-1$
+		private static final String PREF_LASTPATH= JavaScriptUI.ID_PLUGIN + ".lastuserlibrary"; //$NON-NLS-1$
 		private static final String PREF_USER_LIBRARY_LOADSAVE_SIZE= "UserLibraryLoadSaveDialog.size"; //$NON-NLS-1$
 		
 		private List fExistingLibraries;
@@ -442,7 +442,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 						try {
 							encoding= result.getCharset(true);
 						} catch (CoreException exception) {
-							JavaPlugin.log(exception);
+							JavaScriptPlugin.log(exception);
 						}
 					}
 					final List elements= fExportImportList.getCheckedElements();
@@ -472,7 +472,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 					String savedMessage= PreferencesMessages.UserLibraryPreferencePage_LoadSaveDialog_save_ok_message; 
 					MessageDialog.openInformation(getShell(), savedTitle, savedMessage);
 				} catch (IOException exception) {
-					JavaPlugin.log(exception);
+					JavaScriptPlugin.log(exception);
 				}
 			} else {
 				HashSet map= new HashSet(fExistingLibraries.size());
@@ -673,7 +673,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 					
 					String pathString= archiveElement.getAttribute(TAG_ARCHIVE_PATH);
 					IPath path= version.equals(VERSION1) ? Path.fromOSString(pathString) : Path.fromPortableString(pathString);
-					CPListElement newArchive= new CPListElement(newLibrary, null, IClasspathEntry.CPE_LIBRARY, path, null);
+					CPListElement newArchive= new CPListElement(newLibrary, null, IIncludePathEntry.CPE_LIBRARY, path, null);
 					newLibrary.add(newArchive);
 					
 					if (archiveElement.hasAttribute(TAG_SOURCEATTACHMENT)) {
@@ -703,7 +703,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 									try {
 										int kind= Integer.parseInt(ruleElement.getAttribute(TAG_RULE_KIND));
 										IPath pattern= Path.fromPortableString(ruleElement.getAttribute(TAG_RULE_PATTERN));
-										resultingRules.add(JavaCore.newAccessRule(pattern, kind));
+										resultingRules.add(JavaScriptCore.newAccessRule(pattern, kind));
 									} catch (NumberFormatException e) {
 										// ignore
 									}
@@ -724,7 +724,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 	
 	private IDialogSettings fDialogSettings;
 	private TreeListDialogField fLibraryList;
-	private IJavaProject fDummyProject;
+	private IJavaScriptProject fDummyProject;
 	private ClasspathAttributeConfigurationDescriptors fAttributeDescriptors;
 		
 	private static final int IDX_NEW= 0;
@@ -740,17 +740,17 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 	 * Constructor for ClasspathVariablesPreferencePage
 	 */
 	public UserLibraryPreferencePage() {
-		setPreferenceStore(JavaPlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(JavaScriptPlugin.getDefault().getPreferenceStore());
 		fDummyProject= createPlaceholderProject();
 		
-		fAttributeDescriptors= JavaPlugin.getDefault().getClasspathAttributeConfigurationDescriptors();
+		fAttributeDescriptors= JavaScriptPlugin.getDefault().getClasspathAttributeConfigurationDescriptors();
 	
 		// title only used when page is shown programatically
 		setTitle(PreferencesMessages.UserLibraryPreferencePage_title); 
 		setDescription(PreferencesMessages.UserLibraryPreferencePage_description); 
 		noDefaultAndApplyButton();
 
-		fDialogSettings= JavaPlugin.getDefault().getDialogSettings();
+		fDialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();
 		
 		UserLibraryAdapter adapter= new UserLibraryAdapter();
 		String[] buttonLabels= new String[] {
@@ -770,16 +770,16 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 		fLibraryList= new TreeListDialogField(adapter, buttonLabels, new CPListLabelProvider());
 		fLibraryList.setLabelText(PreferencesMessages.UserLibraryPreferencePage_libraries_label);
 		
-		String[] names= JavaCore.getUserLibraryNames();
+		String[] names= JavaScriptCore.getUserLibraryNames();
 		ArrayList elements= new ArrayList();
 		
 		for (int i= 0; i < names.length; i++) {
-			IPath path= new Path(JavaCore.USER_LIBRARY_CONTAINER_ID).append(names[i]);
+			IPath path= new Path(JavaScriptCore.USER_LIBRARY_CONTAINER_ID).append(names[i]);
 			try {
-				IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(path, fDummyProject);
+				IJsGlobalScopeContainer container= JavaScriptCore.getJsGlobalScopeContainer(path, fDummyProject);
 				elements.add(new CPUserLibraryElement(names[i], container, fDummyProject));
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 				// ignore
 			}
 		}
@@ -789,13 +789,13 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 		doSelectionChanged(fLibraryList); //update button enable state 
 	}
 	
-	private static IJavaProject createPlaceholderProject() {
+	private static IJavaScriptProject createPlaceholderProject() {
 		String name= "####internal"; //$NON-NLS-1$
 		IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();
 		while (true) {
 			IProject project= root.getProject(name);
 			if (!project.exists()) {
-				return JavaCore.create(project);
+				return JavaScriptCore.create(project);
 			}
 			name += '1';
 		}		
@@ -897,7 +897,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 	
 	private void updateUserLibararies(IProgressMonitor monitor) throws CoreException {
 		List list= fLibraryList.getElements();
-		HashSet oldNames= new HashSet(Arrays.asList(JavaCore.getUserLibraryNames()));
+		HashSet oldNames= new HashSet(Arrays.asList(JavaScriptCore.getUserLibraryNames()));
 		int nExisting= list.size();
 		
 		HashSet newEntries= new HashSet(list.size());
@@ -911,15 +911,15 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 		
 		int len= nExisting + oldNames.size();
 		monitor.beginTask(PreferencesMessages.UserLibraryPreferencePage_operation, len); 
-		MultiStatus multiStatus= new MultiStatus(JavaUI.ID_PLUGIN, IStatus.OK, PreferencesMessages.UserLibraryPreferencePage_operation_error, null); 
+		MultiStatus multiStatus= new MultiStatus(JavaScriptUI.ID_PLUGIN, IStatus.OK, PreferencesMessages.UserLibraryPreferencePage_operation_error, null); 
 		
-		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(JavaCore.USER_LIBRARY_CONTAINER_ID);
-		IJavaProject jproject= fDummyProject;
+		JsGlobalScopeContainerInitializer initializer= JavaScriptCore.getJsGlobalScopeContainerInitializer(JavaScriptCore.USER_LIBRARY_CONTAINER_ID);
+		IJavaScriptProject jproject= fDummyProject;
 				
 		for (int i= 0; i < nExisting; i++) {
 			CPUserLibraryElement element= (CPUserLibraryElement) list.get(i);
 			IPath path= element.getPath();
-			if (newEntries.contains(element) || element.hasChanges(JavaCore.getJsGlobalScopeContainer(path, jproject))) {
+			if (newEntries.contains(element) || element.hasChanges(JavaScriptCore.getJsGlobalScopeContainer(path, jproject))) {
 				IJsGlobalScopeContainer updatedContainer= element.getUpdatedContainer();
 				try {
 					initializer.requestJsGlobalScopeContainerUpdate(path, jproject, updatedContainer);
@@ -934,7 +934,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 		while (iter.hasNext()) {
 			String name= (String) iter.next();
 			
-			IPath path= new Path(JavaCore.USER_LIBRARY_CONTAINER_ID).append(name);
+			IPath path= new Path(JavaScriptCore.USER_LIBRARY_CONTAINER_ID).append(name);
 			try {
 				initializer.requestJsGlobalScopeContainerUpdate(path, jproject, null);
 			} catch (CoreException e) {
@@ -959,7 +959,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 		String key= elem.getKey();
 		CPListElement selElement= elem.getParent();
 		if (key.equals(CPListElement.SOURCEATTACHMENT)) {
-			IClasspathEntry result= BuildPathDialogAccess.configureSourceAttachment(getShell(), selElement.getClasspathEntry());
+			IIncludePathEntry result= BuildPathDialogAccess.configureSourceAttachment(getShell(), selElement.getClasspathEntry());
 			if (result != null) {
 				selElement.setAttribute(CPListElement.SOURCEATTACHMENT, result.getSourceAttachmentPath());
 				fLibraryList.refresh(elem);
@@ -975,7 +975,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 		} else if (!elem.isBuiltIn()) {
 			ClasspathAttributeConfiguration config= fAttributeDescriptors.get(key);
 			if (config != null) {
-				IClasspathAttribute result= config.performEdit(getShell(), elem.getClasspathAttributeAccess());
+				IIncludePathAttribute result= config.performEdit(getShell(), elem.getClasspathAttributeAccess());
 				if (result != null) {
 					elem.setValue(result.getValue());
 					fLibraryList.refresh(elem);
@@ -1103,7 +1103,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 				} else {
 					ClasspathAttributeConfiguration config= fAttributeDescriptors.get(attrib.getKey());
 					if (config != null) {
-						IClasspathAttribute result= config.performRemove(attrib.getClasspathAttributeAccess());
+						IIncludePathAttribute result= config.performRemove(attrib.getClasspathAttributeAccess());
 						if (result != null) {
 							attrib.setValue(result.getValue());
 							fLibraryList.refresh(attrib);
@@ -1316,7 +1316,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 		CPListElement[] elems= new CPListElement[nChosen];
 		for (int i= 0; i < nChosen; i++) {
 			IPath path= filterPath.append(fileNames[i]).makeAbsolute();	
-			CPListElement curr= new CPListElement(parent, null, IClasspathEntry.CPE_LIBRARY, path, null);
+			CPListElement curr= new CPListElement(parent, null, IIncludePathEntry.CPE_LIBRARY, path, null);
 			curr.setAttribute(CPListElement.SOURCEATTACHMENT, BuildPathSupport.guessSourceAttachment(curr));
 			curr.setAttribute(CPListElement.JAVADOC, BuildPathSupport.guessJavadocLocation(curr));
 			elems[i]= curr;

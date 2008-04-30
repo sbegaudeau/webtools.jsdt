@@ -24,16 +24,16 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
@@ -52,7 +52,7 @@ public class InterfaceIndicatorLabelDecorator implements ILabelDecorator, ILight
 			if (changed.size() == 0)
 				return;
 			
-			fireChange((IJavaElement[])changed.toArray(new IJavaElement[changed.size()]));
+			fireChange((IJavaScriptElement[])changed.toArray(new IJavaScriptElement[changed.size()]));
 		}
 		
 	}
@@ -83,7 +83,7 @@ public class InterfaceIndicatorLabelDecorator implements ILabelDecorator, ILight
 	public void addListener(ILabelProviderListener listener) {
 		if (fChangeListener == null) {
 			fChangeListener= new IntefaceIndicatorChangeListener();
-			JavaCore.addElementChangedListener(fChangeListener);
+			JavaScriptCore.addElementChangedListener(fChangeListener);
 		}
 		
 		if (fListeners == null) {
@@ -98,7 +98,7 @@ public class InterfaceIndicatorLabelDecorator implements ILabelDecorator, ILight
 	 */
 	public void dispose() {
 		if (fChangeListener != null) {
-			JavaCore.removeElementChangedListener(fChangeListener);
+			JavaScriptCore.removeElementChangedListener(fChangeListener);
 			fChangeListener= null;
 		}
 		if (fListeners != null) {
@@ -127,7 +127,7 @@ public class InterfaceIndicatorLabelDecorator implements ILabelDecorator, ILight
 		fListeners.remove(listener);
 		
 		if (fListeners.isEmpty() && fChangeListener != null) {
-			JavaCore.removeElementChangedListener(fChangeListener);
+			JavaScriptCore.removeElementChangedListener(fChangeListener);
 			fChangeListener= null;
 		}
 	}
@@ -142,14 +142,14 @@ public class InterfaceIndicatorLabelDecorator implements ILabelDecorator, ILight
 				return;
 			
 			decoration.addOverlay(overlay, IDecoration.TOP_RIGHT);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return;
 		}
 	}
 	
-	private ImageDescriptor getOverlay(Object element) throws JavaModelException {
-		if (element instanceof ICompilationUnit) {
-			ICompilationUnit unit= (ICompilationUnit) element;
+	private ImageDescriptor getOverlay(Object element) throws JavaScriptModelException {
+		if (element instanceof IJavaScriptUnit) {
+			IJavaScriptUnit unit= (IJavaScriptUnit) element;
 			if (unit.isOpen()) {
 				IType mainType= unit.findPrimaryType();
 				if (mainType != null) {
@@ -157,7 +157,7 @@ public class InterfaceIndicatorLabelDecorator implements ILabelDecorator, ILight
 				}
 				return null;
 			}
-			String typeName= JavaCore.removeJavaLikeExtension(unit.getElementName());
+			String typeName= JavaScriptCore.removeJavaScriptLikeExtension(unit.getElementName());
 			return getOverlayWithSearchEngine(unit, typeName);
 		} else if (element instanceof IClassFile) {
 			IClassFile classFile= (IClassFile) element;
@@ -172,7 +172,7 @@ public class InterfaceIndicatorLabelDecorator implements ILabelDecorator, ILight
 	
 	private ImageDescriptor getOverlayWithSearchEngine(ITypeRoot element, String typeName) {
 		SearchEngine engine= new SearchEngine();
-		IJavaSearchScope scope= SearchEngine.createJavaSearchScope(new IJavaElement[] { element });
+		IJavaScriptSearchScope scope= SearchEngine.createJavaSearchScope(new IJavaScriptElement[] { element });
 		
 		class Result extends RuntimeException {
 			private static final long serialVersionUID= 1L;
@@ -193,11 +193,11 @@ public class InterfaceIndicatorLabelDecorator implements ILabelDecorator, ILight
 		try {
 			String packName = element.getParent().getElementName();
 			int matchRule = SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE;
-			engine.searchAllTypeNames(packName.toCharArray(), matchRule, typeName.toCharArray(), matchRule, IJavaSearchConstants.TYPE, scope, requestor, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH , null);
+			engine.searchAllTypeNames(packName.toCharArray(), matchRule, typeName.toCharArray(), matchRule, IJavaScriptSearchConstants.TYPE, scope, requestor, IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH , null);
 		} catch (Result e) {
 			return getOverlayFromFlags(e.modifiers);
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 		}
 		return null;
 
@@ -216,7 +216,7 @@ public class InterfaceIndicatorLabelDecorator implements ILabelDecorator, ILight
 		return null;
 	}
 
-	private void fireChange(IJavaElement[] elements) {
+	private void fireChange(IJavaScriptElement[] elements) {
 		if (fListeners != null && !fListeners.isEmpty()) {
 			LabelProviderChangedEvent event= new LabelProviderChangedEvent(this, elements);
 			Object[] listeners= fListeners.getListeners();
@@ -226,47 +226,47 @@ public class InterfaceIndicatorLabelDecorator implements ILabelDecorator, ILight
 		}
 	}
 	
-	private void processDelta(IJavaElementDelta delta, List result) {
-		IJavaElement elem= delta.getElement();
+	private void processDelta(IJavaScriptElementDelta delta, List result) {
+		IJavaScriptElement elem= delta.getElement();
 		
-		boolean isChanged= delta.getKind() == IJavaElementDelta.CHANGED;
-		boolean isRemoved= delta.getKind() == IJavaElementDelta.REMOVED;
+		boolean isChanged= delta.getKind() == IJavaScriptElementDelta.CHANGED;
+		boolean isRemoved= delta.getKind() == IJavaScriptElementDelta.REMOVED;
 		int flags= delta.getFlags();
 		
 		switch (elem.getElementType()) {
-			case IJavaElement.JAVA_PROJECT:
+			case IJavaScriptElement.JAVASCRIPT_PROJECT:
 				if (isRemoved || (isChanged && 
-						(flags & IJavaElementDelta.F_CLOSED) != 0)) {
+						(flags & IJavaScriptElementDelta.F_CLOSED) != 0)) {
 					return;
 				}
 				processChildrenDelta(delta, result);
 				return;
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 				if (isRemoved || (isChanged && (
-						(flags & IJavaElementDelta.F_ARCHIVE_CONTENT_CHANGED) != 0 ||
-						(flags & IJavaElementDelta.F_REMOVED_FROM_CLASSPATH) != 0))) {
+						(flags & IJavaScriptElementDelta.F_ARCHIVE_CONTENT_CHANGED) != 0 ||
+						(flags & IJavaScriptElementDelta.F_REMOVED_FROM_CLASSPATH) != 0))) {
 					return;
 				}
 				processChildrenDelta(delta, result);
 				return;
-			case IJavaElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				if (isRemoved)
 					return;
 				processChildrenDelta(delta, result);
 				return;
-			case IJavaElement.TYPE:
-			case IJavaElement.CLASS_FILE:
+			case IJavaScriptElement.TYPE:
+			case IJavaScriptElement.CLASS_FILE:
 				return;
-			case IJavaElement.JAVA_MODEL:
+			case IJavaScriptElement.JAVASCRIPT_MODEL:
 				processChildrenDelta(delta, result);
 				return;
-			case IJavaElement.COMPILATION_UNIT:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
 				// Not the primary compilation unit. Ignore it 
-				if (!JavaModelUtil.isPrimary((ICompilationUnit) elem)) {
+				if (!JavaModelUtil.isPrimary((IJavaScriptUnit) elem)) {
 					return;
 				}
 
-				if (isChanged &&  ((flags & IJavaElementDelta.F_CONTENT) != 0 || (flags & IJavaElementDelta.F_FINE_GRAINED) != 0)) {
+				if (isChanged &&  ((flags & IJavaScriptElementDelta.F_CONTENT) != 0 || (flags & IJavaScriptElementDelta.F_FINE_GRAINED) != 0)) {
 					if (delta.getAffectedChildren().length == 0)
 						return;
 					
@@ -279,8 +279,8 @@ public class InterfaceIndicatorLabelDecorator implements ILabelDecorator, ILight
 		}	
 	}
 	
-	private boolean processChildrenDelta(IJavaElementDelta delta, List result) {
-		IJavaElementDelta[] children= delta.getAffectedChildren();
+	private boolean processChildrenDelta(IJavaScriptElementDelta delta, List result) {
+		IJavaScriptElementDelta[] children= delta.getAffectedChildren();
 		for (int i= 0; i < children.length; i++) {
 			processDelta(children[i], result);
 		}

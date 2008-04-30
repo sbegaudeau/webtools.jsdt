@@ -47,15 +47,15 @@ import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 	
 /*
@@ -76,8 +76,8 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 	
 	private static String fgDefaultEncoding= System.getProperty("file.encoding"); //$NON-NLS-1$
 
-	public static IClasspathEntry[] getDefaultJRELibrary() {
-		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+	public static IIncludePathEntry[] getDefaultJRELibrary() {
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 		
 		String str= store.getString(CLASSPATH_JRELIBRARY_LIST);
 		int index= store.getInt(CLASSPATH_JRELIBRARY_INDEX);
@@ -89,12 +89,12 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 		}
 		
 		if (tok.hasMoreTokens()) {
-			IClasspathEntry[] res= decodeJRELibraryClasspathEntries(tok.nextToken());
+			IIncludePathEntry[] res= decodeJRELibraryClasspathEntries(tok.nextToken());
 			if (res.length > 0) {
 				return res;
 			}
 		}
-		return new IClasspathEntry[] { getJREContainerEntry() };	
+		return new IIncludePathEntry[] { getJREContainerEntry() };	
 	}			
 	
 	// JRE Entry
@@ -111,7 +111,7 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 		try {
 			return URLDecoder.decode(str, fgDefaultEncoding);
 		} catch (UnsupportedEncodingException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		return ""; //$NON-NLS-1$
 	}
@@ -120,12 +120,12 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 		try {
 			return URLEncoder.encode(str, fgDefaultEncoding);
 		} catch (UnsupportedEncodingException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		return ""; //$NON-NLS-1$
 	}	
 	
-	public static IClasspathEntry[] decodeJRELibraryClasspathEntries(String encoded) {
+	public static IIncludePathEntry[] decodeJRELibraryClasspathEntries(String encoded) {
 		StringTokenizer tok= new StringTokenizer(encoded, " "); //$NON-NLS-1$
 		ArrayList res= new ArrayList();
 		while (tok.hasMoreTokens()) {
@@ -137,38 +137,38 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 				IPath attachRoot= decodePath(tok.nextToken());
 				boolean isExported= Boolean.valueOf(tok.nextToken()).booleanValue();
 				switch (kind) {
-					case IClasspathEntry.CPE_SOURCE:
-						res.add(JavaCore.newSourceEntry(path));
+					case IIncludePathEntry.CPE_SOURCE:
+						res.add(JavaScriptCore.newSourceEntry(path));
 						break;
-					case IClasspathEntry.CPE_LIBRARY:
-						res.add(JavaCore.newLibraryEntry(path, attachPath, attachRoot, isExported));
+					case IIncludePathEntry.CPE_LIBRARY:
+						res.add(JavaScriptCore.newLibraryEntry(path, attachPath, attachRoot, isExported));
 						break;
-					case IClasspathEntry.CPE_VARIABLE:
-						res.add(JavaCore.newVariableEntry(path, attachPath, attachRoot, isExported));
+					case IIncludePathEntry.CPE_VARIABLE:
+						res.add(JavaScriptCore.newVariableEntry(path, attachPath, attachRoot, isExported));
 						break;
-					case IClasspathEntry.CPE_PROJECT:
-						res.add(JavaCore.newProjectEntry(path, isExported));
+					case IIncludePathEntry.CPE_PROJECT:
+						res.add(JavaScriptCore.newProjectEntry(path, isExported));
 						break;
-					case IClasspathEntry.CPE_CONTAINER:
-						res.add(JavaCore.newContainerEntry(path, isExported));
+					case IIncludePathEntry.CPE_CONTAINER:
+						res.add(JavaScriptCore.newContainerEntry(path, isExported));
 						break;
 				}								
 			} catch (NumberFormatException e) {
 				String message= PreferencesMessages.NewJavaProjectPreferencePage_error_decode; 
-				JavaPlugin.log(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.ERROR, message, e));
+				JavaScriptPlugin.log(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.ERROR, message, e));
 			} catch (NoSuchElementException e) {
 				String message= PreferencesMessages.NewJavaProjectPreferencePage_error_decode; 
-				JavaPlugin.log(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.ERROR, message, e));
+				JavaScriptPlugin.log(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.ERROR, message, e));
 			}
 		}
-		return (IClasspathEntry[]) res.toArray(new IClasspathEntry[res.size()]);	
+		return (IIncludePathEntry[]) res.toArray(new IIncludePathEntry[res.size()]);	
 	}
 	
 	
-	public static String encodeJRELibrary(String desc, IClasspathEntry[] cpentries) {
+	public static String encodeJRELibrary(String desc, IIncludePathEntry[] cpentries) {
 		StringBuffer buf= new StringBuffer();
 		for (int i= 0; i < cpentries.length; i++) {
-			IClasspathEntry entry= cpentries[i];
+			IIncludePathEntry entry= cpentries[i];
 			buf.append(encode(desc));
 			buf.append(' ');
 			buf.append(entry.getEntryKind());
@@ -226,7 +226,7 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 
 	public NewJavaProjectPreferencePage() {
 		super();
-		setPreferenceStore(JavaPlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(JavaScriptPlugin.getDefault().getPreferenceStore());
 		setDescription(PreferencesMessages.NewJavaProjectPreferencePage_description); 
 	
 		// title used when opened programatically
@@ -263,21 +263,21 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 	
 	private static String getDefaultJRELibraries() {
 		StringBuffer buf= new StringBuffer();
-		IClasspathEntry cntentry= getJREContainerEntry();
-		buf.append(encodeJRELibrary(PreferencesMessages.NewJavaProjectPreferencePage_jre_container_description, new IClasspathEntry[] { cntentry} )); 
+		IIncludePathEntry cntentry= getJREContainerEntry();
+		buf.append(encodeJRELibrary(PreferencesMessages.NewJavaProjectPreferencePage_jre_container_description, new IIncludePathEntry[] { cntentry} )); 
 		buf.append(';');
-		IClasspathEntry varentry= getJREVariableEntry();
-		buf.append(encodeJRELibrary(PreferencesMessages.NewJavaProjectPreferencePage_jre_variable_description, new IClasspathEntry[] { varentry })); 
+		IIncludePathEntry varentry= getJREVariableEntry();
+		buf.append(encodeJRELibrary(PreferencesMessages.NewJavaProjectPreferencePage_jre_variable_description, new IIncludePathEntry[] { varentry })); 
 		buf.append(';');
 		return buf.toString();
 	}
 	
-	private static IClasspathEntry getJREContainerEntry() {
-		return JavaCore.newContainerEntry(new Path("org.eclipse.wst.jsdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+	private static IIncludePathEntry getJREContainerEntry() {
+		return JavaScriptCore.newContainerEntry(new Path("org.eclipse.wst.jsdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
 	}
 	
-	private static IClasspathEntry getJREVariableEntry() {
-		return JavaCore.newVariableEntry(new Path("JRE_LIB"), new Path("JRE_SRC"), new Path("JRE_SRCROOT")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	private static IIncludePathEntry getJREVariableEntry() {
+		return JavaScriptCore.newVariableEntry(new Path("JRE_LIB"), new Path("JRE_SRC"), new Path("JRE_SRCROOT")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}	
 
 	/*
@@ -405,7 +405,7 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 				updateStatus(new StatusInfo(IStatus.ERROR,  PreferencesMessages.NewJavaProjectPreferencePage_folders_error_namesempty)); 
 				return;
 			}
-			IWorkspace workspace= JavaPlugin.getWorkspace();
+			IWorkspace workspace= JavaScriptPlugin.getWorkspace();
 			IProject dmy= workspace.getRoot().getProject("project"); //$NON-NLS-1$
 			
 			IStatus status;
@@ -427,8 +427,8 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 					return;
 				}
 			}
-			IClasspathEntry entry= JavaCore.newSourceEntry(srcPath);
-			status= JavaConventions.validateClasspath(JavaCore.create(dmy), new IClasspathEntry[] { entry }, binPath);
+			IIncludePathEntry entry= JavaScriptCore.newSourceEntry(srcPath);
+			status= JavaScriptConventions.validateClasspath(JavaScriptCore.create(dmy), new IIncludePathEntry[] { entry }, binPath);
 			if (!status.isOK()) {
 				String message= PreferencesMessages.NewJavaProjectPreferencePage_folders_error_invalidcp; 
 				updateStatus(new StatusInfo(IStatus.ERROR, message));
@@ -510,7 +510,7 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 			store.setValue(CLASSPATH_JRELIBRARY_INDEX, fJRECombo.getSelectionIndex());
 		}
 		
-		JavaPlugin.getDefault().savePluginPreferences();
+		JavaScriptPlugin.getDefault().savePluginPreferences();
 		return super.performOk();
 	}
 	

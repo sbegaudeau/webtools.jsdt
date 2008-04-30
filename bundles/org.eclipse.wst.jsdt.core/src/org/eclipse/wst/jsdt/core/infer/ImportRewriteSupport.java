@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.infer;
 
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 
 /**
  *  Support for extending the automatic import insertion mechanisms
@@ -50,7 +50,7 @@ public class ImportRewriteSupport {
 	 * Find the starting position of an import when none already exist
 	 * @return the starting position, -1 for default action
 	 */
-	public int getImportStartPosition(CompilationUnit root) {
+	public int getImportStartPosition(JavaScriptUnit root) {
 		return -1;
 	}
 }

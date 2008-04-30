@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.scripting;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringContribution;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractConstantRefactoring;
 
@@ -28,6 +28,6 @@ public final class ExtractConstantRefactoringContribution extends JDTRefactoring
 	 * {@inheritDoc}
 	 */
 	public final Refactoring createRefactoring(final RefactoringDescriptor descriptor) throws CoreException {
-		return new ExtractConstantRefactoring((ICompilationUnit) null, 0, 0);
+		return new ExtractConstantRefactoring((IJavaScriptUnit) null, 0, 0);
 	}
 }

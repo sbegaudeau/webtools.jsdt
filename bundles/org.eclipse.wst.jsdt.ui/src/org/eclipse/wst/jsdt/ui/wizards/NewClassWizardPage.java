@@ -22,7 +22,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -78,7 +78,7 @@ public class NewClassWizardPage extends NewTypeWizardPage {
 	 * @param selection used to initialize the fields
 	 */
 	public void init(IStructuredSelection selection) {
-		IJavaElement jelem= getInitialJavaElement(selection);
+		IJavaScriptElement jelem= getInitialJavaElement(selection);
 		initContainerPage(jelem);
 		initTypePage(jelem);
 		doStatusUpdate();
@@ -258,7 +258,7 @@ public class NewClassWizardPage extends NewTypeWizardPage {
 		if (doMain) {
 			StringBuffer buf= new StringBuffer();
 			final String lineDelim= "\n"; // OK, since content is formatted afterwards //$NON-NLS-1$
-			String comment= CodeGeneration.getMethodComment(type.getCompilationUnit(), type.getTypeQualifiedName('.'), "main", new String[] {"args"}, new String[0], Signature.createTypeSignature("void", true), null, lineDelim); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			String comment= CodeGeneration.getMethodComment(type.getJavaScriptUnit(), type.getTypeQualifiedName('.'), "main", new String[] {"args"}, new String[0], Signature.createTypeSignature("void", true), null, lineDelim); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if (comment != null) {
 				buf.append(comment);
 				buf.append(lineDelim);
@@ -267,7 +267,7 @@ public class NewClassWizardPage extends NewTypeWizardPage {
 			buf.append(imports.addImport("java.lang.String")); //$NON-NLS-1$
 			buf.append("[] args) {"); //$NON-NLS-1$
 			buf.append(lineDelim);
-			final String content= CodeGeneration.getMethodBodyContent(type.getCompilationUnit(), type.getTypeQualifiedName('.'), "main", false, "", lineDelim); //$NON-NLS-1$ //$NON-NLS-2$
+			final String content= CodeGeneration.getMethodBodyContent(type.getJavaScriptUnit(), type.getTypeQualifiedName('.'), "main", false, "", lineDelim); //$NON-NLS-1$ //$NON-NLS-2$
 			if (content != null && content.length() != 0)
 				buf.append(content);
 			buf.append(lineDelim);

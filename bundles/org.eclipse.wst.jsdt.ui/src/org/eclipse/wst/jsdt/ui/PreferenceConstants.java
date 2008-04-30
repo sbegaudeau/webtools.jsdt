@@ -24,18 +24,18 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.ui.IJavaThemeConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings;
 import org.eclipse.wst.jsdt.internal.ui.preferences.NewJavaProjectPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.FormatterProfileManager;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.JavaSpellingEngine;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.SpellCheckEngine;
-import org.eclipse.wst.jsdt.ui.text.IJavaColorConstants;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptColorConstants;
 
 /**
  * Preference constants used in the JDT-UI preference store. Clients should only read the
@@ -193,7 +193,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @deprecated Use JavaCore preference store (key JavaCore.
+	 * @deprecated Use JavaScriptCore preference store (key JavaScriptCore.
 	 * CODEASSIST_FIELD_PREFIXES and CODEASSIST_STATIC_FIELD_PREFIXES)
 	 */	
 	public static final String CODEGEN_USE_GETTERSETTER_PREFIX= "org.eclipse.wst.jsdt.ui.gettersetter.prefix.enable";//$NON-NLS-1$
@@ -205,7 +205,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>String</code>: comma separated list of prefixed
 	 * </p>
 	 * 
-	 * @deprecated Use JavaCore preference store (key JavaCore.
+	 * @deprecated Use JavaScriptCore preference store (key JavaScriptCore.
 	 * CODEASSIST_FIELD_PREFIXES and CODEASSIST_STATIC_FIELD_PREFIXES)
 	 */	
 	public static final String CODEGEN_GETTERSETTER_PREFIX= "org.eclipse.wst.jsdt.ui.gettersetter.prefix.list";//$NON-NLS-1$
@@ -215,7 +215,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @deprecated Use JavaCore preference store (key JavaCore.
+	 * @deprecated Use JavaScriptCore preference store (key JavaScriptCore.
 	 * CODEASSIST_FIELD_PREFIXES and CODEASSIST_STATIC_FIELD_PREFIXES)
 	 */	
 	public static final String CODEGEN_USE_GETTERSETTER_SUFFIX= "org.eclipse.wst.jsdt.ui.gettersetter.suffix.enable";//$NON-NLS-1$
@@ -226,7 +226,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>String</code>: comma separated list of suffixes
 	 * </p>
-	 * @deprecated Use setting from JavaCore preference store (key JavaCore.
+	 * @deprecated Use setting from JavaScriptCore preference store (key JavaScriptCore.
 	 * CODEASSIST_FIELD_SUFFIXES and CODEASSIST_STATIC_FIELD_SUFFIXES)
 	 */	
 	public static final String CODEGEN_GETTERSETTER_SUFFIX= "org.eclipse.wst.jsdt.ui.gettersetter.suffix.list"; //$NON-NLS-1$
@@ -465,7 +465,7 @@ public class PreferenceConstants {
 
 	/**
 	 * A named preference that holds a list of possible JRE libraries used by the New Java Project wizard. A library 
-	 * consists of a description and an arbitrary number of <code>IClasspathEntry</code>s, that will represent the 
+	 * consists of a description and an arbitrary number of <code>IIncludePathEntry</code>s, that will represent the 
 	 * JRE on the new project's class path. 
 	 * <p>
 	 * Value is of type <code>String</code>: a semicolon separated list of encoded JRE libraries. 
@@ -477,7 +477,7 @@ public class PreferenceConstants {
 	 * </p>
 	 * 
 	 * @see #NEWPROJECT_JRELIBRARY_INDEX
-	 * @see #encodeJRELibrary(String, IClasspathEntry[])
+	 * @see #encodeJRELibrary(String, IIncludePathEntry[])
 	 * @see #decodeJRELibraryDescription(String)
 	 * @see #decodeJRELibraryClasspathEntries(String)
 	 */
@@ -561,7 +561,7 @@ public class PreferenceConstants {
 	 * @see #UPDATE_WHILE_EDITING
 	 * @deprecated Since 3.0, views now always update while editing
 	 */
-	public static final String UPDATE_JAVA_VIEWS= "JavaUI.update"; //$NON-NLS-1$
+	public static final String UPDATE_JAVA_VIEWS= "JavaScriptUI.update"; //$NON-NLS-1$
 
 	/**
 	 * A string value used by the named preference <code>UPDATE_JAVA_VIEWS</code>
@@ -569,7 +569,7 @@ public class PreferenceConstants {
 	 * @see #UPDATE_JAVA_VIEWS
 	 * @deprecated Since 3.0, views now always update while editing
 	 */
-	public static final String UPDATE_ON_SAVE= "JavaUI.update.onSave"; //$NON-NLS-1$
+	public static final String UPDATE_ON_SAVE= "JavaScriptUI.update.onSave"; //$NON-NLS-1$
 
 	/**
 	 * A string value used by the named preference <code>UPDATE_JAVA_VIEWS</code>
@@ -577,7 +577,7 @@ public class PreferenceConstants {
 	 * @see #UPDATE_JAVA_VIEWS
 	 * @deprecated Since 3.0, views now always update while editing
 	 */
-	public static final String UPDATE_WHILE_EDITING= "JavaUI.update.whileEditing"; //$NON-NLS-1$
+	public static final String UPDATE_WHILE_EDITING= "JavaScriptUI.update.whileEditing"; //$NON-NLS-1$
 
 	/**
 	 * A named preference that holds the path of the Javadoc command used by the Javadoc creation wizard.
@@ -590,7 +590,7 @@ public class PreferenceConstants {
 	/**
 	 * A named preference that defines whether the hint to make hover sticky should be shown.
 	 *
-	 * @see JavaUI
+	 * @see JavaScriptUI
 	 * @since 3.0
 	 * @deprecated As of 3.3, replaced by {@link AbstractDecoratedTextEditorPreferenceConstants#EDITOR_SHOW_TEXT_HOVER_AFFORDANCE}
 	 */
@@ -599,7 +599,7 @@ public class PreferenceConstants {
 	/**
 	 * A named preference that defines the key for the hover modifiers.
 	 *
-	 * @see JavaUI
+	 * @see JavaScriptUI
 	 * @since 2.1
 	 */
 	public static final String EDITOR_TEXT_HOVER_MODIFIERS= "hoverModifiers"; //$NON-NLS-1$
@@ -609,7 +609,7 @@ public class PreferenceConstants {
 	 * The value is only used if the value of <code>EDITOR_TEXT_HOVER_MODIFIERS</code>
 	 * cannot be resolved to valid SWT modifier bits.
 	 * 
-	 * @see JavaUI
+	 * @see JavaScriptUI
 	 * @see #EDITOR_TEXT_HOVER_MODIFIERS
 	 * @since 2.1.1
 	 */
@@ -1250,7 +1250,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
-	public final static String EDITOR_MULTI_LINE_COMMENT_COLOR= IJavaColorConstants.JAVA_MULTI_LINE_COMMENT;
+	public final static String EDITOR_MULTI_LINE_COMMENT_COLOR= IJavaScriptColorConstants.JAVA_MULTI_LINE_COMMENT;
 
 	/**
 	 * The symbolic font name for the Java editor text font 
@@ -1267,7 +1267,7 @@ public class PreferenceConstants {
 	 * in bold. If <code>false</code> the are rendered using no font style attribute.
 	 * </p>
 	 */
-	public final static String EDITOR_MULTI_LINE_COMMENT_BOLD= IJavaColorConstants.JAVA_MULTI_LINE_COMMENT + EDITOR_BOLD_SUFFIX; 
+	public final static String EDITOR_MULTI_LINE_COMMENT_BOLD= IJavaScriptColorConstants.JAVA_MULTI_LINE_COMMENT + EDITOR_BOLD_SUFFIX; 
 
 	/**
 	 * A named preference that controls whether multi-line comments are rendered in italic.
@@ -1278,7 +1278,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public final static String EDITOR_MULTI_LINE_COMMENT_ITALIC= IJavaColorConstants.JAVA_MULTI_LINE_COMMENT + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_MULTI_LINE_COMMENT_ITALIC= IJavaScriptColorConstants.JAVA_MULTI_LINE_COMMENT + EDITOR_ITALIC_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether multi-line comments are rendered in strikethrough.
@@ -1289,7 +1289,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_MULTI_LINE_COMMENT_STRIKETHROUGH= IJavaColorConstants.JAVA_MULTI_LINE_COMMENT + EDITOR_STRIKETHROUGH_SUFFIX;
+	public final static String EDITOR_MULTI_LINE_COMMENT_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_MULTI_LINE_COMMENT + EDITOR_STRIKETHROUGH_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether multi-line comments are rendered in underline.
@@ -1300,7 +1300,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_MULTI_LINE_COMMENT_UNDERLINE= IJavaColorConstants.JAVA_MULTI_LINE_COMMENT + EDITOR_UNDERLINE_SUFFIX; 
+	public final static String EDITOR_MULTI_LINE_COMMENT_UNDERLINE= IJavaScriptColorConstants.JAVA_MULTI_LINE_COMMENT + EDITOR_UNDERLINE_SUFFIX; 
 
 	/**
 	 * A named preference that holds the color used to render single line comments.
@@ -1312,7 +1312,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
-	public final static String EDITOR_SINGLE_LINE_COMMENT_COLOR= IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT;
+	public final static String EDITOR_SINGLE_LINE_COMMENT_COLOR= IJavaScriptColorConstants.JAVA_SINGLE_LINE_COMMENT;
 
 	/**
 	 * A named preference that controls whether single line comments are rendered in bold.
@@ -1321,7 +1321,7 @@ public class PreferenceConstants {
 	 * in bold. If <code>false</code> the are rendered using no font style attribute.
 	 * </p>
 	 */
-	public final static String EDITOR_SINGLE_LINE_COMMENT_BOLD= IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT + EDITOR_BOLD_SUFFIX; 
+	public final static String EDITOR_SINGLE_LINE_COMMENT_BOLD= IJavaScriptColorConstants.JAVA_SINGLE_LINE_COMMENT + EDITOR_BOLD_SUFFIX; 
 
 	/**
 	 * A named preference that controls whether single line comments are rendered in italic.
@@ -1332,7 +1332,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public final static String EDITOR_SINGLE_LINE_COMMENT_ITALIC= IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_SINGLE_LINE_COMMENT_ITALIC= IJavaScriptColorConstants.JAVA_SINGLE_LINE_COMMENT + EDITOR_ITALIC_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether single line comments are rendered in strikethrough.
@@ -1343,7 +1343,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_SINGLE_LINE_COMMENT_STRIKETHROUGH= IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT + EDITOR_STRIKETHROUGH_SUFFIX;
+	public final static String EDITOR_SINGLE_LINE_COMMENT_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_SINGLE_LINE_COMMENT + EDITOR_STRIKETHROUGH_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether single line comments are rendered in underline.
@@ -1354,7 +1354,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_SINGLE_LINE_COMMENT_UNDERLINE= IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT + EDITOR_UNDERLINE_SUFFIX; 
+	public final static String EDITOR_SINGLE_LINE_COMMENT_UNDERLINE= IJavaScriptColorConstants.JAVA_SINGLE_LINE_COMMENT + EDITOR_UNDERLINE_SUFFIX; 
 
 	/**
 	 * A named preference that holds the color used to render java keywords.
@@ -1366,7 +1366,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
-	public final static String EDITOR_JAVA_KEYWORD_COLOR= IJavaColorConstants.JAVA_KEYWORD;
+	public final static String EDITOR_JAVA_KEYWORD_COLOR= IJavaScriptColorConstants.JAVA_KEYWORD;
 
 	/**
 	 * A named preference that controls whether keywords are rendered in bold.
@@ -1374,7 +1374,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 */
-	public final static String EDITOR_JAVA_KEYWORD_BOLD= IJavaColorConstants.JAVA_KEYWORD + EDITOR_BOLD_SUFFIX;
+	public final static String EDITOR_JAVA_KEYWORD_BOLD= IJavaScriptColorConstants.JAVA_KEYWORD + EDITOR_BOLD_SUFFIX;
 
 	/**
 	 * A named preference that controls whether keywords are rendered in italic.
@@ -1384,7 +1384,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public final static String EDITOR_JAVA_KEYWORD_ITALIC= IJavaColorConstants.JAVA_KEYWORD + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_JAVA_KEYWORD_ITALIC= IJavaScriptColorConstants.JAVA_KEYWORD + EDITOR_ITALIC_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether keywords are rendered in strikethrough.
@@ -1394,7 +1394,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVA_KEYWORD_STRIKETHROUGH= IJavaColorConstants.JAVA_KEYWORD + EDITOR_STRIKETHROUGH_SUFFIX;
+	public final static String EDITOR_JAVA_KEYWORD_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_KEYWORD + EDITOR_STRIKETHROUGH_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether keywords are rendered in underline.
@@ -1404,7 +1404,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVA_KEYWORD_UNDERLINE= IJavaColorConstants.JAVA_KEYWORD + EDITOR_UNDERLINE_SUFFIX;
+	public final static String EDITOR_JAVA_KEYWORD_UNDERLINE= IJavaScriptColorConstants.JAVA_KEYWORD + EDITOR_UNDERLINE_SUFFIX;
 
 	/**
 	 * A named preference that holds the color used to render string constants.
@@ -1416,7 +1416,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
-	public final static String EDITOR_STRING_COLOR= IJavaColorConstants.JAVA_STRING;
+	public final static String EDITOR_STRING_COLOR= IJavaScriptColorConstants.JAVA_STRING;
 
 	/**
 	 * A named preference that controls whether string constants are rendered in bold.
@@ -1424,7 +1424,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 */
-	public final static String EDITOR_STRING_BOLD= IJavaColorConstants.JAVA_STRING + EDITOR_BOLD_SUFFIX;
+	public final static String EDITOR_STRING_BOLD= IJavaScriptColorConstants.JAVA_STRING + EDITOR_BOLD_SUFFIX;
 
 	/**
 	 * A named preference that controls whether string constants are rendered in italic.
@@ -1434,7 +1434,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public final static String EDITOR_STRING_ITALIC= IJavaColorConstants.JAVA_STRING + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_STRING_ITALIC= IJavaScriptColorConstants.JAVA_STRING + EDITOR_ITALIC_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether string constants are rendered in strikethrough.
@@ -1444,7 +1444,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_STRING_STRIKETHROUGH= IJavaColorConstants.JAVA_STRING + EDITOR_STRIKETHROUGH_SUFFIX;
+	public final static String EDITOR_STRING_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_STRING + EDITOR_STRIKETHROUGH_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether string constants are rendered in underline.
@@ -1454,7 +1454,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_STRING_UNDERLINE= IJavaColorConstants.JAVA_STRING + EDITOR_UNDERLINE_SUFFIX;
+	public final static String EDITOR_STRING_UNDERLINE= IJavaScriptColorConstants.JAVA_STRING + EDITOR_UNDERLINE_SUFFIX;
 
 	/**
 	 * A named preference that holds the color used to render method names.
@@ -1468,7 +1468,7 @@ public class PreferenceConstants {
 	 * @since 3.0
 	 * @deprecated the method name highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#METHOD}
 	 */
-	public final static String EDITOR_JAVA_METHOD_NAME_COLOR= IJavaColorConstants.JAVA_METHOD_NAME;
+	public final static String EDITOR_JAVA_METHOD_NAME_COLOR= IJavaScriptColorConstants.JAVA_METHOD_NAME;
 	
 	/**
 	 * A named preference that controls whether method names are rendered in bold.
@@ -1479,7 +1479,7 @@ public class PreferenceConstants {
 	 * @since 3.0
 	 * @deprecated the method name highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#METHOD}
 	 */
-	public final static String EDITOR_JAVA_METHOD_NAME_BOLD= IJavaColorConstants.JAVA_METHOD_NAME + EDITOR_BOLD_SUFFIX;
+	public final static String EDITOR_JAVA_METHOD_NAME_BOLD= IJavaScriptColorConstants.JAVA_METHOD_NAME + EDITOR_BOLD_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether method names are rendered in italic.
@@ -1490,7 +1490,7 @@ public class PreferenceConstants {
 	 * @since 3.0
 	 * @deprecated the method name highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#METHOD}
 	 */
-	public final static String EDITOR_JAVA_METHOD_NAME_ITALIC= IJavaColorConstants.JAVA_METHOD_NAME + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_JAVA_METHOD_NAME_ITALIC= IJavaScriptColorConstants.JAVA_METHOD_NAME + EDITOR_ITALIC_SUFFIX;
 	
 	/**
 	 * A named preference that holds the color used to render the 'return' keyword.
@@ -1503,7 +1503,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 * @since 3.0
 	 */
-	public final static String EDITOR_JAVA_KEYWORD_RETURN_COLOR= IJavaColorConstants.JAVA_KEYWORD_RETURN;	
+	public final static String EDITOR_JAVA_KEYWORD_RETURN_COLOR= IJavaScriptColorConstants.JAVA_KEYWORD_RETURN;	
 
 	/**
 	 * A named preference that controls whether 'return' keyword is rendered in bold.
@@ -1513,7 +1513,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public final static String EDITOR_JAVA_KEYWORD_RETURN_BOLD= IJavaColorConstants.JAVA_KEYWORD_RETURN + EDITOR_BOLD_SUFFIX;
+	public final static String EDITOR_JAVA_KEYWORD_RETURN_BOLD= IJavaScriptColorConstants.JAVA_KEYWORD_RETURN + EDITOR_BOLD_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether 'return' keyword is rendered in italic.
@@ -1523,7 +1523,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public final static String EDITOR_JAVA_KEYWORD_RETURN_ITALIC= IJavaColorConstants.JAVA_KEYWORD_RETURN + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_JAVA_KEYWORD_RETURN_ITALIC= IJavaScriptColorConstants.JAVA_KEYWORD_RETURN + EDITOR_ITALIC_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether 'return' keyword is rendered in strikethrough.
@@ -1533,7 +1533,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVA_KEYWORD_RETURN_STRIKETHROUGH= IJavaColorConstants.JAVA_KEYWORD_RETURN + EDITOR_STRIKETHROUGH_SUFFIX;
+	public final static String EDITOR_JAVA_KEYWORD_RETURN_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_KEYWORD_RETURN + EDITOR_STRIKETHROUGH_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether 'return' keyword is rendered in italic.
@@ -1543,7 +1543,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVA_KEYWORD_RETURN_UNDERLINE= IJavaColorConstants.JAVA_KEYWORD_RETURN + EDITOR_UNDERLINE_SUFFIX;
+	public final static String EDITOR_JAVA_KEYWORD_RETURN_UNDERLINE= IJavaScriptColorConstants.JAVA_KEYWORD_RETURN + EDITOR_UNDERLINE_SUFFIX;
 	
 	/**
 	 * A named preference that holds the color used to render operators.
@@ -1556,7 +1556,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 * @since 3.0
 	 */
-	public final static String EDITOR_JAVA_OPERATOR_COLOR= IJavaColorConstants.JAVA_OPERATOR;	
+	public final static String EDITOR_JAVA_OPERATOR_COLOR= IJavaScriptColorConstants.JAVA_OPERATOR;	
  
 	/**
 	 * A named preference that controls whether operators are rendered in bold.
@@ -1566,7 +1566,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public final static String EDITOR_JAVA_OPERATOR_BOLD= IJavaColorConstants.JAVA_OPERATOR + EDITOR_BOLD_SUFFIX;
+	public final static String EDITOR_JAVA_OPERATOR_BOLD= IJavaScriptColorConstants.JAVA_OPERATOR + EDITOR_BOLD_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether operators are rendered in italic.
@@ -1576,7 +1576,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public final static String EDITOR_JAVA_OPERATOR_ITALIC= IJavaColorConstants.JAVA_OPERATOR + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_JAVA_OPERATOR_ITALIC= IJavaScriptColorConstants.JAVA_OPERATOR + EDITOR_ITALIC_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether operators are rendered in strikethrough.
@@ -1586,7 +1586,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVA_OPERATOR_STRIKETHROUGH= IJavaColorConstants.JAVA_OPERATOR + EDITOR_STRIKETHROUGH_SUFFIX;
+	public final static String EDITOR_JAVA_OPERATOR_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_OPERATOR + EDITOR_STRIKETHROUGH_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether operators are rendered in underline.
@@ -1596,7 +1596,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVA_OPERATOR_UNDERLINE= IJavaColorConstants.JAVA_OPERATOR + EDITOR_UNDERLINE_SUFFIX;
+	public final static String EDITOR_JAVA_OPERATOR_UNDERLINE= IJavaScriptColorConstants.JAVA_OPERATOR + EDITOR_UNDERLINE_SUFFIX;
 	
 	/**
 	 * A named preference that holds the color used to render brackets.
@@ -1609,7 +1609,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 * @since 3.3
 	 */
-	public final static String EDITOR_JAVA_BRACKET_COLOR= IJavaColorConstants.JAVA_BRACKET;
+	public final static String EDITOR_JAVA_BRACKET_COLOR= IJavaScriptColorConstants.JAVA_BRACKET;
 
 	/**
 	 * A named preference that controls whether brackets are rendered in bold.
@@ -1619,7 +1619,7 @@ public class PreferenceConstants {
 	 *
 	 * @since 3.3
 	 */
-	public final static String EDITOR_JAVA_BRACKET_BOLD= IJavaColorConstants.JAVA_BRACKET + EDITOR_BOLD_SUFFIX;
+	public final static String EDITOR_JAVA_BRACKET_BOLD= IJavaScriptColorConstants.JAVA_BRACKET + EDITOR_BOLD_SUFFIX;
 
 	/**
 	 * A named preference that controls whether brackets are rendered in italic.
@@ -1629,7 +1629,7 @@ public class PreferenceConstants {
 	 *
 	 * @since 3.3
 	 */
-	public final static String EDITOR_JAVA_BRACKET_ITALIC= IJavaColorConstants.JAVA_BRACKET + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_JAVA_BRACKET_ITALIC= IJavaScriptColorConstants.JAVA_BRACKET + EDITOR_ITALIC_SUFFIX;
 
 	/**
 	 * A named preference that controls whether brackets are rendered in strikethrough.
@@ -1639,7 +1639,7 @@ public class PreferenceConstants {
 	 *
 	 * @since 3.3
 	 */
-	public final static String EDITOR_JAVA_BRACKET_STRIKETHROUGH= IJavaColorConstants.JAVA_BRACKET + EDITOR_STRIKETHROUGH_SUFFIX;
+	public final static String EDITOR_JAVA_BRACKET_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_BRACKET + EDITOR_STRIKETHROUGH_SUFFIX;
 
 	/**
 	 * A named preference that controls whether brackets are rendered in underline.
@@ -1649,7 +1649,7 @@ public class PreferenceConstants {
 	 *
 	 * @since 3.3
 	 */
-	public final static String EDITOR_JAVA_BRACKET_UNDERLINE= IJavaColorConstants.JAVA_BRACKET + EDITOR_UNDERLINE_SUFFIX;
+	public final static String EDITOR_JAVA_BRACKET_UNDERLINE= IJavaScriptColorConstants.JAVA_BRACKET + EDITOR_UNDERLINE_SUFFIX;
 
 	/**
 	 * A named preference that holds the color used to render annotations.
@@ -1663,7 +1663,7 @@ public class PreferenceConstants {
 	 * @since 3.1
 	 * @deprecated the annotation highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#ANNOTATION}
 	 */
-	public final static String EDITOR_JAVA_ANNOTATION_COLOR= IJavaColorConstants.JAVA_ANNOTATION;	
+	public final static String EDITOR_JAVA_ANNOTATION_COLOR= IJavaScriptColorConstants.JAVA_ANNOTATION;	
  
 	/**
 	 * A named preference that controls whether annotations are rendered in bold.
@@ -1674,7 +1674,7 @@ public class PreferenceConstants {
 	 * @since 3.1
 	 * @deprecated the annotation highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#ANNOTATION}
 	 */
-	public final static String EDITOR_JAVA_ANNOTATION_BOLD= IJavaColorConstants.JAVA_ANNOTATION + EDITOR_BOLD_SUFFIX;
+	public final static String EDITOR_JAVA_ANNOTATION_BOLD= IJavaScriptColorConstants.JAVA_ANNOTATION + EDITOR_BOLD_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether annotations are rendered in italic.
@@ -1685,7 +1685,7 @@ public class PreferenceConstants {
 	 * @since 3.1
 	 * @deprecated the annotation highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#ANNOTATION}
 	 */
-	public final static String EDITOR_JAVA_ANNOTATION_ITALIC= IJavaColorConstants.JAVA_ANNOTATION + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_JAVA_ANNOTATION_ITALIC= IJavaScriptColorConstants.JAVA_ANNOTATION + EDITOR_ITALIC_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether annotations are rendered in strikethrough.
@@ -1696,7 +1696,7 @@ public class PreferenceConstants {
 	 * @since 3.1
 	 * @deprecated the annotation highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#ANNOTATION}
 	 */
-	public final static String EDITOR_JAVA_ANNOTATION_STRIKETHROUGH= IJavaColorConstants.JAVA_ANNOTATION + EDITOR_STRIKETHROUGH_SUFFIX;
+	public final static String EDITOR_JAVA_ANNOTATION_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_ANNOTATION + EDITOR_STRIKETHROUGH_SUFFIX;
 
 	/**
 	 * A named preference that controls whether annotations are rendered in underline.
@@ -1707,7 +1707,7 @@ public class PreferenceConstants {
 	 * @since 3.1
 	 * @deprecated the annotation highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#ANNOTATION}
 	 */
-	public final static String EDITOR_JAVA_ANNOTATION_UNDERLINE= IJavaColorConstants.JAVA_ANNOTATION + EDITOR_UNDERLINE_SUFFIX;
+	public final static String EDITOR_JAVA_ANNOTATION_UNDERLINE= IJavaScriptColorConstants.JAVA_ANNOTATION + EDITOR_UNDERLINE_SUFFIX;
 	
 	/**
 	 * A named preference that holds the color used to render java default text.
@@ -1719,7 +1719,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
-	public final static String EDITOR_JAVA_DEFAULT_COLOR= IJavaColorConstants.JAVA_DEFAULT;
+	public final static String EDITOR_JAVA_DEFAULT_COLOR= IJavaScriptColorConstants.JAVA_DEFAULT;
 
 	/**
 	 * A named preference that controls whether Java default text is rendered in bold.
@@ -1727,7 +1727,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 */
-	public final static String EDITOR_JAVA_DEFAULT_BOLD= IJavaColorConstants.JAVA_DEFAULT + EDITOR_BOLD_SUFFIX;
+	public final static String EDITOR_JAVA_DEFAULT_BOLD= IJavaScriptColorConstants.JAVA_DEFAULT + EDITOR_BOLD_SUFFIX;
 
 	/**
 	 * A named preference that controls whether Java default text is rendered in italic.
@@ -1737,7 +1737,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public final static String EDITOR_JAVA_DEFAULT_ITALIC= IJavaColorConstants.JAVA_DEFAULT + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_JAVA_DEFAULT_ITALIC= IJavaScriptColorConstants.JAVA_DEFAULT + EDITOR_ITALIC_SUFFIX;
 	/**
 	 * A named preference that controls whether Java default text is rendered in strikethrough.
 	 * <p>
@@ -1746,7 +1746,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVA_DEFAULT_STRIKETHROUGH= IJavaColorConstants.JAVA_DEFAULT + EDITOR_STRIKETHROUGH_SUFFIX;
+	public final static String EDITOR_JAVA_DEFAULT_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_DEFAULT + EDITOR_STRIKETHROUGH_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether Java default text is rendered in underline.
@@ -1756,7 +1756,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVA_DEFAULT_UNDERLINE= IJavaColorConstants.JAVA_DEFAULT + EDITOR_UNDERLINE_SUFFIX;
+	public final static String EDITOR_JAVA_DEFAULT_UNDERLINE= IJavaScriptColorConstants.JAVA_DEFAULT + EDITOR_UNDERLINE_SUFFIX;
 
 	/**
 	 * A named preference that holds the color used to render task tags.
@@ -1769,7 +1769,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 * @since 2.1
 	 */
-	public final static String EDITOR_TASK_TAG_COLOR= IJavaColorConstants.TASK_TAG;
+	public final static String EDITOR_TASK_TAG_COLOR= IJavaScriptColorConstants.TASK_TAG;
 
 	/**
 	 * A named preference that controls whether task tags are rendered in bold.
@@ -1778,7 +1778,7 @@ public class PreferenceConstants {
 	 * </p>
 	 * @since 2.1
 	 */
-	public final static String EDITOR_TASK_TAG_BOLD= IJavaColorConstants.TASK_TAG + EDITOR_BOLD_SUFFIX;
+	public final static String EDITOR_TASK_TAG_BOLD= IJavaScriptColorConstants.TASK_TAG + EDITOR_BOLD_SUFFIX;
 
 	/**
 	 * A named preference that controls whether task tags are rendered in italic.
@@ -1788,7 +1788,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public final static String EDITOR_TASK_TAG_ITALIC= IJavaColorConstants.TASK_TAG + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_TASK_TAG_ITALIC= IJavaScriptColorConstants.TASK_TAG + EDITOR_ITALIC_SUFFIX;
 	/**
 	 * A named preference that controls whether task tags are rendered in strikethrough.
 	 * <p>
@@ -1797,7 +1797,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_TASK_TAG_STRIKETHROUGH= IJavaColorConstants.TASK_TAG + EDITOR_STRIKETHROUGH_SUFFIX;
+	public final static String EDITOR_TASK_TAG_STRIKETHROUGH= IJavaScriptColorConstants.TASK_TAG + EDITOR_STRIKETHROUGH_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether task tags are rendered in underline.
@@ -1807,7 +1807,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_TASK_TAG_UNDERLINE= IJavaColorConstants.TASK_TAG + EDITOR_UNDERLINE_SUFFIX;
+	public final static String EDITOR_TASK_TAG_UNDERLINE= IJavaScriptColorConstants.TASK_TAG + EDITOR_UNDERLINE_SUFFIX;
 
 	/**
 	 * A named preference that holds the color used to render javadoc keywords.
@@ -1819,7 +1819,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
-	public final static String EDITOR_JAVADOC_KEYWORD_COLOR= IJavaColorConstants.JAVADOC_KEYWORD;
+	public final static String EDITOR_JAVADOC_KEYWORD_COLOR= IJavaScriptColorConstants.JAVADOC_KEYWORD;
 
 	/**
 	 * A named preference that controls whether javadoc keywords are rendered in bold.
@@ -1827,7 +1827,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 */
-	public final static String EDITOR_JAVADOC_KEYWORD_BOLD= IJavaColorConstants.JAVADOC_KEYWORD + EDITOR_BOLD_SUFFIX;
+	public final static String EDITOR_JAVADOC_KEYWORD_BOLD= IJavaScriptColorConstants.JAVADOC_KEYWORD + EDITOR_BOLD_SUFFIX;
 
 	/**
 	 * A named preference that controls whether javadoc keywords are rendered in italic.
@@ -1837,7 +1837,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public final static String EDITOR_JAVADOC_KEYWORD_ITALIC= IJavaColorConstants.JAVADOC_KEYWORD + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_JAVADOC_KEYWORD_ITALIC= IJavaScriptColorConstants.JAVADOC_KEYWORD + EDITOR_ITALIC_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether javadoc keywords are rendered in strikethrough.
@@ -1848,7 +1848,7 @@ public class PreferenceConstants {
 	 * @since 3.1
 	 * 
 	 */
-	public final static String EDITOR_JAVADOC_KEYWORD_STRIKETHROUGH= IJavaColorConstants.JAVADOC_KEYWORD + EDITOR_STRIKETHROUGH_SUFFIX;
+	public final static String EDITOR_JAVADOC_KEYWORD_STRIKETHROUGH= IJavaScriptColorConstants.JAVADOC_KEYWORD + EDITOR_STRIKETHROUGH_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether javadoc keywords are rendered in underline.
@@ -1858,7 +1858,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVADOC_KEYWORD_UNDERLINE= IJavaColorConstants.JAVADOC_KEYWORD + EDITOR_UNDERLINE_SUFFIX;
+	public final static String EDITOR_JAVADOC_KEYWORD_UNDERLINE= IJavaScriptColorConstants.JAVADOC_KEYWORD + EDITOR_UNDERLINE_SUFFIX;
 
 	/**
 	 * A named preference that holds the color used to render javadoc tags.
@@ -1870,7 +1870,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
-	public final static String EDITOR_JAVADOC_TAG_COLOR= IJavaColorConstants.JAVADOC_TAG;
+	public final static String EDITOR_JAVADOC_TAG_COLOR= IJavaScriptColorConstants.JAVADOC_TAG;
 
 	/**
 	 * A named preference that controls whether javadoc tags are rendered in bold.
@@ -1878,7 +1878,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 */
-	public final static String EDITOR_JAVADOC_TAG_BOLD= IJavaColorConstants.JAVADOC_TAG + EDITOR_BOLD_SUFFIX;
+	public final static String EDITOR_JAVADOC_TAG_BOLD= IJavaScriptColorConstants.JAVADOC_TAG + EDITOR_BOLD_SUFFIX;
 
 	/**
 	 * A named preference that controls whether javadoc tags are rendered in italic.
@@ -1888,7 +1888,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public final static String EDITOR_JAVADOC_TAG_ITALIC= IJavaColorConstants.JAVADOC_TAG + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_JAVADOC_TAG_ITALIC= IJavaScriptColorConstants.JAVADOC_TAG + EDITOR_ITALIC_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether javadoc tags are rendered in strikethrough.
@@ -1898,7 +1898,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVADOC_TAG_STRIKETHROUGH= IJavaColorConstants.JAVADOC_TAG + EDITOR_STRIKETHROUGH_SUFFIX;
+	public final static String EDITOR_JAVADOC_TAG_STRIKETHROUGH= IJavaScriptColorConstants.JAVADOC_TAG + EDITOR_STRIKETHROUGH_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether javadoc tags are rendered in underline.
@@ -1908,7 +1908,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVADOC_TAG_UNDERLINE= IJavaColorConstants.JAVADOC_TAG + EDITOR_UNDERLINE_SUFFIX;
+	public final static String EDITOR_JAVADOC_TAG_UNDERLINE= IJavaScriptColorConstants.JAVADOC_TAG + EDITOR_UNDERLINE_SUFFIX;
 
 	/**
 	 * A named preference that holds the color used to render javadoc links.
@@ -1920,7 +1920,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
-	public final static String EDITOR_JAVADOC_LINKS_COLOR= IJavaColorConstants.JAVADOC_LINK;
+	public final static String EDITOR_JAVADOC_LINKS_COLOR= IJavaScriptColorConstants.JAVADOC_LINK;
 
 	/**
 	 * A named preference that controls whether javadoc links are rendered in bold.
@@ -1928,7 +1928,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 */
-	public final static String EDITOR_JAVADOC_LINKS_BOLD= IJavaColorConstants.JAVADOC_LINK + EDITOR_BOLD_SUFFIX;
+	public final static String EDITOR_JAVADOC_LINKS_BOLD= IJavaScriptColorConstants.JAVADOC_LINK + EDITOR_BOLD_SUFFIX;
 		
 	/**
 	 * A named preference that controls whether javadoc links are rendered in italic.
@@ -1938,7 +1938,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public final static String EDITOR_JAVADOC_LINKS_ITALIC= IJavaColorConstants.JAVADOC_LINK + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_JAVADOC_LINKS_ITALIC= IJavaScriptColorConstants.JAVADOC_LINK + EDITOR_ITALIC_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether javadoc links are rendered in strikethrough.
@@ -1948,7 +1948,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVADOC_LINKS_STRIKETHROUGH= IJavaColorConstants.JAVADOC_LINK + EDITOR_STRIKETHROUGH_SUFFIX;
+	public final static String EDITOR_JAVADOC_LINKS_STRIKETHROUGH= IJavaScriptColorConstants.JAVADOC_LINK + EDITOR_STRIKETHROUGH_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether javadoc links are rendered in underline.
@@ -1958,7 +1958,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVADOC_LINKS_UNDERLINE= IJavaColorConstants.JAVADOC_LINK + EDITOR_UNDERLINE_SUFFIX;
+	public final static String EDITOR_JAVADOC_LINKS_UNDERLINE= IJavaScriptColorConstants.JAVADOC_LINK + EDITOR_UNDERLINE_SUFFIX;
 		
 	/**
 	 * A named preference that holds the color used to render javadoc default text.
@@ -1970,7 +1970,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
-	public final static String EDITOR_JAVADOC_DEFAULT_COLOR= IJavaColorConstants.JAVADOC_DEFAULT;
+	public final static String EDITOR_JAVADOC_DEFAULT_COLOR= IJavaScriptColorConstants.JAVADOC_DEFAULT;
 
 	/**
 	 * A named preference that controls whether javadoc default text is rendered in bold.
@@ -1978,7 +1978,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 */
-	public final static String EDITOR_JAVADOC_DEFAULT_BOLD= IJavaColorConstants.JAVADOC_DEFAULT + EDITOR_BOLD_SUFFIX;
+	public final static String EDITOR_JAVADOC_DEFAULT_BOLD= IJavaScriptColorConstants.JAVADOC_DEFAULT + EDITOR_BOLD_SUFFIX;
 
 	/**
 	 * A named preference that controls whether javadoc default text is rendered in italic.
@@ -1988,7 +1988,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.0
 	 */
-	public final static String EDITOR_JAVADOC_DEFAULT_ITALIC= IJavaColorConstants.JAVADOC_DEFAULT + EDITOR_ITALIC_SUFFIX;
+	public final static String EDITOR_JAVADOC_DEFAULT_ITALIC= IJavaScriptColorConstants.JAVADOC_DEFAULT + EDITOR_ITALIC_SUFFIX;
 	/**
 	 * A named preference that controls whether javadoc default text is rendered in strikethrough.
 	 * <p>
@@ -1997,7 +1997,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVADOC_DEFAULT_STRIKETHROUGH= IJavaColorConstants.JAVADOC_DEFAULT + EDITOR_STRIKETHROUGH_SUFFIX;
+	public final static String EDITOR_JAVADOC_DEFAULT_STRIKETHROUGH= IJavaScriptColorConstants.JAVADOC_DEFAULT + EDITOR_STRIKETHROUGH_SUFFIX;
 	
 	/**
 	 * A named preference that controls whether javadoc default text is rendered in underline.
@@ -2007,7 +2007,7 @@ public class PreferenceConstants {
 	 * 
 	 * @since 3.1
 	 */
-	public final static String EDITOR_JAVADOC_DEFAULT_UNDERLINE= IJavaColorConstants.JAVADOC_DEFAULT + EDITOR_UNDERLINE_SUFFIX;
+	public final static String EDITOR_JAVADOC_DEFAULT_UNDERLINE= IJavaScriptColorConstants.JAVADOC_DEFAULT + EDITOR_UNDERLINE_SUFFIX;
 
 	/**
 	 * A named preference that holds the color used for 'linked-mode' underline.
@@ -2042,7 +2042,7 @@ public class PreferenceConstants {
 	 * </p>
 	 * @see #EDITOR_NO_HOVER_CONFIGURED_ID
 	 * @see #EDITOR_DEFAULT_HOVER_CONFIGURED_ID
-	 * @see JavaUI
+	 * @see JavaScriptUI
 	 * @since 2.1
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 */
@@ -2058,7 +2058,7 @@ public class PreferenceConstants {
 	 * </p>
 	 * @see #EDITOR_NO_HOVER_CONFIGURED_ID
 	 * @see #EDITOR_DEFAULT_HOVER_CONFIGURED_ID
-	 * @see JavaUI
+	 * @see JavaScriptUI
 	 * @since 2.1
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 */
@@ -2074,7 +2074,7 @@ public class PreferenceConstants {
 	 * </p>
 	 * @see #EDITOR_NO_HOVER_CONFIGURED_ID
 	 * @see #EDITOR_DEFAULT_HOVER_CONFIGURED_ID
-	 * @see JavaUI ID_*_HOVER
+	 * @see JavaScriptUI ID_*_HOVER
 	 * @since 2.1
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 */
@@ -2090,7 +2090,7 @@ public class PreferenceConstants {
 	 * </p>
 	 * @see #EDITOR_NO_HOVER_CONFIGURED_ID
 	 * @see #EDITOR_DEFAULT_HOVER_CONFIGURED_ID
-	 * @see JavaUI ID_*_HOVER
+	 * @see JavaScriptUI ID_*_HOVER
 	 * @since 2.1
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 */
@@ -2106,7 +2106,7 @@ public class PreferenceConstants {
 	 * </p>
 	 * @see #EDITOR_NO_HOVER_CONFIGURED_ID
 	 * @see #EDITOR_DEFAULT_HOVER_CONFIGURED_ID
-	 * @see JavaUI ID_*_HOVER
+	 * @see JavaScriptUI ID_*_HOVER
 	 * @since 2.1
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 */
@@ -2122,7 +2122,7 @@ public class PreferenceConstants {
 	 * </p>
 	 * @see #EDITOR_NO_HOVER_CONFIGURED_ID
 	 * @see #EDITOR_DEFAULT_HOVER_CONFIGURED_ID
-	 * @see JavaUI ID_*_HOVER
+	 * @see JavaScriptUI ID_*_HOVER
 	 * @since 2.1
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 */
@@ -2138,7 +2138,7 @@ public class PreferenceConstants {
 	 * </p>
 	 * @see #EDITOR_NO_HOVER_CONFIGURED_ID
 	 * @see #EDITOR_DEFAULT_HOVER_CONFIGURED_ID
-	 * @see JavaUI ID_*_HOVER
+	 * @see JavaScriptUI ID_*_HOVER
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 * @since 2.1
 	 */
@@ -3200,7 +3200,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 * @since 3.1
 	 */
-	public static final String PROPERTIES_FILE_COLORING_KEY= IJavaColorConstants.PROPERTIES_FILE_COLORING_KEY;
+	public static final String PROPERTIES_FILE_COLORING_KEY= IJavaScriptColorConstants.PROPERTIES_FILE_COLORING_KEY;
 	
 	/**
 	 * A named preference that controls whether keys in a properties file are rendered in bold.
@@ -3253,7 +3253,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 * @since 3.1
 	 */
-	public static final String PROPERTIES_FILE_COLORING_COMMENT= IJavaColorConstants.PROPERTIES_FILE_COLORING_COMMENT;
+	public static final String PROPERTIES_FILE_COLORING_COMMENT= IJavaScriptColorConstants.PROPERTIES_FILE_COLORING_COMMENT;
 
 	/**
 	 * A named preference that controls whether comments in a properties file are rendered in bold.
@@ -3306,7 +3306,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 * @since 3.1
 	 */
-	public static final String PROPERTIES_FILE_COLORING_VALUE= IJavaColorConstants.PROPERTIES_FILE_COLORING_VALUE;
+	public static final String PROPERTIES_FILE_COLORING_VALUE= IJavaScriptColorConstants.PROPERTIES_FILE_COLORING_VALUE;
 
 	/**
 	 * A named preference that controls whether values in a properties file are rendered in bold.
@@ -3359,7 +3359,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 * @since 3.1
 	 */
-	public static final String PROPERTIES_FILE_COLORING_ASSIGNMENT= IJavaColorConstants.PROPERTIES_FILE_COLORING_ASSIGNMENT;
+	public static final String PROPERTIES_FILE_COLORING_ASSIGNMENT= IJavaScriptColorConstants.PROPERTIES_FILE_COLORING_ASSIGNMENT;
 	
 	/**
 	 * A named preference that controls whether assignments in a properties file are rendered in bold.
@@ -3412,7 +3412,7 @@ public class PreferenceConstants {
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 * @since 3.1
 	 */
-	public static final String PROPERTIES_FILE_COLORING_ARGUMENT= IJavaColorConstants.PROPERTIES_FILE_COLORING_ARGUMENT;
+	public static final String PROPERTIES_FILE_COLORING_ARGUMENT= IJavaScriptColorConstants.PROPERTIES_FILE_COLORING_ARGUMENT;
 
 	/**
 	 * A named preference that controls whether arguments in a properties file are rendered in bold.
@@ -3565,7 +3565,7 @@ public class PreferenceConstants {
 		if (store.getBoolean(PreferenceConstants.CODEGEN_USE_GETTERSETTER_PREFIX)) {
 			String prefix= store.getString(PreferenceConstants.CODEGEN_GETTERSETTER_PREFIX);
 			if (prefix.length() > 0) {
-				JavaCore.getPlugin().getPluginPreferences().setValue(JavaCore.CODEASSIST_FIELD_PREFIXES, prefix);
+				JavaScriptCore.getPlugin().getPluginPreferences().setValue(JavaScriptCore.CODEASSIST_FIELD_PREFIXES, prefix);
 				store.setToDefault(PreferenceConstants.CODEGEN_USE_GETTERSETTER_PREFIX);
 				store.setToDefault(PreferenceConstants.CODEGEN_GETTERSETTER_PREFIX);
 			}
@@ -3573,7 +3573,7 @@ public class PreferenceConstants {
 		if (store.getBoolean(PreferenceConstants.CODEGEN_USE_GETTERSETTER_SUFFIX)) {
 			String suffix= store.getString(PreferenceConstants.CODEGEN_GETTERSETTER_SUFFIX);
 			if (suffix.length() > 0) {
-				JavaCore.getPlugin().getPluginPreferences().setValue(JavaCore.CODEASSIST_FIELD_SUFFIXES, suffix);
+				JavaScriptCore.getPlugin().getPluginPreferences().setValue(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES, suffix);
 				store.setToDefault(PreferenceConstants.CODEGEN_USE_GETTERSETTER_SUFFIX);
 				store.setToDefault(PreferenceConstants.CODEGEN_GETTERSETTER_SUFFIX);
 			}
@@ -3915,7 +3915,7 @@ public class PreferenceConstants {
 	 * @return the JDT-UI preference store
 	 */
 	public static IPreferenceStore getPreferenceStore() {
-		return JavaPlugin.getDefault().getPreferenceStore();
+		return JavaScriptPlugin.getDefault().getPreferenceStore();
 	}
 	
 	/**
@@ -3927,7 +3927,7 @@ public class PreferenceConstants {
 	 * 
 	 * @return the encoded string.
 	*/
-	public static String encodeJRELibrary(String description, IClasspathEntry[] entries) {
+	public static String encodeJRELibrary(String description, IIncludePathEntry[] entries) {
 		return NewJavaProjectPreferencePage.encodeJRELibrary(description, entries);
 	}
 	
@@ -3936,7 +3936,7 @@ public class PreferenceConstants {
 	 * @param encodedLibrary the encoded library
 	 * @return the description of an encoded JRE library
 	 * 
-	 * @see #encodeJRELibrary(String, IClasspathEntry[])
+	 * @see #encodeJRELibrary(String, IIncludePathEntry[])
 	 */
 	public static String decodeJRELibraryDescription(String encodedLibrary) {
 		return NewJavaProjectPreferencePage.decodeJRELibraryDescription(encodedLibrary);
@@ -3947,9 +3947,9 @@ public class PreferenceConstants {
 	 * @param encodedLibrary the encoded library
 	 * @return the array of classpath entries of an encoded JRE library.
 	 * 
-	 * @see #encodeJRELibrary(String, IClasspathEntry[])
+	 * @see #encodeJRELibrary(String, IIncludePathEntry[])
 	 */
-	public static IClasspathEntry[] decodeJRELibraryClasspathEntries(String encodedLibrary) {
+	public static IIncludePathEntry[] decodeJRELibraryClasspathEntries(String encodedLibrary) {
 		return NewJavaProjectPreferencePage.decodeJRELibraryClasspathEntries(encodedLibrary);
 	}
 	
@@ -3963,7 +3963,7 @@ public class PreferenceConstants {
 	 * @see #NEWPROJECT_JRELIBRARY_LIST
 	 * @see #NEWPROJECT_JRELIBRARY_INDEX
 	 */
-	public static IClasspathEntry[] getDefaultJRELibrary() {
+	public static IIncludePathEntry[] getDefaultJRELibrary() {
 		return NewJavaProjectPreferencePage.getDefaultJRELibrary();
 	}
 
@@ -3976,19 +3976,19 @@ public class PreferenceConstants {
 	 * @return Returns the current value for the string.
 	 * @since 3.1
 	 */
-	public static String getPreference(String key, IJavaProject project) {
+	public static String getPreference(String key, IJavaScriptProject project) {
 		String val;
 		if (project != null) {
-			val= new ProjectScope(project.getProject()).getNode(JavaUI.ID_PLUGIN).get(key, null);
+			val= new ProjectScope(project.getProject()).getNode(JavaScriptUI.ID_PLUGIN).get(key, null);
 			if (val != null) {
 				return val;
 			}
 		}
-		val= new InstanceScope().getNode(JavaUI.ID_PLUGIN).get(key, null);
+		val= new InstanceScope().getNode(JavaScriptUI.ID_PLUGIN).get(key, null);
 		if (val != null) {
 			return val;
 		}
-		return new DefaultScope().getNode(JavaUI.ID_PLUGIN).get(key, null);
+		return new DefaultScope().getNode(JavaScriptUI.ID_PLUGIN).get(key, null);
 	}
 
 	/**

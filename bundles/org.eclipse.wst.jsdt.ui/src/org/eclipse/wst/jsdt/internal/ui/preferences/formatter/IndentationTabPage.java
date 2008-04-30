@@ -19,7 +19,7 @@ import java.util.Observer;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 
 
@@ -75,7 +75,7 @@ public class IndentationTabPage extends FormatterTabPage {
 
 		final Group generalGroup= createGroup(numColumns, composite, FormatterMessages.IndentationTabPage_general_group_title); 
 		
-		final String[] tabPolicyValues= new String[] {JavaCore.SPACE, JavaCore.TAB, DefaultCodeFormatterConstants.MIXED};
+		final String[] tabPolicyValues= new String[] {JavaScriptCore.SPACE, JavaScriptCore.TAB, DefaultCodeFormatterConstants.MIXED};
 		final String[] tabPolicyLabels= new String[] {
 				FormatterMessages.IndentationTabPage_general_group_option_tab_policy_SPACE, 
 				FormatterMessages.IndentationTabPage_general_group_option_tab_policy_TAB, 
@@ -153,14 +153,14 @@ public class IndentationTabPage extends FormatterTabPage {
 		 * preference. See also CodeFormatterUtil. 
 		 */
 		if (DefaultCodeFormatterConstants.MIXED.equals(tabPolicy)) {
-			if (JavaCore.SPACE.equals(fOldTabChar) || JavaCore.TAB.equals(fOldTabChar))
+			if (JavaScriptCore.SPACE.equals(fOldTabChar) || JavaScriptCore.TAB.equals(fOldTabChar))
 				swapTabValues();
 			tabPreference.setEnabled(true);
 			tabPreference.setKey(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE);
 			indentPreference.setEnabled(true);
 			indentPreference.setKey(DefaultCodeFormatterConstants.FORMATTER_INDENTATION_SIZE);
 			onlyForLeading.setEnabled(true);
-		} else if (JavaCore.SPACE.equals(tabPolicy)) {
+		} else if (JavaScriptCore.SPACE.equals(tabPolicy)) {
 			if (DefaultCodeFormatterConstants.MIXED.equals(fOldTabChar))
 				swapTabValues();
 			tabPreference.setEnabled(true);
@@ -168,7 +168,7 @@ public class IndentationTabPage extends FormatterTabPage {
 			indentPreference.setEnabled(true);
 			indentPreference.setKey(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE);
 			onlyForLeading.setEnabled(false);
-		} else if (JavaCore.TAB.equals(tabPolicy)) {
+		} else if (JavaScriptCore.TAB.equals(tabPolicy)) {
 			if (DefaultCodeFormatterConstants.MIXED.equals(fOldTabChar))
 				swapTabValues();
 			tabPreference.setEnabled(true);

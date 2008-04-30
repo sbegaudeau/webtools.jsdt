@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.search;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 
 /**
  * <p>
- * Describes a search query by giving the {@link IJavaElement} to search
+ * Describes a search query by giving the {@link IJavaScriptElement} to search
  * for.
  * </p>
  * <p>
@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
  * @since 3.0
  */
 public class ElementQuerySpecification extends QuerySpecification {
-	private IJavaElement fElement;
+	private IJavaScriptElement fElement;
 
 	/**
 	 * A constructor.
@@ -36,7 +36,7 @@ public class ElementQuerySpecification extends QuerySpecification {
 	 * @param scope		  The scope to search in.
 	 * @param scopeDescription A human readable description of the search scope.
 	 */
-	public ElementQuerySpecification(IJavaElement javaElement, int limitTo, IJavaSearchScope scope, String scopeDescription) {
+	public ElementQuerySpecification(IJavaScriptElement javaElement, int limitTo, IJavaScriptSearchScope scope, String scopeDescription) {
 		super(limitTo, scope, scopeDescription);
 		fElement= javaElement;
 	}
@@ -45,7 +45,7 @@ public class ElementQuerySpecification extends QuerySpecification {
 	 * Returns the element to search for.
 	 * @return The element to search for.
 	 */
-	public IJavaElement getElement() {
+	public IJavaScriptElement getElement() {
 		return fElement;
 	}
 }

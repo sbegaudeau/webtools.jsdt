@@ -19,9 +19,9 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
@@ -32,7 +32,7 @@ class OverwriteHelper {
 	private Object fDestination;
 	private IFile[] fFiles= new IFile[0];
 	private IFolder[] fFolders= new IFolder[0];
-	private ICompilationUnit[] fCus= new ICompilationUnit[0];
+	private IJavaScriptUnit[] fCus= new IJavaScriptUnit[0];
 	private IPackageFragmentRoot[] fRoots= new IPackageFragmentRoot[0];
 	private IPackageFragment[] fPackageFragments= new IPackageFragment[0];
 
@@ -46,7 +46,7 @@ class OverwriteHelper {
 		fFolders= folders;
 	}
 
-	public void setCus(ICompilationUnit[] cus) {
+	public void setCus(IJavaScriptUnit[] cus) {
 		Assert.isNotNull(cus);
 		fCus= cus;
 	}
@@ -69,7 +69,7 @@ class OverwriteHelper {
 		return fFolders;
 	}
 
-	public ICompilationUnit[] getCusWithoutUnconfirmedOnes() {
+	public IJavaScriptUnit[] getCusWithoutUnconfirmedOnes() {
 		return fCus;
 	}
 
@@ -81,7 +81,7 @@ class OverwriteHelper {
 		return fPackageFragments;
 	}
 
-	public void confirmOverwriting(IReorgQueries reorgQueries, IJavaElement destination) {
+	public void confirmOverwriting(IReorgQueries reorgQueries, IJavaScriptElement destination) {
 		Assert.isNotNull(destination);
 		fDestination= destination;
 		confirmOverwritting(reorgQueries);
@@ -118,11 +118,11 @@ class OverwriteHelper {
 	private void confirmCuOverwritting(IConfirmQuery overwriteQuery) {
 		List cusToNotOverwrite= new ArrayList(1);
 		for (int i= 0; i < fCus.length; i++) {
-			ICompilationUnit cu= fCus[i];
+			IJavaScriptUnit cu= fCus[i];
 			if (canOverwrite(cu) && ! overwrite(cu, overwriteQuery))
 				cusToNotOverwrite.add(cu);
 		}
-		ICompilationUnit[] cus= (ICompilationUnit[]) cusToNotOverwrite.toArray(new ICompilationUnit[cusToNotOverwrite.size()]);
+		IJavaScriptUnit[] cus= (IJavaScriptUnit[]) cusToNotOverwrite.toArray(new IJavaScriptUnit[cusToNotOverwrite.size()]);
 		fCus= ArrayTypeConverter.toCuArray(ReorgUtils.setMinus(fCus, cus));
 	}
 
@@ -190,8 +190,8 @@ class OverwriteHelper {
 	}
 	
 	private boolean canOverwrite(IPackageFragmentRoot root) {
-		Assert.isTrue(fDestination instanceof IJavaProject);
-		IJavaProject destination= (IJavaProject)fDestination;
+		Assert.isTrue(fDestination instanceof IJavaScriptProject);
+		IJavaScriptProject destination= (IJavaScriptProject)fDestination;
 		IFolder conflict= destination.getProject().getFolder(root.getElementName());
 		try {
 			return !destination.equals(root.getParent()) && conflict.exists() &&  conflict.members().length > 0;
@@ -200,10 +200,10 @@ class OverwriteHelper {
 		}
 	}
 
-	private boolean canOverwrite(ICompilationUnit cu) {
+	private boolean canOverwrite(IJavaScriptUnit cu) {
 		if (fDestination instanceof IPackageFragment){
 			IPackageFragment destination= (IPackageFragment)fDestination;
-			return ! destination.equals(cu.getParent()) && destination.getCompilationUnit(cu.getElementName()).exists();
+			return ! destination.equals(cu.getParent()) && destination.getJavaScriptUnit(cu.getElementName()).exists();
 		} else {
 			return canOverwrite(ReorgUtils.getResource(cu));
 		}
@@ -213,7 +213,7 @@ class OverwriteHelper {
 		return overwrite(resource.getName(), overwriteQuery);
 	}
 
-	private static boolean overwrite(IJavaElement element, IConfirmQuery overwriteQuery){
+	private static boolean overwrite(IJavaScriptElement element, IConfirmQuery overwriteQuery){
 		return overwrite(element.getElementName(), overwriteQuery);
 	}
 

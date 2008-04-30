@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
@@ -25,7 +25,7 @@ public class MovePackageChange extends PackageReorgChange {
 		super(pack, dest, null);
 	}
 	
-	protected Change doPerformReorg(IProgressMonitor pm) throws JavaModelException, OperationCanceledException {
+	protected Change doPerformReorg(IProgressMonitor pm) throws JavaScriptModelException, OperationCanceledException {
 		getPackage().move(getDestination(), null, getNewName(), true, pm);
 		return null;
 	}

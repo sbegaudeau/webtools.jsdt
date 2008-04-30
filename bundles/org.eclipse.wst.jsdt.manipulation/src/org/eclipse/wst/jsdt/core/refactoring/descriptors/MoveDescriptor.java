@@ -15,12 +15,12 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 import org.eclipse.wst.jsdt.internal.core.refactoring.descriptors.DescriptorMessages;
 
 /**
@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.internal.core.refactoring.descriptors.DescriptorMess
  * 
  * @since 3.3
  */
-public final class MoveDescriptor extends JavaRefactoringDescriptor {
+public final class MoveDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/** The destination attribute */
 	private static final String ATTRIBUTE_DESTINATION= "destination"; //$NON-NLS-1$
@@ -116,13 +116,13 @@ public final class MoveDescriptor extends JavaRefactoringDescriptor {
 	private IPackageFragmentRoot[] fRoots;
 
 	/** The compilation units */
-	private ICompilationUnit[] fUnits;
+	private IJavaScriptUnit[] fUnits;
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public MoveDescriptor() {
-		super(IJavaRefactorings.MOVE);
+		super(IJavaScriptRefactorings.MOVE);
 	}
 
 	/**
@@ -132,36 +132,36 @@ public final class MoveDescriptor extends JavaRefactoringDescriptor {
 		super.populateArgumentMap();
 		fArguments.put(ATTRIBUTE_POLICY, fMovePolicy);
 		final String project= getProject();
-		if (fDestination instanceof IJavaElement)
-			fArguments.put(ATTRIBUTE_DESTINATION, JavaRefactoringDescriptor.elementToHandle(project, (IJavaElement) fDestination));
+		if (fDestination instanceof IJavaScriptElement)
+			fArguments.put(ATTRIBUTE_DESTINATION, JavaScriptRefactoringDescriptor.elementToHandle(project, (IJavaScriptElement) fDestination));
 		else if (fDestination instanceof IResource)
-			fArguments.put(ATTRIBUTE_TARGET, JavaRefactoringDescriptor.resourceToHandle(null, (IResource) fDestination));
+			fArguments.put(ATTRIBUTE_TARGET, JavaScriptRefactoringDescriptor.resourceToHandle(null, (IResource) fDestination));
 		if (POLICY_MOVE_RESOURCES.equals(fMovePolicy)) {
-			fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_REFERENCES, Boolean.toString(fReferences));
+			fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_REFERENCES, Boolean.toString(fReferences));
 			fArguments.put(ATTRIBUTE_QUALIFIED, Boolean.toString(fQualified));
 			if (fPatterns != null && !"".equals(fPatterns)) //$NON-NLS-1$
 				fArguments.put(ATTRIBUTE_PATTERNS, fPatterns);
 			fArguments.put(ATTRIBUTE_FILES, new Integer(fFiles.length).toString());
 			for (int offset= 0; offset < fFiles.length; offset++)
-				fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_ELEMENT + (offset + 1), JavaRefactoringDescriptor.resourceToHandle(project, fFiles[offset]));
+				fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_ELEMENT + (offset + 1), JavaScriptRefactoringDescriptor.resourceToHandle(project, fFiles[offset]));
 			fArguments.put(ATTRIBUTE_FOLDERS, new Integer(fFolders.length).toString());
 			for (int offset= 0; offset < fFolders.length; offset++)
-				fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_ELEMENT + (offset + fFiles.length + 1), JavaRefactoringDescriptor.resourceToHandle(project, fFolders[offset]));
+				fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_ELEMENT + (offset + fFiles.length + 1), JavaScriptRefactoringDescriptor.resourceToHandle(project, fFolders[offset]));
 			fArguments.put(ATTRIBUTE_UNITS, new Integer(fUnits.length).toString());
 			for (int offset= 0; offset < fUnits.length; offset++)
-				fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_ELEMENT + (offset + fFolders.length + fFiles.length + 1), JavaRefactoringDescriptor.elementToHandle(project, fUnits[offset]));
+				fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_ELEMENT + (offset + fFolders.length + fFiles.length + 1), JavaScriptRefactoringDescriptor.elementToHandle(project, fUnits[offset]));
 		} else if (POLICY_MOVE_ROOTS.equals(fMovePolicy)) {
 			fArguments.put(ATTRIBUTE_ROOTS, new Integer(fRoots.length).toString());
 			for (int offset= 0; offset < fRoots.length; offset++)
-				fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_ELEMENT + (offset + 1), JavaRefactoringDescriptor.elementToHandle(project, fRoots[offset]));
+				fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_ELEMENT + (offset + 1), JavaScriptRefactoringDescriptor.elementToHandle(project, fRoots[offset]));
 		} else if (POLICY_MOVE_PACKAGES.equals(fMovePolicy)) {
 			fArguments.put(ATTRIBUTE_FRAGMENTS, new Integer(fFragments.length).toString());
 			for (int offset= 0; offset < fFragments.length; offset++)
-				fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_ELEMENT + (offset + 1), JavaRefactoringDescriptor.elementToHandle(project, fFragments[offset]));
+				fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_ELEMENT + (offset + 1), JavaScriptRefactoringDescriptor.elementToHandle(project, fFragments[offset]));
 		} else if (POLICY_MOVE_MEMBERS.equals(fMovePolicy)) {
 			fArguments.put(ATTRIBUTE_MEMBERS, new Integer(fMembers.length).toString());
 			for (int offset= 0; offset < fMembers.length; offset++)
-				fArguments.put(JavaRefactoringDescriptor.ATTRIBUTE_ELEMENT + (offset + 1), JavaRefactoringDescriptor.elementToHandle(project, fMembers[offset]));
+				fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_ELEMENT + (offset + 1), JavaScriptRefactoringDescriptor.elementToHandle(project, fMembers[offset]));
 		}
 	}
 
@@ -175,7 +175,7 @@ public final class MoveDescriptor extends JavaRefactoringDescriptor {
 	 * @param element
 	 *            the java element
 	 */
-	public void setDestination(IJavaElement element) {
+	public void setDestination(IJavaScriptElement element) {
 		Assert.isNotNull(element);
 		fDestination= element;
 	}
@@ -285,7 +285,7 @@ public final class MoveDescriptor extends JavaRefactoringDescriptor {
 	 * @param units
 	 *            the compilation units to move
 	 */
-	public void setMoveResources(final IFile[] files, final IFolder[] folders, final ICompilationUnit[] units) {
+	public void setMoveResources(final IFile[] files, final IFolder[] folders, final IJavaScriptUnit[] units) {
 		Assert.isNotNull(files);
 		Assert.isNotNull(folders);
 		Assert.isNotNull(units);

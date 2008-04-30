@@ -33,8 +33,8 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpPostSaveListener;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpPreferenceUtil;
@@ -43,7 +43,7 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.AbstractSaveP
 import org.eclipse.wst.jsdt.internal.ui.preferences.BulletListBlock;
 import org.eclipse.wst.jsdt.internal.ui.preferences.CodeFormatterPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * Preference configuration UI for the clean up save participant.
@@ -179,11 +179,11 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 		
 		settingsChanged();
 		
-		IJavaProject javaProject= null;
+		IJavaScriptProject javaProject= null;
 		if (element != null) {
 			IProject project= (IProject)element.getAdapter(IProject.class);
 			if (project != null) {
-				IJavaProject jProject= JavaCore.create(project);
+				IJavaScriptProject jProject= JavaScriptCore.create(project);
 				if (jProject != null && jProject.exists()) {
 					javaProject= jProject;
 				}
@@ -238,7 +238,7 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 	public void disableProjectSettings() {
 		super.disableProjectSettings();
 		
-		IEclipsePreferences node= fContext.getNode(JavaUI.ID_PLUGIN);
+		IEclipsePreferences node= fContext.getNode(JavaScriptUI.ID_PLUGIN);
 		
 		Map settings= CleanUpConstants.getSaveParticipantSettings();
 		for (Iterator iterator= settings.keySet().iterator(); iterator.hasNext();) {
@@ -315,7 +315,7 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 		fConfigureButton.setEnabled(additionalEnabled);
 	}
 	
-	private void configurePreferenceLink(Link link, final IJavaProject javaProject, final String preferenceId, final String propertyId) {
+	private void configurePreferenceLink(Link link, final IJavaScriptProject javaProject, final String preferenceId, final String propertyId) {
 		link.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (fContainer instanceof IWorkbenchPreferenceContainer) {

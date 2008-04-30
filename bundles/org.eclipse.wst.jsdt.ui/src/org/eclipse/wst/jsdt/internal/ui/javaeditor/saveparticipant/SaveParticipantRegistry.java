@@ -29,11 +29,11 @@ import org.eclipse.wst.jsdt.internal.ui.fix.CleanUpSaveParticipantPreferenceConf
  * Save participants can be enabled and disabled on the Java &gt; Editor &gt;
  * Save Participants preference page. Enabled save participants are notified
  * through a call to
- * {@link IPostSaveListener#saved(org.eclipse.wst.jsdt.core.ICompilationUnit, org.eclipse.core.runtime.IProgressMonitor)}
+ * {@link IPostSaveListener#saved(org.eclipse.wst.jsdt.core.IJavaScriptUnit, org.eclipse.core.runtime.IProgressMonitor)}
  * whenever the {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider} saves a compilation unit
  * that is in the workspace.</p>
  * <p>
- * An instance of this registry can be received through a call to {@link org.eclipse.wst.jsdt.internal.ui.JavaPlugin#getSaveParticipantRegistry()}.</p>
+ * An instance of this registry can be received through a call to {@link org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin#getSaveParticipantRegistry()}.</p>
  * 
  * @since 3.3
  */

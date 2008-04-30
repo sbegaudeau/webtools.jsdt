@@ -33,10 +33,10 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ResourceTransfer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.TypedSource;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaElementTransfer;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ParentChecker;
@@ -44,9 +44,9 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
 
@@ -75,7 +75,7 @@ public class CopyToClipboardAction extends SelectionDispatchAction{
 	}
 	
 	private static ISharedImages getWorkbenchSharedImages() {
-		return JavaPlugin.getDefault().getWorkbench().getSharedImages();
+		return JavaScriptPlugin.getDefault().getWorkbench().getSharedImages();
 	}
 
 	/* (non-Javadoc)
@@ -85,16 +85,16 @@ public class CopyToClipboardAction extends SelectionDispatchAction{
 		try {
 			List elements= selection.toList();
 			IResource[] resources= ReorgUtils.getResources(elements);
-			IJavaElement[] javaElements= ReorgUtils.getJavaElements(elements);
+			IJavaScriptElement[] javaElements= ReorgUtils.getJavaElements(elements);
 			if (elements.size() != resources.length + javaElements.length)
 				setEnabled(false);
 			else
 				setEnabled(canEnable(resources, javaElements));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			//no ui here - this happens on selection changes
 			// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			setEnabled(false);
 		}
 	}
@@ -106,7 +106,7 @@ public class CopyToClipboardAction extends SelectionDispatchAction{
 		try {
 			List elements= selection.toList();
 			IResource[] resources= ReorgUtils.getResources(elements);
-			IJavaElement[] javaElements= ReorgUtils.getJavaElements(elements);
+			IJavaScriptElement[] javaElements= ReorgUtils.getJavaElements(elements);
 			if (elements.size() == resources.length + javaElements.length && canEnable(resources, javaElements)) 
 				doRun(resources, javaElements);
 		} catch (CoreException e) {
@@ -114,11 +114,11 @@ public class CopyToClipboardAction extends SelectionDispatchAction{
 		}
 	}
 
-	private void doRun(IResource[] resources, IJavaElement[] javaElements) throws CoreException {
+	private void doRun(IResource[] resources, IJavaScriptElement[] javaElements) throws CoreException {
 		new ClipboardCopier(resources, javaElements, fClipboard, getShell(), fAutoRepeatOnFailure).copyToClipboard();
 	}
 
-	private boolean canEnable(IResource[] resources, IJavaElement[] javaElements) throws JavaModelException {
+	private boolean canEnable(IResource[] resources, IJavaScriptElement[] javaElements) throws JavaScriptModelException {
 		return new CopyToClipboardEnablementPolicy(resources, javaElements).canEnable();
 	}
 	
@@ -127,12 +127,12 @@ public class CopyToClipboardAction extends SelectionDispatchAction{
 	private static class ClipboardCopier{
 		private final boolean fAutoRepeatOnFailure;
 		private final IResource[] fResources;
-		private final IJavaElement[] fJavaElements;
+		private final IJavaScriptElement[] fJavaElements;
 		private final Clipboard fClipboard;
 		private final Shell fShell;
 		private final ILabelProvider fLabelProvider;
 		
-		private ClipboardCopier(IResource[] resources, IJavaElement[] javaElements, Clipboard clipboard, Shell shell, boolean autoRepeatOnFailure){
+		private ClipboardCopier(IResource[] resources, IJavaScriptElement[] javaElements, Clipboard clipboard, Shell shell, boolean autoRepeatOnFailure){
 			Assert.isNotNull(resources);
 			Assert.isNotNull(javaElements);
 			Assert.isNotNull(clipboard);
@@ -153,7 +153,7 @@ public class CopyToClipboardAction extends SelectionDispatchAction{
 			processJavaElements(fileNames, namesBuf);
 
 			IType[] mainTypes= ReorgUtils.getMainTypes(fJavaElements);
-			ICompilationUnit[] cusOfMainTypes= ReorgUtils.getCompilationUnits(mainTypes);
+			IJavaScriptUnit[] cusOfMainTypes= ReorgUtils.getCompilationUnits(mainTypes);
 			IResource[] resourcesOfMainTypes= ReorgUtils.getResources(cusOfMainTypes);
 			addFileNames(fileNames, resourcesOfMainTypes);
 			
@@ -161,16 +161,16 @@ public class CopyToClipboardAction extends SelectionDispatchAction{
 			addFileNames(fileNames, cuResources);
 
 			IResource[] resourcesForClipboard= ReorgUtils.union(fResources, ReorgUtils.union(cuResources, resourcesOfMainTypes));
-			IJavaElement[] javaElementsForClipboard= ReorgUtils.union(fJavaElements, cusOfMainTypes);
+			IJavaScriptElement[] javaElementsForClipboard= ReorgUtils.union(fJavaElements, cusOfMainTypes);
 			
 			TypedSource[] typedSources= TypedSource.createTypedSources(javaElementsForClipboard);
 			String[] fileNameArray= (String[]) fileNames.toArray(new String[fileNames.size()]);
 			copyToClipboard(resourcesForClipboard, fileNameArray, namesBuf.toString(), javaElementsForClipboard, typedSources, 0);
 		}
 
-		private static IJavaElement[] getCompilationUnits(IJavaElement[] javaElements) {
-			List cus= ReorgUtils.getElementsOfType(javaElements, IJavaElement.COMPILATION_UNIT);
-			return (ICompilationUnit[]) cus.toArray(new ICompilationUnit[cus.size()]);
+		private static IJavaScriptElement[] getCompilationUnits(IJavaScriptElement[] javaElements) {
+			List cus= ReorgUtils.getElementsOfType(javaElements, IJavaScriptElement.JAVASCRIPT_UNIT);
+			return (IJavaScriptUnit[]) cus.toArray(new IJavaScriptUnit[cus.size()]);
 		}
 
 		private void processResources(Set fileNames, StringBuffer namesBuf) {
@@ -186,13 +186,13 @@ public class CopyToClipboardAction extends SelectionDispatchAction{
 
 		private void processJavaElements(Set fileNames, StringBuffer namesBuf) {
 			for (int i= 0; i < fJavaElements.length; i++) {
-				IJavaElement element= fJavaElements[i];
+				IJavaScriptElement element= fJavaElements[i];
 				switch (element.getElementType()) {
-					case IJavaElement.JAVA_PROJECT :
-					case IJavaElement.PACKAGE_FRAGMENT_ROOT :
-					case IJavaElement.PACKAGE_FRAGMENT :
-					case IJavaElement.COMPILATION_UNIT :
-					case IJavaElement.CLASS_FILE :
+					case IJavaScriptElement.JAVASCRIPT_PROJECT :
+					case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT :
+					case IJavaScriptElement.PACKAGE_FRAGMENT :
+					case IJavaScriptElement.JAVASCRIPT_UNIT :
+					case IJavaScriptElement.CLASS_FILE :
 						addFileName(fileNames, ReorgUtils.getResource(element));
 						break;
 					default :
@@ -222,7 +222,7 @@ public class CopyToClipboardAction extends SelectionDispatchAction{
 			}
 		}
 		
-		private void copyToClipboard(IResource[] resources, String[] fileNames, String names, IJavaElement[] javaElements, TypedSource[] typedSources, int repeat){
+		private void copyToClipboard(IResource[] resources, String[] fileNames, String names, IJavaScriptElement[] javaElements, TypedSource[] typedSources, int repeat){
 			final int repeat_max_count= 10;
 			try{
 				fClipboard.setContents( createDataArray(resources, javaElements, fileNames, names, typedSources),
@@ -242,7 +242,7 @@ public class CopyToClipboardAction extends SelectionDispatchAction{
 			}
 		}
 		
-		private static Transfer[] createDataTypeArray(IResource[] resources, IJavaElement[] javaElements, String[] fileNames, TypedSource[] typedSources) {
+		private static Transfer[] createDataTypeArray(IResource[] resources, IJavaScriptElement[] javaElements, String[] fileNames, TypedSource[] typedSources) {
 			List result= new ArrayList(4);
 			if (resources.length != 0)
 				result.add(ResourceTransfer.getInstance());
@@ -256,7 +256,7 @@ public class CopyToClipboardAction extends SelectionDispatchAction{
 			return (Transfer[]) result.toArray(new Transfer[result.size()]);
 		}
 
-		private static Object[] createDataArray(IResource[] resources, IJavaElement[] javaElements, String[] fileNames, String names, TypedSource[] typedSources) {
+		private static Object[] createDataArray(IResource[] resources, IJavaScriptElement[] javaElements, String[] fileNames, String names, TypedSource[] typedSources) {
 			List result= new ArrayList(4);
 			if (resources.length != 0)
 				result.add(resources);
@@ -271,31 +271,31 @@ public class CopyToClipboardAction extends SelectionDispatchAction{
 		}
 
 		private static ILabelProvider createLabelProvider(){
-			return new JavaElementLabelProvider(
-				JavaElementLabelProvider.SHOW_VARIABLE
-				+ JavaElementLabelProvider.SHOW_PARAMETERS
-				+ JavaElementLabelProvider.SHOW_TYPE
+			return new JavaScriptElementLabelProvider(
+				JavaScriptElementLabelProvider.SHOW_VARIABLE
+				+ JavaScriptElementLabelProvider.SHOW_PARAMETERS
+				+ JavaScriptElementLabelProvider.SHOW_TYPE
 			);		
 		}
 		private String getName(IResource resource){
 			return fLabelProvider.getText(resource);
 		}
-		private String getName(IJavaElement javaElement){
+		private String getName(IJavaScriptElement javaElement){
 			return fLabelProvider.getText(javaElement);
 		}
 	}
 	
 	private static class CopyToClipboardEnablementPolicy {
 		private final IResource[] fResources;
-		private final IJavaElement[] fJavaElements;
-		public CopyToClipboardEnablementPolicy(IResource[] resources, IJavaElement[] javaElements){
+		private final IJavaScriptElement[] fJavaElements;
+		public CopyToClipboardEnablementPolicy(IResource[] resources, IJavaScriptElement[] javaElements){
 			Assert.isNotNull(resources);
 			Assert.isNotNull(javaElements);
 			fResources= resources;
 			fJavaElements= javaElements;
 		}
 
-		public boolean canEnable() throws JavaModelException{
+		public boolean canEnable() throws JavaScriptModelException{
 			if (fResources.length + fJavaElements.length == 0)
 				return false;
 			if (hasProjects() && hasNonProjects())
@@ -307,7 +307,7 @@ public class CopyToClipboardAction extends SelectionDispatchAction{
 			return true;
 		}
 
-		private boolean canCopyAllToClipboard() throws JavaModelException {
+		private boolean canCopyAllToClipboard() throws JavaScriptModelException {
 			for (int i= 0; i < fResources.length; i++) {
 				if (! canCopyToClipboard(fResources[i])) return false;
 			}
@@ -317,7 +317,7 @@ public class CopyToClipboardAction extends SelectionDispatchAction{
 			return true;
 		}
 
-		private static boolean canCopyToClipboard(IJavaElement element) throws JavaModelException {
+		private static boolean canCopyToClipboard(IJavaScriptElement element) throws JavaScriptModelException {
 			if (element == null || ! element.exists())
 				return false;
 				

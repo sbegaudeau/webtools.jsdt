@@ -15,8 +15,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
@@ -29,9 +29,9 @@ public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 	public static final String JsECMA_NAME = LaunchingMessages.JREContainerInitializer_JsECMA_NAME;
 
 	/**
-	 * @see JsGlobalScopeContainerInitializer#initialize(IPath, IJavaProject)
+	 * @see JsGlobalScopeContainerInitializer#initialize(IPath, IJavaScriptProject)
 	 */
-	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {		
+	public void initialize(IPath containerPath, IJavaScriptProject project) throws CoreException {		
 		int size = containerPath.segmentCount();
 		if (size > 0) {
 			if (containerPath.segment(0).equals(JavaRuntime.JRE_CONTAINER)) {
@@ -40,7 +40,7 @@ public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 				if (vm != null) {
 					container = new JREContainer(vm, containerPath);
 				}
-				JavaCore.setJsGlobalScopeContainer(containerPath, new IJavaProject[] {project}, new IJsGlobalScopeContainer[] {container}, null);
+				JavaScriptCore.setJsGlobalScopeContainer(containerPath, new IJavaScriptProject[] {project}, new IJsGlobalScopeContainer[] {container}, null);
 			}
 		}
 	}
@@ -182,9 +182,9 @@ public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 	/**
 	 * The container can be updated if it refers to an existing VM.
 	 * 
-	 * @see org.eclipse.jdt.core.JsGlobalScopeContainerInitializer#canUpdateJsGlobalScopeContainer(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject)
+	 * @see org.eclipse.jdt.core.JsGlobalScopeContainerInitializer#canUpdateJsGlobalScopeContainer(org.eclipse.core.runtime.IPath, org.eclipse.IJavaScriptProject.core.IJavaProject)
 	 */
-	public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaProject project) {
+	public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaScriptProject project) {
 //		if (containerPath != null && containerPath.segmentCount() > 0) {
 //			if (JavaRuntime.JRE_CONTAINER.equals(containerPath.segment(0))) {
 //				return resolveVM(containerPath) != null;
@@ -194,9 +194,9 @@ public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 	}
 
 	/**
-	 * @see org.eclipse.jdt.core.JsGlobalScopeContainerInitializer#requestJsGlobalScopeContainerUpdate(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject, org.eclipse.jdt.core.IJsGlobalScopeContainer)
+	 * @see org.eclipse.jdt.core.JsGlobalScopeContainerInitializer#requestJsGlobalScopeContainerUpdate(org.eclipse.core.runtime.IPath, org.eclipse.IJavaScriptProject.core.IJavaProject, org.eclipse.jdt.core.IJsGlobalScopeContainer)
 	 */
-	public void requestJsGlobalScopeContainerUpdate(IPath containerPath, IJavaProject project, IJsGlobalScopeContainer containerSuggestion) throws CoreException {
+	public void requestJsGlobalScopeContainerUpdate(IPath containerPath, IJavaScriptProject project, IJsGlobalScopeContainer containerSuggestion) throws CoreException {
 //		IVMInstall vm = resolveVM(containerPath);
 //		if (vm == null) { 
 //			IStatus status = new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IJavaLaunchConfigurationConstants.ERR_VM_INSTALL_DOES_NOT_EXIST, MessageFormat.format(LaunchingMessages.JREContainerInitializer_JRE_referenced_by_classpath_container__0__does_not_exist__1, new String[]{containerPath.toString()}), null); 
@@ -204,11 +204,11 @@ public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 //		}
 //		// update of the vm with new library locations
 //		
-//		IClasspathEntry[] entries = containerSuggestion.getClasspathEntries();
+//		IIncludePathEntry[] entries = containerSuggestion.getClasspathEntries();
 //		LibraryLocation[] libs = new LibraryLocation[entries.length];
 //		for (int i = 0; i < entries.length; i++) {
-//			IClasspathEntry entry = entries[i];
-//			if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+//			IIncludePathEntry entry = entries[i];
+//			if (entry.getEntryKind() == IIncludePathEntry.CPE_LIBRARY) {
 //				IPath path = entry.getPath();
 //				File lib = path.toFile();
 //				if (lib.exists() && lib.isFile()) {
@@ -221,10 +221,10 @@ public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 //						rootPath = Path.EMPTY;
 //					}
 //					URL javadocLocation = null;
-//					IClasspathAttribute[] extraAttributes = entry.getExtraAttributes();
+//					IIncludePathAttribute[] extraAttributes = entry.getExtraAttributes();
 //					for (int j = 0; j < extraAttributes.length; j++) {
-//						IClasspathAttribute attribute = extraAttributes[j];
-//						if (attribute.getName().equals(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME)) {
+//						IIncludePathAttribute attribute = extraAttributes[j];
+//						if (attribute.getName().equals(IIncludePathAttribute.JSDOC_LOCATION_ATTRIBUTE_NAME)) {
 //							String url = attribute.getValue();
 //							if (url != null && url.trim().length() > 0) {
 //								try {
@@ -252,9 +252,9 @@ public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 	}
 
 	/**
-	 * @see org.eclipse.jdt.core.JsGlobalScopeContainerInitializer#getDescription(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject)
+	 * @see org.eclipse.jdt.core.JsGlobalScopeContainerInitializer#getDescription(org.eclipse.core.runtime.IPath, org.eclipse.IJavaScriptProject.core.IJavaProject)
 	 */
-	public String getDescription(IPath containerPath, IJavaProject project) {
+	public String getDescription(IPath containerPath, IJavaScriptProject project) {
 		if(containerPath!=null && containerPath.lastSegment().equalsIgnoreCase("system.js")) return JsECMA_NAME; //$NON-NLS-1$
 //		String tag = getExecutionEnvironmentId(containerPath);
 //		if (tag == null && containerPath.segmentCount() > 2) {

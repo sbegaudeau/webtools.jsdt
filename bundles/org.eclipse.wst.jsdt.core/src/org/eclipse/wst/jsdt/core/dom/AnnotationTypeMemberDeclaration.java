@@ -148,7 +148,7 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 			if (get) {
 				return getJavadoc();
 			} else {
-				setJavadoc((Javadoc) child);
+				setJavadoc((JSdoc) child);
 				return null;
 			}
 		}
@@ -235,7 +235,7 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 		AnnotationTypeMemberDeclaration result = new AnnotationTypeMemberDeclaration(target);
 		result.setSourceRange(this.getStartPosition(), this.getLength());
 		result.setJavadoc(
-			(Javadoc) ASTNode.copySubtree(target, getJavadoc()));
+			(JSdoc) ASTNode.copySubtree(target, getJavadoc()));
 		result.modifiers().addAll(ASTNode.copySubtrees(target, modifiers()));
 		result.setType((Type) ASTNode.copySubtree(target, getType()));
 		result.setName((SimpleName) getName().clone(target));
@@ -389,7 +389,7 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 	 * @return the binding, or <code>null</code> if the binding cannot be
 	 *    resolved
 	 */
-	public IMethodBinding resolveBinding() {
+	public IFunctionBinding resolveBinding() {
 		return this.ast.getBindingResolver().resolveMember(this);
 	}
 

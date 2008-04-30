@@ -24,10 +24,10 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetUpdater;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 
 public class JavaWorkingSetUpdater implements IWorkingSetUpdater, IElementChangedListener {
@@ -65,7 +65,7 @@ public class JavaWorkingSetUpdater implements IWorkingSetUpdater, IElementChange
 	
 	public JavaWorkingSetUpdater() {
 		fWorkingSets= new ArrayList();
-		JavaCore.addElementChangedListener(this);
+		JavaScriptCore.addElementChangedListener(this);
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class JavaWorkingSetUpdater implements IWorkingSetUpdater, IElementChange
 		synchronized(fWorkingSets) {
 			fWorkingSets.clear();
 		}
-		JavaCore.removeElementChangedListener(this);
+		JavaScriptCore.removeElementChangedListener(this);
 	}
 
 	/**
@@ -129,24 +129,24 @@ public class JavaWorkingSetUpdater implements IWorkingSetUpdater, IElementChange
 		}
 	}
 
-	private void processJavaDelta(WorkingSetDelta result, IJavaElementDelta delta) {
-		IJavaElement jElement= delta.getElement();
+	private void processJavaDelta(WorkingSetDelta result, IJavaScriptElementDelta delta) {
+		IJavaScriptElement jElement= delta.getElement();
 		int index= result.indexOf(jElement);
 		int type= jElement.getElementType();
 		int kind= delta.getKind();
 		int flags= delta.getFlags();
-		if (type == IJavaElement.JAVA_PROJECT && kind == IJavaElementDelta.CHANGED) {
-			if (index != -1 && (flags & IJavaElementDelta.F_CLOSED) != 0) {
-				result.set(index, ((IJavaProject)jElement).getProject());
-			} else if ((flags & IJavaElementDelta.F_OPENED) != 0) {
-				index= result.indexOf(((IJavaProject)jElement).getProject());
+		if (type == IJavaScriptElement.JAVASCRIPT_PROJECT && kind == IJavaScriptElementDelta.CHANGED) {
+			if (index != -1 && (flags & IJavaScriptElementDelta.F_CLOSED) != 0) {
+				result.set(index, ((IJavaScriptProject)jElement).getProject());
+			} else if ((flags & IJavaScriptElementDelta.F_OPENED) != 0) {
+				index= result.indexOf(((IJavaScriptProject)jElement).getProject());
 				if (index != -1)
 					result.set(index, jElement);
 			}
 		}
 		if (index != -1) {
-			if (kind == IJavaElementDelta.REMOVED) {
-				if ((flags & IJavaElementDelta.F_MOVED_TO) != 0) {
+			if (kind == IJavaScriptElementDelta.REMOVED) {
+				if ((flags & IJavaScriptElementDelta.F_MOVED_TO) != 0) {
 					result.set(index, delta.getMovedToElement());
 				} else {
 					result.remove(index);
@@ -159,7 +159,7 @@ public class JavaWorkingSetUpdater implements IWorkingSetUpdater, IElementChange
 				processResourceDelta(result, resourceDeltas[i]);
 			}
 		}
-		IJavaElementDelta[] children= delta.getAffectedChildren();
+		IJavaScriptElementDelta[] children= delta.getAffectedChildren();
 		for (int i= 0; i < children.length; i++) {
 			processJavaDelta(result, children[i]);
 		}
@@ -207,17 +207,17 @@ public class JavaWorkingSetUpdater implements IWorkingSetUpdater, IElementChange
 		for (Iterator iter= elements.iterator(); iter.hasNext();) {
 			IAdaptable element= (IAdaptable)iter.next();
 			boolean remove= false;
-			if (element instanceof IJavaElement) {
-				IJavaElement jElement= (IJavaElement)element;
+			if (element instanceof IJavaScriptElement) {
+				IJavaScriptElement jElement= (IJavaScriptElement)element;
 				// If we have directly a project then remove it when it
 				// doesn't exist anymore. However if we have a sub element
 				// under a project only remove the element if the parent
 				// project is open. Otherwise we would remove all elements
 				// in closed projects.
-				if (jElement instanceof IJavaProject) {
+				if (jElement instanceof IJavaScriptProject) {
 					remove= !jElement.exists();
 				} else {
-					IProject project= jElement.getJavaProject().getProject();
+					IProject project= jElement.getJavaScriptProject().getProject();
 					remove= project.isOpen() && !jElement.exists();
 				}
 			} else if (element instanceof IResource) {

@@ -19,7 +19,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IDocumentProviderExtension2;
 import org.eclipse.ui.texteditor.IDocumentProviderExtension3;
 import org.eclipse.ui.texteditor.IDocumentProviderExtension5;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 /**
  * @since 3.0
@@ -37,7 +37,7 @@ public interface ICompilationUnitDocumentProvider extends IDocumentProvider, IDo
 	 * @param element the element
 	 * @return the working copy for the given element
 	 */
-	ICompilationUnit getWorkingCopy(Object element);
+	IJavaScriptUnit getWorkingCopy(Object element);
 
 	/**
 	 * Saves the content of the given document to the given element. This method has

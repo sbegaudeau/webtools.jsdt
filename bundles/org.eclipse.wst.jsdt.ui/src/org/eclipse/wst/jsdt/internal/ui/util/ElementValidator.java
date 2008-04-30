@@ -18,13 +18,13 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.corext.util.Resources;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 
 /**
- * Helper class to check if a set of <tt>IJavaElement</tt> objects can be
+ * Helper class to check if a set of <tt>IJavaScriptElement</tt> objects can be
  * modified by an operation.
  * 
  * @since 	2.1
@@ -84,8 +84,8 @@ public class ElementValidator {
 	 * 
 	 * @see org.eclipse.core.resources.IWorkspace#validateEdit(org.eclipse.core.resources.IFile[], java.lang.Object)
 	 */
-	public static boolean checkValidateEdit(IJavaElement element, Shell parent, String title) {
-		return checkValidateEdit(new IJavaElement[] {element}, parent, title);
+	public static boolean checkValidateEdit(IJavaScriptElement element, Shell parent, String title) {
+		return checkValidateEdit(new IJavaScriptElement[] {element}, parent, title);
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public class ElementValidator {
 	 * 
 	 * @see org.eclipse.core.resources.IWorkspace#validateEdit(org.eclipse.core.resources.IFile[], java.lang.Object)
 	 */
-	public static boolean checkValidateEdit(IJavaElement[] elements, Shell parent, String title) {
+	public static boolean checkValidateEdit(IJavaScriptElement[] elements, Shell parent, String title) {
 		return checkValidateEdit(getResources(elements), parent, title);
 	}
 	
@@ -127,10 +127,10 @@ public class ElementValidator {
 	 * Otherwise <code>false</code> is returned
 	 * 
 	 * @see #checkInSync(IAdaptable, Shell, String)
-	 * @see #checkValidateEdit(IJavaElement, Shell, String)
+	 * @see #checkValidateEdit(IJavaScriptElement, Shell, String)
 	 */
-	public static boolean check(IJavaElement element, Shell parent, String title, boolean editor) {
-		return check(new IJavaElement[] {element}, parent, title, editor);
+	public static boolean check(IJavaScriptElement element, Shell parent, String title, boolean editor) {
+		return check(new IJavaScriptElement[] {element}, parent, title, editor);
 	}
 	
 	/**
@@ -150,9 +150,9 @@ public class ElementValidator {
 	 * Otherwise <code>false</code> is returned
 	 * 
 	 * @see #checkInSync(IAdaptable[], Shell, String)
-	 * @see #checkValidateEdit(IJavaElement[], Shell, String)
+	 * @see #checkValidateEdit(IJavaScriptElement[], Shell, String)
 	 */
-	public static boolean check(IJavaElement[] elements, Shell parent,String title, boolean editor) {
+	public static boolean check(IJavaScriptElement[] elements, Shell parent,String title, boolean editor) {
 		IResource[] resources= getResources(elements);
 		if (!editor && !checkInSync(resources, parent, title))
 			return false;
@@ -185,9 +185,9 @@ public class ElementValidator {
 		for (int i= 0; i < elements.length; i++) {
 			IAdaptable element= elements[i];
 			IResource resource= null;
-			if (element instanceof IJavaElement) {
-				IJavaElement je= (IJavaElement)element;
-				ICompilationUnit cu= (ICompilationUnit)je.getAncestor(IJavaElement.COMPILATION_UNIT);
+			if (element instanceof IJavaScriptElement) {
+				IJavaScriptElement je= (IJavaScriptElement)element;
+				IJavaScriptUnit cu= (IJavaScriptUnit)je.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 				if (cu != null) {
 					je= cu.getPrimary();
 				}

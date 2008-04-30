@@ -15,11 +15,11 @@ import java.util.HashMap;
 
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryField;
@@ -73,7 +73,7 @@ private void generateInnerClassHandles(IType type, IBinaryType typeInfo, ArrayLi
 	// Can also return an entry for the enclosing type of an inner type.
 	IBinaryNestedType[] innerTypes = typeInfo.getMemberTypes();
 	if (innerTypes != null) {
-		IPackageFragment pkg = (IPackageFragment) type.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
+		IPackageFragment pkg = (IPackageFragment) type.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT);
 		for (int i = 0, typeCount = innerTypes.length; i < typeCount; i++) {
 			IBinaryNestedType binaryType = innerTypes[i];
 			IClassFile parentClassFile= pkg.getClassFile(new String(ClassFile.unqualifiedName(binaryType.getName())) + SUFFIX_STRING_java);
@@ -200,7 +200,7 @@ protected void readBinaryChildren(ClassFile classFile, HashMap newElements, IBin
  * Removes the binary children handles and remove their infos from
  * the <code>JavaModelManager</code>'s cache.
  */
-void removeBinaryChildren() throws JavaModelException {
+void removeBinaryChildren() throws JavaScriptModelException {
 	if (this.binaryChildren != null) {
 		JavaModelManager manager = JavaModelManager.getJavaModelManager();
 		for (int i = 0; i <this.binaryChildren.length; i++) {

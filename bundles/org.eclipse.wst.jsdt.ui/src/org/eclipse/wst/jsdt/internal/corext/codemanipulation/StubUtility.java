@@ -47,19 +47,19 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.NamingConventions;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -69,16 +69,16 @@ import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
@@ -98,7 +98,7 @@ import org.eclipse.wst.jsdt.internal.corext.template.java.CodeTemplateContext;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CodeTemplateContextType;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ASTResolving;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProjectTemplateStore;
@@ -121,7 +121,7 @@ public class StubUtility {
 	/*
 	 * Don't use this method directly, use CodeGeneration.
 	 */
-	public static String getMethodBodyContent(boolean isConstructor, IJavaProject project, String destTypeName, String methodName, String bodyStatement, String lineDelimiter) throws CoreException {
+	public static String getMethodBodyContent(boolean isConstructor, IJavaScriptProject project, String destTypeName, String methodName, String bodyStatement, String lineDelimiter) throws CoreException {
 		String templateName= isConstructor ? CodeTemplateContextType.CONSTRUCTORSTUB_ID : CodeTemplateContextType.METHODSTUB_ID;
 		Template template= getCodeTemplate(templateName, project);
 		if (template == null) {
@@ -141,7 +141,7 @@ public class StubUtility {
 	/*
 	 * Don't use this method directly, use CodeGeneration.
 	 */
-	public static String getGetterMethodBodyContent(IJavaProject project, String destTypeName, String methodName, String fieldName, String lineDelimiter) throws CoreException {
+	public static String getGetterMethodBodyContent(IJavaScriptProject project, String destTypeName, String methodName, String fieldName, String lineDelimiter) throws CoreException {
 		String templateName= CodeTemplateContextType.GETTERSTUB_ID;
 		Template template= getCodeTemplate(templateName, project);
 		if (template == null) {
@@ -158,7 +158,7 @@ public class StubUtility {
 	/*
 	 * Don't use this method directly, use CodeGeneration.
 	 */
-	public static String getSetterMethodBodyContent(IJavaProject project, String destTypeName, String methodName, String fieldName, String paramName, String lineDelimiter) throws CoreException {
+	public static String getSetterMethodBodyContent(IJavaScriptProject project, String destTypeName, String methodName, String fieldName, String paramName, String lineDelimiter) throws CoreException {
 		String templateName= CodeTemplateContextType.SETTERSTUB_ID;
 		Template template= getCodeTemplate(templateName, project);
 		if (template == null) {
@@ -174,12 +174,12 @@ public class StubUtility {
 		return evaluateTemplate(context, template);
 	}
 	
-	public static String getCatchBodyContent(ICompilationUnit cu, String exceptionType, String variableName, ASTNode locationInAST, String lineDelimiter) throws CoreException {
+	public static String getCatchBodyContent(IJavaScriptUnit cu, String exceptionType, String variableName, ASTNode locationInAST, String lineDelimiter) throws CoreException {
 		String enclosingType= ""; //$NON-NLS-1$
 		String enclosingMethod= ""; //$NON-NLS-1$
 			
 		if (locationInAST != null) {
-			MethodDeclaration parentMethod= ASTResolving.findParentMethodDeclaration(locationInAST);
+			FunctionDeclaration parentMethod= ASTResolving.findParentMethodDeclaration(locationInAST);
 			if (parentMethod != null) {
 				enclosingMethod= parentMethod.getName().getIdentifier();
 				locationInAST= parentMethod;
@@ -193,13 +193,13 @@ public class StubUtility {
 	}
 	
 	
-	public static String getCatchBodyContent(ICompilationUnit cu, String exceptionType, String variableName, String enclosingType, String enclosingMethod, String lineDelimiter) throws CoreException {
-		Template template= getCodeTemplate(CodeTemplateContextType.CATCHBLOCK_ID, cu.getJavaProject());
+	public static String getCatchBodyContent(IJavaScriptUnit cu, String exceptionType, String variableName, String enclosingType, String enclosingMethod, String lineDelimiter) throws CoreException {
+		Template template= getCodeTemplate(CodeTemplateContextType.CATCHBLOCK_ID, cu.getJavaScriptProject());
 		if (template == null) {
 			return null;
 		}
 
-		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaProject(), lineDelimiter);
+		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaScriptProject(), lineDelimiter);
 		context.setVariable(CodeTemplateContextType.ENCLOSING_TYPE, enclosingType);
 		context.setVariable(CodeTemplateContextType.ENCLOSING_METHOD, enclosingMethod); 
 		context.setVariable(CodeTemplateContextType.EXCEPTION_TYPE, exceptionType);
@@ -209,28 +209,28 @@ public class StubUtility {
 	
 	/*
 	 * Don't use this method directly, use CodeGeneration.
-	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getCompilationUnitContent(ICompilationUnit, String, String, String, String)
+	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getCompilationUnitContent(IJavaScriptUnit, String, String, String, String)
 	 */	
-	public static String getCompilationUnitContent(ICompilationUnit cu, String fileComment, String typeComment, String typeContent, String lineDelimiter) throws CoreException {
+	public static String getCompilationUnitContent(IJavaScriptUnit cu, String fileComment, String typeComment, String typeContent, String lineDelimiter) throws CoreException {
 		IPackageFragment pack= (IPackageFragment) cu.getParent();
 		String packDecl= pack.isDefaultPackage() ? "" : "package " + pack.getElementName() + ';'; //$NON-NLS-1$ //$NON-NLS-2$
 		return getCompilationUnitContent(cu, packDecl, fileComment, typeComment, typeContent, lineDelimiter);
 	}
 	
-	public static String getCompilationUnitContent(ICompilationUnit cu, String packDecl, String fileComment, String typeComment, String typeContent, String lineDelimiter) throws CoreException {
-		Template template= getCodeTemplate(CodeTemplateContextType.NEWTYPE_ID, cu.getJavaProject());
+	public static String getCompilationUnitContent(IJavaScriptUnit cu, String packDecl, String fileComment, String typeComment, String typeContent, String lineDelimiter) throws CoreException {
+		Template template= getCodeTemplate(CodeTemplateContextType.NEWTYPE_ID, cu.getJavaScriptProject());
 		if (template == null) {
 			return null;
 		}
 		
-		IJavaProject project= cu.getJavaProject();
+		IJavaScriptProject project= cu.getJavaScriptProject();
 		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), project, lineDelimiter);
 		context.setCompilationUnitVariables(cu);
 		context.setVariable(CodeTemplateContextType.PACKAGE_DECLARATION, packDecl);
 		context.setVariable(CodeTemplateContextType.TYPE_COMMENT, typeComment != null ? typeComment : ""); //$NON-NLS-1$
 		context.setVariable(CodeTemplateContextType.FILE_COMMENT, fileComment != null ? fileComment : ""); //$NON-NLS-1$
 		context.setVariable(CodeTemplateContextType.TYPE_DECLARATION, typeContent);
-		context.setVariable(CodeTemplateContextType.TYPENAME, JavaCore.removeJavaLikeExtension(cu.getElementName()));
+		context.setVariable(CodeTemplateContextType.TYPENAME, JavaScriptCore.removeJavaScriptLikeExtension(cu.getElementName()));
 		
 		String[] fullLine= { CodeTemplateContextType.PACKAGE_DECLARATION, CodeTemplateContextType.FILE_COMMENT, CodeTemplateContextType.TYPE_COMMENT };
 		return evaluateTemplate(context, template, fullLine);
@@ -239,31 +239,31 @@ public class StubUtility {
 	
 	/*
 	 * Don't use this method directly, use CodeGeneration.
-	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getFileComment(ICompilationUnit, String)
+	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getFileComment(IJavaScriptUnit, String)
 	 */	
-	public static String getFileComment(ICompilationUnit cu, String lineDelimiter) throws CoreException {
-		Template template= getCodeTemplate(CodeTemplateContextType.FILECOMMENT_ID, cu.getJavaProject());
+	public static String getFileComment(IJavaScriptUnit cu, String lineDelimiter) throws CoreException {
+		Template template= getCodeTemplate(CodeTemplateContextType.FILECOMMENT_ID, cu.getJavaScriptProject());
 		if (template == null) {
 			return null;
 		}
 		
-		IJavaProject project= cu.getJavaProject();
+		IJavaScriptProject project= cu.getJavaScriptProject();
 		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), project, lineDelimiter);
 		context.setCompilationUnitVariables(cu);
-		context.setVariable(CodeTemplateContextType.TYPENAME, JavaCore.removeJavaLikeExtension(cu.getElementName()));
+		context.setVariable(CodeTemplateContextType.TYPENAME, JavaScriptCore.removeJavaScriptLikeExtension(cu.getElementName()));
 		return evaluateTemplate(context, template);
 	}	
 
 	/*
 	 * Don't use this method directly, use CodeGeneration.
-	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getTypeComment(ICompilationUnit, String, String[], String)
+	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getTypeComment(IJavaScriptUnit, String, String[], String)
 	 */		
-	public static String getTypeComment(ICompilationUnit cu, String typeQualifiedName, String[] typeParameterNames, String lineDelim) throws CoreException {
-		Template template= getCodeTemplate(CodeTemplateContextType.TYPECOMMENT_ID, cu.getJavaProject());
+	public static String getTypeComment(IJavaScriptUnit cu, String typeQualifiedName, String[] typeParameterNames, String lineDelim) throws CoreException {
+		Template template= getCodeTemplate(CodeTemplateContextType.TYPECOMMENT_ID, cu.getJavaScriptProject());
 		if (template == null) {
 			return null;
 		}
-		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaProject(), lineDelim);
+		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaScriptProject(), lineDelim);
 		context.setCompilationUnitVariables(cu);
 		context.setVariable(CodeTemplateContextType.ENCLOSING_TYPE, Signature.getQualifier(typeQualifiedName));
 		context.setVariable(CodeTemplateContextType.TYPENAME, Signature.getSimpleName(typeQualifiedName));
@@ -301,7 +301,7 @@ public class StubUtility {
 	/*
 	 * Returns the parameters type names used in see tags. Currently, these are always fully qualified.
 	 */
-	public static String[] getParameterTypeNamesForSeeTag(IMethodBinding binding) {
+	public static String[] getParameterTypeNamesForSeeTag(IFunctionBinding binding) {
 		ITypeBinding[] typeBindings= binding.getParameterTypes();
 		String[] result= new String[typeBindings.length];
 		for (int i= 0; i < result.length; i++) {
@@ -318,13 +318,13 @@ public class StubUtility {
 	/*
 	 * Returns the parameters type names used in see tags. Currently, these are always fully qualified.
 	 */
-	private static String[] getParameterTypeNamesForSeeTag(IMethod overridden) {
+	private static String[] getParameterTypeNamesForSeeTag(IFunction overridden) {
 		try {
 			ASTParser parser= ASTParser.newParser(AST.JLS3);
-			parser.setProject(overridden.getJavaProject());
-			IBinding[] bindings= parser.createBindings(new IJavaElement[] { overridden }, null);
-			if (bindings.length == 1 && bindings[0] instanceof IMethodBinding) {
-				return getParameterTypeNamesForSeeTag((IMethodBinding) bindings[0]);
+			parser.setProject(overridden.getJavaScriptProject());
+			IBinding[] bindings= parser.createBindings(new IJavaScriptElement[] { overridden }, null);
+			if (bindings.length == 1 && bindings[0] instanceof IFunctionBinding) {
+				return getParameterTypeNamesForSeeTag((IFunctionBinding) bindings[0]);
 			}
 		} catch (IllegalStateException e) {
 			// method does not exist
@@ -365,18 +365,18 @@ public class StubUtility {
 
 	/**
      * Don't use this method directly, use CodeGeneration.
-	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getTypeBody(String, ICompilationUnit, String, String)
+	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getTypeBody(String, IJavaScriptUnit, String, String)
 	 */		
-	public static String getTypeBody(String templateID, ICompilationUnit cu, String typeName, String lineDelim) throws CoreException {
+	public static String getTypeBody(String templateID, IJavaScriptUnit cu, String typeName, String lineDelim) throws CoreException {
 		if ( !VALID_TYPE_BODY_TEMPLATES.contains(templateID)) {
 			throw new IllegalArgumentException("Invalid code template ID: " + templateID);  //$NON-NLS-1$
 		}
 		
-		Template template= getCodeTemplate(templateID, cu.getJavaProject());
+		Template template= getCodeTemplate(templateID, cu.getJavaScriptProject());
 		if (template == null) {
 			return null;
 		}
-		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaProject(), lineDelim);
+		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaScriptProject(), lineDelim);
 		context.setCompilationUnitVariables(cu);
 		context.setVariable(CodeTemplateContextType.TYPENAME, typeName);
 
@@ -385,9 +385,9 @@ public class StubUtility {
 	
 	/*
 	 * Don't use this method directly, use CodeGeneration.
-	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getMethodComment(ICompilationUnit, String, String, String[], String[], String, String[], IMethod, String)
+	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getMethodComment(IJavaScriptUnit, String, String, String[], String[], String, String[], IFunction, String)
 	 */
-	public static String getMethodComment(ICompilationUnit cu, String typeName, String methodName, String[] paramNames, String[] excTypeSig, String retTypeSig, String[] typeParameterNames, IMethod target, boolean delegate, String lineDelimiter) throws CoreException {
+	public static String getMethodComment(IJavaScriptUnit cu, String typeName, String methodName, String[] paramNames, String[] excTypeSig, String retTypeSig, String[] typeParameterNames, IFunction target, boolean delegate, String lineDelimiter) throws CoreException {
 		String templateName= CodeTemplateContextType.METHODCOMMENT_ID;
 		if (retTypeSig == null) {
 			templateName= CodeTemplateContextType.CONSTRUCTORCOMMENT_ID;
@@ -397,11 +397,11 @@ public class StubUtility {
 			else
 				templateName= CodeTemplateContextType.OVERRIDECOMMENT_ID;
 		}
-		Template template= getCodeTemplate(templateName, cu.getJavaProject());
+		Template template= getCodeTemplate(templateName, cu.getJavaScriptProject());
 		if (template == null) {
 			return null;
 		}		
-		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaProject(), lineDelimiter);
+		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaScriptProject(), lineDelimiter);
 		context.setCompilationUnitVariables(cu);
 		context.setVariable(CodeTemplateContextType.ENCLOSING_TYPE, typeName);
 		context.setVariable(CodeTemplateContextType.ENCLOSING_METHOD, methodName);
@@ -485,12 +485,12 @@ public class StubUtility {
 	/*
 	 * Don't use this method directly, use CodeGeneration.
 	 */
-	public static String getFieldComment(ICompilationUnit cu, String typeName, String fieldName, String lineDelimiter) throws CoreException {
-		Template template= getCodeTemplate(CodeTemplateContextType.FIELDCOMMENT_ID, cu.getJavaProject());
+	public static String getFieldComment(IJavaScriptUnit cu, String typeName, String fieldName, String lineDelimiter) throws CoreException {
+		Template template= getCodeTemplate(CodeTemplateContextType.FIELDCOMMENT_ID, cu.getJavaScriptProject());
 		if (template == null) {
 			return null;
 		}
-		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaProject(), lineDelimiter);
+		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaScriptProject(), lineDelimiter);
 		context.setCompilationUnitVariables(cu);
 		context.setVariable(CodeTemplateContextType.FIELD_TYPE, typeName);
 		context.setVariable(CodeTemplateContextType.FIELD, fieldName);
@@ -501,16 +501,16 @@ public class StubUtility {
 	
 	/*
 	 * Don't use this method directly, use CodeGeneration.
-	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getSetterComment(ICompilationUnit, String, String, String, String, String, String, String)
+	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getSetterComment(IJavaScriptUnit, String, String, String, String, String, String, String)
 	 */
-	public static String getSetterComment(ICompilationUnit cu, String typeName, String methodName, String fieldName, String fieldType, String paramName, String bareFieldName, String lineDelimiter) throws CoreException {
+	public static String getSetterComment(IJavaScriptUnit cu, String typeName, String methodName, String fieldName, String fieldType, String paramName, String bareFieldName, String lineDelimiter) throws CoreException {
 		String templateName= CodeTemplateContextType.SETTERCOMMENT_ID;
-		Template template= getCodeTemplate(templateName, cu.getJavaProject());
+		Template template= getCodeTemplate(templateName, cu.getJavaScriptProject());
 		if (template == null) {
 			return null;
 		}
 		
-		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaProject(), lineDelimiter);
+		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaScriptProject(), lineDelimiter);
 		context.setCompilationUnitVariables(cu);
 		context.setVariable(CodeTemplateContextType.ENCLOSING_TYPE, typeName);
 		context.setVariable(CodeTemplateContextType.ENCLOSING_METHOD, methodName);
@@ -524,15 +524,15 @@ public class StubUtility {
 	
 	/*
 	 * Don't use this method directly, use CodeGeneration.
-	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getGetterComment(ICompilationUnit, String, String, String, String, String, String)
+	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getGetterComment(IJavaScriptUnit, String, String, String, String, String, String)
 	 */
-	public static String getGetterComment(ICompilationUnit cu, String typeName, String methodName, String fieldName, String fieldType, String bareFieldName, String lineDelimiter) throws CoreException {
+	public static String getGetterComment(IJavaScriptUnit cu, String typeName, String methodName, String fieldName, String fieldType, String bareFieldName, String lineDelimiter) throws CoreException {
 		String templateName= CodeTemplateContextType.GETTERCOMMENT_ID;
-		Template template= getCodeTemplate(templateName, cu.getJavaProject());
+		Template template= getCodeTemplate(templateName, cu.getJavaScriptProject());
 		if (template == null) {
 			return null;
 		}		
-		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaProject(), lineDelimiter);
+		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaScriptProject(), lineDelimiter);
 		context.setCompilationUnitVariables(cu);
 		context.setVariable(CodeTemplateContextType.ENCLOSING_TYPE, typeName);
 		context.setVariable(CodeTemplateContextType.ENCLOSING_METHOD, methodName);
@@ -582,9 +582,9 @@ public class StubUtility {
 	
 	/*
 	 * Don't use this method directly, use CodeGeneration.
-	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getMethodComment(ICompilationUnit, String, MethodDeclaration, boolean, String, String[], String)
+	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getMethodComment(IJavaScriptUnit, String, FunctionDeclaration, boolean, String, String[], String)
 	 */
-	public static String getMethodComment(ICompilationUnit cu, String typeName, MethodDeclaration decl, boolean isDeprecated, String targetName, String targetMethodDeclaringTypeName, String[] targetMethodParameterTypeNames, boolean delegate, String lineDelimiter) throws CoreException {
+	public static String getMethodComment(IJavaScriptUnit cu, String typeName, FunctionDeclaration decl, boolean isDeprecated, String targetName, String targetMethodDeclaringTypeName, String[] targetMethodParameterTypeNames, boolean delegate, String lineDelimiter) throws CoreException {
 		if (typeName==null)
 			typeName=""; //$NON-NLS-1$
 		boolean needsTarget= targetMethodDeclaringTypeName != null && targetMethodParameterTypeNames != null;
@@ -597,11 +597,11 @@ public class StubUtility {
 			else
 				templateName= CodeTemplateContextType.OVERRIDECOMMENT_ID;
 		}
-		Template template= getCodeTemplate(templateName, cu.getJavaProject());
+		Template template= getCodeTemplate(templateName, cu.getJavaScriptProject());
 		if (template == null) {
 			return null;
 		}		
-		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaProject(), lineDelimiter);
+		CodeTemplateContext context= new CodeTemplateContext(template.getContextTypeId(), cu.getJavaScriptProject(), lineDelimiter);
 		context.setCompilationUnitVariables(cu);
 		context.setVariable(CodeTemplateContextType.ENCLOSING_TYPE, typeName);
 		context.setVariable(CodeTemplateContextType.ENCLOSING_METHOD, decl.getName().getIdentifier());
@@ -671,7 +671,7 @@ public class StubUtility {
 	/**
 	 * @deprecated Deprecated to avoid deprecated warnings
 	 */
-	private static ASTNode getReturnType(MethodDeclaration decl) {
+	private static ASTNode getReturnType(FunctionDeclaration decl) {
 		// used from API, can't eliminate
 		return (decl.getAST().apiLevel() == AST.JLS2) ? decl.getReturnType() : decl.getReturnType2();
 	}
@@ -757,11 +757,11 @@ public class StubUtility {
 	 * @param project the java project, or <code>null</code>
 	 * @return the used line delimiter
 	 */
-	public static String getLineDelimiterUsed(IJavaProject project) {
+	public static String getLineDelimiterUsed(IJavaScriptProject project) {
 		return getProjectLineDelimiter(project);
 	}
 
-	private static String getProjectLineDelimiter(IJavaProject javaProject) {
+	private static String getProjectLineDelimiter(IJavaScriptProject javaProject) {
 		IProject project= null;
 		if (javaProject != null)
 			project= javaProject.getProject();
@@ -791,14 +791,14 @@ public class StubUtility {
 	/**
 	 * Examines a string and returns the first line delimiter found.
 	 */
-	public static String getLineDelimiterUsed(IJavaElement elem) {
+	public static String getLineDelimiterUsed(IJavaScriptElement elem) {
 		while (elem != null && !(elem instanceof IOpenable)) {
 			elem= elem.getParent();
 		}
 		if (elem != null) {
 			try {
 				return ((IOpenable) elem).findRecommendedLineSeparator();
-			} catch (JavaModelException exception) {
+			} catch (JavaScriptModelException exception) {
 				// Use project setting
 			}
 		}
@@ -808,9 +808,9 @@ public class StubUtility {
 	/**
 	 * Evaluates the indentation used by a Java element. (in tabulators)
 	 */	
-	public static int getIndentUsed(IJavaElement elem) throws JavaModelException {
+	public static int getIndentUsed(IJavaScriptElement elem) throws JavaScriptModelException {
 		if (elem instanceof ISourceReference) {
-			ICompilationUnit cu= (ICompilationUnit) elem.getAncestor(IJavaElement.COMPILATION_UNIT);
+			IJavaScriptUnit cu= (IJavaScriptUnit) elem.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 			if (cu != null) {
 				IBuffer buf= cu.getBuffer();
 				int offset= ((ISourceReference)elem).getSourceRange().getOffset();
@@ -819,7 +819,7 @@ public class StubUtility {
 				while (i > 0 && !IndentManipulation.isLineDelimiterChar(buf.getChar(i - 1)) ){
 					i--;
 				}
-				return Strings.computeIndentUnits(buf.getText(i, offset - i), elem.getJavaProject());
+				return Strings.computeIndentUnits(buf.getText(i, offset - i), elem.getJavaScriptProject());
 			}
 		}
 		return 0;
@@ -828,10 +828,10 @@ public class StubUtility {
 	/**
 	 * Returns the element after the give element.
 	 */
-	public static IJavaElement findNextSibling(IJavaElement member) throws JavaModelException {
-		IJavaElement parent= member.getParent();
+	public static IJavaScriptElement findNextSibling(IJavaScriptElement member) throws JavaScriptModelException {
+		IJavaScriptElement parent= member.getParent();
 		if (parent instanceof IParent) {
-			IJavaElement[] elements= ((IParent)parent).getChildren();
+			IJavaScriptElement[] elements= ((IParent)parent).getChildren();
 			for (int i= elements.length - 2; i >= 0 ; i--) {
 				if (member.equals(elements[i])) {
 					return elements[i+1];
@@ -841,12 +841,12 @@ public class StubUtility {
 		return null;
 	}
 	
-	public static String getTodoTaskTag(IJavaProject project) {
+	public static String getTodoTaskTag(IJavaScriptProject project) {
 		String markers= null;
 		if (project == null) {
-			markers= JavaCore.getOption(JavaCore.COMPILER_TASK_TAGS);
+			markers= JavaScriptCore.getOption(JavaScriptCore.COMPILER_TASK_TAGS);
 		} else {
-			markers= project.getOption(JavaCore.COMPILER_TASK_TAGS, true);
+			markers= project.getOption(JavaScriptCore.COMPILER_TASK_TAGS, true);
 		}
 		
 		if (markers != null && markers.length() > 0) {
@@ -877,7 +877,7 @@ public class StubUtility {
 	public static final int PARAMETER= 4;
 	public static final int LOCAL= 5;
 	
-	public static String[] getVariableNameSuggestions(int variableKind, IJavaProject project, ITypeBinding expectedType, Expression assignedExpression, Collection excluded) {
+	public static String[] getVariableNameSuggestions(int variableKind, IJavaScriptProject project, ITypeBinding expectedType, Expression assignedExpression, Collection excluded) {
 		LinkedHashSet res= new LinkedHashSet(); // avoid duplicates but keep order
 
 		if (assignedExpression != null) {
@@ -919,7 +919,7 @@ public class StubUtility {
 		return (String[]) res.toArray(new String[res.size()]);
 	}
 	
-	public static String[] getVariableNameSuggestions(int variableKind, IJavaProject project, Type expectedType, Expression assignedExpression, Collection excluded) {
+	public static String[] getVariableNameSuggestions(int variableKind, IJavaScriptProject project, Type expectedType, Expression assignedExpression, Collection excluded) {
 		LinkedHashSet res= new LinkedHashSet(); // avoid duplicates but keep order
 
 		if (assignedExpression != null) {
@@ -983,7 +983,7 @@ public class StubUtility {
 	 * @return returns the name suggestions sorted by relevance (best proposal first). If <code>evaluateDefault</code> is set to true, the returned array is never empty.
 	 * If <code>evaluateDefault</code> is set to false, an empty array is returned if there is no good suggestion for the given base name.
 	 */
-	public static String[] getVariableNameSuggestions(int variableKind, IJavaProject project, String baseName, int dimensions, Collection excluded, boolean evaluateDefault) {
+	public static String[] getVariableNameSuggestions(int variableKind, IJavaScriptProject project, String baseName, int dimensions, Collection excluded, boolean evaluateDefault) {
 		String name= workaround38111(baseName);
 		name= removeTypeArguments(name);
 		String packageName= new String(); // not used, so don't compute for now
@@ -1039,7 +1039,7 @@ public class StubUtility {
 		}
 	}
 	
-	private static String getBaseNameFromExpression(IJavaProject project, Expression assignedExpression, int variableKind) {
+	private static String getBaseNameFromExpression(IJavaScriptProject project, Expression assignedExpression, int variableKind) {
 		String name= null;
 		if (assignedExpression instanceof CastExpression) {
 			assignedExpression= ((CastExpression) assignedExpression).getExpression();
@@ -1051,8 +1051,8 @@ public class StubUtility {
 				return removePrefixAndSuffixForVariable(project, (IVariableBinding) binding);
 			
 			return ASTNodes.getSimpleNameIdentifier(simpleNode);
-		} else if (assignedExpression instanceof MethodInvocation) {
-			SimpleName name2 = ((MethodInvocation) assignedExpression).getName();
+		} else if (assignedExpression instanceof FunctionInvocation) {
+			SimpleName name2 = ((FunctionInvocation) assignedExpression).getName();
 			if (name2!=null)
 				name= name2.getIdentifier();
 		} else if (assignedExpression instanceof SuperMethodInvocation) {
@@ -1094,39 +1094,39 @@ public class StubUtility {
 		return name;
 	}
 	
-	private static String getBaseNameFromLocationInParent(IJavaProject project, Expression assignedExpression) {
+	private static String getBaseNameFromLocationInParent(IJavaScriptProject project, Expression assignedExpression) {
 		StructuralPropertyDescriptor location= assignedExpression.getLocationInParent();
-		if (location == MethodInvocation.ARGUMENTS_PROPERTY) {
-			MethodInvocation parent= (MethodInvocation) assignedExpression.getParent();
-			IMethodBinding binding= parent.resolveMethodBinding();
+		if (location == FunctionInvocation.ARGUMENTS_PROPERTY) {
+			FunctionInvocation parent= (FunctionInvocation) assignedExpression.getParent();
+			IFunctionBinding binding= parent.resolveMethodBinding();
 			int index= parent.arguments().indexOf(assignedExpression);
 			if (binding != null && index != -1) {
 				return getParameterName(binding, index);
 			}
 		} else if (location == ClassInstanceCreation.ARGUMENTS_PROPERTY) {
 			ClassInstanceCreation parent= (ClassInstanceCreation) assignedExpression.getParent();
-			IMethodBinding binding= parent.resolveConstructorBinding();
+			IFunctionBinding binding= parent.resolveConstructorBinding();
 			int index= parent.arguments().indexOf(assignedExpression);
 			if (binding != null && index != -1) {
 				return getParameterName(binding, index);
 			}
 		} else if (location == SuperMethodInvocation.ARGUMENTS_PROPERTY) {
 			SuperMethodInvocation parent= (SuperMethodInvocation) assignedExpression.getParent();
-			IMethodBinding binding= parent.resolveMethodBinding();
+			IFunctionBinding binding= parent.resolveMethodBinding();
 			int index= parent.arguments().indexOf(assignedExpression);
 			if (binding != null && index != -1) {
 				return getParameterName(binding, index);
 			}
 		} else if (location == ConstructorInvocation.ARGUMENTS_PROPERTY) {
 			ConstructorInvocation parent= (ConstructorInvocation) assignedExpression.getParent();
-			IMethodBinding binding= parent.resolveConstructorBinding();
+			IFunctionBinding binding= parent.resolveConstructorBinding();
 			int index= parent.arguments().indexOf(assignedExpression);
 			if (binding != null && index != -1) {
 				return getParameterName(binding, index);
 			}
 		} else if (location == SuperConstructorInvocation.ARGUMENTS_PROPERTY) {
 			SuperConstructorInvocation parent= (SuperConstructorInvocation) assignedExpression.getParent();
-			IMethodBinding binding= parent.resolveConstructorBinding();
+			IFunctionBinding binding= parent.resolveConstructorBinding();
 			int index= parent.arguments().indexOf(assignedExpression);
 			if (binding != null && index != -1) {
 				return getParameterName(binding, index);
@@ -1135,34 +1135,34 @@ public class StubUtility {
 		return null;
 	}
 	
-	private static String getParameterName(IMethodBinding binding, int index) {
+	private static String getParameterName(IFunctionBinding binding, int index) {
 		try {
-			IJavaElement javaElement= binding.getJavaElement();
-			if (javaElement instanceof IMethod) {
-				IMethod method= (IMethod) javaElement;
+			IJavaScriptElement javaElement= binding.getJavaElement();
+			if (javaElement instanceof IFunction) {
+				IFunction method= (IFunction) javaElement;
 				if (method.getOpenable().getBuffer() != null) { // avoid dummy names and lookup from Javadoc
 					String[] parameterNames= method.getParameterNames();
 					if (index < parameterNames.length) {
-						return NamingConventions.removePrefixAndSuffixForArgumentName(method.getJavaProject(), parameterNames[index]);
+						return NamingConventions.removePrefixAndSuffixForArgumentName(method.getJavaScriptProject(), parameterNames[index]);
 					}
 				}
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignore
 		}
 		return null;
 	}
 	
-	public static String[] getArgumentNameSuggestions(IType type,ICompilationUnit compUnit, String[] excluded) {
+	public static String[] getArgumentNameSuggestions(IType type,IJavaScriptUnit compUnit, String[] excluded) {
 		String baseName= (type!=null)?JavaModelUtil.getFullyQualifiedName(type) : compUnit.getElementName();
-		return getVariableNameSuggestions(PARAMETER, compUnit.getJavaProject(),baseName, 0, new ExcludedCollection(excluded), true);
+		return getVariableNameSuggestions(PARAMETER, compUnit.getJavaScriptProject(),baseName, 0, new ExcludedCollection(excluded), true);
 	}
 	
 	public static String[] getArgumentNameSuggestions(IType type, String[] excluded) {
-		return getVariableNameSuggestions(PARAMETER, type.getJavaProject(), JavaModelUtil.getFullyQualifiedName(type), 0, new ExcludedCollection(excluded), true);
+		return getVariableNameSuggestions(PARAMETER, type.getJavaScriptProject(), JavaModelUtil.getFullyQualifiedName(type), 0, new ExcludedCollection(excluded), true);
 	}
 	
-	public static String[] getArgumentNameSuggestions(IJavaProject project, Type type, String[] excluded) {
+	public static String[] getArgumentNameSuggestions(IJavaScriptProject project, Type type, String[] excluded) {
 		int dim= 0;
 		if (type.isArrayType()) {
 			ArrayType arrayType= (ArrayType) type;
@@ -1175,19 +1175,19 @@ public class StubUtility {
 		return getVariableNameSuggestions(PARAMETER, project, ASTNodes.asString(type), dim, new ExcludedCollection(excluded), true);
 	}
 	
-	public static String[] getArgumentNameSuggestions(IJavaProject project, ITypeBinding binding, String[] excluded) {
+	public static String[] getArgumentNameSuggestions(IJavaScriptProject project, ITypeBinding binding, String[] excluded) {
 		return getVariableNameSuggestions(PARAMETER, project, binding, null, new ExcludedCollection(excluded));
 	}
 		
-	public static String[] getArgumentNameSuggestions(IJavaProject project, String baseName, int dimensions, String[] excluded) {
+	public static String[] getArgumentNameSuggestions(IJavaScriptProject project, String baseName, int dimensions, String[] excluded) {
 		return getVariableNameSuggestions(PARAMETER, project, baseName, dimensions, new ExcludedCollection(excluded), true);
 	}
 	
 	public static String[] getFieldNameSuggestions(IType type, int fieldModifiers, String[] excluded) {		
-		return getFieldNameSuggestions(type.getJavaProject(), JavaModelUtil.getFullyQualifiedName(type), 0, fieldModifiers, excluded);
+		return getFieldNameSuggestions(type.getJavaScriptProject(), JavaModelUtil.getFullyQualifiedName(type), 0, fieldModifiers, excluded);
 	}
 		 
-	public static String[] getFieldNameSuggestions(IJavaProject project, String baseName, int dimensions, int modifiers, String[] excluded) {
+	public static String[] getFieldNameSuggestions(IJavaScriptProject project, String baseName, int dimensions, int modifiers, String[] excluded) {
 		if (Flags.isFinal(modifiers) && Flags.isStatic(modifiers)) {
 			return getVariableNameSuggestions(CONSTANT_FIELD, project, baseName, dimensions, new ExcludedCollection(excluded), true);
 		} else if (Flags.isStatic(modifiers)) {
@@ -1196,7 +1196,7 @@ public class StubUtility {
 		return getVariableNameSuggestions(INSTANCE_FIELD, project, baseName, dimensions, new ExcludedCollection(excluded), true);
 	}
 
-	private static String[] getConstantSuggestions(IJavaProject project, String packageName, String typeName, int dimensions, Collection excluded) {
+	private static String[] getConstantSuggestions(IJavaScriptProject project, String packageName, String typeName, int dimensions, Collection excluded) {
 		//TODO: workaround JDT/Core bug 85946
 		
 		String string= Signature.getSimpleName(typeName);
@@ -1216,14 +1216,14 @@ public class StubUtility {
 			}
 		}
 		ArrayList res= new ArrayList();
-		String sourceLevel= project.getOption(JavaCore.COMPILER_SOURCE, true);
-		String complianceLevel= project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+		String sourceLevel= project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
+		String complianceLevel= project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true);
 		
 		boolean nameStarts= true;
 		for (int i= 0; i < buf.length(); i++) {
 			if (nameStarts) {
 				String prop= buf.substring(i);
-				if (!excluded.contains(prop) && JavaConventions.validateFieldName(prop, sourceLevel, complianceLevel).isOK()) {
+				if (!excluded.contains(prop) && JavaScriptConventions.validateFieldName(prop, sourceLevel, complianceLevel).isOK()) {
 					res.add(prop);
 				}
 			}
@@ -1253,7 +1253,7 @@ public class StubUtility {
 		return result.toString();
 	}
 	
-	public static String[] getLocalNameSuggestions(IJavaProject project, String baseName, int dimensions, String[] excluded) {
+	public static String[] getLocalNameSuggestions(IJavaScriptProject project, String baseName, int dimensions, String[] excluded) {
 		return getVariableNameSuggestions(LOCAL, project, baseName, dimensions, new ExcludedCollection(excluded), true);
 	}
 	
@@ -1275,16 +1275,16 @@ public class StubUtility {
 	private static final List BASE_TYPES= Arrays.asList(
 			new String[] {"boolean", "byte", "char", "double", "float", "int", "long", "short"});  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
 
-	public static String suggestArgumentName(IJavaProject project, String baseName, String[] excluded) {
+	public static String suggestArgumentName(IJavaScriptProject project, String baseName, String[] excluded) {
 		return suggestVariableName(PARAMETER, project, baseName, 0, excluded);
 	}
 	
-	private static String suggestVariableName(int varKind, IJavaProject project, String baseName, int dimension, String[] excluded) {
+	private static String suggestVariableName(int varKind, IJavaScriptProject project, String baseName, int dimension, String[] excluded) {
 		return getVariableNameSuggestions(varKind, project, baseName, dimension, new ExcludedCollection(excluded), true)[0];
 	}
 	
 	
-	public static String[][] suggestArgumentNamesWithProposals(IJavaProject project, String[] paramNames) {
+	public static String[][] suggestArgumentNamesWithProposals(IJavaScriptProject project, String[] paramNames) {
 		String[][] newNames= new String[paramNames.length][];
 		ArrayList takenNames= new ArrayList();
 		
@@ -1309,15 +1309,15 @@ public class StubUtility {
 		return newNames;
 	}
 	
-	public static String[][] suggestArgumentNamesWithProposals(IJavaProject project, IMethodBinding binding) {
+	public static String[][] suggestArgumentNamesWithProposals(IJavaScriptProject project, IFunctionBinding binding) {
 		int nParams= binding.getParameterTypes().length;
 		if (nParams > 0) {
 			try {
-				IMethod method= (IMethod) binding.getMethodDeclaration().getJavaElement();
+				IFunction method= (IFunction) binding.getMethodDeclaration().getJavaElement();
 				if (method != null) {
 					return suggestArgumentNamesWithProposals(project, method.getParameterNames());
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore
 			}
 		}
@@ -1329,12 +1329,12 @@ public class StubUtility {
 	}
 	
 	
-	public static String[] suggestArgumentNames(IJavaProject project, IMethodBinding binding) {
+	public static String[] suggestArgumentNames(IJavaScriptProject project, IFunctionBinding binding) {
 		int nParams= binding.getParameterTypes().length;
 
 		if (nParams > 0) {
 			try {
-				IMethod method= (IMethod) binding.getMethodDeclaration().getJavaElement();
+				IFunction method= (IFunction) binding.getMethodDeclaration().getJavaElement();
 				if (method != null) {
 					String[] paramNames= method.getParameterNames();
 					String[] namesArray= new String[0];
@@ -1353,7 +1353,7 @@ public class StubUtility {
 					}
 					return namesArray;
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore
 			}
 		}
@@ -1364,7 +1364,7 @@ public class StubUtility {
 		return names;
 	}
 	
-	public static String removePrefixAndSuffixForVariable(IJavaProject project, IVariableBinding binding) {
+	public static String removePrefixAndSuffixForVariable(IJavaScriptProject project, IVariableBinding binding) {
 		if (binding.isEnumConstant()) {
 			return binding.getName();
 		} else if (binding.isField()) {
@@ -1409,26 +1409,26 @@ public class StubUtility {
     }
 	
 	
-	public static boolean hasFieldName(IJavaProject project, String name) {
-		String prefixes= project.getOption(JavaCore.CODEASSIST_FIELD_PREFIXES, true);
-		String suffixes= project.getOption(JavaCore.CODEASSIST_FIELD_SUFFIXES, true);
-		String staticPrefixes= project.getOption(JavaCore.CODEASSIST_STATIC_FIELD_PREFIXES, true);
-		String staticSuffixes= project.getOption(JavaCore.CODEASSIST_STATIC_FIELD_SUFFIXES, true);
+	public static boolean hasFieldName(IJavaScriptProject project, String name) {
+		String prefixes= project.getOption(JavaScriptCore.CODEASSIST_FIELD_PREFIXES, true);
+		String suffixes= project.getOption(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES, true);
+		String staticPrefixes= project.getOption(JavaScriptCore.CODEASSIST_STATIC_FIELD_PREFIXES, true);
+		String staticSuffixes= project.getOption(JavaScriptCore.CODEASSIST_STATIC_FIELD_SUFFIXES, true);
 		
 		
 		return hasPrefixOrSuffix(prefixes, suffixes, name) 
 			|| hasPrefixOrSuffix(staticPrefixes, staticSuffixes, name);
 	}
 	
-	public static boolean hasParameterName(IJavaProject project, String name) {
-		String prefixes= project.getOption(JavaCore.CODEASSIST_ARGUMENT_PREFIXES, true);
-		String suffixes= project.getOption(JavaCore.CODEASSIST_ARGUMENT_SUFFIXES, true);
+	public static boolean hasParameterName(IJavaScriptProject project, String name) {
+		String prefixes= project.getOption(JavaScriptCore.CODEASSIST_ARGUMENT_PREFIXES, true);
+		String suffixes= project.getOption(JavaScriptCore.CODEASSIST_ARGUMENT_SUFFIXES, true);
 		return hasPrefixOrSuffix(prefixes, suffixes, name);
 	}
 	
-	public static boolean hasLocalVariableName(IJavaProject project, String name) {
-		String prefixes= project.getOption(JavaCore.CODEASSIST_LOCAL_PREFIXES, true);
-		String suffixes= project.getOption(JavaCore.CODEASSIST_LOCAL_SUFFIXES, true);
+	public static boolean hasLocalVariableName(IJavaScriptProject project, String name) {
+		String prefixes= project.getOption(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES, true);
+		String suffixes= project.getOption(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES, true);
 		return hasPrefixOrSuffix(prefixes, suffixes, name);
 	}
 	
@@ -1460,48 +1460,48 @@ public class StubUtility {
 	
 	// -------------------- preference access -----------------------
 	
-	public static boolean useThisForFieldAccess(IJavaProject project) {
+	public static boolean useThisForFieldAccess(IJavaScriptProject project) {
 		return Boolean.valueOf(PreferenceConstants.getPreference(PreferenceConstants.CODEGEN_KEYWORD_THIS, project)).booleanValue(); 
 	}
 	
-	public static boolean useIsForBooleanGetters(IJavaProject project) {
+	public static boolean useIsForBooleanGetters(IJavaScriptProject project) {
 		return Boolean.valueOf(PreferenceConstants.getPreference(PreferenceConstants.CODEGEN_IS_FOR_GETTERS, project)).booleanValue(); 
 	}
 	
-	public static String getExceptionVariableName(IJavaProject project) {
+	public static String getExceptionVariableName(IJavaScriptProject project) {
 		return PreferenceConstants.getPreference(PreferenceConstants.CODEGEN_EXCEPTION_VAR_NAME, project); 
 	}
 	
-	public static boolean doAddComments(IJavaProject project) {
+	public static boolean doAddComments(IJavaScriptProject project) {
 		return Boolean.valueOf(PreferenceConstants.getPreference(PreferenceConstants.CODEGEN_ADD_COMMENTS, project)).booleanValue(); 
 	}
 	
-	public static void setCodeTemplate(String templateId, String pattern, IJavaProject project) {
-		TemplateStore codeTemplateStore= JavaPlugin.getDefault().getCodeTemplateStore();
+	public static void setCodeTemplate(String templateId, String pattern, IJavaScriptProject project) {
+		TemplateStore codeTemplateStore= JavaScriptPlugin.getDefault().getCodeTemplateStore();
 		TemplatePersistenceData data= codeTemplateStore.getTemplateData(templateId);
 		Template orig= data.getTemplate();
 		Template copy= new Template(orig.getName(), orig.getDescription(), orig.getContextTypeId(), pattern, true);
 		data.setTemplate(copy);
 	}
 	
-	private static Template getCodeTemplate(String id, IJavaProject project) {
+	private static Template getCodeTemplate(String id, IJavaScriptProject project) {
 		if (project == null)
-			return JavaPlugin.getDefault().getCodeTemplateStore().findTemplateById(id);
+			return JavaScriptPlugin.getDefault().getCodeTemplateStore().findTemplateById(id);
 		ProjectTemplateStore projectStore= new ProjectTemplateStore(project.getProject());
 		try {
 			projectStore.load();
 		} catch (IOException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		return projectStore.findTemplateById(id);
 	}
 	
 
-	public static ImportRewrite createImportRewrite(ICompilationUnit cu, boolean restoreExistingImports) throws JavaModelException {
+	public static ImportRewrite createImportRewrite(IJavaScriptUnit cu, boolean restoreExistingImports) throws JavaScriptModelException {
 		return CodeStyleConfiguration.createImportRewrite(cu, restoreExistingImports);
 	}
 	
-	public static ImportRewrite createImportRewrite(CompilationUnit astRoot, boolean restoreExistingImports) {
+	public static ImportRewrite createImportRewrite(JavaScriptUnit astRoot, boolean restoreExistingImports) {
 		return CodeStyleConfiguration.createImportRewrite(astRoot, restoreExistingImports);
 	}
 	

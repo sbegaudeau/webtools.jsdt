@@ -140,7 +140,7 @@ public interface ITypeBinding extends IBinding {
 	 *   declared by this class, interface, enum type, or annotation type,
 	 *   or the empty list if this type does not declare any methods or constructors
 	 */
-	public IMethodBinding[] getDeclaredMethods();
+	public IFunctionBinding[] getDeclaredMethods();
 
 	/**
 	 * Returns the declared modifiers for this class or interface binding
@@ -223,7 +223,7 @@ public interface ITypeBinding extends IBinding {
 	 * <code>null</code> if none
 	 * @since 3.1
 	 */
-	public IMethodBinding getDeclaringMethod();
+	public IFunctionBinding getDeclaringMethod();
 
 	/**
 	 * Returns the dimensionality of this array type, or <code>0</code> if this

@@ -11,12 +11,12 @@
 package org.eclipse.wst.jsdt.internal.core.search;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.core.JarPackageFragmentRoot;
@@ -32,51 +32,51 @@ import org.eclipse.wst.jsdt.internal.core.search.matching.MethodPattern;
  * and that are dependent on a given focus element.
  */
 public class IndexSelector {
-	IJavaSearchScope searchScope;
+	IJavaScriptSearchScope searchScope;
 	SearchPattern pattern;
 	IPath[] indexLocations; // cache of the keys for looking index up
 
 public IndexSelector(
-		IJavaSearchScope searchScope,
+		IJavaScriptSearchScope searchScope,
 		SearchPattern pattern) {
 
 	this.searchScope = searchScope;
 	this.pattern = pattern;
 }
 /**
- * Returns whether elements of the given project or jar can see the given focus (an IJavaProject or
+ * Returns whether elements of the given project or jar can see the given focus (an IJavaScriptProject or
  * a JarPackageFragmentRot) either because the focus is part of the project or the jar, or because it is
  * accessible throught the project's classpath
  */
-public static boolean canSeeFocus(IJavaElement focus, boolean isPolymorphicSearch, IPath projectOrJarPath) {
+public static boolean canSeeFocus(IJavaScriptElement focus, boolean isPolymorphicSearch, IPath projectOrJarPath) {
 	try {
-		IClasspathEntry[] focusEntries = null;
+		IIncludePathEntry[] focusEntries = null;
 		if (isPolymorphicSearch) {
 			JavaProject focusProject = focus instanceof JarPackageFragmentRoot ? (JavaProject) focus.getParent() : (JavaProject) focus;
 			focusEntries = focusProject.getExpandedClasspath();
 		}
-		IJavaModel model = focus.getJavaModel();
-		IJavaProject project = getJavaProject(projectOrJarPath, model);
+		IJavaScriptModel model = focus.getJavaScriptModel();
+		IJavaScriptProject project = getJavaProject(projectOrJarPath, model);
 		if (project != null)
 			return canSeeFocus(focus, (JavaProject) project, focusEntries);
 
 		// projectOrJarPath is a jar
 		// it can see the focus only if it is on the classpath of a project that can see the focus
-		IJavaProject[] allProjects = model.getJavaProjects();
+		IJavaScriptProject[] allProjects = model.getJavaScriptProjects();
 		for (int i = 0, length = allProjects.length; i < length; i++) {
 			JavaProject otherProject = (JavaProject) allProjects[i];
-			IClasspathEntry entry = otherProject.getClasspathEntryFor(projectOrJarPath);
+			IIncludePathEntry entry = otherProject.getClasspathEntryFor(projectOrJarPath);
 			if (entry != null
-					&& entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY
+					&& entry.getEntryKind() == IIncludePathEntry.CPE_LIBRARY
 					&& canSeeFocus(focus, otherProject, focusEntries))
 				return true;
 		}
 		return false;
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		return false;
 	}
 }
-public static boolean canSeeFocus(IJavaElement focus, JavaProject javaProject, IClasspathEntry[] focusEntriesForPolymorphicSearch) {
+public static boolean canSeeFocus(IJavaScriptElement focus, JavaProject javaProject, IIncludePathEntry[] focusEntriesForPolymorphicSearch) {
 	try {
 		if (focus.equals(javaProject))
 			return true;
@@ -85,32 +85,32 @@ public static boolean canSeeFocus(IJavaElement focus, JavaProject javaProject, I
 			// look for refering project
 			IPath projectPath = javaProject.getProject().getFullPath();
 			for (int i = 0, length = focusEntriesForPolymorphicSearch.length; i < length; i++) {
-				IClasspathEntry entry = focusEntriesForPolymorphicSearch[i];
-				if (entry.getEntryKind() == IClasspathEntry.CPE_PROJECT && entry.getPath().equals(projectPath))
+				IIncludePathEntry entry = focusEntriesForPolymorphicSearch[i];
+				if (entry.getEntryKind() == IIncludePathEntry.CPE_PROJECT && entry.getPath().equals(projectPath))
 					return true;
 			}
 		}
 		if (focus instanceof LibraryFragmentRoot) {
 			// focus is part of a jar
 			IPath focusPath = focus.getPath();
-			IClasspathEntry[] entries = javaProject.getExpandedClasspath();
+			IIncludePathEntry[] entries = javaProject.getExpandedClasspath();
 			for (int i = 0, length = entries.length; i < length; i++) {
-				IClasspathEntry entry = entries[i];
-				if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY && entry.getPath().equals(focusPath))
+				IIncludePathEntry entry = entries[i];
+				if (entry.getEntryKind() == IIncludePathEntry.CPE_LIBRARY && entry.getPath().equals(focusPath))
 					return true;
 			}
 			return false;
 		}
 		// look for dependent projects
 		IPath focusPath = ((JavaProject) focus).getProject().getFullPath();
-		IClasspathEntry[] entries = javaProject.getExpandedClasspath();
+		IIncludePathEntry[] entries = javaProject.getExpandedClasspath();
 		for (int i = 0, length = entries.length; i < length; i++) {
-			IClasspathEntry entry = entries[i];
-			if (entry.getEntryKind() == IClasspathEntry.CPE_PROJECT && entry.getPath().equals(focusPath))
+			IIncludePathEntry entry = entries[i];
+			if (entry.getEntryKind() == IIncludePathEntry.CPE_PROJECT && entry.getPath().equals(focusPath))
 				return true;
 		}
 		return false;
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		return false;
 	}
 }
@@ -121,7 +121,7 @@ private void initializeIndexLocations() {
 	IPath[] projectsAndJars = this.searchScope.enclosingProjectsAndJars();
 	IndexManager manager = JavaModelManager.getJavaModelManager().getIndexManager();
 	SimpleSet locations = new SimpleSet();
-	IJavaElement focus = MatchLocator.projectOrJarFocus(this.pattern);
+	IJavaScriptElement focus = MatchLocator.projectOrJarFocus(this.pattern);
 	if (focus == null) {
 		for (int i = 0; i < projectsAndJars.length; i++)
 			locations.add(manager.computeIndexLocation(projectsAndJars[i]));
@@ -133,12 +133,12 @@ private void initializeIndexLocations() {
 			SimpleSet visitedProjects = new SimpleSet(length);
 			int projectIndex = 0;
 			SimpleSet jarsToCheck = new SimpleSet(length);
-			IClasspathEntry[] focusEntries = null;
+			IIncludePathEntry[] focusEntries = null;
 			if (this.pattern instanceof MethodPattern) { // should consider polymorphic search for method patterns
 				JavaProject focusProject = focus instanceof LibraryFragmentRoot ? (JavaProject) focus.getParent() : (JavaProject) focus;
 				focusEntries = focusProject.getExpandedClasspath();
 			}
-			IJavaModel model = JavaModelManager.getJavaModelManager().getJavaModel();
+			IJavaScriptModel model = JavaModelManager.getJavaModelManager().getJavaModel();
 			for (int i = 0; i < length; i++) {
 				IPath path = projectsAndJars[i];
 				JavaProject project = (JavaProject) getJavaProject(path, model);
@@ -153,10 +153,10 @@ private void initializeIndexLocations() {
 				}
 			}
 			for (int i = 0; i < projectIndex && jarsToCheck.elementSize > 0; i++) {
-				IClasspathEntry[] entries = projectsCanSeeFocus[i].getResolvedClasspath();
+				IIncludePathEntry[] entries = projectsCanSeeFocus[i].getResolvedClasspath();
 				for (int j = entries.length; --j >= 0;) {
-					IClasspathEntry entry = entries[j];
-					if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+					IIncludePathEntry entry = entries[j];
+					if (entry.getEntryKind() == IIncludePathEntry.CPE_LIBRARY) {
 						IPath path = entry.getPath();
 						if (jarsToCheck.includes(path)) {
 							locations.add(manager.computeIndexLocation(entry.getPath()));
@@ -167,14 +167,14 @@ private void initializeIndexLocations() {
 			}
 			// jar files can be included in the search scope without including one of the projects that references them, so scan all projects that have not been visited
 			if (jarsToCheck.elementSize > 0) {
-				IJavaProject[] allProjects = model.getJavaProjects();
+				IJavaScriptProject[] allProjects = model.getJavaScriptProjects();
 				for (int i = 0, l = allProjects.length; i < l && jarsToCheck.elementSize > 0; i++) {
 					JavaProject project = (JavaProject) allProjects[i];
 					if (!visitedProjects.includes(project)) {
-						IClasspathEntry[] entries = project.getResolvedClasspath();
+						IIncludePathEntry[] entries = project.getResolvedClasspath();
 						for (int j = entries.length; --j >= 0;) {
-							IClasspathEntry entry = entries[j];
-							if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+							IIncludePathEntry entry = entries[j];
+							if (entry.getEntryKind() == IIncludePathEntry.CPE_LIBRARY) {
 								IPath path = entry.getPath();
 								if (jarsToCheck.includes(path)) {
 									locations.add(manager.computeIndexLocation(entry.getPath()));
@@ -185,7 +185,7 @@ private void initializeIndexLocations() {
 					}
 				}
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignored
 		}
 	}
@@ -208,8 +208,8 @@ public IPath[] getIndexLocations() {
  * Returns the java project that corresponds to the given path.
  * Returns null if the path doesn't correspond to a project.
  */
-private static IJavaProject getJavaProject(IPath path, IJavaModel model) {
-	IJavaProject project = model.getJavaProject(path.lastSegment());
+private static IJavaScriptProject getJavaProject(IPath path, IJavaScriptModel model) {
+	IJavaScriptProject project = model.getJavaScriptProject(path.lastSegment());
 	if (project.exists()) {
 		return project;
 	}

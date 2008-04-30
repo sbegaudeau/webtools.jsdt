@@ -14,29 +14,29 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class SetContainerOperation extends ChangeClasspathOperation {
 
 	IPath containerPath;
-	IJavaProject[] affectedProjects;
+	IJavaScriptProject[] affectedProjects;
 	IJsGlobalScopeContainer[] respectiveContainers;
 
 	/*
 	 * Creates a new SetContainerOperation.
 	 */
-	public SetContainerOperation(IPath containerPath, IJavaProject[] affectedProjects, IJsGlobalScopeContainer[] respectiveContainers) {
-		super(new IJavaElement[] {JavaModelManager.getJavaModelManager().getJavaModel()}, !ResourcesPlugin.getWorkspace().isTreeLocked());
+	public SetContainerOperation(IPath containerPath, IJavaScriptProject[] affectedProjects, IJsGlobalScopeContainer[] respectiveContainers) {
+		super(new IJavaScriptElement[] {JavaModelManager.getJavaModelManager().getJavaModel()}, !ResourcesPlugin.getWorkspace().isTreeLocked());
 		this.containerPath = containerPath;
 		this.affectedProjects = affectedProjects;
 		this.respectiveContainers = respectiveContainers;
 	}
 
-	protected void executeOperation() throws JavaModelException {
+	protected void executeOperation() throws JavaScriptModelException {
 		checkCanceled();
 		try {
 			beginTask("", 1); //$NON-NLS-1$
@@ -50,9 +50,9 @@ public class SetContainerOperation extends ChangeClasspathOperation {
 				return;
 
 			final int projectLength = this.affectedProjects.length;
-			final IJavaProject[] modifiedProjects;
-			System.arraycopy(this.affectedProjects, 0, modifiedProjects = new IJavaProject[projectLength], 0, projectLength);
-			final IClasspathEntry[][] oldResolvedPaths = new IClasspathEntry[projectLength][];
+			final IJavaScriptProject[] modifiedProjects;
+			System.arraycopy(this.affectedProjects, 0, modifiedProjects = new IJavaScriptProject[projectLength], 0, projectLength);
+			final IIncludePathEntry[][] oldResolvedPaths = new IIncludePathEntry[projectLength][];
 
 			// filter out unmodified project containers
 			int remaining = 0;
@@ -64,10 +64,10 @@ public class SetContainerOperation extends ChangeClasspathOperation {
 				if (newContainer == null) newContainer = JavaModelManager.CONTAINER_INITIALIZATION_IN_PROGRESS; // 30920 - prevent infinite loop
 				boolean found = false;
 				if (JavaProject.hasJavaNature(affectedProject.getProject())){
-					IClasspathEntry[] rawClasspath = affectedProject.getRawClasspath();
+					IIncludePathEntry[] rawClasspath = affectedProject.getRawIncludepath();
 					for (int j = 0, cpLength = rawClasspath.length; j <cpLength; j++) {
-						IClasspathEntry entry = rawClasspath[j];
-						if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER && entry.getPath().equals(this.containerPath)){
+						IIncludePathEntry entry = rawClasspath[j];
+						if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER && entry.getPath().equals(this.containerPath)){
 							found = true;
 							break;
 						}
@@ -125,10 +125,10 @@ public class SetContainerOperation extends ChangeClasspathOperation {
 			} catch(CoreException e) {
 				if (JavaModelManager.CP_RESOLVE_VERBOSE)
 					verbose_failure(e);
-				if (e instanceof JavaModelException) {
-					throw (JavaModelException)e;
+				if (e instanceof JavaScriptModelException) {
+					throw (JavaScriptModelException)e;
 				} else {
-					throw new JavaModelException(e);
+					throw new JavaScriptModelException(e);
 				}
 			} finally {
 				for (int i = 0; i < projectLength; i++) {
@@ -165,7 +165,7 @@ public class SetContainerOperation extends ChangeClasspathOperation {
 			org.eclipse.wst.jsdt.internal.compiler.util.Util.toString(
 				this.affectedProjects,
 				new org.eclipse.wst.jsdt.internal.compiler.util.Util.Displayable(){
-					public String displayString(Object o) { return ((IJavaProject) o).getElementName(); }
+					public String displayString(Object o) { return ((IJavaScriptProject) o).getElementName(); }
 				}) +
 			"}\n	values: {\n"  +//$NON-NLS-1$
 			org.eclipse.wst.jsdt.internal.compiler.util.Util.toString(
@@ -180,7 +180,7 @@ public class SetContainerOperation extends ChangeClasspathOperation {
 						IJsGlobalScopeContainer container = (IJsGlobalScopeContainer) o;
 						buffer.append(container.getDescription());
 						buffer.append(" {\n"); //$NON-NLS-1$
-						IClasspathEntry[] entries = container.getClasspathEntries();
+						IIncludePathEntry[] entries = container.getIncludepathEntries();
 						if (entries != null){
 							for (int i = 0; i < entries.length; i++){
 								buffer.append(" 			"); //$NON-NLS-1$

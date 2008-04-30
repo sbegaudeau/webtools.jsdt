@@ -24,7 +24,7 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Formatting strategy for java source code.
@@ -58,7 +58,7 @@ public class JavaFormattingStrategy extends ContextBasedFormattingStrategy {
 			Map partitioners= null;
 			try {
 
-				final TextEdit edit= CodeFormatterUtil.reformat(CodeFormatter.K_COMPILATION_UNIT, document.get(), partition.getOffset(), partition.getLength(), 0, TextUtilities.getDefaultLineDelimiter(document), getPreferences());
+				final TextEdit edit= CodeFormatterUtil.reformat(CodeFormatter.K_JAVASCRIPT_UNIT, document.get(), partition.getOffset(), partition.getLength(), 0, TextUtilities.getDefaultLineDelimiter(document), getPreferences());
 				if (edit != null) {
 					if (edit.getChildrenSize() > 20)
 						partitioners= TextUtilities.removeDocumentPartitioners(document);
@@ -67,10 +67,10 @@ public class JavaFormattingStrategy extends ContextBasedFormattingStrategy {
 				}
 
 			} catch (MalformedTreeException exception) {
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 			} catch (BadLocationException exception) {
 				// Can only happen on concurrent document modification - log and bail out
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 			} finally {
 				if (partitioners != null)
 					TextUtilities.addDocumentPartitioners(document, partitioners);

@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpPreferenceUtil;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpRefactoring;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.preferences.BulletListBlock;
 import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesAccess;
@@ -46,7 +46,7 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Pro
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 
 /**
@@ -55,7 +55,7 @@ import org.eclipse.wst.jsdt.ui.JavaUI;
 public class CleanUpConfigurationBlock extends ProfileConfigurationBlock {
 	
 	private static final String CLEANUP_PAGE_SETTINGS_KEY= "cleanup_page"; //$NON-NLS-1$
-	private static final String DIALOGSTORE_LASTSAVELOADPATH= JavaUI.ID_PLUGIN + ".cleanup"; //$NON-NLS-1$
+	private static final String DIALOGSTORE_LASTSAVELOADPATH= JavaScriptUI.ID_PLUGIN + ".cleanup"; //$NON-NLS-1$
 
 	private final IScopeContext fCurrContext;
 	private SelectionButtonDialogField fShowCleanUpWizardDialogField;
@@ -171,12 +171,12 @@ public class CleanUpConfigurationBlock extends ProfileConfigurationBlock {
 		fShowCleanUpWizardDialogField.setLabelText(CleanUpMessages.CleanUpConfigurationBlock_ShowCleanUpWizard_checkBoxLabel);
 	    fShowCleanUpWizardDialogField.doFillIntoGrid(composite, 5);
 	    
-	    IEclipsePreferences node= fCurrContext.getNode(JavaUI.ID_PLUGIN);
+	    IEclipsePreferences node= fCurrContext.getNode(JavaScriptUI.ID_PLUGIN);
 		boolean showWizard;
 		if (node.get(CleanUpConstants.SHOW_CLEAN_UP_WIZARD, null) != null) {
 			showWizard= node.getBoolean(CleanUpConstants.SHOW_CLEAN_UP_WIZARD, true);
 		} else {
-			showWizard= new DefaultScope().getNode(JavaUI.ID_PLUGIN).getBoolean(CleanUpConstants.SHOW_CLEAN_UP_WIZARD, true);
+			showWizard= new DefaultScope().getNode(JavaScriptUI.ID_PLUGIN).getBoolean(CleanUpConstants.SHOW_CLEAN_UP_WIZARD, true);
 		}
 		if (showWizard)
 			fShowCleanUpWizardDialogField.setSelection(true);
@@ -191,7 +191,7 @@ public class CleanUpConfigurationBlock extends ProfileConfigurationBlock {
 	}
 
 	private void doShowCleanUpWizard(boolean showWizard) {
-		IEclipsePreferences preferences= fCurrContext.getNode(JavaUI.ID_PLUGIN);
+		IEclipsePreferences preferences= fCurrContext.getNode(JavaScriptUI.ID_PLUGIN);
 		if (preferences.get(CleanUpConstants.SHOW_CLEAN_UP_WIZARD, null) != null &&
 				preferences.getBoolean(CleanUpConstants.SHOW_CLEAN_UP_WIZARD, true) == showWizard)
 			return;
@@ -207,8 +207,8 @@ public class CleanUpConfigurationBlock extends ProfileConfigurationBlock {
 		if (fCurrContext == null)
 			return;
 		
-		fCurrContext.getNode(JavaUI.ID_PLUGIN).remove(CleanUpConstants.SHOW_CLEAN_UP_WIZARD);
-		boolean showWizard= new DefaultScope().getNode(JavaUI.ID_PLUGIN).getBoolean(CleanUpConstants.SHOW_CLEAN_UP_WIZARD, true);
+		fCurrContext.getNode(JavaScriptUI.ID_PLUGIN).remove(CleanUpConstants.SHOW_CLEAN_UP_WIZARD);
+		boolean showWizard= new DefaultScope().getNode(JavaScriptUI.ID_PLUGIN).getBoolean(CleanUpConstants.SHOW_CLEAN_UP_WIZARD, true);
 		fShowCleanUpWizardDialogField.setDialogFieldListener(null);
 		fShowCleanUpWizardDialogField.setSelection(showWizard);
 		fShowCleanUpWizardDialogField.setDialogFieldListener(new IDialogFieldListener() {
@@ -224,7 +224,7 @@ public class CleanUpConfigurationBlock extends ProfileConfigurationBlock {
 	protected void preferenceChanged(PreferenceChangeEvent event) {
 		if (CleanUpConstants.CLEANUP_PROFILES.equals(event.getKey())) {
 			try {
-				String id= fCurrContext.getNode(JavaUI.ID_PLUGIN).get(CleanUpConstants.CLEANUP_PROFILE, null);
+				String id= fCurrContext.getNode(JavaScriptUI.ID_PLUGIN).get(CleanUpConstants.CLEANUP_PROFILE, null);
 				if (id == null)
 					fProfileManager.getDefaultProfile().getID();
 				
@@ -249,7 +249,7 @@ public class CleanUpConfigurationBlock extends ProfileConfigurationBlock {
 					fProfileManager.setSelected(fProfileManager.getDefaultProfile());
 				}
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		} else if (CleanUpConstants.CLEANUP_PROFILE.equals(event.getKey())) {
 			if (event.getNewValue() == null) {

@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.ExpressionsFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
@@ -36,7 +36,7 @@ public class ExpressionsCleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean requireAST(ICompilationUnit unit) throws CoreException {
+	public boolean requireAST(IJavaScriptUnit unit) throws CoreException {
 		boolean usePrentheses= isEnabled(CleanUpConstants.EXPRESSIONS_USE_PARENTHESES);
 		if (!usePrentheses)
 			return false;
@@ -45,7 +45,7 @@ public class ExpressionsCleanUp extends AbstractCleanUp {
 		       isEnabled(CleanUpConstants.EXPRESSIONS_USE_PARENTHESES_NEVER);
 	}
 	
-	public IFix createFix(CompilationUnit compilationUnit) throws CoreException {
+	public IFix createFix(JavaScriptUnit compilationUnit) throws CoreException {
 		if (compilationUnit == null)
 			return null;
 		
@@ -61,7 +61,7 @@ public class ExpressionsCleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IFix createFix(CompilationUnit compilationUnit, IProblemLocation[] problems) throws CoreException {
+	public IFix createFix(JavaScriptUnit compilationUnit, IProblemLocation[] problems) throws CoreException {
 		return createFix(compilationUnit);
 	}
 
@@ -100,7 +100,7 @@ public class ExpressionsCleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean canFix(CompilationUnit compilationUnit, IProblemLocation problem) throws CoreException {
+	public boolean canFix(JavaScriptUnit compilationUnit, IProblemLocation problem) throws CoreException {
 		if (isEnabled(CleanUpConstants.EXPRESSIONS_USE_PARENTHESES) && isEnabled(CleanUpConstants.EXPRESSIONS_USE_PARENTHESES_ALWAYS)) {
 			IFix fix= ExpressionsFix.createAddParanoidalParenthesisFix(compilationUnit, new ASTNode[] {problem.getCoveredNode(compilationUnit)});
 			if (fix != null)
@@ -117,7 +117,7 @@ public class ExpressionsCleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int maximalNumberOfFixes(CompilationUnit compilationUnit) {
+	public int maximalNumberOfFixes(JavaScriptUnit compilationUnit) {
 		return -1;
 	}
 }

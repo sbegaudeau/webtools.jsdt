@@ -19,8 +19,8 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaMoveProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgPolicyFactory;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgPolicy.IMovePolicy;
@@ -40,7 +40,7 @@ public class ReorgMoveStarter {
 		fMoveProcessor= moveProcessor;
 	}
 	
-	public static ReorgMoveStarter create(IJavaElement[] javaElements, IResource[] resources, IJavaElement destination) throws JavaModelException {
+	public static ReorgMoveStarter create(IJavaScriptElement[] javaElements, IResource[] resources, IJavaScriptElement destination) throws JavaScriptModelException {
 		Assert.isNotNull(javaElements);
 		Assert.isNotNull(resources);
 		Assert.isNotNull(destination);
@@ -53,7 +53,7 @@ public class ReorgMoveStarter {
 		return new ReorgMoveStarter(processor);
 	}
 
-	public static ReorgMoveStarter create(IJavaElement[] javaElements, IResource[] resources, IResource destination) throws JavaModelException {
+	public static ReorgMoveStarter create(IJavaScriptElement[] javaElements, IResource[] resources, IResource destination) throws JavaScriptModelException {
 		Assert.isNotNull(javaElements);
 		Assert.isNotNull(resources);
 		Assert.isNotNull(destination);
@@ -84,7 +84,7 @@ public class ReorgMoveStarter {
 				fMoveProcessor.setReorgQueries(new ReorgQueries(wizard));
 				new RefactoringStarter().activate(ref, wizard, parent, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringSaveHelper.SAVE_ALL); 
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringMessages.OpenRefactoringWizardAction_exception); 
 		}
 	}

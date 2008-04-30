@@ -22,14 +22,14 @@ import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -52,19 +52,19 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.flow.InOutFlowAnaly
 public class MethodExitsFinder extends ASTVisitor {
 	
 	private AST fAST;
-	private MethodDeclaration fMethodDeclaration;
+	private FunctionDeclaration fMethodDeclaration;
 	private List fResult;
 	private List fCatchedExceptions;
 
-	public String initialize(CompilationUnit root, int offset, int length) {
+	public String initialize(JavaScriptUnit root, int offset, int length) {
 		return initialize(root, NodeFinder.perform(root, offset, length));
 	}
 	
-	public String initialize(CompilationUnit root, ASTNode node) {
+	public String initialize(JavaScriptUnit root, ASTNode node) {
 		fAST= root.getAST();
 		
 		if (node instanceof ReturnStatement) {
-			fMethodDeclaration= (MethodDeclaration)ASTNodes.getParent(node, ASTNode.METHOD_DECLARATION);
+			fMethodDeclaration= (FunctionDeclaration)ASTNodes.getParent(node, ASTNode.FUNCTION_DECLARATION);
 			if (fMethodDeclaration == null)
 				return SearchMessages.MethodExitsFinder_no_return_type_selected;
 			return null;
@@ -83,9 +83,9 @@ public class MethodExitsFinder extends ASTVisitor {
 		if (type == null)
 			return SearchMessages.MethodExitsFinder_no_return_type_selected; 
 		type= ASTNodes.getTopMostType(type);
-		if (!(type.getParent() instanceof MethodDeclaration))
+		if (!(type.getParent() instanceof FunctionDeclaration))
 			return SearchMessages.MethodExitsFinder_no_return_type_selected; 
-		fMethodDeclaration= (MethodDeclaration)type.getParent();
+		fMethodDeclaration= (FunctionDeclaration)type.getParent();
 		return null;
 	}
 
@@ -192,7 +192,7 @@ public class MethodExitsFinder extends ASTVisitor {
 		return true;
 	}
 	
-	public boolean visit(MethodInvocation node) {
+	public boolean visit(FunctionInvocation node) {
 		if (isExitPoint(node.resolveMethodBinding())) {
 			fResult.add(node.getName());
 		}
@@ -238,7 +238,7 @@ public class MethodExitsFinder extends ASTVisitor {
 		return !isCatched(binding);
 	}
 	
-	private boolean isExitPoint(IMethodBinding binding) {
+	private boolean isExitPoint(IFunctionBinding binding) {
 		if (binding == null)
 			return false;
 		ITypeBinding[] exceptions= binding.getExceptionTypes();

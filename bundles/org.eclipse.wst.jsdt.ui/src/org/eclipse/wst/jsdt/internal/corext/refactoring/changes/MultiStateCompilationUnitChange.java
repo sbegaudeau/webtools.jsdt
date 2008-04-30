@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.changes;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.ltk.core.refactoring.MultiStateTextFileChange;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 public final class MultiStateCompilationUnitChange extends MultiStateTextFileChange {
 
 	/** The compilation unit */
-	private final ICompilationUnit fUnit;
+	private final IJavaScriptUnit fUnit;
 
 	/**
 	 * Creates a new multi state compilation unit change.
@@ -35,7 +35,7 @@ public final class MultiStateCompilationUnitChange extends MultiStateTextFileCha
 	 * @param unit
 	 *            the compilation unit
 	 */
-	public MultiStateCompilationUnitChange(final String name, final ICompilationUnit unit) {
+	public MultiStateCompilationUnitChange(final String name, final IJavaScriptUnit unit) {
 		super(name, (IFile) unit.getResource());
 
 		fUnit= unit;
@@ -48,7 +48,7 @@ public final class MultiStateCompilationUnitChange extends MultiStateTextFileCha
 	 */
 	public final Object getAdapter(final Class adapter) {
 
-		if (ICompilationUnit.class.equals(adapter))
+		if (IJavaScriptUnit.class.equals(adapter))
 			return fUnit;
 
 		return super.getAdapter(adapter);
@@ -59,7 +59,7 @@ public final class MultiStateCompilationUnitChange extends MultiStateTextFileCha
 	 * 
 	 * @return the compilation unit
 	 */
-	public final ICompilationUnit getCompilationUnit() {
+	public final IJavaScriptUnit getCompilationUnit() {
 		return fUnit;
 	}
 

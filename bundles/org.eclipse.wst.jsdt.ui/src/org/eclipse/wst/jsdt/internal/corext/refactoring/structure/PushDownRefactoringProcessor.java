@@ -38,33 +38,33 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTRequestor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Block;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ITrackedNodePosition;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
@@ -91,9 +91,9 @@ import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.JavaPreferencesSettings;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Refactoring processor for the push down refactoring.
@@ -111,7 +111,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		public static final int PUSH_DOWN_ACTION= 0;
 
 		private static void assertValidAction(IMember member, int action) {
-			if (member instanceof IMethod)
+			if (member instanceof IFunction)
 				Assert.isTrue(action == PUSH_ABSTRACT_ACTION || action == NO_ACTION || action == PUSH_DOWN_ACTION);
 			else if (member instanceof IField)
 				Assert.isTrue(action == NO_ACTION || action == PUSH_DOWN_ACTION);
@@ -135,7 +135,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 
 		private MemberActionInfo(IMember member, int action) {
 			assertValidAction(member, action);
-			Assert.isTrue(member instanceof IField || member instanceof IMethod);
+			Assert.isTrue(member instanceof IField || member instanceof IFunction);
 			fMember= member;
 			fAction= action;
 		}
@@ -159,7 +159,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 			return fMember;
 		}
 
-		int getNewModifiersForCopyInSubclass(int oldModifiers) throws JavaModelException {
+		int getNewModifiersForCopyInSubclass(int oldModifiers) throws JavaScriptModelException {
 			if (isFieldInfo())
 				return oldModifiers;
 			if (isToBeDeletedFromDeclaringClass())
@@ -172,7 +172,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 			return modifiers;
 		}
 
-		int getNewModifiersForOriginal(int oldModifiers) throws JavaModelException {
+		int getNewModifiersForOriginal(int oldModifiers) throws JavaScriptModelException {
 			if (isFieldInfo())
 				return oldModifiers;
 			if (isToBeDeletedFromDeclaringClass())
@@ -204,7 +204,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 			return fMember instanceof IField;
 		}
 
-		boolean isNewMethodToBeDeclaredAbstract() throws JavaModelException {
+		boolean isNewMethodToBeDeclaredAbstract() throws JavaScriptModelException {
 			return !isFieldInfo() && !JdtFlags.isAbstract(fMember) && fAction == PUSH_ABSTRACT_ACTION;
 		}
 
@@ -240,7 +240,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 	private static final GroupCategorySet SET_PUSH_DOWN= new GroupCategorySet(new GroupCategory("org.eclipse.wst.jsdt.internal.corext.pushDown", //$NON-NLS-1$
 			RefactoringCoreMessages.PushDownRefactoring_category_name, RefactoringCoreMessages.PushDownRefactoring_category_description));
 
-	private static MemberActionInfo[] createInfosForAllPushableFieldsAndMethods(IType type) throws JavaModelException {
+	private static MemberActionInfo[] createInfosForAllPushableFieldsAndMethods(IType type) throws JavaScriptModelException {
 		List result= new ArrayList();
 		IMember[] pushableMembers= RefactoringAvailabilityTester.getPushDownMembers(type);
 		for (int i= 0; i < pushableMembers.length; i++) {
@@ -249,7 +249,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return (MemberActionInfo[]) result.toArray(new MemberActionInfo[result.size()]);
 	}
 
-	private static IMember[] getAbstractMembers(IMember[] members) throws JavaModelException {
+	private static IMember[] getAbstractMembers(IMember[] members) throws JavaScriptModelException {
 		List result= new ArrayList(members.length);
 		for (int i= 0; i < members.length; i++) {
 			IMember member= members[i];
@@ -259,7 +259,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return (IMember[]) result.toArray(new IMember[result.size()]);
 	}
 
-	private static CompilationUnitRewrite getCompilationUnitRewrite(final Map rewrites, final ICompilationUnit unit) {
+	private static CompilationUnitRewrite getCompilationUnitRewrite(final Map rewrites, final IJavaScriptUnit unit) {
 		Assert.isNotNull(rewrites);
 		Assert.isNotNull(unit);
 		CompilationUnitRewrite rewrite= (CompilationUnitRewrite) rewrites.get(unit);
@@ -270,11 +270,11 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return rewrite;
 	}
 
-	private static IJavaElement[] getReferencingElementsFromSameClass(IMember member, IProgressMonitor pm, RefactoringStatus status) throws JavaModelException {
+	private static IJavaScriptElement[] getReferencingElementsFromSameClass(IMember member, IProgressMonitor pm, RefactoringStatus status) throws JavaScriptModelException {
 		Assert.isNotNull(member);
-		final RefactoringSearchEngine2 engine= new RefactoringSearchEngine2(SearchPattern.createPattern(member, IJavaSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE));
+		final RefactoringSearchEngine2 engine= new RefactoringSearchEngine2(SearchPattern.createPattern(member, IJavaScriptSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE));
 		engine.setFiltering(true, true);
-		engine.setScope(SearchEngine.createJavaSearchScope(new IJavaElement[] { member.getDeclaringType() }));
+		engine.setScope(SearchEngine.createJavaSearchScope(new IJavaScriptElement[] { member.getDeclaringType() }));
 		engine.setStatus(status);
 		engine.searchPattern(new SubProgressMonitor(pm, 1));
 		SearchResultGroup[] groups= (SearchResultGroup[]) engine.getResults();
@@ -287,7 +287,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 				result.add(SearchUtils.getEnclosingJavaElement(searchResult));
 			}
 		}
-		return (IJavaElement[]) result.toArray(new IJavaElement[result.size()]);
+		return (IJavaScriptElement[]) result.toArray(new IJavaScriptElement[result.size()]);
 	}
 
 	private ITypeHierarchy fCachedClassHierarchy;
@@ -310,26 +310,26 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 					fMembersToMove= new IMember[0];
 					fCachedDeclaringType= type;
 				}
-			} catch (JavaModelException exception) {
-				JavaPlugin.log(exception);
+			} catch (JavaScriptModelException exception) {
+				JavaScriptPlugin.log(exception);
 			}
 		}
 	}
 
-	private void addAllRequiredPushableMembers(List queue, IMember member, IProgressMonitor monitor) throws JavaModelException {
+	private void addAllRequiredPushableMembers(List queue, IMember member, IProgressMonitor monitor) throws JavaScriptModelException {
 		monitor.beginTask(RefactoringCoreMessages.PushDownRefactoring_calculating_required, 2);
 		IProgressMonitor sub= new SubProgressMonitor(monitor, 1);
 		sub.beginTask(RefactoringCoreMessages.PushDownRefactoring_calculating_required, 2);
-		IMethod[] requiredMethods= ReferenceFinderUtil.getMethodsReferencedIn(new IJavaElement[] { member }, new SubProgressMonitor(sub, 1));
+		IFunction[] requiredMethods= ReferenceFinderUtil.getMethodsReferencedIn(new IJavaScriptElement[] { member }, new SubProgressMonitor(sub, 1));
 		sub= new SubProgressMonitor(sub, 1);
 		sub.beginTask(RefactoringCoreMessages.PushDownRefactoring_calculating_required, requiredMethods.length);
 		for (int index= 0; index < requiredMethods.length; index++) {
-			IMethod method= requiredMethods[index];
+			IFunction method= requiredMethods[index];
 			if (!MethodChecks.isVirtual(method) && (method.getDeclaringType().equals(getDeclaringType()) && !queue.contains(method) && RefactoringAvailabilityTester.isPushDownAvailable(method)))
 				queue.add(method);
 		}
 		sub.done();
-		IField[] requiredFields= ReferenceFinderUtil.getFieldsReferencedIn(new IJavaElement[] { member }, new SubProgressMonitor(monitor, 1));
+		IField[] requiredFields= ReferenceFinderUtil.getFieldsReferencedIn(new IJavaScriptElement[] { member }, new SubProgressMonitor(monitor, 1));
 		for (int index= 0; index < requiredFields.length; index++) {
 			IField field= requiredFields[index];
 			if (field.getDeclaringType().equals(getDeclaringType()) && !queue.contains(field) && RefactoringAvailabilityTester.isPushDownAvailable(field))
@@ -338,7 +338,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		monitor.done();
 	}
 
-	private RefactoringStatus checkAbstractMembersInDestinationClasses(IMember[] membersToPushDown, IType[] destinationClassesForAbstract) throws JavaModelException {
+	private RefactoringStatus checkAbstractMembersInDestinationClasses(IMember[] membersToPushDown, IType[] destinationClassesForAbstract) throws JavaScriptModelException {
 		RefactoringStatus result= new RefactoringStatus();
 		IMember[] abstractMembersToPushDown= getAbstractMembers(membersToPushDown);
 		for (int index= 0; index < destinationClassesForAbstract.length; index++) {
@@ -347,7 +347,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return result;
 	}
 
-	private RefactoringStatus checkAccessedFields(IType[] subclasses, IProgressMonitor pm) throws JavaModelException {
+	private RefactoringStatus checkAccessedFields(IType[] subclasses, IProgressMonitor pm) throws JavaScriptModelException {
 		RefactoringStatus result= new RefactoringStatus();
 		IMember[] membersToPushDown= MemberActionInfo.getMembers(getInfosForMembersToBeCreatedInSubclassesOfDeclaringClass());
 		List pushedDownList= Arrays.asList(membersToPushDown);
@@ -359,7 +359,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 				IField field= accessedFields[j];
 				boolean isAccessible= pushedDownList.contains(field) || canBeAccessedFrom(field, targetClass, targetSupertypes) || Flags.isEnum(field.getFlags());
 				if (!isAccessible) {
-					String message= Messages.format(RefactoringCoreMessages.PushDownRefactoring_field_not_accessible, new String[] { JavaElementLabels.getTextLabel(field, JavaElementLabels.ALL_FULLY_QUALIFIED), JavaElementLabels.getTextLabel(targetClass, JavaElementLabels.ALL_FULLY_QUALIFIED) });
+					String message= Messages.format(RefactoringCoreMessages.PushDownRefactoring_field_not_accessible, new String[] { JavaScriptElementLabels.getTextLabel(field, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), JavaScriptElementLabels.getTextLabel(targetClass, JavaScriptElementLabels.ALL_FULLY_QUALIFIED) });
 					result.addError(message, JavaStatusContext.create(field));
 				}
 			}
@@ -368,19 +368,19 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return result;
 	}
 
-	private RefactoringStatus checkAccessedMethods(IType[] subclasses, IProgressMonitor pm) throws JavaModelException {
+	private RefactoringStatus checkAccessedMethods(IType[] subclasses, IProgressMonitor pm) throws JavaScriptModelException {
 		RefactoringStatus result= new RefactoringStatus();
 		IMember[] membersToPushDown= MemberActionInfo.getMembers(getInfosForMembersToBeCreatedInSubclassesOfDeclaringClass());
 		List pushedDownList= Arrays.asList(membersToPushDown);
-		IMethod[] accessedMethods= ReferenceFinderUtil.getMethodsReferencedIn(membersToPushDown, pm);
+		IFunction[] accessedMethods= ReferenceFinderUtil.getMethodsReferencedIn(membersToPushDown, pm);
 		for (int index= 0; index < subclasses.length; index++) {
 			IType targetClass= subclasses[index];
 			ITypeHierarchy targetSupertypes= targetClass.newSupertypeHierarchy(null);
 			for (int offset= 0; offset < accessedMethods.length; offset++) {
-				IMethod method= accessedMethods[offset];
+				IFunction method= accessedMethods[offset];
 				boolean isAccessible= pushedDownList.contains(method) || canBeAccessedFrom(method, targetClass, targetSupertypes);
 				if (!isAccessible) {
-					String message= Messages.format(RefactoringCoreMessages.PushDownRefactoring_method_not_accessible, new String[] { JavaElementLabels.getTextLabel(method, JavaElementLabels.ALL_FULLY_QUALIFIED), JavaElementLabels.getTextLabel(targetClass, JavaElementLabels.ALL_FULLY_QUALIFIED) });
+					String message= Messages.format(RefactoringCoreMessages.PushDownRefactoring_method_not_accessible, new String[] { JavaScriptElementLabels.getTextLabel(method, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), JavaScriptElementLabels.getTextLabel(targetClass, JavaScriptElementLabels.ALL_FULLY_QUALIFIED) });
 					result.addError(message, JavaStatusContext.create(method));
 				}
 			}
@@ -389,7 +389,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return result;
 	}
 
-	private RefactoringStatus checkAccessedTypes(IType[] subclasses, IProgressMonitor pm) throws JavaModelException {
+	private RefactoringStatus checkAccessedTypes(IType[] subclasses, IProgressMonitor pm) throws JavaScriptModelException {
 		RefactoringStatus result= new RefactoringStatus();
 		IType[] accessedTypes= getTypesReferencedInMovedMembers(pm);
 		for (int index= 0; index < subclasses.length; index++) {
@@ -398,7 +398,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 			for (int offset= 0; offset < accessedTypes.length; offset++) {
 				IType type= accessedTypes[offset];
 				if (!canBeAccessedFrom(type, targetClass, targetSupertypes)) {
-					String message= Messages.format(RefactoringCoreMessages.PushDownRefactoring_type_not_accessible, new String[] { JavaElementLabels.getTextLabel(type, JavaElementLabels.ALL_FULLY_QUALIFIED), JavaElementLabels.getTextLabel(targetClass, JavaElementLabels.ALL_FULLY_QUALIFIED) });
+					String message= Messages.format(RefactoringCoreMessages.PushDownRefactoring_type_not_accessible, new String[] { JavaScriptElementLabels.getTextLabel(type, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), JavaScriptElementLabels.getTextLabel(targetClass, JavaScriptElementLabels.ALL_FULLY_QUALIFIED) });
 					result.addError(message, JavaStatusContext.create(type));
 				}
 			}
@@ -407,7 +407,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return result;
 	}
 
-	private RefactoringStatus checkElementsAccessedByModifiedMembers(IProgressMonitor pm) throws JavaModelException {
+	private RefactoringStatus checkElementsAccessedByModifiedMembers(IProgressMonitor pm) throws JavaScriptModelException {
 		RefactoringStatus result= new RefactoringStatus();
 		pm.beginTask(RefactoringCoreMessages.PushDownRefactoring_check_references, 3);
 		IType[] subclasses= getAbstractDestinations(new SubProgressMonitor(pm, 1));
@@ -425,7 +425,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		try {
 			monitor.beginTask(RefactoringCoreMessages.PushDownRefactoring_checking, 5);
 			clearCaches();
-			ICompilationUnit unit= getDeclaringType().getCompilationUnit();
+			IJavaScriptUnit unit= getDeclaringType().getJavaScriptUnit();
 			if (fLayer)
 				unit= unit.findWorkingCopy(fOwner);
 			resetWorkingCopies(unit);
@@ -484,7 +484,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		}
 	}
 
-	private RefactoringStatus checkMembersInDestinationClasses(IProgressMonitor monitor) throws JavaModelException {
+	private RefactoringStatus checkMembersInDestinationClasses(IProgressMonitor monitor) throws JavaScriptModelException {
 		monitor.beginTask(RefactoringCoreMessages.PushDownRefactoring_checking, 2);
 		RefactoringStatus result= new RefactoringStatus();
 		IMember[] membersToPushDown= MemberActionInfo.getMembers(getInfosForMembersToBeCreatedInSubclassesOfDeclaringClass());
@@ -499,7 +499,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return result;
 	}
 
-	private RefactoringStatus checkNonAbstractMembersInDestinationClasses(IMember[] membersToPushDown, IType[] destinationClassesForNonAbstract) throws JavaModelException {
+	private RefactoringStatus checkNonAbstractMembersInDestinationClasses(IMember[] membersToPushDown, IType[] destinationClassesForNonAbstract) throws JavaScriptModelException {
 		RefactoringStatus result= new RefactoringStatus();
 		List list= new ArrayList(); // Arrays.asList does not support removing
 		list.addAll(Arrays.asList(membersToPushDown));
@@ -511,16 +511,16 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return result;
 	}
 
-	private RefactoringStatus checkPossibleSubclasses(IProgressMonitor pm) throws JavaModelException {
+	private RefactoringStatus checkPossibleSubclasses(IProgressMonitor pm) throws JavaScriptModelException {
 		IType[] modifiableSubclasses= getAbstractDestinations(pm);
 		if (modifiableSubclasses.length == 0) {
-			String msg= Messages.format(RefactoringCoreMessages.PushDownRefactoring_no_subclasses, new String[] { JavaElementLabels.getTextLabel(getDeclaringType(), JavaElementLabels.ALL_FULLY_QUALIFIED) });
+			String msg= Messages.format(RefactoringCoreMessages.PushDownRefactoring_no_subclasses, new String[] { JavaScriptElementLabels.getTextLabel(getDeclaringType(), JavaScriptElementLabels.ALL_FULLY_QUALIFIED) });
 			return RefactoringStatus.createFatalErrorStatus(msg);
 		}
 		return new RefactoringStatus();
 	}
 
-	private RefactoringStatus checkReferencesToPushedDownMembers(IProgressMonitor monitor) throws JavaModelException {
+	private RefactoringStatus checkReferencesToPushedDownMembers(IProgressMonitor monitor) throws JavaScriptModelException {
 		List fields= new ArrayList(fMemberInfos.length);
 		for (int index= 0; index < fMemberInfos.length; index++) {
 			MemberActionInfo info= fMemberInfos[index];
@@ -534,9 +534,9 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		for (int index= 0; index < membersToPush.length; index++) {
 			IMember member= membersToPush[index];
 			String label= createLabel(member);
-			IJavaElement[] referencing= getReferencingElementsFromSameClass(member, new SubProgressMonitor(monitor, 1), result);
+			IJavaScriptElement[] referencing= getReferencingElementsFromSameClass(member, new SubProgressMonitor(monitor, 1), result);
 			for (int offset= 0; offset < referencing.length; offset++) {
-				IJavaElement element= referencing[offset];
+				IJavaScriptElement element= referencing[offset];
 				if (movedMembers.contains(element))
 					continue;
 				if (!(element instanceof IMember))
@@ -551,7 +551,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return result;
 	}
 
-	public void computeAdditionalRequiredMembersToPushDown(IProgressMonitor monitor) throws JavaModelException {
+	public void computeAdditionalRequiredMembersToPushDown(IProgressMonitor monitor) throws JavaScriptModelException {
 		List list= Arrays.asList(getAdditionalRequiredMembers(monitor));
 		for (int index= 0; index < fMemberInfos.length; index++) {
 			MemberActionInfo info= fMemberInfos[index];
@@ -560,31 +560,31 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		}
 	}
 
-	private void copyBodyOfPushedDownMethod(ASTRewrite targetRewrite, IMethod method, MethodDeclaration oldMethod, MethodDeclaration newMethod, TypeVariableMaplet[] mapping) throws JavaModelException {
+	private void copyBodyOfPushedDownMethod(ASTRewrite targetRewrite, IFunction method, FunctionDeclaration oldMethod, FunctionDeclaration newMethod, TypeVariableMaplet[] mapping) throws JavaScriptModelException {
 		Block body= oldMethod.getBody();
 		if (body == null) {
 			newMethod.setBody(null);
 			return;
 		}
 		try {
-			final IDocument document= new Document(method.getCompilationUnit().getBuffer().getContents());
+			final IDocument document= new Document(method.getJavaScriptUnit().getBuffer().getContents());
 			final ASTRewrite rewriter= ASTRewrite.create(body.getAST());
 			final ITrackedNodePosition position= rewriter.track(body);
 			body.accept(new TypeVariableMapper(rewriter, mapping));
-			rewriter.rewriteAST(document, getDeclaringType().getCompilationUnit().getJavaProject().getOptions(true)).apply(document, TextEdit.NONE);
+			rewriter.rewriteAST(document, getDeclaringType().getJavaScriptUnit().getJavaScriptProject().getOptions(true)).apply(document, TextEdit.NONE);
 			String content= document.get(position.getStartPosition(), position.getLength());
 			String[] lines= Strings.convertIntoLines(content);
-			Strings.trimIndentation(lines, method.getJavaProject(), false);
+			Strings.trimIndentation(lines, method.getJavaScriptProject(), false);
 			content= Strings.concatenate(lines, StubUtility.getLineDelimiterUsed(method));
 			newMethod.setBody((Block) targetRewrite.createStringPlaceholder(content, ASTNode.BLOCK));
 		} catch (MalformedTreeException exception) {
-			JavaPlugin.log(exception);
+			JavaScriptPlugin.log(exception);
 		} catch (BadLocationException exception) {
-			JavaPlugin.log(exception);
+			JavaScriptPlugin.log(exception);
 		}
 	}
 
-	private void copyMembers(Collection adjustors, Map adjustments, Map rewrites, RefactoringStatus status, MemberActionInfo[] infos, IType[] destinations, CompilationUnitRewrite sourceRewriter, CompilationUnitRewrite unitRewriter, IProgressMonitor monitor) throws JavaModelException {
+	private void copyMembers(Collection adjustors, Map adjustments, Map rewrites, RefactoringStatus status, MemberActionInfo[] infos, IType[] destinations, CompilationUnitRewrite sourceRewriter, CompilationUnitRewrite unitRewriter, IProgressMonitor monitor) throws JavaScriptModelException {
 		try {
 			monitor.beginTask(RefactoringCoreMessages.PushDownRefactoring_checking, 1);
 			IType type= null;
@@ -592,7 +592,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 			for (int index= 0; index < destinations.length; index++) {
 				type= destinations[index];
 				mapping= TypeVariableUtil.superTypeToInheritedType(getDeclaringType(), type);
-				if (unitRewriter.getCu().equals(type.getCompilationUnit())) {
+				if (unitRewriter.getCu().equals(type.getJavaScriptUnit())) {
 					IMember member= null;
 					MemberVisibilityAdjustor adjustor= null;
 					AbstractTypeDeclaration declaration= ASTNodeSearchUtil.getAbstractTypeDeclarationNode(type, unitRewriter.getRoot());
@@ -612,7 +612,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 						adjustor.adjustVisibility(new SubProgressMonitor(monitor, 1));
 						adjustments.remove(member);
 						adjustors.add(adjustor);
-						status.merge(checkProjectCompliance(getCompilationUnitRewrite(rewrites, getDeclaringType().getCompilationUnit()), type, new IMember[] {infos[offset].getMember()}));
+						status.merge(checkProjectCompliance(getCompilationUnitRewrite(rewrites, getDeclaringType().getJavaScriptUnit()), type, new IMember[] {infos[offset].getMember()}));
 						if (infos[offset].isFieldInfo()) {
 							final VariableDeclarationFragment oldField= ASTNodeSearchUtil.getFieldDeclarationFragmentNode((IField) infos[offset].getMember(), sourceRewriter.getRoot());
 							if (oldField != null) {
@@ -621,9 +621,9 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 								ImportRewriteUtil.addImports(unitRewriter, oldField.getParent(), new HashMap(), new HashMap(), false);
 							}
 						} else {
-							final MethodDeclaration oldMethod= ASTNodeSearchUtil.getMethodDeclarationNode((IMethod) infos[offset].getMember(), sourceRewriter.getRoot());
+							final FunctionDeclaration oldMethod= ASTNodeSearchUtil.getMethodDeclarationNode((IFunction) infos[offset].getMember(), sourceRewriter.getRoot());
 							if (oldMethod != null) {
-								MethodDeclaration newMethod= createNewMethodDeclarationNode(infos[offset], sourceRewriter.getRoot(), mapping, unitRewriter, oldMethod);
+								FunctionDeclaration newMethod= createNewMethodDeclarationNode(infos[offset], sourceRewriter.getRoot(), mapping, unitRewriter, oldMethod);
 								unitRewriter.getASTRewrite().getListRewrite(declaration, declaration.getBodyDeclarationsProperty()).insertAt(newMethod, ASTNodes.getInsertionIndex(newMethod, declaration.bodyDeclarations()), unitRewriter.createCategorizedGroupDescription(RefactoringCoreMessages.HierarchyRefactoring_add_member, SET_PUSH_DOWN));
 								ImportRewriteUtil.addImports(unitRewriter, oldMethod, new HashMap(), new HashMap(), false);
 							}
@@ -644,25 +644,25 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 			final Map arguments= new HashMap();
 			String project= null;
 			final IType declaring= getDeclaringType();
-			final IJavaProject javaProject= declaring.getJavaProject();
+			final IJavaScriptProject javaProject= declaring.getJavaScriptProject();
 			if (javaProject != null)
 				project= javaProject.getElementName();
-			int flags= JavaRefactoringDescriptor.JAR_MIGRATION | JavaRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
+			int flags= JavaScriptRefactoringDescriptor.JAR_MIGRATION | JavaScriptRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
 			try {
 				if (declaring.isLocal() || declaring.isAnonymous())
-					flags|= JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
-			} catch (JavaModelException exception) {
-				JavaPlugin.log(exception);
+					flags|= JavaScriptRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
+			} catch (JavaScriptModelException exception) {
+				JavaScriptPlugin.log(exception);
 			}
 			final String description= fMembersToMove.length == 1 ? Messages.format(RefactoringCoreMessages.PushDownRefactoring_descriptor_description_short_multi, fMembersToMove[0].getElementName()) : RefactoringCoreMessages.PushDownRefactoring_descriptor_description_short;
-			final String header= fMembersToMove.length == 1 ? Messages.format(RefactoringCoreMessages.PushDownRefactoring_descriptor_description_full, new String[] { JavaElementLabels.getElementLabel(fMembersToMove[0], JavaElementLabels.ALL_FULLY_QUALIFIED), JavaElementLabels.getElementLabel(declaring, JavaElementLabels.ALL_FULLY_QUALIFIED) }) : Messages.format(RefactoringCoreMessages.PushDownRefactoring_descriptor_description, new String[] { JavaElementLabels.getElementLabel(declaring, JavaElementLabels.ALL_FULLY_QUALIFIED) });
+			final String header= fMembersToMove.length == 1 ? Messages.format(RefactoringCoreMessages.PushDownRefactoring_descriptor_description_full, new String[] { JavaScriptElementLabels.getElementLabel(fMembersToMove[0], JavaScriptElementLabels.ALL_FULLY_QUALIFIED), JavaScriptElementLabels.getElementLabel(declaring, JavaScriptElementLabels.ALL_FULLY_QUALIFIED) }) : Messages.format(RefactoringCoreMessages.PushDownRefactoring_descriptor_description, new String[] { JavaScriptElementLabels.getElementLabel(declaring, JavaScriptElementLabels.ALL_FULLY_QUALIFIED) });
 			final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
 			final String[] settings= new String[fMembersToMove.length];
 			for (int index= 0; index < settings.length; index++)
-				settings[index]= JavaElementLabels.getElementLabel(fMembersToMove[index], JavaElementLabels.ALL_FULLY_QUALIFIED);
+				settings[index]= JavaScriptElementLabels.getElementLabel(fMembersToMove[index], JavaScriptElementLabels.ALL_FULLY_QUALIFIED);
 			comment.addSetting(JDTRefactoringDescriptorComment.createCompositeSetting(RefactoringCoreMessages.PushDownRefactoring_pushed_members_pattern, settings));
 			addSuperTypeSettings(comment, true);
-			final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaRefactorings.PUSH_DOWN, project, description, comment.asString(), arguments, flags);
+			final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaScriptRefactorings.PUSH_DOWN, project, description, comment.asString(), arguments, flags);
 			if (fCachedDeclaringType != null)
 				arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_INPUT, descriptor.elementToHandle(fCachedDeclaringType));
 			for (int index= 0; index < fMembersToMove.length; index++) {
@@ -692,19 +692,19 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		Assert.isNotNull(status);
 		try {
 			monitor.beginTask(RefactoringCoreMessages.PushDownRefactoring_checking, 7);
-			final ICompilationUnit source= getDeclaringType().getCompilationUnit();
+			final IJavaScriptUnit source= getDeclaringType().getJavaScriptUnit();
 			final CompilationUnitRewrite sourceRewriter= new CompilationUnitRewrite(source);
 			final Map rewrites= new HashMap(2);
 			rewrites.put(source, sourceRewriter);
 			IType[] types= getHierarchyOfDeclaringClass(new SubProgressMonitor(monitor, 1)).getSubclasses(getDeclaringType());
 			final Set result= new HashSet(types.length + 1);
 			for (int index= 0; index < types.length; index++)
-				result.add(types[index].getCompilationUnit());
+				result.add(types[index].getJavaScriptUnit());
 			result.add(source);
 			final Map adjustments= new HashMap();
 			final List adjustors= new ArrayList();
-			final ICompilationUnit[] units= (ICompilationUnit[]) result.toArray(new ICompilationUnit[result.size()]);
-			ICompilationUnit unit= null;
+			final IJavaScriptUnit[] units= (IJavaScriptUnit[]) result.toArray(new IJavaScriptUnit[result.size()]);
+			IJavaScriptUnit unit= null;
 			CompilationUnitRewrite rewrite= null;
 			final IProgressMonitor sub= new SubProgressMonitor(monitor, 4);
 			try {
@@ -739,7 +739,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 			}
 			final TextEditBasedChangeManager manager= new TextEditBasedChangeManager();
 			for (final Iterator iterator= rewrites.keySet().iterator(); iterator.hasNext();) {
-				unit= (ICompilationUnit) iterator.next();
+				unit= (IJavaScriptUnit) iterator.next();
 				rewrite= (CompilationUnitRewrite) rewrites.get(unit);
 				if (rewrite != null)
 					manager.manage(unit, rewrite.createChange());
@@ -750,7 +750,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		}
 	}
 
-	private FieldDeclaration createNewFieldDeclarationNode(MemberActionInfo info, CompilationUnit declaringCuNode, TypeVariableMaplet[] mapping, ASTRewrite rewrite, VariableDeclarationFragment oldFieldFragment) throws JavaModelException {
+	private FieldDeclaration createNewFieldDeclarationNode(MemberActionInfo info, JavaScriptUnit declaringCuNode, TypeVariableMaplet[] mapping, ASTRewrite rewrite, VariableDeclarationFragment oldFieldFragment) throws JavaScriptModelException {
 		Assert.isTrue(info.isFieldInfo());
 		IField field= (IField) info.getMember();
 		AST ast= rewrite.getAST();
@@ -760,9 +760,9 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		if (initializer != null) {
 			Expression newInitializer= null;
 			if (mapping.length > 0)
-				newInitializer= createPlaceholderForExpression(initializer, field.getCompilationUnit(), mapping, rewrite);
+				newInitializer= createPlaceholderForExpression(initializer, field.getJavaScriptUnit(), mapping, rewrite);
 			else
-				newInitializer= createPlaceholderForExpression(initializer, field.getCompilationUnit(), rewrite);
+				newInitializer= createPlaceholderForExpression(initializer, field.getJavaScriptUnit(), rewrite);
 			newFragment.setInitializer(newInitializer);
 		}
 		newFragment.setName(ast.newSimpleName(oldFieldFragment.getName().getIdentifier()));
@@ -773,7 +773,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		copyAnnotations(oldField, newField);
 		newField.modifiers().addAll(ASTNodeFactory.newModifiers(ast, info.getNewModifiersForCopyInSubclass(oldField.getModifiers())));
 		Type oldType= oldField.getType();
-		ICompilationUnit cu= field.getCompilationUnit();
+		IJavaScriptUnit cu= field.getJavaScriptUnit();
 		Type newType= null;
 		if (mapping.length > 0) {
 			newType= createPlaceholderForType(oldType, cu, mapping, rewrite);
@@ -783,18 +783,18 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return newField;
 	}
 
-	private MethodDeclaration createNewMethodDeclarationNode(MemberActionInfo info, CompilationUnit declaringCuNode, TypeVariableMaplet[] mapping, CompilationUnitRewrite rewriter, MethodDeclaration oldMethod) throws JavaModelException {
+	private FunctionDeclaration createNewMethodDeclarationNode(MemberActionInfo info, JavaScriptUnit declaringCuNode, TypeVariableMaplet[] mapping, CompilationUnitRewrite rewriter, FunctionDeclaration oldMethod) throws JavaScriptModelException {
 		Assert.isTrue(!info.isFieldInfo());
-		IMethod method= (IMethod) info.getMember();
+		IFunction method= (IFunction) info.getMember();
 		ASTRewrite rewrite= rewriter.getASTRewrite();
 		AST ast= rewrite.getAST();
-		MethodDeclaration newMethod= ast.newMethodDeclaration();
+		FunctionDeclaration newMethod= ast.newFunctionDeclaration();
 		copyBodyOfPushedDownMethod(rewrite, method, oldMethod, newMethod, mapping);
 		newMethod.setConstructor(oldMethod.isConstructor());
 		newMethod.setExtraDimensions(oldMethod.getExtraDimensions());
 		if (info.copyJavadocToCopiesInSubclasses())
 			copyJavadocNode(rewrite, method, oldMethod, newMethod);
-		final IJavaProject project= rewriter.getCu().getJavaProject();
+		final IJavaScriptProject project= rewriter.getCu().getJavaScriptProject();
 		if (info.isNewMethodToBeDeclaredAbstract() && JavaModelUtil.is50OrHigher(project) && JavaPreferencesSettings.getCodeGenerationSettings(project).overrideAnnotation) {
 			final MarkerAnnotation annotation= ast.newMarkerAnnotation();
 			annotation.setTypeName(ast.newSimpleName("Override")); //$NON-NLS-1$
@@ -803,25 +803,25 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		copyAnnotations(oldMethod, newMethod);
 		newMethod.modifiers().addAll(ASTNodeFactory.newModifiers(ast, info.getNewModifiersForCopyInSubclass(oldMethod.getModifiers())));
 		newMethod.setName(ast.newSimpleName(oldMethod.getName().getIdentifier()));
-		copyReturnType(rewrite, method.getCompilationUnit(), oldMethod, newMethod, mapping);
-		copyParameters(rewrite, method.getCompilationUnit(), oldMethod, newMethod, mapping);
+		copyReturnType(rewrite, method.getJavaScriptUnit(), oldMethod, newMethod, mapping);
+		copyParameters(rewrite, method.getJavaScriptUnit(), oldMethod, newMethod, mapping);
 		copyThrownExceptions(oldMethod, newMethod);
 		copyTypeParameters(oldMethod, newMethod);
 		return newMethod;
 	}
 
-	private void declareMethodAbstract(MemberActionInfo info, CompilationUnitRewrite sourceRewrite, CompilationUnitRewrite unitRewrite) throws JavaModelException {
+	private void declareMethodAbstract(MemberActionInfo info, CompilationUnitRewrite sourceRewrite, CompilationUnitRewrite unitRewrite) throws JavaScriptModelException {
 		Assert.isTrue(!info.isFieldInfo());
-		IMethod method= (IMethod) info.getMember();
+		IFunction method= (IFunction) info.getMember();
 		if (JdtFlags.isAbstract(method))
 			return;
-		final MethodDeclaration declaration= ASTNodeSearchUtil.getMethodDeclarationNode(method, sourceRewrite.getRoot());
+		final FunctionDeclaration declaration= ASTNodeSearchUtil.getMethodDeclarationNode(method, sourceRewrite.getRoot());
 		unitRewrite.getASTRewrite().remove(declaration.getBody(), null);
 		sourceRewrite.getImportRemover().registerRemovedNode(declaration.getBody());
 		ModifierRewrite.create(unitRewrite.getASTRewrite(), declaration).setModifiers(info.getNewModifiersForOriginal(declaration.getModifiers()), null);
 	}
 
-	private MemberActionInfo[] getAbstractDeclarationInfos() throws JavaModelException {
+	private MemberActionInfo[] getAbstractDeclarationInfos() throws JavaScriptModelException {
 		List result= new ArrayList(fMemberInfos.length);
 		for (int index= 0; index < fMemberInfos.length; index++) {
 			MemberActionInfo info= fMemberInfos[index];
@@ -831,18 +831,18 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return (MemberActionInfo[]) result.toArray(new MemberActionInfo[result.size()]);
 	}
 
-	private IType[] getAbstractDestinations(IProgressMonitor monitor) throws JavaModelException {
+	private IType[] getAbstractDestinations(IProgressMonitor monitor) throws JavaScriptModelException {
 		IType[] allDirectSubclasses= getHierarchyOfDeclaringClass(monitor).getSubclasses(getDeclaringType());
 		List result= new ArrayList(allDirectSubclasses.length);
 		for (int index= 0; index < allDirectSubclasses.length; index++) {
 			IType subclass= allDirectSubclasses[index];
-			if (subclass.exists() && !subclass.isBinary() && !subclass.isReadOnly() && subclass.getCompilationUnit() != null && subclass.isStructureKnown())
+			if (subclass.exists() && !subclass.isBinary() && !subclass.isReadOnly() && subclass.getJavaScriptUnit() != null && subclass.isStructureKnown())
 				result.add(subclass);
 		}
 		return (IType[]) result.toArray(new IType[result.size()]);
 	}
 
-	private MemberActionInfo[] getAbstractMemberInfos() throws JavaModelException {
+	private MemberActionInfo[] getAbstractMemberInfos() throws JavaScriptModelException {
 		List result= new ArrayList(fMemberInfos.length);
 		for (int index= 0; index < fMemberInfos.length; index++) {
 			MemberActionInfo info= fMemberInfos[index];
@@ -852,7 +852,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return (MemberActionInfo[]) result.toArray(new MemberActionInfo[result.size()]);
 	}
 
-	public IMember[] getAdditionalRequiredMembers(IProgressMonitor monitor) throws JavaModelException {
+	public IMember[] getAdditionalRequiredMembers(IProgressMonitor monitor) throws JavaScriptModelException {
 		IMember[] members= MemberActionInfo.getMembers(getInfosForMembersToBeCreatedInSubclassesOfDeclaringClass());
 		monitor.beginTask(RefactoringCoreMessages.PushDownRefactoring_calculating_required, members.length);// not
 		// true,
@@ -890,7 +890,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return (IMember[]) result.toArray(new IMember[result.size()]);
 	}
 
-	private MemberActionInfo[] getEffectedMemberInfos() throws JavaModelException {
+	private MemberActionInfo[] getEffectedMemberInfos() throws JavaScriptModelException {
 		List result= new ArrayList(fMemberInfos.length);
 		for (int i= 0; i < fMemberInfos.length; i++) {
 			MemberActionInfo info= fMemberInfos[i];
@@ -907,7 +907,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return fMembersToMove;
 	}
 
-	private ITypeHierarchy getHierarchyOfDeclaringClass(IProgressMonitor monitor) throws JavaModelException {
+	private ITypeHierarchy getHierarchyOfDeclaringClass(IProgressMonitor monitor) throws JavaScriptModelException {
 		try {
 			if (fCachedClassHierarchy != null)
 				return fCachedClassHierarchy;
@@ -925,7 +925,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		return IDENTIFIER;
 	}
 
-	private MemberActionInfo[] getInfosForMembersToBeCreatedInSubclassesOfDeclaringClass() throws JavaModelException {
+	private MemberActionInfo[] getInfosForMembersToBeCreatedInSubclassesOfDeclaringClass() throws JavaScriptModelException {
 		MemberActionInfo[] abs= getAbstractMemberInfos();
 		MemberActionInfo[] nonabs= getEffectedMemberInfos();
 		List result= new ArrayList(abs.length + nonabs.length);
@@ -953,9 +953,9 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 			final JavaRefactoringArguments extended= (JavaRefactoringArguments) arguments;
 			String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-				if (element == null || !element.exists() || element.getElementType() != IJavaElement.TYPE)
-					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaRefactorings.PUSH_DOWN);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.TYPE)
+					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.PUSH_DOWN);
 				else
 					fCachedDeclaringType= (IType) element;
 			}
@@ -965,9 +965,9 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 			String attribute= JDTRefactoringDescriptor.ATTRIBUTE_ELEMENT + count;
 			final RefactoringStatus status= new RefactoringStatus();
 			while ((handle= extended.getAttribute(attribute)) != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
 				if (element == null || !element.exists())
-					status.merge(ScriptableRefactoring.createInputWarningStatus(element, getRefactoring().getName(), IJavaRefactorings.PUSH_DOWN));
+					status.merge(ScriptableRefactoring.createInputWarningStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.PUSH_DOWN));
 				else
 					elements.add(element);
 				if (extended.getAttribute(ATTRIBUTE_ABSTRACT + count) != null)
@@ -998,7 +998,7 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void rewriteTypeOccurrences(final TextEditBasedChangeManager manager, final ASTRequestor requestor, final CompilationUnitRewrite rewrite, final ICompilationUnit unit, final CompilationUnit node, final Set replacements, final IProgressMonitor monitor) throws CoreException {
+	protected void rewriteTypeOccurrences(final TextEditBasedChangeManager manager, final ASTRequestor requestor, final CompilationUnitRewrite rewrite, final IJavaScriptUnit unit, final JavaScriptUnit node, final Set replacements, final IProgressMonitor monitor) throws CoreException {
 		// Not needed
 	}
 }

@@ -28,9 +28,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.Position;
 import org.eclipse.search.ui.text.Match;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
@@ -41,12 +41,12 @@ import org.eclipse.wst.jsdt.core.search.SearchRequestor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.PropertyFileDocumentModel;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.StringMatcher;
 
 class NLSSearchResultRequestor extends SearchRequestor {
 	/*
-	 * Matches are added to fResult. Element (group key) is IJavaElement or FileEntry.
+	 * Matches are added to fResult. Element (group key) is IJavaScriptElement or FileEntry.
 	 */
 
 	private static final StringMatcher fgGetClassNameMatcher= new StringMatcher("*.class.getName()*", false, false);  //$NON-NLS-1$
@@ -81,20 +81,20 @@ class NLSSearchResultRequestor extends SearchRequestor {
 		if (offset == -1 || length == -1)
 			return;
 		
-		if (! (match.getElement() instanceof IJavaElement))
+		if (! (match.getElement() instanceof IJavaScriptElement))
 			return;
-		IJavaElement javaElement= (IJavaElement) match.getElement();	
+		IJavaScriptElement javaElement= (IJavaScriptElement) match.getElement();	
 		
 		// ignore matches in import declarations:
-		if (javaElement.getElementType() == IJavaElement.IMPORT_DECLARATION)
+		if (javaElement.getElementType() == IJavaScriptElement.IMPORT_DECLARATION)
 			return;
-		if (javaElement.getElementType() == IJavaElement.CLASS_FILE)
+		if (javaElement.getElementType() == IJavaScriptElement.CLASS_FILE)
 			return; //matches in import statements of class files
-		if (javaElement.getElementType() == IJavaElement.TYPE)
+		if (javaElement.getElementType() == IJavaScriptElement.TYPE)
 			return; //classes extending the accessor class and workaround for bug 61286
 		
 		// heuristic: ignore matches in resource bundle name field:
-		if (javaElement.getElementType() == IJavaElement.FIELD) {
+		if (javaElement.getElementType() == IJavaScriptElement.FIELD) {
 			IField field= (IField) javaElement;
 			String source= field.getSource();
 			if (source != null && fgGetClassNameMatcher.match(source))
@@ -116,7 +116,7 @@ class NLSSearchResultRequestor extends SearchRequestor {
 		if (key != null && isKeyDefined(key))
 			return;
 
-		ICompilationUnit[] allCompilationUnits= JavaModelUtil.getAllCompilationUnits(new IJavaElement[] {javaElement});
+		IJavaScriptUnit[] allCompilationUnits= JavaModelUtil.getAllCompilationUnits(new IJavaScriptElement[] {javaElement});
 		Object element= javaElement;
 		if (allCompilationUnits != null && allCompilationUnits.length == 1) 
 			element= allCompilationUnits[0];
@@ -207,8 +207,8 @@ class NLSSearchResultRequestor extends SearchRequestor {
 	 * @return a string denoting the key, null if no key can be found
 	 * @throws CoreException if a problem occurs while accessing the <code>enclosingElement</code>
 	 */
-	private String findKey(Position keyPositionResult, IJavaElement enclosingElement) throws CoreException {
-		ICompilationUnit unit= (ICompilationUnit)enclosingElement.getAncestor(IJavaElement.COMPILATION_UNIT);
+	private String findKey(Position keyPositionResult, IJavaScriptElement enclosingElement) throws CoreException {
+		IJavaScriptUnit unit= (IJavaScriptUnit)enclosingElement.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 		if (unit == null)
 			return null;
 
@@ -274,14 +274,14 @@ class NLSSearchResultRequestor extends SearchRequestor {
 			lineReader= new LineReader(stream, encoding);
 		} catch (CoreException cex) {
 			// failed to get input stream
-			JavaPlugin.log(cex);
+			JavaScriptPlugin.log(cex);
 			return -1;
 		} catch (IOException e) {
 			if (stream != null) {
 				try {
 					stream.close();
 				} catch (IOException ce) {
-					JavaPlugin.log(ce);
+					JavaScriptPlugin.log(ce);
 				}
 			}
 			return -1;
@@ -312,13 +312,13 @@ class NLSSearchResultRequestor extends SearchRequestor {
 			if (eols != -17)
 				start= -1; //key not found in file. See bug 63794. This can happen if the key contains escaped characters.
 		} catch (IOException ex) {
-			JavaPlugin.log(ex);			
+			JavaScriptPlugin.log(ex);			
 			return -1;
 		} finally {
 			try {
 				lineReader.close();
 			} catch (IOException ex) {
-				JavaPlugin.log(ex);
+				JavaScriptPlugin.log(ex);
 			}
 		}
 		return start;

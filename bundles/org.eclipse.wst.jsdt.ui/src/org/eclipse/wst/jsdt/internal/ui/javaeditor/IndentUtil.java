@@ -16,11 +16,11 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.source.ILineRange;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaHeuristicScanner;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaIndenter;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 
 /**
@@ -35,7 +35,7 @@ public final class IndentUtil {
 	/**
 	 * The result of an indentation operation. The result may be passed to
 	 * subsequent calls to
-	 * {@link IndentUtil#indentLines(IDocument, ILineRange, IJavaProject, IndentResult) indentLines}
+	 * {@link IndentUtil#indentLines(IDocument, ILineRange, IJavaScriptProject, IndentResult) indentLines}
 	 * to obtain consistent results with respect to the indentation of
 	 * line-comments.
 	 */
@@ -77,7 +77,7 @@ public final class IndentUtil {
 	 * @throws BadLocationException if <code>lines</code> is not a valid line
 	 *         range on <code>document</code>
 	 */
-	public static IndentResult indentLines(IDocument document, ILineRange lines, IJavaProject project, IndentResult result) throws BadLocationException {
+	public static IndentResult indentLines(IDocument document, ILineRange lines, IJavaScriptProject project, IndentResult result) throws BadLocationException {
 		int numberOfLines= lines.getNumberOfLines();
 		
 		if (numberOfLines < 1)
@@ -119,7 +119,7 @@ public final class IndentUtil {
 	 * @throws BadLocationException if <code>lines</code> is not a
 	 *         valid line range on <code>document</code>
 	 */
-	public static IndentResult shiftLines(IDocument document, ILineRange lines, IJavaProject project, IndentResult result) throws BadLocationException {
+	public static IndentResult shiftLines(IDocument document, ILineRange lines, IJavaScriptProject project, IndentResult result) throws BadLocationException {
 		int numberOfLines= lines.getNumberOfLines();
 		
 		if (numberOfLines < 1)
@@ -314,8 +314,8 @@ public final class IndentUtil {
 
 		// don't count the space before javadoc like, asterix-style comment lines
 		if (to > from && to < endOffset - 1 && document.get(to - 1, 2).equals(" *")) { //$NON-NLS-1$
-			String type= TextUtilities.getContentType(document, IJavaPartitions.JAVA_PARTITIONING, to, true);
-			if (type.equals(IJavaPartitions.JAVA_DOC) || type.equals(IJavaPartitions.JAVA_MULTI_LINE_COMMENT))
+			String type= TextUtilities.getContentType(document, IJavaScriptPartitions.JAVA_PARTITIONING, to, true);
+			if (type.equals(IJavaScriptPartitions.JAVA_DOC) || type.equals(IJavaScriptPartitions.JAVA_MULTI_LINE_COMMENT))
 				to--;
 		}
 
@@ -372,12 +372,12 @@ public final class IndentUtil {
 		
 		String indent= null;
 		if (offset < document.getLength()) {
-			ITypedRegion partition= TextUtilities.getPartition(document, IJavaPartitions.JAVA_PARTITIONING, offset, true);
-			ITypedRegion startingPartition= TextUtilities.getPartition(document, IJavaPartitions.JAVA_PARTITIONING, offset, false);
+			ITypedRegion partition= TextUtilities.getPartition(document, IJavaScriptPartitions.JAVA_PARTITIONING, offset, true);
+			ITypedRegion startingPartition= TextUtilities.getPartition(document, IJavaScriptPartitions.JAVA_PARTITIONING, offset, false);
 			String type= partition.getType();
-			if (type.equals(IJavaPartitions.JAVA_DOC) || type.equals(IJavaPartitions.JAVA_MULTI_LINE_COMMENT)) {
+			if (type.equals(IJavaScriptPartitions.JAVA_DOC) || type.equals(IJavaScriptPartitions.JAVA_MULTI_LINE_COMMENT)) {
 				indent= computeJavadocIndent(document, line, scanner, startingPartition);
-			} else if (!commentLines[lineIndex] && startingPartition.getOffset() == offset && startingPartition.getType().equals(IJavaPartitions.JAVA_SINGLE_LINE_COMMENT)) {
+			} else if (!commentLines[lineIndex] && startingPartition.getOffset() == offset && startingPartition.getType().equals(IJavaScriptPartitions.JAVA_SINGLE_LINE_COMMENT)) {
 				return false;				
 			}
 		} 
@@ -403,8 +403,8 @@ public final class IndentUtil {
 		// memorize the fact that a line is a single line comment (but not at column 0) and should be treated like code
 		// as opposed to commented out code, which should keep its slashes at column 0
 		if (length > 0) {
-			ITypedRegion partition= TextUtilities.getPartition(document, IJavaPartitions.JAVA_PARTITIONING, end, false);
-			if (partition.getOffset() == end && IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(partition.getType())) {
+			ITypedRegion partition= TextUtilities.getPartition(document, IJavaScriptPartitions.JAVA_PARTITIONING, end, false);
+			if (partition.getOffset() == end && IJavaScriptPartitions.JAVA_SINGLE_LINE_COMMENT.equals(partition.getType())) {
 				commentLines[lineIndex]= true;
 			}
 		}

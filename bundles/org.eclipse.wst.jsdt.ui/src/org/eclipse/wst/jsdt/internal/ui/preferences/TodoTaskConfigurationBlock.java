@@ -30,7 +30,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
@@ -45,17 +45,17 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDial
   */
 public class TodoTaskConfigurationBlock extends OptionsConfigurationBlock {
 
-	private static final Key PREF_COMPILER_TASK_TAGS= getJDTCoreKey(JavaCore.COMPILER_TASK_TAGS);
-	private static final Key PREF_COMPILER_TASK_PRIORITIES= getJDTCoreKey(JavaCore.COMPILER_TASK_PRIORITIES);
+	private static final Key PREF_COMPILER_TASK_TAGS= getJDTCoreKey(JavaScriptCore.COMPILER_TASK_TAGS);
+	private static final Key PREF_COMPILER_TASK_PRIORITIES= getJDTCoreKey(JavaScriptCore.COMPILER_TASK_PRIORITIES);
 	
-	private static final Key PREF_COMPILER_TASK_CASE_SENSITIVE= getJDTCoreKey(JavaCore.COMPILER_TASK_CASE_SENSITIVE);	
+	private static final Key PREF_COMPILER_TASK_CASE_SENSITIVE= getJDTCoreKey(JavaScriptCore.COMPILER_TASK_CASE_SENSITIVE);	
 	
-	private static final String PRIORITY_HIGH= JavaCore.COMPILER_TASK_PRIORITY_HIGH;
-	private static final String PRIORITY_NORMAL= JavaCore.COMPILER_TASK_PRIORITY_NORMAL;
-	private static final String PRIORITY_LOW= JavaCore.COMPILER_TASK_PRIORITY_LOW;
+	private static final String PRIORITY_HIGH= JavaScriptCore.COMPILER_TASK_PRIORITY_HIGH;
+	private static final String PRIORITY_NORMAL= JavaScriptCore.COMPILER_TASK_PRIORITY_NORMAL;
+	private static final String PRIORITY_LOW= JavaScriptCore.COMPILER_TASK_PRIORITY_LOW;
 	
-	private static final String ENABLED= JavaCore.ENABLED;
-	private static final String DISABLED= JavaCore.DISABLED;	
+	private static final String ENABLED= JavaScriptCore.ENABLED;
+	private static final String DISABLED= JavaScriptCore.DISABLED;	
 	
 	public static class TodoTask {
 		public String name;

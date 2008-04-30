@@ -16,7 +16,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.wst.jsdt.core.IAccessRule;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 
 public class CPListElementSorter extends ViewerComparator {
 	
@@ -54,15 +54,15 @@ public class CPListElementSorter extends ViewerComparator {
 				return REQUIRED_ENTRY;
 			}			
 			switch (element.getEntryKind()) {
-			case IClasspathEntry.CPE_LIBRARY:
+			case IIncludePathEntry.CPE_LIBRARY:
 				return LIBRARY;
-			case IClasspathEntry.CPE_PROJECT:
+			case IIncludePathEntry.CPE_PROJECT:
 				return PROJECT;
-			case IClasspathEntry.CPE_SOURCE:
+			case IIncludePathEntry.CPE_SOURCE:
 				return SOURCE;
-			case IClasspathEntry.CPE_VARIABLE:
+			case IIncludePathEntry.CPE_VARIABLE:
 				return VARIABLE;
-			case IClasspathEntry.CPE_CONTAINER:
+			case IIncludePathEntry.CPE_CONTAINER:
 				return CONTAINER;
 			}
 		} else if (obj instanceof CPListElementAttribute) {

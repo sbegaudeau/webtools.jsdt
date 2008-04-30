@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 public class DeferredMethodWrapper extends MethodWrapperWorkbenchAdapter implements IDeferredWorkbenchAdapter {
     private final CallHierarchyContentProvider fProvider;
@@ -76,7 +76,7 @@ public class DeferredMethodWrapper extends MethodWrapperWorkbenchAdapter impleme
         } catch (OperationCanceledException e) {
             collector.add(new Object[] { TreeTermination.SEARCH_CANCELED }, monitor);
         } catch (Exception e) {
-            JavaPlugin.log(e);
+            JavaScriptPlugin.log(e);
         } finally {
             fProvider.doneFetching();
         }

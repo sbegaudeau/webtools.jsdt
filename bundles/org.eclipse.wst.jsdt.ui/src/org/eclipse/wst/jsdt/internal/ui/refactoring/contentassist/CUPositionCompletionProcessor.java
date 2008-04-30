@@ -28,13 +28,13 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.StubTypeContext;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposal;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaTypeCompletionProposal;
@@ -45,7 +45,7 @@ import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalComparator;
 
 public class CUPositionCompletionProcessor implements IContentAssistProcessor, ISubjectControlContentAssistProcessor {
 	
-	private static final ImageDescriptorRegistry IMAGE_DESC_REGISTRY= JavaPlugin.getImageDescriptorRegistry();
+	private static final ImageDescriptorRegistry IMAGE_DESC_REGISTRY= JavaScriptPlugin.getImageDescriptorRegistry();
 	
 	private String fErrorMessage;
 	private char[] fProposalAutoActivationSet;
@@ -57,27 +57,27 @@ public class CUPositionCompletionProcessor implements IContentAssistProcessor, I
 
 	/**
 	 * Creates a <code>CUPositionCompletionProcessor</code>.
-	 * The completion context must be set via {@link #setCompletionContext(ICompilationUnit,String,String)}.
+	 * The completion context must be set via {@link #setCompletionContext(IJavaScriptUnit,String,String)}.
 	 * @param completionRequestor the completion requestor
 	 */
 	public CUPositionCompletionProcessor(CUPositionCompletionRequestor completionRequestor) {
 		fCompletionRequestor= completionRequestor;
 		
 		fComparator= new CompletionProposalComparator();
-		IPreferenceStore preferenceStore= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferenceStore= JavaScriptPlugin.getDefault().getPreferenceStore();
 		String triggers= preferenceStore.getString(PreferenceConstants.CODEASSIST_AUTOACTIVATION_TRIGGERS_JAVA);
 		fProposalAutoActivationSet = triggers.toCharArray();
 	}
 
 	/**
-	 * @param cuHandle the {@link ICompilationUnit} in whose context codeComplete will be invoked.
+	 * @param cuHandle the {@link IJavaScriptUnit} in whose context codeComplete will be invoked.
 	 * 		The given cu doesn't have to exist (and if it exists, it will not be modified).
 	 * 		An independent working copy consisting of
 	 * 		<code>beforeString</code> + ${current_input} + <code>afterString</code> will be used.
 	 * @param beforeString the string before the input position
 	 * @param afterString the string after the input position
 	 */
-	public void setCompletionContext(final ICompilationUnit cuHandle, final String beforeString, final String afterString) {
+	public void setCompletionContext(final IJavaScriptUnit cuHandle, final String beforeString, final String afterString) {
 		fCompletionContextRequestor= new CompletionContextRequestor() {
 			final StubTypeContext fStubTypeContext= new StubTypeContext(cuHandle, beforeString, afterString);
 			public StubTypeContext getStubTypeContext() {
@@ -85,7 +85,7 @@ public class CUPositionCompletionProcessor implements IContentAssistProcessor, I
 			}
 		};
 		if (cuHandle != null)
-			fCompletionRequestor.setJavaProject(cuHandle.getJavaProject());
+			fCompletionRequestor.setJavaProject(cuHandle.getJavaScriptProject());
 	}
 	
 	public void setCompletionContextRequestor(CompletionContextRequestor completionContextRequestor) {
@@ -163,7 +163,7 @@ public class CUPositionCompletionProcessor implements IContentAssistProcessor, I
 
 	private ICompletionProposal[] internalComputeCompletionProposals(int documentOffset, String input) {
 		String cuString= fCompletionContextRequestor.getBeforeString() + input + fCompletionContextRequestor.getAfterString();
-		ICompilationUnit cu= null;
+		IJavaScriptUnit cu= null;
 		try {
 			/*
 			 * Explicitly create a new non-shared working copy.
@@ -188,15 +188,15 @@ public class CUPositionCompletionProcessor implements IContentAssistProcessor, I
 				fErrorMessage= fCompletionRequestor.getErrorMessage();
 			}
 			return proposals;
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 			return null;
 		} finally {
 			try {
 				if (cu != null)
 					cu.discardWorkingCopy();
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 			}
 		}
 	}
@@ -205,16 +205,16 @@ public class CUPositionCompletionProcessor implements IContentAssistProcessor, I
 		public static final char[] TRIGGER_CHARACTERS= new char[] { '.' };
 		
 		private int fOffsetReduction;
-		private IJavaProject fJavaProject;
+		private IJavaScriptProject fJavaProject;
 		
 		private List fProposals;
 		private String fErrorMessage2;
 
-		public IJavaProject getJavaProject() {
+		public IJavaScriptProject getJavaProject() {
 			return fJavaProject;
 		}
 		
-		private void setJavaProject(IJavaProject javaProject) {
+		private void setJavaProject(IJavaScriptProject javaProject) {
 			fJavaProject= javaProject;
 		}
 		

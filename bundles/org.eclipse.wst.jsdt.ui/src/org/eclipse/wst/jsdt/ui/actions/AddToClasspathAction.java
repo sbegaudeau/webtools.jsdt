@@ -26,13 +26,13 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
@@ -70,15 +70,15 @@ public class AddToClasspathAction extends SelectionDispatchAction {
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(checkEnabled(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			setEnabled(false);
 		}
 	}
 	
-	private static boolean checkEnabled(IStructuredSelection selection) throws JavaModelException {
+	private static boolean checkEnabled(IStructuredSelection selection) throws JavaScriptModelException {
 		if (selection.isEmpty())
 			return false;
 		for (Iterator iter= selection.iterator(); iter.hasNext();) {
@@ -88,16 +88,16 @@ public class AddToClasspathAction extends SelectionDispatchAction {
 		return true;
 	}
 
-	private static boolean canBeAddedToBuildPath(Object element) throws JavaModelException{
+	private static boolean canBeAddedToBuildPath(Object element) throws JavaScriptModelException{
 		return (element instanceof IAdaptable) && getCandidate((IAdaptable) element) != null;
 	}
 
-	private static IFile getCandidate(IAdaptable element) throws JavaModelException {
+	private static IFile getCandidate(IAdaptable element) throws JavaScriptModelException {
 		IResource resource= (IResource)element.getAdapter(IResource.class);
 		if (! (resource instanceof IFile) || ! ArchiveFileFilter.isArchivePath(resource.getFullPath()))
 			return null;
 		
-		IJavaProject project= JavaCore.create(resource.getProject());
+		IJavaScriptProject project= JavaScriptCore.create(resource.getProject());
 		if (project != null && project.exists() && (project.findPackageFragmentRoot(resource.getFullPath()) == null))
 			return (IFile) resource;
 		return null;
@@ -115,19 +115,19 @@ public class AddToClasspathAction extends SelectionDispatchAction {
 					monitor.beginTask(ActionMessages.AddToClasspathAction_progressMessage, files.length); 
 					for (int i= 0; i < files.length; i++) {
 						monitor.subTask(files[i].getFullPath().toString());
-						IJavaProject project= JavaCore.create(files[i].getProject());
+						IJavaScriptProject project= JavaScriptCore.create(files[i].getProject());
 						addToClassPath(project, files[i].getFullPath(), new SubProgressMonitor(monitor, 1));
 					}
 				}
 				
-				private void addToClassPath(IJavaProject project, IPath jarPath, IProgressMonitor monitor) throws JavaModelException {
+				private void addToClassPath(IJavaScriptProject project, IPath jarPath, IProgressMonitor monitor) throws JavaScriptModelException {
 					if (monitor.isCanceled())
 						throw new OperationCanceledException();
-					IClasspathEntry[] entries= project.getRawClasspath();
-					IClasspathEntry[] newEntries= new IClasspathEntry[entries.length + 1];
+					IIncludePathEntry[] entries= project.getRawIncludepath();
+					IIncludePathEntry[] newEntries= new IIncludePathEntry[entries.length + 1];
 					System.arraycopy(entries, 0, newEntries, 0, entries.length);
-					newEntries[entries.length]= JavaCore.newLibraryEntry(jarPath, null, null, false);
-					project.setRawClasspath(newEntries, monitor);
+					newEntries[entries.length]= JavaScriptCore.newLibraryEntry(jarPath, null, null, false);
+					project.setRawIncludepath(newEntries, monitor);
 				}
 			};	
 			
@@ -136,7 +136,7 @@ public class AddToClasspathAction extends SelectionDispatchAction {
 			ExceptionHandler.handle(e, getShell(), 
 				ActionMessages.AddToClasspathAction_error_title,  
 				ActionMessages.AddToClasspathAction_error_message); 
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, getShell(), 
 					ActionMessages.AddToClasspathAction_error_title,  
 					ActionMessages.AddToClasspathAction_error_message); 
@@ -146,7 +146,7 @@ public class AddToClasspathAction extends SelectionDispatchAction {
 
 	}
 	
-	private static IFile[] getJARFiles(IStructuredSelection selection) throws JavaModelException {
+	private static IFile[] getJARFiles(IStructuredSelection selection) throws JavaScriptModelException {
 		ArrayList list= new ArrayList();
 		for (Iterator iter= selection.iterator(); iter.hasNext();) {
 			Object element= iter.next();

@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialogTabPage.IModificationListener;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.CustomProfile;
@@ -52,7 +52,7 @@ import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public abstract class ModifyDialog extends StatusDialog implements IModificationListener {
     
@@ -98,11 +98,11 @@ public abstract class ModifyDialog extends StatusDialog implements IModification
 		fProfileStore= profileStore;
 		fLastSaveLoadPathKey= lastSavePathKey;
 
-		fKeyPreferredWidth= JavaUI.ID_PLUGIN + dialogPreferencesKey + DS_KEY_PREFERRED_WIDTH;
-		fKeyPreferredHight= JavaUI.ID_PLUGIN + dialogPreferencesKey + DS_KEY_PREFERRED_HEIGHT;
-		fKeyPreferredX= JavaUI.ID_PLUGIN + dialogPreferencesKey + DS_KEY_PREFERRED_X;
-		fKeyPreferredY= JavaUI.ID_PLUGIN + dialogPreferencesKey + DS_KEY_PREFERRED_Y;
-		fKeyLastFocus= JavaUI.ID_PLUGIN + dialogPreferencesKey + DS_KEY_LAST_FOCUS;
+		fKeyPreferredWidth= JavaScriptUI.ID_PLUGIN + dialogPreferencesKey + DS_KEY_PREFERRED_WIDTH;
+		fKeyPreferredHight= JavaScriptUI.ID_PLUGIN + dialogPreferencesKey + DS_KEY_PREFERRED_HEIGHT;
+		fKeyPreferredX= JavaScriptUI.ID_PLUGIN + dialogPreferencesKey + DS_KEY_PREFERRED_X;
+		fKeyPreferredY= JavaScriptUI.ID_PLUGIN + dialogPreferencesKey + DS_KEY_PREFERRED_Y;
+		fKeyLastFocus= JavaScriptUI.ID_PLUGIN + dialogPreferencesKey + DS_KEY_LAST_FOCUS;
 
 		fProfileManager= profileManager;
 		fNewProfile= newProfile;
@@ -113,7 +113,7 @@ public abstract class ModifyDialog extends StatusDialog implements IModification
 		fWorkingValues= new HashMap(fProfile.getSettings());
 		setStatusLineAboveButtons(false);
 		fTabPages= new ArrayList();
-		fDialogSettings= JavaPlugin.getDefault().getDialogSettings();	
+		fDialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();	
 	}
 
 	protected abstract void addPages(Map values);
@@ -263,7 +263,7 @@ public abstract class ModifyDialog extends StatusDialog implements IModification
 		dialog.setText(FormatterMessages.CodingStyleConfigurationBlock_save_profile_dialog_title); 
 		dialog.setFilterExtensions(new String [] {"*.xml"}); //$NON-NLS-1$
 
-		final String lastPath= JavaPlugin.getDefault().getDialogSettings().get(fLastSaveLoadPathKey + ".savepath"); //$NON-NLS-1$
+		final String lastPath= JavaScriptPlugin.getDefault().getDialogSettings().get(fLastSaveLoadPathKey + ".savepath"); //$NON-NLS-1$
 		if (lastPath != null) {
 			dialog.setFilterPath(lastPath);
 		}
@@ -271,7 +271,7 @@ public abstract class ModifyDialog extends StatusDialog implements IModification
 		if (path == null) 
 			return;
 
-		JavaPlugin.getDefault().getDialogSettings().put(fLastSaveLoadPathKey + ".savepath", dialog.getFilterPath()); //$NON-NLS-1$
+		JavaScriptPlugin.getDefault().getDialogSettings().put(fLastSaveLoadPathKey + ".savepath", dialog.getFilterPath()); //$NON-NLS-1$
 
 		final File file= new File(path);
 		if (file.exists() && !MessageDialog.openQuestion(getShell(), FormatterMessages.CodingStyleConfigurationBlock_save_profile_overwrite_title, Messages.format(FormatterMessages.CodingStyleConfigurationBlock_save_profile_overwrite_message, path))) { 
@@ -338,12 +338,12 @@ public abstract class ModifyDialog extends StatusDialog implements IModification
     	
     	String name= fProfileNameField.getText().trim();
 		if (!name.equals(fProfile.getName()) && fProfileManager.containsName(name)) {
-			updateStatus(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, FormatterMessages.ModifyDialog_Duplicate_Status));
+			updateStatus(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, FormatterMessages.ModifyDialog_Duplicate_Status));
 			return;
 		}
 		
 		if (fProfile.isBuiltInProfile() || fProfile.isSharedProfile()) {
-			updateStatus(new Status(IStatus.INFO, JavaUI.ID_PLUGIN, FormatterMessages.ModifyDialog_NewCreated_Status));
+			updateStatus(new Status(IStatus.INFO, JavaScriptUI.ID_PLUGIN, FormatterMessages.ModifyDialog_NewCreated_Status));
 			return;
 		}
 
@@ -355,18 +355,18 @@ public abstract class ModifyDialog extends StatusDialog implements IModification
     	
 	    if (fProfile.isBuiltInProfile()) {
 			if (fProfile.getName().equals(name)) { 
-				return new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, FormatterMessages.ModifyDialog_BuiltIn_Status);
+				return new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, FormatterMessages.ModifyDialog_BuiltIn_Status);
 			}	
     	}
     	
     	if (fProfile.isSharedProfile()) {
 			if (fProfile.getName().equals(name)) { 
-				return new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, FormatterMessages.ModifyDialog_Shared_Status);
+				return new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, FormatterMessages.ModifyDialog_Shared_Status);
 			}
     	}
 		
 		if (name.length() == 0) {
-			return new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, FormatterMessages.ModifyDialog_EmptyName_Status);
+			return new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, FormatterMessages.ModifyDialog_EmptyName_Status);
 		}
 		
 		return StatusInfo.OK_STATUS;

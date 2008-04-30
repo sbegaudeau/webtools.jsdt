@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
@@ -34,7 +34,7 @@ public SuperTypeReferenceLocator(SuperTypeReferencePattern pattern) {
 //public int match(ConstructorDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(Expression node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(FieldDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
-//public int match(MethodDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
+//public int match(FunctionDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(MessageSend node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(Reference node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(TypeDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
@@ -59,9 +59,9 @@ protected int matchContainer() {
 	return CLASS_CONTAINER;
 }
 /* (non-Javadoc)
- * @see org.eclipse.wst.jsdt.internal.core.search.matching.PatternLocator#matchReportReference(org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode, org.eclipse.wst.jsdt.core.IJavaElement, org.eclipse.wst.jsdt.internal.compiler.lookup.Binding, int, org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator)
+ * @see org.eclipse.wst.jsdt.internal.core.search.matching.PatternLocator#matchReportReference(org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode, org.eclipse.wst.jsdt.core.IJavaScriptElement, org.eclipse.wst.jsdt.internal.compiler.lookup.Binding, int, org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator)
  */
-protected void matchReportReference(ASTNode reference, IJavaElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportReference(ASTNode reference, IJavaScriptElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
 	if (elementBinding instanceof ReferenceBinding) {
 		ReferenceBinding referenceBinding = (ReferenceBinding) elementBinding;
 		if (referenceBinding.isClass() && this.pattern.typeSuffix == IIndexConstants.INTERFACE_SUFFIX) {
@@ -76,7 +76,7 @@ protected void matchReportReference(ASTNode reference, IJavaElement element, Bin
 	super.matchReportReference(reference, element, elementBinding, accuracy, locator);
 }
 protected int referenceType() {
-	return IJavaElement.TYPE;
+	return IJavaScriptElement.TYPE;
 }
 public int resolveLevel(ASTNode node) {
 	if (!(node instanceof TypeReference)) return IMPOSSIBLE_MATCH;

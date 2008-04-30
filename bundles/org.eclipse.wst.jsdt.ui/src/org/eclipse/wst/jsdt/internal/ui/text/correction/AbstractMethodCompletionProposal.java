@@ -17,16 +17,16 @@ import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -45,7 +45,7 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 	private ASTNode fNode;
 	private ITypeBinding fSenderBinding;
 
-	public AbstractMethodCompletionProposal(String label, ICompilationUnit targetCU, ASTNode invocationNode, ITypeBinding binding, int relevance, Image image) {
+	public AbstractMethodCompletionProposal(String label, IJavaScriptUnit targetCU, ASTNode invocationNode, ITypeBinding binding, int relevance, Image image) {
 		super(label, targetCU, null, relevance, image);
 
 		Assert.isTrue(binding != null && Bindings.isDeclarationBinding(binding));
@@ -66,7 +66,7 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 	}
 
 	protected ASTRewrite getRewrite() throws CoreException {
-		CompilationUnit astRoot= ASTResolving.findParentCompilationUnit(fNode);
+		JavaScriptUnit astRoot= ASTResolving.findParentCompilationUnit(fNode);
 		ASTNode typeDecl= astRoot.findDeclaringNode(fSenderBinding);
 		ASTNode newTypeDecl= null;
 		boolean isInDifferentCU;
@@ -83,7 +83,7 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 		if (newTypeDecl != null) {
 			ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 
-			MethodDeclaration newStub= getStub(rewrite, newTypeDecl);
+			FunctionDeclaration newStub= getStub(rewrite, newTypeDecl);
 
 			ChildListPropertyDescriptor property= ASTNodes.getBodyDeclarationsProperty(newTypeDecl);
 			List members= (List) newTypeDecl.getStructuralProperty(property);
@@ -104,9 +104,9 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 		return null;
 	}
 
-	private MethodDeclaration getStub(ASTRewrite rewrite, ASTNode targetTypeDecl) throws CoreException {
+	private FunctionDeclaration getStub(ASTRewrite rewrite, ASTNode targetTypeDecl) throws CoreException {
 		AST ast= targetTypeDecl.getAST();
-		MethodDeclaration decl= ast.newMethodDeclaration();
+		FunctionDeclaration decl= ast.newFunctionDeclaration();
 
 		SimpleName newNameNode= getNewName(rewrite);
 
@@ -135,7 +135,7 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 			if (!fSenderBinding.isInterface() && returnType != null) {
 				ReturnStatement returnStatement= ast.newReturnStatement();
 				returnStatement.setExpression(ASTNodeFactory.newDefaultExpression(ast, returnType, 0));
-				bodyStatement= ASTNodes.asFormattedString(returnStatement, 0, String.valueOf('\n'), getCompilationUnit().getJavaProject().getOptions(true));
+				bodyStatement= ASTNodes.asFormattedString(returnStatement, 0, String.valueOf('\n'), getCompilationUnit().getJavaScriptProject().getOptions(true));
 			}
 		}
 		
@@ -153,11 +153,11 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 		}
 		decl.setBody(body);
 
-		CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(getCompilationUnit().getJavaProject());
+		CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(getCompilationUnit().getJavaScriptProject());
 		if (settings.createComments && !fSenderBinding.isAnonymous()) {
 			String string= CodeGeneration.getMethodComment(getCompilationUnit(), fSenderBinding.getName(), decl, null, String.valueOf('\n'));
 			if (string != null) {
-				Javadoc javadoc= (Javadoc) rewrite.createStringPlaceholder(string, ASTNode.JAVADOC);
+				JSdoc javadoc= (JSdoc) rewrite.createStringPlaceholder(string, ASTNode.JSDOC);
 				decl.setJavadoc(javadoc);
 			}
 		}
@@ -170,7 +170,7 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 		int nDecls= decls.size();
 		for (int i= 0; i < nDecls; i++) {
 			ASTNode curr= (ASTNode) decls.get(i);
-			if (curr instanceof MethodDeclaration && currPos < curr.getStartPosition() + curr.getLength()) {
+			if (curr instanceof FunctionDeclaration && currPos < curr.getStartPosition() + curr.getLength()) {
 				return i + 1;
 			}
 		}
@@ -182,8 +182,8 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 		int lastMethod= 0;
 		for (int i= nDecls - 1; i >= 0; i--) {
 			ASTNode curr= (ASTNode) decls.get(i);
-			if (curr instanceof MethodDeclaration) {
-				if (((MethodDeclaration) curr).isConstructor()) {
+			if (curr instanceof FunctionDeclaration) {
+				if (((FunctionDeclaration) curr).isConstructor()) {
 					return i + 1;
 				}
 				lastMethod= i;

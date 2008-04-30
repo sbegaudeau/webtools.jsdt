@@ -38,7 +38,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.wst.jsdt.internal.corext.CorextMessages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIException;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 import org.w3c.dom.Document;
@@ -152,7 +152,7 @@ public abstract class History {
 	}
 
 	public synchronized void load() {
-		IPath stateLocation= JavaPlugin.getDefault().getStateLocation().append(fFileName);
+		IPath stateLocation= JavaScriptPlugin.getDefault().getStateLocation().append(fFileName);
 		File file= new File(stateLocation.toOSString());
 		if (file.exists()) {
 			InputStreamReader reader= null;
@@ -160,42 +160,42 @@ public abstract class History {
 				reader = new InputStreamReader(new FileInputStream(file), "utf-8");//$NON-NLS-1$
 				load(new InputSource(reader));
 			} catch (IOException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			} finally {
 				try {
 					if (reader != null)
 						reader.close();
 				} catch (IOException e) {
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 				}
 			}
 		}
 	}
 	
 	public synchronized void save() {
-		IPath stateLocation= JavaPlugin.getDefault().getStateLocation().append(fFileName);
+		IPath stateLocation= JavaScriptPlugin.getDefault().getStateLocation().append(fFileName);
 		File file= new File(stateLocation.toOSString());
 		OutputStream out= null;
 		try {
 			out= new FileOutputStream(file); 
 			save(out);
 		} catch (IOException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		} catch (TransformerFactoryConfigurationError e) {
 			// The XML library can be misconficgured (e.g. via 
 			// -Djava.endorsed.dirs=C:\notExisting\xerces-2_7_1)
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		} finally {
 			try {
 				if (out != null) {
 					out.close();
 				}
 			} catch (IOException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 	}

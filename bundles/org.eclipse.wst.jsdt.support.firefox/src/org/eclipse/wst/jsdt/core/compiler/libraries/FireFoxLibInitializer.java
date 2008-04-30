@@ -2,7 +2,7 @@ package org.eclipse.wst.jsdt.core.compiler.libraries;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
@@ -36,7 +36,7 @@ public class FireFoxLibInitializer extends JsGlobalScopeContainerInitializer imp
 	}
 
 
-	public String getDescription(IPath containerPath, IJavaProject project) {
+	public String getDescription(IPath containerPath, IJavaScriptProject project) {
 		return FireFoxLibInitializer.ContainerDescription;
 	}
 
@@ -62,7 +62,7 @@ public class FireFoxLibInitializer extends JsGlobalScopeContainerInitializer imp
 	}
 
 
-	public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaProject project) {
+	public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaScriptProject project) {
 		return true;
 
 

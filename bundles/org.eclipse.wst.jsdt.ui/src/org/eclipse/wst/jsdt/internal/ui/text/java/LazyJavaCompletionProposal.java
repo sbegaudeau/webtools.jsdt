@@ -17,12 +17,12 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
 
@@ -49,7 +49,7 @@ public class LazyJavaCompletionProposal extends AbstractJavaCompletionProposal {
 		public final boolean afterTypeArgumentComma;
 		public final boolean beforeClosingBracket;
 	
-		FormatterPrefs(IJavaProject project) {
+		FormatterPrefs(IJavaScriptProject project) {
 			beforeOpeningParen= getCoreOption(project, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_PAREN_IN_METHOD_INVOCATION, false);
 			afterOpeningParen= getCoreOption(project, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_OPENING_PAREN_IN_METHOD_INVOCATION, false);
 			beforeComma= getCoreOption(project, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_METHOD_INVOCATION_ARGUMENTS, false);
@@ -64,18 +64,18 @@ public class LazyJavaCompletionProposal extends AbstractJavaCompletionProposal {
 			beforeClosingBracket= getCoreOption(project, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_CLOSING_ANGLE_BRACKET_IN_PARAMETERIZED_TYPE_REFERENCE, false);
 		}
 	
-		protected final boolean getCoreOption(IJavaProject project, String key, boolean def) {
+		protected final boolean getCoreOption(IJavaScriptProject project, String key, boolean def) {
 			String option= getCoreOption(project, key);
-			if (JavaCore.INSERT.equals(option))
+			if (JavaScriptCore.INSERT.equals(option))
 				return true;
-			if (JavaCore.DO_NOT_INSERT.equals(option))
+			if (JavaScriptCore.DO_NOT_INSERT.equals(option))
 				return false;
 			return def;
 		}
 	
-		protected final String getCoreOption(IJavaProject project, String key) {
+		protected final String getCoreOption(IJavaScriptProject project, String key) {
 			if (project == null)
-				return JavaCore.getOption(key);
+				return JavaScriptCore.getOption(key);
 			return project.getOption(key, true);
 		}
 	}
@@ -179,7 +179,7 @@ public class LazyJavaCompletionProposal extends AbstractJavaCompletionProposal {
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.AbstractJavaCompletionProposal#isInJavadoc()
 	 */
 	protected final boolean isInJavadoc() {
-		return fInvocationContext.getCoreContext().isInJavadoc();
+		return fInvocationContext.getCoreContext().isInJsdoc();
 	}
 
 	/*
@@ -316,7 +316,7 @@ public class LazyJavaCompletionProposal extends AbstractJavaCompletionProposal {
 	}
 
 	protected Image computeImage() {
-		return JavaPlugin.getImageDescriptorRegistry().get(fInvocationContext.getLabelProvider().createImageDescriptor(fProposal));
+		return JavaScriptPlugin.getImageDescriptorRegistry().get(fInvocationContext.getLabelProvider().createImageDescriptor(fProposal));
 	}
 
 	/**
@@ -412,8 +412,8 @@ public class LazyJavaCompletionProposal extends AbstractJavaCompletionProposal {
 
 	protected FormatterPrefs getFormatterPrefs() {
 		if (fFormatterPrefs == null) {
-			ICompilationUnit cu= fInvocationContext.getCompilationUnit();
-			fFormatterPrefs= new FormatterPrefs(cu == null ? null : cu.getJavaProject());
+			IJavaScriptUnit cu= fInvocationContext.getCompilationUnit();
+			fFormatterPrefs= new FormatterPrefs(cu == null ? null : cu.getJavaScriptProject());
 		}
 		return fFormatterPrefs;
 	}

@@ -15,8 +15,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
@@ -25,8 +25,8 @@ import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
@@ -47,8 +47,8 @@ public class NewMethodCompletionProposal extends AbstractMethodCompletionProposa
 
 	private List fArguments;
 
-	//	invocationNode is MethodInvocation, ConstructorInvocation, SuperConstructorInvocation, ClassInstanceCreation, SuperMethodInvocation
-	public NewMethodCompletionProposal(String label, ICompilationUnit targetCU, ASTNode invocationNode,  List arguments, ITypeBinding binding, int relevance, Image image) {
+	//	invocationNode is FunctionInvocation, ConstructorInvocation, SuperConstructorInvocation, ClassInstanceCreation, SuperMethodInvocation
+	public NewMethodCompletionProposal(String label, IJavaScriptUnit targetCU, ASTNode invocationNode,  List arguments, ITypeBinding binding, int relevance, Image image) {
 		super(label, targetCU, invocationNode, binding, relevance, image);
 		fArguments= arguments;
 	}
@@ -59,16 +59,16 @@ public class NewMethodCompletionProposal extends AbstractMethodCompletionProposa
 		}
 		if (getSenderBinding().isInterface()) {
 			// for interface and annotation members copy the modifiers from an existing field
-			MethodDeclaration[] methodDecls= ((TypeDeclaration) targetTypeDecl).getMethods();
+			FunctionDeclaration[] methodDecls= ((TypeDeclaration) targetTypeDecl).getMethods();
 			if (methodDecls.length > 0) {
 				return methodDecls[0].getModifiers();
 			}
 			return 0;
 		}
 		ASTNode invocationNode= getInvocationNode();
-		if (invocationNode instanceof MethodInvocation) {
+		if (invocationNode instanceof FunctionInvocation) {
 			int modifiers= 0;
-			Expression expression= ((MethodInvocation)invocationNode).getExpression();
+			Expression expression= ((FunctionInvocation)invocationNode).getExpression();
 			if (expression != null) {
 				if (expression instanceof Name && ((Name) expression).resolveBinding().getKind() == IBinding.TYPE) {
 					modifiers |= Modifier.STATIC;
@@ -107,7 +107,7 @@ public class NewMethodCompletionProposal extends AbstractMethodCompletionProposa
 	protected boolean isConstructor() {
 		ASTNode node= getInvocationNode();
 
-		return node.getNodeType() != ASTNode.METHOD_INVOCATION && node.getNodeType() != ASTNode.SUPER_METHOD_INVOCATION;
+		return node.getNodeType() != ASTNode.FUNCTION_INVOCATION && node.getNodeType() != ASTNode.SUPER_METHOD_INVOCATION;
 	}
 
 	/* (non-Javadoc)
@@ -116,8 +116,8 @@ public class NewMethodCompletionProposal extends AbstractMethodCompletionProposa
 	protected SimpleName getNewName(ASTRewrite rewrite) {
 		ASTNode invocationNode= getInvocationNode();
 		String name;
-		if (invocationNode instanceof MethodInvocation) {
-			name= ((MethodInvocation)invocationNode).getName().getIdentifier();
+		if (invocationNode instanceof FunctionInvocation) {
+			name= ((FunctionInvocation)invocationNode).getName().getIdentifier();
 		} else if (invocationNode instanceof SuperMethodInvocation) {
 			name= ((SuperMethodInvocation)invocationNode).getName().getIdentifier();
 		} else {
@@ -136,8 +136,8 @@ public class NewMethodCompletionProposal extends AbstractMethodCompletionProposa
 
 	private ASTNode getInvocationNameNode() {
 		ASTNode node= getInvocationNode();
-		if (node instanceof MethodInvocation) {
-			return ((MethodInvocation)node).getName();
+		if (node instanceof FunctionInvocation) {
+			return ((FunctionInvocation)node).getName();
 		} else if (node instanceof SuperMethodInvocation) {
 			return ((SuperMethodInvocation)node).getName();
 		} else if (node instanceof ClassInstanceCreation) {
@@ -160,8 +160,8 @@ public class NewMethodCompletionProposal extends AbstractMethodCompletionProposa
 		Type newTypeNode= null;
 		ITypeBinding[] otherProposals= null;
 
-		if (node.getParent() instanceof MethodInvocation) {
-			MethodInvocation parent= (MethodInvocation) node.getParent();
+		if (node.getParent() instanceof FunctionInvocation) {
+			FunctionInvocation parent= (FunctionInvocation) node.getParent();
 			if (parent.getExpression() == node) {
 				ITypeBinding[] bindings= ASTResolving.getQualifierGuess(node.getRoot(), parent.getName().getIdentifier(), parent.arguments(), getSenderBinding());
 				if (bindings.length > 0) {
@@ -244,7 +244,7 @@ public class NewMethodCompletionProposal extends AbstractMethodCompletionProposa
 	}
 
 	private String evaluateParameterName(List takenNames, Expression argNode, Type type, String key) {
-		IJavaProject project= getCompilationUnit().getJavaProject();
+		IJavaScriptProject project= getCompilationUnit().getJavaScriptProject();
 		String[] names= StubUtility.getVariableNameSuggestions(StubUtility.PARAMETER, project, type, argNode, takenNames);
 		for (int i= 0; i < names.length; i++) {
 			addLinkedPositionProposal(key, names[i], null);

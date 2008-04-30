@@ -16,7 +16,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.search.TextSearchLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 
 class NLSSearchResultLabelProvider2 extends TextSearchLabelProvider {
@@ -25,7 +25,7 @@ class NLSSearchResultLabelProvider2 extends TextSearchLabelProvider {
 	
 	public NLSSearchResultLabelProvider2(AbstractTextSearchViewPage page) {
 		super(page);
-		fLabelProvider= new AppearanceAwareLabelProvider(JavaElementLabels.ALL_POST_QUALIFIED, 0);
+		fLabelProvider= new AppearanceAwareLabelProvider(JavaScriptElementLabels.ALL_POST_QUALIFIED, 0);
 	}
 	
 	/*

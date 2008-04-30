@@ -45,19 +45,19 @@ import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.TextFieldNavigationHandler;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -73,16 +73,16 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 		private int limitTo;
 		private String pattern;
 		private boolean isCaseSensitive;
-		private IJavaElement javaElement;
+		private IJavaScriptElement javaElement;
 		private int includeMask;
 		private int scope;
 		private IWorkingSet[] workingSets;
 		
-		public SearchPatternData(int searchFor, int limitTo, boolean isCaseSensitive, String pattern, IJavaElement element, int includeMask) {
+		public SearchPatternData(int searchFor, int limitTo, boolean isCaseSensitive, String pattern, IJavaScriptElement element, int includeMask) {
 			this(searchFor, limitTo, pattern, isCaseSensitive, element, ISearchPageContainer.WORKSPACE_SCOPE, null, includeMask);
 		}
 		
-		public SearchPatternData(int searchFor, int limitTo, String pattern, boolean isCaseSensitive, IJavaElement element, int scope, IWorkingSet[] workingSets, int includeMask) {
+		public SearchPatternData(int searchFor, int limitTo, String pattern, boolean isCaseSensitive, IJavaScriptElement element, int scope, IWorkingSet[] workingSets, int includeMask) {
 			this.searchFor= searchFor;
 			this.limitTo= limitTo;
 			this.pattern= pattern;
@@ -94,7 +94,7 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 			setJavaElement(element);
 		}
 		
-		public void setJavaElement(IJavaElement javaElement) {
+		public void setJavaElement(IJavaScriptElement javaElement) {
 			this.javaElement= javaElement;
 		}
 
@@ -102,7 +102,7 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 			return isCaseSensitive;
 		}
 
-		public IJavaElement getJavaElement() {
+		public IJavaScriptElement getJavaElement() {
 			return javaElement;
 		}
 
@@ -154,10 +154,10 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 			if (pattern.length() == 0) {
 				return null;
 			}
-			IJavaElement elem= null;
+			IJavaScriptElement elem= null;
 			String handleId= settings.get("javaElement"); //$NON-NLS-1$
 			if (handleId != null && handleId.length() > 0) {
-				IJavaElement restored= JavaCore.create(handleId); 
+				IJavaScriptElement restored= JavaScriptCore.create(handleId); 
 				if (restored != null && isSearchableType(restored) && restored.exists()) {
 					elem= restored;
 				}
@@ -199,21 +199,21 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 	}
 	
 	// search for
-	private final static int TYPE= IJavaSearchConstants.TYPE;
-	private final static int METHOD= IJavaSearchConstants.METHOD;
-//	private final static int PACKAGE= IJavaSearchConstants.PACKAGE;
-	private final static int CONSTRUCTOR= IJavaSearchConstants.CONSTRUCTOR;
-	private final static int FIELD= IJavaSearchConstants.FIELD;
-	private final static int VAR= IJavaSearchConstants.VAR;
-	private final static int FUNCTION= IJavaSearchConstants.FUNCTION;
+	private final static int TYPE= IJavaScriptSearchConstants.TYPE;
+	private final static int METHOD= IJavaScriptSearchConstants.METHOD;
+//	private final static int PACKAGE= IJavaScriptSearchConstants.PACKAGE;
+	private final static int CONSTRUCTOR= IJavaScriptSearchConstants.CONSTRUCTOR;
+	private final static int FIELD= IJavaScriptSearchConstants.FIELD;
+	private final static int VAR= IJavaScriptSearchConstants.VAR;
+	private final static int FUNCTION= IJavaScriptSearchConstants.FUNCTION;
 	
 	// limit to
-	private final static int DECLARATIONS= IJavaSearchConstants.DECLARATIONS;
-//	private final static int IMPLEMENTORS= IJavaSearchConstants.IMPLEMENTORS;
-	private final static int REFERENCES= IJavaSearchConstants.REFERENCES;
-	private final static int ALL_OCCURRENCES= IJavaSearchConstants.ALL_OCCURRENCES;
-	private final static int READ_ACCESSES= IJavaSearchConstants.READ_ACCESSES;
-	private final static int WRITE_ACCESSES= IJavaSearchConstants.WRITE_ACCESSES;
+	private final static int DECLARATIONS= IJavaScriptSearchConstants.DECLARATIONS;
+//	private final static int IMPLEMENTORS= IJavaScriptSearchConstants.IMPLEMENTORS;
+	private final static int REFERENCES= IJavaScriptSearchConstants.REFERENCES;
+	private final static int ALL_OCCURRENCES= IJavaScriptSearchConstants.ALL_OCCURRENCES;
+	private final static int READ_ACCESSES= IJavaScriptSearchConstants.READ_ACCESSES;
+	private final static int WRITE_ACCESSES= IJavaScriptSearchConstants.WRITE_ACCESSES;
 	
 	public static final String PARTICIPANT_EXTENSION_POINT= "org.eclipse.wst.jsdt.ui.queryParticipants"; //$NON-NLS-1$
 
@@ -231,7 +231,7 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 	private final List fPreviousSearchPatterns;
 	
 	private SearchPatternData fInitialData;
-	private IJavaElement fJavaElement;
+	private IJavaScriptElement fJavaElement;
 	private boolean fFirstTime= true;
 	private IDialogSettings fDialogSettings;
 	private boolean fIsCaseSensitive;
@@ -263,7 +263,7 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 		SearchPatternData data= getPatternData();
 
 		// Setup search scope
-		IJavaSearchScope scope= null;
+		IJavaScriptSearchScope scope= null;
 		String scopeDescription= ""; //$NON-NLS-1$
 		
 		int searchFor= data.getSearchFor();
@@ -278,7 +278,7 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 				scope= factory.createWorkspaceScope(includeMask);
 				break;
 			case ISearchPageContainer.SELECTION_SCOPE:
-				IJavaElement[] javaElements= factory.getJavaElements(getContainer().getSelection());
+				IJavaScriptElement[] javaElements= factory.getJavaElements(getContainer().getSelection());
 				scope= factory.createJavaSearchScope(javaElements, includeMask);
 				scopeDescription= factory.getSelectionScopeDescription(javaElements, includeMask);
 				break;
@@ -738,11 +738,11 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 			IEditorPart activePart= getActiveEditor();
 			if (activePart instanceof JavaEditor) {
 				try {
-					IJavaElement[] elements= SelectionConverter.codeResolve((JavaEditor) activePart);
+					IJavaScriptElement[] elements= SelectionConverter.codeResolve((JavaEditor) activePart);
 					if (elements != null && elements.length > 0) {
 						initData= determineInitValuesFrom(elements[0]);
 					}
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					// ignore
 				}
 			}
@@ -770,7 +770,7 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 		setIncludeMask(getIncludeMask(), getLimitTo());
 	}
 
-	private static boolean forceIncludeAll(int limitTo, IJavaElement elem) {
+	private static boolean forceIncludeAll(int limitTo, IJavaScriptElement elem) {
 		return elem != null && (limitTo == DECLARATIONS /*|| limitTo == IMPLEMENTORS*/);
 	}
 
@@ -780,13 +780,13 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 
 		Object o= selection.getFirstElement();
 		SearchPatternData res= null;
-		if (o instanceof IJavaElement) {
-			res= determineInitValuesFrom((IJavaElement) o);
+		if (o instanceof IJavaScriptElement) {
+			res= determineInitValuesFrom((IJavaScriptElement) o);
 //		} else if (o instanceof LogicalPackage) {
 //			LogicalPackage lp= (LogicalPackage)o;
 //			return new SearchPatternData(PACKAGE, REFERENCES, fIsCaseSensitive, lp.getElementName(), null, getLastIncludeMask());
 		} else if (o instanceof IAdaptable) {
-			IJavaElement element= (IJavaElement) ((IAdaptable) o).getAdapter(IJavaElement.class);
+			IJavaScriptElement element= (IJavaScriptElement) ((IAdaptable) o).getAdapter(IJavaScriptElement.class);
 			if (element != null) {
 				res= determineInitValuesFrom(element);
 			}
@@ -800,30 +800,30 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 		return res;
 	}
 	
-	final static boolean isSearchableType(IJavaElement element) {
+	final static boolean isSearchableType(IJavaScriptElement element) {
 		switch (element.getElementType()) {
-			case IJavaElement.PACKAGE_FRAGMENT:
-			case IJavaElement.PACKAGE_DECLARATION:
-			case IJavaElement.IMPORT_DECLARATION:
-			case IJavaElement.TYPE:
-			case IJavaElement.FIELD:
-			case IJavaElement.METHOD:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.PACKAGE_DECLARATION:
+			case IJavaScriptElement.IMPORT_DECLARATION:
+			case IJavaScriptElement.TYPE:
+			case IJavaScriptElement.FIELD:
+			case IJavaScriptElement.METHOD:
 				return true;
 		}
 		return false;
 	}
 
-	private SearchPatternData determineInitValuesFrom(IJavaElement element) {
+	private SearchPatternData determineInitValuesFrom(IJavaScriptElement element) {
 		try {
 			//JavaSearchScopeFactory factory= JavaSearchScopeFactory.getInstance();
 			//boolean isInsideJRE= factory.isInsideJRE(element);
 			int includeMask= getLastIncludeMask();
 			
 			switch (element.getElementType()) {
-//				case IJavaElement.PACKAGE_FRAGMENT:
-//				case IJavaElement.PACKAGE_DECLARATION:
+//				case IJavaScriptElement.PACKAGE_FRAGMENT:
+//				case IJavaScriptElement.PACKAGE_DECLARATION:
 //					return new SearchPatternData(PACKAGE, REFERENCES, true, element.getElementName(), element, includeMask);
-//				case IJavaElement.IMPORT_DECLARATION: {
+//				case IJavaScriptElement.IMPORT_DECLARATION: {
 //					IImportDeclaration declaration= (IImportDeclaration) element;
 //					if (declaration.isOnDemand()) {
 //						String name= Signature.getQualifier(declaration.getElementName());
@@ -831,35 +831,35 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 //					}
 //					return new SearchPatternData(TYPE, DECLARATIONS, true, element.getElementName(), element, JavaSearchScopeFactory.ALL);
 //				}
-				case IJavaElement.TYPE:
+				case IJavaScriptElement.TYPE:
 					return new SearchPatternData(TYPE, REFERENCES, true, PatternStrings.getTypeSignature((IType) element), element, includeMask);
-				case IJavaElement.COMPILATION_UNIT: {
-					IType mainType= ((ICompilationUnit) element).findPrimaryType();
+				case IJavaScriptElement.JAVASCRIPT_UNIT: {
+					IType mainType= ((IJavaScriptUnit) element).findPrimaryType();
 					if (mainType != null) {
 						return new SearchPatternData(TYPE, REFERENCES, true, PatternStrings.getTypeSignature(mainType), mainType, includeMask);
 					}
 					break;
 				}
-				case IJavaElement.CLASS_FILE: {
+				case IJavaScriptElement.CLASS_FILE: {
 					IType mainType= ((IClassFile) element).getType();
 					if (mainType.exists()) {
 						return new SearchPatternData(TYPE, REFERENCES, true, PatternStrings.getTypeSignature(mainType), mainType, includeMask);
 					}
 					break;
 				}
-				case IJavaElement.FIELD:
+				case IJavaScriptElement.FIELD:
 					IField field = (IField) element;
-					return new SearchPatternData(field.getParent().getElementType()==IJavaElement.TYPE?FIELD:VAR, REFERENCES, true,
+					return new SearchPatternData(field.getParent().getElementType()==IJavaScriptElement.TYPE?FIELD:VAR, REFERENCES, true,
 							PatternStrings.getFieldSignature(field), element, includeMask);
-				case IJavaElement.METHOD:
-					IMethod method= (IMethod) element;
+				case IJavaScriptElement.METHOD:
+					IFunction method= (IFunction) element;
 					int searchFor= method.isConstructor() ? CONSTRUCTOR : METHOD;
-					if (method.getParent().getElementType()!=IJavaElement.TYPE)
+					if (method.getParent().getElementType()!=IJavaScriptElement.TYPE)
 						searchFor=FUNCTION;
 					return new SearchPatternData(searchFor, REFERENCES, true, PatternStrings.getMethodSignature(method), element, includeMask);
 			}
 			
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			if (!e.isDoesNotExist()) {
 				ExceptionHandler.handle(e, SearchMessages.Search_Error_javaElementAccess_title, SearchMessages.Search_Error_javaElementAccess_message); 
 			}
@@ -914,7 +914,7 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 	}
 		
 	private IEditorPart getActiveEditor() {
-		IWorkbenchPage activePage= JavaPlugin.getActivePage();
+		IWorkbenchPage activePage= JavaScriptPlugin.getActivePage();
 		if (activePage != null) {
 			return activePage.getActiveEditor();
 		}
@@ -930,7 +930,7 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 	 */
 	private IDialogSettings getDialogSettings() {
 		if (fDialogSettings == null) {
-			fDialogSettings= JavaPlugin.getDefault().getDialogSettingsSection(PAGE_NAME);
+			fDialogSettings= JavaScriptPlugin.getDefault().getDialogSettingsSection(PAGE_NAME);
 		}
 		return fDialogSettings;
 	}

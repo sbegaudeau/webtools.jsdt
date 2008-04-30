@@ -15,10 +15,10 @@ import java.util.HashMap;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
@@ -87,7 +87,7 @@ public void initializePolymorphicSearch(MatchLocator locator) {
 				locator,
 				this.pattern.declaringType,
 				locator.progressMonitor).collect();
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// inaccurate matches will be found
 	}
 	if (BasicSearchEngine.VERBOSE) {
@@ -337,9 +337,9 @@ private boolean matchOverriddenMethod(ReferenceBinding type, MethodBinding metho
 	return false;
 }
 /**
- * @see org.eclipse.wst.jsdt.internal.core.search.matching.PatternLocator#matchReportReference(org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode, org.eclipse.wst.jsdt.core.IJavaElement, Binding, int, org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator)
+ * @see org.eclipse.wst.jsdt.internal.core.search.matching.PatternLocator#matchReportReference(org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode, org.eclipse.wst.jsdt.core.IJavaScriptElement, Binding, int, org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator)
  */
-protected void matchReportReference(ASTNode reference, IJavaElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportReference(ASTNode reference, IJavaScriptElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
 	MethodBinding methodBinding = (reference instanceof MessageSend) ? ((MessageSend)reference).binding: ((elementBinding instanceof MethodBinding) ? (MethodBinding) elementBinding : null);
 	if (this.isDeclarationOfReferencedMethodsPattern) {
 		if (methodBinding == null) return;
@@ -356,12 +356,12 @@ protected void matchReportReference(ASTNode reference, IJavaElement element, Bin
 	} else {
 		match = locator.newMethodReferenceMatch(element, elementBinding, accuracy, -1, -1, false /*not constructor*/, false/*not synthetic*/, reference);
 		if (this.pattern.findReferences && reference instanceof MessageSend) {
-			IJavaElement focus = ((InternalSearchPattern) this.pattern).focus;
+			IJavaScriptElement focus = ((InternalSearchPattern) this.pattern).focus;
 			// verify closest match if pattern was bound
 			// (see bug 70827)
-			if (focus != null && focus.getElementType() == IJavaElement.METHOD) {
+			if (focus != null && focus.getElementType() == IJavaScriptElement.METHOD) {
 				if (methodBinding != null) {
-					boolean isPrivate = Flags.isPrivate(((IMethod) focus).getFlags());
+					boolean isPrivate = Flags.isPrivate(((IFunction) focus).getFlags());
 					if (isPrivate && !CharOperation.equals(methodBinding.declaringClass.sourceName, focus.getParent().getElementName().toCharArray())) {
 						return; // finally the match was not possible
 					}
@@ -474,7 +474,7 @@ private boolean methodParametersEqualsPattern(MethodBinding method) {
 	}
 	return true;
 }
-public SearchMatch newDeclarationMatch(ASTNode reference, IJavaElement element, Binding elementBinding, int accuracy, int length, MatchLocator locator) {
+public SearchMatch newDeclarationMatch(ASTNode reference, IJavaScriptElement element, Binding elementBinding, int accuracy, int length, MatchLocator locator) {
 	if (elementBinding != null) {
 		MethodBinding methodBinding = (MethodBinding) elementBinding;
 		// If method parameters verification was not valid, then try to see if method arguments can match a method in hierarchy
@@ -509,7 +509,7 @@ public SearchMatch newDeclarationMatch(ASTNode reference, IJavaElement element, 
 	return super.newDeclarationMatch(reference, element, elementBinding, accuracy, length, locator);
 }
 protected int referenceType() {
-	return IJavaElement.METHOD;
+	return IJavaScriptElement.METHOD;
 }
 protected void reportDeclaration(MethodBinding methodBinding, MatchLocator locator, SimpleSet knownMethods) throws CoreException {
 	ReferenceBinding declaringClass = methodBinding.declaringClass;
@@ -518,7 +518,7 @@ protected void reportDeclaration(MethodBinding methodBinding, MatchLocator locat
 
 	char[] bindingSelector = methodBinding.selector;
 	boolean isBinary = type.isBinary();
-	IMethod method = null;
+	IFunction method = null;
 	TypeBinding[] parameters = methodBinding.original().parameters;
 	int parameterLength = parameters.length;
 //	if (isBinary) {
@@ -540,7 +540,7 @@ protected void reportDeclaration(MethodBinding methodBinding, MatchLocator locat
 			}
 			parameterTypes[i] = Signature.createTypeSignature(typeName, false);
 		}
-		method = type.getMethod(new String(bindingSelector), parameterTypes);
+		method = type.getFunction(new String(bindingSelector), parameterTypes);
 //	}
 	if (method == null || knownMethods.addIfNotIncluded(method) == null) return;
 
@@ -548,7 +548,7 @@ protected void reportDeclaration(MethodBinding methodBinding, MatchLocator locat
 	IBinaryType info = null;
 	if (isBinary) {
 		if (resource == null)
-			resource = type.getJavaProject().getProject();
+			resource = type.getJavaScriptProject().getProject();
 		info = locator.getBinaryInfo((org.eclipse.wst.jsdt.internal.core.ClassFile)type.getClassFile(), resource);
 		locator.reportBinaryMemberDeclaration(resource, method, methodBinding, info, SearchMatch.A_ACCURATE);
 	} else {
@@ -569,7 +569,7 @@ protected void reportDeclaration(MethodBinding methodBinding, MatchLocator locat
 				int offset = methodDecl.sourceStart;
 				Binding binding = methodDecl.binding;
 				if (binding != null)
-					method = (IMethod) ((JavaElement) method).resolved(binding);
+					method = (IFunction) ((JavaElement) method).resolved(binding);
 				match = new MethodDeclarationMatch(method, SearchMatch.A_ACCURATE, offset, methodDecl.sourceEnd-offset+1, locator.getParticipant(), resource);
 				locator.report(match);
 			}

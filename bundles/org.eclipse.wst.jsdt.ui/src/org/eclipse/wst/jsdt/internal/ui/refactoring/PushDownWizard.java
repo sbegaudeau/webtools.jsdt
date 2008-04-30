@@ -58,7 +58,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.PushDownRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.PushDownRefactoringProcessor.MemberActionInfo;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -67,7 +67,7 @@ import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 import org.eclipse.wst.jsdt.internal.ui.util.TableLayoutComposite;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 public final class PushDownWizard extends RefactoringWizard {
 
@@ -98,7 +98,7 @@ public final class PushDownWizard extends RefactoringWizard {
 				return result;
 			}
 
-			private final ILabelProvider fLabelProvider= new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT | JavaElementLabelProvider.SHOW_SMALL_ICONS);
+			private final ILabelProvider fLabelProvider= new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_DEFAULT | JavaScriptElementLabelProvider.SHOW_SMALL_ICONS);
 
 			public void dispose() {
 				fLabelProvider.dispose();
@@ -501,7 +501,7 @@ public final class PushDownWizard extends RefactoringWizard {
 						try {
 							getPushDownRefactoring().getPushDownProcessor().computeAdditionalRequiredMembersToPushDown(pm);
 							updateWizardPage(null, true);
-						} catch (final JavaModelException e) {
+						} catch (final JavaScriptModelException e) {
 							throw new InvocationTargetException(e);
 						} finally {
 							pm.done();

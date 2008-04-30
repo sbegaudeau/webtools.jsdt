@@ -41,23 +41,23 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 
@@ -90,7 +90,7 @@ abstract class JavaHistoryActionImpl /* extends Action implements IActionDelegat
 		try {
 			states= file.getHistory(null);
 		} catch (CoreException ex) {
-			JavaPlugin.log(ex);
+			JavaScriptPlugin.log(ex);
 		}
 		
 		int count= 1;
@@ -108,20 +108,20 @@ abstract class JavaHistoryActionImpl /* extends Action implements IActionDelegat
 	final Shell getShell() {
 		if (fEditor != null)
 			return fEditor.getEditorSite().getShell();
-		return JavaPlugin.getActiveWorkbenchShell();
+		return JavaScriptPlugin.getActiveWorkbenchShell();
 	}
 	
 	/**
 	 * Tries to find the given element in a working copy.
 	 */
-	final IJavaElement getWorkingCopy(IJavaElement input) {
+	final IJavaScriptElement getWorkingCopy(IJavaScriptElement input) {
 		// TODO: With new working copy story: original == working copy.
 		// Note that the previous code could result in a reconcile as side effect. Should check if that
 		// is still required.
 		return input;
 	}
 	
-	final ASTNode getBodyContainer(CompilationUnit root, IMember parent) throws JavaModelException {
+	final ASTNode getBodyContainer(JavaScriptUnit root, IMember parent) throws JavaScriptModelException {
 		ISourceRange sourceRange= parent.getNameRange();
 		ASTNode parentNode= NodeFinder.perform(root, sourceRange);
 		do {
@@ -136,7 +136,7 @@ abstract class JavaHistoryActionImpl /* extends Action implements IActionDelegat
 	 * Returns true if the given file is open in an editor.
 	 */
 	final boolean beingEdited(IFile file) {
-		IDocumentProvider dp= JavaPlugin.getDefault().getCompilationUnitDocumentProvider();
+		IDocumentProvider dp= JavaScriptPlugin.getDefault().getCompilationUnitDocumentProvider();
 		FileEditorInput input= new FileEditorInput(file);	
 		return dp.getDocument(input) != null;
 	}
@@ -191,13 +191,13 @@ abstract class JavaHistoryActionImpl /* extends Action implements IActionDelegat
 			TextEdit res= rewriter.rewriteAST(document, options);
 			edit.addChildren(res.removeChildren());
 		} catch (IllegalArgumentException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 			
 		try {
 			new RewriteSessionEditProcessor(document, edit, TextEdit.UPDATE_REGIONS).performEdits();
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		
 		IRunnableWithProgress r= new IRunnableWithProgress() {
@@ -218,7 +218,7 @@ abstract class JavaHistoryActionImpl /* extends Action implements IActionDelegat
 		}
 	}
 
-	static String trimTextBlock(String content, String delimiter, IJavaProject currentProject) {
+	static String trimTextBlock(String content, String delimiter, IJavaScriptProject currentProject) {
 		if (content != null) {
 			String[] lines= Strings.convertIntoLines(content);
 			if (lines != null) {
@@ -231,7 +231,7 @@ abstract class JavaHistoryActionImpl /* extends Action implements IActionDelegat
 	
 	final JavaEditor getEditor(IFile file) {
 		FileEditorInput fei= new FileEditorInput(file);
-		IWorkbench workbench= JavaPlugin.getDefault().getWorkbench();
+		IWorkbench workbench= JavaScriptPlugin.getDefault().getWorkbench();
 		IWorkbenchWindow[] windows= workbench.getWorkbenchWindows();
 		for (int i= 0; i < windows.length; i++) {
 			IWorkbenchPage[] pages= windows[i].getPages();
@@ -274,10 +274,10 @@ abstract class JavaHistoryActionImpl /* extends Action implements IActionDelegat
 	final public void runFromEditor(IAction uiProxy) {
 		
 		// this run is called from Editor
-		IJavaElement element= null;
+		IJavaScriptElement element= null;
 		try {
 			element= SelectionConverter.getElementAtOffset(fEditor);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignored
 		}
 		
@@ -295,7 +295,7 @@ abstract class JavaHistoryActionImpl /* extends Action implements IActionDelegat
 	}
 
 	boolean checkEnabled() {
-		ICompilationUnit unit= SelectionConverter.getInputAsCompilationUnit(fEditor);
+		IJavaScriptUnit unit= SelectionConverter.getInputAsCompilationUnit(fEditor);
 		IFile file= getFile(unit);
 		return isEnabled(file);
 	}	
@@ -315,7 +315,7 @@ abstract class JavaHistoryActionImpl /* extends Action implements IActionDelegat
 		run(fSelection);
 	}
 	
-	static CompilationUnit parsePartialCompilationUnit(ICompilationUnit unit) {
+	static JavaScriptUnit parsePartialCompilationUnit(IJavaScriptUnit unit) {
 				
 		if (unit == null) {
 			throw new IllegalArgumentException();
@@ -327,7 +327,7 @@ abstract class JavaHistoryActionImpl /* extends Action implements IActionDelegat
 			c.setResolveBindings(false);
 			c.setWorkingCopyOwner(null);
 			ASTNode result= c.createAST(null);
-			return (CompilationUnit) result;
+			return (JavaScriptUnit) result;
 		} catch (IllegalStateException e) {
 			// convert ASTParser's complaints into old form
 			throw new IllegalArgumentException();

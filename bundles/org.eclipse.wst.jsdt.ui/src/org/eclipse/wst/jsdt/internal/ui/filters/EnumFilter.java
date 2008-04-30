@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.ui.filters;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * Filters enums.
@@ -27,7 +27,7 @@ public class EnumFilter extends ViewerFilter {
 		if (element instanceof IType) {
 			try {
 				return !((IType) element).isEnum();
-			} catch (JavaModelException ex) {
+			} catch (JavaScriptModelException ex) {
 				return true;
 			}
 		}

@@ -31,14 +31,14 @@ import org.eclipse.ui.IMarkerResolutionGenerator2;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.wst.jsdt.core.CorrectionEngine;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaModelMarker;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelMarker;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.preferences.BuildPathsPropertyPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.UserLibraryPreferencePage;
@@ -55,12 +55,12 @@ public class UserLibraryMarkerResolutionGenerator implements IMarkerResolutionGe
 	 * @see org.eclipse.ui.IMarkerResolutionGenerator2#hasResolutions(org.eclipse.core.resources.IMarker)
 	 */
 	public boolean hasResolutions(IMarker marker) {
-		int id= marker.getAttribute(IJavaModelMarker.ID, -1);
-		if (id == IJavaModelStatusConstants.CP_CONTAINER_PATH_UNBOUND
-				|| id == IJavaModelStatusConstants.CP_VARIABLE_PATH_UNBOUND
-				|| id == IJavaModelStatusConstants.INVALID_CP_CONTAINER_ENTRY
-				|| id == IJavaModelStatusConstants.DEPRECATED_VARIABLE
-				|| id == IJavaModelStatusConstants.INVALID_CLASSPATH) {
+		int id= marker.getAttribute(IJavaScriptModelMarker.ID, -1);
+		if (id == IJavaScriptModelStatusConstants.CP_CONTAINER_PATH_UNBOUND
+				|| id == IJavaScriptModelStatusConstants.CP_VARIABLE_PATH_UNBOUND
+				|| id == IJavaScriptModelStatusConstants.INVALID_CP_CONTAINER_ENTRY
+				|| id == IJavaScriptModelStatusConstants.DEPRECATED_VARIABLE
+				|| id == IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH) {
 			return true;
 		}
 		return false;
@@ -70,21 +70,21 @@ public class UserLibraryMarkerResolutionGenerator implements IMarkerResolutionGe
 	 * @see org.eclipse.ui.IMarkerResolutionGenerator#getResolutions(org.eclipse.core.resources.IMarker)
 	 */
 	public IMarkerResolution[] getResolutions(IMarker marker) {
-		final Shell shell= JavaPlugin.getActiveWorkbenchShell();
+		final Shell shell= JavaScriptPlugin.getActiveWorkbenchShell();
 		if (!hasResolutions(marker) || shell == null) {
 			return NO_RESOLUTION;
 		}
 		
 		ArrayList resolutions= new ArrayList();
 		
-		final IJavaProject project= getJavaProject(marker);
+		final IJavaScriptProject project= getJavaProject(marker);
 		
-		int id= marker.getAttribute(IJavaModelMarker.ID, -1);
-		if (id == IJavaModelStatusConstants.CP_CONTAINER_PATH_UNBOUND) {
+		int id= marker.getAttribute(IJavaScriptModelMarker.ID, -1);
+		if (id == IJavaScriptModelStatusConstants.CP_CONTAINER_PATH_UNBOUND) {
 			String[] arguments= CorrectionEngine.getProblemArguments(marker);
 			final IPath path= new Path(arguments[0]);
 			
-			if (path.segment(0).equals(JavaCore.USER_LIBRARY_CONTAINER_ID)) {
+			if (path.segment(0).equals(JavaScriptCore.USER_LIBRARY_CONTAINER_ID)) {
 				String label= NewWizardMessages.UserLibraryMarkerResolutionGenerator_changetouserlib_label; 
 				Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_RENAME);
 				resolutions.add(new UserLibraryMarkerResolution(label, image) {
@@ -118,45 +118,45 @@ public class UserLibraryMarkerResolutionGenerator implements IMarkerResolutionGe
 		return (IMarkerResolution[]) resolutions.toArray(new IMarkerResolution[resolutions.size()]);
 	}
 
-	protected void changeToExistingLibrary(Shell shell, IPath path, boolean isNew, final IJavaProject project) {
+	protected void changeToExistingLibrary(Shell shell, IPath path, boolean isNew, final IJavaScriptProject project) {
 		try {
-			IClasspathEntry[] entries= project.getRawClasspath();
+			IIncludePathEntry[] entries= project.getRawIncludepath();
 			int idx= indexOfClasspath(entries, path);
 			if (idx == -1) {
 				return;
 			}
-			IClasspathEntry[] res;
+			IIncludePathEntry[] res;
 			if (isNew) {
 				res= BuildPathDialogAccess.chooseContainerEntries(shell, project, entries);
 				if (res == null) {
 					return;
 				}
 			} else {
-				IClasspathEntry resEntry= BuildPathDialogAccess.configureContainerEntry(shell, entries[idx], project, entries);
+				IIncludePathEntry resEntry= BuildPathDialogAccess.configureContainerEntry(shell, entries[idx], project, entries);
 				if (resEntry == null) {
 					return;
 				}
-				res= new IClasspathEntry[] { resEntry };
+				res= new IIncludePathEntry[] { resEntry };
 			}
-			final IClasspathEntry[] newEntries= new IClasspathEntry[entries.length - 1 + res.length];
+			final IIncludePathEntry[] newEntries= new IIncludePathEntry[entries.length - 1 + res.length];
 			System.arraycopy(entries, 0, newEntries, 0, idx);
 			System.arraycopy(res, 0, newEntries, idx, res.length);
 			System.arraycopy(entries, idx + 1, newEntries, idx + res.length, entries.length - idx - 1);
 			
-			IRunnableContext context= JavaPlugin.getActiveWorkbenchWindow();
+			IRunnableContext context= JavaScriptPlugin.getActiveWorkbenchWindow();
 			if (context == null) {
 				context= PlatformUI.getWorkbench().getProgressService();
 			}
 			context.run(true, true, new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					try {
-						project.setRawClasspath(newEntries, project.getOutputLocation(), monitor);
+						project.setRawIncludepath(newEntries, project.getOutputLocation(), monitor);
 					} catch (CoreException e) {
 						throw new InvocationTargetException(e);
 					}
 				}
 			});
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			String title= NewWizardMessages.UserLibraryMarkerResolutionGenerator_error_title; 
 			String message= NewWizardMessages.UserLibraryMarkerResolutionGenerator_error_creationfailed_message; 
 			ExceptionHandler.handle(e, shell, title, message);
@@ -169,17 +169,17 @@ public class UserLibraryMarkerResolutionGenerator implements IMarkerResolutionGe
 		}
 	}
 	
-	private int indexOfClasspath(IClasspathEntry[] entries, IPath path) {
+	private int indexOfClasspath(IIncludePathEntry[] entries, IPath path) {
 		for (int i= 0; i < entries.length; i++) {
-			IClasspathEntry curr= entries[i];
-			if (curr.getEntryKind() == IClasspathEntry.CPE_CONTAINER && curr.getPath().equals(path)) {
+			IIncludePathEntry curr= entries[i];
+			if (curr.getEntryKind() == IIncludePathEntry.CPE_CONTAINER && curr.getPath().equals(path)) {
 				return i;
 			}
 		}
 		return -1;
 	}
 	
-	protected void createUserLibrary(final Shell shell, IPath unboundPath, IJavaProject project) {
+	protected void createUserLibrary(final Shell shell, IPath unboundPath, IJavaScriptProject project) {
 		String name= unboundPath.segment(1);
 		String id= UserLibraryPreferencePage.ID;
 		HashMap data= new HashMap(3);
@@ -188,8 +188,8 @@ public class UserLibraryMarkerResolutionGenerator implements IMarkerResolutionGe
 		PreferencesUtil.createPreferenceDialogOn(shell, id, new String[] { id }, data).open();
 	}
 
-	private IJavaProject getJavaProject(IMarker marker) {
-		return JavaCore.create(marker.getResource().getProject());
+	private IJavaScriptProject getJavaProject(IMarker marker) {
+		return JavaScriptCore.create(marker.getResource().getProject());
 	}
 
 	/**
@@ -228,9 +228,9 @@ public class UserLibraryMarkerResolutionGenerator implements IMarkerResolutionGe
 	}
 
 	private static class OpenBuildPathMarkerResolution implements IMarkerResolution2 {
-		private IJavaProject fProject;
+		private IJavaScriptProject fProject;
 
-		public OpenBuildPathMarkerResolution(IJavaProject project) {
+		public OpenBuildPathMarkerResolution(IJavaScriptProject project) {
 			fProject= project;
 		}
 
@@ -247,7 +247,7 @@ public class UserLibraryMarkerResolutionGenerator implements IMarkerResolutionGe
 		}
 
 		public void run(IMarker marker) {
-			PreferencesUtil.createPropertyDialogOn(JavaPlugin.getActiveWorkbenchShell(), fProject, BuildPathsPropertyPage.PROP_ID, null, null).open();
+			PreferencesUtil.createPropertyDialogOn(JavaScriptPlugin.getActiveWorkbenchShell(), fProject, BuildPathsPropertyPage.PROP_ID, null, null).open();
 		}
 	}
 

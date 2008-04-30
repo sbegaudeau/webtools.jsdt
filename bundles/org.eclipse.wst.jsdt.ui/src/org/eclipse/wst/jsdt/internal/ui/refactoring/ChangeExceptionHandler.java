@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 
@@ -88,20 +88,20 @@ public class ChangeExceptionHandler {
 	}
 	
 	public void handle(Change change, RuntimeException exception) {
-		JavaPlugin.log(exception);
+		JavaScriptPlugin.log(exception);
 		IStatus status= null;
 		if (exception.getMessage() == null) {
-			status= new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR, 
+			status= new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.ERROR, 
 				RefactoringMessages.ChangeExceptionHandler_status_without_detail, exception); 
 		} else {
-			status= new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR, 
+			status= new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.ERROR, 
 				exception.getMessage(), exception);
 		}
 		handle(change, status);
 	}
 	
 	public void handle(Change change, CoreException exception) {
-		JavaPlugin.log(exception);
+		JavaScriptPlugin.log(exception);
 		handle(change, exception.getStatus());
 	}
 	
@@ -109,7 +109,7 @@ public class ChangeExceptionHandler {
 		if (change instanceof CompositeChange) {
 			Change undo= ((CompositeChange)change).getUndoUntilException();
 			if (undo != null) {
-				JavaPlugin.log(status);
+				JavaScriptPlugin.log(status);
 				final ErrorDialog dialog= new RefactorErrorDialog(fParent,
 					RefactoringMessages.ChangeExceptionHandler_dialog_title, 
 					Messages.format(RefactoringMessages.ChangeExceptionHandler_dialog_message, fName), 

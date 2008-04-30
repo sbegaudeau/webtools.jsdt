@@ -27,27 +27,27 @@ import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.text.edits.DeleteEdit;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 
 public class CodeFormatFix implements IFix {
 	
-	public static IFix createCleanUp(ICompilationUnit cu, boolean format, boolean removeTrailingWhitespacesAll, boolean removeTrailingWhitespacesIgnorEmpty) throws CoreException {
+	public static IFix createCleanUp(IJavaScriptUnit cu, boolean format, boolean removeTrailingWhitespacesAll, boolean removeTrailingWhitespacesIgnorEmpty) throws CoreException {
 		if (!format && !removeTrailingWhitespacesAll && !removeTrailingWhitespacesIgnorEmpty)
 			return null;
 		
 		if (format) {
-			Map fomatterSettings= new HashMap(cu.getJavaProject().getOptions(true));
+			Map fomatterSettings= new HashMap(cu.getJavaScriptProject().getOptions(true));
 			
 			String content= cu.getBuffer().getContents();
 			Document document= new Document(content);
 			
-			TextEdit edit= CodeFormatterUtil.reformat(CodeFormatter.K_COMPILATION_UNIT, content, 0, TextUtilities.getDefaultLineDelimiter(document), fomatterSettings);
+			TextEdit edit= CodeFormatterUtil.reformat(CodeFormatter.K_JAVASCRIPT_UNIT, content, 0, TextUtilities.getDefaultLineDelimiter(document), fomatterSettings);
 			if (edit == null || !edit.hasChildren())
 				return null;
 			
@@ -105,7 +105,7 @@ public class CodeFormatFix implements IFix {
 				
 				return new CodeFormatFix(change, cu);
 			} catch (BadLocationException x) {
-				throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), 0, "", x)); //$NON-NLS-1$
+				throw new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), 0, "", x)); //$NON-NLS-1$
 			}
 		}
 		
@@ -132,10 +132,10 @@ public class CodeFormatFix implements IFix {
 		return position;
 	}
 
-	private final ICompilationUnit fCompilationUnit;
+	private final IJavaScriptUnit fCompilationUnit;
 	private final TextChange fChange;
 	
-	public CodeFormatFix(TextChange change, ICompilationUnit compilationUnit) {
+	public CodeFormatFix(TextChange change, IJavaScriptUnit compilationUnit) {
 		fChange= change;
 		fCompilationUnit= compilationUnit;
 	}
@@ -150,7 +150,7 @@ public class CodeFormatFix implements IFix {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.corext.fix.IFix#getCompilationUnit()
 	 */
-	public ICompilationUnit getCompilationUnit() {
+	public IJavaScriptUnit getCompilationUnit() {
 		return fCompilationUnit;
 	}
 	

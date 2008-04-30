@@ -24,8 +24,8 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
@@ -89,17 +89,17 @@ public class ShowInNavigatorViewAction extends SelectionDispatchAction {
 	 * Method declared on SelectionDispatchAction.
 	 */
 	public void run(ITextSelection selection) {
-		IJavaElement input= SelectionConverter.getInput(fEditor);
+		IJavaScriptElement input= SelectionConverter.getInput(fEditor);
 		if (!ActionUtil.isProcessable(getShell(), input))
 			return;		
 		
 		
 		try {
-			IJavaElement[] elements= SelectionConverter.codeResolveOrInputForked(fEditor);
+			IJavaScriptElement[] elements= SelectionConverter.codeResolveOrInputForked(fEditor);
 			if (elements == null || elements.length == 0)
 				return;
 			
-			IJavaElement candidate= elements[0];
+			IJavaScriptElement candidate= elements[0];
 			if (elements.length > 1) {
 				candidate= SelectionConverter.selectJavaElement(elements, getShell(), getDialogTitle(), ActionMessages.ShowInNavigatorView_dialog_message);
 			}
@@ -145,18 +145,18 @@ public class ShowInNavigatorViewAction extends SelectionDispatchAction {
 		Object element= selection.getFirstElement();
 		if (element instanceof IResource)
 			return (IResource)element;
-		if (element instanceof IJavaElement)
-			return getResource((IJavaElement)element);
+		if (element instanceof IJavaScriptElement)
+			return getResource((IJavaScriptElement)element);
 		return null;
 	}
 	
-	private IResource getResource(IJavaElement element) {
+	private IResource getResource(IJavaScriptElement element) {
 		if (element == null)
 			return null;
 		
-		element= (IJavaElement) element.getOpenable();
-		if (element instanceof ICompilationUnit) {
-			element= ((ICompilationUnit) element).getPrimary();
+		element= (IJavaScriptElement) element.getOpenable();
+		if (element instanceof IJavaScriptUnit) {
+			element= ((IJavaScriptUnit) element).getPrimary();
 		}
 		return element.getResource();
 	}

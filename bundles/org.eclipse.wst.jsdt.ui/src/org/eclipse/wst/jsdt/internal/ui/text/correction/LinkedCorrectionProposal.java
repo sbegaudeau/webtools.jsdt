@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ITrackedNodePosition;
@@ -36,7 +36,7 @@ public class LinkedCorrectionProposal extends ASTRewriteCorrectionProposal {
 	 * @param image The image that is displayed for this proposal or <code>null</code> if no
 	 * image is desired.
 	 */
-	public LinkedCorrectionProposal(String name, ICompilationUnit cu, ASTRewrite rewrite, int relevance, Image image) {
+	public LinkedCorrectionProposal(String name, IJavaScriptUnit cu, ASTRewrite rewrite, int relevance, Image image) {
 		super(name, cu, rewrite, relevance, image);
 	}
 

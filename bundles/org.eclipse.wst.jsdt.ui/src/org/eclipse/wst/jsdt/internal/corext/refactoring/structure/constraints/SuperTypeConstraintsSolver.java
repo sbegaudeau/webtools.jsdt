@@ -19,7 +19,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.CastVariable2;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.ConstraintVariable2;
@@ -110,7 +110,7 @@ public class SuperTypeConstraintsSolver {
 			variable= (CastVariable2) iterator.next();
 			final TType type= (TType) variable.getExpressionVariable().getData(DATA_TYPE_ESTIMATE);
 			if (type != null && type.canAssignTo(variable.getType())) {
-				final ICompilationUnit unit= variable.getCompilationUnit();
+				final IJavaScriptUnit unit= variable.getCompilationUnit();
 				Collection casts= (Collection) fObsoleteCasts.get(unit);
 				if (casts != null)
 					casts.add(variable);
@@ -173,7 +173,7 @@ public class SuperTypeConstraintsSolver {
 		final TType superErasure= fModel.getSuperType().getErasure();
 		TType estimatedType= null;
 		ITypeSet set= null;
-		ICompilationUnit unit= null;
+		IJavaScriptUnit unit= null;
 		ConstraintVariable2 variable= null;
 		ITypeConstraintVariable declaration= null;
 		TType variableType= null;

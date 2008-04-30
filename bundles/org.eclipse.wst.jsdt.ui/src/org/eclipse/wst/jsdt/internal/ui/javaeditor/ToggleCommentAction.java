@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 
 /**
@@ -150,7 +150,7 @@ public final class ToggleCommentAction extends TextEditorAction {
 
 		} catch (BadLocationException x) {
 			// should not happen
-			JavaPlugin.log(x);
+			JavaScriptPlugin.log(x);
 		}
 
 		return false;
@@ -173,7 +173,7 @@ public final class ToggleCommentAction extends TextEditorAction {
 
 		} catch (BadLocationException x) {
 			// should not happen
-			JavaPlugin.log(x);
+			JavaScriptPlugin.log(x);
 		}
 
 		return null;
@@ -201,7 +201,7 @@ public final class ToggleCommentAction extends TextEditorAction {
 
 		} catch (BadLocationException x) {
 			// should not happen
-			JavaPlugin.log(x);
+			JavaScriptPlugin.log(x);
 		}
 
 		return -1;
@@ -247,7 +247,7 @@ public final class ToggleCommentAction extends TextEditorAction {
 
 		} catch (BadLocationException x) {
 			// should not happen
-			JavaPlugin.log(x);
+			JavaScriptPlugin.log(x);
 		}
 
 		return false;

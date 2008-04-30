@@ -12,13 +12,13 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring.nls;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 class PackageSelectionStringButtonAdapter implements IStringButtonAdapter {
 
@@ -38,21 +38,21 @@ class PackageSelectionStringButtonAdapter implements IStringButtonAdapter {
 	public void changeControlPressed(DialogField field) {
 		IPackageFragmentRoot root= fPackageSelectionField.getSelectedFragmentRoot();
 
-		IJavaElement[] packages= null;
+		IJavaScriptElement[] packages= null;
 		try {
 			if (root != null && root.exists()) {
 				packages= root.getChildren();
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// no need to react
 		}
 
 		if (packages == null) {
-			packages= new IJavaElement[0];
+			packages= new IJavaScriptElement[0];
 		}
 
 		ElementListSelectionDialog dialog= new ElementListSelectionDialog(field.getLabelControl(null).getShell(),
-			new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT));
+			new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_DEFAULT));
 		dialog.setIgnoreCase(true);
 
 		dialog.setTitle(fTitle);

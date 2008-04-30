@@ -16,7 +16,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 
 /**
@@ -33,9 +33,9 @@ public class RefactoringStarter {
 	 * @param dialogTitle
 	 * @param saveMode a save mode from {@link RefactoringSaveHelper}
 	 * @return <code>true</code> if the refactoring was executed, <code>false</code> otherwise
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public boolean activate(Refactoring refactoring, RefactoringWizard wizard, Shell parent, String dialogTitle, int saveMode) throws JavaModelException {
+	public boolean activate(Refactoring refactoring, RefactoringWizard wizard, Shell parent, String dialogTitle, int saveMode) throws JavaScriptModelException {
 		RefactoringSaveHelper saveHelper= new RefactoringSaveHelper(saveMode);
 		if (! canActivate(saveHelper, parent))
 			return false;

@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.dialogs;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * A settable IStatus. 
@@ -143,7 +143,7 @@ public class StatusInfo implements IStatus {
 	 * @see IStatus#getPlugin()
 	 */
 	public String getPlugin() {
-		return JavaUI.ID_PLUGIN;
+		return JavaScriptUI.ID_PLUGIN;
 	}
 
 	/**

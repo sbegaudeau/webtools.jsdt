@@ -18,10 +18,10 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPage;
 
 /**
@@ -47,10 +47,10 @@ public class JsGlobalScopeContainerDescriptor {
 		String pageClassName = configElement.getAttribute(ATT_PAGE_CLASS);
 
 		if (name == null) {
-			throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, 0, "Invalid extension (missing name): " + id, null)); //$NON-NLS-1$
+			throw new CoreException(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, 0, "Invalid extension (missing name): " + id, null)); //$NON-NLS-1$
 		}
 		if (pageClassName == null) {
-			throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, 0, "Invalid extension (missing page class name): " + id, null)); //$NON-NLS-1$
+			throw new CoreException(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, 0, "Invalid extension (missing page class name): " + id, null)); //$NON-NLS-1$
 		}
 	}
 
@@ -61,7 +61,7 @@ public class JsGlobalScopeContainerDescriptor {
 				fPage= (IJsGlobalScopeContainerPage) elem;
 			} else {
 				String id= fConfigElement.getAttribute(ATT_ID);
-				throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, 0, "Invalid extension (page not of type IJsGlobalScopeContainerPage): " + id, null)); //$NON-NLS-1$
+				throw new CoreException(new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, 0, "Invalid extension (page not of type IJsGlobalScopeContainerPage): " + id, null)); //$NON-NLS-1$
 			}
 		}
 		return fPage;
@@ -90,9 +90,9 @@ public class JsGlobalScopeContainerDescriptor {
 		return fConfigElement.getAttribute(ATT_PAGE_CLASS);
 	}	
 
-	public boolean canEdit(IClasspathEntry entry) {
+	public boolean canEdit(IIncludePathEntry entry) {
 		String id = fConfigElement.getAttribute(ATT_ID);
-		if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+		if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
 			String type = entry.getPath().segment(0);
 			return id.equals(type);
 		}
@@ -102,7 +102,7 @@ public class JsGlobalScopeContainerDescriptor {
 	public static JsGlobalScopeContainerDescriptor[] getDescriptors() {
 		ArrayList containers= new ArrayList();
 		
-		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(JavaUI.ID_PLUGIN, ATT_EXTENSION);
+		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(JavaScriptUI.ID_PLUGIN, ATT_EXTENSION);
 		if (extensionPoint != null) {
 			JsGlobalScopeContainerDescriptor defaultPage= null;
 			String defaultPageName= JsGlobalScopeContainerDefaultPage.class.getName();
@@ -117,7 +117,7 @@ public class JsGlobalScopeContainerDescriptor {
 						containers.add(curr);
 					}
 				} catch (CoreException e) {
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 				}
 			}
 			if (defaultPageName != null && containers.isEmpty()) {

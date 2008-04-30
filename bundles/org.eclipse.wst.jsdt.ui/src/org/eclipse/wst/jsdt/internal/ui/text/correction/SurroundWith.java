@@ -15,16 +15,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
@@ -149,21 +149,21 @@ public abstract class SurroundWith {
 		void initializeStatement(VariableDeclarationStatement statement, VariableDeclarationFragment current);
 	}
 
-	private final CompilationUnit fRootNode;
+	private final JavaScriptUnit fRootNode;
 	private final Statement[] fSelectedStatements;
 	private boolean fIsNewContext;
 	private ITrackedNodePosition fFirstInsertedPosition;
 	private ITrackedNodePosition fLastInsertedPosition;
 	
-	public SurroundWith(CompilationUnit root, Statement[] selectedStatements) {
+	public SurroundWith(JavaScriptUnit root, Statement[] selectedStatements) {
 		fRootNode= root;
 		fSelectedStatements= selectedStatements;
 	}
 	
 
-	public static boolean isApplicable(IInvocationContext context) throws JavaModelException {
-		ICompilationUnit unit= context.getCompilationUnit();
-		CompilationUnit ast= ASTProvider.getASTProvider().getAST(unit, ASTProvider.WAIT_NO, null);
+	public static boolean isApplicable(IInvocationContext context) throws JavaScriptModelException {
+		IJavaScriptUnit unit= context.getCompilationUnit();
+		JavaScriptUnit ast= ASTProvider.getASTProvider().getAST(unit, ASTProvider.WAIT_NO, null);
 		if (ast == null)
 			return true;
 		
@@ -178,9 +178,9 @@ public abstract class SurroundWith {
 	 * Selected nodes in <code>context</code> under <code>selection</code> or null if no valid selection.
 	 * @param context The context in which the proposal is applyed.
 	 * @return Selected nodes or null if no valid selection.
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	public static Statement[] getSelectedStatements(IInvocationContext context) throws JavaModelException {
+	public static Statement[] getSelectedStatements(IInvocationContext context) throws JavaScriptModelException {
 		Selection selection= Selection.createFromStartLength(context.getSelectionOffset(), context.getSelectionLength());
 		SurroundWithAnalyzer analyzer= new SurroundWithAnalyzer(context.getCompilationUnit(), selection);
 		context.getASTRoot().accept(analyzer);
@@ -223,7 +223,7 @@ public abstract class SurroundWith {
 		List inserted= new ArrayList();
 		moveToBlock(selectedStatements, inserted, accessedAfter, readInside, rewrite);
 		if (fIsNewContext) {
-			ImportRewrite importRewrite= StubUtility.createImportRewrite((CompilationUnit)selectedStatements[0].getRoot(), false);
+			ImportRewrite importRewrite= StubUtility.createImportRewrite((JavaScriptUnit)selectedStatements[0].getRoot(), false);
 			for (int i= 0; i < selectedStatements.length; i++) {
 				qualifyThisExpressions(selectedStatements[i], rewrite, importRewrite);
 			}
@@ -500,7 +500,7 @@ public abstract class SurroundWith {
 				if (thisExpr.getQualifier() == null) {
 					ITypeBinding typeBinding= thisExpr.resolveTypeBinding();
 					if (typeBinding != null) {
-						IJavaElement javaElement= typeBinding.getJavaElement();
+						IJavaScriptElement javaElement= typeBinding.getJavaElement();
 						if (javaElement instanceof IType) {
 							String typeName= ((IType)javaElement).getElementName();
 							SimpleName simpleName= thisExpr.getAST().newSimpleName(typeName);
@@ -554,9 +554,9 @@ public abstract class SurroundWith {
 		return fSelectedStatements;
 	}
 
-	private CompilationUnit getRootNode() {
+	private JavaScriptUnit getRootNode() {
 		if (fSelectedStatements.length > 0)
-			return (CompilationUnit)fSelectedStatements[0].getRoot();
+			return (JavaScriptUnit)fSelectedStatements[0].getRoot();
 		return fRootNode;
 	}
 

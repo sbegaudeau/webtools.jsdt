@@ -22,25 +22,25 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaScriptElementDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
@@ -60,9 +60,9 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IReferenceUpdati
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Rename processor to rename type parameters.
@@ -121,7 +121,7 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 		public final boolean visit(final AnnotationTypeDeclaration node) {
 			final String name= node.getName().getIdentifier();
 			if (name.equals(getNewElementName())) {
-				fStatus.addError(Messages.format(RefactoringCoreMessages.RenameTypeParameterRefactoring_type_parameter_inner_class_clash, new String[] { name}), JavaStatusContext.create(fTypeParameter.getDeclaringMember().getCompilationUnit(), new SourceRange(node)));
+				fStatus.addError(Messages.format(RefactoringCoreMessages.RenameTypeParameterRefactoring_type_parameter_inner_class_clash, new String[] { name}), JavaStatusContext.create(fTypeParameter.getDeclaringMember().getJavaScriptUnit(), new SourceRange(node)));
 				return false;
 			}
 			return true;
@@ -130,7 +130,7 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 		public final boolean visit(final EnumDeclaration node) {
 			final String name= node.getName().getIdentifier();
 			if (name.equals(getNewElementName())) {
-				fStatus.addError(Messages.format(RefactoringCoreMessages.RenameTypeParameterRefactoring_type_parameter_inner_class_clash, new String[] { name}), JavaStatusContext.create(fTypeParameter.getDeclaringMember().getCompilationUnit(), new SourceRange(node)));
+				fStatus.addError(Messages.format(RefactoringCoreMessages.RenameTypeParameterRefactoring_type_parameter_inner_class_clash, new String[] { name}), JavaStatusContext.create(fTypeParameter.getDeclaringMember().getJavaScriptUnit(), new SourceRange(node)));
 				return false;
 			}
 			return true;
@@ -151,7 +151,7 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 		public final boolean visit(final TypeDeclaration node) {
 			final String name= node.getName().getIdentifier();
 			if (name.equals(getNewElementName())) {
-				fStatus.addError(Messages.format(RefactoringCoreMessages.RenameTypeParameterRefactoring_type_parameter_inner_class_clash, new String[] { name}), JavaStatusContext.create(fTypeParameter.getDeclaringMember().getCompilationUnit(), new SourceRange(node)));
+				fStatus.addError(Messages.format(RefactoringCoreMessages.RenameTypeParameterRefactoring_type_parameter_inner_class_clash, new String[] { name}), JavaStatusContext.create(fTypeParameter.getDeclaringMember().getJavaScriptUnit(), new SourceRange(node)));
 				return false;
 			}
 			return true;
@@ -195,7 +195,7 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 	}
 
 	protected IFile[] getChangedFiles() throws CoreException {
-		return new IFile[] {ResourceUtil.getFile(fTypeParameter.getDeclaringMember().getCompilationUnit())};
+		return new IFile[] {ResourceUtil.getFile(fTypeParameter.getDeclaringMember().getJavaScriptUnit())};
 	}
 	
 	public int getSaveMode() {
@@ -230,7 +230,7 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 	public final RefactoringStatus checkInitialConditions(final IProgressMonitor monitor) throws CoreException, OperationCanceledException {
 		Assert.isNotNull(monitor);
 		if (!fTypeParameter.exists())
-			return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.RenameTypeParameterRefactoring_deleted, fTypeParameter.getDeclaringMember().getCompilationUnit().getElementName()));
+			return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.RenameTypeParameterRefactoring_deleted, fTypeParameter.getDeclaringMember().getJavaScriptUnit().getElementName()));
 		return Checks.checkIfCuBroken(fTypeParameter.getDeclaringMember());
 	}
 
@@ -247,12 +247,12 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 			final IType type= (IType) member;
 			if (type.getTypeParameter(name).exists())
 				result.addFatalError(RefactoringCoreMessages.RenameTypeParameterRefactoring_class_type_parameter_already_defined);
-		} else if (member instanceof IMethod) {
-			final IMethod method= (IMethod) member;
+		} else if (member instanceof IFunction) {
+			final IFunction method= (IFunction) member;
 			if (method.getTypeParameter(name).exists())
 				result.addFatalError(RefactoringCoreMessages.RenameTypeParameterRefactoring_method_type_parameter_already_defined);
 		} else {
-			JavaPlugin.logErrorMessage("Unexpected sub-type of IMember: " + member.getClass().getName()); //$NON-NLS-1$
+			JavaScriptPlugin.logErrorMessage("Unexpected sub-type of IMember: " + member.getClass().getName()); //$NON-NLS-1$
 			Assert.isTrue(false);
 		}
 		return result;
@@ -264,13 +264,13 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 			Change change= fChange;
 			if (change != null) {
 				String project= null;
-				IJavaProject javaProject= fTypeParameter.getJavaProject();
+				IJavaScriptProject javaProject= fTypeParameter.getJavaScriptProject();
 				if (javaProject != null)
 					project= javaProject.getElementName();
 				final String description= Messages.format(RefactoringCoreMessages.RenameTypeParameterProcessor_descriptor_description_short, fTypeParameter.getElementName());
-				final String header= Messages.format(RefactoringCoreMessages.RenameTypeParameterProcessor_descriptor_description, new String[] { fTypeParameter.getElementName(), JavaElementLabels.getElementLabel(fTypeParameter.getDeclaringMember(), JavaElementLabels.ALL_FULLY_QUALIFIED), getNewElementName()});
+				final String header= Messages.format(RefactoringCoreMessages.RenameTypeParameterProcessor_descriptor_description, new String[] { fTypeParameter.getElementName(), JavaScriptElementLabels.getElementLabel(fTypeParameter.getDeclaringMember(), JavaScriptElementLabels.ALL_FULLY_QUALIFIED), getNewElementName()});
 				final String comment= new JDTRefactoringDescriptorComment(project, this, header).asString();
-				final RenameJavaElementDescriptor descriptor= new RenameJavaElementDescriptor(IJavaRefactorings.RENAME_TYPE_PARAMETER);
+				final RenameJavaScriptElementDescriptor descriptor= new RenameJavaScriptElementDescriptor(IJavaScriptRefactorings.RENAME_TYPE_PARAMETER);
 				descriptor.setProject(project);
 				descriptor.setDescription(description);
 				descriptor.setComment(comment);
@@ -301,17 +301,17 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 		final RefactoringStatus status= new RefactoringStatus();
 		try {
 			monitor.beginTask(RefactoringCoreMessages.RenameTypeParameterRefactoring_searching, 2);
-			final ICompilationUnit cu= fTypeParameter.getDeclaringMember().getCompilationUnit();
-			final CompilationUnit root= RefactoringASTParser.parseWithASTProvider(cu, true, null);
+			final IJavaScriptUnit cu= fTypeParameter.getDeclaringMember().getJavaScriptUnit();
+			final JavaScriptUnit root= RefactoringASTParser.parseWithASTProvider(cu, true, null);
 			final CompilationUnitRewrite rewrite= new CompilationUnitRewrite(cu, root);
 			final IMember member= fTypeParameter.getDeclaringMember();
 			ASTNode declaration= null;
-			if (member instanceof IMethod) {
-				declaration= ASTNodeSearchUtil.getMethodDeclarationNode((IMethod) member, root);
+			if (member instanceof IFunction) {
+				declaration= ASTNodeSearchUtil.getMethodDeclarationNode((IFunction) member, root);
 			} else if (member instanceof IType) {
 				declaration= ASTNodeSearchUtil.getAbstractTypeDeclarationNode((IType) member, root);
 			} else {
-				JavaPlugin.logErrorMessage("Unexpected sub-type of IMember: " + member.getClass().getName()); //$NON-NLS-1$
+				JavaScriptPlugin.logErrorMessage("Unexpected sub-type of IMember: " + member.getClass().getName()); //$NON-NLS-1$
 				Assert.isTrue(false);
 			}
 			monitor.worked(1);
@@ -346,11 +346,11 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 		if (member instanceof IType) {
 			final IType type= (IType) member;
 			return type.getTypeParameter(getNewElementName());
-		} else if (member instanceof IMethod) {
-			final IMethod method= (IMethod) member;
+		} else if (member instanceof IFunction) {
+			final IFunction method= (IFunction) member;
 			return method.getTypeParameter(getNewElementName());
 		} else {
-			JavaPlugin.logErrorMessage("Unexpected sub-type of IMember: " + member.getClass().getName()); //$NON-NLS-1$
+			JavaScriptPlugin.logErrorMessage("Unexpected sub-type of IMember: " + member.getClass().getName()); //$NON-NLS-1$
 			Assert.isTrue(false);
 		}
 		return null;
@@ -372,18 +372,18 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, ATTRIBUTE_PARAMETER));
 			final String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
 				if (element == null || !element.exists())
-					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaRefactorings.RENAME_TYPE_PARAMETER);
+					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.RENAME_TYPE_PARAMETER);
 				else {
-					if (element instanceof IMethod)
-						fTypeParameter= ((IMethod) element).getTypeParameter(parameter);
+					if (element instanceof IFunction)
+						fTypeParameter= ((IFunction) element).getTypeParameter(parameter);
 					else if (element instanceof IType)
 						fTypeParameter= ((IType) element).getTypeParameter(parameter);
 					else
 						return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_illegal_argument, new Object[] { handle, JDTRefactoringDescriptor.ATTRIBUTE_INPUT}));
 					if (fTypeParameter == null || !fTypeParameter.exists())
-						return ScriptableRefactoring.createInputFatalStatus(fTypeParameter, getRefactoring().getName(), IJavaRefactorings.RENAME_TYPE_PARAMETER);
+						return ScriptableRefactoring.createInputFatalStatus(fTypeParameter, getRefactoring().getName(), IJavaScriptRefactorings.RENAME_TYPE_PARAMETER);
 				}
 			} else
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));

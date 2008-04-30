@@ -14,10 +14,10 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -65,7 +65,7 @@ class ConstantChecks {
 			fResult= new LoadTimeConstantChecker((IExpressionFragment) ASTFragmentFactory.createFragmentForFullSubtree(node.getExpression())).check();
 			return false;
 		}
-		public boolean visit(MethodInvocation node) {
+		public boolean visit(FunctionInvocation node) {
 			if(node.getExpression() == null) {
 				visitName(node.getName());	
 			} else {
@@ -94,7 +94,7 @@ class ConstantChecks {
 				                  the presence of semantic information will be admitted. */
 			
 			// If name represents a member:
-			if (binding instanceof IVariableBinding || binding instanceof IMethodBinding)
+			if (binding instanceof IVariableBinding || binding instanceof IFunctionBinding)
 				return isMemberReferenceValidInClassInitialization(name);
 			else if (binding instanceof ITypeBinding)
 				return ! ((ITypeBinding) binding).isTypeVariable();
@@ -110,7 +110,7 @@ class ConstantChecks {
 
 		private boolean isMemberReferenceValidInClassInitialization(Name name) {
 			IBinding binding= name.resolveBinding();
-			Assert.isTrue(binding instanceof IVariableBinding || binding instanceof IMethodBinding);
+			Assert.isTrue(binding instanceof IVariableBinding || binding instanceof IFunctionBinding);
 
 			if(name instanceof SimpleName)
 				return Modifier.isStatic(binding.getModifiers());
@@ -162,7 +162,7 @@ class ConstantChecks {
 					fResult= false;
 					return false;
 				}		
-			} else if(binding instanceof IMethodBinding) {
+			} else if(binding instanceof IFunctionBinding) {
 				if (!Modifier.isStatic(modifiers)) {
 					fResult= false;
 					return false;

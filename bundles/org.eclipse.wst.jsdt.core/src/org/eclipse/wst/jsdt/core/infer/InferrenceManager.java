@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -129,7 +129,7 @@ public class InferrenceManager {
 		ArrayList extList = new ArrayList();
 		if (registry != null) {
 			IExtensionPoint point = registry.getExtensionPoint(
-					JavaCore.PLUGIN_ID, EXTENSION_POINT);
+					JavaScriptCore.PLUGIN_ID, EXTENSION_POINT);
 
 			if (point != null) {
 				IExtension[] extensions = point.getExtensions();

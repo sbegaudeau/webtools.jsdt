@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 
 /**
@@ -31,7 +31,7 @@ public class NonPublicTypeFilter extends ViewerFilter {
 			IType type= (IType)element;
 			try {
 				return Flags.isPublic(type.getFlags());
-			} catch (JavaModelException ex) {
+			} catch (JavaScriptModelException ex) {
 				return true;
 			}
 		}

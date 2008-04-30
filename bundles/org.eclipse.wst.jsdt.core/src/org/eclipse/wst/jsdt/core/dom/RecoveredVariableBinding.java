@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.dom;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
  * This class represents the recovered binding for a variable
@@ -39,13 +39,13 @@ class RecoveredVariableBinding implements IVariableBinding {
 		return null;
 	}
 
-	public IMethodBinding getDeclaringMethod() {
+	public IFunctionBinding getDeclaringMethod() {
 		ASTNode parent = this.variableDeclaration.getParent();
-		while (parent != null && parent.getNodeType() != ASTNode.METHOD_DECLARATION) {
+		while (parent != null && parent.getNodeType() != ASTNode.FUNCTION_DECLARATION) {
 			parent = parent.getParent();
 		}
 		if (parent != null) {
-			return ((MethodDeclaration) parent).resolveBinding();
+			return ((FunctionDeclaration) parent).resolveBinding();
 		}
 		return null;
 	}
@@ -82,7 +82,7 @@ class RecoveredVariableBinding implements IVariableBinding {
 		return AnnotationBinding.NoAnnotations;
 	}
 
-	public IJavaElement getJavaElement() {
+	public IJavaScriptElement getJavaElement() {
 		return null;
 	}
 

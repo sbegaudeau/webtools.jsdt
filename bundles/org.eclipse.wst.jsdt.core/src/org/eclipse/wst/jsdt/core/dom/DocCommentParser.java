@@ -28,7 +28,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
  */
 class DocCommentParser extends AbstractCommentParser {
 
-	private Javadoc docComment;
+	private JSdoc docComment;
 	private AST ast;
 
 	DocCommentParser(AST ast, Scanner scanner, boolean check) {
@@ -46,15 +46,15 @@ class DocCommentParser extends AbstractCommentParser {
 	 * If annotation checking is enabled, will also construct an Annotation node, which will be stored into Parser.annotation
 	 * slot for being consumed later on.
 	 */
-	public Javadoc parse(int[] positions) {
+	public JSdoc parse(int[] positions) {
 		return parse(positions[0], positions[1]-positions[0]);
 	}
-	public Javadoc parse(int start, int length) {
+	public JSdoc parse(int start, int length) {
 
 		// Init
 		this.source = this.scanner.source;
 		this.lineEnds = this.scanner.lineEnds;
-		this.docComment = new Javadoc(this.ast);
+		this.docComment = new JSdoc(this.ast);
 
 		// Parse
 		if (this.checkDocComment) {
@@ -92,7 +92,7 @@ class DocCommentParser extends AbstractCommentParser {
 	 */
 	protected Object createArgumentReference(char[] name, int dim, boolean isVarargs, Object typeRef, long[] dimPositions, long argNamePos) throws InvalidInputException {
 		try {
-			MethodRefParameter argument = this.ast.newMethodRefParameter();
+			FunctionRefParameter argument = this.ast.newFunctionRefParameter();
 			ASTNode node = (ASTNode) typeRef;
 			int argStart = node.getStartPosition();
 			int argEnd = node.getStartPosition()+node.getLength()-1;
@@ -165,7 +165,7 @@ class DocCommentParser extends AbstractCommentParser {
 	protected Object createMethodReference(Object receiver, List arguments) throws InvalidInputException {
 		try {
 			// Create method ref
-			MethodRef methodRef = this.ast.newMethodRef();
+			FunctionRef methodRef = this.ast.newFunctionRef();
 			SimpleName methodName = new SimpleName(this.ast);
 			int length = this.identifierLengthStack[0] - 1; // may be > 0 for member class constructor reference
 			methodName.internalSetIdentifier(new String(this.identifierStack[length]));
@@ -186,7 +186,7 @@ class DocCommentParser extends AbstractCommentParser {
 			if (arguments != null) {
 				Iterator parameters = arguments.listIterator();
 				while (parameters.hasNext()) {
-					MethodRefParameter param = (MethodRefParameter) parameters.next();
+					FunctionRefParameter param = (FunctionRefParameter) parameters.next();
 					methodRef.parameters().add(param);
 				}
 			}

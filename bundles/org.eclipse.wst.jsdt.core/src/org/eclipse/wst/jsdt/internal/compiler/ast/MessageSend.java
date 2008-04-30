@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IFunctionCall;
@@ -43,8 +43,8 @@ public class MessageSend extends Expression implements InvocationSite, IFunction
 	public char[] selector;
 	public Expression[] arguments;
 	public MethodBinding binding;							// exact binding resulting from lookup
-//	protected MethodBinding codegenBinding;		// actual binding used for code generation (if no synthetic accessor)
-//	MethodBinding syntheticAccessor;						// synthetic accessor for inner-emulation
+//	protected FunctionBinding codegenBinding;		// actual binding used for code generation (if no synthetic accessor)
+//	FunctionBinding syntheticAccessor;						// synthetic accessor for inner-emulation
 	public TypeBinding expectedType;					// for generic method invocation (return type inference)
 
 	public long nameSourcePosition ; //(start<<32)+end
@@ -87,7 +87,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		}
 	}
 	ReferenceBinding[] thrownExceptions;
-	if (JavaCore.IS_ECMASCRIPT4)
+	if (JavaScriptCore.IS_ECMASCRIPT4)
 	{
 		if ((thrownExceptions = binding.thrownExceptions) != Binding.NO_EXCEPTIONS) {
 		// must verify that exceptions potentially thrown by this expression are caught in the method
@@ -108,7 +108,7 @@ public void computeConversion(Scope scope, TypeBinding runtimeTimeType, TypeBind
 //		return;
 //	// set the generic cast after the fact, once the type expectation is fully known (no need for strict cast)
 //	if (this.binding != null && this.binding.isValidBinding()) {
-//		MethodBinding originalBinding = this.binding.original();
+//		FunctionBinding originalBinding = this.binding.original();
 //		TypeBinding originalType = originalBinding.returnType;
 //	    // extra cast needed if method return type is type variable
 //		if (originalBinding != this.binding
@@ -152,7 +152,7 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 //	this.codegenBinding = this.binding.original();
 	if (this.binding.isPrivate()){
 
-//		// depth is set for both implicit and explicit access (see MethodBinding#canBeSeenBy)
+//		// depth is set for both implicit and explicit access (see FunctionBinding#canBeSeenBy)
 //		if (currentScope.enclosingSourceType() != this.codegenBinding.declaringClass){
 //
 //			syntheticAccessor = ((SourceTypeBinding)this.codegenBinding.declaringClass).addSyntheticMethod(this.codegenBinding, isSuperAccess());

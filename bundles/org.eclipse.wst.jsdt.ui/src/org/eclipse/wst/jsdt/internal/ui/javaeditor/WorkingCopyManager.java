@@ -18,7 +18,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
 import org.eclipse.wst.jsdt.ui.IWorkingCopyManagerExtension;
@@ -80,7 +80,7 @@ public class WorkingCopyManager implements IWorkingCopyManager, IWorkingCopyMana
 	/*
 	 * @see org.eclipse.wst.jsdt.ui.IWorkingCopyManager#getWorkingCopy(org.eclipse.ui.IEditorInput)
 	 */
-	public ICompilationUnit getWorkingCopy(IEditorInput input) {
+	public IJavaScriptUnit getWorkingCopy(IEditorInput input) {
 		return getWorkingCopy(input, true);
 	}
 
@@ -98,8 +98,8 @@ public class WorkingCopyManager implements IWorkingCopyManager, IWorkingCopyMana
 	 *   copy for this compilation unit
 	 * @since 3.2
 	 */
-	public ICompilationUnit getWorkingCopy(IEditorInput input, boolean primaryOnly) {
-		ICompilationUnit unit= fMap == null ? null : (ICompilationUnit) fMap.get(input);
+	public IJavaScriptUnit getWorkingCopy(IEditorInput input, boolean primaryOnly) {
+		IJavaScriptUnit unit= fMap == null ? null : (IJavaScriptUnit) fMap.get(input);
 		if (unit == null)
 			unit= fDocumentProvider.getWorkingCopy(input);
 		if (unit != null && (!primaryOnly || JavaModelUtil.isPrimary(unit)))
@@ -108,9 +108,9 @@ public class WorkingCopyManager implements IWorkingCopyManager, IWorkingCopyMana
 	}
 
 	/*
-	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.IWorkingCopyManagerExtension#setWorkingCopy(org.eclipse.ui.IEditorInput, org.eclipse.wst.jsdt.core.ICompilationUnit)
+	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.IWorkingCopyManagerExtension#setWorkingCopy(org.eclipse.ui.IEditorInput, org.eclipse.wst.jsdt.core.IJavaScriptUnit)
 	 */
-	public void setWorkingCopy(IEditorInput input, ICompilationUnit workingCopy) {
+	public void setWorkingCopy(IEditorInput input, IJavaScriptUnit workingCopy) {
 		if (fDocumentProvider.getDocument(input) != null) {
 			if (fMap == null)
 				fMap= new HashMap();

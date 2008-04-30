@@ -18,13 +18,13 @@ import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IImportContainer;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IInitializer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
@@ -32,14 +32,14 @@ import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
@@ -58,7 +58,7 @@ public class ASTNodeSearchUtil {
 		//no instance
 	}
 
-	public static ASTNode[] getAstNodes(SearchMatch[] searchResults, CompilationUnit cuNode) {
+	public static ASTNode[] getAstNodes(SearchMatch[] searchResults, JavaScriptUnit cuNode) {
 		List result= new ArrayList(searchResults.length);
 		for (int i= 0; i < searchResults.length; i++) {
 			ASTNode node= getAstNode(searchResults[i], cuNode);
@@ -68,7 +68,7 @@ public class ASTNodeSearchUtil {
 		return (ASTNode[]) result.toArray(new ASTNode[result.size()]);
 	}
 
-	public static ASTNode getAstNode(SearchMatch searchResult, CompilationUnit cuNode) {
+	public static ASTNode getAstNode(SearchMatch searchResult, JavaScriptUnit cuNode) {
 		ASTNode selectedNode= getAstNode(cuNode, searchResult.getOffset(), searchResult.getLength());
 		if (selectedNode == null)
 			return null;
@@ -77,7 +77,7 @@ public class ASTNodeSearchUtil {
 		return selectedNode;
 	}
 
-	public static ASTNode getAstNode(CompilationUnit cuNode, int start, int length){
+	public static ASTNode getAstNode(JavaScriptUnit cuNode, int start, int length){
 		SelectionAnalyzer analyzer= new SelectionAnalyzer(Selection.createFromStartLength(start, length), true);
 		cuNode.accept(analyzer);
 		//XXX workaround for jdt core feature 23527
@@ -92,8 +92,8 @@ public class ASTNodeSearchUtil {
 		
 		ASTNode parentNode= node.getParent();
 
-		if (parentNode instanceof MethodDeclaration){
-			MethodDeclaration md= (MethodDeclaration)parentNode;
+		if (parentNode instanceof FunctionDeclaration){
+			FunctionDeclaration md= (FunctionDeclaration)parentNode;
 			if (!(node instanceof SimpleName)
 				&& md.isConstructor()
 			    && md.getBody() != null
@@ -114,68 +114,68 @@ public class ASTNodeSearchUtil {
 		return node;
 	}
 
-	public static MethodDeclaration getMethodDeclarationNode(IMethod iMethod, CompilationUnit cuNode) throws JavaModelException {
-		return (MethodDeclaration)ASTNodes.getParent(getNameNode(iMethod, cuNode), MethodDeclaration.class);
+	public static FunctionDeclaration getMethodDeclarationNode(IFunction iMethod, JavaScriptUnit cuNode) throws JavaScriptModelException {
+		return (FunctionDeclaration)ASTNodes.getParent(getNameNode(iMethod, cuNode), FunctionDeclaration.class);
 	}
 
-	public static AnnotationTypeMemberDeclaration getAnnotationTypeMemberDeclarationNode(IMethod iMethod, CompilationUnit cuNode) throws JavaModelException {
+	public static AnnotationTypeMemberDeclaration getAnnotationTypeMemberDeclarationNode(IFunction iMethod, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		return (AnnotationTypeMemberDeclaration) ASTNodes.getParent(getNameNode(iMethod, cuNode), AnnotationTypeMemberDeclaration.class);
 	}
 
-	public static BodyDeclaration getMethodOrAnnotationTypeMemberDeclarationNode(IMethod iMethod, CompilationUnit cuNode) throws JavaModelException {
+	public static BodyDeclaration getMethodOrAnnotationTypeMemberDeclarationNode(IFunction iMethod, JavaScriptUnit cuNode) throws JavaScriptModelException {
 //		if (JdtFlags.isAnnotation(iMethod.getDeclaringType()))
 //			return getAnnotationTypeMemberDeclarationNode(iMethod, cuNode);
 //		else
 			return getMethodDeclarationNode(iMethod, cuNode);
 	}
 
-	public static VariableDeclarationFragment getFieldDeclarationFragmentNode(IField iField, CompilationUnit cuNode) throws JavaModelException {
+	public static VariableDeclarationFragment getFieldDeclarationFragmentNode(IField iField, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		ASTNode node= getNameNode(iField, cuNode);
 		if (node instanceof VariableDeclarationFragment)
 			return  (VariableDeclarationFragment)node;
 		return (VariableDeclarationFragment)ASTNodes.getParent(node, VariableDeclarationFragment.class);
 	}
 		
-	public static FieldDeclaration getFieldDeclarationNode(IField iField, CompilationUnit cuNode) throws JavaModelException {
+	public static FieldDeclaration getFieldDeclarationNode(IField iField, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		return (FieldDeclaration) ASTNodes.getParent(getNameNode(iField, cuNode), FieldDeclaration.class);
 	}
 
-	public static EnumConstantDeclaration getEnumConstantDeclaration(IField iField, CompilationUnit cuNode) throws JavaModelException {
+	public static EnumConstantDeclaration getEnumConstantDeclaration(IField iField, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		return (EnumConstantDeclaration) ASTNodes.getParent(getNameNode(iField, cuNode), EnumConstantDeclaration.class);
 	}
 
-	public static BodyDeclaration getFieldOrEnumConstantDeclaration(IField iField, CompilationUnit cuNode) throws JavaModelException {
+	public static BodyDeclaration getFieldOrEnumConstantDeclaration(IField iField, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		if (JdtFlags.isEnum(iField))
 			return getEnumConstantDeclaration(iField, cuNode);
 		else
 			return getFieldDeclarationNode(iField, cuNode);
 	}
 
-	public static EnumDeclaration getEnumDeclarationNode(IType iType, CompilationUnit cuNode) throws JavaModelException {
+	public static EnumDeclaration getEnumDeclarationNode(IType iType, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		return (EnumDeclaration) ASTNodes.getParent(getNameNode(iType, cuNode), EnumDeclaration.class);
 	}
 
-	public static AnnotationTypeDeclaration getAnnotationTypeDeclarationNode(IType iType, CompilationUnit cuNode) throws JavaModelException {
+	public static AnnotationTypeDeclaration getAnnotationTypeDeclarationNode(IType iType, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		return (AnnotationTypeDeclaration) ASTNodes.getParent(getNameNode(iType, cuNode), AnnotationTypeDeclaration.class);
 	}
 
-	public static BodyDeclaration getBodyDeclarationNode(IMember iMember, CompilationUnit cuNode) throws JavaModelException {
+	public static BodyDeclaration getBodyDeclarationNode(IMember iMember, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		return (BodyDeclaration) ASTNodes.getParent(getNameNode(iMember, cuNode), BodyDeclaration.class);
 	}
 
-	public static AbstractTypeDeclaration getAbstractTypeDeclarationNode(IType iType, CompilationUnit cuNode) throws JavaModelException {
+	public static AbstractTypeDeclaration getAbstractTypeDeclarationNode(IType iType, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		return (AbstractTypeDeclaration) ASTNodes.getParent(getNameNode(iType, cuNode), AbstractTypeDeclaration.class);
 	}
 
-	public static TypeDeclaration getTypeDeclarationNode(IType iType, CompilationUnit cuNode) throws JavaModelException {
+	public static TypeDeclaration getTypeDeclarationNode(IType iType, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		return (TypeDeclaration) ASTNodes.getParent(getNameNode(iType, cuNode), TypeDeclaration.class);
 	}
 	
-	public static ClassInstanceCreation getClassInstanceCreationNode(IType iType, CompilationUnit cuNode) throws JavaModelException {
+	public static ClassInstanceCreation getClassInstanceCreationNode(IType iType, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		return (ClassInstanceCreation) ASTNodes.getParent(getNameNode(iType, cuNode), ClassInstanceCreation.class);
 	}
 	
-	public static List getBodyDeclarationList(IType iType, CompilationUnit cuNode) throws JavaModelException {
+	public static List getBodyDeclarationList(IType iType, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		if (iType.isAnonymous())
 			return getClassInstanceCreationNode(iType, cuNode).getAnonymousClassDeclaration().bodyDeclarations();
 		else
@@ -184,21 +184,21 @@ public class ASTNodeSearchUtil {
 	
 	//returns an array because of the import container, which does not represent 1 node but many
 	//for fields, it returns the whole declaration node
-	public static ASTNode[] getDeclarationNodes(IJavaElement element, CompilationUnit cuNode) throws JavaModelException {
+	public static ASTNode[] getDeclarationNodes(IJavaScriptElement element, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		switch(element.getElementType()){
-			case IJavaElement.FIELD:
+			case IJavaScriptElement.FIELD:
 				return new ASTNode[]{getFieldOrEnumConstantDeclaration((IField) element, cuNode)};
-			case IJavaElement.IMPORT_CONTAINER:
+			case IJavaScriptElement.IMPORT_CONTAINER:
 				return getImportNodes((IImportContainer)element, cuNode);
-			case IJavaElement.IMPORT_DECLARATION:
+			case IJavaScriptElement.IMPORT_DECLARATION:
 				return new ASTNode[]{getImportDeclarationNode((IImportDeclaration)element, cuNode)};
-			case IJavaElement.INITIALIZER:
+			case IJavaScriptElement.INITIALIZER:
 				return new ASTNode[]{getInitializerNode((IInitializer)element, cuNode)};
-			case IJavaElement.METHOD:
-				return new ASTNode[]{getMethodOrAnnotationTypeMemberDeclarationNode((IMethod) element, cuNode)};
-			case IJavaElement.PACKAGE_DECLARATION:
+			case IJavaScriptElement.METHOD:
+				return new ASTNode[]{getMethodOrAnnotationTypeMemberDeclarationNode((IFunction) element, cuNode)};
+			case IJavaScriptElement.PACKAGE_DECLARATION:
 				return new ASTNode[]{getPackageDeclarationNode((IPackageDeclaration)element, cuNode)};
-			case IJavaElement.TYPE:
+			case IJavaScriptElement.TYPE:
 				return new ASTNode[]{getAbstractTypeDeclarationNode((IType) element, cuNode)};
 			default:
 				Assert.isTrue(false, String.valueOf(element.getElementType()));
@@ -206,20 +206,20 @@ public class ASTNodeSearchUtil {
 		}
 	}
 
-	private static ASTNode getNameNode(IMember iMember, CompilationUnit cuNode) throws JavaModelException {
+	private static ASTNode getNameNode(IMember iMember, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		return NodeFinder.perform(cuNode, iMember.getNameRange());
 	}
 
-	public static PackageDeclaration getPackageDeclarationNode(IPackageDeclaration reference, CompilationUnit cuNode) throws JavaModelException {
+	public static PackageDeclaration getPackageDeclarationNode(IPackageDeclaration reference, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		return (PackageDeclaration) findNode(reference.getSourceRange(), cuNode);
 	}
 
-	public static ImportDeclaration getImportDeclarationNode(IImportDeclaration reference, CompilationUnit cuNode) throws JavaModelException {
+	public static ImportDeclaration getImportDeclarationNode(IImportDeclaration reference, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		return (ImportDeclaration) findNode(reference.getSourceRange(), cuNode);
 	}
 
-	public static ASTNode[] getImportNodes(IImportContainer reference, CompilationUnit cuNode) throws JavaModelException {
-		IJavaElement[] imps= reference.getChildren();
+	public static ASTNode[] getImportNodes(IImportContainer reference, JavaScriptUnit cuNode) throws JavaScriptModelException {
+		IJavaScriptElement[] imps= reference.getChildren();
 		ASTNode[] result= new ASTNode[imps.length];
 		for (int i= 0; i < imps.length; i++) {
 			result[i]= getImportDeclarationNode((IImportDeclaration)imps[i], cuNode);
@@ -227,7 +227,7 @@ public class ASTNodeSearchUtil {
 		return result;
 	}
 
-	public static Initializer getInitializerNode(IInitializer initializer, CompilationUnit cuNode) throws JavaModelException {
+	public static Initializer getInitializerNode(IInitializer initializer, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		ASTNode node= findNode(initializer.getSourceRange(), cuNode);
 		if (node instanceof Initializer)
 			return (Initializer) node;
@@ -236,7 +236,7 @@ public class ASTNodeSearchUtil {
 		return null;
 	}
 	
-	private static ASTNode findNode(ISourceRange range, CompilationUnit cuNode){
+	private static ASTNode findNode(ISourceRange range, JavaScriptUnit cuNode){
 		NodeFinder nodeFinder= new NodeFinder(range.getOffset(), range.getLength());
 		cuNode.accept(nodeFinder);
 		ASTNode coveredNode= nodeFinder.getCoveredNode();
@@ -246,7 +246,7 @@ public class ASTNodeSearchUtil {
 			return nodeFinder.getCoveringNode();		
 	}
 	
-	public static ASTNode[] findNodes(SearchMatch[] searchResults, CompilationUnit cuNode) {
+	public static ASTNode[] findNodes(SearchMatch[] searchResults, JavaScriptUnit cuNode) {
 		List result= new ArrayList(searchResults.length);
 		for (int i= 0; i < searchResults.length; i++) {
 			ASTNode node= findNode(searchResults[i], cuNode);
@@ -256,7 +256,7 @@ public class ASTNodeSearchUtil {
 		return (ASTNode[]) result.toArray(new ASTNode[result.size()]);
 	}
 
-	public static ASTNode findNode(SearchMatch searchResult, CompilationUnit cuNode) {
+	public static ASTNode findNode(SearchMatch searchResult, JavaScriptUnit cuNode) {
 		ASTNode selectedNode= NodeFinder.perform(cuNode, searchResult.getOffset(), searchResult.getLength());
 		if (selectedNode == null)
 			return null;

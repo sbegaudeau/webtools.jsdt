@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IConfirmQuery;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgQueries;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.ListDialog;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 public class ReorgQueries implements IReorgQueries {
 	
@@ -175,7 +175,7 @@ public class ReorgQueries implements IReorgQueries {
 					dialog.setAddCancelButton(false);
 					dialog.setBlockOnOpen(true);
 					dialog.setContentProvider(new ArrayContentProvider());
-					dialog.setLabelProvider(new JavaElementLabelProvider());
+					dialog.setLabelProvider(new JavaScriptElementLabelProvider());
 					dialog.setTitle(fDialogTitle);
 					dialog.setMessage(question);
 					dialog.setInput(elements);
@@ -289,7 +289,7 @@ public class ReorgQueries implements IReorgQueries {
 					dialog.setAddCancelButton(false);
 					dialog.setBlockOnOpen(true);
 					dialog.setContentProvider(new ArrayContentProvider());
-					dialog.setLabelProvider(new JavaElementLabelProvider());
+					dialog.setLabelProvider(new JavaScriptElementLabelProvider());
 					dialog.setTitle(fDialogTitle);
 					dialog.setMessage(question);
 					dialog.setInput(elements);

@@ -12,10 +12,10 @@ package org.eclipse.wst.jsdt.core;
 
 /**
  * Common protocol for Java elements that have associated source code.
- * This set consists of <code>IClassFile</code>, <code>ICompilationUnit</code>,
+ * This set consists of <code>IClassFile</code>, <code>IJavaScriptUnit</code>,
  * <code>IPackageDeclaration</code>, <code>IImportDeclaration</code>,
  * <code>IImportContainer</code>, <code>IType</code>, <code>IField</code>,
- * <code>IMethod</code>, and <code>IInitializer</code>.
+ * <code>IFunction</code>, and <code>IInitializer</code>.
  * <p>
  * Note: For <code>IClassFile</code>, <code>IType</code> and other members
  * derived from a binary type, the implementation returns source iff the
@@ -52,9 +52,9 @@ boolean exists();
  *
  * @return the source code, or <code>null</code> if this element has no
  *   associated source code
- * @exception JavaModelException if an exception occurs while accessing its corresponding resource
+ * @exception JavaScriptModelException if an exception occurs while accessing its corresponding resource
  */
-String getSource() throws JavaModelException;
+String getSource() throws JavaScriptModelException;
 /**
  * Returns the source range associated with this element.
  * <p>
@@ -64,7 +64,7 @@ String getSource() throws JavaModelException;
  *
  * @return the source range, or <code>null</code> if this element has no
  *   associated source code
- * @exception JavaModelException if an exception occurs while accessing its corresponding resource
+ * @exception JavaScriptModelException if an exception occurs while accessing its corresponding resource
  */
-ISourceRange getSourceRange() throws JavaModelException;
+ISourceRange getSourceRange() throws JavaScriptModelException;
 }

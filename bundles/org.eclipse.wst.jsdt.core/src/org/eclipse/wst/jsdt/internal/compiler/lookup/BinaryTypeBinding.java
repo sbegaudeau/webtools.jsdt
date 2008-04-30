@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import java.util.ArrayList;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -105,7 +105,7 @@ public static AnnotationBinding[] createAnnotations(IBinaryAnnotation[] annotati
 public static ReferenceBinding resolveType(ReferenceBinding type, LookupEnvironment environment, boolean convertGenericToRawType) {
 	if (type instanceof UnresolvedReferenceBinding)
 		return ((UnresolvedReferenceBinding) type).resolve(environment, convertGenericToRawType);
-	if (JavaCore.IS_ECMASCRIPT4)
+	if (JavaScriptCore.IS_ECMASCRIPT4)
 	{
 		if (type.isParameterizedType())
 			return ((ParameterizedTypeBinding) type).resolve();
@@ -503,9 +503,9 @@ private MethodBinding createMethod(ISourceMethod method, long sourceLevel) {
 //		}
 //	}
 //
-//	MethodBinding result = method.isConstructor()
-//		? new MethodBinding(methodModifiers, parameters, exceptions, this)
-//		: new MethodBinding(methodModifiers, method.getSelector(), returnType, parameters, exceptions, this);
+//	FunctionBinding result = method.isConstructor()
+//		? new FunctionBinding(methodModifiers, parameters, exceptions, this)
+//		: new FunctionBinding(methodModifiers, method.getSelector(), returnType, parameters, exceptions, this);
 //	if (this.environment.globalOptions.storeAnnotations)
 //		result.setAnnotations(
 //			createAnnotations(method.getAnnotations(), this.environment),

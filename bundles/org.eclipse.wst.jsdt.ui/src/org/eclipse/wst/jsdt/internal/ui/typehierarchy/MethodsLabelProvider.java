@@ -15,17 +15,17 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Label provider for the hierarchy method viewers. 
@@ -61,23 +61,23 @@ public class MethodsLabelProvider extends AppearanceAwareLabelProvider {
 	}	
 			
 
-	private IType getDefiningType(Object element) throws JavaModelException {
-		int kind= ((IJavaElement) element).getElementType();
+	private IType getDefiningType(Object element) throws JavaScriptModelException {
+		int kind= ((IJavaScriptElement) element).getElementType();
 	
-		if (kind != IJavaElement.METHOD && kind != IJavaElement.FIELD && kind != IJavaElement.INITIALIZER) {
+		if (kind != IJavaScriptElement.METHOD && kind != IJavaScriptElement.FIELD && kind != IJavaScriptElement.INITIALIZER) {
 			return null;
 		}
 		IType declaringType= ((IMember) element).getDeclaringType();
-		if (kind != IJavaElement.METHOD) {
+		if (kind != IJavaScriptElement.METHOD) {
 			return declaringType;
 		}
 		ITypeHierarchy hierarchy= fHierarchy.getHierarchy();
 		if (hierarchy == null) {
 			return declaringType;
 		}
-		IMethod method= (IMethod) element;
+		IFunction method= (IFunction) element;
 		MethodOverrideTester tester= new MethodOverrideTester(declaringType, hierarchy);
-		IMethod res= tester.findDeclaringMethod(method, true);
+		IFunction res= tester.findDeclaringMethod(method, true);
 		if (res == null || method.equals(res)) {
 			return declaringType;
 		}
@@ -114,9 +114,9 @@ public class MethodsLabelProvider extends AppearanceAwareLabelProvider {
 			try {
 				IType type= getDefiningType(element);
 				if (type != null) {
-					return super.getText(type) + JavaElementLabels.CONCAT_STRING;
+					return super.getText(type) + JavaScriptElementLabels.CONCAT_STRING;
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 			}
 		}
 		return null;
@@ -127,8 +127,8 @@ public class MethodsLabelProvider extends AppearanceAwareLabelProvider {
 	 * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
 	 */
 	public Color getForeground(Object element) {
-		if (fMethodsViewer.isShowInheritedMethods() && element instanceof IMethod) {
-			IMethod curr= (IMethod) element;
+		if (fMethodsViewer.isShowInheritedMethods() && element instanceof IFunction) {
+			IFunction curr= (IFunction) element;
 			IMember declaringType= curr.getDeclaringType();
 			
 			if (declaringType==null || !declaringType.equals(fMethodsViewer.getInput())) {

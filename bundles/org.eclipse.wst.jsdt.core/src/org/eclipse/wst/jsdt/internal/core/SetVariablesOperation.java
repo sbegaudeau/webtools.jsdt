@@ -16,11 +16,11 @@ import java.util.Iterator;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class SetVariablesOperation extends ChangeClasspathOperation {
@@ -33,13 +33,13 @@ public class SetVariablesOperation extends ChangeClasspathOperation {
 	 * Creates a new SetVariablesOperation for the given variable values (null path meaning removal), allowing to change multiple variable values at once.
 	 */
 	public SetVariablesOperation(String[] variableNames, IPath[] variablePaths, boolean updatePreferences) {
-		super(new IJavaElement[] {JavaModelManager.getJavaModelManager().getJavaModel()}, !ResourcesPlugin.getWorkspace().isTreeLocked());
+		super(new IJavaScriptElement[] {JavaModelManager.getJavaModelManager().getJavaModel()}, !ResourcesPlugin.getWorkspace().isTreeLocked());
 		this.variableNames = variableNames;
 		this.variablePaths = variablePaths;
 		this.updatePreferences = updatePreferences;
 	}
 
-	protected void executeOperation() throws JavaModelException {
+	protected void executeOperation() throws JavaScriptModelException {
 		checkCanceled();
 		try {
 			beginTask("", 1); //$NON-NLS-1$
@@ -54,7 +54,7 @@ public class SetVariablesOperation extends ChangeClasspathOperation {
 
 			// gather classpath information for updating
 			final HashMap affectedProjectClasspaths = new HashMap(5);
-			IJavaModel model = getJavaModel();
+			IJavaScriptModel model = getJavaModel();
 
 			// filter out unmodified variables
 			int discardCount = 0;
@@ -89,19 +89,19 @@ public class SetVariablesOperation extends ChangeClasspathOperation {
 			if (isCanceled())
 				return;
 
-			IJavaProject[] projects = model.getJavaProjects();
+			IJavaScriptProject[] projects = model.getJavaScriptProjects();
 			nextProject : for (int i = 0, projectLength = projects.length; i < projectLength; i++){
 				JavaProject project = (JavaProject) projects[i];
 
 				// check to see if any of the modified variables is present on the classpath
-				IClasspathEntry[] classpath = project.getRawClasspath();
+				IIncludePathEntry[] classpath = project.getRawIncludepath();
 				for (int j = 0, cpLength = classpath.length; j < cpLength; j++){
 
-					IClasspathEntry entry = classpath[j];
+					IIncludePathEntry entry = classpath[j];
 					for (int k = 0; k < varLength; k++){
 
 						String variableName = this.variableNames[k];
-						if (entry.getEntryKind() ==  IClasspathEntry.CPE_VARIABLE){
+						if (entry.getEntryKind() ==  IIncludePathEntry.CPE_VARIABLE){
 
 							if (variableName.equals(entry.getPath().segment(0))){
 								affectedProjectClasspaths.put(project, project.getResolvedClasspath());
@@ -156,10 +156,10 @@ public class SetVariablesOperation extends ChangeClasspathOperation {
 						verbose_failure(dbgVariableNames);
 						e.printStackTrace();
 					}
-					if (e instanceof JavaModelException) {
-						throw (JavaModelException)e;
+					if (e instanceof JavaScriptModelException) {
+						throw (JavaScriptModelException)e;
 					} else {
-						throw new JavaModelException(e);
+						throw new JavaScriptModelException(e);
 					}
 				}
 			}

@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IInitializer;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 
@@ -46,7 +46,7 @@ public void acceptMemberType(IType type) {
 /**
  * @see IJavaElementRequestor
  */
-public void acceptMethod(IMethod method) {
+public void acceptMethod(IFunction method) {
 	// implements interface method
 }
 /**

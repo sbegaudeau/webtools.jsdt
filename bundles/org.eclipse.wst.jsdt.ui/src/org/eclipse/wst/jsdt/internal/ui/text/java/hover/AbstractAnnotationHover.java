@@ -31,7 +31,7 @@ import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.DefaultMarkerAnnotationAccess;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaAnnotationIterator;
 
 
@@ -42,7 +42,7 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaAnnotationIterator;
  */
 public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHover {
 
-	private IPreferenceStore fStore= JavaPlugin.getDefault().getCombinedPreferenceStore();
+	private IPreferenceStore fStore= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 	private DefaultMarkerAnnotationAccess fAnnotationAccess= new DefaultMarkerAnnotationAccess();
 	private boolean fAllAnnotations;
 
@@ -112,7 +112,7 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 					manager.disconnect(path, LocationKind.NORMALIZE, null);
 				}
 			} catch (CoreException ex) {
-				JavaPlugin.log(ex.getStatus());
+				JavaScriptPlugin.log(ex.getStatus());
 			}
 		}
 
@@ -128,7 +128,7 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 			try {
 				return ((IStorageEditorInput)input).getStorage().getFullPath();
 			} catch (CoreException ex) {
-				JavaPlugin.log(ex.getStatus());
+				JavaScriptPlugin.log(ex.getStatus());
 			}
 		}
 		return null;
@@ -142,7 +142,7 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 		try {
 			manager.connect(path, LocationKind.NORMALIZE, null);
 		} catch (CoreException ex) {
-			JavaPlugin.log(ex.getStatus());
+			JavaScriptPlugin.log(ex.getStatus());
 			return null;
 		}
 
@@ -155,7 +155,7 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 				try {
 					manager.disconnect(path, LocationKind.NORMALIZE, null);
 				} catch (CoreException ex) {
-					JavaPlugin.log(ex.getStatus());
+					JavaScriptPlugin.log(ex.getStatus());
 				}
 			}
 		}

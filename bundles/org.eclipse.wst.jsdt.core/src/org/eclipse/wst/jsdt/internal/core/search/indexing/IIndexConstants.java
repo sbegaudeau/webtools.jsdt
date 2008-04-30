@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.indexing;
 
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 
 public interface IIndexConstants {
 
@@ -35,9 +35,9 @@ public interface IIndexConstants {
 	char ENUM_SUFFIX = 'E';
 	char ANNOTATION_TYPE_SUFFIX = 'A';
 	char TYPE_SUFFIX = 0;
-	char CLASS_AND_ENUM_SUFFIX = IJavaSearchConstants.CLASS_AND_ENUM;
-	char CLASS_AND_INTERFACE_SUFFIX = IJavaSearchConstants.CLASS_AND_INTERFACE;
-	char INTERFACE_AND_ANNOTATION_SUFFIX = IJavaSearchConstants.INTERFACE_AND_ANNOTATION;
+	char CLASS_AND_ENUM_SUFFIX = IJavaScriptSearchConstants.CLASS_AND_ENUM;
+	char CLASS_AND_INTERFACE_SUFFIX = IJavaScriptSearchConstants.CLASS_AND_INTERFACE;
+	char INTERFACE_AND_ANNOTATION_SUFFIX = IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION;
 	char SEPARATOR= '/';
 	char SECONDARY_SUFFIX = 'S';
 

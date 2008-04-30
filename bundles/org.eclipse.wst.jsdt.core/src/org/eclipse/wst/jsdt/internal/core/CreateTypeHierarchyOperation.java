@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IRegion;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.internal.core.hierarchy.RegionBasedTypeHierarchy;
 import org.eclipse.wst.jsdt.internal.core.hierarchy.TypeHierarchy;
 
@@ -46,7 +46,7 @@ public class CreateTypeHierarchyOperation extends JavaModelOperation {
  * given type within the specified region, in the context of
  * the given project.
  */
-public CreateTypeHierarchyOperation(IRegion region, ICompilationUnit[] workingCopies, IType element, boolean computeSubtypes) {
+public CreateTypeHierarchyOperation(IRegion region, IJavaScriptUnit[] workingCopies, IType element, boolean computeSubtypes) {
 	super(element);
 	this.typeHierarchy = new RegionBasedTypeHierarchy(region, workingCopies, element, computeSubtypes);
 }
@@ -54,12 +54,12 @@ public CreateTypeHierarchyOperation(IRegion region, ICompilationUnit[] workingCo
  * Constructs an operation to create a type hierarchy for the
  * given type and working copies.
  */
-public CreateTypeHierarchyOperation(IType element, ICompilationUnit[] workingCopies, IJavaSearchScope scope, boolean computeSubtypes) {
+public CreateTypeHierarchyOperation(IType element, IJavaScriptUnit[] workingCopies, IJavaScriptSearchScope scope, boolean computeSubtypes) {
 	super(element);
-	ICompilationUnit[] copies;
+	IJavaScriptUnit[] copies;
 	if (workingCopies != null) {
 		int length = workingCopies.length;
-		copies = new ICompilationUnit[length];
+		copies = new IJavaScriptUnit[length];
 		System.arraycopy(workingCopies, 0, copies, 0, length);
 	} else {
 		copies = null;
@@ -70,12 +70,12 @@ public CreateTypeHierarchyOperation(IType element, ICompilationUnit[] workingCop
  * Constructs an operation to create a type hierarchy for the
  * given type and working copies.
  */
-public CreateTypeHierarchyOperation(IType element, ICompilationUnit[] workingCopies, IJavaProject project, boolean computeSubtypes) {
+public CreateTypeHierarchyOperation(IType element, IJavaScriptUnit[] workingCopies, IJavaScriptProject project, boolean computeSubtypes) {
 	super(element);
-	ICompilationUnit[] copies;
+	IJavaScriptUnit[] copies;
 	if (workingCopies != null) {
 		int length = workingCopies.length;
-		copies = new ICompilationUnit[length];
+		copies = new IJavaScriptUnit[length];
 		System.arraycopy(workingCopies, 0, copies, 0, length);
 	} else {
 		copies = null;
@@ -84,9 +84,9 @@ public CreateTypeHierarchyOperation(IType element, ICompilationUnit[] workingCop
 }
 /**
  * Performs the operation - creates the type hierarchy
- * @exception JavaModelException The operation has failed.
+ * @exception JavaScriptModelException The operation has failed.
  */
-protected void executeOperation() throws JavaModelException {
+protected void executeOperation() throws JavaScriptModelException {
 	this.typeHierarchy.refresh(this);
 }
 /**
@@ -108,17 +108,17 @@ public boolean isReadOnly() {
  *	<li>ELEMENT_NOT_PRESENT - the provided type or type's project does not exist
  * </ul>
  */
-public IJavaModelStatus verify() {
-	IJavaElement elementToProcess= getElementToProcess();
+public IJavaScriptModelStatus verify() {
+	IJavaScriptElement elementToProcess= getElementToProcess();
 	if (elementToProcess == null && !(this.typeHierarchy instanceof RegionBasedTypeHierarchy)) {
-		return new JavaModelStatus(IJavaModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
+		return new JavaModelStatus(IJavaScriptModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
 	}
 	if (elementToProcess != null && !elementToProcess.exists()) {
-		return new JavaModelStatus(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, elementToProcess);
+		return new JavaModelStatus(IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST, elementToProcess);
 	}
-	IJavaProject project = this.typeHierarchy.javaProject();
+	IJavaScriptProject project = this.typeHierarchy.javaProject();
 	if (project != null && !project.exists()) {
-		return new JavaModelStatus(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, project);
+		return new JavaModelStatus(IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST, project);
 	}
 	return JavaModelStatus.VERIFIED_OK;
 }

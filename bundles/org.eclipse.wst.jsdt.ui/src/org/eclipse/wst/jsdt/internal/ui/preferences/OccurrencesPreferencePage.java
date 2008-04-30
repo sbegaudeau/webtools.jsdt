@@ -12,7 +12,7 @@
 package org.eclipse.wst.jsdt.internal.ui.preferences;
 
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 
 
@@ -44,7 +44,7 @@ public class OccurrencesPreferencePage extends AbstractConfigurationBlockPrefere
 	 * @see org.eclipse.wst.jsdt.internal.ui.preferences.AbstractConfigurationBlockPreferencePage#setPreferenceStore()
 	 */
 	protected void setPreferenceStore() {
-		setPreferenceStore(JavaPlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(JavaScriptPlugin.getDefault().getPreferenceStore());
 	}
 
 	/*

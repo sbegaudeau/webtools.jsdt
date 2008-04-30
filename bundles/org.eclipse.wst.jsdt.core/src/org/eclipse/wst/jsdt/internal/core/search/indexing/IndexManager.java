@@ -27,12 +27,12 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
@@ -100,7 +100,7 @@ public synchronized void aboutToUpdateIndex(IPath containerPath, Integer newInde
  * Note: the actual operation is performed in background
  */
 public void addBinary(IFile resource, IPath containerPath) {
-	if (JavaCore.getPlugin() == null) return;
+	if (JavaScriptCore.getPlugin() == null) return;
 	SearchParticipant participant = SearchEngine.getDefaultSearchParticipant();
 	SearchDocument document = participant.getDocument(resource.getFullPath().toString());
 	IPath indexLocation = computeIndexLocation(containerPath);
@@ -111,7 +111,7 @@ public void addBinary(IFile resource, IPath containerPath) {
  * Note: the actual operation is performed in background
  */
 public void addSource(IFile resource, IPath containerPath, SourceElementParser parser) {
-	if (JavaCore.getPlugin() == null) return;
+	if (JavaScriptCore.getPlugin() == null) return;
 	SearchParticipant participant = SearchEngine.getDefaultSearchParticipant();
 	SearchDocument document = participant.getDocument(resource.getFullPath().toString());
 	((InternalSearchDocument) document).parser = parser;
@@ -123,7 +123,7 @@ public void addSource(IFile resource, IPath containerPath, SourceElementParser p
  */
 public void cleanUpIndexes() {
 	SimpleSet knownPaths = new SimpleSet();
-	IJavaSearchScope scope = BasicSearchEngine.createWorkspaceScope();
+	IJavaScriptSearchScope scope = BasicSearchEngine.createWorkspaceScope();
 	PatternSearchJob job = new PatternSearchJob(null, SearchEngine.getDefaultSearchParticipant(), scope, null);
 	Index[] selectedIndexes = job.getIndexes(null);
 	for (int i = 0, l = selectedIndexes.length; i < l; i++) {
@@ -190,10 +190,10 @@ public void ensureIndexExists(IPath indexLocation, IPath containerPath) {
 		getIndex(containerPath, indexLocation, true, true);
 	}
 }
-public SourceElementParser getSourceElementParser(IJavaProject project, ISourceElementRequestor requestor) {
+public SourceElementParser getSourceElementParser(IJavaScriptProject project, ISourceElementRequestor requestor) {
 	// disable task tags to speed up parsing
 	Map options = project.getOptions(true);
-	options.put(JavaCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
+	options.put(JavaScriptCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
 
 	SourceElementParser parser = new IndexingParser(
 		requestor,
@@ -322,7 +322,7 @@ private SimpleLookupTable getIndexStates() {
 private IPath getJavaPluginWorkingLocation() {
 	if (this.javaPluginLocation != null) return this.javaPluginLocation;
 
-	IPath stateLocation = JavaCore.getPlugin().getStateLocation();
+	IPath stateLocation = JavaScriptCore.getPlugin().getStateLocation();
 	return this.javaPluginLocation = stateLocation;
 }
 private File getSavedIndexesDirectory() {
@@ -341,7 +341,7 @@ public void indexDocument(SearchDocument searchDocument, SearchParticipant searc
  * Note: the actual operation is performed in background
  */
 public void indexAll(IProject project) {
-	if (JavaCore.getPlugin() == null) return;
+	if (JavaScriptCore.getPlugin() == null) return;
 
 	// Also request indexing of binaries on the classpath
 	// determine the new children
@@ -351,13 +351,13 @@ public void indexAll(IProject project) {
 		// only consider immediate libraries - each project will do the same
 		// NOTE: force to resolve CP variables before calling indexer - 19303, so that initializers
 		// will be run in the current thread.
-		IClasspathEntry[] entries = javaProject.getResolvedClasspath();
+		IIncludePathEntry[] entries = javaProject.getResolvedClasspath();
 		for (int i = 0; i < entries.length; i++) {
-			IClasspathEntry entry= entries[i];
-			if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY)
+			IIncludePathEntry entry= entries[i];
+			if (entry.getEntryKind() == IIncludePathEntry.CPE_LIBRARY)
 				this.indexLibrary(entry, project);
 		}
-	} catch(JavaModelException e){ // cannot retrieve classpath info
+	} catch(JavaScriptModelException e){ // cannot retrieve classpath info
 	}
 
 	// check if the same request is not already in the queue
@@ -369,9 +369,9 @@ public void indexAll(IProject project) {
  * Trigger addition of a library to an index
  * Note: the actual operation is performed in background
  */
-public void indexLibrary(IClasspathEntry entry, IProject requestingProject) {
+public void indexLibrary(IIncludePathEntry entry, IProject requestingProject) {
 	// requestingProject is no longer used to cancel jobs but leave it here just in case
-	if (JavaCore.getPlugin() == null) return;
+	if (JavaScriptCore.getPlugin() == null) return;
 	IndexRequest request = null;
 	Object target = JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), entry.getPath(), true);
 	if(target instanceof IFolder || (target instanceof File && ((File)target).isDirectory())
@@ -410,8 +410,8 @@ public void indexLibrary(IClasspathEntry entry, IProject requestingProject) {
 
 	public void indexLibrary(LibraryFragmentRoot entry, IProject requestingProject) {
 		try {
-			indexLibrary(entry.getRawClasspathEntry(), requestingProject);
-		} catch (JavaModelException ex) {
+			indexLibrary(entry.getRawIncludepathEntry(), requestingProject);
+		} catch (JavaScriptModelException ex) {
 
 			ex.printStackTrace();
 		}

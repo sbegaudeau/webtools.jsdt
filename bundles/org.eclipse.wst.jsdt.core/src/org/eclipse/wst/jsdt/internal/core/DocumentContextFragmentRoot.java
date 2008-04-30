@@ -13,17 +13,17 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
 import org.eclipse.wst.jsdt.core.IAccessRule;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JSDScopeUtil;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor;
 import org.eclipse.wst.jsdt.internal.core.search.JavaSearchScope;
@@ -44,14 +44,14 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	private IFile fRelativeFile;
 	private IResource absolutePath;
 	private IPath webContext;
-	private IClasspathEntry rawClassPathEntry;
+	private IIncludePathEntry rawClassPathEntry;
 
 	//public static final boolean RETURN_CU = true;
 	private static final boolean DEBUG = false;
 	//private boolean dirty;
 
 	private static int instances=0;
-	private ICompilationUnit[] workingCopies;
+	private IJavaScriptUnit[] workingCopies;
 	private String[] fSystemFiles;
 	private RestrictedDocumentBinding importPolice;
 
@@ -71,16 +71,16 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 
 			if(DEBUG && !shown) {
 				shown=false;
-				IJavaProject proj = getJavaProject();
+				IJavaScriptProject proj = getJavaScriptProject();
 				try {
-					IClasspathEntry[] entries = proj.getResolvedClasspath(true);
+					IIncludePathEntry[] entries = proj.getResolvedIncludepath(true);
 					System.out.println("DocumentContextFragmentRoot ====>" +"Project Classpath : \n"); //$NON-NLS-1$ //$NON-NLS-2$
 
 					for(int i = 0;i<entries.length;i++) {
 						System.out.println("\t" + entries[i].getPath()); //$NON-NLS-1$
 
 					}
-				} catch (JavaModelException ex) {
+				} catch (JavaScriptModelException ex) {
 					// TODO Auto-generated catch block
 					ex.printStackTrace();
 				}
@@ -152,7 +152,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 
 		if(fSystemFiles!=null) return fSystemFiles;
 
-		IJavaProject javaProject = getJavaProject();
+		IJavaScriptProject javaProject = getJavaScriptProject();
 		int lastGood = 0;
 		IPackageFragmentRoot[]  projectRoots = null;
 
@@ -161,11 +161,11 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 			for(int i =0;i<projectRoots.length;i++) {
 				if(projectRoots[i].isLanguageRuntime()) {
 					projectRoots[lastGood++]=projectRoots[i];
-				}else if(projectRoots[i].getRawClasspathEntry().getEntryKind()== IClasspathEntry.CPE_SOURCE) {
+				}else if(projectRoots[i].getRawIncludepathEntry().getEntryKind()== IIncludePathEntry.CPE_SOURCE) {
 					projectRoots[lastGood++]=projectRoots[i];
 				}
 			}
-		} catch (JavaModelException ex) {
+		} catch (JavaScriptModelException ex) {
 			projectRoots = new IPackageFragmentRoot[0];
 		}
 
@@ -183,11 +183,11 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 
 
 
-	public DocumentContextFragmentRoot(IJavaProject project,
+	public DocumentContextFragmentRoot(IJavaScriptProject project,
 									   IFile resourceRelativeFile,
 									   IPath resourceAbsolutePath,
 									   IPath webContext,
-									   IClasspathEntry rawClassPath) {
+									   IIncludePathEntry rawClassPath) {
 
 		super(resourceRelativeFile, (JavaProject)project);
 
@@ -212,9 +212,9 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot#getRawClasspathEntry()
 	 */
-	public IClasspathEntry getRawClasspathEntry() throws JavaModelException {
+	public IIncludePathEntry getRawIncludepathEntry() throws JavaScriptModelException {
 		if(rawClassPathEntry!=null) return rawClassPathEntry;
-		return super.getRawClasspathEntry();
+		return super.getRawIncludepathEntry();
 	}
 
 	protected  RestrictedDocumentBinding getRestrictedAccessRequestor() {
@@ -225,14 +225,14 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		return importPolice;
 	}
 
-	public DocumentContextFragmentRoot(IJavaProject project,
+	public DocumentContextFragmentRoot(IJavaScriptProject project,
 			   IFile resourceRelativeFile,
 			   IPath resourceAbsolutePath,
 			   IPath webContext) {
 		this(project,resourceRelativeFile,resourceAbsolutePath,webContext,null);
 	}
 
-	public DocumentContextFragmentRoot(IJavaProject project,
+	public DocumentContextFragmentRoot(IJavaScriptProject project,
 			   						   IFile resourceRelativeFile) {
 
 			this(project,resourceRelativeFile, new Path(""), new Path("")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -267,12 +267,12 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		}
 		if(equals) return;
 /*  start  try and expand the include paths from the library entries if necisary */
-		IClasspathEntry[] current = new IClasspathEntry[0];
-		IJavaProject javaProject = getJavaProject();
+		IIncludePathEntry[] current = new IIncludePathEntry[0];
+		IJavaScriptProject javaProject = getJavaScriptProject();
 
 		try {
-			current = javaProject.getRawClasspath();
-		} catch (JavaModelException ex) {
+			current = javaProject.getRawIncludepath();
+		} catch (JavaScriptModelException ex) {
 			// TODO Auto-generated catch block
 		//	ex.printStackTrace();
 		}
@@ -387,35 +387,35 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 
 
 		ArrayList newEntriesList = new ArrayList();
-		IJavaProject javaProject = getJavaProject();
+		IJavaScriptProject javaProject = getJavaScriptProject();
 		IResource myResource = getResource();
 		IContainer folder = (IContainer)myResource;
 
 		for(int i = 0;i<includedFiles.length;i++) {
 			IResource theFile = folder.findMember(includedFiles[i]);
-			if(javaProject.isOnClasspath(theFile)) continue;
-			IClasspathEntry entry = JavaCore.newLibraryEntry(theFile.getLocation().makeAbsolute(), null, null, new IAccessRule[0], new IClasspathAttribute[] {IClasspathAttribute.HIDE}, true);
+			if(javaProject.isOnIncludepath(theFile)) continue;
+			IIncludePathEntry entry = JavaScriptCore.newLibraryEntry(theFile.getLocation().makeAbsolute(), null, null, new IAccessRule[0], new IIncludePathAttribute[] {IIncludePathAttribute.HIDE}, true);
 
 			newEntriesList.add(entry);
 		}
-		IClasspathEntry[] current = new IClasspathEntry[0];
+		IIncludePathEntry[] current = new IIncludePathEntry[0];
 		try {
-			current = javaProject.getRawClasspath();
-		} catch (JavaModelException ex) {
+			current = javaProject.getRawIncludepath();
+		} catch (JavaScriptModelException ex) {
 			// TODO Auto-generated catch block
 		//	ex.printStackTrace();
 		}
 
 
-		IClasspathEntry[] newCpEntries = new IClasspathEntry[newEntriesList.size() + current.length];
+		IIncludePathEntry[] newCpEntries = new IIncludePathEntry[newEntriesList.size() + current.length];
 		System.arraycopy(current, 0, newCpEntries, 0, current.length);
 		int newPtr = 0 ;
 		for(int i =  current.length; i<newCpEntries.length;i++) {
-			newCpEntries[i] = (IClasspathEntry)newEntriesList.get(newPtr++);
+			newCpEntries[i] = (IIncludePathEntry)newEntriesList.get(newPtr++);
 		}
 		try {
-			javaProject.setRawClasspath(newCpEntries, false, new NullProgressMonitor());
-		} catch (JavaModelException ex) {}
+			javaProject.setRawIncludepath(newCpEntries, false, new NullProgressMonitor());
+		} catch (JavaScriptModelException ex) {}
 
 	}
 
@@ -532,19 +532,19 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	}
 
 
-	public SearchableEnvironment newSearchableNameEnvironment(WorkingCopyOwner owner) throws JavaModelException {
+	public SearchableEnvironment newSearchableNameEnvironment(WorkingCopyOwner owner) throws JavaScriptModelException {
 		/* previously restricted searchable environment to 'this'.  But that removes library entries from search results so going back to global project */
 		SearchableEnvironment env =  super.newSearchableNameEnvironment(owner);//new SearchableEnvironment((JavaProject)getJavaProject(),this, owner);
-		int includeMask = IJavaSearchScope.SOURCES | IJavaSearchScope.APPLICATION_LIBRARIES | IJavaSearchScope.SYSTEM_LIBRARIES | IJavaSearchScope.REFERENCED_PROJECTS;
+		int includeMask = IJavaScriptSearchScope.SOURCES | IJavaScriptSearchScope.APPLICATION_LIBRARIES | IJavaScriptSearchScope.SYSTEM_LIBRARIES | IJavaScriptSearchScope.REFERENCED_PROJECTS;
 		env.nameLookup.setRestrictedAccessRequestor(getRestrictedAccessRequestor());
-		((JavaSearchScope)env.searchScope).add((JavaProject)getJavaProject(), includeMask, new HashSet(2));
+		((JavaSearchScope)env.searchScope).add((JavaProject)getJavaScriptProject(), includeMask, new HashSet(2));
 		return env;
 	}
 
 	/*
 	 * Returns a new name lookup. This name lookup first looks in the given working copies.
 	 */
-	public NameLookup newNameLookup(ICompilationUnit[] workingCopies) throws JavaModelException {
+	public NameLookup newNameLookup(IJavaScriptUnit[] workingCopies) throws JavaScriptModelException {
 		this.workingCopies = workingCopies;
 		NameLookup lookup = super.newNameLookup(this.workingCopies);
 		lookup.setRestrictedAccessRequestor(getRestrictedAccessRequestor());
@@ -555,14 +555,14 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	/*
 	 * Returns a new name lookup. This name lookup first looks in the working copies of the given owner.
 	 */
-	public NameLookup newNameLookup(WorkingCopyOwner owner) throws JavaModelException {
+	public NameLookup newNameLookup(WorkingCopyOwner owner) throws JavaScriptModelException {
 
 		NameLookup lookup =  super.newNameLookup(owner);
 		lookup.setRestrictedAccessRequestor(getRestrictedAccessRequestor());
 		return lookup;
 //
 //		JavaModelManager manager = JavaModelManager.getJavaModelManager();
-//		ICompilationUnit[] workingCopies = owner == null ? null : manager.getWorkingCopies(owner, true/*add primary WCs*/);
+//		IJavaScriptUnit[] workingCopies = owner == null ? null : manager.getWorkingCopies(owner, true/*add primary WCs*/);
 //		return newNameLookup(workingCopies);
 	}
 
@@ -593,7 +593,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		return null;
 	}
 
-	public int getKind() throws JavaModelException {
+	public int getKind() throws JavaScriptModelException {
 			return IPackageFragmentRoot.K_SOURCE;
 	}
 

@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.UnusedCodeFix;
@@ -44,7 +44,7 @@ public class UnusedCodeCleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean requireAST(ICompilationUnit unit) throws CoreException {
+	public boolean requireAST(IJavaScriptUnit unit) throws CoreException {
 		boolean removeUnuseMembers= isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS);
 		
 		return removeUnuseMembers && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_METHODS) ||
@@ -55,7 +55,7 @@ public class UnusedCodeCleanUp extends AbstractCleanUp {
 //				isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_IMPORTS) && !isEnabled(CleanUpConstants.ORGANIZE_IMPORTS);
 	}
 
-	public IFix createFix(CompilationUnit compilationUnit) throws CoreException {
+	public IFix createFix(JavaScriptUnit compilationUnit) throws CoreException {
 		if (compilationUnit == null)
 			return null;
 		
@@ -75,7 +75,7 @@ public class UnusedCodeCleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IFix createFix(CompilationUnit compilationUnit, IProblemLocation[] problems) throws CoreException {
+	public IFix createFix(JavaScriptUnit compilationUnit, IProblemLocation[] problems) throws CoreException {
 		if (compilationUnit == null)
 			return null;
 		
@@ -94,7 +94,7 @@ public class UnusedCodeCleanUp extends AbstractCleanUp {
 		Map options= new Hashtable();
 		
 		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_IMPORTS) && !isEnabled(CleanUpConstants.ORGANIZE_IMPORTS))
-			options.put(JavaCore.COMPILER_PB_UNUSED_IMPORT, JavaCore.WARNING);
+			options.put(JavaScriptCore.COMPILER_PB_UNUSED_IMPORT, JavaScriptCore.WARNING);
 
 		boolean removeMembers= isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS);
 		if (removeMembers && (
@@ -102,10 +102,10 @@ public class UnusedCodeCleanUp extends AbstractCleanUp {
 				isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_CONSTRUCTORS) || 
 				isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_FELDS) ||
 				isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_TYPES)))
-			options.put(JavaCore.COMPILER_PB_UNUSED_PRIVATE_MEMBER, JavaCore.WARNING);
+			options.put(JavaScriptCore.COMPILER_PB_UNUSED_PRIVATE_MEMBER, JavaScriptCore.WARNING);
 		
 		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_LOCAL_VARIABLES))
-			options.put(JavaCore.COMPILER_PB_UNUSED_LOCAL, JavaCore.WARNING);
+			options.put(JavaScriptCore.COMPILER_PB_UNUSED_LOCAL, JavaScriptCore.WARNING);
 
 		return options;
 	}
@@ -171,7 +171,7 @@ public class UnusedCodeCleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean canFix(CompilationUnit compilationUnit, IProblemLocation problem) throws CoreException {
+	public boolean canFix(JavaScriptUnit compilationUnit, IProblemLocation problem) throws CoreException {
 		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_IMPORTS)) {
 			UnusedCodeFix fix= UnusedCodeFix.createRemoveUnusedImportFix(compilationUnit, problem);
 			if (fix != null)
@@ -193,7 +193,7 @@ public class UnusedCodeCleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int maximalNumberOfFixes(CompilationUnit compilationUnit) {
+	public int maximalNumberOfFixes(JavaScriptUnit compilationUnit) {
 		int result= 0;
 		IProblem[] problems= compilationUnit.getProblems();
 		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_IMPORTS) && !isEnabled(CleanUpConstants.ORGANIZE_IMPORTS)) {

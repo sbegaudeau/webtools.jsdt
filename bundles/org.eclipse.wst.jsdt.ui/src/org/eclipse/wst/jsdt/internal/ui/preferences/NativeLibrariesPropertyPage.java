@@ -30,17 +30,17 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
@@ -53,26 +53,26 @@ public class NativeLibrariesPropertyPage extends PropertyPage implements IStatus
 
 	private NativeLibrariesConfigurationBlock fConfigurationBlock;
 	private boolean fIsValidElement;
-	private IClasspathEntry fEntry;
+	private IIncludePathEntry fEntry;
 	private IPath fContainerPath;
 	
 	/**
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createControl(Composite parent) {
-		IJavaElement elem= getJavaElement();
+		IJavaScriptElement elem= getJavaElement();
 		try {
 			if (elem instanceof IPackageFragmentRoot) {
 				IPackageFragmentRoot root= (IPackageFragmentRoot) elem;
 				
-				IClasspathEntry entry= root.getRawClasspathEntry();
+				IIncludePathEntry entry= root.getRawIncludepathEntry();
 				if (entry == null) {
 					fIsValidElement= false;
 					setDescription(PreferencesMessages.NativeLibrariesPropertyPage_invalidElementSelection_desription); 
 				} else {
-					if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+					if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
 						fContainerPath= entry.getPath();
-						fEntry= handleContainerEntry(fContainerPath, elem.getJavaProject(), root.getPath());
+						fEntry= handleContainerEntry(fContainerPath, elem.getJavaScriptProject(), root.getPath());
 						fIsValidElement= fEntry != null;
 					} else {
 						fContainerPath= null;
@@ -84,16 +84,16 @@ public class NativeLibrariesPropertyPage extends PropertyPage implements IStatus
 				fIsValidElement= false;
 				setDescription(PreferencesMessages.NativeLibrariesPropertyPage_invalidElementSelection_desription); 
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			fIsValidElement= false;
 			setDescription(PreferencesMessages.NativeLibrariesPropertyPage_invalidElementSelection_desription); 
 		}
 		super.createControl(parent);
 	}
 	
-	private IClasspathEntry handleContainerEntry(IPath containerPath, IJavaProject jproject, IPath jarPath) throws JavaModelException {
-		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
-		IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(containerPath, jproject);
+	private IIncludePathEntry handleContainerEntry(IPath containerPath, IJavaScriptProject jproject, IPath jarPath) throws JavaScriptModelException {
+		JsGlobalScopeContainerInitializer initializer= JavaScriptCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
+		IJsGlobalScopeContainer container= JavaScriptCore.getJsGlobalScopeContainer(containerPath, jproject);
 		if (initializer == null || container == null) {
 			setDescription(Messages.format(PreferencesMessages.NativeLibrariesPropertyPage_invalid_container, containerPath.toString()));
 			return null;
@@ -108,7 +108,7 @@ public class NativeLibrariesPropertyPage extends PropertyPage implements IStatus
 			setDescription(Messages.format(PreferencesMessages.NativeLibrariesPropertyPage_read_only, containerName));
 			return null;
 		}
-		IClasspathEntry entry= JavaModelUtil.findEntryInContainer(container, jarPath);
+		IIncludePathEntry entry= JavaModelUtil.findEntryInContainer(container, jarPath);
 		Assert.isNotNull(entry);
 		return entry;
 	}
@@ -120,12 +120,12 @@ public class NativeLibrariesPropertyPage extends PropertyPage implements IStatus
 		if (!fIsValidElement)
 			return new Composite(parent, SWT.NONE);
 		
-		IJavaElement elem= getJavaElement();
+		IJavaScriptElement elem= getJavaElement();
 		if (elem == null)
 			return new Composite(parent, SWT.NONE);
 		
 		String nativeLibPath= null;
-		IClasspathAttribute[] extraAttributes= fEntry.getExtraAttributes();
+		IIncludePathAttribute[] extraAttributes= fEntry.getExtraAttributes();
 		for (int i= 0; i < extraAttributes.length; i++) {
 			if (extraAttributes[i].getName().equals(JavaRuntime.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY)) {
 				nativeLibPath= extraAttributes[i].getValue();
@@ -168,7 +168,7 @@ public class NativeLibrariesPropertyPage extends PropertyPage implements IStatus
 				return true;//no change
 			}
 			
-			IJavaElement elem= getJavaElement();
+			IJavaScriptElement elem= getJavaElement();
 			try {
 				IRunnableWithProgress runnable= getRunnable(getShell(), elem, nativeLibraryPath, fEntry, fContainerPath);
 				PlatformUI.getWorkbench().getProgressService().run(true, true, runnable);
@@ -185,15 +185,15 @@ public class NativeLibrariesPropertyPage extends PropertyPage implements IStatus
 		return true;
 	}
 	
-	private static IRunnableWithProgress getRunnable(final Shell shell, final IJavaElement elem, final String nativeLibraryPath, final IClasspathEntry entry, final IPath containerPath) {
+	private static IRunnableWithProgress getRunnable(final Shell shell, final IJavaScriptElement elem, final String nativeLibraryPath, final IIncludePathEntry entry, final IPath containerPath) {
 		return new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {				
 				try {
-					IJavaProject project= elem.getJavaProject();
+					IJavaScriptProject project= elem.getJavaScriptProject();
 					if (elem instanceof IPackageFragmentRoot) {
 						CPListElement cpElem= CPListElement.createFromExisting(entry, project);
 						cpElem.setAttribute(CPListElement.NATIVE_LIB_PATH, nativeLibraryPath);
-						IClasspathEntry newEntry= cpElem.getClasspathEntry();
+						IIncludePathEntry newEntry= cpElem.getClasspathEntry();
 						String[] changedAttributes= { CPListElement.NATIVE_LIB_PATH };
 						BuildPathSupport.modifyClasspathEntry(shell, newEntry, changedAttributes, project, containerPath, monitor);
 					}
@@ -204,9 +204,9 @@ public class NativeLibrariesPropertyPage extends PropertyPage implements IStatus
 		};
 	}
 	
-	private IJavaElement getJavaElement() {
+	private IJavaScriptElement getJavaElement() {
 		IAdaptable adaptable= getElement();
-		IJavaElement elem= (IJavaElement) adaptable.getAdapter(IJavaElement.class);
+		IJavaScriptElement elem= (IJavaScriptElement) adaptable.getAdapter(IJavaScriptElement.class);
 		if (elem == null) {
 
 			IResource resource= (IResource) adaptable.getAdapter(IResource.class);
@@ -214,13 +214,13 @@ public class NativeLibrariesPropertyPage extends PropertyPage implements IStatus
 			try {
 				if (resource instanceof IFile && ArchiveFileFilter.isArchivePath(resource.getFullPath())) {
 					IProject proj= resource.getProject();
-					if (proj.hasNature(JavaCore.NATURE_ID)) {
-						IJavaProject jproject= JavaCore.create(proj);
+					if (proj.hasNature(JavaScriptCore.NATURE_ID)) {
+						IJavaScriptProject jproject= JavaScriptCore.create(proj);
 						elem= jproject.getPackageFragmentRoot(resource); // create a handle
 					}
 				}
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
 		}
 		return elem;

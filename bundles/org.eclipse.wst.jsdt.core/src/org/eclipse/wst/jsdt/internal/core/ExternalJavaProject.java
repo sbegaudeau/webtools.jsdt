@@ -12,10 +12,10 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 public class ExternalJavaProject extends JavaProject {
 
@@ -24,12 +24,12 @@ public class ExternalJavaProject extends JavaProject {
 	 */
 	public static final String EXTERNAL_PROJECT_NAME = " "; //$NON-NLS-1$
 
-	public ExternalJavaProject(IClasspathEntry[] rawClasspath) {
+	public ExternalJavaProject(IIncludePathEntry[] rawClasspath) {
 		super(ResourcesPlugin.getWorkspace().getRoot().getProject(EXTERNAL_PROJECT_NAME), JavaModelManager.getJavaModelManager().getJavaModel());
 		try {
 			getPerProjectInfo().setClasspath(rawClasspath, defaultOutputLocation(), JavaModelStatus.VERIFIED_OK/*no .classpath format problem*/, null/*no resolved claspath*/, null/*no reverse map*/, null/*no resolve entry map*/, null/*no resolved status*/);
-		} catch (JavaModelException e) {
-			// getPerProjectInfo() never throws JavaModelException for an ExternalJavaProject
+		} catch (JavaScriptModelException e) {
+			// getPerProjectInfo() never throws JavaScriptModelException for an ExternalJavaProject
 		}
 	}
 
@@ -43,18 +43,18 @@ public class ExternalJavaProject extends JavaProject {
 	}
 
 	public String getOption(String optionName, boolean inheritJavaCoreOptions) {
-		if (JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE.equals(optionName)
-				|| JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE.equals(optionName))
-			return JavaCore.IGNORE;
+		if (JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE.equals(optionName)
+				|| JavaScriptCore.COMPILER_PB_DISCOURAGED_REFERENCE.equals(optionName))
+			return JavaScriptCore.IGNORE;
 		return super.getOption(optionName, inheritJavaCoreOptions);
 	}
 
-	public boolean isOnClasspath(IJavaElement element) {
+	public boolean isOnIncludepath(IJavaScriptElement element) {
 		// since project is external, no element is on classpath (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=61013#c16)
 		return false;
 	}
 
-	public boolean isOnClasspath(IResource resource) {
+	public boolean isOnIncludepath(IResource resource) {
 		// since project is external, no resource is on classpath (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=61013#c16)
 		return false;
 	}

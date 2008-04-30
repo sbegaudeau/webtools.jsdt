@@ -41,8 +41,8 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
@@ -88,7 +88,7 @@ public class CreateMultipleSourceFoldersDialog extends TrayDialog {
 		}
 	}
 
-	private final IJavaProject fJavaProject;
+	private final IJavaScriptProject fJavaProject;
 	private final CPListElement[] fExistingElements;
 	private String fOutputLocation;
 	private final HashSet fRemovedElements;
@@ -96,7 +96,7 @@ public class CreateMultipleSourceFoldersDialog extends TrayDialog {
 	private final HashSet fInsertedElements;
 	private final Hashtable fNonExistingFolders;
 
-	public CreateMultipleSourceFoldersDialog(final IJavaProject javaProject, final CPListElement[] existingElements, final String outputLocation, Shell shell) {
+	public CreateMultipleSourceFoldersDialog(final IJavaScriptProject javaProject, final CPListElement[] existingElements, final String outputLocation, Shell shell) {
 		super(shell);
 		fJavaProject= javaProject;
 		fExistingElements= existingElements;
@@ -144,7 +144,7 @@ public class CreateMultipleSourceFoldersDialog extends TrayDialog {
 			
 			protected Object createFolder(final IContainer container) {
 				final Object[] result= new Object[1];
-				final CPListElement newElement= new CPListElement(fJavaProject, IClasspathEntry.CPE_SOURCE);
+				final CPListElement newElement= new CPListElement(fJavaProject, IIncludePathEntry.CPE_SOURCE);
 				final AddSourceFolderWizard wizard= newSourceFolderWizard(newElement, fExistingElements, fOutputLocation, container);
 				AbstractOpenWizardAction action= new AbstractOpenWizardAction() {
 					protected INewWizard createWizard() throws CoreException {
@@ -177,7 +177,7 @@ public class CreateMultipleSourceFoldersDialog extends TrayDialog {
 			Object[] elements= dialog.getResult();	
 			for (int i= 0; i < elements.length; i++) {
 				IResource res= (IResource)elements[i];
-				fInsertedElements.add(new CPListElement(fJavaProject, IClasspathEntry.CPE_SOURCE, res.getFullPath(), res));
+				fInsertedElements.add(new CPListElement(fJavaProject, IIncludePathEntry.CPE_SOURCE, res.getFullPath(), res));
 			}
 
 			if (fExistingElements.length == 1) {

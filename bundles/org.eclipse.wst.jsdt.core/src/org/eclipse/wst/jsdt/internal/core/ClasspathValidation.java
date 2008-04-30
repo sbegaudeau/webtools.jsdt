@@ -12,10 +12,10 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.builder.JavaBuilder;
 
 /*
@@ -39,7 +39,7 @@ public class ClasspathValidation {
 		JavaModelManager.PerProjectInfo perProjectInfo;
 		try {
 			perProjectInfo = this.project.getPerProjectInfo();
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// project doesn't exist
 			IProject resource = this.project.getProject();
 			if (resource.isAccessible()) {
@@ -52,9 +52,9 @@ public class ClasspathValidation {
 		}
 
 		// use synchronized block to ensure consistency
-		IClasspathEntry[] rawClasspath;
+		IIncludePathEntry[] rawClasspath;
 		IPath outputLocation;
-		IJavaModelStatus status;
+		IJavaScriptModelStatus status;
 		synchronized (perProjectInfo) {
 			rawClasspath = perProjectInfo.rawClasspath;
 			outputLocation = perProjectInfo.outputLocation;
@@ -73,7 +73,7 @@ public class ClasspathValidation {
 		 	for (int i = 0; i < rawClasspath.length; i++) {
 				status = ClasspathEntry.validateClasspathEntry(this.project, rawClasspath[i], false/*src attach*/, true /*recurse in container*/);
 				if (!status.isOK()) {
-					if (status.getCode() == IJavaModelStatusConstants.INVALID_CLASSPATH && ((ClasspathEntry) rawClasspath[i]).isOptional())
+					if (status.getCode() == IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH && ((ClasspathEntry) rawClasspath[i]).isOptional())
 						continue; // ignore this entry
 					this.project.createClasspathProblemMarker(status);
 				}

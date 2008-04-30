@@ -25,11 +25,11 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaScriptElementDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptorComment;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JavaRefactoringArguments;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
@@ -81,7 +81,7 @@ public final class RenameSourceFolderProcessor extends JavaRenameProcessor {
 	}
 
 	public Object getNewElement() throws CoreException {
-		IPackageFragmentRoot[] roots= fSourceFolder.getJavaProject().getPackageFragmentRoots();
+		IPackageFragmentRoot[] roots= fSourceFolder.getJavaScriptProject().getPackageFragmentRoots();
 		for (int i= 0; i < roots.length; i++) {
 			if (roots[i].getElementName().equals(getNewElementName()))
 				return roots[i];	
@@ -130,7 +130,7 @@ public final class RenameSourceFolderProcessor extends JavaRenameProcessor {
 		if (result.hasFatalError())
 			return result;
 			
-		IJavaProject project= fSourceFolder.getJavaProject();
+		IJavaScriptProject project= fSourceFolder.getJavaScriptProject();
 		IPath p= project.getProject().getFullPath().append(newName);
 		if (project.findPackageFragmentRoot(p) != null)
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.RenameSourceFolderRefactoring_already_exists); 
@@ -166,7 +166,7 @@ public final class RenameSourceFolderProcessor extends JavaRenameProcessor {
 			final String description= Messages.format(RefactoringCoreMessages.RenameSourceFolderChange_descriptor_description_short, fSourceFolder.getElementName());
 			final String header= Messages.format(RefactoringCoreMessages.RenameSourceFolderChange_descriptor_description, new String[] { resource.getFullPath().toString(), newName});
 			final String comment= new JDTRefactoringDescriptorComment(project, this, header).asString();
-			final RenameJavaElementDescriptor descriptor= new RenameJavaElementDescriptor(IJavaRefactorings.RENAME_SOURCE_FOLDER);
+			final RenameJavaScriptElementDescriptor descriptor= new RenameJavaScriptElementDescriptor(IJavaScriptRefactorings.RENAME_SOURCE_FOLDER);
 			descriptor.setProject(project);
 			descriptor.setDescription(description);
 			descriptor.setComment(comment);
@@ -186,9 +186,9 @@ public final class RenameSourceFolderProcessor extends JavaRenameProcessor {
 			if (path != null) {
 				final IResource resource= ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(path));
 				if (resource == null || !resource.exists())
-					return ScriptableRefactoring.createInputFatalStatus(resource, getRefactoring().getName(), IJavaRefactorings.RENAME_SOURCE_FOLDER);
+					return ScriptableRefactoring.createInputFatalStatus(resource, getRefactoring().getName(), IJavaScriptRefactorings.RENAME_SOURCE_FOLDER);
 				else
-					fSourceFolder= (IPackageFragmentRoot) JavaCore.create(resource);
+					fSourceFolder= (IPackageFragmentRoot) JavaScriptCore.create(resource);
 			} else
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, ATTRIBUTE_PATH));
 			final String name= generic.getAttribute(ATTRIBUTE_NAME);

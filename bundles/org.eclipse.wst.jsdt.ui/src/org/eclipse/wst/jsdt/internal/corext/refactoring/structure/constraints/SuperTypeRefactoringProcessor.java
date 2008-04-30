@@ -36,17 +36,17 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.BindingKey;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -56,13 +56,13 @@ import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -76,7 +76,7 @@ import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
@@ -102,7 +102,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.CodeGeneration;
 
 /**
@@ -269,7 +269,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 		try {
 			monitor.beginTask("", 100); //$NON-NLS-1$
 			monitor.setTaskName(RefactoringCoreMessages.ExtractInterfaceProcessor_creating);
-			final String delimiter= StubUtility.getLineDelimiterUsed(subType.getJavaProject());
+			final String delimiter= StubUtility.getLineDelimiterUsed(subType.getJavaScriptProject());
 			if (JdtFlags.isPublic(subType)) {
 				buffer.append(JdtFlags.VISIBILITY_STRING_PUBLIC);
 				buffer.append(" "); //$NON-NLS-1$
@@ -286,18 +286,18 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 			final IDocument document= new Document(buffer.toString());
 			final ASTParser parser= ASTParser.newParser(AST.JLS3);
 			parser.setSource(document.get().toCharArray());
-			final CompilationUnit unit= (CompilationUnit) parser.createAST(new SubProgressMonitor(monitor, 100));
+			final JavaScriptUnit unit= (JavaScriptUnit) parser.createAST(new SubProgressMonitor(monitor, 100));
 			final ASTRewrite targetRewrite= ASTRewrite.create(unit.getAST());
 			final AbstractTypeDeclaration targetDeclaration= (AbstractTypeDeclaration) unit.types().get(0);
 			createTypeParameters(targetRewrite, subType, sourceDeclaration, targetDeclaration);
 			createMemberDeclarations(sourceRewrite, targetRewrite, targetDeclaration);
-			final TextEdit edit= targetRewrite.rewriteAST(document, subType.getJavaProject().getOptions(true));
+			final TextEdit edit= targetRewrite.rewriteAST(document, subType.getJavaScriptProject().getOptions(true));
 			try {
 				edit.apply(document, TextEdit.UPDATE_REGIONS);
 			} catch (MalformedTreeException exception) {
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 			} catch (BadLocationException exception) {
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 			}
 			buffer.setLength(0);
 			buffer.append(document.get());
@@ -317,7 +317,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 * @throws CoreException
 	 *             if the imports could not be generated
 	 */
-	protected final String createTypeImports(final ICompilationUnit unit, final IProgressMonitor monitor) throws CoreException {
+	protected final String createTypeImports(final IJavaScriptUnit unit, final IProgressMonitor monitor) throws CoreException {
 		Assert.isNotNull(unit);
 		Assert.isNotNull(monitor);
 		try {
@@ -343,11 +343,11 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 			try {
 				rewrite.rewriteImports(new SubProgressMonitor(monitor, 100)).apply(document);
 			} catch (MalformedTreeException exception) {
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 			} catch (BadLocationException exception) {
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 			} catch (CoreException exception) {
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 			}
 			fTypeBindings.clear();
 			fStaticBindings.clear();
@@ -379,7 +379,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 			for (final Iterator iterator= ((TypeDeclaration) sourceDeclaration).typeParameters().iterator(); iterator.hasNext();) {
 				parameter= (TypeParameter) iterator.next();
 				rewrite.insertLast(ASTNode.copySubtree(targetRewrite.getAST(), parameter), null);
-				ImportRewriteUtil.collectImports(subType.getJavaProject(), sourceDeclaration, fTypeBindings, fStaticBindings, false);
+				ImportRewriteUtil.collectImports(subType.getJavaScriptProject(), sourceDeclaration, fTypeBindings, fStaticBindings, false);
 			}
 		}
 	}
@@ -405,7 +405,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 * @throws CoreException
 	 *             if an error occurs
 	 */
-	protected final String createTypeSource(final ICompilationUnit copy, final IType subType, final String superName, final CompilationUnitRewrite sourceRewrite, final AbstractTypeDeclaration declaration, final RefactoringStatus status, final IProgressMonitor monitor) throws CoreException {
+	protected final String createTypeSource(final IJavaScriptUnit copy, final IType subType, final String superName, final CompilationUnitRewrite sourceRewrite, final AbstractTypeDeclaration declaration, final RefactoringStatus status, final IProgressMonitor monitor) throws CoreException {
 		Assert.isNotNull(copy);
 		Assert.isNotNull(subType);
 		Assert.isNotNull(superName);
@@ -417,7 +417,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 		try {
 			monitor.beginTask("", 100); //$NON-NLS-1$
 			monitor.setTaskName(RefactoringCoreMessages.ExtractInterfaceProcessor_creating);
-			final String delimiter= StubUtility.getLineDelimiterUsed(subType.getJavaProject());
+			final String delimiter= StubUtility.getLineDelimiterUsed(subType.getJavaScriptProject());
 			String typeComment= null;
 			String fileComment= null;
 			if (fSettings.createComments) {
@@ -441,15 +441,15 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 				source= buffer.toString();
 			}
 			final IDocument document= new Document(source);
-			final TextEdit edit= CodeFormatterUtil.format2(CodeFormatter.K_COMPILATION_UNIT, source, 0, delimiter, copy.getJavaProject().getOptions(true));
+			final TextEdit edit= CodeFormatterUtil.format2(CodeFormatter.K_JAVASCRIPT_UNIT, source, 0, delimiter, copy.getJavaScriptProject().getOptions(true));
 			if (edit != null) {
 				try {
 					edit.apply(document, TextEdit.UPDATE_REGIONS);
 				} catch (MalformedTreeException exception) {
-					JavaPlugin.log(exception);
+					JavaScriptPlugin.log(exception);
 					status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ExtractInterfaceProcessor_internal_error));
 				} catch (BadLocationException exception) {
-					JavaPlugin.log(exception);
+					JavaScriptPlugin.log(exception);
 					status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ExtractInterfaceProcessor_internal_error));
 				}
 				source= document.get();
@@ -477,13 +477,13 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 * @throws CoreException
 	 *             if the template could not be evaluated
 	 */
-	protected final String createTypeTemplate(final ICompilationUnit unit, final String imports, String fileComment, final String comment, final String content) throws CoreException {
+	protected final String createTypeTemplate(final IJavaScriptUnit unit, final String imports, String fileComment, final String comment, final String content) throws CoreException {
 		Assert.isNotNull(unit);
 		Assert.isNotNull(imports);
 		Assert.isNotNull(content);
 		final IPackageFragment fragment= (IPackageFragment) unit.getParent();
 		final StringBuffer buffer= new StringBuffer();
-		final String delimiter= StubUtility.getLineDelimiterUsed(unit.getJavaProject());
+		final String delimiter= StubUtility.getLineDelimiterUsed(unit.getJavaScriptProject());
 		if (!fragment.isDefaultPackage()) {
 			buffer.append("package " + fragment.getElementName() + ";"); //$NON-NLS-1$ //$NON-NLS-2$
 			buffer.append(delimiter);
@@ -516,16 +516,16 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 * @param fragment
 	 *            the variable declaration fragment
 	 * @return the corresponding field
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *             if an error occurs
 	 */
-	protected final IField getCorrespondingField(final VariableDeclarationFragment fragment) throws JavaModelException {
+	protected final IField getCorrespondingField(final VariableDeclarationFragment fragment) throws JavaScriptModelException {
 		final IBinding binding= fragment.getName().resolveBinding();
 		if (binding instanceof IVariableBinding) {
 			final IVariableBinding variable= (IVariableBinding) binding;
 			if (variable.isField()) {
-				final ICompilationUnit unit= RefactoringASTParser.getCompilationUnit(fragment);
-				final IJavaElement element= unit.getElementAt(fragment.getStartPosition());
+				final IJavaScriptUnit unit= RefactoringASTParser.getCompilationUnit(fragment);
+				final IJavaScriptElement element= unit.getElementAt(fragment.getStartPosition());
 				if (element instanceof IField)
 					return (IField) element;
 			}
@@ -542,16 +542,16 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 *            <code>&ltIJavaProject, Set&ltICompilationUnit&gt&gt</code>)
 	 * @param nodes
 	 *            the ast nodes representing the type occurrences
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *             if an error occurs
 	 */
-	protected final void getFieldReferencingCompilationUnits(final Map units, final ASTNode[] nodes) throws JavaModelException {
+	protected final void getFieldReferencingCompilationUnits(final Map units, final ASTNode[] nodes) throws JavaScriptModelException {
 		ASTNode node= null;
 		IField field= null;
-		IJavaProject project= null;
+		IJavaScriptProject project= null;
 		for (int index= 0; index < nodes.length; index++) {
 			node= nodes[index];
-			project= RefactoringASTParser.getCompilationUnit(node).getJavaProject();
+			project= RefactoringASTParser.getCompilationUnit(node).getJavaScriptProject();
 			if (project != null) {
 				final List fields= getReferencingFields(node, project);
 				for (int offset= 0; offset < fields.size(); offset++) {
@@ -561,7 +561,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 						set= new HashSet();
 						units.put(project, set);
 					}
-					final ICompilationUnit unit= field.getCompilationUnit();
+					final IJavaScriptUnit unit= field.getJavaScriptUnit();
 					if (unit != null)
 						set.add(unit);
 				}
@@ -578,16 +578,16 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 *            <code>&ltIJavaProject, Set&ltICompilationUnit&gt&gt</code>)
 	 * @param nodes
 	 *            the ast nodes representing the type occurrences
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *             if an error occurs
 	 */
-	protected final void getMethodReferencingCompilationUnits(final Map units, final ASTNode[] nodes) throws JavaModelException {
+	protected final void getMethodReferencingCompilationUnits(final Map units, final ASTNode[] nodes) throws JavaScriptModelException {
 		ASTNode node= null;
-		IMethod method= null;
-		IJavaProject project= null;
+		IFunction method= null;
+		IJavaScriptProject project= null;
 		for (int index= 0; index < nodes.length; index++) {
 			node= nodes[index];
-			project= RefactoringASTParser.getCompilationUnit(node).getJavaProject();
+			project= RefactoringASTParser.getCompilationUnit(node).getJavaScriptProject();
 			if (project != null) {
 				method= getReferencingMethod(node);
 				if (method != null) {
@@ -596,7 +596,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 						set= new HashSet();
 						units.put(project, set);
 					}
-					final ICompilationUnit unit= method.getCompilationUnit();
+					final IJavaScriptUnit unit= method.getJavaScriptUnit();
 					if (unit != null)
 						set.add(unit);
 				}
@@ -615,10 +615,10 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 *            the refactoring status
 	 * @return the referenced compilation units (element type:
 	 *         <code>&ltIJavaProject, Collection&ltSearchResultGroup&gt&gt</code>)
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *             if an error occurs
 	 */
-	protected final Map getReferencingCompilationUnits(final IType type, final IProgressMonitor monitor, final RefactoringStatus status) throws JavaModelException {
+	protected final Map getReferencingCompilationUnits(final IType type, final IProgressMonitor monitor, final RefactoringStatus status) throws JavaScriptModelException {
 		try {
 			monitor.beginTask("", 100); //$NON-NLS-1$
 			monitor.setTaskName(RefactoringCoreMessages.SuperTypeRefactoringProcessor_creating);
@@ -627,7 +627,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 			engine.setFiltering(true, true);
 			engine.setStatus(status);
 			engine.setScope(RefactoringScopeFactory.create(type));
-			engine.setPattern(SearchPattern.createPattern(type, IJavaSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE));
+			engine.setPattern(SearchPattern.createPattern(type, IJavaScriptSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE));
 			engine.searchPattern(new SubProgressMonitor(monitor, 100));
 			return engine.getAffectedProjects();
 		} finally {
@@ -643,10 +643,10 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 * @param project
 	 *            the java project
 	 * @return the referencing fields
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *             if an error occurs
 	 */
-	protected final List getReferencingFields(final ASTNode node, final IJavaProject project) throws JavaModelException {
+	protected final List getReferencingFields(final ASTNode node, final IJavaScriptProject project) throws JavaScriptModelException {
 		List result= Collections.EMPTY_LIST;
 		if (node instanceof Type) {
 			final BodyDeclaration parent= (BodyDeclaration) ASTNodes.getParent(node, BodyDeclaration.class);
@@ -671,28 +671,28 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 * @param node
 	 *            the ast node
 	 * @return the referencing method
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *             if an error occurs
 	 */
-	protected final IMethod getReferencingMethod(final ASTNode node) throws JavaModelException {
+	protected final IFunction getReferencingMethod(final ASTNode node) throws JavaScriptModelException {
 		if (node instanceof Type) {
 			final BodyDeclaration parent= (BodyDeclaration) ASTNodes.getParent(node, BodyDeclaration.class);
-			if (parent instanceof MethodDeclaration) {
-				final IMethodBinding binding= ((MethodDeclaration) parent).resolveBinding();
+			if (parent instanceof FunctionDeclaration) {
+				final IFunctionBinding binding= ((FunctionDeclaration) parent).resolveBinding();
 				if (binding != null) {
-					final ICompilationUnit unit= RefactoringASTParser.getCompilationUnit(node);
-					final IJavaElement element= unit.getElementAt(node.getStartPosition());
-					if (element instanceof IMethod)
-						return (IMethod) element;
+					final IJavaScriptUnit unit= RefactoringASTParser.getCompilationUnit(node);
+					final IJavaScriptElement element= unit.getElementAt(node.getStartPosition());
+					if (element instanceof IFunction)
+						return (IFunction) element;
 				}
 			}
 		}
 		return null;
 	}
 
-	protected ICompilationUnit getSharedWorkingCopy(final ICompilationUnit unit, final IProgressMonitor monitor) throws JavaModelException {
+	protected IJavaScriptUnit getSharedWorkingCopy(final IJavaScriptUnit unit, final IProgressMonitor monitor) throws JavaScriptModelException {
 		try {
-			ICompilationUnit copy= unit.findWorkingCopy(fOwner);
+			IJavaScriptUnit copy= unit.findWorkingCopy(fOwner);
 			if (copy == null)
 				copy= unit.getWorkingCopy(fOwner, monitor);
 			return copy;
@@ -739,7 +739,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 * @param monitor
 	 *            the progress monitor to use
 	 */
-	protected final void performFirstPass(final SuperTypeConstraintsCreator creator, final Map units, final Map groups, final ICompilationUnit unit, final CompilationUnit node, final IProgressMonitor monitor) {
+	protected final void performFirstPass(final SuperTypeConstraintsCreator creator, final Map units, final Map groups, final IJavaScriptUnit unit, final JavaScriptUnit node, final IProgressMonitor monitor) {
 		try {
 			monitor.beginTask("", 100); //$NON-NLS-1$
 			monitor.setTaskName(RefactoringCoreMessages.SuperTypeRefactoringProcessor_creating);
@@ -753,8 +753,8 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 					monitor.worked(40);
 					getFieldReferencingCompilationUnits(units, nodes);
 					monitor.worked(40);
-				} catch (JavaModelException exception) {
-					JavaPlugin.log(exception);
+				} catch (JavaScriptModelException exception) {
+					JavaScriptPlugin.log(exception);
 				}
 			}
 		} finally {
@@ -774,7 +774,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 * @param monitor
 	 *            the progress monitor to use
 	 */
-	protected final void performSecondPass(final SuperTypeConstraintsCreator creator, final ICompilationUnit unit, final CompilationUnit node, final IProgressMonitor monitor) {
+	protected final void performSecondPass(final SuperTypeConstraintsCreator creator, final IJavaScriptUnit unit, final JavaScriptUnit node, final IProgressMonitor monitor) {
 		try {
 			monitor.beginTask("", 20); //$NON-NLS-1$
 			monitor.setTaskName(RefactoringCoreMessages.SuperTypeRefactoringProcessor_creating);
@@ -789,9 +789,9 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 * Resets the working copies.
 	 */
 	protected void resetWorkingCopies() {
-		final ICompilationUnit[] units= JavaCore.getWorkingCopies(fOwner);
+		final IJavaScriptUnit[] units= JavaScriptCore.getWorkingCopies(fOwner);
 		for (int index= 0; index < units.length; index++) {
-			final ICompilationUnit unit= units[index];
+			final IJavaScriptUnit unit= units[index];
 			try {
 				unit.discardWorkingCopy();
 			} catch (Exception exception) {
@@ -806,8 +806,8 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 * @param unit
 	 *            the compilation unit to discard
 	 */
-	protected void resetWorkingCopies(final ICompilationUnit unit) {
-		final ICompilationUnit[] units= JavaCore.getWorkingCopies(fOwner);
+	protected void resetWorkingCopies(final IJavaScriptUnit unit) {
+		final IJavaScriptUnit[] units= JavaScriptCore.getWorkingCopies(fOwner);
 		for (int index= 0; index < units.length; index++) {
 			if (!units[index].equals(unit)) {
 				try {
@@ -819,8 +819,8 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 				try {
 					units[index].getBuffer().setContents(unit.getPrimary().getBuffer().getContents());
 					JavaModelUtil.reconcile(units[index]);
-				} catch (JavaModelException exception) {
-					JavaPlugin.log(exception);
+				} catch (JavaScriptModelException exception) {
+					JavaScriptPlugin.log(exception);
 				}
 			}
 		}
@@ -846,10 +846,10 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 * @param group
 	 *            the text edit group to use
 	 */
-	protected final void rewriteTypeOccurrence(final CompilationUnitRange range, final TType estimate, final ASTRequestor requestor, final CompilationUnitRewrite rewrite, final CompilationUnit copy, final Set replacements, final TextEditGroup group) {
+	protected final void rewriteTypeOccurrence(final CompilationUnitRange range, final TType estimate, final ASTRequestor requestor, final CompilationUnitRewrite rewrite, final JavaScriptUnit copy, final Set replacements, final TextEditGroup group) {
 		ASTNode node= null;
 		IBinding binding= null;
-		final CompilationUnit target= rewrite.getRoot();
+		final JavaScriptUnit target= rewrite.getRoot();
 		node= NodeFinder.perform(copy, range.getSourceRange());
 		if (node != null) {
 			node= ASTNodes.getNormalizedNode(node).getParent();
@@ -858,7 +858,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 				node= target.findDeclaringNode(binding.getKey());
 				if (node instanceof SingleVariableDeclaration) {
 					rewriteTypeOccurrence(estimate, rewrite, ((SingleVariableDeclaration) node).getType(), group);
-					if (node.getParent() instanceof MethodDeclaration) {
+					if (node.getParent() instanceof FunctionDeclaration) {
 						binding= ((VariableDeclaration) node).resolveBinding();
 						if (binding != null)
 							replacements.add(binding.getKey());
@@ -869,11 +869,11 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 				node= target.findDeclaringNode(binding.getKey());
 				if (node instanceof VariableDeclarationFragment)
 					rewriteTypeOccurrence(estimate, rewrite, ((VariableDeclarationStatement) ((VariableDeclarationFragment) node).getParent()).getType(), group);
-			} else if (node instanceof MethodDeclaration) {
-				binding= ((MethodDeclaration) node).resolveBinding();
+			} else if (node instanceof FunctionDeclaration) {
+				binding= ((FunctionDeclaration) node).resolveBinding();
 				node= target.findDeclaringNode(binding.getKey());
-				if (node instanceof MethodDeclaration)
-					rewriteTypeOccurrence(estimate, rewrite, ((MethodDeclaration) node).getReturnType2(), group);
+				if (node instanceof FunctionDeclaration)
+					rewriteTypeOccurrence(estimate, rewrite, ((FunctionDeclaration) node).getReturnType2(), group);
 			} else if (node instanceof FieldDeclaration) {
 				binding= ((VariableDeclaration) ((FieldDeclaration) node).fragments().get(0)).resolveBinding();
 				node= target.findDeclaringNode(binding.getKey());
@@ -884,17 +884,17 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 				}
 			} else if (node instanceof ArrayType) {
 				final ASTNode type= node;
-				while (node != null && !(node instanceof MethodDeclaration) && !(node instanceof VariableDeclarationFragment))
+				while (node != null && !(node instanceof FunctionDeclaration) && !(node instanceof VariableDeclarationFragment))
 					node= node.getParent();
 				if (node != null) {
 					final int delta= node.getStartPosition() + node.getLength() - type.getStartPosition();
-					if (node instanceof MethodDeclaration)
-						binding= ((MethodDeclaration) node).resolveBinding();
+					if (node instanceof FunctionDeclaration)
+						binding= ((FunctionDeclaration) node).resolveBinding();
 					else if (node instanceof VariableDeclarationFragment)
 						binding= ((VariableDeclarationFragment) node).resolveBinding();
 					if (binding != null) {
 						node= target.findDeclaringNode(binding.getKey());
-						if (node instanceof MethodDeclaration || node instanceof VariableDeclarationFragment) {
+						if (node instanceof FunctionDeclaration || node instanceof VariableDeclarationFragment) {
 							node= NodeFinder.perform(target, node.getStartPosition() + node.getLength() - delta, 0);
 							if (node instanceof SimpleName)
 								rewriteTypeOccurrence(estimate, rewrite, node, group);
@@ -903,17 +903,17 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 				}
 			} else if (node instanceof QualifiedName) {
 				final ASTNode name= node;
-				while (node != null && !(node instanceof MethodDeclaration) && !(node instanceof VariableDeclarationFragment))
+				while (node != null && !(node instanceof FunctionDeclaration) && !(node instanceof VariableDeclarationFragment))
 					node= node.getParent();
 				if (node != null) {
 					final int delta= node.getStartPosition() + node.getLength() - name.getStartPosition();
-					if (node instanceof MethodDeclaration)
-						binding= ((MethodDeclaration) node).resolveBinding();
+					if (node instanceof FunctionDeclaration)
+						binding= ((FunctionDeclaration) node).resolveBinding();
 					else if (node instanceof VariableDeclarationFragment)
 						binding= ((VariableDeclarationFragment) node).resolveBinding();
 					if (binding != null) {
 						node= target.findDeclaringNode(binding.getKey());
-						if (node instanceof SimpleName || node instanceof MethodDeclaration || node instanceof VariableDeclarationFragment) {
+						if (node instanceof SimpleName || node instanceof FunctionDeclaration || node instanceof VariableDeclarationFragment) {
 							node= NodeFinder.perform(target, node.getStartPosition() + node.getLength() - delta, 0);
 							if (node instanceof SimpleName)
 								rewriteTypeOccurrence(estimate, rewrite, node, group);
@@ -922,13 +922,13 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 				}
 			} else if (node instanceof CastExpression) {
 				final ASTNode expression= node;
-				while (node != null && !(node instanceof MethodDeclaration))
+				while (node != null && !(node instanceof FunctionDeclaration))
 					node= node.getParent();
 				if (node != null) {
 					final int delta= node.getStartPosition() + node.getLength() - expression.getStartPosition();
-					binding= ((MethodDeclaration) node).resolveBinding();
+					binding= ((FunctionDeclaration) node).resolveBinding();
 					node= target.findDeclaringNode(binding.getKey());
-					if (node instanceof MethodDeclaration) {
+					if (node instanceof FunctionDeclaration) {
 						node= NodeFinder.perform(target, node.getStartPosition() + node.getLength() - delta, 0);
 						if (node instanceof CastExpression)
 							rewriteTypeOccurrence(estimate, rewrite, ((CastExpression) node).getType(), group);
@@ -979,7 +979,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 * @throws CoreException
 	 *             if the change could not be generated
 	 */
-	protected abstract void rewriteTypeOccurrences(TextEditBasedChangeManager manager, ASTRequestor requestor, CompilationUnitRewrite rewrite, ICompilationUnit unit, CompilationUnit node, Set replacements, IProgressMonitor monitor) throws CoreException;
+	protected abstract void rewriteTypeOccurrences(TextEditBasedChangeManager manager, ASTRequestor requestor, CompilationUnitRewrite rewrite, IJavaScriptUnit unit, JavaScriptUnit node, Set replacements, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Creates the necessary text edits to replace the subtype occurrences by a
@@ -1004,7 +1004,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 * @param monitor
 	 *            the progress monitor to use
 	 */
-	protected final void rewriteTypeOccurrences(final TextEditBasedChangeManager manager, final ASTRequestor sourceRequestor, final CompilationUnitRewrite sourceRewrite, final ICompilationUnit subUnit, final CompilationUnit subNode, final Set replacements, final RefactoringStatus status, final IProgressMonitor monitor) {
+	protected final void rewriteTypeOccurrences(final TextEditBasedChangeManager manager, final ASTRequestor sourceRequestor, final CompilationUnitRewrite sourceRewrite, final IJavaScriptUnit subUnit, final JavaScriptUnit subNode, final Set replacements, final RefactoringStatus status, final IProgressMonitor monitor) {
 		try {
 			monitor.beginTask("", 300); //$NON-NLS-1$
 			monitor.setTaskName(RefactoringCoreMessages.ExtractInterfaceProcessor_creating);
@@ -1014,11 +1014,11 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 					units.remove(subUnit);
 				final Map projects= new HashMap();
 				Collection collection= null;
-				IJavaProject project= null;
-				ICompilationUnit current= null;
+				IJavaScriptProject project= null;
+				IJavaScriptUnit current= null;
 				for (final Iterator iterator= units.iterator(); iterator.hasNext();) {
-					current= (ICompilationUnit) iterator.next();
-					project= current.getJavaProject();
+					current= (IJavaScriptUnit) iterator.next();
+					project= current.getJavaScriptProject();
 					collection= (Collection) projects.get(project);
 					if (collection == null) {
 						collection= new ArrayList();
@@ -1033,7 +1033,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 					subMonitor.beginTask("", keySet.size() * 100); //$NON-NLS-1$
 					subMonitor.setTaskName(RefactoringCoreMessages.SuperTypeRefactoringProcessor_creating);
 					for (final Iterator iterator= keySet.iterator(); iterator.hasNext();) {
-						project= (IJavaProject) iterator.next();
+						project= (IJavaScriptProject) iterator.next();
 						collection= (Collection) projects.get(project);
 						parser.setWorkingCopyOwner(fOwner);
 						parser.setResolveBindings(true);
@@ -1043,9 +1043,9 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 						try {
 							subsubMonitor.beginTask("", collection.size() * 100 + 200); //$NON-NLS-1$
 							subsubMonitor.setTaskName(RefactoringCoreMessages.SuperTypeRefactoringProcessor_creating);
-							parser.createASTs((ICompilationUnit[]) collection.toArray(new ICompilationUnit[collection.size()]), new String[0], new ASTRequestor() {
+							parser.createASTs((IJavaScriptUnit[]) collection.toArray(new IJavaScriptUnit[collection.size()]), new String[0], new ASTRequestor() {
 
-								public final void acceptAST(final ICompilationUnit unit, final CompilationUnit node) {
+								public final void acceptAST(final IJavaScriptUnit unit, final JavaScriptUnit node) {
 									final IProgressMonitor subsubsubMonitor= new SubProgressMonitor(subsubMonitor, 100);
 									try {
 										subsubsubMonitor.beginTask("", 100); //$NON-NLS-1$
@@ -1129,10 +1129,10 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 	 *            the progress monitor to use
 	 * @param status
 	 *            the refactoring status
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 *             if an error occurs
 	 */
-	protected final void solveSuperTypeConstraints(final ICompilationUnit subUnit, final CompilationUnit subNode, final IType subType, final ITypeBinding subBinding, final ITypeBinding superBinding, final IProgressMonitor monitor, final RefactoringStatus status) throws JavaModelException {
+	protected final void solveSuperTypeConstraints(final IJavaScriptUnit subUnit, final JavaScriptUnit subNode, final IType subType, final ITypeBinding subBinding, final ITypeBinding superBinding, final IProgressMonitor monitor, final RefactoringStatus status) throws JavaScriptModelException {
 		Assert.isNotNull(subType);
 		Assert.isNotNull(subBinding);
 		Assert.isNotNull(superBinding);
@@ -1147,17 +1147,17 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 			monitor.setTaskName(RefactoringCoreMessages.SuperTypeRefactoringProcessor_creating);
 			final Map firstPass= getReferencingCompilationUnits(subType, new SubProgressMonitor(monitor, 100), status);
 			final Map secondPass= new HashMap();
-			IJavaProject project= null;
+			IJavaScriptProject project= null;
 			Collection collection= null;
 			try {
 				final ASTParser parser= ASTParser.newParser(AST.JLS3);
 				Object element= null;
-				ICompilationUnit current= null;
+				IJavaScriptUnit current= null;
 				SearchResultGroup group= null;
 				SearchMatch[] matches= null;
 				final Map groups= new HashMap();
 				for (final Iterator outer= firstPass.keySet().iterator(); outer.hasNext();) {
-					project= (IJavaProject) outer.next();
+					project= (IJavaScriptProject) outer.next();
 					if (level == 3 && !JavaModelUtil.is50OrHigher(project))
 						level= 2;
 					collection= (Collection) firstPass.get(project);
@@ -1168,7 +1168,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 							for (int index= 0; index < matches.length; index++) {
 								element= matches[index].getElement();
 								if (element instanceof IMember) {
-									current= ((IMember) element).getCompilationUnit();
+									current= ((IMember) element).getJavaScriptUnit();
 									if (current != null)
 										groups.put(current, group);
 								}
@@ -1187,7 +1187,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 					subMonitor.beginTask("", keySet.size() * 100); //$NON-NLS-1$
 					subMonitor.setTaskName(RefactoringCoreMessages.SuperTypeRefactoringProcessor_creating);
 					for (final Iterator outer= keySet.iterator(); outer.hasNext();) {
-						project= (IJavaProject) outer.next();
+						project= (IJavaScriptProject) outer.next();
 						collection= (Collection) firstPass.get(project);
 						if (collection != null) {
 							units= new HashSet(collection.size());
@@ -1197,7 +1197,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 								for (int index= 0; index < matches.length; index++) {
 									element= matches[index].getElement();
 									if (element instanceof IMember) {
-										current= ((IMember) element).getCompilationUnit();
+										current= ((IMember) element).getJavaScriptUnit();
 										if (current != null)
 											units.add(current);
 									}
@@ -1222,9 +1222,9 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 										final int count= iteration.size();
 										subsubsubMonitor.beginTask("", count * 100); //$NON-NLS-1$
 										subsubsubMonitor.setTaskName(RefactoringCoreMessages.SuperTypeRefactoringProcessor_creating);
-										parser.createASTs((ICompilationUnit[]) iteration.toArray(new ICompilationUnit[count]), new String[0], new ASTRequestor() {
+										parser.createASTs((IJavaScriptUnit[]) iteration.toArray(new IJavaScriptUnit[count]), new String[0], new ASTRequestor() {
 
-											public final void acceptAST(final ICompilationUnit unit, final CompilationUnit node) {
+											public final void acceptAST(final IJavaScriptUnit unit, final JavaScriptUnit node) {
 												if (!processed.contains(unit)) {
 													performFirstPass(creator, secondPass, groups, unit, node, new SubProgressMonitor(subsubsubMonitor, 100));
 													processed.add(unit);
@@ -1257,7 +1257,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 					subMonitor.beginTask("", keySet.size() * 100); //$NON-NLS-1$
 					subMonitor.setTaskName(RefactoringCoreMessages.SuperTypeRefactoringProcessor_creating);
 					for (final Iterator iterator= keySet.iterator(); iterator.hasNext();) {
-						project= (IJavaProject) iterator.next();
+						project= (IJavaScriptProject) iterator.next();
 						if (level == 3 && !JavaModelUtil.is50OrHigher(project))
 							level= 2;
 						collection= (Collection) secondPass.get(project);
@@ -1270,9 +1270,9 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 							try {
 								subsubMonitor.beginTask("", collection.size() * 100); //$NON-NLS-1$
 								subsubMonitor.setTaskName(RefactoringCoreMessages.SuperTypeRefactoringProcessor_creating);
-								parser.createASTs((ICompilationUnit[]) collection.toArray(new ICompilationUnit[collection.size()]), new String[0], new ASTRequestor() {
+								parser.createASTs((IJavaScriptUnit[]) collection.toArray(new IJavaScriptUnit[collection.size()]), new String[0], new ASTRequestor() {
 
-									public final void acceptAST(final ICompilationUnit unit, final CompilationUnit node) {
+									public final void acceptAST(final IJavaScriptUnit unit, final JavaScriptUnit node) {
 										if (!processed.contains(unit))
 											performSecondPass(creator, unit, node, new SubProgressMonitor(subsubMonitor, 100));
 										else

@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search;
 
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 
-public abstract class AbstractSearchScope implements IJavaSearchScope {
+public abstract class AbstractSearchScope implements IJavaScriptSearchScope {
 
 /**
- * @see IJavaSearchScope#includesBinaries()
+ * @see IJavaScriptSearchScope#includesBinaries()
  * @deprecated
  */
 public boolean includesBinaries() {
@@ -24,7 +24,7 @@ public boolean includesBinaries() {
 }
 
 /**
- * @see IJavaSearchScope#includesClasspaths()
+ * @see IJavaScriptSearchScope#includesClasspaths()
  * @deprecated
  */
 public boolean includesClasspaths() {
@@ -35,10 +35,10 @@ public boolean includesClasspaths() {
  * Process the given delta and refresh its internal state if needed.
  * Returns whether the internal state was refreshed.
  */
-public abstract void processDelta(IJavaElementDelta delta);
+public abstract void processDelta(IJavaScriptElementDelta delta);
 
 /**
- * @see IJavaSearchScope#setIncludesBinaries(boolean)
+ * @see IJavaScriptSearchScope#setIncludesBinaries(boolean)
  * @deprecated
  */
 public void setIncludesBinaries(boolean includesBinaries) {
@@ -46,7 +46,7 @@ public void setIncludesBinaries(boolean includesBinaries) {
 }
 
 /**
- * @see IJavaSearchScope#setIncludesClasspaths(boolean)
+ * @see IJavaScriptSearchScope#setIncludesClasspaths(boolean)
  * @deprecated
  */
 public void setIncludesClasspaths(boolean includesClasspaths) {

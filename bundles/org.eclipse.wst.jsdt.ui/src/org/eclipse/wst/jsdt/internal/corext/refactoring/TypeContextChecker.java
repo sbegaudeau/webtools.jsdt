@@ -26,15 +26,15 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -48,12 +48,12 @@ import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IExtendedModifier;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
@@ -65,8 +65,8 @@ import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeParameter;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
@@ -81,7 +81,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringFileBuff
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeNameMatchCollector;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.JavaTypeCompletionProcessor;
 
 public class TypeContextChecker {
@@ -96,14 +96,14 @@ public class TypeContextChecker {
 
 		private static final String METHOD_NAME= "__$$__"; //$NON-NLS-1$
 
-		private final IMethod fMethod;
+		private final IFunction fMethod;
 		private final StubTypeContext fStubTypeContext;
 		private final List/*<ParameterInfo>*/ fParameterInfos;
 		private final ReturnTypeInfo fReturnTypeInfo;
 
 		private final IProblemVerifier fProblemVerifier;
 
-		public MethodTypesChecker(IMethod method, StubTypeContext stubTypeContext, List/*<ParameterInfo>*/ parameterInfos, ReturnTypeInfo returnTypeInfo, IProblemVerifier problemVerifier) {
+		public MethodTypesChecker(IFunction method, StubTypeContext stubTypeContext, List/*<ParameterInfo>*/ parameterInfos, ReturnTypeInfo returnTypeInfo, IProblemVerifier problemVerifier) {
 			fMethod= method;
 			fStubTypeContext= stubTypeContext;
 			fParameterInfos= parameterInfos;
@@ -114,7 +114,7 @@ public class TypeContextChecker {
 		public RefactoringStatus[] checkAndResolveMethodTypes() throws CoreException {
 			
 			/* ECMA3 no variable or return types */
-			if(!JavaCore.IS_ECMASCRIPT4) return new RefactoringStatus[0];
+			if(!JavaScriptCore.IS_ECMASCRIPT4) return new RefactoringStatus[0];
 			
 			RefactoringStatus[] results= new MethodTypesSyntaxChecker(fMethod, fParameterInfos, fReturnTypeInfo).checkSyntax();
 			for (int i= 0; i < results.length; i++)
@@ -174,14 +174,14 @@ public class TypeContextChecker {
 			cuString.append(fStubTypeContext.getAfterString());
 			
 			// need a working copy to tell the parser where to resolve (package visible) types
-			ICompilationUnit wc= fMethod.getCompilationUnit().getWorkingCopy(new WorkingCopyOwner() {/*subclass*/}, new NullProgressMonitor());
+			IJavaScriptUnit wc= fMethod.getJavaScriptUnit().getWorkingCopy(new WorkingCopyOwner() {/*subclass*/}, new NullProgressMonitor());
 			try {
 				wc.getBuffer().setContents(cuString.toString());
-				CompilationUnit compilationUnit= new RefactoringASTParser(AST.JLS3).parse(wc, true);
+				JavaScriptUnit compilationUnit= new RefactoringASTParser(AST.JLS3).parse(wc, true);
 				ASTNode method= NodeFinder.perform(compilationUnit, offsetBeforeMethodName, METHOD_NAME.length()).getParent();
 				Type[] typeNodes= new Type[types.length];
-				if (method instanceof MethodDeclaration) {
-					MethodDeclaration methodDeclaration= (MethodDeclaration) method;
+				if (method instanceof FunctionDeclaration) {
+					FunctionDeclaration methodDeclaration= (FunctionDeclaration) method;
 					typeNodes[parameterCount]= methodDeclaration.getReturnType2();
 					List/*<SingleVariableDeclaration>*/ parameters= methodDeclaration.parameters();
 					for (int i= 0; i < parameterCount; i++)
@@ -222,7 +222,7 @@ public class TypeContextChecker {
 			return true;
 		}
 
-		private int appendMethodDeclaration(StringBuffer cuString, String[] types, int parameterCount) throws JavaModelException {
+		private int appendMethodDeclaration(StringBuffer cuString, String[] types, int parameterCount) throws JavaScriptModelException {
 			if (Flags.isStatic(fMethod.getFlags()))
 				cuString.append("static "); //$NON-NLS-1$
 
@@ -320,13 +320,13 @@ public class TypeContextChecker {
 			}
 		}
 
-		private static List findTypeInfos(String typeName, IType contextType, IProgressMonitor pm) throws JavaModelException {
-			IJavaSearchScope scope= SearchEngine.createJavaSearchScope(new IJavaProject[]{contextType.getJavaProject()}, true);
+		private static List findTypeInfos(String typeName, IType contextType, IProgressMonitor pm) throws JavaScriptModelException {
+			IJavaScriptSearchScope scope= SearchEngine.createJavaSearchScope(new IJavaScriptProject[]{contextType.getJavaScriptProject()}, true);
 			IPackageFragment currPackage= contextType.getPackageFragment();
 			ArrayList collectedInfos= new ArrayList();
 			TypeNameMatchCollector requestor= new TypeNameMatchCollector(collectedInfos);
 			int matchMode= SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE;
-			new SearchEngine().searchAllTypeNames(null, matchMode, typeName.toCharArray(), matchMode, IJavaSearchConstants.TYPE, scope, requestor, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, pm);
+			new SearchEngine().searchAllTypeNames(null, matchMode, typeName.toCharArray(), matchMode, IJavaScriptSearchConstants.TYPE, scope, requestor, IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, pm);
 			
 			List result= new ArrayList();
 			for (Iterator iter= collectedInfos.iterator(); iter.hasNext();) {
@@ -336,7 +336,7 @@ public class TypeContextChecker {
 					boolean visible=true;
 					try {
 						visible= JavaModelUtil.isVisible(type, currPackage);
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						//Assume visibile if not available
 					}
 					if (visible) {
@@ -351,11 +351,11 @@ public class TypeContextChecker {
 	
 	private static class MethodTypesSyntaxChecker {
 	
-		private final IMethod fMethod;
+		private final IFunction fMethod;
 		private final List/*<ParameterInfo>*/ fParameterInfos;
 		private final ReturnTypeInfo fReturnTypeInfo;
 	
-		public MethodTypesSyntaxChecker(IMethod method, List/*<ParameterInfo>*/ parameterInfos, ReturnTypeInfo returnTypeInfo) {
+		public MethodTypesSyntaxChecker(IFunction method, List/*<ParameterInfo>*/ parameterInfos, ReturnTypeInfo returnTypeInfo) {
 			fMethod= method;
 			fParameterInfos= parameterInfos;
 			fReturnTypeInfo= returnTypeInfo;
@@ -363,7 +363,7 @@ public class TypeContextChecker {
 		
 		public RefactoringStatus[] checkSyntax() {
 			/* No checks for ECMA 3 */
-			if(!JavaCore.IS_ECMASCRIPT4) return new RefactoringStatus[0]; 
+			if(!JavaScriptCore.IS_ECMASCRIPT4) return new RefactoringStatus[0]; 
 			int parameterCount= fParameterInfos.size();
 			RefactoringStatus[] results= new RefactoringStatus[parameterCount + 1];
 			results[parameterCount]= checkReturnTypeSyntax();
@@ -377,7 +377,7 @@ public class TypeContextChecker {
 		private RefactoringStatus checkParameterTypeSyntax(ParameterInfo info) {
 			if (! info.isAdded() && ! info.isTypeNameChanged())
 				return null;
-			return TypeContextChecker.checkParameterTypeSyntax(info.getNewTypeName(), fMethod.getJavaProject());
+			return TypeContextChecker.checkParameterTypeSyntax(info.getNewTypeName(), fMethod.getJavaScriptProject());
 		}
 		
 		private RefactoringStatus checkReturnTypeSyntax() {
@@ -387,7 +387,7 @@ public class TypeContextChecker {
 				return RefactoringStatus.createFatalErrorStatus(msg);
 			}
 			List problemsCollector= new ArrayList(0);
-			Type parsedType= parseType(newTypeName, fMethod.getJavaProject(), problemsCollector);
+			Type parsedType= parseType(newTypeName, fMethod.getJavaScriptProject(), problemsCollector);
 			if (parsedType == null) {
 				String msg= Messages.format(RefactoringCoreMessages.TypeContextChecker_invalid_return_type, new String[]{newTypeName}); 
 				return RefactoringStatus.createFatalErrorStatus(msg);
@@ -416,7 +416,7 @@ public class TypeContextChecker {
 	
 	}
 
-	private static Type parseType(String typeString, IJavaProject javaProject, List/*<IProblem>*/ problemsCollector) {
+	private static Type parseType(String typeString, IJavaScriptProject javaProject, List/*<IProblem>*/ problemsCollector) {
 		if ("".equals(typeString.trim())) //speed up for a common case //$NON-NLS-1$
 			return null;
 		if (! typeString.trim().equals(typeString))
@@ -430,7 +430,7 @@ public class TypeContextChecker {
 		ASTParser p= ASTParser.newParser(AST.JLS3);
 		p.setSource(cuBuff.toString().toCharArray());
 		p.setProject(javaProject);
-		CompilationUnit cu= (CompilationUnit) p.createAST(null);
+		JavaScriptUnit cu= (JavaScriptUnit) p.createAST(null);
 		Selection selection= Selection.createFromStartLength(offset, typeString.length());
 		SelectionAnalyzer analyzer= new SelectionAnalyzer(selection, false);
 		cu.accept(analyzer);
@@ -462,17 +462,17 @@ public class TypeContextChecker {
 			return typeBinding;
 	}
 
-	public static RefactoringStatus[] checkAndResolveMethodTypes(IMethod method, StubTypeContext stubTypeContext, List parameterInfos, ReturnTypeInfo returnTypeInfo, IProblemVerifier problemVerifier) throws CoreException {
+	public static RefactoringStatus[] checkAndResolveMethodTypes(IFunction method, StubTypeContext stubTypeContext, List parameterInfos, ReturnTypeInfo returnTypeInfo, IProblemVerifier problemVerifier) throws CoreException {
 		MethodTypesChecker checker= new MethodTypesChecker(method, stubTypeContext, parameterInfos, returnTypeInfo, problemVerifier);
 		return checker.checkAndResolveMethodTypes();
 	}
 
-	public static RefactoringStatus[] checkMethodTypesSyntax(IMethod method, List parameterInfos, ReturnTypeInfo returnTypeInfo) {
+	public static RefactoringStatus[] checkMethodTypesSyntax(IFunction method, List parameterInfos, ReturnTypeInfo returnTypeInfo) {
 		MethodTypesSyntaxChecker checker= new MethodTypesSyntaxChecker(method, parameterInfos, returnTypeInfo);
 		return checker.checkSyntax();
 	}
 	
-	public static RefactoringStatus checkParameterTypeSyntax(String type, IJavaProject project) {
+	public static RefactoringStatus checkParameterTypeSyntax(String type, IJavaScriptProject project) {
 		String newTypeName= ParameterInfo.stripEllipsis(type.trim()).trim();
 		
 		if ("".equals(newTypeName.trim())){ //$NON-NLS-1$
@@ -505,7 +505,7 @@ public class TypeContextChecker {
 		return result;
 	}
 	
-	public static StubTypeContext createStubTypeContext(ICompilationUnit cu, CompilationUnit root, int focalPosition) throws CoreException {
+	public static StubTypeContext createStubTypeContext(IJavaScriptUnit cu, JavaScriptUnit root, int focalPosition) throws CoreException {
 		IDocument document= RefactoringFileBuffers.acquire(cu).getDocument();
 		try {
 			StringBuffer bufBefore= new StringBuffer();
@@ -542,13 +542,13 @@ public class TypeContextChecker {
 			BodyDeclaration bodyDeclaration= (BodyDeclaration) iter.next();
 			if (! (bodyDeclaration instanceof AbstractTypeDeclaration)) {
 				//account for local classes:
-				if (! (bodyDeclaration instanceof MethodDeclaration))
+				if (! (bodyDeclaration instanceof FunctionDeclaration))
 					continue;
 				int bodyStart= bodyDeclaration.getStartPosition();
 				int bodyEnd= bodyDeclaration.getStartPosition() + bodyDeclaration.getLength();
 				if (! (bodyStart < focalPosition && focalPosition < bodyEnd))
 					continue;
-				MethodDeclaration methodDeclaration= (MethodDeclaration) bodyDeclaration;
+				FunctionDeclaration methodDeclaration= (FunctionDeclaration) bodyDeclaration;
 				buf= bufBefore;
 				appendModifiers(buf, methodDeclaration.modifiers());
 				appendTypeParameters(buf, methodDeclaration.typeParameters());
@@ -670,26 +670,26 @@ public class TypeContextChecker {
 		String epilog= " {} "; //$NON-NLS-1$
 		if (enclosingType != null) {
 			try {
-				ICompilationUnit cu= enclosingType.getCompilationUnit();
+				IJavaScriptUnit cu= enclosingType.getJavaScriptUnit();
 				ISourceRange typeSourceRange= enclosingType.getSourceRange();
 				int focalPosition= typeSourceRange.getOffset() + typeSourceRange.getLength() - 1; // before closing brace
 	
 				ASTParser parser= ASTParser.newParser(AST.JLS3);
 				parser.setSource(cu);
 				parser.setFocalPosition(focalPosition);
-				CompilationUnit compilationUnit= (CompilationUnit) parser.createAST(null);
+				JavaScriptUnit compilationUnit= (JavaScriptUnit) parser.createAST(null);
 	
 				stubTypeContext= createStubTypeContext(cu, compilationUnit, focalPosition);
 				stubTypeContext= new StubTypeContext(stubTypeContext.getCuHandle(),
 						stubTypeContext.getBeforeString() + prolog,
 						epilog + stubTypeContext.getAfterString());
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 				stubTypeContext= new StubTypeContext(null, null, null);
 			}
 			
 		} else if (packageFragment != null) {
-			ICompilationUnit cu= packageFragment.getCompilationUnit(JavaTypeCompletionProcessor.DUMMY_CU_NAME);
+			IJavaScriptUnit cu= packageFragment.getJavaScriptUnit(JavaTypeCompletionProcessor.DUMMY_CU_NAME);
 			stubTypeContext= new StubTypeContext(cu, "package " + packageFragment.getElementName() + ";" + prolog, epilog);  //$NON-NLS-1$//$NON-NLS-2$
 			
 		} else {
@@ -724,7 +724,7 @@ public class TypeContextChecker {
 		Map options= new HashMap();
 		JavaModelUtil.set50CompilanceOptions(options);
 		p.setCompilerOptions(options);
-		CompilationUnit cu= (CompilationUnit) p.createAST(null);
+		JavaScriptUnit cu= (JavaScriptUnit) p.createAST(null);
 		ASTNode selected= NodeFinder.perform(cu, offset, superType.length());
 		if (selected instanceof Name)
 			selected= selected.getParent();
@@ -750,10 +750,10 @@ public class TypeContextChecker {
 		cuString.append(superClassContext.getAfterString());
 		
 		try {
-			ICompilationUnit wc= typeHandle.getCompilationUnit().getWorkingCopy(new WorkingCopyOwner() {/*subclass*/}, new NullProgressMonitor());
+			IJavaScriptUnit wc= typeHandle.getJavaScriptUnit().getWorkingCopy(new WorkingCopyOwner() {/*subclass*/}, new NullProgressMonitor());
 			try {
 				wc.getBuffer().setContents(cuString.toString());
-				CompilationUnit compilationUnit= new RefactoringASTParser(AST.JLS3).parse(wc, true);
+				JavaScriptUnit compilationUnit= new RefactoringASTParser(AST.JLS3).parse(wc, true);
 				ASTNode type= NodeFinder.perform(compilationUnit, superClassContext.getBeforeString().length(),
 						superclass.length());
 				if (type instanceof Type) {
@@ -767,7 +767,7 @@ public class TypeContextChecker {
 			} finally {
 				wc.discardWorkingCopy();
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return null;
 		}
 	}
@@ -788,10 +788,10 @@ public class TypeContextChecker {
 		cuString.append(superInterfaceContext.getAfterString());
 		
 		try {
-			ICompilationUnit wc= typeHandle.getCompilationUnit().getWorkingCopy(new WorkingCopyOwner() {/*subclass*/}, new NullProgressMonitor());
+			IJavaScriptUnit wc= typeHandle.getJavaScriptUnit().getWorkingCopy(new WorkingCopyOwner() {/*subclass*/}, new NullProgressMonitor());
 			try {
 				wc.getBuffer().setContents(cuString.toString());
-				CompilationUnit compilationUnit= new RefactoringASTParser(AST.JLS3).parse(wc, true);
+				JavaScriptUnit compilationUnit= new RefactoringASTParser(AST.JLS3).parse(wc, true);
 				for (int i= 0; i <= last; i++) {
 					ASTNode type= NodeFinder.perform(compilationUnit, interfaceOffsets[i], interfaces[i].length());
 					if (type instanceof Type) {
@@ -810,7 +810,7 @@ public class TypeContextChecker {
 			} finally {
 				wc.discardWorkingCopy();
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// won't happen
 		}
 		return result;

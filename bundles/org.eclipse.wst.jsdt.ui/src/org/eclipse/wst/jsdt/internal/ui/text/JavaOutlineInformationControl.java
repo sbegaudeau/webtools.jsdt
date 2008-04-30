@@ -45,19 +45,19 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.keys.KeySequence;
 import org.eclipse.ui.keys.SWTKeySupport;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
 import org.eclipse.wst.jsdt.internal.corext.util.SuperTypeHierarchyCache;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.CategoryFilterActionGroup;
@@ -66,10 +66,10 @@ import org.eclipse.wst.jsdt.internal.ui.util.StringMatcher;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.MemberFilter;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.OverrideIndicatorLabelDecorator;
 import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
-import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
+import org.eclipse.wst.jsdt.ui.StandardJavaScriptElementContentProvider;
 
 /**
  * Show outline in light-weight control.
@@ -80,7 +80,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 
 	private KeyAdapter fKeyAdapter;
 	private OutlineContentProvider fOutlineContentProvider;
-	private IJavaElement fInput= null;
+	private IJavaScriptElement fInput= null;
 
 	private OutlineSorter fOutlineSorter;
 
@@ -104,7 +104,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 		private boolean fShowDefiningType;
 
 		private OutlineLabelProvider() {
-			super(AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS |  JavaElementLabels.F_APP_TYPE_SIGNATURE | JavaElementLabels.ALL_CATEGORY, AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS);
+			super(AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS |  JavaScriptElementLabels.F_APP_TYPE_SIGNATURE | JavaScriptElementLabels.ALL_CATEGORY, AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS);
 		}
 
 		/*
@@ -117,11 +117,11 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 					IType type= getDefiningType(element);
 					if (type != null) {
 						StringBuffer buf= new StringBuffer(super.getText(type));
-						buf.append(JavaElementLabels.CONCAT_STRING);
+						buf.append(JavaScriptElementLabels.CONCAT_STRING);
 						buf.append(text);
 						return buf.toString();
 					}
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 				}
 			}
 			return text;
@@ -132,12 +132,12 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 		 */
 		public Color getForeground(Object element) {
 			if (fOutlineContentProvider.isShowingInheritedMembers()) {
-				if (element instanceof IJavaElement) {
-					IJavaElement je= (IJavaElement)element;
-					if (fInput.getElementType() == IJavaElement.CLASS_FILE)
-						je= je.getAncestor(IJavaElement.CLASS_FILE);
+				if (element instanceof IJavaScriptElement) {
+					IJavaScriptElement je= (IJavaScriptElement)element;
+					if (fInput.getElementType() == IJavaScriptElement.CLASS_FILE)
+						je= je.getAncestor(IJavaScriptElement.CLASS_FILE);
 					else
-						je= je.getAncestor(IJavaElement.COMPILATION_UNIT);
+						je= je.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 					if (fInput.equals(je)) {
 						return null;
 					}
@@ -155,23 +155,23 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 			return fShowDefiningType;
 		}
 		
-		private IType getDefiningType(Object element) throws JavaModelException {
-			int kind= ((IJavaElement) element).getElementType();
+		private IType getDefiningType(Object element) throws JavaScriptModelException {
+			int kind= ((IJavaScriptElement) element).getElementType();
 		
-			if (kind != IJavaElement.METHOD && kind != IJavaElement.FIELD && kind != IJavaElement.INITIALIZER) {
+			if (kind != IJavaScriptElement.METHOD && kind != IJavaScriptElement.FIELD && kind != IJavaScriptElement.INITIALIZER) {
 				return null;
 			}
 			IType declaringType= ((IMember) element).getDeclaringType();
-			if (kind != IJavaElement.METHOD) {
+			if (kind != IJavaScriptElement.METHOD) {
 				return declaringType;
 			}
 			ITypeHierarchy hierarchy= getSuperTypeHierarchy(declaringType);
 			if (hierarchy == null) {
 				return declaringType;
 			}
-			IMethod method= (IMethod) element;
+			IFunction method= (IFunction) element;
 			MethodOverrideTester tester= new MethodOverrideTester(declaringType, hierarchy);
-			IMethod res= tester.findDeclaringMethod(method, true);
+			IFunction res= tester.findDeclaringMethod(method, true);
 			if (res == null || method.equals(res)) {
 				return declaringType;
 			}
@@ -210,9 +210,9 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 		protected void internalExpandToLevel(Widget node, int level) {
 			if (!fIsFiltering && node instanceof TreeItem && getMatcher() == null) {
 				TreeItem treeItem= (TreeItem)node;
-				if (treeItem.getParentItem() != null && treeItem.getData() instanceof IJavaElement) {
-					IJavaElement je= (IJavaElement) treeItem.getData();
-					if (je.getElementType() == IJavaElement.IMPORT_CONTAINER || isInnerType(je)) {
+				if (treeItem.getParentItem() != null && treeItem.getData() instanceof IJavaScriptElement) {
+					IJavaScriptElement je= (IJavaScriptElement) treeItem.getData();
+					if (je.getElementType() == IJavaScriptElement.IMPORT_CONTAINER || isInnerType(je)) {
 						setExpanded(treeItem, false);
 						return;
 					}
@@ -221,16 +221,16 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 			super.internalExpandToLevel(node, level);
 		}
 
-		private boolean isInnerType(IJavaElement element) {
-			if (element != null && element.getElementType() == IJavaElement.TYPE) {
+		private boolean isInnerType(IJavaScriptElement element) {
+			if (element != null && element.getElementType() == IJavaScriptElement.TYPE) {
 				IType type= (IType)element;
 				try {
 					return type.isMember();
-				} catch (JavaModelException e) {
-					IJavaElement parent= type.getParent();
+				} catch (JavaScriptModelException e) {
+					IJavaScriptElement parent= type.getParent();
 					if (parent != null) {
 						int parentElementType= parent.getElementType();
-						return (parentElementType != IJavaElement.COMPILATION_UNIT && parentElementType != IJavaElement.CLASS_FILE);
+						return (parentElementType != IJavaScriptElement.JAVASCRIPT_UNIT && parentElementType != IJavaScriptElement.CLASS_FILE);
 					}
 				}
 			}
@@ -239,7 +239,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 	}
 
 
-	private class OutlineContentProvider extends StandardJavaElementContentProvider {
+	private class OutlineContentProvider extends StandardJavaScriptElementContentProvider {
 
 		private boolean fShowInheritedMembers;
 
@@ -607,12 +607,12 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 			inputChanged(null, null);
 			return;
 		}
-		IJavaElement je= (IJavaElement)information;
-		ICompilationUnit cu= (ICompilationUnit)je.getAncestor(IJavaElement.COMPILATION_UNIT);
+		IJavaScriptElement je= (IJavaScriptElement)information;
+		IJavaScriptUnit cu= (IJavaScriptUnit)je.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 		if (cu != null)
 			fInput= cu;
 		else
-			fInput= je.getAncestor(IJavaElement.CLASS_FILE);
+			fInput= je.getAncestor(IJavaScriptElement.CLASS_FILE);
 
 		inputChanged(fInput, information);
 		
@@ -650,7 +650,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 
 	protected void toggleShowInheritedMembers() {
 		long flags= fInnerLabelProvider.getTextFlags();
-		flags ^= JavaElementLabels.ALL_POST_QUALIFIED;
+		flags ^= JavaScriptElementLabels.ALL_POST_QUALIFIED;
 		fInnerLabelProvider.setTextFlags(flags);
 		fOutlineContentProvider.toggleShowInheritedMembers();
 		updateStatusFieldText();
@@ -685,7 +685,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 		}
 		
 		boolean ignoreCase= pattern.toLowerCase().equals(pattern);
-		String pattern2= "*" + JavaElementLabels.CONCAT_STRING + pattern; //$NON-NLS-1$
+		String pattern2= "*" + JavaScriptElementLabels.CONCAT_STRING + pattern; //$NON-NLS-1$
 		fStringMatcher= new OrStringMatcher(pattern, pattern2, ignoreCase, false);
 
 		if (update)
@@ -693,12 +693,12 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 		
 	}
 
-	private IJavaElement[] getInputForCategories() {
+	private IJavaScriptElement[] getInputForCategories() {
 		if (fInput == null)
-			return new IJavaElement[0];
+			return new IJavaScriptElement[0];
 		
 		if (fOutlineContentProvider.isShowingInheritedMembers()) {
-			IJavaElement p= fInput;
+			IJavaScriptElement p= fInput;
 			if (p instanceof ITypeRoot) {
 				p= ((ITypeRoot)p).findPrimaryType();
 			}
@@ -706,19 +706,19 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 				p= p.getParent();
 			}
 			if (!(p instanceof IType))
-				return new IJavaElement[] {fInput};
+				return new IJavaScriptElement[] {fInput};
 			
 			ITypeHierarchy hierarchy= getSuperTypeHierarchy((IType)p);
 			if (hierarchy == null)
-				return new IJavaElement[] {fInput};
+				return new IJavaScriptElement[] {fInput};
 			
 			IType[] supertypes= hierarchy.getAllSupertypes((IType)p);
-			IJavaElement[] result= new IJavaElement[supertypes.length + 1];
+			IJavaScriptElement[] result= new IJavaScriptElement[supertypes.length + 1];
 			result[0]= fInput;
 			System.arraycopy(supertypes, 0, result, 1, supertypes.length);
 			return result;
 		} else {
-			return new IJavaElement[] {fInput};
+			return new IJavaScriptElement[] {fInput};
 		}
 	}
 	
@@ -727,7 +727,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 		if (th == null) {
 			try {
 				th= SuperTypeHierarchyCache.getTypeHierarchy(type, getProgressMonitor());
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				return null;
 			} catch (OperationCanceledException e) {
 				return null;
@@ -738,7 +738,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 	}
 
 	private IProgressMonitor getProgressMonitor() {
-		IWorkbenchPage wbPage= JavaPlugin.getActivePage();
+		IWorkbenchPage wbPage= JavaScriptPlugin.getActivePage();
 		if (wbPage == null)
 			return null;
 

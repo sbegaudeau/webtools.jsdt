@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.delegates;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
@@ -21,10 +21,10 @@ import org.eclipse.wst.jsdt.core.dom.ChildPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
-import org.eclipse.wst.jsdt.core.dom.MethodRef;
-import org.eclipse.wst.jsdt.core.dom.MethodRefParameter;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -42,21 +42,21 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 public class DelegateMethodCreator extends DelegateCreator {
 
 	private ASTNode fDelegateInvocation;
-	private MethodRef fDocMethodReference;
+	private FunctionRef fDocMethodReference;
 
 	protected void initialize() {
 
-		Assert.isTrue(getDeclaration() instanceof MethodDeclaration);
+		Assert.isTrue(getDeclaration() instanceof FunctionDeclaration);
 
 		if (getNewElementName() == null)
-			setNewElementName(((MethodDeclaration) getDeclaration()).getName().getIdentifier());
+			setNewElementName(((FunctionDeclaration) getDeclaration()).getName().getIdentifier());
 		
 		setInsertBefore(true); 
 	}
 
-	protected ASTNode createBody(BodyDeclaration bd) throws JavaModelException {
+	protected ASTNode createBody(BodyDeclaration bd) throws JavaScriptModelException {
 
-		MethodDeclaration methodDeclaration= (MethodDeclaration) bd;
+		FunctionDeclaration methodDeclaration= (FunctionDeclaration) bd;
 
 		// interface or abstract method ? => don't create a method body.
 		if (methodDeclaration.getBody() == null)
@@ -65,12 +65,12 @@ public class DelegateMethodCreator extends DelegateCreator {
 		return createDelegateMethodBody(methodDeclaration);
 	}
 
-	protected ASTNode createDocReference(final BodyDeclaration declaration) throws JavaModelException {
-		fDocMethodReference= getAst().newMethodRef();
+	protected ASTNode createDocReference(final BodyDeclaration declaration) throws JavaScriptModelException {
+		fDocMethodReference= getAst().newFunctionRef();
 		fDocMethodReference.setName(getAst().newSimpleName(getNewElementName()));
 		if (isMoveToAnotherFile())
 			fDocMethodReference.setQualifier(createDestinationTypeName());
-		createArguments((MethodDeclaration) declaration, fDocMethodReference.parameters(), false);
+		createArguments((FunctionDeclaration) declaration, fDocMethodReference.parameters(), false);
 		return fDocMethodReference;
 	}
 
@@ -79,16 +79,16 @@ public class DelegateMethodCreator extends DelegateCreator {
 	}
 
 	protected ChildPropertyDescriptor getJavaDocProperty() {
-		return MethodDeclaration.JAVADOC_PROPERTY;
+		return FunctionDeclaration.JAVADOC_PROPERTY;
 	}
 
 	protected ChildPropertyDescriptor getBodyProperty() {
-		return MethodDeclaration.BODY_PROPERTY;
+		return FunctionDeclaration.BODY_PROPERTY;
 	}
 
 	/**
 	 * @return the delegate incovation, either a {@link ConstructorInvocation}
-	 *         or a {@link MethodInvocation}. May be null if the delegate
+	 *         or a {@link FunctionInvocation}. May be null if the delegate
 	 *         method is abstract (and therefore has no body at all)
 	 */
 	public ASTNode getDelegateInvocation() {
@@ -99,7 +99,7 @@ public class DelegateMethodCreator extends DelegateCreator {
 	 * @return the javadoc reference to the old method in the javadoc comment.
 	 * 		   May be null if no comment was created. 
 	 */
-	public MethodRef getJavadocReference() {
+	public FunctionRef getJavadocReference() {
 		return fDocMethodReference;
 	}
 
@@ -113,7 +113,7 @@ public class DelegateMethodCreator extends DelegateCreator {
 	 *            resulting statement
 	 * @return the corresponding statement
 	 */
-	protected Statement createMethodInvocation(final MethodDeclaration declaration, final MethodInvocation invocation) {
+	protected Statement createMethodInvocation(final FunctionDeclaration declaration, final FunctionInvocation invocation) {
 		Assert.isNotNull(declaration);
 		Assert.isNotNull(invocation);
 		Statement statement= null;
@@ -137,11 +137,11 @@ public class DelegateMethodCreator extends DelegateCreator {
 	 * {@inheritDoc}
 	 */
 	protected IBinding getDeclarationBinding() {
-		final MethodDeclaration declaration= (MethodDeclaration) getDeclaration();
+		final FunctionDeclaration declaration= (FunctionDeclaration) getDeclaration();
 		return declaration.resolveBinding();
 	}
 
-	private void createArguments(final MethodDeclaration declaration, final List arguments, boolean methodInvocation) throws JavaModelException {
+	private void createArguments(final FunctionDeclaration declaration, final List arguments, boolean methodInvocation) throws JavaScriptModelException {
 		Assert.isNotNull(declaration);
 		Assert.isNotNull(arguments);
 		SingleVariableDeclaration variable= null;
@@ -155,7 +155,7 @@ public class DelegateMethodCreator extends DelegateCreator {
 				arguments.add(expression);
 			} else {
 				// we are creating type info for the javadoc
-				final MethodRefParameter parameter= getAst().newMethodRefParameter();
+				final FunctionRefParameter parameter= getAst().newFunctionRefParameter();
 				parameter.setType(ASTNodeFactory.newType(getAst(), variable));
 				if ((index == size - 1) && declaration.isVarargs())
 					parameter.setVarargs(true);
@@ -164,10 +164,10 @@ public class DelegateMethodCreator extends DelegateCreator {
 		}
 	}
 
-	private Block createDelegateMethodBody(final MethodDeclaration declaration) throws JavaModelException {
+	private Block createDelegateMethodBody(final FunctionDeclaration declaration) throws JavaScriptModelException {
 		Assert.isNotNull(declaration);
 
-		MethodDeclaration old= (MethodDeclaration) getDeclaration();
+		FunctionDeclaration old= (FunctionDeclaration) getDeclaration();
 		List arguments;
 		Statement call;
 		if (old.isConstructor()) {
@@ -176,7 +176,7 @@ public class DelegateMethodCreator extends DelegateCreator {
 			call= invocation;
 			fDelegateInvocation= invocation;
 		} else {
-			MethodInvocation invocation= getAst().newMethodInvocation();
+			FunctionInvocation invocation= getAst().newFunctionInvocation();
 			invocation.setName(getAst().newSimpleName(getNewElementName()));
 			invocation.setExpression(getAccess());
 			arguments= invocation.arguments();
@@ -197,7 +197,7 @@ public class DelegateMethodCreator extends DelegateCreator {
 	 * @param invocation the method invocation
 	 * @return the corresponding statement
 	 */
-	private ExpressionStatement createExpressionStatement(final MethodInvocation invocation) {
+	private ExpressionStatement createExpressionStatement(final FunctionInvocation invocation) {
 		Assert.isNotNull(invocation);
 		return invocation.getAST().newExpressionStatement(invocation);
 	}
@@ -208,7 +208,7 @@ public class DelegateMethodCreator extends DelegateCreator {
 	 * @param invocation the method invocation to create a return statement for
 	 * @return the corresponding statement
 	 */
-	private ReturnStatement createReturnStatement(final MethodInvocation invocation) {
+	private ReturnStatement createReturnStatement(final FunctionInvocation invocation) {
 		Assert.isNotNull(invocation);
 		final ReturnStatement statement= invocation.getAST().newReturnStatement();
 		statement.setExpression(invocation);

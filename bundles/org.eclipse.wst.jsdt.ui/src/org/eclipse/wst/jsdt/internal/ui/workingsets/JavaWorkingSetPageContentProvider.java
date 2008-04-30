@@ -12,13 +12,13 @@ package org.eclipse.wst.jsdt.internal.ui.workingsets;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.IJavaModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.ui.StandardJavaScriptElementContentProvider;
 
-class JavaWorkingSetPageContentProvider extends StandardJavaElementContentProvider {
+class JavaWorkingSetPageContentProvider extends StandardJavaScriptElementContentProvider {
 	
 	public boolean hasChildren(Object element) {
 
@@ -30,7 +30,7 @@ class JavaWorkingSetPageContentProvider extends StandardJavaElementContentProvid
 			try {
 				if (pkg.getKind() == IPackageFragmentRoot.K_BINARY)
 					return pkg.getChildren().length > 0;
-			} catch (JavaModelException ex) {
+			} catch (JavaScriptModelException ex) {
 				// use super behavior
 			}
 		}
@@ -39,8 +39,8 @@ class JavaWorkingSetPageContentProvider extends StandardJavaElementContentProvid
 
 	public Object[] getChildren(Object parentElement) {
 		try {
-			if (parentElement instanceof IJavaModel) 
-				return concatenate(super.getChildren(parentElement), getNonJavaProjects((IJavaModel)parentElement));
+			if (parentElement instanceof IJavaScriptModel) 
+				return concatenate(super.getChildren(parentElement), getNonJavaProjects((IJavaScriptModel)parentElement));
 			
 			if (parentElement instanceof IProject) 
 				return ((IProject)parentElement).members();
@@ -51,7 +51,7 @@ class JavaWorkingSetPageContentProvider extends StandardJavaElementContentProvid
 		}
 	}
 
-	private Object[] getNonJavaProjects(IJavaModel model) throws JavaModelException {
-		return model.getNonJavaResources();
+	private Object[] getNonJavaProjects(IJavaScriptModel model) throws JavaScriptModelException {
+		return model.getNonJavaScriptResources();
 	}
 }

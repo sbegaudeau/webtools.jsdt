@@ -11,12 +11,12 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.reorg;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 public interface IReorgDestinationValidator {
 
 	public boolean canChildrenBeDestinations(IResource resource);
-	public boolean canChildrenBeDestinations(IJavaElement javaElement);
+	public boolean canChildrenBeDestinations(IJavaScriptElement javaElement);
 	public boolean canElementBeDestination(IResource resource);
-	public boolean canElementBeDestination(IJavaElement javaElement);
+	public boolean canElementBeDestination(IJavaScriptElement javaElement);
 }

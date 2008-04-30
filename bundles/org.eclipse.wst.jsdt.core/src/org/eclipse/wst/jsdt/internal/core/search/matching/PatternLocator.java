@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
@@ -112,7 +112,7 @@ public static PatternLocator patternLocator(SearchPattern pattern) {
 		case IIndexConstants.CONSTRUCTOR_PATTERN :
 			return new ConstructorLocator((ConstructorPattern) pattern);
 		case IIndexConstants.FIELD_PATTERN :
-			IJavaElement element = ((FieldPattern)pattern).getJavaElement();
+			IJavaScriptElement element = ((FieldPattern)pattern).getJavaElement();
 			if (element instanceof IField) {
 				IField field = (IField) element;
 				if (field.getDeclaringType()==null)
@@ -414,7 +414,7 @@ protected void matchLevelAndReportImportRef(ImportReference importRef, Binding b
 /**
  * Reports the match of the given import reference.
  */
-protected void matchReportImportRef(ImportReference importRef, Binding binding, IJavaElement element, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportImportRef(ImportReference importRef, Binding binding, IJavaScriptElement element, int accuracy, MatchLocator locator) throws CoreException {
 	if (locator.encloses(element)) {
 		// default is to report a match as a regular ref.
 		this.matchReportReference(importRef, element, null/*no binding*/, accuracy, locator);
@@ -423,24 +423,24 @@ protected void matchReportImportRef(ImportReference importRef, Binding binding, 
 /**
  * Reports the match of the given reference.
  */
-protected void matchReportReference(ASTNode reference, IJavaElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportReference(ASTNode reference, IJavaScriptElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
 	match = null;
 	int referenceType = referenceType();
 	int offset = reference.sourceStart;
 	switch (referenceType) {
-		case IJavaElement.PACKAGE_FRAGMENT:
+		case IJavaScriptElement.PACKAGE_FRAGMENT:
 			match = locator.newPackageReferenceMatch(element, accuracy, offset, reference.sourceEnd-offset+1, reference);
 			break;
-		case IJavaElement.TYPE:
+		case IJavaScriptElement.TYPE:
 			match = locator.newTypeReferenceMatch(element, elementBinding, accuracy, offset, reference.sourceEnd-offset+1, reference);
 			break;
-		case IJavaElement.FIELD:
+		case IJavaScriptElement.FIELD:
 			match = locator.newFieldReferenceMatch(element, elementBinding, accuracy, offset, reference.sourceEnd-offset+1, reference);
 			break;
-		case IJavaElement.LOCAL_VARIABLE:
+		case IJavaScriptElement.LOCAL_VARIABLE:
 			match = locator.newLocalVariableReferenceMatch(element, accuracy, offset, reference.sourceEnd-offset+1, reference);
 			break;
-		case IJavaElement.TYPE_PARAMETER:
+		case IJavaScriptElement.TYPE_PARAMETER:
 			match = locator.newTypeParameterReferenceMatch(element, accuracy, offset, reference.sourceEnd-offset+1, reference);
 			break;
 	}
@@ -451,16 +451,16 @@ protected void matchReportReference(ASTNode reference, IJavaElement element, Bin
 /**
  * Reports the match of the given reference. Also provide a local element to eventually report in match.
  */
-protected void matchReportReference(ASTNode reference, IJavaElement element, IJavaElement localElement, IJavaElement[] otherElements, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportReference(ASTNode reference, IJavaScriptElement element, IJavaScriptElement localElement, IJavaScriptElement[] otherElements, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
 	matchReportReference(reference, element, elementBinding, accuracy, locator);
 }
 /**
  * Reports the match of the given reference. Also provide a scope to look for potential other elements.
  */
-protected void matchReportReference(ASTNode reference, IJavaElement element, Binding elementBinding, Scope scope, int accuracy, MatchLocator locator) throws CoreException {
+protected void matchReportReference(ASTNode reference, IJavaScriptElement element, Binding elementBinding, Scope scope, int accuracy, MatchLocator locator) throws CoreException {
 	matchReportReference(reference, element, elementBinding, accuracy, locator);
 }
-public SearchMatch newDeclarationMatch(ASTNode reference, IJavaElement element, Binding elementBinding, int accuracy, int length, MatchLocator locator) {
+public SearchMatch newDeclarationMatch(ASTNode reference, IJavaScriptElement element, Binding elementBinding, int accuracy, int length, MatchLocator locator) {
 	int offset=(reference!=null  )?reference.sourceStart : 0;
 	if (reference instanceof AbstractMethodDeclaration) {
 		AbstractMethodDeclaration method = (AbstractMethodDeclaration) reference;
@@ -1012,7 +1012,7 @@ public String toString(){
 	return "SearchPattern"; //$NON-NLS-1$
 }
 
-public int matchMetadataElement(IJavaElement element)
+public int matchMetadataElement(IJavaScriptElement element)
 {
 	return IMPOSSIBLE_MATCH;
 }

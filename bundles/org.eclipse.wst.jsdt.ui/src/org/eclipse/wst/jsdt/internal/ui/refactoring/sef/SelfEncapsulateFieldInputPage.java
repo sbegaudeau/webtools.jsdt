@@ -35,8 +35,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.sef.SelfEncapsulateFieldRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -44,7 +44,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.TextFieldNavigationHandler;
 import org.eclipse.wst.jsdt.internal.ui.preferences.JavaPreferencesSettings;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class SelfEncapsulateFieldInputPage extends UserInputWizardPage {
 
@@ -196,7 +196,7 @@ public class SelfEncapsulateFieldInputPage extends UserInputWizardPage {
 		fSettings= getDialogSettings().getSection(SelfEncapsulateFieldWizard.DIALOG_SETTING_SECTION);
 		if (fSettings == null) {
 			fSettings= getDialogSettings().addNewSection(SelfEncapsulateFieldWizard.DIALOG_SETTING_SECTION);
-			fSettings.put(GENERATE_JAVADOC, JavaPreferencesSettings.getCodeGenerationSettings(fRefactoring.getField().getJavaProject()).createComments);
+			fSettings.put(GENERATE_JAVADOC, JavaPreferencesSettings.getCodeGenerationSettings(fRefactoring.getField().getJavaScriptProject()).createComments);
 		}
 		fRefactoring.setGenerateJavadoc(fSettings.getBoolean(GENERATE_JAVADOC));
 	}	
@@ -294,13 +294,13 @@ public class SelfEncapsulateFieldInputPage extends UserInputWizardPage {
 		int select= 0;
 		combo.add(RefactoringMessages.SelfEncapsulateFieldInputPage_first_method); 
 		try {
-			IMethod[] methods= field.getDeclaringType().getMethods();
+			IFunction[] methods= field.getDeclaringType().getFunctions();
 			for (int i= 0; i < methods.length; i++) {
-				combo.add(JavaElementLabels.getElementLabel(methods[i], JavaElementLabels.M_PARAMETER_TYPES));
+				combo.add(JavaScriptElementLabels.getElementLabel(methods[i], JavaScriptElementLabels.M_PARAMETER_TYPES));
 			}
 			if (methods.length > 0)
 				select= methods.length;
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// Fall through
 		}
 		combo.select(select);
@@ -327,7 +327,7 @@ public class SelfEncapsulateFieldInputPage extends UserInputWizardPage {
 	private boolean needsSetter() {
 		try {
 			return !JdtFlags.isFinal(fRefactoring.getField());
-		} catch(JavaModelException e) {
+		} catch(JavaScriptModelException e) {
 			return true;
 		}
 	}

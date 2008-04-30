@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the extract superclass refactoring.
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class ExtractSuperclassDescriptor extends JavaRefactoringDescriptor {
+public final class ExtractSuperclassDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public ExtractSuperclassDescriptor() {
-		super(IJavaRefactorings.EXTRACT_SUPERCLASS);
+		super(IJavaScriptRefactorings.EXTRACT_SUPERCLASS);
 	}
 }

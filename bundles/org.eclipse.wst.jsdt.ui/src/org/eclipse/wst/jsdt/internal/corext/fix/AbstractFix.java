@@ -21,9 +21,9 @@ import org.eclipse.ltk.core.refactoring.GroupCategory;
 import org.eclipse.ltk.core.refactoring.GroupCategorySet;
 import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
@@ -38,7 +38,7 @@ public abstract class AbstractFix implements IFix {
 	
 	public static abstract class AbstractFixRewriteOperation implements IFixRewriteOperation {
 		
-		protected Type importType(final ITypeBinding toImport, final ASTNode accessor, ImportRewrite imports, final CompilationUnit compilationUnit) {
+		protected Type importType(final ITypeBinding toImport, final ASTNode accessor, ImportRewrite imports, final JavaScriptUnit compilationUnit) {
 			ImportRewriteContext importContext= new ContextSensitiveImportRewriteContext(compilationUnit, accessor.getStartPosition(), imports);
 			return imports.addImport(toImport, compilationUnit.getAST(), importContext);
 		}
@@ -57,14 +57,14 @@ public abstract class AbstractFix implements IFix {
 	}
 	
 	private final String fName;
-	private final ICompilationUnit fCompilationUnit;
+	private final IJavaScriptUnit fCompilationUnit;
 	private final IFixRewriteOperation[] fFixRewrites;
-	private final CompilationUnit fUnit;
+	private final JavaScriptUnit fUnit;
 	private IStatus fStatus;
 	
-	protected AbstractFix(String name, CompilationUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations) {
+	protected AbstractFix(String name, JavaScriptUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations) {
 		fName= name;
-		fCompilationUnit= (ICompilationUnit)compilationUnit.getJavaElement();
+		fCompilationUnit= (IJavaScriptUnit)compilationUnit.getJavaElement();
 		fFixRewrites= fixRewriteOperations;
 		fUnit= compilationUnit;
 		fStatus= StatusInfo.OK_STATUS;
@@ -80,7 +80,7 @@ public abstract class AbstractFix implements IFix {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.corext.fix.IFix#getCompilationUnit()
 	 */
-	public ICompilationUnit getCompilationUnit() {
+	public IJavaScriptUnit getCompilationUnit() {
 		return fCompilationUnit;
 	}
 	

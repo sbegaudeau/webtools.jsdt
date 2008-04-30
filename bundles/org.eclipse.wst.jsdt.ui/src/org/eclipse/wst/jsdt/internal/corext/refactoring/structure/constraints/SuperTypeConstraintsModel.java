@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Name;
@@ -379,7 +379,7 @@ public final class SuperTypeConstraintsModel {
 	 * @param index the index of the parameter
 	 * @return the created method parameter variable
 	 */
-	public final ConstraintVariable2 createMethodParameterVariable(final IMethodBinding method, final int index) {
+	public final ConstraintVariable2 createMethodParameterVariable(final IFunctionBinding method, final int index) {
 		final ITypeBinding[] parameters= method.getParameterTypes();
 		ITypeBinding binding= parameters[Math.min(index, parameters.length - 1)];
 		if (binding.isArray())
@@ -402,7 +402,7 @@ public final class SuperTypeConstraintsModel {
 	 * @param method the method binding
 	 * @return the created return type variable
 	 */
-	public final ConstraintVariable2 createReturnTypeVariable(final IMethodBinding method) {
+	public final ConstraintVariable2 createReturnTypeVariable(final IFunctionBinding method) {
 		if (!method.isConstructor()) {
 			ITypeBinding binding= method.getReturnType();
 			if (binding != null && binding.isArray())
@@ -501,7 +501,7 @@ public final class SuperTypeConstraintsModel {
 				if (!declaring.isFromSource())
 					variable= new ImmutableTypeVariable2(createTType(type));
 			} else {
-				final IMethodBinding declaring= declaration.getDeclaringMethod();
+				final IFunctionBinding declaring= declaration.getDeclaringMethod();
 				if (declaring != null && !declaring.getDeclaringClass().isFromSource())
 					variable= new ImmutableTypeVariable2(createTType(type));
 			}

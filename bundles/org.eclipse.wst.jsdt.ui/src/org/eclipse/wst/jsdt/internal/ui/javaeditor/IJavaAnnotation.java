@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 import java.util.Iterator;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 
 /**
@@ -95,7 +95,7 @@ public interface IJavaAnnotation {
 	 * Returns the compilation unit corresponding to the document on which the annotation is set
 	 * or <code>null</code> if no corresponding compilation unit exists.
 	 */
-	ICompilationUnit getCompilationUnit();
+	IJavaScriptUnit getCompilationUnit();
 
 	/**
 	 * Returns the problem arguments or <code>null</code> if no problem arguments can be evaluated.

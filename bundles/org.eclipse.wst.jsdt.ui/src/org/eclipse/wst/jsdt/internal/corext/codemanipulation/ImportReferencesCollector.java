@@ -15,24 +15,24 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.text.Region;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
-import org.eclipse.wst.jsdt.core.dom.MethodRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
@@ -53,18 +53,18 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 
 public class ImportReferencesCollector extends GenericVisitor {
 
-	public static void collect(ASTNode node, IJavaProject project, Region rangeLimit, Collection resultingTypeImports, Collection resultingStaticImports) {
-		CompilationUnit astRoot= (CompilationUnit) node.getRoot();
+	public static void collect(ASTNode node, IJavaScriptProject project, Region rangeLimit, Collection resultingTypeImports, Collection resultingStaticImports) {
+		JavaScriptUnit astRoot= (JavaScriptUnit) node.getRoot();
 		node.accept(new ImportReferencesCollector(project, astRoot, rangeLimit, resultingTypeImports, resultingStaticImports));
 	}
 	
 	
-	private CompilationUnit fASTRoot;
+	private JavaScriptUnit fASTRoot;
 	private Region fSubRange;
 	private Collection/*<Name>*/ fTypeImports;
 	private Collection/*<Name>*/ fStaticImports;
 
-	private ImportReferencesCollector(IJavaProject project, CompilationUnit astRoot, Region rangeLimit, Collection resultingTypeImports, Collection resultingStaticImports) {
+	private ImportReferencesCollector(IJavaScriptProject project, JavaScriptUnit astRoot, Region rangeLimit, Collection resultingTypeImports, Collection resultingStaticImports) {
 		super(true);
 		fTypeImports= resultingTypeImports;
 		fStaticImports= resultingStaticImports;
@@ -75,13 +75,13 @@ public class ImportReferencesCollector extends GenericVisitor {
 		fASTRoot= astRoot;
 	}
 	
-	public ImportReferencesCollector(IJavaProject project, Region rangeLimit, Collection resultingTypeImports, Collection resultingStaticImports) {
+	public ImportReferencesCollector(IJavaScriptProject project, Region rangeLimit, Collection resultingTypeImports, Collection resultingStaticImports) {
 		this(project, null, rangeLimit, resultingTypeImports, resultingStaticImports);
 	}
 	
-	public CompilationUnit getASTRoot(ASTNode node) {
+	public JavaScriptUnit getASTRoot(ASTNode node) {
 		if (fASTRoot == null) {
-			fASTRoot= (CompilationUnit) node.getRoot();
+			fASTRoot= (JavaScriptUnit) node.getRoot();
 		}
 		return fASTRoot;
 	}
@@ -152,8 +152,8 @@ public class ImportReferencesCollector extends GenericVisitor {
 					fStaticImports.add(name);
 				}
 			}
-		} else if (binding instanceof IMethodBinding) {
-			IMethodBinding methodBinding= ((IMethodBinding) binding).getMethodDeclaration();
+		} else if (binding instanceof IFunctionBinding) {
+			IFunctionBinding methodBinding= ((IFunctionBinding) binding).getMethodDeclaration();
 			ITypeBinding declaringClass= methodBinding.getDeclaringClass();
 			if (declaringClass != null && !declaringClass.isLocal()) {
 				if (new ScopeAnalyzer(getASTRoot(name)).isDeclaredInScope(methodBinding, (SimpleName)name, ScopeAnalyzer.METHODS | ScopeAnalyzer.CHECK_VISIBILITY))
@@ -271,9 +271,9 @@ public class ImportReferencesCollector extends GenericVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#endVisit(MethodInvocation)
+	 * @see ASTVisitor#endVisit(FunctionInvocation)
 	 */
-	public boolean visit(MethodInvocation node) {
+	public boolean visit(FunctionInvocation node) {
 		evalQualifyingExpression(node.getExpression(), node.getName());
 		doVisitChildren(node.typeArguments());
 		doVisitChildren(node.arguments());
@@ -348,9 +348,9 @@ public class ImportReferencesCollector extends GenericVisitor {
 	}
 	
 	/*
-	 * @see ASTVisitor#visit(MethodDeclaration)
+	 * @see ASTVisitor#visit(FunctionDeclaration)
 	 */
-	public boolean visit(MethodDeclaration node) {
+	public boolean visit(FunctionDeclaration node) {
 		if (!isAffected(node)) {
 			return false;
 		}
@@ -403,14 +403,14 @@ public class ImportReferencesCollector extends GenericVisitor {
 		return false;
 	}
 	
-	public boolean visit(MethodRef node) {
+	public boolean visit(FunctionRef node) {
 		Name qualifier= node.getQualifier();
 		if (qualifier != null) {
 			typeRefFound(qualifier);
 		}
 		List list= node.parameters();
 		if (list != null) {
-			doVisitChildren(list); // visit MethodRefParameter with Type
+			doVisitChildren(list); // visit FunctionRefParameter with Type
 		}
 		return false;
 	}

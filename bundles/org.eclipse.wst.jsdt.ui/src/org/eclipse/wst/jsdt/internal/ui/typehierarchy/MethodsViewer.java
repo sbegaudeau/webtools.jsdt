@@ -30,18 +30,18 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.filters.SyntheticMembersFilter;
 import org.eclipse.wst.jsdt.internal.ui.util.JavaUIHelp;
 import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProblemTableViewer;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.actions.MemberFilterActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.OpenAction;
 
@@ -103,9 +103,9 @@ public class MethodsViewer extends ProblemTableViewer {
 		cprovider.showInheritedMethods(on);
 		fShowInheritedMembersAction.setChecked(on);
 		if (on) {
-			fLabelProvider.setTextFlags(fLabelProvider.getTextFlags() | JavaElementLabels.ALL_POST_QUALIFIED);
+			fLabelProvider.setTextFlags(fLabelProvider.getTextFlags() | JavaScriptElementLabels.ALL_POST_QUALIFIED);
 		} else {
-			fLabelProvider.setTextFlags(fLabelProvider.getTextFlags() & ~JavaElementLabels.ALL_POST_QUALIFIED);
+			fLabelProvider.setTextFlags(fLabelProvider.getTextFlags() & ~JavaScriptElementLabels.ALL_POST_QUALIFIED);
 		}
 		if (on) {
 			sortByDefiningTypeNoRedraw(false);
@@ -274,10 +274,10 @@ public class MethodsViewer extends ProblemTableViewer {
 				Object[] currElements= getFilteredChildren(getInput());
 				for (int i= 0; i < oldSelections.size(); i++) {
 					Object curr= oldSelections.get(i);
-					if (curr instanceof IMethod && !newSelections.contains(curr)) {
-						IMethod method= (IMethod) curr;
+					if (curr instanceof IFunction && !newSelections.contains(curr)) {
+						IFunction method= (IFunction) curr;
 						if (method.exists()) {
-							IMethod similar= findSimilarMethod(method, currElements);
+							IFunction similar= findSimilarMethod(method, currElements);
 							if (similar != null) {
 								newSelectionElements.add(similar);
 							}
@@ -289,23 +289,23 @@ public class MethodsViewer extends ProblemTableViewer {
 				} else if (currElements.length > 0) {
 					newSelection= new StructuredSelection(currElements[0]);
 				}
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 			}
 		}
 		setSelection(newSelection);
 		updateSelection(newSelection);
 	}
 	
-	private IMethod findSimilarMethod(IMethod meth, Object[] elements) throws JavaModelException {
+	private IFunction findSimilarMethod(IFunction meth, Object[] elements) throws JavaScriptModelException {
 		String name= meth.getElementName();
 		String[] paramTypes= meth.getParameterTypes();
 		boolean isConstructor= meth.isConstructor();
 		
 		for (int i= 0; i < elements.length; i++) {
 			Object curr= elements[i];
-			if (curr instanceof IMethod && JavaModelUtil.isSameMethodSignature(name, paramTypes, isConstructor, (IMethod) curr)) {
-				return (IMethod) curr;
+			if (curr instanceof IFunction && JavaModelUtil.isSameMethodSignature(name, paramTypes, isConstructor, (IFunction) curr)) {
+				return (IFunction) curr;
 			}
 		}
 		return null;

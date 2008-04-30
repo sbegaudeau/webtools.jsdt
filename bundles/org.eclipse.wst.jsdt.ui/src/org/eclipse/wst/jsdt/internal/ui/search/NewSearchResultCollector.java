@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui.search;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.search.FieldReferenceMatch;
 import org.eclipse.wst.jsdt.core.search.LocalVariableReferenceMatch;
 import org.eclipse.wst.jsdt.core.search.MethodReferenceMatch;
@@ -30,7 +30,7 @@ public class NewSearchResultCollector extends SearchRequestor {
 	}
 	
 	public void acceptSearchMatch(SearchMatch match) throws CoreException {
-		IJavaElement enclosingElement= (IJavaElement) match.getElement();
+		IJavaScriptElement enclosingElement= (IJavaScriptElement) match.getElement();
 		if (enclosingElement != null) {
 			if (fIgnorePotentials && (match.getAccuracy() == SearchMatch.A_INACCURATE))
 				return;

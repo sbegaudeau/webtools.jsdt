@@ -16,15 +16,15 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -75,9 +75,9 @@ public class ReplaceInvocationsAction extends SelectionDispatchAction {
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isReplaceInvocationsAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 		}
 	}
 
@@ -94,7 +94,7 @@ public class ReplaceInvocationsAction extends SelectionDispatchAction {
 	public void selectionChanged(JavaTextSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isReplaceInvocationsAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			setEnabled(false);
 		}
 	}
@@ -106,8 +106,8 @@ public class ReplaceInvocationsAction extends SelectionDispatchAction {
 		try {
 			Assert.isTrue(RefactoringAvailabilityTester.isReplaceInvocationsAvailable(selection));
 			Object first= selection.getFirstElement();
-			Assert.isTrue(first instanceof IMethod);
-			IMethod method= (IMethod) first;
+			Assert.isTrue(first instanceof IFunction);
+			IFunction method= (IFunction) first;
 			if (ActionUtil.isProcessable(getShell(), method))
 				RefactoringExecutionStarter.startReplaceInvocationsRefactoring(method, getShell());
 		} catch (CoreException e) {
@@ -124,13 +124,13 @@ public class ReplaceInvocationsAction extends SelectionDispatchAction {
 	 */
 	public void run(ITextSelection selection) {
 		try {
-			IJavaElement editorInput= SelectionConverter.getInput(fEditor);
+			IJavaScriptElement editorInput= SelectionConverter.getInput(fEditor);
 			if ((editorInput instanceof ITypeRoot)
 					&& ActionUtil.isProcessable(getShell(), editorInput)) {
 				ITypeRoot typeRoot= (ITypeRoot) editorInput;
 				RefactoringExecutionStarter.startReplaceInvocationsRefactoring(typeRoot, selection.getOffset(), selection.getLength(), getShell());
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			handleException(e);
 		}
 	}

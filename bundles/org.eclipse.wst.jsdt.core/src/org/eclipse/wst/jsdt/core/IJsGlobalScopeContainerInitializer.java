@@ -24,11 +24,11 @@ public interface IJsGlobalScopeContainerInitializer {
 	 * <p>
 	 * The initializer is invoked if a container path needs to be resolved for a given project, and no
 	 * value for it was recorded so far. The implementation of the initializer would typically set the
-	 * corresponding container using <code>JavaCore#setJsGlobalScopeContainer</code>.
+	 * corresponding container using <code>JavaScriptCore#setJsGlobalScopeContainer</code>.
 	 * <p>
 	 * A container initialization can be indirectly performed while attempting to resolve a project
-	 * classpath using <code>IJavaProject#getResolvedClasspath(</code>; or directly when using
-	 * <code>JavaCore#getJsGlobalScopeContainer</code>. During the initialization process, any attempt
+	 * classpath using <code>IJavaScriptProject#getResolvedClasspath(</code>; or directly when using
+	 * <code>JavaScriptCore#getJsGlobalScopeContainer</code>. During the initialization process, any attempt
 	 * to further obtain the same container will simply return <code>null</code> so as to avoid an
 	 * infinite regression of initializations.
 	 * <p>
@@ -51,11 +51,11 @@ public interface IJsGlobalScopeContainerInitializer {
 	 * correct functioning of the Java model, the implementation should use
 	 * only the following Java model APIs:
 	 * <ul>
-	 * <li>{@link JavaCore#setJsGlobalScopeContainer(IPath, IJavaProject[], IJsGlobalScopeContainer[], org.eclipse.core.runtime.IProgressMonitor)}</li>
-	 * <li>{@link JavaCore#getJsGlobalScopeContainer(IPath, IJavaProject)}</li>
-	 * <li>{@link JavaCore#create(org.eclipse.core.resources.IWorkspaceRoot)}</li>
-	 * <li>{@link JavaCore#create(org.eclipse.core.resources.IProject)}</li>
-	 * <li>{@link IJavaModel#getJavaProjects()}</li>
+	 * <li>{@link JavaScriptCore#setJsGlobalScopeContainer(IPath, IJavaScriptProject[], IJsGlobalScopeContainer[], org.eclipse.core.runtime.IProgressMonitor)}</li>
+	 * <li>{@link JavaScriptCore#getJsGlobalScopeContainer(IPath, IJavaScriptProject)}</li>
+	 * <li>{@link JavaScriptCore#create(org.eclipse.core.resources.IWorkspaceRoot)}</li>
+	 * <li>{@link JavaScriptCore#create(org.eclipse.core.resources.IProject)}</li>
+	 * <li>{@link IJavaScriptModel#getJavaScriptProjects()}</li>
 	 * <li>Java element operations marked as "handle-only"</li>
 	 * </ul>
 	 * The effects of using other Java model APIs are unspecified.
@@ -67,11 +67,11 @@ public interface IJsGlobalScopeContainerInitializer {
 	 *    This allows generic containers to be bound with project specific values.
 	 * @throws CoreException if an exception occurs during the initialization
 	 *
-	 * @see JavaCore#getJsGlobalScopeContainer(IPath, IJavaProject)
-	 * @see JavaCore#setJsGlobalScopeContainer(IPath, IJavaProject[], IJsGlobalScopeContainer[], org.eclipse.core.runtime.IProgressMonitor)
+	 * @see JavaScriptCore#getJsGlobalScopeContainer(IPath, IJavaScriptProject)
+	 * @see JavaScriptCore#setJsGlobalScopeContainer(IPath, IJavaScriptProject[], IJsGlobalScopeContainer[], org.eclipse.core.runtime.IProgressMonitor)
 	 * @see IJsGlobalScopeContainer
 	 */
-	public abstract void initialize(IPath containerPath, IJavaProject project) throws CoreException;
+	public abstract void initialize(IPath containerPath, IJavaScriptProject project) throws CoreException;
 
 	/**
 	 * Returns <code>true</code> if this container initializer can be requested to perform updates
@@ -83,7 +83,7 @@ public interface IJsGlobalScopeContainerInitializer {
 	 * @return returns <code>true</code> if the container can be updated
 	 * @since 2.1
 	 */
-	public abstract boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaProject project);
+	public abstract boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaScriptProject project);
 
 	/**
 	 * Request a registered container definition to be updated according to a container suggestion. The container suggestion
@@ -93,21 +93,21 @@ public interface IJsGlobalScopeContainerInitializer {
 	 * <p>
 	 * IMPORTANT: In reaction to receiving an update request, a container initializer will update the corresponding
 	 * container definition (after reconciling changes) at its earliest convenience, using
-	 * <code>JavaCore#setJsGlobalScopeContainer(IPath, IJavaProject[], IJsGlobalScopeContainer[], IProgressMonitor)</code>.
+	 * <code>JavaScriptCore#setJsGlobalScopeContainer(IPath, IJavaScriptProject[], IJsGlobalScopeContainer[], IProgressMonitor)</code>.
 	 * Until it does so, the update will not be reflected in the Java Model.
 	 * <p>
 	 * In order to anticipate whether the container initializer allows to update its containers, the predicate
-	 * <code>JavaCore#canUpdateJsGlobalScopeContainer</code> should be used.
+	 * <code>JavaScriptCore#canUpdateJsGlobalScopeContainer</code> should be used.
 	 * <p>
 	 * @param containerPath the path of the container which requires to be updated
 	 * @param project the project for which the container is to be updated
 	 * @param containerSuggestion a suggestion to update the corresponding container definition
-	 * @throws CoreException when <code>JavaCore#setJsGlobalScopeContainer</code> would throw any.
-	 * @see JavaCore#setJsGlobalScopeContainer(IPath, IJavaProject[], IJsGlobalScopeContainer[], org.eclipse.core.runtime.IProgressMonitor)
-	 * @see JsGlobalScopeContainerInitializer#canUpdateJsGlobalScopeContainer(IPath, IJavaProject)
+	 * @throws CoreException when <code>JavaScriptCore#setJsGlobalScopeContainer</code> would throw any.
+	 * @see JavaScriptCore#setJsGlobalScopeContainer(IPath, IJavaScriptProject[], IJsGlobalScopeContainer[], org.eclipse.core.runtime.IProgressMonitor)
+	 * @see JsGlobalScopeContainerInitializer#canUpdateJsGlobalScopeContainer(IPath, IJavaScriptProject)
 	 * @since 2.1
 	 */
-	public abstract void requestJsGlobalScopeContainerUpdate(IPath containerPath, IJavaProject project, IJsGlobalScopeContainer containerSuggestion)
+	public abstract void requestJsGlobalScopeContainerUpdate(IPath containerPath, IJavaScriptProject project, IJsGlobalScopeContainer containerSuggestion)
 			throws CoreException;
 
 	/**
@@ -121,7 +121,7 @@ public interface IJsGlobalScopeContainerInitializer {
 	 * @return a string description of the container
 	 * @since 2.1
 	 */
-	public abstract String getDescription(IPath containerPath, IJavaProject project);
+	public abstract String getDescription(IPath containerPath, IJavaScriptProject project);
 
 	/**
 	 * Returns a classpath container that is used after this initializer failed to bind a classpath container
@@ -139,7 +139,7 @@ public interface IJsGlobalScopeContainerInitializer {
 	 * @return the default failure container, or <code>null</code> if wishing to run the initializer again
 	 * @since 3.3
 	 */
-	public abstract IJsGlobalScopeContainer getFailureContainer(final IPath containerPath, IJavaProject project);
+	public abstract IJsGlobalScopeContainer getFailureContainer(final IPath containerPath, IJavaScriptProject project);
 
 	/**
 	 * Returns an object which identifies a container for comparison purpose. This allows
@@ -154,9 +154,9 @@ public interface IJsGlobalScopeContainerInitializer {
 	 * @return returns an Object identifying the container for comparison
 	 * @since 3.0
 	 */
-	public abstract Object getComparisonID(IPath containerPath, IJavaProject project);
+	public abstract Object getComparisonID(IPath containerPath, IJavaScriptProject project);
 
-	public abstract URI getHostPath(IPath path, IJavaProject project);
+	public abstract URI getHostPath(IPath path, IJavaScriptProject project);
 
 	LibraryLocation getLibraryLocation();
 	/*
@@ -174,5 +174,5 @@ public interface IJsGlobalScopeContainerInitializer {
 	 */
 	String getInferenceID();
 	
-	void removeFromProject(IJavaProject project);
+	void removeFromProject(IJavaScriptProject project);
 }

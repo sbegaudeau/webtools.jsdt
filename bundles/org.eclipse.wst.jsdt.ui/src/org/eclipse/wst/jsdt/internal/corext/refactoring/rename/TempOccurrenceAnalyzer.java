@@ -18,9 +18,9 @@ import java.util.Set;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
@@ -49,7 +49,7 @@ public class TempOccurrenceAnalyzer extends ASTVisitor {
 	}
 	
 	public void perform() {
-		ASTNode cuNode= ASTNodes.getParent(fTempDeclaration, CompilationUnit.class);
+		ASTNode cuNode= ASTNodes.getParent(fTempDeclaration, JavaScriptUnit.class);
 		cuNode.accept(this);
 	}
 	
@@ -94,13 +94,13 @@ public class TempOccurrenceAnalyzer extends ASTVisitor {
 			
 	//------- visit ------ (don't call)
 	
-	public boolean visit(Javadoc node) {
+	public boolean visit(JSdoc node) {
 		if (fAnalyzeJavadoc)
 			fIsInJavadoc= true;
 		return fAnalyzeJavadoc;
 	}
 		
-	public void endVisit(Javadoc node) {
+	public void endVisit(JSdoc node) {
 		fIsInJavadoc= false;
 	}
 	

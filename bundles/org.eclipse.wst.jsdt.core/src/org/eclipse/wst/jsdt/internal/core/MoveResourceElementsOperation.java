@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
 /**
@@ -27,7 +27,7 @@ public class MoveResourceElementsOperation extends CopyResourceElementsOperation
 /**
  * When executed, this operation will move the given elements to the given containers.
  */
-public MoveResourceElementsOperation(IJavaElement[] elementsToMove, IJavaElement[] destContainers, boolean force) {
+public MoveResourceElementsOperation(IJavaScriptElement[] elementsToMove, IJavaScriptElement[] destContainers, boolean force) {
 	super(elementsToMove, destContainers, force);
 }
 /**

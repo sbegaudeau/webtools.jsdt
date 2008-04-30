@@ -12,15 +12,15 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 //import java.util.HashSet;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 
 public class DeclarationOfReferencedMethodsPattern extends MethodPattern {
 
-protected IJavaElement enclosingElement;
+protected IJavaScriptElement enclosingElement;
 protected SimpleSet knownMethods;
 
-public DeclarationOfReferencedMethodsPattern(IJavaElement enclosingElement) {
+public DeclarationOfReferencedMethodsPattern(IJavaScriptElement enclosingElement) {
 	super(false, true, false,null, null, null, null, null, null, null, null, R_PATTERN_MATCH);
 
 	this.enclosingElement = enclosingElement;

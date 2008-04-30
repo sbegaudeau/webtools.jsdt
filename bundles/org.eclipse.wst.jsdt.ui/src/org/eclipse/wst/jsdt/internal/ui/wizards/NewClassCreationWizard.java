@@ -14,8 +14,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.ui.wizards.NewClassWizardPage;
 
@@ -26,7 +26,7 @@ public class NewClassCreationWizard extends NewElementWizard {
 	
 	public NewClassCreationWizard(NewClassWizardPage page, boolean openEditorOnFinish) {
 		setDefaultPageImageDescriptor(JavaPluginImages.DESC_WIZBAN_NEWCLASS);
-		setDialogSettings(JavaPlugin.getDefault().getDialogSettings());
+		setDialogSettings(JavaScriptPlugin.getDefault().getDialogSettings());
 		setWindowTitle(NewWizardMessages.NewClassCreationWizard_title);
 		
 		fPage= page;
@@ -84,7 +84,7 @@ public class NewClassCreationWizard extends NewElementWizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.ui.wizards.NewElementWizard#getCreatedElement()
 	 */
-	public IJavaElement getCreatedElement() {
+	public IJavaScriptElement getCreatedElement() {
 		return fPage.getCreatedType();
 	}
 

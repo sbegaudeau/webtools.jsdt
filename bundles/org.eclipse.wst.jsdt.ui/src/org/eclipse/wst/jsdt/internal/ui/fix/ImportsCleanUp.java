@@ -15,9 +15,9 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
@@ -41,14 +41,14 @@ public class ImportsCleanUp extends AbstractCleanUp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean requireAST(ICompilationUnit unit) throws CoreException {
+	public boolean requireAST(IJavaScriptUnit unit) throws CoreException {
 	    return isEnabled(CleanUpConstants.ORGANIZE_IMPORTS);
 	}
 
 	/**
      * {@inheritDoc}
      */
-    public IFix createFix(final CompilationUnit compilationUnit) throws CoreException {
+    public IFix createFix(final JavaScriptUnit compilationUnit) throws CoreException {
 		return ImportsFix.createCleanUp(compilationUnit, fCodeGeneratorSettings,
 				isEnabled(CleanUpConstants.ORGANIZE_IMPORTS), fStatus);
 	}
@@ -56,14 +56,14 @@ public class ImportsCleanUp extends AbstractCleanUp {
 	/**
      * {@inheritDoc}
      */
-    public IFix createFix(CompilationUnit compilationUnit, IProblemLocation[] problems) throws CoreException {
+    public IFix createFix(JavaScriptUnit compilationUnit, IProblemLocation[] problems) throws CoreException {
 	    return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public RefactoringStatus checkPreConditions(IJavaProject project, ICompilationUnit[] compilationUnits, IProgressMonitor monitor) throws CoreException {
+    public RefactoringStatus checkPreConditions(IJavaScriptProject project, IJavaScriptUnit[] compilationUnits, IProgressMonitor monitor) throws CoreException {
 		RefactoringStatus result= super.checkPreConditions(project, compilationUnits, monitor);
     	
 		if (isEnabled(CleanUpConstants.ORGANIZE_IMPORTS)) {
@@ -121,14 +121,14 @@ public class ImportsCleanUp extends AbstractCleanUp {
 	/**
      * {@inheritDoc}
      */
-    public int maximalNumberOfFixes(CompilationUnit compilationUnit) {
+    public int maximalNumberOfFixes(JavaScriptUnit compilationUnit) {
 	    return -1;
     }
 
 	/**
      * {@inheritDoc}
      */
-    public boolean needsFreshAST(CompilationUnit compilationUnit) {
+    public boolean needsFreshAST(JavaScriptUnit compilationUnit) {
     	if (isEnabled(CleanUpConstants.ORGANIZE_IMPORTS))
 	    	return true;
     	
@@ -138,7 +138,7 @@ public class ImportsCleanUp extends AbstractCleanUp {
 	/**
      * {@inheritDoc}
      */
-    public boolean canFix(CompilationUnit compilationUnit, IProblemLocation problem) throws CoreException {
+    public boolean canFix(JavaScriptUnit compilationUnit, IProblemLocation problem) throws CoreException {
 	    return false;
     }
 

@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
@@ -117,14 +117,14 @@ public class CompilerOptions {
 	public static final String OPTION_Process_Annotations = "org.eclipse.wst.jsdt.core.compiler.processAnnotations"; //$NON-NLS-1$
 
 	/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
-	public static final String OPTION_Unresolved_Type = JavaCore.UNRESOLVED_TYPE_REFERENCE;
-	public static final String OPTION_Unresolved_Field = JavaCore.UNRESOLVED_FIELD_REFERENCE;
-	public static final String OPTION_Unresolved_Method = JavaCore.UNRESOLVED_METHOD_REFERENCE;
+	public static final String OPTION_Unresolved_Type = JavaScriptCore.UNRESOLVED_TYPE_REFERENCE;
+	public static final String OPTION_Unresolved_Field = JavaScriptCore.UNRESOLVED_FIELD_REFERENCE;
+	public static final String OPTION_Unresolved_Method = JavaScriptCore.UNRESOLVED_METHOD_REFERENCE;
 	/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
 
 	/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
-	public static final String OPTION_LOOSE_VAR_DECL = JavaCore.LOOSE_VAR_DECL;
-	public static final String OPTION_OPTIONAL_SEMICOLON = JavaCore.OPTIONAL_SEMICOLON;
+	public static final String OPTION_LOOSE_VAR_DECL = JavaScriptCore.LOOSE_VAR_DECL;
+	public static final String OPTION_OPTIONAL_SEMICOLON = JavaScriptCore.OPTIONAL_SEMICOLON;
 	/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 
 
@@ -265,7 +265,7 @@ public class CompilerOptions {
 		| UnusedLocalVariable
 		| UnusedPrivateMember
 		| UnusedLabel
-		/*| NullReference -- keep JavaCore#getDefaultOptions comment in sync */;
+		/*| NullReference -- keep JavaScriptCore#getDefaultOptions comment in sync */;
 
 	// By default only lines and source attributes are generated.
 	public int produceDebugAttributes = ClassFileConstants.ATTR_SOURCE | ClassFileConstants.ATTR_LINES;

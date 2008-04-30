@@ -21,10 +21,10 @@ import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
@@ -66,8 +66,8 @@ public class ExceptionAnalyzer extends AbstractExceptionAnalyzer {
 		ExceptionAnalyzer analyzer= new ExceptionAnalyzer(selection);
 		enclosingNode.accept(analyzer);
 		List exceptions= analyzer.getCurrentExceptions();
-		if (enclosingNode.getNodeType() == ASTNode.METHOD_DECLARATION) {
-			List thrownExceptions= ((MethodDeclaration)enclosingNode).thrownExceptions();
+		if (enclosingNode.getNodeType() == ASTNode.FUNCTION_DECLARATION) {
+			List thrownExceptions= ((FunctionDeclaration)enclosingNode).thrownExceptions();
 			for (Iterator thrown= thrownExceptions.iterator(); thrown.hasNext();) {
 				ITypeBinding thrownException= ((Name)thrown.next()).resolveTypeBinding();
 				if (thrownException != null) {
@@ -92,7 +92,7 @@ public class ExceptionAnalyzer extends AbstractExceptionAnalyzer {
 		return true;
 	}
 	
-	public boolean visit(MethodInvocation node) {
+	public boolean visit(FunctionInvocation node) {
 		if (!isSelected(node))
 			return false;
 		return handleExceptions(node.resolveMethodBinding(), node.getAST());
@@ -122,7 +122,7 @@ public class ExceptionAnalyzer extends AbstractExceptionAnalyzer {
 		return handleExceptions(node.resolveConstructorBinding(), node.getAST());
 	}	
 
-	private boolean handleExceptions(IMethodBinding binding, AST ast) {
+	private boolean handleExceptions(IFunctionBinding binding, AST ast) {
 		if (binding == null)
 			return true;
 		ITypeBinding[] exceptions= binding.getExceptionTypes();

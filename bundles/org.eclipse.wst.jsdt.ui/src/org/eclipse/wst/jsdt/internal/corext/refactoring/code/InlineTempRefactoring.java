@@ -33,26 +33,26 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.RangeMarker;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -64,7 +64,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
@@ -82,20 +82,20 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParse
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class InlineTempRefactoring extends ScriptableRefactoring {
 
 	private int fSelectionStart;
 	private int fSelectionLength;
-	private ICompilationUnit fCu;
+	private IJavaScriptUnit fCu;
 	
 	//the following fields are set after the construction
 	private VariableDeclaration fVariableDeclaration;
 	private SimpleName[] fReferences;
-	private CompilationUnit fASTRoot;
+	private JavaScriptUnit fASTRoot;
 
 	/**
 	 * Creates a new inline constant refactoring.
@@ -104,7 +104,7 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 	 * @param selectionStart
 	 * @param selectionLength
 	 */
-	public InlineTempRefactoring(ICompilationUnit unit, CompilationUnit node, int selectionStart, int selectionLength) {
+	public InlineTempRefactoring(IJavaScriptUnit unit, JavaScriptUnit node, int selectionStart, int selectionLength) {
 		Assert.isTrue(selectionStart >= 0);
 		Assert.isTrue(selectionLength >= 0);
 		fSelectionStart= selectionStart;
@@ -121,20 +121,20 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 	 * @param selectionStart
 	 * @param selectionLength
 	 */
-	public InlineTempRefactoring(ICompilationUnit unit, int selectionStart, int selectionLength) {
+	public InlineTempRefactoring(IJavaScriptUnit unit, int selectionStart, int selectionLength) {
 		this(unit, null, selectionStart, selectionLength);
 	}
 	
 	public InlineTempRefactoring(VariableDeclaration decl) {
 		fVariableDeclaration= decl;
 		ASTNode astRoot= decl.getRoot();
-		Assert.isTrue(astRoot instanceof CompilationUnit);
-		fASTRoot= (CompilationUnit) astRoot;
-		Assert.isTrue(fASTRoot.getJavaElement() instanceof ICompilationUnit);
+		Assert.isTrue(astRoot instanceof JavaScriptUnit);
+		fASTRoot= (JavaScriptUnit) astRoot;
+		Assert.isTrue(fASTRoot.getJavaElement() instanceof IJavaScriptUnit);
 		
 		fSelectionStart= decl.getStartPosition();
 		fSelectionLength= decl.getLength();
-		fCu= (ICompilationUnit) fASTRoot.getJavaElement();
+		fCu= (IJavaScriptUnit) fASTRoot.getJavaElement();
 	}
 	
 	public RefactoringStatus checkIfTempSelected() {
@@ -148,7 +148,7 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 		return new RefactoringStatus();
 	}	
 	
-	private CompilationUnit getASTRoot() {
+	private JavaScriptUnit getASTRoot() {
 		if (fASTRoot == null) {
 			fASTRoot= RefactoringASTParser.parseWithASTProvider(fCu, true, null);
 		}
@@ -176,7 +176,7 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 		try {
 			pm.beginTask("", 1); //$NON-NLS-1$
 			
-			RefactoringStatus result= Checks.validateModifiesFiles(ResourceUtil.getFiles(new ICompilationUnit[]{fCu}), getValidationContext());
+			RefactoringStatus result= Checks.validateModifiesFiles(ResourceUtil.getFiles(new IJavaScriptUnit[]{fCu}), getValidationContext());
 			if (result.hasFatalError())
 				return result;
 					
@@ -201,7 +201,7 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 
 	private RefactoringStatus checkSelection(VariableDeclaration decl) {
 		ASTNode parent= decl.getParent();
-		if (parent instanceof MethodDeclaration) {
+		if (parent instanceof FunctionDeclaration) {
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.InlineTempRefactoring_method_parameter); 
 		}
 		
@@ -254,22 +254,22 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 			pm.beginTask(RefactoringCoreMessages.InlineTempRefactoring_preview, 2);
 			final Map arguments= new HashMap();
 			String project= null;
-			IJavaProject javaProject= fCu.getJavaProject();
+			IJavaScriptProject javaProject= fCu.getJavaScriptProject();
 			if (javaProject != null)
 				project= javaProject.getElementName();
 			
 			final IVariableBinding binding= getVariableDeclaration().resolveBinding();
 			String text= null;
-			final IMethodBinding method= binding.getDeclaringMethod();
+			final IFunctionBinding method= binding.getDeclaringMethod();
 			if (method != null)
-				text= BindingLabelProvider.getBindingLabel(method, JavaElementLabels.ALL_FULLY_QUALIFIED);
+				text= BindingLabelProvider.getBindingLabel(method, JavaScriptElementLabels.ALL_FULLY_QUALIFIED);
 			else
-				text= '{' + JavaElementLabels.ELLIPSIS_STRING + '}';
+				text= '{' + JavaScriptElementLabels.ELLIPSIS_STRING + '}';
 			final String description= Messages.format(RefactoringCoreMessages.InlineTempRefactoring_descriptor_description_short, binding.getName());
-			final String header= Messages.format(RefactoringCoreMessages.InlineTempRefactoring_descriptor_description, new String[] { BindingLabelProvider.getBindingLabel(binding, JavaElementLabels.ALL_FULLY_QUALIFIED), text});
+			final String header= Messages.format(RefactoringCoreMessages.InlineTempRefactoring_descriptor_description, new String[] { BindingLabelProvider.getBindingLabel(binding, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), text});
 			final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
-			comment.addSetting(Messages.format(RefactoringCoreMessages.InlineTempRefactoring_original_pattern, BindingLabelProvider.getBindingLabel(binding, JavaElementLabels.ALL_FULLY_QUALIFIED)));
-			final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaRefactorings.INLINE_LOCAL_VARIABLE, project, description, comment.asString(), arguments, RefactoringDescriptor.NONE);
+			comment.addSetting(Messages.format(RefactoringCoreMessages.InlineTempRefactoring_original_pattern, BindingLabelProvider.getBindingLabel(binding, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)));
+			final JDTRefactoringDescriptor descriptor= new JDTRefactoringDescriptor(IJavaScriptRefactorings.INLINE_LOCAL_VARIABLE, project, description, comment.asString(), arguments, RefactoringDescriptor.NONE);
 			arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_INPUT, descriptor.elementToHandle(fCu));
 			arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_SELECTION, String.valueOf(fSelectionStart) + ' ' + String.valueOf(fSelectionLength));
 			
@@ -286,7 +286,7 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 		}
 	}
 
-	private void inlineTemp(CompilationUnitRewrite cuRewrite) throws JavaModelException {
+	private void inlineTemp(CompilationUnitRewrite cuRewrite) throws JavaScriptModelException {
 		SimpleName[] references= getReferences();
 
 		TextEditGroup groupDesc= cuRewrite.createGroupDescription(RefactoringCoreMessages.InlineTempRefactoring_inline_edit_name);
@@ -308,7 +308,7 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
     }
     
 
-	private void removeTemp(CompilationUnitRewrite cuRewrite) throws JavaModelException {
+	private void removeTemp(CompilationUnitRewrite cuRewrite) throws JavaScriptModelException {
 		VariableDeclaration variableDeclaration= getVariableDeclaration();
 		TextEditGroup groupDesc= cuRewrite.createGroupDescription(RefactoringCoreMessages.InlineTempRefactoring_remove_edit_name);
 		ASTNode parent= variableDeclaration.getParent();
@@ -320,7 +320,7 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 		}
 	}
 	
-	private Expression getInitializerSource(CompilationUnitRewrite rewrite, SimpleName reference) throws JavaModelException {
+	private Expression getInitializerSource(CompilationUnitRewrite rewrite, SimpleName reference) throws JavaScriptModelException {
 		Expression copy= getModifiedInitializerSource(rewrite, reference);
 		boolean brackets= needsBrackets(reference, getVariableDeclaration());
 		if (brackets) {
@@ -331,7 +331,7 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 		return copy;
 	}
 	
-	private Expression getModifiedInitializerSource(CompilationUnitRewrite rewrite, SimpleName reference) throws JavaModelException {
+	private Expression getModifiedInitializerSource(CompilationUnitRewrite rewrite, SimpleName reference) throws JavaScriptModelException {
 		VariableDeclaration varDecl= getVariableDeclaration();
 		Expression initializer= varDecl.getInitializer();
 		
@@ -341,7 +341,7 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 				if (! (referenceContext instanceof VariableDeclarationFragment
 						|| referenceContext instanceof SingleVariableDeclaration
 						|| referenceContext instanceof Assignment)) {
-					IMethodBinding methodBinding= Invocations.resolveBinding(initializer);
+					IFunctionBinding methodBinding= Invocations.resolveBinding(initializer);
 					ITypeBinding[] typeArguments= methodBinding.getTypeArguments();
 					Type[] typeArgumentNodes= new Type[typeArguments.length];
 					for (int i= 0; i < typeArguments.length; i++) {
@@ -365,7 +365,7 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 		return copy;
 	}
 
-	private String createParameterizedInvocation(Expression invocation, Type[] typeArgumentNodes) throws JavaModelException {
+	private String createParameterizedInvocation(Expression invocation, Type[] typeArgumentNodes) throws JavaScriptModelException {
 		ASTRewrite rewrite= ASTRewrite.create(invocation.getAST());
 		ListRewrite typeArgsRewrite= rewrite.getListRewrite(invocation, Invocations.getTypeArgumentsProperty(invocation));
 		for (int i= 0; i < typeArgumentNodes.length; i++) {
@@ -374,7 +374,7 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 		
 		IDocument document= new Document(fCu.getBuffer().getContents());
 		final RangeMarker marker= new RangeMarker(invocation.getStartPosition(), invocation.getLength());
-		IJavaProject project= fCu.getJavaProject();
+		IJavaScriptProject project= fCu.getJavaScriptProject();
 		TextEdit[] rewriteEdits= rewrite.rewriteAST(document, project.getOptions(true)).removeChildren();
 		marker.addChildren(rewriteEdits);
 		try {
@@ -384,16 +384,16 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 			int oldIndent= Strings.computeIndentUnits(document.get(region.getOffset(), region.getLength()), project);
 			return Strings.changeIndent(rewrittenInitializer, oldIndent, project, "", TextUtilities.getDefaultLineDelimiter(document)); //$NON-NLS-1$
 		} catch (MalformedTreeException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		//fallback:
 		return fCu.getBuffer().getText(invocation.getStartPosition(), invocation.getLength());
 	}
 	
 	private static boolean isInvocation(Expression node) {
-		return node instanceof MethodInvocation || node instanceof SuperMethodInvocation;
+		return node instanceof FunctionInvocation || node instanceof SuperMethodInvocation;
 	}
 
 	public SimpleName[] getReferences() {
@@ -426,13 +426,13 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_SELECTION));
 			final String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-				if (element == null || !element.exists() || element.getElementType() != IJavaElement.COMPILATION_UNIT)
-					return createInputFatalStatus(element, IJavaRefactorings.INLINE_LOCAL_VARIABLE);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.JAVASCRIPT_UNIT)
+					return createInputFatalStatus(element, IJavaScriptRefactorings.INLINE_LOCAL_VARIABLE);
 				else {
-					fCu= (ICompilationUnit) element;
+					fCu= (IJavaScriptUnit) element;
 		        	if (checkIfTempSelected().hasFatalError())
-						return createInputFatalStatus(element, IJavaRefactorings.INLINE_LOCAL_VARIABLE);
+						return createInputFatalStatus(element, IJavaScriptRefactorings.INLINE_LOCAL_VARIABLE);
 				}
 			} else
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));

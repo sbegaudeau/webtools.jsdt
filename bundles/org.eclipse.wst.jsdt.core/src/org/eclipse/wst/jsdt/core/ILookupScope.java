@@ -7,21 +7,21 @@ public interface ILookupScope {
 	/*
 	 * Returns a new name lookup. This name lookup first looks in the given working copies.
 	 */
-	public NameLookup newNameLookup(ICompilationUnit[] workingCopies) throws JavaModelException;
+	public NameLookup newNameLookup(IJavaScriptUnit[] workingCopies) throws JavaScriptModelException;
 
 	/*
 	 * Returns a new name lookup. This name lookup first looks in the working copies of the given owner.
 	 */
-	public NameLookup newNameLookup(WorkingCopyOwner owner) throws JavaModelException ;
+	public NameLookup newNameLookup(WorkingCopyOwner owner) throws JavaScriptModelException ;
 
 	/*
 	 * Returns a new search name environment for this project. This name environment first looks in the given working copies.
 	 */
-	public SearchableEnvironment newSearchableNameEnvironment(ICompilationUnit[] workingCopies) throws JavaModelException ;
+	public SearchableEnvironment newSearchableNameEnvironment(IJavaScriptUnit[] workingCopies) throws JavaScriptModelException ;
 
 	/*
 	 * Returns a new search name environment for this project. This name environment first looks in the working copies
 	 * of the given owner.
 	 */
-	public SearchableEnvironment newSearchableNameEnvironment(WorkingCopyOwner owner) throws JavaModelException;
+	public SearchableEnvironment newSearchableNameEnvironment(WorkingCopyOwner owner) throws JavaScriptModelException;
 }

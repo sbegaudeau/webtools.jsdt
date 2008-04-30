@@ -18,7 +18,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.internal.ui.preferences.NativeLibrariesConfigurationBlock;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
@@ -30,7 +30,7 @@ public class NativeLibrariesDialog extends StatusDialog {
 
 	private final NativeLibrariesConfigurationBlock fConfigurationBlock;
 	
-	public NativeLibrariesDialog(Shell parent, String nativeLibPath, IClasspathEntry parentEntry) {
+	public NativeLibrariesDialog(Shell parent, String nativeLibPath, IIncludePathEntry parentEntry) {
 		super(parent);
 		setTitle(NewWizardMessages.NativeLibrariesDialog_title);
 		

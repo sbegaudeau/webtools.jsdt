@@ -14,9 +14,9 @@ import java.util.List;
 
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
@@ -42,23 +42,23 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.AbstractExceptionAn
 		return true;
 	}
 	
-	public boolean visit(MethodInvocation node) {
+	public boolean visit(FunctionInvocation node) {
 		SimpleName name = node.getName();
 		if (name!=null)
-			return handleExceptions((IMethodBinding)name.resolveBinding());
+			return handleExceptions((IFunctionBinding)name.resolveBinding());
 		else
 			return true;
 	}
 	
 	public boolean visit(SuperMethodInvocation node) {
-		return handleExceptions((IMethodBinding)node.getName().resolveBinding());
+		return handleExceptions((IFunctionBinding)node.getName().resolveBinding());
 	}
 	
 	public boolean visit(ClassInstanceCreation node) {
 		return handleExceptions(node.resolveConstructorBinding());
 	}
 	
-	private boolean handleExceptions(IMethodBinding binding) {
+	private boolean handleExceptions(IFunctionBinding binding) {
 		if (binding == null)
 			return true;
 		addExceptions(binding.getExceptionTypes());

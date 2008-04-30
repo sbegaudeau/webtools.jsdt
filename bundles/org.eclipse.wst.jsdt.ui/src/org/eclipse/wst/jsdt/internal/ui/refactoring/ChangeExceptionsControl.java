@@ -39,16 +39,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.ExceptionInfo;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.FilteredTypesSelectionDialog;
@@ -100,13 +100,13 @@ public class ChangeExceptionsControl extends Composite {
 	}
 
 	private final IExceptionListChangeListener fListener;
-	private final IJavaProject fProject;
+	private final IJavaScriptProject fProject;
 
 	private TableViewer fTableViewer;
 	private Button fRemoveButton;
 	private List fExceptionInfos;
 
-	public ChangeExceptionsControl(Composite parent, int style, IExceptionListChangeListener listener, IJavaProject project) {
+	public ChangeExceptionsControl(Composite parent, int style, IExceptionListChangeListener listener, IJavaScriptProject project) {
 		super(parent, style);
 		Assert.isNotNull(listener);
 		fListener= listener;
@@ -232,11 +232,11 @@ public class ChangeExceptionsControl extends Composite {
 	}
 	
 	private IType chooseException() {
-		IJavaElement[] elements= new IJavaElement[] { fProject.getJavaProject() };
-		final IJavaSearchScope scope= SearchEngine.createJavaSearchScope(elements);
+		IJavaScriptElement[] elements= new IJavaScriptElement[] { fProject.getJavaScriptProject() };
+		final IJavaScriptSearchScope scope= SearchEngine.createJavaSearchScope(elements);
 		
 		FilteredTypesSelectionDialog dialog= new FilteredTypesSelectionDialog(getShell(), false,
-				PlatformUI.getWorkbench().getProgressService(), scope, IJavaSearchConstants.CLASS);
+				PlatformUI.getWorkbench().getProgressService(), scope, IJavaScriptSearchConstants.CLASS);
 		dialog.setTitle(RefactoringMessages.ChangeExceptionsControl_choose_title); 
 		dialog.setMessage(RefactoringMessages.ChangeExceptionsControl_choose_message); 
 		dialog.setInitialPattern("*Exception*"); //$NON-NLS-1$
@@ -246,8 +246,8 @@ public class ChangeExceptionsControl extends Composite {
 					return new StatusInfo(IStatus.ERROR, ""); //$NON-NLS-1$
 				try {
 					return checkException((IType)selection[0]);
-				} catch (JavaModelException e) {
-					JavaPlugin.log(e);
+				} catch (JavaScriptModelException e) {
+					JavaScriptPlugin.log(e);
 					return StatusInfo.OK_STATUS;
 				}
 			}
@@ -259,7 +259,7 @@ public class ChangeExceptionsControl extends Composite {
 		return null;
 	}
 	
-	private IStatus checkException(final IType type) throws JavaModelException {
+	private IStatus checkException(final IType type) throws JavaScriptModelException {
 		ITypeHierarchy hierarchy= type.newSupertypeHierarchy(new NullProgressMonitor());
 		IType curr= type;
 		while (curr != null) {

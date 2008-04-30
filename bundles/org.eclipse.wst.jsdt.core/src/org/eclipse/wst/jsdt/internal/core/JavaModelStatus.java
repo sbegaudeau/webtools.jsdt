@@ -17,26 +17,26 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
 /**
- * @see IJavaModelStatus
+ * @see IJavaScriptModelStatus
  */
 
-public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaModelStatusConstants, IResourceStatus {
+public class JavaModelStatus extends Status implements IJavaScriptModelStatus, IJavaScriptModelStatusConstants, IResourceStatus {
 
 	/**
 	 * The elements related to the failure, or <code>null</code>
 	 * if no elements are involved.
 	 */
-	protected IJavaElement[] elements = new IJavaElement[0];
+	protected IJavaScriptElement[] elements = new IJavaScriptElement[0];
 	/**
 	 * The path related to the failure, or <code>null</code>
 	 * if no path is involved.
@@ -56,28 +56,28 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 	/**
 	 * Singleton OK object
 	 */
-	public static final IJavaModelStatus VERIFIED_OK = new JavaModelStatus(OK, OK, Messages.status_OK);
+	public static final IJavaScriptModelStatus VERIFIED_OK = new JavaModelStatus(OK, OK, Messages.status_OK);
 
 	/**
 	 * Constructs an Java model status with no corresponding elements.
 	 */
 	public JavaModelStatus() {
 		// no code for an multi-status
-		super(ERROR, JavaCore.PLUGIN_ID, 0, "JavaModelStatus", null); //$NON-NLS-1$
+		super(ERROR, JavaScriptCore.PLUGIN_ID, 0, "JavaModelStatus", null); //$NON-NLS-1$
 	}
 	/**
 	 * Constructs an Java model status with no corresponding elements.
 	 */
 	public JavaModelStatus(int code) {
-		super(ERROR, JavaCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
+		super(ERROR, JavaScriptCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
 		this.elements= JavaElement.NO_ELEMENTS;
 	}
 	/**
 	 * Constructs an Java model status with the given corresponding
 	 * elements.
 	 */
-	public JavaModelStatus(int code, IJavaElement[] elements) {
-		super(ERROR, JavaCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
+	public JavaModelStatus(int code, IJavaScriptElement[] elements) {
+		super(ERROR, JavaScriptCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
 		this.elements= elements;
 		this.path= null;
 	}
@@ -91,7 +91,7 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 	 * Constructs an Java model status with no corresponding elements.
 	 */
 	public JavaModelStatus(int severity, int code, String string) {
-		super(severity, JavaCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
+		super(severity, JavaScriptCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
 		this.elements= JavaElement.NO_ELEMENTS;
 		this.path= null;
 		this.string = string;
@@ -100,14 +100,14 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 	 * Constructs an Java model status with no corresponding elements.
 	 */
 	public JavaModelStatus(int code, Throwable throwable) {
-		super(ERROR, JavaCore.PLUGIN_ID, code, "JavaModelStatus", throwable); //$NON-NLS-1$
+		super(ERROR, JavaScriptCore.PLUGIN_ID, code, "JavaModelStatus", throwable); //$NON-NLS-1$
 		this.elements= JavaElement.NO_ELEMENTS;
 	}
 	/**
 	 * Constructs an Java model status with no corresponding elements.
 	 */
 	public JavaModelStatus(int code, IPath path) {
-		super(ERROR, JavaCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
+		super(ERROR, JavaScriptCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
 		this.elements= JavaElement.NO_ELEMENTS;
 		this.path= path;
 	}
@@ -115,15 +115,15 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 	 * Constructs an Java model status with the given corresponding
 	 * element.
 	 */
-	public JavaModelStatus(int code, IJavaElement element) {
-		this(code, new IJavaElement[]{element});
+	public JavaModelStatus(int code, IJavaScriptElement element) {
+		this(code, new IJavaScriptElement[]{element});
 	}
 	/**
 	 * Constructs an Java model status with the given corresponding
 	 * element and string
 	 */
-	public JavaModelStatus(int code, IJavaElement element, String string) {
-		this(code, new IJavaElement[]{element});
+	public JavaModelStatus(int code, IJavaScriptElement element, String string) {
+		this(code, new IJavaScriptElement[]{element});
 		this.string = string;
 	}
 
@@ -131,8 +131,8 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 	 * Constructs an Java model status with the given corresponding
 	 * element and path
 	 */
-	public JavaModelStatus(int code, IJavaElement element, IPath path) {
-		this(code, new IJavaElement[]{element});
+	public JavaModelStatus(int code, IJavaScriptElement element, IPath path) {
+		this(code, new IJavaScriptElement[]{element});
 		this.path = path;
 	}
 
@@ -140,8 +140,8 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 	 * Constructs an Java model status with the given corresponding
 	 * element, path and string
 	 */
-	public JavaModelStatus(int code, IJavaElement element, IPath path, String string) {
-		this(code, new IJavaElement[]{element});
+	public JavaModelStatus(int code, IJavaScriptElement element, IPath path, String string) {
+		this(code, new IJavaScriptElement[]{element});
 		this.path = path;
 		this.string = string;
 	}
@@ -150,9 +150,9 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
      * Constructs an Java model status with the given corresponding
      * element and path
      */
-    public JavaModelStatus(int severity, int code, IJavaElement element, IPath path, String msg) {
-    	super(severity, JavaCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
-    	this.elements= new IJavaElement[]{element};
+    public JavaModelStatus(int severity, int code, IJavaScriptElement element, IPath path, String msg) {
+    	super(severity, JavaScriptCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
+    	this.elements= new IJavaScriptElement[]{element};
     	this.path = path;
     	this.string = msg;
     }
@@ -161,7 +161,7 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 	 * Constructs an Java model status with no corresponding elements.
 	 */
 	public JavaModelStatus(CoreException coreException) {
-		super(ERROR, JavaCore.PLUGIN_ID, CORE_EXCEPTION, "JavaModelStatus", coreException); //$NON-NLS-1$
+		super(ERROR, JavaScriptCore.PLUGIN_ID, CORE_EXCEPTION, "JavaModelStatus", coreException); //$NON-NLS-1$
 		elements= JavaElement.NO_ELEMENTS;
 	}
 	protected int getBits() {
@@ -176,9 +176,9 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 		return children;
 	}
 	/**
-	 * @see IJavaModelStatus
+	 * @see IJavaScriptModelStatus
 	 */
-	public IJavaElement[] getElements() {
+	public IJavaScriptElement[] getElements() {
 		return elements;
 	}
 	/**
@@ -268,7 +268,7 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 
 				case NAME_COLLISION:
 					if (elements != null && elements.length > 0) {
-						IJavaElement element = elements[0];
+						IJavaScriptElement element = elements[0];
 						if (element instanceof PackageFragment && ((PackageFragment) element).isDefaultPackage()) {
 							return Messages.operation_cannotRenameDefaultPackage;
 						}
@@ -294,7 +294,7 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 					return Messages.bind(Messages.operation_pathOutsideProject, new String[] {string, ((JavaElement)elements[0]).toStringWithAncestors()});
 
 				case READ_ONLY:
-					IJavaElement element = elements[0];
+					IJavaScriptElement element = elements[0];
 					String name = element.getElementName();
 					if (element instanceof IPackageFragment && name.equals(IPackageFragment.DEFAULT_PACKAGE_NAME)) {
 						return Messages.status_defaultPackageReadOnly;
@@ -314,24 +314,24 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 					return Messages.bind(Messages.status_noLocalContents, getPath().toString());
 
 				case CP_CONTAINER_PATH_UNBOUND:
-					IJavaProject javaProject = (IJavaProject)elements[0];
-					JsGlobalScopeContainerInitializer initializer = JavaCore.getJsGlobalScopeContainerInitializer(this.path.segment(0));
+					IJavaScriptProject javaProject = (IJavaScriptProject)elements[0];
+					JsGlobalScopeContainerInitializer initializer = JavaScriptCore.getJsGlobalScopeContainerInitializer(this.path.segment(0));
 					String description = null;
 					if (initializer != null) description = initializer.getDescription(this.path, javaProject);
 					if (description == null) description = path.makeRelative().toString();
 					return Messages.bind(Messages.classpath_unboundContainerPath, new String[] {description, javaProject.getElementName()});
 
 				case INVALID_CP_CONTAINER_ENTRY:
-					javaProject = (IJavaProject)elements[0];
+					javaProject = (IJavaScriptProject)elements[0];
 					IJsGlobalScopeContainer container = null;
 					description = null;
 					try {
-						container = JavaCore.getJsGlobalScopeContainer(path, javaProject);
-					} catch(JavaModelException e){
+						container = JavaScriptCore.getJsGlobalScopeContainer(path, javaProject);
+					} catch(JavaScriptModelException e){
 						// project doesn't exist: ignore
 					}
 					if (container == null) {
-						 initializer = JavaCore.getJsGlobalScopeContainerInitializer(path.segment(0));
+						 initializer = JavaScriptCore.getJsGlobalScopeContainerInitializer(path.segment(0));
 						if (initializer != null) description = initializer.getDescription(path, javaProject);
 					} else {
 						description = container.getDescription();
@@ -340,15 +340,15 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 					return Messages.bind(Messages.classpath_invalidContainer, new String[] {description, javaProject.getElementName()});
 
 				case CP_VARIABLE_PATH_UNBOUND:
-					javaProject = (IJavaProject)elements[0];
+					javaProject = (IJavaScriptProject)elements[0];
 					return Messages.bind(Messages.classpath_unboundVariablePath, new String[] {path.makeRelative().toString(), javaProject.getElementName()});
 
-				case CLASSPATH_CYCLE:
-					javaProject = (IJavaProject)elements[0];
+				case INCLUDEPATH_CYCLE:
+					javaProject = (IJavaScriptProject)elements[0];
 					return Messages.bind(Messages.classpath_cycle, javaProject.getElementName());
 
 				case DISABLED_CP_EXCLUSION_PATTERNS:
-					javaProject = (IJavaProject)elements[0];
+					javaProject = (IJavaScriptProject)elements[0];
 					String projectName = javaProject.getElementName();
 					IPath newPath = path;
 					if (path.segment(0).toString().equals(projectName)) {
@@ -357,7 +357,7 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 					return Messages.bind(Messages.classpath_disabledInclusionExclusionPatterns, new String[] {newPath.makeRelative().toString(), projectName});
 
 				case DISABLED_CP_MULTIPLE_OUTPUT_LOCATIONS:
-					javaProject = (IJavaProject)elements[0];
+					javaProject = (IJavaScriptProject)elements[0];
 					projectName = javaProject.getElementName();
 					newPath = path;
 					if (path.segment(0).toString().equals(projectName)) {
@@ -366,15 +366,15 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 					return Messages.bind(Messages.classpath_disabledMultipleOutputLocations, new String[] {newPath.makeRelative().toString(), projectName});
 
 				case INCOMPATIBLE_JDK_LEVEL:
-						javaProject = (IJavaProject)elements[0];
+						javaProject = (IJavaScriptProject)elements[0];
 						return Messages.bind(Messages.classpath_incompatibleLibraryJDKLevel, new String[]{
 							javaProject.getElementName(),
-							javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true),
+							javaProject.getOption(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, true),
 							path.makeRelative().toString(),
 							string,
 						});
 
-				case CANNOT_RETRIEVE_ATTACHED_JAVADOC :
+				case CANNOT_RETRIEVE_ATTACHED_JSDOC :
 					if (elements != null && elements.length == 1) {
 						if (this.string != null) {
 							return Messages.bind(Messages.status_cannot_retrieve_attached_javadoc, ((JavaElement)elements[0]).toStringWithAncestors(), this.string);
@@ -386,11 +386,11 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 					}
 					break;
 
-				case UNKNOWN_JAVADOC_FORMAT :
+				case UNKNOWN_JSDOC_FORMAT :
 					return Messages.bind(Messages.status_unknown_javadoc_format, ((JavaElement)elements[0]).toStringWithAncestors());
 
 				case DEPRECATED_VARIABLE :
-					javaProject = (IJavaProject)elements[0];
+					javaProject = (IJavaScriptProject)elements[0];
 					return Messages.bind(Messages.classpath_deprecated_variable, new String[] {path.segment(0).toString(), javaProject.getElementName(), this.string});
 			}
 			if (string != null) {
@@ -408,7 +408,7 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 		}
 	}
 	/**
-	 * @see IJavaModelStatus#getPath()
+	 * @see IJavaScriptModelStatus#getPath()
 	 */
 	public IPath getPath() {
 		return path;
@@ -428,14 +428,14 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 		return severity;
 	}
 	/**
-	 * @see IJavaModelStatus#getString()
+	 * @see IJavaScriptModelStatus#getString()
 	 * @deprecated
 	 */
 	public String getString() {
 		return string;
 	}
 	/**
-	 * @see IJavaModelStatus#isDoesNotExist()
+	 * @see IJavaScriptModelStatus#isDoesNotExist()
 	 */
 	public boolean isDoesNotExist() {
 		int code = getCode();
@@ -477,12 +477,12 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 		return ((severityMask == 0) || (bits & severityMask) != 0) && ((categoryMask == 0) || (bits & categoryMask) != 0);
 	}
 	/**
-	 * Creates and returns a new <code>IJavaModelStatus</code> that is a
+	 * Creates and returns a new <code>IJavaScriptModelStatus</code> that is a
 	 * a multi-status status.
 	 *
 	 * @see IStatus#isMultiStatus()
 	 */
-	public static IJavaModelStatus newMultiStatus(IJavaModelStatus[] children) {
+	public static IJavaScriptModelStatus newMultiStatus(IJavaScriptModelStatus[] children) {
 		JavaModelStatus jms = new JavaModelStatus();
 		jms.children = children;
 		return jms;

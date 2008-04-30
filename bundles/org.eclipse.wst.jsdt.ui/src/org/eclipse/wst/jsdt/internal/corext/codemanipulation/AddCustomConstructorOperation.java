@@ -30,23 +30,23 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
@@ -54,7 +54,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitC
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringFileBuffers;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Workspace runnable to add custom constructors initializing fields.
@@ -67,7 +67,7 @@ public final class AddCustomConstructorOperation implements IWorkspaceRunnable {
 	private boolean fApply= true;
 
 	/** The super constructor method binding */
-	private final IMethodBinding fBinding;
+	private final IFunctionBinding fBinding;
 
 	/** The variable bindings to implement */
 	private final IVariableBinding[] fBindings;
@@ -79,7 +79,7 @@ public final class AddCustomConstructorOperation implements IWorkspaceRunnable {
 	private TextEdit fEdit= null;
 
 	/** The insertion point, or <code>null</code> */
-	private final IJavaElement fInsert;
+	private final IJavaScriptElement fInsert;
 
 	/** Should the call to the super constructor be omitted? */
 	private boolean fOmitSuper= false;
@@ -94,7 +94,7 @@ public final class AddCustomConstructorOperation implements IWorkspaceRunnable {
 	private final IType fType;
 
 	/** The compilation unit ast node */
-	private final CompilationUnit fUnit;
+	private final JavaScriptUnit fUnit;
 
 	/** The visibility flags of the new constructor */
 	private int fVisibility= 0;
@@ -111,7 +111,7 @@ public final class AddCustomConstructorOperation implements IWorkspaceRunnable {
 	 * @param apply <code>true</code> if the resulting edit should be applied, <code>false</code> otherwise
 	 * @param save <code>true</code> if the changed compilation unit should be saved, <code>false</code> otherwise
 	 */
-	public AddCustomConstructorOperation(final IType type, final IJavaElement insert, final CompilationUnit unit, final IVariableBinding[] bindings, final IMethodBinding binding, final CodeGenerationSettings settings, final boolean apply, final boolean save) {
+	public AddCustomConstructorOperation(final IType type, final IJavaScriptElement insert, final JavaScriptUnit unit, final IVariableBinding[] bindings, final IFunctionBinding binding, final CodeGenerationSettings settings, final boolean apply, final boolean save) {
 		Assert.isNotNull(type);
 		Assert.isNotNull(unit);
 		Assert.isNotNull(bindings);
@@ -172,12 +172,12 @@ public final class AddCustomConstructorOperation implements IWorkspaceRunnable {
 			monitor.beginTask("", 1); //$NON-NLS-1$
 			monitor.setTaskName(CodeGenerationMessages.AddCustomConstructorOperation_description); 
 			fCreated.clear();
-			final ICompilationUnit unit= fType.getCompilationUnit();
+			final IJavaScriptUnit unit= fType.getJavaScriptUnit();
 			final CompilationUnitRewrite rewrite= new CompilationUnitRewrite(unit, fUnit);
 			ITypeBinding binding= null;
 			ListRewrite rewriter= null;
 			if (fType.isAnonymous()) {
-				final IJavaElement parent= fType.getParent();
+				final IJavaScriptElement parent= fType.getParent();
 				if (parent instanceof IField && Flags.isEnum(((IMember) parent).getFlags())) {
 					final EnumConstantDeclaration constant= (EnumConstantDeclaration) NodeFinder.perform(rewrite.getRoot(), ((ISourceReference) parent).getSourceRange());
 					if (constant != null) {
@@ -215,9 +215,9 @@ public final class AddCustomConstructorOperation implements IWorkspaceRunnable {
 						document= buffer.getDocument();
 					}
 					ASTNode insertion= null;
-					if (fInsert instanceof IMethod)
-						insertion= ASTNodes.getParent(NodeFinder.perform(rewrite.getRoot(), ((IMethod) fInsert).getNameRange()), MethodDeclaration.class);
-					MethodDeclaration stub= StubUtility2.createConstructorStub(rewrite.getCu(), rewrite.getASTRewrite(), rewrite.getImportRewrite(), binding, rewrite.getAST(), fOmitSuper ? null : fBinding, fBindings, fVisibility, fSettings);
+					if (fInsert instanceof IFunction)
+						insertion= ASTNodes.getParent(NodeFinder.perform(rewrite.getRoot(), ((IFunction) fInsert).getNameRange()), FunctionDeclaration.class);
+					FunctionDeclaration stub= StubUtility2.createConstructorStub(rewrite.getCu(), rewrite.getASTRewrite(), rewrite.getImportRewrite(), binding, rewrite.getAST(), fOmitSuper ? null : fBinding, fBindings, fVisibility, fSettings);
 					if (stub != null) {
 						fCreated.addAll(Arrays.asList(fBindings));
 						if (insertion != null)
@@ -241,7 +241,7 @@ public final class AddCustomConstructorOperation implements IWorkspaceRunnable {
 										unit.getBuffer().setContents(document.get());
 								}
 							} catch (Exception exception) {
-								throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), 0, exception.getLocalizedMessage(), exception));
+								throw new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), 0, exception.getLocalizedMessage(), exception));
 							}
 						}
 					}

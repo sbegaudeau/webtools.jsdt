@@ -17,11 +17,11 @@ import java.util.List;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStatusContext;
@@ -34,94 +34,94 @@ class MemberCheckUtil {
 		//static only
 	}
 	
-	public static RefactoringStatus checkMembersInDestinationType(IMember[] members, IType destinationType) throws JavaModelException {	
+	public static RefactoringStatus checkMembersInDestinationType(IMember[] members, IType destinationType) throws JavaScriptModelException {	
 		RefactoringStatus result= new RefactoringStatus();
 		for (int i= 0; i < members.length; i++) {
-			if (members[i].getElementType() == IJavaElement.METHOD)
-				checkMethodInType(destinationType, result, (IMethod)members[i]);
-			else if (members[i].getElementType() == IJavaElement.FIELD)
+			if (members[i].getElementType() == IJavaScriptElement.METHOD)
+				checkMethodInType(destinationType, result, (IFunction)members[i]);
+			else if (members[i].getElementType() == IJavaScriptElement.FIELD)
 				checkFieldInType(destinationType, result, (IField)members[i]);
-			else if (members[i].getElementType() == IJavaElement.TYPE)
+			else if (members[i].getElementType() == IJavaScriptElement.TYPE)
 				checkTypeInType(destinationType, result, (IType)members[i]);
 		}
 		return result;	
 	}
 
-	private static void checkMethodInType(IType destinationType, RefactoringStatus result, IMethod method) throws JavaModelException {
-		IMethod[] destinationTypeMethods= destinationType.getMethods();
-		IMethod found= findMethod(method, destinationTypeMethods);
+	private static void checkMethodInType(IType destinationType, RefactoringStatus result, IFunction method) throws JavaScriptModelException {
+		IFunction[] destinationTypeMethods= destinationType.getFunctions();
+		IFunction found= findMethod(method, destinationTypeMethods);
 		if (found != null){
-			RefactoringStatusContext context= JavaStatusContext.create(destinationType.getCompilationUnit(), found.getSourceRange());
+			RefactoringStatusContext context= JavaStatusContext.create(destinationType.getJavaScriptUnit(), found.getSourceRange());
 			String message= Messages.format(RefactoringCoreMessages.MemberCheckUtil_signature_exists, 
 					new String[]{method.getElementName(), JavaModelUtil.getFullyQualifiedName(destinationType)});
 			result.addError(message, context);
 		} else {
-			IMethod similar= Checks.findMethod(method, destinationType);
+			IFunction similar= Checks.findMethod(method, destinationType);
 			if (similar != null){
 				String message= Messages.format(RefactoringCoreMessages.MemberCheckUtil_same_param_count,
 						 new String[]{method.getElementName(), JavaModelUtil.getFullyQualifiedName(destinationType)});
-				RefactoringStatusContext context= JavaStatusContext.create(destinationType.getCompilationUnit(), similar.getSourceRange());
+				RefactoringStatusContext context= JavaStatusContext.create(destinationType.getJavaScriptUnit(), similar.getSourceRange());
 				result.addWarning(message, context);
 			}										
 		}	
 	}
 	
-	private static void checkFieldInType(IType destinationType, RefactoringStatus result, IField field) throws JavaModelException {
+	private static void checkFieldInType(IType destinationType, RefactoringStatus result, IField field) throws JavaScriptModelException {
 		IField destinationTypeField= destinationType.getField(field.getElementName());	
 		if (! destinationTypeField.exists())
 			return;
 		String message= Messages.format(RefactoringCoreMessages.MemberCheckUtil_field_exists, 
 				new String[]{field.getElementName(), JavaModelUtil.getFullyQualifiedName(destinationType)});
-		RefactoringStatusContext context= JavaStatusContext.create(destinationType.getCompilationUnit(), destinationTypeField.getSourceRange());
+		RefactoringStatusContext context= JavaStatusContext.create(destinationType.getJavaScriptUnit(), destinationTypeField.getSourceRange());
 		result.addError(message, context);
 	}
 	
-	private static void checkTypeInType(IType destinationType, RefactoringStatus result, IType type) throws JavaModelException {
+	private static void checkTypeInType(IType destinationType, RefactoringStatus result, IType type) throws JavaScriptModelException {
 		String typeName= type.getElementName();
 		IType destinationTypeType= destinationType.getType(typeName);
 		if (destinationTypeType.exists()){
 			String message= Messages.format(RefactoringCoreMessages.MemberCheckUtil_type_name_conflict0,  
 					new String[]{typeName, JavaModelUtil.getFullyQualifiedName(destinationType)});
-			RefactoringStatusContext context= JavaStatusContext.create(destinationType.getCompilationUnit(), destinationTypeType.getNameRange());
+			RefactoringStatusContext context= JavaStatusContext.create(destinationType.getJavaScriptUnit(), destinationTypeType.getNameRange());
 			result.addError(message, context);
 		} else {
 			//need to check the hierarchy of enclosing and enclosed types
 			if (destinationType.getElementName().equals(typeName)){
 				String message= Messages.format(RefactoringCoreMessages.MemberCheckUtil_type_name_conflict1,  
 						new String[]{JavaModelUtil.getFullyQualifiedName(type)});
-				RefactoringStatusContext context= JavaStatusContext.create(destinationType.getCompilationUnit(), destinationType.getNameRange());
+				RefactoringStatusContext context= JavaStatusContext.create(destinationType.getJavaScriptUnit(), destinationType.getNameRange());
 				result.addError(message, context);
 			}
 			if (typeNameExistsInEnclosingTypeChain(destinationType, typeName)){
 				String message= Messages.format(RefactoringCoreMessages.MemberCheckUtil_type_name_conflict2,  
 						new String[]{JavaModelUtil.getFullyQualifiedName(type)});
-				RefactoringStatusContext context= JavaStatusContext.create(destinationType.getCompilationUnit(), destinationType.getNameRange());
+				RefactoringStatusContext context= JavaStatusContext.create(destinationType.getJavaScriptUnit(), destinationType.getNameRange());
 				result.addError(message, context);
 			}
 			checkHierarchyOfEnclosedTypes(destinationType, result, type);
 		}
 	}
 
-	private static void checkHierarchyOfEnclosedTypes(IType destinationType, RefactoringStatus result, IType type) throws JavaModelException {
+	private static void checkHierarchyOfEnclosedTypes(IType destinationType, RefactoringStatus result, IType type) throws JavaScriptModelException {
 		IType[] enclosedTypes= getAllEnclosedTypes(type);
 		for (int i= 0; i < enclosedTypes.length; i++) {
 			IType enclosedType= enclosedTypes[i];
 			if (destinationType.getElementName().equals(enclosedType.getElementName())){
 				String message= Messages.format(RefactoringCoreMessages.MemberCheckUtil_type_name_conflict3,  
 						new String[]{JavaModelUtil.getFullyQualifiedName(enclosedType), JavaModelUtil.getFullyQualifiedName(type)});
-				RefactoringStatusContext context= JavaStatusContext.create(destinationType.getCompilationUnit(), destinationType.getNameRange());
+				RefactoringStatusContext context= JavaStatusContext.create(destinationType.getJavaScriptUnit(), destinationType.getNameRange());
 				result.addError(message, context);
 			}
 			if (typeNameExistsInEnclosingTypeChain(destinationType, enclosedType.getElementName())){
 				String message= Messages.format(RefactoringCoreMessages.MemberCheckUtil_type_name_conflict4,  
 						new String[]{JavaModelUtil.getFullyQualifiedName(enclosedType), JavaModelUtil.getFullyQualifiedName(type)});
-				RefactoringStatusContext context= JavaStatusContext.create(destinationType.getCompilationUnit(), destinationType.getNameRange());
+				RefactoringStatusContext context= JavaStatusContext.create(destinationType.getJavaScriptUnit(), destinationType.getNameRange());
 				result.addError(message, context);
 			}
 		}
 	}
 	
-	private static IType[] getAllEnclosedTypes(IType type) throws JavaModelException {
+	private static IType[] getAllEnclosedTypes(IType type) throws JavaScriptModelException {
 		List result= new ArrayList(2);
 		IType[] directlyEnclosed= type.getTypes();
 		result.addAll(Arrays.asList(directlyEnclosed));
@@ -147,7 +147,7 @@ class MemberCheckUtil {
 	 * (only SimpleNames of types), and not by the declaring type.
 	 * @return The found method or <code>null</code>, if nothing found
 	 */
-	public static IMethod findMethod(IMethod method, IMethod[] allMethods) throws JavaModelException {
+	public static IFunction findMethod(IFunction method, IFunction[] allMethods) throws JavaScriptModelException {
 		String name= method.getElementName();
 		String[] paramTypes= method.getParameterTypes();
 		boolean isConstructor= method.isConstructor();

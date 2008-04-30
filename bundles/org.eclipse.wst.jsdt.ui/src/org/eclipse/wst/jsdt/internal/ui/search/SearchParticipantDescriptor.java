@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.search.IQueryParticipant;
 
 /**
@@ -43,18 +43,18 @@ public class SearchParticipantDescriptor {
 		if (fConfigurationElement.getAttribute(ID) == null) {
 			String format= SearchMessages.SearchParticipant_error_noID; 
 			String message= Messages.format(format,  new String[] { fConfigurationElement.getDeclaringExtension().getUniqueIdentifier() });
-			return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), 0, message, null);
+			return new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), 0, message, null);
 		}
 		if (fConfigurationElement.getAttribute(NATURE) == null) {
 			String format= SearchMessages.SearchParticipant_error_noNature; 
 			String message= Messages.format(format,  new String[] { fConfigurationElement.getAttribute(ID)});
-			return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), 0, message, null);
+			return new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), 0, message, null);
 		}
 
 		if (fConfigurationElement.getAttribute(CLASS) == null) {
 			String format= SearchMessages.SearchParticipant_error_noClass; 
 			String message= Messages.format(format,  new String[] { fConfigurationElement.getAttribute(ID)});
-			return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), 0, message, null);
+			return new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), 0, message, null);
 		}
 		return Status.OK_STATUS;
 	}
@@ -75,7 +75,7 @@ public class SearchParticipantDescriptor {
 		try {
 			return (IQueryParticipant) fConfigurationElement.createExecutableExtension(CLASS);
 		} catch (ClassCastException e) {
-			throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), 0, SearchMessages.SearchParticipant_error_classCast, e)); 
+			throw new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), 0, SearchMessages.SearchParticipant_error_classCast, e)); 
 		}
 	}
 

@@ -15,19 +15,19 @@ import java.util.Map;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextUtilities;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
@@ -60,18 +60,18 @@ public abstract class CreateTypeMemberOperation extends CreateElementInCUOperati
  * When executed, this operation will create a type member
  * in the given parent element with the specified source.
  */
-public CreateTypeMemberOperation(IJavaElement parentElement, String source, boolean force) {
+public CreateTypeMemberOperation(IJavaScriptElement parentElement, String source, boolean force) {
 	super(parentElement);
 	this.source = source;
 	this.force = force;
 }
 protected StructuralPropertyDescriptor getChildPropertyDescriptor(ASTNode parent) {
 	switch (parent.getNodeType()) {
-		case ASTNode.COMPILATION_UNIT:
+		case ASTNode.JAVASCRIPT_UNIT:
 			if (createdNode instanceof AbstractTypeDeclaration)
-				return CompilationUnit.TYPES_PROPERTY;
+				return JavaScriptUnit.TYPES_PROPERTY;
 			else
-				return CompilationUnit.STATEMENTS_PROPERTY;
+				return JavaScriptUnit.STATEMENTS_PROPERTY;
 		case ASTNode.ENUM_DECLARATION:
 			return EnumDeclaration.BODY_DECLARATIONS_PROPERTY;
 		case ASTNode.ANNOTATION_TYPE_DECLARATION:
@@ -80,17 +80,17 @@ protected StructuralPropertyDescriptor getChildPropertyDescriptor(ASTNode parent
 			return TypeDeclaration.BODY_DECLARATIONS_PROPERTY;
 	}
 }
-protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, ICompilationUnit cu) throws JavaModelException {
+protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IJavaScriptUnit cu) throws JavaScriptModelException {
 	if (this.createdNode == null) {
 		this.source = removeIndentAndNewLines(this.source, document, cu);
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setSource(this.source.toCharArray());
-		parser.setProject(getCompilationUnit().getJavaProject());
+		parser.setProject(getCompilationUnit().getJavaScriptProject());
 		parser.setKind(ASTParser.K_CLASS_BODY_DECLARATIONS);
 		ASTNode node = parser.createAST(this.progressMonitor);
 		String createdNodeSource;
-		if (node.getNodeType() == ASTNode.COMPILATION_UNIT) {
-			CompilationUnit compilationUnit = (CompilationUnit) node;
+		if (node.getNodeType() == ASTNode.JAVASCRIPT_UNIT) {
+			JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
 			this.createdNode = (ASTNode) compilationUnit.statements().iterator().next();
 			createdNodeSource = this.source;
 		}
@@ -102,7 +102,7 @@ protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IC
 		else {
 			createdNodeSource = generateSyntaxIncorrectAST();
 			if (this.createdNode == null)
-				throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_CONTENTS));
+				throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_CONTENTS));
 		}
 		if (this.alteredName != null) {
 			SimpleName newName = this.createdNode.getAST().newSimpleName(this.alteredName);
@@ -130,9 +130,9 @@ protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IC
 	// return a string place holder (instead of the created node) so has to not lose comments and formatting
 	return rewriter.createStringPlaceholder(this.source, this.createdNode.getNodeType());
 }
-private String removeIndentAndNewLines(String code, IDocument document, ICompilationUnit cu) {
-	IJavaProject project = cu.getJavaProject();
-	Map options = project.getOptions(true/*inherit JavaCore options*/);
+private String removeIndentAndNewLines(String code, IDocument document, IJavaScriptUnit cu) {
+	IJavaScriptProject project = cu.getJavaScriptProject();
+	Map options = project.getOptions(true/*inherit JavaScriptCore options*/);
 	int tabWidth = IndentManipulation.getTabWidth(options);
 	int indentWidth = IndentManipulation.getIndentWidth(options);
 	int indent = IndentManipulation.measureIndentUnits(code, tabWidth, indentWidth);
@@ -168,7 +168,7 @@ protected String generateSyntaxIncorrectAST() {
 //	buff.append(lineSeparator).append('}');
 	ASTParser parser = ASTParser.newParser(AST.JLS3);
 	parser.setSource(buff.toString().toCharArray());
-	CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
+	JavaScriptUnit compilationUnit = (JavaScriptUnit) parser.createAST(null);
 
 //	TypeDeclaration typeDeclaration = (TypeDeclaration) compilationUnit.types().iterator().next();
 	List statements = compilationUnit.statements() ;
@@ -180,7 +180,7 @@ protected String generateSyntaxIncorrectAST() {
  * Returns the IType the member is to be created in.
  */
 protected IType getType() {
-	IJavaElement parentElement = getParentElement();
+	IJavaScriptElement parentElement = getParentElement();
 	return (parentElement instanceof IType) ? (IType)parentElement : null;
 }
 /**
@@ -199,21 +199,21 @@ protected void setAlteredName(String newName) {
   *	<li>NAME_COLLISION - A name collision occurred in the destination
  * </ul>
  */
-public IJavaModelStatus verify() {
-	IJavaModelStatus status = super.verify();
+public IJavaScriptModelStatus verify() {
+	IJavaScriptModelStatus status = super.verify();
 	if (!status.isOK()) {
 		return status;
 	}
 	if (this.source == null) {
-		return new JavaModelStatus(IJavaModelStatusConstants.INVALID_CONTENTS);
+		return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_CONTENTS);
 	}
 	if (!force) {
 		//check for name collisions
 		try {
-			ICompilationUnit cu = getCompilationUnit();
+			IJavaScriptUnit cu = getCompilationUnit();
 			generateElementAST(null, getDocument(cu), cu);
-		} catch (JavaModelException jme) {
-			return jme.getJavaModelStatus();
+		} catch (JavaScriptModelException jme) {
+			return jme.getJavaScriptModelStatus();
 		}
 		return verifyNameCollision();
 	}
@@ -223,7 +223,7 @@ public IJavaModelStatus verify() {
 /**
  * Verify for a name collision in the destination container.
  */
-protected IJavaModelStatus verifyNameCollision() {
+protected IJavaScriptModelStatus verifyNameCollision() {
 	return JavaModelStatus.VERIFIED_OK;
 }
 }

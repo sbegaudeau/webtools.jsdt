@@ -16,13 +16,13 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 
 public class CPJavaProject {
 
-	public static CPJavaProject createFromExisting(IJavaProject javaProject) throws CoreException {
+	public static CPJavaProject createFromExisting(IJavaScriptProject javaProject) throws CoreException {
 		List classpathEntries= ClasspathModifier.getExistingEntries(javaProject);
 		return new CPJavaProject(classpathEntries, javaProject.getOutputLocation());
     }
@@ -48,8 +48,8 @@ public class CPJavaProject {
     	return (CPListElement)fCPListElements.get(index);
     }
 
-    public IClasspathEntry[] getClasspathEntries() {
-    	IClasspathEntry[] result= new IClasspathEntry[fCPListElements.size()];
+    public IIncludePathEntry[] getClasspathEntries() {
+    	IIncludePathEntry[] result= new IIncludePathEntry[fCPListElements.size()];
     	int i= 0;
     	for (Iterator iterator= fCPListElements.iterator(); iterator.hasNext();) {
 	        CPListElement element= (CPListElement)iterator.next();
@@ -71,7 +71,7 @@ public class CPJavaProject {
 	    return fDefaultOutputLocation;
     }
     
-    public IJavaProject getJavaProject() {
+    public IJavaScriptProject getJavaProject() {
 	    return ((CPListElement)fCPListElements.get(0)).getJavaProject();
     }
 

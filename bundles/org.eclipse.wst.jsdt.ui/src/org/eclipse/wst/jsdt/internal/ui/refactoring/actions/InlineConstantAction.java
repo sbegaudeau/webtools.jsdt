@@ -17,16 +17,16 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -72,10 +72,10 @@ public class InlineConstantAction extends SelectionDispatchAction {
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isInlineConstantAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			setEnabled(false);//no ui
 		}
 	}
@@ -91,8 +91,8 @@ public class InlineConstantAction extends SelectionDispatchAction {
 			Assert.isTrue(first instanceof IField);
 			
 			IField field= (IField) first;
-			run(field.getNameRange().getOffset(), field.getNameRange().getLength(), field.getCompilationUnit());
-		} catch (JavaModelException e) {
+			run(field.getNameRange().getOffset(), field.getNameRange().getLength(), field.getJavaScriptUnit());
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, getShell(), RefactoringMessages.InlineConstantAction_dialog_title, RefactoringMessages.InlineConstantAction_unexpected_exception);	 
 		}
 	}	
@@ -113,7 +113,7 @@ public class InlineConstantAction extends SelectionDispatchAction {
 	public void selectionChanged(JavaTextSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isInlineConstantAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			setEnabled(false);
 		}
 	}
@@ -125,29 +125,29 @@ public class InlineConstantAction extends SelectionDispatchAction {
 		run(selection.getOffset(), selection.getLength(), SelectionConverter.getInputAsCompilationUnit(fEditor));
 	}
 
-	private void run(int offset, int length, ICompilationUnit cu) {
+	private void run(int offset, int length, IJavaScriptUnit cu) {
 		Assert.isNotNull(cu);
 		Assert.isTrue(offset >= 0);
 		Assert.isTrue(length >= 0);
 		if (!ActionUtil.isEditable(fEditor, getShell(), cu))
 			return;
 		try {
-			CompilationUnit node= RefactoringASTParser.parseWithASTProvider(cu, true, null);
+			JavaScriptUnit node= RefactoringASTParser.parseWithASTProvider(cu, true, null);
 			if (! RefactoringExecutionStarter.startInlineConstantRefactoring(cu, node, offset, length, getShell())) {
 				MessageDialog.openInformation(getShell(), RefactoringMessages.InlineConstantAction_dialog_title, RefactoringMessages.InlineConstantAction_no_constant_reference_or_declaration);
 			}
 			
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, getShell(), RefactoringMessages.InlineConstantAction_dialog_title, RefactoringMessages.InlineConstantAction_unexpected_exception); 
 		}
 	}
 
-	public boolean tryInlineConstant(ICompilationUnit unit, CompilationUnit node, ITextSelection selection, Shell shell) {
+	public boolean tryInlineConstant(IJavaScriptUnit unit, JavaScriptUnit node, ITextSelection selection, Shell shell) {
 		try {
 			if (RefactoringExecutionStarter.startInlineConstantRefactoring(unit, node, selection.getOffset(), selection.getLength(), shell)) {
 				return true;
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, getShell(), RefactoringMessages.InlineConstantAction_dialog_title, RefactoringMessages.InlineConstantAction_unexpected_exception); 
 		}
 		return false;

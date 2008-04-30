@@ -14,11 +14,11 @@ package org.eclipse.wst.jsdt.core.dom;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
@@ -62,7 +62,7 @@ class PackageBinding implements IPackageBinding {
 				switch(fragType) {
 					case IPackageFragmentRoot.K_SOURCE:
 						String unitName = "package-info.js"; //$NON-NLS-1$
-						ICompilationUnit unit = pkgs[i].getCompilationUnit(unitName);
+						IJavaScriptUnit unit = pkgs[i].getJavaScriptUnit(unitName);
 						if (unit != null) {
 							ASTParser p = ASTParser.newParser(AST.JLS3);
 							p.setSource(unit);
@@ -70,7 +70,7 @@ class PackageBinding implements IPackageBinding {
 							p.setUnitName(unitName);
 							p.setFocalPosition(0);
 							p.setKind(ASTParser.K_COMPILATION_UNIT);
-							CompilationUnit domUnit = (CompilationUnit) p.createAST(null);
+							JavaScriptUnit domUnit = (JavaScriptUnit) p.createAST(null);
 							PackageDeclaration pkgDecl = domUnit.getPackage();
 							if (pkgDecl != null) {
 								List annos = pkgDecl.annotations();
@@ -113,7 +113,7 @@ class PackageBinding implements IPackageBinding {
 //						}
 				}
 			}
-		} catch(JavaModelException e) {
+		} catch(JavaScriptModelException e) {
 			return AnnotationBinding.NoAnnotations;
 		}
 		return AnnotationBinding.NoAnnotations;
@@ -184,12 +184,12 @@ class PackageBinding implements IPackageBinding {
 	/*
 	 * @see IBinding#getJavaElement()
 	 */
-	public IJavaElement getJavaElement() {
+	public IJavaScriptElement getJavaElement() {
 		INameEnvironment nameEnvironment = this.binding.environment.nameEnvironment; // a package binding always has a LooupEnvironment set
 		if (!(nameEnvironment instanceof SearchableEnvironment)) return null;
 		NameLookup nameLookup = ((SearchableEnvironment) nameEnvironment).nameLookup;
 		if (nameLookup == null) return null;
-		IJavaElement[] pkgs = nameLookup.findPackageFragments(getName(), false/*exact match*/);
+		IJavaScriptElement[] pkgs = nameLookup.findPackageFragments(getName(), false/*exact match*/);
 		if (pkgs == null) return null;
 		return pkgs[0];
 	}

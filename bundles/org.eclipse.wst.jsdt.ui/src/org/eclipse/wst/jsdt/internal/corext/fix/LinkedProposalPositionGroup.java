@@ -21,14 +21,14 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ITrackedNodePosition;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class LinkedProposalPositionGroup {
 	
@@ -110,15 +110,15 @@ public class LinkedProposalPositionGroup {
 	
 	private static final class JavaLinkedModeProposal extends Proposal {
 		private final ITypeBinding fTypeProposal;
-		private final ICompilationUnit fCompilationUnit;
+		private final IJavaScriptUnit fCompilationUnit;
 
-		public JavaLinkedModeProposal(ICompilationUnit unit, ITypeBinding typeProposal, int relevance) {
-			super(BindingLabelProvider.getBindingLabel(typeProposal, JavaElementLabels.ALL_DEFAULT | JavaElementLabels.ALL_POST_QUALIFIED), null, relevance);
+		public JavaLinkedModeProposal(IJavaScriptUnit unit, ITypeBinding typeProposal, int relevance) {
+			super(BindingLabelProvider.getBindingLabel(typeProposal, JavaScriptElementLabels.ALL_DEFAULT | JavaScriptElementLabels.ALL_POST_QUALIFIED), null, relevance);
 			fTypeProposal= typeProposal;
 			fCompilationUnit= unit;
 			ImageDescriptor desc= BindingLabelProvider.getBindingImageDescriptor(fTypeProposal, BindingLabelProvider.DEFAULT_IMAGEFLAGS);
 			if (desc != null) {
-				setImage(JavaPlugin.getImageDescriptorRegistry().get(desc));
+				setImage(JavaScriptPlugin.getImageDescriptorRegistry().get(desc));
 			}
 		}
 
@@ -165,7 +165,7 @@ public class LinkedProposalPositionGroup {
 		addProposal(new Proposal(displayString, image, relevance));
 	}
 	
-	public void addProposal(ITypeBinding type, ICompilationUnit cu, int relevance) {
+	public void addProposal(ITypeBinding type, IJavaScriptUnit cu, int relevance) {
 		addProposal(new JavaLinkedModeProposal(cu, type, relevance));
 	}
 	

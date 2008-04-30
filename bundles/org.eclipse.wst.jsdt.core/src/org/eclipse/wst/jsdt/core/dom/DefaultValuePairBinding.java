@@ -26,7 +26,7 @@ class DefaultValuePairBinding extends MemberValuePairBinding {
 		this.value = MemberValuePairBinding.buildDOMValue(binding.getDefaultValue(), resolver);
 	}
 
-	public IMethodBinding getMethodBinding() {
+	public IFunctionBinding getMethodBinding() {
 		return this.bindingResolver.getMethodBinding(this.method);
 	}
 

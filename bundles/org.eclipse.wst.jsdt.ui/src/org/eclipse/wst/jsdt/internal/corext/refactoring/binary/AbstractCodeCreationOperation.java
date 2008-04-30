@@ -31,7 +31,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * Partial implementation of a code creation operation.
@@ -82,7 +82,7 @@ public abstract class AbstractCodeCreationOperation implements IWorkspaceRunnabl
 			try {
 				stream.write(content.getBytes());
 			} catch (IOException exception) {
-				throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), 0, exception.getLocalizedMessage(), exception));
+				throw new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), 0, exception.getLocalizedMessage(), exception));
 			}
 		} finally {
 			if (stream != null) {

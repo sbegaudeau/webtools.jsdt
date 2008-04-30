@@ -11,21 +11,21 @@
 
 package org.eclipse.wst.jsdt.internal.corext.refactoring;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 
 public class StubTypeContext {
 	private String fBeforeString;
 	private String fAfterString;
-	private final ICompilationUnit fCuHandle;
+	private final IJavaScriptUnit fCuHandle;
 	
-	public StubTypeContext(ICompilationUnit cuHandle, String beforeString, String afterString) {
+	public StubTypeContext(IJavaScriptUnit cuHandle, String beforeString, String afterString) {
 		fCuHandle= cuHandle;
 		fBeforeString= beforeString;
 		fAfterString= afterString;
 	}
 	
-	public ICompilationUnit getCuHandle() {
+	public IJavaScriptUnit getCuHandle() {
 		return fCuHandle;
 	}
 	

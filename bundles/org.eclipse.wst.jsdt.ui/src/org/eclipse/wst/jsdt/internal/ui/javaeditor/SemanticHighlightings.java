@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
@@ -473,7 +473,7 @@ public class SemanticHighlightings {
 		 */
 		public boolean consumes(SemanticToken token) {
 			StructuralPropertyDescriptor location= token.getNode().getLocationInParent();
-			return location == MethodDeclaration.NAME_PROPERTY || location == AnnotationTypeMemberDeclaration.NAME_PROPERTY;
+			return location == FunctionDeclaration.NAME_PROPERTY || location == AnnotationTypeMemberDeclaration.NAME_PROPERTY;
 		}
 	}
 
@@ -607,7 +607,7 @@ public class SemanticHighlightings {
 
 			// filter out annotation value references
 			if (binding != null) {
-				ITypeBinding declaringType= ((IMethodBinding)binding).getDeclaringClass();
+				ITypeBinding declaringType= ((IFunctionBinding)binding).getDeclaringClass();
 				if (declaringType.isAnnotation())
 					return false;
 			}
@@ -658,7 +658,7 @@ public class SemanticHighlightings {
 				return false;
 
 			ITypeBinding currentType= Bindings.getBindingOfParentType(node);
-			ITypeBinding declaringType= ((IMethodBinding) binding).getDeclaringClass();
+			ITypeBinding declaringType= ((IFunctionBinding) binding).getDeclaringClass();
 			if (currentType == declaringType || currentType == null)
 				return false;
 
@@ -946,7 +946,7 @@ public class SemanticHighlightings {
 			IBinding binding= token.getBinding();
 			if (binding != null && binding.getKind() == IBinding.VARIABLE && !((IVariableBinding) binding).isField()) {
 				ASTNode decl= token.getRoot().findDeclaringNode(binding);
-				return decl != null && decl.getLocationInParent() == MethodDeclaration.PARAMETERS_PROPERTY;
+				return decl != null && decl.getLocationInParent() == FunctionDeclaration.PARAMETERS_PROPERTY;
 			}
 			return false;
 		}

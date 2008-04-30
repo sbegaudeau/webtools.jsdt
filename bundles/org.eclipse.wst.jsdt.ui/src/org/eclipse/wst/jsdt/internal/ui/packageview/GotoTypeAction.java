@@ -19,17 +19,17 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.ui.IJavaElementSearchConstants;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.IJavaScriptElementSearchConstants;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 class GotoTypeAction extends Action {
 	
@@ -44,12 +44,12 @@ class GotoTypeAction extends Action {
 	}
 
 	public void run() {
-		Shell shell= JavaPlugin.getActiveWorkbenchShell();
+		Shell shell= JavaScriptPlugin.getActiveWorkbenchShell();
 		SelectionDialog dialog= null;
 		try {
-			dialog= JavaUI.createTypeDialog(shell, new ProgressMonitorDialog(shell),
-				SearchEngine.createWorkspaceScope(), IJavaElementSearchConstants.CONSIDER_ALL_TYPES, false);
-		} catch (JavaModelException e) {
+			dialog= JavaScriptUI.createTypeDialog(shell, new ProgressMonitorDialog(shell),
+				SearchEngine.createWorkspaceScope(), IJavaScriptElementSearchConstants.CONSIDER_ALL_TYPES, false);
+		} catch (JavaScriptModelException e) {
 			String title= getDialogTitle();
 			String message= PackagesMessages.GotoType_error_message; 
 			ExceptionHandler.handle(e, title, message);
@@ -69,13 +69,13 @@ class GotoTypeAction extends Action {
 	}
 	
 	private void gotoType(IType type) {
-		ICompilationUnit cu= (ICompilationUnit) type.getAncestor(IJavaElement.COMPILATION_UNIT);
-		IJavaElement element= null;
+		IJavaScriptUnit cu= (IJavaScriptUnit) type.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
+		IJavaScriptElement element= null;
 		if (cu != null) {
 			element= cu.getPrimary();
 		}
 		else {
-			element= type.getAncestor(IJavaElement.CLASS_FILE);
+			element= type.getAncestor(IJavaScriptElement.CLASS_FILE);
 		}
 		if (element != null) {
 			PackageExplorerPart view= PackageExplorerPart.openInActivePerspective();

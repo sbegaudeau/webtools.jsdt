@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetElementAdapter;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 public class JavaWorkingSetElementAdapter implements IWorkingSetElementAdapter {
 
@@ -29,12 +29,12 @@ public class JavaWorkingSetElementAdapter implements IWorkingSetElementAdapter {
 		
 		for (int i= 0; i < elements.length; i++) {
 			IAdaptable curr= elements[i];
-			if (curr instanceof IJavaElement) {
+			if (curr instanceof IJavaScriptElement) {
 				result.add(curr);
 			} else if (curr instanceof IResource) {
 				result.add(adaptFromResource((IResource) curr));
 			} else {
-				Object elem= curr.getAdapter(IJavaElement.class);
+				Object elem= curr.getAdapter(IJavaScriptElement.class);
 				if (elem == null) {
 					elem= curr.getAdapter(IResource.class);
 					if (elem != null) {
@@ -53,8 +53,8 @@ public class JavaWorkingSetElementAdapter implements IWorkingSetElementAdapter {
 		IProject project= resource.getProject();
 		if (project != null && project.isAccessible()) {
 			try {
-				if (project.hasNature(JavaCore.NATURE_ID)) {
-					IJavaElement elem= JavaCore.create(resource);
+				if (project.hasNature(JavaScriptCore.NATURE_ID)) {
+					IJavaScriptElement elem= JavaScriptCore.create(resource);
 					if (elem != null) {
 						return elem;
 					}

@@ -19,26 +19,26 @@ import org.eclipse.wst.jsdt.internal.core.ExternalJavaProject;
 import org.eclipse.wst.jsdt.internal.core.PackageFragment;
 
 /**
- * The owner of an {@link ICompilationUnit} handle in working copy mode.
+ * The owner of an {@link IJavaScriptUnit} handle in working copy mode.
  * An owner is used to identify a working copy and to create its buffer.
  * <p>
  * Clients should subclass this class to instantiate a working copy owner that is specific to their need and that
  * they can pass in to various APIs (e.g. {@link IType#resolveType(String, WorkingCopyOwner)}.
- * Clients can also override the default implementation of {@link #createBuffer(ICompilationUnit)}.
+ * Clients can also override the default implementation of {@link #createBuffer(IJavaScriptUnit)}.
  * </p><p>
  * Note: even though this class has no abstract method, which means that it provides functional default behavior,
  * it is still an abstract class, as clients are intended to own their owner implementation.
  * </p>
- * @see ICompilationUnit#becomeWorkingCopy(org.eclipse.core.runtime.IProgressMonitor)
- * @see ICompilationUnit#discardWorkingCopy()
- * @see ICompilationUnit#getWorkingCopy(org.eclipse.core.runtime.IProgressMonitor)
+ * @see IJavaScriptUnit#becomeWorkingCopy(org.eclipse.core.runtime.IProgressMonitor)
+ * @see IJavaScriptUnit#discardWorkingCopy()
+ * @see IJavaScriptUnit#getWorkingCopy(org.eclipse.core.runtime.IProgressMonitor)
  * @since 3.0
  */
 public abstract class WorkingCopyOwner {
 
 	/**
 	 * Sets the buffer provider of the primary working copy owner. Note that even if the
-	 * buffer provider is a working copy owner, only its <code>createBuffer(ICompilationUnit)</code>
+	 * buffer provider is a working copy owner, only its <code>createBuffer(IJavaScriptUnit)</code>
 	 * method is used by the primary working copy owner. It doesn't replace the internal primary
 	 * working owner.
  	 * <p>
@@ -67,7 +67,7 @@ public abstract class WorkingCopyOwner {
 	 * @return IBuffer the created buffer for the given working copy
 	 * @see IBuffer
 	 */
-	public IBuffer createBuffer(ICompilationUnit workingCopy) {
+	public IBuffer createBuffer(IJavaScriptUnit workingCopy) {
 
 		return BufferManager.createBuffer(workingCopy);
 	}
@@ -85,7 +85,7 @@ public abstract class WorkingCopyOwner {
 	 *
 	 * @since 3.3
 	 */
-	public IProblemRequestor getProblemRequestor(ICompilationUnit workingCopy) {
+	public IProblemRequestor getProblemRequestor(IJavaScriptUnit workingCopy) {
 		return null;
 	}
 
@@ -101,14 +101,14 @@ public abstract class WorkingCopyOwner {
 	 * A DOM AST created using this working copy will have bindings resolved using the given
 	 * classpath, and problem are reported to the given problem requestor.
 	 * <p></p>
-	 * <code>JavaCore#getOptions()</code> is used to create the DOM AST as it is not
+	 * <code>JavaScriptCore#getOptions()</code> is used to create the DOM AST as it is not
 	 * possible to set the options on the non-existing Java project.
 	 * </p><p>
-	 * When the working copy instance is created, an {@link IJavaElementDelta#ADDED added delta} is
+	 * When the working copy instance is created, an {@link IJavaScriptElementDelta#ADDED added delta} is
 	 * reported on this working copy.
 	 * </p><p>
 	 * Once done with the working copy, users of this method must discard it using
-	 * {@link ICompilationUnit#discardWorkingCopy()}.
+	 * {@link IJavaScriptUnit#discardWorkingCopy()}.
 	 * </p><p>
 	 * Note that when such working copy is committed, only its buffer is saved (see
 	 * {@link IBuffer#save(IProgressMonitor, boolean)}) but no resource is created.
@@ -123,17 +123,17 @@ public abstract class WorkingCopyOwner {
 	 * 	that the client is not interested in problems.
 	 * @param monitor a progress monitor used to report progress while opening the working copy
 	 * 	or <code>null</code> if no progress should be reported
-	 * @throws JavaModelException if the contents of this working copy can
+	 * @throws JavaScriptModelException if the contents of this working copy can
 	 *   not be determined.
 	 * @return a new working copy
-	 * @see ICompilationUnit#becomeWorkingCopy(IProblemRequestor, IProgressMonitor)
+	 * @see IJavaScriptUnit#becomeWorkingCopy(IProblemRequestor, IProgressMonitor)
 	 * @since 3.2
 	 *
-	 * @deprecated Use {@link #newWorkingCopy(String, IClasspathEntry[], IProgressMonitor)} instead.
+	 * @deprecated Use {@link #newWorkingCopy(String, IIncludePathEntry[], IProgressMonitor)} instead.
 	 * 	Note that if this deprecated method is used, problems may be reported twice
 	 * 	if the given requestor is not the same as the current working copy owner one.
 	 */
-	public final ICompilationUnit newWorkingCopy(String name, IClasspathEntry[] classpath, IProblemRequestor problemRequestor, IProgressMonitor monitor) throws JavaModelException {
+	public final IJavaScriptUnit newWorkingCopy(String name, IIncludePathEntry[] classpath, IProblemRequestor problemRequestor, IProgressMonitor monitor) throws JavaScriptModelException {
 		ExternalJavaProject project = new ExternalJavaProject(classpath);
 		IPackageFragment parent = project.getPackageFragmentRoot(Path.EMPTY).getPackageFragment(IPackageFragment.DEFAULT_PACKAGE_NAME);
 		CompilationUnit result = new CompilationUnit((PackageFragment) parent, name, this);
@@ -154,14 +154,14 @@ public abstract class WorkingCopyOwner {
 	 *  if bindings need to be resolved. Problems will be reported to the problem requestor
 	 * of the current working copy owner problem if it is not <code>null</code>.
 	 * <p></p>
-	 * Options used to create the DOM AST are got from {@link JavaCore#getOptions()}
+	 * Options used to create the DOM AST are got from {@link JavaScriptCore#getOptions()}
 	 * as it is not possible to set the options on a non-existing Java project.
 	 * </p><p>
-	 * When the working copy instance is created, an {@link IJavaElementDelta#ADDED added delta} is
+	 * When the working copy instance is created, an {@link IJavaScriptElementDelta#ADDED added delta} is
 	 * reported on this working copy.
 	 * </p><p>
 	 * Once done with the working copy, users of this method must discard it using
-	 * {@link ICompilationUnit#discardWorkingCopy()}.
+	 * {@link IJavaScriptUnit#discardWorkingCopy()}.
 	 * </p><p>
 	 * Note that when such working copy is committed, only its buffer is saved (see
 	 * {@link IBuffer#save(IProgressMonitor, boolean)}) but no resource is created.
@@ -173,14 +173,14 @@ public abstract class WorkingCopyOwner {
 	 * @param classpath the classpath used to resolve names in this working copy
 	 * @param monitor a progress monitor used to report progress while opening the working copy
 	 * 	or <code>null</code> if no progress should be reported
-	 * @throws JavaModelException if the contents of this working copy can
+	 * @throws JavaScriptModelException if the contents of this working copy can
 	 *   not be determined.
 	 * @return a new working copy
-	 * @see ICompilationUnit#becomeWorkingCopy(IProgressMonitor)
+	 * @see IJavaScriptUnit#becomeWorkingCopy(IProgressMonitor)
 	 *
 	 * @since 3.3
 	 */
-	public final ICompilationUnit newWorkingCopy(String name, IClasspathEntry[] classpath, IProgressMonitor monitor) throws JavaModelException {
+	public final IJavaScriptUnit newWorkingCopy(String name, IIncludePathEntry[] classpath, IProgressMonitor monitor) throws JavaScriptModelException {
 		ExternalJavaProject project = new ExternalJavaProject(classpath);
 		IPackageFragment parent = project.getPackageFragmentRoot(Path.EMPTY).getPackageFragment(IPackageFragment.DEFAULT_PACKAGE_NAME);
 		CompilationUnit result = new CompilationUnit((PackageFragment) parent, name, this);

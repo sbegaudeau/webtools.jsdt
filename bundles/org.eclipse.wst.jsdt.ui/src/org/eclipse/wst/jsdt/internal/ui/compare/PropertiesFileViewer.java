@@ -22,10 +22,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.IPropertiesFilePartitions;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileSourceViewerConfiguration;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 /**
  * Properties file viewer. 
@@ -40,9 +40,9 @@ public class PropertiesFileViewer extends Viewer {
 	
 	PropertiesFileViewer(Composite parent) {
 		fSourceViewer= new SourceViewer(parent, null, SWT.LEFT_TO_RIGHT | SWT.H_SCROLL | SWT.V_SCROLL);
-		JavaTextTools tools= JavaCompareUtilities.getJavaTextTools();
+		JavaScriptTextTools tools= JavaCompareUtilities.getJavaTextTools();
 		if (tools != null) {
-			IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
+			IPreferenceStore store= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 			fSourceViewer.configure(new PropertiesFileSourceViewerConfiguration(tools.getColorManager(), store, null, IPropertiesFilePartitions.PROPERTIES_FILE_PARTITIONING));
 		}
 
@@ -92,7 +92,7 @@ public class PropertiesFileViewer extends Viewer {
 			try {
 				return JavaCompareUtilities.readString(sca);
 			} catch (CoreException ex) {
-				JavaPlugin.log(ex);
+				JavaScriptPlugin.log(ex);
 			}
 		}
 		return ""; //$NON-NLS-1$

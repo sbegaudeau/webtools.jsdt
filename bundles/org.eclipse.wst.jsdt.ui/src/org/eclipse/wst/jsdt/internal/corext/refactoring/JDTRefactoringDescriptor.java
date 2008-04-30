@@ -25,12 +25,12 @@ import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringContribution;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IScriptableRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
@@ -39,7 +39,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
  * 
  * @since 3.2
  */
-public class JDTRefactoringDescriptor extends JavaRefactoringDescriptor {
+public class JDTRefactoringDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Predefined argument called <code>element&lt;Number&gt;</code>.
@@ -117,10 +117,10 @@ public class JDTRefactoringDescriptor extends JavaRefactoringDescriptor {
 	 *            the element
 	 * @return a corresponding input handle
 	 */
-	public static String elementToHandle(final String project, final IJavaElement element) {
+	public static String elementToHandle(final String project, final IJavaScriptElement element) {
 		final String handle= element.getHandleIdentifier();
-		if (project != null && !(element instanceof IJavaProject)) {
-			final String id= element.getJavaProject().getHandleIdentifier();
+		if (project != null && !(element instanceof IJavaScriptProject)) {
+			final String id= element.getJavaScriptProject().getHandleIdentifier();
 			return handle.substring(id.length());
 		}
 		return handle;
@@ -136,7 +136,7 @@ public class JDTRefactoringDescriptor extends JavaRefactoringDescriptor {
 	 * @return the corresponding java element, or <code>null</code> if no such
 	 *         element exists
 	 */
-	public static IJavaElement handleToElement(final String project, final String handle) {
+	public static IJavaScriptElement handleToElement(final String project, final String handle) {
 		return handleToElement(project, handle, true);
 	}
 
@@ -153,7 +153,7 @@ public class JDTRefactoringDescriptor extends JavaRefactoringDescriptor {
 	 * @return the corresponding java element, or <code>null</code> if no such
 	 *         element exists
 	 */
-	public static IJavaElement handleToElement(final String project, final String handle, final boolean check) {
+	public static IJavaScriptElement handleToElement(final String project, final String handle, final boolean check) {
 		return handleToElement(null, project, handle, check);
 	}
 
@@ -172,27 +172,27 @@ public class JDTRefactoringDescriptor extends JavaRefactoringDescriptor {
 	 * @return the corresponding java element, or <code>null</code> if no such
 	 *         element exists
 	 */
-	public static IJavaElement handleToElement(final WorkingCopyOwner owner, final String project, final String handle, final boolean check) {
-		IJavaElement element= null;
+	public static IJavaScriptElement handleToElement(final WorkingCopyOwner owner, final String project, final String handle, final boolean check) {
+		IJavaScriptElement element= null;
 		if (owner != null)
-			element= JavaCore.create(handle, owner);
+			element= JavaScriptCore.create(handle, owner);
 		else
-			element= JavaCore.create(handle);
+			element= JavaScriptCore.create(handle);
 		if (element == null && project != null) {
-			final IJavaProject javaProject= JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProject(project);
+			final IJavaScriptProject javaProject= JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaScriptProject(project);
 			final String identifier= javaProject.getHandleIdentifier();
 			if (owner != null)
-				element= JavaCore.create(identifier + handle, owner);
+				element= JavaScriptCore.create(identifier + handle, owner);
 			else
-				element= JavaCore.create(identifier + handle);
+				element= JavaScriptCore.create(identifier + handle);
 		}
-		if (check && element instanceof IMethod) {
-			final IMethod method= (IMethod) element;
-			 IMethod[] methods=null;
+		if (check && element instanceof IFunction) {
+			final IFunction method= (IFunction) element;
+			 IFunction[] methods=null;
 			if (method.getDeclaringType()!=null)
 				methods=method.getDeclaringType().findMethods(method);
 			else
-				methods=method.getCompilationUnit().findMethods(method);
+				methods=method.getJavaScriptUnit().findFunctions(method);
 			if (methods != null && methods.length > 0)
 				element= methods[0];
 		}
@@ -312,7 +312,7 @@ public class JDTRefactoringDescriptor extends JavaRefactoringDescriptor {
 	 *            the element
 	 * @return a corresponding input handle
 	 */
-	public String elementToHandle(final IJavaElement element) {
+	public String elementToHandle(final IJavaScriptElement element) {
 		Assert.isNotNull(element);
 		return elementToHandle(getProject(), element);
 	}

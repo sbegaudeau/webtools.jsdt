@@ -34,7 +34,7 @@ public class ContainedLibraryFilter extends ViewerFilter {
 				IResource resource= root.getResource();
 				if (resource != null) {
 					IProject jarProject= resource.getProject();
-					IProject container= root.getJavaProject().getProject();
+					IProject container= root.getJavaScriptProject().getProject();
 					return !container.equals(jarProject);
 				}
 			}

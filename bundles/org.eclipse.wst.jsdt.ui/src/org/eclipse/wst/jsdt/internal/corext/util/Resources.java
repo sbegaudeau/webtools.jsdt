@@ -31,7 +31,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.internal.corext.CorextMessages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 
 public class Resources {
@@ -68,7 +68,7 @@ public class Resources {
 		}
 		if (result != null)
 			return result;
-		return new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$		
+		return new Status(IStatus.OK, JavaScriptPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$		
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class Resources {
 				readOnlyFiles.add(resource);
 		}
 		if (readOnlyFiles.size() == 0)
-			return new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
+			return new Status(IStatus.OK, JavaScriptPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
 			
 		Map oldTimeStamps= createModificationStampMap(readOnlyFiles);
 		IStatus status= ResourcesPlugin.getWorkspace().validateEdit(
@@ -125,7 +125,7 @@ public class Resources {
 		}
 		if (modified != null)	
 			return modified;
-		return new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
+		return new Status(IStatus.OK, JavaScriptPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
 	}
 
 	private static Map createModificationStampMap(List files){
@@ -148,7 +148,7 @@ public class Resources {
 			((MultiStatus)status).add(entry);
 			return status;
 		} else {
-			MultiStatus result= new MultiStatus(JavaPlugin.getPluginId(),
+			MultiStatus result= new MultiStatus(JavaScriptPlugin.getPluginId(),
 				IJavaStatusConstants.VALIDATE_EDIT_CHANGED_CONTENT,
 				CorextMessages.Resources_modifiedResources, null); 
 			result.add(status);
@@ -232,7 +232,7 @@ public class Resources {
 		try {
 			resource.setResourceAttributes(resourceAttributes);
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 	}
 }

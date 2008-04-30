@@ -12,14 +12,14 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 
 import org.eclipse.wst.jsdt.core.JSDScopeUtil;
 
 import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitializerExtension;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 
 
@@ -36,7 +36,7 @@ public class JSDScopeUiUtil {
 	private static final String CLASS="class";
 	private static final String ID="id";
 	
-	public static IJsGlobalScopeContainerInitializerExtension findLibraryUiInitializer(IPath compUnitPath, IJavaProject javaProject) {
+	public static IJsGlobalScopeContainerInitializerExtension findLibraryUiInitializer(IPath compUnitPath, IJavaScriptProject javaProject) {
 		System.out.println("public static IJsGlobalScopeContainerInitializerExtension findLibraryInitializer(");
 		JsGlobalScopeContainerInitializer init =  JSDScopeUtil.findLibraryInitializer(compUnitPath,javaProject);
 			return (IJsGlobalScopeContainerInitializerExtension)init;
@@ -61,7 +61,7 @@ public class JSDScopeUiUtil {
 		    }
 		    
 		}catch(Exception e) {
-			JavaPlugin.log( e);
+			JavaScriptPlugin.log( e);
 		}
 		return null;
 		//IJsGlobalScopeContainerInitializer init = JSDScopeUtil.getContainerInitializer(compUnitPath);

@@ -44,11 +44,11 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerPart;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
 public final class ConfigureWorkingSetAssignementAction extends SelectionDispatchAction {
@@ -399,7 +399,7 @@ public final class ConfigureWorkingSetAssignementAction extends SelectionDispatc
 		List list= selection.toList();
 		for (Iterator iterator= list.iterator(); iterator.hasNext();) {
 			Object object= iterator.next();
-			if (!(object instanceof IResource) && !(object instanceof IJavaElement))
+			if (!(object instanceof IResource) && !(object instanceof IJavaScriptElement))
 				return false;
 		}
 		
@@ -412,7 +412,7 @@ public final class ConfigureWorkingSetAssignementAction extends SelectionDispatc
 		List list= selection.toList();
 		for (Iterator iterator= list.iterator(); iterator.hasNext();) {
 			Object object= iterator.next();
-			if (object instanceof IResource || object instanceof IJavaElement) {
+			if (object instanceof IResource || object instanceof IJavaScriptElement) {
 				result.add(object);
 			}
 		}
@@ -431,7 +431,7 @@ public final class ConfigureWorkingSetAssignementAction extends SelectionDispatc
 			if (element instanceof IResource) {
 				elementName= ((IResource)element).getName();
 			} else {
-				elementName= JavaElementLabels.getElementLabel((IJavaElement)element, JavaElementLabels.ALL_DEFAULT);
+				elementName= JavaScriptElementLabels.getElementLabel((IJavaScriptElement)element, JavaScriptElementLabels.ALL_DEFAULT);
 			}
 			dialog.setMessage(Messages.format(WorkingSetMessages.ConfigureWorkingSetAssignementAction_DialogMessage_specific, elementName));
 		} else {
@@ -560,7 +560,7 @@ public final class ConfigureWorkingSetAssignementAction extends SelectionDispatc
 	}
 	
 	private PackageExplorerPart getActivePackageExplorer() {
-		IWorkbenchPage page= JavaPlugin.getActivePage();
+		IWorkbenchPage page= JavaScriptPlugin.getActivePage();
 		if (page != null) {
 			IWorkbenchPart activePart= page.getActivePart();
 			if (activePart instanceof PackageExplorerPart) {

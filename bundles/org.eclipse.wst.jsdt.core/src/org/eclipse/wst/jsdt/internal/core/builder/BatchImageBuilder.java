@@ -19,7 +19,7 @@ import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
@@ -80,8 +80,8 @@ public void build() {
 
 
 //protected void cleanOutputFolders(boolean copyBack) throws CoreException {
-//	boolean deleteAll = JavaCore.CLEAN.equals(
-//		javaBuilder.javaProject.getOption(JavaCore.CORE_JAVA_BUILD_CLEAN_OUTPUT_FOLDER, true));
+//	boolean deleteAll = JavaScriptCore.CLEAN.equals(
+//		javaBuilder.javaProject.getOption(JavaScriptCore.CORE_JAVA_BUILD_CLEAN_OUTPUT_FOLDER, true));
 //	if (deleteAll) {
 //		if (this.javaBuilder.participants != null)
 //			for (int i = 0, l = this.javaBuilder.participants.length; i < l; i++)
@@ -208,7 +208,7 @@ protected void copyExtraResourcesBack(ClasspathMultiDirectory sourceLocation, fi
 									resource,
 									null,
 									Messages.bind(Messages.build_duplicateResource, id),
-									javaBuilder.javaProject.getOption(JavaCore.CORE_JAVA_BUILD_DUPLICATE_RESOURCE, true));
+									javaBuilder.javaProject.getOption(JavaScriptCore.CORE_JAVA_BUILD_DUPLICATE_RESOURCE, true));
 								return false;
 							}
 							copiedResource.delete(IResource.FORCE, null); // last one wins

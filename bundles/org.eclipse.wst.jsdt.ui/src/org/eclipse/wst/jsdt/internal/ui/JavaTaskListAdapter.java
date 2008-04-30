@@ -13,8 +13,8 @@ package org.eclipse.wst.jsdt.internal.ui;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.views.tasklist.ITaskListResourceAdapter;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 public class JavaTaskListAdapter implements ITaskListResourceAdapter {
 
@@ -22,12 +22,12 @@ public class JavaTaskListAdapter implements ITaskListResourceAdapter {
 	 * @see ITaskListResourceAdapter#getAffectedResource(IAdaptable)
 	 */
 	public IResource getAffectedResource(IAdaptable element) {
-		IJavaElement java = (IJavaElement) element;
+		IJavaScriptElement java = (IJavaScriptElement) element;
 		IResource resource= java.getResource();
 		if (resource != null)
 			return resource; 
 		
-		ICompilationUnit cu= (ICompilationUnit) java.getAncestor(IJavaElement.COMPILATION_UNIT);
+		IJavaScriptUnit cu= (IJavaScriptUnit) java.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 		if (cu != null) {
 			return cu.getPrimary().getResource();
 		}

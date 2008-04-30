@@ -25,9 +25,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
@@ -39,31 +39,31 @@ public class JavaBuildConfigurationBlock extends OptionsConfigurationBlock {
 	
 	private static final String SETTINGS_SECTION_NAME= "JavaBuildConfigurationBlock"; //$NON-NLS-1$
 	
-	private static final Key PREF_PB_MAX_PER_UNIT= getJDTCoreKey(JavaCore.COMPILER_PB_MAX_PER_UNIT);
+	private static final Key PREF_PB_MAX_PER_UNIT= getJDTCoreKey(JavaScriptCore.COMPILER_PB_MAX_PER_UNIT);
 
-	private static final Key PREF_RESOURCE_FILTER= getJDTCoreKey(JavaCore.CORE_JAVA_BUILD_RESOURCE_COPY_FILTER);
-	private static final Key PREF_BUILD_INVALID_CLASSPATH= getJDTCoreKey(JavaCore.CORE_JAVA_BUILD_INVALID_CLASSPATH);
-	private static final Key PREF_BUILD_CLEAN_OUTPUT_FOLDER= getJDTCoreKey(JavaCore.CORE_JAVA_BUILD_CLEAN_OUTPUT_FOLDER);
-	private static final Key PREF_ENABLE_EXCLUSION_PATTERNS= getJDTCoreKey(JavaCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS);
-	private static final Key PREF_ENABLE_MULTIPLE_OUTPUT_LOCATIONS= getJDTCoreKey(JavaCore.CORE_ENABLE_CLASSPATH_MULTIPLE_OUTPUT_LOCATIONS);
+	private static final Key PREF_RESOURCE_FILTER= getJDTCoreKey(JavaScriptCore.CORE_JAVA_BUILD_RESOURCE_COPY_FILTER);
+	private static final Key PREF_BUILD_INVALID_CLASSPATH= getJDTCoreKey(JavaScriptCore.CORE_JAVA_BUILD_INVALID_CLASSPATH);
+	private static final Key PREF_BUILD_CLEAN_OUTPUT_FOLDER= getJDTCoreKey(JavaScriptCore.CORE_JAVA_BUILD_CLEAN_OUTPUT_FOLDER);
+	private static final Key PREF_ENABLE_EXCLUSION_PATTERNS= getJDTCoreKey(JavaScriptCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS);
+	private static final Key PREF_ENABLE_MULTIPLE_OUTPUT_LOCATIONS= getJDTCoreKey(JavaScriptCore.CORE_ENABLE_CLASSPATH_MULTIPLE_OUTPUT_LOCATIONS);
 
-	private static final Key PREF_PB_INCOMPLETE_BUILDPATH= getJDTCoreKey(JavaCore.CORE_INCOMPLETE_CLASSPATH);
-	private static final Key PREF_PB_CIRCULAR_BUILDPATH= getJDTCoreKey(JavaCore.CORE_CIRCULAR_CLASSPATH);
-	private static final Key PREF_PB_INCOMPATIBLE_JDK_LEVEL= getJDTCoreKey(JavaCore.CORE_INCOMPATIBLE_JDK_LEVEL);
-	private static final Key PREF_PB_DUPLICATE_RESOURCE= getJDTCoreKey(JavaCore.CORE_JAVA_BUILD_DUPLICATE_RESOURCE);
-	private static final Key PREF_RECREATE_MODIFIED_CLASS_FILES= getJDTCoreKey(JavaCore.CORE_JAVA_BUILD_RECREATE_MODIFIED_CLASS_FILES_IN_OUTPUT_FOLDER);
+	private static final Key PREF_PB_INCOMPLETE_BUILDPATH= getJDTCoreKey(JavaScriptCore.CORE_INCOMPLETE_CLASSPATH);
+	private static final Key PREF_PB_CIRCULAR_BUILDPATH= getJDTCoreKey(JavaScriptCore.CORE_CIRCULAR_CLASSPATH);
+	private static final Key PREF_PB_INCOMPATIBLE_JDK_LEVEL= getJDTCoreKey(JavaScriptCore.CORE_INCOMPATIBLE_JDK_LEVEL);
+	private static final Key PREF_PB_DUPLICATE_RESOURCE= getJDTCoreKey(JavaScriptCore.CORE_JAVA_BUILD_DUPLICATE_RESOURCE);
+	private static final Key PREF_RECREATE_MODIFIED_CLASS_FILES= getJDTCoreKey(JavaScriptCore.CORE_JAVA_BUILD_RECREATE_MODIFIED_CLASS_FILES_IN_OUTPUT_FOLDER);
 
 	
 	// values
-	private static final String ERROR= JavaCore.ERROR;
-	private static final String WARNING= JavaCore.WARNING;
-	private static final String IGNORE= JavaCore.IGNORE;
+	private static final String ERROR= JavaScriptCore.ERROR;
+	private static final String WARNING= JavaScriptCore.WARNING;
+	private static final String IGNORE= JavaScriptCore.IGNORE;
 
-	private static final String ABORT= JavaCore.ABORT;
-	private static final String CLEAN= JavaCore.CLEAN;
+	private static final String ABORT= JavaScriptCore.ABORT;
+	private static final String CLEAN= JavaScriptCore.CLEAN;
 
-	private static final String ENABLED= JavaCore.ENABLED;
-	private static final String DISABLED= JavaCore.DISABLED;
+	private static final String ENABLED= JavaScriptCore.ENABLED;
+	private static final String DISABLED= JavaScriptCore.DISABLED;
 
 	private PixelConverter fPixelConverter;
 	
@@ -210,7 +210,7 @@ public class JavaBuildConfigurationBlock extends OptionsConfigurationBlock {
 		gd.widthHint= fPixelConverter.convertWidthInCharsToPixels(60);
 		description.setLayoutData(gd);
 
-		IDialogSettings section= JavaPlugin.getDefault().getDialogSettings().getSection(SETTINGS_SECTION_NAME);
+		IDialogSettings section= JavaScriptPlugin.getDefault().getDialogSettings().getSection(SETTINGS_SECTION_NAME);
 		restoreSectionExpansionStates(section);
 		
 		return pageContent;
@@ -301,7 +301,7 @@ public class JavaBuildConfigurationBlock extends OptionsConfigurationBlock {
 	 * @see org.eclipse.wst.jsdt.internal.ui.preferences.OptionsConfigurationBlock#dispose()
 	 */
 	public void dispose() {
-		IDialogSettings settings= JavaPlugin.getDefault().getDialogSettings().addNewSection(SETTINGS_SECTION_NAME);
+		IDialogSettings settings= JavaScriptPlugin.getDefault().getDialogSettings().addNewSection(SETTINGS_SECTION_NAME);
 		storeSectionExpansionStates(settings);
 		super.dispose();
 	}

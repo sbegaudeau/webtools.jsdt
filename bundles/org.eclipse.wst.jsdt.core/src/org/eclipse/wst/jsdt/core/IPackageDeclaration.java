@@ -17,7 +17,7 @@ package org.eclipse.wst.jsdt.core;
  * This interface is not intended to be implemented by clients.
  * </p>
  */
-public interface IPackageDeclaration extends IJavaElement, ISourceReference {
+public interface IPackageDeclaration extends IJavaScriptElement, ISourceReference {
 /**
  * Returns the name of the package the statement refers to.
  * This is a handle-only method.

@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.viewsupport;
 
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 
 /**
  * Listener to be informed on text selection changes in an editor (post selection), including the corresponding AST.
@@ -30,6 +30,6 @@ public interface ISelectionListenerWithAST {
 	 * @param astRoot The AST tree corresponding to the editor's input. This AST is shared and must
 	 * not be modified.
 	 */
-	void selectionChanged(IEditorPart part, ITextSelection selection, CompilationUnit astRoot);
+	void selectionChanged(IEditorPart part, ITextSelection selection, JavaScriptUnit astRoot);
 
 }

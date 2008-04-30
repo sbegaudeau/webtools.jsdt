@@ -16,9 +16,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 class ProjectAndSourceFolderContentProvider extends JavaBrowsingContentProvider {
 
@@ -59,21 +59,21 @@ class ProjectAndSourceFolderContentProvider extends JavaBrowsingContentProvider 
 					result= concatenate(result, getChildren(iter.next()));
 				return result;
 			}
-			if (element instanceof IJavaProject)
-				return getPackageFragmentRoots((IJavaProject)element);
+			if (element instanceof IJavaScriptProject)
+				return getPackageFragmentRoots((IJavaScriptProject)element);
 			if (element instanceof IPackageFragmentRoot)
 				return NO_CHILDREN;
 
 			return super.getChildren(element);
 
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return NO_CHILDREN;
 		} finally {
 			finishedReadInDisplayThread();
 		}
 	}
 
-	protected Object[] getPackageFragmentRoots(IJavaProject project) throws JavaModelException {
+	protected Object[] getPackageFragmentRoots(IJavaScriptProject project) throws JavaScriptModelException {
 		if (!project.getProject().isOpen())
 			return NO_CHILDREN;
 
@@ -94,6 +94,6 @@ class ProjectAndSourceFolderContentProvider extends JavaBrowsingContentProvider 
 	 * @see ITreeContentProvider
 	 */
 	public boolean hasChildren(Object element) {
-		return element instanceof IJavaProject && super.hasChildren(element);
+		return element instanceof IJavaScriptProject && super.hasChildren(element);
 	}
 }

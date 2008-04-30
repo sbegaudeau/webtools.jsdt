@@ -23,8 +23,8 @@ import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Block;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
@@ -58,17 +58,17 @@ public class RefactoringAnalyzeUtil {
 	}
 	
 
-	public static MethodDeclaration getMethodDeclaration(TextEdit edit, TextChange change, CompilationUnit cuNode){
+	public static FunctionDeclaration getMethodDeclaration(TextEdit edit, TextChange change, JavaScriptUnit cuNode){
 		ASTNode decl= RefactoringAnalyzeUtil.findSimpleNameNode(RefactoringAnalyzeUtil.getNewTextRange(edit, change), cuNode);
-		return ((MethodDeclaration)ASTNodes.getParent(decl, MethodDeclaration.class));
+		return ((FunctionDeclaration)ASTNodes.getParent(decl, FunctionDeclaration.class));
 	}
 
-	public static Block getBlock(TextEdit edit, TextChange change, CompilationUnit cuNode){
+	public static Block getBlock(TextEdit edit, TextChange change, JavaScriptUnit cuNode){
 		ASTNode decl= RefactoringAnalyzeUtil.findSimpleNameNode(RefactoringAnalyzeUtil.getNewTextRange(edit, change), cuNode);
 		return ((Block)ASTNodes.getParent(decl, Block.class));
 	}
 	
-	public static IProblem[] getIntroducedCompileProblems(CompilationUnit newCUNode, CompilationUnit oldCuNode) {
+	public static IProblem[] getIntroducedCompileProblems(JavaScriptUnit newCUNode, JavaScriptUnit oldCuNode) {
 		Set subResult= new HashSet();				
 		Set oldProblems= getOldProblems(oldCuNode);
 		IProblem[] newProblems= ASTNodes.getProblems(newCUNode, ASTNodes.INCLUDE_ALL_PARENTS, ASTNodes.PROBLEMS);
@@ -109,12 +109,12 @@ public class RefactoringAnalyzeUtil {
 		return null;	
 	}
 
-	private static SimpleName findSimpleNameNode(IRegion range, CompilationUnit cuNode) {
+	private static SimpleName findSimpleNameNode(IRegion range, JavaScriptUnit cuNode) {
 		ASTNode node= NodeFinder.perform(cuNode, range.getOffset(), range.getLength());
 		return getSimpleName(node);
 	}
 
-	private static Set getOldProblems(CompilationUnit oldCuNode) {
+	private static Set getOldProblems(JavaScriptUnit oldCuNode) {
 		return new HashSet(Arrays.asList(ASTNodes.getProblems(oldCuNode, ASTNodes.INCLUDE_ALL_PARENTS, ASTNodes.PROBLEMS)));
 	}
 }

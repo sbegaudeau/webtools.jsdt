@@ -13,9 +13,9 @@ package org.eclipse.wst.jsdt.internal.ui.filters;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 
 /**
@@ -30,15 +30,15 @@ public class JavaFileFilter  extends ViewerFilter {
 	 * @return Returns true if element should be included in filtered set
 	 */
 	public boolean select(Viewer viewer, Object parent, Object element) {
-		if (element instanceof ICompilationUnit)
+		if (element instanceof IJavaScriptUnit)
 			return false;
 		if (element instanceof IClassFile)
 			return false;
 			
 		if (element instanceof IPackageFragment)
 			try {
-				return ((IPackageFragment)element).getNonJavaResources().length > 0;
-			} catch (JavaModelException ex) {
+				return ((IPackageFragment)element).getNonJavaScriptResources().length > 0;
+			} catch (JavaScriptModelException ex) {
 				return true;
 			}
 		return true;			

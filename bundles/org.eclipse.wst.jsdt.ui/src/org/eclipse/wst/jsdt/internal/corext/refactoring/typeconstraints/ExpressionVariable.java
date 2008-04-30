@@ -11,13 +11,13 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
@@ -33,7 +33,7 @@ public final class ExpressionVariable extends ConstraintVariable {
 	public ExpressionVariable(Expression expression){
 		super(expression.resolveTypeBinding());
 		fSource= expression.toString();
-		ICompilationUnit cu= ASTCreator.getCu(expression);
+		IJavaScriptUnit cu= ASTCreator.getCu(expression);
 		Assert.isNotNull(cu);
 		fRange= new CompilationUnitRange(cu, expression);
 		fExpressionBinding= resolveBinding(expression);
@@ -66,8 +66,8 @@ public final class ExpressionVariable extends ConstraintVariable {
 			return resolveBinding(((ParenthesizedExpression)expression).getExpression());
 		else if (expression instanceof Assignment)
 			return resolveBinding(((Assignment)expression).getLeftHandSide());//TODO ???
-		else if (expression instanceof MethodInvocation)
-			return ((MethodInvocation)expression).resolveMethodBinding();
+		else if (expression instanceof FunctionInvocation)
+			return ((FunctionInvocation)expression).resolveMethodBinding();
 		else if (expression instanceof SuperMethodInvocation)
 			return ((SuperMethodInvocation)expression).resolveMethodBinding();
 		else if (expression instanceof FieldAccess)

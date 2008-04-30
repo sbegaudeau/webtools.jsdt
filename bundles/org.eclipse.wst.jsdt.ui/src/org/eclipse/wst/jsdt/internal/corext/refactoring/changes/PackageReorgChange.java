@@ -19,8 +19,8 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ReorgExecutionLog;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JDTChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.INewNameQuery;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;
@@ -37,7 +37,7 @@ abstract class PackageReorgChange extends JDTChange {
 		fNameQuery= nameQuery;
 	}
 
-	abstract Change doPerformReorg(IProgressMonitor pm) throws JavaModelException, OperationCanceledException;
+	abstract Change doPerformReorg(IProgressMonitor pm) throws JavaScriptModelException, OperationCanceledException;
 
 	public RefactoringStatus isValid(IProgressMonitor pm) throws CoreException {
 		// it is enough to check the package only since package reorg changes
@@ -66,11 +66,11 @@ abstract class PackageReorgChange extends JDTChange {
 	}
 
 	IPackageFragmentRoot getDestination() {
-		return (IPackageFragmentRoot)JavaCore.create(fDestinationHandle);
+		return (IPackageFragmentRoot)JavaScriptCore.create(fDestinationHandle);
 	}
 
 	IPackageFragment getPackage() {
-		return (IPackageFragment)JavaCore.create(fPackageHandle);
+		return (IPackageFragment)JavaScriptCore.create(fPackageHandle);
 	}
 
 	String getNewName() throws OperationCanceledException {

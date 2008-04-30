@@ -25,21 +25,21 @@ import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.java.IJavaReconcilingListener;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * Manages the override and overwrite indicators for
@@ -87,17 +87,17 @@ class OverrideIndicatorManager implements IJavaReconcilingListener {
 		 * Opens and reveals the defining method.
 		 */
 		public void open() {
-			CompilationUnit ast= ASTProvider.getASTProvider().getAST(fJavaElement, ASTProvider.WAIT_ACTIVE_ONLY, null);
+			JavaScriptUnit ast= ASTProvider.getASTProvider().getAST(fJavaElement, ASTProvider.WAIT_ACTIVE_ONLY, null);
 			if (ast != null) {
 				ASTNode node= ast.findDeclaringNode(fAstNodeKey);
-				if (node instanceof MethodDeclaration) {
+				if (node instanceof FunctionDeclaration) {
 					try {
-						IMethodBinding methodBinding= ((MethodDeclaration)node).resolveBinding();
-						IMethodBinding definingMethodBinding= Bindings.findOverriddenMethod(methodBinding, true);
+						IFunctionBinding methodBinding= ((FunctionDeclaration)node).resolveBinding();
+						IFunctionBinding definingMethodBinding= Bindings.findOverriddenMethod(methodBinding, true);
 						if (definingMethodBinding != null) {
-							IJavaElement definingMethod= definingMethodBinding.getJavaElement();
+							IJavaScriptElement definingMethod= definingMethodBinding.getJavaElement();
 							if (definingMethod != null) {
-								JavaUI.openInEditor(definingMethod, true, true);
+								JavaScriptUI.openInEditor(definingMethod, true, true);
 								return;
 							}
 						}
@@ -109,7 +109,7 @@ class OverrideIndicatorManager implements IJavaReconcilingListener {
 			}
 			String title= JavaEditorMessages.OverrideIndicatorManager_open_error_title;
 			String message= JavaEditorMessages.OverrideIndicatorManager_open_error_message;
-			MessageDialog.openError(JavaPlugin.getActiveWorkbenchShell(), title, message);
+			MessageDialog.openError(JavaScriptPlugin.getActiveWorkbenchShell(), title, message);
 		}
 	}
 
@@ -118,10 +118,10 @@ class OverrideIndicatorManager implements IJavaReconcilingListener {
 	private IAnnotationModel fAnnotationModel;
 	private Object fAnnotationModelLockObject;
 	private Annotation[] fOverrideAnnotations;
-	private IJavaElement fJavaElement;
+	private IJavaScriptElement fJavaElement;
 
 
-	public OverrideIndicatorManager(IAnnotationModel annotationModel, IJavaElement javaElement, CompilationUnit ast) {
+	public OverrideIndicatorManager(IAnnotationModel annotationModel, IJavaScriptElement javaElement, JavaScriptUnit ast) {
 		Assert.isNotNull(annotationModel);
 		Assert.isNotNull(javaElement);
 
@@ -156,7 +156,7 @@ class OverrideIndicatorManager implements IJavaReconcilingListener {
 	 * @param progressMonitor the progress monitor
 	 * @since 3.0
 	 */
-	protected void updateAnnotations(CompilationUnit ast, IProgressMonitor progressMonitor) {
+	protected void updateAnnotations(JavaScriptUnit ast, IProgressMonitor progressMonitor) {
 
 		if (ast == null || progressMonitor.isCanceled())
 			return;
@@ -165,12 +165,12 @@ class OverrideIndicatorManager implements IJavaReconcilingListener {
 
 		ast.accept(new ASTVisitor(false) {
 			/*
-			 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.MethodDeclaration)
+			 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.FunctionDeclaration)
 			 */
-			public boolean visit(MethodDeclaration node) {
-				IMethodBinding binding= node.resolveBinding();
+			public boolean visit(FunctionDeclaration node) {
+				IFunctionBinding binding= node.resolveBinding();
 				if (binding != null) {
-					IMethodBinding definingMethod= Bindings.findOverriddenMethod(binding, true);
+					IFunctionBinding definingMethod= Bindings.findOverriddenMethod(binding, true);
 					if (definingMethod != null) {
 
 						ITypeBinding definingType= definingMethod.getDeclaringClass();
@@ -239,9 +239,9 @@ class OverrideIndicatorManager implements IJavaReconcilingListener {
 	}
 
 	/*
-	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.IJavaReconcilingListener#reconciled(CompilationUnit, boolean, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.IJavaReconcilingListener#reconciled(JavaScriptUnit, boolean, IProgressMonitor)
 	 */
-	public void reconciled(CompilationUnit ast, boolean forced, IProgressMonitor progressMonitor) {
+	public void reconciled(JavaScriptUnit ast, boolean forced, IProgressMonitor progressMonitor) {
 		updateAnnotations(ast, progressMonitor);
 	}
 }

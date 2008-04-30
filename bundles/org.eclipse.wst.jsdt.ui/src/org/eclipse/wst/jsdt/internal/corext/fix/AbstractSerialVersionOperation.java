@@ -15,14 +15,14 @@ import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
@@ -55,9 +55,9 @@ public abstract class AbstractSerialVersionOperation extends AbstractLinkedFixRe
 	
 	/** The originally selected node */
 	private final ASTNode[] fNodes;
-	private final ICompilationUnit fUnit;
+	private final IJavaScriptUnit fUnit;
 
-	protected AbstractSerialVersionOperation(final ICompilationUnit unit, final ASTNode[] node) {
+	protected AbstractSerialVersionOperation(final IJavaScriptUnit unit, final ASTNode[] node) {
 		fUnit= unit;
 		fNodes= node;
 	}
@@ -127,7 +127,7 @@ public abstract class AbstractSerialVersionOperation extends AbstractLinkedFixRe
 
 			final String comment= CodeGeneration.getFieldComment(fUnit, declaration.getType().toString(), NAME_FIELD, StubUtility.getLineDelimiterUsed(fUnit));
 			if (comment != null && comment.length() > 0) {
-				final Javadoc doc= (Javadoc) rewrite.createStringPlaceholder(comment, ASTNode.JAVADOC);
+				final JSdoc doc= (JSdoc) rewrite.createStringPlaceholder(comment, ASTNode.JSDOC);
 				declaration.setJavadoc(doc);
 			}
 		}

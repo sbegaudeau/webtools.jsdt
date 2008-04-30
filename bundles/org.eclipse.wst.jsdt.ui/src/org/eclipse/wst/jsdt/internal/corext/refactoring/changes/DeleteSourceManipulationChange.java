@@ -20,11 +20,11 @@ import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ui.ide.undo.ResourceDescription;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceManipulation;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -54,7 +54,7 @@ public class DeleteSourceManipulationChange extends AbstractDeleteChange {
 	public RefactoringStatus isValid(IProgressMonitor pm) throws CoreException {
 		ISourceManipulation element= getSourceManipulation();
 		if (fIsExecuteChange) {
-			if (element instanceof ICompilationUnit) {
+			if (element instanceof IJavaScriptUnit) {
 				// don't check anything in this case. We have a warning dialog
 				// already presented to the user that the file is dirty.
 				return super.isValid(pm, NONE);
@@ -67,7 +67,7 @@ public class DeleteSourceManipulationChange extends AbstractDeleteChange {
 	}
 
 	private String getElementName() {
-		IJavaElement javaElement= getJavaElement(getSourceManipulation());
+		IJavaScriptElement javaElement= getJavaElement(getSourceManipulation());
 		if (JavaElementUtil.isDefaultPackage(javaElement))
 			return RefactoringCoreMessages.DeleteSourceManipulationChange_1; 
 		return javaElement.getElementName();
@@ -77,7 +77,7 @@ public class DeleteSourceManipulationChange extends AbstractDeleteChange {
 	 * @see IChange#getModifiedLanguageElement()
 	 */
 	public Object getModifiedElement() {
-		return JavaCore.create(fHandle);
+		return JavaScriptCore.create(fHandle);
 	}
 	
 	/*
@@ -88,9 +88,9 @@ public class DeleteSourceManipulationChange extends AbstractDeleteChange {
 		// we have to save dirty compilation units before deleting them. Otherwise
 		// we will end up showing ghost compilation units in the package explorer
 		// since the primary working copy still exists.
-		if (element instanceof ICompilationUnit) {
+		if (element instanceof IJavaScriptUnit) {
 			pm.beginTask("", 2); //$NON-NLS-1$
-			ICompilationUnit unit= (ICompilationUnit)element;
+			IJavaScriptUnit unit= (IJavaScriptUnit)element;
 			saveCUnitIfNeeded(unit, new SubProgressMonitor(pm, 1));
 			
 			IResource resource= unit.getResource();
@@ -100,7 +100,7 @@ public class DeleteSourceManipulationChange extends AbstractDeleteChange {
 			return new UndoDeleteResourceChange(resourceDescription);
 			
 		} else if (element instanceof IPackageFragment) {
-			ICompilationUnit[] units= ((IPackageFragment)element).getCompilationUnits();
+			IJavaScriptUnit[] units= ((IPackageFragment)element).getJavaScriptUnits();
 			pm.beginTask("", units.length + 1); //$NON-NLS-1$
 			for (int i = 0; i < units.length; i++) {
 				// fix https://bugs.eclipse.org/bugs/show_bug.cgi?id=66835
@@ -119,12 +119,12 @@ public class DeleteSourceManipulationChange extends AbstractDeleteChange {
 		return (ISourceManipulation) getModifiedElement();
 	}
 
-	private static IJavaElement getJavaElement(ISourceManipulation sm) {
+	private static IJavaScriptElement getJavaElement(ISourceManipulation sm) {
 		//all known ISourceManipulations are IJavaElements
-		return (IJavaElement)sm;
+		return (IJavaScriptElement)sm;
 	}
 	
-	private static void saveCUnitIfNeeded(ICompilationUnit unit, IProgressMonitor pm) throws CoreException {
+	private static void saveCUnitIfNeeded(IJavaScriptUnit unit, IProgressMonitor pm) throws CoreException {
 		saveFileIfNeeded((IFile)unit.getResource(), pm);
 	}
 }

@@ -11,8 +11,8 @@
 package org.eclipse.wst.jsdt.internal.ui;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * This class locates different resources
@@ -20,28 +20,28 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
  */
 public class ResourceLocator implements IResourceLocator {
 	
-	public IResource getUnderlyingResource(Object element) throws JavaModelException {
-		if (element instanceof IJavaElement)
-			return ((IJavaElement) element).getUnderlyingResource();
+	public IResource getUnderlyingResource(Object element) throws JavaScriptModelException {
+		if (element instanceof IJavaScriptElement)
+			return ((IJavaScriptElement) element).getUnderlyingResource();
 		else
 			return null;
 	}
 
-	public IResource getCorrespondingResource(Object element) throws JavaModelException {
-		if (element instanceof IJavaElement)
-			return ((IJavaElement) element).getCorrespondingResource();
+	public IResource getCorrespondingResource(Object element) throws JavaScriptModelException {
+		if (element instanceof IJavaScriptElement)
+			return ((IJavaScriptElement) element).getCorrespondingResource();
 		else
 			return null;
 	}
 
-	public IResource getContainingResource(Object element) throws JavaModelException {
+	public IResource getContainingResource(Object element) throws JavaScriptModelException {
 		IResource resource= null;
 		if (element instanceof IResource)
 			resource= (IResource) element;
-		if (element instanceof IJavaElement) {
-			resource= ((IJavaElement) element).getResource();
+		if (element instanceof IJavaScriptElement) {
+			resource= ((IJavaScriptElement) element).getResource();
 			if (resource == null)
-				resource= ((IJavaElement) element).getJavaProject().getProject();
+				resource= ((IJavaScriptElement) element).getJavaScriptProject().getProject();
 		}
 		return resource;
 	}

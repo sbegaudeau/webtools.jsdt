@@ -27,15 +27,15 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ReplaceInvocationsRefactoring;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
 
 public class ReplaceInvocationsInputPage extends UserInputWizardPage {
 
@@ -43,7 +43,7 @@ public class ReplaceInvocationsInputPage extends UserInputWizardPage {
 
 	private ReplaceInvocationsRefactoring fRefactoring;
 
-	private static final long LABEL_FLAGS= JavaElementLabels.M_PRE_TYPE_PARAMETERS | JavaElementLabels.M_PRE_RETURNTYPE | JavaElementLabels.M_PARAMETER_TYPES | JavaElementLabels.M_PARAMETER_NAMES | JavaElementLabels.M_EXCEPTIONS;
+	private static final long LABEL_FLAGS= JavaScriptElementLabels.M_PRE_TYPE_PARAMETERS | JavaScriptElementLabels.M_PRE_RETURNTYPE | JavaScriptElementLabels.M_PARAMETER_TYPES | JavaScriptElementLabels.M_PARAMETER_NAMES | JavaScriptElementLabels.M_EXCEPTIONS;
 	
 	public ReplaceInvocationsInputPage() {
 		super(PAGE_NAME);
@@ -87,12 +87,12 @@ public class ReplaceInvocationsInputPage extends UserInputWizardPage {
 	}
 
 	private void createMethodSignature(Composite parent) {
-		IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 		JavaSourceViewer signatureViewer= new JavaSourceViewer(parent, null, null, false, SWT.READ_ONLY | SWT.WRAP /*| SWT.BORDER*/, store);
-		signatureViewer.configure(new JavaSourceViewerConfiguration(JavaPlugin.getDefault().getJavaTextTools().getColorManager(), store, null, null));
+		signatureViewer.configure(new JavaScriptSourceViewerConfiguration(JavaScriptPlugin.getDefault().getJavaTextTools().getColorManager(), store, null, null));
 		signatureViewer.getTextWidget().setFont(JFaceResources.getFont(PreferenceConstants.EDITOR_TEXT_FONT));
 		signatureViewer.getTextWidget().setBackground(parent.getBackground());
-		String signatureLabel= JavaElementLabels.getElementLabel(fRefactoring.getMethod(), LABEL_FLAGS);
+		String signatureLabel= JavaScriptElementLabels.getElementLabel(fRefactoring.getMethod(), LABEL_FLAGS);
 		signatureViewer.setDocument(new Document(signatureLabel));
 		signatureViewer.setEditable(false);
 		
@@ -104,9 +104,9 @@ public class ReplaceInvocationsInputPage extends UserInputWizardPage {
 	}
 
 	private void createBody(Composite parent) {
-		IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 		JavaSourceViewer bodyEditor= new JavaSourceViewer(parent, null, null, false, SWT.V_SCROLL | SWT.WRAP | SWT.BORDER, store);
-		bodyEditor.configure(new JavaSourceViewerConfiguration(JavaPlugin.getDefault().getJavaTextTools().getColorManager(), store, null, null));
+		bodyEditor.configure(new JavaScriptSourceViewerConfiguration(JavaScriptPlugin.getDefault().getJavaTextTools().getColorManager(), store, null, null));
 		bodyEditor.getTextWidget().setFont(JFaceResources.getFont(PreferenceConstants.EDITOR_TEXT_FONT));
 		Document bodyDocument= new Document(getInitialBody());
 		bodyEditor.setDocument(bodyDocument);
@@ -126,9 +126,9 @@ public class ReplaceInvocationsInputPage extends UserInputWizardPage {
 			public void documentChanged(DocumentEvent event) {
 				try {
 					fRefactoring.setBody(event.getDocument().get(), fRefactoring.getMethod().getParameterNames());
-				} catch (JavaModelException ex) {
+				} catch (JavaScriptModelException ex) {
 					// TODO Auto-generated catch block
-					JavaPlugin.log(ex);
+					JavaScriptPlugin.log(ex);
 				}
 			}
 		});
@@ -144,7 +144,7 @@ public class ReplaceInvocationsInputPage extends UserInputWizardPage {
 		RefactoringStatus status;
 		try {
 			status= fRefactoring.setCurrentMode(mode);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			status= RefactoringStatus.createFatalErrorStatus(e.getMessage());
 		}
 		setPageComplete(status);

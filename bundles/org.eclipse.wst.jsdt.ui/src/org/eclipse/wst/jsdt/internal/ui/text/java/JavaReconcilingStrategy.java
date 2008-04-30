@@ -28,15 +28,15 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.WorkingCopyManager;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class JavaReconcilingStrategy implements IReconcilingStrategy, IReconcilingStrategyExtension {
 
@@ -54,8 +54,8 @@ public class JavaReconcilingStrategy implements IReconcilingStrategy, IReconcili
 
 	public JavaReconcilingStrategy(ITextEditor editor) {
 		fEditor= editor;
-		fManager= JavaPlugin.getDefault().getWorkingCopyManager();
-		fDocumentProvider= JavaPlugin.getDefault().getCompilationUnitDocumentProvider();
+		fManager= JavaScriptPlugin.getDefault().getWorkingCopyManager();
+		fDocumentProvider= JavaScriptPlugin.getDefault().getCompilationUnitDocumentProvider();
 		fIsJavaReconcilingListener= fEditor instanceof IJavaReconcilingListener;
 		if (fIsJavaReconcilingListener)
 			fJavaReconcilingListener= (IJavaReconcilingListener)fEditor;
@@ -69,9 +69,9 @@ public class JavaReconcilingStrategy implements IReconcilingStrategy, IReconcili
 	}
 
 	private void reconcile(final boolean initialReconcile) {
-		final CompilationUnit[] ast= new CompilationUnit[1];
+		final JavaScriptUnit[] ast= new JavaScriptUnit[1];
 		try {
-			final ICompilationUnit unit= fManager.getWorkingCopy(fEditor.getEditorInput(), false);
+			final IJavaScriptUnit unit= fManager.getWorkingCopy(fEditor.getEditorInput(), false);
 			if (unit != null) {
 				SafeRunner.run(new ISafeRunnable() {
 					public void run() {
@@ -85,12 +85,12 @@ public class JavaReconcilingStrategy implements IReconcilingStrategy, IReconcili
 							}
 							
 							try {
-								boolean isASTNeeded= initialReconcile || JavaPlugin.getDefault().getASTProvider().isActive(unit);
+								boolean isASTNeeded= initialReconcile || JavaScriptPlugin.getDefault().getASTProvider().isActive(unit);
 								// reconcile
 								if (fIsJavaReconcilingListener && isASTNeeded) {
-									int reconcileFlags= ICompilationUnit.FORCE_PROBLEM_DETECTION 
-										| (ASTProvider.SHARED_AST_STATEMENT_RECOVERY ? ICompilationUnit.ENABLE_STATEMENTS_RECOVERY : 0)
-										| (ASTProvider.SHARED_BINDING_RECOVERY ? ICompilationUnit.ENABLE_BINDINGS_RECOVERY : 0);
+									int reconcileFlags= IJavaScriptUnit.FORCE_PROBLEM_DETECTION 
+										| (ASTProvider.SHARED_AST_STATEMENT_RECOVERY ? IJavaScriptUnit.ENABLE_STATEMENTS_RECOVERY : 0)
+										| (ASTProvider.SHARED_BINDING_RECOVERY ? IJavaScriptUnit.ENABLE_BINDINGS_RECOVERY : 0);
 											
 									ast[0]= unit.reconcile(ASTProvider.SHARED_AST_LEVEL, reconcileFlags, null, fProgressMonitor);
 									if (ast[0] != null) {
@@ -98,7 +98,7 @@ public class JavaReconcilingStrategy implements IReconcilingStrategy, IReconcili
 										ASTNodes.setFlagsToAST(ast[0], ASTNode.PROTECT);
 									}
 								} else
-									unit.reconcile(ICompilationUnit.NO_AST, true, null, fProgressMonitor);
+									unit.reconcile(IJavaScriptUnit.NO_AST, true, null, fProgressMonitor);
 							} catch (OperationCanceledException ex) {
 								Assert.isTrue(fProgressMonitor == null || fProgressMonitor.isCanceled());
 								ast[0]= null;
@@ -110,13 +110,13 @@ public class JavaReconcilingStrategy implements IReconcilingStrategy, IReconcili
 								}
 							}
 							
-						} catch (JavaModelException ex) {
+						} catch (JavaScriptModelException ex) {
 							handleException(ex);
 						}
 					}
 					public void handleException(Throwable ex) {
-						IStatus status= new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.OK, "Error in JDT Core during reconcile", ex);  //$NON-NLS-1$
-						JavaPlugin.getDefault().getLog().log(status);
+						IStatus status= new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.OK, "Error in JDT Core during reconcile", ex);  //$NON-NLS-1$
+						JavaScriptPlugin.getDefault().getLog().log(status);
 					}
 				});
 				

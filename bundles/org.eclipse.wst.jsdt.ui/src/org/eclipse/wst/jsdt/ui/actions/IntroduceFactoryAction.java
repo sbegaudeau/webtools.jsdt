@@ -16,14 +16,14 @@ import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -77,9 +77,9 @@ public class IntroduceFactoryAction extends SelectionDispatchAction {
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isIntroduceFactoryAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			setEnabled(false);//no UI here - happens on selection changes
 		}
 	}
@@ -91,11 +91,11 @@ public class IntroduceFactoryAction extends SelectionDispatchAction {
 		try {
 			// we have to call this here - no selection changed event is sent after a refactoring but it may still invalidate enablement
 			if (RefactoringAvailabilityTester.isIntroduceFactoryAvailable(selection)) {
-				IMethod method= (IMethod) selection.getFirstElement();
+				IFunction method= (IFunction) selection.getFirstElement();
 				if (!ActionUtil.isEditable(getShell(), method))
 					return;
 				ISourceRange range= method.getNameRange();
-				RefactoringExecutionStarter.startIntroduceFactoryRefactoring(method.getCompilationUnit(), new TextSelection(range.getOffset(), range.getLength()), getShell());
+				RefactoringExecutionStarter.startIntroduceFactoryRefactoring(method.getJavaScriptUnit(), new TextSelection(range.getOffset(), range.getLength()), getShell());
 			}
 		} catch (CoreException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.IntroduceFactoryAction_dialog_title, RefactoringMessages.IntroduceFactoryAction_exception); 
@@ -115,7 +115,7 @@ public class IntroduceFactoryAction extends SelectionDispatchAction {
 	public void selectionChanged(JavaTextSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isIntroduceFactoryAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			setEnabled(false);
 		}
 	}

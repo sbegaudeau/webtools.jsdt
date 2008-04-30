@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 
 public abstract class PackageFragmentRootContainer implements IAdaptable {
@@ -60,9 +60,9 @@ public abstract class PackageFragmentRootContainer implements IAdaptable {
 		}
 	}
 	
-	private IJavaProject fProject;
+	private IJavaScriptProject fProject;
 
-	public PackageFragmentRootContainer(IJavaProject project) {
+	public PackageFragmentRootContainer(IJavaScriptProject project) {
 		Assert.isNotNull(project);
 		fProject= project;
 	}
@@ -81,7 +81,7 @@ public abstract class PackageFragmentRootContainer implements IAdaptable {
 	
 	public abstract ImageDescriptor getImageDescriptor();
 	
-	public IJavaProject getJavaProject() {
+	public IJavaScriptProject getJavaProject() {
 		return fProject;
 	}
 }

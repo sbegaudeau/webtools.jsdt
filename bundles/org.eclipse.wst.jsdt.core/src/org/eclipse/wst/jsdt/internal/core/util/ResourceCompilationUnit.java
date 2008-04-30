@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit;
 
 /**
- * An ICompilationUnit that retrieves its contents using an IFile
+ * An IJavaScriptUnit that retrieves its contents using an IFile
  */
 public class ResourceCompilationUnit extends CompilationUnit {
 

@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.dom;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ElementValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
@@ -101,7 +101,7 @@ class MemberValuePairBinding implements IMemberValuePairBinding {
 		return AnnotationBinding.NoAnnotations;
 	}
 
-	public IJavaElement getJavaElement() {
+	public IJavaScriptElement getJavaElement() {
 		return null;
 	}
 
@@ -114,7 +114,7 @@ class MemberValuePairBinding implements IMemberValuePairBinding {
 		return IBinding.MEMBER_VALUE_PAIR;
 	}
 
-	public IMethodBinding getMethodBinding() {
+	public IFunctionBinding getMethodBinding() {
 		return this.bindingResolver.getMethodBinding(this.internalPair.getMethodBinding());
 	}
 

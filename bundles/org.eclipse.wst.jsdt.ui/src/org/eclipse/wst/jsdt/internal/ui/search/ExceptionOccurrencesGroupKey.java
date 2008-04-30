@@ -11,15 +11,15 @@
 
 package org.eclipse.wst.jsdt.internal.ui.search;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 public class ExceptionOccurrencesGroupKey extends JavaElementLine {
 	private boolean fIsException;
 	
 	/**
-	 * @param element either an ICompilationUnit or an IClassFile
+	 * @param element either an IJavaScriptUnit or an IClassFile
 	 */
-	public ExceptionOccurrencesGroupKey(IJavaElement element, int line, String lineContents, boolean isException) {
+	public ExceptionOccurrencesGroupKey(IJavaScriptElement element, int line, String lineContents, boolean isException) {
 		super(element, line, lineContents);
 		fIsException= isException;
 	}

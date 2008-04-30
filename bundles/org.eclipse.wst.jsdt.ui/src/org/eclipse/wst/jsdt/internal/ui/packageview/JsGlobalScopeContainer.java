@@ -25,15 +25,15 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitializerExtension;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.util.JSDScopeUiUtil;
 
@@ -42,20 +42,20 @@ import org.eclipse.wst.jsdt.internal.ui.util.JSDScopeUiUtil;
  */
 public class JsGlobalScopeContainer extends PackageFragmentRootContainer {
 
-	private IClasspathEntry fClassPathEntry;
+	private IIncludePathEntry fClassPathEntry;
 	private IJsGlobalScopeContainer fContainer;
 
 	public static class RequiredProjectWrapper implements IAdaptable, IWorkbenchAdapter {
 
 		private final JsGlobalScopeContainer fParent;
-		private final IJavaProject fProject;
+		private final IJavaScriptProject fProject;
 		
-		public RequiredProjectWrapper(JsGlobalScopeContainer parent, IJavaProject project) {
+		public RequiredProjectWrapper(JsGlobalScopeContainer parent, IJavaScriptProject project) {
 			fParent= parent;
 			fProject= project;
 		}
 		
-		public IJavaProject getProject() {
+		public IJavaScriptProject getProject() {
 			return fProject; 
 		}
 		
@@ -86,12 +86,12 @@ public class JsGlobalScopeContainer extends PackageFragmentRootContainer {
 		}
 	}
 
-	public JsGlobalScopeContainer(IJavaProject parent, IClasspathEntry entry) {
+	public JsGlobalScopeContainer(IJavaScriptProject parent, IIncludePathEntry entry) {
 		super(parent);
 		fClassPathEntry= entry;
 		try {
-			fContainer= JavaCore.getJsGlobalScopeContainer(entry.getPath(), parent);
-		} catch (JavaModelException e) {
+			fContainer= JavaScriptCore.getJsGlobalScopeContainer(entry.getPath(), parent);
+		} catch (JavaScriptModelException e) {
 			fContainer= null;
 		}
 	}
@@ -123,18 +123,18 @@ public class JsGlobalScopeContainer extends PackageFragmentRootContainer {
 			list.add(roots[i]);
 		}
 		if (fContainer != null) {
-			IClasspathEntry[] classpathEntries= fContainer.getClasspathEntries();
+			IIncludePathEntry[] classpathEntries= fContainer.getIncludepathEntries();
 			if (classpathEntries == null) {
 				// invalid implementation of a classpath container
-				JavaPlugin.log(new IllegalArgumentException("Invalid classpath container implementation: getClasspathEntries() returns null. " + fContainer.getPath())); //$NON-NLS-1$
+				JavaScriptPlugin.log(new IllegalArgumentException("Invalid classpath container implementation: getClasspathEntries() returns null. " + fContainer.getPath())); //$NON-NLS-1$
 			} else {
 				IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();
 				for (int i= 0; i < classpathEntries.length; i++) {
-					IClasspathEntry entry= classpathEntries[i];
-					if (entry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+					IIncludePathEntry entry= classpathEntries[i];
+					if (entry.getEntryKind() == IIncludePathEntry.CPE_PROJECT) {
 						IResource resource= root.findMember(entry.getPath());
 						if (resource instanceof IProject)
-							list.add(new RequiredProjectWrapper(this, JavaCore.create((IProject) resource)));
+							list.add(new RequiredProjectWrapper(this, JavaScriptCore.create((IProject) resource)));
 					}
 				}
 			}
@@ -158,7 +158,7 @@ public class JsGlobalScopeContainer extends PackageFragmentRootContainer {
 		
 		IPath path= fClassPathEntry.getPath();
 		String containerId= path.segment(0);
-		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(containerId);
+		JsGlobalScopeContainerInitializer initializer= JavaScriptCore.getJsGlobalScopeContainerInitializer(containerId);
 		if (initializer != null) {
 			String description= initializer.getDescription(path, getJavaProject());
 			return Messages.format(PackagesMessages.JsGlobalScopeContainer_unbound_label, description); 
@@ -166,11 +166,11 @@ public class JsGlobalScopeContainer extends PackageFragmentRootContainer {
 		return Messages.format(PackagesMessages.JsGlobalScopeContainer_unknown_label, path.toString()); 
 	}
 	
-	public IClasspathEntry getClasspathEntry() {
+	public IIncludePathEntry getClasspathEntry() {
 		return fClassPathEntry;
 	}
 	
-	static boolean contains(IJavaProject project, IClasspathEntry entry, IPackageFragmentRoot root) {
+	static boolean contains(IJavaScriptProject project, IIncludePathEntry entry, IPackageFragmentRoot root) {
 		IPackageFragmentRoot[] roots= project.findPackageFragmentRoots(entry);
 		for (int i= 0; i < roots.length; i++) {
 			if (roots[i].equals(root))

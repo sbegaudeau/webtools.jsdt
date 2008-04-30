@@ -70,7 +70,7 @@ public class AccessRuleSet {
  * Select the first access rule which is violated when accessing a given type,
  * or null if no 'non accessible' access rule applies.
  * @param targetTypeFilePath the target type file path, formed as:
- * "org/eclipse/jdt/core/JavaCore"
+ * "org/eclipse/jdt/core/JavaScriptCore"
  * @return the first access restriction that applies if any, null else
  */
 public AccessRestriction getViolatedRestriction(char[] targetTypeFilePath) {

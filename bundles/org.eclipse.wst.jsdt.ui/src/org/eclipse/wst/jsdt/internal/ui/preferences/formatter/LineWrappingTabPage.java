@@ -45,8 +45,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 
 /**
@@ -102,7 +102,7 @@ public class LineWrappingTabPage extends FormatterTabPage {
 	}
 	
 
-	private final static String PREF_CATEGORY_INDEX= JavaUI.ID_PLUGIN + "formatter_page.line_wrapping_tab_page.last_category_index"; //$NON-NLS-1$ 
+	private final static String PREF_CATEGORY_INDEX= JavaScriptUI.ID_PLUGIN + "formatter_page.line_wrapping_tab_page.last_category_index"; //$NON-NLS-1$ 
 	
 	
 	private final class CategoryListener implements ISelectionChangedListener, IDoubleClickListener {
@@ -551,7 +551,7 @@ public class LineWrappingTabPage extends FormatterTabPage {
 	/**
 	 * The key to save the user's preview window width in the dialog settings.
 	 */
-	private static final String PREF_PREVIEW_LINE_WIDTH= JavaUI.ID_PLUGIN + ".codeformatter.line_wrapping_tab_page.preview_line_width"; //$NON-NLS-1$
+	private static final String PREF_PREVIEW_LINE_WIDTH= JavaScriptUI.ID_PLUGIN + ".codeformatter.line_wrapping_tab_page.preview_line_width"; //$NON-NLS-1$
 	
 	/**
 	 * The dialog settings.
@@ -611,7 +611,7 @@ public class LineWrappingTabPage extends FormatterTabPage {
 	public LineWrappingTabPage(ModifyDialog modifyDialog, Map workingValues) {
 		super(modifyDialog, workingValues);
 
-		fDialogSettings= JavaPlugin.getDefault().getDialogSettings();
+		fDialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();
 		
 		final String previewLineWidth= fDialogSettings.get(PREF_PREVIEW_LINE_WIDTH);
 		
@@ -821,7 +821,7 @@ public class LineWrappingTabPage extends FormatterTabPage {
                 changeForceSplit(currentKey, forceSplit);
             } catch (IllegalArgumentException e) {
     			fWorkingValues.put(currentKey, DefaultCodeFormatterConstants.createAlignmentValue(forceSplit, DefaultCodeFormatterConstants.WRAP_NO_SPLIT, DefaultCodeFormatterConstants.INDENT_DEFAULT));
-    			JavaPlugin.log(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, 
+    			JavaScriptPlugin.log(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, 
     			        Messages.format(FormatterMessages.LineWrappingTabPage_error_invalid_value, currentKey), e)); 
     		}
         }
@@ -845,7 +845,7 @@ public class LineWrappingTabPage extends FormatterTabPage {
 	        	    changeWrappingStyle(currentKey, wrappingStyle);
 	        	} catch (IllegalArgumentException e) {
 	    			fWorkingValues.put(currentKey, DefaultCodeFormatterConstants.createAlignmentValue(false, wrappingStyle, DefaultCodeFormatterConstants.INDENT_DEFAULT));
-	    			JavaPlugin.log(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, 
+	    			JavaScriptPlugin.log(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, 
 	    			        Messages.format(FormatterMessages.LineWrappingTabPage_error_invalid_value, currentKey), e)); 
 	        	}
 	        }
@@ -869,7 +869,7 @@ public class LineWrappingTabPage extends FormatterTabPage {
             	changeIndentStyle(currentKey, indentStyle);
         	} catch (IllegalArgumentException e) {
     			fWorkingValues.put(currentKey, DefaultCodeFormatterConstants.createAlignmentValue(false, DefaultCodeFormatterConstants.WRAP_NO_SPLIT, indentStyle));
-    			JavaPlugin.log(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.OK, 
+    			JavaScriptPlugin.log(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, 
     			        Messages.format(FormatterMessages.LineWrappingTabPage_error_invalid_value, currentKey), e)); 
     		}
         }

@@ -16,12 +16,12 @@ import java.util.Collection;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -42,19 +42,19 @@ public class Implementors {
     }
 
     /**
-     * Searches for implementors of the specified Java elements. Currently, only IMethod
+     * Searches for implementors of the specified Java elements. Currently, only IFunction
      * instances are searched for. Also, only the first element of the elements
      * parameter is taken into consideration.
      *
      * @param elements
      *
-     * @return An array of found implementing Java elements (currently only IMethod
+     * @return An array of found implementing Java elements (currently only IFunction
      *         instances)
      */
-    public IJavaElement[] searchForImplementors(IJavaElement[] elements,
+    public IJavaScriptElement[] searchForImplementors(IJavaScriptElement[] elements,
         IProgressMonitor progressMonitor) {
         if ((elements != null) && (elements.length > 0)) {
-            IJavaElement element = elements[0];
+            IJavaScriptElement element = elements[0];
 
             try {
                 if (element instanceof IMember) {
@@ -65,15 +65,15 @@ public class Implementors {
                         IType[] implementingTypes = findImplementingTypes(type,
                                 progressMonitor);
 
-                        if (member.getElementType() == IJavaElement.METHOD) {
-                            return findMethods((IMethod)member, implementingTypes, progressMonitor);
+                        if (member.getElementType() == IJavaScriptElement.METHOD) {
+                            return findMethods((IFunction)member, implementingTypes, progressMonitor);
                         } else {
                             return implementingTypes;
                         }
                     }
                 }
-            } catch (JavaModelException e) {
-                JavaPlugin.log(e);
+            } catch (JavaScriptModelException e) {
+                JavaScriptPlugin.log(e);
             }
         }
 
@@ -82,19 +82,19 @@ public class Implementors {
 
     /**
      * Searches for interfaces which are implemented by the declaring classes of the
-     * specified Java elements. Currently, only IMethod instances are searched for.
+     * specified Java elements. Currently, only IFunction instances are searched for.
      * Also, only the first element of the elements parameter is taken into
      * consideration.
      *
      * @param elements
      *
      * @return An array of found interfaces implemented by the declaring classes of the
-     *         specified Java elements (currently only IMethod instances)
+     *         specified Java elements (currently only IFunction instances)
      */
-    public IJavaElement[] searchForInterfaces(IJavaElement[] elements,
+    public IJavaScriptElement[] searchForInterfaces(IJavaScriptElement[] elements,
         IProgressMonitor progressMonitor) {
         if ((elements != null) && (elements.length > 0)) {
-            IJavaElement element = elements[0];
+            IJavaScriptElement element = elements[0];
 
             if (element instanceof IMember) {
                 IMember member = (IMember) element;
@@ -103,8 +103,8 @@ public class Implementors {
                 IType[] implementingTypes = findInterfaces(type, progressMonitor);
 
                 if (!progressMonitor.isCanceled()) {
-                    if (member.getElementType() == IJavaElement.METHOD) {
-                        return findMethods((IMethod)member, implementingTypes, progressMonitor);
+                    if (member.getElementType() == IJavaScriptElement.METHOD) {
+                        return findMethods((IFunction)member, implementingTypes, progressMonitor);
                     } else {
                         return implementingTypes;
                     }
@@ -156,15 +156,15 @@ public class Implementors {
     }
 
     /**
-     * Finds IMethod instances on the specified IType instances with identical signatures
-     * as the specified IMethod parameter.
+     * Finds IFunction instances on the specified IType instances with identical signatures
+     * as the specified IFunction parameter.
      *
      * @param method The method to find "equals" of.
      * @param types The types in which the search is performed.
      *
      * @return An array of methods which match the method parameter.
      */
-    private IJavaElement[] findMethods(IMethod method, IType[] types,
+    private IJavaScriptElement[] findMethods(IFunction method, IType[] types,
         IProgressMonitor progressMonitor) {
         Collection foundMethods = new ArrayList();
 
@@ -175,7 +175,7 @@ public class Implementors {
         try {
             for (int i = 0; i < types.length; i++) {
                 IType type = types[i];
-                IMethod[] methods = type.findMethods(method);
+                IFunction[] methods = type.findMethods(method);
 
                 if (methods != null) {
                     for (int j = 0; j < methods.length; j++) {
@@ -189,6 +189,6 @@ public class Implementors {
             subProgressMonitor.done();
         }
 
-        return (IJavaElement[]) foundMethods.toArray(new IJavaElement[foundMethods.size()]);
+        return (IJavaScriptElement[]) foundMethods.toArray(new IJavaScriptElement[foundMethods.size()]);
     }
 }

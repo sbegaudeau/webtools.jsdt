@@ -41,12 +41,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
@@ -85,8 +85,8 @@ public class SourceAttachmentBlock {
 	private Control fSWTWidget;
 	private Label fFullPathResolvedLabel;
 	
-	private IJavaProject fProject;
-	private IClasspathEntry fEntry;
+	private IJavaScriptProject fProject;
+	private IIncludePathEntry fEntry;
 	private IPath fContainerPath;
 
 
@@ -94,7 +94,7 @@ public class SourceAttachmentBlock {
 	 * @param context listeners for status updates
 	 * @param entry The entry to edit
 	 */
-	public SourceAttachmentBlock(IStatusChangeListener context, IClasspathEntry entry) {
+	public SourceAttachmentBlock(IStatusChangeListener context, IIncludePathEntry entry) {
 		Assert.isNotNull(entry);
 		
 		fContext= context;
@@ -102,7 +102,7 @@ public class SourceAttachmentBlock {
 
 		
 		int kind= entry.getEntryKind();
-		Assert.isTrue(kind == IClasspathEntry.CPE_LIBRARY || kind == IClasspathEntry.CPE_VARIABLE);
+		Assert.isTrue(kind == IIncludePathEntry.CPE_LIBRARY || kind == IIncludePathEntry.CPE_VARIABLE);
 				
 		fWorkspaceRoot= ResourcesPlugin.getWorkspace().getRoot();
 		
@@ -138,9 +138,9 @@ public class SourceAttachmentBlock {
 	}
 	
 	/**
-	 * @deprecated Use API {@link org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess#configureSourceAttachment(Shell, IClasspathEntry)}
+	 * @deprecated Use API {@link org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess#configureSourceAttachment(Shell, IIncludePathEntry)}
 	 */
-	public SourceAttachmentBlock(IStatusChangeListener context, IClasspathEntry entry, IPath containerPath, IJavaProject project) {
+	public SourceAttachmentBlock(IStatusChangeListener context, IIncludePathEntry entry, IPath containerPath, IJavaScriptProject project) {
 		this(context, entry);
 		fContainerPath= containerPath;
 		fProject= project;
@@ -155,7 +155,7 @@ public class SourceAttachmentBlock {
 	}
 	
 	private boolean isVariableEntry() {
-		return fEntry.getEntryKind() == IClasspathEntry.CPE_VARIABLE;
+		return fEntry.getEntryKind() == IIncludePathEntry.CPE_VARIABLE;
 	}
 	
 	
@@ -177,7 +177,7 @@ public class SourceAttachmentBlock {
 		return null;
 	}
 	
-	public IClasspathEntry getNewEntry() {
+	public IIncludePathEntry getNewEntry() {
 		CPListElement elem= CPListElement.createFromExisting(fEntry, fProject);
 		elem.setAttribute(CPListElement.SOURCEATTACHMENT, getSourceAttachmentPath());
 		return elem.getClasspathEntry();
@@ -341,7 +341,7 @@ public class SourceAttachmentBlock {
 		if (path != null) {
 			String varName= path.segment(0);
 			if (varName != null) {
-				IPath varPath= JavaCore.getClasspathVariable(varName);
+				IPath varPath= JavaScriptCore.getIncludepathVariable(varName);
 				if (varPath != null) {
 					return varPath.append(path.removeFirstSegments(1));
 				}
@@ -375,7 +375,7 @@ public class SourceAttachmentBlock {
 					status.setError(NewWizardMessages.SourceAttachmentBlock_filename_error_notvalid); 
 					return status;
 				}
-				fFileVariablePath= JavaCore.getClasspathVariable(varName);
+				fFileVariablePath= JavaScriptCore.getIncludepathVariable(varName);
 				if (fFileVariablePath == null) {
 					status.setError(NewWizardMessages.SourceAttachmentBlock_filename_error_varnotexists); 
 					return status;
@@ -538,7 +538,7 @@ public class SourceAttachmentBlock {
 		if (fSWTWidget != null) {
 			return fSWTWidget.getShell();
 		}
-		return JavaPlugin.getActiveWorkbenchShell();			
+		return JavaScriptPlugin.getActiveWorkbenchShell();			
 	}
 	
 	/**
@@ -553,7 +553,7 @@ public class SourceAttachmentBlock {
 			return new Path(varName);
 		}
 		
-		IPath varPath= JavaCore.getClasspathVariable(varName);
+		IPath varPath= JavaScriptCore.getIncludepathVariable(varName);
 		if (varPath != null) {
 			if (varPath.isPrefixOf(path)) {
 				path= path.removeFirstSegments(varPath.segmentCount());
@@ -570,7 +570,7 @@ public class SourceAttachmentBlock {
 	/**
 	 * Creates a runnable that sets the source attachment by modifying the project's classpath.
 	 */
-	public static IRunnableWithProgress getRunnable(final Shell shell, final IClasspathEntry newEntry, final IJavaProject jproject, final IPath containerPath) {
+	public static IRunnableWithProgress getRunnable(final Shell shell, final IIncludePathEntry newEntry, final IJavaScriptProject jproject, final IPath containerPath) {
 		return new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {				
 				try {
@@ -584,7 +584,7 @@ public class SourceAttachmentBlock {
 	}
 
 	/**
-	 * @deprecated Use {@link #getRunnable(Shell, IClasspathEntry, IJavaProject, IPath)}
+	 * @deprecated Use {@link #getRunnable(Shell, IIncludePathEntry, IJavaScriptProject, IPath)}
 	 */
 	public IRunnableWithProgress getRunnable(final Shell shell) {
 		return getRunnable(shell, getNewEntry(), fProject, fContainerPath);

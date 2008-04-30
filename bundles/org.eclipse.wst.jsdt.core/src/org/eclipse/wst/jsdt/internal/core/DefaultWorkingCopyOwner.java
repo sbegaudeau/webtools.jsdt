@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 
 /**
@@ -28,7 +28,7 @@ public class DefaultWorkingCopyOwner extends WorkingCopyOwner {
 		// only one instance can be created
 	}
 
-	public IBuffer createBuffer(ICompilationUnit workingCopy) {
+	public IBuffer createBuffer(IJavaScriptUnit workingCopy) {
 		if (this.primaryBufferProvider != null) return this.primaryBufferProvider.createBuffer(workingCopy);
 		return super.createBuffer(workingCopy);
 	}

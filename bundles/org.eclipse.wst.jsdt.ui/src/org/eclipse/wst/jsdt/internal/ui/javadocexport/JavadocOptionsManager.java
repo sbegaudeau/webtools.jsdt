@@ -38,22 +38,22 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.launching.ExecutionArguments;
 import org.eclipse.wst.jsdt.launching.IVMInstall;
 import org.eclipse.wst.jsdt.launching.IVMInstallType;
 import org.eclipse.wst.jsdt.launching.JavaRuntime;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -69,8 +69,8 @@ public class JavadocOptionsManager {
 	private String[] fJavadocCommandHistory;
 	
 	
-	private IJavaElement[] fSelectedElements;
-	private IJavaElement[] fInitialElements;
+	private IJavaScriptElement[] fSelectedElements;
+	private IJavaScriptElement[] fInitialElements;
 
 	private String fAccess;
 	private String fDocletpath;
@@ -176,10 +176,10 @@ public class JavadocOptionsManager {
 				}
 				fWizardStatus.setWarning(JavadocExportMessages.JavadocOptionsManager_antfileincorrectCE_warning); 
 			} catch (CoreException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 				fWizardStatus.setWarning(JavadocExportMessages.JavadocOptionsManager_antfileincorrectCE_warning); 
 			} catch (IOException e) {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 				fWizardStatus.setWarning(JavadocExportMessages.JavadocOptionsManager_antfileincorrectIOE_warning); 
 			} catch (SAXException e) {
 				fWizardStatus.setWarning(JavadocExportMessages.JavadocOptionsManager_antfileincorrectSAXE_warning); 
@@ -197,10 +197,10 @@ public class JavadocOptionsManager {
 	 * Returns the Java project that is parent top all selected elements or null if
 	 * the elements are from several projects.
 	 */
-	private IJavaProject getSingleProjectFromInitialSelection() {
-		IJavaProject res= null;
+	private IJavaScriptProject getSingleProjectFromInitialSelection() {
+		IJavaScriptProject res= null;
 		for (int i= 0; i < fInitialElements.length; i++) {
-			IJavaProject curr= fInitialElements[i].getJavaProject();
+			IJavaScriptProject curr= fInitialElements[i].getJavaScriptProject();
 			if (res == null) {
 				res= curr;
 			} else if (!res.equals(curr)) {
@@ -217,7 +217,7 @@ public class JavadocOptionsManager {
 	private void loadFromDialogStore(IDialogSettings settings, List sel) {
 		fInitialElements= getInitialElementsFromSelection(sel);
 		
-		IJavaProject project= getSingleProjectFromInitialSelection();
+		IJavaScriptProject project= getSingleProjectFromInitialSelection();
 
 		fAccess= settings.get(VISIBILITY);
 		if (fAccess == null)
@@ -288,7 +288,7 @@ public class JavadocOptionsManager {
 		
 		fSource= settings.get(SOURCE);
 		if (project != null) {
-			fSource= project.getOption(JavaCore.COMPILER_SOURCE, true);
+			fSource= project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
 		}
 		
 		if (project != null) {
@@ -303,7 +303,7 @@ public class JavadocOptionsManager {
 	private void loadDefaults(List sel) {
 		fInitialElements= getInitialElementsFromSelection(sel);
 		
-		IJavaProject project= getSingleProjectFromInitialSelection();
+		IJavaScriptProject project= getSingleProjectFromInitialSelection();
 
 		if (project != null) {
 			fAntpath= getRecentSettings().getAntpath(project);
@@ -337,7 +337,7 @@ public class JavadocOptionsManager {
 		fOpenInBrowser= false;
 		fSource= "1.3"; //$NON-NLS-1$
 		if (project != null) {
-			fSource= project.getOption(JavaCore.COMPILER_SOURCE, true);
+			fSource= project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
 		}
 
 		//by default it is empty all project map to the empty string
@@ -485,7 +485,7 @@ public class JavadocOptionsManager {
 		return (IContainer[]) res.toArray(new IContainer[res.size()]);
 	}	
 
-	private IJavaElement[] getSelectedElementsFromAnt(Element element) {
+	private IJavaScriptElement[] getSelectedElementsFromAnt(Element element) {
 		List res= new ArrayList();
 
 		// get all the packages listed in the ANT file
@@ -500,7 +500,7 @@ public class JavadocOptionsManager {
 					IContainer curr= containers[i];
 					IResource resource= curr.findMember(relPackagePath);
 					if (resource != null) {
-						IJavaElement javaElem= JavaCore.create(resource);
+						IJavaScriptElement javaElem= JavaScriptCore.create(resource);
 						if (javaElem instanceof IPackageFragment) {
 							res.add(javaElem);
 						}
@@ -517,13 +517,13 @@ public class JavadocOptionsManager {
 			StringTokenizer tokenizer= new StringTokenizer(sourcefiles, ","); //$NON-NLS-1$
 			while (tokenizer.hasMoreTokens()) {
 				String name= tokenizer.nextToken().trim();
-				if (JavaCore.isJavaLikeFileName(name)) {
+				if (JavaScriptCore.isJavaScriptLikeFileName(name)) {
 					IPath path= makeAbsolutePathFromRelative(new Path(name));
 					//if unable to create an absolute path to the resource skip it
 					if (path != null) {
 						IFile[] files= root.findFilesForLocation(path);
 						for (int i= 0; i < files.length; i++) {
-							IJavaElement el= JavaCore.createCompilationUnitFrom(files[i]);
+							IJavaScriptElement el= JavaScriptCore.createCompilationUnitFrom(files[i]);
 							if (el != null) {
 								res.add(el);
 							}
@@ -532,7 +532,7 @@ public class JavadocOptionsManager {
 				}
 			}
 		}
-		return (IJavaElement[]) res.toArray(new IJavaElement[res.size()]);
+		return (IJavaScriptElement[]) res.toArray(new IJavaScriptElement[res.size()]);
 	}
 
 	/**
@@ -548,11 +548,11 @@ public class JavadocOptionsManager {
 		return fWizardStatus;
 	}
 
-	public IJavaElement[] getInitialElements() {
+	public IJavaScriptElement[] getInitialElements() {
 		return fInitialElements;
 	}
 
-	public IJavaElement[] getSourceElements() {
+	public IJavaScriptElement[] getSourceElements() {
 		return fSelectedElements;
 	}
 
@@ -685,7 +685,7 @@ public class JavadocOptionsManager {
 	
 
 	public IStatus getArgumentArray(List vmArgs, List toolArgs) {
-		MultiStatus status= new MultiStatus(JavaUI.ID_PLUGIN, IStatus.OK, JavadocExportMessages.JavadocOptionsManager_status_title, null);
+		MultiStatus status= new MultiStatus(JavaScriptUI.ID_PLUGIN, IStatus.OK, JavadocExportMessages.JavadocOptionsManager_status_title, null);
 		
 		//bug 38692
 		vmArgs.add(getJavadocCommandHistory()[0]);
@@ -773,10 +773,10 @@ public class JavadocOptionsManager {
 		}
 
 		for (int i= 0; i < fSelectedElements.length; i++) {
-			IJavaElement curr= fSelectedElements[i];
+			IJavaScriptElement curr= fSelectedElements[i];
 			if (curr instanceof IPackageFragment) {
 				toolArgs.add(curr.getElementName());
-			} else if (curr instanceof ICompilationUnit) {
+			} else if (curr instanceof IJavaScriptUnit) {
 				// Since the Javadoc tool is running locally we can only  create
 				// Javadoc for local resources. So using the location is fine here.
 				IPath p= curr.getResource().getLocation();
@@ -813,7 +813,7 @@ public class JavadocOptionsManager {
 	}
 	
 
-	public File createXML(IJavaProject[] projects) throws CoreException {
+	public File createXML(IJavaScriptProject[] projects) throws CoreException {
 		FileOutputStream objectStreamOutput= null;
 		//@change
 		//for now only writing ant files for single project selection
@@ -861,7 +861,7 @@ public class JavadocOptionsManager {
 		return null;
 	}
 
-	public void updateDialogSettings(IDialogSettings dialogSettings, IJavaProject[] checkedProjects) {
+	public void updateDialogSettings(IDialogSettings dialogSettings, IJavaScriptProject[] checkedProjects) {
 		IDialogSettings settings= dialogSettings.addNewSection(SECTION_JAVADOC);
 
 		settings.put(JAVADOC_COMMAND_HISTORY, flatStringList(fJavadocCommandHistory));
@@ -957,7 +957,7 @@ public class JavadocOptionsManager {
 		fSourcepath= sourcepath;
 	}
 
-	public void setSelectedElements(IJavaElement[] elements) {
+	public void setSelectedElements(IJavaScriptElement[] elements) {
 		fSelectedElements= elements;
 	}
 
@@ -1007,50 +1007,50 @@ public class JavadocOptionsManager {
 		return fSource;
 	}
 
-	private IJavaElement[] getInitialElementsFromSelection(List candidates) {
+	private IJavaScriptElement[] getInitialElementsFromSelection(List candidates) {
 		ArrayList res= new ArrayList();
 		for (int i= 0; i < candidates.size(); i++) {
 			try {
-				IJavaElement elem= getSelectableJavaElement(candidates.get(i));
+				IJavaScriptElement elem= getSelectableJavaElement(candidates.get(i));
 				if (elem != null) {
 					res.add(elem);
 				}
-			} catch (JavaModelException ignore) {
+			} catch (JavaScriptModelException ignore) {
 				// ignore this
 			}
 		}
-		return (IJavaElement[]) res.toArray(new IJavaElement[res.size()]);
+		return (IJavaScriptElement[]) res.toArray(new IJavaScriptElement[res.size()]);
 	}
 
-	private IJavaElement getSelectableJavaElement(Object obj) throws JavaModelException {
-		IJavaElement je= null;
+	private IJavaScriptElement getSelectableJavaElement(Object obj) throws JavaScriptModelException {
+		IJavaScriptElement je= null;
 		if (obj instanceof IAdaptable) {
-			je= (IJavaElement) ((IAdaptable) obj).getAdapter(IJavaElement.class);
+			je= (IJavaScriptElement) ((IAdaptable) obj).getAdapter(IJavaScriptElement.class);
 		}
 
 		if (je != null) {
 			switch (je.getElementType()) {
-				case IJavaElement.JAVA_MODEL :
-				case IJavaElement.JAVA_PROJECT :
-				case IJavaElement.CLASS_FILE :
+				case IJavaScriptElement.JAVASCRIPT_MODEL :
+				case IJavaScriptElement.JAVASCRIPT_PROJECT :
+				case IJavaScriptElement.CLASS_FILE :
 					break;
-				case IJavaElement.PACKAGE_FRAGMENT_ROOT :
+				case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT :
 					if (containsCompilationUnits((IPackageFragmentRoot) je)) {
 						return je;
 					}
 					break;
-				case IJavaElement.PACKAGE_FRAGMENT :
+				case IJavaScriptElement.PACKAGE_FRAGMENT :
 					if (containsCompilationUnits((IPackageFragment) je)) {
 						return je;
 					}
 					break;
 				default :
-					ICompilationUnit cu= (ICompilationUnit) je.getAncestor(IJavaElement.COMPILATION_UNIT);
+					IJavaScriptUnit cu= (IJavaScriptUnit) je.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 					if (cu != null) {
 						return cu;
 					}
 			}
-			IJavaProject project= je.getJavaProject();
+			IJavaScriptProject project= je.getJavaScriptProject();
 			if (isValidProject(project))
 				return project;
 		}
@@ -1058,19 +1058,19 @@ public class JavadocOptionsManager {
 		return null;
 	}
 
-	private boolean isValidProject(IJavaProject project) throws JavaModelException {
+	private boolean isValidProject(IJavaScriptProject project) throws JavaScriptModelException {
 		if (project != null && project.exists() && project.isOpen()) {
 			return true;
 		}
 		return false;
 	}
 
-	private boolean containsCompilationUnits(IPackageFragmentRoot root) throws JavaModelException {
+	private boolean containsCompilationUnits(IPackageFragmentRoot root) throws JavaScriptModelException {
 		if (root.getKind() != IPackageFragmentRoot.K_SOURCE) {
 			return false;
 		}
 
-		IJavaElement[] elements= root.getChildren();
+		IJavaScriptElement[] elements= root.getChildren();
 		for (int i= 0; i < elements.length; i++) {
 			if (elements[i] instanceof IPackageFragment) {
 				IPackageFragment fragment= (IPackageFragment) elements[i];
@@ -1082,8 +1082,8 @@ public class JavadocOptionsManager {
 		return false;
 	}
 
-	private boolean containsCompilationUnits(IPackageFragment pack) throws JavaModelException {
-		return pack.getCompilationUnits().length > 0;
+	private boolean containsCompilationUnits(IPackageFragment pack) throws JavaScriptModelException {
+		return pack.getJavaScriptUnits().length > 0;
 	}
 
 	public RecentSettingsStore getRecentSettings() {
@@ -1093,13 +1093,13 @@ public class JavadocOptionsManager {
 	/**
 	 * @param project
 	 */
-	public void updateRecentSettings(IJavaProject project) {
+	public void updateRecentSettings(IJavaScriptProject project) {
 		fRecentSettings.setProjectSettings(project, fDestination, fAntpath, fHRefs);
 	}
 
 	
 	private static String initJavadocCommandDefault() {
-		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 		String cmd= store.getString(PreferenceConstants.JAVADOC_COMMAND);	// old location
 		if (cmd != null && cmd.length() > 0) {
 			store.setToDefault(PreferenceConstants.JAVADOC_COMMAND);

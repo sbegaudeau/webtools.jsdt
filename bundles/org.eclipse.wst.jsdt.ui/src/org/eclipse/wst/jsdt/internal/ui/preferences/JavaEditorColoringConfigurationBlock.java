@@ -58,8 +58,8 @@ import org.eclipse.swt.widgets.Scrollable;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlighting;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightingManager;
@@ -71,7 +71,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.SimpleJavaSourceViewerConfiguration
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 /**
  * Configures Java Editor hover preferences.
@@ -283,7 +283,7 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 	 */
 	private static final String UNDERLINE= PreferenceConstants.EDITOR_UNDERLINE_SUFFIX;
 	
-	private static final String COMPILER_TASK_TAGS= JavaCore.COMPILER_TASK_TAGS;
+	private static final String COMPILER_TASK_TAGS= JavaScriptCore.COMPILER_TASK_TAGS;
 	/**
 	 * The keys of the overlay store. 
 	 */
@@ -773,10 +773,10 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 		IPreferenceStore generalTextStore= EditorsUI.getPreferenceStore();
 		IPreferenceStore store= new ChainedPreferenceStore(new IPreferenceStore[] { getPreferenceStore(), new PreferencesAdapter(createTemporaryCorePreferenceStore()), generalTextStore });
 		fPreviewViewer= new JavaSourceViewer(parent, null, null, false, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER, store);
-		SimpleJavaSourceViewerConfiguration configuration= new SimpleJavaSourceViewerConfiguration(fColorManager, store, null, IJavaPartitions.JAVA_PARTITIONING, false);
+		SimpleJavaSourceViewerConfiguration configuration= new SimpleJavaSourceViewerConfiguration(fColorManager, store, null, IJavaScriptPartitions.JAVA_PARTITIONING, false);
 		fPreviewViewer.configure(configuration);
 		// fake 1.5 source to get 1.5 features right.
-		configuration.handlePropertyChangeEvent(new PropertyChangeEvent(this, JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_4, JavaCore.VERSION_1_5));
+		configuration.handlePropertyChangeEvent(new PropertyChangeEvent(this, JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_4, JavaScriptCore.VERSION_1_5));
 		Font font= JFaceResources.getFont(PreferenceConstants.EDITOR_TEXT_FONT);
 		fPreviewViewer.getTextWidget().setFont(font);
 		new JavaSourcePreviewerUpdater(fPreviewViewer, configuration, store);
@@ -784,7 +784,7 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 		
 		String content= loadPreviewContentFromFile("ColorSettingPreviewCode.txt"); //$NON-NLS-1$
 		IDocument document= new Document(content);
-		JavaPlugin.getDefault().getJavaTextTools().setupJavaDocumentPartitioner(document, IJavaPartitions.JAVA_PARTITIONING);
+		JavaScriptPlugin.getDefault().getJavaTextTools().setupJavaDocumentPartitioner(document, IJavaScriptPartitions.JAVA_PARTITIONING);
 		fPreviewViewer.setDocument(document);
 	
 		installSemanticHighlighting();
@@ -814,7 +814,7 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 				buffer.append(separator);
 			}
 		} catch (IOException io) {
-			JavaPlugin.log(io);
+			JavaScriptPlugin.log(io);
 		} finally {
 			if (reader != null) {
 				try { reader.close(); } catch (IOException e) {}
@@ -919,7 +919,7 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 			int offset= document.getLineOffset(line) + column;
 			return new HighlightedRange(offset, length, key);
 		} catch (BadLocationException x) {
-			JavaPlugin.log(x);
+			JavaScriptPlugin.log(x);
 		}
 		return null;
 	}

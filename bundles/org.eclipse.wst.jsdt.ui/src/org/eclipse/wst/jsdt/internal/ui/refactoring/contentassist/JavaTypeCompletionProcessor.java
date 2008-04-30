@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.Signature;
@@ -30,7 +30,7 @@ public class JavaTypeCompletionProcessor extends CUPositionCompletionProcessor {
 	public static final String DUMMY_CLASS_NAME= "$$__$$"; //$NON-NLS-1$
 	
 	/**
-	 * The CU name to be used if no parent ICompilationUnit is available.
+	 * The CU name to be used if no parent IJavaScriptUnit is available.
 	 * The main type of this class will be filtered out from the proposals list.
 	 */
 	public static final String DUMMY_CU_NAME= DUMMY_CLASS_NAME + JavaModelUtil.DEFAULT_CU_SUFFIX;
@@ -74,28 +74,28 @@ public class JavaTypeCompletionProcessor extends CUPositionCompletionProcessor {
 		} else {
 			String before= "public class " + DUMMY_CLASS_NAME + " { ";  //$NON-NLS-1$//$NON-NLS-2$
 			String after= " }"; //$NON-NLS-1$
-			setCompletionContext(packageFragment.getCompilationUnit(DUMMY_CU_NAME), before, after);
+			setCompletionContext(packageFragment.getJavaScriptUnit(DUMMY_CU_NAME), before, after);
 		}
 	}
 	
-	public void setExtendsCompletionContext(IJavaElement javaElement) {
+	public void setExtendsCompletionContext(IJavaScriptElement javaElement) {
 		if (javaElement instanceof IPackageFragment) {
 			IPackageFragment packageFragment= (IPackageFragment) javaElement;
-			ICompilationUnit cu= packageFragment.getCompilationUnit(DUMMY_CU_NAME);
+			IJavaScriptUnit cu= packageFragment.getJavaScriptUnit(DUMMY_CU_NAME);
 			setCompletionContext(cu, "public class " + DUMMY_CLASS_NAME + " extends ", " {}"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 		} else if (javaElement instanceof IType) {
 			// pattern: public class OuterType { public class Type extends /*caret*/  {} }
 			IType type= (IType) javaElement;
 			String before= "public class " + type.getElementName() + " extends "; //$NON-NLS-1$ //$NON-NLS-2$
 			String after= " {}"; //$NON-NLS-1$
-			IJavaElement parent= type.getParent();
+			IJavaScriptElement parent= type.getParent();
 			while (parent instanceof IType) {
 				type= (IType) parent;
 				before+= "public class " + type.getElementName() + " {"; //$NON-NLS-1$ //$NON-NLS-2$
 				after+= "}"; //$NON-NLS-1$
 				parent= type.getParent();
 			}
-			ICompilationUnit cu= type.getCompilationUnit();
+			IJavaScriptUnit cu= type.getJavaScriptUnit();
 			setCompletionContext(cu, before, after);
 		} else {
 			setCompletionContext(null, null, null);
@@ -103,7 +103,7 @@ public class JavaTypeCompletionProcessor extends CUPositionCompletionProcessor {
 	}
 
 //	public void setImplementsCompletionContext(IPackageFragment packageFragment) {
-//		ICompilationUnit cu= packageFragment.getCompilationUnit(DUMMY_CU_NAME);
+//		IJavaScriptUnit cu= packageFragment.getCompilationUnit(DUMMY_CU_NAME);
 //		setCompletionContext(cu, "public class " + DUMMY_CLASS_NAME + " implements ", " {}"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 //	}
 	

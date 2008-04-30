@@ -12,9 +12,9 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
@@ -45,7 +45,7 @@ public class BinaryTypeConverter {
 	/**
 	 * Convert a binary type into an AST type declaration and put it in the given compilation unit.
 	 */
-	public static TypeDeclaration buildTypeDeclaration(IType type, CompilationUnitDeclaration compilationUnit, CompilationResult compilationResult)  throws JavaModelException {
+	public static TypeDeclaration buildTypeDeclaration(IType type, CompilationUnitDeclaration compilationUnit, CompilationResult compilationResult)  throws JavaScriptModelException {
 		PackageFragment pkg = (PackageFragment) type.getPackageFragment();
 		char[][] packageName = Util.toCharArrays(pkg.names);
 
@@ -72,7 +72,7 @@ public class BinaryTypeConverter {
 		return typeDeclaration;
 	}
 
-	private static FieldDeclaration convert(IField field, IType type) throws JavaModelException {
+	private static FieldDeclaration convert(IField field, IType type) throws JavaScriptModelException {
 
 		FieldDeclaration fieldDeclaration = new FieldDeclaration();
 
@@ -83,7 +83,7 @@ public class BinaryTypeConverter {
 		return fieldDeclaration;
 	}
 
-	private static AbstractMethodDeclaration convert(IMethod method, IType type, CompilationResult compilationResult) throws JavaModelException {
+	private static AbstractMethodDeclaration convert(IFunction method, IType type, CompilationResult compilationResult) throws JavaScriptModelException {
 
 		AbstractMethodDeclaration methodDeclaration;
 
@@ -134,7 +134,7 @@ public class BinaryTypeConverter {
 		return methodDeclaration;
 	}
 
-	private static TypeDeclaration convert(IType type, IType alreadyComputedMember,TypeDeclaration alreadyComputedMemberDeclaration, CompilationResult compilationResult) throws JavaModelException {
+	private static TypeDeclaration convert(IType type, IType alreadyComputedMember,TypeDeclaration alreadyComputedMemberDeclaration, CompilationResult compilationResult) throws JavaScriptModelException {
 		/* create type declaration - can be member type */
 		TypeDeclaration typeDeclaration = new TypeDeclaration(compilationResult);
 
@@ -179,7 +179,7 @@ public class BinaryTypeConverter {
 		}
 
 		/* convert methods - need to add default constructor if necessary */
-		IMethod[] methods = type.getMethods();
+		IFunction[] methods = type.getFunctions();
 		int methodCount = methods == null ? 0 : methods.length;
 
 		/* source type has a constructor ?           */

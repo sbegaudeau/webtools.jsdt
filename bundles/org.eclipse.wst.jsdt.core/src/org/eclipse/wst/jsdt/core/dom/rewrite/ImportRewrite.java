@@ -21,18 +21,18 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
@@ -135,8 +135,8 @@ public final class ImportRewrite {
 
 	private final ImportRewriteContext defaultContext;
 
-	private final ICompilationUnit compilationUnit;
-	private final CompilationUnit astRoot;
+	private final IJavaScriptUnit compilationUnit;
+	private final JavaScriptUnit astRoot;
 
 	private final boolean restoreExistingImports;
 	private final List existingImports;
@@ -159,20 +159,20 @@ public final class ImportRewrite {
 	private boolean isImportMatchesType=true;
 
 	/**
-	 * Creates a {@link ImportRewrite} from a {@link ICompilationUnit}. If <code>restoreExistingImports</code>
+	 * Creates a {@link ImportRewrite} from a {@link IJavaScriptUnit}. If <code>restoreExistingImports</code>
 	 * is <code>true</code>, all existing imports are kept, and new imports will be inserted at best matching locations. If
 	 * <code>restoreExistingImports</code> is <code>false</code>, the existing imports will be removed and only the
 	 * newly added imports will be created.
 	 * <p>
-	 * Note that {@link #create(ICompilationUnit, boolean)} is more efficient than this method if an AST for
+	 * Note that {@link #create(IJavaScriptUnit, boolean)} is more efficient than this method if an AST for
 	 * the compilation unit is already available.
 	 * </p>
 	 * @param cu the compilation unit to create the imports for
 	 * @param restoreExistingImports specifies if the existing imports should be kept or removed.
 	 * @return the created import rewriter.
-	 * @throws JavaModelException thrown when the compilation unit could not be accessed.
+	 * @throws JavaScriptModelException thrown when the compilation unit could not be accessed.
 	 */
-	public static ImportRewrite create(ICompilationUnit cu, boolean restoreExistingImports) throws JavaModelException {
+	public static ImportRewrite create(IJavaScriptUnit cu, boolean restoreExistingImports) throws JavaScriptModelException {
 		if (cu == null) {
 			throw new IllegalArgumentException("Compilation unit must not be null"); //$NON-NLS-1$
 		}
@@ -198,25 +198,25 @@ public final class ImportRewrite {
 	}
 
 	/**
-	 * Creates a {@link ImportRewrite} from a an AST ({@link CompilationUnit}). The AST has to be created from a
-	 * {@link ICompilationUnit}, that means {@link ASTParser#setSource(ICompilationUnit)} has been used when creating the
+	 * Creates a {@link ImportRewrite} from a an AST ({@link JavaScriptUnit}). The AST has to be created from a
+	 * {@link IJavaScriptUnit}, that means {@link ASTParser#setSource(IJavaScriptUnit)} has been used when creating the
 	 * AST. If <code>restoreExistingImports</code> is <code>true</code>, all existing imports are kept, and new imports
 	 * will be inserted at best matching locations. If <code>restoreExistingImports</code> is <code>false</code>, the
 	 * existing imports will be removed and only the newly added imports will be created.
 	 * <p>
-	 * Note that this method is more efficient than using {@link #create(ICompilationUnit, boolean)} if an AST is already available.
+	 * Note that this method is more efficient than using {@link #create(IJavaScriptUnit, boolean)} if an AST is already available.
 	 * </p>
 	 * @param astRoot the AST root node to create the imports for
 	 * @param restoreExistingImports specifies if the existing imports should be kept or removed.
 	 * @return the created import rewriter.
 	 * @throws IllegalArgumentException thrown when the passed AST is null or was not created from a compilation unit.
 	 */
-	public static ImportRewrite create(CompilationUnit astRoot, boolean restoreExistingImports) {
+	public static ImportRewrite create(JavaScriptUnit astRoot, boolean restoreExistingImports) {
 		if (astRoot == null) {
 			throw new IllegalArgumentException("AST must not be null"); //$NON-NLS-1$
 		}
 		ITypeRoot typeRoot = astRoot.getTypeRoot();
-		if (!(typeRoot instanceof ICompilationUnit)) {
+		if (!(typeRoot instanceof IJavaScriptUnit)) {
 			throw new IllegalArgumentException("AST must have been constructed from a Java element"); //$NON-NLS-1$
 		}
 		ImportRewriteSupport importRewriteExtension=null;
@@ -243,10 +243,10 @@ public final class ImportRewrite {
 				existingImport.add(buf.toString());
 			}
 		}
-		return new ImportRewrite((ICompilationUnit) typeRoot, astRoot, existingImport, importRewriteExtension);
+		return new ImportRewrite((IJavaScriptUnit) typeRoot, astRoot, existingImport, importRewriteExtension);
 	}
 
-	private ImportRewrite(ICompilationUnit cu, CompilationUnit astRoot, List existingImports, ImportRewriteSupport importRewriteExtension) {
+	private ImportRewrite(IJavaScriptUnit cu, JavaScriptUnit astRoot, List existingImports, ImportRewriteSupport importRewriteExtension) {
 		this.compilationUnit= cu;
 		this.astRoot= astRoot; // might be null
 		this.importRewriteExtension=importRewriteExtension;
@@ -329,7 +329,7 @@ public final class ImportRewrite {
 	 * The compilation unit for which this import rewrite was created for.
 	 * @return the compilation unit for which this import rewrite was created for.
 	 */
-	public ICompilationUnit getCompilationUnit() {
+	public IJavaScriptUnit getCompilationUnit() {
 		return this.compilationUnit;
 	}
 
@@ -751,7 +751,7 @@ public final class ImportRewrite {
 	public String addImport(String qualifiedTypeName, String packageName,  ImportRewriteContext context) {
 		if (packageName==null)
 			packageName=qualifiedTypeName;
-		if (JavaCore.IS_ECMASCRIPT4) {
+		if (JavaScriptCore.IS_ECMASCRIPT4) {
 			int angleBracketOffset = qualifiedTypeName.indexOf('<');
 			if (angleBracketOffset != -1) {
 				return internalAddImport(qualifiedTypeName.substring(0,
@@ -834,8 +834,8 @@ public final class ImportRewrite {
 					ITypeBinding declaringType= variableBinding.getDeclaringClass();
 					return addStaticImport(getRawQualifiedName(declaringType), binding.getName(), true, context);
 				}
-			} else if (binding instanceof IMethodBinding) {
-				ITypeBinding declaringType= ((IMethodBinding) binding).getDeclaringClass();
+			} else if (binding instanceof IFunctionBinding) {
+				ITypeBinding declaringType= ((IFunctionBinding) binding).getDeclaringClass();
 				return addStaticImport(getRawQualifiedName(declaringType), binding.getName(), false, context);
 			}
 		}
@@ -1026,13 +1026,13 @@ public final class ImportRewrite {
 				return new MultiTextEdit();
 			}
 
-			CompilationUnit usedAstRoot= this.astRoot;
+			JavaScriptUnit usedAstRoot= this.astRoot;
 			if (usedAstRoot == null) {
 				ASTParser parser= ASTParser.newParser(AST.JLS3);
 				parser.setSource(this.compilationUnit);
 				parser.setFocalPosition(0); // reduced AST
 				parser.setResolveBindings(false);
-				usedAstRoot= (CompilationUnit) parser.createAST(new SubProgressMonitor(monitor, 1));
+				usedAstRoot= (JavaScriptUnit) parser.createAST(new SubProgressMonitor(monitor, 1));
 			}
 
 			ImportRewriteAnalyzer computer= new ImportRewriteAnalyzer(this.compilationUnit, usedAstRoot, this.importOrder, 

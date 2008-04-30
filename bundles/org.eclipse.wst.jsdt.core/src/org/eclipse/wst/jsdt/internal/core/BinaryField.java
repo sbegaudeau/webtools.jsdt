@@ -13,8 +13,8 @@ package org.eclipse.wst.jsdt.internal.core;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryField;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
@@ -38,19 +38,19 @@ public boolean equals(Object o) {
 /*
  * @see IField
  */
-public Object getConstant() throws JavaModelException {
+public Object getConstant() throws JavaScriptModelException {
 	IBinaryField info = (IBinaryField) getElementInfo();
 	return convertConstant(info.getConstant());
 }
 /*
  * @see IMember
  */
-public int getFlags() throws JavaModelException {
+public int getFlags() throws JavaScriptModelException {
 	IBinaryField info = (IBinaryField) getElementInfo();
 	return info.getModifiers();
 }
 /*
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public int getElementType() {
 	return FIELD;
@@ -61,19 +61,19 @@ public int getElementType() {
 protected char getHandleMementoDelimiter() {
 	return JavaElement.JEM_FIELD;
 }
-public String getKey(boolean forceOpen) throws JavaModelException {
+public String getKey(boolean forceOpen) throws JavaScriptModelException {
 	return getKey(this, forceOpen);
 }
 /*
  * @see IField
  */
-public String getTypeSignature() throws JavaModelException {
+public String getTypeSignature() throws JavaScriptModelException {
 	IBinaryField info = (IBinaryField) getElementInfo();
 	return new String(ClassFile.translatedName(info.getTypeName()));
 }
 /* (non-Javadoc)
  * @see org.eclipse.wst.jsdt.core.IField#isEnumConstant()
- */public boolean isEnumConstant() throws JavaModelException {
+ */public boolean isEnumConstant() throws JavaScriptModelException {
 	return Flags.isEnum(getFlags());
 }
 /* (non-Javadoc)
@@ -102,19 +102,19 @@ protected void toStringInfo(int tab, StringBuffer buffer, Object info, boolean s
 			buffer.append(Signature.toString(this.getTypeSignature()));
 			buffer.append(" "); //$NON-NLS-1$
 			toStringName(buffer);
-		} catch (JavaModelException e) {
-			buffer.append("<JavaModelException in toString of " + getElementName()); //$NON-NLS-1$
+		} catch (JavaScriptModelException e) {
+			buffer.append("<JavaScriptModelException in toString of " + getElementName()); //$NON-NLS-1$
 		}
 	}
 }
-public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelException {
+public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaScriptModelException {
 	String contents = ((BinaryType) this.getDeclaringType()).getJavadocContents(monitor);
 	if (contents == null) return null;
 	int indexAnchor = contents.indexOf(
 			JavadocConstants.ANCHOR_PREFIX_START + this.getElementName() + JavadocConstants.ANCHOR_PREFIX_END);
-	if (indexAnchor == -1) throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.UNKNOWN_JAVADOC_FORMAT, this));
+	if (indexAnchor == -1) throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.UNKNOWN_JSDOC_FORMAT, this));
 	int indexOfEndLink = contents.indexOf(JavadocConstants.ANCHOR_SUFFIX, indexAnchor);
-	if (indexOfEndLink == -1) throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.UNKNOWN_JAVADOC_FORMAT, this));
+	if (indexOfEndLink == -1) throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.UNKNOWN_JSDOC_FORMAT, this));
 	int indexOfNextField = contents.indexOf(JavadocConstants.ANCHOR_PREFIX_START, indexOfEndLink);
 	int indexOfBottom = contents.indexOf(JavadocConstants.CONSTRUCTOR_DETAIL, indexOfEndLink);
 	if (indexOfBottom == -1) {
@@ -124,7 +124,7 @@ public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelExcep
 		}
 	}
 	indexOfNextField= Math.min(indexOfNextField, indexOfBottom);
-	if (indexOfNextField == -1) throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.UNKNOWN_JAVADOC_FORMAT, this));
+	if (indexOfNextField == -1) throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.UNKNOWN_JSDOC_FORMAT, this));
 	return contents.substring(indexOfEndLink + JavadocConstants.ANCHOR_SUFFIX_LENGTH, indexOfNextField);
 }
 }

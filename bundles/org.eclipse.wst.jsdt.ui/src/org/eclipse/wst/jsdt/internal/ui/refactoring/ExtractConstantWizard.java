@@ -27,17 +27,17 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractConstantRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.ControlContentAssistHelper;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.VariableNamesProcessor;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.RowLayouter;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
 
 public class ExtractConstantWizard extends RefactoringWizard {
 
@@ -184,7 +184,7 @@ public class ExtractConstantWizard extends RefactoringWizard {
 				flags= Flags.AccDefault;
 			}
 			ImageDescriptor imageDesc= JavaElementImageProvider.getFieldImageDescriptor(false, flags);
-			imageDesc= new JavaElementImageDescriptor(imageDesc, JavaElementImageDescriptor.STATIC | JavaElementImageDescriptor.FINAL, JavaElementImageProvider.BIG_SIZE);
+			imageDesc= new JavaScriptElementImageDescriptor(imageDesc, JavaScriptElementImageDescriptor.STATIC | JavaScriptElementImageDescriptor.FINAL, JavaElementImageProvider.BIG_SIZE);
 			fContentAssistProcessor.setProposalImageDescriptor(imageDesc);
 		}
 
@@ -231,7 +231,7 @@ public class ExtractConstantWizard extends RefactoringWizard {
 			try {
 				if (fLabel != null)
 					fLabel.setText(RefactoringMessages.ExtractConstantInputPage_signature_preview + getExtractConstantRefactoring().getConstantSignaturePreview()); 
-			} catch(JavaModelException e) {
+			} catch(JavaScriptModelException e) {
 				ExceptionHandler.handle(e, RefactoringMessages.ExtractTempInputPage_extract_local, RefactoringMessages.ExtractConstantInputPage_exception); 
 			}
 		}
@@ -248,8 +248,8 @@ public class ExtractConstantWizard extends RefactoringWizard {
 					return RefactoringStatus.createInfoStatus(fOriginalMessage);
 				else 
 					return result;
-			} catch (JavaModelException e) {
-				JavaPlugin.log(e);
+			} catch (JavaScriptModelException e) {
+				JavaScriptPlugin.log(e);
 				return RefactoringStatus.createFatalErrorStatus(RefactoringMessages.ExtractConstantInputPage_Internal_Error); 
 			}
 		}

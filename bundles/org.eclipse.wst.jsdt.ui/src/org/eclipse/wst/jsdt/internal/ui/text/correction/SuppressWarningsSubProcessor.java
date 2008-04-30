@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.CorrectionEngine;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Annotation;
@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
 import org.eclipse.wst.jsdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -45,7 +45,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
@@ -120,7 +120,7 @@ public class SuppressWarningsSubProcessor {
 		private final ASTNode fNode;
 		private final ChildListPropertyDescriptor fProperty;
 
-		public SuppressWarningsProposal(String warningToken, String label, ICompilationUnit cu, ASTNode node, ChildListPropertyDescriptor property, int relevance) {
+		public SuppressWarningsProposal(String warningToken, String label, IJavaScriptUnit cu, ASTNode node, ChildListPropertyDescriptor property, int relevance) {
 			super(label, cu, null, relevance, JavaPluginImages.get(JavaPluginImages.IMG_OBJS_ANNOTATION));
 			fWarningToken= warningToken;
 			fNode= node;
@@ -150,7 +150,7 @@ public class SuppressWarningsSubProcessor {
 				ListRewrite listRewrite= rewrite.getListRewrite(fNode, fProperty);
 				
 				SingleMemberAnnotation newAnnot= ast.newSingleMemberAnnotation();
-				String importString= createImportRewrite((CompilationUnit) fNode.getRoot()).addImport("java.lang.SuppressWarnings"); //$NON-NLS-1$
+				String importString= createImportRewrite((JavaScriptUnit) fNode.getRoot()).addImport("java.lang.SuppressWarnings"); //$NON-NLS-1$
 				newAnnot.setTypeName(ast.newName(importString));
 
 				newAnnot.setValue(newStringLiteral);
@@ -223,7 +223,7 @@ public class SuppressWarningsSubProcessor {
 		}
 	}
 	
-	private static void addSuppressWarningsProposal(ICompilationUnit cu, ASTNode node, String warningToken, int relevance, Collection proposals) {
+	private static void addSuppressWarningsProposal(IJavaScriptUnit cu, ASTNode node, String warningToken, int relevance, Collection proposals) {
 
 		ChildListPropertyDescriptor property= null;
 		String name;
@@ -256,9 +256,9 @@ public class SuppressWarningsSubProcessor {
 				property= Initializer.MODIFIERS2_PROPERTY;
 				name= CorrectionMessages.SuppressWarningsSubProcessor_suppress_warnings_initializer_label;
 				break;
-			case ASTNode.METHOD_DECLARATION:
-				property= MethodDeclaration.MODIFIERS2_PROPERTY;
-				name= ((MethodDeclaration) node).getName().getIdentifier() + "()"; //$NON-NLS-1$
+			case ASTNode.FUNCTION_DECLARATION:
+				property= FunctionDeclaration.MODIFIERS2_PROPERTY;
+				name= ((FunctionDeclaration) node).getName().getIdentifier() + "()"; //$NON-NLS-1$
 				break;
 			case ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION:
 				property= AnnotationTypeMemberDeclaration.MODIFIERS2_PROPERTY;
@@ -269,7 +269,7 @@ public class SuppressWarningsSubProcessor {
 				name= ((EnumConstantDeclaration) node).getName().getIdentifier();
 				break;
 			default:
-				JavaPlugin.logErrorMessage("SuppressWarning quick fix: wrong node kind: " + node.getNodeType()); //$NON-NLS-1$
+				JavaScriptPlugin.logErrorMessage("SuppressWarning quick fix: wrong node kind: " + node.getNodeType()); //$NON-NLS-1$
 				return;
 		}
 		

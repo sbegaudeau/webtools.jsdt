@@ -6,10 +6,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 public class DocumentContextFragment extends PackageFragment{
 
@@ -41,19 +41,19 @@ public class DocumentContextFragment extends PackageFragment{
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#buildStructure(org.eclipse.wst.jsdt.internal.core.OpenableElementInfo, org.eclipse.core.runtime.IProgressMonitor, java.util.Map, org.eclipse.core.resources.IResource)
 	 */
-//	protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
-//			IJavaElement[] children = info.getChildren();
+//	protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaScriptModelException {
+//			IJavaScriptElement[] children = info.getChildren();
 //			for(int k = 0;k<children.length;k++) {
-//				if(children[k] instanceof CompilationUnit) {
+//				if(children[k] instanceof JavaScriptUnit) {
 //					try {
 //						CompilationUnitElementInfo compInfo = new CompilationUnitElementInfo();
-//						IPath myPath = ((CompilationUnit)children[k]).getPath();
+//						IPath myPath = ((JavaScriptUnit)children[k]).getPath();
 //						IContainer parent  = ((IContainer)getParent().getResource());
 //						IResource me = parent.findMember(myPath);
-//						//((CompilationUnit)children[k]).openWhenClosed(compInfo, pm);
-//						//((CompilationUnit)children[k]).buildStructure(compInfo, pm, newElements, me);
+//						//((JavaScriptUnit)children[k]).openWhenClosed(compInfo, pm);
+//						//((JavaScriptUnit)children[k]).buildStructure(compInfo, pm, newElements, me);
 //
-//					} catch (/*JavaModelException*/ Exception  ex) {
+//					} catch (/*JavaScriptModelException*/ Exception  ex) {
 //						// TODO Auto-generated catch block
 //						ex.printStackTrace();
 //					}
@@ -67,8 +67,8 @@ public class DocumentContextFragment extends PackageFragment{
 	protected boolean computeChildren(OpenableElementInfo info) {
 		//for(int i = 0;i<filesInScope.length;i++) {
 			//ClassFile classFile = new ClassFile(this,resolvePath(filesInScope[i]).toOSString());
-//		CompilationUnit cu= new CompilationUnit(this, this.getPackageFragmentRoot().getPath().toOSString(), DefaultWorkingCopyOwner.PRIMARY);
-			IJavaElement[] children= new IJavaElement[]{getJavaElement(fileInScope)};
+//		JavaScriptUnit cu= new JavaScriptUnit(this, this.getPackageFragmentRoot().getPath().toOSString(), DefaultWorkingCopyOwner.PRIMARY);
+			IJavaScriptElement[] children= new IJavaScriptElement[]{getJavaElement(fileInScope)};
 			for(int k=0;k<children.length;k++) {
 
 				info.addChild(children[k]);
@@ -77,7 +77,7 @@ public class DocumentContextFragment extends PackageFragment{
 		return true;
 	}
 
-	public IJavaElement getJavaElement(String resource) {
+	public IJavaScriptElement getJavaElement(String resource) {
 		/* if resource exists in project, return compunit, else return class */
 		//if(!DocumentContextFragmentRoot.RETURN_CU) return getClassFile(resource);
 //		IPath workspacePath = getPackageFragmentRoot().getJavaProject().getProject().getWorkspace().getRoot().getLocation();
@@ -91,8 +91,8 @@ public class DocumentContextFragment extends PackageFragment{
 		if(elementResource!=null && elementResource.exists()) {
 			try {
 				//return createCompilationUnit(resource, null, true, new NullProgressMonitor());
-				ICompilationUnit unit = getCompilationUnit(resource);
-				//((CompilationUnit)unit).buildStructure(new CompilationUnitElementInfo(), new NullProgressMonitor(), new HashMap(), ((IContainer)getParent().getResource()).findMember(resource));
+				IJavaScriptUnit unit = getJavaScriptUnit(resource);
+				//((JavaScriptUnit)unit).buildStructure(new CompilationUnitElementInfo(), new NullProgressMonitor(), new HashMap(), ((IContainer)getParent().getResource()).findMember(resource));
 				//unit.makeConsistent(new NullProgressMonitor());
 				//((JavaElement)unit).openWhenClosed(new CompilationUnitElementInfo(), new NullProgressMonitor());
 //				boolean unitExists = unit.exists();
@@ -109,7 +109,7 @@ public class DocumentContextFragment extends PackageFragment{
 	}
 
 
-	public IClassFile[] getClassFiles() throws JavaModelException {
+	public IClassFile[] getClassFiles() throws JavaScriptModelException {
 //		IClassFile[] classFiles = new IClassFile[filesInScope.length];
 //		for(int i = 0;i<filesInScope.length;i++) {
 //			ClassFile classFile = new ClassFile(this,filesInScope[i]);
@@ -125,7 +125,7 @@ public class DocumentContextFragment extends PackageFragment{
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#getKind()
 	 */
-	public int getKind() throws JavaModelException {
+	public int getKind() throws JavaScriptModelException {
 		if(hasSource()) return IPackageFragmentRoot.K_SOURCE;
 		return super.getKind();
 	}
@@ -154,11 +154,21 @@ public class DocumentContextFragment extends PackageFragment{
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#getCompilationUnit(java.lang.String)
 	 */
-	public ICompilationUnit getCompilationUnit(String cuName) {
+	/**
+	 * @deprecated Use {@link #getJavaScriptUnit(String)} instead
+	 */
+	public IJavaScriptUnit getCompilationUnit(String cuName) {
+		return getJavaScriptUnit(cuName);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#getCompilationUnit(java.lang.String)
+	 */
+	public IJavaScriptUnit getJavaScriptUnit(String cuName) {
 		return  new CompilationUnit(this, cuName, DefaultWorkingCopyOwner.PRIMARY);
 	}
 
-	public ICompilationUnit createCompilationUnit(String cuName, String contents, boolean force, IProgressMonitor monitor) throws JavaModelException {
+	public IJavaScriptUnit createCompilationUnit(String cuName, String contents, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
 		CreateCompilationUnitOperation op= new CreateCompilationUnitOperation(this, cuName, contents, force);
 		op.runOperation(monitor);
 		return new CompilationUnit(this, cuName, DefaultWorkingCopyOwner.PRIMARY);

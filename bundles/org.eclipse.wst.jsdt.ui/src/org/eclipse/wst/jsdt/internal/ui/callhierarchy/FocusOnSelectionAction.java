@@ -15,9 +15,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -37,7 +37,7 @@ class FocusOnSelectionAction extends Action {
     public boolean canActionBeAdded() {
         Object element = SelectionUtil.getSingleElement(getSelection());
 
-        IMethod method = getSelectedMethod(element);
+        IFunction method = getSelectedMethod(element);
         
         if (method != null) {
             setText(Messages.format(CallHierarchyMessages.FocusOnSelectionAction_focusOn_text, method.getElementName())); 
@@ -48,15 +48,15 @@ class FocusOnSelectionAction extends Action {
         return false;
     }
 
-    private IMethod getSelectedMethod(Object element) {
-		IMethod method = null;
+    private IFunction getSelectedMethod(Object element) {
+		IFunction method = null;
         
-        if (element instanceof IMethod) {
-            method= (IMethod) element;
+        if (element instanceof IFunction) {
+            method= (IFunction) element;
         } else if (element instanceof MethodWrapper) {
             IMember member= ((MethodWrapper) element).getMember();
-            if (member.getElementType() == IJavaElement.METHOD) {
-                method= (IMethod) member;
+            if (member.getElementType() == IJavaScriptElement.METHOD) {
+                method= (IFunction) member;
             }
         }
 		return method;
@@ -68,7 +68,7 @@ class FocusOnSelectionAction extends Action {
     public void run() {
         Object element = SelectionUtil.getSingleElement(getSelection());
 
-        IMethod method= getSelectedMethod(element);
+        IFunction method= getSelectedMethod(element);
         if (method != null) {
                 fPart.setMethod(method);
         }

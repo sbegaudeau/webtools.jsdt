@@ -41,7 +41,7 @@ public class PackageDeclaration extends ASTNode {
 	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor JAVADOC_PROPERTY =
-		new ChildPropertyDescriptor(PackageDeclaration.class, "javadoc", Javadoc.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
+		new ChildPropertyDescriptor(PackageDeclaration.class, "javadoc", JSdoc.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "annotations" structural property of this node type (added in JLS3 API).
@@ -111,7 +111,7 @@ public class PackageDeclaration extends ASTNode {
 	 * Defaults to none.
 	 * @since 3.0
 	 */
-	Javadoc optionalDocComment = null;
+	JSdoc optionalDocComment = null;
 
 	/**
 	 * The annotations (element type: <code>Annotation</code>).
@@ -161,7 +161,7 @@ public class PackageDeclaration extends ASTNode {
 			if (get) {
 				return getJavadoc();
 			} else {
-				setJavadoc((Javadoc) child);
+				setJavadoc((JSdoc) child);
 				return null;
 			}
 		}
@@ -202,7 +202,7 @@ public class PackageDeclaration extends ASTNode {
 		PackageDeclaration result = new PackageDeclaration(target);
 		result.setSourceRange(this.getStartPosition(), this.getLength());
 		if (this.ast.apiLevel >= AST.JLS3) {
-			result.setJavadoc((Javadoc) ASTNode.copySubtree(target, getJavadoc()));
+			result.setJavadoc((JSdoc) ASTNode.copySubtree(target, getJavadoc()));
 			result.annotations().addAll(ASTNode.copySubtrees(target, annotations()));
 		}
 		result.setName((Name) getName().clone(target));
@@ -258,7 +258,7 @@ public class PackageDeclaration extends ASTNode {
 	 * a JLS2 AST
 	 * @since 3.0
 	 */
-	public Javadoc getJavadoc() {
+	public JSdoc getJavadoc() {
 		// more efficient than just calling unsupportedIn2() to check
 		if (this.annotations == null) {
 			unsupportedIn2();
@@ -275,7 +275,7 @@ public class PackageDeclaration extends ASTNode {
 	 * a JLS2 AST
 	 * @since 3.0
 	 */
-	public void setJavadoc(Javadoc docComment) {
+	public void setJavadoc(JSdoc docComment) {
 		// more efficient than just calling unsupportedIn2() to check
 		if (this.annotations == null) {
 			unsupportedIn2();

@@ -22,11 +22,11 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -56,7 +56,7 @@ public class ActionUtil {
 		if (editor == null)
 			return true;
 		Shell shell= editor.getSite().getShell();
-		IJavaElement input= SelectionConverter.getInput(editor);
+		IJavaScriptElement input= SelectionConverter.getInput(editor);
 		// if a Java editor doesn't have an input of type Java element
 		// then it is for sure not on the build path
 		if (input == null) {
@@ -68,7 +68,7 @@ public class ActionUtil {
 		return isProcessable(shell, input);
 	}
 	
-	public static boolean isProcessable(Shell shell, IJavaElement element) {
+	public static boolean isProcessable(Shell shell, IJavaScriptElement element) {
 		if (element == null)
 			return true;
 		if (isOnBuildPath(element))
@@ -79,18 +79,18 @@ public class ActionUtil {
 		return false;
 	}
 
-	public static boolean isOnBuildPath(IJavaElement element) {	
+	public static boolean isOnBuildPath(IJavaScriptElement element) {	
         //fix for bug http://dev.eclipse.org/bugs/show_bug.cgi?id=20051
-        if (element.getElementType() == IJavaElement.JAVA_PROJECT)
+        if (element.getElementType() == IJavaScriptElement.JAVASCRIPT_PROJECT)
             return true;
-		IJavaProject project= element.getJavaProject();
+		IJavaScriptProject project= element.getJavaScriptProject();
 		try {
 			//if (!project.isOnClasspath(element))
 			//	return false;
 			IProject resourceProject= project.getProject();
 			if (resourceProject == null)
 				return false;
-			IProjectNature nature= resourceProject.getNature(JavaCore.NATURE_ID);
+			IProjectNature nature= resourceProject.getNature(JavaScriptCore.NATURE_ID);
 			// We have a Java project
 			if (nature != null)
 				return true;
@@ -99,7 +99,7 @@ public class ActionUtil {
 		return false;
 	}
 
-	public static boolean areProcessable(Shell shell, IJavaElement[] elements) {
+	public static boolean areProcessable(Shell shell, IJavaScriptElement[] elements) {
 		for (int i= 0; i < elements.length; i++) {
 			if (! isOnBuildPath(elements[i])) {
 				MessageDialog.openInformation(shell, 
@@ -124,10 +124,10 @@ public class ActionUtil {
 	 * @return <code>true</code> if the element can be edited,
 	 *         <code>false</code> otherwise
 	 */
-	public static boolean isEditable(JavaEditor editor, Shell shell, IJavaElement element) {
+	public static boolean isEditable(JavaEditor editor, Shell shell, IJavaScriptElement element) {
 		if (editor != null) {
-			IJavaElement input= SelectionConverter.getInput(editor);
-			if (input != null && input.equals(element.getAncestor(IJavaElement.COMPILATION_UNIT)))
+			IJavaScriptElement input= SelectionConverter.getInput(editor);
+			if (input != null && input.equals(element.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT)))
 				return isEditable(editor);
 			else
 				return isEditable(editor) && isEditable(shell, element);
@@ -142,11 +142,11 @@ public class ActionUtil {
 		return editor.validateEditorInputState();
 	}
 			
-	public static boolean isEditable(Shell shell, IJavaElement element) {
+	public static boolean isEditable(Shell shell, IJavaScriptElement element) {
 		if (! isProcessable(shell, element))
 			return false;
 		
-		IJavaElement cu= element.getAncestor(IJavaElement.COMPILATION_UNIT);
+		IJavaScriptElement cu= element.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 		if (cu != null) {
 			IResource resource= cu.getResource();
 			if (resource != null && resource.isDerived()) {

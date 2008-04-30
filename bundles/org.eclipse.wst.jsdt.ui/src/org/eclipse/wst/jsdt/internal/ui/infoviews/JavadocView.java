@@ -68,20 +68,20 @@ import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavadocContentAccess;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
+import org.eclipse.wst.jsdt.ui.JSdocContentAccess;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 import org.osgi.framework.Bundle;
 
 /**
@@ -105,9 +105,9 @@ public class JavadocView extends AbstractInfoView {
 	private static final boolean WARNING_DIALOG_ENABLED= false;
 
 	/** Flags used to render a label in the text widget. */
-	private static final long LABEL_FLAGS=  JavaElementLabels.ALL_FULLY_QUALIFIED
-		| JavaElementLabels.M_PRE_RETURNTYPE | JavaElementLabels.M_PARAMETER_TYPES | JavaElementLabels.M_PARAMETER_NAMES | JavaElementLabels.M_EXCEPTIONS
-		| JavaElementLabels.F_PRE_TYPE_SIGNATURE | JavaElementLabels.T_TYPE_PARAMETERS;
+	private static final long LABEL_FLAGS=  JavaScriptElementLabels.ALL_FULLY_QUALIFIED
+		| JavaScriptElementLabels.M_PRE_RETURNTYPE | JavaScriptElementLabels.M_PARAMETER_TYPES | JavaScriptElementLabels.M_PARAMETER_NAMES | JavaScriptElementLabels.M_EXCEPTIONS
+		| JavaScriptElementLabels.F_PRE_TYPE_SIGNATURE | JavaScriptElementLabels.T_TYPE_PARAMETERS;
 
 
 	/** The HTML widget. */
@@ -286,7 +286,7 @@ public class JavadocView extends AbstractInfoView {
 			 * from the SWT FAQ web site.
 			 */
 
-			IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+			IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 			boolean doNotWarn= store.getBoolean(DO_NOT_WARN_PREFERENCE_KEY);
 			if (WARNING_DIALOG_ENABLED && !doNotWarn) {
 				String title= InfoViewMessages.JavadocView_error_noBrowser_title;
@@ -357,7 +357,7 @@ public class JavadocView extends AbstractInfoView {
 	}
 	
 	private static String loadStyleSheet() {
-		Bundle bundle= Platform.getBundle(JavaPlugin.getPluginId());
+		Bundle bundle= Platform.getBundle(JavaScriptPlugin.getPluginId());
 		URL styleSheetURL= bundle.getEntry("/JavadocViewStyleSheet.css"); //$NON-NLS-1$
 		if (styleSheetURL == null)
 			return null;
@@ -376,7 +376,7 @@ public class JavadocView extends AbstractInfoView {
 			FontData fontData= JFaceResources.getFontRegistry().getFontData(PreferenceConstants.APPEARANCE_JAVADOC_FONT)[0];
 			return HTMLPrinter.convertTopLevelFont(buffer.toString(), fontData);
 		} catch (IOException ex) {
-			JavaPlugin.log(ex);
+			JavaScriptPlugin.log(ex);
 			return null;
 		}
 	}
@@ -436,7 +436,7 @@ public class JavadocView extends AbstractInfoView {
 	 * @since 3.3
 	 */
 	private void refresh() {
-		IJavaElement input= getInput();
+		IJavaScriptElement input= getInput();
 		if (input == null) {
 			StringBuffer buffer= new StringBuffer(""); //$NON-NLS-1$
 			HTMLPrinter.insertPageProlog(buffer, 0, fBackgroundColorRGB, fgStyleSheet);
@@ -477,25 +477,25 @@ public class JavadocView extends AbstractInfoView {
 	 * @see AbstractInfoView#computeInput(Object)
 	 */
 	protected Object computeInput(Object input) {
-		if (getControl() == null || ! (input instanceof IJavaElement))
+		if (getControl() == null || ! (input instanceof IJavaScriptElement))
 			return null;
 
-		IJavaElement je= (IJavaElement)input;
+		IJavaScriptElement je= (IJavaScriptElement)input;
 		String javadocHtml;
 
 		switch (je.getElementType()) {
-			case IJavaElement.COMPILATION_UNIT:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
 				try {
-					javadocHtml= getJavadocHtml(((ICompilationUnit)je).getTypes());
-				} catch (JavaModelException ex) {
+					javadocHtml= getJavadocHtml(((IJavaScriptUnit)je).getTypes());
+				} catch (JavaScriptModelException ex) {
 					javadocHtml= null;
 				}
 				break;
-			case IJavaElement.CLASS_FILE:
-				javadocHtml= getJavadocHtml(new IJavaElement[] {((IClassFile)je).getType()});
+			case IJavaScriptElement.CLASS_FILE:
+				javadocHtml= getJavadocHtml(new IJavaScriptElement[] {((IClassFile)je).getType()});
 				break;
 			default:
-				javadocHtml= getJavadocHtml(new IJavaElement[] { je });
+				javadocHtml= getJavadocHtml(new IJavaScriptElement[] { je });
 		}
 		
 		if (javadocHtml == null)
@@ -541,7 +541,7 @@ public class JavadocView extends AbstractInfoView {
 	 * @param result the Java elements for which to get the Javadoc
 	 * @return a string with the Javadoc in HTML format.
 	 */
-	private String getJavadocHtml(IJavaElement[] result) {
+	private String getJavadocHtml(IJavaScriptElement[] result) {
 		StringBuffer buffer= new StringBuffer();
 		int nResults= result.length;
 
@@ -552,7 +552,7 @@ public class JavadocView extends AbstractInfoView {
 
 			for (int i= 0; i < result.length; i++) {
 				HTMLPrinter.startBulletList(buffer);
-				IJavaElement curr= result[i];
+				IJavaScriptElement curr= result[i];
 				if (curr instanceof IMember)
 					HTMLPrinter.addBullet(buffer, getInfoText((IMember) curr));
 				HTMLPrinter.endBulletList(buffer);
@@ -560,18 +560,18 @@ public class JavadocView extends AbstractInfoView {
 
 		} else {
 
-			IJavaElement curr= result[0];
+			IJavaScriptElement curr= result[0];
 			if (curr instanceof IMember) {
 				IMember member= (IMember) curr;
 //				HTMLPrinter.addSmallHeader(buffer, getInfoText(member));
 				Reader reader;
 				try {
-					reader= JavadocContentAccess.getHTMLContentReader(member, true, true);
+					reader= JSdocContentAccess.getHTMLContentReader(member, true, true);
 					
 					// Provide hint why there's no Javadoc
 					if (reader == null && member.isBinary()) {
 						boolean hasAttachedJavadoc= JavaDocLocations.getJavadocBaseLocation(member) != null;
-						IPackageFragmentRoot root= (IPackageFragmentRoot)member.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+						IPackageFragmentRoot root= (IPackageFragmentRoot)member.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 						boolean hasAttachedSource= root != null && root.getSourceAttachmentPath() != null;
 						IOpenable openable= member.getOpenable();
 						boolean hasSource= openable.getBuffer() != null;
@@ -586,9 +586,9 @@ public class JavadocView extends AbstractInfoView {
 							reader= new StringReader(InfoViewMessages.JavadocView_noInformation);
 					}
 					
-				} catch (JavaModelException ex) {
+				} catch (JavaScriptModelException ex) {
 					reader= new StringReader(InfoViewMessages.JavadocView_error_gettingJavadoc);
-					JavaPlugin.log(ex.getStatus());
+					JavaScriptPlugin.log(ex.getStatus());
 				}
 				if (reader != null) {
 					HTMLPrinter.addParagraph(buffer, reader);
@@ -613,14 +613,14 @@ public class JavadocView extends AbstractInfoView {
 	 * @return a string containing the member's label
 	 */
 	private String getInfoText(IMember member) {
-		return JavaElementLabels.getElementLabel(member, LABEL_FLAGS);
+		return JavaScriptElementLabels.getElementLabel(member, LABEL_FLAGS);
 	}
 
 	/*
-	 * @see org.eclipse.wst.jsdt.internal.ui.infoviews.AbstractInfoView#isIgnoringNewInput(org.eclipse.wst.jsdt.core.IJavaElement, org.eclipse.jface.viewers.ISelection)
+	 * @see org.eclipse.wst.jsdt.internal.ui.infoviews.AbstractInfoView#isIgnoringNewInput(org.eclipse.wst.jsdt.core.IJavaScriptElement, org.eclipse.jface.viewers.ISelection)
 	 * @since 3.2
 	 */
-	protected boolean isIgnoringNewInput(IJavaElement je, IWorkbenchPart part, ISelection selection) {
+	protected boolean isIgnoringNewInput(IJavaScriptElement je, IWorkbenchPart part, ISelection selection) {
 		if (super.isIgnoringNewInput(je, part, selection)
 				&& part instanceof ITextEditor
 				&& selection instanceof ITextSelection) {
@@ -636,8 +636,8 @@ public class JavadocView extends AbstractInfoView {
 			
 			try {
 				int offset= ((ITextSelection)selection).getOffset();
-				String partition= ((IDocumentExtension3)document).getContentType(IJavaPartitions.JAVA_PARTITIONING, offset, false);
-				return  partition != IJavaPartitions.JAVA_DOC;
+				String partition= ((IDocumentExtension3)document).getContentType(IJavaScriptPartitions.JAVA_PARTITIONING, offset, false);
+				return  partition != IJavaScriptPartitions.JAVA_DOC;
 			} catch (BadPartitioningException ex) {
 				return false;
 			} catch (BadLocationException ex) {
@@ -651,8 +651,8 @@ public class JavadocView extends AbstractInfoView {
 	/*
 	 * @see AbstractInfoView#findSelectedJavaElement(IWorkbenchPart)
 	 */
-	protected IJavaElement findSelectedJavaElement(IWorkbenchPart part, ISelection selection) {
-		IJavaElement element;
+	protected IJavaScriptElement findSelectedJavaElement(IWorkbenchPart part, ISelection selection) {
+		IJavaScriptElement element;
 		try {
 			element= super.findSelectedJavaElement(part, selection);
 
@@ -669,14 +669,14 @@ public class JavadocView extends AbstractInfoView {
 				if (document == null)
 					return null;
 
-				ITypedRegion typedRegion= TextUtilities.getPartition(document, IJavaPartitions.JAVA_PARTITIONING, textSelection.getOffset(), false);
-				if (IJavaPartitions.JAVA_DOC.equals(typedRegion.getType()))
+				ITypedRegion typedRegion= TextUtilities.getPartition(document, IJavaScriptPartitions.JAVA_PARTITIONING, textSelection.getOffset(), false);
+				if (IJavaScriptPartitions.JAVA_DOC.equals(typedRegion.getType()))
 					return TextSelectionConverter.getElementAtOffset((JavaEditor)part, textSelection);
 				else
 					return null;
 			} else
 				return element;
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return null;
 		} catch (BadLocationException e) {
 			return null;

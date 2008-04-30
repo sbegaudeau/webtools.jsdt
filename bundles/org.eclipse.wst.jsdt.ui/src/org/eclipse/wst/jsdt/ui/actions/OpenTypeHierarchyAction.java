@@ -24,17 +24,17 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
@@ -126,23 +126,23 @@ public class OpenTypeHierarchyAction extends SelectionDispatchAction {
 		if (input instanceof LogicalPackage)
 			return true;
 		
-		if (!(input instanceof IJavaElement))
+		if (!(input instanceof IJavaScriptElement))
 			return false;
-		switch (((IJavaElement)input).getElementType()) {
-			case IJavaElement.INITIALIZER:
-			case IJavaElement.METHOD:
-			case IJavaElement.FIELD:
-			case IJavaElement.TYPE:
+		switch (((IJavaScriptElement)input).getElementType()) {
+			case IJavaScriptElement.INITIALIZER:
+			case IJavaScriptElement.METHOD:
+			case IJavaScriptElement.FIELD:
+			case IJavaScriptElement.TYPE:
 				return true;
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
-			case IJavaElement.JAVA_PROJECT:
-			case IJavaElement.PACKAGE_FRAGMENT:
-			case IJavaElement.PACKAGE_DECLARATION:
-			case IJavaElement.IMPORT_DECLARATION:	
-			case IJavaElement.CLASS_FILE:
-			case IJavaElement.COMPILATION_UNIT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.JAVASCRIPT_PROJECT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.PACKAGE_DECLARATION:
+			case IJavaScriptElement.IMPORT_DECLARATION:	
+			case IJavaScriptElement.CLASS_FILE:
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
 				return true;
-			case IJavaElement.LOCAL_VARIABLE:
+			case IJavaScriptElement.LOCAL_VARIABLE:
 			default:
 				return false;
 		}
@@ -152,21 +152,21 @@ public class OpenTypeHierarchyAction extends SelectionDispatchAction {
 	 * Method declared on SelectionDispatchAction.
 	 */
 	public void run(ITextSelection selection) {
-		IJavaElement input= SelectionConverter.getInput(fEditor);
+		IJavaScriptElement input= SelectionConverter.getInput(fEditor);
 		if (!ActionUtil.isProcessable(getShell(), input))
 			return;		
 		
 		try {
-			IJavaElement[] elements= SelectionConverter.codeResolveOrInputForked(fEditor);
+			IJavaScriptElement[] elements= SelectionConverter.codeResolveOrInputForked(fEditor);
 			if (elements == null)
 				return;
 			List candidates= new ArrayList(elements.length);
 			for (int i= 0; i < elements.length; i++) {
-				IJavaElement[] resolvedElements= OpenTypeHierarchyUtil.getCandidates(elements[i]);
+				IJavaScriptElement[] resolvedElements= OpenTypeHierarchyUtil.getCandidates(elements[i]);
 				if (resolvedElements != null)	
 					candidates.addAll(Arrays.asList(resolvedElements));
 			}
-			run((IJavaElement[])candidates.toArray(new IJavaElement[candidates.size()]));
+			run((IJavaScriptElement[])candidates.toArray(new IJavaScriptElement[candidates.size()]));
 		} catch (InvocationTargetException e) {
 			ExceptionHandler.handle(e, getShell(), getDialogTitle(), ActionMessages.SelectionConverter_codeResolve_failed);
 		} catch (InterruptedException e) {
@@ -189,19 +189,19 @@ public class OpenTypeHierarchyAction extends SelectionDispatchAction {
 			input= fragments[0];
 		}
 
-		if (!(input instanceof IJavaElement)) {
+		if (!(input instanceof IJavaScriptElement)) {
 			IStatus status= createStatus(ActionMessages.OpenTypeHierarchyAction_messages_no_java_element); 
 			ErrorDialog.openError(getShell(), getDialogTitle(), ActionMessages.OpenTypeHierarchyAction_messages_title, status); 
 			return;
 		}
-		IJavaElement element= (IJavaElement) input;
+		IJavaScriptElement element= (IJavaScriptElement) input;
 		if (!ActionUtil.isProcessable(getShell(), element))
 			return;
 
 		List result= new ArrayList(1);
 		IStatus status= compileCandidates(result, element);
 		if (status.isOK()) {
-			run((IJavaElement[]) result.toArray(new IJavaElement[result.size()]));
+			run((IJavaScriptElement[]) result.toArray(new IJavaScriptElement[result.size()]));
 		} else {
 			ErrorDialog.openError(getShell(), getDialogTitle(), ActionMessages.OpenTypeHierarchyAction_messages_title, status); 
 		}
@@ -211,7 +211,7 @@ public class OpenTypeHierarchyAction extends SelectionDispatchAction {
 	 * No Javadoc since the method isn't meant to be public but is
 	 * since the beginning
 	 */
-	public void run(IJavaElement[] elements) {
+	public void run(IJavaScriptElement[] elements) {
 		if (elements.length == 0) {
 			getShell().getDisplay().beep();
 			return;
@@ -223,44 +223,44 @@ public class OpenTypeHierarchyAction extends SelectionDispatchAction {
 		return ActionMessages.OpenTypeHierarchyAction_dialog_title; 
 	}
 	
-	private static IStatus compileCandidates(List result, IJavaElement elem) {
-		IStatus ok= new Status(IStatus.OK, JavaPlugin.getPluginId(), 0, "", null); //$NON-NLS-1$		
+	private static IStatus compileCandidates(List result, IJavaScriptElement elem) {
+		IStatus ok= new Status(IStatus.OK, JavaScriptPlugin.getPluginId(), 0, "", null); //$NON-NLS-1$		
 		try {
 			switch (elem.getElementType()) {
-				case IJavaElement.INITIALIZER:
-				case IJavaElement.METHOD:
-				case IJavaElement.FIELD:
-				case IJavaElement.TYPE:
-				case IJavaElement.PACKAGE_FRAGMENT_ROOT:
-				case IJavaElement.JAVA_PROJECT:
+				case IJavaScriptElement.INITIALIZER:
+				case IJavaScriptElement.METHOD:
+				case IJavaScriptElement.FIELD:
+				case IJavaScriptElement.TYPE:
+				case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
+				case IJavaScriptElement.JAVASCRIPT_PROJECT:
 					result.add(elem);
 					return ok;
-				case IJavaElement.PACKAGE_FRAGMENT:
+				case IJavaScriptElement.PACKAGE_FRAGMENT:
 					if (((IPackageFragment)elem).containsJavaResources()) {
 						result.add(elem);
 						return ok;
 					}
 					return createStatus(ActionMessages.OpenTypeHierarchyAction_messages_no_java_resources); 
-				case IJavaElement.PACKAGE_DECLARATION:
-					result.add(elem.getAncestor(IJavaElement.PACKAGE_FRAGMENT));
+				case IJavaScriptElement.PACKAGE_DECLARATION:
+					result.add(elem.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT));
 					return ok;
-				case IJavaElement.IMPORT_DECLARATION:	
+				case IJavaScriptElement.IMPORT_DECLARATION:	
 					IImportDeclaration decl= (IImportDeclaration) elem;
 					if (decl.isOnDemand()) {
-						elem= JavaModelUtil.findTypeContainer(elem.getJavaProject(), Signature.getQualifier(elem.getElementName()));
+						elem= JavaModelUtil.findTypeContainer(elem.getJavaScriptProject(), Signature.getQualifier(elem.getElementName()));
 					} else {
-						elem= elem.getJavaProject().findType(elem.getElementName());
+						elem= elem.getJavaScriptProject().findType(elem.getElementName());
 					}
 					if (elem != null) {
 						result.add(elem);
 						return ok;
 					}
 					return createStatus(ActionMessages.OpenTypeHierarchyAction_messages_unknown_import_decl);
-				case IJavaElement.CLASS_FILE:
+				case IJavaScriptElement.CLASS_FILE:
 					result.add(((IClassFile)elem).getType());
 					return ok;				
-				case IJavaElement.COMPILATION_UNIT:
-					ICompilationUnit cu= (ICompilationUnit)elem;
+				case IJavaScriptElement.JAVASCRIPT_UNIT:
+					IJavaScriptUnit cu= (IJavaScriptUnit)elem;
 					IType[] types= cu.getTypes();
 					if (types.length > 0) {
 						result.addAll(Arrays.asList(types));
@@ -268,13 +268,13 @@ public class OpenTypeHierarchyAction extends SelectionDispatchAction {
 					}
 					return createStatus(ActionMessages.OpenTypeHierarchyAction_messages_no_types); 
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return e.getStatus();
 		}
 		return createStatus(ActionMessages.OpenTypeHierarchyAction_messages_no_valid_java_element); 
 	}
 	
 	private static IStatus createStatus(String message) {
-		return new Status(IStatus.INFO, JavaPlugin.getPluginId(), IJavaStatusConstants.INTERNAL_ERROR, message, null);
+		return new Status(IStatus.INFO, JavaScriptPlugin.getPluginId(), IJavaStatusConstants.INTERNAL_ERROR, message, null);
 	}			
 }

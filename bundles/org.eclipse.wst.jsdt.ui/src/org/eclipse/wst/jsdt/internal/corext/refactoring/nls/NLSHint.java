@@ -27,19 +27,19 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Region;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 
 /**
@@ -55,18 +55,18 @@ public class NLSHint {
 	private IPackageFragment fResourceBundlePackage;
 	private NLSSubstitution[] fSubstitutions;
 
-	public NLSHint(ICompilationUnit cu, CompilationUnit astRoot) {
+	public NLSHint(IJavaScriptUnit cu, JavaScriptUnit astRoot) {
 		Assert.isNotNull(cu);
 		Assert.isNotNull(astRoot);
 		
-		IPackageFragment cuPackage= (IPackageFragment) cu.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
+		IPackageFragment cuPackage= (IPackageFragment) cu.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT);
 
 		fAccessorName= NLSRefactoring.DEFAULT_ACCESSOR_CLASSNAME;
 		fAccessorPackage= cuPackage;
 		fResourceBundleName= NLSRefactoring.DEFAULT_PROPERTY_FILENAME + NLSRefactoring.PROPERTY_FILE_EXT;
 		fResourceBundlePackage= cuPackage;
 		
-		IJavaProject project= cu.getJavaProject();
+		IJavaScriptProject project= cu.getJavaScriptProject();
 		NLSLine[] lines= createRawLines(cu);
 		
 		AccessorClassReference accessClassRef= findFirstAccessorReference(lines, astRoot);
@@ -116,20 +116,20 @@ public class NLSHint {
 						fResourceBundlePackage= pack;
 					}
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 			}
 		}
 	}
 	
-	private AccessorClassReference createEclipseNLSLines(final IDocument document, CompilationUnit astRoot, List nlsLines) {
+	private AccessorClassReference createEclipseNLSLines(final IDocument document, JavaScriptUnit astRoot, List nlsLines) {
 		
 		final AccessorClassReference[] firstAccessor= new AccessorClassReference[1];
 		final SortedMap lineToNLSLine= new TreeMap();
 		
 		astRoot.accept(new ASTVisitor() {
 			
-			private ICompilationUnit fCache_CU;
-			private CompilationUnit fCache_AST;
+			private IJavaScriptUnit fCache_CU;
+			private JavaScriptUnit fCache_AST;
 
 			public boolean visit(QualifiedName node) {
 				ITypeBinding type= node.getQualifier().resolveTypeBinding();
@@ -153,16 +153,16 @@ public class NLSHint {
 						nlsLine.add(element);
 						String bundleName;
 						try {
-							ICompilationUnit bundleCU= (ICompilationUnit)type.getJavaElement().getAncestor(IJavaElement.COMPILATION_UNIT); 
+							IJavaScriptUnit bundleCU= (IJavaScriptUnit)type.getJavaElement().getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT); 
 							if (fCache_CU == null || !fCache_CU.equals(bundleCU) || fCache_AST == null) {
 								fCache_CU= bundleCU;
 								if (fCache_CU != null)
-									fCache_AST=	JavaPlugin.getDefault().getASTProvider().getAST(fCache_CU, ASTProvider.WAIT_YES, null);
+									fCache_AST=	JavaScriptPlugin.getDefault().getASTProvider().getAST(fCache_CU, ASTProvider.WAIT_YES, null);
 								else
 									fCache_AST= null;
 							}
 							bundleName = NLSHintHelper.getResourceBundleName(fCache_AST);
-						} catch (JavaModelException e) {
+						} catch (JavaScriptModelException e) {
 							return true; // ignore this accessor and continue
 						}
 						element.setAccessorClassReference(new AccessorClassReference(type, bundleName, new Region(node.getStartPosition(), node.getLength())));
@@ -180,7 +180,7 @@ public class NLSHint {
 		return firstAccessor[0];
 	}
 	
-	private IDocument getDocument(ICompilationUnit cu) {
+	private IDocument getDocument(IJavaScriptUnit cu) {
 		IPath path= cu.getPath();
 		ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
 		try {
@@ -203,7 +203,7 @@ public class NLSHint {
 		return null;
 	}
 
-	private NLSSubstitution[] createSubstitutions(NLSLine[] lines, Properties props, CompilationUnit astRoot) {
+	private NLSSubstitution[] createSubstitutions(NLSLine[] lines, Properties props, JavaScriptUnit astRoot) {
 		List result= new ArrayList();
 		
 		for (int i= 0; i < lines.length; i++) {
@@ -231,7 +231,7 @@ public class NLSHint {
 		return (NLSSubstitution[]) result.toArray(new NLSSubstitution[result.size()]);
 	}
 	
-	private static AccessorClassReference findFirstAccessorReference(NLSLine[] lines, CompilationUnit astRoot) {
+	private static AccessorClassReference findFirstAccessorReference(NLSLine[] lines, JavaScriptUnit astRoot) {
 		for (int i= 0; i < lines.length; i++) {
 			NLSElement[] elements= lines[i].getElements();
 			for (int j= 0; j < elements.length; j++) {
@@ -265,10 +265,10 @@ public class NLSHint {
 		return str.substring(1, str.length() - 1);
 	}
 
-	private static NLSLine[] createRawLines(ICompilationUnit cu) {
+	private static NLSLine[] createRawLines(IJavaScriptUnit cu) {
 		try {
 			return NLSScanner.scan(cu);
-		} catch (JavaModelException x) {
+		} catch (JavaScriptModelException x) {
 			return new NLSLine[0];
 		} catch (InvalidInputException x) {
 			return new NLSLine[0];

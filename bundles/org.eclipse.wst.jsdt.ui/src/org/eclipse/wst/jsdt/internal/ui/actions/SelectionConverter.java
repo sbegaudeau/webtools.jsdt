@@ -27,21 +27,21 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICodeAssist;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 public class SelectionConverter {
 
-	private static final IJavaElement[] EMPTY_RESULT= new IJavaElement[0];
+	private static final IJavaScriptElement[] EMPTY_RESULT= new IJavaScriptElement[0];
 	
 	private SelectionConverter() {
 		// no instance
@@ -58,7 +58,7 @@ public class SelectionConverter {
 	 * <li><code>default</code>: returns an empty structured selection.</li>
 	 * </ul>
 	 */
-	public static IStructuredSelection getStructuredSelection(IWorkbenchPart part) throws JavaModelException {
+	public static IStructuredSelection getStructuredSelection(IWorkbenchPart part) throws JavaScriptModelException {
 		if (part instanceof JavaEditor)
 			return new StructuredSelection(codeResolve((JavaEditor)part));
 		ISelectionProvider provider= part.getSite().getSelectionProvider();
@@ -74,17 +74,17 @@ public class SelectionConverter {
 	/**
 	 * Converts the given structured selection into an array of Java elements.
 	 * An empty array is returned if one of the elements stored in the structured
-	 * selection is not of type <code>IJavaElement</code>
+	 * selection is not of type <code>IJavaScriptElement</code>
 	 */
-	public static IJavaElement[] getElements(IStructuredSelection selection) {
+	public static IJavaScriptElement[] getElements(IStructuredSelection selection) {
 		if (!selection.isEmpty()) {
-			IJavaElement[] result= new IJavaElement[selection.size()];
+			IJavaScriptElement[] result= new IJavaScriptElement[selection.size()];
 			int i= 0;
 			for (Iterator iter= selection.iterator(); iter.hasNext(); i++) {
 				Object element= iter.next();
-				if (!(element instanceof IJavaElement))
+				if (!(element instanceof IJavaScriptElement))
 					return EMPTY_RESULT;
-				result[i]= (IJavaElement)element;
+				result[i]= (IJavaScriptElement)element;
 			}
 			return result;
 		}
@@ -98,17 +98,17 @@ public class SelectionConverter {
 		
 	}
 		
-	public static IJavaElement[] codeResolveOrInputForked(JavaEditor editor) throws InvocationTargetException, InterruptedException {
-		IJavaElement input= getInput(editor);
+	public static IJavaScriptElement[] codeResolveOrInputForked(JavaEditor editor) throws InvocationTargetException, InterruptedException {
+		IJavaScriptElement input= getInput(editor);
 		ITextSelection selection= (ITextSelection)editor.getSelectionProvider().getSelection();
-		IJavaElement[] result= performForkedCodeResolve(input, selection);
+		IJavaScriptElement[] result= performForkedCodeResolve(input, selection);
 		if (result.length == 0) {
-			result= new IJavaElement[] {input};
+			result= new IJavaScriptElement[] {input};
 		}
 		return result;
 	}
 				
-	public static IJavaElement[] codeResolve(JavaEditor editor) throws JavaModelException {
+	public static IJavaScriptElement[] codeResolve(JavaEditor editor) throws JavaScriptModelException {
 		return codeResolve(editor, true);
 	}
 		
@@ -116,7 +116,7 @@ public class SelectionConverter {
 	 * @param primaryOnly if <code>true</code> only primary working copies will be returned
 	 * @since 3.2
 	 */
-	public static IJavaElement[] codeResolve(JavaEditor editor, boolean primaryOnly) throws JavaModelException {
+	public static IJavaScriptElement[] codeResolve(JavaEditor editor, boolean primaryOnly) throws JavaScriptModelException {
 		return codeResolve(getInput(editor, primaryOnly), (ITextSelection)editor.getSelectionProvider().getSelection());
 	}
 	
@@ -127,11 +127,11 @@ public class SelectionConverter {
 	 * @throws InvocationTargetException 
 	 * @since 3.2
 	 */
-	public static IJavaElement[] codeResolveForked(JavaEditor editor, boolean primaryOnly) throws InvocationTargetException, InterruptedException {
+	public static IJavaScriptElement[] codeResolveForked(JavaEditor editor, boolean primaryOnly) throws InvocationTargetException, InterruptedException {
 		return performForkedCodeResolve(getInput(editor, primaryOnly), (ITextSelection)editor.getSelectionProvider().getSelection());
 	}
 			
-	public static IJavaElement getElementAtOffset(JavaEditor editor) throws JavaModelException {
+	public static IJavaScriptElement getElementAtOffset(JavaEditor editor) throws JavaScriptModelException {
 		return getElementAtOffset(editor, true);
 	}
 	
@@ -139,22 +139,22 @@ public class SelectionConverter {
 	 * @param primaryOnly if <code>true</code> only primary working copies will be returned
 	 * @since 3.2
 	 */
-	private static IJavaElement getElementAtOffset(JavaEditor editor, boolean primaryOnly) throws JavaModelException {
+	private static IJavaScriptElement getElementAtOffset(JavaEditor editor, boolean primaryOnly) throws JavaScriptModelException {
 		return getElementAtOffset(getInput(editor, primaryOnly), (ITextSelection)editor.getSelectionProvider().getSelection());
 	}
 	
-	public static IType getTypeAtOffset(JavaEditor editor) throws JavaModelException {
-		IJavaElement element= SelectionConverter.getElementAtOffset(editor);
-		IType type= (IType)element.getAncestor(IJavaElement.TYPE);
+	public static IType getTypeAtOffset(JavaEditor editor) throws JavaScriptModelException {
+		IJavaScriptElement element= SelectionConverter.getElementAtOffset(editor);
+		IType type= (IType)element.getAncestor(IJavaScriptElement.TYPE);
 		if (type == null) {
-			ICompilationUnit unit= SelectionConverter.getInputAsCompilationUnit(editor);
+			IJavaScriptUnit unit= SelectionConverter.getInputAsCompilationUnit(editor);
 			if (unit != null)
 				type= unit.findPrimaryType();
 		}
 		return type;
 	}
 	
-	public static IJavaElement getInput(JavaEditor editor) {
+	public static IJavaScriptElement getInput(JavaEditor editor) {
 		return getInput(editor, true);
 	}
 	
@@ -162,7 +162,7 @@ public class SelectionConverter {
 	 * @param primaryOnly if <code>true</code> only primary working copies will be returned
 	 * @since 3.2
 	 */
-	private static IJavaElement getInput(JavaEditor editor, boolean primaryOnly) {
+	private static IJavaScriptElement getInput(JavaEditor editor, boolean primaryOnly) {
 		if (editor == null)
 			return null;
 		return EditorUtility.getEditorInputJavaElement(editor, primaryOnly);
@@ -175,10 +175,10 @@ public class SelectionConverter {
 		return null;
 	}
 	
-	public static ICompilationUnit getInputAsCompilationUnit(JavaEditor editor) {
+	public static IJavaScriptUnit getInputAsCompilationUnit(JavaEditor editor) {
 		Object editorInput= SelectionConverter.getInput(editor);
-		if (editorInput instanceof ICompilationUnit)
-			return (ICompilationUnit)editorInput;
+		if (editorInput instanceof IJavaScriptUnit)
+			return (IJavaScriptUnit)editorInput;
 		return null;
 	}
 
@@ -189,13 +189,13 @@ public class SelectionConverter {
 		return null;
 	}
 
-	private static IJavaElement[] performForkedCodeResolve(final IJavaElement input, final ITextSelection selection) throws InvocationTargetException, InterruptedException {
+	private static IJavaScriptElement[] performForkedCodeResolve(final IJavaScriptElement input, final ITextSelection selection) throws InvocationTargetException, InterruptedException {
 		final class CodeResolveRunnable implements IRunnableWithProgress {
-			IJavaElement[] result;
+			IJavaScriptElement[] result;
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
 					result= codeResolve(input, selection);
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					throw new InvocationTargetException(e);
 				}
 			}
@@ -205,12 +205,12 @@ public class SelectionConverter {
 		return runnable.result;
 	}
 
-	public static IJavaElement[] codeResolve(IJavaElement input, ITextSelection selection) throws JavaModelException {
+	public static IJavaScriptElement[] codeResolve(IJavaScriptElement input, ITextSelection selection) throws JavaScriptModelException {
 			if (input instanceof ICodeAssist) {
-				if (input instanceof ICompilationUnit) {
-					JavaModelUtil.reconcile((ICompilationUnit) input);
+				if (input instanceof IJavaScriptUnit) {
+					JavaModelUtil.reconcile((IJavaScriptUnit) input);
 				}
-				IJavaElement[] elements= ((ICodeAssist)input).codeSelect(selection.getOffset() + selection.getLength(), 0);
+				IJavaScriptElement[] elements= ((ICodeAssist)input).codeSelect(selection.getOffset() + selection.getLength(), 0);
 				if (elements.length > 0) {
 					return elements;
 				}
@@ -218,17 +218,17 @@ public class SelectionConverter {
 			return EMPTY_RESULT;
 	}
 	
-	public static IJavaElement getElementAtOffset(IJavaElement input, ITextSelection selection) throws JavaModelException {
-		if (input instanceof ICompilationUnit) {
-			ICompilationUnit cunit= (ICompilationUnit) input;
+	public static IJavaScriptElement getElementAtOffset(IJavaScriptElement input, ITextSelection selection) throws JavaScriptModelException {
+		if (input instanceof IJavaScriptUnit) {
+			IJavaScriptUnit cunit= (IJavaScriptUnit) input;
 			JavaModelUtil.reconcile(cunit);
-			IJavaElement ref= cunit.getElementAt(selection.getOffset());
+			IJavaScriptElement ref= cunit.getElementAt(selection.getOffset());
 			if (ref == null)
 				return input;
 			else
 				return ref;
 		} else if (input instanceof IClassFile) {
-			IJavaElement ref= ((IClassFile)input).getElementAt(selection.getOffset());
+			IJavaScriptElement ref= ((IClassFile)input).getElementAt(selection.getOffset());
 			if (ref == null)
 				return input;
 			else
@@ -237,25 +237,25 @@ public class SelectionConverter {
 		return null;
 	}
 	
-//	public static IJavaElement[] resolveSelectedElements(IJavaElement input, ITextSelection selection) throws JavaModelException {
-//		IJavaElement enclosing= resolveEnclosingElement(input, selection);
+//	public static IJavaScriptElement[] resolveSelectedElements(IJavaScriptElement input, ITextSelection selection) throws JavaScriptModelException {
+//		IJavaScriptElement enclosing= resolveEnclosingElement(input, selection);
 //		if (enclosing == null)
 //			return EMPTY_RESULT;
 //		if (!(enclosing instanceof ISourceReference))
 //			return EMPTY_RESULT;
 //		ISourceRange sr= ((ISourceReference)enclosing).getSourceRange();
 //		if (selection.getOffset() == sr.getOffset() && selection.getLength() == sr.getLength())
-//			return new IJavaElement[] {enclosing};
+//			return new IJavaScriptElement[] {enclosing};
 //	}
 	
-	public static IJavaElement resolveEnclosingElement(JavaEditor editor, ITextSelection selection) throws JavaModelException {
+	public static IJavaScriptElement resolveEnclosingElement(JavaEditor editor, ITextSelection selection) throws JavaScriptModelException {
 		return resolveEnclosingElement(getInput(editor), selection);
 	}
 	
-	public static IJavaElement resolveEnclosingElement(IJavaElement input, ITextSelection selection) throws JavaModelException {
-		IJavaElement atOffset= null;
-		if (input instanceof ICompilationUnit) {
-			ICompilationUnit cunit= (ICompilationUnit)input;
+	public static IJavaScriptElement resolveEnclosingElement(IJavaScriptElement input, ITextSelection selection) throws JavaScriptModelException {
+		IJavaScriptElement atOffset= null;
+		if (input instanceof IJavaScriptUnit) {
+			IJavaScriptUnit cunit= (IJavaScriptUnit)input;
 			JavaModelUtil.reconcile(cunit);
 			atOffset= cunit.getElementAt(selection.getOffset());
 		} else if (input instanceof IClassFile) {
@@ -268,7 +268,7 @@ public class SelectionConverter {
 			return input;
 		} else {
 			int selectionEnd= selection.getOffset() + selection.getLength();
-			IJavaElement result= atOffset;
+			IJavaScriptElement result= atOffset;
 			if (atOffset instanceof ISourceReference) {
 				ISourceRange range= ((ISourceReference)atOffset).getSourceRange();
 				while (range.getOffset() + range.getLength() < selectionEnd) {
@@ -288,22 +288,22 @@ public class SelectionConverter {
 	 * Shows a dialog for resolving an ambiguous java element.
 	 * Utility method that can be called by subclasses.
 	 */
-	public static IJavaElement selectJavaElement(IJavaElement[] elements, Shell shell, String title, String message) {
+	public static IJavaScriptElement selectJavaElement(IJavaScriptElement[] elements, Shell shell, String title, String message) {
 		int nResults= elements.length;
 		if (nResults == 0)
 			return null;
 		if (nResults == 1)
 			return elements[0];
 		
-		int flags= JavaElementLabelProvider.SHOW_DEFAULT | JavaElementLabelProvider.SHOW_QUALIFIED | JavaElementLabelProvider.SHOW_ROOT;
+		int flags= JavaScriptElementLabelProvider.SHOW_DEFAULT | JavaScriptElementLabelProvider.SHOW_QUALIFIED | JavaScriptElementLabelProvider.SHOW_ROOT;
 						
-		ElementListSelectionDialog dialog= new ElementListSelectionDialog(shell, new JavaElementLabelProvider(flags));
+		ElementListSelectionDialog dialog= new ElementListSelectionDialog(shell, new JavaScriptElementLabelProvider(flags));
 		dialog.setTitle(title);
 		dialog.setMessage(message);
 		dialog.setElements(elements);
 		
 		if (dialog.open() == Window.OK) {
-			return (IJavaElement) dialog.getFirstResult();
+			return (IJavaScriptElement) dialog.getFirstResult();
 		}		
 		return null;
 	}

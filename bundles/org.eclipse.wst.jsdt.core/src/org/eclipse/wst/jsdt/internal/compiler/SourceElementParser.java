@@ -573,7 +573,7 @@ protected void consumeMethodHeaderNameWithTypeParameters(boolean isAnnotationMet
  * INTERNAL USE-ONLY
  */
 protected void consumeMethodInvocationName() {
-	// MethodInvocation ::= Name '(' ArgumentListopt ')'
+	// FunctionInvocation ::= Name '(' ArgumentListopt ')'
 	super.consumeMethodInvocationName();
 
 	// when the name is only an identifier...we have a message send to "this" (implicit)
@@ -587,7 +587,7 @@ protected void consumeMethodInvocationName() {
 	}
 }
 protected void consumeMethodInvocationNameWithTypeArguments() {
-	// MethodInvocation ::= Name '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
+	// FunctionInvocation ::= Name '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
 	super.consumeMethodInvocationNameWithTypeArguments();
 
 	// when the name is only an identifier...we have a message send to "this" (implicit)
@@ -635,7 +635,7 @@ protected void consumeMethodInvocationPrimaryWithTypeArguments() {
  * INTERNAL USE-ONLY
  */
 protected void consumeMethodInvocationSuper() {
-	// MethodInvocation ::= 'super' '.' 'Identifier' '(' ArgumentListopt ')'
+	// FunctionInvocation ::= 'super' '.' 'Identifier' '(' ArgumentListopt ')'
 	super.consumeMethodInvocationSuper();
 	MessageSend messageSend = (MessageSend) expressionStack[expressionPtr];
 	Expression[] args = messageSend.arguments;
@@ -647,7 +647,7 @@ protected void consumeMethodInvocationSuper() {
 	}
 }
 protected void consumeMethodInvocationSuperWithTypeArguments() {
-	// MethodInvocation ::= 'super' '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
+	// FunctionInvocation ::= 'super' '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
 	super.consumeMethodInvocationSuperWithTypeArguments();
 	MessageSend messageSend = (MessageSend) expressionStack[expressionPtr];
 	Expression[] args = messageSend.arguments;

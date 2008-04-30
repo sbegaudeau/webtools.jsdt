@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.core.search;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 
 /**
@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.core.JavaElement;
  * This class is intended to be instantiated and subclassed by clients.
  * </p>
  *
- * @see SearchEngine#search(SearchPattern, SearchParticipant[], IJavaSearchScope, SearchRequestor, org.eclipse.core.runtime.IProgressMonitor)
+ * @see SearchEngine#search(SearchPattern, SearchParticipant[], IJavaScriptSearchScope, SearchRequestor, org.eclipse.core.runtime.IProgressMonitor)
  * @since 3.0
  */
 public class SearchMatch {
@@ -81,7 +81,7 @@ public class SearchMatch {
 	 * @param resource the resource of the element, or <code>null</code> if none
 	 */
 	public SearchMatch(
-			IJavaElement element,
+			IJavaScriptElement element,
 			int accuracy,
 			int offset,
 			int length,

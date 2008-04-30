@@ -18,16 +18,16 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
@@ -48,7 +48,7 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 	/**
 	 * The compilation unit AST used for this operation
 	 */
-	protected CompilationUnit cuAST;
+	protected JavaScriptUnit cuAST;
 	/**
 	 * A constant meaning to position the new element
 	 * as the last child of its parent element.
@@ -77,7 +77,7 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 	 * if the newly created element will be positioned
 	 * last.
 	 */
-	protected IJavaElement anchorElement = null;
+	protected IJavaScriptElement anchorElement = null;
 	/**
 	 * A flag indicating whether creation of a new element occurred.
 	 * A request for creating a duplicate element would request in this
@@ -89,16 +89,16 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 	 * Constructs an operation that creates a Java Language Element with
 	 * the specified parent, contained within a compilation unit.
 	 */
-	public CreateElementInCUOperation(IJavaElement parentElement) {
-		super(null, new IJavaElement[]{parentElement});
+	public CreateElementInCUOperation(IJavaScriptElement parentElement) {
+		super(null, new IJavaScriptElement[]{parentElement});
 		initializeDefaultPosition();
 	}
-	protected void apply(ASTRewrite rewriter, IDocument document, Map options) throws JavaModelException {
+	protected void apply(ASTRewrite rewriter, IDocument document, Map options) throws JavaScriptModelException {
 		TextEdit edits = rewriter.rewriteAST(document, options);
  		try {
 	 		edits.apply(document);
  		} catch (BadLocationException e) {
- 			throw new JavaModelException(e, IJavaModelStatusConstants.INVALID_CONTENTS);
+ 			throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.INVALID_CONTENTS);
  		}
 	}
 	/**
@@ -114,7 +114,7 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 	 * the given sibling, or to add the new element as the last child
 	 * of its parent if <code>null</code>.
 	 */
-	public void createAfter(IJavaElement sibling) {
+	public void createAfter(IJavaScriptElement sibling) {
 		setRelativePosition(sibling, INSERT_AFTER);
 	}
 	/**
@@ -122,20 +122,20 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 	 * the given sibling, or to add the new element as the last child
 	 * of its parent if <code>null</code>.
 	 */
-	public void createBefore(IJavaElement sibling) {
+	public void createBefore(IJavaScriptElement sibling) {
 		setRelativePosition(sibling, INSERT_BEFORE);
 	}
 	/**
 	 * Execute the operation - generate new source for the compilation unit
 	 * and save the results.
 	 *
-	 * @exception JavaModelException if the operation is unable to complete
+	 * @exception JavaScriptModelException if the operation is unable to complete
 	 */
-	protected void executeOperation() throws JavaModelException {
+	protected void executeOperation() throws JavaScriptModelException {
 		try {
 			beginTask(getMainTaskName(), getMainAmountOfWork());
 			JavaElementDelta delta = newJavaElementDelta();
-			ICompilationUnit unit = getCompilationUnit();
+			IJavaScriptUnit unit = getCompilationUnit();
 			generateNewCompilationUnitAST(unit);
 			if (this.creationOccurred) {
 				//a change has really occurred
@@ -168,11 +168,11 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 	/*
 	 * Returns an AST node for the element being created.
 	 */
-	protected abstract ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, ICompilationUnit cu) throws JavaModelException;
+	protected abstract ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IJavaScriptUnit cu) throws JavaScriptModelException;
 	/*
 	 * Generates a new AST for this operation and applies it to the given cu
 	 */
-	protected void generateNewCompilationUnitAST(ICompilationUnit cu) throws JavaModelException {
+	protected void generateNewCompilationUnitAST(IJavaScriptUnit cu) throws JavaScriptModelException {
 		this.cuAST = parse(cu);
 
 		AST ast = this.cuAST.getAST();
@@ -184,24 +184,24 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 			if (parent == null)
 				parent = this.cuAST;
 			insertASTNode(rewriter, parent, child);
-			apply(rewriter, document, cu.getJavaProject().getOptions(true));
+			apply(rewriter, document, cu.getJavaScriptProject().getOptions(true));
 		}
 		worked(1);
 	}
 	/**
 	 * Creates and returns the handle for the element this operation created.
 	 */
-	protected abstract IJavaElement generateResultHandle();
+	protected abstract IJavaScriptElement generateResultHandle();
 	/**
 	 * Creates and returns the handles for the elements this operation created.
 	 */
-	protected IJavaElement[] generateResultHandles() {
-		return new IJavaElement[]{generateResultHandle()};
+	protected IJavaScriptElement[] generateResultHandles() {
+		return new IJavaScriptElement[]{generateResultHandle()};
 	}
 	/**
 	 * Returns the compilation unit in which the new element is being created.
 	 */
-	protected ICompilationUnit getCompilationUnit() {
+	protected IJavaScriptUnit getCompilationUnit() {
 		return getCompilationUnitFor(getParentElement());
 	}
 	/**
@@ -236,10 +236,10 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 	 * Inserts the given child into the given AST,
 	 * based on the position settings of this operation.
 	 *
-	 * @see #createAfter(IJavaElement)
-	 * @see #createBefore(IJavaElement)
+	 * @see #createAfter(IJavaScriptElement)
+	 * @see #createBefore(IJavaScriptElement)
 	 */
-	protected void insertASTNode(ASTRewrite rewriter, ASTNode parent, ASTNode child) throws JavaModelException {
+	protected void insertASTNode(ASTRewrite rewriter, ASTNode parent, ASTNode child) throws JavaScriptModelException {
 		StructuralPropertyDescriptor propertyDescriptor = getChildPropertyDescriptor(parent);
 		if (propertyDescriptor instanceof ChildListPropertyDescriptor) {
 			ChildListPropertyDescriptor childListPropertyDescriptor = (ChildListPropertyDescriptor) propertyDescriptor;
@@ -269,13 +269,13 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 			rewriter.set(parent, propertyDescriptor, child, null);
 		}
  	}
-	protected CompilationUnit parse(ICompilationUnit cu) throws JavaModelException {
+	protected JavaScriptUnit parse(IJavaScriptUnit cu) throws JavaScriptModelException {
 		// ensure cu is consistent (noop if already consistent)
 		cu.makeConsistent(this.progressMonitor);
 		// create an AST for the compilation unit
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setSource(cu);
-		return (CompilationUnit) parser.createAST(this.progressMonitor);
+		return (JavaScriptUnit) parser.createAST(this.progressMonitor);
 	}
 	/**
 	 * Sets the name of the <code>DOMNode</code> that will be used to
@@ -292,7 +292,7 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 	 * of its parent if <code>null</code>. The <code>position</code>
 	 * must be one of the position constants.
 	 */
-	protected void setRelativePosition(IJavaElement sibling, int policy) throws IllegalArgumentException {
+	protected void setRelativePosition(IJavaScriptElement sibling, int policy) throws IllegalArgumentException {
 		if (sibling == null) {
 			this.anchorElement = null;
 			this.insertionPolicy = INSERT_LAST;
@@ -309,20 +309,20 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 	 * 		import declaration name.
 	 *  <li>INVALID_SIBLING - the sibling provided for positioning is not valid.
 	 * </ul>
-	 * @see IJavaModelStatus
-	 * @see org.eclipse.wst.jsdt.core.JavaConventions
+	 * @see IJavaScriptModelStatus
+	 * @see org.eclipse.wst.jsdt.core.JavaScriptConventions
 	 */
-	public IJavaModelStatus verify() {
+	public IJavaScriptModelStatus verify() {
 		if (getParentElement() == null) {
-			return new JavaModelStatus(IJavaModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
+			return new JavaModelStatus(IJavaScriptModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
 		}
 		if (this.anchorElement != null) {
-			IJavaElement domPresentParent = this.anchorElement.getParent();
-			if (domPresentParent.getElementType() == IJavaElement.IMPORT_CONTAINER) {
+			IJavaScriptElement domPresentParent = this.anchorElement.getParent();
+			if (domPresentParent.getElementType() == IJavaScriptElement.IMPORT_CONTAINER) {
 				domPresentParent = domPresentParent.getParent();
 			}
 			if (!domPresentParent.equals(getParentElement())) {
-				return new JavaModelStatus(IJavaModelStatusConstants.INVALID_SIBLING, this.anchorElement);
+				return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_SIBLING, this.anchorElement);
 			}
 		}
 		return JavaModelStatus.VERIFIED_OK;

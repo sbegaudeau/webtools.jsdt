@@ -82,14 +82,14 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.KeyValuePair;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSSubstitution;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
@@ -100,10 +100,10 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
+import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
 
 class ExternalizeWizardPage extends UserInputWizardPage {
 
@@ -246,12 +246,12 @@ class ExternalizeWizardPage extends UserInputWizardPage {
 		private Image getNLSImage(NLSSubstitution sub) {
 			if ((sub.getValue() == null) && (sub.getKey() != null)) {
 				// Missing keys
-				JavaElementImageDescriptor imageDescriptor= new JavaElementImageDescriptor(getNLSImageDescriptor(sub.getState()), JavaElementImageDescriptor.WARNING, JavaElementImageProvider.SMALL_SIZE);
-				return JavaPlugin.getImageDescriptorRegistry().get(imageDescriptor);
+				JavaScriptElementImageDescriptor imageDescriptor= new JavaScriptElementImageDescriptor(getNLSImageDescriptor(sub.getState()), JavaScriptElementImageDescriptor.WARNING, JavaElementImageProvider.SMALL_SIZE);
+				return JavaScriptPlugin.getImageDescriptorRegistry().get(imageDescriptor);
 			} else
 				if (sub.isConflicting(fSubstitutions) || !isKeyValid(sub, null)) {
-					JavaElementImageDescriptor imageDescriptor= new JavaElementImageDescriptor(getNLSImageDescriptor(sub.getState()), JavaElementImageDescriptor.ERROR, JavaElementImageProvider.SMALL_SIZE);
-					return JavaPlugin.getImageDescriptorRegistry().get(imageDescriptor);
+					JavaScriptElementImageDescriptor imageDescriptor= new JavaScriptElementImageDescriptor(getNLSImageDescriptor(sub.getState()), JavaScriptElementImageDescriptor.ERROR, JavaElementImageProvider.SMALL_SIZE);
+					return JavaScriptPlugin.getImageDescriptorRegistry().get(imageDescriptor);
 				} else {
 					return	getNLSImage(sub.getState());
 				}
@@ -495,7 +495,7 @@ class ExternalizeWizardPage extends UserInputWizardPage {
 	private TableViewer fTableViewer;
 	private SourceViewer fSourceViewer;
 
-	private final ICompilationUnit fCu;
+	private final IJavaScriptUnit fCu;
 	private NLSSubstitution[] fSubstitutions;
 	private Button fExternalizeButton;
 	private Button fIgnoreButton;
@@ -634,7 +634,7 @@ class ExternalizeWizardPage extends UserInputWizardPage {
 	private boolean willCreateAccessorClass() {
 		try {
 			return fNLSRefactoring.willCreateAccessorClass();
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return false;
 		}
 	}
@@ -675,7 +675,7 @@ class ExternalizeWizardPage extends UserInputWizardPage {
 	
 	
 	private AccessorDescription[] loadAccessorDescriptions() {
-		IDialogSettings section= JavaPlugin.getDefault().getDialogSettings().getSection(SETTINGS_NLS_ACCESSORS);
+		IDialogSettings section= JavaScriptPlugin.getDefault().getDialogSettings().getSection(SETTINGS_NLS_ACCESSORS);
 		if (section == null) {
 			return new AccessorDescription[0];
 		}
@@ -698,7 +698,7 @@ class ExternalizeWizardPage extends UserInputWizardPage {
 		if (fAccessorChoices == null) {
 			return;
 		}
-		IDialogSettings dialogSettings= JavaPlugin.getDefault().getDialogSettings();
+		IDialogSettings dialogSettings= JavaScriptPlugin.getDefault().getDialogSettings();
 		IDialogSettings nlsSection= dialogSettings.getSection(SETTINGS_NLS_ACCESSORS);
 		if (nlsSection == null) {
 			nlsSection= dialogSettings.addNewSection(SETTINGS_NLS_ACCESSORS);
@@ -836,11 +836,11 @@ class ExternalizeWizardPage extends UserInputWizardPage {
 		l.setLayoutData(new GridData());
 
 		// source viewer
-		JavaTextTools tools= JavaPlugin.getDefault().getJavaTextTools();
+		JavaScriptTextTools tools= JavaScriptPlugin.getDefault().getJavaTextTools();
 		int styles= SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
-		IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getCombinedPreferenceStore();
 		fSourceViewer= new JavaSourceViewer(c, null, null, false, styles, store);
-		fSourceViewer.configure(new JavaSourceViewerConfiguration(tools.getColorManager(), store, null, null));
+		fSourceViewer.configure(new JavaScriptSourceViewerConfiguration(tools.getColorManager(), store, null, null));
 		fSourceViewer.getControl().setFont(JFaceResources.getFont(PreferenceConstants.EDITOR_TEXT_FONT));
 
 		try {
@@ -857,7 +857,7 @@ class ExternalizeWizardPage extends UserInputWizardPage {
 			gd.widthHint= convertWidthInCharsToPixels(40);
 			fSourceViewer.getControl().setLayoutData(gd);
 
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, NLSUIMessages.ExternalizeWizardPage_exception_title, NLSUIMessages.ExternalizeWizardPage_exception_message); 
 		}
 	}
@@ -891,13 +891,13 @@ class ExternalizeWizardPage extends UserInputWizardPage {
 		if (fNLSRefactoring == null || fNLSRefactoring.getCu() == null)
 			return false;
 		
-		IJavaProject jp= fNLSRefactoring.getCu().getJavaProject();
+		IJavaScriptProject jp= fNLSRefactoring.getCu().getJavaScriptProject();
 		if (jp == null || !jp.exists())
 			return false;
 		
 		try {
 			return jp.findType("org.eclipse.osgi.util.NLS") != null; //$NON-NLS-1$
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			return false;
 		}
 	}

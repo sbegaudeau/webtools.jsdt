@@ -37,18 +37,18 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -122,7 +122,7 @@ public class SourceMapper
 	protected HashMap sourceRanges;
 
 	/*
-	 * A map from IJavaElement to String[]
+	 * A map from IJavaScriptElement to String[]
 	 */
 	protected HashMap categories;
 
@@ -160,7 +160,7 @@ public class SourceMapper
 	/**
 	 * The element searched for
 	 */
-	protected IJavaElement searchedElement;
+	protected IJavaScriptElement searchedElement;
 
 	/**
 	 * imports references
@@ -282,7 +282,7 @@ public class SourceMapper
 		//do nothing
 	}
 
-	private void addCategories(IJavaElement element, char[][] elementCategories) {
+	private void addCategories(IJavaScriptElement element, char[][] elementCategories) {
 		if (elementCategories == null) return;
 		if (this.categories == null)
 			this.categories = new HashMap();
@@ -368,7 +368,7 @@ public class SourceMapper
 
 		if (root.isArchive()) {
 			JarPackageFragmentRoot jarPackageFragmentRoot = (JarPackageFragmentRoot) root;
-			IJavaProject project = jarPackageFragmentRoot.getJavaProject();
+			IJavaScriptProject project = jarPackageFragmentRoot.getJavaScriptProject();
 			String sourceLevel = null;
 			String complianceLevel = null;
 			JavaModelManager manager = JavaModelManager.getJavaModelManager();
@@ -384,10 +384,10 @@ public class SourceMapper
 							String firstLevelPackageName = entryName.substring(0, index);
 							if (!firstLevelPackageNames.contains(firstLevelPackageName)) {
 								if (sourceLevel == null) {
-									sourceLevel = project.getOption(JavaCore.COMPILER_SOURCE, true);
-									complianceLevel = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+									sourceLevel = project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
+									complianceLevel = project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true);
 								}
-								IStatus status = JavaConventions.validatePackageName(firstLevelPackageName, sourceLevel, complianceLevel);
+								IStatus status = JavaScriptConventions.validatePackageName(firstLevelPackageName, sourceLevel, complianceLevel);
 								if (status.isOK() || status.getSeverity() == IStatus.WARNING) {
 									firstLevelPackageNames.add(firstLevelPackageName);
 								}
@@ -764,7 +764,7 @@ public class SourceMapper
 			}
 			this.methodParameterNames[typeDepth] = methodInfo.parameterNames;
 
-			IMethod method = currentType.getMethod(
+			IFunction method = currentType.getFunction(
 					this.memberName[typeDepth],
 					convertTypeNamesToSigs(this.methodParameterTypes[typeDepth]));
 
@@ -854,7 +854,7 @@ public class SourceMapper
 				new SourceRange(
 					this.memberDeclarationStart[typeDepth],
 					declarationEnd - this.memberDeclarationStart[typeDepth] + 1);
-			IMethod method = currentType.getMethod(
+			IFunction method = currentType.getFunction(
 					this.memberName[typeDepth],
 					convertTypeNamesToSigs(this.methodParameterTypes[typeDepth]));
 			setSourceRange(
@@ -967,7 +967,7 @@ public class SourceMapper
 					if (res instanceof IFile) {
 						try {
 							source = org.eclipse.wst.jsdt.internal.core.util.Util.getResourceContentsAsCharArray((IFile)res);
-						} catch (JavaModelException e) {
+						} catch (JavaScriptModelException e) {
 							// ignore
 						}
 					}
@@ -995,28 +995,28 @@ public class SourceMapper
 	 * Returns the SourceRange for the name of the given element, or
 	 * {-1, -1} if no source range is known for the name of the element.
 	 */
-	public SourceRange getNameRange(IJavaElement element) {
+	public SourceRange getNameRange(IJavaScriptElement element) {
 		switch(element.getElementType()) {
-			case IJavaElement.METHOD :
+			case IJavaScriptElement.METHOD :
 				if (((IMember) element).isBinary()) {
-					IJavaElement[] el = getUnqualifiedMethodHandle((IMethod) element, false);
+					IJavaScriptElement[] el = getUnqualifiedMethodHandle((IFunction) element, false);
 					if(el[1] != null && this.sourceRanges.get(el[0]) == null) {
-						element = getUnqualifiedMethodHandle((IMethod) element, true)[0];
+						element = getUnqualifiedMethodHandle((IFunction) element, true)[0];
 					} else {
 						element = el[0];
 					}
 				}
 				break;
-			case IJavaElement.TYPE_PARAMETER :
-				IJavaElement parent = element.getParent();
-				if (parent.getElementType() == IJavaElement.METHOD) {
-					IMethod method = (IMethod) parent;
+			case IJavaScriptElement.TYPE_PARAMETER :
+				IJavaScriptElement parent = element.getParent();
+				if (parent.getElementType() == IJavaScriptElement.METHOD) {
+					IFunction method = (IFunction) parent;
 					if (method.isBinary()) {
-						IJavaElement[] el = getUnqualifiedMethodHandle(method, false);
+						IJavaScriptElement[] el = getUnqualifiedMethodHandle(method, false);
 						if(el[1] != null && this.sourceRanges.get(el[0]) == null) {
-							method = (IMethod) getUnqualifiedMethodHandle(method, true)[0];
+							method = (IFunction) getUnqualifiedMethodHandle(method, true)[0];
 						} else {
-							method = (IMethod) el[0];
+							method = (IFunction) el[0];
 						}
 						element = method.getTypeParameter(element.getElementName());
 					}
@@ -1034,13 +1034,13 @@ public class SourceMapper
 	 * Returns parameters names for the given method, or
 	 * null if no parameter names are known for the method.
 	 */
-	public char[][] getMethodParameterNames(IMethod method) {
+	public char[][] getMethodParameterNames(IFunction method) {
 		if (method.isBinary()) {
-			IJavaElement[] el = getUnqualifiedMethodHandle(method, false);
+			IJavaScriptElement[] el = getUnqualifiedMethodHandle(method, false);
 			if(el[1] != null && this.parameterNames.get(el[0]) == null) {
-				method = (IMethod) getUnqualifiedMethodHandle(method, true)[0];
+				method = (IFunction) getUnqualifiedMethodHandle(method, true)[0];
 			} else {
-				method = (IMethod) el[0];
+				method = (IFunction) el[0];
 			}
 		}
 		char[][] parameters = (char[][]) this.parameterNames.get(method);
@@ -1055,35 +1055,35 @@ public class SourceMapper
 	 * Returns the <code>SourceRange</code> for the given element, or
 	 * {-1, -1} if no source range is known for the element.
 	 */
-	public SourceRange getSourceRange(IJavaElement element) {
+	public SourceRange getSourceRange(IJavaScriptElement element) {
 		if (!this.areRootPathsComputed && element instanceof ISourceReference)
 			try {
 				return (SourceRange)((ISourceReference)element).getSourceRange();
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				org.eclipse.wst.jsdt.internal.core.util.Util.log(e, "error getting source range"); //$NON-NLS-1$
 				return UNKNOWN_RANGE;
 			}
 		switch(element.getElementType()) {
-			case IJavaElement.METHOD :
+			case IJavaScriptElement.METHOD :
 				if (((IMember) element).isBinary()) {
-					IJavaElement[] el = getUnqualifiedMethodHandle((IMethod) element, false);
+					IJavaScriptElement[] el = getUnqualifiedMethodHandle((IFunction) element, false);
 					if(el[1] != null && this.sourceRanges.get(el[0]) == null) {
-						element = getUnqualifiedMethodHandle((IMethod) element, true)[0];
+						element = getUnqualifiedMethodHandle((IFunction) element, true)[0];
 					} else {
 						element = el[0];
 					}
 				}
 				break;
-			case IJavaElement.TYPE_PARAMETER :
-				IJavaElement parent = element.getParent();
-				if (parent.getElementType() == IJavaElement.METHOD) {
-					IMethod method = (IMethod) parent;
+			case IJavaScriptElement.TYPE_PARAMETER :
+				IJavaScriptElement parent = element.getParent();
+				if (parent.getElementType() == IJavaScriptElement.METHOD) {
+					IFunction method = (IFunction) parent;
 					if (method.isBinary()) {
-						IJavaElement[] el = getUnqualifiedMethodHandle(method, false);
+						IJavaScriptElement[] el = getUnqualifiedMethodHandle(method, false);
 						if(el[1] != null && this.sourceRanges.get(el[0]) == null) {
-							method = (IMethod) getUnqualifiedMethodHandle(method, true)[0];
+							method = (IFunction) getUnqualifiedMethodHandle(method, true)[0];
 						} else {
-							method = (IMethod) el[0];
+							method = (IFunction) el[0];
 						}
 						element = method.getTypeParameter(element.getElementName());
 					}
@@ -1103,7 +1103,7 @@ public class SourceMapper
 	 */
 	protected IType getType(String typeName) {
 		if (typeName.length() == 0) {
-			IJavaElement classFile = this.binaryType.getParent();
+			IJavaScriptElement classFile = this.binaryType.getParent();
 			String classFileName = classFile.getElementName();
 			StringBuffer newClassFileName = new StringBuffer();
 			int lastDollar = classFileName.lastIndexOf('$');
@@ -1122,7 +1122,7 @@ public class SourceMapper
 	 * Creates a handle that has parameter types that are not
 	 * fully qualified so that the correct source is found.
 	 */
-	protected IJavaElement[] getUnqualifiedMethodHandle(IMethod method, boolean noDollar) {
+	protected IJavaScriptElement[] getUnqualifiedMethodHandle(IFunction method, boolean noDollar) {
 		boolean hasDollar = false;
 		String[] qualifiedParameterTypes = method.getParameterTypes();
 		String[] unqualifiedParameterTypes = new String[qualifiedParameterTypes.length];
@@ -1133,8 +1133,8 @@ public class SourceMapper
 			hasDollar |= unqualifiedParameterTypes[i].lastIndexOf('$') != -1;
 		}
 
-		IJavaElement[] result = new IJavaElement[2];
-		result[0] = ((IType) method.getParent()).getMethod(
+		IJavaScriptElement[] result = new IJavaScriptElement[2];
+		result[0] = ((IType) method.getParent()).getFunction(
 			method.getElementName(),
 			unqualifiedParameterTypes);
 		if(hasDollar) {
@@ -1236,7 +1236,7 @@ public class SourceMapper
 		IType type,
 		char[] contents,
 		IBinaryType info,
-		IJavaElement elementToFind) {
+		IJavaScriptElement elementToFind) {
 
 		this.binaryType = (BinaryType) type;
 
@@ -1266,7 +1266,7 @@ public class SourceMapper
 			if (info == null) {
 				try {
 					info = (IBinaryType) this.binaryType.getElementInfo();
-				} catch(JavaModelException e) {
+				} catch(JavaScriptModelException e) {
 					return null;
 				}
 			}
@@ -1284,7 +1284,7 @@ public class SourceMapper
 			boolean doFullParse = hasToRetrieveSourceRangesForLocalClass(fullName);
 			parser = new SourceElementParser(this, factory, new CompilerOptions(this.options), doFullParse, true/*optimize string literals*/);
 			parser.javadocParser.checkDocComment = false; // disable javadoc parsing
-			IJavaElement javaElement = this.binaryType.getCompilationUnit();
+			IJavaScriptElement javaElement = this.binaryType.getJavaScriptUnit();
 			if (javaElement == null) javaElement = this.binaryType.getParent();
 			parser.parseCompilationUnit(
 				new BasicCompilationUnit(contents, null, this.binaryType.sourceFileName(info), javaElement),
@@ -1325,7 +1325,7 @@ public class SourceMapper
 	 * @see #parameterNames
 	 */
 	protected void setMethodParameterNames(
-		IMethod method,
+		IFunction method,
 		char[][] parameterNames) {
 		if (parameterNames == null) {
 			parameterNames = CharOperation.NO_CHAR_CHAR;
@@ -1340,7 +1340,7 @@ public class SourceMapper
 	 * @see #sourceRanges
 	 */
 	protected void setSourceRange(
-		IJavaElement element,
+		IJavaScriptElement element,
 		SourceRange sourceRange,
 		SourceRange nameRange) {
 		this.sourceRanges.put(element, new SourceRange[] { sourceRange, nameRange });

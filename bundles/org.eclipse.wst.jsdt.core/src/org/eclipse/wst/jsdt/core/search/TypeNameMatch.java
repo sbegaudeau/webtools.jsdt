@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.search;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 
@@ -25,8 +25,8 @@ import org.eclipse.wst.jsdt.core.IType;
  * </p>
  *
  * @see TypeNameMatchRequestor
- * @see SearchEngine#searchAllTypeNames(char[], int, char[], int, int, IJavaSearchScope, TypeNameMatchRequestor, int, org.eclipse.core.runtime.IProgressMonitor)
- * @see SearchEngine#searchAllTypeNames(char[][], char[][], IJavaSearchScope, TypeNameMatchRequestor, int, org.eclipse.core.runtime.IProgressMonitor)
+ * @see SearchEngine#searchAllTypeNames(char[], int, char[], int, int, IJavaScriptSearchScope, TypeNameMatchRequestor, int, org.eclipse.core.runtime.IProgressMonitor)
+ * @see SearchEngine#searchAllTypeNames(char[][], char[][], IJavaScriptSearchScope, TypeNameMatchRequestor, int, org.eclipse.core.runtime.IProgressMonitor)
  * @since 3.3
  */
 public abstract class TypeNameMatch {
@@ -60,14 +60,14 @@ public abstract int getModifiers();
  * Package fragment root cannot be null and <strong>does</strong> exist.
  *
  * @see #getType()
- * @see IJavaElement#getAncestor(int)
+ * @see IJavaScriptElement#getAncestor(int)
  *
  * @throws NullPointerException if matched type is <code> null</code>
  * @return the existing java model package fragment root (ie. cannot be <code>null</code>
  * 	and will return <code>true</code> to <code>exists()</code> message).
  */
 public IPackageFragmentRoot getPackageFragmentRoot() {
-	return (IPackageFragmentRoot) getType().getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+	return (IPackageFragmentRoot) getType().getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 }
 
 /**
@@ -87,7 +87,7 @@ public String getPackageName() {
  * Returns the name of the stored type.
  *
  * @see #getType()
- * @see IJavaElement#getElementName()
+ * @see IJavaScriptElement#getElementName()
  *
  * @throws NullPointerException if matched type is <code> null</code>
  * @return the type name

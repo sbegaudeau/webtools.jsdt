@@ -22,34 +22,34 @@ public class JSDScopeUtil {
 
 	public static JsGlobalScopeContainerInitializer getContainerInitializer(IPath classPathEntry) {
 		if(classPathEntry==null ) return null;
-		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(classPathEntry.segment(0));
+		JsGlobalScopeContainerInitializer initializer= JavaScriptCore.getJsGlobalScopeContainerInitializer(classPathEntry.segment(0));
 		return initializer ;
 	}
 
-	public IClasspathEntry[] getClasspathEntries(IJsGlobalScopeContainer container) {
+	public IIncludePathEntry[] getIncludepathEntries(IJsGlobalScopeContainer container) {
 
 
-		if(container!=null) return	container.getClasspathEntries();
+		if(container!=null) return	container.getIncludepathEntries();
 
-		return new IClasspathEntry[0];
+		return new IIncludePathEntry[0];
 	}
 
-	public  IJsGlobalScopeContainer getLibraryContainer(IPath cpEntry, IJavaProject javaProject) {
+	public  IJsGlobalScopeContainer getLibraryContainer(IPath cpEntry, IJavaScriptProject javaProject) {
 		IJsGlobalScopeContainer container=null;
 		try {
-			container = JavaCore.getJsGlobalScopeContainer(cpEntry, javaProject);
-		} catch (JavaModelException ex) {
+			container = JavaScriptCore.getJsGlobalScopeContainer(cpEntry, javaProject);
+		} catch (JavaScriptModelException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
 		return	container;
 	}
 
-	public static JsGlobalScopeContainerInitializer findLibraryInitializer(IPath compUnitPath, IJavaProject javaProject) {
+	public static JsGlobalScopeContainerInitializer findLibraryInitializer(IPath compUnitPath, IJavaScriptProject javaProject) {
 		IPackageFragmentRoot[] roots = new IPackageFragmentRoot[0];
 		try {
 			roots = javaProject.getAllPackageFragmentRoots();
-		} catch (JavaModelException ex) {
+		} catch (JavaScriptModelException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}

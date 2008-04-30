@@ -15,12 +15,12 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.IWorkingCopy;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.core.search.BasicSearchEngine;
@@ -36,7 +36,7 @@ import org.eclipse.wst.jsdt.internal.core.search.matching.DeclarationOfReference
  * The search can be limited to a search scope.
  * <p>
  * Various search patterns can be created using the factory methods
- * {@link SearchPattern#createPattern(String, int, int, int)}, {@link SearchPattern#createPattern(IJavaElement, int)},
+ * {@link SearchPattern#createPattern(String, int, int, int)}, {@link SearchPattern#createPattern(IJavaScriptElement, int)},
  * {@link SearchPattern#createOrPattern(SearchPattern, SearchPattern)}.
  * </p>
  * <p>For example, one can search for references to a method in the hierarchy of a type,
@@ -61,11 +61,11 @@ public class SearchEngine {
 
 	/**
 	 * Internal adapter class.
-	 * @deprecated marking deprecated as it uses deprecated IJavaSearchResultCollector
+	 * @deprecated marking deprecated as it uses deprecated IJavaScriptSearchResultCollector
 	 */
 	static class ResultCollectorAdapter extends SearchRequestor {
-		IJavaSearchResultCollector resultCollector;
-		ResultCollectorAdapter(IJavaSearchResultCollector resultCollector) {
+		IJavaScriptSearchResultCollector resultCollector;
+		ResultCollectorAdapter(IJavaScriptSearchResultCollector resultCollector) {
 			this.resultCollector = resultCollector;
 		}
 		/**
@@ -76,7 +76,7 @@ public class SearchEngine {
 				match.getResource(),
 				match.getOffset(),
 				match.getOffset() + match.getLength(),
-				(IJavaElement) match.getElement(),
+				(IJavaScriptElement) match.getElement(),
 				match.getAccuracy()
 			);
 		}
@@ -134,7 +134,7 @@ public class SearchEngine {
 	 * @param workingCopies the working copies that take precedence over their original compilation units
 	 * @since 3.0
 	 */
-	public SearchEngine(ICompilationUnit[] workingCopies) {
+	public SearchEngine(IJavaScriptUnit[] workingCopies) {
 		this.basicEngine = new BasicSearchEngine(workingCopies);
 	}
 	/**
@@ -148,11 +148,11 @@ public class SearchEngine {
 	 *
 	 * @param workingCopies the working copies that take precedence over their original compilation units
 	 * @since 2.0
-	 * @deprecated Use {@link #SearchEngine(ICompilationUnit[])} instead.
+	 * @deprecated Use {@link #SearchEngine(IJavaScriptUnit[])} instead.
 	 */
 	public SearchEngine(IWorkingCopy[] workingCopies) {
 		int length = workingCopies.length;
-		ICompilationUnit[] units = new ICompilationUnit[length];
+		IJavaScriptUnit[] units = new IJavaScriptUnit[length];
 		System.arraycopy(workingCopies, 0, units, 0, length);
 		this.basicEngine = new BasicSearchEngine(units);
 	}
@@ -176,9 +176,9 @@ public class SearchEngine {
 	 *
 	 * @param type the focus of the hierarchy scope
 	 * @return a new hierarchy scope
-	 * @exception JavaModelException if the hierarchy could not be computed on the given type
+	 * @exception JavaScriptModelException if the hierarchy could not be computed on the given type
 	 */
-	public static IJavaSearchScope createHierarchyScope(IType type) throws JavaModelException {
+	public static IJavaScriptSearchScope createHierarchyScope(IType type) throws JavaScriptModelException {
 		return BasicSearchEngine.createHierarchyScope(type);
 	}
 
@@ -192,10 +192,10 @@ public class SearchEngine {
 	 * @param type the focus of the hierarchy scope
 	 * @param owner the owner of working copies that take precedence over original compilation units
 	 * @return a new hierarchy scope
-	 * @exception JavaModelException if the hierarchy could not be computed on the given type
+	 * @exception JavaScriptModelException if the hierarchy could not be computed on the given type
 	 * @since 3.0
 	 */
-	public static IJavaSearchScope createHierarchyScope(IType type, WorkingCopyOwner owner) throws JavaModelException {
+	public static IJavaScriptSearchScope createHierarchyScope(IType type, WorkingCopyOwner owner) throws JavaScriptModelException {
 		return BasicSearchEngine.createHierarchyScope(type, owner);
 	}
 
@@ -210,13 +210,13 @@ public class SearchEngine {
 	 *
 	 * @param resources the resources the scope is limited to
 	 * @return a new Java search scope
-	 * @deprecated Use {@link #createJavaSearchScope(IJavaElement[])} instead.
+	 * @deprecated Use {@link #createJavaSearchScope(IJavaScriptElement[])} instead.
 	 */
-	public static IJavaSearchScope createJavaSearchScope(IResource[] resources) {
+	public static IJavaScriptSearchScope createJavaSearchScope(IResource[] resources) {
 		int length = resources.length;
-		IJavaElement[] elements = new IJavaElement[length];
+		IJavaScriptElement[] elements = new IJavaScriptElement[length];
 		for (int i = 0; i < length; i++) {
-			elements[i] = JavaCore.create(resources[i]);
+			elements[i] = JavaScriptCore.create(resources[i]);
 		}
 		return createJavaSearchScope(elements);
 	}
@@ -226,7 +226,7 @@ public class SearchEngine {
 	 * The Java elements resulting from a search with this scope will
 	 * be children of the given elements.
 	 * <p>
-	 * If an element is an IJavaProject, then the project's source folders,
+	 * If an element is an IJavaScriptProject, then the project's source folders,
 	 * its jars (external and internal) and its referenced projects (with their source
 	 * folders and jars, recursively) will be included.
 	 * If an element is an IPackageFragmentRoot, then only the package fragments of
@@ -241,7 +241,7 @@ public class SearchEngine {
 	 * @return a new Java search scope
 	 * @since 2.0
 	 */
-	public static IJavaSearchScope createJavaSearchScope(IJavaElement[] elements) {
+	public static IJavaScriptSearchScope createJavaSearchScope(IJavaScriptElement[] elements) {
 		return BasicSearchEngine.createJavaSearchScope(elements);
 	}
 
@@ -250,7 +250,7 @@ public class SearchEngine {
 	 * The Java elements resulting from a search with this scope will
 	 * be children of the given elements.
 	 *
-	 * If an element is an IJavaProject, then the project's source folders,
+	 * If an element is an IJavaScriptProject, then the project's source folders,
 	 * its jars (external and internal) and - if specified - its referenced projects
 	 * (with their source folders and jars, recursively) will be included.
 	 * If an element is an IPackageFragmentRoot, then only the package fragments of
@@ -265,7 +265,7 @@ public class SearchEngine {
 	 * @return a new Java search scope
 	 * @since 2.0
 	 */
-	public static IJavaSearchScope createJavaSearchScope(IJavaElement[] elements, boolean includeReferencedProjects) {
+	public static IJavaScriptSearchScope createJavaSearchScope(IJavaScriptElement[] elements, boolean includeReferencedProjects) {
 		return BasicSearchEngine.createJavaSearchScope(elements, includeReferencedProjects);
 	}
 
@@ -274,17 +274,17 @@ public class SearchEngine {
 	 * The Java elements resulting from a search with this scope will
 	 * be children of the given elements.
 	 *
-	 * If an element is an IJavaProject, then it includes:
-	 * - its source folders if IJavaSearchScope.SOURCES is specified,
+	 * If an element is an IJavaScriptProject, then it includes:
+	 * - its source folders if IJavaScriptSearchScope.SOURCES is specified,
 	 * - its application libraries (internal and external jars, class folders that are on the raw classpath,
 	 *   or the ones that are coming from a classpath path variable,
 	 *   or the ones that are coming from a classpath container with the K_APPLICATION kind)
-	 *   if IJavaSearchScope.APPLICATION_LIBRARIES is specified
+	 *   if IJavaScriptSearchScope.APPLICATION_LIBRARIES is specified
 	 * - its system libraries (internal and external jars, class folders that are coming from an
 	 *   IJsGlobalScopeContainer with the K_SYSTEM kind)
-	 *   if IJavaSearchScope.APPLICATION_LIBRARIES is specified
+	 *   if IJavaScriptSearchScope.APPLICATION_LIBRARIES is specified
 	 * - its referenced projects (with their source folders and jars, recursively)
-	 *   if IJavaSearchScope.REFERENCED_PROJECTS is specified.
+	 *   if IJavaScriptSearchScope.REFERENCED_PROJECTS is specified.
 	 * If an element is an IPackageFragmentRoot, then only the package fragments of
 	 * this package fragment root will be included.
 	 * If an element is an IPackageFragment, then only the compilation unit and class
@@ -294,13 +294,13 @@ public class SearchEngine {
 	 * @param elements the Java elements the scope is limited to
 	 * @param includeMask the bit-wise OR of all include types of interest
 	 * @return a new Java search scope
-	 * @see IJavaSearchScope#SOURCES
-	 * @see IJavaSearchScope#APPLICATION_LIBRARIES
-	 * @see IJavaSearchScope#SYSTEM_LIBRARIES
-	 * @see IJavaSearchScope#REFERENCED_PROJECTS
+	 * @see IJavaScriptSearchScope#SOURCES
+	 * @see IJavaScriptSearchScope#APPLICATION_LIBRARIES
+	 * @see IJavaScriptSearchScope#SYSTEM_LIBRARIES
+	 * @see IJavaScriptSearchScope#REFERENCED_PROJECTS
 	 * @since 3.0
 	 */
-	public static IJavaSearchScope createJavaSearchScope(IJavaElement[] elements, int includeMask) {
+	public static IJavaScriptSearchScope createJavaSearchScope(IJavaScriptElement[] elements, int includeMask) {
 		return BasicSearchEngine.createJavaSearchScope(elements, includeMask);
 	}
 
@@ -337,29 +337,29 @@ public class SearchEngine {
 	 * @param stringPattern the given pattern
 	 * @param searchFor determines the nature of the searched elements
 	 *	<ul>
-	 * 	<li>{@link IJavaSearchConstants#CLASS}: only look for classes</li>
-	 *		<li>{@link IJavaSearchConstants#INTERFACE}: only look for interfaces</li>
-	 * 	<li>{@link IJavaSearchConstants#TYPE}: look for both classes and interfaces</li>
-	 *		<li>{@link IJavaSearchConstants#FIELD}: look for fields</li>
-	 *		<li>{@link IJavaSearchConstants#METHOD}: look for methods</li>
-	 *		<li>{@link IJavaSearchConstants#CONSTRUCTOR}: look for constructors</li>
-	 *		<li>{@link IJavaSearchConstants#PACKAGE}: look for packages</li>
+	 * 	<li>{@link IJavaScriptSearchConstants#CLASS}: only look for classes</li>
+	 *		<li>{@link IJavaScriptSearchConstants#INTERFACE}: only look for interfaces</li>
+	 * 	<li>{@link IJavaScriptSearchConstants#TYPE}: look for both classes and interfaces</li>
+	 *		<li>{@link IJavaScriptSearchConstants#FIELD}: look for fields</li>
+	 *		<li>{@link IJavaScriptSearchConstants#METHOD}: look for methods</li>
+	 *		<li>{@link IJavaScriptSearchConstants#CONSTRUCTOR}: look for constructors</li>
+	 *		<li>{@link IJavaScriptSearchConstants#PACKAGE}: look for packages</li>
 	 *	</ul>
 	 * @param limitTo determines the nature of the expected matches
 	 *	<ul>
-	 * 		<li>{@link IJavaSearchConstants#DECLARATIONS}: will search declarations matching with the corresponding
+	 * 		<li>{@link IJavaScriptSearchConstants#DECLARATIONS}: will search declarations matching with the corresponding
 	 * 			element. In case the element is a method, declarations of matching methods in subtypes will also
 	 *  		be found, allowing to find declarations of abstract methods, etc.</li>
 	 *
-	 *		 <li>{@link IJavaSearchConstants#REFERENCES}: will search references to the given element.</li>
+	 *		 <li>{@link IJavaScriptSearchConstants#REFERENCES}: will search references to the given element.</li>
 	 *
-	 *		 <li>{@link IJavaSearchConstants#ALL_OCCURRENCES}: will search for either declarations or references as specified
+	 *		 <li>{@link IJavaScriptSearchConstants#ALL_OCCURRENCES}: will search for either declarations or references as specified
 	 *  		above.</li>
 	 *
-	 *		 <li>{@link IJavaSearchConstants#IMPLEMENTORS}: for types, will find all types
+	 *		 <li>{@link IJavaScriptSearchConstants#IMPLEMENTORS}: for types, will find all types
 	 *				which directly implement/extend a given interface.
-	 *				Note that types may be only classes or only interfaces if {@link IJavaSearchConstants#CLASS } or
-	 *				{@link IJavaSearchConstants#INTERFACE} is respectively used instead of {@link IJavaSearchConstants#TYPE}.
+	 *				Note that types may be only classes or only interfaces if {@link IJavaScriptSearchConstants#CLASS } or
+	 *				{@link IJavaScriptSearchConstants#INTERFACE} is respectively used instead of {@link IJavaScriptSearchConstants#TYPE}.
 	 *		</li>
 	 *	</ul>
 	 *
@@ -382,22 +382,22 @@ public class SearchEngine {
 	 * @param element the Java element the search pattern is based on
 	 * @param limitTo determines the nature of the expected matches
 	 * 	<ul>
-	 * 		<li>{@link IJavaSearchConstants#DECLARATIONS}: will search declarations matching with the corresponding
+	 * 		<li>{@link IJavaScriptSearchConstants#DECLARATIONS}: will search declarations matching with the corresponding
 	 * 			element. In case the element is a method, declarations of matching methods in subtypes will also
 	 *  		be found, allowing to find declarations of abstract methods, etc.</li>
 	 *
-	 *		 <li>{@link IJavaSearchConstants#REFERENCES}: will search references to the given element.</li>
+	 *		 <li>{@link IJavaScriptSearchConstants#REFERENCES}: will search references to the given element.</li>
 	 *
-	 *		 <li>{@link IJavaSearchConstants#ALL_OCCURRENCES}: will search for either declarations or references as specified
+	 *		 <li>{@link IJavaScriptSearchConstants#ALL_OCCURRENCES}: will search for either declarations or references as specified
 	 *  		above.</li>
 	 *
-	 *		 <li>{@link IJavaSearchConstants#IMPLEMENTORS}: for types, will find all types
+	 *		 <li>{@link IJavaScriptSearchConstants#IMPLEMENTORS}: for types, will find all types
 	 *				which directly implement/extend a given interface.</li>
 	 *	</ul>
 	 * @return a search pattern for a Java element or <code>null</code> if the given element is ill-formed
-	 * @deprecated Use {@link SearchPattern#createPattern(IJavaElement, int)} instead.
+	 * @deprecated Use {@link SearchPattern#createPattern(IJavaScriptElement, int)} instead.
 	 */
-	public static ISearchPattern createSearchPattern(IJavaElement element, int limitTo) {
+	public static ISearchPattern createSearchPattern(IJavaScriptElement element, int limitTo) {
 		return new SearchPatternAdapter(SearchPattern.createPattern(element, limitTo));
 	}
 
@@ -418,7 +418,7 @@ public class SearchEngine {
 	 *
 	 * @return a new workspace scope
 	 */
-	public static IJavaSearchScope createWorkspaceScope() {
+	public static IJavaScriptSearchScope createWorkspaceScope() {
 		return BasicSearchEngine.createWorkspaceScope();
 	}
 	/**
@@ -443,30 +443,30 @@ public class SearchEngine {
 	 * @param workspace the workspace
 	 * @param patternString the pattern to be searched for
 	 * @param searchFor a hint what kind of Java element the string pattern represents.
-	 *  Look into {@link IJavaSearchConstants} for valid values
+	 *  Look into {@link IJavaScriptSearchConstants} for valid values
 	 * @param limitTo one of the following values:
 	 *	<ul>
-	 *	  <li>{@link IJavaSearchConstants#DECLARATIONS}: search
+	 *	  <li>{@link IJavaScriptSearchConstants#DECLARATIONS}: search
 	 *		  for declarations only </li>
-	 *	  <li>{@link IJavaSearchConstants#REFERENCES}: search
+	 *	  <li>{@link IJavaScriptSearchConstants#REFERENCES}: search
 	 *		  for all references </li>
-	 *	  <li>{@link IJavaSearchConstants#ALL_OCCURRENCES}: search
+	 *	  <li>{@link IJavaScriptSearchConstants#ALL_OCCURRENCES}: search
 	 *		  for both declarations and all references </li>
-	 *	  <li>{@link IJavaSearchConstants#IMPLEMENTORS}: for types, will find all types
+	 *	  <li>{@link IJavaScriptSearchConstants#IMPLEMENTORS}: for types, will find all types
 	 *			which directly implement/extend a given interface.<br>
-	 *			Note that types may be only classes or only interfaces if respectively {@link IJavaSearchConstants#CLASS} or
-	 *			{@link IJavaSearchConstants#INTERFACE} is used for searchFor parameter instead of {@link IJavaSearchConstants#TYPE}.
+	 *			Note that types may be only classes or only interfaces if respectively {@link IJavaScriptSearchConstants#CLASS} or
+	 *			{@link IJavaScriptSearchConstants#INTERFACE} is used for searchFor parameter instead of {@link IJavaScriptSearchConstants#TYPE}.
 	 *	  </li>
 	 * </ul>
 	 * @param scope the search result has to be limited to the given scope
 	 * @param resultCollector a callback object to which each match is reported
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
-	 * @deprecated Use {@link  #search(SearchPattern, SearchParticipant[], IJavaSearchScope, SearchRequestor, IProgressMonitor)} instead.
+	 * @deprecated Use {@link  #search(SearchPattern, SearchParticipant[], IJavaScriptSearchScope, SearchRequestor, IProgressMonitor)} instead.
 	 */
-	public void search(IWorkspace workspace, String patternString, int searchFor, int limitTo, IJavaSearchScope scope, IJavaSearchResultCollector resultCollector) throws JavaModelException {
+	public void search(IWorkspace workspace, String patternString, int searchFor, int limitTo, IJavaScriptSearchScope scope, IJavaScriptSearchResultCollector resultCollector) throws JavaScriptModelException {
 		try {
 			int matchMode = patternString.indexOf('*') != -1 || patternString.indexOf('?') != -1
 				? SearchPattern.R_PATTERN_MATCH
@@ -478,9 +478,9 @@ public class SearchEngine {
 				new ResultCollectorAdapter(resultCollector),
 				resultCollector.getProgressMonitor());
 		} catch (CoreException e) {
-			if (e instanceof JavaModelException)
-				throw (JavaModelException) e;
-			throw new JavaModelException(e);
+			if (e instanceof JavaScriptModelException)
+				throw (JavaScriptModelException) e;
+			throw new JavaScriptModelException(e);
 		}
 	}
 
@@ -491,25 +491,25 @@ public class SearchEngine {
 	 * @param element the Java element to be searched for
 	 * @param limitTo one of the following values:
 	 *	<ul>
-	 *	  <li>{@link IJavaSearchConstants#DECLARATIONS}: search
+	 *	  <li>{@link IJavaScriptSearchConstants#DECLARATIONS}: search
 	 *		  for declarations only </li>
-	 *	  <li>{@link IJavaSearchConstants#REFERENCES}: search
+	 *	  <li>{@link IJavaScriptSearchConstants#REFERENCES}: search
 	 *		  for all references </li>
-	 *	  <li>{@link IJavaSearchConstants#ALL_OCCURRENCES}: search
+	 *	  <li>{@link IJavaScriptSearchConstants#ALL_OCCURRENCES}: search
 	 *		  for both declarations and all references </li>
-	 *	  <li>{@link IJavaSearchConstants#IMPLEMENTORS}: for types, will find all types
+	 *	  <li>{@link IJavaScriptSearchConstants#IMPLEMENTORS}: for types, will find all types
 	 *				which directly implement/extend a given interface.</li>
 	 * 	</ul>
 	 * @param scope the search result has to be limited to the given scope
 	 * @param resultCollector a callback object to which each match is reported
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the element doesn't exist</li>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
-	 * @deprecated Use {@link #search(SearchPattern, SearchParticipant[], IJavaSearchScope, SearchRequestor, IProgressMonitor)} instead.
+	 * @deprecated Use {@link #search(SearchPattern, SearchParticipant[], IJavaScriptSearchScope, SearchRequestor, IProgressMonitor)} instead.
 	 */
-	public void search(IWorkspace workspace, IJavaElement element, int limitTo, IJavaSearchScope scope, IJavaSearchResultCollector resultCollector) throws JavaModelException {
+	public void search(IWorkspace workspace, IJavaScriptElement element, int limitTo, IJavaScriptSearchScope scope, IJavaScriptSearchResultCollector resultCollector) throws JavaScriptModelException {
 		search(workspace, createSearchPattern(element, limitTo), scope, resultCollector);
 	}
 
@@ -522,13 +522,13 @@ public class SearchEngine {
 	 * @param searchPattern the pattern to be searched for
 	 * @param scope the search result has to be limited to the given scope
 	 * @param resultCollector a callback object to which each match is reported
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
-	 * @deprecated Use {@link  #search(SearchPattern, SearchParticipant[], IJavaSearchScope, SearchRequestor, IProgressMonitor)} instead.
+	 * @deprecated Use {@link  #search(SearchPattern, SearchParticipant[], IJavaScriptSearchScope, SearchRequestor, IProgressMonitor)} instead.
 	 */
-	public void search(IWorkspace workspace, ISearchPattern searchPattern, IJavaSearchScope scope, IJavaSearchResultCollector resultCollector) throws JavaModelException {
+	public void search(IWorkspace workspace, ISearchPattern searchPattern, IJavaScriptSearchScope scope, IJavaScriptSearchResultCollector resultCollector) throws JavaScriptModelException {
 		try {
 			search(
 				((SearchPatternAdapter)searchPattern).pattern,
@@ -537,9 +537,9 @@ public class SearchEngine {
 				new ResultCollectorAdapter(resultCollector),
 				resultCollector.getProgressMonitor());
 		} catch (CoreException e) {
-			if (e instanceof JavaModelException)
-				throw (JavaModelException) e;
-			throw new JavaModelException(e);
+			if (e instanceof JavaScriptModelException)
+				throw (JavaScriptModelException) e;
+			throw new JavaScriptModelException(e);
 		}
 	}
 
@@ -559,7 +559,7 @@ public class SearchEngine {
 	 *	</ul>
 	 *@since 3.0
 	 */
-	public void search(SearchPattern pattern, SearchParticipant[] participants, IJavaSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException {
+	public void search(SearchPattern pattern, SearchParticipant[] participants, IJavaScriptSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException {
 		this.basicEngine.search(pattern, participants, scope, requestor, monitor);
 	}
 
@@ -570,7 +570,7 @@ public class SearchEngine {
 	 *
 	 * @param packageExactName the exact package full name of the searched types.<br>
 	 * 					If you want to use a prefix or a wild-carded string for package, you need to use
-	 * 					{@link #searchAllTypeNames(char[], int, char[], int, int, IJavaSearchScope, TypeNameRequestor, int, IProgressMonitor)}
+	 * 					{@link #searchAllTypeNames(char[], int, char[], int, int, IJavaScriptSearchScope, TypeNameRequestor, int, IProgressMonitor)}
 	 * 					method  instead. May be <code>null</code>, then any package name is accepted.
 	 * @param typeName the dot-separated qualified name of the searched type (the qualification include
 	 *					the enclosing types if the searched type is a member type), or a prefix
@@ -590,32 +590,32 @@ public class SearchEngine {
 	 *   or {@link SearchPattern#R_PREFIX_MATCH} if a prefix non case sensitive match is requested.
 	 * @param searchFor determines the nature of the searched elements
 	 *	<ul>
-	 * 	<li>{@link IJavaSearchConstants#CLASS}: only look for classes</li>
-	 *		<li>{@link IJavaSearchConstants#INTERFACE}: only look for interfaces</li>
-	 * 	<li>{@link IJavaSearchConstants#ENUM}: only look for enumeration</li>
-	 *		<li>{@link IJavaSearchConstants#ANNOTATION_TYPE}: only look for annotation type</li>
-	 * 	<li>{@link IJavaSearchConstants#CLASS_AND_ENUM}: only look for classes and enumerations</li>
-	 *		<li>{@link IJavaSearchConstants#CLASS_AND_INTERFACE}: only look for classes and interfaces</li>
-	 * 	<li>{@link IJavaSearchConstants#TYPE}: look for all types (ie. classes, interfaces, enum and annotation types)</li>
+	 * 	<li>{@link IJavaScriptSearchConstants#CLASS}: only look for classes</li>
+	 *		<li>{@link IJavaScriptSearchConstants#INTERFACE}: only look for interfaces</li>
+	 * 	<li>{@link IJavaScriptSearchConstants#ENUM}: only look for enumeration</li>
+	 *		<li>{@link IJavaScriptSearchConstants#ANNOTATION_TYPE}: only look for annotation type</li>
+	 * 	<li>{@link IJavaScriptSearchConstants#CLASS_AND_ENUM}: only look for classes and enumerations</li>
+	 *		<li>{@link IJavaScriptSearchConstants#CLASS_AND_INTERFACE}: only look for classes and interfaces</li>
+	 * 	<li>{@link IJavaScriptSearchConstants#TYPE}: look for all types (ie. classes, interfaces, enum and annotation types)</li>
 	 *	</ul>
 	 * @param scope the scope to search in
 	 * @param nameRequestor the requestor that collects the results of the search
 	 * @param waitingPolicy one of
 	 * <ul>
-	 *		<li>{@link IJavaSearchConstants#FORCE_IMMEDIATE_SEARCH} if the search should start immediately</li>
-	 *		<li>{@link IJavaSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH} if the search should be cancelled if the
+	 *		<li>{@link IJavaScriptSearchConstants#FORCE_IMMEDIATE_SEARCH} if the search should start immediately</li>
+	 *		<li>{@link IJavaScriptSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH} if the search should be cancelled if the
 	 *			underlying indexer has not finished indexing the workspace</li>
-	 *		<li>{@link IJavaSearchConstants#WAIT_UNTIL_READY_TO_SEARCH} if the search should wait for the
+	 *		<li>{@link IJavaScriptSearchConstants#WAIT_UNTIL_READY_TO_SEARCH} if the search should wait for the
 	 *			underlying indexer to finish indexing the workspace</li>
 	 * </ul>
 	 * @param progressMonitor the progress monitor to report progress to, or <code>null</code> if no progress
 	 *							monitor is provided
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
 	 * @since 3.1
-	 * @deprecated Use {@link #searchAllTypeNames(char[], int, char[], int, int, IJavaSearchScope, TypeNameRequestor, int, IProgressMonitor)}
+	 * @deprecated Use {@link #searchAllTypeNames(char[], int, char[], int, int, IJavaScriptSearchScope, TypeNameRequestor, int, IProgressMonitor)}
 	 * 	instead
 	 */
 	public void searchAllTypeNames(
@@ -623,10 +623,10 @@ public class SearchEngine {
 		final char[] typeName,
 		final int matchRule,
 		int searchFor,
-		IJavaSearchScope scope,
+		IJavaScriptSearchScope scope,
 		final TypeNameRequestor nameRequestor,
 		int waitingPolicy,
-		IProgressMonitor progressMonitor)  throws JavaModelException {
+		IProgressMonitor progressMonitor)  throws JavaScriptModelException {
 
 		searchAllTypeNames(packageExactName, SearchPattern.R_EXACT_MATCH, typeName, matchRule, searchFor, scope, nameRequestor, waitingPolicy, progressMonitor);
 	}
@@ -669,27 +669,27 @@ public class SearchEngine {
 	 *   or {@link SearchPattern#R_PREFIX_MATCH} if a prefix non case sensitive match is requested.
 	 * @param searchFor determines the nature of the searched elements
 	 *	<ul>
-	 * 	<li>{@link IJavaSearchConstants#CLASS}: only look for classes</li>
-	 *		<li>{@link IJavaSearchConstants#INTERFACE}: only look for interfaces</li>
-	 * 	<li>{@link IJavaSearchConstants#ENUM}: only look for enumeration</li>
-	 *		<li>{@link IJavaSearchConstants#ANNOTATION_TYPE}: only look for annotation type</li>
-	 * 	<li>{@link IJavaSearchConstants#CLASS_AND_ENUM}: only look for classes and enumerations</li>
-	 *		<li>{@link IJavaSearchConstants#CLASS_AND_INTERFACE}: only look for classes and interfaces</li>
-	 * 	<li>{@link IJavaSearchConstants#TYPE}: look for all types (ie. classes, interfaces, enum and annotation types)</li>
+	 * 	<li>{@link IJavaScriptSearchConstants#CLASS}: only look for classes</li>
+	 *		<li>{@link IJavaScriptSearchConstants#INTERFACE}: only look for interfaces</li>
+	 * 	<li>{@link IJavaScriptSearchConstants#ENUM}: only look for enumeration</li>
+	 *		<li>{@link IJavaScriptSearchConstants#ANNOTATION_TYPE}: only look for annotation type</li>
+	 * 	<li>{@link IJavaScriptSearchConstants#CLASS_AND_ENUM}: only look for classes and enumerations</li>
+	 *		<li>{@link IJavaScriptSearchConstants#CLASS_AND_INTERFACE}: only look for classes and interfaces</li>
+	 * 	<li>{@link IJavaScriptSearchConstants#TYPE}: look for all types (ie. classes, interfaces, enum and annotation types)</li>
 	 *	</ul>
 	 * @param scope the scope to search in
 	 * @param nameRequestor the requestor that collects the results of the search
 	 * @param waitingPolicy one of
 	 * <ul>
-	 *		<li>{@link IJavaSearchConstants#FORCE_IMMEDIATE_SEARCH} if the search should start immediately</li>
-	 *		<li>{@link IJavaSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH} if the search should be cancelled if the
+	 *		<li>{@link IJavaScriptSearchConstants#FORCE_IMMEDIATE_SEARCH} if the search should start immediately</li>
+	 *		<li>{@link IJavaScriptSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH} if the search should be cancelled if the
 	 *			underlying indexer has not finished indexing the workspace</li>
-	 *		<li>{@link IJavaSearchConstants#WAIT_UNTIL_READY_TO_SEARCH} if the search should wait for the
+	 *		<li>{@link IJavaScriptSearchConstants#WAIT_UNTIL_READY_TO_SEARCH} if the search should wait for the
 	 *			underlying indexer to finish indexing the workspace</li>
 	 * </ul>
 	 * @param progressMonitor the progress monitor to report progress to, or <code>null</code> if no progress
 	 *							monitor is provided
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
@@ -701,10 +701,10 @@ public class SearchEngine {
 		final char[] typeName,
 		final int typeMatchRule,
 		int searchFor,
-		IJavaSearchScope scope,
+		IJavaScriptSearchScope scope,
 		final TypeNameRequestor nameRequestor,
 		int waitingPolicy,
-		IProgressMonitor progressMonitor)  throws JavaModelException {
+		IProgressMonitor progressMonitor)  throws JavaScriptModelException {
 
 		TypeNameRequestorWrapper requestorWrapper = new TypeNameRequestorWrapper(nameRequestor);
 		this.basicEngine.searchAllTypeNames(packageName, packageMatchRule, typeName, typeMatchRule, searchFor, scope, requestorWrapper, waitingPolicy, progressMonitor);
@@ -752,28 +752,28 @@ public class SearchEngine {
 	 *   or {@link SearchPattern#R_PREFIX_MATCH} if a prefix non case sensitive match is requested.
 	 * @param searchFor determines the nature of the searched elements
 	 *	<ul>
-	 * 	<li>{@link IJavaSearchConstants#CLASS}: only look for classes</li>
-	 *		<li>{@link IJavaSearchConstants#INTERFACE}: only look for interfaces</li>
-	 * 	<li>{@link IJavaSearchConstants#ENUM}: only look for enumeration</li>
-	 *		<li>{@link IJavaSearchConstants#ANNOTATION_TYPE}: only look for annotation type</li>
-	 * 	<li>{@link IJavaSearchConstants#CLASS_AND_ENUM}: only look for classes and enumerations</li>
-	 *		<li>{@link IJavaSearchConstants#CLASS_AND_INTERFACE}: only look for classes and interfaces</li>
-	 * 	<li>{@link IJavaSearchConstants#TYPE}: look for all types (ie. classes, interfaces, enum and annotation types)</li>
+	 * 	<li>{@link IJavaScriptSearchConstants#CLASS}: only look for classes</li>
+	 *		<li>{@link IJavaScriptSearchConstants#INTERFACE}: only look for interfaces</li>
+	 * 	<li>{@link IJavaScriptSearchConstants#ENUM}: only look for enumeration</li>
+	 *		<li>{@link IJavaScriptSearchConstants#ANNOTATION_TYPE}: only look for annotation type</li>
+	 * 	<li>{@link IJavaScriptSearchConstants#CLASS_AND_ENUM}: only look for classes and enumerations</li>
+	 *		<li>{@link IJavaScriptSearchConstants#CLASS_AND_INTERFACE}: only look for classes and interfaces</li>
+	 * 	<li>{@link IJavaScriptSearchConstants#TYPE}: look for all types (ie. classes, interfaces, enum and annotation types)</li>
 	 *	</ul>
 	 * @param scope the scope to search in
 	 * @param nameMatchRequestor the {@link TypeNameMatchRequestor requestor} that collects
 	 * 				{@link TypeNameMatch matches} of the search.
 	 * @param waitingPolicy one of
 	 * <ul>
-	 *		<li>{@link IJavaSearchConstants#FORCE_IMMEDIATE_SEARCH} if the search should start immediately</li>
-	 *		<li>{@link IJavaSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH} if the search should be cancelled if the
+	 *		<li>{@link IJavaScriptSearchConstants#FORCE_IMMEDIATE_SEARCH} if the search should start immediately</li>
+	 *		<li>{@link IJavaScriptSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH} if the search should be cancelled if the
 	 *			underlying indexer has not finished indexing the workspace</li>
-	 *		<li>{@link IJavaSearchConstants#WAIT_UNTIL_READY_TO_SEARCH} if the search should wait for the
+	 *		<li>{@link IJavaScriptSearchConstants#WAIT_UNTIL_READY_TO_SEARCH} if the search should wait for the
 	 *			underlying indexer to finish indexing the workspace</li>
 	 * </ul>
 	 * @param progressMonitor the progress monitor to report progress to, or <code>null</code> if no progress
 	 *							monitor is provided
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
@@ -785,10 +785,10 @@ public class SearchEngine {
 		final char[] typeName,
 		final int typeMatchRule,
 		int searchFor,
-		IJavaSearchScope scope,
+		IJavaScriptSearchScope scope,
 		final TypeNameMatchRequestor nameMatchRequestor,
 		int waitingPolicy,
-		IProgressMonitor progressMonitor)  throws JavaModelException {
+		IProgressMonitor progressMonitor)  throws JavaScriptModelException {
 
 		TypeNameMatchRequestorWrapper requestorWrapper = new TypeNameMatchRequestorWrapper(nameMatchRequestor, scope);
 		this.basicEngine.searchAllTypeNames(packageName, packageMatchRule, typeName, typeMatchRule, searchFor, scope, requestorWrapper, waitingPolicy, progressMonitor);
@@ -806,15 +806,15 @@ public class SearchEngine {
 	 * @param nameRequestor the requestor that collects the results of the search
 	 * @param waitingPolicy one of
 	 * <ul>
-	 *		<li>{@link IJavaSearchConstants#FORCE_IMMEDIATE_SEARCH} if the search should start immediately</li>
-	 *		<li>{@link IJavaSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH} if the search should be cancelled if the
+	 *		<li>{@link IJavaScriptSearchConstants#FORCE_IMMEDIATE_SEARCH} if the search should start immediately</li>
+	 *		<li>{@link IJavaScriptSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH} if the search should be cancelled if the
 	 *			underlying indexer has not finished indexing the workspace</li>
-	 *		<li>{@link IJavaSearchConstants#WAIT_UNTIL_READY_TO_SEARCH} if the search should wait for the
+	 *		<li>{@link IJavaScriptSearchConstants#WAIT_UNTIL_READY_TO_SEARCH} if the search should wait for the
 	 *			underlying indexer to finish indexing the workspace</li>
 	 * </ul>
 	 * @param progressMonitor the progress monitor to report progress to, or <code>null</code> if no progress
 	 *							monitor is provided
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
@@ -823,17 +823,17 @@ public class SearchEngine {
 	public void searchAllTypeNames(
 		final char[][] qualifications,
 		final char[][] typeNames,
-		IJavaSearchScope scope,
+		IJavaScriptSearchScope scope,
 		final TypeNameRequestor nameRequestor,
 		int waitingPolicy,
-		IProgressMonitor progressMonitor)  throws JavaModelException {
+		IProgressMonitor progressMonitor)  throws JavaScriptModelException {
 
 		TypeNameRequestorWrapper requestorWrapper = new TypeNameRequestorWrapper(nameRequestor);
 		this.basicEngine.searchAllTypeNames(
 			qualifications,
 			typeNames,
 			SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE,
-			IJavaSearchConstants.TYPE,
+			IJavaScriptSearchConstants.TYPE,
 			scope,
 			requestorWrapper,
 			waitingPolicy,
@@ -857,15 +857,15 @@ public class SearchEngine {
 	 * 				{@link TypeNameMatch matches} of the search.
 	 * @param waitingPolicy one of
 	 * <ul>
-	 *		<li>{@link IJavaSearchConstants#FORCE_IMMEDIATE_SEARCH} if the search should start immediately</li>
-	 *		<li>{@link IJavaSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH} if the search should be cancelled if the
+	 *		<li>{@link IJavaScriptSearchConstants#FORCE_IMMEDIATE_SEARCH} if the search should start immediately</li>
+	 *		<li>{@link IJavaScriptSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH} if the search should be cancelled if the
 	 *			underlying indexer has not finished indexing the workspace</li>
-	 *		<li>{@link IJavaSearchConstants#WAIT_UNTIL_READY_TO_SEARCH} if the search should wait for the
+	 *		<li>{@link IJavaScriptSearchConstants#WAIT_UNTIL_READY_TO_SEARCH} if the search should wait for the
 	 *			underlying indexer to finish indexing the workspace</li>
 	 * </ul>
 	 * @param progressMonitor the progress monitor to report progress to, or <code>null</code> if no progress
 	 *							monitor is provided
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
@@ -874,17 +874,17 @@ public class SearchEngine {
 	public void searchAllTypeNames(
 		final char[][] qualifications,
 		final char[][] typeNames,
-		IJavaSearchScope scope,
+		IJavaScriptSearchScope scope,
 		final TypeNameMatchRequestor nameMatchRequestor,
 		int waitingPolicy,
-		IProgressMonitor progressMonitor)  throws JavaModelException {
+		IProgressMonitor progressMonitor)  throws JavaScriptModelException {
 
 		TypeNameMatchRequestorWrapper requestorWrapper = new TypeNameMatchRequestorWrapper(nameMatchRequestor, scope);
 		this.basicEngine.searchAllTypeNames(
 			qualifications,
 			typeNames,
 			SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE,
-			IJavaSearchConstants.TYPE,
+			IJavaScriptSearchConstants.TYPE,
 			scope,
 			requestorWrapper,
 			waitingPolicy,
@@ -914,38 +914,38 @@ public class SearchEngine {
 	 *   or {@link SearchPattern#R_PREFIX_MATCH} if a prefix non case sensitive match is requested.
 	 * @param searchFor one of
 	 * <ul>
-	 * 		<li>{@link IJavaSearchConstants#CLASS} if searching for classes only</li>
-	 * 		<li>{@link IJavaSearchConstants#INTERFACE} if searching for interfaces only</li>
-	 * 		<li>{@link IJavaSearchConstants#TYPE} if searching for both classes and interfaces</li>
+	 * 		<li>{@link IJavaScriptSearchConstants#CLASS} if searching for classes only</li>
+	 * 		<li>{@link IJavaScriptSearchConstants#INTERFACE} if searching for interfaces only</li>
+	 * 		<li>{@link IJavaScriptSearchConstants#TYPE} if searching for both classes and interfaces</li>
 	 * </ul>
 	 * @param scope the scope to search in
 	 * @param nameRequestor the requestor that collects the results of the search
 	 * @param waitingPolicy one of
 	 * <ul>
-	 *		<li>{@link IJavaSearchConstants#FORCE_IMMEDIATE_SEARCH} if the search should start immediately</li>
-	 *		<li>{@link IJavaSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH} if the search should be cancelled if the
+	 *		<li>{@link IJavaScriptSearchConstants#FORCE_IMMEDIATE_SEARCH} if the search should start immediately</li>
+	 *		<li>{@link IJavaScriptSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH} if the search should be cancelled if the
 	 *			underlying indexer has not finished indexing the workspace</li>
-	 *		<li>{@link IJavaSearchConstants#WAIT_UNTIL_READY_TO_SEARCH} if the search should wait for the
+	 *		<li>{@link IJavaScriptSearchConstants#WAIT_UNTIL_READY_TO_SEARCH} if the search should wait for the
 	 *			underlying indexer to finish indexing the workspace</li>
 	 * </ul>
 	 * @param progressMonitor the progress monitor to report progress to, or <code>null</code> if no progress
 	 *							monitor is provided
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
 	 * @since 3.0
-	 *@deprecated Use {@link #searchAllTypeNames(char[], char[], int, int, IJavaSearchScope, TypeNameRequestor, int, IProgressMonitor)} instead
+	 *@deprecated Use {@link #searchAllTypeNames(char[], char[], int, int, IJavaScriptSearchScope, TypeNameRequestor, int, IProgressMonitor)} instead
 	 */
 	public void searchAllTypeNames(
 		final char[] packageName,
 		final char[] typeName,
 		final int matchRule,
 		int searchFor,
-		IJavaSearchScope scope,
+		IJavaScriptSearchScope scope,
 		final ITypeNameRequestor nameRequestor,
 		int waitingPolicy,
-		IProgressMonitor progressMonitor)  throws JavaModelException {
+		IProgressMonitor progressMonitor)  throws JavaScriptModelException {
 
 		TypeNameRequestorAdapter requestorAdapter = new TypeNameRequestorAdapter(nameRequestor);
 		this.basicEngine.searchAllTypeNames(packageName, SearchPattern.R_EXACT_MATCH, typeName, matchRule, searchFor, scope, requestorAdapter, waitingPolicy, progressMonitor);
@@ -964,36 +964,36 @@ public class SearchEngine {
 	 *					for this type, or a wild-carded string for this type.
 	 * @param matchMode one of
 	 * <ul>
-	 *		<li>{@link IJavaSearchConstants#EXACT_MATCH} if the package name and type name are the full names
+	 *		<li>{@link IJavaScriptSearchConstants#EXACT_MATCH} if the package name and type name are the full names
 	 *			of the searched types.</li>
-	 *		<li>{@link IJavaSearchConstants#PREFIX_MATCH} if the package name and type name are prefixes of the names
+	 *		<li>{@link IJavaScriptSearchConstants#PREFIX_MATCH} if the package name and type name are prefixes of the names
 	 *			of the searched types.</li>
-	 *		<li>{@link IJavaSearchConstants#PATTERN_MATCH} if the package name and type name contain wild-cards.</li>
+	 *		<li>{@link IJavaScriptSearchConstants#PATTERN_MATCH} if the package name and type name contain wild-cards.</li>
 	 * </ul>
 	 * @param isCaseSensitive whether the search should be case sensitive
 	 * @param searchFor one of
 	 * <ul>
-	 * 		<li>{@link IJavaSearchConstants#CLASS} if searching for classes only</li>
-	 * 		<li>{@link IJavaSearchConstants#INTERFACE} if searching for interfaces only</li>
-	 * 		<li>{@link IJavaSearchConstants#TYPE} if searching for both classes and interfaces</li>
+	 * 		<li>{@link IJavaScriptSearchConstants#CLASS} if searching for classes only</li>
+	 * 		<li>{@link IJavaScriptSearchConstants#INTERFACE} if searching for interfaces only</li>
+	 * 		<li>{@link IJavaScriptSearchConstants#TYPE} if searching for both classes and interfaces</li>
 	 * </ul>
 	 * @param scope the scope to search in
 	 * @param nameRequestor the requestor that collects the results of the search
 	 * @param waitingPolicy one of
 	 * <ul>
-	 *		<li>{@link IJavaSearchConstants#FORCE_IMMEDIATE_SEARCH} if the search should start immediately</li>
-	 *		<li>{@link IJavaSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH} if the search should be cancelled if the
+	 *		<li>{@link IJavaScriptSearchConstants#FORCE_IMMEDIATE_SEARCH} if the search should start immediately</li>
+	 *		<li>{@link IJavaScriptSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH} if the search should be cancelled if the
 	 *			underlying indexer has not finished indexing the workspace</li>
-	 *		<li>{@link IJavaSearchConstants#WAIT_UNTIL_READY_TO_SEARCH} if the search should wait for the
+	 *		<li>{@link IJavaScriptSearchConstants#WAIT_UNTIL_READY_TO_SEARCH} if the search should wait for the
 	 *			underlying indexer to finish indexing the workspace</li>
 	 * </ul>
 	 * @param progressMonitor the progress monitor to report progress to, or <code>null</code> if no progress
 	 *							monitor is provided
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
-	 *@deprecated Use {@link #searchAllTypeNames(char[], char[], int, int, IJavaSearchScope, ITypeNameRequestor, int, IProgressMonitor)} instead
+	 *@deprecated Use {@link #searchAllTypeNames(char[], char[], int, int, IJavaScriptSearchScope, ITypeNameRequestor, int, IProgressMonitor)} instead
 	 */
 	public void searchAllTypeNames(
 		IWorkspace workspace,
@@ -1002,10 +1002,10 @@ public class SearchEngine {
 		final int matchMode,
 		final boolean isCaseSensitive,
 		int searchFor,
-		IJavaSearchScope scope,
+		IJavaScriptSearchScope scope,
 		final ITypeNameRequestor nameRequestor,
 		int waitingPolicy,
-		IProgressMonitor progressMonitor)  throws JavaModelException {
+		IProgressMonitor progressMonitor)  throws JavaScriptModelException {
 
 		searchAllTypeNames(
 			packageName,
@@ -1048,14 +1048,14 @@ public class SearchEngine {
 	 * @param enclosingElement the method, type, or compilation unit to be searched in
 	 * @param requestor a callback object to which each match is reported
 	 * @param monitor the progress monitor used to report progress
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the element doesn't exist</li>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
 	 * @since 3.0
 	 */
-	public void searchDeclarationsOfAccessedFields(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
+	public void searchDeclarationsOfAccessedFields(IJavaScriptElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaScriptModelException {
 		this.basicEngine.searchDeclarationsOfAccessedFields(enclosingElement, requestor, monitor);
 	}
 
@@ -1089,14 +1089,14 @@ public class SearchEngine {
 	 * @param workspace the workspace
 	 * @param enclosingElement the method, type, or compilation unit to be searched in
 	 * @param resultCollector a callback object to which each match is reported
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the element doesn't exist</li>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
-	 * @deprecated Use {@link  #searchDeclarationsOfAccessedFields(IJavaElement, SearchRequestor, IProgressMonitor)} instead.
+	 * @deprecated Use {@link  #searchDeclarationsOfAccessedFields(IJavaScriptElement, SearchRequestor, IProgressMonitor)} instead.
 	 */
-	public void searchDeclarationsOfAccessedFields(IWorkspace workspace, IJavaElement enclosingElement, IJavaSearchResultCollector resultCollector) throws JavaModelException {
+	public void searchDeclarationsOfAccessedFields(IWorkspace workspace, IJavaScriptElement enclosingElement, IJavaScriptSearchResultCollector resultCollector) throws JavaScriptModelException {
 		SearchPattern pattern = new DeclarationOfAccessedFieldsPattern(enclosingElement);
 		this.basicEngine.searchDeclarations(enclosingElement, new ResultCollectorAdapter(resultCollector), pattern, resultCollector.getProgressMonitor());
 	}
@@ -1131,14 +1131,14 @@ public class SearchEngine {
 	 * @param enclosingElement the method, type, or compilation unit to be searched in
 	 * @param requestor a callback object to which each match is reported
 	 * @param monitor the progress monitor used to report progress
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the element doesn't exist</li>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
 	 * @since 3.0
 	 */
-	public void searchDeclarationsOfReferencedTypes(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
+	public void searchDeclarationsOfReferencedTypes(IJavaScriptElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaScriptModelException {
 		this.basicEngine.searchDeclarationsOfReferencedTypes(enclosingElement, requestor, monitor);
 	}
 
@@ -1172,14 +1172,14 @@ public class SearchEngine {
 	 * @param workspace the workspace
 	 * @param enclosingElement the method, type, or compilation unit to be searched in
 	 * @param resultCollector a callback object to which each match is reported
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the element doesn't exist</li>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
-	 * @deprecated Use {@link #searchDeclarationsOfReferencedTypes(IJavaElement, SearchRequestor, IProgressMonitor)} instead.
+	 * @deprecated Use {@link #searchDeclarationsOfReferencedTypes(IJavaScriptElement, SearchRequestor, IProgressMonitor)} instead.
 	 */
-	public void searchDeclarationsOfReferencedTypes(IWorkspace workspace, IJavaElement enclosingElement, IJavaSearchResultCollector resultCollector) throws JavaModelException {
+	public void searchDeclarationsOfReferencedTypes(IWorkspace workspace, IJavaScriptElement enclosingElement, IJavaScriptSearchResultCollector resultCollector) throws JavaScriptModelException {
 		SearchPattern pattern = new DeclarationOfReferencedTypesPattern(enclosingElement);
 		this.basicEngine.searchDeclarations(enclosingElement, new ResultCollectorAdapter(resultCollector), pattern, resultCollector.getProgressMonitor());
 	}
@@ -1217,14 +1217,14 @@ public class SearchEngine {
 	 * @param enclosingElement the method, type, or compilation unit to be searched in
 	 * @param requestor a callback object to which each match is reported
 	 * @param monitor the progress monitor used to report progress
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the element doesn't exist</li>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
 	 * @since 3.0
 	 */
-	public void searchDeclarationsOfSentMessages(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
+	public void searchDeclarationsOfSentMessages(IJavaScriptElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaScriptModelException {
 		this.basicEngine.searchDeclarationsOfSentMessages(enclosingElement, requestor, monitor);
 	}
 
@@ -1261,14 +1261,14 @@ public class SearchEngine {
 	 * @param workspace the workspace
 	 * @param enclosingElement the method, type, or compilation unit to be searched in
 	 * @param resultCollector a callback object to which each match is reported
-	 * @exception JavaModelException if the search failed. Reasons include:
+	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the element doesn't exist</li>
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
-	 * @deprecated Use {@link #searchDeclarationsOfSentMessages(IJavaElement, SearchRequestor, IProgressMonitor)} instead.
+	 * @deprecated Use {@link #searchDeclarationsOfSentMessages(IJavaScriptElement, SearchRequestor, IProgressMonitor)} instead.
 	 */
-	public void searchDeclarationsOfSentMessages(IWorkspace workspace, IJavaElement enclosingElement, IJavaSearchResultCollector resultCollector) throws JavaModelException {
+	public void searchDeclarationsOfSentMessages(IWorkspace workspace, IJavaScriptElement enclosingElement, IJavaScriptSearchResultCollector resultCollector) throws JavaScriptModelException {
 		SearchPattern pattern = new DeclarationOfReferencedMethodsPattern(enclosingElement);
 		this.basicEngine.searchDeclarations(enclosingElement, new ResultCollectorAdapter(resultCollector), pattern, resultCollector.getProgressMonitor());
 	}

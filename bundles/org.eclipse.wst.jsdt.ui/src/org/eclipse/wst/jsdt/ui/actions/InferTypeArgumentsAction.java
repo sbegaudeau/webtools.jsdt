@@ -16,12 +16,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -88,10 +88,10 @@ public class InferTypeArgumentsAction extends SelectionDispatchAction {
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(RefactoringAvailabilityTester.isInferTypeArgumentsAvailable(selection));
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 			if (JavaModelUtil.isExceptionToBeLogged(e))
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			setEnabled(false);//no UI
 		}
 	}
@@ -100,7 +100,7 @@ public class InferTypeArgumentsAction extends SelectionDispatchAction {
 	 * @see org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction#run(org.eclipse.jface.viewers.IStructuredSelection)
 	 */
 	public void run(IStructuredSelection selection) {
-		IJavaElement[] elements= getSelectedElements(selection);
+		IJavaScriptElement[] elements= getSelectedElements(selection);
 		try {
 			if (! ActionUtil.areProcessable(getShell(), elements))
 				return;
@@ -110,7 +110,7 @@ public class InferTypeArgumentsAction extends SelectionDispatchAction {
 			} else {
 				MessageDialog.openInformation(getShell(), RefactoringMessages.OpenRefactoringWizardAction_unavailable, RefactoringMessages.InferTypeArgumentsAction_unavailable); 
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringMessages.OpenRefactoringWizardAction_exception); 
 		}
 	}
@@ -121,28 +121,28 @@ public class InferTypeArgumentsAction extends SelectionDispatchAction {
 	public void run(ITextSelection selection) {
 		if (!ActionUtil.isEditable(fEditor))
 			return;
-		IJavaElement element= SelectionConverter.getInput(fEditor);
-		IJavaElement[] array= new IJavaElement[] {element};
+		IJavaScriptElement element= SelectionConverter.getInput(fEditor);
+		IJavaScriptElement[] array= new IJavaScriptElement[] {element};
 		try {
 			if (element != null && RefactoringAvailabilityTester.isInferTypeArgumentsAvailable(array)){
 				RefactoringExecutionStarter.startInferTypeArgumentsRefactoring(array, getShell());	
 			} else {
 				MessageDialog.openInformation(getShell(), RefactoringMessages.OpenRefactoringWizardAction_unavailable, RefactoringMessages.InferTypeArgumentsAction_unavailable); 
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringMessages.OpenRefactoringWizardAction_exception); 
 		}
 	}
 	
-	private static IJavaElement[] getSelectedElements(IStructuredSelection selection){
+	private static IJavaScriptElement[] getSelectedElements(IStructuredSelection selection){
 		List list= selection.toList();
-		IJavaElement[] elements= new IJavaElement[list.size()];
+		IJavaScriptElement[] elements= new IJavaScriptElement[list.size()];
 		for (int i= 0; i < list.size(); i++) {
 			Object object= list.get(i);
-			if (object instanceof IJavaElement)
-				elements[i]= (IJavaElement) object;
+			if (object instanceof IJavaScriptElement)
+				elements[i]= (IJavaScriptElement) object;
 			else
-				return new IJavaElement[0];
+				return new IJavaScriptElement[0];
 		}
 		return elements;
 	}

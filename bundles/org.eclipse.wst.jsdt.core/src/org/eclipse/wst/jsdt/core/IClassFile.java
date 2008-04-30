@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * A class file has a single child of type <code>IType</code>.
  * Class file elements need to be opened before they can be navigated.
  * If a class file cannot be parsed, its structure remains unknown. Use
- * <code>IJavaElement.isStructureKnown</code> to determine whether this is the
+ * <code>IJavaScriptElement.isStructureKnown</code> to determine whether this is the
  * case.
  * <p>
  * Note: <code>IClassFile</code> extends <code>ISourceReference</code>.
@@ -49,13 +49,13 @@ public interface IClassFile extends ITypeRoot {
  * Only the new buffer is affected.
  * </p>
  * <p>
- * Using {@link ICompilationUnit#commitWorkingCopy(boolean, IProgressMonitor)} on the working copy
- * will throw a <code>JavaModelException</code> as a class file is implicetly read-only.
+ * Using {@link IJavaScriptUnit#commitWorkingCopy(boolean, IProgressMonitor)} on the working copy
+ * will throw a <code>JavaScriptModelException</code> as a class file is implicetly read-only.
  * </p>
  * <p>
  * If this class file was already in working copy mode, an internal counter is incremented and no
  * other action is taken on this working copy. To bring this working copy back into the original mode
- * (where it reflects the underlying resource), {@link ICompilationUnit#discardWorkingCopy} must be call as many
+ * (where it reflects the underlying resource), {@link IJavaScriptUnit#discardWorkingCopy} must be call as many
  * times as {@link #becomeWorkingCopy(IProblemRequestor, WorkingCopyOwner, IProgressMonitor)}.
  * </p>
  * <p>
@@ -73,25 +73,25 @@ public interface IClassFile extends ITypeRoot {
  * @param monitor a progress monitor used to report progress while opening this compilation unit
  * 	or <code>null</code> if no progress should be reported
  * @return a working copy for this class file
- * @throws JavaModelException if this compilation unit could not become a working copy.
- * @see ICompilationUnit#discardWorkingCopy()
+ * @throws JavaScriptModelException if this compilation unit could not become a working copy.
+ * @see IJavaScriptUnit#discardWorkingCopy()
  * @since 3.2
  * @deprecated Use {@link ITypeRoot#getWorkingCopy(WorkingCopyOwner, IProgressMonitor)} instead.
  * 	Note that if this deprecated method is used, problems will be reported to the given problem requestor
  * 	as well as the problem requestor returned by the working copy owner (if not null).
  */
-ICompilationUnit becomeWorkingCopy(IProblemRequestor problemRequestor, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException;
+IJavaScriptUnit becomeWorkingCopy(IProblemRequestor problemRequestor, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException;
 
 /**
  * Returns the bytes contained in this class file.
  *
  * @return the bytes contained in this class file
  *
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource
  * @since 3.3
  */
-byte[] getBytes() throws JavaModelException;
+byte[] getBytes() throws JavaScriptModelException;
 
 /**
  * Returns the type contained in this class file.
@@ -101,7 +101,7 @@ byte[] getBytes() throws JavaModelException;
  *
  */
 IType getType();
-public IType[] getTypes() throws JavaModelException ;
+public IType[] getTypes() throws JavaScriptModelException ;
 
 
 /**
@@ -119,7 +119,7 @@ public IType[] getTypes() throws JavaModelException ;
  * @param factory the factory that creates a buffer that is used to get the content of the working copy
  *                 or <code>null</code> if the internal factory should be used
  * @return a  a working copy on the source associated with this class file
- * @exception JavaModelException if the source of this class file can
+ * @exception JavaScriptModelException if the source of this class file can
  *   not be determined. Reasons include:
  * <ul>
  * <li> This class file does not exist (ELEMENT_DOES_NOT_EXIST)</li>
@@ -127,27 +127,27 @@ public IType[] getTypes() throws JavaModelException ;
  * @since 2.0
  * @deprecated Use {@link ITypeRoot#getWorkingCopy(WorkingCopyOwner, IProgressMonitor)} instead
  */
-IJavaElement getWorkingCopy(IProgressMonitor monitor, IBufferFactory factory) throws JavaModelException;
+IJavaScriptElement getWorkingCopy(IProgressMonitor monitor, IBufferFactory factory) throws JavaScriptModelException;
 /**
  * Returns whether this type represents a class. This is not guaranteed to be
  * instantaneous, as it may require parsing the underlying file.
  *
  * @return <code>true</code> if the class file represents a class.
  *
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource
  */
-boolean isClass() throws JavaModelException;
+boolean isClass() throws JavaScriptModelException;
 /**
  * Returns whether this type represents an interface. This is not guaranteed to
  * be instantaneous, as it may require parsing the underlying file.
  *
  * @return <code>true</code> if the class file represents an interface.
  *
- * @exception JavaModelException if this element does not exist or if an
+ * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource
  */
-boolean isInterface() throws JavaModelException;
+boolean isInterface() throws JavaScriptModelException;
 
 
 

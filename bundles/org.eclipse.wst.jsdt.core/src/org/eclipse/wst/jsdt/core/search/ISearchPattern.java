@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.core.search;
  * A search pattern defines how search results are found. Use <code>SearchEngine.createSearchPattern</code>
  * to create a search pattern.
  *
- * @see SearchEngine#createSearchPattern(org.eclipse.wst.jsdt.core.IJavaElement, int)
+ * @see SearchEngine#createSearchPattern(org.eclipse.wst.jsdt.core.IJavaScriptElement, int)
  * @see SearchEngine#createSearchPattern(String, int, int, boolean)
  * @deprecated Since 3.0, the class
  * {@link org.eclipse.wst.jsdt.core.search.SearchPattern} replaces this interface.

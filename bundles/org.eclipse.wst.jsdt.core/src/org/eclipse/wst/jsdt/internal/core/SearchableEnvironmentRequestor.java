@@ -11,12 +11,12 @@
 package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.wst.jsdt.core.IInitializer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.codeassist.ISearchRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
@@ -39,7 +39,7 @@ class SearchableEnvironmentRequestor extends JavaElementRequestor {
 	 */
 	protected ICompilationUnit unitToSkip;
 
-	protected IJavaProject project;
+	protected IJavaScriptProject project;
 
 	protected NameLookup nameLookup;
 
@@ -61,14 +61,14 @@ public SearchableEnvironmentRequestor(ISearchRequestor requestor) {
  * given SearchRequestor.  The requestor will not accept types in
  * the <code>unitToSkip</code>.
  */
-public SearchableEnvironmentRequestor(ISearchRequestor requestor, ICompilationUnit unitToSkip, IJavaProject project, NameLookup nameLookup) {
+public SearchableEnvironmentRequestor(ISearchRequestor requestor, ICompilationUnit unitToSkip, IJavaScriptProject project, NameLookup nameLookup) {
 	this.requestor = requestor;
 	this.unitToSkip= unitToSkip;
 	this.project= project;
 	this.nameLookup = nameLookup;
 	this.checkAccessRestrictions =
-		!JavaCore.IGNORE.equals(project.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
-		|| !JavaCore.IGNORE.equals(project.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true));
+		!JavaScriptCore.IGNORE.equals(project.getOption(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
+		|| !JavaScriptCore.IGNORE.equals(project.getOption(JavaScriptCore.COMPILER_PB_DISCOURAGED_REFERENCE, true));
 }
 /**
  * Do nothing, a SearchRequestor does not accept initializers
@@ -90,7 +90,7 @@ public void acceptPackageFragment(IPackageFragment packageFragment) {
  */
 public void acceptType(IType type) {
 	try {
-		if (this.unitToSkip != null && this.unitToSkip.equals(type.getCompilationUnit())){
+		if (this.unitToSkip != null && this.unitToSkip.equals(type.getJavaScriptUnit())){
 			return;
 		}
 		char[] packageName = type.getPackageFragment().getElementName().toCharArray();
@@ -99,8 +99,8 @@ public void acceptType(IType type) {
 		// determine associated access restriction
 		AccessRestriction accessRestriction = null;
 
-		if (this.checkAccessRestrictions && (isBinary || !type.getJavaProject().equals(this.project))) {
-			PackageFragmentRoot root = (PackageFragmentRoot)type.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+		if (this.checkAccessRestrictions && (isBinary || !type.getJavaScriptProject().equals(this.project))) {
+			PackageFragmentRoot root = (PackageFragmentRoot)type.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 			ClasspathEntry entry = (ClasspathEntry) this.nameLookup.rootToResolvedEntries.get(root);
 			if (entry != null) { // reverse map always contains resolved CP entry
 				AccessRuleSet accessRuleSet = entry.getAccessRuleSet();
@@ -113,7 +113,7 @@ public void acceptType(IType type) {
 			}
 		}
 		this.requestor.acceptType(packageName,null, type.getElementName().toCharArray(), null, type.getFlags(), accessRestriction);
-	} catch (JavaModelException jme) {
+	} catch (JavaScriptModelException jme) {
 		// ignore
 	}
 }

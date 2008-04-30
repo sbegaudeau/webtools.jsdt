@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * Discards a working copy (decrement its use count and remove its working copy info if the use count is 0)
@@ -21,16 +21,16 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
  */
 public class DiscardWorkingCopyOperation extends JavaModelOperation {
 
-	public DiscardWorkingCopyOperation(IJavaElement workingCopy) {
-		super(new IJavaElement[] {workingCopy});
+	public DiscardWorkingCopyOperation(IJavaScriptElement workingCopy) {
+		super(new IJavaScriptElement[] {workingCopy});
 	}
-	protected void executeOperation() throws JavaModelException {
+	protected void executeOperation() throws JavaScriptModelException {
 		CompilationUnit workingCopy = getWorkingCopy();
 
 		JavaModelManager manager = JavaModelManager.getJavaModelManager();
 		int useCount = manager.discardPerWorkingCopyInfo(workingCopy);
 		if (useCount == 0) {
-			IJavaProject javaProject = workingCopy.getJavaProject();
+			IJavaScriptProject javaProject = workingCopy.getJavaScriptProject();
 			if (ExternalJavaProject.EXTERNAL_PROJECT_NAME.equals(javaProject.getElementName())) {
 				manager.removePerProjectInfo((JavaProject) javaProject);
 				manager.containerRemove(javaProject);
@@ -45,12 +45,12 @@ public class DiscardWorkingCopyOperation extends JavaModelOperation {
 				if (workingCopy.getResource().isAccessible()) {
 					// report a F_PRIMARY_WORKING_COPY change delta for a primary working copy
 					JavaElementDelta delta = new JavaElementDelta(getJavaModel());
-					delta.changed(workingCopy, IJavaElementDelta.F_PRIMARY_WORKING_COPY);
+					delta.changed(workingCopy, IJavaScriptElementDelta.F_PRIMARY_WORKING_COPY);
 					addDelta(delta);
 				} else {
 					// report a REMOVED delta
 					JavaElementDelta delta = new JavaElementDelta(getJavaModel());
-					delta.removed(workingCopy, IJavaElementDelta.F_PRIMARY_WORKING_COPY);
+					delta.removed(workingCopy, IJavaScriptElementDelta.F_PRIMARY_WORKING_COPY);
 					addDelta(delta);
 				}
 			}

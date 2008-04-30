@@ -62,7 +62,7 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.model.WorkbenchViewerSorter;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
@@ -363,7 +363,7 @@ public class PropertiesFileEditorPreferencePage extends PreferencePage implement
 	 * Creates a new preference page.
 	 */
 	public PropertiesFileEditorPreferencePage() {
-		setPreferenceStore(JavaPlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(JavaScriptPlugin.getDefault().getPreferenceStore());
 		
 		fOverlayStore= new OverlayPreferenceStore(getPreferenceStore(), createOverlayStoreKeys());
 	}
@@ -564,7 +564,7 @@ public class PropertiesFileEditorPreferencePage extends PreferencePage implement
 	
 	private Control createPreviewer(Composite parent) {
 		
-		IPreferenceStore store= new ChainedPreferenceStore(new IPreferenceStore[] { fOverlayStore, JavaPlugin.getDefault().getCombinedPreferenceStore()});
+		IPreferenceStore store= new ChainedPreferenceStore(new IPreferenceStore[] { fOverlayStore, JavaScriptPlugin.getDefault().getCombinedPreferenceStore()});
 		fPreviewViewer= new JavaSourceViewer(parent, null, null, false, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER, store);
 		fColorManager= new JavaColorManager(false);
 		PropertiesFileSourceViewerConfiguration configuration= new PropertiesFileSourceViewerConfiguration(fColorManager, store, null, IPropertiesFilePartitions.PROPERTIES_FILE_PARTITIONING);
@@ -686,7 +686,7 @@ public class PropertiesFileEditorPreferencePage extends PreferencePage implement
 	 */
 	public boolean performOk() {
 		fOverlayStore.propagate();
-		JavaPlugin.getDefault().savePluginPreferences();
+		JavaScriptPlugin.getDefault().savePluginPreferences();
 		return true;
 	}
 	
@@ -733,7 +733,7 @@ public class PropertiesFileEditorPreferencePage extends PreferencePage implement
 				buffer.append(separator);
 			}
 		} catch (IOException io) {
-			JavaPlugin.log(io);
+			JavaScriptPlugin.log(io);
 		} finally {
 			if (reader != null) {
 				try { reader.close(); } catch (IOException e) {}

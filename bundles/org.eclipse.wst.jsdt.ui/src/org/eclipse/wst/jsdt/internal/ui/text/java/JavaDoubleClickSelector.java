@@ -17,7 +17,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.text.ISourceVersionDependent;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaPairMatcher;
 
@@ -104,7 +104,7 @@ public class JavaDoubleClickSelector implements ITextDoubleClickStrategy, ISourc
 		 * @see org.eclipse.wst.jsdt.internal.ui.text.ISourceVersionDependent#setSourceVersion(java.lang.String)
 		 */
 		public void setSourceVersion(String version) {
-			if (JavaCore.VERSION_1_5.compareTo(version) <= 0)
+			if (JavaScriptCore.VERSION_1_5.compareTo(version) <= 0)
 				fSelectAnnotations= true;
 			else
 				fSelectAnnotations= false;

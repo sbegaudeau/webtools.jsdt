@@ -15,12 +15,12 @@ import java.util.HashSet;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeFilter;
@@ -45,13 +45,13 @@ public class SimilarElementsRequestor extends CompletionRequestor {
 
 	private HashSet fResult;
 
-	public static SimilarElement[] findSimilarElement(ICompilationUnit cu, Name name, int kind) throws JavaModelException {
+	public static SimilarElement[] findSimilarElement(IJavaScriptUnit cu, Name name, int kind) throws JavaScriptModelException {
 		int pos= name.getStartPosition();
 		int nArguments= -1;
 
 		String identifier= ASTNodes.getSimpleNameIdentifier(name);
 		String returnType= null;
-		ICompilationUnit preparedCU= null;
+		IJavaScriptUnit preparedCU= null;
 
 		try {
 //			if (name.isQualifiedName()) {
@@ -59,7 +59,7 @@ public class SimilarElementsRequestor extends CompletionRequestor {
 //			} else {
 				pos= name.getStartPosition() + 1; // first letter must be included, other
 		//	}
-			Javadoc javadoc=  (Javadoc) ASTNodes.getParent(name, ASTNode.JAVADOC);
+			JSdoc javadoc=  (JSdoc) ASTNodes.getParent(name, ASTNode.JSDOC);
 			if (javadoc != null) {
 				preparedCU= createPreparedCU(cu, javadoc, name.getStartPosition());
 				cu= preparedCU;
@@ -96,13 +96,13 @@ public class SimilarElementsRequestor extends CompletionRequestor {
 //			requestor.setIgnored(CompletionProposal.POTENTIAL_METHOD_DECLARATION, false);
 //			requestor.setIgnored(CompletionProposal.VARIABLE_DECLARATION, false);
 //			
-//			requestor.setIgnored(CompletionProposal.JAVADOC_BLOCK_TAG, true);
-//			requestor.setIgnored(CompletionProposal.JAVADOC_FIELD_REF, true);
-//			requestor.setIgnored(CompletionProposal.JAVADOC_INLINE_TAG, true);
-//			requestor.setIgnored(CompletionProposal.JAVADOC_METHOD_REF, true);
-//			requestor.setIgnored(CompletionProposal.JAVADOC_PARAM_REF, true);
-//			requestor.setIgnored(CompletionProposal.JAVADOC_TYPE_REF, true);
-//			requestor.setIgnored(CompletionProposal.JAVADOC_VALUE_REF, true);
+//			requestor.setIgnored(CompletionProposal.JSDOC_BLOCK_TAG, true);
+//			requestor.setIgnored(CompletionProposal.JSDOC_FIELD_REF, true);
+//			requestor.setIgnored(CompletionProposal.JSDOC_INLINE_TAG, true);
+//			requestor.setIgnored(CompletionProposal.JSDOC_METHOD_REF, true);
+//			requestor.setIgnored(CompletionProposal.JSDOC_PARAM_REF, true);
+//			requestor.setIgnored(CompletionProposal.JSDOC_TYPE_REF, true);
+//			requestor.setIgnored(CompletionProposal.JSDOC_VALUE_REF, true);
 //			
 //			requestor.setIgnored(CompletionProposal.TYPE_REF, true);
 //			
@@ -118,9 +118,9 @@ public class SimilarElementsRequestor extends CompletionRequestor {
 		}
 	}
 
-	private static ICompilationUnit createPreparedCU(ICompilationUnit cu, Javadoc comment, int wordStart) throws JavaModelException {
+	private static IJavaScriptUnit createPreparedCU(IJavaScriptUnit cu, JSdoc comment, int wordStart) throws JavaScriptModelException {
 		int startpos= comment.getStartPosition();
-		boolean isTopLevel= comment.getParent().getParent() instanceof CompilationUnit;
+		boolean isTopLevel= comment.getParent().getParent() instanceof JavaScriptUnit;
 		char[] content= (char[]) cu.getBuffer().getCharacters().clone();
 		if (isTopLevel && (wordStart + 6 < content.length)) {
 			content[startpos++]= 'i'; content[startpos++]= 'm'; content[startpos++]= 'p';
@@ -135,7 +135,7 @@ public class SimilarElementsRequestor extends CompletionRequestor {
 		/*
 		 * Explicitly create a new non-shared working copy.
 		 */
-		ICompilationUnit newCU= cu.getWorkingCopy(null);
+		IJavaScriptUnit newCU= cu.getWorkingCopy(null);
 		newCU.getBuffer().setContents(content);
 		return newCU;
 	}
@@ -156,7 +156,7 @@ public class SimilarElementsRequestor extends CompletionRequestor {
 		fResult.add(elem);
 	}
 
-	private SimilarElement[] process(ICompilationUnit cu, int pos) throws JavaModelException {
+	private SimilarElement[] process(IJavaScriptUnit cu, int pos) throws JavaScriptModelException {
 		try {
 			cu.codeComplete(pos, this);
 			processKeywords();

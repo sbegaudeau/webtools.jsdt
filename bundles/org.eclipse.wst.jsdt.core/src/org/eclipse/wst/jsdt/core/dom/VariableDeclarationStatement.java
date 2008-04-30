@@ -54,7 +54,7 @@ public class VariableDeclarationStatement extends Statement {
 		new SimplePropertyDescriptor(VariableDeclarationStatement.class, "modifiers", int.class, MANDATORY); //$NON-NLS-1$
 
 	public static final ChildPropertyDescriptor JAVADOC_PROPERTY =
-		new ChildPropertyDescriptor(VariableDeclarationStatement.class, "javadoc", Javadoc.class, OPTIONAL, NO_CYCLE_RISK);  //$NON-NLS-1$
+		new ChildPropertyDescriptor(VariableDeclarationStatement.class, "javadoc", JSdoc.class, OPTIONAL, NO_CYCLE_RISK);  //$NON-NLS-1$
 
 	/**
 	 * The "modifiers" structural property of this node type (added in JLS3 API).
@@ -145,7 +145,7 @@ public class VariableDeclarationStatement extends Statement {
 	private int modifierFlags = Modifier.NONE;
 
 
-	Javadoc optionalDocComment = null;
+	JSdoc optionalDocComment = null;
 
 	/**
 	 * The base type; lazily initialized; defaults to an unspecified,
@@ -218,7 +218,7 @@ public class VariableDeclarationStatement extends Statement {
 			if (get) {
 				return getJavadoc();
 			} else {
-				setJavadoc((Javadoc) child);
+				setJavadoc((JSdoc) child);
 				return null;
 			}
 		}
@@ -264,7 +264,7 @@ public class VariableDeclarationStatement extends Statement {
 		}
 		result.setType((Type) getType().clone(target));
 		result.setJavadoc(
-				(Javadoc) ASTNode.copySubtree(target, getJavadoc()));
+				(JSdoc) ASTNode.copySubtree(target, getJavadoc()));
 		result.fragments().addAll(
 			ASTNode.copySubtrees(target, fragments()));
 		return result;
@@ -463,7 +463,7 @@ public class VariableDeclarationStatement extends Statement {
 	 *
 	 * @return the doc comment node, or <code>null</code> if none
 	 */
-	public Javadoc getJavadoc() {
+	public JSdoc getJavadoc() {
 		return this.optionalDocComment;
 	}
 
@@ -473,7 +473,7 @@ public class VariableDeclarationStatement extends Statement {
 	 * @param docComment the doc comment node, or <code>null</code> if none
 	 * @exception IllegalArgumentException if the doc comment string is invalid
 	 */
-	public void setJavadoc(Javadoc docComment) {
+	public void setJavadoc(JSdoc docComment) {
 		ChildPropertyDescriptor p = internalJavadocProperty();
 		ASTNode oldChild = this.optionalDocComment;
 		preReplaceChild(oldChild, docComment, p);

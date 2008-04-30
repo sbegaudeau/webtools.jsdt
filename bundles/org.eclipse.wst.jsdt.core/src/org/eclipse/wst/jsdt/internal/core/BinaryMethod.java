@@ -12,13 +12,13 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -29,10 +29,10 @@ import org.eclipse.wst.jsdt.internal.core.JavaModelManager.PerProjectInfo;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
- * @see IMethod
+ * @see IFunction
  */
 
-/* package */ class BinaryMethod extends BinaryMember implements IMethod {
+/* package */ class BinaryMethod extends BinaryMember implements IFunction {
 	/**
 	 * The parameter type signatures of the method - stored locally
 	 * to perform equality test. <code>null</code> indicates no
@@ -62,9 +62,9 @@ public boolean equals(Object o) {
 	return super.equals(o) && Util.equalArraysOrNull(this.parameterTypes, ((BinaryMethod)o).parameterTypes);
 }
 /*
- * @see IMethod
+ * @see IFunction
  */
-public String[] getExceptionTypes() throws JavaModelException {
+public String[] getExceptionTypes() throws JavaScriptModelException {
 	if (this.exceptionTypes == null) {
 		IBinaryMethod info = (IBinaryMethod) getElementInfo();
 		char[] genericSignature = info.getGenericSignature();
@@ -94,7 +94,7 @@ public String[] getExceptionTypes() throws JavaModelException {
 	return this.exceptionTypes;
 }
 /*
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public int getElementType() {
 	return METHOD;
@@ -102,7 +102,7 @@ public int getElementType() {
 /*
  * @see IMember
  */
-public int getFlags() throws JavaModelException {
+public int getFlags() throws JavaScriptModelException {
 	IBinaryMethod info = (IBinaryMethod) getElementInfo();
 	return info.getModifiers();
 }
@@ -129,20 +129,20 @@ protected void getHandleMemento(StringBuffer buff) {
 protected char getHandleMementoDelimiter() {
 	return JavaElement.JEM_METHOD;
 }
-public String getKey(boolean forceOpen) throws JavaModelException {
+public String getKey(boolean forceOpen) throws JavaScriptModelException {
 	return getKey(this, forceOpen);
 }
 /*
- * @see IMethod
+ * @see IFunction
  */
 public int getNumberOfParameters() {
 	return this.parameterTypes == null ? 0 : this.parameterTypes.length;
 }
 /*
- * @see IMethod
+ * @see IFunction
  * Look for source attachment information to retrieve the actual parameter names as stated in source.
  */
-public String[] getParameterNames() throws JavaModelException {
+public String[] getParameterNames() throws JavaScriptModelException {
 	if (this.parameterNames != null)
 		return this.parameterNames;
 
@@ -183,7 +183,7 @@ public String[] getParameterNames() throws JavaModelException {
 		}
 		String javadocContents = null;
 		IType declaringType = this.getDeclaringType();
-		PerProjectInfo projectInfo = JavaModelManager.getJavaModelManager().getPerProjectInfoCheckExistence(this.getJavaProject().getProject());
+		PerProjectInfo projectInfo = JavaModelManager.getJavaModelManager().getPerProjectInfoCheckExistence(this.getJavaScriptProject().getProject());
 		synchronized (projectInfo.javadocCache) {
 			javadocContents = (String) projectInfo.javadocCache.get(declaringType);
 			if (javadocContents == null) {
@@ -193,7 +193,7 @@ public String[] getParameterNames() throws JavaModelException {
 		if (javadocContents == null) {
 			long timeOut = 50; // default value
 			try {
-				String option = this.getJavaProject().getOption(JavaCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC, true);
+				String option = this.getJavaScriptProject().getOption(JavaScriptCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC, true);
 				if (option != null) {
 					timeOut = Long.parseLong(option);
 				}
@@ -222,7 +222,7 @@ public String[] getParameterNames() throws JavaModelException {
 					try {
 						// this call has a side-effect on the per project info cache
 						nameCollector.setJavadoc(BinaryMethod.this.getAttachedJavadoc(null));
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						// ignore
 					}
 					synchronized(nameCollector) {
@@ -243,7 +243,7 @@ public String[] getParameterNames() throws JavaModelException {
 			// need to extract the part relative to the binary method since javadoc contains the javadoc for the declaring type
 			try {
 				javadocContents = extractJavadoc(declaringType, javadocContents);
-			} catch(JavaModelException e) {
+			} catch(JavaScriptModelException e) {
 				// ignore
 			}
 		} else {
@@ -358,7 +358,7 @@ private char[][] splitParameters(char[] parametersSource, int paramCount) {
 	return params;
 }
 /*
- * @see IMethod
+ * @see IFunction
  */
 public String[] getParameterTypes() {
 	return this.parameterTypes;
@@ -368,7 +368,7 @@ public ITypeParameter getTypeParameter(String typeParameterName) {
 	return new TypeParameter(this, typeParameterName);
 }
 
-public ITypeParameter[] getTypeParameters() throws JavaModelException {
+public ITypeParameter[] getTypeParameters() throws JavaScriptModelException {
 	String[] typeParameterSignatures = getTypeParameterSignatures();
 	int length = typeParameterSignatures.length;
 	if (length == 0) return TypeParameter.NO_TYPE_PARAMETERS;
@@ -381,11 +381,11 @@ public ITypeParameter[] getTypeParameters() throws JavaModelException {
 }
 
 /**
- * @see IMethod#getTypeParameterSignatures()
+ * @see IFunction#getTypeParameterSignatures()
  * @since 3.0
  * @deprecated
  */
-public String[] getTypeParameterSignatures() throws JavaModelException {
+public String[] getTypeParameterSignatures() throws JavaScriptModelException {
 	IBinaryMethod info = (IBinaryMethod) getElementInfo();
 	char[] genericSignature = info.getGenericSignature();
 	if (genericSignature == null)
@@ -395,7 +395,7 @@ public String[] getTypeParameterSignatures() throws JavaModelException {
 	return CharOperation.toStrings(typeParams);
 }
 
-public String[] getRawParameterNames() throws JavaModelException {
+public String[] getRawParameterNames() throws JavaScriptModelException {
 	IBinaryMethod info = (IBinaryMethod) getElementInfo();
 	int paramCount = Signature.getParameterCount(new String(info.getMethodDescriptor()));
 	return getRawParameterNames(paramCount);
@@ -409,9 +409,9 @@ private String[] getRawParameterNames(int paramCount) {
 }
 
 /*
- * @see IMethod
+ * @see IFunction
  */
-public String getReturnType() throws JavaModelException {
+public String getReturnType() throws JavaScriptModelException {
 	if (this.returnType == null) {
 		IBinaryMethod info = (IBinaryMethod) getElementInfo();
 		this.returnType = getReturnType(info);
@@ -426,9 +426,9 @@ private String getReturnType(IBinaryMethod info) {
 	return new String(ClassFile.translatedName(returnTypeName.toCharArray()));
 }
 /*
- * @see IMethod
+ * @see IFunction
  */
-public String getSignature() throws JavaModelException {
+public String getSignature() throws JavaScriptModelException {
 	IBinaryMethod info = (IBinaryMethod) getElementInfo();
 	return new String(info.getMethodDescriptor());
 }
@@ -443,9 +443,9 @@ public int hashCode() {
 	return hash;
 }
 /*
- * @see IMethod
+ * @see IFunction
  */
-public boolean isConstructor() throws JavaModelException {
+public boolean isConstructor() throws JavaScriptModelException {
 	if (!this.getElementName().equals(this.parent.getElementName())) {
 		// faster than reaching the info
 		return false;
@@ -454,21 +454,21 @@ public boolean isConstructor() throws JavaModelException {
 	return info.isConstructor();
 }
 /*
- * @see IMethod#isMainMethod()
+ * @see IFunction#isMainMethod()
  */
-public boolean isMainMethod() throws JavaModelException {
+public boolean isMainMethod() throws JavaScriptModelException {
 	return this.isMainMethod(this);
 }
 /* (non-Javadoc)
- * @see org.eclipse.wst.jsdt.core.IMethod#isResolved()
+ * @see org.eclipse.wst.jsdt.core.IFunction#isResolved()
  */
 public boolean isResolved() {
 	return false;
 }
 /*
- * @see IMethod#isSimilar(IMethod)
+ * @see IFunction#isSimilar(IFunction)
  */
-public boolean isSimilar(IMethod method) {
+public boolean isSimilar(IFunction method) {
 	return
 		areSimilarMethods(
 			this.getElementName(), this.getParameterTypes(),
@@ -556,13 +556,13 @@ protected void toStringName(StringBuffer buffer, int flags) {
 		buffer.append(this.occurrenceCount);
 	}
 }
-public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelException {
+public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaScriptModelException {
 	IType declaringType = this.getDeclaringType();
 
 	String contents = ((BinaryType) declaringType).getJavadocContents(monitor);
 	return extractJavadoc(declaringType, contents);
 }
-private String extractJavadoc(IType declaringType, String contents) throws JavaModelException {
+private String extractJavadoc(IType declaringType, String contents) throws JavaScriptModelException {
 	if (contents == null) return null;
 
 	String typeQualifiedName = null;
@@ -591,7 +591,7 @@ private String extractJavadoc(IType declaringType, String contents) throws JavaM
 	if (genericSignature != null) {
 		genericSignature = CharOperation.replaceOnCopy(genericSignature, '/', '.');
 		anchor = Util.toAnchor(genericSignature, methodName, Flags.isVarargs(this.getFlags()));
-		if (anchor == null) throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.UNKNOWN_JAVADOC_FORMAT, this));
+		if (anchor == null) throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.UNKNOWN_JSDOC_FORMAT, this));
 	} else {
 		anchor = Signature.toString(this.getSignature().replace('/', '.'), methodName, null, true, false, Flags.isVarargs(this.getFlags()));
 	}
@@ -599,7 +599,7 @@ private String extractJavadoc(IType declaringType, String contents) throws JavaM
 		int depth = 0;
 		final String packageFragmentName = declaringType.getPackageFragment().getElementName();
 		// might need to remove a part of the signature corresponding to the synthetic argument
-		final IJavaProject javaProject = declaringType.getJavaProject();
+		final IJavaScriptProject javaProject = declaringType.getJavaScriptProject();
 		char[][] typeNames = CharOperation.splitOn('.', typeQualifiedName.toCharArray());
 		if (!Flags.isStatic(declaringType.getFlags())) depth++;
 		StringBuffer typeName = new StringBuffer();
@@ -631,7 +631,7 @@ private String extractJavadoc(IType declaringType, String contents) throws JavaM
 		return null; // method without javadoc
 	}
 	int indexOfEndLink = contents.indexOf(JavadocConstants.ANCHOR_SUFFIX, indexAnchor);
-	if (indexOfEndLink == -1) throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.UNKNOWN_JAVADOC_FORMAT, this));
+	if (indexOfEndLink == -1) throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.UNKNOWN_JSDOC_FORMAT, this));
 	int indexOfNextMethod = contents.indexOf(JavadocConstants.ANCHOR_PREFIX_START, indexOfEndLink);
 	// find bottom
 	int indexOfBottom = -1;
@@ -643,12 +643,18 @@ private String extractJavadoc(IType declaringType, String contents) throws JavaM
 	} else {
 		indexOfBottom = contents.indexOf(JavadocConstants.END_OF_CLASS_DATA, indexOfEndLink);
 	}
-	if (indexOfBottom == -1) throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.UNKNOWN_JAVADOC_FORMAT, this));
+	if (indexOfBottom == -1) throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.UNKNOWN_JSDOC_FORMAT, this));
 	indexOfNextMethod = Math.min(indexOfNextMethod, indexOfBottom);
-	if (indexOfNextMethod == -1) throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.UNKNOWN_JAVADOC_FORMAT, this));
+	if (indexOfNextMethod == -1) throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.UNKNOWN_JSDOC_FORMAT, this));
 	return contents.substring(indexOfEndLink + JavadocConstants.ANCHOR_SUFFIX_LENGTH, indexOfNextMethod);
 }
-public IMethod getMethod(String selector, String[] parameterTypeSignatures) {
+/**
+ * @deprecated Use {@link #getFunction(String,String[])} instead
+ */
+public IFunction getMethod(String selector, String[] parameterTypeSignatures) {
+	return getFunction(selector, parameterTypeSignatures);
+}
+public IFunction getFunction(String selector, String[] parameterTypeSignatures) {
 	// TODO Auto-generated method stub
 	return null;
 }

@@ -33,7 +33,7 @@ public interface ISourceManipulation {
  *   the target name should be replaced, and <code>false</code> to throw an
  *   exception in the event of a name collision
  * @param monitor a progress monitor
- * @exception JavaModelException if this element could not be copied. Reasons include:
+ * @exception JavaScriptModelException if this element could not be copied. Reasons include:
  * <ul>
  * <li> This Java element, container element, or sibling does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * <li> A <code>CoreException</code> occurred while updating an underlying resource
@@ -47,7 +47,7 @@ public interface ISourceManipulation {
  *
  * @exception IllegalArgumentException if container is <code>null</code>
  */
-void copy(IJavaElement container, IJavaElement sibling, String rename, boolean replace, IProgressMonitor monitor) throws JavaModelException;
+void copy(IJavaScriptElement container, IJavaScriptElement sibling, String rename, boolean replace, IProgressMonitor monitor) throws JavaScriptModelException;
 /**
  * Deletes this element, forcing if specified and necessary.
  *
@@ -55,14 +55,14 @@ void copy(IJavaElement container, IJavaElement sibling, String rename, boolean r
  *    in sync with the local file system will be tolerated (same as the force flag
  *	  in IResource operations).
  * @param monitor a progress monitor
- * @exception JavaModelException if this element could not be deleted. Reasons include:
+ * @exception JavaScriptModelException if this element could not be deleted. Reasons include:
  * <ul>
  * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * <li> A <code>CoreException</code> occurred while updating an underlying resource (CORE_EXCEPTION)</li>
  * <li> This element is read-only (READ_ONLY)</li>
  * </ul>
  */
-void delete(boolean force, IProgressMonitor monitor) throws JavaModelException;
+void delete(boolean force, IProgressMonitor monitor) throws JavaScriptModelException;
 /**
  * Moves this element to the given container.
  *
@@ -76,7 +76,7 @@ void delete(boolean force, IProgressMonitor monitor) throws JavaModelException;
  *   the target name should be replaced, and <code>false</code> to throw an
  *   exception in the event of a name collision
  * @param monitor a progress monitor
- * @exception JavaModelException if this element could not be moved. Reasons include:
+ * @exception JavaScriptModelException if this element could not be moved. Reasons include:
  * <ul>
  * <li> This Java element, container element, or sibling does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * <li> A <code>CoreException</code> occurred while updating an underlying resource
@@ -90,7 +90,7 @@ void delete(boolean force, IProgressMonitor monitor) throws JavaModelException;
  *
  * @exception IllegalArgumentException if container is <code>null</code>
  */
-void move(IJavaElement container, IJavaElement sibling, String rename, boolean replace, IProgressMonitor monitor) throws JavaModelException;
+void move(IJavaScriptElement container, IJavaScriptElement sibling, String rename, boolean replace, IProgressMonitor monitor) throws JavaScriptModelException;
 /**
  * Renames this element to the given name.
  *
@@ -99,7 +99,7 @@ void move(IJavaElement container, IJavaElement sibling, String rename, boolean r
  *   should be replaced, and <code>false</code> to throw an exception in the
  *   event of a name collision
  * @param monitor a progress monitor
- * @exception JavaModelException if this element could not be renamed. Reasons include:
+ * @exception JavaScriptModelException if this element could not be renamed. Reasons include:
  * <ul>
  * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * <li> A <code>CoreException</code> occurred while updating an underlying resource
@@ -109,5 +109,5 @@ void move(IJavaElement container, IJavaElement sibling, String rename, boolean r
  * <li> This element is read-only (READ_ONLY)
  * </ul>
  */
-void rename(String name, boolean replace, IProgressMonitor monitor) throws JavaModelException;
+void rename(String name, boolean replace, IProgressMonitor monitor) throws JavaScriptModelException;
 }

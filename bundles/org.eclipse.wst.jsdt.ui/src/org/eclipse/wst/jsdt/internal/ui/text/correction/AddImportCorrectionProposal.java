@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.internal.corext.util.QualifiedTypeNameHistory;
@@ -26,7 +26,7 @@ public class AddImportCorrectionProposal extends ASTRewriteCorrectionProposal {
 	private final String fTypeName;
 	private final String fQualifierName;
 
-	public AddImportCorrectionProposal(String name, ICompilationUnit cu, int relevance, Image image, String qualifierName, String typeName, SimpleName node) {
+	public AddImportCorrectionProposal(String name, IJavaScriptUnit cu, int relevance, Image image, String qualifierName, String typeName, SimpleName node) {
 		super(name, cu, ASTRewrite.create(node.getAST()), relevance, image);
 		fTypeName= typeName;
 		fQualifierName= qualifierName;

@@ -24,14 +24,14 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.part.ISetSelectionTarget;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
@@ -41,7 +41,7 @@ public class ResetAllAction extends BuildpathModifierAction {
 	
 	private final HintTextGroup fProvider;
 	private final IRunnableContext fContext;
-	private IJavaProject fJavaProject;
+	private IJavaScriptProject fJavaProject;
 	private List fEntries;
 	private IPath fOutputLocation;
 
@@ -65,30 +65,30 @@ public class ResetAllAction extends BuildpathModifierAction {
 		return NewWizardMessages.PackageExplorerActionGroup_FormText_Default_ResetAll;
 	}
 
-	public void setBreakPoint(IJavaProject javaProject) {
+	public void setBreakPoint(IJavaScriptProject javaProject) {
 		fJavaProject= javaProject;
 		if (fJavaProject.exists()) {
 			try {
 	            fEntries= ClasspathModifier.getExistingEntries(fJavaProject);
 	            fOutputLocation= fJavaProject.getOutputLocation();
-            } catch (JavaModelException e) {
-	            JavaPlugin.log(e);
+            } catch (JavaScriptModelException e) {
+	            JavaScriptPlugin.log(e);
 	            return;
             }
 			setEnabled(true);
 		} else {
-			JavaCore.addElementChangedListener(new IElementChangedListener() {
+			JavaScriptCore.addElementChangedListener(new IElementChangedListener() {
 		
 				public void elementChanged(ElementChangedEvent event) {
 					if (fJavaProject.exists()) {
 						try {
 	                        fEntries= ClasspathModifier.getExistingEntries(fJavaProject);
 	                        fOutputLocation= fJavaProject.getOutputLocation();
-                        } catch (JavaModelException e) {
-                        	JavaPlugin.log(e);
+                        } catch (JavaScriptModelException e) {
+                        	JavaScriptPlugin.log(e);
                         	return;
                         } finally {
-							JavaCore.removeElementChangedListener(this);
+							JavaScriptCore.removeElementChangedListener(this);
                         }
 						setEnabled(true);
 					}					
@@ -131,7 +131,7 @@ public class ResetAllAction extends BuildpathModifierAction {
 	                    informListeners(delta);
 	                    
 	            		selectAndReveal(new StructuredSelection(fJavaProject));
-	                } catch (JavaModelException e) {
+	                } catch (JavaScriptModelException e) {
 	                    showExceptionDialog(e, NewWizardMessages.NewSourceContainerWorkbookPage_ToolBar_ClearAll_tooltip);
 	                } catch (CoreException e) {
 	                    showExceptionDialog(e, NewWizardMessages.NewSourceContainerWorkbookPage_ToolBar_ClearAll_tooltip);
@@ -145,7 +145,7 @@ public class ResetAllAction extends BuildpathModifierAction {
 			if (e.getCause() instanceof CoreException) {
 				showExceptionDialog((CoreException)e.getCause(), NewWizardMessages.NewSourceContainerWorkbookPage_ToolBar_ClearAll_tooltip);
 			} else {
-				JavaPlugin.log(e);
+				JavaScriptPlugin.log(e);
 			}
         } catch (InterruptedException e) {
         }
@@ -164,11 +164,11 @@ public class ResetAllAction extends BuildpathModifierAction {
 
 	
 	//TODO: Remove, action should be disabled if not hasChange
-	private boolean hasChange(IJavaProject project) throws JavaModelException {
+	private boolean hasChange(IJavaScriptProject project) throws JavaScriptModelException {
 		if (!project.getOutputLocation().equals(fOutputLocation))
             return true;
       
-		IClasspathEntry[] currentEntries= project.getRawClasspath();
+		IIncludePathEntry[] currentEntries= project.getRawIncludepath();
         if (currentEntries.length != fEntries.size())
             return true;
         

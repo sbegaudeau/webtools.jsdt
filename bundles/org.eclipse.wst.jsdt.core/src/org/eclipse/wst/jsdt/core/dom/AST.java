@@ -22,9 +22,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
 
@@ -51,7 +51,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
  * unparented. Each of these nodes is the root of a separate little tree of nodes.
  * The method <code>ASTNode.getRoot()</code> navigates from any node to the root
  * of the tree that it is contained in. Ordinarily, an AST instance has one main
- * tree (rooted at a <code>CompilationUnit</code>), with newly-created nodes appearing
+ * tree (rooted at a <code>JavaScriptUnit</code>), with newly-created nodes appearing
  * as additional roots until they are parented somewhere under the main tree.
  * One can navigate from any node to its AST instance, but not conversely.
  * </p>
@@ -69,7 +69,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
  * Document doc = new Document("import java.util.List;\nclass X {}\n");
  * ASTParser parser = ASTParser.newParser(AST.JLS3);
  * parser.setSource(doc.get().toCharArray());
- * CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+ * JavaScriptUnit cu = (JavaScriptUnit) parser.createAST(null);
  * cu.recordModifications();
  * AST ast = cu.getAST();
  * ImportDeclaration id = ast.newImportDeclaration();
@@ -224,12 +224,12 @@ public final class AST {
 	/**
 	 * Creates a new, empty abstract syntax tree using default options.
 	 *
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#getDefaultOptions()
 	 * @deprecated Clients should port their code to use the new JLS3 AST API and call
 	 *    {@link #newAST(int) AST.newAST(AST.JLS3)} instead of using this constructor.
 	 */
 	public AST() {
-		this(JavaCore.getDefaultOptions());
+		this(JavaScriptCore.getDefaultOptions());
 	}
 
 	/**
@@ -249,7 +249,7 @@ public final class AST {
 	 * @param isResolved whether the given compilation unit declaration is resolved
 	 * @return the compilation unit node
 	 */
-	public static CompilationUnit convertCompilationUnit(
+	public static JavaScriptUnit convertCompilationUnit(
 		int level,
 		org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration compilationUnitDeclaration,
 		char[] source,
@@ -274,7 +274,7 @@ public final class AST {
 		ast.setBindingResolver(resolver);
 		converter.setAST(ast);
 
-		CompilationUnit unit = converter.convert(compilationUnitDeclaration, source);
+		JavaScriptUnit unit = converter.convert(compilationUnitDeclaration, source);
 		unit.setLineEndTable(compilationUnitDeclaration.compilationResult.getLineSeparatorPositions());
 		unit.setTypeRoot(workingCopy);
 		ast.setDefaultNodeFlag(savedDefaultNodeFlag);
@@ -287,7 +287,7 @@ public final class AST {
 	 * Following option keys are significant:
 	 * <ul>
 	 * <li><code>"org.eclipse.wst.jsdt.core.compiler.source"</code> -
-	 *    indicates source compatibility mode (as per <code>JavaCore</code>);
+	 *    indicates source compatibility mode (as per <code>JavaScriptCore</code>);
 	 *    <code>"1.3"</code> means the source code is as per JDK 1.3;
 	 *    <code>"1.4"</code> means the source code is as per JDK 1.4
 	 *    (<code>"assert"</code> is now a keyword);
@@ -300,24 +300,24 @@ public final class AST {
 	 *
 	 * @param options the table of options (key type: <code>String</code>;
 	 *    value type: <code>String</code>)
-	 * @see JavaCore#getDefaultOptions()
+	 * @see JavaScriptCore#getDefaultOptions()
 	 * @deprecated Clients should port their code to use the new JLS3 AST API and call
 	 *    {@link #newAST(int) AST.newAST(AST.JLS3)} instead of using this constructor.
 	 */
 	public AST(Map options) {
 		this(JLS2);
-		Object sourceLevelOption = options.get(JavaCore.COMPILER_SOURCE);
+		Object sourceLevelOption = options.get(JavaScriptCore.COMPILER_SOURCE);
 		long sourceLevel = ClassFileConstants.JDK1_3;
-		if (JavaCore.VERSION_1_4.equals(sourceLevelOption)) {
+		if (JavaScriptCore.VERSION_1_4.equals(sourceLevelOption)) {
 			sourceLevel = ClassFileConstants.JDK1_4;
-		} else if (JavaCore.VERSION_1_5.equals(sourceLevelOption)) {
+		} else if (JavaScriptCore.VERSION_1_5.equals(sourceLevelOption)) {
 			sourceLevel = ClassFileConstants.JDK1_5;
 		}
-		Object complianceLevelOption = options.get(JavaCore.COMPILER_COMPLIANCE);
+		Object complianceLevelOption = options.get(JavaScriptCore.COMPILER_COMPLIANCE);
 		long complianceLevel = ClassFileConstants.JDK1_3;
-		if (JavaCore.VERSION_1_4.equals(complianceLevelOption)) {
+		if (JavaScriptCore.VERSION_1_4.equals(complianceLevelOption)) {
 			complianceLevel = ClassFileConstants.JDK1_4;
-		} else if (JavaCore.VERSION_1_5.equals(complianceLevelOption)) {
+		} else if (JavaScriptCore.VERSION_1_5.equals(complianceLevelOption)) {
 			complianceLevel = ClassFileConstants.JDK1_5;
 		}
 		// override scanner if 1.4 or 1.5 asked for
@@ -742,7 +742,7 @@ public final class AST {
 	 * Parses the source string of the given Java model compilation unit element
 	 * and creates and returns a corresponding abstract syntax tree. The source
 	 * string is obtained from the Java model element using
-	 * <code>ICompilationUnit.getSource()</code>.
+	 * <code>IJavaScriptUnit.getSource()</code>.
 	 * <p>
 	 * The returned compilation unit node is the root node of a new AST.
 	 * Each node in the subtree carries source range(s) information relating back
@@ -796,8 +796,8 @@ public final class AST {
 	 * @since 2.0
 	 * @deprecated Use {@link ASTParser} instead.
 	 */
-	public static CompilationUnit parseCompilationUnit(
-		ICompilationUnit unit,
+	public static JavaScriptUnit parseCompilationUnit(
+		IJavaScriptUnit unit,
 		boolean resolveBindings) {
 
 		try {
@@ -805,7 +805,7 @@ public final class AST {
 			c.setSource(unit);
 			c.setResolveBindings(resolveBindings);
 			ASTNode result = c.createAST(null);
-			return (CompilationUnit) result;
+			return (JavaScriptUnit) result;
 		} catch (IllegalStateException e) {
 			// convert ASTParser's complaints into old form
 			throw new IllegalArgumentException();
@@ -871,7 +871,7 @@ public final class AST {
 	 * @since 2.1
 	 * @deprecated Use {@link ASTParser} instead.
 	 */
-	public static CompilationUnit parseCompilationUnit(
+	public static JavaScriptUnit parseCompilationUnit(
 		IClassFile classFile,
 		boolean resolveBindings) {
 
@@ -883,7 +883,7 @@ public final class AST {
 			c.setSource(classFile);
 			c.setResolveBindings(resolveBindings);
 			ASTNode result = c.createAST(null);
-			return (CompilationUnit) result;
+			return (JavaScriptUnit) result;
 		} catch (IllegalStateException e) {
 			// convert ASTParser's complaints into old form
 			throw new IllegalArgumentException();
@@ -935,7 +935,7 @@ public final class AST {
 	 * <p>
 	 * The name of the compilation unit must be supplied for resolving bindings.
 	 * This name should be suffixed by a dot ('.') followed by one of the
-	 * {@link JavaCore#getJavaLikeExtensions() Java-like extensions}
+	 * {@link JavaScriptCore#getJavaScriptLikeExtensions() Java-like extensions}
 	 * and match the name of the main
 	 * (public) class or interface declared in the source. For example, if the source
 	 * declares a public class named "Foo", the name of the compilation can be
@@ -957,10 +957,10 @@ public final class AST {
 	 * @since 2.0
 	 * @deprecated Use {@link ASTParser} instead.
 	 */
-	public static CompilationUnit parseCompilationUnit(
+	public static JavaScriptUnit parseCompilationUnit(
 		char[] source,
 		String unitName,
-		IJavaProject project) {
+		IJavaScriptProject project) {
 
 		if (source == null) {
 			throw new IllegalArgumentException();
@@ -971,7 +971,7 @@ public final class AST {
 		astParser.setProject(project);
 		astParser.setResolveBindings(project != null);
 		ASTNode result = astParser.createAST(null);
-		return (CompilationUnit) result;
+		return (JavaScriptUnit) result;
 	}
 
 	/**
@@ -1009,14 +1009,14 @@ public final class AST {
 	 * @since 2.0
 	 * @deprecated Use {@link ASTParser} instead.
 	 */
-	public static CompilationUnit parseCompilationUnit(char[] source) {
+	public static JavaScriptUnit parseCompilationUnit(char[] source) {
 		if (source == null) {
 			throw new IllegalArgumentException();
 		}
 		ASTParser c = ASTParser.newParser(AST.JLS2);
 		c.setSource(source);
 		ASTNode result = c.createAST(null);
-		return (CompilationUnit) result;
+		return (JavaScriptUnit) result;
 	}
 
 	/**
@@ -1183,7 +1183,7 @@ public final class AST {
 	private final Object[] THIS_AST= new Object[] {this};
 
 	/*
-	 * Must not collide with a value for ICompilationUnit constants
+	 * Must not collide with a value for IJavaScriptUnit constants
 	 */
 	static final int RESOLVED_BINDINGS = 0x80000000;
 
@@ -1569,9 +1569,22 @@ public final class AST {
 	 * import declarations, and no type declarations.
 	 *
 	 * @return the new unparented compilation unit node
+	 * @deprecated Use {@link #newJavaScriptUnit()} instead
 	 */
-	public CompilationUnit newCompilationUnit() {
-		return new CompilationUnit(this);
+	public JavaScriptUnit newCompilationUnit() {
+		return newJavaScriptUnit();
+	}
+
+	//=============================== DECLARATIONS ===========================
+	/**
+	 * Creates an unparented compilation unit node owned by this AST.
+	 * The compilation unit initially has no package declaration, no
+	 * import declarations, and no type declarations.
+	 *
+	 * @return the new unparented compilation unit node
+	 */
+	public JavaScriptUnit newJavaScriptUnit() {
+		return new JavaScriptUnit(this);
 	}
 
 	/**
@@ -1628,14 +1641,33 @@ public final class AST {
 	 * body (as opposed to an empty body).
 	 * <p>
 	 * To create a constructor, use this method and then call
-	 * <code>MethodDeclaration.setConstructor(true)</code> and
-	 * <code>MethodDeclaration.setName(className)</code>.
+	 * <code>FunctionDeclaration.setConstructor(true)</code> and
+	 * <code>FunctionDeclaration.setName(className)</code>.
+	 * </p>
+	 *
+	 * @return a new unparented method declaration node
+	 * @deprecated Use {@link #newFunctionDeclaration()} instead
+	 */
+	public FunctionDeclaration newMethodDeclaration() {
+		return newFunctionDeclaration();
+	}
+
+	/**
+	 * Creates an unparented method declaration node owned by this AST.
+	 * By default, the declaration is for a method of an unspecified, but
+	 * legal, name; no modifiers; no doc comment; no parameters; return
+	 * type void; no extra array dimensions; no thrown exceptions; and no
+	 * body (as opposed to an empty body).
+	 * <p>
+	 * To create a constructor, use this method and then call
+	 * <code>FunctionDeclaration.setConstructor(true)</code> and
+	 * <code>FunctionDeclaration.setName(className)</code>.
 	 * </p>
 	 *
 	 * @return a new unparented method declaration node
 	 */
-	public MethodDeclaration newMethodDeclaration() {
-		MethodDeclaration result = new MethodDeclaration(this);
+	public FunctionDeclaration newFunctionDeclaration() {
+		FunctionDeclaration result = new FunctionDeclaration(this);
 		result.setConstructor(false);
 		return result;
 	}
@@ -1836,7 +1868,7 @@ public final class AST {
 	 * Note that this node type is used to recording the source
 	 * range where a comment was found in the source string.
 	 * These comment nodes are normally found (only) in
-	 * {@linkplain CompilationUnit#getCommentList()
+	 * {@linkplain JavaScriptUnit#getCommentList()
 	 * the comment table} for parsed compilation units.
 	 * </p>
 	 *
@@ -1854,7 +1886,7 @@ public final class AST {
 	 * Note that this node type is used to recording the source
 	 * range where a comment was found in the source string.
 	 * These comment nodes are normally found (only) in
-	 * {@linkplain CompilationUnit#getCommentList()
+	 * {@linkplain JavaScriptUnit#getCommentList()
 	 * the comment table} for parsed compilation units.
 	 * </p>
 	 *
@@ -1878,9 +1910,22 @@ public final class AST {
 	 * doc comment string)
 	 *
 	 * @return a new unparented doc comment node
+	 * @deprecated Use {@link #newJSdoc()} instead
 	 */
-	public Javadoc newJavadoc() {
-		Javadoc result = new Javadoc(this);
+	public JSdoc newJavadoc() {
+		return newJSdoc();
+	}
+
+	/**
+	 * Creates and returns a new doc comment node.
+	 * Initially the new node has an empty list of tag elements
+	 * (and, for backwards compatability, an unspecified, but legal,
+	 * doc comment string)
+	 *
+	 * @return a new unparented doc comment node
+	 */
+	public JSdoc newJSdoc() {
+		JSdoc result = new JSdoc(this);
 		return result;
 	}
 
@@ -1889,7 +1934,7 @@ public final class AST {
 	 * Initially the new node has no tag name and an empty list of fragments.
 	 * <p>
 	 * Note that this node type is used only inside doc comments
-	 * ({@link Javadoc}).
+	 * ({@link JSdoc}).
 	 * </p>
 	 *
 	 * @return a new unparented tag element node
@@ -1905,7 +1950,7 @@ public final class AST {
 	 * Initially the new node has an empty text string.
 	 * <p>
 	 * Note that this node type is used only inside doc comments
-	 * ({@link Javadoc Javadoc}).
+	 * ({@link JSdoc Javadoc}).
 	 * </p>
 	 *
 	 * @return a new unparented text element node
@@ -1922,7 +1967,7 @@ public final class AST {
 	 * an unspecified, but legal, member name.
 	 * <p>
 	 * Note that this node type is used only inside doc comments
-	 * ({@link Javadoc}).
+	 * ({@link JSdoc}).
 	 * </p>
 	 *
 	 * @return a new unparented member reference node
@@ -1940,14 +1985,32 @@ public final class AST {
 	 * empty parameter list.
 	 * <p>
 	 * Note that this node type is used only inside doc comments
-	 * ({@link Javadoc Javadoc}).
+	 * ({@link JSdoc Javadoc}).
+	 * </p>
+	 *
+	 * @return a new unparented method reference node
+	 * @since 3.0
+	 * @deprecated Use {@link #newFunctionRef()} instead
+	 */
+	public FunctionRef newMethodRef() {
+		return newFunctionRef();
+	}
+
+	/**
+	 * Creates and returns a new method reference node.
+	 * Initially the new node has no qualifier name,
+	 * an unspecified, but legal, method name, and an
+	 * empty parameter list.
+	 * <p>
+	 * Note that this node type is used only inside doc comments
+	 * ({@link JSdoc Javadoc}).
 	 * </p>
 	 *
 	 * @return a new unparented method reference node
 	 * @since 3.0
 	 */
-	public MethodRef newMethodRef() {
-		MethodRef result = new MethodRef(this);
+	public FunctionRef newFunctionRef() {
+		FunctionRef result = new FunctionRef(this);
 		return result;
 	}
 
@@ -1957,14 +2020,31 @@ public final class AST {
 	 * type, not variable arity, and no parameter name.
 	 * <p>
 	 * Note that this node type is used only inside doc comments
-	 * ({@link Javadoc}).
+	 * ({@link JSdoc}).
+	 * </p>
+	 *
+	 * @return a new unparented method reference parameter node
+	 * @since 3.0
+	 * @deprecated Use {@link #newFunctionRefParameter()} instead
+	 */
+	public FunctionRefParameter newMethodRefParameter() {
+		return newFunctionRefParameter();
+	}
+
+	/**
+	 * Creates and returns a new method reference node.
+	 * Initially the new node has an unspecified, but legal,
+	 * type, not variable arity, and no parameter name.
+	 * <p>
+	 * Note that this node type is used only inside doc comments
+	 * ({@link JSdoc}).
 	 * </p>
 	 *
 	 * @return a new unparented method reference parameter node
 	 * @since 3.0
 	 */
-	public MethodRefParameter newMethodRefParameter() {
-		MethodRefParameter result = new MethodRefParameter(this);
+	public FunctionRefParameter newFunctionRefParameter() {
+		FunctionRefParameter result = new FunctionRefParameter(this);
 		return result;
 	}
 
@@ -2384,9 +2464,22 @@ public final class AST {
 	 * arguments is empty.
 	 *
 	 * @return a new unparented method invocation expression node
+	 * @deprecated Use {@link #newFunctionInvocation()} instead
 	 */
-	public MethodInvocation newMethodInvocation() {
-		MethodInvocation result = new MethodInvocation(this);
+	public FunctionInvocation newMethodInvocation() {
+		return newFunctionInvocation();
+	}
+
+	/**
+	 * Creates an unparented method invocation expression node owned by this
+	 * AST. By default, the name of the method is unspecified (but legal)
+	 * there is no receiver expression, no type arguments, and the list of
+	 * arguments is empty.
+	 *
+	 * @return a new unparented method invocation expression node
+	 */
+	public FunctionInvocation newFunctionInvocation() {
+		FunctionInvocation result = new FunctionInvocation(this);
 		return result;
 	}
 
@@ -2815,10 +2908,10 @@ public final class AST {
 	 * marked as unmodifiable, or if this compilation unit has already
 	 * been tampered with, or if recording has already been enabled,
 	 * or if <code>root</code> is not owned by this AST
-	 * @see CompilationUnit#recordModifications()
+	 * @see JavaScriptUnit#recordModifications()
 	 * @since 3.0
 	 */
-	void recordModifications(CompilationUnit root) {
+	void recordModifications(JavaScriptUnit root) {
 		if(this.modificationCount != this.originalModificationCount) {
 			throw new IllegalArgumentException("AST is already modified"); //$NON-NLS-1$
 		} else if(this.rewriter  != null) {
@@ -2845,14 +2938,14 @@ public final class AST {
 	 * @param options the table of formatter options
 	 * (key type: <code>String</code>; value type: <code>String</code>);
 	 * or <code>null</code> to use the standard global options
-	 * {@link JavaCore#getOptions() JavaCore.getOptions()}.
+	 * {@link JavaScriptCore#getOptions() JavaScriptCore.getOptions()}.
 	 * @return text edit object describing the changes to the
 	 * document corresponding to the recorded AST modifications
 	 * @exception IllegalArgumentException if the document passed is
 	 * <code>null</code> or does not correspond to this AST
 	 * @exception IllegalStateException if <code>recordModifications</code>
 	 * was not called to enable recording
-	 * @see CompilationUnit#rewrite(IDocument, Map)
+	 * @see JavaScriptUnit#rewrite(IDocument, Map)
 	 * @since 3.0
 	 */
 	TextEdit rewrite(IDocument document, Map options) {
@@ -2881,7 +2974,7 @@ public final class AST {
 	 * @since 3.3
 	 */
 	public boolean hasStatementsRecovery() {
-		return (this.bits & ICompilationUnit.ENABLE_STATEMENTS_RECOVERY) != 0;
+		return (this.bits & IJavaScriptUnit.ENABLE_STATEMENTS_RECOVERY) != 0;
 	}
 
 	/**
@@ -2891,7 +2984,7 @@ public final class AST {
 	 * @since 3.3
 	 */
 	public boolean hasBindingsRecovery() {
-		return (this.bits & ICompilationUnit.ENABLE_BINDINGS_RECOVERY) != 0;
+		return (this.bits & IJavaScriptUnit.ENABLE_BINDINGS_RECOVERY) != 0;
 	}
 
 	void setFlag(int newValue) {

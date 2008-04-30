@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.internal.ui.packageview.LibraryContainer;
@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.ui.packageview.LibraryContainer;
  */
 public class ProjectLibraryRoot implements IAdaptable{
 	
-	private IJavaProject project;
+	private IJavaScriptProject project;
 	private static final String LIBRARY_UI_DESC = Messages.getString("ProjectLibraryRoot.0"); //$NON-NLS-1$
 
 	
@@ -68,11 +68,11 @@ public class ProjectLibraryRoot implements IAdaptable{
 		
 	}
 	
-	public ProjectLibraryRoot(IJavaProject project) {
+	public ProjectLibraryRoot(IJavaScriptProject project) {
 		this.project=project;
 	
 	}
-	public IJavaProject getProject() {
+	public IJavaScriptProject getProject() {
 		return project;
 	}
 	public String getText() {
@@ -87,25 +87,25 @@ public class ProjectLibraryRoot implements IAdaptable{
 			try {
 				roots = project.getPackageFragmentRoots();
 			}
-			catch (JavaModelException e1) {}
+			catch (JavaScriptModelException e1) {}
 			next: for (int i= 0; i < roots.length; i++) {
 				IPackageFragmentRoot root= roots[i];
-				IClasspathEntry classpathEntry=null;
+				IIncludePathEntry classpathEntry=null;
 				try {
-					classpathEntry = root.getRawClasspathEntry();
+					classpathEntry = root.getRawIncludepathEntry();
 				}
-				catch (JavaModelException e) {}
+				catch (JavaScriptModelException e) {}
 				
 				int entryKind= classpathEntry.getEntryKind();
-				IClasspathAttribute[] attribs = classpathEntry.getExtraAttributes();
+				IIncludePathAttribute[] attribs = classpathEntry.getExtraAttributes();
 				
 				for(int k = 0;attribs!=null && k<attribs.length;k++) {
-					if(attribs[k]==IClasspathAttribute.HIDE) continue next;
+					if(attribs[k]==IIncludePathAttribute.HIDE) continue next;
 					
 				}
 				
 				
-			if ( (entryKind != IClasspathEntry.CPE_SOURCE) && entryKind!=IClasspathEntry.CPE_CONTAINER) {
+			if ( (entryKind != IIncludePathEntry.CPE_SOURCE) && entryKind!=IIncludePathEntry.CPE_CONTAINER) {
 					addJARContainer= true;
 					projectPackageFragmentRoots.add(root);
 				} 
@@ -116,14 +116,14 @@ public class ProjectLibraryRoot implements IAdaptable{
 			}
 			
 			// separate loop to make sure all containers are on the classpath
-			IClasspathEntry[] rawClasspath = new IClasspathEntry[0];
+			IIncludePathEntry[] rawClasspath = new IIncludePathEntry[0];
 			try {
-				rawClasspath = project.getRawClasspath();
+				rawClasspath = project.getRawIncludepath();
 			}
-			catch (JavaModelException e) {}
+			catch (JavaScriptModelException e) {}
 			for (int i= 0; i < rawClasspath.length; i++) {
-				IClasspathEntry classpathEntry= rawClasspath[i];
-				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+				IIncludePathEntry classpathEntry= rawClasspath[i];
+				if (classpathEntry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
 					projectPackageFragmentRoots.add(new JsGlobalScopeContainer(project, classpathEntry));
 				}	
 			}	

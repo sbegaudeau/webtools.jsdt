@@ -29,19 +29,19 @@ import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameLocalVariableDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
@@ -61,20 +61,20 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParse
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TextChangeManager;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class RenameLocalVariableProcessor extends JavaRenameProcessor implements IReferenceUpdating {
 
 	private ILocalVariable fLocalVariable;
-	private ICompilationUnit fCu;
+	private IJavaScriptUnit fCu;
 	
 	//the following fields are set or modified after the construction
 	private boolean fUpdateReferences;
 	private String fCurrentName;
 	private String fNewName;
-	private CompilationUnit fCompilationUnitNode;
+	private JavaScriptUnit fCompilationUnitNode;
 	private VariableDeclaration fTempDeclarationNode;
 	private TextChange fChange;
 	
@@ -93,7 +93,7 @@ public class RenameLocalVariableProcessor extends JavaRenameProcessor implements
 		fLocalVariable= localVariable;
 		fUpdateReferences= true;
 		if (localVariable != null)
-			fCu= (ICompilationUnit) localVariable.getAncestor(IJavaElement.COMPILATION_UNIT);
+			fCu= (IJavaScriptUnit) localVariable.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 		fNewName= ""; //$NON-NLS-1$
 		fIsComposite= false;
 	}
@@ -109,7 +109,7 @@ public class RenameLocalVariableProcessor extends JavaRenameProcessor implements
 	 * @param node the compilation unit node
 	 * @param categorySet the group category set
 	 */
-	RenameLocalVariableProcessor(ILocalVariable localVariable, TextChangeManager manager, CompilationUnit node, GroupCategorySet categorySet) {
+	RenameLocalVariableProcessor(ILocalVariable localVariable, TextChangeManager manager, JavaScriptUnit node, GroupCategorySet categorySet) {
 		this(localVariable);
 		fChangeManager= manager;
 		fCategorySet= categorySet;
@@ -206,7 +206,7 @@ public class RenameLocalVariableProcessor extends JavaRenameProcessor implements
 		initAST();
 		if (fTempDeclarationNode == null || fTempDeclarationNode.resolveBinding() == null)
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.RenameTempRefactoring_must_select_local); 
-		if (! Checks.isDeclaredIn(fTempDeclarationNode, MethodDeclaration.class) 
+		if (! Checks.isDeclaredIn(fTempDeclarationNode, FunctionDeclaration.class) 
 		 && ! Checks.isDeclaredIn(fTempDeclarationNode, Initializer.class))
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.RenameTempRefactoring_only_in_methods_and_initializers); 
 				
@@ -214,7 +214,7 @@ public class RenameLocalVariableProcessor extends JavaRenameProcessor implements
 		return new RefactoringStatus();
 	}
 
-	private void initAST() throws JavaModelException {
+	private void initAST() throws JavaScriptModelException {
 		if (!fIsComposite)
 			fCompilationUnitNode= RefactoringASTParser.parseWithASTProvider(fCu, true, null);
 		ISourceRange sourceRange= fLocalVariable.getNameRange();
@@ -271,12 +271,12 @@ public class RenameLocalVariableProcessor extends JavaRenameProcessor implements
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.INameUpdating#checkNewElementName(java.lang.String)
 	 */
-	public RefactoringStatus checkNewElementName(String newName) throws JavaModelException {
+	public RefactoringStatus checkNewElementName(String newName) throws JavaScriptModelException {
 		RefactoringStatus result= Checks.checkFieldName(newName);
 		if (! Checks.startsWithLowerCase(newName))
 			if (fIsComposite) {
-				final String nameOfParent= (fLocalVariable.getParent() instanceof IMethod) ? fLocalVariable.getParent().getElementName() : RefactoringCoreMessages.JavaElementUtil_initializer;
-				final String nameOfType= fLocalVariable.getAncestor(IJavaElement.TYPE).getElementName();
+				final String nameOfParent= (fLocalVariable.getParent() instanceof IFunction) ? fLocalVariable.getParent().getElementName() : RefactoringCoreMessages.JavaElementUtil_initializer;
+				final String nameOfType= fLocalVariable.getAncestor(IJavaScriptElement.TYPE).getElementName();
 				result.addWarning(Messages.format(RefactoringCoreMessages.RenameTempRefactoring_lowercase2, new String[] { newName, nameOfParent, nameOfType }));
 			} else {
 				result.addWarning(RefactoringCoreMessages.RenameTempRefactoring_lowercase);
@@ -344,10 +344,10 @@ public class RenameLocalVariableProcessor extends JavaRenameProcessor implements
 			if (change != null) {
 				final ISourceRange range= fLocalVariable.getNameRange();
 				String project= null;
-				IJavaProject javaProject= fCu.getJavaProject();
+				IJavaScriptProject javaProject= fCu.getJavaScriptProject();
 				if (javaProject != null)
 					project= javaProject.getElementName();
-				final String header= Messages.format(RefactoringCoreMessages.RenameLocalVariableProcessor_descriptor_description, new String[] { fCurrentName, JavaElementLabels.getElementLabel(fLocalVariable.getParent(), JavaElementLabels.ALL_FULLY_QUALIFIED), fNewName});
+				final String header= Messages.format(RefactoringCoreMessages.RenameLocalVariableProcessor_descriptor_description, new String[] { fCurrentName, JavaScriptElementLabels.getElementLabel(fLocalVariable.getParent(), JavaScriptElementLabels.ALL_FULLY_QUALIFIED), fNewName});
 				final String description= Messages.format(RefactoringCoreMessages.RenameLocalVariableProcessor_descriptor_description_short, fCurrentName);
 				final String comment= new JDTRefactoringDescriptorComment(project, this, header).asString();
 				final RenameLocalVariableDescriptor descriptor= new RenameLocalVariableDescriptor();
@@ -374,19 +374,19 @@ public class RenameLocalVariableProcessor extends JavaRenameProcessor implements
 			final JavaRefactoringArguments extended= (JavaRefactoringArguments) arguments;
 			final String handle= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_INPUT);
 			if (handle != null) {
-				final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+				final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
 				if (element != null && element.exists()) {
-					if (element.getElementType() == IJavaElement.COMPILATION_UNIT) {
-						fCu= (ICompilationUnit) element;
-					} else if (element.getElementType() == IJavaElement.LOCAL_VARIABLE) {
+					if (element.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT) {
+						fCu= (IJavaScriptUnit) element;
+					} else if (element.getElementType() == IJavaScriptElement.LOCAL_VARIABLE) {
 						fLocalVariable= (ILocalVariable) element;
-						fCu= (ICompilationUnit) fLocalVariable.getAncestor(IJavaElement.COMPILATION_UNIT);
+						fCu= (IJavaScriptUnit) fLocalVariable.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 						if (fCu == null)
-							return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaRefactorings.RENAME_LOCAL_VARIABLE);
+							return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.RENAME_LOCAL_VARIABLE);
 					} else
-						return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaRefactorings.RENAME_LOCAL_VARIABLE);
+						return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.RENAME_LOCAL_VARIABLE);
 				} else
-					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaRefactorings.RENAME_LOCAL_VARIABLE);
+					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.RENAME_LOCAL_VARIABLE);
 			} else
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));
 			final String name= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_NAME);
@@ -406,18 +406,18 @@ public class RenameLocalVariableProcessor extends JavaRenameProcessor implements
 						length= Integer.valueOf(tokenizer.nextToken()).intValue();
 					if (offset >= 0 && length >= 0) {
 						try {
-							final IJavaElement[] elements= fCu.codeSelect(offset, length);
+							final IJavaScriptElement[] elements= fCu.codeSelect(offset, length);
 							if (elements != null) {
 								for (int index= 0; index < elements.length; index++) {
-									final IJavaElement element= elements[index];
+									final IJavaScriptElement element= elements[index];
 									if (element instanceof ILocalVariable)
 										fLocalVariable= (ILocalVariable) element;
 								}
 							}
 							if (fLocalVariable == null)
-								return ScriptableRefactoring.createInputFatalStatus(null, getRefactoring().getName(), IJavaRefactorings.RENAME_LOCAL_VARIABLE);
-						} catch (JavaModelException exception) {
-							JavaPlugin.log(exception);
+								return ScriptableRefactoring.createInputFatalStatus(null, getRefactoring().getName(), IJavaScriptRefactorings.RENAME_LOCAL_VARIABLE);
+						} catch (JavaScriptModelException exception) {
+							JavaScriptPlugin.log(exception);
 						}
 					} else
 						return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_illegal_argument, new Object[] { selection, JDTRefactoringDescriptor.ATTRIBUTE_SELECTION}));

@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui.search;
 
 import org.eclipse.search.ui.ISearchPageScoreComputer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.ui.browsing.LogicalPackage;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput;
 
@@ -22,7 +22,7 @@ public class JavaSearchPageScoreComputer implements ISearchPageScoreComputer {
 			// Can't decide
 			return ISearchPageScoreComputer.UNKNOWN;
 		
-		if (element instanceof IJavaElement || element instanceof IClassFileEditorInput || element instanceof LogicalPackage)
+		if (element instanceof IJavaScriptElement || element instanceof IClassFileEditorInput || element instanceof LogicalPackage)
 			return 90;
 		
 		return ISearchPageScoreComputer.LOWEST;

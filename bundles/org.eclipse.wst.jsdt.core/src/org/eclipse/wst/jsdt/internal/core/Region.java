@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import java.util.ArrayList;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.IRegion;
 
@@ -36,9 +36,9 @@ public Region() {
 	fRootElements = new ArrayList(1);
 }
 /**
- * @see IRegion#add(IJavaElement)
+ * @see IRegion#add(IJavaScriptElement)
  */
-public void add(IJavaElement element) {
+public void add(IJavaScriptElement element) {
 	if (!contains(element)) {
 		//"new" element added to region
 		removeAllChildren(element);
@@ -49,13 +49,13 @@ public void add(IJavaElement element) {
 /**
  * @see IRegion
  */
-public boolean contains(IJavaElement element) {
+public boolean contains(IJavaScriptElement element) {
 
 	int size = fRootElements.size();
 	ArrayList parents = getAncestors(element);
 
 	for (int i = 0; i < size; i++) {
-		IJavaElement aTop = (IJavaElement) fRootElements.get(i);
+		IJavaScriptElement aTop = (IJavaScriptElement) fRootElements.get(i);
 		if (aTop.equals(element)) {
 			return true;
 		}
@@ -73,9 +73,9 @@ public boolean contains(IJavaElement element) {
  * in bottom-up order.
  *
  */
-private ArrayList getAncestors(IJavaElement element) {
+private ArrayList getAncestors(IJavaScriptElement element) {
 	ArrayList parents = new ArrayList();
-	IJavaElement parent = element.getParent();
+	IJavaScriptElement parent = element.getParent();
 	while (parent != null) {
 		parents.add(parent);
 		parent = parent.getParent();
@@ -86,19 +86,19 @@ private ArrayList getAncestors(IJavaElement element) {
 /**
  * @see IRegion
  */
-public IJavaElement[] getElements() {
+public IJavaScriptElement[] getElements() {
 	int size= fRootElements.size();
-	IJavaElement[] roots= new IJavaElement[size];
+	IJavaScriptElement[] roots= new IJavaScriptElement[size];
 	for (int i = 0; i < size; i++) {
-		roots[i]= (IJavaElement) fRootElements.get(i);
+		roots[i]= (IJavaScriptElement) fRootElements.get(i);
 	}
 
 	return roots;
 }
 /**
- * @see IRegion#remove(IJavaElement)
+ * @see IRegion#remove(IJavaScriptElement)
  */
-public boolean remove(IJavaElement element) {
+public boolean remove(IJavaScriptElement element) {
 
 	removeAllChildren(element);
 	return fRootElements.remove(element);
@@ -109,13 +109,13 @@ public boolean remove(IJavaElement element) {
  *
  * <p>Children are all children, not just direct children.
  */
-protected void removeAllChildren(IJavaElement element) {
+protected void removeAllChildren(IJavaScriptElement element) {
 	if (element instanceof IParent) {
 		ArrayList newRootElements = new ArrayList();
 		for (int i = 0, size = fRootElements.size(); i < size; i++) {
-			IJavaElement currentRoot = (IJavaElement)fRootElements.get(i);
+			IJavaScriptElement currentRoot = (IJavaScriptElement)fRootElements.get(i);
 			//walk the current root hierarchy
-			IJavaElement parent = currentRoot.getParent();
+			IJavaScriptElement parent = currentRoot.getParent();
 			boolean isChild= false;
 			while (parent != null) {
 				if (parent.equals(element)) {
@@ -136,7 +136,7 @@ protected void removeAllChildren(IJavaElement element) {
  */
 public String toString() {
 	StringBuffer buffer= new StringBuffer();
-	IJavaElement[] roots= getElements();
+	IJavaScriptElement[] roots= getElements();
 	buffer.append('[');
 	for (int i= 0; i < roots.length; i++) {
 		buffer.append(roots[i].getElementName());

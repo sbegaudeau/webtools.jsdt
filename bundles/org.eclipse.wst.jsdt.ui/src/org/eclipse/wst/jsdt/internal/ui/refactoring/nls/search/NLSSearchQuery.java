@@ -22,35 +22,35 @@ import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 
 public class NLSSearchQuery implements ISearchQuery {
 
 	private NLSSearchResult fResult;
-	private IJavaElement[] fWrapperClass;
+	private IJavaScriptElement[] fWrapperClass;
 	private IFile[] fPropertiesFile;
-	private IJavaSearchScope fScope;
+	private IJavaScriptSearchScope fScope;
 	private String fScopeDescription;
 	
-	public NLSSearchQuery(IJavaElement[] wrapperClass, IFile[] propertiesFile, IJavaSearchScope scope, String scopeDescription) {
+	public NLSSearchQuery(IJavaScriptElement[] wrapperClass, IFile[] propertiesFile, IJavaScriptSearchScope scope, String scopeDescription) {
 		fWrapperClass= wrapperClass;
 		fPropertiesFile= propertiesFile;
 		fScope= scope;
@@ -66,17 +66,17 @@ public class NLSSearchQuery implements ISearchQuery {
 		try {
 			final AbstractTextSearchResult textResult= (AbstractTextSearchResult) getSearchResult();
 			textResult.removeAll();
-			AppearanceAwareLabelProvider labelProvider= new AppearanceAwareLabelProvider(JavaElementLabels.ALL_POST_QUALIFIED, 0);
+			AppearanceAwareLabelProvider labelProvider= new AppearanceAwareLabelProvider(JavaScriptElementLabels.ALL_POST_QUALIFIED, 0);
 			
 			for (int i= 0; i < fWrapperClass.length; i++) {
-				IJavaElement wrapperClass= fWrapperClass[i];
+				IJavaScriptElement wrapperClass= fWrapperClass[i];
 				IFile propertieFile= fPropertiesFile[i];
 				if (! wrapperClass.exists())
 					return JavaUIStatus.createError(0, Messages.format(NLSSearchMessages.NLSSearchQuery_wrapperNotExists, wrapperClass.getElementName()), null); 
 				if (! wrapperClass.exists())
 					return JavaUIStatus.createError(0, Messages.format(NLSSearchMessages.NLSSearchQuery_propertiesNotExists, propertieFile.getName()), null); 
 				
-				SearchPattern pattern= SearchPattern.createPattern(wrapperClass, IJavaSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
+				SearchPattern pattern= SearchPattern.createPattern(wrapperClass, IJavaScriptSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
 				SearchParticipant[] participants= new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()};
 				
 				NLSSearchResultRequestor requestor= new NLSSearchResultRequestor(propertieFile, fResult);
@@ -85,7 +85,7 @@ public class NLSSearchQuery implements ISearchQuery {
 					engine.search(pattern, participants, fScope, requestor, new SubProgressMonitor(monitor, 4));
 					requestor.reportUnusedPropertyNames(new SubProgressMonitor(monitor, 1));
 					
-					ICompilationUnit compilationUnit= ((IType)wrapperClass).getCompilationUnit();
+					IJavaScriptUnit compilationUnit= ((IType)wrapperClass).getJavaScriptUnit();
 					CompilationUnitEntry groupElement= new CompilationUnitEntry(Messages.format(NLSSearchMessages.NLSSearchResultCollector_unusedKeys, labelProvider.getText(compilationUnit)), compilationUnit);
 					
 					boolean hasUnusedPropertie= false;
@@ -110,7 +110,7 @@ public class NLSSearchQuery implements ISearchQuery {
 						fResult.addCompilationUnitGroup(groupElement);
 					
 				} catch (CoreException e) {
-					JavaPlugin.log(e);
+					JavaScriptPlugin.log(e);
 				}
 			}
 		} finally {
@@ -119,7 +119,7 @@ public class NLSSearchQuery implements ISearchQuery {
 		return 	Status.OK_STATUS;
 	}
 
-	private boolean isNLSField(IField field) throws JavaModelException {
+	private boolean isNLSField(IField field) throws JavaScriptModelException {
 		int flags= field.getFlags();
 		if (!Flags.isPublic(flags))
 			return false;

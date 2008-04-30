@@ -11,9 +11,9 @@
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 
 
@@ -30,7 +30,7 @@ public final class AnonymousTypeProposalInfo extends MemberProposalInfo {
 	 * @param project the java project to reference when resolving types
 	 * @param proposal the proposal to generate information for
 	 */
-	public AnonymousTypeProposalInfo(IJavaProject project, CompletionProposal proposal) {
+	public AnonymousTypeProposalInfo(IJavaScriptProject project, CompletionProposal proposal) {
 		super(project, proposal);
 	}
 
@@ -39,9 +39,9 @@ public final class AnonymousTypeProposalInfo extends MemberProposalInfo {
 	 * Returns <code>null</code> if no corresponding member can be found.
 	 *
 	 * @return the resolved member or <code>null</code> if none is found
-	 * @throws JavaModelException if accessing the java model fails
+	 * @throws JavaScriptModelException if accessing the java model fails
 	 */
-	protected IMember resolveMember() throws JavaModelException {
+	protected IMember resolveMember() throws JavaScriptModelException {
 		char[] signature= fProposal.getDeclarationSignature();
 		String typeName= SignatureUtil.stripSignatureToFQN(String.valueOf(signature));
 		return fJavaProject.findType(typeName);

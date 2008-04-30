@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
 /**
@@ -28,7 +28,7 @@ public class RenameResourceElementsOperation extends MoveResourceElementsOperati
  * When executed, this operation will rename the specified elements with the given names in the
  * corresponding destinations.
  */
-public RenameResourceElementsOperation(IJavaElement[] elements, IJavaElement[] destinations, String[] newNames, boolean force) {
+public RenameResourceElementsOperation(IJavaScriptElement[] elements, IJavaScriptElement[] destinations, String[] newNames, boolean force) {
 	//a rename is a move to the same parent with a new name specified
 	//these elements are from different parents
 	super(elements, destinations, force);
@@ -49,18 +49,18 @@ protected boolean isRename() {
 /**
  * @see MultiOperation
  */
-protected void verify(IJavaElement element) throws JavaModelException {
+protected void verify(IJavaScriptElement element) throws JavaScriptModelException {
 	super.verify(element);
 
 	int elementType = element.getElementType();
 
-	if (!(elementType == IJavaElement.COMPILATION_UNIT || elementType == IJavaElement.PACKAGE_FRAGMENT)) {
-		error(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, element);
+	if (!(elementType == IJavaScriptElement.JAVASCRIPT_UNIT || elementType == IJavaScriptElement.PACKAGE_FRAGMENT)) {
+		error(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, element);
 	}
-	if (elementType == IJavaElement.COMPILATION_UNIT) {
+	if (elementType == IJavaScriptElement.JAVASCRIPT_UNIT) {
 		CompilationUnit cu = (CompilationUnit)element;
 		if (cu.isWorkingCopy() && !cu.isPrimary()) {
-			error(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, element);
+			error(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, element);
 		}
 	}
 	verifyRenaming(element);

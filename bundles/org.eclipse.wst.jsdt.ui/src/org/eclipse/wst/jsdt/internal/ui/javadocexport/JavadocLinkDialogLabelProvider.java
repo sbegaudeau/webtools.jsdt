@@ -18,11 +18,11 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.wst.jsdt.ui.ISharedImages;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 
 public class JavadocLinkDialogLabelProvider extends LabelProvider {
@@ -49,12 +49,12 @@ public class JavadocLinkDialogLabelProvider extends LabelProvider {
 			if (ref.isProjectRef()) {
 				desc= PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(IDE.SharedImages.IMG_OBJ_PROJECT);
 			} else {
-				desc= JavaUI.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJS_JAR);
+				desc= JavaScriptUI.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJS_JAR);
 			}
 			if (ref.getURL() == null) {
-				return JavaPlugin.getImageDescriptorRegistry().get(new JavaElementImageDescriptor(desc, JavaElementImageDescriptor.WARNING, JavaElementImageProvider.SMALL_SIZE));
+				return JavaScriptPlugin.getImageDescriptorRegistry().get(new JavaScriptElementImageDescriptor(desc, JavaScriptElementImageDescriptor.WARNING, JavaElementImageProvider.SMALL_SIZE));
 			}
-			return JavaPlugin.getImageDescriptorRegistry().get(desc);
+			return JavaScriptPlugin.getImageDescriptorRegistry().get(desc);
 		}
 		return null;
 	}

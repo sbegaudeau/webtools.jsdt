@@ -43,7 +43,7 @@ public abstract class CodeFormatter {
 	/**
 	 * Kind used to format a compilation unit
 	 */
-	public static final int K_COMPILATION_UNIT = 0x08;
+	public static final int K_JAVASCRIPT_UNIT = 0x08;
 
 	/**
 	 * Kind used to format a single-line comment
@@ -70,7 +70,7 @@ public abstract class CodeFormatter {
 	 * caller to get rid of preceeding whitespaces.</p>
 	 *
 	 * @param kind Use to specify the kind of the code snippet to format. It can be any of these:
-	 *        K_EXPRESSION, K_STATEMENTS, K_CLASS_BODY_DECLARATIONS, K_COMPILATION_UNIT, K_UNKNOWN,
+	 *        K_EXPRESSION, K_STATEMENTS, K_CLASS_BODY_DECLARATIONS, K_JAVASCRIPT_UNIT, K_UNKNOWN,
 	 *        K_SINGLE_LINE_COMMENT, K_MULTI_LINE_COMMENT, K_JAVA_DOC
 	 * @param source the source to format
 	 * @param offset the given offset to start recording the edits (inclusive).

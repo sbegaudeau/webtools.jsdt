@@ -56,45 +56,45 @@ import org.eclipse.ltk.core.refactoring.participants.ResourceChangeChecker;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.eclipse.ltk.core.refactoring.participants.ValidateEditChecker;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IImportContainer;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IInitializer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
@@ -131,31 +131,31 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public final class ReorgPolicyFactory {
 
 	private static final class ActualSelectionComputer {
 
-		private final IJavaElement[] fJavaElements;
+		private final IJavaScriptElement[] fJavaElements;
 
 		private final IResource[] fResources;
 
-		public ActualSelectionComputer(IJavaElement[] javaElements, IResource[] resources) {
+		public ActualSelectionComputer(IJavaScriptElement[] javaElements, IResource[] resources) {
 			fJavaElements= javaElements;
 			fResources= resources;
 		}
 
-		public IJavaElement[] getActualJavaElementsToReorg() throws JavaModelException {
+		public IJavaScriptElement[] getActualJavaElementsToReorg() throws JavaScriptModelException {
 			List result= new ArrayList();
 			for (int i= 0; i < fJavaElements.length; i++) {
-				IJavaElement element= fJavaElements[i];
+				IJavaScriptElement element= fJavaElements[i];
 				if (element == null)
 					continue;
 //				if (element instanceof IType) {
 //					IType type= (IType) element;
-//					ICompilationUnit cu= type.getCompilationUnit();
+//					IJavaScriptUnit cu= type.getCompilationUnit();
 //					if (cu != null && type.getDeclaringType() == null && cu.exists() && cu.getTypes().length == 1 && !result.contains(cu))
 //						result.add(cu);
 //					else if (!result.contains(type))
@@ -165,7 +165,7 @@ public final class ReorgPolicyFactory {
 					result.add(element);
 				}
 			}
-			return (IJavaElement[]) result.toArray(new IJavaElement[result.size()]);
+			return (IJavaScriptElement[]) result.toArray(new IJavaScriptElement[result.size()]);
 		}
 
 		public IResource[] getActualResourcesToReorg() {
@@ -174,7 +174,7 @@ public final class ReorgPolicyFactory {
 			for (int i= 0; i < fResources.length; i++) {
 				if (fResources[i] == null)
 					continue;
-				IJavaElement element= JavaCore.create(fResources[i]);
+				IJavaScriptElement element= JavaScriptCore.create(fResources[i]);
 				if (element == null || !element.exists() || !javaElementSet.contains(element))
 					if (!result.contains(fResources[i]))
 						result.add(fResources[i]);
@@ -188,7 +188,7 @@ public final class ReorgPolicyFactory {
 
 		private static final String POLICY_COPY_RESOURCE= "org.eclipse.wst.jsdt.ui.copyResources"; //$NON-NLS-1$
 
-		private static Change copyCuToPackage(ICompilationUnit cu, IPackageFragment dest, NewNameProposer nameProposer, INewNameQueries copyQueries) {
+		private static Change copyCuToPackage(IJavaScriptUnit cu, IPackageFragment dest, NewNameProposer nameProposer, INewNameQueries copyQueries) {
 			// XXX workaround for bug 31998 we will have to disable renaming of
 			// linked packages (and cus)
 			IResource res= ReorgUtils.getResource(cu);
@@ -212,7 +212,7 @@ public final class ReorgPolicyFactory {
 			}
 		}
 
-		private static Change copyFileToContainer(ICompilationUnit cu, IContainer dest, NewNameProposer nameProposer, INewNameQueries copyQueries) {
+		private static Change copyFileToContainer(IJavaScriptUnit cu, IContainer dest, NewNameProposer nameProposer, INewNameQueries copyQueries) {
 			IResource resource= ReorgUtils.getResource(cu);
 			return createCopyResourceChange(resource, nameProposer, copyQueries, dest);
 		}
@@ -233,11 +233,11 @@ public final class ReorgPolicyFactory {
 
 		private ReorgExecutionLog fReorgExecutionLog;
 
-		CopyFilesFoldersAndCusPolicy(IFile[] files, IFolder[] folders, ICompilationUnit[] cus) {
+		CopyFilesFoldersAndCusPolicy(IFile[] files, IFolder[] folders, IJavaScriptUnit[] cus) {
 			super(files, folders, cus);
 		}
 
-		private Change createChange(ICompilationUnit unit, NewNameProposer nameProposer, INewNameQueries copyQueries) {
+		private Change createChange(IJavaScriptUnit unit, NewNameProposer nameProposer, INewNameQueries copyQueries) {
 			IPackageFragment pack= getDestinationAsPackageFragment();
 			if (pack != null)
 				return copyCuToPackage(unit, pack, nameProposer, copyQueries);
@@ -248,7 +248,7 @@ public final class ReorgPolicyFactory {
 		public Change createChange(IProgressMonitor pm, INewNameQueries copyQueries) {
 			IFile[] file= getFiles();
 			IFolder[] folders= getFolders();
-			ICompilationUnit[] cus= getCus();
+			IJavaScriptUnit[] cus= getCus();
 			pm.beginTask("", cus.length + file.length + folders.length); //$NON-NLS-1$
 			NewNameProposer nameProposer= new NewNameProposer();
 			CompositeChange composite= new DynamicValidationStateChange(RefactoringCoreMessages.ReorgPolicy_copy);
@@ -326,7 +326,7 @@ public final class ReorgPolicyFactory {
 			fReorgExecutionLog= new ReorgExecutionLog();
 			CopyArguments jArgs= new CopyArguments(getDestination(), fReorgExecutionLog);
 			CopyArguments rArgs= new CopyArguments(getDestinationAsContainer(), fReorgExecutionLog);
-			ICompilationUnit[] cus= getCus();
+			IJavaScriptUnit[] cus= getCus();
 			for (int i= 0; i < cus.length; i++) {
 				fModifications.copy(cus[i], jArgs, rArgs);
 			}
@@ -342,11 +342,11 @@ public final class ReorgPolicyFactory {
 		}
 
 		protected String getProcessorId() {
-			return IJavaRefactorings.COPY;
+			return IJavaScriptRefactorings.COPY;
 		}
 
 		protected String getRefactoringId() {
-			return IJavaRefactorings.COPY;
+			return IJavaScriptRefactorings.COPY;
 		}
 
 		public ReorgExecutionLog getReorgExecutionLog() {
@@ -366,7 +366,7 @@ public final class ReorgPolicyFactory {
 			super(roots);
 		}
 
-		private Change createChange(IPackageFragmentRoot root, IJavaProject destination, NewNameProposer nameProposer, INewNameQueries copyQueries) {
+		private Change createChange(IPackageFragmentRoot root, IJavaScriptProject destination, NewNameProposer nameProposer, INewNameQueries copyQueries) {
 			IResource res= root.getResource();
 			IProject destinationProject= destination.getProject();
 			String newName= nameProposer.createNewName(res, destinationProject);
@@ -385,7 +385,7 @@ public final class ReorgPolicyFactory {
 			pm.beginTask("", roots.length); //$NON-NLS-1$
 			CompositeChange composite= new DynamicValidationStateChange(RefactoringCoreMessages.ReorgPolicy_copy_source_folder);
 			composite.markAsSynthetic();
-			IJavaProject destination= getDestinationJavaProject();
+			IJavaScriptProject destination= getDestinationJavaProject();
 			Assert.isNotNull(destination);
 			for (int i= 0; i < roots.length; i++) {
 				composite.add(createChange(roots[i], destination, nameProposer, copyQueries));
@@ -431,11 +431,11 @@ public final class ReorgPolicyFactory {
 		}
 
 		protected String getProcessorId() {
-			return IJavaRefactorings.COPY;
+			return IJavaScriptRefactorings.COPY;
 		}
 
 		protected String getRefactoringId() {
-			return IJavaRefactorings.COPY;
+			return IJavaScriptRefactorings.COPY;
 		}
 
 		public ReorgExecutionLog getReorgExecutionLog() {
@@ -457,7 +457,7 @@ public final class ReorgPolicyFactory {
 
 		private Change createChange(IPackageFragment pack, IPackageFragmentRoot destination, NewNameProposer nameProposer, INewNameQueries copyQueries) {
 			String newName= nameProposer.createNewName(pack, destination);
-			if (newName == null || JavaConventions.validatePackageName(newName).getSeverity() < IStatus.ERROR) {
+			if (newName == null || JavaScriptConventions.validatePackageName(newName).getSeverity() < IStatus.ERROR) {
 				INewNameQuery nameQuery;
 				if (newName == null)
 					nameQuery= copyQueries.createNullQuery();
@@ -476,7 +476,7 @@ public final class ReorgPolicyFactory {
 			}
 		}
 
-		public Change createChange(IProgressMonitor pm, INewNameQueries newNameQueries) throws JavaModelException {
+		public Change createChange(IProgressMonitor pm, INewNameQueries newNameQueries) throws JavaScriptModelException {
 			NewNameProposer nameProposer= new NewNameProposer();
 			IPackageFragment[] fragments= getPackages();
 			pm.beginTask("", fragments.length); //$NON-NLS-1$
@@ -528,11 +528,11 @@ public final class ReorgPolicyFactory {
 		}
 
 		protected String getProcessorId() {
-			return IJavaRefactorings.COPY;
+			return IJavaScriptRefactorings.COPY;
 		}
 
 		protected String getRefactoringId() {
-			return IJavaRefactorings.COPY;
+			return IJavaScriptRefactorings.COPY;
 		}
 
 		public ReorgExecutionLog getReorgExecutionLog() {
@@ -548,28 +548,28 @@ public final class ReorgPolicyFactory {
 
 		private ReorgExecutionLog fReorgExecutionLog;
 
-		CopySubCuElementsPolicy(IJavaElement[] javaElements) {
+		CopySubCuElementsPolicy(IJavaScriptElement[] javaElements) {
 			super(javaElements);
 		}
 
-		public boolean canEnable() throws JavaModelException {
+		public boolean canEnable() throws JavaScriptModelException {
 			return super.canEnable() && (getSourceCu() != null || getSourceClassFile() != null);
 		}
 
-		public Change createChange(IProgressMonitor pm, INewNameQueries copyQueries) throws JavaModelException {
+		public Change createChange(IProgressMonitor pm, INewNameQueries copyQueries) throws JavaScriptModelException {
 			try {
-				CompilationUnit sourceCuNode= createSourceCuNode();
-				ICompilationUnit targetCu= getDestinationCu();
+				JavaScriptUnit sourceCuNode= createSourceCuNode();
+				IJavaScriptUnit targetCu= getDestinationCu();
 				CompilationUnitRewrite targetRewriter= new CompilationUnitRewrite(targetCu);
-				IJavaElement[] javaElements= getJavaElements();
+				IJavaScriptElement[] javaElements= getJavaElements();
 				for (int i= 0; i < javaElements.length; i++) {
 					copyToDestination(javaElements[i], targetRewriter, sourceCuNode, targetRewriter.getRoot());
 				}
 				return createCompilationUnitChange(targetCu, targetRewriter);
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				throw e;
 			} catch (CoreException e) {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			}
 		}
 
@@ -577,7 +577,7 @@ public final class ReorgPolicyFactory {
 			return new JDTCopyRefactoringDescriptor(getReorgExecutionLog(), getProcessorId(), project, description, comment.asString(), arguments, flags);
 		}
 
-		private CompilationUnit createSourceCuNode() {
+		private JavaScriptUnit createSourceCuNode() {
 			Assert.isTrue(getSourceCu() != null || getSourceClassFile() != null);
 			Assert.isTrue(getSourceCu() == null || getSourceClassFile() == null);
 			ASTParser parser= ASTParser.newParser(AST.JLS3);
@@ -585,7 +585,7 @@ public final class ReorgPolicyFactory {
 				parser.setSource(getSourceCu());
 			else
 				parser.setSource(getSourceClassFile());
-			return (CompilationUnit) parser.createAST(null);
+			return (JavaScriptUnit) parser.createAST(null);
 		}
 
 		public IFile[] getAllModifiedFiles() {
@@ -645,7 +645,7 @@ public final class ReorgPolicyFactory {
 			fModifications= new CopyModifications();
 			fReorgExecutionLog= new ReorgExecutionLog();
 			CopyArguments args= new CopyArguments(getJavaElementDestination(), fReorgExecutionLog);
-			IJavaElement[] javaElements= getJavaElements();
+			IJavaScriptElement[] javaElements= getJavaElements();
 			for (int i= 0; i < javaElements.length; i++) {
 				fModifications.copy(javaElements[i], args, null);
 			}
@@ -657,11 +657,11 @@ public final class ReorgPolicyFactory {
 		}
 
 		protected String getProcessorId() {
-			return IJavaRefactorings.COPY;
+			return IJavaScriptRefactorings.COPY;
 		}
 
 		protected String getRefactoringId() {
-			return IJavaRefactorings.COPY;
+			return IJavaScriptRefactorings.COPY;
 		}
 
 		public ReorgExecutionLog getReorgExecutionLog() {
@@ -671,7 +671,7 @@ public final class ReorgPolicyFactory {
 		private IClassFile getSourceClassFile() {
 			// all have a common parent, so all must be in the same classfile
 			// we checked before that the array in not null and not empty
-			return (IClassFile) getJavaElements()[0].getAncestor(IJavaElement.CLASS_FILE);
+			return (IClassFile) getJavaElements()[0].getAncestor(IJavaScriptElement.CLASS_FILE);
 		}
 	}
 
@@ -691,23 +691,23 @@ public final class ReorgPolicyFactory {
 			return null;
 		}
 
-		private ICompilationUnit[] fCus;
+		private IJavaScriptUnit[] fCus;
 
 		private IFile[] fFiles;
 
 		private IFolder[] fFolders;
 
-		public FilesFoldersAndCusReorgPolicy(IFile[] files, IFolder[] folders, ICompilationUnit[] cus) {
+		public FilesFoldersAndCusReorgPolicy(IFile[] files, IFolder[] folders, IJavaScriptUnit[] cus) {
 			fFiles= files;
 			fFolders= folders;
 			fCus= cus;
 		}
 
-		public boolean canChildrenBeDestinations(IJavaElement javaElement) {
+		public boolean canChildrenBeDestinations(IJavaScriptElement javaElement) {
 			switch (javaElement.getElementType()) {
-				case IJavaElement.JAVA_MODEL:
-				case IJavaElement.JAVA_PROJECT:
-				case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+				case IJavaScriptElement.JAVASCRIPT_MODEL:
+				case IJavaScriptElement.JAVASCRIPT_PROJECT:
+				case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 					return true;
 				default:
 					return false;
@@ -718,9 +718,9 @@ public final class ReorgPolicyFactory {
 			return resource instanceof IContainer;
 		}
 
-		public boolean canElementBeDestination(IJavaElement javaElement) {
+		public boolean canElementBeDestination(IJavaScriptElement javaElement) {
 			switch (javaElement.getElementType()) {
-				case IJavaElement.PACKAGE_FRAGMENT:
+				case IJavaScriptElement.PACKAGE_FRAGMENT:
 					return true;
 				default:
 					return false;
@@ -774,7 +774,7 @@ public final class ReorgPolicyFactory {
 			return -1;
 		}
 
-		protected final ICompilationUnit[] getCus() {
+		protected final IJavaScriptUnit[] getCus() {
 			return fCus;
 		}
 
@@ -785,7 +785,7 @@ public final class ReorgPolicyFactory {
 			final IProject resource= getSingleProject();
 			final String project= resource != null ? resource.getName() : null;
 			final String header= Messages.format(getHeaderPattern(), new String[] { String.valueOf(length), getDestinationLabel()});
-			int flags= JavaRefactoringDescriptor.JAR_MIGRATION | JavaRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
+			int flags= JavaScriptRefactoringDescriptor.JAR_MIGRATION | JavaScriptRefactoringDescriptor.JAR_REFACTORING | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
 			final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
 			final JDTRefactoringDescriptor descriptor= createRefactoringDescriptor(comment, arguments, description, project, flags);
 			arguments.put(ATTRIBUTE_POLICY, getPolicyId());
@@ -806,7 +806,7 @@ public final class ReorgPolicyFactory {
 			IResource resDest= getResourceDestination();
 			if (resDest != null)
 				return getAsContainer(resDest);
-			IJavaElement jelDest= getJavaElementDestination();
+			IJavaScriptElement jelDest= getJavaElementDestination();
 			Assert.isNotNull(jelDest);
 			return getAsContainer(ReorgUtils.getResource(jelDest));
 		}
@@ -818,13 +818,13 @@ public final class ReorgPolicyFactory {
 			return getResourceDestinationAsPackageFragment(getResourceDestination());
 		}
 
-		protected final IJavaElement getDestinationContainerAsJavaElement() {
+		protected final IJavaScriptElement getDestinationContainerAsJavaElement() {
 			if (getJavaElementDestination() != null)
 				return getJavaElementDestination();
 			IContainer destinationAsContainer= getDestinationAsContainer();
 			if (destinationAsContainer == null)
 				return null;
-			IJavaElement je= JavaCore.create(destinationAsContainer);
+			IJavaScriptElement je= JavaScriptCore.create(destinationAsContainer);
 			if (je != null && je.exists())
 				return je;
 			return null;
@@ -838,32 +838,32 @@ public final class ReorgPolicyFactory {
 			return fFolders;
 		}
 
-		private IPackageFragment getJavaDestinationAsPackageFragment(IJavaElement javaDest) {
+		private IPackageFragment getJavaDestinationAsPackageFragment(IJavaScriptElement javaDest) {
 			if (javaDest == null || (fCheckDestination && !javaDest.exists()))
 				return null;
 			if (javaDest instanceof IPackageFragment)
 				return (IPackageFragment) javaDest;
 			if (javaDest instanceof IPackageFragmentRoot)
 				return ((IPackageFragmentRoot) javaDest).getPackageFragment(""); //$NON-NLS-1$
-			if (javaDest instanceof IJavaProject) {
+			if (javaDest instanceof IJavaScriptProject) {
 				try {
-					IPackageFragmentRoot root= ReorgUtils.getCorrespondingPackageFragmentRoot((IJavaProject) javaDest);
+					IPackageFragmentRoot root= ReorgUtils.getCorrespondingPackageFragmentRoot((IJavaScriptProject) javaDest);
 					if (root != null)
 						return root.getPackageFragment(""); //$NON-NLS-1$
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					// fall through
 				}
 			}
-			return (IPackageFragment) javaDest.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
+			return (IPackageFragment) javaDest.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT);
 		}
 
-		public final IJavaElement[] getJavaElements() {
+		public final IJavaScriptElement[] getJavaElements() {
 			return fCus;
 		}
 
 		private IPackageFragment getResourceDestinationAsPackageFragment(IResource resource) {
 			if (resource instanceof IFile)
-				return getJavaDestinationAsPackageFragment(JavaCore.create(resource.getParent()));
+				return getJavaDestinationAsPackageFragment(JavaScriptCore.create(resource.getParent()));
 			return null;
 		}
 
@@ -887,8 +887,8 @@ public final class ReorgPolicyFactory {
 			}
 			for (int index= 0; index < fCus.length; index++) {
 				if (result == null)
-					result= fCus[index].getJavaProject().getProject();
-				else if (!result.equals(fCus[index].getJavaProject().getProject()))
+					result= fCus[index].getJavaScriptProject().getProject();
+				else if (!result.equals(fCus[index].getJavaScriptProject().getProject()))
 					return null;
 			}
 			return result;
@@ -962,15 +962,15 @@ public final class ReorgPolicyFactory {
 					final String attribute= JDTRefactoringDescriptor.ATTRIBUTE_ELEMENT + (folderCount + fileCount + index + 1);
 					handle= extended.getAttribute(attribute);
 					if (handle != null && !"".equals(handle)) { //$NON-NLS-1$
-						final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-						if (element == null || !element.exists() || element.getElementType() != IJavaElement.COMPILATION_UNIT)
+						final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+						if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.JAVASCRIPT_UNIT)
 							status.merge(ScriptableRefactoring.createInputWarningStatus(element, getProcessorId(), getRefactoringId()));
 						else
 							elements.add(element);
 					} else
 						return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, attribute));
 				}
-				fCus= (ICompilationUnit[]) elements.toArray(new ICompilationUnit[elements.size()]);
+				fCus= (IJavaScriptUnit[]) elements.toArray(new IJavaScriptUnit[elements.size()]);
 			} else
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.InitializableRefactoring_inacceptable_arguments);
 			status.merge(super.initialize(arguments));
@@ -986,13 +986,13 @@ public final class ReorgPolicyFactory {
 			return false;
 		}
 
-		protected RefactoringStatus verifyDestination(IJavaElement javaElement) throws JavaModelException {
+		protected RefactoringStatus verifyDestination(IJavaScriptElement javaElement) throws JavaScriptModelException {
 			Assert.isNotNull(javaElement);
 			if (!fCheckDestination)
 				return new RefactoringStatus();
 			if (!javaElement.exists())
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_doesnotexist0);
-			if (javaElement instanceof IJavaModel)
+			if (javaElement instanceof IJavaScriptModel)
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_jmodel);
 
 			if (javaElement.isReadOnly())
@@ -1028,7 +1028,7 @@ public final class ReorgPolicyFactory {
 			return new RefactoringStatus();
 		}
 
-		protected RefactoringStatus verifyDestination(IResource resource) throws JavaModelException {
+		protected RefactoringStatus verifyDestination(IResource resource) throws JavaScriptModelException {
 			Assert.isNotNull(resource);
 			if (!resource.exists() || resource.isPhantom())
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_phantom);
@@ -1052,7 +1052,7 @@ public final class ReorgPolicyFactory {
 
 		private static final String POLICY_MOVE_RESOURCES= "org.eclipse.wst.jsdt.ui.moveResources"; //$NON-NLS-1$
 
-		private static Change moveCuToPackage(ICompilationUnit cu, IPackageFragment dest) {
+		private static Change moveCuToPackage(IJavaScriptUnit cu, IPackageFragment dest) {
 			// XXX workaround for bug 31998 we will have to disable renaming of
 			// linked packages (and cus)
 			IResource resource= cu.getResource();
@@ -1063,7 +1063,7 @@ public final class ReorgPolicyFactory {
 			return new MoveCompilationUnitChange(cu, dest);
 		}
 
-		private static Change moveFileToContainer(ICompilationUnit cu, IContainer dest) {
+		private static Change moveFileToContainer(IJavaScriptUnit cu, IContainer dest) {
 			return new MoveResourceChange(cu.getResource(), dest);
 		}
 
@@ -1081,7 +1081,7 @@ public final class ReorgPolicyFactory {
 
 		private boolean fUpdateReferences;
 
-		MoveFilesFoldersAndCusPolicy(IFile[] files, IFolder[] folders, ICompilationUnit[] cus) {
+		MoveFilesFoldersAndCusPolicy(IFile[] files, IFolder[] folders, IJavaScriptUnit[] cus) {
 			super(files, folders, cus);
 			fUpdateReferences= true;
 			fUpdateQualifiedNames= false;
@@ -1123,25 +1123,25 @@ public final class ReorgPolicyFactory {
 					computeQualifiedNameMatches(new SubProgressMonitor(pm, 4));
 				result.merge(super.checkFinalConditions(new SubProgressMonitor(pm, 1), context, reorgQueries));
 				return result;
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				throw e;
 			} catch (CoreException e) {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			} finally {
 				pm.done();
 			}
 		}
 
-		private void computeQualifiedNameMatches(IProgressMonitor pm) throws JavaModelException {
+		private void computeQualifiedNameMatches(IProgressMonitor pm) throws JavaScriptModelException {
 			if (!fUpdateQualifiedNames)
 				return;
 			IPackageFragment destination= getDestinationAsPackageFragment();
 			if (destination != null) {
-				ICompilationUnit[] cus= getCus();
+				IJavaScriptUnit[] cus= getCus();
 				pm.beginTask("", cus.length); //$NON-NLS-1$
 				pm.subTask(RefactoringCoreMessages.MoveRefactoring_scanning_qualified_names);
 //				for (int i= 0; i < cus.length; i++) {
-//					ICompilationUnit cu= cus[i];
+//					IJavaScriptUnit cu= cus[i];
 //					IType[] types= cu.getTypes();
 //					IProgressMonitor typesMonitor= new SubProgressMonitor(pm, 1);
 //					typesMonitor.beginTask("", types.length); //$NON-NLS-1$
@@ -1161,7 +1161,7 @@ public final class ReorgPolicyFactory {
 				throw new OperationCanceledException();
 		}
 
-		private Change createChange(ICompilationUnit cu) {
+		private Change createChange(IJavaScriptUnit cu) {
 			IPackageFragment pack= getDestinationAsPackageFragment();
 			if (pack != null)
 				return moveCuToPackage(cu, pack);
@@ -1171,7 +1171,7 @@ public final class ReorgPolicyFactory {
 			return moveFileToContainer(cu, container);
 		}
 
-		public Change createChange(IProgressMonitor pm) throws JavaModelException {
+		public Change createChange(IProgressMonitor pm) throws JavaScriptModelException {
 			if (!fUpdateReferences) {
 				return createSimpleMoveChange(pm);
 			} else {
@@ -1186,7 +1186,7 @@ public final class ReorgPolicyFactory {
 			return new MoveResourceChange(res, destinationAsContainer);
 		}
 
-		private TextChangeManager createChangeManager(IProgressMonitor pm, RefactoringStatus status) throws JavaModelException {
+		private TextChangeManager createChangeManager(IProgressMonitor pm, RefactoringStatus status) throws JavaScriptModelException {
 			pm.beginTask("", 1);//$NON-NLS-1$
 			try {
 				if (!fUpdateReferences)
@@ -1207,7 +1207,7 @@ public final class ReorgPolicyFactory {
 			return new JDTMoveRefactoringDescriptor(getCreateTargetExecutionLog(), getProcessorId(), project, description, comment.asString(), arguments, flags);
 		}
 
-		private Change createReferenceUpdatingMoveChange(IProgressMonitor pm) throws JavaModelException {
+		private Change createReferenceUpdatingMoveChange(IProgressMonitor pm) throws JavaScriptModelException {
 			pm.beginTask("", 2 + (fUpdateQualifiedNames ? 1 : 0)); //$NON-NLS-1$
 			try {
 				CompositeChange composite= new DynamicValidationStateChange(RefactoringCoreMessages.ReorgPolicy_move);
@@ -1242,7 +1242,7 @@ public final class ReorgPolicyFactory {
 			result.markAsSynthetic();
 			IFile[] files= getFiles();
 			IFolder[] folders= getFolders();
-			ICompilationUnit[] cus= getCus();
+			IJavaScriptUnit[] cus= getCus();
 			pm.beginTask("", files.length + folders.length + cus.length); //$NON-NLS-1$
 			for (int i= 0; i < files.length; i++) {
 				result.add(createChange(files[i]));
@@ -1336,7 +1336,7 @@ public final class ReorgPolicyFactory {
 			// canUpdateReferences is true
 			boolean updateReferenes= canUpdateReferences() && getUpdateReferences();
 			if (unitDestination != null) {
-				ICompilationUnit[] units= getCus();
+				IJavaScriptUnit[] units= getCus();
 				for (int i= 0; i < units.length; i++) {
 					fModifications.move(units[i], new MoveArguments(unitDestination, updateReferenes));
 				}
@@ -1359,7 +1359,7 @@ public final class ReorgPolicyFactory {
 		}
 
 		protected String getProcessorId() {
-			return IJavaRefactorings.MOVE;
+			return IJavaScriptRefactorings.MOVE;
 		}
 
 		protected Map getRefactoringArguments(String project) {
@@ -1373,7 +1373,7 @@ public final class ReorgPolicyFactory {
 		}
 
 		protected String getRefactoringId() {
-			return IJavaRefactorings.MOVE;
+			return IJavaScriptRefactorings.MOVE;
 		}
 
 		public boolean getUpdateQualifiedNames() {
@@ -1386,7 +1386,7 @@ public final class ReorgPolicyFactory {
 
 		private void handleType(IType type, IPackageFragment destination, IProgressMonitor pm) {
 			QualifiedNameFinder.process(fQualifiedNameSearchResult, type.getFullyQualifiedName(), destination.getElementName() + "." + type.getTypeQualifiedName(), //$NON-NLS-1$
-					fFilePatterns, type.getJavaProject().getProject(), pm);
+					fFilePatterns, type.getJavaScriptProject().getProject(), pm);
 		}
 
 		public boolean hasAllInputSet() {
@@ -1445,7 +1445,7 @@ public final class ReorgPolicyFactory {
 			fUpdateReferences= update;
 		}
 
-		protected RefactoringStatus verifyDestination(IJavaElement destination) throws JavaModelException {
+		protected RefactoringStatus verifyDestination(IJavaScriptElement destination) throws JavaScriptModelException {
 			RefactoringStatus superStatus= super.verifyDestination(destination);
 			if (superStatus.hasFatalError())
 				return superStatus;
@@ -1463,7 +1463,7 @@ public final class ReorgPolicyFactory {
 			return superStatus;
 		}
 
-		protected RefactoringStatus verifyDestination(IResource destination) throws JavaModelException {
+		protected RefactoringStatus verifyDestination(IResource destination) throws JavaScriptModelException {
 			RefactoringStatus superStatus= super.verifyDestination(destination);
 			if (superStatus.hasFatalError())
 				return superStatus;
@@ -1474,7 +1474,7 @@ public final class ReorgPolicyFactory {
 			IContainer destinationAsContainer= getDestinationAsContainer();
 			if (destinationAsContainer != null && destinationAsContainer.equals(commonParent))
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_parent);
-			IJavaElement destinationContainerAsPackage= getDestinationContainerAsJavaElement();
+			IJavaScriptElement destinationContainerAsPackage= getDestinationContainerAsJavaElement();
 			if (destinationContainerAsPackage != null && destinationContainerAsPackage.equals(commonParent))
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_parent);
 
@@ -1486,7 +1486,7 @@ public final class ReorgPolicyFactory {
 
 		private static final String POLICY_MOVE_ROOTS= "org.eclipse.wst.jsdt.ui.moveRoots"; //$NON-NLS-1$
 
-		private static boolean isParentOfAny(IJavaProject javaProject, IPackageFragmentRoot[] roots) {
+		private static boolean isParentOfAny(IJavaScriptProject javaProject, IPackageFragmentRoot[] roots) {
 			for (int i= 0; i < roots.length; i++) {
 				if (ReorgUtils.isParentInWorkspaceOrOnDisk(roots[i], javaProject))
 					return true;
@@ -1502,7 +1502,7 @@ public final class ReorgPolicyFactory {
 			super(roots);
 		}
 
-		public boolean canEnable() throws JavaModelException {
+		public boolean canEnable() throws JavaScriptModelException {
 			if (!super.canEnable())
 				return false;
 			IPackageFragmentRoot[] roots= getPackageFragmentRoots();
@@ -1521,10 +1521,10 @@ public final class ReorgPolicyFactory {
 				RefactoringStatus status= super.checkFinalConditions(pm, context, reorgQueries);
 				confirmMovingReadOnly(reorgQueries);
 				return status;
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				throw e;
 			} catch (CoreException e) {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			}
 		}
 
@@ -1533,17 +1533,17 @@ public final class ReorgPolicyFactory {
 				throw new OperationCanceledException();
 		}
 
-		private Change createChange(IPackageFragmentRoot root, IJavaProject destination) {
+		private Change createChange(IPackageFragmentRoot root, IJavaScriptProject destination) {
 			// /XXX fix the query
 			return new MovePackageFragmentRootChange(root, destination.getProject(), null);
 		}
 
-		public Change createChange(IProgressMonitor pm) throws JavaModelException {
+		public Change createChange(IProgressMonitor pm) throws JavaScriptModelException {
 			IPackageFragmentRoot[] roots= getPackageFragmentRoots();
 			pm.beginTask("", roots.length); //$NON-NLS-1$
 			CompositeChange composite= new DynamicValidationStateChange(RefactoringCoreMessages.ReorgPolicy_move_source_folder);
 			composite.markAsSynthetic();
-			IJavaProject destination= getDestinationJavaProject();
+			IJavaScriptProject destination= getDestinationJavaProject();
 			Assert.isNotNull(destination);
 			for (int i= 0; i < roots.length; i++) {
 				composite.add(createChange(roots[i], destination));
@@ -1582,7 +1582,7 @@ public final class ReorgPolicyFactory {
 				return fModifications;
 
 			fModifications= new MoveModifications();
-			IJavaProject destination= getDestinationJavaProject();
+			IJavaScriptProject destination= getDestinationJavaProject();
 			boolean updateReferences= canUpdateReferences() && getUpdateReferences();
 			if (destination != null) {
 				IPackageFragmentRoot[] roots= getPackageFragmentRoots();
@@ -1598,11 +1598,11 @@ public final class ReorgPolicyFactory {
 		}
 
 		protected String getProcessorId() {
-			return IJavaRefactorings.MOVE;
+			return IJavaScriptRefactorings.MOVE;
 		}
 
 		protected String getRefactoringId() {
-			return IJavaRefactorings.MOVE;
+			return IJavaScriptRefactorings.MOVE;
 		}
 
 		public boolean isTextualMove() {
@@ -1617,11 +1617,11 @@ public final class ReorgPolicyFactory {
 			fCheckDestination= check;
 		}
 
-		protected RefactoringStatus verifyDestination(IJavaElement javaElement) throws JavaModelException {
+		protected RefactoringStatus verifyDestination(IJavaScriptElement javaElement) throws JavaScriptModelException {
 			RefactoringStatus superStatus= super.verifyDestination(javaElement);
 			if (superStatus.hasFatalError())
 				return superStatus;
-			IJavaProject javaProject= getDestinationJavaProject();
+			IJavaScriptProject javaProject= getDestinationJavaProject();
 			if (isParentOfAny(javaProject, getPackageFragmentRoots()))
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_element2parent);
 			return superStatus;
@@ -1654,10 +1654,10 @@ public final class ReorgPolicyFactory {
 				RefactoringStatus status= super.checkFinalConditions(pm, context, reorgQueries);
 				confirmMovingReadOnly(reorgQueries);
 				return status;
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				throw e;
 			} catch (CoreException e) {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			}
 		}
 
@@ -1670,7 +1670,7 @@ public final class ReorgPolicyFactory {
 			return new MovePackageChange(pack, destination);
 		}
 
-		public Change createChange(IProgressMonitor pm) throws JavaModelException {
+		public Change createChange(IProgressMonitor pm) throws JavaScriptModelException {
 			IPackageFragment[] fragments= getPackages();
 			pm.beginTask("", fragments.length); //$NON-NLS-1$
 			CompositeChange result= new DynamicValidationStateChange(RefactoringCoreMessages.ReorgPolicy_move_package);
@@ -1729,11 +1729,11 @@ public final class ReorgPolicyFactory {
 		}
 
 		protected String getProcessorId() {
-			return IJavaRefactorings.MOVE;
+			return IJavaScriptRefactorings.MOVE;
 		}
 
 		protected String getRefactoringId() {
-			return IJavaRefactorings.MOVE;
+			return IJavaScriptRefactorings.MOVE;
 		}
 
 		public boolean isTextualMove() {
@@ -1748,7 +1748,7 @@ public final class ReorgPolicyFactory {
 			fCheckDestination= check;
 		}
 
-		protected RefactoringStatus verifyDestination(IJavaElement javaElement) throws JavaModelException {
+		protected RefactoringStatus verifyDestination(IJavaScriptElement javaElement) throws JavaScriptModelException {
 			RefactoringStatus superStatus= super.verifyDestination(javaElement);
 			if (superStatus.hasFatalError())
 				return superStatus;
@@ -1766,30 +1766,30 @@ public final class ReorgPolicyFactory {
 
 		private CreateTargetExecutionLog fCreateTargetExecutionLog= new CreateTargetExecutionLog();
 
-		MoveSubCuElementsPolicy(IJavaElement[] javaElements) {
+		MoveSubCuElementsPolicy(IJavaScriptElement[] javaElements) {
 			super(javaElements);
 		}
 
-		public boolean canEnable() throws JavaModelException {
+		public boolean canEnable() throws JavaScriptModelException {
 			return super.canEnable() && getSourceCu() != null;
 		}
 
-		public Change createChange(IProgressMonitor pm) throws JavaModelException {
+		public Change createChange(IProgressMonitor pm) throws JavaScriptModelException {
 			pm.beginTask("", 3); //$NON-NLS-1$
 			try {
-				final ICompilationUnit sourceCu= getSourceCu();
-				CompilationUnit sourceCuNode= RefactoringASTParser.parseWithASTProvider(sourceCu, false, new SubProgressMonitor(pm, 1));
+				final IJavaScriptUnit sourceCu= getSourceCu();
+				JavaScriptUnit sourceCuNode= RefactoringASTParser.parseWithASTProvider(sourceCu, false, new SubProgressMonitor(pm, 1));
 				CompilationUnitRewrite sourceRewriter= new CompilationUnitRewrite(sourceCu, sourceCuNode);
-				ICompilationUnit destinationCu= getDestinationCu();
+				IJavaScriptUnit destinationCu= getDestinationCu();
 				CompilationUnitRewrite targetRewriter;
 				if (sourceCu.equals(destinationCu)) {
 					targetRewriter= sourceRewriter;
 					pm.worked(1);
 				} else {
-					CompilationUnit destinationCuNode= RefactoringASTParser.parseWithASTProvider(destinationCu, false, new SubProgressMonitor(pm, 1));
+					JavaScriptUnit destinationCuNode= RefactoringASTParser.parseWithASTProvider(destinationCu, false, new SubProgressMonitor(pm, 1));
 					targetRewriter= new CompilationUnitRewrite(destinationCu, destinationCuNode);
 				}
-				IJavaElement[] javaElements= getJavaElements();
+				IJavaScriptElement[] javaElements= getJavaElements();
 				for (int i= 0; i < javaElements.length; i++) {
 					copyToDestination(javaElements[i], targetRewriter, sourceRewriter.getRoot(), targetRewriter.getRoot());
 				}
@@ -1802,15 +1802,15 @@ public final class ReorgPolicyFactory {
 					result.markAsSynthetic();
 					result.add(targetCuChange);
 //					if (Arrays.asList(getJavaElements()).containsAll(Arrays.asList(sourceCu.getTypes())))
-//						result.add(DeleteChangeCreator.createDeleteChange(null, new IResource[0], new ICompilationUnit[] {sourceCu}, RefactoringCoreMessages.ReorgPolicy_move, null));
+//						result.add(DeleteChangeCreator.createDeleteChange(null, new IResource[0], new IJavaScriptUnit[] {sourceCu}, RefactoringCoreMessages.ReorgPolicy_move, null));
 //					else
 						result.add(createCompilationUnitChange(sourceCu, sourceRewriter));
 					return result;
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				throw e;
 			} catch (CoreException e) {
-				throw new JavaModelException(e);
+				throw new JavaScriptModelException(e);
 			} finally {
 				pm.done();
 			}
@@ -1883,11 +1883,11 @@ public final class ReorgPolicyFactory {
 		}
 
 		protected String getProcessorId() {
-			return IJavaRefactorings.MOVE;
+			return IJavaScriptRefactorings.MOVE;
 		}
 
 		protected String getRefactoringId() {
-			return IJavaRefactorings.MOVE;
+			return IJavaScriptRefactorings.MOVE;
 		}
 
 		public boolean isTextualMove() {
@@ -1902,10 +1902,10 @@ public final class ReorgPolicyFactory {
 			fCheckDestination= check;
 		}
 
-		protected RefactoringStatus verifyDestination(IJavaElement destination) throws JavaModelException {
-			IJavaElement[] elements= getJavaElements();
+		protected RefactoringStatus verifyDestination(IJavaScriptElement destination) throws JavaScriptModelException {
+			IJavaScriptElement[] elements= getJavaElements();
 			for (int i= 0; i < elements.length; i++) {
-				IJavaElement parent= destination.getParent();
+				IJavaScriptElement parent= destination.getParent();
 				while (parent != null) {
 					if (parent.equals(elements[i]))
 						return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_cannot);
@@ -1931,7 +1931,7 @@ public final class ReorgPolicyFactory {
 		}
 
 		private static boolean isNewNameOk(IPackageFragment dest, String newName) {
-			return !dest.getCompilationUnit(newName).exists();
+			return !dest.getJavaScriptUnit(newName).exists();
 		}
 
 		private static boolean isNewNameOk(IPackageFragmentRoot root, String newName) {
@@ -1940,7 +1940,7 @@ public final class ReorgPolicyFactory {
 
 		private final Set fAutoGeneratedNewNames= new HashSet(2);
 
-		public String createNewName(ICompilationUnit cu, IPackageFragment destination) {
+		public String createNewName(IJavaScriptUnit cu, IPackageFragment destination) {
 			if (isNewNameOk(destination, cu.getElementName()))
 				return null;
 			if (!ReorgUtils.isParentInWorkspaceOrOnDisk(cu, destination))
@@ -1954,7 +1954,7 @@ public final class ReorgPolicyFactory {
 					newName= Messages.format(RefactoringCoreMessages.CopyRefactoring_cu_copyOfMore, new String[] { String.valueOf(i), cu.getElementName()});
 				if (isNewNameOk(destination, newName) && !fAutoGeneratedNewNames.contains(newName)) {
 					fAutoGeneratedNewNames.add(newName);
-					return JavaCore.removeJavaLikeExtension(newName);
+					return JavaScriptCore.removeJavaScriptLikeExtension(newName);
 				}
 				i++;
 			}
@@ -2003,7 +2003,7 @@ public final class ReorgPolicyFactory {
 
 	private static final class NoCopyPolicy extends ReorgPolicy implements ICopyPolicy {
 
-		public boolean canEnable() throws JavaModelException {
+		public boolean canEnable() throws JavaScriptModelException {
 			return false;
 		}
 
@@ -2027,8 +2027,8 @@ public final class ReorgPolicyFactory {
 			return UNUSED_STRING;
 		}
 
-		public IJavaElement[] getJavaElements() {
-			return new IJavaElement[0];
+		public IJavaScriptElement[] getJavaElements() {
+			return new IJavaScriptElement[0];
 		}
 
 		public String getPolicyId() {
@@ -2055,18 +2055,18 @@ public final class ReorgPolicyFactory {
 			return new RefactoringStatus();
 		}
 
-		protected RefactoringStatus verifyDestination(IJavaElement javaElement) throws JavaModelException {
+		protected RefactoringStatus verifyDestination(IJavaScriptElement javaElement) throws JavaScriptModelException {
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_noCopying);
 		}
 
-		protected RefactoringStatus verifyDestination(IResource resource) throws JavaModelException {
+		protected RefactoringStatus verifyDestination(IResource resource) throws JavaScriptModelException {
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_noCopying);
 		}
 	}
 
 	private static final class NoMovePolicy extends ReorgPolicy implements IMovePolicy {
 
-		public boolean canEnable() throws JavaModelException {
+		public boolean canEnable() throws JavaScriptModelException {
 			return false;
 		}
 
@@ -2098,8 +2098,8 @@ public final class ReorgPolicyFactory {
 			return UNUSED_STRING;
 		}
 
-		public IJavaElement[] getJavaElements() {
-			return new IJavaElement[0];
+		public IJavaScriptElement[] getJavaElements() {
+			return new IJavaScriptElement[0];
 		}
 
 		public String getPolicyId() {
@@ -2134,11 +2134,11 @@ public final class ReorgPolicyFactory {
 			fCheckDestination= check;
 		}
 
-		protected RefactoringStatus verifyDestination(IJavaElement javaElement) throws JavaModelException {
+		protected RefactoringStatus verifyDestination(IJavaScriptElement javaElement) throws JavaScriptModelException {
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_noMoving);
 		}
 
-		protected RefactoringStatus verifyDestination(IResource resource) throws JavaModelException {
+		protected RefactoringStatus verifyDestination(IResource resource) throws JavaScriptModelException {
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_noMoving);
 		}
 	}
@@ -2151,10 +2151,10 @@ public final class ReorgPolicyFactory {
 			fPackageFragmentRoots= roots;
 		}
 
-		public boolean canChildrenBeDestinations(IJavaElement javaElement) {
+		public boolean canChildrenBeDestinations(IJavaScriptElement javaElement) {
 			switch (javaElement.getElementType()) {
-				case IJavaElement.JAVA_MODEL:
-				case IJavaElement.JAVA_PROJECT:
+				case IJavaScriptElement.JAVASCRIPT_MODEL:
+				case IJavaScriptElement.JAVASCRIPT_PROJECT:
 					return true;
 				default:
 					return false;
@@ -2165,15 +2165,15 @@ public final class ReorgPolicyFactory {
 			return false;
 		}
 
-		public boolean canElementBeDestination(IJavaElement javaElement) {
-			return javaElement.getElementType() == IJavaElement.JAVA_PROJECT;
+		public boolean canElementBeDestination(IJavaScriptElement javaElement) {
+			return javaElement.getElementType() == IJavaScriptElement.JAVASCRIPT_PROJECT;
 		}
 
 		public boolean canElementBeDestination(IResource resource) {
 			return false;
 		}
 
-		public boolean canEnable() throws JavaModelException {
+		public boolean canEnable() throws JavaScriptModelException {
 			if (!super.canEnable())
 				return false;
 			for (int i= 0; i < fPackageFragmentRoots.length; i++) {
@@ -2194,7 +2194,7 @@ public final class ReorgPolicyFactory {
 		private void confirmOverwriting(IReorgQueries reorgQueries) {
 			OverwriteHelper oh= new OverwriteHelper();
 			oh.setPackageFragmentRoots(fPackageFragmentRoots);
-			IJavaProject javaProject= getDestinationJavaProject();
+			IJavaScriptProject javaProject= getDestinationJavaProject();
 			oh.confirmOverwriting(reorgQueries, javaProject);
 			fPackageFragmentRoots= oh.getPackageFragmentRootsWithoutUnconfirmedOnes();
 		}
@@ -2221,18 +2221,18 @@ public final class ReorgPolicyFactory {
 			return new RefactoringChangeDescriptor(descriptor);
 		}
 
-		private IJavaProject getDestinationAsJavaProject(IJavaElement javaElementDestination) {
+		private IJavaScriptProject getDestinationAsJavaProject(IJavaScriptElement javaElementDestination) {
 			if (javaElementDestination == null)
 				return null;
 			else
-				return javaElementDestination.getJavaProject();
+				return javaElementDestination.getJavaScriptProject();
 		}
 
-		protected IJavaProject getDestinationJavaProject() {
+		protected IJavaScriptProject getDestinationJavaProject() {
 			return getDestinationAsJavaProject(getJavaElementDestination());
 		}
 
-		public IJavaElement[] getJavaElements() {
+		public IJavaScriptElement[] getJavaElements() {
 			return fPackageFragmentRoots;
 		}
 
@@ -2252,8 +2252,8 @@ public final class ReorgPolicyFactory {
 			IProject result= null;
 			for (int index= 0; index < fPackageFragmentRoots.length; index++) {
 				if (result == null)
-					result= fPackageFragmentRoots[index].getJavaProject().getProject();
-				else if (!result.equals(fPackageFragmentRoots[index].getJavaProject().getProject()))
+					result= fPackageFragmentRoots[index].getJavaScriptProject().getProject();
+				else if (!result.equals(fPackageFragmentRoots[index].getJavaScriptProject().getProject()))
 					return null;
 			}
 			return result;
@@ -2279,8 +2279,8 @@ public final class ReorgPolicyFactory {
 					final String attribute= JDTRefactoringDescriptor.ATTRIBUTE_ELEMENT + (index + 1);
 					handle= extended.getAttribute(attribute);
 					if (handle != null && !"".equals(handle)) { //$NON-NLS-1$
-						final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-						if (element == null || !element.exists() || element.getElementType() != IJavaElement.PACKAGE_FRAGMENT_ROOT)
+						final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+						if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.PACKAGE_FRAGMENT_ROOT)
 							status.merge(ScriptableRefactoring.createInputWarningStatus(element, getProcessorId(), getRefactoringId()));
 						else
 							elements.add(element);
@@ -2294,19 +2294,19 @@ public final class ReorgPolicyFactory {
 			return status;
 		}
 
-		protected RefactoringStatus verifyDestination(IJavaElement javaElement) throws JavaModelException {
+		protected RefactoringStatus verifyDestination(IJavaScriptElement javaElement) throws JavaScriptModelException {
 			Assert.isNotNull(javaElement);
 			if (!fCheckDestination)
 				return new RefactoringStatus();
 			if (!javaElement.exists())
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_cannot1);
-			if (javaElement instanceof IJavaModel)
+			if (javaElement instanceof IJavaScriptModel)
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_jmodel);
-			if (!(javaElement instanceof IJavaProject || javaElement instanceof IPackageFragmentRoot))
+			if (!(javaElement instanceof IJavaScriptProject || javaElement instanceof IPackageFragmentRoot))
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_src2proj);
 			if (javaElement.isReadOnly())
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_src2writable);
-			if (ReorgUtils.isPackageFragmentRoot(javaElement.getJavaProject()))
+			if (ReorgUtils.isPackageFragmentRoot(javaElement.getJavaScriptProject()))
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_src2nosrc);
 			return new RefactoringStatus();
 		}
@@ -2324,11 +2324,11 @@ public final class ReorgPolicyFactory {
 			fPackageFragments= packageFragments;
 		}
 
-		public boolean canChildrenBeDestinations(IJavaElement javaElement) {
+		public boolean canChildrenBeDestinations(IJavaScriptElement javaElement) {
 			switch (javaElement.getElementType()) {
-				case IJavaElement.JAVA_MODEL:
-				case IJavaElement.JAVA_PROJECT:
-				case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+				case IJavaScriptElement.JAVASCRIPT_MODEL:
+				case IJavaScriptElement.JAVASCRIPT_PROJECT:
+				case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 					// can be nested
 					// (with exclusion
 					// filters)
@@ -2342,10 +2342,10 @@ public final class ReorgPolicyFactory {
 			return false;
 		}
 
-		public boolean canElementBeDestination(IJavaElement javaElement) {
+		public boolean canElementBeDestination(IJavaScriptElement javaElement) {
 			switch (javaElement.getElementType()) {
-				case IJavaElement.JAVA_PROJECT:
-				case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+				case IJavaScriptElement.JAVASCRIPT_PROJECT:
+				case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 					return true;
 				default:
 					return false;
@@ -2356,7 +2356,7 @@ public final class ReorgPolicyFactory {
 			return false;
 		}
 
-		public boolean canEnable() throws JavaModelException {
+		public boolean canEnable() throws JavaScriptModelException {
 			for (int i= 0; i < fPackageFragments.length; i++) {
 				if (JavaElementUtil.isDefaultPackage(fPackageFragments[i]) || fPackageFragments[i].isReadOnly())
 					return false;
@@ -2372,7 +2372,7 @@ public final class ReorgPolicyFactory {
 			return refactoringStatus;
 		}
 
-		private void confirmOverwriting(IReorgQueries reorgQueries) throws JavaModelException {
+		private void confirmOverwriting(IReorgQueries reorgQueries) throws JavaScriptModelException {
 			OverwriteHelper helper= new OverwriteHelper();
 			helper.setPackages(fPackageFragments);
 			IPackageFragmentRoot destRoot= getDestinationAsPackageFragmentRoot();
@@ -2391,7 +2391,7 @@ public final class ReorgPolicyFactory {
 			final IProject resource= getSingleProject();
 			final String project= resource != null ? resource.getName() : null;
 			final String header= Messages.format(getHeaderPattern(), new String[] { String.valueOf(length), getDestinationLabel()});
-			int flags= JavaRefactoringDescriptor.JAR_REFACTORING | JavaRefactoringDescriptor.JAR_MIGRATION | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
+			int flags= JavaScriptRefactoringDescriptor.JAR_REFACTORING | JavaScriptRefactoringDescriptor.JAR_MIGRATION | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
 			final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
 			final JDTRefactoringDescriptor descriptor= createRefactoringDescriptor(comment, arguments, description, project, flags);
 			arguments.put(ATTRIBUTE_POLICY, getPolicyId());
@@ -2402,11 +2402,11 @@ public final class ReorgPolicyFactory {
 			return new RefactoringChangeDescriptor(descriptor);
 		}
 
-		protected IPackageFragmentRoot getDestinationAsPackageFragmentRoot() throws JavaModelException {
+		protected IPackageFragmentRoot getDestinationAsPackageFragmentRoot() throws JavaScriptModelException {
 			return getDestinationAsPackageFragmentRoot(getJavaElementDestination());
 		}
 
-		private IPackageFragmentRoot getDestinationAsPackageFragmentRoot(IJavaElement javaElement) throws JavaModelException {
+		private IPackageFragmentRoot getDestinationAsPackageFragmentRoot(IJavaScriptElement javaElement) throws JavaScriptModelException {
 			if (javaElement == null)
 				return null;
 
@@ -2419,12 +2419,12 @@ public final class ReorgPolicyFactory {
 					return (IPackageFragmentRoot) pack.getParent();
 			}
 
-			if (javaElement instanceof IJavaProject)
-				return ReorgUtils.getCorrespondingPackageFragmentRoot((IJavaProject) javaElement);
+			if (javaElement instanceof IJavaScriptProject)
+				return ReorgUtils.getCorrespondingPackageFragmentRoot((IJavaScriptProject) javaElement);
 			return null;
 		}
 
-		public IJavaElement[] getJavaElements() {
+		public IJavaScriptElement[] getJavaElements() {
 			return fPackageFragments;
 		}
 
@@ -2440,8 +2440,8 @@ public final class ReorgPolicyFactory {
 			IProject result= null;
 			for (int index= 0; index < fPackageFragments.length; index++) {
 				if (result == null)
-					result= fPackageFragments[index].getJavaProject().getProject();
-				else if (!result.equals(fPackageFragments[index].getJavaProject().getProject()))
+					result= fPackageFragments[index].getJavaScriptProject().getProject();
+				else if (!result.equals(fPackageFragments[index].getJavaScriptProject().getProject()))
 					return null;
 			}
 			return result;
@@ -2467,8 +2467,8 @@ public final class ReorgPolicyFactory {
 					final String attribute= JDTRefactoringDescriptor.ATTRIBUTE_ELEMENT + (index + 1);
 					handle= extended.getAttribute(attribute);
 					if (handle != null && !"".equals(handle)) { //$NON-NLS-1$
-						final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
-						if (element == null || !element.exists() || element.getElementType() != IJavaElement.PACKAGE_FRAGMENT)
+						final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+						if (element == null || !element.exists() || element.getElementType() != IJavaScriptElement.PACKAGE_FRAGMENT)
 							status.merge(ScriptableRefactoring.createInputWarningStatus(element, getProcessorId(), getRefactoringId()));
 						else
 							elements.add(element);
@@ -2482,13 +2482,13 @@ public final class ReorgPolicyFactory {
 			return status;
 		}
 
-		protected RefactoringStatus verifyDestination(IJavaElement javaElement) throws JavaModelException {
+		protected RefactoringStatus verifyDestination(IJavaScriptElement javaElement) throws JavaScriptModelException {
 			Assert.isNotNull(javaElement);
 			if (!fCheckDestination)
 				return new RefactoringStatus();
 			if (!javaElement.exists())
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_cannot1);
-			if (javaElement instanceof IJavaModel)
+			if (javaElement instanceof IJavaScriptModel)
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_jmodel);
 			IPackageFragmentRoot destRoot= getDestinationAsPackageFragmentRoot(javaElement);
 			if (!ReorgUtils.isSourceFolder(destRoot))
@@ -2509,11 +2509,11 @@ public final class ReorgPolicyFactory {
 
 		protected boolean fCheckDestination= true;
 
-		private IJavaElement fJavaElementDestination;
+		private IJavaScriptElement fJavaElementDestination;
 
 		private IResource fResourceDestination;
 
-		public boolean canChildrenBeDestinations(IJavaElement javaElement) {
+		public boolean canChildrenBeDestinations(IJavaScriptElement javaElement) {
 			return true;
 		}
 
@@ -2521,7 +2521,7 @@ public final class ReorgPolicyFactory {
 			return true;
 		}
 
-		public boolean canElementBeDestination(IJavaElement javaElement) {
+		public boolean canElementBeDestination(IJavaScriptElement javaElement) {
 			return true;
 		}
 
@@ -2529,7 +2529,7 @@ public final class ReorgPolicyFactory {
 			return true;
 		}
 
-		public boolean canEnable() throws JavaModelException {
+		public boolean canEnable() throws JavaScriptModelException {
 			IResource[] resources= getResources();
 			for (int i= 0; i < resources.length; i++) {
 				IResource resource= resources[i];
@@ -2537,9 +2537,9 @@ public final class ReorgPolicyFactory {
 					return false;
 			}
 
-			IJavaElement[] javaElements= getJavaElements();
+			IJavaScriptElement[] javaElements= getJavaElements();
 			for (int i= 0; i < javaElements.length; i++) {
-				IJavaElement element= javaElements[i];
+				IJavaScriptElement element= javaElements[i];
 				if (!element.exists())
 					return false;
 			}
@@ -2594,7 +2594,7 @@ public final class ReorgPolicyFactory {
 			Object destination= getJavaElementDestination();
 			if (destination == null)
 				destination= getResourceDestination();
-			return JavaElementLabels.getTextLabel(destination, JavaElementLabels.ALL_FULLY_QUALIFIED);
+			return JavaScriptElementLabels.getTextLabel(destination, JavaScriptElementLabels.ALL_FULLY_QUALIFIED);
 		}
 
 		public String getFilePatterns() {
@@ -2607,7 +2607,7 @@ public final class ReorgPolicyFactory {
 
 		protected abstract String getHeaderPattern();
 
-		public final IJavaElement getJavaElementDestination() {
+		public final IJavaScriptElement getJavaElementDestination() {
 			return fJavaElementDestination;
 		}
 
@@ -2619,7 +2619,7 @@ public final class ReorgPolicyFactory {
 
 		protected Map getRefactoringArguments(String project) {
 			final Map arguments= new HashMap();
-			final IJavaElement element= getJavaElementDestination();
+			final IJavaScriptElement element= getJavaElementDestination();
 			if (element != null)
 				arguments.put(ATTRIBUTE_DESTINATION, JDTRefactoringDescriptor.elementToHandle(project, element));
 			else {
@@ -2662,15 +2662,15 @@ public final class ReorgPolicyFactory {
 				final JavaRefactoringArguments extended= (JavaRefactoringArguments) arguments;
 				String handle= extended.getAttribute(ATTRIBUTE_DESTINATION);
 				if (handle != null) {
-					final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+					final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
 					if (element != null) {
 						if (fCheckDestination && !element.exists())
 							return ScriptableRefactoring.createInputFatalStatus(element, getProcessorId(), getRefactoringId());
 						else {
 							try {
 								return setDestination(element);
-							} catch (JavaModelException exception) {
-								JavaPlugin.log(exception);
+							} catch (JavaScriptModelException exception) {
+								JavaScriptPlugin.log(exception);
 								return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_illegal_argument, new String[] { handle, JDTRefactoringDescriptor.ATTRIBUTE_INPUT}));
 							}
 						}
@@ -2683,8 +2683,8 @@ public final class ReorgPolicyFactory {
 						else {
 							try {
 								return setDestination(resource);
-							} catch (JavaModelException exception) {
-								JavaPlugin.log(exception);
+							} catch (JavaScriptModelException exception) {
+								JavaScriptPlugin.log(exception);
 								return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_illegal_argument, new String[] { handle, JDTRefactoringDescriptor.ATTRIBUTE_INPUT}));
 							}
 						}
@@ -2699,8 +2699,8 @@ public final class ReorgPolicyFactory {
 						else {
 							try {
 								return setDestination(resource);
-							} catch (JavaModelException exception) {
-								JavaPlugin.log(exception);
+							} catch (JavaScriptModelException exception) {
+								JavaScriptPlugin.log(exception);
 								return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_illegal_argument, new String[] { handle, JDTRefactoringDescriptor.ATTRIBUTE_INPUT}));
 							}
 						}
@@ -2720,7 +2720,7 @@ public final class ReorgPolicyFactory {
 			}
 		}
 
-		public final RefactoringStatus setDestination(IJavaElement destination) throws JavaModelException {
+		public final RefactoringStatus setDestination(IJavaScriptElement destination) throws JavaScriptModelException {
 			Assert.isNotNull(destination);
 			fJavaElementDestination= null;
 			fResourceDestination= null;
@@ -2728,7 +2728,7 @@ public final class ReorgPolicyFactory {
 			return verifyDestination(destination);
 		}
 
-		public final RefactoringStatus setDestination(IResource destination) throws JavaModelException {
+		public final RefactoringStatus setDestination(IResource destination) throws JavaScriptModelException {
 			Assert.isNotNull(destination);
 			fJavaElementDestination= null;
 			fResourceDestination= null;
@@ -2757,9 +2757,9 @@ public final class ReorgPolicyFactory {
 			// returns false
 		}
 
-		protected abstract RefactoringStatus verifyDestination(IJavaElement destination) throws JavaModelException;
+		protected abstract RefactoringStatus verifyDestination(IJavaScriptElement destination) throws JavaScriptModelException;
 
-		protected abstract RefactoringStatus verifyDestination(IResource destination) throws JavaModelException;
+		protected abstract RefactoringStatus verifyDestination(IResource destination) throws JavaScriptModelException;
 	}
 
 	private static abstract class SubCuElementReorgPolicy extends ReorgPolicy {
@@ -2778,7 +2778,7 @@ public final class ReorgPolicyFactory {
 
 		protected static final int ONLY_TYPES= 0;
 
-		protected static CompilationUnitChange createCompilationUnitChange(ICompilationUnit cu, CompilationUnitRewrite rewrite) throws CoreException {
+		protected static CompilationUnitChange createCompilationUnitChange(IJavaScriptUnit cu, CompilationUnitRewrite rewrite) throws CoreException {
 			CompilationUnitChange change= rewrite.createChange();
 			if (change != null) {
 				if (cu.isWorkingCopy())
@@ -2787,35 +2787,35 @@ public final class ReorgPolicyFactory {
 			return change;
 		}
 
-		protected static final ICompilationUnit getDestinationCu(IJavaElement destination) {
-			if (destination instanceof ICompilationUnit)
-				return (ICompilationUnit) destination;
-			return (ICompilationUnit) destination.getAncestor(IJavaElement.COMPILATION_UNIT);
+		protected static final IJavaScriptUnit getDestinationCu(IJavaScriptElement destination) {
+			if (destination instanceof IJavaScriptUnit)
+				return (IJavaScriptUnit) destination;
+			return (IJavaScriptUnit) destination.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 		}
 
-		private static ICompilationUnit getEnclosingCu(IJavaElement destination) {
-			if (destination instanceof ICompilationUnit)
-				return (ICompilationUnit) destination;
-			return (ICompilationUnit) destination.getAncestor(IJavaElement.COMPILATION_UNIT);
+		private static IJavaScriptUnit getEnclosingCu(IJavaScriptElement destination) {
+			if (destination instanceof IJavaScriptUnit)
+				return (IJavaScriptUnit) destination;
+			return (IJavaScriptUnit) destination.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 		}
 
-		private static IType getEnclosingType(IJavaElement destination) {
+		private static IType getEnclosingType(IJavaScriptElement destination) {
 			if (destination instanceof IType)
 				return (IType) destination;
-			return (IType) destination.getAncestor(IJavaElement.TYPE);
+			return (IType) destination.getAncestor(IJavaScriptElement.TYPE);
 		}
 
-		private static String getUnindentedSource(ISourceReference sourceReference) throws JavaModelException {
-			Assert.isTrue(sourceReference instanceof IJavaElement);
+		private static String getUnindentedSource(ISourceReference sourceReference) throws JavaScriptModelException {
+			Assert.isTrue(sourceReference instanceof IJavaScriptElement);
 			String[] lines= Strings.convertIntoLines(sourceReference.getSource());
-			final IJavaProject project= ((IJavaElement) sourceReference).getJavaProject();
+			final IJavaScriptProject project= ((IJavaScriptElement) sourceReference).getJavaScriptProject();
 			Strings.trimIndentation(lines, project, false);
-			return Strings.concatenate(lines, StubUtility.getLineDelimiterUsed((IJavaElement) sourceReference));
+			return Strings.concatenate(lines, StubUtility.getLineDelimiterUsed((IJavaScriptElement) sourceReference));
 		}
 
-		private IJavaElement[] fJavaElements;
+		private IJavaScriptElement[] fJavaElements;
 
-		SubCuElementReorgPolicy(IJavaElement[] javaElements) {
+		SubCuElementReorgPolicy(IJavaScriptElement[] javaElements) {
 			fJavaElements= javaElements;
 		}
 
@@ -2827,7 +2827,7 @@ public final class ReorgPolicyFactory {
 			return false;
 		}
 
-		public boolean canEnable() throws JavaModelException {
+		public boolean canEnable() throws JavaScriptModelException {
 			if (!super.canEnable())
 				return false;
 			for (int i= 0; i < fJavaElements.length; i++) {
@@ -2841,8 +2841,8 @@ public final class ReorgPolicyFactory {
 			return true;
 		}
 
-		private void copyImportsToDestination(IImportContainer container, ASTRewrite rewrite, CompilationUnit sourceCuNode, CompilationUnit destinationCuNode) throws JavaModelException {
-			IJavaElement[] importDeclarations= container.getChildren();
+		private void copyImportsToDestination(IImportContainer container, ASTRewrite rewrite, JavaScriptUnit sourceCuNode, JavaScriptUnit destinationCuNode) throws JavaScriptModelException {
+			IJavaScriptElement[] importDeclarations= container.getChildren();
 			for (int i= 0; i < importDeclarations.length; i++) {
 				Assert.isTrue(importDeclarations[i] instanceof IImportDeclaration);
 				IImportDeclaration importDeclaration= (IImportDeclaration) importDeclarations[i];
@@ -2850,35 +2850,35 @@ public final class ReorgPolicyFactory {
 			}
 		}
 
-		private void copyImportToDestination(IImportDeclaration declaration, ASTRewrite targetRewrite, CompilationUnit sourceCuNode, CompilationUnit destinationCuNode) throws JavaModelException {
+		private void copyImportToDestination(IImportDeclaration declaration, ASTRewrite targetRewrite, JavaScriptUnit sourceCuNode, JavaScriptUnit destinationCuNode) throws JavaScriptModelException {
 			ImportDeclaration sourceNode= ASTNodeSearchUtil.getImportDeclarationNode(declaration, sourceCuNode);
 			ImportDeclaration copiedNode= (ImportDeclaration) ASTNode.copySubtree(targetRewrite.getAST(), sourceNode);
-			targetRewrite.getListRewrite(destinationCuNode, CompilationUnit.IMPORTS_PROPERTY).insertLast(copiedNode, null);
+			targetRewrite.getListRewrite(destinationCuNode, JavaScriptUnit.IMPORTS_PROPERTY).insertLast(copiedNode, null);
 		}
 
-		private void copyInitializerToDestination(IInitializer initializer, CompilationUnitRewrite targetRewriter, CompilationUnit sourceCuNode, CompilationUnit targetCuNode) throws JavaModelException {
+		private void copyInitializerToDestination(IInitializer initializer, CompilationUnitRewrite targetRewriter, JavaScriptUnit sourceCuNode, JavaScriptUnit targetCuNode) throws JavaScriptModelException {
 			BodyDeclaration newInitializer= (BodyDeclaration) targetRewriter.getASTRewrite().createStringPlaceholder(getUnindentedSource(initializer), ASTNode.INITIALIZER);
 			copyMemberToDestination(initializer, targetRewriter, sourceCuNode, targetCuNode, newInitializer);
 		}
 
-		private void copyMemberToDestination(IMember member, CompilationUnitRewrite targetRewriter, CompilationUnit sourceCuNode, CompilationUnit targetCuNode, BodyDeclaration newMember) throws JavaModelException {
-			IJavaElement javaElementDestination= getJavaElementDestination();
+		private void copyMemberToDestination(IMember member, CompilationUnitRewrite targetRewriter, JavaScriptUnit sourceCuNode, JavaScriptUnit targetCuNode, BodyDeclaration newMember) throws JavaScriptModelException {
+			IJavaScriptElement javaElementDestination= getJavaElementDestination();
 			ASTNode nodeDestination;
 			ASTNode destinationContainer;
 			switch (javaElementDestination.getElementType()) {
-				case IJavaElement.INITIALIZER:
+				case IJavaScriptElement.INITIALIZER:
 					nodeDestination= ASTNodeSearchUtil.getInitializerNode((IInitializer) javaElementDestination, targetCuNode);
 					destinationContainer= nodeDestination.getParent();
 					break;
-				case IJavaElement.FIELD:
+				case IJavaScriptElement.FIELD:
 					nodeDestination= ASTNodeSearchUtil.getFieldOrEnumConstantDeclaration((IField) javaElementDestination, targetCuNode);
 					destinationContainer= nodeDestination.getParent();
 					break;
-				case IJavaElement.METHOD:
-					nodeDestination= ASTNodeSearchUtil.getMethodOrAnnotationTypeMemberDeclarationNode((IMethod) javaElementDestination, targetCuNode);
+				case IJavaScriptElement.METHOD:
+					nodeDestination= ASTNodeSearchUtil.getMethodOrAnnotationTypeMemberDeclarationNode((IFunction) javaElementDestination, targetCuNode);
 					destinationContainer= nodeDestination.getParent();
 					break;
-				case IJavaElement.TYPE:
+				case IJavaScriptElement.TYPE:
 					nodeDestination= null;
 					IType typeDestination= (IType) javaElementDestination;
 					if (typeDestination.isAnonymous())
@@ -2918,44 +2918,44 @@ public final class ReorgPolicyFactory {
 			}
 			// fall-back / default:
 //			final AbstractTypeDeclaration declaration= ASTNodeSearchUtil.getAbstractTypeDeclarationNode(getDestinationAsType(), targetCuNode.);
-			targetRewriter.getASTRewrite().getListRewrite(targetCuNode, CompilationUnit.STATEMENTS_PROPERTY).insertLast(newMember, null);
+			targetRewriter.getASTRewrite().getListRewrite(targetCuNode, JavaScriptUnit.STATEMENTS_PROPERTY).insertLast(newMember, null);
 		}
 
-		private void copyMethodToDestination(IMethod method, CompilationUnitRewrite targetRewriter, CompilationUnit sourceCuNode, CompilationUnit targetCuNode) throws JavaModelException {
-			BodyDeclaration newMethod= (BodyDeclaration) targetRewriter.getASTRewrite().createStringPlaceholder(getUnindentedSource(method), ASTNode.METHOD_DECLARATION);
+		private void copyMethodToDestination(IFunction method, CompilationUnitRewrite targetRewriter, JavaScriptUnit sourceCuNode, JavaScriptUnit targetCuNode) throws JavaScriptModelException {
+			BodyDeclaration newMethod= (BodyDeclaration) targetRewriter.getASTRewrite().createStringPlaceholder(getUnindentedSource(method), ASTNode.FUNCTION_DECLARATION);
 			copyMemberToDestination(method, targetRewriter, sourceCuNode, targetCuNode, newMethod);
 		}
 
-		private void copyPackageDeclarationToDestination(IPackageDeclaration declaration, ASTRewrite targetRewrite, CompilationUnit sourceCuNode, CompilationUnit destinationCuNode) throws JavaModelException {
+		private void copyPackageDeclarationToDestination(IPackageDeclaration declaration, ASTRewrite targetRewrite, JavaScriptUnit sourceCuNode, JavaScriptUnit destinationCuNode) throws JavaScriptModelException {
 			if (destinationCuNode.getPackage() != null)
 				return;
 			PackageDeclaration sourceNode= ASTNodeSearchUtil.getPackageDeclarationNode(declaration, sourceCuNode);
 			PackageDeclaration copiedNode= (PackageDeclaration) ASTNode.copySubtree(targetRewrite.getAST(), sourceNode);
-			targetRewrite.set(destinationCuNode, CompilationUnit.PACKAGE_PROPERTY, copiedNode, null);
+			targetRewrite.set(destinationCuNode, JavaScriptUnit.PACKAGE_PROPERTY, copiedNode, null);
 		}
 
-		protected void copyToDestination(IJavaElement element, CompilationUnitRewrite targetRewriter, CompilationUnit sourceCuNode, CompilationUnit targetCuNode) throws CoreException {
+		protected void copyToDestination(IJavaScriptElement element, CompilationUnitRewrite targetRewriter, JavaScriptUnit sourceCuNode, JavaScriptUnit targetCuNode) throws CoreException {
 			final ASTRewrite rewrite= targetRewriter.getASTRewrite();
 			switch (element.getElementType()) {
-				case IJavaElement.FIELD:
+				case IJavaScriptElement.FIELD:
 					copyMemberToDestination((IMember) element, targetRewriter, sourceCuNode, targetCuNode, createNewFieldDeclarationNode(((IField) element), rewrite, sourceCuNode));
 					break;
-				case IJavaElement.IMPORT_CONTAINER:
+				case IJavaScriptElement.IMPORT_CONTAINER:
 					copyImportsToDestination((IImportContainer) element, rewrite, sourceCuNode, targetCuNode);
 					break;
-				case IJavaElement.IMPORT_DECLARATION:
+				case IJavaScriptElement.IMPORT_DECLARATION:
 					copyImportToDestination((IImportDeclaration) element, rewrite, sourceCuNode, targetCuNode);
 					break;
-				case IJavaElement.INITIALIZER:
+				case IJavaScriptElement.INITIALIZER:
 					copyInitializerToDestination((IInitializer) element, targetRewriter, sourceCuNode, targetCuNode);
 					break;
-				case IJavaElement.METHOD:
-					copyMethodToDestination((IMethod) element, targetRewriter, sourceCuNode, targetCuNode);
+				case IJavaScriptElement.METHOD:
+					copyMethodToDestination((IFunction) element, targetRewriter, sourceCuNode, targetCuNode);
 					break;
-				case IJavaElement.PACKAGE_DECLARATION:
+				case IJavaScriptElement.PACKAGE_DECLARATION:
 					copyPackageDeclarationToDestination((IPackageDeclaration) element, rewrite, sourceCuNode, targetCuNode);
 					break;
-				case IJavaElement.TYPE:
+				case IJavaScriptElement.TYPE:
 					copyTypeToDestination((IType) element, targetRewriter, sourceCuNode, targetCuNode);
 					break;
 
@@ -2964,21 +2964,21 @@ public final class ReorgPolicyFactory {
 			}
 		}
 
-		private void copyTypeToDestination(IType type, CompilationUnitRewrite targetRewriter, CompilationUnit sourceCuNode, CompilationUnit targetCuNode) throws JavaModelException {
+		private void copyTypeToDestination(IType type, CompilationUnitRewrite targetRewriter, JavaScriptUnit sourceCuNode, JavaScriptUnit targetCuNode) throws JavaScriptModelException {
 			AbstractTypeDeclaration newType= (AbstractTypeDeclaration) targetRewriter.getASTRewrite().createStringPlaceholder(getUnindentedSource(type), ASTNode.TYPE_DECLARATION);
 			IType enclosingType= getEnclosingType(getJavaElementDestination());
 			if (enclosingType != null) {
 				copyMemberToDestination(type, targetRewriter, sourceCuNode, targetCuNode, newType);
 			} else {
-				targetRewriter.getASTRewrite().getListRewrite(targetCuNode, CompilationUnit.TYPES_PROPERTY).insertLast(newType, null);
+				targetRewriter.getASTRewrite().getListRewrite(targetCuNode, JavaScriptUnit.TYPES_PROPERTY).insertLast(newType, null);
 			}
 		}
 
-		private BodyDeclaration createNewFieldDeclarationNode(IField field, ASTRewrite rewrite, CompilationUnit sourceCuNode) throws CoreException {
+		private BodyDeclaration createNewFieldDeclarationNode(IField field, ASTRewrite rewrite, JavaScriptUnit sourceCuNode) throws CoreException {
 			AST targetAst= rewrite.getAST();
 			ITextFileBuffer buffer= null;
 			BodyDeclaration newDeclaration= null;
-			ICompilationUnit unit= field.getCompilationUnit();
+			IJavaScriptUnit unit= field.getJavaScriptUnit();
 			try {
 				buffer= RefactoringFileBuffers.acquire(unit);
 				IDocument document= buffer.getDocument();
@@ -3003,12 +3003,12 @@ public final class ReorgPolicyFactory {
 					Assert.isTrue(false);
 				if (newDeclaration != null) {
 					newDeclaration.modifiers().addAll(ASTNodeFactory.newModifiers(targetAst, bodyDeclaration.getModifiers()));
-					Javadoc javadoc= bodyDeclaration.getJavadoc();
+					JSdoc javadoc= bodyDeclaration.getJavadoc();
 					if (javadoc != null)
-						newDeclaration.setJavadoc((Javadoc) rewrite.createStringPlaceholder(document.get(javadoc.getStartPosition(), javadoc.getLength()), ASTNode.JAVADOC));
+						newDeclaration.setJavadoc((JSdoc) rewrite.createStringPlaceholder(document.get(javadoc.getStartPosition(), javadoc.getLength()), ASTNode.JSDOC));
 				}
 			} catch (BadLocationException exception) {
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 			} finally {
 				if (buffer != null)
 					RefactoringFileBuffers.release(unit);
@@ -3021,13 +3021,13 @@ public final class ReorgPolicyFactory {
 		}
 
 		protected final int getContentKind() {
-			final int types= ReorgUtils.getElementsOfType(fJavaElements, IJavaElement.TYPE).size();
-			final int fields= ReorgUtils.getElementsOfType(fJavaElements, IJavaElement.FIELD).size();
-			final int methods= ReorgUtils.getElementsOfType(fJavaElements, IJavaElement.METHOD).size();
-			final int initializers= ReorgUtils.getElementsOfType(fJavaElements, IJavaElement.INITIALIZER).size();
-			final int packages= ReorgUtils.getElementsOfType(fJavaElements, IJavaElement.PACKAGE_DECLARATION).size();
-			final int container= ReorgUtils.getElementsOfType(fJavaElements, IJavaElement.IMPORT_CONTAINER).size();
-			final int imp= ReorgUtils.getElementsOfType(fJavaElements, IJavaElement.IMPORT_DECLARATION).size();
+			final int types= ReorgUtils.getElementsOfType(fJavaElements, IJavaScriptElement.TYPE).size();
+			final int fields= ReorgUtils.getElementsOfType(fJavaElements, IJavaScriptElement.FIELD).size();
+			final int methods= ReorgUtils.getElementsOfType(fJavaElements, IJavaScriptElement.METHOD).size();
+			final int initializers= ReorgUtils.getElementsOfType(fJavaElements, IJavaScriptElement.INITIALIZER).size();
+			final int packages= ReorgUtils.getElementsOfType(fJavaElements, IJavaScriptElement.PACKAGE_DECLARATION).size();
+			final int container= ReorgUtils.getElementsOfType(fJavaElements, IJavaScriptElement.IMPORT_CONTAINER).size();
+			final int imp= ReorgUtils.getElementsOfType(fJavaElements, IJavaScriptElement.IMPORT_DECLARATION).size();
 			final int length= types + fields + methods + initializers + packages + container + imp;
 			if (length == types)
 				return ONLY_TYPES;
@@ -3053,7 +3053,7 @@ public final class ReorgPolicyFactory {
 			final IProject resource= getSingleProject();
 			final String project= resource != null ? resource.getName() : null;
 			final String header= Messages.format(getHeaderPattern(), new String[] { String.valueOf(length), getDestinationLabel()});
-			int flags= JavaRefactoringDescriptor.JAR_REFACTORING | JavaRefactoringDescriptor.JAR_MIGRATION | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
+			int flags= JavaScriptRefactoringDescriptor.JAR_REFACTORING | JavaScriptRefactoringDescriptor.JAR_MIGRATION | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE;
 			final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
 			final JDTRefactoringDescriptor descriptor= createRefactoringDescriptor(comment, arguments, description, project, flags);
 			arguments.put(ATTRIBUTE_POLICY, getPolicyId());
@@ -3064,23 +3064,23 @@ public final class ReorgPolicyFactory {
 			return new RefactoringChangeDescriptor(descriptor);
 		}
 
-		private IType getDestinationAsType() throws JavaModelException {
-			IJavaElement destination= getJavaElementDestination();
+		private IType getDestinationAsType() throws JavaScriptModelException {
+			IJavaScriptElement destination= getJavaElementDestination();
 			IType enclosingType= getEnclosingType(destination);
 			if (enclosingType != null)
 				return enclosingType;
-			ICompilationUnit enclosingCu= getEnclosingCu(destination);
+			IJavaScriptUnit enclosingCu= getEnclosingCu(destination);
 			Assert.isNotNull(enclosingCu);
 			IType mainType= JavaElementUtil.getMainType(enclosingCu);
 			Assert.isNotNull(mainType);
 			return mainType;
 		}
 
-		protected final ICompilationUnit getDestinationCu() {
+		protected final IJavaScriptUnit getDestinationCu() {
 			return getDestinationCu(getJavaElementDestination());
 		}
 
-		public final IJavaElement[] getJavaElements() {
+		public final IJavaScriptElement[] getJavaElements() {
 			return fJavaElements;
 		}
 
@@ -3092,17 +3092,17 @@ public final class ReorgPolicyFactory {
 			IProject result= null;
 			for (int index= 0; index < fJavaElements.length; index++) {
 				if (result == null)
-					result= fJavaElements[index].getJavaProject().getProject();
-				else if (!result.equals(fJavaElements[index].getJavaProject().getProject()))
+					result= fJavaElements[index].getJavaScriptProject().getProject();
+				else if (!result.equals(fJavaElements[index].getJavaScriptProject().getProject()))
 					return null;
 			}
 			return result;
 		}
 
-		protected final ICompilationUnit getSourceCu() {
+		protected final IJavaScriptUnit getSourceCu() {
 			// all have a common parent, so all must be in the same cu
 			// we checked before that the array in not null and not empty
-			return (ICompilationUnit) fJavaElements[0].getAncestor(IJavaElement.COMPILATION_UNIT);
+			return (IJavaScriptUnit) fJavaElements[0].getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 		}
 
 		public RefactoringStatus initialize(RefactoringArguments arguments) {
@@ -3125,7 +3125,7 @@ public final class ReorgPolicyFactory {
 					final String attribute= JDTRefactoringDescriptor.ATTRIBUTE_ELEMENT + (index + 1);
 					handle= extended.getAttribute(attribute);
 					if (handle != null && !"".equals(handle)) { //$NON-NLS-1$
-						final IJavaElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
+						final IJavaScriptElement element= JDTRefactoringDescriptor.handleToElement(extended.getProject(), handle, false);
 						if (element == null || !element.exists())
 							status.merge(ScriptableRefactoring.createInputWarningStatus(element, getProcessorId(), getRefactoringId()));
 						else
@@ -3133,55 +3133,55 @@ public final class ReorgPolicyFactory {
 					} else
 						return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, attribute));
 				}
-				fJavaElements= (IJavaElement[]) elements.toArray(new IJavaElement[elements.size()]);
+				fJavaElements= (IJavaScriptElement[]) elements.toArray(new IJavaScriptElement[elements.size()]);
 			} else
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.InitializableRefactoring_inacceptable_arguments);
 			status.merge(super.initialize(arguments));
 			return status;
 		}
 
-		private RefactoringStatus recursiveVerifyDestination(IJavaElement destination) throws JavaModelException {
+		private RefactoringStatus recursiveVerifyDestination(IJavaScriptElement destination) throws JavaScriptModelException {
 			Assert.isNotNull(destination);
 			if (!fCheckDestination)
 				return new RefactoringStatus();
 			if (!destination.exists())
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_doesnotexist1);
-			if (destination instanceof IJavaModel)
+			if (destination instanceof IJavaScriptModel)
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_jmodel);
-			if (!(destination instanceof ICompilationUnit) && !ReorgUtils.isInsideCompilationUnit(destination))
+			if (!(destination instanceof IJavaScriptUnit) && !ReorgUtils.isInsideCompilationUnit(destination))
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_cannot);
 
-			ICompilationUnit destinationCu= getDestinationCu(destination);
+			IJavaScriptUnit destinationCu= getDestinationCu(destination);
 			Assert.isNotNull(destinationCu);
 			if (destinationCu.isReadOnly())
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_cannot_modify);
 
 			switch (destination.getElementType()) {
-				case IJavaElement.COMPILATION_UNIT:
-					int[] types0= new int[] { IJavaElement.FIELD, IJavaElement.INITIALIZER, IJavaElement.METHOD};
+				case IJavaScriptElement.JAVASCRIPT_UNIT:
+					int[] types0= new int[] { IJavaScriptElement.FIELD, IJavaScriptElement.INITIALIZER, IJavaScriptElement.METHOD};
 					if (ReorgUtils.hasElementsOfType(getJavaElements(), types0))
 						return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_cannot);
 					break;
-				case IJavaElement.PACKAGE_DECLARATION:
+				case IJavaScriptElement.PACKAGE_DECLARATION:
 					return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_package_decl);
 
-				case IJavaElement.IMPORT_CONTAINER:
-					if (ReorgUtils.hasElementsNotOfType(getJavaElements(), IJavaElement.IMPORT_DECLARATION))
+				case IJavaScriptElement.IMPORT_CONTAINER:
+					if (ReorgUtils.hasElementsNotOfType(getJavaElements(), IJavaScriptElement.IMPORT_DECLARATION))
 						return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_cannot);
 					break;
 
-				case IJavaElement.IMPORT_DECLARATION:
-					if (ReorgUtils.hasElementsNotOfType(getJavaElements(), IJavaElement.IMPORT_DECLARATION))
+				case IJavaScriptElement.IMPORT_DECLARATION:
+					if (ReorgUtils.hasElementsNotOfType(getJavaElements(), IJavaScriptElement.IMPORT_DECLARATION))
 						return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_cannot);
 					break;
 
-				case IJavaElement.FIELD:// fall thru
-				case IJavaElement.INITIALIZER:// fall thru
-				case IJavaElement.METHOD:// fall thru
+				case IJavaScriptElement.FIELD:// fall thru
+				case IJavaScriptElement.INITIALIZER:// fall thru
+				case IJavaScriptElement.METHOD:// fall thru
 					return recursiveVerifyDestination(destination.getParent());
 
-				case IJavaElement.TYPE:
-					int[] types1= new int[] { IJavaElement.IMPORT_DECLARATION, IJavaElement.IMPORT_CONTAINER, IJavaElement.PACKAGE_DECLARATION};
+				case IJavaScriptElement.TYPE:
+					int[] types1= new int[] { IJavaScriptElement.IMPORT_DECLARATION, IJavaScriptElement.IMPORT_CONTAINER, IJavaScriptElement.PACKAGE_DECLARATION};
 					if (ReorgUtils.hasElementsOfType(getJavaElements(), types1))
 						return recursiveVerifyDestination(destination.getParent());
 					break;
@@ -3190,11 +3190,11 @@ public final class ReorgPolicyFactory {
 			return new RefactoringStatus();
 		}
 
-		protected RefactoringStatus verifyDestination(IJavaElement destination) throws JavaModelException {
+		protected RefactoringStatus verifyDestination(IJavaScriptElement destination) throws JavaScriptModelException {
 			return recursiveVerifyDestination(destination);
 		}
 
-		protected final RefactoringStatus verifyDestination(IResource destination) throws JavaModelException {
+		protected final RefactoringStatus verifyDestination(IResource destination) throws JavaScriptModelException {
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_no_resource);
 		}
 	}
@@ -3237,7 +3237,7 @@ public final class ReorgPolicyFactory {
 		return false;
 	}
 
-	public static ICopyPolicy createCopyPolicy(IResource[] resources, IJavaElement[] javaElements) throws JavaModelException {
+	public static ICopyPolicy createCopyPolicy(IResource[] resources, IJavaScriptElement[] javaElements) throws JavaScriptModelException {
 		return (ICopyPolicy) createReorgPolicy(true, resources, javaElements);
 	}
 
@@ -3263,7 +3263,7 @@ public final class ReorgPolicyFactory {
 		return null;
 	}
 
-	public static IMovePolicy createMovePolicy(IResource[] resources, IJavaElement[] javaElements) throws JavaModelException {
+	public static IMovePolicy createMovePolicy(IResource[] resources, IJavaScriptElement[] javaElements) throws JavaScriptModelException {
 		return (IMovePolicy) createReorgPolicy(false, resources, javaElements);
 	}
 
@@ -3289,7 +3289,7 @@ public final class ReorgPolicyFactory {
 		return null;
 	}
 
-	private static IReorgPolicy createReorgPolicy(boolean copy, IResource[] selectedResources, IJavaElement[] selectedJavaElements) throws JavaModelException {
+	private static IReorgPolicy createReorgPolicy(boolean copy, IResource[] selectedResources, IJavaScriptElement[] selectedJavaElements) throws JavaScriptModelException {
 		final IReorgPolicy NO;
 		if (copy)
 			NO= new NoCopyPolicy();
@@ -3298,13 +3298,13 @@ public final class ReorgPolicyFactory {
 
 		ActualSelectionComputer selectionComputer= new ActualSelectionComputer(selectedJavaElements, selectedResources);
 		IResource[] resources= selectionComputer.getActualResourcesToReorg();
-		IJavaElement[] javaElements= selectionComputer.getActualJavaElementsToReorg();
+		IJavaScriptElement[] javaElements= selectionComputer.getActualJavaElementsToReorg();
 
-		if ((resources.length + javaElements.length == 0) || containsNull(resources) || containsNull(javaElements) || ReorgUtils.isArchiveMember(javaElements) || ReorgUtils.hasElementsOfType(javaElements, IJavaElement.JAVA_PROJECT) || ReorgUtils.hasElementsOfType(javaElements, IJavaElement.JAVA_MODEL) || ReorgUtils.hasElementsOfType(resources, IResource.PROJECT | IResource.ROOT) || !new ParentChecker(resources, javaElements).haveCommonParent())
+		if ((resources.length + javaElements.length == 0) || containsNull(resources) || containsNull(javaElements) || ReorgUtils.isArchiveMember(javaElements) || ReorgUtils.hasElementsOfType(javaElements, IJavaScriptElement.JAVASCRIPT_PROJECT) || ReorgUtils.hasElementsOfType(javaElements, IJavaScriptElement.JAVASCRIPT_MODEL) || ReorgUtils.hasElementsOfType(resources, IResource.PROJECT | IResource.ROOT) || !new ParentChecker(resources, javaElements).haveCommonParent())
 			return NO;
 
-		if (ReorgUtils.hasElementsOfType(javaElements, IJavaElement.PACKAGE_FRAGMENT)) {
-			if (resources.length != 0 || ReorgUtils.hasElementsNotOfType(javaElements, IJavaElement.PACKAGE_FRAGMENT))
+		if (ReorgUtils.hasElementsOfType(javaElements, IJavaScriptElement.PACKAGE_FRAGMENT)) {
+			if (resources.length != 0 || ReorgUtils.hasElementsNotOfType(javaElements, IJavaScriptElement.PACKAGE_FRAGMENT))
 				return NO;
 			if (copy)
 				return new CopyPackagesPolicy(ArrayTypeConverter.toPackageArray(javaElements));
@@ -3312,8 +3312,8 @@ public final class ReorgPolicyFactory {
 				return new MovePackagesPolicy(ArrayTypeConverter.toPackageArray(javaElements));
 		}
 
-		if (ReorgUtils.hasElementsOfType(javaElements, IJavaElement.PACKAGE_FRAGMENT_ROOT)) {
-			if (resources.length != 0 || ReorgUtils.hasElementsNotOfType(javaElements, IJavaElement.PACKAGE_FRAGMENT_ROOT))
+		if (ReorgUtils.hasElementsOfType(javaElements, IJavaScriptElement.PACKAGE_FRAGMENT_ROOT)) {
+			if (resources.length != 0 || ReorgUtils.hasElementsNotOfType(javaElements, IJavaScriptElement.PACKAGE_FRAGMENT_ROOT))
 				return NO;
 			if (copy)
 				return new CopyPackageFragmentRootsPolicy(ArrayTypeConverter.toPackageFragmentRootArray(javaElements));
@@ -3321,8 +3321,8 @@ public final class ReorgPolicyFactory {
 				return new MovePackageFragmentRootsPolicy(ArrayTypeConverter.toPackageFragmentRootArray(javaElements));
 		}
 
-		if (ReorgUtils.hasElementsOfType(resources, IResource.FILE | IResource.FOLDER) || ReorgUtils.hasElementsOfType(javaElements, IJavaElement.COMPILATION_UNIT)) {
-			if (ReorgUtils.hasElementsNotOfType(javaElements, IJavaElement.COMPILATION_UNIT))
+		if (ReorgUtils.hasElementsOfType(resources, IResource.FILE | IResource.FOLDER) || ReorgUtils.hasElementsOfType(javaElements, IJavaScriptElement.JAVASCRIPT_UNIT)) {
+			if (ReorgUtils.hasElementsNotOfType(javaElements, IJavaScriptElement.JAVASCRIPT_UNIT))
 				return NO;
 			if (ReorgUtils.hasElementsNotOfType(resources, IResource.FILE | IResource.FOLDER))
 				return NO;
@@ -3335,8 +3335,8 @@ public final class ReorgPolicyFactory {
 		if (hasElementsSmallerThanCuOrClassFile(javaElements)) {
 			// assertions guaranteed by common parent
 			Assert.isTrue(resources.length == 0);
-			Assert.isTrue(!ReorgUtils.hasElementsOfType(javaElements, IJavaElement.COMPILATION_UNIT));
-			Assert.isTrue(!ReorgUtils.hasElementsOfType(javaElements, IJavaElement.CLASS_FILE));
+			Assert.isTrue(!ReorgUtils.hasElementsOfType(javaElements, IJavaScriptElement.JAVASCRIPT_UNIT));
+			Assert.isTrue(!ReorgUtils.hasElementsOfType(javaElements, IJavaScriptElement.CLASS_FILE));
 			Assert.isTrue(!hasElementsLargerThanCuOrClassFile(javaElements));
 			if (copy)
 				return new CopySubCuElementsPolicy(javaElements);
@@ -3346,7 +3346,7 @@ public final class ReorgPolicyFactory {
 		return NO;
 	}
 
-	private static boolean hasElementsLargerThanCuOrClassFile(IJavaElement[] javaElements) {
+	private static boolean hasElementsLargerThanCuOrClassFile(IJavaScriptElement[] javaElements) {
 		for (int i= 0; i < javaElements.length; i++) {
 			if (!ReorgUtils.isInsideCompilationUnit(javaElements[i]) && !ReorgUtils.isInsideClassFile(javaElements[i]))
 				return true;
@@ -3354,7 +3354,7 @@ public final class ReorgPolicyFactory {
 		return false;
 	}
 
-	private static boolean hasElementsSmallerThanCuOrClassFile(IJavaElement[] javaElements) {
+	private static boolean hasElementsSmallerThanCuOrClassFile(IJavaScriptElement[] javaElements) {
 		for (int i= 0; i < javaElements.length; i++) {
 			if (ReorgUtils.isInsideCompilationUnit(javaElements[i]))
 				return true;
@@ -3421,16 +3421,16 @@ public final class ReorgPolicyFactory {
 				final boolean processed= Boolean.valueOf(tokenizer.nextToken()).booleanValue();
 				if (processed) {
 					log.markAsProcessed(element);
-					if (element instanceof IJavaElement)
-						log.markAsProcessed(JavaElementResourceMapping.create((IJavaElement) element));
+					if (element instanceof IJavaScriptElement)
+						log.markAsProcessed(JavaElementResourceMapping.create((IJavaScriptElement) element));
 				}
 				if (tokenizer.hasMoreTokens()) {
 					final boolean renamed= Boolean.valueOf(tokenizer.nextToken()).booleanValue();
 					if (renamed && tokenizer.hasMoreTokens()) {
 						final String name= tokenizer.nextToken();
 						log.setNewName(element, name);
-						if (element instanceof IJavaElement)
-							log.setNewName(JavaElementResourceMapping.create((IJavaElement) element), name);
+						if (element instanceof IJavaScriptElement)
+							log.setNewName(JavaElementResourceMapping.create((IJavaScriptElement) element), name);
 					}
 				}
 			}
@@ -3461,8 +3461,8 @@ public final class ReorgPolicyFactory {
 	}
 
 	private static boolean storeLogElement(StringBuffer buffer, String project, Object object) {
-		if (object instanceof IJavaElement) {
-			final IJavaElement element= (IJavaElement) object;
+		if (object instanceof IJavaScriptElement) {
+			final IJavaScriptElement element= (IJavaScriptElement) object;
 			buffer.append(JDTRefactoringDescriptor.elementToHandle(project, element));
 			return true;
 		} else if (object instanceof IResource) {

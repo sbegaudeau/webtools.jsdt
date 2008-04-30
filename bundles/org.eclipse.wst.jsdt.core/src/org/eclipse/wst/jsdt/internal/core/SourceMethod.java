@@ -11,21 +11,21 @@
 package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 
 /**
- * @see IMethod
+ * @see IFunction
  */
 
-public class SourceMethod extends NamedMember implements IMethod {
+public class SourceMethod extends NamedMember implements IFunction {
 
 	/**
 	 * The parameter type signatures of the method - stored locally
@@ -44,7 +44,7 @@ protected SourceMethod(JavaElement parent, String name, String[] parameterTypes)
 		this.parameterTypes= parameterTypes;
 	}
 }
-protected void closing(Object info) throws JavaModelException {
+protected void closing(Object info) throws JavaScriptModelException {
 	super.closing(info);
 	SourceMethodElementInfo elementInfo = (SourceMethodElementInfo) info;
 	ITypeParameter[] typeParameters = elementInfo.typeParameters;
@@ -57,15 +57,15 @@ public boolean equals(Object o) {
 	return super.equals(o);// && Util.equalArraysOrNull(this.parameterTypes, ((SourceMethod)o).parameterTypes);
 }
 /**
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public int getElementType() {
 	return METHOD;
 }
 /**
- * @see IMethod
+ * @see IFunction
  */
-public String[] getExceptionTypes() throws JavaModelException {
+public String[] getExceptionTypes() throws JavaScriptModelException {
 	SourceMethodElementInfo info = (SourceMethodElementInfo) getElementInfo();
 	char[][] exs= info.getExceptionTypeNames();
 	return CompilationUnitStructureRequestor.convertTypeNamesToSigs(exs);
@@ -94,32 +94,32 @@ protected char getHandleMementoDelimiter() {
 	return JavaElement.JEM_METHOD;
 }
 /* (non-Javadoc)
- * @see org.eclipse.wst.jsdt.core.IMethod#getKey()
+ * @see org.eclipse.wst.jsdt.core.IFunction#getKey()
  */
 public String getKey() {
 	try {
 		return getKey(this, false/*don't open*/);
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// happen only if force open is true
 		return null;
 	}
 }
 /**
- * @see IMethod
+ * @see IFunction
  */
 public int getNumberOfParameters() {
 	return this.parameterTypes == null ? 0 : this.parameterTypes.length;
 }
 /**
- * @see IMethod
+ * @see IFunction
  */
-public String[] getParameterNames() throws JavaModelException {
+public String[] getParameterNames() throws JavaScriptModelException {
 	SourceMethodElementInfo info = (SourceMethodElementInfo) getElementInfo();
 	char[][] names= info.getArgumentNames();
 	return CharOperation.toStrings(names);
 }
 /**
- * @see IMethod
+ * @see IFunction
  */
 public String[] getParameterTypes() {
 	return this.parameterTypes;
@@ -129,17 +129,17 @@ public ITypeParameter getTypeParameter(String typeParameterName) {
 	return new TypeParameter(this, typeParameterName);
 }
 
-public ITypeParameter[] getTypeParameters() throws JavaModelException {
+public ITypeParameter[] getTypeParameters() throws JavaScriptModelException {
 	SourceMethodElementInfo info = (SourceMethodElementInfo) getElementInfo();
 	return info.typeParameters;
 }
 
 /**
- * @see IMethod#getTypeParameterSignatures()
+ * @see IFunction#getTypeParameterSignatures()
  * @since 3.0
  * @deprecated
  */
-public String[] getTypeParameterSignatures() throws JavaModelException {
+public String[] getTypeParameterSignatures() throws JavaScriptModelException {
 	ITypeParameter[] typeParameters = getTypeParameters();
 	int length = typeParameters.length;
 	String[] typeParameterSignatures = new String[length];
@@ -164,30 +164,30 @@ public String[] getTypeParameterSignatures() throws JavaModelException {
 /*
  * @see JavaElement#getPrimaryElement(boolean)
  */
-public IJavaElement getPrimaryElement(boolean checkOwner) {
+public IJavaScriptElement getPrimaryElement(boolean checkOwner) {
 	if (checkOwner) {
-		CompilationUnit cu = (CompilationUnit)getAncestor(COMPILATION_UNIT);
+		CompilationUnit cu = (CompilationUnit)getAncestor(JAVASCRIPT_UNIT);
 		if (cu.isPrimary()) return this;
 	}
-	IJavaElement primaryParent = this.parent.getPrimaryElement(false);
+	IJavaScriptElement primaryParent = this.parent.getPrimaryElement(false);
 	if (primaryParent instanceof IType)
-		return ((IType)primaryParent).getMethod(this.name, this.parameterTypes);
-	return ((ICompilationUnit)primaryParent).getMethod(this.name, this.parameterTypes);
+		return ((IType)primaryParent).getFunction(this.name, this.parameterTypes);
+	return ((IJavaScriptUnit)primaryParent).getFunction(this.name, this.parameterTypes);
 }
-public String[] getRawParameterNames() throws JavaModelException {
+public String[] getRawParameterNames() throws JavaScriptModelException {
 	return getParameterNames();
 }
 /**
- * @see IMethod
+ * @see IFunction
  */
-public String getReturnType() throws JavaModelException {
+public String getReturnType() throws JavaScriptModelException {
 	SourceMethodElementInfo info = (SourceMethodElementInfo) getElementInfo();
 	return  Signature.createTypeSignature(info.getReturnTypeName(), false) ;
 }
 /**
- * @see IMethod
+ * @see IFunction
  */
-public String getSignature() throws JavaModelException {
+public String getSignature() throws JavaScriptModelException {
 	SourceMethodElementInfo info = (SourceMethodElementInfo) getElementInfo();
 	return Signature.createMethodSignature(this.parameterTypes, Signature.createTypeSignature(info.getReturnTypeName(), false));
 }
@@ -203,9 +203,9 @@ public int hashCode() {
 	return hash;
 }
 /**
- * @see IMethod
+ * @see IFunction
  */
-public boolean isConstructor() throws JavaModelException {
+public boolean isConstructor() throws JavaScriptModelException {
 	if (!this.getElementName().equals(this.parent.getElementName())) {
 		// faster than reaching the info
 		return false;
@@ -214,21 +214,21 @@ public boolean isConstructor() throws JavaModelException {
 	return info.isConstructor();
 }
 /**
- * @see IMethod#isMainMethod()
+ * @see IFunction#isMainMethod()
  */
-public boolean isMainMethod() throws JavaModelException {
+public boolean isMainMethod() throws JavaScriptModelException {
 	return this.isMainMethod(this);
 }
 /* (non-Javadoc)
- * @see org.eclipse.wst.jsdt.core.IMethod#isResolved()
+ * @see org.eclipse.wst.jsdt.core.IFunction#isResolved()
  */
 public boolean isResolved() {
 	return false;
 }
 /**
- * @see IMethod#isSimilar(IMethod)
+ * @see IFunction#isSimilar(IFunction)
  */
-public boolean isSimilar(IMethod method) {
+public boolean isSimilar(IFunction method) {
 	return
 		areSimilarMethods(
 			this.getElementName(), this.getParameterTypes(),
@@ -321,7 +321,14 @@ protected void toStringName(StringBuffer buffer, int flags) {
 	}
 }
 
-public IMethod getMethod(String selector, String[] parameterTypeSignatures)
+/**
+ * @deprecated Use {@link #getFunction(String,String[])} instead
+ */
+public IFunction getMethod(String selector, String[] parameterTypeSignatures)
+{
+	return getFunction(selector, parameterTypeSignatures);
+}
+public IFunction getFunction(String selector, String[] parameterTypeSignatures)
 {
 	return new SourceMethod(this, selector, parameterTypeSignatures);
 

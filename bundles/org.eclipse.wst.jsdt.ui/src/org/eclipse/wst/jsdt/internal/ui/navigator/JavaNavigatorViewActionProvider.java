@@ -21,7 +21,7 @@ import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.IExtensionActivationListener;
 import org.eclipse.ui.navigator.IExtensionStateModel;
 import org.eclipse.ui.navigator.INavigatorActivationService;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.navigator.IExtensionStateConstants.Values;
 
 /**
@@ -128,7 +128,7 @@ public class JavaNavigatorViewActionProvider extends CommonActionProvider {
 
 		// If no memento try an restore from preference store
 		if (state == null) {
-			IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+			IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 			state= new Integer(store.getInt(TAG_LAYOUT));
 		}
 
@@ -144,7 +144,7 @@ public class JavaNavigatorViewActionProvider extends CommonActionProvider {
 
 	public void saveState(IMemento aMemento) {
 		super.saveState(aMemento);
-		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 		if (fStateModel.getBooleanProperty(Values.IS_LAYOUT_FLAT))
 			store.setValue(TAG_LAYOUT, FLAT_LAYOUT);
 		else

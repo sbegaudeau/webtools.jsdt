@@ -44,15 +44,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.dialogs.SelectionStatusDialog;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.CheckedListDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
@@ -82,8 +82,8 @@ public class CategoryFilterActionGroup extends ActionGroup {
 							return true;
 					}
 					return false;
-				} catch (JavaModelException e) {
-					JavaPlugin.log(e);
+				} catch (JavaScriptModelException e) {
+					JavaScriptPlugin.log(e);
 				}
 			}
 			return true;
@@ -259,14 +259,14 @@ public class CategoryFilterActionGroup extends ActionGroup {
 	private final String fViewerId;
 	private final CategoryFilter fFilter;
 	private final HashSet fFilteredCategories;
-	private IJavaElement[] fInputElement;
+	private IJavaScriptElement[] fInputElement;
 	private final CategoryFilterMenuAction fMenuAction;
 	private IMenuManager fMenuManager;
 	private IMenuListener fMenuListener;
 	private final LinkedHashMap fLRUList;
 	private boolean fFilterUncategorizedMembers;
 
-	public CategoryFilterActionGroup(final StructuredViewer viewer, final String viewerId, IJavaElement[] input) {
+	public CategoryFilterActionGroup(final StructuredViewer viewer, final String viewerId, IJavaScriptElement[] input) {
 		Assert.isLegal(viewer != null);
 		Assert.isLegal(viewerId != null);
 		Assert.isLegal(input != null);
@@ -291,14 +291,14 @@ public class CategoryFilterActionGroup extends ActionGroup {
 		fViewer.addFilter(fFilter);
 	}
 	
-	public void setInput(IJavaElement[] input) {
+	public void setInput(IJavaScriptElement[] input) {
 		Assert.isLegal(input != null);
 		fInputElement= input;
 	}
 	
 	private void loadSettings() {
 		fFilteredCategories.clear();
-		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 		String string= store.getString(getPreferenceKey());
 		if (string != null && string.length() > 0) {
 			String[] categories= string.split(";"); //$NON-NLS-1$
@@ -317,7 +317,7 @@ public class CategoryFilterActionGroup extends ActionGroup {
 	}
 
 	private void storeSettings() {
-		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore store= JavaScriptPlugin.getDefault().getPreferenceStore();
 		if (fFilteredCategories.size() == 0) {
 			store.setValue(getPreferenceKey(), ""); //$NON-NLS-1$
 		} else {
@@ -441,33 +441,33 @@ public class CategoryFilterActionGroup extends ActionGroup {
 		return hasUncategorizedMember[0];
 	}
 
-	private boolean collectCategories(IJavaElement element, IResultCollector collector) {//HashSet result, int max, LinkedHashMap lruList) {
+	private boolean collectCategories(IJavaScriptElement element, IResultCollector collector) {//HashSet result, int max, LinkedHashMap lruList) {
 		try {
 			if (element instanceof IMember) {
 				IMember member= (IMember)element;
 				collector.accept(member.getCategories());
 				return processChildren(member.getChildren(), collector);
-			} else if (element instanceof ICompilationUnit) {
-				return processChildren(((ICompilationUnit)element).getChildren(), collector);
+			} else if (element instanceof IJavaScriptUnit) {
+				return processChildren(((IJavaScriptUnit)element).getChildren(), collector);
 			} else if (element instanceof IClassFile) {
 				return processChildren(((IClassFile)element).getChildren(), collector);
-			} else if (element instanceof IJavaModel) {
-				return processChildren(((IJavaModel)element).getChildren(), collector);
-			} else if (element instanceof IJavaProject) {
-				return processChildren(((IJavaProject)element).getChildren(), collector);
+			} else if (element instanceof IJavaScriptModel) {
+				return processChildren(((IJavaScriptModel)element).getChildren(), collector);
+			} else if (element instanceof IJavaScriptProject) {
+				return processChildren(((IJavaScriptProject)element).getChildren(), collector);
 			} else if (element instanceof IPackageFragment) {
 				return processChildren(((IPackageFragment)element).getChildren(), collector);
 			} else if (element instanceof IPackageFragmentRoot)	 {
 				return processChildren(((IPackageFragmentRoot)element).getChildren(), collector);
 			}
 			return false;
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e);
 			return true;
 		}
 	}
 
-	private boolean processChildren(IJavaElement[] children, IResultCollector collector) {
+	private boolean processChildren(IJavaScriptElement[] children, IResultCollector collector) {
 		for (int i= 0; i < children.length; i++) {
 			if (collectCategories(children[i], collector))
 				return true;
@@ -489,7 +489,7 @@ public class CategoryFilterActionGroup extends ActionGroup {
 		return "CategoryFilterActionGroup." + fViewerId; //$NON-NLS-1$
 	}
 	
-	private void showCategorySelectionDialog(IJavaElement[] input) {
+	private void showCategorySelectionDialog(IJavaScriptElement[] input) {
 		final HashSet/*<String>*/ categories= new HashSet();
 		for (int i= 0; i < input.length; i++) {
 			collectCategories(input[i], new IResultCollector() {

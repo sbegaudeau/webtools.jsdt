@@ -31,11 +31,11 @@ import org.eclipse.ltk.core.refactoring.GroupCategory;
 import org.eclipse.ltk.core.refactoring.GroupCategorySet;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.ReplaceEdit;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.SearchResultGroup;
@@ -53,7 +53,7 @@ class TextMatchUpdater {
 			RefactoringCoreMessages.TextMatchUpdater_textualMatches_name, 
 			RefactoringCoreMessages.TextMatchUpdater_textualMatches_description));
 	
-	private final IJavaSearchScope fScope;
+	private final IJavaScriptSearchScope fScope;
 	private final TextChangeManager fManager;
 	private final SearchResultGroup[] fReferences;
 	private final boolean fOnlyQualified;
@@ -62,7 +62,7 @@ class TextMatchUpdater {
 	private final String fNewName;
 	private final int fCurrentNameLength;
 	
-	private TextMatchUpdater(TextChangeManager manager, IJavaSearchScope scope, String currentName, String currentQualifier, String newName, SearchResultGroup[] references, boolean onlyQualified){
+	private TextMatchUpdater(TextChangeManager manager, IJavaScriptSearchScope scope, String currentName, String currentQualifier, String newName, SearchResultGroup[] references, boolean onlyQualified){
 		Assert.isNotNull(manager);
 		Assert.isNotNull(scope);
 		Assert.isNotNull(references);
@@ -76,15 +76,15 @@ class TextMatchUpdater {
 		fScanner= new RefactoringScanner(currentName, currentQualifier);
 	}
 
-	static void perform(IProgressMonitor pm, IJavaSearchScope scope, String currentName, String currentQualifier, String newName, TextChangeManager manager, SearchResultGroup[] references, boolean onlyQualified) throws JavaModelException{
+	static void perform(IProgressMonitor pm, IJavaScriptSearchScope scope, String currentName, String currentQualifier, String newName, TextChangeManager manager, SearchResultGroup[] references, boolean onlyQualified) throws JavaScriptModelException{
 		new TextMatchUpdater(manager, scope, currentName, currentQualifier, newName, references, onlyQualified).updateTextMatches(pm);
 	}
 
-	static void perform(IProgressMonitor pm, IJavaSearchScope scope, ITextUpdating processor, TextChangeManager manager, SearchResultGroup[] references) throws JavaModelException{
+	static void perform(IProgressMonitor pm, IJavaScriptSearchScope scope, ITextUpdating processor, TextChangeManager manager, SearchResultGroup[] references) throws JavaScriptModelException{
 		new TextMatchUpdater(manager, scope, processor.getCurrentElementName(), processor.getCurrentElementQualifier(), processor.getNewElementName(), references, false).updateTextMatches(pm);
 	}
 
-	private void updateTextMatches(IProgressMonitor pm) throws JavaModelException {	
+	private void updateTextMatches(IProgressMonitor pm) throws JavaScriptModelException {	
 		try{
 			IProject[] projectsInScope= getProjectsInScope();
 			
@@ -115,19 +115,19 @@ class TextMatchUpdater {
 		return (IProject[]) projectsInScope.toArray(new IProject[projectsInScope.size()]);
 	}
 
-	private void addTextMatches(IResource resource, IProgressMonitor pm) throws JavaModelException{
+	private void addTextMatches(IResource resource, IProgressMonitor pm) throws JavaScriptModelException{
 		try{
 			String task= RefactoringCoreMessages.TextMatchUpdater_searching + resource.getFullPath(); 
 			if (resource instanceof IFile){
-				IJavaElement element= JavaCore.create(resource);
+				IJavaScriptElement element= JavaScriptCore.create(resource);
 				// don't start pm task (flickering label updates; finally {pm.done()} is enough)
-				if (!(element instanceof ICompilationUnit))
+				if (!(element instanceof IJavaScriptUnit))
 					return;
 				if (! element.exists())
 					return;
 				if (! fScope.encloses(element))
 					return;
-				addCuTextMatches((ICompilationUnit) element);
+				addCuTextMatches((IJavaScriptUnit) element);
 				
 			} else if (resource instanceof IContainer){
 				IResource[] members= ((IContainer) resource).members();
@@ -140,16 +140,16 @@ class TextMatchUpdater {
 					addTextMatches(members[i], new SubProgressMonitor(pm, 1));
 				}	
 			}
-		} catch (JavaModelException e){
+		} catch (JavaScriptModelException e){
 			throw e;	
 		} catch (CoreException e){
-			throw new JavaModelException(e);	
+			throw new JavaScriptModelException(e);	
 		} finally{
 			pm.done();
 		}	
 	}
 	
-	private void addCuTextMatches(ICompilationUnit cu) throws JavaModelException{
+	private void addCuTextMatches(IJavaScriptUnit cu) throws JavaScriptModelException{
 		fScanner.scan(cu);
 		Set matches= fScanner.getMatches(); //Set of TextMatch
 		if (matches.size() == 0)
@@ -160,7 +160,7 @@ class TextMatchUpdater {
 			addTextUpdates(cu, matches); 
 	}
 	
-	private void removeReferences(ICompilationUnit cu, Set matches) {
+	private void removeReferences(IJavaScriptUnit cu, Set matches) {
 		for (int i= 0; i < fReferences.length; i++) {
 			SearchResultGroup group= fReferences[i];
 			if (cu.equals(group.getCompilationUnit())) {
@@ -182,7 +182,7 @@ class TextMatchUpdater {
 		}
 	}
 
-	private void addTextUpdates(ICompilationUnit cu, Set matches) {
+	private void addTextUpdates(IJavaScriptUnit cu, Set matches) {
 		for (Iterator resultIter= matches.iterator(); resultIter.hasNext();){
 			TextMatch match= (TextMatch) resultIter.next();
 			if (!match.isQualified() && fOnlyQualified)

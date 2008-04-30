@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /*
  * The page to configure the task tags
@@ -30,7 +30,7 @@ public class TodoTaskPreferencePage extends PropertyAndPreferencePage {
 	private TodoTaskConfigurationBlock fConfigurationBlock;
 
 	public TodoTaskPreferencePage() {
-		setPreferenceStore(JavaPlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(JavaScriptPlugin.getDefault().getPreferenceStore());
 		setDescription(PreferencesMessages.TodoTaskPreferencePage_description); 
 		
 		// only used when page is shown programatically

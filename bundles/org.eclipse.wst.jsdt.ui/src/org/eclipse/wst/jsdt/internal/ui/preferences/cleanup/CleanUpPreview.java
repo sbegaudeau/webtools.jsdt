@@ -21,9 +21,9 @@ import org.eclipse.jface.text.formatter.IContentFormatter;
 import org.eclipse.jface.text.formatter.IContentFormatterExtension;
 import org.eclipse.jface.text.formatter.IFormattingContext;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.MultiFixMessages;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.JavaPreview;
@@ -35,7 +35,7 @@ public class CleanUpPreview extends JavaPreview {
 	private ICleanUp[] fPreviewCleanUps;
 	private boolean fFormat;
 	public CleanUpPreview(Composite parent, ICleanUp[] cleanUps) {
-		super(JavaCore.getDefaultOptions(), parent);
+		super(JavaScriptCore.getDefaultOptions(), parent);
 		fPreviewCleanUps= cleanUps;
 		fFormat= false;
 	}
@@ -77,15 +77,15 @@ public class CleanUpPreview extends JavaPreview {
 			final IContentFormatter formatter =	fViewerConfiguration.getContentFormatter(fSourceViewer);
 			if (formatter instanceof IContentFormatterExtension) {
 				final IContentFormatterExtension extension = (IContentFormatterExtension) formatter;
-				context.setProperty(FormattingContextProperties.CONTEXT_PREFERENCES, JavaCore.getOptions());
+				context.setProperty(FormattingContextProperties.CONTEXT_PREFERENCES, JavaScriptCore.getOptions());
 				context.setProperty(FormattingContextProperties.CONTEXT_DOCUMENT, Boolean.valueOf(true));
 				extension.format(fPreviewDocument, context);
 			} else
 				formatter.format(fPreviewDocument, new Region(0, fPreviewDocument.getLength()));
 		} catch (Exception e) {
-			final IStatus status= new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IJavaStatusConstants.INTERNAL_ERROR, 
+			final IStatus status= new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IJavaStatusConstants.INTERNAL_ERROR, 
 				MultiFixMessages.CleanUpRefactoringWizard_formatterException_errorMessage, e); 
-			JavaPlugin.log(status);
+			JavaScriptPlugin.log(status);
 		} finally {
 		    context.dispose();
 		    fSourceViewer.setRedraw(true);

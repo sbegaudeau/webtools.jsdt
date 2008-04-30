@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.template.java;
 import java.util.Arrays;
 
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 
 /**
@@ -229,7 +229,7 @@ public final class SignatureUtil {
 			String[][] strings= context.resolveType(simpleName);
 			if (strings != null && strings.length > 0)
 				qualifier= strings[0][0];
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignore - not found
 		}
 		

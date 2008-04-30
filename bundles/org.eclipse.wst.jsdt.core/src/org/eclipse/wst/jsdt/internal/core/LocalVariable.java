@@ -16,11 +16,11 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
@@ -80,7 +80,7 @@ public class LocalVariable extends SourceRefElement implements ILocalVariable {
 		// a local variable has no info
 	}
 
-	public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner owner) {
+	public IJavaScriptElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner owner) {
 		switch (token.charAt(0)) {
 			case JEM_COUNT:
 				return getHandleUpdatingCountFromMemento(memento, owner);
@@ -142,7 +142,7 @@ public class LocalVariable extends SourceRefElement implements ILocalVariable {
 	/**
 	 * @see org.eclipse.wst.jsdt.core.ISourceReference
 	 */
-	public String getSource() throws JavaModelException {
+	public String getSource() throws JavaScriptModelException {
 		IOpenable openable = this.parent.getOpenableParent();
 		IBuffer buffer = openable.getBuffer();
 		if (buffer == null) {
@@ -172,7 +172,7 @@ public class LocalVariable extends SourceRefElement implements ILocalVariable {
 		return this.typeSignature;
 	}
 
-	public IResource getUnderlyingResource() throws JavaModelException {
+	public IResource getUnderlyingResource() throws JavaScriptModelException {
 		return this.parent.getUnderlyingResource();
 	}
 
@@ -180,7 +180,7 @@ public class LocalVariable extends SourceRefElement implements ILocalVariable {
 		return Util.combineHashCodes(this.parent.hashCode(), this.nameStart);
 	}
 
-	public boolean isStructureKnown() throws JavaModelException {
+	public boolean isStructureKnown() throws JavaScriptModelException {
         return true;
     }
 

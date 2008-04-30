@@ -12,19 +12,19 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
@@ -49,18 +49,18 @@ public class CreatePackageDeclarationOperation extends CreateElementInCUOperatio
 /**
  * When executed, this operation will add a package declaration to the given compilation unit.
  */
-public CreatePackageDeclarationOperation(String name, ICompilationUnit parentElement) {
+public CreatePackageDeclarationOperation(String name, IJavaScriptUnit parentElement) {
 	super(parentElement);
 	this.name= name;
 }
 protected StructuralPropertyDescriptor getChildPropertyDescriptor(ASTNode parent) {
-	return CompilationUnit.PACKAGE_PROPERTY;
+	return JavaScriptUnit.PACKAGE_PROPERTY;
 }
-protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, ICompilationUnit cu) throws JavaModelException {
+protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IJavaScriptUnit cu) throws JavaScriptModelException {
 	//look for an existing package declaration
-	IJavaElement[] children = getCompilationUnit().getChildren();
+	IJavaScriptElement[] children = getCompilationUnit().getChildren();
 	for (int i = 0; i < children.length; i++) {
-		if (children[i].getElementType() ==  IJavaElement.PACKAGE_DECLARATION && this.name.equals(children[i].getElementName())) {
+		if (children[i].getElementType() ==  IJavaScriptElement.PACKAGE_DECLARATION && this.name.equals(children[i].getElementName())) {
 			//equivalent package declaration already exists
 			this.creationOccurred = false;
 			return null;
@@ -75,7 +75,7 @@ protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IC
 /**
  * Creates and returns the handle for the element this operation created.
  */
-protected IJavaElement generateResultHandle() {
+protected IJavaScriptElement generateResultHandle() {
 	return getCompilationUnit().getPackageDeclaration(this.name);
 }
 /**
@@ -93,7 +93,7 @@ public String getMainTaskName(){
  */
 protected void initializeDefaultPosition() {
 	try {
-		ICompilationUnit cu = getCompilationUnit();
+		IJavaScriptUnit cu = getCompilationUnit();
 		IImportDeclaration[] imports = cu.getImports();
 		if (imports.length > 0) {
 			createBefore(imports[0]);
@@ -104,7 +104,7 @@ protected void initializeDefaultPosition() {
 			createBefore(types[0]);
 			return;
 		}
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		// cu doesn't exist: ignore
 	}
 }
@@ -114,17 +114,17 @@ protected void initializeDefaultPosition() {
  *  <li>INVALID_NAME - a name supplied to the operation was not a valid
  * 		package declaration name.
  * </ul>
- * @see IJavaModelStatus
- * @see JavaConventions
+ * @see IJavaScriptModelStatus
+ * @see JavaScriptConventions
  */
-public IJavaModelStatus verify() {
-	IJavaModelStatus status = super.verify();
+public IJavaScriptModelStatus verify() {
+	IJavaScriptModelStatus status = super.verify();
 	if (!status.isOK()) {
 		return status;
 	}
-	IJavaProject project = getParentElement().getJavaProject();
-	if (JavaConventions.validatePackageName(this.name, project.getOption(JavaCore.COMPILER_SOURCE, true), project.getOption(JavaCore.COMPILER_COMPLIANCE, true)).getSeverity() == IStatus.ERROR) {
-		return new JavaModelStatus(IJavaModelStatusConstants.INVALID_NAME, this.name);
+	IJavaScriptProject project = getParentElement().getJavaScriptProject();
+	if (JavaScriptConventions.validatePackageName(this.name, project.getOption(JavaScriptCore.COMPILER_SOURCE, true), project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true)).getSeverity() == IStatus.ERROR) {
+		return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_NAME, this.name);
 	}
 	return JavaModelStatus.VERIFIED_OK;
 }

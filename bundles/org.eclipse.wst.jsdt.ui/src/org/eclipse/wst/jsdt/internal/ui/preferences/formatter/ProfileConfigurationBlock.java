@@ -38,9 +38,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesAccess;
 import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesMessages;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.CustomProfile;
@@ -48,7 +48,7 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Pro
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.osgi.service.prefs.BackingStoreException;
 
 public abstract class ProfileConfigurationBlock {
@@ -72,7 +72,7 @@ public abstract class ProfileConfigurationBlock {
     					fProfileStore.writeProfiles(fProfileManager.getSortedProfiles(), fInstanceScope); // update profile store
     					fProfileManager.commitChanges(fCurrContext); 
     				} catch (CoreException x) {
-    					JavaPlugin.log(x);
+    					JavaScriptPlugin.log(x);
     				}
     				break;
     			case ProfileManager.SELECTION_CHANGED_EVENT:
@@ -189,14 +189,14 @@ public abstract class ProfileConfigurationBlock {
 			final FileDialog dialog= new FileDialog(fComposite.getShell(), SWT.OPEN);
 			dialog.setText(FormatterMessages.CodingStyleConfigurationBlock_load_profile_dialog_title); 
 			dialog.setFilterExtensions(new String [] {"*.xml"}); //$NON-NLS-1$
-			final String lastPath= JavaPlugin.getDefault().getDialogSettings().get(fLastSaveLoadPathKey + ".loadpath"); //$NON-NLS-1$
+			final String lastPath= JavaScriptPlugin.getDefault().getDialogSettings().get(fLastSaveLoadPathKey + ".loadpath"); //$NON-NLS-1$
 			if (lastPath != null) {
 				dialog.setFilterPath(lastPath);
 			}
 			final String path= dialog.open();
 			if (path == null) 
 				return;
-			JavaPlugin.getDefault().getDialogSettings().put(fLastSaveLoadPathKey + ".loadpath", dialog.getFilterPath()); //$NON-NLS-1$
+			JavaScriptPlugin.getDefault().getDialogSettings().put(fLastSaveLoadPathKey + ".loadpath", dialog.getFilterPath()); //$NON-NLS-1$
 
 			final File file= new File(path);
 			Collection profiles= null;
@@ -277,14 +277,14 @@ public abstract class ProfileConfigurationBlock {
         try {
             profiles= fProfileStore.readProfiles(fInstanceScope);
         } catch (CoreException e) {
-        	JavaPlugin.log(e);
+        	JavaScriptPlugin.log(e);
         }
         if (profiles == null) {
         	try {
         		// bug 129427
         	    profiles= fProfileStore.readProfiles(new DefaultScope());
         	} catch (CoreException e) {
-        		JavaPlugin.log(e);
+        		JavaScriptPlugin.log(e);
         	}
         }
         
@@ -303,7 +303,7 @@ public abstract class ProfileConfigurationBlock {
 				}
 			}
 		};
-		access.getInstanceScope().getNode(JavaUI.ID_PLUGIN).addPreferenceChangeListener(fPreferenceListener);
+		access.getInstanceScope().getNode(JavaScriptUI.ID_PLUGIN).addPreferenceChangeListener(fPreferenceListener);
 
 	}
 
@@ -413,14 +413,14 @@ public abstract class ProfileConfigurationBlock {
 
 	public void performApply() {
 		try {
-			fCurrContext.getNode(JavaUI.ID_PLUGIN).flush();
-			fCurrContext.getNode(JavaCore.PLUGIN_ID).flush();
+			fCurrContext.getNode(JavaScriptUI.ID_PLUGIN).flush();
+			fCurrContext.getNode(JavaScriptCore.PLUGIN_ID).flush();
 			if (fCurrContext != fInstanceScope) {
-				fInstanceScope.getNode(JavaUI.ID_PLUGIN).flush();
-				fInstanceScope.getNode(JavaCore.PLUGIN_ID).flush();
+				fInstanceScope.getNode(JavaScriptUI.ID_PLUGIN).flush();
+				fInstanceScope.getNode(JavaScriptCore.PLUGIN_ID).flush();
 			}
 		} catch (BackingStoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 	}
 
@@ -436,7 +436,7 @@ public abstract class ProfileConfigurationBlock {
 
 	public void dispose() {
 		if (fPreferenceListener != null) {
-			fPreferenceAccess.getInstanceScope().getNode(JavaUI.ID_PLUGIN).removePreferenceChangeListener(fPreferenceListener);
+			fPreferenceAccess.getInstanceScope().getNode(JavaScriptUI.ID_PLUGIN).removePreferenceChangeListener(fPreferenceListener);
 			fPreferenceListener= null;
 		}
 	}

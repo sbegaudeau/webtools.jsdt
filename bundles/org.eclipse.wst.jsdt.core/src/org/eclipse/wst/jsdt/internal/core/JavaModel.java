@@ -26,23 +26,23 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModel;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModel;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
 /**
- * Implementation of <code>IJavaModel<code>. The Java Model maintains a cache of
- * active <code>IJavaProject</code>s in a workspace. A Java Model is specific to a
+ * Implementation of <code>IJavaScriptModel<code>. The Java Model maintains a cache of
+ * active <code>IJavaScriptProject</code>s in a workspace. A Java Model is specific to a
  * workspace. To retrieve a workspace's model, use the
  * <code>#getJavaModel(IWorkspace)</code> method.
  *
- * @see IJavaModel
+ * @see IJavaScriptModel
  */
-public class JavaModel extends Openable implements IJavaModel {
+public class JavaModel extends Openable implements IJavaScriptModel {
 
 	/**
 	 * A set of java.io.Files used as a cache of external jars that
@@ -69,12 +69,12 @@ public class JavaModel extends Openable implements IJavaModel {
 protected JavaModel() throws Error {
 	super(null);
 }
-protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource)	/*throws JavaModelException*/ {
+protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource)	/*throws JavaScriptModelException*/ {
 
 	// determine my children
 	IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 	int length = projects.length;
-	IJavaElement[] children = new IJavaElement[length];
+	IJavaScriptElement[] children = new IJavaScriptElement[length];
 	int index = 0;
 	for (int i = 0; i < length; i++) {
 		IProject project = projects[i];
@@ -83,7 +83,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 		}
 	}
 	if (index < length)
-		System.arraycopy(children, 0, children = new IJavaElement[index], 0, index);
+		System.arraycopy(children, 0, children = new IJavaScriptElement[index], 0, index);
 	info.setChildren(children);
 
 	newElements.put(this, info);
@@ -91,7 +91,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 	return true;
 }
 /*
- * @see IJavaModel
+ * @see IJavaScriptModel
  */
 public boolean contains(IResource resource) {
 	switch (resource.getType()) {
@@ -100,10 +100,10 @@ public boolean contains(IResource resource) {
 			return true;
 	}
 	// file or folder
-	IJavaProject[] projects;
+	IJavaScriptProject[] projects;
 	try {
-		projects = this.getJavaProjects();
-	} catch (JavaModelException e) {
+		projects = this.getJavaScriptProjects();
+	} catch (JavaScriptModelException e) {
 		return false;
 	}
 	for (int i = 0, length = projects.length; i < length; i++) {
@@ -115,10 +115,10 @@ public boolean contains(IResource resource) {
 	return true;
 }
 /**
- * @see IJavaModel
+ * @see IJavaScriptModel
  */
-public void copy(IJavaElement[] elements, IJavaElement[] containers, IJavaElement[] siblings, String[] renamings, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (elements != null && elements.length > 0 && elements[0] != null && elements[0].getElementType() < IJavaElement.TYPE) {
+public void copy(IJavaScriptElement[] elements, IJavaScriptElement[] containers, IJavaScriptElement[] siblings, String[] renamings, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
+	if (elements != null && elements.length > 0 && elements[0] != null && elements[0].getElementType() < IJavaScriptElement.TYPE) {
 		runOperation(new CopyResourceElementsOperation(elements, containers, force), elements, siblings, renamings, monitor);
 	} else {
 		runOperation(new CopyElementsOperation(elements, containers, force), elements, siblings, renamings, monitor);
@@ -132,10 +132,10 @@ protected Object createElementInfo() {
 }
 
 /**
- * @see IJavaModel
+ * @see IJavaScriptModel
  */
-public void delete(IJavaElement[] elements, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (elements != null && elements.length > 0 && elements[0] != null && elements[0].getElementType() < IJavaElement.TYPE) {
+public void delete(IJavaScriptElement[] elements, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
+	if (elements != null && elements.length > 0 && elements[0] != null && elements[0].getElementType() < IJavaScriptElement.TYPE) {
 		new DeleteResourceElementsOperation(elements, force).runOperation(monitor);
 	} else {
 		new DeleteElementsOperation(elements, force).runOperation(monitor);
@@ -146,10 +146,10 @@ public boolean equals(Object o) {
 	return super.equals(o);
 }
 /**
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public int getElementType() {
-	return JAVA_MODEL;
+	return JAVASCRIPT_MODEL;
 }
 /**
  * Flushes the cache of external files known to be existing.
@@ -162,12 +162,12 @@ public static void flushExternalFileCache() {
 /*
  * @see JavaElement
  */
-public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner owner) {
+public IJavaScriptElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner owner) {
 	switch (token.charAt(0)) {
 		case JEM_JAVAPROJECT:
 			if (!memento.hasMoreTokens()) return this;
 			String projectName = memento.nextToken();
-			JavaElement project = (JavaElement)getJavaProject(projectName);
+			JavaElement project = (JavaElement)getJavaScriptProject(projectName);
 			return project.getHandleFromMemento(memento, owner);
 	}
 	return null;
@@ -187,9 +187,9 @@ protected char getHandleMementoDelimiter(){
 	return 0;
 }
 /**
- * @see IJavaModel
+ * @see IJavaScriptModel
  */
-public IJavaProject getJavaProject(String projectName) {
+public IJavaScriptProject getJavaScriptProject(String projectName) {
 	return new JavaProject(ResourcesPlugin.getWorkspace().getRoot().getProject(projectName), this);
 }
 /**
@@ -200,7 +200,7 @@ public IJavaProject getJavaProject(String projectName) {
  * @exception IllegalArgumentException if the given resource
  * is not one of an IProject, IFolder, or IFile.
  */
-public IJavaProject getJavaProject(IResource resource) {
+public IJavaScriptProject getJavaProject(IResource resource) {
 	switch(resource.getType()){
 		case IResource.FOLDER:
 			return new JavaProject(((IFolder)resource).getProject(), this);
@@ -213,30 +213,30 @@ public IJavaProject getJavaProject(IResource resource) {
 	}
 }
 /**
- * @see IJavaModel
+ * @see IJavaScriptModel
  */
-public IJavaProject[] getJavaProjects() throws JavaModelException {
-	ArrayList list = getChildrenOfType(JAVA_PROJECT);
-	IJavaProject[] array= new IJavaProject[list.size()];
+public IJavaScriptProject[] getJavaScriptProjects() throws JavaScriptModelException {
+	ArrayList list = getChildrenOfType(JAVASCRIPT_PROJECT);
+	IJavaScriptProject[] array= new IJavaScriptProject[list.size()];
 	list.toArray(array);
 	return array;
 
 }
 /**
- * @see IJavaModel
+ * @see IJavaScriptModel
  */
-public Object[] getNonJavaResources() throws JavaModelException {
+public Object[] getNonJavaScriptResources() throws JavaScriptModelException {
 		return ((JavaModelInfo) getElementInfo()).getNonJavaResources();
 }
 
 /*
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public IPath getPath() {
 	return Path.ROOT;
 }
 /*
- * @see IJavaElement
+ * @see IJavaScriptElement
  */
 public IResource getResource() {
 	return ResourcesPlugin.getWorkspace().getRoot();
@@ -255,10 +255,10 @@ public IWorkspace getWorkspace() {
 }
 
 /**
- * @see IJavaModel
+ * @see IJavaScriptModel
  */
-public void move(IJavaElement[] elements, IJavaElement[] containers, IJavaElement[] siblings, String[] renamings, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (elements != null && elements.length > 0 && elements[0] != null && elements[0].getElementType() < IJavaElement.TYPE) {
+public void move(IJavaScriptElement[] elements, IJavaScriptElement[] containers, IJavaScriptElement[] siblings, String[] renamings, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
+	if (elements != null && elements.length > 0 && elements[0] != null && elements[0].getElementType() < IJavaScriptElement.TYPE) {
 		runOperation(new MoveResourceElementsOperation(elements, containers, force), elements, siblings, renamings, monitor);
 	} else {
 		runOperation(new MoveElementsOperation(elements, containers, force), elements, siblings, renamings, monitor);
@@ -266,21 +266,21 @@ public void move(IJavaElement[] elements, IJavaElement[] containers, IJavaElemen
 }
 
 /**
- * @see IJavaModel#refreshExternalArchives(IJavaElement[], IProgressMonitor)
+ * @see IJavaScriptModel#refreshExternalArchives(IJavaScriptElement[], IProgressMonitor)
  */
-public void refreshExternalArchives(IJavaElement[] elementsScope, IProgressMonitor monitor) throws JavaModelException {
+public void refreshExternalArchives(IJavaScriptElement[] elementsScope, IProgressMonitor monitor) throws JavaScriptModelException {
 	if (elementsScope == null){
-		elementsScope = new IJavaElement[] { this };
+		elementsScope = new IJavaScriptElement[] { this };
 	}
 	JavaModelManager.getJavaModelManager().getDeltaProcessor().checkExternalArchiveChanges(elementsScope, monitor);
 }
 
 /**
- * @see IJavaModel
+ * @see IJavaScriptModel
  */
-public void rename(IJavaElement[] elements, IJavaElement[] destinations, String[] renamings, boolean force, IProgressMonitor monitor) throws JavaModelException {
+public void rename(IJavaScriptElement[] elements, IJavaScriptElement[] destinations, String[] renamings, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
 	MultiOperation op;
-	if (elements != null && elements.length > 0 && elements[0] != null && elements[0].getElementType() < IJavaElement.TYPE) {
+	if (elements != null && elements.length > 0 && elements[0] != null && elements[0].getElementType() < IJavaScriptElement.TYPE) {
 		op = new RenameResourceElementsOperation(elements, destinations, renamings, force);
 	} else {
 		op = new RenameElementsOperation(elements, destinations, renamings, force);
@@ -291,7 +291,7 @@ public void rename(IJavaElement[] elements, IJavaElement[] destinations, String[
 /**
  * Configures and runs the <code>MultiOperation</code>.
  */
-protected void runOperation(MultiOperation op, IJavaElement[] elements, IJavaElement[] siblings, String[] renamings, IProgressMonitor monitor) throws JavaModelException {
+protected void runOperation(MultiOperation op, IJavaScriptElement[] elements, IJavaScriptElement[] siblings, String[] renamings, IProgressMonitor monitor) throws JavaScriptModelException {
 	op.setRenamings(renamings);
 	if (siblings != null) {
 		for (int i = 0; i < elements.length; i++) {

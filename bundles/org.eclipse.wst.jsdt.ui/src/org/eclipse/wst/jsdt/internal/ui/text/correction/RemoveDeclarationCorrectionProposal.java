@@ -14,22 +14,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -45,7 +45,7 @@ import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.LinkedNodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 
 public class RemoveDeclarationCorrectionProposal extends ASTRewriteCorrectionProposal {
@@ -76,7 +76,7 @@ public class RemoveDeclarationCorrectionProposal extends ASTRewriteCorrectionPro
 			return false;
 		}
 
-		public boolean visit(MethodInvocation node) {
+		public boolean visit(FunctionInvocation node) {
 			fSideEffectNodes.add(node);
 			return false;
 		}
@@ -95,8 +95,8 @@ public class RemoveDeclarationCorrectionProposal extends ASTRewriteCorrectionPro
 
 	private SimpleName fName;
 
-	public RemoveDeclarationCorrectionProposal(ICompilationUnit cu, SimpleName name, int relevance) {
-		super("", cu, null, relevance, JavaPlugin.getDefault().getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE)); //$NON-NLS-1$
+	public RemoveDeclarationCorrectionProposal(IJavaScriptUnit cu, SimpleName name, int relevance) {
+		super("", cu, null, relevance, JavaScriptPlugin.getDefault().getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE)); //$NON-NLS-1$
 		fName= name;
 	}
 
@@ -107,7 +107,7 @@ public class RemoveDeclarationCorrectionProposal extends ASTRewriteCorrectionPro
 			case IBinding.TYPE:
 				return Messages.format(CorrectionMessages.RemoveDeclarationCorrectionProposal_removeunusedtype_description, name);
 			case IBinding.METHOD:
-				if (((IMethodBinding) binding).isConstructor()) {
+				if (((IFunctionBinding) binding).isConstructor()) {
 					return Messages.format(CorrectionMessages.RemoveDeclarationCorrectionProposal_removeunusedconstructor_description, name);
 				} else {
 					return Messages.format(CorrectionMessages.RemoveDeclarationCorrectionProposal_removeunusedmethod_description, name);
@@ -128,10 +128,10 @@ public class RemoveDeclarationCorrectionProposal extends ASTRewriteCorrectionPro
 	 */
 	protected ASTRewrite getRewrite() {
 		IBinding binding= fName.resolveBinding();
-		CompilationUnit root= (CompilationUnit) fName.getRoot();
+		JavaScriptUnit root= (JavaScriptUnit) fName.getRoot();
 		ASTRewrite rewrite;
 		if (binding.getKind() == IBinding.METHOD) {
-			IMethodBinding decl= ((IMethodBinding) binding).getMethodDeclaration();
+			IFunctionBinding decl= ((IFunctionBinding) binding).getMethodDeclaration();
 			ASTNode declaration= root.findDeclaringNode(decl);
 			rewrite= ASTRewrite.create(root.getAST());
 			rewrite.remove(declaration, null);
@@ -142,7 +142,7 @@ public class RemoveDeclarationCorrectionProposal extends ASTRewriteCorrectionPro
 			rewrite.remove(declaration, null);
 		} else if (binding.getKind() == IBinding.VARIABLE) {
 			// needs full AST
-			CompilationUnit completeRoot= JavaPlugin.getDefault().getASTProvider().getAST(getCompilationUnit(), ASTProvider.WAIT_YES, null);
+			JavaScriptUnit completeRoot= JavaScriptPlugin.getDefault().getASTProvider().getAST(getCompilationUnit(), ASTProvider.WAIT_YES, null);
 
 			SimpleName nameNode= (SimpleName) NodeFinder.perform(completeRoot, fName.getStartPosition(), fName.getLength());
 
@@ -164,8 +164,8 @@ public class RemoveDeclarationCorrectionProposal extends ASTRewriteCorrectionPro
 	}
 
 	private void removeParamTag(ASTRewrite rewrite, SingleVariableDeclaration varDecl) {
-		if (varDecl.getParent() instanceof MethodDeclaration) {
-			Javadoc javadoc= ((MethodDeclaration) varDecl.getParent()).getJavadoc();
+		if (varDecl.getParent() instanceof FunctionDeclaration) {
+			JSdoc javadoc= ((FunctionDeclaration) varDecl.getParent()).getJavadoc();
 			if (javadoc != null) {
 				TagElement tagElement= JavadocTagsSubProcessor.findParamTag(javadoc, varDecl.getName().getIdentifier());
 				if (tagElement != null) {

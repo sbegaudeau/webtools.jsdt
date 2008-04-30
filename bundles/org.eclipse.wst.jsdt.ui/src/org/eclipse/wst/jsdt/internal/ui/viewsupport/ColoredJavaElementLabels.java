@@ -18,30 +18,30 @@ import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IInitializer;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString.Style;
 import org.eclipse.wst.jsdt.launching.JavaRuntime;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 public class ColoredJavaElementLabels {
 
@@ -53,7 +53,7 @@ public class ColoredJavaElementLabels {
 	
 	public final static long COLORIZE= 1L << 55;
 	
-	private final static long QUALIFIER_FLAGS= JavaElementLabels.P_COMPRESSED | JavaElementLabels.USE_RESOLVED;
+	private final static long QUALIFIER_FLAGS= JavaScriptElementLabels.P_COMPRESSED | JavaScriptElementLabels.USE_RESOLVED;
 	
 
 	private static final boolean getFlag(long flags, long flag) {
@@ -61,22 +61,22 @@ public class ColoredJavaElementLabels {
 	}
 	
 	/**
-	 * Returns the label of the given object. The object must be of type {@link IJavaElement} or adapt to {@link org.eclipse.ui.model.IWorkbenchAdapter}. The empty string is returned
+	 * Returns the label of the given object. The object must be of type {@link IJavaScriptElement} or adapt to {@link org.eclipse.ui.model.IWorkbenchAdapter}. The empty string is returned
 	 * if the element type is not known.
 	 * @param obj Object to get the label from.
 	 * @param flags The rendering flags
 	 * @return Returns the label or the empty string if the object type is not supported.
 	 */
 	public static ColoredString getTextLabel(Object obj, long flags) {
-		if (obj instanceof IJavaElement) {
-			return getElementLabel((IJavaElement) obj, flags);
+		if (obj instanceof IJavaScriptElement) {
+			return getElementLabel((IJavaScriptElement) obj, flags);
 		} else if (obj instanceof IResource) {
 			return new ColoredString(((IResource) obj).getName());
 		} else if (obj instanceof JsGlobalScopeContainer) {
 			JsGlobalScopeContainer container= (JsGlobalScopeContainer) obj;
 			return getContainerEntryLabel(container.getClasspathEntry().getPath(), container.getJavaProject());
 		}
-		return new ColoredString(JavaElementLabels.getTextLabel(obj, flags));
+		return new ColoredString(JavaScriptElementLabels.getTextLabel(obj, flags));
 	}
 				
 	/**
@@ -85,7 +85,7 @@ public class ColoredJavaElementLabels {
 	 * @param flags The rendering flags.
 	 * @return the label of the Java element
 	 */
-	public static ColoredString getElementLabel(IJavaElement element, long flags) {
+	public static ColoredString getElementLabel(IJavaScriptElement element, long flags) {
 		ColoredString result= new ColoredString();
 		getElementLabel(element, flags, result);
 		return result;
@@ -97,62 +97,62 @@ public class ColoredJavaElementLabels {
 	 * @param flags The rendering flags.
 	 * @param result The buffer to append the resulting label to.
 	 */
-	public static void getElementLabel(IJavaElement element, long flags, ColoredString result) {
+	public static void getElementLabel(IJavaScriptElement element, long flags, ColoredString result) {
 		int type= element.getElementType();
 		IPackageFragmentRoot root= null;
 		
-		if (type != IJavaElement.JAVA_MODEL && type != IJavaElement.JAVA_PROJECT && type != IJavaElement.PACKAGE_FRAGMENT_ROOT)
+		if (type != IJavaScriptElement.JAVASCRIPT_MODEL && type != IJavaScriptElement.JAVASCRIPT_PROJECT && type != IJavaScriptElement.PACKAGE_FRAGMENT_ROOT)
 			root= JavaModelUtil.getPackageFragmentRoot(element);
-		if (root != null && getFlag(flags, JavaElementLabels.PREPEND_ROOT_PATH)) {
-			getPackageFragmentRootLabel(root, JavaElementLabels.ROOT_QUALIFIED, result);
-			result.append(JavaElementLabels.CONCAT_STRING);
+		if (root != null && getFlag(flags, JavaScriptElementLabels.PREPEND_ROOT_PATH)) {
+			getPackageFragmentRootLabel(root, JavaScriptElementLabels.ROOT_QUALIFIED, result);
+			result.append(JavaScriptElementLabels.CONCAT_STRING);
 		}		
 		
 		switch (type) {
-			case IJavaElement.METHOD:
-				getMethodLabel((IMethod) element, flags, result);
+			case IJavaScriptElement.METHOD:
+				getMethodLabel((IFunction) element, flags, result);
 				break;
-			case IJavaElement.FIELD: 
+			case IJavaScriptElement.FIELD: 
 				getFieldLabel((IField) element, flags, result);
 				break;
-			case IJavaElement.LOCAL_VARIABLE: 
+			case IJavaScriptElement.LOCAL_VARIABLE: 
 				getLocalVariableLabel((ILocalVariable) element, flags, result);
 				break;
-			case IJavaElement.INITIALIZER:
+			case IJavaScriptElement.INITIALIZER:
 				getInitializerLabel((IInitializer) element, flags, result);
 				break;				
-			case IJavaElement.TYPE: 
+			case IJavaScriptElement.TYPE: 
 				getTypeLabel((IType) element, flags, result);
 				break;
-			case IJavaElement.CLASS_FILE: 
+			case IJavaScriptElement.CLASS_FILE: 
 				getClassFileLabel((IClassFile) element, flags, result);
 				break;					
-			case IJavaElement.COMPILATION_UNIT: 
-				getCompilationUnitLabel((ICompilationUnit) element, flags, result);
+			case IJavaScriptElement.JAVASCRIPT_UNIT: 
+				getCompilationUnitLabel((IJavaScriptUnit) element, flags, result);
 				break;	
-			case IJavaElement.PACKAGE_FRAGMENT: 
+			case IJavaScriptElement.PACKAGE_FRAGMENT: 
 				getPackageFragmentLabel((IPackageFragment) element, flags, result);
 				break;
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT: 
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT: 
 				getPackageFragmentRootLabel((IPackageFragmentRoot) element, flags, result);
 				break;
-			case IJavaElement.IMPORT_CONTAINER:
-			case IJavaElement.IMPORT_DECLARATION:
-			case IJavaElement.PACKAGE_DECLARATION:
+			case IJavaScriptElement.IMPORT_CONTAINER:
+			case IJavaScriptElement.IMPORT_DECLARATION:
+			case IJavaScriptElement.PACKAGE_DECLARATION:
 				getDeclarationLabel(element, flags, result);
 				break;
-			case IJavaElement.JAVA_PROJECT:
-			case IJavaElement.JAVA_MODEL:
+			case IJavaScriptElement.JAVASCRIPT_PROJECT:
+			case IJavaScriptElement.JAVASCRIPT_MODEL:
 				result.append(element.getElementName());
 				break;
 			default:
 				result.append(element.getElementName());
 		}
 		
-		if (root != null && getFlag(flags, JavaElementLabels.APPEND_ROOT_PATH)) {
+		if (root != null && getFlag(flags, JavaScriptElementLabels.APPEND_ROOT_PATH)) {
 			int offset= result.length();
-			result.append(JavaElementLabels.CONCAT_STRING);
-			getPackageFragmentRootLabel(root, JavaElementLabels.ROOT_QUALIFIED, result);
+			result.append(JavaScriptElementLabels.CONCAT_STRING);
+			getPackageFragmentRootLabel(root, JavaScriptElementLabels.ROOT_QUALIFIED, result);
 			
 			if (getFlag(flags, COLORIZE)) {
 				result.colorize(offset, result.length() - offset, QUALIFIER_STYLE);
@@ -167,13 +167,13 @@ public class ColoredJavaElementLabels {
 	 * @param flags The rendering flags. Flags with names starting with 'M_' are considered.
 	 * @param result The buffer to append the resulting label to.
 	 */		
-	public static void getMethodLabel(IMethod method, long flags, ColoredString result) {
+	public static void getMethodLabel(IFunction method, long flags, ColoredString result) {
 		try {
-			BindingKey resolvedKey= getFlag(flags, JavaElementLabels.USE_RESOLVED) && method.isResolved() ? new BindingKey(method.getKey()) : null;
+			BindingKey resolvedKey= getFlag(flags, JavaScriptElementLabels.USE_RESOLVED) && method.isResolved() ? new BindingKey(method.getKey()) : null;
 			String resolvedSig= (resolvedKey != null) ? resolvedKey.toSignature() : null;
 			
 			// type parameters
-			if (getFlag(flags, JavaElementLabels.M_PRE_TYPE_PARAMETERS)) {
+			if (getFlag(flags, JavaScriptElementLabels.M_PRE_TYPE_PARAMETERS)) {
 				if (resolvedKey != null) {
 					if (resolvedKey.isParameterizedMethod()) {
 						String[] typeArgRefs= resolvedKey.getTypeArguments();
@@ -198,15 +198,15 @@ public class ColoredJavaElementLabels {
 			}
 			
 			// return type
-			if (getFlag(flags, JavaElementLabels.M_PRE_RETURNTYPE) && method.exists() && !method.isConstructor()) {
+			if (getFlag(flags, JavaScriptElementLabels.M_PRE_RETURNTYPE) && method.exists() && !method.isConstructor()) {
 				String returnTypeSig= resolvedSig != null ? Signature.getReturnType(resolvedSig) : method.getReturnType();
 				getTypeSignatureLabel(returnTypeSig, flags, result);
 				result.append(' ');
 			}
 			
 			// qualification
-			if (getFlag(flags, JavaElementLabels.M_FULLY_QUALIFIED)) {
-				getTypeLabel(method.getDeclaringType(), JavaElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
+			if (getFlag(flags, JavaScriptElementLabels.M_FULLY_QUALIFIED)) {
+				getTypeLabel(method.getDeclaringType(), JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
 				result.append('.');
 			}
 				
@@ -214,11 +214,11 @@ public class ColoredJavaElementLabels {
 			
 			// parameters
 			result.append('(');
-			if (getFlag(flags, JavaElementLabels.M_PARAMETER_TYPES | JavaElementLabels.M_PARAMETER_NAMES)) {
+			if (getFlag(flags, JavaScriptElementLabels.M_PARAMETER_TYPES | JavaScriptElementLabels.M_PARAMETER_NAMES)) {
 				String[] types= null;
 				int nParams= 0;
 				boolean renderVarargs= false;
-				if (getFlag(flags, JavaElementLabels.M_PARAMETER_TYPES)) {
+				if (getFlag(flags, JavaScriptElementLabels.M_PARAMETER_TYPES)) {
 					if (resolvedSig != null) {
 						types= Signature.getParameterTypes(resolvedSig);
 					} else {
@@ -228,7 +228,7 @@ public class ColoredJavaElementLabels {
 					renderVarargs= method.exists() && Flags.isVarargs(method.getFlags());
 				}
 				String[] names= null;
-				if (getFlag(flags, JavaElementLabels.M_PARAMETER_NAMES) && method.exists()) {
+				if (getFlag(flags, JavaScriptElementLabels.M_PARAMETER_NAMES) && method.exists()) {
 					names= method.getParameterNames();
 					if (types == null) {
 						nParams= names.length;
@@ -242,7 +242,7 @@ public class ColoredJavaElementLabels {
 								types= typesWithoutSyntheticParams;
 							} else {
 								// https://bugs.eclipse.org/bugs/show_bug.cgi?id=101029
-								// JavaPlugin.logErrorMessage("JavaElementLabels: Number of param types(" + nParams + ") != number of names(" + names.length + "): " + method.getElementName());   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+								// JavaScriptPlugin.logErrorMessage("JavaScriptElementLabels: Number of param types(" + nParams + ") != number of names(" + names.length + "): " + method.getElementName());   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 								names= null; // no names rendered
 							}
 						}
@@ -251,7 +251,7 @@ public class ColoredJavaElementLabels {
 				
 				for (int i= 0; i < nParams; i++) {
 					if (i > 0) {
-						result.append(JavaElementLabels.COMMA_STRING);
+						result.append(JavaScriptElementLabels.COMMA_STRING);
 					}
 					if (types != null) {
 						String paramSig= types[i];
@@ -261,7 +261,7 @@ public class ColoredJavaElementLabels {
 							for (int k= 0; k < newDim; k++) {
 								result.append('[').append(']');
 							}
-							result.append(JavaElementLabels.ELLIPSIS_STRING);
+							result.append(JavaScriptElementLabels.ELLIPSIS_STRING);
 						} else {
 							getTypeSignatureLabel(paramSig, flags, result);
 						}
@@ -275,12 +275,12 @@ public class ColoredJavaElementLabels {
 				}
 			} else {
 				if (method.getParameterTypes().length > 0) {
-					result.append(JavaElementLabels.ELLIPSIS_STRING);
+					result.append(JavaScriptElementLabels.ELLIPSIS_STRING);
 				}
 			}
 			result.append(')');
 					
-			if (getFlag(flags, JavaElementLabels.M_EXCEPTIONS)) {
+			if (getFlag(flags, JavaScriptElementLabels.M_EXCEPTIONS)) {
 				String[] types;
 				if (resolvedKey != null) {
 					types= resolvedKey.getThrownExceptions();
@@ -291,14 +291,14 @@ public class ColoredJavaElementLabels {
 					result.append(" throws "); //$NON-NLS-1$
 					for (int i= 0; i < types.length; i++) {
 						if (i > 0) {
-							result.append(JavaElementLabels.COMMA_STRING);
+							result.append(JavaScriptElementLabels.COMMA_STRING);
 						}
 						getTypeSignatureLabel(types[i], flags, result);
 					}
 				}
 			}
 			
-			if (getFlag(flags, JavaElementLabels.M_APP_TYPE_PARAMETERS)) {
+			if (getFlag(flags, JavaScriptElementLabels.M_APP_TYPE_PARAMETERS)) {
 				int offset= result.length();
 				if (resolvedKey != null) {
 					if (resolvedKey.isParameterizedMethod()) {
@@ -326,9 +326,9 @@ public class ColoredJavaElementLabels {
 				}
 			}
 			
-			if (getFlag(flags, JavaElementLabels.M_APP_RETURNTYPE) && method.exists() && !method.isConstructor()) {
+			if (getFlag(flags, JavaScriptElementLabels.M_APP_RETURNTYPE) && method.exists() && !method.isConstructor()) {
 				int offset= result.length();
-				result.append(JavaElementLabels.DECL_STRING);
+				result.append(JavaScriptElementLabels.DECL_STRING);
 				String returnTypeSig= resolvedSig != null ? Signature.getReturnType(resolvedSig) : method.getReturnType();
 				getTypeSignatureLabel(returnTypeSig, flags, result);
 				if (getFlag(flags, COLORIZE)) {
@@ -337,26 +337,26 @@ public class ColoredJavaElementLabels {
 			}			
 
 			// category
-			if (getFlag(flags, JavaElementLabels.M_CATEGORY) && method.exists()) 
+			if (getFlag(flags, JavaScriptElementLabels.M_CATEGORY) && method.exists()) 
 				getCategoryLabel(method, result);
 			
 			// post qualification
-			if (getFlag(flags, JavaElementLabels.M_POST_QUALIFIED)) {
+			if (getFlag(flags, JavaScriptElementLabels.M_POST_QUALIFIED)) {
 				int offset= result.length();
-				result.append(JavaElementLabels.CONCAT_STRING);
+				result.append(JavaScriptElementLabels.CONCAT_STRING);
 				if (method.getDeclaringType()!=null)
-					getTypeLabel(method.getDeclaringType(), JavaElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
+					getTypeLabel(method.getDeclaringType(), JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
 				if (getFlag(flags, COLORIZE)) {
 					result.colorize(offset, result.length() - offset, QUALIFIER_STYLE);
 				}
 			}
 			
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e); // NotExistsException will not reach this point
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e); // NotExistsException will not reach this point
 		}
 	}
 
-	private static void getCategoryLabel(IMember member, ColoredString result) throws JavaModelException {
+	private static void getCategoryLabel(IMember member, ColoredString result) throws JavaScriptModelException {
 		String[] categories= member.getCategories();
 		if (categories.length > 0) {
 			ColoredString categoriesBuf= new ColoredString();
@@ -365,7 +365,7 @@ public class ColoredJavaElementLabels {
 					categoriesBuf.append(JavaUIMessages.JavaElementLabels_category_separator_string);
 				categoriesBuf.append(categories[i]);
 			}
-			result.append(JavaElementLabels.CONCAT_STRING);
+			result.append(JavaScriptElementLabels.CONCAT_STRING);
 			result.append(Messages.format(JavaUIMessages.JavaElementLabels_category , categoriesBuf.toString()));
 		}
 	}
@@ -375,7 +375,7 @@ public class ColoredJavaElementLabels {
 			result.append('<');
 			for (int i = 0; i < typeParameters.length; i++) {
 				if (i > 0) {
-					result.append(JavaElementLabels.COMMA_STRING);
+					result.append(JavaScriptElementLabels.COMMA_STRING);
 				}
 				result.append(typeParameters[i].getElementName());
 			}
@@ -392,8 +392,8 @@ public class ColoredJavaElementLabels {
 	public static void getFieldLabel(IField field, long flags, ColoredString result) {
 		try {
 			
-			if (getFlag(flags, JavaElementLabels.F_PRE_TYPE_SIGNATURE) && field.exists() && !Flags.isEnum(field.getFlags())) {
-				if (getFlag(flags, JavaElementLabels.USE_RESOLVED) && field.isResolved()) {
+			if (getFlag(flags, JavaScriptElementLabels.F_PRE_TYPE_SIGNATURE) && field.exists() && !Flags.isEnum(field.getFlags())) {
+				if (getFlag(flags, JavaScriptElementLabels.USE_RESOLVED) && field.isResolved()) {
 					getTypeSignatureLabel(new BindingKey(field.getKey()).toSignature(), flags, result);
 				} else {
 					getTypeSignatureLabel(field.getTypeSignature(), flags, result);
@@ -402,16 +402,16 @@ public class ColoredJavaElementLabels {
 			}
 			
 			// qualification
-			if (getFlag(flags, JavaElementLabels.F_FULLY_QUALIFIED)) {
-				getTypeLabel(field.getDeclaringType(), JavaElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
+			if (getFlag(flags, JavaScriptElementLabels.F_FULLY_QUALIFIED)) {
+				getTypeLabel(field.getDeclaringType(), JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
 				result.append('.');
 			}
 			result.append(field.getElementName());
 			
-			if (getFlag(flags, JavaElementLabels.F_APP_TYPE_SIGNATURE) && field.exists() && !Flags.isEnum(field.getFlags())) {
+			if (getFlag(flags, JavaScriptElementLabels.F_APP_TYPE_SIGNATURE) && field.exists() && !Flags.isEnum(field.getFlags())) {
 				int offset= result.length();
-				result.append(JavaElementLabels.DECL_STRING);
-				if (getFlag(flags, JavaElementLabels.USE_RESOLVED) && field.isResolved()) {
+				result.append(JavaScriptElementLabels.DECL_STRING);
+				if (getFlag(flags, JavaScriptElementLabels.USE_RESOLVED) && field.isResolved()) {
 					getTypeSignatureLabel(new BindingKey(field.getKey()).toSignature(), flags, result);
 				} else {
 					getTypeSignatureLabel(field.getTypeSignature(), flags, result);
@@ -422,21 +422,21 @@ public class ColoredJavaElementLabels {
 			}
 
 			// category
-			if (getFlag(flags, JavaElementLabels.F_CATEGORY) && field.exists())
+			if (getFlag(flags, JavaScriptElementLabels.F_CATEGORY) && field.exists())
 				getCategoryLabel(field, result);
 
 			// post qualification
-			if (getFlag(flags, JavaElementLabels.F_POST_QUALIFIED)) {
+			if (getFlag(flags, JavaScriptElementLabels.F_POST_QUALIFIED)) {
 				int offset= result.length();
-				result.append(JavaElementLabels.CONCAT_STRING);
-				getTypeLabel(field.getDeclaringType(), JavaElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
+				result.append(JavaScriptElementLabels.CONCAT_STRING);
+				getTypeLabel(field.getDeclaringType(), JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
 				if (getFlag(flags, COLORIZE)) {
 					result.colorize(offset, result.length() - offset, QUALIFIER_STYLE);
 				}
 			}
 
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e); // NotExistsException will not reach this point
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e); // NotExistsException will not reach this point
 		}			
 	}
 	
@@ -447,21 +447,21 @@ public class ColoredJavaElementLabels {
 	 * @param result The buffer to append the resulting label to.
 	 */	
 	public static void getLocalVariableLabel(ILocalVariable localVariable, long flags, ColoredString result) {
-		if (getFlag(flags, JavaElementLabels.F_PRE_TYPE_SIGNATURE)) {
+		if (getFlag(flags, JavaScriptElementLabels.F_PRE_TYPE_SIGNATURE)) {
 			getTypeSignatureLabel(localVariable.getTypeSignature(), flags, result);
 			result.append(' ');
 		}
 		
-		if (getFlag(flags, JavaElementLabels.F_FULLY_QUALIFIED)) {
-			getElementLabel(localVariable.getParent(), JavaElementLabels.M_PARAMETER_TYPES | JavaElementLabels.M_FULLY_QUALIFIED | JavaElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
+		if (getFlag(flags, JavaScriptElementLabels.F_FULLY_QUALIFIED)) {
+			getElementLabel(localVariable.getParent(), JavaScriptElementLabels.M_PARAMETER_TYPES | JavaScriptElementLabels.M_FULLY_QUALIFIED | JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
 			result.append('.');
 		}
 		
 		result.append(localVariable.getElementName());
 		
-		if (getFlag(flags, JavaElementLabels.F_APP_TYPE_SIGNATURE)) {
+		if (getFlag(flags, JavaScriptElementLabels.F_APP_TYPE_SIGNATURE)) {
 			int offset= result.length();
-			result.append(JavaElementLabels.DECL_STRING);
+			result.append(JavaScriptElementLabels.DECL_STRING);
 			getTypeSignatureLabel(localVariable.getTypeSignature(), flags, result);
 			if (getFlag(flags, COLORIZE)) {
 				result.colorize(offset, result.length() - offset, APPENDED_TYPE_STYLE);
@@ -469,9 +469,9 @@ public class ColoredJavaElementLabels {
 		}
 		
 		// post qualification
-		if (getFlag(flags, JavaElementLabels.F_POST_QUALIFIED)) {
-			result.append(JavaElementLabels.CONCAT_STRING);
-			getElementLabel(localVariable.getParent(), JavaElementLabels.M_PARAMETER_TYPES | JavaElementLabels.M_FULLY_QUALIFIED | JavaElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
+		if (getFlag(flags, JavaScriptElementLabels.F_POST_QUALIFIED)) {
+			result.append(JavaScriptElementLabels.CONCAT_STRING);
+			getElementLabel(localVariable.getParent(), JavaScriptElementLabels.M_PARAMETER_TYPES | JavaScriptElementLabels.M_FULLY_QUALIFIED | JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
 		}
 	}
 	
@@ -483,17 +483,17 @@ public class ColoredJavaElementLabels {
 	 */	
 	public static void getInitializerLabel(IInitializer initializer, long flags, ColoredString result) {
 		// qualification
-		if (getFlag(flags, JavaElementLabels.I_FULLY_QUALIFIED)) {
-			getTypeLabel(initializer.getDeclaringType(), JavaElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
+		if (getFlag(flags, JavaScriptElementLabels.I_FULLY_QUALIFIED)) {
+			getTypeLabel(initializer.getDeclaringType(), JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
 			result.append('.');
 		}
 		result.append(JavaUIMessages.JavaElementLabels_initializer); 
 
 		// post qualification
-		if (getFlag(flags, JavaElementLabels.I_POST_QUALIFIED)) {
+		if (getFlag(flags, JavaScriptElementLabels.I_POST_QUALIFIED)) {
 			int offset= result.length();
-			result.append(JavaElementLabels.CONCAT_STRING);
-			getTypeLabel(initializer.getDeclaringType(), JavaElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
+			result.append(JavaScriptElementLabels.CONCAT_STRING);
+			getTypeLabel(initializer.getDeclaringType(), JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
 			if (getFlag(flags, COLORIZE)) {
 				result.colorize(offset, result.length() - offset, QUALIFIER_STYLE);
 			}
@@ -549,7 +549,7 @@ public class ColoredJavaElementLabels {
 			result.append('<');
 			for (int i = 0; i < typeArgsSig.length; i++) {
 				if (i > 0) {
-					result.append(JavaElementLabels.COMMA_STRING);
+					result.append(JavaScriptElementLabels.COMMA_STRING);
 				}
 				getTypeSignatureLabel(typeArgsSig[i], flags, result);
 			}
@@ -562,7 +562,7 @@ public class ColoredJavaElementLabels {
 			result.append('<');
 			for (int i = 0; i < typeParamSigs.length; i++) {
 				if (i > 0) {
-					result.append(JavaElementLabels.COMMA_STRING);
+					result.append(JavaScriptElementLabels.COMMA_STRING);
 				}
 				result.append(Signature.getTypeVariable(typeParamSigs[i]));
 			}
@@ -579,21 +579,21 @@ public class ColoredJavaElementLabels {
 	 */		
 	public static void getTypeLabel(IType type, long flags, ColoredString result) {
 		
-		if (getFlag(flags, JavaElementLabels.T_FULLY_QUALIFIED)) {
+		if (getFlag(flags, JavaScriptElementLabels.T_FULLY_QUALIFIED)) {
 			IPackageFragment pack= type.getPackageFragment();
 			if (!pack.isDefaultPackage()) {
 				getPackageFragmentLabel(pack, (flags & QUALIFIER_FLAGS), result);
 				result.append('.');
 			}
 		}
-		if (getFlag(flags, JavaElementLabels.T_FULLY_QUALIFIED | JavaElementLabels.T_CONTAINER_QUALIFIED)) {
+		if (getFlag(flags, JavaScriptElementLabels.T_FULLY_QUALIFIED | JavaScriptElementLabels.T_CONTAINER_QUALIFIED)) {
 			IType declaringType= type.getDeclaringType();
 			if (declaringType != null) {
-				getTypeLabel(declaringType, JavaElementLabels.T_CONTAINER_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
+				getTypeLabel(declaringType, JavaScriptElementLabels.T_CONTAINER_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
 				result.append('.');
 			}
 			int parentType= type.getParent().getElementType();
-			if (parentType == IJavaElement.METHOD || parentType == IJavaElement.FIELD || parentType == IJavaElement.INITIALIZER) { // anonymous or local
+			if (parentType == IJavaScriptElement.METHOD || parentType == IJavaScriptElement.FIELD || parentType == IJavaScriptElement.INITIALIZER) { // anonymous or local
 				getElementLabel(type.getParent(), 0, result);
 				result.append('.');
 			}
@@ -603,7 +603,7 @@ public class ColoredJavaElementLabels {
 		if (typeName.length() == 0) { // anonymous
 			try {
 				if (type.getParent() instanceof IField && type.isEnum()) {
-					typeName= '{' + JavaElementLabels.ELLIPSIS_STRING + '}'; 
+					typeName= '{' + JavaScriptElementLabels.ELLIPSIS_STRING + '}'; 
 				} else {
 					String supertypeName;
 					String[] superInterfaceNames= type.getSuperInterfaceNames();
@@ -614,14 +614,14 @@ public class ColoredJavaElementLabels {
 					}
 					typeName= Messages.format(JavaUIMessages.JavaElementLabels_anonym_type , supertypeName); 
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				//ignore
 				typeName= JavaUIMessages.JavaElementLabels_anonym; 
 			}
 		}
 		result.append(typeName);
-		if (getFlag(flags, JavaElementLabels.T_TYPE_PARAMETERS)) {
-			if (getFlag(flags, JavaElementLabels.USE_RESOLVED) && type.isResolved()) {
+		if (getFlag(flags, JavaScriptElementLabels.T_TYPE_PARAMETERS)) {
+			if (getFlag(flags, JavaScriptElementLabels.USE_RESOLVED) && type.isResolved()) {
 				BindingKey key= new BindingKey(type.getKey());
 				if (key.isParameterizedType()) {
 					String[] typeArguments= key.getTypeArguments();
@@ -633,30 +633,30 @@ public class ColoredJavaElementLabels {
 			} else if (type.exists()) {
 				try {
 					getTypeParametersLabel(type.getTypeParameters(), flags, result);
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					// ignore
 				}
 			}
 		}
 		
 		// category
-		if (getFlag(flags, JavaElementLabels.T_CATEGORY) && type.exists()) {
+		if (getFlag(flags, JavaScriptElementLabels.T_CATEGORY) && type.exists()) {
 			try {
 				getCategoryLabel(type, result);
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// ignore
 			}
 		}
 
 		// post qualification
-		if (getFlag(flags, JavaElementLabels.T_POST_QUALIFIED)) {
+		if (getFlag(flags, JavaScriptElementLabels.T_POST_QUALIFIED)) {
 			int offset= result.length();
-			result.append(JavaElementLabels.CONCAT_STRING);
+			result.append(JavaScriptElementLabels.CONCAT_STRING);
 			IType declaringType= type.getDeclaringType();
 			if (declaringType != null) {
-				getTypeLabel(declaringType, JavaElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
+				getTypeLabel(declaringType, JavaScriptElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
 				int parentType= type.getParent().getElementType();
-				if (parentType == IJavaElement.METHOD || parentType == IJavaElement.FIELD || parentType == IJavaElement.INITIALIZER) { // anonymous or local
+				if (parentType == IJavaScriptElement.METHOD || parentType == IJavaScriptElement.FIELD || parentType == IJavaScriptElement.INITIALIZER) { // anonymous or local
 					result.append('.');
 					getElementLabel(type.getParent(), 0, result);
 				}
@@ -675,26 +675,26 @@ public class ColoredJavaElementLabels {
 	 * @param flags The rendering flags. Flags with names starting with 'D_' are considered.
 	 * @param result The buffer to append the resulting label to.
 	 */	
-	public static void getDeclarationLabel(IJavaElement declaration, long flags, ColoredString result) {
-		if (getFlag(flags, JavaElementLabels.D_QUALIFIED)) {
-			IJavaElement openable= (IJavaElement) declaration.getOpenable();
+	public static void getDeclarationLabel(IJavaScriptElement declaration, long flags, ColoredString result) {
+		if (getFlag(flags, JavaScriptElementLabels.D_QUALIFIED)) {
+			IJavaScriptElement openable= (IJavaScriptElement) declaration.getOpenable();
 			if (openable != null) {
-				result.append(getElementLabel(openable, JavaElementLabels.CF_QUALIFIED | JavaElementLabels.CU_QUALIFIED | (flags & QUALIFIER_FLAGS)));
+				result.append(getElementLabel(openable, JavaScriptElementLabels.CF_QUALIFIED | JavaScriptElementLabels.CU_QUALIFIED | (flags & QUALIFIER_FLAGS)));
 				result.append('/');
 			}	
 		}
-		if (declaration.getElementType() == IJavaElement.IMPORT_CONTAINER) {
+		if (declaration.getElementType() == IJavaScriptElement.IMPORT_CONTAINER) {
 			result.append(JavaUIMessages.JavaElementLabels_import_container); 
 		} else {
 			result.append(declaration.getElementName());
 		}
 		// post qualification
-		if (getFlag(flags, JavaElementLabels.D_POST_QUALIFIED)) {
+		if (getFlag(flags, JavaScriptElementLabels.D_POST_QUALIFIED)) {
 			int offset= result.length();
-			IJavaElement openable= (IJavaElement) declaration.getOpenable();
+			IJavaScriptElement openable= (IJavaScriptElement) declaration.getOpenable();
 			if (openable != null) {
-				result.append(JavaElementLabels.CONCAT_STRING);
-				result.append(getElementLabel(openable, JavaElementLabels.CF_QUALIFIED | JavaElementLabels.CU_QUALIFIED | (flags & QUALIFIER_FLAGS)));
+				result.append(JavaScriptElementLabels.CONCAT_STRING);
+				result.append(getElementLabel(openable, JavaScriptElementLabels.CF_QUALIFIED | JavaScriptElementLabels.CU_QUALIFIED | (flags & QUALIFIER_FLAGS)));
 			}
 			if (getFlag(flags, COLORIZE)) {
 				result.colorize(offset, result.length() - offset, QUALIFIER_STYLE);
@@ -709,7 +709,7 @@ public class ColoredJavaElementLabels {
 	 * @param result The buffer to append the resulting label to.
 	 */	
 	public static void getClassFileLabel(IClassFile classFile, long flags, ColoredString result) {
-		if (getFlag(flags, JavaElementLabels.CF_QUALIFIED)) {
+		if (getFlag(flags, JavaScriptElementLabels.CF_QUALIFIED)) {
 			IPackageFragment pack= (IPackageFragment) classFile.getParent();
 			if (!pack.isDefaultPackage()) {
 				getPackageFragmentLabel(pack, (flags & QUALIFIER_FLAGS), result);
@@ -718,9 +718,9 @@ public class ColoredJavaElementLabels {
 		}
 		result.append(classFile.getElementName());
 		
-		if (getFlag(flags, JavaElementLabels.CF_POST_QUALIFIED)) {
+		if (getFlag(flags, JavaScriptElementLabels.CF_POST_QUALIFIED)) {
 			int offset= result.length();
-			result.append(JavaElementLabels.CONCAT_STRING);
+			result.append(JavaScriptElementLabels.CONCAT_STRING);
 			getPackageFragmentLabel((IPackageFragment) classFile.getParent(), flags & QUALIFIER_FLAGS, result);
 			if (getFlag(flags, COLORIZE)) {
 				result.colorize(offset, result.length() - offset, QUALIFIER_STYLE);
@@ -734,8 +734,8 @@ public class ColoredJavaElementLabels {
 	 * @param flags The rendering flags. Flags with names starting with 'CU_' are considered.
 	 * @param result The buffer to append the resulting label to.
 	 */
-	public static void getCompilationUnitLabel(ICompilationUnit cu, long flags, ColoredString result) {
-		if (getFlag(flags, JavaElementLabels.CU_QUALIFIED)) {
+	public static void getCompilationUnitLabel(IJavaScriptUnit cu, long flags, ColoredString result) {
+		if (getFlag(flags, JavaScriptElementLabels.CU_QUALIFIED)) {
 			IPackageFragment pack= (IPackageFragment) cu.getParent();
 			if (!pack.isDefaultPackage()) {
 				getPackageFragmentLabel(pack, (flags & QUALIFIER_FLAGS), result);
@@ -744,9 +744,9 @@ public class ColoredJavaElementLabels {
 		}
 		result.append(cu.getElementName());
 		
-		if (getFlag(flags, JavaElementLabels.CU_POST_QUALIFIED)) {
+		if (getFlag(flags, JavaScriptElementLabels.CU_POST_QUALIFIED)) {
 			int offset= result.length();
-			result.append(JavaElementLabels.CONCAT_STRING);
+			result.append(JavaScriptElementLabels.CONCAT_STRING);
 			getPackageFragmentLabel((IPackageFragment) cu.getParent(), flags & QUALIFIER_FLAGS, result);
 			if (getFlag(flags, COLORIZE)) {
 				result.colorize(offset, result.length() - offset, QUALIFIER_STYLE);
@@ -761,23 +761,23 @@ public class ColoredJavaElementLabels {
 	 * @param result The buffer to append the resulting label to.
 	 */	
 	public static void getPackageFragmentLabel(IPackageFragment pack, long flags, ColoredString result) {
-		if (getFlag(flags, JavaElementLabels.P_QUALIFIED)) {
-			getPackageFragmentRootLabel((IPackageFragmentRoot) pack.getParent(), JavaElementLabels.ROOT_QUALIFIED, result);
+		if (getFlag(flags, JavaScriptElementLabels.P_QUALIFIED)) {
+			getPackageFragmentRootLabel((IPackageFragmentRoot) pack.getParent(), JavaScriptElementLabels.ROOT_QUALIFIED, result);
 			result.append('/');
 		}
 		if (pack.isDefaultPackage()) {
-			result.append(JavaElementLabels.DEFAULT_PACKAGE);
-		} else if (getFlag(flags, JavaElementLabels.P_COMPRESSED)) {
+			result.append(JavaScriptElementLabels.DEFAULT_PACKAGE);
+		} else if (getFlag(flags, JavaScriptElementLabels.P_COMPRESSED)) {
 			StringBuffer buf= new StringBuffer();
-			JavaElementLabels.getPackageFragmentLabel(pack, JavaElementLabels.P_COMPRESSED, buf);
+			JavaScriptElementLabels.getPackageFragmentLabel(pack, JavaScriptElementLabels.P_COMPRESSED, buf);
 			result.append(buf.toString());
 		} else {
 			result.append(pack.getElementName());
 		}
-		if (getFlag(flags, JavaElementLabels.P_POST_QUALIFIED)) {
+		if (getFlag(flags, JavaScriptElementLabels.P_POST_QUALIFIED)) {
 			int offset= result.length();
-			result.append(JavaElementLabels.CONCAT_STRING);
-			getPackageFragmentRootLabel((IPackageFragmentRoot) pack.getParent(), JavaElementLabels.ROOT_QUALIFIED, result);
+			result.append(JavaScriptElementLabels.CONCAT_STRING);
+			getPackageFragmentRootLabel((IPackageFragmentRoot) pack.getParent(), JavaScriptElementLabels.ROOT_QUALIFIED, result);
 			if (getFlag(flags, COLORIZE)) {
 				result.colorize(offset, result.length() - offset, QUALIFIER_STYLE);
 			}
@@ -799,7 +799,7 @@ public class ColoredJavaElementLabels {
 	
 	private static void getArchiveLabel(IPackageFragmentRoot root, long flags, ColoredString result) {
 		// Handle variables different	
-		if (getFlag(flags, JavaElementLabels.ROOT_VARIABLE) && getVariableLabel(root, flags, result))
+		if (getFlag(flags, JavaScriptElementLabels.ROOT_VARIABLE) && getVariableLabel(root, flags, result))
 			return;
 		boolean external= root.isExternal();
 		if (external)
@@ -810,16 +810,16 @@ public class ColoredJavaElementLabels {
 	
 	private static boolean getVariableLabel(IPackageFragmentRoot root, long flags, ColoredString result) {
 		try {
-			IClasspathEntry rawEntry= root.getRawClasspathEntry();
-			if (rawEntry != null && rawEntry.getEntryKind() == IClasspathEntry.CPE_VARIABLE) {
+			IIncludePathEntry rawEntry= root.getRawIncludepathEntry();
+			if (rawEntry != null && rawEntry.getEntryKind() == IIncludePathEntry.CPE_VARIABLE) {
 				IPath path= rawEntry.getPath().makeRelative();
 				int offset= result.length();
-				if (getFlag(flags, JavaElementLabels.REFERENCED_ROOT_POST_QUALIFIED)) {
+				if (getFlag(flags, JavaScriptElementLabels.REFERENCED_ROOT_POST_QUALIFIED)) {
 					int segements= path.segmentCount();
 					if (segements > 0) {
 						result.append(path.segment(segements - 1));
 						if (segements > 1) {
-							result.append(JavaElementLabels.CONCAT_STRING);
+							result.append(JavaScriptElementLabels.CONCAT_STRING);
 							result.append(path.removeLastSegments(1).toOSString());
 						}
 					} else {
@@ -828,7 +828,7 @@ public class ColoredJavaElementLabels {
 				} else {
 					result.append(path.toString());
 				}
-				result.append(JavaElementLabels.CONCAT_STRING);
+				result.append(JavaScriptElementLabels.CONCAT_STRING);
 				if (root.isExternal())
 					result.append(root.getPath().toOSString());
 				else
@@ -839,21 +839,21 @@ public class ColoredJavaElementLabels {
 				}
 				return true;
 			}
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e); // problems with class path
+		} catch (JavaScriptModelException e) {
+			JavaScriptPlugin.log(e); // problems with class path
 		}
 		return false;
 	}
 
 	private static void getExternalArchiveLabel(IPackageFragmentRoot root, long flags, ColoredString result) {
 		IPath path= root.getPath();
-		if (getFlag(flags, JavaElementLabels.REFERENCED_ROOT_POST_QUALIFIED)) {
+		if (getFlag(flags, JavaScriptElementLabels.REFERENCED_ROOT_POST_QUALIFIED)) {
 			int segements= path.segmentCount();
 			if (segements > 0) {
 				result.append(path.segment(segements - 1));
 				int offset= result.length();
 				if (segements > 1 || path.getDevice() != null) {
-					result.append(JavaElementLabels.CONCAT_STRING);
+					result.append(JavaScriptElementLabels.CONCAT_STRING);
 					result.append(path.removeLastSegments(1).toOSString());
 				}
 				if (getFlag(flags, COLORIZE)) {
@@ -869,18 +869,18 @@ public class ColoredJavaElementLabels {
 
 	private static void getInternalArchiveLabel(IPackageFragmentRoot root, long flags, ColoredString result) {
 		IResource resource= root.getResource();
-		boolean rootQualified= getFlag(flags, JavaElementLabels.ROOT_QUALIFIED);
-		boolean referencedQualified= getFlag(flags, JavaElementLabels.REFERENCED_ROOT_POST_QUALIFIED) && isReferenced(root);
+		boolean rootQualified= getFlag(flags, JavaScriptElementLabels.ROOT_QUALIFIED);
+		boolean referencedQualified= getFlag(flags, JavaScriptElementLabels.REFERENCED_ROOT_POST_QUALIFIED) && isReferenced(root);
 		if (rootQualified) {
 			result.append(root.getPath().makeRelative().toString());
 		} else {
 			result.append(root.getElementName());
 			int offset= result.length();
 			if (referencedQualified) {
-				result.append(JavaElementLabels.CONCAT_STRING);
+				result.append(JavaScriptElementLabels.CONCAT_STRING);
 				result.append(resource.getParent().getFullPath().makeRelative().toString());
-			} else if (getFlag(flags, JavaElementLabels.ROOT_POST_QUALIFIED)) {
-				result.append(JavaElementLabels.CONCAT_STRING);
+			} else if (getFlag(flags, JavaScriptElementLabels.ROOT_POST_QUALIFIED)) {
+				result.append(JavaScriptElementLabels.CONCAT_STRING);
 				result.append(root.getParent().getPath().makeRelative().toString());
 			} else {
 				return;
@@ -893,8 +893,8 @@ public class ColoredJavaElementLabels {
 
 	private static void getFolderLabel(IPackageFragmentRoot root, long flags, ColoredString result) {
 		IResource resource= root.getResource();
-		boolean rootQualified= getFlag(flags, JavaElementLabels.ROOT_QUALIFIED);
-		boolean referencedQualified= getFlag(flags, JavaElementLabels.REFERENCED_ROOT_POST_QUALIFIED) && isReferenced(root);
+		boolean rootQualified= getFlag(flags, JavaScriptElementLabels.ROOT_QUALIFIED);
+		boolean referencedQualified= getFlag(flags, JavaScriptElementLabels.REFERENCED_ROOT_POST_QUALIFIED) && isReferenced(root);
 		if (rootQualified) {
 			result.append(root.getPath().makeRelative().toString());
 		} else {
@@ -910,10 +910,10 @@ public class ColoredJavaElementLabels {
 				result.append(root.getElementName());
 			int offset= result.length();
 			if (referencedQualified) {
-				result.append(JavaElementLabels.CONCAT_STRING);
+				result.append(JavaScriptElementLabels.CONCAT_STRING);
 				result.append(resource.getProject().getName());
-			} else if (getFlag(flags, JavaElementLabels.ROOT_POST_QUALIFIED)) {
-				result.append(JavaElementLabels.CONCAT_STRING);
+			} else if (getFlag(flags, JavaScriptElementLabels.ROOT_POST_QUALIFIED)) {
+				result.append(JavaScriptElementLabels.CONCAT_STRING);
 				result.append(root.getParent().getElementName());
 			} else {
 				return;
@@ -935,7 +935,7 @@ public class ColoredJavaElementLabels {
 		IResource resource= root.getResource();
 		if (resource != null) {
 			IProject jarProject= resource.getProject();
-			IProject container= root.getJavaProject().getProject();
+			IProject container= root.getJavaScriptProject().getProject();
 			return !container.equals(jarProject);
 		}
 		return false;
@@ -947,15 +947,15 @@ public class ColoredJavaElementLabels {
 	 * @param project The project the container is resolved in.
 	 * @return Returns the label of the classpath container
 	 */
-	public static ColoredString getContainerEntryLabel(IPath containerPath, IJavaProject project) {
+	public static ColoredString getContainerEntryLabel(IPath containerPath, IJavaScriptProject project) {
 		try {
-			IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(containerPath, project);
+			IJsGlobalScopeContainer container= JavaScriptCore.getJsGlobalScopeContainer(containerPath, project);
 			String description= null;
 			if (container != null) {
 				description= container.getDescription();
 			}
 			if (description == null) {
-				JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
+				JsGlobalScopeContainerInitializer initializer= JavaScriptCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
 				if (initializer != null) {
 					description= initializer.getDescription(containerPath, project);
 				}
@@ -970,7 +970,7 @@ public class ColoredJavaElementLabels {
 				}
 				return str;
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			// ignore
 		}
 		return new ColoredString(containerPath.toString());

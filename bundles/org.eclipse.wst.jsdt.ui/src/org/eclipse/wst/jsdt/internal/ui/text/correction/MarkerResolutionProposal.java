@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolution2;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 
@@ -59,7 +59,7 @@ public class MarkerResolutionProposal implements IJavaCompletionProposal {
 			String problemDesc= (String) fMarker.getAttribute(IMarker.MESSAGE);
 			return Messages.format(CorrectionMessages.MarkerResolutionProposal_additionaldesc, problemDesc);
 		} catch (CoreException e) {
-			JavaPlugin.log(e);
+			JavaScriptPlugin.log(e);
 		}
 		return null;
 	}

@@ -11,8 +11,8 @@
 package org.eclipse.wst.jsdt.internal.corext.util;
 
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
@@ -119,7 +119,7 @@ public class TypeInfoFilter {
 	}
 	
 	private String fText;
-	private IJavaSearchScope fSearchScope;
+	private IJavaScriptSearchScope fSearchScope;
 	private boolean fIsWorkspaceScope;
 	private int fElementKind;
 	private ITypeInfoFilterExtension fFilterExtension;
@@ -130,7 +130,7 @@ public class TypeInfoFilter {
 	
 	private static final int TYPE_MODIFIERS= Flags.AccEnum | Flags.AccAnnotation | Flags.AccInterface;
 	
-	public TypeInfoFilter(String text, IJavaSearchScope scope, int elementKind, ITypeInfoFilterExtension extension) {
+	public TypeInfoFilter(String text, IJavaScriptSearchScope scope, int elementKind, ITypeInfoFilterExtension extension) {
 		fText= text;
 		fSearchScope= scope;
 		fIsWorkspaceScope= fSearchScope.equals(SearchEngine.createWorkspaceScope());
@@ -249,21 +249,21 @@ public class TypeInfoFilter {
 	}
 	
 	private boolean matchesModifiers(TypeNameMatch type) {
-		if (fElementKind == IJavaSearchConstants.TYPE)
+		if (fElementKind == IJavaScriptSearchConstants.TYPE)
 			return true;
 		int modifiers= type.getModifiers() & TYPE_MODIFIERS;
 		switch (fElementKind) {
-			case IJavaSearchConstants.CLASS:
+			case IJavaScriptSearchConstants.CLASS:
 				return modifiers == 0;
-			case IJavaSearchConstants.ANNOTATION_TYPE:
+			case IJavaScriptSearchConstants.ANNOTATION_TYPE:
 				return Flags.isAnnotation(modifiers);
-			case IJavaSearchConstants.INTERFACE:
+			case IJavaScriptSearchConstants.INTERFACE:
 				return Flags.isInterface(modifiers);
-			case IJavaSearchConstants.ENUM:
+			case IJavaScriptSearchConstants.ENUM:
 				return Flags.isEnum(modifiers);
-			case IJavaSearchConstants.CLASS_AND_INTERFACE:
+			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE:
 				return modifiers == 0 || Flags.isInterface(modifiers);
-			case IJavaSearchConstants.CLASS_AND_ENUM:
+			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
 				return modifiers == 0 || Flags.isEnum(modifiers);
 		}
 		return false;

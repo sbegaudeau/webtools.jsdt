@@ -22,11 +22,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.core.IJarEntryResource;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 /**
  * Add the <code>StatusBarUpdater</code> to your ViewPart to have the statusbar
@@ -34,9 +34,9 @@ import org.eclipse.wst.jsdt.ui.JavaElementLabels;
  */
 public class StatusBarUpdater implements ISelectionChangedListener {
 	
-	private final long LABEL_FLAGS= JavaElementLabels.DEFAULT_QUALIFIED | JavaElementLabels.ROOT_POST_QUALIFIED | JavaElementLabels.APPEND_ROOT_PATH |
-			JavaElementLabels.M_PARAMETER_TYPES | JavaElementLabels.M_PARAMETER_NAMES | JavaElementLabels.M_APP_RETURNTYPE | JavaElementLabels.M_EXCEPTIONS | 
-		 	JavaElementLabels.F_APP_TYPE_SIGNATURE | JavaElementLabels.T_TYPE_PARAMETERS;
+	private final long LABEL_FLAGS= JavaScriptElementLabels.DEFAULT_QUALIFIED | JavaScriptElementLabels.ROOT_POST_QUALIFIED | JavaScriptElementLabels.APPEND_ROOT_PATH |
+			JavaScriptElementLabels.M_PARAMETER_TYPES | JavaScriptElementLabels.M_PARAMETER_NAMES | JavaScriptElementLabels.M_APP_RETURNTYPE | JavaScriptElementLabels.M_EXCEPTIONS | 
+		 	JavaScriptElementLabels.F_APP_TYPE_SIGNATURE | JavaScriptElementLabels.T_TYPE_PARAMETERS;
 		 	
 	private IStatusLineManager fStatusLineManager;
 	
@@ -62,23 +62,23 @@ public class StatusBarUpdater implements ISelectionChangedListener {
 				return Messages.format(JavaUIMessages.StatusBarUpdater_num_elements_selected, String.valueOf(nElements)); 
 			} else { 
 				Object elem= selection.getFirstElement();
-				if (elem instanceof IJavaElement) {
-					return formatJavaElementMessage((IJavaElement) elem);
+				if (elem instanceof IJavaScriptElement) {
+					return formatJavaElementMessage((IJavaScriptElement) elem);
 				} else if (elem instanceof IResource) {
 					return formatResourceMessage((IResource) elem);
 				} else if (elem instanceof PackageFragmentRootContainer) {
 					PackageFragmentRootContainer container= (PackageFragmentRootContainer) elem;
-					return container.getLabel() + JavaElementLabels.CONCAT_STRING + container.getJavaProject().getElementName();
+					return container.getLabel() + JavaScriptElementLabels.CONCAT_STRING + container.getJavaProject().getElementName();
 				} else if (elem instanceof IJarEntryResource) {
 					IJarEntryResource jarEntryResource= (IJarEntryResource) elem;
 					StringBuffer buf= new StringBuffer(jarEntryResource.getName());
-					buf.append(JavaElementLabels.CONCAT_STRING);
+					buf.append(JavaScriptElementLabels.CONCAT_STRING);
 					IPath fullPath= jarEntryResource.getFullPath();
 					if (fullPath.segmentCount() > 1) {
 						buf.append(fullPath.removeLastSegments(1).makeRelative());
-						buf.append(JavaElementLabels.CONCAT_STRING);
+						buf.append(JavaScriptElementLabels.CONCAT_STRING);
 					}
-					JavaElementLabels.getPackageFragmentRootLabel(jarEntryResource.getPackageFragmentRoot(), JavaElementLabels.ROOT_POST_QUALIFIED, buf);
+					JavaScriptElementLabels.getPackageFragmentRootLabel(jarEntryResource.getPackageFragmentRoot(), JavaScriptElementLabels.ROOT_POST_QUALIFIED, buf);
 					return buf.toString();
 				} else if (elem instanceof IAdaptable) {
 					IWorkbenchAdapter wbadapter= (IWorkbenchAdapter) ((IAdaptable)elem).getAdapter(IWorkbenchAdapter.class);
@@ -91,14 +91,14 @@ public class StatusBarUpdater implements ISelectionChangedListener {
 		return "";  //$NON-NLS-1$
 	}
 		
-	private String formatJavaElementMessage(IJavaElement element) {
-		return JavaElementLabels.getElementLabel(element, LABEL_FLAGS);
+	private String formatJavaElementMessage(IJavaScriptElement element) {
+		return JavaScriptElementLabels.getElementLabel(element, LABEL_FLAGS);
 	}
 		
 	private String formatResourceMessage(IResource element) {
 		IContainer parent= element.getParent();
 		if (parent != null && parent.getType() != IResource.ROOT)
-			return element.getName() + JavaElementLabels.CONCAT_STRING + parent.getFullPath().makeRelative().toString();
+			return element.getName() + JavaScriptElementLabels.CONCAT_STRING + parent.getFullPath().makeRelative().toString();
 		else
 			return element.getName();
 	}	

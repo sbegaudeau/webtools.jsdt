@@ -25,17 +25,17 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.AddUnimplementedMethodsOperation;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
@@ -45,7 +45,7 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
 import org.eclipse.wst.jsdt.internal.ui.util.ElementValidator;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * Adds unimplemented methods of a type. The action opens a dialog from which the user can
@@ -98,12 +98,12 @@ public class OverrideMethodsAction extends SelectionDispatchAction {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.ADD_UNIMPLEMENTED_METHODS_ACTION);
 	}
 
-	private boolean canEnable(IStructuredSelection selection) throws JavaModelException {
+	private boolean canEnable(IStructuredSelection selection) throws JavaScriptModelException {
 		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IType)) {
 			final IType type= (IType) selection.getFirstElement();
-			return type.getCompilationUnit() != null && !type.isInterface();
+			return type.getJavaScriptUnit() != null && !type.isInterface();
 		}
-		if ((selection.size() == 1) && (selection.getFirstElement() instanceof ICompilationUnit))
+		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IJavaScriptUnit))
 			return true;
 		return false;
 	}
@@ -116,15 +116,15 @@ public class OverrideMethodsAction extends SelectionDispatchAction {
 		return DIALOG_TITLE;
 	}
 
-	private IType getSelectedType(IStructuredSelection selection) throws JavaModelException {
+	private IType getSelectedType(IStructuredSelection selection) throws JavaScriptModelException {
 		final Object[] elements= selection.toArray();
 		if (elements.length == 1 && (elements[0] instanceof IType)) {
 			final IType type= (IType) elements[0];
-			if (type.getCompilationUnit() != null && !type.isInterface()) {
+			if (type.getJavaScriptUnit() != null && !type.isInterface()) {
 				return type;
 			}
-		} else if (elements[0] instanceof ICompilationUnit) {
-			final IType type= ((ICompilationUnit) elements[0]).findPrimaryType();
+		} else if (elements[0] instanceof IJavaScriptUnit) {
+			final IType type= ((IJavaScriptUnit) elements[0]).findPrimaryType();
 			if (type != null && !type.isInterface())
 				return type;
 		}
@@ -177,7 +177,7 @@ public class OverrideMethodsAction extends SelectionDispatchAction {
 			} else {
 				MessageDialog.openInformation(getShell(), getDialogTitle(), ActionMessages.OverrideMethodsAction_not_applicable); 
 			}
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ExceptionHandler.handle(e, getShell(), getDialogTitle(), null);
 		} catch (CoreException e) {
 			ExceptionHandler.handle(e, getShell(), getDialogTitle(), ActionMessages.OverrideMethodsAction_error_actionfailed); 
@@ -205,24 +205,24 @@ public class OverrideMethodsAction extends SelectionDispatchAction {
 		ArrayList methods= new ArrayList();
 		for (int i= 0; i < selected.length; i++) {
 			Object elem= selected[i];
-			if (elem instanceof IMethodBinding) {
+			if (elem instanceof IFunctionBinding) {
 				methods.add(elem);
 			}
 		}
-		IMethodBinding[] methodToOverride= (IMethodBinding[]) methods.toArray(new IMethodBinding[methods.size()]);
+		IFunctionBinding[] methodToOverride= (IFunctionBinding[]) methods.toArray(new IFunctionBinding[methods.size()]);
 
 		
-		final IEditorPart editor= JavaUI.openInEditor(type.getCompilationUnit());
+		final IEditorPart editor= JavaScriptUI.openInEditor(type.getJavaScriptUnit());
 		final IRewriteTarget target= editor != null ? (IRewriteTarget) editor.getAdapter(IRewriteTarget.class) : null;
 		if (target != null)
 			target.beginCompoundChange();
 		try {
-			CompilationUnit astRoot= dialog.getCompilationUnit();
+			JavaScriptUnit astRoot= dialog.getCompilationUnit();
 			final ITypeBinding typeBinding= ASTNodes.getTypeBinding(astRoot, type);
 			int insertPos= dialog.getInsertOffset();
 			
 			AddUnimplementedMethodsOperation operation= (AddUnimplementedMethodsOperation) createRunnable(astRoot, typeBinding, methodToOverride, insertPos, dialog.getGenerateComment());
-			IRunnableContext context= JavaPlugin.getActiveWorkbenchWindow();
+			IRunnableContext context= JavaScriptPlugin.getActiveWorkbenchWindow();
 			if (context == null)
 				context= new BusyIndicatorRunnableContext();
 			PlatformUI.getWorkbench().getProgressService().runInUI(context, new WorkbenchRunnableAdapter(operation, operation.getSchedulingRule()), operation.getSchedulingRule());
@@ -243,18 +243,18 @@ public class OverrideMethodsAction extends SelectionDispatchAction {
 	/**
 	 * Returns a runnable that creates the method stubs for overridden methods.
 	 * 
-	 * @param astRoot the AST of the compilation unit to work on. The AST must have been created from a {@link ICompilationUnit}, that
-	 * means {@link org.eclipse.wst.jsdt.core.dom.ASTParser#setSource(ICompilationUnit)} was used.
+	 * @param astRoot the AST of the compilation unit to work on. The AST must have been created from a {@link IJavaScriptUnit}, that
+	 * means {@link org.eclipse.wst.jsdt.core.dom.ASTParser#setSource(IJavaScriptUnit)} was used.
 	 * @param type the binding of the type to add the new methods to. The type binding must correspond to a type declaration in the AST.
 	 * @param methodToOverride the bindings of methods to override or <code>null</code> to implement all unimplemented, abstract methods from super types.
 	 * @param insertPos a hint for a location in the source where to insert the new methods or <code>-1</code> to use the default behavior.
 	 * @param createComments if set, comments will be added to the new methods.
 	 * @return returns a runnable that creates the methods stubs.
-	 * @throws IllegalArgumentException a {@link IllegalArgumentException} is thrown if the AST passed has not been created from a {@link ICompilationUnit}.
+	 * @throws IllegalArgumentException a {@link IllegalArgumentException} is thrown if the AST passed has not been created from a {@link IJavaScriptUnit}.
 	 * 
 	 * @since 3.2
 	 */
-	public static IWorkspaceRunnable createRunnable(CompilationUnit astRoot, ITypeBinding type, IMethodBinding[] methodToOverride, int insertPos, boolean createComments) {
+	public static IWorkspaceRunnable createRunnable(JavaScriptUnit astRoot, ITypeBinding type, IFunctionBinding[] methodToOverride, int insertPos, boolean createComments) {
 		AddUnimplementedMethodsOperation operation= new AddUnimplementedMethodsOperation(astRoot, type, methodToOverride, insertPos, true, true, false);
 		operation.setCreateComments(createComments);
 		return operation;
@@ -266,9 +266,9 @@ public class OverrideMethodsAction extends SelectionDispatchAction {
 	public void selectionChanged(IStructuredSelection selection) {
 		try {
 			setEnabled(canEnable(selection));
-		} catch (JavaModelException exception) {
+		} catch (JavaScriptModelException exception) {
 			if (JavaModelUtil.isExceptionToBeLogged(exception))
-				JavaPlugin.log(exception);
+				JavaScriptPlugin.log(exception);
 			setEnabled(false);
 		}
 	}

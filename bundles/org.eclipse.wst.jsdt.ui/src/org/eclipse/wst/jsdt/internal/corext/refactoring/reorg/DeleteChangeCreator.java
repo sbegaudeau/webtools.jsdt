@@ -30,12 +30,12 @@ import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.ltk.core.refactoring.TextFileChange;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceManipulation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
@@ -65,7 +65,7 @@ class DeleteChangeCreator {
 	 *        <code>javaElements</code> does not contain package fragments
 	 */
 	static Change createDeleteChange(TextChangeManager manager, IResource[] resources,
-			IJavaElement[] javaElements, String changeName, List/*<IResource>*/ packageDeletes) throws CoreException {
+			IJavaScriptElement[] javaElements, String changeName, List/*<IResource>*/ packageDeletes) throws CoreException {
 		/*
 		 * Problem: deleting a package and subpackages can result in
 		 * multiple package fragments in fJavaElements but only
@@ -81,7 +81,7 @@ class DeleteChangeCreator {
 		}
 		
 		for (int i= 0; i < javaElements.length; i++) {
-			IJavaElement element= javaElements[i];
+			IJavaScriptElement element= javaElements[i];
 			if (! ReorgUtils.isInsideCompilationUnit(element))
 				result.add(createDeleteChange(element));
 		}
@@ -94,7 +94,7 @@ class DeleteChangeCreator {
 		if (grouped.size() != 0 ){
 			Assert.isNotNull(manager);
 			for (Iterator iter= grouped.keySet().iterator(); iter.hasNext();) {
-				ICompilationUnit cu= (ICompilationUnit) iter.next();
+				IJavaScriptUnit cu= (IJavaScriptUnit) iter.next();
 				result.add(createDeleteChange(cu, (List)grouped.get(cu), manager));
 			}
 		}
@@ -114,20 +114,20 @@ class DeleteChangeCreator {
 	}
 
 	/*
-	 * List<IJavaElement> javaElements
+	 * List<IJavaScriptElement> javaElements
 	 */
-	private static Change createDeleteChange(ICompilationUnit cu, List javaElements, TextChangeManager manager) throws CoreException {
-		CompilationUnit cuNode= RefactoringASTParser.parseWithASTProvider(cu, false, null);
+	private static Change createDeleteChange(IJavaScriptUnit cu, List javaElements, TextChangeManager manager) throws CoreException {
+		JavaScriptUnit cuNode= RefactoringASTParser.parseWithASTProvider(cu, false, null);
 		CompilationUnitRewrite rewriter= new CompilationUnitRewrite(cu, cuNode);
-		IJavaElement[] elements= (IJavaElement[]) javaElements.toArray(new IJavaElement[javaElements.size()]);
+		IJavaScriptElement[] elements= (IJavaScriptElement[]) javaElements.toArray(new IJavaScriptElement[javaElements.size()]);
 		ASTNodeDeleteUtil.markAsDeleted(elements, rewriter, null);
 		return addTextEditFromRewrite(manager, cu, rewriter.getASTRewrite());
 	}
 
-	private static TextChange addTextEditFromRewrite(TextChangeManager manager, ICompilationUnit cu, ASTRewrite rewrite) throws CoreException {
+	private static TextChange addTextEditFromRewrite(TextChangeManager manager, IJavaScriptUnit cu, ASTRewrite rewrite) throws CoreException {
 		try {
 			ITextFileBuffer buffer= RefactoringFileBuffers.acquire(cu);
-			TextEdit resultingEdits= rewrite.rewriteAST(buffer.getDocument(), cu.getJavaProject().getOptions(true));
+			TextEdit resultingEdits= rewrite.rewriteAST(buffer.getDocument(), cu.getJavaScriptProject().getOptions(true));
 			TextChange textChange= manager.get(cu);
 			if (textChange instanceof TextFileChange) {
 				TextFileChange tfc= (TextFileChange) textChange;
@@ -142,50 +142,50 @@ class DeleteChangeCreator {
 		}
 	}
 
-	//List<IJavaElement>
-	private static List getElementsSmallerThanCu(IJavaElement[] javaElements){
+	//List<IJavaScriptElement>
+	private static List getElementsSmallerThanCu(IJavaScriptElement[] javaElements){
 		List result= new ArrayList();
 		for (int i= 0; i < javaElements.length; i++) {
-			IJavaElement element= javaElements[i];
+			IJavaScriptElement element= javaElements[i];
 			if (ReorgUtils.isInsideCompilationUnit(element))
 				result.add(element);
 		}
 		return result;
 	}
 
-	private static Change createDeleteChange(IJavaElement javaElement) {
+	private static Change createDeleteChange(IJavaScriptElement javaElement) {
 		Assert.isTrue(! ReorgUtils.isInsideCompilationUnit(javaElement));
 		
 		switch(javaElement.getElementType()){
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 				return createPackageFragmentRootDeleteChange((IPackageFragmentRoot)javaElement);
 
-			case IJavaElement.PACKAGE_FRAGMENT:
+			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				return createSourceManipulationDeleteChange((IPackageFragment)javaElement);
 
-			case IJavaElement.COMPILATION_UNIT:
-				return createSourceManipulationDeleteChange((ICompilationUnit)javaElement);
+			case IJavaScriptElement.JAVASCRIPT_UNIT:
+				return createSourceManipulationDeleteChange((IJavaScriptUnit)javaElement);
 
-			case IJavaElement.CLASS_FILE:
+			case IJavaScriptElement.CLASS_FILE:
 				//if this assert fails, it means that a precondition is missing
 				Assert.isTrue(((IClassFile)javaElement).getResource() instanceof IFile);
 				return createDeleteChange(((IClassFile)javaElement).getResource());
 
-			case IJavaElement.JAVA_MODEL: //cannot be done
+			case IJavaScriptElement.JAVASCRIPT_MODEL: //cannot be done
 				Assert.isTrue(false);
 				return null;
 
-			case IJavaElement.JAVA_PROJECT: //handled differently
+			case IJavaScriptElement.JAVASCRIPT_PROJECT: //handled differently
 				Assert.isTrue(false);
 				return null;
 
-			case IJavaElement.TYPE:
-			case IJavaElement.FIELD:
-			case IJavaElement.METHOD:
-			case IJavaElement.INITIALIZER:
-			case IJavaElement.PACKAGE_DECLARATION:
-			case IJavaElement.IMPORT_CONTAINER:
-			case IJavaElement.IMPORT_DECLARATION:
+			case IJavaScriptElement.TYPE:
+			case IJavaScriptElement.FIELD:
+			case IJavaScriptElement.METHOD:
+			case IJavaScriptElement.INITIALIZER:
+			case IJavaScriptElement.PACKAGE_DECLARATION:
+			case IJavaScriptElement.IMPORT_CONTAINER:
+			case IJavaScriptElement.IMPORT_DECLARATION:
 				Assert.isTrue(false);//not done here
 			default:
 				Assert.isTrue(false);//there's no more kinds
@@ -195,10 +195,10 @@ class DeleteChangeCreator {
 
 	private static Change createSourceManipulationDeleteChange(ISourceManipulation element) {
 		//XXX workaround for bug 31384, in case of linked ISourceManipulation delete the resource
-		if (element instanceof ICompilationUnit || element instanceof IPackageFragment){
+		if (element instanceof IJavaScriptUnit || element instanceof IPackageFragment){
 			IResource resource;
-			if (element instanceof ICompilationUnit)
-				resource= ReorgUtils.getResource((ICompilationUnit)element);
+			if (element instanceof IJavaScriptUnit)
+				resource= ReorgUtils.getResource((IJavaScriptUnit)element);
 			else 
 				resource= ((IPackageFragment)element).getResource();
 			if (resource != null && resource.isLinked())

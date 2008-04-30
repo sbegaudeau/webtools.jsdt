@@ -16,10 +16,10 @@ package org.eclipse.wst.jsdt.core.compiler;
 
 import java.util.HashMap;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaModelMarker;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelMarker;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.internal.core.CompilationUnit;
@@ -80,30 +80,30 @@ public ReconcileContext(ReconcileWorkingCopyOperation operation, CompilationUnit
  *
  * @return the AST created from the current state of the working copy,
  *   or <code>null</code> if none could be created
- * @exception JavaModelException  if the contents of the working copy
+ * @exception JavaScriptModelException  if the contents of the working copy
  *		cannot be accessed. Reasons include:
  * <ul>
  * <li> The working copy does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * </ul>
  */
-public org.eclipse.wst.jsdt.core.dom.CompilationUnit getAST3() throws JavaModelException {
+public org.eclipse.wst.jsdt.core.dom.JavaScriptUnit getAST3() throws JavaScriptModelException {
 	if (this.operation.astLevel != AST.JLS3 || !this.operation.resolveBindings) {
 		// create AST (optionally resolving bindings)
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
-		parser.setCompilerOptions(workingCopy.getJavaProject().getOptions(true));
-		if (JavaProject.hasJavaNature(workingCopy.getJavaProject().getProject()))
+		parser.setCompilerOptions(workingCopy.getJavaScriptProject().getOptions(true));
+		if (JavaProject.hasJavaNature(workingCopy.getJavaScriptProject().getProject()))
 			parser.setResolveBindings(true);
-		parser.setStatementsRecovery((this.operation.reconcileFlags & ICompilationUnit.ENABLE_STATEMENTS_RECOVERY) != 0);
-		parser.setBindingsRecovery((this.operation.reconcileFlags & ICompilationUnit.ENABLE_BINDINGS_RECOVERY) != 0);
+		parser.setStatementsRecovery((this.operation.reconcileFlags & IJavaScriptUnit.ENABLE_STATEMENTS_RECOVERY) != 0);
+		parser.setBindingsRecovery((this.operation.reconcileFlags & IJavaScriptUnit.ENABLE_BINDINGS_RECOVERY) != 0);
 		parser.setSource(workingCopy);
-		return (org.eclipse.wst.jsdt.core.dom.CompilationUnit) parser.createAST(this.operation.progressMonitor);
+		return (org.eclipse.wst.jsdt.core.dom.JavaScriptUnit) parser.createAST(this.operation.progressMonitor);
 	}
 	return this.operation.makeConsistent(this.workingCopy);
 }
 
 /**
  * Returns the AST level requested by the reconcile operation.
- * It is either {@link ICompilationUnit#NO_AST}, or one of the JLS constants defined on {@link AST}.
+ * It is either {@link IJavaScriptUnit#NO_AST}, or one of the JLS constants defined on {@link AST}.
  *
  * @return the AST level requested by the reconcile operation
  */
@@ -128,7 +128,7 @@ public boolean isResolvingBindings() {
  *
  * @return the delta describing the change, or <code>null</code> if none
  */
-public IJavaElementDelta getDelta() {
+public IJavaScriptElementDelta getDelta() {
 	return this.operation.deltaBuilder.delta;
 }
 
@@ -150,7 +150,7 @@ public CategorizedProblem[] getProblems(String markerType) {
  *
  * @return the working copy this context refers to
  */
-public ICompilationUnit getWorkingCopy() {
+public IJavaScriptUnit getWorkingCopy() {
 	return this.workingCopy;
 }
 
@@ -168,8 +168,8 @@ public ICompilationUnit getWorkingCopy() {
  */
 public void resetAST() {
 	this.operation.ast = null;
-	putProblems(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, null);
-	putProblems(IJavaModelMarker.TASK_MARKER, null);
+	putProblems(IJavaScriptModelMarker.JAVASCRIPT_MODEL_PROBLEM_MARKER, null);
+	putProblems(IJavaScriptModelMarker.TASK_MARKER, null);
 }
 
 /**

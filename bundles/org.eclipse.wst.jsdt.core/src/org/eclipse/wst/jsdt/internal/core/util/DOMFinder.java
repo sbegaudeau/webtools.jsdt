@@ -13,20 +13,20 @@ package org.eclipse.wst.jsdt.internal.core.util;
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeParameter;
@@ -38,12 +38,12 @@ public class DOMFinder extends ASTVisitor {
 	public ASTNode foundNode = null;
 	public IBinding foundBinding = null;
 
-	private CompilationUnit ast;
+	private JavaScriptUnit ast;
 	private SourceRefElement element;
 	private boolean resolveBinding;
 	private int rangeStart = -1, rangeLength = 0;
 
-	public DOMFinder(CompilationUnit ast, SourceRefElement element, boolean resolveBinding) {
+	public DOMFinder(JavaScriptUnit ast, SourceRefElement element, boolean resolveBinding) {
 		this.ast = ast;
 		this.element = element;
 		this.resolveBinding = resolveBinding;
@@ -57,7 +57,7 @@ public class DOMFinder extends ASTVisitor {
 		return false;
 	}
 
-	public ASTNode search() throws JavaModelException {
+	public ASTNode search() throws JavaScriptModelException {
 		ISourceRange range = null;
 		if (this.element instanceof IMember && !(this.element instanceof IInitializer))
 			range = ((IMember) this.element).getNameRange();
@@ -123,7 +123,7 @@ public class DOMFinder extends ASTVisitor {
 		return true;
 	}
 
-	public boolean visit(MethodDeclaration node) {
+	public boolean visit(FunctionDeclaration node) {
 		if (found(node, node.getName()) && this.resolveBinding)
 			this.foundBinding = node.resolveBinding();
 		return true;

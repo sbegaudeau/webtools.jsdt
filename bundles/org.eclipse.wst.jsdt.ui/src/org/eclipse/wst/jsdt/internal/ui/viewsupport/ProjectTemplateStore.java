@@ -25,8 +25,8 @@ import org.eclipse.jface.text.templates.persistence.TemplatePersistenceData;
 import org.eclipse.jface.text.templates.persistence.TemplateReaderWriter;
 import org.eclipse.jface.text.templates.persistence.TemplateStore;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
  * @since 3.1
@@ -39,11 +39,11 @@ public final class ProjectTemplateStore {
 	private final TemplateStore fProjectStore;
 	
 	public ProjectTemplateStore(IProject project) {
-		fInstanceStore= JavaPlugin.getDefault().getCodeTemplateStore();
+		fInstanceStore= JavaScriptPlugin.getDefault().getCodeTemplateStore();
 		if (project == null) {
 			fProjectStore= null;
 		} else {
-			final ScopedPreferenceStore projectSettings= new ScopedPreferenceStore(new ProjectScope(project), JavaUI.ID_PLUGIN);
+			final ScopedPreferenceStore projectSettings= new ScopedPreferenceStore(new ProjectScope(project), JavaScriptUI.ID_PLUGIN);
 			fProjectStore= new TemplateStore(projectSettings, KEY) {
 				/*
 				 * Make sure we keep the id of added code templates - add removes
@@ -67,7 +67,7 @@ public final class ProjectTemplateStore {
 	}
 	
 	public static boolean hasProjectSpecificTempates(IProject project) {
-		String pref= new ProjectScope(project).getNode(JavaUI.ID_PLUGIN).get(KEY, null);
+		String pref= new ProjectScope(project).getNode(JavaScriptUI.ID_PLUGIN).get(KEY, null);
 		if (pref != null && pref.trim().length() > 0) {
 			Reader input= new StringReader(pref);
 			TemplateReaderWriter reader= new TemplateReaderWriter();

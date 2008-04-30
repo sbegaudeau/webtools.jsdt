@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 
 /**
  * Refactoring descriptor for the convert member type refactoring.
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
  * 
  * @since 3.3
  */
-public final class ConvertMemberTypeDescriptor extends JavaRefactoringDescriptor {
+public final class ConvertMemberTypeDescriptor extends JavaScriptRefactoringDescriptor {
 
 	/**
 	 * Creates a new refactoring descriptor.
 	 */
 	public ConvertMemberTypeDescriptor() {
-		super(IJavaRefactorings.CONVERT_MEMBER_TYPE);
+		super(IJavaScriptRefactorings.CONVERT_MEMBER_TYPE);
 	}
 }

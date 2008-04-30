@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /*
  * The page to configure the naming style options.
@@ -31,7 +31,7 @@ public class ImportOrganizePreferencePage extends PropertyAndPreferencePage {
 	private ImportOrganizeConfigurationBlock fConfigurationBlock;
 
 	public ImportOrganizePreferencePage() {
-		setPreferenceStore(JavaPlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(JavaScriptPlugin.getDefault().getPreferenceStore());
 		//setDescription(PreferencesMessages.ImportOrganizePreferencePage_description); 
 		
 		// only used when page is shown programatically
