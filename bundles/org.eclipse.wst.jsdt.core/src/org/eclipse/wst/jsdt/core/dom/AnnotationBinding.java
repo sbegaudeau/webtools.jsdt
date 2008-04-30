@@ -20,6 +20,11 @@ import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 
 /**
  * Internal class
+ *
+ * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
+ * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
+ * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 
+ * (repeatedly) as the API evolves.
  */
 class AnnotationBinding implements IAnnotationBinding {
 	static final AnnotationBinding[] NoAnnotations = new AnnotationBinding[0];

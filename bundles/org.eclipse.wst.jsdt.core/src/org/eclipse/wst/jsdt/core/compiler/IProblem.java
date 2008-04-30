@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -114,8 +114,7 @@ package org.eclipse.wst.jsdt.core.compiler;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 
 /**
- * Description of a Java problem, as detected by the compiler or some of the underlying
- * technology reusing the compiler.
+ * Description of a JavaScript problem, as detected by the validator
  * A problem provides access to:
  * <ul>
  * <li> its location (originating source file name, source position, line number), </li>
@@ -124,12 +123,15 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
  * as constants on this interface. </li>
  * </ul>
  *
- * Note: the compiler produces IProblems internally, which are turned into markers by the JavaBuilder
+ * Note: the validator produces IProblems internally, which are turned into markers by the JavaScriptBuilder
  * so as to persist problem descriptions. This explains why there is no API allowing to reach IProblem detected
  * when compiling. However, the Java problem markers carry equivalent information to IProblem, in particular
  * their ID (attribute "id") is set to one of the IDs defined on this interface.
- *
- * @since 2.0
+ *  
+ * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
+ * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
+ * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 
+ * (repeatedly) as the API evolves.
  */
 public interface IProblem {
 

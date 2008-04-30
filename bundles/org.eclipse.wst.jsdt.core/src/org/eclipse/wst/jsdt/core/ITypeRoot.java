@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * 	were already implemented in this interface respectively since version 3.0 and version 1.0.
  * @see IClassFile Note that method {@link #getWorkingCopy(WorkingCopyOwner, IProgressMonitor)}
  * 	was already implemented in this interface since version 3.0.
- * @since 3.3
+ *  
+ * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
+ * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
+ * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 
+ * (repeatedly) as the API evolves.
  */
 public interface ITypeRoot extends IJavaScriptElement, IParent, IOpenable, ISourceReference, ICodeAssist, IFunctionContainer {
 
