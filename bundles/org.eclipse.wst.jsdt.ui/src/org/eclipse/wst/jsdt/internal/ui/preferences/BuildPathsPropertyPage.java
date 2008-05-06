@@ -33,8 +33,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
-import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
@@ -182,10 +180,8 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 	private IProject getProject() {
 		IAdaptable adaptable= getElement();
 		if (adaptable != null) {
-			IJavaScriptElement elem= (IJavaScriptElement) adaptable.getAdapter(IJavaScriptElement.class);
-			if (elem instanceof IJavaScriptProject) {
-				return ((IJavaScriptProject) elem).getProject();
-			}
+			IProject elem= (IProject) adaptable.getAdapter(IProject.class);
+			if(elem!=null) return elem;
 		}
 		return null;
 	}
