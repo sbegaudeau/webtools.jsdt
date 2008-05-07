@@ -24,7 +24,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -42,7 +41,7 @@ public class JavadocSpecificsWizardPage extends JavadocWizardPage {
 	private Button fOverViewButton;
 	private Button fOverViewBrowseButton;
 	private Button fAntButton;
-	private Combo fSourceCombo;
+//	private Combo fSourceCombo;
 	
 	private Composite fLowerComposite;
 	private Text fOverViewText;
@@ -133,12 +132,12 @@ public class JavadocSpecificsWizardPage extends JavadocWizardPage {
 		layout.marginWidth= 0;
 		inner.setLayout(layout);
 		
-		createLabel(inner, SWT.NONE, JavadocExportMessages.JavadocSpecificsWizardPage_sourcecompatibility_label, createGridData(GridData.HORIZONTAL_ALIGN_BEGINNING, 1, 0)); 
-
-		fSourceCombo= createCombo(inner, SWT.NONE, fStore.getSource(), createGridData(1));
-		String[] versions= { "-", "1.3", "1.4", "1.5" };//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
-		fSourceCombo.setItems(versions);   
-		fSourceCombo.setText(fStore.getSource());
+//		createLabel(inner, SWT.NONE, JavadocExportMessages.JavadocSpecificsWizardPage_sourcecompatibility_label, createGridData(GridData.HORIZONTAL_ALIGN_BEGINNING, 1, 0)); 
+//
+//		fSourceCombo= createCombo(inner, SWT.NONE, fStore.getSource(), createGridData(1));
+//		String[] versions= { "-", "1.3", "1.4", "1.5" };//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+//		fSourceCombo.setItems(versions);   
+//		fSourceCombo.setText(fStore.getSource());
 		
 		
 		//Listeners
@@ -275,7 +274,7 @@ public class JavadocSpecificsWizardPage extends JavadocWizardPage {
 			fStore.setGeneralAntpath(fAntText.getText());
 		}
 		fStore.setOpenInBrowser(fCheckbrowser.getSelection());
-		fStore.setSource(fSourceCombo.getText());
+//		fStore.setSource(fSourceCombo.getText());
 
 	}
 

@@ -113,17 +113,17 @@ public class ClasspathModifier {
 		if (outputPath == null)
 			outputPath= cpProject.getDefaultOutputLocation();
 						
-		IStatus pathValidation= workspace.validatePath(outputPath.toString(), IResource.PROJECT | IResource.FOLDER);
-		if (!pathValidation.isOK())
-			return new StatusInfo(IStatus.ERROR, Messages.format(NewWizardMessages.OutputLocationDialog_error_invalidpath, pathValidation.getMessage()));
+//		IStatus pathValidation= workspace.validatePath(outputPath.toString(), IResource.PROJECT | IResource.FOLDER);
+//		if (!pathValidation.isOK())
+//			return new StatusInfo(IStatus.ERROR, Messages.format(NewWizardMessages.OutputLocationDialog_error_invalidpath, pathValidation.getMessage()));
 		
 		IWorkspaceRoot root= workspace.getRoot();
 		IResource res= root.findMember(outputPath);
-		if (res != null) {
-			// if exists, must be a folder or project
-			if (res.getType() == IResource.FILE)
-				return new StatusInfo(IStatus.ERROR, NewWizardMessages.OutputLocationDialog_error_existingisfile);
-		}
+//		if (res != null) {
+//			// if exists, must be a folder or project
+//			if (res.getType() == IResource.FILE)
+//				return new StatusInfo(IStatus.ERROR, NewWizardMessages.OutputLocationDialog_error_existingisfile);
+//		}
 		
 		IStatus result= StatusInfo.OK_STATUS;
 		

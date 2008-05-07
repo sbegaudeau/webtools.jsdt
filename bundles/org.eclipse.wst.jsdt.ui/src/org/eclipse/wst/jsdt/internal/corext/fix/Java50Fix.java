@@ -16,20 +16,16 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.Annotation;
-import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -42,7 +38,6 @@ import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
-import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.internal.corext.dom.LinkedNodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.generics.InferTypeArgumentsConstraintCreator;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.generics.InferTypeArgumentsConstraintsSolver;
@@ -68,28 +63,28 @@ public class Java50Fix extends LinkedFix {
 	private static final String OVERRIDE= "Override"; //$NON-NLS-1$
 	private static final String DEPRECATED= "Deprecated"; //$NON-NLS-1$
 	
-	private static class AnnotationRewriteOperation extends AbstractFixRewriteOperation {
-		private final BodyDeclaration fBodyDeclaration;
-		private final String fAnnotation;
-
-		public AnnotationRewriteOperation(BodyDeclaration bodyDeclaration, String annotation) {
-			fBodyDeclaration= bodyDeclaration;
-			fAnnotation= annotation;
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.internal.corext.fix.AbstractFix.IFixRewriteOperation#rewriteAST(org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite, java.util.List)
-		 */
-		public void rewriteAST(CompilationUnitRewrite cuRewrite, List textEditGroups) throws CoreException {
-			AST ast= cuRewrite.getRoot().getAST();
-			ListRewrite listRewrite= cuRewrite.getASTRewrite().getListRewrite(fBodyDeclaration, fBodyDeclaration.getModifiersProperty());
-			Annotation newAnnotation= ast.newMarkerAnnotation();
-			newAnnotation.setTypeName(ast.newSimpleName(fAnnotation));
-			TextEditGroup group= createTextEditGroup(Messages.format(FixMessages.Java50Fix_AddMissingAnnotation_description, fAnnotation));
-			textEditGroups.add(group);
-			listRewrite.insertFirst(newAnnotation, group);
-		}
-	}
+//	private static class AnnotationRewriteOperation extends AbstractFixRewriteOperation {
+//		private final BodyDeclaration fBodyDeclaration;
+//		private final String fAnnotation;
+//
+//		public AnnotationRewriteOperation(BodyDeclaration bodyDeclaration, String annotation) {
+//			fBodyDeclaration= bodyDeclaration;
+//			fAnnotation= annotation;
+//		}
+//
+//		/* (non-Javadoc)
+//		 * @see org.eclipse.wst.jsdt.internal.corext.fix.AbstractFix.IFixRewriteOperation#rewriteAST(org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite, java.util.List)
+//		 */
+//		public void rewriteAST(CompilationUnitRewrite cuRewrite, List textEditGroups) throws CoreException {
+//			AST ast= cuRewrite.getRoot().getAST();
+//			ListRewrite listRewrite= cuRewrite.getASTRewrite().getListRewrite(fBodyDeclaration, fBodyDeclaration.getModifiersProperty());
+//			Annotation newAnnotation= ast.newMarkerAnnotation();
+//			newAnnotation.setTypeName(ast.newSimpleName(fAnnotation));
+//			TextEditGroup group= createTextEditGroup(Messages.format(FixMessages.Java50Fix_AddMissingAnnotation_description, fAnnotation));
+//			textEditGroups.add(group);
+//			listRewrite.insertFirst(newAnnotation, group);
+//		}
+//	}
 	
 	private static class AddTypeParametersOperation extends AbstractLinkedFixRewriteOperation {
 		
@@ -144,43 +139,43 @@ public class Java50Fix extends LinkedFix {
 		}
 	}
 	
-	public static Java50Fix createAddOverrideAnnotationFix(JavaScriptUnit compilationUnit, IProblemLocation problem) {
-		if (problem.getProblemId() != IProblem.MissingOverrideAnnotation)
-			return null;
-		
-		return createFix(compilationUnit, problem, OVERRIDE, FixMessages.Java50Fix_AddOverride_description);
-	}
+//	public static Java50Fix createAddOverrideAnnotationFix(JavaScriptUnit compilationUnit, IProblemLocation problem) {
+//		if (problem.getProblemId() != IProblem.MissingOverrideAnnotation)
+//			return null;
+//		
+//		return createFix(compilationUnit, problem, OVERRIDE, FixMessages.Java50Fix_AddOverride_description);
+//	}
 	
-	public static Java50Fix createAddDeprectatedAnnotation(JavaScriptUnit compilationUnit, IProblemLocation problem) {
-		int id= problem.getProblemId();
-		if (id != IProblem.FieldMissingDeprecatedAnnotation && 
-			id != IProblem.MethodMissingDeprecatedAnnotation && 
-			id != IProblem.TypeMissingDeprecatedAnnotation)
-			
-			return null;
-			
-		return createFix(compilationUnit, problem, DEPRECATED, FixMessages.Java50Fix_AddDeprecated_description);
-	}
-	
-	private static Java50Fix createFix(JavaScriptUnit compilationUnit, IProblemLocation problem, String annotation, String label) {
-		IJavaScriptUnit cu= (IJavaScriptUnit)compilationUnit.getJavaElement();
-		if (!JavaModelUtil.is50OrHigher(cu.getJavaScriptProject()))
-			return null;
-		
-		ASTNode selectedNode= problem.getCoveringNode(compilationUnit);
-		if (selectedNode == null)
-			return null;
-		
-		ASTNode declaringNode= getDeclaringNode(selectedNode);
-		if (!(declaringNode instanceof BodyDeclaration)) 
-			return null;
-		
-		BodyDeclaration declaration= (BodyDeclaration) declaringNode;
-		
-		AnnotationRewriteOperation operation= new AnnotationRewriteOperation(declaration, annotation);
-		
-		return new Java50Fix(label, compilationUnit, new IFixRewriteOperation[] {operation});
-	}
+//	public static Java50Fix createAddDeprectatedAnnotation(JavaScriptUnit compilationUnit, IProblemLocation problem) {
+//		int id= problem.getProblemId();
+//		if (id != IProblem.FieldMissingDeprecatedAnnotation && 
+//			id != IProblem.MethodMissingDeprecatedAnnotation && 
+//			id != IProblem.TypeMissingDeprecatedAnnotation)
+//			
+//			return null;
+//			
+//		return createFix(compilationUnit, problem, DEPRECATED, FixMessages.Java50Fix_AddDeprecated_description);
+//	}
+//	
+//	private static Java50Fix createFix(JavaScriptUnit compilationUnit, IProblemLocation problem, String annotation, String label) {
+//		IJavaScriptUnit cu= (IJavaScriptUnit)compilationUnit.getJavaElement();
+//		if (!JavaModelUtil.is50OrHigher(cu.getJavaScriptProject()))
+//			return null;
+//		
+//		ASTNode selectedNode= problem.getCoveringNode(compilationUnit);
+//		if (selectedNode == null)
+//			return null;
+//		
+//		ASTNode declaringNode= getDeclaringNode(selectedNode);
+//		if (!(declaringNode instanceof BodyDeclaration)) 
+//			return null;
+//		
+//		BodyDeclaration declaration= (BodyDeclaration) declaringNode;
+//		
+//		AnnotationRewriteOperation operation= new AnnotationRewriteOperation(declaration, annotation);
+//		
+//		return new Java50Fix(label, compilationUnit, new IFixRewriteOperation[] {operation});
+//	}
 	
 	public static Java50Fix createRawTypeReferenceFix(JavaScriptUnit compilationUnit, IProblemLocation problem) {
 		List operations= new ArrayList();
@@ -211,11 +206,11 @@ public class Java50Fix extends LinkedFix {
 			locations[i]= new ProblemLocation(problems[i]);
 		}
 		
-		if (addOverrideAnnotation)
-			createAddOverrideAnnotationOperations(compilationUnit, locations, operations);
-		
-		if (addDeprecatedAnnotation)
-			createAddDeprecatedAnnotationOperations(compilationUnit, locations, operations);
+//		if (addOverrideAnnotation)
+//			createAddOverrideAnnotationOperations(compilationUnit, locations, operations);
+//		
+//		if (addDeprecatedAnnotation)
+//			createAddDeprecatedAnnotationOperations(compilationUnit, locations, operations);
 		
 		if (rawTypeReference)
 			createRawTypeReferenceOperations(compilationUnit, locations, operations);
@@ -241,11 +236,11 @@ public class Java50Fix extends LinkedFix {
 
 		List/*<IFixRewriteOperation>*/ operations= new ArrayList();
 		
-		if (addOverrideAnnotation)
-			createAddOverrideAnnotationOperations(compilationUnit, problems, operations);
-		
-		if (addDeprecatedAnnotation)
-			createAddDeprecatedAnnotationOperations(compilationUnit, problems, operations);
+//		if (addOverrideAnnotation)
+//			createAddOverrideAnnotationOperations(compilationUnit, problems, operations);
+//		
+//		if (addDeprecatedAnnotation)
+//			createAddDeprecatedAnnotationOperations(compilationUnit, problems, operations);
 		
 		if (rawTypeReferences)
 			createRawTypeReferenceOperations(compilationUnit, problems, operations);
@@ -258,50 +253,50 @@ public class Java50Fix extends LinkedFix {
 		return new Java50Fix(FixMessages.Java50Fix_add_annotations_change_name, compilationUnit, operationsArray);
 	}
 	
-	private static void createAddDeprecatedAnnotationOperations(JavaScriptUnit compilationUnit, IProblemLocation[] locations, List result) {
-		for (int i= 0; i < locations.length; i++) {
-			int id= locations[i].getProblemId();
-			
-			if (id == IProblem.FieldMissingDeprecatedAnnotation ||
-				id == IProblem.MethodMissingDeprecatedAnnotation ||
-				id == IProblem.TypeMissingDeprecatedAnnotation) {
-				
-				IProblemLocation problem= locations[i];
+//	private static void createAddDeprecatedAnnotationOperations(JavaScriptUnit compilationUnit, IProblemLocation[] locations, List result) {
+//		for (int i= 0; i < locations.length; i++) {
+//			int id= locations[i].getProblemId();
+//			
+//			if (id == IProblem.FieldMissingDeprecatedAnnotation ||
+//				id == IProblem.MethodMissingDeprecatedAnnotation ||
+//				id == IProblem.TypeMissingDeprecatedAnnotation) {
+//				
+//				IProblemLocation problem= locations[i];
+//
+//				ASTNode selectedNode= problem.getCoveringNode(compilationUnit);
+//				if (selectedNode != null) { 
+//					
+//					ASTNode declaringNode= getDeclaringNode(selectedNode);
+//					if (declaringNode instanceof BodyDeclaration) {
+//						BodyDeclaration declaration= (BodyDeclaration) declaringNode;
+//						AnnotationRewriteOperation operation= new AnnotationRewriteOperation(declaration, DEPRECATED);
+//						result.add(operation);
+//					}
+//				}
+//			}	
+//		}
+//	}
 
-				ASTNode selectedNode= problem.getCoveringNode(compilationUnit);
-				if (selectedNode != null) { 
-					
-					ASTNode declaringNode= getDeclaringNode(selectedNode);
-					if (declaringNode instanceof BodyDeclaration) {
-						BodyDeclaration declaration= (BodyDeclaration) declaringNode;
-						AnnotationRewriteOperation operation= new AnnotationRewriteOperation(declaration, DEPRECATED);
-						result.add(operation);
-					}
-				}
-			}	
-		}
-	}
-
-	private static void createAddOverrideAnnotationOperations(JavaScriptUnit compilationUnit, IProblemLocation[] locations, List result) {
-		for (int i= 0; i < locations.length; i++) {
-			
-			if (locations[i].getProblemId() == IProblem.MissingOverrideAnnotation) {
-
-				IProblemLocation problem= locations[i];
-
-				ASTNode selectedNode= problem.getCoveringNode(compilationUnit);
-				if (selectedNode != null) { 
-					
-					ASTNode declaringNode= getDeclaringNode(selectedNode);
-					if (declaringNode instanceof BodyDeclaration) {
-						BodyDeclaration declaration= (BodyDeclaration) declaringNode;
-						AnnotationRewriteOperation operation= new AnnotationRewriteOperation(declaration, OVERRIDE);
-						result.add(operation);
-					}
-				}
-			}	
-		}
-	}
+//	private static void createAddOverrideAnnotationOperations(JavaScriptUnit compilationUnit, IProblemLocation[] locations, List result) {
+//		for (int i= 0; i < locations.length; i++) {
+//			
+//			if (locations[i].getProblemId() == IProblem.MissingOverrideAnnotation) {
+//
+//				IProblemLocation problem= locations[i];
+//
+//				ASTNode selectedNode= problem.getCoveringNode(compilationUnit);
+//				if (selectedNode != null) { 
+//					
+//					ASTNode declaringNode= getDeclaringNode(selectedNode);
+//					if (declaringNode instanceof BodyDeclaration) {
+//						BodyDeclaration declaration= (BodyDeclaration) declaringNode;
+//						AnnotationRewriteOperation operation= new AnnotationRewriteOperation(declaration, OVERRIDE);
+//						result.add(operation);
+//					}
+//				}
+//			}	
+//		}
+//	}
 	
 	private static SimpleType createRawTypeReferenceOperations(JavaScriptUnit compilationUnit, IProblemLocation[] locations, List operations) {
 		List/*<SimpleType>*/ result= new ArrayList();

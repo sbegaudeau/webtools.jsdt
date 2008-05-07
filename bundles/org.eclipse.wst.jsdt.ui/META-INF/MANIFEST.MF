@@ -58,7 +58,6 @@ Export-Package: org.eclipse.wst.jsdt.internal.corext;x-friends:="org.eclipse.wst
  org.eclipse.wst.jsdt.internal.ui.preferences;x-internal:=true,
  org.eclipse.wst.jsdt.internal.ui.preferences.cleanup;x-internal:=true,
  org.eclipse.wst.jsdt.internal.ui.preferences.formatter;x-internal:=true,
- org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor;x-internal:=true,
  org.eclipse.wst.jsdt.internal.ui.refactoring;x-internal:=true,
  org.eclipse.wst.jsdt.internal.ui.refactoring.actions;x-internal:=true,
  org.eclipse.wst.jsdt.internal.ui.refactoring.binary;x-internal:=true,

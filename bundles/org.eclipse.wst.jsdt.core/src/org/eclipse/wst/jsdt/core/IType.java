@@ -239,30 +239,6 @@ public interface IType extends IMember, IFunctionContainer {
 	IField createField(String contents, IJavaScriptElement sibling, boolean force, IProgressMonitor monitor)
 		throws JavaScriptModelException;
 
-	/**
-	 * Creates and returns a static initializer in this type with the
-	 * given contents.
-	 * <p>
-	 * Optionally, the new element can be positioned before the specified
-	 * sibling. If no sibling is specified, the new initializer is positioned
-	 * after the last existing initializer declaration, or as the first member
-	 * in the type if there are no initializers.</p>
-	 *
-	 * @param contents the given contents
-	 * @param sibling the given sibling
-	 * @param monitor the given progress monitor
-	 * @exception JavaScriptModelException if the element could not be created. Reasons include:
-	 * <ul>
-	 * <li> This element does not exist
-	 * <li> A <code>CoreException</code> occurred while updating an underlying resource
-	 * <li> The specified sibling is not a child of this type (INVALID_SIBLING)
-	 * <li> The contents could not be recognized as an initializer declaration (INVALID_CONTENTS)
-	 * <li> This type is read-only (binary) (READ_ONLY)
-	 * </ul>
-	 * @return a static initializer in this type with the given contents
-	 */
-	IInitializer createInitializer(String contents, IJavaScriptElement sibling, IProgressMonitor monitor)
-		throws JavaScriptModelException;
 
 	/**
 	 * Creates and returns a method or constructor in this type with the

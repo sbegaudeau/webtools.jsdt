@@ -742,14 +742,14 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 //					dialog.performPageSwitch(fPageContainer);
 //				}
 			}
-		} else 	if (key.equals(CPListElement.OUTPUT)) {
-			//CPListElement selElement=  elem.getParent();
-			OutputLocationDialog dialog= new OutputLocationDialog(getShell(), selElement, fClassPathList.getElements(), new Path("").makeAbsolute(), true); //$NON-NLS-1$
-			if (dialog.open() == Window.OK) {
-				selElement.setAttribute(CPListElement.OUTPUT, dialog.getOutputLocation());
-				fFoldersList.refresh();
-				fClassPathList.dialogFieldChanged(); // validate
-			}
+//		} else 	if (key.equals(CPListElement.OUTPUT)) {
+//			//CPListElement selElement=  elem.getParent();
+//			OutputLocationDialog dialog= new OutputLocationDialog(getShell(), selElement, fClassPathList.getElements(), new Path("").makeAbsolute(), true); //$NON-NLS-1$
+//			if (dialog.open() == Window.OK) {
+//				selElement.setAttribute(CPListElement.OUTPUT, dialog.getOutputLocation());
+//				fFoldersList.refresh();
+//				fClassPathList.dialogFieldChanged(); // validate
+//			}
 		} else if (key.equals(CPListElement.EXCLUSION) || key.equals(CPListElement.INCLUSION)) {
 			EditFilterWizard wizard= newEditFilterWizard(elem.getParent(), fFoldersList.getElements(), ""); //$NON-NLS-1$
 			OpenBuildPathWizardAction action= new OpenBuildPathWizardAction(wizard);

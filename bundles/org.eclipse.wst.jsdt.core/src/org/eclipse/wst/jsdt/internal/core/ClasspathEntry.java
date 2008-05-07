@@ -30,11 +30,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -42,7 +42,6 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRule;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
-import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 import org.w3c.dom.DOMException;
@@ -1342,9 +1341,9 @@ public class ClasspathEntry implements IIncludePathEntry {
 					IPath customOutput;
 					if ((customOutput = resolvedEntry.getOutputLocation()) != null) {
 
-						if (disableCustomOutputLocations) {
-							return new JavaModelStatus(IJavaScriptModelStatusConstants.DISABLED_CP_MULTIPLE_OUTPUT_LOCATIONS, javaProject, resolvedEntry.getPath());
-						}
+//						if (disableCustomOutputLocations) {
+//							return new JavaModelStatus(IJavaScriptModelStatusConstants.DISABLED_CP_MULTIPLE_OUTPUT_LOCATIONS, javaProject, resolvedEntry.getPath());
+//						}
 						// ensure custom output is in project
 						if (customOutput.isAbsolute()) {
 							if (!javaProject.getPath().isPrefixOf(customOutput)) {
@@ -1365,26 +1364,26 @@ public class ClasspathEntry implements IIncludePathEntry {
 			}
 		}
 		// check nesting across output locations
-		for (int i = 1 /*no check for default output*/ ; i < outputCount; i++) {
-		    IPath customOutput = outputLocations[i];
-		    int index;
-			// check nesting
-			if ((index = Util.indexOfEnclosingPath(customOutput, outputLocations, outputCount)) != -1 && index != i) {
-				if (index == 0) {
-					// custom output is nested in project's output: need to check if all source entries have a custom
-					// output before complaining
-					if (potentialNestedOutput == null) potentialNestedOutput = customOutput;
-				} else {
-					return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH, Messages.bind(Messages.classpath_cannotNestOutputInOutput, new String[] {customOutput.makeRelative().toString(), outputLocations[index].makeRelative().toString()}));
-				}
-			}
-		}
-		// allow custom output nesting in project's output if all source entries have a custom output
-		if (sourceEntryCount <= outputCount-1) {
-		    allowNestingInOutputLocations[0] = true;
-		} else if (potentialNestedOutput != null) {
-			return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH, Messages.bind(Messages.classpath_cannotNestOutputInOutput, new String[] {potentialNestedOutput.makeRelative().toString(), outputLocations[0].makeRelative().toString()}));
-		}
+//		for (int i = 1 /*no check for default output*/ ; i < outputCount; i++) {
+//		    IPath customOutput = outputLocations[i];
+//		    int index;
+//			// check nesting
+//			if ((index = Util.indexOfEnclosingPath(customOutput, outputLocations, outputCount)) != -1 && index != i) {
+//				if (index == 0) {
+//					// custom output is nested in project's output: need to check if all source entries have a custom
+//					// output before complaining
+//					if (potentialNestedOutput == null) potentialNestedOutput = customOutput;
+//				} else {
+//					return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH, Messages.bind(Messages.classpath_cannotNestOutputInOutput, new String[] {customOutput.makeRelative().toString(), outputLocations[index].makeRelative().toString()}));
+//				}
+//			}
+//		}
+//		// allow custom output nesting in project's output if all source entries have a custom output
+//		if (sourceEntryCount <= outputCount-1) {
+//		    allowNestingInOutputLocations[0] = true;
+//		} else if (potentialNestedOutput != null) {
+//			return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH, Messages.bind(Messages.classpath_cannotNestOutputInOutput, new String[] {potentialNestedOutput.makeRelative().toString(), outputLocations[0].makeRelative().toString()}));
+//		}
 
 		for (int i = 0 ; i < length; i++) {
 			IIncludePathEntry resolvedEntry = classpath[i];
@@ -1474,18 +1473,18 @@ public class ClasspathEntry implements IIncludePathEntry {
 				}
 			}
 
-			// prevent nesting output location inside entry unless enclosing is a source entry which explicitly exclude the output location
-		    char[][] inclusionPatterns = ((ClasspathEntry)entry).fullInclusionPatternChars();
-		    char[][] exclusionPatterns = ((ClasspathEntry)entry).fullExclusionPatternChars();
-		    for (int j = 0; j < outputCount; j++){
-		        IPath currentOutput = outputLocations[j];
-    			if (entryPath.equals(currentOutput)) continue;
-				if (entryPath.isPrefixOf(currentOutput)) {
-				    if (kind != IIncludePathEntry.CPE_SOURCE || !Util.isExcluded(currentOutput, inclusionPatterns, exclusionPatterns, true)) {
-						return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH, Messages.bind(Messages.classpath_cannotNestOutputInEntry, new String[] {currentOutput.makeRelative().toString(), entryPath.makeRelative().toString()}));
-				    }
-				}
-		    }
+//			// prevent nesting output location inside entry unless enclosing is a source entry which explicitly exclude the output location
+//		    char[][] inclusionPatterns = ((ClasspathEntry)entry).fullInclusionPatternChars();
+//		    char[][] exclusionPatterns = ((ClasspathEntry)entry).fullExclusionPatternChars();
+//		    for (int j = 0; j < outputCount; j++){
+//		        IPath currentOutput = outputLocations[j];
+//    			if (entryPath.equals(currentOutput)) continue;
+//				if (entryPath.isPrefixOf(currentOutput)) {
+//				    if (kind != IIncludePathEntry.CPE_SOURCE || !Util.isExcluded(currentOutput, inclusionPatterns, exclusionPatterns, true)) {
+//						return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH, Messages.bind(Messages.classpath_cannotNestOutputInEntry, new String[] {currentOutput.makeRelative().toString(), entryPath.makeRelative().toString()}));
+//				    }
+//				}
+//		    }
 
 		    // prevent nesting entry inside output location - when distinct from project or a source folder
 //		    for (int j = 0; j < outputCount; j++){
@@ -1501,42 +1500,42 @@ public class ClasspathEntry implements IIncludePathEntry {
 		// perform one separate iteration so as to not take precedence over previously checked scenarii (in particular should
 		// diagnose nesting source folder issue before this one, for example, [src]"Project/", [src]"Project/source/" and output="Project/" should
 		// first complain about missing exclusion pattern
-		for (int i = 0 ; i < length; i++) {
-			IIncludePathEntry entry = classpath[i];
-			if (entry == null) continue;
-			IPath entryPath = entry.getPath();
-			int kind = entry.getEntryKind();
+//		for (int i = 0 ; i < length; i++) {
+//			IIncludePathEntry entry = classpath[i];
+//			if (entry == null) continue;
+//			IPath entryPath = entry.getPath();
+//			int kind = entry.getEntryKind();
+//
+//			// Build some common strings for status message
+//			boolean isProjectRelative = projectName.equals(entryPath.segment(0));
+//			String entryPathMsg = isProjectRelative ? entryPath.removeFirstSegments(1).toString() : entryPath.makeRelative().toString();
 
-			// Build some common strings for status message
-			boolean isProjectRelative = projectName.equals(entryPath.segment(0));
-			String entryPathMsg = isProjectRelative ? entryPath.removeFirstSegments(1).toString() : entryPath.makeRelative().toString();
-
-			if (kind == IIncludePathEntry.CPE_SOURCE) {
-				IPath output = entry.getOutputLocation();
-				if (output == null) continue; // 36465 - for 2.0 backward compatibility, only check specific output locations (the default can still coincidate)
-				// if (output == null) output = projectOutputLocation; // if no specific output, still need to check using default output (this line would check default output)
-				for (int j = 0; j < length; j++) {
-					IIncludePathEntry otherEntry = classpath[j];
-					if (otherEntry == entry) continue;
-
-					// Build some common strings for status message
-					boolean opStartsWithProject = projectName.equals(otherEntry.getPath().segment(0));
-					String otherPathMsg = opStartsWithProject ? otherEntry.getPath().removeFirstSegments(1).toString() : otherEntry.getPath().makeRelative().toString();
-
-					switch (otherEntry.getEntryKind()) {
-						case IIncludePathEntry.CPE_SOURCE :
-							if (otherEntry.getPath().equals(output)) {
-								return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH, Messages.bind(Messages.classpath_cannotUseDistinctSourceFolderAsOutput, new String[] {entryPathMsg, otherPathMsg, projectName}));
-							}
-							break;
-						case IIncludePathEntry.CPE_LIBRARY :
-							if (otherEntry.getPath().equals(output)) {
-								return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH, Messages.bind(Messages.classpath_cannotUseLibraryAsOutput, new String[] {entryPathMsg, otherPathMsg, projectName}));
-							}
-					}
-				}
-			}
-		}
+//			if (kind == IIncludePathEntry.CPE_SOURCE) {
+//				IPath output = entry.getOutputLocation();
+//				if (output == null) continue; // 36465 - for 2.0 backward compatibility, only check specific output locations (the default can still coincidate)
+//				// if (output == null) output = projectOutputLocation; // if no specific output, still need to check using default output (this line would check default output)
+//				for (int j = 0; j < length; j++) {
+//					IIncludePathEntry otherEntry = classpath[j];
+//					if (otherEntry == entry) continue;
+//
+//					// Build some common strings for status message
+//					boolean opStartsWithProject = projectName.equals(otherEntry.getPath().segment(0));
+//					String otherPathMsg = opStartsWithProject ? otherEntry.getPath().removeFirstSegments(1).toString() : otherEntry.getPath().makeRelative().toString();
+//
+//					switch (otherEntry.getEntryKind()) {
+//						case IIncludePathEntry.CPE_SOURCE :
+//							if (otherEntry.getPath().equals(output)) {
+//								return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH, Messages.bind(Messages.classpath_cannotUseDistinctSourceFolderAsOutput, new String[] {entryPathMsg, otherPathMsg, projectName}));
+//							}
+//							break;
+//						case IIncludePathEntry.CPE_LIBRARY :
+//							if (otherEntry.getPath().equals(output)) {
+//								return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH, Messages.bind(Messages.classpath_cannotUseLibraryAsOutput, new String[] {entryPathMsg, otherPathMsg, projectName}));
+//							}
+//					}
+//				}
+//			}
+//		}
 		return JavaModelStatus.VERIFIED_OK;
 	}
 
@@ -1723,13 +1722,13 @@ public class ClasspathEntry implements IIncludePathEntry {
 						if (!prereqProjectRsc.isOpen()){
 							return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH, Messages.bind(Messages.classpath_closedProject, new String[] {path.segment(0)}));
 						}
-						if (!JavaScriptCore.IGNORE.equals(project.getOption(JavaScriptCore.CORE_INCOMPATIBLE_JDK_LEVEL, true))) {
-							long projectTargetJDK = CompilerOptions.versionToJdkLevel(project.getOption(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, true));
-							long prereqProjectTargetJDK = CompilerOptions.versionToJdkLevel(prereqProject.getOption(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, true));
-							if (prereqProjectTargetJDK > projectTargetJDK) {
-								return new JavaModelStatus(IJavaScriptModelStatusConstants.INCOMPATIBLE_JDK_LEVEL, project, path, CompilerOptions.versionFromJdkLevel(prereqProjectTargetJDK));
-							}
-						}
+//						if (!JavaScriptCore.IGNORE.equals(project.getOption(JavaScriptCore.CORE_INCOMPATIBLE_JDK_LEVEL, true))) {
+//							long projectTargetJDK = CompilerOptions.versionToJdkLevel(project.getOption(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, true));
+//							long prereqProjectTargetJDK = CompilerOptions.versionToJdkLevel(prereqProject.getOption(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, true));
+//							if (prereqProjectTargetJDK > projectTargetJDK) {
+//								return new JavaModelStatus(IJavaScriptModelStatusConstants.INCOMPATIBLE_JDK_LEVEL, project, path, CompilerOptions.versionFromJdkLevel(prereqProjectTargetJDK));
+//							}
+//						}
 					} catch (CoreException e){
 						return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH, Messages.bind(Messages.classpath_unboundProject, new String[] {path.segment(0), projectName}));
 					}
@@ -1745,9 +1744,9 @@ public class ClasspathEntry implements IIncludePathEntry {
 						&& JavaScriptCore.DISABLED.equals(project.getOption(JavaScriptCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS, true))) {
 					return new JavaModelStatus(IJavaScriptModelStatusConstants.DISABLED_CP_EXCLUSION_PATTERNS, project, path);
 				}
-				if (entry.getOutputLocation() != null && JavaScriptCore.DISABLED.equals(project.getOption(JavaScriptCore.CORE_ENABLE_CLASSPATH_MULTIPLE_OUTPUT_LOCATIONS, true))) {
-					return new JavaModelStatus(IJavaScriptModelStatusConstants.DISABLED_CP_MULTIPLE_OUTPUT_LOCATIONS, project, path);
-				}
+//				if (entry.getOutputLocation() != null && JavaScriptCore.DISABLED.equals(project.getOption(JavaScriptCore.CORE_ENABLE_CLASSPATH_MULTIPLE_OUTPUT_LOCATIONS, true))) {
+//					return new JavaModelStatus(IJavaScriptModelStatusConstants.DISABLED_CP_MULTIPLE_OUTPUT_LOCATIONS, project, path);
+//				}
 				if (path != null && path.isAbsolute() && !path.isEmpty()) {
 					IPath projectPath= project.getProject().getFullPath();
 					if (!projectPath.isPrefixOf(path) || JavaModel.getTarget(workspaceRoot, path, true) == null){

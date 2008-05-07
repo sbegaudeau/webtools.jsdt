@@ -36,11 +36,11 @@ final class JavaTemplateMessages extends NLS {
 	public static String JavaContextType_variable_description_array_type;
 	public static String JavaContextType_variable_description_array_element;
 	public static String JavaContextType_variable_description_index;
-	public static String JavaContextType_variable_description_collection;
-	public static String JavaContextType_variable_description_iterable;
-	public static String JavaContextType_variable_description_iterable_type;
-	public static String JavaContextType_variable_description_iterable_element;
-	public static String JavaContextType_variable_description_iterator;
+//	public static String JavaContextType_variable_description_collection;
+//	public static String JavaContextType_variable_description_iterable;
+//	public static String JavaContextType_variable_description_iterable_type;
+//	public static String JavaContextType_variable_description_iterable_element;
+//	public static String JavaContextType_variable_description_iterator;
 	public static String JavaContextType_variable_description_todo;
 	public static String JavaContext_error_title;
 	public static String JavaContext_error_message;

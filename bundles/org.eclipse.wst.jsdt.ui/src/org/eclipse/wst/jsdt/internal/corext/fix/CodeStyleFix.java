@@ -21,17 +21,16 @@ import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -39,7 +38,6 @@ import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
 import org.eclipse.wst.jsdt.core.dom.SwitchCase;
-import org.eclipse.wst.jsdt.core.dom.ThisExpression;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
@@ -49,7 +47,6 @@ import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
-import org.eclipse.wst.jsdt.internal.corext.dom.ScopeAnalyzer;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ProblemLocation;
@@ -183,13 +180,14 @@ public class CodeStyleFix extends AbstractFix {
 
 					fResult.add(new AddStaticQualifierOperation(declaringClass, node));
 				}
-			} else if (fFindUnqualifiedAccesses){
-				String qualifier= getNonStaticQualifier(declaringClass, fImportRewrite, node);
-				if (qualifier == null)
-					return;
-
-				fResult.add(new AddThisQualifierOperation(qualifier, node));
-			}
+			} 
+//			else if (fFindUnqualifiedAccesses){
+//				String qualifier= getNonStaticQualifier(declaringClass, fImportRewrite, node);
+//				if (qualifier == null)
+//					return;
+//
+//				fResult.add(new AddThisQualifierOperation(qualifier, node));
+//			}
 		}		
 
 		private void handleMethod(SimpleName node, IFunctionBinding binding) {
@@ -203,163 +201,163 @@ public class CodeStyleFix extends AbstractFix {
 					fResult.add(new AddStaticQualifierOperation(declaringClass, node));
 				}
 			} else {
-				if (fFindUnqualifiedMethodAccesses) {
-					String qualifier= getNonStaticQualifier(declaringClass, fImportRewrite, node);
-					if (qualifier == null)
-						return;
-
-					fResult.add(new AddThisQualifierOperation(qualifier, node));
-				}
+//				if (fFindUnqualifiedMethodAccesses) {
+//					String qualifier= getNonStaticQualifier(declaringClass, fImportRewrite, node);
+//					if (qualifier == null)
+//						return;
+//
+//					fResult.add(new AddThisQualifierOperation(qualifier, node));
+//				}
 			}
 		}
 	}
 	
-	private static class ThisQualifierVisitor extends GenericVisitor {
-		
-		private final JavaScriptUnit fCompilationUnit;
-		private final List fOperations;
-		private final boolean fRemoveFieldQualifiers;
-		private final boolean fRemoveMethodQualifiers;
-		
-		public ThisQualifierVisitor(boolean removeFieldQualifiers,
-									boolean removeMethodQualifiers,
-									JavaScriptUnit compilationUnit,
-									List result) {
-			fRemoveFieldQualifiers= removeFieldQualifiers;
-			fRemoveMethodQualifiers= removeMethodQualifiers;
-			fCompilationUnit= compilationUnit;
-			fOperations= result;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		public boolean visit(final FieldAccess node) {
-			if (!fRemoveFieldQualifiers)
-				return true;
-			
-			Expression expression= node.getExpression();
-			if (!(expression instanceof ThisExpression))
-				return true;
-			
-			final SimpleName name= node.getName();
-			if (hasConflict(expression.getStartPosition(), name, ScopeAnalyzer.VARIABLES))
-				return true;
-			
-			fOperations.add(new AbstractFixRewriteOperation() {
-				public void rewriteAST(CompilationUnitRewrite cuRewrite, List textEditGroups) throws CoreException {
-					ASTRewrite rewrite= cuRewrite.getASTRewrite();
-					
-					TextEditGroup group= createTextEditGroup(FixMessages.CodeStyleFix_removeThis_groupDescription);
-					textEditGroups.add(group);
-					
-					rewrite.replace(node, rewrite.createCopyTarget(name), group);
-				}
-			});
-			return super.visit(node);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		public boolean visit(final FunctionInvocation node) {
-			if (!fRemoveMethodQualifiers)
-				return true;
-			
-			Expression expression= node.getExpression();
-			if (!(expression instanceof ThisExpression)) 
-				return true;
-			
-			final SimpleName name= node.getName();
-			if (name!=null && name.resolveBinding() == null)
-				return true;
-			
-			if (hasConflict(expression.getStartPosition(), name, ScopeAnalyzer.METHODS))
-				return true;
-			
-			Name qualifier= ((ThisExpression)expression).getQualifier();
-			if (qualifier != null) {
-				ITypeBinding declaringClass= ((IFunctionBinding)name.resolveBinding()).getDeclaringClass();
-				if (declaringClass == null)
-					return true;
-				
-				ITypeBinding caller= getDeclaringType(node);
-				if (caller == null)
-					return true;
-				
-				ITypeBinding callee= (ITypeBinding)qualifier.resolveBinding();
-				if (callee == null)
-					return true;
-				
-				if (callee.isAssignmentCompatible(declaringClass) && caller.isAssignmentCompatible(declaringClass))
-					return true;
-			}
-			
-			fOperations.add(new AbstractFixRewriteOperation() {
-				public void rewriteAST(CompilationUnitRewrite cuRewrite, List textEditGroups) throws CoreException {
-					ASTRewrite rewrite= cuRewrite.getASTRewrite();
-					
-					TextEditGroup group= createTextEditGroup(FixMessages.CodeStyleFix_removeThis_groupDescription);
-					textEditGroups.add(group);
-					
-					rewrite.remove(node.getExpression(), group);
-				}
-			});
-			return super.visit(node);
-		}
-		
-		private ITypeBinding getDeclaringType(FunctionInvocation node) {
-			ASTNode p= node;
-			while (p != null) {
-				p= p.getParent();
-				if (p instanceof AbstractTypeDeclaration) {
-					return ((AbstractTypeDeclaration)p).resolveBinding();
-				}
-			}
-			return null;
-        }
+//	private static class ThisQualifierVisitor extends GenericVisitor {
+//		
+//		private final JavaScriptUnit fCompilationUnit;
+//		private final List fOperations;
+//		private final boolean fRemoveFieldQualifiers;
+//		private final boolean fRemoveMethodQualifiers;
+//		
+//		public ThisQualifierVisitor(boolean removeFieldQualifiers,
+//									boolean removeMethodQualifiers,
+//									JavaScriptUnit compilationUnit,
+//									List result) {
+//			fRemoveFieldQualifiers= removeFieldQualifiers;
+//			fRemoveMethodQualifiers= removeMethodQualifiers;
+//			fCompilationUnit= compilationUnit;
+//			fOperations= result;
+//		}
+//		
+//		/**
+//		 * {@inheritDoc}
+//		 */
+//		public boolean visit(final FieldAccess node) {
+//			if (!fRemoveFieldQualifiers)
+//				return true;
+//			
+//			Expression expression= node.getExpression();
+//			if (!(expression instanceof ThisExpression))
+//				return true;
+//			
+//			final SimpleName name= node.getName();
+//			if (hasConflict(expression.getStartPosition(), name, ScopeAnalyzer.VARIABLES))
+//				return true;
+//			
+//			fOperations.add(new AbstractFixRewriteOperation() {
+//				public void rewriteAST(CompilationUnitRewrite cuRewrite, List textEditGroups) throws CoreException {
+//					ASTRewrite rewrite= cuRewrite.getASTRewrite();
+//					
+//					TextEditGroup group= createTextEditGroup(FixMessages.CodeStyleFix_removeThis_groupDescription);
+//					textEditGroups.add(group);
+//					
+//					rewrite.replace(node, rewrite.createCopyTarget(name), group);
+//				}
+//			});
+//			return super.visit(node);
+//		}
+//		
+//		/**
+//		 * {@inheritDoc}
+//		 */
+//		public boolean visit(final FunctionInvocation node) {
+//			if (!fRemoveMethodQualifiers)
+//				return true;
+//			
+//			Expression expression= node.getExpression();
+//			if (!(expression instanceof ThisExpression)) 
+//				return true;
+//			
+//			final SimpleName name= node.getName();
+//			if (name!=null && name.resolveBinding() == null)
+//				return true;
+//			
+//			if (hasConflict(expression.getStartPosition(), name, ScopeAnalyzer.METHODS))
+//				return true;
+//			
+//			Name qualifier= ((ThisExpression)expression).getQualifier();
+//			if (qualifier != null) {
+//				ITypeBinding declaringClass= ((IFunctionBinding)name.resolveBinding()).getDeclaringClass();
+//				if (declaringClass == null)
+//					return true;
+//				
+//				ITypeBinding caller= getDeclaringType(node);
+//				if (caller == null)
+//					return true;
+//				
+//				ITypeBinding callee= (ITypeBinding)qualifier.resolveBinding();
+//				if (callee == null)
+//					return true;
+//				
+//				if (callee.isAssignmentCompatible(declaringClass) && caller.isAssignmentCompatible(declaringClass))
+//					return true;
+//			}
+//			
+//			fOperations.add(new AbstractFixRewriteOperation() {
+//				public void rewriteAST(CompilationUnitRewrite cuRewrite, List textEditGroups) throws CoreException {
+//					ASTRewrite rewrite= cuRewrite.getASTRewrite();
+//					
+//					TextEditGroup group= createTextEditGroup(FixMessages.CodeStyleFix_removeThis_groupDescription);
+//					textEditGroups.add(group);
+//					
+//					rewrite.remove(node.getExpression(), group);
+//				}
+//			});
+//			return super.visit(node);
+//		}
+//		
+//		private ITypeBinding getDeclaringType(FunctionInvocation node) {
+//			ASTNode p= node;
+//			while (p != null) {
+//				p= p.getParent();
+//				if (p instanceof AbstractTypeDeclaration) {
+//					return ((AbstractTypeDeclaration)p).resolveBinding();
+//				}
+//			}
+//			return null;
+//        }
+//
+//		private boolean hasConflict(int startPosition, SimpleName name, int flag) {
+//			ScopeAnalyzer analyzer= new ScopeAnalyzer(fCompilationUnit);
+//			IBinding[] declarationsInScope= analyzer.getDeclarationsInScope(startPosition, flag);
+//			for (int i= 0; i < declarationsInScope.length; i++) {
+//				IBinding decl= declarationsInScope[i];
+//				if (decl.getName().equals(name.getIdentifier()) && name.resolveBinding() != decl)
+//					return true;
+//			}
+//			return false;
+//		}
+//	}
 
-		private boolean hasConflict(int startPosition, SimpleName name, int flag) {
-			ScopeAnalyzer analyzer= new ScopeAnalyzer(fCompilationUnit);
-			IBinding[] declarationsInScope= analyzer.getDeclarationsInScope(startPosition, flag);
-			for (int i= 0; i < declarationsInScope.length; i++) {
-				IBinding decl= declarationsInScope[i];
-				if (decl.getName().equals(name.getIdentifier()) && name.resolveBinding() != decl)
-					return true;
-			}
-			return false;
-		}
-	}
-
-	private final static class AddThisQualifierOperation extends AbstractFixRewriteOperation {
-
-		private final String fQualifier;
-		private final SimpleName fName;
-
-		public AddThisQualifierOperation(String qualifier, SimpleName name) {
-			fQualifier= qualifier;
-			fName= name;
-		}
-		
-		public String getDescription() {
-			return Messages.format(FixMessages.CodeStyleFix_QualifyWithThis_description, new Object[] {fName.getIdentifier(), fQualifier});
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.internal.corext.fix.AbstractFix.IFixRewriteOperation#rewriteAST(org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite, java.util.List)
-		 */
-		public void rewriteAST(CompilationUnitRewrite cuRewrite, List textEditGroups) throws CoreException {
-			ASTRewrite rewrite= cuRewrite.getASTRewrite();
-			TextEditGroup group;
-			if (fName.resolveBinding() instanceof IFunctionBinding) {
-				group= createTextEditGroup(FixMessages.CodeStyleFix_QualifyMethodWithThis_description);
-			} else {
-				group= createTextEditGroup(FixMessages.CodeStyleFix_QualifyFieldWithThis_description);
-			}
-			textEditGroups.add(group);
-			rewrite.replace(fName, rewrite.createStringPlaceholder(fQualifier  + '.' + fName.getIdentifier(), ASTNode.SIMPLE_NAME), group);
-		}		
-	}
+//	private final static class AddThisQualifierOperation extends AbstractFixRewriteOperation {
+//
+//		private final String fQualifier;
+//		private final SimpleName fName;
+//
+//		public AddThisQualifierOperation(String qualifier, SimpleName name) {
+//			fQualifier= qualifier;
+//			fName= name;
+//		}
+//		
+//		public String getDescription() {
+//			return Messages.format(FixMessages.CodeStyleFix_QualifyWithThis_description, new Object[] {fName.getIdentifier(), fQualifier});
+//		}
+//
+//		/* (non-Javadoc)
+//		 * @see org.eclipse.wst.jsdt.internal.corext.fix.AbstractFix.IFixRewriteOperation#rewriteAST(org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite, java.util.List)
+//		 */
+//		public void rewriteAST(CompilationUnitRewrite cuRewrite, List textEditGroups) throws CoreException {
+//			ASTRewrite rewrite= cuRewrite.getASTRewrite();
+//			TextEditGroup group;
+//			if (fName.resolveBinding() instanceof IFunctionBinding) {
+//				group= createTextEditGroup(FixMessages.CodeStyleFix_QualifyMethodWithThis_description);
+//			} else {
+//				group= createTextEditGroup(FixMessages.CodeStyleFix_QualifyFieldWithThis_description);
+//			}
+//			textEditGroups.add(group);
+//			rewrite.replace(fName, rewrite.createStringPlaceholder(fQualifier  + '.' + fName.getIdentifier(), ASTNode.SIMPLE_NAME), group);
+//		}		
+//	}
 	
 	private final static class AddStaticQualifierOperation extends AbstractFixRewriteOperation {
 
@@ -442,17 +440,17 @@ public class CodeStyleFix extends AbstractFix {
 		return new CodeStyleFix[] {fix1};
 	}
 	
-	public static CodeStyleFix createAddFieldQualifierFix(JavaScriptUnit compilationUnit, IProblemLocation problem) throws CoreException {
-		if (IProblem.UnqualifiedFieldAccess != problem.getProblemId())
-			return null;
-		
-		AddThisQualifierOperation operation= getUnqualifiedFieldAccessResolveOperation(compilationUnit, problem);
-		if (operation == null)
-			return null;
-
-		String groupName= operation.getDescription();
-		return new CodeStyleFix(groupName, compilationUnit, new IFixRewriteOperation[] {operation});
-	}
+//	public static CodeStyleFix createAddFieldQualifierFix(JavaScriptUnit compilationUnit, IProblemLocation problem) throws CoreException {
+//		if (IProblem.UnqualifiedFieldAccess != problem.getProblemId())
+//			return null;
+//		
+//		AddThisQualifierOperation operation= getUnqualifiedFieldAccessResolveOperation(compilationUnit, problem);
+//		if (operation == null)
+//			return null;
+//
+//		String groupName= operation.getDescription();
+//		return new CodeStyleFix(groupName, compilationUnit, new IFixRewriteOperation[] {operation});
+//	}
 	
 	public static CodeStyleFix createIndirectAccessToStaticFix(JavaScriptUnit compilationUnit, IProblemLocation problem) throws CoreException {
 		if (!isIndirectStaticAccess(problem))
@@ -492,10 +490,10 @@ public class CodeStyleFix extends AbstractFix {
         }
 		addToStaticAccessOperations(compilationUnit, locations, changeNonStaticAccessToStatic, changeIndirectStaticAccessToDirect, operations);
 		
-		if (removeFieldQualifier || removeMethodQualifier) {
-			ThisQualifierVisitor visitor= new ThisQualifierVisitor(removeFieldQualifier, removeMethodQualifier, compilationUnit, operations);
-			compilationUnit.accept(visitor);
-		}
+//		if (removeFieldQualifier || removeMethodQualifier) {
+//			ThisQualifierVisitor visitor= new ThisQualifierVisitor(removeFieldQualifier, removeMethodQualifier, compilationUnit, operations);
+//			compilationUnit.accept(visitor);
+//		}
 
 		if (operations.isEmpty())
 			return null;
@@ -513,16 +511,16 @@ public class CodeStyleFix extends AbstractFix {
 			return null;
 				
 		List/*<IFixRewriteOperation>*/ operations= new ArrayList(); 
-		if (addThisQualifier) {
-			for (int i= 0; i < problems.length; i++) {
-				IProblemLocation problem= problems[i];
-				if (problem.getProblemId() == IProblem.UnqualifiedFieldAccess) {
-					AddThisQualifierOperation operation= getUnqualifiedFieldAccessResolveOperation(compilationUnit, problem);
-					if (operation != null)
-						operations.add(operation);
-				}
-			}
-		}
+//		if (addThisQualifier) {
+//			for (int i= 0; i < problems.length; i++) {
+//				IProblemLocation problem= problems[i];
+//				if (problem.getProblemId() == IProblem.UnqualifiedFieldAccess) {
+//					AddThisQualifierOperation operation= getUnqualifiedFieldAccessResolveOperation(compilationUnit, problem);
+//					if (operation != null)
+//						operations.add(operation);
+//				}
+//			}
+//		}
 
 		addToStaticAccessOperations(compilationUnit, problems, changeNonStaticAccessToStatic, changeIndirectStaticAccessToDirect, operations);
 
@@ -636,24 +634,24 @@ public class CodeStyleFix extends AbstractFix {
 		return null;
 	}
 		
-	private static AddThisQualifierOperation getUnqualifiedFieldAccessResolveOperation(JavaScriptUnit compilationUnit, IProblemLocation problem) throws CoreException {
-		SimpleName name= getName(compilationUnit, problem);
-		if (name == null)
-			return null;
-		
-		IBinding binding= name.resolveBinding();
-		if (binding == null || binding.getKind() != IBinding.VARIABLE)
-			return null;
-		
-		ImportRewrite imports= StubUtility.createImportRewrite(compilationUnit, true);
-		
-		String replacement= getQualifier((IVariableBinding)binding, imports, name);
-		if (replacement == null)
-			return null;
-		
-		return new AddThisQualifierOperation(replacement, name);
-	}
-	
+//	private static AddThisQualifierOperation getUnqualifiedFieldAccessResolveOperation(JavaScriptUnit compilationUnit, IProblemLocation problem) throws CoreException {
+//		SimpleName name= getName(compilationUnit, problem);
+//		if (name == null)
+//			return null;
+//		
+//		IBinding binding= name.resolveBinding();
+//		if (binding == null || binding.getKind() != IBinding.VARIABLE)
+//			return null;
+//		
+//		ImportRewrite imports= StubUtility.createImportRewrite(compilationUnit, true);
+//		
+//		String replacement= getQualifier((IVariableBinding)binding, imports, name);
+//		if (replacement == null)
+//			return null;
+//		
+//		return new AddThisQualifierOperation(replacement, name);
+//	}
+//	
 	private static String getQualifier(IVariableBinding binding, ImportRewrite imports, SimpleName name) {
 		ITypeBinding declaringClass= binding.getDeclaringClass();
 		if (Modifier.isStatic(binding.getModifiers())) {

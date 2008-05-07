@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -64,19 +63,14 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
-import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
@@ -84,7 +78,6 @@ import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.SourceAttachmentBlock;
 import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
-import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
 
 /**
  * Java specific text editor.
@@ -173,16 +166,16 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 			data.heightHint= 2;
 			separator.setLayoutData(data);
 
-			try {
-				IPackageFragmentRoot root= getPackageFragmentRoot(fFile);
-				if (root != null) {
-					createSourceAttachmentControls(fComposite, root);
-				}
-			} catch (JavaScriptModelException e) {
-				String title= JavaEditorMessages.SourceAttachmentForm_error_title;
-				String message= JavaEditorMessages.SourceAttachmentForm_error_message;
-				ExceptionHandler.handle(e, fComposite.getShell(), title, message);
-			}
+//			try {
+//				IPackageFragmentRoot root= getPackageFragmentRoot(fFile);
+//				if (root != null) {
+//					createSourceAttachmentControls(fComposite, root);
+//				}
+//			} catch (JavaScriptModelException e) {
+//				String title= JavaEditorMessages.SourceAttachmentForm_error_title;
+//				String message= JavaEditorMessages.SourceAttachmentForm_error_message;
+//				ExceptionHandler.handle(e, fComposite.getShell(), title, message);
+//			}
 
 			separator= createCompositeSeparator(fComposite);
 			data= new GridData(GridData.FILL_HORIZONTAL);
@@ -198,88 +191,88 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 			return fComposite;
 		}
 
-		private void createSourceAttachmentControls(Composite composite, IPackageFragmentRoot root) throws JavaScriptModelException {
-			IIncludePathEntry entry;
-			try {
-				entry= root.getRawIncludepathEntry();
-			} catch (JavaScriptModelException ex) {
-				if (ex.isDoesNotExist())
-					entry= null;
-				else
-					throw ex;
-			}
-			IPath containerPath= null;
-
-			if (entry == null || root.getKind() != IPackageFragmentRoot.K_BINARY) {
-				createLabel(composite, Messages.format(JavaEditorMessages.SourceAttachmentForm_message_noSource, fFile.getDisplayName()));
-				return;
-			}
-
-			IJavaScriptProject jproject= root.getJavaScriptProject();
-			if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
-				containerPath= entry.getPath();
-				JsGlobalScopeContainerInitializer initializer= JavaScriptCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
-				IJsGlobalScopeContainer container= JavaScriptCore.getJsGlobalScopeContainer(containerPath, jproject);
-				if (initializer == null || container == null) {
-					createLabel(composite, Messages.format(JavaEditorMessages.ClassFileEditor_SourceAttachmentForm_cannotconfigure, containerPath.toString())); 
-					return;
-				}
-				String containerName= container.getDescription();
-				IStatus status= initializer.getSourceAttachmentStatus(containerPath, jproject);
-				if (status.getCode() == JsGlobalScopeContainerInitializer.ATTRIBUTE_NOT_SUPPORTED) {
-					createLabel(composite, Messages.format(JavaEditorMessages.ClassFileEditor_SourceAttachmentForm_notsupported, containerName));  
-					return;
-				}
-				if (status.getCode() == JsGlobalScopeContainerInitializer.ATTRIBUTE_READ_ONLY) {
-					createLabel(composite, Messages.format(JavaEditorMessages.ClassFileEditor_SourceAttachmentForm_readonly, containerName));  
-					return;
-				}
-				entry= JavaModelUtil.findEntryInContainer(container, root.getPath());
-				Assert.isNotNull(entry);
-			}
-
-
-			Button button;
-
-			IPath path= entry.getSourceAttachmentPath();
-			if (path == null || path.isEmpty()) {
-				createLabel(composite, Messages.format(JavaEditorMessages.SourceAttachmentForm_message_noSourceAttachment, root.getElementName()));
-				createLabel(composite, JavaEditorMessages.SourceAttachmentForm_message_pressButtonToAttach);
-				createLabel(composite, null);
-
-				button= createButton(composite, JavaEditorMessages.SourceAttachmentForm_button_attachSource);
-
-			} else {
-				createLabel(composite, Messages.format(JavaEditorMessages.SourceAttachmentForm_message_noSourceInAttachment, fFile.getDisplayName()));
-				createLabel(composite, JavaEditorMessages.SourceAttachmentForm_message_pressButtonToChange);
-				createLabel(composite, null);
-
-				button= createButton(composite, JavaEditorMessages.SourceAttachmentForm_button_changeAttachedSource);
-			}
-
-			button.addSelectionListener(getButtonListener(entry, containerPath, jproject));
-		}
-
-		private SelectionListener getButtonListener(final IIncludePathEntry entry, final IPath containerPath, final IJavaScriptProject jproject) {
-			return new SelectionListener() {
-				public void widgetSelected(SelectionEvent event) {
-					Shell shell= getSite().getShell();
-					try {
-						IIncludePathEntry result= BuildPathDialogAccess.configureSourceAttachment(shell, entry);
-						if (result != null) {
-							applySourceAttachment(shell, result, jproject, containerPath);
-							verifyInput(getEditorInput());
-						}
-					} catch (CoreException e) {
-						String title= JavaEditorMessages.SourceAttachmentForm_error_title;
-						String message= JavaEditorMessages.SourceAttachmentForm_error_message;
-						ExceptionHandler.handle(e, shell, title, message);
-					}
-				}
-
-				public void widgetDefaultSelected(SelectionEvent e) {}
-			};
-		}
+//		private void createSourceAttachmentControls(Composite composite, IPackageFragmentRoot root) throws JavaScriptModelException {
+//			IIncludePathEntry entry;
+//			try {
+//				entry= root.getRawIncludepathEntry();
+//			} catch (JavaScriptModelException ex) {
+//				if (ex.isDoesNotExist())
+//					entry= null;
+//				else
+//					throw ex;
+//			}
+//			IPath containerPath= null;
+//
+//			if (entry == null || root.getKind() != IPackageFragmentRoot.K_BINARY) {
+//				createLabel(composite, Messages.format(JavaEditorMessages.SourceAttachmentForm_message_noSource, fFile.getDisplayName()));
+//				return;
+//			}
+//
+//			IJavaScriptProject jproject= root.getJavaScriptProject();
+//			if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
+//				containerPath= entry.getPath();
+//				JsGlobalScopeContainerInitializer initializer= JavaScriptCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
+//				IJsGlobalScopeContainer container= JavaScriptCore.getJsGlobalScopeContainer(containerPath, jproject);
+//				if (initializer == null || container == null) {
+//					createLabel(composite, Messages.format(JavaEditorMessages.ClassFileEditor_SourceAttachmentForm_cannotconfigure, containerPath.toString())); 
+//					return;
+//				}
+//				String containerName= container.getDescription();
+//				IStatus status= initializer.getSourceAttachmentStatus(containerPath, jproject);
+//				if (status.getCode() == JsGlobalScopeContainerInitializer.ATTRIBUTE_NOT_SUPPORTED) {
+//					createLabel(composite, Messages.format(JavaEditorMessages.ClassFileEditor_SourceAttachmentForm_notsupported, containerName));  
+//					return;
+//				}
+//				if (status.getCode() == JsGlobalScopeContainerInitializer.ATTRIBUTE_READ_ONLY) {
+//					createLabel(composite, Messages.format(JavaEditorMessages.ClassFileEditor_SourceAttachmentForm_readonly, containerName));  
+//					return;
+//				}
+//				entry= JavaModelUtil.findEntryInContainer(container, root.getPath());
+//				Assert.isNotNull(entry);
+//			}
+//
+//
+//			Button button;
+//
+//			IPath path= entry.getSourceAttachmentPath();
+//			if (path == null || path.isEmpty()) {
+//				createLabel(composite, Messages.format(JavaEditorMessages.SourceAttachmentForm_message_noSourceAttachment, root.getElementName()));
+//				createLabel(composite, JavaEditorMessages.SourceAttachmentForm_message_pressButtonToAttach);
+//				createLabel(composite, null);
+//
+//				button= createButton(composite, JavaEditorMessages.SourceAttachmentForm_button_attachSource);
+//
+//			} else {
+//				createLabel(composite, Messages.format(JavaEditorMessages.SourceAttachmentForm_message_noSourceInAttachment, fFile.getDisplayName()));
+//				createLabel(composite, JavaEditorMessages.SourceAttachmentForm_message_pressButtonToChange);
+//				createLabel(composite, null);
+//
+//				button= createButton(composite, JavaEditorMessages.SourceAttachmentForm_button_changeAttachedSource);
+//			}
+//
+//			button.addSelectionListener(getButtonListener(entry, containerPath, jproject));
+//		}
+//
+//		private SelectionListener getButtonListener(final IIncludePathEntry entry, final IPath containerPath, final IJavaScriptProject jproject) {
+//			return new SelectionListener() {
+//				public void widgetSelected(SelectionEvent event) {
+//					Shell shell= getSite().getShell();
+//					try {
+//						IIncludePathEntry result= BuildPathDialogAccess.configureSourceAttachment(shell, entry);
+//						if (result != null) {
+//							applySourceAttachment(shell, result, jproject, containerPath);
+//							verifyInput(getEditorInput());
+//						}
+//					} catch (CoreException e) {
+//						String title= JavaEditorMessages.SourceAttachmentForm_error_title;
+//						String message= JavaEditorMessages.SourceAttachmentForm_error_message;
+//						ExceptionHandler.handle(e, shell, title, message);
+//					}
+//				}
+//
+//				public void widgetDefaultSelected(SelectionEvent e) {}
+//			};
+//		}
 
 		protected void applySourceAttachment(Shell shell, IIncludePathEntry newEntry, IJavaScriptProject project, IPath containerPath) {
 			try {

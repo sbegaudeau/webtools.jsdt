@@ -40,7 +40,7 @@ public class DialogPackageExplorerActionGroup extends CompositeActionGroup {
 	private final ExcludeFromBuildpathAction fExcludeFromBuildpathAction;
 	private final IncludeToBuildpathAction fIncludeToBuildpathAction;
 	private final EditFilterAction fEditFilterAction;
-	private final EditOutputFolderAction fEditOutputFolderAction;
+//	private final EditOutputFolderAction fEditOutputFolderAction;
 	private final ClasspathModifierDropDownAction fDropDownAction;
 	private final CreateLinkedSourceFolderAction fCreateLinkedSourceFolderAction;
 	private final CreateSourceFolderAction fCreateSourceFolderAction;
@@ -104,17 +104,17 @@ public class DialogPackageExplorerActionGroup extends CompositeActionGroup {
 	        };
 			fDialogPackageExplorer.addSelectionChangedListener(fEditFilterAction);
 	
-	        fEditOutputFolderAction= new EditOutputFolderAction(context, fDialogPackageExplorer) {
-	        	public void run() {
-	        		page.commitDefaultOutputFolder();
-	        	    super.run();
-	        	}
-	        };
-			fDialogPackageExplorer.addSelectionChangedListener(fEditOutputFolderAction);
+//	        fEditOutputFolderAction= new EditOutputFolderAction(context, fDialogPackageExplorer) {
+//	        	public void run() {
+//	        		page.commitDefaultOutputFolder();
+//	        	    super.run();
+//	        	}
+//	        };
+//			fDialogPackageExplorer.addSelectionChangedListener(fEditOutputFolderAction);
         
         fDropDownAction= new ClasspathModifierDropDownAction();
 		fDropDownAction.addAction(fEditFilterAction);
-        fDropDownAction.addAction(fEditOutputFolderAction);
+//        fDropDownAction.addAction(fEditOutputFolderAction);
 		fDialogPackageExplorer.addPostSelectionChangedListener(fDropDownAction);
         
         fCreateLinkedSourceFolderAction= new CreateLinkedSourceFolderAction2(provider, context, fDialogPackageExplorer) {
@@ -185,7 +185,7 @@ public class DialogPackageExplorerActionGroup extends CompositeActionGroup {
         fDialogPackageExplorer.removeSelectionChangedListener(fExcludeFromBuildpathAction);
 		fDialogPackageExplorer.removeSelectionChangedListener(fIncludeToBuildpathAction);
 		fDialogPackageExplorer.removeSelectionChangedListener(fEditFilterAction);
-		fDialogPackageExplorer.removeSelectionChangedListener(fEditOutputFolderAction);
+//		fDialogPackageExplorer.removeSelectionChangedListener(fEditOutputFolderAction);
 		fDialogPackageExplorer.removePostSelectionChangedListener(fDropDownAction);
         fDialogPackageExplorer= null;
     }
@@ -196,7 +196,7 @@ public class DialogPackageExplorerActionGroup extends CompositeActionGroup {
     	fExcludeFromBuildpathAction.addBuildpathModifierListener(listener);
     	fIncludeToBuildpathAction.addBuildpathModifierListener(listener);
     	fEditFilterAction.addBuildpathModifierListener(listener);
-    	fEditOutputFolderAction.addBuildpathModifierListener(listener);
+//    	fEditOutputFolderAction.addBuildpathModifierListener(listener);
     	fCreateLinkedSourceFolderAction.addBuildpathModifierListener(listener);
     	fCreateSourceFolderAction.addBuildpathModifierListener(listener);
     }
@@ -207,7 +207,7 @@ public class DialogPackageExplorerActionGroup extends CompositeActionGroup {
     	fExcludeFromBuildpathAction.removeBuildpathModifierListener(listener);
     	fIncludeToBuildpathAction.removeBuildpathModifierListener(listener);
     	fEditFilterAction.removeBuildpathModifierListener(listener);
-    	fEditOutputFolderAction.removeBuildpathModifierListener(listener);
+//    	fEditOutputFolderAction.removeBuildpathModifierListener(listener);
     	fCreateLinkedSourceFolderAction.removeBuildpathModifierListener(listener);
     	fCreateSourceFolderAction.removeBuildpathModifierListener(listener);
     }
@@ -278,8 +278,8 @@ public class DialogPackageExplorerActionGroup extends CompositeActionGroup {
     	if (fEditFilterAction.isEnabled())
     		menu.add(fEditFilterAction);
     	
-    	if (fEditOutputFolderAction.isEnabled())
-    		menu.add(fEditOutputFolderAction);
+//    	if (fEditOutputFolderAction.isEnabled())
+//    		menu.add(fEditOutputFolderAction);
     	
     	if (fCreateLinkedSourceFolderAction.isEnabled())
     		menu.add(fCreateLinkedSourceFolderAction);
@@ -308,8 +308,8 @@ public class DialogPackageExplorerActionGroup extends CompositeActionGroup {
     	if (fIncludeToBuildpathAction.isEnabled())
     		result.add(fIncludeToBuildpathAction);
     	
-    	if (fEditOutputFolderAction.isEnabled())
-    		result.add(fEditOutputFolderAction);
+//    	if (fEditOutputFolderAction.isEnabled())
+//    		result.add(fEditOutputFolderAction);
     	
 		if (fAddFolderToBuildpathAction.isEnabled())
     		result.add(fAddFolderToBuildpathAction);
@@ -320,9 +320,9 @@ public class DialogPackageExplorerActionGroup extends CompositeActionGroup {
 	    return (BuildpathModifierAction[])result.toArray(new BuildpathModifierAction[result.size()]);
     }
 
-	public EditOutputFolderAction getEditOutputFolderAction() {
-	    return fEditOutputFolderAction;
-    }
+//	public EditOutputFolderAction getEditOutputFolderAction() {
+//	    return fEditOutputFolderAction;
+//    }
 
 	public ResetAllAction getResetAllAction() {
 		return fResetAllAction;

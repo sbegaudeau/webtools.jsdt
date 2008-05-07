@@ -132,16 +132,16 @@ public class Java50CleanUp extends AbstractCleanUp {
 	 * {@inheritDoc}
 	 */
 	public boolean canFix(JavaScriptUnit compilationUnit, IProblemLocation problem) throws CoreException {
-		if (isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS) && isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS_OVERRIDE)) {
-			Java50Fix fix= Java50Fix.createAddOverrideAnnotationFix(compilationUnit, problem);
-			if (fix != null)
-				return true;
-		}
-		if (isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS) && isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS_DEPRECATED)) {
-			Java50Fix fix= Java50Fix.createAddDeprectatedAnnotation(compilationUnit, problem);
-			if (fix != null)
-				return true;
-		}
+//		if (isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS) && isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS_OVERRIDE)) {
+//			Java50Fix fix= Java50Fix.createAddOverrideAnnotationFix(compilationUnit, problem);
+//			if (fix != null)
+//				return true;
+//		}
+//		if (isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS) && isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS_DEPRECATED)) {
+//			Java50Fix fix= Java50Fix.createAddDeprectatedAnnotation(compilationUnit, problem);
+//			if (fix != null)
+//				return true;
+//		}
 		if (isEnabled(CleanUpConstants.VARIABLE_DECLARATION_USE_TYPE_ARGUMENTS_FOR_RAW_TYPE_REFERENCES)) {
 			Java50Fix fix= Java50Fix.createRawTypeReferenceFix(compilationUnit, problem);
 			if (fix != null)

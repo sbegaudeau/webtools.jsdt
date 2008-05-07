@@ -816,6 +816,7 @@
 		     </adapt>
          </enabledWhen>
       </page>
+      <!--
       <page
             name="%nativeLibraryPageName"
             category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
@@ -825,7 +826,7 @@
             <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
          </enabledWhen>
       </page>
-      
+      -->
       <page
             name="%editorPageName"
             category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
@@ -1270,6 +1271,7 @@
             name="%JavaElementHyperlinkDetector"
             targetId="org.eclipse.wst.jsdt.ui.javaCode">
       </hyperlinkDetector>
+<!--      
       <hyperlinkDetector
             class="org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertyKeyHyperlinkDetector"
             id="org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertyKeyHyperlinkDetector"
@@ -1277,6 +1279,7 @@
             modifierKeys="M1+M3"
             targetId="org.eclipse.wst.jsdt.ui.PropertiesFileEditor">
       </hyperlinkDetector>
+-->      
    </extension>
 
    <extension
@@ -1791,11 +1794,6 @@
    </extension>
    <extension
          point="org.eclipse.compare.structureCreators">
-      <structureCreator
-            extensions="jar"
-            class="org.eclipse.wst.jsdt.internal.ui.compare.JarStructureCreator"
-            id="org.eclipse.wst.jsdt.internal.ui.compare.JarStructureCreator">
-      </structureCreator>
       <structureCreator
             extensions="js"
             class="org.eclipse.wst.jsdt.internal.ui.compare.JavaStructureCreator"

@@ -23,15 +23,15 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
-import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
@@ -40,14 +40,12 @@ import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.internal.ui.wizards.NewAnnotationCreationWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewClassCreationWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewElementWizard;
-import org.eclipse.wst.jsdt.internal.ui.wizards.NewEnumCreationWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewInterfaceCreationWizard;
 import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.wizards.NewTypeWizardPage;
@@ -245,10 +243,10 @@ public class NewCUCompletionUsingWizardProposal extends ChangeCorrectionProposal
 				return new NewClassCreationWizard();
 			case K_INTERFACE:
 				return new NewInterfaceCreationWizard();
-			case K_ENUM:
-				return new NewEnumCreationWizard();
-			case K_ANNOTATION:
-				return new NewAnnotationCreationWizard();
+//			case K_ENUM:
+//				return new NewEnumCreationWizard();
+//			case K_ANNOTATION:
+//				return new NewAnnotationCreationWizard();
 		}
 		throw new IllegalArgumentException();
 	}

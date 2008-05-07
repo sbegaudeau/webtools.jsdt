@@ -59,19 +59,6 @@ public class CleanUpMessages extends NLS {
 	public static String CodeStyleTabPage_RadioName_NeverUseParantheses;
 	public static String CodeStyleTabPage_RadioName_UseBlocksSpecial;
 
-	public static String MemberAccessesTabPage_CheckboxName_ChangeAccessesThroughInstances;
-	public static String MemberAccessesTabPage_CheckboxName_ChangeAccessesThroughSubtypes;
-	public static String MemberAccessesTabPage_CheckboxName_FieldQualifier;
-	public static String MemberAccessesTabPage_CheckboxName_MethodQualifier;
-	public static String MemberAccessesTabPage_CheckboxName_QualifyFieldWithDeclaringClass;
-	public static String MemberAccessesTabPage_CheckboxName_QualifyMethodWithDeclaringClass;
-	public static String MemberAccessesTabPage_CheckboxName_QualifyWithDeclaringClass;
-	public static String MemberAccessesTabPage_GroupName_NonStaticAccesses;
-	public static String MemberAccessesTabPage_GroupName_StaticAccesses;
-	public static String MemberAccessesTabPage_RadioName_AlwaysThisForFields;
-	public static String MemberAccessesTabPage_RadioName_AlwaysThisForMethods;
-	public static String MemberAccessesTabPage_RadioName_NeverThisForFields;
-	public static String MemberAccessesTabPage_RadioName_NeverThisForMethods;
 
 
 	public static String UnnecessaryCodeTabPage_CheckboxName_UnnecessaryNLSTags;

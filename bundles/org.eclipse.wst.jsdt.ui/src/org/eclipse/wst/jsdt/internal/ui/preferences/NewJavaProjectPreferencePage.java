@@ -257,20 +257,20 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 		store.setDefault(SRCBIN_SRCNAME, "script"); //$NON-NLS-1$
 		store.setDefault(SRCBIN_BINNAME, ""); //$NON-NLS-1$
 		
-		store.setDefault(CLASSPATH_JRELIBRARY_LIST, getDefaultJRELibraries());
+//		store.setDefault(CLASSPATH_JRELIBRARY_LIST, getDefaultJRELibraries());
 		store.setDefault(CLASSPATH_JRELIBRARY_INDEX, 0); 
 	}
 	
-	private static String getDefaultJRELibraries() {
-		StringBuffer buf= new StringBuffer();
-		IIncludePathEntry cntentry= getJREContainerEntry();
-		buf.append(encodeJRELibrary(PreferencesMessages.NewJavaProjectPreferencePage_jre_container_description, new IIncludePathEntry[] { cntentry} )); 
-		buf.append(';');
-		IIncludePathEntry varentry= getJREVariableEntry();
-		buf.append(encodeJRELibrary(PreferencesMessages.NewJavaProjectPreferencePage_jre_variable_description, new IIncludePathEntry[] { varentry })); 
-		buf.append(';');
-		return buf.toString();
-	}
+//	private static String getDefaultJRELibraries() {
+//		StringBuffer buf= new StringBuffer();
+//		IIncludePathEntry cntentry= getJREContainerEntry();
+//		buf.append(encodeJRELibrary(PreferencesMessages.NewJavaProjectPreferencePage_jre_container_description, new IIncludePathEntry[] { cntentry} )); 
+//		buf.append(';');
+//		IIncludePathEntry varentry= getJREVariableEntry();
+//		buf.append(encodeJRELibrary(PreferencesMessages.NewJavaProjectPreferencePage_jre_variable_description, new IIncludePathEntry[] { varentry })); 
+//		buf.append(';');
+//		return buf.toString();
+//	}
 	
 	private static IIncludePathEntry getJREContainerEntry() {
 		return JavaScriptCore.newContainerEntry(new Path("org.eclipse.wst.jsdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
@@ -419,14 +419,14 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 				}
 			}
 			IPath binPath= dmy.getFullPath().append(binName);
-			if (binName.length() != 0) {
-				status= workspace.validatePath(binPath.toString(), IResource.FOLDER);
-				if (!status.isOK()) {
-					String message= Messages.format(PreferencesMessages.NewJavaProjectPreferencePage_folders_error_invalidbinname, status.getMessage()); 
-					updateStatus(new StatusInfo(IStatus.ERROR, message));
-					return;
-				}
-			}
+//			if (binName.length() != 0) {
+//				status= workspace.validatePath(binPath.toString(), IResource.FOLDER);
+//				if (!status.isOK()) {
+//					String message= Messages.format(PreferencesMessages.NewJavaProjectPreferencePage_folders_error_invalidbinname, status.getMessage()); 
+//					updateStatus(new StatusInfo(IStatus.ERROR, message));
+//					return;
+//				}
+//			}
 			IIncludePathEntry entry= JavaScriptCore.newSourceEntry(srcPath);
 			status= JavaScriptConventions.validateClasspath(JavaScriptCore.create(dmy), new IIncludePathEntry[] { entry }, binPath);
 			if (!status.isOK()) {

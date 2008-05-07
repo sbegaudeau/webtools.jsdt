@@ -43,9 +43,4 @@ public final class CodeGenerationMessages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, CodeGenerationMessages.class);
 	}
 
-	public static String GenerateHashCodeEqualsOperation_hash_code_comment;
-	public static String GenerateHashCodeEqualsOperation_tag_param;
-	public static String GenerateHashCodeEqualsOperation_hash_code_argument;
-	public static String GenerateHashCodeEqualsOperation_tag_return;
-	public static String GenerateHashCodeEqualsOperation_return_comment;
 }

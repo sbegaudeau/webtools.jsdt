@@ -83,15 +83,15 @@ public class JavaContextType extends CompilationUnitContextType {
 		}
 	}
 	
-	protected static class Iterable extends AbstractIterable {
-		public Iterable() {
-		    super("iterable", JavaTemplateMessages.JavaContextType_variable_description_iterable);  //$NON-NLS-1$
-		}
-		
-		protected Variable[] getLocalVariables(JavaContext jc) {
-			return jc.getIterables();
-		}
-	}
+//	protected static class Iterable extends AbstractIterable {
+//		public Iterable() {
+//		    super("iterable", JavaTemplateMessages.JavaContextType_variable_description_iterable);  //$NON-NLS-1$
+//		}
+//		
+//		protected Variable[] getLocalVariables(JavaContext jc) {
+//			return jc.getIterables();
+//		}
+//	}
 	
 	protected static abstract class AbstractIterableType extends TemplateVariableResolver {
 		private String fMasterName;
@@ -155,14 +155,14 @@ public class JavaContextType extends CompilationUnitContextType {
 		}
 	}
 	
-	protected static class IterableType extends AbstractIterableType {
-		public IterableType() {
-	     	super("iterable_type", JavaTemplateMessages.JavaContextType_variable_description_iterable_type, "iterable");  //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		protected Variable[] getLocalVariables(JavaContext jc) {
-			return jc.getIterables();
-		}
-	}
+//	protected static class IterableType extends AbstractIterableType {
+//		public IterableType() {
+//	     	super("iterable_type", JavaTemplateMessages.JavaContextType_variable_description_iterable_type, "iterable");  //$NON-NLS-1$ //$NON-NLS-2$
+//		}
+//		protected Variable[] getLocalVariables(JavaContext jc) {
+//			return jc.getIterables();
+//		}
+//	}
 	
 	protected static abstract class AbstractIterableElement extends TemplateVariableResolver {
 		private String fMasterName;
@@ -233,14 +233,14 @@ public class JavaContextType extends CompilationUnitContextType {
 		}
 	}
 	
-	protected static class IterableElement extends AbstractIterableElement {
-		public IterableElement() {
-	     	super("iterable_element", JavaTemplateMessages.JavaContextType_variable_description_iterable_element, "iterable");	 //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		protected Variable[] getLocalVariables(JavaContext jc) {
-			return jc.getIterables();
-		}
-	}
+//	protected static class IterableElement extends AbstractIterableElement {
+//		public IterableElement() {
+//	     	super("iterable_element", JavaTemplateMessages.JavaContextType_variable_description_iterable_element, "iterable");	 //$NON-NLS-1$ //$NON-NLS-2$
+//		}
+//		protected Variable[] getLocalVariables(JavaContext jc) {
+//			return jc.getIterables();
+//		}
+//	}
 	
 	protected static class Index extends NameResolver {
 	    public Index() {
@@ -250,22 +250,22 @@ public class JavaContextType extends CompilationUnitContextType {
 	    }
 	}
 
-	protected static class Collection extends LocalVarResolver {
-	    public Collection() {
-	    	super("java.util.Collection"); //$NON-NLS-1$
-	    	setType("collection"); //$NON-NLS-1$
-	    	setDescription(JavaTemplateMessages.JavaContextType_variable_description_collection);
-		}
-	}
-
-	protected static class Iterator extends NameResolver {
-	    public Iterator() {
-	    	super("java.util.Iterator"); //$NON-NLS-1$
-	     	setType("iterator"); //$NON-NLS-1$
-	     	setDescription(JavaTemplateMessages.JavaContextType_variable_description_iterator);
-		}
-	}
-	
+//	protected static class Collection extends LocalVarResolver {
+//	    public Collection() {
+//	    	super("java.util.Collection"); //$NON-NLS-1$
+//	    	setType("collection"); //$NON-NLS-1$
+//	    	setDescription(JavaTemplateMessages.JavaContextType_variable_description_collection);
+//		}
+//	}
+//
+//	protected static class Iterator extends NameResolver {
+//	    public Iterator() {
+//	    	super("java.util.Iterator"); //$NON-NLS-1$
+//	     	setType("iterator"); //$NON-NLS-1$
+//	     	setDescription(JavaTemplateMessages.JavaContextType_variable_description_iterator);
+//		}
+//	}
+//	
 	protected static class Todo extends TemplateVariableResolver {
 
 		public Todo() {
@@ -325,11 +325,11 @@ public class JavaContextType extends CompilationUnitContextType {
 		addResolver(new ArrayType());
 		addResolver(new ArrayElement());
 		addResolver(new Index());
-		addResolver(new Iterator());
-		addResolver(new Collection());
-		addResolver(new Iterable());
-		addResolver(new IterableType());
-		addResolver(new IterableElement());
+//		addResolver(new Iterator());
+//		addResolver(new Collection());
+//		addResolver(new Iterable());
+//		addResolver(new IterableType());
+//		addResolver(new IterableElement());
 		addResolver(new Todo());
 	}
 	

@@ -35,9 +35,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
-import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileDocumentSetupParticipant;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
@@ -267,10 +266,10 @@ class JavaCompareUtilities {
 		if (tools != null)
 			tools.setupJavaDocumentPartitioner(document, IJavaScriptPartitions.JAVA_PARTITIONING);
 	}
-	
-	static void setupPropertiesFileDocument(IDocument document) {
-		PropertiesFileDocumentSetupParticipant.setupDocument(document);
-	}
+//	
+//	static void setupPropertiesFileDocument(IDocument document) {
+//		PropertiesFileDocumentSetupParticipant.setupDocument(document);
+//	}
 	
 	/**
 	 * Reads the contents of the given input stream into a string.

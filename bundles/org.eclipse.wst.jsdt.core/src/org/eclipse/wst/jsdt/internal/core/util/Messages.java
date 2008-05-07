@@ -61,7 +61,6 @@ public final class Messages extends NLS {
 	public static String operation_createUnitProgress;
 	public static String operation_createFieldProgress;
 	public static String operation_createImportsProgress;
-	public static String operation_createInitializerProgress;
 	public static String operation_createMethodProgress;
 	public static String operation_createPackageProgress;
 	public static String operation_createPackageFragmentProgress;
@@ -79,7 +78,6 @@ public final class Messages extends NLS {
 	public static String build_readingDelta;
 	public static String build_analyzingDeltas;
 	public static String build_analyzingSources;
-	public static String build_copyingResources;
 	public static String build_compiling;
 	public static String build_foundHeader;
 	public static String build_fixedHeader;
@@ -95,7 +93,7 @@ public final class Messages extends NLS {
 	public static String build_serializationError;
 //	public static String build_classFileCollision;
 //	public static String build_duplicateClassFile;
-	public static String build_duplicateResource;
+//	public static String build_duplicateResource;
 //	public static String build_inconsistentClassFile;
 	public static String build_inconsistentProject;
 	public static String build_incompleteClassPath;
@@ -131,12 +129,8 @@ public final class Messages extends NLS {
 	public static String classpath_cannotNestEntryInEntry;
 	public static String classpath_cannotNestEntryInEntryNoExclusion;
 	public static String classpath_cannotNestEntryInLibrary;
-	public static String classpath_cannotNestOutputInEntry;
-	public static String classpath_cannotNestOutputInOutput;
 	public static String classpath_cannotReadClasspathFile;
 	public static String classpath_cannotReferToItself;
-	public static String classpath_cannotUseDistinctSourceFolderAsOutput;
-	public static String classpath_cannotUseLibraryAsOutput;
 	public static String classpath_closedProject;
 	public static String classpath_cycle;
 	public static String classpath_duplicateEntryPath;
@@ -159,8 +153,6 @@ public final class Messages extends NLS {
 	public static String classpath_unknownKind;
 	public static String classpath_xmlFormatError;
 	public static String classpath_disabledInclusionExclusionPatterns;
-	public static String classpath_disabledMultipleOutputLocations;
-	public static String classpath_incompatibleLibraryJDKLevel;
 	public static String classpath_duplicateEntryExtraAttribute;
 	public static String classpath_deprecated_variable;
 	public static String file_notFound;

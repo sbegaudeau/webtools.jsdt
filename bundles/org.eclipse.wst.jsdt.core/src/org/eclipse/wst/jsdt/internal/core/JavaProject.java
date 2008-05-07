@@ -851,16 +851,16 @@ public class JavaProject
 				severity = IMarker.SEVERITY_ERROR;
 				break;
 
-			case  IJavaScriptModelStatusConstants.INCOMPATIBLE_JDK_LEVEL :
-				String setting = getOption(JavaScriptCore.CORE_INCOMPATIBLE_JDK_LEVEL, true);
-				if (JavaScriptCore.ERROR.equals(setting)) {
-					severity = IMarker.SEVERITY_ERROR;
-				} else if (JavaScriptCore.WARNING.equals(setting)) {
-					severity = IMarker.SEVERITY_WARNING;
-				} else {
-					return; // setting == IGNORE
-				}
-				break;
+//			case  IJavaScriptModelStatusConstants.INCOMPATIBLE_JDK_LEVEL :
+//				String setting = getOption(JavaScriptCore.CORE_INCOMPATIBLE_JDK_LEVEL, true);
+//				if (JavaScriptCore.ERROR.equals(setting)) {
+//					severity = IMarker.SEVERITY_ERROR;
+//				} else if (JavaScriptCore.WARNING.equals(setting)) {
+//					severity = IMarker.SEVERITY_WARNING;
+//				} else {
+//					return; // setting == IGNORE
+//				}
+//				break;
 
 			default:
 				IPath path = status.getPath();

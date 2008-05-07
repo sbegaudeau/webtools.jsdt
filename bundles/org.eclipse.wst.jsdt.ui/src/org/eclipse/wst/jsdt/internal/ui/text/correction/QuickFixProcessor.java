@@ -433,7 +433,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				break;
 			case IProblem.UnqualifiedFieldAccess:
 				ModifierCorrectionSubProcessor.addGetterSetterProposal(context, problem, proposals, 15);
-				LocalCorrectionsSubProcessor.addUnqualifiedFieldAccessProposal(context, problem, proposals);
+//				LocalCorrectionsSubProcessor.addUnqualifiedFieldAccessProposal(context, problem, proposals);
 				break;
 			case IProblem.Task:
 				proposals.add(new TaskMarkerProposal(context.getCompilationUnit(), problem, 10));
@@ -502,9 +502,9 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.NonGenericType:
 				TypeParameterMismatchSubProcessor.removeMismatchedParameters(context, problem, proposals);
 				break;
-			case IProblem.MissingOverrideAnnotation:
-				ModifierCorrectionSubProcessor.addOverrideAnnotationProposal(context, problem, proposals);
-				break;
+//			case IProblem.MissingOverrideAnnotation:
+//				ModifierCorrectionSubProcessor.addOverrideAnnotationProposal(context, problem, proposals);
+//				break;
 			case IProblem.MethodMustOverride:
 			case IProblem.MethodMustOverrideOrImplement:
 				ModifierCorrectionSubProcessor.removeOverrideAnnotationProposal(context, problem, proposals);
@@ -512,7 +512,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.FieldMissingDeprecatedAnnotation:
 			case IProblem.MethodMissingDeprecatedAnnotation:
 			case IProblem.TypeMissingDeprecatedAnnotation:
-				ModifierCorrectionSubProcessor.addDeprecatedAnnotationProposal(context, problem, proposals);
+//				ModifierCorrectionSubProcessor.addDeprecatedAnnotationProposal(context, problem, proposals);
 				break;
 			case IProblem.OverridingDeprecatedMethod:
 				ModifierCorrectionSubProcessor.addOverridingDeprecatedMethodProposal(context, problem, proposals);

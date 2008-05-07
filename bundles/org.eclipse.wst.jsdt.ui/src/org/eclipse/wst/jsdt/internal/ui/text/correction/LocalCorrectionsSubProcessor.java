@@ -563,19 +563,19 @@ public class LocalCorrectionsSubProcessor {
 		}
 	}
 
-	public static void addUnqualifiedFieldAccessProposal(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-		IFix fix= CodeStyleFix.createAddFieldQualifierFix(context.getASTRoot(), problem);
-		if (fix != null) {
-			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
-			Map options= new HashMap();
-			options.put(CleanUpConstants.MEMBER_ACCESSES_NON_STATIC_FIELD_USE_THIS, CleanUpConstants.TRUE);
-			options.put(CleanUpConstants.MEMBER_ACCESSES_NON_STATIC_FIELD_USE_THIS_ALWAYS, CleanUpConstants.TRUE);
-			FixCorrectionProposal proposal= new FixCorrectionProposal(fix, new CodeStyleCleanUp(options), 5, image, context);
-			proposal.setCommandId(ADD_FIELD_QUALIFICATION_ID);
-			proposals.add(proposal);
-		}
-	}
-
+//	public static void addUnqualifiedFieldAccessProposal(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
+//		IFix fix= CodeStyleFix.createAddFieldQualifierFix(context.getASTRoot(), problem);
+//		if (fix != null) {
+//			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
+//			Map options= new HashMap();
+//			options.put(CleanUpConstants.MEMBER_ACCESSES_NON_STATIC_FIELD_USE_THIS, CleanUpConstants.TRUE);
+//			options.put(CleanUpConstants.MEMBER_ACCESSES_NON_STATIC_FIELD_USE_THIS_ALWAYS, CleanUpConstants.TRUE);
+//			FixCorrectionProposal proposal= new FixCorrectionProposal(fix, new CodeStyleCleanUp(options), 5, image, context);
+//			proposal.setCommandId(ADD_FIELD_QUALIFICATION_ID);
+//			proposals.add(proposal);
+//		}
+//	}
+//
 	public static void addInvalidVariableNameProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
 		// hiding, redefined or future keyword
 

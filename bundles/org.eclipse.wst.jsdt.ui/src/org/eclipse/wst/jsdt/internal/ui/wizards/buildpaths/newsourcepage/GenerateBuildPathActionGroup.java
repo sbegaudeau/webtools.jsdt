@@ -170,8 +170,8 @@ public class GenerateBuildPathActionGroup extends ActionGroup {
 		final EditFilterAction editFilterAction= new EditFilterAction(site);
 		fActions.add(editFilterAction);
 			
-		final EditOutputFolderAction editOutput= new EditOutputFolderAction(site);
-		fActions.add(editOutput);
+//		final EditOutputFolderAction editOutput= new EditOutputFolderAction(site);
+//		fActions.add(editOutput);
 		
 		final ConfigureBuildPathAction configure= new ConfigureBuildPathAction(site);
 		fActions.add(configure);

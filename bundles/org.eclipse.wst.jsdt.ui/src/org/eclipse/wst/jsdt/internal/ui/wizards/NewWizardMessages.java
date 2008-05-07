@@ -194,14 +194,6 @@ public final class NewWizardMessages extends NLS {
 	public static String NewInterfaceWizardPage_title;
 	public static String NewInterfaceWizardPage_description;
 	
-	public static String NewEnumCreationWizard_title;
-	public static String NewEnumWizardPage_title;
-	public static String NewEnumWizardPage_description;
-	
-	public static String NewAnnotationCreationWizard_title;
-	public static String NewAnnotationWizardPage_title;
-	public static String NewAnnotationWizardPage_description;
-	
 	public static String JavaCapabilityConfigurationPage_title;
 	public static String JavaCapabilityConfigurationPage_description;
 	public static String JavaCapabilityConfigurationPage_op_desc_java;
@@ -420,15 +412,6 @@ public final class NewWizardMessages extends NLS {
 	public static String NewVariableEntryDialog_info_notexists;
 	public static String NewVariableEntryDialog_info_noselection;
 	public static String NewVariableEntryDialog_info_selected;
-	
-	public static String OutputLocationDialog_title;
-	public static String OutputLocationDialog_usedefault_label;
-	public static String OutputLocationDialog_usespecific_label;
-	public static String OutputLocationDialog_location_button;
-	public static String OutputLocationDialog_error_existingisfile;
-	public static String OutputLocationDialog_error_invalidpath;
-	public static String OutputLocationDialog_ChooseOutputFolder_title;
-	public static String OutputLocationDialog_ChooseOutputFolder_description;
 	
 	public static String ExclusionInclusionDialog_title;
 	public static String ExclusionInclusionDialog_description;

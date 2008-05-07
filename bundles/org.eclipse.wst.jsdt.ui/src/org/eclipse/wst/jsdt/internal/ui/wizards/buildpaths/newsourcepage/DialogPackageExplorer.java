@@ -341,9 +341,9 @@ public class DialogPackageExplorer implements IMenuListener, ISelectionProvider,
                 } else {
                 	if (element instanceof CPListElementAttribute) {
 						CPListElementAttribute attribute= (CPListElementAttribute)element;
-                		if (attribute.getKey().equals(CPListElement.OUTPUT)) {
-                			fActionGroup.getEditOutputFolderAction().run();
-                		}
+//                		if (attribute.getKey().equals(CPListElement.OUTPUT)) {
+//                			fActionGroup.getEditOutputFolderAction().run();
+//                		}
                 	}
                 }
             }
@@ -489,7 +489,7 @@ public class DialogPackageExplorer implements IMenuListener, ISelectionProvider,
      */
     public void showOutputFolders(boolean showOutputFolders) {
         fShowOutputFolders= showOutputFolders;
-        fActionGroup.getEditOutputFolderAction().showOutputFolders(showOutputFolders);
+//        fActionGroup.getEditOutputFolderAction().showOutputFolders(showOutputFolders);
         fPackageViewer.refresh();
     }
 

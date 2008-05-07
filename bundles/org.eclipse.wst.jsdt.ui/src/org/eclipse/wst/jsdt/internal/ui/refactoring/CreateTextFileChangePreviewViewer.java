@@ -29,9 +29,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.changes.CreateTextFileChange;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
-import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.IPropertiesFilePartitions;
-import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileDocumentSetupParticipant;
-import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileSourceViewerConfiguration;
 import org.eclipse.wst.jsdt.internal.ui.util.ViewerPane;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
@@ -138,10 +135,12 @@ public final class CreateTextFileChangePreviewViewer implements IChangePreviewVi
 		if ("java".equals(textType)) { //$NON-NLS-1$
 			textTools.setupJavaDocumentPartitioner(document);
 			fSourceViewer.configure(new JavaScriptSourceViewerConfiguration(textTools.getColorManager(), store, null, null));
-		} else if ("properties".equals(textType)) { //$NON-NLS-1$
-			PropertiesFileDocumentSetupParticipant.setupDocument(document);
-			fSourceViewer.configure(new PropertiesFileSourceViewerConfiguration(textTools.getColorManager(), store, null, IPropertiesFilePartitions.PROPERTIES_FILE_PARTITIONING));
-		} else {
+		} 
+//		else if ("properties".equals(textType)) { //$NON-NLS-1$
+//			PropertiesFileDocumentSetupParticipant.setupDocument(document);
+//			fSourceViewer.configure(new PropertiesFileSourceViewerConfiguration(textTools.getColorManager(), store, null, IPropertiesFilePartitions.PROPERTIES_FILE_PARTITIONING));
+//		}
+		else {
 			fSourceViewer.configure(new SourceViewerConfiguration());
 		}
 		fSourceViewer.setInput(document);

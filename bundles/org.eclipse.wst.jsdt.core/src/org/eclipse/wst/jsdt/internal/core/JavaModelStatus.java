@@ -356,23 +356,7 @@ public class JavaModelStatus extends Status implements IJavaScriptModelStatus, I
 					}
 					return Messages.bind(Messages.classpath_disabledInclusionExclusionPatterns, new String[] {newPath.makeRelative().toString(), projectName});
 
-				case DISABLED_CP_MULTIPLE_OUTPUT_LOCATIONS:
-					javaProject = (IJavaScriptProject)elements[0];
-					projectName = javaProject.getElementName();
-					newPath = path;
-					if (path.segment(0).toString().equals(projectName)) {
-						newPath = path.removeFirstSegments(1);
-					}
-					return Messages.bind(Messages.classpath_disabledMultipleOutputLocations, new String[] {newPath.makeRelative().toString(), projectName});
 
-				case INCOMPATIBLE_JDK_LEVEL:
-						javaProject = (IJavaScriptProject)elements[0];
-						return Messages.bind(Messages.classpath_incompatibleLibraryJDKLevel, new String[]{
-							javaProject.getElementName(),
-							javaProject.getOption(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, true),
-							path.makeRelative().toString(),
-							string,
-						});
 
 				case CANNOT_RETRIEVE_ATTACHED_JSDOC :
 					if (elements != null && elements.length == 1) {

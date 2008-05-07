@@ -17,14 +17,14 @@ import java.util.HashMap;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ICompletionRequestor;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
@@ -138,17 +138,7 @@ public IField createField(String contents, IJavaScriptElement sibling, boolean f
 	op.runOperation(monitor);
 	return (IField) op.getResultElements()[0];
 }
-/**
- * @see IType
- */
-public IInitializer createInitializer(String contents, IJavaScriptElement sibling, IProgressMonitor monitor) throws JavaScriptModelException {
-	CreateInitializerOperation op = new CreateInitializerOperation(this, contents);
-	if (sibling != null) {
-		op.createBefore(sibling);
-	}
-	op.runOperation(monitor);
-	return (IInitializer) op.getResultElements()[0];
-}
+
 /**
  * @see IType
  */

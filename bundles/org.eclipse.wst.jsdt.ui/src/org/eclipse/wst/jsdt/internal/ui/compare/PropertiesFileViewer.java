@@ -61,7 +61,7 @@ public class PropertiesFileViewer extends Viewer {
 	public void setInput(Object input) {
 		if (input instanceof IStreamContentAccessor) {
 			Document document= new Document(getString(input));
-			JavaCompareUtilities.setupPropertiesFileDocument(document);
+//			JavaCompareUtilities.setupPropertiesFileDocument(document);
 			fSourceViewer.setDocument(document);
 		}
 		fInput= input;

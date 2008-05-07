@@ -20,7 +20,6 @@ public final class CompareMessages extends NLS {
 		// Do not instantiate
 	}
 
-	public static String JarStructureCreator_name;
 	public static String JavaCompareWithEditionActionImpl_0;
 	public static String JavaMergeViewer_title;
 	public static String JavaReplaceWithEditionActionImpl_0;
