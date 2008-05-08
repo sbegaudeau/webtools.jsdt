@@ -43,10 +43,6 @@ import org.eclipse.wst.jsdt.core.compiler.IProblem;
  * <code>endReporting</code> calls are always made as well as
  * <code>acceptContext</code> call.
  * </p>
- * <p>
- * The class was introduced in 3.0 as a more evolvable replacement
- * for the <code>ICompletionRequestor</code> interface.
- * </p>
  *
  * @see ICodeAssist
  *  
@@ -141,7 +137,6 @@ public abstract class CompletionRequestor {
 	 * @see CompletionProposal#getKind()
 	 * @see CompletionProposal#getRequiredProposals()
 	 *
-	 * @since 3.3
 	 */
 	public boolean isAllowingRequiredProposals(int proposalKind, int requiredProposalKind) {
 		if (proposalKind < CompletionProposal.FIRST_KIND
@@ -176,7 +171,6 @@ public abstract class CompletionRequestor {
 	 * @see CompletionProposal#getKind()
 	 * @see CompletionProposal#getRequiredProposals()
 	 *
-	 * @since 3.3
 	 */
 	public void setAllowsRequiredProposals(int proposalKind, int requiredProposalKind, boolean allow) {
 		if (proposalKind < CompletionProposal.FIRST_KIND
@@ -202,21 +196,14 @@ public abstract class CompletionRequestor {
 	/**
 	 * Returns the favorite references which are used to compute some completion proposals.
 	 * <p>
-	 * A favorite reference is a qualified reference as it can be seen in an import statement.<br>
-	 * e.g. <code>{"java.util.Arrays"}</code><br>
-	 * It can be an on demand reference.<br>
-	 * e.g. <code>{"java.util.Arrays.*"}</code>
-	 * It can be a reference to a static method or field (as in a static import)<br>
-	 * e.g. <code>{"java.util.Arrays.equals"}</code>
-	 * </p>
-	 * <p>
 	 * Currently only on demand type references (<code>"java.util.Arrays.*"</code>),
 	 * references to a static method or a static field are used to compute completion proposals.
 	 * Other kind of reference could be used in the future.
 	 * </p>
 	 * @return favorite imports
 	 *
-	 * @since 3.3
+	 *
+	 * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public String[] getFavoriteReferences() {
 		return this.favoriteReferences;
@@ -230,7 +217,8 @@ public abstract class CompletionRequestor {
 	 *
 	 * @see #getFavoriteReferences()
 	 *
-	 * @since 3.3
+	 * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
+	 *
 	 */
 	public void setFavoriteReferences(String[] favoriteImports) {
 		this.favoriteReferences = favoriteImports;
@@ -301,7 +289,6 @@ public abstract class CompletionRequestor {
 	 * </p>
 	 * @param context the completion context
 	 *
-	 * @since 3.1
 	 */
 	public void acceptContext(CompletionContext context) {
 		// do nothing

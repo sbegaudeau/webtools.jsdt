@@ -115,7 +115,6 @@ public class CorrectionEngine implements ProblemReasons {
 	 * @exception IllegalArgumentException if <code>requestor</code> is <code>null</code>
 	 * @exception JavaScriptModelException currently this exception is never thrown, but the opportunity to thrown an exception
 	 * 	when the correction failed is kept for later.
-	 * @since 2.0
 	 */
 	public void computeCorrections(IMarker marker, IJavaScriptUnit targetUnit, int positionOffset, ICorrectionRequestor requestor) throws JavaScriptModelException {
 
@@ -149,7 +148,6 @@ public class CorrectionEngine implements ProblemReasons {
 	 * @exception IllegalArgumentException if <code>targetUnit</code> or <code>requestor</code> is <code>null</code>
 	 * @exception JavaScriptModelException currently this exception is never thrown, but the opportunity to thrown an exception
 	 * 	when the correction failed is kept for later.
-	 * @since 2.0
 	 */
 	public void computeCorrections(IProblem problem, IJavaScriptUnit targetUnit, ICorrectionRequestor requestor) throws JavaScriptModelException {
 		if (requestor == null) {
@@ -186,7 +184,6 @@ public class CorrectionEngine implements ProblemReasons {
 	 * @exception IllegalArgumentException if <code>requestor</code> is <code>null</code>
 	 * @exception JavaScriptModelException currently this exception is never thrown, but the opportunity to thrown an exception
 	 * 	when the correction failed is kept for later.
-	 * @since 2.0
 	 */
 	private void computeCorrections(IJavaScriptUnit unit, int id, int start, int end, String[] arguments, ICorrectionRequestor requestor) {
 
@@ -411,14 +408,13 @@ public class CorrectionEngine implements ProblemReasons {
 	 * neither null nor empty, it contains at least the String <code>all</code>.
 	 * It should not be modified by the caller (please take a copy if modifications
 	 * are needed).<br>
-	 * <b>Note:</b> The tokens returned are not necessarily standardized across Java
-	 * compilers. If you were to use one of these tokens in a <code>@SuppressWarnings</code>
-	 * annotation in the Java source code, the effects (if any) may vary from
-	 * compiler to compiler.
+	 * <b>Note:</b> The tokens returned are not necessarily standardized across JavaScript
+	 * validators. If you were to use one of these tokens in a <code>@SuppressWarnings</code>
+	 * annotation in the JavaScript source code, the effects (if any) may vary from
+	 * validator to validator.
 	 *
 	 * @return an array of strings which contains one entry per warning token
 	 * 			accepted by the <code>@SuppressWarnings</code> annotation.
-	 * @since 3.2
 	 */
 	public static String[] getAllWarningTokens() {
 		return CompilerOptions.warningTokens;
@@ -432,7 +428,6 @@ public class CorrectionEngine implements ProblemReasons {
 	 * @param problemMarker
 	 * 		the problem marker to decode arguments from.
 	 * @return an array of String arguments, or <code>null</code> if unable to extract arguments
-	 * @since 2.1
 	 */
 	public static String[] getProblemArguments(IMarker problemMarker){
 		String argumentsString = problemMarker.getAttribute(IJavaScriptModelMarker.ARGUMENTS, null);
@@ -455,16 +450,15 @@ public class CorrectionEngine implements ProblemReasons {
 	 * <code>"all"</code> so as to suppress all possible warnings at once.
 	 * </p>
 	 * <p>
-	 * <b>Note:</b> The tokens returned are not necessarily standardized across Java
-	 * compilers. If you were to use one of these tokens in an @SuppressWarnings
-	 * annotation in the Java source code, the effects (if any) may vary from
-	 * compiler to compiler.
+	 * <b>Note:</b> The tokens returned are not necessarily standardized across JavaScript
+	 * validators. If you were to use one of these tokens in an @SuppressWarnings
+	 * annotation in the JavaScript source code, the effects (if any) may vary from
+	 * validator to validator.
 	 * </p>
 	 * @param problemID
 	 *         the ID of a given warning to suppress
 	 * @return a String which can be used in <code>@SuppressWarnings</code> annotation,
 	 * or <code>null</code> if unable to suppress this warning.
-	 * @since 3.1
 	 */
 	public static String getWarningToken(int problemID){
 		long irritant = ProblemReporter.getIrritant(problemID);

@@ -38,7 +38,7 @@ import java.util.EventObject;
  * </p>
  * <p>
  * This class is not intended to be instantiated or subclassed by clients.
- * Instances of this class are automatically created by the Java model.
+ * Instances of this class are automatically created by the JavaScript model.
  * </p>
  *
  * @see IBuffer

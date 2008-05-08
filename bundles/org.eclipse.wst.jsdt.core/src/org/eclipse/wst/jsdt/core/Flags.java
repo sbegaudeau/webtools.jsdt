@@ -15,16 +15,10 @@ package org.eclipse.wst.jsdt.core;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
 /**
- * Utility class for decoding modifier flags in Java elements.
+ * Utility class for decoding modifier flags in JavaScript elements.
  * <p>
  * This class provides static methods only; it is not intended to be
  * instantiated or subclassed by clients.
- * </p>
- * <p>
- * Note that the numeric values of these flags match the ones for class files
- * as described in the Java Virtual Machine Specification. The AST class
- * <code>Modifier</code> provides the same functionality as this class, only in
- * the <code>org.eclipse.wst.jsdt.core.dom</code> package.
  * </p>
  *
  * @see IMember#getFlags()
@@ -38,113 +32,93 @@ public final class Flags {
 
 	/**
 	 * Constant representing the absence of any flag
-	 * @since 3.0
 	 */
 	public static final int AccDefault = ClassFileConstants.AccDefault;
 	/**
-	 * Public access flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
+	 * Public access flag. 
+	 *
+	 * <b>This flag only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static final int AccPublic = ClassFileConstants.AccPublic;
 	/**
-	 * Private access flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
+	 * Private access flag.  
+	 *
+	 * <b>This flag only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static final int AccPrivate = ClassFileConstants.AccPrivate;
 	/**
-	 * Protected access flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
+	 * Protected access flag.  
+	 *
+	 * <b>This flag only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static final int AccProtected = ClassFileConstants.AccProtected;
 	/**
-	 * Static access flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
+	 * Static access flag. 
 	 */
 	public static final int AccStatic = ClassFileConstants.AccStatic;
-	/**
-	 * Final access flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
+	/*
+	 * Final access flag. 
 	 */
 	public static final int AccFinal = ClassFileConstants.AccFinal;
-	/**
-	 * Synchronized access flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
+	/*
+	 * Synchronized access flag.
 	 */
 	public static final int AccSynchronized = ClassFileConstants.AccSynchronized;
-	/**
-	 * Volatile property flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
+	/*
+	 * Volatile property flag. 
 	 */
 	public static final int AccVolatile = ClassFileConstants.AccVolatile;
-	/**
-	 * Transient property flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
+	/*
+	 * Transient property flag. 
 	 */
 	public static final int AccTransient = ClassFileConstants.AccTransient;
-	/**
-	 * Native property flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
+	/*
+	 * Native property flag.
 	 */
 	public static final int AccNative = ClassFileConstants.AccNative;
 	/**
-	 * Interface property flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
+	 * Interface property flag.
+	 *
+	 * <b>This flag only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static final int AccInterface = ClassFileConstants.AccInterface;
 	/**
-	 * Abstract property flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
+	 * Abstract property flag. 
+	 *
+	 * <b>This flag only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static final int AccAbstract = ClassFileConstants.AccAbstract;
-	/**
+	/*
 	 * Strictfp property flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
 	 */
 	public static final int AccStrictfp = ClassFileConstants.AccStrictfp;
 	/**
-	 * Super property flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
+	 * Super property flag.  
+	 *
+	 * <b>This flag only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static final int AccSuper = ClassFileConstants.AccSuper;
-	/**
-	 * Synthetic property flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
+	/*
+	 * Synthetic property flag.  
 	 */
 	public static final int AccSynthetic = ClassFileConstants.AccSynthetic;
 	/**
-	 * Deprecated property flag. See The Java Virtual Machine Specification for more details.
-	 * @since 2.0
+	 * Deprecated property flag.  
 	 */
 	public static final int AccDeprecated = ClassFileConstants.AccDeprecated;
 
-	/**
-	 * Bridge method property flag (added in J2SE 1.5). Used to flag a compiler-generated
-	 * bridge methods.
-	 * See The Java Virtual Machine Specification for more details.
-	 * @since 3.0
-	 */
 	public static final int AccBridge = ClassFileConstants.AccBridge;
 
-	/**
-	 * Varargs method property flag (added in J2SE 1.5).
+	/**=
+	 * Varargs method property 
 	 * Used to flag variable arity method declarations.
-	 * See The Java Virtual Machine Specification for more details.
-	 * @since 3.0
+	 *
+	 * <b>This flag only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static final int AccVarargs = ClassFileConstants.AccVarargs;
 
-	/**
-	 * Enum property flag (added in J2SE 1.5).
-	 * See The Java Virtual Machine Specification for more details.
-	 * @since 3.0
-	 */
 	public static final int AccEnum = ClassFileConstants.AccEnum;
 
-	/**
-	 * Annotation property flag (added in J2SE 1.5).
-	 * See The Java Virtual Machine Specification for more details.
-	 * @since 3.0
-	 */
 	public static final int AccAnnotation = ClassFileConstants.AccAnnotation;
 
 	/**
@@ -158,6 +132,8 @@ public final class Flags {
 	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>abstract</code> modifier is included
+	 *
+	 * <b>This method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static boolean isAbstract(int flags) {
 		return (flags & AccAbstract) != 0;
@@ -172,7 +148,7 @@ public final class Flags {
 	public static boolean isDeprecated(int flags) {
 		return (flags & AccDeprecated) != 0;
 	}
-	/**
+	/*
 	 * Returns whether the given integer includes the <code>final</code> modifier.
 	 *
 	 * @param flags the flags
@@ -186,12 +162,13 @@ public final class Flags {
 	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>interface</code> modifier is included
-	 * @since 2.0
+	 *
+	 * <b>This method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static boolean isInterface(int flags) {
 		return (flags & AccInterface) != 0;
 	}
-	/**
+	/*
 	 * Returns whether the given integer includes the <code>native</code> modifier.
 	 *
 	 * @param flags the flags
@@ -200,13 +177,14 @@ public final class Flags {
 	public static boolean isNative(int flags) {
 		return (flags & AccNative) != 0;
 	}
-	/**
+	/*
 	 * Returns whether the given integer does not include one of the
 	 * <code>public</code>, <code>private</code>, or <code>protected</code> flags.
 	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if no visibility flag is set
-	 * @since 3.2
+	 *
+	 * <b>This method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static boolean isPackageDefault(int flags) {
 		return (flags & (AccPublic | AccPrivate | AccProtected)) == 0;
@@ -216,6 +194,8 @@ public final class Flags {
 	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>private</code> modifier is included
+	 *
+	 * <b>This method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static boolean isPrivate(int flags) {
 		return (flags & AccPrivate) != 0;
@@ -225,6 +205,8 @@ public final class Flags {
 	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>protected</code> modifier is included
+	 *
+	 * <b>This method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static boolean isProtected(int flags) {
 		return (flags & AccProtected) != 0;
@@ -234,6 +216,8 @@ public final class Flags {
 	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>public</code> modifier is included
+	 *
+	 * <b>This method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static boolean isPublic(int flags) {
 		return (flags & AccPublic) != 0;
@@ -252,12 +236,13 @@ public final class Flags {
 	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>super</code> modifier is included
-	 * @since 3.2
+	 *
+	 * <b>This method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static boolean isSuper(int flags) {
 		return (flags & AccSuper) != 0;
 	}
-	/**
+	/*
 	 * Returns whether the given integer includes the <code>strictfp</code> modifier.
 	 *
 	 * @param flags the flags
@@ -266,7 +251,7 @@ public final class Flags {
 	public static boolean isStrictfp(int flags) {
 		return (flags & AccStrictfp) != 0;
 	}
-	/**
+	/*
 	 * Returns whether the given integer includes the <code>synchronized</code> modifier.
 	 *
 	 * @param flags the flags
@@ -275,7 +260,7 @@ public final class Flags {
 	public static boolean isSynchronized(int flags) {
 		return (flags & AccSynchronized) != 0;
 	}
-	/**
+	/*
 	 * Returns whether the given integer includes the indication that the
 	 * element is synthetic.
 	 *
@@ -285,7 +270,7 @@ public final class Flags {
 	public static boolean isSynthetic(int flags) {
 		return (flags & AccSynthetic) != 0;
 	}
-	/**
+	/*
 	 * Returns whether the given integer includes the <code>transient</code> modifier.
 	 *
 	 * @param flags the flags
@@ -294,7 +279,7 @@ public final class Flags {
 	public static boolean isTransient(int flags) {
 		return (flags & AccTransient) != 0;
 	}
-	/**
+	/*
 	 * Returns whether the given integer includes the <code>volatile</code> modifier.
 	 *
 	 * @param flags the flags
@@ -304,53 +289,49 @@ public final class Flags {
 		return (flags & AccVolatile) != 0;
 	}
 
-	/**
+	/*
 	 * Returns whether the given integer has the <code>AccBridge</code>
 	 * bit set.
 	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>AccBridge</code> flag is included
 	 * @see #AccBridge
-	 * @since 3.0
 	 */
 	public static boolean isBridge(int flags) {
 		return (flags & AccBridge) != 0;
 	}
 
-	/**
+	/*
 	 * Returns whether the given integer has the <code>AccVarargs</code>
 	 * bit set.
 	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>AccVarargs</code> flag is included
 	 * @see #AccVarargs
-	 * @since 3.0
 	 */
 	public static boolean isVarargs(int flags) {
 		return (flags & AccVarargs) != 0;
 	}
 
-	/**
+	/*
 	 * Returns whether the given integer has the <code>AccEnum</code>
 	 * bit set.
 	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>AccEnum</code> flag is included
 	 * @see #AccEnum
-	 * @since 3.0
 	 */
 	public static boolean isEnum(int flags) {
 		return (flags & AccEnum) != 0;
 	}
 
-	/**
+	/*
 	 * Returns whether the given integer has the <code>AccAnnotation</code>
 	 * bit set.
 	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>AccAnnotation</code> flag is included
 	 * @see #AccAnnotation
-	 * @since 3.0
 	 */
 	public static boolean isAnnotation(int flags) {
 		return (flags & AccAnnotation) != 0;
@@ -366,19 +347,6 @@ public final class Flags {
 	 *   <code>public</code> <code>protected</code> <code>private</code>
 	 *   <code>static</code>
 	 *   <code>abstract</code> <code>final</code> <code>native</code> <code>synchronized</code> <code>transient</code> <code>volatile</code> <code>strictfp</code>
-	 * </pre>
-	 * This is a compromise between the orders specified in sections 8.1.1,
-	 * 8.3.1, 8.4.3, 8.8.3, 9.1.1, and 9.3 of <em>The Java Language
-	 * Specification, Second Edition</em> (JLS2).
-	 * </p>
-	 * <p>
-	 * Note that the flags of a method can include the AccVarargs flag that has no standard description. Since the AccVarargs flag has the same value as
-	 * the AccTransient flag (valid for fields only), attempting to get the description of method modifiers with the AccVarargs flag set would result in an
-	 * unexpected description. Clients should ensure that the AccVarargs is not included in the flags of a method as follows:
-	 * <pre>
-	 * IFunction method = ...
-	 * int flags = method.getFlags() & ~Flags.AccVarargs;
-	 * return Flags.toString(flags);
 	 * </pre>
 	 * </p>
 	 * <p>
