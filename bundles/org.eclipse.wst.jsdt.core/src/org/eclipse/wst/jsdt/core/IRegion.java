@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.core;
 
 /**
- * A Java model region describes a hierarchical set of elements.
+ * A JavaScript model region describes a hierarchical set of elements.
  * Regions are often used to describe a set of elements to be considered
  * when performing operations; for example, the set of elements to be
  * considered during a search. A region may include elements from different

@@ -13,14 +13,14 @@ package org.eclipse.wst.jsdt.core;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * Common protocol for Java elements that must be opened before they can be
- * navigated or modified. Opening a textual element (such as a compilation unit)
+ * Common protocol for JavaScript elements that must be opened before they can be
+ * navigated or modified. Opening a textual element (such as a javaScript file)
  * involves opening a buffer on its contents.  While open, any changes to the buffer
  * can be reflected in the element's structure;
  * see {@link #isConsistent} and {@link #makeConsistent(IProgressMonitor)}.
  * <p>
  * To reduce complexity in clients, elements are automatically opened
- * by the Java model as element properties are accessed. The Java model maintains
+ * by the JavaScript model as element properties are accessed. The JavaScript model maintains
  * an LRU cache of open elements, and automatically closes elements as they
  * are swapped out of the cache to make room for other elements. Elements with
  * unsaved changes are never removed from the cache, and thus, if the client
@@ -31,7 +31,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * </p>
  * <p>
  * To open an element, all openable parent elements must be open.
- * The Java model automatically opens parent elements, as it automatically opens elements.
+ * The JavaScript model automatically opens parent elements, as it automatically opens elements.
  * Opening an element may provide access to direct children and other descendants,
  * but does not automatically open any descendents which are themselves {@link IOpenable}.
  * For example, opening a compilation unit provides access to all its constituent elements,
@@ -53,7 +53,7 @@ public interface IOpenable {
  * Closing an element which is not open has no effect.
  *
  * <p>Note: although {@link #close} is exposed in the API, clients are
- * not expected to open and close elements - the Java model does this automatically
+ * not expected to open and close elements - the JavaScript model does this automatically
  * as elements are accessed.
  *
  * @exception JavaScriptModelException if an error occurs closing this element
@@ -69,7 +69,6 @@ public void close() throws JavaScriptModelException;
  * @return the recommended line separator for this element
  * @exception JavaScriptModelException if this element does not exist or if an
  *		exception occurs while accessing its corresponding resource.
- * @since 3.2
  */
 public String findRecommendedLineSeparator() throws JavaScriptModelException;
 /**
@@ -138,7 +137,7 @@ boolean isOpen();
  * @exception JavaScriptModelException if the element is unable to access the contents
  * 		of its underlying resource. Reasons include:
  * <ul>
- *  <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ *  <li>This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * </ul>
  * @see IOpenable#isConsistent()
  * @see IJavaScriptUnit#reconcile(int, boolean, WorkingCopyOwner, IProgressMonitor)
@@ -149,14 +148,14 @@ void makeConsistent(IProgressMonitor progress) throws JavaScriptModelException;
  * For compilation units, a buffer is opened on the contents of the underlying resource.
  *
  * <p>Note: although {@link #open} is exposed in the API, clients are
- * not expected to open and close elements - the Java model does this automatically
+ * not expected to open and close elements - the JavaScript model does this automatically
  * as elements are accessed.
  *
  * @param progress the given progress monitor
  * @exception JavaScriptModelException if an error occurs accessing the contents
  * 		of its underlying resource. Reasons include:
  * <ul>
- *  <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ *  <li>This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * </ul>
  */
 public void open(IProgressMonitor progress) throws JavaScriptModelException;
@@ -186,8 +185,8 @@ public void open(IProgressMonitor progress) throws JavaScriptModelException;
  * @exception JavaScriptModelException if an error occurs accessing the contents
  * 		of its underlying resource. Reasons include:
  * <ul>
- *  <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
- *  <li>This Java element is read-only (READ_ONLY)</li>
+ *  <li>This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ *  <li>This JavaScript element is read-only (READ_ONLY)</li>
  * </ul>
  */
 public void save(IProgressMonitor progress, boolean force) throws JavaScriptModelException;

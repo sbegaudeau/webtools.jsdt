@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.core;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * Common protocol for Java elements that support source code manipulations such
+ * Common protocol for JavaScript elements that support source code manipulations such
  * as copy, move, rename, and delete.
  * <p>
  * This interface is not intended to be implemented by clients.
@@ -40,7 +40,7 @@ public interface ISourceManipulation {
  * @param monitor a progress monitor
  * @exception JavaScriptModelException if this element could not be copied. Reasons include:
  * <ul>
- * <li> This Java element, container element, or sibling does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * <li> This JavaScript element, container element, or sibling does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * <li> A <code>CoreException</code> occurred while updating an underlying resource
  * <li> The container is of an incompatible type (INVALID_DESTINATION)
  * <li> The sibling is not a child of the given container (INVALID_SIBLING)
@@ -62,7 +62,7 @@ void copy(IJavaScriptElement container, IJavaScriptElement sibling, String renam
  * @param monitor a progress monitor
  * @exception JavaScriptModelException if this element could not be deleted. Reasons include:
  * <ul>
- * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * <li> A <code>CoreException</code> occurred while updating an underlying resource (CORE_EXCEPTION)</li>
  * <li> This element is read-only (READ_ONLY)</li>
  * </ul>
@@ -83,7 +83,7 @@ void delete(boolean force, IProgressMonitor monitor) throws JavaScriptModelExcep
  * @param monitor a progress monitor
  * @exception JavaScriptModelException if this element could not be moved. Reasons include:
  * <ul>
- * <li> This Java element, container element, or sibling does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * <li> This JavaScript element, container element, or sibling does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * <li> A <code>CoreException</code> occurred while updating an underlying resource
  * <li> The container is of an incompatible type (INVALID_DESTINATION)
  * <li> The sibling is not a child of the given container (INVALID_SIBLING)
@@ -106,7 +106,7 @@ void move(IJavaScriptElement container, IJavaScriptElement sibling, String renam
  * @param monitor a progress monitor
  * @exception JavaScriptModelException if this element could not be renamed. Reasons include:
  * <ul>
- * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * <li> A <code>CoreException</code> occurred while updating an underlying resource
  * <li> The new name is invalid (INVALID_NAME)
  * <li> A child in the container already exists with the same name (NAME_COLLISION)

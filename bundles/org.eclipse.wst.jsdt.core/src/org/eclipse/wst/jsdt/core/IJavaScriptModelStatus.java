@@ -14,20 +14,20 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 
 /**
- * Represents the outcome of an Java model operation. Status objects are
+ * Represents the outcome of an JavaScript model operation. Status objects are
  * used inside <code>JavaScriptModelException</code> objects to indicate what went
  * wrong.
  * <p>
- * Java model status object are distinguished by their plug-in id:
+ * JavaScript model status object are distinguished by their plug-in id:
  * <code>getPlugin</code> returns <code>"org.eclipse.wst.jsdt.core"</code>.
  * <code>getCode</code> returns one of the status codes declared in
  * <code>IJavaScriptModelStatusConstants</code>.
  * </p>
  * <p>
- * A Java model status may also carry additional information (that is, in
+ * A JavaScript model status may also carry additional information (that is, in
  * addition to the information defined in <code>IStatus</code>):
  * <ul>
- *   <li>elements - optional handles to Java elements associated with the failure</li>
+ *   <li>elements - optional handles to JavaScript elements associated with the failure</li>
  *   <li>string - optional string associated with the failure</li>
  * </ul>
  * <p>
@@ -44,11 +44,11 @@ import org.eclipse.core.runtime.IStatus;
  */
 public interface IJavaScriptModelStatus extends IStatus {
 /**
- * Returns any Java elements associated with the failure (see specification
+ * Returns any JavaScript elements associated with the failure (see specification
  * of the status code), or an empty array if no elements are related to this
  * particular status code.
  *
- * @return the list of Java element culprits
+ * @return the list of JavaScript element culprits
  * @see IJavaScriptModelStatusConstants
  */
 IJavaScriptElement[] getElements();
@@ -76,11 +76,11 @@ IPath getPath();
  */
 String getString();
 /**
- * Returns whether this status indicates that a Java model element does not exist.
+ * Returns whether this status indicates that a JavaScript model element does not exist.
  * This convenience method is equivalent to
  * <code>getCode() == IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>.
  *
- * @return <code>true</code> if the status code indicates that a Java model
+ * @return <code>true</code> if the status code indicates that a JavaScript model
  *   element does not exist
  * @see IJavaScriptModelStatusConstants#ELEMENT_DOES_NOT_EXIST
  */

@@ -130,10 +130,10 @@ public final class Flags {
 	/**
 	 * Returns whether the given integer includes the <code>abstract</code> modifier.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>abstract</code> modifier is included
-	 *
-	 * <b>This method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static boolean isAbstract(int flags) {
 		return (flags & AccAbstract) != 0;
@@ -160,10 +160,10 @@ public final class Flags {
 	/**
 	 * Returns whether the given integer includes the <code>interface</code> modifier.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>interface</code> modifier is included
-	 *
-	 * <b>This method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static boolean isInterface(int flags) {
 		return (flags & AccInterface) != 0;
@@ -181,10 +181,10 @@ public final class Flags {
 	 * Returns whether the given integer does not include one of the
 	 * <code>public</code>, <code>private</code>, or <code>protected</code> flags.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if no visibility flag is set
-	 *
-	 * <b>This method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static boolean isPackageDefault(int flags) {
 		return (flags & (AccPublic | AccPrivate | AccProtected)) == 0;
@@ -192,10 +192,10 @@ public final class Flags {
 	/**
 	 * Returns whether the given integer includes the <code>private</code> modifier.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>private</code> modifier is included
-	 *
-	 * <b>This method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static boolean isPrivate(int flags) {
 		return (flags & AccPrivate) != 0;
@@ -203,10 +203,10 @@ public final class Flags {
 	/**
 	 * Returns whether the given integer includes the <code>protected</code> modifier.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>protected</code> modifier is included
-	 *
-	 * <b>This method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static boolean isProtected(int flags) {
 		return (flags & AccProtected) != 0;
@@ -214,10 +214,10 @@ public final class Flags {
 	/**
 	 * Returns whether the given integer includes the <code>public</code> modifier.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>public</code> modifier is included
-	 *
-	 * <b>This method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static boolean isPublic(int flags) {
 		return (flags & AccPublic) != 0;
@@ -234,10 +234,10 @@ public final class Flags {
 	/**
 	 * Returns whether the given integer includes the <code>super</code> modifier.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the <code>super</code> modifier is included
-	 *
-	 * <b>This method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static boolean isSuper(int flags) {
 		return (flags & AccSuper) != 0;

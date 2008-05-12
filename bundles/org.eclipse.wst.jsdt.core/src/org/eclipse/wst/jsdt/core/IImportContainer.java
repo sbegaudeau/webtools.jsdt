@@ -11,12 +11,14 @@
 package org.eclipse.wst.jsdt.core;
 
 /**
- * Represents an import container is a child of a Java compilation unit that contains
- * all (and only) the import declarations. If a compilation unit has no import
+ * Represents an import container is a child of a JavaScript unit that contains
+ * all (and only) the import declarations. If a JavaScript unit has no import
  * declarations, no import container will be present.
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
+ * 
+ * <b>This Interface only applies to ECMAScript 4 which is not yet supported</b>
  *  
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 

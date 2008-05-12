@@ -15,7 +15,6 @@ package org.eclipse.wst.jsdt.core;
  * <p>
  * This interface may be implemented by clients.
  * </p>
- * @since 2.0
  * @deprecated Use {@link WorkingCopyOwner} instead
  *  
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 

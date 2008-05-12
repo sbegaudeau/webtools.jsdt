@@ -200,10 +200,10 @@ public abstract class CompletionRequestor {
 	 * references to a static method or a static field are used to compute completion proposals.
 	 * Other kind of reference could be used in the future.
 	 * </p>
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @return favorite imports
 	 *
-	 *
-	 * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public String[] getFavoriteReferences() {
 		return this.favoriteReferences;
@@ -213,11 +213,11 @@ public abstract class CompletionRequestor {
 	 * Set the favorite references which will be used to compute some completion proposals.
 	 * A favorite reference is a qualified reference as it can be seen in an import statement.<br>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param favoriteImports
 	 *
 	 * @see #getFavoriteReferences()
-	 *
-	 * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
 	 *
 	 */
 	public void setFavoriteReferences(String[] favoriteImports) {

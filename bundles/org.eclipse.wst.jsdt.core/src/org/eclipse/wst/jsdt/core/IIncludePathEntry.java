@@ -13,67 +13,61 @@ package org.eclipse.wst.jsdt.core;
 import org.eclipse.core.runtime.IPath;
 
 /**
- * An entry on a Java project classpath identifying one or more package fragment
- * roots. A classpath entry has a content kind (either source,
+ * An entry on a JavaScript project includepath identifying one or more package fragment
+ * roots. A includepath entry has a content kind (either source,
  * {@link IPackageFragmentRoot#K_SOURCE}, or binary, {@link IPackageFragmentRoot#K_BINARY}), which is inherited
  * by each package fragment root and package fragment associated with the entry.
  * <p>
- * A classpath entry can refer to any of the following:<ul>
+ * A includepath entry can refer to any of the following:<ul>
  *
  *	<li>Source code in the current project. In this case, the entry identifies a
  *		root folder in the current project containing package fragments and
  *		source files with one of the {@link JavaScriptCore#getJavaScriptLikeExtensions()
- *		Java-like extensions}. The root folder itself represents a default
+ *		JavaScript-like extensions}. The root folder itself represents a default
  *		package, subfolders represent package fragments, and files with a
- *     Java-like extension (e.g. <code>.js</code> files)
- *		represent compilation units. All compilation units will be compiled when
- * 		the project is built. The classpath entry must specify the
+ *     JavaScript-like extension (e.g. <code>.js</code> files)
+ *		represent javaScript files. All javaScript files will be compiled when
+ * 		the project is built. The includepath entry must specify the
  *		absolute path to the root folder. Entries of this kind are
  *		associated with the {@link #CPE_SOURCE} constant.
- *      Source classpath entries can carry inclusion and exclusion patterns for
- *      selecting which source files appear as compilation
+ *      Source includepath entries can carry inclusion and exclusion patterns for
+ *      selecting which source files appear as javaScript
  *      units and get compiled when the project is built.
  *  </li>
  *
  *	<li>A binary library in the current project, in another project, or in the external
- *		file system. In this case the entry identifies a JAR (or root folder) containing
- *		package fragments and <code>.class</code> files.  The classpath entry
- *		must specify the absolute path to the JAR (or root folder), and in case it refers
- *		to an external JAR, then there is no associated resource in the workbench. Entries
+ *		file system. In this case the entry identifies non-editable files.  Entries
  *		of this kind are associated with the {@link #CPE_LIBRARY} constant.</li>
  *
  *	<li>A required project. In this case the entry identifies another project in
- *		the workspace. The required project is used as a binary library when compiling
- *		(that is, the builder looks in the output location of the required project
- *		for required <code>.class</code> files when building). When performing other
+ *		the workspace.  When performing other
  *		"development" operations - such as code assist, code resolve, type hierarchy
  *		creation, etc. - the source code of the project is referred to. Thus, development
- *		is performed against a required project's source code, and compilation is
- *		performed against a required project's last built state.  The
- *		classpath entry must specify the absolute path to the
+ *		is performed against a required project's source code.  The
+ *		includepath entry must specify the absolute path to the
  *		project. Entries of this kind are  associated with the {@link #CPE_PROJECT}
  *		constant.
- * 		Note: referencing a required project with a classpath entry refers to the source
+ * 		Note: referencing a required project with a includepath entry refers to the source
  *     code or associated <code>.class</code> files located in its output location.
- *     It will also automatically include any other libraries or projects that the required project's classpath
- *     refers to, iff the corresponding classpath entries are tagged as being exported
+ *     It will also automatically include any other libraries or projects that the required project's includepath
+ *     refers to, iff the corresponding includepath entries are tagged as being exported
  *     ({@link IIncludePathEntry#isExported}).
- *    Unless exporting some classpath entries, classpaths are not chained by default -
- *    each project must specify its own classpath in its entirety.</li>
+ *    Unless exporting some includepath entries, includepaths are not chained by default -
+ *    each project must specify its own includepath in its entirety.</li>
  *
- *  <li> A path beginning in a classpath variable defined globally to the workspace.
+ *  <li> A path beginning in a includepath variable defined globally to the workspace.
  *		Entries of this kind are  associated with the {@link #CPE_VARIABLE} constant.
- *      Classpath variables are created using {@link JavaScriptCore#setIncludepathVariable(String, IPath, org.eclipse.core.runtime.IProgressMonitor)},
+ *      Includepath variables are created using {@link JavaScriptCore#setIncludepathVariable(String, IPath, org.eclipse.core.runtime.IProgressMonitor)},
  * 		and gets resolved, to either a project or library entry, using
  *      {@link JavaScriptCore#getResolvedIncludepathEntry(IIncludePathEntry)}.
  *		It is also possible to register an automatic initializer ({@link JsGlobalScopeVariableInitializer}),
  * 	which will be invoked through the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer".
- * 	After resolution, a classpath variable entry may either correspond to a project or a library entry. </li>
+ * 	After resolution, a includepath variable entry may either correspond to a project or a library entry. </li>
  *
- *  <li> A named classpath container identified by its container path.
- *     A classpath container provides a way to indirectly reference a set of classpath entries through
- *     a classpath entry of kind {@link #CPE_CONTAINER}. Typically, a classpath container can
- *     be used to describe a complex library composed of multiple JARs, projects or classpath variables,
+ *  <li> A named includepath container identified by its container path.
+ *     A includepath container provides a way to indirectly reference a set of includepath entries through
+ *     a includepath entry of kind {@link #CPE_CONTAINER}. Typically, a includepath container can
+ *     be used to describe a complex library composed of multiple files, projects or includepath variables,
  *     considering also that containers can be mapped differently on each project. Several projects can
  *     reference the same generic container path, but have each of them actually bound to a different
  *     container object.
@@ -82,7 +76,7 @@ import org.eclipse.core.runtime.IPath;
  *     recorded for this container path onto this project (using {@link JavaScriptCore#setJsGlobalScopeContainer},
  * 	then a {@link JsGlobalScopeContainerInitializer} will be activated if any was registered for this
  * 	container ID onto the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer".
- * 	A classpath container entry can be resolved explicitly using {@link JavaScriptCore#getJsGlobalScopeContainer}
+ * 	A includepath container entry can be resolved explicitly using {@link JavaScriptCore#getJsGlobalScopeContainer}
  * 	and the resulting container entries can contain any non-container entry. In particular, it may contain variable
  *     entries, which in turn needs to be resolved before being directly used.
  * 	<br> Also note that the container resolution APIs include an IJavaScriptProject argument, so as to allow the same
@@ -92,17 +86,17 @@ import org.eclipse.core.runtime.IPath;
  * The result of {@link IJavaScriptProject#getResolvedClasspath} will have all entries of type
  * {@link #CPE_VARIABLE} and {@link #CPE_CONTAINER} resolved to a set of
  * {@link #CPE_SOURCE}, {@link #CPE_LIBRARY} or {@link #CPE_PROJECT}
- * classpath entries.
+ * includepath entries.
  * <p>
- * Any classpath entry other than a source folder (kind {@link #CPE_SOURCE}) can
+ * Any includepath entry other than a source folder (kind {@link #CPE_SOURCE}) can
  * be marked as being exported. Exported entries are automatically contributed to
  * dependent projects, along with the project's default output folder, which is
  * implicitly exported, and any auxiliary output folders specified on source
- * classpath entries. The project's output folder(s) are always listed first,
+ * includepath entries. The project's output folder(s) are always listed first,
  * followed by the any exported entries.
  * <p>
  * This interface is not intended to be implemented by clients.
- * Classpath entries can be created via methods on {@link JavaScriptCore}.
+ * Includepath entries can be created via methods on {@link JavaScriptCore}.
  * </p>
  *
  * @see JavaScriptCore#newLibraryEntry(org.eclipse.core.runtime.IPath, org.eclipse.core.runtime.IPath, org.eclipse.core.runtime.IPath)
@@ -121,36 +115,33 @@ import org.eclipse.core.runtime.IPath;
 public interface IIncludePathEntry {
 
 	/**
-	 * Entry kind constant describing a classpath entry identifying a
-	 * library. A library is a folder or JAR containing package
-	 * fragments consisting of pre-compiled binaries.
+	 * Entry kind constant describing a includepath entry identifying a
+	 * library. 
 	 */
 	int CPE_LIBRARY = 1;
 
 	/**
-	 * Entry kind constant describing a classpath entry identifying a
+	 * Entry kind constant describing a includepath entry identifying a
 	 * required project.
 	 */
 	int CPE_PROJECT = 2;
 
 	/**
-	 * Entry kind constant describing a classpath entry identifying a
+	 * Entry kind constant describing a includepath entry identifying a
 	 * folder containing package fragments with source code
-	 * to be compiled.
+	 * to be validated.
 	 */
 	int CPE_SOURCE = 3;
 
 	/**
-	 * Entry kind constant describing a classpath entry defined using
-	 * a path that begins with a classpath variable reference.
+	 * Entry kind constant describing a includepath entry defined using
+	 * a path that begins with a includepath variable reference.
 	 */
 	int CPE_VARIABLE = 4;
 
 	/**
-	 * Entry kind constant describing a classpath entry representing
-	 * a name classpath container.
-	 *
-	 * @since 2.0
+	 * Entry kind constant describing a includepath entry representing
+	 * a name includepath container.
 	 */
 	int CPE_CONTAINER = 5;
 
@@ -160,7 +151,6 @@ public interface IIncludePathEntry {
 	 * Returns false otherwise.
 	 *
 	 * @return whether the access rules of the project's exported entries should be combined with this entry's access rules
-	 * @since 3.1
 	 */
 	boolean combineAccessRules();
 
@@ -168,46 +158,45 @@ public interface IIncludePathEntry {
 	 * Returns the possibly empty list of access rules for this entry.
 	 *
 	 * @return the possibly empty list of access rules for this entry
-	 * @since 3.1
 	 */
 	IAccessRule[] getAccessRules();
 	/**
 	 * Returns the kind of files found in the package fragments identified by this
-	 * classpath entry.
+	 * includepath entry.
 	 *
 	 * @return {@link IPackageFragmentRoot#K_SOURCE} for files containing
 	 *   source code, and {@link IPackageFragmentRoot#K_BINARY} for binary
 	 *   class files.
 	 *   There is no specified value for an entry denoting a variable ({@link #CPE_VARIABLE})
-	 *   or a classpath container ({@link #CPE_CONTAINER}).
+	 *   or a includepath container ({@link #CPE_CONTAINER}).
 	 */
 	int getContentKind();
 
 	/**
-	 * Returns the kind of this classpath entry.
+	 * Returns the kind of this includepath entry.
 	 *
 	 * @return one of:
 	 * <ul>
 	 * <li>{@link #CPE_SOURCE} - this entry describes a source root in
 	 		its project
-	 * <li>{@link #CPE_LIBRARY} - this entry describes a folder or JAR
-	 		containing binaries
+	 * <li>{@link #CPE_LIBRARY} - this entry describes a folder 
+	 		containing non-editable files
 	 * <li>{@link #CPE_PROJECT} - this entry describes another project
 	 *
 	 * <li>{@link #CPE_VARIABLE} - this entry describes a project or library
-	 *  	indirectly via a classpath variable in the first segment of the path
+	 *  	indirectly via a includepath variable in the first segment of the path
 	 * *
 	 * <li>{@link #CPE_CONTAINER} - this entry describes set of entries
-	 *  	referenced indirectly via a classpath container
+	 *  	referenced indirectly via a includepath container
 	 * </ul>
 	 */
 	int getEntryKind();
 
 	/**
 	 * Returns the set of patterns used to exclude resources or classes associated with
-	 * this classpath entry.
+	 * this includepath entry.
 	 * <p>
-	 * For source classpath entries,
+	 * For source includepath entries,
 	 * exclusion patterns allow specified portions of the resource tree rooted
 	 * at this source entry's path to be filtered out. If no exclusion patterns
 	 * are specified, this source entry includes all relevent files. Each path
@@ -218,10 +207,6 @@ public interface IIncludePathEntry {
 	 * Exclusion patterns have higher precedence than inclusion patterns;
 	 * in other words, exclusion patterns can remove files for the ones that
 	 * are to be included, not the other way around.
-	 * </p>
-	 * <p>
-	 * Note that there is no need to supply a pattern to exclude ".class" files
-	 * because a source entry filters these out automatically.
 	 * </p>
 	 * <p>
 	 * The pattern mechanism is similar to Ant's. Each pattern is represented as
@@ -250,7 +235,7 @@ public interface IIncludePathEntry {
 	 * the folder named <code>tests</code>.
 	 * </p>
 	 * <p>
-	 * Example patterns in source entries (assuming that "java" is the only {@link JavaScriptCore#getJavaScriptLikeExtensions() Java-like extension}):
+	 * Example patterns in source entries (assuming that "js" is the only {@link JavaScriptCore#getJavaScriptLikeExtensions() JavaScript-like extension}):
 	 * <ul>
 	 * <li>
 	 * <code>tests/&#42;&#42;</code> (or simply <code>tests/</code>)
@@ -280,26 +265,24 @@ public interface IIncludePathEntry {
 	 * </p>
 	 *
 	 * @return the possibly empty list of resource exclusion patterns
-	 *   associated with this classpath entry, or <code>null</code> if this kind
-	 *   of classpath entry does not support exclusion patterns
-	 * @since 2.1
+	 *   associated with this includepath entry, or <code>null</code> if this kind
+	 *   of includepath entry does not support exclusion patterns
 	 */
 	IPath[] getExclusionPatterns();
 
 	/**
-	 * Returns the extra classpath attributes for this classpath entry. Returns an empty array if this entry
+	 * Returns the extra includepath attributes for this includepath entry. Returns an empty array if this entry
 	 * has no extra attributes.
 	 *
-	 * @return the possibly empty list of extra classpath attributes for this classpath entry
-	 * @since 3.1
+	 * @return the possibly empty list of extra includepath attributes for this includepath entry
 	 */
 	IIncludePathAttribute[] getExtraAttributes();
 
 	/**
-	 * Returns the set of patterns used to explicitly define resources or classes
-	 * to be included with this classpath entry.
+	 * Returns the set of patterns used to explicitly define resources
+	 * to be included with this includepath entry.
 	 * <p>
-	 * For source classpath entries,
+	 * For source includepath entries,
 	 * when no inclusion patterns are specified, the source entry includes all
 	 * relevent files in the resource tree rooted at this source entry's path.
 	 * Specifying one or more inclusion patterns means that only the specified
@@ -340,13 +323,12 @@ public interface IIncludePathEntry {
 	 * </p>
 	 *
 	 * @return the possibly empty list of resource inclusion patterns
-	 *   associated with this classpath entry, or <code>null</code> if this kind
-	 *   of classpath entry does not support inclusion patterns
-	 * @since 3.0
+	 *   associated with this includepath entry, or <code>null</code> if this kind
+	 *   of includepath entry does not support inclusion patterns
 	 */
 	IPath[] getInclusionPatterns();
 
-	/**
+	/*
 	 * Returns the full path to the specific location where the builder writes
 	 * <code>.class</code> files generated for this source entry
 	 * (entry kind {@link #CPE_SOURCE}).
@@ -361,50 +343,47 @@ public interface IIncludePathEntry {
 	 * @return the full path to the specific location where the builder writes
 	 * <code>.class</code> files for this source entry, or <code>null</code>
 	 * if using default output folder
-	 * @since 2.1
 	 */
 	IPath getOutputLocation();
 
 	/**
-	 * Returns the path of this classpath entry.
+	 * Returns the path of this includepath entry.
 	 *
-	 * The meaning of the path of a classpath entry depends on its entry kind:<ul>
+	 * The meaning of the path of a includepath entry depends on its entry kind:<ul>
 	 *	<li>Source code in the current project ({@link #CPE_SOURCE}) -
 	 *      The path associated with this entry is the absolute path to the root folder. </li>
 	 *	<li>A binary library in the current project ({@link #CPE_LIBRARY}) - the path
-	 *		associated with this entry is the absolute path to the JAR (or root folder), and
-	 *		in case it refers to an external JAR, then there is no associated resource in
-	 *		the workbench.
+	 *		associated with this entry is the absolute path to the file.
 	 *	<li>A required project ({@link #CPE_PROJECT}) - the path of the entry denotes the
 	 *		path to the corresponding project resource.</li>
 	 *  <li>A variable entry ({@link #CPE_VARIABLE}) - the first segment of the path
-	 *      is the name of a classpath variable. If this classpath variable
-	 *		is bound to the path <i>P</i>, the path of the corresponding classpath entry
+	 *      is the name of a includepath variable. If this includepath variable
+	 *		is bound to the path <i>P</i>, the path of the corresponding includepath entry
 	 *		is computed by appending to <i>P</i> the segments of the returned
 	 *		path without the variable.</li>
 	 *  <li> A container entry ({@link #CPE_CONTAINER}) - the path of the entry
-	 * 	is the name of the classpath container, which can be bound indirectly to a set of classpath
+	 * 	is the name of the includepath container, which can be bound indirectly to a set of includepath
 	 * 	entries after resolution. The containerPath is a formed by a first ID segment followed with
 	 *     extra segments that can be used as additional hints for resolving this container
 	 * 	reference (also see {@link IJsGlobalScopeContainer}).
 	 * </li>
 	 * </ul>
 	 *
-	 * @return the path of this classpath entry
+	 * @return the path of this includepath entry
 	 */
 	IPath getPath();
 
 	/**
 	 * Returns the path to the source archive or folder associated with this
-	 * classpath entry, or <code>null</code> if this classpath entry has no
+	 * includepath entry, or <code>null</code> if this includepath entry has no
 	 * source attachment.
 	 * <p>
-	 * Only library and variable classpath entries may have source attachments.
-	 * For library classpath entries, the result path (if present) locates a source
+	 * Only library and variable includepath entries may have source attachments.
+	 * For library includepath entries, the result path (if present) locates a source
 	 * archive or folder. This archive or folder can be located in a project of the
-	 * workspace or outside thr workspace. For variable classpath entries, the
+	 * workspace or outside thr workspace. For variable includepath entries, the
 	 * result path (if present) has an analogous form and meaning as the
-	 * variable path, namely the first segment is the name of a classpath variable.
+	 * variable path, namely the first segment is the name of a includepath variable.
 	 * </p>
 	 *
 	 * @return the path to the source archive or folder, or <code>null</code> if none
@@ -429,26 +408,25 @@ public interface IIncludePathEntry {
 	 * {@link #CPE_SOURCE}), which cannot be exported.
 	 *
 	 * @return <code>true</code> if exported, and <code>false</code> otherwise
-	 * @since 2.0
 	 */
 	boolean isExported();
 
 	/**
-	 * This is a helper method, which returns the resolved classpath entry denoted
+	 * This is a helper method, which returns the resolved includepath entry denoted
 	 * by an entry (if it is a variable entry). It is obtained by resolving the variable
 	 * reference in the first segment. Returns <code>null</code> if unable to resolve using
 	 * the following algorithm:
 	 * <ul>
 	 * <li> if variable segment cannot be resolved, returns <code>null</code></li>
-	 * <li> finds a project, JAR or binary folder in the workspace at the resolved path location</li>
-	 * <li> if none finds an external JAR file or folder outside the workspace at the resolved path location </li>
+	 * <li> finds a project,  binary folder in the workspace at the resolved path location</li>
+	 * <li> if none finds an external file or folder outside the workspace at the resolved path location </li>
 	 * <li> if none returns <code>null</code></li>
 	 * </ul>
 	 * <p>
-	 * Variable source attachment is also resolved and recorded in the resulting classpath entry.
+	 * Variable source attachment is also resolved and recorded in the resulting includepath entry.
 	 * <p>
-	 * @return the resolved library or project classpath entry, or <code>null</code>
-	 *   if the given path could not be resolved to a classpath entry
+	 * @return the resolved library or project includepath entry, or <code>null</code>
+	 *   if the given path could not be resolved to a includepath entry
 	 *	<p>
 	 * Note that this deprecated API doesn't handle CPE_CONTAINER entries.
 	 *

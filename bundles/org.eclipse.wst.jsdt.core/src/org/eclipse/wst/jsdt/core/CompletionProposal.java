@@ -265,9 +265,9 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </ul>
 	 * </p>
 	 *
-	 * @see #getKind()
-	 *
 	 * <b>This completion only applies to ECMAScript 4 which is not yet supported</b>
+	 *
+	 * @see #getKind()
 	 */
 	public static final int PACKAGE_REF = 8;
 

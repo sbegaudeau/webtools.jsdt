@@ -64,7 +64,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @param requestor the completion requestor
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
-	 * @since 2.0
 	 * @deprecated Use {@link #codeComplete(char[],int,int,char[][],char[][],int[],boolean,CompletionRequestor)} instead.
 	 */
 	void codeComplete(
@@ -109,7 +108,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @param owner the owner of working copies that take precedence over their original compilation units
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
-	 * @since 3.0
 	 * @deprecated Use {@link #codeComplete(char[],int,int,char[][],char[][],int[],boolean,CompletionRequestor,WorkingCopyOwner)} instead.
 	 */
 	void codeComplete(
@@ -147,7 +145,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @param requestor the completion requestor
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
-	 * @since 3.1
 	 */
 	void codeComplete(
 		char[] snippet,
@@ -191,7 +188,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @param owner the owner of working copies that take precedence over their original compilation units
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
-	 * @since 3.1
 	 */
 	void codeComplete(
 		char[] snippet,
@@ -227,7 +223,7 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @param monitor the given progress monitor
 	 * @exception JavaScriptModelException if the element could not be created. Reasons include:
 	 * <ul>
-	 * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+	 * <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * <li> A <code>CoreException</code> occurred while updating an underlying resource
 	 * <li> The specified sibling is not a child of this type (INVALID_SIBLING)
 	 * <li> The contents could not be recognized as a field declaration (INVALID_CONTENTS)
@@ -261,7 +257,7 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @param monitor the given progress monitor
 	 * @exception JavaScriptModelException if the element could not be created. Reasons include:
 	 * <ul>
-	 * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+	 * <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * <li> A <code>CoreException</code> occurred while updating an underlying resource
 	 * <li> The specified sibling is not a child of this type (INVALID_SIBLING)
 	 * <li> The contents could not be recognized as a method or constructor
@@ -295,7 +291,7 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @param monitor the given progress monitor
 	 * @exception JavaScriptModelException if the element could not be created. Reasons include:
 	 * <ul>
-	 * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+	 * <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * <li> A <code>CoreException</code> occurred while updating an underlying resource
 	 * <li> The specified sibling is not a child of this type (INVALID_SIBLING)
 	 * <li> The contents could not be recognized as a type declaration (INVALID_CONTENTS)
@@ -320,7 +316,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @param method the given method
 	 * @return the found method or <code>null</code> if no such methods can be found.
 	 *
-	 * @since 2.0
 	 */
 	IFunction[] findMethods(IFunction method);
 
@@ -331,7 +326,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @return the children for the given category.
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *      exception occurs while accessing its corresponding resource.
-	 *  @since 3.2
 	 */
 	IJavaScriptElement[] getChildrenForCategory(String category) throws JavaScriptModelException;
 
@@ -383,37 +377,21 @@ public interface IType extends IMember, IFunctionContainer {
 	 * This is the name of the package, followed by <code>'.'</code>,
 	 * followed by the type-qualified name using the <code>enclosingTypeSeparator</code>.
 	 *
-	 * For example:
-	 * <ul>
-	 * <li>the fully qualified name of a class B defined as a member of a class A in a compilation unit A.js
-	 *     in a package x.y using the '.' separator is "x.y.A.B"</li>
-	 * <li>the fully qualified name of a class B defined as a member of a class A in a compilation unit A.js
-	 *     in a package x.y using the '$' separator is "x.y.A$B"</li>
-	 * <li>the fully qualified name of a binary type whose class file is x/y/A$B.class
-	 *     using the '.' separator is "x.y.A.B"</li>
-	 * <li>the fully qualified name of a binary type whose class file is x/y/A$B.class
-	 *     using the '$' separator is "x.y.A$B"</li>
-	 * <li>the fully qualified name of an anonymous binary type whose class file is x/y/A$1.class
-	 *     using the '.' separator is "x.y.A$1"</li>
-	 * </ul>
 	 *
 	 * This is a handle-only method.
 	 *
 	 * @param enclosingTypeSeparator the given enclosing type separator
 	 * @return the fully qualified name of this type, including qualification for any containing types and packages
 	 * @see IType#getTypeQualifiedName(char)
-	 * @since 2.0
 	 */
 	String getFullyQualifiedName(char enclosingTypeSeparator);
 
 	/**
-	 * Returns this type's fully qualified name followed by its type parameters between angle brakets if it is a generic type.
-	 * For example, "p.X&lt;T&gt;", "java.util.Map&lt;java.lang.String, p.X&gt;"
+	 * Returns this type's fully qualified name
 	 *
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *      exception occurs while accessing its corresponding resource.
 	 * @return the fully qualified parameterized representation of this type
-	 * @since 3.1
 	 */
 	String getFullyQualifiedParameterizedName() throws JavaScriptModelException;
 
@@ -448,7 +426,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @return the binding key for this type
 	 * @see org.eclipse.wst.jsdt.core.dom.IBinding#getKey()
 	 * @see BindingKey
-	 * @since 3.1
 	 */
 	String getKey();
 
@@ -519,7 +496,7 @@ public interface IType extends IMember, IFunctionContainer {
 	IFunction[] getFunctions() throws JavaScriptModelException;
 
 	/**
-	 * Returns the package fragment in which this element is defined.
+	 * Returns the source folder (package fragment) in which this element is defined.
 	 * This is a handle-only method.
 	 *
 	 * @return the package fragment in which this element is defined
@@ -560,7 +537,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return the type signature of this type's superclass, or
 	 * <code>null</code> if none
-	 * @since 3.0
 	 */
 	String getSuperclassTypeSignature() throws JavaScriptModelException;
 
@@ -582,12 +558,13 @@ public interface IType extends IMember, IFunctionContainer {
 	 * or rich (for parameterized types). See {@link Signature} for details.
 	 * </p>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return  the type signatures of interfaces that this type implements
 	 * or extends, in the order in which they are listed in the source,
 	 * an empty collection if none
-	 * @since 3.0
 	 */
 	String[] getSuperInterfaceTypeSignatures() throws JavaScriptModelException;
 
@@ -608,6 +585,8 @@ public interface IType extends IMember, IFunctionContainer {
 	 * structured signature strings containing more precise information.
 	 * </p>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return  the names of interfaces that this type implements or extends, in the order in which they are listed in the source,
@@ -623,12 +602,13 @@ public interface IType extends IMember, IFunctionContainer {
 	 * types) or resolved (for binary types). See {@link Signature} for details.
 	 * </p>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *      exception occurs while accessing its corresponding resource.
 	 * @return the formal type parameter signatures of this type,
 	 * in the order declared in the source, an empty array if none
 	 * @see Signature
-	 * @since 3.0
 	 */
 	String[] getTypeParameterSignatures() throws JavaScriptModelException;
 
@@ -636,11 +616,12 @@ public interface IType extends IMember, IFunctionContainer {
 	 * Returns the formal type parameters for this type.
 	 * Returns an empty array if this type has no formal type parameters.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *      exception occurs while accessing its corresponding resource.
 	 * @return the formal type parameters of this type,
 	 * in the order declared in the source, an empty array if none
-	 * @since 3.1
 	 */
 	ITypeParameter[] getTypeParameters() throws JavaScriptModelException;
 
@@ -657,9 +638,10 @@ public interface IType extends IMember, IFunctionContainer {
 	 * Returns the type parameter declared in this type with the given name.
 	 * This is a handle-only method. The type parameter may or may not exist.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param name the given simple name
 	 * @return the type parameter declared in this type with the given name
-	 * @since 3.1
 	 */
 	ITypeParameter getTypeParameter(String name);
 
@@ -667,10 +649,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * Returns the type-qualified name of this type,
 	 * including qualification for any enclosing types,
 	 * but not including package qualification.
-	 * For source types, this consists of the simple names of any enclosing types,
-	 * separated by <code>'$'</code>, followed by the simple name of this type
-	 * or the occurence count of this type if it is anonymous.
-	 * For binary types, this is the name of the class file without the ".class" suffix.
 	 * This is a handle-only method.
 	 *
 	 * @return the type-qualified name of this type
@@ -681,30 +659,11 @@ public interface IType extends IMember, IFunctionContainer {
 	 * Returns the type-qualified name of this type,
 	 * including qualification for any enclosing types,
 	 * but not including package qualification.
-	 * For source types, this consists of the simple names of any enclosing types,
-	 * separated by <code>enclosingTypeSeparator</code>, followed by the
-	 * simple name of this type  or the occurence count of this type if it is anonymous.
-	 * For binary types, this is the name of the class file without the ".class" suffix.
-	 *
-	 * For example:
-	 * <ul>
-	 * <li>the type qualified name of a class B defined as a member of a class A
-	 *     using the '.' separator is "A.B"</li>
-	 * <li>the type qualified name of a class B defined as a member of a class A
-	 *     using the '$' separator is "A$B"</li>
-	 * <li>the type qualified name of a binary type whose class file is A$B.class
-	 *     using the '.' separator is "A$B"</li>
-	 * <li>the type qualified name of a binary type whose class file is A$B.class
-	 *     using the '$' separator is "A$B"</li>
-	 * <li>the type qualified name of an anonymous binary type whose class file is A$1.class
-	 *     using the '.' separator is "A$1"</li>
-	 * </ul>
 	 *
 	 * This is a handle-only method.
 	 *
 	 * @param enclosingTypeSeparator the specified enclosing type separator
 	 * @return the type-qualified name of this type
-	 * @since 2.0
 	 */
 	String getTypeQualifiedName(char enclosingTypeSeparator);
 
@@ -724,12 +683,11 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return true if this type represents an anonymous type, false otherwise
-	 * @since 2.0
 	 */
 	boolean isAnonymous() throws JavaScriptModelException;
 
 	/**
-	 * Returns whether this type represents a class.
+	 * Returns whether this type is read-only.
 	 * <p>
 	 * Note that a class can neither be an interface, an enumeration class, nor an annotation type.
 	 * </p>
@@ -740,7 +698,7 @@ public interface IType extends IMember, IFunctionContainer {
 	 */
 	boolean isClass() throws JavaScriptModelException;
 
-	/**
+	/*
 	 * Returns whether this type represents an enumeration class.
 	 * <p>
 	 * Note that an enumeration class can neither be a class, an interface, nor an annotation type.
@@ -750,7 +708,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return true if this type represents an enumeration class,
 	 * false otherwise
-	 * @since 3.0
 	 */
 	boolean isEnum() throws JavaScriptModelException;
 
@@ -760,13 +717,15 @@ public interface IType extends IMember, IFunctionContainer {
 	 * Note that an interface can also be an annotation type, but it can neither be a class nor an enumeration class.
 	 * </p>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return true if this type represents an interface, false otherwise
 	 */
 	boolean isInterface() throws JavaScriptModelException;
 
-	/**
+	/*
 	 * Returns whether this type represents an annotation type.
 	 * <p>
 	 * Note that an annotation type is also an interface, but it can neither be a class nor an enumeration class.
@@ -776,7 +735,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return true if this type represents an annotation type,
 	 * false otherwise
-	 * @since 3.0
 	 */
 	boolean isAnnotation() throws JavaScriptModelException;
 
@@ -786,7 +744,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return true if this type represents a local type, false otherwise
-	 * @since 2.0
 	 */
 	boolean isLocal() throws JavaScriptModelException;
 
@@ -796,7 +753,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return true if this type represents a member type, false otherwise
-	 * @since 2.0
 	 */
 	boolean isMember() throws JavaScriptModelException;
 	/**
@@ -804,7 +760,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * If a type is resolved, its key contains resolved information.
 	 *
 	 * @return whether this type represents a resolved type.
-	 * @since 3.1
 	 */
 	boolean isResolved();
 	/**
@@ -825,7 +780,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 *      - type is not the focus of the hierarchy or
 	 *		- unable to read the input stream (wrong format, IOException during reading, ...)
 	 * @see ITypeHierarchy#store(java.io.OutputStream, IProgressMonitor)
-	 * @since 2.1
 	 */
 	ITypeHierarchy loadTypeHierachy(InputStream input, IProgressMonitor monitor) throws JavaScriptModelException;
 	/**
@@ -854,7 +808,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @return a type hierarchy for this type containing this type and all of its supertypes
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
-	 * @since 3.0
 	 */
 	ITypeHierarchy newSupertypeHierarchy(IJavaScriptUnit[] workingCopies, IProgressMonitor monitor)
 		throws JavaScriptModelException;
@@ -874,7 +827,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @return a type hierarchy for this type containing this type and all of its supertypes
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
-	 * @since 2.0
 	 * @deprecated Use {@link #newSupertypeHierarchy(IJavaScriptUnit[], IProgressMonitor)} instead
 	 */
 	ITypeHierarchy newSupertypeHierarchy(IWorkingCopy[] workingCopies, IProgressMonitor monitor)
@@ -896,7 +848,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @return a type hierarchy for this type containing this type and all of its supertypes
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
-	 * @since 3.0
 	 */
 	ITypeHierarchy newSupertypeHierarchy(WorkingCopyOwner owner, IProgressMonitor monitor)
 		throws JavaScriptModelException;
@@ -936,7 +887,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @return a type hierarchy for this type containing
 	 * this type, all of its supertypes, and all its subtypes
 	 * in the context of the given project
-	 * @since 3.0
 	 */
 	ITypeHierarchy newTypeHierarchy(IJavaScriptProject project, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException;
 
@@ -967,7 +917,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * this type, all of its supertypes, and all its subtypes in the workspace
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
-	 * @since 3.0
 	 */
 	ITypeHierarchy newTypeHierarchy(IJavaScriptUnit[] workingCopies, IProgressMonitor monitor) throws JavaScriptModelException;
 
@@ -986,7 +935,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * this type, all of its supertypes, and all its subtypes in the workspace
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
-	 * @since 2.0
 	 * @deprecated Use {@link #newTypeHierarchy(IJavaScriptUnit[], IProgressMonitor)} instead
 	 */
 	ITypeHierarchy newTypeHierarchy(IWorkingCopy[] workingCopies, IProgressMonitor monitor) throws JavaScriptModelException;
@@ -1008,7 +956,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * this type, all of its supertypes, and all its subtypes in the workspace
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
-	 * @since 3.0
 	 */
 	ITypeHierarchy newTypeHierarchy(WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException;
 
@@ -1025,12 +972,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * </p>
 	 * <p>
 	 * Returns <code>null</code> if unable to find any matching type.
-	 * </p>
-	 *<p>
-	 * For example, resolution of <code>"Object"</code> would typically return
-	 * <code>{{"java.lang", "Object"}}</code>. Another resolution that returns
-	 * <code>{{"", "X.Inner"}}</code> represents the inner type Inner defined in type X in the
-	 * default package.
 	 * </p>
 	 *
 	 * @param typeName the given type name
@@ -1059,19 +1000,12 @@ public interface IType extends IMember, IFunctionContainer {
 	 * <p>
 	 * Returns <code>null</code> if unable to find any matching type.
 	 *</p>
-	 *<p>
-	 * For example, resolution of <code>"Object"</code> would typically return
-	 * <code>{{"java.lang", "Object"}}</code>. Another resolution that returns
-	 * <code>{{"", "X.Inner"}}</code> represents the inner type Inner defined in type X in the
-	 * default package.
-	 * </p>
 	 *
 	 * @param typeName the given type name
 	 * @param owner the owner of working copies that take precedence over their original compilation units
 	 * @exception JavaScriptModelException if code resolve could not be performed.
 	 * @return the resolved type names or <code>null</code> if unable to find any matching type
 	 * @see #getTypeQualifiedName(char)
-	 * @since 3.0
 	 */
 	String[][] resolveType(String typeName, WorkingCopyOwner owner) throws JavaScriptModelException;
 }

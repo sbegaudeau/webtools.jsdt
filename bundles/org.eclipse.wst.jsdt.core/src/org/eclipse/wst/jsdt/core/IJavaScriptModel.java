@@ -15,15 +15,15 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * Represent the root Java element corresponding to the workspace.
+ * Represent the root JavaScript element corresponding to the workspace.
  * Since there is only one such root element, it is commonly referred to as
- * <em>the</em> Java model element.
- * The Java model element needs to be opened before it can be navigated or manipulated.
- * The Java model element has no parent (it is the root of the Java element
+ * <em>the</em> JavaScript model element.
+ * The JavaScript model element needs to be opened before it can be navigated or manipulated.
+ * The JavaScript model element has no parent (it is the root of the JavaScript element
  * hierarchy). Its children are <code>IJavaScriptProject</code>s.
  * <p>
  * This interface provides methods for performing copy, move, rename, and
- * delete operations on multiple Java elements.
+ * delete operations on multiple JavaScript elements.
  * </p>
  * <p>
  * This interface is not intended to be implemented by clients. An instance
@@ -40,19 +40,18 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public interface IJavaScriptModel extends IJavaScriptElement, IOpenable, IParent {
 /**
- * Returns whether this Java model contains an <code>IJavaScriptElement</code> whose
- * resource is the given resource or a non-Java resource which is the given resource.
+ * Returns whether this JavaScript model contains an <code>IJavaScriptElement</code> whose
+ * resource is the given resource or a non-JavaScript resource which is the given resource.
  * <p>
  * Note: no existency check is performed on the argument resource. If it is not accessible
- * (see <code>IResource.isAccessible()</code>) yet but would be located in Java model
+ * (see <code>IResource.isAccessible()</code>) yet but would be located in JavaScript model
  * range, then it will return <code>true</code>.
  * </p><p>
- * If the resource is accessible, it can be reached by navigating the Java model down using the
+ * If the resource is accessible, it can be reached by navigating the JavaScript model down using the
  * <code>getChildren()</code> and/or <code>getNonJavaResources()</code> methods.
  * </p>
  * @param resource the resource to check
- * @return true if the resource is accessible through the Java model
- * @since 2.1
+ * @return true if the resource is accessible through the JavaScript model
  */
 boolean contains(IResource resource);
 /**
@@ -119,41 +118,40 @@ void copy(IJavaScriptElement[] elements, IJavaScriptElement[] containers, IJavaS
  */
 void delete(IJavaScriptElement[] elements, boolean force, IProgressMonitor monitor) throws JavaScriptModelException;
 /**
- * Returns the Java project with the given name. This is a handle-only method.
+ * Returns the JavaScript project with the given name. This is a handle-only method.
  * The project may or may not exist.
  *
- * @param name the name of the Java project
- * @return the Java project with the given name
+ * @param name the name of the JavaScript project
+ * @return the JavaScript project with the given name
  */
 IJavaScriptProject getJavaScriptProject(String name);
 /**
- * Returns the Java projects in this Java model, or an empty array if there
+ * Returns the JavaScript projects in this JavaScript model, or an empty array if there
  * are none.
  *
- * @return the Java projects in this Java model, or an empty array if there
+ * @return the JavaScript projects in this JavaScript model, or an empty array if there
  * are none
  * @exception JavaScriptModelException if this request fails.
  */
 IJavaScriptProject[] getJavaScriptProjects() throws JavaScriptModelException;
 /**
- * Returns an array of non-Java resources (that is, non-Java projects) in
+ * Returns an array of non-JavaScript resources (that is, non-JavaScript projects) in
  * the workspace.
  * <p>
- * Non-Java projects include all projects that are closed (even if they have the
- * Java nature).
+ * Non-JavaScript projects include all projects that are closed (even if they have the
+ * JavaScript nature).
  * </p>
  *
- * @return an array of non-Java projects (<code>IProject</code>s) contained
+ * @return an array of non-JavaScript projects (<code>IProject</code>s) contained
  *              in the workspace.
  * @throws JavaScriptModelException if this element does not exist or if an
  *		exception occurs while accessing its corresponding resource
- * @since 2.1
  */
 Object[] getNonJavaScriptResources() throws JavaScriptModelException;
 /**
- * Returns the workspace associated with this Java model.
+ * Returns the workspace associated with this JavaScript model.
  *
- * @return the workspace associated with this Java model
+ * @return the workspace associated with this JavaScript model
  */
 IWorkspace getWorkspace();
 /**
@@ -207,16 +205,16 @@ IWorkspace getWorkspace();
 void move(IJavaScriptElement[] elements, IJavaScriptElement[] containers, IJavaScriptElement[] siblings, String[] renamings, boolean replace, IProgressMonitor monitor) throws JavaScriptModelException;
 
 /**
- * Triggers an update of the JavaModel with respect to the referenced external archives.
- * This operation will issue a JavaModel delta describing the discovered changes, in term
- * of Java element package fragment roots added, removed or changed.
+ * Triggers an update of the JavaScriptModel with respect to the referenced external archives.
+ * This operation will issue a JavaScriptModel delta describing the discovered changes, in term
+ * of JavaScript element package fragment roots added, removed or changed.
  * Note that a collection of elements can be passed so as to narrow the set of archives
  * to refresh (passing <code>null</code> along is equivalent to refreshing the entire mode).
  * The elements can be:
  * <ul>
  * <li> package fragment roots corresponding to external archives
- * <li> Java projects, which referenced external archives will be refreshed
- * <li> Java model, all referenced external archives will be refreshed.
+ * <li> JavaScript projects, which referenced external archives will be refreshed
+ * <li> JavaScript model, all referenced external archives will be refreshed.
  * </ul>
  * <p> In case an archive is used by multiple projects, the delta issued will account for
  * all of them. This means that even if a project was not part of the elements scope, it
@@ -230,7 +228,6 @@ void move(IJavaScriptElement[] elements, IJavaScriptElement[] containers, IJavaS
  * </ul>
  *
  * @see IJavaScriptElementDelta
- * @since 2.0
  */
 void refreshExternalArchives(IJavaScriptElement[] elementsScope, IProgressMonitor monitor) throws JavaScriptModelException;
 

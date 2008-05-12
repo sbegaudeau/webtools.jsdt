@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.core;
 
 /**
- * Common protocol for Java elements that can be members of types.
+ * Common protocol for JavaScript elements that can be members of javaScript files or types.
  * This set consists of <code>IType</code>, <code>IFunction</code>,
  * <code>IField</code>, and <code>IInitializer</code>.
  * <p>
@@ -25,17 +25,16 @@ package org.eclipse.wst.jsdt.core;
  */
 public interface IMember extends IJavaScriptElement, ISourceReference, ISourceManipulation, IParent {
 /**
- * Returns the categories defined by this member's Javadoc. A category is the identifier
- * following the tag <code>@category</code> in the member's Javadoc.
- * Returns an empty array if no category is defined in this member's Javadoc.
+ * Returns the categories defined by this member's JSDoc. A category is the identifier
+ * following the tag <code>@category</code> in the member's JSDoc.
+ * Returns an empty array if no category is defined in this member's JSDoc.
  *
  * @return the categories defined by this member's doc
  * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource.
- *  @since 3.2
  */
 String[] getCategories() throws JavaScriptModelException;
-/**
+/*
  * Returns the class file in which this member is declared, or <code>null</code>
  * if this member is not declared in a class file (for example, a source type).
  * This is a handle-only method.
@@ -45,22 +44,22 @@ String[] getCategories() throws JavaScriptModelException;
  */
 IClassFile getClassFile();
 /**
- * Returns the compilation unit in which this member is declared, or <code>null</code>
- * if this member is not declared in a compilation unit (for example, a binary type).
+ * Returns the javaScript unit in which this member is declared, or <code>null</code>
+ * if this member is not declared in a javaScript unit .
  * This is a handle-only method.
  *
- * @return the compilation unit in which this member is declared, or <code>null</code>
- * if this member is not declared in a compilation unit (for example, a binary type)
+ * @return the javaScript unit in which this member is declared, or <code>null</code>
+ * if this member is not declared in a javaScript unit  
  * @deprecated Use {@link #getJavaScriptUnit()} instead
  */
 IJavaScriptUnit getCompilationUnit();
 /**
- * Returns the compilation unit in which this member is declared, or <code>null</code>
- * if this member is not declared in a compilation unit (for example, a binary type).
+ * Returns the javaScript unit in which this member is declared, or <code>null</code>
+ * if this member is not declared in a javaScript unit.
  * This is a handle-only method.
  *
- * @return the compilation unit in which this member is declared, or <code>null</code>
- * if this member is not declared in a compilation unit (for example, a binary type)
+ * @return the javaScript unit in which this member is declared, or <code>null</code>
+ * if this member is not declared in a javaScript unit (for example, a binary type)
  */
 IJavaScriptUnit getJavaScriptUnit();
 /**
@@ -87,22 +86,21 @@ IType getDeclaringType();
  */
 int getFlags() throws JavaScriptModelException;
 /**
- * Returns the Javadoc range if this element is from source or if this element
+ * Returns the JSDoc range if this element is from source or if this element
  * is a binary element with an attached source, null otherwise.
  *
- * <p>If this element is from source, the javadoc range is
+ * <p>If this element is from source, the jsdoc range is
  * extracted from the corresponding source.</p>
- * <p>If this element is from a binary, the javadoc is extracted from the
+ * <p>If this element is from a binary, the jsdoc is extracted from the
  * attached source if present.</p>
  * <p>If this element's openable is not consistent, then null is returned.</p>
  *
  * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource.
- * @return a source range corresponding to the javadoc source or <code>null</code>
- * if no source is available, this element has no javadoc comment or
+ * @return a source range corresponding to the jsdoc source or <code>null</code>
+ * if no source is available, this element has no jsdoc comment or
  * this element's openable is not consistent
  * @see IOpenable#isConsistent()
- * @since 3.2
  */
 ISourceRange getJSdocRange() throws JavaScriptModelException;
 /**
@@ -135,15 +133,13 @@ ISourceRange getNameRange() throws JavaScriptModelException;
  * </p>
  *
  * @return the position relative to the order this member is defined in the source
- * @since 3.2
  */
 int getOccurrenceCount();
 /**
- * Returns the Java type root in which this member is declared.
+ * Returns the JavaScript type root in which this member is declared.
  * This is a handle-only method.
  *
- * @return the Java type root in which this member is declared.
- * @since 3.3
+ * @return the JavaScript type root in which this member is declared.
  */
 ITypeRoot getTypeRoot();
 /**
@@ -157,15 +153,14 @@ ITypeRoot getTypeRoot();
  * @param name the given simple name
  * @param occurrenceCount the specified position
  * @return the type with the given name and/or with the specified position relative to the order they are defined in the source
- * @since 3.0
  */
 IType getType(String name, int occurrenceCount);
 /**
- * Returns whether this member is from a class file.
+ * Returns whether this member is from a non-editable file.
  * This is a handle-only method.
  *
- * @return <code>true</code> if from a class file, and <code>false</code> if
- *   from a compilation unit
+ * @return <code>true</code> if from a non-editable file, and <code>false</code> if
+ *   from a javaScript unit
  */
 boolean isBinary();
 }

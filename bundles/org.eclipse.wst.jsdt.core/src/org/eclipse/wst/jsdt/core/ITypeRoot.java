@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 
 /**
- * Represents an entire Java type root (either an <code>IJavaScriptUnit</code>
+ * Represents an entire JavaScript type root (either an <code>IJavaScriptUnit</code>
  * or an <code>IClassFile</code>).
  *
  * <p>
@@ -34,33 +34,33 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public interface ITypeRoot extends IJavaScriptElement, IParent, IOpenable, ISourceReference, ICodeAssist, IFunctionContainer {
 
 /**
- * Finds the primary type of this Java type root (that is, the type with the same name as the
- * compilation unit, or the type of a class file), or <code>null</code> if no such a type exists.
+ * Finds the primary type of this JavaScript type root (that is, the type with the same name as the
+ * javascript file), or <code>null</code> if no such a type exists.
  *
- * @return the found primary type of this Java type root, or <code>null</code> if no such a type exists
+ * @return the found primary type of this JavaScript type root, or <code>null</code> if no such a type exists
  */
 IType findPrimaryType();
 
 /**
- * Returns the smallest element within this Java type root that
+ * Returns the smallest element within this JavaScript type root that
  * includes the given source position (that is, a method, field, etc.), or
- * <code>null</code> if there is no element other than the Java type root
+ * <code>null</code> if there is no element other than the JavaScript type root
  * itself at the given position, or if the given position is not
- * within the source range of the source of this Java type root.
+ * within the source range of the source of this JavaScript type root.
  *
- * @param position a source position inside the Java type root
- * @return the innermost Java element enclosing a given source position or <code>null</code>
- *	if none (excluding the Java type root).
- * @throws JavaScriptModelException if the Java type root does not exist or if an
+ * @param position a source position inside the JavaScript type root
+ * @return the innermost JavaScript element enclosing a given source position or <code>null</code>
+ *	if none (excluding the JavaScript type root).
+ * @throws JavaScriptModelException if the JavaScript type root does not exist or if an
  *	exception occurs while accessing its corresponding resource
  */
 IJavaScriptElement getElementAt(int position) throws JavaScriptModelException;
 
 /**
- * Returns a shared working copy on this compilation unit or class file using the given working copy owner to create
+ * Returns a shared working copy on this javaScirpt file using the given working copy owner to create
  * the buffer. If this is already a working copy of the given owner, the element itself is returned.
  * This API can only answer an already existing working copy if it is based on the same
- * original Java type root AND was using the same working copy owner (that is, as defined by {@link Object#equals}).
+ * original JavaScript type root AND was using the same working copy owner (that is, as defined by {@link Object#equals}).
  * <p>
  * The life time of a shared working copy is as follows:
  * <ul>
@@ -74,7 +74,7 @@ IJavaScriptElement getElementAt(int position) throws JavaScriptModelException;
  * <p>
  * Note that the working copy owner will be used for the life time of the shared working copy, that is if the
  * working copy is closed then reopened, this owner will be used.
- * The buffer will be automatically initialized with the original's Java type root content upon creation.
+ * The buffer will be automatically initialized with the original's JavaScript type root content upon creation.
  * <p>
  * When the shared working copy instance is created, an ADDED IJavaScriptElementDelta is reported on this
  * working copy.
@@ -94,8 +94,8 @@ IJavaScriptElement getElementAt(int position) throws JavaScriptModelException;
  *                 or <code>null</code> if no progress should be reported
  * @throws JavaScriptModelException if the contents of this element can
  *   	not be determined.
- * @return a new working copy of this Java type root using the given owner to create
- *		the buffer, or this Java type root if it is already a working copy
+ * @return a new working copy of this JavaScript type root using the given owner to create
+ *		the buffer, or this JavaScript type root if it is already a working copy
  */
 IJavaScriptUnit getWorkingCopy(WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException;
 

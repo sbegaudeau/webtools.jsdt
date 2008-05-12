@@ -11,9 +11,9 @@
 package org.eclipse.wst.jsdt.core;
 
 /**
- * Represents a local variable declared in a method or an initializer.
+ * Represents a local variable declared in a method..
  * <code>ILocalVariable</code> are pseudo-elements created as the result of a <code>ICodeAssist.codeSelect(...)</code>
- * operation. They are not part of the Java model (<code>exists()</code> returns whether the parent exists rather than
+ * operation. They are not part of the JavaScript model (<code>exists()</code> returns whether the parent exists rather than
  * whether the local variable exists in the parent) and they are not included in the children of an <code>IFunction</code>
  * or an <code>IInitializer</code>.
  * <p>

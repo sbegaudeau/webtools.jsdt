@@ -50,13 +50,6 @@ public interface ICompletionRequestor {
  * 		This value can only be used for compare relevance. A proposal is more relevant than another if his relevance
  * 		value is higher.
  *
- * NOTE - All package and type names are presented in their readable form:
- *    Package names are in the form "a.b.c".
- *    Base types are in the form "int" or "boolean".
- *    Array types are in the qualified form "M[]" or "int[]".
- *    Nested type names are in the qualified form "A.M".
- *    The default package is represented by an empty array.
- *
  * NOTE: parameter names can be retrieved from the source model after the user selects a specific method.
  *
  * @deprecated Use {@link CompletionRequestor#accept(CompletionProposal)} instead.
@@ -72,7 +65,7 @@ void acceptAnonymousType(
 	int completionStart,
 	int completionEnd,
 	int relevance);
-/**
+/*
  * Code assist notification of a class completion.
  *
  * @param packageName Declaring package name of the class.
@@ -86,11 +79,6 @@ void acceptAnonymousType(
  * 		This value can only be used for compare relevance. A proposal is more relevant than another if his relevance
  * 		value is higher.
  *
- * NOTE - All package and type names are presented in their readable form:
- *    Package names are in the form "a.b.c".
- *    Nested type names are in the qualified form "A.M".
- *    The default package is represented by an empty array.
- *
  * @deprecated Use {@link CompletionRequestor#accept(CompletionProposal)} instead.
  */
 void acceptClass(
@@ -102,7 +90,7 @@ void acceptClass(
 	int completionEnd,
 	int relevance);
 /**
- * Code assist notification of a compilation error detected during completion.
+ * Code assist notification of a validation error detected during completion.
  *  @param error Only problems which are categorized as non-syntax errors are notified to the
  *     requestor, warnings are silently ignored.
  *		In case an error got signalled, no other completions might be available,
@@ -116,7 +104,7 @@ void acceptClass(
  */
 void acceptError(IProblem error);
 /**
- * Code assist notification of a field completion.
+ * Code assist notification of a field or var completion.
  *
  * @param declaringTypePackageName Name of the package in which the type that contains this field is declared.
  * @param declaringTypeName Name of the type declaring this new field.
@@ -131,13 +119,6 @@ void acceptError(IProblem error);
  * 		It is a positive integer which are used for determine if this proposal is more relevant than another proposal.
  * 		This value can only be used for compare relevance. A proposal is more relevant than another if his relevance
  * 		value is higher.
- *
- * NOTE - All package and type names are presented in their readable form:
- *    Package names are in the form "a.b.c".
- *    Base types are in the form "int" or "boolean".
- *    Array types are in the qualified form "M[]" or "int[]".
- *    Nested type names are in the qualified form "A.M".
- *    The default package is represented by an empty array.
  *
  * @deprecated Use {@link CompletionRequestor#accept(CompletionProposal)} instead.
  */
@@ -155,6 +136,8 @@ void acceptField(
 /**
  * Code assist notification of an interface completion.
  *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * @param packageName Declaring package name of the interface.
  * @param interfaceName Name of the interface.
  * @param completionName The completion for the interface.	Can include ';' for imported interfaces.
@@ -165,12 +148,6 @@ void acceptField(
  * 		It is a positive integer which are used for determine if this proposal is more relevant than another proposal.
  * 		This value can only be used for compare relevance. A proposal is more relevant than another if his relevance
  * 		value is higher.
- *
- * NOTE - All package and type names are presented in their readable form:
- *    Package names are in the form "a.b.c".
- *    Nested type names are in the qualified form "A.M".
- *    The default package is represented by an empty array.
- *
  * @deprecated Use {@link CompletionRequestor#accept(CompletionProposal)} instead.
  */
 void acceptInterface(
@@ -220,13 +197,6 @@ void acceptLabel(char[] labelName, int completionStart, int completionEnd, int r
  * 		This value can only be used for compare relevance. A proposal is more relevant than another if his relevance
  * 		value is higher.
  *
- * NOTE - All package and type names are presented in their readable form:
- *    Package names are in the form "a.b.c".
- *    Base types are in the form "int" or "boolean".
- *    Array types are in the qualified form "M[]" or "int[]".
- *    Nested type names are in the qualified form "A.M".
- *    The default package is represented by an empty array.
- *
  * @deprecated Use {@link CompletionRequestor#accept(CompletionProposal)} instead.
  */
 void acceptLocalVariable(
@@ -238,7 +208,7 @@ void acceptLocalVariable(
 	int completionEnd,
 	int relevance);
 /**
- * Code assist notification of a method completion.
+ * Code assist notification of a method/function completion.
  *
  * @param declaringTypePackageName Name of the package in which the type that contains this new method is declared.
  * @param declaringTypeName Name of the type declaring this new method.
@@ -259,13 +229,6 @@ void acceptLocalVariable(
  * 		It is a positive integer which are used for determine if this proposal is more relevant than another proposal.
  * 		This value can only be used for compare relevance. A proposal is more relevant than another if his relevance
  * 		value is higher.
- *
- * NOTE - All package and type names are presented in their readable form:
- *    Package names are in the form "a.b.c".
- *    Base types are in the form "int" or "boolean".
- *    Array types are in the qualified form "M[]" or "int[]".
- *    Nested type names are in the qualified form "A.M".
- *    The default package is represented by an empty array.
  *
  * NOTE: parameter names can be retrieved from the source model after the user selects a specific method.
  *
@@ -287,7 +250,7 @@ void acceptMethod(
 	int relevance);
 
 /**
- * Code assist notification of a method completion.
+ * Code assist notification of a method/function completion.
  *
  * @param declaringTypePackageName Name of the package in which the type that contains this new method is declared.
  * @param declaringTypeName Name of the type declaring this new method.
@@ -308,13 +271,6 @@ void acceptMethod(
  * 		It is a positive integer which are used for determine if this proposal is more relevant than another proposal.
  * 		This value can only be used for compare relevance. A proposal is more relevant than another if his relevance
  * 		value is higher.
- *
- * NOTE - All package and type names are presented in their readable form:
- *    Package names are in the form "a.b.c".
- *    Base types are in the form "int" or "boolean".
- *    Array types are in the qualified form "M[]" or "int[]".
- *    Nested type names are in the qualified form "A.M".
- *    The default package is represented by an empty array.
  *
  * NOTE: parameter names can be retrieved from the source model after the user selects a specific method.
  *
@@ -350,6 +306,8 @@ void acceptModifier(char[] modifierName, int completionStart, int completionEnd,
 /**
  * Code assist notification of a package completion.
  *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * @param packageName The package name.
  * @param completionName The completion for the package. Can include '.*;' for imports.
  * @param completionStart The start position of insertion of the name of this new package.
@@ -373,6 +331,8 @@ void acceptPackage(
 /**
  * Code assist notification of a type completion.
  *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * @param packageName Declaring package name of the type.
  * @param typeName Name of the type.
  * @param completionName The completion for the type. Can include ';' for imported types.
@@ -385,8 +345,8 @@ void acceptPackage(
  *
  * NOTE - All package and type names are presented in their readable form:
  *    Package names are in the form "a.b.c".
- *    Nested type names are in the qualified form "A.M".
  *    The default package is represented by an empty array.
+ * 
  * @deprecated Use {@link CompletionRequestor#accept(CompletionProposal)} instead.
  */
 void acceptType(
@@ -411,12 +371,6 @@ void acceptType(
  * 		This value can only be used for compare relevance. A proposal is more relevant than another if his relevance
  * 		value is higher.
  *
- * NOTE - All package and type names are presented in their readable form:
- *    Package names are in the form "a.b.c".
- *    Base types are in the form "int" or "boolean".
- *    Array types are in the qualified form "M[]" or "int[]".
- *    Nested type names are in the qualified form "A.M".
- *    The default package is represented by an empty array.
  * @deprecated Use {@link CompletionRequestor#accept(CompletionProposal)} instead.
  */
 void acceptVariableName(

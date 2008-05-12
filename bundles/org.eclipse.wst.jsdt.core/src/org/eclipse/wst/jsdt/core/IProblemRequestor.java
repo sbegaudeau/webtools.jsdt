@@ -13,8 +13,8 @@ package org.eclipse.wst.jsdt.core;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 
 /**
- * A callback interface for receiving java problem as they are discovered
- * by some Java operation.
+ * A callback interface for receiving javaScript problem as they are discovered
+ * by some JavaScript operation.
  *
  * @see IProblem
  *  
@@ -26,9 +26,9 @@ import org.eclipse.wst.jsdt.core.compiler.IProblem;
 public interface IProblemRequestor {
 
 	/**
-	 * Notification of a Java problem.
+	 * Notification of a JavaScript problem.
 	 *
-	 * @param problem IProblem - The discovered Java problem.
+	 * @param problem IProblem - The discovered JavaScript problem.
 	 */
 	void acceptProblem(IProblem problem);
 

@@ -22,14 +22,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * A package fragment root contains a set of package fragments.
- * It corresponds to an underlying resource which is either a folder,
- * JAR, or zip.  In the case of a folder, all descendant folders represent
+ * A package fragment root (or source folder root) contains a set of source folders (package fragments).
+ * It corresponds to an underlying resource which is either folder.  All descendant folders represent
  * package fragments.  For a given child folder representing a package fragment,
  * the corresponding package name is composed of the folder names between the folder
  * for this root and the child folder representing the package, separated by '.'.
- * In the case of a JAR or zip, the contents of the archive dictates
- * the set of package fragments in an analogous manner.
  * Package fragment roots need to be opened before they can be navigated or manipulated.
  * The children are of type <code>IPackageFragment</code>, and are in no particular order.
  * <p>
@@ -50,7 +47,7 @@ public interface IPackageFragmentRoot
 	int K_SOURCE = 1;
 	/**
 	 * Kind constant for a binary path root. Indicates this
-	 * root only contains binary files.
+	 * root only contains binary (non-editable) files.
 	 */
 	int K_BINARY = 2;
 	/**
@@ -60,34 +57,29 @@ public interface IPackageFragmentRoot
 	/**
 	 * Update model flag constant (bit mask value 1) indicating that the operation
 	 * is to not copy/move/delete the package fragment root resource.
-	 * @since 2.1
 	 */
 	int NO_RESOURCE_MODIFICATION = 1;
 	/**
 	 * Update model flag constant (bit mask value 2) indicating that the operation
-	 * is to update the classpath of the originating project.
-	 * @since 2.1
+	 * is to update the includepath of the originating project.
 	 */
 	int ORIGINATING_PROJECT_INCLUDEPATH = 2;
 	/**
 	 * Update model flag constant (bit mask value 4) indicating that the operation
-	 * is to update the classpath of all referring projects except the originating project.
-	 * @since 2.1
+	 * is to update the includepath of all referring projects except the originating project.
 	 */
 	int OTHER_REFERRING_PROJECTS_INCLUDEPATH = 4;
 	/**
 	 * Update model flag constant (bit mask value 8) indicating that the operation
-	 * is to update the classpath of the destination project.
-	 * @since 2.1
+	 * is to update the includepath of the destination project.
 	 */
 	int DESTINATION_PROJECT_INCLUDEPATH = 8;
 	/**
 	 * Update model flag constant (bit mask value 16) indicating that the operation
-	 * is to replace the resource and the destination project's classpath entry.
-	 * @since 2.1
+	 * is to replace the resource and the destination project's includepath entry.
 	 */
 	int REPLACE = 16;
-	/**
+	/*
 	 * Attaches the source archive identified by the given absolute path to this
 	 * binary package fragment root. <code>rootPath</code> specifies the location
 	 * of the root within the archive or folder (empty specifies the default root
@@ -105,7 +97,7 @@ public interface IPackageFragmentRoot
 	 * @param monitor the given progress monitor
 	 * @exception JavaScriptModelException if this operation fails. Reasons include:
 	 * <ul>
-	 * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+	 * <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * <li> A <code>CoreException</code> occurred while updating a server property
 	 * <li> This package fragment root is not of kind binary (INVALID_ELEMENT_TYPES)
 	 * <li> The path provided is not absolute (RELATIVE_PATH)
@@ -125,22 +117,22 @@ public interface IPackageFragmentRoot
 	 * is then ignored.
 	 * </p><p>
 	 * If <code>DESTINATION_PROJECT_INCLUDEPATH</code> is specified in
-	 * <code>updateModelFlags</code>, updates the classpath of the
-	 * destination's project (if it is a Java project). If a non-<code>null</code>
-	 * sibling is specified, a copy of this root's classpath entry is inserted before the
-	 * sibling on the destination project's raw classpath. If <code>null</code> is
-	 * specified, the classpath entry is added at the end of the raw classpath.
+	 * <code>updateModelFlags</code>, updates the includepath of the
+	 * destination's project (if it is a JavaScript project). If a non-<code>null</code>
+	 * sibling is specified, a copy of this root's includepath entry is inserted before the
+	 * sibling on the destination project's raw includepath. If <code>null</code> is
+	 * specified, the includepath entry is added at the end of the raw includepath.
 	 * </p><p>
 	 * If <code>REPLACE</code> is specified in <code>updateModelFlags</code>,
 	 * overwrites the resource at the destination path if any.
-	 * If the same classpath entry already exists on the destination project's raw
-	 * classpath, then the sibling is ignored and the new classpath entry replaces the
+	 * If the same includepath entry already exists on the destination project's raw
+	 * includepath, then the sibling is ignored and the new includepath entry replaces the
 	 * existing one.
 	 * </p><p>
 	 * If no flags is specified in <code>updateModelFlags</code> (using
 	 * <code>IResource.NONE</code>), the default behavior applies: the
 	 * resource is copied (if this package fragment root is not external) and the
-	 * classpath is not updated.
+	 * includepath is not updated.
 	 * </p>
 	 *
 	 * @param destination the destination path
@@ -149,8 +141,8 @@ public interface IPackageFragmentRoot
 	 * @param updateModelFlags bit-wise or of update resource flag constants
 	 *   (<code>DESTINATION_PROJECT_INCLUDEPATH</code> and
 	 *   <code>NO_RESOURCE_MODIFICATION</code>)
-	 * @param sibling the classpath entry before which a copy of the classpath
-	 * entry should be inserted or <code>null</code> if the classpath entry should
+	 * @param sibling the includepath entry before which a copy of the includepath
+	 * entry should be inserted or <code>null</code> if the includepath entry should
 	 * be inserted at the end
 	 * @param monitor a progress monitor
 	 *
@@ -159,19 +151,18 @@ public interface IPackageFragmentRoot
 	 * <ul>
 	 * <li> This root does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * <li> A <code>CoreException</code> occurred while copying the
-	 * resource or updating a classpath</li>
+	 * resource or updating a includepath</li>
 	 * <li>
 	 * The destination is not inside an existing project and <code>updateModelFlags</code>
 	 * has been specified as <code>DESTINATION_PROJECT_INCLUDEPATH</code>
 	 * (INVALID_DESTINATION)</li>
-	 * <li> The sibling is not a classpath entry on the destination project's
-	 * raw classpath (INVALID_SIBLING)</li>
-	 * <li> The same classpath entry already exists on the destination project's
-	 * classpath (NAME_COLLISION) and <code>updateModelFlags</code>
+	 * <li> The sibling is not a includepath entry on the destination project's
+	 * raw includepath (INVALID_SIBLING)</li>
+	 * <li> The same includepath entry already exists on the destination project's
+	 * includepath (NAME_COLLISION) and <code>updateModelFlags</code>
 	 * has not been specified as <code>REPLACE</code></li>
 	 * </ul>
 	 * @see org.eclipse.core.resources.IResource#copy(IPath, boolean, IProgressMonitor)
-	 * @since 2.1
 	 */
 	void copy(IPath destination, int updateResourceFlags, int updateModelFlags, IIncludePathEntry sibling, IProgressMonitor monitor) throws JavaScriptModelException;
 	/**
@@ -190,7 +181,7 @@ public interface IPackageFragmentRoot
 	 * @param monitor the given progress monitor
 	 * @exception JavaScriptModelException if the element could not be created. Reasons include:
 	 * <ul>
-	 * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+	 * <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * <li> A <code>CoreException</code> occurred while creating an underlying resource
 	 * <li> This package fragment root is read only (READ_ONLY)
 	 * <li> The name is not a valid package name (INVALID_NAME)
@@ -214,18 +205,18 @@ public interface IPackageFragmentRoot
 	 * is then ignored.
 	 * </p><p>
 	 * If <code>ORIGINATING_PROJECT_INCLUDEPATH</code> is specified in
-	 * <code>updateModelFlags</code>, update the raw classpath of this package
-	 * fragment root's project by removing the corresponding classpath entry.
+	 * <code>updateModelFlags</code>, update the raw includepath of this package
+	 * fragment root's project by removing the corresponding includepath entry.
 	 * </p><p>
 	 * If <code>OTHER_REFERRING_PROJECTS_INCLUDEPATH</code> is specified in
-	 * <code>updateModelFlags</code>, update the raw classpaths of all other Java
-	 * projects referring to this root's resource by removing the corresponding classpath
+	 * <code>updateModelFlags</code>, update the raw includepaths of all other JavaScript
+	 * projects referring to this root's resource by removing the corresponding includepath
 	 * entries.
 	 * </p><p>
 	 * If no flags is specified in <code>updateModelFlags</code> (using
 	 * <code>IResource.NONE</code>), the default behavior applies: the
 	 * resource is deleted (if this package fragment root is not external) and no
-	 * classpaths are updated.
+	 * includepaths are updated.
 	 * </p>
 	 *
 	 * @param updateResourceFlags bit-wise or of update resource flag constants
@@ -241,17 +232,16 @@ public interface IPackageFragmentRoot
 	 * <ul>
 	 * <li> This root does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * <li> A <code>CoreException</code> occurred while deleting the resource
-	 * or updating a classpath
+	 * or updating a includepath
 	 * </li>
 	 * </ul>
 	 * @see org.eclipse.core.resources.IResource#delete(boolean, IProgressMonitor)
-	 * @since 2.1
 	 */
 	void delete(int updateResourceFlags, int updateModelFlags, IProgressMonitor monitor) throws JavaScriptModelException;
 	/**
 	 * Returns this package fragment root's kind encoded as an integer.
 	 * A package fragment root can contain source files (i.e. files with one
-	 * of the {@link JavaScriptCore#getJavaScriptLikeExtensions() Java-like extensions},
+	 * of the {@link JavaScriptCore#getJavaScriptLikeExtensions() JavaScript-like extensions},
 	 * or <code>.class</code> files, but not both.
 	 * If the underlying folder or archive contains other kinds of files, they are ignored.
 	 * In particular, <code>.class</code> files are ignored under a source package fragment root,
@@ -266,17 +256,17 @@ public interface IPackageFragmentRoot
 	int getKind() throws JavaScriptModelException;
 
 	/**
-	 * Returns an array of non-Java resources contained in this package fragment root.
+	 * Returns an array of non-JavaScript resources contained in this package fragment root.
 	 * <p>
-	 * Non-Java resources includes other files and folders located in the same
+	 * Non-JavaScript resources includes other files and folders located in the same
 	 * directories as the compilation units or class files under this package
 	 * fragment root. Resources excluded from this package fragment root
-	 * by virtue of inclusion/exclusion patterns on the corresponding source classpath
-	 * entry are considered non-Java resources and will appear in the result
+	 * by virtue of inclusion/exclusion patterns on the corresponding source includepath
+	 * entry are considered non-JavaScript resources and will appear in the result
 	 * (possibly in a folder). Thus when a nested source folder is excluded, it will appear
-	 * in the non-Java resources of the outer folder.
+	 * in the non-JavaScript resources of the outer folder.
 	 * </p>
-	 * @return an array of non-Java resources (<code>IFile</code>s,
+	 * @return an array of non-JavaScript resources (<code>IFile</code>s,
 	 *              <code>IFolder</code>s, or <code>IStorage</code>s if the
 	 *              package fragment root is in archive) contained in this package
 	 *              fragment root
@@ -300,15 +290,14 @@ public interface IPackageFragmentRoot
 
 
 	/**
-	 * Returns the first raw classpath entry that corresponds to this package
+	 * Returns the first raw includepath entry that corresponds to this package
 	 * fragment root.
-	 * A raw classpath entry corresponds to a package fragment root if once resolved
+	 * A raw includepath entry corresponds to a package fragment root if once resolved
 	 * this entry's path is equal to the root's path.
 	 *
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
-	 * @return the first raw classpath entry that corresponds to this package fragment root
-	 * @since 2.0
+	 * @return the first raw includepath entry that corresponds to this package fragment root
 	 */
 	IIncludePathEntry getRawIncludepathEntry() throws JavaScriptModelException;
 
@@ -374,31 +363,31 @@ public interface IPackageFragmentRoot
 	 * is then ignored.
 	 * </p><p>
 	 * If <code>DESTINATION_PROJECT_INCLUDEPATH</code> is specified in
-	 * <code>updateModelFlags</code>, updates the classpath of the
-	 * destination's project (if it is a Java project). If a non-<code>null</code>
-	 * sibling is specified, a copy of this root's classpath entry is inserted before the
-	 * sibling on the destination project's raw classpath. If <code>null</code> is
-	 * specified, the classpath entry is added at the end of the raw classpath.
+	 * <code>updateModelFlags</code>, updates the includepath of the
+	 * destination's project (if it is a JavaScript project). If a non-<code>null</code>
+	 * sibling is specified, a copy of this root's includepath entry is inserted before the
+	 * sibling on the destination project's raw includepath. If <code>null</code> is
+	 * specified, the includepath entry is added at the end of the raw includepath.
 	 * </p><p>
 	 * If <code>ORIGINATING_PROJECT_INCLUDEPATH</code> is specified in
-	 * <code>updateModelFlags</code>, update the raw classpath of this package
-	 * fragment root's project by removing the corresponding classpath entry.
+	 * <code>updateModelFlags</code>, update the raw includepath of this package
+	 * fragment root's project by removing the corresponding includepath entry.
 	 * </p><p>
 	 * If <code>OTHER_REFERRING_PROJECTS_INCLUDEPATH</code> is specified in
-	 * <code>updateModelFlags</code>, update the raw classpaths of all other Java
-	 * projects referring to this root's resource by removing the corresponding classpath
+	 * <code>updateModelFlags</code>, update the raw includepaths of all other JavaScript
+	 * projects referring to this root's resource by removing the corresponding includepath
 	 * entries.
 	 * </p><p>
 	 * If <code>REPLACE</code> is specified in <code>updateModelFlags</code>,
 	 * overwrites the resource at the destination path if any.
-	 * If the same classpath entry already exists on the destination project's raw
-	 * classpath, then the sibling is ignored and the new classpath entry replaces the
+	 * If the same includepath entry already exists on the destination project's raw
+	 * includepath, then the sibling is ignored and the new includepath entry replaces the
 	 * existing one.
 	 * </p><p>
 	 * If no flags is specified in <code>updateModelFlags</code> (using
 	 * <code>IResource.NONE</code>), the default behavior applies: the
 	 * resource is moved (if this package fragment root is not external) and no
-	 * classpaths are updated.
+	 * includepaths are updated.
 	 * </p>
 	 *
 	 * @param destination the destination path
@@ -410,8 +399,8 @@ public interface IPackageFragmentRoot
 	 *   <code>ORIGINATING_PROJECT_INCLUDEPATH</code>,
 	 *   <code>OTHER_REFERRING_PROJECTS_INCLUDEPATH</code> and
 	 *   <code>NO_RESOURCE_MODIFICATION</code>)
-	 * @param sibling the classpath entry before which a copy of the classpath
-	 * entry should be inserted or <code>null</code> if the classpath entry should
+	 * @param sibling the includepath entry before which a copy of the includepath
+	 * entry should be inserted or <code>null</code> if the includepath entry should
 	 * be inserted at the end
 	 * @param monitor a progress monitor
 	 *
@@ -420,19 +409,18 @@ public interface IPackageFragmentRoot
 	 * <ul>
 	 * <li> This root does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * <li> A <code>CoreException</code> occurred while copying the
-	 * resource or updating a classpath</li>
+	 * resource or updating a includepath</li>
 	 * <li>
 	 * The destination is not inside an existing project and <code>updateModelFlags</code>
 	 * has been specified as <code>DESTINATION_PROJECT_INCLUDEPATH</code>
 	 * (INVALID_DESTINATION)</li>
-	 * <li> The sibling is not a classpath entry on the destination project's
-	 * raw classpath (INVALID_SIBLING)</li>
-	 * <li> The same classpath entry already exists on the destination project's
-	 * classpath (NAME_COLLISION) and <code>updateModelFlags</code>
+	 * <li> The sibling is not a includepath entry on the destination project's
+	 * raw includepath (INVALID_SIBLING)</li>
+	 * <li> The same includepath entry already exists on the destination project's
+	 * includepath (NAME_COLLISION) and <code>updateModelFlags</code>
 	 * has not been specified as <code>REPLACE</code></li>
 	 * </ul>
 	 * @see org.eclipse.core.resources.IResource#move(IPath, boolean, IProgressMonitor)
-	 * @since 2.1
 	 */
 	void move(IPath destination, int updateResourceFlags, int updateModelFlags, IIncludePathEntry sibling, IProgressMonitor monitor) throws JavaScriptModelException;
 

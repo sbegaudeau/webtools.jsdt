@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.core;
 
 /**
- * Markers used by the Java model.
+ * Markers used by the JavaScript model.
  * <p>
  * This interface declares constants only; it is not intended to be implemented
  * or extended.
@@ -25,18 +25,18 @@ package org.eclipse.wst.jsdt.core;
 public interface IJavaScriptModelMarker {
 
 	/**
-	 * Java model problem marker type (value
+	 * JavaScript model problem marker type (value
 	 * <code>"org.eclipse.wst.jsdt.core.problem"</code>). This can be used to
 	 * recognize those markers in the workspace that flag problems detected by
-	 * the Java tooling during compilation.
+	 * the JavaScript tooling during validation.
 	 */
 	String JAVASCRIPT_MODEL_PROBLEM_MARKER = JavaScriptCore.PLUGIN_ID + ".problem"; //$NON-NLS-1$
 
 	/**
-	 * Java model transient problem marker type (value
+	 * JavaScript model transient problem marker type (value
 	 * <code>"org.eclipse.wst.jsdt.core.transient_problem"</code>). This can be
 	 * used to recognize those markers in the workspace that flag transient
-	 * problems detected by the Java tooling (such as a problem detected by the
+	 * problems detected by the JavaScript tooling (such as a problem detected by the
 	 * outliner, or a problem detected during a code completion). Since 1.0,
 	 * transient problems are reported as <code>IProblem</code> through
 	 * various API. Only the evaluation API is still producing markers for
@@ -49,15 +49,14 @@ public interface IJavaScriptModelMarker {
 	String TRANSIENT_PROBLEM = JavaScriptCore.PLUGIN_ID + ".transient_problem"; //$NON-NLS-1$
 
 	/**
-	 * Java model task marker type (value
+	 * JavaScript model task marker type (value
 	 * <code>"org.eclipse.wst.jsdt.core.task"</code>). This can be used to
 	 * recognize task markers in the workspace that correspond to tasks
-	 * specified in Java source comments and detected during compilation (for
+	 * specified in JavaScript source comments and detected during compilation (for
 	 * example, 'TO-DO: ...'). Tasks are identified by a task tag, which can be
 	 * customized through <code>JavaScriptCore</code> option
 	 * <code>"org.eclipse.wst.jsdt.core.compiler.taskTag"</code>.
 	 *
-	 * @since 2.1
 	 */
 	String TASK_MARKER = JavaScriptCore.PLUGIN_ID + ".task"; //$NON-NLS-1$
 
@@ -67,7 +66,6 @@ public interface IJavaScriptModelMarker {
 	 * with colon separator) and separated with '#' characters. For example: {
 	 * "foo", "bar" } is encoded as "2:foo#bar", { } is encoded as "0: "
 	 *
-	 * @since 2.0
 	 */
 	String ARGUMENTS = "arguments"; //$NON-NLS-1$
 
@@ -78,7 +76,6 @@ public interface IJavaScriptModelMarker {
 
 	/**
 	 * ID category marker attribute (value <code>"categoryId"</code>)
-	 * @since 3.2
 	 */
 	String CATEGORY_ID = "categoryId"; //$NON-NLS-1$
 
@@ -96,20 +93,19 @@ public interface IJavaScriptModelMarker {
 	String CYCLE_DETECTED = "cycleDetected"; //$NON-NLS-1$
 
 	/**
-	 * Build path problem marker type (value
+	 * Include path problem marker type (value
 	 * <code>"org.eclipse.wst.jsdt.core.buildpath_problem"</code>). This can be
 	 * used to recognize those markers in the workspace that flag problems
-	 * detected by the Java tooling during classpath setting.
+	 * detected by the JavaScript tooling during includepath setting.
 	 */
 	String BUILDPATH_PROBLEM_MARKER = JavaScriptCore.PLUGIN_ID
 			+ ".buildpath_problem"; //$NON-NLS-1$
 
 	/**
-	 * Classpath file format marker attribute (value
-	 * <code>"classpathFileFormat"</code>). Used only on buildpath problem
+	 * IncludePath file format marker attribute (value
+	 * <code>"classpathFileFormat"</code>). Used only on includepath problem
 	 * markers. The value of this attribute is either "true" or "false".
 	 *
-	 * @since 2.0
 	 */
 	String INCLUDEPATH_FILE_FORMAT = "classpathFileFormat"; //$NON-NLS-1$
 }

@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.core;
 
 /**
- * Common protocol for Java elements that contain other Java elements.
+ * Common protocol for JavaScript elements that contain other JavaScript elements.
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>

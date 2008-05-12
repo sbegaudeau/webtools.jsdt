@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.core;
 
 /**
- * A callback interface for receiving java problem correction.
+ * A callback interface for receiving javaScript problem correction.
  *  
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
@@ -19,7 +19,7 @@ package org.eclipse.wst.jsdt.core;
  * (repeatedly) as the API evolves.
  */
 public interface ICorrectionRequestor {
-/**
+/*
  * Notification of a class correction.
  *
  * @param packageName Declaring package name of the class.
@@ -42,7 +42,7 @@ void acceptClass(
 	int correctionStart,
 	int correctionEnd);
 /**
- * Notification of a field correction.
+ * Notification of a field/var correction.
  *
  * @param declaringTypePackageName Name of the package in which the type that contains this field is declared.
  * @param declaringTypeName Name of the type declaring this field.
@@ -54,12 +54,6 @@ void acceptClass(
  * @param correctionStart The start position of insertion of the correction of this field.
  * @param correctionEnd The end position of insertion of the correction of this field.
  *
- * NOTE - All package and type names are presented in their readable form:
- *    Package names are in the form "a.b.c".
- *    Base types are in the form "int" or "boolean".
- *    Array types are in the qualified form "M[]" or "int[]".
- *    Nested type names are in the qualified form "A.M".
- *    The default package is represented by an empty array.
  */
 void acceptField(
 	char[] declaringTypePackageName,
@@ -86,6 +80,8 @@ void acceptField(
  *    Package names are in the form "a.b.c".
  *    Nested type names are in the qualified form "A.M".
  *    The default package is represented by an empty array.
+ * 
+ * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
  */
 void acceptInterface(
 	char[] packageName,
@@ -104,12 +100,6 @@ void acceptInterface(
  * @param correctionStart The start position of insertion of the correction of this local variable.
  * @param correctionEnd The end position of insertion of the correction of this local variable.
  *
- * NOTE - All package and type names are presented in their readable form:
- *    Package names are in the form "a.b.c".
- *    Base types are in the form "int" or "boolean".
- *    Array types are in the qualified form "M[]" or "int[]".
- *    Nested type names are in the qualified form "A.M".
- *    The default package is represented by an empty array.
  */
 void acceptLocalVariable(
 	char[] name,
@@ -138,13 +128,6 @@ void acceptLocalVariable(
  * @param correctionStart The start position of insertion of the correction of this method.
  * @param correctionEnd The end position of insertion of the correction of this method.
  *
- * NOTE - All package and type names are presented in their readable form:
- *    Package names are in the form "a.b.c".
- *    Base types are in the form "int" or "boolean".
- *    Array types are in the qualified form "M[]" or "int[]".
- *    Nested type names are in the qualified form "A.M".
- *    The default package is represented by an empty array.
- *
  * NOTE: parameter names can be retrieved from the source model after the user selects a specific method.
  */
 void acceptMethod(
@@ -169,9 +152,7 @@ void acceptMethod(
  * @param correctionStart The start position of insertion of the correction of this package.
  * @param correctionEnd The end position of insertion of the correction of this package.
  *
- * NOTE - All package names are presented in their readable form:
- *    Package names are in the form "a.b.c".
- *    The default package is represented by an empty array.
+ * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
  */
 void acceptPackage(
 	char[] packageName,

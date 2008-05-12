@@ -22,6 +22,8 @@ package org.eclipse.wst.jsdt.core;
  * of the type parameters use {@link IType#getTypeParameters()} for a type and use
  * {@link IFunction#getTypeParameters()} for a method.
  * </p>
+ * <p><b>Note: This Interface only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>

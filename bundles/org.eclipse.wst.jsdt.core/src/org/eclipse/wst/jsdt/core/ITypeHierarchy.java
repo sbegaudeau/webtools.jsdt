@@ -18,10 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * A type hierarchy provides navigations between a type and its resolved
  * supertypes and subtypes for a specific type or for all types within a region.
  * Supertypes may extend outside of the type hierarchy's region in which it was
- * created such that the root of the hierarchy is always included. For example, if a type
- * hierarchy is created for a <code>java.io.File</code>, and the region the hierarchy was
- * created in is the package fragment <code>java.io</code>, the supertype
- * <code>java.lang.Object</code> will still be included.
+ * created such that the root of the hierarchy is always included. 
  * <p>
  * A type hierarchy is static and can become stale. Although consistent when
  * created, it does not automatically track changes in the model.
@@ -115,6 +112,8 @@ IType[] getAllSuperclasses(IType type);
  * An empty array is returned if there are no resolved superinterfaces for the
  * given type.
  *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * <p>NOTE: once a type hierarchy has been created, it is more efficient to
  * query the hierarchy for superinterfaces than to query a type recursively.
  * Querying an element performs a dynamic resolution,
@@ -129,9 +128,6 @@ IType[] getAllSuperInterfaces(IType type);
  * given type, in bottom-up order. An empty array
  * is returned if there are no resolved supertypes for the
  * given type.
- * <p>
- * Note that <code>java.lang.Object</code> is NOT considered to be a supertype
- * of any interface type.
  * </p><p>NOTE: once a type hierarchy has been created, it is more efficient to
  * query the hierarchy for supertypes than to query a type recursively up
  * the supertype chain. Querying an element performs a dynamic resolution,
@@ -158,7 +154,6 @@ IType[] getAllTypes();
  * @param type the given type
  * @return the modifier flags for this member
  * @see Flags
- * @since 2.0
  */
 int getCachedFlags(IType type);
 
@@ -168,6 +163,8 @@ int getCachedFlags(IType type);
  * hierarchy's graph.
  * Returns an empty collection if the given type is a class, or
  * if no interfaces were resolved to extend the given interface.
+ *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
  *
  * @param type the given type
  * @return all interfaces resolved to extend the given interface limited to the interfaces in this
@@ -196,6 +193,8 @@ IType[] getRootClasses();
 /**
  * Returns all interfaces in the graph which have no resolved superinterfaces,
  * in no particular order.
+ *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
  *
  * @return all interfaces in the graph which have no resolved superinterfaces
  */
@@ -245,6 +244,8 @@ IType getSuperclass(IType type);
  * hierarchy's graph.
  * For classes, this gives the interfaces that the class implements.
  * For interfaces, this gives the interfaces that the interface extends.
+ *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
  *
  * @param type the given type
  * @return the direct resolved interfaces that the given type implements or extends limited to the interfaces in this type

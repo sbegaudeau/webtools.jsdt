@@ -13,20 +13,20 @@ package org.eclipse.wst.jsdt.core;
 import org.eclipse.core.runtime.IPath;
 
 /**
- * Interface of a classpath container.
- * A classpath container provides a way to indirectly reference a set of classpath entries through
- * a classpath entry of kind <code>CPE_CONTAINER</code>. Typically, a classpath container can
- * be used to describe a complex library composed of multiple JARs or projects, considering also
+ * Interface of a includepath container.
+ * A includepath container provides a way to indirectly reference a set of includepath entries through
+ * a includepath entry of kind <code>CPE_CONTAINER</code>. Typically, a includepath container can
+ * be used to describe a complex library composed of filess or projects, considering also
  * that containers can map to different set of entries on each project, in other words, several
  * projects can reference the same generic container path, but have each of them actually bound
  * to a different container object.
  * <p>
- * The set of entries associated with a classpath container may contain any of the following:
+ * The set of entries associated with a includepath container may contain any of the following:
  * <ul>
  * <li> library entries (<code>CPE_LIBRARY</code>) </li>
  * <li> project entries (<code>CPE_PROJECT</code>) </li>
  * </ul>
- * In particular, a classpath container can neither reference further classpath containers or classpath variables.
+ * In particular, a includepath container can neither reference further includepath containers or includepath variables.
  * <p>
  * Classpath container values are persisted locally to the workspace, but are not preserved from a
  * session to another. It is thus highly recommended to register a <code>JsGlobalScopeContainerInitializer</code>
@@ -58,27 +58,27 @@ public interface IJsGlobalScopeContainer {
 	int K_DEFAULT_SYSTEM = 3;
 
 	/**
-	 * Answers the set of classpath entries this container is mapping to.
+	 * Answers the set of includepath entries this container is mapping to.
 	 * <p>
-	 * The set of entries associated with a classpath container may contain any of the following:
+	 * The set of entries associated with a includepath container may contain any of the following:
 	 * <ul>
 	 * <li> library entries (<code>CPE_LIBRARY</code>) </li>
 	 * <li> project entries (<code>CPE_PROJECT</code>) </li>
 	 * </ul>
-	 * A classpath container can neither reference further classpath containers
-	 * or classpath variables.
+	 * A includepath container can neither reference further includepath containers
+	 * or includepath variables.
 	 * </p>
 	 * <p>
-	 * This method is called by the Java model when it needs to resolve this
-	 * classpath container entry into a list of library and project entries.
-	 * The method is typically called exactly once for a given Java project,
-	 * and the resulting list of entries cached internally by the Java model.
+	 * This method is called by the JavaScript model when it needs to resolve this
+	 * includepath container entry into a list of library and project entries.
+	 * The method is typically called exactly once for a given JavaScript project,
+	 * and the resulting list of entries cached internally by the JavaScript model.
 	 * This method must not be called by other clients.
 	 * <p>
 	 * There are a wide variety of conditions under which this method may be
 	 * invoked. To ensure that the implementation does not interfere with
-	 * correct functioning of the Java model, the implementation should use
-	 * only the following Java model APIs:
+	 * correct functioning of the JavaScript model, the implementation should use
+	 * only the following JavaScript model APIs:
 	 * <ul>
 	 * <li>{@link JavaScriptCore#newLibraryEntry(IPath, IPath, IPath, boolean)} and variants</li>
 	 * <li>{@link JavaScriptCore#newProjectEntry(IPath, boolean)} and variants</li>
@@ -89,39 +89,39 @@ public interface IJsGlobalScopeContainer {
 	 * <li>{@link IJavaScriptProject#readRawIncludepath()}</li>
 	 * <li>{@link IJavaScriptProject#getOutputLocation()}</li>
 	 * <li>{@link IJavaScriptProject#readOutputLocation()}</li>
-	 * <li>Java element operations marked as "handle-only"</li>
+	 * <li>JavaScript element operations marked as "handle-only"</li>
 	 * </ul>
-	 * The effects of using other Java model APIs are unspecified.
+	 * The effects of using other JavaScript model APIs are unspecified.
 	 * </p>
 	 *
-	 * @return IIncludePathEntry[] - the classpath entries this container represents
+	 * @return IIncludePathEntry[] - the includepath entries this container represents
 	 * @see IIncludePathEntry
 	 * @deprecated Use {@link #getIncludepathEntries()} instead
 	 */
 	IIncludePathEntry[] getClasspathEntries();
 
 	/**
-	 * Answers the set of classpath entries this container is mapping to.
+	 * Answers the set of includepath entries this container is mapping to.
 	 * <p>
-	 * The set of entries associated with a classpath container may contain any of the following:
+	 * The set of entries associated with a includepath container may contain any of the following:
 	 * <ul>
 	 * <li> library entries (<code>CPE_LIBRARY</code>) </li>
 	 * <li> project entries (<code>CPE_PROJECT</code>) </li>
 	 * </ul>
-	 * A classpath container can neither reference further classpath containers
-	 * or classpath variables.
+	 * A includepath container can neither reference further includepath containers
+	 * or includepath variables.
 	 * </p>
 	 * <p>
-	 * This method is called by the Java model when it needs to resolve this
-	 * classpath container entry into a list of library and project entries.
-	 * The method is typically called exactly once for a given Java project,
-	 * and the resulting list of entries cached internally by the Java model.
+	 * This method is called by the JavaScript model when it needs to resolve this
+	 * includepath container entry into a list of library and project entries.
+	 * The method is typically called exactly once for a given JavaScript project,
+	 * and the resulting list of entries cached internally by the JavaScript model.
 	 * This method must not be called by other clients.
 	 * <p>
 	 * There are a wide variety of conditions under which this method may be
 	 * invoked. To ensure that the implementation does not interfere with
-	 * correct functioning of the Java model, the implementation should use
-	 * only the following Java model APIs:
+	 * correct functioning of the JavaScript model, the implementation should use
+	 * only the following JavaScript model APIs:
 	 * <ul>
 	 * <li>{@link JavaScriptCore#newLibraryEntry(IPath, IPath, IPath, boolean)} and variants</li>
 	 * <li>{@link JavaScriptCore#newProjectEntry(IPath, boolean)} and variants</li>
@@ -132,12 +132,12 @@ public interface IJsGlobalScopeContainer {
 	 * <li>{@link IJavaScriptProject#readRawIncludepath()}</li>
 	 * <li>{@link IJavaScriptProject#getOutputLocation()}</li>
 	 * <li>{@link IJavaScriptProject#readOutputLocation()}</li>
-	 * <li>Java element operations marked as "handle-only"</li>
+	 * <li>JavaScript element operations marked as "handle-only"</li>
 	 * </ul>
-	 * The effects of using other Java model APIs are unspecified.
+	 * The effects of using other JavaScript model APIs are unspecified.
 	 * </p>
 	 *
-	 * @return IIncludePathEntry[] - the classpath entries this container represents
+	 * @return IIncludePathEntry[] - the includepath entries this container represents
 	 * @see IIncludePathEntry
 	 */
     IIncludePathEntry[] getIncludepathEntries();

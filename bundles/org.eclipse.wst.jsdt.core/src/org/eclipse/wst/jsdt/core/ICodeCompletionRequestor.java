@@ -52,19 +52,19 @@ void acceptClass(
 	int completionStart,
 	int completionEnd);
 /**
- * Code assist notification of a compilation error detected during completion.
+ * Code assist notification of a validation error detected during completion.
  *  @param marker Only problems which are categorized as errors are notified to the requestor,
  *		warnings are silently ignored.
  *		In case an error got signaled, no other completions might be available,
  *		therefore the problem message should be presented to the user.
  *		The source positions of the problem are related to the source where it was
- *		detected (might be in another compilation unit, if it was indirectly requested
+ *		detected (might be in another javaScript unit, if it was indirectly requested
  *		during the code assist process).
  *      Note: the problem knows its originating file name.
  */
 void acceptError(IMarker marker);
 /**
- * Code assist notification of a field completion.
+ * Code assist notification of a field or var completion.
  *
  * @param declaringTypePackageName Name of the package in which the type that contains this field is declared.
  *
@@ -170,7 +170,7 @@ void acceptLocalVariable(
 	int completionStart,
 	int completionEnd);
 /**
- * Code assist notification of a method completion.
+ * Code assist notification of a method/function completion.
  *
  * @param declaringTypePackageName Name of the package in which the type that contains this new method is declared.
  *

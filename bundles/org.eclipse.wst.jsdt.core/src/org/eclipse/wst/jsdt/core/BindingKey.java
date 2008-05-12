@@ -50,11 +50,11 @@ public final class BindingKey {
 	 * </pre>
 	 * </p>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param typeKey the binding key of the given type
 	 * @param arrayDimension the given array dimension
 	 * @return a new array type binding key
-	 * 
-	 * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static String createArrayTypeBindingKey(String typeKey, int arrayDimension) {
 		// Note this implementation is heavily dependent on ArrayTypeBinding#computeUniqueKey()
@@ -111,10 +111,10 @@ public final class BindingKey {
 	 * </pre>
 	 * </p>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param typeName the possibly qualified type name
 	 * @return a new type binding key
-	 * 
-	 * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static String createTypeBindingKey(String typeName) {
 		// Note this implementation is heavily dependent on TypeBinding#computeUniqueKey() and its subclasses
@@ -134,11 +134,11 @@ public final class BindingKey {
 	 * </pre>
 	 * </p>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param typeVariableName the name of the given type variable
 	 * @param declaringKey the binding key of the type or method the type variable belongs to
 	 * @return a new type variable binding key
-	 *
-	 * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static String createTypeVariableBindingKey(String typeVariableName, String declaringKey) {
 		// Note this implementation is heavily dependent on TypeVariableBinding#computeUniqueKey()
@@ -168,11 +168,11 @@ public final class BindingKey {
 	 * </pre>
 	 * </p>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param typeKey the binding key of the given type
 	 * @param kind one of {@link Signature#C_STAR}, {@link Signature#C_SUPER}, or {@link Signature#C_EXTENDS}
 	 * @return a new wildcard type binding key
-	 *
-	 * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static String createWilcardTypeBindingKey(String typeKey, char kind) {
 		// Note this implementation is heavily dependent on WildcardBinding#computeUniqueKey()
@@ -192,10 +192,9 @@ public final class BindingKey {
 	 * If this binding key does not  represent a function or does not throw any exception,
 	 * returns an empty array.
 	 *
-	 * @return the thrown exceptions signatures
-	 * @since 3.3
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
 	 *
-	 * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
+	 * @return the thrown exceptions signatures
 	 */
 	public String[] getThrownExceptions() {
 		KeyToSignature keyToSignature = new KeyToSignature(this.key, KeyToSignature.THROWN_EXCEPTIONS);
@@ -219,9 +218,9 @@ public final class BindingKey {
 	/**
 	 * Returns whether this binding key represents a raw type.
 	 *
-	 * @return whether this binding key represents a raw type
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
 	 *
-	 * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
+	 * @return whether this binding key represents a raw type
 	 */
 	public boolean isRawType() {
 		KeyKind kind = new KeyKind(this.key);
@@ -232,9 +231,9 @@ public final class BindingKey {
 	/**
 	 * Returns whether this binding key represents a parameterized type, or if its declaring type is a parameterized type.
 	 *
-	 * @return whether this binding key represents a parameterized type
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
 	 *
-	 * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
+	 * @return whether this binding key represents a parameterized type
 	 */
 	public boolean isParameterizedType() {
 		KeyKind kind = new KeyKind(this.key);
@@ -245,9 +244,9 @@ public final class BindingKey {
 	/**
 	 * Returns whether this binding key represents a parameterized method, or if its declaring method is a parameterized method.
 	 *
-	 * @return whether this binding key represents a parameterized method
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
 	 *
-	 * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
+	 * @return whether this binding key represents a parameterized method
 	 */
 	public boolean isParameterizedMethod() {
 		KeyKind kind = new KeyKind(this.key);
@@ -262,7 +261,6 @@ public final class BindingKey {
 	 *
 	 * @return the resolved signature for this binding key
 	 * @see Signature
-	 * @since 3.2
 	 */
 	public String toSignature() {
 		KeyToSignature keyToSignature = new KeyToSignature(this.key, KeyToSignature.SIGNATURE);

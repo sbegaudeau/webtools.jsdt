@@ -12,7 +12,7 @@
 package org.eclipse.wst.jsdt.core;
 
 /**
- * Represents a method (or constructor) declared in a type.
+ * Represents a function or a method (or constructor) declared in a type.
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
@@ -24,12 +24,9 @@ package org.eclipse.wst.jsdt.core;
  */
 public interface IFunction extends IMember {
 /**
- * Returns the simple name of this method.
+ * Returns the simple name of this function or method.
  * For a constructor, this returns the simple name of the declaring type.
  * Note: This holds whether the constructor appears in a source or binary type
- * (even though class files internally define constructor names to be <code>"&lt;init&gt;"</code>).
- * For the class initialization methods in binary types, this returns
- * the special name <code>"&lt;clinit&gt;"</code>.
  * This is a handle-only method.
  * @return the simple name of this method
  */
@@ -48,6 +45,8 @@ String getElementName();
  * or rich (for parameterized types). See {@link Signature} for details.
  * </p>
  *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource.
  * @return the type signatures of the exceptions this method throws,
@@ -64,12 +63,13 @@ String[] getExceptionTypes() throws JavaScriptModelException;
  * types) or resolved (for binary types). See {@link Signature} for details.
  * </p>
  *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource.
  * @return the formal type parameter signatures of this method,
  * in the order declared in the source, an empty array if none
  * @see Signature
- * @since 3.0
  * @deprecated Use {@link #getTypeParameters()} instead
  */
 String[] getTypeParameterSignatures() throws JavaScriptModelException;
@@ -77,11 +77,12 @@ String[] getTypeParameterSignatures() throws JavaScriptModelException;
  * Returns the formal type parameters for this method.
  * Returns an empty array if this method has no formal type parameters.
  *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource.
  * @return the formal type parameters of this method,
  * in the order declared in the source, an empty array if none
- * @since 3.1
  */
 ITypeParameter[] getTypeParameters() throws JavaScriptModelException;
 /**
@@ -99,16 +100,13 @@ int getNumberOfParameters();
  * @return the binding key for this method
  * @see org.eclipse.wst.jsdt.core.dom.IBinding#getKey()
  * @see BindingKey
- * @since 3.1
  */
 String getKey();
 /**
  * Returns the names of parameters in this method.
- * For binary types, associated source or attached Javadoc are used to retrieve the names.
- * If none can be retrieved, then these names are invented as "arg"+i, where i starts at 0.
  * Returns an empty array if this method has no parameters.
  *
- * <p>For example, a method declared as <code>public void foo(String text, int length)</code>
+ * <p>For example, a method declared as <code>function foo( text,  length)</code>
  * would return the array <code>{"text","length"}</code>.
  * </p>
  *
@@ -122,10 +120,6 @@ String[] getParameterNames() throws JavaScriptModelException;
  * Returns an empty array if this method has no parameters.
  * This is a handle-only method.
  * <p>
- * For example, a source method declared as <code>public void foo(String text, int length)</code>
- * would return the array <code>{"QString;","I"}</code>.
- * </p>
- * <p>
  * The type signatures may be either unresolved (for source types)
  * or resolved (for binary types), and either basic (for basic types)
  * or rich (for parameterized types). See {@link Signature} for details.
@@ -137,11 +131,9 @@ String[] getParameterNames() throws JavaScriptModelException;
 String[] getParameterTypes();
 /**
  * Returns the names of parameters in this method.
- * For binary types, these names are invented as "arg"+i, where i starts at 0
- * (even if source is associated with the binary or if Javdoc is attached to the binary).
  * Returns an empty array if this method has no parameters.
  *
- * <p>For example, a method declared as <code>public void foo(String text, int length)</code>
+ * <p>For example, a method declared as <code>function foo( text,  length)</code>
  * would return the array <code>{"text","length"}</code>. For the same method in a
  * binary, this would return <code>{"arg0", "arg1"}</code>.
  * </p>
@@ -149,14 +141,16 @@ String[] getParameterTypes();
  * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource.
  * @return the names of parameters in this method, an empty array if this method has no parameters
- * @since 3.2
  */
 String[] getRawParameterNames() throws JavaScriptModelException;
 /**
  * Returns the type signature of the return value of this method.
  * For constructors, this returns the signature for void.
  * <p>
- * For example, a source method declared as <code>public String getName()</code>
+ * Until EMCAScript 4 is supported, types are inferred by analying the code, and are not necessarily accurate.
+ * </p>
+ * <p>
+ * For example, a source method declared as <code>function getName(){return "abc"}</code>
  * would return <code>"QString;"</code>.
  * </p>
  * <p>
@@ -196,9 +190,10 @@ String getSignature() throws JavaScriptModelException;
  * Returns the type parameter declared in this method with the given name.
  * This is a handle-only method. The type parameter may or may not exist.
  *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * @param name the given simple name
  * @return the type parameter declared in this method with the given name
- * @since 3.1
  */
 ITypeParameter getTypeParameter(String name);
 /**
@@ -211,7 +206,7 @@ ITypeParameter getTypeParameter(String name);
  */
 boolean isConstructor() throws JavaScriptModelException;
 
-/**
+/*
  * Returns whether this method is a main method.
  * It is a main method if:
  * <ul>
@@ -223,7 +218,6 @@ boolean isConstructor() throws JavaScriptModelException;
  *
  * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource.
- * @since 2.0
  * @return true if this method is a main method, false otherwise
  */
 boolean isMainMethod() throws JavaScriptModelException;
@@ -232,7 +226,6 @@ boolean isMainMethod() throws JavaScriptModelException;
  * If a method is resoved, its key contains resolved information.
  *
  * @return whether this method represents a resolved method.
- * @since 3.1
  */
 boolean isResolved();
 /**
@@ -248,7 +241,6 @@ boolean isResolved();
  * @param method the given method
  * @return true if this method is similar to the given method.
  * @see Signature#getSimpleName(char[])
- * @since 2.0
  */
 boolean isSimilar(IFunction method);
 /**

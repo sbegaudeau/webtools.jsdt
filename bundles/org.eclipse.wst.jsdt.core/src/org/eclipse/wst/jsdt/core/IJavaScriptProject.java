@@ -26,24 +26,21 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.eval.IEvaluationContext;
 
 /**
- * A Java project represents a view of a project resource in terms of Java
+ * A JavaScript project represents a view of a project resource in terms of JavaScript
  * elements such as package fragments, types, methods and fields.
- * A project may contain several package roots, which contain package fragments.
- * A package root corresponds to an underlying folder or JAR.
+ * A project may contain several source folders (package roots), which contain source folders (package fragments).
+ * A package root corresponds to an underlying folder.
  * <p>
- * Each Java project has a classpath, defining which folders contain source code and
- * where required libraries are located. Each Java project also has an output location,
- * defining where the builder writes <code>.class</code> files. A project that
+ * Each JavaScript project has a includepath, defining which folders contain source code and
+ * where required libraries are located. A project that
  * references packages in another project can access the packages by including
- * the required project in a classpath entry. The Java model will present the
- * source elements in the required project; when building, the compiler will use
- * the corresponding generated class files from the required project's output
- * location(s)). The classpath format is a sequence of classpath entries
+ * the required project in a includepath entry. The JavaScript model will present the
+ * source elements in the required project. The includepath format is a sequence of includepath entries
  * describing the location and contents of package fragment roots.
  * </p>
- * Java project elements need to be opened before they can be navigated or manipulated.
- * The children of a Java project are the package fragment roots that are
- * defined by the classpath and contained in this project (in other words, it
+ * JavaScript project elements need to be opened before they can be navigated or manipulated.
+ * The children of a JavaScript project are the package fragment roots that are
+ * defined by the includepath and contained in this project (in other words, it
  * does not include package fragment roots for other projects).
  * </p>
  * <p>
@@ -66,28 +63,26 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	IFile getJSDTScopeFile();
 	
 	/**
-	 * Decodes the classpath entry that has been encoded in the given string
+	 * Decodes the includepath entry that has been encoded in the given string
 	 * in the context of this project.
 	 * Returns null if the encoded entry is malformed.
 	 *
-	 * @param encodedEntry the encoded classpath entry
-	 * @return the decoded classpath entry, or <code>null</code> if unable to decode it
-	 * @since 3.2
+	 * @param encodedEntry the encoded includepath entry
+	 * @return the decoded includepath entry, or <code>null</code> if unable to decode it
 	 */
 	IIncludePathEntry decodeIncludepathEntry(String encodedEntry);
 
 	/**
-	 * Encodes the given classpath entry into a string in the context of this project.
+	 * Encodes the given includepath entry into a string in the context of this project.
 	 *
-	 * @param classpathEntry the classpath entry to encode
-	 * @return the encoded classpath entry
-	 * @since 3.2
+	 * @param includepathEntry the includepath entry to encode
+	 * @return the encoded includepath entry
 	 */
-	String encodeIncludepathEntry(IIncludePathEntry classpathEntry);
+	String encodeIncludepathEntry(IIncludePathEntry includepathEntry);
 
 	/**
 	 * Returns the <code>IJavaScriptElement</code> corresponding to the given
-	 * classpath-relative path, or <code>null</code> if no such
+	 * includepath-relative path, or <code>null</code> if no such
 	 * <code>IJavaScriptElement</code> is found. The result is one of an
 	 * <code>IJavaScriptUnit</code>, <code>IClassFile</code>, or
 	 * <code>IPackageFragment</code>.
@@ -99,18 +94,18 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * <code>IJavaScriptUnit</code> or <code>IClassFile</code> corresponding to
 	 * "java.lang.Object". The path "java/lang" would result in the
 	 * <code>IPackageFragment</code> for "java.lang".
-	 * @param path the given classpath-relative path
+	 * @param path the given includepath-relative path
 	 * @exception JavaScriptModelException if the given path is <code>null</code>
 	 *  or absolute
 	 * @return the <code>IJavaScriptElement</code> corresponding to the given
-	 * classpath-relative path, or <code>null</code> if no such
+	 * includepath-relative path, or <code>null</code> if no such
 	 * <code>IJavaScriptElement</code> is found
 	 */
 	IJavaScriptElement findElement(IPath path) throws JavaScriptModelException;
 
 	/**
 	 * Returns the <code>IJavaScriptElement</code> corresponding to the given
-	 * classpath-relative path, or <code>null</code> if no such
+	 * includepath-relative path, or <code>null</code> if no such
 	 * <code>IJavaScriptElement</code> is found. The result is one of an
 	 * <code>IJavaScriptUnit</code>, <code>IClassFile</code>, or
 	 * <code>IPackageFragment</code>. If it is an <code>IJavaScriptUnit</code>,
@@ -123,20 +118,19 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * <code>IJavaScriptUnit</code> or <code>IClassFile</code> corresponding to
 	 * "java.lang.Object". The path "java/lang" would result in the
 	 * <code>IPackageFragment</code> for "java.lang".
-	 * @param path the given classpath-relative path
-	 * @param owner the owner of the returned compilation unit, ignored if it is
-	 *   not a compilation unit.
+	 * @param path the given includepath-relative path
+	 * @param owner the owner of the returned javaScript unit, ignored if it is
+	 *   not a javaScript unit.
 	 * @exception JavaScriptModelException if the given path is <code>null</code>
 	 *  or absolute
 	 * @return the <code>IJavaScriptElement</code> corresponding to the given
-	 * classpath-relative path, or <code>null</code> if no such
+	 * includepath-relative path, or <code>null</code> if no such
 	 * <code>IJavaScriptElement</code> is found
-	 * @since 3.0
 	 */
 	IJavaScriptElement findElement(IPath path, WorkingCopyOwner owner) throws JavaScriptModelException;
 
 	/**
-	 * Returns the first existing package fragment on this project's classpath
+	 * Returns the first existing package fragment on this project's includepath
 	 * whose path matches the given (absolute) path, or <code>null</code> if none
 	 * exist.
 	 * The path can be:
@@ -145,14 +139,14 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * @param path the given absolute path
 	 * @exception JavaScriptModelException if this project does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
-	 * @return the first existing package fragment on this project's classpath
+	 * @return the first existing package fragment on this project's includepath
 	 * whose path matches the given (absolute) path, or <code>null</code> if none
 	 * exist
 	 */
 	IPackageFragment findPackageFragment(IPath path) throws JavaScriptModelException;
 
 	/**
-	 * Returns the existing package fragment root on this project's classpath
+	 * Returns the existing package fragment root on this project's includepath
 	 * whose path matches the given (absolute) path, or <code>null</code> if
 	 * one does not exist.
 	 * The path can be:
@@ -161,7 +155,7 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * @param path the given absolute path
 	 * @exception JavaScriptModelException if this project does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
-	 * @return the existing package fragment root on this project's classpath
+	 * @return the existing package fragment root on this project's includepath
 	 * whose path matches the given (absolute) path, or <code>null</code> if
 	 * one does not exist
 	 */
@@ -169,103 +163,98 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 		throws JavaScriptModelException;
 	/**
 	 * Returns the existing package fragment roots identified by the given entry.
-	 * Note that a classpath entry that refers to another project may
+	 * Note that a includepath entry that refers to another project may
 	 * have more than one root (if that project has more than on root
-	 * containing source), and classpath entries within the current
+	 * containing source), and includepath entries within the current
 	 * project identify a single root.
 	 * <p>
-	 * If the classpath entry denotes a variable, it will be resolved and return
+	 * If the includepath entry denotes a variable, it will be resolved and return
 	 * the roots of the target entry (empty if not resolvable).
 	 * <p>
-	 * If the classpath entry denotes a container, it will be resolved and return
+	 * If the includepath entry denotes a container, it will be resolved and return
 	 * the roots corresponding to the set of container entries (empty if not resolvable).
 	 *
 	 * @param entry the given entry
 	 * @return the existing package fragment roots identified by the given entry
 	 * @see IJsGlobalScopeContainer
-	 * @since 2.1
 	 */
 	IPackageFragmentRoot[] findPackageFragmentRoots(IIncludePathEntry entry);
 	/**
-	 * Returns the first type found following this project's classpath
+	 * Returns the first type found following this project's includepath
 	 * with the given fully qualified name or <code>null</code> if none is found.
 	 * The fully qualified name is a dot-separated name. For example,
 	 * a class B defined as a member type of a class A in package x.y should have a
 	 * the fully qualified name "x.y.A.B".
 	 *
 	 * Note that in order to be found, a type name (or its toplevel enclosing
-	 * type name) must match its corresponding compilation unit name. As a
+	 * type name) must match its corresponding javaScript unit name. As a
 	 * consequence, secondary types cannot be found using this functionality.
 	 * To find secondary types use {@link #findType(String, IProgressMonitor)} instead.
 	 *
 	 * @param fullyQualifiedName the given fully qualified name
 	 * @exception JavaScriptModelException if this project does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
-	 * @return the first type found following this project's classpath
+	 * @return the first type found following this project's includepath
 	 * with the given fully qualified name or <code>null</code> if none is found
 	 * @see IType#getFullyQualifiedName(char)
-	 * @since 2.0
 	 */
 	IType findType(String fullyQualifiedName) throws JavaScriptModelException;
 	/**
 	 * Same functionality as {@link #findType(String)} but also look for secondary
-	 * types if given name does not match a compilation unit name.
+	 * types if given name does not match a javaScript unit name.
 	 *
 	 * @param fullyQualifiedName the given fully qualified name
 	 * @param progressMonitor the progress monitor to report progress to,
 	 * 	or <code>null</code> if no progress monitor is provided
 	 * @exception JavaScriptModelException if this project does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
-	 * @return the first type found following this project's classpath
+	 * @return the first type found following this project's includepath
 	 * with the given fully qualified name or <code>null</code> if none is found
 	 * @see IType#getFullyQualifiedName(char)
-	 * @since 3.2
 	 */
 	IType findType(String fullyQualifiedName, IProgressMonitor progressMonitor) throws JavaScriptModelException;
 	/**
-	 * Returns the first type found following this project's classpath
+	 * Returns the first type found following this project's includepath
 	 * with the given fully qualified name or <code>null</code> if none is found.
 	 * The fully qualified name is a dot-separated name. For example,
 	 * a class B defined as a member type of a class A in package x.y should have a
 	 * the fully qualified name "x.y.A.B".
-	 * If the returned type is part of a compilation unit, its owner is the given
+	 * If the returned type is part of a javaScript unit, its owner is the given
 	 * owner.
 	 *
 	 * Note that in order to be found, a type name (or its toplevel enclosing
-	 * type name) must match its corresponding compilation unit name. As a
+	 * type name) must match its corresponding javaScript unit name. As a
 	 * consequence, secondary types cannot be found using this functionality.
 	 * To find secondary types use {@link #findType(String, WorkingCopyOwner, IProgressMonitor)}
 	 * instead.
 	 *
 	 * @param fullyQualifiedName the given fully qualified name
-	 * @param owner the owner of the returned type's compilation unit
+	 * @param owner the owner of the returned type's javaScript unit
 	 * @exception JavaScriptModelException if this project does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
-	 * @return the first type found following this project's classpath
+	 * @return the first type found following this project's includepath
 	 * with the given fully qualified name or <code>null</code> if none is found
 	 * @see IType#getFullyQualifiedName(char)
-	 * @since 3.0
 	 */
 	IType findType(String fullyQualifiedName, WorkingCopyOwner owner) throws JavaScriptModelException;
 	/**
 	 * Same functionality as {@link #findType(String, WorkingCopyOwner)}
 	 * but also look for secondary types if given name does not match
-	 * a compilation unit name.
+	 * a javaScript unit name.
 	 *
 	 * @param fullyQualifiedName the given fully qualified name
-	 * @param owner the owner of the returned type's compilation unit
+	 * @param owner the owner of the returned type's javaScript unit
 	 * @param progressMonitor the progress monitor to report progress to,
 	 * 	or <code>null</code> if no progress monitor is provided
 	 * @exception JavaScriptModelException if this project does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
-	 * @return the first type found following this project's classpath
+	 * @return the first type found following this project's includepath
 	 * with the given fully qualified name or <code>null</code> if none is found
 	 * @see IType#getFullyQualifiedName(char)
-	 * @since 3.2
 	 */
 	IType findType(String fullyQualifiedName, WorkingCopyOwner owner, IProgressMonitor progressMonitor) throws JavaScriptModelException;
 	/**
-	 * Returns the first type found following this project's classpath
+	 * Returns the first type found following this project's includepath
 	 * with the given package name and type qualified name
 	 * or <code>null</code> if none is found.
 	 * The package name is a dot-separated name.
@@ -274,7 +263,7 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * type qualified name "A.B".
 	 *
 	 * Note that in order to be found, a type name (or its toplevel enclosing
-	 * type name) must match its corresponding compilation unit name. As a
+	 * type name) must match its corresponding javaScript unit name. As a
 	 * consequence, secondary types cannot be found using this functionality.
 	 * To find secondary types use {@link #findType(String, String, IProgressMonitor)}
 	 * instead.
@@ -283,16 +272,15 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * @param typeQualifiedName the given type qualified name
 	 * @exception JavaScriptModelException if this project does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
-	 * @return the first type found following this project's classpath
+	 * @return the first type found following this project's includepath
 	 * with the given package name and type qualified name
 	 * or <code>null</code> if none is found
 	 * @see IType#getTypeQualifiedName(char)
-	 * @since 2.0
 	 */
 	IType findType(String packageName, String typeQualifiedName) throws JavaScriptModelException;
 	/**
 	 * Same functionality as {@link #findType(String, String)} but also look for
-	 * secondary types if given name does not match a compilation unit name.
+	 * secondary types if given name does not match a javaScript unit name.
 	 *
 	 * @param packageName the given package name
 	 * @param typeQualifiedName the given type qualified name
@@ -300,84 +288,81 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * 	or <code>null</code> if no progress monitor is provided
 	 * @exception JavaScriptModelException if this project does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
-	 * @return the first type found following this project's classpath
+	 * @return the first type found following this project's includepath
 	 * with the given fully qualified name or <code>null</code> if none is found
 	 * @see IType#getFullyQualifiedName(char)
-	 * @since 3.2
 	 */
 	IType findType(String packageName, String typeQualifiedName, IProgressMonitor progressMonitor) throws JavaScriptModelException;
 	/**
-	 * Returns the first type found following this project's classpath
+	 * Returns the first type found following this project's includepath
 	 * with the given package name and type qualified name
 	 * or <code>null</code> if none is found.
 	 * The package name is a dot-separated name.
 	 * The type qualified name is also a dot-separated name. For example,
 	 * a class B defined as a member type of a class A should have the
 	 * type qualified name "A.B".
-	 * If the returned type is part of a compilation unit, its owner is the given
+	 * If the returned type is part of a javaScript unit, its owner is the given
 	 * owner.
 	 *
 	 * Note that in order to be found, a type name (or its toplevel enclosing
-	 * type name) must match its corresponding compilation unit name. As a
+	 * type name) must match its corresponding javaScript unit name. As a
 	 * consequence, secondary types cannot be found using this functionality.
 	 * To find secondary types use {@link #findType(String, String, WorkingCopyOwner, IProgressMonitor)}
 	 * instead.
 	 *
 	 * @param packageName the given package name
 	 * @param typeQualifiedName the given type qualified name
-	 * @param owner the owner of the returned type's compilation unit
+	 * @param owner the owner of the returned type's javaScript unit
 	 * @exception JavaScriptModelException if this project does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
-	 * @return the first type found following this project's classpath
+	 * @return the first type found following this project's includepath
 	 * with the given package name and type qualified name
 	 * or <code>null</code> if none is found
 	 * @see IType#getTypeQualifiedName(char)
-	 * @since 3.0
 	 */
 	IType findType(String packageName, String typeQualifiedName, WorkingCopyOwner owner) throws JavaScriptModelException;
 	/**
 	 * Same functionality as {@link #findType(String, String, WorkingCopyOwner)}
-	 * but also look for secondary types if given name does not match a compilation unit name.
+	 * but also look for secondary types if given name does not match a javaScript unit name.
 	 *
 	 * @param packageName the given package name
 	 * @param typeQualifiedName the given type qualified name
-	 * @param owner the owner of the returned type's compilation unit
+	 * @param owner the owner of the returned type's javaScript unit
 	 * @param progressMonitor the progress monitor to report progress to,
 	 * 	or <code>null</code> if no progress monitor is provided
 	 * @exception JavaScriptModelException if this project does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
-	 * @return the first type found following this project's classpath
+	 * @return the first type found following this project's includepath
 	 * with the given fully qualified name or <code>null</code> if none is found
 	 * @see IType#getFullyQualifiedName(char)
-	 * @since 3.2
 	 */
 	IType findType(String packageName, String typeQualifiedName, WorkingCopyOwner owner, IProgressMonitor progressMonitor) throws JavaScriptModelException;
 
 	/**
 	 * Returns all of the existing package fragment roots that exist
-	 * on the classpath, in the order they are defined by the classpath.
+	 * on the includepath, in the order they are defined by the includepath.
 	 *
 	 * @return all of the existing package fragment roots that exist
-	 * on the classpath
+	 * on the includepath
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
 	 */
 	IPackageFragmentRoot[] getAllPackageFragmentRoots() throws JavaScriptModelException;
 
 	/**
-	 * Returns an array of non-Java resources directly contained in this project.
-	 * It does not transitively answer non-Java resources contained in folders;
+	 * Returns an array of non-JavaScript resources directly contained in this project.
+	 * It does not transitively answer non-JavaScript resources contained in folders;
 	 * these would have to be explicitly iterated over.
 	 * <p>
-	 * Non-Java resources includes other files and folders located in the
+	 * Non-JavaScript resources includes other files and folders located in the
 	 * project not accounted for by any of it source or binary package fragment
 	 * roots. If the project is a source folder itself, resources excluded from the
-	 * corresponding source classpath entry by one or more exclusion patterns
-	 * are considered non-Java resources and will appear in the result
+	 * corresponding source includepath entry by one or more exclusion patterns
+	 * are considered non-JavaScript resources and will appear in the result
 	 * (possibly in a folder)
 	 * </p>
 	 *
-	 * @return an array of non-Java resources (<code>IFile</code>s and/or
+	 * @return an array of non-JavaScript resources (<code>IFile</code>s and/or
 	 *              <code>IFolder</code>s) directly contained in this project
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
@@ -395,7 +380,6 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * @param inheritJavaCoreOptions - boolean indicating whether JavaScriptCore options should be inherited as well
 	 * @return the String value of a given option
 	 * @see JavaScriptCore#getDefaultOptions()
-	 * @since 2.1
 	 */
 	String getOption(String optionName, boolean inheritJavaCoreOptions);
 
@@ -411,7 +395,6 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * @return table of current settings of all options
 	 *   (key type: <code>String</code>; value type: <code>String</code>)
 	 * @see JavaScriptCore#getDefaultOptions()
-	 * @since 2.1
 	 */
 	Map getOptions(boolean inheritJavaCoreOptions);
 
@@ -420,9 +403,9 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * relative absolute path.
 	 * <p>
 	 * The default output location is where class files are ordinarily generated
-	 * (and resource files, copied). Each source classpath entry can also
+	 * (and resource files, copied). Each source includepath entry can also
 	 * specify an output location for the generated class files (and copied
-	 * resource files) corresponding to compilation units under that source
+	 * resource files) corresponding to javaScript units under that source
 	 * folder. This makes it possible to arrange generated class files for
 	 * different source folders in different output folders, and not
 	 * necessarily the default output folder. This means that the generated
@@ -438,39 +421,39 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	IPath getOutputLocation() throws JavaScriptModelException;
 
 	/**
-	 * Returns a package fragment root for the JAR at the specified file system path.
+	 * Returns a package fragment root for the file at the specified file system path.
 	 * This is a handle-only method.  The underlying <code>java.io.File</code>
-	 * may or may not exist. No resource is associated with this local JAR
+	 * may or may not exist. No resource is associated with this local file
 	 * package fragment root.
 	 *
-	 * @param jarPath the jars's file system path
-	 * @return a package fragment root for the JAR at the specified file system path
+	 * @param filePath the   file system path
+	 * @return a package fragment root for the file at the specified file system path
 	 */
-	IPackageFragmentRoot getPackageFragmentRoot(String jarPath);
+	IPackageFragmentRoot getPackageFragmentRoot(String filePath);
 
 	/**
 	 * Returns a package fragment root for the given resource, which
 	 * must either be a folder representing the top of a package hierarchy,
-	 * or a <code>.jar</code> or <code>.zip</code> file.
+	 * or a javaScript file.
 	 * This is a handle-only method.  The underlying resource may or may not exist.
 	 *
 	 * @param resource the given resource
 	 * @return a package fragment root for the given resource, which
 	 * must either be a folder representing the top of a package hierarchy,
-	 * or a <code>.jar</code> or <code>.zip</code> file
+	 * or a javaScript file
 	 */
 	IPackageFragmentRoot getPackageFragmentRoot(IResource resource);
 
 	/**
 	 * Returns all of the  package fragment roots contained in this
-	 * project, identified on this project's resolved classpath. The result
+	 * project, identified on this project's resolved includepath. The result
 	 * does not include package fragment roots in other projects referenced
-	 * on this project's classpath.
+	 * on this project's includepath.
 	 *
 	 * <p>NOTE: This is equivalent to <code>getChildren()</code>.
 	 *
 	 * @return all of the  package fragment roots contained in this
-	 * project, identified on this project's resolved classpath
+	 * project, identified on this project's resolved includepath
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
 	 */
@@ -478,15 +461,15 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 
 	/**
 	 * Returns the existing package fragment roots identified by the given entry.
-	 * Note that a classpath entry that refers to another project may
+	 * Note that a includepath entry that refers to another project may
 	 * have more than one root (if that project has more than on root
-	 * containing source), and classpath entries within the current
+	 * containing source), and includepath entries within the current
 	 * project identify a single root.
 	 * <p>
-	 * If the classpath entry denotes a variable, it will be resolved and return
+	 * If the includepath entry denotes a variable, it will be resolved and return
 	 * the roots of the target entry (empty if not resolvable).
 	 * <p>
-	 * If the classpath entry denotes a container, it will be resolved and return
+	 * If the includepath entry denotes a container, it will be resolved and return
 	 * the roots corresponding to the set of container entries (empty if not resolvable).
 	 *
 	 * @param entry the given entry
@@ -501,7 +484,7 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * in this project. This is a convenience method.
 	 *
 	 * Note that the package fragment roots corresponds to the resolved
-	 * classpath of the project.
+	 * includepath of the project.
 	 *
 	 * @return all package fragments in all package fragment roots contained
 	 * in this project
@@ -520,31 +503,25 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	IProject getProject();
 
 	/**
-	 * Returns the raw classpath for the project, as a list of classpath
+	 * Returns the raw includepath for the project, as a list of includepath
 	 * entries. This corresponds to the exact set of entries which were assigned
-	 * using <code>setRawClasspath</code>, in particular such a classpath may
-	 * contain classpath variable and classpath container entries. Classpath
-	 * variable and classpath container entries can be resolved using the
-	 * helper method <code>getResolvedClasspath</code>; classpath variable
+	 * using <code>setRawIncludepath</code>, in particular such a includepath may
+	 * contain includepath variable and includepath container entries. Includepath
+	 * variable and includepath container entries can be resolved using the
+	 * helper method <code>getResolvedIncludepath</code>; includepath variable
 	 * entries also can be resolved individually using
-	 * <code>JavaScriptCore#getClasspathVariable</code>).
+	 * <code>JavaScriptCore#getIncludepathVariable</code>).
 	 * <p>
-	 * Both classpath containers and classpath variables provides a level of
-	 * indirection that can make the <code>.classpath</code> file stable across
+	 * Both includepath containers and includepath variables provides a level of
+	 * indirection that can make the <code>.jsdtScope</code> file stable across
 	 * workspaces.
-	 * As an example, classpath variables allow a classpath to no longer refer
-	 * directly to external JARs located in some user specific location.
-	 * The classpath can simply refer to some variables defining the proper
-	 * locations of these external JARs. Similarly, classpath containers
-	 * allows classpath entries to be computed dynamically by the plug-in that
-	 * defines that kind of classpath container.
 	 * </p>
 	 * <p>
-	 * Note that in case the project isn't yet opened, the classpath will
-	 * be read directly from the associated <tt>.classpath</tt> file.
+	 * Note that in case the project isn't yet opened, the includepath will
+	 * be read directly from the associated <tt>.jsdtScope</tt> file.
 	 * </p>
 	 *
-	 * @return the raw classpath for the project, as a list of classpath entries
+	 * @return the raw includepath for the project, as a list of includepath entries
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
 	 * @see IIncludePathEntry
@@ -553,45 +530,45 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 
 	/**
 	 * Returns the names of the projects that are directly required by this
-	 * project. A project is required if it is in its classpath.
+	 * project. A project is required if it is in its includepath.
 	 * <p>
-	 * The project names are returned in the order they appear on the classpath.
+	 * The project names are returned in the order they appear on the includepath.
 	 *
 	 * @return the names of the projects that are directly required by this
-	 * project in classpath order
+	 * project in includepath order
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
 	 */
 	String[] getRequiredProjectNames() throws JavaScriptModelException;
 
 	/**
-	 * This is a helper method returning the resolved classpath for the project
-	 * as a list of simple (non-variable, non-container) classpath entries.
-	 * All classpath variable and classpath container entries in the project's
-	 * raw classpath will be replaced by the simple classpath entries they
+	 * This is a helper method returning the resolved includepath for the project
+	 * as a list of simple (non-variable, non-container) includepath entries.
+	 * All includepath variable and includepath container entries in the project's
+	 * raw includepath will be replaced by the simple includepath entries they
 	 * resolve to.
 	 * <p>
-	 * The resulting resolved classpath is accurate for the given point in time.
-	 * If the project's raw classpath is later modified, or if classpath
-	 * variables are changed, the resolved classpath can become out of date.
-	 * Because of this, hanging on resolved classpath is not recommended.
+	 * The resulting resolved includepath is accurate for the given point in time.
+	 * If the project's raw includepath is later modified, or if includepath
+	 * variables are changed, the resolved includepath can become out of date.
+	 * Because of this, hanging on resolved includepath is not recommended.
 	 * </p>
 	 *
 	 * @param ignoreUnresolvedEntry indicates how to handle unresolvable
 	 * variables and containers; <code>true</code> indicates that missing
-	 * variables and unresolvable classpath containers should be silently
+	 * variables and unresolvable includepath containers should be silently
 	 * ignored, and that the resulting list should consist only of the
 	 * entries that could be successfully resolved; <code>false</code> indicates
 	 * that a <code>JavaScriptModelException</code> should be thrown for the first
 	 * unresolved variable or container
-	 * @return the resolved classpath for the project as a list of simple
-	 * classpath entries, where all classpath variable and container entries
+	 * @return the resolved includepath for the project as a list of simple
+	 * includepath entries, where all includepath variable and container entries
 	 * have been resolved and substituted with their final target entries
 	 * @exception JavaScriptModelException in one of the corresponding situation:
 	 * <ul>
 	 *    <li>this element does not exist</li>
 	 *    <li>an exception occurs while accessing its corresponding resource</li>
-	 *    <li>a classpath variable or classpath container was not resolvable
+	 *    <li>a includepath variable or includepath container was not resolvable
 	 *    and <code>ignoreUnresolvedEntry</code> is <code>false</code>.</li>
 	 * </ul>
 	 * @see IIncludePathEntry
@@ -606,40 +583,38 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	boolean hasBuildState();
 
 	/**
-	 * Returns whether setting this project's classpath to the given classpath entries
+	 * Returns whether setting this project's includepath to the given includepath entries
 	 * would result in a cycle.
 	 *
 	 * If the set of entries contains some variables, those are resolved in order to determine
 	 * cycles.
 	 *
-	 * @param entries the given classpath entries
-	 * @return true if the given classpath entries would result in a cycle, false otherwise
+	 * @param entries the given includepath entries
+	 * @return true if the given includepath entries would result in a cycle, false otherwise
 	 */
 	boolean hasIncludepathCycle(IIncludePathEntry[] entries);
 	/**
-	 * Returns whether the given element is on the classpath of this project,
-	 * that is, referenced from a classpath entry and not explicitly excluded
+	 * Returns whether the given element is on the includepath of this project,
+	 * that is, referenced from a includepath entry and not explicitly excluded
 	 * using an exclusion pattern.
 	 *
 	 * @param element the given element
-	 * @return <code>true</code> if the given element is on the classpath of
+	 * @return <code>true</code> if the given element is on the includepath of
 	 * this project, <code>false</code> otherwise
 	 * @see IIncludePathEntry#getInclusionPatterns()
 	 * @see IIncludePathEntry#getExclusionPatterns()
-	 * @since 2.0
 	 */
 	boolean isOnIncludepath(IJavaScriptElement element);
 	/**
-	 * Returns whether the given resource is on the classpath of this project,
-	 * that is, referenced from a classpath entry and not explicitly excluded
+	 * Returns whether the given resource is on the includepath of this project,
+	 * that is, referenced from a includepath entry and not explicitly excluded
 	 * using an exclusion pattern.
 	 *
 	 * @param resource the given resource
-	 * @return <code>true</code> if the given resource is on the classpath of
+	 * @return <code>true</code> if the given resource is on the includepath of
 	 * this project, <code>false</code> otherwise
 	 * @see IIncludePathEntry#getInclusionPatterns()
 	 * @see IIncludePathEntry#getExclusionPatterns()
-	 * @since 2.1
 	 */
 	boolean isOnIncludepath(IResource resource);
 
@@ -669,21 +644,20 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * region, considering subtypes within that region and considering types in the
 	 * working copies with the given owner.
 	 * In other words, the owner's working copies will take
-	 * precedence over their original compilation units in the workspace.
+	 * precedence over their original javaScript units in the workspace.
 	 * <p>
-	 * Note that if a working copy is empty, it will be as if the original compilation
+	 * Note that if a working copy is empty, it will be as if the original javaScript
 	 * unit had been deleted.
 	 * <p>
 	 *
 	 * @param monitor the given progress monitor
 	 * @param region the given region
-	 * @param owner the owner of working copies that take precedence over their original compilation units
+	 * @param owner the owner of working copies that take precedence over their original javaScript units
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
 	 * @exception IllegalArgumentException if region is <code>null</code>
 	 * @return a type hierarchy for all types in the given
 	 * region, considering subtypes within that region
-	 * @since 3.0
 	 */
 	ITypeHierarchy newTypeHierarchy(IRegion region, WorkingCopyOwner owner, IProgressMonitor monitor)
 		throws JavaScriptModelException;
@@ -714,16 +688,16 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * subtypes in the specified region and considering types in the
 	 * working copies with the given owner.
 	 * In other words, the owner's working copies will take
-	 * precedence over their original compilation units in the workspace.
+	 * precedence over their original javaScript units in the workspace.
 	 * <p>
-	 * Note that if a working copy is empty, it will be as if the original compilation
+	 * Note that if a working copy is empty, it will be as if the original javaScript
 	 * unit had been deleted.
 	 * <p>
 	 *
 	 * @param type the given type
 	 * @param region the given region
 	 * @param monitor the given monitor
-	 * @param owner the owner of working copies that take precedence over their original compilation units
+	 * @param owner the owner of working copies that take precedence over their original javaScript units
 	 *
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
@@ -731,7 +705,6 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * @exception IllegalArgumentException if type or region is <code>null</code>
 	 * @return a type hierarchy for the given type considering
 	 * subtypes in the specified region
-	 * @since 3.0
 	 */
 	ITypeHierarchy newTypeHierarchy(
 		IType type,
@@ -741,7 +714,7 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 		throws JavaScriptModelException;
 
 	/**
-	 * Returns the default output location for the project as defined by its <code>.classpath</code> file from disk, or <code>null</code>
+	 * Returns the default output location for the project as defined by its <code>.jsdtScope</code> file from disk, or <code>null</code>
 	 * if unable to read the file.
 	 * <p>
 	 * This output location may differ from the in-memory one returned by <code>getOutputLocation</code>, in case the
@@ -749,69 +722,67 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * is automatically noticed and reconciled at the next resource change notification event.
 	 * However, if the file is modified within an operation, where this change needs to be taken into account before the
 	 * operation ends, then the output location from disk can be read using this method, and further assigned to the project
-	 * using <code>setRawClasspath(...)</code>.
+	 * using <code>setRawIncludepath(...)</code>.
 	 * <p>
 	 * The default output location is where class files are ordinarily generated
-	 * (and resource files, copied). Each source classpath entry can also
+	 * (and resource files, copied). Each source includepath entry can also
 	 * specify an output location for the generated class files (and copied
-	 * resource files) corresponding to compilation units under that source
+	 * resource files) corresponding to javaScript units under that source
 	 * folder. This makes it possible to arrange generated class files for
 	 * different source folders in different output folders, and not
 	 * necessarily the default output folder. This means that the generated
 	 * class files for the project may end up scattered across several folders,
 	 * rather than all in the default output folder (which is more standard).
 	 * <p>
-	 * In order to manually force a project classpath refresh, one can simply assign the project classpath using the result of this
+	 * In order to manually force a project includepath refresh, one can simply assign the project includepath using the result of this
 	 * method, as follows:
-	 * <code>proj.setRawClasspath(proj.readRawClasspath(), proj.readOutputLocation(), monitor)</code>
-	 * (note that the <code>readRawClasspath/readOutputLocation</code> methods could return <code>null</code>).
+	 * <code>proj.setRawIncludepath(proj.readRawIncludepath(), proj.readOutputLocation(), monitor)</code>
+	 * (note that the <code>readRawIncludepath/readOutputLocation</code> methods could return <code>null</code>).
 	 * <p>
 	 * @return the workspace-relative absolute path of the default output folder
 	 * @see #getOutputLocation()
-	 * @since 3.0
 	 */
 	IPath readOutputLocation();
 
 	/**
-	 * Returns the raw classpath for the project as defined by its
-	 * <code>.classpath</code> file from disk, or <code>null</code>
+	 * Returns the raw includepath for the project as defined by its
+	 * <code>.jsdtScope</code> file from disk, or <code>null</code>
 	 * if unable to read the file.
 	 * <p>
-	 * This classpath may differ from the in-memory classpath returned by
-	 * <code>getRawClasspath</code>, in case the automatic reconciliation
+	 * This includepath may differ from the in-memory includepath returned by
+	 * <code>getRawIncludepath</code>, in case the automatic reconciliation
 	 * mechanism has not been performed yet. Usually, any change to the
-	 * <code>.classpath</code> file is automatically noticed and reconciled at
+	 * <code>.jsdtScope</code> file is automatically noticed and reconciled at
 	 * the next resource change notification event. However, if the file is
 	 * modified within an operation, where this change needs to be taken into
-	 * account before the operation ends, then the classpath from disk can be
+	 * account before the operation ends, then the includepath from disk can be
 	 * read using this method, and further assigned to the project using
-	 * <code>setRawClasspath(...)</code>.
+	 * <code>setRawIncludepath(...)</code>.
 	 * </p>
 	 * <p>
-	 * Classpath variable and classpath container entries can be resolved using
-	 * the helper method <code>getResolvedClasspath</code>; classpath variable
+	 * Includepath variable and includepath container entries can be resolved using
+	 * the helper method <code>getResolvedIncludepath</code>; includepath variable
 	 * entries also can be resolved individually using
-	 * <code>JavaScriptCore#getClasspathVariable</code>).
+	 * <code>JavaScriptCore#getIncludepathVariable</code>).
 	 * </p>
 	 * <p>
-	 * Note that no check is performed whether the project has the Java nature
-	 * set, allowing an existing <code>.classpath</code> file to be considered
-	 * independantly (unlike <code>getRawClasspath</code> which requires the
-	 * Java nature to be associated with the project).
+	 * Note that no check is performed whether the project has the JavaScript nature
+	 * set, allowing an existing <code>.jsdtScope</code> file to be considered
+	 * independantly (unlike <code>getRawIncludepath</code> which requires the
+	 * JavaScript nature to be associated with the project).
 	 * </p>
 	 * <p>
-	 * In order to manually force a project classpath refresh, one can simply
-	 * assign the project classpath using the result of this method, as follows:
-	 * <code>proj.setRawClasspath(proj.readRawClasspath(), proj.readOutputLocation(), monitor)</code>
-	 * (note that the <code>readRawClasspath/readOutputLocation</code> methods
+	 * In order to manually force a project includepath refresh, one can simply
+	 * assign the project includepath using the result of this method, as follows:
+	 * <code>proj.setRawIncludepath(proj.readRawIncludepath(), proj.readOutputLocation(), monitor)</code>
+	 * (note that the <code>readRawIncludepath/readOutputLocation</code> methods
 	 * could return <code>null</code>).
 	 * </p>
 	 *
-	 * @return the raw classpath from disk for the project, as a list of
-	 * classpath entries
+	 * @return the raw includepath from disk for the project, as a list of
+	 * includepath entries
 	 * @see #getRawIncludepath()
 	 * @see IIncludePathEntry
-	 * @since 3.0
 	 */
 	IIncludePathEntry[] readRawIncludepath();
 
@@ -824,7 +795,6 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * @param optionName the name of an option
 	 * @param optionValue the value of the option to set
 	 * @see JavaScriptCore#getDefaultOptions()
-	 * @since 3.0
 	 */
 	void setOption(String optionName, String optionValue);
 
@@ -839,7 +809,6 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * @param newOptions the new options (key type: <code>String</code>; value type: <code>String</code>),
 	 *   or <code>null</code> to flush all custom options (clients will automatically get the global JavaScriptCore options).
 	 * @see JavaScriptCore#getDefaultOptions()
-	 * @since 2.1
 	 */
 	void setOptions(Map newOptions);
 
@@ -848,9 +817,9 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * described by the given workspace-relative absolute path.
 	 * <p>
 	 * The default output location is where class files are ordinarily generated
-	 * (and resource files, copied). Each source classpath entries can also
+	 * (and resource files, copied). Each source includepath entries can also
 	 * specify an output location for the generated class files (and copied
-	 * resource files) corresponding to compilation units under that source
+	 * resource files) corresponding to javaScript units under that source
 	 * folder. This makes it possible to arrange that generated class files for
 	 * different source folders to end up in different output folders, and not
 	 * necessarily the default output folder. This means that the generated
@@ -862,9 +831,9 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * folder
 	 * @param monitor the progress monitor
 	 *
-	 * @exception JavaScriptModelException if the classpath could not be set. Reasons include:
+	 * @exception JavaScriptModelException if the includepath could not be set. Reasons include:
 	 * <ul>
-	 *  <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+	 *  <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 *  <li> The path refers to a location not contained in this project (<code>PATH_OUTSIDE_PROJECT</code>)
 	 *  <li> The path is not an absolute path (<code>RELATIVE_PATH</code>)
 	 *  <li> The path is nested inside a package fragment root of this project (<code>INVALID_PATH</code>)
@@ -877,111 +846,100 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 		throws JavaScriptModelException;
 
 	/**
-	 * Sets both the classpath of this project and its default output
-	 * location at once. The classpath is defined using a list of classpath
-	 * entries. In particular such a classpath may contain classpath variable entries.
-	 * Classpath variable entries can be resolved individually ({@link JavaScriptCore#getIncludepathVariable(String)}),
-	 * or the full classpath can be resolved at once using the helper method {@link #getResolvedIncludepath(boolean)}.
+	 * Sets both the includepath of this project and its default output
+	 * location at once. The includepath is defined using a list of includepath
+	 * entries. In particular such a includepath may contain includepath variable entries.
+	 * Includepath variable entries can be resolved individually ({@link JavaScriptCore#getIncludepathVariable(String)}),
+	 * or the full includepath can be resolved at once using the helper method {@link #getResolvedIncludepath(boolean)}.
 	 * <p>
-	 * A classpath variable provides an indirection level for better sharing a classpath. As an example, it allows
-	 * a classpath to no longer refer directly to external JARs located in some user specific location. The classpath
-	 * can simply refer to some variables defining the proper locations of these external JARs.
 	 * </p><p>
-	 * If it is specified that this operation cannot modify resources, the .classpath file will not be written to disk
-	 * and no error marker will be generated. To synchronize the .classpath with the in-memory classpath,
-	 * one can use <code>setRawClasspath(readRawClasspath(), true, monitor)</code>.
+	 * If it is specified that this operation cannot modify resources, the .jsdtScope file will not be written to disk
+	 * and no error marker will be generated. To synchronize the .jsdtScope with the in-memory includepath,
+	 * one can use <code>setRawIncludepath(readRawIncludepath(), true, monitor)</code>.
 	 * </p><p>
-	 * Setting the classpath to <code>null</code> specifies a default classpath
-	 * (the project root). Setting the classpath to an empty array specifies an
-	 * empty classpath.
+	 * Setting the includepath to <code>null</code> specifies a default includepath
+	 * (the project root). Setting the includepath to an empty array specifies an
+	 * empty includepath.
 	 * </p><p>
-	 * If a cycle is detected while setting this classpath (and if resources can be modified), an error marker will be added
+	 * If a cycle is detected while setting this includepath (and if resources can be modified), an error marker will be added
 	 * to the project closing the cycle.
 	 * To avoid this problem, use {@link #hasIncludepathCycle(IIncludePathEntry[])}
-	 * before setting the classpath.
+	 * before setting the includepath.
 	 * <p>
 	 * This operation acquires a lock on the workspace's root.
 	 *
-	 * @param entries a list of classpath entries
+	 * @param entries a list of includepath entries
 	 * @param outputLocation the default output location
 	 * @param canModifyResources whether resources should be written to disk if needed
 	 * @param monitor the given progress monitor
-	 * @exception JavaScriptModelException if the classpath could not be set. Reasons include:
+	 * @exception JavaScriptModelException if the includepath could not be set. Reasons include:
 	 * <ul>
-	 * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
-	 * <li> The classpath is being modified during resource change event notification (CORE_EXCEPTION)
-	 * <li> The classpath failed the validation check as defined by {@link JavaScriptConventions#validateClasspath(IJavaScriptProject, IIncludePathEntry[], IPath)}
+	 * <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+	 * <li> The includepath is being modified during resource change event notification (CORE_EXCEPTION)
+	 * <li> The includepath failed the validation check as defined by {@link JavaScriptConventions#validateIncludepath(IJavaScriptProject, IIncludePathEntry[], IPath)}
 	 * </ul>
 	 * @see IIncludePathEntry
-	 * @since 3.2
 	 */
 	void setRawIncludepath(IIncludePathEntry[] entries, IPath outputLocation, boolean canModifyResources, IProgressMonitor monitor) throws JavaScriptModelException;
 
 	/**
-	 * Sets the classpath of this project using a list of classpath entries. In particular such a classpath may contain
-	 * classpath variable entries. Classpath variable entries can be resolved individually ({@link JavaScriptCore#getIncludepathVariable(String)}),
-	 * or the full classpath can be resolved at once using the helper method {@link #getResolvedIncludepath(boolean)}.
+	 * Sets the includepath of this project using a list of includepath entries. In particular such a includepath may contain
+	 * includepath variable entries. Includepath variable entries can be resolved individually ({@link JavaScriptCore#getIncludepathVariable(String)}),
+	 * or the full includepath can be resolved at once using the helper method {@link #getResolvedIncludepath(boolean)}.
 	 * <p>
-	 * A classpath variable provides an indirection level for better sharing a classpath. As an example, it allows
-	 * a classpath to no longer refer directly to external JARs located in some user specific location. The classpath
-	 * can simply refer to some variables defining the proper locations of these external JARs.
 	 * </p><p>
-	 * If it is specified that this operation cannot modify resources, the .classpath file will not be written to disk
-	 * and no error marker will be generated. To synchronize the .classpath with the in-memory classpath,
-	 * one can use <code>setRawClasspath(readRawClasspath(), true, monitor)</code>.
+	 * If it is specified that this operation cannot modify resources, the .jsdtScope file will not be written to disk
+	 * and no error marker will be generated. To synchronize the .jsdtScope with the in-memory includepath,
+	 * one can use <code>setRawIncludepath(readRawIncludepath(), true, monitor)</code>.
 	 * </p><p>
-	 * Setting the classpath to <code>null</code> specifies a default classpath
-	 * (the project root). Setting the classpath to an empty array specifies an
-	 * empty classpath.
+	 * Setting the includepath to <code>null</code> specifies a default includepath
+	 * (the project root). Setting the includepath to an empty array specifies an
+	 * empty includepath.
 	 * </p><p>
-	 * If a cycle is detected while setting this classpath (and if resources can be modified), an error marker will be added
+	 * If a cycle is detected while setting this includepath (and if resources can be modified), an error marker will be added
 	 * to the project closing the cycle.
 	 * To avoid this problem, use {@link #hasIncludepathCycle(IIncludePathEntry[])}
-	 * before setting the classpath.
+	 * before setting the includepath.
 	 * <p>
 	 * This operation acquires a lock on the workspace's root.
 	 *
-	 * @param entries a list of classpath entries
+	 * @param entries a list of includepath entries
 	 * @param canModifyResources whether resources should be written to disk if needed
 	 * @param monitor the given progress monitor
-	 * @exception JavaScriptModelException if the classpath could not be set. Reasons include:
+	 * @exception JavaScriptModelException if the includepath could not be set. Reasons include:
 	 * <ul>
-	 * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
-	 * <li> The classpath is being modified during resource change event notification (CORE_EXCEPTION)
-	 * <li> The classpath failed the validation check as defined by {@link JavaScriptConventions#validateClasspath(IJavaScriptProject, IIncludePathEntry[], IPath)}
+	 * <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+	 * <li> The includepath is being modified during resource change event notification (CORE_EXCEPTION)
+	 * <li> The includepath failed the validation check as defined by {@link JavaScriptConventions#validateIncludepath(IJavaScriptProject, IIncludePathEntry[], IPath)}
 	 * </ul>
 	 * @see IIncludePathEntry
-	 * @since 3.2
 	 */
 	void setRawIncludepath(IIncludePathEntry[] entries, boolean canModifyResources, IProgressMonitor monitor) throws JavaScriptModelException;
 
 	/**
-	 * Sets the classpath of this project using a list of classpath entries. In particular such a classpath may contain
-	 * classpath variable entries. Classpath variable entries can be resolved individually ({@link JavaScriptCore#getIncludepathVariable(String)}),
-	 * or the full classpath can be resolved at once using the helper method {@link #getResolvedIncludepath(boolean)}.
+	 * Sets the includepath of this project using a list of includepath entries. In particular such a includepath may contain
+	 * includepath variable entries. Includepath variable entries can be resolved individually ({@link JavaScriptCore#getIncludepathVariable(String)}),
+	 * or the full includepath can be resolved at once using the helper method {@link #getResolvedIncludepath(boolean)}.
 	 * <p>
-	 * A classpath variable provides an indirection level for better sharing a classpath. As an example, it allows
-	 * a classpath to no longer refer directly to external JARs located in some user specific location. The classpath
-	 * can simply refer to some variables defining the proper locations of these external JARs.
 	 * <p>
-	 * Setting the classpath to <code>null</code> specifies a default classpath
-	 * (the project root). Setting the classpath to an empty array specifies an
-	 * empty classpath.
+	 * Setting the includepath to <code>null</code> specifies a default includepath
+	 * (the project root). Setting the includepath to an empty array specifies an
+	 * empty includepath.
 	 * <p>
-	 * If a cycle is detected while setting this classpath, an error marker will be added
+	 * If a cycle is detected while setting this includepath, an error marker will be added
 	 * to the project closing the cycle.
 	 * To avoid this problem, use {@link #hasIncludepathCycle(IIncludePathEntry[])}
-	 * before setting the classpath.
+	 * before setting the includepath.
 	 * <p>
 	 * This operation acquires a lock on the workspace's root.
 	 *
-	 * @param entries a list of classpath entries
+	 * @param entries a list of includepath entries
 	 * @param monitor the given progress monitor
-	 * @exception JavaScriptModelException if the classpath could not be set. Reasons include:
+	 * @exception JavaScriptModelException if the includepath could not be set. Reasons include:
 	 * <ul>
-	 * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
-	 * <li> The classpath is being modified during resource change event notification (CORE_EXCEPTION)
-	 * <li> The classpath failed the validation check as defined by {@link JavaScriptConventions#validateClasspath(IJavaScriptProject, IIncludePathEntry[], IPath)}
+	 * <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+	 * <li> The includepath is being modified during resource change event notification (CORE_EXCEPTION)
+	 * <li> The includepath failed the validation check as defined by {@link JavaScriptConventions#validateIncludepath(IJavaScriptProject, IIncludePathEntry[], IPath)}
 	 * </ul>
 	 * @see IIncludePathEntry
 	 */
@@ -989,52 +947,46 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 		throws JavaScriptModelException;
 
 	/**
-	 * Sets the both the classpath of this project and its default output
-	 * location at once. The classpath is defined using a list of classpath
-	 * entries. In particular, such a classpath may contain classpath variable
-	 * entries. Classpath variable entries can be resolved individually (see
-	 * ({@link JavaScriptCore#getIncludepathVariable(String)}), or the full classpath can be
+	 * Sets the both the includepath of this project and its default output
+	 * location at once. The includepath is defined using a list of includepath
+	 * entries. In particular, such a includepath may contain includepath variable
+	 * entries. Includepath variable entries can be resolved individually (see
+	 * ({@link JavaScriptCore#getIncludepathVariable(String)}), or the full includepath can be
 	 * resolved at once using the helper method
 	 * {@link #getResolvedIncludepath(boolean)}.
 	 * <p>
-	 * A classpath variable provides an indirection level for better sharing a
-	 * classpath. As an example, it allows a classpath to no longer refer
-	 * directly to external JARs located in some user specific location. The
-	 * classpath can simply refer to some variables defining the proper
-	 * locations of these external JARs.
 	 * </p>
 	 * <p>
-	 * Setting the classpath to <code>null</code> specifies a default classpath
-	 * (the project root). Setting the classpath to an empty array specifies an
-	 * empty classpath.
+	 * Setting the includepath to <code>null</code> specifies a default includepath
+	 * (the project root). Setting the includepath to an empty array specifies an
+	 * empty includepath.
 	 * </p>
 	 * <p>
-	 * If a cycle is detected while setting this classpath, an error marker will
+	 * If a cycle is detected while setting this includepath, an error marker will
 	 * be added to the project closing the cycle. To avoid this problem, use
 	 * {@link #hasIncludepathCycle(IIncludePathEntry[])} before setting
-	 * the classpath.
+	 * the includepath.
 	 * </p>
 	 * <p>
 	 * This operation acquires a lock on the workspace's root.
 	 * </p>
 	 *
-	 * @param entries a list of classpath entries
+	 * @param entries a list of includepath entries
 	 * @param monitor the progress monitor
 	 * @param outputLocation the default output location
-	 * @exception JavaScriptModelException if the classpath could not be set. Reasons
+	 * @exception JavaScriptModelException if the includepath could not be set. Reasons
 	 * include:
 	 * <ul>
-	 * <li> This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+	 * <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * <li> Two or more entries specify source roots with the same or overlapping paths (NAME_COLLISION)
 	 * <li> A entry of kind <code>CPE_PROJECT</code> refers to this project (INVALID_PATH)
-	 *  <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+	 *  <li>This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 *	<li>The output location path refers to a location not contained in this project (<code>PATH_OUTSIDE_PROJECT</code>)
 	 *	<li>The output location path is not an absolute path (<code>RELATIVE_PATH</code>)
 	 *  <li>The output location path is nested inside a package fragment root of this project (<code>INVALID_PATH</code>)
-	 * <li> The classpath is being modified during resource change event notification (CORE_EXCEPTION)
+	 * <li> The includepath is being modified during resource change event notification (CORE_EXCEPTION)
 	 * </ul>
 	 * @see IIncludePathEntry
-	 * @since 2.0
 	 */
 	void setRawIncludepath(IIncludePathEntry[] entries, IPath outputLocation, IProgressMonitor monitor)
 		throws JavaScriptModelException;

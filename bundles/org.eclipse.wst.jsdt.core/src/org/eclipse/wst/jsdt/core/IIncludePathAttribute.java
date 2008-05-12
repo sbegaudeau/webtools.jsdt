@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.core;
 import org.eclipse.wst.jsdt.internal.core.ClasspathAttribute;
 
 /**
- * A classpath attribute defines a name/value pair that can be persisted with a classpath entry. Such an attribute
+ * A includepath attribute defines a name/value pair that can be persisted with a includepath entry. Such an attribute
  * can be created using the factory method {@link JavaScriptCore#newIncludepathAttribute(String, String) newClasspathAttribute(String name, String value)}.
  * <p>
  * This interface is not intended to be implemented by clients.
@@ -59,9 +59,8 @@ import org.eclipse.wst.jsdt.internal.core.ClasspathAttribute;
 public interface IIncludePathAttribute {
 
 	/**
-	 * Constant for the name of the javadoc location attribute.
+	 * Constant for the name of the jsdoc location attribute.
 	 *
-	 * @since 3.1
 	 */
 	String JSDOC_LOCATION_ATTRIBUTE_NAME = "javadoc_location"; //$NON-NLS-1$
 
@@ -69,27 +68,23 @@ public interface IIncludePathAttribute {
 	 * Constant for the name of the optional attribute. The possible values
 	 * for this attribute are <code>"true"</code> or <code>"false"</code>.
 	 * When not present, <code>"false"</code> is assumed.
-	 * If the value of this attribute is <code>"true"</code>, the classpath entry
+	 * If the value of this attribute is <code>"true"</code>, the includepath entry
 	 * is optional. If the underlying resource or jar file doesn't exist, no error
-	 * is reported and the classpath entry is ignored.
-	 *
-	 * @since 3.2
+	 * is reported and the includepath entry is ignored.
 	 */
 	String OPTIONAL = "optional"; //$NON-NLS-1$
 
 	/**
-	 * Returns the name of this classpath attribute.
+	 * Returns the name of this includepath attribute.
 	 *
-	 * @return the name of this classpath attribute.
-	 * @since 3.1
+	 * @return the name of this includepath attribute.
 	 */
 	String getName();
 
 	/**
-	 * Returns the value of this classpath attribute.
+	 * Returns the value of this includepath attribute.
 	 *
-	 * @return the value of this classpath attribute.
-	 * @since 3.1
+	 * @return the value of this includepath attribute.
 	 */
 	String getValue();
 	

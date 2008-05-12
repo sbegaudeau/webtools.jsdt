@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 
 
 /**
@@ -21,11 +20,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * This interface is not intended to be implemented by clients.
  * </p>
  *
- * @see IJavaScriptUnit Note that methods {@link #findPrimaryType()} and {@link #getElementAt(int)}
- * 	were already implemented in this interface respectively since version 3.0 and version 1.0.
- * @see IClassFile Note that method {@link #getWorkingCopy(WorkingCopyOwner, IProgressMonitor)}
- * 	was already implemented in this interface since version 3.0.
- * 
  * <p>
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
@@ -47,14 +41,11 @@ public interface IFunctionContainer  {
  */
 IField getField(String name);
 /**
- * Returns the fields declared by this type.
- * If this is a source type, the results are listed in the order
- * in which they appear in the source, otherwise, the results are
- * in no particular order.  For binary types, this includes synthetic fields.
+ * Returns the fields declared by this type or javascript file.
  *
  * @exception JavaScriptModelException if this element does not exist or if an
  *		exception occurs while accessing its corresponding resource.
- * @return the fields declared by this type
+ * @return the fields declared by this type or file
  */
 IField[] getFields() throws JavaScriptModelException;
 
@@ -109,12 +100,7 @@ IFunction getFunction(String name, String[] parameterTypeSignatures);
  */
 IFunction[] getMethods() throws JavaScriptModelException;
 /**
- * Returns the methods and constructors declared by this type.
- * For binary types, this may include the special <code>&lt;clinit&gt</code>; method
- * and synthetic methods.
- * If this is a source type, the results are listed in the order
- * in which they appear in the source, otherwise, the results are
- * in no particular order.
+ * Returns the methods and constructors declared by this type or file.
  *
  * @exception JavaScriptModelException if this element does not exist or if an
  *		exception occurs while accessing its corresponding resource.
@@ -122,6 +108,13 @@ IFunction[] getMethods() throws JavaScriptModelException;
  */
 IFunction[] getFunctions() throws JavaScriptModelException;
 
+/**
+ * Returns the type with the specified name
+ *
+ * @exception JavaScriptModelException if this element does not exist or if an
+ *		exception occurs while accessing its corresponding resource.
+ * @return the type with the specified name in this file
+ */
 IType getType(String name);
 
 }

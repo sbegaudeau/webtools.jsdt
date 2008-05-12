@@ -16,11 +16,11 @@ import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 
 
 /**
- * Represents an entire Java compilation unit (source file with one of the
- * {@link JavaScriptCore#getJavaScriptLikeExtensions() Java-like extensions}).
- * Compilation unit elements need to be opened before they can be navigated or manipulated.
+ * Represents an entire JavaScript file (source file with one of the
+ * {@link JavaScriptCore#getJavaScriptLikeExtensions() JavaScript-like extensions}).
+ * JavaScriptUnit elements need to be opened before they can be navigated or manipulated.
  * The children are of type {@link IPackageDeclaration},
- * {@link IImportContainer}, and {@link IType},
+ * {@link IImportContainer},{@link IFunction},{@link IField}, and {@link IType},
  * and appear in the order in which they are declared in the source.
  * If a source file cannot be parsed, its structure remains unknown.
  * Use {@link IJavaScriptElement#isStructureKnown} to determine whether this is
@@ -43,14 +43,12 @@ public static final int NO_AST = 0;
 /**
  * Constant indicating that a reconcile operation should recompute the problems
  * even if the source hasn't changed.
- * @since 3.3
  */
 public static final int FORCE_PROBLEM_DETECTION = 0x01;
 
 /**
  * Constant indicating that a reconcile operation should enable the statements recovery.
  * @see org.eclipse.wst.jsdt.core.dom.ASTParser#setStatementsRecovery(boolean)
- * @since 3.3
  */
 public static final int ENABLE_STATEMENTS_RECOVERY = 0x02;
 
@@ -58,15 +56,14 @@ public static final int ENABLE_STATEMENTS_RECOVERY = 0x02;
  * Constant indicating that a reconcile operation should enable the bindings recovery
  * @see org.eclipse.wst.jsdt.core.dom.ASTParser#setBindingsRecovery(boolean)
  * @see org.eclipse.wst.jsdt.core.dom.IBinding#isRecovered()
- * @since 3.3
  */
 public static final int ENABLE_BINDINGS_RECOVERY = 0x04;
 
 
 /**
- * Changes this compilation unit handle into a working copy. A new {@link IBuffer} is
- * created using this compilation unit handle's owner. Uses the primary owner is none was
- * specified when this compilation unit handle was created.
+ * Changes this javaScript file handle into a working copy. A new {@link IBuffer} is
+ * created using this javaScript file handle's owner. Uses the primary owner is none was
+ * specified when this javaScript file handle was created.
  * <p>
  * When switching to working copy mode, problems are reported to given
  * {@link IProblemRequestor}. Note that once in working copy mode, the given
@@ -74,13 +71,13 @@ public static final int ENABLE_BINDINGS_RECOVERY = 0x04;
  * is used to report subsequent problems.
  * </p>
  * <p>
- * Once in working copy mode, changes to this compilation unit or its children are done in memory.
+ * Once in working copy mode, changes to this javaScript file or its children are done in memory.
  * Only the new buffer is affected. Using {@link #commitWorkingCopy(boolean, IProgressMonitor)}
- * will bring the underlying resource in sync with this compilation unit.
+ * will bring the underlying resource in sync with this javaScript file.
  * </p>
  * <p>
- * If this compilation unit was already in working copy mode, an internal counter is incremented and no
- * other action is taken on this compilation unit. To bring this compilation unit back into the original mode
+ * If this javaScript file was already in working copy mode, an internal counter is incremented and no
+ * other action is taken on this javaScript file. To bring this javaScript file back into the original mode
  * (where it reflects the underlying resource), {@link #discardWorkingCopy} must be call as many
  * times as {@link #becomeWorkingCopy(IProblemRequestor, IProgressMonitor)}.
  * </p>
@@ -88,11 +85,10 @@ public static final int ENABLE_BINDINGS_RECOVERY = 0x04;
  * @param problemRequestor a requestor which will get notified of problems detected during
  * 	reconciling as they are discovered. The requestor can be set to <code>null</code> indicating
  * 	that the client is not interested in problems.
- * @param monitor a progress monitor used to report progress while opening this compilation unit
+ * @param monitor a progress monitor used to report progress while opening this javaScript file
  * 	or <code>null</code> if no progress should be reported
- * @throws JavaScriptModelException if this compilation unit could not become a working copy.
+ * @throws JavaScriptModelException if this javaScript file could not become a working copy.
  * @see #discardWorkingCopy()
- * @since 3.0
   *
  * @deprecated Use {@link #becomeWorkingCopy(IProgressMonitor)} instead.
  * 	Note that if this deprecated method is used, problems will be reported to the given problem requestor
@@ -100,28 +96,27 @@ public static final int ENABLE_BINDINGS_RECOVERY = 0x04;
 */
 void becomeWorkingCopy(IProblemRequestor problemRequestor, IProgressMonitor monitor) throws JavaScriptModelException;
 /**
- * Changes this compilation unit handle into a working copy. A new {@link IBuffer} is
- * created using this compilation unit handle's owner. Uses the primary owner if none was
- * specified when this compilation unit handle was created.
+ * Changes this javaScript file handle into a working copy. A new {@link IBuffer} is
+ * created using this javaScript file handle's owner. Uses the primary owner if none was
+ * specified when this javaScript file handle was created.
  * <p>
  * When switching to working copy mode, problems are reported to the {@link IProblemRequestor
  * problem requestor} of the {@link WorkingCopyOwner working copy owner}.
  * </p><p>
- * Once in working copy mode, changes to this compilation unit or its children are done in memory.
+ * Once in working copy mode, changes to this javaScript file or its children are done in memory.
  * Only the new buffer is affected. Using {@link #commitWorkingCopy(boolean, IProgressMonitor)}
- * will bring the underlying resource in sync with this compilation unit.
+ * will bring the underlying resource in sync with this javaScript file.
  * </p><p>
- * If this compilation unit was already in working copy mode, an internal counter is incremented and no
- * other action is taken on this compilation unit. To bring this compilation unit back into the original mode
+ * If this javaScript file was already in working copy mode, an internal counter is incremented and no
+ * other action is taken on this javaScript file. To bring this javaScript file back into the original mode
  * (where it reflects the underlying resource), {@link #discardWorkingCopy} must be call as many
  * times as {@link #becomeWorkingCopy(IProblemRequestor, IProgressMonitor)}.
  * </p>
  *
- * @param monitor a progress monitor used to report progress while opening this compilation unit
+ * @param monitor a progress monitor used to report progress while opening this javaScript file
  * 	or <code>null</code> if no progress should be reported
- * @throws JavaScriptModelException if this compilation unit could not become a working copy.
+ * @throws JavaScriptModelException if this javaScript file could not become a working copy.
  * @see #discardWorkingCopy()
- * @since 3.3
  */
 void becomeWorkingCopy(IProgressMonitor monitor) throws JavaScriptModelException;
 /**
@@ -136,11 +131,6 @@ void becomeWorkingCopy(IProgressMonitor monitor) throws JavaScriptModelException
  *		a subsequent change in the resource</li>
  * <li> <code>false</code> - in this case a {@link JavaScriptModelException} is thrown</li>
  * </ul>
- * <p>
- * Since 2.1, a working copy can be created on a not-yet existing compilation
- * unit. In particular, such a working copy can then be committed in order to create
- * the corresponding compilation unit.
- * </p>
  * @param force a flag to handle the cases when the contents of the original resource have changed
  * since this working copy was created
  * @param monitor the given progress monitor
@@ -150,16 +140,15 @@ void becomeWorkingCopy(IProgressMonitor monitor) throws JavaScriptModelException
  * <li> This element is not a working copy (INVALID_ELEMENT_TYPES)
  * <li> A update conflict (described above) (UPDATE_CONFLICT)
  * </ul>
- * @since 3.0
  */
 void commitWorkingCopy(boolean force, IProgressMonitor monitor) throws JavaScriptModelException;
 /**
- * Creates and returns an non-static import declaration in this compilation unit
+ * Creates and returns an non-static import declaration in this javaScript file
  * with the given name. This method is equivalent to
  * <code>createImport(name, Flags.AccDefault, sibling, monitor)</code>.
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
  *
- * @param name the name of the import declaration to add as defined by JLS2 7.5. (For example: <code>"java.io.File"</code> or
- *  <code>"java.awt.*"</code>)
+ * @param name the name of the import declaration to add
  * @param sibling the existing element which the import declaration will be inserted immediately before (if
  *	<code> null </code>, then this import will be inserted as the last import declaration.
  * @param monitor the progress monitor to notify
@@ -167,39 +156,30 @@ void commitWorkingCopy(boolean force, IProgressMonitor monitor) throws JavaScrip
  *
  * @throws JavaScriptModelException if the element could not be created. Reasons include:
  * <ul>
- * <li> This Java element does not exist or the specified sibling does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * <li> This JavaScript element does not exist or the specified sibling does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * <li> A {@link org.eclipse.core.runtime.CoreException} occurred while updating an underlying resource
- * <li> The specified sibling is not a child of this compilation unit (INVALID_SIBLING)
+ * <li> The specified sibling is not a child of this javaScript file (INVALID_SIBLING)
  * <li> The name is not a valid import name (INVALID_NAME)
  * </ul>
  * @see #createImport(String, IJavaScriptElement, int, IProgressMonitor)
+ * 
  */
 IImportDeclaration createImport(String name, IJavaScriptElement sibling, IProgressMonitor monitor) throws JavaScriptModelException;
 
 /**
- * Creates and returns an import declaration in this compilation unit
+ * Creates and returns an import declaration in this javaScript file
  * with the given name.
  * <p>
  * Optionally, the new element can be positioned before the specified
  * sibling. If no sibling is specified, the element will be inserted
- * as the last import declaration in this compilation unit.
+ * as the last import declaration in this javaScript file.
  * <p>
- * If the compilation unit already includes the specified import declaration,
+ * If the javaScript file already includes the specified import declaration,
  * the import is not generated (it does not generate duplicates).
- * Note that it is valid to specify both a single-type import and an on-demand import
- * for the same package, for example <code>"java.io.File"</code> and
- * <code>"java.io.*"</code>, in which case both are preserved since the semantics
- * of this are not the same as just importing <code>"java.io.*"</code>.
- * Importing <code>"java.lang.*"</code>, or the package in which the compilation unit
- * is defined, are not treated as special cases.  If they are specified, they are
- * included in the result.
- * <p>
- * Note: This API element is only needed for dealing with Java code that uses
- * new language features of J2SE 5.0.
- * </p>
  *
- * @param name the name of the import declaration to add as defined by JLS2 7.5. (For example: <code>"java.io.File"</code> or
- *  <code>"java.awt.*"</code>)
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
+ * @param name the name of the import declaration 
  * @param sibling the existing element which the import declaration will be inserted immediately before (if
  *	<code> null </code>, then this import will be inserted as the last import declaration.
  * @param flags {@link Flags#AccStatic} for static imports, or
@@ -210,50 +190,55 @@ IImportDeclaration createImport(String name, IJavaScriptElement sibling, IProgre
  *
  * @throws JavaScriptModelException if the element could not be created. Reasons include:
  * <ul>
- * <li> This Java element does not exist or the specified sibling does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * <li> This JavaScript element does not exist or the specified sibling does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * <li> A {@link org.eclipse.core.runtime.CoreException} occurred while updating an underlying resource
- * <li> The specified sibling is not a child of this compilation unit (INVALID_SIBLING)
+ * <li> The specified sibling is not a child of this javaScript file (INVALID_SIBLING)
  * <li> The name is not a valid import name (INVALID_NAME)
  * </ul>
  * @see Flags
- * @since 3.0
  */
 IImportDeclaration createImport(String name, IJavaScriptElement sibling, int flags, IProgressMonitor monitor) throws JavaScriptModelException;
 
 /**
- * Creates and returns a package declaration in this compilation unit
+ * Creates and returns a package declaration in this javaScript file
  * with the given package name.
  *
- * <p>If the compilation unit already includes the specified package declaration,
+ * <p>If the javaScript file already includes the specified package declaration,
  * it is not generated (it does not generate duplicates).
  *
- * @param name the name of the package declaration to add as defined by JLS2 7.4. (For example, <code>"java.lang"</code>)
+ *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
+ * @param name the name of the package declaration to add 
  * @param monitor the progress monitor to notify
  * @return the newly inserted package declaration (or the previously existing one in case attempting to create a duplicate)
  *
  * @throws JavaScriptModelException if the element could not be created. Reasons include:
  * <ul>
- * <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * <li>This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * <li> A {@link org.eclipse.core.runtime.CoreException} occurred while updating an underlying resource
  * <li> The name is not a valid package name (INVALID_NAME)
  * </ul>
  */
  IPackageDeclaration createPackageDeclaration(String name, IProgressMonitor monitor) throws JavaScriptModelException;
 /**
- * Creates and returns a type in this compilation unit with the
- * given contents. If this compilation unit does not exist, one
+ * Creates and returns a type in this javaScript file with the
+ * given contents. If this javaScript file does not exist, one
  * will be created with an appropriate package declaration.
  * <p>
  * Optionally, the new type can be positioned before the specified
  * sibling. If <code>sibling</code> is <code>null</code>, the type will be appended
- * to the end of this compilation unit.
+ * to the end of this javaScript file.
  *
- * <p>It is possible that a type with the same name already exists in this compilation unit.
+ * <p>It is possible that a type with the same name already exists in this javaScript file.
  * The value of the <code>force</code> parameter effects the resolution of
  * such a conflict:<ul>
  * <li> <code>true</code> - in this case the type is created with the new contents</li>
  * <li> <code>false</code> - in this case a {@link JavaScriptModelException} is thrown</li>
  * </ul>
+ *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  *
  * @param contents the source contents of the type declaration to add.
  * @param sibling the existing element which the type will be inserted immediately before (if
@@ -266,37 +251,101 @@ IImportDeclaration createImport(String name, IJavaScriptElement sibling, int fla
  * <ul>
  * <li>The specified sibling element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * <li> A {@link org.eclipse.core.runtime.CoreException} occurred while updating an underlying resource
- * <li> The specified sibling is not a child of this compilation unit (INVALID_SIBLING)
+ * <li> The specified sibling is not a child of this javaScript file (INVALID_SIBLING)
  * <li> The contents could not be recognized as a type declaration (INVALID_CONTENTS)
  * <li> There was a naming collision with an existing type (NAME_COLLISION)
  * </ul>
  */
 IType createType(String contents, IJavaScriptElement sibling, boolean force, IProgressMonitor monitor) throws JavaScriptModelException;
 
+/**
+ * Creates and returns a var in this javaScript file with the
+ * given contents. If this javaScript file does not exist, one
+ * will be created with an appropriate package declaration.
+ * <p>
+ * Optionally, the new var can be positioned before the specified
+ * sibling. If <code>sibling</code> is <code>null</code>, the var will be appended
+ * to the end of this javaScript file.
+ *
+ * <p>It is possible that a var with the same name already exists in this javaScript file.
+ * The value of the <code>force</code> parameter effects the resolution of
+ * such a conflict:<ul>
+ * <li> <code>true</code> - in this case the var is created with the new contents</li>
+ * <li> <code>false</code> - in this case a {@link JavaScriptModelException} is thrown</li>
+ * </ul>
+ *
+ * @param contents the source contents of the var declaration to add.
+ * @param sibling the existing element which the var will be inserted immediately before (if
+ *	<code>null</code>, then this var will be inserted as the last var declaration.
+ * @param force a <code>boolean</code> flag indicating how to deal with duplicates
+ * @param monitor the progress monitor to notify
+ * @return the newly inserted var
+ *
+ * @throws JavaScriptModelException if the element could not be created. Reasons include:
+ * <ul>
+ * <li>The specified sibling element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * <li> A {@link org.eclipse.core.runtime.CoreException} occurred while updating an underlying resource
+ * <li> The specified sibling is not a child of this javaScript file (INVALID_SIBLING)
+ * <li> The contents could not be recognized as a var declaration (INVALID_CONTENTS)
+ * <li> There was a naming collision with an existing var (NAME_COLLISION)
+ * </ul>
+ */
 IField createField(String contents, IJavaScriptElement sibling, boolean force, IProgressMonitor monitor)
 throws JavaScriptModelException;
 
+
+/**
+ * Creates and returns a function in this javaScript file with the
+ * given contents. If this javaScript file does not exist, one
+ * will be created with an appropriate package declaration.
+ * <p>
+ * Optionally, the new function can be positioned before the specified
+ * sibling. If <code>sibling</code> is <code>null</code>, the function will be appended
+ * to the end of this javaScript file.
+ *
+ * <p>It is possible that a function with the same name already exists in this javaScript file.
+ * The value of the <code>force</code> parameter effects the resolution of
+ * such a conflict:<ul>
+ * <li> <code>true</code> - in this case the function is created with the new contents</li>
+ * <li> <code>false</code> - in this case a {@link JavaScriptModelException} is thrown</li>
+ * </ul>
+ *
+ * @param contents the source contents of the function declaration to add.
+ * @param sibling the existing element which the function will be inserted immediately before (if
+ *	<code>null</code>, then this function will be inserted as the last function declaration.
+ * @param force a <code>boolean</code> flag indicating how to deal with duplicates
+ * @param monitor the progress monitor to notify
+ * @return the newly inserted function
+ *
+ * @throws JavaScriptModelException if the element could not be created. Reasons include:
+ * <ul>
+ * <li>The specified sibling element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * <li> A {@link org.eclipse.core.runtime.CoreException} occurred while updating an underlying resource
+ * <li> The specified sibling is not a child of this javaScript file (INVALID_SIBLING)
+ * <li> The contents could not be recognized as a function declaration (INVALID_CONTENTS)
+ * <li> There was a naming collision with an existing function (NAME_COLLISION)
+ * </ul>
+ */
 IFunction createMethod(String contents, IJavaScriptElement sibling, boolean force, IProgressMonitor monitor)
 throws JavaScriptModelException;
 
 /**
- * Changes this compilation unit in working copy mode back to its original mode.
+ * Changes this javaScript file in working copy mode back to its original mode.
  * <p>
- * This has no effect if this compilation unit was not in working copy mode.
+ * This has no effect if this javaScript file was not in working copy mode.
  * </p>
  * <p>
  * If {@link #becomeWorkingCopy} was called several times on this
- * compilation unit, {@link #discardWorkingCopy} must be called as
+ * javaScript file, {@link #discardWorkingCopy} must be called as
  * many times before it switches back to the original mode.
  * </p>
  *
  * @throws JavaScriptModelException if this working copy could not return in its original mode.
  * @see #becomeWorkingCopy(IProblemRequestor, IProgressMonitor)
- * @since 3.0
  */
 void discardWorkingCopy() throws JavaScriptModelException;
 /**
- * Finds the elements in this compilation unit that correspond to
+ * Finds the elements in this javaScript file that correspond to
  * the given element.
  * An element A corresponds to an element B if:
  * <ul>
@@ -304,83 +353,87 @@ void discardWorkingCopy() throws JavaScriptModelException;
  * <li>If A is a method, A must have the same number of arguments as
  *     B and the simple names of the argument types must be equals.
  * <li>The parent of A corresponds to the parent of B recursively up to
- *     their respective compilation units.
+ *     their respective javaScript files.
  * <li>A exists.
  * </ul>
- * Returns <code>null</code> if no such java elements can be found
- * or if the given element is not included in a compilation unit.
+ * Returns <code>null</code> if no such javaScript elements can be found
+ * or if the given element is not included in a javaScript file.
  *
  * @param element the given element
- * @return the found elements in this compilation unit that correspond to the given element
- * @since 3.0
+ * @return the found elements in this javaScript file that correspond to the given element
  */
 IJavaScriptElement[] findElements(IJavaScriptElement element);
 /**
- * Finds the working copy for this compilation unit, given a {@link WorkingCopyOwner}.
- * If no working copy has been created for this compilation unit associated with this
+ * Finds the working copy for this javaScript file, given a {@link WorkingCopyOwner}.
+ * If no working copy has been created for this javaScript file associated with this
  * working copy owner, returns <code>null</code>.
  * <p>
  * Users of this method must not destroy the resulting working copy.
  *
  * @param owner the given {@link WorkingCopyOwner}
- * @return the found working copy for this compilation unit, <code>null</code> if none
+ * @return the found working copy for this javaScript file, <code>null</code> if none
  * @see WorkingCopyOwner
- * @since 3.0
  */
 IJavaScriptUnit findWorkingCopy(WorkingCopyOwner owner);
 /**
- * Returns all types declared in this compilation unit in the order
+ * Returns all types declared in this javaScript file in the order
  * in which they appear in the source.
  * This includes all top-level types and nested member types.
  * It does NOT include local types (types defined in methods).
  *
- * @return the array of top-level and member types defined in a compilation unit, in declaration order.
+ * @return the array of top-level and member types defined in a javaScript file, in declaration order.
  * @throws JavaScriptModelException if this element does not exist or if an
  *		exception occurs while accessing its corresponding resource
  */
 IType[] getAllTypes() throws JavaScriptModelException;
 /**
- * Returns the first import declaration in this compilation unit with the given name.
+ * Returns the first import declaration in this javaScript file with the given name.
  * This is a handle-only method. The import declaration may or may not exist. This
- * is a convenience method - imports can also be accessed from a compilation unit's
+ * is a convenience method - imports can also be accessed from a javaScript file's
  * import container.
  *
- * @param name the name of the import to find as defined by JLS2 7.5. (For example: <code>"java.io.File"</code>
- * 	or <code>"java.awt.*"</code>)
+ *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
+ * @param name the name of the import to find
  * @return a handle onto the corresponding import declaration. The import declaration may or may not exist.
  */
 IImportDeclaration getImport(String name) ;
 /**
- * Returns the import container for this compilation unit.
+ * Returns the import container for this javaScript file.
  * This is a handle-only method. The import container may or
  * may not exist. The import container can used to access the
  * imports.
+ *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * @return a handle onto the corresponding import container. The
  *		import contain may or may not exist.
  */
 IImportContainer getImportContainer();
 /**
- * Returns the import declarations in this compilation unit
+ * Returns the import declarations in this javaScript file
  * in the order in which they appear in the source. This is
  * a convenience method - import declarations can also be
- * accessed from a compilation unit's import container.
+ * accessed from a javaScript file's import container.
  *
- * @return the import declarations in this compilation unit
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
+ * @return the import declarations in this javaScript file
  * @throws JavaScriptModelException if this element does not exist or if an
  *		exception occurs while accessing its corresponding resource
  */
 IImportDeclaration[] getImports() throws JavaScriptModelException;
 /**
- * Returns the primary compilation unit (whose owner is the primary owner)
- * this working copy was created from, or this compilation unit if this a primary
- * compilation unit.
+ * Returns the primary javaScript file (whose owner is the primary owner)
+ * this working copy was created from, or this javaScript file if this a primary
+ * javaScript file.
  * <p>
- * Note that the returned primary compilation unit can be in working copy mode.
+ * Note that the returned primary javaScript file can be in working copy mode.
  * </p>
  *
- * @return the primary compilation unit this working copy was created from,
- * or this compilation unit if it is primary
- * @since 3.0
+ * @return the primary javaScript file this working copy was created from,
+ * or this javaScript file if it is primary
  */
 IJavaScriptUnit getPrimary();
 /**
@@ -388,22 +441,25 @@ IJavaScriptUnit getPrimary();
  * Returns null if it is not a working copy or if it has no owner.
  *
  * @return WorkingCopyOwner the owner of this working copy or <code>null</code>
- * @since 3.0
  */
 WorkingCopyOwner getOwner();
 /**
- * Returns the first package declaration in this compilation unit with the given package name
+ * Returns the first package declaration in this javaScript file with the given package name
  * (there normally is at most one package declaration).
  * This is a handle-only method. The package declaration may or may not exist.
  *
- * @param name the name of the package declaration as defined by JLS2 7.4. (For example, <code>"java.lang"</code>)
- * @return the first package declaration in this compilation unit with the given package name
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
+ * @param name the name of the package declaration
+ * @return the first package declaration in this javaScript file with the given package name
  */
 IPackageDeclaration getPackageDeclaration(String name);
 /**
- * Returns the package declarations in this compilation unit
+ * Returns the package declarations in this javaScript file
  * in the order in which they appear in the source.
  * There normally is at most one package declaration.
+ *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
  *
  * @return an array of package declaration (normally of size one)
  *
@@ -412,17 +468,20 @@ IPackageDeclaration getPackageDeclaration(String name);
  */
 IPackageDeclaration[] getPackageDeclarations() throws JavaScriptModelException;
 /**
- * Returns the top-level types declared in this compilation unit
+ * Returns the top-level types declared in this javaScript file
  * in the order in which they appear in the source.
  *
- * @return the top-level types declared in this compilation unit
+ *
+ * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
+ * @return the top-level types declared in this javaScript file
  * @throws JavaScriptModelException if this element does not exist or if an
  *		exception occurs while accessing its corresponding resource
  */
 IType[] getTypes() throws JavaScriptModelException;
 /**
- * Returns a new working copy of this compilation unit if it is a primary compilation unit,
- * or this compilation unit if it is already a non-primary working copy.
+ * Returns a new working copy of this javaScript file if it is a primary javaScript file,
+ * or this javaScript file if it is already a non-primary working copy.
  * <p>
  * Note: if intending to share a working copy amongst several clients, then
  * {@link #getWorkingCopy(WorkingCopyOwner, IProblemRequestor, IProgressMonitor)}
@@ -436,22 +495,21 @@ IType[] getTypes() throws JavaScriptModelException;
  * </p><p>
  * Since 2.1, a working copy can be created on a not-yet existing compilation
  * unit. In particular, such a working copy can then be committed in order to create
- * the corresponding compilation unit.
+ * the corresponding javaScript file.
  * </p>
- * @param monitor a progress monitor used to report progress while opening this compilation unit
+ * @param monitor a progress monitor used to report progress while opening this javaScript file
  *                 or <code>null</code> if no progress should be reported
  * @throws JavaScriptModelException if the contents of this element can
  *   not be determined.
  * @return a new working copy of this element if this element is not
  * a working copy, or this element if this element is already a working copy
- * @since 3.0
  */
 IJavaScriptUnit getWorkingCopy(IProgressMonitor monitor) throws JavaScriptModelException;
 /**
- * Returns a shared working copy on this compilation unit using the given working copy owner to create
- * the buffer, or this compilation unit if it is already a non-primary working copy.
+ * Returns a shared working copy on this javaScript file using the given working copy owner to create
+ * the buffer, or this javaScript file if it is already a non-primary working copy.
  * This API can only answer an already existing working copy if it is based on the same
- * original compilation unit AND was using the same working copy owner (that is, as defined by {@link Object#equals}).
+ * original javaScript file AND was using the same working copy owner (that is, as defined by {@link Object#equals}).
  * <p>
  * The life time of a shared working copy is as follows:
  * <ul>
@@ -465,7 +523,7 @@ IJavaScriptUnit getWorkingCopy(IProgressMonitor monitor) throws JavaScriptModelE
  * <p>
  * Note that the working copy owner will be used for the life time of this working copy, that is if the
  * working copy is closed then reopened, this owner will be used.
- * The buffer will be automatically initialized with the original's compilation unit content
+ * The buffer will be automatically initialized with the original's javaScript file content
  * upon creation.
  * <p>
  * When the shared working copy instance is created, an ADDED IJavaScriptElementDelta is reported on this
@@ -473,20 +531,19 @@ IJavaScriptUnit getWorkingCopy(IProgressMonitor monitor) throws JavaScriptModelE
  * </p><p>
  * Since 2.1, a working copy can be created on a not-yet existing compilation
  * unit. In particular, such a working copy can then be committed in order to create
- * the corresponding compilation unit.
+ * the corresponding javaScript file.
  * </p>
  * @param owner the working copy owner that creates a buffer that is used to get the content
  * 				of the working copy
  * @param problemRequestor a requestor which will get notified of problems detected during
  * 	reconciling as they are discovered. The requestor can be set to <code>null</code> indicating
  * 	that the client is not interested in problems.
- * @param monitor a progress monitor used to report progress while opening this compilation unit
+ * @param monitor a progress monitor used to report progress while opening this javaScript file
  *                 or <code>null</code> if no progress should be reported
  * @throws JavaScriptModelException if the contents of this element can
  *   not be determined.
  * @return a new working copy of this element using the given factory to create
  * the buffer, or this element if this element is already a working copy
- * @since 3.0
   * @deprecated Use {@link ITypeRoot#getWorkingCopy(WorkingCopyOwner, IProgressMonitor)} instead.
  * 	Note that if this deprecated method is used, problems will be reported on the passed problem requester
  * 	as well as on the problem requestor returned by the working copy owner (if not null).
@@ -495,26 +552,24 @@ IJavaScriptUnit getWorkingCopy(WorkingCopyOwner owner, IProblemRequestor problem
 /**
  * Returns whether the resource of this working copy has changed since the
  * inception of this working copy.
- * Returns <code>false</code> if this compilation unit is not in working copy mode.
+ * Returns <code>false</code> if this javaScript file is not in working copy mode.
  *
  * @return whether the resource has changed
- * @since 3.0
  */
 public boolean hasResourceChanged();
 /**
  * Returns whether this element is a working copy.
  *
  * @return true if this element is a working copy, false otherwise
- * @since 3.0
  */
 boolean isWorkingCopy();
 
 /**
- * Reconciles the contents of this working copy, sends out a Java delta
+ * Reconciles the contents of this working copy, sends out a JavaScript delta
  * notification indicating the nature of the change of the working copy since
  * the last time it was either reconciled or made consistent
  * ({@link IOpenable#makeConsistent(IProgressMonitor)}), and returns a
- * compilation unit AST if requested.
+ * javaScript file AST if requested.
  * <p>
  * It performs the reconciliation by locally caching the contents of
  * the working copy, updating the contents, then creating a delta
@@ -528,7 +583,7 @@ boolean isWorkingCopy();
  * This functionality allows to specify a working copy owner which is used
  * during problem detection. All references contained in the working copy are
  * resolved against other units; for which corresponding owned working copies
- * are going to take precedence over their original compilation units. If
+ * are going to take precedence over their original javaScript files. If
  * <code>null</code> is passed in, then the primary working copy owner is used.
  * </p>
  * <p>
@@ -540,7 +595,7 @@ boolean isWorkingCopy();
  * Note: Since 3.0, added/removed/changed inner types generate change deltas.
  * </p>
  * <p>
- * If requested, a DOM AST representing the compilation unit is returned.
+ * If requested, a DOM AST representing the javaScript file is returned.
  * Its bindings are computed only if the problem requestor is active, or if the
  * problem detection is forced. This method returns <code>null</code> if the
  * creation of the DOM AST was not requested, or if the requested level of AST
@@ -557,27 +612,26 @@ boolean isWorkingCopy();
  * @param forceProblemDetection boolean indicating whether problem should be
  *   recomputed even if the source hasn't changed
  * @param owner the owner of working copies that take precedence over the
- *   original compilation units, or <code>null</code> if the primary working
+ *   original javaScript files, or <code>null</code> if the primary working
  *   copy owner should be used
  * @param monitor a progress monitor
- * @return the compilation unit AST or <code>null</code> if not requested,
+ * @return the javaScript file AST or <code>null</code> if not requested,
  *    or if the requested level of AST API is not supported,
  *    or if the working copy was consistent
  * @throws JavaScriptModelException if the contents of the original element
  *		cannot be accessed. Reasons include:
  * <ul>
- * <li> The original Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * <li> The original JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * </ul>
- * @since 3.0
  */
 JavaScriptUnit reconcile(int astLevel, boolean forceProblemDetection, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException;
 
 /**
- * Reconciles the contents of this working copy, sends out a Java delta
+ * Reconciles the contents of this working copy, sends out a JavaScript delta
  * notification indicating the nature of the change of the working copy since
  * the last time it was either reconciled or made consistent
  * ({@link IOpenable#makeConsistent(IProgressMonitor)}), and returns a
- * compilation unit AST if requested.
+ * javaScript file AST if requested.
  * <p>
  * It performs the reconciliation by locally caching the contents of
  * the working copy, updating the contents, then creating a delta
@@ -591,7 +645,7 @@ JavaScriptUnit reconcile(int astLevel, boolean forceProblemDetection, WorkingCop
  * This functionality allows to specify a working copy owner which is used
  * during problem detection. All references contained in the working copy are
  * resolved against other units; for which corresponding owned working copies
- * are going to take precedence over their original compilation units. If
+ * are going to take precedence over their original javaScript files. If
  * <code>null</code> is passed in, then the primary working copy owner is used.
  * </p>
  * <p>
@@ -603,7 +657,7 @@ JavaScriptUnit reconcile(int astLevel, boolean forceProblemDetection, WorkingCop
  * Note: Since 3.0, added/removed/changed inner types generate change deltas.
  * </p>
  * <p>
- * If requested, a DOM AST representing the compilation unit is returned.
+ * If requested, a DOM AST representing the javaScript file is returned.
  * Its bindings are computed only if the problem requestor is active, or if the
  * problem detection is forced. This method returns <code>null</code> if the
  * creation of the DOM AST was not requested, or if the requested level of AST
@@ -622,27 +676,26 @@ JavaScriptUnit reconcile(int astLevel, boolean forceProblemDetection, WorkingCop
  *   recomputed even if the source hasn't changed
  * @param enableStatementsRecovery if <code>true</code> statements recovery is enabled.
  * @param owner the owner of working copies that take precedence over the
- *   original compilation units, or <code>null</code> if the primary working
+ *   original javaScript files, or <code>null</code> if the primary working
  *   copy owner should be used
  * @param monitor a progress monitor
- * @return the compilation unit AST or <code>null</code> if not requested,
+ * @return the javaScript file AST or <code>null</code> if not requested,
  *    or if the requested level of AST API is not supported,
  *    or if the working copy was consistent
  * @throws JavaScriptModelException if the contents of the original element
  *		cannot be accessed. Reasons include:
  * <ul>
- * <li> The original Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * <li> The original JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * </ul>
- * @since 3.2
  */
 JavaScriptUnit reconcile(int astLevel, boolean forceProblemDetection, boolean enableStatementsRecovery, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException;
 
 /**
- * Reconciles the contents of this working copy, sends out a Java delta
+ * Reconciles the contents of this working copy, sends out a JavaScript delta
  * notification indicating the nature of the change of the working copy since
  * the last time it was either reconciled or made consistent
  * ({@link IOpenable#makeConsistent(IProgressMonitor)}), and returns a
- * compilation unit AST if requested.
+ * javaScript file AST if requested.
  *
  * <p>
  * If the problem detection is forced by passing the {@link #FORCE_PROBLEM_DETECTION} bit in the given reconcile flag,
@@ -659,7 +712,7 @@ JavaScriptUnit reconcile(int astLevel, boolean forceProblemDetection, boolean en
  * This functionality allows to specify a working copy owner which is used
  * during problem detection. All references contained in the working copy are
  * resolved against other units; for which corresponding owned working copies
- * are going to take precedence over their original compilation units. If
+ * are going to take precedence over their original javaScript files. If
  * <code>null</code> is passed in, then the primary working copy owner is used.
  * </p>
  * <p>
@@ -671,7 +724,7 @@ JavaScriptUnit reconcile(int astLevel, boolean forceProblemDetection, boolean en
  * Note: Since 3.0, added/removed/changed inner types generate change deltas.
  * </p>
  * <p>
- * If requested, a DOM AST representing the compilation unit is returned.
+ * If requested, a DOM AST representing the javaScript file is returned.
  * Its bindings are computed only if the problem requestor is active, or if the
  * problem detection is forced. This method returns <code>null</code> if the
  * creation of the DOM AST was not requested, or if the requested level of AST
@@ -694,21 +747,20 @@ JavaScriptUnit reconcile(int astLevel, boolean forceProblemDetection, boolean en
  * or the {@linkplain org.eclipse.wst.jsdt.core.dom.AST#newAST(int) AST API level} of the AST if one is wanted
  * @param reconcileFlags the given reconcile flags
  * @param owner the owner of working copies that take precedence over the
- *   original compilation units, or <code>null</code> if the primary working
+ *   original javaScript files, or <code>null</code> if the primary working
  *   copy owner should be used
  * @param monitor a progress monitor
- * @return the compilation unit AST or <code>null</code> if not requested,
+ * @return the javaScript file AST or <code>null</code> if not requested,
  *    or if the requested level of AST API is not supported,
  *    or if the working copy was consistent
  * @throws JavaScriptModelException if the contents of the original element
  *		cannot be accessed. Reasons include:
  * <ul>
- * <li> The original Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * <li> The original JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * </ul>
  * @see #FORCE_PROBLEM_DETECTION
  * @see #ENABLE_BINDINGS_RECOVERY
  * @see #ENABLE_STATEMENTS_RECOVERY
- * @since 3.3
  */
 JavaScriptUnit reconcile(int astLevel, int reconcileFlags, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException;
 
@@ -723,16 +775,25 @@ JavaScriptUnit reconcile(int astLevel, int reconcileFlags, WorkingCopyOwner owne
  * @throws JavaScriptModelException if the contents of the original element
  *		cannot be accessed.  Reasons include:
  * <ul>
- * <li> The original Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * <li> The original JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * </ul>
- * @since 3.0
  */
 void restore() throws JavaScriptModelException;
 /**
  * @deprecated Use {@link #findFunctions(IFunction)} instead
  */
 IFunction[] findMethods(IFunction method);
-IFunction[] findFunctions(IFunction method);
+
+/**
+ * Finds the function in this javaScript file that correspond to
+ * the given function.
+ * Returns <code>null</code> if no such function can be found
+ * or if the given element is not included in a javaScript file.
+ *
+ * @param function the given function
+ * @return the found functions in this javaScript file that correspond to the given function
+ */
+IFunction[] findFunctions(IFunction function);
 
 
 

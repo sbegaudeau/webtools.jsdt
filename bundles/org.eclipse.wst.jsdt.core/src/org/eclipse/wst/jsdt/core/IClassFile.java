@@ -13,23 +13,14 @@ package org.eclipse.wst.jsdt.core;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * Represents an entire binary type (single <code>.class</code> file).
- * A class file has a single child of type <code>IType</code>.
- * Class file elements need to be opened before they can be navigated.
- * If a class file cannot be parsed, its structure remains unknown. Use
+ * Represents an entire non-editable JavaScript file.
+ * non-editable JavaScript file elements need to be opened before they can be navigated.
+ * If a  file cannot be parsed, its structure remains unknown. Use
  * <code>IJavaScriptElement.isStructureKnown</code> to determine whether this is the
  * case.
  * <p>
- * Note: <code>IClassFile</code> extends <code>ISourceReference</code>.
- * Source can be obtained for a class file if and only if source has been attached to this
- * class file. The source associated with a class file is the source code of
- * the compilation unit it was (nominally) generated from.
- * </p>
- * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
- *
- * @see IPackageFragmentRoot#attachSource(org.eclipse.core.runtime.IPath, org.eclipse.core.runtime.IPath, IProgressMonitor)
  *  
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
@@ -40,7 +31,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public interface IClassFile extends ITypeRoot {
 
 /**
- * Changes this class file handle into a working copy. A new {@link IBuffer} is
+ * Changes this  file handle into a working copy. A new {@link IBuffer} is
  * created using the given owner. Uses the primary owner if <code>null</code> is
  * specified.
  * <p>
@@ -55,20 +46,17 @@ public interface IClassFile extends ITypeRoot {
  * </p>
  * <p>
  * Using {@link IJavaScriptUnit#commitWorkingCopy(boolean, IProgressMonitor)} on the working copy
- * will throw a <code>JavaScriptModelException</code> as a class file is implicetly read-only.
+ * will throw a <code>JavaScriptModelException</code> as a file is implicitly read-only.
  * </p>
  * <p>
- * If this class file was already in working copy mode, an internal counter is incremented and no
+ * If this file was already in working copy mode, an internal counter is incremented and no
  * other action is taken on this working copy. To bring this working copy back into the original mode
  * (where it reflects the underlying resource), {@link IJavaScriptUnit#discardWorkingCopy} must be call as many
  * times as {@link #becomeWorkingCopy(IProblemRequestor, WorkingCopyOwner, IProgressMonitor)}.
  * </p>
  * <p>
- * The primary compilation unit of a class file's working copy does not exist if the class file is not
+ * The primary javaScript unit of a file's working copy does not exist if the file is not
  * in working copy mode (<code>classFileWorkingCopy.getPrimary().exists() == false</code>).
- * </p>
- * <p>
- * The resource of a class file's working copy is <code>null</code> if the class file is in an external jar file.
  * </p>
  *
  * @param problemRequestor a requestor which will get notified of problems detected during
@@ -77,10 +65,9 @@ public interface IClassFile extends ITypeRoot {
  * @param owner the given {@link WorkingCopyOwner}, or <code>null</code> for the primary owner
  * @param monitor a progress monitor used to report progress while opening this compilation unit
  * 	or <code>null</code> if no progress should be reported
- * @return a working copy for this class file
- * @throws JavaScriptModelException if this compilation unit could not become a working copy.
+ * @return a working copy for this file
+ * @throws JavaScriptModelException if this javaScript unit could not become a working copy.
  * @see IJavaScriptUnit#discardWorkingCopy()
- * @since 3.2
  * @deprecated Use {@link ITypeRoot#getWorkingCopy(WorkingCopyOwner, IProgressMonitor)} instead.
  * 	Note that if this deprecated method is used, problems will be reported to the given problem requestor
  * 	as well as the problem requestor returned by the working copy owner (if not null).
@@ -88,21 +75,20 @@ public interface IClassFile extends ITypeRoot {
 IJavaScriptUnit becomeWorkingCopy(IProblemRequestor problemRequestor, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException;
 
 /**
- * Returns the bytes contained in this class file.
+ * Returns the bytes contained in this  file.
  *
- * @return the bytes contained in this class file
+ * @return the bytes contained in this  file
  *
  * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource
- * @since 3.3
  */
 byte[] getBytes() throws JavaScriptModelException;
 
 /**
- * Returns the type contained in this class file.
+ * Returns the first type contained in this  file.
  * This is a handle-only method. The type may or may not exist.
  *
- * @return the type contained in this class file
+ * @return the type contained in this file
  *
  */
 IType getType();
@@ -110,11 +96,11 @@ public IType[] getTypes() throws JavaScriptModelException ;
 
 
 /**
- * Returns a working copy on the source associated with this class file using the given
+ * Returns a working copy on the source associated with this  file using the given
  * factory to create the buffer, or <code>null</code> if there is no source associated
- * with the class file.
+ * with the  file.
  * <p>
- * The buffer will be automatically initialized with the source of the class file
+ * The buffer will be automatically initialized with the source of the  file
  * upon creation.
  * <p>
  * The only valid operations on this working copy are <code>getBuffer()</code> or <code>getOriginalElement</code>.
@@ -123,21 +109,20 @@ public IType[] getTypes() throws JavaScriptModelException ;
  *                 or <code>null</code> if no progress should be reported
  * @param factory the factory that creates a buffer that is used to get the content of the working copy
  *                 or <code>null</code> if the internal factory should be used
- * @return a  a working copy on the source associated with this class file
- * @exception JavaScriptModelException if the source of this class file can
+ * @return a  a working copy on the source associated with this  file
+ * @exception JavaScriptModelException if the source of this  file can
  *   not be determined. Reasons include:
  * <ul>
- * <li> This class file does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * <li> This  file does not exist (ELEMENT_DOES_NOT_EXIST)</li>
  * </ul>
- * @since 2.0
  * @deprecated Use {@link ITypeRoot#getWorkingCopy(WorkingCopyOwner, IProgressMonitor)} instead
  */
 IJavaScriptElement getWorkingCopy(IProgressMonitor monitor, IBufferFactory factory) throws JavaScriptModelException;
-/**
- * Returns whether this type represents a class. This is not guaranteed to be
+/* 
+ * Returns whether this type is edit. This is not guaranteed to be
  * instantaneous, as it may require parsing the underlying file.
  *
- * @return <code>true</code> if the class file represents a class.
+ * @return <code>true</code> if the  file represents a class.
  *
  * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource
@@ -147,7 +132,7 @@ boolean isClass() throws JavaScriptModelException;
  * Returns whether this type represents an interface. This is not guaranteed to
  * be instantaneous, as it may require parsing the underlying file.
  *
- * @return <code>true</code> if the class file represents an interface.
+ * @return <code>true</code> if the file represents an interface.
  *
  * @exception JavaScriptModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource

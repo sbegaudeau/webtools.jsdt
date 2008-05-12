@@ -14,7 +14,7 @@
 package org.eclipse.wst.jsdt.core;
 
 /**
- * Status codes used with Java model status objects.
+ * Status codes used with JavaScript model status objects.
  * <p>
  * This interface declares constants only; it is not intended to be implemented
  * or extended.
@@ -33,21 +33,17 @@ public interface IJavaScriptModelStatusConstants {
 	/**
 	 * Status constant indicating that a container path was resolved
 	 * to invalid entries (null or container).
-	 *
-	 * @since 2.0
 	 */
 	public static final int INVALID_CP_CONTAINER_ENTRY = 962;
 
 	/**
 	 * Status constant indicating that a container path was not resolvable
 	 * indicating either the referred container is undefined, unbound.
-	 *
-	 * @since 2.0
 	 */
 	public static final int CP_CONTAINER_PATH_UNBOUND = 963;
 
 	/**
-	 * Status constant indicating that a classpath entry was invalid
+	 * Status constant indicating that a includepath entry was invalid
 	 */
 	public static final int INVALID_INCLUDEPATH = 964;
 
@@ -199,13 +195,13 @@ public interface IJavaScriptModelStatusConstants {
 	public static final int TARGET_EXCEPTION = 987;
 
 	/**
-	 * Status constant indicating that the Java builder
+	 * Status constant indicating that the JavaScript validator
 	 * could not be initialized.
 	 */
 	public static final int BUILDER_INITIALIZATION_ERROR = 990;
 
 	/**
-	 * Status constant indicating that the Java builder's last built state
+	 * Status constant indicating that the JavaScript validator's last built state
 	 * could not be serialized or deserialized.
 	 */
 	public static final int BUILDER_SERIALIZATION_ERROR = 991;
@@ -222,22 +218,22 @@ public interface IJavaScriptModelStatusConstants {
 	public static final int INVALID_SIBLING = 993;
 
 	/**
-	 * Status indicating that a Java element could not be created because
+	 * Status indicating that a JavaScript element could not be created because
 	 * the underlying resource is invalid.
 	 * @see JavaScriptCore
 	 */
 	 public static final int INVALID_RESOURCE = 995;
 
 	/**
-	 * Status indicating that a Java element could not be created because
+	 * Status indicating that a JavaScript element could not be created because
 	 * the underlying resource is not of an appropriate type.
 	 * @see JavaScriptCore
 	 */
 	 public static final int INVALID_RESOURCE_TYPE = 996;
 
 	/**
-	 * Status indicating that a Java element could not be created because
-	 * the project owning underlying resource does not have the Java nature.
+	 * Status indicating that a JavaScript element could not be created because
+	 * the project owning underlying resource does not have the JavaScript nature.
 	 * @see JavaScriptCore
 	 */
 	 public static final int INVALID_PROJECT = 997;
@@ -259,24 +255,21 @@ public interface IJavaScriptModelStatusConstants {
 	 public static final int NO_LOCAL_CONTENTS = 999;
 
 	 /**
-	  * Status indicating that a .classpath file is ill-formed, and thus cannot
+	  * Status indicating that a .jsdtScope file is ill-formed, and thus cannot
 	  * be read/written successfully.
-	  * @since 2.1
 	  */
 	 public static final int INVALID_INCLUDEPATH_FILE_FORMAT = 1000;
 
 	 /**
 	  * Status indicating that a project is involved in a build path cycle.
-	  * @since 2.1
 	  */
 	 public static final int INCLUDEPATH_CYCLE = 1001;
 
 	/**
 	 * Status constant indicating that an inclusion or an exclusion pattern got specified
-	 * on a classpath source entry, though it was explicitely disabled
+	 * on a includepath source entry, though it was explicitely disabled
 	 * according to its project preference settings.
 	 * @see org.eclipse.wst.jsdt.core.IJavaScriptProject#getOptions(boolean)
-	 * @since 2.1
 	 */
 	public static final int DISABLED_CP_EXCLUSION_PATTERNS = 1002;
 
@@ -285,50 +278,42 @@ public interface IJavaScriptModelStatusConstants {
 	 * with a source entry, though it was explicitely disabled according to its project
 	 * preference settings.
 	 * @see org.eclipse.wst.jsdt.core.IJavaScriptProject#getOptions(boolean)
-	 * @since 2.1
 	 */
 	public static final int DISABLED_CP_MULTIPLE_OUTPUT_LOCATIONS = 1003;
 
-	/**
+	/*
 	 * Status constant indicating that a project is prerequisiting some library for which the
 	 * classfile JDK version level is more recent than the project JDK target level setting.
 	 * This can indicate some binary incompatibility issues later on.
-	 * @since 3.0
 	 */
 	public static final int INCOMPATIBLE_JDK_LEVEL	= 1004;
 
 	/**
-	 * Status constant indicating that a compiler failure occurred.
-	 * @since 3.0
+	 * Status constant indicating that a validation failure occurred.
 	 */
 	public static final int VALIDATION_FAILURE	= 1005;
 	/**
-	 * Status constant indicating that an element is not on its project's claspath.
-	 * @since 3.1
-	 */
+	 * Status constant indicating that an element is not on its project's includepath.
+     */
 	public static final int ELEMENT_NOT_ON_CLASSPATH	= 1006;
-	/**
+	/*
 	 * Status constant indicating that a compiler option is invalid.
-	 * @since 3.1
 	 */
 //	public static final int INVALID_COMPILER_OPTION = 1007;
 	/**
-	 * <p>Status constant indicating that the attached javadoc content cannot be retrieved due to multiple reasons:
+	 * <p>Status constant indicating that the attached jsdoc content cannot be retrieved due to multiple reasons:
 	 * invalid url, timed-out,...</p>
 	 *
-	 * @since 3.2
 	 */
 	public static final int CANNOT_RETRIEVE_ATTACHED_JSDOC = 1008;
 	/**
-	 * <p>Status constant indicating that the attached javadoc content format is unrecognized.</p>
+	 * <p>Status constant indicating that the attached jsdoc content format is unrecognized.</p>
 	 *
-	 * @since 3.2
 	 */
 	public static final int UNKNOWN_JSDOC_FORMAT = 1009;
 	/**
 	 * <p>Status constant indicating that the variable is deprecated.</p>
 	 *
-	 * @since 3.3
 	 */
 	public static final int DEPRECATED_VARIABLE = 1010;
 }
