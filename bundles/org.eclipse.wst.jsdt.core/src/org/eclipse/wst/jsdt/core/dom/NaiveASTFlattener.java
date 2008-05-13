@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     bug 227489 - Etienne Pfister <epfister@hsr.ch>
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.dom;
 
@@ -285,7 +286,8 @@ class NaiveASTFlattener extends ASTVisitor {
 		this.buffer.append("{\n");//$NON-NLS-1$
 		this.indent++;
 		for (Iterator it = node.statements().iterator(); it.hasNext(); ) {
-			Statement s = (Statement) it.next();
+			// fix for inner function handling, Etienne Pfister
+			ASTNode s = (ASTNode) it.next();
 			s.accept(this);
 		}
 		this.indent--;

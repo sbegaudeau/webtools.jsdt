@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     bug 227489 - Etienne Pfister <epfister@hsr.ch>
  *******************************************************************************/
 
 package org.eclipse.wst.jsdt.core.dom;
@@ -518,7 +519,11 @@ class ASTConverter {
 				for (int i = 0; i < statementsLength; i++) {
 					if (statements[i] instanceof org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration) {
 						checkAndAddMultipleLocalDeclaration(statements, i, block.statements());
-					} else {
+					} else if (statements[i] instanceof org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration) { // fix for inner function handling, Etienne Pfister
+					   	org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration method = (org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration) statements[i];
+					   	block.statements().add(convert(method));
+					}
+					else {
 						final Statement statement = convert(statements[i]);
 						if (statement != null) {
 							block.statements().add(statement);

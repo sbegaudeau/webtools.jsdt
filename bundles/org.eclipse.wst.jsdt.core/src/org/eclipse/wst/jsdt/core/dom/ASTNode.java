@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     bug 227489 - Etienne Pfister <epfister@hsr.ch>
  *******************************************************************************/
 
 package org.eclipse.wst.jsdt.core.dom;
@@ -1902,7 +1903,11 @@ public abstract class ASTNode {
 		Class childClass = newChild.getClass();
 		if (nodeType != null && !nodeType.isAssignableFrom(childClass)) {
 			// new child is not of the right type
-			throw new ClassCastException();
+			
+			// fix for inner function handling, Etienne Pfister
+			if(!(newChild instanceof org.eclipse.wst.jsdt.core.dom.FunctionDeclaration)) {
+				throw new ClassCastException();
+			}
 		}
 		if ((newChild.typeAndFlags & PROTECT) != 0) {
 			// new child node is protected => cannot be parented
