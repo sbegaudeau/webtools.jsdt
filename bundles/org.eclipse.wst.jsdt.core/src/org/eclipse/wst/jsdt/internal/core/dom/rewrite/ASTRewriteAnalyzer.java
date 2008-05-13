@@ -35,9 +35,6 @@ import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
-import org.eclipse.wst.jsdt.core.dom.Annotation;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
@@ -54,38 +51,33 @@ import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ChildPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionExpression;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
 import org.eclipse.wst.jsdt.core.dom.ListExpression;
-import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
-import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
-import org.eclipse.wst.jsdt.core.dom.FunctionRef;
-import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
-import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
@@ -102,7 +94,6 @@ import org.eclipse.wst.jsdt.core.dom.RegularExpressionLiteral;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SimpleType;
-import org.eclipse.wst.jsdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.StringLiteral;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
@@ -1277,9 +1268,6 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		 */
 		protected String getSeparatorString(int nodeIndex) {
 			ASTNode curr= getNewNode(nodeIndex);
-			if (curr instanceof Annotation) {
-				return this.annotationSeparation.getPrefix(getNodeIndent(nodeIndex + 1));
-			}
 			return super.getSeparatorString(nodeIndex);
 		}
 	}
@@ -2564,7 +2552,6 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		}
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			int pos= rewriteJavadoc(node, PackageDeclaration.JAVADOC_PROPERTY);
-			rewriteNodeList(node, PackageDeclaration.ANNOTATIONS_PROPERTY, pos, "", " "); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		rewriteRequiredNode(node, PackageDeclaration.NAME_PROPERTY);
@@ -3183,46 +3170,6 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration)
-	 */
-	public boolean visit(AnnotationTypeDeclaration node) {
-		if (!hasChildrenChanges(node)) {
-			return doVisitUnchangedChildren(node);
-		}
-		int pos= rewriteJavadoc(node, AnnotationTypeDeclaration.JAVADOC_PROPERTY);
-		rewriteModifiers2(node, AnnotationTypeDeclaration.MODIFIERS2_PROPERTY, pos);
-		pos= rewriteRequiredNode(node, AnnotationTypeDeclaration.NAME_PROPERTY);
-
-		int startIndent= getIndent(node.getStartPosition()) + 1;
-		int startPos= getPosAfterLeftBrace(pos);
-		rewriteParagraphList(node, AnnotationTypeDeclaration.BODY_DECLARATIONS_PROPERTY, startPos, startIndent, -1, 2);
-		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration)
-	 */
-	public boolean visit(AnnotationTypeMemberDeclaration node) {
-		if (!hasChildrenChanges(node)) {
-			return doVisitUnchangedChildren(node);
-		}
-		int pos= rewriteJavadoc(node, AnnotationTypeMemberDeclaration.JAVADOC_PROPERTY);
-		rewriteModifiers2(node, AnnotationTypeMemberDeclaration.MODIFIERS2_PROPERTY, pos);
-		rewriteRequiredNode(node, AnnotationTypeMemberDeclaration.TYPE_PROPERTY);
-		pos= rewriteRequiredNode(node, AnnotationTypeMemberDeclaration.NAME_PROPERTY);
-
-		try {
-			int changeKind= getChangeKind(node, AnnotationTypeMemberDeclaration.DEFAULT_PROPERTY);
-			if (changeKind == RewriteEvent.INSERTED || changeKind == RewriteEvent.REMOVED) {
-				pos= getScanner().getTokenEndOffset(ITerminalSymbols.TokenNameRPAREN, pos);
-			}
-			rewriteNode(node, AnnotationTypeMemberDeclaration.DEFAULT_PROPERTY, pos, this.formatter.ANNOT_MEMBER_DEFAULT);
-		} catch (CoreException e) {
-			handleException(e);
-		}
-		return false;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.EnhancedForStatement)
@@ -3249,120 +3196,6 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration)
-	 */
-	public boolean visit(EnumConstantDeclaration node) {
-		if (!hasChildrenChanges(node)) {
-			return doVisitUnchangedChildren(node);
-		}
-		int pos= rewriteJavadoc(node, EnumConstantDeclaration.JAVADOC_PROPERTY);
-		rewriteModifiers2(node, EnumConstantDeclaration.MODIFIERS2_PROPERTY, pos);
-		pos= rewriteRequiredNode(node, EnumConstantDeclaration.NAME_PROPERTY);
-		RewriteEvent argsEvent= getEvent(node, EnumConstantDeclaration.ARGUMENTS_PROPERTY);
-		if (argsEvent != null && argsEvent.getChangeKind() != RewriteEvent.UNCHANGED) {
-			RewriteEvent[] children= argsEvent.getChildren();
-			try {
-				int nextTok= getScanner().readNext(pos, true);
-				boolean hasParents= (nextTok == ITerminalSymbols.TokenNameLPAREN);
-				boolean isAllRemoved= hasParents && isAllOfKind(children, RewriteEvent.REMOVED);
-				String prefix= ""; //$NON-NLS-1$
-				if (!hasParents) {
-					prefix= "("; //$NON-NLS-1$
-				} else if (!isAllRemoved) {
-					pos= getScanner().getCurrentEndOffset();
-				}
-				pos= rewriteNodeList(node, EnumConstantDeclaration.ARGUMENTS_PROPERTY, pos, prefix, ", "); //$NON-NLS-1$
-
-				if (!hasParents) {
-					doTextInsert(pos, ")", getEditGroup(children[children.length - 1])); //$NON-NLS-1$
-				} else if (isAllRemoved) {
-					int afterClosing= getScanner().getNextEndOffset(pos, true);
-					doTextRemove(pos, afterClosing - pos, getEditGroup(children[children.length - 1]));
-					pos= afterClosing;
-				}
-			} catch (CoreException e) {
-				handleException(e);
-			}
-		} else {
-			pos= doVisit(node, EnumConstantDeclaration.ARGUMENTS_PROPERTY, pos);
-		}
-
-		if (isChanged(node, EnumConstantDeclaration.ANONYMOUS_CLASS_DECLARATION_PROPERTY)) {
-			int kind= getChangeKind(node, EnumConstantDeclaration.ANONYMOUS_CLASS_DECLARATION_PROPERTY);
-			if (kind == RewriteEvent.REMOVED) {
-				try {
-					// 'pos' can be before brace
-					pos= getScanner().getPreviousTokenEndOffset(ITerminalSymbols.TokenNameLBRACE, pos);
-				} catch (CoreException e) {
-					handleException(e);
-				}
-			} else {
-				pos= node.getStartPosition() + node.getLength(); // insert pos
-			}
-			rewriteNode(node, EnumConstantDeclaration.ANONYMOUS_CLASS_DECLARATION_PROPERTY, pos, ASTRewriteFormatter.SPACE);
-		}
-		return false;
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.EnumDeclaration)
-	 */
-	public boolean visit(EnumDeclaration node) {
-		if (!hasChildrenChanges(node)) {
-			return doVisitUnchangedChildren(node);
-		}
-		int pos= rewriteJavadoc(node, EnumDeclaration.JAVADOC_PROPERTY);
-		rewriteModifiers2(node, EnumDeclaration.MODIFIERS2_PROPERTY, pos);
-		pos= rewriteRequiredNode(node, EnumDeclaration.NAME_PROPERTY);
-		pos= rewriteNodeList(node, EnumDeclaration.SUPER_INTERFACE_TYPES_PROPERTY, pos, " implements ", ", "); //$NON-NLS-1$ //$NON-NLS-2$
-
-		pos= getPosAfterLeftBrace(pos);
-
-		String leadString= ""; //$NON-NLS-1$
-		RewriteEvent constEvent= getEvent(node, EnumDeclaration.ENUM_CONSTANTS_PROPERTY);
-
-		if (constEvent != null && constEvent.getChangeKind() != RewriteEvent.UNCHANGED) {
-			RewriteEvent[] events= constEvent.getChildren();
-			if (isAllOfKind(events, RewriteEvent.INSERTED)) {
-				leadString= this.formatter.FIRST_ENUM_CONST.getPrefix(getIndent(node.getStartPosition()));
-			}
-		}
-		pos= rewriteNodeList(node, EnumDeclaration.ENUM_CONSTANTS_PROPERTY, pos, leadString, ", "); //$NON-NLS-1$
-
-		RewriteEvent bodyEvent= getEvent(node, EnumDeclaration.BODY_DECLARATIONS_PROPERTY);
-		int indent= 0;
-		if (bodyEvent != null && bodyEvent.getChangeKind() != RewriteEvent.UNCHANGED) {
-			boolean hasConstants= !((List) getNewValue(node, EnumDeclaration.ENUM_CONSTANTS_PROPERTY)).isEmpty();
-
-			RewriteEvent[] children= bodyEvent.getChildren();
-			try {
-				if (hasConstants) {
-					indent= getIndent(pos);
-				} else {
-					indent= getIndent(node.getStartPosition()) + 1;
-				}
-				int token= getScanner().readNext(pos, true);
-				boolean hasSemicolon= token == ITerminalSymbols.TokenNameSEMICOLON;
-				if (!hasSemicolon && isAllOfKind(children, RewriteEvent.INSERTED)) {
-					if (!hasConstants) {
-						String str= this.formatter.FIRST_ENUM_CONST.getPrefix(indent - 1);
-						doTextInsert(pos, str, getEditGroup(children[0]));
-					}
-					doTextInsert(pos, ";", getEditGroup(children[0])); //$NON-NLS-1$
-				} else if (hasSemicolon) {
-					int endPos= getScanner().getCurrentEndOffset();
-					if (isAllOfKind(children, RewriteEvent.REMOVED)) {
-						doTextRemove(pos, endPos - pos, getEditGroup(children[0]));
-					}
-					pos= endPos;
-				}
-			} catch (CoreException e) {
-				handleException(e);
-			}
-		}
-		rewriteParagraphList(node, EnumDeclaration.BODY_DECLARATIONS_PROPERTY, pos, indent, -1, 2);
-		return false;
-	}
 
 	public boolean visit(ListExpression node) {
 		if (!hasChildrenChanges(node)) {
@@ -3375,28 +3208,6 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.MarkerAnnotation)
-	 */
-	public boolean visit(MarkerAnnotation node) {
-		if (!hasChildrenChanges(node)) {
-			return doVisitUnchangedChildren(node);
-		}
-		rewriteRequiredNode(node, MarkerAnnotation.TYPE_NAME_PROPERTY);
-		return false;
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.MemberValuePair)
-	 */
-	public boolean visit(MemberValuePair node) {
-		if (!hasChildrenChanges(node)) {
-			return doVisitUnchangedChildren(node);
-		}
-		rewriteRequiredNode(node, MemberValuePair.NAME_PROPERTY);
-		rewriteRequiredNode(node, MemberValuePair.VALUE_PROPERTY);
-
-		return false;
-	}
-	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.Modifier)
 	 */
 	public boolean visit(Modifier node) {
@@ -3406,27 +3217,6 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		String newText= getNewValue(node, Modifier.KEYWORD_PROPERTY).toString(); // type Modifier.ModifierKeyword
 		TextEditGroup group = getEditGroup(node, Modifier.KEYWORD_PROPERTY);
 		doTextReplace(node.getStartPosition(), node.getLength(), newText, group);
-		return false;
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.NormalAnnotation)
-	 */
-	public boolean visit(NormalAnnotation node) {
-		if (!hasChildrenChanges(node)) {
-			return doVisitUnchangedChildren(node);
-		}
-		int pos= rewriteRequiredNode(node, NormalAnnotation.TYPE_NAME_PROPERTY);
-		if (isChanged(node, NormalAnnotation.VALUES_PROPERTY)) {
-			// eval position after opening parent
-			try {
-				int startOffset= getScanner().getTokenEndOffset(ITerminalSymbols.TokenNameLPAREN, pos);
-				rewriteNodeList(node, NormalAnnotation.VALUES_PROPERTY, startOffset, "", ", "); //$NON-NLS-1$ //$NON-NLS-2$
-			} catch (CoreException e) {
-				handleException(e);
-			}
-		} else {
-			voidVisit(node, NormalAnnotation.VALUES_PROPERTY);
-		}
 		return false;
 	}
 	/* (non-Javadoc)
@@ -3459,17 +3249,6 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		}
 		rewriteRequiredNode(node, QualifiedType.QUALIFIER_PROPERTY);
 		rewriteRequiredNode(node, QualifiedType.NAME_PROPERTY);
-		return false;
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.SingleMemberAnnotation)
-	 */
-	public boolean visit(SingleMemberAnnotation node) {
-		if (!hasChildrenChanges(node)) {
-			return doVisitUnchangedChildren(node);
-		}
-		rewriteRequiredNode(node, SingleMemberAnnotation.TYPE_NAME_PROPERTY);
-		rewriteRequiredNode(node, SingleMemberAnnotation.VALUE_PROPERTY);
 		return false;
 	}
 	public boolean visit(UndefinedLiteral node) {

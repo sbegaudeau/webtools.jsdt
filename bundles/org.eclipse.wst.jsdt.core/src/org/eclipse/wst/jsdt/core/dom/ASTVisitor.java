@@ -178,41 +178,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.1
-	 */
-	public boolean visit(AnnotationTypeDeclaration node) {
-		return true;
-	}
-
-
-	/**
-	 * Visits the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing and return true.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @return <code>true</code> if the children of this node should be
-	 * visited, and <code>false</code> if the children of this node should
-	 * be skipped
-	 * @since 3.1
-	 */
-	public boolean visit(AnnotationTypeMemberDeclaration node) {
-		return true;
-	}
-
-	/**
-	 * Visits the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing and return true.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @return <code>true</code> if the children of this node should be
-	 * visited, and <code>false</code> if the children of this node should
-	 * be skipped
 	 */
 	public boolean visit(AnonymousClassDeclaration node) {
 		return true;
@@ -577,40 +542,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.1
-	 */
-	public boolean visit(EnumConstantDeclaration node) {
-		return true;
-	}
-
-	/**
-	 * Visits the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing and return true.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @return <code>true</code> if the children of this node should be
-	 * visited, and <code>false</code> if the children of this node should
-	 * be skipped
-	 * @since 3.1
-	 */
-	public boolean visit(EnumDeclaration node) {
-		return true;
-	}
-
-	/**
-	 * Visits the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing and return true.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @return <code>true</code> if the children of this node should be
-	 * visited, and <code>false</code> if the children of this node should
-	 * be skipped
 	 */
 	public boolean visit(ExpressionStatement node) {
 		return true;
@@ -820,23 +751,6 @@ public abstract class ASTVisitor {
 		return true;
 	}
 
-	/**
-	 * Visits the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing and return true.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @return <code>true</code> if the children of this node should be
-	 * visited, and <code>false</code> if the children of this node should
-	 * be skipped
-	 * @since 3.1
-	 */
-	public boolean visit(MarkerAnnotation node) {
-		return true;
-	}
-
 
 	/**
 	 * Visits the given type-specific AST node.
@@ -852,24 +766,6 @@ public abstract class ASTVisitor {
 	 * @since 3.0
 	 */
 	public boolean visit(MemberRef node) {
-		return true;
-	}
-
-
-	/**
-	 * Visits the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing and return true.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @return <code>true</code> if the children of this node should be
-	 * visited, and <code>false</code> if the children of this node should
-	 * be skipped
-	 * @since 3.1
-	 */
-	public boolean visit(MemberValuePair node) {
 		return true;
 	}
 
@@ -960,23 +856,6 @@ public abstract class ASTVisitor {
 		return true;
 	}
 
-
-	/**
-	 * Visits the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing and return true.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @return <code>true</code> if the children of this node should be
-	 * visited, and <code>false</code> if the children of this node should
-	 * be skipped
-	 * @since 3.1
-	 */
-	public boolean visit(NormalAnnotation node) {
-		return true;
-	}
 
 	/**
 	 * Visits the given type-specific AST node.
@@ -1193,23 +1072,6 @@ public abstract class ASTVisitor {
 		return true;
 	}
 
-
-	/**
-	 * Visits the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing and return true.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @return <code>true</code> if the children of this node should be
-	 * visited, and <code>false</code> if the children of this node should
-	 * be skipped
-	 * @since 3.1
-	 */
-	public boolean visit(SingleMemberAnnotation node) {
-		return true;
-	}
 
 
 	/**
@@ -1568,31 +1430,6 @@ public abstract class ASTVisitor {
 	public boolean visit(FunctionExpression node) {
 		return true;
 	}
-	/**
-	 * End of visit the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing. Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @since 3.1
-	 */
-	public void endVisit(AnnotationTypeDeclaration node) {
-		// default implementation: do nothing
-	}
-
-	/**
-	 * End of visit the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing. Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @since 3.1
-	 */
-	public void endVisit(AnnotationTypeMemberDeclaration node) {
-		// default implementation: do nothing
-	}
 
 	/**
 	 * End of visit the given type-specific AST node.
@@ -1875,32 +1712,6 @@ public abstract class ASTVisitor {
 	 * </p>
 	 *
 	 * @param node the node to visit
-	 * @since 3.1
-	 */
-	public void endVisit(EnumConstantDeclaration node) {
-		// default implementation: do nothing
-	}
-
-	/**
-	 * End of visit the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing. Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @since 3.1
-	 */
-	public void endVisit(EnumDeclaration node) {
-		// default implementation: do nothing
-	}
-
-	/**
-	 * End of visit the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing. Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
 	 */
 	public void endVisit(ExpressionStatement node) {
 		// default implementation: do nothing
@@ -2057,20 +1868,6 @@ public abstract class ASTVisitor {
 	public void endVisit(ListExpression node) {
 		// default implementation: do nothing
 	}
-
-	/**
-	 * End of visit the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing. Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @since 3.1
-	 */
-	public void endVisit(MarkerAnnotation node) {
-		// default implementation: do nothing
-	}
-
 	/**
 	 * End of visit the given type-specific AST node.
 	 * <p>
@@ -2081,19 +1878,6 @@ public abstract class ASTVisitor {
 	 * @since 3.0
 	 */
 	public void endVisit(MemberRef node) {
-		// default implementation: do nothing
-	}
-
-	/**
-	 * End of visit the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing. Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @since 3.1
-	 */
-	public void endVisit(MemberValuePair node) {
 		// default implementation: do nothing
 	}
 
@@ -2157,19 +1941,6 @@ public abstract class ASTVisitor {
 	 * @since 3.1
 	 */
 	public void endVisit(Modifier node) {
-		// default implementation: do nothing
-	}
-
-	/**
-	 * End of visit the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing. Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @since 3.1
-	 */
-	public void endVisit(NormalAnnotation node) {
 		// default implementation: do nothing
 	}
 
@@ -2332,19 +2103,6 @@ public abstract class ASTVisitor {
 	 * @param node the node to visit
 	 */
 	public void endVisit(SimpleType node) {
-		// default implementation: do nothing
-	}
-
-	/**
-	 * End of visit the given type-specific AST node.
-	 * <p>
-	 * The default implementation does nothing. Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param node the node to visit
-	 * @since 3.1
-	 */
-	public void endVisit(SingleMemberAnnotation node) {
 		// default implementation: do nothing
 	}
 

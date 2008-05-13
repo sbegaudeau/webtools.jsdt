@@ -92,14 +92,6 @@ public interface IJavaScriptColorConstants {
 	String JAVA_DEFAULT= "java_default"; //$NON-NLS-1$
 
 	/**
-	 * The color key for the Java built-in types such as <code>int</code> and <code>char</code> in Java code
-	 * (value <code>"java_type"</code>).
-	 *
-	 * @deprecated no longer used, replaced by <code>JAVA_KEYWORD</code>
-	 */
-	String JAVA_TYPE= "java_type"; //$NON-NLS-1$
-
-	/**
 	 * The color key for annotations
 	 * (value <code>"java_annotation"</code>).
 	 *

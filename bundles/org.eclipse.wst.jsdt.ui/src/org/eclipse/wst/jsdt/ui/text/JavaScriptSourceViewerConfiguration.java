@@ -16,7 +16,6 @@ import java.util.Map;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.wst.jsdt.internal.ui.text.html.HTMLTextPresenter;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -75,6 +74,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.PreferencesAdapter;
 import org.eclipse.wst.jsdt.internal.ui.text.SingleTokenJavaScanner;
 import org.eclipse.wst.jsdt.internal.ui.text.comment.CommentFormattingStrategy;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.JavaCorrectionAssistant;
+import org.eclipse.wst.jsdt.internal.ui.text.html.HTMLTextPresenter;
 import org.eclipse.wst.jsdt.internal.ui.text.java.ContentAssistProcessor;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaAutoIndentStrategy;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCodeScanner;
@@ -93,7 +93,6 @@ import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavaDocScanner;
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavadocCompletionProcessor;
 import org.eclipse.wst.jsdt.internal.ui.typehierarchy.HierarchyInformationControl;
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
 
 
@@ -109,23 +108,6 @@ import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
  * (repeatedly) as the API evolves.
  */
 public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfiguration {
-
-	/**
-	 * Preference key used to look up display tab width.
-	 *
-	 * @since 2.0
-	 * @deprecated As of 3.0, replaced by {@link org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants#EDITOR_TAB_WIDTH}
-	 */
-	public final static String PREFERENCE_TAB_WIDTH= PreferenceConstants.EDITOR_TAB_WIDTH;
-
-	/**
-	 * Preference key for inserting spaces rather than tabs.
-	 *
-	 * @since 2.0
-	 * @deprecated as of 3.1 use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_TAB_CHAR}
-	 */
-	public final static String SPACES_FOR_TABS= PreferenceConstants.EDITOR_SPACES_FOR_TABS;
-
 
 	private JavaScriptTextTools fJavaTextTools;
 	private ITextEditor fTextEditor;
@@ -177,7 +159,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	 * <p>
 	 * Creates a Java source viewer configuration in the new setup without text tools. Clients are
 	 * allowed to call {@link JavaScriptSourceViewerConfiguration#handlePropertyChangeEvent(PropertyChangeEvent)}
-	 * and disallowed to call {@link JavaScriptSourceViewerConfiguration#getPreferenceStore()} on the resulting
+	 * on the resulting
 	 * Java source viewer configuration.
 	 * </p>
 	 *
@@ -193,27 +175,6 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 		fTextEditor= editor;
 		fDocumentPartitioning= partitioning;
 		initializeScanners();
-	}
-
-	/**
-	 * Creates a new Java source viewer configuration for viewers in the given editor
-	 * using the given Java tools.
-	 *
-	 * @param tools the Java text tools to be used
-	 * @param editor the editor in which the configured viewer(s) will reside, or <code>null</code> if none
-	 * @see JavaScriptTextTools
-	 * @deprecated As of 3.0, replaced by {@link JavaScriptSourceViewerConfiguration#JavaSourceViewerConfiguration(IColorManager, IPreferenceStore, ITextEditor, String)}
-	 */
-	public JavaScriptSourceViewerConfiguration(JavaScriptTextTools tools, ITextEditor editor) {
-		super(createPreferenceStore(tools));
-		fJavaTextTools= tools;
-		fColorManager= tools.getColorManager();
-		fCodeScanner= (AbstractJavaScanner) fJavaTextTools.getCodeScanner();
-		fMultilineCommentScanner= (AbstractJavaScanner) fJavaTextTools.getMultilineCommentScanner();
-		fSinglelineCommentScanner= (AbstractJavaScanner) fJavaTextTools.getSinglelineCommentScanner();
-		fStringScanner= (AbstractJavaScanner) fJavaTextTools.getStringScanner();
-		fJavaDocScanner= (AbstractJavaScanner) fJavaTextTools.getJavaDocScanner();
-		fTextEditor= editor;
 	}
 
 	/**
@@ -280,23 +241,6 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	 */
 	protected ITextEditor getEditor() {
 		return fTextEditor;
-	}
-
-	/**
-	 * Returns the preference store used by this configuration to initialize
-	 * the individual bits and pieces.
-	 * <p>
-	 * Clients are not allowed to call this method if the new setup without
-	 * text tools is in use.</p>
-	 *
-	 * @return the preference store used to initialize this configuration
-	 * @see JavaScriptSourceViewerConfiguration#JavaSourceViewerConfiguration(IColorManager, IPreferenceStore, ITextEditor, String)
-	 * @since 2.0
-	 * @deprecated As of 3.0
-	 */
-	protected IPreferenceStore getPreferenceStore() {
-		Assert.isTrue(!isNewSetup());
-		return fJavaTextTools.getPreferenceStore();
 	}
 
 	/**

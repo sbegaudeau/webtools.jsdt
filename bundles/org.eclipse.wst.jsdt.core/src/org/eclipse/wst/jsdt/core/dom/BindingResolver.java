@@ -101,21 +101,6 @@ class BindingResolver {
 	}
 
 	/**
-	 * Finds the corresponding AST node from which the given annotation instance originated.
-	 *
-	 * The default implementation of this method returns <code>null</code>.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param instance the dom annotation
-	 * @return the corresponding node where the bindings is declared,
-	 *    or <code>null</code> if none
-	 */
-	ASTNode findDeclaringNode(IAnnotationBinding instance) {
-		return null;
-	}
-
-	/**
 	 * Allows the user to get information about the given old/new pair of
 	 * AST nodes.
 	 * <p>
@@ -259,20 +244,6 @@ class BindingResolver {
 		return null;
 	}
 
-	/**
-	 * Return the new annotation corresponding to the given old annotation
-	 * <p>
-	 * The default implementation of this method returns <code>null</code>
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param instance the old annotation
-	 * @return the new DOM annotation
-	 */
-	IAnnotationBinding getAnnotationInstance(org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding instance) {
-		return null;
-	}
-
 	boolean isResolvedTypeInferredFromExpectedType(FunctionInvocation methodInvocation) {
 		return false;
 	}
@@ -407,27 +378,7 @@ class BindingResolver {
 	IFunctionBinding resolveConstructor(ConstructorInvocation expression) {
 		return null;
 	}
-	/**
-	 * Resolves and returns the binding for the constructor being invoked.
-	 * <p>
-	 * The implementation of
-	 * <code>ConstructorInvocation.resolveConstructor</code>
-	 * forwards to this method. Which constructor is invoked is often a function
-	 * of the context in which the expression node is embedded as well as
-	 * the expression subtree itself.
-	 * </p>
-	 * <p>
-	 * The default implementation of this method returns <code>null</code>.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param enumConstantDeclaration the enum constant declaration of interest
-	 * @return the binding for the constructor being invoked, or
-	 *    <code>null</code> if no binding is available
-	 */
-	IFunctionBinding resolveConstructor(EnumConstantDeclaration enumConstantDeclaration) {
-		return null;
-	}
+
 	/**
 	 * Resolves and returns the binding for the constructor being invoked.
 	 * <p>
@@ -531,29 +482,6 @@ class BindingResolver {
 	 *         available
 	 */
 	IBinding resolveImport(ImportDeclaration importDeclaration) {
-		return null;
-	}
-
-	/**
-	 * Resolves the given annotation type declaration and returns the binding
-	 * for it.
-	 * <p>
-	 * The implementation of <code>AnnotationTypeMemberDeclaration.resolveBinding</code>
-	 * forwards to this method. How the declaration resolves is often a
-	 * function of the context in which the declaration node is embedded as well
-	 * as the declaration subtree itself.
-	 * </p>
-	 * <p>
-	 * The default implementation of this method returns <code>null</code>.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param member the annotation type member declaration of interest
-	 * @return the binding for the given annotation type member declaration, or <code>null</code>
-	 *    if no binding is available
-	 * @since 3.0
-	 */
-	IFunctionBinding resolveMember(AnnotationTypeMemberDeclaration member) {
 		return null;
 	}
 
@@ -681,27 +609,6 @@ class BindingResolver {
 	}
 
 	/**
-	 * Resolves the given member value pair and returns the binding for it.
-	 * <p>
-	 * The implementation of <code>MemberValuePair.resolveMemberValuePairBinding</code> forwards to
-	 * this method. How the name resolves is often a function of the context
-	 * in which the name node is embedded as well as the name itself.
-	 * </p>
-	 * <p>
-	 * The default implementation of this method returns <code>null</code>.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param memberValuePair the member value pair of interest
-	 * @return the binding for the member value pair, or <code>null</code> if no binding is
-	 *    available
-	 * @since 3.2
-	 */
-	IMemberValuePairBinding resolveMemberValuePair(MemberValuePair memberValuePair) {
-		return null;
-	}
-
-	/**
 	 * Resolves the given reference and returns the binding for it.
 	 * <p>
 	 * The implementation of <code>FunctionRef.resolveBinding</code> forwards to
@@ -719,29 +626,6 @@ class BindingResolver {
 	 * @since 3.0
 	 */
 	IBinding resolveReference(FunctionRef ref) {
-		return null;
-	}
-
-	/**
-	 * Resolves the given annotation type declaration and returns the binding
-	 * for it.
-	 * <p>
-	 * The implementation of <code>AnnotationTypeDeclaration.resolveBinding</code>
-	 * forwards to this method. How the declaration resolves is often a
-	 * function of the context in which the declaration node is embedded as well
-	 * as the declaration subtree itself.
-	 * </p>
-	 * <p>
-	 * The default implementation of this method returns <code>null</code>.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param type the annotation type declaration of interest
-	 * @return the binding for the given annotation type declaration, or <code>null</code>
-	 *    if no binding is available
-	 * @since 3.0
-	 */
-	ITypeBinding resolveType(AnnotationTypeDeclaration type) {
 		return null;
 	}
 
@@ -764,29 +648,6 @@ class BindingResolver {
 	 *    if no binding is available
 	 */
 	ITypeBinding resolveType(AnonymousClassDeclaration type) {
-		return null;
-	}
-
-	/**
-	 * Resolves the given enum declaration and returns the binding
-	 * for it.
-	 * <p>
-	 * The implementation of <code>EnumDeclaration.resolveBinding</code>
-	 * forwards to this method. How the enum declaration resolves is often
-	 * a function of the context in which the declaration node is embedded
-	 * as well as the enum declaration subtree itself.
-	 * </p>
-	 * <p>
-	 * The default implementation of this method returns <code>null</code>.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param type the enum declaration of interest
-	 * @return the binding for the given enum declaration, or <code>null</code>
-	 *    if no binding is available
-	 * @since 3.0
-	 */
-	ITypeBinding resolveType(EnumDeclaration type) {
 		return null;
 	}
 
@@ -863,26 +724,6 @@ class BindingResolver {
 		return null;
 	}
 
-	/**
-	 * Resolves the given enum constant declaration and returns the binding for
-	 * the field.
-	 * <p>
-	 * The implementation of <code>EnumConstantDeclaration.resolveVariable</code>
-	 * forwards to this method.
-	 * </p>
-	 * <p>
-	 * The default implementation of this method returns <code>null</code>.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param enumConstant the enum constant declaration of interest
-	 * @return the field binding for the given enum constant declaration, or
-	 *    <code>null</code> if no binding is available
-	 * @since 3.0
-	 */
-	IVariableBinding resolveVariable(EnumConstantDeclaration enumConstant) {
-		return null;
-	}
 
 	/**
 	 * Resolves the given variable declaration and returns the binding for it.
@@ -933,24 +774,6 @@ class BindingResolver {
 		return null;
 	}
 
-	/**
-	 * Resolves the given annotation instance and returns the DOM representation for it.
-	 * <p>
-	 * The implementation of {@link Annotation#resolveAnnotationBinding()}
-	 * forwards to this method.
-	 * </p>
-	 * <p>
-	 * The default implementation of this method returns <code>null</code>.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param annotation the annotation ast node of interest
-	 * @return the DOM annotation representation for the given ast node, or
-	 *    <code>null</code> if none is available
-	 */
-	IAnnotationBinding resolveAnnotation(Annotation annotation) {
-		return null;
-	}
 
 	/**
 	 * Answer an array type binding with the given type binding and the given

@@ -168,7 +168,7 @@ public void resolve(MethodScope initializationScope) {
 		initializationScope.initializedField = this.binding;
 		initializationScope.lastVisibleFieldID = this.binding.id;
 
-		resolveAnnotations(initializationScope, this.annotations, this.binding);
+//		resolveAnnotations(initializationScope, this.annotations, this.binding);
 		// check @Deprecated annotation presence
 		if ((this.binding.getAnnotationTagBits() & TagBits.AnnotationDeprecated) == 0
 				&& (this.binding.modifiers & ClassFileConstants.AccDeprecated) != 0

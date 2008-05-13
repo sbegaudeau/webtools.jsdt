@@ -19,24 +19,22 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
-import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
 import org.eclipse.wst.jsdt.internal.corext.util.SuperTypeHierarchyCache;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageImageDescriptor;
@@ -191,42 +189,6 @@ public class OverrideIndicatorLabelDecorator implements ILabelDecorator, ILightw
 		return -1;
 	}
 
-	/**
-	 * Note: This method is for internal use only. Clients should not call this method.
-	 * @param type The declaring type of the method to decorate.
-	 * @param hierarchy The type hierarchy of the declaring type.
-	 * @param name The name of the method to find.
-	 * @param paramTypes The parameter types of the method to find.
-	 * @return The resulting decoration.
-	 * @throws JavaScriptModelException
-	 * @deprecated Not used anymore. This method is not accurate for methods in generic types.
-	 */
-	protected int findInHierarchy(IType type, ITypeHierarchy hierarchy, String name, String[] paramTypes) throws JavaScriptModelException {
-		IType superClass= hierarchy.getSuperclass(type);
-		if (superClass != null) {
-			IFunction res= JavaModelUtil.findMethodInHierarchy(hierarchy, superClass, name, paramTypes, false);
-			if (res != null && !Flags.isPrivate(res.getFlags()) && JavaModelUtil.isVisibleInHierarchy(res, type.getPackageFragment())) {
-				if (JdtFlags.isAbstract(res)) {
-					return JavaScriptElementImageDescriptor.IMPLEMENTS;
-				} else {
-					return JavaScriptElementImageDescriptor.OVERRIDES;
-				}
-			}
-		}
-		IType[] interfaces= hierarchy.getSuperInterfaces(type);
-		for (int i= 0; i < interfaces.length; i++) {
-			IFunction res= JavaModelUtil.findMethodInHierarchy(hierarchy, interfaces[i], name, paramTypes, false);
-			if (res != null) {
-				if (JdtFlags.isAbstract(res)) {
-					return JavaScriptElementImageDescriptor.IMPLEMENTS;
-				} else {
-					return JavaScriptElementImageDescriptor.OVERRIDES;
-				}
-			}
-		}
-		return 0;
-	}
-	
 	/* (non-Javadoc)
 	 * @see IBaseLabelProvider#addListener(ILabelProviderListener)
 	 */

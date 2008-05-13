@@ -72,16 +72,6 @@ public class PreferenceConstants {
 	public static final String APPEARANCE_METHOD_TYPEPARAMETERS= "org.eclipse.wst.jsdt.ui.methodtypeparametesr";//$NON-NLS-1$
 
 	/**
-	 * A named preference that controls if override indicators are rendered in the UI.
-	 * <p>
-	 * Value is of type <code>Boolean</code>: if <code>true</code> override 
-	 * indicators are rendered
-	 * </p>
-	 * @deprecated Override Indicator is now controlled on the platform's decorator preference page
-	 */
-	public static final String APPEARANCE_OVERRIDE_INDICATOR= "org.eclipse.wst.jsdt.ui.overrideindicator";//$NON-NLS-1$
-
-	/**
 	 * A named preference that controls if quick assist light bulbs are shown.
 	 * <p>
 	 * Value is of type <code>Boolean</code>: if <code>true</code> light bulbs are shown
@@ -276,37 +266,6 @@ public class PreferenceConstants {
 	public static final String CODEGEN_ADD_COMMENTS= "org.eclipse.wst.jsdt.ui.javadoc"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that controls if a comment stubs will be added
-	 * automatically to newly created types and methods.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 * @deprecated Use CODEGEN_ADD_COMMENTS instead (Name is more precise).
-	 */
-	public static final String CODEGEN__JAVADOC_STUBS= CODEGEN_ADD_COMMENTS;
-
-	/**
-	 * A named preference that controls if a non-javadoc comment gets added to methods generated via the 
-	 * "Override Methods" operation.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 * @deprecated New code template story: user can
-	 * specify the overriding method comment.
-	 */
-	public static final String CODEGEN__NON_JAVADOC_COMMENTS= "org.eclipse.wst.jsdt.ui.seecomments"; //$NON-NLS-1$
-
-	/**
-	 * A named preference that controls if a file comment gets added to newly created files.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 * @deprecated New code template story: user can
-	 * specify the new file code template.
-	 */
-	public static final String CODEGEN__FILE_COMMENTS= "org.eclipse.wst.jsdt.ui.filecomments"; //$NON-NLS-1$
-	
-	/**
 	 * A named preference that controls whether to add a override annotation for newly created methods
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
@@ -371,24 +330,6 @@ public class PreferenceConstants {
 	 * </p>
 	 */
 	public static final String SHOW_CU_CHILDREN= "org.eclipse.wst.jsdt.ui.packages.cuchildren"; //$NON-NLS-1$
-
-	/**
-	 * A named preference that controls whether the package explorer's selection is linked to the active editor.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 * @deprecated Since 3.3. Not used anymore. Package view always restores with the last recently used setting.
-	 */
-	public static final String LINK_PACKAGES_TO_EDITOR= "org.eclipse.wst.jsdt.ui.packages.linktoeditor"; //$NON-NLS-1$
-
-	/**
-	 * A named preference that controls whether the hierarchy view's selection is linked to the active editor.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 * @deprecated Since 3.3. Not used anymore. Type hierarchy view always restores with the last recently used setting.
-	 */
-	public static final String LINK_TYPEHIERARCHY_TO_EDITOR= "org.eclipse.wst.jsdt.ui.packages.linktypehierarchytoeditor"; //$NON-NLS-1$
 
 	/**
 	 * A named preference that controls whether the projects view's selection is
@@ -641,15 +582,6 @@ public class PreferenceConstants {
 	 * @since 2.1
 	 */
 	public static final String ID_JAVADOC_HOVER= "org.eclipse.wst.jsdt.ui.JavadocHover"; //$NON-NLS-1$
-
-	/**
-	 * The id of the problem hover contributed for extension point
-	 * <code>javaEditorTextHovers</code>.
-	 *
-	 * @since 2.1
-	 * @deprecated as of 3.0, this hover is no longer available
-	 */
-	public static final String ID_PROBLEM_HOVER= "org.eclipse.wst.jsdt.ui.ProblemHover"; //$NON-NLS-1$
 
 	/**
 	 * A named preference that controls whether bracket matching highlighting is turned on or off.
@@ -2469,19 +2401,6 @@ public class PreferenceConstants {
 	public static final String EDITOR_SMART_TAB= "smart_tab"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that controls whether Java comments should be
-	 * spell checked.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 * 
-	 * @deprecated since 3.1, use {@link org.eclipse.ui.texteditor.spelling.SpellingService#PREFERENCE_SPELLING_ENABLED}
-	 *             and {@link org.eclipse.ui.texteditor.spelling.SpellingService#PREFERENCE_SPELLING_ENGINE}
-	 * @since 3.0
-	 */
-	public final static String SPELLING_CHECK_SPELLING= "spelling_check_spelling"; //$NON-NLS-1$
-
-	/**
 	 * A named preference that controls whether words containing digits should
 	 * be skipped during spell checking.
 	 * <p>
@@ -2622,123 +2541,6 @@ public class PreferenceConstants {
 	 * @since 3.0
 	 */
 	public final static String SPELLING_ENABLE_CONTENTASSIST= "spelling_enable_contentassist"; //$NON-NLS-1$
-
-	/**
-	 * A named preference that controls whether code snippets are formatted
-	 * in Javadoc comments.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 *
-	 * @since 3.0
-	 * @deprecated As of 3.1, replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_FORMAT_SOURCE}
-	 */	
-	public final static String FORMATTER_COMMENT_FORMATSOURCE= "comment_format_source_code"; //$NON-NLS-1$
-	
-	/**
-	 * A named preference that controls whether description of Javadoc
-	 * parameters are indented.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 *
-	 * @since 3.0
-	 * @deprecated As of 3.1, replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_INDENT_PARAMETER_DESCRIPTION}
-	 */	
-	public final static String FORMATTER_COMMENT_INDENTPARAMETERDESCRIPTION= "comment_indent_parameter_description"; //$NON-NLS-1$
-
-	/**
-	 * A named preference that controls whether the header comment of
-	 * a Java source file is formatted.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 *
-	 * @since 3.0
-	 * @deprecated As of 3.1, replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_FORMAT_HEADER}
-	 */	
-	public final static String FORMATTER_COMMENT_FORMATHEADER= "comment_format_header"; //$NON-NLS-1$
-
-	/**
-	 * A named preference that controls whether Javadoc root tags
-	 * are indented.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 *
-	 * @since 3.0
-	 * @deprecated As of 3.1, replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_INDENT_ROOT_TAGS}
-	 */	
-	public final static String FORMATTER_COMMENT_INDENTROOTTAGS= "comment_indent_root_tags"; //$NON-NLS-1$
-	
-	/**
-	 * A named preference that controls whether Javadoc comments
-	 * are formatted by the content formatter.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 *
-	 * @since 3.0
-	 * @deprecated As of 3.1, replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_FORMAT}
-	 */	
-	public final static String FORMATTER_COMMENT_FORMAT= "comment_format_comments"; //$NON-NLS-1$
-
-	/**
-	 * A named preference that controls whether a new line is inserted
-	 * after Javadoc root tag parameters.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 *
-	 * @since 3.0
-	 * @deprecated As of 3.1, replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_INSERT_NEW_LINE_FOR_PARAMETER}
-	 */	
-	public final static String FORMATTER_COMMENT_NEWLINEFORPARAMETER= "comment_new_line_for_parameter"; //$NON-NLS-1$
-
-	/**
-	 * A named preference that controls whether an empty line is inserted before
-	 * the Javadoc root tag block.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 *
-	 * @since 3.0
-	 * @deprecated As of 3.1, replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_INSERT_EMPTY_LINE_BEFORE_ROOT_TAGS}
-	 */	
-	public final static String FORMATTER_COMMENT_SEPARATEROOTTAGS= "comment_separate_root_tags"; //$NON-NLS-1$
-
-	/**
-	 * A named preference that controls whether blank lines are cleared during formatting.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 *
-	 * @since 3.0
-	 * @deprecated As of 3.1, replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_CLEAR_BLANK_LINES}
-	 */	
-	public final static String FORMATTER_COMMENT_CLEARBLANKLINES= "comment_clear_blank_lines"; //$NON-NLS-1$
-
-	/**
-	 * A named preference that controls the line length of comments.
-	 * <p>
-	 * Value is of type <code>Integer</code>. The value must be at least 4 for reasonable formatting.
-	 * </p>
-	 *
-	 * @since 3.0
-	 * @deprecated As of 3.1, replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_LINE_LENGTH}
-	 */	
-	public final static String FORMATTER_COMMENT_LINELENGTH= "comment_line_length"; //$NON-NLS-1$
-
-	/**
-	 * A named preference that controls whether HTML tags are formatted.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 *
-	 * @since 3.0
-	 * @deprecated As of 3.1, replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_FORMAT_HTML}
-	 */	
-	public final static String FORMATTER_COMMENT_FORMATHTML= "comment_format_html"; //$NON-NLS-1$
 
 	/**
 	 * A named preference that controls if the Java code assist gets auto activated.

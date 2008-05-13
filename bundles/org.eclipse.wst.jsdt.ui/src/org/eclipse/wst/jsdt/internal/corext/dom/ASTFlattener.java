@@ -14,7 +14,96 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.dom.*;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
+import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
+import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
+import org.eclipse.wst.jsdt.core.dom.ArrayType;
+import org.eclipse.wst.jsdt.core.dom.AssertStatement;
+import org.eclipse.wst.jsdt.core.dom.Assignment;
+import org.eclipse.wst.jsdt.core.dom.Block;
+import org.eclipse.wst.jsdt.core.dom.BlockComment;
+import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
+import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
+import org.eclipse.wst.jsdt.core.dom.BreakStatement;
+import org.eclipse.wst.jsdt.core.dom.CastExpression;
+import org.eclipse.wst.jsdt.core.dom.CatchClause;
+import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
+import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
+import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
+import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
+import org.eclipse.wst.jsdt.core.dom.DoStatement;
+import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
+import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
+import org.eclipse.wst.jsdt.core.dom.Expression;
+import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
+import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
+import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionExpression;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
+import org.eclipse.wst.jsdt.core.dom.IfStatement;
+import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.InfixExpression;
+import org.eclipse.wst.jsdt.core.dom.Initializer;
+import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
+import org.eclipse.wst.jsdt.core.dom.LineComment;
+import org.eclipse.wst.jsdt.core.dom.ListExpression;
+import org.eclipse.wst.jsdt.core.dom.MemberRef;
+import org.eclipse.wst.jsdt.core.dom.Modifier;
+import org.eclipse.wst.jsdt.core.dom.Name;
+import org.eclipse.wst.jsdt.core.dom.NullLiteral;
+import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
+import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
+import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
+import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
+import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.QualifiedType;
+import org.eclipse.wst.jsdt.core.dom.RegularExpressionLiteral;
+import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SimpleType;
+import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.wst.jsdt.core.dom.Statement;
+import org.eclipse.wst.jsdt.core.dom.StringLiteral;
+import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
+import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.SwitchCase;
+import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
+import org.eclipse.wst.jsdt.core.dom.TagElement;
+import org.eclipse.wst.jsdt.core.dom.TextElement;
+import org.eclipse.wst.jsdt.core.dom.ThisExpression;
+import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
+import org.eclipse.wst.jsdt.core.dom.TryStatement;
+import org.eclipse.wst.jsdt.core.dom.Type;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
+import org.eclipse.wst.jsdt.core.dom.TypeParameter;
+import org.eclipse.wst.jsdt.core.dom.UndefinedLiteral;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.core.dom.WildcardType;
+import org.eclipse.wst.jsdt.core.dom.WithStatement;
 
 /**
 *
@@ -121,47 +210,6 @@ public class ASTFlattener extends GenericVisitor {
 //		if (Modifier.isTransient(modifiers)) {
 //			this.fBuffer.append("transient ");//$NON-NLS-1$
 //		}
-	}
-
-	/*
-	 * @see ASTVisitor#visit(AnnotationTypeDeclaration)
-	 * @since 3.0
-	 */
-	public boolean visit(AnnotationTypeDeclaration node) {
-		if (node.getJavadoc() != null) {
-			node.getJavadoc().accept(this);
-		}
-		printModifiers(node.modifiers());
-		this.fBuffer.append("@interface ");//$NON-NLS-1$
-		node.getName().accept(this);
-		this.fBuffer.append(" {");//$NON-NLS-1$
-		for (Iterator it= node.bodyDeclarations().iterator(); it.hasNext();) {
-			BodyDeclaration d= (BodyDeclaration) it.next();
-			d.accept(this);
-		}
-		this.fBuffer.append("}");//$NON-NLS-1$
-		return false;
-	}
-
-	/*
-	 * @see ASTVisitor#visit(AnnotationTypeMemberDeclaration)
-	 * @since 3.0
-	 */
-	public boolean visit(AnnotationTypeMemberDeclaration node) {
-		if (node.getJavadoc() != null) {
-			node.getJavadoc().accept(this);
-		}
-		printModifiers(node.modifiers());
-		node.getType().accept(this);
-		this.fBuffer.append(" ");//$NON-NLS-1$
-		node.getName().accept(this);
-		this.fBuffer.append("()");//$NON-NLS-1$
-		if (node.getDefault() != null) {
-			this.fBuffer.append(" default ");//$NON-NLS-1$
-			node.getDefault().accept(this);
-		}
-		this.fBuffer.append(";");//$NON-NLS-1$
-		return false;
 	}
 
 	/*
@@ -518,77 +566,6 @@ public class ASTFlattener extends GenericVisitor {
 		return false;
 	}
 
-	/*
-	 * @see ASTVisitor#visit(EnumConstantDeclaration)
-	 * @since 3.0
-	 */
-	public boolean visit(EnumConstantDeclaration node) {
-		if (node.getJavadoc() != null) {
-			node.getJavadoc().accept(this);
-		}
-		printModifiers(node.modifiers());
-		node.getName().accept(this);
-		if (!node.arguments().isEmpty()) {
-			this.fBuffer.append("(");//$NON-NLS-1$
-			for (Iterator it= node.arguments().iterator(); it.hasNext();) {
-				Expression e= (Expression) it.next();
-				e.accept(this);
-				if (it.hasNext()) {
-					this.fBuffer.append(",");//$NON-NLS-1$
-				}
-			}
-			this.fBuffer.append(")");//$NON-NLS-1$
-		}
-		if (node.getAnonymousClassDeclaration() != null) {
-			node.getAnonymousClassDeclaration().accept(this);
-		}
-		return false;
-	}
-
-	/*
-	 * @see ASTVisitor#visit(EnumDeclaration)
-	 * @since 3.0
-	 */
-	public boolean visit(EnumDeclaration node) {
-		if (node.getJavadoc() != null) {
-			node.getJavadoc().accept(this);
-		}
-		printModifiers(node.modifiers());
-		this.fBuffer.append("enum ");//$NON-NLS-1$
-		node.getName().accept(this);
-		this.fBuffer.append(" ");//$NON-NLS-1$
-		if (!node.superInterfaceTypes().isEmpty()) {
-			this.fBuffer.append("implements ");//$NON-NLS-1$
-			for (Iterator it= node.superInterfaceTypes().iterator(); it.hasNext();) {
-				Type t= (Type) it.next();
-				t.accept(this);
-				if (it.hasNext()) {
-					this.fBuffer.append(", ");//$NON-NLS-1$
-				}
-			}
-			this.fBuffer.append(" ");//$NON-NLS-1$
-		}
-		this.fBuffer.append("{");//$NON-NLS-1$
-		for (Iterator it = node.enumConstants().iterator(); it.hasNext(); ) {
-			EnumConstantDeclaration d = (EnumConstantDeclaration) it.next();
-			d.accept(this);
-			// enum constant declarations do not include punctuation
-			if (it.hasNext()) {
-				// enum constant declarations are separated by commas
-				this.fBuffer.append(", ");//$NON-NLS-1$
-			}
-		}
-		if (!node.bodyDeclarations().isEmpty()) {
-			this.fBuffer.append("; ");//$NON-NLS-1$
-			for (Iterator it = node.bodyDeclarations().iterator(); it.hasNext(); ) {
-				BodyDeclaration d = (BodyDeclaration) it.next();
-				d.accept(this);
-				// other body declarations include trailing punctuation
-			}
-		}
-		this.fBuffer.append("}");//$NON-NLS-1$
-		return false;
-	}
 
 	/*
 	 * @see ASTVisitor#visit(ExpressionStatement)
@@ -799,15 +776,6 @@ public class ASTFlattener extends GenericVisitor {
 		return false;
 	}
 
-	/*
-	 * @see ASTVisitor#visit(MarkerAnnotation)
-	 * @since 3.0
-	 */
-	public boolean visit(MarkerAnnotation node) {
-		this.fBuffer.append("@");//$NON-NLS-1$
-		node.getTypeName().accept(this);
-		return false;
-	}
 
 	/*
 	 * @see ASTVisitor#visit(MemberRef)
@@ -822,16 +790,6 @@ public class ASTFlattener extends GenericVisitor {
 		return false;
 	}
 
-	/*
-	 * @see ASTVisitor#visit(MemberValuePair)
-	 * @since 3.0
-	 */
-	public boolean visit(MemberValuePair node) {
-		node.getName().accept(this);
-		this.fBuffer.append("=");//$NON-NLS-1$
-		node.getValue().accept(this);
-		return false;
-	}
 
 	/*
 	 * @see ASTVisitor#visit(FunctionRef)
@@ -988,24 +946,6 @@ public class ASTFlattener extends GenericVisitor {
 		return false;
 	}
 
-	/*
-	 * @see ASTVisitor#visit(NormalAnnotation)
-	 * @since 3.0
-	 */
-	public boolean visit(NormalAnnotation node) {
-		this.fBuffer.append("@");//$NON-NLS-1$
-		node.getTypeName().accept(this);
-		this.fBuffer.append("(");//$NON-NLS-1$
-		for (Iterator it= node.values().iterator(); it.hasNext();) {
-			MemberValuePair p= (MemberValuePair) it.next();
-			p.accept(this);
-			if (it.hasNext()) {
-				this.fBuffer.append(",");//$NON-NLS-1$
-			}
-		}
-		this.fBuffer.append(")");//$NON-NLS-1$
-		return false;
-	}
 
 	/*
 	 * @see ASTVisitor#visit(NullLiteral)
@@ -1035,11 +975,6 @@ public class ASTFlattener extends GenericVisitor {
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			if (node.getJavadoc() != null) {
 				node.getJavadoc().accept(this);
-			}
-			for (Iterator it= node.annotations().iterator(); it.hasNext();) {
-				Annotation p= (Annotation) it.next();
-				p.accept(this);
-				this.fBuffer.append(" ");//$NON-NLS-1$
 			}
 		}
 		this.fBuffer.append("package ");//$NON-NLS-1$
@@ -1149,19 +1084,6 @@ public class ASTFlattener extends GenericVisitor {
 	 */
 	public boolean visit(SimpleType node) {
 		return true;
-	}
-
-	/*
-	 * @see ASTVisitor#visit(SingleMemberAnnotation)
-	 * @since 3.0
-	 */
-	public boolean visit(SingleMemberAnnotation node) {
-		this.fBuffer.append("@");//$NON-NLS-1$
-		node.getTypeName().accept(this);
-		this.fBuffer.append("(");//$NON-NLS-1$
-		node.getValue().accept(this);
-		this.fBuffer.append(")");//$NON-NLS-1$
-		return false;
 	}
 
 	/*
@@ -1470,17 +1392,6 @@ public class ASTFlattener extends GenericVisitor {
 		BodyDeclaration prev= null;
 		for (Iterator it= node.bodyDeclarations().iterator(); it.hasNext();) {
 			BodyDeclaration d= (BodyDeclaration) it.next();
-			if (prev instanceof EnumConstantDeclaration) {
-				// enum constant declarations do not include punctuation
-				if (d instanceof EnumConstantDeclaration) {
-					// enum constant declarations are separated by commas
-					this.fBuffer.append(", ");//$NON-NLS-1$
-				} else {
-					// semicolon separates last enum constant declaration from 
-					// first class body declarations
-					this.fBuffer.append("; ");//$NON-NLS-1$
-				}
-			}
 			d.accept(this);
 		}
 		this.fBuffer.append("}");//$NON-NLS-1$

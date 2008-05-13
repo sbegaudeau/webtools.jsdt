@@ -27,19 +27,17 @@ import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -101,8 +99,6 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 				return doAddField(cu);
 			case LOCAL:
 				return doAddLocal(cu);
-			case ENUM_CONST:
-				return doAddEnumConst(cu);
 			default:
 				throw new IllegalArgumentException("Unsupported variable kind: " + fVariableKind); //$NON-NLS-1$
 		}
@@ -491,33 +487,6 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 		}
 
 		return modifiers;
-	}
-
-	private ASTRewrite doAddEnumConst(JavaScriptUnit astRoot) throws CoreException {
-		SimpleName node= fOriginalNode;
-
-		ASTNode newTypeDecl= astRoot.findDeclaringNode(fSenderBinding);
-		if (newTypeDecl == null) {
-			astRoot= ASTResolving.createQuickFixAST(getCompilationUnit(), null);
-			newTypeDecl= astRoot.findDeclaringNode(fSenderBinding.getKey());
-		}
-
-		if (newTypeDecl != null) {
-			AST ast= newTypeDecl.getAST();
-
-			ASTRewrite rewrite= ASTRewrite.create(ast);
-
-			EnumConstantDeclaration constDecl= ast.newEnumConstantDeclaration();
-			constDecl.setName(ast.newSimpleName(node.getIdentifier()));
-
-			ListRewrite listRewriter= rewrite.getListRewrite(newTypeDecl, EnumDeclaration.ENUM_CONSTANTS_PROPERTY);
-			listRewriter.insertLast(constDecl, null);
-
-			addLinkedPosition(rewrite.track(constDecl.getName()), false, KEY_NAME);
-
-			return rewrite;
-		}
-		return null;
 	}
 
 

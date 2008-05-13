@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.oaametadata.Method;
 
@@ -440,16 +438,16 @@ public AnnotationBinding[] getAnnotations() {
 	MethodBinding originalMethod = this.original();
 	return originalMethod.declaringClass.retrieveAnnotations(originalMethod);
 }
-/**
- * @param index the index of the parameter of interest
- * @return the annotations on the <code>index</code>th parameter
- * @throws ArrayIndexOutOfBoundsException when <code>index</code> is not valid
- */
-public AnnotationBinding[] getParameterAnnotations(int index) {
-	MethodBinding originalMethod = this.original();
-	AnnotationHolder holder = originalMethod.declaringClass.retrieveAnnotationHolder(originalMethod, true);
-	return holder == null ? Binding.NO_ANNOTATIONS : holder.getParameterAnnotations(index);
-}
+///**
+// * @param index the index of the parameter of interest
+// * @return the annotations on the <code>index</code>th parameter
+// * @throws ArrayIndexOutOfBoundsException when <code>index</code> is not valid
+// */
+//public AnnotationBinding[] getParameterAnnotations(int index) {
+//	MethodBinding originalMethod = this.original();
+//	AnnotationHolder holder = originalMethod.declaringClass.retrieveAnnotationHolder(originalMethod, true);
+//	return holder == null ? Binding.NO_ANNOTATIONS : holder.getParameterAnnotations(index);
+//}
 public final int getAccessFlags() {
 	return modifiers & ExtraCompilerModifiers.AccJustFlag;
 }
@@ -461,15 +459,15 @@ public final int getAccessFlags() {
  */
 public long getAnnotationTagBits() {
 	MethodBinding originalMethod = this.original();
-	if ((originalMethod.tagBits & TagBits.AnnotationResolved) == 0 && originalMethod.declaringClass instanceof SourceTypeBinding) {
-		ClassScope scope = ((SourceTypeBinding) originalMethod.declaringClass).classScope;
-		if (scope != null) {
-			TypeDeclaration typeDecl = scope.referenceContext;
-			AbstractMethodDeclaration methodDecl = typeDecl.declarationOf(originalMethod);
-			if (methodDecl != null)
-				ASTNode.resolveAnnotations(methodDecl.scope, methodDecl.annotations, originalMethod);
-		}
-	}
+//	if ((originalMethod.tagBits & TagBits.AnnotationResolved) == 0 && originalMethod.declaringClass instanceof SourceTypeBinding) {
+//		ClassScope scope = ((SourceTypeBinding) originalMethod.declaringClass).classScope;
+//		if (scope != null) {
+//			TypeDeclaration typeDecl = scope.referenceContext;
+//			AbstractMethodDeclaration methodDecl = typeDecl.declarationOf(originalMethod);
+//			if (methodDecl != null)
+//				ASTNode.resolveAnnotations(methodDecl.scope, methodDecl.annotations, originalMethod);
+//		}
+//	}
 	return originalMethod.tagBits;
 }
 /**

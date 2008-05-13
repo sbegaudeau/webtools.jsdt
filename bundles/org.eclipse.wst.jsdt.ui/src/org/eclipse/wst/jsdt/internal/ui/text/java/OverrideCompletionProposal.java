@@ -24,8 +24,8 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension4;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
@@ -33,11 +33,10 @@ import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ITrackedNodePosition;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
@@ -108,11 +107,6 @@ public class OverrideCompletionProposal extends JavaTypeCompletionProposal imple
 				case ASTNode.CLASS_INSTANCE_CREATION:
 					binding= ((ClassInstanceCreation) node.getParent()).resolveTypeBinding();
 					break;
-				case ASTNode.ENUM_CONSTANT_DECLARATION:
-					IFunctionBinding methodBinding= ((EnumConstantDeclaration) node.getParent()).resolveConstructorBinding();
-					if (methodBinding != null) {
-						binding= methodBinding.getDeclaringClass();
-					}
 			}
 			descriptor= AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY;
 		} else if (node instanceof AbstractTypeDeclaration) {

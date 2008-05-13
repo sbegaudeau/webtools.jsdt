@@ -78,16 +78,6 @@ public class StandardJavaScriptElementContentProvider implements ITreeContentPro
 	}
 	
 	/**
-	 *@deprecated Use {@link #StandardJavaScriptElementContentProvider(boolean)} instead.
-	 * Since 3.0 compilation unit children are always provided as working copies. The Java Model
-	 * does not support the 'original' mode anymore.
-	 */
-	public StandardJavaScriptElementContentProvider(boolean provideMembers, boolean provideWorkingCopy) {
-		this(provideMembers);
-	}
-	
-	
-	/**
 	 * Creates a new <code>StandardJavaScriptElementContentProvider</code>.
 	 *
 	 * @param provideMembers if <code>true</code> members below compilation units 
@@ -128,14 +118,6 @@ public class StandardJavaScriptElementContentProvider implements ITreeContentPro
 	 */
 	public boolean getProvideWorkingCopy() {
 		return fProvideWorkingCopy;
-	}
-
-	/**
-	 * @deprecated Since 3.0 compilation unit children are always provided from the working copy. The Java model
-	 * offers a unified world and does not support the 'original' mode anymore. 
-	 */
-	public void setProvideWorkingCopy(boolean b) {
-		fProvideWorkingCopy= b;
 	}
 
 	/* (non-Javadoc)

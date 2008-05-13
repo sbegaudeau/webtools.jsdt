@@ -650,21 +650,6 @@ public abstract class ASTNode {
 	 */
 	public static final int ENHANCED_FOR_STATEMENT = 70;
 
-	/**
-	 * Node type constant indicating a node of type
-	 * <code>EnumDeclaration</code>.
-	 * @see EnumDeclaration
-	 * @since 3.1
-	 */
-	public static final int ENUM_DECLARATION = 71;
-
-	/**
-	 * Node type constant indicating a node of type
-	 * <code>EnumConstantDeclaration</code>.
-	 * @see EnumConstantDeclaration
-	 * @since 3.1
-	 */
-	public static final int ENUM_CONSTANT_DECLARATION = 72;
 
 	/**
 	 * Node type constant indicating a node of type
@@ -698,53 +683,6 @@ public abstract class ASTNode {
 	 */
 	public static final int WILDCARD_TYPE = 76;
 
-	/**
-	 * Node type constant indicating a node of type
-	 * <code>NormalAnnotation</code>.
-	 * @see NormalAnnotation
-	 * @since 3.1
-	 */
-	public static final int NORMAL_ANNOTATION = 77;
-
-	/**
-	 * Node type constant indicating a node of type
-	 * <code>MarkerAnnotation</code>.
-	 * @see MarkerAnnotation
-	 * @since 3.1
-	 */
-	public static final int MARKER_ANNOTATION = 78;
-
-	/**
-	 * Node type constant indicating a node of type
-	 * <code>SingleMemberAnnotation</code>.
-	 * @see SingleMemberAnnotation
-	 * @since 3.1
-	 */
-	public static final int SINGLE_MEMBER_ANNOTATION = 79;
-
-	/**
-	 * Node type constant indicating a node of type
-	 * <code>MemberValuePair</code>.
-	 * @see MemberValuePair
-	 * @since 3.1
-	 */
-	public static final int MEMBER_VALUE_PAIR = 80;
-
-	/**
-	 * Node type constant indicating a node of type
-	 * <code>AnnotationTypeDeclaration</code>.
-	 * @see AnnotationTypeDeclaration
-	 * @since 3.1
-	 */
-	public static final int ANNOTATION_TYPE_DECLARATION = 81;
-
-	/**
-	 * Node type constant indicating a node of type
-	 * <code>AnnotationTypeMemberDeclaration</code>.
-	 * @see AnnotationTypeMemberDeclaration
-	 * @since 3.1
-	 */
-	public static final int ANNOTATION_TYPE_MEMBER_DECLARATION = 82;
 
 
 	public static final int FOR_IN_STATEMENT = 83;
@@ -782,10 +720,6 @@ public abstract class ASTNode {
 	 */
 	public static Class nodeClassForType(int nodeType) {
 		switch (nodeType) {
-			case ANNOTATION_TYPE_DECLARATION :
-				return AnnotationTypeDeclaration.class;
-			case ANNOTATION_TYPE_MEMBER_DECLARATION :
-				return AnnotationTypeMemberDeclaration.class;
 			case ANONYMOUS_CLASS_DECLARATION :
 				return AnonymousClassDeclaration.class;
 			case ARRAY_ACCESS :
@@ -830,10 +764,6 @@ public abstract class ASTNode {
 				return EmptyStatement.class;
 			case ENHANCED_FOR_STATEMENT :
 				return EnhancedForStatement.class;
-			case ENUM_CONSTANT_DECLARATION :
-				return EnumConstantDeclaration.class;
-			case ENUM_DECLARATION :
-				return EnumDeclaration.class;
 			case EXPRESSION_STATEMENT :
 				return ExpressionStatement.class;
 			case FIELD_ACCESS :
@@ -860,12 +790,8 @@ public abstract class ASTNode {
 				return LabeledStatement.class;
 			case LINE_COMMENT :
 				return LineComment.class;
-			case MARKER_ANNOTATION :
-				return MarkerAnnotation.class;
 			case MEMBER_REF :
 				return MemberRef.class;
-			case MEMBER_VALUE_PAIR :
-				return MemberValuePair.class;
 			case FUNCTION_DECLARATION :
 				return FunctionDeclaration.class;
 			case FUNCTION_INVOCATION :
@@ -876,8 +802,6 @@ public abstract class ASTNode {
 				return FunctionRefParameter.class;
 			case MODIFIER :
 				return Modifier.class;
-			case NORMAL_ANNOTATION :
-				return NormalAnnotation.class;
 			case NULL_LITERAL :
 				return NullLiteral.class;
 			case UNDEFINED_LITERAL :
@@ -906,8 +830,6 @@ public abstract class ASTNode {
 				return SimpleName.class;
 			case SIMPLE_TYPE :
 				return SimpleType.class;
-			case SINGLE_MEMBER_ANNOTATION :
-				return SingleMemberAnnotation.class;
 			case SINGLE_VARIABLE_DECLARATION :
 				return SingleVariableDeclaration.class;
 			case STRING_LITERAL :

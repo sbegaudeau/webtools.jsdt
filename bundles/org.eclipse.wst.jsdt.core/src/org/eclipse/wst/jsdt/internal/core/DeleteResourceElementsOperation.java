@@ -130,8 +130,8 @@ protected void verify(IJavaScriptElement element) throws JavaScriptModelExceptio
 	int type = element.getElementType();
 	if (type <= IJavaScriptElement.PACKAGE_FRAGMENT_ROOT || type > IJavaScriptElement.JAVASCRIPT_UNIT)
 		error(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, element);
-	else if (type == IJavaScriptElement.PACKAGE_FRAGMENT && element instanceof JarPackageFragment)
-		error(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, element);
+//	else if (type == IJavaScriptElement.PACKAGE_FRAGMENT && element instanceof JarPackageFragment)
+//		error(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, element);
 	IResource resource = element.getResource();
 	if (resource instanceof IFolder) {
 		if (resource.isLinked()) {

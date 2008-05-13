@@ -537,55 +537,6 @@ public final class JavaModelUtil {
 	}
 
 	/**
-	 * Returns the original if the given member. If the member is already
-	 * an original the input is returned. The returned member might not exist
-	 * 
-	 * @deprecated Replace by IMember#getPrimaryElement() if <code>member</code> is not part
-	 * of a shared working copy owner. Also have a look at http://bugs.eclipse.org/bugs/show_bug.cgi?id=18568
-	 */
-	public static IMember toOriginal(IMember member) {
-		if (member instanceof IFunction)
-			return toOriginalMethod((IFunction)member);
-
-		// TODO: remove toOriginalMethod(IFunction)
-
-		return (IMember) member.getPrimaryElement();
-		/*IJavaScriptUnit cu= member.getCompilationUnit();
-		if (cu != null && cu.isWorkingCopy())
-			return (IMember)cu.getOriginal(member);
-		return member;*/
-	}
-	
-	/*
-	 * TODO remove if toOriginal(IMember) can be removed
-	 * XXX workaround for bug 18568
-	 * http://bugs.eclipse.org/bugs/show_bug.cgi?id=18568
-	 * to be removed once the bug is fixed
-	 */
-	private static IFunction toOriginalMethod(IFunction method) {
-		IJavaScriptUnit cu= method.getJavaScriptUnit();
-		if (cu == null || isPrimary(cu)) {
-			return method;
-		}
-		try{
-			//use the workaround only if needed	
-			if (method.getDeclaringType()==null || ! method.getElementName().equals(method.getDeclaringType().getElementName()))
-				return (IFunction) method.getPrimaryElement();
-			
-			IType originalType = (IType) toOriginal(method.getDeclaringType());
-			IFunction[] methods = originalType.findMethods(method);
-			boolean isConstructor = method.isConstructor();
-			for (int i=0; i < methods.length; i++) {
-			  if (methods[i].isConstructor() == isConstructor) 
-				return methods[i];
-			}
-			return null;
-		} catch (JavaScriptModelException e){
-			return null;
-		}	
-	}
-
-	/**
 	 * Returns true if a cu is a primary cu (original or shared working copy)
 	 */
 	public static boolean isPrimary(IJavaScriptUnit cu) {

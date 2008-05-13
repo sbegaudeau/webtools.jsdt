@@ -17,9 +17,7 @@ import java.util.List;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -60,14 +58,6 @@ public class LocalTypeAnalyzer extends ASTVisitor {
 	}
 
 	public boolean visit(TypeDeclaration node) {
-		return visitType(node);
-	}
-
-	public boolean visit(AnnotationTypeDeclaration node) {
-		return visitType(node);
-	}
-
-	public boolean visit(EnumDeclaration node) {
 		return visitType(node);
 	}
 

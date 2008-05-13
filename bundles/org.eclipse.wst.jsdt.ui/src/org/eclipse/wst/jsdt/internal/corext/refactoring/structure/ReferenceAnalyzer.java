@@ -10,18 +10,16 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.structure;
 
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
-import org.eclipse.wst.jsdt.core.dom.FunctionRef;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
@@ -131,15 +129,4 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 		return false;
 	}
 
-	public boolean visit(AnnotationTypeDeclaration node) {
-		if (isMovedMember(node.resolveBinding()))
-			return false;
-		return super.visit(node);
-	}
-
-	public boolean visit(EnumDeclaration node) {
-		if (isMovedMember(node.resolveBinding()))
-			return false;
-		return super.visit(node);
-	}
 }

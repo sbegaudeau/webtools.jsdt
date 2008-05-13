@@ -32,22 +32,18 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
-import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaScriptConventions;
-import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
@@ -366,43 +362,44 @@ public class SourceMapper
 		final HashSet firstLevelPackageNames = new HashSet();
 		boolean containsADefaultPackage = false;
 
-		if (root.isArchive()) {
-			JarPackageFragmentRoot jarPackageFragmentRoot = (JarPackageFragmentRoot) root;
-			IJavaScriptProject project = jarPackageFragmentRoot.getJavaScriptProject();
-			String sourceLevel = null;
-			String complianceLevel = null;
-			JavaModelManager manager = JavaModelManager.getJavaModelManager();
-			ZipFile zip = null;
-			try {
-				zip = manager.getZipFile(jarPackageFragmentRoot.getPath());
-				for (Enumeration entries = zip.entries(); entries.hasMoreElements(); ) {
-					ZipEntry entry = (ZipEntry) entries.nextElement();
-					String entryName = entry.getName();
-					if (!entry.isDirectory()) {
-						int index = entryName.indexOf('/');
-						if (index != -1 && Util.isClassFileName(entryName)) {
-							String firstLevelPackageName = entryName.substring(0, index);
-							if (!firstLevelPackageNames.contains(firstLevelPackageName)) {
-								if (sourceLevel == null) {
-									sourceLevel = project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
-									complianceLevel = project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true);
-								}
-								IStatus status = JavaScriptConventions.validatePackageName(firstLevelPackageName, sourceLevel, complianceLevel);
-								if (status.isOK() || status.getSeverity() == IStatus.WARNING) {
-									firstLevelPackageNames.add(firstLevelPackageName);
-								}
-							}
-						} else if (Util.isClassFileName(entryName)) {
-							containsADefaultPackage = true;
-						}
-					}
-				}
-			} catch (CoreException e) {
-				// ignore
-			} finally {
-				manager.closeZipFile(zip); // handle null case
-			}
-		} else {
+//		if (root.isArchive()) {
+//			JarPackageFragmentRoot jarPackageFragmentRoot = (JarPackageFragmentRoot) root;
+//			IJavaScriptProject project = jarPackageFragmentRoot.getJavaScriptProject();
+//			String sourceLevel = null;
+//			String complianceLevel = null;
+//			JavaModelManager manager = JavaModelManager.getJavaModelManager();
+//			ZipFile zip = null;
+//			try {
+//				zip = manager.getZipFile(jarPackageFragmentRoot.getPath());
+//				for (Enumeration entries = zip.entries(); entries.hasMoreElements(); ) {
+//					ZipEntry entry = (ZipEntry) entries.nextElement();
+//					String entryName = entry.getName();
+//					if (!entry.isDirectory()) {
+//						int index = entryName.indexOf('/');
+//						if (index != -1 && Util.isClassFileName(entryName)) {
+//							String firstLevelPackageName = entryName.substring(0, index);
+//							if (!firstLevelPackageNames.contains(firstLevelPackageName)) {
+//								if (sourceLevel == null) {
+//									sourceLevel = project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
+//									complianceLevel = project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true);
+//								}
+//								IStatus status = JavaScriptConventions.validatePackageName(firstLevelPackageName, sourceLevel, complianceLevel);
+//								if (status.isOK() || status.getSeverity() == IStatus.WARNING) {
+//									firstLevelPackageNames.add(firstLevelPackageName);
+//								}
+//							}
+//						} else if (Util.isClassFileName(entryName)) {
+//							containsADefaultPackage = true;
+//						}
+//					}
+//				}
+//			} catch (CoreException e) {
+//				// ignore
+//			} finally {
+//				manager.closeZipFile(zip); // handle null case
+//			}
+//		} else
+		{
 			Object target = JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), root.getPath(), true);
 			if (target instanceof IResource) {
 				IResource resource = (IResource) target;

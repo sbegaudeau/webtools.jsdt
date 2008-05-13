@@ -249,7 +249,7 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 		IJavaScriptElement[] frags = null;
 		try {
 			if (!root.isOpen()) {
-				PackageFragmentRootInfo info = root.isArchive() ? new JarPackageFragmentRootInfo() : new PackageFragmentRootInfo();
+				PackageFragmentRootInfo info =  new PackageFragmentRootInfo();
 				((PackageFragmentRoot) root).computeChildren(info, new HashMap());
 				frags = info.children;
 			} else

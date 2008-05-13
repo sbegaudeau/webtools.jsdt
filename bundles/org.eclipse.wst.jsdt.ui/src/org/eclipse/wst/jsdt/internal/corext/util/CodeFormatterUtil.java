@@ -305,11 +305,6 @@ public class CodeFormatterUtil {
 					suffix= ";"; //$NON-NLS-1$
 					code= CodeFormatter.K_STATEMENTS;
 					break;
-				case ASTNode.MEMBER_VALUE_PAIR:
-					prefix= "@Author("; //$NON-NLS-1$
-					suffix= ") class x {}"; //$NON-NLS-1$
-					code= CodeFormatter.K_JAVASCRIPT_UNIT;
-					break;
 				case ASTNode.MODIFIER:
 					suffix= " class x {}"; //$NON-NLS-1$
 					code= CodeFormatter.K_JAVASCRIPT_UNIT;				

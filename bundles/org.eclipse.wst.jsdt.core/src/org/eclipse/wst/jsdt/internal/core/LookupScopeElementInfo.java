@@ -13,8 +13,8 @@ package org.eclipse.wst.jsdt.internal.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
@@ -162,10 +162,10 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 						LibraryFragmentRootInfo info = new LibraryFragmentRootInfo();
 						((LibraryFragmentRoot) root).computeChildren(info, new HashMap());
 						frags = info.children;
-					} else if (root.isArchive() && !root.isOpen()) {
-						JarPackageFragmentRootInfo info = new JarPackageFragmentRootInfo();
-						((JarPackageFragmentRoot) root).computeChildren(info, new HashMap());
-						frags = info.children;
+//					} else if (root.isArchive() && !root.isOpen()) {
+//						JarPackageFragmentRootInfo info = new JarPackageFragmentRootInfo();
+//						((JarPackageFragmentRoot) root).computeChildren(info, new HashMap());
+//						frags = info.children;
 					} else if (root instanceof PackageFragmentRoot) {
 						PackageFragmentRootInfo info = new PackageFragmentRootInfo();
 						((PackageFragmentRoot) root).computeChildren(info, new HashMap());

@@ -369,7 +369,13 @@ public ITypeParameter getTypeParameter(String typeParameterName) {
 }
 
 public ITypeParameter[] getTypeParameters() throws JavaScriptModelException {
-	String[] typeParameterSignatures = getTypeParameterSignatures();
+	IBinaryMethod info = (IBinaryMethod) getElementInfo();
+	char[] genericSignature = info.getGenericSignature();
+	if (genericSignature == null)
+		return TypeParameter.NO_TYPE_PARAMETERS;
+	char[] dotBasedSignature = CharOperation.replaceOnCopy(genericSignature, '/', '.');
+	char[][] typeParams = Signature.getTypeParameters(dotBasedSignature);
+	String[] typeParameterSignatures = CharOperation.toStrings(typeParams);
 	int length = typeParameterSignatures.length;
 	if (length == 0) return TypeParameter.NO_TYPE_PARAMETERS;
 	ITypeParameter[] typeParameters = new ITypeParameter[length];
@@ -380,20 +386,6 @@ public ITypeParameter[] getTypeParameters() throws JavaScriptModelException {
 	return typeParameters;
 }
 
-/**
- * @see IFunction#getTypeParameterSignatures()
- * @since 3.0
- * @deprecated
- */
-public String[] getTypeParameterSignatures() throws JavaScriptModelException {
-	IBinaryMethod info = (IBinaryMethod) getElementInfo();
-	char[] genericSignature = info.getGenericSignature();
-	if (genericSignature == null)
-		return CharOperation.NO_STRINGS;
-	char[] dotBasedSignature = CharOperation.replaceOnCopy(genericSignature, '/', '.');
-	char[][] typeParams = Signature.getTypeParameters(dotBasedSignature);
-	return CharOperation.toStrings(typeParams);
-}
 
 public String[] getRawParameterNames() throws JavaScriptModelException {
 	IBinaryMethod info = (IBinaryMethod) getElementInfo();
@@ -647,12 +639,6 @@ private String extractJavadoc(IType declaringType, String contents) throws JavaS
 	indexOfNextMethod = Math.min(indexOfNextMethod, indexOfBottom);
 	if (indexOfNextMethod == -1) throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.UNKNOWN_JSDOC_FORMAT, this));
 	return contents.substring(indexOfEndLink + JavadocConstants.ANCHOR_SUFFIX_LENGTH, indexOfNextMethod);
-}
-/**
- * @deprecated Use {@link #getFunction(String,String[])} instead
- */
-public IFunction getMethod(String selector, String[] parameterTypeSignatures) {
-	return getFunction(selector, parameterTypeSignatures);
 }
 public IFunction getFunction(String selector, String[] parameterTypeSignatures) {
 	// TODO Auto-generated method stub

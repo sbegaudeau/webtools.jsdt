@@ -746,74 +746,6 @@ public final class JavaScriptCore extends Plugin {
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_BRACE_POSITION_FOR_ANONYMOUS_TYPE_DECLARATION},
-	 * {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_BRACE_POSITION_FOR_BLOCK} ,
-	 * {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_BRACE_POSITION_FOR_CONSTRUCTOR_DECLARATION},
-	 * {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_BRACE_POSITION_FOR_METHOD_DECLARATION},
-	 * {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_BRACE_POSITION_FOR_SWITCH},
-	 * {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_BRACE_POSITION_FOR_TYPE_DECLARATION} instead
-	 */
-	public static final String FORMATTER_NEWLINE_OPENING_BRACE = PLUGIN_ID + ".formatter.newline.openingBrace"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_INSERT_NEW_LINE_BEFORE_CATCH_IN_TRY_STATEMENT},
-	 *  {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_INSERT_NEW_LINE_BEFORE_ELSE_IN_IF_STATEMENT},
-	 *  {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_INSERT_NEW_LINE_BEFORE_FINALLY_IN_TRY_STATEMENT},
-	 *  {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_INSERT_NEW_LINE_BEFORE_WHILE_IN_DO_STATEMENT} instead.
-	 */
-	public static final String FORMATTER_NEWLINE_CONTROL = PLUGIN_ID + ".formatter.newline.controlStatement"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMPACT_ELSE_IF} instead
-	 */
-	public static final String FORMATTER_NEWLINE_ELSE_IF = PLUGIN_ID + ".formatter.newline.elseIf"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_INSERT_NEW_LINE_IN_EMPTY_BLOCK} instead
-	 */
-	public static final String FORMATTER_NEWLINE_EMPTY_BLOCK = PLUGIN_ID + ".formatter.newline.emptyBlock"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_NUMBER_OF_EMPTY_LINES_TO_PRESERVE} instead
-	 */
-	public static final String FORMATTER_CLEAR_BLANK_LINES = PLUGIN_ID + ".formatter.newline.clearAll"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_LINE_SPLIT} instead
-	 */
-	public static final String FORMATTER_LINE_SPLIT = PLUGIN_ID + ".formatter.lineSplit"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_INSERT_SPACE_BEFORE_ASSIGNMENT_OPERATOR} instead
-	 */
-	public static final String FORMATTER_COMPACT_ASSIGNMENT = PLUGIN_ID + ".formatter.style.assignment"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_TAB_CHAR}} instead
-	 */
-	public static final String FORMATTER_TAB_CHAR = PLUGIN_ID + ".formatter.tabulation.char"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_TAB_SIZE} instead
-	 */
-	public static final String FORMATTER_TAB_SIZE = PLUGIN_ID + ".formatter.tabulation.size"; //$NON-NLS-1$
-	/**
-	 * Possible configurable option ID
-	 * @see #getDefaultOptions()
-	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_INSERT_SPACE_AFTER_CLOSING_PAREN_IN_CAST} instead
-	 */
-	public static final String FORMATTER_SPACE_CASTEXPRESSION = PLUGIN_ID + ".formatter.space.castexpression"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
 	 */
 	public static final String CODEASSIST_VISIBILITY_CHECK = PLUGIN_ID + ".codeComplete.visibilityCheck"; //$NON-NLS-1$
 	/**
@@ -1127,21 +1059,6 @@ public final class JavaScriptCore extends Plugin {
 	 * @param attributes the mutable marker attribute map (key type: <code>String</code>,
 	 *   value type: <code>String</code>)
 	 * @param element the JavaScript element for which the marker needs to be configured
-	 * @deprecated Use {@link #addJavaScriptElementMarkerAttributes(Map,IJavaScriptElement)} instead
-	 */
-	public static void addJavaElementMarkerAttributes(
-		Map attributes,
-		IJavaScriptElement element) {
-			addJavaScriptElementMarkerAttributes(attributes, element);
-		}
-
-	/**
-	 * Configures the given marker attribute map for the given JavaScript element.
-	 * Used for markers, which denote a JavaScript element rather than a resource.
-	 *
-	 * @param attributes the mutable marker attribute map (key type: <code>String</code>,
-	 *   value type: <code>String</code>)
-	 * @param element the JavaScript element for which the marker needs to be configured
 	 */
 	public static void addJavaScriptElementMarkerAttributes(
 		Map attributes,
@@ -1151,17 +1068,6 @@ public final class JavaScriptCore extends Plugin {
 		if (attributes != null && element != null)
 			attributes.put(ATT_HANDLE_ID, element.getHandleIdentifier());
 	}
-
-	/**
-	 * @deprecated Use {@link #addNonJavaScriptResources(Object[],IContainer,int,ArrayList)} instead
-	 */
-	private static void addNonJavaResources(Object[] nonJavaResources,
-			IContainer container,
-			int rootPathSegmentCounts,
-			ArrayList collector) {
-				addNonJavaScriptResources(nonJavaResources, container,
-						rootPathSegmentCounts, collector);
-			}
 
 	private static void addNonJavaScriptResources(Object[] nonJavaResources,
 			IContainer container,
@@ -1192,21 +1098,6 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 
-	/**
-	 * Adds the given listener for POST_CHANGE resource change events to the JavaScript core.
-	 * The listener is guaranteed to be notified of the POST_CHANGE resource change event before
-	 * the JavaScript core starts processing the resource change event itself.
-	 * <p>
-	 * Has no effect if an identical listener is already registered.
-	 * </p>
-	 *
-	 * @param listener the listener
-	 * @see #removePreProcessingResourceChangedListener(IResourceChangeListener)
-	 * @deprecated use addPreProcessingResourceChangedListener(listener, IResourceChangeEvent.POST_CHANGE) instead
-	 */
-	public static void addPreProcessingResourceChangedListener(IResourceChangeListener listener) {
-		addPreProcessingResourceChangedListener(listener, IResourceChangeEvent.POST_CHANGE);
-	}
 
 	/**
 	 * Adds the given listener for resource change events of the given types to the JavaScript core.
@@ -1558,44 +1449,6 @@ public final class JavaScriptCore extends Plugin {
 			"	class: " + configurationElement.getAttribute("class")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
-	/**
-	 * Returns the path held in the given includepath variable.
-	 * Returns <code>null</code> if unable to bind.
-	 * <p>
-	 * Includepath variable values are persisted locally to the workspace, and
-	 * are preserved from session to session.
-	 * <p>
-	 * Note that includepath variables can be contributed registered initializers for,
-	 * using the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer".
-	 * If an initializer is registered for a variable, its persisted value will be ignored:
-	 * its initializer will thus get the opportunity to rebind the variable differently on
-	 * each session.
-	 *
-	 * @param variableName the name of the includepath variable
-	 * @return the path, or <code>null</code> if none
-	 * @see #setClasspathVariable(String, IPath)
-	 */
-	/**
-	 * Returns the path held in the given includepath variable.
-	 * Returns <code>null</code> if unable to bind.
-	 * <p>
-	 * Includepath variable values are persisted locally to the workspace, and
-	 * are preserved from session to session.
-	 * <p>
-	 * Note that includepath variables can be contributed registered initializers for,
-	 * using the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer".
-	 * If an initializer is registered for a variable, its persisted value will be ignored:
-	 * its initializer will thus get the opportunity to rebind the variable differently on
-	 * each session.
-	 *
-	 * @param variableName the name of the includepath variable
-	 * @return the path, or <code>null</code> if none
-	 * @see #setIncludepathVariable(String, IPath)
-	 * @deprecated Use {@link #getIncludepathVariable(String)} instead
-	 */
-	public static IPath getClasspathVariable(final String variableName) {
-		return getIncludepathVariable(variableName);
-	}
 
 	/**
 	 * Returns the path held in the given includepath variable.
@@ -1711,16 +1564,6 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 
-	/**
-	 * Returns deprecation message of a given includepath variable.
-	 *
-	 * @param variableName
-	 * @return A string if the includepath variable is deprecated, <code>null</code> otherwise.
-	 * @deprecated Use {@link #getIncludepathVariableDeprecationMessage(String)} instead
-	 */
-	public static String getClasspathVariableDeprecationMessage(String variableName) {
-		return getIncludepathVariableDeprecationMessage(variableName);
-	}
 
 	/**
 	 * Returns deprecation message of a given includepath variable.
@@ -1798,21 +1641,6 @@ public final class JavaScriptCore extends Plugin {
 			"CPVariable INIT - found initializer\n" + //$NON-NLS-1$
 			"	variable: " + variable + '\n' + //$NON-NLS-1$
 			"	class: " + configElement.getAttribute("class")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	/**
-	 * Returns the names of all known includepath variables.
-	 * <p>
-	 * Includepath variable values are persisted locally to the workspace, and
-	 * are preserved from session to session.
-	 * <p>
-	 *
-	 * @return the list of includepath variable names
-	 * @see #setIncludepathVariable(String, IPath)
-	 * @deprecated Use {@link #getIncludepathVariableNames()} instead
-	 */
-	public static String[] getClasspathVariableNames() {
-		return getIncludepathVariableNames();
 	}
 
 	/**
@@ -3990,24 +3818,6 @@ public final class JavaScriptCore extends Plugin {
 			accessRules,
 			false, // no access rules to combine
 			extraAttributes);
-	}
-	/**
-	 * Removed the given includepath variable. Does nothing if no value was
-	 * set for this includepath variable.
-	 * <p>
-	 * This functionality cannot be used while the resource tree is locked.
-	 * <p>
-	 * Includepath variable values are persisted locally to the workspace, and
-	 * are preserved from session to session.
-	 * <p>
-	 *
-	 * @param variableName the name of the includepath variable
-	 * @see #setIncludepathVariable(String, IPath)
-	 *
-	 * @deprecated Use {@link #removeIncludepathVariable(String, IProgressMonitor)} instead
-	 */
-	public static void removeIncludepathVariable(String variableName) {
-		removeIncludepathVariable(variableName, null);
 	}
 
 	/**

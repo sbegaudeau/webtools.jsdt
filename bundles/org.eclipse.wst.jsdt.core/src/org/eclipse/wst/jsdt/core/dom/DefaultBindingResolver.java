@@ -32,7 +32,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Literal;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
@@ -48,7 +47,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ElementValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
@@ -232,17 +230,6 @@ class DefaultBindingResolver extends BindingResolver {
 			return binding;
 		}
 		return null;
-	}
-
-	synchronized IMemberValuePairBinding getMemberValuePairBinding(ElementValuePair valuePair) {
-		if (valuePair == null) return null;
-		IMemberValuePairBinding binding =
-			(IMemberValuePairBinding) this.bindingTables.compilerBindingsToASTBindings.get(valuePair);
-		if (binding != null)
-			return binding;
-		binding = new MemberValuePairBinding(valuePair, this);
-		this.bindingTables.compilerBindingsToASTBindings.put(valuePair, binding);
-		return binding;
 	}
 
 	/*
@@ -490,17 +477,6 @@ class DefaultBindingResolver extends BindingResolver {
 	}
 
 
-	synchronized IAnnotationBinding getAnnotationInstance(org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding internalInstance) {
-		if (internalInstance == null) return null;
-		IAnnotationBinding domInstance =
-			(IAnnotationBinding) this.bindingTables.compilerBindingsToASTBindings.get(internalInstance);
-		if (domInstance != null)
-			return domInstance;
-		domInstance = new AnnotationBinding(internalInstance, this);
-		this.bindingTables.compilerBindingsToASTBindings.put(internalInstance, domInstance);
-		return domInstance;
-	}
-
 	/*
 	 * Method declared on BindingResolver.
 	 */
@@ -591,21 +567,6 @@ class DefaultBindingResolver extends BindingResolver {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.BindingResolver#resolveConstructor(org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration)
-	 */
-	IFunctionBinding resolveConstructor(EnumConstantDeclaration enumConstantDeclaration) {
-		org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode node = (org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode) this.newAstToOldAst.get(enumConstantDeclaration);
-		if (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration) {
-			org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration fieldDeclaration = (org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration) node;
-			if (fieldDeclaration.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT && fieldDeclaration.initialization != null) {
-				AllocationExpression allocationExpression = (AllocationExpression) fieldDeclaration.initialization;
-				return this.getMethodBinding(allocationExpression.binding);
-			}
-		}
-		return null;
-	}
-
 	/*
 	 * @see BindingResolver#resolveConstructor(SuperConstructorInvocation)
 	 */
@@ -656,14 +617,6 @@ class DefaultBindingResolver extends BindingResolver {
 				case ASTNode.FUNCTION_INVOCATION :
 				case ASTNode.SUPER_METHOD_INVOCATION :
 				case ASTNode.CONDITIONAL_EXPRESSION :
-				case ASTNode.MARKER_ANNOTATION :
-				case ASTNode.NORMAL_ANNOTATION :
-				case ASTNode.SINGLE_MEMBER_ANNOTATION :
-					org.eclipse.wst.jsdt.internal.compiler.ast.Expression compilerExpression = (org.eclipse.wst.jsdt.internal.compiler.ast.Expression) this.newAstToOldAst.get(expression);
-					if (compilerExpression != null) {
-						return this.getTypeBinding(compilerExpression.resolvedType);
-					}
-					break;
 				case ASTNode.STRING_LITERAL :
 					if (this.scope != null) {
 						return this.getTypeBinding(this.scope.getJavaLangString());
@@ -787,27 +740,6 @@ class DefaultBindingResolver extends BindingResolver {
 			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=53357
 			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
 			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
-		}
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.BindingResolver#resolveMember(org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration)
-	 */
-	IFunctionBinding resolveMember(AnnotationTypeMemberDeclaration declaration) {
-		Object oldNode = this.newAstToOldAst.get(declaration);
-		if (oldNode instanceof AbstractMethodDeclaration) {
-			AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) oldNode;
-			IFunctionBinding methodBinding = this.getMethodBinding(methodDeclaration.binding);
-			if (methodBinding == null) {
-				return null;
-			}
-			this.bindingsToAstNodes.put(methodBinding, declaration);
-			String key = methodBinding.getKey();
-			if (key != null) {
-				this.bindingTables.bindingKeysToBindings.put(key, methodBinding);
-			}
-			return methodBinding;
 		}
 		return null;
 	}
@@ -1377,15 +1309,6 @@ class DefaultBindingResolver extends BindingResolver {
 	}
 
 	/* (non-Javadoc)
-	 * @see BindingResolver#resolveMemberValuePair(MemberValuePair)
-     * @since 3.2
-	 */
-	synchronized IMemberValuePairBinding resolveMemberValuePair(org.eclipse.wst.jsdt.core.dom.MemberValuePair memberValuePair) {
-		MemberValuePair valuePair = (MemberValuePair) this.newAstToOldAst.get(memberValuePair);
-		return getMemberValuePairBinding(valuePair.compilerElementPair);
-	}
-
-	/* (non-Javadoc)
 	 * @see BindingResolver#resolveReference(FunctionRef)
      * @since 3.0
 	 */
@@ -1400,26 +1323,6 @@ class DefaultBindingResolver extends BindingResolver {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.BindingResolver#resolveType(org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration)
-	 */
-	ITypeBinding resolveType(AnnotationTypeDeclaration type) {
-		final Object node = this.newAstToOldAst.get(type);
-		if (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration) {
-			org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration typeDeclaration = (org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration) node;
-			ITypeBinding typeBinding = this.getTypeBinding(typeDeclaration.binding);
-			if (typeBinding == null) {
-				return null;
-			}
-			this.bindingsToAstNodes.put(typeBinding, type);
-			String key = typeBinding.getKey();
-			if (key != null) {
-				this.bindingTables.bindingKeysToBindings.put(key, typeBinding);
-			}
-			return typeBinding;
-		}
-		return null;
-	}
 	/*
 	 * @see BindingResolver#resolveType(AnonymousClassDeclaration)
 	 */
@@ -1428,27 +1331,6 @@ class DefaultBindingResolver extends BindingResolver {
 		if (node != null && (node.bits & org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode.IsAnonymousType) != 0) {
 			org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration anonymousLocalTypeDeclaration = (org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration) node;
 			ITypeBinding typeBinding = this.getTypeBinding(anonymousLocalTypeDeclaration.binding);
-			if (typeBinding == null) {
-				return null;
-			}
-			this.bindingsToAstNodes.put(typeBinding, type);
-			String key = typeBinding.getKey();
-			if (key != null) {
-				this.bindingTables.bindingKeysToBindings.put(key, typeBinding);
-			}
-			return typeBinding;
-		}
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.BindingResolver#resolveType(org.eclipse.wst.jsdt.core.dom.EnumDeclaration)
-	 */
-	ITypeBinding resolveType(EnumDeclaration type) {
-		final Object node = this.newAstToOldAst.get(type);
-		if (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration) {
-			org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration typeDeclaration = (org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration) node;
-			ITypeBinding typeBinding = this.getTypeBinding(typeDeclaration.binding);
 			if (typeBinding == null) {
 				return null;
 			}
@@ -1590,26 +1472,6 @@ class DefaultBindingResolver extends BindingResolver {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.BindingResolver#resolveVariable(org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration)
-	 */
-	synchronized IVariableBinding resolveVariable(EnumConstantDeclaration enumConstant) {
-		final Object node = this.newAstToOldAst.get(enumConstant);
-		if (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration) {
-			org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration fieldDeclaration = (org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration) node;
-			IVariableBinding variableBinding = this.getVariableBinding(fieldDeclaration.binding);
-			if (variableBinding == null) {
-				return null;
-			}
-			this.bindingsToAstNodes.put(variableBinding, enumConstant);
-			String key = variableBinding.getKey();
-			if (key != null) {
-				this.bindingTables.bindingKeysToBindings.put(key, variableBinding);
-			}
-			return variableBinding;
-		}
-		return null;
-	}
 	/*
 	 * Method declared on BindingResolver.
 	 */
@@ -1743,20 +1605,6 @@ class DefaultBindingResolver extends BindingResolver {
 		return null;
 	}
 
-	synchronized IAnnotationBinding resolveAnnotation(final Annotation domASTNode) {
-		Object oldNode = this.newAstToOldAst.get(domASTNode);
-		if (oldNode instanceof org.eclipse.wst.jsdt.internal.compiler.ast.Annotation) {
-			org.eclipse.wst.jsdt.internal.compiler.ast.Annotation internalAstNode =
-				(org.eclipse.wst.jsdt.internal.compiler.ast.Annotation) oldNode;
-
-			IAnnotationBinding domAnnotation = this.getAnnotationInstance(internalAstNode.getCompilerAnnotation());
-			if (domAnnotation == null)
-				return null;
-			this.bindingsToAstNodes.put(domAnnotation, domASTNode);
-			return domAnnotation;
-		}
-		return null;
-	}
 
 	/*
 	 * Method declared on BindingResolver.

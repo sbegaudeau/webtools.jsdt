@@ -22,11 +22,11 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
@@ -36,7 +36,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.JavaRenameProcess
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.MethodChecks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameCompilationUnitProcessor;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameEnumConstProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameFieldProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameJavaProjectProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameLocalVariableProcessor;
@@ -49,7 +48,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameVirtualMeth
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.INameUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IReferenceUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ITextUpdating;
-import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringExecutionHelper;
@@ -206,22 +204,6 @@ public class RenameSupport {
 	/** Flag indicating that references are to be updated as well. */
 	public static final int UPDATE_REFERENCES= 1 << 0;
 	
-	/** 
-     * Flag indicating that Javadoc comments are to be updated as well.
-	 * @deprecated use UPDATE_REFERENCES or UPDATE_TEXTUAL_MATCHES or both.
-     */
-	public static final int UPDATE_JAVADOC_COMMENTS= 1 << 1;
-	/**
-     * Flag indicating that regular comments are to be updated as well.
-	 * @deprecated use UPDATE_TEXTUAL_MATCHES
-     */
-	public static final int UPDATE_REGULAR_COMMENTS= 1 << 2;
-	/**
-     * Flag indicating that string literals are to be updated as well.
-	 * @deprecated use UPDATE_TEXTUAL_MATCHES
-     */
-	public static final int UPDATE_STRING_LITERALS= 1 << 3;
-
 	/**
 	 * Flag indicating that textual matches in comments and in string literals
 	 * are to be updated as well.
@@ -396,14 +378,10 @@ public class RenameSupport {
 	 * the {@link RenameSupport}.
 	 */
 	public static RenameSupport create(IField field, String newName, int flags) throws CoreException {
-		if (JdtFlags.isEnum(field))
-			return new RenameSupport(new RenameEnumConstProcessor(field), newName, flags);
-		else {
 			final RenameFieldProcessor processor= new RenameFieldProcessor(field);
 			processor.setRenameGetter(updateGetterMethod(flags));
 			processor.setRenameSetter(updateSetterMethod(flags));
 			return new RenameSupport(processor, newName, flags);
-		}
 	}
 
 	/**
@@ -468,7 +446,7 @@ public class RenameSupport {
 	}
 	
 	private static boolean updateTextualMatches(int flags) {
-		int TEXT_UPDATES= UPDATE_TEXTUAL_MATCHES | UPDATE_REGULAR_COMMENTS | UPDATE_STRING_LITERALS;
+		int TEXT_UPDATES= UPDATE_TEXTUAL_MATCHES;
 		return (flags & TEXT_UPDATES) != 0;
 	}
 	

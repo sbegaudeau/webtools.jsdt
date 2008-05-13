@@ -26,12 +26,10 @@ import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IBufferFactory;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICodeCompletionRequestor;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
-import org.eclipse.wst.jsdt.core.ICompletionRequestor;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IProblemRequestor;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
@@ -233,23 +231,8 @@ public class MetadataFile extends Openable implements
 		return null;
 	}
 
-	public void codeComplete(int offset, ICodeCompletionRequestor requestor)
-			throws JavaScriptModelException {
-
-	}
-
-	public void codeComplete(int offset, ICompletionRequestor requestor)
-			throws JavaScriptModelException {
-
-	}
-
 	public void codeComplete(int offset, CompletionRequestor requestor)
 			throws JavaScriptModelException {
-
-	}
-
-	public void codeComplete(int offset, ICompletionRequestor requestor,
-			WorkingCopyOwner owner) throws JavaScriptModelException {
 
 	}
 
@@ -282,13 +265,6 @@ public class MetadataFile extends Openable implements
 			list.toArray(array);
 			return array;
 		}
-	}
-
-	/**
-	 * @deprecated Use {@link #getFunction(String,String[])} instead
-	 */
-	public IFunction getMethod(String selector, String[] parameterTypeSignatures) {
-		return getFunction(selector, parameterTypeSignatures);
 	}
 
 	public IFunction getFunction(String selector, String[] parameterTypeSignatures) {

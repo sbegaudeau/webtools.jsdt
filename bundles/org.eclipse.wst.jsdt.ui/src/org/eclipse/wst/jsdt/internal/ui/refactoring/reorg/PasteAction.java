@@ -63,9 +63,9 @@ import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
 import org.eclipse.ui.actions.CopyProjectOperation;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
@@ -1137,8 +1137,6 @@ public class PasteAction extends SelectionDispatchAction{
 
 			private static void insertToType(ASTRewrite rewrite, ASTNode node, AbstractTypeDeclaration typeDeclaration) {
 				switch (node.getNodeType()) {
-					case ASTNode.ANNOTATION_TYPE_DECLARATION:
-					case ASTNode.ENUM_DECLARATION:
 					case ASTNode.TYPE_DECLARATION:
 					case ASTNode.FUNCTION_DECLARATION:
 					case ASTNode.FIELD_DECLARATION:
@@ -1153,8 +1151,6 @@ public class PasteAction extends SelectionDispatchAction{
 			private static void insertToCu(ASTRewrite rewrite, ASTNode node, JavaScriptUnit cuNode) {
 				switch (node.getNodeType()) {
 					case ASTNode.TYPE_DECLARATION:
-					case ASTNode.ENUM_DECLARATION:
-					case ASTNode.ANNOTATION_TYPE_DECLARATION:
 						rewrite.getListRewrite(cuNode, JavaScriptUnit.TYPES_PROPERTY).insertAt(node, ASTNodes.getInsertionIndex((AbstractTypeDeclaration) node, cuNode.types()), null);
 						break;
 					case ASTNode.IMPORT_DECLARATION:

@@ -412,13 +412,6 @@ public class JavaModelStatus extends Status implements IJavaScriptModelStatus, I
 		return severity;
 	}
 	/**
-	 * @see IJavaScriptModelStatus#getString()
-	 * @deprecated
-	 */
-	public String getString() {
-		return string;
-	}
-	/**
 	 * @see IJavaScriptModelStatus#isDoesNotExist()
 	 */
 	public boolean isDoesNotExist() {

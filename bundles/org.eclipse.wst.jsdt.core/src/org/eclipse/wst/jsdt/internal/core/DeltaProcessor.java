@@ -36,8 +36,8 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.PerformanceStats;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
-import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
 import org.eclipse.wst.jsdt.core.IJavaScriptModel;
@@ -659,12 +659,12 @@ public class DeltaProcessor {
 		} else {
 			close(element);
 			int flags = IJavaScriptElementDelta.F_CONTENT;
-			if (element instanceof JarPackageFragmentRoot){
-				flags |= IJavaScriptElementDelta.F_ARCHIVE_CONTENT_CHANGED;
-				// need also to reset project cache otherwise it will be out-of-date
-				// see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=162621
-				this.projectCachesToReset.add(element.getJavaScriptProject());
-			}
+//			if (element instanceof JarPackageFragmentRoot){
+//				flags |= IJavaScriptElementDelta.F_ARCHIVE_CONTENT_CHANGED;
+//				// need also to reset project cache otherwise it will be out-of-date
+//				// see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=162621
+//				this.projectCachesToReset.add(element.getJavaScriptProject());
+//			}
 			if (isPrimary) {
 				flags |= IJavaScriptElementDelta.F_PRIMARY_RESOURCE;
 			}
@@ -2424,7 +2424,7 @@ public class DeltaProcessor {
 				break;
 			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT :
 				if (element instanceof LibraryFragmentRoot) {
-					JarPackageFragmentRoot root = (JarPackageFragmentRoot)element;
+					LibraryFragmentRoot root = (LibraryFragmentRoot)element;
 					// index jar file only once (if the root is in its declaring project)
 					IPath jarPath = root.getPath();
 					switch (delta.getKind()) {

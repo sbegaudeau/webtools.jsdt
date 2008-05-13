@@ -47,13 +47,13 @@ protected boolean close(LRUCacheEntry entry) {
 			return false;
 		} else {
 			// We must close an entire JarPackageFragmentRoot at once.
-			if (element instanceof JarPackageFragment) {
-				JarPackageFragment packageFragment= (JarPackageFragment) element;
-				JarPackageFragmentRoot root = (JarPackageFragmentRoot) packageFragment.getParent();
-				root.close();
-			} else {
+//			if (element instanceof JarPackageFragment) {
+//				JarPackageFragment packageFragment= (JarPackageFragment) element;
+//				JarPackageFragmentRoot root = (JarPackageFragmentRoot) packageFragment.getParent();
+//				root.close();
+//			} else {
 				element.close();
-			}
+//			}
 			return true;
 		}
 	} catch (JavaScriptModelException npe) {

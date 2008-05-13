@@ -37,10 +37,10 @@ import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
@@ -54,20 +54,18 @@ import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
-import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
-import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
-import org.eclipse.wst.jsdt.core.dom.JSdoc;
-import org.eclipse.wst.jsdt.core.dom.MemberRef;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.FunctionRef;
 import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
+import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.MemberRef;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
@@ -1509,8 +1507,6 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	private static final boolean BUG_89686= true; //see bug 83693: Search for References to methods/constructors: do ranges include parameter lists?
 	
 	private OccurrenceUpdate createOccurrenceUpdate(ASTNode node, CompilationUnitRewrite cuRewrite, RefactoringStatus result) {
-		if (BUG_89686 && node instanceof SimpleName && node.getParent() instanceof EnumConstantDeclaration)
-			node= node.getParent();
 		
 		if (isReferenceNode(node))
 			return new ReferenceUpdate(node, cuRewrite, result);
@@ -1535,7 +1531,6 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			case ASTNode.CLASS_INSTANCE_CREATION :
 			case ASTNode.CONSTRUCTOR_INVOCATION :
 			case ASTNode.SUPER_CONSTRUCTOR_INVOCATION :
-			case ASTNode.ENUM_CONSTANT_DECLARATION :
 				return true;
 
 			default :
@@ -1780,8 +1775,6 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			if (fNode instanceof SuperConstructorInvocation)	
 				return getASTRewrite().getListRewrite(fNode, SuperConstructorInvocation.ARGUMENTS_PROPERTY);
 			
-			if (fNode instanceof EnumConstantDeclaration)	
-				return getASTRewrite().getListRewrite(fNode, EnumConstantDeclaration.ARGUMENTS_PROPERTY);
 			
 			return null;
 		}
@@ -1839,10 +1832,6 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 				return false; //Constructors don't override -> enclosing has not been changed -> no recursion
 			}
 			
-			if (fNode instanceof EnumConstantDeclaration) {
-				return false; //cannot define enum constant inside enum constructor
-			}
-
 			Assert.isTrue(false);
 			return false;
 		}
@@ -2350,9 +2339,6 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 				} else if (node instanceof ClassInstanceCreation) {
 					ClassInstanceCreation cic= (ClassInstanceCreation) node;
 					return Messages.format(RefactoringCoreMessages.ChangeSignatureRefactoring_anonymous_subclass, new String[]{ASTNodes.asString(cic.getType())}); 
-				} else if (node instanceof EnumConstantDeclaration) {
-					EnumDeclaration ed= (EnumDeclaration) node.getParent();
-					return Messages.format(RefactoringCoreMessages.ChangeSignatureRefactoring_anonymous_subclass, new String[]{ASTNodes.asString(ed.getName())}); 
 				}
 			}
 		}

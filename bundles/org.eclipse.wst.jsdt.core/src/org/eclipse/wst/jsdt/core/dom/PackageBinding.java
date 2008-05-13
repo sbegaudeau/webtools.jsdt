@@ -11,14 +11,7 @@
 
 package org.eclipse.wst.jsdt.core.dom;
 
-import java.util.Iterator;
-import java.util.List;
-
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
-import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
@@ -44,80 +37,6 @@ class PackageBinding implements IPackageBinding {
 //		this.resolver = resolver;
 	}
 
-	public IAnnotationBinding[] getAnnotations() {
-		try {
-			INameEnvironment nameEnvironment = this.binding.environment.nameEnvironment;
-			if (!(nameEnvironment instanceof SearchableEnvironment))
-				return AnnotationBinding.NoAnnotations;
-			NameLookup nameLookup = ((SearchableEnvironment) nameEnvironment).nameLookup;
-			if (nameLookup == null)
-				return AnnotationBinding.NoAnnotations;
-			final String pkgName = getName();
-			IPackageFragment[] pkgs = nameLookup.findPackageFragments(pkgName, false/*exact match*/);
-			if (pkgs == null)
-				return AnnotationBinding.NoAnnotations;
-
-			for (int i = 0, len = pkgs.length; i < len; i++) {
-				int fragType = pkgs[i].getKind();
-				switch(fragType) {
-					case IPackageFragmentRoot.K_SOURCE:
-						String unitName = "package-info.js"; //$NON-NLS-1$
-						IJavaScriptUnit unit = pkgs[i].getJavaScriptUnit(unitName);
-						if (unit != null) {
-							ASTParser p = ASTParser.newParser(AST.JLS3);
-							p.setSource(unit);
-							p.setResolveBindings(true);
-							p.setUnitName(unitName);
-							p.setFocalPosition(0);
-							p.setKind(ASTParser.K_COMPILATION_UNIT);
-							JavaScriptUnit domUnit = (JavaScriptUnit) p.createAST(null);
-							PackageDeclaration pkgDecl = domUnit.getPackage();
-							if (pkgDecl != null) {
-								List annos = pkgDecl.annotations();
-								if (annos == null || annos.isEmpty())
-									return AnnotationBinding.NoAnnotations;
-								IAnnotationBinding[] result = new IAnnotationBinding[annos.size()];
-								int index=0;
-		 						for (Iterator it = annos.iterator(); it.hasNext(); index++) {
-									result[index] = ((Annotation) it.next()).resolveAnnotationBinding();
-									// not resolving bindings
-									if (result[index] == null)
-										return AnnotationBinding.NoAnnotations;
-								}
-								return result;
-							}
-						}
-						break;
-					case IPackageFragmentRoot.K_BINARY:
-
-// unused code
-//						NameEnvironmentAnswer answer =
-//							nameEnvironment.findType(TypeConstants.PACKAGE_INFO_NAME, this.binding.compoundName);
-//						if (answer != null && answer.isBinaryType()) {
-//							IBinaryType type = answer.getBinaryType();
-//							IBinaryAnnotation[] binaryAnnotations = type.getAnnotations();
-//							org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] binaryInstances =
-//								BinaryTypeBinding.createAnnotations(binaryAnnotations, this.binding.environment);
-//							org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] allInstances =
-//								org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding.addStandardAnnotations(binaryInstances, type.getTagBits(), this.binding.environment);
-//							int total = allInstances.length;
-//							IAnnotationBinding[] domInstances = new AnnotationBinding[total];
-//							for (int a = 0; a < total; a++) {
-//								final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(allInstances[a]);
-//								if (annotationInstance == null) {// not resolving binding
-//									return AnnotationBinding.NoAnnotations;
-//								}
-//								domInstances[a] = annotationInstance;
-//							}
-//							return domInstances;
-//						}
-				}
-			}
-		} catch(JavaScriptModelException e) {
-			return AnnotationBinding.NoAnnotations;
-		}
-		return AnnotationBinding.NoAnnotations;
-	}
 
 	/*
 	 * @see IBinding#getName()

@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
@@ -115,51 +113,51 @@ public class LocalVariableBinding extends VariableBinding {
 		return uniqueKey;
 	}
 
-	public AnnotationBinding[] getAnnotations() {
-		if (this.declaringScope == null) {
-			if ((this.tagBits & TagBits.AnnotationResolved) != 0) {
-				// annotation are already resolved
-		if (this.declaringScope == null)
-				if (this.declaration == null) {
-			return Binding.NO_ANNOTATIONS;
-				}
-				Annotation[] annotations = this.declaration.annotations;
-				if (annotations != null) {
-					int length = annotations.length;
-					AnnotationBinding[] annotationBindings = new AnnotationBinding[length];
-					for (int i = 0; i < length; i++) {
-						AnnotationBinding compilerAnnotation = annotations[i].getCompilerAnnotation();
-						if (compilerAnnotation == null) {
-							return Binding.NO_ANNOTATIONS;
-						}
-						annotationBindings[i] = compilerAnnotation;
-					}
-					return annotationBindings;
-				}
-			}
-			return Binding.NO_ANNOTATIONS;
-		}
-		SourceTypeBinding sourceType = this.declaringScope.enclosingSourceType();
-		if (sourceType == null)
-			return Binding.NO_ANNOTATIONS;
-
-		AnnotationBinding[] annotations = sourceType.retrieveAnnotations(this);
-		if ((this.tagBits & TagBits.AnnotationResolved) == 0) {
-			if (((this.tagBits & TagBits.IsArgument) != 0) && this.declaration != null) {
-				Annotation[] annotationNodes = declaration.annotations;
-				if (annotationNodes != null) {
-					int length = annotationNodes.length;
-					ASTNode.resolveAnnotations(this.declaringScope, annotationNodes, this);
-					annotations = new AnnotationBinding[length];
-					for (int i = 0; i < length; i++)
-						annotations[i] = new AnnotationBinding(annotationNodes[i]);
-					setAnnotations(annotations);
-				}
-			}
-		}
-		return annotations;
-	}
-
+//	public AnnotationBinding[] getAnnotations() {
+//		if (this.declaringScope == null) {
+//			if ((this.tagBits & TagBits.AnnotationResolved) != 0) {
+//				// annotation are already resolved
+//		if (this.declaringScope == null)
+//				if (this.declaration == null) {
+//			return Binding.NO_ANNOTATIONS;
+//				}
+//				Annotation[] annotations = this.declaration.annotations;
+//				if (annotations != null) {
+//					int length = annotations.length;
+//					AnnotationBinding[] annotationBindings = new AnnotationBinding[length];
+//					for (int i = 0; i < length; i++) {
+//						AnnotationBinding compilerAnnotation = annotations[i].getCompilerAnnotation();
+//						if (compilerAnnotation == null) {
+//							return Binding.NO_ANNOTATIONS;
+//						}
+//						annotationBindings[i] = compilerAnnotation;
+//					}
+//					return annotationBindings;
+//				}
+//			}
+//			return Binding.NO_ANNOTATIONS;
+//		}
+//		SourceTypeBinding sourceType = this.declaringScope.enclosingSourceType();
+//		if (sourceType == null)
+//			return Binding.NO_ANNOTATIONS;
+//
+//		AnnotationBinding[] annotations = sourceType.retrieveAnnotations(this);
+//		if ((this.tagBits & TagBits.AnnotationResolved) == 0) {
+//			if (((this.tagBits & TagBits.IsArgument) != 0) && this.declaration != null) {
+//				Annotation[] annotationNodes = declaration.annotations;
+//				if (annotationNodes != null) {
+//					int length = annotationNodes.length;
+//					ASTNode.resolveAnnotations(this.declaringScope, annotationNodes, this);
+//					annotations = new AnnotationBinding[length];
+//					for (int i = 0; i < length; i++)
+//						annotations[i] = new AnnotationBinding(annotationNodes[i]);
+//					setAnnotations(annotations);
+//				}
+//			}
+//		}
+//		return annotations;
+//	}
+//
 	private void getScopeKey(BlockScope scope, StringBuffer buffer) {
 		int scopeIndex = scope.scopeIndex();
 		if (scopeIndex != -1) {

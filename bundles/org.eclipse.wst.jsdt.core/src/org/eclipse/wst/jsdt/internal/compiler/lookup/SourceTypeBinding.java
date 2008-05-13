@@ -20,7 +20,6 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
@@ -832,18 +831,18 @@ public char[] genericSignature() {
  * @see org.eclipse.wst.jsdt.internal.compiler.lookup.Binding#getAnnotationTagBits()
  */
 public long getAnnotationTagBits() {
-	if ((this.tagBits & TagBits.AnnotationResolved) == 0 && this.scope != null) {
-		TypeDeclaration typeDecl = this.classScope.referenceContext;
-		boolean old = typeDecl.staticInitializerScope.insideTypeAnnotation;
-		try {
-			typeDecl.staticInitializerScope.insideTypeAnnotation = true;
-			ASTNode.resolveAnnotations(typeDecl.staticInitializerScope, typeDecl.annotations, this);
-		} finally {
-			typeDecl.staticInitializerScope.insideTypeAnnotation = old;
-		}
-		if ((this.tagBits & TagBits.AnnotationDeprecated) != 0)
-			this.modifiers |= ClassFileConstants.AccDeprecated;
-	}
+//	if ((this.tagBits & TagBits.AnnotationResolved) == 0 && this.scope != null) {
+//		TypeDeclaration typeDecl = this.classScope.referenceContext;
+//		boolean old = typeDecl.staticInitializerScope.insideTypeAnnotation;
+//		try {
+//			typeDecl.staticInitializerScope.insideTypeAnnotation = true;
+//			ASTNode.resolveAnnotations(typeDecl.staticInitializerScope, typeDecl.annotations, this);
+//		} finally {
+//			typeDecl.staticInitializerScope.insideTypeAnnotation = old;
+//		}
+//		if ((this.tagBits & TagBits.AnnotationDeprecated) != 0)
+//			this.modifiers |= ClassFileConstants.AccDeprecated;
+//	}
 	return this.tagBits;
 }
 public MethodBinding[] getDefaultAbstractMethods() {

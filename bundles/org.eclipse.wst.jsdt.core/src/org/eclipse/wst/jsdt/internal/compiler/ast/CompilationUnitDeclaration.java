@@ -393,9 +393,9 @@ public class CompilationUnitDeclaration
 			}
 			syntheticTypeDeclaration.resolve(this.scope);
 			// resolve annotations if any
-			if (this.currentPackage!= null && this.currentPackage.annotations != null) {
-				resolveAnnotations(syntheticTypeDeclaration.staticInitializerScope, this.currentPackage.annotations, this.scope.getDefaultPackage());
-			}
+//			if (this.currentPackage!= null && this.currentPackage.annotations != null) {
+//				resolveAnnotations(syntheticTypeDeclaration.staticInitializerScope, this.currentPackage.annotations, this.scope.getDefaultPackage());
+//			}
 			// resolve javadoc package if any
 			if (this.javadoc != null) {
 				this.javadoc.resolve(syntheticTypeDeclaration.staticInitializerScope);

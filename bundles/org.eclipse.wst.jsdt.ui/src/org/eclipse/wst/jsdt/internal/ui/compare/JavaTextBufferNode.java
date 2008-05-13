@@ -110,11 +110,6 @@ class JavaTextBufferNode implements ITypedElement, IEncodedStreamContentAccessor
 			case JavaNode.INTERFACE:
 				return ASTNode.TYPE_DECLARATION;
 				
-			case JavaNode.ENUM:
-				return ASTNode.ENUM_DECLARATION;
-				
-			case JavaNode.ANNOTATION:
-				return ASTNode.ANNOTATION_TYPE_DECLARATION;
 				
 			case JavaNode.CONSTRUCTOR:
 			case JavaNode.METHOD:

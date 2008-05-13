@@ -55,8 +55,8 @@ public class DefaultSpellingEngine implements ISpellingEngine {
 	public DefaultSpellingEngine() {
 		if (JAVA_CONTENT_TYPE != null)
 			fEngines.put(JAVA_CONTENT_TYPE, new JavaSpellingEngine());
-		if (PROPERTIES_CONTENT_TYPE != null)
-			fEngines.put(PROPERTIES_CONTENT_TYPE, new PropertiesFileSpellingEngine());
+//		if (PROPERTIES_CONTENT_TYPE != null)
+//			fEngines.put(PROPERTIES_CONTENT_TYPE, new PropertiesFileSpellingEngine());
 		if (TEXT_CONTENT_TYPE != null)
 			fEngines.put(TEXT_CONTENT_TYPE, new TextSpellingEngine());
 	}

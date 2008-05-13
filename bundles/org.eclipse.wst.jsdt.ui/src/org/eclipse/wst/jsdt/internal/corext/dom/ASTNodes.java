@@ -22,11 +22,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
-import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
@@ -39,23 +35,22 @@ import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Message;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
@@ -631,8 +626,6 @@ public class ASTNodes {
 
 		switch (memberType) {
 			case ASTNode.TYPE_DECLARATION:
-			case ASTNode.ENUM_DECLARATION :
-			case ASTNode.ANNOTATION_TYPE_DECLARATION :
 				return store.getCategoryIndex(MembersOrderPreferenceCache.TYPE_INDEX) * 2;
 			case ASTNode.FIELD_DECLARATION:
 				if (Modifier.isStatic(modifiers)) {
@@ -648,8 +641,6 @@ public class ASTNodes {
 					return store.getCategoryIndex(MembersOrderPreferenceCache.STATIC_INIT_INDEX) * 2;
 				}
 				return store.getCategoryIndex(MembersOrderPreferenceCache.INIT_INDEX) * 2;
-			case ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION:
-				return store.getCategoryIndex(MembersOrderPreferenceCache.METHOD_INDEX) * 2;
 			case ASTNode.FUNCTION_DECLARATION:
 				if (Modifier.isStatic(modifiers)) {
 					return store.getCategoryIndex(MembersOrderPreferenceCache.STATIC_METHODS_INDEX) * 2;
@@ -808,18 +799,9 @@ public class ASTNodes {
 	public static ITypeBinding getTypeBinding(JavaScriptUnit root, IType type) throws JavaScriptModelException {
 		if (type.isAnonymous()) {
 			final IJavaScriptElement parent= type.getParent();
-			if (parent instanceof IField && Flags.isEnum(((IMember) parent).getFlags())) {
-				final EnumConstantDeclaration constant= (EnumConstantDeclaration) NodeFinder.perform(root, ((ISourceReference) parent).getSourceRange());
-				if (constant != null) {
-					final AnonymousClassDeclaration declaration= constant.getAnonymousClassDeclaration();
-					if (declaration != null)
-						return declaration.resolveBinding();
-				}
-			} else {
 				final ClassInstanceCreation creation= (ClassInstanceCreation) getParent(NodeFinder.perform(root, type.getNameRange()), ClassInstanceCreation.class);
 				if (creation != null)
 					return creation.resolveTypeBinding();
-			}
 		} else {
 			final AbstractTypeDeclaration declaration= (AbstractTypeDeclaration) getParent(NodeFinder.perform(root, type.getNameRange()), AbstractTypeDeclaration.class);
 			if (declaration != null)

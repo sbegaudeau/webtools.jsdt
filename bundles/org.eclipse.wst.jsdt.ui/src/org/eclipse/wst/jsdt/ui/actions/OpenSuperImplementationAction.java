@@ -13,13 +13,12 @@ package org.eclipse.wst.jsdt.ui.actions;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -69,24 +68,6 @@ public class OpenSuperImplementationAction extends SelectionDispatchAction {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.OPEN_SUPER_IMPLEMENTATION_ACTION);
 	}
 	
-	/**
-	 * Creates a new <code>OpenSuperImplementationAction</code>. The action requires
-	 * that the selection provided by the given selection provider is of type <code>
-	 * org.eclipse.jface.viewers.IStructuredSelection</code>.
-	 * 
-	 * @param site the site providing context information for this action
-	 * @param provider a special selection provider which is used instead 
-	 *  of the site's selection provider or <code>null</code> to use the site's
-	 *  selection provider
-	 * 
-	 * @since 3.2
-	 * @deprecated Use {@link #setSpecialSelectionProvider(ISelectionProvider)} instead. This API will be
-	 * removed after 3.2 M5.
-     */
-    public OpenSuperImplementationAction(IWorkbenchSite site, ISelectionProvider provider) {
-        this(site);
-        setSpecialSelectionProvider(provider);
-    }
     
 
 	

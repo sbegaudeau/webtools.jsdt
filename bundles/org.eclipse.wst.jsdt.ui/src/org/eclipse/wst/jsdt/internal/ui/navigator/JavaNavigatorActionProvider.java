@@ -17,7 +17,6 @@ import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage.GenerateBuildPathActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.CCPActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.GenerateActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
@@ -32,7 +31,6 @@ import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
  * hierarchy, call hierarchy, etc).</li>
  * <li>{@link CCPActionGroup}. Contributes the Cut/Copy/Paste/Delete.</li>
  * <li>{@link JavaSearchActionGroup}. Contributes the search functionality (find in workspace, project, etc).</li>
- * <li>{@link GenerateBuildPathActionGroup}. Contributes the "Build Path>" convenience submenu option.</li>
  * <li>{@link GenerateActionGroup}. Contributes the "Source>" and "Generate>" submenu .</li>
  * </ul>
  */

@@ -34,7 +34,6 @@ public abstract class VariableBinding extends Binding {
 		return this.constant;
 	}
 
-	public abstract AnnotationBinding[] getAnnotations();
 
 	public final boolean isBlankFinal(){
 		return (modifiers & ExtraCompilerModifiers.AccBlankFinal) != 0;

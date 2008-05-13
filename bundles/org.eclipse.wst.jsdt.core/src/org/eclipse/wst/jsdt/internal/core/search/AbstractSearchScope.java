@@ -15,43 +15,12 @@ import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 
 public abstract class AbstractSearchScope implements IJavaScriptSearchScope {
 
-/**
- * @see IJavaScriptSearchScope#includesBinaries()
- * @deprecated
- */
-public boolean includesBinaries() {
-	return true;
-}
-
-/**
- * @see IJavaScriptSearchScope#includesClasspaths()
- * @deprecated
- */
-public boolean includesClasspaths() {
-	return true;
-}
-
 /* (non-Javadoc)
  * Process the given delta and refresh its internal state if needed.
  * Returns whether the internal state was refreshed.
  */
 public abstract void processDelta(IJavaScriptElementDelta delta);
 
-/**
- * @see IJavaScriptSearchScope#setIncludesBinaries(boolean)
- * @deprecated
- */
-public void setIncludesBinaries(boolean includesBinaries) {
-	// implements interface method
-}
-
-/**
- * @see IJavaScriptSearchScope#setIncludesClasspaths(boolean)
- * @deprecated
- */
-public void setIncludesClasspaths(boolean includesClasspaths) {
-	// implements interface method
-}
 public boolean shouldExclude(String container, String resourceName) {
 	return false;
 }

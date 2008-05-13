@@ -779,10 +779,6 @@ JavaScriptUnit reconcile(int astLevel, int reconcileFlags, WorkingCopyOwner owne
  * </ul>
  */
 void restore() throws JavaScriptModelException;
-/**
- * @deprecated Use {@link #findFunctions(IFunction)} instead
- */
-IFunction[] findMethods(IFunction method);
 
 /**
  * Finds the function in this javaScript file that correspond to

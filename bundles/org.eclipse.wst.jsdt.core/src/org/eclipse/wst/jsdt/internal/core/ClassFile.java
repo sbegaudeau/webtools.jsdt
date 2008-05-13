@@ -15,31 +15,26 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
-import org.eclipse.wst.jsdt.core.ICompletionRequestor;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IParent;
@@ -50,9 +45,9 @@ import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptConventions;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
-import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -222,24 +217,6 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 //	((ClassFileInfo) info).readBinaryChildren(this, (HashMap) newElements, typeInfo);
 	return true;
 }
-/**
- * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, ICompletionRequestor)
- * @deprecated
- */
-public void codeComplete(int offset, ICompletionRequestor requestor) throws JavaScriptModelException {
-	codeComplete(offset, requestor, DefaultWorkingCopyOwner.PRIMARY);
-}
-/**
- * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, ICompletionRequestor, WorkingCopyOwner)
- * @deprecated
- */
-public void codeComplete(int offset, ICompletionRequestor requestor, WorkingCopyOwner owner) throws JavaScriptModelException {
-	if (requestor == null) {
-		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
-	}
-	codeComplete(offset, new org.eclipse.wst.jsdt.internal.codeassist.CompletionRequestorWrapper(requestor), owner);
-}
-
 /* (non-Javadoc)
  * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, org.eclipse.wst.jsdt.core.CompletionRequestor)
  */
@@ -350,32 +327,32 @@ public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaScriptMode
 
 public byte[] getBytes() throws JavaScriptModelException {
 	JavaElement pkg = (JavaElement) getParent();
-	if (pkg instanceof JarPackageFragment) {
-		JarPackageFragmentRoot root = (JarPackageFragmentRoot) pkg.getParent();
-		ZipFile zip = null;
-		try {
-			zip = root.getJar();
-			String entryName = Util.concatWith(((PackageFragment) pkg).names, getElementName(), '/');
-			ZipEntry ze = zip.getEntry(entryName);
-			if (ze != null) {
-				return org.eclipse.wst.jsdt.internal.compiler.util.Util.getZipEntryByteContent(ze, zip);
-			}
-			throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
-		} catch (IOException ioe) {
-			throw new JavaScriptModelException(ioe, IJavaScriptModelStatusConstants.IO_EXCEPTION);
-		} catch (CoreException e) {
-			if (e instanceof JavaScriptModelException) {
-				throw (JavaScriptModelException)e;
-			} else {
-				throw new JavaScriptModelException(e);
-			}
-		} finally {
-			JavaModelManager.getJavaModelManager().closeZipFile(zip);
-		}
-	} else {
+//	if (pkg instanceof JarPackageFragment) {
+//		JarPackageFragmentRoot root = (JarPackageFragmentRoot) pkg.getParent();
+//		ZipFile zip = null;
+//		try {
+//			zip = root.getJar();
+//			String entryName = Util.concatWith(((PackageFragment) pkg).names, getElementName(), '/');
+//			ZipEntry ze = zip.getEntry(entryName);
+//			if (ze != null) {
+//				return org.eclipse.wst.jsdt.internal.compiler.util.Util.getZipEntryByteContent(ze, zip);
+//			}
+//			throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
+//		} catch (IOException ioe) {
+//			throw new JavaScriptModelException(ioe, IJavaScriptModelStatusConstants.IO_EXCEPTION);
+//		} catch (CoreException e) {
+//			if (e instanceof JavaScriptModelException) {
+//				throw (JavaScriptModelException)e;
+//			} else {
+//				throw new JavaScriptModelException(e);
+//			}
+//		} finally {
+//			JavaModelManager.getJavaModelManager().closeZipFile(zip);
+//		}
+//	} else {
 		IFile file = (IFile) getResource();
 		return Util.getResourceContentsAsByteArray(file);
-	}
+//	}
 }
 public IBuffer getBuffer() throws JavaScriptModelException {
 	IStatus status = validateClassFile();
@@ -611,13 +588,6 @@ public IJavaScriptUnit getWorkingCopy(WorkingCopyOwner owner, IProgressMonitor m
 	return workingCopy;
 }
 /**
- * @see IClassFile
- * @deprecated
- */
-public IJavaScriptElement getWorkingCopy(IProgressMonitor monitor, org.eclipse.wst.jsdt.core.IBufferFactory factory) throws JavaScriptModelException {
-	return getWorkingCopy(BufferFactoryWrapper.create(factory), monitor);
-}
-/**
  * @see Openable
  */
 protected boolean hasBuffer() {
@@ -784,65 +754,6 @@ public static char[] translatedName(char[] name) {
 	return className;
 }
 
-/**
- * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, org.eclipse.wst.jsdt.core.ICodeCompletionRequestor)
- * @deprecated - should use codeComplete(int, ICompletionRequestor) instead
- */
-public void codeComplete(int offset, final org.eclipse.wst.jsdt.core.ICodeCompletionRequestor requestor) throws JavaScriptModelException {
-
-	if (requestor == null){
-		codeComplete(offset, (ICompletionRequestor)null);
-		return;
-	}
-	codeComplete(
-		offset,
-		new ICompletionRequestor(){
-			public void acceptAnonymousType(char[] superTypePackageName,char[] superTypeName, char[][] parameterPackageNames,char[][] parameterTypeNames,char[][] parameterNames,char[] completionName,int modifiers,int completionStart,int completionEnd, int relevance) {
-				// ignore
-			}
-			public void acceptClass(char[] packageName, char[] className, char[] completionName, int modifiers, int completionStart, int completionEnd, int relevance) {
-				requestor.acceptClass(packageName, className, completionName, modifiers, completionStart, completionEnd);
-			}
-			public void acceptError(IProblem error) {
-				// was disabled in 1.0
-			}
-			public void acceptField(char[] declaringTypePackageName, char[] declaringTypeName, char[] fieldName, char[] typePackageName, char[] typeName, char[] completionName, int modifiers, int completionStart, int completionEnd, int relevance) {
-				requestor.acceptField(declaringTypePackageName, declaringTypeName, fieldName, typePackageName, typeName, completionName, modifiers, completionStart, completionEnd);
-			}
-			public void acceptInterface(char[] packageName,char[] interfaceName,char[] completionName,int modifiers,int completionStart,int completionEnd, int relevance) {
-				requestor.acceptInterface(packageName, interfaceName, completionName, modifiers, completionStart, completionEnd);
-			}
-			public void acceptKeyword(char[] keywordName,int completionStart,int completionEnd, int relevance){
-				requestor.acceptKeyword(keywordName, completionStart, completionEnd);
-			}
-			public void acceptLabel(char[] labelName,int completionStart,int completionEnd, int relevance){
-				requestor.acceptLabel(labelName, completionStart, completionEnd);
-			}
-			public void acceptLocalVariable(char[] localVarName,char[] typePackageName,char[] typeName,int modifiers,int completionStart,int completionEnd, int relevance){
-				// ignore
-			}
-			public void acceptMethod(char[] declaringTypePackageName,char[] declaringTypeName,char[] selector,char[][] parameterPackageNames,char[][] parameterTypeNames,char[][] parameterNames,char[] returnTypePackageName,char[] returnTypeName,char[] completionName,int modifiers,int completionStart,int completionEnd, int relevance){
-				// skip parameter names
-				requestor.acceptMethod(declaringTypePackageName, declaringTypeName, selector, parameterPackageNames, parameterTypeNames, returnTypePackageName, returnTypeName, completionName, modifiers, completionStart, completionEnd);
-			}
-			public void acceptMethodDeclaration(char[] declaringTypePackageName,char[] declaringTypeName,char[] selector,char[][] parameterPackageNames,char[][] parameterTypeNames,char[][] parameterNames,char[] returnTypePackageName,char[] returnTypeName,char[] completionName,int modifiers,int completionStart,int completionEnd, int relevance){
-				// ignore
-			}
-			public void acceptModifier(char[] modifierName,int completionStart,int completionEnd, int relevance){
-				requestor.acceptModifier(modifierName, completionStart, completionEnd);
-			}
-			public void acceptPackage(char[] packageName,char[] completionName,int completionStart,int completionEnd, int relevance){
-				requestor.acceptPackage(packageName, completionName, completionStart, completionEnd);
-			}
-			public void acceptType(char[] packageName,char[] typeName,char[] completionName,int completionStart,int completionEnd, int relevance){
-				requestor.acceptType(packageName, typeName, completionName, completionStart, completionEnd);
-			}
-			public void acceptVariableName(char[] typePackageName,char[] typeName,char[] varName,char[] completionName,int completionStart,int completionEnd, int relevance){
-				// ignore
-			}
-		});
-}
-
 /*
  * @see IType#getField(String name)
  */
@@ -864,13 +775,6 @@ public IField[] getFields() throws JavaScriptModelException {
 		return array;
 	}
 }
-/**
- * @deprecated Use {@link #getFunction(String,String[])} instead
- */
-public IFunction getMethod(String selector, String[] parameterTypeSignatures) {
-	return getFunction(selector, parameterTypeSignatures);
-}
-
 public IFunction getFunction(String selector, String[] parameterTypeSignatures) {
 	return new SourceMethod(this, selector, parameterTypeSignatures);
 }

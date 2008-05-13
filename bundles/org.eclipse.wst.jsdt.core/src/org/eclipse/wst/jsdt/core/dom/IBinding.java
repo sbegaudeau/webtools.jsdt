@@ -71,48 +71,7 @@ public interface IBinding {
 	 */
 	public static final int METHOD = 4;
 
-	/**
-	 * Kind constant (value 5) indicating an annotation binding.
-	 * Bindings of this kind can be safely cast to <code>IAnnotationBinding</code>.
-	 *
-	 * @see #getKind()
-	 * @see IAnnotationBinding
-	 * @since 3.2
-	 */
-	public static final int ANNOTATION = 5;
 
-	/**
-	 * Kind constant (value 6) indicating a member value pair binding.
-	 * Bindings of this kind can be safely cast to <code>IMemberValuePairBinding</code>.
-	 *
-	 * @see #getKind()
-	 * @see IMemberValuePairBinding
-	 * @since 3.2
-	 */
-	public static final int MEMBER_VALUE_PAIR = 6;
-
-	/**
-	 * Return the resolved annotations associated with this binding.
-	 * <ul>
-	 * <li>Package bindings - these are annotations on a package declaration.
-	 * </li>
-	 * <li>Type bindings - these are annotations on a class, interface, enum,
-	 * or annotation type declaration. The result is the same regardless of
-	 * whether the type is parameterized.</li>
-	 * <li>Method bindings - these are annotations on a method or constructor
-	 * declaration. The result is the same regardless of whether the method is
-	 * parameterized.</li>
-	 * <li>Variable bindings - these are annotations on a field, enum constant,
-	 * or formal parameter declaration.</li>
-	 * <li>Annotation bindings - an empty array is always returned</li>
-	 * <li>Member value pair bindings - an empty array is always returned<li>
-	 * </ul>
-	 *
-	 * @return the list of resolved annotations, or the empty list if there are no
-	 * annotations associated with the object
-	 * @since 3.2
-	 */
-	public IAnnotationBinding[] getAnnotations();
 
 	/**
 	 * Returns the kind of bindings this is. That is one of the kind constants:

@@ -24,7 +24,6 @@ import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.Annotation;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
@@ -35,12 +34,13 @@ import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
@@ -48,9 +48,7 @@ import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
@@ -207,12 +205,6 @@ public class ASTResolving {
 				VariableDeclaration varDecl= (VariableDeclaration) initializerParent;
 				creationType= ASTNodes.getType(varDecl);
 				dim-= varDecl.getExtraDimensions();
-			} else if (initializerParent instanceof MemberValuePair) {
-				String name= ((MemberValuePair) initializerParent).getName().getIdentifier();
-				IFunctionBinding annotMember= findAnnotationMember((Annotation) initializerParent.getParent(), name);
-				if (annotMember != null) {
-					return getReducedDimensionBinding(annotMember.getReturnType(), dim);
-				}
 			}
 			if (creationType != null) {
 				while ((creationType instanceof ArrayType) && dim > 0) {
@@ -283,21 +275,6 @@ public class ASTResolving {
 				return parent.getAST().resolveWellKnownType("boolean"); //$NON-NLS-1$
 			}
 			return parent.getAST().resolveWellKnownType("java.lang.String"); //$NON-NLS-1$			
-		case ASTNode.SINGLE_MEMBER_ANNOTATION: {
-			IFunctionBinding annotMember= findAnnotationMember((Annotation) parent, "value"); //$NON-NLS-1$
-			if (annotMember != null) {
-				return annotMember.getReturnType();
-			}
-			break;
-		}
-		case ASTNode.MEMBER_VALUE_PAIR: {
-			String name= ((MemberValuePair) parent).getName().getIdentifier();
-			IFunctionBinding annotMember= findAnnotationMember((Annotation) parent.getParent(), name);
-			if (annotMember != null) {
-				return annotMember.getReturnType();
-			}
-			break;
-		}
 		default:
 			// do nothing
 		}
@@ -305,14 +282,6 @@ public class ASTResolving {
 		return null;
 	}
 	
-	private static IFunctionBinding findAnnotationMember(Annotation annotation, String name) {
-		ITypeBinding annotBinding= annotation.resolveTypeBinding();
-		if (annotBinding != null) {
-			return Bindings.findMethodInType(annotBinding, name, (String[]) null);
-		}
-		return null;
-	}
-
 	public static Type guessTypeForReference(AST ast, ASTNode node) {
 		ASTNode parent= node.getParent();
 		while (parent != null) {
@@ -741,9 +710,6 @@ public class ASTResolving {
 	
 	public static boolean isInsideModifiers(ASTNode node) {
 		while (node != null && !(node instanceof BodyDeclaration)) {
-			if (node instanceof Annotation) {
-				return true;
-			}
 			node= node.getParent();
 		}
 		return false;
@@ -850,18 +816,12 @@ public class ASTResolving {
 					kind= SimilarElementsRequestor.CLASSES;
 				}
 				break;
-			case ASTNode.ENUM_DECLARATION:
-				kind= SimilarElementsRequestor.INTERFACES;
-				break;
 			case ASTNode.FUNCTION_DECLARATION:
 				if (node.getLocationInParent() == FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY) {
 					kind= SimilarElementsRequestor.CLASSES;
 				} else if (node.getLocationInParent() == FunctionDeclaration.RETURN_TYPE2_PROPERTY) {
 					kind= SimilarElementsRequestor.ALL_TYPES | SimilarElementsRequestor.VOIDTYPE;
 				}
-				break;
-			case ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION:
-				kind= SimilarElementsRequestor.PRIMITIVETYPES | SimilarElementsRequestor.ANNOTATIONS | SimilarElementsRequestor.ENUMS;
 				break;
 			case ASTNode.INSTANCEOF_EXPRESSION:
 				kind= SimilarElementsRequestor.REF_TYPES;
@@ -884,11 +844,6 @@ public class ASTResolving {
 				break;
 			case ASTNode.TAG_ELEMENT:
 				kind= SimilarElementsRequestor.REF_TYPES;
-				break;
-			case ASTNode.MARKER_ANNOTATION:
-			case ASTNode.SINGLE_MEMBER_ANNOTATION:
-			case ASTNode.NORMAL_ANNOTATION:
-				kind= SimilarElementsRequestor.ANNOTATIONS;
 				break;
 			case ASTNode.TYPE_PARAMETER:
 				if (((TypeParameter) parent).typeBounds().indexOf(node) > 0) {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IArgument;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
@@ -74,8 +73,8 @@ public class Argument extends LocalDeclaration implements IArgument {
 			this.binding = new LocalVariableBinding(this, typeBinding, this.modifiers, true);
 		}
 		scope.addLocalVariable(	this.binding );
-		if (JavaScriptCore.IS_ECMASCRIPT4)
-			resolveAnnotations(scope, this.annotations, this.binding);
+//		if (JavaScriptCore.IS_ECMASCRIPT4)
+//			resolveAnnotations(scope, this.annotations, this.binding);
 		//true stand for argument instead of just local
 		this.binding.declaration = this;
 		this.binding.useFlag = used ? LocalVariableBinding.USED : LocalVariableBinding.UNUSED;
@@ -153,7 +152,7 @@ public class Argument extends LocalDeclaration implements IArgument {
 		}
 
 		this.binding = new LocalVariableBinding(this, exceptionType, modifiers, false); // argument decl, but local var  (where isArgument = false)
-		resolveAnnotations(scope, this.annotations, this.binding);
+//		resolveAnnotations(scope, this.annotations, this.binding);
 
 		scope.addLocalVariable(binding);
 		binding.setConstant(Constant.NotAConstant);

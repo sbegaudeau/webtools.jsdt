@@ -18,10 +18,10 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
@@ -70,7 +70,6 @@ class TypeBinding implements ITypeBinding {
 	private String key;
 	private BindingResolver resolver;
 	private IVariableBinding[] fields;
-	private IAnnotationBinding[] annotations;
 	private IFunctionBinding[] methods;
 	private ITypeBinding[] members;
 	private ITypeBinding[] interfaces;
@@ -92,29 +91,6 @@ class TypeBinding implements ITypeBinding {
 		return this.resolver.resolveArrayType(this, dimension);
 	}
 
-	public IAnnotationBinding[] getAnnotations() {
-		if (this.annotations != null) {
-			return this.annotations;
-		}
-		if (this.binding.isAnnotationType() || this.binding.isClass() || this.binding.isEnum() || this.binding.isInterface()) {
-			org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding refType =
-				(org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding) this.binding;
-			org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] internalAnnotations = refType.getAnnotations();
-			int length = internalAnnotations == null ? 0 : internalAnnotations.length;
-			if (length != 0) {
-				IAnnotationBinding[] domInstances = new IAnnotationBinding[length];
-				for (int i = 0; i < length; i++) {
-					final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(internalAnnotations[i]);
-					if (annotationInstance == null) {
-						return AnnotationBinding.NoAnnotations;
-					}
-					domInstances[i] = annotationInstance;
-				}
-				return this.annotations = domInstances;
-			}
-		}
-		return this.annotations = AnnotationBinding.NoAnnotations;
-	}
 
 	/*
 	 * @see ITypeBinding#getBinaryName()

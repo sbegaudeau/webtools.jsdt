@@ -164,16 +164,6 @@ public class DocumentContextFragment extends PackageFragment{
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#getCompilationUnit(java.lang.String)
 	 */
-	/**
-	 * @deprecated Use {@link #getJavaScriptUnit(String)} instead
-	 */
-	public IJavaScriptUnit getCompilationUnit(String cuName) {
-		return getJavaScriptUnit(cuName);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#getCompilationUnit(java.lang.String)
-	 */
 	public IJavaScriptUnit getJavaScriptUnit(String cuName) {
 		return  new CompilationUnit(this, cuName, DefaultWorkingCopyOwner.PRIMARY);
 	}

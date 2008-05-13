@@ -38,7 +38,6 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.Annotation;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
@@ -677,11 +676,6 @@ public class ModifierCorrectionSubProcessor {
 		FunctionDeclaration methodDecl= (FunctionDeclaration) selectedNode;
 		AST ast= methodDecl.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(ast);
-		if (is50OrHigher) {
-			Annotation annot= ast.newMarkerAnnotation();
-			annot.setTypeName(ast.newName("Deprecated")); //$NON-NLS-1$
-			rewrite.getListRewrite(methodDecl, methodDecl.getModifiersProperty()).insertFirst(annot, null);
-		}
 		JSdoc javadoc= methodDecl.getJavadoc();
 		if (javadoc != null || !is50OrHigher) {
 			if (!is50OrHigher) {
@@ -700,24 +694,24 @@ public class ModifierCorrectionSubProcessor {
 	}
 		
 	public static void removeOverrideAnnotationProposal(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-		IJavaScriptUnit cu= context.getCompilationUnit();
-
-		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
-		if (!(selectedNode instanceof FunctionDeclaration)) {
-			return;
-		}
-		FunctionDeclaration methodDecl= (FunctionDeclaration) selectedNode;
-		Annotation annot= findAnnotation("java.lang.Override", methodDecl.modifiers()); //$NON-NLS-1$
-		if (annot != null) {
-			ASTRewrite rewrite= ASTRewrite.create(annot.getAST());
-			rewrite.remove(annot, null);
-			String label= CorrectionMessages.ModifierCorrectionSubProcessor_remove_override;
-			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
-			ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, cu, rewrite, 6, image);
-			proposals.add(proposal);
-			
-			QuickAssistProcessor.getCreateInSuperClassProposals(context, methodDecl.getName(), proposals);
-		}
+//		IJavaScriptUnit cu= context.getCompilationUnit();
+//
+//		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
+//		if (!(selectedNode instanceof FunctionDeclaration)) {
+//			return;
+//		}
+//		FunctionDeclaration methodDecl= (FunctionDeclaration) selectedNode;
+//		Annotation annot= findAnnotation("java.lang.Override", methodDecl.modifiers()); //$NON-NLS-1$
+//		if (annot != null) {
+//			ASTRewrite rewrite= ASTRewrite.create(annot.getAST());
+//			rewrite.remove(annot, null);
+//			String label= CorrectionMessages.ModifierCorrectionSubProcessor_remove_override;
+//			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
+//			ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, cu, rewrite, 6, image);
+//			proposals.add(proposal);
+//			
+//			QuickAssistProcessor.getCreateInSuperClassProposals(context, methodDecl.getName(), proposals);
+//		}
 	}
 
 	private static final String KEY_MODIFIER= "modifier"; //$NON-NLS-1$
@@ -802,20 +796,6 @@ public class ModifierCorrectionSubProcessor {
 				ModifierKeyword keyword= modifier.getKeyword();
 				if (keyword == ModifierKeyword.PUBLIC_KEYWORD || keyword == ModifierKeyword.PROTECTED_KEYWORD || keyword == ModifierKeyword.PRIVATE_KEYWORD) {
 					return modifier;
-				}
-			}
-		}
-		return null;
-	}
-	
-	private static Annotation findAnnotation(String qualifiedTypeName, List modifiers) {
-		for (int i= 0; i < modifiers.size(); i++) {
-			Object curr= modifiers.get(i);
-			if (curr instanceof Annotation) {
-				Annotation annot= (Annotation) curr;
-				ITypeBinding binding= annot.getTypeName().resolveTypeBinding();
-				if (binding != null && qualifiedTypeName.equals(binding.getQualifiedName())) {
-					return annot;
 				}
 			}
 		}

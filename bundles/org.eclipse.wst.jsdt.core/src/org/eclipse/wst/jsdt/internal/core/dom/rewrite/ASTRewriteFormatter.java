@@ -313,11 +313,6 @@ import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 					suffix= ";"; //$NON-NLS-1$
 					code= CodeFormatter.K_STATEMENTS;
 					break;
-				case ASTNode.MEMBER_VALUE_PAIR:
-					prefix= "@Author("; //$NON-NLS-1$
-					suffix= ") class x {}"; //$NON-NLS-1$
-					code= CodeFormatter.K_JAVASCRIPT_UNIT;
-					break;
 				case ASTNode.MODIFIER:
 					suffix= " function x() {}"; //$NON-NLS-1$
 					code= CodeFormatter.K_JAVASCRIPT_UNIT;

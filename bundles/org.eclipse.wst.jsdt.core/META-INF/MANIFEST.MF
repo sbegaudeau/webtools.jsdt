@@ -43,7 +43,6 @@ Export-Package: org.eclipse.wst.jsdt.core,
  org.eclipse.wst.jsdt.internal.formatter;x-internal:=true,
  org.eclipse.wst.jsdt.internal.formatter.align;x-internal:=true,
  org.eclipse.wst.jsdt.internal.formatter.comment;x-internal:=true,
- org.eclipse.wst.jsdt.internal.formatter.old;x-internal:=true,
  org.eclipse.wst.jsdt.internal.oaametadata,
  org.eclipse.wst.jsdt.launching
 Bundle-Version: 1.0.0.qualifier

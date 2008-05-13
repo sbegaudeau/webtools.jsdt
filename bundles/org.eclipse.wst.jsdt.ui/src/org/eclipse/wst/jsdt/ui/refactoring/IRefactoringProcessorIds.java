@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.ui.refactoring;
 
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameCompilationUnitProcessor;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameEnumConstProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameFieldProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameJavaProjectProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameMethodProcessor;
@@ -160,17 +159,17 @@ public interface IRefactoringProcessorIds {
 	 */
 	public static String RENAME_FIELD_PROCESSOR= RenameFieldProcessor.IDENTIFIER;
 
-	/**
-	 * Processor ID of the rename enum constant processor
-	 * (value <code>"org.eclipse.wst.jsdt.ui.renameEnumConstProcessor"</code>).
-	 * 
-	 * The rename filed processor loads the following participants:
-	 * <ul>
-	 *   <li>participants registered for renaming <code>IField</code>.</li>
-	 * </ul>
-	 * @since 3.1
-	 */
-	public static String RENAME_ENUM_CONSTANT_PROCESSOR= RenameEnumConstProcessor.IDENTIFIER;
+//	/**
+//	 * Processor ID of the rename enum constant processor
+//	 * (value <code>"org.eclipse.wst.jsdt.ui.renameEnumConstProcessor"</code>).
+//	 * 
+//	 * The rename filed processor loads the following participants:
+//	 * <ul>
+//	 *   <li>participants registered for renaming <code>IField</code>.</li>
+//	 * </ul>
+//	 * @since 3.1
+//	 */
+//	public static String RENAME_ENUM_CONSTANT_PROCESSOR= RenameEnumConstProcessor.IDENTIFIER;
 
 	/**
 	 * Processor ID of the rename resource processor

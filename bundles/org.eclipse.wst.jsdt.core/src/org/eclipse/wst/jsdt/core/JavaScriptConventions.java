@@ -23,9 +23,8 @@ import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
-import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper; 
+import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
-import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
 import org.eclipse.wst.jsdt.internal.core.JavaModelStatus;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
@@ -50,35 +49,6 @@ public final class JavaScriptConventions {
 
 	private JavaScriptConventions() {
 		// Not instantiable
-	}
-
-	/**
-	 * Returns whether the given package fragment root paths are considered
-	 * to overlap.
-	 * <p>
-	 * Two root paths overlap if one is a prefix of the other, or they point to
-	 * the same location. 
-	 *
-	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
-	 *
-	 * @param rootPath1 the first root path
-	 * @param rootPath2 the second root path
-	 * @return true if the given package fragment root paths are considered to overlap, false otherwise
-	 * @deprecated Overlapping roots are allowed in 2.1
-	 */
-	public static boolean isOverlappingRoots(IPath rootPath1, IPath rootPath2) {
-		if (rootPath1 == null || rootPath2 == null) {
-			return false;
-		}
-		String extension1 = rootPath1.getFileExtension();
-		String extension2 = rootPath2.getFileExtension();
-		if (extension1 != null && (extension1.equalsIgnoreCase(SuffixConstants.EXTENSION_JAR) || extension1.equalsIgnoreCase(SuffixConstants.EXTENSION_ZIP))) {
-			return false;
-		}
-		if (extension2 != null && (extension2.equalsIgnoreCase(SuffixConstants.EXTENSION_JAR) || extension2.equalsIgnoreCase(SuffixConstants.EXTENSION_ZIP))) {
-			return false;
-		}
-		return rootPath1.isPrefixOf(rootPath2) || rootPath2.isPrefixOf(rootPath1);
 	}
 
 	/*
@@ -184,28 +154,6 @@ public final class JavaScriptConventions {
 //			return status;
 //		}
 		return JavaModelStatus.VERIFIED_OK;
-	}
-
-	/*
-	 * Validate the given .class file name.
-	 * <p>
-	 * A .class file name must obey the following rules:
-	 * <ul>
-	 * <li> it must not be null
-	 * <li> it must include the <code>".class"</code> suffix
-	 * <li> its prefix must be a valid identifier
-	 * <li> it must not contain any characters or substrings that are not valid
-	 *		   on the file system on which workspace root is located.
-	 * </ul>
-	 * </p>
-	 * @param name the name of a .class file
-	 * @return a status object with code <code>IStatus.OK</code> if
-	 *		the given name is valid as a .class file name, otherwise a status
-	 *		object indicating what is wrong with the name
-	 * @deprecated Use {@link #validateClassFileName(String id, String sourceLevel, String complianceLevel)} instead
-	 */
-	public static IStatus validateClassFileName(String name) {
-		return validateClassFileName(name, CompilerOptions.VERSION_1_3, CompilerOptions.VERSION_1_3);
 	}
 
 	/*
@@ -327,23 +275,6 @@ public final class JavaScriptConventions {
 	}
 
 	/**
-	 * Validate the given import declaration name.
-	 * <p>
-	 * The name of an import corresponds to a fully qualified type name
-	 *
-	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
-	 *
-	 * @param name the import declaration
-	 * @return a status object with code <code>IStatus.OK</code> if
-	 *		the given name is valid as an import declaration, otherwise a status
-	 *		object indicating what is wrong with the name
-	 * @deprecated Use {@link #validateImportDeclaration(String id, String sourceLevel, String complianceLevel)} instead
-	 */
-	public static IStatus validateImportDeclaration(String name) {
-		return validateImportDeclaration(name,CompilerOptions.VERSION_1_3,CompilerOptions.VERSION_1_3);
-	}
-
-	/**
 	 * Validate the given import declaration name for the given source and compliance levels.
 	 * <p>
 	 * The name of an import corresponds to a fully qualified type name.
@@ -452,41 +383,11 @@ public final class JavaScriptConventions {
 	 *		the given name is valid as a method name, otherwise a status
 	 *		object indicating what is wrong with the name
 	 * @deprecated Use {@link #validateFunctionName(String id, String sourceLevel, String complianceLevel)} instead
-	 * @deprecated Use {@link #validateFunctionName(String)} instead
-	 */
-	public static IStatus validateMethodName(String name) {
-		return validateFunctionName(name);
-	}
-
-	/**
-	 * Validate the given function name.
-	 * <p>
-	 *
-	 * @param name the name of a method
-	 * @return a status object with code <code>IStatus.OK</code> if
-	 *		the given name is valid as a method name, otherwise a status
-	 *		object indicating what is wrong with the name
-	 * @deprecated Use {@link #validateFunctionName(String id, String sourceLevel, String complianceLevel)} instead
 	 */
 	public static IStatus validateFunctionName(String name) {
 		return validateFunctionName(name, CompilerOptions.VERSION_1_3,CompilerOptions.VERSION_1_3);
 	}
 
-	/**
-	 * Validate the given function name for the given source and compliance levels.
-	 * <p>
-	 *
-	 * @param name the name of a method
-	 * @param sourceLevel the source level
-	 * @param complianceLevel the compliance level
-	 * @return a status object with code <code>IStatus.OK</code> if
-	 *		the given name is valid as a method name, otherwise a status
-	 *		object indicating what is wrong with the name
-	 * @deprecated Use {@link #validateFunctionName(String,String,String)} instead
-	 */
-	public static IStatus validateMethodName(String name, String sourceLevel, String complianceLevel) {
-		return validateFunctionName(name, sourceLevel, complianceLevel);
-	}
 
 	/**
 	 * Validate the given function name for the given source and compliance levels.

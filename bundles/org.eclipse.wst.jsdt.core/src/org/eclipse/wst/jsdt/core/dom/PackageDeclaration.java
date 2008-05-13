@@ -47,13 +47,6 @@ public class PackageDeclaration extends ASTNode {
 		new ChildPropertyDescriptor(PackageDeclaration.class, "javadoc", JSdoc.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * The "annotations" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
-	 */
-	public static final ChildListPropertyDescriptor ANNOTATIONS_PROPERTY =
-		new ChildListPropertyDescriptor(PackageDeclaration.class, "annotations", Annotation.class, CYCLE_RISK); //$NON-NLS-1$
-
-	/**
 	 * The "name" structural property of this node type.
 	 * @since 3.0
 	 */
@@ -85,7 +78,6 @@ public class PackageDeclaration extends ASTNode {
 		propertyList = new ArrayList(4);
 		createPropertyList(PackageDeclaration.class, propertyList);
 		addProperty(JAVADOC_PROPERTY, propertyList);
-		addProperty(ANNOTATIONS_PROPERTY, propertyList);
 		addProperty(NAME_PROPERTY, propertyList);
 		PROPERTY_DESCRIPTORS_3_0 = reapPropertyList(propertyList);
 	}
@@ -144,9 +136,6 @@ public class PackageDeclaration extends ASTNode {
 	 */
 	PackageDeclaration(AST ast) {
 		super(ast);
-		if (ast.apiLevel >= AST.JLS3) {
-			this.annotations = new ASTNode.NodeList(ANNOTATIONS_PROPERTY);
-		}
 	}
 
 	/* (omit javadoc for this method)
@@ -184,9 +173,6 @@ public class PackageDeclaration extends ASTNode {
 	 * Method declared on ASTNode.
 	 */
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
-		if (property == ANNOTATIONS_PROPERTY) {
-			return annotations();
-		}
 		// allow default implementation to flag the error
 		return super.internalGetChildListProperty(property);
 	}

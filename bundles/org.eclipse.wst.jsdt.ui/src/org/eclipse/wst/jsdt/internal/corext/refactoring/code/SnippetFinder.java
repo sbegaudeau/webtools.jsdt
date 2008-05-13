@@ -20,14 +20,12 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.dom.ASTMatcher;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
@@ -174,28 +172,6 @@ import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 	}
 	
 	public void endVisit(TypeDeclaration node) {
-		--fTypes;
-		super.endVisit(node);
-	}
-	
-	public boolean visit(EnumDeclaration node) {
-		if (++fTypes > 1)
-			return false;
-		return super.visit(node);
-	}
-	
-	public void endVisit(EnumDeclaration node) {
-		--fTypes;
-		super.endVisit(node);
-	}
-	
-	public boolean visit(AnnotationTypeDeclaration node) {
-		if (++fTypes > 1)
-			return false;
-		return super.visit(node);
-	}
-	
-	public void endVisit(AnnotationTypeDeclaration node) {
 		--fTypes;
 		super.endVisit(node);
 	}

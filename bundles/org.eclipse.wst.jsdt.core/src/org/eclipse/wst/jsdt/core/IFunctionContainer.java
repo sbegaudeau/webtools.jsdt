@@ -64,24 +64,6 @@ IField[] getFields() throws JavaScriptModelException;
  * @param name the given name
  * @param parameterTypeSignatures the given parameter types
  * @return the method with the specified name and parameter types in this type
- * @deprecated Use {@link #getFunction(String,String[])} instead
- */
-IFunction getMethod(String name, String[] parameterTypeSignatures);
-/**
- * Returns the method with the specified name and parameter types
- * in this type (for example, <code>"foo", {"I", "QString;"}</code>).
- * To get the handle for a constructor, the name specified must be the
- * simple name of the enclosing type.
- * This is a handle-only method.  The method may or may not be present.
- * <p>
- * The type signatures may be either unresolved (for source types)
- * or resolved (for binary types), and either basic (for basic types)
- * or rich (for parameterized types). See {@link Signature} for details.
- * </p>
- *
- * @param name the given name
- * @param parameterTypeSignatures the given parameter types
- * @return the method with the specified name and parameter types in this type
  */
 IFunction getFunction(String name, String[] parameterTypeSignatures);
 

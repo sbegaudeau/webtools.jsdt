@@ -92,46 +92,5 @@ public boolean encloses(IJavaScriptElement element);
  * @return an array of paths to the enclosing projects and JARS.
  */
 IPath[] enclosingProjectsAndJars();
-/**
- * Returns whether this scope contains any <code>.class</code> files (either
- * in folders or within JARs).
- *
- * @return whether this scope contains any <code>.class</code> files
- * @deprecated Use
- * {@link org.eclipse.wst.jsdt.core.search.SearchEngine#createJavaSearchScope(IJavaScriptElement[])}
- * with the package fragment roots that correspond to the binaries instead.
- */
-boolean includesBinaries();
-/**
- * Returns whether this scope includes classpaths defined by
- * the projects of the resources of this search scope.
- *
- * @return whether this scope includes classpaths
- * @deprecated Use
- * {@link org.eclipse.wst.jsdt.core.search.SearchEngine#createJavaSearchScope(IJavaScriptElement[])}
- * with a Java project instead.
- */
-boolean includesClasspaths();
-/**
- * Sets whether this scope contains any <code>.class</code> files (either
- * in folders or within JARs).
- *
- * @param includesBinaries whether this scope contains any <code>.class</code> files
- * @deprecated Use
- * {@link org.eclipse.wst.jsdt.core.search.SearchEngine#createJavaSearchScope(IJavaScriptElement[])}
- * with the package fragment roots that correspond to the binaries instead.
- */
-public void setIncludesBinaries(boolean includesBinaries);
-/**
- * Sets whether this scope includes the classpaths defined by
- * the projects of the resources of this search scope.
- *
- * @param includesClasspaths whether this scope includes classpaths
- * @deprecated Use
- * {@link org.eclipse.wst.jsdt.core.search.SearchEngine#createJavaSearchScope(IJavaScriptElement[])}
- * with a Java project instead.
- */
-public void setIncludesClasspaths(boolean includesClasspaths);
-
 public boolean shouldExclude(String container, String resourceName);
 }

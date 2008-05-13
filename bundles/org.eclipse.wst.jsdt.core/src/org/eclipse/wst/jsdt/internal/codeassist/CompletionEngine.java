@@ -20,8 +20,8 @@ import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IAccessRule;
-import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
@@ -50,9 +50,7 @@ import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnJavadocTag;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnJavadocTypeParamReference;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnKeyword;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnLocalName;
-import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMarkerAnnotationName;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMemberAccess;
-import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMemberValueName;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMessageSend;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMessageSendName;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMethodName;
@@ -79,7 +77,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
@@ -1996,85 +1993,85 @@ public final class CompletionEngine
 					false,
 					typesFound);
 			}
-		} else if (astNode instanceof CompletionOnMarkerAnnotationName) {
-			CompletionOnMarkerAnnotationName annot = (CompletionOnMarkerAnnotationName) astNode;
-			CompletionOnAnnotationOfType fakeType = (CompletionOnAnnotationOfType)scope.parent.referenceContext();
-			if (fakeType.annotations[0] == annot) {
-				// When the completion is inside a method body the annotation cannot be accuratly attached to the correct node by completion recovery.
-				// So 'targetedElement' is not computed in this case.
-				if (scope.parent.parent == null || !(scope.parent.parent instanceof MethodScope)) {
-					this.targetedElement = computeTargetedElement(fakeType);
-				}
-
-			}
-			this.assistNodeIsAnnotation = true;
-			if (annot.type instanceof CompletionOnSingleTypeReference) {
-				CompletionOnSingleTypeReference type = (CompletionOnSingleTypeReference) annot.type;
-				this.completionToken = type.token;
-				setSourceRange(type.sourceStart, type.sourceEnd);
-
-				findTypesAndPackages(this.completionToken, scope, new ObjectVector());
-			} else if (annot.type instanceof CompletionOnQualifiedTypeReference) {
-				this.insideQualifiedReference = true;
-
-				CompletionOnQualifiedTypeReference type = (CompletionOnQualifiedTypeReference) annot.type;
-				this.completionToken = type.completionIdentifier;
-				long completionPosition = type.sourcePositions[type.tokens.length];
-				if (qualifiedBinding instanceof PackageBinding) {
-
-					setSourceRange(astNode.sourceStart, (int) completionPosition);
-					// replace to the end of the completion identifier
-					findTypesAndSubpackages(this.completionToken, (PackageBinding) qualifiedBinding, scope);
-				} else {
-					setSourceRange((int) (completionPosition >>> 32), (int) completionPosition);
-
-					findMemberTypes(
-						this.completionToken,
-						(ReferenceBinding) qualifiedBinding,
-						scope,
-						scope.enclosingSourceType(),
-						false,
-						false,
-						new ObjectVector());
-				}
-			}
-		} else if (astNode instanceof CompletionOnMemberValueName) {
-			CompletionOnMemberValueName memberValuePair = (CompletionOnMemberValueName) astNode;
-			Annotation annotation = (Annotation) astNodeParent;
-
-			this.completionToken = memberValuePair.name;
-
-			ReferenceBinding annotationType = (ReferenceBinding)annotation.resolvedType;
-
-			if (annotationType != null && annotationType.isAnnotationType()) {
-				if (!this.requestor.isIgnored(CompletionProposal.ANNOTATION_ATTRIBUTE_REF)) {
-					this.findAnnotationAttributes(this.completionToken, annotation.memberValuePairs(), annotationType);
-				}
-				if (this.assistNodeCanBeSingleMemberAnnotation) {
-					if (this.expectedTypesPtr > -1 && this.expectedTypes[0].isAnnotationType()) {
-						findTypesAndPackages(this.completionToken, scope, new ObjectVector());
-					} else {
-						if (scope instanceof BlockScope && !this.requestor.isIgnored(CompletionProposal.LOCAL_VARIABLE_REF)) {
-							char[][] alreadyDefinedName = computeAlreadyDefinedName((BlockScope)scope, FakeInvocationSite);
-
-							findUnresolvedReference(
-									memberValuePair.sourceStart,
-									memberValuePair.sourceEnd,
-									(BlockScope)scope,
-									alreadyDefinedName);
-						}
-						findVariablesAndMethods(
-							this.completionToken,
-							scope,
-							FakeInvocationSite,
-							scope,
-							insideTypeAnnotation,
-							true);
-						// can be the start of a qualified type name
-						findTypesAndPackages(this.completionToken, scope, new ObjectVector());
-					}
-				}
-			}
+//		} else if (astNode instanceof CompletionOnMarkerAnnotationName) {
+//			CompletionOnMarkerAnnotationName annot = (CompletionOnMarkerAnnotationName) astNode;
+//			CompletionOnAnnotationOfType fakeType = (CompletionOnAnnotationOfType)scope.parent.referenceContext();
+//			if (fakeType.annotations[0] == annot) {
+//				// When the completion is inside a method body the annotation cannot be accuratly attached to the correct node by completion recovery.
+//				// So 'targetedElement' is not computed in this case.
+//				if (scope.parent.parent == null || !(scope.parent.parent instanceof MethodScope)) {
+//					this.targetedElement = computeTargetedElement(fakeType);
+//				}
+//
+//			}
+//			this.assistNodeIsAnnotation = true;
+//			if (annot.type instanceof CompletionOnSingleTypeReference) {
+//				CompletionOnSingleTypeReference type = (CompletionOnSingleTypeReference) annot.type;
+//				this.completionToken = type.token;
+//				setSourceRange(type.sourceStart, type.sourceEnd);
+//
+//				findTypesAndPackages(this.completionToken, scope, new ObjectVector());
+//			} else if (annot.type instanceof CompletionOnQualifiedTypeReference) {
+//				this.insideQualifiedReference = true;
+//
+//				CompletionOnQualifiedTypeReference type = (CompletionOnQualifiedTypeReference) annot.type;
+//				this.completionToken = type.completionIdentifier;
+//				long completionPosition = type.sourcePositions[type.tokens.length];
+//				if (qualifiedBinding instanceof PackageBinding) {
+//
+//					setSourceRange(astNode.sourceStart, (int) completionPosition);
+//					// replace to the end of the completion identifier
+//					findTypesAndSubpackages(this.completionToken, (PackageBinding) qualifiedBinding, scope);
+//				} else {
+//					setSourceRange((int) (completionPosition >>> 32), (int) completionPosition);
+//
+//					findMemberTypes(
+//						this.completionToken,
+//						(ReferenceBinding) qualifiedBinding,
+//						scope,
+//						scope.enclosingSourceType(),
+//						false,
+//						false,
+//						new ObjectVector());
+//				}
+//			}
+//		} else if (astNode instanceof CompletionOnMemberValueName) {
+//			CompletionOnMemberValueName memberValuePair = (CompletionOnMemberValueName) astNode;
+//			Annotation annotation = (Annotation) astNodeParent;
+//
+//			this.completionToken = memberValuePair.name;
+//
+//			ReferenceBinding annotationType = (ReferenceBinding)annotation.resolvedType;
+//
+//			if (annotationType != null && annotationType.isAnnotationType()) {
+//				if (!this.requestor.isIgnored(CompletionProposal.ANNOTATION_ATTRIBUTE_REF)) {
+//					this.findAnnotationAttributes(this.completionToken, annotation.memberValuePairs(), annotationType);
+//				}
+//				if (this.assistNodeCanBeSingleMemberAnnotation) {
+//					if (this.expectedTypesPtr > -1 && this.expectedTypes[0].isAnnotationType()) {
+//						findTypesAndPackages(this.completionToken, scope, new ObjectVector());
+//					} else {
+//						if (scope instanceof BlockScope && !this.requestor.isIgnored(CompletionProposal.LOCAL_VARIABLE_REF)) {
+//							char[][] alreadyDefinedName = computeAlreadyDefinedName((BlockScope)scope, FakeInvocationSite);
+//
+//							findUnresolvedReference(
+//									memberValuePair.sourceStart,
+//									memberValuePair.sourceEnd,
+//									(BlockScope)scope,
+//									alreadyDefinedName);
+//						}
+//						findVariablesAndMethods(
+//							this.completionToken,
+//							scope,
+//							FakeInvocationSite,
+//							scope,
+//							insideTypeAnnotation,
+//							true);
+//						// can be the start of a qualified type name
+//						findTypesAndPackages(this.completionToken, scope, new ObjectVector());
+//					}
+//				}
+//			}
 		} else if(astNode instanceof CompletionOnBrankStatementLabel) {
 			if (!this.requestor.isIgnored(CompletionProposal.LABEL_REF)) {
 				CompletionOnBrankStatementLabel label = (CompletionOnBrankStatementLabel) astNode;

@@ -477,8 +477,8 @@ private void rebuildIndex(IPath indexLocation, IPath containerPath) {
 			request = new IndexAllProject(p, this);
 	} else if (target instanceof IFolder) {
 		request = new IndexBinaryFolder((IFolder) target, this);
-	} else if (target instanceof IFile) {
-		request = new AddJarFileToIndex((IFile) target, this);
+//	} else if (target instanceof IFile) {
+//		request = new AddJarFileToIndex((IFile) target, this);
 	} else if (target instanceof File) {
 		request = new AddLibraryFileToIndex(containerPath, this);
 //		request = new AddJarFileToIndex(containerPath, this);

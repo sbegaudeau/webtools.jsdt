@@ -19,7 +19,6 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
-import org.eclipse.wst.jsdt.internal.core.JarPackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot;
@@ -52,7 +51,7 @@ public static boolean canSeeFocus(IJavaScriptElement focus, boolean isPolymorphi
 	try {
 		IIncludePathEntry[] focusEntries = null;
 		if (isPolymorphicSearch) {
-			JavaProject focusProject = focus instanceof JarPackageFragmentRoot ? (JavaProject) focus.getParent() : (JavaProject) focus;
+			JavaProject focusProject = (JavaProject) focus;
 			focusEntries = focusProject.getExpandedClasspath();
 		}
 		IJavaScriptModel model = focus.getJavaScriptModel();

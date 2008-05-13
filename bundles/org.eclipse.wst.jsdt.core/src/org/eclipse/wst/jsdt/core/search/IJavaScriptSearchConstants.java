@@ -190,44 +190,6 @@ public interface IJavaScriptSearchConstants {
 	/* Syntactic match modes */
 
 	/**
-	 * The search pattern matches exactly the search result,
-	 * that is, the source of the search result equals the search pattern.
-	 * @deprecated Use {@link SearchPattern#R_EXACT_MATCH} instead.
-	 */
-	int EXACT_MATCH = 0;
-	/**
-	 * The search pattern is a prefix of the search result.
-	 * @deprecated Use {@link SearchPattern#R_PREFIX_MATCH} instead.
-	 */
-	int PREFIX_MATCH = 1;
-	/**
-	 * The search pattern contains one or more wild cards ('*') where a
-	 * wild-card can replace 0 or more characters in the search result.
-	 * @deprecated Use {@link SearchPattern#R_PATTERN_MATCH} instead.
-	 */
-	int PATTERN_MATCH = 2;
-
-
-	/* Case sensitivity */
-
-	/**
-	 * The search pattern matches the search result only
-	 * if cases are the same.
-	 * @deprecated Use the methods that take the matchMode
-	 *   with {@link SearchPattern#R_CASE_SENSITIVE} as a matchRule instead.
-	 */
-	boolean CASE_SENSITIVE = true;
-	/**
-	 * The search pattern ignores cases in the search result.
-	 * @deprecated Use the methods that take the matchMode
-	 *   without {@link SearchPattern#R_CASE_SENSITIVE} as a matchRule instead.
-	 */
-	boolean CASE_INSENSITIVE = false;
-
-
-	/* Waiting policies */
-
-	/**
 	 * The search operation starts immediately, even if the underlying indexer
 	 * has not finished indexing the workspace. Results will more likely
 	 * not contain all the matches.

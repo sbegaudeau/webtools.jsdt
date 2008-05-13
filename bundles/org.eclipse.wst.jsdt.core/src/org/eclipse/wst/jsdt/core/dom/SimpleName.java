@@ -259,20 +259,8 @@ public class SimpleName extends Name {
 		if (parent instanceof VariableDeclarationFragment) {
 			return (d == VariableDeclarationFragment.NAME_PROPERTY);
 		}
-		if (parent instanceof EnumDeclaration) {
-			return (d == EnumDeclaration.NAME_PROPERTY);
-		}
-		if (parent instanceof EnumConstantDeclaration) {
-			return (d == EnumConstantDeclaration.NAME_PROPERTY);
-		}
 		if (parent instanceof TypeParameter) {
 			return (d == TypeParameter.NAME_PROPERTY);
-		}
-		if (parent instanceof AnnotationTypeDeclaration) {
-			return (d == AnnotationTypeDeclaration.NAME_PROPERTY);
-		}
-		if (parent instanceof AnnotationTypeMemberDeclaration) {
-			return (d == AnnotationTypeMemberDeclaration.NAME_PROPERTY);
 		}
 		return false;
 	}

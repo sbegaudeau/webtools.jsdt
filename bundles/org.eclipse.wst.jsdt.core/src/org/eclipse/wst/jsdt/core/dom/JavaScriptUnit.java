@@ -747,33 +747,6 @@ public class JavaScriptUnit extends ASTNode {
 	 * through the end of the source string and has no line delimiter.
 	 * For example, the source string <code>class A\n{\n}</code> has 3 lines
 	 * corresponding to inclusive character ranges [0,7], [8,9], and [10,10].
-	 * Returns 1 for a character position that does not correspond to any
-	 * source line, or if no line number information is available for this
-	 * compilation unit.
-	 *
-	 * @param position a 0-based character position, possibly
-	 *   negative or out of range
-	 * @return the 1-based line number, or <code>1</code> if the character
-	 *    position does not correspond to a source line in the original
-	 *    source file or if line number information is not known for this
-	 *    compilation unit
-	 * @deprecated Use getLineNumber(int) instead. Be careful to handle the negative values.
-	 * @see ASTParser
-	 * @see #getLineNumber(int)
-	 */
-	public int lineNumber(int position) {
-		int lineNumber = getLineNumber(position);
-		return lineNumber < 1 ? 1 : lineNumber;
-	}
-
-	/**
-	 * Returns the line number corresponding to the given source character
-	 * position in the original source string. The initial line of the
-	 * compilation unit is numbered 1, and each line extends through the
-	 * last character of the end-of-line delimiter. The very last line extends
-	 * through the end of the source string and has no line delimiter.
-	 * For example, the source string <code>class A\n{\n}</code> has 3 lines
-	 * corresponding to inclusive character ranges [0,7], [8,9], and [10,10].
 	 * Returns -1 for a character position that does not correspond to any
 	 * source line, or -2 if no line number information is available for this
 	 * compilation unit.

@@ -140,12 +140,12 @@ public abstract class AbstractMethodDeclaration
 			for (int i = 0, length = this.arguments.length; i < length; i++) {
 				IArgument argument = this.arguments[i];
 				argument.bind(this.scope, this.binding.parameters[i], used);
-				if (argument.getAnnotation() != null) {
-					this.binding.tagBits |= TagBits.HasParameterAnnotations;
-					if (paramAnnotations == null)
-						paramAnnotations = new AnnotationBinding[length][];
-					paramAnnotations[i] = argument.getBinding().getAnnotations();
-				}
+//				if (argument.getAnnotation() != null) {
+//					this.binding.tagBits |= TagBits.HasParameterAnnotations;
+//					if (paramAnnotations == null)
+//						paramAnnotations = new AnnotationBinding[length][];
+//					paramAnnotations[i] = argument.getBinding().getAnnotations();
+//				}
 			}
 			if (paramAnnotations != null)
 				this.binding.setParameterAnnotations(paramAnnotations);
@@ -376,8 +376,8 @@ public abstract class AbstractMethodDeclaration
 			if (JavaScriptCore.IS_ECMASCRIPT4)
 				bindThrownExceptions();
 			resolveJavadoc();
-			if (JavaScriptCore.IS_ECMASCRIPT4)
-				resolveAnnotations(scope, this.annotations, this.binding);
+//			if (JavaScriptCore.IS_ECMASCRIPT4)
+//				resolveAnnotations(scope, this.annotations, this.binding);
 			resolveStatements();
 			// check @Deprecated annotation presence
 			if (this.binding != null

@@ -1243,15 +1243,6 @@ public class ClasspathEntry implements IIncludePathEntry {
 	}
 
 	/**
-	 * @see IIncludePathEntry
-	 * @deprecated
-	 */
-	public IIncludePathEntry getResolvedEntry() {
-
-		return JavaScriptCore.getResolvedIncludepathEntry(this);
-	}
-
-	/**
 	 * Validate a given classpath and output location for a project, using the following rules:
 	 * <ul>
 	 *   <li> Classpath entries cannot collide with each other; that is, all entry paths must be unique.

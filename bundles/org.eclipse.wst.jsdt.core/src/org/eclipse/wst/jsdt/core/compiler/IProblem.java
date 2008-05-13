@@ -588,17 +588,6 @@ void setSourceStart(int sourceStart);
 	int IllegalModifierCombinationFinalVolatileForField = FieldRelated + 345;
 	int UnexpectedStaticModifierForField = FieldRelated + 346;
 
-	/** @deprecated - problem is no longer generated, use {@link #UndefinedType} instead */
-	int FieldTypeNotFound =  FieldRelated + 349 + ProblemReasons.NotFound; // FieldRelated + 350
-	/** @deprecated - problem is no longer generated, use {@link #NotVisibleType} instead */
-	int FieldTypeNotVisible =  FieldRelated + 349 + ProblemReasons.NotVisible; // FieldRelated + 351
-	/** @deprecated - problem is no longer generated, use {@link #AmbiguousType} instead */
-	int FieldTypeAmbiguous =  FieldRelated + 349 + ProblemReasons.Ambiguous; // FieldRelated + 352
-	/** @deprecated - problem is no longer generated, use {@link #InternalTypeNameProvided} instead */
-	int FieldTypeInternalNameProvided =  FieldRelated + 349 + ProblemReasons.InternalNameProvided; // FieldRelated + 353
-	/** @deprecated - problem is no longer generated, use {@link #InheritedTypeHidesEnclosingName} instead */
-	int FieldTypeInheritedNameHidesEnclosingName =  FieldRelated + 349 + ProblemReasons.InheritedNameHidesEnclosingName; // FieldRelated + 354
-
 	// method related problems
 	int DuplicateMethod = MethodRelated + 355;
 	int IllegalModifierForArgument = MethodRelated + 356;

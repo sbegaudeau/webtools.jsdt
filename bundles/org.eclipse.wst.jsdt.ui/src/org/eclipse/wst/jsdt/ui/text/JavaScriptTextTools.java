@@ -17,7 +17,6 @@ import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
-import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.wst.jsdt.internal.ui.text.FastJavaPartitionScanner;
@@ -215,62 +214,6 @@ public class JavaScriptTextTools {
 	}
 
 	/**
-	 * Returns a scanner which is configured to scan Java source code.
-	 *
-	 * @return a Java source code scanner
-	 * @deprecated As of 3.0, replaced by {@link JavaScriptSourceViewerConfiguration#getCodeScanner()}
-	 */
-	public RuleBasedScanner getCodeScanner() {
-		return fCodeScanner;
-	}
-
-	/**
-	 * Returns a scanner which is configured to scan Java multi-line comments.
-	 *
-	 * @return a Java multi-line comment scanner
-	 * @since 2.0
-	 * @deprecated As of 3.0, replaced by {@link JavaScriptSourceViewerConfiguration#getMultilineCommentScanner()}
-	 */
-	public RuleBasedScanner getMultilineCommentScanner() {
-		return fMultilineCommentScanner;
-	}
-
-	/**
-	 * Returns a scanner which is configured to scan Java single-line comments.
-	 *
-	 * @return a Java single-line comment scanner
-	 * @since 2.0
-	 * @deprecated As of 3.0, replaced by {@link JavaScriptSourceViewerConfiguration#getSinglelineCommentScanner()}
-	 */
-	public RuleBasedScanner getSinglelineCommentScanner() {
-		return fSinglelineCommentScanner;
-	}
-
-	/**
-	 * Returns a scanner which is configured to scan Java strings.
-	 *
-	 * @return a Java string scanner
-	 * @since 2.0
-	 * @deprecated As of 3.0, replaced by {@link JavaScriptSourceViewerConfiguration#getStringScanner()}
-	 */
-	public RuleBasedScanner getStringScanner() {
-		return fStringScanner;
-	}
-
-	/**
-	 * Returns a scanner which is configured to scan JavaDoc compliant comments.
-	 * <p>
-	 * Note that the start sequence "/**" and the corresponding end sequence
-	 * are part of the Javadoc comment.</p>
-	 *
-	 * @return a Javadoc scanner
-	 * @deprecated As of 3.0, replaced by {@link JavaScriptSourceViewerConfiguration#getJavaDocScanner()}
-	 */
-	public RuleBasedScanner getJavaDocScanner() {
-		return fJavaDocScanner;
-	}
-
-	/**
 	 * Returns a scanner which is configured to scan
 	 * Java-specific partitions, which are multi-line comments,
 	 * Javadoc comments, and regular Java source code.
@@ -290,37 +233,6 @@ public class JavaScriptTextTools {
 	 */
 	public IDocumentPartitioner createDocumentPartitioner() {
 		return new FastPartitioner(getPartitionScanner(), LEGAL_CONTENT_TYPES);
-	}
-
-	/**
-	 * Returns the names of the document position categories used by the document
-	 * partitioners created by this object to manage their partition information.
-	 * <p>
-	 * If the partitioners don't use document position categories, the returned
-	 * result is <code>null</code>.</p>
-	 *
-	 * @return the partition managing position categories or <code>null</code> if there is none
-	 * @deprecated As of 3.0, replaced by {@link org.eclipse.jface.text.TextUtilities#computePartitionManagingCategories(IDocument)}
-	 */
-	public String[] getPartitionManagingPositionCategories() {
-		return new String[] { org.eclipse.jface.text.rules.DefaultPartitioner.CONTENT_TYPES_CATEGORY };
-	}
-
-	/**
-	 * Determines whether the preference change encoded by the given event
-	 * changes the behavior of one its contained components.
-	 *
-	 * @param event the event to be investigated
-	 * @return <code>true</code> if event causes a behavioral change
-	 * @since 2.0
-	 * @deprecated As of 3.0, replaced by {@link org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration#affectsTextPresentation(PropertyChangeEvent)}
-	 */
-	public boolean affectsBehavior(PropertyChangeEvent event) {
-		return  fCodeScanner.affectsBehavior(event) ||
-					fMultilineCommentScanner.affectsBehavior(event) ||
-					fSinglelineCommentScanner.affectsBehavior(event) ||
-					fStringScanner.affectsBehavior(event) ||
-					fJavaDocScanner.affectsBehavior(event);
 	}
 
 	/**

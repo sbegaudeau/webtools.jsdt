@@ -66,16 +66,6 @@ IJavaScriptElement[] getElements();
  */
 IPath getPath();
 /**
- * Returns the string associated with the failure (see specification
- * of the status code), or <code>null</code> if no string is related to this
- * particular status code.
- *
- * @return the string culprit, or <code>null</code> if none
- * @see IJavaScriptModelStatusConstants
- * @deprecated Use {@link IStatus#getMessage()} instead
- */
-String getString();
-/**
  * Returns whether this status indicates that a JavaScript model element does not exist.
  * This convenience method is equivalent to
  * <code>getCode() == IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>.

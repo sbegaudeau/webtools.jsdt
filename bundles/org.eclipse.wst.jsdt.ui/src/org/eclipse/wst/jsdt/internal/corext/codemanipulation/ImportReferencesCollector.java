@@ -20,28 +20,25 @@ import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
-import org.eclipse.wst.jsdt.core.dom.FunctionRef;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.QualifiedType;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SimpleType;
-import org.eclipse.wst.jsdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.TagElement;
 import org.eclipse.wst.jsdt.core.dom.ThisExpression;
@@ -317,31 +314,7 @@ public class ImportReferencesCollector extends GenericVisitor {
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor#visit(org.eclipse.wst.jsdt.core.dom.MarkerAnnotation)
-	 */
-	public boolean visit(MarkerAnnotation node) {
-		typeRefFound(node.getTypeName());
-		return false;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor#visit(org.eclipse.wst.jsdt.core.dom.MarkerAnnotation)
-	 */
-	public boolean visit(NormalAnnotation node) {
-		typeRefFound(node.getTypeName());
-		doVisitChildren(node.values());
-		return false;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor#visit(org.eclipse.wst.jsdt.core.dom.MarkerAnnotation)
-	 */
-	public boolean visit(SingleMemberAnnotation node) {
-		typeRefFound(node.getTypeName());
-		doVisitNode(node.getValue());
-		return false;
-	}
+
 
 	/*
 	 * @see ASTVisitor#visit(TypeDeclaration)

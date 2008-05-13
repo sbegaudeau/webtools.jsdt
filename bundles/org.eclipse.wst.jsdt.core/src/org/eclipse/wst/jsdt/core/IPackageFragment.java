@@ -98,18 +98,6 @@ public interface IPackageFragment extends IParent, IJavaScriptElement, IOpenable
 	IClassFile[] getClassFiles() throws JavaScriptModelException;
 	/**
 	 * Returns the javaScript unit with the specified name
-	 * in this fplder (for example, <code>"Object.js"</code>).
-	 * The name has to be a valid javaScript unit name.
-	 * This is a handle-only method.  The javaScript unit may or may not be present.
-	 *
-	 * @param name the given name
-	 * @return the javaScript unit with the specified name in this package
-	 * @see JavaScriptConventions#validateCompilationUnitName(String name, String sourceLevel, String complianceLevel)
-	 * @deprecated Use {@link #getJavaScriptUnit(String)} instead
-	 */
-	IJavaScriptUnit getCompilationUnit(String name);
-	/**
-	 * Returns the javaScript unit with the specified name
 	 * in this package (for example, <code>"Object.js"</code>).
 	 * The name has to be a valid javaScript unit name.
 	 * This is a handle-only method.  The javaScript unit may or may not be present.
@@ -119,20 +107,6 @@ public interface IPackageFragment extends IParent, IJavaScriptElement, IOpenable
 	 * @see JavaScriptConventions#validateCompilationUnitName(String name, String sourceLevel, String complianceLevel)
 	 */
 	IJavaScriptUnit getJavaScriptUnit(String name);
-	/**
-	 * Returns all of the javaScript units in this source folder.
-	 *
-	 * <p>Note: it is possible that a psource folder contains only
-	 * read-only files (in other words, its kind is <code>K_BINARY</code>), in which
-	 * case this method returns an empty collection.
-	 * </p>
-	 *
-	 * @exception JavaScriptModelException if this element does not exist or if an
-	 *		exception occurs while accessing its corresponding resource.
-	 * @return all of the javaScript units in this source folder
-	 * @deprecated Use {@link #getJavaScriptUnits()} instead
-	 */
-	IJavaScriptUnit[] getCompilationUnits() throws JavaScriptModelException;
 	/**
 	 * Returns all of the javaScript units in this source folder.
 	 *
@@ -146,25 +120,6 @@ public interface IPackageFragment extends IParent, IJavaScriptElement, IOpenable
 	 * @return all of the javaScript units in this source folder
 	 */
 	IJavaScriptUnit[] getJavaScriptUnits() throws JavaScriptModelException;
-	/**
-	 * Returns all of the javaScript units in this source folder that are
-	 * in working copy mode and that have the given owner.
-	 * <p>
-	 * Only existing working copies are returned. So a javaScript unit handle that has no
-	 * corresponding resource on disk will be included if and only if is in working copy mode.
-	 * </p>
-	 * <p>Note: it is possible that a source folder contains only
-	 * read-only files (in other words, its kind is <code>K_BINARY</code>), in which
-	 * case this method returns an empty collection.
-	 * </p>
-	 *
-	 * @param owner the owner of the returned javaScript units
-	 * @exception JavaScriptModelException if this element does not exist or if an
-	 *		exception occurs while accessing its corresponding resource.
-	 * @return all of the javaScript units in this source folder
-	 * @deprecated Use {@link #getJavaScriptUnits(WorkingCopyOwner)} instead
-	 */
-	IJavaScriptUnit[] getCompilationUnits(WorkingCopyOwner owner) throws JavaScriptModelException;
 	/**
 	 * Returns all of the javaScript units in this source folder that are
 	 * in working copy mode and that have the given owner.

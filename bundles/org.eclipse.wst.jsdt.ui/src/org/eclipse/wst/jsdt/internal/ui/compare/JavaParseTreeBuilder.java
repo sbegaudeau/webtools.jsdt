@@ -15,15 +15,11 @@ import java.util.Stack;
 
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -75,32 +71,9 @@ class JavaParseTreeBuilder extends ASTVisitor {
         pop();
     }
 
-    public boolean visit(EnumDeclaration node) {
-        push(JavaNode.ENUM, node.getName().toString(), node.getStartPosition(), node.getLength());
-        return true;
-    }
-
-    public void endVisit(EnumDeclaration node) {
-        pop();
-    }
+ 
     
-	public boolean visit(AnnotationTypeDeclaration node) {
-		push(JavaNode.ANNOTATION, node.getName().toString(), node.getStartPosition(), node.getLength());
-        return true;
-	}
-	
-	public void endVisit(AnnotationTypeDeclaration node) {
-		pop();
-	}
 
-	public boolean visit(AnnotationTypeMemberDeclaration node) {
-        push(JavaNode.METHOD, getSignature(node), node.getStartPosition(), node.getLength());
-        return true;
-	}
-	
-	public void endVisit(AnnotationTypeMemberDeclaration node) {
-		pop();
-	}
 
     public boolean visit(FunctionDeclaration node) {
         String signature= getSignature(node);
@@ -147,15 +120,6 @@ class JavaParseTreeBuilder extends ASTVisitor {
         pop();
     }
 
-    public boolean visit(EnumConstantDeclaration node) {
-        push(JavaNode.FIELD, node.getName().toString(), node.getStartPosition(), node.getLength());
-        return false;
-    }
-
-    public void endVisit(EnumConstantDeclaration node) {
-        pop();
-    }
-    
     // private stuff
 
     /**
@@ -230,13 +194,6 @@ class JavaParseTreeBuilder extends ASTVisitor {
         return buffer.toString();
     }
 
-    private String getSignature(AnnotationTypeMemberDeclaration node) {
-        StringBuffer buffer= new StringBuffer();
-        buffer.append(node.getName().toString());
-        buffer.append('(');
-        buffer.append(')');
-        return buffer.toString();
-    }
 
     private String getType(Type type) {
         String name= type.toString();

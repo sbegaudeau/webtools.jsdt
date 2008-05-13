@@ -441,29 +441,4 @@ public interface IEvaluationContext {
 	public void validateImports(ICodeSnippetRequestor requestor)
 		throws JavaScriptModelException;
 
-	/**
-	 * Performs a code completion at the given position in the given code snippet,
-	 * reporting results to the given completion requestor.
-	 * <p>
-	 * Note that code completion does not involve evaluation.
-	 * <p>
-	 *
-	 * @param codeSnippet the code snippet to complete in
-	 * @param position the character position in the code snippet to complete at,
-	 *   or -1 indicating the beginning of the snippet
-	 * @param requestor the code completion requestor capable of accepting all
-	 *    possible types of completions
-	 * @exception JavaScriptModelException if code completion could not be performed. Reasons include:
-	 *  <ul>
-	 *	  <li>The position specified is less than -1 or is greater than the snippet's
-	 *	    length (INDEX_OUT_OF_BOUNDS)</li>
-	 *  </ul>
-	 * @deprecated - use codeComplete(String, int, ICompletionRequestor) instead
-	 */
-	public void codeComplete(
-		String codeSnippet,
-		int position,
-		org.eclipse.wst.jsdt.core.ICodeCompletionRequestor requestor)
-		throws JavaScriptModelException;
-
 }

@@ -291,10 +291,10 @@ public class ClassScope extends Scope {
 		MethodBinding[] methodBindings = new MethodBinding[(clinitIndex == -1 ? size : size - 1) + count];
 		// create special methods for enums
 	    SourceTypeBinding sourceType = getReferenceBinding();
-		if (isEnum) {
-			methodBindings[0] = sourceType.addSyntheticEnumMethod(TypeConstants.VALUES); // add <EnumType>[] values()
-			methodBindings[1] = sourceType.addSyntheticEnumMethod(TypeConstants.VALUEOF); // add <EnumType> valueOf()
-		}
+//		if (isEnum) {
+//			methodBindings[0] = sourceType.addSyntheticEnumMethod(TypeConstants.VALUES); // add <EnumType>[] values()
+//			methodBindings[1] = sourceType.addSyntheticEnumMethod(TypeConstants.VALUEOF); // add <EnumType> valueOf()
+//		}
 		// create bindings for source methods
 		for (int i = 0; i < size; i++) {
 			if (i != clinitIndex) {

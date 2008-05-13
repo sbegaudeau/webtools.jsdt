@@ -411,17 +411,6 @@ public class TypeHierarchyViewPart extends ViewPart implements ITypeHierarchyVie
 	}
 
 	/**
-	 * @return The input type
-	 * @deprecated
-	 */	
-	public IType getInput() {
-		if (fInputElement instanceof IType) {
-			return (IType) fInputElement;
-		}
-		return null;
-	}
-	
-	/**
 	 * Sets the input to a new type
 	 * @param type The new input type
 	 * @deprecated 

@@ -856,12 +856,12 @@ public void resolve() {
 	}
 	try {
 		boolean old = this.staticInitializerScope.insideTypeAnnotation;
-		try {
-			this.staticInitializerScope.insideTypeAnnotation = true;
-			resolveAnnotations(this.staticInitializerScope, this.annotations, sourceType);
-		} finally {
-			this.staticInitializerScope.insideTypeAnnotation = old;
-		}
+//		try {
+//			this.staticInitializerScope.insideTypeAnnotation = true;
+//			resolveAnnotations(this.staticInitializerScope, this.annotations, sourceType);
+//		} finally {
+//			this.staticInitializerScope.insideTypeAnnotation = old;
+//		}
 		// check @Deprecated annotation
 		if ((sourceType.getAnnotationTagBits() & TagBits.AnnotationDeprecated) == 0
 				&& (sourceType.modifiers & ClassFileConstants.AccDeprecated) != 0

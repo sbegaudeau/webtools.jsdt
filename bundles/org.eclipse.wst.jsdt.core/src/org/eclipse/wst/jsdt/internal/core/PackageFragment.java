@@ -244,21 +244,8 @@ public IJavaScriptUnit getCompilationUnit(String cuName, String superTypeName) {
 	return new CompilationUnit(this, cuName,superTypeName, DefaultWorkingCopyOwner.PRIMARY);
 }
 
-/**
- * @deprecated Use {@link #getJavaScriptUnit(String)} instead
- */
-public IJavaScriptUnit getCompilationUnit(String cuName) {
-	return getJavaScriptUnit(cuName);
-}
 public IJavaScriptUnit getJavaScriptUnit(String cuName) {
 	return getCompilationUnit(cuName,null);
-}
-/**
- * @see IPackageFragment#getCompilationUnits()
- * @deprecated Use {@link #getJavaScriptUnits()} instead
- */
-public IJavaScriptUnit[] getCompilationUnits() throws JavaScriptModelException {
-	return getJavaScriptUnits();
 }
 /**
  * @see IPackageFragment#getJavaScriptUnits()
@@ -272,13 +259,6 @@ public IJavaScriptUnit[] getJavaScriptUnits() throws JavaScriptModelException {
 	IJavaScriptUnit[] array= new IJavaScriptUnit[list.size()];
 	list.toArray(array);
 	return array;
-}
-/**
- * @see IPackageFragment#getCompilationUnits(WorkingCopyOwner)
- * @deprecated Use {@link #getJavaScriptUnits(WorkingCopyOwner)} instead
- */
-public IJavaScriptUnit[] getCompilationUnits(WorkingCopyOwner owner) {
-	return getJavaScriptUnits(owner);
 }
 /**
  * @see IPackageFragment#getJavaScriptUnits(WorkingCopyOwner)

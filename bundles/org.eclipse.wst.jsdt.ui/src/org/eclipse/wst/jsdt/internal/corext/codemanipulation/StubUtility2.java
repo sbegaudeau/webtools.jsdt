@@ -25,19 +25,18 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.NamingConventions;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.Annotation;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.IPackageBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
@@ -69,11 +68,6 @@ public final class StubUtility2 {
 
 	public static void addOverrideAnnotation(ASTRewrite rewrite, FunctionDeclaration decl, IFunctionBinding binding) {
 		String version= binding.getJavaElement().getJavaScriptProject().getOption(JavaScriptCore.COMPILER_COMPLIANCE, true);
-		if (!binding.getDeclaringClass().isInterface() || !JavaModelUtil.isVersionLessThan(version, JavaScriptCore.VERSION_1_6)) {
-			final Annotation marker= rewrite.getAST().newMarkerAnnotation();
-			marker.setTypeName(rewrite.getAST().newSimpleName("Override")); //$NON-NLS-1$
-			rewrite.getListRewrite(decl, FunctionDeclaration.MODIFIERS2_PROPERTY).insertFirst(marker, null);
-		}
 	}
 
 	public static FunctionDeclaration createConstructorStub(IJavaScriptUnit unit, ASTRewrite rewrite, ImportRewrite imports, IFunctionBinding binding, String type, int modifiers, boolean omitSuperForDefConst, boolean todo, CodeGenerationSettings settings) throws CoreException {

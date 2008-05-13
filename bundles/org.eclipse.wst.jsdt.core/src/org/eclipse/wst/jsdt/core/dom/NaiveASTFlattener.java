@@ -134,49 +134,6 @@ class NaiveASTFlattener extends ASTVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(AnnotationTypeDeclaration)
-	 * @since 3.1
-	 */
-	public boolean visit(AnnotationTypeDeclaration node) {
-		if (node.getJavadoc() != null) {
-			node.getJavadoc().accept(this);
-		}
-		printIndent();
-		printModifiers(node.modifiers());
-		this.buffer.append("@interface ");//$NON-NLS-1$
-		node.getName().accept(this);
-		this.buffer.append(" {");//$NON-NLS-1$
-		for (Iterator it = node.bodyDeclarations().iterator(); it.hasNext(); ) {
-			BodyDeclaration d = (BodyDeclaration) it.next();
-			d.accept(this);
-		}
-		this.buffer.append("}\n");//$NON-NLS-1$
-		return false;
-	}
-
-	/*
-	 * @see ASTVisitor#visit(AnnotationTypeMemberDeclaration)
-	 * @since 3.1
-	 */
-	public boolean visit(AnnotationTypeMemberDeclaration node) {
-		if (node.getJavadoc() != null) {
-			node.getJavadoc().accept(this);
-		}
-		printIndent();
-		printModifiers(node.modifiers());
-		node.getType().accept(this);
-		this.buffer.append(" ");//$NON-NLS-1$
-		node.getName().accept(this);
-		this.buffer.append("()");//$NON-NLS-1$
-		if (node.getDefault() != null) {
-			this.buffer.append(" default ");//$NON-NLS-1$
-			node.getDefault().accept(this);
-		}
-		this.buffer.append(";\n");//$NON-NLS-1$
-		return false;
-	}
-
-	/*
 	 * @see ASTVisitor#visit(AnonymousClassDeclaration)
 	 */
 	public boolean visit(AnonymousClassDeclaration node) {
@@ -531,79 +488,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		return false;
 	}
 
-	/*
-	 * @see ASTVisitor#visit(EnumConstantDeclaration)
-	 * @since 3.1
-	 */
-	public boolean visit(EnumConstantDeclaration node) {
-		if (node.getJavadoc() != null) {
-			node.getJavadoc().accept(this);
-		}
-		printIndent();
-		printModifiers(node.modifiers());
-		node.getName().accept(this);
-		if (!node.arguments().isEmpty()) {
-			this.buffer.append("(");//$NON-NLS-1$
-			for (Iterator it = node.arguments().iterator(); it.hasNext(); ) {
-				Expression e = (Expression) it.next();
-				e.accept(this);
-				if (it.hasNext()) {
-					this.buffer.append(",");//$NON-NLS-1$
-				}
-			}
-			this.buffer.append(")");//$NON-NLS-1$
-		}
-		if (node.getAnonymousClassDeclaration() != null) {
-			node.getAnonymousClassDeclaration().accept(this);
-		}
-		return false;
-	}
 
-	/*
-	 * @see ASTVisitor#visit(EnumDeclaration)
-	 * @since 3.1
-	 */
-	public boolean visit(EnumDeclaration node) {
-		if (node.getJavadoc() != null) {
-			node.getJavadoc().accept(this);
-		}
-		printIndent();
-		printModifiers(node.modifiers());
-		this.buffer.append("enum ");//$NON-NLS-1$
-		node.getName().accept(this);
-		this.buffer.append(" ");//$NON-NLS-1$
-		if (!node.superInterfaceTypes().isEmpty()) {
-			this.buffer.append("implements ");//$NON-NLS-1$
-			for (Iterator it = node.superInterfaceTypes().iterator(); it.hasNext(); ) {
-				Type t = (Type) it.next();
-				t.accept(this);
-				if (it.hasNext()) {
-					this.buffer.append(", ");//$NON-NLS-1$
-				}
-			}
-			this.buffer.append(" ");//$NON-NLS-1$
-		}
-		this.buffer.append("{");//$NON-NLS-1$
-		for (Iterator it = node.enumConstants().iterator(); it.hasNext(); ) {
-			EnumConstantDeclaration d = (EnumConstantDeclaration) it.next();
-			d.accept(this);
-			// enum constant declarations do not include punctuation
-			if (it.hasNext()) {
-				// enum constant declarations are separated by commas
-				this.buffer.append(", ");//$NON-NLS-1$
-			}
-		}
-		if (!node.bodyDeclarations().isEmpty()) {
-			this.buffer.append("; ");//$NON-NLS-1$
-			for (Iterator it = node.bodyDeclarations().iterator(); it.hasNext(); ) {
-				BodyDeclaration d = (BodyDeclaration) it.next();
-				d.accept(this);
-				// other body declarations include trailing punctuation
-			}
-		}
-		this.buffer.append("}\n");//$NON-NLS-1$
-		return false;
-	}
 
 	/*
 	 * @see ASTVisitor#visit(ExpressionStatement)
@@ -822,16 +707,6 @@ class NaiveASTFlattener extends ASTVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(MarkerAnnotation)
-	 * @since 3.1
-	 */
-	public boolean visit(MarkerAnnotation node) {
-		this.buffer.append("@");//$NON-NLS-1$
-		node.getTypeName().accept(this);
-		return false;
-	}
-
-	/*
 	 * @see ASTVisitor#visit(MemberRef)
 	 * @since 3.0
 	 */
@@ -844,16 +719,6 @@ class NaiveASTFlattener extends ASTVisitor {
 		return false;
 	}
 
-	/*
-	 * @see ASTVisitor#visit(MemberValuePair)
-	 * @since 3.1
-	 */
-	public boolean visit(MemberValuePair node) {
-		node.getName().accept(this);
-		this.buffer.append("=");//$NON-NLS-1$
-		node.getValue().accept(this);
-		return false;
-	}
 
 	/*
 	 * @see ASTVisitor#visit(FunctionRef)
@@ -1014,25 +879,6 @@ class NaiveASTFlattener extends ASTVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(NormalAnnotation)
-	 * @since 3.1
-	 */
-	public boolean visit(NormalAnnotation node) {
-		this.buffer.append("@");//$NON-NLS-1$
-		node.getTypeName().accept(this);
-		this.buffer.append("(");//$NON-NLS-1$
-		for (Iterator it = node.values().iterator(); it.hasNext(); ) {
-			MemberValuePair p = (MemberValuePair) it.next();
-			p.accept(this);
-			if (it.hasNext()) {
-				this.buffer.append(",");//$NON-NLS-1$
-			}
-		}
-		this.buffer.append(")");//$NON-NLS-1$
-		return false;
-	}
-
-	/*
 	 * @see ASTVisitor#visit(NullLiteral)
 	 */
 	public boolean visit(NullLiteral node) {
@@ -1090,11 +936,6 @@ class NaiveASTFlattener extends ASTVisitor {
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			if (node.getJavadoc() != null) {
 				node.getJavadoc().accept(this);
-			}
-			for (Iterator it = node.annotations().iterator(); it.hasNext(); ) {
-				Annotation p = (Annotation) it.next();
-				p.accept(this);
-				this.buffer.append(" ");//$NON-NLS-1$
 			}
 		}
 		printIndent();
@@ -1208,18 +1049,6 @@ class NaiveASTFlattener extends ASTVisitor {
 		return true;
 	}
 
-	/*
-	 * @see ASTVisitor#visit(SingleMemberAnnotation)
-	 * @since 3.1
-	 */
-	public boolean visit(SingleMemberAnnotation node) {
-		this.buffer.append("@");//$NON-NLS-1$
-		node.getTypeName().accept(this);
-		this.buffer.append("(");//$NON-NLS-1$
-		node.getValue().accept(this);
-		this.buffer.append(")");//$NON-NLS-1$
-		return false;
-	}
 
 	/*
 	 * @see ASTVisitor#visit(SingleVariableDeclaration)

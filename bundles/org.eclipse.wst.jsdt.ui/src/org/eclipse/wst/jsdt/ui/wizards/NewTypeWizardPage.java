@@ -2408,28 +2408,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	}
 
 	/**
-	 * @param parentCU the current compilation unit
-	 * @return returns the template or <code>null</code>
-	 * @deprecated Use getTypeComment(IJavaScriptUnit, String)
-	 */
-	protected String getTypeComment(IJavaScriptUnit parentCU) {
-		if (StubUtility.doAddComments(parentCU.getJavaScriptProject()))
-			return getTypeComment(parentCU, StubUtility.getLineDelimiterUsed(parentCU));
-		return null;
-	}
-
-	/**
-	 * @param name the name of the template
-	 * @param parentCU the current compilation unit
-	 * @return returns the template or <code>null</code>
-	 * @deprecated Use getTemplate(String,IJavaScriptUnit,int)
-	 */
-	protected String getTemplate(String name, IJavaScriptUnit parentCU) {
-		return getTemplate(name, parentCU, 0);
-	}
-		
-	
-	/**
 	 * Returns the string resulting from evaluation the given template in
 	 * the context of the given compilation unit. This accesses the normal
 	 * template page, not the code templates. To use code templates use

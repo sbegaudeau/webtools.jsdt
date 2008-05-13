@@ -45,12 +45,12 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
@@ -62,16 +62,14 @@ import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.ASTRequestor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.Annotation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IExtendedModifier;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -609,7 +607,6 @@ public final class ExtractInterfaceProcessor extends SuperTypeRefactoringProcess
 		boolean abstractFound= false;
 		ITypeBinding binding= null;
 		Modifier modifier= null;
-		Annotation annotation= null;
 		IExtendedModifier extended= null;
 		for (final Iterator iterator= declaration.modifiers().iterator(); iterator.hasNext();) {
 			extended= (IExtendedModifier) iterator.next();
@@ -624,11 +621,6 @@ public final class ExtractInterfaceProcessor extends SuperTypeRefactoringProcess
 					continue;
 				}
 				list.remove(modifier, null);
-			} else if (extended.isAnnotation()) {
-				annotation= (Annotation) extended;
-				binding= annotation.resolveTypeBinding();
-				if (binding.getQualifiedName().equals("java.lang.Override")) //$NON-NLS-1$
-					list.remove(annotation, null);
 			}
 		}
 		final ModifierRewrite rewriter= ModifierRewrite.create(rewrite, declaration);
@@ -687,8 +679,6 @@ public final class ExtractInterfaceProcessor extends SuperTypeRefactoringProcess
 			final ASTRewrite rewriter= rewrite.getASTRewrite();
 			if (declaration instanceof TypeDeclaration)
 				rewriter.getListRewrite(declaration, TypeDeclaration.SUPER_INTERFACE_TYPES_PROPERTY).insertLast(type, rewrite.createCategorizedGroupDescription(RefactoringCoreMessages.ExtractInterfaceProcessor_add_super_interface, SET_EXTRACT_INTERFACE));
-			else if (declaration instanceof EnumDeclaration)
-				rewriter.getListRewrite(declaration, EnumDeclaration.SUPER_INTERFACE_TYPES_PROPERTY).insertLast(type, rewrite.createCategorizedGroupDescription(RefactoringCoreMessages.ExtractInterfaceProcessor_add_super_interface, SET_EXTRACT_INTERFACE));
 			monitor.worked(1);
 		} finally {
 			monitor.done();

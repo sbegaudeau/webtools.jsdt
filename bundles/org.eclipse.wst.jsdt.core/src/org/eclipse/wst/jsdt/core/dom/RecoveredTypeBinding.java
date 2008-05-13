@@ -488,12 +488,6 @@ class RecoveredTypeBinding implements ITypeBinding {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.IBinding#getAnnotations()
-	 */
-	public IAnnotationBinding[] getAnnotations() {
-		return AnnotationBinding.NoAnnotations;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.IBinding#getJavaElement()

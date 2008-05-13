@@ -22,12 +22,10 @@ import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
-import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
@@ -95,13 +93,7 @@ public class SortMembersOperation implements IWorkspaceRunnable {
 							return getMemberCategory(MembersOrderPreferenceCache.INIT_INDEX);
 					}
 				case ASTNode.TYPE_DECLARATION :
-				case ASTNode.ENUM_DECLARATION :
-				case ASTNode.ANNOTATION_TYPE_DECLARATION :
 					return getMemberCategory(MembersOrderPreferenceCache.TYPE_INDEX);
-				case ASTNode.ENUM_CONSTANT_DECLARATION :
-					return getMemberCategory(MembersOrderPreferenceCache.ENUM_CONSTANTS_INDEX);
-				case ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION:
-					return getMemberCategory(MembersOrderPreferenceCache.METHOD_INDEX); // reusing the method index
 					
 			}
 			return 0; // should never happen
@@ -198,8 +190,6 @@ public class SortMembersOperation implements IWorkspaceRunnable {
 						return preserveRelativeOrder(bodyDeclaration1, bodyDeclaration2);
 					}
 				case ASTNode.TYPE_DECLARATION :
-				case ASTNode.ENUM_DECLARATION :
-				case ASTNode.ANNOTATION_TYPE_DECLARATION :
 					{
 						AbstractTypeDeclaration type1= (AbstractTypeDeclaration) bodyDeclaration1;
 						AbstractTypeDeclaration type2= (AbstractTypeDeclaration) bodyDeclaration2;
@@ -209,32 +199,6 @@ public class SortMembersOperation implements IWorkspaceRunnable {
 
 						// typedeclarations are sorted by name
 						return compareNames(bodyDeclaration1, bodyDeclaration2, name1, name2);					
-					}
-				case ASTNode.ENUM_CONSTANT_DECLARATION :
-					{
-						if (!fDoNotSortFields) {
-							EnumConstantDeclaration decl1= (EnumConstantDeclaration) bodyDeclaration1;
-							EnumConstantDeclaration decl2= (EnumConstantDeclaration) bodyDeclaration2;
-							
-							String name1= decl1.getName().getIdentifier();
-							String name2= decl2.getName().getIdentifier();
-							
-							// enum constants declarations are sorted by name
-							return compareNames(bodyDeclaration1, bodyDeclaration2, name1, name2);		
-						} else {
-							return preserveRelativeOrder(bodyDeclaration1, bodyDeclaration2);
-						}
-					}
-				case ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION :
-					{
-						AnnotationTypeMemberDeclaration decl1= (AnnotationTypeMemberDeclaration) bodyDeclaration1;
-						AnnotationTypeMemberDeclaration decl2= (AnnotationTypeMemberDeclaration) bodyDeclaration2;
-						
-						String name1= decl1.getName().getIdentifier();
-						String name2= decl2.getName().getIdentifier();
-						
-						// enum constants declarations are sorted by name
-						return compareNames(bodyDeclaration1, bodyDeclaration2, name1, name2);
 					}
 			}
 			return 0;

@@ -93,14 +93,6 @@ public IClassFile[] getClassFiles() throws JavaScriptModelException {
 /**
  * A jar package fragment never contains compilation units.
  * @see org.eclipse.wst.jsdt.core.IPackageFragment
- * @deprecated Use {@link #getJavaScriptUnits()} instead
- */
-public IJavaScriptUnit[] getCompilationUnits() {
-	return getJavaScriptUnits();
-}
-/**
- * A jar package fragment never contains compilation units.
- * @see org.eclipse.wst.jsdt.core.IPackageFragment
  */
 public IJavaScriptUnit[] getJavaScriptUnits() {
 	return NO_COMPILATION_UNITS;

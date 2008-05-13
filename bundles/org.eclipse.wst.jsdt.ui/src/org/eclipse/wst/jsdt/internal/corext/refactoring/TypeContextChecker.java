@@ -26,9 +26,9 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
-import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
@@ -41,19 +41,16 @@ import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IExtendedModifier;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
@@ -187,8 +184,6 @@ public class TypeContextChecker {
 					for (int i= 0; i < parameterCount; i++)
 						typeNodes[i]= ((SingleVariableDeclaration) parameters.get(i)).getType();
 
-				} else if (method instanceof AnnotationTypeMemberDeclaration) {
-					typeNodes[0]= ((AnnotationTypeMemberDeclaration) method).getType();
 				}
 
 				for (int i= 0; i < types.length; i++) {
@@ -598,22 +593,9 @@ public class TypeContextChecker {
 				List superInterfaces= type.superInterfaceTypes();
 				appendSuperInterfaces(buf, superInterfaces);
 				
-			} else if (decl instanceof AnnotationTypeDeclaration) {
-				AnnotationTypeDeclaration annotation= (AnnotationTypeDeclaration) decl;
-				buf.append("@interface "); //$NON-NLS-1$
-				buf.append(annotation.getName().getIdentifier());
-				
-			} else if (decl instanceof EnumDeclaration) {
-				EnumDeclaration enumDecl= (EnumDeclaration) decl;
-				buf.append("enum "); //$NON-NLS-1$
-				buf.append(enumDecl.getName().getIdentifier());
-				List superInterfaces= enumDecl.superInterfaceTypes();
-				appendSuperInterfaces(buf, superInterfaces);
 			}
 			
 			buf.append("{\n"); //$NON-NLS-1$
-			if (decl instanceof EnumDeclaration)
-				buf.append(";\n"); //$NON-NLS-1$
 			fillWithTypeStubs(bufBefore, bufAfter, focalPosition, decl.bodyDeclarations());
 			buf= decl.getStartPosition() + decl.getLength() < focalPosition ? bufBefore : bufAfter;
 			buf.append("}\n"); //$NON-NLS-1$

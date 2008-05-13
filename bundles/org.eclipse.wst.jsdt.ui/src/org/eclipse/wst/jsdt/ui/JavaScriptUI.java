@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Shell;
@@ -42,8 +41,6 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.SharedImages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.FilteredTypesSelectionDialog;
-import org.eclipse.wst.jsdt.internal.ui.dialogs.MainTypeSelectionDialog;
-import org.eclipse.wst.jsdt.internal.ui.dialogs.MultiMainTypeSelectionDialog;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.PackageSelectionDialog;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
@@ -241,23 +238,6 @@ public final class JavaScriptUI {
 	 * @since 2.0
 	 */
 	public static String ID_MEMBERS_VIEW= "org.eclipse.wst.jsdt.ui.MembersView"; //$NON-NLS-1$
-
-	/**
-	 * The class org.eclipse.debug.core.model.IProcess allows attaching
-	 * String properties to processes. The Java UI contributes a property
-	 * page for IProcess that will show the contents of the property
-	 * with this key.
-	 * The intent of this property is to show the command line a process
-	 * was launched with.
-	 * @deprecated
-	 */
-	public final static String ATTR_CMDLINE= "org.eclipse.wst.jsdt.ui.launcher.cmdLine"; //$NON-NLS-1$
-	
-	
-	/**
-	 * @deprecated Constant introduced to avoid deprecated warning
-	 */
-	private final static int DEPRECATED_CONSIDER_TYPES= IJavaScriptElementSearchConstants.CONSIDER_TYPES;
 
 	/**
 	 * Returns the shared images for the Java UI.
@@ -562,8 +542,6 @@ public final class JavaScriptUI {
 			elementKinds= IJavaScriptSearchConstants.CLASS_AND_INTERFACE;
 		} else if (style == IJavaScriptElementSearchConstants.CONSIDER_CLASSES_AND_ENUMS) {
 			elementKinds= IJavaScriptSearchConstants.CLASS_AND_ENUM;
-		} else if (style == DEPRECATED_CONSIDER_TYPES) {
-			elementKinds= IJavaScriptSearchConstants.CLASS_AND_INTERFACE;
 		} else {	
 			throw new IllegalArgumentException("Invalid style constant."); //$NON-NLS-1$
 		}
@@ -574,62 +552,8 @@ public final class JavaScriptUI {
 		return dialog;
 	}
 
-	/**
-	 * Creates a selection dialog that lists all types in the given scope containing 
-	 * a standard <code>main</code> method.
-	 * The caller is responsible for opening the dialog with <code>Window.open</code>,
-	 * and subsequently extracting the selected type(s) (of type
-	 * <code>IType</code>) via <code>SelectionDialog.getResult</code>.
-	 * 
-	 * @param parent the parent shell of the dialog to be created
-	 * @param context the runnable context used to show progress when the dialog
-	 *   is being populated
-	 * @param scope the scope that limits which types are included
-	 * @param style flags defining the style of the dialog; the only valid values are
-	 *   <code>IJavaScriptElementSearchConstants.CONSIDER_BINARIES</code>,
-	 *   <code>CONSIDER_EXTERNAL_JARS</code>, or their bitwise OR, or <code>0</code>
-	 * @param multipleSelection <code>true</code> if multiple selection is allowed
-	 * @param filter the initial pattern to filter the set of types containing a main method. For 
-	 * example "App" shows all types starting with "app". The meta character '?' representing 
-	 * any character and '*' representing any string are supported. Clients can pass an empty 
-	 * string if no filtering is required.
-	 * @return a new selection dialog
-	 * 
-	 * @since 2.0
-	 */
-	public static SelectionDialog createMainTypeDialog(Shell parent, IRunnableContext context, IJavaScriptSearchScope scope, int style, boolean multipleSelection, String filter) {
-		if (multipleSelection) {
-			MultiMainTypeSelectionDialog dialog= new MultiMainTypeSelectionDialog(parent, context, scope, style);
-			dialog.setFilter(filter);
-			return dialog;
-		} else {
-			MainTypeSelectionDialog dialog= new MainTypeSelectionDialog(parent, context, scope, style);
-			dialog.setFilter(filter);
-			return dialog;
-		}		
-	}
 
-	/**
-	 * Creates a selection dialog that lists all types in the given scope containing 
-	 * a standard <code>main</code> method.
-	 * The caller is responsible for opening the dialog with <code>Window.open</code>,
-	 * and subsequently extracting the selected type(s) (of type
-	 * <code>IType</code>) via <code>SelectionDialog.getResult</code>.
-	 * 
-	 * @param parent the parent shell of the dialog to be created
-	 * @param context the runnable context used to show progress when the dialog
-	 *   is being populated
-	 * @param scope the scope that limits which types are included
-	 * @param style flags defining the style of the dialog; the only valid values are
-	 *   <code>IJavaScriptElementSearchConstants.CONSIDER_BINARIES</code>,
-	 *   <code>CONSIDER_EXTERNAL_JARS</code>, or their bitwise OR, or <code>0</code>
-	 * @param multipleSelection <code>true</code> if multiple selection is allowed
-	 * @return a new selection dialog
-	 */
-	public static SelectionDialog createMainTypeDialog(Shell parent, IRunnableContext context, IJavaScriptSearchScope scope, int style, boolean multipleSelection) {
-		return createMainTypeDialog(parent, context, scope, style, multipleSelection, "");//$NON-NLS-1$
-	}
-	
+
 	/**
 	 * Opens an editor on the given Java element in the active page. Valid elements are all Java elements that are {@link ISourceReference}.
  	 * For elements inside a compilation unit or class file, the parent is opened in the editor is opened and the element revealed.
@@ -673,22 +597,6 @@ public final class JavaScriptUI {
 	}	
 
 	/** 
-	 * Reveals the source range of the given source reference element in the
-	 * given editor. No checking is done if the editor displays a compilation unit or
-	 * class file that contains the given source reference. The editor simply reveals
-	 * the source range denoted by the given source reference.
-	 *
-	 * @param part the editor displaying the compilation unit or class file
-	 * @param element the source reference element defining the source range to be revealed
-	 * 
-	 * @deprecated use <code>revealInEditor(IEditorPart, IJavaScriptElement)</code> instead
-	 */	
-	public static void revealInEditor(IEditorPart part, ISourceReference element) {
-		if (element instanceof IJavaScriptElement)
-			revealInEditor(part, (IJavaScriptElement) element);
-	}
-	
-	/** 
 	 * Reveals the given java element  in the given editor. If the element is not an instance
 	 * of <code>ISourceReference</code> this method result in a NOP. If it is a source
 	 * reference no checking is done if the editor displays a compilation unit or class file that 
@@ -730,64 +638,6 @@ public final class JavaScriptUI {
 	}
 
 	/**
-	 * Answers the shared working copies currently registered for the Java plug-in.
-	 * Note that the returned array can include working copies that are
-	 * not on the class path of a Java project.
-	 * 
-	 * @return the list of shared working copies
-	 * 
-	 * @see org.eclipse.wst.jsdt.core.JavaScriptCore#getSharedWorkingCopies(org.eclipse.wst.jsdt.core.IBufferFactory)
-	 * @since 2.0
-	 * @deprecated Use {@link JavaScriptCore#getWorkingCopies(org.eclipse.wst.jsdt.core.WorkingCopyOwner)} instead with <code>null</code> as
-	 * argument for owner.
-	 */
-	public static org.eclipse.wst.jsdt.core.IWorkingCopy[] getSharedWorkingCopies() {
-		return JavaScriptCore.getSharedWorkingCopies(getBufferFactory());
-	}
-	
-	/**
-	 * Answers the shared working copies that are on the class path of a Java
-	 * project currently registered for the Java plug-in.
-	 * 
-	 * 
-	 * @return the list of shared working copies
-	 * 
-	 * @see #getSharedWorkingCopies()
-	 * @since 2.1
-	 * @deprecated Use {@link JavaScriptCore#getWorkingCopies(org.eclipse.wst.jsdt.core.WorkingCopyOwner)} instead and filter the list
-	 * with {@link IJavaScriptProject#isOnIncludepath(IJavaScriptElement)}.
-	 */
-	public static org.eclipse.wst.jsdt.core.IWorkingCopy[] getSharedWorkingCopiesOnClasspath() {
-		org.eclipse.wst.jsdt.core.IWorkingCopy[] wcs= getSharedWorkingCopies();
-		List result= new ArrayList(wcs.length);
-		for (int i = 0; i < wcs.length; i++) {
-			org.eclipse.wst.jsdt.core.IWorkingCopy wc= wcs[i];
-			if (wc instanceof IJavaScriptElement) {
-				IJavaScriptElement je= (IJavaScriptElement)wc;
-				if (je.getJavaScriptProject().isOnIncludepath(je)) {
-					result.add(wc);
-				}
-			}
-		}
-		return (org.eclipse.wst.jsdt.core.IWorkingCopy[])result.toArray(new org.eclipse.wst.jsdt.core.IWorkingCopy[result.size()]);
-	}
-	
-	/**
-	 * Returns the buffer factory for the Java UI plug-in.
-	 *
-	 * @return the buffer factory for the Java UI plug-in
-	 * 
-	 * @see org.eclipse.wst.jsdt.core.IBufferFactory
-	 * @since 2.0
-	 * @deprecated {@link org.eclipse.wst.jsdt.core.IBufferFactory} has been replaced by {@link org.eclipse.wst.jsdt.core.WorkingCopyOwner}.
-	 * The Java UI plug-in uses the <i>primary working copy owner</i> that can be accessed with <code>null</code> in
-	 * API's that require an owner
-	 */
-	public static org.eclipse.wst.jsdt.core.IBufferFactory getBufferFactory() {
-		return JavaScriptPlugin.getDefault().getBufferFactory();
-	}
-
-	/**
 	 * Returns the DocumentProvider used for Java compilation units.
 	 *
 	 * @return the DocumentProvider for Java compilation units.
@@ -799,59 +649,6 @@ public final class JavaScriptUI {
 		return JavaScriptPlugin.getDefault().getCompilationUnitDocumentProvider();
 	}
 		
-	/**
-	 * Sets the Javadoc location for an archive with the given path.
-	 * 
-	 * @param archivePath the path of the library; this can be an workspace path
-	 * or an external path in case of an external library.
-	 * @param url the Javadoc location to set. This location should contain index.html and
-	 * a file 'package-list'. <code>null</code> clears the current documentation
-	 * location.
-	 * @deprecated Javadoc is now attached to the classpath entry. 
-	 * Evaluate the libraries classpath entry and reconfigure the Javadoc location there.
-	 * 
-	 * @since 2.0
-	 */
-	public static void setLibraryJSdocLocation(IPath archivePath, URL url) {
-		// deprecated
-	}
-	
-	/**
-	 * Sets the Javadoc locations for archives with the given paths. 
-	 * 
-	 * @param archivePaths the paths of the libraries. can be workspace paths
-	 * or external paths in case of an external library.
-	 * @param urls the Javadoc locations to set. Each location corresponds to the archive path of the same index. A location should contain index.html and
-	 * a file 'package-list'. <code>null</code> is a valid location entry and clears the current documentation
-	 * location. The length of the location array must be equals to the number of archive paths passed.
-	 * 
-	 * 	@deprecated Javadoc is now attached to the classpath entry. 
-	 * Evaluate the libraries classpath entry and reconfigure the Javadoc location there.
-	 * 
-	 * @since 3.0
-	 */
-	public static void setLibraryJavadocLocations(IPath[] archivePaths, URL[] urls) {
-		// deprecated
-	}
-	
-	/**
-	 * Returns the Javadoc location for an archive or <code>null</code> if no
-	 * location is available.
-	 * 
-	 * @param archivePath the path of the library. This can be an workspace path
-	 * or an external path in case of an external library.
-	 * @return the Javadoc location for an archive or <code>null</code>.
-	 * 
-	 * @deprecated Javadoc is now attached to the classpath entry. Use {@link #getJSdocBaseLocation(IJavaScriptElement)}
-	 * with the archive's {@link IPackageFragmentRoot} or use {@link #getLibraryJSdocLocation(IIncludePathEntry)}
-	 * with the archive's {@link IIncludePathEntry}.
-	 * 
-	 * @since 2.0
-	 */	
-	public static URL getLibraryJSdocLocation(IPath archivePath) {
-		return null;
-	}
-	
 	/**
 	 * Returns the Javadoc location for library's classpath entry or <code>null</code> if no
 	 * location is available. Note that only classpath entries of kind {@link IIncludePathEntry#CPE_LIBRARY} and

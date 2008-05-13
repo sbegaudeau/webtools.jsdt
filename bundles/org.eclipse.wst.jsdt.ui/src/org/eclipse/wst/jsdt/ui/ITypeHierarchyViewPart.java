@@ -100,16 +100,6 @@ public interface ITypeHierarchyViewPart extends IViewPart {
 	 * Returns the input element of this type hierarchy view.
 	 *
 	 * @return the input element, or <code>null</code> if no input element is set
-	 * @see #setInput(IType)
-	 * @deprecated use getInputElement instead
-	 */
-	public IType getInput();
-	
-
-	/**
-	 * Returns the input element of this type hierarchy view.
-	 *
-	 * @return the input element, or <code>null</code> if no input element is set
 	 * @see #setInputElement(IJavaScriptElement)
 	 * 
 	 * @since 2.0

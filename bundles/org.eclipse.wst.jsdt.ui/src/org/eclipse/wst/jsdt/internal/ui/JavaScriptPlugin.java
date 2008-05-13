@@ -38,7 +38,6 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -70,13 +69,11 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ClassFileDocumentProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.DocumentAdapter;
-import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ICompilationUnitDocumentProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.WorkingCopyManager;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.SaveParticipantRegistry;
 import org.eclipse.wst.jsdt.internal.ui.preferences.MembersOrderPreferenceCache;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.FormatterProfileStore;
-import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileDocumentProvider;
 import org.eclipse.wst.jsdt.internal.ui.text.PreferencesAdapter;
 import org.eclipse.wst.jsdt.internal.ui.text.folding.JavaFoldingStructureProviderRegistry;
 import org.eclipse.wst.jsdt.internal.ui.text.java.ContentAssistHistory;
@@ -162,7 +159,6 @@ public class JavaScriptPlugin extends AbstractUIPlugin {
 	/**
 	 * @deprecated
 	 */
-	private org.eclipse.wst.jsdt.core.IBufferFactory fBufferFactory;
 	private ICompilationUnitDocumentProvider fCompilationUnitDocumentProvider;
 	private ClassFileDocumentProvider fClassFileDocumentProvider;
 	private JavaScriptTextTools fJavaTextTools;
@@ -260,13 +256,6 @@ public class JavaScriptPlugin extends AbstractUIPlugin {
 		 return null;
 	}
 	
-	/**
-	 * @deprecated Use EditorUtility.getDirtyEditors() instead.
-	 */
-	public static IEditorPart[] getDirtyEditors() {
-		return EditorUtility.getDirtyEditors();
-	}
-		
 	public static String getPluginId() {
 		return JavaScriptUI.ID_PLUGIN;
 	}
@@ -594,33 +583,13 @@ public class JavaScriptPlugin extends AbstractUIPlugin {
 		return window.getActivePage();
 	}
 	
-	/**
-	 * @deprecated
-	 */
-	public synchronized org.eclipse.wst.jsdt.core.IBufferFactory getBufferFactory() {
-		if (fBufferFactory == null)
-			fBufferFactory= new org.eclipse.wst.jsdt.internal.ui.javaeditor.CustomBufferFactory();
-		return fBufferFactory;
-	}
-	
 	public synchronized ICompilationUnitDocumentProvider getCompilationUnitDocumentProvider() {
 		if (fCompilationUnitDocumentProvider == null)
 			fCompilationUnitDocumentProvider= new CompilationUnitDocumentProvider();
 		return fCompilationUnitDocumentProvider;
 	}
 	
-	/**
-	 * Returns the shared document provider for Java properties files
-	 * used by this plug-in instance.  
-	 * 
-	 * @return the shared document provider for Java properties files
-	 * @since 3.1
-	 */
-	public synchronized IDocumentProvider getPropertiesFileDocumentProvider() {
-		if (fPropertiesFileDocumentProvider == null)
-			fPropertiesFileDocumentProvider= new PropertiesFileDocumentProvider();
-		return fPropertiesFileDocumentProvider;
-	}
+
 	
 	public synchronized ClassFileDocumentProvider getClassFileDocumentProvider() {
 		if (fClassFileDocumentProvider == null)

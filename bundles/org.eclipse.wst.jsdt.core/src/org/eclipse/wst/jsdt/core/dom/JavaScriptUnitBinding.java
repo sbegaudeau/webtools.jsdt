@@ -68,10 +68,6 @@ class JavaScriptUnitBinding implements ITypeBinding {
 		return null;
 	}
 
-	public IAnnotationBinding[] getAnnotations() {
-		return AnnotationBinding.NoAnnotations;
-	}
-
 	/*
 	 * @see ITypeBinding#getBinaryName()
 	 * @since 3.0

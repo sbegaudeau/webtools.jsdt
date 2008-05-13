@@ -24,23 +24,19 @@ import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ASTNodeSearchUtil;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite;
-import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 
 public class ASTNodeDeleteUtil {
 
 	private static ASTNode[] getNodesToDelete(IJavaScriptElement element, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		// fields are different because you don't delete the whole declaration but only a fragment of it
 		if (element.getElementType() == IJavaScriptElement.FIELD) {
-			if (JdtFlags.isEnum((IField) element))
-				return new ASTNode[] { ASTNodeSearchUtil.getEnumConstantDeclaration((IField) element, cuNode)};
-			else
 				return new ASTNode[] { ASTNodeSearchUtil.getFieldDeclarationFragmentNode((IField) element, cuNode)};
 		}
 		if (element.getElementType() == IJavaScriptElement.TYPE && ((IType) element).isLocal()) {

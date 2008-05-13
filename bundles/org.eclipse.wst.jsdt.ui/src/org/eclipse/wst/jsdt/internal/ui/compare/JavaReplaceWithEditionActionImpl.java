@@ -34,16 +34,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.ui.history.ElementLocalHistoryPageSource;
 import org.eclipse.team.ui.history.HistoryPageCompareEditorInput;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
@@ -183,10 +181,6 @@ class JavaReplaceWithEditionActionImpl extends JavaHistoryActionImpl {
 				length= 1;
 			ASTNode node2= NodeFinder.perform(root, new SourceRange(nameRange.getOffset(), length));
 			ASTNode node= ASTNodes.getParent(node2, BodyDeclaration.class);
-			if (node == null)
-				node= ASTNodes.getParent(node2, AnnotationTypeDeclaration.class);
-			if (node == null)
-				node= ASTNodes.getParent(node2, EnumDeclaration.class);
 			
 			//ASTNode node= getBodyContainer(root, input);
 			if (node == null) {

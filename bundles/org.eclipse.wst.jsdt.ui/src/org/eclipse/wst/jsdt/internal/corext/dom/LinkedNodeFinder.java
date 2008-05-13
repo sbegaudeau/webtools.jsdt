@@ -16,17 +16,15 @@ import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 
@@ -248,20 +246,6 @@ public class LinkedNodeFinder  {
 			return true;
 		}		
 
-		public boolean visit(EnumDeclaration node) {
-			if (fBinding.getKind() == IBinding.METHOD) {
-				IFunctionBinding binding= (IFunctionBinding) fBinding;
-				if (binding.isConstructor() && binding.getDeclaringClass() == node.resolveBinding()) {
-					fResult.add(node.getName());
-				}
-			}
-			return true;
-		}		
-
-		public boolean visit(AnnotationTypeDeclaration node) {
-			// annotation types can not have a constructor
-			return true;
-		}		
 
 		public boolean visit(SimpleName node) {
 			IBinding binding= node.resolveBinding();

@@ -24,10 +24,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
@@ -125,7 +125,6 @@ import org.eclipse.wst.jsdt.internal.core.BinaryMember;
 import org.eclipse.wst.jsdt.internal.core.BinaryType;
 import org.eclipse.wst.jsdt.internal.core.ClassFile;
 import org.eclipse.wst.jsdt.internal.core.CompilationUnit;
-import org.eclipse.wst.jsdt.internal.core.JarPackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
@@ -363,7 +362,7 @@ public static void setFocus(InternalSearchPattern pattern, IJavaScriptElement fo
 private static HashMap workingCopiesThatCanSeeFocus(org.eclipse.wst.jsdt.core.IJavaScriptUnit[] copies, IJavaScriptElement focus, boolean isPolymorphicSearch, SearchParticipant participant) {
 	if (copies == null) return new HashMap();
 	if (focus != null) {
-		while (!(focus instanceof IJavaScriptProject) && !(focus instanceof JarPackageFragmentRoot)) {
+		while (!(focus instanceof IJavaScriptProject)) {
 			focus = focus.getParent();
 		}
 	}
@@ -410,7 +409,7 @@ public static void findIndexMatches(InternalSearchPattern pattern, Index index, 
 
 public static IJavaScriptElement getProjectOrJar(IJavaScriptElement element) {
 	while (!(element instanceof IJavaScriptProject) &&
-			!(element instanceof JarPackageFragmentRoot || element instanceof LibraryFragmentRoot)) {
+			!( element instanceof LibraryFragmentRoot)) {
 		element = element.getParent();
 	}
 	return element;

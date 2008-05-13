@@ -110,12 +110,6 @@ class DefaultASTVisitor extends ASTVisitor {
 	public void endVisit(EnhancedForStatement node) {
 		endVisitNode(node);
 	}
-	public void endVisit(EnumConstantDeclaration node) {
-		endVisitNode(node);
-	}
-	public void endVisit(EnumDeclaration node) {
-		endVisitNode(node);
-	}
 
 	public void endVisit(ExpressionStatement node) {
 		endVisitNode(node);
@@ -166,9 +160,6 @@ class DefaultASTVisitor extends ASTVisitor {
 		endVisitNode(node);
 	}
 	public void endVisit(MemberRef node) {
-		endVisitNode(node);
-	}
-	public void endVisit(MemberValuePair node) {
 		endVisitNode(node);
 	}
 	public void endVisit(FunctionDeclaration node) {
@@ -372,12 +363,6 @@ class DefaultASTVisitor extends ASTVisitor {
 	public boolean visit(EnhancedForStatement node) {
 		return visitNode(node);
 	}
-	public boolean visit(EnumConstantDeclaration node) {
-		return visitNode(node);
-	}
-	public boolean visit(EnumDeclaration node) {
-		return visitNode(node);
-	}
 	public boolean visit(ExpressionStatement node) {
 		return visitNode(node);
 	}
@@ -431,9 +416,6 @@ class DefaultASTVisitor extends ASTVisitor {
 		return visitNode(node);
 	}
 	public boolean visit(MemberRef node) {
-		return visitNode(node);
-	}
-	public boolean visit(MemberValuePair node) {
 		return visitNode(node);
 	}
 	public boolean visit(FunctionDeclaration node) {

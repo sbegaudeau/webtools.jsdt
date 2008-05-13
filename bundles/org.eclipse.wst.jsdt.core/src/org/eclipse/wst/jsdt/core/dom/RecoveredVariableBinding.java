@@ -83,10 +83,6 @@ class RecoveredVariableBinding implements IVariableBinding {
 		return this.variableDeclaration instanceof SingleVariableDeclaration;
 	}
 
-	public IAnnotationBinding[] getAnnotations() {
-		return AnnotationBinding.NoAnnotations;
-	}
-
 	public IJavaScriptElement getJavaElement() {
 		return null;
 	}

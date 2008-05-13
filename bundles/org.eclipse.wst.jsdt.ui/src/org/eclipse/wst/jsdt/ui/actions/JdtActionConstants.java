@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.actions;
 
-import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
 /**
  * Action ids for standard actions, for groups in the menu bar, and
@@ -87,13 +86,6 @@ public class JdtActionConstants {
 
 	// Edit menu
 
-	/**
-	 * Edit menu: name of standard Show Javadoc global action
-	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.ShowJavaDoc"</code>).
-	 * @deprecated As of 3.3, replaced by {@link ITextEditorActionConstants#SHOW_INFORMATION}
-	 */
-	public static final String SHOW_JAVA_DOC= "org.eclipse.wst.jsdt.ui.actions.ShowJavaDoc"; //$NON-NLS-1$
-	
 	/**
 	 * Edit menu: name of standard Code Assist global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.ContentAssist"</code>).
@@ -240,14 +232,6 @@ public class JdtActionConstants {
 	public static final String ADD_JAVA_DOC_COMMENT= "org.eclipse.wst.jsdt.ui.actions.AddJavaDocComment"; //$NON-NLS-1$
 
 	/**
-	 * Source menu: name of standard Find Strings to Externalize global action
-	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.FindStringsToExternalize"</code>).
-	 * 
-	 * @deprecated Use {@link JdtActionConstants#EXTERNALIZE_STRINGS} instead
-	 */
-	public static final String FIND_STRINGS_TO_EXTERNALIZE= "org.eclipse.wst.jsdt.ui.actions.FindStringsToExternalize"; //$NON-NLS-1$
-	
-	/**
 	 * Source menu: name of standard Externalize Strings global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.ExternalizeStrings"</code>).
 	 */
@@ -318,13 +302,6 @@ public class JdtActionConstants {
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.Rename"</code>).
 	 */
 	public static final String RENAME= "org.eclipse.wst.jsdt.ui.actions.Rename"; //$NON-NLS-1$
-	
-	/**
-	 * Refactor menu: name of standard Inline Temp global action
-	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.InlineTemp"</code>).
-	 * @deprecated Use INLINE
-	 */
-	public static final String INLINE_TEMP= "org.eclipse.wst.jsdt.ui.actions.InlineTemp"; //$NON-NLS-1$
 	
 	/**
 	 * Refactor menu: name of standard Extract Temp global action

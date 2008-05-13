@@ -32,15 +32,6 @@ public interface IJavaScriptElementSearchConstants {
 	public static final int CONSIDER_INTERFACES= 1 << 2;
 
 	/**
-	 * Search scope constant indicating that both classes and interfaces 
-	 * should be considered. Equivalent to
-	 * <code>CONSIDER_CLASSES | CONSIDER_INTERFACES</code>.
-	 * 
-	 * @deprecated use CONSIDER_ALL_TYPES or CONSIDER_CLASSES_AND_INTERFACES instead
-	 */
-	public static final int CONSIDER_TYPES= CONSIDER_CLASSES | CONSIDER_INTERFACES;
-
-	/**
 	 * Search scope constant (bit mask) indicating that binaries should be considered.
 	 * Used when opening certain kinds of selection dialogs.
 	 */

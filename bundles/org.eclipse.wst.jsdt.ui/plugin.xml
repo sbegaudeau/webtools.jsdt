@@ -142,10 +142,12 @@
       		attributeName="javadoc_location"
             class="org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.JavadocAttributeConfiguration">
       </classpathAttributeConfiguration>
+<!--      
       <classpathAttributeConfiguration
       		attributeName="org.eclipse.wst.jsdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY"
             class="org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.NativeLibAttributeConfiguration">
-      </classpathAttributeConfiguration>      
+      </classpathAttributeConfiguration>
+-->            
    </extension>
    
    <extension
@@ -1799,6 +1801,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.compare.JavaStructureCreator"
             id="org.eclipse.wst.jsdt.internal.ui.compare.JavaStructureCreator">
       </structureCreator>
+<!--      
       <structureCreator
             class="org.eclipse.wst.jsdt.internal.ui.compare.PropertiesStructureCreator"
             id="org.eclipse.wst.jsdt.internal.ui.compare.PropertiesStructureCreator">
@@ -1807,6 +1810,7 @@
 			contentTypeId="org.eclipse.wst.jsdt.core.javaProperties"
             structureCreatorId="org.eclipse.wst.jsdt.internal.ui.compare.PropertiesStructureCreator">
 	  </contentTypeBinding>
+-->	  
    </extension>
    <extension
          point="org.eclipse.compare.contentViewers">
@@ -4769,6 +4773,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.InterfaceFilter"
             id="org.eclipse.wst.jsdt.ui.TypesView.InterfaceFilter">
       </filter>
+<!--      
       <filter
             targetId="org.eclipse.wst.jsdt.ui.TypesView"
             name="%HideEnum.label"
@@ -4785,6 +4790,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.AnnotationFilter"
             id="org.eclipse.wst.jsdt.ui.TypesView.AnnotationFilter">
       </filter>
+-->
       <filter
             targetId="org.eclipse.wst.jsdt.ui.TypesView"
             name="%HideClass.label"
@@ -5082,9 +5088,11 @@
       <contribution
             class="org.eclipse.wst.jsdt.internal.corext.refactoring.scripting.RenameCompilationUnitRefactoringContribution"
             id="org.eclipse.wst.jsdt.ui.rename.compilationunit"/>
+<!--            
       <contribution
             class="org.eclipse.wst.jsdt.internal.corext.refactoring.scripting.RenameEnumConstRefactoringContribution"
             id="org.eclipse.wst.jsdt.ui.rename.enum.constant"/>
+-->            
       <contribution
             class="org.eclipse.wst.jsdt.internal.corext.refactoring.scripting.RenameFieldRefactoringContribution"
             id="org.eclipse.wst.jsdt.ui.rename.field"/>
@@ -5599,6 +5607,7 @@
 		        name="%HideEmptyInnerPackages.label"
 		        description="%HideEmptyInnerPackages.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideEmptyInnerPackages"/>
+<!--		        
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.AnnotationFilter"
 		        name="%HideAnnotation.label"
@@ -5609,6 +5618,7 @@
 		        name="%HideEnum.label"
 		        description="%HideEnum.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideAnnotations"/>
+-->		        
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.InterfaceFilter"
 		        name="%HideInterface.label"

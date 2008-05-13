@@ -114,19 +114,6 @@ public interface IFunctionBinding extends IBinding {
 	 */
 	public Object getDefaultValue();
 
-	/**
-	 * Returns the resolved annotations of a parameter of this method.
-	 * The result returned is the same regardless of whether
-	 * this is a parameterized method.
-	 *
-	 * @param paramIndex the index of the parameter of interest
-	 * @return the resolved annotations of the <code>paramIndex</code>th parameter,
-	 * or an empty list if there are none
-	 * @throws ArrayIndexOutOfBoundsException if <code>paramIndex</code> is
-	 * not a valid index
-	 * @since 3.2
-	 */
-	public IAnnotationBinding[] getParameterAnnotations(int paramIndex);
 
 	/**
 	 * Returns a list of type bindings representing the formal parameter types,

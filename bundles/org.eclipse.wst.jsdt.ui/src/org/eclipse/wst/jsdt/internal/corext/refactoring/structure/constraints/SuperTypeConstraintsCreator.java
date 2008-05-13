@@ -19,7 +19,6 @@ import java.util.Stack;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
@@ -35,14 +34,14 @@ import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
@@ -729,12 +728,7 @@ public final class SuperTypeConstraintsCreator extends HierarchicalASTVisitor {
 		return originals;
 	}
 
-	/*
-	 * @see org.eclipse.wst.jsdt.internal.corext.dom.HierarchicalASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration)
-	 */
-	public final boolean visit(final AnnotationTypeDeclaration node) {
-		return false;
-	}
+
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.corext.dom.HierarchicalASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.Comment)

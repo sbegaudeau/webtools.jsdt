@@ -173,12 +173,6 @@ public interface IJavaScriptElementDelta {
 	public int F_REMOVED_FROM_CLASSPATH = 0x000080;
 
 	/**
-	 * Change flag indicating that a includepath entry corresponding to the element has changed position in the project's
-	 * includepath. This flag is only valid if the element is an {@link IPackageFragmentRoot}.
-	 * @deprecated Use {@link #F_REORDER} instead.
-	 */
-	public int F_INCLUDEPATH_REORDER = 0x000100;
-	/**
 	 * Change flag indicating that the element has changed position relatively to its siblings.
 	 * If the element is an {@link IPackageFragmentRoot},  a includepath entry corresponding
 	 * to the element has changed position in the project's includepath.

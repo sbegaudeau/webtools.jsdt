@@ -34,12 +34,12 @@ import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
@@ -47,19 +47,16 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
-import org.eclipse.wst.jsdt.core.dom.Annotation;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IExtendedModifier;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -208,8 +205,6 @@ public abstract class HierarchyProcessor extends SuperTypeRefactoringProcessor {
 		for (int index= 0, n= oldField.modifiers().size(); index < n; index++) {
 			final IExtendedModifier modifier= (IExtendedModifier) oldField.modifiers().get(index);
 			final List modifiers= newField.modifiers();
-			if (modifier.isAnnotation() && !modifiers.contains(modifier))
-				modifiers.add(index, ASTNode.copySubtree(ast, (Annotation) modifier));
 		}
 	}
 
@@ -218,8 +213,6 @@ public abstract class HierarchyProcessor extends SuperTypeRefactoringProcessor {
 		for (int index= 0, n= oldMethod.modifiers().size(); index < n; index++) {
 			final IExtendedModifier modifier= (IExtendedModifier) oldMethod.modifiers().get(index);
 			final List modifiers= newMethod.modifiers();
-			if (modifier.isAnnotation() && !modifiers.contains(modifier))
-				modifiers.add(index, ASTNode.copySubtree(ast, (Annotation) modifier));
 		}
 	}
 
@@ -334,15 +327,6 @@ public abstract class HierarchyProcessor extends SuperTypeRefactoringProcessor {
 			final ITrackedNodePosition position= rewriter.track(bodyDeclaration);
 			bodyDeclaration.accept(new TypeVariableMapper(rewriter, mapping) {
 
-				public final boolean visit(final AnnotationTypeDeclaration node) {
-					ModifierRewrite.create(fRewrite, bodyDeclaration).setVisibility(Modifier.PROTECTED, null);
-					return true;
-				}
-
-				public final boolean visit(final EnumDeclaration node) {
-					ModifierRewrite.create(fRewrite, bodyDeclaration).setVisibility(Modifier.PROTECTED, null);
-					return true;
-				}
 
 				public final boolean visit(final TypeDeclaration node) {
 					ModifierRewrite.create(fRewrite, bodyDeclaration).setVisibility(Modifier.PROTECTED, null);
@@ -455,9 +439,6 @@ public abstract class HierarchyProcessor extends SuperTypeRefactoringProcessor {
 			final IMember member= (IMember) iterator.next();
 			ASTNode node= null;
 			if (member instanceof IField) {
-				if (Flags.isEnum(member.getFlags()))
-					node= ASTNodeSearchUtil.getEnumConstantDeclaration((IField) member, cuNode);
-				else
 					node= ASTNodeSearchUtil.getFieldDeclarationFragmentNode((IField) member, cuNode);
 			} else if (member instanceof IType)
 				node= ASTNodeSearchUtil.getAbstractTypeDeclarationNode((IType) member, cuNode);

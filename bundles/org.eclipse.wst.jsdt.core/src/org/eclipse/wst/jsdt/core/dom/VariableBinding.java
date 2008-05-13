@@ -44,22 +44,6 @@ class VariableBinding implements IVariableBinding {
 		this.binding = binding;
 	}
 
-	public IAnnotationBinding[] getAnnotations() {
-		org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] internalAnnotations = this.binding.getAnnotations();
-		// the variable is not an enum constant nor a field nor an argument.
-		int length = internalAnnotations == null ? 0 : internalAnnotations.length;
-		IAnnotationBinding[] domInstances =
-			length == 0 ? AnnotationBinding.NoAnnotations : new AnnotationBinding[length];
-		for (int i = 0; i < length; i++) {
-			final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(internalAnnotations[i]);
-			if (annotationInstance == null) {// not resolving binding
-				return AnnotationBinding.NoAnnotations;
-			}
-			domInstances[i] = annotationInstance;
-		}
-		return domInstances;
-	}
-
 	/* (non-Javadoc)
 	 * @see IVariableBinding#getConstantValue()
 	 * @since 3.0

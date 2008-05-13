@@ -15,31 +15,27 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IImportContainer;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
@@ -50,7 +46,6 @@ import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
 import org.eclipse.wst.jsdt.internal.corext.dom.SelectionAnalyzer;
-import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 
 public class ASTNodeSearchUtil {
 
@@ -118,10 +113,6 @@ public class ASTNodeSearchUtil {
 		return (FunctionDeclaration)ASTNodes.getParent(getNameNode(iMethod, cuNode), FunctionDeclaration.class);
 	}
 
-	public static AnnotationTypeMemberDeclaration getAnnotationTypeMemberDeclarationNode(IFunction iMethod, JavaScriptUnit cuNode) throws JavaScriptModelException {
-		return (AnnotationTypeMemberDeclaration) ASTNodes.getParent(getNameNode(iMethod, cuNode), AnnotationTypeMemberDeclaration.class);
-	}
-
 	public static BodyDeclaration getMethodOrAnnotationTypeMemberDeclarationNode(IFunction iMethod, JavaScriptUnit cuNode) throws JavaScriptModelException {
 //		if (JdtFlags.isAnnotation(iMethod.getDeclaringType()))
 //			return getAnnotationTypeMemberDeclarationNode(iMethod, cuNode);
@@ -140,24 +131,11 @@ public class ASTNodeSearchUtil {
 		return (FieldDeclaration) ASTNodes.getParent(getNameNode(iField, cuNode), FieldDeclaration.class);
 	}
 
-	public static EnumConstantDeclaration getEnumConstantDeclaration(IField iField, JavaScriptUnit cuNode) throws JavaScriptModelException {
-		return (EnumConstantDeclaration) ASTNodes.getParent(getNameNode(iField, cuNode), EnumConstantDeclaration.class);
-	}
 
 	public static BodyDeclaration getFieldOrEnumConstantDeclaration(IField iField, JavaScriptUnit cuNode) throws JavaScriptModelException {
-		if (JdtFlags.isEnum(iField))
-			return getEnumConstantDeclaration(iField, cuNode);
-		else
 			return getFieldDeclarationNode(iField, cuNode);
 	}
 
-	public static EnumDeclaration getEnumDeclarationNode(IType iType, JavaScriptUnit cuNode) throws JavaScriptModelException {
-		return (EnumDeclaration) ASTNodes.getParent(getNameNode(iType, cuNode), EnumDeclaration.class);
-	}
-
-	public static AnnotationTypeDeclaration getAnnotationTypeDeclarationNode(IType iType, JavaScriptUnit cuNode) throws JavaScriptModelException {
-		return (AnnotationTypeDeclaration) ASTNodes.getParent(getNameNode(iType, cuNode), AnnotationTypeDeclaration.class);
-	}
 
 	public static BodyDeclaration getBodyDeclarationNode(IMember iMember, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		return (BodyDeclaration) ASTNodes.getParent(getNameNode(iMember, cuNode), BodyDeclaration.class);

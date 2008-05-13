@@ -19,14 +19,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -77,26 +76,6 @@ public class OpenTypeHierarchyAction extends SelectionDispatchAction {
 		setDescription(ActionMessages.OpenTypeHierarchyAction_description); 
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.OPEN_TYPE_HIERARCHY_ACTION);
 	}
-	
-	/**
-	 * Creates a new <code>OpenTypeHierarchyAction</code>. The action requires
-	 * that the selection provided by the given selection provider is of type <code>
-	 * org.eclipse.jface.viewers.IStructuredSelection</code>.
-	 * 
-	 * @param site the site providing context information for this action
-	 * @param provider a special selection provider which is used instead 
-	 *  of the site's selection provider or <code>null</code> to use the site's
-	 *  selection provider
-	 * 
-	 * @since 3.2
-	 * @deprecated Use {@link #setSpecialSelectionProvider(ISelectionProvider)} instead. This API will be
-	 * removed after 3.2 M5.
-     */
-    public OpenTypeHierarchyAction(IWorkbenchSite site, ISelectionProvider provider) {
-        this(site);
-        setSpecialSelectionProvider(provider);
-    }
-
 	
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.

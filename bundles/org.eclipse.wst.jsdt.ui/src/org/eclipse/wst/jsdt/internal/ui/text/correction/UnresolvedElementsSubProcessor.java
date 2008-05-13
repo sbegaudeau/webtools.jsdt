@@ -19,9 +19,9 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -29,32 +29,28 @@ import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTMatcher;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.Annotation;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.IPackageBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SimpleType;
-import org.eclipse.wst.jsdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
@@ -77,8 +73,8 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.QualifiedTypeNameHistory;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeFilter;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.ChangeDescription;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.EditDescription;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.InsertDescription;
@@ -1555,53 +1551,53 @@ public class UnresolvedElementsSubProcessor {
 		proposals.add(new RenameNodeCompletionProposal(label, context.getCompilationUnit(), offset, length, lengthId, 7));
 	}
 
-	public static void getAnnotationMemberProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-		JavaScriptUnit astRoot= context.getASTRoot();
-		IJavaScriptUnit cu= context.getCompilationUnit();
-		ASTNode selectedNode= problem.getCoveringNode(astRoot);
-
-		Annotation annotation;
-		String memberName;
-		if (selectedNode.getLocationInParent() == MemberValuePair.NAME_PROPERTY) {
-			if (selectedNode.getParent().getLocationInParent() != NormalAnnotation.VALUES_PROPERTY) {
-				return;
-			}
-			annotation= (Annotation) selectedNode.getParent().getParent();
-			memberName= ((SimpleName) selectedNode).getIdentifier();
-		} else if (selectedNode.getLocationInParent() == SingleMemberAnnotation.VALUE_PROPERTY) {
-			annotation= (Annotation) selectedNode.getParent();
-			memberName= "value"; //$NON-NLS-1$
-		} else {
-			return;
-		}
-		
-		ITypeBinding annotBinding= annotation.resolveTypeBinding();
-		if (annotBinding == null) {
-			return;
-		}
-
-		
-		if (annotation instanceof NormalAnnotation) {
-			// similar names
-			IFunctionBinding[] otherMembers= annotBinding.getDeclaredMethods();
-			for (int i= 0; i < otherMembers.length; i++) {
-				IFunctionBinding binding= otherMembers[i];
-				String curr= binding.getName();
-				int relevance= NameMatcher.isSimilarName(memberName, curr) ? 6 : 3;
-				String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_UnresolvedElementsSubProcessor_changetoattribute_description, curr);
-				proposals.add(new RenameNodeCompletionProposal(label, cu, problem.getOffset(), problem.getLength(), curr, relevance));
-			}
-		}
-		
-		if (annotBinding.isFromSource()) {
-			IJavaScriptUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, annotBinding);
-			if (targetCU != null) {
-				String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_UnresolvedElementsSubProcessor_createattribute_description, memberName);
-				Image image= JavaPluginImages.get(JavaPluginImages.IMG_MISC_PUBLIC);
-				proposals.add(new NewAnnotationMemberProposal(label, targetCU, selectedNode, annotBinding, 5, image));
-			}
-		}
-	}
+//	public static void getAnnotationMemberProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
+//		JavaScriptUnit astRoot= context.getASTRoot();
+//		IJavaScriptUnit cu= context.getCompilationUnit();
+//		ASTNode selectedNode= problem.getCoveringNode(astRoot);
+//
+//		Annotation annotation;
+//		String memberName;
+//		if (selectedNode.getLocationInParent() == MemberValuePair.NAME_PROPERTY) {
+//			if (selectedNode.getParent().getLocationInParent() != NormalAnnotation.VALUES_PROPERTY) {
+//				return;
+//			}
+//			annotation= (Annotation) selectedNode.getParent().getParent();
+//			memberName= ((SimpleName) selectedNode).getIdentifier();
+//		} else if (selectedNode.getLocationInParent() == SingleMemberAnnotation.VALUE_PROPERTY) {
+//			annotation= (Annotation) selectedNode.getParent();
+//			memberName= "value"; //$NON-NLS-1$
+//		} else {
+//			return;
+//		}
+//		
+//		ITypeBinding annotBinding= annotation.resolveTypeBinding();
+//		if (annotBinding == null) {
+//			return;
+//		}
+//
+//		
+//		if (annotation instanceof NormalAnnotation) {
+//			// similar names
+//			IFunctionBinding[] otherMembers= annotBinding.getDeclaredMethods();
+//			for (int i= 0; i < otherMembers.length; i++) {
+//				IFunctionBinding binding= otherMembers[i];
+//				String curr= binding.getName();
+//				int relevance= NameMatcher.isSimilarName(memberName, curr) ? 6 : 3;
+//				String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_UnresolvedElementsSubProcessor_changetoattribute_description, curr);
+//				proposals.add(new RenameNodeCompletionProposal(label, cu, problem.getOffset(), problem.getLength(), curr, relevance));
+//			}
+//		}
+//		
+//		if (annotBinding.isFromSource()) {
+//			IJavaScriptUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, annotBinding);
+//			if (targetCU != null) {
+//				String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_UnresolvedElementsSubProcessor_createattribute_description, memberName);
+//				Image image= JavaPluginImages.get(JavaPluginImages.IMG_MISC_PUBLIC);
+//				proposals.add(new NewAnnotationMemberProposal(label, targetCU, selectedNode, annotBinding, 5, image));
+//			}
+//		}
+//	}
 
 
 }

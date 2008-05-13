@@ -334,8 +334,6 @@ public class TypeDeclarationStatement extends Statement {
 		AbstractTypeDeclaration d = getDeclaration();
 		if (d instanceof TypeDeclaration) {
 			return ((TypeDeclaration) d).resolveBinding();
-		} else if (d instanceof AnnotationTypeDeclaration) {
-			return ((AnnotationTypeDeclaration) d).resolveBinding();
 		} else {
 			// shouldn't happen
 			return null;

@@ -13,17 +13,11 @@ package org.eclipse.wst.jsdt.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
-import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.util.PublicScanner;
 import org.eclipse.wst.jsdt.internal.formatter.DefaultCodeFormatter;
 
@@ -65,43 +59,6 @@ public class ToolFactory {
 	 * @see #createCodeFormatter(Map, int)
 	 */
 	public static final int M_FORMAT_EXISTING = new Integer(1).intValue();
-
-	/**
-	 * Create an instance of a code formatter. A code formatter implementation can be contributed via the
-	 * extension point "org.eclipse.wst.jsdt.core.codeFormatter". If unable to find a registered extension, the factory
-	 * will default to using the default code formatter.
-	 *
-	 * @return an instance of a code formatter
-	 * @see ICodeFormatter
-	 * @see ToolFactory#createDefaultCodeFormatter(Map)
-	 * @deprecated Use {@link #createCodeFormatter(Map)} instead. Extension point is discontinued
-	 */
-	public static ICodeFormatter createCodeFormatter(){
-
-			Plugin jdtCorePlugin = JavaScriptCore.getPlugin();
-			if (jdtCorePlugin == null) return null;
-
-			IExtensionPoint extension = jdtCorePlugin.getDescriptor().getExtensionPoint(JavaModelManager.FORMATTER_EXTPOINT_ID);
-			if (extension != null) {
-				IExtension[] extensions =  extension.getExtensions();
-				for(int i = 0; i < extensions.length; i++){
-					IConfigurationElement [] configElements = extensions[i].getConfigurationElements();
-					for(int j = 0; j < configElements.length; j++){
-						try {
-							Object execExt = configElements[j].createExecutableExtension("class"); //$NON-NLS-1$
-							if (execExt instanceof ICodeFormatter){
-								// use first contribution found
-								return (ICodeFormatter)execExt;
-							}
-						} catch(CoreException e){
-							// unable to instantiate extension, will answer default formatter instead
-						}
-					}
-				}
-			}
-		// no proper contribution found, use default formatter
-		return createDefaultCodeFormatter(null);
-	}
 
 	/**
 	 * Create an instance of the built-in code formatter.
@@ -158,25 +115,6 @@ public class ToolFactory {
 
 
 
-
-	/**
-	 * Create an instance of the built-in code formatter. A code formatter implementation can be contributed via the
-	 * extension point "org.eclipse.wst.jsdt.core.codeFormatter". If unable to find a registered extension, the factory will
-	 * default to using the default code formatter.
-	 *
-	 * @param options - the options map to use for formatting with the default code formatter. Recognized options
-	 * 	are documented on <code>JavaScriptCore#getDefaultOptions()</code>. If set to <code>null</code>, then use
-	 * 	the current settings from <code>JavaScriptCore#getOptions</code>.
-	 * @return an instance of the built-in code formatter
-	 * @see ICodeFormatter
-	 * @see ToolFactory#createCodeFormatter()
-	 * @see JavaScriptCore#getOptions()
-	 * @deprecated Use {@link #createCodeFormatter(Map)} instead
-	 */
-	public static ICodeFormatter createDefaultCodeFormatter(Map options){
-		if (options == null) options = JavaScriptCore.getOptions();
-		return new org.eclipse.wst.jsdt.internal.formatter.old.CodeFormatter(options);
-	}
 
 	/**
 	 * Create a scanner, indicating the level of detail requested for tokenizing. The scanner can then be

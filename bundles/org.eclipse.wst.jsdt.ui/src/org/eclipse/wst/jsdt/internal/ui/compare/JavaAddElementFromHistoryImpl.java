@@ -35,18 +35,15 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
@@ -182,15 +179,10 @@ class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {
 						
 					} else if (parent instanceof IType) {
 						ASTNode declaration= getBodyContainer(root, (IType)parent);
-						if (declaration instanceof TypeDeclaration || declaration instanceof AnnotationTypeDeclaration) {
+						if (declaration instanceof TypeDeclaration) {
 							List container= ASTNodes.getBodyDeclarations(declaration);
 							int index= ASTNodes.getInsertionIndex((BodyDeclaration)newNode, container);
 							ListRewrite lw= rewriter.getListRewrite(declaration, ASTNodes.getBodyDeclarationsProperty(declaration));
-							lw.insertAt(newNode, index, null);
-						} else if (declaration instanceof EnumDeclaration) {
-							List container= ((EnumDeclaration)declaration).enumConstants();
-							int index= ASTNodes.getInsertionIndex((FieldDeclaration)newNode, container);
-							ListRewrite lw= rewriter.getListRewrite(declaration, EnumDeclaration.ENUM_CONSTANTS_PROPERTY);
 							lw.insertAt(newNode, index, null);
 						}
 					} else {
@@ -266,12 +258,6 @@ class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {
 			case JavaNode.CLASS:
 			case JavaNode.INTERFACE:
 				return ASTNode.TYPE_DECLARATION;
-				
-			case JavaNode.ENUM:
-				return ASTNode.ENUM_DECLARATION;
-				
-			case JavaNode.ANNOTATION:
-				return ASTNode.ANNOTATION_TYPE_DECLARATION;
 				
 			case JavaNode.CONSTRUCTOR:
 			case JavaNode.METHOD:

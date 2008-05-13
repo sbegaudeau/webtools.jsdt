@@ -55,14 +55,14 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelMarker;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IRegion;
@@ -643,7 +643,7 @@ public class JavaProject
 							 }
 							 else
 							 {
-								 root = new JarPackageFragmentRoot(entryPath, this);
+//								 root = new JarPackageFragmentRoot(entryPath, this);
 
 							 }
 						}
@@ -1770,7 +1770,7 @@ public class JavaProject
 		switch (resource.getType()) {
 			case IResource.FILE:
 				if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(resource.getName())) {
-					return new JarPackageFragmentRoot(resource, this);
+//					return new JarPackageFragmentRoot(resource, this);
 				} else {
 					return null;
 				}
@@ -1817,14 +1817,6 @@ public class JavaProject
 			length);
 
 		return roots;
-	}
-
-	/**
-	 * @see IJavaScriptProject
-	 * @deprecated
-	 */
-	public IPackageFragmentRoot[] getPackageFragmentRoots(IIncludePathEntry entry) {
-		return findPackageFragmentRoots(entry);
 	}
 
 	/**

@@ -410,27 +410,4 @@ public interface IIncludePathEntry {
 	 * @return <code>true</code> if exported, and <code>false</code> otherwise
 	 */
 	boolean isExported();
-
-	/**
-	 * This is a helper method, which returns the resolved includepath entry denoted
-	 * by an entry (if it is a variable entry). It is obtained by resolving the variable
-	 * reference in the first segment. Returns <code>null</code> if unable to resolve using
-	 * the following algorithm:
-	 * <ul>
-	 * <li> if variable segment cannot be resolved, returns <code>null</code></li>
-	 * <li> finds a project,  binary folder in the workspace at the resolved path location</li>
-	 * <li> if none finds an external file or folder outside the workspace at the resolved path location </li>
-	 * <li> if none returns <code>null</code></li>
-	 * </ul>
-	 * <p>
-	 * Variable source attachment is also resolved and recorded in the resulting includepath entry.
-	 * <p>
-	 * @return the resolved library or project includepath entry, or <code>null</code>
-	 *   if the given path could not be resolved to a includepath entry
-	 *	<p>
-	 * Note that this deprecated API doesn't handle CPE_CONTAINER entries.
-	 *
-	 * @deprecated Use {@link JavaScriptCore#getResolvedIncludepathEntry(IIncludePathEntry)} instead
-	 */
-	IIncludePathEntry getResolvedEntry();
 }

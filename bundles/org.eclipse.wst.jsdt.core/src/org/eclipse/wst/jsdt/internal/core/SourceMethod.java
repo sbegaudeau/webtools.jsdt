@@ -134,32 +134,6 @@ public ITypeParameter[] getTypeParameters() throws JavaScriptModelException {
 	return info.typeParameters;
 }
 
-/**
- * @see IFunction#getTypeParameterSignatures()
- * @since 3.0
- * @deprecated
- */
-public String[] getTypeParameterSignatures() throws JavaScriptModelException {
-	ITypeParameter[] typeParameters = getTypeParameters();
-	int length = typeParameters.length;
-	String[] typeParameterSignatures = new String[length];
-	for (int i = 0; i < length; i++) {
-		TypeParameter typeParameter = (TypeParameter) typeParameters[i];
-		TypeParameterElementInfo info = (TypeParameterElementInfo) typeParameter.getElementInfo();
-		char[][] bounds = info.bounds;
-		if (bounds == null) {
-			typeParameterSignatures[i] = Signature.createTypeParameterSignature(typeParameter.getElementName(), CharOperation.NO_STRINGS);
-		} else {
-			int boundsLength = bounds.length;
-			char[][] boundSignatures = new char[boundsLength][];
-			for (int j = 0; j < boundsLength; j++) {
-				boundSignatures[j] = Signature.createCharArrayTypeSignature(bounds[j], false);
-			}
-			typeParameterSignatures[i] = new String(Signature.createTypeParameterSignature(typeParameter.getElementName().toCharArray(), boundSignatures));
-		}
-	}
-	return typeParameterSignatures;
-}
 
 /*
  * @see JavaElement#getPrimaryElement(boolean)
@@ -321,13 +295,6 @@ protected void toStringName(StringBuffer buffer, int flags) {
 	}
 }
 
-/**
- * @deprecated Use {@link #getFunction(String,String[])} instead
- */
-public IFunction getMethod(String selector, String[] parameterTypeSignatures)
-{
-	return getFunction(selector, parameterTypeSignatures);
-}
 public IFunction getFunction(String selector, String[] parameterTypeSignatures)
 {
 	return new SourceMethod(this, selector, parameterTypeSignatures);

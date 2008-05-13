@@ -16,8 +16,6 @@ import java.util.Collection;
 import org.eclipse.wst.jsdt.core.dom.ASTMatcher;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
@@ -33,39 +31,34 @@ import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionExpression;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
 import org.eclipse.wst.jsdt.core.dom.LineComment;
 import org.eclipse.wst.jsdt.core.dom.ListExpression;
-import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
-import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
-import org.eclipse.wst.jsdt.core.dom.FunctionRef;
-import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
-import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
@@ -82,7 +75,6 @@ import org.eclipse.wst.jsdt.core.dom.RegularExpressionLiteral;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SimpleType;
-import org.eclipse.wst.jsdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.StringLiteral;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
@@ -556,18 +548,6 @@ class AstMatchingNodeFinder {
 			return super.visit(node);
 		}
 
-		public boolean visit(AnnotationTypeDeclaration node) {
-			if (node.subtreeMatch(fMatcher, fNodeToMatch))
-				return matches(node);
-			return super.visit(node);
-		}
-
-		public boolean visit(AnnotationTypeMemberDeclaration node) {
-			if (node.subtreeMatch(fMatcher, fNodeToMatch))
-				return matches(node);
-			return super.visit(node);
-		}
-
 		public boolean visit(BlockComment node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
@@ -580,37 +560,13 @@ class AstMatchingNodeFinder {
 			return super.visit(node);
 		}
 
-		public boolean visit(EnumConstantDeclaration node) {
-			if (node.subtreeMatch(fMatcher, fNodeToMatch))
-				return matches(node);
-			return super.visit(node);
-		}
-
-		public boolean visit(EnumDeclaration node) {
-			if (node.subtreeMatch(fMatcher, fNodeToMatch))
-				return matches(node);
-			return super.visit(node);
-		}
-
 		public boolean visit(LineComment node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
 			return super.visit(node);
 		}
 
-		public boolean visit(MarkerAnnotation node) {
-			if (node.subtreeMatch(fMatcher, fNodeToMatch))
-				return matches(node);
-			return super.visit(node);
-		}
-
 		public boolean visit(MemberRef node) {
-			if (node.subtreeMatch(fMatcher, fNodeToMatch))
-				return matches(node);
-			return super.visit(node);
-		}
-
-		public boolean visit(MemberValuePair node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
 			return super.visit(node);
@@ -634,12 +590,6 @@ class AstMatchingNodeFinder {
 			return super.visit(node);
 		}
 
-		public boolean visit(NormalAnnotation node) {
-			if (node.subtreeMatch(fMatcher, fNodeToMatch))
-				return matches(node);
-			return super.visit(node);
-		}
-
 		public boolean visit(ParameterizedType node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
@@ -647,12 +597,6 @@ class AstMatchingNodeFinder {
 		}
 
 		public boolean visit(QualifiedType node) {
-			if (node.subtreeMatch(fMatcher, fNodeToMatch))
-				return matches(node);
-			return super.visit(node);
-		}
-
-		public boolean visit(SingleMemberAnnotation node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
 			return super.visit(node);

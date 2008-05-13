@@ -35,19 +35,18 @@ import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
@@ -1990,7 +1989,6 @@ public class AdvancedQuickAssistProcessor implements IQuickAssistProcessor {
 				|| locationInParent == FunctionInvocation.ARGUMENTS_PROPERTY 
 				|| locationInParent == ConstructorInvocation.ARGUMENTS_PROPERTY 
 				|| locationInParent == SuperMethodInvocation.ARGUMENTS_PROPERTY 
-				|| locationInParent == EnumConstantDeclaration.ARGUMENTS_PROPERTY 
 				|| locationInParent == SuperConstructorInvocation.ARGUMENTS_PROPERTY 
 				|| locationInParent == ClassInstanceCreation.ARGUMENTS_PROPERTY 
 				|| locationInParent == ConditionalExpression.EXPRESSION_PROPERTY 

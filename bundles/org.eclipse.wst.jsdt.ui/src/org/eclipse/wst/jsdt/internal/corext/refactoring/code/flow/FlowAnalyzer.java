@@ -18,8 +18,6 @@ import java.util.List;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
@@ -34,21 +32,20 @@ import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
@@ -59,14 +56,10 @@ import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
 import org.eclipse.wst.jsdt.core.dom.ListExpression;
-import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
-import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
@@ -80,7 +73,6 @@ import org.eclipse.wst.jsdt.core.dom.QualifiedType;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SimpleType;
-import org.eclipse.wst.jsdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.StringLiteral;
@@ -376,20 +368,6 @@ abstract class FlowAnalyzer extends GenericVisitor {
 
 	//---- concret endVisit methods ---------------------------------------------------
 	
-	public void endVisit(AnnotationTypeDeclaration node) {
-		if (skipNode(node))
-			return;
-		GenericSequentialFlowInfo info= processSequential(node, node.bodyDeclarations());
-		info.setNoReturn();
-	}
-	
-	public void endVisit(AnnotationTypeMemberDeclaration node) {
-		if (skipNode(node))
-			return;
-		GenericSequentialFlowInfo info= processSequential(node, node.getType(), node.getDefault());
-		info.setNoReturn();		
-	}
-	
 	public void endVisit(AnonymousClassDeclaration node) {
 		if (skipNode(node))
 			return;
@@ -553,21 +531,6 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		forInfo.removeLabel(null);
 	}
 	
-	public void endVisit(EnumConstantDeclaration node) {
-		if (skipNode(node))
-			return;
-		GenericSequentialFlowInfo info= processSequential(node, node.arguments());
-		process(info, node.getAnonymousClassDeclaration());
-	}
-	
-	public void endVisit(EnumDeclaration node) {
-		if (skipNode(node))
-			return;
-		GenericSequentialFlowInfo info= processSequential(node, node.superInterfaceTypes()); 
-		process(info, node.enumConstants());
-		process(info, node.bodyDeclarations());
-		info.setNoReturn();
-	}
 	
 	public void endVisit(ExpressionStatement node) {
 		if (skipNode(node))
@@ -664,26 +627,7 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		processSequential(node, node.expressions());
 	}
 	
-	public void endVisit(MarkerAnnotation node) {
-		// nothing to do for marker annotations;
-	}
-	
-	public void endVisit(MemberValuePair node) {
-		if (skipNode(node))
-			return;
 
-		FlowInfo name= getFlowInfo(node.getName());
-		FlowInfo value= getFlowInfo(node.getValue());
-		if (name instanceof LocalFlowInfo) {
-			LocalFlowInfo llhs= (LocalFlowInfo)name;
-			llhs.setWriteAccess(fFlowContext);
-		}
-		GenericSequentialFlowInfo info= createSequential(node);
-		// first process value and then name.
-		info.merge(value, fFlowContext);
-		info.merge(name, fFlowContext);
-		
-	}
 	
 	public void endVisit(FunctionDeclaration node) {
 		if (skipNode(node))
@@ -697,13 +641,7 @@ abstract class FlowAnalyzer extends GenericVisitor {
 	public void endVisit(FunctionInvocation node) {
 		endVisitMethodInvocation(node, node.getExpression(), node.arguments(), getMethodBinding(node.getName()));
 	}
-	
-	public void endVisit(NormalAnnotation node) {
-		if (skipNode(node))
-			return;
-		GenericSequentialFlowInfo info= processSequential(node, node.getTypeName());
-		process(info, node.values());
-	}
+
 	
 	public void endVisit(NullLiteral node) {
 		// Leaf node.
@@ -800,11 +738,6 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		assignFlowInfo(node, node.getName());
 	}
 	
-	public void endVisit(SingleMemberAnnotation node) {
-		if (skipNode(node))
-			return;
-		assignFlowInfo(node, node.getValue());
-	}
 	
 	public void endVisit(SingleVariableDeclaration node) {
 		if (skipNode(node))

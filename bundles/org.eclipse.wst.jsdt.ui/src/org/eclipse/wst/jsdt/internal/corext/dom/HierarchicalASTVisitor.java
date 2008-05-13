@@ -10,7 +10,98 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.dom;
 
-import org.eclipse.wst.jsdt.core.dom.*;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
+import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
+import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
+import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
+import org.eclipse.wst.jsdt.core.dom.ArrayType;
+import org.eclipse.wst.jsdt.core.dom.AssertStatement;
+import org.eclipse.wst.jsdt.core.dom.Assignment;
+import org.eclipse.wst.jsdt.core.dom.Block;
+import org.eclipse.wst.jsdt.core.dom.BlockComment;
+import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
+import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
+import org.eclipse.wst.jsdt.core.dom.BreakStatement;
+import org.eclipse.wst.jsdt.core.dom.CastExpression;
+import org.eclipse.wst.jsdt.core.dom.CatchClause;
+import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
+import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
+import org.eclipse.wst.jsdt.core.dom.Comment;
+import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
+import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
+import org.eclipse.wst.jsdt.core.dom.DoStatement;
+import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
+import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
+import org.eclipse.wst.jsdt.core.dom.Expression;
+import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
+import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
+import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionExpression;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
+import org.eclipse.wst.jsdt.core.dom.IfStatement;
+import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.InfixExpression;
+import org.eclipse.wst.jsdt.core.dom.Initializer;
+import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
+import org.eclipse.wst.jsdt.core.dom.LineComment;
+import org.eclipse.wst.jsdt.core.dom.ListExpression;
+import org.eclipse.wst.jsdt.core.dom.MemberRef;
+import org.eclipse.wst.jsdt.core.dom.Modifier;
+import org.eclipse.wst.jsdt.core.dom.Name;
+import org.eclipse.wst.jsdt.core.dom.NullLiteral;
+import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
+import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
+import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
+import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
+import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.QualifiedType;
+import org.eclipse.wst.jsdt.core.dom.RegularExpressionLiteral;
+import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SimpleType;
+import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.wst.jsdt.core.dom.Statement;
+import org.eclipse.wst.jsdt.core.dom.StringLiteral;
+import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
+import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.SwitchCase;
+import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
+import org.eclipse.wst.jsdt.core.dom.TagElement;
+import org.eclipse.wst.jsdt.core.dom.TextElement;
+import org.eclipse.wst.jsdt.core.dom.ThisExpression;
+import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
+import org.eclipse.wst.jsdt.core.dom.TryStatement;
+import org.eclipse.wst.jsdt.core.dom.Type;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
+import org.eclipse.wst.jsdt.core.dom.TypeParameter;
+import org.eclipse.wst.jsdt.core.dom.UndefinedLiteral;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.core.dom.WildcardType;
+import org.eclipse.wst.jsdt.core.dom.WithStatement;
 
 /**
  * <p>This class provides a convenient behaviour-only 
@@ -98,19 +189,6 @@ public void endVisit(BodyDeclaration node) {
 		endVisit((BodyDeclaration) node);
 	}
 	
-		public boolean visit(AnnotationTypeDeclaration node) {
-			return visit((AbstractTypeDeclaration) node);
-		}
-		public void endVisit(AnnotationTypeDeclaration node) {
-			endVisit((AbstractTypeDeclaration) node);
-		}
-		
-		public boolean visit(EnumDeclaration node) {
-			return visit((AbstractTypeDeclaration) node);
-		}
-		public void endVisit(EnumDeclaration node) {
-			endVisit((AbstractTypeDeclaration) node);
-		}
 		
 		public boolean visit(TypeDeclaration node) {
 			return visit((AbstractTypeDeclaration) node);
@@ -120,19 +198,7 @@ public void endVisit(BodyDeclaration node) {
 		}
 	//---- End AbstractTypeDeclaration Hierarchy ---------------------------
 	
-	public boolean visit(AnnotationTypeMemberDeclaration node) {
-		return visit((BodyDeclaration) node);
-	}
-	public void endVisit(AnnotationTypeMemberDeclaration node) {
-		endVisit((BodyDeclaration) node);
-	}
-	
-	public boolean visit(EnumConstantDeclaration node) {
-		return visit((BodyDeclaration) node);
-	}
-	public void endVisit(EnumConstantDeclaration node) {
-		endVisit((BodyDeclaration) node);
-	}
+
 	
 	public boolean visit(FieldDeclaration node) {
 		return visit((BodyDeclaration) node);
@@ -213,36 +279,7 @@ public void endVisit(Expression node) {
 	endVisit((ASTNode) node);
 }
 
-	//---- Begin Annotation Hierarchy ----------------------------------
-	public boolean visit(Annotation node) {
-		return visit((Expression) node);
-	}
-	public void endVisit(Annotation node) {
-		endVisit((Expression) node);
-	}
-	
-		public boolean visit(MarkerAnnotation node) {
-			return visit((Annotation) node);
-		}
-		public void endVisit(MarkerAnnotation node) {
-			endVisit((Annotation) node);
-		}
-		
-		public boolean visit(NormalAnnotation node) {
-			return visit((Annotation) node);
-		}
-		public void endVisit(NormalAnnotation node) {
-			endVisit((Annotation) node);
-		}
-		
-		public boolean visit(SingleMemberAnnotation node) {
-			return visit((Annotation) node);
-		}
-		public void endVisit(SingleMemberAnnotation node) {
-			endVisit((Annotation) node);
-		}
-		
-	//---- End Annotation Hierarchy -----------------------------
+
 	
 	public boolean visit(ArrayAccess node) {
 		return visit((Expression) node);
@@ -491,12 +528,6 @@ public void endVisit(MemberRef node) {
 	endVisit((ASTNode) node);
 }
 
-public boolean visit(MemberValuePair node) {
-	return visit((ASTNode) node);
-}
-public void endVisit(MemberValuePair node) {
-	endVisit((ASTNode) node);
-}
 
 public boolean visit(FunctionRef node) {
 	return visit((ASTNode) node);

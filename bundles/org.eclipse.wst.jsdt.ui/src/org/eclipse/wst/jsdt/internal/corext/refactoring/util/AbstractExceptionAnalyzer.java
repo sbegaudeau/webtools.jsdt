@@ -16,13 +16,11 @@ import java.util.List;
 import java.util.Stack;
 
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
 import org.eclipse.wst.jsdt.core.dom.TryStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
@@ -51,19 +49,6 @@ public abstract class AbstractExceptionAnalyzer extends ASTVisitor {
 		return true;
 	}
 
-	public boolean visit(EnumDeclaration node) {
-		// Don't dive into a local type.
-		if (node.isLocalTypeDeclaration())
-			return false;
-		return true;
-	}
-
-	public boolean visit(AnnotationTypeDeclaration node) {
-		// Don't dive into a local type.
-		if (node.isLocalTypeDeclaration())
-			return false;
-		return true;
-	}
 	
 	public boolean visit(AnonymousClassDeclaration node) {
 		// Don't dive into a local type.

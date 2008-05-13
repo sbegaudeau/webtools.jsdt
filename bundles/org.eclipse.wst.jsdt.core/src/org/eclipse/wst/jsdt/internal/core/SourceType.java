@@ -17,7 +17,6 @@ import java.util.HashMap;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
-import org.eclipse.wst.jsdt.core.ICompletionRequestor;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IInitializer;
@@ -67,24 +66,6 @@ protected void closing(Object info) throws JavaScriptModelException {
 	for (int i = 0, length = typeParameters.length; i < length; i++) {
 		((TypeParameter) typeParameters[i]).close();
 	}
-}
-/**
- * @see IType
- * @deprecated
- */
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,ICompletionRequestor requestor) throws JavaScriptModelException {
-	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, requestor, DefaultWorkingCopyOwner.PRIMARY);
-}
-/**
- * @see IType
- * @deprecated
- */
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,ICompletionRequestor requestor, WorkingCopyOwner owner) throws JavaScriptModelException {
-	if (requestor == null) {
-		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
-	}
-	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, new org.eclipse.wst.jsdt.internal.codeassist.CompletionRequestorWrapper(requestor), owner);
-
 }
 /**
  * @see IType
@@ -368,13 +349,6 @@ public String getKey() {
 		// happen only if force open is true
 		return null;
 	}
-}
-/**
- * @see IType#getMethod
- * @deprecated Use {@link #getFunction(String,String[])} instead
- */
-public IFunction getMethod(String selector, String[] parameterTypeSignatures) {
-	return getFunction(selector, parameterTypeSignatures);
 }
 /**
  * @see IType#getMethod
@@ -681,30 +655,6 @@ public ITypeHierarchy newSupertypeHierarchy(
 	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), false);
 	op.runOperation(monitor);
 	return op.getResult();
-}
-/**
- * @param workingCopies the working copies that take precedence over their original compilation units
- * @param monitor the given progress monitor
- * @return a type hierarchy for this type containing this type and all of its supertypes
- * @exception JavaScriptModelException if this element does not exist or if an
- *		exception occurs while accessing its corresponding resource.
- *
- * @see IType#newSupertypeHierarchy(IWorkingCopy[], IProgressMonitor)
- * @deprecated
- */
-public ITypeHierarchy newSupertypeHierarchy(
-	IWorkingCopy[] workingCopies,
-	IProgressMonitor monitor)
-	throws JavaScriptModelException {
-
-	IJavaScriptUnit[] copies;
-	if (workingCopies == null) {
-		copies = null;
-	} else {
-		int length = workingCopies.length;
-		System.arraycopy(workingCopies, 0, copies = new IJavaScriptUnit[length], 0, length);
-	}
-	return newSupertypeHierarchy(copies, monitor);
 }
 /**
  * @see IType#newSupertypeHierarchy(WorkingCopyOwner, IProgressMonitor)

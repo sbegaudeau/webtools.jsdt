@@ -85,13 +85,6 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 */
 	public static final String SELECT_LAST= "org.eclipse.wst.jsdt.ui.edit.text.java.select.last"; //$NON-NLS-1$
 	
-	/**
-	 * Action definition ID of the edit -> correction assist proposal action
-	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.correction.assist.proposals"</code>).
-	 * 
-	 * @deprecated As of 3.2, replaced by {@link ITextEditorActionDefinitionIds#QUICK_ASSIST}
-	 */
-	public static final String CORRECTION_ASSIST_PROPOSALS= QUICK_ASSIST;
 		
 
 	/**
@@ -100,13 +93,6 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * @since 3.0
 	 */
 	public static final String CONTENT_ASSIST_COMPLETE_PREFIX= "org.eclipse.wst.jsdt.ui.edit.text.java.complete.prefix"; //$NON-NLS-1$
-
-	/**
-	 * Action definition ID of the edit -> show Javadoc action
-	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.show.javadoc"</code>).
-	 * @deprecated As of 3.3, replaced by {@link ITextEditorActionDefinitionIds#SHOW_INFORMATION}
-	 */
-	public static final String SHOW_JAVADOC= "org.eclipse.wst.jsdt.ui.edit.text.java.show.javadoc"; //$NON-NLS-1$
 
 	/**
 	 * Action definition ID of the navigate -> Show Outline action
@@ -266,29 +252,6 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	public static final String EXTERNALIZE_STRINGS= "org.eclipse.wst.jsdt.ui.edit.text.java.externalize.strings"; //$NON-NLS-1$
 	
 	/**
-	 * Action definition ID of the source -> find strings to externalize action
-	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.find.strings.to.externalize"</code>).
-	 * 
-	 * @since 3.0
-	 * @deprecated Use {@link IJavaEditorActionDefinitionIds#EXTERNALIZE_STRINGS} instead
-	 */
-	public static final String FIND_STRINGS_TO_EXTERNALIZE= "org.eclipse.wst.jsdt.ui.edit.text.java.find.strings.to.externalize"; //$NON-NLS-1$
-	
-	/**
-	 * Note: this id is for internal use only.
-	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds#GOTO_NEXT_ANNOTATION}
-	 */
-	public static final String SHOW_NEXT_PROBLEM= "org.eclipse.wst.jsdt.ui.edit.text.java.show.next.problem"; //$NON-NLS-1$
-	
-	/**
-	 * Note: this id is for internal use only.
-	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds#GOTO_PREVIOUS_ANNOTATION}
-	 */
-	public static final String SHOW_PREVIOUS_PROBLEM= "org.eclipse.wst.jsdt.ui.edit.text.java.show.previous.problem"; //$NON-NLS-1$
-
-	// refactor
-	
-	/**
 	 * Action definition ID of the refactor -> pull up action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.pull.up"</code>).
 	 */
@@ -350,13 +313,6 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 */
 	public static final String INTRODUCE_FACTORY= "org.eclipse.wst.jsdt.ui.edit.text.java.introduce.factory"; //$NON-NLS-1$
 
-	/**
-	 * Action definition ID of the refactor -> inline local variable action
-	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.inline.local.variable"</code>).
-	 * @deprecated Use INLINE
-	 */
-	public static final String INLINE_LOCAL_VARIABLE= "org.eclipse.wst.jsdt.ui.edit.text.java.inline.local.variable"; //$NON-NLS-1$
-	
 	/**
 	 * Action definition ID of the refactor -> self encapsulate field action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.self.encapsulate.field"</code>).
@@ -635,13 +591,6 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	public static final String SEARCH_IMPLEMENT_OCCURRENCES_IN_FILE= "org.eclipse.wst.jsdt.ui.edit.text.java.search.implement.occurrences"; //$NON-NLS-1$
 
 	// miscellaneous
-	
-	/**
-	 * Action definition ID of the toggle presentation tool bar button action
-	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.toggle.presentation"</code>).
-	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds#TOGGLE_SHOW_SELECTED_ELEMENT_ONLY}
-	 */
-	public static final String TOGGLE_PRESENTATION= "org.eclipse.wst.jsdt.ui.edit.text.java.toggle.presentation"; //$NON-NLS-1$
 	
 	/**
 	 * Action definition ID of the toggle text hover tool bar button action

@@ -47,16 +47,6 @@ public final class CompletionContext extends InternalCompletionContext {
 
 	public static final int TOKEN_KIND_STRING_LITERAL = 2;
 	/**
-	 * Tell user whether completion takes place in a jSdoc comment or not.
-	 *
-	 * @return boolean true if completion takes place in a jsdoc comment, false otherwise.
-	 * @deprecated Use {@link #isInJsdoc()} instead
-	 */
-	public boolean isInJavadoc() {
-		return isInJsdoc();
-	}
-
-	/**
 	 * Tell user whether completion takes place in a jsdoc comment or not.
 	 *
 	 * @return boolean true if completion takes place in a jsdoc comment, false otherwise.
@@ -69,38 +59,9 @@ public final class CompletionContext extends InternalCompletionContext {
 	 * Tell user whether completion takes place in text area of a jsdoc comment or not.
 	 *
 	 * @return boolean true if completion takes place in a text area of a jsdoc comment, false otherwise.
-	 * @deprecated Use {@link #isInJsdocText()} instead
-	 */
-	public boolean isInJavadocText() {
-		return isInJsdocText();
-	}
-
-	/**
-	 * Tell user whether completion takes place in text area of a jsdoc comment or not.
-	 *
-	 * @return boolean true if completion takes place in a text area of a jsdoc comment, false otherwise.
 	 */
 	public boolean isInJsdocText() {
 		return (this.javadoc & CompletionOnJavadoc.TEXT) != 0;
-	}
-
-	/**
-	 * Tell user whether completion takes place in a formal reference of a jsdoc tag or not.
-	 * Tags with formal reference are:
-	 * <ul>
-	 * 	<li>&#64;see</li>
-	 * 	<li>&#64;throws</li>
-	 * 	<li>&#64;exception</li>
-	 * 	<li>{&#64;link Object}</li>
-	 * 	<li>{&#64;linkplain Object}</li>
-	 * 	<li>{&#64;value} when compiler compliance is set at leats to 1.5</li>
-	 * </ul>
-	 *
-	 * @return boolean true if completion takes place in formal reference of a jsdoc tag, false otherwise.
-	 * @deprecated Use {@link #isInJsdocFormalReference()} instead
-	 */
-	public boolean isInJavadocFormalReference() {
-		return isInJsdocFormalReference();
 	}
 
 	/**

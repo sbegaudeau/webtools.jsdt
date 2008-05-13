@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
@@ -39,7 +38,6 @@ public FieldBinding(FieldBinding initialFieldBinding, ReferenceBinding declaring
 	super(initialFieldBinding.name, initialFieldBinding.type, initialFieldBinding.modifiers, initialFieldBinding.constant());
 	this.declaringClass = declaringClass;
 	this.id = initialFieldBinding.id;
-	setAnnotations(initialFieldBinding.getAnnotations());
 }
 /* API
 * Answer the receiver's binding type from Binding.BindingID.
@@ -249,33 +247,25 @@ public long getAnnotationTagBits() {
 			this.tagBits |= (TagBits.AnnotationResolved | TagBits.DeprecatedAnnotationResolved);
 			return 0;
 		}
-		TypeDeclaration typeDecl = scope.referenceContext;
-		FieldDeclaration fieldDecl = typeDecl.declarationOf(originalField);
-		if (fieldDecl != null) {
-			MethodScope initializationScope = isStatic() ? typeDecl.staticInitializerScope : typeDecl.initializerScope;
-			FieldBinding previousField = initializationScope.initializedField;
-			int previousFieldID = initializationScope.lastVisibleFieldID;
-			try {
-				initializationScope.initializedField = originalField;
-				initializationScope.lastVisibleFieldID = originalField.id;
-				ASTNode.resolveAnnotations(initializationScope, fieldDecl.annotations, originalField);
-			} finally {
-				initializationScope.initializedField = previousField;
-				initializationScope.lastVisibleFieldID = previousFieldID;
-			}
-		}
+//		TypeDeclaration typeDecl = scope.referenceContext;
+//		FieldDeclaration fieldDecl = typeDecl.declarationOf(originalField);
+//		if (fieldDecl != null) {
+//			MethodScope initializationScope = isStatic() ? typeDecl.staticInitializerScope : typeDecl.initializerScope;
+//			FieldBinding previousField = initializationScope.initializedField;
+//			int previousFieldID = initializationScope.lastVisibleFieldID;
+//			try {
+//				initializationScope.initializedField = originalField;
+//				initializationScope.lastVisibleFieldID = originalField.id;
+//				ASTNode.resolveAnnotations(initializationScope, fieldDecl.annotations, originalField);
+//			} finally {
+//				initializationScope.initializedField = previousField;
+//				initializationScope.lastVisibleFieldID = previousFieldID;
+//			}
+//		}
 	}
 	return originalField.tagBits;
 }
 
-public AnnotationBinding[] getAnnotations() {
-	FieldBinding originalField = this.original();
-	ReferenceBinding declaringClassBinding = originalField.declaringClass;
-	if (declaringClassBinding == null) {
-		return Binding.NO_ANNOTATIONS;
-	}
-	return declaringClassBinding.retrieveAnnotations(originalField);
-}
 
 /* Answer true if the receiver has default visibility
 */

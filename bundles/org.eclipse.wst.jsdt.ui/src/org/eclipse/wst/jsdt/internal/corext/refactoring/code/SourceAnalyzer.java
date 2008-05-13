@@ -29,20 +29,18 @@ import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
@@ -92,12 +90,6 @@ class SourceAnalyzer  {
 				fInterruptedExecutionFlow= true;
 			}
 			return true;
-		}
-		public boolean visit(EnumDeclaration node) {
-			return false;
-		}		
-		public boolean visit(AnnotationTypeDeclaration node) {
-			return false;
 		}
 		public boolean visit(TypeDeclaration node) {
 			return false;
@@ -157,18 +149,6 @@ class SourceAnalyzer  {
 			return visitType(node);
 		}
 		public void endVisit(TypeDeclaration node) {
-			fTypeCounter--;
-		}
-		public boolean visit(EnumDeclaration node) {
-			return visitType(node);
-		}
-		public void endVisit(EnumDeclaration node) {
-			fTypeCounter--;
-		}
-		public boolean visit(AnnotationTypeDeclaration node) {
-			return visitType(node);
-		}
-		public void endVisit(AnnotationTypeDeclaration node) {
 			fTypeCounter--;
 		}
 		private boolean visitType(AbstractTypeDeclaration node) {

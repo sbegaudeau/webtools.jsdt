@@ -26,7 +26,6 @@ import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ForeachStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArgumentExpression;
@@ -38,9 +37,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
@@ -156,7 +152,7 @@ class ASTConverter {
 					position = nextMethodDeclaration.declarationSourceStart;
 					nextDeclarationType = 1; // METHOD
 				}
-			}
+ 			}
 			if (membersIndex < membersLength) {
 				nextMemberDeclaration = members[membersIndex];
 				if (nextMemberDeclaration.declarationSourceStart < position) {
@@ -166,11 +162,7 @@ class ASTConverter {
 			}
 			switch (nextDeclarationType) {
 				case 0 :
-					if (nextFieldDeclaration.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
-						typeDecl.bodyDeclarations().add(convert(nextFieldDeclaration));
-					} else {
 						checkAndAddMultipleFieldDeclaration(fields, fieldsIndex, typeDecl.bodyDeclarations());
-					}
 					fieldsIndex++;
 					break;
 				case 1 :
@@ -193,72 +185,6 @@ class ASTConverter {
 		convert(typeDeclaration.javadoc, typeDecl);
 	}
 
-	protected void buildBodyDeclarations(org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration enumDeclaration2, EnumDeclaration enumDeclaration) {
-		// add body declaration in the lexical order
-		org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration[] members = enumDeclaration2.memberTypes;
-		org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration[] fields = enumDeclaration2.fields;
-		org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration[] methods = enumDeclaration2.methods;
-
-		int fieldsLength = fields == null? 0 : fields.length;
-		int methodsLength = methods == null? 0 : methods.length;
-		int membersLength = members == null ? 0 : members.length;
-		int fieldsIndex = 0;
-		int methodsIndex = 0;
-		int membersIndex = 0;
-
-		while ((fieldsIndex < fieldsLength)
-			|| (membersIndex < membersLength)
-			|| (methodsIndex < methodsLength)) {
-			org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration nextFieldDeclaration = null;
-			org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration nextMethodDeclaration = null;
-			org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration nextMemberDeclaration = null;
-
-			int position = Integer.MAX_VALUE;
-			int nextDeclarationType = -1;
-			if (fieldsIndex < fieldsLength) {
-				nextFieldDeclaration = fields[fieldsIndex];
-				if (nextFieldDeclaration.declarationSourceStart < position) {
-					position = nextFieldDeclaration.declarationSourceStart;
-					nextDeclarationType = 0; // FIELD
-				}
-			}
-			if (methodsIndex < methodsLength) {
-				nextMethodDeclaration = methods[methodsIndex];
-				if (nextMethodDeclaration.declarationSourceStart < position) {
-					position = nextMethodDeclaration.declarationSourceStart;
-					nextDeclarationType = 1; // METHOD
-				}
-			}
-			if (membersIndex < membersLength) {
-				nextMemberDeclaration = members[membersIndex];
-				if (nextMemberDeclaration.declarationSourceStart < position) {
-					position = nextMemberDeclaration.declarationSourceStart;
-					nextDeclarationType = 2; // MEMBER
-				}
-			}
-			switch (nextDeclarationType) {
-				case 0 :
-					if (nextFieldDeclaration.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
-						enumDeclaration.enumConstants().add(convert(nextFieldDeclaration));
-					} else {
-						checkAndAddMultipleFieldDeclaration(fields, fieldsIndex, enumDeclaration.bodyDeclarations());
-					}
-					fieldsIndex++;
-					break;
-				case 1 :
-					methodsIndex++;
-					if (!nextMethodDeclaration.isDefaultConstructor() && !nextMethodDeclaration.isClinit()) {
-						enumDeclaration.bodyDeclarations().add(convert(nextMethodDeclaration));
-					}
-					break;
-				case 2 :
-					membersIndex++;
-					enumDeclaration.bodyDeclarations().add(convert(nextMemberDeclaration));
-					break;
-			}
-		}
-		convert(enumDeclaration2.javadoc, enumDeclaration);
-	}
 
 	protected void buildBodyDeclarations(org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration expression, AnonymousClassDeclaration anonymousClassDeclaration) {
 		// add body declaration in the lexical order
@@ -305,11 +231,7 @@ class ASTConverter {
 			}
 			switch (nextDeclarationType) {
 				case 0 :
-					if (nextFieldDeclaration.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
-						anonymousClassDeclaration.bodyDeclarations().add(convert(nextFieldDeclaration));
-					} else {
 						checkAndAddMultipleFieldDeclaration(fields, fieldsIndex, anonymousClassDeclaration.bodyDeclarations());
-					}
 					fieldsIndex++;
 					break;
 				case 1 :
@@ -702,60 +624,7 @@ class ASTConverter {
 		return infixExpression;
 	}
 
-	public AnnotationTypeDeclaration convertToAnnotationDeclaration(org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration typeDeclaration) {
-		checkCanceled();
-		AnnotationTypeDeclaration typeDecl = this.ast.newAnnotationTypeDeclaration();
-		setModifiers(typeDecl, typeDeclaration);
-		final SimpleName typeName = new SimpleName(this.ast);
-		typeName.internalSetIdentifier(new String(typeDeclaration.name));
-		typeName.setSourceRange(typeDeclaration.sourceStart, typeDeclaration.sourceEnd - typeDeclaration.sourceStart + 1);
-		typeDecl.setName(typeName);
-		typeDecl.setSourceRange(typeDeclaration.declarationSourceStart, typeDeclaration.bodyEnd - typeDeclaration.declarationSourceStart + 1);
 
-		buildBodyDeclarations(typeDeclaration, typeDecl);
-		// The javadoc comment is now got from list store in compilation unit declaration
-		if (this.resolveBindings) {
-			recordNodes(typeDecl, typeDeclaration);
-			recordNodes(typeName, typeDeclaration);
-			typeDecl.resolveBinding();
-		}
-		return typeDecl;
-	}
-
-	public ASTNode convert(org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration annotationTypeMemberDeclaration) {
-		checkCanceled();
-		if (this.ast.apiLevel == AST.JLS2_INTERNAL) {
-			return null;
-		}
-		AnnotationTypeMemberDeclaration annotationTypeMemberDeclaration2 = new AnnotationTypeMemberDeclaration(this.ast);
-		setModifiers(annotationTypeMemberDeclaration2, annotationTypeMemberDeclaration);
-		final SimpleName methodName = new SimpleName(this.ast);
-		methodName.internalSetIdentifier(new String(annotationTypeMemberDeclaration.selector));
-		int start = annotationTypeMemberDeclaration.sourceStart;
-		int end = retrieveIdentifierEndPosition(start, annotationTypeMemberDeclaration.sourceEnd);
-		methodName.setSourceRange(start, end - start + 1);
-		annotationTypeMemberDeclaration2.setName(methodName);
-		org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference typeReference = annotationTypeMemberDeclaration.returnType;
-		if (typeReference != null) {
-			Type returnType = convertType(typeReference);
-			setTypeForMethodDeclaration(annotationTypeMemberDeclaration2, returnType, 0);
-		}
-		int declarationSourceStart = annotationTypeMemberDeclaration.declarationSourceStart;
-		int declarationSourceEnd = annotationTypeMemberDeclaration.bodyEnd;
-		annotationTypeMemberDeclaration2.setSourceRange(declarationSourceStart, declarationSourceEnd - declarationSourceStart + 1);
-		// The javadoc comment is now got from list store in compilation unit declaration
-		convert(annotationTypeMemberDeclaration.javadoc, annotationTypeMemberDeclaration2);
-		org.eclipse.wst.jsdt.internal.compiler.ast.Expression memberValue = annotationTypeMemberDeclaration.defaultValue;
-		if (memberValue != null) {
-			annotationTypeMemberDeclaration2.setDefault(convert(memberValue));
-		}
-		if (this.resolveBindings) {
-			recordNodes(annotationTypeMemberDeclaration2, annotationTypeMemberDeclaration);
-			recordNodes(methodName, annotationTypeMemberDeclaration);
-			annotationTypeMemberDeclaration2.resolveBinding();
-		}
-		return annotationTypeMemberDeclaration2;
-	}
 
 	public SingleVariableDeclaration convert(org.eclipse.wst.jsdt.internal.compiler.ast.Argument argument) {
 		SingleVariableDeclaration variableDecl = new SingleVariableDeclaration(this.ast);
@@ -810,16 +679,6 @@ class ASTConverter {
 		return variableDecl;
 	}
 
-
-	public Annotation convert(org.eclipse.wst.jsdt.internal.compiler.ast.Annotation annotation) {
-		if (annotation instanceof org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation) {
-			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation) annotation);
-		} else if (annotation instanceof org.eclipse.wst.jsdt.internal.compiler.ast.MarkerAnnotation) {
-			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.MarkerAnnotation) annotation);
-		} else {
-			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.NormalAnnotation) annotation);
-		}
-	}
 
 	public ArrayCreation convert(org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression expression) {
 		ArrayCreation arrayCreation = new ArrayCreation(this.ast);
@@ -1523,55 +1382,6 @@ class ASTConverter {
 		return emptyExpression;
 	}
 
-	// field is an enum constant
-	public EnumConstantDeclaration convert(org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration enumConstant) {
-		checkCanceled();
-		EnumConstantDeclaration enumConstantDeclaration = new EnumConstantDeclaration(this.ast);
-		final SimpleName typeName = new SimpleName(this.ast);
-		typeName.internalSetIdentifier(new String(enumConstant.name));
-		typeName.setSourceRange(enumConstant.sourceStart, enumConstant.sourceEnd - enumConstant.sourceStart + 1);
-		enumConstantDeclaration.setName(typeName);
-		int declarationSourceStart = enumConstant.declarationSourceStart;
-		int declarationSourceEnd = enumConstant.declarationSourceEnd;
-		final org.eclipse.wst.jsdt.internal.compiler.ast.Expression initialization = enumConstant.initialization;
-		if (initialization != null) {
-			if (initialization instanceof QualifiedAllocationExpression) {
-				org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration anonymousType = ((QualifiedAllocationExpression) initialization).anonymousType;
-				if (anonymousType != null) {
-					AnonymousClassDeclaration anonymousClassDeclaration = new AnonymousClassDeclaration(this.ast);
-					int start = retrieveStartBlockPosition(anonymousType.sourceEnd, anonymousType.bodyEnd);
-					int end = retrieveRightBrace(anonymousType.bodyEnd, declarationSourceEnd);
-					if (end == -1) end = anonymousType.bodyEnd;
-					anonymousClassDeclaration.setSourceRange(start, end - start + 1);
-					enumConstantDeclaration.setAnonymousClassDeclaration(anonymousClassDeclaration);
-					buildBodyDeclarations(anonymousType, anonymousClassDeclaration);
-					if (this.resolveBindings) {
-						recordNodes(anonymousClassDeclaration, anonymousType);
-						anonymousClassDeclaration.resolveBinding();
-					}
-					enumConstantDeclaration.setSourceRange(declarationSourceStart, end - declarationSourceStart + 1);
-				}
-			} else {
-				enumConstantDeclaration.setSourceRange(declarationSourceStart, declarationSourceEnd - declarationSourceStart + 1);
-			}
-			final org.eclipse.wst.jsdt.internal.compiler.ast.Expression[] arguments = ((org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression) initialization).arguments;
-			if (arguments != null) {
-				for (int i = 0, max = arguments.length; i < max; i++) {
-					enumConstantDeclaration.arguments().add(convert(arguments[i]));
-				}
-			}
-		} else {
-			enumConstantDeclaration.setSourceRange(declarationSourceStart, declarationSourceEnd - declarationSourceStart + 1);
-		}
-		setModifiers(enumConstantDeclaration, enumConstant);
-		if (this.resolveBindings) {
-			recordNodes(enumConstantDeclaration, enumConstant);
-			recordNodes(typeName, enumConstant);
-			enumConstantDeclaration.resolveVariable();
-		}
-		convert(enumConstant.javadoc, enumConstantDeclaration);
-		return enumConstantDeclaration;
-	}
 
 	public Expression convert(org.eclipse.wst.jsdt.internal.compiler.ast.EqualExpression expression) {
 		InfixExpression infixExpression = new InfixExpression(this.ast);
@@ -2269,38 +2079,6 @@ class ASTConverter {
 		return expr;
 	}
 
-	public MarkerAnnotation convert(org.eclipse.wst.jsdt.internal.compiler.ast.MarkerAnnotation annotation) {
-		final MarkerAnnotation markerAnnotation = new MarkerAnnotation(this.ast);
-		setTypeNameForAnnotation(annotation, markerAnnotation);
-		int start = annotation.sourceStart;
-		int end = annotation.declarationSourceEnd;
-		markerAnnotation.setSourceRange(start, end - start + 1);
-		if (this.resolveBindings) {
-			recordNodes(markerAnnotation, annotation);
-			markerAnnotation.resolveAnnotationBinding();
-		}
-		return markerAnnotation;
-	}
-
-	public MemberValuePair convert(org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair memberValuePair) {
-		final MemberValuePair pair = new MemberValuePair(this.ast);
-		final SimpleName simpleName = new SimpleName(this.ast);
-		simpleName.internalSetIdentifier(new String(memberValuePair.name));
-		int start = memberValuePair.sourceStart;
-		int end = memberValuePair.sourceEnd;
-		simpleName.setSourceRange(start, end - start + 1);
-		pair.setName(simpleName);
-		final Expression value = convert(memberValuePair.value);
-		pair.setValue(value);
-		start = memberValuePair.sourceStart;
-		end = value.getStartPosition() + value.getLength() - 1;
-		pair.setSourceRange(start, end - start + 1);
-		if (this.resolveBindings) {
-			recordNodes(simpleName, memberValuePair);
-			recordNodes(pair, memberValuePair);
-		}
-		return pair;
-	}
 
 	public Name convert(org.eclipse.wst.jsdt.internal.compiler.ast.NameReference reference) {
 		if (reference instanceof org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference) {
@@ -2327,24 +2105,6 @@ class ASTConverter {
 		return infixExpression;
 	}
 
-	public NormalAnnotation convert(org.eclipse.wst.jsdt.internal.compiler.ast.NormalAnnotation annotation) {
-		final NormalAnnotation normalAnnotation = new NormalAnnotation(this.ast);
-		setTypeNameForAnnotation(annotation, normalAnnotation);
-		org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair[] memberValuePairs = annotation.memberValuePairs;
-		if (memberValuePairs != null) {
-			for (int i = 0, max = memberValuePairs.length; i < max; i++) {
-				normalAnnotation.values().add(convert(memberValuePairs[i]));
-			}
-		}
-		int start = annotation.sourceStart;
-		int end = annotation.declarationSourceEnd;
-		normalAnnotation.setSourceRange(start, end - start + 1);
-		if (this.resolveBindings) {
-			recordNodes(normalAnnotation, annotation);
-			normalAnnotation.resolveAnnotationBinding();
-		}
-		return normalAnnotation;
-	}
 
 	public NullLiteral convert(org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral expression) {
 		final NullLiteral literal = new NullLiteral(this.ast);
@@ -2586,20 +2346,6 @@ class ASTConverter {
 		return returnStatement;
 	}
 
-	public SingleMemberAnnotation convert(org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation annotation) {
-		final SingleMemberAnnotation singleMemberAnnotation = new SingleMemberAnnotation(this.ast);
-		setTypeNameForAnnotation(annotation, singleMemberAnnotation);
-		singleMemberAnnotation.setValue(convert(annotation.memberValue));
-		int start = annotation.sourceStart;
-		int end = annotation.declarationSourceEnd;
-		singleMemberAnnotation.setSourceRange(start, end - start + 1);
-		if (this.resolveBindings) {
-			recordNodes(singleMemberAnnotation, annotation);
-			singleMemberAnnotation.resolveAnnotationBinding();
-		}
-		return singleMemberAnnotation;
-	}
-
 	public SimpleName convert(org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference nameReference) {
 		final SimpleName name = new SimpleName(this.ast);
 		name.internalSetIdentifier(new String(nameReference.token));
@@ -2670,32 +2416,6 @@ class ASTConverter {
 			if (result == null) {
 				return createFakeEmptyStatement(statement);
 			}
-			switch(result.getNodeType()) {
-				case ASTNode.ENUM_DECLARATION:
-					switch(this.ast.apiLevel) {
-						case AST.JLS2_INTERNAL :
-							return createFakeEmptyStatement(statement);
-						case AST.JLS3 :
-							final TypeDeclarationStatement typeDeclarationStatement = new TypeDeclarationStatement(this.ast);
-							typeDeclarationStatement.setDeclaration((EnumDeclaration) result);
-							AbstractTypeDeclaration typeDecl = typeDeclarationStatement.getDeclaration();
-							typeDeclarationStatement.setSourceRange(typeDecl.getStartPosition(), typeDecl.getLength());
-							return typeDeclarationStatement;
-					}
-					break;
-				case ASTNode.ANNOTATION_TYPE_DECLARATION :
-					switch(this.ast.apiLevel) {
-						case AST.JLS2_INTERNAL :
-							return createFakeEmptyStatement(statement);
-						case AST.JLS3 :
-							TypeDeclarationStatement typeDeclarationStatement = new TypeDeclarationStatement(this.ast);
-							typeDeclarationStatement.setDeclaration((AnnotationTypeDeclaration) result);
-							AbstractTypeDeclaration typeDecl = typeDeclarationStatement.getDeclaration();
-							typeDeclarationStatement.setSourceRange(typeDecl.getStartPosition(), typeDecl.getLength());
-							return typeDeclarationStatement;
-					}
-					break;
-				default:
 					TypeDeclaration typeDeclaration = (TypeDeclaration) result;
  						TypeDeclarationStatement typeDeclarationStatement = new TypeDeclarationStatement(this.ast);
 						typeDeclarationStatement.setDeclaration(typeDeclaration);
@@ -2711,7 +2431,6 @@ class ASTConverter {
 						}
 						return typeDeclarationStatement;
 
-			}
 		}
 		if (statement instanceof org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement) statement);
@@ -2834,20 +2553,6 @@ class ASTConverter {
 
 	public ASTNode convert(org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration typeDeclaration) {
 		int kind = org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration.kind(typeDeclaration.modifiers);
-		switch (kind) {
-			case org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration.ENUM_DECL :
-				if (this.ast.apiLevel == AST.JLS2_INTERNAL) {
-					return null;
-				} else {
-					return convertToEnumDeclaration(typeDeclaration);
-				}
-			case org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration.ANNOTATION_TYPE_DECL :
-				if (this.ast.apiLevel == AST.JLS2_INTERNAL) {
-					return null;
-				} else {
-					return convertToAnnotationDeclaration(typeDeclaration);
-				}
-		}
 
 		checkCanceled();
 		TypeDeclaration typeDecl = new TypeDeclaration(this.ast);
@@ -3093,30 +2798,6 @@ class ASTConverter {
 		return packageDeclaration;
 	}
 
-	private EnumDeclaration convertToEnumDeclaration(org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration typeDeclaration) {
-		checkCanceled();
-		final EnumDeclaration enumDeclaration2 = new EnumDeclaration(this.ast);
-		setModifiers(enumDeclaration2, typeDeclaration);
-		final SimpleName typeName = new SimpleName(this.ast);
-		typeName.internalSetIdentifier(new String(typeDeclaration.name));
-		typeName.setSourceRange(typeDeclaration.sourceStart, typeDeclaration.sourceEnd - typeDeclaration.sourceStart + 1);
-		enumDeclaration2.setName(typeName);
-		enumDeclaration2.setSourceRange(typeDeclaration.declarationSourceStart, typeDeclaration.bodyEnd - typeDeclaration.declarationSourceStart + 1);
-
-		org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference[] superInterfaces = typeDeclaration.superInterfaces;
-		if (superInterfaces != null) {
-			for (int index = 0, length = superInterfaces.length; index < length; index++) {
-				enumDeclaration2.superInterfaceTypes().add(convertType(superInterfaces[index]));
-			}
-		}
-		buildBodyDeclarations(typeDeclaration, enumDeclaration2);
-		if (this.resolveBindings) {
-			recordNodes(enumDeclaration2, typeDeclaration);
-			recordNodes(typeName, typeDeclaration);
-			enumDeclaration2.resolveBinding();
-		}
-		return enumDeclaration2;
-	}
 	public Expression convertToExpression(org.eclipse.wst.jsdt.internal.compiler.ast.Statement statement) {
 		if (statement instanceof org.eclipse.wst.jsdt.internal.compiler.ast.Expression) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.Expression) statement);
@@ -3881,9 +3562,7 @@ class ASTConverter {
 			while(!(currentNode instanceof AbstractTypeDeclaration)) {
 				currentNode = currentNode.getParent();
 			}
-			if (currentNode instanceof TypeDeclaration
-				|| currentNode instanceof EnumDeclaration
-				|| currentNode instanceof AnnotationTypeDeclaration) {
+			if (currentNode instanceof TypeDeclaration) {
 				org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration typeDecl = (org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration) this.ast.getBindingResolver().getCorrespondingNode(currentNode);
 				if ((initializer.getModifiers() & Modifier.STATIC) != 0) {
 					return typeDecl.staticInitializerScope;
@@ -3896,9 +3575,7 @@ class ASTConverter {
 			while(!(currentNode instanceof AbstractTypeDeclaration)) {
 				currentNode = currentNode.getParent();
 			}
-			if (currentNode instanceof TypeDeclaration
-					|| currentNode instanceof EnumDeclaration
-					|| currentNode instanceof AnnotationTypeDeclaration) {
+			if (currentNode instanceof TypeDeclaration) {
 				org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration typeDecl = (org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration) this.ast.getBindingResolver().getCorrespondingNode(currentNode);
 				if ((fieldDeclaration.getModifiers() & Modifier.STATIC) != 0) {
 					return typeDecl.staticInitializerScope;
@@ -4583,16 +4260,6 @@ class ASTConverter {
 		this.docParser = new DocCommentParser(this.ast, this.scanner, this.insideComments);
 	}
 
-	protected void setModifiers(AnnotationTypeDeclaration typeDecl, org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration typeDeclaration) {
-		this.scanner.resetTo(typeDeclaration.declarationSourceStart, typeDeclaration.sourceStart);
-		this.setModifiers(typeDecl, typeDeclaration.annotations);
-	}
-
-	protected void setModifiers(AnnotationTypeMemberDeclaration annotationTypeMemberDecl, org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration annotationTypeMemberDeclaration) {
-		this.scanner.resetTo(annotationTypeMemberDeclaration.declarationSourceStart, annotationTypeMemberDeclaration.sourceStart);
-		this.setModifiers(annotationTypeMemberDecl, annotationTypeMemberDeclaration.annotations);
-	}
-
 	/**
 	 * @param bodyDeclaration
 	 */
@@ -4636,14 +4303,6 @@ class ASTConverter {
 					case TerminalTokens.TokenNamestrictfp:
 						modifier = createModifier(Modifier.ModifierKeyword.STRICTFP_KEYWORD);
 						break;
-					case TerminalTokens.TokenNameAT :
-						// we have an annotation
-						if (annotations != null && indexInAnnotations < annotations.length) {
-							org.eclipse.wst.jsdt.internal.compiler.ast.Annotation annotation = annotations[indexInAnnotations++];
-							modifier = convert(annotation);
-							this.scanner.resetTo(annotation.declarationSourceEnd + 1, this.compilationUnitSourceLength);
-						}
-						break;
 					case TerminalTokens.TokenNameCOMMENT_BLOCK :
 					case TerminalTokens.TokenNameCOMMENT_LINE :
 					case TerminalTokens.TokenNameCOMMENT_JAVADOC :
@@ -4660,25 +4319,6 @@ class ASTConverter {
 		}
 	}
 
-
-	protected void setModifiers(EnumDeclaration enumDeclaration, org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration enumDeclaration2) {
-		this.scanner.resetTo(enumDeclaration2.declarationSourceStart, enumDeclaration2.sourceStart);
-		this.setModifiers(enumDeclaration, enumDeclaration2.annotations);
-	}
-
-	protected void setModifiers(EnumConstantDeclaration enumConstantDeclaration, org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration fieldDeclaration) {
-		switch(this.ast.apiLevel) {
-			case AST.JLS2_INTERNAL :
-				enumConstantDeclaration.internalSetModifiers(fieldDeclaration.modifiers & ExtraCompilerModifiers.AccJustFlag);
-				if (fieldDeclaration.annotations != null) {
-					enumConstantDeclaration.setFlags(enumConstantDeclaration.getFlags() | ASTNode.MALFORMED);
-				}
-				break;
-			case AST.JLS3 :
-				this.scanner.resetTo(fieldDeclaration.declarationSourceStart, fieldDeclaration.sourceStart);
-				this.setModifiers(enumConstantDeclaration, fieldDeclaration.annotations);
-		}
-	}
 
 	/**
 	 * @param fieldDeclaration
@@ -4790,14 +4430,6 @@ class ASTConverter {
 							case TerminalTokens.TokenNamestrictfp:
 								modifier = createModifier(Modifier.ModifierKeyword.STRICTFP_KEYWORD);
 								break;
-							case TerminalTokens.TokenNameAT :
-								// we have an annotation
-								if (annotations != null && indexInAnnotations < annotations.length) {
-									org.eclipse.wst.jsdt.internal.compiler.ast.Annotation annotation = annotations[indexInAnnotations++];
-									modifier = convert(annotation);
-									this.scanner.resetTo(annotation.declarationSourceEnd + 1, this.compilationUnitSourceLength);
-								}
-								break;
 							case TerminalTokens.TokenNameCOMMENT_BLOCK :
 							case TerminalTokens.TokenNameCOMMENT_LINE :
 							case TerminalTokens.TokenNameCOMMENT_JAVADOC :
@@ -4864,14 +4496,6 @@ class ASTConverter {
 							break;
 						case TerminalTokens.TokenNamestrictfp:
 							modifier = createModifier(Modifier.ModifierKeyword.STRICTFP_KEYWORD);
-							break;
-						case TerminalTokens.TokenNameAT :
-							// we have an annotation
-							if (annotations != null && indexInAnnotations < annotations.length) {
-								org.eclipse.wst.jsdt.internal.compiler.ast.Annotation annotation = annotations[indexInAnnotations++];
-								modifier = convert(annotation);
-								this.scanner.resetTo(annotation.declarationSourceEnd + 1, this.compilationUnitSourceLength);
-							}
 							break;
 						case TerminalTokens.TokenNameCOMMENT_BLOCK :
 						case TerminalTokens.TokenNameCOMMENT_LINE :
@@ -4967,14 +4591,6 @@ class ASTConverter {
 							case TerminalTokens.TokenNamestrictfp:
 								modifier = createModifier(Modifier.ModifierKeyword.STRICTFP_KEYWORD);
 								break;
-							case TerminalTokens.TokenNameAT :
-								// we have an annotation
-								if (annotations != null && indexInAnnotations < annotations.length) {
-									org.eclipse.wst.jsdt.internal.compiler.ast.Annotation annotation = annotations[indexInAnnotations++];
-									modifier = convert(annotation);
-									this.scanner.resetTo(annotation.declarationSourceEnd + 1, this.compilationUnitSourceLength);
-								}
-								break;
 							case TerminalTokens.TokenNameCOMMENT_BLOCK :
 							case TerminalTokens.TokenNameCOMMENT_LINE :
 							case TerminalTokens.TokenNameCOMMENT_JAVADOC :
@@ -5047,14 +4663,6 @@ class ASTConverter {
 								break;
 							case TerminalTokens.TokenNamestrictfp:
 								modifier = createModifier(Modifier.ModifierKeyword.STRICTFP_KEYWORD);
-								break;
-							case TerminalTokens.TokenNameAT :
-								// we have an annotation
-								if (annotations != null && indexInAnnotations < annotations.length) {
-									org.eclipse.wst.jsdt.internal.compiler.ast.Annotation annotation = annotations[indexInAnnotations++];
-									modifier = convert(annotation);
-									this.scanner.resetTo(annotation.declarationSourceEnd + 1, this.compilationUnitSourceLength);
-								}
 								break;
 							case TerminalTokens.TokenNameCOMMENT_BLOCK :
 							case TerminalTokens.TokenNameCOMMENT_LINE :
@@ -5186,28 +4794,6 @@ class ASTConverter {
 		return qualifiedName;
 	}
 
-	protected void setTypeNameForAnnotation(org.eclipse.wst.jsdt.internal.compiler.ast.Annotation compilerAnnotation, Annotation annotation) {
-		TypeReference typeReference = compilerAnnotation.type;
-		if (typeReference instanceof QualifiedTypeReference) {
-			QualifiedTypeReference qualifiedTypeReference = (QualifiedTypeReference) typeReference;
-			char[][] tokens = qualifiedTypeReference.tokens;
-			long[] positions = qualifiedTypeReference.sourcePositions;
-			// QualifiedName
-			annotation.setTypeName(setQualifiedNameNameAndSourceRanges(tokens, positions, typeReference));
-		} else {
-			SingleTypeReference singleTypeReference = (SingleTypeReference) typeReference;
-			final SimpleName name = new SimpleName(this.ast);
-			name.internalSetIdentifier(new String(singleTypeReference.token));
-			int start = singleTypeReference.sourceStart;
-			int end = singleTypeReference.sourceEnd;
-			name.setSourceRange(start, end - start + 1);
-			name.index = 1;
-			annotation.setTypeName(name);
-			if (this.resolveBindings) {
-				recordNodes(name, typeReference);
-			}
-		}
-	}
 
 	protected void setTypeForField(FieldDeclaration fieldDeclaration, Type type, int extraDimension) {
 		if (extraDimension != 0) {
@@ -5312,10 +4898,6 @@ class ASTConverter {
 				break;
 			}
 		}
-	}
-
-	protected void setTypeForMethodDeclaration(AnnotationTypeMemberDeclaration annotationTypeMemberDeclaration, Type type, int extraDimension) {
-		annotationTypeMemberDeclaration.setType(type);
 	}
 
 	protected void setTypeForSingleVariableDeclaration(SingleVariableDeclaration singleVariableDeclaration, Type type, int extraDimension) {

@@ -14,10 +14,6 @@ import java.util.List;
 
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
@@ -65,14 +61,6 @@ public class ModifierRewrite {
 				return rewrite.getListRewrite(declNode, SingleVariableDeclaration.MODIFIERS2_PROPERTY);
 			case ASTNode.TYPE_DECLARATION:
 				return rewrite.getListRewrite(declNode, TypeDeclaration.MODIFIERS2_PROPERTY);
-			case ASTNode.ENUM_DECLARATION:
-				return rewrite.getListRewrite(declNode, EnumDeclaration.MODIFIERS2_PROPERTY);
-			case ASTNode.ANNOTATION_TYPE_DECLARATION:
-				return rewrite.getListRewrite(declNode, AnnotationTypeDeclaration.MODIFIERS2_PROPERTY);
-			case ASTNode.ENUM_CONSTANT_DECLARATION:
-				return rewrite.getListRewrite(declNode, EnumConstantDeclaration.MODIFIERS2_PROPERTY);
-			case ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION:
-				return rewrite.getListRewrite(declNode, AnnotationTypeMemberDeclaration.MODIFIERS2_PROPERTY);
 			default:
 				throw new IllegalArgumentException("node has no modifiers: " + declNode.getClass().getName()); //$NON-NLS-1$
 		}

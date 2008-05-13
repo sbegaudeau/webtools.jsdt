@@ -15,8 +15,6 @@ import java.util.List;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
@@ -34,39 +32,34 @@ import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ChildPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionExpression;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
 import org.eclipse.wst.jsdt.core.dom.LineComment;
 import org.eclipse.wst.jsdt.core.dom.ListExpression;
-import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
-import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
-import org.eclipse.wst.jsdt.core.dom.FunctionRef;
-import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
-import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
@@ -83,7 +76,6 @@ import org.eclipse.wst.jsdt.core.dom.RegularExpressionLiteral;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SimpleType;
-import org.eclipse.wst.jsdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.StringLiteral;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
@@ -822,7 +814,6 @@ public class ASTRewriteFlattener extends ASTVisitor {
 			if (javadoc != null) {
 				javadoc.accept(this);
 			}
-			visitList(node, PackageDeclaration.ANNOTATIONS_PROPERTY, String.valueOf(' '));
 		}
 		this.result.append("package "); //$NON-NLS-1$
 		getChildNode(node, PackageDeclaration.NAME_PROPERTY).accept(this);
@@ -1288,46 +1279,6 @@ public class ASTRewriteFlattener extends ASTVisitor {
 		this.result.append(getAttribute(node, TextElement.TEXT_PROPERTY));
 		return false;
 	}
-	/*
-	 * @see ASTVisitor#visit(AnnotationTypeDeclaration)
-	 * @since 3.0
-	 */
-	public boolean visit(AnnotationTypeDeclaration node) {
-		ASTNode javadoc= getChildNode(node, AnnotationTypeDeclaration.JAVADOC_PROPERTY);
-		if (javadoc != null) {
-			javadoc.accept(this);
-		}
-		visitList(node, AnnotationTypeDeclaration.MODIFIERS2_PROPERTY, String.valueOf(' '), Util.EMPTY_STRING, String.valueOf(' '));
-		this.result.append("@interface ");//$NON-NLS-1$
-		getChildNode(node, AnnotationTypeDeclaration.NAME_PROPERTY).accept(this);
-		this.result.append('{');
-		visitList(node, AnnotationTypeDeclaration.BODY_DECLARATIONS_PROPERTY, Util.EMPTY_STRING);
-		this.result.append('}');
-		return false;
-	}
-
-	/*
-	 * @see ASTVisitor#visit(AnnotationTypeMemberDeclaration)
-	 * @since 3.0
-	 */
-	public boolean visit(AnnotationTypeMemberDeclaration node) {
-		ASTNode javadoc= getChildNode(node, AnnotationTypeMemberDeclaration.JAVADOC_PROPERTY);
-		if (javadoc != null) {
-			javadoc.accept(this);
-		}
-		visitList(node, AnnotationTypeMemberDeclaration.MODIFIERS2_PROPERTY, String.valueOf(' '), Util.EMPTY_STRING, String.valueOf(' '));
-		getChildNode(node, AnnotationTypeMemberDeclaration.TYPE_PROPERTY).accept(this);
-		this.result.append(' ');
-		getChildNode(node, AnnotationTypeMemberDeclaration.NAME_PROPERTY).accept(this);
-		this.result.append("()");//$NON-NLS-1$
-		ASTNode def= getChildNode(node, AnnotationTypeMemberDeclaration.DEFAULT_PROPERTY);
-		if (def != null) {
-			this.result.append(" default ");//$NON-NLS-1$
-			def.accept(this);
-		}
-		this.result.append(';');
-		return false;
-	}
 
 	/*
 	 * @see ASTVisitor#visit(EnhancedForStatement)
@@ -1343,66 +1294,7 @@ public class ASTRewriteFlattener extends ASTVisitor {
 		return false;
 	}
 
-	/*
-	 * @see ASTVisitor#visit(EnumConstantDeclaration)
-	 * @since 3.0
-	 */
-	public boolean visit(EnumConstantDeclaration node) {
-		ASTNode javadoc= getChildNode(node, EnumConstantDeclaration.JAVADOC_PROPERTY);
-		if (javadoc != null) {
-			javadoc.accept(this);
-		}
-		visitList(node, EnumConstantDeclaration.MODIFIERS2_PROPERTY, String.valueOf(' '), Util.EMPTY_STRING, String.valueOf(' '));
-		getChildNode(node, EnumConstantDeclaration.NAME_PROPERTY).accept(this);
-		visitList(node, EnumConstantDeclaration.ARGUMENTS_PROPERTY, String.valueOf(','), String.valueOf('('), String.valueOf(')'));
-		ASTNode classDecl= getChildNode(node, EnumConstantDeclaration.ANONYMOUS_CLASS_DECLARATION_PROPERTY);
-		if (classDecl != null) {
-			classDecl.accept(this);
-		}
-		return false;
-	}
 
-	/*
-	 * @see ASTVisitor#visit(EnumDeclaration)
-	 * @since 3.0
-	 */
-	public boolean visit(EnumDeclaration node) {
-		ASTNode javadoc= getChildNode(node, EnumDeclaration.JAVADOC_PROPERTY);
-		if (javadoc != null) {
-			javadoc.accept(this);
-		}
-		visitList(node, EnumDeclaration.MODIFIERS2_PROPERTY, String.valueOf(' '), Util.EMPTY_STRING, String.valueOf(' '));
-		this.result.append("enum ");//$NON-NLS-1$
-		getChildNode(node, EnumDeclaration.NAME_PROPERTY).accept(this);
-		this.result.append(' ');
-		visitList(node, EnumDeclaration.SUPER_INTERFACE_TYPES_PROPERTY, String.valueOf(','), "implements ", Util.EMPTY_STRING); //$NON-NLS-1$
-
-		this.result.append('{');
-		visitList(node, EnumDeclaration.ENUM_CONSTANTS_PROPERTY, String.valueOf(','), Util.EMPTY_STRING, Util.EMPTY_STRING);
-		visitList(node, EnumDeclaration.BODY_DECLARATIONS_PROPERTY, Util.EMPTY_STRING, String.valueOf(';'), Util.EMPTY_STRING);
-		this.result.append('}');
-		return false;
-	}
-	/*
-	 * @see ASTVisitor#visit(MarkerAnnotation)
-	 * @since 3.0
-	 */
-	public boolean visit(MarkerAnnotation node) {
-		this.result.append('@');
-		getChildNode(node, MarkerAnnotation.TYPE_NAME_PROPERTY).accept(this);
-		return false;
-	}
-
-	/*
-	 * @see ASTVisitor#visit(MemberValuePair)
-	 * @since 3.0
-	 */
-	public boolean visit(MemberValuePair node) {
-		getChildNode(node, MemberValuePair.NAME_PROPERTY).accept(this);
-		this.result.append('=');
-		getChildNode(node, MemberValuePair.VALUE_PROPERTY).accept(this);
-		return false;
-	}
 	/*
 	 * @see ASTVisitor#visit(Modifier)
 	 * @since 3.0
@@ -1412,18 +1304,6 @@ public class ASTRewriteFlattener extends ASTVisitor {
 		return false;
 	}
 
-	/*
-	 * @see ASTVisitor#visit(NormalAnnotation)
-	 * @since 3.0
-	 */
-	public boolean visit(NormalAnnotation node) {
-		this.result.append('@');
-		getChildNode(node, NormalAnnotation.TYPE_NAME_PROPERTY).accept(this);
-		this.result.append('(');
-		visitList(node, NormalAnnotation.VALUES_PROPERTY, ", "); //$NON-NLS-1$
-		this.result.append(')');
-		return false;
-	}
 	/*
 	 * @see ASTVisitor#visit(ParameterizedType)
 	 * @since 3.0
@@ -1447,17 +1327,6 @@ public class ASTRewriteFlattener extends ASTVisitor {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.SingleMemberAnnotation)
-	 */
-	public boolean visit(SingleMemberAnnotation node) {
-		this.result.append('@');
-		getChildNode(node, SingleMemberAnnotation.TYPE_NAME_PROPERTY).accept(this);
-		this.result.append('(');
-		getChildNode(node, SingleMemberAnnotation.VALUE_PROPERTY).accept(this);
-		this.result.append(')');
-		return false;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.TypeParameter)

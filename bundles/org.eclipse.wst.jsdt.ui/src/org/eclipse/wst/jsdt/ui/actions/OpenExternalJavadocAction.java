@@ -16,7 +16,6 @@ import java.net.URL;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -73,24 +72,6 @@ public class OpenExternalJavadocAction extends SelectionDispatchAction {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.OPEN_EXTERNAL_JAVADOC_ACTION);
 	}
 	
-	/**
-	 * Creates a new <code>OpenExternalJavadocAction</code>. The action requires
-	 * that the selection provided by the given selection provider is of type <code>
-	 * org.eclipse.jface.viewers.IStructuredSelection</code>.
-	 * 
-	 * @param site the site providing additional context information for this action
-	 * @param provider a special selection provider which is used instead 
-	 *  of the site's selection provider or <code>null</code> to use the site's
-	 *  selection provider
-	 * 
-	 * @since 3.2
-	 * @deprecated Use {@link #setSpecialSelectionProvider(ISelectionProvider)} instead. This API will be
-	 * removed after 3.2 M5.
-     */
-    public OpenExternalJavadocAction(IWorkbenchSite site, ISelectionProvider provider) {
-        this(site);
-        setSpecialSelectionProvider(provider);
-    }
 
 	
 	/**

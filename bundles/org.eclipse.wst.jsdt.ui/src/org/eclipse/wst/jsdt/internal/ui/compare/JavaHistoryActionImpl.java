@@ -41,18 +41,16 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
@@ -125,7 +123,7 @@ abstract class JavaHistoryActionImpl /* extends Action implements IActionDelegat
 		ISourceRange sourceRange= parent.getNameRange();
 		ASTNode parentNode= NodeFinder.perform(root, sourceRange);
 		do {
-			if (parentNode instanceof TypeDeclaration || parentNode instanceof EnumDeclaration || parentNode instanceof AnnotationTypeDeclaration)
+			if (parentNode instanceof TypeDeclaration )
 				return parentNode;
 			parentNode= parentNode.getParent();
 		} while (parentNode != null);

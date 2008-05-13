@@ -53,27 +53,6 @@ public class ElementChangedEvent extends EventObject {
 	 * to one or more JavaScript element(s) expressed as a hierarchical
 	 * java element delta as returned by <code>getDelta</code>.
 	 *
-	 * Note: this notification occurs during the corresponding PRE_AUTO_BUILD
-	 * resource change notification. The delta, which is notified here, only contains
-	 * information relative to the previous JavaScriptModel operations (in other words,
-	 * it ignores the possible resources which have changed outside JavaScript operations).
-	 * In particular, it is possible that the JavaScriptModel be inconsistent with respect to
-	 * resources, which got modified outside JavaScriptModel operations (it will only be
-	 * fully consistent once the POST_CHANGE notification has occurred).
-	 *
-	 * @see IJavaScriptElementDelta
-	 * @see org.eclipse.core.resources.IResourceChangeEvent
-	 * @see #getDelta()
-	 * @deprecated - no longer used, such deltas are now notified during POST_CHANGE
-	 */
-	public static final int PRE_AUTO_BUILD = 2;
-
-	/**
-	 * Event type constant (bit mask) indicating an after-the-fact
-	 * report of creations, deletions, and modifications
-	 * to one or more JavaScript element(s) expressed as a hierarchical
-	 * java element delta as returned by <code>getDelta</code>.
-	 *
 	 * Note: this notification occurs as a result of a working copy reconcile
 	 * operation.
 	 *
@@ -118,7 +97,6 @@ public class ElementChangedEvent extends EventObject {
 	 *
 	 * @return one of the event type constants
 	 * @see #POST_CHANGE
-	 * @see #PRE_AUTO_BUILD
 	 * @see #POST_RECONCILE
 	 */
 	public int getType() {

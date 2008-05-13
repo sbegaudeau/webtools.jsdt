@@ -20,14 +20,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
-import org.eclipse.wst.jsdt.core.ICompletionRequestor;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
@@ -74,24 +73,6 @@ protected void closing(Object info) throws JavaScriptModelException {
 	cfi.removeBinaryChildren();
 }
 
-/**
- * @see IType#codeComplete(char[], int, int, char[][], char[][], int[], boolean, ICompletionRequestor)
- * @deprecated
- */
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,ICompletionRequestor requestor) throws JavaScriptModelException {
-	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, requestor, DefaultWorkingCopyOwner.PRIMARY);
-}
-
-/**
- * @see IType#codeComplete(char[], int, int, char[][], char[][], int[], boolean, ICompletionRequestor, WorkingCopyOwner)
- * @deprecated
- */
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,ICompletionRequestor requestor, WorkingCopyOwner owner) throws JavaScriptModelException {
-	if (requestor == null) {
-		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
-	}
-	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, new org.eclipse.wst.jsdt.internal.codeassist.CompletionRequestorWrapper(requestor), owner);
-}
 /*
  * @see IType#codeComplete(char[], int, int, char[][], char[][], int[], boolean, ICompletionRequestor)
  */
@@ -428,15 +409,6 @@ public IInitializer[] getInitializers() {
 }
 public String getKey(boolean forceOpen) throws JavaScriptModelException {
 	return getKey(this, forceOpen);
-}
-/*
- * @see IType#getMethod(String name, String[] parameterTypeSignatures)
- */
-/**
- * @deprecated Use {@link #getFunction(String,String[])} instead
- */
-public IFunction getMethod(String selector, String[] parameterTypeSignatures) {
-	return getFunction(selector, parameterTypeSignatures);
 }
 /*
  * @see IType#getMethod(String name, String[] parameterTypeSignatures)
@@ -786,30 +758,6 @@ public ITypeHierarchy newSupertypeHierarchy(
 	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), false);
 	op.runOperation(monitor);
 	return op.getResult();
-}
-/**
- * @param workingCopies the working copies that take precedence over their original compilation units
- * @param monitor the given progress monitor
- * @return a type hierarchy for this type containing this type and all of its supertypes
- * @exception JavaScriptModelException if this element does not exist or if an
- *		exception occurs while accessing its corresponding resource.
- *
- * @see IType#newSupertypeHierarchy(IWorkingCopy[], IProgressMonitor)
- * @deprecated
- */
-public ITypeHierarchy newSupertypeHierarchy(
-	IWorkingCopy[] workingCopies,
-	IProgressMonitor monitor)
-	throws JavaScriptModelException {
-
-	IJavaScriptUnit[] copies;
-	if (workingCopies == null) {
-		copies = null;
-	} else {
-		int length = workingCopies.length;
-		System.arraycopy(workingCopies, 0, copies = new IJavaScriptUnit[length], 0, length);
-	}
-	return newSupertypeHierarchy(copies, monitor);
 }
 /*
  * @see IType#newSupertypeHierarchy(WorkingCopyOwner, IProgressMonitor)

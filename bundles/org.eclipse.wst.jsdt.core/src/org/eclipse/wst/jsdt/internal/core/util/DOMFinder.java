@@ -16,17 +16,13 @@ import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeParameter;
@@ -69,18 +65,6 @@ public class DOMFinder extends ASTVisitor {
 		return this.foundNode;
 	}
 
-	public boolean visit(AnnotationTypeDeclaration node) {
-		if (found(node, node.getName()) && this.resolveBinding)
-			this.foundBinding = node.resolveBinding();
-		return true;
-	}
-
-	public boolean visit(AnnotationTypeMemberDeclaration node) {
-		if (found(node, node.getName()) && this.resolveBinding)
-			this.foundBinding = node.resolveBinding();
-		return true;
-	}
-
 	public boolean visit(AnonymousClassDeclaration node) {
 		ASTNode name;
 		ASTNode parent = node.getParent();
@@ -88,25 +72,10 @@ public class DOMFinder extends ASTVisitor {
 			case ASTNode.CLASS_INSTANCE_CREATION:
 				name = ((ClassInstanceCreation) parent).getType();
 				break;
-			case ASTNode.ENUM_CONSTANT_DECLARATION:
-				name = ((EnumConstantDeclaration) parent).getName();
-				break;
 			default:
 				return true;
 		}
 		if (found(node, name) && this.resolveBinding)
-			this.foundBinding = node.resolveBinding();
-		return true;
-	}
-
-	public boolean visit(EnumConstantDeclaration node) {
-		if (found(node, node.getName()) && this.resolveBinding)
-			this.foundBinding = node.resolveVariable();
-		return true;
-	}
-
-	public boolean visit(EnumDeclaration node) {
-		if (found(node, node.getName()) && this.resolveBinding)
 			this.foundBinding = node.resolveBinding();
 		return true;
 	}

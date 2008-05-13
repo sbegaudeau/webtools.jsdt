@@ -15,20 +15,18 @@ import java.util.Map;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextUtilities;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
@@ -72,10 +70,6 @@ protected StructuralPropertyDescriptor getChildPropertyDescriptor(ASTNode parent
 				return JavaScriptUnit.TYPES_PROPERTY;
 			else
 				return JavaScriptUnit.STATEMENTS_PROPERTY;
-		case ASTNode.ENUM_DECLARATION:
-			return EnumDeclaration.BODY_DECLARATIONS_PROPERTY;
-		case ASTNode.ANNOTATION_TYPE_DECLARATION:
-			return AnnotationTypeDeclaration.BODY_DECLARATIONS_PROPERTY;
 		default:
 			return TypeDeclaration.BODY_DECLARATIONS_PROPERTY;
 	}

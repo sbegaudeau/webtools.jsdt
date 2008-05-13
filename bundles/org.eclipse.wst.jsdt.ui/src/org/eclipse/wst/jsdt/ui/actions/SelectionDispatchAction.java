@@ -67,28 +67,6 @@ public abstract class SelectionDispatchAction extends Action implements ISelecti
 	}
 
 	/**
-	 * Creates a new action with no text and no image
-	 * 
-	 * <p>
-	 * Configure the action later using the set methods.
-	 * </p>
-	 * 
-	 * @param site the site this action is working on
-	 * @param provider a special selection provider which is used
-	 * instead of the site's selection provider or <code>null</code> to use the site's
-	 * selection provider. Clients can for example use a {@link ConvertingSelectionProvider}
-	 * to first convert a selection before passing it to the action.
-	 *  
-	 * @since 3.2
-	 * @deprecated Use {@link #setSpecialSelectionProvider(ISelectionProvider)} instead. This constructor will be
-	 * removed after 3.2 M5.
-	 */
-	protected SelectionDispatchAction(IWorkbenchSite site, ISelectionProvider provider) {
-		this(site);
-		setSpecialSelectionProvider(provider);
-	}
-
-	/**
 	 * Returns the site owning this action.
 	 * 
 	 * @return the site owning this action

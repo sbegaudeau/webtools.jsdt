@@ -12,12 +12,11 @@ package org.eclipse.wst.jsdt.internal.corext.util;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
@@ -205,8 +204,7 @@ public class JdtFlags {
 	private static boolean isInterfaceOrAnnotationMember(BodyDeclaration bodyDeclaration) {
 		boolean isInterface= (bodyDeclaration.getParent() instanceof TypeDeclaration) &&
 				((TypeDeclaration)bodyDeclaration.getParent()).isInterface();
-		boolean isAnnotation= bodyDeclaration.getParent() instanceof AnnotationTypeDeclaration;
-		return 	isInterface || isAnnotation;
+		return 	isInterface ;
 	}
 
 	private static boolean isNestedInterfaceOrAnnotation(IMember member) throws JavaScriptModelException{

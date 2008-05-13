@@ -12,12 +12,11 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -194,10 +193,6 @@ public class JavaTextSelection extends TextSelection {
 				break;
 			} else if (nodeType == ASTNode.SINGLE_VARIABLE_DECLARATION &&
 				       ((SingleVariableDeclaration)node).getInitializer() == last) {
-				fInVariableInitializer= true;
-				break;
-			} else if (nodeType == ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION &&
-				       ((AnnotationTypeMemberDeclaration)node).getDefault() == last) {
 				fInVariableInitializer= true;
 				break;
 			}

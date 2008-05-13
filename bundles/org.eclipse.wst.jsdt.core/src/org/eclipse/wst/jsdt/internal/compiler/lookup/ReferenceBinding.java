@@ -616,12 +616,6 @@ public final int getAccessFlags() {
 	return this.modifiers & ExtraCompilerModifiers.AccJustFlag;
 }
 /**
- * @return the JSR 175 annotations for this type.
- */
-public AnnotationBinding[] getAnnotations() {
-	return retrieveAnnotations(this);
-}
-/**
  * @see org.eclipse.wst.jsdt.internal.compiler.lookup.Binding#getAnnotationTagBits()
  */
 public long getAnnotationTagBits() {

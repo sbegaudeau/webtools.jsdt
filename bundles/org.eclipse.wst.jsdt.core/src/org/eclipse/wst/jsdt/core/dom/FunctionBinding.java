@@ -37,7 +37,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 /**
  * Internal implementation of method bindings.
  */
-class FunctionBinding implements IFunctionBinding {
+class FunctionBinding implements IFunctionBinding { 
 
 	private static final int VALID_MODIFIERS = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE |
 		Modifier.ABSTRACT | Modifier.STATIC | Modifier.FINAL | Modifier.SYNCHRONIZED | Modifier.NATIVE |
@@ -53,8 +53,6 @@ class FunctionBinding implements IFunctionBinding {
 	private String key;
 	private ITypeBinding[] typeParameters;
 	private ITypeBinding[] typeArguments;
-	private IAnnotationBinding[] annotations;
-	private IAnnotationBinding[] parameterAnnotations;
 
 	FunctionBinding(BindingResolver resolver, org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding binding) {
 		this.resolver = resolver;
@@ -105,26 +103,6 @@ class FunctionBinding implements IFunctionBinding {
 		return name;
 	}
 
-	public IAnnotationBinding[] getAnnotations() {
-		if (this.annotations != null) {
-			return this.annotations;
-		}
-		org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] annots = this.binding.getAnnotations();
-		int length = annots == null ? 0 : annots.length;
-		if (length == 0) {
-			return this.annotations = AnnotationBinding.NoAnnotations;
-		}
-		IAnnotationBinding[] domInstances = new AnnotationBinding[length];
-		for (int i = 0; i < length; i++) {
-			final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(annots[i]);
-			if (annotationInstance == null) {
-				return this.annotations = AnnotationBinding.NoAnnotations;
-			}
-			domInstances[i] = annotationInstance;
-		}
-		return this.annotations = domInstances;
-	}
-
 	/**
 	 * @see IFunctionBinding#getDeclaringClass()
 	 */
@@ -133,26 +111,6 @@ class FunctionBinding implements IFunctionBinding {
 			this.declaringClass = this.resolver.getTypeBinding(this.binding.declaringClass);
 		}
 		return declaringClass;
-	}
-
-	public IAnnotationBinding[] getParameterAnnotations(int index) {
-		if (this.parameterAnnotations != null) {
-			return this.parameterAnnotations;
-		}
-		org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] annots = this.binding.getParameterAnnotations(index);
-		int length = annots == null ? 0 : annots.length;
-		if (length == 0) {
-			return this.parameterAnnotations = AnnotationBinding.NoAnnotations;
-		}
-		IAnnotationBinding[] domInstances =new AnnotationBinding[length];
-		for (int i = 0; i < length; i++) {
-			final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(annots[i]);
-			if (annotationInstance == null) {
-				return this.parameterAnnotations = AnnotationBinding.NoAnnotations;
-			}
-			domInstances[i] = annotationInstance;
-		}
-		return this.parameterAnnotations = domInstances;
 	}
 
 	/**
@@ -200,8 +158,6 @@ class FunctionBinding implements IFunctionBinding {
 	}
 
 	public Object getDefaultValue() {
-		if (isAnnotationMember())
-			return MemberValuePairBinding.buildDOMValue(this.binding.getDefaultValue(), this.resolver);
 		return null;
 	}
 
@@ -275,10 +231,9 @@ class FunctionBinding implements IFunctionBinding {
 					return (JavaElement) typeRoot.getFunction(getName(), parameters);
 				else
 					return (JavaElement) declaringType.getFunction(getName(), parameters);
-			} else {
-				// annotation type member declaration
-				AnnotationTypeMemberDeclaration typeMemberDeclaration = (AnnotationTypeMemberDeclaration) node;
-				return (JavaElement) declaringType.getFunction(typeMemberDeclaration.getName().getIdentifier(), CharOperation.NO_STRINGS); // annotation type members don't have parameters
+			}
+			else {
+				return null;
 			}
 		} else {
 			// case of method not in the created AST, or a binary method

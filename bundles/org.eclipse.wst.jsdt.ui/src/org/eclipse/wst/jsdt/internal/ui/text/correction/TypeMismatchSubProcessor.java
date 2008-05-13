@@ -23,18 +23,16 @@ import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.Type;
@@ -98,12 +96,6 @@ public class TypeMismatchSubProcessor {
 				castTypeBinding= ASTNodes.getType(frag).resolveBinding();
 				receiverNode= frag.getName();
 			}
-		} else if (parentNodeType == ASTNode.MEMBER_VALUE_PAIR) {
-			receiverNode= ((MemberValuePair) selectedNode.getParent()).getName();
-			castTypeBinding= ASTResolving.guessBindingForReference(nodeToCast);
-		} else if (parentNodeType == ASTNode.SINGLE_MEMBER_ANNOTATION) {
-			receiverNode= ((SingleMemberAnnotation) selectedNode.getParent()).getTypeName(); // use the type name
-			castTypeBinding= ASTResolving.guessBindingForReference(nodeToCast);
 		} else {
 			// try to find the binding corresponding to 'castTypeName'
 			castTypeBinding= ASTResolving.guessBindingForReference(nodeToCast);
@@ -221,12 +213,6 @@ public class TypeMismatchSubProcessor {
 			if (!methodBinding.isConstructor()) {
 				declaringType= methodBinding.getDeclaringClass().getTypeDeclaration();
 				callerBindingDecl= methodBinding.getMethodDeclaration();
-			}
-		} else if (callerBinding instanceof ITypeBinding && nodeToCast.getLocationInParent() == SingleMemberAnnotation.TYPE_NAME_PROPERTY) {
-			declaringType= (ITypeBinding) callerBinding;
-			callerBindingDecl= Bindings.findMethodInType(declaringType, "value", (String[]) null); //$NON-NLS-1$
-			if (callerBindingDecl == null) {
-				return;
 			}
 		}
 

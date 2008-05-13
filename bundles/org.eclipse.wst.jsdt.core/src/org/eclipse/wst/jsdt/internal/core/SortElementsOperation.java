@@ -23,21 +23,18 @@ import org.eclipse.text.edits.RangeMarker;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
@@ -197,15 +194,6 @@ public class SortElementsOperation extends JavaModelOperation {
 				}
 				return true;
 			}
-			public boolean visit(AnnotationTypeDeclaration annotationTypeDeclaration) {
-				List bodyDeclarations = annotationTypeDeclaration.bodyDeclarations();
-				for (Iterator iter = bodyDeclarations.iterator(); iter.hasNext();) {
-					BodyDeclaration bodyDeclaration = (BodyDeclaration) iter.next();
-					bodyDeclaration.setProperty(JavaScriptUnitSorter.RELATIVE_ORDER, new Integer(bodyDeclaration.getStartPosition()));
-					annotationTypeDeclaration.setProperty(CONTAINS_MALFORMED_NODES, Boolean.valueOf(isMalformed(bodyDeclaration)));
-				}
-				return true;
-			}
 
 			public boolean visit(AnonymousClassDeclaration anonymousClassDeclaration) {
 				List bodyDeclarations = anonymousClassDeclaration.bodyDeclarations();
@@ -227,21 +215,6 @@ public class SortElementsOperation extends JavaModelOperation {
 				return true;
 			}
 
-			public boolean visit(EnumDeclaration enumDeclaration) {
-				List bodyDeclarations = enumDeclaration.bodyDeclarations();
-				for (Iterator iter = bodyDeclarations.iterator(); iter.hasNext();) {
-					BodyDeclaration bodyDeclaration = (BodyDeclaration) iter.next();
-					bodyDeclaration.setProperty(JavaScriptUnitSorter.RELATIVE_ORDER, new Integer(bodyDeclaration.getStartPosition()));
-					enumDeclaration.setProperty(CONTAINS_MALFORMED_NODES, Boolean.valueOf(isMalformed(bodyDeclaration)));
-				}
-				List enumConstants = enumDeclaration.enumConstants();
-				for (Iterator iter = enumConstants.iterator(); iter.hasNext();) {
-					EnumConstantDeclaration enumConstantDeclaration = (EnumConstantDeclaration) iter.next();
-					enumConstantDeclaration.setProperty(JavaScriptUnitSorter.RELATIVE_ORDER, new Integer(enumConstantDeclaration.getStartPosition()));
-					enumDeclaration.setProperty(CONTAINS_MALFORMED_NODES, Boolean.valueOf(isMalformed(enumConstantDeclaration)));
-				}
-				return true;
-			}
 		});
 
 		final ASTRewrite rewriter= ASTRewrite.create(ast.getAST());
@@ -276,14 +249,6 @@ public class SortElementsOperation extends JavaModelOperation {
 				return true;
 			}
 
-			public boolean visit(AnnotationTypeDeclaration annotationTypeDeclaration) {
-				if (checkMalformedNodes(annotationTypeDeclaration)) {
-					return true; // abort sorting of current element
-				}
-
-				sortElements(annotationTypeDeclaration.bodyDeclarations(), rewriter.getListRewrite(annotationTypeDeclaration, AnnotationTypeDeclaration.BODY_DECLARATIONS_PROPERTY));
-				return true;
-			}
 
 			public boolean visit(AnonymousClassDeclaration anonymousClassDeclaration) {
 				if (checkMalformedNodes(anonymousClassDeclaration)) {
@@ -303,15 +268,6 @@ public class SortElementsOperation extends JavaModelOperation {
 				return true;
 			}
 
-			public boolean visit(EnumDeclaration enumDeclaration) {
-				if (checkMalformedNodes(enumDeclaration)) {
-					return true; // abort sorting of current element
-				}
-
-				sortElements(enumDeclaration.bodyDeclarations(), rewriter.getListRewrite(enumDeclaration, EnumDeclaration.BODY_DECLARATIONS_PROPERTY));
-				sortElements(enumDeclaration.enumConstants(), rewriter.getListRewrite(enumDeclaration, EnumDeclaration.ENUM_CONSTANTS_PROPERTY));
-				return true;
-			}
 		});
 
 		if (!hasChanges[0])
