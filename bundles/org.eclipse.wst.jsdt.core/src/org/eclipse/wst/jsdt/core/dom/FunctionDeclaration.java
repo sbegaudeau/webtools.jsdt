@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Etienne Pfister <epfister@hsr.ch> - bug 231122
  *******************************************************************************/
 
 package org.eclipse.wst.jsdt.core.dom;
@@ -464,7 +465,12 @@ public class FunctionDeclaration extends BodyDeclaration {
 		}
 		result.setConstructor(isConstructor());
 		result.setExtraDimensions(getExtraDimensions());
-		result.setName((SimpleName) getName().clone(target));
+		
+		SimpleName name = getName();
+		if(name != null){
+			result.setName((SimpleName) name.clone(target));
+		}
+		
 		result.parameters().addAll(
 			ASTNode.copySubtrees(target, parameters()));
 		result.thrownExceptions().addAll(

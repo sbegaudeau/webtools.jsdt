@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Etienne Pfister <epfister@hsr.ch> - bug 231122
  *******************************************************************************/
 
 package org.eclipse.wst.jsdt.core.dom;
@@ -318,7 +319,11 @@ public class ClassInstanceCreation extends Expression {
 		}
 		if (this.ast.apiLevel >= AST.JLS3) {
 			result.typeArguments().addAll(ASTNode.copySubtrees(target, typeArguments()));
-			result.setType((Type) getType().clone(target));
+			
+			Type type = getType();
+			if(type != null){
+				result.setType((Type) type.clone(target));
+			}
 		}
 		result.arguments().addAll(ASTNode.copySubtrees(target, arguments()));
 		result.setAnonymousClassDeclaration(
