@@ -125,7 +125,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
  *
  * Note: the validator produces IProblems internally, which are turned into markers by the JavaScriptBuilder
  * so as to persist problem descriptions. This explains why there is no API allowing to reach IProblem detected
- * when compiling. However, the Java problem markers carry equivalent information to IProblem, in particular
+ * when compiling. However, the JavaScript problem markers carry equivalent information to IProblem, in particular
  * their ID (attribute "id") is set to one of the IDs defined on this interface.
  *  
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
@@ -240,7 +240,6 @@ void setSourceStart(int sourceStart);
 	int ImportRelated = 0x10000000;
 	int Internal = 0x20000000;
 	int Syntax = 0x40000000;
-	/** @since 3.0 */
 	int Javadoc = 0x80000000;
 
 	/**
@@ -250,12 +249,12 @@ void setSourceStart(int sourceStart);
 
 	/**
 	 * Below are listed all available problem IDs. Note that this list could be augmented in the future,
-	 * as new features are added to the Java core implementation.
+	 * as new features are added to the JavaScript core implementation.
 	 */
 
 	/**
 	 * ID reserved for referencing an internal error inside the JavaScriptCore implementation which
-	 * may be surfaced as a problem associated with the compilation unit which caused it to occur.
+	 * may be surfaced as a problem associated with the javaScript unit which caused it to occur.
 	 */
 	int Unclassified = 0;
 
@@ -268,13 +267,11 @@ void setSourceStart(int sourceStart);
 	int AmbiguousType = TypeRelated + 4;
 	int UsingDeprecatedType = TypeRelated + 5;
 	int InternalTypeNameProvided = TypeRelated + 6;
-	/** @since 2.1 */
 	int UnusedPrivateType = Internal + TypeRelated + 7;
 
 	int IncompatibleTypesInEqualityOperator = TypeRelated + 15;
 	int IncompatibleTypesInConditionalOperator = TypeRelated + 16;
 	int TypeMismatch = TypeRelated + 17;
-	/** @since 3.0 */
 	int IndirectAccessToStaticType = Internal + TypeRelated + 18;
 
 	/**
@@ -288,16 +285,11 @@ void setSourceStart(int sourceStart);
 	int OuterLocalMustBeFinal = Internal + 25;
 	int CannotDefineInterfaceInLocalType = Internal + 26;
 	int IllegalPrimitiveOrArrayTypeForEnclosingInstance = TypeRelated + 27;
-	/** @since 2.1 */
 	int EnclosingInstanceInConstructorCall = Internal + 28;
 	int AnonymousClassCannotExtendFinalClass = TypeRelated + 29;
-	/** @since 3.1 */
 	int CannotDefineAnnotationInLocalType = Internal + 30;
-	/** @since 3.1 */
 	int CannotDefineEnumInLocalType = Internal + 31;
-	/** @since 3.1 */
 	int NonStaticContextForEnumMemberType = Internal + 32;
-	/** @since 3.3 */
 	int TypeHidingType = TypeRelated + 33;
 
 
@@ -313,9 +305,7 @@ void setSourceStart(int sourceStart);
 	int RedefinedArgument = Internal + 56;
 	// final local variables
 	int DuplicateFinalLocalInitialization = Internal + 57;
-	/** @since 2.1 */
 	int NonBlankFinalLocalAssignment = Internal + 58;
-	/** @since 3.2 */
 	int ParameterAssignment = Internal + 59;
 	int FinalOuterLocalAssignment = Internal + 60;
 	int LocalVariableIsNeverUsed = Internal + 61;
@@ -324,11 +314,8 @@ void setSourceStart(int sourceStart);
 	int BytecodeExceeds64KLimitForClinit = Internal + 64;
 	int TooManyArgumentSlots = Internal + 65;
 	int TooManyLocalVariableSlots = Internal + 66;
-	/** @since 2.1 */
 	int TooManySyntheticArgumentSlots = Internal + 67;
-	/** @since 2.1 */
 	int TooManyArrayDimensions = Internal + 68;
-	/** @since 2.1 */
 	int BytecodeExceeds64KLimitForConstructor = Internal + 69;
 
 	// fields
@@ -338,13 +325,9 @@ void setSourceStart(int sourceStart);
 	int UsingDeprecatedField = FieldRelated + 73;
 	int NonStaticFieldFromStaticInvocation = FieldRelated + 74;
 	int ReferenceToForwardField = FieldRelated + Internal + 75;
-	/** @since 2.1 */
 	int NonStaticAccessToStaticField = Internal + FieldRelated + 76;
-	/** @since 2.1 */
 	int UnusedPrivateField = Internal + FieldRelated + 77;
-	/** @since 3.0 */
 	int IndirectAccessToStaticField = Internal + FieldRelated + 78;
-	/** @since 3.0 */
 	int UnqualifiedFieldAccess = Internal + FieldRelated + 79;
 
 	// blank final fields
@@ -353,19 +336,12 @@ void setSourceStart(int sourceStart);
 	int DuplicateBlankFinalFieldInitialization = FieldRelated + 82;
 
 	// variable hiding
-	/** @since 3.0 */
 	int LocalVariableHidingLocalVariable = Internal + 90;
-	/** @since 3.0 */
 	int LocalVariableHidingField = Internal + FieldRelated + 91;
-	/** @since 3.0 */
 	int FieldHidingLocalVariable = Internal + FieldRelated + 92;
-	/** @since 3.0 */
 	int FieldHidingField = Internal + FieldRelated + 93;
-	/** @since 3.0 */
 	int ArgumentHidingLocalVariable = Internal + 94;
-	/** @since 3.0 */
 	int ArgumentHidingField = Internal + 95;
-	/** @since 3.1 */
 	int MissingSerialVersion = Internal + 96;
 	/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 	int LooseVarDecl = Internal + 97;
@@ -390,11 +366,8 @@ void setSourceStart(int sourceStart);
 	int NoMessageSendOnBaseType = MethodRelated + 114;
 	int ParameterMismatch = MethodRelated + 115;
 	int NoMessageSendOnArrayType = MethodRelated + 116;
-	/** @since 2.1 */
     int NonStaticAccessToStaticMethod = Internal + MethodRelated + 117;
-	/** @since 2.1 */
 	int UnusedPrivateMethod = Internal + MethodRelated + 118;
-	/** @since 3.0 */
 	int IndirectAccessToStaticMethod = Internal + MethodRelated + 119;
 	int WrongNumberOfArguments = Internal + MethodRelated + 120;
 	int NotAFunction = Internal + MethodRelated + 121;
@@ -404,14 +377,12 @@ void setSourceStart(int sourceStart);
 	int NotVisibleConstructor = ConstructorRelated + 131;
 	int AmbiguousConstructor = ConstructorRelated + 132;
 	int UsingDeprecatedConstructor = ConstructorRelated + 133;
-	/** @since 2.1 */
 	int UnusedPrivateConstructor = Internal + MethodRelated + 134;
 	// explicit constructor calls
 	int InstanceFieldDuringConstructorInvocation = ConstructorRelated + 135;
 	int InstanceMethodDuringConstructorInvocation = ConstructorRelated + 136;
 	int RecursiveConstructorInvocation = ConstructorRelated + 137;
 	int ThisSuperDuringConstructorInvocation = ConstructorRelated + 138;
-	/** @since 3.0 */
 	int InvalidExplicitConstructorCall = ConstructorRelated + Syntax + 139;
 	// implicit constructor calls
 	int UndefinedConstructorInDefaultConstructor = ConstructorRelated + 140;
@@ -464,30 +435,17 @@ void setSourceStart(int sourceStart);
 	// throw
 	int CannotThrowNull = Internal + 177;
 	// assignment
-	/** @since 2.1 */
 	int AssignmentHasNoEffect = Internal + 178;
-	/** @since 3.0 */
 	int PossibleAccidentalBooleanAssignment = Internal + 179;
-	/** @since 3.0 */
 	int SuperfluousSemicolon = Internal + 180;
-	/** @since 3.0 */
 	int UnnecessaryCast = Internal + TypeRelated + 181;
-	/** @deprecated - no longer generated, use {@link #UnnecessaryCast} instead
-	 *   @since 3.0 */
 	int UnnecessaryArgumentCast = Internal + TypeRelated + 182;
-	/** @since 3.0 */
 	int UnnecessaryInstanceof = Internal + TypeRelated + 183;
-	/** @since 3.0 */
 	int FinallyMustCompleteNormally = Internal + 184;
-	/** @since 3.0 */
 	int UnusedMethodDeclaredThrownException = Internal + 185;
-	/** @since 3.0 */
 	int UnusedConstructorDeclaredThrownException = Internal + 186;
-	/** @since 3.0 */
 	int InvalidCatchBlockSequence = Internal + TypeRelated + 187;
-	/** @since 3.0 */
 	int EmptyControlFlowStatement = Internal + TypeRelated + 188;
-	/** @since 3.0 */
 	int UnnecessaryElse = Internal + 189;
 
 	// inner emulation
@@ -496,7 +454,6 @@ void setSourceStart(int sourceStart);
 	int NeedToEmulateMethodAccess = MethodRelated + 192;
 	int NeedToEmulateConstructorAccess = MethodRelated + 193;
 
-	/** @since 3.2 */
 	int FallthroughCase = Internal + 194;
 
 	//inherited name hides enclosing name (sort of ambiguous)
@@ -504,11 +461,9 @@ void setSourceStart(int sourceStart);
 	int InheritedFieldHidesEnclosingName = FieldRelated + 196;
 	int InheritedTypeHidesEnclosingName = TypeRelated + 197;
 
-	/** @since 3.1 */
 	int IllegalUsageOfQualifiedTypeReference = Internal + Syntax + 198;
 
 	// miscellaneous
-	/** @since 3.2 */
 	int UnusedLabel = Internal + 199;
 	int ThisInStaticContext = Internal + 200;
 	int StaticMethodRequested = Internal + MethodRelated + 201;
@@ -527,38 +482,22 @@ void setSourceStart(int sourceStart);
 	int UnmatchedBracket = Syntax + Internal + 220;
 	int NoFieldOnBaseType = FieldRelated + 221;
 	int InvalidExpressionAsStatement = Syntax + Internal + 222;
-	/** @since 2.1 */
 	int ExpressionShouldBeAVariable = Syntax + Internal + 223;
-	/** @since 2.1 */
 	int MissingSemiColon = Syntax + Internal + 224;
-	/** @since 2.1 */
 	int InvalidParenthesizedExpression = Syntax + Internal + 225;
 
-	/** @since 3.0 */
 	int ParsingErrorInsertTokenBefore = Syntax + Internal + 230;
-	/** @since 3.0 */
 	int ParsingErrorInsertTokenAfter = Syntax + Internal + 231;
-	/** @since 3.0 */
     int ParsingErrorDeleteToken = Syntax + Internal + 232;
-    /** @since 3.0 */
     int ParsingErrorDeleteTokens = Syntax + Internal + 233;
-    /** @since 3.0 */
     int ParsingErrorMergeTokens = Syntax + Internal + 234;
-    /** @since 3.0 */
     int ParsingErrorInvalidToken = Syntax + Internal + 235;
-    /** @since 3.0 */
     int ParsingErrorMisplacedConstruct = Syntax + Internal + 236;
-    /** @since 3.0 */
     int ParsingErrorReplaceTokens = Syntax + Internal + 237;
-    /** @since 3.0 */
     int ParsingErrorNoSuggestionForTokens = Syntax + Internal + 238;
-    /** @since 3.0 */
     int ParsingErrorUnexpectedEOF = Syntax + Internal + 239;
-    /** @since 3.0 */
     int ParsingErrorInsertToComplete = Syntax + Internal + 240;
-    /** @since 3.0 */
     int ParsingErrorInsertToCompleteScope = Syntax + Internal + 241;
-    /** @since 3.0 */
     int ParsingErrorInsertToCompletePhrase = Syntax + Internal + 242;
     /* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
     int OptionalSemiColon = Syntax + Internal + 243;
@@ -578,17 +517,12 @@ void setSourceStart(int sourceStart);
 	int UnterminatedString = Syntax + Internal + 259;
 	int UnterminatedComment = Syntax + Internal + 260;
 	int NonExternalizedStringLiteral = Internal + 261;
-	/** @since 3.1 */
 	int InvalidDigit = Syntax + Internal + 262;
-	/** @since 3.1 */
 	int InvalidLowSurrogate = Syntax + Internal + 263;
-	/** @since 3.1 */
 	int InvalidHighSurrogate = Syntax + Internal + 264;
-	/** @since 3.2 */
 	int UnnecessaryNLSTag = Internal + 265;
 
 	// type related problems
-	/** @since 3.1 */
 	int DiscouragedReference = TypeRelated + 280;
 
 	int InterfaceCannotHaveInitializers = TypeRelated + 300;
@@ -598,7 +532,6 @@ void setSourceStart(int sourceStart);
 	int IllegalModifierForMemberClass = TypeRelated + 304;
 	int IllegalModifierForMemberInterface = TypeRelated + 305;
 	int IllegalModifierForLocalClass = TypeRelated + 306;
-	/** @since 3.1 */
 	int ForbiddenReference = TypeRelated + 307;
 	int IllegalModifierCombinationFinalAbstractForClass = TypeRelated + 308;
 	int IllegalVisibilityModifierForInterfaceMemberType = TypeRelated + 309;
@@ -621,9 +554,7 @@ void setSourceStart(int sourceStart);
 	int MustSpecifyPackage = Internal + 326;
 	int HierarchyHasProblems = TypeRelated + 327;
 	int PackageIsNotExpectedPackage = Internal + 328;
-	/** @since 2.1 */
 	int ObjectCannotHaveSuperTypes = Internal + 329;
-	/** @since 3.1 */
 	int ObjectMustBeClass = Internal + 330;
 
 	/** @deprecated - problem is no longer generated, use {@link #UndefinedType} instead */
@@ -735,7 +666,6 @@ void setSourceStart(int sourceStart);
 	/** @deprecated - problem is no longer generated, use {@link #InheritedTypeHidesEnclosingName} instead */
 	int ImportInheritedNameHidesEnclosingName =  ImportRelated + 389 + ProblemReasons.InheritedNameHidesEnclosingName; // ImportRelated + 394
 
-	/** @since 3.1 */
 	int InvalidTypeForStaticImport =  ImportRelated + 391;
 
 	// local variable related problems
@@ -762,13 +692,9 @@ void setSourceStart(int sourceStart);
 	int OverridingNonVisibleMethod = MethodRelated + 410;
 	int AbstractMethodCannotBeOverridden = MethodRelated + 411;
 	int OverridingDeprecatedMethod = MethodRelated + 412;
-	/** @since 2.1 */
 	int IncompatibleReturnTypeForNonInheritedInterfaceMethod = MethodRelated + 413;
-	/** @since 2.1 */
 	int IncompatibleExceptionInThrowsClauseForNonInheritedInterfaceMethod = MethodRelated + 414;
-	/** @since 3.1 */
 	int IllegalVararg = MethodRelated + 415;
-	/** @since 3.3 */
 	int OverridingMethodWithoutSuperInvocation = MethodRelated + 416;
 
 	// code snippet support
@@ -778,13 +704,10 @@ void setSourceStart(int sourceStart);
 
 	//constant pool
 	int TooManyConstantsInConstantPool = Internal + 430;
-	/** @since 2.1 */
 	int TooManyBytesForStringConstant = Internal + 431;
 
 	// static constraints
-	/** @since 2.1 */
 	int TooManyFields = Internal + 432;
-	/** @since 2.1 */
 	int TooManyMethods = Internal + 433;
 
 	// 1.4 features
@@ -793,34 +716,23 @@ void setSourceStart(int sourceStart);
 
 	// 1.5 features
 	int UseEnumAsAnIdentifier = Internal + 441;
-	/** @since 3.2 */
 	int EnumConstantsCannotBeSurroundedByParenthesis = Syntax + Internal + 442;
 
 	// detected task
-	/** @since 2.1 */
 	int Task = Internal + 450;
 
 	// local variables related problems, cont'd
-	/** @since 3.3 */
 	int NullLocalVariableReference = Internal + 451;
-	/** @since 3.3 */
 	int PotentialNullLocalVariableReference = Internal + 452;
-	/** @since 3.3 */
 	int RedundantNullCheckOnNullLocalVariable = Internal + 453;
-	/** @since 3.3 */
 	int NullLocalVariableComparisonYieldsFalse = Internal + 454;
-	/** @since 3.3 */
 	int RedundantLocalVariableNullAssignment = Internal + 455;
-	/** @since 3.3 */
 	int NullLocalVariableInstanceofYieldsFalse = Internal + 456;
-	/** @since 3.3 */
 	int RedundantNullCheckOnNonNullLocalVariable = Internal + 457;
-	/** @since 3.3 */
 	int NonNullLocalVariableComparisonYieldsFalse = Internal + 458;
 
 
 	// block
-	/** @since 3.0 */
 	int UndocumentedEmptyBlock = Internal + 460;
 
 	/*
@@ -828,460 +740,265 @@ void setSourceStart(int sourceStart);
 	 */
 	/**
 	 * Problem warned on duplicated tag.
-	 * @since 3.3
 	 */
 	int JavadocDuplicateTag = Javadoc + Internal + 464;
 	/**
 	 * Problem signaled on an hidden reference due to a too low visibility level.
-	 * @since 3.3
 	 */
 	int JavadocHiddenReference = Javadoc + Internal + 465;
 	/**
 	 * Problem signaled on an invalid qualification for member type reference.
-	 * @since 3.3
 	 */
 	int JavadocInvalidMemberTypeQualification = Javadoc + Internal + 466;
-	/** @since 3.2 */
 	int JavadocMissingIdentifier = Javadoc + Internal + 467;
-	/** @since 3.2 */
 	int JavadocNonStaticTypeFromStaticInvocation = Javadoc + Internal + 468;
-	/** @since 3.1 */
 	int JavadocInvalidParamTagTypeParameter = Javadoc + Internal + 469;
-	/** @since 3.0 */
 	int JavadocUnexpectedTag = Javadoc + Internal + 470;
-	/** @since 3.0 */
 	int JavadocMissingParamTag = Javadoc + Internal + 471;
-	/** @since 3.0 */
 	int JavadocMissingParamName = Javadoc + Internal + 472;
-	/** @since 3.0 */
 	int JavadocDuplicateParamName = Javadoc + Internal + 473;
-	/** @since 3.0 */
 	int JavadocInvalidParamName = Javadoc + Internal + 474;
-	/** @since 3.0 */
 	int JavadocMissingReturnTag = Javadoc + Internal + 475;
-	/** @since 3.0 */
 	int JavadocDuplicateReturnTag = Javadoc + Internal + 476;
-	/** @since 3.0 */
 	int JavadocMissingThrowsTag = Javadoc + Internal + 477;
-	/** @since 3.0 */
 	int JavadocMissingThrowsClassName = Javadoc + Internal + 478;
-	/** @since 3.0 */
 	int JavadocInvalidThrowsClass = Javadoc + Internal + 479;
-	/** @since 3.0 */
 	int JavadocDuplicateThrowsClassName = Javadoc + Internal + 480;
-	/** @since 3.0 */
 	int JavadocInvalidThrowsClassName = Javadoc + Internal + 481;
-	/** @since 3.0 */
 	int JavadocMissingSeeReference = Javadoc + Internal + 482;
-	/** @since 3.0 */
 	int JavadocInvalidSeeReference = Javadoc + Internal + 483;
-	/** @since 3.0 */
 	int JavadocInvalidSeeHref = Javadoc + Internal + 484;
-	/** @since 3.0 */
 	int JavadocInvalidSeeArgs = Javadoc + Internal + 485;
-	/** @since 3.0 */
 	int JavadocMissing = Javadoc + Internal + 486;
-	/** @since 3.0 */
 	int JavadocInvalidTag = Javadoc + Internal + 487;
 	/*
 	 * ID for field errors in Javadoc
 	 */
-	/** @since 3.0 */
 	int JavadocUndefinedField = Javadoc + Internal + 488;
-	/** @since 3.0 */
 	int JavadocNotVisibleField = Javadoc + Internal + 489;
-	/** @since 3.0 */
 	int JavadocAmbiguousField = Javadoc + Internal + 490;
-	/** @since 3.0 */
 	int JavadocUsingDeprecatedField = Javadoc + Internal + 491;
 	/*
 	 * IDs for constructor errors in Javadoc
 	 */
-	/** @since 3.0 */
 	int JavadocUndefinedConstructor = Javadoc + Internal + 492;
-	/** @since 3.0 */
 	int JavadocNotVisibleConstructor = Javadoc + Internal + 493;
-	/** @since 3.0 */
 	int JavadocAmbiguousConstructor = Javadoc + Internal + 494;
-	/** @since 3.0 */
 	int JavadocUsingDeprecatedConstructor = Javadoc + Internal + 495;
 	/*
 	 * IDs for method errors in Javadoc
 	 */
-	/** @since 3.0 */
 	int JavadocUndefinedMethod = Javadoc + Internal + 496;
-	/** @since 3.0 */
 	int JavadocNotVisibleMethod = Javadoc + Internal + 497;
-	/** @since 3.0 */
 	int JavadocAmbiguousMethod = Javadoc + Internal + 498;
-	/** @since 3.0 */
 	int JavadocUsingDeprecatedMethod = Javadoc + Internal + 499;
-	/** @since 3.0 */
 	int JavadocNoMessageSendOnBaseType = Javadoc + Internal + 500;
-	/** @since 3.0 */
 	int JavadocParameterMismatch = Javadoc + Internal + 501;
-	/** @since 3.0 */
 	int JavadocNoMessageSendOnArrayType = Javadoc + Internal + 502;
 	/*
 	 * IDs for type errors in Javadoc
 	 */
-	/** @since 3.0 */
 	int JavadocUndefinedType = Javadoc + Internal + 503;
-	/** @since 3.0 */
 	int JavadocNotVisibleType = Javadoc + Internal + 504;
-	/** @since 3.0 */
 	int JavadocAmbiguousType = Javadoc + Internal + 505;
-	/** @since 3.0 */
 	int JavadocUsingDeprecatedType = Javadoc + Internal + 506;
-	/** @since 3.0 */
 	int JavadocInternalTypeNameProvided = Javadoc + Internal + 507;
-	/** @since 3.0 */
 	int JavadocInheritedMethodHidesEnclosingName = Javadoc + Internal + 508;
-	/** @since 3.0 */
 	int JavadocInheritedFieldHidesEnclosingName = Javadoc + Internal + 509;
-	/** @since 3.0 */
 	int JavadocInheritedNameHidesEnclosingTypeName = Javadoc + Internal + 510;
-	/** @since 3.0 */
 	int JavadocAmbiguousMethodReference = Javadoc + Internal + 511;
-	/** @since 3.0 */
 	int JavadocUnterminatedInlineTag = Javadoc + Internal + 512;
-	/** @since 3.0 */
 	int JavadocMalformedSeeReference = Javadoc + Internal + 513;
-	/** @since 3.0 */
 	int JavadocMessagePrefix = Internal + 514;
 
-	/** @since 3.1 */
 	int JavadocMissingHashCharacter = Javadoc + Internal + 515;
-	/** @since 3.1 */
 	int JavadocEmptyReturnTag = Javadoc + Internal + 516;
-	/** @since 3.1 */
 	int JavadocInvalidValueReference = Javadoc + Internal + 517;
-	/** @since 3.1 */
 	int JavadocUnexpectedText = Javadoc + Internal + 518;
-	/** @since 3.1 */
 	int JavadocInvalidParamTagName = Javadoc + Internal + 519;
 
 	/**
 	 * Generics
 	 */
-	/** @since 3.1 */
 	int DuplicateTypeVariable = Internal + 520;
-	/** @since 3.1 */
 	int IllegalTypeVariableSuperReference = Internal + 521;
-	/** @since 3.1 */
 	int NonStaticTypeFromStaticInvocation = Internal + 522;
-	/** @since 3.1 */
 	int ObjectCannotBeGeneric = Internal + 523;
-	/** @since 3.1 */
 	int NonGenericType = TypeRelated + 524;
-	/** @since 3.1 */
 	int IncorrectArityForParameterizedType = TypeRelated + 525;
-	/** @since 3.1 */
 	int TypeArgumentMismatch = TypeRelated + 526;
-	/** @since 3.1 */
 	int DuplicateMethodErasure = TypeRelated + 527;
-	/** @since 3.1 */
 	int ReferenceToForwardTypeVariable = TypeRelated + 528;
-    /** @since 3.1 */
 	int BoundMustBeAnInterface = TypeRelated + 529;
-    /** @since 3.1 */
 	int UnsafeRawConstructorInvocation = TypeRelated + 530;
-    /** @since 3.1 */
 	int UnsafeRawMethodInvocation = TypeRelated + 531;
-    /** @since 3.1 */
 	int UnsafeTypeConversion = TypeRelated + 532;
-    /** @since 3.1 */
 	int InvalidTypeVariableExceptionType = TypeRelated + 533;
-	/** @since 3.1 */
 	int InvalidParameterizedExceptionType = TypeRelated + 534;
-	/** @since 3.1 */
 	int IllegalGenericArray = TypeRelated + 535;
-	/** @since 3.1 */
 	int UnsafeRawFieldAssignment = TypeRelated + 536;
-	/** @since 3.1 */
 	int FinalBoundForTypeVariable = TypeRelated + 537;
-	/** @since 3.1 */
 	int UndefinedTypeVariable = Internal + 538;
-	/** @since 3.1 */
 	int SuperInterfacesCollide = TypeRelated + 539;
-	/** @since 3.1 */
 	int WildcardConstructorInvocation = TypeRelated + 540;
-	/** @since 3.1 */
 	int WildcardMethodInvocation = TypeRelated + 541;
-	/** @since 3.1 */
 	int WildcardFieldAssignment = TypeRelated + 542;
-	/** @since 3.1 */
 	int GenericMethodTypeArgumentMismatch = TypeRelated + 543;
-	/** @since 3.1 */
 	int GenericConstructorTypeArgumentMismatch = TypeRelated + 544;
-	/** @since 3.1 */
 	int UnsafeGenericCast = TypeRelated + 545;
-	/** @since 3.1 */
 	int IllegalInstanceofParameterizedType = Internal + 546;
-	/** @since 3.1 */
 	int IllegalInstanceofTypeParameter = Internal + 547;
-	/** @since 3.1 */
 	int NonGenericMethod = TypeRelated + 548;
-	/** @since 3.1 */
 	int IncorrectArityForParameterizedMethod = TypeRelated + 549;
-	/** @since 3.1 */
 	int ParameterizedMethodArgumentTypeMismatch = TypeRelated + 550;
-	/** @since 3.1 */
 	int NonGenericConstructor = TypeRelated + 551;
-	/** @since 3.1 */
 	int IncorrectArityForParameterizedConstructor = TypeRelated + 552;
-	/** @since 3.1 */
 	int ParameterizedConstructorArgumentTypeMismatch = TypeRelated + 553;
-	/** @since 3.1 */
 	int TypeArgumentsForRawGenericMethod = TypeRelated + 554;
-	/** @since 3.1 */
 	int TypeArgumentsForRawGenericConstructor = TypeRelated + 555;
-	/** @since 3.1 */
 	int SuperTypeUsingWildcard = TypeRelated + 556;
-	/** @since 3.1 */
 	int GenericTypeCannotExtendThrowable = TypeRelated + 557;
-	/** @since 3.1 */
 	int IllegalClassLiteralForTypeVariable = TypeRelated + 558;
-	/** @since 3.1 */
 	int UnsafeReturnTypeOverride = MethodRelated + 559;
-	/** @since 3.1 */
 	int MethodNameClash = MethodRelated + 560;
-	/** @since 3.1 */
 	int RawMemberTypeCannotBeParameterized = TypeRelated + 561;
-	/** @since 3.1 */
 	int MissingArgumentsForParameterizedMemberType = TypeRelated + 562;
-	/** @since 3.1 */
 	int StaticMemberOfParameterizedType = TypeRelated + 563;
-    /** @since 3.1 */
 	int BoundHasConflictingArguments = TypeRelated + 564;
-    /** @since 3.1 */
 	int DuplicateParameterizedMethods = MethodRelated + 565;
-	/** @since 3.1 */
 	int IllegalQualifiedParameterizedTypeAllocation = TypeRelated + 566;
-	/** @since 3.1 */
 	int DuplicateBounds = TypeRelated + 567;
-	/** @since 3.1 */
 	int BoundCannotBeArray = TypeRelated + 568;
-    /** @since 3.1 */
 	int UnsafeRawGenericConstructorInvocation = TypeRelated + 569;
-    /** @since 3.1 */
 	int UnsafeRawGenericMethodInvocation = TypeRelated + 570;
-	/** @since 3.1 */
 	int TypeParameterHidingType = TypeRelated + 571;
-	/** @since 3.2 */
 	int RawTypeReference = TypeRelated + 572;
-	/** @since 3.2 */
 	int NoAdditionalBoundAfterTypeVariable = TypeRelated + 573;
-	/** @since 3.2 */
 	int UnsafeGenericArrayForVarargs = MethodRelated + 574;
-	/** @since 3.2 */
 	int IllegalAccessFromTypeVariable = TypeRelated + 575;
-	/** @since 3.3 */
 	int TypeHidingTypeParameterFromType = TypeRelated + 576;
-	/** @since 3.3 */
 	int TypeHidingTypeParameterFromMethod = TypeRelated + 577;
-    /** @since 3.3 */
     int InvalidUsageOfWildcard = Syntax + Internal + 578;
 
 	/**
 	 * Foreach
 	 */
-	/** @since 3.1 */
 	int IncompatibleTypesInForeach = TypeRelated + 580;
-	/** @since 3.1 */
 	int InvalidTypeForCollection = Internal + 581;
 
 	/**
 	 * 1.5 Syntax errors (when source level < 1.5)
 	 */
-	/** @since 3.1 */
     int InvalidUsageOfTypeParameters = Syntax + Internal + 590;
-    /** @since 3.1 */
     int InvalidUsageOfStaticImports = Syntax + Internal + 591;
-    /** @since 3.1 */
     int InvalidUsageOfForeachStatements = Syntax + Internal + 592;
-    /** @since 3.1 */
     int InvalidUsageOfTypeArguments = Syntax + Internal + 593;
-    /** @since 3.1 */
     int InvalidUsageOfEnumDeclarations = Syntax + Internal + 594;
-    /** @since 3.1 */
     int InvalidUsageOfVarargs = Syntax + Internal + 595;
-    /** @since 3.1 */
     int InvalidUsageOfAnnotations = Syntax + Internal + 596;
-    /** @since 3.1 */
     int InvalidUsageOfAnnotationDeclarations = Syntax + Internal + 597;
 
     /**
      * Annotation
      */
-	/** @since 3.1 */
 	int IllegalModifierForAnnotationMethod = MethodRelated + 600;
-    /** @since 3.1 */
     int IllegalExtendedDimensions = MethodRelated + 601;
-    /** @since 3.1 */
 	int InvalidFileNameForPackageAnnotations = Syntax + Internal + 602;
-    /** @since 3.1 */
 	int IllegalModifierForAnnotationType = TypeRelated + 603;
-    /** @since 3.1 */
 	int IllegalModifierForAnnotationMemberType = TypeRelated + 604;
-    /** @since 3.1 */
 	int InvalidAnnotationMemberType = TypeRelated + 605;
-    /** @since 3.1 */
 	int AnnotationCircularitySelfReference = TypeRelated + 606;
-    /** @since 3.1 */
 	int AnnotationCircularity = TypeRelated + 607;
-	/** @since 3.1 */
 	int DuplicateAnnotation = TypeRelated + 608;
-	/** @since 3.1 */
 	int MissingValueForAnnotationMember = TypeRelated + 609;
-	/** @since 3.1 */
 	int DuplicateAnnotationMember = Internal + 610;
-	/** @since 3.1 */
 	int UndefinedAnnotationMember = MethodRelated + 611;
-	/** @since 3.1 */
 	int AnnotationValueMustBeClassLiteral = Internal + 612;
-	/** @since 3.1 */
 	int AnnotationValueMustBeConstant = Internal + 613;
-	/** @deprecated - problem is no longer generated (code is legite)
-	 *   @since 3.1 */
 	int AnnotationFieldNeedConstantInitialization = Internal + 614;
-	/** @since 3.1 */
 	int IllegalModifierForAnnotationField = Internal + 615;
-	/** @since 3.1 */
 	int AnnotationCannotOverrideMethod = MethodRelated + 616;
-	/** @since 3.1 */
 	int AnnotationMembersCannotHaveParameters = Syntax + Internal + 617;
-	/** @since 3.1 */
 	int AnnotationMembersCannotHaveTypeParameters = Syntax + Internal + 618;
-	/** @since 3.1 */
 	int AnnotationTypeDeclarationCannotHaveSuperclass = Syntax + Internal + 619;
-	/** @since 3.1 */
 	int AnnotationTypeDeclarationCannotHaveSuperinterfaces = Syntax + Internal + 620;
-	/** @since 3.1 */
 	int DuplicateTargetInTargetAnnotation = Internal + 621;
-	/** @since 3.1 */
 	int DisallowedTargetForAnnotation = TypeRelated + 622;
-	/** @since 3.1 */
 	int MethodMustOverride = MethodRelated + 623;
-	/** @since 3.1 */
 	int AnnotationTypeDeclarationCannotHaveConstructor = Syntax + Internal + 624;
-	/** @since 3.1 */
 	int AnnotationValueMustBeAnnotation = Internal + 625;
-	/** @since 3.1 */
 	int AnnotationTypeUsedAsSuperInterface = TypeRelated + 626;
-	/** @since 3.1 */
 	int MissingOverrideAnnotation = MethodRelated + 627;
-	/** @since 3.1 */
 	int FieldMissingDeprecatedAnnotation = Internal + 628;
-	/** @since 3.1 */
 	int MethodMissingDeprecatedAnnotation = Internal + 629;
-	/** @since 3.1 */
 	int TypeMissingDeprecatedAnnotation = Internal + 630;
-	/** @since 3.1 */
 	int UnhandledWarningToken = Internal + 631;
-	/** @since 3.2 */
 	int AnnotationValueMustBeArrayInitializer = Internal + 632;
-	/** @since 3.3 */
 	int AnnotationValueMustBeAnEnumConstant = Internal + 633;
-	/** @since 3.3 */
 	int MethodMustOverrideOrImplement = MethodRelated + 634;
 
 	/**
 	 * Corrupted binaries
 	 */
-	/** @since 3.1 */
 	int CorruptedSignature = Internal + 700;
 	/**
 	 * Corrupted source
 	 */
-	/** @since 3.2 */
 	int InvalidEncoding = Internal + 701;
-	/** @since 3.2 */
 	int CannotReadSource = Internal + 702;
 
 	/**
 	 * Autoboxing
 	 */
-	/** @since 3.1 */
 	int BoxingConversion = Internal + 720;
-	/** @since 3.1 */
 	int UnboxingConversion = Internal + 721;
 
 	/**
 	 * Enum
 	 */
-	/** @since 3.1 */
 	int IllegalModifierForEnum = TypeRelated + 750;
-	/** @since 3.1 */
 	int IllegalModifierForEnumConstant = FieldRelated + 751;
-	/** @since 3.1 */
 	int IllegalModifierForLocalEnum = TypeRelated + 752;
-	/** @since 3.1 */
 	int IllegalModifierForMemberEnum = TypeRelated + 753;
-	/** @since 3.1 */
 	int CannotDeclareEnumSpecialMethod = MethodRelated + 754;
-	/** @since 3.1 */
 	int IllegalQualifiedEnumConstantLabel = FieldRelated + 755;
-	/** @since 3.1 */
 	int CannotExtendEnum = TypeRelated + 756;
-	/** @since 3.1 */
 	int CannotInvokeSuperConstructorInEnum = MethodRelated + 757;
-	/** @since 3.1 */
 	int EnumAbstractMethodMustBeImplemented = MethodRelated + 758;
-	/** @since 3.1 */
 	int EnumSwitchCannotTargetField = FieldRelated + 759;
-	/** @since 3.1 */
 	int IllegalModifierForEnumConstructor = MethodRelated + 760;
-	/** @since 3.1 */
 	int MissingEnumConstantCase = FieldRelated + 761;
-	/** @since 3.2 */ // TODO need to fix 3.1.1 contribution (inline this constant on client side)
 	int EnumStaticFieldInInInitializerContext = FieldRelated + 762;
 
 	/**
 	 * Var args
 	 */
-	/** @since 3.1 */
 	int IllegalExtendedDimensionsForVarArgs = Syntax + Internal + 800;
-	/** @since 3.1 */
 	int MethodVarargsArgumentNeedCast = MethodRelated + 801;
-	/** @since 3.1 */
 	int ConstructorVarargsArgumentNeedCast = ConstructorRelated + 802;
-	/** @since 3.1 */
 	int VarargsConflict = MethodRelated + 803;
 
 	/**
 	 * Javadoc Generic
 	 */
-	/** @since 3.1 */
 	int JavadocGenericMethodTypeArgumentMismatch = Javadoc + Internal + 850;
-	/** @since 3.1 */
 	int JavadocNonGenericMethod = Javadoc + Internal + 851;
-	/** @since 3.1 */
 	int JavadocIncorrectArityForParameterizedMethod = Javadoc + Internal + 852;
-	/** @since 3.1 */
 	int JavadocParameterizedMethodArgumentTypeMismatch = Javadoc + Internal + 853;
-	/** @since 3.1 */
 	int JavadocTypeArgumentsForRawGenericMethod = Javadoc + Internal + 854;
-	/** @since 3.1 */
 	int JavadocGenericConstructorTypeArgumentMismatch = Javadoc + Internal + 855;
-	/** @since 3.1 */
 	int JavadocNonGenericConstructor = Javadoc + Internal + 856;
-	/** @since 3.1 */
 	int JavadocIncorrectArityForParameterizedConstructor = Javadoc + Internal + 857;
-	/** @since 3.1 */
 	int JavadocParameterizedConstructorArgumentTypeMismatch = Javadoc + Internal + 858;
-	/** @since 3.1 */
 	int JavadocTypeArgumentsForRawGenericConstructor = Javadoc + Internal + 859;
 
 	/**
 	 * External problems -- These are problems defined by other plugins
 	 */
 
-	/** @since 3.2 */
 	int ExternalProblemNotFixable = 900;
 
 	// indicates an externally defined problem that has a quick-assist processor
 	// associated with it
-	/** @since 3.2 */
 	int ExternalProblemFixable = 901;
 }

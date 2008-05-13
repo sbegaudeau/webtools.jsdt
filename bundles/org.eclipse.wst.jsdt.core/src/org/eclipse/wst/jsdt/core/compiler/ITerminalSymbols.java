@@ -12,7 +12,7 @@
 package org.eclipse.wst.jsdt.core.compiler;
 
 /**
- * Maps each terminal symbol in the java-grammar into a unique integer.
+ * Maps each terminal symbol in the javaScript-grammar into a unique integer.
  * This integer is used to represent the terminal when computing a parsing action.
  * <p>
  * This interface is not intended to be implemented by clients.
@@ -35,9 +35,6 @@ public interface ITerminalSymbols {
 	int TokenNameIdentifier = 5;
 	int TokenNameabstract = 98;
 
-    /**
-     * "assert" token (added in J2SE 1.4).
-     */
 	int TokenNameassert = 118;
 	int TokenNameboolean = 18;
 	int TokenNamebreak = 119;
@@ -143,32 +140,14 @@ public interface ITerminalSymbols {
 	int TokenNameEOF = 158;
 	int TokenNameERROR = 309;
 
-    /**
-     * "enum" keyword (added in J2SE 1.5).
-     * @since 3.0
-     */
 	int TokenNameenum = 400;
 
-    /**
-     * "@" token (added in J2SE 1.5).
-     * @since 3.0
-     */
 	int TokenNameAT = 401;
 
-    /**
-     * "..." token (added in J2SE 1.5).
-     * @since 3.0
-     */
 	int TokenNameELLIPSIS = 402;
 
-	/**
-	 * @since 3.1
-	 */
 	int TokenNameconst = 403;
 
-	/**
-	 * @since 3.1
-	 */
 	int TokenNamegoto = 404;
 
 	int TokenNameNOT_EQUAL_EQUAL=450;

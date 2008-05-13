@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.core.ReconcileWorkingCopyOperation;
 
 /**
- * The context of a reconcile event that is notified to interested compilation
+ * The context of a reconcile event that is notified to interested validation
  * participants while a reconcile operation is running.
  * <p>
  * A reconcile participant can get the AST for the reconcile-operation using
@@ -127,7 +127,7 @@ public boolean isResolvingBindings() {
 /**
  * Returns the delta describing the change to the working copy being reconciled.
  * Returns <code>null</code> if there is no change.
- * Note that the delta's AST is not yet positionnned at this stage. Use {@link #getAST3()}
+ * Note that the delta's AST is not yet positioned at this stage. Use {@link #getAST3()}
  * to get the current AST.
  *
  * @return the delta describing the change, or <code>null</code> if none
@@ -137,12 +137,12 @@ public IJavaScriptElementDelta getDelta() {
 }
 
 /**
- * Returns the problems to be reported to the problem requestor of the reconcile operation
+ * Returns the problems to be reported to the problem requester of the reconcile operation
  * for the given marker type.
  * Returns <code>null</code> if no problems need to be reported for this marker type.
  *
  * @param markerType the given marker type
- * @return problems to be reported to the problem requesto
+ * @return problems to be reported to the problem requester
  */
 public CategorizedProblem[] getProblems(String markerType) {
 	if (this.operation.problems == null) return null;
@@ -160,14 +160,14 @@ public IJavaScriptUnit getWorkingCopy() {
 
 /**
  * Resets the AST carried by this context.
- * A compilation participant that modifies the environment that would result in different
+ * A validation participant that modifies the environment that would result in different
  * bindings for the AST is expected to reset the AST on this context, so that other
  * participants don't get a stale AST.
  * <p>
  * Note that resetting the AST will not restart the reconcile process. Only further
  * participants will see the new AST. Thus participants running before the one that
  * resets the AST will have a stale view of the AST and its problems. Use
- * the compilation participant extension point to order the participants.
+ * the validation participant extension point to order the participants.
  * </p>
  */
 public void resetAST() {
@@ -177,7 +177,7 @@ public void resetAST() {
 }
 
 /**
- * Sets the problems to be reported to the problem requestor of the reconcile operation
+ * Sets the problems to be reported to the problem requester of the reconcile operation
  * for the given marker type.
  * <code>null</code> indicates that no problems need to be reported.
  * <p>
@@ -186,7 +186,7 @@ public void resetAST() {
  * </p>
  *
  * @param markerType the marker type of the given problems
- * @param problems  the problems to be reported to the problem requestor of the reconcile operation,
+ * @param problems  the problems to be reported to the problem requester of the reconcile operation,
  *   or <code>null</code> if none
  */
 public void putProblems(String markerType, CategorizedProblem[] problems) {

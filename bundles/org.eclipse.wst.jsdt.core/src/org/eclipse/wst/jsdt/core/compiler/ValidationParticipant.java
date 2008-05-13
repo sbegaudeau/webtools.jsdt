@@ -91,7 +91,7 @@ public boolean isActive(IJavaScriptProject project) {
 	return false;
 }
 
-/**
+/*
  * Returns whether this participant is interested in only Annotations.
  * <p>
  * Default is to return <code>false</code>.
@@ -102,7 +102,7 @@ public boolean isAnnotationProcessor() {
 	return false;
 }
 
-/**
+/*
  * Notifies this participant that a validation operation has found source files using Annotations.
  * Only sent to participants interested in the current build project that answer true to isAnnotationProcessor().
  * Each BuildContext was informed whether its source file currently hasAnnotations().

@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.core.compiler;
 
 
  /**
-  * Definition of a Java scanner, as returned by the <code>ToolFactory</code>.
+  * Definition of a JavaScript scanner, as returned by the <code>ToolFactory</code>.
   * The scanner is responsible for tokenizing a given source, providing information about
   * the nature of the token read, its positions and source equivalent.
   * <p>

@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.internal.core.builder.ValidationParticipantResult;
 import org.eclipse.wst.jsdt.internal.core.builder.SourceFile;
 
 /**
- * The context of a build event that is notified to interested compilation
+ * The context of a validation event that is notified to interested validation
  * participants when {@link ValidationParticipant#buildStarting(BuildContext[], boolean) a build is starting},
  * or to annotations processors when {@link ValidationParticipant#processAnnotations(BuildContext[]) a source file has annotations}.
  * <p>
@@ -44,29 +44,29 @@ public BuildContext(SourceFile sourceFile) {
 }
 
 /**
- * Returns the contents of the compilation unit.
+ * Returns the contents of the javaScript unit.
  *
- * @return the contents of the compilation unit
+ * @return the contents of the javaScript unit
  */
 public char[] getContents() {
 	return this.sourceFile.getContents();
 }
 
 /**
- * Returns the <code>IFile</code> representing the compilation unit.
+ * Returns the <code>IFile</code> representing the javaScript unit.
  *
- * @return the <code>IFile</code> representing the compilation unit
+ * @return the <code>IFile</code> representing the javaScript unit
  */
 public IFile getFile() {
 	return this.sourceFile.resource;
 }
 
 /**
- * Returns whether the compilation unit contained any annotations when it was compiled.
+ * Returns whether the javaScript unit contained any annotations when it was compiled.
  *
  * NOTE: This is only valid during {@link ValidationParticipant#processAnnotations(BuildContext[])}.
  *
- * @return whether the compilation unit contained any annotations when it was compiled
+ * @return whether the javaScript unit contained any annotations when it was compiled
  */
 public boolean hasAnnotations() {
 	return this.hasAnnotations; // only set during processAnnotations

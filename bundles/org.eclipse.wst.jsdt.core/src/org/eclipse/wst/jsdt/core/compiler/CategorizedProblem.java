@@ -13,10 +13,10 @@ package org.eclipse.wst.jsdt.core.compiler;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblem;
 
 /**
- * Richer description of a Java problem, as detected by the compiler or some of the underlying
+ * Richer description of a JavaScript problem, as detected by the compiler or some of the underlying
  * technology reusing the compiler. With the introduction of <code>validationParticipant</code>,
  * the simpler problem interface <code>IProblem</code> did not carry enough information to better
- * separate and categorize Java problems. In order to minimize impact on existing API, Java problems
+ * separate and categorize JavaScript problems. In order to minimize impact on existing API, JavaScript problems
  * are still passed around as <code>IProblem</code>, though actual implementations should explicitly
  * extend <code>CategorizedProblem</code>. Participants can produce their own problem definitions,
  * and given these are categorized problems, they can be better handled by clients (such as user
@@ -26,27 +26,27 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblem;
  * <ul>
  * <li> its location (originating source file name, source position, line number), </li>
  * <li> its message description and a predicate to check its severity (warning or error). </li>
- * <li> its ID : a number identifying the very nature of this problem. All possible IDs for standard Java
+ * <li> its ID : a number identifying the very nature of this problem. All possible IDs for standard JavaScript
  * problems are listed as constants on <code>IProblem</code>, </li>
  * <li> its marker type : a string identifying the problem creator. It corresponds to the marker type
- * chosen if this problem was to be persisted. Standard Java problems are associated to marker
+ * chosen if this problem was to be persisted. Standard JavaScript problems are associated to marker
  * type "org.eclipse.wst.jsdt.core.problem"), </li>
  * <li> its category ID : a number identifying the category this problem belongs to. All possible IDs for
- * standard Java problem categories are listed in this class. </li>
+ * standard JavaScript problem categories are listed in this class. </li>
  * </ul>
  *
- * Note: the compiler produces IProblems internally, which are turned into markers by the JavaBuilder
+ * Note: the compiler produces IProblems internally, which are turned into markers by the validator
  * so as to persist problem descriptions. This explains why there is no API allowing to reach IProblem detected
- * when compiling. However, the Java problem markers carry equivalent information to IProblem, in particular
+ * when validating. However, the JavaScript problem markers carry equivalent information to IProblem, in particular
  * their ID (attribute "id") is set to one of the IDs defined on this interface.
  *
- * Note: Standard Java problems produced by Java default tooling will be subclasses of this class. Technically, most
+ * Note: Standard JavaScript problems produced by JavaScript default tooling will be subclasses of this class. Technically, most
  * API methods dealing with problems are referring to <code>IProblem</code> for backward compatibility reason.
  * It is intended that <code>CategorizedProblem</code> will be subclassed for custom problem implementation when
  * participating in compilation operations, so as to allow participant to contribute their own marker types, and thus
  * defining their own domain specific problem/category IDs.
  *
- * Note: standard Java problems produced by Java default tooling will set the
+ * Note: standard JavaScript problems produced by JavaScript default tooling will set the
  * marker IMarker#GENERATED_BY attribute to JavaBuilder#GENERATED_BY; compiler
  * participants may specify the IMarker#GENERATED_BY attribute of their markers
  * by adding it to the extra marker attributes of the problems they generate;
@@ -62,7 +62,7 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblem;
 public abstract class CategorizedProblem implements IProblem {
 
 	/**
-	 * List of standard category IDs used by Java problems, more categories will be added
+	 * List of standard category IDs used by JavaScript problems, more categories will be added
 	 * in the future.
 	 */
 	public static final int CAT_UNSPECIFIED = 0;
@@ -102,7 +102,7 @@ public abstract class CategorizedProblem implements IProblem {
  * defined in the context of some marker type. Custom implementations of <code>CategorizedProblem</code>
  * may choose arbitrary values for problem/category IDs, as long as they are associated with a different
  * marker type.
- * Standard Java problem markers (i.e. marker type is "org.eclipse.wst.jsdt.core.problem") carry an
+ * Standard JavaScript problem markers (i.e. marker type is "org.eclipse.wst.jsdt.core.problem") carry an
  * attribute "categoryId" persisting the originating problem category ID as defined by this method).
  * @return id - an integer identifying the category of this problem
  */
@@ -110,7 +110,7 @@ public abstract int getCategoryID();
 
 /**
  * Returns the marker type associated to this problem, if it gets persisted into a marker by the JavaBuilder
- * Standard Java problems are associated to marker type "org.eclipse.wst.jsdt.core.problem").
+ * Standard JavaScript problems are associated to marker type "org.eclipse.wst.jsdt.core.problem").
  * Note: problem markers are expected to extend "org.eclipse.core.resources.problemmarker" marker type.
  * @return the type of the marker which would be associated to the problem
  */

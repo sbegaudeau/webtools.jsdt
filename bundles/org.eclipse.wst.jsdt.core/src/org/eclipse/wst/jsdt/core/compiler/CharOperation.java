@@ -38,7 +38,6 @@ public final class CharOperation {
 
 	/**
 	 * Constant for an empty String array.
-	 * @since 3.1
 	 */
 	public static final String[] NO_STRINGS = new String[0];
 
@@ -188,12 +187,10 @@ public static final char[][] arrayConcat(char[][] first, char[][] second) {
  * This function recognizes both upper and lower CamelCase, depending whether the leading character is capitalized
  * or not. The leading part of an upper CamelCase pattern is assumed to contain a sequence of capitals which are appearing
  * in the matching name; e.g. 'NPE' will match 'NullPointerException', but not 'NewPerfData'. A lower CamelCase pattern
- * uses a lowercase first character. In Java, type names follow the upper CamelCase convention, whereas method or field
- * names follow the lower CamelCase convention.
+ * uses a lowercase first character.
  * <br>
  * The pattern may contain lowercase characters, which will be match in a case sensitive way. These characters must
- * appear in sequence in the name. For instance, 'NPExcep' will match 'NullPointerException', but not 'NullPointerExCEPTION'
- * or 'NuPoEx' will match 'NullPointerException', but not 'NoPointerException'.
+ * appear in sequence in the name.
  * <br><br>
  * Examples:
  * <ol>
@@ -232,7 +229,6 @@ public static final char[][] arrayConcat(char[][] first, char[][] second) {
  * @param pattern the given pattern
  * @param name the given name
  * @return true if the pattern matches the given name, false otherwise
- * @since 3.2
  */
 public static final boolean camelCaseMatch(char[] pattern, char[] name) {
 	if (pattern == null)
@@ -253,7 +249,7 @@ public static final boolean camelCaseMatch(char[] pattern, char[] name) {
  * This function recognizes both upper and lower CamelCase, depending whether the leading character is capitalized
  * or not. The leading part of an upper CamelCase pattern is assumed to contain a sequence of capitals which are appearing
  * in the matching name; e.g. 'NPE' will match 'NullPointerException', but not 'NewPerfData'. A lower CamelCase pattern
- * uses a lowercase first character. In Java, type names follow the upper CamelCase convention, whereas method or field
+ * uses a lowercase first character. In JavaScript, type names follow the upper CamelCase convention, whereas method or field
  * names follow the lower CamelCase convention.
  * <br>
  * The pattern may contain lowercase characters, which will be match in a case sensitive way. These characters must
@@ -321,7 +317,6 @@ public static final boolean camelCaseMatch(char[] pattern, char[] name) {
  * @param nameStart the start index of the name, inclusive
  * @param nameEnd the end index of the name, exclusive
  * @return true if a sub-pattern matches the subpart of the given name, false otherwise
- * @since 3.2
  */
 public static final boolean camelCaseMatch(char[] pattern, int patternStart, int patternEnd, char[] name, int nameStart, int nameEnd) {
 	if (name == null)
@@ -417,7 +412,6 @@ public static final boolean camelCaseMatch(char[] pattern, int patternStart, int
  *
  * @param charArrays the char array to convert
  * @return the char arrays as an array of Strings or null if the given char arrays is null.
- * @since 3.0
  */
 public static String[] charArrayToStringArray(char[][] charArrays) {
 	if (charArrays == null)
@@ -436,7 +430,6 @@ public static String[] charArrayToStringArray(char[][] charArrays) {
 
  * @param charArray the char array to convert
  * @return the char array as a String or null if the given char array is null.
- * @since 3.0
  */
 public static String charToString(char[] charArray) {
 	if (charArray == null) return null;
@@ -498,7 +491,6 @@ public static final char[][] arrayConcat(char[][] first, char[] second) {
  * @param array2 the second given array
  * @return the returned value of the comparison between array1 and array2
  * @throws NullPointerException if one of the arrays is null
- * @since 3.3
  */
 public static final int compareTo(char[] array1, char[] array2) {
 	int length1 = array1.length;
@@ -1179,7 +1171,6 @@ public static final boolean contains(char character, char[] array) {
  * @param array the array in which the search is done
  * @return true if the array contains an occurrence of one of the characters, false otherwise.
  * @throws NullPointerException if array is null.
- * @since 3.1
  */
 public static final boolean contains(char[] characters, char[] array) {
 	for (int i = array.length; --i >= 0;)
@@ -1460,7 +1451,6 @@ public static final boolean equals(char[] first, char[] second) {
  * @param secondStart inclusive start position in the second array to compare
  * @param secondEnd exclusive end position in the second array to compare
  * @return true if the first array is identical character by character to fragment of second array ranging from secondStart to secondEnd-1, otherwise false
- * @since 3.0
  */
 public static final boolean equals(char[] first, char[] second, int secondStart, int secondEnd) {
 	return equals(first, second, secondStart, secondEnd, true);
@@ -1524,7 +1514,6 @@ public static final boolean equals(char[] first, char[] second, int secondStart,
  * @param secondEnd exclusive end position in the second array to compare
  * @param isCaseSensitive check whether or not the equality should be case sensitive
  * @return true if the first array is identical character by character to fragment of second array ranging from secondStart to secondEnd-1, otherwise false
- * @since 3.2
  */
 public static final boolean equals(char[] first, char[] second, int secondStart, int secondEnd, boolean isCaseSensitive) {
 	if (first == second)
@@ -1710,7 +1699,7 @@ public static final int hashCode(char[] array) {
 }
 
 /**
- * Answers true if c is a whitespace according to the JLS (&#92;u000a, &#92;u000c, &#92;u000d, &#92;u0009), otherwise false.
+ * Answers true if c is a whitespace  (&#92;u000a, &#92;u000c, &#92;u000d, &#92;u0009), otherwise false.
  * <br>
  * <br>
  * For example:
@@ -1792,7 +1781,6 @@ public static final int indexOf(char toBeFound, char[] array) {
  * @return the first index in the array for which the toBeFound array is a matching
  * subarray following the case rule, -1 otherwise
  * @throws NullPointerException if array is null or toBeFound is null
- * @since 3.2
  */
 public static final int indexOf(char[] toBeFound, char[] array, boolean isCaseSensitive) {
 	return indexOf(toBeFound, array, isCaseSensitive, 0);
@@ -1826,7 +1814,6 @@ public static final int indexOf(char[] toBeFound, char[] array, boolean isCaseSe
  * @return the first index in the array for which the toBeFound array is a matching
  * subarray following the case rule starting at the index start, -1 otherwise
  * @throws NullPointerException if array is null or toBeFound is null
- * @since 3.2
  */
 public static final int indexOf(final char[] toBeFound, final char[] array, final boolean isCaseSensitive, final int start) {
 	return indexOf(toBeFound, array, isCaseSensitive, start, array.length);
@@ -1861,7 +1848,6 @@ public static final int indexOf(final char[] toBeFound, final char[] array, fina
  * @return the first index in the array for which the toBeFound array is a matching
  * subarray following the case rule starting at the index start, -1 otherwise
  * @throws NullPointerException if array is null or toBeFound is null
- * @since 3.2
  */
 public static final int indexOf(final char[] toBeFound, final char[] array, final boolean isCaseSensitive, final int start, final int end) {
 	final int arrayLength = end;
@@ -1988,7 +1974,6 @@ public static final int indexOf(char toBeFound, char[] array, int start) {
  * equal to toBeFound, -1 otherwise
  * @throws NullPointerException if array is null
  * @throws ArrayIndexOutOfBoundsException if  start is lower than 0 or ending greater than array length
- * @since 3.2
  */
 public static final int indexOf(char toBeFound, char[] array, int start, int end) {
 	for (int i = start; i < end; i++)
@@ -2141,7 +2126,7 @@ public static final int lastIndexOf(
  * <br>
  * For example,
  * <pre>
- * 	lastSegment("java.lang.Object".toCharArray(),'.') --> Object
+ * 	lastSegment("my.namespace.Object".toCharArray(),'.') --> Object
  * </pre>
  *
  * @param array the array
@@ -2732,7 +2717,6 @@ public static final boolean prefixEquals(
  * @param array the given array
  * @param toBeRemoved the character to be removed
  * @return a new array removing given character
- * @since 3.2
  */
 public static final char[] remove(char[] array, char toBeRemoved) {
 
@@ -2759,7 +2743,7 @@ public static final char[] remove(char[] array, char toBeRemoved) {
 }
 
 /**
- * Replace all occurrence of the character to be replaced with the remplacement character in the
+ * Replace all occurrence of the character to be replaced with the replacement character in the
  * given array.
  * <br>
  * <br>
@@ -2799,7 +2783,7 @@ public static final void replace(
 }
 
 /**
- * Replace all occurrences of characters to be replaced with the remplacement character in the
+ * Replace all occurrences of characters to be replaced with the replacement character in the
  * given array.
  * <br>
  * <br>
@@ -2818,14 +2802,13 @@ public static final void replace(
  * @param toBeReplaced characters to be replaced
  * @param replacementChar the replacement character
  * @throws NullPointerException if arrays are null.
- * @since 3.1
  */
 public static final void replace(char[] array, char[] toBeReplaced, char replacementChar) {
 	replace(array, toBeReplaced, replacementChar, 0, array.length);
 }
 
 /**
- * Replace all occurrences of characters to be replaced with the remplacement character in the
+ * Replace all occurrences of characters to be replaced with the replacement character in the
  * given array from the start position (inclusive) to the end position (exclusive).
  * <br>
  * <br>
@@ -2848,7 +2831,6 @@ public static final void replace(char[] array, char[] toBeReplaced, char replace
  * @param start the given start position (inclusive)
  * @param end  the given end position (exclusive)
  * @throws NullPointerException if arrays are null.
- * @since 3.2
  */
 public static final void replace(char[] array, char[] toBeReplaced, char replacementChar, int start, int end) {
 	for (int i = end; --i >= start;)
@@ -2943,7 +2925,7 @@ public static final char[] replace(
 }
 
 /**
- * Replace all occurrence of the character to be replaced with the remplacement character
+ * Replace all occurrence of the character to be replaced with the replacement character
  * in a copy of the given array. Returns the given array if no occurrences of the character
  * to be replaced are found.
  * <br>
@@ -2970,7 +2952,6 @@ public static final char[] replace(
  * @param toBeReplaced the character to be replaced
  * @param replacementChar the replacement character
  * @throws NullPointerException if the given array is null
- * @since 3.1
  */
 public static final char[] replaceOnCopy(
 	char[] array,
@@ -3400,7 +3381,6 @@ final static public String toString(char[][] array) {
  *
  * @param array the given array
  * @return an array of strings
- * @since 3.0
  */
 final static public String[] toStrings(char[][] array) {
 	if (array == null) return NO_STRINGS;
