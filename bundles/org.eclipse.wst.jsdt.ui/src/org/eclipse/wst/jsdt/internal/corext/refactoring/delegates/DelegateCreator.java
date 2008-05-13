@@ -33,6 +33,7 @@ import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.TagElement;
 import org.eclipse.wst.jsdt.core.dom.TextElement;
@@ -446,7 +447,9 @@ public abstract class DelegateCreator {
 	private ChildListPropertyDescriptor getTypeBodyDeclarationsProperty() {
 		ASTNode parent= fDeclaration.getParent();
 
-		if (parent instanceof AbstractTypeDeclaration)
+		if (parent instanceof JavaScriptUnit)
+			return JavaScriptUnit.STATEMENTS_PROPERTY;
+		else if (parent instanceof AbstractTypeDeclaration)
 			return ((AbstractTypeDeclaration) parent).getBodyDeclarationsProperty();
 		else if (parent instanceof AnonymousClassDeclaration)
 			return AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY;

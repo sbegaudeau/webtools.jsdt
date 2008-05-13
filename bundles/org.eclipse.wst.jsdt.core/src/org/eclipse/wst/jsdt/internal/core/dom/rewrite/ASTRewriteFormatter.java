@@ -301,7 +301,7 @@ import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
 				case ASTNode.JSDOC:
-					suffix= "\nclass A {}"; //$NON-NLS-1$
+					suffix= "\nfunction A() {}"; //$NON-NLS-1$
 					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
 				case ASTNode.CATCH_CLAUSE:
@@ -319,7 +319,7 @@ import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
 				case ASTNode.MODIFIER:
-					suffix= " class x {}"; //$NON-NLS-1$
+					suffix= " function x() {}"; //$NON-NLS-1$
 					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
 				case ASTNode.TYPE_PARAMETER:
