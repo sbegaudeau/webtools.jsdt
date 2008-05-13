@@ -5387,30 +5387,7 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 		}
 	}
 	
-	/*
-	 * Ensures that bindings are created when reconciling an external working copy.
-	 */
-	public void test0578() throws CoreException {
-		IJavaScriptUnit workingCopy = null;
-		try {
-	 		IIncludePathEntry[] classpath = new IIncludePathEntry[] {JavaScriptCore.newLibraryEntry(getConverterJCLPath(), null, null)};
-			workingCopy = newExternalWorkingCopy("External.js", classpath, new ProblemRequestor(), "");
-			
-			String contents =
-				"public class External {\n"+
-				"	/*start*/String foo(){\n"+
-				"		return \"\";\n" +
-				"	}/*end*/\n"+
-				"}\n";
-			IBinding methodBinding = resolveBindings(contents, workingCopy)[0];
-			assertBindingEquals(
-				"LExternal;.foo()Ljava/lang/String;",
-				methodBinding);
-		} finally {
-			if (workingCopy != null)
-				workingCopy.discardWorkingCopy();
-		}
-	}
+
 
 	/*
 	 * Ensures that the start position of an argument that has a previous sibbling with a comment is correct

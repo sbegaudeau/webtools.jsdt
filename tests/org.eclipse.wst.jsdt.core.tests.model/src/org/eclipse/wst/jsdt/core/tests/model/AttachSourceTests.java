@@ -21,10 +21,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceRange;
@@ -34,7 +34,6 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.internal.core.JarPackageFragmentRoot;
 
 /**
  * TO DO:
@@ -719,66 +718,66 @@ public void testProjectAsSourceAttachment() throws CoreException {
 	}
 }
 
-/**
- * Attaches a source zip to a jar.  The source zip has
- * a nested root structure and exists as a resource.  Tests that
- * the attachment is persisted as a server property for the jar.
- */
-public void testRootPath() throws JavaScriptModelException {
-	IJavaScriptProject project = getJavaProject("AttachSourceTests");
-	IFile jar = (IFile) project.getProject().findMember("attach2.jar");
-	IFile srcZip=(IFile) project.getProject().findMember("attach2src.zip");
-	JarPackageFragmentRoot root = (JarPackageFragmentRoot) project.getPackageFragmentRoot(jar);
-	root.attachSource(srcZip.getFullPath(), new Path("src/nested"), null);
-
-	IClassFile cf = root.getPackageFragment("x.y").getClassFile("B.class");
-	assertTrue("source code does not exist for the entire attached compilation unit", cf.getSource() != null);
-	root.close();
-	cf = root.getPackageFragment("x.y").getClassFile("B.class");
-	assertTrue("source code does not exist for the entire attached compilation unit", cf.getSource() != null);
-
-	IPath rootSAPath= root.getSourceAttachmentRootPath();
-	assertEquals("Unexpected source attachment root path for " + root.getPath(), "src/nested", rootSAPath.toString());
-
-	IPath saPath= root.getSourceAttachmentPath();
-	assertEquals("Unexpected source attachment path for " + root.getPath(), "/AttachSourceTests/attach2src.zip", saPath.toString());
-	
-	root.close();
-}
-/**
- * Attaches a source zip to a jar specifying an invalid root path.  
- * Ensures that the root path is just used as a hint, and that the source is still retrieved.
- */
-public void testRootPath2() throws JavaScriptModelException {
-	IJavaScriptProject project = getJavaProject("AttachSourceTests");
-	IFile jar = (IFile) project.getProject().findMember("attach2.jar");
-	IFile srcZip=(IFile) project.getProject().findMember("attach2src.zip");
-	JarPackageFragmentRoot root = (JarPackageFragmentRoot) project.getPackageFragmentRoot(jar);
-	root.attachSource(srcZip.getFullPath(), new Path(""), null);
-
-	IClassFile cf = root.getPackageFragment("x.y").getClassFile("B.class");
-	assertTrue("source code does not exist for the entire attached compilation unit", cf.getSource() != null);
-	root.close();
-}
-/**
- * Attaches a sa source folder can be attached to a lib folder specifying an invalid root path.  
- * Ensures that the root path is just used as a hint, and that the source is still retrieved.
- */
-public void testRootPath3() throws JavaScriptModelException {
-	IPackageFragmentRoot root = this.getPackageFragmentRoot("/AttachSourceTests/lib");
-	this.attachSource(root, "/AttachSourceTests/srcLib", "invalid");
-	
-	IClassFile cf = root.getPackageFragment("p").getClassFile("X.class");
-	assertSourceEquals(
-		"Unexpected source for class file",
-		"package p;\n" +
-		"public class X {\n" +
-		"	public void foo() {\n" +
-		"	}\n" +
-		"}",
-		cf.getSource());
-	root.close();
-}
+///**
+// * Attaches a source zip to a jar.  The source zip has
+// * a nested root structure and exists as a resource.  Tests that
+// * the attachment is persisted as a server property for the jar.
+// */
+//public void testRootPath() throws JavaScriptModelException {
+//	IJavaScriptProject project = getJavaProject("AttachSourceTests");
+//	IFile jar = (IFile) project.getProject().findMember("attach2.jar");
+//	IFile srcZip=(IFile) project.getProject().findMember("attach2src.zip");
+//	JarPackageFragmentRoot root = (JarPackageFragmentRoot) project.getPackageFragmentRoot(jar);
+//	root.attachSource(srcZip.getFullPath(), new Path("src/nested"), null);
+//
+//	IClassFile cf = root.getPackageFragment("x.y").getClassFile("B.class");
+//	assertTrue("source code does not exist for the entire attached compilation unit", cf.getSource() != null);
+//	root.close();
+//	cf = root.getPackageFragment("x.y").getClassFile("B.class");
+//	assertTrue("source code does not exist for the entire attached compilation unit", cf.getSource() != null);
+//
+//	IPath rootSAPath= root.getSourceAttachmentRootPath();
+//	assertEquals("Unexpected source attachment root path for " + root.getPath(), "src/nested", rootSAPath.toString());
+//
+//	IPath saPath= root.getSourceAttachmentPath();
+//	assertEquals("Unexpected source attachment path for " + root.getPath(), "/AttachSourceTests/attach2src.zip", saPath.toString());
+//	
+//	root.close();
+//}
+///**
+// * Attaches a source zip to a jar specifying an invalid root path.  
+// * Ensures that the root path is just used as a hint, and that the source is still retrieved.
+// */
+//public void testRootPath2() throws JavaScriptModelException {
+//	IJavaScriptProject project = getJavaProject("AttachSourceTests");
+//	IFile jar = (IFile) project.getProject().findMember("attach2.jar");
+//	IFile srcZip=(IFile) project.getProject().findMember("attach2src.zip");
+//	JarPackageFragmentRoot root = (JarPackageFragmentRoot) project.getPackageFragmentRoot(jar);
+//	root.attachSource(srcZip.getFullPath(), new Path(""), null);
+//
+//	IClassFile cf = root.getPackageFragment("x.y").getClassFile("B.class");
+//	assertTrue("source code does not exist for the entire attached compilation unit", cf.getSource() != null);
+//	root.close();
+//}
+///**
+// * Attaches a sa source folder can be attached to a lib folder specifying an invalid root path.  
+// * Ensures that the root path is just used as a hint, and that the source is still retrieved.
+// */
+//public void testRootPath3() throws JavaScriptModelException {
+//	IPackageFragmentRoot root = this.getPackageFragmentRoot("/AttachSourceTests/lib");
+//	this.attachSource(root, "/AttachSourceTests/srcLib", "invalid");
+//	
+//	IClassFile cf = root.getPackageFragment("p").getClassFile("X.class");
+//	assertSourceEquals(
+//		"Unexpected source for class file",
+//		"package p;\n" +
+//		"public class X {\n" +
+//		"	public void foo() {\n" +
+//		"	}\n" +
+//		"}",
+//		cf.getSource());
+//	root.close();
+//}
 /**
  * Attach a jar with a source attachement that doesn't contain the source folders
  */

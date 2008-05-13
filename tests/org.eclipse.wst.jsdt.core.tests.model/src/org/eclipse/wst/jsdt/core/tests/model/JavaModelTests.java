@@ -518,47 +518,6 @@ public void testInitializeAfterLoad() throws CoreException {
 	JavaScriptCore.initializeAfterLoad(null);
 }
 
-/**
- * Ensures that a registered pre-processing resource changed listener is correctly called.
- * @deprecated since using deprecated API
- */
-public void testPreProcessingResourceChangedListener01() throws CoreException {
-	final int[] eventType = new int[] {0};
-	IResourceChangeListener listener = new IResourceChangeListener(){
-		public void resourceChanged(IResourceChangeEvent event) {
-			eventType[0] |= event.getType();
-		}
-	};
-	try {
-		JavaScriptCore.addPreProcessingResourceChangedListener(listener);
-		createProject("Test");
-		assertEquals("Unexpected event type", IResourceChangeEvent.POST_CHANGE, eventType[0]);
-	} finally {
-		JavaScriptCore.removePreProcessingResourceChangedListener(listener);
-		deleteProject("Test");
-	}
-}
-
-/*
- * Ensures that a registered PRE_BUILD pre-processing resource changed listener is correctly called.
- */
-public void testPreProcessingResourceChangedListener02() throws CoreException {
-	final int[] eventType = new int[] {0};
-	IResourceChangeListener listener = new IResourceChangeListener(){
-		public void resourceChanged(IResourceChangeEvent event) {
-			eventType[0] |= event.getType();
-		}
-	};
-	try {
-		JavaScriptCore.addPreProcessingResourceChangedListener(listener, IResourceChangeEvent.PRE_BUILD);
-		createProject("Test");
-		waitForAutoBuild();
-		assertEquals("Unexpected event type", IResourceChangeEvent.PRE_BUILD, eventType[0]);
-	} finally {
-		JavaScriptCore.removePreProcessingResourceChangedListener(listener);
-		deleteProject("Test");
-	}
-}
 
 /*
  * Ensures that a registered POST_BUILD pre-processing resource changed listener is correctly called.

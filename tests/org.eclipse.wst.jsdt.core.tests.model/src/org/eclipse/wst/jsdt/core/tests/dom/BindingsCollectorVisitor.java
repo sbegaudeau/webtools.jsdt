@@ -13,7 +13,55 @@ package org.eclipse.wst.jsdt.core.tests.dom;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.eclipse.wst.jsdt.core.dom.*;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
+import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
+import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
+import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
+import org.eclipse.wst.jsdt.core.dom.ArrayType;
+import org.eclipse.wst.jsdt.core.dom.Assignment;
+import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
+import org.eclipse.wst.jsdt.core.dom.CastExpression;
+import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
+import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
+import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
+import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.IBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
+import org.eclipse.wst.jsdt.core.dom.IPackageBinding;
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
+import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
+import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.InfixExpression;
+import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
+import org.eclipse.wst.jsdt.core.dom.ListExpression;
+import org.eclipse.wst.jsdt.core.dom.MemberRef;
+import org.eclipse.wst.jsdt.core.dom.NullLiteral;
+import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
+import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
+import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
+import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
+import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SimpleType;
+import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.wst.jsdt.core.dom.StringLiteral;
+import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
+import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.ThisExpression;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 /**
  * @author oliviert
  *
@@ -43,24 +91,7 @@ class BindingsCollectorVisitor extends ASTVisitor {
 			set.add(node);
 		}
 	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(AnnotationTypeDeclaration)
-	 * @since 3.0
-	 */
-	public void endVisit(AnnotationTypeDeclaration node) {
-		ITypeBinding typeBinding = node.resolveBinding();
-		collectBindings(node, typeBinding);
-	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(AnnotationTypeMemberDeclaration)
-	 * @since 3.0
-	 */
-	public void endVisit(AnnotationTypeMemberDeclaration node) {
-		IFunctionBinding binding = node.resolveBinding();
-		collectBindings(node, binding);
-	}
+ 
 
 	/**
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(AnonymousClassDeclaration)
@@ -157,25 +188,7 @@ class BindingsCollectorVisitor extends ASTVisitor {
 		IFunctionBinding methodBinding = node.resolveConstructorBinding();
 		collectBindings(node, methodBinding);
 	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(EnumConstantDeclaration)
-	 * @since 3.0
-	 */
-	public void endVisit(EnumConstantDeclaration node) {
-		IVariableBinding binding = node.resolveVariable();
-		collectBindings(node, binding);
-	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(EnumDeclaration)
-	 * @since 3.0
-	 */
-	public void endVisit(EnumDeclaration node) {
-		ITypeBinding typeBinding = node.resolveBinding();
-		collectBindings(node, typeBinding);
-	}
-
+ 
 	/**
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(FieldAccess)
 	 */

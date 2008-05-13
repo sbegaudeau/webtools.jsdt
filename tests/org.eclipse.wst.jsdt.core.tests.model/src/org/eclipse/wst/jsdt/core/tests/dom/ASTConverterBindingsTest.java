@@ -15,16 +15,14 @@ import java.util.List;
 
 import junit.framework.Test;
 
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
@@ -35,12 +33,12 @@ import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.IPackageBinding;
@@ -49,11 +47,9 @@ import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ListExpression;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
-import org.eclipse.wst.jsdt.core.dom.FunctionRef;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
@@ -98,23 +94,6 @@ public class ASTConverterBindingsTest extends ConverterTestSetup {
 			}
 		}
 
-		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(AnnotationTypeDeclaration)
-		 * @since 3.0
-		 */
-		public void endVisit(AnnotationTypeDeclaration node) {
-			ITypeBinding typeBinding = node.resolveBinding();
-			collectBindings(node, typeBinding);
-		}
-
-		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(AnnotationTypeMemberDeclaration)
-		 * @since 3.0
-		 */
-		public void endVisit(AnnotationTypeMemberDeclaration node) {
-			IFunctionBinding binding = node.resolveBinding();
-			collectBindings(node, binding);
-		}
 
 		/**
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(AnonymousClassDeclaration)
@@ -210,24 +189,6 @@ public class ASTConverterBindingsTest extends ConverterTestSetup {
 		public void endVisit(ConstructorInvocation node) {
 			IFunctionBinding methodBinding = node.resolveConstructorBinding();
 			collectBindings(node, methodBinding);
-		}
-
-		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(EnumConstantDeclaration)
-		 * @since 3.0
-		 */
-		public void endVisit(EnumConstantDeclaration node) {
-			IVariableBinding binding = node.resolveVariable();
-			collectBindings(node, binding);
-		}
-
-		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(EnumDeclaration)
-		 * @since 3.0
-		 */
-		public void endVisit(EnumDeclaration node) {
-			ITypeBinding typeBinding = node.resolveBinding();
-			collectBindings(node, typeBinding);
 		}
 
 		/**

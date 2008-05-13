@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
@@ -30,32 +29,28 @@ import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
-import org.eclipse.wst.jsdt.core.dom.FunctionRef;
-import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
@@ -124,12 +119,6 @@ public class SampleASTs {
 		Initializer in = target.newInitializer();
 		td.bodyDeclarations().add(in);	
 
-		if (target.apiLevel() >= AST.JLS3) {
-			EnumDeclaration ed = target.newEnumDeclaration();
-			td.bodyDeclarations().add(ed);	
-			EnumConstantDeclaration ec = target.newEnumConstantDeclaration();
-			ed.enumConstants().add(ec);	
-		}
 		
 		FunctionDeclaration md = target.newFunctionDeclaration();
 		SingleVariableDeclaration singleVariableDeclaration = target.newSingleVariableDeclaration();
@@ -272,18 +261,7 @@ public class SampleASTs {
 		VariableDeclarationExpression variableDeclarationExpression = target.newVariableDeclarationExpression(variableDeclarationFragment3);
 		z.add(variableDeclarationExpression);
 		
-		// annotations
-		if (target.apiLevel() >= AST.JLS3) {
-			AnnotationTypeDeclaration atd = target.newAnnotationTypeDeclaration();
-			cu.types().add(atd);
-			atd.bodyDeclarations().add(target.newAnnotationTypeMemberDeclaration());
-			td.modifiers().add(target.newMarkerAnnotation());
-			td.modifiers().add(target.newSingleMemberAnnotation());
-			NormalAnnotation an0 = target.newNormalAnnotation();
-			td.modifiers().add(an0);
-			an0.values().add(target.newMemberValuePair());
-			td.modifiers().add(target.newModifier(Modifier.ModifierKeyword.PRIVATE_KEYWORD));
-		}
+
 		return cu;
 	}
 	

@@ -12,9 +12,90 @@
 package org.eclipse.wst.jsdt.core.tests.dom;
 
 import java.lang.reflect.Method;
+
 import junit.framework.Test;
-import org.eclipse.wst.jsdt.core.dom.*;
+
+import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
+import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
+import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
+import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
+import org.eclipse.wst.jsdt.core.dom.ArrayType;
+import org.eclipse.wst.jsdt.core.dom.AssertStatement;
+import org.eclipse.wst.jsdt.core.dom.Assignment;
+import org.eclipse.wst.jsdt.core.dom.Block;
+import org.eclipse.wst.jsdt.core.dom.BlockComment;
+import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
+import org.eclipse.wst.jsdt.core.dom.BreakStatement;
+import org.eclipse.wst.jsdt.core.dom.CastExpression;
+import org.eclipse.wst.jsdt.core.dom.CatchClause;
+import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
+import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
+import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
+import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
+import org.eclipse.wst.jsdt.core.dom.DoStatement;
+import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
+import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
+import org.eclipse.wst.jsdt.core.dom.Expression;
+import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
+import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
+import org.eclipse.wst.jsdt.core.dom.IfStatement;
+import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.InfixExpression;
+import org.eclipse.wst.jsdt.core.dom.Initializer;
+import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
+import org.eclipse.wst.jsdt.core.dom.LineComment;
+import org.eclipse.wst.jsdt.core.dom.MemberRef;
+import org.eclipse.wst.jsdt.core.dom.Modifier;
+import org.eclipse.wst.jsdt.core.dom.Name;
+import org.eclipse.wst.jsdt.core.dom.NullLiteral;
+import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
+import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
+import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
+import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
+import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.QualifiedType;
+import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SimpleType;
+import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.wst.jsdt.core.dom.Statement;
+import org.eclipse.wst.jsdt.core.dom.StringLiteral;
+import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
+import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.SwitchCase;
+import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
+import org.eclipse.wst.jsdt.core.dom.TagElement;
+import org.eclipse.wst.jsdt.core.dom.TextElement;
+import org.eclipse.wst.jsdt.core.dom.ThisExpression;
+import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
+import org.eclipse.wst.jsdt.core.dom.TryStatement;
+import org.eclipse.wst.jsdt.core.dom.Type;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
+import org.eclipse.wst.jsdt.core.dom.TypeParameter;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.core.dom.WildcardType;
 
 public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.TestCase { 
 
@@ -103,21 +184,15 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	String TP1S;
 	TypeParameter TP2;
 	String TP2S;
-	MemberValuePair MVP1;
 	String MVP1S;
-	MemberValuePair MVP2;
 	String MVP2S;
 	Modifier MOD1;
 	String MOD1S;
 	Modifier MOD2;
 	String MOD2S;
-	Annotation ANO1;
 	String ANO1S;
-	Annotation ANO2;
 	String ANO2S;
-	EnumConstantDeclaration EC1;
 	String EC1S;
-	EnumConstantDeclaration EC2;
 	String EC2S;
 	
 	final StringBuffer b = new StringBuffer();
@@ -248,36 +323,12 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 			TP2.setName(ast.newSimpleName("y")); //$NON-NLS-1$
 			TP2S = "[(tTP[(nSyynS)]tTP)]"; //$NON-NLS-1$
 
-			MVP1 = ast.newMemberValuePair();
-			MVP1.setName(ast.newSimpleName("x")); //$NON-NLS-1$
-			MVP1.setValue(ast.newSimpleName("y")); //$NON-NLS-1$
-			MVP1S = "[(@MVP[(nSxxnS)][(nSyynS)]@MVP)]"; //$NON-NLS-1$
-		
-			MVP2 = ast.newMemberValuePair();
-			MVP2.setName(ast.newSimpleName("a")); //$NON-NLS-1$
-			MVP2.setValue(ast.newSimpleName("b")); //$NON-NLS-1$
-			MVP2S = "[(@MVP[(nSaanS)][(nSbbnS)]@MVP)]"; //$NON-NLS-1$
 		
 			MOD1 = ast.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD);
 			MOD1S = "[(MODpublicpublicMOD)]"; //$NON-NLS-1$
 			MOD2 = ast.newModifier(Modifier.ModifierKeyword.FINAL_KEYWORD);
 			MOD2S = "[(MODfinalfinalMOD)]"; //$NON-NLS-1$
 		
-			ANO1 = ast.newMarkerAnnotation();
-			ANO1.setTypeName(ast.newSimpleName("a")); //$NON-NLS-1$
-			ANO1S = "[(@MAN[(nSaanS)]@MAN)]"; //$NON-NLS-1$
-
-			ANO2 = ast.newNormalAnnotation();
-			ANO2.setTypeName(ast.newSimpleName("b")); //$NON-NLS-1$
-			ANO2S = "[(@NAN[(nSbbnS)]@NAN)]"; //$NON-NLS-1$
-		
-			EC1 = ast.newEnumConstantDeclaration();
-			EC1.setName(ast.newSimpleName("c")); //$NON-NLS-1$
-			EC1S = "[(ECD[(nSccnS)]ECD)]"; //$NON-NLS-1$
-		
-			EC2 = ast.newEnumConstantDeclaration();
-			EC2.setName(ast.newSimpleName("d")); //$NON-NLS-1$
-			EC2S = "[(ECD[(nSddnS)]ECD)]"; //$NON-NLS-1$
 		}
 
 	}
@@ -557,22 +608,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		}
 		public void endVisit(EnhancedForStatement node) {
 			b.append("sEFR)"); //$NON-NLS-1$
-		}
-
-		public boolean visit(EnumConstantDeclaration node) {
-			b.append("(ECD"); //$NON-NLS-1$
-			return isVisitingChildren();
-		}
-		public void endVisit(EnumConstantDeclaration node) {
-			b.append("ECD)"); //$NON-NLS-1$
-		}
-
-		public boolean visit(EnumDeclaration node) {
-			b.append("(ED"); //$NON-NLS-1$
-			return isVisitingChildren();
-		}
-		public void endVisit(EnumDeclaration node) {
-			b.append("ED)"); //$NON-NLS-1$
 		}
 
 		public boolean visit(ExpressionStatement node) {
@@ -967,53 +1002,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 			b.append("sWH)"); //$NON-NLS-1$
 		}
 
-		public boolean visit(AnnotationTypeDeclaration node) {
-			b.append("(@TD"); //$NON-NLS-1$
-			return isVisitingChildren();
-		}
-		public void endVisit(AnnotationTypeDeclaration node) {
-			b.append("@TD)"); //$NON-NLS-1$
-		}
-
-		public boolean visit(AnnotationTypeMemberDeclaration node) {
-			b.append("(@MD"); //$NON-NLS-1$
-			return isVisitingChildren();
-		}
-		public void endVisit(AnnotationTypeMemberDeclaration node) {
-			b.append("@MD)"); //$NON-NLS-1$
-		}
-
-		public boolean visit(NormalAnnotation node) {
-			b.append("(@NAN"); //$NON-NLS-1$
-			return isVisitingChildren();
-		}
-		public void endVisit(NormalAnnotation node) {
-			b.append("@NAN)"); //$NON-NLS-1$
-		}
-
-		public boolean visit(MarkerAnnotation node) {
-			b.append("(@MAN"); //$NON-NLS-1$
-			return isVisitingChildren();
-		}
-		public void endVisit(MarkerAnnotation node) {
-			b.append("@MAN)"); //$NON-NLS-1$
-		}
-
-		public boolean visit(SingleMemberAnnotation node) {
-			b.append("(@SMAN"); //$NON-NLS-1$
-			return isVisitingChildren();
-		}
-		public void endVisit(SingleMemberAnnotation node) {
-			b.append("@SMAN)"); //$NON-NLS-1$
-		}
-
-		public boolean visit(MemberValuePair node) {
-			b.append("(@MVP"); //$NON-NLS-1$
-			return isVisitingChildren();
-		}
-		public void endVisit(MemberValuePair node) {
-			b.append("@MVP)"); //$NON-NLS-1$
-		}
 
 		public boolean visit(Modifier node) {
 			b.append("(MOD"); //$NON-NLS-1$
@@ -1360,48 +1348,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		String result = b.toString();
 		assertTrue(result.equals("[(sEMsEM)]")); //$NON-NLS-1$
 	}
-	/** @deprecated Only to suppress warnings for refs to bodyDeclarations. */
-	// TODO (jeem) - remove deprecation after 3.1 M4
-	public void testEnumConstantDeclaration() {
-		if (ast.apiLevel() == AST.JLS2) {
-			return;
-		}
-		EnumConstantDeclaration x1 = ast.newEnumConstantDeclaration();
-		x1.setJavadoc(JD1);
-		x1.modifiers().add(MOD1);
-		x1.modifiers().add(MOD2);
-		x1.setName(N1);
-		x1.arguments().add(E1);
-		x1.arguments().add(E2);
-		x1.setAnonymousClassDeclaration(ACD1);
-		TestVisitor v1 = new TestVisitor();
-		b.setLength(0);
-		x1.accept(v1);
-		String result = b.toString();
-		assertTrue(result.equals("[(ECD"+JD1S+MOD1S+MOD2S+N1S+E1S+E2S+ACD1S+"ECD)]")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-	/** @deprecated using deprecated code */
-	public void testEnumDeclaration() {
-		if (ast.apiLevel() == AST.JLS2) {
-			return;
-		}
-		EnumDeclaration x1 = ast.newEnumDeclaration();
-		x1.setJavadoc(JD1);
-		x1.modifiers().add(MOD1);
-		x1.modifiers().add(MOD2);
-		x1.setName(N1);
-		x1.superInterfaceTypes().add(T1);
-		x1.superInterfaceTypes().add(T2);
-		x1.enumConstants().add(EC1);
-		x1.enumConstants().add(EC2);
-		x1.bodyDeclarations().add(FD1);
-		x1.bodyDeclarations().add(FD2);
-		TestVisitor v1 = new TestVisitor();
-		b.setLength(0);
-		x1.accept(v1);
-		String result = b.toString();
-		assertTrue(result.equals("[(ED"+JD1S+MOD1S+MOD2S+N1S+T1S+T2S+EC1S+EC2S+FD1S+FD2S+"ED)]")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
 	public void testExpressionStatement() {
 		ExpressionStatement x1 = ast.newExpressionStatement(E1);
 		TestVisitor v1 = new TestVisitor();
@@ -1685,104 +1631,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		assertTrue(result.equals("[(MODprivateprivateMOD)]")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
-	/** @deprecated using deprecated code */
-	public void testNormalAnnotation() {
-		if (ast.apiLevel() == AST.JLS2) {
-			return;
-		}
-		NormalAnnotation x1 = ast.newNormalAnnotation();
-		x1.setTypeName(N1);
-		x1.values().add(MVP1);
-		x1.values().add(MVP2);
-		TestVisitor v1 = new TestVisitor();
-		b.setLength(0);
-		x1.accept(v1);
-		String result = b.toString();
-		assertTrue(result.equals("[(@NAN"+N1S+MVP1S+MVP2S+"@NAN)]")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	/** @deprecated using deprecated code */
-	public void testMemberValuePair() {
-		if (ast.apiLevel() == AST.JLS2) {
-			return;
-		}
-		MemberValuePair x1 = ast.newMemberValuePair();
-		x1.setName(N1);
-		x1.setValue(E1);
-		TestVisitor v1 = new TestVisitor();
-		b.setLength(0);
-		x1.accept(v1);
-		String result = b.toString();
-		assertTrue(result.equals("[(@MVP"+N1S+E1S+"@MVP)]")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	/** @deprecated using deprecated code */
-	public void testMarkerAnnotation() {
-		if (ast.apiLevel() == AST.JLS2) {
-			return;
-		}
-		MarkerAnnotation x1 = ast.newMarkerAnnotation();
-		x1.setTypeName(N1);
-		TestVisitor v1 = new TestVisitor();
-		b.setLength(0);
-		x1.accept(v1);
-		String result = b.toString();
-		assertTrue(result.equals("[(@MAN"+N1S+"@MAN)]")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	/** @deprecated using deprecated code */
-	public void testSingleMemberAnnotation() {
-		if (ast.apiLevel() == AST.JLS2) {
-			return;
-		}
-		SingleMemberAnnotation x1 = ast.newSingleMemberAnnotation();
-		x1.setTypeName(N1);
-		x1.setValue(E1);
-		TestVisitor v1 = new TestVisitor();
-		b.setLength(0);
-		x1.accept(v1);
-		String result = b.toString();
-		assertTrue(result.equals("[(@SMAN"+N1S+E1S+"@SMAN)]")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	/** @deprecated using deprecated code */
-	public void testAnnotationTypeDeclaration() {
-		if (ast.apiLevel() == AST.JLS2) {
-			return;
-		}
-		AnnotationTypeDeclaration x1 = ast.newAnnotationTypeDeclaration();
-		x1.setJavadoc(JD1);
-		x1.modifiers().add(MOD1);
-		x1.modifiers().add(MOD2);
-		x1.setName(N1);
-		x1.bodyDeclarations().add(FD1);
-		x1.bodyDeclarations().add(FD2);
-		TestVisitor v1 = new TestVisitor();
-		b.setLength(0);
-		x1.accept(v1);
-		String result = b.toString();
-		assertTrue(result.equals("[(@TD"+JD1S+MOD1S+MOD2S+N1S+FD1S+FD2S+"@TD)]")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	}
-	
-	/** @deprecated using deprecated code */
-	public void testAnnotationTypeMemberDeclaration() {
-		if (ast.apiLevel() == AST.JLS2) {
-			return;
-		}
-		AnnotationTypeMemberDeclaration x1 = ast.newAnnotationTypeMemberDeclaration();
-		x1.setJavadoc(JD1);
-		x1.modifiers().add(MOD1);
-		x1.modifiers().add(MOD2);
-		x1.setType(T1);
-		x1.setName(N1);
-		x1.setDefault(E1);
-		TestVisitor v1 = new TestVisitor();
-		b.setLength(0);
-		x1.accept(v1);
-		String result = b.toString();
-		assertTrue(result.equals("[(@MD"+JD1S+MOD1S+MOD2S+T1S+N1S+E1S+"@MD)]")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
 	public void testNullLiteral() {
 		NullLiteral x1 = ast.newNullLiteral();
 		TestVisitor v1 = new TestVisitor();
@@ -1798,25 +1646,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		x1.accept(v1);
 		String result = b.toString();
 		assertTrue(result.equals("[(eNU1.01.0eNU)]")); //$NON-NLS-1$
-	}
-	/** @deprecated using deprecated code */
-	public void testPackageDeclaration() {
-		PackageDeclaration x1 = ast.newPackageDeclaration();
-		if (ast.apiLevel() >= AST.JLS3) {
-			x1.setJavadoc(JD1);
-			x1.annotations().add(ANO1);
-			x1.annotations().add(ANO2);
-		}
-		x1.setName(N1);
-		TestVisitor v1 = new TestVisitor();
-		b.setLength(0);
-		x1.accept(v1);
-		String result = b.toString();
-		if (ast.apiLevel() == AST.JLS2) {
-			assertTrue(result.equals("[(PD"+N1S+"PD)]")); //$NON-NLS-1$ //$NON-NLS-2$
-		} else {
-			assertTrue(result.equals("[(PD"+JD1S+ANO1S+ANO2S+N1S+"PD)]")); //$NON-NLS-1$ //$NON-NLS-2$
-		}
 	}
 	public void testParenthesizedExpression() {
 		ParenthesizedExpression x1 = ast.newParenthesizedExpression();

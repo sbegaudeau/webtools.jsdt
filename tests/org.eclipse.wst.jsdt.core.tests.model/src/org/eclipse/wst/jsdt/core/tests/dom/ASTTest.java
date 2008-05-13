@@ -17,12 +17,96 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import java.util.Map;
-
 import junit.framework.Test;
-import org.eclipse.wst.jsdt.core.dom.*;
+
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.ASTMatcher;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
+import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
+import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
+import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
+import org.eclipse.wst.jsdt.core.dom.ArrayType;
+import org.eclipse.wst.jsdt.core.dom.AssertStatement;
+import org.eclipse.wst.jsdt.core.dom.Assignment;
+import org.eclipse.wst.jsdt.core.dom.Block;
+import org.eclipse.wst.jsdt.core.dom.BlockComment;
+import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
+import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
+import org.eclipse.wst.jsdt.core.dom.BreakStatement;
+import org.eclipse.wst.jsdt.core.dom.CastExpression;
+import org.eclipse.wst.jsdt.core.dom.CatchClause;
+import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
+import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
+import org.eclipse.wst.jsdt.core.dom.Comment;
+import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
+import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
+import org.eclipse.wst.jsdt.core.dom.DoStatement;
+import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
+import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
+import org.eclipse.wst.jsdt.core.dom.Expression;
+import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
+import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
+import org.eclipse.wst.jsdt.core.dom.IfStatement;
+import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.InfixExpression;
+import org.eclipse.wst.jsdt.core.dom.Initializer;
+import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
+import org.eclipse.wst.jsdt.core.dom.LineComment;
+import org.eclipse.wst.jsdt.core.dom.MemberRef;
+import org.eclipse.wst.jsdt.core.dom.Modifier;
+import org.eclipse.wst.jsdt.core.dom.Name;
+import org.eclipse.wst.jsdt.core.dom.NullLiteral;
+import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
+import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
+import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
+import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
+import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.QualifiedType;
+import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SimpleType;
+import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.wst.jsdt.core.dom.Statement;
+import org.eclipse.wst.jsdt.core.dom.StringLiteral;
+import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
+import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.SwitchCase;
+import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
+import org.eclipse.wst.jsdt.core.dom.TagElement;
+import org.eclipse.wst.jsdt.core.dom.TextElement;
+import org.eclipse.wst.jsdt.core.dom.ThisExpression;
+import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
+import org.eclipse.wst.jsdt.core.dom.TryStatement;
+import org.eclipse.wst.jsdt.core.dom.Type;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
+import org.eclipse.wst.jsdt.core.dom.TypeParameter;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.core.dom.WildcardType;
 
 // testing
 
@@ -48,23 +132,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			}
 		}
 	
-		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(AnnotationTypeDeclaration, Object)
-		 * @since 3.0
-		 */
-		public boolean match(AnnotationTypeDeclaration node, Object other) {
-			checkPositions(node, other);
-			return super.match(node, other);
-		}
-	
-		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(AnnotationTypeMemberDeclaration, Object)
-		 * @since 3.0
-		 */
-		public boolean match(AnnotationTypeMemberDeclaration node, Object other) {
-			checkPositions(node, other);
-			return super.match(node, other);
-		}
 	
 		/**
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(AnonymousClassDeclaration, Object)
@@ -243,16 +310,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			checkPositions(node, other);
 			return super.match(node, other);
 		}
-		
-		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(EnumConstantDeclaration, Object)
-		 * @since 3.0
-		 */
-		public boolean match(EnumConstantDeclaration node, Object other) {
-			checkPositions(node, other);
-			return super.match(node, other);
-		}
-		
+
 		/**
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(ExpressionStatement, Object)
 		 */
@@ -349,15 +407,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			checkPositions(node, other);
 			return super.match(node, other);
 		}
-	
-		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(MarkerAnnotation, Object)
-		 * @since 3.0
-		 */
-		public boolean match(MarkerAnnotation node, Object other) {
-			checkPositions(node, other);
-			return super.match(node, other);
-		}
+
 	
 		/**
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(MemberRef, Object)
@@ -368,14 +418,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			return super.match(node, other);
 		}
 	
-		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(MemberValuePair, Object)
-		 * @since 3.0
-		 */
-		public boolean match(MemberValuePair node, Object other) {
-			checkPositions(node, other);
-			return super.match(node, other);
-		}
+
 	
 		/**
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(FunctionDeclaration, Object)
@@ -420,14 +463,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			return super.match(node, other);
 		}
 	
-		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(NormalAnnotation, Object)
-		 * @since 3.0
-		 */
-		public boolean match(NormalAnnotation node, Object other) {
-			checkPositions(node, other);
-			return super.match(node, other);
-		}
 	
 		/**
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(NullLiteral, Object)
@@ -531,15 +566,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(SimpleType, Object)
 		 */
 		public boolean match(SimpleType node, Object other) {
-			checkPositions(node, other);
-			return super.match(node, other);
-		}
-	
-		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(SingleMemberAnnotation, Object)
-		 * @since 3.0
-		 */
-		public boolean match(SingleMemberAnnotation node, Object other) {
 			checkPositions(node, other);
 			return super.match(node, other);
 		}
@@ -1477,22 +1503,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		fd.setName(ast.newSimpleName("b")); //$NON-NLS-1$
 		assertTrue(x.isDeclaration() == false);
 		
-		if (ast.apiLevel() >= AST.JLS3) {
-			AnnotationTypeDeclaration atd = ast.newAnnotationTypeDeclaration();
-			atd.setName(x);
-			assertTrue(x.isDeclaration() == true);
-			atd.setName(ast.newSimpleName("b")); //$NON-NLS-1$
-			assertTrue(x.isDeclaration() == false);
-		}
-		
-		if (ast.apiLevel() >= AST.JLS3) {
-			AnnotationTypeMemberDeclaration atmd = ast.newAnnotationTypeMemberDeclaration();
-			atmd.setName(x);
-			assertTrue(x.isDeclaration() == true);
-			atmd.setName(ast.newSimpleName("b")); //$NON-NLS-1$
-			assertTrue(x.isDeclaration() == false);
-		}
-		
+
 	}		
 
 	public void testQualifiedName() {
@@ -2324,16 +2335,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				}
 			});
 			
-			genericPropertyListTest(x, x.annotations(), new Property("Annotations", true, Annotation.class) { //$NON-NLS-1$
-				public ASTNode sample(AST targetAst, boolean parented) {
-					MarkerAnnotation result = targetAst.newMarkerAnnotation();
-					if (parented) {
-						PackageDeclaration pd = targetAst.newPackageDeclaration();
-						pd.annotations().add(result);
-					}
-					return result;
-				}
-			});
+
 		}
 		
 		genericPropertyTest(x, new Property("Name", true, Name.class) { //$NON-NLS-1$
@@ -2573,7 +2575,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		}
 		
 		tJavadocComment(x);
-		tModifiers(x);		
 		
 		genericPropertyTest(x, new Property("Name", true, SimpleName.class) { //$NON-NLS-1$
 			public ASTNode sample(AST targetAst, boolean parented) {
@@ -2697,14 +2698,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		TypeDeclaration t1 = ast.newTypeDeclaration();
 		TypeDeclaration t2 = ast.newTypeDeclaration();
 		
-		EnumConstantDeclaration c1 = null;
-		EnumConstantDeclaration c2 = null;
-		if (ast.apiLevel() >= AST.JLS3) {
-			c1 = ast.newEnumConstantDeclaration();
-			c2 = ast.newEnumConstantDeclaration();
-			x.bodyDeclarations().add(c1);
-			x.bodyDeclarations().add(c2);
-		}
 
 		x.bodyDeclarations().add(ast.newInitializer());
 		x.bodyDeclarations().add(f1);
@@ -2742,250 +2735,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 	
 	}	
 	
-	/** @deprecated using deprecated code */
-	public void testEnumDeclaration() {
-		if (ast.apiLevel() == AST.JLS2) {
-			// node type introduced in 3.0 API
-			try {
-				ast.newEnumDeclaration();
-				assertTrue(false);
-			} catch (UnsupportedOperationException e) {
-				// pass
-			}
-			return;
-		}
-		long previousCount = ast.modificationCount();
-		final EnumDeclaration x = ast.newEnumDeclaration();
-		assertTrue(ast.modificationCount() > previousCount);
-		previousCount = ast.modificationCount();
-		assertTrue(x.getAST() == ast);
-		assertTrue(x.getParent() == null);
-		assertTrue(x.modifiers().size() == 0);
-		assertTrue(x.getName().getParent() == x);
-		assertTrue(x.getName().isDeclaration() == true);
-		assertTrue(x.getJavadoc() == null);
-		assertTrue(x.superInterfaceTypes().size() == 0);
-		assertTrue(x.enumConstants().size()== 0);
-		assertTrue(x.bodyDeclarations().size()== 0);
-		assertTrue(x.getNodeType() == ASTNode.ENUM_DECLARATION);
-		assertTrue(x.structuralPropertiesForType() == EnumDeclaration.propertyDescriptors(ast.apiLevel()));
-		// make sure that reading did not change modification count
-		assertTrue(ast.modificationCount() == previousCount);
-	
-		previousCount = ast.modificationCount();
-		
-		tJavadocComment(x);
-		tModifiers(x);		
-		
-		genericPropertyTest(x, new Property("Name", true, SimpleName.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				SimpleName result = targetAst.newSimpleName("foo"); //$NON-NLS-1$
-				if (parented) {
-					targetAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode get() {
-				return x.getName();
-			}
-			public void set(ASTNode value) {
-				x.setName((SimpleName) value);
-			}
-		});
-		
-		genericPropertyListTest(x, x.superInterfaceTypes(),
-		  new Property("SuperInterfaceTypes", true, Type.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				SimpleType result = targetAst.newSimpleType(targetAst.newSimpleName("foo")); //$NON-NLS-1$
-				if (parented) {
-					targetAst.newArrayType(result);
-				}
-				return result;
-			}
-		});
-
-		genericPropertyListTest(x, x.enumConstants(),
-				  new Property("EnumConstants", true, EnumConstantDeclaration.class) { //$NON-NLS-1$
-					public ASTNode sample(AST targetAst, boolean parented) {
-						EnumConstantDeclaration result = targetAst.newEnumConstantDeclaration();
-						if (parented) {
-							// use fact that EnumConstantDeclaration is also a BodyDeclaration
-							TypeDeclaration d = targetAst.newTypeDeclaration();
-							d.bodyDeclarations().add(result);
-						}
-						return result;
-					}
-					public ASTNode wrap() {
-						EnumConstantDeclaration s1 = x.getAST().newEnumConstantDeclaration();
-						AnonymousClassDeclaration anonymousClassDeclaration = x.getAST().newAnonymousClassDeclaration();
-						s1.setAnonymousClassDeclaration(anonymousClassDeclaration);
-						anonymousClassDeclaration.bodyDeclarations().add(x);
-						return s1;
-					}
-					public void unwrap() {
-						AnonymousClassDeclaration anonymousClassDeclaration = (AnonymousClassDeclaration) x.getParent();
-						if (anonymousClassDeclaration != null) {
-							anonymousClassDeclaration.bodyDeclarations().remove(x);
-						}
-					}
-				});
-				
-		genericPropertyListTest(x, x.bodyDeclarations(),
-		  new Property("BodyDeclarations", true, BodyDeclaration.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				TypeDeclaration result = targetAst.newTypeDeclaration();
-				if (parented) {
-					JavaScriptUnit cu = targetAst.newJavaScriptUnit();
-					cu.types().add(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				TypeDeclaration s1 = x.getAST().newTypeDeclaration();
-				s1.bodyDeclarations().add(x);
-				return s1;
-			}
-			public void unwrap() {
-				TypeDeclaration s1 = (TypeDeclaration) x.getParent();
-				s1.bodyDeclarations().remove(x);
-			}
-		});
-		
-		// check special bodyDeclaration methods
-		x.bodyDeclarations().clear();
-		EnumConstantDeclaration c1 = ast.newEnumConstantDeclaration();
-		EnumConstantDeclaration c2 = ast.newEnumConstantDeclaration();
-		FieldDeclaration f1 = ast.newFieldDeclaration(ast.newVariableDeclarationFragment());
-		FieldDeclaration f2 = ast.newFieldDeclaration(ast.newVariableDeclarationFragment());
-		FunctionDeclaration m1 = ast.newFunctionDeclaration();
-		FunctionDeclaration m2 = ast.newFunctionDeclaration();
-		TypeDeclaration t1 = ast.newTypeDeclaration();
-		TypeDeclaration t2 = ast.newTypeDeclaration();
-
-		x.enumConstants().add(c1);
-		x.enumConstants().add(c2);
-		x.bodyDeclarations().add(f1);
-		x.bodyDeclarations().add(f2);
-		x.bodyDeclarations().add(m1);
-		x.bodyDeclarations().add(m2);
-		x.bodyDeclarations().add(t1);
-		x.bodyDeclarations().add(t2);
-
-		// check that TypeDeclarations in body are classified correctly
-		assertTrue(t1.isLocalTypeDeclaration() == false);
-		assertTrue(t1.isMemberTypeDeclaration() == true);
-		assertTrue(t1.isPackageMemberTypeDeclaration() == false);
-	
-	}	
-	
-	/** @deprecated using deprecated code */
-	public void testEnumConstantDeclaration() {
-		if (ast.apiLevel() == AST.JLS2) {
-			// node type introduced in 3.0 API
-			try {
-				ast.newEnumConstantDeclaration();
-				assertTrue(false);
-			} catch (UnsupportedOperationException e) {
-				// pass
-			}
-			return;
-		}
-		long previousCount = ast.modificationCount();
-		final EnumConstantDeclaration x = ast.newEnumConstantDeclaration();
-		assertTrue(ast.modificationCount() > previousCount);
-		previousCount = ast.modificationCount();
-		assertTrue(x.getAST() == ast);
-		assertTrue(x.getParent() == null);
-		assertTrue(x.getName().getParent() == x);
-		assertTrue(x.getName().isDeclaration() == true);
-		assertTrue(x.getJavadoc() == null);
-		assertTrue(x.arguments().size()== 0);
-		assertTrue(x.getAnonymousClassDeclaration() == null);
-		assertTrue(x.modifiers().size() == 0);
-		assertTrue(x.getNodeType() == ASTNode.ENUM_CONSTANT_DECLARATION);
-		assertTrue(x.structuralPropertiesForType() == EnumConstantDeclaration.propertyDescriptors(ast.apiLevel()));
-		// make sure that reading did not change modification count
-		assertTrue(ast.modificationCount() == previousCount);
-			
-		tJavadocComment(x);
-		tModifiers(x);		
-				
-		genericPropertyTest(x, new Property("Name", true, SimpleName.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				SimpleName result = targetAst.newSimpleName("foo"); //$NON-NLS-1$
-				if (parented) {
-					targetAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode get() {
-				return x.getName();
-			}
-			public void set(ASTNode value) {
-				x.setName((SimpleName) value);
-			}
-		});
-				
-		genericPropertyListTest(x, x.arguments(),
-		  new Property("Arguments", true, Expression.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				SimpleName result = targetAst.newSimpleName("foo"); //$NON-NLS-1$
-				if (parented) {
-					targetAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				AnonymousClassDeclaration s1 = x.getAST().newAnonymousClassDeclaration();
-				s1.bodyDeclarations().add(x);
-				return s1;
-			}
-			public void unwrap() {
-				AnonymousClassDeclaration s1 = (AnonymousClassDeclaration) x.getParent();
-				s1.bodyDeclarations().remove(x);
-			}
-		});
-
-		genericPropertyTest(x, new Property("AnonymousClassDeclaration", false, AnonymousClassDeclaration.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				AnonymousClassDeclaration result = targetAst.newAnonymousClassDeclaration();
-				if (parented) {
-					targetAst.newClassInstanceCreation().setAnonymousClassDeclaration(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				// return AnonymousClassDeclaration that embeds x
-				AnonymousClassDeclaration s0 = x.getAST().newAnonymousClassDeclaration();
-				EnumDeclaration s1 = x.getAST().newEnumDeclaration();
-				s0.bodyDeclarations().add(s1);
-				s1.bodyDeclarations().add(x);
-				return s0;
-			}
-			public void unwrap() {
-				EnumDeclaration s1 = (EnumDeclaration) x.getParent();
-				s1.bodyDeclarations().remove(x);
-			}
-			public ASTNode get() {
-				return x.getAnonymousClassDeclaration();
-			}
-			public void set(ASTNode value) {
-				x.setAnonymousClassDeclaration((AnonymousClassDeclaration) value);
-			}
-		});
-
-		// check that TypeDeclarations in body are classified correctly
-		x.setAnonymousClassDeclaration(null);
-		AnonymousClassDeclaration w0 = ast.newAnonymousClassDeclaration();
-		x.setAnonymousClassDeclaration(w0);
-		TypeDeclaration w1 = ast.newTypeDeclaration();
-		w0.bodyDeclarations().add(w1);
-
-		assertTrue(w1.isLocalTypeDeclaration() == false);
-		assertTrue(w1.isMemberTypeDeclaration() == true);
-		assertTrue(w1.isPackageMemberTypeDeclaration() == false);
-	
-	}	
 	
 	/** @deprecated using deprecated code */
 	public void testTypeParameter() {
@@ -3100,55 +2849,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			assertTrue(x.isVarargs() == false);
 		}
 
-		if (ast.apiLevel() >= AST.JLS3) {
-			genericPropertyListTest(x, x.modifiers(), new Property("Modifiers", true, IExtendedModifier.class) { //$NON-NLS-1$
-				public ASTNode sample(AST targetAst, boolean parented) {
-					Modifier result = targetAst.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD);
-					if (parented) {
-						TypeDeclaration pd = targetAst.newTypeDeclaration();
-						pd.modifiers().add(result);
-					}
-					return result;
-				}
-				public ASTNode wrap() {
-					SingleMemberAnnotation s1 = x.getAST().newSingleMemberAnnotation();
-					ClassInstanceCreation s2 = x.getAST().newClassInstanceCreation();
-					AnonymousClassDeclaration s3 = x.getAST().newAnonymousClassDeclaration();
-					FunctionDeclaration s4 = x.getAST().newFunctionDeclaration();
-					SingleVariableDeclaration s5 = x.getAST().newSingleVariableDeclaration();
-					s1.setValue(s2);
-					s2.setAnonymousClassDeclaration(s3);
-					s3.bodyDeclarations().add(s4);
-					s4.parameters().add(s5);
-					s5.modifiers().add(x);
-					return s1;
-				}
-				public void unwrap() {
-					SingleVariableDeclaration s5 = (SingleVariableDeclaration) x.getParent();
-					s5.modifiers().remove(x);
-				}
-			});
-			
-			// check that getModifiers() tracks changes to modifiers()
-			x.modifiers().clear();
-			assertTrue(x.getModifiers() == Modifier.NONE);
-			Modifier[] allMods = allModifiers();
-			// one at a time
-			for (int i = 0 ; i < allMods.length; i++) {
-				x.modifiers().add(allMods[i]);
-				assertTrue(x.getModifiers() == allMods[i].getKeyword().toFlagValue());
-				x.modifiers().remove(allMods[i]);
-				assertTrue(x.getModifiers() == Modifier.NONE);
-			}
-			// all at same time
-			for (int i = 0 ; i < allMods.length; i++) {
-				x.modifiers().add(allMods[i]);
-			}
-			int flags  = x.getModifiers();
-			for (int i = 0 ; i < allMods.length; i++) {
-				assertTrue((flags & allMods[i].getKeyword().toFlagValue()) != 0);
-			}
-		}
 
 		genericPropertyTest(x, new Property("Name", true, SimpleName.class) { //$NON-NLS-1$
 			public ASTNode sample(AST targetAst, boolean parented) {
@@ -3361,7 +3061,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(x.getExtraDimensions() == 0);
 
 		tJavadocComment(x);
-		tModifiers(x);
 						
 		if (ast.apiLevel() >= AST.JLS3) {
 			genericPropertyListTest(x, x.typeParameters(),
@@ -3534,7 +3233,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(ast.modificationCount() == previousCount);
 		
 		tJavadocComment(x);
-		tModifiers(x);
 				
 		if (ast.apiLevel() == AST.JLS2) {
 			int legal = Modifier.STATIC;
@@ -4282,58 +3980,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			assertTrue(x.getModifiers() == Modifier.NONE);
 		}
 		
-		if (ast.apiLevel() >= AST.JLS3) {
-			genericPropertyListTest(x, x.modifiers(), new Property("Modifiers", true, IExtendedModifier.class) { //$NON-NLS-1$
-				public ASTNode sample(AST targetAst, boolean parented) {
-					Modifier result = targetAst.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD);
-					if (parented) {
-						TypeDeclaration pd = targetAst.newTypeDeclaration();
-						pd.modifiers().add(result);
-					}
-					return result;
-				}
-				public ASTNode wrap() {
-					SingleMemberAnnotation s1 = x.getAST().newSingleMemberAnnotation();
-					ClassInstanceCreation s2 = x.getAST().newClassInstanceCreation();
-					AnonymousClassDeclaration s3 = x.getAST().newAnonymousClassDeclaration();
-					FunctionDeclaration s4 = x.getAST().newFunctionDeclaration();
-					Block s5 = x.getAST().newBlock();
-					VariableDeclarationFragment s6 = x.getAST().newVariableDeclarationFragment();
-					VariableDeclarationStatement s7 = x.getAST().newVariableDeclarationStatement(s6);
-					s1.setValue(s2);
-					s2.setAnonymousClassDeclaration(s3);
-					s3.bodyDeclarations().add(s4);
-					s4.setBody(s5);
-					s5.statements().add(s7);
-					s7.modifiers().add(x);
-					return s1;
-				}
-				public void unwrap() {
-					VariableDeclarationStatement s7 = (VariableDeclarationStatement) x.getParent();
-					s7.modifiers().remove(x);
-				}
-			});
-			
-			// check that getModifiers() tracks changes to modifiers()
-			x.modifiers().clear();
-			assertTrue(x.getModifiers() == Modifier.NONE);
-			Modifier[] allMods = allModifiers();
-			// one at a time
-			for (int i = 0 ; i < allMods.length; i++) {
-				x.modifiers().add(allMods[i]);
-				assertTrue(x.getModifiers() == allMods[i].getKeyword().toFlagValue());
-				x.modifiers().remove(allMods[i]);
-				assertTrue(x.getModifiers() == Modifier.NONE);
-			}
-			// all at same time
-			for (int i = 0 ; i < allMods.length; i++) {
-				x.modifiers().add(allMods[i]);
-			}
-			int flags  = x.getModifiers();
-			for (int i = 0 ; i < allMods.length; i++) {
-				assertTrue((flags & allMods[i].getKeyword().toFlagValue()) != 0);
-			}
-		}
 
 		genericPropertyTest(x, new Property("Type", true, Type.class) { //$NON-NLS-1$
 			public ASTNode sample(AST targetAst, boolean parented) {
@@ -4513,47 +4159,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			assertTrue(x.getModifiers() == Modifier.NONE);
 		}
 		
-		if (ast.apiLevel() >= AST.JLS3) {
-			genericPropertyListTest(x, x.modifiers(), new Property("Modifiers", true, IExtendedModifier.class) { //$NON-NLS-1$
-				public ASTNode sample(AST targetAst, boolean parented) {
-					Modifier result = targetAst.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD);
-					if (parented) {
-						TypeDeclaration pd = targetAst.newTypeDeclaration();
-						pd.modifiers().add(result);
-					}
-					return result;
-				}
-				public ASTNode wrap() {
-					SingleMemberAnnotation s1 = x.getAST().newSingleMemberAnnotation();
-					s1.setValue(x);
-					return s1;
-				}
-				public void unwrap() {
-					SingleMemberAnnotation s1 = (SingleMemberAnnotation) x.getParent();
-					s1.setValue(x.getAST().newNullLiteral());
-				}
-			});
-
-			// check that getModifiers() tracks changes to modifiers()
-			x.modifiers().clear();
-			assertTrue(x.getModifiers() == Modifier.NONE);
-			Modifier[] allMods = allModifiers();
-			// one at a time
-			for (int i = 0 ; i < allMods.length; i++) {
-				x.modifiers().add(allMods[i]);
-				assertTrue(x.getModifiers() == allMods[i].getKeyword().toFlagValue());
-				x.modifiers().remove(allMods[i]);
-				assertTrue(x.getModifiers() == Modifier.NONE);
-			}
-			// all at same time
-			for (int i = 0 ; i < allMods.length; i++) {
-				x.modifiers().add(allMods[i]);
-			}
-			int flags  = x.getModifiers();
-			for (int i = 0 ; i < allMods.length; i++) {
-				assertTrue((flags & allMods[i].getKeyword().toFlagValue()) != 0);
-			}
-		}
 
 		genericPropertyTest(x, new Property("Type", true, Type.class) { //$NON-NLS-1$
 			public ASTNode sample(AST targetAst, boolean parented) {
@@ -4644,7 +4249,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		}
 
 		tJavadocComment(x);
-		tModifiers(x);
 						
 		genericPropertyTest(x, new Property("Type", true, Type.class) { //$NON-NLS-1$
 			public ASTNode sample(AST targetAst, boolean parented) {
@@ -5472,62 +5076,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		return allMods;
 	}
 	
-	/**
-	 * Exercise the modifiers property.
-	 * 
-	 * @param x the body declaration to test
-	 * @deprecated using deprecated code
-	 */
-	void tModifiers(final BodyDeclaration x) {
-		if (ast.apiLevel() == AST.JLS2) {
-			return;
-		}
-		genericPropertyListTest(x, x.modifiers(), new Property("Modifiers", true, IExtendedModifier.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				Modifier result = targetAst.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD);
-				if (parented) {
-					TypeDeclaration pd = targetAst.newTypeDeclaration();
-					pd.modifiers().add(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				SingleMemberAnnotation s1 = x.getAST().newSingleMemberAnnotation();
-				ClassInstanceCreation s2 = x.getAST().newClassInstanceCreation();
-				AnonymousClassDeclaration s3 = x.getAST().newAnonymousClassDeclaration();
-				FunctionDeclaration s4 = x.getAST().newFunctionDeclaration();
-				s1.setValue(s2);
-				s2.setAnonymousClassDeclaration(s3);
-				s3.bodyDeclarations().add(s4);
-				s4.modifiers().add(x);
-				return s1;
-			}
-			public void unwrap() {
-				FunctionDeclaration s4 = (FunctionDeclaration) x.getParent();
-				s4.modifiers().remove(x);
-			}
-		});
-		
-		// check that getModifiers() tracks changes to modifiers()
-		x.modifiers().clear();
-		assertTrue(x.getModifiers() == Modifier.NONE);
-		Modifier[] allMods = allModifiers();
-		// one at a time
-		for (int i = 0 ; i < allMods.length; i++) {
-			x.modifiers().add(allMods[i]);
-			assertTrue(x.getModifiers() == allMods[i].getKeyword().toFlagValue());
-			x.modifiers().remove(allMods[i]);
-			assertTrue(x.getModifiers() == Modifier.NONE);
-		}
-		// all at same time
-		for (int i = 0 ; i < allMods.length; i++) {
-			x.modifiers().add(allMods[i]);
-		}
-		int flags  = x.getModifiers();
-		for (int i = 0 ; i < allMods.length; i++) {
-			assertTrue((flags & allMods[i].getKeyword().toFlagValue()) != 0);
-		}
-	}
 
 	/**
 	 * Exercise the alternateRoot property of a Comment.
@@ -6152,10 +5700,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			}
 			public boolean visit(VariableDeclarationFragment node) {
 				assertTrue(node.resolveBinding() == null);
-				return true;
-			}
-			public boolean visit(EnumConstantDeclaration node) {
-				assertTrue(node.resolveVariable() == null);
 				return true;
 			}
 		};
@@ -7764,451 +7308,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		});
 	}
 	
-	/** @deprecated using deprecated code */
-	public void testAnnotationTypeDeclaration() {
-		if (ast.apiLevel() == AST.JLS2) {
-			// node type introduced in 3.0 API
-			try {
-				ast.newAnnotationTypeDeclaration();
-				assertTrue(false);
-			} catch (UnsupportedOperationException e) {
-				// pass
-			}
-			return;
-		}
-		long previousCount = ast.modificationCount();
-		final AnnotationTypeDeclaration x = ast.newAnnotationTypeDeclaration();
-		assertTrue(ast.modificationCount() > previousCount);
-		previousCount = ast.modificationCount();
-		assertTrue(x.getAST() == ast);
-		assertTrue(x.getParent() == null);
-		assertTrue(x.modifiers().size() == 0);
-		assertTrue(x.getJavadoc() == null);
-		assertTrue(x.getName().getParent() == x);
-		assertTrue(x.getName().isDeclaration() == true);
-		assertTrue(x.bodyDeclarations().size()== 0);
-		assertTrue(x.getNodeType() == ASTNode.ANNOTATION_TYPE_DECLARATION);
-		assertTrue(x.structuralPropertiesForType() == 
-			AnnotationTypeDeclaration.propertyDescriptors(ast.apiLevel()));
-		// make sure that reading did not change modification count
-		assertTrue(ast.modificationCount() == previousCount);
-	
-		previousCount = ast.modificationCount();
-		
-		tJavadocComment(x);
-		tModifiers(x);		
-		
-		genericPropertyTest(x, new Property("Name", true, SimpleName.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				SimpleName result = targetAst.newSimpleName("foo"); //$NON-NLS-1$
-				if (parented) {
-					targetAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode get() {
-				return x.getName();
-			}
-			public void set(ASTNode value) {
-				x.setName((SimpleName) value);
-			}
-		});
-		
-		genericPropertyListTest(x, x.bodyDeclarations(),
-		  new Property("BodyDeclarations", true, BodyDeclaration.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				AnnotationTypeMemberDeclaration result = targetAst.newAnnotationTypeMemberDeclaration();
-				if (parented) {
-					AnnotationTypeDeclaration atd = targetAst.newAnnotationTypeDeclaration();
-					atd.bodyDeclarations().add(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				// return AnnotationTypeMemberDeclaration that embeds x
-				AnnotationTypeMemberDeclaration s1 = x.getAST().newAnnotationTypeMemberDeclaration();
-				ClassInstanceCreation s2 = x.getAST().newClassInstanceCreation();
-				AnonymousClassDeclaration s3 = x.getAST().newAnonymousClassDeclaration();
-				s1.setDefault(s2);
-				s2.setAnonymousClassDeclaration(s3);
-				s3.bodyDeclarations().add(x);
-				return s1;
-			}
-			public void unwrap() {
-				AnonymousClassDeclaration s3 = (AnonymousClassDeclaration) x.getParent();
-				s3.bodyDeclarations().remove(x);
-			}
-		});
-		
-		// check that TypeDeclarations in body are classified correctly
-		assertTrue(x.isLocalTypeDeclaration() == false);
-		assertTrue(x.isMemberTypeDeclaration() == false);
-		assertTrue(x.isPackageMemberTypeDeclaration() == false);
-	
-		// check special bodyDeclaration methods
-		TypeDeclaration t0 = ast.newTypeDeclaration();
-		AnnotationTypeDeclaration t1 = ast.newAnnotationTypeDeclaration();
-		t0.bodyDeclarations().add(t1);
-		assertTrue(t1.isLocalTypeDeclaration() == false);
-		assertTrue(t1.isMemberTypeDeclaration() == true);
-		assertTrue(t1.isPackageMemberTypeDeclaration() == false);
-		
-		JavaScriptUnit t2 = ast.newJavaScriptUnit();
-		AnnotationTypeDeclaration t3 = ast.newAnnotationTypeDeclaration();
-		t2.types().add(t3);
-		assertTrue(t3.isLocalTypeDeclaration() == false);
-		assertTrue(t3.isMemberTypeDeclaration() == false);
-		assertTrue(t3.isPackageMemberTypeDeclaration() == true);
-	}
-
-	/** @deprecated using deprecated code */
-	public void testAnnotationTypeMemberDeclaration() {
-		if (ast.apiLevel() == AST.JLS2) {
-			// node type introduced in 3.0 API
-			try {
-				ast.newAnnotationTypeMemberDeclaration();
-				assertTrue(false);
-			} catch (UnsupportedOperationException e) {
-				// pass
-			}
-			return;
-		}
-		long previousCount = ast.modificationCount();
-		final AnnotationTypeMemberDeclaration x = ast.newAnnotationTypeMemberDeclaration();
-		assertTrue(ast.modificationCount() > previousCount);
-		previousCount = ast.modificationCount();
-		assertTrue(x.getAST() == ast);
-		assertTrue(x.getParent() == null);
-		assertTrue(x.modifiers().size() == 0);
-		assertTrue(x.getName().getParent() == x);
-		assertTrue(x.getName().isDeclaration() == true);
-		assertTrue(x.getType().getParent() == x);
-		assertTrue(x.getJavadoc() == null);
-		assertTrue(x.getDefault() == null);
-		assertTrue(x.getNodeType() == ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION);
-		assertTrue(x.structuralPropertiesForType() == 
-			AnnotationTypeMemberDeclaration.propertyDescriptors(ast.apiLevel()));
-		// make sure that reading did not change modification count
-		assertTrue(ast.modificationCount() == previousCount);
-	
-		tJavadocComment(x);
-		tModifiers(x);
-						
-		genericPropertyTest(x, new Property("Name", true, SimpleName.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				SimpleName result = targetAst.newSimpleName("foo"); //$NON-NLS-1$
-				if (parented) {
-					targetAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode get() {
-				return x.getName();
-			}
-			public void set(ASTNode value) {
-				x.setName((SimpleName) value);
-			}
-		});
-		
-		genericPropertyTest(x, new Property("Type", true, Type.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				SimpleType result = targetAst.newSimpleType(
-					targetAst.newSimpleName("foo")); //$NON-NLS-1$
-				if (parented) {
-					targetAst.newArrayType(result);
-				}
-				return result;
-			}
-			public ASTNode get() {
-				return x.getType();
-			}
-			public void set(ASTNode value) {
-				x.setType((Type) value);
-			}
-		});
-		
-		genericPropertyTest(x, new Property("Default", false, Expression.class) { //$NON-NLS-1$
-			public ASTNode sample(AST localAst, boolean parented) {
-				Expression result = localAst.newSimpleName("foo"); //$NON-NLS-1$
-				if (parented) {
-					localAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				// return Expression that embeds x
-				ClassInstanceCreation s1 = x.getAST().newClassInstanceCreation();
-				AnonymousClassDeclaration s2 = x.getAST().newAnonymousClassDeclaration();
-				s1.setAnonymousClassDeclaration(s2);
-				s2.bodyDeclarations().add(x);
-				return s1;
-			}
-			public void unwrap() {
-				AnonymousClassDeclaration s2 = (AnonymousClassDeclaration) x.getParent();
-				s2.bodyDeclarations().remove(x);
-			}
-			public ASTNode get() {
-				return x.getDefault();
-			}
-			public void set(ASTNode value) {
-				x.setDefault((Expression) value);
-			}
-		});
-	}
-
-	/** @deprecated using deprecated code */
-	public void testNormalAnnotation() {
-		if (ast.apiLevel() == AST.JLS2) {
-			// node type introduced in 3.0 API
-			try {
-				ast.newNormalAnnotation();
-				assertTrue(false);
-			} catch (UnsupportedOperationException e) {
-				// pass
-			}
-			return;
-		}
-		long previousCount = ast.modificationCount();
-		final NormalAnnotation x = ast.newNormalAnnotation(); //$NON-NLS-1$
-		assertTrue(ast.modificationCount() > previousCount);
-		previousCount = ast.modificationCount();
-		assertTrue(x.getAST() == ast);
-		assertTrue(x.getParent() == null);
-		assertTrue(x.getTypeName().getParent() == x);
-		assertTrue(x.values().size() == 0);
-		assertTrue(x.isAnnotation());
-		assertTrue(!x.isModifier());
-		assertTrue(!x.isMarkerAnnotation());
-		assertTrue(x.isNormalAnnotation());
-		assertTrue(!x.isSingleMemberAnnotation());
-		assertTrue(x.getNodeType() == ASTNode.NORMAL_ANNOTATION);
-		assertTrue(x.structuralPropertiesForType() == 
-			NormalAnnotation.propertyDescriptors(ast.apiLevel()));
-		// make sure that reading did not change modification count
-		assertTrue(ast.modificationCount() == previousCount);
-		
-		tAnnotationName(x);
-
-		genericPropertyListTest(x, x.values(), new Property("Values", true, MemberValuePair.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				MemberValuePair result = targetAst.newMemberValuePair();
-				if (parented) {
-					NormalAnnotation ann = targetAst.newNormalAnnotation();
-					ann.values().add(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				// return MemberValuePair that embeds x
-				MemberValuePair s1 = x.getAST().newMemberValuePair();
-				ClassInstanceCreation s2 = x.getAST().newClassInstanceCreation();
-				AnonymousClassDeclaration s3 = x.getAST().newAnonymousClassDeclaration();
-				FunctionDeclaration s4 = x.getAST().newFunctionDeclaration();
-				s1.setValue(s2);
-				s2.setAnonymousClassDeclaration(s3);
-				s3.bodyDeclarations().add(s4);
-				s4.modifiers().add(x);
-				return s1;
-			}
-			public void unwrap() {
-				FunctionDeclaration s4 = (FunctionDeclaration) x.getParent();
-				s4.modifiers().remove(x);
-			}
-		});
-	}
-		
-	/** @deprecated using deprecated code */
-	public void testMarkerAnnotation() {
-		if (ast.apiLevel() == AST.JLS2) {
-			// node type introduced in 3.0 API
-			try {
-				ast.newMarkerAnnotation();
-				assertTrue(false);
-			} catch (UnsupportedOperationException e) {
-				// pass
-			}
-			return;
-		}
-		long previousCount = ast.modificationCount();
-		final MarkerAnnotation x = ast.newMarkerAnnotation(); //$NON-NLS-1$
-		assertTrue(ast.modificationCount() > previousCount);
-		previousCount = ast.modificationCount();
-		assertTrue(x.getAST() == ast);
-		assertTrue(x.getParent() == null);
-		assertTrue(x.getTypeName().getParent() == x);
-		assertTrue(x.isAnnotation());
-		assertTrue(!x.isModifier());
-		assertTrue(x.isMarkerAnnotation());
-		assertTrue(!x.isNormalAnnotation());
-		assertTrue(!x.isSingleMemberAnnotation());
-		assertTrue(x.getNodeType() == ASTNode.MARKER_ANNOTATION);
-		assertTrue(x.structuralPropertiesForType() == 
-			MarkerAnnotation.propertyDescriptors(ast.apiLevel()));
-		// make sure that reading did not change modification count
-		assertTrue(ast.modificationCount() == previousCount);
-		
-		tAnnotationName(x);
-	}
-
-	/** @deprecated using deprecated code */
-	public void testSingleMemberAnnotation() {
-		if (ast.apiLevel() == AST.JLS2) {
-			// node type introduced in 3.0 API
-			try {
-				ast.newSingleMemberAnnotation();
-				assertTrue(false);
-			} catch (UnsupportedOperationException e) {
-				// pass
-			}
-			return;
-		}
-		long previousCount = ast.modificationCount();
-		final SingleMemberAnnotation x = ast.newSingleMemberAnnotation(); //$NON-NLS-1$
-		assertTrue(ast.modificationCount() > previousCount);
-		previousCount = ast.modificationCount();
-		assertTrue(x.getAST() == ast);
-		assertTrue(x.getParent() == null);
-		assertTrue(x.getTypeName().getParent() == x);
-		assertTrue(x.isAnnotation());
-		assertTrue(!x.isModifier());
-		assertTrue(!x.isMarkerAnnotation());
-		assertTrue(!x.isNormalAnnotation());
-		assertTrue(x.isSingleMemberAnnotation());
-		assertTrue(x.getNodeType() == ASTNode.SINGLE_MEMBER_ANNOTATION);
-		// make sure that reading did not change modification count
-		assertTrue(ast.modificationCount() == previousCount);
-		
-		tAnnotationName(x);
-
-		genericPropertyTest(x, new Property("Value", true, Expression.class) { //$NON-NLS-1$
-			public ASTNode sample(AST localAst, boolean parented) {
-				Expression result = localAst.newSimpleName("foo"); //$NON-NLS-1$
-				if (parented) {
-					localAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				// return Expression that embeds x
-				ClassInstanceCreation s1 = x.getAST().newClassInstanceCreation();
-				AnonymousClassDeclaration s2 = x.getAST().newAnonymousClassDeclaration();
-				FunctionDeclaration s3 = x.getAST().newFunctionDeclaration();
-				s1.setAnonymousClassDeclaration(s2);
-				s2.bodyDeclarations().add(s3);
-				s3.modifiers().add(x);
-				return s1;
-			}
-			public void unwrap() {
-				FunctionDeclaration s3 = (FunctionDeclaration) x.getParent();
-				s3.modifiers().remove(x);
-			}
-			public ASTNode get() {
-				return x.getValue();
-			}
-			public void set(ASTNode value) {
-				x.setValue((Expression) value);
-			}
-		});
-	}
-
-	/** @deprecated using deprecated code */
-	public void testMemberValuePair() {
-		if (ast.apiLevel() == AST.JLS2) {
-			// node type introduced in 3.0 API
-			try {
-				ast.newMemberValuePair();
-				assertTrue(false);
-			} catch (UnsupportedOperationException e) {
-				// pass
-			}
-			return;
-		}
-		long previousCount = ast.modificationCount();
-		final MemberValuePair x = ast.newMemberValuePair(); //$NON-NLS-1$
-		assertTrue(ast.modificationCount() > previousCount);
-		previousCount = ast.modificationCount();
-		assertTrue(x.getAST() == ast);
-		assertTrue(x.getParent() == null);
-		assertTrue(x.getName().getParent() == x);
-		assertTrue(x.getName().isDeclaration() == false);
-		assertTrue(x.getNodeType() == ASTNode.MEMBER_VALUE_PAIR);
-		assertTrue(x.structuralPropertiesForType() == 
-			MemberValuePair.propertyDescriptors(ast.apiLevel()));
-		// make sure that reading did not change modification count
-		assertTrue(ast.modificationCount() == previousCount);
-
-		genericPropertyTest(x, new Property("Name", true, SimpleName.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				SimpleName result = targetAst.newSimpleName("a"); //$NON-NLS-1$
-				if (parented) {
-					targetAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode get() {
-				return x.getName();
-			}
-			public void set(ASTNode value) {
-				x.setName((SimpleName) value);
-			}
-		});
-		
-		genericPropertyTest(x, new Property("Value", true, Expression.class) { //$NON-NLS-1$
-			public ASTNode sample(AST localAst, boolean parented) {
-				Expression result = localAst.newSimpleName("foo"); //$NON-NLS-1$
-				if (parented) {
-					localAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				// return Expression that embeds x
-				ClassInstanceCreation s1 = x.getAST().newClassInstanceCreation();
-				AnonymousClassDeclaration s2 = x.getAST().newAnonymousClassDeclaration();
-				FunctionDeclaration s3 = x.getAST().newFunctionDeclaration();
-				NormalAnnotation s4 = x.getAST().newNormalAnnotation();
-				s1.setAnonymousClassDeclaration(s2);
-				s2.bodyDeclarations().add(s3);
-				s3.modifiers().add(s4);
-				s4.values().add(x);
-				return s1;
-			}
-			public void unwrap() {
-				NormalAnnotation s4 = (NormalAnnotation) x.getParent();
-				s4.values().remove(x);
-			}
-			public ASTNode get() {
-				return x.getValue();
-			}
-			public void set(ASTNode value) {
-				x.setValue((Expression) value);
-			}
-		});
-	}
-	
-	/**
-	 * Exercise the typeName property of an Annotation.
-	 * 
-	 * @param x the annotation to test
-     * @since 3.0
-	 */
-	public void tAnnotationName(final Annotation x) {
-		genericPropertyTest(x, new Property("TypeName", true, Name.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				SimpleName result = targetAst.newSimpleName("a"); //$NON-NLS-1$
-				if (parented) {
-					targetAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode get() {
-				return x.getTypeName();
-			}
-			public void set(ASTNode value) {
-				x.setTypeName((Name) value);
-			}
-		});
-	}
 
 	/** @deprecated using deprecated code */
 	public void testModifiers() {
@@ -8483,25 +7582,15 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(ASTNode.FUNCTION_REF == 68);
 		assertTrue(ASTNode.FUNCTION_REF_PARAMETER == 69);
 		assertTrue(ASTNode.ENHANCED_FOR_STATEMENT == 70);
-		assertTrue(ASTNode.ENUM_DECLARATION == 71);
-		assertTrue(ASTNode.ENUM_CONSTANT_DECLARATION == 72);
 		assertTrue(ASTNode.TYPE_PARAMETER == 73);
 		assertTrue(ASTNode.PARAMETERIZED_TYPE == 74);
 		assertTrue(ASTNode.QUALIFIED_TYPE == 75);
 		assertTrue(ASTNode.WILDCARD_TYPE == 76);
-		assertTrue(ASTNode.NORMAL_ANNOTATION == 77);
-		assertTrue(ASTNode.MARKER_ANNOTATION == 78);
-		assertTrue(ASTNode.SINGLE_MEMBER_ANNOTATION == 79);
-		assertTrue(ASTNode.MEMBER_VALUE_PAIR == 80);
-		assertTrue(ASTNode.ANNOTATION_TYPE_DECLARATION == 81);
-		assertTrue(ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION == 82);
 		assertTrue(ASTNode.MODIFIER == 83);
 		
 		// ensure that all constants are distinct, positive, and small
 		// (this may seem paranoid, but this test did uncover a stupid bug!)
 		int[] all= {
-	      	  ASTNode.ANNOTATION_TYPE_DECLARATION,
-			  ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION,
               ASTNode.ANONYMOUS_CLASS_DECLARATION,
               ASTNode.ARRAY_ACCESS,
               ASTNode.ARRAY_CREATION,
@@ -8524,8 +7613,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
               ASTNode.DO_STATEMENT,
               ASTNode.EMPTY_STATEMENT,
               ASTNode.ENHANCED_FOR_STATEMENT,
-              ASTNode.ENUM_CONSTANT_DECLARATION,
-              ASTNode.ENUM_DECLARATION,
               ASTNode.EXPRESSION_STATEMENT,
               ASTNode.FIELD_ACCESS,
               ASTNode.FIELD_DECLARATION,
@@ -8538,15 +7625,12 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
               ASTNode.JSDOC,
               ASTNode.LABELED_STATEMENT,
         	  ASTNode.LINE_COMMENT,
-      		  ASTNode.MARKER_ANNOTATION,
         	  ASTNode.MEMBER_REF,
-      		  ASTNode.MEMBER_VALUE_PAIR,
               ASTNode.FUNCTION_DECLARATION,
               ASTNode.FUNCTION_INVOCATION,
         	  ASTNode.FUNCTION_REF,
         	  ASTNode.FUNCTION_REF_PARAMETER,
       		  ASTNode.MODIFIER,              
-			  ASTNode.NORMAL_ANNOTATION,
               ASTNode.NULL_LITERAL,
               ASTNode.NUMBER_LITERAL,
               ASTNode.PACKAGE_DECLARATION,
@@ -8560,7 +7644,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
               ASTNode.RETURN_STATEMENT,
               ASTNode.SIMPLE_NAME,
               ASTNode.SIMPLE_TYPE,
-      		  ASTNode.SINGLE_MEMBER_ANNOTATION,
               ASTNode.SINGLE_VARIABLE_DECLARATION,
               ASTNode.STRING_LITERAL,
               ASTNode.SUPER_CONSTRUCTOR_INVOCATION,

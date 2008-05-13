@@ -537,20 +537,20 @@ public void testParameterTypeSignatures5() throws JavaScriptModelException {
 		"U:TT;\n",
 		type.getTypeParameterSignatures());
 }
-
-/**
- * Ensure that the type parameter signatures of a binary method are correct.
- * @deprecated
- */
-public void testParameterTypeSignatures6() throws JavaScriptModelException {
-	IType type = this.jarRoot.getPackageFragment("generic").getClassFile("X.class").getType();
-	IFunction method = type.getFunction("foo", new String[] {"TK;", "TV;"});
-	assertStringsEqual(
-		"Unexpected type parameters",
-		"K:Ljava.lang.Object;\n" + 
-		"V:Ljava.lang.Object;\n",
-		method.getTypeParameterSignatures());
-}
+//
+///**
+// * Ensure that the type parameter signatures of a binary method are correct.
+// * @deprecated
+// */
+//public void testParameterTypeSignatures6() throws JavaScriptModelException {
+//	IType type = this.jarRoot.getPackageFragment("generic").getClassFile("X.class").getType();
+//	IFunction method = type.getFunction("foo", new String[] {"TK;", "TV;"});
+//	assertStringsEqual(
+//		"Unexpected type parameters",
+//		"K:Ljava.lang.Object;\n" + 
+//		"V:Ljava.lang.Object;\n",
+//		method.getTypeParameterSignatures());
+//}
 
 /*
  * Ensures that the raw parameter names of a binary method with source attached are correct.

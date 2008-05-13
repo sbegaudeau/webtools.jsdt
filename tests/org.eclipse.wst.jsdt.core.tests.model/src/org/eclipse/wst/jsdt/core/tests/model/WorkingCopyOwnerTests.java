@@ -1016,25 +1016,6 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 		TypeDeclaration type = (TypeDeclaration) ast.types().get(0);
 		assertNull("Unexpected binding", type.resolveBinding());
 	}
-
-	/*
-	 * Ensures that a new working copy with no resource can be committed (its buffer is saved).
-	 */
-	public void testNewWorkingCopy08() throws CoreException {
-		WorkingCopyOwner owner = new WorkingCopyOwner() {
-			public IBuffer createBuffer(IJavaScriptUnit wc) {
-				IBuffer buffer = new TestBuffer(wc);
-				buffer.setContents(
-					"public class X {\n" +
-					"}"
-				);
-				return buffer;
-			}
-		};
-		this.workingCopy = owner.newWorkingCopy("X.js", null/*no classpath*/, null/*no problem requestor*/, null/*no progress monitor*/);
-		this.workingCopy.commitWorkingCopy(true, null);
-		assertFalse("Should not have unsaved changes", this.workingCopy.hasUnsavedChanges());
-	}
 	
 	/*
 	 * Ensures that a Java project named " " doesn't exist if a working copy with no resource is created.

@@ -14,22 +14,20 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import junit.framework.Test;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
-import org.eclipse.wst.jsdt.core.JavaScriptModelException;
-import org.eclipse.wst.jsdt.core.dom.AST;
-import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.JSdoc;
-import org.eclipse.wst.jsdt.core.util.JavaScriptUnitSorter;
-import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.ASTParser;
+import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
+import org.eclipse.wst.jsdt.core.util.JavaScriptUnitSorter;
+import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 
 /**
  * 
@@ -64,46 +62,46 @@ private void sortUnit(int apiLevel, IJavaScriptUnit unit, String expectedResult,
 	this.sortUnit(apiLevel, unit, expectedResult, testPositions, new DefaultJavaElementComparator(1,2,3,4,5,6,7,8,9));
 }
 /** @deprecated */
-private void oldAPISortUnit(IJavaScriptUnit unit, String expectedResult, boolean testPositions, Comparator comparator) throws CoreException {
-	String initialSource = unit.getSource();
-	int[] positions = null;
-	int[] initialPositions = null;
-	ArrayList arrayList = new ArrayList();
-	if (testPositions) {
-		for (int i = 0; i < initialSource.length(); i++) {
-			if (!Character.isWhitespace(initialSource.charAt(i))) {
-				arrayList.add(new Integer(i));
-			}
-		}
-		final int length = arrayList.size();
-		positions = new int[length];
-		for (int i = 0; i < length; i++) {
-			positions[i] = ((Integer) arrayList.get(i)).intValue();
-		}
-		initialPositions = new int[length];
-		System.arraycopy(positions, 0, initialPositions, 0, length);
-	}
-	IJavaScriptUnit copy = unit.getWorkingCopy(null);
-	JavaScriptUnitSorter.sort(copy , positions, comparator, 0, new NullProgressMonitor());
-	String sortedSource = copy.getBuffer().getContents();
-	assertEquals("Different output", expectedResult, sortedSource); //$NON-NLS-1$
-	final int expectedResultLength = expectedResult.length();
-	if (testPositions) {
-		for (int i = 0, max = positions.length; i < max; i++) {
-			char mappedChar = ' ';
-			char initial = initialSource.charAt(initialPositions[i]);
-			try {
-				mappedChar = expectedResult.charAt(positions[i]);
-				if (mappedChar != initial) {
-					System.out.println("wrong mapped positions: " + initialPositions[i] + " <-> " + positions[i] + ": expected " + initial + " but was " + mappedChar); //$NON-NLS-1$ //$NON-NLS-2$
-					assertEquals("wrong mapped positions: " + initialPositions[i] + " <-> " + positions[i], initial, mappedChar); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-			} catch(StringIndexOutOfBoundsException e) {
-				System.out.println("Out of bounds : (length = " + expectedResultLength + ") " + positions[i]);
-			}
-		}
-	}
-}
+//private void oldAPISortUnit(IJavaScriptUnit unit, String expectedResult, boolean testPositions, Comparator comparator) throws CoreException {
+//	String initialSource = unit.getSource();
+//	int[] positions = null;
+//	int[] initialPositions = null;
+//	ArrayList arrayList = new ArrayList();
+//	if (testPositions) {
+//		for (int i = 0; i < initialSource.length(); i++) {
+//			if (!Character.isWhitespace(initialSource.charAt(i))) {
+//				arrayList.add(new Integer(i));
+//			}
+//		}
+//		final int length = arrayList.size();
+//		positions = new int[length];
+//		for (int i = 0; i < length; i++) {
+//			positions[i] = ((Integer) arrayList.get(i)).intValue();
+//		}
+//		initialPositions = new int[length];
+//		System.arraycopy(positions, 0, initialPositions, 0, length);
+//	}
+//	IJavaScriptUnit copy = unit.getWorkingCopy(null);
+//	JavaScriptUnitSorter.sort(copy , positions, comparator, 0, new NullProgressMonitor());
+//	String sortedSource = copy.getBuffer().getContents();
+//	assertEquals("Different output", expectedResult, sortedSource); //$NON-NLS-1$
+//	final int expectedResultLength = expectedResult.length();
+//	if (testPositions) {
+//		for (int i = 0, max = positions.length; i < max; i++) {
+//			char mappedChar = ' ';
+//			char initial = initialSource.charAt(initialPositions[i]);
+//			try {
+//				mappedChar = expectedResult.charAt(positions[i]);
+//				if (mappedChar != initial) {
+//					System.out.println("wrong mapped positions: " + initialPositions[i] + " <-> " + positions[i] + ": expected " + initial + " but was " + mappedChar); //$NON-NLS-1$ //$NON-NLS-2$
+//					assertEquals("wrong mapped positions: " + initialPositions[i] + " <-> " + positions[i], initial, mappedChar); //$NON-NLS-1$ //$NON-NLS-2$
+//				}
+//			} catch(StringIndexOutOfBoundsException e) {
+//				System.out.println("Out of bounds : (length = " + expectedResultLength + ") " + positions[i]);
+//			}
+//		}
+//	}
+//}
 private void sortUnit(int apiLevel, IJavaScriptUnit unit, String expectedResult, boolean testPositions, Comparator comparator) throws CoreException {
 
 	String initialSource = unit.getSource();
@@ -1841,46 +1839,46 @@ public void test027() throws CoreException {
 		this.deleteFile("/P/src/X.js");
 	}
 }
-//https://bugs.eclipse.org/bugs/show_bug.cgi?id=101453
-/** @deprecated */
-public void test028() throws CoreException {
-	try {
-		this.createFile(
-			"/P/src/X.js",
-			"public final class X\n" +
-			"{\n" +
-			"/** JavaDoc comment2 */\n" +
-			"int j;\n" +
-			"/** JavaDoc comment1 */\n" +
-			"int i;\n" +
-			"}"
-		);
-		String expectedResult = 
-			"public final class X\n" +
-			"{\n" +
-			"/** JavaDoc comment1 */\n" +
-			"int i;\n" +
-			"/** JavaDoc comment2 */\n" +
-			"int j;\n" +
-			"}";
-		oldAPISortUnit(this.getCompilationUnit("/P/src/X.js"), expectedResult, false, new Comparator() {
-			public int compare(Object o1, Object o2) {
-				BodyDeclaration bodyDeclaration1 = (BodyDeclaration) o1;
-				BodyDeclaration bodyDeclaration2 = (BodyDeclaration) o2;
-				JSdoc javadoc1 = bodyDeclaration1.getJavadoc();
-				JSdoc javadoc2 = bodyDeclaration2.getJavadoc();
-				if (javadoc1 != null && javadoc2 != null) {
-					return javadoc1.getComment().compareTo(javadoc2.getComment());
-				}
-				final int sourceStart1 = ((Integer) bodyDeclaration1.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
-				final int sourceStart2 = ((Integer) bodyDeclaration2.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
-				return sourceStart1 - sourceStart2;
-			}
-		});
-	} finally {
-		this.deleteFile("/P/src/X.js");
-	}
-}
+////https://bugs.eclipse.org/bugs/show_bug.cgi?id=101453
+///** @deprecated */
+//public void test028() throws CoreException {
+//	try {
+//		this.createFile(
+//			"/P/src/X.js",
+//			"public final class X\n" +
+//			"{\n" +
+//			"/** JavaDoc comment2 */\n" +
+//			"int j;\n" +
+//			"/** JavaDoc comment1 */\n" +
+//			"int i;\n" +
+//			"}"
+//		);
+//		String expectedResult = 
+//			"public final class X\n" +
+//			"{\n" +
+//			"/** JavaDoc comment1 */\n" +
+//			"int i;\n" +
+//			"/** JavaDoc comment2 */\n" +
+//			"int j;\n" +
+//			"}";
+//		oldAPISortUnit(this.getCompilationUnit("/P/src/X.js"), expectedResult, false, new Comparator() {
+//			public int compare(Object o1, Object o2) {
+//				BodyDeclaration bodyDeclaration1 = (BodyDeclaration) o1;
+//				BodyDeclaration bodyDeclaration2 = (BodyDeclaration) o2;
+//				JSdoc javadoc1 = bodyDeclaration1.getJavadoc();
+//				JSdoc javadoc2 = bodyDeclaration2.getJavadoc();
+//				if (javadoc1 != null && javadoc2 != null) {
+//					return javadoc1.getComment().compareTo(javadoc2.getComment());
+//				}
+//				final int sourceStart1 = ((Integer) bodyDeclaration1.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
+//				final int sourceStart2 = ((Integer) bodyDeclaration2.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
+//				return sourceStart1 - sourceStart2;
+//			}
+//		});
+//	} finally {
+//		this.deleteFile("/P/src/X.js");
+//	}
+//}
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=101885
 public void test029() throws CoreException {
 	try {
@@ -2018,12 +2016,6 @@ public void test033() throws CoreException {
 
 		Comparator comparator = new Comparator() {
 			public int compare(Object o1, Object o2) {
-				switch(((ASTNode) o1).getNodeType()) {
-					case ASTNode.ENUM_CONSTANT_DECLARATION :
-						if (o2 instanceof EnumConstantDeclaration) {
-							return ((EnumConstantDeclaration) o1).getName().getIdentifier().compareTo(((EnumConstantDeclaration) o2).getName().getIdentifier());
-						}
-				}
 				BodyDeclaration bodyDeclaration1 = (BodyDeclaration) o1;
 				BodyDeclaration bodyDeclaration2 = (BodyDeclaration) o2;
 				final int sourceStart1 = ((Integer) bodyDeclaration1.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();

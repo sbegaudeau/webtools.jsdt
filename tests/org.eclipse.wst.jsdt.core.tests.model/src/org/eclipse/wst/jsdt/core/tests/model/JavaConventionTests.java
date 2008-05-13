@@ -156,41 +156,41 @@ public class JavaConventionTests extends AbstractJavaModelTests {
 	public void testInvalidImportDeclaration3() {
 		assertEquals("import not reconized as invalid; empty string", IStatus.ERROR, validate("", IMPORT_DECLARATION));
 	}
-	/**
-	 * Test for package fragment root overlap
-	 * @deprecated isOverlappingRoots is deprecated
-	 */
-	public void testPackageFragmentRootOverlap() throws Exception {
-		try {
-			IJavaScriptProject project = this.createJavaProject("P1", new String[] {"src"}, new String[] {"/P1/jclMin.jar"}, "bin");
-			
-			// ensure the external JCL is copied
-			setupExternalJCL("jclMin");
-			
-			this.copy(new java.io.File(getExternalJCLPathString()), new java.io.File(getWorkspaceRoot().getLocation().toOSString() + java.io.File.separator + "P1" + java.io.File.separator + "jclMin.jar"));
-			project.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
-			
-			IPackageFragmentRoot p1Zip= getPackageFragmentRoot("P1", "jclMin.jar");
-			IPackageFragmentRoot p1Src= getPackageFragmentRoot("P1", "src");
-		
-			assertTrue("zip should not overlap source root",
-					!JavaScriptConventions.isOverlappingRoots(p1Zip.getUnderlyingResource().getFullPath(), p1Src.getUnderlyingResource().getFullPath()));
-		
-			this.createJavaProject("P2", new String[] {"src"}, "bin");
-		
-			IPackageFragmentRoot p2Src= getPackageFragmentRoot("P2", "src");
-			assertTrue("source roots in different projects should not overlap ",
-					!JavaScriptConventions.isOverlappingRoots(p1Src.getUnderlyingResource().getFullPath(), p2Src.getUnderlyingResource().getFullPath()));
-		
-			assertTrue("The same root should overlap", JavaScriptConventions.isOverlappingRoots(p2Src.getUnderlyingResource().getFullPath(), p2Src.getUnderlyingResource().getFullPath()));
-		
-			assertTrue("isOverLappingRoot does not handle null arguments", !JavaScriptConventions.isOverlappingRoots(p2Src.getUnderlyingResource().getFullPath(), null));
-			assertTrue("isOverLappingRoot does not handle null arguments", !JavaScriptConventions.isOverlappingRoots(null, null));
-		} finally {
-			this.deleteProject("P1");
-			this.deleteProject("P2");
-		}
-	}
+//	/**
+//	 * Test for package fragment root overlap
+//	 * @deprecated isOverlappingRoots is deprecated
+//	 */
+//	public void testPackageFragmentRootOverlap() throws Exception {
+//		try {
+//			IJavaScriptProject project = this.createJavaProject("P1", new String[] {"src"}, new String[] {"/P1/jclMin.jar"}, "bin");
+//			
+//			// ensure the external JCL is copied
+//			setupExternalJCL("jclMin");
+//			
+//			this.copy(new java.io.File(getExternalJCLPathString()), new java.io.File(getWorkspaceRoot().getLocation().toOSString() + java.io.File.separator + "P1" + java.io.File.separator + "jclMin.jar"));
+//			project.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
+//			
+//			IPackageFragmentRoot p1Zip= getPackageFragmentRoot("P1", "jclMin.jar");
+//			IPackageFragmentRoot p1Src= getPackageFragmentRoot("P1", "src");
+//		
+//			assertTrue("zip should not overlap source root",
+//					!JavaScriptConventions.isOverlappingRoots(p1Zip.getUnderlyingResource().getFullPath(), p1Src.getUnderlyingResource().getFullPath()));
+//		
+//			this.createJavaProject("P2", new String[] {"src"}, "bin");
+//		
+//			IPackageFragmentRoot p2Src= getPackageFragmentRoot("P2", "src");
+//			assertTrue("source roots in different projects should not overlap ",
+//					!JavaScriptConventions.isOverlappingRoots(p1Src.getUnderlyingResource().getFullPath(), p2Src.getUnderlyingResource().getFullPath()));
+//		
+//			assertTrue("The same root should overlap", JavaScriptConventions.isOverlappingRoots(p2Src.getUnderlyingResource().getFullPath(), p2Src.getUnderlyingResource().getFullPath()));
+//		
+//			assertTrue("isOverLappingRoot does not handle null arguments", !JavaScriptConventions.isOverlappingRoots(p2Src.getUnderlyingResource().getFullPath(), null));
+//			assertTrue("isOverLappingRoot does not handle null arguments", !JavaScriptConventions.isOverlappingRoots(null, null));
+//		} finally {
+//			this.deleteProject("P1");
+//			this.deleteProject("P2");
+//		}
+//	}
 	/**
 	 * @see JavaScriptConventions
 	 */

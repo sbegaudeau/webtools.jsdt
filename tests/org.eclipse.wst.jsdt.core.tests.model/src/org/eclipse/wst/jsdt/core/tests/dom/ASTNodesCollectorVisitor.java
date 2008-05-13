@@ -14,8 +14,31 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.wst.jsdt.core.dom.*;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
+import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
+import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.MemberRef;
+import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
+import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SimpleType;
+import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
+import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.ThisExpression;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 
 class ASTNodesCollectorVisitor extends ASTVisitor {
 	
@@ -33,24 +56,6 @@ class ASTNodesCollectorVisitor extends ASTVisitor {
 
 	private void add(ASTNode node) {
 		this.detachedAstNodes.add(node);
-	}
-		
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(AnnotationTypeDeclaration)
-	 * @since 3.0
-	 */
-	public void endVisit(AnnotationTypeDeclaration node) {
-		add(node);
-		node.setName(node.getAST().newSimpleName("XXX")); //$NON-NLS-1$
-		detachedListElement(node.bodyDeclarations());
-	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(AnnotationTypeMemberDeclaration)
-	 * @since 3.0
-	 */
-	public void endVisit(AnnotationTypeMemberDeclaration node) {
-		node.setName(node.getAST().newSimpleName("XXX")); //$NON-NLS-1$
 	}
 
 	/**
@@ -86,25 +91,6 @@ class ASTNodesCollectorVisitor extends ASTVisitor {
 		node.setPackage(node.getAST().newPackageDeclaration());
 	}
 
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(EnumConstantDeclaration)
-	 * @since 3.0
-	 */
-	public void endVisit(EnumConstantDeclaration node) {
-		add(node);
-		node.setName(node.getAST().newSimpleName("XXX")); //$NON-NLS-1$
-		detachedListElement(node.getAnonymousClassDeclaration().bodyDeclarations());
-	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(EnumDeclaration)
-	 * @since 3.0
-	 */
-	public void endVisit(EnumDeclaration node) {
-		add(node);
-		node.setName(node.getAST().newSimpleName("XXX")); //$NON-NLS-1$
-		detachedListElement(node.bodyDeclarations());
-	}
 
 	/**
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.FieldAccess)

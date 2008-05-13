@@ -17,14 +17,64 @@ import java.util.Map;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
-import org.eclipse.wst.jsdt.core.dom.*;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.ASTParser;
+import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
+import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
+import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
+import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
+import org.eclipse.wst.jsdt.core.dom.ArrayType;
+import org.eclipse.wst.jsdt.core.dom.Assignment;
+import org.eclipse.wst.jsdt.core.dom.Block;
+import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
+import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
+import org.eclipse.wst.jsdt.core.dom.CastExpression;
+import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
+import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
+import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
+import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
+import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.InfixExpression;
+import org.eclipse.wst.jsdt.core.dom.Initializer;
+import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.MemberRef;
+import org.eclipse.wst.jsdt.core.dom.NullLiteral;
+import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
+import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
+import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
+import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
+import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.QualifiedType;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SimpleType;
+import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.wst.jsdt.core.dom.StringLiteral;
+import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
+import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.ThisExpression;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
+import org.eclipse.wst.jsdt.core.dom.TypeParameter;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
 
 public abstract class ConverterTestSetup extends AbstractASTTests {
@@ -208,17 +258,7 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 			super.endVisit(node);
 		}
 
-		public void endVisit(MarkerAnnotation node) {
-			assertNotNull(node+" should have a binding", node.resolveTypeBinding());
-			super.endVisit(node);
-		}
-
 		public void endVisit(FunctionInvocation node) {
-			assertNotNull(node+" should have a binding", node.resolveTypeBinding());
-			super.endVisit(node);
-		}
-
-		public void endVisit(NormalAnnotation node) {
 			assertNotNull(node+" should have a binding", node.resolveTypeBinding());
 			super.endVisit(node);
 		}
@@ -244,11 +284,6 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 		}
 
 		public void endVisit(PrefixExpression node) {
-			assertNotNull(node+" should have a binding", node.resolveTypeBinding());
-			super.endVisit(node);
-		}
-
-		public void endVisit(SingleMemberAnnotation node) {
 			assertNotNull(node+" should have a binding", node.resolveTypeBinding());
 			super.endVisit(node);
 		}
@@ -283,27 +318,12 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 			super.endVisit(node);
 		}
 
-		public void endVisit(AnnotationTypeDeclaration node) {
-			assertNotNull(node+" should have a binding", node.resolveBinding());
-			super.endVisit(node);
-		}
-
-		public void endVisit(AnnotationTypeMemberDeclaration node) {
-			assertNotNull(node+" should have a binding", node.resolveBinding());
-			super.endVisit(node);
-		}
-
 		public void endVisit(AnonymousClassDeclaration node) {
 			assertNotNull(node+" should have a binding", node.resolveBinding());
 			super.endVisit(node);
 		}
 
 		public void endVisit(ArrayType node) {
-			assertNotNull(node+" should have a binding", node.resolveBinding());
-			super.endVisit(node);
-		}
-
-		public void endVisit(EnumDeclaration node) {
 			assertNotNull(node+" should have a binding", node.resolveBinding());
 			super.endVisit(node);
 		}

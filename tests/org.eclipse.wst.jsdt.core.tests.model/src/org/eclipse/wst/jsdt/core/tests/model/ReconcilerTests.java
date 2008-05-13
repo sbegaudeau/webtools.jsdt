@@ -1081,65 +1081,6 @@ public void testExcludePartOfAnotherProject2() throws CoreException {
 	}
 }
 /*
- * Ensures that an external working copy can be reconciled with no error.
- */
-public void testExternal1() throws CoreException {
-	this.workingCopy.discardWorkingCopy(); // don't use the one created in setUp()
-	this.workingCopy = null;
-	this.problemRequestor =  new ProblemRequestor();
-	IIncludePathEntry[] classpath = new IIncludePathEntry[] {JavaScriptCore.newLibraryEntry(getExternalJCLPath(), null, null)};
-	this.workingCopy = newExternalWorkingCopy("External.js", classpath, this.problemRequestor,
-		"public class External {\n"+
-		"	String foo(){\n"+
-		"		return \"\";\n" +
-		"	}\n"+
-		"}\n"
-	);
-	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null/*no owner*/, null);
-
-	assertProblems(
-		"Unexpected problems",
-		"----------\n" + 
-		"----------\n"
-	);
-}
-
-/*
- * Ensures that an external working copy with a container classpath entry can be reconciled with no exception.
- * (regression test for bug 148970 Exceptions opening external Java file)
- */
-public void testExternal2() throws CoreException {
-	class LogListener implements ILogListener {
-    	IStatus log;
-        public void logging(IStatus status, String plugin) {
-            this.log = status;
-        }
-	}
-	LogListener listener = new LogListener();
-	try {
-		Platform.addLogListener(listener);
-		this.workingCopy.discardWorkingCopy(); // don't use the one created in setUp()
-		this.workingCopy = null;
-		this.problemRequestor =  new ProblemRequestor();
-		ContainerInitializer.setInitializer(new ClasspathInitializerTests.DefaultContainerInitializer(new String[] {" ", getExternalJCLPathString()}));
-		IIncludePathEntry[] classpath = new IIncludePathEntry[] {
-			JavaScriptCore.newContainerEntry(new Path("org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"))
-		};
-		this.workingCopy = newExternalWorkingCopy("External.js", classpath, this.problemRequestor,
-			"public class External {\n"+
-			"	String foo(){\n"+
-			"		return \"\";\n" +
-			"	}\n"+
-			"}\n"
-		);
-		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null/*no owner*/, null);
-		assertEquals("Should not get any exception in log", null, listener.log);
-	} finally {
-		Platform.removeLogListener(listener);
-	}
-}
-
-/*
  * Ensures that included part of prereq project are visible
  */
 public void testIncludePartOfAnotherProject1() throws CoreException {

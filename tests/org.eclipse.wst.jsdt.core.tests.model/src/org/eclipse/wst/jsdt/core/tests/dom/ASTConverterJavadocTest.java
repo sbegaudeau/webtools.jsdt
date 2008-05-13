@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.dom;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -22,12 +23,45 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.core.dom.*;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.ASTParser;
+import org.eclipse.wst.jsdt.core.dom.ArrayType;
+import org.eclipse.wst.jsdt.core.dom.Block;
+import org.eclipse.wst.jsdt.core.dom.Comment;
+import org.eclipse.wst.jsdt.core.dom.Expression;
+import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
+import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
+import org.eclipse.wst.jsdt.core.dom.IBinding;
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
+import org.eclipse.wst.jsdt.core.dom.IfStatement;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.MemberRef;
+import org.eclipse.wst.jsdt.core.dom.Name;
+import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
+import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
+import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SimpleType;
+import org.eclipse.wst.jsdt.core.dom.Statement;
+import org.eclipse.wst.jsdt.core.dom.TagElement;
+import org.eclipse.wst.jsdt.core.dom.TextElement;
+import org.eclipse.wst.jsdt.core.dom.Type;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 
 public class ASTConverterJavadocTest extends ConverterTestSetup {
@@ -2788,46 +2822,6 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		}
 	}
 
-	/**
-	 * Bug 94150: [javadoc][dom] Extended ranges wrong for method name without return type
-	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=94150"
-	 */
-	public void testBug94150() throws JavaScriptModelException {
-		workingCopies = new IJavaScriptUnit[1];
-		astLevel = AST.JLS3;
-		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b94150/Category.js",
-			"package javadoc.b94150;\n" + 
-			"public enum Category {\n" + 
-			"    /**\n" + 
-			"     * history style\n" + 
-			"     * @see Object\n" + 
-			"     */ \n" + 
-			"     HISTORY,\n" + 
-			"\n" + 
-			"    /**\n" + 
-			"     * war style\n" + 
-			"     */ \n" + 
-			"     WAR;\n" + 
-			"}\n"
-		);
-		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
-			// Get enum declaration
-			ASTNode node = getASTNode(compilUnit, 0);
-			assertEquals("Expected enum declaration.", ASTNode.ENUM_DECLARATION, node.getNodeType());
-			EnumDeclaration enumDeclaration = (EnumDeclaration) node;
-
-			// Verify each enum constant javadoc
-			List constants = enumDeclaration.enumConstants();
-			int size = constants.size();
-			assertEquals("Wrong number of constants", 2, size);
-			for (int i=0; i<size; i++) {
-				EnumConstantDeclaration constant  = (EnumConstantDeclaration) constants.get(i);
-				JSdoc docComment = (JSdoc) compilUnit.getCommentList().get(i); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
-				assertTrue("Javadoc should be set on first enum constant", docComment == constant.getJavadoc());
-			}
-		}
-	}
 
 	/**
 	 * Bug 99507: [javadoc] Infinit loop in DocCommentParser
@@ -3416,60 +3410,4 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		}
 	}
 
-	/**
-	 * @bug 165525: [comments] ASTParser excludes trailing line comments from extended range of fields in enums
-	 * @test Ensure that extended ranges are correct for enum constants and last comments of enum declaration
-	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=165525"
-	 */
-	public void testBug165525() throws JavaScriptModelException {
-		workingCopies = new IJavaScriptUnit[1];
-		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b165525/Test.js",
-			"package javadoc.b165525;\n" + 
-			"public enum Test {\n" + 
-			"	ENUM_CONST_1(\"String constant 1\") //$NON-NLS-1$\n" + 
-			"	, ENUM_CONST_2(\"String constant 2\") //$NON-NLS-1$\n" + 
-			"	;\n" + 
-			"	Test(String x) {\n" + 
-			"	}\n" + 
-			"	String a = \"a\"; //$NON-NLS-1$\n" + 
-			"	String b = \"b\"; //$NON-NLS-1$\n" + 
-			"}\n"
-		);
-		JavaScriptUnit compilUnit = (JavaScriptUnit) runConversion(AST.JLS3, workingCopies[0], true);
-		verifyWorkingCopiesComments();
-		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
-			// Verify comment type
-			List unitComments = compilUnit.getCommentList();
-			assertEquals("Wrong number of comments", 4, unitComments.size());
-
-			// Verify extension of first enum declaration constant
-			Comment comment = (Comment) unitComments.get(0);
-			EnumDeclaration enumDeclaration = (EnumDeclaration) compilUnit.types().get(0);
-			EnumConstantDeclaration constantDeclaration = (EnumConstantDeclaration) enumDeclaration.enumConstants().get(0);
-			int declarationEnd = constantDeclaration.getStartPosition() + compilUnit.getExtendedLength(constantDeclaration) - 1;
-			int commentEnd = comment.getStartPosition() + comment.getLength() - 1;
-			assumeEquals("Enum constant declaration "+constantDeclaration+" does not have the correct length", commentEnd, declarationEnd);
-
-			// Verify extension of second enum declaration constant
-			comment = (Comment) unitComments.get(1);
-			constantDeclaration = (EnumConstantDeclaration) enumDeclaration.enumConstants().get(1);
-			declarationEnd = constantDeclaration.getStartPosition() + compilUnit.getExtendedLength(constantDeclaration) - 1;
-			commentEnd = comment.getStartPosition() + comment.getLength() - 1;
-			assumeEquals("Enum constant declaration "+constantDeclaration+" does not have the correct length", commentEnd, declarationEnd);
-
-			// Verify extension of first field declaration
-			comment = (Comment) unitComments.get(2);
-			FieldDeclaration fieldDeclaration = (FieldDeclaration) enumDeclaration.bodyDeclarations().get(1);
-			declarationEnd = fieldDeclaration.getStartPosition() + compilUnit.getExtendedLength(fieldDeclaration) - 1;
-			commentEnd = comment.getStartPosition() + comment.getLength() - 1;
-			assumeEquals("Enum constant declaration "+constantDeclaration+" does not have the correct length", commentEnd, declarationEnd);
-
-			// Verify extension of second field declaration
-			comment = (Comment) unitComments.get(3);
-			fieldDeclaration = (FieldDeclaration) enumDeclaration.bodyDeclarations().get(2);
-			declarationEnd = fieldDeclaration.getStartPosition() + compilUnit.getExtendedLength(fieldDeclaration) - 1;
-			commentEnd = comment.getStartPosition() + comment.getLength() - 1;
-			assumeEquals("Enum constant declaration "+constantDeclaration+" does not have the correct length", commentEnd, declarationEnd);
-		}
-	}
 }

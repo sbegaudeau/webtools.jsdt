@@ -12,7 +12,6 @@
 package org.eclipse.wst.jsdt.core.tests.dom;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +22,68 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.BindingKey;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.core.dom.*;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.ASTMatcher;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
+import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ArrayType;
+import org.eclipse.wst.jsdt.core.dom.AssertStatement;
+import org.eclipse.wst.jsdt.core.dom.Block;
+import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
+import org.eclipse.wst.jsdt.core.dom.CastExpression;
+import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
+import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
+import org.eclipse.wst.jsdt.core.dom.Expression;
+import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
+import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.IBinding;
+import org.eclipse.wst.jsdt.core.dom.IExtendedModifier;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
+import org.eclipse.wst.jsdt.core.dom.IPackageBinding;
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
+import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
+import org.eclipse.wst.jsdt.core.dom.IfStatement;
+import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.Initializer;
+import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.Modifier;
+import org.eclipse.wst.jsdt.core.dom.Name;
+import org.eclipse.wst.jsdt.core.dom.NullLiteral;
+import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
+import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
+import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.QualifiedType;
+import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SimpleType;
+import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.wst.jsdt.core.dom.Statement;
+import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
+import org.eclipse.wst.jsdt.core.dom.SwitchCase;
+import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
+import org.eclipse.wst.jsdt.core.dom.TryStatement;
+import org.eclipse.wst.jsdt.core.dom.Type;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
+import org.eclipse.wst.jsdt.core.dom.TypeParameter;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
 
 public class ASTConverter15Test extends ConverterTestSetup {
@@ -128,165 +181,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		assertProblemsSize(compilationUnit, 0);
 	}
 	
-	public void test0003() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0003", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runJLS3Conversion(sourceUnit, true, true);
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-		assertProblemsSize(compilationUnit, 0);
-		List types = compilationUnit.types();
-		assertEquals("Wrong number of types", 3, types.size());
-		AbstractTypeDeclaration typeDeclaration = (AbstractTypeDeclaration) types.get(2);
-		assertEquals("wrong type", ASTNode.TYPE_DECLARATION, typeDeclaration.getNodeType());
-		TypeDeclaration typeDeclaration2 = (TypeDeclaration) typeDeclaration;
-		List modifiers = typeDeclaration2.modifiers();
-		assertEquals("Wrong number of modifiers", 2, modifiers.size());
-		ASTNode modifier = (ASTNode) modifiers.get(0);
-		checkSourceRange(modifier, "@Author(@Name(first=\"Joe\", last=\"Hacker\"))", source);
-		assertEquals("wrong type", ASTNode.SINGLE_MEMBER_ANNOTATION, modifier.getNodeType());
-		SingleMemberAnnotation annotation = (SingleMemberAnnotation) modifier;
-		checkSourceRange(annotation.getTypeName(), "Author", source);
-		Expression value = annotation.getValue();
-		assertEquals("wrong type", ASTNode.NORMAL_ANNOTATION, value.getNodeType());
-		NormalAnnotation normalAnnotation = (NormalAnnotation) value;
-		checkSourceRange(normalAnnotation.getTypeName(), "Name", source);
-		List values = normalAnnotation.values();
-		assertEquals("wrong size", 2, values.size());
-		MemberValuePair memberValuePair = (MemberValuePair) values.get(0);
-		checkSourceRange(memberValuePair, "first=\"Joe\"", source);
-		checkSourceRange(memberValuePair.getName(), "first", source);
-		checkSourceRange(memberValuePair.getValue(), "\"Joe\"", source);
-		memberValuePair = (MemberValuePair) values.get(1);
-		checkSourceRange(memberValuePair, "last=\"Hacker\"", source);		
-		checkSourceRange(memberValuePair.getName(), "last", source);
-		checkSourceRange(memberValuePair.getValue(), "\"Hacker\"", source);
-		modifier = (ASTNode) modifiers.get(1);
-		checkSourceRange(modifier, "public", source);
-	}
-	
-	public void test0004() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0004", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runJLS3Conversion(sourceUnit, true, true);
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-		assertProblemsSize(compilationUnit, 0);
-		List types = compilationUnit.types();
-		assertEquals("Wrong number of types", 3, types.size());
-		AbstractTypeDeclaration typeDeclaration = (AbstractTypeDeclaration) types.get(2);
-		assertEquals("wrong type", ASTNode.TYPE_DECLARATION, typeDeclaration.getNodeType());
-		TypeDeclaration typeDeclaration2 = (TypeDeclaration) typeDeclaration;
-		List modifiers = typeDeclaration2.modifiers();
-		assertEquals("Wrong number of modifiers", 2, modifiers.size());
-		ASTNode modifier = (ASTNode) modifiers.get(1);
-		checkSourceRange(modifier, "@Author(@Name(first=\"Joe\", last=\"Hacker\"))", source);
-		assertEquals("wrong type", ASTNode.SINGLE_MEMBER_ANNOTATION, modifier.getNodeType());
-		SingleMemberAnnotation annotation = (SingleMemberAnnotation) modifier;
-		checkSourceRange(annotation.getTypeName(), "Author", source);
-		Expression value = annotation.getValue();
-		assertEquals("wrong type", ASTNode.NORMAL_ANNOTATION, value.getNodeType());
-		NormalAnnotation normalAnnotation = (NormalAnnotation) value;
-		checkSourceRange(normalAnnotation.getTypeName(), "Name", source);
-		List values = normalAnnotation.values();
-		assertEquals("wrong size", 2, values.size());
-		MemberValuePair memberValuePair = (MemberValuePair) values.get(0);
-		checkSourceRange(memberValuePair, "first=\"Joe\"", source);
-		checkSourceRange(memberValuePair.getName(), "first", source);
-		checkSourceRange(memberValuePair.getValue(), "\"Joe\"", source);
-		memberValuePair = (MemberValuePair) values.get(1);
-		checkSourceRange(memberValuePair, "last=\"Hacker\"", source);		
-		checkSourceRange(memberValuePair.getName(), "last", source);
-		checkSourceRange(memberValuePair.getValue(), "\"Hacker\"", source);
-		modifier = (ASTNode) modifiers.get(0);
-		checkSourceRange(modifier, "public", source);
-	}
-	
-	public void test0005() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0005", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runJLS3Conversion(sourceUnit, true, true);
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-		assertProblemsSize(compilationUnit, 0);
-		List types = compilationUnit.types();
-		assertEquals("Wrong number of types", 4, types.size());
-		AbstractTypeDeclaration typeDeclaration = (AbstractTypeDeclaration) types.get(3);
-		assertEquals("wrong type", ASTNode.TYPE_DECLARATION, typeDeclaration.getNodeType());
-		TypeDeclaration typeDeclaration2 = (TypeDeclaration) typeDeclaration;
-		List modifiers = typeDeclaration2.modifiers();
-		assertEquals("Wrong number of modifiers", 3, modifiers.size());
-		ASTNode modifier = (ASTNode) modifiers.get(0);
-		checkSourceRange(modifier, "@Retention", source);
-		assertEquals("wrong type", ASTNode.MARKER_ANNOTATION, modifier.getNodeType());
-		MarkerAnnotation markerAnnotation = (MarkerAnnotation) modifier;
-		checkSourceRange(markerAnnotation.getTypeName(), "Retention", source);
-		modifier = (ASTNode) modifiers.get(2);
-		checkSourceRange(modifier, "@Author(@Name(first=\"Joe\", last=\"Hacker\", age=32))", source);
-		assertEquals("wrong type", ASTNode.SINGLE_MEMBER_ANNOTATION, modifier.getNodeType());
-		SingleMemberAnnotation annotation = (SingleMemberAnnotation) modifier;
-		checkSourceRange(annotation.getTypeName(), "Author", source);
-		Expression value = annotation.getValue();
-		assertEquals("wrong type", ASTNode.NORMAL_ANNOTATION, value.getNodeType());
-		NormalAnnotation normalAnnotation = (NormalAnnotation) value;
-		checkSourceRange(normalAnnotation.getTypeName(), "Name", source);
-		List values = normalAnnotation.values();
-		assertEquals("wrong size", 3, values.size());
-		MemberValuePair memberValuePair = (MemberValuePair) values.get(0);
-		checkSourceRange(memberValuePair, "first=\"Joe\"", source);
-		checkSourceRange(memberValuePair.getName(), "first", source);
-		checkSourceRange(memberValuePair.getValue(), "\"Joe\"", source);
-		memberValuePair = (MemberValuePair) values.get(1);
-		checkSourceRange(memberValuePair, "last=\"Hacker\"", source);		
-		checkSourceRange(memberValuePair.getName(), "last", source);
-		checkSourceRange(memberValuePair.getValue(), "\"Hacker\"", source);
-		memberValuePair = (MemberValuePair) values.get(2);
-		checkSourceRange(memberValuePair, "age=32", source);		
-		checkSourceRange(memberValuePair.getName(), "age", source);
-		checkSourceRange(memberValuePair.getValue(), "32", source);
-		modifier = (ASTNode) modifiers.get(1);
-		checkSourceRange(modifier, "public", source);
-		
-		typeDeclaration = (AbstractTypeDeclaration) types.get(0);
-		assertEquals("wrong type", ASTNode.ANNOTATION_TYPE_DECLARATION, typeDeclaration.getNodeType());
-		AnnotationTypeDeclaration annotationTypeDeclaration = (AnnotationTypeDeclaration) typeDeclaration;
-		List bodyDeclarations = annotationTypeDeclaration.bodyDeclarations();
-		assertEquals("Wrong size", 3, bodyDeclarations.size());
-		BodyDeclaration bodyDeclaration = (BodyDeclaration) bodyDeclarations.get(0);
-		assertEquals("wrong type", ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION, bodyDeclaration.getNodeType());
-		AnnotationTypeMemberDeclaration annotationTypeMemberDeclaration = (AnnotationTypeMemberDeclaration) bodyDeclaration;
-		IFunctionBinding methodBinding = annotationTypeMemberDeclaration.resolveBinding();
-		assertNotNull("No binding", methodBinding);
-		checkSourceRange(annotationTypeMemberDeclaration, "String first() default \"Joe\";", source);
-		Expression expression = annotationTypeMemberDeclaration.getDefault();
-		checkSourceRange(expression, "\"Joe\"", source);
-		bodyDeclaration = (BodyDeclaration) bodyDeclarations.get(2);
-		assertEquals("wrong type", ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION, bodyDeclaration.getNodeType());
-		annotationTypeMemberDeclaration = (AnnotationTypeMemberDeclaration) bodyDeclaration;
-		checkSourceRange(annotationTypeMemberDeclaration, "int age();", source);
-		expression = annotationTypeMemberDeclaration.getDefault();
-		assertNull("Got a default", expression);
-	}
-	
-	public void test0006() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0006", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runConversion(AST.JLS3, sourceUnit, true);
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-		final String expectedOutput = "Package annotations must be in file package-info.js";
-		assertProblemsSize(compilationUnit, 1, expectedOutput);
-		PackageDeclaration packageDeclaration = compilationUnit.getPackage();
-		assertNotNull("No package declaration", packageDeclaration);
-		checkSourceRange(packageDeclaration, "@Retention package test0006;", source);
-		List annotations = packageDeclaration.annotations();
-		assertEquals("Wrong size", 1, annotations.size());
-		Annotation annotation = (Annotation) annotations.get(0);
-		checkSourceRange(annotation, "@Retention", source);
-		assertEquals("Not a marker annotation", annotation.getNodeType(), ASTNode.MARKER_ANNOTATION);
-		MarkerAnnotation markerAnnotation = (MarkerAnnotation) annotation;
-		checkSourceRange(markerAnnotation.getTypeName(), "Retention", source);
-	}
 	
 	public void test0007() throws JavaScriptModelException {
 		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0007", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -821,220 +715,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		checkSourceRange(type, "E", source);
 	}
 	
-	public void test0026() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0026", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		ASTNode result = runJLS3Conversion(sourceUnit, true, true);
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-		assertProblemsSize(compilationUnit, 0);
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode node = getASTNode(compilationUnit, 0);
-		assertEquals("Not an enum declaration", ASTNode.ENUM_DECLARATION, node.getNodeType());
-		EnumDeclaration enumDeclaration = (EnumDeclaration) node;
-		ITypeBinding typeBinding2 = enumDeclaration.resolveBinding();
-		assertNotNull("No binding", typeBinding2);
-		List modifiers = enumDeclaration.modifiers();
-		assertEquals("Wrong number of modifiers", 1, modifiers.size());
-		IExtendedModifier extendedModifier = (IExtendedModifier) modifiers.get(0);
-		assertTrue("Not a modifier", extendedModifier instanceof Modifier);
-		Modifier modifier = (Modifier) extendedModifier;
-		checkSourceRange(modifier, "public", source);
-		assertEquals("wrong name", "X", enumDeclaration.getName().getIdentifier());
-		List enumConstants = enumDeclaration.enumConstants();
-		assertEquals("wrong size", 4, enumConstants.size());
-		List bodyDeclarations = enumDeclaration.bodyDeclarations();
-		assertEquals("wrong size", 2, bodyDeclarations.size());
-		EnumConstantDeclaration enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(0);
-		IFunctionBinding methodBinding = enumConstantDeclaration.resolveConstructorBinding();
-		assertNotNull("No binding", methodBinding);
-		assertTrue("Not a constructor", methodBinding.isConstructor());
-		checkSourceRange(enumConstantDeclaration.getName(), "PLUS", source);
-		checkSourceRange(enumConstantDeclaration, "PLUS {\n" +
-				"        @Override\n" + 
-				"        double eval(double x, double y) { return x + y; }\n" + 
-				"    }", source);
-		assertEquals("wrong size", 0, enumConstantDeclaration.arguments().size());
-		AnonymousClassDeclaration anonymousClassDeclaration = enumConstantDeclaration.getAnonymousClassDeclaration();
-		assertNotNull("No anonymous class", anonymousClassDeclaration);
-		checkSourceRange(anonymousClassDeclaration, "{\n" +
-				"        @Override\n" + 
-				"        double eval(double x, double y) { return x + y; }\n" + 
-				"    }", source);
-		ITypeBinding typeBinding = anonymousClassDeclaration.resolveBinding();
-		assertNotNull("No binding", typeBinding);
-		assertTrue("Not a enum type", typeBinding.isEnum());
-		bodyDeclarations = anonymousClassDeclaration.bodyDeclarations();
-		assertEquals("wrong size", 1, bodyDeclarations.size());
-		BodyDeclaration bodyDeclaration = (BodyDeclaration) bodyDeclarations.get(0);
-		assertEquals("Not a method declaration", ASTNode.FUNCTION_DECLARATION, bodyDeclaration.getNodeType());
-		FunctionDeclaration methodDeclaration = (FunctionDeclaration) bodyDeclaration;
-		checkSourceRange(methodDeclaration.getName(), "eval", source);
-		checkSourceRange(methodDeclaration, "@Override\n        double eval(double x, double y) { return x + y; }", source);
-		assertEquals("wrong size", 0, enumConstantDeclaration.arguments().size());		
-		
-		enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(1);
-		methodBinding = enumConstantDeclaration.resolveConstructorBinding();
-		assertNotNull("No binding", methodBinding);
-		assertTrue("Not a constructor", methodBinding.isConstructor());
-		checkSourceRange(enumConstantDeclaration.getName(), "MINUS", source);
-		checkSourceRange(enumConstantDeclaration, "MINUS {\n" +
-				"        @Override\n" + 
-				"        double eval(double x, double y) { return x - y; }\n" + 
-				"    }", source);
-		anonymousClassDeclaration = enumConstantDeclaration.getAnonymousClassDeclaration();
-		typeBinding = anonymousClassDeclaration.resolveBinding();
-		assertNotNull("No binding", typeBinding);
-		assertTrue("Not a enum type", typeBinding.isEnum());
-		assertNotNull("No anonymous class", anonymousClassDeclaration);
-		checkSourceRange(anonymousClassDeclaration, "{\n" +
-				"        @Override\n" + 
-				"        double eval(double x, double y) { return x - y; }\n" + 
-				"    }", source);
-		bodyDeclarations = anonymousClassDeclaration.bodyDeclarations();
-		assertEquals("wrong size", 1, bodyDeclarations.size());
-		bodyDeclaration = (BodyDeclaration) bodyDeclarations.get(0);
-		assertEquals("Not a method declaration", ASTNode.FUNCTION_DECLARATION, bodyDeclaration.getNodeType());
-		methodDeclaration = (FunctionDeclaration) bodyDeclaration;
-		checkSourceRange(methodDeclaration.getName(), "eval", source);
-		checkSourceRange(methodDeclaration, "@Override\n        double eval(double x, double y) { return x - y; }", source);
-		assertEquals("wrong size", 0, enumConstantDeclaration.arguments().size());		
-
-		enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(2);
-		methodBinding = enumConstantDeclaration.resolveConstructorBinding();
-		assertNotNull("No binding", methodBinding);
-		assertTrue("Not a constructor", methodBinding.isConstructor());
-		checkSourceRange(enumConstantDeclaration.getName(), "TIMES", source);
-		checkSourceRange(enumConstantDeclaration, "TIMES {\n" +
-				"        @Override\n" + 
-				"        double eval(double x, double y) { return x * y; }\n" + 
-				"    }", source);
-		anonymousClassDeclaration = enumConstantDeclaration.getAnonymousClassDeclaration();
-		assertNotNull("No anonymous class", anonymousClassDeclaration);
-		checkSourceRange(anonymousClassDeclaration, "{\n" +
-				"        @Override\n" + 
-				"        double eval(double x, double y) { return x * y; }\n" + 
-				"    }", source);
-		typeBinding = anonymousClassDeclaration.resolveBinding();
-		assertNotNull("No binding", typeBinding);
-		assertTrue("Not a enum type", typeBinding.isEnum());
-		bodyDeclarations = anonymousClassDeclaration.bodyDeclarations();
-		assertEquals("wrong size", 1, bodyDeclarations.size());
-		bodyDeclaration = (BodyDeclaration) bodyDeclarations.get(0);
-		assertEquals("Not a method declaration", ASTNode.FUNCTION_DECLARATION, bodyDeclaration.getNodeType());
-		methodDeclaration = (FunctionDeclaration) bodyDeclaration;
-		checkSourceRange(methodDeclaration.getName(), "eval", source);
-		checkSourceRange(methodDeclaration, "@Override\n        double eval(double x, double y) { return x * y; }", source);
-		assertEquals("wrong size", 0, enumConstantDeclaration.arguments().size());		
-
-		enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(3);
-		methodBinding = enumConstantDeclaration.resolveConstructorBinding();
-		assertNotNull("No binding", methodBinding);
-		assertTrue("Not a constructor", methodBinding.isConstructor());
-		checkSourceRange(enumConstantDeclaration.getName(), "DIVIDED_BY", source);
-		checkSourceRange(enumConstantDeclaration, "DIVIDED_BY {\n" +
-				"        @Override\n" + 
-				"        double eval(double x, double y) { return x / y; }\n" + 
-				"    }", source);
-		anonymousClassDeclaration = enumConstantDeclaration.getAnonymousClassDeclaration();
-		assertNotNull("No anonymous class", anonymousClassDeclaration);
-		checkSourceRange(anonymousClassDeclaration, "{\n" +
-				"        @Override\n" + 
-				"        double eval(double x, double y) { return x / y; }\n" + 
-				"    }", source);
-		typeBinding = anonymousClassDeclaration.resolveBinding();
-		assertNotNull("No binding", typeBinding);
-		assertTrue("Not a enum type", typeBinding.isEnum());
-		bodyDeclarations = anonymousClassDeclaration.bodyDeclarations();
-		assertEquals("wrong size", 1, bodyDeclarations.size());
-		bodyDeclaration = (BodyDeclaration) bodyDeclarations.get(0);
-		assertEquals("Not a method declaration", ASTNode.FUNCTION_DECLARATION, bodyDeclaration.getNodeType());
-		methodDeclaration = (FunctionDeclaration) bodyDeclaration;
-		checkSourceRange(methodDeclaration.getName(), "eval", source);
-		checkSourceRange(methodDeclaration, "@Override\n        double eval(double x, double y) { return x / y; }", source);
-		assertEquals("wrong size", 0, enumConstantDeclaration.arguments().size());		
-	}
-	
-	public void test0027() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0027", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		ASTNode result = runJLS3Conversion(sourceUnit, true, true);
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-		assertProblemsSize(compilationUnit, 0);
-		ASTNode node = getASTNode(compilationUnit, 0);
-		char[] source = sourceUnit.getSource().toCharArray();
-		assertEquals("Not an enum declaration", ASTNode.ENUM_DECLARATION, node.getNodeType());
-		EnumDeclaration enumDeclaration = (EnumDeclaration) node;
-		List modifiers = enumDeclaration.modifiers();
-		assertEquals("Wrong number of modifiers", 1, modifiers.size());
-		IExtendedModifier extendedModifier = (IExtendedModifier) modifiers.get(0);
-		assertTrue("Not a modifier", extendedModifier instanceof Modifier);
-		Modifier modifier = (Modifier) extendedModifier;
-		checkSourceRange(modifier, "public", source);
-		assertEquals("wrong name", "X", enumDeclaration.getName().getIdentifier());
-		List enumConstants = enumDeclaration.enumConstants();
-		assertEquals("wrong size", 4, enumConstants.size());
-		EnumConstantDeclaration enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(0);
-		IFunctionBinding methodBinding = enumConstantDeclaration.resolveConstructorBinding();
-		assertNotNull("No binding", methodBinding);
-		assertTrue("Not a constructor", methodBinding.isConstructor());
-		checkSourceRange(enumConstantDeclaration.getName(), "PENNY", source);
-		checkSourceRange(enumConstantDeclaration, "PENNY(1)", source);
-		List arguments = enumConstantDeclaration.arguments();
-		assertEquals("wrong size", 1, arguments.size());		
-		Expression argument = (Expression) arguments.get(0);
-		checkSourceRange(argument, "1", source);
-		assertEquals("not an number literal", ASTNode.NUMBER_LITERAL, argument.getNodeType());
-		IVariableBinding binding = enumConstantDeclaration.resolveVariable();
-		assertNotNull("No binding", binding);
-		assertEquals("Wrong name", "PENNY", binding.getName());
-		ASTNode node2 = compilationUnit.findDeclaringNode(binding);
-		assertTrue("Different node", node2 == enumConstantDeclaration);
-		
-		enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(1);
-		methodBinding = enumConstantDeclaration.resolveConstructorBinding();
-		assertNotNull("No binding", methodBinding);
-		assertTrue("Not a constructor", methodBinding.isConstructor());
-		checkSourceRange(enumConstantDeclaration.getName(), "NICKEL", source);
-		checkSourceRange(enumConstantDeclaration, "NICKEL(5)", source);
-		arguments = enumConstantDeclaration.arguments();
-		assertEquals("wrong size", 1, arguments.size());		
-		argument = (Expression) arguments.get(0);
-		checkSourceRange(argument, "5", source);
-		assertEquals("not an number literal", ASTNode.NUMBER_LITERAL, argument.getNodeType());
-		binding = enumConstantDeclaration.resolveVariable();
-		assertNotNull("No binding", binding);
-		assertEquals("Wrong name", "NICKEL", binding.getName());
-		
-		enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(2);
-		methodBinding = enumConstantDeclaration.resolveConstructorBinding();
-		assertNotNull("No binding", methodBinding);
-		assertTrue("Not a constructor", methodBinding.isConstructor());
-		checkSourceRange(enumConstantDeclaration.getName(), "DIME", source);
-		checkSourceRange(enumConstantDeclaration, "DIME(10)", source);
-		arguments = enumConstantDeclaration.arguments();
-		assertEquals("wrong size", 1, arguments.size());		
-		argument = (Expression) arguments.get(0);
-		checkSourceRange(argument, "10", source);
-		assertEquals("not an number literal", ASTNode.NUMBER_LITERAL, argument.getNodeType());
-		binding = enumConstantDeclaration.resolveVariable();
-		assertNotNull("No binding", binding);
-		assertEquals("Wrong name", "DIME", binding.getName());
-
-	
-		enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(3);
-		methodBinding = enumConstantDeclaration.resolveConstructorBinding();
-		assertNotNull("No binding", methodBinding);
-		checkSourceRange(enumConstantDeclaration.getName(), "QUARTER", source);
-		checkSourceRange(enumConstantDeclaration, "QUARTER(25)", source);
-		arguments = enumConstantDeclaration.arguments();
-		assertEquals("wrong size", 1, arguments.size());		
-		argument = (Expression) arguments.get(0);
-		checkSourceRange(argument, "25", source);
-		assertEquals("not an number literal", ASTNode.NUMBER_LITERAL, argument.getNodeType());
-		binding = enumConstantDeclaration.resolveVariable();
-		assertNotNull("No binding", binding);
-		assertEquals("Wrong name", "QUARTER", binding.getName());
-	}
 	
 	public void test0028() throws JavaScriptModelException {
 		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0028", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -1501,65 +1181,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		assertProblemsSize(compilationUnit, 0);
 	}
 	
-	/**
-	 * Test for https://bugs.eclipse.org/bugs/show_bug.cgi?id=73561
-	 */
-	public void test0048() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0048", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runJLS3Conversion(sourceUnit, true, true);
-		assertNotNull(result);
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-		assertProblemsSize(compilationUnit, 0);
-		ASTNode node = getASTNode(compilationUnit, 0);
-		assertEquals("Not an enum declaration", ASTNode.ENUM_DECLARATION, node.getNodeType());
-		EnumDeclaration enumDeclaration = (EnumDeclaration) node;
-		List enumConstants = enumDeclaration.enumConstants();
-		assertEquals("wrong size", 2, enumConstants.size());
-		EnumConstantDeclaration enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(0);
-		IFunctionBinding methodBinding = enumConstantDeclaration.resolveConstructorBinding();
-		assertNotNull("No binding", methodBinding);
-		assertTrue("Not a constructor", methodBinding.isConstructor());
-		checkSourceRange(enumConstantDeclaration, "GREEN(0, 1)", source);
-		checkSourceRange(enumConstantDeclaration.getName(), "GREEN", source);
-		enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(1);
-		methodBinding = enumConstantDeclaration.resolveConstructorBinding();
-		assertNotNull("No binding", methodBinding);
-		assertTrue("Not a constructor", methodBinding.isConstructor());
-		checkSourceRange(enumConstantDeclaration.getName(), "RED", source);
-		checkSourceRange(enumConstantDeclaration, "RED()", source);
-	}
-	
-	/**
-	 * Test for https://bugs.eclipse.org/bugs/show_bug.cgi?id=73561
-	 */
-	public void test0049() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0049", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runJLS3Conversion(sourceUnit, true, true);
-		assertNotNull(result);
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-		assertProblemsSize(compilationUnit, 0);
-		ASTNode node = getASTNode(compilationUnit, 0);
-		assertEquals("Not an enum declaration", ASTNode.ENUM_DECLARATION, node.getNodeType());
-		EnumDeclaration enumDeclaration = (EnumDeclaration) node;
-		List enumConstants = enumDeclaration.enumConstants();
-		assertEquals("wrong size", 2, enumConstants.size());
-		EnumConstantDeclaration enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(0);
-		IFunctionBinding methodBinding = enumConstantDeclaration.resolveConstructorBinding();
-		assertNotNull("No binding", methodBinding);
-		assertTrue("Not a constructor", methodBinding.isConstructor());
-		checkSourceRange(enumConstantDeclaration, "GREEN(0, 1)", source);
-		checkSourceRange(enumConstantDeclaration.getName(), "GREEN", source);
-		enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(1);
-		methodBinding = enumConstantDeclaration.resolveConstructorBinding();
-		assertNotNull("No binding", methodBinding);
-		assertTrue("Not a constructor", methodBinding.isConstructor());
-		checkSourceRange(enumConstantDeclaration.getName(), "RED", source);
-		checkSourceRange(enumConstantDeclaration, "RED", source);
-	}
 	
 	/**
 	 * Ellipsis
@@ -1626,54 +1247,7 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
 		assertProblemsSize(compilationUnit, 0);
 	}
-	
-	/**
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=76100
-	 */
-	public void test0053() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0053", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		ASTNode result = runJLS3Conversion(sourceUnit, true, true);
-		assertNotNull(result);
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-		assertProblemsSize(compilationUnit, 0);
-		ASTNode node = getASTNode(compilationUnit, 0);
-		assertEquals("Not an annotation type declaration", ASTNode.ANNOTATION_TYPE_DECLARATION, node.getNodeType());
-		AnnotationTypeDeclaration annotationTypeDeclaration = (AnnotationTypeDeclaration) node;
-		assertNotNull("No javadoc", annotationTypeDeclaration.getJavadoc());
-	}
-	
-	/**
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=76100
-	 */
-	public void test0054() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0054", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		ASTNode result = runJLS3Conversion(sourceUnit, true, true);
-		assertNotNull(result);
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-		assertProblemsSize(compilationUnit, 0);
-		ASTNode node = getASTNode(compilationUnit, 0);
-		assertEquals("Not an annotation type declaration", ASTNode.ENUM_DECLARATION, node.getNodeType());
-		EnumDeclaration enumDeclaration = (EnumDeclaration) node;
-		assertNotNull("No javadoc", enumDeclaration.getJavadoc());
-	}
-	
-	/**
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=76100
-	 */
-	public void test0055() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0055", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		ASTNode result = runJLS3Conversion(sourceUnit, true, true);
-		assertNotNull(result);
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-		assertProblemsSize(compilationUnit, 0);
-		ASTNode node = getASTNode(compilationUnit, 0);
-		assertEquals("Not an annotation type declaration", ASTNode.ANNOTATION_TYPE_DECLARATION, node.getNodeType());
-		AnnotationTypeDeclaration annotationTypeDeclaration = (AnnotationTypeDeclaration) node;
-		assertNotNull("No javadoc", annotationTypeDeclaration.getJavadoc());
-	}
+
 	
 	/**
 	 *
@@ -1686,25 +1260,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
 		final String expectedOutput = "Zork1 cannot be resolved to a type";
 		assertProblemsSize(compilationUnit, 1, expectedOutput);
-	}
-	
-	/**
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=77175
-	 */
-	public void test0057() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0057", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		ASTNode result = runJLS3Conversion(sourceUnit, true, true);
-		assertNotNull(result);
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-		assertProblemsSize(compilationUnit, 0);
-		ASTNode node = getASTNode(compilationUnit, 0);
-		assertEquals("Not an enum declaration", ASTNode.ENUM_DECLARATION, node.getNodeType());
-		EnumDeclaration enumDeclaration = (EnumDeclaration) node;
-		ITypeBinding typeBinding = enumDeclaration.resolveBinding();
-		assertNotNull("No binding", typeBinding);
-		assertTrue("Not an enum type", typeBinding.isEnum());
-		assertTrue("Not a top level type", typeBinding.isTopLevel());
 	}
 	
 	/**
@@ -2774,33 +2329,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		});
 	}
 	
-	/*
-	 * Check bindings for annotation type declaration
-	 */
-	public void test0091() throws JavaScriptModelException {
-		this.workingCopy = getWorkingCopy("/Converter15/src/p/X.js", true/*resolve*/);
-		ASTNode node = buildAST(
-			"package p;\n" +
-			"@interface X {\n" +
-			"	int id() default 0;\n" +
-			"}",
-			this.workingCopy);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-		node = getASTNode(compilationUnit, 0);
-		assertEquals("Not an annotation type declaration", ASTNode.ANNOTATION_TYPE_DECLARATION, node.getNodeType());
-		AnnotationTypeDeclaration annotationTypeDeclaration = (AnnotationTypeDeclaration) node;
-		ITypeBinding binding = annotationTypeDeclaration.resolveBinding();
-		assertNotNull("No binding", binding);
-		assertTrue("Not an annotation", binding.isAnnotation());
-		assertEquals("Wrong name", "X", binding.getName());
-		node = getASTNode(compilationUnit, 0, 0);
-		assertEquals("Not an annotation type member declaration", ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION, node.getNodeType());
-		AnnotationTypeMemberDeclaration memberDeclaration = (AnnotationTypeMemberDeclaration) node;
-		IFunctionBinding methodBinding = memberDeclaration.resolveBinding();
-		assertNotNull("No binding", methodBinding);
-		assertEquals("Wrong name", "id", methodBinding.getName());
-	}
 	
 	/*
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=80960
@@ -2859,35 +2387,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		assertNotNull("No java element", element);
 	}
 	
-
-	public void test0094() throws JavaScriptModelException {
-		String contents =
-			"import java.lang.annotation.Target;\n" +
-			"import java.lang.annotation.Retention;\n" +
-			"\n" +
-			"@Retention(RetentionPolicy.SOURCE)\n" +
-			"@Target(ElementType.METHOD)\n" +
-			"@interface ThrowAwayMethod {\n" +
-			"\n" +
-			"	/**\n" +
-			"	 * Comment for <code>test</code>\n" +
-			"	 */\n" +
-			"	protected final Test test;\n" +
-			"\n" +
-			"	/**\n" +
-			"	 * @param test\n" +
-			"	 */\n" +
-			"	ThrowAwayMethod(Test test) {\n" +
-			"		this.test= test;\n" +
-			"	}\n" +
-			"}";
-		this.workingCopy = getWorkingCopy("/Converter15/src/ThrowAwayMethod.js", true/*resolve*/);
-		ASTNode node = buildAST(
-			contents,
-			this.workingCopy,
-			false);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-	}
 	
 	/*
 	 * Ensures that resolving a generic method with a non existing parameter type doesn't throw a NPE when computing its binding key.
@@ -2908,85 +2407,7 @@ public class ASTConverter15Test extends ConverterTestSetup {
 			binding);
 	}
 	
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=82140
-	 */
-	public void test0096() throws JavaScriptModelException {
-		String contents =
-			"public @interface An1 {\n" +
-			"	String value();\n" +
-			"	String item() default \"Hello\";\n" +
-			"\n" +
-			"}\n" +
-			"\n" +
-			"@An1(value=\"X\") class A {\n" +
-			"	\n" +
-			"}";
-		this.workingCopy = getWorkingCopy("/Converter15/src/An1.js", true/*resolve*/);
-		ASTNode node = buildAST(
-			contents,
-			this.workingCopy);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-		node = getASTNode(compilationUnit, 1);
-		assertEquals("Not a type declaration", ASTNode.TYPE_DECLARATION, node.getNodeType());
-		TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-		assertEquals("Wrong name", "A", typeDeclaration.getName().getIdentifier());
-		List modifiers = typeDeclaration.modifiers();
-		assertEquals("Wrong size", 1, modifiers.size());
-		IExtendedModifier modifier = (IExtendedModifier) modifiers.get(0);
-		assertTrue("Not an annotation", modifier instanceof Annotation);
-		checkSourceRange((Annotation) modifier, "@An1(value=\"X\")", contents.toCharArray());
-	}
 	
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=82140
-	 */
-	public void test0097() throws JavaScriptModelException {
-		String contents =
-			"@interface An1 {}\n" +
-			"@interface An2 {}\n" +
-			"@interface An3 {}\n" +
-			"@An2 class X {\n" +
-			"	@An1 Object o;\n" +
-			"	@An3 void foo() {\n" +
-			"		\n" +
-			"	}\n" +
-			"}";
-		this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-		ASTNode node = buildAST(
-			contents,
-			this.workingCopy);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-		assertProblemsSize(compilationUnit, 0);
-		node = getASTNode(compilationUnit, 3);
-		assertEquals("Not a type declaration", ASTNode.TYPE_DECLARATION, node.getNodeType());
-		TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-		List modifiers = typeDeclaration.modifiers();
-		assertEquals("Wrong size", 1, modifiers.size());
-		IExtendedModifier modifier = (IExtendedModifier) modifiers.get(0);
-		assertTrue("Not an annotation", modifier instanceof Annotation);
-		checkSourceRange((Annotation) modifier, "@An2", contents.toCharArray());
-		
-		node = getASTNode(compilationUnit, 3, 0);
-		assertEquals("Not a field declaration", ASTNode.FIELD_DECLARATION, node.getNodeType());
-		FieldDeclaration fieldDeclaration = (FieldDeclaration) node;
-		modifiers = fieldDeclaration.modifiers();
-		assertEquals("Wrong size", 1, modifiers.size());
-		modifier = (IExtendedModifier) modifiers.get(0);
-		assertTrue("Not an annotation", modifier instanceof Annotation);
-		checkSourceRange((Annotation) modifier, "@An1", contents.toCharArray());
-
-		node = getASTNode(compilationUnit, 3, 1);
-		assertEquals("Not a field declaration", ASTNode.FUNCTION_DECLARATION, node.getNodeType());
-		FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
-		modifiers = methodDeclaration.modifiers();
-		assertEquals("Wrong size", 1, modifiers.size());
-		modifier = (IExtendedModifier) modifiers.get(0);
-		assertTrue("Not an annotation", modifier instanceof Annotation);
-		checkSourceRange((Annotation) modifier, "@An3", contents.toCharArray());
-	}
 	
 	/*
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=82140
@@ -3009,120 +2430,7 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		assertEquals("Wrong size", 0, modifiers.size());
 	}
 	
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=82141
-	 */
-	public void test0099() throws JavaScriptModelException {
-		String contents =
-			"public class X {\n" +
-			"	@Override @Annot(value=\"Hello\") public String toString() {\n" +
-			"		return super.toString();\n" +
-			"	}\n" +
-			"	@Annot(\"Hello\") void bar() {\n" +
-			"	}\n" +
-			"	@interface Annot {\n" +
-			"		String value();\n" +
-			"	}\n" +
-			"}";
-		this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-		ASTNode node = buildAST(
-			contents,
-			this.workingCopy);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-		assertProblemsSize(compilationUnit, 0);
-		node = getASTNode(compilationUnit, 0, 0);
-		assertEquals("Not a method declaration", ASTNode.FUNCTION_DECLARATION, node.getNodeType());
-		FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
-		List modifiers = methodDeclaration.modifiers();
-		assertEquals("Wrong size", 3, modifiers.size());
-		IExtendedModifier modifier = (IExtendedModifier) modifiers.get(0);
-		assertTrue("Wrong type", modifier instanceof Annotation);
-		Annotation annotation = (Annotation) modifier;
-		ITypeBinding binding = annotation.resolveTypeBinding();
-		assertNotNull("No binding", binding);
-
-		modifier = (IExtendedModifier) modifiers.get(1);
-		assertTrue("Wrong type", modifier instanceof Annotation);
-		annotation = (Annotation) modifier;
-		binding = annotation.resolveTypeBinding();
-		assertNotNull("No binding", binding);
-		assertEquals("Wrong type", ASTNode.NORMAL_ANNOTATION, annotation.getNodeType());
-		NormalAnnotation normalAnnotation = (NormalAnnotation) annotation;
-		List values = normalAnnotation.values();
-		assertEquals("wrong size", 1, values.size());
-		MemberValuePair valuePair = (MemberValuePair) values.get(0);
-		SimpleName name = valuePair.getName();
-		IBinding binding2 = name.resolveBinding();
-		assertNotNull("No binding", binding2);
-		ITypeBinding typeBinding = name.resolveTypeBinding();
-		assertNotNull("No binding", typeBinding);
-
-		node = getASTNode(compilationUnit, 0, 1);
-		assertEquals("Not a method declaration", ASTNode.FUNCTION_DECLARATION, node.getNodeType());
-		methodDeclaration = (FunctionDeclaration) node;
-		modifiers = methodDeclaration.modifiers();
-		assertEquals("Wrong size", 1, modifiers.size());
-		modifier = (IExtendedModifier) modifiers.get(0);
-		assertTrue("Wrong type", modifier instanceof Annotation);
-		annotation = (Annotation) modifier;
-		binding = annotation.resolveTypeBinding();
-		assertNotNull("No binding", binding);
-	}
 	
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=82216
-	 */
-	public void test0100() throws JavaScriptModelException {
-		String contents =
-			"public enum E {\n" +
-			"	A, B, C;\n" +
-			"	public static final E D = B;\n" +
-			"	public static final String F = \"Hello\";\n" +
-			"}";
-		this.workingCopy = getWorkingCopy("/Converter15/src/E.js", true/*resolve*/);
-		ASTNode node = buildAST(
-			contents,
-			this.workingCopy);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-		assertProblemsSize(compilationUnit, 0);
-		node = getASTNode(compilationUnit, 0);
-		assertEquals("Not an enum declaration", ASTNode.ENUM_DECLARATION, node.getNodeType());
-		EnumDeclaration enumDeclaration = (EnumDeclaration) node;
-		List enumConstants = enumDeclaration.enumConstants();
-		assertEquals("wrong size", 3, enumConstants.size());
-		EnumConstantDeclaration enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(0);
-		IFunctionBinding methodBinding = enumConstantDeclaration.resolveConstructorBinding();
-		assertNotNull("No binding", methodBinding);
-		assertTrue("Not a constructor", methodBinding.isConstructor());
-		IVariableBinding variableBinding = enumConstantDeclaration.resolveVariable();
-		assertNotNull("no binding", variableBinding);
-		assertNull("is constant", variableBinding.getConstantValue());
-		assertTrue("Not an enum constant", variableBinding.isEnumConstant());
-		
-		node = getASTNode(compilationUnit, 0, 0);
-		assertEquals("Not a field declaration", ASTNode.FIELD_DECLARATION, node.getNodeType());
-		FieldDeclaration fieldDeclaration = (FieldDeclaration) node;
-		List fragments = fieldDeclaration.fragments();
-		assertEquals("Wrong size", 1, fragments.size());
-		VariableDeclarationFragment fragment = (VariableDeclarationFragment) fragments.get(0);
-		assertEquals("wrong name", "D", fragment.getName().getIdentifier());
-		variableBinding = fragment.resolveBinding();
-		assertNotNull("no binding", variableBinding);			
-		assertFalse("An enum constant", variableBinding.isEnumConstant());
-
-		node = getASTNode(compilationUnit, 0, 1);
-		assertEquals("Not a field declaration", ASTNode.FIELD_DECLARATION, node.getNodeType());
-		fieldDeclaration = (FieldDeclaration) node;
-		fragments = fieldDeclaration.fragments();
-		assertEquals("Wrong size", 1, fragments.size());
-		fragment = (VariableDeclarationFragment) fragments.get(0);
-		assertEquals("wrong name", "F", fragment.getName().getIdentifier());
-		variableBinding = fragment.resolveBinding();
-		assertNotNull("no binding", variableBinding);	
-		assertNotNull("is constant", variableBinding.getConstantValue());
-	}
 	
 	/*
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=68823
@@ -3275,180 +2583,9 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		assertTrue("Wrong type", kind == IBinding.VARIABLE || kind == IBinding.METHOD);
 	}
 
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=83011
-	 */
-	public void test0105() throws JavaScriptModelException {
-		String contents =
-			"@interface Ann {}\n" +
-			"\n" +
-			"@Ann public class X {}\n";
-		this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-		ASTNode node = buildAST(
-			contents,
-			this.workingCopy);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-		assertProblemsSize(compilationUnit, 0);
-		node = getASTNode(compilationUnit, 1);
-		assertEquals("Not a type declaration", ASTNode.TYPE_DECLARATION, node.getNodeType());
-		TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-		List modifiers = typeDeclaration.modifiers();
-		assertEquals("Wrong size", 2, modifiers.size());
-		IExtendedModifier extendedModifier = (IExtendedModifier) modifiers.get(0);
-		assertTrue("Not a marker annotation", extendedModifier instanceof MarkerAnnotation);
-		MarkerAnnotation markerAnnotation = (MarkerAnnotation) extendedModifier;
-		ITypeBinding binding = markerAnnotation.resolveTypeBinding();
-		assertNotNull("No binding", binding);
-		Name name = markerAnnotation.getTypeName();
-		binding = name.resolveTypeBinding();
-		assertNotNull("No binding", binding);
-	}
-	
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=83011
-	 */
-	public void test0106() throws JavaScriptModelException {
-		String contents =
-			"package p;\n" +
-			"@interface Ann {}\n" +
-			"\n" +
-			"@p.Ann public class X {}\n";
-		this.workingCopy = getWorkingCopy("/Converter15/src/p/X.js", true/*resolve*/);
-		ASTNode node = buildAST(
-			contents,
-			this.workingCopy);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-		assertProblemsSize(compilationUnit, 0);
-		node = getASTNode(compilationUnit, 1);
-		assertEquals("Not a type declaration", ASTNode.TYPE_DECLARATION, node.getNodeType());
-		TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-		List modifiers = typeDeclaration.modifiers();
-		assertEquals("Wrong size", 2, modifiers.size());
-		IExtendedModifier extendedModifier = (IExtendedModifier) modifiers.get(0);
-		assertTrue("Not a marker annotation", extendedModifier instanceof MarkerAnnotation);
-		MarkerAnnotation markerAnnotation = (MarkerAnnotation) extendedModifier;
-		ITypeBinding typeBinding = markerAnnotation.resolveTypeBinding();
-		assertNotNull("No binding", typeBinding);
-		Name name = markerAnnotation.getTypeName();
-		typeBinding = name.resolveTypeBinding();
-		assertNotNull("No binding", typeBinding);
-		IBinding binding = name.resolveBinding();
-		assertNotNull("No binding", binding);
-		assertEquals("Wrong kind of binding", IBinding.TYPE, binding.getKind());
-		assertEquals("Not a qualified name", ASTNode.QUALIFIED_NAME, name.getNodeType());
-		QualifiedName qualifiedName = (QualifiedName) name;
-		SimpleName simpleName = qualifiedName.getName();
-		binding = simpleName.resolveBinding();
-		assertNotNull("No binding", binding);
-		name = qualifiedName.getQualifier();
-		binding = name.resolveBinding();
-		assertNotNull("No binding", binding);			
-		assertEquals("Wrong kind of binding", IBinding.PACKAGE, binding.getKind());
-	}
 
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=83013
-	 */
-	public void test0107() throws JavaScriptModelException {
-		String contents =
-			"@interface A {\n" +
-			"    String value() default \"\";\n" +
-			"}\n" +
-			"@interface Main {\n" +
-			"   A child() default @A(\"Void\");\n" +
-			"}\n" +
-			"@Main(child=@A(\"\")) @A class X {}\n";
-		this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-		ASTNode node = buildAST(
-			contents,
-			this.workingCopy);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-		assertProblemsSize(compilationUnit, 0);
-		node = getASTNode(compilationUnit, 2);
-		assertEquals("Not a type declaration", ASTNode.TYPE_DECLARATION, node.getNodeType());
-		checkSourceRange(node, "@Main(child=@A(\"\")) @A class X {}", contents.toCharArray());
-	}
 	
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=83228
-	 */
-	public void test0108() throws JavaScriptModelException {
-		String contents =
-			"class X<E> {\n" +
-			"    enum Numbers {\n" +
-			"        ONE {\n" +
-			"            Numbers getSquare() {\n" +
-			"                return ONE;\n" +
-			"            }\n" +
-			"        };\n" +
-			"        abstract Numbers getSquare();\n" +
-			"    }\n" +
-			"}\n";
-		this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-		ASTNode node = buildAST(
-			contents,
-			this.workingCopy);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-		assertProblemsSize(compilationUnit, 0);
-		node = getASTNode(compilationUnit, 0, 0);
-		EnumDeclaration enumDeclaration = (EnumDeclaration) node;
-
-		List bodyDeclarations = enumDeclaration.bodyDeclarations();
-		assertEquals("Wrong size", 1, bodyDeclarations.size());
-		FunctionDeclaration methodDeclaration = (FunctionDeclaration) bodyDeclarations.get(0);
-		Type returnType = methodDeclaration.getReturnType2();
-		ITypeBinding typeBinding = returnType.resolveBinding();
 	
-		List enumConstants = enumDeclaration.enumConstants();
-		assertEquals("Wrong size", 1, enumConstants.size());
-		EnumConstantDeclaration constantDeclaration = (EnumConstantDeclaration) enumConstants.get(0);
-		AnonymousClassDeclaration anonymousClassDeclaration = constantDeclaration.getAnonymousClassDeclaration();
-		assertNotNull("No anonymous", anonymousClassDeclaration);
-		bodyDeclarations = anonymousClassDeclaration.bodyDeclarations();
-		assertEquals("Wrong size", 1, bodyDeclarations.size());
-		BodyDeclaration bodyDeclaration = (BodyDeclaration) bodyDeclarations.get(0);
-		assertEquals("Not a method declaration", ASTNode.FUNCTION_DECLARATION, bodyDeclaration.getNodeType());
-		methodDeclaration = (FunctionDeclaration) bodyDeclaration;
-		Type type = methodDeclaration.getReturnType2();
-		assertEquals("Not a simple type", ASTNode.SIMPLE_TYPE, type.getNodeType());
-		SimpleType simpleType = (SimpleType) type;
-		Name name = simpleType.getName();
-		assertEquals("Not a simple name", ASTNode.SIMPLE_NAME, name.getNodeType());
-		SimpleName simpleName = (SimpleName) name;
-		ITypeBinding typeBinding2 = simpleName.resolveTypeBinding();
-		
-		assertTrue("Not equals", typeBinding.isEqualTo(typeBinding2));
-		assertTrue("Not identical", typeBinding == typeBinding2);
-	}
-	
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=883297
-	 */
-	public void test0109() throws JavaScriptModelException {
-		String contents =
-			"@Annot(value=\"Hello\", count=-1)\n" +
-			"@interface Annot {\n" +
-			"    String value();\n" +
-			"    int count();\n" +
-			"}";
-		this.workingCopy = getWorkingCopy("/Converter15/src/Annot.js", true/*resolve*/);
-		ASTNode node = buildAST(
-			contents,
-			this.workingCopy);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-		assertProblemsSize(compilationUnit, 0);
-		node = getASTNode(compilationUnit, 0);
-		AnnotationTypeDeclaration annotationTypeDeclaration = (AnnotationTypeDeclaration) node;
-		ITypeBinding typeBinding = annotationTypeDeclaration.resolveBinding();
-		assertNotNull("No type binding", typeBinding);
-		IFunctionBinding[] methods = typeBinding.getDeclaredMethods();
-		assertEquals("Wrong size", 2, methods.length);
-	}
 	
 	/*
 	 * Ensures that the type declaration of a top level type binding is correct.
@@ -4222,47 +3359,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		assertEquals("wrong name", "test0139a", packageBinding.getName());
 	}
 	
-	/**
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=85115
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=85215
-	 */
-	public void test0140() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0140", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		ASTNode result = runJLS3Conversion(sourceUnit, true, false);
-		assertNotNull(result);
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-		assertProblemsSize(compilationUnit, 0);
-		ASTNode node = getASTNode(compilationUnit, 0);
-		assertNotNull("No node", node);
-		assertEquals("Not an enum declaration", ASTNode.ENUM_DECLARATION, node.getNodeType());
-		EnumDeclaration enumDeclaration = (EnumDeclaration) node;
-		List modifiers = enumDeclaration.modifiers();
-		assertEquals("Wrong size", 2, modifiers.size());
-		IExtendedModifier modifier = (IExtendedModifier) modifiers.get(0);
-		assertTrue("Wrong type", modifier instanceof MarkerAnnotation);
-		MarkerAnnotation markerAnnotation = (MarkerAnnotation) modifier;
-		ITypeBinding typeBinding = markerAnnotation.resolveTypeBinding();
-		assertTrue("Not an annotation", typeBinding.isAnnotation());
-		assertTrue("Not a top level type", typeBinding.isTopLevel());
-		
-		sourceUnit = getCompilationUnit("Converter15" , "src", "test0140", "Annot.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		result = runJLS3Conversion(sourceUnit, true, false);
-		assertNotNull(result);
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
-		compilationUnit = (JavaScriptUnit) result;
-		assertProblemsSize(compilationUnit, 0);
-		node = getASTNode(compilationUnit, 0);
-		assertNotNull("No node", node);
-		assertEquals("Not an annotation declaration", ASTNode.ANNOTATION_TYPE_DECLARATION, node.getNodeType());
-		AnnotationTypeDeclaration annotationTypeDeclaration = (AnnotationTypeDeclaration) node;
-		modifiers = annotationTypeDeclaration.modifiers();
-		assertEquals("Wrong size", 1, modifiers.size());
-		typeBinding = annotationTypeDeclaration.resolveBinding();
-		int modifierValue = typeBinding.getModifiers();
-		assertEquals("Type is not public", Modifier.PUBLIC, modifierValue);
-	}
-	
     // https://bugs.eclipse.org/bugs/show_bug.cgi?id=83100
 	public void test0141() throws CoreException {
     	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
@@ -4486,213 +3582,8 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		assertProblemsSize(compilationUnit, 0);
     }
 	
-    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=87350
-    public void test0148() throws CoreException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-    	String contents =
-    		"public enum X {\n" + 
-    		"    RED, GREEN(), BLUE(17), PINK(1) {/*anon*};\n" + 
-    		"    Color() {}\n" + 
-    		"    Color(int i) {}\n";
-    	ASTNode node = buildAST(
-				contents,
-    			this.workingCopy,
-    			false);
-    	assertNotNull("No node", node);
-    	assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-    	JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-		String expectedErrors = "The constructor X(int) is undefined\n" + 
-			"The constructor X(int) is undefined\n" + 
-			"Unexpected end of comment";
-    	assertProblemsSize(compilationUnit, 3, expectedErrors);
-    }
+
 	
-    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=88252
-    public void test0149() throws CoreException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-    	String contents =
-    		" interface Jpf {\n" +
-    		" 	@interface Action {\n" +
-    		" 		ValidatableProperty[] validatableProperties();\n" +
-    		" 	}\n" +
-    		" 	\n" +
-    		" 	@interface ValidatableProperty {\n" +
-    		" 		String propertyName();\n" +
-    		" 		 ValidationLocaleRules[] localeRules();\n" +
-    		" 	}\n" +
-    		" 	\n" +
-    		" 	@interface ValidationLocaleRules {\n" +
-    		" 		  ValidateMinLength validateMinLength();\n" +
-    		" 	}\n" +
-    		" 	\n" +
-    		" 	@interface ValidateMinLength {\n" +
-    		" 		String chars();\n" +
-    		" 	}\n" +
-    		"}\n" +
-    		" \n" +
-    		" public class X {\n" +
-    		" \n" +
-    		" @Jpf.Action(\n" +
-    		"      validatableProperties={@Jpf.ValidatableProperty(propertyName=\"fooField\",\n" +
-    		"        localeRules={@Jpf.ValidationLocaleRules(\n" +
-    		"            validateMinLength=@Jpf.ValidateMinLength(chars=\"12\")\n" +
-    		"        )}\n" +
-    		"      )}\n" +
-    		"    )\n" +
-    		"    public String actionForValidationRuleTest()    {\n" +
-    		"        return null;\n" +
-    		"    }\n" +
-    		"}";
-    	ASTNode node = buildAST(
-				contents,
-    			this.workingCopy);
-    	assertNotNull("No node", node);
-    	assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-    	JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-    	assertProblemsSize(compilationUnit, 0);
-		node = getASTNode(compilationUnit, 1, 0);
-   		assertEquals("Not a method declaration", ASTNode.FUNCTION_DECLARATION, node.getNodeType());
-		FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
-		List modifiers = methodDeclaration.modifiers();
-		assertEquals("Wrong size", 2, modifiers.size());
-		IExtendedModifier modifier = (IExtendedModifier) modifiers.get(0);
-  		assertTrue("Not a normal annotation", modifier instanceof NormalAnnotation);
-		NormalAnnotation annotation = (NormalAnnotation) modifier;
-		List values = annotation.values();
-		assertEquals("wrong size", 1, values.size());
-		MemberValuePair memberValuePair = (MemberValuePair) values.get(0);
-		Expression expression = memberValuePair.getValue();
-   		assertEquals("Not an array initializer", ASTNode.ARRAY_INITIALIZER, expression.getNodeType());
-		ArrayInitializer arrayInitializer = (ArrayInitializer) expression;
-		List expressions = arrayInitializer.expressions();
-		assertEquals("wrong size", 1, expressions.size());
-		Expression expression2 = (Expression) expressions.get(0);
-  		assertEquals("Not a normal annotation", ASTNode.NORMAL_ANNOTATION, expression2.getNodeType());
-		NormalAnnotation annotation2 = (NormalAnnotation) expression2;
-		values = annotation2.values();
-		assertEquals("wrong size", 2, values.size());
-		MemberValuePair memberValuePair2 = (MemberValuePair) values.get(1);
-		Expression expression3 = memberValuePair2.getValue();
-   		assertEquals("Not an array initializer", ASTNode.ARRAY_INITIALIZER, expression3.getNodeType());
-		arrayInitializer = (ArrayInitializer) expression3;
-		expressions = arrayInitializer.expressions();
-		assertEquals("wrong size", 1, expressions.size());
-		Expression expression4 = (Expression) expressions.get(0);
-   		assertEquals("Not a normal annotation", ASTNode.NORMAL_ANNOTATION, expression4.getNodeType());
-		NormalAnnotation annotation3 = (NormalAnnotation) expression4;
-		values = annotation3.values();
-		assertEquals("wrong size", 1, values.size());
-		MemberValuePair memberValuePair3 = (MemberValuePair) values.get(0);
-		Expression expression5 = memberValuePair3.getValue();
-   		assertEquals("Not a normal annotation", ASTNode.NORMAL_ANNOTATION, expression5.getNodeType());
-		NormalAnnotation annotation4 = (NormalAnnotation) expression5;
-		checkSourceRange(annotation4, "@Jpf.ValidateMinLength(chars=\"12\")", contents);
-		checkSourceRange(memberValuePair3, "validateMinLength=@Jpf.ValidateMinLength(chars=\"12\")", contents);
-   }
-	
-    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=88224
-    public void test0150() throws CoreException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-    	String contents =
-    		"public class X {\n" +
-    		"	void foo() {\n" +
-    		"		class Local {\n" +
-    		"			static enum E {\n" +
-    		"				C, B;\n" +
-    		"			}\n" +
-    		"		}\n" +
-    		"	}\n" +
-    		"	void bar() {\n" +
-    		"	}\n" +
-    		"}";
-    	ASTNode node = buildAST(
-				contents,
-    			this.workingCopy,
-    			false);
-    	assertNotNull("No node", node);
-    	assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-    	JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-        final String expectedErrors = "The member enum E cannot be local";
-    	assertProblemsSize(compilationUnit, 1, expectedErrors);
-		node = getASTNode(compilationUnit, 0, 0, 0);
-   		assertEquals("Not a type declaration statement", ASTNode.TYPE_DECLARATION_STATEMENT, node.getNodeType());
-		TypeDeclarationStatement typeDeclarationStatement = (TypeDeclarationStatement) node;
-		AbstractTypeDeclaration typeDeclaration = typeDeclarationStatement.getDeclaration();
-		List bodyDeclarations = typeDeclaration.bodyDeclarations();
-		assertEquals("Wrong size", 1, bodyDeclarations.size());
-		BodyDeclaration bodyDeclaration = (BodyDeclaration) bodyDeclarations.get(0);
-   		assertEquals("Not an enum declaration", ASTNode.ENUM_DECLARATION, bodyDeclaration.getNodeType());
-		EnumDeclaration enumDeclaration = (EnumDeclaration) bodyDeclaration;
-		List enumConstants = enumDeclaration.enumConstants();
-		assertEquals("Wrong size", 2, enumConstants.size());
-		EnumConstantDeclaration enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(0);
-		checkSourceRange(enumConstantDeclaration, "C", contents);
-		enumConstantDeclaration = (EnumConstantDeclaration) enumConstants.get(1);
-		checkSourceRange(enumConstantDeclaration, "B", contents);
-   }
-	
-	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=88548
-    public void test0151() throws CoreException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-    	String contents =
-	   		"public enum X {\n" + 
-    		"	RED, GREEN(), BLUE(17);\n" + 
-    		"	X() {}\n" + 
-    		"	X(int i) {}\n" + 
-    		"	public static void main(String[] args) {\n" +
-    		"		for (X x : X.values()) {\n" +
-    		"			switch(x) {\n" +
-    		"				case RED :\n" +
-    		"					System.out.println(\"ROUGE\");\n" +
-    		"					break;\n" +
-    		"				case GREEN :\n" +
-    		"					System.out.println(\"VERT\");\n" +
-    		"					break;\n" +
-    		"				case BLUE :\n" +
-    		"					System.out.println(\"BLEU\");\n" +
-    		"					break;\n" +
-    		"			}\n" +
-    		"		}\n" +
-    		"   }\n" +
-    		"}";
-    	ASTNode node = buildAST(
-				contents,
-    			this.workingCopy);
-    	assertNotNull("No node", node);
-    	assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-    	JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-    	assertProblemsSize(compilationUnit, 0);
-		node = getASTNode(compilationUnit, 0);
-    	assertEquals("Not an enum declaration", ASTNode.ENUM_DECLARATION, node.getNodeType());
-		EnumDeclaration enumDeclaration = (EnumDeclaration) node;
-		List bodyDeclarations = enumDeclaration.bodyDeclarations();
-		assertEquals("Wrong size", 3, bodyDeclarations.size());
-		BodyDeclaration bodyDeclaration = (BodyDeclaration) bodyDeclarations.get(2);
-    	assertEquals("Not a method declaration", ASTNode.FUNCTION_DECLARATION, bodyDeclaration.getNodeType());
-		FunctionDeclaration methodDeclaration = (FunctionDeclaration) bodyDeclaration;
-		Block block = methodDeclaration.getBody();
-		assertNotNull("No body", block);
-		List statements = block.statements();
-		assertEquals("Wrong size", 1, statements.size());
-		Statement statement = (Statement) statements.get(0);
-    	assertEquals("Not an enhanced for statement", ASTNode.ENHANCED_FOR_STATEMENT, statement.getNodeType());
-		EnhancedForStatement forStatement = (EnhancedForStatement) statement;
-		Statement statement2 = forStatement.getBody();
-    	assertEquals("Not a block", ASTNode.BLOCK, statement2.getNodeType());
-		Block block2 = (Block) statement2;
-		statements = block2.statements();
-		assertEquals("Wrong size", 1, statements.size());
-		statement = (Statement) statements.get(0);
-    	assertEquals("Not a switch statement", ASTNode.SWITCH_STATEMENT, statement.getNodeType());
-		SwitchStatement switchStatement = (SwitchStatement) statement;
-		statements = switchStatement.statements();
-		assertEquals("Wrong size", 9, statements.size());
-		statement = (Statement) statements.get(0);
-    	assertEquals("Not a switch case statement", ASTNode.SWITCH_CASE, statement.getNodeType());
-		SwitchCase switchCase = (SwitchCase) statement;
-		Expression expression = switchCase.getExpression();
-		assertNull("Got a constant", expression.resolveConstantExpressionValue());
-   }
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=88548
     public void test0152() throws CoreException {
@@ -5459,27 +4350,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 	   	checkSourceRange(wildcardType, "? super java.lang.Number", contents);
     }
     
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=93075
-	 */
-    public void test0179() throws CoreException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-   		String contents =
-				"@interface Test {}\n" +
-				"public enum X\n" +
-				"{\n" +
-				"     /*start*/@Test HISTORY/*end*/\n" +
-				"}";
-	   	ASTNode node = buildAST(
-			contents,
-    		this.workingCopy);
-	   	assertEquals("Not an enum constant declaration", ASTNode.ENUM_CONSTANT_DECLARATION, node.getNodeType());
-		EnumConstantDeclaration constantDeclaration = (EnumConstantDeclaration) node;
-		List modifiers = constantDeclaration.modifiers();
-		assertEquals("Wrong size", 1, modifiers.size());
-		IExtendedModifier modifier = (IExtendedModifier) modifiers.get(0);
-	   	assertTrue("Not a marker annotation", modifier instanceof MarkerAnnotation);
-    }
     
 	/*
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=92360
@@ -6136,46 +5006,7 @@ public class ASTConverter15Test extends ConverterTestSetup {
     	assertTrue("not a primitive type", type.isPrimitiveType());
     }
 	
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=110657
-	 */
-	public void test0202() throws CoreException {
-	   	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-		final String source = "public class X {\n" +
-			"    public static void main(String[] args) {\n" +
-			"        byte[] b1 = new byte[0];\n" +
-			"        byte[] b2 = new byte[0];\n" +
-			"        for (@Ann final byte bs[] : new byte[][] { b1, b2 }) {\n" +
-			"			System.out.println(bs);\n" +
-			"        }\n" +
-			"    }\n" +
-			"}\n" +
-			"@interface Ann {}";
-		ASTNode node = buildAST(
-			source,
-			this.workingCopy,
-			false);
-    	assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-    	JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-    	assertProblemsSize(compilationUnit, 0);
-    	node = getASTNode(compilationUnit, 0, 0, 2);
-    	assertEquals("Not an enhanced for statement", ASTNode.ENHANCED_FOR_STATEMENT, node.getNodeType());
-    	EnhancedForStatement forStatement = (EnhancedForStatement) node;
-    	final SingleVariableDeclaration parameter = forStatement.getParameter();
-    	final Type type = parameter.getType();
-    	assertEquals("Wrong extended dimension", 1, parameter.getExtraDimensions());
-    	checkSourceRange(type, "byte", source);
-    	checkSourceRange(parameter, "@Ann final byte bs[]", source);
-    	assertTrue("not a primitive type", type.isPrimitiveType());
-    	List modifiers = parameter.modifiers();
-    	assertEquals("Wrong size", 2, modifiers.size());
-    	final ASTNode modifier1 = ((ASTNode) modifiers.get(0));
-		assertEquals("Not an annotation", ASTNode.MARKER_ANNOTATION, modifier1.getNodeType());
-    	final ASTNode modifier2 = ((ASTNode) modifiers.get(1));
-		assertEquals("Not a modifier", ASTNode.MODIFIER, modifier2.getNodeType());
-		checkSourceRange(modifier1, "@Ann", source);
-		checkSourceRange(modifier2, "final", source);
-    }
+	
 	/*
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=80472
 	 */
@@ -6249,44 +5080,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 	   	assertFalse("Declaration and reference keys should not be the same", bindings[0].getKey().equals(bindings[1].getKey()));
 	}
 	
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=120263
-	 */
-	public void test0206() throws JavaScriptModelException {
-		this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-    	String contents =
-    		"public class X {\n" + 
-    		"        public @interface Annot {\n" + 
-    		"        }\n" + 
-    		"        @Annot(newAttrib= {1, 2})\n" + 
-    		"        public void foo() {\n" + 
-    		"        }\n" + 
-    		"}";
-    	ASTNode node = buildAST(
-    			contents,
-    			this.workingCopy,
-    			false);
-		assertNotNull("No node", node);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-    	assertProblemsSize(compilationUnit, 1, "The attribute newAttrib is undefined for the annotation type X.Annot");
-    	node = getASTNode(compilationUnit, 0, 1);
-		assertEquals("Not a method declaration", ASTNode.FUNCTION_DECLARATION, node.getNodeType());
-		FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
-		List modifiers = methodDeclaration.modifiers();
-		assertEquals("Wrong size", 2, modifiers.size());
-		IExtendedModifier extendedModifier = (IExtendedModifier) modifiers.get(0);
-		assertTrue("Not a normal annotation", extendedModifier instanceof NormalAnnotation);
-		NormalAnnotation annotation = (NormalAnnotation) extendedModifier;
-		List values = annotation.values();
-		assertEquals("Wrong size", 1, values.size());
-		MemberValuePair memberValuePair = (MemberValuePair) values.get(0);
-		Expression value = memberValuePair.getValue();
-		assertEquals("Not an array initializer", ASTNode.ARRAY_INITIALIZER, value.getNodeType());
-		ArrayInitializer arrayInitializer = (ArrayInitializer) value;
-		ITypeBinding typeBinding = arrayInitializer.resolveTypeBinding();
-		assertNotNull("No binding", typeBinding);
-	}
 	
 	/*
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=124716
@@ -6313,88 +5106,9 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		ClassInstanceCreation classInstanceCreation = (ClassInstanceCreation) expression;
 		IFunctionBinding binding = classInstanceCreation.resolveConstructorBinding();
 		assertNotNull("Should not be null", binding);
-		IAnnotationBinding[] annotations = binding.getAnnotations();
-		assertNotNull("Should not be null", annotations);
-		assertEquals("Should be empty", 0, annotations.length);
 	}
 	
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=125807
-	 */
-	public void test0208() throws JavaScriptModelException {
-		this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-		String contents =
-			"@Override(x= 1)\n" + 
-			"public class X { }";
-		ASTNode node = buildAST(
-				contents,
-				this.workingCopy,
-				false);
-		assertNotNull("No node", node);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-		String problems =
-			"The annotation @Override is disallowed for this location\n" + 
-			"The attribute x is undefined for the annotation type Override";
-		assertProblemsSize(compilationUnit, 2, problems);
-		node = getASTNode(compilationUnit, 0);
-		assertEquals("Not a type declaration", ASTNode.TYPE_DECLARATION, node.getNodeType());
-		TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-		List modifiers = typeDeclaration.modifiers();
-		assertEquals("Wrong size", 2, modifiers.size());
-		assertTrue("Wrong type", modifiers.get(0) instanceof NormalAnnotation);
-		NormalAnnotation normalAnnotation = (NormalAnnotation) modifiers.get(0);
-		IAnnotationBinding annotationBinding = normalAnnotation.resolveAnnotationBinding();
-		IMemberValuePairBinding[] pairs = annotationBinding.getDeclaredMemberValuePairs();
-		assertEquals("Wrong size", 1, pairs.length);
-		assertNotNull("Should not be null", pairs[0].getValue());
-	}
 	
-	public void test0209() throws JavaScriptModelException {
-		this.workingCopy = getWorkingCopy("/Converter15/src/test/V.js", true/*resolve*/);
-		String contents =
-			"package test;\n" + 
-			"import pack.*;\n" + 
-			"public class V {\n" + 
-			"	void bar() {\n" + 
-			"	}\n" + 
-			"	void foo() {\n" + 
-			"		@A3(\n" + 
-			"			annot = @A2(\n" + 
-			"				annot = @A1(value = E.CV, list = new E[] { E.CAV, E.CAV}, clazz = E.class),\n" + 
-			"				value = E.CV,\n" + 
-			"				list = new E[] { E.CAV, E.CAV},\n" + 
-			"				clazz = E.class),\n" + 
-			"			value = E.CV,\n" + 
-			"			list = new E[] { E.CAV, E.CAV},\n" + 
-			"			clazz = E.class)\n" + 
-			"		int x = 0;\n" + 
-			"		System.out.println(x);\n" + 
-			"		System.out.println(x + 1);\n" + 
-			"	}\n" + 
-			"}";
-		ASTNode node = buildAST(
-				contents,
-				this.workingCopy,
-				false);
-		assertNotNull("No node", node);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-		String problems =
-			"The value for annotation attribute A1.list must be an array initializer\n" + 
-			"The value for annotation attribute A2.list must be an array initializer\n" + 
-			"The value for annotation attribute A3.list must be an array initializer";
-		assertProblemsSize(compilationUnit, 3, problems);
-		List imports = compilationUnit.imports();
-		assertEquals("wrong size", 1, imports.size());
-		ImportDeclaration importDeclaration = (ImportDeclaration) imports.get(0);
-		Name name = importDeclaration.getName();
-		assertEquals("Not a simple name", ASTNode.SIMPLE_NAME, name.getNodeType());
-		SimpleName simpleName = (SimpleName) name;
-		IBinding binding = simpleName.resolveBinding();
-		assertNotNull("No binding", binding);
-		assertEquals("Wrong type", IBinding.PACKAGE, binding.getKind());
-	}
 	public void test0210() throws JavaScriptModelException {
 		this.workingCopy = getWorkingCopy("/Converter15/src/X.js", false);
 		String contents =
@@ -6511,8 +5225,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		checkSourceRange(simpleName, "length", contents);
 		IBinding binding = simpleName.resolveBinding();
 		assertEquals("Not a field", IBinding.VARIABLE, binding.getKind());
-		IVariableBinding variableBinding = (IVariableBinding) binding;
-		assertEquals("No annotations", 0, variableBinding.getAnnotations().length);
 	}
 	
 	/*
@@ -6877,81 +5589,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		assertEquals("Wrong size", 0, typeArguments.length);
 	}
 	
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=140318
-	 */
-	public void test0218() throws JavaScriptModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-    	String contents =
-			"import java.util.List;\n" + 
-			"\n" + 
-			"public class X {\n" + 
-			"	/**\n" + 
-			"	 * @category fo\n" + 
-			"	 */\n" + 
-			"	@Test private int fXoo;\n" + 
-			"}";
-	   	ASTNode node = buildAST(
-				contents,
-    			this.workingCopy,
-    			false);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit unit = (JavaScriptUnit) node;
-		assertProblemsSize(unit, 1, "Test cannot be resolved to a type");
-		node = getASTNode(unit, 0, 0);
-		assertEquals("Not a field declaration", ASTNode.FIELD_DECLARATION, node.getNodeType());
-		FieldDeclaration declaration = (FieldDeclaration) node;
-		List modifiers = declaration.modifiers();
-		assertEquals("wrong size", 2, modifiers.size());
-		assertEquals("Not a marker annotation", ASTNode.MARKER_ANNOTATION, ((ASTNode) modifiers.get(0)).getNodeType());
-		MarkerAnnotation annotation = (MarkerAnnotation) modifiers.get(0);
-		Name name = annotation.getTypeName();
-		assertEquals("Not a simple name", ASTNode.SIMPLE_NAME, name.getNodeType());
-		ITypeBinding binding = name.resolveTypeBinding();
-		assertNull("Got a binding", binding);
-		IBinding binding2 = name.resolveBinding();
-		assertNull("Got a binding", binding2);
-		IAnnotationBinding annotationBinding = annotation.resolveAnnotationBinding();
-		assertNull("Got a binding", annotationBinding);
-	}
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=140318
-	 */
-	public void test0219() throws JavaScriptModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-    	String contents =
-			"import java.util.List;\n" + 
-			"\n" + 
-			"public class X {\n" + 
-			"	/**\n" + 
-			"	 * @category fo\n" + 
-			"	 */\n" + 
-			"	@Test private int fXoo;\n" + 
-			"}\n" +
-			"class Test {}";
-	   	ASTNode node = buildAST(
-				contents,
-    			this.workingCopy,
-    			false);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit unit = (JavaScriptUnit) node;
-		assertProblemsSize(unit, 1, "Type mismatch: cannot convert from Test to Annotation");
-		node = getASTNode(unit, 0, 0);
-		assertEquals("Not a field declaration", ASTNode.FIELD_DECLARATION, node.getNodeType());
-		FieldDeclaration declaration = (FieldDeclaration) node;
-		List modifiers = declaration.modifiers();
-		assertEquals("wrong size", 2, modifiers.size());
-		assertEquals("Not a marker annotation", ASTNode.MARKER_ANNOTATION, ((ASTNode) modifiers.get(0)).getNodeType());
-		MarkerAnnotation annotation = (MarkerAnnotation) modifiers.get(0);
-		Name name = annotation.getTypeName();
-		assertEquals("Not a simple name", ASTNode.SIMPLE_NAME, name.getNodeType());
-		ITypeBinding binding = name.resolveTypeBinding();
-		assertNotNull("No binding", binding);
-		IBinding binding2 = name.resolveBinding();
-		assertNotNull("No binding", binding2);
-		IAnnotationBinding annotationBinding = annotation.resolveAnnotationBinding();
-		assertNull("Got a binding", annotationBinding);
-	}
 	
 	/*
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=142793
@@ -7063,321 +5700,7 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		assertNotNull("No expression", expression);
 		assertEquals("Not a method invocation", ASTNode.FUNCTION_INVOCATION, expression.getNodeType());
 	}
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=153303
-	 */
-	public void test0223() throws JavaScriptModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-    	String contents =
-    		"public class X {\n" + 
-    		"    @Zork\n" + 
-    		"    public void foo( ) {\n" + 
-    		"    }\n" + 
-    		"}";
-	   	ASTNode node = buildAST(
-				contents,
-    			this.workingCopy,
-    			false);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit unit = (JavaScriptUnit) node;
-		assertProblemsSize(unit, 1, "Zork cannot be resolved to a type");
-		node = getASTNode(unit, 0, 0);
-		assertEquals("Not a method declaration", ASTNode.FUNCTION_DECLARATION, node.getNodeType());
-		FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
-		IFunctionBinding methodBinding = methodDeclaration.resolveBinding();
-		IAnnotationBinding[] annotations = methodBinding.getAnnotations();
-		assertEquals("Wrong size", 0, annotations.length);
-	}
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=153303
-	 */
-	public void test0224() throws JavaScriptModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-    	String contents =
-    		"@Zork\n" + 
-    		"public class X {\n" +
-    		"}";
-	   	ASTNode node = buildAST(
-				contents,
-    			this.workingCopy,
-    			false);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit unit = (JavaScriptUnit) node;
-		assertProblemsSize(unit, 1, "Zork cannot be resolved to a type");
-		node = getASTNode(unit, 0);
-		assertEquals("Not a type declaration", ASTNode.TYPE_DECLARATION, node.getNodeType());
-		TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-		ITypeBinding typeBinding = typeDeclaration.resolveBinding();
-		IAnnotationBinding[] annotations = typeBinding.getAnnotations();
-		assertEquals("Wrong size", 0, annotations.length);
-	}
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=153303
-	 */
-	public void test0225() throws JavaScriptModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-    	String contents =
-    		"public class X {\n" +
-    		"    public void foo(@Zork String s) {\n" + 
-    		"    }\n" + 
-    		"}";
-	   	ASTNode node = buildAST(
-				contents,
-    			this.workingCopy,
-    			false);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit unit = (JavaScriptUnit) node;
-		assertProblemsSize(unit, 1, "Zork cannot be resolved to a type");
-		node = getASTNode(unit, 0, 0);
-		assertEquals("Not a method declaration", ASTNode.FUNCTION_DECLARATION, node.getNodeType());
-		FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
-		List parameters = methodDeclaration.parameters();
-		assertEquals("wrong size", 1, parameters.size());
-		SingleVariableDeclaration singleVariableDeclaration = (SingleVariableDeclaration) parameters.get(0);
-		IVariableBinding variableBinding = singleVariableDeclaration.resolveBinding();
-		IAnnotationBinding[] bindings = variableBinding.getAnnotations();
-		assertEquals("Wrong size", 0, bindings.length);
-	}
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=153303
-	 */
-	public void test0226() throws JavaScriptModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/p/package-info.js", true/*resolve*/);
-    	String contents =
-    		"@Zork package p;";
-	   	ASTNode node = buildAST(
-				contents,
-    			this.workingCopy,
-    			false);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit unit = (JavaScriptUnit) node;
-		assertProblemsSize(unit, 1, "Zork cannot be resolved to a type");
-		PackageDeclaration packageDeclaration = unit.getPackage();
-		IPackageBinding packageBinding = packageDeclaration.resolveBinding();
-		IAnnotationBinding[] annotations = packageBinding.getAnnotations();
-		assertEquals("Wrong size", 0, annotations.length);
-	}
 	
-	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=155115
-	public void test0227() throws JavaScriptModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-    	String contents =
-    		"import anno.Anno;\n" + 
-    		"import binary.B;\n" + 
-    		"import intf.IFoo;\n" + 
-    		"\n" + 
-    		"public class X extends B {\n" + 
-    		"	@Anno(clz=IFoo.IBar.class)\n" + 
-    			// the annotation we chase up is not this one, but the one
-    			// carried by B#f
-    		"	public void f() {}\n" +
-    		"   IFoo.IBar m;\n" + 
-    		"}";
-    	class TestASTRequestor extends ASTRequestor {
-    		public ArrayList asts = new ArrayList();
-    		public void acceptAST(IJavaScriptUnit source, JavaScriptUnit compilationUnit) {
-    			this.asts.add(compilationUnit);
-    		}
-    		public void acceptBinding(String bindingKey, IBinding binding) {
-    		}
-    	}
-    	this.workingCopy.getBuffer().setContents(contents);
-    	this.workingCopy.save(null, true);
-    	TestASTRequestor requestor = new TestASTRequestor();
-    	resolveASTs(new IJavaScriptUnit[] { this.workingCopy } , new String[0], requestor, this.getJavaProject("Converter15"), null);
-    	ArrayList asts = requestor.asts;
-		assertEquals("Wrong size", 1, asts.size());
-		JavaScriptUnit compilationUnit = (JavaScriptUnit) asts.get(0);
-		assertNotNull("No compilation unit", compilationUnit);
-		List types = compilationUnit.types();
-		assertEquals("Wrong size", 1, types.size());
-		AbstractTypeDeclaration abstractTypeDeclaration = (AbstractTypeDeclaration) types.get(0);
-		assertEquals("Wrong type", ASTNode.TYPE_DECLARATION, abstractTypeDeclaration.getNodeType());
-		TypeDeclaration declaration = (TypeDeclaration) abstractTypeDeclaration;
-		Type superclass = declaration.getSuperclassType();
-		assertNotNull("No superclass", superclass);
-		ITypeBinding typeBinding = superclass.resolveBinding();
-		assertNotNull("No binding", typeBinding);
-		IFunctionBinding[] methods = typeBinding.getDeclaredMethods();
-		assertNotNull("No methods", methods);
-		assertEquals("Wrong size", 2, methods.length);
-		IFunctionBinding methodBinding = null;
-		for(int i = 0; i < 2; i++) {
-			methodBinding = methods[i];
-			if (methodBinding.getName().equals("f")) {
-				break;
-			}
-		}
-		assertEquals("Wrong name", "f", methodBinding.getName());
-		IAnnotationBinding[] annotationBindings = methodBinding.getAnnotations();
-		assertNotNull("No annotations", annotationBindings);
-		assertEquals("Wrong size", 1, annotationBindings.length);
-		IAnnotationBinding annotationBinding = annotationBindings[0];
-		IMemberValuePairBinding[] pairs = annotationBinding.getAllMemberValuePairs();
-		assertNotNull("no pairs", pairs);
-		assertEquals("Wrong size", 1, pairs.length);
-		IMemberValuePairBinding memberValuePairBinding = pairs[0];
-		assertEquals("Wrong kind", IBinding.MEMBER_VALUE_PAIR, memberValuePairBinding.getKind());
-		Object value = memberValuePairBinding.getValue();
-		assertNotNull("No value", value);
-		assertTrue("Not a type binding", value instanceof ITypeBinding);
-		assertEquals("Wrong qualified name", "intf.IFoo.IBar", 
-				((ITypeBinding) value).getQualifiedName());		
-		IVariableBinding[] fields = 
-			declaration.resolveBinding().getDeclaredFields();
-		assertTrue("Bad field definition", fields != null && fields.length == 1);
-		assertEquals("Type binding mismatch", value, fields[0].getType());
-	}
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=157403
-	 */
-	public void test0228() throws JavaScriptModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-    	String contents =
-    		"@interface Ann {\n" + 
-    		"  int foo();\n" + 
-    		"}\n" + 
-    		"@Ann(foo = bar())\n" + 
-    		"public class X {\n" + 
-    		"	public static int bar() {\n" +
-    		" 		return 0;\n" +
-    		"	}\n" + 
-    		"}";
-	   	ASTNode node = buildAST(
-				contents,
-    			this.workingCopy,
-    			false);
-		assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit unit = (JavaScriptUnit) node;
-		assertProblemsSize(unit, 1, "The method bar() is undefined for the type X");
-		List types = unit.types();
-		assertEquals("wrong size", 2, types.size());
-		AbstractTypeDeclaration typeDeclaration = (AbstractTypeDeclaration) types.get(1);
-		assertEquals("Not a type declaration", ASTNode.TYPE_DECLARATION, typeDeclaration.getNodeType());
-		TypeDeclaration declaration = (TypeDeclaration) typeDeclaration;
-		List modifiers = declaration.modifiers();
-		assertEquals("wrong size", 2, modifiers.size());
-		IExtendedModifier modifier = (IExtendedModifier) modifiers.get(0);
-		assertTrue("not an annotation", modifier.isAnnotation());
-		Annotation annotation = (Annotation) modifier;
-		assertEquals("Not a normal annotation", ASTNode.NORMAL_ANNOTATION, annotation.getNodeType());
-		NormalAnnotation normalAnnotation = (NormalAnnotation) annotation;
-		List values = normalAnnotation.values();
-		assertEquals("wrong size", 1, values.size());
-		MemberValuePair pair = (MemberValuePair) values.get(0);
-		IBinding binding = pair.getName().resolveBinding();
-		assertNotNull("No binding", binding);
-		binding = pair.getValue().resolveTypeBinding();
-		assertNull("Got a binding", binding);
-		binding = pair.resolveMemberValuePairBinding();
-		assertNotNull("No binding", binding);		
-	}
-	
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=160089
-	 */
-	public void test0229() throws JavaScriptModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
-    	String contents =
-     		"import java.util.List;\n" +
-     		"import java.util.Collection;\n" +
-     		"public class X {\n" +
-     		"	public static List<String> bar;\n" +
-     		"   @SuppressWarnings(\"unchecked\")\n" +
-     		"	public static Collection bar2;\n" +
-    		"}";
-    	this.workingCopy.getBuffer().setContents(contents);
-    	this.workingCopy.save(null, true);
-    	final ASTNode[] asts = new ASTNode[1];
-       	final IBinding[] bindings = new IBinding[1];
-       	final String key = BindingKey.createParameterizedTypeBindingKey(
-       	     "Ljava/util/Collection<TE;>;", new String[] {});
-    	resolveASTs(
-			new IJavaScriptUnit[] {
-				this.workingCopy
-			},
-			new String[] {
-				key	
-			},
-			new ASTRequestor() {
-                public void acceptAST(IJavaScriptUnit source, JavaScriptUnit localAst) {
-                	asts[0] = localAst;
-                }
-                public void acceptBinding(String bindingKey, IBinding binding) {
-                	if (key.equals(bindingKey)) {
-                		bindings[0] = binding;
-                 	}
-                }
-			},
-			getJavaProject("Converter15"),
-			null);
-    	ASTNode node = asts[0];
-    	assertNotNull("Should not be null", node);
-    	assertNotNull("Should not be null", bindings[0]);
-    	assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
-		JavaScriptUnit unit = (JavaScriptUnit) node;
-		assertProblemsSize(unit, 0);
-		node = getASTNode(unit, 0, 0);
-    	assertEquals("Not a compilation unit", ASTNode.FIELD_DECLARATION, node.getNodeType());
-    	FieldDeclaration fieldDeclaration = (FieldDeclaration) node;
-    	Type type = fieldDeclaration.getType();
-    	ITypeBinding typeBinding = type.resolveBinding();
-		node = getASTNode(unit, 0, 1);
-    	assertEquals("Not a compilation unit", ASTNode.FIELD_DECLARATION, node.getNodeType());
-    	fieldDeclaration = (FieldDeclaration) node;
-    	type = fieldDeclaration.getType();
-    	ITypeBinding typeBinding2 = type.resolveBinding();
-    	final ITypeBinding collectionTypeBinding = (ITypeBinding) bindings[0];
-    	assertTrue("Not a raw type", collectionTypeBinding.isRawType());
-    	assertTrue("Not assignement compatible", typeBinding.isAssignmentCompatible(typeBinding2));
-    	assertTrue("Not assignement compatible", typeBinding.isAssignmentCompatible(collectionTypeBinding));
-	}
-	
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=156352
-	 */
-	public void test0230() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0230", "Test3.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		IType type = sourceUnit.getType("Test3");//$NON-NLS-1$
-
-		assertNotNull("Should not be null", type);
-		ASTParser parser= ASTParser.newParser(AST.JLS3);
-		parser.setProject(type.getJavaScriptProject());
-		IBinding[] bindings= parser.createBindings(new IJavaScriptElement[] { type }, null);
-		if (bindings.length == 1 && bindings[0] instanceof ITypeBinding) {
-			ITypeBinding typeBinding= (ITypeBinding) bindings[0];
-			StringBuffer buffer = new StringBuffer();
-			while (typeBinding != null) {
-				buffer.append(typeBinding.getAnnotations().length);	
-				typeBinding= typeBinding.getSuperclass();
-			}
-			assertEquals("Wrong number of annotations", "000", String.valueOf(buffer));
-		}
-	}
-	
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=156352
-	 */
-	public void test0231() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter15" , "src", "test0231", "Test3.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		IType type = sourceUnit.getType("Test3");//$NON-NLS-1$
-
-		assertNotNull("Should not be null", type);
-		ASTParser parser= ASTParser.newParser(AST.JLS3);
-		parser.setSource(sourceUnit);
-		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		parser.setResolveBindings(true);
-		JavaScriptUnit unit = (JavaScriptUnit) parser.createAST(null);
-		List types = unit.types();
-		TypeDeclaration typeDeclaration = (TypeDeclaration) types.get(0);
-		ITypeBinding typeBinding = typeDeclaration.resolveBinding();
-		StringBuffer buffer = new StringBuffer();
-		while (typeBinding != null) {
-			buffer.append(typeBinding.getAnnotations().length);	
-			typeBinding= typeBinding.getSuperclass();
-		}
-		assertEquals("Wrong number of annotations", "020", String.valueOf(buffer));
-	}
 	
 	/*
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=167958
@@ -7420,13 +5743,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		Type type = declaration.getReturnType2();
 		ITypeBinding typeBinding = type.resolveBinding();
 		assertTrue("Not a binary type binding", !typeBinding.isFromSource());
-		IAnnotationBinding[] annotations = typeBinding.getAnnotations();
-		assertNotNull("No annotations", annotations);
-		assertEquals("Wrong size", 1, annotations.length);
-		IAnnotationBinding annotationBinding = annotations[0];
-		assertEquals("Wrong name", "Annot", annotationBinding.getName());
-		ITypeBinding binding = annotationBinding.getAnnotationType();
-		assertEquals("Wrong name", "test0232.Annot", binding.getQualifiedName());
 	}
 
 	/*
@@ -7475,17 +5791,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		Type type = declaration.getReturnType2();
 		ITypeBinding typeBinding = type.resolveBinding();
 		assertTrue("Not a binary type binding", !typeBinding.isFromSource());
-		IAnnotationBinding[] annotations = typeBinding.getAnnotations();
-		assertNotNull("No annotations", annotations);
-		assertEquals("Wrong size", 1, annotations.length);
-		IAnnotationBinding annotationBinding = annotations[0];
-		assertEquals("Wrong name", "Annot", annotationBinding.getName());
-		ITypeBinding binding = annotationBinding.getAnnotationType();
-		assertEquals("Wrong name", "test0233.Annot", binding.getQualifiedName());
-		IMemberValuePairBinding[] pairs = annotationBinding.getAllMemberValuePairs();
-		assertEquals("Wrong number", 1, pairs.length);
-		assertEquals("Wrong key", "message", pairs[0].getName());
-		assertEquals("Wrong value", "Hello, World!", pairs[0].getValue());
 	}
 	
 	/*

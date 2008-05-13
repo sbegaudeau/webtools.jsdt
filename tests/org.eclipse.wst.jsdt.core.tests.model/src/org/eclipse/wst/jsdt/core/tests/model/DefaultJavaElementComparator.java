@@ -16,13 +16,11 @@ import java.util.List;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
-import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -177,22 +175,13 @@ class DefaultJavaElementComparator implements Comparator {
 					return this.categories[STATIC_METHOD_CATEGORY];
 				}
 				return this.categories[METHOD_CATEGORY];
-			case ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION :
-				if (Flags.isStatic(node.getModifiers())) {
-					return this.categories[STATIC_METHOD_CATEGORY];
-				}
-				return this.categories[METHOD_CATEGORY];
 			case ASTNode.FIELD_DECLARATION :
 				FieldDeclaration fieldDeclaration = (FieldDeclaration) node;
 				if (Flags.isStatic(fieldDeclaration.getModifiers())) {
 					return this.categories[STATIC_FIELD_CATEGORY];
 				}
 				return this.categories[FIELD_CATEGORY];
-			case ASTNode.ENUM_CONSTANT_DECLARATION :
-				return this.categories[STATIC_FIELD_CATEGORY];
 			case ASTNode.TYPE_DECLARATION :
-			case ASTNode.ENUM_DECLARATION :
-			case ASTNode.ANNOTATION_TYPE_DECLARATION :
 				AbstractTypeDeclaration abstractTypeDeclaration = (AbstractTypeDeclaration) node;
 				if (Flags.isStatic(abstractTypeDeclaration.getModifiers())) {
 					return this.categories[STATIC_TYPE_CATEGORY];
@@ -263,20 +252,12 @@ class DefaultJavaElementComparator implements Comparator {
 					buffer.append(buildSignature(type));
 				}
 				return String.valueOf(buffer);
-			case ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION :
-				AnnotationTypeMemberDeclaration annotationTypeMemberDeclaration = (AnnotationTypeMemberDeclaration) node;
-				return annotationTypeMemberDeclaration.getName().getIdentifier();
 			case ASTNode.FIELD_DECLARATION :
 				FieldDeclaration fieldDeclaration = (FieldDeclaration) node;
 				return ((VariableDeclarationFragment) fieldDeclaration.fragments().get(0)).getName().getIdentifier();
-			case ASTNode.ENUM_CONSTANT_DECLARATION :
-				EnumConstantDeclaration enumConstantDeclaration = (EnumConstantDeclaration) node;
-				return enumConstantDeclaration.getName().getIdentifier();
 			case ASTNode.INITIALIZER :
 				return ((Integer) node.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).toString();
 			case ASTNode.TYPE_DECLARATION :
-			case ASTNode.ENUM_DECLARATION :
-			case ASTNode.ANNOTATION_TYPE_DECLARATION :
 				AbstractTypeDeclaration abstractTypeDeclaration = (AbstractTypeDeclaration) node;
 				return abstractTypeDeclaration.getName().getIdentifier();
 		}
