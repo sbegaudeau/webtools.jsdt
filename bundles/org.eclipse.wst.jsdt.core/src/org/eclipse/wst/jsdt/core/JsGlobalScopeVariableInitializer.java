@@ -12,11 +12,11 @@
 package org.eclipse.wst.jsdt.core;
 
 /**
- * Abstract base implementation of all classpath variable initializers.
- * Classpath variable initializers are used in conjunction with the
+ * Abstract base implementation of all includepath variable initializers.
+ * Includepath variable initializers are used in conjunction with the
  * "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer" extension point.
  * <p>
- * Clients should subclass this class to implement a specific classpath
+ * Clients should subclass this class to implement a specific includepath
  * variable initializer. The subclass must have a public 0-argument
  * constructor and a concrete implementation of <code>initialize</code>.
  *
@@ -30,14 +30,14 @@ package org.eclipse.wst.jsdt.core;
 public abstract class JsGlobalScopeVariableInitializer {
 
     /**
-     * Creates a new classpath variable initializer.
+     * Creates a new includepath variable initializer.
      */
     public JsGlobalScopeVariableInitializer() {
-    	// a classpath variable initializer must have a public 0-argument constructor
+    	// a includepath variable initializer must have a public 0-argument constructor
     }
 
     /**
-     * Binds a value to the workspace classpath variable with the given name,
+     * Binds a value to the workspace includepath variable with the given name,
      * or fails silently if this cannot be done.
      * <p>
      * A variable initializer is automatically activated whenever a variable value
@@ -45,7 +45,7 @@ public abstract class JsGlobalScopeVariableInitializer {
      * the initializer can set the corresponding variable using
      * <code>JavaScriptCore#setClasspathVariable</code>.
      *
-     * @param variable the name of the workspace classpath variable
+     * @param variable the name of the workspace includepath variable
      *    that requires a binding
      *
      * @see JavaScriptCore#getIncludepathVariable(String)

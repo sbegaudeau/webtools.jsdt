@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.internal.core.InternalNamingConventions;
 
 
 /**
- * Provides methods for computing Java-specific names.
+ * Provides methods for computing JavaScript-specific names.
  * <p>
  * The behavior of the methods is dependent of several JavaScriptCore options.
  * <p>

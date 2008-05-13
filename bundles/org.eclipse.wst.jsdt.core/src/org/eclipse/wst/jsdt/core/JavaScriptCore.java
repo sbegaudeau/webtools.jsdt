@@ -14,8 +14,8 @@
  *                                 CORE_CIRCULAR_CLASSPATH
  *                                 CORE_INCOMPLETE_CLASSPATH
  *     IBM Corporation - added run(IWorkspaceRunnable, IProgressMonitor)
- *     IBM Corporation - added exclusion patterns to source classpath entries
- *     IBM Corporation - added specific output location to source classpath entries
+ *     IBM Corporation - added exclusion patterns to source includepath entries
+ *     IBM Corporation - added specific output location to source includepath entries
  *     IBM Corporation - added the following constants:
  *                                 CORE_JAVA_BUILD_CLEAN_OUTPUT_FOLDER
  *                                 CORE_JAVA_BUILD_RECREATE_MODIFIED_CLASS_FILES_IN_OUTPUT_FOLDER
@@ -133,8 +133,8 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 import org.osgi.framework.BundleContext;
 
 /**
- * The plug-in runtime class for the Java model plug-in containing the core
- * (UI-free) support for Java projects.
+ * The plug-in runtime class for the JavaScript model plug-in containing the core
+ * (UI-free) support for JavaScript projects.
  * <p>
  * Like all plug-in runtime classes (subclasses of <code>Plugin</code>), this
  * class is automatically instantiated by the platform when the plug-in gets
@@ -143,8 +143,8 @@ import org.osgi.framework.BundleContext;
  * </p>
  * <p>
  * The single instance of this class can be accessed from any plug-in declaring
- * the Java model plug-in as a prerequisite via
- * <code>JavaScriptCore.getJavaCore()</code>. The Java model plug-in will be activated
+ * the JavaScript model plug-in as a prerequisite via
+ * <code>JavaScriptCore.getJavaCore()</code>. The JavaScript model plug-in will be activated
  * automatically if not already active.
  * </p>
  *  
@@ -162,42 +162,41 @@ public final class JavaScriptCore extends Plugin {
 
 	private static Plugin JAVA_CORE_PLUGIN = null;
 	/**
-	 * The plug-in identifier of the Java core support
+	 * The plug-in identifier of the JavaScript core support
 	 * (value <code>"org.eclipse.wst.jsdt.core"</code>).
 	 */
 	public static final String PLUGIN_ID = "org.eclipse.wst.jsdt.core" ; //$NON-NLS-1$
 
 	/**
-	 * The identifier for the Java builder
-	 * (value <code>"org.eclipse.wst.jsdt.core.jsbuilder"</code>).
+	 * The identifier for the JavaScript validator
+	 * (value <code>"org.eclipse.wst.jsdt.core.javascriptValidator"</code>).
 	 */
 	public static final String BUILDER_ID = PLUGIN_ID + ".javascriptValidator" ; //$NON-NLS-1$
 
 	/**
-	 * The identifier for the Java model
+	 * The identifier for the JavaScript model
 	 * (value <code>"org.eclipse.wst.jsdt.core.jsmodel"</code>).
 	 */
 	public static final String MODEL_ID = PLUGIN_ID + ".jsmodel" ; //$NON-NLS-1$
 
 	/**
-	 * The identifier for the Java nature
+	 * The identifier for the JavaScript nature
 	 * (value <code>"org.eclipse.wst.jsdt.core.jsnature"</code>).
 	 * The presence of this nature on a project indicates that it is
-	 * Java-capable.
+	 * JavaScript-capable.
 	 *
 	 * @see org.eclipse.core.resources.IProject#hasNature(java.lang.String)
 	 */
 	public static final String NATURE_ID = PLUGIN_ID + ".jsNature" ; //$NON-NLS-1$
 
 	/**
-	 * Name of the handle id attribute in a Java marker.
+	 * Name of the handle id attribute in a JavaScript marker.
 	 */
 	protected static final String ATT_HANDLE_ID =
 		"org.eclipse.wst.jsdt.internal.core.JavaModelManager.handleId" ; //$NON-NLS-1$
 
 	/**
 	 * Name of the User Library Container id.
-	 * @since 3.0
 	 */
 	public static final String USER_LIBRARY_CONTAINER_ID= "org.eclipse.wst.jsdt.USER_LIBRARY"; //$NON-NLS-1$
 
@@ -231,13 +230,11 @@ public final class JavaScriptCore extends Plugin {
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_CODEGEN_INLINE_JSR_BYTECODE = PLUGIN_ID + ".compiler.codegen.inlineJsrBytecode"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_DOC_COMMENT_SUPPORT = PLUGIN_ID + ".compiler.doc.comment.support"; //$NON-NLS-1$
 	/**
@@ -270,13 +267,11 @@ public final class JavaScriptCore extends Plugin {
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String COMPILER_PB_DEPRECATION_IN_DEPRECATED_CODE = PLUGIN_ID + ".compiler.problem.deprecationInDeprecatedCode"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_DEPRECATION_WHEN_OVERRIDING_DEPRECATED_METHOD = "org.eclipse.wst.jsdt.core.compiler.problem.deprecationWhenOverridingDeprecatedMethod"; //$NON-NLS-1$
 	/**
@@ -297,25 +292,21 @@ public final class JavaScriptCore extends Plugin {
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String COMPILER_PB_UNUSED_PARAMETER_WHEN_IMPLEMENTING_ABSTRACT = PLUGIN_ID + ".compiler.problem.unusedParameterWhenImplementingAbstract"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String COMPILER_PB_UNUSED_PARAMETER_WHEN_OVERRIDING_CONCRETE = PLUGIN_ID + ".compiler.problem.unusedParameterWhenOverridingConcrete"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.3
 	 */
 	public static final String COMPILER_PB_UNUSED_PARAMETER_INCLUDE_DOC_COMMENT_REFERENCE = PLUGIN_ID + ".compiler.problem.unusedParameterIncludeDocCommentReference"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String COMPILER_PB_UNUSED_IMPORT = PLUGIN_ID + ".compiler.problem.unusedImport"; //$NON-NLS-1$
 	/**
@@ -326,368 +317,307 @@ public final class JavaScriptCore extends Plugin {
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String COMPILER_PB_NON_NLS_STRING_LITERAL = PLUGIN_ID + ".compiler.problem.nonExternalizedStringLiteral"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String COMPILER_PB_ASSERT_IDENTIFIER = PLUGIN_ID + ".compiler.problem.assertIdentifier"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_ENUM_IDENTIFIER = PLUGIN_ID + ".compiler.problem.enumIdentifier"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String COMPILER_PB_STATIC_ACCESS_RECEIVER = PLUGIN_ID + ".compiler.problem.staticAccessReceiver"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_INDIRECT_STATIC_ACCESS = PLUGIN_ID + ".compiler.problem.indirectStaticAccess"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String COMPILER_PB_NO_EFFECT_ASSIGNMENT = PLUGIN_ID + ".compiler.problem.noEffectAssignment"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String COMPILER_PB_INCOMPATIBLE_NON_INHERITED_INTERFACE_METHOD = PLUGIN_ID + ".compiler.problem.incompatibleNonInheritedInterfaceMethod"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String COMPILER_PB_UNUSED_PRIVATE_MEMBER = PLUGIN_ID + ".compiler.problem.unusedPrivateMember"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_LOCAL_VARIABLE_HIDING = PLUGIN_ID + ".compiler.problem.localVariableHiding"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_SPECIAL_PARAMETER_HIDING_FIELD = PLUGIN_ID + ".compiler.problem.specialParameterHidingField"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_FIELD_HIDING = PLUGIN_ID + ".compiler.problem.fieldHiding"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_TYPE_PARAMETER_HIDING = PLUGIN_ID + ".compiler.problem.typeParameterHiding"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_POSSIBLE_ACCIDENTAL_BOOLEAN_ASSIGNMENT = PLUGIN_ID + ".compiler.problem.possibleAccidentalBooleanAssignment"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.2
 	 */
 	public static final String COMPILER_PB_FALLTHROUGH_CASE = PLUGIN_ID + ".compiler.problem.fallthroughCase"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_EMPTY_STATEMENT = PLUGIN_ID + ".compiler.problem.emptyStatement"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_BOOLEAN_METHOD_THROWING_EXCEPTION = PLUGIN_ID + ".compiler.problem.booleanMethodThrowingException"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_UNNECESSARY_TYPE_CHECK = PLUGIN_ID + ".compiler.problem.unnecessaryTypeCheck"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_UNNECESSARY_ELSE = PLUGIN_ID + ".compiler.problem.unnecessaryElse"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_UNDOCUMENTED_EMPTY_BLOCK = PLUGIN_ID + ".compiler.problem.undocumentedEmptyBlock"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_FINALLY_BLOCK_NOT_COMPLETING = PLUGIN_ID + ".compiler.problem.finallyBlockNotCompletingNormally"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_UNUSED_DECLARED_THROWN_EXCEPTION = PLUGIN_ID + ".compiler.problem.unusedDeclaredThrownException"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_UNUSED_DECLARED_THROWN_EXCEPTION_WHEN_OVERRIDING = PLUGIN_ID + ".compiler.problem.unusedDeclaredThrownExceptionWhenOverriding"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_UNQUALIFIED_FIELD_ACCESS = PLUGIN_ID + ".compiler.problem.unqualifiedFieldAccess"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
 	 * @deprecated - got renamed into {@link #COMPILER_PB_UNCHECKED_TYPE_OPERATION}
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_UNSAFE_TYPE_OPERATION = PLUGIN_ID + ".compiler.problem.uncheckedTypeOperation"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_UNCHECKED_TYPE_OPERATION = PLUGIN_ID + ".compiler.problem.uncheckedTypeOperation"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.2
 	 */
 	public static final String COMPILER_PB_RAW_TYPE_REFERENCE = PLUGIN_ID + ".compiler.problem.rawTypeReference"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_FINAL_PARAMETER_BOUND = PLUGIN_ID + ".compiler.problem.finalParameterBound"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_MISSING_SERIAL_VERSION = PLUGIN_ID + ".compiler.problem.missingSerialVersion"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_VARARGS_ARGUMENT_NEED_CAST = PLUGIN_ID + ".compiler.problem.varargsArgumentNeedCast"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_AUTOBOXING = PLUGIN_ID + ".compiler.problem.autoboxing"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_ANNOTATION_SUPER_INTERFACE = PLUGIN_ID + ".compiler.problem.annotationSuperInterface"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_MISSING_OVERRIDE_ANNOTATION = PLUGIN_ID + ".compiler.problem.missingOverrideAnnotation"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_MISSING_DEPRECATED_ANNOTATION = PLUGIN_ID + ".compiler.problem.missingDeprecatedAnnotation"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_INCOMPLETE_ENUM_SWITCH = PLUGIN_ID + ".compiler.problem.incompleteEnumSwitch"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
-	 * @since 3.1
 	 * @deprecated use {@link #COMPILER_PB_NULL_REFERENCE} instead
 	 */
 	public static final String COMPILER_PB_INCONSISTENT_NULL_CHECK = PLUGIN_ID + ".compiler.problem.inconsistentNullCheck"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.2
 	 */
 	public static final String COMPILER_PB_UNUSED_LABEL = PLUGIN_ID + ".compiler.problem.unusedLabel"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_INVALID_JAVADOC = PLUGIN_ID + ".compiler.problem.invalidJavadoc"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_INVALID_JAVADOC_TAGS = PLUGIN_ID + ".compiler.problem.invalidJavadocTags"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_INVALID_JAVADOC_TAGS__DEPRECATED_REF = PLUGIN_ID + ".compiler.problem.invalidJavadocTagsDeprecatedRef"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_INVALID_JAVADOC_TAGS__NOT_VISIBLE_REF = PLUGIN_ID + ".compiler.problem.invalidJavadocTagsNotVisibleRef"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_INVALID_JAVADOC_TAGS_VISIBILITY = PLUGIN_ID + ".compiler.problem.invalidJavadocTagsVisibility"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_MISSING_JAVADOC_TAGS = PLUGIN_ID + ".compiler.problem.missingJavadocTags"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_MISSING_JAVADOC_TAGS_VISIBILITY = PLUGIN_ID + ".compiler.problem.missingJavadocTagsVisibility"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_MISSING_JAVADOC_TAGS_OVERRIDING = PLUGIN_ID + ".compiler.problem.missingJavadocTagsOverriding"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_MISSING_JAVADOC_COMMENTS = PLUGIN_ID + ".compiler.problem.missingJavadocComments"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_MISSING_JAVADOC_COMMENTS_VISIBILITY = PLUGIN_ID + ".compiler.problem.missingJavadocCommentsVisibility"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_PB_MISSING_JAVADOC_COMMENTS_OVERRIDING = PLUGIN_ID + ".compiler.problem.missingJavadocCommentsOverriding"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String COMPILER_PB_CHAR_ARRAY_IN_STRING_CONCATENATION = PLUGIN_ID + ".compiler.problem.noImplicitStringConversion"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String COMPILER_PB_MAX_PER_UNIT = PLUGIN_ID + ".compiler.maxProblemPerUnit"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.2
 	 */
 	public static final String COMPILER_PB_FATAL_OPTIONAL_ERROR = PLUGIN_ID + ".compiler.problem.fatalOptionalError"; //$NON-NLS-1$
 	/**
 	 * Possible configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.2
 	 */
 	public static final String COMPILER_PB_PARAMETER_ASSIGNMENT = PLUGIN_ID + ".compiler.problem.parameterAssignment"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String COMPILER_SOURCE = PLUGIN_ID + ".compiler.source"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String COMPILER_COMPLIANCE = PLUGIN_ID + ".compiler.compliance"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String COMPILER_TASK_PRIORITIES = PLUGIN_ID + ".compiler.taskPriorities"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value for COMPILER_TASK_PRIORITIES.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String COMPILER_TASK_PRIORITY_HIGH = "HIGH"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value for COMPILER_TASK_PRIORITIES.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String COMPILER_TASK_PRIORITY_LOW = "LOW"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value for COMPILER_TASK_PRIORITIES.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String COMPILER_TASK_PRIORITY_NORMAL = "NORMAL"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String COMPILER_TASK_TAGS = PLUGIN_ID + ".compiler.taskTags"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String COMPILER_TASK_CASE_SENSITIVE = PLUGIN_ID + ".compiler.taskCaseSensitive"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_FORBIDDEN_REFERENCE = PLUGIN_ID + ".compiler.problem.forbiddenReference"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_DISCOURAGED_REFERENCE = PLUGIN_ID + ".compiler.problem.discouragedReference"; //$NON-NLS-1$
 
@@ -708,37 +638,31 @@ public final class JavaScriptCore extends Plugin {
 	 *
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_SUPPRESS_WARNINGS = PLUGIN_ID + ".compiler.problem.suppressWarnings"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_UNHANDLED_WARNING_TOKEN = PLUGIN_ID + ".compiler.problem.unhandledWarningToken"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.2
 	 */
 	public static final String COMPILER_PB_NULL_REFERENCE = PLUGIN_ID + ".compiler.problem.nullReference"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.3
 	 */
 	public static final String COMPILER_PB_POTENTIAL_NULL_REFERENCE = PLUGIN_ID + ".compiler.problem.potentialNullReference"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.3
 	 */
 	public static final String COMPILER_PB_REDUNDANT_NULL_CHECK = PLUGIN_ID + ".compiler.problem.redundantNullCheck"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.3
 	 */
 	public static final String COMPILER_PB_OVERRIDING_METHOD_WITHOUT_SUPER_INVOCATION = PLUGIN_ID + ".compiler.problem.overridingMethodWithoutSuperInvocation"; //$NON-NLS-1$
 	/**
@@ -749,95 +673,79 @@ public final class JavaScriptCore extends Plugin {
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String CORE_JAVA_BUILD_RESOURCE_COPY_FILTER = PLUGIN_ID + ".builder.resourceCopyExclusionFilter"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CORE_JAVA_BUILD_DUPLICATE_RESOURCE = PLUGIN_ID + ".builder.duplicateResourceTask"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CORE_JAVA_BUILD_CLEAN_OUTPUT_FOLDER = PLUGIN_ID + ".builder.cleanOutputFolder"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.2
 	 */
 	public static final String CORE_JAVA_BUILD_RECREATE_MODIFIED_CLASS_FILES_IN_OUTPUT_FOLDER = PLUGIN_ID + ".builder.recreateModifiedClassFileInOutputFolder"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CORE_INCOMPLETE_CLASSPATH = PLUGIN_ID + ".incompleteClasspath"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CORE_CIRCULAR_CLASSPATH = PLUGIN_ID + ".circularClasspath"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String CORE_INCOMPATIBLE_JDK_LEVEL = PLUGIN_ID + ".incompatibleJDKLevel"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String CORE_JAVA_BUILD_INVALID_CLASSPATH = PLUGIN_ID + ".builder.invalidClasspath"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String CORE_ENCODING = PLUGIN_ID + ".encoding"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS = PLUGIN_ID + ".classpath.exclusionPatterns"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CORE_ENABLE_CLASSPATH_MULTIPLE_OUTPUT_LOCATIONS = PLUGIN_ID + ".classpath.multipleOutputLocations"; //$NON-NLS-1$
 	/**
 	 * Default task tag
 	 * @deprecated Use {@link #DEFAULT_TASK_TAGS} instead
-	 * @since 2.1
 	 */
 	public static final String DEFAULT_TASK_TAG = "TODO"; //$NON-NLS-1$
 	/**
 	 * Default task priority
 	 * @deprecated Use {@link #DEFAULT_TASK_PRIORITIES} instead
-	 * @since 2.1
 	 */
 	public static final String DEFAULT_TASK_PRIORITY = "NORMAL"; //$NON-NLS-1$
 	/**
 	 * Default task tag
-	 * @since 3.0
 	 */
 	public static final String DEFAULT_TASK_TAGS = "TODO,FIXME,XXX"; //$NON-NLS-1$
 	/**
 	 * Default task priority
-	 * @since 3.0
 	 */
 	public static final String DEFAULT_TASK_PRIORITIES = "NORMAL,HIGH,NORMAL"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_BRACE_POSITION_FOR_ANONYMOUS_TYPE_DECLARATION},
 	 * {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_BRACE_POSITION_FOR_BLOCK} ,
 	 * {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_BRACE_POSITION_FOR_CONSTRUCTOR_DECLARATION},
@@ -849,7 +757,6 @@ public final class JavaScriptCore extends Plugin {
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_INSERT_NEW_LINE_BEFORE_CATCH_IN_TRY_STATEMENT},
 	 *  {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_INSERT_NEW_LINE_BEFORE_ELSE_IN_IF_STATEMENT},
 	 *  {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_INSERT_NEW_LINE_BEFORE_FINALLY_IN_TRY_STATEMENT},
@@ -859,153 +766,129 @@ public final class JavaScriptCore extends Plugin {
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMPACT_ELSE_IF} instead
 	 */
 	public static final String FORMATTER_NEWLINE_ELSE_IF = PLUGIN_ID + ".formatter.newline.elseIf"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_INSERT_NEW_LINE_IN_EMPTY_BLOCK} instead
 	 */
 	public static final String FORMATTER_NEWLINE_EMPTY_BLOCK = PLUGIN_ID + ".formatter.newline.emptyBlock"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_NUMBER_OF_EMPTY_LINES_TO_PRESERVE} instead
 	 */
 	public static final String FORMATTER_CLEAR_BLANK_LINES = PLUGIN_ID + ".formatter.newline.clearAll"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_LINE_SPLIT} instead
 	 */
 	public static final String FORMATTER_LINE_SPLIT = PLUGIN_ID + ".formatter.lineSplit"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_INSERT_SPACE_BEFORE_ASSIGNMENT_OPERATOR} instead
 	 */
 	public static final String FORMATTER_COMPACT_ASSIGNMENT = PLUGIN_ID + ".formatter.style.assignment"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_TAB_CHAR}} instead
 	 */
 	public static final String FORMATTER_TAB_CHAR = PLUGIN_ID + ".formatter.tabulation.char"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_TAB_SIZE} instead
 	 */
 	public static final String FORMATTER_TAB_SIZE = PLUGIN_ID + ".formatter.tabulation.size"; //$NON-NLS-1$
 	/**
 	 * Possible configurable option ID
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 * @deprecated Use {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_INSERT_SPACE_AFTER_CLOSING_PAREN_IN_CAST} instead
 	 */
 	public static final String FORMATTER_SPACE_CASTEXPRESSION = PLUGIN_ID + ".formatter.space.castexpression"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String CODEASSIST_VISIBILITY_CHECK = PLUGIN_ID + ".codeComplete.visibilityCheck"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.2
 	 */
 	public static final String CODEASSIST_DEPRECATION_CHECK = PLUGIN_ID + ".codeComplete.deprecationCheck"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.2
 	 */
 	public static final String CODEASSIST_CAMEL_CASE_MATCH = PLUGIN_ID + ".codeComplete.camelCaseMatch"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String CODEASSIST_IMPLICIT_QUALIFICATION = PLUGIN_ID + ".codeComplete.forceImplicitQualification"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CODEASSIST_FIELD_PREFIXES = PLUGIN_ID + ".codeComplete.fieldPrefixes"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CODEASSIST_STATIC_FIELD_PREFIXES = PLUGIN_ID + ".codeComplete.staticFieldPrefixes"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CODEASSIST_LOCAL_PREFIXES = PLUGIN_ID + ".codeComplete.localPrefixes"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CODEASSIST_ARGUMENT_PREFIXES = PLUGIN_ID + ".codeComplete.argumentPrefixes"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CODEASSIST_FIELD_SUFFIXES = PLUGIN_ID + ".codeComplete.fieldSuffixes"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CODEASSIST_STATIC_FIELD_SUFFIXES = PLUGIN_ID + ".codeComplete.staticFieldSuffixes"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CODEASSIST_LOCAL_SUFFIXES = PLUGIN_ID + ".codeComplete.localSuffixes"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CODEASSIST_ARGUMENT_SUFFIXES = PLUGIN_ID + ".codeComplete.argumentSuffixes"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String CODEASSIST_FORBIDDEN_REFERENCE_CHECK= PLUGIN_ID + ".codeComplete.forbiddenReferenceCheck"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String CODEASSIST_DISCOURAGED_REFERENCE_CHECK= PLUGIN_ID + ".codeComplete.discouragedReferenceCheck"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.3
 	 */
 	public static final String CODEASSIST_SUGGEST_STATIC_IMPORTS= PLUGIN_ID + ".codeComplete.suggestStaticImports"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
-	 * @since 3.2
 	 */
 	public static final String TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC = PLUGIN_ID + ".timeoutForParameterNameFromAttachedJavadoc"; //$NON-NLS-1$
 
@@ -1042,37 +925,31 @@ public final class JavaScriptCore extends Plugin {
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String VERSION_1_3 = "1.3"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String VERSION_1_4 = "1.4"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String VERSION_1_5 = "1.5"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 3.2
 	 */
 	public static final String VERSION_1_6 = "1.6"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 3.3
 	 */
 	public static final String VERSION_1_7 = "1.7"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String ABORT = "abort"; //$NON-NLS-1$
 	/**
@@ -1098,118 +975,100 @@ public final class JavaScriptCore extends Plugin {
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String INSERT = "insert"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String DO_NOT_INSERT = "do not insert"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String PRESERVE_ONE = "preserve one"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String CLEAR_ALL = "clear all"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String NORMAL = "normal"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String COMPACT = "compact"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String TAB = "tab"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String SPACE = "space"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String ENABLED = "enabled"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 2.0
 	 */
 	public static final String DISABLED = "disabled"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 2.1
 	 */
 	public static final String CLEAN = "clean"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String PUBLIC = "public"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String PROTECTED = "protected"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String DEFAULT = "default"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 3.0
 	 */
 	public static final String PRIVATE = "private"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option value.
 	 * @see #getDefaultOptions()
-	 * @since 3.1
 	 */
 	public static final String NEVER = "never"; //$NON-NLS-1$
 
 	/**
-	 * Value of the content-type for Java source files. Use this value to retrieve the Java content type
-	 * from the content type manager, and to add new Java-like extensions to this content type.
+	 * Value of the content-type for JavaScript source files. Use this value to retrieve the JavaScript content type
+	 * from the content type manager, and to add new JavaScript-like extensions to this content type.
 	 *
 	 * @see org.eclipse.core.runtime.content.IContentTypeManager#getContentType(String)
 	 * @see #getJavaScriptLikeExtensions()
-	 * @since 3.2
 	 */
 	public static final String JAVA_SOURCE_CONTENT_TYPE = JavaScriptCore.PLUGIN_ID+".jsSource" ; //$NON-NLS-1$
 
 	/**
-	 * Creates the Java core plug-in.
+	 * Creates the JavaScript core plug-in.
 	 * <p>
 	 * The plug-in instance is created automatically by the
 	 * Eclipse platform. Clients must not call.
 	 * </p>
 	 *
-	 * @since 3.0
 	 */
 	public JavaScriptCore() {
 		super();
@@ -1217,7 +1076,7 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Adds the given listener for changes to Java elements.
+	 * Adds the given listener for changes to JavaScript elements.
 	 * Has no effect if an identical listener is already registered.
 	 *
 	 * This listener will only be notified during the POST_CHANGE resource change notification
@@ -1233,21 +1092,21 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Adds the given listener for changes to Java elements.
+	 * Adds the given listener for changes to JavaScript elements.
 	 * Has no effect if an identical listener is already registered.
 	 * After completion of this method, the given listener will be registered for exactly
 	 * the specified events.  If they were previously registered for other events, they
 	 * will be deregistered.
 	 * <p>
 	 * Once registered, a listener starts receiving notification of changes to
-	 * java elements in the model. The listener continues to receive
+	 * javaScript elements in the model. The listener continues to receive
 	 * notifications until it is replaced or removed.
 	 * </p>
 	 * <p>
 	 * Listeners can listen for several types of event as defined in <code>ElementChangeEvent</code>.
 	 * Clients are free to register for any number of event types however if they register
 	 * for more than one, it is their responsibility to ensure they correctly handle the
-	 * case where the same java element change shows up in multiple notifications.
+	 * case where the same javaScript element change shows up in multiple notifications.
 	 * Clients are guaranteed to receive only the events for which they are registered.
 	 * </p>
 	 *
@@ -1256,19 +1115,18 @@ public final class JavaScriptCore extends Plugin {
 	 * @see IElementChangedListener
 	 * @see ElementChangedEvent
 	 * @see #removeElementChangedListener(IElementChangedListener)
-	 * @since 2.0
 	 */
 	public static void addElementChangedListener(IElementChangedListener listener, int eventMask) {
 		JavaModelManager.getJavaModelManager().deltaState.addElementChangedListener(listener, eventMask);
 	}
 
 	/**
-	 * Configures the given marker attribute map for the given Java element.
-	 * Used for markers, which denote a Java element rather than a resource.
+	 * Configures the given marker attribute map for the given JavaScript element.
+	 * Used for markers, which denote a JavaScript element rather than a resource.
 	 *
 	 * @param attributes the mutable marker attribute map (key type: <code>String</code>,
 	 *   value type: <code>String</code>)
-	 * @param element the Java element for which the marker needs to be configured
+	 * @param element the JavaScript element for which the marker needs to be configured
 	 * @deprecated Use {@link #addJavaScriptElementMarkerAttributes(Map,IJavaScriptElement)} instead
 	 */
 	public static void addJavaElementMarkerAttributes(
@@ -1278,12 +1136,12 @@ public final class JavaScriptCore extends Plugin {
 		}
 
 	/**
-	 * Configures the given marker attribute map for the given Java element.
-	 * Used for markers, which denote a Java element rather than a resource.
+	 * Configures the given marker attribute map for the given JavaScript element.
+	 * Used for markers, which denote a JavaScript element rather than a resource.
 	 *
 	 * @param attributes the mutable marker attribute map (key type: <code>String</code>,
 	 *   value type: <code>String</code>)
-	 * @param element the Java element for which the marker needs to be configured
+	 * @param element the JavaScript element for which the marker needs to be configured
 	 */
 	public static void addJavaScriptElementMarkerAttributes(
 		Map attributes,
@@ -1335,16 +1193,15 @@ public final class JavaScriptCore extends Plugin {
 
 
 	/**
-	 * Adds the given listener for POST_CHANGE resource change events to the Java core.
+	 * Adds the given listener for POST_CHANGE resource change events to the JavaScript core.
 	 * The listener is guaranteed to be notified of the POST_CHANGE resource change event before
-	 * the Java core starts processing the resource change event itself.
+	 * the JavaScript core starts processing the resource change event itself.
 	 * <p>
 	 * Has no effect if an identical listener is already registered.
 	 * </p>
 	 *
 	 * @param listener the listener
 	 * @see #removePreProcessingResourceChangedListener(IResourceChangeListener)
-	 * @since 3.0
 	 * @deprecated use addPreProcessingResourceChangedListener(listener, IResourceChangeEvent.POST_CHANGE) instead
 	 */
 	public static void addPreProcessingResourceChangedListener(IResourceChangeListener listener) {
@@ -1352,9 +1209,9 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Adds the given listener for resource change events of the given types to the Java core.
+	 * Adds the given listener for resource change events of the given types to the JavaScript core.
 	 * The listener is guaranteed to be notified of the resource change event before
-	 * the Java core starts processing the resource change event itself.
+	 * the JavaScript core starts processing the resource change event itself.
 	 * <p>
 	 * If an identical listener is already registered, the given event types are added to the event types
 	 * of interest to the listener.
@@ -1376,18 +1233,17 @@ public final class JavaScriptCore extends Plugin {
 	 * listener
 	 * @see #removePreProcessingResourceChangedListener(IResourceChangeListener)
 	 * @see IResourceChangeEvent
-	 * @since 3.2
 	 */
 	public static void addPreProcessingResourceChangedListener(IResourceChangeListener listener, int eventMask) {
 		JavaModelManager.getJavaModelManager().deltaState.addPreResourceChangedListener(listener, eventMask);
 	}
 
 	/**
-	 * Configures the given marker for the given Java element.
-	 * Used for markers, which denote a Java element rather than a resource.
+	 * Configures the given marker for the given JavaScript element.
+	 * Used for markers, which denote a JavaScript element rather than a resource.
 	 *
 	 * @param marker the marker to be configured
-	 * @param element the Java element for which the marker needs to be configured
+	 * @param element the JavaScript element for which the marker needs to be configured
 	 * @exception CoreException if the <code>IMarker.setAttribute</code> on the marker fails
 	 */
 	public void configureJavaScriptElementMarker(IMarker marker, IJavaScriptElement element)
@@ -1399,30 +1255,29 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Returns the Java model element corresponding to the given handle identifier
+	 * Returns the JavaScript model element corresponding to the given handle identifier
 	 * generated by <code>IJavaScriptElement.getHandleIdentifier()</code>, or
 	 * <code>null</code> if unable to create the associated element.
 	 *
 	 * @param handleIdentifier the given handle identifier
-	 * @return the Java element corresponding to the handle identifier
+	 * @return the JavaScript element corresponding to the handle identifier
 	 */
 	public static IJavaScriptElement create(String handleIdentifier) {
 		return create(handleIdentifier, DefaultWorkingCopyOwner.PRIMARY);
 	}
 
 	/**
-	 * Returns the Java model element corresponding to the given handle identifier
+	 * Returns the JavaScript model element corresponding to the given handle identifier
 	 * generated by <code>IJavaScriptElement.getHandleIdentifier()</code>, or
 	 * <code>null</code> if unable to create the associated element.
-	 * If the returned Java element is an <code>IJavaScriptUnit</code>, its owner
-	 * is the given owner if such a working copy exists, otherwise the compilation unit
-	 * is a primary compilation unit.
+	 * If the returned JavaScript element is an <code>IJavaScriptUnit</code>, its owner
+	 * is the given owner if such a working copy exists, otherwise the javaScript unit
+	 * is a primary javaScript unit.
 	 *
 	 * @param handleIdentifier the given handle identifier
-	 * @param owner the owner of the returned compilation unit, ignored if the returned
-	 *   element is not a compilation unit
-	 * @return the Java element corresponding to the handle identifier
-	 * @since 3.0
+	 * @param owner the owner of the returned javaScript unit, ignored if the returned
+	 *   element is not a javaScript unit
+	 * @return the JavaScript element corresponding to the handle identifier
 	 */
 	public static IJavaScriptElement create(String handleIdentifier, WorkingCopyOwner owner) {
 		if (handleIdentifier == null) {
@@ -1434,54 +1289,54 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Returns the Java element corresponding to the given file, or
+	 * Returns the JavaScript element corresponding to the given file, or
 	 * <code>null</code> if unable to associate the given file
-	 * with a Java element.
+	 * with a JavaScript element.
 	 *
 	 * <p>The file must be one of:<ul>
 	 *	<li>a file with one of the {@link JavaScriptCore#getJavaScriptLikeExtensions()
-	 *      Java-like extensions} - the element returned is the corresponding <code>IJavaScriptUnit</code></li>
+	 *      JavaScript-like extensions} - the element returned is the corresponding <code>IJavaScriptUnit</code></li>
 	 *	<li>a <code>.class</code> file - the element returned is the corresponding <code>IClassFile</code></li>
 	 *	<li>a <code>.jar</code> file - the element returned is the corresponding <code>IPackageFragmentRoot</code></li>
 	 *	</ul>
 	 * <p>
-	 * Creating a Java element has the side effect of creating and opening all of the
+	 * Creating a JavaScript element has the side effect of creating and opening all of the
 	 * element's parents if they are not yet open.
 	 *
 	 * @param file the given file
-	 * @return the Java element corresponding to the given file, or
+	 * @return the JavaScript element corresponding to the given file, or
 	 * <code>null</code> if unable to associate the given file
-	 * with a Java element
+	 * with a JavaScript element
 	 */
 	public static IJavaScriptElement create(IFile file) {
-		return JavaModelManager.create(file, null/*unknown java project*/);
+		return JavaModelManager.create(file, null/*unknown javaScript project*/);
 	}
 	/**
-	 * Returns the package fragment or package fragment root corresponding to the given folder, or
-	 * <code>null</code> if unable to associate the given folder with a Java element.
+	 * Returns the source folder (package fragment or package fragment root) corresponding to the given folder, or
+	 * <code>null</code> if unable to associate the given folder with a JavaScript element.
 	 * <p>
 	 * Note that a package fragment root is returned rather than a default package.
 	 * <p>
-	 * Creating a Java element has the side effect of creating and opening all of the
+	 * Creating a JavaScript element has the side effect of creating and opening all of the
 	 * element's parents if they are not yet open.
 	 *
 	 * @param folder the given folder
 	 * @return the package fragment or package fragment root corresponding to the given folder, or
-	 * <code>null</code> if unable to associate the given folder with a Java element
+	 * <code>null</code> if unable to associate the given folder with a JavaScript element
 	 */
 	public static IJavaScriptElement create(IFolder folder) {
-		return JavaModelManager.create(folder, null/*unknown java project*/);
+		return JavaModelManager.create(folder, null/*unknown javaScript project*/);
 	}
 	/**
-	 * Returns the Java project corresponding to the given project.
+	 * Returns the JavaScript project corresponding to the given project.
 	 * <p>
-	 * Creating a Java Project has the side effect of creating and opening all of the
+	 * Creating a JavaScript Project has the side effect of creating and opening all of the
 	 * project's parents if they are not yet open.
 	 * <p>
-	 * Note that no check is done at this time on the existence or the java nature of this project.
+	 * Note that no check is done at this time on the existence or the javaScript nature of this project.
 	 *
 	 * @param project the given project
-	 * @return the Java project corresponding to the given project, null if the given project is null
+	 * @return the JavaScript project corresponding to the given project, null if the given project is null
 	 */
 	public static IJavaScriptProject create(IProject project) {
 		if (project == null) {
@@ -1491,65 +1346,60 @@ public final class JavaScriptCore extends Plugin {
 		return javaModel.getJavaProject(project);
 	}
 	/**
-	 * Returns the Java element corresponding to the given resource, or
+	 * Returns the JavaScript element corresponding to the given resource, or
 	 * <code>null</code> if unable to associate the given resource
-	 * with a Java element.
+	 * with a JavaScript element.
 	 * <p>
 	 * The resource must be one of:<ul>
 	 *	<li>a project - the element returned is the corresponding <code>IJavaScriptProject</code></li>
 	 *	<li>a file with one of the {@link JavaScriptCore#getJavaScriptLikeExtensions()
-	 *      Java-like extensions} - the element returned is the corresponding <code>IJavaScriptUnit</code></li>
-	 *	<li>a <code>.class</code> file - the element returned is the corresponding <code>IClassFile</code></li>
-	 *	<li>a <code>.jar</code> file - the element returned is the corresponding <code>IPackageFragmentRoot</code></li>
+	 *      JavaScript-like extensions} - the element returned is the corresponding <code>IJavaScriptUnit</code></li>
 	 *  <li>a folder - the element returned is the corresponding <code>IPackageFragmentRoot</code>
 	 *    	or <code>IPackageFragment</code></li>
 	 *  <li>the workspace root resource - the element returned is the <code>IJavaScriptModel</code></li>
 	 *	</ul>
 	 * <p>
-	 * Creating a Java element has the side effect of creating and opening all of the
+	 * Creating a JavaScript element has the side effect of creating and opening all of the
 	 * element's parents if they are not yet open.
 	 *
 	 * @param resource the given resource
-	 * @return the Java element corresponding to the given resource, or
+	 * @return the JavaScript element corresponding to the given resource, or
 	 * <code>null</code> if unable to associate the given resource
-	 * with a Java element
+	 * with a JavaScript element
 	 */
 	public static IJavaScriptElement create(IResource resource) {
-		return JavaModelManager.create(resource, null/*unknown java project*/);
+		return JavaModelManager.create(resource, null/*unknown javaScript project*/);
 	}
 	/**
-	 * Returns the Java element corresponding to the given file, its project being the given
+	 * Returns the JavaScript element corresponding to the given file, its project being the given
 	 * project. Returns <code>null</code> if unable to associate the given resource
-	 * with a Java element.
+	 * with a JavaScript element.
 	 *<p>
 	 * The resource must be one of:<ul>
 	 *	<li>a project - the element returned is the corresponding <code>IJavaScriptProject</code></li>
 	 *	<li>a file with one of the {@link JavaScriptCore#getJavaScriptLikeExtensions()
-	 *      Java-like extensions} - the element returned is the corresponding <code>IJavaScriptUnit</code></li>
-	 *	<li>a <code>.class</code> file - the element returned is the corresponding <code>IClassFile</code></li>
-	 *	<li>a <code>.jar</code> file - the element returned is the corresponding <code>IPackageFragmentRoot</code></li>
+	 *      JavaScript-like extensions} - the element returned is the corresponding <code>IJavaScriptUnit</code></li>
 	 *  <li>a folder - the element returned is the corresponding <code>IPackageFragmentRoot</code>
 	 *    	or <code>IPackageFragment</code></li>
 	 *  <li>the workspace root resource - the element returned is the <code>IJavaScriptModel</code></li>
 	 *	</ul>
 	 * <p>
-	 * Creating a Java element has the side effect of creating and opening all of the
+	 * Creating a JavaScript element has the side effect of creating and opening all of the
 	 * element's parents if they are not yet open.
 	 *
 	 * @param resource the given resource
-	 * @return the Java element corresponding to the given file, or
+	 * @return the JavaScript element corresponding to the given file, or
 	 * <code>null</code> if unable to associate the given file
-	 * with a Java element
-	 * @since 3.3
+	 * with a JavaScript element
 	 */
 	public static IJavaScriptElement create(IResource resource, IJavaScriptProject project) {
 		return JavaModelManager.create(resource, project);
 	}
 	/**
-	 * Returns the Java model.
+	 * Returns the JavaScript model.
 	 *
 	 * @param root the given root
-	 * @return the Java model, or <code>null</code> if the root is null
+	 * @return the JavaScript model, or <code>null</code> if the root is null
 	 */
 	public static IJavaScriptModel create(IWorkspaceRoot root) {
 		if (root == null) {
@@ -1557,7 +1407,7 @@ public final class JavaScriptCore extends Plugin {
 		}
 		return JavaModelManager.getJavaModelManager().getJavaModel();
 	}
-	/**
+	/*
 	 * Creates and returns a class file element for
 	 * the given <code>.class</code> file. Returns <code>null</code> if unable
 	 * to recognize the class file.
@@ -1570,33 +1420,33 @@ public final class JavaScriptCore extends Plugin {
 		return JavaModelManager.createClassFileFrom(file, null);
 	}
 	/**
-	 * Creates and returns a compilation unit element for
+	 * Creates and returns a javaScript unit element for
 	 * the given source file (i.e. a file with one of the {@link JavaScriptCore#getJavaScriptLikeExtensions()
-	 * Java-like extensions}). Returns <code>null</code> if unable
-	 * to recognize the compilation unit.
+	 * JavaScript-like extensions}). Returns <code>null</code> if unable
+	 * to recognize the javaScript unit.
 	 *
 	 * @param file the given source file
-	 * @return a compilation unit element for the given source file, or <code>null</code> if unable
-	 * to recognize the compilation unit
+	 * @return a javaScript unit element for the given source file, or <code>null</code> if unable
+	 * to recognize the javaScript unit
 	 */
 	public static IJavaScriptUnit createCompilationUnitFrom(IFile file) {
-		return JavaModelManager.createCompilationUnitFrom(file, null/*unknown java project*/);
+		return JavaModelManager.createCompilationUnitFrom(file, null/*unknown javaScript project*/);
 	}
-	/**
+	/*
 	 * Creates and returns a handle for the given JAR file.
-	 * The Java model associated with the JAR's project may be
+	 * The JavaScript model associated with the JAR's project may be
 	 * created as a side effect.
 	 *
 	 * @param file the given JAR file
 	 * @return a handle for the given JAR file, or <code>null</code> if unable to create a JAR package fragment root.
-	 * (for example, if the JAR file represents a non-Java resource)
+	 * (for example, if the JAR file represents a non-JavaScript resource)
 	 */
 	public static IPackageFragmentRoot createJarPackageFragmentRootFrom(IFile file) {
-		return JavaModelManager.createJarPackageFragmentRootFrom(file, null/*unknown java project*/);
+		return JavaModelManager.createJarPackageFragmentRootFrom(file, null/*unknown javaScript project*/);
 	}
 
 	/**
-	 * Answers the project specific value for a given classpath container.
+	 * Answers the project specific value for a given includepath container.
 	 * In case this container path could not be resolved, then will answer <code>null</code>.
 	 * Both the container path and the project context are supposed to be non-null.
 	 * <p>
@@ -1610,14 +1460,14 @@ public final class JavaScriptCore extends Plugin {
 	 * when requested <code>IJsGlobalScopeContainer#getPath</code>.
 	 * Indeed, the containerPath is just an indication for resolving it to an actual container object.
 	 * <p>
-	 * Classpath container values are persisted locally to the workspace, but
+	 * Includepath container values are persisted locally to the workspace, but
 	 * are not preserved from a session to another. It is thus highly recommended to register a
 	 * <code>JsGlobalScopeContainerInitializer</code> for each referenced container
 	 * (through the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer").
 	 * <p>
 	 * @param containerPath the name of the container, which needs to be resolved
 	 * @param project a specific project in which the container is being resolved
-	 * @return the corresponding classpath container or <code>null</code> if unable to find one.
+	 * @return the corresponding includepath container or <code>null</code> if unable to find one.
 	 *
 	 * @exception JavaScriptModelException if an exception occurred while resolving the container, or if the resolved container
 	 *   contains illegal entries (contains CPE_CONTAINER entries or null entries).
@@ -1625,7 +1475,6 @@ public final class JavaScriptCore extends Plugin {
 	 * @see JsGlobalScopeContainerInitializer
 	 * @see IJsGlobalScopeContainer
 	 * @see #setJsGlobalScopeContainer(IPath, IJavaScriptProject[], IJsGlobalScopeContainer[], IProgressMonitor)
-	 * @since 2.0
 	 */
 	public static IJsGlobalScopeContainer getJsGlobalScopeContainer(IPath containerPath, IJavaScriptProject project) throws JavaScriptModelException {
 
@@ -1638,16 +1487,15 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Helper method finding the classpath container initializer registered for a given classpath container ID
+	 * Helper method finding the includepath container initializer registered for a given includepath container ID
 	 * or <code>null</code> if none was found while iterating over the contributions to extension point to
 	 * the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer".
 	 * <p>
 	 * A containerID is the first segment of any container path, used to identify the registered container initializer.
 	 * <p>
 	 * @param containerID - a containerID identifying a registered initializer
-	 * @return JsGlobalScopeContainerInitializer - the registered classpath container initializer or <code>null</code> if
+	 * @return JsGlobalScopeContainerInitializer - the registered includepath container initializer or <code>null</code> if
 	 * none was found.
-	 * @since 2.1
 	 */
 	public static JsGlobalScopeContainerInitializer getJsGlobalScopeContainerInitializer(String containerID) {
 		HashMap containerInitializersCache = JavaModelManager.getJavaModelManager().containerInitializersCache;
@@ -1711,36 +1559,36 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Returns the path held in the given classpath variable.
+	 * Returns the path held in the given includepath variable.
 	 * Returns <code>null</code> if unable to bind.
 	 * <p>
-	 * Classpath variable values are persisted locally to the workspace, and
+	 * Includepath variable values are persisted locally to the workspace, and
 	 * are preserved from session to session.
 	 * <p>
-	 * Note that classpath variables can be contributed registered initializers for,
+	 * Note that includepath variables can be contributed registered initializers for,
 	 * using the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer".
 	 * If an initializer is registered for a variable, its persisted value will be ignored:
 	 * its initializer will thus get the opportunity to rebind the variable differently on
 	 * each session.
 	 *
-	 * @param variableName the name of the classpath variable
+	 * @param variableName the name of the includepath variable
 	 * @return the path, or <code>null</code> if none
 	 * @see #setClasspathVariable(String, IPath)
 	 */
 	/**
-	 * Returns the path held in the given classpath variable.
+	 * Returns the path held in the given includepath variable.
 	 * Returns <code>null</code> if unable to bind.
 	 * <p>
-	 * Classpath variable values are persisted locally to the workspace, and
+	 * Includepath variable values are persisted locally to the workspace, and
 	 * are preserved from session to session.
 	 * <p>
-	 * Note that classpath variables can be contributed registered initializers for,
+	 * Note that includepath variables can be contributed registered initializers for,
 	 * using the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer".
 	 * If an initializer is registered for a variable, its persisted value will be ignored:
 	 * its initializer will thus get the opportunity to rebind the variable differently on
 	 * each session.
 	 *
-	 * @param variableName the name of the classpath variable
+	 * @param variableName the name of the includepath variable
 	 * @return the path, or <code>null</code> if none
 	 * @see #setIncludepathVariable(String, IPath)
 	 * @deprecated Use {@link #getIncludepathVariable(String)} instead
@@ -1750,36 +1598,36 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Returns the path held in the given classpath variable.
+	 * Returns the path held in the given includepath variable.
 	 * Returns <code>null</code> if unable to bind.
 	 * <p>
-	 * Classpath variable values are persisted locally to the workspace, and
+	 * Includepath variable values are persisted locally to the workspace, and
 	 * are preserved from session to session.
 	 * <p>
-	 * Note that classpath variables can be contributed registered initializers for,
+	 * Note that includepath variables can be contributed registered initializers for,
 	 * using the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer".
 	 * If an initializer is registered for a variable, its persisted value will be ignored:
 	 * its initializer will thus get the opportunity to rebind the variable differently on
 	 * each session.
 	 *
-	 * @param variableName the name of the classpath variable
+	 * @param variableName the name of the includepath variable
 	 * @return the path, or <code>null</code> if none
 	 * @see #setClasspathVariable(String, IPath)
 	 */
 	/**
-	 * Returns the path held in the given classpath variable.
+	 * Returns the path held in the given includepath variable.
 	 * Returns <code>null</code> if unable to bind.
 	 * <p>
-	 * Classpath variable values are persisted locally to the workspace, and
+	 * Includepath variable values are persisted locally to the workspace, and
 	 * are preserved from session to session.
 	 * <p>
-	 * Note that classpath variables can be contributed registered initializers for,
+	 * Note that includepath variables can be contributed registered initializers for,
 	 * using the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer".
 	 * If an initializer is registered for a variable, its persisted value will be ignored:
 	 * its initializer will thus get the opportunity to rebind the variable differently on
 	 * each session.
 	 *
-	 * @param variableName the name of the classpath variable
+	 * @param variableName the name of the includepath variable
 	 * @return the path, or <code>null</code> if none
 	 * @see #setIncludepathVariable(String, IPath)
 	 */
@@ -1864,11 +1712,10 @@ public final class JavaScriptCore extends Plugin {
 
 
 	/**
-	 * Returns deprecation message of a given classpath variable.
+	 * Returns deprecation message of a given includepath variable.
 	 *
 	 * @param variableName
-	 * @return A string if the classpath variable is deprecated, <code>null</code> otherwise.
-	 * @since 3.3
+	 * @return A string if the includepath variable is deprecated, <code>null</code> otherwise.
 	 * @deprecated Use {@link #getIncludepathVariableDeprecationMessage(String)} instead
 	 */
 	public static String getClasspathVariableDeprecationMessage(String variableName) {
@@ -1876,25 +1723,23 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Returns deprecation message of a given classpath variable.
+	 * Returns deprecation message of a given includepath variable.
 	 *
 	 * @param variableName
-	 * @return A string if the classpath variable is deprecated, <code>null</code> otherwise.
-	 * @since 3.3
+	 * @return A string if the includepath variable is deprecated, <code>null</code> otherwise.
 	 */
 	public static String getIncludepathVariableDeprecationMessage(String variableName) {
 	    return (String) JavaModelManager.getJavaModelManager().deprecatedVariables.get(variableName);
 	}
 
 	/**
-	 * Helper method finding the classpath variable initializer registered for a given classpath variable name
+	 * Helper method finding the includepath variable initializer registered for a given includepath variable name
 	 * or <code>null</code> if none was found while iterating over the contributions to extension point to
 	 * the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer".
 	 * <p>
  	 * @param variable the given variable
- 	 * @return JsGlobalScopeVariableInitializer - the registered classpath variable initializer or <code>null</code> if
+ 	 * @return JsGlobalScopeVariableInitializer - the registered includepath variable initializer or <code>null</code> if
 	 * none was found.
-	 * @since 2.1
  	 */
 	public static JsGlobalScopeVariableInitializer getJsGlobalScopeVariableInitializer(String variable){
 
@@ -1956,13 +1801,13 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Returns the names of all known classpath variables.
+	 * Returns the names of all known includepath variables.
 	 * <p>
-	 * Classpath variable values are persisted locally to the workspace, and
+	 * Includepath variable values are persisted locally to the workspace, and
 	 * are preserved from session to session.
 	 * <p>
 	 *
-	 * @return the list of classpath variable names
+	 * @return the list of includepath variable names
 	 * @see #setIncludepathVariable(String, IPath)
 	 * @deprecated Use {@link #getIncludepathVariableNames()} instead
 	 */
@@ -1971,13 +1816,13 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Returns the names of all known classpath variables.
+	 * Returns the names of all known includepath variables.
 	 * <p>
-	 * Classpath variable values are persisted locally to the workspace, and
+	 * Includepath variable values are persisted locally to the workspace, and
 	 * are preserved from session to session.
 	 * <p>
 	 *
-	 * @return the list of classpath variable names
+	 * @return the list of includepath variable names
 	 * @see #setIncludepathVariable(String, IPath)
 	 */
 	public static String[] getIncludepathVariableNames() {
@@ -1997,14 +1842,14 @@ public final class JavaScriptCore extends Plugin {
 	 * <pre>
 	 * RECOGNIZED OPTIONS:
 	 *
-	 * COMPILER / Setting Compliance Level
-	 *    Select the compliance level for the compiler. In "1.3" mode, source and target settings
+	 * VALIDATOR / Setting Compliance Level
+	 *    Select the compliance level for the validator. In "1.3" mode, source and target settings
 	 *    should not go beyond "1.3" level.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.compliance"
 	 *     - possible values:   { "1.3", "1.4", "1.5", "1.6", "1.7" }
 	 *     - default:           "1.4"
 	 *
-	 * COMPILER / Setting Source Compatibility Mode
+	 * VALIDATOR / Setting Source Compatibility Mode
 	 *    Specify whether which source level compatibility is used. From 1.4 on, 'assert' is a keyword
 	 *    reserved for assertion support. Also note, than when toggling to 1.4 mode, the target VM
 	 *   level should be set to "1.4" and the compliance mode should be "1.4".
@@ -2019,141 +1864,66 @@ public final class JavaScriptCore extends Plugin {
 	 *     - possible values:   { "1.3", "1.4", "1.5", "1.6", "1.7" }
 	 *     - default:           "1.3"
 	 *
-	 * COMPILER / Defining Target Java Platform
-	 *    For binary compatibility reason, .class files can be tagged to with certain VM versions and later.
-	 *    Note that "1.4" target requires to toggle compliance mode to "1.4", "1.5" target requires
-	 *    to toggle compliance mode to "1.5", "1.6" target requires to toggle compliance mode to "1.6" and
-	 *    "1.7" target requires to toggle compliance mode to "1.7".
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.codegen.targetPlatform"
-	 *     - possible values:   { "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7" }
-	 *     - default:           "1.2"
 	 *
-	 * COMPILER / Generating Local Variable Debug Attribute
- 	 *    When generated, this attribute will enable local variable names
-	 *    to be displayed in debugger, only in place where variables are
-	 *    definitely assigned (.class file is then bigger)
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.debug.localVariable"
-	 *     - possible values:   { "generate", "do not generate" }
-	 *     - default:           "generate"
-	 *
-	 * COMPILER / Generating Line Number Debug Attribute
-	 *    When generated, this attribute will enable source code highlighting in debugger
-	 *    (.class file is then bigger).
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.debug.lineNumber"
-	 *     - possible values:   { "generate", "do not generate" }
-	 *     - default:           "generate"
-	 *
-	 * COMPILER / Generating Source Debug Attribute
-	 *    When generated, this attribute will enable the debugger to present the
-	 *    corresponding source code.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.debug.sourceFile"
-	 *     - possible values:   { "generate", "do not generate" }
-	 *     - default:           "generate"
-	 *
-	 * COMPILER / Preserving Unused Local Variables
-	 *    Unless requested to preserve unused local variables (that is, never read), the
-	 *    compiler will optimize them out, potentially altering debugging
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.codegen.unusedLocal"
-	 *     - possible values:   { "preserve", "optimize out" }
-	 *     - default:           "preserve"
-	 *
-	 * COMPILER / Inline JSR Bytecode Instruction
-	 *    When enabled, the compiler will no longer generate JSR instructions, but rather inline corresponding
-	 *   subroutine code sequences (mostly corresponding to try finally blocks). The generated code will thus
-	 *   get bigger, but will load faster on virtual machines since the verification process is then much simpler.
-	 *  This mode is anticipating support for the Java Specification Request 202.
-	 *  Note that JSR inlining is optional only for target platform lesser than 1.5. From 1.5 on, the JSR
-	 *  inlining is mandatory (also see related setting "org.eclipse.wst.jsdt.core.compiler.codegen.targetPlatform").
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.codegen.inlineJsrBytecode"
-	 *     - possible values:   { "enabled", "disabled" }
-	 *     - default:           "disabled"
-	 *
-	 * COMPILER / Javadoc Comment Support
-	 *    When this support is disabled, the compiler will ignore all javadoc problems options settings
-	 *    and will not report any javadoc problem. It will also not find any reference in javadoc comment and
-	 *    DOM AST Javadoc node will be only a flat text instead of having structured tag elements.
+	 * VALIDATOR / JSdoc Comment Support
+	 *    When this support is disabled, the validator will ignore all jsdoc problems options settings
+	 *    and will not report any jsdoc problem. It will also not find any reference in jsdoc comment and
+	 *    DOM AST JSdoc node will be only a flat text instead of having structured tag elements.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.doc.comment.support"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "enabled"
 	 *
-	 * COMPILER / Reporting Attempt to Override Package-Default Method
-	 *    A package default method is not visible in a different package, and thus
-	 *    cannot be overridden. When enabling this option, the compiler will signal
-	 *    such scenarii either as an error or a warning.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.overridingPackageDefaultMethod"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "warning"
-	 *
-	 * COMPILER / Reporting Method With Constructor Name
-	 *    Naming a method with a constructor name is generally considered poor
-	 *    style programming. When enabling this option, the compiler will signal such
-	 *    scenarii either as an error or a warning.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.methodWithConstructorName"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "warning"
-	 *
-	 * COMPILER / Reporting Deprecation
-	 *    When enabled, the compiler will signal use of deprecated API either as an
+	 * VALIDATOR / Reporting Deprecation
+	 *    When enabled, the validator will signal use of deprecated API either as an
 	 *    error or a warning.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.deprecation"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
 	 *
-	 * COMPILER / Reporting Deprecation Inside Deprecated Code
-	 *    When enabled, the compiler will signal use of deprecated API inside deprecated code.
+	 * VALIDATOR / Reporting Deprecation Inside Deprecated Code
+	 *    When enabled, the validator will signal use of deprecated API inside deprecated code.
 	 *    The severity of the problem is controlled with option "org.eclipse.wst.jsdt.core.compiler.problem.deprecation".
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.deprecationInDeprecatedCode"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
 	 *
-	 * COMPILER / Reporting Deprecation When Overriding Deprecated Method
-	 *    When enabled, the compiler will signal the declaration of a method overriding a deprecated one.
+	 * VALIDATOR / Reporting Deprecation When Overriding Deprecated Method
+	 *    When enabled, the validator will signal the declaration of a method overriding a deprecated one.
 	 *    The severity of the problem is controlled with option "org.eclipse.wst.jsdt.core.compiler.problem.deprecation".
 	 *     - option id:        "org.eclipse.wst.jsdt.core.compiler.problem.deprecationWhenOverridingDeprecatedMethod"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
 	 *
-	 * COMPILER / Reporting Hidden Catch Block
-	 *    Locally to a try statement, some catch blocks may hide others . For example,
-	 *      try {  throw new java.io.CharConversionException();
-	 *      } catch (java.io.CharConversionException e) {
-	 *      } catch (java.io.IOException e) {}.
-	 *    When enabling this option, the compiler will issue an error or a warning for hidden
-	 *    catch blocks corresponding to checked exceptions
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.hiddenCatchBlock"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "warning"
-	 *
-	 * COMPILER / Reporting Unused Local
-	 *    When enabled, the compiler will issue an error or a warning for unused local
+	 * VALIDATOR / Reporting Unused Local
+	 *    When enabled, the validator will issue an error or a warning for unused local
 	 *    variables (that is, variables never read from)
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unusedLocal"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Unused Parameter
-	 *    When enabled, the compiler will issue an error or a warning for unused method
+	 * VALIDATOR / Reporting Unused Parameter
+	 *    When enabled, the validator will issue an error or a warning for unused method
 	 *    parameters (that is, parameters never read from)
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unusedParameter"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Unused Parameter if Implementing Abstract Method
-	 *    When enabled, the compiler will signal unused parameters in abstract method implementations.
+	 * VALIDATOR / Reporting Unused Parameter if Implementing Abstract Method
+	 *    When enabled, the validator will signal unused parameters in abstract method implementations.
 	 *    The severity of the problem is controlled with option "org.eclipse.wst.jsdt.core.compiler.problem.unusedParameter".
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unusedParameterWhenImplementingAbstract"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
 	 *
-	 * COMPILER / Reporting Unused Parameter if Overriding Concrete Method
-	 *    When enabled, the compiler will signal unused parameters in methods overriding concrete ones.
+	 * VALIDATOR / Reporting Unused Parameter if Overriding Concrete Method
+	 *    When enabled, the validator will signal unused parameters in methods overriding concrete ones.
 	 *    The severity of the problem is controlled with option "org.eclipse.wst.jsdt.core.compiler.problem.unusedParameter".
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unusedParameterWhenOverridingConcrete"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
 	 *
-	 * COMPILER / Consider Reference in Doc Comment for Unused Parameter Check
-	 *    When enabled, the compiler will consider doc comment references to parameters (i.e. @param clauses) for the unused
+	 * VALIDATOR / Consider Reference in Doc Comment for Unused Parameter Check
+	 *    When enabled, the validator will consider doc comment references to parameters (i.e. @param clauses) for the unused
 	 *    parameter check. Thus, documented parameters will be considered as mandated as per doc contract.
 	 *    The severity of the unused parameter problem is controlled with option "org.eclipse.wst.jsdt.core.compiler.problem.unusedParameter".
 	 *    Note: this option has no effect until the doc comment support is enabled according to the
@@ -2162,170 +1932,122 @@ public final class JavaScriptCore extends Plugin {
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "enabled"
 	 *
-	 * COMPILER / Reporting Unused Import
-	 *    When enabled, the compiler will issue an error or a warning for unused import
+	 * VALIDATOR / Reporting Unused Import
+	 *    When enabled, the validator will issue an error or a warning for unused import
 	 *    reference
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unusedImport"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
 	 *
-	 * COMPILER / Reporting Unused Private Members
-	 *    When enabled, the compiler will issue an error or a warning whenever a private
+	 * VALIDATOR / Reporting Unused Private Members
+	 *    When enabled, the validator will issue an error or a warning whenever a private
 	 *    method or field is declared but never used within the same unit.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unusedPrivateMember"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Assignment with no Effect
-	 *    When enabled, the compiler will issue an error or a warning whenever an assignment
+	 * VALIDATOR / Reporting Assignment with no Effect
+	 *    When enabled, the validator will issue an error or a warning whenever an assignment
 	 *    has no effect (e.g 'x = x').
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.noEffectAssignment"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
 	 *
-	 * COMPILER / Reporting Empty Statements and Unnecessary Semicolons
-	 *    When enabled, the compiler will issue an error or a warning if an empty statement or a
+	 * VALIDATOR / Reporting Empty Statements and Unnecessary Semicolons
+	 *    When enabled, the validator will issue an error or a warning if an empty statement or a
 	 *    unnecessary semicolon is encountered.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.emptyStatement"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Unnecessary Type Check
-	 *    When enabled, the compiler will issue an error or a warning when a cast or an instanceof operation
+	 * VALIDATOR / Reporting Unnecessary Type Check
+	 *    When enabled, the validator will issue an error or a warning when a cast or an instanceof operation
 	 *    is unnecessary.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unnecessaryTypeCheck"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Unnecessary Else
-	 *    When enabled, the compiler will issue an error or a warning when a statement is unnecessarily
+	 * VALIDATOR / Reporting Unnecessary Else
+	 *    When enabled, the validator will issue an error or a warning when a statement is unnecessarily
 	 *    nested within an else clause (in situation where then clause is not completing normally).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unnecessaryElse"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Synthetic Access Emulation
-	 *    When enabled, the compiler will issue an error or a warning whenever it emulates
-	 *    access to a non-accessible member of an enclosing type. Such access can have
-	 *    performance implications.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.syntheticAccessEmulation"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "ignore"
-	 *
-	 * COMPILER / Reporting Non-Externalized String Literal
-	 *    When enabled, the compiler will issue an error or a warning for non externalized
+	 * VALIDATOR / Reporting Non-Externalized String Literal
+	 *    When enabled, the validator will issue an error or a warning for non externalized
 	 *    String literal (that is, not tagged with //$NON-NLS-&lt;n&gt;$).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.nonExternalizedStringLiteral"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Usage of 'assert' Identifier
-	 *    When enabled, the compiler will issue an error or a warning whenever 'assert' is
-	 *    used as an identifier (reserved keyword in 1.4)
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.assertIdentifier"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "warning"
-	 *
-	 * COMPILER / Reporting Usage of 'enum' Identifier
-	 *    When enabled, the compiler will issue an error or a warning whenever 'enum' is
-	 *    used as an identifier (reserved keyword in 1.5)
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.enumIdentifier"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "warning"
-	 *
-	 * COMPILER / Reporting Non-Static Reference to a Static Member
-	 *    When enabled, the compiler will issue an error or a warning whenever a static field
+	 * VALIDATOR / Reporting Non-Static Reference to a Static Member
+	 *    When enabled, the validator will issue an error or a warning whenever a static field
 	 *    or method is accessed with an expression receiver. A reference to a static member should
 	 *    be qualified with a type name.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.staticAccessReceiver"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
 	 *
-	 * COMPILER / Reporting Indirect Reference to a Static Member
-	 *    When enabled, the compiler will issue an error or a warning whenever a static field
+	 * VALIDATOR / Reporting Indirect Reference to a Static Member
+	 *    When enabled, the validator will issue an error or a warning whenever a static field
 	 *    or method is accessed in an indirect way. A reference to a static member should
 	 *    preferably be qualified with its declaring type name.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.indirectStaticAccess"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Interface Method not Compatible with non-Inherited Methods
-	 *    When enabled, the compiler will issue an error or a warning whenever an interface
-	 *    defines a method incompatible with a non-inherited Object method. Until this conflict
-	 *    is resolved, such an interface cannot be implemented, For example,
-	 *      interface I {
-	 *         int clone();
-	 *      }
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.incompatibleNonInheritedInterfaceMethod"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "warning"
-	 *
-	 * COMPILER / Reporting Usage of char[] Expressions in String Concatenations
-	 *    When enabled, the compiler will issue an error or a warning whenever a char[] expression
-	 *    is used in String concatenations (for example, "hello" + new char[]{'w','o','r','l','d'}).
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.noImplicitStringConversion"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "warning"
-	 *
-	 * COMPILER / Reporting Local Variable Declaration Hiding another Variable
-	 *    When enabled, the compiler will issue an error or a warning whenever a local variable
+	 * VALIDATOR / Reporting Local Variable Declaration Hiding another Variable
+	 *    When enabled, the validator will issue an error or a warning whenever a local variable
 	 *    declaration is hiding some field or local variable (either locally, inherited or defined in enclosing type).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.localVariableHiding"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Field Declaration Hiding another Variable
-	 *    When enabled, the compiler will issue an error or a warning whenever a field
+	 * VALIDATOR / Reporting Field Declaration Hiding another Variable
+	 *    When enabled, the validator will issue an error or a warning whenever a field
 	 *    declaration is hiding some field or local variable (either locally, inherited or defined in enclosing type).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.fieldHiding"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Special Parameter Hiding another Field
-	 *    When enabled, the compiler will signal cases where a constructor or setter method parameter declaration
-	 *    is hiding some field (either locally, inherited or defined in enclosing type).
-	 *    The severity of the problem is controlled with option "org.eclipse.wst.jsdt.core.compiler.problem.localVariableHiding".
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.specialParameterHidingField"
-	 *     - possible values:   { "enabled", "disabled" }
-	 *     - default:           "disabled"
-	 *
-	 * COMPILER / Reporting Type Declaration Hiding another Type
-	 *    When enabled, the compiler will issue an error or a warning in situations where a type parameter
+	 * VALIDATOR / Reporting Type Declaration Hiding another Type
+	 *    When enabled, the validator will issue an error or a warning in situations where a type parameter
 	 *    declaration is hiding some type, when a nested type is hiding some type parameter, or when
 	 *    a nested type is hiding another nested type defined in same unit.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.typeParameterHiding"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
 	 *
-	 * COMPILER / Reporting Possible Accidental Boolean Assignment
-	 *    When enabled, the compiler will issue an error or a warning if a boolean assignment is acting as the condition
+	 * VALIDATOR / Reporting Possible Accidental Boolean Assignment
+	 *    When enabled, the validator will issue an error or a warning if a boolean assignment is acting as the condition
 	 *    of a control statement  (where it probably was meant to be a boolean comparison).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.possibleAccidentalBooleanAssignment"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Undocumented Empty Block
-	 *    When enabled, the compiler will issue an error or a warning when an empty block is detected and it is not
+	 * VALIDATOR / Reporting Undocumented Empty Block
+	 *    When enabled, the validator will issue an error or a warning when an empty block is detected and it is not
 	 *    documented with any comment.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.undocumentedEmptyBlock"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Finally Blocks Not Completing Normally
-	 *    When enabled, the compiler will issue an error or a warning when a finally block does not complete normally.
+	 * VALIDATOR / Reporting Finally Blocks Not Completing Normally
+	 *    When enabled, the validator will issue an error or a warning when a finally block does not complete normally.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.finallyBlockNotCompletingNormally"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
 	 *
-	 * COMPILER / Reporting Unused Declared Thrown Exception
-	 *    When enabled, the compiler will issue an error or a warning when a method or a constructor is declaring a
+	 * VALIDATOR / Reporting Unused Declared Thrown Exception
+	 *    When enabled, the validator will issue an error or a warning when a method or a constructor is declaring a
 	 *    thrown checked exception, but never actually raises it in its body.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unusedDeclaredThrownException"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Unused Declared Thrown Exception in Overridind Method
-	 *    When disabled, the compiler will not include overriding methods in its diagnosis for unused declared
+	 * VALIDATOR / Reporting Unused Declared Thrown Exception in Overridind Method
+	 *    When disabled, the validator will not include overriding methods in its diagnosis for unused declared
 	 *    thrown exceptions.
 	 *    <br>
 	 *    The severity of the problem is controlled with option "org.eclipse.wst.jsdt.core.compiler.problem.unusedDeclaredThrownException".
@@ -2333,52 +2055,15 @@ public final class JavaScriptCore extends Plugin {
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
 	 *
-	 * COMPILER / Reporting Unqualified Access to Field
-	 *    When enabled, the compiler will issue an error or a warning when a field is access without any qualification.
+	 * VALIDATOR / Reporting Unqualified Access to Field
+	 *    When enabled, the validator will issue an error or a warning when a field is access without any qualification.
 	 *    In order to improve code readability, it should be qualified, e.g. 'x' should rather be written 'this.x'.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unqualifiedFieldAccess"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Unchecked Type Operation
-	 *    When enabled, the compiler will issue an error or a warning whenever an operation involves generic types, and potentially
-	 *    invalidates type safety since involving raw types (e.g. invoking #foo(X&lt;String&gt;) with arguments  (X)).
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.uncheckedTypeOperation"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "warning"
-	 *
-	 * COMPILER / Reporting Raw Type Reference
-	 *    When enabled, the compiler will issue an error or a warning when detecting references to raw types. Raw types are
-	 *    discouraged, and are intended to help interfacing with legacy code. In the future, the language specification may
-	 *    reject raw references to generic types.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.rawTypeReference"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "warning"
-	 *
-	 * COMPILER / Reporting final Bound for Type Parameter
-	 *    When enabled, the compiler will issue an error or a warning whenever a generic type parameter is associated with a
-	 *    bound corresponding to a final type; since final types cannot be further extended, the parameter is pretty useless.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.finalParameterBound"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "warning"
-	 *
-	 * COMPILER / Reporting Missing Declaration of serialVersionUID Field on Serializable Class
-	 *    When enabled, the compiler will issue an error or a warning whenever a serializable class is missing a local declaration
-	 *    of a serialVersionUID field. This field must be declared as static final and be of type long.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.missingSerialVersion"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "warning"
-	 *
-	 * COMPILER / Reporting Varargs Argument Needing a Cast in Method/Constructor Invocation
-	 *    When enabled, the compiler will issue an error or a warning whenever a varargs arguments should be cast
-	 *    when passed to a method/constructor invocation. (e.g. Class.getMethod(String name, Class ... args )
-	 *    invoked with arguments ("foo", null)).
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.varargsArgumentNeedCast"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "warning"
-	 *
-	 * COMPILER / Reporting Null Dereference
-	 *    When enabled, the compiler will issue an error or a warning whenever a
+	 * VALIDATOR / Reporting Null Dereference
+	 *    When enabled, the validator will issue an error or a warning whenever a
 	 *    variable that is statically known to hold a null value is used to
 	 *    access a field or method.
 	 *
@@ -2386,8 +2071,8 @@ public final class JavaScriptCore extends Plugin {
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Potential Null Dereference
-	 *    When enabled, the compiler will issue an error or a warning whenever a
+	 * VALIDATOR / Reporting Potential Null Dereference
+	 *    When enabled, the validator will issue an error or a warning whenever a
 	 *    variable that has formerly been tested against null but is not (no more)
 	 *    statically known to hold a non-null value is used to access a field or
 	 *    method.
@@ -2396,8 +2081,8 @@ public final class JavaScriptCore extends Plugin {
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Redundant Null Check
-	 *    When enabled, the compiler will issue an error or a warning whenever a
+	 * VALIDATOR / Reporting Redundant Null Check
+	 *    When enabled, the validator will issue an error or a warning whenever a
 	 *    variable that is statically known to hold a null or a non-null value
 	 *    is tested against null.
 	 *
@@ -2405,59 +2090,30 @@ public final class JavaScriptCore extends Plugin {
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Use of Annotation Type as Super Interface
-	 *    When enabled, the compiler will issue an error or a warning whenever an annotation type is used
+	 * VALIDATOR / Reporting Use of Annotation Type as Super Interface
+	 *    When enabled, the validator will issue an error or a warning whenever an annotation type is used
 	 *    as a super-interface. Though legal, this is discouraged.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.annotationSuperInterface"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
 	 *
-	 * COMPILER / Reporting Missing @Override Annotation
-	 *    When enabled, the compiler will issue an error or a warning whenever encountering a method
-	 *    declaration which overrides a superclass method but has no @Override annotation.
-	 *     - option id:        "org.eclipse.wst.jsdt.core.compiler.problem.missingOverrideAnnotation"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "ignore"
-	 *
-	 * COMPILER / Reporting Missing @Deprecated Annotation
-	 *    When enabled, the compiler will issue an error or a warning whenever encountering a declaration
-	 *    carrying a @deprecated doc tag but having no corresponding @Deprecated annotation.
-	 *     - option id:        "org.eclipse.wst.jsdt.core.compiler.problem.missingDeprecatedAnnotation"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "ignore"
-	 *
-	 * COMPILER / Reporting Incomplete Enum Switch
-	 *    When enabled, the compiler will issue an error or a warning whenever
-	 *    an enum constant has no corresponding case label in an enum switch
-	 *    statement.
-	 *     - option id:        "org.eclipse.wst.jsdt.core.compiler.problem.incompleteEnumSwitch"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "ignore"
-	 *
-	 * COMPILER / Reporting Boxing/Unboxing Conversion
-	 *    When enabled, the compiler will issue an error or a warning whenever a boxing or an unboxing
-	 *    conversion is performed.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.autoboxing"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "ignore"
-	 *
-	 * COMPILER / Reporting Invalid Javadoc Comment
-	 *    This is the generic control for the severity of Javadoc problems.
-	 *    When enabled, the compiler will issue an error or a warning for a problem in Javadoc.
+	 * VALIDATOR / Reporting Invalid Jsdoc Comment
+	 *    This is the generic control for the severity of JSdoc problems.
+	 *    When enabled, the validator will issue an error or a warning for a problem in JSdoc.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.invalidJavadoc"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Visibility Level For Invalid Javadoc Tags
-	 *    Set the minimum visibility level for Javadoc tag problems. Below this level problems will be ignored.
+	 * VALIDATOR / Visibility Level For Invalid JSdoc Tags
+	 *    Set the minimum visibility level for JSdoc tag problems. Below this level problems will be ignored.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.invalidJavadocTagsVisibility"
 	 *     - possible values:   { "public", "protected", "default", "private" }
 	 *     - default:           "public"
 	 *
-	 * COMPILER / Reporting Invalid Javadoc Tags
-	 *    When enabled, the compiler will signal unbound or unexpected reference tags in Javadoc.
+	 * VALIDATOR / Reporting Invalid JSdoc Tags
+	 *    When enabled, the validator will signal unbound or unexpected reference tags in JSdoc.
 	 *    A 'throws' tag referencing an undeclared exception would be considered as unexpected.
-	 *    <br>Note that this diagnosis can be enabled based on the visibility of the construct associated with the Javadoc;
+	 *    <br>Note that this diagnosis can be enabled based on the visibility of the construct associated with the JSDoc;
 	 *    also see the setting "org.eclipse.wst.jsdt.core.compiler.problem.invalidJavadocTagsVisibility".
 	 *    <br>
 	 *    The severity of the problem is controlled with option "org.eclipse.wst.jsdt.core.compiler.problem.invalidJavadoc".
@@ -2465,84 +2121,84 @@ public final class JavaScriptCore extends Plugin {
 	 *     - possible values:   { "disabled", "enabled" }
 	 *     - default:           "disabled"
 	 *
-	 * COMPILER / Reporting Invalid Javadoc Tags with Deprecated References
-	 *    Specify whether the compiler will report deprecated references used in Javadoc tags.
-	 *    <br>Note that this diagnosis can be enabled based on the visibility of the construct associated with the Javadoc;
+	 * VALIDATOR / Reporting Invalid JSdoc Tags with Deprecated References
+	 *    Specify whether the validator will report deprecated references used in JSdoc tags.
+	 *    <br>Note that this diagnosis can be enabled based on the visibility of the construct associated with the JSDoc;
 	 *    also see the setting "org.eclipse.wst.jsdt.core.compiler.problem.invalidJavadocTagsVisibility".
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.invalidJavadocTagsDeprecatedRef"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
 	 *
-	 * COMPILER / Reporting Invalid Javadoc Tags with Not Visible References
-	 *    Specify whether the compiler will report non-visible references used in Javadoc tags.
-	 *    <br>Note that this diagnosis can be enabled based on the visibility of the construct associated with the Javadoc;
+	 * VALIDATOR / Reporting Invalid JSdoc Tags with Not Visible References
+	 *    Specify whether the validator will report non-visible references used in JSDoc tags.
+	 *    <br>Note that this diagnosis can be enabled based on the visibility of the construct associated with the JSDoc;
 	 *    also see the setting "org.eclipse.wst.jsdt.core.compiler.problem.invalidJavadocTagsVisibility".
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.invalidJavadocTagsNotVisibleRef"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
 	 *
-	 * COMPILER / Reporting Missing Javadoc Tags
-	 *    This is the generic control for the severity of Javadoc missing tag problems.
-	 *    When enabled, the compiler will issue an error or a warning when tags are missing in Javadoc comments.
-	 *    <br>Note that this diagnosis can be enabled based on the visibility of the construct associated with the Javadoc;
+	 * VALIDATOR / Reporting Missing JSDoc Tags
+	 *    This is the generic control for the severity of JSDoc missing tag problems.
+	 *    When enabled, the validator will issue an error or a warning when tags are missing in JSDoc comments.
+	 *    <br>Note that this diagnosis can be enabled based on the visibility of the construct associated with the JSDoc;
 	 *    also see the setting "org.eclipse.wst.jsdt.core.compiler.problem.missingJavadocTagsVisibility".
 	 *    <br>
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.missingJavadocTags"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Visibility Level For Missing Javadoc Tags
-	 *    Set the minimum visibility level for Javadoc missing tag problems. Below this level problems will be ignored.
+	 * VALIDATOR / Visibility Level For Missing JSDoc Tags
+	 *    Set the minimum visibility level for JSDoc missing tag problems. Below this level problems will be ignored.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.missingJavadocTagsVisibility"
 	 *     - possible values:   { "public", "protected", "default", "private" }
 	 *     - default:           "public"
 	 *
-	 * COMPILER / Reporting Missing Javadoc Tags on Overriding Methods
-	 *    Specify whether the compiler will verify overriding methods in order to report Javadoc missing tag problems.
+	 * VALIDATOR / Reporting Missing JSDoc Tags on Overriding Methods
+	 *    Specify whether the validator will verify overriding methods in order to report JSDoc missing tag problems.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.missingJavadocTagsOverriding"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
 	 *
-	 * COMPILER / Reporting Missing Javadoc Comments
-	 *    This is the generic control for the severity of missing Javadoc comment problems.
-	 *    When enabled, the compiler will issue an error or a warning when Javadoc comments are missing.
-	 *    <br>Note that this diagnosis can be enabled based on the visibility of the construct associated with the expected Javadoc;
+	 * VALIDATOR / Reporting Missing JSDoc Comments
+	 *    This is the generic control for the severity of missing JSDoc comment problems.
+	 *    When enabled, the validator will issue an error or a warning when JSDoc comments are missing.
+	 *    <br>Note that this diagnosis can be enabled based on the visibility of the construct associated with the expected JSDoc;
 	 *    also see the setting "org.eclipse.wst.jsdt.core.compiler.problem.missingJavadocCommentsVisibility".
 	 *    <br>
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.missingJavadocComments"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Visibility Level For Missing Javadoc Comments
-	 *    Set the minimum visibility level for missing Javadoc problems. Below this level problems will be ignored.
+	 * VALIDATOR / Visibility Level For Missing JSDoc Comments
+	 *    Set the minimum visibility level for missing JSDoc problems. Below this level problems will be ignored.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.missingJavadocCommentsVisibility"
 	 *     - possible values:   { "public", "protected", "default", "private" }
 	 *     - default:           "public"
 	 *
-	 * COMPILER / Reporting Missing Javadoc Comments on Overriding Methods
-	 *    Specify whether the compiler will verify overriding methods in order to report missing Javadoc comment problems.
+	 * VALIDATOR / Reporting Missing JSDoc Comments on Overriding Methods
+	 *    Specify whether the validator will verify overriding methods in order to report missing JSDoc comment problems.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.missingJavadocCommentsOverriding"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
 	 *
-	 * COMPILER / Maximum Number of Problems Reported per Compilation Unit
-	 *    Specify the maximum number of problems reported on each compilation unit.
+	 * VALIDATOR / Maximum Number of Problems Reported per JavaScript Unit
+	 *    Specify the maximum number of problems reported on each javaScript unit.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.maxProblemPerUnit"
 	 *     - possible values:	"&lt;n&gt;" where &lt;n&gt; is zero or a positive integer (if zero then all problems are reported).
 	 *     - default:           "100"
 	 *
-	 * COMPILER / Treating Optional Error as Fatal
+	 * VALIDATOR / Treating Optional Error as Fatal
 	 *    When enabled, optional errors (i.e. optional problems which severity is set to "error") will be treated as standard
-	 *    compiler errors, yielding problem methods/types preventing from running offending code until the issue got resolved.
+	 *    validator errors, yielding problem methods/types preventing from running offending code until the issue got resolved.
 	 *    When disabled, optional errors are only considered as warnings, still carrying an error indication to make them more
 	 *    severe. Note that by default, errors are fatal, whether they are optional or not.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.fatalOptionalError"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "enabled"
 	 *
-	 * COMPILER / Defining the Automatic Task Tags
-	 *    When the tag list is not empty, the compiler will issue a task marker whenever it encounters
-	 *    one of the corresponding tags inside any comment in Java source code.
+	 * VALIDATOR / Defining the Automatic Task Tags
+	 *    When the tag list is not empty, the validator will issue a task marker whenever it encounters
+	 *    one of the corresponding tags inside any comment in JavaScript source code.
 	 *    Generated task messages will start with the tag, and range until the next line separator,
 	 *    comment ending, or tag.
 	 *    When a given line of code bears multiple tags, each tag will be reported separately.
@@ -2557,72 +2213,51 @@ public final class JavaScriptCore extends Plugin {
 	 *     - possible values:   { "&lt;tag&gt;[,&lt;tag&gt;]*" } where &lt;tag&gt; is a String without any wild-card or leading/trailing spaces
 	 *     - default:           "TODO,FIXME,XXX"
 	 *
-	 * COMPILER / Defining the Automatic Task Priorities
+	 * VALIDATOR / Defining the Automatic Task Priorities
 	 *    In parallel with the Automatic Task Tags, this list defines the priorities (high, normal or low)
-	 *    of the task markers issued by the compiler.
+	 *    of the task markers issued by the validator.
 	 *    If the default is specified, the priority of each task marker is "NORMAL".
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.taskPriorities"
 	 *     - possible values:   { "&lt;priority&gt;[,&lt;priority&gt;]*" } where &lt;priority&gt; is one of "HIGH", "NORMAL" or "LOW"
 	 *     - default:           "NORMAL,HIGH,NORMAL"
 	 *
-	 * COMPILER / Determining whether task tags are case-sensitive
+	 * VALIDATOR / Determining whether task tags are case-sensitive
 	 *    When enabled, task tags are considered in a case-sensitive way.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.taskCaseSensitive"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "enabled"
 	 *
-	 * COMPILER / Reporting Forbidden Reference to Type with Restricted Access
-	 *    When enabled, the compiler will issue an error or a warning when referring to a type that is non accessible, as defined according
-	 *    to the access rule specifications.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.forbiddenReference"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "warning"
-	 *
-	 * COMPILER / Reporting Discouraged Reference to Type with Restricted Access
-	 *    When enabled, the compiler will issue an error or a warning when referring to a type with discouraged access, as defined according
+	 * VALIDATOR / Reporting Discouraged Reference to Type with Restricted Access
+	 *    When enabled, the validator will issue an error or a warning when referring to a type with discouraged access, as defined according
 	 *    to the access rule specifications.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.discouragedReference"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
 	 *
-	 * COMPILER / Determining Effect of @SuppressWarnings
-	 *    When enabled, the @SuppressWarnings annotation can be used to suppress some compiler warnings.
-	 *    When disabled, all @SupressWarnings annotations are ignored; i.e., warnings are reported.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.suppressWarnings"
-	 *     - possible values:   { "enabled", "disabled" }
-	 *     - default:           "enabled"
-	 *
-	 * COMPILER / Reporting Unhandled Warning Token for @SuppressWarnings
-	 *    When enabled, the compiler will issue an error or a warning when encountering a token
-	 *    it cannot handle inside a @SuppressWarnings annotation.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unhandledWarningToken"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "warning"
-	 *
-	 * COMPILER / Reporting Unreferenced Label
-	 *    When enabled, the compiler will issue an error or a warning when encountering a labeled statement which label
+	 * VALIDATOR / Reporting Unreferenced Label
+	 *    When enabled, the validator will issue an error or a warning when encountering a labeled statement which label
 	 *    is never explicitly referenced. A label is considered to be referenced if its name explicitly appears behind a break
 	 *    or continue statement; for instance the following label would be considered unreferenced;   LABEL: { break; }
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unusedLabel"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
 	 *
-	 * COMPILER / Reporting Parameter Assignment
-	 *    When enabled, the compiler will issue an error or a warning if a parameter is
+	 * VALIDATOR / Reporting Parameter Assignment
+	 *    When enabled, the validator will issue an error or a warning if a parameter is
 	 *    assigned to.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.parameterAssignment"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Switch Fall-Through Case
-	 *    When enabled, the compiler will issue an error or a warning if a case may be
+	 * VALIDATOR / Reporting Switch Fall-Through Case
+	 *    When enabled, the validator will issue an error or a warning if a case may be
 	 *    entered by falling through previous case. Empty cases are allowed.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.fallthroughCase"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
-	 * COMPILER / Reporting Overriding method that doesn't call the super method invocation
-	 *    When enabled, the compiler will issue an error or a warning if a method is overriding a method without calling
+	 * VALIDATOR / Reporting Overriding method that doesn't call the super method invocation
+	 *    When enabled, the validator will issue an error or a warning if a method is overriding a method without calling
 	 *    the super invocation.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.overridingMethodWithoutSuperInvocation"
 	 *     - possible values:   { "error", "warning", "ignore" }
@@ -2635,28 +2270,11 @@ public final class JavaScriptCore extends Plugin {
 	 *       or the name of a folder which ends with '/'
 	 *     - default:           ""
 	 *
-	 * BUILDER / Abort if Invalid Classpath
-	 *    Allow to toggle the builder to abort if the classpath is invalid
+	 * BUILDER / Abort if Invalid Includepath
+	 *    Allow to toggle the builder to abort if the includepath is invalid
 	 *     - option id:         "org.eclipse.wst.jsdt.core.builder.invalidClasspath"
 	 *     - possible values:   { "abort", "ignore" }
 	 *     - default:           "abort"
-	 *
-	 * BUILDER / Cleaning Output Folder(s)
-	 *    Indicate whether the JavaBuilder is allowed to clean the output folders
-	 *    when performing full build operations.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.builder.cleanOutputFolder"
-	 *     - possible values:   { "clean", "ignore" }
-	 *     - default:           "clean"
-	 *
-	 * BUILDER / Recreate Modified class files in Output Folder
-	 *    Indicate whether the JavaBuilder should check for any changes to .class files
-	 *    in the output folders while performing incremental build operations. If changes
-	 *    are detected to managed .class files, then a full build is performed, otherwise
-	 *    the changes are left as is. Tools further altering generated .class files, like optimizers,
-	 *    should ensure this option remains set in its default state of ignore.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.builder.recreateModifiedClassFileInOutputFolder"
-	 *     - possible values:   { "enabled", "ignore" }
-	 *     - default:           "ignore"
 	 *
 	 * BUILDER / Reporting Duplicate Resources
 	 *    Indicate the severity of the problem reported when more than one occurrence
@@ -2667,7 +2285,7 @@ public final class JavaScriptCore extends Plugin {
 	 *
 	 * JAVACORE / Computing Project Build Order
 	 *    Indicate whether JavaScriptCore should enforce the project build order to be based on
-	 *    the classpath prerequisite chain. When requesting to compute, this takes over
+	 *    the includepath prerequisite chain. When requesting to compute, this takes over
 	 *    the platform default order (based on project references).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.computeJavaBuildOrder"
 	 *     - possible values:   { "compute", "ignore" }
@@ -2680,42 +2298,34 @@ public final class JavaScriptCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.encoding"
 	 *     - value:           &lt;immutable, platform default value&gt;
 	 *
-	 * JAVACORE / Reporting Incomplete Classpath
-	 *    Indicate the severity of the problem reported when an entry on the classpath does not exist,
+	 * JAVACORE / Reporting Incomplete Includepath
+	 *    Indicate the severity of the problem reported when an entry on the includepath does not exist,
 	 *    is not legite or is not visible (for example, a referenced project is closed).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.incompleteClasspath"
 	 *     - possible values:   { "error", "warning"}
 	 *     - default:           "error"
 	 *
-	 * JAVACORE / Reporting Classpath Cycle
+	 * JAVACORE / Reporting Includepath Cycle
 	 *    Indicate the severity of the problem reported when a project is involved in a cycle.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.circularClasspath"
 	 *     - possible values:   { "error", "warning" }
 	 *     - default:           "error"
-	 *
-	 * JAVACORE / Reporting Incompatible JDK Level for Required Binaries
-	 *    Indicate the severity of the problem reported when a project prerequisites another project
-	 *    or library with an incompatible target JDK level (e.g. project targeting 1.1 vm, but compiled against 1.4 libraries).
-	 *     - option id:         "org.eclipse.wst.jsdt.core.incompatibleJDKLevel"
-	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "ignore"
-	 *
-	 * JAVACORE / Enabling Usage of Classpath Exclusion Patterns
-	 *    When disabled, no entry on a project classpath can be associated with
+	 * JAVACORE / Enabling Usage of Includepath Exclusion Patterns
+	 *    When disabled, no entry on a project includepath can be associated with
 	 *    an exclusion pattern.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.classpath.exclusionPatterns"
+	 *     - option id:         "org.eclipse.wst.jsdt.core.includepath.exclusionPatterns"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "enabled"
 	 *
-	 * JAVACORE / Enabling Usage of Classpath Multiple Output Locations
-	 *    When disabled, no entry on a project classpath can be associated with
+	 * JAVACORE / Enabling Usage of Includepath Multiple Output Locations
+	 *    When disabled, no entry on a project includepath can be associated with
 	 *    a specific output location, preventing thus usage of multiple output locations.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.classpath.multipleOutputLocations"
+	 *     - option id:         "org.eclipse.wst.jsdt.core.includepath.multipleOutputLocations"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "enabled"
 	 *
-	 * JAVACORE / Set the timeout value for retrieving the method's parameter names from javadoc
-	 *    Timeout in milliseconds to retrieve the method's parameter names from javadoc.
+	 * JAVACORE / Set the timeout value for retrieving the method's parameter names from jsdoc
+	 *    Timeout in milliseconds to retrieve the method's parameter names from jsdoc.
 	 *    If the value is 0, the parameter names are not fetched and the raw names are returned.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.timeoutForParameterNameFromAttachedJavadoc"
 	 *     - possible values:	"&lt;n&gt;", where n is an integer greater than or equal to 0
@@ -2904,7 +2514,6 @@ public final class JavaScriptCore extends Plugin {
 	 * @return the name of the default charset encoding for workspace root.
 	 * @see IContainer#getDefaultCharset()
 	 * @see ResourcesPlugin#getEncoding()
-	 * @since 3.0
 	 */
 	public static String getEncoding() {
 		// Verify that workspace is not shutting down (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=60687)
@@ -2920,8 +2529,8 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Returns an array that contains the resources generated by the Java builder when building the
-	 * compilation units contained in the given region.
+	 * Returns an array that contains the resources generated by the JavaScript builder when building the
+	 * javaScript units contained in the given region.
 	 * <p>The contents of the array is accurate only if the elements of the given region have been built.</p>
 	 * <p>The given region can contain instances of:</p>
 	 * <ul>
@@ -2933,12 +2542,11 @@ public final class JavaScriptCore extends Plugin {
 	 * <p>All other types of <code>org.eclipse.wst.jsdt.core.IJavaScriptElement</code> are ignored.</p>
 	 *
 	 * @param region the given region
-	 * @param includesNonJavaResources a flag that indicates if non-java resources should be included
+	 * @param includesNonJavaResources a flag that indicates if non-javaScript resources should be included
 	 *
-	 * @return an array that contains the resources generated by the Java builder when building the
-	 * compilation units contained in the given region, an empty array if none
+	 * @return an array that contains the resources generated by the JavaScript builder when building the
+	 * javaScript units contained in the given region, an empty array if none
 	 * @exception IllegalArgumentException if the given region is <code>null</code>
-	 * @since 3.3
 	 */
 	public static IResource[] getGeneratedResources(IRegion region, boolean includesNonJavaResources) {
 		if (region == null) throw new IllegalArgumentException("region cannot be null"); //$NON-NLS-1$
@@ -2946,7 +2554,7 @@ public final class JavaScriptCore extends Plugin {
 		HashMap projectsStates = new HashMap();
 		ArrayList collector = new ArrayList();
 		for (int i = 0, max = elements.length; i < max; i++) {
-			// collect all the java project
+			// collect all the javaScript project
 			IJavaScriptElement element = elements[i];
 			IJavaScriptProject javaProject = element.getJavaScriptProject();
 			IProject project = javaProject.getProject();
@@ -3023,7 +2631,7 @@ public final class JavaScriptCore extends Plugin {
 						getGeneratedResource(compilationUnits[j], container, state, rootPathSegmentCounts, collector);
 					}
 					if (includesNonJavaResources) {
-						// retrieve all non-java resources from the output location using the package fragment path
+						// retrieve all non-javaScript resources from the output location using the package fragment path
 						Object[] nonJavaResources = null;
 						try {
 							nonJavaResources = fragment.getNonJavaScriptResources();
@@ -3059,7 +2667,7 @@ public final class JavaScriptCore extends Plugin {
 							getGeneratedResource(units[n], container, state, rootPathSegmentCounts, collector);
 						}
 						if (includesNonJavaResources) {
-							// retrieve all non-java resources from the output location using the package fragment path
+							// retrieve all non-javaScript resources from the output location using the package fragment path
 							Object[] nonJavaResources = null;
 							try {
 								nonJavaResources = fragment.getNonJavaScriptResources();
@@ -3111,24 +2719,23 @@ public final class JavaScriptCore extends Plugin {
 
 
 	/**
-	 * Returns the single instance of the Java core plug-in runtime class.
+	 * Returns the single instance of the JavaScript core plug-in runtime class.
 	 * Equivalent to <code>(JavaScriptCore) getPlugin()</code>.
 	 *
-	 * @return the single instance of the Java core plug-in runtime class
+	 * @return the single instance of the JavaScript core plug-in runtime class
 	 */
 	public static JavaScriptCore getJavaScriptCore() {
 		return (JavaScriptCore) getPlugin();
 	}
 
 	/**
-	 * Returns the list of known Java-like extensions.
-	 * Java like extension are defined in the {@link org.eclipse.core.runtime.Platform#getContentTypeManager()
+	 * Returns the list of known JavaScript-like extensions.
+	 * JavaScript like extension are defined in the {@link org.eclipse.core.runtime.Platform#getContentTypeManager()
 	 * content type manager} for the {@link #JAVA_SOURCE_CONTENT_TYPE}.
-	 * Note that a Java-like extension doesn't include the leading dot ('.').
-	 * Also note that the "java" extension is always defined as a Java-like extension.
+	 * Note that a JavaScript-like extension doesn't include the leading dot ('.').
+	 * Also note that the "js" extension is always defined as a JavaScript-like extension.
 	 *
-	 * @return the list of known Java-like extensions.
-	 * @since 3.2
+	 * @return the list of known JavaScript-like extensions.
 	 */
 	public static String[] getJavaScriptLikeExtensions() {
 		return CharOperation.toStrings(Util.getJavaLikeExtensions());
@@ -3145,7 +2752,6 @@ public final class JavaScriptCore extends Plugin {
 	 * @return the String value of a given option
 	 * @see JavaScriptCore#getDefaultOptions()
 	 * @see org.eclipse.wst.jsdt.internal.core.JavaCorePreferenceInitializer for changing default settings
-	 * @since 2.0
 	 */
 	public static String getOption(String optionName) {
 		return JavaModelManager.getJavaModelManager().getOption(optionName);
@@ -3167,16 +2773,16 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Returns the single instance of the Java core plug-in runtime class.
+	 * Returns the single instance of the JavaScript core plug-in runtime class.
 	 *
-	 * @return the single instance of the Java core plug-in runtime class
+	 * @return the single instance of the JavaScript core plug-in runtime class
 	 */
 	public static Plugin getPlugin() {
 		return JAVA_CORE_PLUGIN;
 	}
 
 	/**
-	 * This is a helper method, which returns the resolved classpath entry denoted
+	 * This is a helper method, which returns the resolved includepath entry denoted
 	 * by a given entry (if it is a variable entry). It is obtained by resolving the variable
 	 * reference in the first segment. Returns <code>null</code> if unable to resolve using
 	 * the following algorithm:
@@ -3187,15 +2793,15 @@ public final class JavaScriptCore extends Plugin {
 	 * <li> if none returns <code>null</code></li>
 	 * </ul>
 	 * <p>
-	 * Variable source attachment path and root path are also resolved and recorded in the resulting classpath entry.
+	 * Variable source attachment path and root path are also resolved and recorded in the resulting includepath entry.
 	 * <p>
-	 * NOTE: This helper method does not handle classpath containers, for which should rather be used
+	 * NOTE: This helper method does not handle includepath containers, for which should rather be used
 	 * <code>JavaScriptCore#getJsGlobalScopeContainer(IPath, IJavaScriptProject)</code>.
 	 * <p>
 	 *
 	 * @param entry the given variable entry
-	 * @return the resolved library or project classpath entry, or <code>null</code>
-	 *   if the given variable entry could not be resolved to a valid classpath entry
+	 * @return the resolved library or project includepath entry, or <code>null</code>
+	 *   if the given variable entry could not be resolved to a valid includepath entry
 	 */
 	public static IIncludePathEntry getResolvedIncludepathEntry(IIncludePathEntry entry) {
 
@@ -3318,7 +2924,6 @@ public final class JavaScriptCore extends Plugin {
 	 *
 	 * @param factory the given buffer factory
 	 * @return the list of shared working copies for a given buffer factory
-	 * @since 2.0
 	 * @deprecated Use {@link #getWorkingCopies(WorkingCopyOwner)} instead
 	 */
 	public static IWorkingCopy[] getSharedWorkingCopies(IBufferFactory factory){
@@ -3330,10 +2935,9 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Returns the names of all defined user libraries. The corresponding classpath container path
+	 * Returns the names of all defined user libraries. The corresponding includepath container path
 	 * is the name appended to the USER_LIBRARY_CONTAINER_ID.
 	 * @return Return an array containing the names of all known user defined.
-	 * @since 3.0
 	 */
 	public static String[] getUserLibraryNames() {
 		 return UserLibraryManager.getUserLibraryNames();
@@ -3341,12 +2945,11 @@ public final class JavaScriptCore extends Plugin {
 
 	/**
 	 * Returns the working copies that have the given owner.
-	 * Only compilation units in working copy mode are returned.
+	 * Only javaScript units in working copy mode are returned.
 	 * If the owner is <code>null</code>, primary working copies are returned.
 	 *
 	 * @param owner the given working copy owner or <code>null</code> for primary working copy owner
 	 * @return the list of working copies for a given owner
-	 * @since 3.0
 	 */
 	public static IJavaScriptUnit[] getWorkingCopies(WorkingCopyOwner owner){
 
@@ -3368,7 +2971,7 @@ public final class JavaScriptCore extends Plugin {
 	 * overhead on user actions, if it can be performed before at some
 	 * appropriate moment.
 	 * </p><p>
-	 * This initialization runs accross all Java projects in the workspace. Thus the
+	 * This initialization runs accross all JavaScript projects in the workspace. Thus the
 	 * workspace root scheduling rule is used during this operation.
 	 * </p><p>
 	 * This method may return before the initialization is complete. The
@@ -3381,7 +2984,6 @@ public final class JavaScriptCore extends Plugin {
 	 *    reporting and cancellation are not desired
 	 * @exception CoreException if the initialization fails,
 	 * 		the status of the exception indicates the reason of the failure
-	 * @since 3.1
 	 */
 	public static void initializeAfterLoad(IProgressMonitor monitor) throws CoreException {
 		try {
@@ -3485,7 +3087,7 @@ public final class JavaScriptCore extends Plugin {
 						try {
 							projects = model.getJavaScriptProjects();
 						} catch (JavaScriptModelException e) {
-							// could not get Java projects: ignore
+							// could not get JavaScript projects: ignore
 						}
 						if (projects != null) {
 							for (int i = 0, length = projects.length; i < length; i++) {
@@ -3532,31 +3134,29 @@ public final class JavaScriptCore extends Plugin {
 		}
 	}
 	/**
-	 * Returns whether a given classpath variable is read-only or not.
+	 * Returns whether a given includepath variable is read-only or not.
 	 *
 	 * @param variableName
-	 * @return <code>true</code> if the classpath variable is read-only,
+	 * @return <code>true</code> if the includepath variable is read-only,
 	 * 	<code>false</code> otherwise.
-	 * @since 3.3
 	 */
 	public static boolean isIncludepathVariableReadOnly(String variableName) {
 	    return JavaModelManager.getJavaModelManager().readOnlyVariables.contains(variableName);
 	}
 
 	/**
-	 * Returns whether the given file name's extension is a Java-like extension.
+	 * Returns whether the given file name's extension is a JavaScript-like extension.
 	 *
-	 * @return whether the given file name's extension is a Java-like extension
+	 * @return whether the given file name's extension is a JavaScript-like extension
 	 * @see #getJavaScriptLikeExtensions()
-	 * @since 3.2
 	 */
 	public static boolean isJavaScriptLikeFileName(String fileName) {
 		return Util.isJavaLikeFileName(fileName);
 	}
 
 	/**
-	 * Returns whether the given marker references the given Java element.
-	 * Used for markers, which denote a Java element rather than a resource.
+	 * Returns whether the given marker references the given JavaScript element.
+	 * Used for markers, which denote a JavaScript element rather than a resource.
 	 *
 	 * @param element the element
 	 * @param marker the marker
@@ -3598,8 +3198,8 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Returns whether the given marker delta references the given Java element.
-	 * Used for markers deltas, which denote a Java element rather than a resource.
+	 * Returns whether the given marker delta references the given JavaScript element.
+	 * Used for markers deltas, which denote a JavaScript element rather than a resource.
 	 *
 	 * @param element the element
 	 * @param markerDelta the marker delta
@@ -3653,34 +3253,31 @@ public final class JavaScriptCore extends Plugin {
 	 *                     or {@link IAccessRule#K_NON_ACCESSIBLE}, optionally combined with
 	 *                     {@link IAccessRule#IGNORE_IF_BETTER}
 	 * @return a new access rule
-	 * @since 3.1
 	 */
 	public static IAccessRule newAccessRule(IPath filePattern, int kind) {
 		return new ClasspathAccessRule(filePattern, kind);
 	}
 
 	/**
-	 * Creates and returns a new classpath attribute with the given name and the given value.
+	 * Creates and returns a new includepath attribute with the given name and the given value.
 	 *
-	 * @return a new classpath attribute
-	 * @since 3.1
+	 * @return a new includepath attribute
 	 */
 	public static IIncludePathAttribute newIncludepathAttribute(String name, String value) {
 		return new ClasspathAttribute(name, value);
 	}
 
 	/**
-	 * Creates and returns a new classpath entry of kind <code>CPE_CONTAINER</code>
+	 * Creates and returns a new includepath entry of kind <code>CPE_CONTAINER</code>
 	 * for the given path. This method is fully equivalent to calling
 	 * {@link #newContainerEntry(IPath, IAccessRule[], IIncludePathAttribute[], boolean)
 	 * newContainerEntry(containerPath, new IAccessRule[0], new IIncludePathAttribute[0], false)}.
 	 * <p>
 	 * @param containerPath the path identifying the container, it must be formed of two
 	 * 	segments
-	 * @return a new container classpath entry
+	 * @return a new container includepath entry
 	 *
 	 * @see JavaScriptCore#getJsGlobalScopeContainer(IPath, IJavaScriptProject)
-	 * @since 2.0
 	 */
 	public static IIncludePathEntry newContainerEntry(IPath containerPath) {
 		return newContainerEntry(
@@ -3691,7 +3288,7 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Creates and returns a new classpath entry of kind <code>CPE_CONTAINER</code>
+	 * Creates and returns a new includepath entry of kind <code>CPE_CONTAINER</code>
 	 * for the given path. This method is fully equivalent to calling
 	 * {@link #newContainerEntry(IPath, IAccessRule[], IIncludePathAttribute[], boolean)
 	 * newContainerEntry(containerPath, new IAccessRule[0], new IIncludePathAttribute[0], isExported)}.
@@ -3700,11 +3297,10 @@ public final class JavaScriptCore extends Plugin {
 	 * 	one segment (ID+hints)
 	 * @param isExported a boolean indicating whether this entry is contributed to dependent
 	 *    projects in addition to the output location
-	 * @return a new container classpath entry
+	 * @return a new container includepath entry
 	 *
 	 * @see JavaScriptCore#getJsGlobalScopeContainer(IPath, IJavaScriptProject)
 	 * @see JavaScriptCore#setJsGlobalScopeContainer(IPath, IJavaScriptProject[], IJsGlobalScopeContainer[], IProgressMonitor)
-	 * @since 2.0
 	 */
 	public static IIncludePathEntry newContainerEntry(IPath containerPath, boolean isExported) {
 		return newContainerEntry(
@@ -3715,13 +3311,13 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Creates and returns a new classpath entry of kind <code>CPE_CONTAINER</code>
+	 * Creates and returns a new includepath entry of kind <code>CPE_CONTAINER</code>
 	 * for the given path. The path of the container will be used during resolution so as to map this
-	 * container entry to a set of other classpath entries the container is acting for.
+	 * container entry to a set of other includepath entries the container is acting for.
 	 * <p>
 	 * A container entry allows to express indirect references to a set of libraries, projects and variable entries,
-	 * which can be interpreted differently for each Java project where it is used.
-	 * A classpath container entry can be resolved using <code>JavaScriptCore.getResolvedJsGlobalScopeContainer</code>,
+	 * which can be interpreted differently for each JavaScript project where it is used.
+	 * A includepath container entry can be resolved using <code>JavaScriptCore.getResolvedJsGlobalScopeContainer</code>,
 	 * and updated with <code>JavaScriptCore.JsGlobalScopeContainerChanged</code>
 	 * <p>
 	 * A container is exclusively resolved by a <code>JsGlobalScopeContainerInitializer</code> registered onto the
@@ -3734,7 +3330,7 @@ public final class JavaScriptCore extends Plugin {
 	 * 	hints during the initialization phase. </li>
 	 * </ul>
 	 * <p>
-	 * Example of an JsGlobalScopeContainerInitializer for a classpath container denoting a default JDK container:
+	 * Example of an JsGlobalScopeContainerInitializer for a includepath container denoting a default JDK container:
 	 * <pre>
 	 * containerEntry = JavaScriptCore.newContainerEntry(new Path("MyProvidedJDK/default"));
 	 *
@@ -3767,7 +3363,7 @@ public final class JavaScriptCore extends Plugin {
 	 * with the non accessible files patterns of the project.
 	 * </p>
 	 * <p>
-	 * Note that this operation does not attempt to validate classpath containers
+	 * Note that this operation does not attempt to validate includepath containers
 	 * or access the resources at the given paths.
 	 * </p>
 	 *
@@ -3777,13 +3373,12 @@ public final class JavaScriptCore extends Plugin {
 	 * @param extraAttributes the possibly empty list of extra attributes to persist with this entry
 	 * @param isExported a boolean indicating whether this entry is contributed to dependent
 	 *    projects in addition to the output location
-	 * @return a new container classpath entry
+	 * @return a new container includepath entry
 	 *
 	 * @see JavaScriptCore#getJsGlobalScopeContainer(IPath, IJavaScriptProject)
 	 * @see JavaScriptCore#setJsGlobalScopeContainer(IPath, IJavaScriptProject[], IJsGlobalScopeContainer[], IProgressMonitor)
 	 * @see JavaScriptCore#newContainerEntry(IPath, boolean)
 	 * @see JavaScriptCore#newAccessRule(IPath, int)
-	 * @since 3.1
 	 */
 	public static IIncludePathEntry newContainerEntry(
 			IPath containerPath,
@@ -3818,7 +3413,7 @@ public final class JavaScriptCore extends Plugin {
 	 * region, considering subtypes within that region and considering types in the
 	 * working copies with the given owner.
 	 * In other words, the owner's working copies will take
-	 * precedence over their original compilation units in the workspace.
+	 * precedence over their original javaScript units in the workspace.
 	 * <p>
 	 * Note that if a working copy is empty, it will be as if the original compilation
 	 * unit had been deleted.
@@ -3826,14 +3421,13 @@ public final class JavaScriptCore extends Plugin {
 	 *
 	 * @param monitor the given progress monitor
 	 * @param region the given region
-	 * @param owner the owner of working copies that take precedence over their original compilation units,
+	 * @param owner the owner of working copies that take precedence over their original javaScript units,
 	 *   or <code>null</code> if the primary working copy owner should be used
 	 * @exception JavaScriptModelException if an element in the region does not exist or if an
 	 *		exception occurs while accessing its corresponding resource
 	 * @exception IllegalArgumentException if region is <code>null</code>
 	 * @return a type hierarchy for all types in the given
 	 * region, considering subtypes within that region
-	 * @since 3.1
 	 */
 	public static ITypeHierarchy newTypeHierarchy(IRegion region, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException {
 		if (region == null) {
@@ -3847,7 +3441,7 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Creates and returns a new non-exported classpath entry of kind <code>CPE_LIBRARY</code> for the
+	 * Creates and returns a new non-exported includepath entry of kind <code>CPE_LIBRARY</code> for the
 	 * JAR or folder identified by the given absolute path. This specifies that all package fragments
 	 * within the root will have children of type <code>IClassFile</code>.
 	 * This method is fully equivalent to calling
@@ -3860,7 +3454,7 @@ public final class JavaScriptCore extends Plugin {
 	 *   and will be automatically converted to <code>null</code>.
 	 * @param sourceAttachmentRootPath the location of the root of the source files within the source archive or folder
 	 *    or <code>null</code> if this location should be automatically detected.
-	 * @return a new library classpath entry
+	 * @return a new library includepath entry
 	 */
 	public static IIncludePathEntry newLibraryEntry(
 		IPath path,
@@ -3877,7 +3471,7 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Creates and returns a new classpath entry of kind <code>CPE_LIBRARY</code> for the JAR or folder
+	 * Creates and returns a new includepath entry of kind <code>CPE_LIBRARY</code> for the JAR or folder
 	 * identified by the given absolute path. This specifies that all package fragments within the root
 	 * will have children of type <code>IClassFile</code>.
 	 * This method is fully equivalent to calling
@@ -3892,8 +3486,7 @@ public final class JavaScriptCore extends Plugin {
 	 *    or <code>null</code> if this location should be automatically detected.
 	 * @param isExported indicates whether this entry is contributed to dependent
 	 * 	  projects in addition to the output location
-	 * @return a new library classpath entry
-	 * @since 2.0
+	 * @return a new library includepath entry
 	 */
 	public static IIncludePathEntry newLibraryEntry(
 		IPath path,
@@ -3911,7 +3504,7 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Creates and returns a new classpath entry of kind <code>CPE_LIBRARY</code> for the JAR or folder
+	 * Creates and returns a new includepath entry of kind <code>CPE_LIBRARY</code> for the JAR or folder
 	 * identified by the given absolute path. This specifies that all package fragments within the root
 	 * will have children of type <code>IClassFile</code>.
 	 * <p>
@@ -3922,26 +3515,6 @@ public final class JavaScriptCore extends Plugin {
 	 * to the workspace root). To use a binary folder external to the workspace, it must first be
 	 * linked (see IFolder#createLink(...)).
 	 * <p>
-	 * e.g. Here are some examples of binary path usage<ul>
-	 *	<li><code> "c:\jdk1.2.2\jre\lib\rt.jar" </code> - reference to an external JAR on Windows</li>
-	 *	<li><code> "/Project/someLib.jar" </code> - reference to an internal JAR on Windows or Linux</li>
-	 *	<li><code> "/Project/classes/" </code> - reference to an internal binary folder on Windows or Linux</li>
-	 * </ul>
-	 * Note that on non-Windows platform, a path <code>"/some/lib.jar"</code> is ambiguous.
-	 * It can be a path to an external JAR (its file system path being <code>"/some/lib.jar"</code>)
-	 * or it can be a path to an internal JAR (<code>"some"</code> being a project in the workspace).
-	 * Such an ambiguity is solved when the classpath entry is used (e.g. in {@link IJavaScriptProject#getPackageFragmentRoots()}).
-	 * If the resource <code>"lib.jar"</code> exists in project <code>"some"</code>, then it is considered an
-	 * internal JAR. Otherwise it is an external JAR.
-	 * <p>Also note that this operation does not attempt to validate or access the
-	 * resources at the given paths.
-	 * </p><p>
-	 * The access rules determine the set of accessible class files
-	 * in the library. If the list of access rules is empty then all files
-	 * in this library are accessible.
-	 * See {@link IAccessRule} for a detailed description of access
-	 * rules.
-	 * </p>
 	 * <p>
 	 * The <code>extraAttributes</code> list contains name/value pairs that must be persisted with
 	 * this entry. If no extra attributes are provided, an empty array must be passed in.<br>
@@ -3965,8 +3538,7 @@ public final class JavaScriptCore extends Plugin {
 	 * @param extraAttributes the possibly empty list of extra attributes to persist with this entry
 	 * @param isExported indicates whether this entry is contributed to dependent
 	 * 	  projects in addition to the output location
-	 * @return a new library classpath entry
-	 * @since 3.1
+	 * @return a new library includepath entry
 	 */
 	public static IIncludePathEntry newLibraryEntry(
 			IPath path,
@@ -4003,21 +3575,21 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Creates and returns a new non-exported classpath entry of kind <code>CPE_PROJECT</code>
+	 * Creates and returns a new non-exported includepath entry of kind <code>CPE_PROJECT</code>
 	 * for the project identified by the given absolute path.
 	 * This method is fully equivalent to calling
 	 * {@link #newProjectEntry(IPath, IAccessRule[], boolean, IIncludePathAttribute[], boolean)
 	 * newProjectEntry(path, new IAccessRule[0], true, new IIncludePathAttribute[0], false)}.
 	 *
 	 * @param path the absolute path of the binary archive
-	 * @return a new project classpath entry
+	 * @return a new project includepath entry
 	 */
 	public static IIncludePathEntry newProjectEntry(IPath path) {
 		return newProjectEntry(path, false);
 	}
 
 	/**
-	 * Creates and returns a new classpath entry of kind <code>CPE_PROJECT</code>
+	 * Creates and returns a new includepath entry of kind <code>CPE_PROJECT</code>
 	 * for the project identified by the given absolute path.
 	 * This method is fully equivalent to calling
 	 * {@link #newProjectEntry(IPath, IAccessRule[], boolean, IIncludePathAttribute[], boolean)
@@ -4026,8 +3598,7 @@ public final class JavaScriptCore extends Plugin {
 	 * @param path the absolute path of the prerequisite project
 	 * @param isExported indicates whether this entry is contributed to dependent
 	 * 	  projects in addition to the output location
-	 * @return a new project classpath entry
-	 * @since 2.0
+	 * @return a new project includepath entry
 	 */
 	public static IIncludePathEntry newProjectEntry(IPath path, boolean isExported) {
 
@@ -4042,11 +3613,11 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Creates and returns a new classpath entry of kind <code>CPE_PROJECT</code>
+	 * Creates and returns a new includepath entry of kind <code>CPE_PROJECT</code>
 	 * for the project identified by the given absolute path.
 	 * <p>
-	 * A project entry is used to denote a prerequisite project on a classpath.
-	 * The referenced project will be contributed as a whole, either as sources (in the Java Model, it
+	 * A project entry is used to denote a prerequisite project on a includepath.
+	 * The referenced project will be contributed as a whole, either as sources (in the JavaScript Model, it
 	 * contributes all its package fragment roots) or as binaries (when building, it contributes its
 	 * whole output location).
 	 * </p>
@@ -4086,8 +3657,7 @@ public final class JavaScriptCore extends Plugin {
 	 * @param extraAttributes the possibly empty list of extra attributes to persist with this entry
 	 * @param isExported indicates whether this entry is contributed to dependent
 	 * 	  projects in addition to the output location
-	 * @return a new project classpath entry
-	 * @since 3.1
+	 * @return a new project includepath entry
 	 */
 	public static IIncludePathEntry newProjectEntry(
 			IPath path,
@@ -4123,7 +3693,7 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Creates and returns a new classpath entry of kind <code>CPE_SOURCE</code>
+	 * Creates and returns a new includepath entry of kind <code>CPE_SOURCE</code>
 	 * for all files in the project's source folder identified by the given
 	 * absolute workspace-relative path.
 	 * <p>
@@ -4134,7 +3704,7 @@ public final class JavaScriptCore extends Plugin {
 	 * </p>
 	 *
 	 * @param path the absolute workspace-relative path of a source folder
-	 * @return a new source classpath entry
+	 * @return a new source includepath entry
 	 * @see #newSourceEntry(IPath, IPath[], IPath[], IPath)
 	 */
 	public static IIncludePathEntry newSourceEntry(IPath path) {
@@ -4143,7 +3713,7 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Creates and returns a new classpath entry of kind <code>CPE_SOURCE</code>
+	 * Creates and returns a new includepath entry of kind <code>CPE_SOURCE</code>
 	 * for the project's source folder identified by the given absolute
 	 * workspace-relative path but excluding all source files with paths
 	 * matching any of the given patterns.
@@ -4157,9 +3727,8 @@ public final class JavaScriptCore extends Plugin {
 	 * @param path the absolute workspace-relative path of a source folder
 	 * @param exclusionPatterns the possibly empty list of exclusion patterns
 	 *    represented as relative paths
-	 * @return a new source classpath entry
+	 * @return a new source includepath entry
 	 * @see #newSourceEntry(IPath, IPath[], IPath[], IPath)
-	 * @since 2.1
 	 */
 	public static IIncludePathEntry newSourceEntry(IPath path, IPath[] exclusionPatterns) {
 
@@ -4167,7 +3736,7 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Creates and returns a new classpath entry of kind <code>CPE_SOURCE</code>
+	 * Creates and returns a new includepath entry of kind <code>CPE_SOURCE</code>
 	 * for the project's source folder identified by the given absolute
 	 * workspace-relative path but excluding all source files with paths
 	 * matching any of the given patterns, and associated with a specific output location
@@ -4183,9 +3752,8 @@ public final class JavaScriptCore extends Plugin {
 	 * @param exclusionPatterns the possibly empty list of exclusion patterns
 	 *    represented as relative paths
 	 * @param specificOutputLocation the specific output location for this source entry (<code>null</code> if using project default ouput location)
-	 * @return a new source classpath entry
+	 * @return a new source includepath entry
 	 * @see #newSourceEntry(IPath, IPath[], IPath[], IPath)
-	 * @since 2.1
 	 */
 	public static IIncludePathEntry newSourceEntry(IPath path, IPath[] exclusionPatterns, IPath specificOutputLocation) {
 
@@ -4193,7 +3761,7 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Creates and returns a new classpath entry of kind <code>CPE_SOURCE</code>
+	 * Creates and returns a new includepath entry of kind <code>CPE_SOURCE</code>
 	 * for the project's source folder identified by the given absolute
 	 * workspace-relative path but excluding all source files with paths
 	 * matching any of the given patterns, and associated with a specific output location
@@ -4211,16 +3779,15 @@ public final class JavaScriptCore extends Plugin {
 	 * @param exclusionPatterns the possibly empty list of exclusion patterns
 	 *    represented as relative paths
 	 * @param specificOutputLocation the specific output location for this source entry (<code>null</code> if using project default ouput location)
-	 * @return a new source classpath entry
+	 * @return a new source includepath entry
 	 * @see #newSourceEntry(IPath, IPath[], IPath[], IPath, IIncludePathAttribute[])
-	 * @since 3.0
 	 */
 	public static IIncludePathEntry newSourceEntry(IPath path, IPath[] inclusionPatterns, IPath[] exclusionPatterns, IPath specificOutputLocation) {
 		return newSourceEntry(path, inclusionPatterns, exclusionPatterns, specificOutputLocation, ClasspathEntry.NO_EXTRA_ATTRIBUTES);
 	}
 
 	/**
-	 * Creates and returns a new classpath entry of kind <code>CPE_SOURCE</code>
+	 * Creates and returns a new includepath entry of kind <code>CPE_SOURCE</code>
 	 * for the project's source folder identified by the given absolute
 	 * workspace-relative path using the given inclusion and exclusion patterns
 	 * to determine which source files are included, and the given output path
@@ -4228,7 +3795,7 @@ public final class JavaScriptCore extends Plugin {
 	 * <p>
 	 * The source folder is referred to using an absolute path relative to the
 	 * workspace root, e.g. <code>/Project/src</code>. A project's source
-	 * folders are located with that project. That is, a source classpath
+	 * folders are located with that project. That is, a source includepath
 	 * entry specifying the path <code>/P1/src</code> is only usable for
 	 * project <code>P1</code>.
 	 * </p>
@@ -4251,27 +3818,6 @@ public final class JavaScriptCore extends Plugin {
 	 * the root will have children of type <code>IJavaScriptUnit</code>.
 	 * </p>
 	 * <p>
-	 * For example, if the source folder path is
-	 * <code>/Project/src</code>, there are no inclusion filters, and the
-	 * exclusion pattern is
-	 * <code>com/xyz/tests/&#42;&#42;</code>, then source files
-	 * like <code>/Project/src/com/xyz/Foo.js</code>
-	 * and <code>/Project/src/com/xyz/utils/Bar.js</code> would be included,
-	 * whereas <code>/Project/src/com/xyz/tests/T1.js</code>
-	 * and <code>/Project/src/com/xyz/tests/quick/T2.js</code> would be
-	 * excluded.
-	 * </p>
-	 * <p>
-	 * Additionally, a source entry can be associated with a specific output location.
-	 * By doing so, the Java builder will ensure that the generated ".class" files will
-	 * be issued inside this output location, as opposed to be generated into the
-	 * project default output location (when output location is <code>null</code>).
-	 * Note that multiple source entries may target the same output location.
-	 * The output location is referred to using an absolute path relative to the
-	 * workspace root, e.g. <code>"/Project/bin"</code>, it must be located inside
-	 * the same project as the source folder.
-	 * </p>
-	 * <p>
 	 * Also note that all sources/binaries inside a project are contributed as
 	 * a whole through a project entry
 	 * (see <code>JavaScriptCore.newProjectEntry</code>). Particular source entries
@@ -4290,11 +3836,10 @@ public final class JavaScriptCore extends Plugin {
 	 *    represented as relative paths
 	 * @param specificOutputLocation the specific output location for this source entry (<code>null</code> if using project default ouput location)
 	 * @param extraAttributes the possibly empty list of extra attributes to persist with this entry
-	 * @return a new source classpath entry with the given exclusion patterns
+	 * @return a new source includepath entry with the given exclusion patterns
 	 * @see IIncludePathEntry#getInclusionPatterns()
 	 * @see IIncludePathEntry#getExclusionPatterns()
 	 * @see IIncludePathEntry#getOutputLocation()
-	 * @since 3.1
 	 */
 	public static IIncludePathEntry newSourceEntry(IPath path, IPath[] inclusionPatterns, IPath[] exclusionPatterns, IPath specificOutputLocation, IIncludePathAttribute[] extraAttributes) {
 
@@ -4319,20 +3864,20 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Creates and returns a new non-exported classpath entry of kind <code>CPE_VARIABLE</code>
+	 * Creates and returns a new non-exported includepath entry of kind <code>CPE_VARIABLE</code>
 	 * for the given path. This method is fully equivalent to calling
 	 * {@link #newVariableEntry(IPath, IPath, IPath, IAccessRule[], IIncludePathAttribute[], boolean)
 	 * newVariableEntry(variablePath, variableSourceAttachmentPath, sourceAttachmentRootPath, new IAccessRule[0], new IIncludePathAttribute[0], false)}.
 	 *
 	 * @param variablePath the path of the binary archive; first segment is the
-	 *   name of a classpath variable
+	 *   name of a includepath variable
 	 * @param variableSourceAttachmentPath the path of the corresponding source archive,
 	 *    or <code>null</code> if none; if present, the first segment is the
-	 *    name of a classpath variable (not necessarily the same variable
+	 *    name of a includepath variable (not necessarily the same variable
 	 *    as the one that begins <code>variablePath</code>)
 	 * @param sourceAttachmentRootPath the location of the root of the source files within the source archive
 	 *    or <code>null</code> if <code>variableSourceAttachmentPath</code> is also <code>null</code>
-	 * @return a new library classpath entry
+	 * @return a new library includepath entry
 	 */
 	public static IIncludePathEntry newVariableEntry(
 		IPath variablePath,
@@ -4343,23 +3888,22 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Creates and returns a new classpath entry of kind <code>CPE_VARIABLE</code>
+	 * Creates and returns a new includepath entry of kind <code>CPE_VARIABLE</code>
 	 * for the given path. This method is fully equivalent to calling
 	 * {@link #newVariableEntry(IPath, IPath, IPath, IAccessRule[], IIncludePathAttribute[], boolean)
 	 * newVariableEntry(variablePath, variableSourceAttachmentPath, sourceAttachmentRootPath, new IAccessRule[0], new IIncludePathAttribute[0], isExported)}.
 	 *
 	 * @param variablePath the path of the binary archive; first segment is the
-	 *   name of a classpath variable
+	 *   name of a includepath variable
 	 * @param variableSourceAttachmentPath the path of the corresponding source archive,
 	 *    or <code>null</code> if none; if present, the first segment is the
-	 *    name of a classpath variable (not necessarily the same variable
+	 *    name of a includepath variable (not necessarily the same variable
 	 *    as the one that begins <code>variablePath</code>)
 	 * @param variableSourceAttachmentRootPath the location of the root of the source files within the source archive
 	 *    or <code>null</code> if <code>variableSourceAttachmentPath</code> is also <code>null</code>
 	 * @param isExported indicates whether this entry is contributed to dependent
 	 * 	  projects in addition to the output location
-	 * @return a new variable classpath entry
-	 * @since 2.0
+	 * @return a new variable includepath entry
 	 */
 	public static IIncludePathEntry newVariableEntry(
 			IPath variablePath,
@@ -4377,31 +3921,16 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Creates and returns a new classpath entry of kind <code>CPE_VARIABLE</code>
-	 * for the given path. The first segment of the path is the name of a classpath variable.
+	 * Creates and returns a new includepath entry of kind <code>CPE_VARIABLE</code>
+	 * for the given path. The first segment of the path is the name of a includepath variable.
 	 * The trailing segments of the path will be appended to resolved variable path.
 	 * <p>
-	 * A variable entry allows to express indirect references on a classpath to other projects or libraries,
-	 * depending on what the classpath variable is referring.
+	 * A variable entry allows to express indirect references on a includepath to other projects or libraries,
+	 * depending on what the includepath variable is referring.
 	 * <p>
 	 *	It is possible to register an automatic initializer (<code>JsGlobalScopeVariableInitializer</code>),
 	 * which will be invoked through the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer".
-	 * After resolution, a classpath variable entry may either correspond to a project or a library entry.
-	 * <p>
-	 * e.g. Here are some examples of variable path usage<ul>
-	 * <li> "JDTCORE" where variable <code>JDTCORE</code> is
-	 *		bound to "c:/jars/jdtcore.jar". The resolved classpath entry is denoting the library "c:\jars\jdtcore.jar"</li>
-	 * <li> "JDTCORE" where variable <code>JDTCORE</code> is
-	 *		bound to "/Project_JDTCORE". The resolved classpath entry is denoting the project "/Project_JDTCORE"</li>
-	 * <li> "PLUGINS/com.example/example.jar" where variable <code>PLUGINS</code>
-	 *      is bound to "c:/eclipse/plugins". The resolved classpath entry is denoting the library "c:\eclipse\plugins\com.example\example.jar"</li>
-	 * </ul>
-	 * <p>
-	 * The access rules determine the set of accessible class files
-	 * in the project or library. If the list of access rules is empty then all files
-	 * in this project or library are accessible.
-	 * See {@link IAccessRule} for a detailed description of access rules.
-	 * </p>
+	 * After resolution, a includepath variable entry may either correspond to a project or a library entry.
 	 * <p>
 	 * The <code>extraAttributes</code> list contains name/value pairs that must be persisted with
 	 * this entry. If no extra attributes are provided, an empty array must be passed in.<br>
@@ -4415,15 +3944,15 @@ public final class JavaScriptCore extends Plugin {
 	 * with the non accessible files patterns of the project.
 	 * </p>
 	 * <p>
-	 * Note that this operation does not attempt to validate classpath variables
+	 * Note that this operation does not attempt to validate includepath variables
 	 * or access the resources at the given paths.
 	 * </p>
 	 *
 	 * @param variablePath the path of the binary archive; first segment is the
-	 *   name of a classpath variable
+	 *   name of a includepath variable
 	 * @param variableSourceAttachmentPath the path of the corresponding source archive,
 	 *    or <code>null</code> if none; if present, the first segment is the
-	 *    name of a classpath variable (not necessarily the same variable
+	 *    name of a includepath variable (not necessarily the same variable
 	 *    as the one that begins <code>variablePath</code>)
 	 * @param variableSourceAttachmentRootPath the location of the root of the source files within the source archive
 	 *    or <code>null</code> if <code>variableSourceAttachmentPath</code> is also <code>null</code>
@@ -4431,8 +3960,7 @@ public final class JavaScriptCore extends Plugin {
 	 * @param extraAttributes the possibly empty list of extra attributes to persist with this entry
 	 * @param isExported indicates whether this entry is contributed to dependent
 	 * 	  projects in addition to the output location
-	 * @return a new variable classpath entry
-	 * @since 3.1
+	 * @return a new variable includepath entry
 	 */
 	public static IIncludePathEntry newVariableEntry(
 			IPath variablePath,
@@ -4446,7 +3974,7 @@ public final class JavaScriptCore extends Plugin {
 		if (variablePath.segmentCount() < 1) {
 			Assert.isTrue(
 				false,
-				"Illegal classpath variable path: \'" + variablePath.makeRelative().toString() + "\', must have at least one segment"); //$NON-NLS-1$//$NON-NLS-2$
+				"Illegal includepath variable path: \'" + variablePath.makeRelative().toString() + "\', must have at least one segment"); //$NON-NLS-1$//$NON-NLS-2$
 		}
 
 		return new ClasspathEntry(
@@ -4464,16 +3992,16 @@ public final class JavaScriptCore extends Plugin {
 			extraAttributes);
 	}
 	/**
-	 * Removed the given classpath variable. Does nothing if no value was
-	 * set for this classpath variable.
+	 * Removed the given includepath variable. Does nothing if no value was
+	 * set for this includepath variable.
 	 * <p>
 	 * This functionality cannot be used while the resource tree is locked.
 	 * <p>
-	 * Classpath variable values are persisted locally to the workspace, and
+	 * Includepath variable values are persisted locally to the workspace, and
 	 * are preserved from session to session.
 	 * <p>
 	 *
-	 * @param variableName the name of the classpath variable
+	 * @param variableName the name of the includepath variable
 	 * @see #setIncludepathVariable(String, IPath)
 	 *
 	 * @deprecated Use {@link #removeIncludepathVariable(String, IProgressMonitor)} instead
@@ -4483,16 +4011,16 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Removed the given classpath variable. Does nothing if no value was
-	 * set for this classpath variable.
+	 * Removed the given includepath variable. Does nothing if no value was
+	 * set for this includepath variable.
 	 * <p>
 	 * This functionality cannot be used while the resource tree is locked.
 	 * <p>
-	 * Classpath variable values are persisted locally to the workspace, and
+	 * Includepath variable values are persisted locally to the workspace, and
 	 * are preserved from session to session.
 	 * <p>
 	 *
-	 * @param variableName the name of the classpath variable
+	 * @param variableName the name of the includepath variable
 	 * @param monitor the progress monitor to report progress
 	 * @see #setIncludepathVariable(String, IPath)
 	 */
@@ -4516,13 +4044,12 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Removes the file extension from the given file name, if it has a Java-like file
+	 * Removes the file extension from the given file name, if it has a JavaScript-like file
 	 * extension. Otherwise the file name itself is returned.
 	 * Note this removes the dot ('.') before the extension as well.
 	 *
 	 * @param fileName the name of a file
-	 * @return the fileName without the Java-like extension
-	 * @since 3.2
+	 * @return the fileName without the JavaScript-like extension
 	 */
 	public static String removeJavaScriptLikeExtension(String fileName) {
 		return Util.getNameWithoutJavaLikeExtension(fileName);
@@ -4534,7 +4061,6 @@ public final class JavaScriptCore extends Plugin {
 	 * Has no affect if an identical listener is not registered.
 	 *
 	 * @param listener the listener
-	 * @since 3.0
 	 */
 	public static void removePreProcessingResourceChangedListener(IResourceChangeListener listener) {
 		JavaModelManager.getJavaModelManager().deltaState.removePreResourceChangedListener(listener);
@@ -4543,13 +4069,13 @@ public final class JavaScriptCore extends Plugin {
 
 
 	/**
-	 * Runs the given action as an atomic Java model operation.
+	 * Runs the given action as an atomic JavaScript model operation.
 	 * <p>
-	 * After running a method that modifies java elements,
+	 * After running a method that modifies javaScript elements,
 	 * registered listeners receive after-the-fact notification of
 	 * what just transpired, in the form of a element changed event.
 	 * This method allows clients to call a number of
-	 * methods that modify java elements and only have element
+	 * methods that modify javaScript elements and only have element
 	 * changed event notifications reported at the end of the entire
 	 * batch.
 	 * </p>
@@ -4557,7 +4083,7 @@ public final class JavaScriptCore extends Plugin {
 	 * If this method is called outside the dynamic scope of another such
 	 * call, this method runs the action and then reports a single
 	 * element changed event describing the net effect of all changes
-	 * done to java elements by the action.
+	 * done to javaScript elements by the action.
 	 * </p>
 	 * <p>
 	 * If this method is called in the dynamic scope of another such
@@ -4568,19 +4094,18 @@ public final class JavaScriptCore extends Plugin {
 	 * @param monitor a progress monitor, or <code>null</code> if progress
 	 *    reporting and cancellation are not desired
 	 * @exception CoreException if the operation failed.
-	 * @since 2.1
 	 */
 	public static void run(IWorkspaceRunnable action, IProgressMonitor monitor) throws CoreException {
 		run(action, ResourcesPlugin.getWorkspace().getRoot(), monitor);
 	}
 	/**
-	 * Runs the given action as an atomic Java model operation.
+	 * Runs the given action as an atomic JavaScript model operation.
 	 * <p>
-	 * After running a method that modifies java elements,
+	 * After running a method that modifies javaScript elements,
 	 * registered listeners receive after-the-fact notification of
 	 * what just transpired, in the form of a element changed event.
 	 * This method allows clients to call a number of
-	 * methods that modify java elements and only have element
+	 * methods that modify javaScript elements and only have element
 	 * changed event notifications reported at the end of the entire
 	 * batch.
 	 * </p>
@@ -4588,7 +4113,7 @@ public final class JavaScriptCore extends Plugin {
 	 * If this method is called outside the dynamic scope of another such
 	 * call, this method runs the action and then reports a single
 	 * element changed event describing the net effect of all changes
-	 * done to java elements by the action.
+	 * done to javaScript elements by the action.
 	 * </p>
 	 * <p>
 	 * If this method is called in the dynamic scope of another such
@@ -4606,7 +4131,6 @@ public final class JavaScriptCore extends Plugin {
 	 * @param monitor a progress monitor, or <code>null</code> if progress
 	 *    reporting and cancellation are not desired
 	 * @exception CoreException if the operation failed.
-	 * @since 3.0
 	 */
 	public static void run(IWorkspaceRunnable action, ISchedulingRule rule, IProgressMonitor monitor) throws CoreException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -4624,7 +4148,7 @@ public final class JavaScriptCore extends Plugin {
 	 * set of projects with their respective containers.
 	 * <p>
 	 * <code>containerPath</code> is the path under which these values can be referenced through
-	 * container classpath entries (<code>IIncludePathEntry#CPE_CONTAINER</code>). A container path
+	 * container includepath entries (<code>IIncludePathEntry#CPE_CONTAINER</code>). A container path
 	 * is formed by a first ID segment followed with extra segments, which can be used as additional hints
 	 * for the resolution. The container ID is used to identify a <code>JsGlobalScopeContainerInitializer</code>
 	 * registered on the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer".
@@ -4637,14 +4161,14 @@ public final class JavaScriptCore extends Plugin {
 	 * point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer").
 	 * <p>
 	 * In reaction to changing container values, the JavaModel will be updated to reflect the new
-	 * state of the updated container. A combined Java element delta will be notified to describe the corresponding
-	 * classpath changes resulting from the container update. This operation is batched, and automatically eliminates
+	 * state of the updated container. A combined JavaScript element delta will be notified to describe the corresponding
+	 * includepath changes resulting from the container update. This operation is batched, and automatically eliminates
 	 * unnecessary updates (new container is same as old one). This operation acquires a lock on the workspace's root.
 	 * <p>
 	 * This functionality cannot be used while the workspace is locked, since
 	 * it may create/remove some resource markers.
 	 * <p>
-	 * Classpath container values are persisted locally to the workspace, but
+	 * Includepath container values are persisted locally to the workspace, but
 	 * are not preserved from a session to another. It is thus highly recommended to register a
 	 * <code>JsGlobalScopeContainerInitializer</code> for each referenced container
 	 * (through the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer").
@@ -4661,7 +4185,6 @@ public final class JavaScriptCore extends Plugin {
 	 * @see JsGlobalScopeContainerInitializer
 	 * @see #getJsGlobalScopeContainer(IPath, IJavaScriptProject)
 	 * @see IJsGlobalScopeContainer
-	 * @since 2.0
 	 */
 	public static void setJsGlobalScopeContainer(IPath containerPath, IJavaScriptProject[] affectedProjects, IJsGlobalScopeContainer[] respectiveContainers, IProgressMonitor monitor) throws JavaScriptModelException {
 		if (affectedProjects.length != respectiveContainers.length)
@@ -4671,16 +4194,16 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Sets the value of the given classpath variable.
+	 * Sets the value of the given includepath variable.
 	 * The path must have at least one segment.
 	 * <p>
 	 * This functionality cannot be used while the resource tree is locked.
 	 * <p>
-	 * Classpath variable values are persisted locally to the workspace, and
+	 * Includepath variable values are persisted locally to the workspace, and
 	 * are preserved from session to session.
 	 * <p>
 	 *
-	 * @param variableName the name of the classpath variable
+	 * @param variableName the name of the includepath variable
 	 * @param path the path
 	 * @throws JavaScriptModelException
 	 * @see #getIncludepathVariable(String)
@@ -4694,17 +4217,17 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Sets the value of the given classpath variable.
+	 * Sets the value of the given includepath variable.
 	 * The path must not be null.
 	 * <p>
 	 * This functionality cannot be used while the resource tree is locked.
 	 * <p>
-	 * Classpath variable values are persisted locally to the workspace, and
+	 * Includepath variable values are persisted locally to the workspace, and
 	 * are preserved from session to session.
 	 * <p>
 	 * Updating a variable with the same value has no effect.
 	 *
-	 * @param variableName the name of the classpath variable
+	 * @param variableName the name of the includepath variable
 	 * @param path the path
 	 * @param monitor a monitor to report progress
 	 * @throws JavaScriptModelException
@@ -4721,29 +4244,28 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Sets the values of all the given classpath variables at once.
+	 * Sets the values of all the given includepath variables at once.
 	 * Null paths can be used to request corresponding variable removal.
 	 * <p>
-	 * A combined Java element delta will be notified to describe the corresponding
-	 * classpath changes resulting from the variables update. This operation is batched,
+	 * A combined JavaScript element delta will be notified to describe the corresponding
+	 * includepath changes resulting from the variables update. This operation is batched,
 	 * and automatically eliminates unnecessary updates (new variable is same as old one).
 	 * This operation acquires a lock on the workspace's root.
 	 * <p>
 	 * This functionality cannot be used while the workspace is locked, since
 	 * it may create/remove some resource markers.
 	 * <p>
-	 * Classpath variable values are persisted locally to the workspace, and
+	 * Includepath variable values are persisted locally to the workspace, and
 	 * are preserved from session to session.
 	 * <p>
 	 * Updating a variable with the same value has no effect.
 	 *
-	 * @param variableNames an array of names for the updated classpath variables
-	 * @param paths an array of path updates for the modified classpath variables (null
+	 * @param variableNames an array of names for the updated includepath variables
+	 * @param paths an array of path updates for the modified includepath variables (null
 	 *       meaning that the corresponding value will be removed
 	 * @param monitor a monitor to report progress
 	 * @throws JavaScriptModelException
 	 * @see #getIncludepathVariable(String)
-	 * @since 2.0
 	 */
 	public static void setIncludepathVariables(
 		String[] variableNames,
@@ -4757,10 +4279,10 @@ public final class JavaScriptCore extends Plugin {
 	}
 
 	/**
-	 * Sets the default's compiler options inside the given options map according
+	 * Sets the default's validator options inside the given options map according
 	 * to the given compliance.
 	 *
-	 * <p>The given compliance must be one of the compliance supported by the compiler.
+	 * <p>The given compliance must be one of the compliance supported by the validator.
 	 * See {@link #getDefaultOptions()} for a list of compliance values.</p>
 	 *
 	 * <p>The list of modified options is:</p>
@@ -4856,7 +4378,7 @@ public final class JavaScriptCore extends Plugin {
 	 * Startup the JavaScriptCore plug-in.
 	 * <p>
 	 * Registers the JavaModelManager as a resource changed listener and save participant.
-	 * Starts the background indexing, and restore saved classpath variable values.
+	 * Starts the background indexing, and restore saved includepath variable values.
 	 * <p>
 	 * @throws Exception
 	 * @see org.eclipse.core.runtime.Plugin#start(BundleContext)

@@ -51,7 +51,6 @@ public class ToolFactory {
 	 * @see DefaultCodeFormatterConstants#FORMATTER_NEVER_INDENT_BLOCK_COMMENTS_ON_FIRST_COLUMN
 	 * @see DefaultCodeFormatterConstants#FORMATTER_NEVER_INDENT_LINE_COMMENTS_ON_FIRST_COLUMN
 	 * @see #createCodeFormatter(Map, int)
-	 * @since 3.3
 	 */
 	public static final int M_FORMAT_NEW = new Integer(0).intValue();
 
@@ -64,7 +63,6 @@ public class ToolFactory {
 	 * @see DefaultCodeFormatterConstants#FORMATTER_NEVER_INDENT_BLOCK_COMMENTS_ON_FIRST_COLUMN
 	 * @see DefaultCodeFormatterConstants#FORMATTER_NEVER_INDENT_LINE_COMMENTS_ON_FIRST_COLUMN
 	 * @see #createCodeFormatter(Map, int)
-	 * @since 3.3
 	 */
 	public static final int M_FORMAT_EXISTING = new Integer(1).intValue();
 
@@ -121,7 +119,6 @@ public class ToolFactory {
 	 * @return an instance of the built-in code formatter
 	 * @see CodeFormatter
 	 * @see JavaScriptCore#getOptions()
-	 * @since 3.0
 	 */
 	public static CodeFormatter createCodeFormatter(Map options){
 		return createCodeFormatter(options, M_FORMAT_NEW);
@@ -146,7 +143,6 @@ public class ToolFactory {
 	 * @return an instance of the built-in code formatter
 	 * @see CodeFormatter
 	 * @see JavaScriptCore#getOptions()
-	 * @since 3.3
 	 */
 	public static CodeFormatter createCodeFormatter(Map options, int mode) {
 		if (options == null) options = JavaScriptCore.getOptions();
@@ -184,7 +180,7 @@ public class ToolFactory {
 
 	/**
 	 * Create a scanner, indicating the level of detail requested for tokenizing. The scanner can then be
-	 * used to tokenize some source in a Java aware way.
+	 * used to tokenize some source in a JavaScript aware way.
 	 * Here is a typical scanning loop:
 	 *
 	 * <code>
@@ -207,8 +203,7 @@ public class ToolFactory {
 	 * @param tokenizeWhiteSpace if set to <code>false</code>, white spaces will be silently consumed,
 	 * @param assertMode if set to <code>false</code>, occurrences of 'assert' will be reported as identifiers
 	 * (<code>ITerminalSymbols#TokenNameIdentifier</code>), whereas if set to <code>true</code>, it
-	 * would report assert keywords (<code>ITerminalSymbols#TokenNameassert</code>). Java 1.4 has introduced
-	 * a new 'assert' keyword.
+	 * would report assert keywords (<code>ITerminalSymbols#TokenNameassert</code>).
 	 * @param recordLineSeparator if set to <code>true</code>, the scanner will record positions of encountered line
 	 * separator ends. In case of multi-character line separators, the last character position is considered. These positions
 	 * can then be extracted using <code>IScanner#getLineEnds</code>. Only non-unicode escape sequences are
@@ -225,7 +220,7 @@ public class ToolFactory {
 
 	/**
 	 * Create a scanner, indicating the level of detail requested for tokenizing. The scanner can then be
-	 * used to tokenize some source in a Java aware way.
+	 * used to tokenize some source in a JavaScript aware way.
 	 * Here is a typical scanning loop:
 	 *
 	 * <code>
@@ -252,11 +247,9 @@ public class ToolFactory {
 	 * considered as valid line separators.
 	 * @param sourceLevel if set to <code>&quot;1.3&quot;</code> or <code>null</code>, occurrences of 'assert' will be reported as identifiers
 	 * (<code>ITerminalSymbols#TokenNameIdentifier</code>), whereas if set to <code>&quot;1.4&quot;</code>, it
-	 * would report assert keywords (<code>ITerminalSymbols#TokenNameassert</code>). Java 1.4 has introduced
-	 * a new 'assert' keyword.
+	 * would report assert keywords (<code>ITerminalSymbols#TokenNameassert</code>). 
   	 * @return a scanner
 	 * @see org.eclipse.wst.jsdt.core.compiler.IScanner
-     * @since 3.0
 	 */
 	public static IScanner createScanner(boolean tokenizeComments, boolean tokenizeWhiteSpace, boolean recordLineSeparator, String sourceLevel) {
 		PublicScanner scanner = null;
@@ -269,7 +262,7 @@ public class ToolFactory {
 
 	/**
 	 * Create a scanner, indicating the level of detail requested for tokenizing. The scanner can then be
-	 * used to tokenize some source in a Java aware way.
+	 * used to tokenize some source in a JavaScript aware way.
 	 * Here is a typical scanning loop:
 	 *
 	 * <code>
@@ -296,14 +289,12 @@ public class ToolFactory {
 	 * considered as valid line separators.
 	 * @param sourceLevel if set to <code>&quot;1.3&quot;</code> or <code>null</code>, occurrences of 'assert' will be reported as identifiers
 	 * (<code>ITerminalSymbols#TokenNameIdentifier</code>), whereas if set to <code>&quot;1.4&quot;</code>, it
-	 * would report assert keywords (<code>ITerminalSymbols#TokenNameassert</code>). Java 1.4 has introduced
-	 * a new 'assert' keyword.
+	 * would report assert keywords (<code>ITerminalSymbols#TokenNameassert</code>). 
 	 * @param complianceLevel This is used to support the Unicode 4.0 character sets. if set to 1.5 or above,
 	 * the Unicode 4.0 is supporte, otherwise Unicode 3.0 is supported.
   	 * @return a scanner
 	 * @see org.eclipse.wst.jsdt.core.compiler.IScanner
 	 *
-     * @since 3.1
 	 */
 	public static IScanner createScanner(boolean tokenizeComments, boolean tokenizeWhiteSpace, boolean recordLineSeparator, String sourceLevel, String complianceLevel) {
 		PublicScanner scanner = null;

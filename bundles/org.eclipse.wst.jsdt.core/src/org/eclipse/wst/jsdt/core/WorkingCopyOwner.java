@@ -46,8 +46,8 @@ public abstract class WorkingCopyOwner {
 	 * method is used by the primary working copy owner. It doesn't replace the internal primary
 	 * working owner.
  	 * <p>
-	 * This method is for internal use by the jdt-related plug-ins.
-	 * Clients outside of the jdt should not reference this method.
+	 * This method is for internal use by the jsdt-related plug-ins.
+	 * Clients outside of the jsdt should not reference this method.
 	 * </p>
 	 *
 	 * @param primaryBufferProvider the primary buffer provider
@@ -87,7 +87,6 @@ public abstract class WorkingCopyOwner {
 	 * @return the problem requestor to be used by working copies of this working
 	 * copy owner or <code>null</code> if no problem requestor is configured.
 	 *
-	 * @since 3.3
 	 */
 	public IProblemRequestor getProblemRequestor(IJavaScriptUnit workingCopy) {
 		return null;
@@ -98,15 +97,15 @@ public abstract class WorkingCopyOwner {
 	 * create its buffer.
 	 * <p>
 	 * This working copy always belongs to the default package in a package
-	 * fragment root that corresponds to its Java project, and this Java project never exists.
-	 * However this Java project has the given classpath that is used when resolving names
+	 * fragment root that corresponds to its JavaScript project, and this JavaScript project never exists.
+	 * However this JavaScript project has the given includepath that is used when resolving names
 	 * in this working copy.
 	 * </p><p>
 	 * A DOM AST created using this working copy will have bindings resolved using the given
-	 * classpath, and problem are reported to the given problem requestor.
+	 * includepath, and problem are reported to the given problem requestor.
 	 * <p></p>
 	 * <code>JavaScriptCore#getOptions()</code> is used to create the DOM AST as it is not
-	 * possible to set the options on the non-existing Java project.
+	 * possible to set the options on the non-existing JavaScript project.
 	 * </p><p>
 	 * When the working copy instance is created, an {@link IJavaScriptElementDelta#ADDED added delta} is
 	 * reported on this working copy.
@@ -121,7 +120,7 @@ public abstract class WorkingCopyOwner {
 	 * </p>
 	 *
 	 * @param name the name of the working copy (e.g. "X.js")
-	 * @param classpath the classpath used to resolve names in this working copy
+	 * @param includepath the includepath used to resolve names in this working copy
 	 * @param problemRequestor a requestor which will get notified of problems detected during
 	 * 	reconciling as they are discovered. The requestor can be set to <code>null</code> indicating
 	 * 	that the client is not interested in problems.
@@ -131,7 +130,6 @@ public abstract class WorkingCopyOwner {
 	 *   not be determined.
 	 * @return a new working copy
 	 * @see IJavaScriptUnit#becomeWorkingCopy(IProblemRequestor, IProgressMonitor)
-	 * @since 3.2
 	 *
 	 * @deprecated Use {@link #newWorkingCopy(String, IIncludePathEntry[], IProgressMonitor)} instead.
 	 * 	Note that if this deprecated method is used, problems may be reported twice
@@ -150,16 +148,16 @@ public abstract class WorkingCopyOwner {
 	 * create its buffer.
 	 * <p>
 	 * This working copy always belongs to the default package in a package
-	 * fragment root that corresponds to its Java project, and this Java project never exists.
-	 * However this Java project has the given classpath that is used when resolving names
+	 * fragment root that corresponds to its JavaScript project, and this JavaScript project never exists.
+	 * However this JavaScript project has the given includepath that is used when resolving names
 	 * in this working copy.
 	 * </p><p>
-	 * If a DOM AST is created using this working copy, then given classpath will be used
+	 * If a DOM AST is created using this working copy, then given includepath will be used
 	 *  if bindings need to be resolved. Problems will be reported to the problem requestor
 	 * of the current working copy owner problem if it is not <code>null</code>.
 	 * <p></p>
 	 * Options used to create the DOM AST are got from {@link JavaScriptCore#getOptions()}
-	 * as it is not possible to set the options on a non-existing Java project.
+	 * as it is not possible to set the options on a non-existing JavaScript project.
 	 * </p><p>
 	 * When the working copy instance is created, an {@link IJavaScriptElementDelta#ADDED added delta} is
 	 * reported on this working copy.
@@ -174,7 +172,7 @@ public abstract class WorkingCopyOwner {
 	 * </p>
 	 *
 	 * @param name the name of the working copy (e.g. "X.js")
-	 * @param classpath the classpath used to resolve names in this working copy
+	 * @param classpath the includepath used to resolve names in this working copy
 	 * @param monitor a progress monitor used to report progress while opening the working copy
 	 * 	or <code>null</code> if no progress should be reported
 	 * @throws JavaScriptModelException if the contents of this working copy can
@@ -182,7 +180,6 @@ public abstract class WorkingCopyOwner {
 	 * @return a new working copy
 	 * @see IJavaScriptUnit#becomeWorkingCopy(IProgressMonitor)
 	 *
-	 * @since 3.3
 	 */
 	public final IJavaScriptUnit newWorkingCopy(String name, IIncludePathEntry[] classpath, IProgressMonitor monitor) throws JavaScriptModelException {
 		ExternalJavaProject project = new ExternalJavaProject(classpath);

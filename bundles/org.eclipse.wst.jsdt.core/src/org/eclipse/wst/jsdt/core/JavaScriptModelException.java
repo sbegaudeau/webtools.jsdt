@@ -18,12 +18,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.wst.jsdt.internal.core.JavaModelStatus;
 
 /**
- * A checked exception representing a failure in the Java model.
- * Java model exceptions contain a Java-specific status object describing the
+ * A checked exception representing a failure in the JavaScript model.
+ * JavaScript model exceptions contain a JavaScript-specific status object describing the
  * cause of the exception.
  * <p>
  * This class is not intended to be subclassed by clients. Instances of this
- * class are automatically created by the Java model when problems arise, so
+ * class are automatically created by the JavaScript model when problems arise, so
  * there is generally no need for clients to create instances.
  * </p>
  *
@@ -41,12 +41,12 @@ public class JavaScriptModelException extends CoreException {
 
 	CoreException nestedCoreException;
 /**
- * Creates a Java model exception that wrappers the given <code>Throwable</code>.
- * The exception contains a Java-specific status object with severity
+ * Creates a JavaScript model exception that wrappers the given <code>Throwable</code>.
+ * The exception contains a JavaScript-specific status object with severity
  * <code>IStatus.ERROR</code> and the given status code.
  *
  * @param e the <code>Throwable</code>
- * @param code one of the Java-specific status codes declared in
+ * @param code one of the JavaScript-specific status codes declared in
  *   <code>IJavaScriptModelStatusConstants</code>
  * @see IJavaScriptModelStatusConstants
  * @see org.eclipse.core.runtime.IStatus#ERROR
@@ -55,7 +55,7 @@ public JavaScriptModelException(Throwable e, int code) {
 	this(new JavaModelStatus(code, e));
 }
 /**
- * Creates a Java model exception for the given <code>CoreException</code>.
+ * Creates a JavaScript model exception for the given <code>CoreException</code>.
  * Equivalent to
  * <code>JavaScriptModelException(exception,IJavaScriptModelStatusConstants.CORE_EXCEPTION</code>.
  *
@@ -66,9 +66,9 @@ public JavaScriptModelException(CoreException exception) {
 	this.nestedCoreException = exception;
 }
 /**
- * Creates a Java model exception for the given Java-specific status object.
+ * Creates a JavaScript model exception for the given JavaScript-specific status object.
  *
- * @param status the Java-specific status object
+ * @param status the JavaScript-specific status object
  */
 public JavaScriptModelException(IJavaScriptModelStatus status) {
 	super(status);
@@ -77,7 +77,7 @@ public JavaScriptModelException(IJavaScriptModelStatus status) {
  * Returns the underlying <code>Throwable</code> that caused the failure.
  *
  * @return the wrappered <code>Throwable</code>, or <code>null</code> if the
- *   direct case of the failure was at the Java model layer
+ *   direct case of the failure was at the JavaScript model layer
  */
 public Throwable getException() {
 	if (this.nestedCoreException == null) {
@@ -87,7 +87,7 @@ public Throwable getException() {
 	}
 }
 /**
- * Returns the Java model status object for this exception.
+ * Returns the JavaScript model status object for this exception.
  * Equivalent to <code>(IJavaScriptModelStatus) getStatus()</code>.
  *
  * @return a status object
@@ -103,13 +103,13 @@ public IJavaScriptModelStatus getJavaScriptModelStatus() {
 	}
 }
 /**
- * Returns whether this exception indicates that a Java model element does not
+ * Returns whether this exception indicates that a JavaScript model element does not
  * exist. Such exceptions have a status with a code of
  * <code>IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code> or
  * <code>IJavaScriptModelStatusConstants.ELEMENT_NOT_ON_CLASSPATH</code>.
  * This is a convenience method.
  *
- * @return <code>true</code> if this exception indicates that a Java model
+ * @return <code>true</code> if this exception indicates that a JavaScript model
  *   element does not exist
  * @see IJavaScriptModelStatus#isDoesNotExist()
  * @see IJavaScriptModelStatusConstants#ELEMENT_DOES_NOT_EXIST
@@ -124,7 +124,6 @@ public boolean isDoesNotExist() {
  * Prints this exception's stack trace to the given print stream.
  *
  * @param output the print stream
- * @since 3.0
  */
 public void printStackTrace(PrintStream output) {
 	synchronized(output) {
@@ -141,7 +140,6 @@ public void printStackTrace(PrintStream output) {
  * Prints this exception's stack trace to the given print writer.
  *
  * @param output the print writer
- * @since 3.0
  */
 public void printStackTrace(PrintWriter output) {
 	synchronized(output) {
@@ -159,7 +157,7 @@ public void printStackTrace(PrintWriter output) {
  */
 public String toString() {
 	StringBuffer buffer= new StringBuffer();
-	buffer.append("Java Model Exception: "); //$NON-NLS-1$
+	buffer.append("JavaScript Model Exception: "); //$NON-NLS-1$
 	if (getException() != null) {
 		if (getException() instanceof CoreException) {
 			CoreException c= (CoreException)getException();

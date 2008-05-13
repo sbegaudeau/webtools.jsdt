@@ -28,15 +28,15 @@ import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.internal.core.JavaModelStatus;
 
 /**
- * Abstract base implementation of all classpath container initializer.
- * Classpath variable containers are used in conjunction with the
+ * Abstract base implementation of all includepath container initializer.
+ * Includepath variable containers are used in conjunction with the
  * "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer" extension point.
  * <p>
- * Clients should subclass this class to implement a specific classpath
+ * Clients should subclass this class to implement a specific includepath
  * container initializer. The subclass must have a public 0-argument
  * constructor and a concrete implementation of <code>initialize</code>.
  * <p>
- * Multiple classpath containers can be registered, each of them declares
+ * Multiple includepath containers can be registered, each of them declares
  * the container ID they can handle, so as to narrow the set of containers they
  * can resolve, in other words, a container initializer is guaranteed to only be
  * activated to resolve containers which match the ID they registered onto.
@@ -61,7 +61,6 @@ public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScop
 	 * @see #getAttributeStatus(IPath, IJavaScriptProject, String)
 	 * @see #getSourceAttachmentStatus(IPath, IJavaScriptProject)
 	 *
-	 * @since 3.3
 	 */
 	public static final int ATTRIBUTE_NOT_SUPPORTED = 1;
 
@@ -72,15 +71,14 @@ public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScop
 	 * @see #getAttributeStatus(IPath, IJavaScriptProject, String)
 	 * @see #getSourceAttachmentStatus(IPath, IJavaScriptProject)
 	 *
-	 * @since 3.3
 	 */
 	public static final int ATTRIBUTE_READ_ONLY = 2;
 
    /**
-     * Creates a new classpath container initializer.
+     * Creates a new includepath container initializer.
      */
     public JsGlobalScopeContainerInitializer() {
-    	// a classpath container initializer must have a public 0-argument constructor
+    	// a includepath container initializer must have a public 0-argument constructor
     }
 
 	public void initialize(IPath containerPath, IJavaScriptProject project) throws CoreException {
@@ -104,7 +102,7 @@ public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScop
 	 */
     public void requestJsGlobalScopeContainerUpdate(IPath containerPath, IJavaScriptProject project, IJsGlobalScopeContainer containerSuggestion) throws CoreException {
 
-		// By default, classpath container initializers do not accept updating containers
+		// By default, includepath container initializers do not accept updating containers
     }
 
 	/* (non-Javadoc)
@@ -234,7 +232,7 @@ public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScop
 	 * The status message can contain more information.
 	 * </p><p>
 	 * If the subclass does not override this method, then the default behavior is
-	 * to return {@link IStatus#OK OK} if and only if the classpath container can
+	 * to return {@link IStatus#OK OK} if and only if the includepath container can
 	 * be updated (see {@link #canUpdateJsGlobalScopeContainer(IPath, IJavaScriptProject)}).
 	 * </p>
 	 *
@@ -243,7 +241,6 @@ public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScop
 	 * @param project the project for which the container is to be updated
 	 * @return returns the access rules attribute status
 	 *
-	 * @since 3.3
 	 */
 	public IStatus getAccessRulesStatus(IPath containerPath, IJavaScriptProject project) {
 
@@ -270,7 +267,7 @@ public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScop
 	 * The status message can contain more information.
 	 * </p><p>
 	 * If the subclass does not override this method, then the default behavior is
-	 * to return {@link IStatus#OK OK} if and only if the classpath container can
+	 * to return {@link IStatus#OK OK} if and only if the includepath container can
 	 * be updated (see {@link #canUpdateJsGlobalScopeContainer(IPath, IJavaScriptProject)}).
 	 * </p>
 	 *
@@ -280,8 +277,6 @@ public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScop
 	 * @param attributeKey the key of the extra attribute
 	 * @return returns the extra attribute status
 	 * @see IIncludePathAttribute
-	 *
-	 * @since 3.3
 	 */
 	public IStatus getAttributeStatus(IPath containerPath, IJavaScriptProject project, String attributeKey) {
 
@@ -308,7 +303,7 @@ public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScop
 	 * The status message can contain more information.
 	 * </p><p>
 	 * If the subclass does not override this method, then the default behavior is
-	 * to return {@link IStatus#OK OK} if and only if the classpath container can
+	 * to return {@link IStatus#OK OK} if and only if the includepath container can
 	 * be updated (see {@link #canUpdateJsGlobalScopeContainer(IPath, IJavaScriptProject)}).
 	 * </p>
 	 *
@@ -316,8 +311,6 @@ public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScop
 	 * 	updated
 	 * @param project the project for which the container is to be updated
 	 * @return returns the source attachment attribute status
-	 *
-	 * @since 3.3
 	 */
 	public IStatus getSourceAttachmentStatus(IPath containerPath, IJavaScriptProject project) {
 

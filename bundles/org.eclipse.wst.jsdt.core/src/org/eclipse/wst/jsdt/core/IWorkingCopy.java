@@ -15,12 +15,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * Common protocol for Java elements that support working copies.
+ * Common protocol for JavaScript elements that support working copies.
  * <p>
- * A working copy of a Java element acts just like a regular element (handle),
+ * A working copy of a JavaScript element acts just like a regular element (handle),
  * except it is not attached to an underlying resource. A working copy is not
- * visible to the rest of the Java model. Changes in a working copy's
- * buffer are not realized in a resource. To bring the Java model up-to-date with a working
+ * visible to the rest of the JavaScript model. Changes in a working copy's
+ * buffer are not realized in a resource. To bring the JavaScript model up-to-date with a working
  * copy's contents, an explicit commit must be performed on the working copy.
  * Other operations performed on a working copy update the
  * contents of the working copy's buffer but do not commit the contents
@@ -35,12 +35,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * </p>
  * <p>
  * The client that creates a working copy is responsible for
- * destroying the working copy. The Java model will never automatically
+ * destroying the working copy. The JavaScript model will never automatically
  * destroy or close a working copy. (Note that destroying a working copy
  * does not commit it to the model, it only frees up the memory occupied by
  * the element). After a working copy is destroyed, the working copy cannot
  * be accessed again. Non-handle methods will throw a
- * <code>JavaScriptModelException</code> indicating the Java element does not exist.
+ * <code>JavaScriptModelException</code> indicating the JavaScript element does not exist.
  * </p>
  * <p>
  * A working copy cannot be created from another working copy.
@@ -60,7 +60,7 @@ public interface IWorkingCopy {
 
 	/**
 	 * Commits the contents of this working copy to its original element
-	 * and underlying resource, bringing the Java model up-to-date with
+	 * and underlying resource, bringing the JavaScript model up-to-date with
 	 * the current contents of the working copy.
 	 *
 	 * <p>It is possible that the contents of the original resource have changed
@@ -73,9 +73,9 @@ public interface IWorkingCopy {
 	 * <li> <code>false</code> - in this case a <code>JavaScriptModelException</code> is thrown</li>
 	 * </ul>
 	 * <p>
-	 * Since 2.1, a working copy can be created on a not-yet existing compilation
+	 * A working copy can be created on a not-yet existing compilation
 	 * unit. In particular, such a working copy can then be committed in order to create
-	 * the corresponding compilation unit.
+	 * the corresponding javaScript unit.
 	 * </p>
 	 * @param force a flag to handle the cases when the contents of the original resource have changed
 	 * since this working copy was created
@@ -117,7 +117,6 @@ public interface IWorkingCopy {
 	 * @param bufferFactory the given <code>IBuffer</code> factory
 	 * @return the found shared working copy for this element, <code>null</code> if none
 	 * @see IBufferFactory
-	 * @since 2.0
 	 *
 	 * @deprecated Use {@link IJavaScriptUnit#findWorkingCopy(WorkingCopyOwner)} instead.
 	 */
@@ -148,7 +147,7 @@ public interface IWorkingCopy {
 	IJavaScriptElement getOriginalElement();
 
 	/**
-	 * Finds the elements in this compilation unit that correspond to
+	 * Finds the elements in this javaScript unit that correspond to
 	 * the given element.
 	 * An element A corresponds to an element B if:
 	 * <ul>
@@ -156,26 +155,24 @@ public interface IWorkingCopy {
 	 * <li>If A is a method, A must have the same number of arguments as
 	 *     B and the simple names of the argument types must be equals.
 	 * <li>The parent of A corresponds to the parent of B recursively up to
-	 *     their respective compilation units.
+	 *     their respective javaScript units.
 	 * <li>A exists.
 	 * </ul>
-	 * Returns <code>null</code> if no such java elements can be found
-	 * or if the given element is not included in a compilation unit.
+	 * Returns <code>null</code> if no such javaScript elements can be found
+	 * or if the given element is not included in a javaScript unit.
 	 *
 	 * @param element the given element
-	 * @return the found elements in this compilation unit that correspond to the given element
-	 * @since 2.0
+	 * @return the found elements in this javaScript unit that correspond to the given element
 	 *
 	 * @deprecated Use {@link IJavaScriptUnit#findElements(IJavaScriptElement)} instead.
 	 */
 	IJavaScriptElement[] findElements(IJavaScriptElement element);
 
 	/**
-	 * Finds the primary type of this compilation unit (that is, the type with the same name as the
-	 * compilation unit), or <code>null</code> if no such a type exists.
+	 * Finds the primary type of this javaScript unit (that is, the type with the same name as the
+	 * javaScript unit), or <code>null</code> if no such a type exists.
 	 *
-	 * @return the found primary type of this compilation unit, or <code>null</code> if no such a type exists
-	 * @since 2.0
+	 * @return the found primary type of this javaScript unit, or <code>null</code> if no such a type exists
 	 *
 	 * @deprecated Use {@link ITypeRoot#findPrimaryType()} instead.
 	 */
@@ -185,7 +182,7 @@ public interface IWorkingCopy {
 	 * Returns a shared working copy on this element using the given factory to create
 	 * the buffer, or this element if this element is already a working copy.
 	 * This API can only answer an already existing working copy if it is based on the same
-	 * original compilation unit AND was using the same buffer factory (that is, as defined by <code>Object.equals</code>).
+	 * original javaScript unit AND was using the same buffer factory (that is, as defined by <code>Object.equals</code>).
 	 * <p>
 	 * The life time of a shared working copy is as follows:
 	 * <ul>
@@ -199,13 +196,13 @@ public interface IWorkingCopy {
 	 * <p>
 	 * Note that the buffer factory will be used for the life time of this working copy, that is if the
 	 * working copy is closed then reopened, this factory will be used.
-	 * The buffer will be automatically initialized with the original's compilation unit content
+	 * The buffer will be automatically initialized with the original's javaScript unit content
 	 * upon creation.
 	 * <p>
 	 * When the shared working copy instance is created, an ADDED IJavaScriptElementDelta is reported on this
 	 * working copy.
 	 *
-	 * @param monitor a progress monitor used to report progress while opening this compilation unit
+	 * @param monitor a progress monitor used to report progress while opening this javaScript unit
 	 *                 or <code>null</code> if no progress should be reported
 	 * @param factory the factory that creates a buffer that is used to get the content of the working copy
 	 *                 or <code>null</code> if the internal factory should be used
@@ -218,7 +215,6 @@ public interface IWorkingCopy {
 	 * the buffer, or this element if this element is already a working copy
 	 * @see IBufferFactory
 	 * @see IProblemRequestor
-	 * @since 2.0
 	 *
 	 * @deprecated Use {@link IJavaScriptUnit#getWorkingCopy(WorkingCopyOwner, IProblemRequestor, IProgressMonitor)} instead.
 	 */
@@ -238,9 +234,9 @@ public interface IWorkingCopy {
 	 * When the working copy instance is created, an ADDED IJavaScriptElementDelta is
 	 * reported on this working copy.
 	 * </p><p>
-	 * Since 2.1, a working copy can be created on a not-yet existing compilation
+	 * A working copy can be created on a not-yet existing compilation
 	 * unit. In particular, such a working copy can then be committed in order to create
-	 * the corresponding compilation unit.
+	 * the corresponding javaScript unit.
 	 * </p>
 	 * @exception JavaScriptModelException if the contents of this element can
 	 *   not be determined.
@@ -256,7 +252,7 @@ public interface IWorkingCopy {
 	 * the buffer, or this element if this element is already a working copy.
 	 * Note that this factory will be used for the life time of this working copy, that is if the
 	 * working copy is closed then reopened, this factory will be reused.
-	 * The buffer will be automatically initialized with the original's compilation unit content
+	 * The buffer will be automatically initialized with the original's javaScript unit content
 	 * upon creation.
 	 * <p>
 	 * Note: if intending to share a working copy amongst several clients, then
@@ -265,11 +261,11 @@ public interface IWorkingCopy {
 	 * When the working copy instance is created, an ADDED IJavaScriptElementDelta is
 	 * reported on this working copy.
 	 * </p><p>
-	 * Since 2.1, a working copy can be created on a not-yet existing compilation
+	 * A working copy can be created on a not-yet existing compilation
 	 * unit. In particular, such a working copy can then be committed in order to create
-	 * the corresponding compilation unit.
+	 * the corresponding javaScript unit.
 	 * </p>
-	 * @param monitor a progress monitor used to report progress while opening this compilation unit
+	 * @param monitor a progress monitor used to report progress while opening this javaScript unit
 	 *                 or <code>null</code> if no progress should be reported
 	 * @param factory the factory that creates a buffer that is used to get the content of the working copy
 	 *                 or <code>null</code> if the internal factory should be used
@@ -280,7 +276,6 @@ public interface IWorkingCopy {
 	 *   not be determined.
 	 * @return a new working copy of this element using the given factory to create
 	 * the buffer, or this element if this element is already a working copy
-	 * @since 2.0
 	 *
 	 * @deprecated Use {@link IJavaScriptUnit#getWorkingCopy(WorkingCopyOwner, IProblemRequestor, IProgressMonitor)} instead.
 	 */
@@ -326,12 +321,11 @@ public interface IWorkingCopy {
 	 * creation, and no longer as transient markers. Therefore this API will
 	 * return <code>null</code>.</p>
 	 * <p>
- 	 * Note: Since 3.0 added/removed/changed inner types generate change deltas.</p>
 	 *
 	 * @exception JavaScriptModelException if the contents of the original element
 	 *		cannot be accessed. Reasons include:
 	 * <ul>
-	 * <li> The original Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+	 * <li> The original JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * </ul>
 	 * @return <code>null</code>
 	 *
@@ -354,7 +348,6 @@ public interface IWorkingCopy {
 	 * creation, and no longer as transient markers. Therefore this API answers
 	 * nothing.</p>
 	 * <p>
- 	 * Note: Since 3.0 added/removed/changed inner types generate change deltas.</p>
 	 *
 	 * @param forceProblemDetection boolean indicating whether problem should be recomputed
 	 *   even if the source hasn't changed.
@@ -362,9 +355,8 @@ public interface IWorkingCopy {
 	 * @exception JavaScriptModelException if the contents of the original element
 	 *		cannot be accessed. Reasons include:
 	 * <ul>
-	 * <li> The original Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+	 * <li> The original JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * </ul>
-	 * @since 2.0
 	 *
 	 * @deprecated Use {@link IJavaScriptUnit#reconcile(int, boolean, WorkingCopyOwner, IProgressMonitor)} instead.
 	 */
@@ -381,7 +373,7 @@ public interface IWorkingCopy {
 	 * @exception JavaScriptModelException if the contents of the original element
 	 *		cannot be accessed.  Reasons include:
 	 * <ul>
-	 * <li> The original Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+	 * <li> The original JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
 	 * </ul>
 	 * @deprecated Use {@link IJavaScriptUnit#restore()} instead.
 	 */
