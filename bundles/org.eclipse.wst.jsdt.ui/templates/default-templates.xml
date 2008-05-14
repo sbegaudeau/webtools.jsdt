@@ -48,7 +48,7 @@
 
 <template name="do" description="%Templates.do" id="org.eclipse.wst.jsdt.ui.templates.do" context="javaScript" enabled="true" autoinsert="false">do {
 	${line_selection}${cursor}
-} while (${condition:var(boolean)});</template>
+} while (${condition});</template>
 
 <template name="switch" description="%Templates.switch" id="org.eclipse.wst.jsdt.ui.templates.switch" context="javaScript" enabled="true" autoinsert="false">switch (${key}) {
 	case ${value}:
@@ -59,17 +59,17 @@
 		break;
 }</template>
 
-<template name="if" description="%Templates.if" id="org.eclipse.wst.jsdt.ui.templates.if" context="javaScript" enabled="true" autoinsert="false">if (${condition:var(boolean)}) {
+<template name="if" description="%Templates.if" id="org.eclipse.wst.jsdt.ui.templates.if" context="javaScript" enabled="true" autoinsert="false">if (${condition}) {
 	${line_selection}${cursor}
 }</template>
 
-<template name="ifelse" description="%Templates.ifelse" id="org.eclipse.wst.jsdt.ui.templates.ifelse" context="javaScript" enabled="true" autoinsert="false">if (${condition:var(boolean)}) {
+<template name="ifelse" description="%Templates.ifelse" id="org.eclipse.wst.jsdt.ui.templates.ifelse" context="javaScript" enabled="true" autoinsert="false">if (${condition}) {
 	${cursor}
 } else {
 	
 }</template>
 
-<template name="elseif" description="%Templates.elseif" id="org.eclipse.wst.jsdt.ui.templates.elseif" context="javaScript" enabled="true" autoinsert="false">else if (${condition:var(boolean)}) {
+<template name="elseif" description="%Templates.elseif" id="org.eclipse.wst.jsdt.ui.templates.elseif" context="javaScript" enabled="true" autoinsert="false">else if (${condition}) {
 	${cursor}
 }</template>
 
@@ -153,7 +153,7 @@ return ${name};</template>
 
 <template name="@author" description="%Templates.author" id="org.eclipse.wst.jsdt.ui.templates.author" context="jsdoc" enabled="true" autoinsert="true">@author ${user}</template>
 
-<template name="while" description="%Templates.while_condition" id="org.eclipse.wst.jsdt.ui.templates.while_condition" context="javaScript" enabled="true" autoinsert="false">while (${condition:var(boolean)}) {
+<template name="while" description="%Templates.while_condition" id="org.eclipse.wst.jsdt.ui.templates.while_condition" context="javaScript" enabled="true" autoinsert="false">while (${condition}) {
 	${line_selection}${cursor}
 }</template>
 
