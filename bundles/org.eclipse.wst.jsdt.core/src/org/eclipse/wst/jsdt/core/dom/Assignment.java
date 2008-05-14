@@ -165,7 +165,6 @@ public class Assignment extends Expression {
 
 	/**
 	 * The "rightHandSide" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor RIGHT_HAND_SIDE_PROPERTY =
 		new ChildPropertyDescriptor(Assignment.class, "rightHandSide", Expression.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$

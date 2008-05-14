@@ -33,7 +33,8 @@ public class ArrayType extends Type {
 
 	/**
 	 * The "componentType" structural property of this node type.
-	 * @since 3.0
+	 * <p><b>Note: This Field only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 */
 	public static final ChildPropertyDescriptor COMPONENT_TYPE_PROPERTY =
 		new ChildPropertyDescriptor(ArrayType.class, "componentType", Type.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
@@ -61,7 +62,6 @@ public class ArrayType extends Type {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
@@ -169,6 +169,8 @@ public class ArrayType extends Type {
 	 * Sets the component type of this array type. The component type
 	 * may be another array type.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param componentType the component type
 	 * @exception IllegalArgumentException if:
 	 * <ul>
@@ -194,6 +196,8 @@ public class ArrayType extends Type {
 	 * This is a convenience method that descends a chain of nested array types
 	 * until it reaches a non-array type.
 	 * </p>
+	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
 	 *
 	 * @return the component type node
 	 */

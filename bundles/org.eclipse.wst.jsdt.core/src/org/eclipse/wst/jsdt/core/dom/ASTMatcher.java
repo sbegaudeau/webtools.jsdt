@@ -51,7 +51,6 @@ public class ASTMatcher {
 
 	/**
 	 * Indicates whether doc tags should be matched.
-	 * @since 3.0
 	 */
 	private boolean matchDocTags;
 
@@ -74,7 +73,6 @@ public class ASTMatcher {
 	 * @param matchDocTags <code>true</code> if doc comment tags are
 	 * to be compared by default, and <code>false</code> otherwise
 	 * @see #match(JSdoc,Object)
-	 * @since 3.0
 	 */
 	public ASTMatcher(boolean matchDocTags) {
 		this.matchDocTags = matchDocTags;
@@ -368,7 +366,6 @@ public class ASTMatcher {
 	 * @return <code>true</code> if the subtree matches, or
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
-	 * @since 3.0
 	 */
 	public boolean match(BlockComment node, Object other) {
 		if (!(other instanceof BlockComment)) {
@@ -1043,7 +1040,7 @@ public class ASTMatcher {
 	}
 
 	/**
-	 * Return whether the deprecated comment strings of the given java doc are equals.
+	 * Return whether the deprecated comment strings of the given jsdoc are equals.
 	 * <p>
 	 * Note the only purpose of this method is to hide deprecated warnings.
 	 * @deprecated mark deprecated to hide deprecated usage

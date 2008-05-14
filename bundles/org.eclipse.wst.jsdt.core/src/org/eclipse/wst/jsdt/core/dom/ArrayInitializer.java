@@ -19,7 +19,7 @@ import java.util.List;
  *
  * <pre>
  * ArrayInitializer:
- * 		<b>{</b> [ Expression { <b>,</b> Expression} [ <b>,</b> ]] <b>}</b>
+ * 		</b> { Expression { <b>,</b> Expression} { <b>,</b> }} <b>}</b>
  * </pre>
  *
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
@@ -31,7 +31,6 @@ public class ArrayInitializer extends Expression {
 
 	/**
 	 * The "expressions" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final ChildListPropertyDescriptor EXPRESSIONS_PROPERTY =
 		new ChildListPropertyDescriptor(ArrayInitializer.class, "expressions", Expression.class, CYCLE_RISK); //$NON-NLS-1$
@@ -59,7 +58,6 @@ public class ArrayInitializer extends Expression {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;

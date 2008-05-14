@@ -16,15 +16,8 @@ import java.util.List;
 /**
  * Array creation expression AST node type.
  * For JLS2:
- * <pre>
- * ArrayCreation:
- *    <b>new</b> PrimitiveType <b>[</b> Expression <b>]</b> { <b>[</b> Expression <b>]</b> } { <b>[</b> <b>]</b> }
- *    <b>new</b> TypeName <b>[</b> Expression <b>]</b> { <b>[</b> Expression <b>]</b> } { <b>[</b> <b>]</b> }
- *    <b>new</b> PrimitiveType <b>[</b> <b>]</b> { <b>[</b> <b>]</b> } ArrayInitializer
- *    <b>new</b> TypeName <b>[</b> <b>]</b> { <b>[</b> <b>]</b> } ArrayInitializer
- * </pre>
  * <p>
- * The mapping from Java language syntax to AST nodes is as follows:
+ * The mapping from JavaScript language syntax to AST nodes is as follows:
  * <ul>
  * <li>the type node is the array type of the creation expression,
  *   with one level of array per set of square brackets,</li>
@@ -52,21 +45,20 @@ public class ArrayCreation extends Expression {
 
 	/**
 	 * The "type" structural property of this node type.
-	 * @since 3.0
+	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
 	 */
 	public static final ChildPropertyDescriptor TYPE_PROPERTY =
 		new ChildPropertyDescriptor(ArrayCreation.class, "type", ArrayType.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "dimensions" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final ChildListPropertyDescriptor DIMENSIONS_PROPERTY =
 		new ChildListPropertyDescriptor(ArrayCreation.class, "dimensions", Expression.class, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "initializer" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor INITIALIZER_PROPERTY =
 		new ChildPropertyDescriptor(ArrayCreation.class, "initializer", ArrayInitializer.class, OPTIONAL, CYCLE_RISK); //$NON-NLS-1$
@@ -96,7 +88,6 @@ public class ArrayCreation extends Expression {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
@@ -219,6 +210,8 @@ public class ArrayCreation extends Expression {
 
 	/**
 	 * Returns the array type in this array creation expression.
+	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
 	 *
 	 * @return the array type
 	 */

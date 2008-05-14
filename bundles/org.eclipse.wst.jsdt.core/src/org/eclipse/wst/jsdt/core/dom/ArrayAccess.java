@@ -31,14 +31,12 @@ public class ArrayAccess extends Expression {
 
 	/**
 	 * The "array" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor ARRAY_PROPERTY =
 		new ChildPropertyDescriptor(ArrayAccess.class, "array", Expression.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "index" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor INDEX_PROPERTY =
 		new ChildPropertyDescriptor(ArrayAccess.class, "index", Expression.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
@@ -67,7 +65,6 @@ public class ArrayAccess extends Expression {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;

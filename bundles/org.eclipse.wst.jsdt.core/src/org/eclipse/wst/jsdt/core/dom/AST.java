@@ -55,24 +55,24 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
  * </p>
  * <p>
  * The class {@link ASTParser} parses a string
- * containing a Java source code and returns an abstract syntax tree
+ * containing a JavaScript source code and returns an abstract syntax tree
  * for it. The resulting nodes carry source ranges relating the node back to
  * the original source characters.
  * </p>
  * <p>
- * Compilation units created by <code>ASTParser</code> from a
+ * JavaScript units created by <code>ASTParser</code> from a
  * source document can be serialized after arbitrary modifications
  * with minimal loss of original formatting. Here is an example:
  * <pre>
- * Document doc = new Document("import java.util.List;\nclass X {}\n");
+ * Document doc = new Document("var abc;\nfunction X() {}\n");
  * ASTParser parser = ASTParser.newParser(AST.JLS3);
  * parser.setSource(doc.get().toCharArray());
  * JavaScriptUnit cu = (JavaScriptUnit) parser.createAST(null);
  * cu.recordModifications();
  * AST ast = cu.getAST();
- * ImportDeclaration id = ast.newImportDeclaration();
- * id.setName(ast.newName(new String[] {"java", "util", "Set"});
- * cu.imports().add(id); // add import declaration at end
+ * FunctionDeclaration id = ast.newFunctionDeclaration();
+ * id.setName(ast.newName("X2");
+ * cu.statements().add(id); // add declaration at end
  * TextEdit edits = cu.rewrite(document, null);
  * UndoEdit undo = edits.apply(document);
  * </pre>
@@ -95,16 +95,11 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
  */
 public final class AST {
 	/**
-	 * Constant for indicating the AST API that handles JLS2.
+	 * Constant for indicating the AST API that handles standard Javascript.
 	 * This API is capable of handling all constructs
-	 * in the Java language as described in the Java Language
-     * Specification, Second Edition (JLS2).
-     * JLS2 is a superset of all earlier versions of the
-     * Java language, and the JLS2 API can be used to manipulate
-     * programs written in all versions of the Java language
-     * up to and including J2SE 1.4.
+	 * in the JavaScript language as described in the ECMA-262
+     * Specification.
      *
-	 * @since 3.0
 	 * @deprecated Clients should use the {@link #JLS3} AST API instead.
 	 */
 	public static final int JLS2 = 2;
@@ -112,21 +107,17 @@ public final class AST {
 	/**
 	 * Internal synonym for {@link #JLS2}. Use to alleviate
 	 * deprecation warnings.
-	 * @since 3.1
 	 */
 	/*package*/ static final int JLS2_INTERNAL = JLS2;
 
 	/**
-	 * Constant for indicating the AST API that handles JLS3.
+	 * Constant for indicating the AST API that handles ECMAScript 4.
 	 * This API is capable of handling all constructs in the
-	 * Java language as described in the Java Language
-	 * Specification, Third Edition (JLS3).
-     * JLS3 is a superset of all earlier versions of the
-     * Java language, and the JLS3 API can be used to manipulate
-     * programs written in all versions of the Java language
-     * up to and including J2SE 5 (aka JDK 1.5).
+	 * JavaScript language as described in the ECMAScript 4
+	 * Specification.
+     * ECMAScript 4 is a superset of all earlier versions of the
+     * JavaScript language.
      *
-	 * @since 3.1
 	 */
 	public static final int JLS3 = 3;
 
@@ -139,13 +130,11 @@ public final class AST {
 	/**
 	 * The event handler for this AST.
 	 * Initially an event handler that does not nothing.
-	 * @since 3.0
 	 */
 	private NodeEventHandler eventHandler = new NodeEventHandler();
 
 	/**
 	 * Level of AST API supported by this AST.
-	 * @since 3.0
 	 */
 	int apiLevel;
 
@@ -159,7 +148,6 @@ public final class AST {
 	 * Internal original modification count; value is equals to <code>
 	 * modificationCount</code> at the end of the parse (<code>ASTParser
 	 * </code>). If this ast is not created with a parser then value is 0.
-	 * @since 3.0
 	 */
 	private long originalModificationCount = 0;
 
@@ -171,19 +159,17 @@ public final class AST {
 	 * to prevent events from being reported for the modification
 	 * of the node as well as for the creation of the missing child.
 	 * </p>
-	 * @since 3.0
 	 */
 	private int disableEvents = 0;
 
 	/**
 	 * Internal object unique to the AST instance. Readers must synchronize on
 	 * this object when the modifying instance fields.
-	 * @since 3.0
 	 */
 	private final Object internalASTLock = new Object();
 
 	/**
-	 * Java Scanner used to validate preconditions for the creation of specific nodes
+	 * JavaScript Scanner used to validate preconditions for the creation of specific nodes
 	 * like CharacterLiteral, NumberLiteral, StringLiteral or SimpleName.
 	 */
 	Scanner scanner;
@@ -199,11 +185,10 @@ public final class AST {
 	private int defaultNodeFlag = 0;
 
 	/**
-	 * Creates a new Java abstract syntax tree
+	 * Creates a new JavaScript abstract syntax tree
      * (AST) following the specified set of API rules.
      *
  	 * @param level the API level; one of the LEVEL constants
-     * @since 3.0
 	 */
 	private AST(int level) {
 		if ((level != AST.JLS2)
@@ -238,18 +223,18 @@ public final class AST {
 	 * Internal method.
 	 * <p>
 	 * This method converts the given internal compiler AST for the given source string
-	 * into a compilation unit. This method is not intended to be called by clients.
+	 * into a javaScript unit. This method is not intended to be called by clients.
 	 * </p>
 	 *
  	 * @param level the API level; one of the LEVEL constants
-	 * @param compilationUnitDeclaration an internal AST node for a compilation unit declaration
-	 * @param source the string of the Java compilation unit
+	 * @param compilationUnitDeclaration an internal AST node for a javaScript unit declaration
+	 * @param source the string of the JavaScript javaScript unit
 	 * @param options compiler options
 	 * @param workingCopy the working copy that the AST is created from
 	 * @param monitor the progress monitor used to report progress and request cancelation,
 	 *     or <code>null</code> if none
-	 * @param isResolved whether the given compilation unit declaration is resolved
-	 * @return the compilation unit node
+	 * @param isResolved whether the given javaScript unit declaration is resolved
+	 * @return the javaScript unit node
 	 */
 	public static JavaScriptUnit convertCompilationUnit(
 		int level,
@@ -285,20 +270,6 @@ public final class AST {
 
 	/**
 	 * Creates a new, empty abstract syntax tree using the given options.
-	 * <p>
-	 * Following option keys are significant:
-	 * <ul>
-	 * <li><code>"org.eclipse.wst.jsdt.core.compiler.source"</code> -
-	 *    indicates source compatibility mode (as per <code>JavaScriptCore</code>);
-	 *    <code>"1.3"</code> means the source code is as per JDK 1.3;
-	 *    <code>"1.4"</code> means the source code is as per JDK 1.4
-	 *    (<code>"assert"</code> is now a keyword);
-	 *    <code>"1.5"</code> means the source code is as per JDK 1.5
-	 *    (<code>"enum"</code> is now a keyword);
-	 *    additional legal values may be added later. </li>
-	 * </ul>
-	 * Options other than the above are ignored.
-	 * </p>
 	 *
 	 * @param options the table of options (key type: <code>String</code>;
 	 *    value type: <code>String</code>)
@@ -335,12 +306,8 @@ public final class AST {
 	}
 
 	/**
-	 * Creates a new Java abstract syntax tree
+	 * Creates a new JavaScript abstract syntax tree
      * (AST) following the specified set of API rules.
-     * <p>
-     * Clients should use this method specifing {@link #JLS3} as the
-     * AST level in all cases, even when dealing with JDK 1.3 or 1.4..
-     * </p>
      *
  	 * @param level the API level; one of the LEVEL constants
 	 * @return new AST instance following the specified set of API rules.
@@ -348,7 +315,6 @@ public final class AST {
 	 * <ul>
 	 * <li>the API level is not one of the LEVEL constants</li>
 	 * </ul>
-     * @since 3.0
 	 */
 	public static AST newAST(int level) {
 		if ((level != AST.JLS2)
@@ -392,7 +358,6 @@ public final class AST {
 	 *
 	 * @return level the API level; one of the <code>JLS*</code>LEVEL
      * declared on <code>AST</code>; assume this set is open-ended
-     * @since 3.0
 	 */
 	public int apiLevel() {
 		return this.apiLevel;
@@ -429,7 +394,6 @@ public final class AST {
 	 * This method is thread-safe for AST readers.
 	 *
 	 * @see #reenableEvents()
-     * @since 3.0
      */
 	final void disableEvents() {
 		synchronized (this.internalASTLock) {
@@ -444,7 +408,6 @@ public final class AST {
 	 * This method is thread-safe for AST readers.
 	 *
 	 * @see #disableEvents()
-     * @since 3.0
      */
 	final void reenableEvents() {
 		synchronized (this.internalASTLock) {
@@ -459,7 +422,6 @@ public final class AST {
 	 * @param node the node about to be modified
 	 * @param child the node about to be removed
 	 * @param property the child or child list property descriptor
-	 * @since 3.0
 	 */
 	void preRemoveChildEvent(ASTNode node, ASTNode child, StructuralPropertyDescriptor property) {
 		// IMPORTANT: this method is called by readers during lazy init
@@ -483,12 +445,11 @@ public final class AST {
 	}
 
 	/**
-	 * Reports that the given node jsut lost a child.
+	 * Reports that the given node just lost a child.
 	 *
 	 * @param node the node that was modified
 	 * @param child the child node that was removed
 	 * @param property the child or child list property descriptor
-	 * @since 3.0
 	 */
 	void postRemoveChildEvent(ASTNode node, ASTNode child, StructuralPropertyDescriptor property) {
 		// IMPORTANT: this method is called by readers during lazy init
@@ -518,7 +479,6 @@ public final class AST {
 	 * @param child the child node about to be removed
 	 * @param newChild the replacement child
 	 * @param property the child or child list property descriptor
-	 * @since 3.0
 	 */
 	void preReplaceChildEvent(ASTNode node, ASTNode child, ASTNode newChild, StructuralPropertyDescriptor property) {
 		// IMPORTANT: this method is called by readers during lazy init
@@ -548,7 +508,6 @@ public final class AST {
 	 * @param child the child removed
 	 * @param newChild the replacement child
 	 * @param property the child or child list property descriptor
-	 * @since 3.0
 	 */
 	void postReplaceChildEvent(ASTNode node, ASTNode child, ASTNode newChild, StructuralPropertyDescriptor property) {
 		// IMPORTANT: this method is called by readers during lazy init
@@ -577,7 +536,6 @@ public final class AST {
 	 * @param node the node that to be modified
 	 * @param child the node that to be added as a child
 	 * @param property the child or child list property descriptor
-	 * @since 3.0
 	 */
 	void preAddChildEvent(ASTNode node, ASTNode child, StructuralPropertyDescriptor property) {
 		// IMPORTANT: this method is called by readers during lazy init
@@ -606,7 +564,6 @@ public final class AST {
 	 * @param node the node that was modified
 	 * @param child the node that was added as a child
 	 * @param property the child or child list property descriptor
-	 * @since 3.0
 	 */
 	void postAddChildEvent(ASTNode node, ASTNode child, StructuralPropertyDescriptor property) {
 		// IMPORTANT: this method is called by readers during lazy init
@@ -635,7 +592,6 @@ public final class AST {
 	 *
 	 * @param node the node to be modified
 	 * @param property the property descriptor
-	 * @since 3.0
 	 */
 	void preValueChangeEvent(ASTNode node, SimplePropertyDescriptor property) {
 		// IMPORTANT: this method is called by readers during lazy init
@@ -664,7 +620,6 @@ public final class AST {
 	 *
 	 * @param node the node that was modified
 	 * @param property the property descriptor
-	 * @since 3.0
 	 */
 	void postValueChangeEvent(ASTNode node, SimplePropertyDescriptor property) {
 		// IMPORTANT: this method is called by readers during lazy init
@@ -691,7 +646,6 @@ public final class AST {
 	 * Reports that the given node is about to be cloned.
 	 *
 	 * @param node the node to be cloned
-	 * @since 3.0
 	 */
 	void preCloneNodeEvent(ASTNode node) {
 		synchronized (this.internalASTLock) {
@@ -718,7 +672,6 @@ public final class AST {
 	 *
 	 * @param node the node that was cloned
 	 * @param clone the clone of <code>node</code>
-	 * @since 3.0
 	 */
 	void postCloneNodeEvent(ASTNode node, ASTNode clone) {
 		synchronized (this.internalASTLock) {
@@ -753,7 +706,6 @@ public final class AST {
 	 * Returns the event handler for this AST.
 	 *
 	 * @return the event handler for this AST
-	 * @since 3.0
 	 */
 	NodeEventHandler getEventHandler() {
 		return this.eventHandler;
@@ -763,7 +715,6 @@ public final class AST {
 	 * Sets the event handler for this AST.
 	 *
 	 * @param eventHandler the event handler for this AST
-	 * @since 3.0
 	 */
 	void setEventHandler(NodeEventHandler eventHandler) {
 		if (this.eventHandler == null) {
@@ -776,7 +727,6 @@ public final class AST {
 	 * Returns default node flags of new nodes of this AST.
 	 *
 	 * @return the default node flags of new nodes of this AST
-	 * @since 3.0
 	 */
 	int getDefaultNodeFlag() {
 		return this.defaultNodeFlag;
@@ -786,7 +736,6 @@ public final class AST {
 	 * Sets default node flags of new nodes of this AST.
 	 *
 	 * @param flag node flags of new nodes of this AST
-	 * @since 3.0
 	 */
 	void setDefaultNodeFlag(int flag) {
 		this.defaultNodeFlag = flag;
@@ -795,7 +744,6 @@ public final class AST {
 	/**
 	 * Set <code>originalModificationCount</code> to the current modification count
 	 *
-	 * @since 3.0
 	 */
 	void setOriginalModificationCount(long count) {
 		this.originalModificationCount = count;
@@ -806,39 +754,6 @@ public final class AST {
 	 * <p>
 	 * Note that bindings are generally unavailable unless requested when the
 	 * AST is being built.
-	 * </p>
-	 * <p>
-	 * The following type names are supported:
-	 * <ul>
-	 * <li><code>"boolean"</code></li>
-	 * <li><code>"byte"</code></li>
-	 * <li><code>"char"</code></li>
-	 * <li><code>"double"</code></li>
-	 * <li><code>"float"</code></li>
-	 * <li><code>"int"</code></li>
-	 * <li><code>"long"</code></li>
-	 * <li><code>"short"</code></li>
-	 * <li><code>"void"</code></li>
-	 * <li><code>"java.lang.Boolean"</code> (since 3.1)</li>
-	 * <li><code>"java.lang.Byte"</code> (since 3.1)</li>
-	 * <li><code>"java.lang.Character"</code> (since 3.1)</li>
-	 * <li><code>"java.lang.Class"</code></li>
-	 * <li><code>"java.lang.Cloneable"</code></li>
-	 * <li><code>"java.lang.Double"</code> (since 3.1)</li>
-	 * <li><code>"java.lang.Error"</code></li>
-	 * <li><code>"java.lang.Exception"</code></li>
-	 * <li><code>"java.lang.Float"</code> (since 3.1)</li>
-	 * <li><code>"java.lang.Integer"</code> (since 3.1)</li>
-	 * <li><code>"java.lang.Long"</code> (since 3.1)</li>
-	 * <li><code>"java.lang.Object"</code></li>
-	 * <li><code>"java.lang.RuntimeException"</code></li>
-	 * <li><code>"java.lang.Short"</code> (since 3.1)</li>
-	 * <li><code>"java.lang.String"</code></li>
-	 * <li><code>"java.lang.StringBuffer"</code></li>
-	 * <li><code>"java.lang.Throwable"</code></li>
-	 * <li><code>"java.lang.Void"</code> (since 3.1)</li>
-	 * <li><code>"java.io.Serializable"</code></li>
-	 * </ul>
 	 * </p>
 	 *
 	 * @param name the name of a well known type
@@ -870,7 +785,6 @@ public final class AST {
      * building level JLS2 ASTs.
 
      * @exception UnsupportedOperationException
-	 * @since 3.0
      */
 	void unsupportedIn2() {
 	  if (this.apiLevel == AST.JLS2) {
@@ -883,7 +797,6 @@ public final class AST {
      * building level JLS2 ASTs.
 
      * @exception UnsupportedOperationException
-	 * @since 3.0
      */
 	void supportedOnlyIn2() {
 	  if (this.apiLevel != AST.JLS2) {
@@ -893,13 +806,11 @@ public final class AST {
 
 	/**
 	 * new Class[] {AST.class}
-	 * @since 3.0
 	 */
 	private static final Class[] AST_CLASS = new Class[] {AST.class};
 
 	/**
 	 * new Object[] {this}
-	 * @since 3.0
 	 */
 	private final Object[] THIS_AST= new Object[] {this};
 
@@ -921,7 +832,6 @@ public final class AST {
 	 * @return a new unparented node owned by this AST
 	 * @exception IllegalArgumentException if <code>nodeClass</code> is
 	 * <code>null</code> or is not a concrete node type class
-	 * @since 3.0
 	 */
 	public ASTNode createInstance(Class nodeClass) {
 		if (nodeClass == null) {
@@ -963,7 +873,6 @@ public final class AST {
 	 * @return a new unparented node owned by this AST
 	 * @exception IllegalArgumentException if <code>nodeType</code> is
 	 * not a legal AST node type
-	 * @since 3.0
 	 */
 	public ASTNode createInstance(int nodeType) {
 		// nodeClassForType throws IllegalArgumentException if nodeType is bogus
@@ -974,7 +883,7 @@ public final class AST {
 	//=============================== NAMES ===========================
 	/**
 	 * Creates and returns a new unparented simple name node for the given
-	 * identifier. The identifier should be a legal Java identifier, but not
+	 * identifier. The identifier should be a legal JavaScript identifier, but not
 	 * a keyword, boolean literal ("true", "false") or null literal ("null").
 	 *
 	 * @param identifier the identifier
@@ -1017,11 +926,11 @@ public final class AST {
 	 * Creates and returns a new unparented name node for the given name
 	 * segments. Returns a simple name if there is only one name segment, and
 	 * a qualified name if there are multiple name segments. Each of the name
-	 * segments should be legal Java identifiers (this constraint may or may
+	 * segments should be legal JavaScript identifiers (this constraint may or may
 	 * not be enforced), and there must be at least one name segment.
 	 *
 	 * @param identifiers a list of 1 or more name segments, each of which
-	 *    is a legal Java identifier
+	 *    is a legal JavaScript identifier
 	 * @return a new unparented name node
 	 * @exception IllegalArgumentException if:
 	 * <ul>
@@ -1067,23 +976,22 @@ public final class AST {
 	 * The name string must consist of 1 or more name segments separated
 	 * by single dots '.'. Returns a {@link QualifiedName} if the name has
 	 * dots, and a {@link SimpleName} otherwise. Each of the name
-	 * segments should be legal Java identifiers (this constraint may or may
+	 * segments should be legal JavaScript identifiers (this constraint may or may
 	 * not be enforced), and there must be at least one name segment.
 	 * The string must not contains white space, '&lt;', '&gt;',
 	 * '[', ']', or other any other characters that are not
-	 * part of the Java identifiers or separating '.'s.
+	 * part of the JavaScript identifiers or separating '.'s.
 	 *
 	 * @param qualifiedName string consisting of 1 or more name segments,
-	 * each of which is a legal Java identifier, separated  by single dots '.'
+	 * each of which is a legal JavaScript identifier, separated  by single dots '.'
 	 * @return a new unparented name node
 	 * @exception IllegalArgumentException if:
 	 * <ul>
 	 * <li>the string is empty</li>
 	 * <li>the string begins or ends in a '.'</li>
 	 * <li>the string has adjacent '.'s</li>
-	 * <li>the segments between the '.'s are not valid Java identifiers</li>
+	 * <li>the segments between the '.'s are not valid JavaScript identifiers</li>
 	 * </ul>
-	 * @since 3.1
 	 */
 	public Name newName(String qualifiedName) {
 		StringTokenizer t = new StringTokenizer(qualifiedName, ".", true); //$NON-NLS-1$
@@ -1129,6 +1037,8 @@ public final class AST {
 	 * type (<code>Type</code>) by wrapping it.
 	 * </p>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param typeName the name of the class or interface
 	 * @return a new unparented simple type node
 	 * @exception IllegalArgumentException if:
@@ -1170,6 +1080,8 @@ public final class AST {
 	 * element type of the result will not be the same as what was passed in.
 	 * </p>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param elementType the element type (never an array type)
 	 * @param dimensions the number of dimensions, a positive number
 	 * @return a new unparented array type node
@@ -1205,6 +1117,8 @@ public final class AST {
 	 * Creates and returns a new unparented primitive type node with the given
 	 * type code.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param typeCode one of the primitive type code constants declared in
 	 *    <code>PrimitiveType</code>
 	 * @return a new unparented primitive type node
@@ -1216,6 +1130,18 @@ public final class AST {
 		return result;
 	}
 
+	/**
+	 * Creates and returns a new inferred type node with the given
+	 * type name.
+	 *
+	 * @param typeName the name of the inferred type
+	 * @return a new unparented inferred type node
+	 * @exception IllegalArgumentException if:
+	 * <ul>
+	 * <li>the node belongs to a different AST</li>
+	 * <li>the node already has a parent</li>
+	 * </ul>
+	 */
 	public InferredType newInferredType(String typeName) {
 		InferredType result = new InferredType(this);
 		result.setSourceRange(-1, 0);
@@ -1229,6 +1155,8 @@ public final class AST {
 	 * Creates and returns a new unparented parameterized type node with the
 	 * given type and an empty list of type arguments.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param type the type that is parameterized
 	 * @return a new unparented parameterized type node
 	 * @exception IllegalArgumentException if:
@@ -1238,7 +1166,6 @@ public final class AST {
 	 * </ul>
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
 	 */
 	public ParameterizedType newParameterizedType(Type type) {
 		ParameterizedType result = new ParameterizedType(this);
@@ -1250,6 +1177,8 @@ public final class AST {
 	 * Creates and returns a new unparented qualified type node with
 	 * the given qualifier type and name.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param qualifier the qualifier type node
 	 * @param name the simple name being qualified
 	 * @return a new unparented qualified type node
@@ -1260,7 +1189,6 @@ public final class AST {
 	 * </ul>
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
 	 */
 	public QualifiedType newQualifiedType(Type qualifier, SimpleName name) {
 		QualifiedType result = new QualifiedType(this);
@@ -1273,10 +1201,11 @@ public final class AST {
 	 * Creates and returns a new unparented wildcard type node with no
 	 * type bound.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @return a new unparented wildcard type node
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
 	 */
 	public WildcardType newWildcardType() {
 		WildcardType result = new WildcardType(this);
@@ -1285,11 +1214,11 @@ public final class AST {
 
 	//=============================== DECLARATIONS ===========================
 	/**
-	 * Creates an unparented compilation unit node owned by this AST.
-	 * The compilation unit initially has no package declaration, no
+	 * Creates an unparented javaScript unit node owned by this AST.
+	 * The javaScript unit initially has no package declaration, no
 	 * import declarations, and no type declarations.
 	 *
-	 * @return the new unparented compilation unit node
+	 * @return the new unparented javaScript unit node
 	 * @deprecated Use {@link #newJavaScriptUnit()} instead
 	 */
 	public JavaScriptUnit newCompilationUnit() {
@@ -1298,11 +1227,11 @@ public final class AST {
 
 	//=============================== DECLARATIONS ===========================
 	/**
-	 * Creates an unparented compilation unit node owned by this AST.
-	 * The compilation unit initially has no package declaration, no
+	 * Creates an unparented javaScript unit node owned by this AST.
+	 * The javaScript unit initially has no package declaration, no
 	 * import declarations, and no type declarations.
 	 *
-	 * @return the new unparented compilation unit node
+	 * @return the new unparented javaScript unit node
 	 */
 	public JavaScriptUnit newJavaScriptUnit() {
 		return new JavaScriptUnit(this);
@@ -1312,6 +1241,8 @@ public final class AST {
 	 * Creates an unparented package declaration node owned by this AST.
 	 * The package declaration initially declares a package with an
 	 * unspecified name.
+	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
 	 *
 	 * @return the new unparented package declaration node
 	 */
@@ -1324,6 +1255,8 @@ public final class AST {
 	 * Creates an unparented import declaration node owned by this AST.
 	 * The import declaration initially contains a single-type import
 	 * of a type with an unspecified name.
+	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
 	 *
 	 * @return the new unparented import declaration node
 	 */
@@ -1345,6 +1278,8 @@ public final class AST {
 	 * To create an enum declaration, use this method and then call
 	 * <code>TypeDeclaration.setEnumeration(true)</code>.
 	 * </p>
+	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
 	 *
 	 * @return a new unparented type declaration node
 	 */
@@ -1418,7 +1353,7 @@ public final class AST {
 		return result;
 	}
 
-	/**
+	/*
 	 * Creates an unparented initializer node owned by this AST, with an
 	 * empty block. By default, the initializer has no modifiers and
 	 * an empty block.
@@ -1434,10 +1369,11 @@ public final class AST {
 	 * Creates and returns a new unparented type parameter type node with an
 	 * unspecified type variable name and an empty list of type bounds.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @return a new unparented type parameter node
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
 	 */
 	public TypeParameter newTypeParameter() {
 		TypeParameter result = new TypeParameter(this);
@@ -1449,12 +1385,13 @@ public final class AST {
 	 * Creates and returns a new unparented modifier node for the given
 	 * modifier.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param keyword one of the modifier keyword constants
 	 * @return a new unparented modifier node
 	 * @exception IllegalArgumentException if the primitive type code is invalid
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
 	 */
 	public Modifier newModifier(Modifier.ModifierKeyword keyword) {
 		Modifier result = new Modifier(this);
@@ -1464,18 +1401,15 @@ public final class AST {
 
 	/**
 	 * Creates and returns a list of new unparented modifier nodes
-	 * for the given modifier flags. When multiple modifiers are
-	 * requested the modifiers nodes will appear in the following order:
-	 * public, protected, private, abstract, static, final, synchronized,
-	 * native, strictfp, transient, volatile. This order is consistent
-	 * with the recommendations in JLS2 8.1.1, 8.3.1, and 8.4.3.
+	 * for the given modifier flags. 
+	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
 	 *
 	 * @param flags bitwise or of modifier flags declared on {@link Modifier}
 	 * @return a possibly empty list of new unparented modifier nodes
 	 *   (element type <code>Modifier</code>)
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
 	 */
 	public List newModifiers(int flags) {
 		if (this.apiLevel == AST.JLS2) {
@@ -1527,11 +1461,10 @@ public final class AST {
 	 * range where a comment was found in the source string.
 	 * These comment nodes are normally found (only) in
 	 * {@linkplain JavaScriptUnit#getCommentList()
-	 * the comment table} for parsed compilation units.
+	 * the comment table} for parsed javaScript units.
 	 * </p>
 	 *
 	 * @return a new unparented block comment node
-	 * @since 3.0
 	 */
 	public BlockComment newBlockComment() {
 		BlockComment result = new BlockComment(this);
@@ -1545,11 +1478,10 @@ public final class AST {
 	 * range where a comment was found in the source string.
 	 * These comment nodes are normally found (only) in
 	 * {@linkplain JavaScriptUnit#getCommentList()
-	 * the comment table} for parsed compilation units.
+	 * the comment table} for parsed javaScript units.
 	 * </p>
 	 *
 	 * @return a new unparented line comment node
-	 * @since 3.0
 	 */
 	public LineComment newLineComment() {
 		LineComment result = new LineComment(this);
@@ -1596,7 +1528,6 @@ public final class AST {
 	 * </p>
 	 *
 	 * @return a new unparented tag element node
-	 * @since 3.0
 	 */
 	public TagElement newTagElement() {
 		TagElement result = new TagElement(this);
@@ -1612,7 +1543,6 @@ public final class AST {
 	 * </p>
 	 *
 	 * @return a new unparented text element node
-	 * @since 3.0
 	 */
 	public TextElement newTextElement() {
 		TextElement result = new TextElement(this);
@@ -1629,7 +1559,6 @@ public final class AST {
 	 * </p>
 	 *
 	 * @return a new unparented member reference node
-	 * @since 3.0
 	 */
 	public MemberRef newMemberRef() {
 		MemberRef result = new MemberRef(this);
@@ -1647,7 +1576,6 @@ public final class AST {
 	 * </p>
 	 *
 	 * @return a new unparented method reference node
-	 * @since 3.0
 	 * @deprecated Use {@link #newFunctionRef()} instead
 	 */
 	public FunctionRef newMethodRef() {
@@ -1665,7 +1593,6 @@ public final class AST {
 	 * </p>
 	 *
 	 * @return a new unparented method reference node
-	 * @since 3.0
 	 */
 	public FunctionRef newFunctionRef() {
 		FunctionRef result = new FunctionRef(this);
@@ -1682,7 +1609,6 @@ public final class AST {
 	 * </p>
 	 *
 	 * @return a new unparented method reference parameter node
-	 * @since 3.0
 	 * @deprecated Use {@link #newFunctionRefParameter()} instead
 	 */
 	public FunctionRefParameter newMethodRefParameter() {
@@ -1699,7 +1625,6 @@ public final class AST {
 	 * </p>
 	 *
 	 * @return a new unparented method reference parameter node
-	 * @since 3.0
 	 */
 	public FunctionRefParameter newFunctionRefParameter() {
 		FunctionRefParameter result = new FunctionRefParameter(this);
@@ -1749,6 +1674,8 @@ public final class AST {
 	 * (<code>Statement</code>) by wrapping it.
 	 * </p>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param decl the type declaration
 	 * @return a new unparented local type declaration statement node
 	 * @exception IllegalArgumentException if:
@@ -1774,6 +1701,8 @@ public final class AST {
 	 * (<code>Statement</code>) by wrapping it.
 	 * </p>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param decl the type declaration
 	 * @return a new unparented local type declaration statement node
 	 * @exception IllegalArgumentException if:
@@ -1782,7 +1711,6 @@ public final class AST {
 	 * <li>the node already has a parent</li>
 	 * <li>a cycle in would be created</li>
 	 * </ul>
-	 * @since 3.0
 	 */
 	public TypeDeclarationStatement
 			newTypeDeclarationStatement(AbstractTypeDeclaration decl) {
@@ -1874,6 +1802,13 @@ public final class AST {
 		return new WhileStatement(this);
 	}
 
+	/**
+	 * Creates a new unparented with statement node owned by this AST.
+	 * By default, the expression is unspecified (but legal), and
+	 * the body statement is an empty block.
+	 *
+	 * @return a new unparented with statement node
+	 */
 	public WithStatement newWithStatement() {
 		return new WithStatement(this);
 	}
@@ -1931,7 +1866,7 @@ public final class AST {
 		return new ThrowStatement(this);
 	}
 
-	/**
+	/*
 	 * Creates a new unparented assert statement node owned by this AST.
 	 * By default, the first expression is unspecified, but legal, and has no
 	 * message expression.
@@ -1994,11 +1929,18 @@ public final class AST {
 		return new ForStatement(this);
 	}
 
+	/**
+	 * Creates a new unparented for..in statement node owned by this AST.
+	 * By default, there are no initializers, no condition expression,
+	 * no updaters, and the body is an empty block.
+	 *
+	 * @return a new unparented for..in statement node
+	 */
 	public ForInStatement newForInStatement() {
 		return new ForInStatement(this);
 	}
 
-	/**
+	/*
 	 * Creates a new unparented enhanced for statement node owned by this AST.
 	 * By default, the paramter and expression are unspecified
 	 * but legal subtrees, and the body is an empty block.
@@ -2006,7 +1948,6 @@ public final class AST {
 	 * @return a new unparented throw statement node
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
 	 */
 	public EnhancedForStatement newEnhancedForStatement() {
 		return new EnhancedForStatement(this);
@@ -2035,14 +1976,20 @@ public final class AST {
 	}
 
 
-	public RegularExpressionLiteral newRegularExpressionLiteral() {
+
+	/**
+	 * Creates and returns a new Regular Expression literal node.
+	 * Initially the node has an unspecified character literal.
+	 *
+	 * @return a new unparented regular expression literal node
+	 */	public RegularExpressionLiteral newRegularExpressionLiteral() {
 		return new RegularExpressionLiteral(this);
 	}
 /**
 	 * Creates and returns a new unparented number literal node.
 	 *
 	 * @param literal the token for the numeric literal as it would
-	 *    appear in Java source code
+	 *    appear in JavaScript source code
 	 * @return a new unparented number literal node
 	 * @exception IllegalArgumentException if the literal is null
 	 */
@@ -2075,6 +2022,12 @@ public final class AST {
 		return new NullLiteral(this);
 	}
 
+
+	/**
+	 * Creates and returns a new unparented 'undefined' literal node.
+	 *
+	 * @return a new unparented 'undefined' literal node
+	 */
 	public UndefinedLiteral newUndefinedLiteral() {
 		return new UndefinedLiteral(this);
 	}
@@ -2146,6 +2099,8 @@ public final class AST {
 	 * this AST. By default, the name of the method is unspecified (but legal)
 	 * there is no qualifier, no type arguments, and the list of arguments is empty.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @return a new unparented  "super" method invocation
 	 *    expression node
 	 */
@@ -2164,6 +2119,8 @@ public final class AST {
 	 * statements are as the first statement of a constructor body.
 	 * </p>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @return a new unparented alternate constructor invocation statement node
 	 */
 	public ConstructorInvocation newConstructorInvocation() {
@@ -2180,6 +2137,8 @@ public final class AST {
 	 * super method invocation is an Expression. The only valid use of these
 	 * statements are as the first statement of a constructor body.
 	 * </p>
+	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
 	 *
 	 * @return a new unparented super constructor invocation statement node
 	 */
@@ -2236,6 +2195,8 @@ public final class AST {
 	 * Additional variable declaration fragments can be added afterwards.
 	 * </p>
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @param fragment the variable declaration fragment
 	 * @return a new unparented field declaration node
 	 * @exception IllegalArgumentException if:
@@ -2283,6 +2244,8 @@ public final class AST {
 	 * owned by this AST. By default, the expression and field are both
 	 * unspecified, but legal, names.
 	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
 	 * @return a new unparented super field access expression node
 	 */
 	public SuperFieldAccess newSuperFieldAccess() {
@@ -2293,6 +2256,8 @@ public final class AST {
 	/**
 	 * Creates and returns a new unparented type literal expression node
 	 * owned by this AST. By default, the type is unspecified (but legal).
+	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
 	 *
 	 * @return a new unparented type literal node
 	 */
@@ -2313,16 +2278,34 @@ public final class AST {
 		return result;
 	}
 
+	/**
+	 * Creates and returns a new unparented function expression node
+	 * owned by this AST. 
+	 *
+	 * @return a new unparented function expression node
+	 */
 	public FunctionExpression newFunctionExpression() {
 		FunctionExpression result = new FunctionExpression(this);
 		return result;
 	}
 
+	/**
+	 * Creates and returns a new unparented object literal expression node
+	 * owned by this AST. 
+	 *
+	 * @return a new unparented object literal expression node
+	 */
 	public ObjectLiteral newObjectLiteral() {
 		ObjectLiteral result = new ObjectLiteral(this);
 		return result;
 	}
 
+	/**
+	 * Creates and returns a new unparented object literal field expression node
+	 * owned by this AST. 
+	 *
+	 * @return a new unparented object literal field expression node
+	 */
 	public ObjectLiteralField newObjectLiteralField() {
 		ObjectLiteralField result = new ObjectLiteralField(this);
 		return result;
@@ -2405,37 +2388,6 @@ public final class AST {
 	 * owned by this AST. By default, the array type is an unspecified
 	 * 1-dimensional array, the list of dimensions is empty, and there is no
 	 * array initializer.
-	 * <p>
-	 * Examples:
-	 * <code>
-	 * <pre>
-	 * // new String[len]
-	 * ArrayCreation ac1 = ast.newArrayCreation();
-	 * ac1.setType(
-	 *    ast.newArrayType(
-	 *       ast.newSimpleType(ast.newSimpleName("String"))));
-	 * ac1.dimensions().add(ast.newSimpleName("len"));
-     *
-	 * // new double[7][24][]
-	 * ArrayCreation ac2 = ast.newArrayCreation();
-	 * ac2.setType(
-	 *    ast.newArrayType(
-	 *       ast.newPrimitiveType(PrimitiveType.DOUBLE), 3));
-	 * ac2.dimensions().add(ast.newNumberLiteral("7"));
-	 * ac2.dimensions().add(ast.newNumberLiteral("24"));
-	 *
-	 * // new int[] {1, 2}
-	 * ArrayCreation ac3 = ast.newArrayCreation();
-	 * ac3.setType(
-	 *    ast.newArrayType(
-	 *       ast.newPrimitiveType(PrimitiveType.INT)));
-	 * ArrayInitializer ai = ast.newArrayInitializer();
-	 * ac3.setInitializer(ai);
-	 * ai.expressions().add(ast.newNumberLiteral("1"));
-	 * ai.expressions().add(ast.newNumberLiteral("2"));
-	 * </pre>
-	 * </code>
-	 * </p>
 	 *
 	 * @return a new unparented array creation expression node
 	 */
@@ -2494,7 +2446,7 @@ public final class AST {
 
 	/**
 	 * Enables the recording of changes to the given compilation
-	 * unit and its descendents. The compilation unit must have
+	 * unit and its descendents. The javaScript unit must have
 	 * been created by <code>ASTParser</code> and still be in
 	 * its original state. Once recording is on,
 	 * arbitrary changes to the subtree rooted at the compilation
@@ -2503,12 +2455,11 @@ public final class AST {
 	 * representing the corresponding edits to the original
 	 * source code string.
 	 *
-	 * @exception IllegalArgumentException if this compilation unit is
-	 * marked as unmodifiable, or if this compilation unit has already
+	 * @exception IllegalArgumentException if this javaScript unit is
+	 * marked as unmodifiable, or if this javaScript unit has already
 	 * been tampered with, or if recording has already been enabled,
 	 * or if <code>root</code> is not owned by this AST
 	 * @see JavaScriptUnit#recordModifications()
-	 * @since 3.0
 	 */
 	void recordModifications(JavaScriptUnit root) {
 		if(this.modificationCount != this.originalModificationCount) {
@@ -2529,11 +2480,11 @@ public final class AST {
 	 * Converts all modifications recorded into an object
 	 * representing the corresponding text edits to the
 	 * given document containing the original source
-	 * code for the compilation unit that gave rise to
+	 * code for the javaScript unit that gave rise to
 	 * this AST.
 	 *
 	 * @param document original document containing source code
-	 * for the compilation unit
+	 * for the javaScript unit
 	 * @param options the table of formatter options
 	 * (key type: <code>String</code>; value type: <code>String</code>);
 	 * or <code>null</code> to use the standard global options
@@ -2545,7 +2496,6 @@ public final class AST {
 	 * @exception IllegalStateException if <code>recordModifications</code>
 	 * was not called to enable recording
 	 * @see JavaScriptUnit#rewrite(IDocument, Map)
-	 * @since 3.0
 	 */
 	TextEdit rewrite(IDocument document, Map options) {
 		if (document == null) {
@@ -2560,7 +2510,6 @@ public final class AST {
 	 * Returns true if the ast tree was created with bindings, false otherwise
 	 *
 	 * @return true if the ast tree was created with bindings, false otherwise
-	 * @since 3.3
 	 */
 	public boolean hasResolvedBindings() {
 		return (this.bits & RESOLVED_BINDINGS) != 0;
@@ -2570,7 +2519,6 @@ public final class AST {
 	 * Returns true if the ast tree was created with statements recovery, false otherwise
 	 *
 	 * @return true if the ast tree was created with statements recovery, false otherwise
-	 * @since 3.3
 	 */
 	public boolean hasStatementsRecovery() {
 		return (this.bits & IJavaScriptUnit.ENABLE_STATEMENTS_RECOVERY) != 0;
@@ -2580,7 +2528,6 @@ public final class AST {
 	 * Returns true if the ast tree was created with bindings recovery, false otherwise
 	 *
 	 * @return true if the ast tree was created with bindings recovery, false otherwise
-	 * @since 3.3
 	 */
 	public boolean hasBindingsRecovery() {
 		return (this.bits & IJavaScriptUnit.ENABLE_BINDINGS_RECOVERY) != 0;

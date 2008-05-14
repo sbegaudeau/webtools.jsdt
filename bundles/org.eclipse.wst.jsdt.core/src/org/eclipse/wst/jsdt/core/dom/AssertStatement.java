@@ -22,6 +22,8 @@ import java.util.List;
  *    <b>assert</b> Expression [ <b>:</b> Expression ] <b>;</b>
  * </pre>
  *
+ * <p><b>Note: This Class only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
  * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 

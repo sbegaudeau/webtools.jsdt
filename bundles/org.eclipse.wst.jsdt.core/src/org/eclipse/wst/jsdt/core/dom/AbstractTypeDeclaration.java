@@ -13,14 +13,7 @@ package org.eclipse.wst.jsdt.core.dom;
 import java.util.List;
 
 /**
- * Abstract subclass for type declaration, enum declaration,
- * and annotation type declaration AST node types.
- * <pre>
- * AbstractTypeDeclaration:
- * 		TypeDeclaration
- * 		EnumDeclaration
- * 		AnnotationTypeDeclaration
- * </pre>
+ * Abstract subclass for type declaration AST node types.
  *
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
@@ -32,15 +25,13 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 
 	/**
 	 * The type name; lazily initialized; defaults to a unspecified,
-	 * legal Java class identifier.
-	 * @since 2.0 (originally declared on <code>TypeDeclaration</code>)
+	 * legal JavaScript class identifier.
 	 */
 	SimpleName typeName = null;
 
 	/**
 	 * The body declarations (element type: <code>BodyDeclaration</code>).
 	 * Defaults to an empty list.
-	 * @since 2.0 (originally declared on <code>TypeDeclaration</code>)
 	 */
 	ASTNode.NodeList bodyDeclarations;
 
@@ -76,7 +67,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 	 * of this node.
 	 *
 	 * @return the property descriptor
-	 * @since 3.1
 	 */
 	public final ChildPropertyDescriptor getNameProperty() {
 		return internalNameProperty();
@@ -122,7 +112,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 	 * Returns the name of the type declared in this type declaration.
 	 *
 	 * @return the type name node
-	 * @since 2.0 (originally declared on <code>TypeDeclaration</code>)
 	 */
 	public SimpleName getName() {
 		if (this.typeName == null) {
@@ -148,7 +137,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 	 * <li>the node belongs to a different AST</li>
 	 * <li>the node already has a parent</li>
 	 * </ul>
-	 * @since 2.0 (originally declared on <code>TypeDeclaration</code>)
 	 */
 	public void setName(SimpleName typeName) {
 		if (typeName == null) {
@@ -167,7 +155,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 	 *
 	 * @return the live list of body declarations
 	 *    (element type: <code>BodyDeclaration</code>)
-	 * @since 2.0 (originally declared on <code>TypeDeclaration</code>)
 	 */
 	public List bodyDeclarations() {
 		return this.bodyDeclarations;
@@ -183,7 +170,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 	 *
 	 * @return <code>true</code> if this type declaration is a child of
 	 *   a compilation unit node, and <code>false</code> otherwise
-	 * @since 2.0 (originally declared on <code>TypeDeclaration</code>)
 	 */
 	public boolean isPackageMemberTypeDeclaration() {
 		ASTNode parent = getParent();
@@ -201,7 +187,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 	 * @return <code>true</code> if this type declaration is a child of
 	 *   a type declaration node or an anonymous class declaration node,
 	 *   and <code>false</code> otherwise
-	 * @since 2.0 (originally declared on <code>TypeDeclaration</code>)
 	 */
 	public boolean isMemberTypeDeclaration() {
 		ASTNode parent = getParent();
@@ -218,7 +203,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 	 *
 	 * @return <code>true</code> if this type declaration is a child of
 	 *   a type declaration statement node, and <code>false</code> otherwise
-	 * @since 2.0 (originally declared on <code>TypeDeclaration</code>)
 	 */
 	public boolean isLocalTypeDeclaration() {
 		ASTNode parent = getParent();
@@ -235,7 +219,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 	 *
 	 * @return the binding, or <code>null</code> if the binding cannot be
 	 *    resolved
-	 * @since 3.1 Declared in 3.0 on the individual subclasses.
 	 */
 	public final ITypeBinding resolveBinding() {
 		return internalResolveBinding();

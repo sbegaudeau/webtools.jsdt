@@ -36,7 +36,6 @@ public class AnonymousClassDeclaration extends ASTNode {
 
 	/**
 	 * The "bodyDeclarations" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final ChildListPropertyDescriptor BODY_DECLARATIONS_PROPERTY =
 		new ChildListPropertyDescriptor(AnonymousClassDeclaration.class, "bodyDeclarations", BodyDeclaration.class, CYCLE_RISK); //$NON-NLS-1$

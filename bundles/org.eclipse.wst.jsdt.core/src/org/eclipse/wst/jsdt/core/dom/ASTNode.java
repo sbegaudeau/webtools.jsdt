@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Abstract superclass of all Abstract Syntax Tree (AST) node types.
  * <p>
- * An AST node represents a Java source code construct, such
+ * An AST node represents a JavaScript source code construct, such
  * as a name, type, expression, statement, or declaration.
  * </p>
  * <p>
@@ -75,7 +75,7 @@ import java.util.Map;
  * </p>
  * <p>
  * The class {@link ASTParser} parses a string
- * containing a Java source code and returns an abstract syntax tree
+ * containing a JavaScript source code and returns an abstract syntax tree
  * for it. The resulting nodes carry source ranges relating the node back to
  * the original source characters. The source range covers the construct
  * as a whole.
@@ -194,7 +194,7 @@ public abstract class ASTNode {
 	 */
 	public static final int ARRAY_TYPE = 5;
 
-	/**
+	/*
 	 * Node type constant indicating a node of type
 	 * <code>AssertStatement</code>.
 	 * @see AssertStatement
@@ -590,7 +590,6 @@ public abstract class ASTNode {
 	 * Node type constant indicating a node of type
 	 * <code>LineComment</code>.
 	 * @see LineComment
-	 * @since 3.0
 	 */
 	public static final int LINE_COMMENT = 63;
 
@@ -598,7 +597,7 @@ public abstract class ASTNode {
 	 * Node type constant indicating a node of type
 	 * <code>BlockComment</code>.
 	 * @see BlockComment
-	 * @since 3.0
+	 *  
 	 */
 	public static final int BLOCK_COMMENT = 64;
 
@@ -606,7 +605,7 @@ public abstract class ASTNode {
 	 * Node type constant indicating a node of type
 	 * <code>TagElement</code>.
 	 * @see TagElement
-	 * @since 3.0
+	 *  
 	 */
 	public static final int TAG_ELEMENT = 65;
 
@@ -614,7 +613,7 @@ public abstract class ASTNode {
 	 * Node type constant indicating a node of type
 	 * <code>TextElement</code>.
 	 * @see TextElement
-	 * @since 3.0
+	 *  
 	 */
 	public static final int TEXT_ELEMENT = 66;
 
@@ -622,7 +621,7 @@ public abstract class ASTNode {
 	 * Node type constant indicating a node of type
 	 * <code>MemberRef</code>.
 	 * @see MemberRef
-	 * @since 3.0
+	 *  
 	 */
 	public static final int MEMBER_REF = 67;
 
@@ -630,7 +629,7 @@ public abstract class ASTNode {
 	 * Node type constant indicating a node of type
 	 * <code>FunctionRef</code>.
 	 * @see FunctionRef
-	 * @since 3.0
+	 *  
 	 */
 	public static final int FUNCTION_REF = 68;
 
@@ -638,7 +637,7 @@ public abstract class ASTNode {
 	 * Node type constant indicating a node of type
 	 * <code>FunctionRefParameter</code>.
 	 * @see FunctionRefParameter
-	 * @since 3.0
+	 *  
 	 */
 	public static final int FUNCTION_REF_PARAMETER = 69;
 
@@ -646,7 +645,7 @@ public abstract class ASTNode {
 	 * Node type constant indicating a node of type
 	 * <code>EnhancedForStatement</code>.
 	 * @see EnhancedForStatement
-	 * @since 3.1
+	 *  
 	 */
 	public static final int ENHANCED_FOR_STATEMENT = 70;
 
@@ -655,7 +654,7 @@ public abstract class ASTNode {
 	 * Node type constant indicating a node of type
 	 * <code>TypeParameter</code>.
 	 * @see TypeParameter
-	 * @since 3.1
+	 *  
 	 */
 	public static final int TYPE_PARAMETER = 73;
 
@@ -663,7 +662,7 @@ public abstract class ASTNode {
 	 * Node type constant indicating a node of type
 	 * <code>ParameterizedType</code>.
 	 * @see ParameterizedType
-	 * @since 3.1
+	 *  
 	 */
 	public static final int PARAMETERIZED_TYPE = 74;
 
@@ -671,7 +670,7 @@ public abstract class ASTNode {
 	 * Node type constant indicating a node of type
 	 * <code>QualifiedType</code>.
 	 * @see QualifiedType
-	 * @since 3.1
+	 *  
 	 */
 	public static final int QUALIFIED_TYPE = 75;
 
@@ -679,7 +678,7 @@ public abstract class ASTNode {
 	 * Node type constant indicating a node of type
 	 * <code>WildcardType</code>.
 	 * @see WildcardType
-	 * @since 3.1
+	 *  
 	 */
 	public static final int WILDCARD_TYPE = 76;
 
@@ -704,7 +703,6 @@ public abstract class ASTNode {
 	 * Node type constant indicating a node of type
 	 * <code>Modifier</code>.
 	 * @see Modifier
-	 * @since 3.1
 	 */
 	public static final int MODIFIER = 100;
 
@@ -716,7 +714,6 @@ public abstract class ASTNode {
 	 * @exception IllegalArgumentException if <code>nodeType</code> is
 	 * not a legal AST node type
 	 * @see #getNodeType()
-	 * @since 3.0
 	 */
 	public static Class nodeClassForType(int nodeType) {
 		switch (nodeType) {
@@ -961,7 +958,7 @@ public abstract class ASTNode {
 	 * The standard parser (<code>ASTParser</code>) sets this
 	 * flag on the nodes it creates.
 	 * </p>
-	 * @since 3.0
+	 *  
 	 */
 	public static final int ORIGINAL = 2;
 
@@ -980,7 +977,6 @@ public abstract class ASTNode {
 	 * this flag on a node to prevent further modification of the
 	 * its structural properties.
 	 * </p>
-	 * @since 3.0
 	 */
 	public static final int PROTECT = 4;
 
@@ -992,7 +988,6 @@ public abstract class ASTNode {
 	 * The standard parser (<code>ASTParser</code>) sets this
 	 * flag on a node to indicate a recovered node.
 	 * </p>
-	 * @since 3.2
 	 */
 	public static final int RECOVERED = 8;
 
@@ -1013,27 +1008,22 @@ public abstract class ASTNode {
 	 * if this node is a root. Initially <code>null</code>.
 	 *
 	 * @see #getLocationInParent
-	 * @since 3.0
 	 */
 	private StructuralPropertyDescriptor location = null;
 
 	/** Internal convenience constant indicating that there is definite risk of cycles.
-	 * @since 3.0
 	 */
 	static final boolean CYCLE_RISK = true;
 
 	/** Internal convenience constant indicating that there is no risk of cycles.
-	 * @since 3.0
 	 */
 	static final boolean NO_CYCLE_RISK = false;
 
 	/** Internal convenience constant indicating that a structural property is mandatory.
-	 * @since 3.0
-	 */
+ */
 	static final boolean MANDATORY = true;
 
 	/** Internal convenience constant indicating that a structural property is optional.
-	 * @since 3.0
 	 */
 	static final boolean OPTIONAL = false;
 
@@ -1136,7 +1126,6 @@ public abstract class ASTNode {
 		 * this list.
 		 *
 		 * @param property the property descriptor
-		 * @since 3.0
 		 */
 		NodeList(ChildListPropertyDescriptor property) {
 			super();
@@ -1417,7 +1406,6 @@ public abstract class ASTNode {
 	 *
 	 * @return the location of this node in its parent,
 	 * or <code>null</code> if this node has no parent
-	 * @since 3.0
 	 */
 	public final StructuralPropertyDescriptor getLocationInParent() {
 		return this.location;
@@ -1455,7 +1443,6 @@ public abstract class ASTNode {
 	 * @param property the property
 	 * @return the value, or <code>null</code> if none
 	 * @exception RuntimeException if this node does not have the given property
-	 * @since 3.0
 	 */
 	public final Object getStructuralProperty(StructuralPropertyDescriptor property) {
 		if (property instanceof SimplePropertyDescriptor) {
@@ -1494,7 +1481,6 @@ public abstract class ASTNode {
 	 * @param value the property value
 	 * @exception RuntimeException if this node does not have the
 	 * given property, or if the given property cannot be set
-	 * @since 3.0
 	 */
 	public final void setStructuralProperty(StructuralPropertyDescriptor property, Object value) {
 		if (property instanceof SimplePropertyDescriptor) {
@@ -1544,7 +1530,7 @@ public abstract class ASTNode {
 	 * <code>0</code> for set operations
 	 * @exception RuntimeException if this node does not have the
 	 * given property, or if the given value cannot be set as specified
-	 * @since 3.0
+	 *  
 	 */
 	int internalGetSetIntProperty(SimplePropertyDescriptor property, boolean get, int value) {
 		throw new RuntimeException("Node does not have this property");  //$NON-NLS-1$
@@ -1565,7 +1551,6 @@ public abstract class ASTNode {
 	 * <code>false</code> for set operations
 	 * @exception RuntimeException if this node does not have the
 	 * given property, or if the given value cannot be set as specified
-	 * @since 3.0
 	 */
 	boolean internalGetSetBooleanProperty(SimplePropertyDescriptor property, boolean get, boolean value) {
 		throw new RuntimeException("Node does not have this property");  //$NON-NLS-1$
@@ -1587,7 +1572,6 @@ public abstract class ASTNode {
 	 * <code>null</code> for set operations
 	 * @exception RuntimeException if this node does not have the
 	 * given property, or if the given value cannot be set as specified
-	 * @since 3.0
 	 */
 	Object internalGetSetObjectProperty(SimplePropertyDescriptor property, boolean get, Object value) {
 		throw new RuntimeException("Node does not have this property");  //$NON-NLS-1$
@@ -1608,7 +1592,6 @@ public abstract class ASTNode {
 	 * <code>null</code> for set operations
 	 * @exception RuntimeException if this node does not have the
 	 * given property, or if the given child cannot be set as specified
-	 * @since 3.0
 	 */
 	ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
 		throw new RuntimeException("Node does not have this property");  //$NON-NLS-1$
@@ -1624,7 +1607,6 @@ public abstract class ASTNode {
 	 * @return the list (element type: {@link ASTNode})
 	 * @exception RuntimeException if the given node does not have the
 	 * given property
-	 * @since 3.0
 	 */
 	List internalGetChildListProperty(ChildListPropertyDescriptor property) {
 		throw new RuntimeException("Node does not have this property");  //$NON-NLS-1$
@@ -1641,7 +1623,6 @@ public abstract class ASTNode {
 	 *
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
 	 */
 	public final List structuralPropertiesForType() {
 		return internalStructuralPropertiesForType(this.ast.apiLevel);
@@ -1660,7 +1641,6 @@ public abstract class ASTNode {
 	 * @param apiLevel the API level; one of the <code>AST.JLS*</code> constants
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
 	 */
 	abstract List internalStructuralPropertiesForType(int apiLevel);
 
@@ -1714,7 +1694,6 @@ public abstract class ASTNode {
      * building JLS2 level ASTs.
 
      * @exception UnsupportedOperationException
-	 * @since 3.0
      */
 	final void unsupportedIn2() {
 	  if (this.ast.apiLevel == AST.JLS2_INTERNAL) {
@@ -1727,7 +1706,6 @@ public abstract class ASTNode {
      * building JLS2 level ASTs.
 
      * @exception UnsupportedOperationException
-	 * @since 3.0
      */
 	final void supportedOnlyIn2() {
 	  if (this.ast.apiLevel != AST.JLS2_INTERNAL) {
@@ -1749,7 +1727,6 @@ public abstract class ASTNode {
 	 * or <code>null</code> if <code>parent</code> is <code>null</code>
 	 * @see #getLocationInParent
 	 * @see #getParent
-	 * @since 3.0
 	 */
 	final void setParent(ASTNode parent, StructuralPropertyDescriptor property) {
 		this.ast.modifying();
@@ -1767,7 +1744,6 @@ public abstract class ASTNode {
 	 * by passing <code>null</code> to the appropriate setter method;
 	 * this operation fails if this node is in a mandatory property.
 	 *
-	 * @since 3.0
 	 */
 	public final void delete() {
 		StructuralPropertyDescriptor p = getLocationInParent();
@@ -1806,7 +1782,7 @@ public abstract class ASTNode {
 	 * <li>the child has the incorrect node type</li>
 	 * <li>the node already has a parent</li>
 	 * <li>a cycle in would be created</li>
-	 * </ul>
+     * </ul>
 	 */
 	static void checkNewChild(ASTNode node, ASTNode newChild,
 			boolean cycleCheck, Class nodeType) {
@@ -1874,7 +1850,6 @@ public abstract class ASTNode {
 	 * <li>a cycle in would be created</li>
 	 * <li>any of the nodes involved are unmodifiable</li>
 	 * </ul>
-	 * @since 3.0
 	 */
 	final void preReplaceChild(ASTNode oldChild, ASTNode newChild, ChildPropertyDescriptor property) {
 		if ((this.typeAndFlags & PROTECT) != 0) {
@@ -1913,7 +1888,6 @@ public abstract class ASTNode {
 	 * old child of this node with another node.
      * See {@link #preReplaceChild(ASTNode, ASTNode, ChildPropertyDescriptor)}
      * for details.
-	 * @since 3.0
 	 */
 	final void postReplaceChild(ASTNode oldChild, ASTNode newChild, ChildPropertyDescriptor property) {
 		// link new child to parent
@@ -1952,7 +1926,6 @@ public abstract class ASTNode {
 	 * <ul>
 	 * <li>this node is unmodifiable</li>
 	 * </ul>
-	 * @since 3.0
 	 */
 	final void preValueChange(SimplePropertyDescriptor property) {
 		if ((this.typeAndFlags & PROTECT) != 0) {
@@ -1967,7 +1940,6 @@ public abstract class ASTNode {
      * Postlude portion of the "3 step program" for replacing the
 	 * old child of this node with another node.
      * See {@link #preValueChange(SimplePropertyDescriptor)} for details.
-	 * @since 3.0
 	 */
 	final void postValueChange(SimplePropertyDescriptor property) {
 		this.ast.postValueChangeEvent(this, property);
@@ -2001,7 +1973,7 @@ public abstract class ASTNode {
      *    }
      * }
      * </pre>
-     * @since 3.0
+     *  
      */
 	final void preLazyInit() {
 		// IMPORTANT: this method is called by readers
@@ -2017,7 +1989,6 @@ public abstract class ASTNode {
 	 *   there is no replacement child
 	 * @param property the property descriptor of this node describing
      * the relationship between node and child
-     * @since 3.0
      */
 	final void postLazyInit(ASTNode newChild, ChildPropertyDescriptor property) {
 		// IMPORTANT: this method is called by readers
@@ -2618,7 +2589,7 @@ public abstract class ASTNode {
 	}
 
 	/**
-	 * Appends a standard Java source code representation of this subtree to the given
+	 * Appends a standard JavaScript source code representation of this subtree to the given
 	 * string buffer.
 	 *
 	 * @param buffer the string buffer to append to
@@ -2648,7 +2619,6 @@ public abstract class ASTNode {
 	 * @param string the string to measure, or <code>null</code>
 	 * @return the size of this string object in bytes, or
 	 *   0 if the string is <code>null</code>
-     * @since 3.0
 	 */
 	static int stringSize(String string) {
 		int size = 0;

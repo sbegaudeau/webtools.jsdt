@@ -36,12 +36,12 @@ import org.eclipse.wst.jsdt.internal.core.util.RecordedParsingInformation;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
- * A Java language parser for creating abstract syntax trees (ASTs).
+ * A JavaScript language parser for creating abstract syntax trees (ASTs).
  * <p>
  * Example: Create basic AST from source string
  * <pre>
  * char[] source = ...;
- * ASTParser parser = ASTParser.newParser(AST.JLS3);  // handles JDK 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6
+ * ASTParser parser = ASTParser.newParser(AST.JLS3);  
  * parser.setSource(source);
  * JavaScriptUnit result = (JavaScriptUnit) parser.createAST(null);
  * </pre>
@@ -59,14 +59,14 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * <li>Whether {@linkplain #setResolveBindings(boolean) bindings} will be created.</li>
  * <li>Which {@linkplain #setWorkingCopyOwner(WorkingCopyOwner)
  * working set owner} to use when resolving bindings).</li>
- * <li>A hypothetical {@linkplain #setUnitName(String) compilation unit file name}
- * and {@linkplain #setProject(IJavaScriptProject) Java project}
- * for locating a raw source string in the Java model (when
+ * <li>A hypothetical {@linkplain #setUnitName(String) javaScript unit file name}
+ * and {@linkplain #setProject(IJavaScriptProject) JavaScript project}
+ * for locating a raw source string in the JavaScript model (when
  * resolving bindings)</li>
  * <li>Which {@linkplain #setCompilerOptions(Map) compiler options}
  * to use.</li>
  * <li>Whether to parse just {@linkplain #setKind(int) an expression, statements,
- * or body declarations} rather than an entire compilation unit.</li>
+ * or body declarations} rather than an entire javaScript unit.</li>
  * <li>Whether to return a {@linkplain #setFocalPosition(int) abridged AST}
  * focused on the declaration containing a given source position.</li>
  * </ul>
@@ -99,12 +99,12 @@ public class ASTParser {
 
 	/**
 	 * Kind constant used to request that the source be parsed
-	 * as a compilation unit.
+	 * as a javaScript unit.
 	 */
 	public static final int K_COMPILATION_UNIT = 0x08;
 
 	/**
-	 * Creates a new object for creating a Java abstract syntax tree
+	 * Creates a new object for creating a JavaScript abstract syntax tree
      * (AST) following the specified set of API rules.
      *
  	 * @param level the API level; one of the LEVEL constants
@@ -121,7 +121,7 @@ public class ASTParser {
 	private final int apiLevel;
 
 	/**
-	 * Kind of parse requested. Defaults to an entire compilation unit.
+	 * Kind of parse requested. Defaults to an entire javaScript unit.
 	 */
 	private int astKind;
 
@@ -163,7 +163,7 @@ public class ASTParser {
     private char[] rawSource = null;
 
     /**
-     * Java model class file or compilation unit supplying the source.
+     * JavaScript  unit supplying the source.
      */
     private ITypeRoot typeRoot = null;
 
@@ -187,13 +187,13 @@ public class ASTParser {
 	private WorkingCopyOwner workingCopyOwner = DefaultWorkingCopyOwner.PRIMARY;
 
     /**
-	 * Java project used to resolve names, or <code>null</code> if none.
+	 * JavaScript project used to resolve names, or <code>null</code> if none.
      * Defaults to none.
      */
 	private IJavaScriptProject project = null;
 
     /**
-	 * Name of the compilation unit for resolving bindings, or
+	 * Name of the javaScript unit for resolving bindings, or
 	 * <code>null</code> if none. Defaults to none.
      */
 	private String unitName = null;
@@ -260,7 +260,7 @@ public class ASTParser {
 	 * Note that {@link #setSource(IClassFile)},
 	 * {@link #setSource(IJavaScriptUnit)},
 	 * and {@link #setProject(IJavaScriptProject)} reset the compiler options
-	 * based on the Java project. In other cases, compiler options default
+	 * based on the JavaScript project. In other cases, compiler options default
 	 * to {@link JavaScriptCore#getOptions()}. In either case, and especially
 	 * in the latter, the caller should carefully weight the consequences of
 	 * allowing compiler options to be defaulted as opposed to being
@@ -318,15 +318,15 @@ public class ASTParser {
 	 * outset.
 	 * </p>
 	 * <p>
-	 * When bindings are requested, instead of considering compilation units on disk only
+	 * When bindings are requested, instead of considering javaScript units on disk only
 	 * one can supply a <code>WorkingCopyOwner</code>. Working copies owned
-	 * by this owner take precedence over the underlying compilation units when looking
+	 * by this owner take precedence over the underlying javaScript units when looking
 	 * up names and drawing the connections.
 	 * </p>
 	 * <p>
-     * Binding information is obtained from the Java model.
-     * This means that the compilation unit must be located relative to the
-     * Java model. This happens automatically when the source code comes from
+     * Binding information is obtained from the JavaScript model.
+     * This means that the javaScript unit must be located relative to the
+     * JavaScript model. This happens automatically when the source code comes from
      * either {@link #setSource(IJavaScriptUnit) setSource(IJavaScriptUnit)}
      * or {@link #setSource(IClassFile) setSource(IClassFile)}.
      * When source is supplied by {@link #setSource(char[]) setSource(char[])},
@@ -348,14 +348,14 @@ public class ASTParser {
      * By default, complete ASTs are returned.
      * <p>
      * When <code>true</code> the resulting AST does not have nodes for
-     * the entire compilation unit. Rather, the AST is only fleshed out
+     * the entire javaScript unit. Rather, the AST is only fleshed out
      * for the node that include the given source position. This kind of limited
      * AST is sufficient for certain purposes but totally unsuitable for others.
      * In places where it can be used, the limited AST offers the advantage of
      * being smaller and faster to construct.
 	 * </p>
 	 * <p>
-	 * The AST will include nodes for all of the compilation unit's
+	 * The AST will include nodes for all of the javaScript unit's functions, top-level vars,
 	 * package, import, and top-level type declarations. It will also always contain
 	 * nodes for all the body declarations for those top-level types, as well
 	 * as body declarations for any member types. However, some of the body
@@ -374,7 +374,7 @@ public class ASTParser {
 	 * returned will be a skeleton that includes nodes for all and only the major
 	 * declarations; this kind of AST is still quite useful because it contains
 	 * all the constructs that introduce names visible to the world outside the
-	 * compilation unit.
+	 * javaScript unit.
 	 * </p>
 	 *
 	 * @param position a position into the corresponding body declaration
@@ -386,7 +386,7 @@ public class ASTParser {
 
 	/**
 	 * Sets the kind of constructs to be parsed from the source.
-     * Defaults to an entire compilation unit.
+     * Defaults to an entire javaScript unit.
 	 * <p>
 	 * When the parse is successful the result returned includes the ASTs for the
 	 * requested source:
@@ -481,10 +481,10 @@ public class ASTParser {
 	/**
      * Sets the source code to be parsed.
      * This method automatically sets the project (and compiler
-     * options) based on the given compilation unit, in a manner
+     * options) based on the given javaScript unit, in a manner
      * equivalent to <code>setProject(source.getJavaProject())</code>
      *
-	 * @param source the Java model compilation unit whose source code
+	 * @param source the JavaScript model javaScript unit whose source code
      * is to be parsed, or <code>null</code> if none
       */
 	public void setSource(IJavaScriptUnit source) {
@@ -494,12 +494,10 @@ public class ASTParser {
 	/**
      * Sets the source code to be parsed.
      * <p>This method automatically sets the project (and compiler
-     * options) based on the given compilation unit, in a manner
+     * options) based on the given javaScript unit, in a manner
      * equivalent to <code>setProject(source.getJavaProject())</code>.</p>
-     * <p>If the given class file has  no source attachment, the creation of the
-     * ast will fail with an IllegalStateException.</p>
      *
-	 * @param source the Java model class file whose corresponding source code
+	 * @param source the JavaScript file whose corresponding source code
      * is to be parsed, or <code>null</code> if none
      */
 	public void setSource(IClassFile source) {
@@ -509,14 +507,11 @@ public class ASTParser {
 	/**
 	 * Sets the source code to be parsed.
 	 * <p>This method automatically sets the project (and compiler
-	 * options) based on the given compilation unit of class file, in a manner
+	 * options) based on the given javaScript unit, in a manner
 	 * equivalent to <code>setProject(source.getJavaProject())</code>.</p>
-	 * <p>If the source is a class file without source attachment, the creation of the
-	 * ast will fail with an IllegalStateException.</p>
 	 *
-	 * @param source the Java model compilation unit or class file whose corresponding source code
+	 * @param source the JavaScript model javaScript unit whose corresponding source code
 	 * is to be parsed, or <code>null</code> if none
-	 * @since 3.3
 	 */
 	public void setSource(ITypeRoot source) {
 		this.typeRoot = source;
@@ -558,7 +553,6 @@ public class ASTParser {
 	 * @param enabled <code>true</code> if statements containing syntax errors are wanted,
 	 *   and <code>false</code> if these statements aren't wanted.
 	 *
-	 * @since 3.2
 	 */
 	public void setStatementsRecovery(boolean enabled) {
 		this.statementsRecovery = enabled;
@@ -569,7 +563,7 @@ public class ASTParser {
      * <code>null</code> means the primary owner. Defaults to the primary owner.
      *
 	 * @param owner the owner of working copies that take precedence over underlying
-	 *   compilation units, or <code>null</code> if the primary owner should be used
+	 *   javaScript units, or <code>null</code> if the primary owner should be used
      */
 	public void setWorkingCopyOwner(WorkingCopyOwner owner) {
 	    if (owner == null) {
@@ -580,22 +574,21 @@ public class ASTParser {
 	}
 
 	/**
-     * Sets the name of the compilation unit that would hypothetically contains
+     * Sets the name of the javaScript unit that would hypothetically contains
      * the source string. This is used in conjunction with {@link #setSource(char[])}
-     * and {@link #setProject(IJavaScriptProject) } to locate the compilation unit relative to a Java project.
+     * and {@link #setProject(IJavaScriptProject) } to locate the javaScript unit relative to a JavaScript project.
      * Defaults to none (<code>null</code>).
 	 * <p>
-	 * The name of the compilation unit must be supplied for resolving bindings.
+	 * The name of the javaScript unit must be supplied for resolving bindings.
 	 * This name should be suffixed by a dot ('.') followed by one of the
-	 * {@link JavaScriptCore#getJavaScriptLikeExtensions() Java-like extensions}
-	 * and match the name of the main (public) class or interface declared in the source.</p>
+	 * {@link JavaScriptCore#getJavaScriptLikeExtensions() JavaScript-like extensions}.
 	 *
 	 * <p>This name must represent the full path of the unit inside the given project. For example, if the source
-	 * declares a public class named "Foo" in a project "P", the name of the compilation unit must be
+	 * declares a public class named "Foo" in a project "P", the name of the javaScript unit must be
 	 * "/P/Foo.js". If the source declares a public class name "Bar" in a package "p1.p2" in a project "P",
-	 * the name of the compilation unit must be "/P/p1/p2/Bar.js".</p>
+	 * the name of the javaScript unit must be "/P/p1/p2/Bar.js".</p>
      *
-	 * @param unitName the name of the compilation unit that would contain the source
+	 * @param unitName the name of the javaScript unit that would contain the source
 	 *    string, or <code>null</code> if none
      */
 	public void setUnitName(String unitName) {
@@ -603,7 +596,7 @@ public class ASTParser {
 	}
 
 	/**
-	 * Sets the Java project used when resolving bindings.
+	 * Sets the JavaScript project used when resolving bindings.
 	 * This method automatically sets the compiler
 	 * options based on the given project:
 	 * <pre>
@@ -618,7 +611,7 @@ public class ASTParser {
 	 * through the classpath of the given project.
 	 * Defaults to none (<code>null</code>).
 	 *
-	 * @param project the Java project used to resolve names, or
+	 * @param project the JavaScript project used to resolve names, or
 	 *    <code>null</code> if none
 	 */
 	public void setProject(IJavaScriptProject project) {
@@ -662,27 +655,27 @@ public class ASTParser {
 	}
 
 	/**
-     * Creates ASTs for a batch of compilation units.
+     * Creates ASTs for a batch of javaScript units.
      * When bindings are being resolved, processing a
-     * batch of compilation units is more efficient because much
+     * batch of javaScript units is more efficient because much
      * of the work involved in resolving bindings can be shared.
      * <p>
-     * When bindings are being resolved, all compilation units must
-     * come from the same Java project, which must be set beforehand
+     * When bindings are being resolved, all javaScript units must
+     * come from the same JavaScript project, which must be set beforehand
      * with <code>setProject</code>.
-     * The compilation units are processed one at a time in no
-     * specified order. For each of the compilation units in turn,
+     * The javaScript units are processed one at a time in no
+     * specified order. For each of the javaScript units in turn,
 	 * <ul>
 	 * <li><code>ASTParser.createAST</code> is called to parse it
 	 * and create a corresponding AST. The calls to
 	 * <code>ASTParser.createAST</code> all employ the same settings.</li>
 	 * <li><code>ASTRequestor.acceptAST</code> is called passing
-	 * the compilation unit and the corresponding AST to
+	 * the javaScript unit and the corresponding AST to
 	 * <code>requestor</code>.
 	 * </li>
 	 * </ul>
-     * Note only ASTs from the given compilation units are reported
-     * to the requestor. If additional compilation units are required to
+     * Note only ASTs from the given javaScript units are reported
+     * to the requestor. If additional javaScript units are required to
      * resolve the original ones, the corresponding ASTs are <b>not</b>
      * reported to the requestor.
      * </p>
@@ -702,9 +695,9 @@ public class ASTParser {
      * units being processed. When bindings are being resolved,
      * the keys and corresponding bindings (or <code>null</code> if none) are
      * passed to <code>ASTRequestor.acceptBinding</code>. Note that binding keys
-     * for elements outside the set of compilation units being processed are looked up
+     * for elements outside the set of javaScript units being processed are looked up
      * after all <code>ASTRequestor.acceptAST</code> callbacks have been made.
-     * Binding keys for elements inside the set of compilation units being processed
+     * Binding keys for elements inside the set of javaScript units being processed
      * are looked up and reported right after the corresponding
      * <code>ASTRequestor.acceptAST</code> callback has been made.
      * No <code>ASTRequestor.acceptBinding</code> callbacks are made unless
@@ -715,14 +708,13 @@ public class ASTParser {
      * default values so the object is ready to be reused.
      * </p>
      *
-     * @param compilationUnits the compilation units to create ASTs for
+     * @param compilationUnits the javaScript units to create ASTs for
      * @param bindingKeys the binding keys to create bindings for
      * @param requestor the AST requestor that collects abtract syntax trees and bindings
 	 * @param monitor the progress monitor used to report progress and request cancelation,
 	 *   or <code>null</code> if none
 	 * @exception IllegalStateException if the settings provided
 	 * are insufficient, contradictory, or otherwise unsupported
-	 * @since 3.1
      */
 	public void createASTs(IJavaScriptUnit[] compilationUnits, String[] bindingKeys, ASTRequestor requestor, IProgressMonitor monitor) {
 		try {
@@ -743,11 +735,11 @@ public class ASTParser {
 	}
 
 	/**
-     * Creates bindings for a batch of Java elements. These elements are either
+     * Creates bindings for a batch of JavaScript elements. These elements are either
      * enclosed in {@link IJavaScriptUnit}s or in {@link IClassFile}s.
      * <p>
-     * All enclosing compilation units and class files must
-     * come from the same Java project, which must be set beforehand
+     * All enclosing javaScript units must
+     * come from the same JavaScript project, which must be set beforehand
      * with <code>setProject</code>.
      * </p>
      * <p>
@@ -756,7 +748,7 @@ public class ASTParser {
      * </p>
      * <p>
      * The returned array has the same size as the given elements array. At a given position
-     * it contains the binding of the corresponding Java element, or <code>null</code>
+     * it contains the binding of the corresponding JavaScript element, or <code>null</code>
      * if no binding could be created.
      * </p>
 	 * <p>
@@ -774,12 +766,11 @@ public class ASTParser {
      * default values so the object is ready to be reused.
      * </p>
      *
-     * @param elements the Java elements to create bindings for
-     * @return the bindings for the given Java elements, possibly containing <code>null</code>s
+     * @param elements the JavaScript elements to create bindings for
+     * @return the bindings for the given JavaScript elements, possibly containing <code>null</code>s
      *              if some bindings could not be created
 	 * @exception IllegalStateException if the settings provided
 	 * are insufficient, contradictory, or otherwise unsupported
-	 * @since 3.1
      */
 	public IBinding[] createBindings(IJavaScriptElement[] elements, IProgressMonitor monitor) {
 		try {
@@ -837,7 +828,7 @@ public class ASTParser {
 //							BinaryType type = (BinaryType) this.typeRoot.findPrimaryType();
 							char[] fileName =this.typeRoot.getElementName().toCharArray();
 //							IBinaryType binaryType = (IBinaryType) type.getElementInfo();
-//							// file name is used to recreate the Java element, so it has to be the toplevel .class file name
+//							// file name is used to recreate the JavaScript element, so it has to be the toplevel .class file name
 //							char[] fileName = type.getElementName().toCharArray();
 //							int firstDollar = CharOperation.indexOf('$', fileName);
 //							if (firstDollar != -1) {
@@ -850,7 +841,7 @@ public class ASTParser {
 //							}
 							sourceUnit = new BasicCompilationUnit(sourceString.toCharArray(), Util.toCharArrays(packageFragment.names), new String(fileName), this.project);
 						} catch(JavaScriptModelException e) {
-							// an error occured accessing the java element
+							// an error occured accessing the javaScript element
 							throw new IllegalStateException();
 						}
 					} else if (this.rawSource != null) {
