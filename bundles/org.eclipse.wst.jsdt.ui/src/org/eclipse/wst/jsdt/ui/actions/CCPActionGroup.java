@@ -55,6 +55,8 @@ public class CCPActionGroup extends ActionGroup {
 	private SelectionDispatchAction fPasteAction;
 	private SelectionDispatchAction fCutAction;
 	
+	private boolean showLimited;
+	
 	/**
 	 * Creates a new <code>CCPActionGroup</code>. The group requires that
 	 * the selection provided by the view part's selection provider is of type
@@ -149,6 +151,8 @@ public class CCPActionGroup extends ActionGroup {
 			SelectionDispatchAction action= fActions[i];
 			if (action == fCutAction && !fCutAction.isEnabled())
 				continue;
+			if (action!=fPasteAction && this.showLimited)
+				continue;
 			menu.appendToGroup(ICommonMenuConstants.GROUP_EDIT, action);
 		}		
 	}		
@@ -164,5 +168,9 @@ public class CCPActionGroup extends ActionGroup {
 		}
 		deregisterActionsAsSelectionChangeListeners();
 	}
+	public void setShowLimited(boolean showLimited) {
+		this.showLimited = showLimited;
+	}
+
 
 }

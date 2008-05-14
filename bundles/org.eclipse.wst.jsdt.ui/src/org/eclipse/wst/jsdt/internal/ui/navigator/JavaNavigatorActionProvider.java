@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui.navigator;
 
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.actions.ActionContext;
@@ -60,7 +61,11 @@ public class JavaNavigatorActionProvider extends CommonActionProvider {
 
 	public void fillContextMenu(IMenuManager menu) {
 		if (fInViewPart) {
+			 ISelection selection = (this.getContext()!=null) ? this.getContext().getSelection() : null;
+			 boolean isEmpty = (selection!=null)? selection.isEmpty() : false;
+			 fOpenViewGroup.containsShowInMenu(!isEmpty);
 			fOpenViewGroup.fillContextMenu(menu);
+			fCCPGroup.setShowLimited(isEmpty);
 			fCCPGroup.fillContextMenu(menu);
 		//	fBuildPathGroup.fillContextMenu(menu);
 			fGenerateGroup.fillContextMenu(menu);
