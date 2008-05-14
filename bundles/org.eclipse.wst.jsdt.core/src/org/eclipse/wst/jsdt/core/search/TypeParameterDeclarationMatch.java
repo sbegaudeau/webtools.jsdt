@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
- * A Java search match that represents a type parameter declaration or reference.
+ * A JavaScript search match that represents a type parameter declaration or reference.
  * The element is an {@link org.eclipse.wst.jsdt.core.ITypeParameter}.
  * <p>
  * This class is intended to be instantiated and subclassed by clients.

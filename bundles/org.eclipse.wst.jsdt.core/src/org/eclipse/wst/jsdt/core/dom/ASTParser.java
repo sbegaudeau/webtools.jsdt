@@ -63,7 +63,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * and {@linkplain #setProject(IJavaScriptProject) JavaScript project}
  * for locating a raw source string in the JavaScript model (when
  * resolving bindings)</li>
- * <li>Which {@linkplain #setCompilerOptions(Map) compiler options}
+ * <li>Which {@linkplain #setCompilerOptions(Map) validator options}
  * to use.</li>
  * <li>Whether to parse just {@linkplain #setKind(int) an expression, statements,
  * or body declarations} rather than an entire javaScript unit.</li>
@@ -236,8 +236,8 @@ public class ASTParser {
 	}
 
     /**
-     * Requests that the compiler should perform bindings recovery.
-     * When bindings recovery is enabled the compiler returns incomplete bindings.
+     * Requests that the validator should perform bindings recovery.
+     * When bindings recovery is enabled the validator returns incomplete bindings.
      * <p>
      * Default to <code>false</code>.
      * </p>
@@ -248,24 +248,23 @@ public class ASTParser {
      *   and <code>false</code> if only complete bindings are expected.
      *
      * @see IBinding#isRecovered()
-     * @since 3.3
      */
     public void setBindingsRecovery(boolean enabled) {
         this.bindingsRecovery = enabled;
     }
 
 	/**
-	 * Sets the compiler options to be used when parsing.
+	 * Sets the validator options to be used when parsing.
 	 * <p>
 	 * Note that {@link #setSource(IClassFile)},
 	 * {@link #setSource(IJavaScriptUnit)},
-	 * and {@link #setProject(IJavaScriptProject)} reset the compiler options
-	 * based on the JavaScript project. In other cases, compiler options default
+	 * and {@link #setProject(IJavaScriptProject)} reset the validator options
+	 * based on the JavaScript project. In other cases, validator options default
 	 * to {@link JavaScriptCore#getOptions()}. In either case, and especially
 	 * in the latter, the caller should carefully weight the consequences of
-	 * allowing compiler options to be defaulted as opposed to being
+	 * allowing validator options to be defaulted as opposed to being
 	 * explicitly specified for the <code>ASTParser</code> instance.
-	 * For instance, there is a compiler option called "Source Compatibility Mode"
+	 * For instance, there is a validator option called "Source Compatibility Mode"
 	 * which determines which JDK level the source code is expected to meet.
 	 * If you specify "1.4", then "assert" is treated as a keyword and disallowed
 	 * as an identifier; if you specify "1.3", then "assert" is allowed as an
@@ -291,7 +290,7 @@ public class ASTParser {
 	}
 
 	/**
-	 * Requests that the compiler should provide binding information for
+	 * Requests that the validator should provide binding information for
      * the AST nodes it creates.
      * <p>
      * Default to <code>false</code> (no bindings).
@@ -332,7 +331,7 @@ public class ASTParser {
      * When source is supplied by {@link #setSource(char[]) setSource(char[])},
      * the location must be extablished explicitly by calling
      * {@link #setProject(IJavaScriptProject)} and  {@link #setUnitName(String)}.
-	 * Note that the compiler options that affect doc comment checking may also
+	 * Note that the validator options that affect doc comment checking may also
 	 * affect whether any bindings are resolved for nodes within doc comments.
 	 * </p>
 	 *
@@ -428,7 +427,7 @@ public class ASTParser {
 	 * In more severe failure cases where the parser is unable to
 	 * recognize the input, this method returns
 	 * a {@link JavaScriptUnit JavaScriptUnit} node with at least the
-	 * compiler messages.
+	 * validator messages.
 	 * </p>
 	 * <p>Each node in the subtree (other than the contrived nodes)
 	 * carries source range(s) information relating back
@@ -543,8 +542,8 @@ public class ASTParser {
 	}
 
 	/**
-	 * Requests that the compiler should perform statements recovery.
-	 * When statements recovery is enabled the compiler tries to create statement nodes
+	 * Requests that the validator should perform statements recovery.
+	 * When statements recovery is enabled the validator tries to create statement nodes
 	 * from code containing syntax errors
      * <p>
      * Default to <code>false</code>.
@@ -604,11 +603,11 @@ public class ASTParser {
 	 * </pre>
 	 * See {@link #setCompilerOptions(Map)} for a discussion of
 	 * the pros and cons of using these options vs specifying
-	 * compiler options explicitly.
+	 * validator options explicitly.
 	 * This setting is used in conjunction with <code>setSource(char[])</code>.
 	 * For the purposes of resolving bindings, types declared in the
 	 * source string will hide types by the same name available
-	 * through the classpath of the given project.
+	 * through the includepath of the given project.
 	 * Defaults to none (<code>null</code>).
 	 *
 	 * @param project the JavaScript project used to resolve names, or
@@ -950,7 +949,7 @@ public class ASTParser {
 	 * In more severe failure cases where the parser is unable to
 	 * recognize the input, this method returns
 	 * a {@link JavaScriptUnit JavaScriptUnit} node with at least the
-	 * compiler messages.
+	 * validator messages.
 	 * </p>
 	 * <p>Each node in the subtree (other than the contrived nodes)
 	 * carries source range(s) information relating back

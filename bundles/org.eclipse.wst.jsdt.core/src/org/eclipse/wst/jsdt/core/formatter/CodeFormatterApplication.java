@@ -185,7 +185,7 @@ public class CodeFormatterApplication implements IApplication {
 	}
 
 	/**
-	 * Recursively format the Java source code that is contained in the
+	 * Recursively format the JavaScript source code that is contained in the
 	 * directory rooted at dir.
 	 */
 	private void formatDirTree(File dir, CodeFormatter codeFormatter) {
@@ -205,7 +205,7 @@ public class CodeFormatterApplication implements IApplication {
 	}
 
 	/**
-	 * Format the given Java source file.
+	 * Format the given JavaScript source file.
 	 */
 	private void formatFile(File file, CodeFormatter codeFormatter) {
 		IDocument doc = new Document();
@@ -337,7 +337,7 @@ public class CodeFormatterApplication implements IApplication {
 	}
 
 	/**
-	 * Return a Java Properties file representing the options that are in the
+	 * Return a JavaScript Properties file representing the options that are in the
 	 * specified config file.
 	 */
 	private Properties readConfig(String filename) {
@@ -362,7 +362,7 @@ public class CodeFormatterApplication implements IApplication {
 	}
 
 	/**
-	 * Runs the Java code formatter application
+	 * Runs the JavaScript code formatter application
 	 */
 	public Object start(IApplicationContext context) throws Exception {
 		File[] filesToFormat = processCommandLine((String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS));

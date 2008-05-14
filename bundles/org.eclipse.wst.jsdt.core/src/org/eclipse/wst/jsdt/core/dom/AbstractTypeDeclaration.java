@@ -48,7 +48,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 	 * of this node.
 	 *
 	 * @return the property descriptor
-	 * @since 3.1
 	 */
 	public final ChildListPropertyDescriptor getBodyDeclarationsProperty() {
 		return internalBodyDeclarationsProperty();
@@ -165,11 +164,11 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 	 * a top-level type).
 	 * <p>
 	 * Note that this is a convenience method that simply checks whether
-	 * this node's parent is a compilation unit node.
+	 * this node's parent is a javaScript unit node.
 	 * </p>
 	 *
 	 * @return <code>true</code> if this type declaration is a child of
-	 *   a compilation unit node, and <code>false</code> otherwise
+	 *   a javaScript unit node, and <code>false</code> otherwise
 	 */
 	public boolean isPackageMemberTypeDeclaration() {
 		ASTNode parent = getParent();
@@ -233,7 +232,7 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 	 */
 	abstract ITypeBinding internalResolveBinding();
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {

@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.internal.core.search.TypeNameMatchRequestorWrapper;
 import org.eclipse.wst.jsdt.internal.core.search.TypeNameRequestorWrapper;
 
 /**
- * A {@link SearchEngine} searches for Java elements following a search pattern.
+ * A {@link SearchEngine} searches for JavaScript elements following a search pattern.
  * The search can be limited to a search scope.
  * <p>
  * Various search patterns can be created using the factory methods
@@ -55,15 +55,15 @@ public class SearchEngine {
 
 	/**
 	 * Creates a new search engine with a list of working copies that will take precedence over
-	 * their original compilation units in the subsequent search operations.
+	 * their original javascript unit s in the subsequent search operations.
 	 * <p>
 	 * Note that passing an empty working copy will be as if the original compilation
 	 * unit had been deleted.</p>
 	 * <p>
 	 * Since 3.0 the given working copies take precedence over primary working copies (if any).
 	 *
-	 * @param workingCopies the working copies that take precedence over their original compilation units
-	 * @since 3.0
+	 * @param workingCopies the working copies that take precedence over their original javascript unit s
+	 *  
 	 */
 	public SearchEngine(IJavaScriptUnit[] workingCopies) {
 		this.basicEngine = new BasicSearchEngine(workingCopies);
@@ -71,18 +71,18 @@ public class SearchEngine {
 	/**
 	 * Creates a new search engine with the given working copy owner.
 	 * The working copies owned by this owner will take precedence over
-	 * the primary compilation units in the subsequent search operations.
+	 * the primary javascript unit s in the subsequent search operations.
 	 *
-	 * @param workingCopyOwner the owner of the working copies that take precedence over their original compilation units
-	 * @since 3.0
+	 * @param workingCopyOwner the owner of the working copies that take precedence over their original javascript unit s
+	 *  
 	 */
 	public SearchEngine(WorkingCopyOwner workingCopyOwner) {
 		this.basicEngine = new BasicSearchEngine(workingCopyOwner);
 	}
 
 	/**
-	 * Returns a Java search scope limited to the hierarchy of the given type.
-	 * The Java elements resulting from a search with this scope will
+	 * Returns a JavaScript search scope limited to the hierarchy of the given type.
+	 * The JavaScript elements resulting from a search with this scope will
 	 * be types in this hierarchy, or members of the types in this hierarchy.
 	 *
 	 * @param type the focus of the hierarchy scope
@@ -94,25 +94,25 @@ public class SearchEngine {
 	}
 
 	/**
-	 * Returns a Java search scope limited to the hierarchy of the given type.
+	 * Returns a JavaScript search scope limited to the hierarchy of the given type.
 	 * When the hierarchy is computed, the types defined in the working copies owned
-	 * by the given owner take precedence over the original compilation units.
-	 * The Java elements resulting from a search with this scope will
+	 * by the given owner take precedence over the original javascript unit s.
+	 * The JavaScript elements resulting from a search with this scope will
 	 * be types in this hierarchy, or members of the types in this hierarchy.
 	 *
 	 * @param type the focus of the hierarchy scope
-	 * @param owner the owner of working copies that take precedence over original compilation units
+	 * @param owner the owner of working copies that take precedence over original javascript unit s
 	 * @return a new hierarchy scope
 	 * @exception JavaScriptModelException if the hierarchy could not be computed on the given type
-	 * @since 3.0
+	 *  
 	 */
 	public static IJavaScriptSearchScope createHierarchyScope(IType type, WorkingCopyOwner owner) throws JavaScriptModelException {
 		return BasicSearchEngine.createHierarchyScope(type, owner);
 	}
 
 	/**
-	 * Returns a Java search scope limited to the given Java elements.
-	 * The Java elements resulting from a search with this scope will
+	 * Returns a JavaScript search scope limited to the given JavaScript elements.
+	 * The JavaScript elements resulting from a search with this scope will
 	 * be children of the given elements.
 	 * <p>
 	 * If an element is an IJavaScriptProject, then the project's source folders,
@@ -120,23 +120,23 @@ public class SearchEngine {
 	 * folders and jars, recursively) will be included.
 	 * If an element is an IPackageFragmentRoot, then only the package fragments of
 	 * this package fragment root will be included.
-	 * If an element is an IPackageFragment, then only the compilation unit and class
+	 * If an element is an IPackageFragment, then only the javascript unit  and class
 	 * files of this package fragment will be included. Subpackages will NOT be
 	 * included.</p>
 	 * <p>
 	 * In other words, this is equivalent to using SearchEngine.createJavaSearchScope(elements, true).</p>
 	 *
-	 * @param elements the Java elements the scope is limited to
-	 * @return a new Java search scope
-	 * @since 2.0
+	 * @param elements the JavaScript elements the scope is limited to
+	 * @return a new JavaScript search scope
+	 *  
 	 */
 	public static IJavaScriptSearchScope createJavaSearchScope(IJavaScriptElement[] elements) {
 		return BasicSearchEngine.createJavaSearchScope(elements);
 	}
 
 	/**
-	 * Returns a Java search scope limited to the given Java elements.
-	 * The Java elements resulting from a search with this scope will
+	 * Returns a JavaScript search scope limited to the given JavaScript elements.
+	 * The JavaScript elements resulting from a search with this scope will
 	 * be children of the given elements.
 	 *
 	 * If an element is an IJavaScriptProject, then the project's source folders,
@@ -144,30 +144,30 @@ public class SearchEngine {
 	 * (with their source folders and jars, recursively) will be included.
 	 * If an element is an IPackageFragmentRoot, then only the package fragments of
 	 * this package fragment root will be included.
-	 * If an element is an IPackageFragment, then only the compilation unit and class
+	 * If an element is an IPackageFragment, then only the javascript unit  and class
 	 * files of this package fragment will be included. Subpackages will NOT be
 	 * included.
 	 *
-	 * @param elements the Java elements the scope is limited to
+	 * @param elements the JavaScript elements the scope is limited to
 	 * @param includeReferencedProjects a flag indicating if referenced projects must be
 	 * 									 recursively included
-	 * @return a new Java search scope
-	 * @since 2.0
+	 * @return a new JavaScript search scope
+	 *  
 	 */
 	public static IJavaScriptSearchScope createJavaSearchScope(IJavaScriptElement[] elements, boolean includeReferencedProjects) {
 		return BasicSearchEngine.createJavaSearchScope(elements, includeReferencedProjects);
 	}
 
 	/**
-	 * Returns a Java search scope limited to the given Java elements.
-	 * The Java elements resulting from a search with this scope will
+	 * Returns a JavaScript search scope limited to the given JavaScript elements.
+	 * The JavaScript elements resulting from a search with this scope will
 	 * be children of the given elements.
 	 *
 	 * If an element is an IJavaScriptProject, then it includes:
 	 * - its source folders if IJavaScriptSearchScope.SOURCES is specified,
-	 * - its application libraries (internal and external jars, class folders that are on the raw classpath,
-	 *   or the ones that are coming from a classpath path variable,
-	 *   or the ones that are coming from a classpath container with the K_APPLICATION kind)
+	 * - its application libraries (internal and external jars, class folders that are on the raw includepath,
+	 *   or the ones that are coming from a includepath path variable,
+	 *   or the ones that are coming from a includepath container with the K_APPLICATION kind)
 	 *   if IJavaScriptSearchScope.APPLICATION_LIBRARIES is specified
 	 * - its system libraries (internal and external jars, class folders that are coming from an
 	 *   IJsGlobalScopeContainer with the K_SYSTEM kind)
@@ -176,18 +176,18 @@ public class SearchEngine {
 	 *   if IJavaScriptSearchScope.REFERENCED_PROJECTS is specified.
 	 * If an element is an IPackageFragmentRoot, then only the package fragments of
 	 * this package fragment root will be included.
-	 * If an element is an IPackageFragment, then only the compilation unit and class
+	 * If an element is an IPackageFragment, then only the javascript unit  and class
 	 * files of this package fragment will be included. Subpackages will NOT be
 	 * included.
 	 *
-	 * @param elements the Java elements the scope is limited to
+	 * @param elements the JavaScript elements the scope is limited to
 	 * @param includeMask the bit-wise OR of all include types of interest
-	 * @return a new Java search scope
+	 * @return a new JavaScript search scope
 	 * @see IJavaScriptSearchScope#SOURCES
 	 * @see IJavaScriptSearchScope#APPLICATION_LIBRARIES
 	 * @see IJavaScriptSearchScope#SYSTEM_LIBRARIES
 	 * @see IJavaScriptSearchScope#REFERENCED_PROJECTS
-	 * @since 3.0
+	 *  
 	 */
 	public static IJavaScriptSearchScope createJavaSearchScope(IJavaScriptElement[] elements, int includeMask) {
 		return BasicSearchEngine.createJavaSearchScope(elements, includeMask);
@@ -196,17 +196,17 @@ public class SearchEngine {
 	/**
 	 * Create a type name match on a given type with specific modifiers.
 	 *
-	 * @param type The java model handle of the type
+	 * @param type The javascript model handle of the type
 	 * @param modifiers Modifiers of the type
 	 * @return A non-null match on the given type.
-	 * @since 3.3
+	 *  
 	 */
 	public static TypeNameMatch createTypeNameMatch(IType type, int modifiers) {
 		return BasicSearchEngine.createTypeNameMatch(type, modifiers);
 	}
 
 	/**
-	 * Returns a Java search scope with the workspace as the only limit.
+	 * Returns a JavaScript search scope with the workspace as the only limit.
 	 *
 	 * @return a new workspace scope
 	 */
@@ -214,10 +214,10 @@ public class SearchEngine {
 		return BasicSearchEngine.createWorkspaceScope();
 	}
 	/**
-	 * Returns a new default Java search participant.
+	 * Returns a new default JavaScript search participant.
 	 *
-	 * @return a new default Java search participant
-	 * @since 3.0
+	 * @return a new default JavaScript search participant
+	 *  
 	 */
 	public static SearchParticipant getDefaultSearchParticipant() {
 		return BasicSearchEngine.getDefaultSearchParticipant();
@@ -225,7 +225,7 @@ public class SearchEngine {
 
 	/**
 	 * Searches for matches of a given search pattern. Search patterns can be created using helper
-	 * methods (from a String pattern or a Java element) and encapsulate the description of what is
+	 * methods (from a String pattern or a JavaScript element) and encapsulate the description of what is
 	 * being searched (for example, search method declarations in a case sensitive way).
 	 *
 	 * @param pattern the pattern to search
@@ -235,9 +235,9 @@ public class SearchEngine {
 	 * @param monitor the progress monitor used to report progress
 	 * @exception CoreException if the search failed. Reasons include:
 	 *	<ul>
-	 *		<li>the classpath is incorrectly set</li>
+	 *		<li>the includepath is incorrectly set</li>
 	 *	</ul>
-	 *@since 3.0
+	 * 
 	 */
 	public void search(SearchPattern pattern, SearchParticipant[] participants, IJavaScriptSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException {
 		this.basicEngine.search(pattern, participants, scope, requestor, monitor);
@@ -303,9 +303,9 @@ public class SearchEngine {
 	 *							monitor is provided
 	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
-	 *		<li>the classpath is incorrectly set</li>
+	 *		<li>the includepath is incorrectly set</li>
 	 *	</ul>
-	 * @since 3.3
+	 *  
 	 */
 	public void searchAllTypeNames(
 		final char[] packageName,
@@ -387,9 +387,9 @@ public class SearchEngine {
 	 *							monitor is provided
 	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
-	 *		<li>the classpath is incorrectly set</li>
+	 *		<li>the includepath is incorrectly set</li>
 	 *	</ul>
-	 * @since 3.3
+	 *  
 	 */
 	public void searchAllTypeNames(
 		final char[] packageName,
@@ -428,9 +428,9 @@ public class SearchEngine {
 	 *							monitor is provided
 	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
-	 *		<li>the classpath is incorrectly set</li>
+	 *		<li>the includepath is incorrectly set</li>
 	 *	</ul>
-	 * @since 3.1
+	 *  
 	 */
 	public void searchAllTypeNames(
 		final char[][] qualifications,
@@ -479,9 +479,9 @@ public class SearchEngine {
 	 *							monitor is provided
 	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
-	 *		<li>the classpath is incorrectly set</li>
+	 *		<li>the includepath is incorrectly set</li>
 	 *	</ul>
-	 * @since 3.3
+	 *  
 	 */
 	public void searchAllTypeNames(
 		final char[][] qualifications,
@@ -505,7 +505,7 @@ public class SearchEngine {
 
 	/**
 	 * Searches for all declarations of the fields accessed in the given element.
-	 * The element can be a compilation unit, a source type, or a source method.
+	 * The element can be a javascript unit , a source type, or a source method.
 	 * Reports the field declarations using the given requestor.
 	 * <p>
 	 * Consider the following code:
@@ -530,15 +530,15 @@ public class SearchEngine {
 	 * <code>B.value</code> and <code>A.field1</code>.
 	 * </p>
 	 *
-	 * @param enclosingElement the method, type, or compilation unit to be searched in
+	 * @param enclosingElement the method, type, or javascript unit  to be searched in
 	 * @param requestor a callback object to which each match is reported
 	 * @param monitor the progress monitor used to report progress
 	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the element doesn't exist</li>
-	 *		<li>the classpath is incorrectly set</li>
+	 *		<li>the includepath is incorrectly set</li>
 	 *	</ul>
-	 * @since 3.0
+	 *  
 	 */
 	public void searchDeclarationsOfAccessedFields(IJavaScriptElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaScriptModelException {
 		this.basicEngine.searchDeclarationsOfAccessedFields(enclosingElement, requestor, monitor);
@@ -546,7 +546,7 @@ public class SearchEngine {
 
 	/**
 	 * Searches for all declarations of the types referenced in the given element.
-	 * The element can be a compilation unit, a source type, or a source method.
+	 * The element can be a javascript unit , a source type, or a source method.
 	 * Reports the type declarations using the given requestor.
 	 * <p>
 	 * Consider the following code:
@@ -571,15 +571,15 @@ public class SearchEngine {
 	 * would collect the class <code>B</code> and the interface <code>I</code>.
 	 * </p>
 	 *
-	 * @param enclosingElement the method, type, or compilation unit to be searched in
+	 * @param enclosingElement the method, type, or javascript unit  to be searched in
 	 * @param requestor a callback object to which each match is reported
 	 * @param monitor the progress monitor used to report progress
 	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the element doesn't exist</li>
-	 *		<li>the classpath is incorrectly set</li>
+	 *		<li>the includepath is incorrectly set</li>
 	 *	</ul>
-	 * @since 3.0
+	 *  
 	 */
 	public void searchDeclarationsOfReferencedTypes(IJavaScriptElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaScriptModelException {
 		this.basicEngine.searchDeclarationsOfReferencedTypes(enclosingElement, requestor, monitor);
@@ -587,7 +587,7 @@ public class SearchEngine {
 
 	/**
 	 * Searches for all declarations of the methods invoked in the given element.
-	 * The element can be a compilation unit, a source type, or a source method.
+	 * The element can be a javascript unit , a source type, or a source method.
 	 * Reports the method declarations using the given requestor.
 	 * <p>
 	 * Consider the following code:
@@ -615,15 +615,15 @@ public class SearchEngine {
 	 * <code>A.foo()</code>, <code>B.foo()</code>, and <code>A.bar()</code>.
 	 * </p>
 	 *
-	 * @param enclosingElement the method, type, or compilation unit to be searched in
+	 * @param enclosingElement the method, type, or javascript unit  to be searched in
 	 * @param requestor a callback object to which each match is reported
 	 * @param monitor the progress monitor used to report progress
 	 * @exception JavaScriptModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the element doesn't exist</li>
-	 *		<li>the classpath is incorrectly set</li>
+	 *		<li>the includepath is incorrectly set</li>
 	 *	</ul>
-	 * @since 3.0
+	 *  
 	 */
 	public void searchDeclarationsOfSentMessages(IJavaScriptElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaScriptModelException {
 		this.basicEngine.searchDeclarationsOfSentMessages(enclosingElement, requestor, monitor);

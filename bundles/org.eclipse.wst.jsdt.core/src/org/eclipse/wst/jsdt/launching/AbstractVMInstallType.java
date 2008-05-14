@@ -156,7 +156,7 @@ public abstract class AbstractVMInstallType implements IVMInstallType, IExecutab
 	}
 
 	/**
-	 * Returns a URL for the default javadoc location of a VM installed at the
+	 * Returns a URL for the default jsdoc location of a VM installed at the
 	 * given home location, or <code>null</code> if none. The default
 	 * implementation returns <code>null</code>, subclasses must override as
 	 * appropriate.
@@ -168,8 +168,8 @@ public abstract class AbstractVMInstallType implements IVMInstallType, IExecutab
 	 * </p>
 	 * 
 	 * @param installLocation home location
-	 * @return default javadoc location or <code>null</code>
-	 * @since 2.1
+	 * @return default jsdoc location or <code>null</code>
+	 *  
 	 */
 	public URL getDefaultJavadocLocation(File installLocation) {
 		return null;		

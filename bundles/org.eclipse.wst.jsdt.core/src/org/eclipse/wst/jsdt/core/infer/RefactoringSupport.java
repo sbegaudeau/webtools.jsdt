@@ -31,6 +31,13 @@ public class RefactoringSupport {
 	{
 		return null;
 	}
+
+	/**
+	 * Determines if the inferred classes can safely be renamed.
+	 * 
+	 * @return true if the inferred class can safely be renamed
+	 * 
+	 */
 	
 	public boolean supportsClassRename()
 	{

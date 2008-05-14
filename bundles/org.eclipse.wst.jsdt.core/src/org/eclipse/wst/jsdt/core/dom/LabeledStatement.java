@@ -31,14 +31,14 @@ public class LabeledStatement extends Statement {
 
 	/**
 	 * The "label" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor LABEL_PROPERTY =
 		new ChildPropertyDescriptor(LabeledStatement.class, "label", SimpleName.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "body" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor BODY_PROPERTY =
 		new ChildPropertyDescriptor(LabeledStatement.class, "body", Statement.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
@@ -67,7 +67,7 @@ public class LabeledStatement extends Statement {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
@@ -75,7 +75,7 @@ public class LabeledStatement extends Statement {
 
 	/**
 	 * The label; lazily initialized; defaults to a unspecified,
-	 * legal Java identifier.
+	 * legal JavaScript identifier.
 	 */
 	private SimpleName labelName = null;
 
@@ -232,7 +232,7 @@ public class LabeledStatement extends Statement {
 	/**
 	 * Sets the body of this labeled statement.
 	 * <p>
-	 * Special note: The Java language does not allow a local variable declaration
+	 * Special note: The JavaScript language does not allow a local variable declaration
 	 * to appear as the body of a labeled statement (they may only appear within a
 	 * block). However, the AST will allow a <code>VariableDeclarationStatement</code>
 	 * as the body of a <code>LabeledStatement</code>. To get something that will

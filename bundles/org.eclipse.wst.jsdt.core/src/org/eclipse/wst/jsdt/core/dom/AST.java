@@ -229,7 +229,7 @@ public final class AST {
  	 * @param level the API level; one of the LEVEL constants
 	 * @param compilationUnitDeclaration an internal AST node for a javaScript unit declaration
 	 * @param source the string of the JavaScript javaScript unit
-	 * @param options compiler options
+	 * @param options validator options
 	 * @param workingCopy the working copy that the AST is created from
 	 * @param monitor the progress monitor used to report progress and request cancelation,
 	 *     or <code>null</code> if none
@@ -952,7 +952,7 @@ public final class AST {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * This method is a copy of setName(String[]) that doesn't do any validation.
 	 */
 	Name internalNewName(String[] identifiers) {

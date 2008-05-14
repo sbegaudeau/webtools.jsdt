@@ -33,14 +33,12 @@ public class AssertStatement extends Statement {
 
 	/**
 	 * The "expression" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor EXPRESSION_PROPERTY =
 		new ChildPropertyDescriptor(AssertStatement.class, "expression", Expression.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "message" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor MESSAGE_PROPERTY =
 		new ChildPropertyDescriptor(AssertStatement.class, "message", Expression.class, OPTIONAL, CYCLE_RISK); //$NON-NLS-1$
@@ -69,7 +67,6 @@ public class AssertStatement extends Statement {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;

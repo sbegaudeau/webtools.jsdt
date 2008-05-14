@@ -24,12 +24,12 @@ import java.util.List;
  * 		ClassDeclaration
  * 		InterfaceDeclaration
  * ClassDeclaration:
- *      [ Javadoc ] { Modifier } <b>class</b> Identifier
+ *      [ jsdoc ] { Modifier } <b>class</b> Identifier
  *			[ <b>extends</b> Type]
  *			[ <b>implements</b> Type { <b>,</b> Type } ]
  *			<b>{</b> { ClassBodyDeclaration | <b>;</b> } <b>}</b>
  * InterfaceDeclaration:
- *      [ Javadoc ] { Modifier } <b>interface</b> Identifier
+ *      [ jsdoc ] { Modifier } <b>interface</b> Identifier
  *			[ <b>extends</b> Type { <b>,</b> Type } ]
  * 			<b>{</b> { InterfaceBodyDeclaration | <b>;</b> } <b>}</b>
  * </pre>
@@ -42,27 +42,29 @@ import java.util.List;
  * 		ClassDeclaration
  * 		InterfaceDeclaration
  * ClassDeclaration:
- *      [ Javadoc ] { ExtendedModifier } <b>class</b> Identifier
+ *      [ jsdoc ] { ExtendedModifier } <b>class</b> Identifier
  *			[ <b>&lt;</b> TypeParameter { <b>,</b> TypeParameter } <b>&gt;</b> ]
  *			[ <b>extends</b> Type ]
  *			[ <b>implements</b> Type { <b>,</b> Type } ]
  *			<b>{</b> { ClassBodyDeclaration | <b>;</b> } <b>}</b>
  * InterfaceDeclaration:
- *      [ Javadoc ] { ExtendedModifier } <b>interface</b> Identifier
+ *      [ jsdoc ] { ExtendedModifier } <b>interface</b> Identifier
  *			[ <b>&lt;</b> TypeParameter { <b>,</b> TypeParameter } <b>&gt;</b> ]
  *			[ <b>extends</b> Type { <b>,</b> Type } ]
  * 			<b>{</b> { InterfaceBodyDeclaration | <b>;</b> } <b>}</b>
  * </pre>
  * <p>
- * When a Javadoc comment is present, the source
+ * When a jsdoc comment is present, the source
  * range begins with the first character of the "/**" comment delimiter.
- * When there is no Javadoc comment, the source range begins with the first
+ * When there is no jsdoc comment, the source range begins with the first
  * character of the first modifier or annotation (if any), or the
  * first character of the "class" or "interface" keyword (if no
  * modifiers or annotations). The source range extends through the last character of the "}"
  * token following the body declarations.
  * </p>
   * 
+ * <p><b>Note: This Class only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
  * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 
@@ -72,35 +74,35 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 
 	/**
 	 * The "javadoc" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor JAVADOC_PROPERTY =
 		internalJavadocPropertyFactory(TypeDeclaration.class);
 
 	/**
 	 * The "modifiers" structural property of this node type (JLS2 API only).
-	 * @since 3.0
+	 *  
 	 */
 	public static final SimplePropertyDescriptor MODIFIERS_PROPERTY =
 		internalModifiersPropertyFactory(TypeDeclaration.class);
 
 	/**
 	 * The "modifiers" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor MODIFIERS2_PROPERTY =
 		internalModifiers2PropertyFactory(TypeDeclaration.class);
 
 	/**
 	 * The "interface" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final SimplePropertyDescriptor INTERFACE_PROPERTY =
 		new SimplePropertyDescriptor(TypeDeclaration.class, "interface", boolean.class, MANDATORY); //$NON-NLS-1$
 
 	/**
 	 * The "name" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		internalNamePropertyFactory(TypeDeclaration.class);
@@ -108,42 +110,42 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 
 	/**
 	 * The "superclass" structural property of this node type (JLS2 API only).
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor SUPERCLASS_PROPERTY =
 		new ChildPropertyDescriptor(TypeDeclaration.class, "superclass", Name.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "superInterfaces" structural property of this node type (JLS2 API only).
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor SUPER_INTERFACES_PROPERTY =
 		new ChildListPropertyDescriptor(TypeDeclaration.class, "superInterfaces", Name.class, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "superclassType" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
+	 *  
 	 */
 	public static final ChildPropertyDescriptor SUPERCLASS_TYPE_PROPERTY =
 		new ChildPropertyDescriptor(TypeDeclaration.class, "superclassType", Type.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "superInterfaceTypes" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor SUPER_INTERFACE_TYPES_PROPERTY =
 		new ChildListPropertyDescriptor(TypeDeclaration.class, "superInterfaceTypes", Type.class, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "typeParameters" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor TYPE_PARAMETERS_PROPERTY =
 		new ChildListPropertyDescriptor(TypeDeclaration.class, "typeParameters", TypeParameter.class, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "bodyDeclarations" structural property of this node type (added in JLS3 API).
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor BODY_DECLARATIONS_PROPERTY =
 		internalBodyDeclarationPropertyFactory(TypeDeclaration.class);
@@ -152,7 +154,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.0
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_2_0;
 
@@ -160,7 +162,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.1
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_3_0;
 
@@ -198,7 +200,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		if (apiLevel == AST.JLS2_INTERNAL) {
@@ -218,7 +220,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	 * The type paramters (element type: <code>TypeParameter</code>).
 	 * Null in JLS2. Added in JLS3; defaults to an empty list
 	 * (see constructor).
-	 * @since 3.1
+	 *  
 	 */
 	private ASTNode.NodeList typeParameters = null;
 
@@ -241,7 +243,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	 * The optional superclass type; <code>null</code> if none.
 	 * Defaults to none. Note that this field is not used for
 	 * interface declarations. Null in JLS2. Added in JLS3.
-	 * @since 3.1
+	 *  
 	 */
 	private Type optionalSuperclassType = null;
 
@@ -249,7 +251,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	 * The superinterface types (element type: <code>Type</code>).
 	 * Null in JLS2. Added in JLS3; defaults to an empty list
 	 * (see constructor).
-	 * @since 3.1
+	 *  
 	 */
 	private ASTNode.NodeList superInterfaceTypes = null;
 
@@ -278,15 +280,15 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 		}
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
-	 * @since 3.0
+	 *  
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int internalGetSetIntProperty(SimplePropertyDescriptor property, boolean get, int value) {
@@ -302,7 +304,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 		return super.internalGetSetIntProperty(property, get, value);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean internalGetSetBooleanProperty(SimplePropertyDescriptor property, boolean get, boolean value) {
@@ -318,7 +320,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 		return super.internalGetSetBooleanProperty(property, get, value);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -358,7 +360,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
@@ -381,35 +383,35 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 		return super.internalGetChildListProperty(property);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on BodyDeclaration.
 	 */
 	final ChildPropertyDescriptor internalJavadocProperty() {
 		return JAVADOC_PROPERTY;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on BodyDeclaration.
 	 */
 	final ChildListPropertyDescriptor internalModifiers2Property() {
 		return MODIFIERS2_PROPERTY;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on BodyDeclaration.
 	 */
 	final SimplePropertyDescriptor internalModifiersProperty() {
 		return MODIFIERS_PROPERTY;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on AbstractTypeDeclaration.
 	 */
 	final ChildPropertyDescriptor internalNameProperty() {
 		return NAME_PROPERTY;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on AbstractTypeDeclaration.
 	 */
 	final ChildListPropertyDescriptor internalBodyDeclarationsProperty() {
@@ -417,14 +419,14 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	}
 
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return TYPE_DECLARATION;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -455,7 +457,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -463,7 +465,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -523,7 +525,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	 *    (element type: <code>TypeParameter</code>)
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
+	 *  
 	 */
 	public List typeParameters() {
 		// more efficient than just calling unsupportedIn2() to check
@@ -557,7 +559,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	/**
 	 * Internal synonym for deprecated method. Used to avoid
 	 * deprecation warnings.
-	 * @since 3.1
+	 *  
 	 */
 	/*package*/ final Name internalGetSuperclass() {
 		supportedOnlyIn2();
@@ -577,7 +579,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	*    there is none
 	* @exception UnsupportedOperationException if this operation is used in
 	* a JLS2 AST
-	* @since 3.1
+	*  
 	*/
 	public Type getSuperclassType() {
 	    unsupportedIn2();
@@ -613,7 +615,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	/**
 	 * Internal synonym for deprecated method. Used to avoid
 	 * deprecation warnings.
-	 * @since 3.1
+	 *  
 	 */
 	/*package*/ final void internalSetSuperclass(Name superclassName) {
 	    supportedOnlyIn2();
@@ -640,7 +642,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	 * </ul>
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
+	 *  
 	 */
 	public void setSuperclassType(Type superclassType) {
 	    unsupportedIn2();
@@ -671,7 +673,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	/**
 	 * Internal synonym for deprecated method. Used to avoid
 	 * deprecation warnings.
-	 * @since 3.1
+	 *  
 	 */
 	/*package*/ final List internalSuperInterfaces() {
 		// more efficient than just calling supportedOnlyIn2() to check
@@ -691,7 +693,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	 *    (element type: <code>Type</code>)
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
+	 *  
 	 */
 	public List superInterfaceTypes() {
 		// more efficient than just calling unsupportedIn2() to check
@@ -794,21 +796,21 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 		return memberTypes;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on AsbtractTypeDeclaration.
 	 */
 	ITypeBinding internalResolveBinding() {
 		return this.ast.getBindingResolver().resolveType(this);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return super.memSize() + 6 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

@@ -27,10 +27,10 @@ import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 public interface IRuntimeClasspathEntryResolver2 extends IRuntimeClasspathEntryResolver {
 	
 	/**
-	 * Returns whether the given classpath entry references a VM install.
+	 * Returns whether the given includepath entry references a VM install.
 	 * 
-	 * @param entry classpath entry
-	 * @return whether the given classpath entry references a VM install
+	 * @param entry includepath entry
+	 * @return whether the given includepath entry references a VM install
 	 */
 	public boolean isVMInstallReference(IIncludePathEntry entry);
 }

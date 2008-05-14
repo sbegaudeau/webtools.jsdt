@@ -62,9 +62,9 @@ public final class LibraryLocation {
 	 * 					  "src/java/lang/Object.java" in the zip file, the 
 	 * 					  packageRoot should be "src"
 	 * 					  Must not be <code>null</code>. (Use Path.EMPTY or IPath.ROOT)
-	 * @param javadocLocation The location of the javadoc for <code>library</code>
+	 * @param javadocLocation The location of the jsdoc for <code>library</code>
 	 * @throws	IllegalArgumentException	If the library path is <code>null</code>.
-	 * @since 3.1
+	 *  
 	 */	
 	public LibraryLocation(IPath libraryPath, IPath sourcePath, IPath packageRoot, URL javadocLocation) {
 		if (libraryPath == null)
@@ -138,7 +138,7 @@ public final class LibraryLocation {
 	 * @param o1 object to be compared
 	 * @param o2 object to be compared
 	 * @return whether the given objects are equal or both null
-	 * @since 3.1
+	 *  
 	 */	
 	private boolean equalsOrNull(Object o1, Object o2) {
 		if (o1 == null) {
@@ -151,11 +151,11 @@ public final class LibraryLocation {
 	}
 
 	/**
-	 * Returns the Javadoc location associated with this Library location.
+	 * Returns the jsdoc location associated with this Library location.
 	 * 
-	 * @return a url pointing to the Javadoc location associated with
+	 * @return a url pointing to the jsdoc location associated with
 	 * 	this Library location, or <code>null</code> if none
-	 * @since 3.1
+	 *  
 	 */
 	public URL getJavadocLocation() {
 		return fJavadocLocation;

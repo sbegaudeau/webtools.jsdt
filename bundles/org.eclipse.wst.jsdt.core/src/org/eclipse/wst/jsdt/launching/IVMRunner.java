@@ -18,7 +18,7 @@ import org.eclipse.debug.core.ILaunch;
 
 
 /**
- * A VM runner starts a Java VM running a Java program.
+ * A VM runner starts a JavaScript VM running a JavaScript program.
  * <p>
  * Clients may implement this interface to launch a new kind of VM.
  * </p>
@@ -31,7 +31,7 @@ import org.eclipse.debug.core.ILaunch;
 public interface IVMRunner {
 		
 	/**
-	 * Launches a Java VM as specified in the given configuration,
+	 * Launches a JavaScript VM as specified in the given configuration,
 	 * contributing results (debug targets and processes), to the
 	 * given launch.
 	 *

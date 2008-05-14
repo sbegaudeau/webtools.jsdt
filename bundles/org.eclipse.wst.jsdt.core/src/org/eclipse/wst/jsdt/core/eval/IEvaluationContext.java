@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 /**
  * An evaluation context supports evaluating code snippets.
  * <p>
- * A code snippet is pretty much any valid piece of Java code that could be
+ * A code snippet is pretty much any valid piece of JavaScript code that could be
  * pasted into the body of a method and compiled. However, there are two
  * areas where the rules are slightly more liberal.
  * <p>
@@ -118,7 +118,7 @@ public interface IEvaluationContext {
 	 *	  <li>The position specified is less than -1 or is greater than the snippet's
 	 *	    length (INDEX_OUT_OF_BOUNDS)</li>
 	 *  </ul>
-	 * @since 2.0
+	 *  
 	 * @deprecated Use {@link #codeComplete(String,int,CompletionRequestor)} instead.
 	 */
 	public void codeComplete(
@@ -130,7 +130,7 @@ public interface IEvaluationContext {
 	 * Performs a code completion at the given position in the given code snippet,
 	 * reporting results to the given completion requestor.
 	 * It considers types in the working copies with the given owner first. In other words,
-	 * the owner's working copies will take precedence over their original compilation units
+	 * the owner's working copies will take precedence over their original javascript unit s
 	 * in the workspace.
 	 * <p>
 	 * Note that if a working copy is empty, it will be as if the original compilation
@@ -145,13 +145,13 @@ public interface IEvaluationContext {
 	 *   or -1 indicating the beginning of the snippet
 	 * @param requestor the code completion requestor capable of accepting all
 	 *    possible types of completions
-	 * @param owner the owner of working copies that take precedence over their original compilation units
+	 * @param owner the owner of working copies that take precedence over their original javascript unit s
 	 * @exception JavaScriptModelException if code completion could not be performed. Reasons include:
 	 *  <ul>
 	 *	  <li>The position specified is less than -1 or is greater than the snippet's
 	 *	    length (INDEX_OUT_OF_BOUNDS)</li>
 	 *  </ul>
-	 * @since 3.0
+	 *  
 	 * @deprecated Use {@link #codeComplete(String,int,CompletionRequestor,WorkingCopyOwner)} instead.
 	 */
 	public void codeComplete(
@@ -177,7 +177,7 @@ public interface IEvaluationContext {
 	 *	  <li>The position specified is less than -1 or is greater than the snippet's
 	 *	    length (INDEX_OUT_OF_BOUNDS)</li>
 	 *  </ul>
-	 * @since 3.1
+	 *  
 	 */
 	public void codeComplete(
 		String codeSnippet,
@@ -188,7 +188,7 @@ public interface IEvaluationContext {
 	 * Performs a code completion at the given position in the given code snippet,
 	 * reporting results to the given completion requestor.
 	 * It considers types in the working copies with the given owner first. In other words,
-	 * the owner's working copies will take precedence over their original compilation units
+	 * the owner's working copies will take precedence over their original javascript unit s
 	 * in the workspace.
 	 * <p>
 	 * Note that if a working copy is empty, it will be as if the original compilation
@@ -203,13 +203,13 @@ public interface IEvaluationContext {
 	 *   or -1 indicating the beginning of the snippet
 	 * @param requestor the code completion requestor capable of accepting all
 	 *    possible types of completions
-	 * @param owner the owner of working copies that take precedence over their original compilation units
+	 * @param owner the owner of working copies that take precedence over their original javascript unit s
 	 * @exception JavaScriptModelException if code completion could not be performed. Reasons include:
 	 *  <ul>
 	 *	  <li>The position specified is less than -1 or is greater than the snippet's
 	 *	    length (INDEX_OUT_OF_BOUNDS)</li>
 	 *  </ul>
-	 * @since 3.1
+	 *  
 	 */
 	public void codeComplete(
 		String codeSnippet,
@@ -218,7 +218,7 @@ public interface IEvaluationContext {
 		WorkingCopyOwner owner)
 		throws JavaScriptModelException;
 	/**
-	 * Resolves and returns a collection of Java elements corresponding to the source
+	 * Resolves and returns a collection of JavaScript elements corresponding to the source
 	 * code at the given positions in the given code snippet.
 	 * <p>
 	 * Note that code select does not involve evaluation, and problems are never
@@ -229,7 +229,7 @@ public interface IEvaluationContext {
 	 * @param offset the position in the code snippet of the first character
 	 *   of the code to resolve
 	 * @param length the length of the selected code to resolve
-	 * @return the (possibly empty) list of selection Java elements
+	 * @return the (possibly empty) list of selection JavaScript elements
 	 * @exception JavaScriptModelException if code resolve could not be performed.
 	 *   Reasons include:
 	 *   <ul>
@@ -240,10 +240,10 @@ public interface IEvaluationContext {
 	public IJavaScriptElement[] codeSelect(String codeSnippet, int offset, int length)
 		throws JavaScriptModelException;
 	/**
-	 * Resolves and returns a collection of Java elements corresponding to the source
+	 * Resolves and returns a collection of JavaScript elements corresponding to the source
 	 * code at the given positions in the given code snippet.
 	 * It considers types in the working copies with the given owner first. In other words,
-	 * the owner's working copies will take precedence over their original compilation units
+	 * the owner's working copies will take precedence over their original javascript unit s
 	 * in the workspace.
 	 * <p>
 	 * Note that if a working copy is empty, it will be as if the original compilation
@@ -258,15 +258,15 @@ public interface IEvaluationContext {
 	 * @param offset the position in the code snippet of the first character
 	 *   of the code to resolve
 	 * @param length the length of the selected code to resolve
-	 * @param owner the owner of working copies that take precedence over their original compilation units
-	 * @return the (possibly empty) list of selection Java elements
+	 * @param owner the owner of working copies that take precedence over their original javascript unit s
+	 * @return the (possibly empty) list of selection JavaScript elements
 	 * @exception JavaScriptModelException if code resolve could not be performed.
 	 *   Reasons include:
 	 *   <ul>
 	 *	   <li>The position specified is less than -1 or is greater than the snippet's
 	 *	     length (INDEX_OUT_OF_BOUNDS)</li>
 	 *   </ul>
-	 * @since 3.0
+	 *  
 	 */
 	public IJavaScriptElement[] codeSelect(String codeSnippet, int offset, int length, WorkingCopyOwner owner)
 		throws JavaScriptModelException;
@@ -388,9 +388,9 @@ public interface IEvaluationContext {
 	 */
 	public String getPackageName();
 	/**
-	 * Returns the Java project this evaluation context was created for.
+	 * Returns the JavaScript project this evaluation context was created for.
 	 *
-	 * @return the Java project
+	 * @return the JavaScript project
 	 */
 	public IJavaScriptProject getProject();
 	/**

@@ -63,7 +63,6 @@ public class AnonymousClassDeclaration extends ASTNode {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
@@ -91,14 +90,14 @@ public class AnonymousClassDeclaration extends ASTNode {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
@@ -109,14 +108,14 @@ public class AnonymousClassDeclaration extends ASTNode {
 		return super.internalGetChildListProperty(property);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return ANONYMOUS_CLASS_DECLARATION;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -127,7 +126,7 @@ public class AnonymousClassDeclaration extends ASTNode {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -135,7 +134,7 @@ public class AnonymousClassDeclaration extends ASTNode {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -173,7 +172,7 @@ public class AnonymousClassDeclaration extends ASTNode {
 		return this.ast.getBindingResolver().resolveType(this);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -181,7 +180,7 @@ public class AnonymousClassDeclaration extends ASTNode {
 		return BASE_NODE_SIZE + 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

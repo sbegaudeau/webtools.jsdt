@@ -31,7 +31,7 @@ public class FunctionExpression extends Expression {
 
 	/**
 	 * The "type" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor METHOD_PROPERTY =
 		new ChildPropertyDescriptor(FunctionExpression.class, "method", FunctionDeclaration.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
@@ -59,7 +59,7 @@ public class FunctionExpression extends Expression {
 	 * <code>AST.JLS*</code> constants
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
@@ -85,14 +85,14 @@ public class FunctionExpression extends Expression {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -108,14 +108,14 @@ public class FunctionExpression extends Expression {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return FUNCTION_EXPRESSION;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -125,7 +125,7 @@ public class FunctionExpression extends Expression {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -133,7 +133,7 @@ public class FunctionExpression extends Expression {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -187,7 +187,7 @@ public class FunctionExpression extends Expression {
 
 
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -195,7 +195,7 @@ public class FunctionExpression extends Expression {
 		return BASE_NODE_SIZE + 2 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

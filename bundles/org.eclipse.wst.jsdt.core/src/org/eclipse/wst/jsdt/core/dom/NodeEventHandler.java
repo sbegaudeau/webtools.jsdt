@@ -42,7 +42,7 @@ class NodeEventHandler {
 	 * @param child the node about to be removed
 	 * @param property the child or child list property descriptor
 	 * @see #postRemoveChildEvent(ASTNode, ASTNode, StructuralPropertyDescriptor)
-	 * @since 3.0
+	 *  
 	 */
 	void preRemoveChildEvent(ASTNode node, ASTNode child, StructuralPropertyDescriptor property) {
 		// do nothing
@@ -57,7 +57,7 @@ class NodeEventHandler {
 	 * @param child the child that was removed; note that this node is unparented
 	 * @param property the child or child list property descriptor
 	 * @see #preRemoveChildEvent(ASTNode, ASTNode, StructuralPropertyDescriptor)
-	 * @since 3.0
+	 *  
 	 */
 	void postRemoveChildEvent(ASTNode node, ASTNode child, StructuralPropertyDescriptor property) {
 		// do nothing
@@ -74,7 +74,7 @@ class NodeEventHandler {
 	 * @param newChild the replacement child; note that this node is unparented
 	 * @param property the child or child list property descriptor
 	 * @see #preReplaceChildEvent(ASTNode, ASTNode, ASTNode, StructuralPropertyDescriptor)
-	 * @since 3.0
+	 *  
 	 */
 	void preReplaceChildEvent(ASTNode node, ASTNode child, ASTNode newChild, StructuralPropertyDescriptor property) {
 		// do nothing
@@ -90,7 +90,7 @@ class NodeEventHandler {
 	 * @param newChild the replacement child
 	 * @param property the child or child list property descriptor
 	 * @see #postReplaceChildEvent(ASTNode, ASTNode, ASTNode, StructuralPropertyDescriptor)
-	 * @since 3.0
+	 *  
 	 */
 	void postReplaceChildEvent(ASTNode node, ASTNode child, ASTNode newChild, StructuralPropertyDescriptor property) {
 		// do nothing
@@ -109,7 +109,7 @@ class NodeEventHandler {
 	 * follow)
 	 * @param property the child or child list property descriptor
 	 * @see #postAddChildEvent(ASTNode, ASTNode, StructuralPropertyDescriptor)
-	 * @since 3.0
+	 *  
 	 */
 	void preAddChildEvent(ASTNode node, ASTNode child, StructuralPropertyDescriptor property) {
 		// do nothing
@@ -124,7 +124,7 @@ class NodeEventHandler {
 	 * @param child the node that was added as a child
 	 * @param property the child or child list property descriptor
 	 * @see #preAddChildEvent(ASTNode, ASTNode, StructuralPropertyDescriptor)
-	 * @since 3.0
+	 *  
 	 */
 	void postAddChildEvent(ASTNode node, ASTNode child, StructuralPropertyDescriptor property) {
 		// do nothing
@@ -139,7 +139,7 @@ class NodeEventHandler {
 	 * @param node the node to be modified
 	 * @param property the property descriptor
 	 * @see #postValueChangeEvent(ASTNode, SimplePropertyDescriptor)
-	 * @since 3.0
+	 *  
 	 */
 	void preValueChangeEvent(ASTNode node, SimplePropertyDescriptor property) {
 		// do nothing
@@ -154,7 +154,7 @@ class NodeEventHandler {
 	 * @param node the node that was modified
 	 * @param property the property descriptor
 	 * @see #preValueChangeEvent(ASTNode, SimplePropertyDescriptor)
-	 * @since 3.0
+	 *  
 	 */
 	void postValueChangeEvent(ASTNode node, SimplePropertyDescriptor property) {
 		// do nothing
@@ -168,7 +168,7 @@ class NodeEventHandler {
 	 *
 	 * @param node the node to be modified
 	 * @see #postCloneNodeEvent(ASTNode, ASTNode)
-	 * @since 3.0
+	 *  
 	 */
 	void preCloneNodeEvent(ASTNode node) {
 		// do nothing
@@ -183,7 +183,7 @@ class NodeEventHandler {
 	 * @param node the node that was modified
 	 * @param clone the clone of <code>node</code>
 	 * @see #preCloneNodeEvent(ASTNode)
-	 * @since 3.0
+	 *  
 	 */
 	void postCloneNodeEvent(ASTNode node, ASTNode clone) {
 		// do nothing

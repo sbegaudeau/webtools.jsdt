@@ -52,7 +52,7 @@ public String getFullyQualifiedName() {
 /**
  * Returns the modifiers of the matched type.
  * <p>
- * This is a handle-only method as neither Java Model nor classpath
+ * This is a handle-only method as neither JavaScript Model nor includepath
  * initialization is done while calling this method.
  *
  * @return the type modifiers
@@ -67,7 +67,7 @@ public abstract int getModifiers();
  * @see IJavaScriptElement#getAncestor(int)
  *
  * @throws NullPointerException if matched type is <code> null</code>
- * @return the existing java model package fragment root (ie. cannot be <code>null</code>
+ * @return the existing javascript model package fragment root (ie. cannot be <code>null</code>
  * 	and will return <code>true</code> to <code>exists()</code> message).
  */
 public IPackageFragmentRoot getPackageFragmentRoot() {
@@ -101,14 +101,14 @@ public String getSimpleTypeName() {
 }
 
 /**
- * Returns a java model type handle.
+ * Returns a javascript model type handle.
  * This handle may exist or not, but is not supposed to be <code>null</code>.
  * <p>
- * This is a handle-only method as neither Java Model nor classpath
+ * This is a handle-only method as neither JavaScript Model nor includepath
  * initializations are done while calling this method.
  *
  * @see IType
- * @return the non-null handle on matched java model type.
+ * @return the non-null handle on matched javascript model type.
  */
 public abstract IType getType();
 

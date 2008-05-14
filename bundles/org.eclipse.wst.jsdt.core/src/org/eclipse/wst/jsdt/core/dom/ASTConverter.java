@@ -283,7 +283,7 @@ class ASTConverter {
 			initializer.setBody(convert(oldInitializer.block));
 			setModifiers(initializer, oldInitializer);
 			initializer.setSourceRange(oldInitializer.declarationSourceStart, oldInitializer.sourceEnd - oldInitializer.declarationSourceStart + 1);
-			// The javadoc comment is now got from list store in javaScript unit declaration
+			// The jsdoc comment is now got from list store in javaScript unit declaration
 			convert(oldInitializer.javadoc, initializer);
 			bodyDeclarations.add(initializer);
 			return;
@@ -498,7 +498,7 @@ class ASTConverter {
 			}
 		}
 
-		// The javadoc comment is now got from list store in javaScript unit declaration
+		// The jsdoc comment is now got from list store in javaScript unit declaration
 		convert(methodDeclaration.javadoc, methodDecl);
 		if (this.resolveBindings) {
 			recordNodes(methodDecl, methodDeclaration);
@@ -3282,7 +3282,7 @@ class ASTConverter {
 		Comment comment = null;
 		int start = positions[0];
 		int end = positions[1];
-		if (positions[1]>0) { // Javadoc comments have positive end position
+		if (positions[1]>0) { // jsdoc comments have positive end position
 			JSdoc docComment = this.docParser.parse(positions);
 			if (docComment == null) return null;
 			comment = docComment;

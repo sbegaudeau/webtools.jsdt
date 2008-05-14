@@ -35,14 +35,14 @@ public class MemberRef extends ASTNode implements IDocElement {
 
 	/**
 	 * The "qualifier" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor QUALIFIER_PROPERTY =
 		new ChildPropertyDescriptor(MemberRef.class, "qualifier", Name.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "name" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		new ChildPropertyDescriptor(MemberRef.class, "name", SimpleName.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
@@ -69,7 +69,7 @@ public class MemberRef extends ASTNode implements IDocElement {
 	 * @param apiLevel the API level; one of the AST.JLS* constants
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
@@ -82,7 +82,7 @@ public class MemberRef extends ASTNode implements IDocElement {
 
 	/**
 	 * The member name; lazily initialized; defaults to a unspecified,
-	 * legal Java method name.
+	 * legal JavaScript method name.
 	 */
 	private SimpleName memberName = null;
 
@@ -102,14 +102,14 @@ public class MemberRef extends ASTNode implements IDocElement {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -133,14 +133,14 @@ public class MemberRef extends ASTNode implements IDocElement {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return MEMBER_REF;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -151,7 +151,7 @@ public class MemberRef extends ASTNode implements IDocElement {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -159,7 +159,7 @@ public class MemberRef extends ASTNode implements IDocElement {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -255,14 +255,14 @@ public class MemberRef extends ASTNode implements IDocElement {
 		return this.ast.getBindingResolver().resolveReference(this);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return BASE_NODE_SIZE + 2 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

@@ -29,6 +29,8 @@ import java.util.List;
  *
  * @see FieldAccess
  * 
+ * <p><b>Note: This Class only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
  * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 
@@ -38,14 +40,14 @@ public class SuperFieldAccess extends Expression {
 
 	/**
 	 * The "qualifier" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor QUALIFIER_PROPERTY =
 		new ChildPropertyDescriptor(SuperFieldAccess.class, "qualifier", Name.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "name" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		new ChildPropertyDescriptor(SuperFieldAccess.class, "name", SimpleName.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
@@ -73,7 +75,7 @@ public class SuperFieldAccess extends Expression {
 	 * <code>AST.JLS*</code> constants
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
@@ -104,14 +106,14 @@ public class SuperFieldAccess extends Expression {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -135,14 +137,14 @@ public class SuperFieldAccess extends Expression {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return SUPER_FIELD_ACCESS;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -153,7 +155,7 @@ public class SuperFieldAccess extends Expression {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -161,7 +163,7 @@ public class SuperFieldAccess extends Expression {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -232,7 +234,7 @@ public class SuperFieldAccess extends Expression {
 	 *
 	 * @return the variable binding, or <code>null</code> if the binding cannot
 	 * be resolved
-	 * @since 3.0
+	 *  
 	 */
 	public IVariableBinding resolveFieldBinding() {
 		return this.ast.getBindingResolver().resolveField(this);
@@ -259,7 +261,7 @@ public class SuperFieldAccess extends Expression {
 		postReplaceChild(oldChild, fieldName, NAME_PROPERTY);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -267,7 +269,7 @@ public class SuperFieldAccess extends Expression {
 		return BASE_NODE_SIZE + 2 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

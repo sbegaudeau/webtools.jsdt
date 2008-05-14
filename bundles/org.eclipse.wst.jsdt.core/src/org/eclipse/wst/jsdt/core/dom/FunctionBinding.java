@@ -72,7 +72,7 @@ class FunctionBinding implements IFunctionBinding {
 
 	/**
 	 * @see IFunctionBinding#isDefaultConstructor()
-	 * @since 3.0
+	 *  
 	 */
 	public boolean isDefaultConstructor() {
 		final ReferenceBinding declaringClassBinding = this.binding.declaringClass;
@@ -304,7 +304,7 @@ class FunctionBinding implements IFunctionBinding {
 
 	/**
 	 * @see org.eclipse.wst.jsdt.core.dom.IFunctionBinding#isVarargs()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isVarargs() {
 		return this.binding.isVarargs();
@@ -322,7 +322,7 @@ class FunctionBinding implements IFunctionBinding {
 
 	/**
 	 * @see IBinding#isEqualTo(IBinding)
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isEqualTo(IBinding other) {
 		if (other == this) {
@@ -365,7 +365,7 @@ class FunctionBinding implements IFunctionBinding {
 
 	/**
 	 * @see org.eclipse.wst.jsdt.core.dom.IFunctionBinding#isGenericMethod()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isGenericMethod() {
 		// equivalent to return getTypeParameters().length > 0;

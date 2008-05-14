@@ -40,7 +40,7 @@ public class VMStandin extends AbstractVMInstall {
     
     /**
      * <code>java.version</code> system property, or <code>null</code>
-     * @since 3.1
+     *  
      */
     private String fJavaVersion = null;
 
@@ -57,7 +57,7 @@ public class VMStandin extends AbstractVMInstall {
 	 * 
 	 * @param sourceVM
 	 * @param id
-	 * @since 3.2
+	 *  
 	 */
 	public VMStandin(IVMInstall sourceVM, String id) {
 		super(sourceVM.getVMInstallType(), id);

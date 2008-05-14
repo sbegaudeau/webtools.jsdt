@@ -704,7 +704,6 @@ public class ASTMatcher {
 	 * @return <code>true</code> if the subtree matches, or
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
-	 * @since 3.1
 	 */
 	public boolean match(EnhancedForStatement node, Object other) {
 		if (!(other instanceof EnhancedForStatement)) {
@@ -1095,7 +1094,6 @@ public class ASTMatcher {
 	 * @return <code>true</code> if the subtree matches, or
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
-	 * @since 3.0
 	 */
 	public boolean match(LineComment node, Object other) {
 		if (!(other instanceof LineComment)) {
@@ -1126,7 +1124,6 @@ public class ASTMatcher {
 	 * @return <code>true</code> if the subtree matches, or
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
-	 * @since 3.0
 	 */
 	public boolean match(MemberRef node, Object other) {
 		if (!(other instanceof MemberRef)) {
@@ -1152,7 +1149,6 @@ public class ASTMatcher {
 	 * @return <code>true</code> if the subtree matches, or
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
-	 * @since 3.0
 	 */
 	public boolean match(FunctionRef node, Object other) {
 		if (!(other instanceof FunctionRef)) {
@@ -1178,7 +1174,6 @@ public class ASTMatcher {
 	 * @return <code>true</code> if the subtree matches, or
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
-	 * @since 3.0
 	 */
 	public boolean match(FunctionRefParameter node, Object other) {
 		if (!(other instanceof FunctionRefParameter)) {
@@ -1297,7 +1292,6 @@ public class ASTMatcher {
 	 * @return <code>true</code> if the subtree matches, or
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
-	 * @since 3.1
 	 */
 	public boolean match(Modifier node, Object other) {
 		if (!(other instanceof Modifier)) {
@@ -1401,7 +1395,6 @@ public class ASTMatcher {
 	 * @return <code>true</code> if the subtree matches, or
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
-	 * @since 3.1
 	 */
 	public boolean match(ParameterizedType node, Object other) {
 		if (!(other instanceof ParameterizedType)) {
@@ -1541,7 +1534,6 @@ public class ASTMatcher {
 	 * @return <code>true</code> if the subtree matches, or
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
-	 * @since 3.1
 	 */
 	public boolean match(QualifiedType node, Object other) {
 		if (!(other instanceof QualifiedType)) {
@@ -1828,7 +1820,6 @@ public class ASTMatcher {
 	 * @return <code>true</code> if the subtree matches, or
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
-	 * @since 3.0
 	 */
 	public boolean match(TagElement node, Object other) {
 		if (!(other instanceof TagElement)) {
@@ -1853,7 +1844,6 @@ public class ASTMatcher {
 	 * @return <code>true</code> if the subtree matches, or
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
-	 * @since 3.0
 	 */
 	public boolean match(TextElement node, Object other) {
 		if (!(other instanceof TextElement)) {
@@ -2041,7 +2031,6 @@ public class ASTMatcher {
 	 * @return <code>true</code> if the subtree matches, or
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
-	 * @since 3.1
 	 */
 	public boolean match(TypeParameter node, Object other) {
 		if (!(other instanceof TypeParameter)) {
@@ -2195,7 +2184,6 @@ public class ASTMatcher {
 	 * @return <code>true</code> if the subtree matches, or
 	 *   <code>false</code> if they do not match or the other object has a
 	 *   different node type or is <code>null</code>
-	 * @since 3.1
 	 */
 	public boolean match(WildcardType node, Object other) {
 		if (!(other instanceof WildcardType)) {

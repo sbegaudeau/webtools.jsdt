@@ -23,7 +23,7 @@ package org.eclipse.wst.jsdt.launching;
  * in bug 73493.
  * </p>
  * <p>
- * Additionally, this interface optionally provides the Java version
+ * Additionally, this interface optionally provides the JavaScript version
  * associated with a VM install. 
  * </p>
  * <p>

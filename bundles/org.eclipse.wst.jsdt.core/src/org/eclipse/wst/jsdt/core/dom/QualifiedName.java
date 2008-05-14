@@ -39,14 +39,14 @@ public class QualifiedName extends Name {
 
 	/**
 	 * The "qualifier" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor QUALIFIER_PROPERTY =
 		new ChildPropertyDescriptor(QualifiedName.class, "qualifier", Name.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "name" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		new ChildPropertyDescriptor(QualifiedName.class, "name", SimpleName.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
@@ -74,7 +74,7 @@ public class QualifiedName extends Name {
 	 * <code>AST.JLS*</code> constants
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
@@ -82,13 +82,13 @@ public class QualifiedName extends Name {
 
 	/**
 	 * The identifier; lazily initialized; defaults to a unspecified, legal
-	 * Java identifier.
+	 * JavaScript identifier.
 	 */
 	private Name qualifier = null;
 
 	/**
 	 * The name being qualified; lazily initialized; defaults to a unspecified,
-	 * legal Java identifier.
+	 * legal JavaScript identifier.
 	 */
 	private SimpleName name = null;
 
@@ -106,14 +106,14 @@ public class QualifiedName extends Name {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -137,14 +137,14 @@ public class QualifiedName extends Name {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return QUALIFIED_NAME;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -155,7 +155,7 @@ public class QualifiedName extends Name {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -163,7 +163,7 @@ public class QualifiedName extends Name {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -255,7 +255,7 @@ public class QualifiedName extends Name {
 		postReplaceChild(oldChild, name, NAME_PROPERTY);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on Name.
 	 */
 	void appendName(StringBuffer buffer) {
@@ -264,14 +264,14 @@ public class QualifiedName extends Name {
 		getName().appendName(buffer);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return BASE_NAME_NODE_SIZE + 3 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

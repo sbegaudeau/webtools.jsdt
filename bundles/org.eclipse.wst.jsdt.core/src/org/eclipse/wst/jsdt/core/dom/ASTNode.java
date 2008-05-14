@@ -105,7 +105,7 @@ import java.util.Map;
  * for details.
  * </p>
  * <p>
- * Compilation units created by <code>ASTParser</code> from a
+ * JavaScript units created by <code>ASTParser</code> from a
  * source document can be serialized after arbitrary modifications
  * with minimal loss of original formatting. See
  * {@link JavaScriptUnit#recordModifications()} for details.

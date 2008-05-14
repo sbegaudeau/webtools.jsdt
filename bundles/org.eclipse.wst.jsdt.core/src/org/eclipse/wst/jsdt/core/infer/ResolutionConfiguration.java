@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.core.infer;
 
 /**
- *  This class provides configuration information on the inferred class
+ *  This class provides configuration information for when the inferred class
  *  gets resolved
  * 
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 

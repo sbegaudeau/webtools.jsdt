@@ -49,7 +49,7 @@ public interface IVMInstallChangedListener {
 	public static final String PROPERTY_INSTALL_LOCATION =JavaScriptCore.PLUGIN_ID + ".PROPERTY_INSTALL_LOCATION";	 //$NON-NLS-1$
 			
 	/**
-	 * Property constant indicating the Javadoc location associated
+	 * Property constant indicating the jsdoc location associated
 	 * with a VM install has changed.
 	 */
 	public static final String PROPERTY_JAVADOC_LOCATION = JavaScriptCore.PLUGIN_ID+ ".PROPERTY_JAVADOC_LOCATION"; //$NON-NLS-1$
@@ -58,7 +58,7 @@ public interface IVMInstallChangedListener {
 	 * Property constant indicating the VM arguments associated
 	 * with a VM install has changed.
      * 
-     * @since 3.2
+     *  
 	 */
 	public static final String PROPERTY_VM_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".PROPERTY_VM_ARGUMENTS"; //$NON-NLS-1$
 

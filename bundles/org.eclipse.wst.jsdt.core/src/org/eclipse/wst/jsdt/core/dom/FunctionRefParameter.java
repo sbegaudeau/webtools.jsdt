@@ -28,11 +28,11 @@ import java.util.List;
  * 		Type [ <b>...</b> ] [ Identifier ]
  * </pre>
  * <p>
- * Note: The 1.5 spec for the Javadoc tool does not mention the possibility
+ * Note: The 1.5 spec for the jsdoc tool does not mention the possibility
  * of a variable arity indicator in method references. However, the 1.5
- * Javadoc tool itself does indeed support it. Since it makes sense to have
+ * jsdoc tool itself does indeed support it. Since it makes sense to have
  * a way to explicitly refer to variable arity methods, it seems more likely
- * that the Javadoc spec is wrong in this case.
+ * that the jsdoc spec is wrong in this case.
  * </p>
  *
  * 
@@ -45,21 +45,21 @@ public class FunctionRefParameter extends ASTNode {
 
 	/**
 	 * The "type" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor TYPE_PROPERTY =
 		new ChildPropertyDescriptor(FunctionRefParameter.class, "type", Type.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "varargs" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
+	 *  
 	 */
 	public static final SimplePropertyDescriptor VARARGS_PROPERTY =
 		new SimplePropertyDescriptor(FunctionRefParameter.class, "varargs", boolean.class, MANDATORY); //$NON-NLS-1$
 
 	/**
 	 * The "name" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		new ChildPropertyDescriptor(FunctionRefParameter.class, "name", SimpleName.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
@@ -68,7 +68,7 @@ public class FunctionRefParameter extends ASTNode {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.0
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_2_0;
 
@@ -76,7 +76,7 @@ public class FunctionRefParameter extends ASTNode {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.1
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_3_0;
 
@@ -102,7 +102,7 @@ public class FunctionRefParameter extends ASTNode {
 	 * @param apiLevel the API level; one of the AST.JLS* constants
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		if (apiLevel == AST.JLS2_INTERNAL) {
@@ -122,7 +122,7 @@ public class FunctionRefParameter extends ASTNode {
 	 * Indicates the last parameter of a variable arity method;
 	 * defaults to false.
 	 *
-	 * @since 3.1
+	 *  
 	 */
 	private boolean variableArity = false;
 
@@ -146,14 +146,14 @@ public class FunctionRefParameter extends ASTNode {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -177,7 +177,7 @@ public class FunctionRefParameter extends ASTNode {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean internalGetSetBooleanProperty(SimplePropertyDescriptor property, boolean get, boolean value) {
@@ -193,14 +193,14 @@ public class FunctionRefParameter extends ASTNode {
 		return super.internalGetSetBooleanProperty(property, get, value);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return FUNCTION_REF_PARAMETER;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -214,7 +214,7 @@ public class FunctionRefParameter extends ASTNode {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -222,7 +222,7 @@ public class FunctionRefParameter extends ASTNode {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -292,7 +292,7 @@ public class FunctionRefParameter extends ASTNode {
 	 *    and <code>false</code> otherwise
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isVarargs() {
 		unsupportedIn2();
@@ -305,7 +305,7 @@ public class FunctionRefParameter extends ASTNode {
 	 *
 	 * @param variableArity <code>true</code> if this is a variable arity
 	 *    parameter, and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public void setVarargs(boolean variableArity) {
 		unsupportedIn2();
@@ -341,14 +341,14 @@ public class FunctionRefParameter extends ASTNode {
 		postReplaceChild(oldChild, name, NAME_PROPERTY);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return BASE_NODE_SIZE + 2 * 5;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

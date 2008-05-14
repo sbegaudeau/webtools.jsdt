@@ -44,7 +44,7 @@ public class SearchMatch {
 	/**
 	 * The search result is potentially a match for the search pattern,
 	 * but the search engine is unable to fully check it (for example, because
-	 * there are errors in the code or the classpath are not correctly set).
+	 * there are errors in the code or the includepath are not correctly set).
 	 *
 	 * @see #getAccuracy()
 	 */
@@ -167,7 +167,7 @@ public class SearchMatch {
 	 *
 	 * @return one of {@link SearchPattern#R_FULL_MATCH}, {@link SearchPattern#R_EQUIVALENT_MATCH}
 	 * 	or {@link SearchPattern#R_ERASURE_MATCH}
-	 * @since 3.1
+	 *  
 	 */
 	public final int getRule() {
 		return this.rule;
@@ -179,7 +179,7 @@ public class SearchMatch {
 	 *
 	 * @return <code>true</code> if match element is compatible
 	 * 				<code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public final boolean isEquivalent() {
 		return isErasure() && (this.rule & SearchPattern.R_EQUIVALENT_MATCH) != 0;
@@ -192,7 +192,7 @@ public class SearchMatch {
 	 *
 	 * @return <code>true</code> if match element has same erasure
 	 * 				<code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public final boolean isErasure() {
 		return (this.rule & SearchPattern.R_ERASURE_MATCH) != 0;
@@ -204,7 +204,7 @@ public class SearchMatch {
 	 *
 	 * @return <code>true</code> if match is exact
 	 * 				<code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public final boolean isExact() {
 		return isEquivalent() && (this.rule & SearchPattern.R_FULL_MATCH) != 0;
@@ -218,7 +218,7 @@ public class SearchMatch {
 	 *
 	 * @return <code>true</code> if this match is associated to an implicit
 	 * element and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public final boolean isImplicit() {
 		return this.implicit;
@@ -229,7 +229,7 @@ public class SearchMatch {
 	 *
 	 * @return <code>true</code> if this match is associated to a raw
 	 * type or method and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public final boolean isRaw() {
 		return this.raw;
@@ -284,7 +284,7 @@ public class SearchMatch {
 	 *
 	 * @param implicit <code>true</code> if this match is associated to an implicit
 	 * element and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public final void setImplicit(boolean implicit) {
 		this.implicit = implicit;
@@ -331,7 +331,7 @@ public class SearchMatch {
 	 *
 	 * @param rule one of {@link SearchPattern#R_FULL_MATCH}, {@link SearchPattern#R_EQUIVALENT_MATCH}
 	 * 	or {@link SearchPattern#R_ERASURE_MATCH}
-	 * @since 3.1
+	 *  
 	 */
 	public final void setRule(int rule) {
 		this.rule = rule;
@@ -342,7 +342,7 @@ public class SearchMatch {
 	 *
 	 * @param raw <code>true</code> if this search match is associated to a raw
 	 * type or method and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public final void setRaw(boolean raw) {
 		this.raw = raw;

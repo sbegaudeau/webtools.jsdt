@@ -161,7 +161,7 @@ public class PrimitiveType extends Type {
 
 	/**
 	 * The "primitiveTypeCode" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final SimplePropertyDescriptor PRIMITIVE_TYPE_CODE_PROPERTY =
 		new SimplePropertyDescriptor(PrimitiveType.class, "primitiveTypeCode", PrimitiveType.Code.class, MANDATORY); //$NON-NLS-1$
@@ -189,7 +189,7 @@ public class PrimitiveType extends Type {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
@@ -217,14 +217,14 @@ public class PrimitiveType extends Type {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final Object internalGetSetObjectProperty(SimplePropertyDescriptor property, boolean get, Object value) {
@@ -240,14 +240,14 @@ public class PrimitiveType extends Type {
 		return super.internalGetSetObjectProperty(property, get, value);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return PRIMITIVE_TYPE;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -257,7 +257,7 @@ public class PrimitiveType extends Type {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -265,7 +265,7 @@ public class PrimitiveType extends Type {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -299,7 +299,7 @@ public class PrimitiveType extends Type {
 		postValueChange(PRIMITIVE_TYPE_CODE_PROPERTY);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -307,7 +307,7 @@ public class PrimitiveType extends Type {
 		return BASE_NODE_SIZE + 1 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

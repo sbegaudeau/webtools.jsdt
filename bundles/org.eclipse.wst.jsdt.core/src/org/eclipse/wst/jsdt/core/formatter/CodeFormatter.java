@@ -45,23 +45,23 @@ public abstract class CodeFormatter {
 	public static final int K_CLASS_BODY_DECLARATIONS = 0x04;
 
 	/**
-	 * Kind used to format a compilation unit
+	 * Kind used to format a javascript unit 
 	 */
 	public static final int K_JAVASCRIPT_UNIT = 0x08;
 
 	/**
 	 * Kind used to format a single-line comment
-	 * @since 3.1
+	 *  
 	 */
 	public static final int K_SINGLE_LINE_COMMENT = 0x10;
 	/**
 	 * Kind used to format a multi-line comment
-	 * @since 3.1
+	 *  
 	 */
 	public static final int K_MULTI_LINE_COMMENT = 0x20;
 	/**
-	 * Kind used to format a Javadoc comment
-	 * @since 3.1
+	 * Kind used to format a jsdoc comment
+	 *  
 	 */
 	public static final int K_JAVA_DOC = 0x40;
 
@@ -100,7 +100,7 @@ public abstract class CodeFormatter {
 	 * @param indentationLevel the given indentation level
 	 * @return the string corresponding to the right indentation level
 	 * @exception IllegalArgumentException if the given indentation level is lower than zero
-	 * @since 3.2
+	 *  
 	 */
 	public String createIndentationString(int indentationLevel) {
 		return Util.EMPTY_STRING;

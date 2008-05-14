@@ -93,7 +93,7 @@ public abstract class Comment extends ASTNode {
 	 * comment nodes exist outside the normal AST and each is
 	 * a root in its own right. This optional property provides
 	 * a well-known way to navigate from the comment to the
-	 * compilation unit in such cases. Note that the alternate root
+	 * javaScript unit in such cases. Note that the alternate root
 	 * property is not one of the comment node's children. It is simply a
 	 * reference to a node.
 	 * </p>
@@ -123,7 +123,7 @@ public abstract class Comment extends ASTNode {
 		this.alternateRoot = root;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {

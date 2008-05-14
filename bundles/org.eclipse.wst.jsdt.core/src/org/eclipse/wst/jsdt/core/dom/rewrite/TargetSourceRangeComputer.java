@@ -44,7 +44,6 @@ public class TargetSourceRangeComputer {
 	 * Reified source range. Instances are &quot;value&quot; object
 	 * (cannot be modified).
 	 *
-	 * @since 3.1
 	 */
 	public static final class SourceRange {
 		/**
@@ -122,9 +121,9 @@ public class TargetSourceRangeComputer {
 	 * original source range of the node.
 	 * </p>
 	 *
-	 * @param node the node with a known source range in the compilation unit
+	 * @param node the node with a known source range in the javaScript unit
 	 * being rewritten
-	 * @return the exact source range in the compilation unit being rewritten
+	 * @return the exact source range in the javaScript unit being rewritten
 	 * that should be replaced (or deleted)
 	 */
 	public SourceRange computeSourceRange(ASTNode node) {

@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 /**
- * Java compilation unit AST node type. This is the type of the root of an AST.
+ * JavaScript javaScript unit AST node type. This is the type of the root of an AST.
  * <p>
  * The source range for this type of node is ordinarily the entire source file,
  * including leading and trailing whitespace and comments.
@@ -67,7 +67,7 @@ public class JavaScriptUnit extends ASTNode {
 	/**
 	 * The "imports" structural property of this node type.
 	 *
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor IMPORTS_PROPERTY =
 		new ChildListPropertyDescriptor(JavaScriptUnit.class, "imports", ImportDeclaration.class, NO_CYCLE_RISK); //$NON-NLS-1$
@@ -75,7 +75,7 @@ public class JavaScriptUnit extends ASTNode {
 	/**
 	 * The "package" structural property of this node type.
 	 *
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor PACKAGE_PROPERTY =
 		new ChildPropertyDescriptor(JavaScriptUnit.class, "package", PackageDeclaration.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
@@ -84,14 +84,14 @@ public class JavaScriptUnit extends ASTNode {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.0
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
 
 	/**
 	 * The "types" structural property of this node type.
 	 *
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor TYPES_PROPERTY =
 		new ChildListPropertyDescriptor(JavaScriptUnit.class, "types", AbstractTypeDeclaration.class, CYCLE_RISK); //$NON-NLS-1$
@@ -118,7 +118,7 @@ public class JavaScriptUnit extends ASTNode {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
@@ -127,13 +127,13 @@ public class JavaScriptUnit extends ASTNode {
 	/**
 	 * The comment mapper, or <code>null</code> if none;
 	 * initially <code>null</code>.
-	 * @since 3.0
+	 *  
 	 */
 	private DefaultCommentMapper commentMapper = null;
 
 	/**
-	 * The Java type root (an <code>org.eclipse.wst.jsdt.core.IJavaScriptUnit</code> or an <code>org.eclipse.wst.jsdt.core.IClassFile</code>)
-	 * this compilation unit was created from, or <code>null</code> if it was not created from a Java type root.
+	 * The JavaScript type root (an <code>org.eclipse.wst.jsdt.core.IJavaScriptUnit</code> or an <code>org.eclipse.wst.jsdt.core.IClassFile</code>)
+	 * this javaScript unit was created from, or <code>null</code> if it was not created from a JavaScript type root.
 	 */
 	private ITypeRoot typeRoot = null;
 
@@ -155,14 +155,14 @@ public class JavaScriptUnit extends ASTNode {
 	private int[] lineEndTable = Util.EMPTY_INT_ARRAY;
 
 	/**
-	 * Messages reported by the compiler during parsing or name resolution.
+	 * Messages reported by the validator during parsing or name resolution.
 	 */
 	private Message[] messages;
 
 	/**
 	 * The comment list (element type: <code>Comment</code>,
 	 * or <code>null</code> if none; initially <code>null</code>.
-	 * @since 3.0
+	 *  
 	 */
 	private List optionalCommentList = null;
 
@@ -170,7 +170,7 @@ public class JavaScriptUnit extends ASTNode {
 	 * The comment table, or <code>null</code> if none; initially
 	 * <code>null</code>. This array is the storage underlying
 	 * the <code>optionalCommentList</code> ArrayList.
-	 * @since 3.0
+	 *  
 	 */
 	Comment[] optionalCommentTable = null;
 
@@ -181,7 +181,7 @@ public class JavaScriptUnit extends ASTNode {
 	private PackageDeclaration optionalPackageDeclaration = null;
 
 	/**
-	 * Problems reported by the compiler during parsing or name resolution.
+	 * Problems reported by the validator during parsing or name resolution.
 	 */
 	private IProblem[] problems = EMPTY_PROBLEMS;
 
@@ -198,7 +198,7 @@ public class JavaScriptUnit extends ASTNode {
 
 	/**
 	 * Creates a new AST node for a compilation owned by the given AST.
-	 * The compilation unit initially has no package declaration, no
+	 * The javaScript unit initially has no package declaration, no
 	 * import declarations, and no type declarations.
 	 * <p>
 	 * N.B. This constructor is package-private; all subclasses must be
@@ -212,7 +212,7 @@ public class JavaScriptUnit extends ASTNode {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -227,7 +227,7 @@ public class JavaScriptUnit extends ASTNode {
 		visitor.endVisit(this);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -254,9 +254,9 @@ public class JavaScriptUnit extends ASTNode {
 	 * @return the 0-based column number, or <code>-1</code> if the character
 	 *    position does not correspond to a source line in the original
 	 *    source file or <code>-2</code> if column number information is unknown for this
-	 *    compilation unit
+	 *    javaScript unit
 	 * @see ASTParser
-	 * @since 3.2
+	 *  
 	 */
 	public int getColumnNumber(final int position) {
 		if (this.lineEndTable == null) return -2;
@@ -284,9 +284,9 @@ public class JavaScriptUnit extends ASTNode {
 	}
 
 	/**
-	 * Finds the corresponding AST node in the given compilation unit from
+	 * Finds the corresponding AST node in the given javaScript unit from
 	 * which the given binding originated. Returns <code>null</code> if the
-	 * binding does not correspond to any node in this compilation unit.
+	 * binding does not correspond to any node in this javaScript unit.
 	 * This method always returns <code>null</code> if bindings were not requested
 	 * when this AST was built.
 	 * <p>
@@ -332,7 +332,7 @@ public class JavaScriptUnit extends ASTNode {
 	 * @param binding the binding
 	 * @return the corresponding node where the given binding is declared,
 	 * or <code>null</code> if the binding does not correspond to a node in this
-	 * compilation unit or if bindings were not requested when this AST was built
+	 * javaScript unit or if bindings were not requested when this AST was built
 	 * @see #findDeclaringNode(String)
 	 */
 	public ASTNode findDeclaringNode(IBinding binding) {
@@ -340,7 +340,7 @@ public class JavaScriptUnit extends ASTNode {
 	}
 
 	/**
-	 * Finds the corresponding AST node in the given compilation unit from
+	 * Finds the corresponding AST node in the given javaScript unit from
 	 * which the binding with the given key originated. Returns
 	 * <code>null</code> if the corresponding node cannot be determined.
 	 * This method always returns <code>null</code> if bindings were not requested
@@ -379,10 +379,10 @@ public class JavaScriptUnit extends ASTNode {
 	 * @param key the binding key, or <code>null</code>
 	 * @return the corresponding node where a binding with the given
 	 * key is declared, or <code>null</code> if the key is <code>null</code>
-	 * or if the key does not correspond to a node in this compilation unit
+	 * or if the key does not correspond to a node in this javaScript unit
 	 * or if bindings were not requested when this AST was built
 	 * @see IBinding#getKey()
-	 * @since 2.1
+	 *  
 	 */
 	public ASTNode findDeclaringNode(String key) {
 		return this.ast.getBindingResolver().findDeclaringNode(key);
@@ -390,14 +390,14 @@ public class JavaScriptUnit extends ASTNode {
 
 	/**
 	 * Returns a list of the comments encountered while parsing
-	 * this compilation unit.
+	 * this javaScript unit.
 	 * <p>
-	 * Since the Java language allows comments to appear most anywhere
+	 * Since the JavaScript language allows comments to appear most anywhere
 	 * in the source text, it is problematic to locate comments in relation
 	 * to the structure of an AST. The one exception is doc comments
 	 * which, by convention, immediately precede type, field, and
 	 * method declarations; these comments are located in the AST
-	 * by {@link  BodyDeclaration#getJavadoc BodyDeclaration.getJavadoc}.
+	 * by {@link  BodyDeclaration#getjsdoc BodyDeclaration.getJavadoc}.
 	 * Other comments do not show up in the AST. The table of comments
 	 * is provided for clients that need to find the source ranges of
 	 * all comments in the original source string. It includes entries
@@ -408,20 +408,20 @@ public class JavaScriptUnit extends ASTNode {
 	 * Note on comment parenting: The {@link ASTNode#getParent() getParent()}
 	 * of a doc comment associated with a body declaration is the body
 	 * declaration node; for these comment nodes
-	 * {@link ASTNode#getRoot() getRoot()} will return the compilation unit
+	 * {@link ASTNode#getRoot() getRoot()} will return the javaScript unit
 	 * (assuming an unmodified AST) reflecting the fact that these nodes
-	 * are property located in the AST for the compilation unit.
+	 * are property located in the AST for the javaScript unit.
 	 * However, for other comment nodes, {@link ASTNode#getParent() getParent()}
 	 * will return <code>null</code>, and {@link ASTNode#getRoot() getRoot()}
 	 * will return the comment node itself, indicating that these comment nodes
-	 * are not directly connected to the AST for the compilation unit. The
+	 * are not directly connected to the AST for the javaScript unit. The
 	 * {@link Comment#getAlternateRoot Comment.getAlternateRoot}
 	 * method provides a way to navigate from a comment to its compilation
 	 * unit.
 	 * </p>
 	 * <p>
 	 * A note on visitors: The only comment nodes that will be visited when
-	 * visiting a compilation unit are the doc comments parented by body
+	 * visiting a javaScript unit are the doc comments parented by body
 	 * declarations. To visit all comments in normal reading order, iterate
 	 * over the comment table and call {@link ASTNode#accept(ASTVisitor) accept}
 	 * on each element.
@@ -432,9 +432,9 @@ public class JavaScriptUnit extends ASTNode {
 	 *
 	 * @return an unmodifiable list of comments in increasing order of source
 	 * start position, or <code>null</code> if comment information
-	 * for this compilation unit is not available
+	 * for this javaScript unit is not available
 	 * @see ASTParser
-	 * @since 3.0
+	 *  
 	 */
 	public List getCommentList() {
 		return this.optionalCommentList;
@@ -444,7 +444,7 @@ public class JavaScriptUnit extends ASTNode {
 	 * Returns the internal comment mapper.
 	 *
 	 * @return the comment mapper, or <code>null</code> if none.
-	 * @since 3.0
+	 *  
 	 */
 	DefaultCommentMapper getCommentMapper() {
 		return this.commentMapper;
@@ -460,7 +460,7 @@ public class JavaScriptUnit extends ASTNode {
 	 * @return a (possibly 0) length, or <code>0</code>
 	 *    if no source position information is recorded for this node
 	 * @see #getExtendedStartPosition(ASTNode)
-	 * @since 3.0
+	 *  
 	 */
 	public int getExtendedLength(ASTNode node) {
 		if (node == null) {
@@ -484,7 +484,7 @@ public class JavaScriptUnit extends ASTNode {
 	 * @return the 0-based character index, or <code>-1</code>
 	 *    if no source position information is recorded for this node
 	 * @see #getExtendedLength(ASTNode)
-	 * @since 3.0
+	 *  
 	 */
 	public int getExtendedStartPosition(ASTNode node) {
 		if (node == null) {
@@ -499,11 +499,11 @@ public class JavaScriptUnit extends ASTNode {
 	}
 
 	/**
-	 * The Java element (an <code>org.eclipse.wst.jsdt.core.IJavaScriptUnit</code> or an <code>org.eclipse.wst.jsdt.core.IClassFile</code>)
-	 * this compilation unit was created from, or <code>null</code> if it was not created from a Java element.
+	 * The JavaScript element (an <code>org.eclipse.wst.jsdt.core.IJavaScriptUnit</code> or an <code>org.eclipse.wst.jsdt.core.IClassFile</code>)
+	 * this javaScript unit was created from, or <code>null</code> if it was not created from a JavaScript element.
 	 *
-	 * @return the Java element this compilation unit was created from, or <code>null</code> if none
-	 * @since 3.1
+	 * @return the JavaScript element this javaScript unit was created from, or <code>null</code> if none
+	 *  
 	 * @see #getTypeRoot()
 	 */
 	public IJavaScriptElement getJavaElement() {
@@ -511,14 +511,14 @@ public class JavaScriptUnit extends ASTNode {
 	}
 
 	/**
-	 * Returns the list of messages reported by the compiler during the parsing
-	 * or the type checking of this compilation unit. This list might be a subset of
-	 * errors detected and reported by a Java compiler.
+	 * Returns the list of messages reported by the validator during the parsing
+	 * or the type checking of this javaScript unit. This list might be a subset of
+	 * errors detected and reported by a JavaScript compiler.
 	 * <p>
 	 * This list of messages is suitable for simple clients that do little
 	 * more than log the messages or display them to the user. Clients that
 	 * need further details should call <code>getProblems</code> to get
-	 * compiler problem objects.
+	 * validator problem objects.
 	 * </p>
 	 *
 	 * @return the list of messages, possibly empty
@@ -543,7 +543,7 @@ public class JavaScriptUnit extends ASTNode {
 		return this.messages;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
@@ -552,7 +552,7 @@ public class JavaScriptUnit extends ASTNode {
 
 	/**
 	 * Returns the node for the package declaration of this compilation
-	 * unit, or <code>null</code> if this compilation unit is in the
+	 * unit, or <code>null</code> if this javaScript unit is in the
 	 * default package.
 	 *
 	 * @return the package declaration node, or <code>null</code> if none
@@ -565,7 +565,7 @@ public class JavaScriptUnit extends ASTNode {
 	 * Given a line number and column number, returns the corresponding
 	 * position in the original source string.
 	 * Returns -2 if no line number information is available for this
-	 * compilation unit.
+	 * javaScript unit.
 	 * Returns the total size of the source string if <code>line</code>
 	 * is greater than the actual number lines in the unit.
 	 * Returns -1 if <code>column</code> is less than 0,
@@ -576,8 +576,8 @@ public class JavaScriptUnit extends ASTNode {
 	 * @param column the zero-based column number
 	 * @return the 0-based character position in the source string;
 	 * <code>-2</code> if line/column number information is not known
-	 * for this compilation unit or <code>-1</code> the inputs are not valid
-	 * @since 3.2
+	 * for this javaScript unit or <code>-1</code> the inputs are not valid
+	 *  
 	 */
 	 public int getPosition(int line, int column) {
 		if (this.lineEndTable == null) return -2;
@@ -609,7 +609,7 @@ public class JavaScriptUnit extends ASTNode {
 
 	/**
 	 * Returns the list of detailed problem reports noted by the compiler
-	 * during the parsing or the type checking of this compilation unit. This
+	 * during the parsing or the type checking of this javaScript unit. This
 	 * list might be a subset of errors detected and reported by a Java
 	 * compiler.
 	 * <p>
@@ -620,18 +620,18 @@ public class JavaScriptUnit extends ASTNode {
 	 * @return the list of detailed problem objects, possibly empty
 	 * @see #getMessages()
 	 * @see ASTParser
-	 * @since 2.1
+	 *  
 	 */
 	public IProblem[] getProblems() {
 		return this.problems;
 	}
 
 	/**
-	 * The Java type root (a {@link org.eclipse.wst.jsdt.core.IJavaScriptUnit compilation unit} or a {@link org.eclipse.wst.jsdt.core.IClassFile class file})
-	 * this compilation unit was created from, or <code>null</code> if it was not created from a Java type root.
+	 * The JavaScript type root (a {@link org.eclipse.wst.jsdt.core.IJavaScriptUnit javaScript unit} or a {@link org.eclipse.wst.jsdt.core.IClassFile class file})
+	 * this javaScript unit was created from, or <code>null</code> if it was not created from a JavaScript type root.
 	 *
-	 * @return the Java type root this compilation unit was created from, or <code>null</code> if none
-	 * @since 3.3
+	 * @return the JavaScript type root this javaScript unit was created from, or <code>null</code> if none
+	 *  
 	 */
 	public ITypeRoot getTypeRoot() {
 		return this.typeRoot;
@@ -639,7 +639,7 @@ public class JavaScriptUnit extends ASTNode {
 
 	/**
 	 * Returns the live list of nodes for the import declarations of this
-	 * compilation unit, in order of appearance.
+	 * javaScript unit, in order of appearance.
 	 *
 	 * @return the live list of import declaration nodes
 	 *    (elementType: <code>ImportDeclaration</code>)
@@ -655,7 +655,7 @@ public class JavaScriptUnit extends ASTNode {
 	 * @param node the node
 	 * @return 0-based index of first leading comment or -1 if node has no associated
 	 * 	comment before its start position.
-	 * @since 3.2
+	 *  
 	 */
 	public int firstLeadingCommentIndex(ASTNode node) {
 		if (node == null) {
@@ -674,7 +674,7 @@ public class JavaScriptUnit extends ASTNode {
 	 * @param node the node
 	 * @return 0-based index of last trailing comment or -1 if node has no
 	 * 	associated comment after its end position.
-	 * @since 3.2
+	 *  
 	 */
 	public int lastTrailingCommentIndex(ASTNode node) {
 		if (node == null) {
@@ -691,14 +691,14 @@ public class JavaScriptUnit extends ASTNode {
 	 * scanner.
 	 *
 	 * @param scanner the scanner
-	 * @since 3.0
+	 *  
 	 */
 	void initCommentMapper(Scanner scanner) {
 		this.commentMapper = new DefaultCommentMapper(this.optionalCommentTable);
 		this.commentMapper.initialize(this, scanner);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
@@ -715,7 +715,7 @@ public class JavaScriptUnit extends ASTNode {
 		return super.internalGetChildListProperty(property);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -731,9 +731,9 @@ public class JavaScriptUnit extends ASTNode {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
-	 * @since 3.0
+	 *  
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
@@ -742,23 +742,23 @@ public class JavaScriptUnit extends ASTNode {
 	/**
 	 * Returns the line number corresponding to the given source character
 	 * position in the original source string. The initial line of the
-	 * compilation unit is numbered 1, and each line extends through the
+	 * javaScript unit is numbered 1, and each line extends through the
 	 * last character of the end-of-line delimiter. The very last line extends
 	 * through the end of the source string and has no line delimiter.
 	 * For example, the source string <code>class A\n{\n}</code> has 3 lines
 	 * corresponding to inclusive character ranges [0,7], [8,9], and [10,10].
 	 * Returns -1 for a character position that does not correspond to any
 	 * source line, or -2 if no line number information is available for this
-	 * compilation unit.
+	 * javaScript unit.
 	 *
 	 * @param position a 0-based character position, possibly
 	 *   negative or out of range
 	 * @return the 1-based line number, or <code>-1</code> if the character
 	 *    position does not correspond to a source line in the original
 	 *    source file or <code>-2</code> if line number information is not known for this
-	 *    compilation unit
+	 *    javaScript unit
 	 * @see ASTParser
-	 * @since 3.2
+	 *  
 	 */
 	public int getLineNumber(int position) {
 		if (this.lineEndTable == null) return -2;
@@ -819,7 +819,7 @@ public class JavaScriptUnit extends ASTNode {
 		}
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -836,7 +836,7 @@ public class JavaScriptUnit extends ASTNode {
 
 	/**
 	 * Enables the recording of changes to this compilation
-	 * unit and its descendents. The compilation unit must have
+	 * unit and its descendents. The javaScript unit must have
 	 * been created by <code>ASTParser</code> and still be in
 	 * its original state. Once recording is on,
 	 * arbitrary changes to the subtree rooted at this compilation
@@ -845,10 +845,10 @@ public class JavaScriptUnit extends ASTNode {
 	 * representing the corresponding edits to the original
 	 * source code string.
 	 *
-	 * @exception IllegalArgumentException if this compilation unit is
-	 * marked as unmodifiable, or if this compilation unit has already
+	 * @exception IllegalArgumentException if this javaScript unit is
+	 * marked as unmodifiable, or if this javaScript unit has already
 	 * been tampered with, or recording has already been enabled
-	 * @since 3.0
+	 *  
 	 */
 	public void recordModifications() {
 		getAST().recordModifications(this);
@@ -858,9 +858,9 @@ public class JavaScriptUnit extends ASTNode {
 	 * Converts all modifications recorded for this compilation
 	 * unit into an object representing the corresponding text
 	 * edits to the given document containing the original source
-	 * code for this compilation unit.
+	 * code for this javaScript unit.
 	 * <p>
-	 * The compilation unit must have been created by
+	 * The javaScript unit must have been created by
 	 * <code>ASTParser</code> from the source code string in the
 	 * given document, and recording must have been turned
 	 * on with a prior call to <code>recordModifications</code>
@@ -876,7 +876,7 @@ public class JavaScriptUnit extends ASTNode {
 	 * </p>
 	 *
 	 * @param document original document containing source code
-	 * for this compilation unit
+	 * for this javaScript unit
 	 * @param options the table of formatter options
 	 * (key type: <code>String</code>; value type: <code>String</code>);
 	 * or <code>null</code> to use the standard global options
@@ -888,7 +888,7 @@ public class JavaScriptUnit extends ASTNode {
 	 * @exception IllegalStateException if <code>recordModifications</code>
 	 * was not called to enable recording
 	 * @see #recordModifications()
-	 * @since 3.0
+	 *  
 	 */
 	public TextEdit rewrite(IDocument document, Map options) {
 		return getAST().rewrite(document, options);
@@ -896,16 +896,16 @@ public class JavaScriptUnit extends ASTNode {
 
 	/**
 	 * Sets the list of the comments encountered while parsing
-	 * this compilation unit.
+	 * this javaScript unit.
 	 *
 	 * @param commentTable a list of comments in increasing order
 	 * of source start position, or <code>null</code> if comment
-	 * information for this compilation unit is not available
+	 * information for this javaScript unit is not available
 	 * @exception IllegalArgumentException if the comment table is
 	 * not in increasing order of source position
 	 * @see #getCommentList()
 	 * @see ASTParser
-	 * @since 3.0
+	 *  
 	 */
 	void setCommentTable(Comment[] commentTable) {
 		// double check table to ensure that all comments have
@@ -935,17 +935,17 @@ public class JavaScriptUnit extends ASTNode {
 	}
 
 	/**
-	 * Sets the Java type root (a {@link org.eclipse.wst.jsdt.core.IJavaScriptUnit compilation unit} or a {@link org.eclipse.wst.jsdt.core.IClassFile class file})
-	 * this compilation unit was created from, or <code>null</code> if it was not created from a Java type root.
+	 * Sets the JavaScript type root (a {@link org.eclipse.wst.jsdt.core.IJavaScriptUnit javaScript unit} or a {@link org.eclipse.wst.jsdt.core.IClassFile class file})
+	 * this javaScript unit was created from, or <code>null</code> if it was not created from a JavaScript type root.
 	 *
-	 * @param typeRoot the Java type root this compilation unit was created from
+	 * @param typeRoot the JavaScript type root this javaScript unit was created from
 	 */
 	void setTypeRoot(ITypeRoot typeRoot) {
 		this.typeRoot = typeRoot;
 	}
 
 	/**
-	 * Sets the line end table for this compilation unit.
+	 * Sets the line end table for this javaScript unit.
 	 * If <code>lineEndTable[i] == p</code> then line number <code>i+1</code>
 	 * ends at character position <code>p</code>. Except for the last line, the
 	 * positions are that of (the last character of) the line delimiter.
@@ -965,11 +965,11 @@ public class JavaScriptUnit extends ASTNode {
 	}
 
 	/**
-	 * Sets or clears the package declaration of this compilation unit
+	 * Sets or clears the package declaration of this javaScript unit
 	 * node to the given package declaration node.
 	 *
 	 * @param pkgDecl the new package declaration node, or
-	 *   <code>null</code> if this compilation unit does not have a package
+	 *   <code>null</code> if this javaScript unit does not have a package
 	 *   declaration (that is in the default package)
 	 * @exception IllegalArgumentException if:
 	 * <ul>
@@ -986,8 +986,8 @@ public class JavaScriptUnit extends ASTNode {
 
 
 	/**
-	 * Sets the array of problems reported by the compiler during the parsing or
-	 * name resolution of this compilation unit.
+	 * Sets the array of problems reported by the validator during the parsing or
+	 * name resolution of this javaScript unit.
 	 *
 	 * @param problems the list of problems
 	 */
@@ -998,7 +998,7 @@ public class JavaScriptUnit extends ASTNode {
 		this.problems = problems;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -1006,7 +1006,7 @@ public class JavaScriptUnit extends ASTNode {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {
@@ -1031,7 +1031,7 @@ public class JavaScriptUnit extends ASTNode {
 
 	/**
 	 * Returns the live list of nodes for the top-level type declarations of this
-	 * compilation unit, in order of appearance.
+	 * javaScript unit, in order of appearance.
      * <p>
      * Note that in JLS3, the types may include both enum declarations
      * and annotation type declarations introduced in J2SE 5.

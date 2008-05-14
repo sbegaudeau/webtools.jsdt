@@ -72,7 +72,7 @@ class InternalASTRewrite extends NodeEventHandler {
 				 * {@link TargetSourceRangeComputer#computeSourceRange(ASTNode)}
 				 * is specialized to work in the case of internal AST rewriting, where the
 				 * original AST has been modified from its original form. This means that
-				 * one cannot trust that the root of the given node is the compilation unit.
+				 * one cannot trust that the root of the given node is the javaScript unit.
 				 */
 				public SourceRange computeSourceRange(ASTNode node) {
 					int extendedStartPosition = rootNode.getExtendedStartPosition(node);

@@ -88,8 +88,8 @@ public final class Flags {
 	 * <b>This flag only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static final int AccAbstract = ClassFileConstants.AccAbstract;
-	/*
-	 * Strictfp property flag. See The Java Virtual Machine Specification for more details.
+	/**
+	 * Strictfp property flag.  
 	 */
 	public static final int AccStrictfp = ClassFileConstants.AccStrictfp;
 	/**
@@ -140,7 +140,7 @@ public final class Flags {
 	}
 	/**
 	 * Returns whether the given integer includes the indication that the
-	 * element is deprecated (<code>@deprecated</code> tag in Javadoc comment).
+	 * element is deprecated (<code>@deprecated</code> tag in jsdoc comment).
 	 *
 	 * @param flags the flags
 	 * @return <code>true</code> if the element is marked as deprecated

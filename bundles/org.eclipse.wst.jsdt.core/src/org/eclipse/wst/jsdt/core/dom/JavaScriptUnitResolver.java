@@ -97,26 +97,26 @@ class JavaScriptUnitResolver extends Compiler {
 	private IProgressMonitor monitor;
 
 	/**
-	 * Answer a new CompilationUnitVisitor using the given name environment and compiler options.
+	 * Answer a new CompilationUnitVisitor using the given name environment and validator options.
 	 * The environment and options will be in effect for the lifetime of the compiler.
-	 * When the compiler is run, compilation results are sent to the given requestor.
+	 * When the validator is run, compilation results are sent to the given requestor.
 	 *
 	 *  @param environment org.eclipse.wst.jsdt.internal.compiler.api.env.INameEnvironment
-	 *      Environment used by the compiler in order to resolve type and package
+	 *      Environment used by the validator in order to resolve type and package
 	 *      names. The name environment implements the actual connection of the compiler
 	 *      to the outside world (for example, in batch mode the name environment is performing
 	 *      pure file accesses, reuse previous build state or connection to repositories).
-	 *      Note: the name environment is responsible for implementing the actual classpath
+	 *      Note: the name environment is responsible for implementing the actual includepath
 	 *            rules.
 	 *
 	 *  @param policy org.eclipse.wst.jsdt.internal.compiler.api.problem.IErrorHandlingPolicy
-	 *      Configurable part for problem handling, allowing the compiler client to
+	 *      Configurable part for problem handling, allowing the validator client to
 	 *      specify the rules for handling problems (stop on first error or accumulate
 	 *      them all) and at the same time perform some actions such as opening a dialog
-	 *      in UI when compiling interactively.
+	 *      in UI when validating interactively.
 	 *      @see org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies
 	 *
-	 *	@param compilerOptions The compiler options to use for the resolution.
+	 *	@param compilerOptions The validator options to use for the resolution.
 	 *
 	 *  @param requestor org.eclipse.wst.jsdt.internal.compiler.api.ICompilerRequestor
 	 *      Component which will receive and persist all compilation results and is intended
@@ -125,11 +125,11 @@ class JavaScriptUnitResolver extends Compiler {
 	 *      @see org.eclipse.wst.jsdt.internal.compiler.CompilationResult
 	 *
 	 *  @param problemFactory org.eclipse.wst.jsdt.internal.compiler.api.problem.IProblemFactory
-	 *      Factory used inside the compiler to create problem descriptors. It allows the
-	 *      compiler client to supply its own representation of compilation problems in
+	 *      Factory used inside the validator to create problem descriptors. It allows the
+	 *      validator client to supply its own representation of compilation problems in
 	 *      order to avoid object conversions. Note that the factory is not supposed
-	 *      to accumulate the created problems, the compiler will gather them all and hand
-	 *      them back as part of the compilation unit result.
+	 *      to accumulate the created problems, the validator will gather them all and hand
+	 *      them back as part of the javaScript unit result.
 	 */
 	public JavaScriptUnitResolver(
 		INameEnvironment environment,
@@ -148,15 +148,15 @@ class JavaScriptUnitResolver extends Compiler {
 	 * Add additional source types
 	 */
 	public void accept(ISourceType[] sourceTypes, PackageBinding packageBinding, AccessRestriction accessRestriction) {
-		// Need to reparse the entire source of the compilation unit so as to get source positions
+		// Need to reparse the entire source of the javaScript unit so as to get source positions
 		// (case of processing a source that was not known by beginToCompile (e.g. when asking to createBinding))
 		SourceTypeElementInfo sourceType = (SourceTypeElementInfo) sourceTypes[0];
 		accept((org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit) sourceType.getHandle().getJavaScriptUnit(), accessRestriction);
 	}
 
 	/**
-	 * Add the initial set of compilation units into the loop
-	 *  ->  build compilation unit declarations, their bindings and record their results.
+	 * Add the initial set of javaScript units into the loop
+	 *  ->  build javaScript unit declarations, their bindings and record their results.
 	 */
 	protected void beginToCompile(org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit[] sourceUnits, String[] bindingKeys) {
 		int sourceLength = sourceUnits.length;
@@ -204,7 +204,7 @@ class JavaScriptUnitResolver extends Compiler {
 		for (int i = 0; i < keyLength; i++) {
 			BindingKeyResolver resolver = new BindingKeyResolver(bindingKeys[i], this, this.lookupEnvironment);
 			resolver.parse(true/*pause after fully qualified name*/);
-			// If it doesn't have a type name, then it is either an array type, package or base type, which will definitely not have a compilation unit.
+			// If it doesn't have a type name, then it is either an array type, package or base type, which will definitely not have a javaScript unit.
 			// Skipping it will speed up performance because the call will open jars. (theodora)
 			CompilationUnitDeclaration parsedUnit = resolver.hasTypeName() ? resolver.getCompilationUnitDeclaration() : null;
 			if (parsedUnit != null) {
@@ -525,7 +525,7 @@ class JavaScriptUnitResolver extends Compiler {
 
 			unit =
 				resolver.resolve(
-					null, // no existing compilation unit declaration
+					null, // no existing javaScript unit declaration
 					sourceUnit,
 					nodeSearcher,
 					true, // method verification
@@ -582,7 +582,7 @@ class JavaScriptUnitResolver extends Compiler {
 		for (int i = 0; i < length; i++) {
 			IJavaScriptElement element = elements[i];
 			if (!(element instanceof SourceRefElement))
-				throw new IllegalStateException(element + " is not part of a compilation unit or class file"); //$NON-NLS-1$
+				throw new IllegalStateException(element + " is not part of a javaScript unit or class file"); //$NON-NLS-1$
 			Object cu = element.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 			if (cu != null) {
 				// source member
@@ -749,7 +749,7 @@ class JavaScriptUnitResolver extends Compiler {
 					this.requestedSources.removeKey(fileName);
 					this.requestedKeys.removeKey(fileName);
 				} finally {
-					// cleanup compilation unit result
+					// cleanup javaScript unit result
 					unit.cleanUp();
 				}
 				this.unitsToProcess[i] = null; // release reference to processed unit declaration
@@ -877,15 +877,15 @@ class JavaScriptUnitResolver extends Compiler {
 		} finally {
 			// No reset is performed there anymore since,
 			// within the CodeAssist (or related tools),
-			// the compiler may be called *after* a call
+			// the validator may be called *after* a call
 			// to this resolve(...) method. And such a call
-			// needs to have a compiler with a non-empty
+			// needs to have a validator with a non-empty
 			// environment.
 			// this.reset();
 		}
 	}
 	/*
-	 * Internal API used to resolve a given compilation unit. Can run a subset of the compilation process
+	 * Internal API used to resolve a given javaScript unit. Can run a subset of the compilation process
 	 */
 	public CompilationUnitDeclaration resolve(
 			org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit sourceUnit,
@@ -894,7 +894,7 @@ class JavaScriptUnitResolver extends Compiler {
 			boolean generateCode) {
 
 		return resolve(
-			null, /* no existing compilation unit declaration*/
+			null, /* no existing javaScript unit declaration*/
 			sourceUnit,
 			null/*no node searcher*/,
 			verifyMethods,
@@ -903,7 +903,7 @@ class JavaScriptUnitResolver extends Compiler {
 	}
 
 	/*
-	 * Internal API used to resolve a given compilation unit. Can run a subset of the compilation process
+	 * Internal API used to resolve a given javaScript unit. Can run a subset of the compilation process
 	 */
 	public CompilationUnitDeclaration resolve(
 			CompilationUnitDeclaration unit,

@@ -42,7 +42,7 @@ public class DefaultCodeFormatterConstants {
  	 * @see #FORMATTER_BRACE_POSITION_FOR_METHOD_DECLARATION
  	 * @see #FORMATTER_BRACE_POSITION_FOR_SWITCH
 	 * @see #FORMATTER_BRACE_POSITION_FOR_TYPE_DECLARATION
-	 * @since 3.0
+	 *  
 	 */
 	public static final String END_OF_LINE = "end_of_line";	//$NON-NLS-1$
 
@@ -50,7 +50,7 @@ public class DefaultCodeFormatterConstants {
 	 * <pre>
 	 * FORMATTER / Value to set an option to false.
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FALSE = "false"; //$NON-NLS-1$
 
@@ -63,7 +63,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGN_TYPE_MEMBERS_ON_COLUMNS = JavaScriptCore.PLUGIN_ID + ".formatter.align_type_members_on_columns";	 //$NON-NLS-1$
 
@@ -75,7 +75,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_ALLOCATION_EXPRESSION = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_arguments_in_allocation_expression";	 //$NON-NLS-1$
 	/**
@@ -86,7 +86,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_ENUM_CONSTANT = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_arguments_in_enum_constant";	 //$NON-NLS-1$
 	/**
@@ -97,7 +97,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_EXPLICIT_CONSTRUCTOR_CALL = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_arguments_in_explicit_constructor_call";	 //$NON-NLS-1$
 	/**
@@ -108,7 +108,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_METHOD_INVOCATION = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_arguments_in_method_invocation";	 //$NON-NLS-1$
 	/**
@@ -119,7 +119,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_QUALIFIED_ALLOCATION_EXPRESSION = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_arguments_in_qualified_allocation_expression";	 //$NON-NLS-1$
 	/**
@@ -130,7 +130,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, M_NO_ALIGNMENT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.2
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_ASSIGNMENT  = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_assignment";	 //$NON-NLS-1$
 	/**
@@ -141,7 +141,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_BINARY_EXPRESSION = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_binary_expression";	 //$NON-NLS-1$
 	/**
@@ -152,7 +152,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_ONE_PER_LINE, INDENT_BY_ONE)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_COMPACT_IF = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_compact_if";	 //$NON-NLS-1$
 	/**
@@ -163,7 +163,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_ONE_PER_LINE, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_CONDITIONAL_EXPRESSION = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_conditional_expression";	 //$NON-NLS-1$
 	/**
@@ -174,7 +174,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:          createAlignmentValue(false, WRAP_NO_SPLIT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_ENUM_CONSTANTS = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_enum_constants";	 //$NON-NLS-1$
 	/**
@@ -185,7 +185,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_EXPRESSIONS_IN_ARRAY_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_expressions_in_array_initializer";	 //$NON-NLS-1$
 	/**
@@ -196,7 +196,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_MULTIPLE_FIELDS = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_multiple_fields";//$NON-NLS-1$
 	/**
@@ -207,7 +207,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_PARAMETERS_IN_CONSTRUCTOR_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_parameters_in_constructor_declaration";	 //$NON-NLS-1$
 	/**
@@ -218,7 +218,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_PARAMETERS_IN_METHOD_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_parameters_in_method_declaration";	 //$NON-NLS-1$
 	/**
@@ -229,7 +229,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_SELECTOR_IN_METHOD_INVOCATION = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_selector_in_method_invocation";	 //$NON-NLS-1$
 	/**
@@ -240,7 +240,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_NEXT_SHIFTED, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_SUPERCLASS_IN_TYPE_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_superclass_in_type_declaration";	 //$NON-NLS-1$
 	/**
@@ -251,7 +251,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_SUPERINTERFACES_IN_ENUM_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_superinterfaces_in_enum_declaration";	 //$NON-NLS-1$
 	/**
@@ -262,7 +262,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_SUPERINTERFACES_IN_TYPE_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_superinterfaces_in_type_declaration";	 //$NON-NLS-1$
 	/**
@@ -273,7 +273,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_THROWS_CLAUSE_IN_CONSTRUCTOR_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_throws_clause_in_constructor_declaration";	 //$NON-NLS-1$
 	/**
@@ -284,7 +284,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           createAlignmentValue(false, WRAP_COMPACT, INDENT_DEFAULT)
 	 * </pre>
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_ALIGNMENT_FOR_THROWS_CLAUSE_IN_METHOD_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.alignment_for_throws_clause_in_method_declaration";	 //$NON-NLS-1$
 
@@ -295,7 +295,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "0"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BLANK_LINES_AFTER_IMPORTS = JavaScriptCore.PLUGIN_ID + ".formatter.blank_lines_after_imports";	//$NON-NLS-1$
 	/**
@@ -305,7 +305,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "0"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BLANK_LINES_AFTER_PACKAGE = JavaScriptCore.PLUGIN_ID + ".formatter.blank_lines_after_package";	//$NON-NLS-1$
 	/**
@@ -315,7 +315,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "0"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BLANK_LINES_AT_BEGINNING_OF_METHOD_BODY = JavaScriptCore.PLUGIN_ID + ".formatter.number_of_blank_lines_at_beginning_of_method_body"; //$NON-NLS-1$
 	/**
@@ -325,7 +325,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "0"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BLANK_LINES_BEFORE_FIELD = JavaScriptCore.PLUGIN_ID + ".formatter.blank_lines_before_field";	//$NON-NLS-1$
 	/**
@@ -335,7 +335,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "0"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BLANK_LINES_BEFORE_FIRST_CLASS_BODY_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.blank_lines_before_first_class_body_declaration";	//$NON-NLS-1$
 	/**
@@ -345,7 +345,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "0"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BLANK_LINES_BEFORE_IMPORTS = JavaScriptCore.PLUGIN_ID + ".formatter.blank_lines_before_imports";	//$NON-NLS-1$
 	/**
@@ -355,7 +355,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "0"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BLANK_LINES_BEFORE_MEMBER_TYPE = JavaScriptCore.PLUGIN_ID + ".formatter.blank_lines_before_member_type";	//$NON-NLS-1$
 	/**
@@ -365,7 +365,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "0"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BLANK_LINES_BEFORE_METHOD = JavaScriptCore.PLUGIN_ID + ".formatter.blank_lines_before_method";	//$NON-NLS-1$
 	/**
@@ -375,7 +375,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "0"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BLANK_LINES_BEFORE_NEW_CHUNK = JavaScriptCore.PLUGIN_ID + ".formatter.blank_lines_before_new_chunk";	//$NON-NLS-1$
 	/**
@@ -385,7 +385,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "0"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BLANK_LINES_BEFORE_PACKAGE = JavaScriptCore.PLUGIN_ID + ".formatter.blank_lines_before_package";	//$NON-NLS-1$
 	/**
@@ -398,7 +398,7 @@ public class DefaultCodeFormatterConstants {
 	 * Note: Import groups are defined once "Organize Import" operation has been executed. The code formatter itself
 	 * doesn't define the import groups.
 	 *
-	 * @since 3.3
+	 *  
 	 */
 	public static final String FORMATTER_BLANK_LINES_BETWEEN_IMPORT_GROUPS = JavaScriptCore.PLUGIN_ID + ".formatter.blank_lines_between_import_groups";	//$NON-NLS-1$
 	/**
@@ -408,7 +408,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "0"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BLANK_LINES_BETWEEN_TYPE_DECLARATIONS = JavaScriptCore.PLUGIN_ID + ".formatter.blank_lines_between_type_declarations";	//$NON-NLS-1$
 	/**
@@ -422,7 +422,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #NEXT_LINE
 	 * @see #NEXT_LINE_SHIFTED
 	 * @see #NEXT_LINE_ON_WRAP
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_BRACE_POSITION_FOR_ANNOTATION_TYPE_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.brace_position_for_annotation_type_declaration";	//$NON-NLS-1$
 	/**
@@ -436,7 +436,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #NEXT_LINE
 	 * @see #NEXT_LINE_SHIFTED
 	 * @see #NEXT_LINE_ON_WRAP
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BRACE_POSITION_FOR_ANONYMOUS_TYPE_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.brace_position_for_anonymous_type_declaration";	//$NON-NLS-1$
 	/**
@@ -450,7 +450,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #NEXT_LINE
 	 * @see #NEXT_LINE_SHIFTED
 	 * @see #NEXT_LINE_ON_WRAP
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BRACE_POSITION_FOR_ARRAY_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.brace_position_for_array_initializer";	//$NON-NLS-1$
 	/**
@@ -464,7 +464,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #NEXT_LINE
 	 * @see #NEXT_LINE_SHIFTED
 	 * @see #NEXT_LINE_ON_WRAP
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BRACE_POSITION_FOR_OBJLIT_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.brace_position_for_objlit_initializer";	//$NON-NLS-1$
 	/**
@@ -478,7 +478,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #NEXT_LINE
 	 * @see #NEXT_LINE_SHIFTED
 	 * @see #NEXT_LINE_ON_WRAP
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BRACE_POSITION_FOR_BLOCK = JavaScriptCore.PLUGIN_ID + ".formatter.brace_position_for_block";	//$NON-NLS-1$
 	/**
@@ -493,7 +493,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #NEXT_LINE
 	 * @see #NEXT_LINE_SHIFTED
 	 * @see #NEXT_LINE_ON_WRAP
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BRACE_POSITION_FOR_BLOCK_IN_CASE = JavaScriptCore.PLUGIN_ID + ".formatter.brace_position_for_block_in_case";	//$NON-NLS-1$
 	/**
@@ -507,7 +507,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #NEXT_LINE
 	 * @see #NEXT_LINE_SHIFTED
 	 * @see #NEXT_LINE_ON_WRAP
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BRACE_POSITION_FOR_CONSTRUCTOR_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.brace_position_for_constructor_declaration";	//$NON-NLS-1$
 	/**
@@ -521,7 +521,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #NEXT_LINE
 	 * @see #NEXT_LINE_SHIFTED
 	 * @see #NEXT_LINE_ON_WRAP
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_BRACE_POSITION_FOR_ENUM_CONSTANT = JavaScriptCore.PLUGIN_ID + ".formatter.brace_position_for_enum_constant";	//$NON-NLS-1$
 	/**
@@ -535,7 +535,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #NEXT_LINE
 	 * @see #NEXT_LINE_SHIFTED
 	 * @see #NEXT_LINE_ON_WRAP
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_BRACE_POSITION_FOR_ENUM_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.brace_position_for_enum_declaration";	//$NON-NLS-1$
 	/**
@@ -549,7 +549,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #NEXT_LINE
 	 * @see #NEXT_LINE_SHIFTED
 	 * @see #NEXT_LINE_ON_WRAP
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BRACE_POSITION_FOR_METHOD_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.brace_position_for_method_declaration";	//$NON-NLS-1$
 	/**
@@ -563,7 +563,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #NEXT_LINE
 	 * @see #NEXT_LINE_SHIFTED
 	 * @see #NEXT_LINE_ON_WRAP
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BRACE_POSITION_FOR_SWITCH = JavaScriptCore.PLUGIN_ID + ".formatter.brace_position_for_switch";	//$NON-NLS-1$
 	/**
@@ -577,7 +577,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #NEXT_LINE
 	 * @see #NEXT_LINE_SHIFTED
 	 * @see #NEXT_LINE_ON_WRAP
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_BRACE_POSITION_FOR_TYPE_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.brace_position_for_type_declaration";	//$NON-NLS-1$
 
@@ -590,21 +590,21 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.1
+	 *  
 	 * @deprecated Use {@link #FORMATTER_COMMENT_CLEAR_BLANK_LINES_IN_BLOCK_COMMENT} and {@link #FORMATTER_COMMENT_CLEAR_BLANK_LINES_IN_JAVADOC_COMMENT}
 	 */
 	public final static String FORMATTER_COMMENT_CLEAR_BLANK_LINES = "org.eclipse.wst.jsdt.core.formatter.comment.clear_blank_lines"; //$NON-NLS-1$
 
 	/**
 	 * <pre>
-	 * FORMATTER / Option to control whether blank lines are cleared inside javadoc comments
+	 * FORMATTER / Option to control whether blank lines are cleared inside jsdoc comments
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.comment.clear_blank_lines_in_javadoc_comment"
 	 *     - possible values:   { TRUE, FALSE }
 	 *     - default:           FALSE
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 *  
 	 */
 	public final static String FORMATTER_COMMENT_CLEAR_BLANK_LINES_IN_JAVADOC_COMMENT = "org.eclipse.wst.jsdt.core.formatter.comment.clear_blank_lines_in_javadoc_comment"; //$NON-NLS-1$
 
@@ -617,7 +617,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 *  
 	 */
 	public final static String FORMATTER_COMMENT_CLEAR_BLANK_LINES_IN_BLOCK_COMMENT = "org.eclipse.wst.jsdt.core.formatter.comment.clear_blank_lines_in_block_comment"; //$NON-NLS-1$
 
@@ -630,7 +630,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.1
+	 *  
 	 * @deprecated Use multiple settings for each kind of comments. See {@link #FORMATTER_COMMENT_FORMAT_BLOCK_COMMENT},
 	 * {@link #FORMATTER_COMMENT_FORMAT_JAVADOC_COMMENT} and {@link #FORMATTER_COMMENT_FORMAT_LINE_COMMENT}.
 	 */
@@ -645,7 +645,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 *  
 	 */
 	public final static String FORMATTER_COMMENT_FORMAT_LINE_COMMENT = "org.eclipse.wst.jsdt.core.formatter.comment.format_line_comments"; //$NON-NLS-1$
 
@@ -658,33 +658,33 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 *  
 	 */
 	public final static String FORMATTER_COMMENT_FORMAT_BLOCK_COMMENT = "org.eclipse.wst.jsdt.core.formatter.comment.format_block_comments"; //$NON-NLS-1$
 
 	/**
 	 * <pre>
-	 * FORMATTER / Option to control whether javadoc comments are formatted
+	 * FORMATTER / Option to control whether jsdoc comments are formatted
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.comment.format_javadoc_comments"
 	 *     - possible values:   { TRUE, FALSE }
 	 *     - default:           TRUE
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 *  
 	 */
 	public final static String FORMATTER_COMMENT_FORMAT_JAVADOC_COMMENT = "org.eclipse.wst.jsdt.core.formatter.comment.format_javadoc_comments"; //$NON-NLS-1$
 
 	/**
 	 * <pre>
-	 * FORMATTER / Option to control whether the header comment of a Java source file is formatted
+	 * FORMATTER / Option to control whether the header comment of a JavaScript source file is formatted
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.comment.format_header"
 	 *     - possible values:   { TRUE, FALSE }
 	 *     - default:           FALSE
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.1
+	 *  
 	 */
 	public final static String FORMATTER_COMMENT_FORMAT_HEADER = "org.eclipse.wst.jsdt.core.formatter.comment.format_header"; //$NON-NLS-1$
 
@@ -697,7 +697,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.1
+	 *  
 	 */
 	public final static String FORMATTER_COMMENT_FORMAT_HTML = "org.eclipse.wst.jsdt.core.formatter.comment.format_html"; //$NON-NLS-1$
 
@@ -710,59 +710,59 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.1
+	 *  
 	 */
 	public final static String FORMATTER_COMMENT_FORMAT_SOURCE = "org.eclipse.wst.jsdt.core.formatter.comment.format_source_code"; //$NON-NLS-1$
 
 	/**
 	 * <pre>
-	 * FORMATTER / Option to control whether description of Javadoc parameters are indented
+	 * FORMATTER / Option to control whether description of jsdoc parameters are indented
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.comment.indent_parameter_description"
 	 *     - possible values:   { TRUE, FALSE }
 	 *     - default:           TRUE
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.1
+	 *  
 	 */
 	public final static String FORMATTER_COMMENT_INDENT_PARAMETER_DESCRIPTION = "org.eclipse.wst.jsdt.core.formatter.comment.indent_parameter_description"; //$NON-NLS-1$
 
 	/**
 	 * <pre>
-	 * FORMATTER / Option to control whether Javadoc root tags are indented.
+	 * FORMATTER / Option to control whether jsdoc root tags are indented.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.comment.indent_root_tags"
 	 *     - possible values:   { TRUE, FALSE }
 	 *     - default:           TRUE
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.1
+	 *  
 	 */
 	public final static String FORMATTER_COMMENT_INDENT_ROOT_TAGS = "org.eclipse.wst.jsdt.core.formatter.comment.indent_root_tags"; //$NON-NLS-1$
 
 	/**
 	 * <pre>
-	 * FORMATTER / Option to insert an empty line before the Javadoc root tag block
+	 * FORMATTER / Option to insert an empty line before the jsdoc root tag block
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.comment.insert_new_line_before_root_tags"
 	 *     - possible values:   { INSERT, DO_NOT_INSERT }
 	 *     - default:           INSERT
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public final static String FORMATTER_COMMENT_INSERT_EMPTY_LINE_BEFORE_ROOT_TAGS = "org.eclipse.wst.jsdt.core.formatter.comment.insert_new_line_before_root_tags"; //$NON-NLS-1$
 
 	/**
 	 * <pre>
-	 * FORMATTER / Option to insert a new line after Javadoc root tag parameters
+	 * FORMATTER / Option to insert a new line after jsdoc root tag parameters
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.comment.insert_new_line_for_parameter"
 	 *     - possible values:   { INSERT, DO_NOT_INSERT }
 	 *     - default:           INSERT
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public final static String FORMATTER_COMMENT_INSERT_NEW_LINE_FOR_PARAMETER = "org.eclipse.wst.jsdt.core.formatter.comment.insert_new_line_for_parameter"; //$NON-NLS-1$
 
@@ -773,7 +773,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "80"
 	 * </pre>
-	 * @since 3.1
+	 *  
 	 */
 	public final static String FORMATTER_COMMENT_LINE_LENGTH = "org.eclipse.wst.jsdt.core.formatter.comment.line_length"; //$NON-NLS-1$
 
@@ -786,7 +786,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_COMPACT_ELSE_IF = JavaScriptCore.PLUGIN_ID + ".formatter.compact_else_if";	//$NON-NLS-1$
 
@@ -797,7 +797,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "2"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_CONTINUATION_INDENTATION = JavaScriptCore.PLUGIN_ID + ".formatter.continuation_indentation";	//$NON-NLS-1$
 	/**
@@ -807,7 +807,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "2"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_CONTINUATION_INDENTATION_FOR_ARRAY_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.continuation_indentation_for_array_initializer";	//$NON-NLS-1$
 	/**
@@ -817,7 +817,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "1"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_CONTINUATION_INDENTATION_FOR_OBJLIT_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.continuation_indentation_for_objlit_initializer";	//$NON-NLS-1$
 	/**
@@ -829,7 +829,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.2
+	 *  
 	 */
 	public static final String FORMATTER_INDENT_BODY_DECLARATIONS_COMPARE_TO_ANNOTATION_DECLARATION_HEADER = JavaScriptCore.PLUGIN_ID + ".formatter.indent_body_declarations_compare_to_annotation_declaration_header";	//$NON-NLS-1$
 	/**
@@ -841,7 +841,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INDENT_BODY_DECLARATIONS_COMPARE_TO_ENUM_CONSTANT_HEADER = JavaScriptCore.PLUGIN_ID + ".formatter.indent_body_declarations_compare_to_enum_constant_header";	//$NON-NLS-1$
 	/**
@@ -853,7 +853,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INDENT_BODY_DECLARATIONS_COMPARE_TO_ENUM_DECLARATION_HEADER = JavaScriptCore.PLUGIN_ID + ".formatter.indent_body_declarations_compare_to_enum_declaration_header";	//$NON-NLS-1$
 	/**
@@ -865,7 +865,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INDENT_BODY_DECLARATIONS_COMPARE_TO_TYPE_HEADER = JavaScriptCore.PLUGIN_ID + ".formatter.indent_body_declarations_compare_to_type_header";	//$NON-NLS-1$
 	/**
@@ -877,7 +877,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INDENT_BREAKS_COMPARE_TO_CASES = JavaScriptCore.PLUGIN_ID + ".formatter.indent_breaks_compare_to_cases";	//$NON-NLS-1$
 	/**
@@ -889,7 +889,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.2
+	 *  
 	 */
 	public static final String FORMATTER_INDENT_EMPTY_LINES = JavaScriptCore.PLUGIN_ID + ".formatter.indent_empty_lines"; //$NON-NLS-1$
 	/**
@@ -901,7 +901,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INDENT_STATEMENTS_COMPARE_TO_BLOCK = JavaScriptCore.PLUGIN_ID + ".formatter.indent_statements_compare_to_block"; //$NON-NLS-1$
 	/**
@@ -913,7 +913,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INDENT_STATEMENTS_COMPARE_TO_BODY = JavaScriptCore.PLUGIN_ID + ".formatter.indent_statements_compare_to_body"; //$NON-NLS-1$
 	/**
@@ -925,7 +925,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INDENT_SWITCHSTATEMENTS_COMPARE_TO_CASES = JavaScriptCore.PLUGIN_ID + ".formatter.indent_switchstatements_compare_to_cases";	//$NON-NLS-1$
 	/**
@@ -937,7 +937,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INDENT_SWITCHSTATEMENTS_COMPARE_TO_SWITCH = JavaScriptCore.PLUGIN_ID + ".formatter.indent_switchstatements_compare_to_switch";	//$NON-NLS-1$
 
@@ -951,7 +951,7 @@ public class DefaultCodeFormatterConstants {
 	 * <p>This option is used only if the tab char is set to MIXED.
 	 * </p>
 	 * @see #FORMATTER_TAB_CHAR
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INDENTATION_SIZE = JavaScriptCore.PLUGIN_ID + ".formatter.indentation.size"; //$NON-NLS-1$
 
@@ -964,7 +964,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_AFTER_ANNOTATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_after_annotation";//$NON-NLS-1$
 
@@ -977,7 +977,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_AFTER_OPENING_BRACE_IN_ARRAY_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_after_opening_brace_in_array_initializer";//$NON-NLS-1$
 
@@ -990,7 +990,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_AFTER_OPENING_BRACE_IN_OBJLIT_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_after_opening_brace_in_objlit_initializer";//$NON-NLS-1$
 
@@ -1003,7 +1003,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_AFTER_COMMA_IN_OBJLIT_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_after_comma_in_objlit_initializer";//$NON-NLS-1$
 
@@ -1016,7 +1016,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_AT_END_OF_FILE_IF_MISSING = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_at_end_of_file_if_missing";//$NON-NLS-1$
 	/**
@@ -1028,7 +1028,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_BEFORE_CATCH_IN_TRY_STATEMENT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_before_catch_in_try_statement";	//$NON-NLS-1$
 	/**
@@ -1040,7 +1040,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_BEFORE_CLOSING_BRACE_IN_ARRAY_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_before_closing_brace_in_array_initializer";//$NON-NLS-1$
 	/**
@@ -1052,7 +1052,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_BEFORE_CLOSING_BRACE_IN_OBJLIT_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_before_closing_brace_in_objlit_initializer";//$NON-NLS-1$
 	/**
@@ -1064,7 +1064,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_BEFORE_ELSE_IN_IF_STATEMENT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_before_else_in_if_statement";	//$NON-NLS-1$
 	/**
@@ -1076,7 +1076,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_BEFORE_FINALLY_IN_TRY_STATEMENT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_before_finally_in_try_statement";	//$NON-NLS-1$
 	/**
@@ -1088,7 +1088,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_BEFORE_WHILE_IN_DO_STATEMENT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_before_while_in_do_statement";	//$NON-NLS-1$
 	/**
@@ -1100,7 +1100,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.2
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_IN_EMPTY_ANNOTATION_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_in_empty_annotation_declaration";	//$NON-NLS-1$
 	/**
@@ -1112,7 +1112,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_IN_EMPTY_ANONYMOUS_TYPE_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_in_empty_anonymous_type_declaration";	//$NON-NLS-1$
 	/**
@@ -1124,7 +1124,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_IN_EMPTY_BLOCK = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_in_empty_block";	//$NON-NLS-1$
 	/**
@@ -1136,7 +1136,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_IN_EMPTY_ENUM_CONSTANT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_in_empty_enum_constant";	//$NON-NLS-1$
 	/**
@@ -1148,7 +1148,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_IN_EMPTY_ENUM_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_in_empty_enum_declaration";	//$NON-NLS-1$
 	/**
@@ -1160,7 +1160,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_IN_EMPTY_METHOD_BODY = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_in_empty_method_body";	//$NON-NLS-1$
 	/**
@@ -1172,7 +1172,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_IN_EMPTY_TYPE_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_new_line_in_empty_type_declaration";	//$NON-NLS-1$
 	/**
@@ -1184,7 +1184,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_AND_IN_TYPE_PARAMETER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_and_in_type_parameter"; //$NON-NLS-1$
 	/**
@@ -1196,7 +1196,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_ASSIGNMENT_OPERATOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_assignment_operator"; //$NON-NLS-1$
 	/**
@@ -1208,7 +1208,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_AT_IN_ANNOTATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_at_in_annotation"; //$NON-NLS-1$
 	/**
@@ -1220,7 +1220,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_AT_IN_ANNOTATION_TYPE_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_at_in_annotation_type_declaration"; //$NON-NLS-1$
 	/**
@@ -1232,7 +1232,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_BINARY_OPERATOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_binary_operator"; //$NON-NLS-1$
 	/**
@@ -1244,7 +1244,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_CLOSING_ANGLE_BRACKET_IN_TYPE_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_closing_angle_bracket_in_type_arguments"; //$NON-NLS-1$
 	/**
@@ -1256,7 +1256,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_CLOSING_ANGLE_BRACKET_IN_TYPE_PARAMETERS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_closing_angle_bracket_in_type_parameters"; //$NON-NLS-1$
 	/**
@@ -1268,7 +1268,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_CLOSING_BRACE_IN_BLOCK = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_closing_brace_in_block"; //$NON-NLS-1$
 	/**
@@ -1280,7 +1280,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_CLOSING_PAREN_IN_CAST = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_closing_paren_in_cast"; //$NON-NLS-1$
 	/**
@@ -1292,7 +1292,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COLON_IN_ASSERT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_colon_in_assert"; //$NON-NLS-1$
 	/**
@@ -1304,7 +1304,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COLON_IN_CASE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_colon_in_case";	//$NON-NLS-1$
 	/**
@@ -1316,7 +1316,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COLON_IN_CONDITIONAL = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_colon_in_conditional"; //$NON-NLS-1$
 	/**
@@ -1328,7 +1328,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COLON_IN_FOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_colon_in_for";	//$NON-NLS-1$
 	/**
@@ -1340,7 +1340,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COLON_IN_LABELED_STATEMENT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_colon_in_labeled_statement"; //$NON-NLS-1$
 	/**
@@ -1352,7 +1352,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_ALLOCATION_EXPRESSION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_allocation_expression"; //$NON-NLS-1$
 	/**
@@ -1364,7 +1364,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_ANNOTATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_annotation"; //$NON-NLS-1$
 	/**
@@ -1376,7 +1376,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_ARRAY_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_array_initializer"; //$NON-NLS-1$
 	/**
@@ -1388,7 +1388,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_CONSTRUCTOR_DECLARATION_PARAMETERS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_constructor_declaration_parameters"; //$NON-NLS-1$
 	/**
@@ -1400,7 +1400,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_CONSTRUCTOR_DECLARATION_THROWS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_constructor_declaration_throws"; //$NON-NLS-1$
 	/**
@@ -1412,7 +1412,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_ENUM_CONSTANT_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_enum_constant_arguments"; //$NON-NLS-1$
 	/**
@@ -1424,7 +1424,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_ENUM_DECLARATIONS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_enum_declarations"; //$NON-NLS-1$
 	/**
@@ -1436,7 +1436,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_EXPLICIT_CONSTRUCTOR_CALL_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_explicitconstructorcall_arguments"; //$NON-NLS-1$
 	/**
@@ -1448,7 +1448,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_FOR_INCREMENTS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_for_increments"; //$NON-NLS-1$
 	/**
@@ -1460,7 +1460,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_FOR_INITS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_for_inits"; //$NON-NLS-1$
 	/**
@@ -1472,7 +1472,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_METHOD_DECLARATION_PARAMETERS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_method_declaration_parameters"; //$NON-NLS-1$
 	/**
@@ -1484,7 +1484,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_METHOD_DECLARATION_THROWS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_method_declaration_throws"; //$NON-NLS-1$
 	/**
@@ -1496,7 +1496,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_METHOD_INVOCATION_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_method_invocation_arguments"; //$NON-NLS-1$
 	/**
@@ -1508,7 +1508,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_MULTIPLE_FIELD_DECLARATIONS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_multiple_field_declarations"; //$NON-NLS-1$
 	/**
@@ -1520,7 +1520,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_MULTIPLE_LOCAL_DECLARATIONS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_multiple_local_declarations"; //$NON-NLS-1$
 	/**
@@ -1532,7 +1532,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_PARAMETERIZED_TYPE_REFERENCE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_parameterized_type_reference"; //$NON-NLS-1$
 	/**
@@ -1544,7 +1544,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_SUPERINTERFACES = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_superinterfaces"; //$NON-NLS-1$
 	/**
@@ -1556,7 +1556,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_TYPE_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_type_arguments"; //$NON-NLS-1$
 	/**
@@ -1568,7 +1568,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_TYPE_PARAMETERS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_comma_in_type_parameters"; //$NON-NLS-1$
 	/**
@@ -1580,7 +1580,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_ELLIPSIS  = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_ellipsis";	//$NON-NLS-1$
 	/**
@@ -1592,7 +1592,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_ANGLE_BRACKET_IN_PARAMETERIZED_TYPE_REFERENCE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_angle_bracket_in_parameterized_type_reference";//$NON-NLS-1$
 	/**
@@ -1604,7 +1604,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_ANGLE_BRACKET_IN_TYPE_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_angle_bracket_in_type_arguments";//$NON-NLS-1$
 	/**
@@ -1616,7 +1616,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_ANGLE_BRACKET_IN_TYPE_PARAMETERS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_angle_bracket_in_type_parameters";//$NON-NLS-1$
 	/**
@@ -1628,7 +1628,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_BRACE_IN_ARRAY_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_brace_in_array_initializer";	//$NON-NLS-1$
 	/**
@@ -1640,7 +1640,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_BRACKET_IN_ARRAY_ALLOCATION_EXPRESSION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_bracket_in_array_allocation_expression";//$NON-NLS-1$
 	/**
@@ -1652,7 +1652,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_BRACKET_IN_ARRAY_REFERENCE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_bracket_in_array_reference";//$NON-NLS-1$
 	/**
@@ -1664,7 +1664,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_PAREN_IN_ANNOTATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_paren_in_annotation"; //$NON-NLS-1$
 	/**
@@ -1676,7 +1676,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_PAREN_IN_CAST = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_paren_in_cast"; //$NON-NLS-1$
 	/**
@@ -1688,7 +1688,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_PAREN_IN_CATCH = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_paren_in_catch"; //$NON-NLS-1$
 	/**
@@ -1700,7 +1700,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_PAREN_IN_CONSTRUCTOR_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_paren_in_constructor_declaration";	//$NON-NLS-1$
 	/**
@@ -1712,7 +1712,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_PAREN_IN_ENUM_CONSTANT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_paren_in_enum_constant"; //$NON-NLS-1$
 	/**
@@ -1724,7 +1724,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_PAREN_IN_FOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_paren_in_for"; //$NON-NLS-1$
 	/**
@@ -1736,7 +1736,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_PAREN_IN_IF = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_paren_in_if"; //$NON-NLS-1$
 	/**
@@ -1748,7 +1748,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_PAREN_IN_METHOD_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_paren_in_method_declaration";	//$NON-NLS-1$
 	/**
@@ -1760,7 +1760,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_PAREN_IN_METHOD_INVOCATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_paren_in_method_invocation"; //$NON-NLS-1$
 	/**
@@ -1772,7 +1772,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_PAREN_IN_PARENTHESIZED_EXPRESSION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_paren_in_parenthesized_expression"; //$NON-NLS-1$
 	/**
@@ -1784,7 +1784,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_PAREN_IN_SWITCH = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_paren_in_switch"; //$NON-NLS-1$
 	/**
@@ -1796,7 +1796,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_PAREN_IN_SYNCHRONIZED = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_paren_in_synchronized"; //$NON-NLS-1$
 	/**
@@ -1808,7 +1808,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_OPENING_PAREN_IN_WHILE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_opening_paren_in_while"; //$NON-NLS-1$
 	/**
@@ -1820,7 +1820,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_POSTFIX_OPERATOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_postfix_operator"; //$NON-NLS-1$
 	/**
@@ -1832,7 +1832,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_PREFIX_OPERATOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_prefix_operator"; //$NON-NLS-1$
 	/**
@@ -1844,7 +1844,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_QUESTION_IN_CONDITIONAL = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_question_in_conditional"; //$NON-NLS-1$
 	/**
@@ -1856,7 +1856,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_QUESTION_IN_WILDCARD = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_question_in_wildcard"; //$NON-NLS-1$
 	/**
@@ -1868,7 +1868,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_SEMICOLON_IN_FOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_semicolon_in_for"; //$NON-NLS-1$
 	/**
@@ -1880,7 +1880,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_UNARY_OPERATOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_unary_operator"; //$NON-NLS-1$
 	/**
@@ -1892,7 +1892,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_AND_IN_TYPE_PARAMETER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_and_in_type_parameter";	//$NON-NLS-1$
 	/**
@@ -1904,7 +1904,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_ASSIGNMENT_OPERATOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_assignment_operator";	//$NON-NLS-1$
 	/**
@@ -1916,7 +1916,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_AT_IN_ANNOTATION_TYPE_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_at_in_annotation_type_declaration";	//$NON-NLS-1$
 	/**
@@ -1928,7 +1928,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_BINARY_OPERATOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_binary_operator";	//$NON-NLS-1$
 	/**
@@ -1940,7 +1940,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_ANGLE_BRACKET_IN_PARAMETERIZED_TYPE_REFERENCE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_angle_bracket_in_parameterized_type_reference";		//$NON-NLS-1$
 	/**
@@ -1952,7 +1952,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_ANGLE_BRACKET_IN_TYPE_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_angle_bracket_in_type_arguments";		//$NON-NLS-1$
 	/**
@@ -1964,7 +1964,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_ANGLE_BRACKET_IN_TYPE_PARAMETERS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_angle_bracket_in_type_parameters";		//$NON-NLS-1$
 	/**
@@ -1976,7 +1976,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_BRACE_IN_ARRAY_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_brace_in_array_initializer";		//$NON-NLS-1$
 	/**
@@ -1988,7 +1988,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_BRACKET_IN_ARRAY_ALLOCATION_EXPRESSION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_bracket_in_array_allocation_expression";//$NON-NLS-1$
 	/**
@@ -2000,7 +2000,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_BRACKET_IN_ARRAY_REFERENCE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_bracket_in_array_reference";//$NON-NLS-1$
 	/**
@@ -2012,7 +2012,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_PAREN_IN_ANNOTATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_paren_in_annotation";	//$NON-NLS-1$
 	/**
@@ -2024,7 +2024,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_PAREN_IN_CAST = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_paren_in_cast";	//$NON-NLS-1$
 	/**
@@ -2036,7 +2036,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_PAREN_IN_CATCH = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_paren_in_catch";	//$NON-NLS-1$
 	/**
@@ -2048,7 +2048,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_PAREN_IN_CONSTRUCTOR_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_paren_in_constructor_declaration";	//$NON-NLS-1$
 	/**
@@ -2060,7 +2060,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_PAREN_IN_ENUM_CONSTANT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_paren_in_enum_constant";	//$NON-NLS-1$
 	/**
@@ -2072,7 +2072,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_PAREN_IN_FOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_paren_in_for";	//$NON-NLS-1$
 	/**
@@ -2084,7 +2084,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_PAREN_IN_IF = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_paren_in_if";	//$NON-NLS-1$
 	/**
@@ -2096,7 +2096,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_PAREN_IN_METHOD_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_paren_in_method_declaration";	//$NON-NLS-1$
 	/**
@@ -2108,7 +2108,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_PAREN_IN_METHOD_INVOCATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_paren_in_method_invocation"; //$NON-NLS-1$
 	/**
@@ -2120,7 +2120,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_PAREN_IN_PARENTHESIZED_EXPRESSION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_paren_in_parenthesized_expression"; //$NON-NLS-1$
 	/**
@@ -2132,7 +2132,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_PAREN_IN_SWITCH = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_paren_in_switch";	//$NON-NLS-1$
 	/**
@@ -2144,7 +2144,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_PAREN_IN_SYNCHRONIZED = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_paren_in_synchronized";	//$NON-NLS-1$
 	/**
@@ -2156,7 +2156,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_CLOSING_PAREN_IN_WHILE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_closing_paren_in_while";	//$NON-NLS-1$
 	/**
@@ -2168,7 +2168,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_ASSERT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_colon_in_assert";	//$NON-NLS-1$
 	/**
@@ -2180,7 +2180,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_CASE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_colon_in_case";	//$NON-NLS-1$
 	/**
@@ -2192,7 +2192,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_CONDITIONAL = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_colon_in_conditional";	//$NON-NLS-1$
 	/**
@@ -2204,7 +2204,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_DEFAULT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_colon_in_default";	//$NON-NLS-1$
 	/**
@@ -2216,7 +2216,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_FOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_colon_in_for";	//$NON-NLS-1$
 	/**
@@ -2228,7 +2228,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_LABELED_STATEMENT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_colon_in_labeled_statement";	//$NON-NLS-1$
 	/**
@@ -2240,7 +2240,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_ALLOCATION_EXPRESSION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_allocation_expression";	//$NON-NLS-1$
 	/**
@@ -2252,7 +2252,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_ANNOTATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_annotation";	//$NON-NLS-1$
 	/**
@@ -2264,7 +2264,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_ARRAY_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_array_initializer";	//$NON-NLS-1$
 	/**
@@ -2276,7 +2276,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_CONSTRUCTOR_DECLARATION_PARAMETERS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_constructor_declaration_parameters";	//$NON-NLS-1$
 	/**
@@ -2288,7 +2288,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_CONSTRUCTOR_DECLARATION_THROWS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_constructor_declaration_throws";	//$NON-NLS-1$
 	/**
@@ -2300,7 +2300,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_ENUM_CONSTANT_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_enum_constant_arguments";	//$NON-NLS-1$
 	/**
@@ -2312,7 +2312,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_ENUM_DECLARATIONS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_enum_declarations";	//$NON-NLS-1$
 	/**
@@ -2324,7 +2324,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_EXPLICIT_CONSTRUCTOR_CALL_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_explicitconstructorcall_arguments";	//$NON-NLS-1$
 	/**
@@ -2336,7 +2336,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_FOR_INCREMENTS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_for_increments";	//$NON-NLS-1$
 	/**
@@ -2348,7 +2348,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_FOR_INITS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_for_inits";	//$NON-NLS-1$
 	/**
@@ -2360,7 +2360,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_METHOD_DECLARATION_PARAMETERS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_method_declaration_parameters";	//$NON-NLS-1$
 	/**
@@ -2372,7 +2372,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_METHOD_DECLARATION_THROWS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_method_declaration_throws";	//$NON-NLS-1$
 	/**
@@ -2384,7 +2384,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_METHOD_INVOCATION_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_method_invocation_arguments";	//$NON-NLS-1$
 	/**
@@ -2396,7 +2396,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_MULTIPLE_FIELD_DECLARATIONS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_multiple_field_declarations";	//$NON-NLS-1$
 	/**
@@ -2408,7 +2408,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_MULTIPLE_LOCAL_DECLARATIONS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_multiple_local_declarations";	//$NON-NLS-1$
 	/**
@@ -2420,7 +2420,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_PARAMETERIZED_TYPE_REFERENCE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_parameterized_type_reference";	//$NON-NLS-1$
 	/**
@@ -2432,7 +2432,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_SUPERINTERFACES = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_superinterfaces";	//$NON-NLS-1$
 	/**
@@ -2444,7 +2444,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_TYPE_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_type_arguments";	//$NON-NLS-1$
 	/**
@@ -2456,7 +2456,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_TYPE_PARAMETERS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_comma_in_type_parameters";	//$NON-NLS-1$
 	/**
@@ -2468,7 +2468,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_ELLIPSIS  = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_ellipsis";	//$NON-NLS-1$
 	/**
@@ -2480,7 +2480,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_ANGLE_BRACKET_IN_PARAMETERIZED_TYPE_REFERENCE  = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_angle_bracket_in_parameterized_type_reference";	//$NON-NLS-1$
 	/**
@@ -2492,7 +2492,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_ANGLE_BRACKET_IN_TYPE_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_angle_bracket_in_type_arguments";	//$NON-NLS-1$
 	/**
@@ -2504,7 +2504,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_ANGLE_BRACKET_IN_TYPE_PARAMETERS = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_angle_bracket_in_type_parameters";	//$NON-NLS-1$
 	/**
@@ -2516,7 +2516,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_ANNOTATION_TYPE_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_brace_in_annotation_type_declaration"; 	//$NON-NLS-1$
 	/**
@@ -2528,7 +2528,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_ANONYMOUS_TYPE_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_brace_in_anonymous_type_declaration"; 	//$NON-NLS-1$
 	/**
@@ -2540,7 +2540,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_ARRAY_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_brace_in_array_initializer"; //$NON-NLS-1$
 	/**
@@ -2552,7 +2552,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_BLOCK = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_brace_in_block";	//$NON-NLS-1$
 	/**
@@ -2564,7 +2564,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_CONSTRUCTOR_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_brace_in_constructor_declaration";	//$NON-NLS-1$
 	/**
@@ -2576,7 +2576,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_ENUM_CONSTANT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_brace_in_enum_constant";	//$NON-NLS-1$
 	/**
@@ -2588,7 +2588,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_ENUM_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_brace_in_enum_declaration";	//$NON-NLS-1$
 	/**
@@ -2600,7 +2600,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_METHOD_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_brace_in_method_declaration";	//$NON-NLS-1$
 	/**
@@ -2612,7 +2612,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_SWITCH = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_brace_in_switch";	//$NON-NLS-1$
 	/**
@@ -2624,7 +2624,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_TYPE_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_brace_in_type_declaration";	//$NON-NLS-1$
 	/**
@@ -2636,7 +2636,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACKET_IN_ARRAY_ALLOCATION_EXPRESSION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_bracket_in_array_allocation_expression";//$NON-NLS-1$
 	/**
@@ -2648,7 +2648,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACKET_IN_ARRAY_REFERENCE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_bracket_in_array_reference";//$NON-NLS-1$
 	/**
@@ -2660,7 +2660,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACKET_IN_ARRAY_TYPE_REFERENCE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_bracket_in_array_type_reference";	//$NON-NLS-1$
 	/**
@@ -2672,7 +2672,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_PAREN_IN_ANNOTATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_paren_in_annotation";	//$NON-NLS-1$
 	/**
@@ -2684,7 +2684,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_PAREN_IN_ANNOTATION_TYPE_MEMBER_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_paren_in_annotation_type_member_declaration";	//$NON-NLS-1$
 	/**
@@ -2696,7 +2696,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_PAREN_IN_CATCH = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_paren_in_catch";	//$NON-NLS-1$
 	/**
@@ -2708,7 +2708,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_PAREN_IN_CONSTRUCTOR_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_paren_in_constructor_declaration";	//$NON-NLS-1$
 	/**
@@ -2720,7 +2720,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_PAREN_IN_ENUM_CONSTANT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_paren_in_enum_constant";	//$NON-NLS-1$
 	/**
@@ -2732,7 +2732,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_PAREN_IN_FOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_paren_in_for";	//$NON-NLS-1$
 	/**
@@ -2744,7 +2744,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_PAREN_IN_IF = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_paren_in_if";	//$NON-NLS-1$
 	/**
@@ -2756,7 +2756,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_PAREN_IN_METHOD_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_paren_in_method_declaration";	//$NON-NLS-1$
 	/**
@@ -2768,7 +2768,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_PAREN_IN_METHOD_INVOCATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_paren_in_method_invocation";	//$NON-NLS-1$
 	/**
@@ -2780,7 +2780,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_PAREN_IN_PARENTHESIZED_EXPRESSION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_paren_in_parenthesized_expression"; //$NON-NLS-1$
 	/**
@@ -2792,7 +2792,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_PAREN_IN_SWITCH = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_paren_in_switch";	//$NON-NLS-1$
 	/**
@@ -2804,7 +2804,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_PAREN_IN_SYNCHRONIZED = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_paren_in_synchronized";	//$NON-NLS-1$
 	/**
@@ -2816,7 +2816,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_PAREN_IN_WHILE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_paren_in_while";	//$NON-NLS-1$
 	/**
@@ -2829,7 +2829,7 @@ public class DefaultCodeFormatterConstants {
 	 *
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.2
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_PARENTHESIZED_EXPRESSION_IN_RETURN  = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_parenthesized_expression_in_return";	//$NON-NLS-1$
 	/**
@@ -2842,7 +2842,7 @@ public class DefaultCodeFormatterConstants {
 	 *
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.3
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_PARENTHESIZED_EXPRESSION_IN_THROW  = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_parenthesized_expression_in_throw";	//$NON-NLS-1$
 	/**
@@ -2854,7 +2854,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_POSTFIX_OPERATOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_postfix_operator";	//$NON-NLS-1$
 	/**
@@ -2866,7 +2866,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_PREFIX_OPERATOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_prefix_operator";	//$NON-NLS-1$
 	/**
@@ -2878,7 +2878,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_QUESTION_IN_CONDITIONAL = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_question_in_conditional";	//$NON-NLS-1$
 	/**
@@ -2890,7 +2890,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_QUESTION_IN_WILDCARD = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_question_in_wildcard"; //$NON-NLS-1$
 	/**
@@ -2902,7 +2902,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_SEMICOLON = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_semicolon";	//$NON-NLS-1$
 	/**
@@ -2914,7 +2914,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_SEMICOLON_IN_FOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_semicolon_in_for";	//$NON-NLS-1$
 	/**
@@ -2926,7 +2926,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_UNARY_OPERATOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_unary_operator";	//$NON-NLS-1$
 
@@ -2939,7 +2939,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BETWEEN_BRACKETS_IN_ARRAY_TYPE_REFERENCE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_between_brackets_in_array_type_reference";	//$NON-NLS-1$
 	/**
@@ -2951,7 +2951,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BETWEEN_EMPTY_BRACES_IN_ARRAY_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_between_empty_braces_in_array_initializer";	//$NON-NLS-1$
 	/**
@@ -2963,7 +2963,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BETWEEN_EMPTY_BRACKETS_IN_ARRAY_ALLOCATION_EXPRESSION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_between_empty_brackets_in_array_allocation_expression";	//$NON-NLS-1$
 	/**
@@ -2975,7 +2975,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BETWEEN_EMPTY_PARENS_IN_ANNOTATION_TYPE_MEMBER_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_between_empty_parens_in_annotation_type_member_declaration";	//$NON-NLS-1$
 	/**
@@ -2987,7 +2987,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BETWEEN_EMPTY_PARENS_IN_CONSTRUCTOR_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_between_empty_parens_in_constructor_declaration";	//$NON-NLS-1$
 	/**
@@ -2999,7 +2999,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BETWEEN_EMPTY_PARENS_IN_ENUM_CONSTANT = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_between_empty_parens_in_enum_constant";	//$NON-NLS-1$
 	/**
@@ -3011,7 +3011,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BETWEEN_EMPTY_PARENS_IN_METHOD_DECLARATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_between_empty_parens_in_method_declaration";	//$NON-NLS-1$
 	/**
@@ -3023,7 +3023,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BETWEEN_EMPTY_PARENS_IN_METHOD_INVOCATION = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_between_empty_parens_in_method_invocation";	//$NON-NLS-1$
 	/**
@@ -3035,7 +3035,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_KEEP_ELSE_STATEMENT_ON_SAME_LINE = JavaScriptCore.PLUGIN_ID + ".formatter.keep_else_statement_on_same_line"; //$NON-NLS-1$
 	/**
@@ -3047,7 +3047,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_KEEP_EMPTY_ARRAY_INITIALIZER_ON_ONE_LINE = JavaScriptCore.PLUGIN_ID + ".formatter.keep_empty_array_initializer_on_one_line"; //$NON-NLS-1$
 	/**
@@ -3059,7 +3059,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_KEEP_EMPTY_OBJLIT_INITIALIZER_ON_ONE_LINE = JavaScriptCore.PLUGIN_ID + ".formatter.keep_empty_objlit_initializer_on_one_line"; //$NON-NLS-1$
 	/**
@@ -3071,7 +3071,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_KEEP_GUARDIAN_CLAUSE_ON_ONE_LINE = JavaScriptCore.PLUGIN_ID + ".formatter.format_guardian_clause_on_one_line";	//$NON-NLS-1$
 	/**
@@ -3083,7 +3083,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_KEEP_SIMPLE_IF_ON_ONE_LINE = JavaScriptCore.PLUGIN_ID + ".formatter.keep_imple_if_on_one_line"; //$NON-NLS-1$
 	/**
@@ -3095,7 +3095,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_KEEP_THEN_STATEMENT_ON_SAME_LINE = JavaScriptCore.PLUGIN_ID + ".formatter.keep_then_statement_on_same_line";//$NON-NLS-1$
 
@@ -3106,7 +3106,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "80"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_LINE_SPLIT = JavaScriptCore.PLUGIN_ID + ".formatter.lineSplit"; //$NON-NLS-1$
 	/**
@@ -3120,7 +3120,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @see org.eclipse.wst.jsdt.core.ToolFactory#createCodeFormatter(Map, int)
-	 * @since 3.3
+	 *  
 	 */
 	public static final String FORMATTER_NEVER_INDENT_BLOCK_COMMENTS_ON_FIRST_COLUMN = JavaScriptCore.PLUGIN_ID + ".formatter.never_indent_block_comments_on_first_column"; //$NON-NLS-1$
 	/**
@@ -3134,7 +3134,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @see org.eclipse.wst.jsdt.core.ToolFactory#createCodeFormatter(Map, int)
-	 * @since 3.3
+	 *  
 	 */
 	public static final String FORMATTER_NEVER_INDENT_LINE_COMMENTS_ON_FIRST_COLUMN = JavaScriptCore.PLUGIN_ID + ".formatter.never_indent_line_comments_on_first_column"; //$NON-NLS-1$
 	/**
@@ -3144,7 +3144,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "0"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_NUMBER_OF_EMPTY_LINES_TO_PRESERVE = JavaScriptCore.PLUGIN_ID + ".formatter.number_of_empty_lines_to_preserve";	//$NON-NLS-1$
 	/**
@@ -3156,7 +3156,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_PUT_EMPTY_STATEMENT_ON_NEW_LINE = JavaScriptCore.PLUGIN_ID + ".formatter.put_empty_statement_on_new_line";	//$NON-NLS-1$
 	/**
@@ -3171,7 +3171,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see JavaScriptCore#TAB
 	 * @see JavaScriptCore#SPACE
 	 * @see #MIXED
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_TAB_CHAR = JavaScriptCore.PLUGIN_ID + ".formatter.tabulation.char"; //$NON-NLS-1$
 	/**
@@ -3181,7 +3181,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "4"
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String FORMATTER_TAB_SIZE = JavaScriptCore.PLUGIN_ID + ".formatter.tabulation.size"; //$NON-NLS-1$
 
@@ -3194,7 +3194,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.1
+	 *  
 	 */
 	public static final String FORMATTER_USE_TABS_ONLY_FOR_LEADING_INDENTATIONS = JavaScriptCore.PLUGIN_ID + ".formatter.use_tabs_only_for_leading_indentations"; //$NON-NLS-1$
 	/**
@@ -3207,14 +3207,14 @@ public class DefaultCodeFormatterConstants {
 	 * This option is used only if the option {@link #FORMATTER_ALIGNMENT_FOR_BINARY_EXPRESSION} is set.
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 *  
 	 */
 	public static final String FORMATTER_WRAP_BEFORE_BINARY_OPERATOR = JavaScriptCore.PLUGIN_ID + ".formatter.wrap_before_binary_operator"; //$NON-NLS-1$
 	/**
 	 * <pre>
 	 * FORMATTER / The wrapping is done by indenting by one compare to the current indentation.
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final int INDENT_BY_ONE= 2;
 
@@ -3222,14 +3222,14 @@ public class DefaultCodeFormatterConstants {
 	 * <pre>
 	 * FORMATTER / The wrapping is done by using the current indentation.
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final int INDENT_DEFAULT= 0;
 	/**
 	 * <pre>
 	 * FORMATTER / The wrapping is done by indenting on column under the splitting location.
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final int INDENT_ON_COLUMN = 1;
 
@@ -3237,7 +3237,7 @@ public class DefaultCodeFormatterConstants {
 	 * <pre>
 	 * FORMATTER / Possible value for the option FORMATTER_TAB_CHAR
 	 * </pre>
-	 * @since 3.1
+	 *  
 	 * @see JavaScriptCore#TAB
 	 * @see JavaScriptCore#SPACE
 	 * @see #FORMATTER_TAB_CHAR
@@ -3256,7 +3256,7 @@ public class DefaultCodeFormatterConstants {
  	 * @see #FORMATTER_BRACE_POSITION_FOR_METHOD_DECLARATION
  	 * @see #FORMATTER_BRACE_POSITION_FOR_SWITCH
 	 * @see #FORMATTER_BRACE_POSITION_FOR_TYPE_DECLARATION
-	 * @since 3.0
+	 *  
 	 */
 	public static final String NEXT_LINE = "next_line"; //$NON-NLS-1$
 	/**
@@ -3272,7 +3272,7 @@ public class DefaultCodeFormatterConstants {
  	 * @see #FORMATTER_BRACE_POSITION_FOR_METHOD_DECLARATION
  	 * @see #FORMATTER_BRACE_POSITION_FOR_SWITCH
 	 * @see #FORMATTER_BRACE_POSITION_FOR_TYPE_DECLARATION
-	 * @since 3.0
+	 *  
 	 */
     public static final String NEXT_LINE_ON_WRAP = "next_line_on_wrap"; //$NON-NLS-1$
 	/**
@@ -3288,21 +3288,21 @@ public class DefaultCodeFormatterConstants {
  	 * @see #FORMATTER_BRACE_POSITION_FOR_METHOD_DECLARATION
  	 * @see #FORMATTER_BRACE_POSITION_FOR_SWITCH
 	 * @see #FORMATTER_BRACE_POSITION_FOR_TYPE_DECLARATION
-	 * @since 3.0
+	 *  
 	 */
 	public static final String NEXT_LINE_SHIFTED = "next_line_shifted";	//$NON-NLS-1$
 	/**
 	 * <pre>
 	 * FORMATTER / Value to set an option to true.
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final String TRUE = "true"; //$NON-NLS-1$
 	/**
 	 * <pre>
 	 * FORMATTER / The wrapping is done using as few lines as possible.
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final int WRAP_COMPACT= 1;
 	/**
@@ -3310,7 +3310,7 @@ public class DefaultCodeFormatterConstants {
 	 * FORMATTER / The wrapping is done putting the first element on a new
 	 *             line and then wrapping next elements using as few lines as possible.
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final int WRAP_COMPACT_FIRST_BREAK= 2;
 	/**
@@ -3318,7 +3318,7 @@ public class DefaultCodeFormatterConstants {
 	 * FORMATTER / The wrapping is done by putting each element on its own line
 	 *             except the first element.
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final int WRAP_NEXT_PER_LINE= 5;
 	/**
@@ -3326,7 +3326,7 @@ public class DefaultCodeFormatterConstants {
 	 * FORMATTER / The wrapping is done by putting each element on its own line.
 	 *             All elements are indented by one except the first element.
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final int WRAP_NEXT_SHIFTED= 4;
 
@@ -3334,14 +3334,14 @@ public class DefaultCodeFormatterConstants {
 	 * <pre>
 	 * FORMATTER / Value to disable alignment.
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final int WRAP_NO_SPLIT= 0;
 	/**
 	 * <pre>
 	 * FORMATTER / The wrapping is done by putting each element on its own line.
 	 * </pre>
-	 * @since 3.0
+	 *  
 	 */
 	public static final int WRAP_ONE_PER_LINE= 3;
 
@@ -3396,7 +3396,7 @@ public class DefaultCodeFormatterConstants {
 	 * the default formatter settings of Eclipse version 2.1.
 	 *
 	 * @return the Eclipse 2.1 settings
-	 * @since 3.0
+	 *  
 	 */
 	public static Map getEclipse21Settings() {
 		return DefaultCodeFormatterOptions.getDefaultSettings().getMap();
@@ -3406,7 +3406,7 @@ public class DefaultCodeFormatterConstants {
 	 * Returns the default Eclipse formatter settings
 	 *
 	 * @return the Eclipse default settings
-	 * @since 3.1
+	 *  
 	 */
 	public static Map getEclipseDefaultSettings() {
 		return DefaultCodeFormatterOptions.getEclipseDefaultSettings().getMap();
@@ -3467,10 +3467,10 @@ public class DefaultCodeFormatterConstants {
 	}
 
 	/**
-	 * Returns the settings according to the Java conventions.
+	 * Returns the settings according to the JavaScript conventions.
 	 *
-	 * @return the settings according to the Java conventions
-	 * @since 3.0
+	 * @return the settings according to the JavaScript conventions
+	 *  
 	 */
 	public static Map getJavaConventionsSettings() {
 		return DefaultCodeFormatterOptions.getJavaConventionsSettings().getMap();

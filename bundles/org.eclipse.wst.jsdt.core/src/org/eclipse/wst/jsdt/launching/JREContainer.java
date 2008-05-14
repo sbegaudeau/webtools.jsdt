@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import com.ibm.icu.text.MessageFormat;
 
 /** 
- * JRE Container - resolves a classpath container variable to a JRE
+ * JRE Container - resolves a includepath container variable to a JRE
  * 
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
@@ -47,17 +47,17 @@ public class JREContainer implements IJsGlobalScopeContainer {
 	private IPath fPath = null;
 	
 	/**
-	 * Cache of classpath entries per VM install. Cleared when a VM changes.
+	 * Cache of includepath entries per VM install. Cleared when a VM changes.
 	 */
 	private static Map fgClasspathEntries = null;
 	
 	private static IAccessRule[] EMPTY_RULES = new IAccessRule[0];
 	
 	/**
-	 * Returns the classpath entries associated with the given VM.
+	 * Returns the includepath entries associated with the given VM.
 	 * 
 	 * @param vm
-	 * @return classpath entries
+	 * @return includepath entries
 	 */
 	private static IIncludePathEntry[] getClasspathEntries(IVMInstall vm) {
 		if (fgClasspathEntries == null) {
@@ -91,17 +91,17 @@ public class JREContainer implements IJsGlobalScopeContainer {
 	}
 	
 	/**
-	 * Computes the classpath entries associated with a VM - one entry per library.
+	 * Computes the includepath entries associated with a VM - one entry per library.
 	 * 
 	 * @param vm
-	 * @return classpath entries
+	 * @return includepath entries
 	 */
 	private static IIncludePathEntry[] computeClasspathEntries(IVMInstall vm) {
 		LibraryLocation[] libs = vm.getLibraryLocations();
-		boolean overrideJavaDoc = false;
+		boolean overridejsdoc = false;
 		if (libs == null) {
 			libs = JavaRuntime.getLibraryLocations(vm);
-			overrideJavaDoc = true;
+			overridejsdoc = true;
 		}
 		List entries = new ArrayList(libs.length);
 		for (int i = 0; i < libs.length; i++) {
@@ -115,7 +115,7 @@ public class JREContainer implements IJsGlobalScopeContainer {
 					rootPath = null;
 				}
 				URL javadocLocation = libs[i].getJavadocLocation();
-				if (overrideJavaDoc && javadocLocation == null) {
+				if (overridejsdoc && javadocLocation == null) {
 					javadocLocation = vm.getJavadocLocation();
 				}
 				IIncludePathAttribute[] attributes = null;
@@ -131,7 +131,7 @@ public class JREContainer implements IJsGlobalScopeContainer {
 	}
 	
 	/**
-	 * Constructs a JRE classpath conatiner on the given VM install
+	 * Constructs a JRE includepath conatiner on the given VM install
 	 * 
 	 * @param vm vm install - cannot be <code>null</code>
 	 * @param path container path used to resolve this JRE

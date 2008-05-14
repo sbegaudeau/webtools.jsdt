@@ -56,7 +56,7 @@ public interface IVMInstallType {
 	 * 
 	 * @param name the VM name
 	 * @return a VM instance, or <code>null</code> if not found
-	 * @since 2.0
+	 *  
 	 */
 	IVMInstall findVMInstallByName(String name);	
 	
@@ -125,7 +125,7 @@ public interface IVMInstallType {
 	 * @see IVMInstallType#validateInstallLocation(File)
 	 * 
 	 * @return default library locations based on the given <code>installLocation</code>.
-	 * @since 2.0
+	 *  
 	 */
 	LibraryLocation[] getDefaultLibraryLocations(File installLocation);	
 }

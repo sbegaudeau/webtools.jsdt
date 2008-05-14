@@ -13,7 +13,10 @@ package org.eclipse.wst.jsdt.core.ast;
 
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 /**
- *  
+ *  Abstract representation of a var.
+ * <p>
+ * This interface is not intended to be implemented by clients.
+ * </p>
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
  * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 
@@ -21,11 +24,31 @@ import org.eclipse.wst.jsdt.core.infer.InferredType;
  */
 
 public interface IAbstractVariableDeclaration extends IStatement{
+	/**
+	 * Set the inferred type of the var
+	 * @param inferred type
+	 */
 	public void setInferredType(InferredType type);
+	/**
+	 * Get the inferred type of the var
+	 * @return inferred type
+	 */
 	public InferredType getInferredType();
 	public IAnnotation[] getAnnotation();
+	/**
+	 * get the var name
+	 * @return name
+	 */
 	public char[] getName();
+	/**
+	 * Get the initialization expression of the var
+	 * @return initialization expression
+	 */
 	public IExpression getInitialization();
+	/**
+	 * get the JSDoc for the var
+	 * @return jsdoc
+	 */
 	public IJsDoc getJsDoc();
 
 }

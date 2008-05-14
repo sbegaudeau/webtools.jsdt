@@ -54,6 +54,8 @@ import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 /**
  * 
+ * The default inference engine.  This class can also be subclassed by Inferrence providors.
+ * 
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
  * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 
@@ -573,6 +575,11 @@ public class InferEngine extends ASTVisitor {
 	}
 
 	
+	/**
+	 * handle the inferrencing for an assigment whose right hand side is a function expression
+	 * @param the assignment AST node
+	 * @return true if handled
+	 */
 	protected boolean handleFunctionExpressionAssignment(Assignment assignment)
 	{
 		FunctionExpression functionExpression=null;
@@ -816,6 +823,12 @@ public class InferEngine extends ASTVisitor {
 		return false;
 	}
 
+	/**
+	 * Get the function referenced by the expression
+	 * 
+	 * @param expression AST node
+	 * @return the function or null
+	 */
 	protected IFunctionDeclaration getDefinedFunction(IExpression expression)
 	{
 		if (expression instanceof SingleNameReference)
@@ -1366,6 +1379,13 @@ public class InferEngine extends ASTVisitor {
 		return addType(className,false);
 	}
 
+	/**
+	 * Create a new inferred type with the given name
+	 * 
+	 * @param className the name of the inferred type
+	 * @param isDefinition true if this unit defines the type
+	 * @return new Inferred type
+	 */
 	protected InferredType addType(char[] className, boolean isDefinition) {
 
 		InferredType type = compUnit.findInferredType(className);
@@ -1411,7 +1431,7 @@ public class InferEngine extends ASTVisitor {
 	}
 
 
-	/*
+	/**
 	 * Finds a Var Declaration on the context from the name represented with the expression
 	 *
 	 * Currently, only SNR are supported
@@ -1618,6 +1638,11 @@ public class InferEngine extends ASTVisitor {
 	}
 	
 
+	/**
+	 * Overriden by client who wish to update the infer options
+	 * 
+	 * @param options
+	 */
 	public void initializeOptions(InferOptions options) {
 	}
 	
@@ -1626,6 +1651,11 @@ public class InferEngine extends ASTVisitor {
 		return false;
 	}
 	
+	/**
+	 * Get the Script file this inferrence is being done on
+	 * 
+	 * @return
+	 */
 	public IScriptFileDeclaration getScriptFileDeclaration()
 	{
 		return this.compUnit;

@@ -349,7 +349,7 @@ class DocCommentParser extends AbstractCommentParser {
 			this.tagSourceEnd = currentPosition-1;
 		}
 
-		// Try to get tag name other than java identifier
+		// Try to get tag name other than javaScript identifier
 		// (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=51660)
 		if (this.scanner.currentCharacter != ' ' && !ScannerHelper.isWhitespace(this.scanner.currentCharacter)) {
 			tagNameToken: while (token != TerminalTokens.TokenNameEOF && this.index < this.scanner.eofPosition) {

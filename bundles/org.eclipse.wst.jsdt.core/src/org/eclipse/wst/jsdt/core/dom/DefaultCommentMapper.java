@@ -122,7 +122,7 @@ class DefaultCommentMapper {
 	 * @return the 0-based character index, or <code>-1</code>
 	 *    if no source position information is recorded for this node
 	 * @see #getExtendedLength(ASTNode)
-	 * @since 3.0
+	 *  
 	 */
 	public int getExtendedStartPosition(ASTNode node) {
 		if (this.leadingPtr >= 0) {
@@ -179,7 +179,7 @@ class DefaultCommentMapper {
 	 *    if no source position information is recorded for this node
 	 * @see #getExtendedStartPosition(ASTNode)
 	 * @see #getExtendedEnd(ASTNode)
-	 * @since 3.0
+	 *  
 	 */
 	public int getExtendedLength(ASTNode node) {
 		return getExtendedEnd(node) - getExtendedStartPosition(node) + 1;

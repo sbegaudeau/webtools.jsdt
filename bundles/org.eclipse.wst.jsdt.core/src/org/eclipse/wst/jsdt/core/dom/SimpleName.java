@@ -36,7 +36,7 @@ public class SimpleName extends Name {
 	/**
 	 * The "identifier" structural property of this node type.
 	 *
-	 * @since 3.0
+	 *  
 	 */
 	public static final SimplePropertyDescriptor IDENTIFIER_PROPERTY =
 		new SimplePropertyDescriptor(SimpleName.class, "identifier", String.class, MANDATORY); //$NON-NLS-1$
@@ -45,7 +45,7 @@ public class SimpleName extends Name {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.0
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
 
@@ -63,25 +63,25 @@ public class SimpleName extends Name {
 	 * @param apiLevel the API level; one of the AST.JLS* constants
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
 
 	/**
-	 * An unspecified (but externally observable) legal Java identifier.
+	 * An unspecified (but externally observable) legal JavaScript identifier.
 	 */
 	private static final String MISSING_IDENTIFIER = "MISSING";//$NON-NLS-1$
 
 	/**
-	 * The identifier; defaults to a unspecified, legal Java identifier.
+	 * The identifier; defaults to a unspecified, legal JavaScript identifier.
 	 */
 	private String identifier = MISSING_IDENTIFIER;
 
 	/**
 	 * Creates a new AST node for a simple name owned by the given AST.
-	 * The new node has an unspecified, legal Java identifier.
+	 * The new node has an unspecified, legal JavaScript identifier.
 	 * <p>
 	 * N.B. This constructor is package-private; all subclasses must be
 	 * declared in the same package; clients are unable to declare
@@ -94,15 +94,15 @@ public class SimpleName extends Name {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
-	 * @since 3.0
+	 *  
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final Object internalGetSetObjectProperty(SimplePropertyDescriptor property, boolean get, Object value) {
@@ -118,14 +118,14 @@ public class SimpleName extends Name {
 		return super.internalGetSetObjectProperty(property, get, value);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return SIMPLE_NAME;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -135,7 +135,7 @@ public class SimpleName extends Name {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -143,7 +143,7 @@ public class SimpleName extends Name {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -163,7 +163,7 @@ public class SimpleName extends Name {
 	/**
 	 * Sets the identifier of this node to the given value.
 	 * The identifier should be legal according to the rules
-	 * of the Java language. Note that keywords are not legal
+	 * of the JavaScript language. Note that keywords are not legal
 	 * identifiers.
 	 * <p>
 	 * Note that the list of keywords may depend on the version of the
@@ -200,7 +200,7 @@ public class SimpleName extends Name {
 		postValueChange(IDENTIFIER_PROPERTY);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * This method is a copy of setIdentifier(String) that doesn't do any validation.
 	 */
 	void internalSetIdentifier(String ident) {
@@ -265,14 +265,14 @@ public class SimpleName extends Name {
 		return false;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on Name.
 	 */
 	void appendName(StringBuffer buffer) {
 		buffer.append(getIdentifier());
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -284,7 +284,7 @@ public class SimpleName extends Name {
 		return size;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

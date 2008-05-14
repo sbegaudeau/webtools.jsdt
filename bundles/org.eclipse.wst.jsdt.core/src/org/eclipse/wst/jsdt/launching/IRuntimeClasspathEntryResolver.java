@@ -17,17 +17,17 @@ import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 
 /**
- * Resolves variable and/or container runtime classpath entries in
- * the context of a launch configuration or Java project. A resolver can be declared
+ * Resolves variable and/or container runtime includepath entries in
+ * the context of a launch configuration or JavaScript project. A resolver can be declared
  * as an extension (<code>org.eclipse.wst.jsdt.launching.runtimeClasspathEntryResolver</code>),
  * or be registered with the <code>JavaRuntime</code> programmatically.
  * <p>
- * A resolver is registered for a specific classpath
+ * A resolver is registered for a specific includepath
  * <code>VARIABLE</code> and/or <code>CONTAINER</code>. A resolver is
- * consulted when a runtime classpath entry is needs to be resolved.
+ * consulted when a runtime includepath entry is needs to be resolved.
  * </p>
  * A resolver extension is defined in <code>plugin.xml</code>.
- * Following is an example definition of a runtime classpath entry
+ * Following is an example definition of a runtime includepath entry
  * resolver extension.
  * <pre>
  * &lt;extension point="org.eclipse.wst.jsdt.launching.runtimeClasspathEntryResolvers"&gt;
@@ -42,11 +42,11 @@ import org.eclipse.wst.jsdt.core.IJavaScriptProject;
  * The attributes are specified as follows:
  * <ul>
  * <li><code>id</code> specifies a unique identifier for this extension.</li>
- * <li><code>class</code> specifies the fully qualified name of the Java class
+ * <li><code>class</code> specifies the fully qualified name of the JavaScript class
  *   that implements <code>IRuntimeClasspathEntryResolver</code>.</li>
- * <li><code>variable</code> name of the classpath variable this resolver
+ * <li><code>variable</code> name of the includepath variable this resolver
  * 	is registered for.</li>
- * <li><code>container</code> identifier of the classpath container this
+ * <li><code>container</code> identifier of the includepath container this
  * 	resolver is registered for.</li>
  * </ul>
  * At least one of <code>variable</code> or <code>container</code> must be
@@ -64,12 +64,12 @@ import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 public interface IRuntimeClasspathEntryResolver {
 	
 	/**
-	 * Returns resolved runtime classpath entries for the given runtime classpath entry,
+	 * Returns resolved runtime includepath entries for the given runtime includepath entry,
 	 * in the context of the given launch configuration.
 	 * 
-	 * @param entry runtime classpath entry to resolve, of type
+	 * @param entry runtime includepath entry to resolve, of type
 	 * 	<code>VARIABLE</code> or <code>CONTAINTER</code>
-	 * @param configuration the context in which the runtime classpath entry
+	 * @param configuration the context in which the runtime includepath entry
 	 * 	needs to be resolved
 	 * @return resolved entries (zero or more)
 	 * @exception CoreException if unable to resolve the entry  
@@ -77,12 +77,12 @@ public interface IRuntimeClasspathEntryResolver {
 	public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry, ILaunchConfiguration configuration) throws CoreException;
 	
 	/**
-	 * Returns resolved runtime classpath entries for the given runtime classpath entry,
-	 * in the context of the given Java project.
+	 * Returns resolved runtime includepath entries for the given runtime includepath entry,
+	 * in the context of the given JavaScript project.
 	 * 
-	 * @param entry runtime classpath entry to resolve, of type
+	 * @param entry runtime includepath entry to resolve, of type
 	 * 	<code>VARIABLE</code> or <code>CONTAINTER</code>
-	 * @param project context in which the runtime classpath entry
+	 * @param project context in which the runtime includepath entry
 	 * 	needs to be resolved
 	 * @return resolved entries (zero or more)
 	 * @exception CoreException if unable to resolve the entry  
@@ -90,10 +90,10 @@ public interface IRuntimeClasspathEntryResolver {
 	public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry, IJavaScriptProject project) throws CoreException;	
 	
 	/**
-	 * Returns a VM install associated with the given classpath entry,
+	 * Returns a VM install associated with the given includepath entry,
 	 * or <code>null</code> if none.
 	 * 
-	 * @param entry classpath entry
+	 * @param entry includepath entry
 	 * @return vm install associated with entry or <code>null</code> if none
 	 * @exception CoreException if unable to resolve a VM
 	 */

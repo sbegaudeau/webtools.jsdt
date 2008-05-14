@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
 
 /** 
- * Resolves a container for a JRE classpath container entry.
+ * Resolves a container for a JRE includepath container entry.
  * 
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
@@ -96,7 +96,7 @@ public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 //	 * 
 //	 * @param environment
 //	 * @return vm install or <code>null</code>
-//	 * @since 3.2
+//	 *  
 //	 */
 //	public static IVMInstall resolveVM(IExecutionEnvironment environment) {
 //		IVMInstall vm = environment.getDefaultVM();
@@ -204,7 +204,7 @@ public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 	public void requestJsGlobalScopeContainerUpdate(IPath containerPath, IJavaScriptProject project, IJsGlobalScopeContainer containerSuggestion) throws CoreException {
 //		IVMInstall vm = resolveVM(containerPath);
 //		if (vm == null) { 
-//			IStatus status = new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IJavaLaunchConfigurationConstants.ERR_VM_INSTALL_DOES_NOT_EXIST, MessageFormat.format(LaunchingMessages.JREContainerInitializer_JRE_referenced_by_classpath_container__0__does_not_exist__1, new String[]{containerPath.toString()}), null); 
+//			IStatus status = new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IJavaLaunchConfigurationConstants.ERR_VM_INSTALL_DOES_NOT_EXIST, MessageFormat.format(LaunchingMessages.JREContainerInitializer_JRE_referenced_by_includepath_container__0__does_not_exist__1, new String[]{containerPath.toString()}), null); 
 //			throw new CoreException(status);
 //		}
 //		// update of the vm with new library locations

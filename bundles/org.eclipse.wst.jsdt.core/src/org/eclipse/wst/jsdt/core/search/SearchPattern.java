@@ -103,7 +103,7 @@ public abstract class SearchPattern extends InternalSearchPattern {
 
 	/**
 	 * Match rule: The search pattern matches search results as raw/parameterized types/methods with same erasure.
-	 * This mode has no effect on other java elements search.<br>
+	 * This mode has no effect on other javascript elements search.<br>
 	 * Type search example:
 	 * 	<ul>
 	 * 	<li>pattern: <code>List&lt;Exception&gt;</code></li>
@@ -119,13 +119,13 @@ public abstract class SearchPattern extends InternalSearchPattern {
 	 * This rule is not activated by default, so raw types or parameterized types with same erasure will not be found
 	 * for pattern List&lt;String&gt;,
 	 * Note that with this pattern, the match selection will be only on the erasure even for parameterized types.
-	 * @since 3.1
+	 *  
 	 */
 	public static final int R_ERASURE_MATCH = 0x0010;
 
 	/**
 	 * Match rule: The search pattern matches search results as raw/parameterized types/methods with equivalent type parameters.
-	 * This mode has no effect on other java elements search.<br>
+	 * This mode has no effect on other javascript elements search.<br>
 	 * Type search example:
 	 * <ul>
 	 * 	<li>pattern: <code>List&lt;Exception&gt;</code></li>
@@ -154,14 +154,14 @@ public abstract class SearchPattern extends InternalSearchPattern {
 	 * This mode is overridden by {@link  #R_ERASURE_MATCH} as erasure matches obviously include equivalent ones.
 	 * That means that pattern with rule set to {@link #R_EQUIVALENT_MATCH} | {@link  #R_ERASURE_MATCH}
 	 * will return same results than rule only set with {@link  #R_ERASURE_MATCH}.
-	 * @since 3.1
+	 *  
 	 */
 	public static final int R_EQUIVALENT_MATCH = 0x0020;
 
 	/**
 	 * Match rule: The search pattern matches exactly the search result,
 	 * that is, the source of the search result equals the search pattern.
-	 * @since 3.1
+	 *  
 	 */
 	public static final int R_FULL_MATCH = 0x0040;
 
@@ -191,7 +191,7 @@ public abstract class SearchPattern extends InternalSearchPattern {
 	 * Camel Case match rule, but with <code>N*P*E*</code> string pattern, it will
 	 * use only Pattern match rule.
 	 *
-	 * @since 3.2
+	 *  
 	 */
 	public static final int R_CAMELCASE_MATCH = 0x0080;
 
@@ -265,7 +265,7 @@ public SearchPattern(int matchRule) {
  * @param pattern the given pattern
  * @param name the given name
  * @return true if the pattern matches the given name, false otherwise
- * @since 3.2
+ *  
  */
 public static final boolean camelCaseMatch(String pattern, String name) {
 	if (pattern == null)
@@ -358,7 +358,7 @@ public static final boolean camelCaseMatch(String pattern, String name) {
  * @param nameStart the start index of the name, inclusive
  * @param nameEnd the end index of the name, exclusive
  * @return true if a sub-pattern matches the subpart of the given name, false otherwise
- * @since 3.2
+ *  
  */
 public static final boolean camelCaseMatch(String pattern, int patternStart, int patternEnd, String name, int nameStart, int nameEnd) {
 	if (name == null)
@@ -504,7 +504,7 @@ private static SearchPattern createFieldPattern(String patternString, int limitT
 						if (!(TerminalTokens.TokenNameWHITESPACE == lastToken || TerminalTokens.TokenNameDOT == lastToken))
 							mode = InsideType;
 						break;
-					default: // all other tokens are considered identifiers (see bug 21763 Problem in Java search [search])
+					default: // all other tokens are considered identifiers (see bug 21763 Problem in JavaScript search [search])
 						if (fieldName == null)
 							fieldName = scanner.getCurrentTokenString();
 						else
@@ -516,7 +516,7 @@ private static SearchPattern createFieldPattern(String patternString, int limitT
 				switch (token) {
 					case TerminalTokens.TokenNameWHITESPACE:
 						break;
-					default: // all other tokens are considered identifiers (see bug 21763 Problem in Java search [search])
+					default: // all other tokens are considered identifiers (see bug 21763 Problem in JavaScript search [search])
 						if (type == null)
 							type = scanner.getCurrentTokenString();
 						else
@@ -702,7 +702,7 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 									break;
 							}
 							break;
-						default: // all other tokens are considered identifiers (see bug 21763 Problem in Java search [search])
+						default: // all other tokens are considered identifiers (see bug 21763 Problem in JavaScript search [search])
 							if (selector == null)
 								selector = scanner.getCurrentTokenString();
 							else
@@ -772,7 +772,7 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 							argCount++;
 							if (parameterType == null) return null; // invalid syntax
 							// fall through next case to add token
-						default: // all other tokens are considered identifiers (see bug 21763 Problem in Java search [search])
+						default: // all other tokens are considered identifiers (see bug 21763 Problem in JavaScript search [search])
 							if (parameterType == null)
 								parameterType = scanner.getCurrentTokenString();
 							else
@@ -808,7 +808,7 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 							argCount++;
 							if (returnType == null) return null; // invalid syntax
 							// fall through next case to add token
-						default: // all other tokens are considered identifiers (see bug 21763 Problem in Java search [search])
+						default: // all other tokens are considered identifiers (see bug 21763 Problem in JavaScript search [search])
 							if (returnType == null)
 								returnType = scanner.getCurrentTokenString();
 							else
@@ -1141,7 +1141,7 @@ public static SearchPattern createPattern(String stringPattern, int searchFor, i
 }
 
 /**
- * Returns a search pattern based on a given Java element.
+ * Returns a search pattern based on a given JavaScript element.
  * The pattern is used to trigger the appropriate search.
  * <br>
  * Note that for generic searches, the returned pattern consider {@link #R_ERASURE_MATCH} matches.
@@ -1151,7 +1151,7 @@ public static SearchPattern createPattern(String stringPattern, int searchFor, i
  * <br>
  * The pattern can be parameterized as follows:
  *
- * @param element the Java element the search pattern is based on
+ * @param element the JavaScript element the search pattern is based on
  * @param limitTo determines the nature of the expected matches
  *	<ul>
  * 	<li>{@link IJavaScriptSearchConstants#DECLARATIONS}: will search declarations matching
@@ -1188,17 +1188,17 @@ public static SearchPattern createPattern(String stringPattern, int searchFor, i
  *				which directly implement/extend a given interface.
  *		</li>
  *	</ul>
- * @return a search pattern for a Java element or <code>null</code> if the given element is ill-formed
+ * @return a search pattern for a JavaScript element or <code>null</code> if the given element is ill-formed
  */
 public static SearchPattern createPattern(IJavaScriptElement element, int limitTo) {
 	return createPattern(element, limitTo, R_EXACT_MATCH | R_CASE_SENSITIVE | R_ERASURE_MATCH);
 }
 
 /**
- * Returns a search pattern based on a given Java element.
+ * Returns a search pattern based on a given JavaScript element.
  * The pattern is used to trigger the appropriate search, and can be parameterized as follows:
  *
- * @param element the Java element the search pattern is based on
+ * @param element the JavaScript element the search pattern is based on
  * @param limitTo determines the nature of the expected matches
  *	<ul>
  * 	<li>{@link IJavaScriptSearchConstants#DECLARATIONS}: will search declarations matching
@@ -1244,8 +1244,8 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
  * 	Note that {@link #R_ERASURE_MATCH} or {@link #R_EQUIVALENT_MATCH} have no effect on non-generic types
  * 	or methods search.<br>
  * 	Note also that default behavior for generic types or methods is to find exact matches.
- * @return a search pattern for a Java element or <code>null</code> if the given element is ill-formed
- * @since 3.1
+ * @return a search pattern for a JavaScript element or <code>null</code> if the given element is ill-formed
+ *  
  */
 public static SearchPattern createPattern(IJavaScriptElement element, int limitTo, int matchRule) {
 	SearchPattern searchPattern = null;
@@ -1611,7 +1611,7 @@ private static SearchPattern createTypePattern(char[] simpleName, char[] package
  *		Runnable
  *		List&lt;String&gt;
  *
- * @since 3.1
+ *  
  *		Type arguments can be specified to search references to parameterized types.
  * 	and look as follow: '&lt;' { [ '?' {'extends'|'super'} ] type ( ',' [ '?' {'extends'|'super'} ] type )* | '?' } '&gt;'
  * 	Please note that:
@@ -1638,7 +1638,7 @@ private static SearchPattern createTypePattern(String patternString, int limitTo
 				case TerminalTokens.TokenNameLESS:
 					argCount++;
 					// fall through default case to add token to type
-				default: // all other tokens are considered identifiers (see bug 21763 Problem in Java search [search])
+				default: // all other tokens are considered identifiers (see bug 21763 Problem in JavaScript search [search])
 					if (type == null)
 						type = scanner.getCurrentTokenString();
 					else
@@ -1910,7 +1910,7 @@ public boolean matchesName(char[] pattern, char[] name) {
  * @param stringPattern The string pattern
  * @param matchRule The match rule
  * @return Optimized valid match rule or -1 if an incompatibility was detected.
- * @since 3.2
+ *  
  */
 public static int validateMatchRule(String stringPattern, int matchRule) {
 

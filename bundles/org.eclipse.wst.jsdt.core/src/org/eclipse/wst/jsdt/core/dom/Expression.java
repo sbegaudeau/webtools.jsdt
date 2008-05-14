@@ -91,7 +91,7 @@ public abstract class Expression extends ASTNode {
 	 * @return the constant expression value, or <code>null</code> if this
 	 * expression has no constant expression value or if bindings were not
 	 * requested when the AST was created
-	 * @since 3.1
+	 *  
 	 */
 	public final Object resolveConstantExpressionValue() {
 		return this.ast.getBindingResolver().resolveConstantExpressionValue(this);
@@ -119,7 +119,7 @@ public abstract class Expression extends ASTNode {
 	 * @return <code>true</code> if this expression is the site of a
 	 * boxing conversion, or <code>false</code> if either no boxing conversion
 	 * is involved or if bindings were not requested when the AST was created
-	 * @since 3.1
+	 *  
 	 */
 	public final boolean resolveBoxing() {
 		return this.ast.getBindingResolver().resolveBoxing(this);
@@ -134,7 +134,7 @@ public abstract class Expression extends ASTNode {
 	 * unboxing conversion, or <code>false</code> if either no unboxing
 	 * conversion is involved or if bindings were not requested when the
 	 * AST was created
-	 * @since 3.1
+	 *  
 	 */
 	public final boolean resolveUnboxing() {
 		return this.ast.getBindingResolver().resolveUnboxing(this);

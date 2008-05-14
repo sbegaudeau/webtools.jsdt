@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Internal AST visitor for serializing an AST in a quick and dirty fashion.
  * For various reasons the resulting string is not necessarily legal
- * Java code; and even if it is legal Java code, it is not necessarily the string
+ * JavaScript code; and even if it is legal JavaScript code, it is not necessarily the string
  * that corresponds to the given AST. Although useless for most purposes, it's
  * fine for generating debug print strings.
  * <p>
@@ -255,7 +255,7 @@ class NaiveASTFlattener extends ASTVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(BlockComment)
-	 * @since 3.0
+	 *  
 	 */
 	public boolean visit(BlockComment node) {
 		printIndent();
@@ -475,7 +475,7 @@ class NaiveASTFlattener extends ASTVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(EnhancedForStatement)
-	 * @since 3.1
+	 *  
 	 */
 	public boolean visit(EnhancedForStatement node) {
 		printIndent();
@@ -688,7 +688,7 @@ class NaiveASTFlattener extends ASTVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(LineComment)
-	 * @since 3.0
+	 *  
 	 */
 	public boolean visit(LineComment node) {
 		this.buffer.append("//\n");//$NON-NLS-1$
@@ -708,7 +708,7 @@ class NaiveASTFlattener extends ASTVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(MemberRef)
-	 * @since 3.0
+	 *  
 	 */
 	public boolean visit(MemberRef node) {
 		if (node.getQualifier() != null) {
@@ -722,7 +722,7 @@ class NaiveASTFlattener extends ASTVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(FunctionRef)
-	 * @since 3.0
+	 *  
 	 */
 	public boolean visit(FunctionRef node) {
 		if (node.getQualifier() != null) {
@@ -744,7 +744,7 @@ class NaiveASTFlattener extends ASTVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(FunctionRefParameter)
-	 * @since 3.0
+	 *  
 	 */
 	public boolean visit(FunctionRefParameter node) {
 		node.getType().accept(this);
@@ -871,7 +871,7 @@ class NaiveASTFlattener extends ASTVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(Modifier)
-	 * @since 3.1
+	 *  
 	 */
 	public boolean visit(Modifier node) {
 		this.buffer.append(node.getKeyword().toString());
@@ -947,7 +947,7 @@ class NaiveASTFlattener extends ASTVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(ParameterizedType)
-	 * @since 3.1
+	 *  
 	 */
 	public boolean visit(ParameterizedType node) {
 		node.getType().accept(this);
@@ -1011,7 +1011,7 @@ class NaiveASTFlattener extends ASTVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(QualifiedType)
-	 * @since 3.1
+	 *  
 	 */
 	public boolean visit(QualifiedType node) {
 		node.getQualifier().accept(this);
@@ -1207,7 +1207,7 @@ class NaiveASTFlattener extends ASTVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(TagElement)
-	 * @since 3.0
+	 *  
 	 */
 	public boolean visit(TagElement node) {
 		if (node.isNested()) {
@@ -1247,7 +1247,7 @@ class NaiveASTFlattener extends ASTVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(TextElement)
-	 * @since 3.0
+	 *  
 	 */
 	public boolean visit(TextElement node) {
 		this.buffer.append(node.getText());
@@ -1397,7 +1397,7 @@ class NaiveASTFlattener extends ASTVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(TypeParameter)
-	 * @since 3.1
+	 *  
 	 */
 	public boolean visit(TypeParameter node) {
 		node.getName().accept(this);
@@ -1479,7 +1479,7 @@ class NaiveASTFlattener extends ASTVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(WildcardType)
-	 * @since 3.1
+	 *  
 	 */
 	public boolean visit(WildcardType node) {
 		this.buffer.append("?");//$NON-NLS-1$

@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
- * A Java search match that represents a method reference.
+ * A JavaScript search match that represents a method reference.
  * The element is the inner-most enclosing member that references this method.
  * <p>
  * This class is intended to be instantiated and subclassed by clients.
@@ -62,7 +62,7 @@ public class MethodReferenceMatch extends SearchMatch {
 	 * comment, and <code>false</code> otherwise
 	 * @param participant the search participant that created the match
 	 * @param resource the resource of the element
-	 * @since 3.1
+	 *  
 	 */
 	public MethodReferenceMatch(IJavaScriptElement enclosingElement, int accuracy, int offset, int length, boolean constructor, boolean synthetic, boolean insideDocComment, SearchParticipant participant, IResource resource) {
 		this(enclosingElement, accuracy, offset, length, insideDocComment, participant, resource);
@@ -87,7 +87,7 @@ public class MethodReferenceMatch extends SearchMatch {
 	 * comment, and <code>false</code> otherwise
 	 * @param participant the search participant that created the match
 	 * @param resource the resource of the element
-	 * @since 3.3
+	 *  
 	 */
 	public MethodReferenceMatch(IJavaScriptElement enclosingElement, int accuracy, int offset, int length, boolean constructor, boolean synthetic, boolean superInvocation, boolean insideDocComment, SearchParticipant participant, IResource resource) {
 		this(enclosingElement, accuracy, offset, length, constructor, synthetic, insideDocComment, participant, resource);
@@ -98,7 +98,7 @@ public class MethodReferenceMatch extends SearchMatch {
 	 * Returns whether the reference is on a constructor.
 	 *
 	 * @return Returns whether the reference is on a constructor or not.
-	 * @since 3.1
+	 *  
 	 */
 	public final boolean isConstructor() {
 		return this.constructor;
@@ -110,7 +110,7 @@ public class MethodReferenceMatch extends SearchMatch {
 	 * declaration is used or implicit super constructor is called.
 	 *
 	 * @return whether the reference is synthetic or not.
-	 * @since 3.1
+	 *  
 	 */
 	public final boolean isSynthetic() {
 		return this.synthetic;

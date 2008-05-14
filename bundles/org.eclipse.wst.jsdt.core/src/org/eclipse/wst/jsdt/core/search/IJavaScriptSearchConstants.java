@@ -77,35 +77,35 @@ public interface IJavaScriptSearchConstants {
 	/**
 	 * The searched element is an enum.
 	 * More selective than using {@link #TYPE}.
-	 * @since 3.1
+	 *  
 	 */
 	int ENUM= 7;
 
 	/**
 	 * The searched element is an annotation type.
 	 * More selective than using {@link #TYPE}.
-	 * @since 3.1
+	 *  
 	 */
 	int ANNOTATION_TYPE= 8;
 
 	/**
 	 * The searched element is a class or enum type.
 	 * More selective than using {@link #TYPE}.
-	 * @since 3.1
+	 *  
 	 */
 	int CLASS_AND_ENUM= 9;
 
 	/**
 	 * The searched element is a class or interface type.
 	 * More selective than using {@link #TYPE}.
-	 * @since 3.1
+	 *  
 	 */
 	int CLASS_AND_INTERFACE= 10;
 
 	/**
 	 * The searched element is an interface or annotation type.
 	 * More selective than using {@link #TYPE}.
-	 * @since 3.3
+	 *  
 	 */
 	int INTERFACE_AND_ANNOTATION= 11;
 
@@ -155,7 +155,7 @@ public interface IJavaScriptSearchConstants {
 	 * opposed to write accesses. Note that some expressions are considered both
 	 * as field read/write accesses: for example, x++; x+= 1;
 	 *
-	 * @since 2.0
+	 *  
 	 */
 	int READ_ACCESSES = 4;
 
@@ -164,14 +164,14 @@ public interface IJavaScriptSearchConstants {
 	 * opposed to read accesses. Note that some expressions are considered both
 	 * as field read/write accesses: for example,  x++; x+= 1;
 	 *
-	 * @since 2.0
+	 *  
 	 */
 	int WRITE_ACCESSES = 5;
 
 	/**
 	 * Ignore declaring type while searching result.
 	 * Can be used in conjunction with any of the nature of match.
-	 * @since 3.1
+	 *  
 	 */
 	int IGNORE_DECLARING_TYPE = 0x10;
 
@@ -183,7 +183,7 @@ public interface IJavaScriptSearchConstants {
 	 * 	<li>for fields search, pattern will ignore field type</li>
 	 * 	<li>this flag will have no effect for types search</li>
 	 *	</ul>
-	 * @since 3.1
+	 *  
 	 */
 	int IGNORE_RETURN_TYPE = 0x20;
 

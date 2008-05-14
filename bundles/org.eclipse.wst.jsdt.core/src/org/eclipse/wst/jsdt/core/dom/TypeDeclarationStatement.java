@@ -35,6 +35,8 @@ import java.util.List;
  * in particular, only class and enum declarations are meaningful in the context of
  * a block.
  * 
+ * <p><b>Note: This Class only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
  * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 
@@ -44,14 +46,14 @@ public class TypeDeclarationStatement extends Statement {
 
 	/**
 	 * The "typeDeclaration" structural property of this node type (JLS2 API only).
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor TYPE_DECLARATION_PROPERTY =
 		new ChildPropertyDescriptor(TypeDeclarationStatement.class, "typeDeclaration", TypeDeclaration.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "declaration" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
+	 *  
 	 */
 	public static final ChildPropertyDescriptor DECLARATION_PROPERTY =
 		new ChildPropertyDescriptor(TypeDeclarationStatement.class, "declaration", AbstractTypeDeclaration.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
@@ -60,7 +62,7 @@ public class TypeDeclarationStatement extends Statement {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.0
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_2_0;
 
@@ -68,7 +70,7 @@ public class TypeDeclarationStatement extends Statement {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.1
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_3_0;
 
@@ -93,7 +95,7 @@ public class TypeDeclarationStatement extends Statement {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		if (apiLevel == AST.JLS2_INTERNAL) {
@@ -142,15 +144,15 @@ public class TypeDeclarationStatement extends Statement {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
-	 * @since 3.0
+	 *  
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -174,14 +176,14 @@ public class TypeDeclarationStatement extends Statement {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return TYPE_DECLARATION_STATEMENT;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -194,7 +196,7 @@ public class TypeDeclarationStatement extends Statement {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -202,7 +204,7 @@ public class TypeDeclarationStatement extends Statement {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -218,7 +220,7 @@ public class TypeDeclarationStatement extends Statement {
 	 * statement (added in JLS3 API).
 	 *
 	 * @return the type declaration node
-	 * @since 3.1
+	 *  
 	 */
 	public AbstractTypeDeclaration getDeclaration() {
 		if (this.typeDecl == null) {
@@ -245,7 +247,7 @@ public class TypeDeclarationStatement extends Statement {
 	 * <li>the node already has a parent</li>
 	 * <li>a cycle in would be created</li>
 	 * </ul>
-	 * @since 3.1
+	 *  
 	 */
 	public void setDeclaration(AbstractTypeDeclaration decl) {
 		if (decl == null) {
@@ -278,7 +280,7 @@ public class TypeDeclarationStatement extends Statement {
 	/**
 	 * Internal synonym for deprecated method. Used to avoid
 	 * deprecation warnings.
-	 * @since 3.1
+	 *  
 	 */
 	/*package*/ final TypeDeclaration internalGetTypeDeclaration() {
 		supportedOnlyIn2();
@@ -310,7 +312,7 @@ public class TypeDeclarationStatement extends Statement {
 	/**
 	 * Internal synonym for deprecated method. Used to avoid
 	 * deprecation warnings.
-	 * @since 3.1
+	 *  
 	 */
 	/*package*/ final void internalSetTypeDeclaration(TypeDeclaration decl) {
 	    supportedOnlyIn2();
@@ -340,14 +342,14 @@ public class TypeDeclarationStatement extends Statement {
 		}
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return super.memSize() + 1 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

@@ -16,15 +16,15 @@ import org.w3c.dom.Element;
 
 /**
  * Enhancements to <code>IRuntimeClasspathEntry</code> to support
- * extensible runtime classpath entries. Contributed runtime classpath
+ * extensible runtime includepath entries. Contributed runtime includepath
  * entries have a type of <code>OTHER</code>, and are contributed to
  * the <code>runtimeClasspathEntries</code> extension point.
  * <p>
  * Clients are not intended to implement this interface, as new types
- * of runtime classpath entries are only intended to be contributed
- * by the Java debugger.
+ * of runtime includepath entries are only intended to be contributed
+ * by the JavaScript debugger.
  * </p>
- * @since 3.0 
+ *   
  * @see org.eclipse.wst.jsdt.launching.IRuntimeClasspathEntry
  * 
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
@@ -35,48 +35,48 @@ import org.w3c.dom.Element;
 public interface IRuntimeClasspathEntry2 extends IRuntimeClasspathEntry {
 	
 	/**
-	 * Initializes this runtime classpath entry from the given memento.
+	 * Initializes this runtime includepath entry from the given memento.
 	 * 
-	 * @param memento memento created by a classpath entry of the same type
+	 * @param memento memento created by a includepath entry of the same type
 	 * @throws CoreException if unable to initialize from the given memento
 	 */
 	public void initializeFrom(Element memento) throws CoreException;
 	
 	/**
 	 * Returns the unique identifier of the extension that contributed
-	 * this classpath entry type, or <code>null</code> if this classpath
+	 * this includepath entry type, or <code>null</code> if this includepath
 	 * entry type was not contributed.
 	 * 
 	 * @return the unique identifier of the extension that contributed
-	 *  this classpath entry type, or <code>null</code> if this classpath
+	 *  this includepath entry type, or <code>null</code> if this includepath
 	 *  entry type was not contributed
 	 */
 	public String getTypeId();
 	
 	/**
-	 * Returns whether this classpath entry is composed of other entries.
+	 * Returns whether this includepath entry is composed of other entries.
 	 * 
-	 * @return whether this classpath entry is composed of other entries
+	 * @return whether this includepath entry is composed of other entries
 	 */
 	public boolean isComposite();
 	
 	/**
-	 * Returns the classpath entries this entry is composed of, or an
+	 * Returns the includepath entries this entry is composed of, or an
 	 * empty collection if this entry is not a composite entry.
 	 * 
 	 * @param configuration the context (launch configuration) in which
-	 *  this runtime classpath entry is being queried for contained
+	 *  this runtime includepath entry is being queried for contained
 	 * 	entries, possibly <code>null</code> 
-	 * @return the classpath entries this entry is composed of, or an
+	 * @return the includepath entries this entry is composed of, or an
 	 * empty collection if this entry is not a composite entry
 	 * @throws CoreException if unable to retrieve contained entries
 	 */
 	public IRuntimeClasspathEntry[] getRuntimeClasspathEntries(ILaunchConfiguration configuration) throws CoreException;
 	
 	/**
-	 * Returns a human readable name for this classpath entry.
+	 * Returns a human readable name for this includepath entry.
 	 * 
-	 * @return a human readable name for this classpath entry
+	 * @return a human readable name for this includepath entry
 	 */
 	public String getName();
 }

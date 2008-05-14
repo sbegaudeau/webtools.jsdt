@@ -42,49 +42,49 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 
 	/**
 	 * The "modifiers" structural property of this node type (JLS2 API only).
-	 * @since 3.0
+	 *  
 	 */
 	public static final SimplePropertyDescriptor MODIFIERS_PROPERTY =
 		new SimplePropertyDescriptor(SingleVariableDeclaration.class, "modifiers", int.class, MANDATORY); //$NON-NLS-1$
 
 	/**
 	 * The "modifiers" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor MODIFIERS2_PROPERTY =
 		new ChildListPropertyDescriptor(SingleVariableDeclaration.class, "modifiers", IExtendedModifier.class, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "name" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		new ChildPropertyDescriptor(SingleVariableDeclaration.class, "name", SimpleName.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "type" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor TYPE_PROPERTY =
 		new ChildPropertyDescriptor(SingleVariableDeclaration.class, "type", Type.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "varargs" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
+	 *  
 	 */
 	public static final SimplePropertyDescriptor VARARGS_PROPERTY =
 		new SimplePropertyDescriptor(SingleVariableDeclaration.class, "varargs", boolean.class, MANDATORY); //$NON-NLS-1$
 
 	/**
 	 * The "extraDimensions" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final SimplePropertyDescriptor EXTRA_DIMENSIONS_PROPERTY =
 		new SimplePropertyDescriptor(SingleVariableDeclaration.class, "extraDimensions", int.class, MANDATORY); //$NON-NLS-1$
 
 	/**
 	 * The "initializer" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor INITIALIZER_PROPERTY =
 		new ChildPropertyDescriptor(SingleVariableDeclaration.class, "initializer", Expression.class, OPTIONAL, CYCLE_RISK); //$NON-NLS-1$
@@ -93,7 +93,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.0
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_2_0;
 
@@ -101,7 +101,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.1
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_3_0;
 
@@ -134,7 +134,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 	 * <code>AST.JLS*</code> constants
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		if (apiLevel == AST.JLS2_INTERNAL) {
@@ -149,7 +149,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 	 * Null in JLS2. Added in JLS3; defaults to an empty list
 	 * (see constructor).
 	 *
-	 * @since 3.1
+	 *  
 	 */
 	private ASTNode.NodeList modifiers = null;
 
@@ -161,7 +161,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 
 	/**
 	 * The variable name; lazily initialized; defaults to a unspecified,
-	 * legal Java identifier.
+	 * legal JavaScript identifier.
 	 */
 	private SimpleName variableName = null;
 
@@ -175,7 +175,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 	 * Indicates the last parameter of a variable arity method;
 	 * defaults to false.
 	 *
-	 * @since 3.1
+	 *  
 	 */
 	private boolean variableArity = false;
 
@@ -183,7 +183,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 	 * The number of extra array dimensions that appear after the variable;
 	 * defaults to 0.
 	 *
-	 * @since 2.1
+	 *  
 	 */
 	private int extraArrayDimensions = 0;
 
@@ -211,38 +211,38 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 		}
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on VariableDeclaration.
-	 * @since 3.1
+	 *  
 	 */
 	final SimplePropertyDescriptor internalExtraDimensionsProperty() {
 		return EXTRA_DIMENSIONS_PROPERTY;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on VariableDeclaration.
-	 * @since 3.1
+	 *  
 	 */
 	final ChildPropertyDescriptor internalInitializerProperty() {
 		return INITIALIZER_PROPERTY;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on VariableDeclaration.
-	 * @since 3.1
+	 *  
 	 */
 	final ChildPropertyDescriptor internalNameProperty() {
 		return NAME_PROPERTY;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int internalGetSetIntProperty(SimplePropertyDescriptor property, boolean get, int value) {
@@ -266,7 +266,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 		return super.internalGetSetIntProperty(property, get, value);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean internalGetSetBooleanProperty(SimplePropertyDescriptor property, boolean get, boolean value) {
@@ -282,7 +282,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 		return super.internalGetSetBooleanProperty(property, get, value);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -314,7 +314,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
@@ -325,14 +325,14 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 		return super.internalGetChildListProperty(property);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return SINGLE_VARIABLE_DECLARATION;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -352,7 +352,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -360,7 +360,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -389,7 +389,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 	 *    (element type: <code>IExtendedModifier</code>)
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
+	 *  
 	 */
 	public List modifiers() {
 		// more efficient than just calling unsupportedIn2() to check
@@ -451,7 +451,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 	/**
 	 * Internal synonym for deprecated method. Used to avoid
 	 * deprecation warnings.
-	 * @since 3.1
+	 *  
 	 */
 	/*package*/ final void internalSetModifiers(int pmodifiers) {
 	    supportedOnlyIn2();
@@ -460,7 +460,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 		postValueChange(MODIFIERS_PROPERTY);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on VariableDeclaration.
 	 */
 	public SimpleName getName() {
@@ -477,7 +477,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 		return this.variableName;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on VariableDeclaration.
 	 */
 	public void setName(SimpleName variableName) {
@@ -551,7 +551,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 	 *    and <code>false</code> otherwise
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isVarargs() {
 		// more efficient than just calling unsupportedIn2() to check
@@ -567,7 +567,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 	 *
 	 * @param variableArity <code>true</code> if this is a variable arity
 	 *    parameter declaration, and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public void setVarargs(boolean variableArity) {
 		// more efficient than just calling unsupportedIn2() to check
@@ -579,17 +579,17 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 		postValueChange(VARARGS_PROPERTY);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on VariableDeclaration.
-	 * @since 2.1
+	 *  
 	 */
 	public int getExtraDimensions() {
 		return this.extraArrayDimensions;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on VariableDeclaration.
-	 * @since 2.1
+	 *  
 	 */
 	public void setExtraDimensions(int dimensions) {
 		if (dimensions < 0) {
@@ -600,14 +600,14 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 		postValueChange(EXTRA_DIMENSIONS_PROPERTY);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on VariableDeclaration.
 	 */
 	public Expression getInitializer() {
 		return this.optionalInitializer;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on VariableDeclaration.
 	 */
 	public void setInitializer(Expression initializer) {
@@ -619,7 +619,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 		postReplaceChild(oldChild, initializer,INITIALIZER_PROPERTY);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -627,7 +627,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 		return BASE_NODE_SIZE + 7 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

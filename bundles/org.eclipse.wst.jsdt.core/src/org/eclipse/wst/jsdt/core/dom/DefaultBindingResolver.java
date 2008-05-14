@@ -87,7 +87,7 @@ class DefaultBindingResolver extends BindingResolver {
 		Map bindingKeysToBindings;
 		/**
 		 * This map is used to keep the correspondance between new bindings and the
-		 * compiler bindings as well as new annotation instances to their internal counterpart.
+		 * validator bindings as well as new annotation instances to their internal counterpart.
 		 * This is an identity map. We should only create one object for one binding or annotation.
 		 */
 		Map compilerBindingsToASTBindings;
@@ -120,7 +120,7 @@ class DefaultBindingResolver extends BindingResolver {
 	Map newAstToOldAst;
 
 	/**
-	 * Compilation unit scope
+	 * JavaScript unit scope
 	 */
 	private CompilationUnitScope scope;
 
@@ -1291,7 +1291,7 @@ class DefaultBindingResolver extends BindingResolver {
 
 	/* (non-Javadoc)
 	 * @see BindingResolver#resolveReference(MemberRef)
-     * @since 3.0
+     *  
 	 */
 	synchronized IBinding resolveReference(MemberRef ref) {
 		org.eclipse.wst.jsdt.internal.compiler.ast.Expression expression = (org.eclipse.wst.jsdt.internal.compiler.ast.Expression) this.newAstToOldAst.get(ref);
@@ -1310,7 +1310,7 @@ class DefaultBindingResolver extends BindingResolver {
 
 	/* (non-Javadoc)
 	 * @see BindingResolver#resolveReference(FunctionRef)
-     * @since 3.0
+     *  
 	 */
 	synchronized IBinding resolveReference(FunctionRef ref) {
 		org.eclipse.wst.jsdt.internal.compiler.ast.Expression expression = (org.eclipse.wst.jsdt.internal.compiler.ast.Expression) this.newAstToOldAst.get(ref);

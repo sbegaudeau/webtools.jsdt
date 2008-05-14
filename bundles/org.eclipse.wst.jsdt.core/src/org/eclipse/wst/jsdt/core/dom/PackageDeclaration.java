@@ -25,13 +25,15 @@ import java.util.List;
  * were added:
  * <pre>
  * PackageDeclaration:
- *    [ Javadoc ] { Annotation } <b>package</b> Name <b>;</b>
+ *    [ jsdoc ] { Annotation } <b>package</b> Name <b>;</b>
  * </pre>
- * Note that the standard AST parser only recognizes a Javadoc comment
+ * Note that the standard AST parser only recognizes a jsdoc comment
  * immediately preceding the package declaration when it occurs in the
- * special <code>package-info.js</code> compilation unit (JLS3 7.4.1.1).
- * The Javadoc comment in that file contains the package description.
+ * special <code>package-info.js</code> javaScript unit (JLS3 7.4.1.1).
+ * The jsdoc comment in that file contains the package description.
  * 
+ * <p><b>Note: This Class only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
  * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 
@@ -41,14 +43,14 @@ public class PackageDeclaration extends ASTNode {
 
 	/**
 	 * The "javadoc" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor JAVADOC_PROPERTY =
 		new ChildPropertyDescriptor(PackageDeclaration.class, "javadoc", JSdoc.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "name" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		new ChildPropertyDescriptor(PackageDeclaration.class, "name", Name.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
@@ -57,7 +59,7 @@ public class PackageDeclaration extends ASTNode {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.0
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_2_0;
 
@@ -65,7 +67,7 @@ public class PackageDeclaration extends ASTNode {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.1
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_3_0;
 
@@ -91,7 +93,7 @@ public class PackageDeclaration extends ASTNode {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		if (apiLevel == AST.JLS2_INTERNAL) {
@@ -104,7 +106,7 @@ public class PackageDeclaration extends ASTNode {
 	/**
 	 * The doc comment, or <code>null</code> if none.
 	 * Defaults to none.
-	 * @since 3.0
+	 *  
 	 */
 	JSdoc optionalDocComment = null;
 
@@ -112,20 +114,20 @@ public class PackageDeclaration extends ASTNode {
 	 * The annotations (element type: <code>Annotation</code>).
 	 * Null in JLS2. Added in JLS3; defaults to an empty list
 	 * (see constructor).
-	 * @since 3.1
+	 *  
 	 */
 	private ASTNode.NodeList annotations = null;
 
 	/**
 	 * The package name; lazily initialized; defaults to a unspecified,
-	 * legal Java package identifier.
+	 * legal JavaScript package identifier.
 	 */
 	private Name packageName = null;
 
 	/**
 	 * Creates a new AST node for a package declaration owned by the
 	 * given AST. The package declaration initially has an unspecified,
-	 * but legal, Java identifier; and an empty list of annotations.
+	 * but legal, JavaScript identifier; and an empty list of annotations.
 	 * <p>
 	 * N.B. This constructor is package-private; all subclasses must be
 	 * declared in the same package; clients are unable to declare
@@ -138,14 +140,14 @@ public class PackageDeclaration extends ASTNode {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -169,7 +171,7 @@ public class PackageDeclaration extends ASTNode {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
@@ -177,14 +179,14 @@ public class PackageDeclaration extends ASTNode {
 		return super.internalGetChildListProperty(property);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return PACKAGE_DECLARATION;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -198,7 +200,7 @@ public class PackageDeclaration extends ASTNode {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -206,7 +208,7 @@ public class PackageDeclaration extends ASTNode {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -229,7 +231,7 @@ public class PackageDeclaration extends ASTNode {
 	 *    (element type: <code>Annotation</code>)
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
+	 *  
 	 */
 	public List annotations() {
 		// more efficient than just calling unsupportedIn2() to check
@@ -245,7 +247,7 @@ public class PackageDeclaration extends ASTNode {
 	 * @return the doc comment node, or <code>null</code> if none
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.0
+	 *  
 	 */
 	public JSdoc getJavadoc() {
 		// more efficient than just calling unsupportedIn2() to check
@@ -262,7 +264,7 @@ public class PackageDeclaration extends ASTNode {
 	 * @exception IllegalArgumentException if the doc comment string is invalid
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.0
+	 *  
 	 */
 	public void setJavadoc(JSdoc docComment) {
 		// more efficient than just calling unsupportedIn2() to check
@@ -329,14 +331,14 @@ public class PackageDeclaration extends ASTNode {
 		return this.ast.getBindingResolver().resolvePackage(this);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return BASE_NODE_SIZE + 3 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

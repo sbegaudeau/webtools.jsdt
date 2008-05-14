@@ -14,10 +14,10 @@ package org.eclipse.wst.jsdt.core.dom;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
- * A binding represents a named entity in the Java language. The world of
+ * A binding represents a named entity in the JavaScript language. The world of
  * bindings provides an integrated picture of the structure of the program as
  * seen from the compiler's point of view. This interface declare protocol
- * common to the various different kinds of named entities in the Java language:
+ * common to the various different kinds of named entities in the JavaScript language:
  * packages, types, fields, methods, constructors, and local variables.
  * <p>
  * This interface is not intended to be implemented by clients.
@@ -114,7 +114,7 @@ public interface IBinding {
 	/**
 	 * Return whether this binding is for something that is deprecated.
 	 * A deprecated class, interface, field, method, or constructor is one that
-	 * is marked with the 'deprecated' tag in its Javadoc comment.
+	 * is marked with the 'deprecated' tag in its jsdoc comment.
 	 *
 	 * @return <code>true</code> if this binding is deprecated, and
 	 *    <code>false</code> otherwise
@@ -127,7 +127,7 @@ public interface IBinding {
 	 *
 	 * @return <code>true</code> if this binding is a recovered binding, and
 	 *    <code>false</code> otherwise
-	 * @since 3.3
+	 *  
 	 */
 	public boolean isRecovered();
 
@@ -135,7 +135,7 @@ public interface IBinding {
 	 * Returns whether this binding is synthetic. A synthetic binding is one that
 	 * was made up by the compiler, rather than something declared in the
 	 * source code. Note that default constructors (the 0-argument constructor that
-	 * the compiler generates for class declarations with no explicit constructors
+	 * the validator generates for class declarations with no explicit constructors
 	 * declarations) are not generally considered synthetic (although they
 	 * may be if the class itself is synthetic).
 	 * But see {@link IFunctionBinding#isDefaultConstructor() IFunctionBinding.isDefaultConstructor}
@@ -149,14 +149,14 @@ public interface IBinding {
 	public boolean isSynthetic();
 
 	/**
-	 * Returns the Java element that corresponds to this binding.
+	 * Returns the JavaScript element that corresponds to this binding.
 	 * Returns <code>null</code> if this binding has no corresponding
-	 * Java element.
+	 * JavaScript element.
 	 * <p>
-	 * For array types, this method returns the Java element that corresponds
+	 * For array types, this method returns the JavaScript element that corresponds
 	 * to the array's element type. For raw and parameterized types, this method
-	 * returns the Java element of the erasure. For annotations, this methods
-	 * returns the Java element of the annotation type.
+	 * returns the JavaScript element of the erasure. For annotations, this methods
+	 * returns the JavaScript element of the annotation type.
 	 * </p>
 	 * <p>
 	 * Here are the cases where a <code>null</code> should be expected:
@@ -175,9 +175,9 @@ public interface IBinding {
 	 * this method returns non-<code>null</code>.
 	 * </p>
 	 *
-	 * @return the Java element that corresponds to this binding,
+	 * @return the JavaScript element that corresponds to this binding,
 	 * 		or <code>null</code> if none
-	 * @since 3.1
+	 *  
 	 */
 	public IJavaScriptElement getJavaElement();
 
@@ -190,7 +190,7 @@ public interface IBinding {
 	 * stable as possible. This last property makes these keys useful for
 	 * comparing bindings between disconnected clusters of bindings (for example,
 	 * the bindings between the "before" and "after" ASTs of the same
-	 * compilation unit).
+	 * javaScript unit).
 	 * </p>
 	 * <p>
 	 * The exact details of how the keys are generated is unspecified.
@@ -272,7 +272,7 @@ public interface IBinding {
 	 * <code>null</code>, or if the bindings do not have the same key,
 	 * or if one or both of the bindings have no key
 	 * @see #getKey()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isEqualTo(IBinding binding);
 

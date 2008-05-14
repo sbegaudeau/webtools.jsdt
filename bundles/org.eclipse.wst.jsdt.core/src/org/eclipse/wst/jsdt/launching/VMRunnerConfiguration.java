@@ -44,7 +44,7 @@ public class VMRunnerConfiguration {
 	 * using the given class path.
 	 *
 	 * @param classToLaunch The fully qualified name of the class to launch. May not be null.
-	 * @param classPath 	The classpath. May not be null.
+	 * @param classPath 	The includepath. May not be null.
 	 */
 	public VMRunnerConfiguration(String classToLaunch, String[] classPath) {
 		if (classToLaunch == null) {
@@ -62,7 +62,7 @@ public class VMRunnerConfiguration {
 	 * VM-specific attributes.
 	 * 
 	 * @param map the <code>Map</code> of VM-specific attributes.
-	 * @since 2.0
+	 *  
 	 */
 	public void setVMSpecificAttributesMap(Map map) {
 		fVMSpecificAttributesMap = map;
@@ -101,30 +101,30 @@ public class VMRunnerConfiguration {
 	}
 	
 	/**
-	 * Sets the environment for the Java program. The Java VM will be
+	 * Sets the environment for the JavaScript program. The JavaScript VM will be
 	 * launched in the given environment.
 	 * 
-	 * @param environment the environment for the Java program specified as an array
+	 * @param environment the environment for the JavaScript program specified as an array
 	 *  of strings, each element specifying an environment variable setting in the
 	 *  format <i>name</i>=<i>value</i>
-	 * @since 3.0
+	 *  
 	 */
 	public void setEnvironment(String[] environment) {
 		fEnvironment= environment;
 	}
 		
 	/**
-	 * Sets the boot classpath. Note that the boot classpath will be passed to the 
+	 * Sets the boot includepath. Note that the boot includepath will be passed to the 
 	 * VM "as is". This means it has to be complete. Interpretation of the boot class path
 	 * is up to the VM runner this object is passed to.
 	 * <p>
 	 * In release 3.0, support has been added for appending and prepending the
-	 * boot classpath. Generally an <code>IVMRunner</code> should use the prepend,
-	 * main, and append boot classpaths provided. However, in the case that an
+	 * boot includepath. Generally an <code>IVMRunner</code> should use the prepend,
+	 * main, and append boot includepaths provided. However, in the case that an
 	 * <code>IVMRunner</code> does not support these options, a complete bootpath
 	 * should also be specified.
 	 * </p>
-	 * @param bootClassPath The boot classpath. An empty array indicates an empty
+	 * @param bootClassPath The boot includepath. An empty array indicates an empty
 	 *  bootpath and <code>null</code> indicates a default bootpath.
 	 */
 	public void setBootClassPath(String[] bootClassPath) {
@@ -136,7 +136,7 @@ public class VMRunnerConfiguration {
 	 * VM-specific attributes.
 	 * 
 	 * @return The <code>Map</code> of VM-specific attributes or <code>null</code>.
-	 * @since 2.0
+	 *  
 	 */
 	public Map getVMSpecificAttributesMap() {
 		return fVMSpecificAttributesMap;
@@ -152,20 +152,20 @@ public class VMRunnerConfiguration {
 	}
 	
 	/**
-	 * Returns the classpath.
+	 * Returns the includepath.
 	 *
-	 * @return the classpath
+	 * @return the includepath
 	 */
 	public String[] getClassPath() {
 		return fClassPath;
 	}
 	
 	/**
-	 * Returns the boot classpath. An empty array indicates an empty
+	 * Returns the boot includepath. An empty array indicates an empty
 	 * bootpath and <code>null</code> indicates a default bootpath.
 	 * <p>
 	 * In 3.0, support has been added for prepending and appending to the
-	 * boot classpath. The new attributes are stored in the VM specific
+	 * boot includepath. The new attributes are stored in the VM specific
 	 * attributes map using the following keys defined in 
 	 * <code>IJavaLaunchConfigurationConstants</code>:
 	 * <ul>
@@ -174,7 +174,7 @@ public class VMRunnerConfiguration {
 	 * <li>ATTR_BOOTPATH</li>
 	 * </ul>
 	 * </p>
-	 * @return The boot classpath. An empty array indicates an empty
+	 * @return The boot includepath. An empty array indicates an empty
 	 *  bootpath and <code>null</code> indicates a default bootpath.
 	 * @see #setBootClassPath(String[])
 	 * @see IJavaLaunchConfigurationConstants
@@ -197,9 +197,9 @@ public class VMRunnerConfiguration {
 	}
 	
 	/**
-	 * Returns the arguments to the Java program.
+	 * Returns the arguments to the JavaScript program.
 	 *
-	 * @return The Java program arguments. Default is an empty array. Will not be <code>null</code>.
+	 * @return The JavaScript program arguments. Default is an empty array. Will not be <code>null</code>.
 	 * @see #setProgramArguments(String[])
 	 */
 	public String[] getProgramArguments() {
@@ -210,10 +210,10 @@ public class VMRunnerConfiguration {
 	}
 	
 	/**
-	 * Returns the environment for the Java program or <code>null</code>
+	 * Returns the environment for the JavaScript program or <code>null</code>
 	 * 
-	 * @return The Java program environment. Default is <code>null</code>
-	 * @since 3.0
+	 * @return The JavaScript program environment. Default is <code>null</code>
+	 *  
 	 */
 	public String[] getEnvironment() {
 		return fEnvironment;
@@ -226,7 +226,7 @@ public class VMRunnerConfiguration {
 	 *  to be used by a launched VM, or <code>null</code> if
 	 *  the default working directory is to be inherited from the
 	 *  current process
-	 * @since 2.0
+	 *  
 	 */
 	public void setWorkingDirectory(String path) {
 		fWorkingDirectory = path;
@@ -238,7 +238,7 @@ public class VMRunnerConfiguration {
 	 * @return the absolute path to the working directory
 	 *  of a launched VM, or <code>null</code> if the working
 	 *  directory is inherited from the current process
-	 * @since 2.0
+	 *  
 	 */
 	public String getWorkingDirectory() {
 		return fWorkingDirectory;
@@ -249,7 +249,7 @@ public class VMRunnerConfiguration {
 	 * debug mode. Has no effect when not in debug mode.
 	 *  
 	 * @param resume whether to resume the VM on startup
-	 * @since 3.0
+	 *  
 	 */
 	public void setResumeOnStartup(boolean resume) {
 		fResume = resume;
@@ -261,7 +261,7 @@ public class VMRunnerConfiguration {
 	 * value is <code>true</code> for backwards compatibility.
 	 * 
 	 * @return whether to resume the VM on startup
-	 * @since 3.0
+	 *  
 	 */
 	public boolean isResumeOnStartup() {
 		return fResume;

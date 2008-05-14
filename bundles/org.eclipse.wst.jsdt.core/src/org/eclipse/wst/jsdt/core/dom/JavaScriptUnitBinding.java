@@ -70,7 +70,7 @@ class JavaScriptUnitBinding implements ITypeBinding {
 
 	/*
 	 * @see ITypeBinding#getBinaryName()
-	 * @since 3.0
+	 *  
 	 */
 	public String getBinaryName() {
 		char[] constantPoolName = this.binding.constantPoolName();
@@ -112,7 +112,7 @@ class JavaScriptUnitBinding implements ITypeBinding {
 //	}
 
 	/*
-	 * Returns the compilation unit for the given file name, or null if not found.
+	 * Returns the javaScript unit for the given file name, or null if not found.
 	 * @see org.eclipse.wst.jsdt.internal.compiler.env.IDependent#getFileName()
 	 */
 	private IJavaScriptUnit getCompilationUnit(char[] fileName) {
@@ -153,7 +153,7 @@ class JavaScriptUnitBinding implements ITypeBinding {
 				}
 				return newFields;
 		} catch (RuntimeException e) {
-			/* in case a method cannot be resolvable due to missing jars on the classpath
+			/* in case a method cannot be resolvable due to missing jars on the includepath
 			 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
@@ -184,7 +184,7 @@ class JavaScriptUnitBinding implements ITypeBinding {
 //				}
 				return newMethods;
 		} catch (RuntimeException e) {
-			/* in case a method cannot be resolvable due to missing jars on the classpath
+			/* in case a method cannot be resolvable due to missing jars on the includepath
 			 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
@@ -265,7 +265,7 @@ class JavaScriptUnitBinding implements ITypeBinding {
 //		try {
 //			interfaces = referenceBinding.superInterfaces();
 //		} catch (RuntimeException e) {
-//			/* in case a method cannot be resolvable due to missing jars on the classpath
+//			/* in case a method cannot be resolvable due to missing jars on the includepath
 //			 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
 //			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
 //			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
@@ -306,7 +306,7 @@ class JavaScriptUnitBinding implements ITypeBinding {
 
 		ReferenceBinding referenceBinding = (ReferenceBinding) typeBinding;
 		char[] fileName = referenceBinding.getFileName();
-			if (fileName == null) return null; // case of a WilCardBinding that doesn't have a corresponding Java element
+			if (fileName == null) return null; // case of a WilCardBinding that doesn't have a corresponding JavaScript element
 			// member or top level type
 			ITypeBinding declaringTypeBinding = getDeclaringClass();
 			if (declaringTypeBinding == null) {
@@ -571,7 +571,7 @@ class JavaScriptUnitBinding implements ITypeBinding {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getWildcard()
-	 * @since 3.1
+	 *  
 	 */
 	public ITypeBinding getWildcard() {
 		return null;
@@ -579,7 +579,7 @@ class JavaScriptUnitBinding implements ITypeBinding {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#isGenericType()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isGenericType() {
 			return false;
@@ -654,7 +654,7 @@ class JavaScriptUnitBinding implements ITypeBinding {
 
 	/*
 	 * @see IBinding#isEqualTo(Binding)
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isEqualTo(IBinding other) {
 		if (other == this) {

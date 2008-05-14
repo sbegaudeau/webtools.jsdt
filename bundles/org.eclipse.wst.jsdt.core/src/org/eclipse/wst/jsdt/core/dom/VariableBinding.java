@@ -46,7 +46,7 @@ class VariableBinding implements IVariableBinding {
 
 	/* (non-Javadoc)
 	 * @see IVariableBinding#getConstantValue()
-	 * @since 3.0
+	 *  
 	 */
 	public Object getConstantValue() {
 		Constant c = this.binding.constant();
@@ -210,7 +210,7 @@ class VariableBinding implements IVariableBinding {
 
 	/*
 	 * @see IVariableBinding#getVariableDeclaration()
-	 * @since 3.1
+	 *  
 	 */
 	public IVariableBinding getVariableDeclaration() {
 		if (this.isField()) {
@@ -245,7 +245,7 @@ class VariableBinding implements IVariableBinding {
 
 	/*
 	 * @see IVariableBinding#isEnumConstant()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isEnumConstant() {
 		return (this.binding.modifiers & ClassFileConstants.AccEnum) != 0;
@@ -253,7 +253,7 @@ class VariableBinding implements IVariableBinding {
 
 	/*
 	 * @see IBinding#isEqualTo(Binding)
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isEqualTo(IBinding other) {
 		if (other == this) {

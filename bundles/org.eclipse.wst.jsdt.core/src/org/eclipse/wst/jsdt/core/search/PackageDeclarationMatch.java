@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
- * A Java search match that represents a package declaration.
+ * A JavaScript search match that represents a package declaration.
  * The element is an <code>IPackageFragment</code>.
  * <p>
  * This class is intended to be instantiated and subclassed by clients.

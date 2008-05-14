@@ -205,7 +205,7 @@ public abstract class AbstractVMInstall implements IVMInstall, IVMInstall2, IVMI
 	 * Whether this VM should fire property change notifications.
 	 * 
 	 * @param notify
-	 * @since 2.1
+	 *  
 	 */
 	protected void setNotify(boolean notify) {
 		fNotify = notify;
@@ -213,7 +213,7 @@ public abstract class AbstractVMInstall implements IVMInstall, IVMInstall2, IVMI
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
-     * @since 2.1
+     *  
 	 */
 	public boolean equals(Object object) {
 		if (object instanceof IVMInstall) {
@@ -226,7 +226,7 @@ public abstract class AbstractVMInstall implements IVMInstall, IVMInstall2, IVMI
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
-	 * @since 2.1
+	 *  
 	 */
 	public int hashCode() {
 		return getVMInstallType().hashCode() + getId().hashCode();
@@ -234,7 +234,7 @@ public abstract class AbstractVMInstall implements IVMInstall, IVMInstall2, IVMI
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.launching.IVMInstall#getDefaultVMArguments()
-	 * @since 3.0
+	 *  
 	 */
 	public String[] getVMArguments() {
 		String args = getVMArgs();
@@ -247,7 +247,7 @@ public abstract class AbstractVMInstall implements IVMInstall, IVMInstall2, IVMI
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.launching.IVMInstall#setDefaultVMArguments(java.lang.String[])
-	 * @since 3.0
+	 *  
 	 */
 	public void setVMArguments(String[] vmArgs) {
 		if (vmArgs == null) {
@@ -463,7 +463,7 @@ public abstract class AbstractVMInstall implements IVMInstall, IVMInstall2, IVMI
 	 *            <code>null</code> if none
 	 * @param code error code
 	 * @throws CoreException the "abort" core exception
-	 * @since 3.2
+	 *  
 	 */
 	protected void abort(String message, Throwable exception, int code) throws CoreException {
 		throw new CoreException(new Status(IStatus.ERROR, JavaScriptCore.PLUGIN_ID, code, message, exception));

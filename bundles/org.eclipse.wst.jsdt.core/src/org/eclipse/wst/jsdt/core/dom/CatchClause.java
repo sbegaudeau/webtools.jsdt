@@ -31,14 +31,12 @@ public class CatchClause extends ASTNode {
 
 	/**
 	 * The "exception" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor EXCEPTION_PROPERTY =
 		new ChildPropertyDescriptor(CatchClause.class, "exception", SingleVariableDeclaration.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "body" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor BODY_PROPERTY =
 		new ChildPropertyDescriptor(CatchClause.class, "body", Block.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
@@ -67,7 +65,6 @@ public class CatchClause extends ASTNode {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;

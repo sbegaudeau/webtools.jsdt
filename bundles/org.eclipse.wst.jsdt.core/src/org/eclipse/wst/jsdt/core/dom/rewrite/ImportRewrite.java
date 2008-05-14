@@ -53,7 +53,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
 /**
  * The {@link ImportRewrite} helps updating imports following a import order and on-demand imports threshold as configured by a project.
  * <p>
- * The import rewrite is created on a compilation unit and collects references to types that are added or removed. When adding imports, e.g. using
+ * The import rewrite is created on a javaScript unit and collects references to types that are added or removed. When adding imports, e.g. using
  * {@link #addImport(String)}, the import rewrite evaluates if the type can be imported and returns the a reference to the type that can be used in code.
  * This reference is either unqualified if the import could be added, or fully qualified if the import failed due to a conflict with another element of the same name.
  * </p>
@@ -169,16 +169,16 @@ public final class ImportRewrite {
 	 * newly added imports will be created.
 	 * <p>
 	 * Note that {@link #create(IJavaScriptUnit, boolean)} is more efficient than this method if an AST for
-	 * the compilation unit is already available.
+	 * the javaScript unit is already available.
 	 * </p>
-	 * @param cu the compilation unit to create the imports for
+	 * @param cu the javaScript unit to create the imports for
 	 * @param restoreExistingImports specifies if the existing imports should be kept or removed.
 	 * @return the created import rewriter.
-	 * @throws JavaScriptModelException thrown when the compilation unit could not be accessed.
+	 * @throws JavaScriptModelException thrown when the javaScript unit could not be accessed.
 	 */
 	public static ImportRewrite create(IJavaScriptUnit cu, boolean restoreExistingImports) throws JavaScriptModelException {
 		if (cu == null) {
-			throw new IllegalArgumentException("Compilation unit must not be null"); //$NON-NLS-1$
+			throw new IllegalArgumentException("JavaScript unit must not be null"); //$NON-NLS-1$
 		}
 		ImportRewriteSupport importRewriteExtension=null;
 		InferrenceProvider[] inferenceProviders = InferrenceManager.getInstance().getInferenceProviders( (IInferenceFile)cu);
@@ -213,7 +213,7 @@ public final class ImportRewrite {
 	 * @param astRoot the AST root node to create the imports for
 	 * @param restoreExistingImports specifies if the existing imports should be kept or removed.
 	 * @return the created import rewriter.
-	 * @throws IllegalArgumentException thrown when the passed AST is null or was not created from a compilation unit.
+	 * @throws IllegalArgumentException thrown when the passed AST is null or was not created from a javaScript unit.
 	 */
 	public static ImportRewrite create(JavaScriptUnit astRoot, boolean restoreExistingImports) {
 		if (astRoot == null) {
@@ -221,7 +221,7 @@ public final class ImportRewrite {
 		}
 		ITypeRoot typeRoot = astRoot.getTypeRoot();
 		if (!(typeRoot instanceof IJavaScriptUnit)) {
-			throw new IllegalArgumentException("AST must have been constructed from a Java element"); //$NON-NLS-1$
+			throw new IllegalArgumentException("AST must have been constructed from a JavaScript element"); //$NON-NLS-1$
 		}
 		ImportRewriteSupport importRewriteExtension=null;
 		InferrenceProvider[] inferenceProviders = InferrenceManager.getInstance().getInferenceProviders( (IInferenceFile)typeRoot);
@@ -330,8 +330,8 @@ public final class ImportRewrite {
 	}
 
 	/**
-	 * The compilation unit for which this import rewrite was created for.
-	 * @return the compilation unit for which this import rewrite was created for.
+	 * The javaScript unit for which this import rewrite was created for.
+	 * @return the javaScript unit for which this import rewrite was created for.
 	 */
 	public IJavaScriptUnit getCompilationUnit() {
 		return this.compilationUnit;
@@ -348,7 +348,7 @@ public final class ImportRewrite {
 
 	/**
 	 * Specifies that implicit imports (types in default package, package <code>java.lang</code> or
-	 * in the same package as the rewrite compilation unit should not be created except if necessary
+	 * in the same package as the rewrite javaScript unit should not be created except if necessary
 	 * to resolve an on-demand import conflict. The filter is enabled by default.
 	 * @param filterImplicitImports if set, implicit imports will be filtered.
 	 */
@@ -411,7 +411,7 @@ public final class ImportRewrite {
  	 * No imports are added for types that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
 	 * <p>
-	 * The content of the compilation unit itself is actually not modified
+	 * The content of the javaScript unit itself is actually not modified
 	 * in any way by this method; rather, the rewriter just records that a new import has been added.
 	 * </p>
 	 * @param typeSig the signature of the type to be added.
@@ -433,7 +433,7 @@ public final class ImportRewrite {
  	 * No imports are added for types that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
 	 * <p>
-	 * The content of the compilation unit itself is actually not modified
+	 * The content of the javaScript unit itself is actually not modified
 	 * in any way by this method; rather, the rewriter just records that a new import has been added.
 	 * </p>
 	 * @param typeSig the signature of the type to be added.
@@ -506,7 +506,7 @@ public final class ImportRewrite {
  	 * No imports are added for types that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
 	 * <p>
-	 * The content of the compilation unit itself is actually not modified
+	 * The content of the javaScript unit itself is actually not modified
 	 * in any way by this method; rather, the rewriter just records that a new import has been added.
 	 * </p>
 	 * @param binding the signature of the type to be added.
@@ -527,7 +527,7 @@ public final class ImportRewrite {
  	 * No imports are added for types that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
 	 * <p>
-	 * The content of the compilation unit itself is actually not modified
+	 * The content of the javaScript unit itself is actually not modified
 	 * in any way by this method; rather, the rewriter just records that a new import has been added.
 	 * </p>
 	 * @param binding the signature of the type to be added.
@@ -650,7 +650,7 @@ public final class ImportRewrite {
  	 * No imports are added for types that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
 	 * <p>
-	 * The content of the compilation unit itself is actually not modified
+	 * The content of the javaScript unit itself is actually not modified
 	 * in any way by this method; rather, the rewriter just records that a new import has been added.
 	 * </p>
 	 * @param binding the signature of the type to be added.
@@ -672,7 +672,7 @@ public final class ImportRewrite {
  	 * No imports are added for types that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
 	 * <p>
-	 * The content of the compilation unit itself is actually not modified
+	 * The content of the javaScript unit itself is actually not modified
 	 * in any way by this method; rather, the rewriter just records that a new import has been added.
 	 * </p>
 	 * @param binding the signature of the type to be added.
@@ -743,7 +743,7 @@ public final class ImportRewrite {
  	 * No imports are added for types that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
 	 * <p>
-	 * The content of the compilation unit itself is actually not modified
+	 * The content of the javaScript unit itself is actually not modified
 	 * in any way by this method; rather, the rewriter just records that a new import has been added.
 	 * </p>
 	 * @param qualifiedTypeName the qualified type name of the type to be added
@@ -779,7 +779,7 @@ public final class ImportRewrite {
  	 * No imports are added for types that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
 	 * <p>
-	 * The content of the compilation unit itself is actually not modified
+	 * The content of the javaScript unit itself is actually not modified
 	 * in any way by this method; rather, the rewriter just records that a new import has been added.
 	 * </p>
 	 * @param qualifiedTypeName the qualified type name of the type to be added
@@ -798,7 +798,7 @@ public final class ImportRewrite {
  	 * No imports are added for members that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
 	 * <p>
-	 * The content of the compilation unit itself is actually not modified
+	 * The content of the javaScript unit itself is actually not modified
 	 * in any way by this method; rather, the rewriter just records that a new import has been added.
 	 * </p>
 	 * @param binding The binding of the static field or method to be added.
@@ -819,7 +819,7 @@ public final class ImportRewrite {
  	 * No imports are added for members that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
 	 * <p>
-	 * The content of the compilation unit itself is actually not modified
+	 * The content of the javaScript unit itself is actually not modified
 	 * in any way by this method; rather, the rewriter just records that a new import has been added.
 	 * </p>
 	 * @param binding The binding of the static field or method to be added.
@@ -854,7 +854,7 @@ public final class ImportRewrite {
  	 * No imports are added for members that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
 	 * <p>
-	 * The content of the compilation unit itself is actually not modified
+	 * The content of the javaScript unit itself is actually not modified
 	 * in any way by this method; rather, the rewriter just records that a new import has been added.
 	 * </p>
 	 * @param declaringTypeName The qualified name of the static's member declaring type
@@ -876,7 +876,7 @@ public final class ImportRewrite {
  	 * No imports are added for members that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
 	 * <p>
-	 * The content of the compilation unit itself is actually not modified
+	 * The content of the javaScript unit itself is actually not modified
 	 * in any way by this method; rather, the rewriter just records that a new import has been added.
 	 * </p>
 	 * @param declaringTypeName The qualified name of the static's member declaring type
@@ -971,7 +971,7 @@ public final class ImportRewrite {
 	 * Records to remove a import. No remove is recorded if no such import exists or if such an import is recorded
 	 * to be added. In that case the record of the addition is discarded.
 	 * <p>
-	 * The content of the compilation unit itself is actually not modified
+	 * The content of the javaScript unit itself is actually not modified
 	 * in any way by this method; rather, the rewriter just records that an import has been removed.
 	 * </p>
 	 * @param qualifiedName The import name to remove.
@@ -985,7 +985,7 @@ public final class ImportRewrite {
 	 * Records to remove a static import. No remove is recorded if no such import exists or if such an import is recorded
 	 * to be added. In that case the record of the addition is discarded.
 	 * <p>
-	 * The content of the compilation unit itself is actually not modified
+	 * The content of the javaScript unit itself is actually not modified
 	 * in any way by this method; rather, the rewriter just records that a new import has been removed.
 	 * </p>
 	 * @param qualifiedName The import name to remove.
@@ -1006,7 +1006,7 @@ public final class ImportRewrite {
 
 	/**
 	 * Converts all modifications recorded by this rewriter into an object representing the corresponding text
-	 * edits to the source code of the rewrite's compilation unit. The compilation unit itself is not modified.
+	 * edits to the source code of the rewrite's javaScript unit. The javaScript unit itself is not modified.
 	 * <p>
 	 * Calling this methods does not discard the modifications on record. Subsequence modifications are added
 	 * to the ones already on record. If this method is called again later, the resulting text edit object will accurately

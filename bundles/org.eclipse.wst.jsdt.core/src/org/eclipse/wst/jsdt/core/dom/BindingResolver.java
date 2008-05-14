@@ -45,7 +45,7 @@ class BindingResolver {
 	/**
 	 * Finds the corresponding AST node from which the given binding originated.
 	 * Returns <code>null</code> if the binding does not correspond to any node
-	 * in the compilation unit.
+	 * in the javaScript unit.
 	 * <p>
 	 * The following table indicates the expected node type for the various
 	 * different kinds of bindings:
@@ -253,7 +253,7 @@ class BindingResolver {
 	}
 
 	/**
-	 * Returns the compiler lookup environment used by this binding resolver.
+	 * Returns the validator lookup environment used by this binding resolver.
 	 * Returns <code>null</code> if none.
 	 *
 	 * @return the lookup environment used by this resolver, or <code>null</code> if none.
@@ -282,7 +282,6 @@ class BindingResolver {
 	 * @return <code>true</code> if this expression is the site of a
 	 * boxing conversion, or <code>false</code> if either no boxing conversion
 	 * is involved or if bindings were not requested when the AST was created
-	 * @since 3.1
 	 */
 	boolean resolveBoxing(Expression expression) {
 		return false;
@@ -297,7 +296,6 @@ class BindingResolver {
 	 * unboxing conversion, or <code>false</code> if either no unboxing
 	 * conversion is involved or if bindings were not requested when the
 	 * AST was created
-	 * @since 3.1
 	 */
 	boolean resolveUnboxing(Expression expression) {
 		return false;
@@ -329,7 +327,6 @@ class BindingResolver {
 	 * @return the constant expression value, or <code>null</code> if this
 	 * expression has no constant expression value or if bindings were not
 	 * requested when the AST was created
-	 * @since 3.1
 	 */
 	Object resolveConstantExpressionValue(Expression expression) {
 		return null;
@@ -602,7 +599,6 @@ class BindingResolver {
 	 * @param ref the reference of interest
 	 * @return the binding for the reference, or <code>null</code> if no binding is
 	 *    available
-	 * @since 3.0
 	 */
 	IBinding resolveReference(MemberRef ref) {
 		return null;
@@ -623,7 +619,6 @@ class BindingResolver {
 	 * @param ref the reference of interest
 	 * @return the binding for the reference, or <code>null</code> if no binding is
 	 *    available
-	 * @since 3.0
 	 */
 	IBinding resolveReference(FunctionRef ref) {
 		return null;
@@ -718,7 +713,6 @@ class BindingResolver {
 	 * @param typeParameter the type paramter of interest
 	 * @return the binding for the given type parameter, or <code>null</code>
 	 *    if no binding is available
-	 * @since 3.1
 	 */
 	ITypeBinding resolveTypeParameter(TypeParameter typeParameter) {
 		return null;
@@ -799,10 +793,10 @@ class BindingResolver {
 	}
 
 	/**
-	 * Returns the compilation unit scope used by this binding resolver.
+	 * Returns the javaScript unit scope used by this binding resolver.
 	 * Returns <code>null</code> if none.
 	 *
-	 * @return the compilation unit scope by this resolver, or <code>null</code> if none.
+	 * @return the javaScript unit scope by this resolver, or <code>null</code> if none.
 	 */
 	public CompilationUnitScope scope() {
 		return null;

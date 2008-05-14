@@ -110,7 +110,6 @@ public abstract class ASTVisitor {
 
 	/**
 	 * Indicates whether doc tags should be visited by default.
-	 * @since 3.0
 	 */
 	private boolean visitDocTags;
 
@@ -134,7 +133,6 @@ public abstract class ASTVisitor {
 	 * to be visited by default, and <code>false</code> otherwise
 	 * @see JSdoc#tags()
 	 * @see #visit(JSdoc)
-	 * @since 3.0
 	 */
 	public ASTVisitor(boolean visitDocTags) {
 		this.visitDocTags = visitDocTags;
@@ -312,7 +310,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.0
 	 */
 	public boolean visit(BlockComment node) {
 		return true;
@@ -525,7 +522,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.1
 	 */
 	public boolean visit(EnhancedForStatement node) {
 		return true;
@@ -740,7 +736,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.0
 	 */
 	public boolean visit(LineComment node) {
 		return true;
@@ -763,7 +758,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.0
 	 */
 	public boolean visit(MemberRef node) {
 		return true;
@@ -781,7 +775,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.0
 	 */
 	public boolean visit(FunctionRef node) {
 		return true;
@@ -799,7 +792,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.0
 	 */
 	public boolean visit(FunctionRefParameter node) {
 		return true;
@@ -850,7 +842,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.1
 	 */
 	public boolean visit(Modifier node) {
 		return true;
@@ -921,7 +912,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.1
 	 */
 	public boolean visit(ParameterizedType node) {
 		return true;
@@ -1018,7 +1008,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.1
 	 */
 	public boolean visit(QualifiedType node) {
 		return true;
@@ -1198,7 +1187,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.0
 	 */
 	public boolean visit(TagElement node) {
 		return true;
@@ -1216,7 +1204,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.0
 	 */
 	public boolean visit(TextElement node) {
 		return true;
@@ -1330,7 +1317,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.1
 	 */
 	public boolean visit(TypeParameter node) {
 		return true;
@@ -1415,7 +1401,6 @@ public abstract class ASTVisitor {
 	 * @return <code>true</code> if the children of this node should be
 	 * visited, and <code>false</code> if the children of this node should
 	 * be skipped
-	 * @since 3.1
 	 */
 	public boolean visit(WildcardType node) {
 		return true;
@@ -1539,7 +1524,6 @@ public abstract class ASTVisitor {
 	 * </p>
 	 *
 	 * @param node the node to visit
-	 * @since 3.0
 	 */
 	public void endVisit(BlockComment node) {
 		// default implementation: do nothing
@@ -1699,7 +1683,6 @@ public abstract class ASTVisitor {
 	 * </p>
 	 *
 	 * @param node the node to visit
-	 * @since 3.1
 	 */
 	public void endVisit(EnhancedForStatement node) {
 		// default implementation: do nothing
@@ -1858,7 +1841,6 @@ public abstract class ASTVisitor {
 	 * </p>
 	 *
 	 * @param node the node to visit
-	 * @since 3.0
 	 */
 	public void endVisit(LineComment node) {
 		// default implementation: do nothing
@@ -1875,7 +1857,6 @@ public abstract class ASTVisitor {
 	 * </p>
 	 *
 	 * @param node the node to visit
-	 * @since 3.0
 	 */
 	public void endVisit(MemberRef node) {
 		// default implementation: do nothing
@@ -1888,7 +1869,6 @@ public abstract class ASTVisitor {
 	 * </p>
 	 *
 	 * @param node the node to visit
-	 * @since 3.0
 	 */
 	public void endVisit(FunctionRef node) {
 		// default implementation: do nothing
@@ -1901,7 +1881,6 @@ public abstract class ASTVisitor {
 	 * </p>
 	 *
 	 * @param node the node to visit
-	 * @since 3.0
 	 */
 	public void endVisit(FunctionRefParameter node) {
 		// default implementation: do nothing
@@ -1938,7 +1917,6 @@ public abstract class ASTVisitor {
 	 * </p>
 	 *
 	 * @param node the node to visit
-	 * @since 3.1
 	 */
 	public void endVisit(Modifier node) {
 		// default implementation: do nothing
@@ -1991,7 +1969,6 @@ public abstract class ASTVisitor {
 	 * </p>
 	 *
 	 * @param node the node to visit
-	 * @since 3.1
 	 */
 	public void endVisit(ParameterizedType node) {
 		// default implementation: do nothing
@@ -2064,7 +2041,6 @@ public abstract class ASTVisitor {
 	 * </p>
 	 *
 	 * @param node the node to visit
-	 * @since 3.1
 	 */
 	public void endVisit(QualifiedType node) {
 		// default implementation: do nothing
@@ -2197,7 +2173,6 @@ public abstract class ASTVisitor {
 	 * </p>
 	 *
 	 * @param node the node to visit
-	 * @since 3.0
 	 */
 	public void endVisit(TagElement node) {
 		// default implementation: do nothing
@@ -2210,7 +2185,6 @@ public abstract class ASTVisitor {
 	 * </p>
 	 *
 	 * @param node the node to visit
-	 * @since 3.0
 	 */
 	public void endVisit(TextElement node) {
 		// default implementation: do nothing
@@ -2295,7 +2269,6 @@ public abstract class ASTVisitor {
 	 * </p>
 	 *
 	 * @param node the node to visit
-	 * @since 3.1
 	 */
 	public void endVisit(TypeParameter node) {
 		// default implementation: do nothing
@@ -2360,7 +2333,6 @@ public abstract class ASTVisitor {
 	 * </p>
 	 *
 	 * @param node the node to visit
-	 * @since 3.1
 	 */
 	public void endVisit(WildcardType node) {
 		// default implementation: do nothing

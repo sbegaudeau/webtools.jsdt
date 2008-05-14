@@ -122,7 +122,7 @@ class PackageBinding implements IPackageBinding {
 
 	/*
 	 * @see IBinding#isEqualTo(Binding)
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isEqualTo(IBinding other) {
 		if (other == this) {

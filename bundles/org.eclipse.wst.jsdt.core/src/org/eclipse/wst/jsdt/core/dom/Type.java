@@ -108,7 +108,7 @@ public abstract class Type extends ASTNode {
 	 *
 	 * @return <code>true</code> if this is a parameterized type, and
 	 *    <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public final boolean isParameterizedType() {
 		return (this instanceof ParameterizedType);
@@ -136,7 +136,7 @@ public abstract class Type extends ASTNode {
 	 *
 	 * @return <code>true</code> if this is a qualified type, and
 	 *    <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public final boolean isQualifiedType() {
 		return (this instanceof QualifiedType);
@@ -152,7 +152,7 @@ public abstract class Type extends ASTNode {
 	 *
 	 * @return <code>true</code> if this is a wildcard type, and
 	 *    <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public final boolean isWildcardType() {
 		return (this instanceof WildcardType);

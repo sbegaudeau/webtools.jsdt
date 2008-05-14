@@ -47,7 +47,7 @@ public interface IVariableBinding extends IBinding {
 	 *
 	 * @return <code>true</code> if this is the binding for an enum constant,
 	 *    and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isEnumConstant();
 
@@ -56,7 +56,7 @@ public interface IVariableBinding extends IBinding {
 	 *
 	 * @return <code>true</code> if this is the binding for a parameter,
 	 *    and <code>false</code> otherwise
-	 * @since 3.2
+	 *  
 	 */
 	public boolean isParameter();
 
@@ -129,7 +129,7 @@ public interface IVariableBinding extends IBinding {
 	 * JLS2 15.28.). The result is always <code>null</code> for enum constants.
 	 *
 	 * @return the constant value, or <code>null</code> if none
-	 * @since 3.0
+	 *  
 	 */
 	public Object getConstantValue();
 
@@ -148,7 +148,7 @@ public interface IVariableBinding extends IBinding {
 	 *
 	 * @return the binding of the method or constructor that declares this
 	 * local variable, or <code>null</code> if none
-	 * @since 3.1
+	 *  
 	 */
 	public IFunctionBinding getDeclaringMethod();
 
@@ -161,7 +161,7 @@ public interface IVariableBinding extends IBinding {
 	 * returns the same binding.
 	 *
 	 * @return the variable binding for the originating declaration
-	 * @since 3.1
+	 *  
 	 */
 	public IVariableBinding getVariableDeclaration();
 

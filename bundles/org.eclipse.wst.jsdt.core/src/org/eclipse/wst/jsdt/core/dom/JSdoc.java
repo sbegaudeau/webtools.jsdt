@@ -34,7 +34,7 @@ public class JSdoc extends Comment {
 
 	/**
 	 * The "comment" structural property of this node type (JLS2 API only).
-	 * @since 3.0
+	 *  
 	 * @deprecated Replaced by {@link #TAGS_PROPERTY} in the JLS3 API.
 	 */
 	public static final SimplePropertyDescriptor COMMENT_PROPERTY =
@@ -42,7 +42,7 @@ public class JSdoc extends Comment {
 
 	/**
 	 * The "tags" structural property of this node type.
-	 * @since 3.1
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor TAGS_PROPERTY =
 		new ChildListPropertyDescriptor(JSdoc.class, "tags", TagElement.class, CYCLE_RISK); //$NON-NLS-1$
@@ -52,7 +52,7 @@ public class JSdoc extends Comment {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.0
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_2_0;
 
@@ -60,7 +60,7 @@ public class JSdoc extends Comment {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.1
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_3_0;
 
@@ -85,7 +85,7 @@ public class JSdoc extends Comment {
 	 * <code>AST.JLS*</code> constants
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		if (apiLevel == AST.JLS2_INTERNAL) {
@@ -97,13 +97,13 @@ public class JSdoc extends Comment {
 
 	/**
 	 * Canonical minimal doc comment.
-     * @since 3.0
+     *  
 	 */
 	private static final String MINIMAL_DOC_COMMENT = "/** */";//$NON-NLS-1$
 
 	/**
 	 * The doc comment string, including opening and closing comment
-	 * delimiters; defaults to a minimal Javadoc comment.
+	 * delimiters; defaults to a minimal jsdoc comment.
 	 * @deprecated The comment string was replaced in the 3.0 release
 	 * by a representation of the structure of the doc comment.
 	 * For backwards compatibility, it is still funcational as before.
@@ -113,7 +113,7 @@ public class JSdoc extends Comment {
 	/**
 	 * The list of tag elements (element type: <code>TagElement</code>).
 	 * Defaults to an empty list.
-	 * @since 3.0
+	 *  
 	 */
 	private ASTNode.NodeList tags =
 		new ASTNode.NodeList(TAGS_PROPERTY);
@@ -134,14 +134,14 @@ public class JSdoc extends Comment {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final Object internalGetSetObjectProperty(SimplePropertyDescriptor property, boolean get, Object value) {
@@ -157,7 +157,7 @@ public class JSdoc extends Comment {
 		return super.internalGetSetObjectProperty(property, get, value);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
@@ -168,14 +168,14 @@ public class JSdoc extends Comment {
 		return super.internalGetChildListProperty(property);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return JSDOC;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -188,7 +188,7 @@ public class JSdoc extends Comment {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -196,7 +196,7 @@ public class JSdoc extends Comment {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -230,7 +230,7 @@ public class JSdoc extends Comment {
 	 * and any embedded line breaks.
 	 *
 	 * @param docComment the doc comment string
-	 * @exception IllegalArgumentException if the Java comment string is invalid
+	 * @exception IllegalArgumentException if the JavaScript comment string is invalid
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * an AST later than JLS2
 	 * @deprecated The comment string was replaced in the 3.0 release
@@ -251,7 +251,7 @@ public class JSdoc extends Comment {
 			boolean onlyOneComment = false;
 			while ((token = scanner.getNextToken()) != TerminalTokens.TokenNameEOF) {
 				switch(token) {
-					case TerminalTokens.TokenNameCOMMENT_JAVADOC :
+					case TerminalTokens.TokenNameCOMMENT_jsdoc :
 						if (onlyOneComment) {
 							throw new IllegalArgumentException();
 						}
@@ -295,13 +295,13 @@ public class JSdoc extends Comment {
 	 *
 	 * @return the live list of tag elements in this doc comment
 	 * (element type: <code>TagElement</code>)
-	 * @since 3.0
+	 *  
 	 */
 	public List tags() {
 		return this.tags;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -313,7 +313,7 @@ public class JSdoc extends Comment {
 		return size;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

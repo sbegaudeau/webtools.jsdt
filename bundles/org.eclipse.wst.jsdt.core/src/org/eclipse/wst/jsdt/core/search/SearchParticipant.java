@@ -145,7 +145,7 @@ public abstract class SearchParticipant {
 	 * matching the given pattern in the given search scope.
 	 * <p>
 	 * Note that a participant (e.g. a JSP participant) can pre-process the contents of the given documents,
-	 * create its own documents whose contents are Java compilation units and delegate the match location
+	 * create its own documents whose contents are JavaScript javascript unit s and delegate the match location
 	 * to the default participant (see {@link SearchEngine#getDefaultSearchParticipant()}). Passing its own
 	 * {@link SearchRequestor} this particpant can then map the match positions back to the original
 	 * contents, create its own matches and report them to the original requestor.
@@ -177,7 +177,7 @@ public abstract class SearchParticipant {
 	 * </p>
 	 *
 	 * @param indexLocation the location in the file system to the index
-	 * @since 3.2
+	 *  
 	 */
 	public void removeIndex(IPath indexLocation){
 		IndexManager manager = JavaModelManager.getJavaModelManager().getIndexManager();

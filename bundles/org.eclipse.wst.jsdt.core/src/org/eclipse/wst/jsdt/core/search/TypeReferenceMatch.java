@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 
 /**
- * A Java search match that represents a type reference.
+ * A JavaScript search match that represents a type reference.
  * The element is the inner-most enclosing member that references this type.
  * <p>
  * This class is intended to be instantiated and subclassed by clients.
@@ -54,7 +54,7 @@ public class TypeReferenceMatch extends SearchMatch {
 	 *
 	 * @return the element of the search match, or <code>null</code> if none or there's
 	 * 	no more specific local element than the element itself ({@link SearchMatch#getElement()}).
-	 * @since 3.2
+	 *  
 	 */
 	public final IJavaScriptElement getLocalElement() {
 		return this.localElement;
@@ -69,7 +69,7 @@ public class TypeReferenceMatch extends SearchMatch {
 	 * additional fields of a multiple fields declaration.
 	 *
 	 * @return the other elements of the search match, or <code>null</code> if none
-	 * @since 3.2
+	 *  
 	 */
 	public final IJavaScriptElement[] getOtherElements() {
 		return this.otherElements;
@@ -80,7 +80,7 @@ public class TypeReferenceMatch extends SearchMatch {
 	 *
 	 * @param localElement A more specific local element that corresponds to the match,
 	 * 	or <code>null</code> if none
-	 * @since 3.2
+	 *  
 	 */
 	public final void setLocalElement(IJavaScriptElement localElement) {
 		this.localElement = localElement;
@@ -91,7 +91,7 @@ public class TypeReferenceMatch extends SearchMatch {
 	 *
 	 * @param otherElements the other elements of the match,
 	 * 	or <code>null</code> if none
-	 * @since 3.2
+	 *  
 	 */
 	public final void setOtherElements(IJavaScriptElement[] otherElements) {
 		this.otherElements = otherElements;

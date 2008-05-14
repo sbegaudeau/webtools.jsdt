@@ -89,7 +89,6 @@ public class ASTRewrite {
 	/**
 	 * Target source range computer; null means uninitialized;
 	 * lazy initialized to <code>new TargetSourceRangeComputer()</code>.
-	 * @since 3.1
 	 */
 	private TargetSourceRangeComputer targetSourceRangeComputer = null;
 
@@ -218,11 +217,10 @@ public class ASTRewrite {
 	 * @return text edit object describing the changes to the
 	 * document corresponding to the changes recorded by this rewriter
 	 * @throws JavaScriptModelException A {@link JavaScriptModelException} is thrown when
-	 * the underlying compilation units buffer could not be accessed.
+	 * the underlying javaScript units buffer could not be accessed.
 	 * @throws IllegalArgumentException An {@link IllegalArgumentException}
 	 * is thrown if the document passed does not correspond to the AST that is rewritten.
 	 *
-	 * @since 3.2
 	 */
 	public TextEdit rewriteAST() throws JavaScriptModelException, IllegalArgumentException {
 		ASTNode rootNode= getRootNode();
@@ -232,12 +230,12 @@ public class ASTRewrite {
 
 		ASTNode root= rootNode.getRoot();
 		if (!(root instanceof JavaScriptUnit)) {
-			throw new IllegalArgumentException("This API can only be used if the AST is created from a compilation unit or class file"); //$NON-NLS-1$
+			throw new IllegalArgumentException("This API can only be used if the AST is created from a javaScript unit or class file"); //$NON-NLS-1$
 		}
 		JavaScriptUnit astRoot= (JavaScriptUnit) root;
 		ITypeRoot typeRoot = astRoot.getTypeRoot();
 		if (typeRoot == null || typeRoot.getBuffer() == null) {
-			throw new IllegalArgumentException("This API can only be used if the AST is created from a compilation unit or class file"); //$NON-NLS-1$
+			throw new IllegalArgumentException("This API can only be used if the AST is created from a javaScript unit or class file"); //$NON-NLS-1$
 		}
 
 		char[] content= typeRoot.getBuffer().getCharacters();
@@ -414,7 +412,6 @@ public class ASTRewrite {
 	 * @param property the node's property
 	 * @return the value of the given property as managed by this rewriter
 	 *
-	 * @since 3.2
 	 */
 	public Object get(ASTNode node, StructuralPropertyDescriptor property) {
 		if (node == null || property == null) {
@@ -548,7 +545,6 @@ public class ASTRewrite {
 	 * @param targetNodes the nodes to go in the group
 	 * @return the new group node
 	 * @throws IllegalArgumentException if the targetNodes is <code>null</code> or empty
-	 * @since 3.1
 	 */
 	public final ASTNode createGroupNode(ASTNode[] targetNodes) {
 		if (targetNodes == null || targetNodes.length == 0) {
@@ -618,7 +614,6 @@ public class ASTRewrite {
 	 * The default value is a <code>new TargetSourceRangeComputer()</code>.
 	 *
 	 * @return an extended source range computer
-	 * @since 3.1
 	 */
 	public final TargetSourceRangeComputer getExtendedSourceRangeComputer() {
 		if (this.targetSourceRangeComputer == null) {
@@ -635,7 +630,6 @@ public class ASTRewrite {
 	 * @param computer a target source range computer,
 	 * or <code>null</code> to restore the default value of
 	 * <code>new TargetSourceRangeComputer()</code>
-	 * @since 3.1
 	 */
 	public final void setTargetSourceRangeComputer(TargetSourceRangeComputer computer) {
 		// if computer==null, rely on lazy init code in getTargetSourceRangeComputer()

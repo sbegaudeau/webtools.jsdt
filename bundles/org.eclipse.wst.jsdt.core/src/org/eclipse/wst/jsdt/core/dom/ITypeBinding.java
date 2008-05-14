@@ -65,14 +65,12 @@ public interface ITypeBinding extends IBinding {
 	 * <li>if the receiver represents the void type</li>
 	 * <li>if the resulting dimensions is lower than one or greater than 255</li>
 	 * </ul>
-	 * @since 3.3
+	 *  
 	 */
 	public ITypeBinding createArrayType(int dimension);
 
 	/**
 	 * Returns the binary name of this type binding.
-	 * The binary name of a class is defined in the Java Language
-	 * Specification 3rd edition, section 13.1.
 	 * <p>
 	 * Note that in some cases, the binary name may be unavailable.
 	 * This may happen, for example, for a local type declared in
@@ -81,7 +79,7 @@ public interface ITypeBinding extends IBinding {
 	 *
 	 * @return the binary name of this type, or <code>null</code>
 	 * if the binary name is unknown
-	 * @since 3.0
+	 *  
 	 */
 	public String getBinaryName();
 
@@ -92,7 +90,7 @@ public interface ITypeBinding extends IBinding {
 	 * @return the bound of this wildcard type, or <code>null</code> if none
 	 * @see #isWildcardType()
 	 * @see #isUpperbound()
-	 * @since 3.1
+	 *  
 	 */
 	public ITypeBinding getBound();
 
@@ -104,7 +102,7 @@ public interface ITypeBinding extends IBinding {
 	 *
 	 * @return the component type binding, or <code>null</code> if this is
 	 *   not an array type
-	 * @since 3.2
+	 *  
 	 */
 	public ITypeBinding getComponentType();
 
@@ -150,7 +148,7 @@ public interface ITypeBinding extends IBinding {
 	 * Returns the declared modifiers for this class or interface binding
 	 * as specified in the original source declaration of the class or
 	 * interface. The result may not correspond to the modifiers in the compiled
-	 * binary, since the compiler may change them (in particular, for inner
+	 * binary, since the validator may change them (in particular, for inner
 	 * class emulation). The <code>getModifiers</code> method should be used if
 	 * the compiled modifiers are needed. Returns -1 if this type does not
 	 * represent a class or interface.
@@ -225,7 +223,7 @@ public interface ITypeBinding extends IBinding {
 	 *
 	 * @return the binding of the method that declares this type, or
 	 * <code>null</code> if none
-	 * @since 3.1
+	 *  
 	 */
 	public IFunctionBinding getDeclaringMethod();
 
@@ -272,7 +270,7 @@ public interface ITypeBinding extends IBinding {
 	 * </ul>
 	 *
 	 * @return the erasure type binding
-	 * @since 3.1
+	 *  
 	 */
 	public ITypeBinding getErasure();
 
@@ -312,7 +310,7 @@ public interface ITypeBinding extends IBinding {
 	 * Returns the compiled modifiers for this class, interface, enum,
 	 * or annotation type binding.
 	 * The result may not correspond to the modifiers as declared in the
-	 * original source, since the compiler may change them (in particular,
+	 * original source, since the validator may change them (in particular,
 	 * for inner class emulation). The <code>getDeclaredModifiers</code> method
 	 * should be used if the original modifiers are needed.
 	 * Returns 0 if this type does not represent a class, an interface, an enum, an annotation
@@ -443,7 +441,7 @@ public interface ITypeBinding extends IBinding {
 	 * @return the fully qualified name of the type represented by this
 	 *    binding, or the empty string if it has none
 	 * @see #getName()
-	 * @since 2.1
+	 *  
 	 */
 	public String getQualifiedName();
 
@@ -494,7 +492,7 @@ public interface ITypeBinding extends IBinding {
 	 * @see #isGenericType()
 	 * @see #isParameterizedType()
 	 * @see #isRawType()
-	 * @since 3.1
+	 *  
 	 */
 	public ITypeBinding[] getTypeArguments();
 
@@ -514,7 +512,7 @@ public interface ITypeBinding extends IBinding {
      * or otherwise the empty list
 	 * @see #isCapture()
 	 * @see #isTypeVariable()
-	 * @since 3.1
+	 *  
 	 */
 	public ITypeBinding[] getTypeBounds();
 
@@ -532,7 +530,7 @@ public interface ITypeBinding extends IBinding {
 	 * <p>For other type bindings, this returns the same binding.</p>
 	 *
 	 * @return the type binding
-	 * @since 3.1
+	 *  
 	 */
 	public ITypeBinding getTypeDeclaration();
 
@@ -549,7 +547,7 @@ public interface ITypeBinding extends IBinding {
 	 * @return the list of binding for the type variables for the type
 	 * parameters of this type, or otherwise the empty list
 	 * @see #isTypeVariable()
-	 * @since 3.1
+	 *  
 	 */
 	// TODO (jeem) - clarify whether binding for a generic type instance carries a copy of the generic type's type parameters as well as type arguments
 	public ITypeBinding[] getTypeParameters();
@@ -561,7 +559,7 @@ public interface ITypeBinding extends IBinding {
 	 *
 	 * @return the corresponding wildcard binding for a capture
 	 * binding, <code>null</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public ITypeBinding getWildcard();
 
@@ -573,7 +571,7 @@ public interface ITypeBinding extends IBinding {
 	 *
 	 * @return <code>true</code> if this object represents an annotation type,
 	 *    and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isAnnotation();
 
@@ -602,8 +600,7 @@ public interface ITypeBinding extends IBinding {
 
 	/**
 	 * Returns whether an expression of this type can be assigned to a variable
-	 * of the given type, as specified in section 5.2 of <em>The Java Language
-	 * Specification, Third Edition</em> (JLS3).
+	 * of the given type.
 	 *
 	 * <p>If the receiver or the argument is a recovered type, the answer is always false,
 	 * unless the two types are identical or the argument is <code>java.lang.Object</code>.</p>
@@ -611,16 +608,14 @@ public interface ITypeBinding extends IBinding {
 	 * @param variableType the type of a variable to check compatibility against
 	 * @return <code>true</code> if an expression of this type can be assigned to a
 	 *   variable of the given type, and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isAssignmentCompatible(ITypeBinding variableType);
 
 	/**
 	 * Returns whether this type binding represents a capture binding.
 	 * <p>
-	 * Capture bindings result from capture conversion as specified
-	 * in section 5.1.10 of <em>The Java Language Specification,
-	 * Third Edition</em> (JLS3).
+	 * Capture bindings result from capture conversion.
 	 * </p>
 	 * <p>
 	 * A capture binding may have upper bounds and a lower bound.
@@ -640,14 +635,12 @@ public interface ITypeBinding extends IBinding {
 	 *   and <code>false</code> otherwise
 	 * @see #getTypeBounds()
 	 * @see #getWildcard()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isCapture();
 
 	/**
-	 * Returns whether this type is cast compatible with the given type,
-	 * as specified in section 5.5 of <em>The Java Language
-	 * Specification, Third Edition</em> (JLS3).
+	 * Returns whether this type is cast compatible with the given type.
 	 * <p>
 	 * NOTE: The cast compatibility check performs backwards.
 	 * When testing whether type B can be cast to type A, one would use:
@@ -660,7 +653,7 @@ public interface ITypeBinding extends IBinding {
 	 * @param type the type to check compatibility against
 	 * @return <code>true</code> if this type is cast compatible with the
 	 * given type, and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isCastCompatible(ITypeBinding type);
 
@@ -677,7 +670,7 @@ public interface ITypeBinding extends IBinding {
 	 *
 	 * @return <code>true</code> if this object represents an enum type,
 	 *    and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isEnum();
 
@@ -714,7 +707,7 @@ public interface ITypeBinding extends IBinding {
 	 * @return <code>true</code> if this type binding represents a
 	 * declaration of a generic class or interface, and <code>false</code> otherwise
 	 * @see #getTypeParameters()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isGenericType();
 
@@ -807,7 +800,7 @@ public interface ITypeBinding extends IBinding {
 	 * type reference, and <code>false</code> otherwise
 	 * @see #getTypeArguments()
 	 * @see #getTypeDeclaration()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isParameterizedType();
 
@@ -849,14 +842,12 @@ public interface ITypeBinding extends IBinding {
 	 * type reference, and <code>false</code> otherwise
 	 * @see #getTypeDeclaration()
 	 * @see #getTypeArguments()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isRawType();
 
 	/**
-	 * Returns whether this type is subtype compatible with the given type,
-	 * as specified in section 4.10 of <em>The Java Language
-	 * Specification, Third Edition</em> (JLS3).
+	 * Returns whether this type is subtype compatible with the given type.
 	 *
 	 * <p>If the receiver or the argument is a recovered type, the answer is always false,
 	 * unless the two types are identical or the argument is <code>java.lang.Object</code>.</p>
@@ -864,7 +855,7 @@ public interface ITypeBinding extends IBinding {
 	 * @param type the type to check compatibility against
 	 * @return <code>true</code> if this type is subtype compatible with the
 	 * given type, and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isSubTypeCompatible(ITypeBinding type);
 
@@ -897,7 +888,7 @@ public interface ITypeBinding extends IBinding {
 	 *   and <code>false</code> otherwise
 	 * @see #getName()
 	 * @see #getTypeBounds()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isTypeVariable();
 
@@ -911,7 +902,7 @@ public interface ITypeBinding extends IBinding {
 	 * an upper bound, and <code>false</code> in all other cases
 	 * @see #isWildcardType()
 	 * @see #getBound()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isUpperbound();
 
@@ -927,7 +918,7 @@ public interface ITypeBinding extends IBinding {
 	 *
 	 * @return <code>true</code> if this object represents a wildcard type,
 	 *    and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 * @see #getBound()
 	 * @see #isUpperbound()
 	 */

@@ -14,7 +14,7 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
  
 /**
- * Constant definitions for Java launch configurations.
+ * Constant definitions for JavaScript launch configurations.
  * <p>
  * Constant definitions only; not to be implemented.
  * </p>
@@ -27,19 +27,19 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 public interface IJavaLaunchConfigurationConstants {
 
 	/**
-	 * Identifier for the Local Java Application launch configuration type
+	 * Identifier for the Local JavaScript Application launch configuration type
 	 * (value <code>"org.eclipse.wst.jsdt.launching.localJavaApplication"</code>).
 	 */
 	public static final String ID_JAVA_APPLICATION = JavaScriptCore.PLUGIN_ID + ".localJavaApplication"; //$NON-NLS-1$
 	
 	/**
-	 * Identifier for the Remote Java Application launch configuration type
+	 * Identifier for the Remote JavaScript Application launch configuration type
 	 * (value <code>"org.eclipse.wst.jsdt.launching.remoteJavaApplication"</code>).
 	 */
 	public static final String ID_REMOTE_JAVA_APPLICATION = JavaScriptCore.PLUGIN_ID + ".remoteJavaApplication"; //$NON-NLS-1$	
 
 	/**
-	 * Identifier for the Java Applet launch configuration type
+	 * Identifier for the JavaScript Applet launch configuration type
 	 * (value <code>"org.eclipse.wst.jsdt.launching.javaApplet"</code>).
 	 */
 	public static final String ID_JAVA_APPLET = JavaScriptCore.PLUGIN_ID + ".javaApplet"; //$NON-NLS-1$	
@@ -51,8 +51,8 @@ public interface IJavaLaunchConfigurationConstants {
 	public static final String ID_SOCKET_ATTACH_VM_CONNECTOR = JavaScriptCore.PLUGIN_ID + ".socketAttachConnector"; //$NON-NLS-1$	
 	
 	/**
-	 * Identifier for the java process type, which is annotated on processes created
-	 * by the local java application launch delegate.
+	 * Identifier for the javascript process type, which is annotated on processes created
+	 * by the local javascript application launch delegate.
 	 * 
 	 * (value <code>"java"</code>).
 	 */
@@ -60,7 +60,7 @@ public interface IJavaLaunchConfigurationConstants {
 			
 	/**
 	 * Launch configuration attribute key. The value is a name of
-	 * a Java project associated with a Java launch configuration.
+	 * a JavaScript project associated with a JavaScript launch configuration.
 	 */
 	public static final String ATTR_PROJECT_NAME = JavaScriptCore.PLUGIN_ID + ".PROJECT_ATTR"; //$NON-NLS-1$
 	
@@ -75,20 +75,20 @@ public interface IJavaLaunchConfigurationConstants {
 	 * whether execution should stop when main is entered. The default value
 	 * is <code>false</code>.
 	 * 
-	 * @since 2.1
+	 *  
 	 */
 	public static final String ATTR_STOP_IN_MAIN = JavaScriptCore.PLUGIN_ID + ".STOP_IN_MAIN";	 //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is a string specifying
-	 * program arguments for a Java launch configuration, as they should appear
+	 * program arguments for a JavaScript launch configuration, as they should appear
 	 * on the command line.
 	 */
 	public static final String ATTR_PROGRAM_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".PROGRAM_ARGUMENTS"; //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is a string specifying
-	 * VM arguments for a Java launch configuration, as they should appear
+	 * VM arguments for a JavaScript launch configuration, as they should appear
 	 * on the command line.
 	 */
 	public static final String ATTR_VM_ARGUMENTS = JavaScriptCore.PLUGIN_ID + ".VM_ARGUMENTS";	 //$NON-NLS-1$
@@ -107,15 +107,15 @@ public interface IJavaLaunchConfigurationConstants {
 	
 	/**
 	 * Launch configuration attribute key. The value is a path identifying the JRE used
-	 * when launching a local VM. The path is a classpath container corresponding
-	 * to the <code>JavaRuntime.JRE_CONTAINER</code> classpath container.
+	 * when launching a local VM. The path is a includepath container corresponding
+	 * to the <code>JavaRuntime.JRE_CONTAINER</code> includepath container.
 	 * <p>
 	 * When unspecified the default JRE for a launch configuration is used (which is the
 	 * JRE associated with the project being launched, or the workspace default JRE when
-	 * no project is associated with a configuration). The default JRE classpath container
+	 * no project is associated with a configuration). The default JRE includepath container
 	 * refers explicitly to the workspace default JRE.
 	 * </p>
-	 * @since 3.2
+	 *  
 	 */
 	public static final String ATTR_JRE_CONTAINER_PATH = JavaRuntime.JRE_CONTAINER;
 	
@@ -132,7 +132,7 @@ public interface IJavaLaunchConfigurationConstants {
 	/**
 	 * Launch configuration attribute key. The value is an identifier of
 	 * a VM install type. Used in conjunction with a VM install name, to 
-	 * specify the VM to use when launching a local Java application.
+	 * specify the VM to use when launching a local JavaScript application.
 	 * The associated VM install name is specified via the attribute
 	 * <code>ATTR_VM_INSTALL_NAME</code>.
 	 * 
@@ -159,32 +159,32 @@ public interface IJavaLaunchConfigurationConstants {
 	/**
 	 * Launch configuration attribute key. The attribute value is an ordered list of strings
 	 * which are mementos for runtime class path entries. When unspecified, a default
-	 * classpath is generated by the classpath provider associated with a launch
+	 * includepath is generated by the includepath provider associated with a launch
 	 * configuration (via the <code>ATTR_CLASSPATH_PROVIDER</code> attribute).
 	 */
 	public static final String ATTR_CLASSPATH = JavaScriptCore.PLUGIN_ID + ".CLASSPATH";	 //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is a boolean specifying
-	 * whether a default classpath should be used when launching a local
-	 * Java application. When <code>false</code>, a classpath must be specified
+	 * whether a default includepath should be used when launching a local
+	 * JavaScript application. When <code>false</code>, a includepath must be specified
 	 * via the <code>ATTR_CLASSPATH</code> attribute. When <code>true</code> or
-	 * unspecified, a classpath is computed by the classpath provider associated
+	 * unspecified, a includepath is computed by the includepath provider associated
 	 * with a launch configuration.
 	 */
 	public static final String ATTR_DEFAULT_CLASSPATH = JavaScriptCore.PLUGIN_ID + ".DEFAULT_CLASSPATH"; //$NON-NLS-1$
 
 	/**
 	 * Launch configuration attribute key. The value is an identifier of a
-	 * classpath provider extension used to compute the classpath
-	 * for a launch configuration. When unspecified, the default classpath
+	 * includepath provider extension used to compute the includepath
+	 * for a launch configuration. When unspecified, the default includepath
 	 * provider is used - <code>StandardClasspathProvider</code>.
 	 */
 	public static final String ATTR_CLASSPATH_PROVIDER = JavaScriptCore.PLUGIN_ID + ".CLASSPATH_PROVIDER";	 //$NON-NLS-1$
 	
 	/**
 	 * Launch configuration attribute key. The value is an ordered list of
-	 * strings which are mementos for associated runtime classpath entries
+	 * strings which are mementos for associated runtime includepath entries
 	 * interpreted as locations in which to look for source code. When unspecified,
 	 * a default source lookup path is generated by the source path provider
 	 * associated with a launch configurations (via the
@@ -237,7 +237,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * Launch configuration attribute key. The value is an integer
 	 * indicating the width of the applet viewing area.
 	 * 
-	 * @since 2.1
+	 *  
 	 */
 	public static final String ATTR_APPLET_WIDTH = JavaScriptCore.PLUGIN_ID + ".APPLET_WIDTH";	 //$NON-NLS-1$
 
@@ -245,7 +245,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * Launch configuration attribute key. The value is an integer
 	 * indicating the height of the applet viewing area.
 	 * 
-	 * @since 2.1
+	 *  
 	 */
 	public static final String ATTR_APPLET_HEIGHT = JavaScriptCore.PLUGIN_ID + ".APPLET_HEIGHT";	 //$NON-NLS-1$
 
@@ -253,7 +253,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * Launch configuration attribute key. The value is a String indicating the
 	 * HTML name of the applet.
 	 * 
-	 * @since 2.1
+	 *  
 	 */
 	public static final String ATTR_APPLET_NAME = JavaScriptCore.PLUGIN_ID + ".APPLET_NAME";	 //$NON-NLS-1$
 
@@ -262,7 +262,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * represent applet parameter names and the values in the map are the
 	 * corresponding parameter values
 	 * 
-	 * @since 2.1
+	 *  
 	 */
 	public static final String ATTR_APPLET_PARAMETERS = JavaScriptCore.PLUGIN_ID + ".APPLET_PARAMETERS";	 //$NON-NLS-1$
 
@@ -270,7 +270,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * Launch configuration attribute key. The value is a String indicating the
 	 * fully qualified name of the applet viewer utility class to use.
 	 * 
-	 * @since 2.1
+	 *  
 	 */
 	public static final String ATTR_APPLET_APPLETVIEWER_CLASS = JavaScriptCore.PLUGIN_ID + ".APPLET_APPLETVIEWER_CLASS";	 //$NON-NLS-1$
 	
@@ -279,36 +279,36 @@ public interface IJavaLaunchConfigurationConstants {
 	 * of strings describing paths in the local file system that
 	 * should be prepended to the bootpath, or <code>null</code>
 	 * if none. The value is computed dynamically at launch time
-	 * and placed in the VM specific arguments map by the Java 
+	 * and placed in the VM specific arguments map by the JavaScript 
 	 * application launch delegate.
 	 * 
-	 * @since 3.0
+	 *  
 	 */
-	public static final String ATTR_BOOTPATH_PREPEND = JavaScriptCore.PLUGIN_ID + ".-Xbootclasspath/p:";	 //$NON-NLS-1$
+	public static final String ATTR_BOOTPATH_PREPEND = JavaScriptCore.PLUGIN_ID + ".-Xbootincludepath/p:";	 //$NON-NLS-1$
 
 	/**
 	 * Attribute key for a VM specific argument. Value is an array
 	 * of strings describing paths in the local file system that
 	 * should be placed on the bootpath explicitly, or <code>null</code>
 	 * if none. The value is computed dynamically at launch time
-	 * and placed in the VM specific arguments map by the Java 
+	 * and placed in the VM specific arguments map by the JavaScript 
 	 * application launch delegate.
 	 * 
-	 * @since 3.0
+	 *  
 	 */
-	public static final String ATTR_BOOTPATH = JavaScriptCore.PLUGIN_ID + ".-Xbootclasspath:";	 //$NON-NLS-1$
+	public static final String ATTR_BOOTPATH = JavaScriptCore.PLUGIN_ID + ".-Xbootincludepath:";	 //$NON-NLS-1$
 	
 	/**
 	 * Attribute key for a VM specific argument. Value is an array
 	 * of strings describing paths in the local file system that
 	 * should be appended to the bootpath, or <code>null</code>
 	 * if none. The value is computed dynamically at launch time
-	 * and placed in the VM specific arguments map by the Java 
+	 * and placed in the VM specific arguments map by the JavaScript 
 	 * application launch delegate.
 	 * 
-	 * @since 3.0
+	 *  
 	 */	
-	public static final String ATTR_BOOTPATH_APPEND = JavaScriptCore.PLUGIN_ID + ".-Xbootclasspath/a:";	 //$NON-NLS-1$
+	public static final String ATTR_BOOTPATH_APPEND = JavaScriptCore.PLUGIN_ID + ".-Xbootincludepath/a:";	 //$NON-NLS-1$
 
 	/**
 	 * Status code indicating a launch configuration does not
@@ -354,7 +354,7 @@ public interface IJavaLaunchConfigurationConstants {
 	
 	/**
 	 * Status code indicating the project associated with
-	 * a launch configuration is not a Java project.
+	 * a launch configuration is not a JavaScript project.
 	 */
 	public static final int ERR_NOT_A_JAVA_PROJECT = 107;	
 	
@@ -453,14 +453,14 @@ public interface IJavaLaunchConfigurationConstants {
 	 * Status code indicating that the applet launcher was asked to
 	 * launch a resource that did not extend <code>java.applet.Applet</code>.
 	 * 
-	 * @since 2.1
+	 *  
 	 */
 	public static final int ERR_NOT_AN_APPLET = 121;		
 
 	/**
 	 * Status code indicating that no launch configuration was specified.
 	 * 
-	 * @since 2.1
+	 *  
 	 */
 	public static final int ERR_UNSPECIFIED_LAUNCH_CONFIG = 122;		
 
@@ -468,7 +468,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * Status code indicating that the .html file used to initiate an applet
 	 * launch could not be built.
 	 * 
-	 * @since 2.1
+	 *  
 	 */
 	public static final int ERR_COULD_NOT_BUILD_HTML = 123;		
 	
@@ -476,7 +476,7 @@ public interface IJavaLaunchConfigurationConstants {
 	 * Status code indicating that the project referenced by a launch configuration
 	 * is closed.
 	 * 
-	 * @since 3.0
+	 *  
 	 */
 	public static final int ERR_PROJECT_CLOSED = 124;			
 
@@ -488,7 +488,7 @@ public interface IJavaLaunchConfigurationConstants {
 	/**
 	 * Default value for the 'ATTR_APPLET_APPLETVIEWER' attribute.
 	 * 
-	 * @since 2.1
+	 *  
 	 */	
 	public static final String DEFAULT_APPLETVIEWER_CLASS = "sun.applet.AppletViewer";	 //$NON-NLS-1$
 	public static final String MAIN_ENTRY_METHOD_NAME="$$main$$";

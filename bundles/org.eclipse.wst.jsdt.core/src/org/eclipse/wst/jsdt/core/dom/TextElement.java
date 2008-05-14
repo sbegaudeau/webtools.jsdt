@@ -35,7 +35,7 @@ public final class TextElement extends ASTNode implements IDocElement {
 	/**
 	 * The "test" structural property of this node type.
 	 *
-	 * @since 3.0
+	 *  
 	 */
 	public static final SimplePropertyDescriptor TEXT_PROPERTY =
 		new SimplePropertyDescriptor(TextElement.class, "text", String.class, MANDATORY); //$NON-NLS-1$
@@ -44,7 +44,7 @@ public final class TextElement extends ASTNode implements IDocElement {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.0
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
 
@@ -63,7 +63,7 @@ public final class TextElement extends ASTNode implements IDocElement {
 	 * <code>AST.JLS*</code> constants
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
@@ -89,14 +89,14 @@ public final class TextElement extends ASTNode implements IDocElement {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final Object internalGetSetObjectProperty(SimplePropertyDescriptor property, boolean get, Object value) {
@@ -112,14 +112,14 @@ public final class TextElement extends ASTNode implements IDocElement {
 		return super.internalGetSetObjectProperty(property, get, value);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return TEXT_ELEMENT;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -129,7 +129,7 @@ public final class TextElement extends ASTNode implements IDocElement {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -137,7 +137,7 @@ public final class TextElement extends ASTNode implements IDocElement {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -179,7 +179,7 @@ public final class TextElement extends ASTNode implements IDocElement {
 		postValueChange(TEXT_PROPERTY);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -191,7 +191,7 @@ public final class TextElement extends ASTNode implements IDocElement {
 		return size;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

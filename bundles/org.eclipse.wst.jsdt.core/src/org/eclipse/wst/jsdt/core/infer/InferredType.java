@@ -33,6 +33,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 
 
 /**
+ * The represenation of an inferred type. 
  * 
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
@@ -74,20 +75,43 @@ public class InferredType extends ASTNode {
 
 	public Object userData;
 	
+	/**
+	 * Create a new inferred type
+	 * 
+	 * @param className inferred type name
+	 */
 	public InferredType(char [] className)
 	{
 		this.name=className;
 		this.sourceStart=-1;
 	}
 
+	/**
+	 * Gets the name of the inferred type
+	 * 
+	 * @return the inferred type name
+	 */
 	public char [] getName() {
 		return name;
 	}
 
+	/**
+	 * Get the superclass name of the inferred type
+	 * 
+	 * @return superclass name
+	 */
 	public char [] getSuperClassName()
 	{
 		return superClass!=null ? superClass.getName() : OBJECT_NAME;
 	}
+	
+	/**
+	 * Add a new inferred attribute to the inferred type
+	 * 
+	 * @param name the attribute name
+	 * @param definer the ASTNode which this attribute is inferred from
+	 * @return a new InferredAttribute
+	 */
 	public InferredAttribute addAttribute(char [] name, IASTNode definer)
 	{
 		InferredAttribute attribute = findAttribute(name);
@@ -115,6 +139,12 @@ public class InferredType extends ASTNode {
 		return attribute;
 	}
 
+	/**
+	 * Add an InferredAttribute to this inferred type.
+	 * 
+	 * @param newAttribute the attribute to add.
+	 * @return 
+	 */
 	public InferredAttribute addAttribute(InferredAttribute newAttribute)
 	{
 		IASTNode definer=newAttribute.node;
@@ -140,6 +170,12 @@ public class InferredType extends ASTNode {
 		}
 		return newAttribute;
 	}
+	/**
+	 * Find the inferred attribute with the given name
+	 * 
+	 * @param name name of the attribute to find
+	 * @return the found InferredAttribute, or null if not found
+	 */
 	public InferredAttribute findAttribute(char [] name)
 	{
 		return (InferredAttribute)attributesHash.get(name);
@@ -153,6 +189,14 @@ public class InferredType extends ASTNode {
 	}
 
 
+	/**
+	 * Add a new method to the inferred type
+	 * 
+	 * @param methodName name of the method to add
+	 * @param functionDeclaration the AST Node containing the method bode
+	 * @param isConstructor true if it is a constructor
+	 * @return a new inferred method
+	 */
 	public InferredMethod addMethod(char [] methodName, IFunctionDeclaration functionDeclaration, boolean isConstructor) {
 		MethodDeclaration methodDeclaration = (MethodDeclaration)functionDeclaration;
 		InferredMethod method = findMethod(methodName, methodDeclaration);
@@ -187,6 +231,13 @@ public class InferredType extends ASTNode {
 		return method;
 	}
 
+	/**
+	 * Find an inferred method
+	 * 
+	 * @param methodName name of the method to find
+	 * @param methodDeclaration not used
+	 * @return the found method, or null
+	 */
 	public InferredMethod findMethod(char [] methodName, IFunctionDeclaration methodDeclaration) {
 		boolean isConstructor= methodName==TypeConstants.INIT;
 		if (methods!=null)
@@ -331,6 +382,11 @@ public class InferredType extends ASTNode {
 		return !isAnonymous || !CharOperation.prefixEquals(InferEngine.ANONYMOUS_PREFIX, this.name);
 	}
 	
+	/**
+	 * Set the charactor position (in the source) of the type name
+	 * 
+	 * @param start type name position
+	 */
 	public void setNameStart(int start)
 	{
 		this.nameStart=start;

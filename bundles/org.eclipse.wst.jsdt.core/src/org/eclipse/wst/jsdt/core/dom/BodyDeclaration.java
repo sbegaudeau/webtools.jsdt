@@ -68,7 +68,6 @@ public abstract class BodyDeclaration extends ProgramElement {
 	/**
 	 * The modifier flags; bit-wise or of Modifier flags.
 	 * Defaults to none. Not used in 3.0.
-	 * @since 3.0 - field was moved up from subclasses
 	 */
 	private int modifierFlags = Modifier.NONE;
 
@@ -77,7 +76,6 @@ public abstract class BodyDeclaration extends ProgramElement {
 	 * Null in JLS2. Added in JLS3; defaults to an empty list
 	 * (see constructor).
 	 *
-	 * @since 3.0
 	 */
 	ASTNode.NodeList modifiers = null;
 
@@ -102,7 +100,6 @@ public abstract class BodyDeclaration extends ProgramElement {
 	 * of this node as used in JLS3.
 	 *
 	 * @return the property descriptor
-	 * @since 3.1
 	 */
 	public final ChildListPropertyDescriptor getModifiersProperty() {
 		// important: return property for AST.JLS3
@@ -122,7 +119,6 @@ public abstract class BodyDeclaration extends ProgramElement {
 	 * of this node.
 	 *
 	 * @return the property descriptor
-	 * @since 3.1
 	 */
 	public final ChildPropertyDescriptor getJavadocProperty() {
 		return internalJavadocProperty();
@@ -244,7 +240,6 @@ public abstract class BodyDeclaration extends ProgramElement {
 	/**
 	 * Internal synonym for deprecated method. Used to avoid
 	 * deprecation warnings.
-	 * @since 3.1
 	 */
 	/*package*/ final void internalSetModifiers(int pmodifiers) {
 		// more efficient than just calling supportedOnlyIn2() to check
@@ -265,7 +260,6 @@ public abstract class BodyDeclaration extends ProgramElement {
 	 *    (element type: <code>IExtendedModifier</code>)
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
 	 */
 	public List modifiers() {
 		// more efficient than just calling unsupportedIn2() to check
@@ -275,7 +269,7 @@ public abstract class BodyDeclaration extends ProgramElement {
 		return this.modifiers;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {

@@ -20,7 +20,7 @@ import java.net.URL;
  * configured dynamically at run-time. This is typically done by the user 
  * interactively in the UI.
  * <p>
- * A VM install is responsible for creating VM runners to launch a Java program
+ * A VM install is responsible for creating VM runners to launch a JavaScript program
  * in a specific mode.
  * </p>
  * <p>
@@ -101,7 +101,7 @@ public interface IVMInstall {
 	 * @return 	The library locations of this IVMInstall.
 	 * 			Returns <code>null</code> to indicate that this VM install uses
 	 * 			the default library locations associated with this VM's install type.
-	 * @since 2.0
+	 *  
 	 */
 	LibraryLocation[] getLibraryLocations();	
 	
@@ -111,25 +111,25 @@ public interface IVMInstall {
 	 * 			with this IVMInstall.
 	 * 			May be <code>null</code> to indicate that this VM install uses
 	 * 			the default library locations associated with this VM's install type.
-	 * @since 2.0
+	 *  
 	 */
 	void setLibraryLocations(LibraryLocation[] locations);	
 	
 	/**
-	 * Sets the Javadoc location associated with this VM install.
+	 * Sets the jsdoc location associated with this VM install.
 	 * 
-	 * @param url a url pointing to the Javadoc location associated with
+	 * @param url a url pointing to the jsdoc location associated with
 	 * 	this VM install
-	 * @since 2.0
+	 *  
 	 */
 	public void setJavadocLocation(URL url);
 	
 	/**
-	 * Returns the Javadoc location associated with this VM install.
+	 * Returns the jsdoc location associated with this VM install.
 	 * 
-	 * @return a url pointing to the Javadoc location associated with
+	 * @return a url pointing to the jsdoc location associated with
 	 * 	this VM install, or <code>null</code> if none
-	 * @since 2.0
+	 *  
 	 */
 	public URL getJavadocLocation();
 	
@@ -141,7 +141,7 @@ public interface IVMInstall {
 	 * @return VM arguments to be used with this vm install whenever this
 	 * VM is launched as they should be passed to the command line, or
 	 * <code>null</code> if none
-	 * @since 3.0
+	 *  
 	 */
 	public String[] getVMArguments();
 	
@@ -153,7 +153,7 @@ public interface IVMInstall {
 	 * 
 	 * @param vmArgs VM arguments to be used with this vm install whenever this
 	 * VM is launched, possibly <code>null</code>
-	 * @since 3.0
+	 *  
 	 * @deprecated if possible, clients should use setVMArgs(String) on
 	 *  {@link IVMInstall2} when possible
 	 */

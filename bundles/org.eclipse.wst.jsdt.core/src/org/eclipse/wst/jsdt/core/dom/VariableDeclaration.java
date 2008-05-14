@@ -37,7 +37,7 @@ public abstract class VariableDeclaration extends ASTNode {
 	 * of this node.
 	 *
 	 * @return the property descriptor
-	 * @since 3.1
+	 *  
 	 */
 	abstract SimplePropertyDescriptor internalExtraDimensionsProperty();
 
@@ -46,7 +46,7 @@ public abstract class VariableDeclaration extends ASTNode {
 	 * of this node.
 	 *
 	 * @return the property descriptor
-	 * @since 3.1
+	 *  
 	 */
 	public final SimplePropertyDescriptor getExtraDimensionsProperty() {
 		return internalExtraDimensionsProperty();
@@ -57,7 +57,7 @@ public abstract class VariableDeclaration extends ASTNode {
 	 * of this node.
 	 *
 	 * @return the property descriptor
-	 * @since 3.1
+	 *  
 	 */
 	abstract ChildPropertyDescriptor internalInitializerProperty();
 
@@ -66,7 +66,7 @@ public abstract class VariableDeclaration extends ASTNode {
 	 * of this node.
 	 *
 	 * @return the property descriptor
-	 * @since 3.1
+	 *  
 	 */
 	public final ChildPropertyDescriptor getInitializerProperty() {
 		return internalInitializerProperty();
@@ -77,7 +77,7 @@ public abstract class VariableDeclaration extends ASTNode {
 	 * of this node.
 	 *
 	 * @return the property descriptor
-	 * @since 3.1
+	 *  
 	 */
 	abstract ChildPropertyDescriptor internalNameProperty();
 
@@ -86,7 +86,7 @@ public abstract class VariableDeclaration extends ASTNode {
 	 * of this node.
 	 *
 	 * @return the property descriptor
-	 * @since 3.1
+	 *  
 	 */
 	public final ChildPropertyDescriptor getNameProperty() {
 		return internalNameProperty();
@@ -137,7 +137,7 @@ public abstract class VariableDeclaration extends ASTNode {
 	 * </p>
 	 *
 	 * @return the number of extra array dimensions
-	 * @since 2.1
+	 *  
 	 */
 	public abstract int getExtraDimensions();
 
@@ -156,7 +156,7 @@ public abstract class VariableDeclaration extends ASTNode {
 	 * @param dimensions the number of array dimensions
 	 * @exception IllegalArgumentException if the number of dimensions is
 	 *    negative
-	 * @since 2.1
+	 *  
 	 */
 	public abstract void setExtraDimensions(int dimensions);
 

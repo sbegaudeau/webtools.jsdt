@@ -94,7 +94,7 @@ class TypeBinding implements ITypeBinding {
 
 	/*
 	 * @see ITypeBinding#getBinaryName()
-	 * @since 3.0
+	 *  
 	 */
 	public String getBinaryName() {
 		if (this.binding.isCapture()) {
@@ -165,7 +165,7 @@ class TypeBinding implements ITypeBinding {
 	}
 
 	/*
-	 * Returns the compilation unit for the given file name, or null if not found.
+	 * Returns the javaScript unit for the given file name, or null if not found.
 	 * @see org.eclipse.wst.jsdt.internal.compiler.env.IDependent#getFileName()
 	 */
 	private IJavaScriptUnit getCompilationUnit(char[] fileName) {
@@ -221,7 +221,7 @@ class TypeBinding implements ITypeBinding {
 				}
 			}
 		} catch (RuntimeException e) {
-			/* in case a method cannot be resolvable due to missing jars on the classpath
+			/* in case a method cannot be resolvable due to missing jars on the includepath
 			 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
@@ -262,7 +262,7 @@ class TypeBinding implements ITypeBinding {
 				}
 			}
 		} catch (RuntimeException e) {
-			/* in case a method cannot be resolvable due to missing jars on the classpath
+			/* in case a method cannot be resolvable due to missing jars on the includepath
 			 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
@@ -304,7 +304,7 @@ class TypeBinding implements ITypeBinding {
 				}
 			}
 		} catch (RuntimeException e) {
-			/* in case a method cannot be resolvable due to missing jars on the classpath
+			/* in case a method cannot be resolvable due to missing jars on the includepath
 			 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
@@ -325,7 +325,7 @@ class TypeBinding implements ITypeBinding {
 				try {
 					return this.resolver.getMethodBinding(localTypeBinding.enclosingMethod);
 				} catch (RuntimeException e) {
-					/* in case a method cannot be resolvable due to missing jars on the classpath
+					/* in case a method cannot be resolvable due to missing jars on the includepath
 					 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
 					 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
 					 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
@@ -340,7 +340,7 @@ class TypeBinding implements ITypeBinding {
 				try {
 					return this.resolver.getMethodBinding((MethodBinding)declaringElement);
 				} catch (RuntimeException e) {
-					/* in case a method cannot be resolvable due to missing jars on the classpath
+					/* in case a method cannot be resolvable due to missing jars on the includepath
 					 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
 					 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
 					 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
@@ -362,7 +362,7 @@ class TypeBinding implements ITypeBinding {
 				try {
 					return this.resolver.getTypeBinding(referenceBinding.enclosingType());
 				} catch (RuntimeException e) {
-					/* in case a method cannot be resolvable due to missing jars on the classpath
+					/* in case a method cannot be resolvable due to missing jars on the includepath
 					 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
 					 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
 					 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
@@ -377,7 +377,7 @@ class TypeBinding implements ITypeBinding {
 				try {
 					return this.resolver.getTypeBinding((ReferenceBinding)declaringElement);
 				} catch (RuntimeException e) {
-					/* in case a method cannot be resolvable due to missing jars on the classpath
+					/* in case a method cannot be resolvable due to missing jars on the includepath
 					 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
 					 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
 					 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
@@ -443,7 +443,7 @@ class TypeBinding implements ITypeBinding {
 		try {
 			internalInterfaces = referenceBinding.superInterfaces();
 		} catch (RuntimeException e) {
-			/* in case a method cannot be resolvable due to missing jars on the classpath
+			/* in case a method cannot be resolvable due to missing jars on the includepath
 			 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
@@ -548,7 +548,7 @@ class TypeBinding implements ITypeBinding {
 				return (JavaElement) declaringType.getTypeParameter(typeVariableName);
 			}
 		} else {
-			if (fileName == null) return null; // case of a WilCardBinding that doesn't have a corresponding Java element
+			if (fileName == null) return null; // case of a WilCardBinding that doesn't have a corresponding JavaScript element
 			// member or top level type
 			ITypeBinding declaringTypeBinding = null;
 			if (this.isArray()) {
@@ -881,7 +881,7 @@ class TypeBinding implements ITypeBinding {
 		try {
 			superclass = ((ReferenceBinding)this.binding).superclass();
 		} catch (RuntimeException e) {
-			/* in case a method cannot be resolvable due to missing jars on the classpath
+			/* in case a method cannot be resolvable due to missing jars on the includepath
 			 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
@@ -1003,7 +1003,7 @@ class TypeBinding implements ITypeBinding {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getWildcard()
-	 * @since 3.1
+	 *  
 	 */
 	public ITypeBinding getWildcard() {
 		if (this.binding instanceof CaptureBinding) {
@@ -1015,7 +1015,7 @@ class TypeBinding implements ITypeBinding {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#isGenericType()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isGenericType() {
 		// equivalent to return getTypeParameters().length > 0;
@@ -1127,7 +1127,7 @@ class TypeBinding implements ITypeBinding {
 
 	/*
 	 * @see IBinding#isEqualTo(Binding)
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isEqualTo(IBinding other) {
 		if (other == this) {

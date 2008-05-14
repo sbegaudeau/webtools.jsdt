@@ -14,8 +14,8 @@ package org.eclipse.wst.jsdt.launching;
 import org.eclipse.debug.core.DebugPlugin;
 
 /**
- * The execution arguments for running a Java VM. The execution arguments are
- * separated into two parts: arguments to the VM itself, and arguments to the Java 
+ * The execution arguments for running a JavaScript VM. The execution arguments are
+ * separated into two parts: arguments to the VM itself, and arguments to the JavaScript 
  * main program. This class provides convenience methods for parsing a string
  * of arguments into separate components.
  * <p>

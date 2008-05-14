@@ -35,22 +35,22 @@ public interface IJavaScriptSearchScope {
 String JAR_FILE_ENTRY_SEPARATOR = "|"; //$NON-NLS-1$
 /**
  * Include type constant (bit mask) indicating that source folders should be considered in the search scope.
- * @since 3.0
+ *  
  */
 int SOURCES = 1;
 /**
  * Include type constant (bit mask) indicating that application libraries should be considered in the search scope.
- * @since 3.0
+ *  
  */
 int APPLICATION_LIBRARIES = 2;
 /**
  * Include type constant (bit mask) indicating that system libraries should be considered in the search scope.
- * @since 3.0
+ *  
  */
 int SYSTEM_LIBRARIES = 4;
 /**
  * Include type constant (bit mask) indicating that referenced projects should be considered in the search scope.
- * @since 3.0
+ *  
  */
 int REFERENCED_PROJECTS = 8;
 /**

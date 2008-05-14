@@ -21,7 +21,7 @@ import java.util.List;
  *    Type <b>.</b> SimpleName
  * </pre>
  * <p>
- * Not all node arragements will represent legal Java constructs. In particular,
+ * Not all node arragements will represent legal JavaScript constructs. In particular,
  * it is nonsense if the type is an array type or primitive type. The normal use
  * is when the type is a simple or parameterized type.
  * </p>
@@ -101,7 +101,7 @@ public class QualifiedType extends Type {
 
 	/**
 	 * The name being qualified; lazily initialized; defaults to a unspecified,
-	 * legal Java identifier.
+	 * legal JavaScript identifier.
 	 */
 	private SimpleName name = null;
 
@@ -119,14 +119,14 @@ public class QualifiedType extends Type {
 	    unsupportedIn2();
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -150,14 +150,14 @@ public class QualifiedType extends Type {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return QUALIFIED_TYPE;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -168,7 +168,7 @@ public class QualifiedType extends Type {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -176,7 +176,7 @@ public class QualifiedType extends Type {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -267,7 +267,7 @@ public class QualifiedType extends Type {
 		postReplaceChild(oldChild, name, NAME_PROPERTY);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -275,7 +275,7 @@ public class QualifiedType extends Type {
 		return BASE_NODE_SIZE + 3 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

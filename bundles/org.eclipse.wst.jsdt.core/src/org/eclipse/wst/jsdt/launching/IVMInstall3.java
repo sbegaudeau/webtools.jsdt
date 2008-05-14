@@ -37,7 +37,7 @@ public interface IVMInstall3 {
 	 * @param monitor progress monitor or <code>null</code>
 	 * @return map of system property names to associated property values
 	 * @throws CoreException if an exception occurs evaluating the properties
-	 * @since 3.2
+	 *  
 	 */
 // ASDT never called
 	//	public Map evaluateSystemProperties(String[] properties, IProgressMonitor monitor) throws CoreException;

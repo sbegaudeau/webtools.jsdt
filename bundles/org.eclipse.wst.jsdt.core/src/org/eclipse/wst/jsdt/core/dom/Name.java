@@ -97,7 +97,7 @@ public abstract class Name extends Expression implements IDocElement {
 	 * identifier.
 	 *
 	 * @return the fully qualified name
-	 * @since 3.0
+	 *  
 	 */
 	public final String getFullyQualifiedName() {
 		if (isSimpleName()) {
@@ -115,7 +115,7 @@ public abstract class Name extends Expression implements IDocElement {
 	 * buffer.
 	 *
 	 * @param buffer the buffer
-	 * @since 3.0
+	 *  
 	 */
 	abstract void appendName(StringBuffer buffer);
 }

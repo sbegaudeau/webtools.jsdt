@@ -32,7 +32,6 @@ public class BooleanLiteral extends Expression {
 
 	/**
 	 * The "booleanValue" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final SimplePropertyDescriptor BOOLEAN_VALUE_PROPERTY =
 		new SimplePropertyDescriptor(BooleanLiteral.class, "booleanValue", boolean.class, MANDATORY); //$NON-NLS-1$
@@ -60,7 +59,6 @@ public class BooleanLiteral extends Expression {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
@@ -83,14 +81,14 @@ public class BooleanLiteral extends Expression {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean internalGetSetBooleanProperty(SimplePropertyDescriptor property, boolean get, boolean newValue) {
@@ -106,14 +104,14 @@ public class BooleanLiteral extends Expression {
 		return super.internalGetSetBooleanProperty(property, get, newValue);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return BOOLEAN_LITERAL;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -123,7 +121,7 @@ public class BooleanLiteral extends Expression {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -131,7 +129,7 @@ public class BooleanLiteral extends Expression {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -163,14 +161,14 @@ public class BooleanLiteral extends Expression {
 		postValueChange(BOOLEAN_VALUE_PROPERTY);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return BASE_NODE_SIZE + 1 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

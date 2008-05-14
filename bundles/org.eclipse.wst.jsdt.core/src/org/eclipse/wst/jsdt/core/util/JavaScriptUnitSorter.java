@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.core.SortElementsOperation;
 
 /**
- * Operation for sorting members within a compilation unit.
+ * Operation for sorting members within a javascript unit .
  * <p>
  * This class provides all functionality via static members; it is not
  * intended to be instantiated or subclassed.
@@ -85,15 +85,15 @@ public final class JavaScriptUnitSorter {
 	public static final String RELATIVE_ORDER = "relativeOrder"; //$NON-NLS-1$
 
 	/**
-     * Reorders the declarations in the given compilation unit according to
+     * Reorders the declarations in the given javascript unit  according to
      * the specified AST level. The caller is responsible for arranging in
-     * advance that the given compilation unit is a working copy, and for
+     * advance that the given javascript unit  is a working copy, and for
      * saving the changes afterwards.
      * <p>
      * <b>Note:</b> Reordering the members within a type declaration might be
      * more than a cosmetic change and could have potentially serious
      * repercussions. Firstly, the order in which the fields of a type are
-     * initialized is significant in the Java language; reordering fields
+     * initialized is significant in the JavaScript language; reordering fields
      * and initializers may result in compilation errors or change the execution
      * behavior of the code. Secondly, reordering a class's members may affect
      * how its instances are serialized. This operation should therefore be used
@@ -113,7 +113,7 @@ public final class JavaScriptUnitSorter {
      * AST of the specified level
      * ({@link org.eclipse.wst.jsdt.core.dom.ASTParser#newParser(int)}. Clients
      * will generally specify AST.JLS3 since that will cover all constructs found
-     * in Java 1.0, 1.1, 1.2, 1.3, 1.4, and 1.5 source code.
+     * in JavaScript 1.0, 1.1, 1.2, 1.3, 1.4, and 1.5 source code.
      * The comparator is called on body declarations of nested classes, including
      * anonymous and local classes, but always at the same level. Clients need to provide
      * a comparator implementation (there is no standard comparator). The
@@ -179,12 +179,12 @@ public final class JavaScriptUnitSorter {
      * </p>
      *
      * @param level the AST level; one of the AST LEVEL constants
-     * @param compilationUnit the given compilation unit, which must be a
+     * @param compilationUnit the given javascript unit , which must be a
      * working copy
      * @param positions an array of source positions to map, or
      * <code>null</code> if none. If supplied, the positions must
      * character-based source positions within the original source code for
-     * the given compilation unit, arranged in non-decreasing order.
+     * the given javascript unit , arranged in non-decreasing order.
      * The array is updated in place when this method returns to reflect the
      * corresponding source positions in the permuted source code string
      * (but not necessarily any longer in non-decreasing order).
@@ -195,20 +195,20 @@ public final class JavaScriptUnitSorter {
      * behavior (reserved for future growth)
      * @param monitor the progress monitor to notify, or <code>null</code> if
      * none
-     * @exception JavaScriptModelException if the compilation unit could not be
+     * @exception JavaScriptModelException if the javascript unit  could not be
      * sorted. Reasons include:
      * <ul>
-     * <li> The given compilation unit does not exist (ELEMENT_DOES_NOT_EXIST)</li>
-     * <li> The given compilation unit is not a working copy (INVALID_ELEMENT_TYPES)</li>
+     * <li> The given javascript unit  does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+     * <li> The given javascript unit  is not a working copy (INVALID_ELEMENT_TYPES)</li>
      * <li> A <code>CoreException</code> occurred while accessing the underlying
      * resource
      * </ul>
-     * @exception IllegalArgumentException if the given compilation unit is null
+     * @exception IllegalArgumentException if the given javascript unit  is null
      * or if the given comparator is null, or if <code>level</code> is not one of
      * the AST JLS level constants.
      * @see org.eclipse.wst.jsdt.core.dom.BodyDeclaration
      * @see #RELATIVE_ORDER
-     * @since 3.1
+     *  
      */
     public static void sort(int level, IJavaScriptUnit compilationUnit,
             int[] positions,
@@ -225,15 +225,15 @@ public final class JavaScriptUnitSorter {
     }
 
 	/**
-	 * Reorders the declarations in the given compilation unit according to the
+	 * Reorders the declarations in the given javascript unit  according to the
 	 * specified comparator. The caller is responsible for arranging in advance
-	 * that the given compilation unit is a working copy, and for applying the
+	 * that the given javascript unit  is a working copy, and for applying the
 	 * returned TextEdit afterwards.
 	 * <p>
 	 * <b>Note:</b> Reordering the members within a type declaration might be
 	 * more than a cosmetic change and could have potentially serious
 	 * repercussions. Firstly, the order in which the fields of a type are
-	 * initialized is significant in the Java language; reordering fields and
+	 * initialized is significant in the JavaScript language; reordering fields and
 	 * initializers may result in compilation errors or change the execution
 	 * behavior of the code. Secondly, reordering a class's members may affect
 	 * how its instances are serialized. This operation should therefore be used
@@ -319,18 +319,18 @@ public final class JavaScriptUnitSorter {
 	 * @return a TextEdit describing the required edits to do the sort, or <code>null</code>
 	 *            if sorting is not required
 	 * @exception JavaScriptModelException
-	 *                if the compilation unit could not be sorted. Reasons
+	 *                if the javascript unit  could not be sorted. Reasons
 	 *                include:
 	 *                <ul>
 	 *                <li> The given unit was not created from a IJavaScriptUnit (INVALID_ELEMENT_TYPES)</li>
 	 *                </ul>
 	 * @exception IllegalArgumentException
-	 *                if the given compilation unit is null or if the given
+	 *                if the given javascript unit  is null or if the given
 	 *                comparator is null, or if <code>options</code> is not one
 	 *                of the supported levels.
 	 * @see org.eclipse.wst.jsdt.core.dom.BodyDeclaration
 	 * @see #RELATIVE_ORDER
-	 * @since 3.3
+	 *  
 	 */
 	public static TextEdit sort(JavaScriptUnit unit,
 			Comparator comparator,

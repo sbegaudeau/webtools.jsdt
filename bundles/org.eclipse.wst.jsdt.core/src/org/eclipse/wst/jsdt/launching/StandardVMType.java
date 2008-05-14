@@ -51,7 +51,7 @@ public class StandardVMType extends AbstractVMInstallType {
 	private static final char fgSeparator = File.separatorChar;
 
 	/**
-	 * The list of locations in which to look for the java executable in candidate
+	 * The list of locations in which to look for the javascript executable in candidate
 	 * VM install locations, relative to the VM install location.
 	 */
 	private static final String[] fgCandidateJavaFiles = {"javaw", "javaw.exe", "java", "java.exe", "j9w", "j9w.exe", "j9", "j9.exe"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
@@ -116,7 +116,7 @@ public class StandardVMType extends AbstractVMInstallType {
 //	
 //	/**
 //	 * Return <code>true</code> if the appropriate system libraries can be found for the
-//	 * specified java executable, <code>false</code> otherwise.
+//	 * specified javascript executable, <code>false</code> otherwise.
 //	 */
 //	protected boolean canDetectDefaultSystemLibraries(File javaHome, File javaExecutable) {
 //		LibraryLocation[] locations = getDefaultLibraryLocations(javaHome);
@@ -161,14 +161,14 @@ public class StandardVMType extends AbstractVMInstallType {
 //			return null;
 //		}
 //
-//		// Find the 'java' executable file under the java home directory.  If it can't be
+//		// Find the 'java' executable file under the javascript home directory.  If it can't be
 //		// found, return null.
 //		File javaExecutable = findJavaExecutable(javaHome);
 //		if (javaExecutable == null) {
 //			return null;
 //		}
 //		
-//		// If the reported java home directory terminates with 'jre', first see if 
+//		// If the reported javascript home directory terminates with 'jre', first see if 
 //		// the parent directory contains the required libraries
 //		boolean foundLibraries = false;
 //		if (javaHome.getName().equalsIgnoreCase("jre")) { //$NON-NLS-1$
@@ -179,7 +179,7 @@ public class StandardVMType extends AbstractVMInstallType {
 //			}
 //		}	
 //		
-//		// If we haven't already found the libraries, look in the reported java home dir
+//		// If we haven't already found the libraries, look in the reported javascript home dir
 //		if (!foundLibraries) {
 //			if (!canDetectDefaultSystemLibraries(javaHome, javaExecutable)) {
 //				return null;
@@ -193,7 +193,7 @@ public class StandardVMType extends AbstractVMInstallType {
 
 	/**
 	 * Return an <code>IPath</code> corresponding to the single library file containing the
-	 * standard Java classes for most VMs version 1.2 and above.
+	 * standard JavaScript classes for most VMs version 1.2 and above.
 	 */
 	protected IPath getDefaultSystemLibrary(File javaHome) {
 		IPath jreLibPath= new Path(javaHome.getPath()).append("lib").append("rt.jar"); //$NON-NLS-2$ //$NON-NLS-1$
@@ -273,8 +273,8 @@ public class StandardVMType extends AbstractVMInstallType {
 		return new LibraryLocation[]{location};
 		
 		
-//		// Determine the java executable that corresponds to the specified install location
-//		// and use this to generate library info.  If no java executable was found, 
+//		// Determine the javascript executable that corresponds to the specified install location
+//		// and use this to generate library info.  If no javascript executable was found, 
 //		// the 'standard' libraries will be returned.
 //		File javaExecutable = findJavaExecutable(installLocation);
 //		LibraryInfo libInfo;
@@ -482,7 +482,7 @@ public class StandardVMType extends AbstractVMInstallType {
 	}
 
 //	/**
-//	 * Generates library information for the given java executable. A main
+//	 * Generates library information for the given javascript executable. A main
 //	 * program is run (<code>org.eclipse.jdt.internal.launching.support.
 //	 * LibraryDetector</code>), that dumps the system properties for bootpath
 //	 * and extension directories. This output is then parsed and cached for
@@ -502,7 +502,7 @@ public class StandardVMType extends AbstractVMInstallType {
 //		File file = LaunchingPlugin.getFileInPlugin(new Path("lib/launchingsupport.jar")); //$NON-NLS-1$
 //		if (file.exists()) {	
 //			String javaExecutablePath = javaExecutable.getAbsolutePath();
-//			String[] cmdLine = new String[] {javaExecutablePath, "-classpath", file.getAbsolutePath(), "org.eclipse.jdt.internal.launching.support.LibraryDetector"};  //$NON-NLS-1$ //$NON-NLS-2$
+//			String[] cmdLine = new String[] {javaExecutablePath, "-includepath", file.getAbsolutePath(), "org.eclipse.jdt.internal.launching.support.LibraryDetector"};  //$NON-NLS-1$ //$NON-NLS-2$
 //			Process p = null;
 //			try {
 //				p = Runtime.getRuntime().exec(cmdLine);

@@ -196,7 +196,7 @@ public abstract class Statement extends ProgramElement  {
 	 * Copies the leading comment from the given statement.
 	 *
 	 * @param source the statement that supplies the leading comment
-	 * @since 2.1
+	 *  
 	 */
 	void copyLeadingComment(Statement source) {
 		setLeadingComment(source.getLeadingComment());

@@ -21,12 +21,12 @@ import java.util.List;
  * For JLS2:
  * <pre>
  * FunctionDeclaration:
- *    [ Javadoc ] { Modifier } ( Type | <b>void</b> ) Identifier <b>(</b>
+ *    [ jsdoc ] { Modifier } ( Type | <b>void</b> ) Identifier <b>(</b>
  *        [ FormalParameter
  * 		     { <b>,</b> FormalParameter } ] <b>)</b> {<b>[</b> <b>]</b> }
  *        [ <b>throws</b> TypeName { <b>,</b> TypeName } ] ( Block | <b>;</b> )
  * ConstructorDeclaration:
- *    [ Javadoc ] { Modifier } Identifier <b>(</b>
+ *    [ jsdoc ] { Modifier } Identifier <b>(</b>
  * 		  [ FormalParameter
  * 			 { <b>,</b> FormalParameter } ] <b>)</b>
  *        [<b>throws</b> TypeName { <b>,</b> TypeName } ] Block
@@ -35,14 +35,14 @@ import java.util.List;
  * (and annotations) were added:
  * <pre>
  * FunctionDeclaration:
- *    [ Javadoc ] { ExtendedModifier }
+ *    [ jsdoc ] { ExtendedModifier }
  *		  [ <b>&lt;</b> TypeParameter { <b>,</b> TypeParameter } <b>&gt;</b> ]
  *        ( Type | <b>void</b> ) Identifier <b>(</b>
  *        [ FormalParameter
  * 		     { <b>,</b> FormalParameter } ] <b>)</b> {<b>[</b> <b>]</b> }
  *        [ <b>throws</b> TypeName { <b>,</b> TypeName } ] ( Block | <b>;</b> )
  * ConstructorDeclaration:
- *    [ Javadoc ] { ExtendedModifier }
+ *    [ jsdoc ] { ExtendedModifier }
  *		  [ <b>&lt;</b> TypeParameter { <b>,</b> TypeParameter } <b>&gt;</b> ]
  *        Identifier <b>(</b>
  * 		  [ FormalParameter
@@ -50,9 +50,9 @@ import java.util.List;
  *        [<b>throws</b> TypeName { <b>,</b> TypeName } ] Block
  * </pre>
  * <p>
- * When a Javadoc comment is present, the source
+ * When a jsdoc comment is present, the source
  * range begins with the first character of the "/**" comment delimiter.
- * When there is no Javadoc comment, the source range begins with the first
+ * When there is no jsdoc comment, the source range begins with the first
  * character of the first modifier keyword (if modifiers), or the
  * first character of the "&lt;" token (method, no modifiers, type parameters),
  * or the first character of the return type (method, no modifiers, no type
@@ -70,84 +70,84 @@ public class FunctionDeclaration extends BodyDeclaration {
 
 	/**
 	 * The "javadoc" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor JAVADOC_PROPERTY =
 		internalJavadocPropertyFactory(FunctionDeclaration.class);
 
 	/**
 	 * The "modifiers" structural property of this node type (JLS2 API only).
-	 * @since 3.0
+	 *  
 	 */
 	public static final SimplePropertyDescriptor MODIFIERS_PROPERTY =
 		internalModifiersPropertyFactory(FunctionDeclaration.class);
 
 	/**
 	 * The "modifiers" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor MODIFIERS2_PROPERTY =
 		internalModifiers2PropertyFactory(FunctionDeclaration.class);
 
 	/**
 	 * The "constructor" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final SimplePropertyDescriptor CONSTRUCTOR_PROPERTY =
 		new SimplePropertyDescriptor(FunctionDeclaration.class, "constructor", boolean.class, MANDATORY); //$NON-NLS-1$
 
 	/**
 	 * The "name" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		new ChildPropertyDescriptor(FunctionDeclaration.class, "name", SimpleName.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "returnType" structural property of this node type (JLS2 API only).
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor RETURN_TYPE_PROPERTY =
 		new ChildPropertyDescriptor(FunctionDeclaration.class, "returnType", Type.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "returnType2" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
+	 *  
 	 */
 	public static final ChildPropertyDescriptor RETURN_TYPE2_PROPERTY =
 		new ChildPropertyDescriptor(FunctionDeclaration.class, "returnType2", Type.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "extraDimensions" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final SimplePropertyDescriptor EXTRA_DIMENSIONS_PROPERTY =
 		new SimplePropertyDescriptor(FunctionDeclaration.class, "extraDimensions", int.class, MANDATORY); //$NON-NLS-1$
 
 	/**
 	 * The "typeParameters" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor TYPE_PARAMETERS_PROPERTY =
 		new ChildListPropertyDescriptor(FunctionDeclaration.class, "typeParameters", TypeParameter.class, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "parameters" structural property of this node type).
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor PARAMETERS_PROPERTY =
 		new ChildListPropertyDescriptor(FunctionDeclaration.class, "parameters", SingleVariableDeclaration.class, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "thrownExceptions" structural property of this node type).
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor THROWN_EXCEPTIONS_PROPERTY =
 		new ChildListPropertyDescriptor(FunctionDeclaration.class, "thrownExceptions", Name.class, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "body" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor BODY_PROPERTY =
 		new ChildPropertyDescriptor(FunctionDeclaration.class, "body", Block.class, OPTIONAL, CYCLE_RISK); //$NON-NLS-1$
@@ -156,7 +156,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.0
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_2_0;
 
@@ -164,7 +164,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.1
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_3_0;
 
@@ -204,7 +204,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 	 * @param apiLevel the API level; one of the AST.JLS* constants
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		if (apiLevel == AST.JLS2_INTERNAL) {
@@ -222,7 +222,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 
 	/**
 	 * The method name; lazily initialized; defaults to an unspecified,
-	 * legal Java identifier.
+	 * legal JavaScript identifier.
 	 */
 	private SimpleName methodName = null;
 
@@ -244,7 +244,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 
 	/**
 	 * Indicated whether the return type has been initialized.
-	 * @since 3.1
+	 *  
 	 */
 	private boolean returnType2Initialized = false;
 
@@ -252,7 +252,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 	 * The type paramters (element type: <code>TypeParameter</code>).
 	 * Null in JLS2. Added in JLS3; defaults to an empty list
 	 * (see constructor).
-	 * @since 3.1
+	 *  
 	 */
 	private ASTNode.NodeList typeParameters = null;
 
@@ -260,7 +260,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 	 * The number of array dimensions that appear after the parameters, rather
 	 * than after the return type itself; defaults to 0.
 	 *
-	 * @since 2.1
+	 *  
 	 */
 	private int extraArrayDimensions = 0;
 
@@ -299,15 +299,15 @@ public class FunctionDeclaration extends BodyDeclaration {
 		}
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
-	 * @since 3.0
+	 *  
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int internalGetSetIntProperty(SimplePropertyDescriptor property, boolean get, int value) {
@@ -331,7 +331,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 		return super.internalGetSetIntProperty(property, get, value);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean internalGetSetBooleanProperty(SimplePropertyDescriptor property, boolean get, boolean value) {
@@ -347,7 +347,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 		return super.internalGetSetBooleanProperty(property, get, value);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -395,7 +395,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
@@ -415,35 +415,35 @@ public class FunctionDeclaration extends BodyDeclaration {
 		return super.internalGetChildListProperty(property);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on BodyDeclaration.
 	 */
 	final ChildPropertyDescriptor internalJavadocProperty() {
 		return JAVADOC_PROPERTY;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on BodyDeclaration.
 	 */
 	final ChildListPropertyDescriptor internalModifiers2Property() {
 		return MODIFIERS2_PROPERTY;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on BodyDeclaration.
 	 */
 	final SimplePropertyDescriptor internalModifiersProperty() {
 		return MODIFIERS_PROPERTY;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return FUNCTION_DECLARATION;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -480,7 +480,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -488,7 +488,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -542,7 +542,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 	 *    (element type: <code>TypeParameter</code>)
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
+	 *  
 	 */
 	public List typeParameters() {
 		// more efficient than just calling unsupportedIn2() to check
@@ -613,7 +613,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
 	 * @see SingleVariableDeclaration#isVarargs()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isVarargs() {
 		// more efficient than just calling unsupportedIn2() to check
@@ -663,7 +663,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 	/**
 	 * Internal synonym for deprecated method. Used to avoid
 	 * deprecation warnings.
-	 * @since 3.1
+	 *  
 	 */
 	/*package*/ final Type internalGetReturnType() {
 		supportedOnlyIn2();
@@ -707,7 +707,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 	/**
 	 * Internal synonym for deprecated method. Used to avoid
 	 * deprecation warnings.
-	 * @since 3.1
+	 *  
 	 */
 	/*package*/ void internalSetReturnType(Type type) {
 	    supportedOnlyIn2();
@@ -736,7 +736,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 	 * or <code>null</code> if none
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
+	 *  
 	 */
 	public Type getReturnType2() {
 	    unsupportedIn2();
@@ -774,7 +774,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 	 * <li>the node belongs to a different AST</li>
 	 * <li>the node already has a parent</li>
 	 * </ul>
-	 * @since 3.1
+	 *  
 	 */
 	public void setReturnType2(Type type) {
 	    unsupportedIn2();
@@ -801,7 +801,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 	 * </p>
 	 *
 	 * @return the number of extra array dimensions
-	 * @since 2.1
+	 *  
 	 */
 	public int getExtraDimensions() {
 		return this.extraArrayDimensions;
@@ -822,7 +822,7 @@ public class FunctionDeclaration extends BodyDeclaration {
 	 * @param dimensions the number of array dimensions
 	 * @exception IllegalArgumentException if the number of dimensions is
 	 *    negative
-	 * @since 2.1
+	 *  
 	 */
 	public void setExtraDimensions(int dimensions) {
 		if (dimensions < 0) {
@@ -889,14 +889,14 @@ public class FunctionDeclaration extends BodyDeclaration {
 		return this.ast.getBindingResolver().resolveMethod(this);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return super.memSize() + 9 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

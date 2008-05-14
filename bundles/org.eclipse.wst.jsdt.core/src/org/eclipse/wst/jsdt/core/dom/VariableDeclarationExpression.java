@@ -49,28 +49,28 @@ public class VariableDeclarationExpression extends Expression {
 
 	/**
 	 * The "modifiers" structural property of this node type (JLS2 API only).
-	 * @since 3.0
+	 *  
 	 */
 	public static final SimplePropertyDescriptor MODIFIERS_PROPERTY =
 		new SimplePropertyDescriptor(VariableDeclarationExpression.class, "modifiers", int.class, MANDATORY); //$NON-NLS-1$
 
 	/**
 	 * The "modifiers" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor MODIFIERS2_PROPERTY =
 		new ChildListPropertyDescriptor(VariableDeclarationExpression.class, "modifiers", IExtendedModifier.class, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "type" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor TYPE_PROPERTY =
 		new ChildPropertyDescriptor(VariableDeclarationExpression.class, "type", Type.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "fragments" structural property of this node type).
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor FRAGMENTS_PROPERTY =
 		new ChildListPropertyDescriptor(VariableDeclarationExpression.class, "fragments", VariableDeclarationFragment.class, CYCLE_RISK); //$NON-NLS-1$
@@ -79,7 +79,7 @@ public class VariableDeclarationExpression extends Expression {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.0
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_2_0;
 
@@ -87,7 +87,7 @@ public class VariableDeclarationExpression extends Expression {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.1
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_3_0;
 
@@ -116,7 +116,7 @@ public class VariableDeclarationExpression extends Expression {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		if (apiLevel == AST.JLS2_INTERNAL) {
@@ -130,7 +130,7 @@ public class VariableDeclarationExpression extends Expression {
 	 * The extended modifiers (element type: <code>IExtendedModifier</code>).
 	 * Null in JLS2. Added in JLS3; defaults to an empty list
 	 * (see constructor).
-	 * @since 3.0
+	 *  
 	 */
 	private ASTNode.NodeList modifiers = null;
 
@@ -171,14 +171,14 @@ public class VariableDeclarationExpression extends Expression {
 		}
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int internalGetSetIntProperty(SimplePropertyDescriptor property, boolean get, int value) {
@@ -194,7 +194,7 @@ public class VariableDeclarationExpression extends Expression {
 		return super.internalGetSetIntProperty(property, get, value);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -210,7 +210,7 @@ public class VariableDeclarationExpression extends Expression {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
@@ -224,14 +224,14 @@ public class VariableDeclarationExpression extends Expression {
 		return super.internalGetChildListProperty(property);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return VARIABLE_DECLARATION_EXPRESSION;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -251,7 +251,7 @@ public class VariableDeclarationExpression extends Expression {
 
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -259,7 +259,7 @@ public class VariableDeclarationExpression extends Expression {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -287,7 +287,7 @@ public class VariableDeclarationExpression extends Expression {
 	 *    (element type: <code>IExtendedModifier</code>)
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
+	 *  
 	 */
 	public List modifiers() {
 		// more efficient than just calling unsupportedIn2() to check
@@ -348,7 +348,7 @@ public class VariableDeclarationExpression extends Expression {
 	/**
 	 * Internal synonym for deprecated method. Used to avoid
 	 * deprecation warnings.
-	 * @since 3.1
+	 *  
 	 */
 	/*package*/ final void internalSetModifiers(int pmodifiers) {
 	    supportedOnlyIn2();
@@ -416,7 +416,7 @@ public class VariableDeclarationExpression extends Expression {
 		return this.variableDeclarationFragments;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -424,7 +424,7 @@ public class VariableDeclarationExpression extends Expression {
 		return BASE_NODE_SIZE + 4 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

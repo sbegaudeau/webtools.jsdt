@@ -63,7 +63,6 @@ public final class ListRewrite {
 
 	 * @return the node that contains the list for which this list rewriter was created
 	 * @see #getLocationInParent()
-	 * @since 3.1
 	 */
 	public ASTNode getParent() {
 		return this.parent;
@@ -74,7 +73,6 @@ public final class ListRewrite {
 	 *
 	 * @return the property of the parent node for which this list rewriter was created
 	 * @see #getParent()
-	 * @since 3.1
 	 */
 	public StructuralPropertyDescriptor getLocationInParent() {
 		return this.childProperty;
@@ -106,7 +104,6 @@ public final class ListRewrite {
 	/**
 	 * Returns the ASTRewrite instance from which this ListRewriter has been created from.
 	 * @return the parent AST Rewriter instance.
-	 * @since 3.1
 	 */
 	public ASTRewrite getASTRewrite() {
 		return this.rewriter;
@@ -350,7 +347,6 @@ public final class ListRewrite {
 	 * is not before the last node. An <code>IllegalArgumentException</code> is
 	 * also thrown if the moved range is overlapping with an other moved or copied range.
 	 *
-	 * @since 3.1
 	 */
 	public final ASTNode createMoveTarget(ASTNode first, ASTNode last) {
 		return createMoveTarget(first, last, null, null);
@@ -378,7 +374,6 @@ public final class ListRewrite {
 	 * </code> is also thrown if the moved range is overlapping with an other moved
 	 * or copied range.
 	 *
-	 * @since 3.1
 	 */
 	public final ASTNode createMoveTarget(ASTNode first, ASTNode last, ASTNode replacingNode, TextEditGroup editGroup) {
 		if (first == last) {

@@ -13,12 +13,12 @@ package org.eclipse.wst.jsdt.core.dom;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 /**
- * An AST requestor handles ASTs for compilation units passed to
+ * An AST requestor handles ASTs for javaScript units passed to
  * <code>ASTParser.createASTs</code>.
  * <p>
  * <code>ASTRequestor.acceptAST</code> is called for each of the
- * compilation units passed to <code>ASTParser.createASTs</code>.
- * After all the compilation units have been processed,
+ * javaScript units passed to <code>ASTParser.createASTs</code>.
+ * After all the javaScript units have been processed,
  * <code>ASTRequestor.acceptBindings</code> is called for each
  * of the binding keys passed to <code>ASTParser.createASTs</code>.
  * </p>
@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 public abstract class ASTRequestor {
 
 	/**
-	 * The compilation unit resolver used to resolve bindings, or
+	 * The javaScript unit resolver used to resolve bindings, or
 	 * <code>null</code> if none. Note that this field is non-null
 	 * only within the dynamic scope of a call to
 	 * <code>ASTParser.createASTs</code>.
@@ -53,14 +53,14 @@ public abstract class ASTRequestor {
 	}
 
 	/**
-	 * Accepts an AST corresponding to the compilation unit.
+	 * Accepts an AST corresponding to the javaScript unit.
 	 * That is, <code>ast</code> is an AST for <code>source</code>.
 	 * <p>
 	 * The default implementation of this method does nothing.
 	 * Clients should override to process the resulting AST.
 	 * </p>
 	 *
-	 * @param source the compilation unit the ast is coming from
+	 * @param source the javaScript unit the ast is coming from
 	 * @param ast the requested abtract syntax tree
 	 */
 	public void acceptAST(IJavaScriptUnit source, JavaScriptUnit ast) {

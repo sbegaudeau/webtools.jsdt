@@ -18,7 +18,7 @@ import org.eclipse.core.resources.IMarker;
  * In addition, it receives compilation problems detected during code snippet
  * compilation.
  * <p>
- * Clients may implement this interface to provide a bridge a running Java VM.
+ * Clients may implement this interface to provide a bridge a running JavaScript VM.
  * </p>
  *
  * @see IEvaluationContext#evaluateCodeSnippet(String, ICodeSnippetRequestor, org.eclipse.core.runtime.IProgressMonitor)

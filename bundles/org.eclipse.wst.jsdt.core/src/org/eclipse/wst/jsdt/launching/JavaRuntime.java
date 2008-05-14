@@ -41,7 +41,7 @@ import com.ibm.icu.text.MessageFormat;
  * the registered VM types contributed through the 
  * <code>"org.eclipse.wst.jsdt.launching.vmType"</code> extension point.
  * As well, this class provides VM install change notification,
- * and computes classpaths and source lookup paths for launch
+ * and computes includepaths and source lookup paths for launch
  * configurations.
  * <p>
  * This class provides static methods only; it is not intended to be
@@ -75,17 +75,17 @@ public final class JavaRuntime {
 	
 	/**
 	 * Simple identifier constant (value <code>"runtimeClasspathEntryResolvers"</code>) for the
-	 * runtime classpath entry resolvers extension point.
+	 * runtime includepath entry resolvers extension point.
 	 * 
-	 * @since 2.0
+	 *  
 	 */
 	public static final String EXTENSION_POINT_RUNTIME_CLASSPATH_ENTRY_RESOLVERS= "runtimeClasspathEntryResolvers";	 //$NON-NLS-1$	
 	
 	/**
 	 * Simple identifier constant (value <code>"classpathProviders"</code>) for the
-	 * runtime classpath providers extension point.
+	 * runtime includepath providers extension point.
 	 * 
-	 * @since 2.0
+	 *  
 	 */
 	public static final String EXTENSION_POINT_RUNTIME_CLASSPATH_PROVIDERS= "classpathProviders";	 //$NON-NLS-1$		
 	
@@ -93,7 +93,7 @@ public final class JavaRuntime {
 	 * Simple identifier constant (value <code>"executionEnvironments"</code>) for the
 	 * execution environments extension point.
 	 * 
-	 * @since 3.2
+	 *  
 	 */
 	public static final String EXTENSION_POINT_EXECUTION_ENVIRONMENTS= "executionEnvironments";	 //$NON-NLS-1$
 	
@@ -101,14 +101,14 @@ public final class JavaRuntime {
 	 * Simple identifier constant (value <code>"vmInstalls"</code>) for the
 	 * VM installs extension point.
 	 * 
-	 * @since 3.2
+	 *  
 	 */
 	public static final String EXTENSION_POINT_VM_INSTALLS = "vmInstalls";	 //$NON-NLS-1$		
 		
 	/**
 	 * Classpath container used for a project's JRE
 	 * (value <code>"org.eclipse.wst.jsdt.launching.JRE_CONTAINER"</code>). A
-	 * container is resolved in the context of a specific Java project, to one
+	 * container is resolved in the context of a specific JavaScript project, to one
 	 * or more system libraries contained in a JRE. The container can have zero
 	 * or two path segments following the container name. When no segments
 	 * follow the container name, the workspace default JRE is used to build a
@@ -119,7 +119,7 @@ public final class JavaRuntime {
 	 * 	project. For example, the standard VM.</li>
 	 * <li>VM Install Name - a user defined name that identifies that a specific VM
 	 * 	of the above kind. For example, <code>IBM 1.3.1</code>. This information is
-	 *  shared in a projects classpath file, so teams must agree on JRE naming
+	 *  shared in a projects includepath file, so teams must agree on JRE naming
 	 * 	conventions.</li>
 	 * </ol>
 	 * <p>
@@ -130,13 +130,13 @@ public final class JavaRuntime {
 	 * <li>Identifier of a contributed execution environment</li>
 	 * </ol>
 	 * </p>
-	 * @since 2.0
+	 *  
 	 */
 	public static final String JRE_CONTAINER ="org.eclipse.wst.jsdt.launching.JRE_CONTAINER"; //$NON-NLS-1$
 	public static final String BASE_BROWSER_LIB="org.eclipse.wst.jsdt.launching.baseBrowserLibrary";
 	
 	/*
-	 * Default supertype for compilation units
+	 * Default supertype for javascript unit s
 	 */
 	public static final String DEFAULT_SUPER_TYPE ="Global"; //$NON-NLS-1$
 	
@@ -146,11 +146,11 @@ public final class JavaRuntime {
 	 * When a JRE cannot be resolved for a project by this plug-in's container
 	 * initializer, an exception is thrown with this status code. A status handler
 	 * may be registered for this status code. The <code>source</code> object provided
-	 * to the status handler is the Java project for which the path could not be
+	 * to the status handler is the JavaScript project for which the path could not be
 	 * resolved. The status handler must return an <code>IVMInstall</code> or <code>null</code>.
-	 * The container resolver will re-set the project's classpath if required.
+	 * The container resolver will re-set the project's includepath if required.
 	 * 
-	 * @since 2.0
+	 *  
 	 */
 	public static final int ERR_UNABLE_TO_RESOLVE_JRE = 160;
 	
@@ -159,21 +159,21 @@ public final class JavaRuntime {
 	 * value when attempting to launch and connect to a debuggable VM. The value is
 	 * an int, indicating a number of milliseconds.
 	 * 
-	 * @since 2.0
+	 *  
 	 */
 	public static final String PREF_CONNECT_TIMEOUT = JavaScriptCore.PLUGIN_ID + ".PREF_CONNECT_TIMEOUT"; //$NON-NLS-1$
 	
 	/**
 	 * Preference key for the String of XML that defines all installed VMs.
 	 * 
-	 * @since 2.1
+	 *  
 	 */
 	public static final String PREF_VM_XML = JavaScriptCore.PLUGIN_ID + ".PREF_VM_XML"; //$NON-NLS-1$
 	
 	/**
 	 * Default launch/connect timeout (ms).
 	 * 
-	 * @since 2.0
+	 *  
 	 */
 	public static final int DEF_CONNECT_TIMEOUT = 20000;
 	
@@ -190,7 +190,7 @@ public final class JavaRuntime {
 	public final static String ATTR_CMDLINE= JavaScriptCore.PLUGIN_ID + ".launcher.cmdLine"; //$NON-NLS-1$
 	
 	/**
-	 * Attribute key for a classpath attribute referencing a
+	 * Attribute key for a includepath attribute referencing a
 	 * list of shared libraries that should appear on the
 	 * <code>-Djava.library.path</code> system property.
 	 * <p>
@@ -207,7 +207,7 @@ public final class JavaRuntime {
 	 * as relative to the workspace location. If the path is absolute, it is 
 	 * interpreted as an absolute path in the local file system.
 	 * </p>
-	 * @since 3.1
+	 *  
 	 * @see org.eclipse.wst.jsdt.core.IIncludePathAttribute
 	 */
 	public static final String CLASSPATH_ATTR_LIBRARY_PATH_ENTRY =  JavaScriptCore.PLUGIN_ID + ".CLASSPATH_ATTR_LIBRARY_PATH_ENTRY"; //$NON-NLS-1$
@@ -222,7 +222,7 @@ public final class JavaRuntime {
 	
 	/**
 	 * Resolvers keyed by variable name, container id,
-	 * and runtime classpath entry id.
+	 * and runtime includepath entry id.
 	 */
 	private static Map fgVariableResolvers = null;
 	private static Map fgContainerResolvers = null;
@@ -234,7 +234,7 @@ public final class JavaRuntime {
 //	private static Map fgPathProviders = null;
 	
 	/**
-	 * Default classpath and source path providers.
+	 * Default includepath and source path providers.
 	 */
 //	private static IRuntimeClasspathProvider fgDefaultClasspathProvider = new StandardClasspathProvider();
 //	private static IRuntimeClasspathProvider fgDefaultSourcePathProvider = new StandardSourcePathProvider();
@@ -246,7 +246,7 @@ public final class JavaRuntime {
 	
 	/**
 	 * Cache of already resolved projects in container entries. Used to avoid
-	 * cycles in project dependencies when resolving classpath container entries.
+	 * cycles in project dependencies when resolving includepath container entries.
 	 * Counters used to know when entering/exiting to clear cache
 	 */
 //	private static ThreadLocal fgProjects = new ThreadLocal(); // Lists
@@ -299,17 +299,17 @@ public final class JavaRuntime {
 //	}
 
 	/**
-	 * Returns the VM assigned to build the given Java project.
+	 * Returns the VM assigned to build the given JavaScript project.
 	 * The project must exist. The VM assigned to a project is
 	 * determined from its build path.
 	 * 
 	 * @param project the project to retrieve the VM from
-	 * @return the VM instance that is assigned to build the given Java project
+	 * @return the VM instance that is assigned to build the given JavaScript project
 	 * 		   Returns <code>null</code> if no VM is referenced on the project's build path.
 	 * @throws CoreException if unable to determine the project's VM install
 	 */
 	public static IVMInstall getVMInstall(IJavaScriptProject project) throws CoreException {
-		// check the classpath
+		// check the includepath
 		IVMInstall vm = null;
 		IIncludePathEntry[] classpath = project.getRawIncludepath();
 		IRuntimeClasspathEntryResolver resolver = null;
@@ -373,7 +373,7 @@ public final class JavaRuntime {
 	 * @param monitor progress monitor or <code>null</code>
 	 * @param savePreference If <code>true</code>, update workbench preferences to reflect
 	 * 		   				  the new default VM.
-	 * @since 2.1
+	 *  
 	 */
 	public static void setDefaultVMInstall(IVMInstall vm, IProgressMonitor monitor, boolean savePreference) throws CoreException {
 		IVMInstall previous = null;
@@ -399,7 +399,7 @@ public final class JavaRuntime {
 //	 * @param	connector The connector to make the default. May be <code>null</code> to clear 
 //	 * 				the default.
 //	 * @param monitor The progress monitor to use
-//	 * @since 2.0
+//	 *  
 //	 * @throws CoreException Thrown if saving the new default setting fails
 //	 */
 //	public static void setDefaultVMConnector(IVMConnector connector, IProgressMonitor monitor) throws CoreException {
@@ -433,7 +433,7 @@ public final class JavaRuntime {
 //	/**
 //	 * Return the default VM connector.
 //	 * @return	Returns the default VM connector.
-//	 * @since 2.0
+//	 *  
 //	 */
 //	public static IVMConnector getDefaultVMConnector() {
 //		String id = getDefaultVMConnectorId();
@@ -474,7 +474,7 @@ public final class JavaRuntime {
 	 * 
 	 * @param vm the instance of IVMInstallType to be identified
 	 * 
-	 * @since 2.1
+	 *  
 	 */
 	public static String getCompositeIdFromVM(IVMInstall vm) {
 		if (vm == null) {
@@ -494,7 +494,7 @@ public final class JavaRuntime {
 	 * 
 	 * @param idString the composite id that specifies an instance of IVMInstall
 	 * 
-	 * @since 2.1
+	 *  
 	 */
 	public static IVMInstall getVMFromCompositeId(String idString) {
 		if (idString == null || idString.length() == 0) {
@@ -512,36 +512,36 @@ public final class JavaRuntime {
 	}
 
 //	/**
-//	 * Returns a new runtime classpath entry for the given expression that
+//	 * Returns a new runtime includepath entry for the given expression that
 //	 * may contain string substitution variable references. The resulting expression
 //	 * refers to an archive (jar or directory) containing class files.
 //	 * 
 //	 * @param expression an expression that resolves to the location of an archive
-//	 * @return runtime classpath entry
-//	 * @since 3.0
+//	 * @return runtime includepath entry
+//	 *  
 //	 */
 //	public static IRuntimeClasspathEntry newStringVariableClasspathEntry(String expression) {
 //		return new VariableClasspathEntry(expression);
 //	}
 //	
 //	/**
-//	 * Returns a new runtime classpath entry containing the default classpath
-//	 * for the specified Java project. 
+//	 * Returns a new runtime includepath entry containing the default includepath
+//	 * for the specified JavaScript project. 
 //	 * 
-//	 * @param project Java project
-//	 * @return runtime classpath entry
-//	 * @since 3.0
+//	 * @param project JavaScript project
+//	 * @return runtime includepath entry
+//	 *  
 //	 */
 //	public static IRuntimeClasspathEntry newDefaultProjectClasspathEntry(IJavaScriptProject project) {
 //		return new DefaultProjectClasspathEntry(project);
 //	}	
 	
 	/**
-	 * Returns a new runtime classpath entry for the given project.
+	 * Returns a new runtime includepath entry for the given project.
 	 * 
-	 * @param project Java project
-	 * @return runtime classpath entry
-	 * @since 2.0
+	 * @param project JavaScript project
+	 * @return runtime includepath entry
+	 *  
 	 */
 	public static IRuntimeClasspathEntry newProjectRuntimeClasspathEntry(IJavaScriptProject project) {
 		IIncludePathEntry cpe = JavaScriptCore.newProjectEntry(project.getProject().getFullPath());
@@ -550,11 +550,11 @@ public final class JavaRuntime {
 	
 	
 	/**
-	 * Returns a new runtime classpath entry for the given archive.
+	 * Returns a new runtime includepath entry for the given archive.
 	 * 
 	 * @param resource archive resource
-	 * @return runtime classpath entry
-	 * @since 2.0
+	 * @return runtime includepath entry
+	 *  
 	 */
 	public static IRuntimeClasspathEntry newArchiveRuntimeClasspathEntry(IResource resource) {
 		IIncludePathEntry cpe = JavaScriptCore.newLibraryEntry(resource.getFullPath(), null, null);
@@ -562,12 +562,12 @@ public final class JavaRuntime {
 	}
 	
 	/**
-	 * Returns a new runtime classpath entry for the given archive (possibly
+	 * Returns a new runtime includepath entry for the given archive (possibly
 	 * external).
 	 * 
 	 * @param path absolute path to an archive
-	 * @return runtime classpath entry
-	 * @since 2.0
+	 * @return runtime includepath entry
+	 *  
 	 */
 	public static IRuntimeClasspathEntry newArchiveRuntimeClasspathEntry(IPath path) {
 		IIncludePathEntry cpe = JavaScriptCore.newLibraryEntry(path, null, null);
@@ -575,13 +575,13 @@ public final class JavaRuntime {
 	}
 
 	/**
-	 * Returns a new runtime classpath entry for the classpath
+	 * Returns a new runtime includepath entry for the includepath
 	 * variable with the given path.
 	 * 
 	 * @param path variable path; first segment is the name of the variable; 
 	 * 	trailing segments are appended to the resolved variable value
-	 * @return runtime classpath entry
-	 * @since 2.0
+	 * @return runtime includepath entry
+	 *  
 	 */
 	public static IRuntimeClasspathEntry newVariableRuntimeClasspathEntry(IPath path) {
 		IIncludePathEntry cpe = JavaScriptCore.newVariableEntry(path, null, null);
@@ -589,33 +589,33 @@ public final class JavaRuntime {
 	}
 
 	/**
-	 * Returns a runtime classpath entry for the given container path with the given
-	 * classpath property.
+	 * Returns a runtime includepath entry for the given container path with the given
+	 * includepath property.
 	 * 
 	 * @param path container path
-	 * @param classpathProperty the type of entry - one of <code>USER_CLASSES</code>,
+	 * @param includepathProperty the type of entry - one of <code>USER_CLASSES</code>,
 	 * 	<code>BOOTSTRAP_CLASSES</code>, or <code>STANDARD_CLASSES</code>
-	 * @return runtime classpath entry
-	 * @exception CoreException if unable to construct a runtime classpath entry
-	 * @since 2.0
+	 * @return runtime includepath entry
+	 * @exception CoreException if unable to construct a runtime includepath entry
+	 *  
 	 */
 	public static IRuntimeClasspathEntry newRuntimeContainerClasspathEntry(IPath path, int classpathProperty) throws CoreException {
 		return newRuntimeContainerClasspathEntry(path, classpathProperty, null);
 	}
 	
 	/**
-	 * Returns a runtime classpath entry for the given container path with the given
-	 * classpath property to be resolved in the context of the given Java project.
+	 * Returns a runtime includepath entry for the given container path with the given
+	 * includepath property to be resolved in the context of the given JavaScript project.
 	 * 
 	 * @param path container path
-	 * @param classpathProperty the type of entry - one of <code>USER_CLASSES</code>,
+	 * @param includepathProperty the type of entry - one of <code>USER_CLASSES</code>,
 	 * 	<code>BOOTSTRAP_CLASSES</code>, or <code>STANDARD_CLASSES</code>
-	 * @param project Java project context used for resolution, or <code>null</code>
+	 * @param project JavaScript project context used for resolution, or <code>null</code>
 	 *  if to be resolved in the context of the launch configuration this entry
 	 *  is referenced in
-	 * @return runtime classpath entry
-	 * @exception CoreException if unable to construct a runtime classpath entry
-	 * @since 3.0
+	 * @return runtime includepath entry
+	 * @exception CoreException if unable to construct a runtime includepath entry
+	 *  
 	 */
 	public static IRuntimeClasspathEntry newRuntimeContainerClasspathEntry(IPath path, int classpathProperty, IJavaScriptProject project) throws CoreException {
 //		IIncludePathEntry cpe = JavaScriptCore.newContainerEntry(path);
@@ -627,12 +627,12 @@ public final class JavaRuntime {
 	}	
 		
 	/**
-	 * Returns a runtime classpath entry constructed from the given memento.
+	 * Returns a runtime includepath entry constructed from the given memento.
 	 * 
-	 * @param memento a memento for a runtime classpath entry
-	 * @return runtime classpath entry
-	 * @exception CoreException if unable to construct a runtime classpath entry
-	 * @since 2.0
+	 * @param memento a memento for a runtime includepath entry
+	 * @return runtime includepath entry
+	 * @exception CoreException if unable to construct a runtime includepath entry
+	 *  
 	 */
 	public static IRuntimeClasspathEntry newRuntimeClasspathEntry(String memento) throws CoreException {
 //		try {
@@ -671,13 +671,13 @@ public final class JavaRuntime {
 	}
 	
 	/**
-	 * Returns a runtime classpath entry that corresponds to the given
-	 * classpath entry. The classpath entry may not be of type <code>CPE_SOURCE</code>
+	 * Returns a runtime includepath entry that corresponds to the given
+	 * includepath entry. The includepath entry may not be of type <code>CPE_SOURCE</code>
 	 * or <code>CPE_CONTAINER</code>.
 	 * 
-	 * @param entry a classpath entry
-	 * @return runtime classpath entry
-	 * @since 2.0
+	 * @param entry a includepath entry
+	 * @return runtime includepath entry
+	 *  
 	 */
 	private static IRuntimeClasspathEntry newRuntimeClasspathEntry(IIncludePathEntry entry) {
 //		return new RuntimeClasspathEntry(entry);
@@ -686,17 +686,17 @@ public final class JavaRuntime {
 	}	
 			
 	/**
-	 * Computes and returns the default unresolved runtime classpath for the
+	 * Computes and returns the default unresolved runtime includepath for the
 	 * given project.
 	 * 
-	 * @return runtime classpath entries
-	 * @exception CoreException if unable to compute the runtime classpath
+	 * @return runtime includepath entries
+	 * @exception CoreException if unable to compute the runtime includepath
 	 * @see IRuntimeClasspathEntry
-	 * @since 2.0
+	 *  
 	 */
 	public static IRuntimeClasspathEntry[] computeUnresolvedRuntimeClasspath(IJavaScriptProject project) throws CoreException {
 //		IIncludePathEntry[] entries = project.getRawClasspath();
-//		List classpathEntries = new ArrayList(3);
+//		List includepathEntries = new ArrayList(3);
 //		for (int i = 0; i < entries.length; i++) {
 //			IIncludePathEntry entry = entries[i];
 //			switch (entry.getEntryKind()) {
@@ -708,10 +708,10 @@ public final class JavaRuntime {
 //								// don't look at application entries
 //								break;
 //							case IJsGlobalScopeContainer.K_DEFAULT_SYSTEM:
-//								classpathEntries.add(newRuntimeContainerClasspathEntry(container.getPath(), IRuntimeClasspathEntry.STANDARD_CLASSES, project));
+//								includepathEntries.add(newRuntimeContainerClasspathEntry(container.getPath(), IRuntimeClasspathEntry.STANDARD_CLASSES, project));
 //								break;	
 //							case IJsGlobalScopeContainer.K_SYSTEM:
-//								classpathEntries.add(newRuntimeContainerClasspathEntry(container.getPath(), IRuntimeClasspathEntry.BOOTSTRAP_CLASSES, project));
+//								includepathEntries.add(newRuntimeContainerClasspathEntry(container.getPath(), IRuntimeClasspathEntry.BOOTSTRAP_CLASSES, project));
 //								break;
 //						}						
 //					}
@@ -720,15 +720,15 @@ public final class JavaRuntime {
 //					if (JRELIB_VARIABLE.equals(entry.getPath().segment(0))) {
 //						IRuntimeClasspathEntry jre = newVariableRuntimeClasspathEntry(entry.getPath());
 //						jre.setClasspathProperty(IRuntimeClasspathEntry.STANDARD_CLASSES);
-//						classpathEntries.add(jre);
+//						includepathEntries.add(jre);
 //					}
 //					break;
 //				default:
 //					break;
 //			}
 //		}
-//		classpathEntries.add(newDefaultProjectClasspathEntry(project));
-//		return (IRuntimeClasspathEntry[]) classpathEntries.toArray(new IRuntimeClasspathEntry[classpathEntries.size()]);
+//		includepathEntries.add(newDefaultProjectClasspathEntry(project));
+//		return (IRuntimeClasspathEntry[]) includepathEntries.toArray(new IRuntimeClasspathEntry[includepathEntries.size()]);
 //		
 //TODO: implement
 throw new org.eclipse.wst.jsdt.core.UnimplementedException();
@@ -739,9 +739,9 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * configuration.
 //	 * 
 //	 * @param configuration launch configuration
-//	 * @return runtime classpath entries
+//	 * @return runtime includepath entries
 //	 * @exception CoreException if unable to compute the source lookup path
-//	 * @since 2.0
+//	 *  
 //	 */
 //	public static IRuntimeClasspathEntry[] computeUnresolvedSourceLookupPath(ILaunchConfiguration configuration) throws CoreException {
 //		return getSourceLookupPathProvider(configuration).computeUnresolvedClasspath(configuration);
@@ -755,19 +755,19 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * @param configuration launch configuration
 //	 * @return resolved entries
 //	 * @exception CoreException if unable to resolve the source lookup path
-//	 * @since 2.0
+//	 *  
 //	 */
 //	public static IRuntimeClasspathEntry[] resolveSourceLookupPath(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration) throws CoreException {
 //		return getSourceLookupPathProvider(configuration).resolveClasspath(entries, configuration);
 //	}	
 //	
 //	/**
-//	 * Returns the classpath provider for the given launch configuration.
+//	 * Returns the includepath provider for the given launch configuration.
 //	 * 
 //	 * @param configuration launch configuration
-//	 * @return classpath provider
+//	 * @return includepath provider
 //	 * @exception CoreException if unable to resolve the path provider
-//	 * @since 2.0
+//	 *  
 //	 */
 //	public static IRuntimeClasspathProvider getClasspathProvider(ILaunchConfiguration configuration) throws CoreException {
 //		String providerId = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, (String)null);
@@ -789,7 +789,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * @param configuration launch configuration
 //	 * @return source lookup path provider
 //	 * @exception CoreException if unable to resolve the path provider
-//	 * @since 2.0
+//	 *  
 //	 */
 //	public static IRuntimeClasspathProvider getSourceLookupPathProvider(ILaunchConfiguration configuration) throws CoreException {
 //		String providerId = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_SOURCE_PATH_PROVIDER, (String)null);
@@ -810,22 +810,22 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * launch configuration. If the entry is of kind
 	 * <code>VARIABLE</code> or <code>CONTAINER</code>, variable and container
 	 * resolvers are consulted. If the entry is of kind <code>PROJECT</code>,
-	 * and the associated Java project specifies non-default output locations,
+	 * and the associated JavaScript project specifies non-default output locations,
 	 * the corresponding output locations are returned. Otherwise, the given
 	 * entry is returned.
 	 * <p>
 	 * If the given entry is a variable entry, and a resolver is not registered,
 	 * the entry itself is returned. If the given entry is a container, and a
-	 * resolver is not registered, resolved runtime classpath entries are calculated
-	 * from the associated container classpath entries, in the context of the project
+	 * resolver is not registered, resolved runtime includepath entries are calculated
+	 * from the associated container includepath entries, in the context of the project
 	 * associated with the given launch configuration.
 	 * </p>
-	 * @param entry runtime classpath entry
+	 * @param entry runtime includepath entry
 	 * @param configuration launch configuration
-	 * @return resolved runtime classpath entry
+	 * @return resolved runtime includepath entry
 	 * @exception CoreException if unable to resolve
 	 * @see IRuntimeClasspathEntryResolver
-	 * @since 2.0
+	 *  
 	 */
 	public static IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry, ILaunchConfiguration configuration) throws CoreException {
 		//TODO: implement
@@ -886,7 +886,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	}
 	
 //	/**
-//	 * Default resolution for a classpath variable - resolve to an archive. Only
+//	 * Default resolution for a includepath variable - resolve to an archive. Only
 //	 * one of project/configuration can be non-null.
 //	 * 
 //	 * @param entry
@@ -937,23 +937,23 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	}
 //	
 //	/**
-//	 * Returns runtime classpath entries corresponding to the output locations
+//	 * Returns runtime includepath entries corresponding to the output locations
 //	 * of the given project, or null if the project only uses the default
 //	 * output location.
 //	 * 
 //	 * @param project
-//	 * @param classpathProperty the type of classpath entries to create
+//	 * @param includepathProperty the type of includepath entries to create
 //	 * @return IRuntimeClasspathEntry[] or <code>null</code>
 //	 * @throws CoreException
 //	 */
-//	private static IRuntimeClasspathEntry[] resolveOutputLocations(IJavaScriptProject project, int classpathProperty) throws CoreException {
+//	private static IRuntimeClasspathEntry[] resolveOutputLocations(IJavaScriptProject project, int includepathProperty) throws CoreException {
 //		List nonDefault = new ArrayList();
 //		if (project.exists() && project.getProject().isOpen()) {
 //			IIncludePathEntry entries[] = project.getRawClasspath();
 //			for (int i = 0; i < entries.length; i++) {
-//				IIncludePathEntry classpathEntry = entries[i];
-//				if (classpathEntry.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
-//					IPath path = classpathEntry.getOutputLocation();
+//				IIncludePathEntry includepathEntry = entries[i];
+//				if (includepathEntry.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
+//					IPath path = includepathEntry.getOutputLocation();
 //					if (path != null) {
 //						nonDefault.add(path);
 //					}
@@ -972,32 +972,32 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //		for (int i = 0; i < locations.length; i++) {
 //			IIncludePathEntry newEntry = JavaScriptCore.newLibraryEntry((IPath)nonDefault.get(i), null, null);
 //			locations[i] = new RuntimeClasspathEntry(newEntry);
-//			locations[i].setClasspathProperty(classpathProperty);
+//			locations[i].setClasspathProperty(includepathProperty);
 //		}
 //		return locations;						
 //	}
 	
 	/**
 	 * Returns resolved entries for the given entry in the context of the given
-	 * Java project. If the entry is of kind
+	 * JavaScript project. If the entry is of kind
 	 * <code>VARIABLE</code> or <code>CONTAINER</code>, variable and container
 	 * resolvers are consulted. If the entry is of kind <code>PROJECT</code>,
-	 * and the associated Java project specifies non-default output locations,
+	 * and the associated JavaScript project specifies non-default output locations,
 	 * the corresponding output locations are returned. Otherwise, the given
 	 * entry is returned.
 	 * <p>
 	 * If the given entry is a variable entry, and a resolver is not registered,
 	 * the entry itself is returned. If the given entry is a container, and a
-	 * resolver is not registered, resolved runtime classpath entries are calculated
-	 * from the associated container classpath entries, in the context of the 
+	 * resolver is not registered, resolved runtime includepath entries are calculated
+	 * from the associated container includepath entries, in the context of the 
 	 * given project.
 	 * </p>
-	 * @param entry runtime classpath entry
-	 * @param project Java project context
-	 * @return resolved runtime classpath entry
+	 * @param entry runtime includepath entry
+	 * @param project JavaScript project context
+	 * @return resolved runtime includepath entry
 	 * @exception CoreException if unable to resolve
 	 * @see IRuntimeClasspathEntryResolver
-	 * @since 2.0
+	 *  
 	 */
 	public static IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry, IJavaScriptProject project) throws CoreException {
 //		switch (entry.getType()) {
@@ -1046,7 +1046,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 		
 	/**
 	 * Performs default resolution for a container entry.
-	 * Delegates to the Java model.
+	 * Delegates to the JavaScript model.
 	 */
 //	private static IRuntimeClasspathEntry[] computeDefaultContainerEntries(IRuntimeClasspathEntry entry, ILaunchConfiguration config) throws CoreException {
 //		IJavaScriptProject project = entry.getJavaProject();
@@ -1058,7 +1058,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	
 	/**
 	 * Performs default resolution for a container entry.
-	 * Delegates to the Java model.
+	 * Delegates to the JavaScript model.
 	 */
 //	private static IRuntimeClasspathEntry[] computeDefaultContainerEntries(IRuntimeClasspathEntry entry, IJavaScriptProject project) throws CoreException {
 //		//TODO: implement
@@ -1069,7 +1069,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 ////		} 
 ////		IJsGlobalScopeContainer container = JavaScriptCore.getJsGlobalScopeContainer(entry.getPath(), project);
 ////		if (container == null) {
-////			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_Could_not_resolve_classpath_container___0__1, new String[]{entry.getPath().toString()}), null); 
+////			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_Could_not_resolve_includepath_container___0__1, new String[]{entry.getPath().toString()}), null); 
 ////			// execution will not reach here - exception will be thrown
 ////			return null;
 ////		} 
@@ -1105,8 +1105,8 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 ////					IJavaScriptProject jp = JavaScriptCore.create(p);
 ////					if (!projects.contains(jp)) {
 ////						projects.add(jp);
-////						IRuntimeClasspathEntry classpath = newDefaultProjectClasspathEntry(jp);
-////						IRuntimeClasspathEntry[] entries = resolveRuntimeClasspathEntry(classpath, jp);
+////						IRuntimeClasspathEntry includepath = newDefaultProjectClasspathEntry(jp);
+////						IRuntimeClasspathEntry[] entries = resolveRuntimeClasspathEntry(includepath, jp);
 ////						for (int j = 0; j < entries.length; j++) {
 ////							IRuntimeClasspathEntry e = entries[j];
 ////							if (!resolved.contains(e)) {
@@ -1130,7 +1130,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 ////				fgEntryCount.set(new Integer(intCount));
 ////			}
 ////		}
-////		// set classpath property
+////		// set includepath property
 ////		IRuntimeClasspathEntry[] result = new IRuntimeClasspathEntry[resolved.size()];
 ////		for (int i = 0; i < result.length; i++) {
 ////			result[i] = (IRuntimeClasspathEntry) resolved.get(i);
@@ -1144,9 +1144,9 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * Variable and container entries are unresolved.
 	 * 
 	 * @param configuration launch configuration
-	 * @return unresolved runtime classpath entries
-	 * @exception CoreException if unable to compute the classpath
-	 * @since 2.0
+	 * @return unresolved runtime includepath entries
+	 * @exception CoreException if unable to compute the includepath
+	 *  
 	 */
 	public static IRuntimeClasspathEntry[] computeUnresolvedRuntimeClasspath(ILaunchConfiguration configuration) throws CoreException {
 //		return getClasspathProvider(configuration).computeUnresolvedClasspath(configuration);
@@ -1156,14 +1156,14 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	}
 	
 	/**
-	 * Resolves the given classpath, returning the resolved classpath
+	 * Resolves the given includepath, returning the resolved includepath
 	 * in the context of the given launch configuration.
 	 *
-	 * @param entries unresolved classpath
+	 * @param entries unresolved includepath
 	 * @param configuration launch configuration
-	 * @return resolved runtime classpath entries
-	 * @exception CoreException if unable to compute the classpath
-	 * @since 2.0
+	 * @return resolved runtime includepath entries
+	 * @exception CoreException if unable to compute the includepath
+	 *  
 	 */
 	public static IRuntimeClasspathEntry[] resolveRuntimeClasspath(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration) throws CoreException {
 //		TODO: implement
@@ -1175,8 +1175,8 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * Return the <code>IJavaScriptProject</code> referenced in the specified configuration or
 	 * <code>null</code> if none.
 	 *
-	 * @exception CoreException if the referenced Java project does not exist
-	 * @since 2.0
+	 * @exception CoreException if the referenced JavaScript project does not exist
+	 *  
 	 */
 	public static IJavaScriptProject getJavaProject(ILaunchConfiguration configuration) throws CoreException {
 ////TODO: implement
@@ -1196,7 +1196,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	}
 				
 	/**
-	 * Convenience method to get the java model.
+	 * Convenience method to get the javascript model.
 	 */
 	private static IJavaScriptModel getJavaModel() {
 		return JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
@@ -1220,7 +1220,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * @param configuration launch configuration
 	 * @return vm install
 	 * @exception CoreException if unable to compute a vm install
-	 * @since 2.0
+	 *  
 	 */
 	public static IVMInstall computeVMInstall(ILaunchConfiguration configuration) throws CoreException {
 		String jreAttr = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_JRE_CONTAINER_PATH, (String)null);
@@ -1261,7 +1261,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * @param name vm name
 	 * @return vm install
 	 * @exception CoreException if unable to resolve
-	 * @since 3.2
+	 *  
 	 */
 	private static IVMInstall resolveVM(String type, String name, ILaunchConfiguration configuration) throws CoreException {
 		IVMInstallType vt = getVMInstallType(type);
@@ -1315,12 +1315,12 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	}	
 		
 	/**
-	 * Computes the default application classpath entries for the given 
+	 * Computes the default application includepath entries for the given 
 	 * project.
 	 * 
-	 * @param	jproject The project to compute the classpath for
-	 * @return	The computed classpath. May be empty, but not null.
-	 * @throws	CoreException if unable to compute the default classpath
+	 * @param	jproject The project to compute the includepath for
+	 * @return	The computed includepath. May be empty, but not null.
+	 * @throws	CoreException if unable to compute the default includepath
 	 */
 	public static String[] computeDefaultRuntimeClassPath(IJavaScriptProject jproject) throws CoreException {
 		IRuntimeClasspathEntry[] unresolved = computeUnresolvedRuntimeClasspath(jproject);
@@ -1426,7 +1426,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	
 //	/**
 //	 * Loads contributed VM installs
-//	 * @since 3.2
+//	 *  
 //	 */
 //	private static void addVMExtensions(VMDefinitionsContainer vmDefs) {
 //		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(LaunchingPlugin.ID_PLUGIN, JavaRuntime.EXTENSION_POINT_VM_INSTALLS);
@@ -1463,7 +1463,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //							abort(MessageFormat.format("vmInstall {0} contributed by {1} missing required attribute home", //$NON-NLS-1$
 //									new String[]{id, element.getContributor().getName()}), null);
 //						}		
-//						String javadoc = element.getAttribute("javadocURL"); //$NON-NLS-1$
+//						String jsdoc = element.getAttribute("javadocURL"); //$NON-NLS-1$
 //						String vmArgs = element.getAttribute("vmArgs"); //$NON-NLS-1$
 //						VMStandin standin = new VMStandin(installType, id);
 //						standin.setName(name);
@@ -1483,7 +1483,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //                        			new String[]{home, id, element.getContributor().getName(), status.getMessage()}), null);
 //                        }
 //                        standin.setInstallLocation(homeDir);
-//						if (javadoc != null) {
+//						if (jsdoc != null) {
 //							try {
 //								standin.setJavadocLocation(new URL(javadoc));
 //							} catch (MalformedURLException e) {
@@ -1550,7 +1550,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //     * @param expression
 //     * @return expression after string substitution 
 //     * @throws CoreException
-//     * @since 3.2
+//     *  
 //     */
 //    private static String substitute(String expression) throws CoreException {
 //        return VariablesPlugin.getDefault().getStringVariableManager().performStringSubstitution(expression);
@@ -1562,7 +1562,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //     * 
 //     * @param id vm id
 //     * @return whether the vm install was contributed via extension point
-//     * @since 3.2
+//     *  
 //     */
 //    public static boolean isContributedVMInstall(String id) {
 //        getVMInstallTypes(); // ensure VMs are initialized
@@ -1573,7 +1573,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * Evaluates library locations for a IVMInstall. If no library locations are set on the install, a default
 	 * location is evaluated and checked if it exists.
 	 * @return library locations with paths that exist or are empty
-	 * @since 2.0
+	 *  
 	 */
 	public static LibraryLocation[] getLibraryLocations(IVMInstall vm)  {
 		IPath[] libraryPaths;
@@ -1675,10 +1675,10 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	}
 //	
 //	/**
-//	 * Creates and returns a classpath entry describing
-//	 * the JRE_LIB classpath variable.
+//	 * Creates and returns a includepath entry describing
+//	 * the JRE_LIB includepath variable.
 //	 * 
-//	 * @return a new IIncludePathEntry that describes the JRE_LIB classpath variable
+//	 * @return a new IIncludePathEntry that describes the JRE_LIB includepath variable
 //	 */
 //	public static IIncludePathEntry getJREVariableEntry() {
 //		return JavaScriptCore.newVariableEntry(
@@ -1689,47 +1689,47 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	}
 //	
 	/**
-	 * Creates and returns a classpath entry describing
+	 * Creates and returns a includepath entry describing
 	 * the default JRE container entry.
 	 * 
 	 * @return a new IIncludePathEntry that describes the default JRE container entry
-	 * @since 2.0
+	 *  
 	 */
 	public static IIncludePathEntry getDefaultJREContainerEntry() {
 		return JavaScriptCore.newContainerEntry(newDefaultJREContainerPath());
 	}	
 	
 	/**
-	 * Returns a path for the JRE classpath container identifying the 
+	 * Returns a path for the JRE includepath container identifying the 
 	 * default VM install.
 	 * 
-	 * @return classpath container path
-	 * @since 3.2
+	 * @return includepath container path
+	 *  
 	 */	
 	public static IPath newDefaultJREContainerPath() {
 		return new Path(JRE_CONTAINER);
 	}
 	
 	/**
-	 * Returns a path for the JRE classpath container identifying the 
+	 * Returns a path for the JRE includepath container identifying the 
 	 * specified VM install by type and name.
 	 * 
 	 * @param vm vm install
-	 * @return classpath container path
-	 * @since 3.2
+	 * @return includepath container path
+	 *  
 	 */
 	public static IPath newJREContainerPath(IVMInstall vm) {
 		return newJREContainerPath(vm.getVMInstallType().getId(), vm.getName());
 	}
 	
 	/**
-	 * Returns a path for the JRE classpath container identifying the 
+	 * Returns a path for the JRE includepath container identifying the 
 	 * specified VM install by type and name.
 	 * 
 	 * @param typeId vm install type identifier
 	 * @param name vm install name
-	 * @return classpath container path
-	 * @since 3.2
+	 * @return includepath container path
+	 *  
 	 */	
 	public static IPath newJREContainerPath(String typeId, String name) {
 		IPath path = newDefaultJREContainerPath();
@@ -1739,12 +1739,12 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	}
 	
 //	/**
-//	 * Returns a path for the JRE classpath container identifying the 
+//	 * Returns a path for the JRE includepath container identifying the 
 //	 * specified execution environment.
 //	 * 
 //	 * @param environment execution environment
-//	 * @return classpath container path
-//	 * @since 3.2
+//	 * @return includepath container path
+//	 *  
 //	 */
 //	public static IPath newJREContainerPath(IExecutionEnvironment environment) {
 //		IPath path = newDefaultJREContainerPath(); 
@@ -1754,13 +1754,13 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	}	
 	
 	/**
-	 * Returns the JRE referenced by the specified JRE classpath container
+	 * Returns the JRE referenced by the specified JRE includepath container
 	 * path or <code>null</code> if none.
 	 *  
 	 * @param jreContainerPath
-	 * @return JRE referenced by the specified JRE classpath container
+	 * @return JRE referenced by the specified JRE includepath container
 	 *  path or <code>null</code>
-	 * @since 3.2
+	 *  
 	 */
 	public static IVMInstall getVMInstall(IPath jreContainerPath) {
 		return JREContainerInitializer.resolveVM(jreContainerPath);
@@ -1768,11 +1768,11 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	
 //	/**
 //	 * Returns the identifier of the VM install type referenced by the
-//	 * given JRE classpath container path, or <code>null</code> if none.
+//	 * given JRE includepath container path, or <code>null</code> if none.
 //	 * 
 //	 * @param jreContainerPath
 //	 * @return vm install type identifier or <code>null</code>
-//	 * @since 3.2
+//	 *  
 //	 */
 //	public static String getVMInstallTypeId(IPath jreContainerPath) {
 //		if (JREContainerInitializer.isExecutionEnvironment(jreContainerPath)) {
@@ -1783,11 +1783,11 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //
 //	/**
 //	 * Returns the name of the VM install referenced by the
-//	 * given JRE classpath container path, or <code>null</code> if none.
+//	 * given JRE includepath container path, or <code>null</code> if none.
 //	 * 
 //	 * @param jreContainerPath
 //	 * @return vm name or <code>null</code>
-//	 * @since 3.2
+//	 *  
 //	 */
 //	public static String getVMInstallName(IPath jreContainerPath) {
 //		if (JREContainerInitializer.isExecutionEnvironment(jreContainerPath)) {
@@ -1798,39 +1798,39 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	
 	/**
 	 * Returns the execution environment identifier in the following JRE
-	 * classpath container path, or <code>null</code> if none.
+	 * includepath container path, or <code>null</code> if none.
 	 *  
-	 * @param jreContainerPath classpath container path
+	 * @param jreContainerPath includepath container path
 	 * @return execution environment identifier or <code>null</code>
-	 * @since 3.2
+	 *  
 	 */
 	public static String getExecutionEnvironmentId(IPath jreContainerPath) {
 		return JREContainerInitializer.getExecutionEnvironmentId(jreContainerPath);
 	}
 	
 	/**
-	 * Returns a runtime classpath entry identifying the JRE to use when launching the specified
+	 * Returns a runtime includepath entry identifying the JRE to use when launching the specified
 	 * configuration or <code>null</code> if none is specified. The entry returned represents a
-	 * either a classpath variable or classpath container that resolves to a JRE.
+	 * either a includepath variable or includepath container that resolves to a JRE.
 	 * <p>
 	 * The entry is resolved as follows:
 	 * <ol>
 	 * <li>If the <code>ATTR_JRE_CONTAINER_PATH</code> is present, it is used to create
-	 *  a classpath container referring to a JRE.</li>
+	 *  a includepath container referring to a JRE.</li>
 	 * <li>Next, if the <code>ATTR_VM_INSTALL_TYPE</code> and <code>ATTR_VM_INSTALL_NAME</code>
-	 * attributes are present, they are used to create a classpath container.</li>
+	 * attributes are present, they are used to create a includepath container.</li>
 	 * <li>When none of the above attributes are specified, a default entry is
 	 * created which refers to the JRE referenced by the build path of the configuration's
-	 * associated Java project. This could be a classpath variable or classpath container.</li>
-	 * <li>When there is no Java project associated with a configuration, the workspace
+	 * associated JavaScript project. This could be a includepath variable or includepath container.</li>
+	 * <li>When there is no JavaScript project associated with a configuration, the workspace
 	 * default JRE is used to create a container path.</li>
 	 * </ol>
 	 * </p>
 	 * @param configuration
-	 * @return classpath container path identifying a JRE or <code>null</code>
+	 * @return includepath container path identifying a JRE or <code>null</code>
 	 * @exception org.eclipse.core.runtime.CoreException if an exception occurs retrieving
 	 *  attributes from the specified launch configuration
-	 * @since 3.2
+	 *  
 	 */
 	public static IRuntimeClasspathEntry computeJREEntry(ILaunchConfiguration configuration) throws CoreException {
 		String jreAttr = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_JRE_CONTAINER_PATH, (String)null);
@@ -1861,15 +1861,15 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	}
 	
 	/**
-	 * Returns a runtime classpath entry identifying the JRE referenced by the specified
+	 * Returns a runtime includepath entry identifying the JRE referenced by the specified
 	 * project, or <code>null</code> if none. The entry returned represents a either a
-	 * classpath variable or classpath container that resolves to a JRE.
+	 * includepath variable or includepath container that resolves to a JRE.
 	 * 
-	 * @param project Java project
-	 * @return JRE runtime classpath entry or <code>null</code>
+	 * @param project JavaScript project
+	 * @return JRE runtime includepath entry or <code>null</code>
 	 * @exception org.eclipse.core.runtime.CoreException if an exception occurs
-	 * 	accessing the project's classpath
-	 * @since 3.2
+	 * 	accessing the project's includepath
+	 *  
 	 */
 	public static IRuntimeClasspathEntry computeJREEntry(IJavaScriptProject project) throws CoreException {
 		IIncludePathEntry[] rawClasspath = project.getRawIncludepath();
@@ -1910,26 +1910,26 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	}	
 	
 //	/**
-//	 * Returns whether the given runtime classpath entry refers to a vm install.
+//	 * Returns whether the given runtime includepath entry refers to a vm install.
 //	 * 
 //	 * @param entry
-//	 * @return whether the given runtime classpath entry refers to a vm install
-//	 * @since 3.2
+//	 * @return whether the given runtime includepath entry refers to a vm install
+//	 *  
 //	 */
 //	public static boolean isVMInstallReference(IRuntimeClasspathEntry entry) {
-//		IIncludePathEntry classpathEntry = entry.getClasspathEntry();
-//		if (classpathEntry != null) {
-//			switch (classpathEntry.getEntryKind()) {
+//		IIncludePathEntry includepathEntry = entry.getClasspathEntry();
+//		if (includepathEntry != null) {
+//			switch (includepathEntry.getEntryKind()) {
 //				case IIncludePathEntry.CPE_VARIABLE:
-//					IRuntimeClasspathEntryResolver2 resolver = getVariableResolver(classpathEntry.getPath().segment(0));
+//					IRuntimeClasspathEntryResolver2 resolver = getVariableResolver(includepathEntry.getPath().segment(0));
 //					if (resolver != null) {
-//						return resolver.isVMInstallReference(classpathEntry);
+//						return resolver.isVMInstallReference(includepathEntry);
 //					}
 //					break;					
 //				case IIncludePathEntry.CPE_CONTAINER:
-//					resolver = getContainerResolver(classpathEntry.getPath().segment(0));
+//					resolver = getContainerResolver(includepathEntry.getPath().segment(0));
 //					if (resolver != null) {
-//						return resolver.isVMInstallReference(classpathEntry);
+//						return resolver.isVMInstallReference(includepathEntry);
 //					}
 //					break;
 //				}
@@ -1943,7 +1943,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * 
 //	 * @param id VM connector identifier
 //	 * @return VM connector or <code>null</code> if none
-//	 * @since 2.0
+//	 *  
 //	 */
 //	public static IVMConnector getVMConnector(String id) {
 //		return LaunchingPlugin.getDefault().getVMConnector(id);
@@ -1953,7 +1953,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * Returns all VM connector extensions.
 //	 *
 //	 * @return VM connectors
-//	 * @since 2.0
+//	 *  
 //	 */
 //	public static IVMConnector[] getVMConnectors() {
 //		return LaunchingPlugin.getDefault().getVMConnectors();
@@ -1963,7 +1963,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * Returns the preference store for the launching plug-in.
 	 * 
 	 * @return the preference store for the launching plug-in
-	 * @since 2.0
+	 *  
 	 */
 	public static Preferences getPreferences() {
 		return JavaScriptCore.getPlugin().getPluginPreferences();
@@ -1972,7 +1972,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	/**
 	 * Saves the preferences for the launching plug-in.
 	 * 
-	 * @since 2.0
+	 *  
 	 */
 	public static void savePreferences() {
 		 JavaScriptCore.getPlugin().savePluginPreferences();
@@ -1981,9 +1981,9 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	/**
 //	 * Registers the given resolver for the specified variable.
 //	 * 
-//	 * @param resolver runtime classpath entry resolver
+//	 * @param resolver runtime includepath entry resolver
 //	 * @param variableName variable name to register for
-//	 * @since 2.0
+//	 *  
 //	 */
 //	public static void addVariableResolver(IRuntimeClasspathEntryResolver resolver, String variableName) {
 //		Map map = getVariableResolvers();
@@ -1993,9 +1993,9 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	/**
 	 * Registers the given resolver for the specified container.
 	 * 
-	 * @param resolver runtime classpath entry resolver
-	 * @param containerIdentifier identifier of the classpath container to register for
-	 * @since 2.0
+	 * @param resolver runtime includepath entry resolver
+	 * @param containerIdentifier identifier of the includepath container to register for
+	 *  
 	 */
 	public static void addContainerResolver(IRuntimeClasspathEntryResolver resolver, String containerIdentifier) {
 		Map map = getContainerResolvers();
@@ -2023,7 +2023,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	}
 	
 //	/**
-//	 * Returns all registered runtime classpath entry resolvers.
+//	 * Returns all registered runtime includepath entry resolvers.
 //	 */
 //	private static Map getEntryResolvers() {
 //		if (fgRuntimeClasspathEntryResolvers == null) {
@@ -2059,7 +2059,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	}
 
 //	/**
-//	 * Returns all registered classpath providers.
+//	 * Returns all registered includepath providers.
 //	 */
 //	private static Map getClasspathProviders() {
 //		if (fgPathProviders == null) {
@@ -2103,11 +2103,11 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	}
 	
 //	/**
-//	 * Returns the resolver registered for the given contributed classpath
+//	 * Returns the resolver registered for the given contributed includepath
 //	 * entry type.
 //	 * 
-//	 * @param typeId the id of the contributed classpath entry
-//	 * @return the resolver registered for the given classpath entry
+//	 * @param typeId the id of the contributed includepath entry
+//	 * @return the resolver registered for the given includepath entry
 //	 */	
 //	private static IRuntimeClasspathEntryResolver getContributedResolver(String typeId) {
 //		IRuntimeClasspathEntryResolver resolver = (IRuntimeClasspathEntryResolver)getEntryResolvers().get(typeId);
@@ -2122,7 +2122,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * listeners. Has no effect if an identical listener is already registered.
 //	 * 
 //	 * @param listener the listener to add
-//	 * @since 2.0
+//	 *  
 //	 */
 //	public static void addVMInstallChangedListener(IVMInstallChangedListener listener) {
 //		fgVMListeners.add(listener);
@@ -2133,7 +2133,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * listeners. Has no effect if an identical listener is not already registered.
 //	 * 
 //	 * @param listener the listener to remove
-//	 * @since 2.0
+//	 *  
 //	 */
 //	public static void removeVMInstallChangedListener(IVMInstallChangedListener listener) {
 //		fgVMListeners.remove(listener);
@@ -2151,7 +2151,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * Notifies all VM install changed listeners of the given property change.
 	 * 
 	 * @param event event describing the change.
-	 * @since 2.0
+	 *  
 	 */
 	public static void fireVMChanged(PropertyChangeEvent event) {
 		Object[] listeners = fgVMListeners.getListeners();
@@ -2165,7 +2165,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * Notifies all VM install changed listeners of the VM addition
 	 * 
 	 * @param vm the VM that has been added
-	 * @since 2.0
+	 *  
 	 */
 	public static void fireVMAdded(IVMInstall vm) {
 		if (!fgInitializingVMs) {
@@ -2181,7 +2181,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * Notifies all VM install changed listeners of the VM removal
 	 * 
 	 * @param vm the VM that has been removed
-	 * @since 2.0
+	 *  
 	 */
 	public static void fireVMRemoved(IVMInstall vm) {
 		Object[] listeners = fgVMListeners.getListeners();
@@ -2198,7 +2198,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * 
 //	 * @return the default output directory for the specified launch
 //	 * configuration's project
-//	 * @since 2.1
+//	 *  
 //	 */
 //	public static String getProjectOutputDirectory(ILaunchConfiguration config) {
 //		try {
@@ -2223,14 +2223,14 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	
 //	/**
 //	 * Returns a collection of source containers corresponding to the given
-//	 * resolved runtime classpath entries.
+//	 * resolved runtime includepath entries.
 //	 * <p>
 //	 * Note that the entries must be resolved to ARCHIVE and PROJECT entries,
 //	 * as source containers cannot be determined for unresolved entries.
 //	 * </p>
 //	 * @param entries entries to translate
-//	 * @return source containers corresponding to the given runtime classpath entries
-//	 * @since 3.1
+//	 * @return source containers corresponding to the given runtime includepath entries
+//	 *  
 //	 */
 //	public static ISourceContainer[] getSourceContainers(IRuntimeClasspathEntry[] entries) {
 //		return JavaSourceLookupUtil.translate(entries);
@@ -2239,15 +2239,15 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	/**
 //	 * Returns a collection of paths that should be appended to the given project's
 //	 * <code>java.library.path</code> system property when launched. Entries are
-//	 * searched for on the project's build path as extra classpath attributes.
+//	 * searched for on the project's build path as extra includepath attributes.
 //	 * Each entry represents an absolute path in the local file system.
 //	 *
 //	 * @param project the project to compute the <code>java.library.path</code> for
 //	 * @param requiredProjects whether to consider entries in required projects
 //	 * @return a collection of paths representing entries that should be appended
 //	 *  to the given project's <code>java.library.path</code>
-//	 * @throws CoreException if unable to compute the Java library path
-//	 * @since 3.1
+//	 * @throws CoreException if unable to compute the JavaScript library path
+//	 *  
 //	 * @see org.eclipse.wst.jsdt.core.IIncludePathAttribute
 //	 * @see JavaRuntime#CLASSPATH_ATTR_LIBRARY_PATH_ENTRY
 //	 */
@@ -2280,15 +2280,15 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	}
 //
 //	/**
-//	 * Gathers all Java library entries for the given project and optionally its required
+//	 * Gathers all JavaScript library entries for the given project and optionally its required
 //	 * projects.
 //	 * 
 //	 * @param project project to gather entries for
 //	 * @param requiredProjects whether to consider required projects 
 //	 * @param visited projects already considered
 //	 * @param entries collection to add library entries to
-//	 * @throws CoreException if unable to gather classpath entries
-//	 * @since 3.1
+//	 * @throws CoreException if unable to gather includepath entries
+//	 *  
 //	 */
 //	private static void gatherJavaLibraryPathEntries(IJavaScriptProject project, boolean requiredProjects, Set visited, List entries) throws CoreException {
 //		if (visited.contains(project)) {
@@ -2314,22 +2314,22 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	}
 //	
 //	/**
-//	 * Adds all java library path extra classpath entry values to the given entries collection
-//	 * specified on the given project's classpath, and returns a collection of required
+//	 * Adds all javascript library path extra includepath entry values to the given entries collection
+//	 * specified on the given project's includepath, and returns a collection of required
 //	 * projects, or <code>null</code>.
 //	 *  
 //	 * @param project project being processed
 //	 * @param collectRequired whether to collect required projects
-//	 * @param classpathEntries the project's raw classpath
-//	 * @param entries collection to add java library path entries to
-//	 * @return required project classpath entries or <code>null</code>
+//	 * @param includepathEntries the project's raw includepath
+//	 * @param entries collection to add javascript library path entries to
+//	 * @return required project includepath entries or <code>null</code>
 //	 * @throws CoreException
-//	 * @since 3.1
+//	 *  
 //	 */
-//	private static IIncludePathEntry[] processJavaLibraryPathEntries(IJavaScriptProject project, boolean collectRequired, IIncludePathEntry[] classpathEntries, List entries) throws CoreException {
+//	private static IIncludePathEntry[] processJavaLibraryPathEntries(IJavaScriptProject project, boolean collectRequired, IIncludePathEntry[] includepathEntries, List entries) throws CoreException {
 //		List req = null;
-//		for (int i = 0; i < classpathEntries.length; i++) {
-//			IIncludePathEntry entry = classpathEntries[i];
+//		for (int i = 0; i < includepathEntries.length; i++) {
+//			IIncludePathEntry entry = includepathEntries[i];
 //			IIncludePathAttribute[] extraAttributes = entry.getExtraAttributes();
 //			for (int j = 0; j < extraAttributes.length; j++) {
 //				String[] paths = getLibraryPaths(extraAttributes[j]);
@@ -2366,7 +2366,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	}
 //	
 //	/**
-//	 * Creates a new classpath attribute referencing a list of shared libraries that should
+//	 * Creates a new includepath attribute referencing a list of shared libraries that should
 //	 * appear on the <code>-Djava.library.path</code> system property at runtime
 //	 * for an associated {@link IIncludePathEntry}.
 //	 * <p>
@@ -2379,9 +2379,9 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * <code>Path(String)</code>, and may contain <code>IStringVariable</code>'s.
 //	 * Variable substitution is performed on each string before a path is constructed
 //	 * from a string.
-//	 * @return a classpath attribute with the name <code>CLASSPATH_ATTR_LIBRARY_PATH_ENTRY</code>
+//	 * @return a includepath attribute with the name <code>CLASSPATH_ATTR_LIBRARY_PATH_ENTRY</code>
 //	 * and an value encoded to the specified paths.
-//	 * @since 3.1
+//	 *  
 //	 */
 //	public static IIncludePathAttribute newLibraryPathsAttribute(String[] paths) {
 //		StringBuffer value = new StringBuffer();
@@ -2406,14 +2406,14 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * and <code>getLibraryPaths(IIncludePathAttribute)</code> should be used to
 //	 * encode and decode the attribute value. 
 //	 * </p>
-//	 * @param attribute a <code>CLASSPATH_ATTR_LIBRARY_PATH_ENTRY</code> classpath attribute
+//	 * @param attribute a <code>CLASSPATH_ATTR_LIBRARY_PATH_ENTRY</code> includepath attribute
 //	 * @return an array of strings referencing shared libraries that should
 //	 * appear on the <code>-Djava.library.path</code> system property at runtime
 //	 * for an associated {@link IIncludePathEntry}, or <code>null</code> if the
 //	 * given attribute is not a <code>CLASSPATH_ATTR_LIBRARY_PATH_ENTRY</code>.
 //	 * Each string is used to create an <code>IPath</code> using the constructor
 //	 * <code>Path(String)</code>, and may contain <code>IStringVariable</code>'s.
-//	 * @since 3.1
+//	 *  
 //	 */	
 //	public static String[] getLibraryPaths(IIncludePathAttribute attribute) {
 //		if (CLASSPATH_ATTR_LIBRARY_PATH_ENTRY.equals(attribute.getName())) {
@@ -2427,7 +2427,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	 * Returns the execution environments manager.
 //	 * 
 //	 * @return execution environments manager
-//	 * @since 3.2
+//	 *  
 //	 */
 //	public static IExecutionEnvironmentsManager getExecutionEnvironmentsManager() {
 //		return EnvironmentsManager.getDefault();
@@ -2437,7 +2437,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * Perform VM type and VM install initialization. Does not hold locks
 	 * while performing change notification.
 	 * 
-	 * @since 3.2
+	 *  
 	 */
 	private static void initializeVMs() {
 		

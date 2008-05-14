@@ -38,28 +38,28 @@ public class FunctionInvocation extends Expression {
 
 	/**
 	 * The "expression" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor EXPRESSION_PROPERTY =
 		new ChildPropertyDescriptor(FunctionInvocation.class, "expression", Expression.class, OPTIONAL, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "typeArguments" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor TYPE_ARGUMENTS_PROPERTY =
 		new ChildListPropertyDescriptor(FunctionInvocation.class, "typeArguments", Type.class, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "name" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		new ChildPropertyDescriptor(FunctionInvocation.class, "name", SimpleName.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "arguments" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildListPropertyDescriptor ARGUMENTS_PROPERTY =
 		new ChildListPropertyDescriptor(FunctionInvocation.class, "arguments", Expression.class, CYCLE_RISK); //$NON-NLS-1$
@@ -68,7 +68,7 @@ public class FunctionInvocation extends Expression {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.0
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_2_0;
 
@@ -76,7 +76,7 @@ public class FunctionInvocation extends Expression {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.1
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_3_0;
 
@@ -106,7 +106,7 @@ public class FunctionInvocation extends Expression {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		if (apiLevel == AST.JLS2_INTERNAL) {
@@ -125,13 +125,13 @@ public class FunctionInvocation extends Expression {
 	 * The type arguments (element type: <code>Type</code>).
 	 * Null in JLS2. Added in JLS3; defaults to an empty list
 	 * (see constructor).
-	 * @since 3.1
+	 *  
 	 */
 	private ASTNode.NodeList typeArguments = null;
 
 	/**
 	 * The method name; lazily initialized; defaults to a unspecified,
-	 * legal Java method name.
+	 * legal JavaScript method name.
 	 */
 	private SimpleName methodName = null;
 
@@ -156,14 +156,14 @@ public class FunctionInvocation extends Expression {
 		}
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -187,7 +187,7 @@ public class FunctionInvocation extends Expression {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
@@ -201,14 +201,14 @@ public class FunctionInvocation extends Expression {
 		return super.internalGetChildListProperty(property);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return FUNCTION_INVOCATION;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -225,7 +225,7 @@ public class FunctionInvocation extends Expression {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -233,7 +233,7 @@ public class FunctionInvocation extends Expression {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -270,7 +270,7 @@ public class FunctionInvocation extends Expression {
 	 *
 	 * @return <code>true</code> if the resolved return type has been inferred
 	 * 	from the assignment context (JLS3 15.12.2.8), <code>false</code> otherwise
-	 * @since 3.3
+	 *  
 	 */
 	public boolean isResolvedTypeInferredFromExpectedType() {
 		return this.ast.getBindingResolver().isResolvedTypeInferredFromExpectedType(this);
@@ -303,7 +303,7 @@ public class FunctionInvocation extends Expression {
 	 *    (element type: <code>Type</code>)
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
+	 *  
 	 */
 	public List typeArguments() {
 		// more efficient than just calling unsupportedIn2() to check
@@ -374,13 +374,13 @@ public class FunctionInvocation extends Expression {
 	 *
 	 * @return the method binding, or <code>null</code> if the binding cannot
 	 * be resolved
-	 * @since 2.1
+	 *  
 	 */
 	public IFunctionBinding resolveMethodBinding() {
 		return this.ast.getBindingResolver().resolveMethod(this);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -388,7 +388,7 @@ public class FunctionInvocation extends Expression {
 		return BASE_NODE_SIZE + 4 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

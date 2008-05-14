@@ -57,18 +57,18 @@ public interface IFunctionBinding extends IBinding {
 	 * <li>methods</li>
 	 * <li>constructors with more than one parameter</li>
 	 * <li>0-argument constructors where the binding information was obtained
-	 * from a Java source file containing an explicit 0-argument constructor
+	 * from a JavaScript source file containing an explicit 0-argument constructor
 	 * declaration</li>
 	 * <li>0-argument constructors where the binding information was obtained
-	 * from a Java class file (it is not possible to determine from a
+	 * from a JavaScript class file (it is not possible to determine from a
 	 * class file whether a 0-argument constructor was present in the source
-	 * code versus generated automatically by a Java compiler)</li>
+	 * code versus generated automatically by a JavaScript compiler)</li>
 	 * </ul>
 	 *
 	 * @return <code>true</code> if this is known to be the binding for a
 	 * compiler-generated default constructor, and <code>false</code>
 	 * otherwise
-	 * @since 3.0
+	 *  
 	 */
 	public boolean isDefaultConstructor();
 
@@ -110,7 +110,7 @@ public interface IFunctionBinding extends IBinding {
 	 *
 	 * @return the default value of this annotation type member, or <code>null</code>
 	 * if none or not applicable
-	 * @since 3.2
+	 *  
 	 */
 	public Object getDefaultValue();
 
@@ -170,7 +170,7 @@ public interface IFunctionBinding extends IBinding {
 	 * @return the list of binding for the type variables for the type
 	 * parameters of this method, or otherwise the empty list
 	 * @see ITypeBinding#isTypeVariable()
-	 * @since 3.1
+	 *  
 	 */
 	public ITypeBinding[] getTypeParameters();
 
@@ -179,7 +179,7 @@ public interface IFunctionBinding extends IBinding {
 	 *
 	 * @return <code>true</code> iff this is the binding for an annotation type member
 	 *         and <code>false</code> otherwise
-	 * @since 3.2
+	 *  
 	 */
 	public boolean isAnnotationMember();
 
@@ -203,7 +203,7 @@ public interface IFunctionBinding extends IBinding {
 	 * @return <code>true</code> if this method binding represents a
 	 * declaration of a generic method, and <code>false</code> otherwise
 	 * @see #getTypeParameters()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isGenericMethod();
 
@@ -221,7 +221,7 @@ public interface IFunctionBinding extends IBinding {
 	 * method reference, and <code>false</code> otherwise
 	 * @see #getMethodDeclaration()
 	 * @see #getTypeArguments()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isParameterizedMethod();
 
@@ -241,7 +241,7 @@ public interface IFunctionBinding extends IBinding {
 	 * @see #getMethodDeclaration()
 	 * @see #isParameterizedMethod()
 	 * @see #isRawMethod()
-	 * @since 3.1
+	 *  
 	 */
 	public ITypeBinding[] getTypeArguments();
 
@@ -259,7 +259,7 @@ public interface IFunctionBinding extends IBinding {
 	 * the receiver of the method invocation.</p>
 	 *
 	 * @return the method binding
-	 * @since 3.1
+	 *  
 	 */
 	public IFunctionBinding getMethodDeclaration();
 
@@ -277,16 +277,15 @@ public interface IFunctionBinding extends IBinding {
 	 * method reference, and <code>false</code> otherwise
 	 * @see #getMethodDeclaration()
 	 * @see #getTypeArguments()
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isRawMethod();
 
 	/**
-	 * Returns whether this method's signature is a subsignature of the given method as
-	 * specified in section 8.4.2 of <em>The Java Language Specification, Third Edition</em> (JLS3).
+	 * Returns whether this method's signature is a subsignature of the given method.
 	 *
 	 * @return <code>true</code> if this method's signature is a subsignature of the given method
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isSubsignature(IFunctionBinding otherMethod);
 
@@ -298,19 +297,17 @@ public interface IFunctionBinding extends IBinding {
 	 *
 	 * @return <code>true</code> if this is a variable arity method,
 	 *    and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isVarargs();
 
 	/**
-	 * Returns whether this method overrides the given method,
-	 * as specified in section 8.4.8.1 of <em>The Java Language
-	 * Specification, Third Edition</em> (JLS3).
+	 * Returns whether this method overrides the given method.
 	 *
-	 * @param method the method that is possibly overriden
+	 * @param method the method that is possibly overridden
 	 * @return <code>true</code> if this method overrides the given method,
 	 * and <code>false</code> otherwise
-	 * @since 3.1
+	 *  
 	 */
 	public boolean overrides(IFunctionBinding method);
 }

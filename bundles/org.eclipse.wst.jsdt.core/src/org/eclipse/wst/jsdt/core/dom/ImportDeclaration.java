@@ -28,6 +28,8 @@ import java.util.List;
  *    <b>import</b> [ <b>static</b> ] Name [ <b>.</b> <b>*</b> ] <b>;</b>
  * </pre>
  * 
+ * <p><b>Note: This Class only applies to ECMAScript 4 which is not yet supported</b></p>
+ *
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
  * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 
@@ -37,21 +39,21 @@ public class ImportDeclaration extends ASTNode {
 
 	/**
 	 * The "name" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		new ChildPropertyDescriptor(ImportDeclaration.class, "name", Name.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "onDemand" structural property of this node type.
-	 * @since 3.0
+	 *  
 	 */
 	public static final SimplePropertyDescriptor ON_DEMAND_PROPERTY =
 		new SimplePropertyDescriptor(ImportDeclaration.class, "onDemand", boolean.class, MANDATORY); //$NON-NLS-1$
 
 	/**
 	 * The "static" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
+	 *  
 	 */
 	public static final SimplePropertyDescriptor STATIC_PROPERTY =
 		new SimplePropertyDescriptor(ImportDeclaration.class, "static", boolean.class, MANDATORY); //$NON-NLS-1$
@@ -65,7 +67,7 @@ public class ImportDeclaration extends ASTNode {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.0
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_2_0;
 
@@ -73,7 +75,7 @@ public class ImportDeclaration extends ASTNode {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.1
+	 *  
 	 */
 	private static final List PROPERTY_DESCRIPTORS_3_0;
 
@@ -103,7 +105,7 @@ public class ImportDeclaration extends ASTNode {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
+	 *  
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		if (apiLevel == AST.JLS2_INTERNAL) {
@@ -115,7 +117,7 @@ public class ImportDeclaration extends ASTNode {
 
 	/**
 	 * The import name; lazily initialized; defaults to a unspecified,
-	 * legal Java identifier.
+	 * legal JavaScript identifier.
 	 */
 	private Name importName = null;
 
@@ -127,7 +129,7 @@ public class ImportDeclaration extends ASTNode {
 	/**
 	 * Static versus regular; defaults to regular import.
 	 * Added in JLS3; not used in JLS2.
-	 * @since 3.1
+	 *  
 	 */
 	private boolean isStatic = false;
 
@@ -135,7 +137,7 @@ public class ImportDeclaration extends ASTNode {
 	/**
 	 * Creates a new AST node for an import declaration owned by the
 	 * given AST. The import declaration initially is a regular (non-static)
-	 * single type import for an unspecified, but legal, Java type name.
+	 * single type import for an unspecified, but legal, JavaScript type name.
 	 * <p>
 	 * N.B. This constructor is package-private; all subclasses must be
 	 * declared in the same package; clients are unable to declare
@@ -148,14 +150,14 @@ public class ImportDeclaration extends ASTNode {
 		super(ast);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean internalGetSetBooleanProperty(SimplePropertyDescriptor property, boolean get, boolean value) {
@@ -187,7 +189,7 @@ public class ImportDeclaration extends ASTNode {
 		return super.internalGetSetBooleanProperty(property, get, value);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -203,14 +205,14 @@ public class ImportDeclaration extends ASTNode {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return IMPORT_DECLARATION;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -225,7 +227,7 @@ public class ImportDeclaration extends ASTNode {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -233,7 +235,7 @@ public class ImportDeclaration extends ASTNode {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -335,7 +337,7 @@ public class ImportDeclaration extends ASTNode {
 	 *    and <code>false</code> if this is a regular import
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
+	 *  
 	 */
 	public boolean isStatic() {
 		unsupportedIn2();
@@ -349,7 +351,7 @@ public class ImportDeclaration extends ASTNode {
 	 *    and <code>false</code> if this is a regular import
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
+	 *  
 	 */
 	public void setStatic(boolean isStatic) {
 		unsupportedIn2();
@@ -385,14 +387,14 @@ public class ImportDeclaration extends ASTNode {
 		return this.ast.getBindingResolver().resolveImport(this);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return BASE_NODE_SIZE + 3 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

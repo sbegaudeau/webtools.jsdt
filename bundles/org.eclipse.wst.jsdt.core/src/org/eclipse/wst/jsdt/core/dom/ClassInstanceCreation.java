@@ -35,7 +35,7 @@ import java.util.List;
  *            [ AnonymousClassDeclaration ]
  * </pre>
  * <p>
- * Not all node arragements will represent legal Java constructs. In particular,
+ * Not all node arragements will represent legal JavaScript constructs. In particular,
  * it is nonsense if the type is a primitive type or an array type (primitive
  * types cannot be instantiated, and array creations must be represented with
  * <code>ArrayCreation</code> nodes). The normal use is when the type is a
@@ -67,42 +67,36 @@ public class ClassInstanceCreation extends Expression {
 
 	/**
 	 * The "typeArguments" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
 	 */
 	public static final ChildListPropertyDescriptor TYPE_ARGUMENTS_PROPERTY =
 		new ChildListPropertyDescriptor(ClassInstanceCreation.class, "typeArguments", Type.class, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "expression" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor EXPRESSION_PROPERTY =
 		new ChildPropertyDescriptor(ClassInstanceCreation.class, "expression", Expression.class, OPTIONAL, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "name" structural property of this node type (JLS2 API only).
-	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		new ChildPropertyDescriptor(ClassInstanceCreation.class, "name", Name.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "type" structural property of this node type (added in JLS3 API).
-	 * @since 3.1
 	 */
 	public static final ChildPropertyDescriptor TYPE_PROPERTY =
 		new ChildPropertyDescriptor(ClassInstanceCreation.class, "type", Type.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "arguments" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final ChildListPropertyDescriptor ARGUMENTS_PROPERTY =
 		new ChildListPropertyDescriptor(ClassInstanceCreation.class, "arguments", Expression.class, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "anonymousClassDeclaration" structural property of this node type.
-	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor ANONYMOUS_CLASS_DECLARATION_PROPERTY =
 		new ChildPropertyDescriptor(ClassInstanceCreation.class, "anonymousClassDeclaration", AnonymousClassDeclaration.class, OPTIONAL, CYCLE_RISK); //$NON-NLS-1$
@@ -114,7 +108,6 @@ public class ClassInstanceCreation extends Expression {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.0
 	 */
 	private static final List PROPERTY_DESCRIPTORS_2_0;
 
@@ -122,7 +115,6 @@ public class ClassInstanceCreation extends Expression {
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
-	 * @since 3.1
 	 */
 	private static final List PROPERTY_DESCRIPTORS_3_0;
 
@@ -156,7 +148,6 @@ public class ClassInstanceCreation extends Expression {
 
 	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
-	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		if (apiLevel == AST.JLS2_INTERNAL) {
@@ -177,7 +168,6 @@ public class ClassInstanceCreation extends Expression {
 	 * The type arguments (element type: <code>Type</code>).
 	 * Null in JLS2. Added in JLS3; defaults to an empty list
 	 * (see constructor).
-	 * @since 3.1
 	 */
 	private ASTNode.NodeList typeArguments = null;
 
@@ -189,7 +179,6 @@ public class ClassInstanceCreation extends Expression {
 
 	/**
 	 * The type; lazily initialized; defaults to a unspecified type.
-	 * @since 3.0
 	 */
 	private Type type = null;
 
@@ -226,16 +215,15 @@ public class ClassInstanceCreation extends Expression {
 		}
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
-	 * @since 3.0
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -283,7 +271,7 @@ public class ClassInstanceCreation extends Expression {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
@@ -297,14 +285,14 @@ public class ClassInstanceCreation extends Expression {
 		return super.internalGetChildListProperty(property);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return CLASS_INSTANCE_CREATION;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -332,7 +320,7 @@ public class ClassInstanceCreation extends Expression {
 		return result;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -340,7 +328,7 @@ public class ClassInstanceCreation extends Expression {
 		return matcher.match(this, other);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -414,7 +402,6 @@ public class ClassInstanceCreation extends Expression {
 	 *    (element type: <code>Type</code>)
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
 	 */
 	public List typeArguments() {
 		// more efficient than just calling unsupportedIn2() to check
@@ -442,7 +429,6 @@ public class ClassInstanceCreation extends Expression {
 	/**
 	 * Internal synonym for deprecated method. Used to avoid
 	 * deprecation warnings.
-	 * @since 3.1
 	 */
 	/*package*/ Name internalGetName() {
 	    supportedOnlyIn2();
@@ -482,7 +468,6 @@ public class ClassInstanceCreation extends Expression {
 	/**
 	 * Internal synonym for deprecated method. Used to avoid
 	 * deprecation warnings.
-	 * @since 3.1
 	 */
 	/*package*/ void internalSetName(Name name) {
 	    supportedOnlyIn2();
@@ -502,7 +487,6 @@ public class ClassInstanceCreation extends Expression {
 	 * @return the type node
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
 	 */
 	public Type getType() {
 	    unsupportedIn2();
@@ -531,7 +515,6 @@ public class ClassInstanceCreation extends Expression {
 	 * </ul>
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * a JLS2 AST
-	 * @since 3.1
 	 */
 	public void setType(Type type) {
 	    unsupportedIn2();
@@ -595,7 +578,7 @@ public class ClassInstanceCreation extends Expression {
 		return this.ast.getBindingResolver().resolveConstructor(this);
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -603,7 +586,7 @@ public class ClassInstanceCreation extends Expression {
 		return BASE_NODE_SIZE + 6 * 4;
 	}
 
-	/* (omit javadoc for this method)
+	/* (omit jsdoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

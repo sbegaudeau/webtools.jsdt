@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.core.util;
 
 /**
- * Definition of the modifier constants as specified in the JVM specifications.
+ * Definition of the modifier constants.
  *
  * This interface is not intended to be implemented by clients.
  * 
@@ -33,14 +33,14 @@ public interface IModifierConstants {
 
 	/**
 	 * Indicates a bridge method (added in J2SE 1.5).
-	 * @since 3.0
+	 *  
 	 */
 	int ACC_BRIDGE       = 0x0040;
 	int ACC_TRANSIENT    = 0x0080;
 
 	/**
 	 * Indicates a variable arity method (added in J2SE 1.5).
-	 * @since 3.0
+	 *  
 	 */
 	int ACC_VARARGS      = 0x0080;
 	int ACC_NATIVE       = 0x0100;
@@ -49,19 +49,19 @@ public interface IModifierConstants {
 	int ACC_STRICT       = 0x0800;
 	/**
 	 * Indicates a synthetic member.
-	 * @since 3.0
+	 *  
 	 */
 	int ACC_SYNTHETIC    = 0x1000;
 
 	/**
 	 * Indicates an annotation (added in J2SE 1.5).
-	 * @since 3.0
+	 *  
 	 */
 	int ACC_ANNOTATION   = 0x2000;
 
 	/**
 	 * Indicates an enum (added in J2SE 1.5).
-	 * @since 3.0
+	 *  
 	 */
 	int ACC_ENUM         = 0x4000;
 }
