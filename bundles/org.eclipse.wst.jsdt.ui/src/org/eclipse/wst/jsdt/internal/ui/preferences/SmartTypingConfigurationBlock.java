@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
  * Configures Java Editor typing preferences.
  * 
- * @since 3.1
+ * 
  */
 class SmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 

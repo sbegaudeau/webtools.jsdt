@@ -111,7 +111,7 @@ import org.eclipse.wst.jsdt.ui.dialogs.TypeSelectionExtension;
  * Shows a list of Java types to the user with a text entry field for a string
  * pattern used to filter the list of types.
  * 
- * @since 3.3
+ * 
  */
 public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog implements ITypeSelectionComponent {
 	

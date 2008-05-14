@@ -29,7 +29,7 @@ import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProvider;
 
 
 /**
- * @since 3.0
+ * 
  */
 public class JavaFoldingStructureProviderRegistry {
 

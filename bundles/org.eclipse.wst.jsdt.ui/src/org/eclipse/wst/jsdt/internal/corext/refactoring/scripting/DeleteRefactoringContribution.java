@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaDeleteRefactor
 /**
  * Refactoring contribution for the delete refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class DeleteRefactoringContribution extends JDTRefactoringContribution {
 

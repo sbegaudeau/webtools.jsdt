@@ -65,7 +65,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 /**
  * Creates constructors for a type based on existing fields.
  * <p>
- * Will open the parent compilation unit in a Java editor. Opens a dialog with a list
+ * Will open the parent compilation unit in a JavaScript editor. Opens a dialog with a list
  * fields from which a constructor will be generated. User is able to check or uncheck
  * items before constructors are generated. The result is unsaved, so the user can decide
  * if the changes are acceptable.
@@ -417,7 +417,7 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 		}
 	}
 
-	// ---- Java Editor --------------------------------------------------------------
+	// ---- JavaScript Editor --------------------------------------------------------------
 
 	/*
 	 * (non-Javadoc) Method declared on SelectionDispatchAction

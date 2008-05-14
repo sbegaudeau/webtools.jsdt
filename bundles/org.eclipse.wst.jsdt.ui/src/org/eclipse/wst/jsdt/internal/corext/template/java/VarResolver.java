@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitComplet
  * Resolves template variables to a local variable that is assignment-compatible with the variable
  * instance' class parameter.
  * 
- * @since 3.3
+ * 
  */
 public class VarResolver extends TemplateVariableResolver {
 	

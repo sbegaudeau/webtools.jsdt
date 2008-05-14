@@ -195,7 +195,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 
 		/*
 		 * @see IWidgetTokenOwnerExtension#requestWidgetToken(IWidgetTokenKeeper, int)
-		 * @since 3.0
+		 * 
 		 */
 		public boolean requestWidgetToken(IWidgetTokenKeeper requester, int priority) {
 			if (PlatformUI.getWorkbench().getHelpSystem().isContextHelpDisplayed())
@@ -205,7 +205,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 
 		/*
 		 * @see org.eclipse.jface.text.source.SourceViewer#createFormattingContext()
-		 * @since 3.0
+		 * 
 		 */
 		public IFormattingContext createFormattingContext() {
 			IFormattingContext context= new CommentFormattingContext();
@@ -288,7 +288,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	/**
 	 * Position updater that takes any changes at the borders of a position to not belong to the position.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private static class ExclusivePositionUpdater implements IPositionUpdater {
 
@@ -604,7 +604,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	 * Remembers data related to the current selection to be able to
 	 * restore it later.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private class RememberedSelection {
 		/** The remembered selection start. */
@@ -715,7 +715,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	 * Remembers additional data for a given
 	 * offset to be able restore it later.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private class RememberedOffset {
 		/** Remembered line for the given offset */
@@ -759,7 +759,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 		 * @return the element's start line, or -1
 		 * @throws BadLocationException
 		 * @throws JavaScriptModelException
-		 * @since 3.2
+		 * 
 		 */
 		private int getElementLine(IDocument document, IJavaScriptElement element) throws BadLocationException, JavaScriptModelException {
 			if (element instanceof IMember) {
@@ -969,7 +969,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	private JavaEditorErrorTickUpdater fJavaEditorErrorTickUpdater;
 	/**
 	 * The remembered selection.
-	 * @since 3.0
+	 * 
 	 */
 	private RememberedSelection fRememberedSelection= new RememberedSelection();
 	/** The bracket inserter. */
@@ -983,7 +983,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 
 	/**
 	 * Reconciling listeners.
-	 * @since 3.0
+	 * 
 	 */
 	private ListenerList fReconcilingListeners= new ListenerList(ListenerList.IDENTITY);
 
@@ -1266,7 +1266,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	
 	/*
 	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#openSaveErrorDialog(java.lang.String, java.lang.String, org.eclipse.core.runtime.CoreException)
-	 * @since 3.3
+	 * 
 	 */
 	protected void openSaveErrorDialog(String title, String message, CoreException exception) {
 		IStatus status= exception.getStatus();
@@ -1308,7 +1308,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor#installOverrideIndicator(boolean)
-	 * @since 3.0
+	 * 
 	 */
 	protected void installOverrideIndicator(boolean provideAST) {
 		super.installOverrideIndicator(provideAST);
@@ -1321,7 +1321,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor#uninstallOverrideIndicator()
-	 * @since 3.0
+	 * 
 	 */
 	protected void uninstallOverrideIndicator() {
 		if (fOverrideIndicatorManager != null)
@@ -1332,7 +1332,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	/**
 	 * Configures the toggle comment action
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private void configureToggleCommentAction() {
 		IAction action= getAction("ToggleComment"); //$NON-NLS-1$
@@ -1345,7 +1345,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 
 	/*
 	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#installTabsToSpacesConverter()
-	 * @since 3.3
+	 * 
 	 */
 	protected void installTabsToSpacesConverter() {
 		ISourceViewer sourceViewer= getSourceViewer(); 
@@ -1367,7 +1367,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 
 	/*
 	 * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#isTabsToSpacesConversionEnabled()
-	 * @since 3.3
+	 * 
 	 */
 	protected boolean isTabsToSpacesConversionEnabled() {
 		IJavaScriptElement element= getInputJavaElement();
@@ -1531,7 +1531,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.IJavaReconcilingListener#aboutToBeReconciled()
-	 * @since 3.0
+	 * 
 	 */
 	public void aboutToBeReconciled() {
 
@@ -1546,7 +1546,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.IJavaReconcilingListener#reconciled(JavaScriptUnit, boolean, IProgressMonitor)
-	 * @since 3.0
+	 * 
 	 */
 	public void reconciled(JavaScriptUnit ast, boolean forced, IProgressMonitor progressMonitor) {
 		
@@ -1596,7 +1596,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	 * Has no effect if an identical listener was not already registered.
 	 *
 	 * @param listener	The reconcile listener to be added
-	 * @since 3.0
+	 * 
 	 */
 	final void addReconcileListener(IJavaReconcilingListener listener) {
 		synchronized (fReconcilingListeners) {
@@ -1609,7 +1609,7 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	 * Has no effect if an identical listener was not already registered.
 	 *
 	 * @param listener	the reconcile listener to be removed
-	 * @since 3.0
+	 * 
 	 */
 	final void removeReconcileListener(IJavaReconcilingListener listener) {
 		synchronized (fReconcilingListeners) {

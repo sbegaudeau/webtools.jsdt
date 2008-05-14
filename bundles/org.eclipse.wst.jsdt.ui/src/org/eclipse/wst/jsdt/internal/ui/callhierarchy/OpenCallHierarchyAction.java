@@ -74,7 +74,7 @@ public class OpenCallHierarchyAction extends SelectionDispatchAction {
 	 *  of the site's selection provider or <code>null</code> to use the site's
 	 *  selection provider
      * 
-     * @since 3.2
+     * 
 	 * @deprecated Use {@link #setSpecialSelectionProvider(ISelectionProvider)} instead. This API will be
 	 * removed after 3.2 M5.
      */

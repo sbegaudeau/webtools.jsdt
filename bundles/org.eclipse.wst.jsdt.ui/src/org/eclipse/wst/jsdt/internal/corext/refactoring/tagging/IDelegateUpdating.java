@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.tagging;
  * Interface for refactorings which are able to create
  * appropriate delegates for the refactored elements.
  * 
- * @since 3.2
+ * 
  *
  */
 public interface IDelegateUpdating {

@@ -46,7 +46,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParse
 /**
  * Type constraints model to hold all type constraints to replace type occurrences by a given supertype.
  * 
- * @since 3.1
+ * 
  */
 public final class SuperTypeConstraintsModel {
 

@@ -81,7 +81,7 @@ public class CodeFormatterUtil {
 	 * @param project the project where the source is used or <code>null</code>
 	 *        if the project is unknown and the workspace default should be used
 	 * @return the indent width
-	 * @since 3.1
+	 * 
 	 */
 	public static int getIndentWidth(IJavaScriptProject project) {
 		String key;
@@ -101,7 +101,7 @@ public class CodeFormatterUtil {
 	 *        <code>null</code> to get the global preference
 	 * @param key the key of the preference
 	 * @return the value of the preference
-	 * @since 3.1
+	 * 
 	 */
 	private static String getCoreOption(IJavaScriptProject project, String key) {
 		if (project == null)
@@ -119,7 +119,7 @@ public class CodeFormatterUtil {
 	 * @param key the key of the preference
 	 * @param def the default value
 	 * @return the value of the preference
-	 * @since 3.1
+	 * 
 	 */
 	private static int getCoreOption(IJavaScriptProject project, String key, int def) {
 		try {

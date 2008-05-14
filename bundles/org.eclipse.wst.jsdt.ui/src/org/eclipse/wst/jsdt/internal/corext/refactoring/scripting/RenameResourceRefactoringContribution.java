@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameResourcePro
 /**
  * Refactoring contribution for the rename resource refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class RenameResourceRefactoringContribution extends JDTRefactoringContribution {
 

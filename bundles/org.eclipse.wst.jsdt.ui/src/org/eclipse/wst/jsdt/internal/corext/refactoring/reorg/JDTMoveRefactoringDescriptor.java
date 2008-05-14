@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor
 /**
  * Descriptor object of a JDT move refactoring.
  * 
- * @since 3.3
+ * 
  */
 public final class JDTMoveRefactoringDescriptor extends JDTRefactoringDescriptor {
 

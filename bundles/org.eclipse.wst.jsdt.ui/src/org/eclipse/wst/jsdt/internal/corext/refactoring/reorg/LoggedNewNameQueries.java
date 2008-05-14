@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 /**
  * Logged implementation of new name queries.
  * 
- * @since 3.3
+ * 
  */
 public final class LoggedNewNameQueries implements INewNameQueries {
 

@@ -59,7 +59,7 @@ public class JavaTemplatePreferencePage extends TemplatePreferencePage implement
 	
 	/*
 	 * @see org.eclipse.ui.texteditor.templates.TemplatePreferencePage#createContents(org.eclipse.swt.widgets.Composite)
-	 * @since 3.3
+	 * 
 	 */
 	protected Control createContents(Composite ancestor) {
 		ScrolledPageContent scrolled= new ScrolledPageContent(ancestor, SWT.H_SCROLL | SWT.V_SCROLL);

@@ -22,14 +22,14 @@ public class CleanUpConstants {
 	/**
 	 * False value
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public static final String FALSE= "false"; //$NON-NLS-1$
 	
 	/**
 	 * True value
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public static final String TRUE= "true"; //$NON-NLS-1$
 	
@@ -42,7 +42,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String FORMAT_SOURCE_CODE= "cleanup.format_source_code"; //$NON-NLS-1$
 	
@@ -58,7 +58,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 * @deprecated replaced by {@link #FORMAT_SOURCE_CODE}
 	 */
 	public static final String FORMAT_COMMENT= "cleanup.format_comment"; //$NON-NLS-1$
@@ -73,7 +73,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 * @deprecated replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_FORMAT_LINE_COMMENT}
 	 */
 	public static final String FORMAT_SINGLE_LINE_COMMENT= "cleanup.format_single_line_comment"; //$NON-NLS-1$
@@ -88,7 +88,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 * @deprecated replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_FORMAT_BLOCK_COMMENT}
 	 */
 	public static final String FORMAT_MULTI_LINE_COMMENT= "cleanup.format_multi_line_comment"; //$NON-NLS-1$
@@ -103,7 +103,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 * @deprecated replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_FORMAT_JAVADOC_COMMENT}
 	 */
 	public static final String FORMAT_JAVADOC= "cleanup.format_javadoc"; //$NON-NLS-1$
@@ -117,7 +117,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String FORMAT_REMOVE_TRAILING_WHITESPACES= "cleanup.remove_trailing_whitespaces"; //$NON-NLS-1$
 	
@@ -132,7 +132,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String FORMAT_REMOVE_TRAILING_WHITESPACES_ALL= "cleanup.remove_trailing_whitespaces_all"; //$NON-NLS-1$
 	
@@ -148,7 +148,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String FORMAT_REMOVE_TRAILING_WHITESPACES_IGNORE_EMPTY= "cleanup.remove_trailing_whitespaces_ignore_empty"; //$NON-NLS-1$
 	
@@ -163,7 +163,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String MEMBER_ACCESSES_NON_STATIC_FIELD_USE_THIS= "cleanup.use_this_for_non_static_field_access"; //$NON-NLS-1$
 	
@@ -185,7 +185,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String MEMBER_ACCESSES_NON_STATIC_FIELD_USE_THIS_ALWAYS= "cleanup.always_use_this_for_non_static_field_access"; //$NON-NLS-1$
 	
@@ -207,7 +207,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String MEMBER_ACCESSES_NON_STATIC_FIELD_USE_THIS_IF_NECESSARY= "cleanup.use_this_for_non_static_field_access_only_if_necessary"; //$NON-NLS-1$
 	
@@ -223,7 +223,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String MEMBER_ACCESSES_NON_STATIC_METHOD_USE_THIS= "cleanup.use_this_for_non_static_method_access"; //$NON-NLS-1$
 	
@@ -245,7 +245,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String MEMBER_ACCESSES_NON_STATIC_METHOD_USE_THIS_ALWAYS= "cleanup.always_use_this_for_non_static_method_access"; //$NON-NLS-1$
 	
@@ -267,7 +267,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String MEMBER_ACCESSES_NON_STATIC_METHOD_USE_THIS_IF_NECESSARY= "cleanup.use_this_for_non_static_method_access_only_if_necessary"; //$NON-NLS-1$
 	
@@ -285,7 +285,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String MEMBER_ACCESSES_STATIC_QUALIFY_WITH_DECLARING_CLASS= "cleanup.qualify_static_member_accesses_with_declaring_class"; //$NON-NLS-1$
 	
@@ -311,7 +311,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String MEMBER_ACCESSES_STATIC_QUALIFY_WITH_DECLARING_CLASS_FIELD= "cleanup.qualify_static_field_accesses_with_declaring_class"; //$NON-NLS-1$
 	
@@ -337,7 +337,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String MEMBER_ACCESSES_STATIC_QUALIFY_WITH_DECLARING_CLASS_METHOD= "cleanup.qualify_static_method_accesses_with_declaring_class"; //$NON-NLS-1$
 	
@@ -363,7 +363,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String MEMBER_ACCESSES_STATIC_QUALIFY_WITH_DECLARING_CLASS_SUBTYPE_ACCESS= "cleanup.qualify_static_member_accesses_through_subtypes_with_declaring_class"; //$NON-NLS-1$
 	
@@ -389,7 +389,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String MEMBER_ACCESSES_STATIC_QUALIFY_WITH_DECLARING_CLASS_INSTANCE_ACCESS= "cleanup.qualify_static_member_accesses_through_instances_with_declaring_class"; //$NON-NLS-1$
 	
@@ -406,7 +406,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String CONTROL_STATEMENTS_USE_BLOCKS= "cleanup.use_blocks"; //$NON-NLS-1$
 	
@@ -428,7 +428,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String CONTROL_STATMENTS_USE_BLOCKS_ALWAYS= "cleanup.always_use_blocks"; //$NON-NLS-1$
 	
@@ -451,7 +451,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String CONTROL_STATMENTS_USE_BLOCKS_NO_FOR_RETURN_AND_THROW= "cleanup.use_blocks_only_for_return_and_throw"; //$NON-NLS-1$
 	
@@ -473,7 +473,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String CONTROL_STATMENTS_USE_BLOCKS_NEVER= "cleanup.never_use_blocks"; //$NON-NLS-1$
 	
@@ -494,7 +494,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String CONTROL_STATMENTS_CONVERT_FOR_LOOP_TO_ENHANCED= "cleanup.convert_to_enhanced_for_loop"; //$NON-NLS-1$
 	
@@ -511,7 +511,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String EXPRESSIONS_USE_PARENTHESES= "cleanup.use_parentheses_in_expressions"; //$NON-NLS-1$
 	
@@ -533,7 +533,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String EXPRESSIONS_USE_PARENTHESES_ALWAYS= "cleanup.always_use_parentheses_in_expressions"; //$NON-NLS-1$
 	
@@ -555,7 +555,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String EXPRESSIONS_USE_PARENTHESES_NEVER= "cleanup.never_use_parentheses_in_expressions"; //$NON-NLS-1$
 	
@@ -572,7 +572,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String VARIABLE_DECLARATIONS_USE_FINAL= "cleanup.make_variable_declarations_final"; //$NON-NLS-1$
 	
@@ -593,7 +593,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String VARIABLE_DECLARATIONS_USE_FINAL_PRIVATE_FIELDS= "cleanup.make_private_fields_final"; //$NON-NLS-1$
 	
@@ -614,7 +614,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String VARIABLE_DECLARATIONS_USE_FINAL_PARAMETERS= "cleanup.make_parameters_final"; //$NON-NLS-1$
 	
@@ -635,7 +635,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String VARIABLE_DECLARATIONS_USE_FINAL_LOCAL_VARIABLES= "cleanup.make_local_variable_final"; //$NON-NLS-1$
 	
@@ -655,7 +655,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String VARIABLE_DECLARATION_USE_TYPE_ARGUMENTS_FOR_RAW_TYPE_REFERENCES= "cleanup.use_arguments_for_raw_type_references"; //$NON-NLS-1$
 	
@@ -668,7 +668,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String REMOVE_UNUSED_CODE_IMPORTS= "cleanup.remove_unused_imports"; //$NON-NLS-1$
 	
@@ -686,7 +686,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String REMOVE_UNUSED_CODE_PRIVATE_MEMBERS= "cleanup.remove_unused_private_members"; //$NON-NLS-1$
 	
@@ -701,7 +701,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String REMOVE_UNUSED_CODE_PRIVATE_TYPES= "cleanup.remove_unused_private_types"; //$NON-NLS-1$
 	
@@ -716,7 +716,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String REMOVE_UNUSED_CODE_PRIVATE_CONSTRUCTORS= "cleanup.remove_private_constructors"; //$NON-NLS-1$
 	
@@ -731,7 +731,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String REMOVE_UNUSED_CODE_PRIVATE_FELDS= "cleanup.remove_unused_private_fields"; //$NON-NLS-1$
 	
@@ -746,7 +746,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String REMOVE_UNUSED_CODE_PRIVATE_METHODS= "cleanup.remove_unused_private_methods"; //$NON-NLS-1$
 	
@@ -759,7 +759,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String REMOVE_UNUSED_CODE_LOCAL_VARIABLES= "cleanup.remove_unused_local_variables"; //$NON-NLS-1$
 	
@@ -772,7 +772,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String REMOVE_UNNECESSARY_CASTS= "cleanup.remove_unnecessary_casts"; //$NON-NLS-1$
 	
@@ -793,7 +793,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String REMOVE_UNNECESSARY_NLS_TAGS= "cleanup.remove_unnecessary_nls_tags"; //$NON-NLS-1$
 	
@@ -809,7 +809,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String ADD_MISSING_ANNOTATIONS= "cleanup.add_missing_annotations"; //$NON-NLS-1$
 	
@@ -834,7 +834,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String ADD_MISSING_ANNOTATIONS_OVERRIDE= "cleanup.add_missing_override_annotations"; //$NON-NLS-1$
 	
@@ -859,7 +859,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String ADD_MISSING_ANNOTATIONS_DEPRECATED= "cleanup.add_missing_deprecated_annotations"; //$NON-NLS-1$
 	
@@ -875,7 +875,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String ADD_MISSING_SERIAL_VERSION_ID= "cleanup.add_serial_version_id"; //$NON-NLS-1$
 	
@@ -894,7 +894,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String ADD_MISSING_SERIAL_VERSION_ID_GENERATED= "cleanup.add_generated_serial_version_id"; //$NON-NLS-1$
 	
@@ -912,7 +912,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String ADD_MISSING_SERIAL_VERSION_ID_DEFAULT= "cleanup.add_default_serial_version_id"; //$NON-NLS-1$
 	
@@ -933,7 +933,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String ADD_MISSING_NLS_TAGS= "cleanup.add_missing_nls_tags"; //$NON-NLS-1$
 	
@@ -946,7 +946,7 @@ public class CleanUpConstants {
 	 * 
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String ORGANIZE_IMPORTS= "cleanup.organize_imports"; //$NON-NLS-1$
 	
@@ -960,7 +960,7 @@ public class CleanUpConstants {
 	 * @see #SORT_MEMBERS_ALL
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String SORT_MEMBERS = "cleanup.sort_members"; //$NON-NLS-1$
 
@@ -977,7 +977,7 @@ public class CleanUpConstants {
 	 * @see #SORT_MEMBERS
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @since 3.3
+	 * 
 	 */
 	public static final String SORT_MEMBERS_ALL = "cleanup.sort_members_all"; //$NON-NLS-1$
 
@@ -990,7 +990,7 @@ public class CleanUpConstants {
 	 * Default value: <code><b>true</b></code><br>
 	 * <br>
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public static final String SHOW_CLEAN_UP_WIZARD= "cleanup.showwizard"; //$NON-NLS-1$
 	
@@ -1003,7 +1003,7 @@ public class CleanUpConstants {
 	 * List profiles= new ProfileStore(CLEANUP_PROFILES, new CleanUpVersioner()).readProfiles(new InstanceScope());
 	 * </code></pre>
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public static final String CLEANUP_PROFILES= "org.eclipse.wst.jsdt.ui.cleanupprofiles"; //$NON-NLS-1$
 	
@@ -1013,7 +1013,7 @@ public class CleanUpConstants {
 	 * Possible values: String value<br>
 	 * Default value: {@link #DEFAULT_PROFILE} <br>
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public final static String CLEANUP_PROFILE= "cleanup_profile"; //$NON-NLS-1$$
 	
@@ -1024,7 +1024,7 @@ public class CleanUpConstants {
 	 * Possible values: String value<br>
 	 * Default value: {@link #DEFAULT_SAVE_PARTICIPANT_PROFILE} <br>
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public static final String CLEANUP_ON_SAVE_PROFILE= "cleanup.on_save_profile_id"; //$NON-NLS-1$
 	
@@ -1034,7 +1034,7 @@ public class CleanUpConstants {
 	 * Possible values: Integer value<br>
 	 * Default value: {@link org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpProfileVersioner#CURRENT_VERSION} <br>
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public final static String CLEANUP_SETTINGS_VERSION_KEY= "cleanup_settings_version"; //$NON-NLS-1$
 	
@@ -1042,7 +1042,7 @@ public class CleanUpConstants {
 	 * Id of the 'Eclipse [built-in]' profile.<br>
 	 * <br>
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public final static String ECLIPSE_PROFILE= "org.eclipse.wst.jsdt.ui.default.eclipse_clean_up_profile"; //$NON-NLS-1$
 	
@@ -1050,7 +1050,7 @@ public class CleanUpConstants {
 	 * Id of the 'Save Participant [built-in]' profile.<br>
 	 * <br>
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public final static String SAVE_PARTICIPANT_PROFILE= "org.eclipse.wst.jsdt.ui.default.save_participant_clean_up_profile"; //$NON-NLS-1$
 	
@@ -1062,7 +1062,7 @@ public class CleanUpConstants {
 	 * Possible values: String value<br>
 	 * Default value: {@link #ECLIPSE_PROFILE} <br>
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public final static String DEFAULT_PROFILE= ECLIPSE_PROFILE;
 	
@@ -1073,7 +1073,7 @@ public class CleanUpConstants {
 	 * Possible values: String value<br>
 	 * Default value: {@link #SAVE_PARTICIPANT_PROFILE} <br>
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public final static String DEFAULT_SAVE_PARTICIPANT_PROFILE= SAVE_PARTICIPANT_PROFILE;
 	

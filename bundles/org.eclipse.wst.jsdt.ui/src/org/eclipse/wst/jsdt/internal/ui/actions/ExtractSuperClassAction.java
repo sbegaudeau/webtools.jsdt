@@ -47,7 +47,7 @@ import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
  * 
- * @since 3.2
+ * 
  */
 public class ExtractSuperClassAction extends SelectionDispatchAction {
 
@@ -55,7 +55,7 @@ public class ExtractSuperClassAction extends SelectionDispatchAction {
 	 * Action definition ID of the refactor -> extract supertype action (value
 	 * <code>"org.eclipse.wst.jsdt.ui.edit.text.java.extract.superclass"</code>).
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static final String EXTRACT_SUPERTYPE= "org.eclipse.wst.jsdt.ui.edit.text.java.extract.superclass"; //$NON-NLS-1$
 
@@ -63,7 +63,7 @@ public class ExtractSuperClassAction extends SelectionDispatchAction {
 	 * Refactor menu: name of standard Extract Supertype global action (value
 	 * <code>"org.eclipse.wst.jsdt.ui.actions.ExtractSuperclass"</code>).
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static final String EXTRACT_SUPERTYPES= "org.eclipse.wst.jsdt.ui.actions.ExtractSuperclass"; //$NON-NLS-1$
 

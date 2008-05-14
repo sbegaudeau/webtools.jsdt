@@ -17,7 +17,7 @@ import java.util.Map;
  * Objects of this class can be used as a log to trace the creation of new
  * destinations during refactorings like move.
  * 
- * @since 3.3
+ * 
  */
 public final class CreateTargetExecutionLog {
 

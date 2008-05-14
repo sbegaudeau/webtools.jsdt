@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
  * Abstract preference page which is used to wrap a
  * {@link org.eclipse.wst.jsdt.internal.ui.preferences.IPreferenceConfigurationBlock}.
  * 
- * @since 3.0
+ * 
  */
 public abstract class AbstractConfigurationBlockPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 	

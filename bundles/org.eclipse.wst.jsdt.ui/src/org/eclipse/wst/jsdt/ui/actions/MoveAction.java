@@ -39,7 +39,7 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.reorg.ReorgMoveAction;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 
 /**
- * This action moves Java elements to a new location. The action prompts
+ * This action moves JavaScript elements to a new location. The action prompts
  * the user for the new location.
  * <p>
  * The action is applicable to a homogeneous selection containing either
@@ -89,7 +89,7 @@ public class MoveAction extends SelectionDispatchAction{
 	
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the java editor
+	 * @param editor the JavaScript editor
 	 */
 	public MoveAction(JavaEditor editor) {
 		super(editor.getEditorSite());

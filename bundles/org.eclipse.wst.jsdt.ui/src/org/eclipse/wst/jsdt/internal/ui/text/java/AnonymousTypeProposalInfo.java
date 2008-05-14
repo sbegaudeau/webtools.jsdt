@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 /**
  * Proposal info that computes the javadoc lazily when it is queried.
  *
- * @since 3.1
+ * 
  */
 public final class AnonymousTypeProposalInfo extends MemberProposalInfo {
 

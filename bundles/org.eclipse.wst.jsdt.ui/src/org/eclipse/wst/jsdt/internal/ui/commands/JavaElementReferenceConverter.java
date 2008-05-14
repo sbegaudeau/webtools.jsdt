@@ -49,7 +49,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * in the {@link org.eclipse.wst.jsdt.core.Signature Signature} class.
  * </p>
  * 
- * @since 3.2
+ * 
  */
 public class JavaElementReferenceConverter extends AbstractParameterValueConverter {
 

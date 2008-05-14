@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractMethodRefact
 /**
  * Refactoring contribution for the extract method refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class ExtractMethodRefactoringContribution extends JDTRefactoringContribution {
 

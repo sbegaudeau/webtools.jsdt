@@ -28,7 +28,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavaDocScanner;
 
 
 /**
- * Tools required to configure a Java text viewer.
+ * Tools required to configure a JavaScript text viewer.
  * The color manager and all scanner exist only one time, i.e.
  * the same instances are returned to all clients. Thus, clients
  * share those tools.
@@ -45,7 +45,7 @@ public class JavaScriptTextTools {
 
 	/**
 	 * Array with legal content types.
-	 * @since 3.0
+	 * 
 	 */
 	private final static String[] LEGAL_CONTENT_TYPES= new String[] {
 		IJavaScriptPartitions.JAVA_DOC,
@@ -69,13 +69,13 @@ public class JavaScriptTextTools {
 
 	/** The color manager. */
 	private JavaColorManager fColorManager;
-	/** The Java source code scanner. */
+	/** The JavaScript source code scanner. */
 	private JavaCodeScanner fCodeScanner;
-	/** The Java multi-line comment scanner. */
+	/** The JavaScript multi-line comment scanner. */
 	private JavaCommentScanner fMultilineCommentScanner;
-	/** The Java single-line comment scanner. */
+	/** The JavaScript single-line comment scanner. */
 	private JavaCommentScanner fSinglelineCommentScanner;
-	/** The Java string scanner. */
+	/** The JavaScript string scanner. */
 	private SingleTokenJavaScanner fStringScanner;
 	/** The JavaDoc scanner. */
 	private JavaDocScanner fJavaDocScanner;
@@ -83,7 +83,7 @@ public class JavaScriptTextTools {
 	private IPreferenceStore fPreferenceStore;
 	/**
 	 * The core preference store.
-	 * @since 2.1
+	 * 
 	 */
 	private Preferences fCorePreferenceStore;
 	/** The preference change listener */
@@ -91,21 +91,21 @@ public class JavaScriptTextTools {
 
 
 	/**
-	 * Creates a new Java text tools collection.
+	 * Creates a new JavaScript text tools collection.
 	 *
 	 * @param store the preference store to initialize the text tools. The text tool
 	 *			instance installs a listener on the passed preference store to adapt itself to
 	 *			changes in the preference store. In general <code>PreferenceConstants.
 	 *			getPreferenceStore()</code> should be used to initialize the text tools.
 	 * @see org.eclipse.wst.jsdt.ui.PreferenceConstants#getPreferenceStore()
-	 * @since 2.0
+	 * 
 	 */
 	public JavaScriptTextTools(IPreferenceStore store) {
 		this(store, null, true);
 	}
 
 	/**
-	 * Creates a new Java text tools collection.
+	 * Creates a new JavaScript text tools collection.
 	 *
 	 * @param store the preference store to initialize the text tools. The text tool
 	 *			instance installs a listener on the passed preference store to adapt itself to
@@ -115,14 +115,14 @@ public class JavaScriptTextTools {
 	 *			automatically disposes all managed colors when the current display gets disposed
 	 *			and all calls to {@link org.eclipse.jface.text.source.ISharedTextColors#dispose()} are ignored.
 	 * @see org.eclipse.wst.jsdt.ui.PreferenceConstants#getPreferenceStore()
-	 * @since 2.1
+	 * 
 	 */
 	public JavaScriptTextTools(IPreferenceStore store, boolean autoDisposeOnDisplayDispose) {
 		this(store, null, autoDisposeOnDisplayDispose);
 	}
 
 	/**
-	 * Creates a new Java text tools collection.
+	 * Creates a new JavaScript text tools collection.
 	 * @param store the preference store to initialize the text tools. The text tool
 	 *			instance installs a listener on the passed preference store to adapt itself to
 	 *			changes in the preference store. In general <code>PreferenceConstants.
@@ -131,14 +131,14 @@ public class JavaScriptTextTools {
 	 *			instance installs a listener on the passed preference store to adapt itself to
 	 *			changes in the preference store.
 	 * @see org.eclipse.wst.jsdt.ui.PreferenceConstants#getPreferenceStore()
-	 * @since 2.1
+	 * 
 	 */
 	public JavaScriptTextTools(IPreferenceStore store, Preferences coreStore) {
 		this(store, coreStore, true);
 	}
 
 	/**
-	 * Creates a new Java text tools collection.
+	 * Creates a new JavaScript text tools collection.
 	 *
 	 * @param store the preference store to initialize the text tools. The text tool
 	 *			instance installs a listener on the passed preference store to adapt itself to
@@ -151,7 +151,7 @@ public class JavaScriptTextTools {
 	 *			automatically disposes all managed colors when the current display gets disposed
 	 *			and all calls to {@link org.eclipse.jface.text.source.ISharedTextColors#dispose()} are ignored.
 	 * @see org.eclipse.wst.jsdt.ui.PreferenceConstants#getPreferenceStore()
-	 * @since 2.1
+	 * 
 	 */
 	public JavaScriptTextTools(IPreferenceStore store, Preferences coreStore, boolean autoDisposeOnDisplayDispose) {
 		fPreferenceStore= store;
@@ -202,11 +202,11 @@ public class JavaScriptTextTools {
 	 * Returns the color manager which is used to manage
 	 * any Java-specific colors needed for such things like syntax highlighting.
 	 * <p>
-	 * Clients which are only interested in the color manager of the Java UI
+	 * Clients which are only interested in the color manager of the JavaScript UI
 	 * plug-in should use {@link org.eclipse.wst.jsdt.ui.JavaScriptUI#getColorManager()}.
 	 * </p>
 	 *
-	 * @return the color manager to be used for Java text viewers
+	 * @return the color manager to be used for JavaScript text viewers
 	 * @see org.eclipse.wst.jsdt.ui.JavaScriptUI#getColorManager()
 	 */
 	public IColorManager getColorManager() {
@@ -216,9 +216,9 @@ public class JavaScriptTextTools {
 	/**
 	 * Returns a scanner which is configured to scan
 	 * Java-specific partitions, which are multi-line comments,
-	 * Javadoc comments, and regular Java source code.
+	 * Javadoc comments, and regular JavaScript source code.
 	 *
-	 * @return a Java partition scanner
+	 * @return a JavaScript partition scanner
 	 */
 	public IPartitionTokenScanner getPartitionScanner() {
 		return new FastJavaPartitionScanner();
@@ -229,7 +229,7 @@ public class JavaScriptTextTools {
 	 * using this object's partitions scanner. This method is a
 	 * convenience method.
 	 *
-	 * @return a newly created Java document partitioner
+	 * @return a newly created JavaScript document partitioner
 	 */
 	public IDocumentPartitioner createDocumentPartitioner() {
 		return new FastPartitioner(getPartitionScanner(), LEGAL_CONTENT_TYPES);
@@ -240,7 +240,7 @@ public class JavaScriptTextTools {
 	 * encoded in the given event.
 	 *
 	 * @param event the event to which to adapt
-	 * @since 2.0
+	 * 
 	 * @deprecated As of 3.0, no replacement
 	 */
 	protected void adaptToPreferenceChange(PropertyChangeEvent event) {
@@ -257,21 +257,21 @@ public class JavaScriptTextTools {
 	}
 
 	/**
-	 * Sets up the Java document partitioner for the given document for the default partitioning.
+	 * Sets up the JavaScript document partitioner for the given document for the default partitioning.
 	 *
 	 * @param document the document to be set up
-	 * @since 3.0
+	 * 
 	 */
 	public void setupJavaDocumentPartitioner(IDocument document) {
 		setupJavaDocumentPartitioner(document, IDocumentExtension3.DEFAULT_PARTITIONING);
 	}
 
 	/**
-	 * Sets up the Java document partitioner for the given document for the given partitioning.
+	 * Sets up the JavaScript document partitioner for the given document for the given partitioning.
 	 *
 	 * @param document the document to be set up
 	 * @param partitioning the document partitioning
-	 * @since 3.0
+	 * 
 	 */
 	public void setupJavaDocumentPartitioner(IDocument document, String partitioning) {
 		IDocumentPartitioner partitioner= createDocumentPartitioner();
@@ -288,7 +288,7 @@ public class JavaScriptTextTools {
 	 * Returns this text tool's preference store.
 	 *
 	 * @return the preference store
-	 * @since 3.0
+	 * 
 	 */
 	protected IPreferenceStore getPreferenceStore() {
 		return fPreferenceStore;
@@ -298,7 +298,7 @@ public class JavaScriptTextTools {
 	 * Returns this text tool's core preference store.
 	 *
 	 * @return the core preference store
-	 * @since 3.0
+	 * 
 	 */
 	protected Preferences getCorePreferenceStore() {
 		return fCorePreferenceStore;

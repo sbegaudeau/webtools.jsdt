@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
 /**
  * Handles Java editor font changes for Java source preview viewers.
  * 
- * @since 3.0
+ * 
  */
 class JavaSourcePreviewerUpdater {
 	

@@ -136,7 +136,7 @@ import org.eclipse.wst.jsdt.ui.refactoring.RenameSupport;
  * initialization.
  * </p>
  * 
- * @since 3.1
+ * 
  */
 public final class RefactoringExecutionStarter {
 

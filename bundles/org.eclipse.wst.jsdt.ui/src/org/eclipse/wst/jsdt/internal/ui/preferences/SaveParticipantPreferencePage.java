@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 /**
  * Configures Java Editor save participant preferences.
  * 
- * @since 3.3
+ * 
  */
 public final class SaveParticipantPreferencePage extends AbstractConfigurationBlockPreferenceAndPropertyPage {
 	

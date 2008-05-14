@@ -109,7 +109,7 @@ public class JavaSourceHover extends AbstractJavaEditorTextHover implements ITex
 
 	/*
 	 * @see org.eclipse.jface.text.ITextHoverExtension#getHoverControlCreator()
-	 * @since 3.0
+	 * 
 	 */
 	public IInformationControlCreator getHoverControlCreator() {
 		return new IInformationControlCreator() {
@@ -125,7 +125,7 @@ public class JavaSourceHover extends AbstractJavaEditorTextHover implements ITex
 
 	/*
 	 * @see IInformationProviderExtension2#getInformationPresenterControlCreator()
-	 * @since 3.0
+	 * 
 	 */
 	public IInformationControlCreator getInformationPresenterControlCreator() {
 		return new IInformationControlCreator() {

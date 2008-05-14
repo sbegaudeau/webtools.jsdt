@@ -85,7 +85,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
  * Wizard page for pull up refactoring wizards which allows to specify the
  * actions on the members to pull up.
  * 
- * @since 3.2
+ * 
  */
 public class PullUpMemberPage extends UserInputWizardPage {
 

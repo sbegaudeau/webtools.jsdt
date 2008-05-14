@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 /**
  * Adds view menus to switch between flat and hierarchical layout.
  * 
- * @since 2.1
+ * 
  */
 class LayoutActionGroup extends ActionGroup {
 

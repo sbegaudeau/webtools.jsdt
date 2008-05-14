@@ -56,7 +56,7 @@ import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 /**
  * Abstract class for views which show information for a given element.
  *
- * @since 3.0
+ * 
  */
 public abstract class AbstractInfoView extends ViewPart implements ISelectionListener, IMenuListener, IPropertyChangeListener {
 
@@ -118,7 +118,7 @@ public abstract class AbstractInfoView extends ViewPart implements ISelectionLis
 	
 	/**
 	 * Background color.
-	 * @since 3.2
+	 * 
 	 */
 	private Color fBackgroundColor;
 	private RGB fBackgroundColorRGB;
@@ -172,7 +172,7 @@ public abstract class AbstractInfoView extends ViewPart implements ISelectionLis
 	 * Returns the context ID for the Help system
 	 *
 	 * @return	the string used as ID for the Help context
-	 * @since 3.1
+	 * 
 	 */
 	abstract protected String getHelpContextId();
 
@@ -292,7 +292,7 @@ public abstract class AbstractInfoView extends ViewPart implements ISelectionLis
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.infoviews.AbstractInfoView#inititalizeColors()
-	 * @since 3.2
+	 * 
 	 */
 	private void inititalizeColors() {
 		if (getSite().getShell().isDisposed())
@@ -324,7 +324,7 @@ public abstract class AbstractInfoView extends ViewPart implements ISelectionLis
 	 * The preference key for the background color.
 	 * 
 	 * @return the background color key
-	 * @since 3.2
+	 * 
 	 */
 	abstract protected String getBackgroundColorKey();
 	

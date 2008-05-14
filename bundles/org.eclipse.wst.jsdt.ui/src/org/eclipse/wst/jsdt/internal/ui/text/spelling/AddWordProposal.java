@@ -36,7 +36,7 @@ import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 /**
  * Proposal to add the unknown word to the dictionaries.
  *
- * @since 3.0
+ * 
  */
 public class AddWordProposal implements IJavaCompletionProposal {
 
@@ -101,7 +101,7 @@ public class AddWordProposal implements IJavaCompletionProposal {
 	 * 
 	 * @param shell
 	 * @return <code>true</code> if the user wants to configure the user dictionary
-	 * @since 3.3
+	 * 
 	 */
 	private boolean askUserToConfigureUserDictionary(Shell shell) {
 		MessageDialogWithToggle toggleDialog= MessageDialogWithToggle.openYesNoQuestion(

@@ -26,7 +26,7 @@ import org.osgi.service.prefs.BackingStoreException;
  * throws an {@link java.lang.UnsupportedOperationException}.
  * </p>
  *
- * @since 3.1
+ * 
  */
 class EclipsePreferencesAdapter implements IPreferenceStore {
 

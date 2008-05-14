@@ -28,7 +28,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 /**
  * NLS key hyperlink.
  *
- * @since 3.1
+ * 
  */
 public class NLSKeyHyperlink implements IHyperlink {
 

@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 /**
  * Refactoring contribution for the inline method refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class InlineMethodRefactoringContribution extends JDTRefactoringContribution {
 

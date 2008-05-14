@@ -28,7 +28,7 @@ import com.ibm.icu.text.BreakIterator;
 /**
  * Iterator to spell check javadoc comment regions.
  *
- * @since 3.0
+ * 
  */
 public class SpellCheckIterator implements ISpellCheckIterator {
 
@@ -120,7 +120,7 @@ public class SpellCheckIterator implements ISpellCheckIterator {
 	
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellCheckIterator#setIgnoreSingleLetters(boolean)
-	 * @since 3.3
+	 * 
 	 */
 	public void setIgnoreSingleLetters(boolean state) {
 		fIsIgnoringSingleLetters= state;
@@ -189,7 +189,7 @@ public class SpellCheckIterator implements ISpellCheckIterator {
 	 * @param token the token to check
 	 * @param tags the tags to check
 	 * @return <code>true</code> iff the last token is in the given array
-	 * @since 3.3
+	 * 
 	 */
 	protected final boolean isToken(final String token, final String[] tags) {
 

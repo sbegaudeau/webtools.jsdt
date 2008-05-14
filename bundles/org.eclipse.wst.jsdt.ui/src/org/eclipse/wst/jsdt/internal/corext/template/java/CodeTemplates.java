@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
  * <code>CodeTemplates</code> gives access to the available code templates.
- * @since 3.0
+ * 
  * @deprecated use {@link org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin#getCodeTemplateStore()} instead 
  */
 public class CodeTemplates extends org.eclipse.wst.jsdt.internal.corext.template.java.TemplateSet {

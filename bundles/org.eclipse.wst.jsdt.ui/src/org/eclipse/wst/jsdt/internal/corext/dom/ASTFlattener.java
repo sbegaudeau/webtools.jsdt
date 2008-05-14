@@ -326,7 +326,7 @@ public class ASTFlattener extends GenericVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(BlockComment)
-	 * @since 3.0
+	
 	 */
 	public boolean visit(BlockComment node) {
 		this.fBuffer.append("/* */");//$NON-NLS-1$
@@ -554,7 +554,7 @@ public class ASTFlattener extends GenericVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(EnhancedForStatement)
-	 * @since 3.0
+	 
 	 */
 	public boolean visit(EnhancedForStatement node) {
 		this.fBuffer.append("for (");//$NON-NLS-1$
@@ -769,7 +769,7 @@ public class ASTFlattener extends GenericVisitor {
 	
 	/*
 	 * @see ASTVisitor#visit(LineComment)
-	 * @since 3.0
+	
 	 */
 	public boolean visit(LineComment node) {
 		this.fBuffer.append("//\n");//$NON-NLS-1$
@@ -779,7 +779,7 @@ public class ASTFlattener extends GenericVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(MemberRef)
-	 * @since 3.0
+	 
 	 */
 	public boolean visit(MemberRef node) {
 		if (node.getQualifier() != null) {
@@ -793,7 +793,7 @@ public class ASTFlattener extends GenericVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(FunctionRef)
-	 * @since 3.0
+	
 	 */
 	public boolean visit(FunctionRef node) {
 		if (node.getQualifier() != null) {
@@ -815,7 +815,7 @@ public class ASTFlattener extends GenericVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(FunctionRefParameter)
-	 * @since 3.0
+	
 	 */
 	public boolean visit(FunctionRefParameter node) {
 		node.getType().accept(this);
@@ -939,7 +939,7 @@ public class ASTFlattener extends GenericVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(Modifier)
-	 * @since 3.0
+	
 	 */
 	public boolean visit(Modifier node) {
 		this.fBuffer.append(node.getKeyword().toString());
@@ -985,7 +985,7 @@ public class ASTFlattener extends GenericVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(ParameterizedType)
-	 * @since 3.0
+	
 	 */
 	public boolean visit(ParameterizedType node) {
 		node.getType().accept(this);
@@ -1049,7 +1049,7 @@ public class ASTFlattener extends GenericVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(QualifiedType)
-	 * @since 3.0
+	
 	 */
 	public boolean visit(QualifiedType node) {
 		node.getQualifier().accept(this);
@@ -1236,7 +1236,7 @@ public class ASTFlattener extends GenericVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(TagElement)
-	 * @since 3.0
+	
 	 */
 	public boolean visit(TagElement node) {
 		if (node.isNested()) {
@@ -1276,7 +1276,7 @@ public class ASTFlattener extends GenericVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(TextElement)
-	 * @since 3.0
+	
 	 */
 	public boolean visit(TextElement node) {
 		this.fBuffer.append(node.getText());
@@ -1422,7 +1422,7 @@ public class ASTFlattener extends GenericVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(TypeParameter)
-	 * @since 3.0
+	
 	 */
 	public boolean visit(TypeParameter node) {
 		node.getName().accept(this);
@@ -1501,7 +1501,7 @@ public class ASTFlattener extends GenericVisitor {
 
 	/*
 	 * @see ASTVisitor#visit(WildcardType)
-	 * @since 3.0
+	
 	 */
 	public boolean visit(WildcardType node) {
 		this.fBuffer.append("?");//$NON-NLS-1$

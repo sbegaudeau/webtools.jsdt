@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.InlineTempRefactori
 /**
  * Refactoring contribution for the inline temp refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class InlineTempRefactoringContribution extends JDTRefactoringContribution {
 

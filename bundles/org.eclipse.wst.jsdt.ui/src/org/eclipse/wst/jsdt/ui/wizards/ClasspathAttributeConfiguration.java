@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 
 /**
  * A {@link ClasspathAttributeConfiguration} specifies how a {@link IIncludePathAttribute class path attribute} is presented and configured
- * in the Java build path dialog. 
+ * in the JavaScript build path dialog. 
  * <p>
  * Clients should implement this interface and include the name of their 
  * class in an extension contributed to the jdt.ui's classpath attribute configuration 
@@ -51,8 +51,8 @@ public abstract class ClasspathAttributeConfiguration {
 		public abstract IIncludePathEntry getParentClasspassEntry();
 		
 		/**
-		 * Returns the Java project the current attribute is part of. 
-		 * @return the parent Java project
+		 * Returns the JavaScript project the current attribute is part of. 
+		 * @return the parent JavaScript project
 		 */
 		public abstract IJavaScriptProject getJavaProject();	
 		

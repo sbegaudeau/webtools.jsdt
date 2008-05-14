@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 /**
  * Spelling problem to be accepted by problem requesters.
  *
- * @since 3.1
+ * 
  */
 public class CoreSpellingProblem extends CategorizedProblem {
 

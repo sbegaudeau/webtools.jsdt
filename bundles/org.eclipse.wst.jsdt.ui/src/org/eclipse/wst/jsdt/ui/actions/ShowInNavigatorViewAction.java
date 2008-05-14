@@ -36,7 +36,7 @@ import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 /**
  * Reveals the selected element in the resource navigator view. 
  * <p>
- * Action is applicable to structured selections containing Java element 
+ * Action is applicable to structured selections containing JavaScript element 
  * or resources.
  * 
  * <p>
@@ -68,7 +68,7 @@ public class ShowInNavigatorViewAction extends SelectionDispatchAction {
 
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public ShowInNavigatorViewAction(JavaEditor editor) {
 		this(editor.getEditorSite());

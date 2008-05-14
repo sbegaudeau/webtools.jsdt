@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 /**
  * Completions of inline tags such as &#x7b;&#x40;link &#x7d;. See {@link CompletionProposal#JSDOC_INLINE_TAG}.
  * 
- * @since 3.2
+ * 
  */
 public final class JavadocInlineTagCompletionProposal extends LazyJavaCompletionProposal {
 	/** Triggers for types in javadoc. Do not modify. */

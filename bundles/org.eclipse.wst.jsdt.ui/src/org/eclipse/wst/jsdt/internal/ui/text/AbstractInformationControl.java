@@ -72,7 +72,7 @@ import org.eclipse.wst.jsdt.ui.actions.CustomFiltersActionGroup;
 /**
  * Abstract class for Show hierarchy in light-weight controls.
  *
- * @since 2.1
+ * 
  */
 public abstract class AbstractInformationControl extends PopupDialog implements IInformationControl, IInformationControlExtension, IInformationControlExtension2, DisposeListener {
 
@@ -80,7 +80,7 @@ public abstract class AbstractInformationControl extends PopupDialog implements 
 	 * The NamePatternFilter selects the elements which
 	 * match the given string patterns.
 	 *
-	 * @since 2.0
+	 * 
 	 */
 	protected class NamePatternFilter extends ViewerFilter {
 
@@ -125,8 +125,8 @@ public abstract class AbstractInformationControl extends PopupDialog implements 
 
 	/**
 	 * Fields that support the dialog menu
-	 * @since 3.0
-	 * @since 3.2 - now appended to framework menu
+	 * 
+	 *  - now appended to framework menu
 	 */
 	private Composite fViewMenuButtonComposite;
 
@@ -138,7 +138,7 @@ public abstract class AbstractInformationControl extends PopupDialog implements 
 	/**
 	 * Field for tree style since it must be remembered by the instance.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private int fTreeStyle;
 	
@@ -181,7 +181,7 @@ public abstract class AbstractInformationControl extends PopupDialog implements 
 	 * 
 	 * @param parent The parent composite
 	 * @return The control representing the main content.
-	 * @since 3.2
+	 * 
 	 */
 	protected Control createDialogArea(Composite parent) {
 		fTreeViewer= createTreeViewer(parent, fTreeStyle);
@@ -486,7 +486,7 @@ public abstract class AbstractInformationControl extends PopupDialog implements 
 	 * Clients can extend or override.
 	 *
 	 * @param viewMenu the menu manager that manages the menu
-	 * @since 3.0
+	 * 
 	 */
 	protected void fillViewMenu(IMenuManager viewMenu) {
 		fCustomFiltersActionGroup.fillViewMenu(viewMenu);
@@ -496,7 +496,7 @@ public abstract class AbstractInformationControl extends PopupDialog implements 
 	 * Overridden to call the old framework method.
 	 * 
 	 * @see org.eclipse.jface.dialogs.PopupDialog#fillDialogMenu(IMenuManager)
-	 * @since 3.2
+	 * 
 	 */
 	protected void fillDialogMenu(IMenuManager dialogMenu) {
 		super.fillDialogMenu(dialogMenu);
@@ -527,7 +527,7 @@ public abstract class AbstractInformationControl extends PopupDialog implements 
 	
 	/*
 	 * @see org.eclipse.jface.dialogs.PopupDialog#open()
-	 * @since 3.3
+	 * 
 	 */
 	public int open() {
 		addHandlerAndKeyBindingSupport();
@@ -557,7 +557,7 @@ public abstract class AbstractInformationControl extends PopupDialog implements 
 	/**
 	 * Adds handler and key binding support.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	protected void addHandlerAndKeyBindingSupport() {
 		// Register action with command support
@@ -570,7 +570,7 @@ public abstract class AbstractInformationControl extends PopupDialog implements 
 	/**
 	 * Removes handler and key binding support.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	protected void removeHandlerAndKeyBindingSupport() {
 		// Remove handler submission
@@ -721,7 +721,7 @@ public abstract class AbstractInformationControl extends PopupDialog implements 
 	/*
 	 * Overridden to insert the filter text into the title and menu area.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	protected Control createTitleMenuArea(Composite parent) {
 		fViewMenuButtonComposite= (Composite) super.createTitleMenuArea(parent);
@@ -751,7 +751,7 @@ public abstract class AbstractInformationControl extends PopupDialog implements 
 	/*
 	 * Overridden to insert the filter text into the title control
 	 * if there is no header specified.
-	 * @since 3.2
+	 * 
 	 */
 	protected Control createTitleControl(Composite parent) {
 		if (hasHeader()) {

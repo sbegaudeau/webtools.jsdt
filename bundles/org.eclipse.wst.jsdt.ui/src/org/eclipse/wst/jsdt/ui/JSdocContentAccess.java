@@ -105,7 +105,7 @@ public class JSdocContentAccess {
 	 * @param reader the reader
 	 * @param length the length of the underlying content
 	 * @return <code>true</code> if the reader only returns the inheritDoc tag
-	 * @since 3.2
+	 * 
 	 */
 	private static boolean containsOnlyInheritDoc(Reader reader, int length) {
 		char[] content= new char[length];
@@ -131,7 +131,7 @@ public class JSdocContentAccess {
 	 * @return a reader for the Javadoc comment content in HTML or <code>null</code> if the member
 	 * 			does not contain a Javadoc comment or if no source is available
 	 * @throws JavaScriptModelException is thrown when the elements Javadoc can not be accessed
-	 * @since 3.2
+	 * 
 	 */
 	public static Reader getHTMLContentReader(IMember member, boolean allowInherited, boolean useAttachedJavadoc) throws JavaScriptModelException {
 		Reader contentReader= getContentReader(member, allowInherited);

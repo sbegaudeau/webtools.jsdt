@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.MultiVariabl
  * Resolves template variables to non-conflicting names that adhere to the naming conventions and
  * match the parameter (fully qualified name).
  * 
- * @since 3.3
+ * 
  */
 public class NameResolver extends TemplateVariableResolver {
 	

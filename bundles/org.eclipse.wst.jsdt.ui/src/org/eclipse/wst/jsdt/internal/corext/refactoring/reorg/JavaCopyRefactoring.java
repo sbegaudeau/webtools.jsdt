@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 /**
  * A copy refactoring which can be initialized with refactoring arguments.
  * 
- * @since 3.3
+ * 
  */
 public final class JavaCopyRefactoring extends CopyRefactoring implements IScriptableRefactoring {
 

@@ -15,7 +15,7 @@ import org.eclipse.osgi.util.NLS;
 /**
  * Helper class to get NLSed messages.
  *
- * @since 3.3
+ * 
  */
 final class SaveParticipantMessages extends NLS {
 

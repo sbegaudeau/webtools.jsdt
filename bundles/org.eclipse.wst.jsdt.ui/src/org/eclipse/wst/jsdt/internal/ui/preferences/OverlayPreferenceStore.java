@@ -463,7 +463,7 @@ public class OverlayPreferenceStore  implements IPreferenceStore {
 	 * </p>
 	 * 
 	 * @param keys
-	 * @since 3.0
+	 * 
 	 */
 	public void addKeys(OverlayKey[] keys) {
 		Assert.isTrue(!fLoaded);

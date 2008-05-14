@@ -32,7 +32,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
- * @since 3.2
+ * 
  */
 public final class ProposalSorterRegistry {
 	private static final String EXTENSION_POINT= "javaCompletionProposalSorters"; //$NON-NLS-1$

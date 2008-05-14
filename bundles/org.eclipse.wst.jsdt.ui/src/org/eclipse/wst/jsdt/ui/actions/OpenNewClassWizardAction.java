@@ -69,7 +69,7 @@ public class OpenNewClassWizardAction extends AbstractOpenWizardAction {
 	 * 
 	 * @param openEditorOnFinish if set, the wizard will open the created type with the default editor
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public void setOpenEditorOnFinish(boolean openEditorOnFinish) {
 		fOpenEditorOnFinish= openEditorOnFinish;

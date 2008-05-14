@@ -27,7 +27,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetPage;
 
 /**
- * @since 3.1
+ * 
  */
 public abstract class AbstractWorkingSetWizardPage extends WizardPage implements IWorkingSetPage {
 

@@ -42,7 +42,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 /**
  * Create Javadoc comment stubs for the selected members.
  * <p>
- * Will open the parent compilation unit in a Java editor. The result is 
+ * Will open the parent compilation unit in a JavaScript editor. The result is 
  * unsaved, so the user can decide if the changes are acceptable.
  * <p>
  * The action is applicable to structured selections containing elements
@@ -124,7 +124,7 @@ public class AddJavaDocStubAction extends SelectionDispatchAction {
 		}
 	}
 	
-	//---- Java Editor --------------------------------------------------------------
+	//---- JavaScript Editor --------------------------------------------------------------
 	
 	/* (non-Javadoc)
 	 * Method declared on SelectionDispatchAction

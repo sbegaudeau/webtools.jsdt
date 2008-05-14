@@ -135,7 +135,7 @@ public class JavaReconciler extends MonoReconciler {
 	/**
 	 * Internal Java element changed listener
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private class ElementChangedListener implements IElementChangedListener {
 		/*
@@ -153,7 +153,7 @@ public class JavaReconciler extends MonoReconciler {
 	/**
 	 * Internal resource change listener.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	class ResourceChangeListener implements IResourceChangeListener {
 
@@ -205,32 +205,32 @@ public class JavaReconciler extends MonoReconciler {
 	private Object fMutex;
 	/**
 	 * The Java element changed listener.
-	 * @since 3.0
+	 * 
 	 */
 	private IElementChangedListener fJavaElementChangedListener;
 	/**
 	 * Tells whether the Java model sent out a changed event.
-	 * @since 3.0
+	 * 
 	 */
 	private volatile boolean fHasJavaModelChanged= true;
 	/**
 	 * Tells whether this reconciler's editor is active.
-	 * @since 3.1
+	 * 
 	 */
 	private volatile boolean fIsEditorActive= true;
 	/**
 	 * The resource change listener.
-	 * @since 3.0
+	 * 
 	 */
 	private IResourceChangeListener fResourceChangeListener;
 	/**
 	 * The property change listener.
-	 * @since 3.3
+	 * 
 	 */
 	private IPropertyChangeListener fPropertyChangeListener;
 	/**
 	 * Tells whether a reconcile is in progress.
-	 * @since 3.1
+	 * 
 	 */
 	private volatile boolean fIsReconciling= false;
 	
@@ -336,7 +336,7 @@ public class JavaReconciler extends MonoReconciler {
 
 	/*
 	 * @see org.eclipse.jface.text.reconciler.AbstractReconciler#aboutToReconcile()
-	 * @since 3.0
+	 * 
 	 */
 	protected void aboutToBeReconciled() {
 		JavaCompositeReconcilingStrategy strategy= (JavaCompositeReconcilingStrategy) getReconcilingStrategy(IDocument.DEFAULT_CONTENT_TYPE);
@@ -377,7 +377,7 @@ public class JavaReconciler extends MonoReconciler {
 	 * Tells whether the Java Model has changed or not.
 	 *
 	 * @return <code>true</code> iff the Java Model has changed
-	 * @since 3.0
+	 * 
 	 */
 	private synchronized boolean hasJavaModelChanged() {
 		return fHasJavaModelChanged;
@@ -387,7 +387,7 @@ public class JavaReconciler extends MonoReconciler {
 	 * Sets whether the Java Model has changed or not.
 	 *
 	 * @param state <code>true</code> iff the java model has changed
-	 * @since 3.0
+	 * 
 	 */
 	private synchronized void setJavaModelChanged(boolean state) {
 		fHasJavaModelChanged= state;
@@ -397,7 +397,7 @@ public class JavaReconciler extends MonoReconciler {
 	 * Tells whether this reconciler's editor is active.
 	 *
 	 * @return <code>true</code> iff the editor is active
-	 * @since 3.1
+	 * 
 	 */
 	private synchronized boolean isEditorActive() {
 		return fIsEditorActive;
@@ -408,7 +408,7 @@ public class JavaReconciler extends MonoReconciler {
 	 * Sets whether this reconciler's editor is active.
 	 *
 	 * @param state <code>true</code> iff the editor is active
-	 * @since 3.1
+	 * 
 	 */
 	private synchronized void setEditorActive(boolean state) {
 		fIsEditorActive= state;

@@ -23,7 +23,7 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
  * @see org.eclipse.ltk.core.refactoring.RefactoringContribution
  * @see org.eclipse.ltk.core.refactoring.RefactoringDescriptor
  * 
- * @since 3.2
+ * 
  */
 public final class JavaRefactoringArguments extends RefactoringArguments {
 

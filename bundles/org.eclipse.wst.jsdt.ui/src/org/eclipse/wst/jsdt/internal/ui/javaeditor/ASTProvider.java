@@ -46,14 +46,14 @@ import org.eclipse.wst.jsdt.ui.JavaScriptUI;
  * Provides a shared AST for clients. The shared AST is
  * the AST of the active Java editor's input element.
  *
- * @since 3.0
+ * 
  */
 public final class ASTProvider {
 
 	/**
 	 * Wait flag.
 	 *
-	 * @since 3.1
+	 * 
 	 */
 	public static final class WAIT_FLAG {
 
@@ -79,7 +79,7 @@ public final class ASTProvider {
 	 * AST is not for the given java element.
 	 * </p>
 	 *
-	 * @since 3.1
+	 * 
 	 */
 	public static final WAIT_FLAG WAIT_YES= new WAIT_FLAG("wait yes"); //$NON-NLS-1$
 
@@ -90,7 +90,7 @@ public final class ASTProvider {
 	 * No AST will be created by the AST provider.
 	 * </p>
 	 *
-	 * @since 3.1
+	 * 
 	 */
 	public static final WAIT_FLAG WAIT_ACTIVE_ONLY= new WAIT_FLAG("wait active only"); //$NON-NLS-1$
 
@@ -101,14 +101,14 @@ public final class ASTProvider {
 	 * No AST will be created by the AST provider.
 	 * </p>
 	 *
-	 * @since 3.1
+	 * 
 	 */
 	public static final WAIT_FLAG WAIT_NO= new WAIT_FLAG("don't wait"); //$NON-NLS-1$
 
 
 	/**
 	 * Tells whether this class is in debug mode.
-	 * @since 3.0
+	 * 
 	 */
 	private static final boolean DEBUG= "true".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.wst.jsdt.ui/debug/ASTProvider"));  //$NON-NLS-1$//$NON-NLS-2$
 
@@ -116,7 +116,7 @@ public final class ASTProvider {
 	/**
 	 * Internal activation listener.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private class ActivationListener implements IPartListener2, IWindowListener {
 
@@ -260,7 +260,7 @@ public final class ASTProvider {
 	 * Returns the Java plug-in's AST provider.
 	 * 
 	 * @return the AST provider
-	 * @since 3.2
+	 * 
 	 */
 	public static ASTProvider getASTProvider() {
 		return JavaScriptPlugin.getDefault().getASTProvider();
@@ -330,7 +330,7 @@ public final class ASTProvider {
 	 *
 	 * @param cu the compilation unit
 	 * @return <code>true</code> if the given compilation unit is the active one
-	 * @since 3.1
+	 * 
 	 */
 	public boolean isActive(IJavaScriptUnit cu) {
 		return cu != null && cu.equals(fActiveJavaElement);
@@ -601,7 +601,7 @@ public final class ASTProvider {
 	 * 
 	 * @param je the Java element to test
 	 * @return <code>true</code> if the element has source
-	 * @since 3.2
+	 * 
 	 */
 	private boolean hasSource(IJavaScriptElement je) {
 		if (je == null || !je.exists())

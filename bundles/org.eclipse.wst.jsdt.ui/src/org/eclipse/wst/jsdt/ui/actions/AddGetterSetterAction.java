@@ -100,7 +100,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptUI;
  * fields for which a setter or getter can be generated. User is able to check or uncheck
  * items before setters or getters are generated.
  * <p>
- * Will open the parent compilation unit in a Java editor. The result is unsaved, so the
+ * Will open the parent compilation unit in a JavaScript editor. The result is unsaved, so the
  * user can decide if the changes are acceptable.
  * <p>
  * The action is applicable to structured selections containing elements of type
@@ -527,7 +527,7 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 		run(cu, type, getterFields, setterFields, getterSetterFields, JavaScriptUI.openInEditor(cu), unit, elementPosition);
 	}
 
-	// ---- Java Editor --------------------------------------------------------------
+	// ---- JavaScript Editor --------------------------------------------------------------
 
 	/*
 	 * (non-Javadoc) Method declared on SelectionDispatchAction

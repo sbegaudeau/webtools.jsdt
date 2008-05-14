@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.reorg;
 /**
  * Creates a new monitoring create target queries.
  * 
- * @since 3.3
+ * 
  */
 public final class MonitoringCreateTargetQueries implements ICreateTargetQueries {
 

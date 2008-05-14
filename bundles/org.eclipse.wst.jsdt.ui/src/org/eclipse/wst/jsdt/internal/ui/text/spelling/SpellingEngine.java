@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellEventListener
 /**
  * Internal abstract spelling engine, subclasses provide a content-type specific implementation.
  *
- * @since 3.1
+ * 
  */
 public abstract class SpellingEngine implements ISpellingEngine {
 
@@ -40,7 +40,7 @@ public abstract class SpellingEngine implements ISpellingEngine {
 		
 		/**
 		 * The document.
-		 * @since 3.3
+		 * 
 		 */
 		private IDocument fDocument;
 

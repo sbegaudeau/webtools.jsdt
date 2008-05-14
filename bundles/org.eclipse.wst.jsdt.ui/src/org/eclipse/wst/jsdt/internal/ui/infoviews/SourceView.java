@@ -65,7 +65,7 @@ import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
 /**
  * View which shows source for a given Java element.
  *
- * @since 3.0
+ * 
  */
 public class SourceView extends AbstractInfoView implements IMenuListener {
 
@@ -75,7 +75,7 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 	/**
 	 * Internal property change listener for handling changes in the editor's preferences.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	class PropertyChangeListener implements IPropertyChangeListener {
 		/*
@@ -151,7 +151,7 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 	private IPropertyChangeListener fFontPropertyChangeListener= new FontPropertyChangeListener();
 	/**
 	 * The editor's property change listener.
-	 * @since 3.0
+	 * 
 	 */
 	private IPropertyChangeListener fPropertyChangeListener= new PropertyChangeListener();
 	/** The open action */
@@ -235,7 +235,7 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.infoviews.AbstractInfoView#getSelectAllAction()
-	 * @since 3.0
+	 * 
 	 */
 	protected IAction getSelectAllAction() {
 		return fSelectAllAction;
@@ -281,7 +281,7 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 	
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.infoviews.AbstractInfoView#getBackgroundColorKey()
-	 * @since 3.2
+	 * 
 	 */
 	protected String getBackgroundColorKey() {
 		return "org.eclipse.wst.jsdt.ui.DeclarationView.backgroundColor";		 //$NON-NLS-1$
@@ -510,7 +510,7 @@ public class SourceView extends AbstractInfoView implements IMenuListener {
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.infoviews.AbstractInfoView#getHelpContextId()
-	 * @since 3.1
+	 * 
 	 */
 	protected String getHelpContextId() {
 		return IJavaHelpContextIds.SOURCE_VIEW;

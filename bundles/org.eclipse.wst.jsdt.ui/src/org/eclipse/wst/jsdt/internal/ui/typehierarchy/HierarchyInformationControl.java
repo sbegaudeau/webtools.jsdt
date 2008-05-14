@@ -52,7 +52,7 @@ import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
 /**
  * Show hierarchy in light-weight control.
  * 
- * @since 3.0
+ * 
  */
 public class HierarchyInformationControl extends AbstractInformationControl {
 	

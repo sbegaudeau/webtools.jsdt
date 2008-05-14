@@ -46,7 +46,7 @@ public class ConvertLocalToFieldAction extends SelectionDispatchAction {
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
 	 * 
-	 * @param editor the java editor
+	 * @param editor the JavaScript editor
 	 */
 	public ConvertLocalToFieldAction(JavaEditor editor) {
 		super(editor.getEditorSite());

@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * Interface for spell checkers.
  *
- * @since 3.0
+ * 
  */
 public interface ISpellChecker {
 
@@ -120,7 +120,7 @@ public interface ISpellChecker {
 	 * Returns the current locale of the spell check engine.
 	 *
 	 * @return The current locale of the engine
-	 * @since 3.3
+	 * 
 	 */
 	Locale getLocale();
 }

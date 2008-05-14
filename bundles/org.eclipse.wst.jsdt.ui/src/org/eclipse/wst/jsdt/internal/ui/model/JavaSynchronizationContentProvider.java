@@ -64,7 +64,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 /**
  * Java-aware synchronization content provider.
  * 
- * @since 3.2
+ * 
  */
 public final class JavaSynchronizationContentProvider extends AbstractSynchronizationContentProvider implements IPipelinedTreeContentProvider {
 

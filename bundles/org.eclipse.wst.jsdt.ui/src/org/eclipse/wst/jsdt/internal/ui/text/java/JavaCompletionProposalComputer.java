@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 /**
  * Computes Java completion proposals and context infos.
  * 
- * @since 3.2
+ * 
  */
 public class JavaCompletionProposalComputer implements IJavaCompletionProposalComputer {
 
@@ -205,7 +205,7 @@ public class JavaCompletionProposalComputer implements IJavaCompletionProposalCo
 	 * 
 	 * @return the <code>String</code> array with with favorite static members
 	 * @see org.eclipse.wst.jsdt.core.CompletionRequestor#setFavoriteReferences(String[])
-	 * @since 3.3
+	 * 
 	 */
 	private String[] getFavoriteStaticMembers() {
 		String serializedFavorites= PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.CODEASSIST_FAVORITE_STATIC_MEMBERS);

@@ -476,7 +476,7 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 
 	/*
 	 * @see org.eclipse.jface.text.quickassist.IQuickAssistProcessor#canFix(org.eclipse.jface.text.source.Annotation)
-	 * @since 3.2
+	 * 
 	 */
 	public boolean canFix(Annotation annotation) {
 		return hasCorrections(annotation);
@@ -484,7 +484,7 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 
 	/*
 	 * @see org.eclipse.jface.text.quickassist.IQuickAssistProcessor#canAssist(org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext)
-	 * @since 3.2
+	 * 
 	 */
 	public boolean canAssist(IQuickAssistInvocationContext invocationContext) {
 		if (invocationContext instanceof IInvocationContext)

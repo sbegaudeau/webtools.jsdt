@@ -25,7 +25,7 @@ import com.ibm.icu.text.BreakIterator;
  * A line break may be any of "\n", "\r", "\r\n", "\n\r".
  * </p>
  *
- * @since 3.0
+ * 
  */
 public class JavaBreakIterator extends BreakIterator {
 

@@ -37,7 +37,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 /**
  * Descriptor object of a JDT refactoring.
  * 
- * @since 3.2
+ * 
  */
 public class JDTRefactoringDescriptor extends JavaScriptRefactoringDescriptor {
 

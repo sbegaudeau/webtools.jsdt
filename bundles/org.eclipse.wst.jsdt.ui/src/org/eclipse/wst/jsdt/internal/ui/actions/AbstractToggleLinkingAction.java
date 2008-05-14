@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
  * This is an action template for actions that toggle whether
  * it links its selection to the active editor.
  * 
- * @since 3.0
+ * 
  */
 public abstract class AbstractToggleLinkingAction extends Action {
 	

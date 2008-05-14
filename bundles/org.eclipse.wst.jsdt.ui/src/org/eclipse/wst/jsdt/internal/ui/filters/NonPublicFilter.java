@@ -16,7 +16,7 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.MemberFilter;
 /**
  * Non-public member filter.
  * 
- * @since 3.0
+ * 
  */
 public class NonPublicFilter extends MemberFilter {
 	public NonPublicFilter() {

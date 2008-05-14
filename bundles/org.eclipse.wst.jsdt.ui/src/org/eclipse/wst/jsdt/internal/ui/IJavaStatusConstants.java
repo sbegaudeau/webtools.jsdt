@@ -53,7 +53,7 @@ public interface IJavaStatusConstants {
 	 * save listener.
 	 * 
 	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.IPostSaveListener
-	 * @since 3.3
+	 * 
 	 */
 	public static final int EDITOR_POST_SAVE_NOTIFICATION= 10006;
 	

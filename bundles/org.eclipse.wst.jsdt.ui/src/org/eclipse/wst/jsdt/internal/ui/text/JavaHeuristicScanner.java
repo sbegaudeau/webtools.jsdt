@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
  *
  * <p>An instance holds some internal position in the document and is therefore not threadsafe.</p>
  *
- * @since 3.0
+ * 
  */
 public final class JavaHeuristicScanner implements Symbols {
 	/**
@@ -244,7 +244,7 @@ public final class JavaHeuristicScanner implements Symbols {
 	private int fPos;
 	/**
 	 * The most recently used partition.
-	 * @since 3.2
+	 * 
 	 */
 	private ITypedRegion fCachedPartition= new TypedRegion(-1, 0, "__no_partition_at_all"); //$NON-NLS-1$
 
@@ -825,7 +825,7 @@ public final class JavaHeuristicScanner implements Symbols {
 	 * @param region a region
 	 * @param position an offset
 	 * @return <code>true</code> if <code>region</code> contains <code>position</code>
-	 * @since 3.2
+	 * 
 	 */
 	private boolean contains(IRegion region, int position) {
 		int offset= region.getOffset();
@@ -898,7 +898,7 @@ public final class JavaHeuristicScanner implements Symbols {
 	 *        <code>bound</code> &lt; <code>start</code>, or <code>UNBOUND</code>
 	 * @return <code>true</code> if the current position looks like after the type name of a class
 	 *         instance creation
-	 * @since 3.2
+	 * 
 	 */
 	public boolean looksLikeClassInstanceCreationBackward(int start, int bound) {
 		int token= previousToken(start - 1, bound);
@@ -923,7 +923,7 @@ public final class JavaHeuristicScanner implements Symbols {
 	 * @param identifier the identifier to check
 	 * @return <code>true</code> if <code>identifier</code> is probably a
 	 *         type variable or type name, <code>false</code> if not
-	 * @since 3.2
+	 * 
 	 */
 	public static boolean isGenericStarter(CharSequence identifier) {
 		/* This heuristic allows any identifiers if they start with an upper

@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.text.java.ContentAssistHistory.RHSHistory;
 
 /**
- * Describes the context of a content assist invocation in a Java editor.
+ * Describes the context of a content assist invocation in a JavaScript editor.
  * <p>
  * Clients may use but not subclass this class.
  * </p>
@@ -98,7 +98,7 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 	 * Returns the project of the compilation unit that content assist is invoked in,
 	 * <code>null</code> if none.
 	 * 
-	 * @return the current java project, possibly <code>null</code>
+	 * @return the current JavaScript project, possibly <code>null</code>
 	 */
 	public IJavaScriptProject getProject() {
 		IJavaScriptUnit unit= getCompilationUnit();
@@ -256,7 +256,7 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 	 * Runs code completion on the cu and collects keyword proposals. {@link #fKeywordProposals} is
 	 * non-<code>null</code> after this call.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	private void computeKeywordsAndContext() {
 		IJavaScriptUnit cu= getCompilationUnit();

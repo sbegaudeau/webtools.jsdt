@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
- * The action opens a Java editor on the selected method's super implementation.
+ * The action opens a JavaScript editor on the selected method's super implementation.
  * <p>
  * The action is applicable to selections containing elements of type <code>
  * IFunction</code>.
@@ -73,7 +73,7 @@ public class OpenSuperImplementationAction extends SelectionDispatchAction {
 	
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public OpenSuperImplementationAction(JavaEditor editor) {
 		this(editor.getEditorSite());

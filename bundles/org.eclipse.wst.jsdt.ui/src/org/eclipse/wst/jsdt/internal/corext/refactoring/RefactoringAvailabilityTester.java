@@ -67,7 +67,7 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.RefactoringActions;
  * initialization.
  * </p>
  * 
- * @since 3.1
+ * 
  */
 public final class RefactoringAvailabilityTester {
 

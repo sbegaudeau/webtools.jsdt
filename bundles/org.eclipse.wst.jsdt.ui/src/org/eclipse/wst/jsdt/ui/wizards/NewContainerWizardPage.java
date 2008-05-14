@@ -56,7 +56,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 import org.eclipse.wst.jsdt.ui.StandardJavaScriptElementContentProvider;
 
 /**
- * Wizard page that acts as a base class for wizard pages that create new Java elements. 
+ * Wizard page that acts as a base class for wizard pages that create new JavaScript elements. 
  * The class provides a input field for source folders (called container in this class) and
  * API to validate the enter source folder name.
  * 
@@ -109,7 +109,7 @@ public abstract class NewContainerWizardPage extends NewElementWizardPage {
 	 * Returns the label that is used for the container input field.
 	 * 
 	 * @return the label that is used for the container input field.
-	 * @since 3.2
+	 * 
 	 */
 	protected String getContainerLabel() {
 		return NewWizardMessages.NewContainerWizardPage_container_label;
@@ -117,9 +117,9 @@ public abstract class NewContainerWizardPage extends NewElementWizardPage {
 			
 	/**
 	 * Initializes the source folder field with a valid package fragment root.
-	 * The package fragment root is computed from the given Java element.
+	 * The package fragment root is computed from the given JavaScript element.
 	 * 
-	 * @param elem the Java element used to compute the initial package
+	 * @param elem the JavaScript element used to compute the initial package
 	 *    fragment root used as the source folder
 	 */
 	protected void initContainerPage(IJavaScriptElement elem) {
@@ -153,11 +153,11 @@ public abstract class NewContainerWizardPage extends NewElementWizardPage {
 	}
 	
 	/**
-	 * Utility method to inspect a selection to find a Java element. 
+	 * Utility method to inspect a selection to find a JavaScript element. 
 	 * 
 	 * @param selection the selection to be inspected
-	 * @return a Java element to be used as the initial selection, or <code>null</code>,
-	 * if no Java element exists in the given selection
+	 * @return a JavaScript element to be used as the initial selection, or <code>null</code>,
+	 * if no JavaScript element exists in the given selection
 	 */
 	protected IJavaScriptElement getInitialJavaElement(IStructuredSelection selection) {
 		IJavaScriptElement jelem= null;
@@ -175,7 +175,7 @@ public abstract class NewContainerWizardPage extends NewElementWizardPage {
 							jelem= (IJavaScriptElement) resource.getAdapter(IJavaScriptElement.class);
 						}
 						if (jelem == null) {
-							jelem= JavaScriptCore.create(resource); // java project
+							jelem= JavaScriptCore.create(resource); // JavaScript project
 						}
 					}
 				}
@@ -213,7 +213,7 @@ public abstract class NewContainerWizardPage extends NewElementWizardPage {
 	 * when the current editor does not have focus or does not return a text selection.
 	 * @return Returns the text selection of the current editor or <code>null</code>.
      *
-     * @since 3.0 
+     *  
 	 */
 	protected ITextSelection getCurrentTextSelection() {
 		IWorkbenchPart part= JavaScriptPlugin.getActivePage().getActivePart();
@@ -391,11 +391,11 @@ public abstract class NewContainerWizardPage extends NewElementWizardPage {
 	}
 	
 	/**
-	 * Returns the Java project of the currently selected package fragment root or <code>null</code>
+	 * Returns the JavaScript project of the currently selected package fragment root or <code>null</code>
 	 * if no package fragment root is configured.
 	 * 
-	 * @return The current Java project or <code>null</code>.
-	 * @since 3.3
+	 * @return The current JavaScript project or <code>null</code>.
+	 * 
 	 */
 	public IJavaScriptProject getJavaProject() {
 		IPackageFragmentRoot root= getPackageFragmentRoot();
@@ -453,7 +453,7 @@ public abstract class NewContainerWizardPage extends NewElementWizardPage {
 	 * Clients can override this method if they want to offer a different dialog.
 	 * </p>
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	protected IPackageFragmentRoot chooseContainer() {
 		IJavaScriptElement initElement= getPackageFragmentRoot();

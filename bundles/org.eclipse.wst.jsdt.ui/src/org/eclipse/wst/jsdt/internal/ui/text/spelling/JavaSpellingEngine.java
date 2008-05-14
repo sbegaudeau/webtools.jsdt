@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 /**
  * Java spelling engine
  *
- * @since 3.1
+ * 
  */
 public class JavaSpellingEngine extends SpellingEngine {
 	

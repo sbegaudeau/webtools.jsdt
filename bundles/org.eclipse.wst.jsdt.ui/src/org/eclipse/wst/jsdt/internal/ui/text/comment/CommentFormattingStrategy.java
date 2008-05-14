@@ -36,7 +36,7 @@ import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 /**
  * Formatting strategy for general source code comments.
  *
- * @since 3.0
+ * 
  */
 public class CommentFormattingStrategy extends ContextBasedFormattingStrategy {
 
@@ -86,7 +86,7 @@ public class CommentFormattingStrategy extends ContextBasedFormattingStrategy {
 	 * 
 	 * @see CommentFormattingStrategy#format()
 	 * @return A <code>TextEdit</code>, or <code>null</code> if no formating is required
-	 * @since 3.3
+	 * 
 	 */
 	public TextEdit calculateTextEdit() {
 		super.format();
@@ -190,7 +190,7 @@ public class CommentFormattingStrategy extends ContextBasedFormattingStrategy {
 	 *
 	 * @param type the partition type
 	 * @return the code snippet kind
-	 * @since 3.1
+	 * 
 	 */
 	private static int getKindForPartitionType(String type) {
 		if (IJavaScriptPartitions.JAVA_SINGLE_LINE_COMMENT.equals(type))
@@ -210,7 +210,7 @@ public class CommentFormattingStrategy extends ContextBasedFormattingStrategy {
 	 * @param tabSize the tab size
 	 * @param indentSize the indent size in space equivalents
 	 * @return the inferred indentation level
-	 * @since 3.1
+	 * 
 	 */
 	private int inferIndentationLevel(String reference, int tabSize, int indentSize) {
 		StringBuffer expanded= expandTabs(reference, tabSize);
@@ -231,7 +231,7 @@ public class CommentFormattingStrategy extends ContextBasedFormattingStrategy {
 	 * @param string the string
 	 * @param tabSize the tab size
 	 * @return the expanded string
-	 * @since 3.1
+	 * 
 	 */
 	private static StringBuffer expandTabs(String string, int tabSize) {
 		StringBuffer expanded= new StringBuffer();
@@ -257,7 +257,7 @@ public class CommentFormattingStrategy extends ContextBasedFormattingStrategy {
 	 *
 	 * @param preferences the preferences
 	 * @return the visual tab size
-	 * @since 3.1
+	 * 
 	 */
 	private static int getTabSize(Map preferences) {
 		/*
@@ -286,7 +286,7 @@ public class CommentFormattingStrategy extends ContextBasedFormattingStrategy {
 	 *
 	 * @param preferences the preferences
 	 * @return the indentation size in space equivalents
-	 * @since 3.3
+	 * 
 	 */
 	private static int getIndentSize(Map preferences) {
 		/*

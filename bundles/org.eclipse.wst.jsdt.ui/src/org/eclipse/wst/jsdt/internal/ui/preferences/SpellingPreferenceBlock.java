@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
 /**
  * Spelling preference block
  * 
- * @since 3.1
+ * 
  */
 public class SpellingPreferenceBlock implements ISpellingPreferenceBlock {
 	

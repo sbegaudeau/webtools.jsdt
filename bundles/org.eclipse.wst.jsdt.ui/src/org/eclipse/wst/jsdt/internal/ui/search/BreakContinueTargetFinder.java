@@ -49,7 +49,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
  * The target statement is a while, do, switch, for or a labeled statement.
  * Break is described in section 14.15 of the JLS3 and continue in section 14.16.</p>
  * 
- * @since 3.2
+ * 
  */
 public class BreakContinueTargetFinder extends ASTVisitor {
 	private ASTNode fSelected;

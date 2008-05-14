@@ -19,7 +19,7 @@ import org.eclipse.jface.text.link.LinkedModeModel;
  * Turns off occurrences highlighting on a java editor until linked mode is
  * left.
  *
- * @since 3.0
+ * 
  */
 public class EditorHighlightingSynchronizer implements ILinkedModeListener {
 
@@ -51,7 +51,7 @@ public class EditorHighlightingSynchronizer implements ILinkedModeListener {
 	}
 
 	/*
-	 * @since 3.2
+	 * 
 	 */
 	private boolean isEditorDisposed() {
 		return fEditor == null || fEditor.getSelectionProvider() == null;

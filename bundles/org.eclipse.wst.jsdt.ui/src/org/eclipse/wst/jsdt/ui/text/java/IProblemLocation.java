@@ -45,7 +45,7 @@ public interface IProblemLocation {
 	 * Returns the marker type of this problem.
 	 *
 	 * @return The marker type of the problem.
-	 * @since 3.2
+	 * 
 	 */
 	String getMarkerType();
 	

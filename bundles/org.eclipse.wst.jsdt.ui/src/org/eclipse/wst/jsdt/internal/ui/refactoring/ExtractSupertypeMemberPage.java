@@ -68,7 +68,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
  * Wizard page for the extract supertype refactoring, which, apart from pull up
  * facilities, also allows to specify the types where to extract the supertype.
  * 
- * @since 3.2
+ * 
  */
 public final class ExtractSupertypeMemberPage extends PullUpMemberPage {
 

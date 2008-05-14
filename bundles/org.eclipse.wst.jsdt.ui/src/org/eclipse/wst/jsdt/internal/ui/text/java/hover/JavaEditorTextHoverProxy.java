@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.ui.text.java.hover.IJavaEditorTextHover;
 /**
  * Proxy for JavaEditorTextHovers.
  *
- * @since 2.1
+ * 
  */
 public class JavaEditorTextHoverProxy extends AbstractJavaEditorTextHover implements ITextHoverExtension, IInformationProviderExtension2 {
 
@@ -88,7 +88,7 @@ public class JavaEditorTextHoverProxy extends AbstractJavaEditorTextHover implem
 
 	/*
 	 * @see org.eclipse.jface.text.ITextHoverExtension#getHoverControlCreator()
-	 * @since 3.0
+	 * 
 	 */
 	public IInformationControlCreator getHoverControlCreator() {
 		if (ensureHoverCreated() && (fHover instanceof ITextHoverExtension))

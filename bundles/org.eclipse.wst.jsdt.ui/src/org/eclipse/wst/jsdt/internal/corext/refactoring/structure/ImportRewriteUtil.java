@@ -32,7 +32,7 @@ import org.eclipse.wst.jsdt.internal.corext.codemanipulation.ImportReferencesCol
 /**
  * Utility methods to manage static and non-static imports of a compilation unit.
  * 
- * @since 3.1
+ * 
  */
 public final class ImportRewriteUtil {
 

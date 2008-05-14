@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 /**
  * Proposal to change the letter case of a word.
  *
- * @since 3.0
+ * 
  */
 public class ChangeCaseProposal extends WordCorrectionProposal {
 

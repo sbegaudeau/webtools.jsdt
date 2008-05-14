@@ -30,7 +30,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
  * {@link org.eclipse.wst.jsdt.internal.corext.refactoring.structure.MoveStaticMembersProcessor#getASTMembers(org.eclipse.ltk.core.refactoring.RefactoringStatus)}
  * for more information.
  * 
- * @since 3.2
+ * 
  */
 public class DelegateFieldCreator extends DelegateCreator {
 

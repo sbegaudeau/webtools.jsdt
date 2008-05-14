@@ -41,7 +41,7 @@ public class BasicCompilationUnitEditorActionContributor extends BasicJavaEditor
 
 	/**
 	 * A menu listener that can remove itself from the menu it listens to.
-	 * @since 3.2
+	 * 
 	 */
     private final class MenuListener implements IMenuListener {
         private final IMenuManager fMenu;
@@ -67,9 +67,9 @@ public class BasicCompilationUnitEditorActionContributor extends BasicJavaEditor
 	protected RetargetTextEditorAction fQuickAssistAction;
 	protected RetargetTextEditorAction fChangeEncodingAction;
 	
-	/* @since 3.2 */
+	/*  */
 	protected SpecificContentAssistAction[] fSpecificAssistActions;
-	/* @since 3.2 */
+	/*  */
 	private MenuListener fContentAssistMenuListener;
 
 
@@ -175,7 +175,7 @@ public class BasicCompilationUnitEditorActionContributor extends BasicJavaEditor
 	
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.BasicJavaEditorActionContributor#dispose()
-	 * @since 3.1
+	 * 
 	 */ 
 	public void dispose() {
 		if (fRetargetContentAssist != null) {

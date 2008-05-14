@@ -48,7 +48,7 @@ import org.eclipse.wst.jsdt.ui.search.ElementQuerySpecification;
 import org.eclipse.wst.jsdt.ui.search.QuerySpecification;
 
 /**
- * Abstract class for Java search actions.
+ * Abstract class for JavaScript search actions.
  * <p>
  * Note: This class is for internal use only. Clients should not use this class.
  * </p>
@@ -249,8 +249,8 @@ public abstract class FindAction extends SelectionDispatchAction {
 	}
 
 	/**
-	 * Executes this action for the given java element.
-	 * @param element The java element to be found.
+	 * Executes this action for the given JavaScript element.
+	 * @param element The JavaScript element to be found.
 	 */
 	public void run(IJavaScriptElement element) {
 		

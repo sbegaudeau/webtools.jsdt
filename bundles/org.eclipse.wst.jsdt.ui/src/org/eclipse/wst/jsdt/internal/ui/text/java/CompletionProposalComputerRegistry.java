@@ -49,7 +49,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
  * <code>org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer</code>
  * extension point.
  * 
- * @since 3.2
+ * 
  */
 public final class CompletionProposalComputerRegistry {
 

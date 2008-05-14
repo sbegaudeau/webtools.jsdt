@@ -153,7 +153,7 @@ public class OrganizeImportsAction extends SelectionDispatchAction {
 	
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public OrganizeImportsAction(JavaEditor editor) {
 		super(editor.getEditorSite());

@@ -222,7 +222,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 		 * @return returns either the simple member name if the import was successful or else the qualified name if
 		 * an import conflict prevented the import.
 		 * 
-		 * @since 3.2
+		 * 
 		 */				
 		public String addStaticImport(String declaringTypeName, String simpleName, boolean isField) {
 			return fImportsRewrite.addStaticImport(declaringTypeName, simpleName, isField);
@@ -243,17 +243,17 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	}
 		
 	
-	/** Public access flag. See The Java Virtual Machine Specification for more details. */
+	/** Public access flag. See The JavaScript Virtual Machine Specification for more details. */
 	public int F_PUBLIC = Flags.AccPublic;
-	/** Private access flag. See The Java Virtual Machine Specification for more details. */
+	/** Private access flag. See The JavaScript Virtual Machine Specification for more details. */
 	public int F_PRIVATE = Flags.AccPrivate;
-	/**  Protected access flag. See The Java Virtual Machine Specification for more details. */
+	/**  Protected access flag. See The JavaScript Virtual Machine Specification for more details. */
 	public int F_PROTECTED = Flags.AccProtected;
-	/** Static access flag. See The Java Virtual Machine Specification for more details. */
+	/** Static access flag. See The JavaScript Virtual Machine Specification for more details. */
 	public int F_STATIC = Flags.AccStatic;
-	/** Final access flag. See The Java Virtual Machine Specification for more details. */
+	/** Final access flag. See The JavaScript Virtual Machine Specification for more details. */
 	public int F_FINAL = Flags.AccFinal;
-	/** Abstract property flag. See The Java Virtual Machine Specification for more details. */
+	/** Abstract property flag. See The JavaScript Virtual Machine Specification for more details. */
 	public int F_ABSTRACT = Flags.AccAbstract;
 
 	private final static String PAGE_NAME= "NewTypeWizardPage"; //$NON-NLS-1$
@@ -355,25 +355,25 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	
 	/**
 	 * Constant to signal that the created type is a class.
-	 * @since 3.1
+	 * 
 	 */
 	public static final int CLASS_TYPE = 1;
 	
 	/**
 	 * Constant to signal that the created type is a interface.
-	 * @since 3.1
+	 * 
 	 */
 	public static final int INTERFACE_TYPE = 2;
 	
 	/**
 	 * Constant to signal that the created type is an enum.
-	 * @since 3.1
+	 * 
 	 */
 	public static final int ENUM_TYPE = 3;
 	
 	/**
 	 * Constant to signal that the created type is an annotation.
-	 * @since 3.1
+	 * 
 	 */
 	public static final int ANNOTATION_TYPE = 4;
 
@@ -394,7 +394,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * @param typeKind Signals the kind of the type to be created. Valid kinds are
 	 * {@link #CLASS_TYPE}, {@link #INTERFACE_TYPE}, {@link #ENUM_TYPE} and {@link #ANNOTATION_TYPE}
 	 * @param pageName the wizard page's name
-	 * @since 3.1
+	 * 
 	 */
 	public NewTypeWizardPage(int typeKind, String pageName) {
 	    super(pageName);
@@ -594,7 +594,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * Returns the label that is used for the package input field.
 	 * 
 	 * @return the label that is used for the package input field.
-	 * @since 3.2
+	 * 
 	 */
 	protected String getPackageLabel() {
 		return NewWizardMessages.NewTypeWizardPage_package_label;
@@ -604,7 +604,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * Returns the label that is used for the enclosing type input field.
 	 * 
 	 * @return the label that is used for the enclosing type input field.
-	 * @since 3.2
+	 * 
 	 */
 	protected String getEnclosingTypeLabel() {
 		return NewWizardMessages.NewTypeWizardPage_enclosing_selection_label;
@@ -614,7 +614,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * Returns the label that is used for the type name input field.
 	 * 
 	 * @return the label that is used for the type name input field.
-	 * @since 3.2
+	 * 
 	 */
 	protected String getTypeNameLabel() {
 		return NewWizardMessages.NewTypeWizardPage_typename_label;
@@ -624,7 +624,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * Returns the label that is used for the modifiers input field.
 	 * 
 	 * @return the label that is used for the modifiers input field
-	 * @since 3.2
+	 * 
 	 */
 	protected String getModifiersLabel() {
 		return NewWizardMessages.NewTypeWizardPage_modifiers_acc_label;
@@ -634,7 +634,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * Returns the label that is used for the super class input field.
 	 * 
 	 * @return the label that is used for the super class input field.
-	 * @since 3.2
+	 * 
 	 */
 	protected String getSuperClassLabel() {
 		return NewWizardMessages.NewTypeWizardPage_superclass_label;
@@ -644,7 +644,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * Returns the label that is used for the super interfaces input field.
 	 * 
 	 * @return the label that is used for the super interfaces input field.
-	 * @since 3.2
+	 * 
 	 */
 	protected String getSuperInterfacesLabel() {
 	    if (fTypeKind != INTERFACE_TYPE)
@@ -862,7 +862,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * @param composite the parent composite
 	 * @param nColumns number of columns to span
 	 * 
-	 * @since 3.1
+	 * 
 	 */			
 	protected void createCommentControls(Composite composite, int nColumns) {
     	Link link= new Link(composite, SWT.NONE);
@@ -1277,7 +1277,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * @param superInterface the fully qualified type name of the interface.
 	 * @return returns <code>true</code>if the interfaces has been added, <code>false</code>
 	 * if the interface already is in the list.
-	 * @since 3.2
+	 * 
 	 */
 	public boolean addSuperInterface(String superInterface) {
 		return fSuperInterfacesDialogField.addElement(new InterfaceWrapper(superInterface));
@@ -1291,7 +1291,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * @param doAddComments if <code>true</code>, comments are added.
 	 * @param canBeModified if <code>true</code> check box is
 	 * editable; otherwise it is read-only.
-	 * 	@since 3.1
+	 * 	
 	 */	
 	public void setAddComments(boolean doAddComments, boolean canBeModified) {
 		fAddCommentButton.setSelection(doAddComments);
@@ -1303,7 +1303,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * additionally have to enable the control. This has been added for backwards compatibility.
 	 * 
 	 * @param useAddCommentValue if <code>true</code>, 
-	 * 	@since 3.1
+	 * 	
 	 */	
 	public void enableCommentControl(boolean useAddCommentValue) {
 		fUseAddCommentButtonValue= useAddCommentValue;
@@ -1316,7 +1316,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * the settings as specified in the preferences is used.
 	 * 
 	 * @return Returns <code>true</code> if comments can be added
-	 * @since 3.1
+	 * 
 	 */	
 	public boolean isAddComments() {
 		if (fUseAddCommentButtonValue) {
@@ -1329,7 +1329,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * Returns the resource handle that corresponds to the compilation unit to was or
 	 * will be created or modified.
 	 * @return A resource or null if the page contains illegal values.
-	 * @since 3.0
+	 * 
 	 */
 	public IResource getModifiedResource() {
 		IType enclosing= getEnclosingType();
@@ -1539,7 +1539,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * @param typeName the name of the type to create the compilation unit for.
 	 * @return the name of the compilation unit to be created for the given name
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	protected String getCompilationUnitName(String typeName) {
 		return typeName + JavaModelUtil.DEFAULT_CU_SUFFIX;
@@ -1765,7 +1765,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * Clients can override this method if they want to offer a different dialog.
 	 * </p>
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	protected IPackageFragment choosePackage() {
 		IPackageFragmentRoot froot= getPackageFragmentRoot();
@@ -1809,7 +1809,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * Clients can override this method if they want to offer a different dialog.
 	 * </p>
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	protected IType chooseEnclosingType() {
 		IPackageFragmentRoot root= getPackageFragmentRoot();
@@ -1840,7 +1840,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * Clients can override this method if they want to offer a different dialog.
 	 * </p>
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	protected IType chooseSuperClass() {
 		IJavaScriptProject project= getJavaProject();
@@ -1871,7 +1871,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * Clients can override this method if they want to offer a different dialog.
 	 * </p>
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	protected void chooseSuperInterfaces() {
 		IJavaScriptProject project= getJavaProject();
@@ -2148,7 +2148,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	}
 
 	/**
-	 * Uses the New Java file template from the code template page to generate a
+	 * Uses the New JavaScript file template from the code template page to generate a
 	 * compilation unit with the given type content.
 	 * @param cu The new created compilation unit
 	 * @param typeContent The content of the type, including signature and type
@@ -2157,7 +2157,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * @return String Returns the result of evaluating the new file template
 	 * with the given type content.
 	 * @throws CoreException
-	 * @since 2.1
+	 * 
 	 */
 	protected String constructCUContent(IJavaScriptUnit cu, String typeContent, String lineDelimiter) throws CoreException {
 		String fileComment= getFileComment(cu, lineDelimiter);
@@ -2351,7 +2351,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * is not desired
 	 * @throws CoreException 
      *
-     * @since 3.1
+     * 
 	 */		
 	protected String getFileComment(IJavaScriptUnit parentCU, String lineDelimiter) throws CoreException {
 		if (isAddComments()) {
@@ -2385,7 +2385,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * @return the type comment or <code>null</code> if a type comment 
 	 * is not desired
      *
-     * @since 3.0
+     * 
 	 */		
 	protected String getTypeComment(IJavaScriptUnit parentCU, String lineDelimiter) {
 		if (isAddComments()) {

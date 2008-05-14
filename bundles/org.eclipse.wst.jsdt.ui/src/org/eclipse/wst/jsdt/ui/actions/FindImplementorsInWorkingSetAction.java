@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.ui.search.QuerySpecification;
 
 /**
  * Finds implementors of the selected element in working sets.
- * The action is applicable to selections representing a Java interface.
+ * The action is applicable to selections representing a JavaScript interface.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -70,7 +70,7 @@ public class FindImplementorsInWorkingSetAction extends FindImplementorsAction {
 
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public FindImplementorsInWorkingSetAction(JavaEditor editor) {
 		super(editor);
@@ -78,7 +78,7 @@ public class FindImplementorsInWorkingSetAction extends FindImplementorsAction {
 
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 * @param workingSets the working sets to be used in the search
 	 */
 	public FindImplementorsInWorkingSetAction(JavaEditor editor, IWorkingSet[] workingSets) {

@@ -41,7 +41,7 @@ import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
  * </pre>
  * </p>
  *
- * @since 3.0
+ * 
  */
 public final class WordCompletionProposalComputer implements IJavaCompletionProposalComputer {
 

@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
  * Operation, which run, creates structurally equivalent stub types for a list
  * of binary package fragments.
  * 
- * @since 3.2
+ * 
  */
 public class StubCreationOperation extends AbstractCodeCreationOperation {
 

@@ -51,7 +51,7 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 	private MemberFilterActionGroup fMemberFilterActionGroup;
 	/**
 	 * Category filter action group.
-	 * @since 3.2
+	 * 
 	 */
 	private CategoryFilterActionGroup fCategoryFilterActionGroup;
 
@@ -121,7 +121,7 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.browsing.JavaBrowsingPart#fillActionBars(org.eclipse.ui.IActionBars)
-	 * @since 3.2
+	 * 
 	 */
 	protected void fillActionBars(IActionBars actionBars) {
 		super.fillActionBars(actionBars);
@@ -131,7 +131,7 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.browsing.JavaBrowsingPart#setInput(java.lang.Object)
-	 * @since 3.2
+	 * 
 	 */
 	protected void setInput(Object input) {
 		super.setInput(input);

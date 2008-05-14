@@ -21,7 +21,7 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
  * A reconciling strategy consisting of a sequence of internal reconciling strategies.
  * By default, all requests are passed on to the contained strategies.
  *
- * @since 3.0
+ * 
  */
 public class CompositeReconcilingStrategy  implements IReconcilingStrategy, IReconcilingStrategyExtension {
 

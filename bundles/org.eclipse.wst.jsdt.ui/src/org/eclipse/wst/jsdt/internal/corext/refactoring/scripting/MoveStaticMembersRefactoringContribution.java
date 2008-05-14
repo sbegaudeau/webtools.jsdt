@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.MoveStaticMemb
 /**
  * Refactoring contribution for the move static members refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class MoveStaticMembersRefactoringContribution extends JDTRefactoringContribution {
 

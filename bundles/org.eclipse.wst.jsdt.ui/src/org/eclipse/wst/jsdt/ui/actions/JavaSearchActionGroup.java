@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.ui.search.SearchMessages;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
- * Action group that adds the Java search actions to a context menu and
+ * Action group that adds the JavaScript search actions to a context menu and
  * the global menu bar.
  * 
  * <p>
@@ -76,7 +76,7 @@ public class JavaSearchActionGroup extends ActionGroup {
 
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public JavaSearchActionGroup(JavaEditor editor) {
 		Assert.isNotNull(editor);

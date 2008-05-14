@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
  * Partial implementation of a scriptable refactoring which provides a comment
  * for the history.
  * 
- * @since 3.2
+ * 
  */
 public abstract class ScriptableRefactoring extends Refactoring implements IScriptableRefactoring, ICommentProvider {
 

@@ -28,7 +28,7 @@ public abstract class SemanticHighlighting {
 
 	/**
 	 * @return the default default text color
-	 * @since 3.3
+	 * 
 	 */
 	public abstract RGB getDefaultDefaultTextColor();
 	
@@ -53,7 +53,7 @@ public abstract class SemanticHighlighting {
 
 	/**
 	 * @return <code>true</code> if the text attribute strikethrough is set by default
-	 * @since 3.1
+	 * 
 	 */
 	public boolean isStrikethroughByDefault() {
 		return false;
@@ -61,7 +61,7 @@ public abstract class SemanticHighlighting {
 
 	/**
 	 * @return <code>true</code> if the text attribute underline is set by default
-	 * @since 3.1
+	 * 
 	 */
 	public boolean isUnderlineByDefault() {
 		return false;
@@ -118,7 +118,7 @@ public abstract class SemanticHighlighting {
 	 * @param key the key for the constant in the registry
 	 * @param defaultRGB the default RGB if no entry is found
 	 * @return RGB the RGB
-	 * @since 3.3
+	 * 
 	 */
 	private static RGB findRGB(ColorRegistry registry, String key, RGB defaultRGB) {
 		RGB rgb= registry.getRGB(key);

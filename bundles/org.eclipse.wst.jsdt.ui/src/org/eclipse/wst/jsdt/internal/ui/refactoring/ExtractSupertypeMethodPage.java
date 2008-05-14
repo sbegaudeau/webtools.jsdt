@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 /**
  * Wizard page to select methods to be deleted after extract supertype.
  * 
- * @since 3.2
+ * 
  */
 public class ExtractSupertypeMethodPage extends PullUpMethodPage {
 

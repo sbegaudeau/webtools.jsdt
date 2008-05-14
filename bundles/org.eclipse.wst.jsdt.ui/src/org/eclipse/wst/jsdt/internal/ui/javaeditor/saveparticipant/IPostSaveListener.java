@@ -28,7 +28,7 @@ import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
  * 
  * @see SaveParticipantDescriptor
  * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider
- * @since 3.3
+ * 
  */
 public interface IPostSaveListener {
 	

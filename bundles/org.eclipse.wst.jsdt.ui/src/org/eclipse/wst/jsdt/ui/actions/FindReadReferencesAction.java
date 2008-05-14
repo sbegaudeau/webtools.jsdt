@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.internal.ui.search.SearchMessages;
 
 /**
  * Finds field read accesses of the selected element in the workspace.
- * The action is applicable to selections representing a Java interface field.
+ * The action is applicable to selections representing a JavaScript interface field.
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
@@ -48,7 +48,7 @@ public class FindReadReferencesAction extends FindReferencesAction {
 
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public FindReadReferencesAction(JavaEditor editor) {
 		super(editor);

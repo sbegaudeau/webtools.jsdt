@@ -36,7 +36,7 @@ import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 /**
  * Completion proposal for required imports.
  * 
- * @since 3.3
+ * 
   */
 public class ImportCompletionProposal extends AbstractJavaCompletionProposal {
 

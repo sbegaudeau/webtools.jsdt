@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.JavaPresentationReconciler;
 /**
  * Semantic highlighting presenter - UI thread implementation.
  *
- * @since 3.0
+ * 
  */
 public class SemanticHighlightingPresenter implements ITextPresentationListener, ITextInputListener, IDocumentListener {
 

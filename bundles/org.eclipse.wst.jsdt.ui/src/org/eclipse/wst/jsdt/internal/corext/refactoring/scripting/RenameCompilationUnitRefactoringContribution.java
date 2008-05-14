@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameCompilation
 /**
  * Refactoring contribution for the rename compilation unit refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class RenameCompilationUnitRefactoringContribution extends JDTRefactoringContribution {
 

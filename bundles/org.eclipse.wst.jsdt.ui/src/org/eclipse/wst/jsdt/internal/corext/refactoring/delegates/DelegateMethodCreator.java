@@ -37,7 +37,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 /**
  * Delegate creator for static and non-static methods.
  * 
- * @since 3.2
+ * 
  */
 public class DelegateMethodCreator extends DelegateCreator {
 

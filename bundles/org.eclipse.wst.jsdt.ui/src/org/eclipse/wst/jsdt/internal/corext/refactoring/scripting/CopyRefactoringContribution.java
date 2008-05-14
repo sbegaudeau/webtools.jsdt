@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaCopyRefactorin
 /**
  * Refactoring contribution for the copy refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class CopyRefactoringContribution extends JDTRefactoringContribution {
 

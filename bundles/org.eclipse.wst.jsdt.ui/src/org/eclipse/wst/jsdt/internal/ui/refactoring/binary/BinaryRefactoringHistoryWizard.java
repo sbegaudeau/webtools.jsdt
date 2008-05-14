@@ -72,7 +72,7 @@ import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
  * Partial implementation of a refactoring history wizard which creates stubs
  * from a binary package fragment root while refactoring.
  * 
- * @since 3.2
+ * 
  */
 public abstract class BinaryRefactoringHistoryWizard extends RefactoringHistoryWizard {
 

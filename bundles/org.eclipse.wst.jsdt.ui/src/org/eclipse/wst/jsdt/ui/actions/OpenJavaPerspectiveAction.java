@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
- * Action to programmatically open a Java perspective.
+ * Action to programmatically open a JavaScript perspective.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.

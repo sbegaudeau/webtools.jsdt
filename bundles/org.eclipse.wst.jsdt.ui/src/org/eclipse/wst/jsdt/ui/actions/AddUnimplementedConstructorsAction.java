@@ -82,7 +82,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 /**
  * Creates unimplemented constructors for a type.
  * <p>
- * Will open the parent compilation unit in a Java editor. Opens a dialog with a list of
+ * Will open the parent compilation unit in a JavaScript editor. Opens a dialog with a list of
  * constructors from the super class which can be generated. User is able to check or
  * uncheck items before constructors are generated. The result is unsaved, so the user can
  * decide if the changes are acceptable.
@@ -571,7 +571,7 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 	 * @return returns a runnable that creates the constructor stubs.
 	 * @throws IllegalArgumentException a {@link IllegalArgumentException} is thrown if the AST passed has not been created from a {@link IJavaScriptUnit}.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static IWorkspaceRunnable createRunnable(JavaScriptUnit astRoot, ITypeBinding type, IFunctionBinding[] constructorsToOverride, int insertPos, boolean createComments, int visibility, boolean omitSuper) {
 		AddUnimplementedConstructorsOperation operation= new AddUnimplementedConstructorsOperation(astRoot, type, constructorsToOverride, insertPos, true, true, false);
@@ -597,7 +597,7 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 		}
 	}
 
-	// ---- Java Editor --------------------------------------------------------------
+	// ---- JavaScript Editor --------------------------------------------------------------
 
 	/*
 	 * (non-Javadoc) Method declared on SelectionDispatchAction

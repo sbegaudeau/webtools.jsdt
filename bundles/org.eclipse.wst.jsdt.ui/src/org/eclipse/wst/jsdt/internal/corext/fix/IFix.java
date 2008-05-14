@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
  * which applied to a <code>IJavaScriptUnit</code> will fix
  * one or several problems.
  * 
- * @since 3.2
+ 
  */
 public interface IFix {
 	

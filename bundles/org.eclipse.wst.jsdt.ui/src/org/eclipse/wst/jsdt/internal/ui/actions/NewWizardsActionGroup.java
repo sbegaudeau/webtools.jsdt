@@ -28,7 +28,7 @@ import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
  * 
- * @since 2.1
+ * 
  */
 public class NewWizardsActionGroup extends ActionGroup {
 

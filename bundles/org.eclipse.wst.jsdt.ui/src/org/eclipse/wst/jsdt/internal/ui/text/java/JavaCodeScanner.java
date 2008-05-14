@@ -45,7 +45,7 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 	/**
 	 * Rule to detect java operators.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private static final class OperatorRule implements IRule {
 
@@ -99,7 +99,7 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 	/**
 	 * Rule to detect java brackets.
 	 *
-	 * @since 3.3
+	 * 
 	 */
 	private static final class BracketRule implements IRule {
 
@@ -190,7 +190,7 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 	 * It does not match if there is a comment between the '@' symbol and
 	 * the identifier. See https://bugs.eclipse.org/bugs/show_bug.cgi?id=82452
 	 *
-	 * @since 3.1
+	 * 
 	 */
 //	private static class AnnotationRule implements IRule, ISourceVersionDependent {
 //		/**

@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.PullUpRefactor
 /**
  * Refactoring contribution for the pull up refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class PullUpRefactoringContribution extends JDTRefactoringContribution {
 

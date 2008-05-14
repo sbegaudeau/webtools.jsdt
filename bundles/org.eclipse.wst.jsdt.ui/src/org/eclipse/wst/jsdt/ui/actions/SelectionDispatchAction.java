@@ -120,7 +120,7 @@ public abstract class SelectionDispatchAction extends Action implements ISelecti
 	 * selection provider. Clients can for example use a {@link ConvertingSelectionProvider}
 	 * to first convert a selection before passing it to the action.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public void setSpecialSelectionProvider(ISelectionProvider provider) {
 		fSpecialSelectionProvider= provider;

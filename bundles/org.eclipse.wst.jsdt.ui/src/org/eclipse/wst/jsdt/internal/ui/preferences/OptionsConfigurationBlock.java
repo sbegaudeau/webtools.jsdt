@@ -60,7 +60,7 @@ import org.osgi.service.prefs.BackingStoreException;
  * Abstract options configuration block providing a general implementation for setting up
  * an options configuration page.
  * 
- * @since 2.1
+ * 
  */
 public abstract class OptionsConfigurationBlock {
 	
@@ -770,7 +770,7 @@ public abstract class OptionsConfigurationBlock {
 	}
 
 	/**
-	 * @since 3.1
+	 * 
 	 */
 	public void performRevert() {
 		for (int i= 0; i < fAllKeys.length; i++) {

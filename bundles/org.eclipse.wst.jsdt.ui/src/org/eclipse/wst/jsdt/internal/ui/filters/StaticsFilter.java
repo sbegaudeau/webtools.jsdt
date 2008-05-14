@@ -16,7 +16,7 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.MemberFilter;
 /**
  * Statics filter.
  * 
- * @since 3.0
+ * 
  */
 public class StaticsFilter extends MemberFilter {
 	public StaticsFilter() {

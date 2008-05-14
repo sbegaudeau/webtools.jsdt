@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.spelling.JavaSpellingReconcileStrat
  * Reconciling strategy for Java code. This is a composite strategy containing the
  * regular java model reconciler and the comment spelling strategy.
  *
- * @since 3.0
+ * 
  */
 public class JavaCompositeReconcilingStrategy  extends CompositeReconcilingStrategy {
 
@@ -129,7 +129,7 @@ public class JavaCompositeReconcilingStrategy  extends CompositeReconcilingStrat
 	/**
 	 * Called before reconciling is started.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	public void aboutToBeReconciled() {
 		fJavaStrategy.aboutToBeReconciled();

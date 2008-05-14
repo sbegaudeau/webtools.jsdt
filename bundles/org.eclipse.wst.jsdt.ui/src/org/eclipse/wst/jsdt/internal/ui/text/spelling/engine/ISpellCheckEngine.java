@@ -20,7 +20,7 @@ import java.util.Locale;
  * dictionaries.
  * </p>
  *
- * @since 3.0
+ * 
  */
 public interface ISpellCheckEngine {
 

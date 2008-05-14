@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.MultiVariabl
 /**
  * Resolves to the lower bound of a type argument of another template variable.
  * 
- * @since 3.3
+ * 
  */
 public class TypeVariableResolver extends TemplateVariableResolver {
 
@@ -31,7 +31,7 @@ public class TypeVariableResolver extends TemplateVariableResolver {
 
 	/*
 	 * @see org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org.eclipse.jface.text.templates.TemplateVariable, org.eclipse.jface.text.templates.TemplateContext)
-	 * @since 3.3
+	 * 
 	 */
 	public void resolve(TemplateVariable variable, TemplateContext context) {
 		if (!(variable instanceof MultiVariable)) {

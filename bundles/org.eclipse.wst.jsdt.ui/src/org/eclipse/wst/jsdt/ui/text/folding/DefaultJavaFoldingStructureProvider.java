@@ -218,7 +218,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	}
 	
 	/**
-	 * A {@link ProjectionAnnotation} for java code.
+	 * A {@link ProjectionAnnotation} for JavaScript code.
 	 */
 	protected static final class JavaProjectionAnnotation extends ProjectionAnnotation {
 
@@ -230,7 +230,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 		 * 
 		 * @param isCollapsed <code>true</code> to set the initial state to collapsed,
 		 *        <code>false</code> to set it to expanded
-		 * @param element the java element this annotation refers to
+		 * @param element the JavaScript element this annotation refers to
 		 * @param isComment <code>true</code> for a foldable comment, <code>false</code> for a
 		 *        foldable code element
 		 */
@@ -314,7 +314,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	}
 	
 	/**
-	 * Matches java elements contained in a certain set.
+	 * Matches JavaScript elements contained in a certain set.
 	 */
 	private static final class JavaElementSetFilter implements Filter {
 		private final Set/*<? extends IJavaScriptElement>*/ fSet;
@@ -366,9 +366,9 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 		 * </p> 
 		 *  
 		 * @param ast the compilation unit AST
-		 * @param delta the Java element delta for the given AST element
+		 * @param delta the JavaScript element delta for the given AST element
 		 * @return <code>true</code> if the delta should be ignored
-		 * @since 3.3
+		 * 
 		 */
 		private boolean shouldIgnoreDelta(JavaScriptUnit ast, IJavaScriptElementDelta delta) {
 			if (ast == null)
@@ -545,7 +545,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 
 	/**
 	 * Projection position that will return two foldable regions: one folding away
-	 * the lines before the one containing the simple name of the java element, one
+	 * the lines before the one containing the simple name of the JavaScript element, one
 	 * folding away any lines after the caption.
 	 */
 	private static final class JavaElementPosition extends Position implements IProjectionPosition {
@@ -702,7 +702,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	
 	/**
 	 * Reusable scanner.
-	 * @since 3.3
+	 * 
 	 */
 	private IScanner fSharedScanner= ToolFactory.createScanner(true, false, false, false);
 	
@@ -975,7 +975,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	}
 
 	/**
-	 * Computes the folding structure for a given {@link IJavaScriptElement java element}. Computed
+	 * Computes the folding structure for a given {@link IJavaScriptElement JavaScript element}. Computed
 	 * projection annotations are
 	 * {@link DefaultJavaFoldingStructureProvider.FoldingStructureComputationContext#addProjectionRange(DefaultJavaFoldingStructureProvider.JavaProjectionAnnotation, Position) added}
 	 * to the computation context.
@@ -990,7 +990,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	 * </ul>
 	 * </p>
 	 * 
-	 * @param element the java element to compute the folding structure for
+	 * @param element the JavaScript element to compute the folding structure for
 	 * @param ctx the computation context
 	 */
 	protected void computeFoldingStructure(IJavaScriptElement element, FoldingStructureComputationContext ctx) {
@@ -1051,7 +1051,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	 * 
 	 * @param type the type to test
 	 * @return <code>true</code> if <code>type</code> is an anonymous enum declaration
-	 * @since 3.3
+	 * 
 	 */
 	private boolean isAnonymousEnum(IType type) {
 		try {
@@ -1078,10 +1078,10 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	 * <p>
 	 * The last region in the returned array (if not empty) describes the region for the java
 	 * element that implements the source reference. Any preceding regions describe javadoc comments
-	 * of that java element.
+	 * of that JavaScript element.
 	 * </p>
 	 * 
-	 * @param reference a java element that is a source reference
+	 * @param reference a JavaScript element that is a source reference
 	 * @param ctx the folding context
 	 * @return the regions to be folded
 	 */
@@ -1404,7 +1404,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	
 	/*
 	 * @see IJavaFoldingStructureProviderExtension#collapseMembers()
-	 * @since 3.2
+	 * 
 	 */
 	public final void collapseMembers() {
 		modifyFiltered(fMemberFilter, false);
@@ -1412,7 +1412,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 	
 	/*
 	 * @see IJavaFoldingStructureProviderExtension#collapseComments()
-	 * @since 3.2
+	 * 
 	 */
 	public final void collapseComments() {
 		modifyFiltered(fCommentFilter, false);

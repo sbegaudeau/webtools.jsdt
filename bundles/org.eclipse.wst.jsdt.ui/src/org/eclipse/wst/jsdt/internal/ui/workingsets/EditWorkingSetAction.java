@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 /**
  * Displays an IWorkingSetEditWizard for editing a working set.
  * 
- * @since 2.1
+ * 
  */
 public class EditWorkingSetAction extends Action {
 	private IWorkbenchPartSite fSite;

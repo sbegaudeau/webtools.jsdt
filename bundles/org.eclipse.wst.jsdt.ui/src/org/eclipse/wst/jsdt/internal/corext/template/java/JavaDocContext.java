@@ -58,7 +58,7 @@ public class JavaDocContext extends CompilationUnitContext {
 	 * @param document the document.
 	 * @param completionPosition the position defining the completion offset and length 
 	 * @param compilationUnit the compilation unit (may be <code>null</code>).
-	 * @since 3.2
+	 * 
 	 */
 	public JavaDocContext(TemplateContextType type, IDocument document, Position completionPosition, IJavaScriptUnit compilationUnit) {
 		super(type, document, completionPosition, compilationUnit);

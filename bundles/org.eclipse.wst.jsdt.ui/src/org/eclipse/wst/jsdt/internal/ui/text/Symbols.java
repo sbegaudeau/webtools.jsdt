@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.ui.text;
 /**
  * Symbols for the heuristic java scanner.
  *
- * @since 3.0
+ * 
  */
 public interface Symbols {
 	int TokenEOF= -1;

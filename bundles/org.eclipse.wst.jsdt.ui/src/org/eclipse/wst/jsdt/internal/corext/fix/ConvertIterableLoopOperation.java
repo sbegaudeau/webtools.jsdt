@@ -60,7 +60,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.correction.ASTResolving;
 /**
  * Operation to convert for loops over iterables to enhanced for loops.
  * 
- * @since 3.1
+ * 
  */
 public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 	

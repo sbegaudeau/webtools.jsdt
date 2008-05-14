@@ -27,7 +27,7 @@ import org.osgi.service.prefs.BackingStoreException;
  * Abstract preference and property page which is used to wrap a
  * {@link org.eclipse.wst.jsdt.internal.ui.preferences.IPreferenceAndPropertyConfigurationBlock}.
  * 
- * @since 3.3
+ * 
  */
 public abstract class AbstractConfigurationBlockPreferenceAndPropertyPage extends PropertyAndPreferencePage {
 	

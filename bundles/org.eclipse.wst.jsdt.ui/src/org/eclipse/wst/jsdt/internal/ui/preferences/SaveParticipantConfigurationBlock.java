@@ -34,7 +34,7 @@ import com.ibm.icu.text.Collator;
 /**
  * Configures Java Editor save participants.
  * 
- * @since 3.3
+ * 
  */
 class SaveParticipantConfigurationBlock implements IPreferenceAndPropertyConfigurationBlock {
 	
@@ -57,7 +57,7 @@ class SaveParticipantConfigurationBlock implements IPreferenceAndPropertyConfigu
 	
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.preferences.IPreferenceConfigurationBlock#createControl(org.eclipse.swt.widgets.Composite)
-	 * @since 3.3
+	 * 
 	 */
 	public Control createControl(Composite parent) {
 		Composite composite= new Composite(parent, SWT.NONE);

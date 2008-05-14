@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.Assert;
 /**
  * Describes a save participant contribution.
  *
- * @since 3.3
+ * 
  */
 public class SaveParticipantDescriptor {
 

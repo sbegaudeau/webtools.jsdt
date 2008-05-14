@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ExtractSuperty
 /**
  * Refactoring contribution for the extract supertype refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class ExtractSupertypeRefactoringContribution extends JDTRefactoringContribution {
 

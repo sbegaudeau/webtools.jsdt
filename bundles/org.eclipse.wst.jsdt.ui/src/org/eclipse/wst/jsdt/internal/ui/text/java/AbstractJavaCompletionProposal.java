@@ -80,7 +80,7 @@ import org.osgi.framework.Bundle;
 
 /**
  * 
- * @since 3.2
+ * 
  */
 public abstract class AbstractJavaCompletionProposal implements IJavaCompletionProposal, ICompletionProposalExtension, ICompletionProposalExtension2, ICompletionProposalExtension3, ICompletionProposalExtension5 {
 	
@@ -88,7 +88,7 @@ public abstract class AbstractJavaCompletionProposal implements IJavaCompletionP
 	/**
 	 * The control creator.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	private static final class ControlCreator extends AbstractReusableInformationControlCreator {
 		/*
@@ -217,12 +217,12 @@ public abstract class AbstractJavaCompletionProposal implements IJavaCompletionP
 	/**
 	 * The control creator.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private IInformationControlCreator fCreator;
 	/**
 	 * The CSS used to format javadoc information.
-	 * @since 3.3
+	 * 
 	 */
 	private static String fgCSSStyles;
 	
@@ -527,7 +527,7 @@ public abstract class AbstractJavaCompletionProposal implements IJavaCompletionP
 	 * Returns the style information for displaying HTML (Javadoc) content.
 	 * 
 	 * @return the CSS styles 
-	 * @since 3.3
+	 * 
 	 */
 	protected String getCSSStyles() {
 		if (fgCSSStyles == null) {
@@ -726,7 +726,7 @@ public abstract class AbstractJavaCompletionProposal implements IJavaCompletionP
 	 * @param document the document 
 	 * @param offset the offset
 	 * @return the prefix
-	 * @since 3.2
+	 * 
 	 */
 	protected String getPrefix(IDocument document, int offset) {
 		try {
@@ -746,7 +746,7 @@ public abstract class AbstractJavaCompletionProposal implements IJavaCompletionP
 	 * @return <code>true</code> if the string begins with the given prefix and
 	 *			<code>false</code> if <code>prefix</code> is longer than <code>string</code>
 	 *			or the string doesn't start with the given prefix 
-	 * @since 3.2
+	 * 
 	 */
 	protected boolean isPrefix(String prefix, String string) {
 		if (prefix == null || string ==null || prefix.length() > string.length())
@@ -768,7 +768,7 @@ public abstract class AbstractJavaCompletionProposal implements IJavaCompletionP
 	 * @param prefix the prefix to match against
 	 * @param string the string to match
 	 * @return a compound of prefix and any postfix taken from <code>string</code>
-	 * @since 3.2
+	 * 
 	 */
 	protected final String getCamelCaseCompound(String prefix, String string) {
 		if (prefix.length() > string.length())
@@ -795,7 +795,7 @@ public abstract class AbstractJavaCompletionProposal implements IJavaCompletionP
 	 * Returns true if camel case matching is enabled.
 	 * 
 	 * @return <code>true</code> if camel case matching is enabled
-	 * @since 3.2
+	 * 
 	 */
 	protected boolean isCamelCaseMatching() {
 		IJavaScriptProject project= getProject();
@@ -1022,7 +1022,7 @@ public abstract class AbstractJavaCompletionProposal implements IJavaCompletionP
 	 * 
 	 * @return <code>true</code> if required proposals are supported by this proposal
 	 * @see CompletionProposal#getRequiredProposals()
-	 * @since 3.3
+	 * 
 	 */
 	protected boolean isSupportingRequiredProposals() {
 		if (fInvocationContext == null || !(fProposalInfo instanceof MemberProposalInfo))

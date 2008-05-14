@@ -28,7 +28,7 @@ final public class TemplateInformationControlCreator implements IInformationCont
 	/**
 	 * The orientation to be used by this hover.
 	 * Allowed values are: SWT#RIGHT_TO_LEFT or SWT#LEFT_TO_RIGHT
-	 * @since 3.2
+	 * 
 	 */
 	private int fOrientation;
 

@@ -37,18 +37,18 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
  
 /**
- * A base content provider for Java elements. It provides access to the
- * Java element hierarchy without listening to changes in the Java model.
- * If updating the presentation on Java model change is required than 
- * clients have to subclass, listen to Java model changes and have to update
+ * A base content provider for JavaScriptelements. It provides access to the
+ * JavaScriptelement hierarchy without listening to changes in the JavaScriptmodel.
+ * If updating the presentation on JavaScript model change is required than 
+ * clients have to subclass, listen to JavaScript model changes and have to update
  * the UI using corresponding methods provided by the JFace viewers or their 
  * own UI presentation.
  * <p>
- * The following Java element hierarchy is surfaced by this content provider:
+ * The following JavaScript element hierarchy is surfaced by this content provider:
  * <p>
  * <pre>
-Java model (<code>IJavaScriptModel</code>)
-   Java project (<code>IJavaScriptProject</code>)
+JavaScript model (<code>IJavaScriptModel</code>)
+   JavaScript project (<code>IJavaScriptProject</code>)
       package fragment root (<code>IPackageFragmentRoot</code>)
          package fragment (<code>IPackageFragment</code>)
             compilation unit (<code>IJavaScriptUnit</code>)
@@ -56,12 +56,12 @@ Java model (<code>IJavaScriptModel</code>)
  * </pre>
  * </p> 			
  * <p>
- * Note that when the entire Java project is declared to be package fragment root,
+ * Note that when the entire JavaScript project is declared to be package fragment root,
  * the corresponding package fragment root element that normally appears between the
- * Java project and the package fragments is automatically filtered out.
+ * JavaScript project and the package fragments is automatically filtered out.
  * </p>
  * 
- * @since 2.0
+ * 
  */
 public class StandardJavaScriptElementContentProvider implements ITreeContentProvider, IWorkingCopyProvider {
 
@@ -113,7 +113,7 @@ public class StandardJavaScriptElementContentProvider implements ITreeContentPro
 	}
 	
 	/**
-	 * @deprecated Since 3.0 compilation unit children are always provided as working copies. The Java model
+	 * @deprecated Since 3.0 compilation unit children are always provided as working copies. The JavaScript model
 	 * does not support the 'original' mode anymore. 
 	 */
 	public boolean getProvideWorkingCopy() {
@@ -274,7 +274,7 @@ public class StandardJavaScriptElementContentProvider implements ITreeContentPro
 		
 		if (element instanceof IParent) {
 			try {
-				// when we have Java children return true, else we fetch all the children
+				// when we have JavaScript children return true, else we fetch all the children
 				if (((IParent)element).hasChildren())
 					return true;
 			} catch(JavaScriptModelException e) {
@@ -301,7 +301,7 @@ public class StandardJavaScriptElementContentProvider implements ITreeContentPro
 	 * @exception JavaScriptModelException if the package fragment root does not exist or if an
 	 *      exception occurs while accessing its corresponding resource
 	 *      
-	 * @since 3.3
+	 * 
 	 */
 	protected Object[] getPackageFragmentRootContent(IPackageFragmentRoot root) throws JavaScriptModelException {
 		IJavaScriptElement[] fragments= root.getChildren();
@@ -316,9 +316,9 @@ public class StandardJavaScriptElementContentProvider implements ITreeContentPro
 	
 	/**
 	 * Evaluates all children of a given {@link IJavaScriptProject}. Clients can override this method.
-	 * @param project The Java project to evaluate the children for.
+	 * @param project The JavaScript project to evaluate the children for.
 	 * @return The children of the project. Typically these are package fragment roots but can also be other elements.
-	 * @exception JavaScriptModelException if the Java project does not exist or if an
+	 * @exception JavaScriptModelException if the JavaScript project does not exist or if an
 	 *      exception occurs while accessing its corresponding resource
 	 */
 	protected Object[] getPackageFragmentRoots(IJavaScriptProject project) throws JavaScriptModelException {
@@ -361,7 +361,7 @@ public class StandardJavaScriptElementContentProvider implements ITreeContentPro
 	 * @exception JavaScriptModelException if the package fragment does not exist or if an
 	 *      exception occurs while accessing its corresponding resource
 	 *      
-	 * @since 3.3
+	 * 
 	 */
 	protected Object[] getPackageContent(IPackageFragment fragment) throws JavaScriptModelException {
 		if (fragment.getKind() == IPackageFragmentRoot.K_SOURCE) {
@@ -376,7 +376,7 @@ public class StandardJavaScriptElementContentProvider implements ITreeContentPro
 	 * @return The children of the given package fragment.
 	 * @exception CoreException if the folder does not exist.
 	 *      
-	 * @since 3.3
+	 * 
 	 */
 	protected Object[] getFolderContent(IFolder folder) throws CoreException {
 		IResource[] members= folder.members();
@@ -385,13 +385,13 @@ public class StandardJavaScriptElementContentProvider implements ITreeContentPro
 			return members;
 		boolean isFolderOnClasspath = javaProject.isOnIncludepath(folder);
 		List nonJavaResources= new ArrayList();
-		// Can be on classpath but as a member of non-java resource folder
+		// Can be on classpath but as a member of non-JavaScript resource folder
 		for (int i= 0; i < members.length; i++) {
 			IResource member= members[i];
-			// A resource can also be a java element
+			// A resource can also be a JavaScript element
 			// in the case of exclusion and inclusion filters.
-			// We therefore exclude Java elements from the list
-			// of non-Java resources.
+			// We therefore exclude JavaScript elements from the list
+			// of non-JavaScript resources.
 			if (isFolderOnClasspath) {
 				if (javaProject.findPackageFragmentRoot(member.getFullPath()) == null) {
 					nonJavaResources.add(member);

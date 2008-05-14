@@ -41,13 +41,13 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.IndentUtil.IndentResult;
 
 /**
  * Action for moving selected lines in a Java editor.
- * @since 3.1
+ * 
  */
 public class JavaMoveLinesAction extends TextEditorAction {
 
 	/**
 	 * State shared by the Move / Copy lines action quadruple.
-	 * @since 3.1
+	 * 
 	 */
 	private static final class SharedState {
 		/** The compilation unit editor that all four actions operate on. */

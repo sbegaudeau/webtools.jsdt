@@ -83,7 +83,7 @@ public class PullUpAction extends SelectionDispatchAction {
 	 * this constructor.
 	 * 
 	 * @param editor
-	 *            the java editor
+	 *            the JavaScript editor
 	 */
 	public PullUpAction(JavaEditor editor) {
 		this(editor.getEditorSite());

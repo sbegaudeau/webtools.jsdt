@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalComparator;
 /**
  * A relevance based sorter.
  * 
- * @since 3.2
+ * 
  */
 public final class RelevanceSorter extends AbstractProposalSorter {
 

@@ -231,7 +231,7 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 	 * Remembers the selection in the content assist history.
 	 * 
 	 * @throws JavaScriptModelException if anything goes wrong
-	 * @since 3.2
+	 * 
 	 */
 	protected final void rememberSelection() throws JavaScriptModelException {
 		IType lhs= fInvocationContext.getExpectedType();
@@ -370,7 +370,7 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 	
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.LazyJavaCompletionProposal#computeContextInformation()
-	 * @since 3.3
+	 * 
 	 */
 	protected IContextInformation computeContextInformation() {
 		char[] signature= fProposal.getSignature();

@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 /**
  * Action to run content assist on a specific proposal category.
  * 
- * @since 3.2
+ * 
  */
 final class SpecificContentAssistAction extends Action implements IUpdate {
 	/**

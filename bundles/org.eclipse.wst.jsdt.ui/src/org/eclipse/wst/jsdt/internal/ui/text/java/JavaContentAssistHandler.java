@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.SpecificContentAssistExecutor
 
 /**
  * 
- * @since 3.2
+ * 
  */
 public final class JavaContentAssistHandler extends AbstractHandler {
 	private final SpecificContentAssistExecutor fExecutor= new SpecificContentAssistExecutor(CompletionProposalComputerRegistry.getDefault());

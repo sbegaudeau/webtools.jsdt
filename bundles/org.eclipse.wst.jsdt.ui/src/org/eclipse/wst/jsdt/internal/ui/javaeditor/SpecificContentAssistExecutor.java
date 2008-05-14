@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.java.CompletionProposalComputerRegi
 /**
  * A content assist executor can invoke content assist for a specific proposal category on an editor.
  *  
- * @since 3.2
+ * 
  */
 public final class SpecificContentAssistExecutor {
 

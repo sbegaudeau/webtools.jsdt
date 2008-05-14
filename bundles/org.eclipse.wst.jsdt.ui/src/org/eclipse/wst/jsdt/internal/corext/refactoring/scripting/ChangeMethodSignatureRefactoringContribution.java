@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ChangeSignatur
 /**
  * Refactoring contribution for the change method signature refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class ChangeMethodSignatureRefactoringContribution extends JDTRefactoringContribution {
 

@@ -48,7 +48,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptUI;
  * Sorts the members of a compilation unit with the sort order as specified in
  * the Sort Order preference page.
  * <p>
- * The action will open the parent compilation unit in a Java editor. The result
+ * The action will open the parent compilation unit in a JavaScript editor. The result
  * is unsaved, so the user can decide if the changes are acceptable.
  * <p>
  * The action is applicable to structured selections containing a single
@@ -161,7 +161,7 @@ public class SortMembersAction extends SelectionDispatchAction {
 		return false;
 	}
 
-	//---- Java Editor --------------------------------------------------------------
+	//---- JavaScript Editor --------------------------------------------------------------
 	
 	/* (non-Javadoc)
 	 * Method declared on SelectionDispatchAction

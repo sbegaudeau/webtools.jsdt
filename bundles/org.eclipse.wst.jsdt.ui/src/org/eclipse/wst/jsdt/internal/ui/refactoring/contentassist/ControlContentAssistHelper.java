@@ -28,7 +28,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.ContentAssistPreference;
 
 
 /**
- * @since 3.0
+ * 
  */
 public class ControlContentAssistHelper {
 	

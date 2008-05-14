@@ -52,17 +52,17 @@ public class JavaCommentScanner extends AbstractJavaScanner{
 		private IToken fToken;
 		/**
 		 * Uppercase words
-		 * @since 3.0
+		 * 
 		 */
 		private Map fUppercaseWords= new HashMap();
 		/**
 		 * <code>true</code> if task tag detection is case-sensitive.
-		 * @since 3.0
+		 * 
 		 */
 		private boolean fCaseSensitive= true;
 		/**
 		 * Buffer for uppercase word
-		 * @since 3.0
+		 * 
 		 */
 		private CombinedWordRule.CharacterBuffer fBuffer= new CombinedWordRule.CharacterBuffer(16);
 
@@ -72,7 +72,7 @@ public class JavaCommentScanner extends AbstractJavaScanner{
 
 		/*
 		 * @see org.eclipse.wst.jsdt.internal.ui.text.CombinedWordRule.WordMatcher#clearWords()
-		 * @since 3.0
+		 * 
 		 */
 		public synchronized void clearWords() {
 			super.clearWords();
@@ -100,7 +100,7 @@ public class JavaCommentScanner extends AbstractJavaScanner{
 
 		/*
 		 * @see org.eclipse.wst.jsdt.internal.ui.text.CombinedWordRule.WordMatcher#addWord(java.lang.String, org.eclipse.jface.text.rules.IToken)
-		 * @since 3.0
+		 * 
 		 */
 		public synchronized void addWord(String word, IToken token) {
 			Assert.isNotNull(word);
@@ -112,7 +112,7 @@ public class JavaCommentScanner extends AbstractJavaScanner{
 
 		/*
 		 * @see org.eclipse.wst.jsdt.internal.ui.text.CombinedWordRule.WordMatcher#evaluate(org.eclipse.jface.text.rules.ICharacterScanner, org.eclipse.wst.jsdt.internal.ui.text.CombinedWordRule.CharacterBuffer)
-		 * @since 3.0
+		 * 
 		 */
 		public synchronized IToken evaluate(ICharacterScanner scanner, CombinedWordRule.CharacterBuffer word) {
 			if (fCaseSensitive)
@@ -132,7 +132,7 @@ public class JavaCommentScanner extends AbstractJavaScanner{
 		 * Is task tag detection case-senstive?
 		 *
 		 * @return <code>true</code> iff task tag detection is case-sensitive
-		 * @since 3.0
+		 * 
 		 */
 		public boolean isCaseSensitive() {
 			return fCaseSensitive;
@@ -142,7 +142,7 @@ public class JavaCommentScanner extends AbstractJavaScanner{
 		 * Enables/disables the case-sensitivity of the task tag detection.
 		 *
 		 * @param caseSensitive <code>true</code> iff case-sensitivity should be enabled
-		 * @since 3.0
+		 * 
 		 */
 		public void setCaseSensitive(boolean caseSensitive) {
 			fCaseSensitive= caseSensitive;
@@ -153,12 +153,12 @@ public class JavaCommentScanner extends AbstractJavaScanner{
 	protected static final String TASK_TAG= IJavaScriptColorConstants.TASK_TAG;
 	/**
 	 * Preference key of a string preference, specifying if task tag detection is case-sensitive.
-	 * @since 3.0
+	 * 
 	 */
 	private static final String COMPILER_TASK_CASE_SENSITIVE= JavaScriptCore.COMPILER_TASK_CASE_SENSITIVE;
 	/**
 	 * Preference value of enabled preferences.
-	 * @since 3.0
+	 * 
 	 */
 	private static final String ENABLED= JavaScriptCore.ENABLED;
 
@@ -188,7 +188,7 @@ public class JavaCommentScanner extends AbstractJavaScanner{
 	 * @param store Preference store
 	 * @param defaultTokenProperty Default token property
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	public JavaCommentScanner(IColorManager manager, IPreferenceStore store, String defaultTokenProperty) {
 		this(manager, store, null, defaultTokenProperty, new String[] { defaultTokenProperty, TASK_TAG });
@@ -202,7 +202,7 @@ public class JavaCommentScanner extends AbstractJavaScanner{
 	 * @param defaultTokenProperty Default token property
 	 * @param tokenProperties Token properties
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	public JavaCommentScanner(IColorManager manager, IPreferenceStore store, String defaultTokenProperty, String[] tokenProperties) {
 		this(manager, store, null, defaultTokenProperty, tokenProperties);

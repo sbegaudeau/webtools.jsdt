@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalComparator;
 /**
  * A alphabetic proposal based sorter.
  * 
- * @since 3.2
+ * 
  */
 public final class AlphabeticSorter extends AbstractProposalSorter {
 

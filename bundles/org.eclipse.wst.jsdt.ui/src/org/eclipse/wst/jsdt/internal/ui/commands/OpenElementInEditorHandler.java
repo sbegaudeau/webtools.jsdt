@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 /**
  * A command handler to open a java element in its editor.
  * 
- * @since 3.2
+ * 
  */
 public class OpenElementInEditorHandler extends AbstractHandler {
 

@@ -139,7 +139,7 @@ public class TemplateEngine {
 	 * selected.
 	 *
 	 * @return <code>true</code> if one or multiple lines are selected
-	 * @since 2.1
+	 * 
 	 */
 	private boolean areMultipleLinesSelected(ITextViewer viewer) {
 		if (viewer == null)

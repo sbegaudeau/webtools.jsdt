@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * Event fired by spell checkers.
  *
- * @since 3.0
+ * 
  */
 public interface ISpellEvent {
 

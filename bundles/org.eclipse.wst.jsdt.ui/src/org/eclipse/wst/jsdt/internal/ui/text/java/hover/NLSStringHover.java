@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 /**
  * Provides externalized string as hover info for NLS key.
  *
- * @since 3.1
+ * 
  */
 public class NLSStringHover extends AbstractJavaEditorTextHover {
 

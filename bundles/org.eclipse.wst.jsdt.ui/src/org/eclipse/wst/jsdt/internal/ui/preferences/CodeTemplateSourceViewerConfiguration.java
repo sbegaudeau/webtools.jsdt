@@ -150,7 +150,7 @@ public class CodeTemplateSourceViewerConfiguration extends SimpleJavaSourceViewe
 	
 	/*
 	 * @see SourceViewerConfiguration#getTextHover(ISourceViewer, String, int)
-	 * @since 2.1
+	 * 
 	 */
 	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
 		return new TemplateVariableTextHover(fProcessor);

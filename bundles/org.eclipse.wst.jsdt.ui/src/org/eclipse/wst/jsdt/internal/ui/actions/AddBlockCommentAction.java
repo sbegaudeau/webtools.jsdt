@@ -29,7 +29,7 @@ import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
  * Action that encloses the editor's current selection with Java block comment terminators
  * (<code>&#47;&#42;</code> and <code>&#42;&#47;</code>).
  * 
- * @since 3.0
+ * 
  */
 public class AddBlockCommentAction extends BlockCommentAction {
 

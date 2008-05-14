@@ -125,7 +125,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
  * see the target method, this refactoring will try to adjust the visibility of the target method and
  * enclosing types as well. However, the latter is only possible if the target method is from source.
  * 
- * @since 3.2
+ * 
  * 
  */
 public class IntroduceIndirectionRefactoring extends ScriptableRefactoring {

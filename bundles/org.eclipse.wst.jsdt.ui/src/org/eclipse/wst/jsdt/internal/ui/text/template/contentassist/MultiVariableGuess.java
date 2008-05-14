@@ -259,7 +259,7 @@ public class MultiVariableGuess {
 	/**
 	 * @param master
 	 * @param slave
-	 * @since 3.3
+	 * 
 	 */
 	public void addDependency(MultiVariable master, MultiVariable slave) {
 		// check for cycles and multi-slaves

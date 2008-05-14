@@ -35,7 +35,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 /**
  * Java-aware synchronization compare adapter.
  * 
- * @since 3.2
+ * 
  */
 public final class JavaSynchronizationCompareAdapter extends AbstractSynchronizationCompareAdapter {
 

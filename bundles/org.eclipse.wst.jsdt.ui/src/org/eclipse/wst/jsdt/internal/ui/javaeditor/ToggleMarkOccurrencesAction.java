@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
  * A toolbar action which toggles the {@linkplain org.eclipse.wst.jsdt.ui.PreferenceConstants#EDITOR_MARK_OCCURRENCES mark occurrences preference}.
  *
- * @since 3.0
+ * 
  */
 public class ToggleMarkOccurrencesAction extends TextEditorAction implements IPropertyChangeListener {
 

@@ -31,28 +31,28 @@ public class CodeGeneration {
 	/**
 	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, IJavaScriptUnit, String, String)} to get the code template used
 	 * for a new class type body.
-	 * @since 3.2
+	 * 
 	 */
 	public static final String CLASS_BODY_TEMPLATE_ID= CodeTemplateContextType.CLASSBODY_ID;
 	
 	/**
 	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, IJavaScriptUnit, String, String)} to get the code template used
 	 * for a new interface type body.
-	 * @since 3.2
+	 * 
 	 */
 	public static final String INTERFACE_BODY_TEMPLATE_ID= CodeTemplateContextType.INTERFACEBODY_ID;
 	
 	/**
 	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, IJavaScriptUnit, String, String)} to get the code template used
 	 * for a new enum type body.
-	 * @since 3.2
+	 * 
 	 */
 	public static final String ENUM_BODY_TEMPLATE_ID= CodeTemplateContextType.ENUMBODY_ID;
 	
 	/**
 	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, IJavaScriptUnit, String, String)} to get the code template used
 	 * for a new annotation type body.
-	 * @since 3.2
+	 * 
 	 */
 	public static final String ANNOTATION_BODY_TEMPLATE_ID= CodeTemplateContextType.ANNOTATIONBODY_ID;
 	
@@ -62,7 +62,7 @@ public class CodeGeneration {
 	}
 	
 	/**
-	 * Returns the content for a new compilation unit using the 'new Java file' code template.
+	 * Returns the content for a new compilation unit using the 'new JavaScript file' code template.
 	 * @param cu The compilation unit to create the source for. The compilation unit does not need to exist.
 	 * @param typeComment The comment for the type to be created. Used when the code template contains a <i>${typecomment}</i> variable. Can be <code>null</code> if
 	 * no comment should be added.
@@ -76,7 +76,7 @@ public class CodeGeneration {
 	}
 	
 	/**
-	 * Returns the content for a new compilation unit using the 'new Java file' code template.
+	 * Returns the content for a new compilation unit using the 'new JavaScript file' code template.
 	 * @param cu The compilation unit to create the source for. The compilation unit does not need to exist.
 	 * 	@param fileComment The file comment to be used when the code template contains a <i>${filecomment}</i> variable. Can be <code>null</code> if
 	 * no comment should be added.
@@ -86,7 +86,7 @@ public class CodeGeneration {
 	 * @param lineDelimiter The line delimiter to be used.
 	 * @return Returns the new content or <code>null</code> if the template is undefined or empty.
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
-	 * @since 3.1
+	 * 
 	 */
 	public static String getCompilationUnitContent(IJavaScriptUnit cu, String fileComment, String typeComment, String typeContent, String lineDelimiter) throws CoreException {	
 		return StubUtility.getCompilationUnitContent(cu, fileComment, typeComment, typeContent, lineDelimiter);
@@ -98,7 +98,7 @@ public class CodeGeneration {
 	 * @param lineDelimiter The line delimiter to be used.
 	 * @return Returns the new content or <code>null</code> if the code template is undefined or empty. The returned content is unformatted and is not indented.
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
-	 * @since 3.1
+	 * 
 	 */	
 	public static String getFileComment(IJavaScriptUnit cu, String lineDelimiter) throws CoreException {
 		return StubUtility.getFileComment(cu, lineDelimiter);
@@ -126,7 +126,7 @@ public class CodeGeneration {
 	 * @param lineDelimiter The line delimiter to be used.
 	 * @return Returns the new content or <code>null</code> if the code template is undefined or empty. The returned content is unformatted and is not indented.
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
-	 * @since 3.1
+	 * 
 	 */	
 	public static String getTypeComment(IJavaScriptUnit cu, String typeQualifiedName, String[] typeParameterNames, String lineDelimiter) throws CoreException {
 		return StubUtility.getTypeComment(cu, typeQualifiedName, typeParameterNames, lineDelimiter);
@@ -141,7 +141,7 @@ public class CodeGeneration {
 	 * @param lineDelim The line delimiter to be used.
 	 * @return Returns the new content or <code>null</code> if the code template is undefined or empty. The returned content is unformatted and is not indented.
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
-	 * @since 3.2
+	 * 
 	 */	
 	public static String getTypeBody(String typeKind, IJavaScriptUnit cu, String typeName, String lineDelim) throws CoreException {
 		return StubUtility.getTypeBody(typeKind, cu, typeName, lineDelim);
@@ -155,7 +155,7 @@ public class CodeGeneration {
 	 * @param lineDelimiter The line delimiter to be used.
 	 * @return Returns the new content or <code>null</code> if the code template is undefined or empty. The returned content is unformatted and is not indented.
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
-	 * @since 3.0
+	 * 
 	 */	
 	public static String getFieldComment(IJavaScriptUnit cu, String typeName, String fieldName, String lineDelimiter) throws CoreException {
 		return StubUtility.getFieldComment(cu, typeName, fieldName, lineDelimiter);
@@ -237,7 +237,7 @@ public class CodeGeneration {
 	 * @return Returns the constructed comment or <code>null</code> if
 	 * the comment code template is empty. The returned content is unformatted and not indented (formatting required).
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
-	 * @since 3.1
+	 * 
 	 */
 	public static String getMethodComment(IJavaScriptUnit cu, String declaringTypeName, String methodName, String[] paramNames, String[] excTypeSig, String retTypeSig, String[] typeParameterNames, IFunction overridden, String lineDelimiter) throws CoreException {
 		return StubUtility.getMethodComment(cu, declaringTypeName, methodName, paramNames, excTypeSig, retTypeSig, typeParameterNames, overridden, false, lineDelimiter);
@@ -288,7 +288,7 @@ public class CodeGeneration {
 	 * @return Returns the constructed comment or <code>null</code> if
 	 * the comment code template is empty. The returned string is unformatted and and has no indent (formatting required).
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
-	 * @since 3.2
+	 * 
 	 */
 
 	public static String getMethodComment(IJavaScriptUnit cu, String declaringTypeName, FunctionDeclaration decl, boolean isDeprecated, String overriddenMethodName, String overriddenMethodDeclaringTypeName, String[] overriddenMethodParameterTypeNames, String lineDelimiter) throws CoreException {
@@ -329,7 +329,7 @@ public class CodeGeneration {
 	 * @return Returns the constructed body content or <code>null</code> if
 	 * the comment code template is empty. The returned string is unformatted and and has no indent (formatting required).
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
-	 * @since 3.0
+	 * 
 	 */	
 	public static String getGetterMethodBodyContent(IJavaScriptUnit cu, String declaringTypeName, String methodName, String fieldName, String lineDelimiter) throws CoreException {
 		return StubUtility.getGetterMethodBodyContent(cu.getJavaScriptProject(), declaringTypeName, methodName, fieldName, lineDelimiter);
@@ -350,7 +350,7 @@ public class CodeGeneration {
 	 * @return Returns the constructed body content or <code>null</code> if
 	 * the comment code template is empty. The returned string is unformatted and and has no indent (formatting required).
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
-	 * @since 3.0
+	 * 
 	 */	
 	public static String getSetterMethodBodyContent(IJavaScriptUnit cu, String declaringTypeName, String methodName, String fieldName, String paramName, String lineDelimiter) throws CoreException {
 		return StubUtility.getSetterMethodBodyContent(cu.getJavaScriptProject(), declaringTypeName, methodName, fieldName, paramName, lineDelimiter);
@@ -372,7 +372,7 @@ public class CodeGeneration {
 	 * @return Returns the generated getter comment or <code>null</code> if the
 	 * code template is empty. The returned content is not indented.
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
-	 * @since 3.0
+	 * 
 	 */
 	public static String getGetterComment(IJavaScriptUnit cu, String declaringTypeName, String methodName, String fieldName, String fieldType, String bareFieldName, String lineDelimiter) throws CoreException {
 		return StubUtility.getGetterComment(cu, declaringTypeName, methodName, fieldName, fieldType, bareFieldName, lineDelimiter);
@@ -395,7 +395,7 @@ public class CodeGeneration {
 	 * @return Returns the generated setter comment or <code>null</code> if the
 	 * code template is empty. The returned comment is not indented.
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
-	 * @since 3.0
+	 * 
 	 */
 	public static String getSetterComment(IJavaScriptUnit cu, String declaringTypeName, String methodName, String fieldName, String fieldType, String paramName, String bareFieldName, String lineDelimiter) throws CoreException {
 		return StubUtility.getSetterComment(cu, declaringTypeName, methodName, fieldName, fieldType, paramName, bareFieldName, lineDelimiter);

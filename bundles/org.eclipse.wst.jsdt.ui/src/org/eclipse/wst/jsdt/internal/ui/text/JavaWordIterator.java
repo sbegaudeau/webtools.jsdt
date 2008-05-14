@@ -22,7 +22,7 @@ import com.ibm.icu.text.BreakIterator;
  * Breaks java text into word starts, also stops at line start and end. No
  * direction dependency.
  *
- * @since 3.0
+ * 
  */
 public class JavaWordIterator extends BreakIterator {
 

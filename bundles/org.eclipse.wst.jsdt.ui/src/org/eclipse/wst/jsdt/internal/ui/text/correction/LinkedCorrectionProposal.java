@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.core.dom.rewrite.ITrackedNodePosition;
  * Either a rewriter is directly passed in the constructor or method {@link #getRewrite()} is overridden
  * to provide the AST rewriter that is evaluated to the document when the proposal is
  * applied.
- * @since 3.0
+ * 
  */
 public class LinkedCorrectionProposal extends ASTRewriteCorrectionProposal {
 

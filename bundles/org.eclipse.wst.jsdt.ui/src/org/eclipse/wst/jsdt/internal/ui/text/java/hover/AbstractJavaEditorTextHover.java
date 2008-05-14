@@ -46,12 +46,12 @@ import org.osgi.framework.Bundle;
 /**
  * Abstract class for providing hover information for Java elements.
  *
- * @since 2.1
+ * 
  */
 public abstract class AbstractJavaEditorTextHover implements IJavaEditorTextHover, ITextHoverExtension {
 	/**
 	 * The style sheet (css).
-	 * @since 3.2
+	 * 
 	 */
 	private static String fgStyleSheet;
 	private IEditorPart fEditor;
@@ -127,7 +127,7 @@ public abstract class AbstractJavaEditorTextHover implements IJavaEditorTextHove
 	 *
 	 * @param javaElements the Java elements for which to provide hover information
 	 * @return the hover information string
-	 * @since 2.1
+	 * 
 	 */
 	protected String getHoverInfo(IJavaScriptElement[] javaElements) {
 		return null;
@@ -135,7 +135,7 @@ public abstract class AbstractJavaEditorTextHover implements IJavaEditorTextHove
 
 	/*
 	 * @see ITextHoverExtension#getHoverControlCreator()
-	 * @since 3.0
+	 * 
 	 */
 	public IInformationControlCreator getHoverControlCreator() {
 		return new IInformationControlCreator() {

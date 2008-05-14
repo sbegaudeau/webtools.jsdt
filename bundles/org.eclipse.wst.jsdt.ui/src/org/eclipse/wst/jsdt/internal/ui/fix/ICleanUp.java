@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
  * compiled by using the compiler options returned by
  * <code>getRequiredOptions</code>.
  * 
- * @since 3.2
+ * 
  */
 public interface ICleanUp {
 	

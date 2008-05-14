@@ -41,7 +41,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.TypingRun.ChangeType;
  * Undo specifications are removed after a number of typing runs.
  * </p>
  *
- * @since 3.0
+ * 
  */
 public class SmartBackspaceManager {
 	/* independent of JDT - may be moved to jface.text */
@@ -50,7 +50,7 @@ public class SmartBackspaceManager {
 	 * An undo specification describes the change that should be executed if
 	 * backspace is pressed at its trigger offset.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	public static final class UndoSpec {
 		private final int triggerOffset;

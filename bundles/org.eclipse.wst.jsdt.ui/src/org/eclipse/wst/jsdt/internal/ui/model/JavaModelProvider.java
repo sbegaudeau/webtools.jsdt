@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;
 /**
  * Java-aware model provider.
  * 
- * @since 3.2
+ * 
  */
 public final class JavaModelProvider extends ModelProvider {
 

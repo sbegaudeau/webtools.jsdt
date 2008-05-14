@@ -26,7 +26,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * Menu contribution item which shows and lets select a working set.
  * 
- * @since 2.0
+ * 
  */
 public class WorkingSetMenuContributionItem extends ContributionItem {
 
@@ -78,7 +78,7 @@ public class WorkingSetMenuContributionItem extends ContributionItem {
 	
 	/*
 	 * @see org.eclipse.jface.action.ContributionItem#dispose()
-	 * @since 3.0
+	 * 
 	 */
 	public void dispose() {
 		if (fImage != null && !fImage.isDisposed())

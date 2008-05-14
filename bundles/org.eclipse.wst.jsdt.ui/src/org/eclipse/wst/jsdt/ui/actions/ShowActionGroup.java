@@ -68,7 +68,7 @@ public class ShowActionGroup extends ActionGroup {
 	
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param part the Java editor
+	 * @param part the JavaScript editor
 	 */
 	public ShowActionGroup(JavaEditor part) {
 		fShowInPackagesViewAction= new ShowInPackageViewAction(part);

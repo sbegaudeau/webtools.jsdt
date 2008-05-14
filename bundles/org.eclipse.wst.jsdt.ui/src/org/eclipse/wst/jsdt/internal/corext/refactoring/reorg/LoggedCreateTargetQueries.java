@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 /**
  * Logged implementation of new create target queries.
  * 
- * @since 3.3
+ * 
  */
 public final class LoggedCreateTargetQueries implements ICreateTargetQueries {
 

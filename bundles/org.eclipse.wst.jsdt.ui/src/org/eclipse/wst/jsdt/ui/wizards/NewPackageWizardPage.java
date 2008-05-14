@@ -299,7 +299,7 @@ public class NewPackageWizardPage extends NewContainerWizardPage {
 	 * Returns the resource handle that corresponds to the element to was created or
 	 * will be created.
 	 * @return A resource or null if the page contains illegal values.
-	 * @since 3.0
+	 * 
 	 */
 	public IResource getModifiedResource() {
 		IPackageFragmentRoot root= getPackageFragmentRoot();
@@ -347,7 +347,7 @@ public class NewPackageWizardPage extends NewContainerWizardPage {
 	 * monitor must not be <code>null</code>
 	 * @throws CoreException Thrown if creating the package failed.
 	 * @throws InterruptedException Thrown when the operation has been canceled.
-	 * @since 2.1
+	 * 
 	 */
 	public void createPackage(IProgressMonitor monitor) throws CoreException, InterruptedException {
 		if (monitor == null) {

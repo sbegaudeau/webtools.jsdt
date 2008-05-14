@@ -96,7 +96,7 @@ public class WorkingCopyManager implements IWorkingCopyManager, IWorkingCopyMana
 	 * @return the working copy of the compilation unit, or <code>null</code> if the
 	 *   input does not encode an editor input, or if there is no remembered working
 	 *   copy for this compilation unit
-	 * @since 3.2
+	 * 
 	 */
 	public IJavaScriptUnit getWorkingCopy(IEditorInput input, boolean primaryOnly) {
 		IJavaScriptUnit unit= fMap == null ? null : (IJavaScriptUnit) fMap.get(input);

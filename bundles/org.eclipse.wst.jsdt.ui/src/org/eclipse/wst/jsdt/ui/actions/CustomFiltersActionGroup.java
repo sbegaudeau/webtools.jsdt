@@ -85,7 +85,7 @@ public class CustomFiltersActionGroup extends ActionGroup {
 	/**
 	 * Menu contribution item which shows and lets check and uncheck filters.
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	class FilterActionMenuContributionItem extends ContributionItem {
 
@@ -198,27 +198,27 @@ public class CustomFiltersActionGroup extends ActionGroup {
 	/**
 	 * Recently changed filter Ids stack with oldest on top (i.e. at the end).
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private Stack fLRUFilterIdsStack; 
 	/**
 	 * Handle to menu manager to dynamically update
 	 * the last recently used filters.
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	private IMenuManager fMenuManager;
 	/**
 	 * The menu listener which dynamically updates
 	 * the last recently used filters.
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	private IMenuListener fMenuListener;
 	/**
 	 * Filter Ids used in the last view menu invocation.
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	private String[] fFilterIdsUsedInLastViewMenu;
 
@@ -286,7 +286,7 @@ public class CustomFiltersActionGroup extends ActionGroup {
 	 * 
 	 * @return a list of currently enabled filters
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public String[] internalGetEnabledFilterIds() {
 		ArrayList enabledFilterIds= new ArrayList();
@@ -389,7 +389,7 @@ public class CustomFiltersActionGroup extends ActionGroup {
 	 * Sets the recently changed filters.
 	 * 
 	 * @param changeHistory the change history
-	 * @since 3.0
+	 * 
 	 */
 	private void setRecentlyChangedFilters(Stack changeHistory) {
 		Stack oldestFirstStack= new Stack();
@@ -642,7 +642,7 @@ public class CustomFiltersActionGroup extends ActionGroup {
 	 * the given memento
 	 * 
 	 * @param memento the memento into which to store the LRU filter Ids
-	 * @since 3.0
+	 * 
 	 */
 	private void saveLRUFilters(IMemento memento) {
 		if(fLRUFilterIdsStack != null && !fLRUFilterIdsStack.isEmpty()) {

@@ -524,7 +524,7 @@ public class TemplateProposal implements IJavaCompletionProposal, ICompletionPro
 	 * Returns <code>true</code> if the proposal has a selection, e.g. will wrap some code.
 	 * 
 	 * @return <code>true</code> if the proposals completion length is non zero
-	 * @since 3.2
+	 * 
 	 */
 	private boolean isSelectionTemplate() {
 		if (fContext instanceof DocumentTemplateContext) {

@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
  * Default spell checker for standard text.
  *
- * @since 3.0
+ * 
  */
 public class DefaultSpellChecker implements ISpellChecker {
 
@@ -143,7 +143,7 @@ public class DefaultSpellChecker implements ISpellChecker {
 
 	/**
 	 * The locale of this checker.
-	 * @since 3.3
+	 * 
 	 */
 	private Locale fLocale;
 
@@ -367,7 +367,7 @@ public class DefaultSpellChecker implements ISpellChecker {
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellChecker#getLocale()
-	 * @since 3.3
+	 * 
 	 */
 	public Locale getLocale() {
 		return fLocale;

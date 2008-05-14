@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 /**
  * Types directly completed to &#x7b;&#x40;link Type&#x7d;. See {@link CompletionProposal#JSDOC_TYPE_REF}.
  * 
- * @since 3.2
+ * 
  */
 public final class JavadocLinkTypeCompletionProposal extends LazyJavaTypeCompletionProposal {
 

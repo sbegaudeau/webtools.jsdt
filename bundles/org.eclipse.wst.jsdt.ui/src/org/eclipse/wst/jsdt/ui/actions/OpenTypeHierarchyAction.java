@@ -79,7 +79,7 @@ public class OpenTypeHierarchyAction extends SelectionDispatchAction {
 	
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public OpenTypeHierarchyAction(JavaEditor editor) {
 		this(editor.getEditorSite());

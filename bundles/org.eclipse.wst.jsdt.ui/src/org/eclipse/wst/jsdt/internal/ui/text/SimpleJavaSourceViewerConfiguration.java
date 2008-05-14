@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
  * and disables all other features like code assist, quick outlines, hyperlinking, etc.
  * </p>
  * 
- * @since 3.1
+ * 
  */
 public class SimpleJavaSourceViewerConfiguration extends JavaScriptSourceViewerConfiguration {
 

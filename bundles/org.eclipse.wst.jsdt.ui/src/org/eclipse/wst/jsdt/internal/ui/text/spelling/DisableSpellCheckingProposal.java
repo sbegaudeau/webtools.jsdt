@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 /**
  * Proposal to disable spell checking.
  *
- * @since 3.3
+ * 
  */
 public class DisableSpellCheckingProposal implements IJavaCompletionProposal {
 	

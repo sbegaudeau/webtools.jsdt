@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.ui.actions;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
 /**
- * Defines the definition IDs for the Java editor actions.
+ * Defines the definition IDs for the JavaScript editor actions.
  * 
  * <p>
  * This interface is not intended to be implemented or extended.
@@ -33,7 +33,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the edit -> smart typing action
 	 * (value <code>"org.eclipse.wst.jsdt.smartTyping.toggle"</code>).
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	public static final String TOGGLE_SMART_TYPING= "org.eclipse.wst.jsdt.smartTyping.toggle"; //$NON-NLS-1$
 
@@ -41,7 +41,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the edit -> go to matching bracket action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.goto.matching.bracket"</code>).
 	 *
-	 * @since 2.1
+	 * 
 	 */
 	public static final String GOTO_MATCHING_BRACKET= "org.eclipse.wst.jsdt.ui.edit.text.java.goto.matching.bracket"; //$NON-NLS-1$
 
@@ -49,7 +49,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the edit -> go to next member action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.goto.next.member"</code>).
 	 *
-	 * @since 2.1
+	 * 
 	 */
 	public static final String GOTO_NEXT_MEMBER= "org.eclipse.wst.jsdt.ui.edit.text.java.goto.next.member"; //$NON-NLS-1$
 
@@ -57,7 +57,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the edit -> go to previous member action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.goto.previous.member"</code>).
 	 *
-	 * @since 2.1
+	 * 
 	 */
 	public static final String GOTO_PREVIOUS_MEMBER= "org.eclipse.wst.jsdt.ui.edit.text.java.goto.previous.member"; //$NON-NLS-1$
 	
@@ -90,7 +90,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	/**
 	 * Action definition ID of the edit -> content assist complete prefix action
 	 * (value: <code>"org.eclipse.wst.jsdt.ui.edit.text.java.complete.prefix"</code>).
-	 * @since 3.0
+	 * 
 	 */
 	public static final String CONTENT_ASSIST_COMPLETE_PREFIX= "org.eclipse.wst.jsdt.ui.edit.text.java.complete.prefix"; //$NON-NLS-1$
 
@@ -98,7 +98,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the navigate -> Show Outline action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.show.outline"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String SHOW_OUTLINE= "org.eclipse.wst.jsdt.ui.edit.text.java.show.outline"; //$NON-NLS-1$
 	
@@ -106,7 +106,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the navigate -> Show Hierarchy action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.open.hierarchy"</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String OPEN_HIERARCHY= "org.eclipse.wst.jsdt.ui.edit.text.java.open.hierarchy"; //$NON-NLS-1$
 
@@ -115,7 +115,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the Navigate -> Open Structure action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.navigate.java.open.structure"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String OPEN_STRUCTURE= "org.eclipse.wst.jsdt.ui.navigate.java.open.structure"; //$NON-NLS-1$
 
@@ -136,7 +136,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	/**
 	 * Action definition ID of the source -> toggle comment action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.toggle.comment"</code>).
-	 * @since 3.0
+	 * 
 	 */
 	public static final String TOGGLE_COMMENT= "org.eclipse.wst.jsdt.ui.edit.text.java.toggle.comment"; //$NON-NLS-1$
 	
@@ -144,14 +144,14 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	/**
 	 * Action definition ID of the source -> add block comment action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.add.block.comment"</code>).
-	 * @since 3.0
+	 * 
 	 */
 	public static final String ADD_BLOCK_COMMENT= "org.eclipse.wst.jsdt.ui.edit.text.java.add.block.comment"; //$NON-NLS-1$
 
 	/**
 	 * Action definition ID of the source -> remove block comment action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.remove.block.comment"</code>).
-	 * @since 3.0
+	 * 
 	 */
 	public static final String REMOVE_BLOCK_COMMENT= "org.eclipse.wst.jsdt.ui.edit.text.java.remove.block.comment"; //$NON-NLS-1$
 	
@@ -168,9 +168,9 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	public static final String FORMAT= "org.eclipse.wst.jsdt.ui.edit.text.java.format"; //$NON-NLS-1$
 	
 	/**
-	 * Action definition id of the java quick format action
+	 * Action definition id of the JavaScript quick format action
 	 * (value: <code>"org.eclipse.wst.jsdt.ui.edit.text.java.quick.format"</code>).
-	 * @since 3.0
+	 * 
 	 */
 	public static final String QUICK_FORMAT= "org.eclipse.wst.jsdt.ui.edit.text.java.quick.format"; //$NON-NLS-1$
 
@@ -189,14 +189,14 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	/**
 	 * Action definition ID of the source -> sort order action (value
 	 * <code>"org.eclipse.wst.jsdt.ui.edit.text.java.sort.members"</code>).
-	 * @since 2.1
+	 * 
 	 */
 	public static final String SORT_MEMBERS= "org.eclipse.wst.jsdt.ui.edit.text.java.sort.members"; //$NON-NLS-1$
 
 	/**
 	 * Action definition ID of the source -> add javadoc comment action (value
 	 * <code>"org.eclipse.wst.jsdt.ui.edit.text.java.add.javadoc.comment"</code>).
-	 * @since 2.1
+	 * 
 	 */		
 	public static final String ADD_JAVADOC_COMMENT= "org.eclipse.wst.jsdt.ui.edit.text.java.add.javadoc.comment"; //$NON-NLS-1$
 
@@ -227,7 +227,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	/**
 	 * Action definition ID of the source ->generate hashcode() and equals() action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.generate.hashcode.equals"</code>).
-	 * @since 3.2
+	 * 
 	 */
 	public static final String GENERATE_HASHCODE_EQUALS= "org.eclipse.wst.jsdt.ui.edit.text.java.generate.hashcode.equals"; //$NON-NLS-1$
 
@@ -240,7 +240,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	/**
 	 * Action definition ID of the source -> generate delegates action (value
 	 * <code>"org.eclipse.wst.jsdt.ui.edit.text.java.create.delegate.methods"</code>).
-	 * @since 2.1
+	 * 
 	 */
 	public static final String CREATE_DELEGATE_METHODS= "org.eclipse.wst.jsdt.ui.edit.text.java.create.delegate.methods"; //$NON-NLS-1$
 	
@@ -261,7 +261,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the refactor -> push down action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.push.down"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String PUSH_DOWN= "org.eclipse.wst.jsdt.ui.edit.text.java.push.down"; //$NON-NLS-1$
 	
@@ -293,7 +293,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the refactor -> extract constant action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.extract.constant"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String EXTRACT_CONSTANT= "org.eclipse.wst.jsdt.ui.edit.text.java.extract.constant"; //$NON-NLS-1$
 
@@ -301,7 +301,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the refactor -> introduce parameter action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.introduce.parameter"</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String INTRODUCE_PARAMETER= "org.eclipse.wst.jsdt.ui.edit.text.java.introduce.parameter"; //$NON-NLS-1$
 
@@ -309,7 +309,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the refactor -> introduce factory action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.introduce.factory"</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String INTRODUCE_FACTORY= "org.eclipse.wst.jsdt.ui.edit.text.java.introduce.factory"; //$NON-NLS-1$
 
@@ -329,7 +329,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the refactor -> inline action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.inline"</code>).
 	 *
-	 * @since 2.1
+	 * 
 	 */
 	public static final String INLINE= "org.eclipse.wst.jsdt.ui.edit.text.java.inline"; //$NON-NLS-1$
 	
@@ -337,7 +337,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the refactor -> replace invocations action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.replace.invocations"</code>).
 	 *
-	 * @since 3.2
+	 * 
 	 */
 	public static final String REPLACE_INVOCATIONS= "org.eclipse.wst.jsdt.ui.edit.text.java.replace.invocations"; //$NON-NLS-1$
 	
@@ -345,7 +345,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the refactor -> introduce indirection action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.create.indirection"</code>).
 	 *
-	 * @since 3.2
+	 * 
 	 */
 	public static final String INTRODUCE_INDIRECTION= "org.eclipse.wst.jsdt.ui.edit.text.java.introduce.indirection"; //$NON-NLS-1$
 
@@ -353,7 +353,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the refactor -> extract interface action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.extract.interface"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String EXTRACT_INTERFACE= "org.eclipse.wst.jsdt.ui.edit.text.java.extract.interface"; //$NON-NLS-1$
 
@@ -361,7 +361,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the refactor -> change type action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.change.type"</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String CHANGE_TYPE= "org.eclipse.wst.jsdt.ui.edit.text.java.change.type"; //$NON-NLS-1$
 
@@ -369,7 +369,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the refactor -> move inner type to top level action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.move.inner.to.top.level"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String MOVE_INNER_TO_TOP= "org.eclipse.wst.jsdt.ui.edit.text.java.move.inner.to.top.level"; //$NON-NLS-1$
 
@@ -377,7 +377,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the refactor -> use supertype action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.use.supertype"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String USE_SUPERTYPE= "org.eclipse.wst.jsdt.ui.edit.text.java.use.supertype"; //$NON-NLS-1$
 
@@ -385,7 +385,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the refactor -> infer generic type arguments action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.infer.type.arguments"</code>).
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String INFER_TYPE_ARGUMENTS_ACTION= "org.eclipse.wst.jsdt.ui.edit.text.java.infer.type.arguments"; //$NON-NLS-1$
 
@@ -393,7 +393,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the refactor -> promote local variable action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.promote.local.variable"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String PROMOTE_LOCAL_VARIABLE= "org.eclipse.wst.jsdt.ui.edit.text.java.promote.local.variable"; //$NON-NLS-1$
 
@@ -401,7 +401,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	 * Action definition ID of the refactor -> convert anonymous to nested action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.convert.anonymous.to.nested"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String CONVERT_ANONYMOUS_TO_NESTED= "org.eclipse.wst.jsdt.ui.edit.text.java.convert.anonymous.to.nested"; //$NON-NLS-1$
 
@@ -434,7 +434,7 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
     /**
      * Action definition ID of the navigate -> open call hierarchy action
      * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.org.eclipse.wst.jsdt.ui.edit.text.java.open.call.hierarchy"</code>).
-     * @since 3.0
+     * 
      */
     public static final String OPEN_CALL_HIERARCHY= "org.eclipse.wst.jsdt.ui.edit.text.java.open.call.hierarchy"; //$NON-NLS-1$
     
@@ -558,35 +558,35 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	/**
 	 * Action definition ID of the search -> implementors in project action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.search.implementors.in.project"</code>).
-	 * @since 3.0
+	 * 
 	 */
 	public static final String SEARCH_IMPLEMENTORS_IN_PROJECT= "org.eclipse.wst.jsdt.ui.edit.text.java.search.implementors.in.project"; //$NON-NLS-1$
 	
 	/**
 	 * Action definition ID of the search -> occurrences in file quick menu action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.search.occurrences.in.file.quickMenu"</code>).
-	 * @since 3.1
+	 * 
 	 */
 	public static final String SEARCH_OCCURRENCES_IN_FILE_QUICK_MENU= "org.eclipse.wst.jsdt.ui.edit.text.java.search.occurrences.in.file.quickMenu"; //$NON-NLS-1$
 	
 	/**
 	 * Action definition ID of the search -> occurrences in file > elements action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.search.occurrences.in.file"</code>).
-	 * @since 3.1
+	 * 
 	 */
 	public static final String SEARCH_OCCURRENCES_IN_FILE= "org.eclipse.wst.jsdt.ui.edit.text.java.search.occurrences.in.file"; //$NON-NLS-1$
 
 	/**
 	 * Action definition ID of the search -> occurrences in file > exceptions action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.search.exception.occurrences"</code>).
-	 * @since 3.1
+	 * 
 	 */
 	public static final String SEARCH_EXCEPTION_OCCURRENCES_IN_FILE= "org.eclipse.wst.jsdt.ui.edit.text.java.search.exception.occurrences"; //$NON-NLS-1$
 
 	/**
 	 * Action definition ID of the search -> occurrences in file > implements action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.java.search.implement.occurrences"</code>).
-	 * @since 3.1
+	 * 
 	 */
 	public static final String SEARCH_IMPLEMENT_OCCURRENCES_IN_FILE= "org.eclipse.wst.jsdt.ui.edit.text.java.search.implement.occurrences"; //$NON-NLS-1$
 
@@ -601,35 +601,35 @@ public interface IJavaEditorActionDefinitionIds extends ITextEditorActionDefinit
 	/**
 	 * Action definition ID of the remove occurrence annotations action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.edit.text.remove.occurrence.annotations"</code>).
-	 * @since 3.0
+	 * 
 	 */
 	public static final String REMOVE_OCCURRENCE_ANNOTATIONS= "org.eclipse.wst.jsdt.ui.edit.text.remove.occurrence.annotations";  //$NON-NLS-1$
 
 	/**
 	 * Action definition id of toggle mark occurrences action
 	 * (value: <code>"org.eclipse.wst.jsdt.ui.edit.text.java.toggleMarkOccurrences"</code>).
-	 * @since 3.0
+	 * 
 	 */
 	public static final String TOGGLE_MARK_OCCURRENCES= "org.eclipse.wst.jsdt.ui.edit.text.java.toggleMarkOccurrences"; //$NON-NLS-1$
 
 	/**
 	 * Action definition id of the collapse members action
 	 * (value: <code>"org.eclipse.wst.jsdt.ui.edit.text.java.folding.collapseMembers"</code>).
-	 * @since 3.2
+	 * 
 	 */
 	public static final String FOLDING_COLLAPSE_MEMBERS= "org.eclipse.wst.jsdt.ui.edit.text.java.folding.collapseMembers"; //$NON-NLS-1$
 
 	/**
 	 * Action definition id of the collapse comments action
 	 * (value: <code>"org.eclipse.wst.jsdt.ui.edit.text.java.folding.collapseComments"</code>).
-	 * @since 3.2
+	 * 
 	 */
 	public static final String FOLDING_COLLAPSE_COMMENTS= "org.eclipse.wst.jsdt.ui.edit.text.java.folding.collapseComments"; //$NON-NLS-1$
 
 	/**
 	 * Action definition id of the code clean up action
 	 * (value: <code>"org.eclipse.wst.jsdt.ui.edit.text.java.clean.up"</code>).
-	 * @since 3.2
+	 * 
 	 */
 	public static final String CLEAN_UP= "org.eclipse.wst.jsdt.ui.edit.text.java.clean.up"; //$NON-NLS-1$
 }

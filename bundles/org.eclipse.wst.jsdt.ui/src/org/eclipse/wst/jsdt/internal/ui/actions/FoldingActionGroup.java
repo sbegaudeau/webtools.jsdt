@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
 /**
  * Groups the JDT folding actions.
  *  
- * @since 3.0
+ * 
  */
 public class FoldingActionGroup extends ActionGroup {
 	private static abstract class PreferenceAction extends ResourceAction implements IUpdate {
@@ -44,7 +44,7 @@ public class FoldingActionGroup extends ActionGroup {
 	}
 	
 	/**
-	 * @since 3.2
+	 * 
 	 */
 	private class FoldingAction extends PreferenceAction {
 

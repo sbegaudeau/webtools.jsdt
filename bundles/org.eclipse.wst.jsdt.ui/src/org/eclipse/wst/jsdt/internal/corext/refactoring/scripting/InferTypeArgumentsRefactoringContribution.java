@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.generics.InferTypeArgume
 /**
  * Refactoring contribution for the infer typearguments refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class InferTypeArgumentsRefactoringContribution extends JDTRefactoringContribution {
 

@@ -29,7 +29,7 @@ import org.eclipse.wst.jsdt.internal.ui.packageview.PackagesMessages;
 /**
  * Adds view menus to switch between flat and hierarchical layout.
  * 
- * @since 3.2
+ * 
  */
 public class CommonLayoutActionGroup extends MultiActionGroup {
 

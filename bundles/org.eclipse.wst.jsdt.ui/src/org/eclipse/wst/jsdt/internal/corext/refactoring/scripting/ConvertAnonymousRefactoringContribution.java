@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ConvertAnonymousToN
 /**
  * Refactoring contribution for the convert anonymous refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class ConvertAnonymousRefactoringContribution extends JDTRefactoringContribution {
 

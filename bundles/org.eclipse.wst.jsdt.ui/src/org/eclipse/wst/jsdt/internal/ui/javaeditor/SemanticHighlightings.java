@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
  * Semantic highlightings
  *
- * @since 3.0
+ * 
  */
 public class SemanticHighlightings {
 
@@ -74,7 +74,7 @@ public class SemanticHighlightings {
 
 	/**
 	 * A named preference part that controls the highlighting of annotation element references.
-	 * @since 3.1
+	 * 
 	 */
 	public static final String ANNOTATION_ELEMENT_REFERENCE="annotationElementReference"; //$NON-NLS-1$
 
@@ -105,13 +105,13 @@ public class SemanticHighlightings {
 
 	/**
 	 * A named preference part that controls the highlighting of type parameters.
-	 * @since 3.1
+	 * 
 	 */
 	public static final String TYPE_VARIABLE="typeParameter"; //$NON-NLS-1$
 
 	/**
 	 * A named preference part that controls the highlighting of type parameters.
-	 * @since 3.1
+	 * 
 	 * @author STP
 	 */
 	public static final String OBJECT_INITIALIZER="objectInitializer"; //$NON-NLS-1$
@@ -120,7 +120,7 @@ public class SemanticHighlightings {
 	 * A named preference part that controls the highlighting of methods
 	 * (invocations and declarations).
 	 *
-	 * @since 3.1
+	 * 
 	 */
 	public static final String METHOD="method"; //$NON-NLS-1$
 
@@ -128,42 +128,42 @@ public class SemanticHighlightings {
 	 * A named preference part that controls the highlighting of auto(un)boxed
 	 * expressions.
 	 *
-	 * @since 3.1
+	 * 
 	 */
 	public static final String AUTOBOXING="autoboxing"; //$NON-NLS-1$
 
 	/**
 	 * A named preference part that controls the highlighting of classes.
 	 *
-	 * @since 3.2
+	 * 
 	 */
 	public static final String CLASS="class"; //$NON-NLS-1$
 	
 	/**
 	 * A named preference part that controls the highlighting of enums.
 	 *
-	 * @since 3.2
+	 * 
 	 */
 	public static final String ENUM="enum"; //$NON-NLS-1$
 	
 	/**
 	 * A named preference part that controls the highlighting of interfaces.
 	 *
-	 * @since 3.2
+	 * 
 	 */
 	public static final String INTERFACE="interface"; //$NON-NLS-1$
 	
 	/**
 	 * A named preference part that controls the highlighting of annotations.
 	 *
-	 * @since 3.2
+	 * 
 	 */
 	public static final String ANNOTATION="annotation"; //$NON-NLS-1$
 	
 	/**
 	 * A named preference part that controls the highlighting of type arguments.
 	 *
-	 * @since 3.2
+	 * 
 	 */
 	public static final String TYPE_ARGUMENT="typeArgument"; //$NON-NLS-1$
 	
@@ -519,7 +519,7 @@ public class SemanticHighlightings {
 	
 	/**
 	 * Semantic highlighting for annotation element references.
-	 * @since 3.1
+	 * 
 	 */
 /*
 	private static final class AnnotationElementReferenceHighlighting extends SemanticHighlighting {
@@ -986,7 +986,7 @@ public class SemanticHighlightings {
 
 		/*
 		 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlighting#isStrikethroughByDefault()
-		 * @since 3.1
+		 * 
 		 */
 		public boolean isStrikethroughByDefault() {
 			return true;
@@ -1062,7 +1062,7 @@ public class SemanticHighlightings {
 
 	/**
 	 * Semantic highlighting for type variables.
-	 * @since 3.1
+	 * 
 	 */
 /*
 	private static final class TypeVariableHighlighting extends SemanticHighlighting {
@@ -1109,7 +1109,7 @@ public class SemanticHighlightings {
 	
 	/**
 	 * Semantic highlighting for classes.
-	 * @since 3.2
+	 * 
 	 */
 /*
 	private static final class ClassHighlighting extends SemanticHighlighting {
@@ -1212,7 +1212,7 @@ public class SemanticHighlightings {
 	
 	/**
 	 * Semantic highlighting for interfaces.
-	 * @since 3.2
+	 * 
 	 */
 /*
 	private static final class InterfaceHighlighting extends SemanticHighlighting {
@@ -1266,7 +1266,7 @@ public class SemanticHighlightings {
 	
 	/**
 	 * Semantic highlighting for annotation types.
-	 * @since 3.2
+	 * 
 	 */
 /*
 	private static final class AnnotationHighlighting extends SemanticHighlighting {
@@ -1321,7 +1321,7 @@ public class SemanticHighlightings {
 	
 	/**
 	 * Semantic highlighting for annotation types.
-	 * @since 3.2
+	 * 
 	 */
 /*
 	private static final class TypeArgumentHighlighting extends SemanticHighlighting {
@@ -1407,7 +1407,7 @@ public class SemanticHighlightings {
 	 *
 	 * @param semanticHighlighting the semantic highlighting
 	 * @return the strikethrough preference key
-	 * @since 3.1
+	 * 
 	 */
 	public static String getStrikethroughPreferenceKey(SemanticHighlighting semanticHighlighting) {
 		return PreferenceConstants.EDITOR_SEMANTIC_HIGHLIGHTING_PREFIX + semanticHighlighting.getPreferenceKey() + PreferenceConstants.EDITOR_SEMANTIC_HIGHLIGHTING_STRIKETHROUGH_SUFFIX;
@@ -1418,7 +1418,7 @@ public class SemanticHighlightings {
 	 *
 	 * @param semanticHighlighting the semantic highlighting
 	 * @return the underline preference key
-	 * @since 3.1
+	 * 
 	 */
 	public static String getUnderlinePreferenceKey(SemanticHighlighting semanticHighlighting) {
 		return PreferenceConstants.EDITOR_SEMANTIC_HIGHLIGHTING_PREFIX + semanticHighlighting.getPreferenceKey() + PreferenceConstants.EDITOR_SEMANTIC_HIGHLIGHTING_UNDERLINE_SUFFIX;
@@ -1494,7 +1494,7 @@ new ObjectInitializerHighlighting(),
 	 * @param event the property change under examination
 	 * @return <code>true</code> if <code>event</code> changed semantic
 	 *         highlighting enablement, <code>false</code> if it did not
-	 * @since 3.1
+	 * 
 	 */
 	public static boolean affectsEnablement(IPreferenceStore store, PropertyChangeEvent event) {
 		String relevantKey= null;
@@ -1526,7 +1526,7 @@ new ObjectInitializerHighlighting(),
 	 * @param store the preference store to consult
 	 * @return <code>true</code> if semantic highlighting is enabled,
 	 *         <code>false</code> if it is not
-	 * @since 3.1
+	 * 
 	 */
 	public static boolean isEnabled(IPreferenceStore store) {
 		SemanticHighlighting[] highlightings= getSemanticHighlightings();
@@ -1555,7 +1555,7 @@ new ObjectInitializerHighlighting(),
 	 * </p>
 	 *
 	 * @param store the preference store to migrate
-	 * @since 3.1
+	 * 
 	 */
 	private static void convertMethodHighlightingPreferences(IPreferenceStore store) {
 		String colorkey= PreferenceConstants.EDITOR_SEMANTIC_HIGHLIGHTING_PREFIX + METHOD + PreferenceConstants.EDITOR_SEMANTIC_HIGHLIGHTING_COLOR_SUFFIX;
@@ -1587,7 +1587,7 @@ new ObjectInitializerHighlighting(),
 	 * </p>
 	 * 
 	 * @param store the preference store to migrate
-	 * @since 3.2
+	 * 
 	 */
 	private static void convertAnnotationHighlightingPreferences(IPreferenceStore store) {
 		String colorkey= PreferenceConstants.EDITOR_SEMANTIC_HIGHLIGHTING_PREFIX + ANNOTATION + PreferenceConstants.EDITOR_SEMANTIC_HIGHLIGHTING_COLOR_SUFFIX;
@@ -1626,7 +1626,7 @@ new ObjectInitializerHighlighting(),
 	 * @param newKey the new preference key
 	 * @return <code>true</code> if <code>store</code> was modified,
 	 *         <code>false</code> if not
-	 * @since 3.1
+	 * 
 	 */
 	private static boolean conditionalReset(IPreferenceStore store, String oldKey, String newKey) {
 		if (!store.isDefault(oldKey)) {
@@ -1645,7 +1645,7 @@ new ObjectInitializerHighlighting(),
 	 * @param store	the preference store
 	 * @param key the preference key
 	 * @param newValue the new value
-	 * @since 3.3
+	 * 
 	 */
 	private static void setDefaultAndFireEvent(IPreferenceStore store, String key, RGB newValue) {
 		RGB oldValue= null;

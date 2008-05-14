@@ -112,7 +112,7 @@ public class GenericVisitor extends ASTVisitor {
 	 * to be visited by default, and <code>false</code> otherwise
 	 * @see JSdoc#tags()
 	 * @see #visit(JSdoc)
-	 * @since 3.0
+	
 	 */
 	public GenericVisitor(boolean visitJavadocTags) {
 		super(visitJavadocTags);

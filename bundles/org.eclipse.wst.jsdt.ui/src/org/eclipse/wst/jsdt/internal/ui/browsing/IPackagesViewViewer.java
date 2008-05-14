@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Widget;
  * Allows accessing the PackagesViewTableViewer and the
  * PackagesViewTreeViewer with identical API.
  *
- * @since 2.1
+ * 
  */
 interface IPackagesViewViewer {
 

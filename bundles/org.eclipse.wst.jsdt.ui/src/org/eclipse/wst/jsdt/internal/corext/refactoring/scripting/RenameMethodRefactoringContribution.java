@@ -29,7 +29,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameVirtualMeth
 /**
  * Refactoring contribution for the rename method refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class RenameMethodRefactoringContribution extends JDTRefactoringContribution {
 

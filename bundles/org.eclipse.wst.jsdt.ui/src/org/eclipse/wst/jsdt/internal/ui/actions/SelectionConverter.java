@@ -114,7 +114,7 @@ public class SelectionConverter {
 		
 	/**
 	 * @param primaryOnly if <code>true</code> only primary working copies will be returned
-	 * @since 3.2
+	 * 
 	 */
 	public static IJavaScriptElement[] codeResolve(JavaEditor editor, boolean primaryOnly) throws JavaScriptModelException {
 		return codeResolve(getInput(editor, primaryOnly), (ITextSelection)editor.getSelectionProvider().getSelection());
@@ -125,7 +125,7 @@ public class SelectionConverter {
 	 * @param primaryOnly if <code>true</code> only primary working copies will be returned
 	 * @throws InterruptedException 
 	 * @throws InvocationTargetException 
-	 * @since 3.2
+	 * 
 	 */
 	public static IJavaScriptElement[] codeResolveForked(JavaEditor editor, boolean primaryOnly) throws InvocationTargetException, InterruptedException {
 		return performForkedCodeResolve(getInput(editor, primaryOnly), (ITextSelection)editor.getSelectionProvider().getSelection());
@@ -137,7 +137,7 @@ public class SelectionConverter {
 	
 	/**
 	 * @param primaryOnly if <code>true</code> only primary working copies will be returned
-	 * @since 3.2
+	 * 
 	 */
 	private static IJavaScriptElement getElementAtOffset(JavaEditor editor, boolean primaryOnly) throws JavaScriptModelException {
 		return getElementAtOffset(getInput(editor, primaryOnly), (ITextSelection)editor.getSelectionProvider().getSelection());
@@ -160,7 +160,7 @@ public class SelectionConverter {
 	
 	/**
 	 * @param primaryOnly if <code>true</code> only primary working copies will be returned
-	 * @since 3.2
+	 * 
 	 */
 	private static IJavaScriptElement getInput(JavaEditor editor, boolean primaryOnly) {
 		if (editor == null)

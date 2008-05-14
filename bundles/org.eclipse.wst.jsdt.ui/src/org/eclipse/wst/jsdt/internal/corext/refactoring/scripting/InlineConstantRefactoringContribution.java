@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.InlineConstantRefac
 /**
  * Refactoring contribution for the inline constant refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class InlineConstantRefactoringContribution extends JDTRefactoringContribution {
 

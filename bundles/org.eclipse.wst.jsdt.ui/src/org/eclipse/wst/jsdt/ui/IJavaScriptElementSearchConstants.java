@@ -47,7 +47,7 @@ public interface IJavaScriptElementSearchConstants {
 	 * Search scope constant (bit mask) indicating that required projects should be considered.
 	 * Used when opening certain kinds of selection dialogs.
 	 * 
-	 * @since 2.0
+	 * 
 	 */	
 	public static final int CONSIDER_REQUIRED_PROJECTS= 1 << 5;
 	
@@ -55,7 +55,7 @@ public interface IJavaScriptElementSearchConstants {
 	 * Search scope constant indicating that annotation types should be considered.
 	 * Used when opening certain kinds of selection dialogs.
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final int CONSIDER_ANNOTATION_TYPES= 1 << 6;
 
@@ -63,7 +63,7 @@ public interface IJavaScriptElementSearchConstants {
 	 * Search scope constant indicating that enums should be considered.
 	 * Used when opening certain kinds of selection dialogs.
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final int CONSIDER_ENUMS= 1 << 7;
 
@@ -71,7 +71,7 @@ public interface IJavaScriptElementSearchConstants {
 	 * Search scope constant indicating that classes, interfaces, annotations
 	 * and enums should be considered.
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final int CONSIDER_ALL_TYPES= 1 << 8;
 
@@ -79,7 +79,7 @@ public interface IJavaScriptElementSearchConstants {
 	 * Search scope constant indicating that only classes and interfaces 
 	 * should be considered.
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final int CONSIDER_CLASSES_AND_INTERFACES= 1 << 9;
 
@@ -87,7 +87,7 @@ public interface IJavaScriptElementSearchConstants {
 	 * Search scope constant indicating that only classes and enumeration types 
 	 * should be considered.
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final int CONSIDER_CLASSES_AND_ENUMS= 1 << 10;
 }

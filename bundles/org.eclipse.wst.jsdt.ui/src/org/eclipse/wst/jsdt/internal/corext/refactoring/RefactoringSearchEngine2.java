@@ -46,7 +46,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
 /**
  * Helper class to use the search engine in refactorings.
  * 
- * @since 3.1
+ * 
  */
 public final class RefactoringSearchEngine2 {
 

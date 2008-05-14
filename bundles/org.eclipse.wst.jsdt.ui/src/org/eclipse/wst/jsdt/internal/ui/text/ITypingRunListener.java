@@ -16,7 +16,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.TypingRun.ChangeType;
 /**
  * Listener for <code>TypingRun</code> events.
  *
- * @since 3.0
+ * 
  */
 public interface ITypingRunListener {
 	/**

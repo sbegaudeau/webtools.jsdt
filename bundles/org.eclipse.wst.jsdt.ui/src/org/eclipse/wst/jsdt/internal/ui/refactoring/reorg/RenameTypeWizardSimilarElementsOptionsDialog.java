@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDial
 /**
  * Option dialog for selecting a similarly named element renaming strategy
  * 
- * @since 3.2
+ * 
  * 
  */
 public class RenameTypeWizardSimilarElementsOptionsDialog extends MessageDialog {

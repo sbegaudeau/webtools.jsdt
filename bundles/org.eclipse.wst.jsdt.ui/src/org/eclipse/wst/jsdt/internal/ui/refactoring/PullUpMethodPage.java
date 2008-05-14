@@ -81,7 +81,7 @@ import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
  * Wizard page for pull up refactoring wizards which allows to specify the
  * methods to be deleted in subtypes after pull up.
  * 
- * @since 3.2
+ * 
  */
 public class PullUpMethodPage extends UserInputWizardPage {
 

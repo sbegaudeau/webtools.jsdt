@@ -18,7 +18,7 @@ package org.eclipse.wst.jsdt.internal.ui.text.java.hover;
  *		Java problems.
  *		see: https://bugs.eclipse.org/bugs/show_bug.cgi?id=62081
  *
- * @since 3.0
+ * 
  */
 public class ProblemHover extends AbstractAnnotationHover {
 

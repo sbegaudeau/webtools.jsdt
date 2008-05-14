@@ -41,7 +41,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
  * Partial implementation of a spell dictionary.
  *
- * @since 3.0
+ * 
  */
 public abstract class AbstractSpellDictionary implements ISpellDictionary {
 
@@ -70,13 +70,13 @@ public abstract class AbstractSpellDictionary implements ISpellDictionary {
 	private boolean fLoaded= false;
 	/**
 	 * Must the dictionary be loaded?
-	 * @since 3.2
+	 * 
 	 */
 	private boolean fMustLoad= true;
 
 	/**
 	 * Tells whether to strip non-letters at word boundaries.
-	 * @since 3.3
+	 * 
 	 */
 	boolean fIsStrippingNonLetters= true;
 
@@ -216,7 +216,7 @@ public abstract class AbstractSpellDictionary implements ISpellDictionary {
 	 * Tells whether this dictionary is empty.
 	 * 
 	 * @return <code>true</code> if this dictionary is empty
-	 * @since 3.3
+	 * 
 	 */
 	protected boolean isEmpty() {
 		return fHashBuckets.size() == 0;
@@ -422,7 +422,7 @@ public abstract class AbstractSpellDictionary implements ISpellDictionary {
 	
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellDictionary#setStripNonLetters(boolean)
-	 * @since 3.3
+	 * 
 	 */
 	public void setStripNonLetters(boolean state) {
 		fIsStrippingNonLetters= state;
@@ -436,7 +436,7 @@ public abstract class AbstractSpellDictionary implements ISpellDictionary {
 	 * 
 	 * @param word the word to strip
 	 * @return the stripped word
-	 * @since 3.3
+	 * 
 	 */
 	protected String stripNonLetters(String word) {
 		if (!fIsStrippingNonLetters)
@@ -545,7 +545,7 @@ public abstract class AbstractSpellDictionary implements ISpellDictionary {
 	/**
 	 * Compacts the dictionary.
 	 * 
-	 * @since 3.3.
+	 * 
 	 */
 	private void compact() {
 		Iterator iter= fHashBuckets.values().iterator();
@@ -603,7 +603,7 @@ public abstract class AbstractSpellDictionary implements ISpellDictionary {
 	 * Returns the encoding of this dictionary.
 	 * 
 	 * @return the encoding of this dictionary
-	 * @since 3.3
+	 * 
 	 */
 	protected String getEncoding() {
 		String encoding= JavaScriptPlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.SPELLING_USER_DICTIONARY_ENCODING);

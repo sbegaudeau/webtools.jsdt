@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
 /**
  * 
- * @since 3.2
+ * 
  */
 public class JavaNoTypeCompletionProposalComputer extends JavaCompletionProposalComputer {
 	/*

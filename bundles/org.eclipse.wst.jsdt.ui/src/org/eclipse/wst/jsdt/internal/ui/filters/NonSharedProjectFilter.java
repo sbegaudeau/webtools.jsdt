@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.core.IJavaScriptProject;
  * Filters non-shared projects and Java projects. Non-shared projects are
  * projects that are not controlled by a team provider.
  * 
- * @since 2.1
+ * 
  */
 public class NonSharedProjectFilter extends ViewerFilter {
 

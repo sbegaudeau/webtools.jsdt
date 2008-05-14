@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.ui.text.javadoc;
 /**
  * Html tag constants.
  *
- * @since 3.0
+ * 
  */
 public interface IHtmlTagConstants {
 
@@ -26,12 +26,12 @@ public interface IHtmlTagConstants {
 
 	/**
 	 * Html entity start.
-	 * @since 3.3
+	 * 
 	 */
 	public static final char HTML_ENTITY_START= '&';
 	/**
 	 * Html entity end.
-	 * @since 3.3
+	 * 
 	 */
 	public static final char HTML_ENTITY_END= ';';
 	

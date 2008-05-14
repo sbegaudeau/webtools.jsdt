@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 
 
 /**
- * Sorter for Java elements. Ordered by element category, then by element name. 
+ * Sorter for JavaScript elements. Ordered by element category, then by element name. 
  * Package fragment roots are sorted as ordered on the classpath.
  * 
  * <p>

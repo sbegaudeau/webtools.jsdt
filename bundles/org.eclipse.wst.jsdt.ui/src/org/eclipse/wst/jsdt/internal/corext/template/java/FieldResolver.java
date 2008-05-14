@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitComplet
  * Resolves a template variable to a field that is assignment-compatible
  * with the variable instance' class parameter.
  * 
- * @since 3.3
+ * 
  */
 public class FieldResolver extends TemplateVariableResolver {
 	

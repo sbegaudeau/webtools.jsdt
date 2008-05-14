@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
  * in the specified working set.
  * <p>
  * The action is applicable to selections and Search view entries
- * representing a Java element.
+ * representing a JavaScript element.
  * 
  * <p>
  * Note: This class is for internal use only. Clients should not use this class.

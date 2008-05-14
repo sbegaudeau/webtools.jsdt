@@ -65,7 +65,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
  * Configures Java Editor hover preferences.
  * 
- * @since 2.1
+ * 
  */
 class JavaEditorHoverConfigurationBlock implements IPreferenceConfigurationBlock {
 

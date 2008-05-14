@@ -62,7 +62,7 @@ public class JdtActionConstants {
     /**
      * Navigate menu: name of standard Open Call Hierarchy global action
      * (value <code>"org.eclipse.wst.jsdt.ui.actions.OpenCallHierarchy"</code>).
-     * @since 3.0
+     * 
      */
     public static final String OPEN_CALL_HIERARCHY= "org.eclipse.wst.jsdt.ui.actions.OpenCallHierarchy"; //$NON-NLS-1$
 
@@ -109,7 +109,7 @@ public class JdtActionConstants {
 	/**
 	 * Source menu: name of standard ToggleComment global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.ToggleComment"</code>).
-	 * @since 3.0
+	 * 
 	 */
 	public static final String TOGGLE_COMMENT= "org.eclipse.wst.jsdt.ui.actions.ToggleComment"; //$NON-NLS-1$
 	
@@ -117,7 +117,7 @@ public class JdtActionConstants {
 	 * Source menu: name of standard Block Comment global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.AddBlockComment"</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String ADD_BLOCK_COMMENT= "org.eclipse.wst.jsdt.ui.actions.AddBlockComment"; //$NON-NLS-1$
 	
@@ -125,7 +125,7 @@ public class JdtActionConstants {
 	 * Source menu: name of standard Block Uncomment global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.RemoveBlockComment"</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String REMOVE_BLOCK_COMMENT= "org.eclipse.wst.jsdt.ui.actions.RemoveBlockComment"; //$NON-NLS-1$
 	
@@ -133,7 +133,7 @@ public class JdtActionConstants {
 	 * Source menu: name of standard Indent global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.Indent"</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String INDENT= "org.eclipse.wst.jsdt.ui.actions.Indent"; //$NON-NLS-1$
 	
@@ -158,7 +158,7 @@ public class JdtActionConstants {
 	/**
 	 * Source menu: name of standard Format Element global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.FormatElement"</code>).
-	 * @since 3.0
+	 * 
 	 */
 	public static final String FORMAT_ELEMENT= "org.eclipse.wst.jsdt.ui.actions.FormatElement"; //$NON-NLS-1$
 	
@@ -177,7 +177,7 @@ public class JdtActionConstants {
 	/**
 	 * Source menu: name of standard Sort Members global action (value
 	 * <code>"org.eclipse.wst.jsdt.ui.actions.SortMembers"</code>).
-	 * @since 2.1
+	 * 
 	 */
 	public static final String SORT_MEMBERS= "org.eclipse.wst.jsdt.ui.actions.SortMembers"; //$NON-NLS-1$
 	
@@ -202,7 +202,7 @@ public class JdtActionConstants {
 	/**
 	 * Source menu: name of standard delegate methods global action (value
 	 * <code>"org.eclipse.wst.jsdt.ui.actions.GenerateDelegateMethods"</code>).
-	 * @since 2.1
+	 * 
 	 */
 	public static final String GENERATE_DELEGATE_METHODS= "org.eclipse.wst.jsdt.ui.actions.GenerateDelegateMethods"; //$NON-NLS-1$
 
@@ -221,7 +221,7 @@ public class JdtActionConstants {
 	/**
 	 * Source menu: name of standard Generate hashCode() and equals() global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.GenerateHashCodeEquals"</code>).
-	 * @since 3.2
+	 * 
 	 */
 	public static final String GENERATE_HASHCODE_EQUALS= "org.eclipse.wst.jsdt.ui.actions.GenerateHashCodeEquals"; //$NON-NLS-1$
 
@@ -259,7 +259,7 @@ public class JdtActionConstants {
 	 * Source menu: name of standard Clean up global action 
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.CleanUp"</code>).
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static final String CLEAN_UP= "org.eclipse.wst.jsdt.ui.actions.CleanUp"; //$NON-NLS-1$
 
@@ -287,7 +287,7 @@ public class JdtActionConstants {
 	 * Refactor menu: name of standard Push Down global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.PushDown"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String PUSH_DOWN= "org.eclipse.wst.jsdt.ui.actions.PushDown"; //$NON-NLS-1$
 	
@@ -313,7 +313,7 @@ public class JdtActionConstants {
 	 * Refactor menu: name of standard Extract Constant global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.ExtractConstant"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String EXTRACT_CONSTANT= "org.eclipse.wst.jsdt.ui.actions.ExtractConstant"; //$NON-NLS-1$
 
@@ -321,7 +321,7 @@ public class JdtActionConstants {
 	 * Refactor menu: name of standard Introduce Parameter global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.IntroduceParameter"</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String INTRODUCE_PARAMETER= "org.eclipse.wst.jsdt.ui.actions.IntroduceParameter"; //$NON-NLS-1$
 
@@ -329,7 +329,7 @@ public class JdtActionConstants {
 	 * Refactor menu: name of standard Introduce Factory global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.IntroduceFactory"</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String INTRODUCE_FACTORY= "org.eclipse.wst.jsdt.ui.actions.IntroduceFactory"; //$NON-NLS-1$
 
@@ -343,7 +343,7 @@ public class JdtActionConstants {
 	 * Refactor menu: name of standard Replace Invocations global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.ReplaceInvocations"</code>).
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static final String REPLACE_INVOCATIONS="org.eclipse.wst.jsdt.ui.actions.ReplaceInvocations"; //$NON-NLS-1$
 	
@@ -351,7 +351,7 @@ public class JdtActionConstants {
 	 * Refactor menu: name of standard Introduce Indirection global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.IntroduceIndirection"</code>).
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static final String INTRODUCE_INDIRECTION= "org.eclipse.wst.jsdt.ui.actions.IntroduceIndirection"; //$NON-NLS-1$
 
@@ -359,7 +359,7 @@ public class JdtActionConstants {
 	 * Refactor menu: name of standard Inline global action 
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.Inline"</code>).
 	 *
-	 * @since 2.1
+	 * 
 	 */
 	public static final String INLINE= "org.eclipse.wst.jsdt.ui.actions.Inline"; //$NON-NLS-1$
 
@@ -367,7 +367,7 @@ public class JdtActionConstants {
 	 * Refactor menu: name of standard Extract Interface global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.ExtractInterface"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String EXTRACT_INTERFACE= "org.eclipse.wst.jsdt.ui.actions.ExtractInterface"; //$NON-NLS-1$
 
@@ -375,7 +375,7 @@ public class JdtActionConstants {
 	 * Refactor menu: name of standard Generalize Declared Type global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.ChangeType"</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String CHANGE_TYPE= "org.eclipse.wst.jsdt.ui.actions.ChangeType"; //$NON-NLS-1$
 
@@ -383,7 +383,7 @@ public class JdtActionConstants {
 	 * Refactor menu: name of standard global action to convert a nested type to a top level type
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.MoveInnerToTop"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String CONVERT_NESTED_TO_TOP= "org.eclipse.wst.jsdt.ui.actions.ConvertNestedToTop"; //$NON-NLS-1$
 	
@@ -391,7 +391,7 @@ public class JdtActionConstants {
 	 * Refactor menu: name of standard Use Supertype global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.UseSupertype"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String USE_SUPERTYPE= "org.eclipse.wst.jsdt.ui.actions.UseSupertype"; //$NON-NLS-1$
 
@@ -399,7 +399,7 @@ public class JdtActionConstants {
 	 * Refactor menu: name of standard Infer Generic Type Arguments global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.InferTypeArguments"</code>).
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String INFER_TYPE_ARGUMENTS= "org.eclipse.wst.jsdt.ui.actions.InferTypeArguments"; //$NON-NLS-1$
 
@@ -407,7 +407,7 @@ public class JdtActionConstants {
 	 * Refactor menu: name of standard global action to convert a local
 	 * variable to a field (value <code>"org.eclipse.wst.jsdt.ui.actions.ConvertLocalToField"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String CONVERT_LOCAL_TO_FIELD= "org.eclipse.wst.jsdt.ui.actions.ConvertLocalToField"; //$NON-NLS-1$
 
@@ -415,7 +415,7 @@ public class JdtActionConstants {
 	 * Refactor menu: name of standard Covert Anonymous to Nested global action
 	 * (value <code>"org.eclipse.wst.jsdt.ui.actions.ConvertAnonymousToNested"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String CONVERT_ANONYMOUS_TO_NESTED= "org.eclipse.wst.jsdt.ui.actions.ConvertAnonymousToNested"; //$NON-NLS-1$
 	
@@ -541,7 +541,7 @@ public class JdtActionConstants {
 	 * Search menu: name of standard Occurrences in File global action (value
 	 * <code>"org.eclipse.wst.jsdt.ui.actions.OccurrencesInFile"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String FIND_OCCURRENCES_IN_FILE= "org.eclipse.wst.jsdt.ui.actions.OccurrencesInFile"; //$NON-NLS-1$
 	
@@ -549,7 +549,7 @@ public class JdtActionConstants {
 	 * Search menu: name of standard Find exception occurrences global action (value
 	 * <code>"org.eclipse.wst.jsdt.ui.actions.ExceptionOccurrences"</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String FIND_EXCEPTION_OCCURRENCES= "org.eclipse.wst.jsdt.ui.actions.ExceptionOccurrences"; //$NON-NLS-1$
 	
@@ -557,7 +557,7 @@ public class JdtActionConstants {
 	 * Search menu: name of standard Find implement occurrences global action (value
 	 * <code>"org.eclipse.wst.jsdt.ui.actions.ImplementOccurrences"</code>).
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String FIND_IMPLEMENT_OCCURRENCES= "org.eclipse.wst.jsdt.ui.actions.ImplementOccurrences"; //$NON-NLS-1$		
 

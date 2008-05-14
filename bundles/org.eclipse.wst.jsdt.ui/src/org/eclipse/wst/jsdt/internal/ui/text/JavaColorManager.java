@@ -52,7 +52,7 @@ public class JavaColorManager implements IColorManager, IColorManagerExtension {
 	 * automatically disposes all managed colors when the current display gets disposed
 	 * and all calls to {@link org.eclipse.jface.text.source.ISharedTextColors#dispose()} are ignored.
 	 *
-	 * @since 2.1
+	 * 
 	 */
 	public JavaColorManager(boolean autoDisposeOnDisplayDispose) {
 		fAutoDisposeOnDisplayDispose= autoDisposeOnDisplayDispose;

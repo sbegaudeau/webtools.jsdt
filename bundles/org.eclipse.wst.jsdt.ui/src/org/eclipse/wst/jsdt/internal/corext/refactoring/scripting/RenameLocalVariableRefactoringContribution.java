@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameLocalVariab
 /**
  * Refactoring contribution for the rename local variable refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class RenameLocalVariableRefactoringContribution extends JDTRefactoringContribution {
 

@@ -103,7 +103,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
  * hierarchy, and to perform a "Use Supertype" refactoring afterwards.
  * </p>
  * 
- * @since 3.2
+ * 
  */
 public abstract class HierarchyProcessor extends SuperTypeRefactoringProcessor {
 

@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractTempRefactor
 /**
  * Refactoring contribution for the extract temp refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class ExtractTempRefactoringContribution extends JDTRefactoringContribution {
 

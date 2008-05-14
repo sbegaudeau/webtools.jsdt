@@ -43,7 +43,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
  * Configures the content assist preferences.
  * 
- * @since 3.0
+ * 
  */
 class CodeAssistConfigurationBlock extends OptionsConfigurationBlock {
 	

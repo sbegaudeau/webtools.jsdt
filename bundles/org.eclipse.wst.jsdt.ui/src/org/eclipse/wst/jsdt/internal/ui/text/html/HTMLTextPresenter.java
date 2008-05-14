@@ -217,7 +217,7 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
 
 	/*
 	 * @see IHoverInformationPresenterExtension#updatePresentation(Drawable drawable, String, TextPresentation, int, int)
-	 * @since 3.2
+	 * 
 	 */
 	public String updatePresentation(Drawable drawable, String hoverInfo, TextPresentation presentation, int maxWidth, int maxHeight) {
 

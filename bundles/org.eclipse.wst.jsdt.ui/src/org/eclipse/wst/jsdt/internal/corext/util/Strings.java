@@ -153,7 +153,7 @@ public class Strings {
 	 * @param line the text line
 	 * @param project the java project from which to get the formatter
 	 *        preferences, or <code>null</code> for global preferences
-	 * @since 3.1
+	 * 
 	 */
 	public static int computeIndentUnits(String line, IJavaScriptProject project) {
 		return IndentManipulation.measureIndentUnits(line, CodeFormatterUtil.getTabWidth(project), CodeFormatterUtil.getIndentWidth(project));
@@ -166,7 +166,7 @@ public class Strings {
 	 * @param line the text line
 	 * @param tabWidth the width of the '\t' character in space equivalents
 	 * @param indentWidth the width of one indentation unit in space equivalents
-	 * @since 3.1
+	 * 
 	 */
 	public static int computeIndentUnits(String line, int tabWidth, int indentWidth) {
 		return IndentManipulation.measureIndentUnits(line, tabWidth, indentWidth);
@@ -180,7 +180,7 @@ public class Strings {
 	 * @param line the string to measure the indent of
 	 * @param tabSize the visual size of a tab in space equivalents
 	 * @return the visual length of the indentation of <code>line</code>
-	 * @since 3.1
+	 * 
 	 */
 	public static int measureIndentLength(CharSequence line, int tabSize) {
 		return IndentManipulation.measureIndentInSpaces(line, tabSize);
@@ -193,7 +193,7 @@ public class Strings {
 	 * 
 	 * @param project the java project from which to get the formatter
 	 *        preferences, or <code>null</code> for global preferences
-	 * @since 3.1
+	 * 
 	 */
 	public static String trimIndent(String line, int indentsToRemove, IJavaScriptProject project) {
 		return IndentManipulation.trimIndent(line, indentsToRemove, CodeFormatterUtil.getTabWidth(project), CodeFormatterUtil.getIndentWidth(project));
@@ -204,7 +204,7 @@ public class Strings {
 	 * has the requested number of indents. If <code>indentsToRemove <= 0</code>
 	 * the line is returned.
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static String trimIndent(String line, int indentsToRemove, int tabWidth, int indentWidth) {
 		return IndentManipulation.trimIndent(line, indentsToRemove, tabWidth, indentWidth);
@@ -216,7 +216,7 @@ public class Strings {
 
 	 * @param project the java project from which to get the formatter
 	 *        preferences, or <code>null</code> for global preferences
-	 * @since 3.1
+	 * 
 	 */
 	public static void trimIndentation(String[] lines, IJavaScriptProject project) {
 		trimIndentation(lines, CodeFormatterUtil.getTabWidth(project), CodeFormatterUtil.getIndentWidth(project), true);
@@ -225,7 +225,7 @@ public class Strings {
 	 * Removes the common number of indents from all lines. If a line
 	 * only consists out of white space it is ignored.
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static void trimIndentation(String[] lines, int tabWidth, int indentWidth) {
 		trimIndentation(lines, tabWidth, indentWidth, true);
@@ -238,7 +238,7 @@ public class Strings {
 	 * 
 	 * @param project the java project from which to get the formatter
 	 *        preferences, or <code>null</code> for global preferences
-	 * @since 3.1
+	 * 
 	 */
 	public static void trimIndentation(String[] lines, IJavaScriptProject project, boolean considerFirstLine) {
 		trimIndentation(lines, CodeFormatterUtil.getTabWidth(project), CodeFormatterUtil.getIndentWidth(project), considerFirstLine);
@@ -248,7 +248,7 @@ public class Strings {
 	 * Removes the common number of indents from all lines. If a line
 	 * only consists out of white space it is ignored. If <code>
 	 * considerFirstLine</code> is false the first line will be ignored.
-	 * @since 3.1
+	 * 
 	 */
 	public static void trimIndentation(String[] lines, int tabWidth, int indentWidth, boolean considerFirstLine) {
 		String[] toDo= new String[lines.length];
@@ -291,7 +291,7 @@ public class Strings {
 	 * @param project the java project from which to get the formatter
 	 *        preferences, or <code>null</code> for global preferences
 	 * @return the indent part of <code>line</code>, but no odd spaces
-	 * @since 3.1
+	 * 
 	 */
 	public static String getIndentString(String line, IJavaScriptProject project) {
 		return IndentManipulation.extractIndentString(line, CodeFormatterUtil.getTabWidth(project), CodeFormatterUtil.getIndentWidth(project));
@@ -305,7 +305,7 @@ public class Strings {
 	 * @param tabWidth the size of one tab in space equivalents
 	 * @param indentWidth the size of the indent in space equivalents
 	 * @return the indent part of <code>line</code>, but no odd spaces
-	 * @since 3.1
+	 * 
 	 */
 	public static String getIndentString(String line, int tabWidth, int indentWidth) {
 		return IndentManipulation.extractIndentString(line, tabWidth, indentWidth);
@@ -335,7 +335,7 @@ public class Strings {
 	 * 
 	 * @param project the java project from which to get the formatter
 	 *        preferences, or <code>null</code> for global preferences
-	 * @since 3.1
+	 * 
 	 */
 	public static String changeIndent(String code, int codeIndentLevel, IJavaScriptProject project, String newIndent, String lineDelim) {
 		return IndentManipulation.changeIndent(code, codeIndentLevel, CodeFormatterUtil.getTabWidth(project), CodeFormatterUtil.getIndentWidth(project), newIndent, lineDelim);
@@ -345,7 +345,7 @@ public class Strings {
 	 * Change the indent of, possible muti-line, code range. The current indent is removed, a new indent added.
 	 * The first line of the code will not be changed. (It is considered to have no indent as it might start in
 	 * the middle of a line)
-	 * @since 3.1
+	 * 
 	 */
 	public static String changeIndent(String code, int codeIndentLevel, int tabWidth, int indentWidth, String newIndent, String lineDelim) {
 		return IndentManipulation.changeIndent(code, codeIndentLevel, tabWidth, indentWidth, newIndent, lineDelim);

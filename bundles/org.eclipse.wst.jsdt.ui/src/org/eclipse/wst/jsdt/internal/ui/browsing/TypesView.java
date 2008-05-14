@@ -177,7 +177,7 @@ public class TypesView extends JavaBrowsingPart {
 	 * Handles selection of LogicalPackage in Packages view.
 	 *
 	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
-	 * @since 2.1
+	 * 
 	 */
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		if (!needsToProcessSelectionChanged(part, selection))

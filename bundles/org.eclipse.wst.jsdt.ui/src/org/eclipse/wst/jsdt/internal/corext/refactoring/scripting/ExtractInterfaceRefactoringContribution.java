@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ExtractInterfa
 /**
  * Refactoring contribution for the extract interface refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class ExtractInterfaceRefactoringContribution extends JDTRefactoringContribution {
 

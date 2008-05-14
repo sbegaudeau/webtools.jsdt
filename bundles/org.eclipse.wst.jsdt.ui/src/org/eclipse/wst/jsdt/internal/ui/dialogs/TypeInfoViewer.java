@@ -88,7 +88,7 @@ import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoImageProvider;
  * search engine. All viewer updating takes place in the UI thread.
  * Therefore no synchronization of the methods is necessary.
  * 
- * @since 3.1
+ * 
  */
 public class TypeInfoViewer {
 	

@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.ui.text.spelling.engine;
 /**
  * Interface of hashers to compute the phonetic hash for a word.
  *
- * @since 3.0
+ * 
  */
 public interface IPhoneticHashProvider {
 

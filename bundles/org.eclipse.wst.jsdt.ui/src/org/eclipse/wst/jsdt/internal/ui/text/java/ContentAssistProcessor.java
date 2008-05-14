@@ -77,7 +77,7 @@ import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
  * </ul>
  * </p>
  * 
- * @since 3.2
+ * 
  */
 public class ContentAssistProcessor implements IContentAssistProcessor {
 	private static final boolean DEBUG= "true".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.wst.jsdt.ui/debug/ResultCollector"));  //$NON-NLS-1$//$NON-NLS-2$
@@ -86,7 +86,7 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 	 * Dialog settings key for the "all categories are disabled" warning dialog. See
 	 * {@link OptionalMessageDialog}.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	private static final String PREF_WARN_ABOUT_EMPTY_ASSIST_CATEGORY= "EmptyDefaultAssistCategory"; //$NON-NLS-1$
 
@@ -435,7 +435,7 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 	 * Informs the user about the fact that there are no enabled categories in the default content
 	 * assist set and shows a link to the preferences.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	private boolean informUserAboutEmptyDefaultCategory() {
 		if (OptionalMessageDialog.isDialogEnabled(PREF_WARN_ABOUT_EMPTY_ASSIST_CATEGORY)) {

@@ -576,7 +576,7 @@ class EditTemplateDialog extends StatusDialog {
 	 * Returns the created template.
 	 * 
 	 * @return the created template
-	 * @since 3.1
+	 * 
 	 */
 	public Template getTemplate() {
 		return fTemplate;
@@ -594,7 +594,7 @@ class EditTemplateDialog extends StatusDialog {
 	
 	/*
 	 * @see org.eclipse.jface.dialogs.Dialog#getDialogBoundsSettings()
-	 * @since 3.2
+	 * 
 	 */
 	protected IDialogSettings getDialogBoundsSettings() {
 		String sectionName= getClass().getName() + "_dialogBounds"; //$NON-NLS-1$

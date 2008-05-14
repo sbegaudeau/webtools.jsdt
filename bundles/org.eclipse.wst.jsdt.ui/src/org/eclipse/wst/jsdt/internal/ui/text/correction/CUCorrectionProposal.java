@@ -76,7 +76,7 @@ import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
  * <p>
  * The proposal takes care of the preview of the changes as proposal information.
  * </p>
- * @since 3.2
+ * 
  */
 public class CUCorrectionProposal extends ChangeCorrectionProposal  {
 

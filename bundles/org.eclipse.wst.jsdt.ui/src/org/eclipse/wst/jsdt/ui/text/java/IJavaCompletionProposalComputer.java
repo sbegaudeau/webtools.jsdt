@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * Computes completions and context information displayed by the Java editor content assistant.
+ * Computes completions and context information displayed by the JavaScript editor content assistant.
  * Contributions to the <tt>org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer</tt> extension point
  * must implement this interface.
  * 

@@ -14,7 +14,7 @@ import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.IntroduceIndirectionRefactoring;
 
 /**
- * @since 3.2
+ * 
  */
 public class IntroduceIndirectionWizard extends RefactoringWizard {
 

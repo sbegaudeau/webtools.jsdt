@@ -46,7 +46,7 @@ import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 /**
  * Action for refreshing the workspace from the local file system for
  * the selected resources and all of their descendants. This action
- * also considers external Jars managed by the Java Model.
+ * also considers external Jars managed by the JavaScript Model.
  * <p>
  * Action is applicable to selections containing resources and Java
  * elements down to compilation units.

@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaAnnotationIterator;
 /**
  * Abstract super class for annotation hovers.
  *
- * @since 3.0
+ * 
  */
 public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHover {
 

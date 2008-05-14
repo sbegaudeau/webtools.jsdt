@@ -38,9 +38,9 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 
 /**
- * Standard wizard page for creating new Java projects. This page can be used in 
- * project creation wizards. The page shows UI to configure the project with a Java 
- * build path and output location. On finish the page will also configure the Java nature.
+ * Standard wizard page for creating new JavaScript projects. This page can be used in 
+ * project creation wizards. The page shows UI to configure the project with a JavaScript 
+ * build path and output location. On finish the page will also configure the JavaScript nature.
  * <p>
  * This is a replacement for <code>NewJavaProjectWizardPage</code> with a cleaner API.
  * </p>
@@ -61,7 +61,7 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 	private BuildPathsBlock fBuildPathsBlock;
 	
 	/**
-	 * Creates a wizard page that can be used in a Java project creation wizard.
+	 * Creates a wizard page that can be used in a JavaScript project creation wizard.
 	 * It contains UI to configure a the classpath and the output folder.
 	 * 
 	 * <p>
@@ -90,7 +90,7 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
     
     /*
      * @see org.eclipse.jface.dialogs.DialogPage#dispose()
-     * @since 3.3
+     * 
      */
     public void dispose() {
     	try {
@@ -105,10 +105,10 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 	
 	/**
 	 * Clients can override this method to choose if the new source page is used. The new source page
-	 * requires that the project is already created as Java project. The page will directly manipulate the classpath.
+	 * requires that the project is already created as JavaScript project. The page will directly manipulate the classpath.
 	 * By default <code>false</code> is returned.
 	 * @return Returns <code>true</code> if the new source page should be used.
-	 * @since 3.1
+	 * 
 	 */
 	protected boolean useNewSourcePage() {
 		return false;
@@ -127,7 +127,7 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 	 * The project does not have to exist at the time of initialization, but must exist when executing the runnable
 	 * obtained by <code>getRunnable()</code>.
 	 * </p>
-	 * @param jproject The Java project.
+	 * @param jproject The JavaScript project.
 	 * @param defaultOutputLocation The default classpath entries or <code>null</code> to let the page choose the default
 	 * @param defaultEntries The folder to be taken as the default output path or <code>null</code> to let the page choose the default
 	 * @param defaultsOverrideExistingClasspath If set to <code>true</code>, an existing '.classpath' file is ignored. If set to <code>false</code>
@@ -177,10 +177,10 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 	}
 	
 	/**
-	 * Returns the Java project that was passed in {@link #init(IJavaScriptProject, IPath, IIncludePathEntry[], boolean)} or <code>null</code> if the 
+	 * Returns the JavaScript project that was passed in {@link #init(IJavaScriptProject, IPath, IIncludePathEntry[], boolean)} or <code>null</code> if the 
 	 * page has not been initialized yet.
 	 * 
-	 * @return the managed Java project or <code>null</code>
+	 * @return the managed JavaScript project or <code>null</code>
 	 */	
 	public IJavaScriptProject getJavaProject() {
 		return fJavaProject;
@@ -188,12 +188,12 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 	
 
 	/**
-	 * Returns the runnable that will create the Java project or <code>null</code> if the page has 
+	 * Returns the runnable that will create the JavaScript project or <code>null</code> if the page has 
 	 * not been initialized. The runnable sets the project's classpath and output location to the values 
-	 * configured in the page and adds the Java nature if not set yet. The method requires that the 
+	 * configured in the page and adds the JavaScript nature if not set yet. The method requires that the 
 	 * project is created and opened.
 	 *
-	 * @return the runnable that creates the new Java project
+	 * @return the runnable that creates the new JavaScript project
 	 */		
 	public IRunnableWithProgress getRunnable() {
 		if (getJavaProject() != null) {
@@ -220,18 +220,18 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 	 *  progress reporting is not desired
 	 * @throws CoreException if the project couldn't be created
 	 * @see org.eclipse.core.resources.IProjectDescription#setLocationURI(java.net.URI)
-	 * @since 3.2
+	 * 
 	 */
 	public static void createProject(IProject project, URI locationURI, IProgressMonitor monitor) throws CoreException {
 		BuildPathsBlock.createProject(project, locationURI, monitor);
 	}
 
 	/**
-	 * Adds the Java nature to the project (if not set yet) and configures the build classpath.
+	 * Adds the JavaScript nature to the project (if not set yet) and configures the build classpath.
 	 * 
 	 * @param monitor a progress monitor to report progress or <code>null</code> if
 	 * progress reporting is not desired
-	 * @throws CoreException Thrown when the configuring the Java project failed.
+	 * @throws CoreException Thrown when the configuring the JavaScript project failed.
 	 * @throws InterruptedException Thrown when the operation has been canceled.
 	 */
 	public void configureJavaProject(IProgressMonitor monitor) throws CoreException, InterruptedException {
@@ -256,7 +256,7 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 	/**
 	 * Transfers the focus into this page.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	protected void setFocus() {
 		getBuildPathsBlock().setFocus();

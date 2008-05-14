@@ -176,7 +176,7 @@ public class CleanUpPreferenceUtil {
 	 * including the built in profiles.
 	 * @param scope the context from which to retrieve the profiles
 	 * @return list of profiles, not null
-	 * @since 3.3
+	 * 
 	 */
 	public static List loadProfiles(IScopeContext scope) {
     	
@@ -201,7 +201,7 @@ public class CleanUpPreferenceUtil {
 	/**
 	 * Returns a list of built in clean up profiles
 	 * @return the list of built in profiles, not null
-	 * @since 3.3
+	 * 
 	 */
 	public static List getBuiltInProfiles() {
     	ArrayList result= new ArrayList();

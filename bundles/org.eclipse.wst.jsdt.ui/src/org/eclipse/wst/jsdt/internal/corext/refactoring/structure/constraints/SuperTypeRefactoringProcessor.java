@@ -109,7 +109,7 @@ import org.eclipse.wst.jsdt.ui.CodeGeneration;
  * Partial implementation of a refactoring processor solving supertype
  * constraint models.
  * 
- * @since 3.1
+ * 
  */
 public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor implements IScriptableRefactoring, ICommentProvider {
 

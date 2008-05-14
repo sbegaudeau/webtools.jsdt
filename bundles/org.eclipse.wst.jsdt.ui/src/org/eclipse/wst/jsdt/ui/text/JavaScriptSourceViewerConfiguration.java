@@ -97,7 +97,7 @@ import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
 
 
 /**
- * Configuration for a source viewer which shows Java code.
+ * Configuration for a source viewer which shows JavaScript code.
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
@@ -113,61 +113,61 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	private ITextEditor fTextEditor;
 	/**
 	 * The document partitioning.
-	 * @since 3.0
+	 * 
 	 */
 	private String fDocumentPartitioning;
 	/**
-	 * The Java source code scanner.
-	 * @since 3.0
+	 * The JavaScript source code scanner.
+	 * 
 	 */
 	private AbstractJavaScanner fCodeScanner;
 	/**
-	 * The Java multi-line comment scanner.
-	 * @since 3.0
+	 * The JavaScript multi-line comment scanner.
+	 * 
 	 */
 	private AbstractJavaScanner fMultilineCommentScanner;
 	/**
-	 * The Java single-line comment scanner.
-	 * @since 3.0
+	 * The JavaScript single-line comment scanner.
+	 * 
 	 */
 	private AbstractJavaScanner fSinglelineCommentScanner;
 	/**
-	 * The Java string scanner.
-	 * @since 3.0
+	 * The JavaScript string scanner.
+	 * 
 	 */
 	private AbstractJavaScanner fStringScanner;
 	/**
 	 * The Javadoc scanner.
-	 * @since 3.0
+	 * 
 	 */
 	private AbstractJavaScanner fJavaDocScanner;
 	/**
 	 * The color manager.
-	 * @since 3.0
+	 * 
 	 */
 	private IColorManager fColorManager;
 	/**
 	 * The double click strategy.
-	 * @since 3.1
+	 * 
 	 */
 	private JavaDoubleClickSelector fJavaDoubleClickSelector;
 
 
 	/**
-	 * Creates a new Java source viewer configuration for viewers in the given editor
+	 * Creates a new JavaScript source viewer configuration for viewers in the given editor
 	 * using the given preference store, the color manager and the specified document partitioning.
 	 * <p>
-	 * Creates a Java source viewer configuration in the new setup without text tools. Clients are
+	 * Creates a JavaScript source viewer configuration in the new setup without text tools. Clients are
 	 * allowed to call {@link JavaScriptSourceViewerConfiguration#handlePropertyChangeEvent(PropertyChangeEvent)}
 	 * on the resulting
-	 * Java source viewer configuration.
+	 * JavaScript source viewer configuration.
 	 * </p>
 	 *
 	 * @param colorManager the color manager
 	 * @param preferenceStore the preference store, can be read-only
 	 * @param editor the editor in which the configured viewer(s) will reside, or <code>null</code> if none
 	 * @param partitioning the document partitioning for this configuration, or <code>null</code> for the default partitioning
-	 * @since 3.0
+	 * 
 	 */
 	public JavaScriptSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, ITextEditor editor, String partitioning) {
 		super(preferenceStore);
@@ -178,39 +178,39 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	}
 
 	/**
-	 * Returns the Java source code scanner for this configuration.
+	 * Returns the JavaScript source code scanner for this configuration.
 	 *
-	 * @return the Java source code scanner
+	 * @return the JavaScript source code scanner
 	 */
 	protected RuleBasedScanner getCodeScanner() {
 		return fCodeScanner;
 	}
 
 	/**
-	 * Returns the Java multi-line comment scanner for this configuration.
+	 * Returns the JavaScript multi-line comment scanner for this configuration.
 	 *
-	 * @return the Java multi-line comment scanner
-	 * @since 2.0
+	 * @return the JavaScript multi-line comment scanner
+	 * 
 	 */
 	protected RuleBasedScanner getMultilineCommentScanner() {
 		return fMultilineCommentScanner;
 	}
 
 	/**
-	 * Returns the Java single-line comment scanner for this configuration.
+	 * Returns the JavaScript single-line comment scanner for this configuration.
 	 *
-	 * @return the Java single-line comment scanner
-	 * @since 2.0
+	 * @return the JavaScript single-line comment scanner
+	 * 
 	 */
 	protected RuleBasedScanner getSinglelineCommentScanner() {
 		return fSinglelineCommentScanner;
 	}
 
 	/**
-	 * Returns the Java string scanner for this configuration.
+	 * Returns the JavaScript string scanner for this configuration.
 	 *
-	 * @return the Java string scanner
-	 * @since 2.0
+	 * @return the JavaScript string scanner
+	 * 
 	 */
 	protected RuleBasedScanner getStringScanner() {
 		return fStringScanner;
@@ -246,7 +246,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	/**
 	 * @return <code>true</code> iff the new setup without text tools is in use.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private boolean isNewSetup() {
 		return fJavaTextTools == null;
@@ -256,9 +256,9 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	 * Creates and returns a preference store which combines the preference
 	 * stores from the text tools and which is read-only.
 	 *
-	 * @param javaTextTools the Java text tools
+	 * @param javaTextTools the JavaScript text tools
 	 * @return the combined read-only preference store
-	 * @since 3.0
+	 * 
 	 */
 	private static final IPreferenceStore createPreferenceStore(JavaScriptTextTools javaTextTools) {
 		Assert.isNotNull(javaTextTools);
@@ -272,7 +272,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	/**
 	 * Initializes the scanners.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private void initializeScanners() {
 		Assert.isTrue(isNewSetup());
@@ -359,7 +359,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 
 	/*
 	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getQuickAssistAssistant(org.eclipse.jface.text.source.ISourceViewer)
-	 * @since 3.2
+	 * 
 	 */
 	public IQuickAssistAssistant getQuickAssistAssistant(ISourceViewer sourceViewer) {
 		if (getEditor() != null)
@@ -423,7 +423,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 
 	/*
 	 * @see SourceViewerConfiguration#getDefaultPrefixes(ISourceViewer, String)
-	 * @since 2.0
+	 * 
 	 */
 	public String[] getDefaultPrefixes(ISourceViewer sourceViewer, String contentType) {
 		return new String[] { "//", "" }; //$NON-NLS-1$ //$NON-NLS-2$
@@ -465,7 +465,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	 * @param tabWidth the display tab width
 	 * @return the indent prefixes
 	 * @see #getIndentPrefixes(ISourceViewer, String)
-	 * @since 3.3
+	 * 
 	 */
 	private String[] getIndentPrefixesForSpaces(int tabWidth) {
 		String[] indentPrefixes= new String[tabWidth + 2];
@@ -489,7 +489,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	 * 
 	 * @param count	the space count
 	 * @return the string with the spaces
-	 * @since 3.3
+	 * 
 	 */
 	private String getStringWithSpaces(int count) {
 		char[] spaceChars= new char[count];
@@ -539,7 +539,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 
 	/*
 	 * @see SourceViewerConfiguration#getOverviewRulerAnnotationHover(ISourceViewer)
-	 * @since 3.0
+	 * 
 	 */
 	public IAnnotationHover getOverviewRulerAnnotationHover(ISourceViewer sourceViewer) {
 		return new HTMLAnnotationHover() {
@@ -551,7 +551,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 
 	/*
 	 * @see SourceViewerConfiguration#getConfiguredTextHoverStateMasks(ISourceViewer, String)
-	 * @since 2.1
+	 * 
 	 */
 	public int[] getConfiguredTextHoverStateMasks(ISourceViewer sourceViewer, String contentType) {
 		JavaEditorTextHoverDescriptor[] hoverDescs= JavaScriptPlugin.getDefault().getJavaEditorTextHoverDescriptors();
@@ -580,7 +580,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 
 	/*
 	 * @see SourceViewerConfiguration#getTextHover(ISourceViewer, String, int)
-	 * @since 2.1
+	 * 
 	 */
 	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
 		JavaEditorTextHoverDescriptor[] hoverDescs= JavaScriptPlugin.getDefault().getJavaEditorTextHoverDescriptors();
@@ -617,7 +617,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 
 	/*
 	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getConfiguredDocumentPartitioning(org.eclipse.jface.text.source.ISourceViewer)
-	 * @since 3.0
+	 * 
 	 */
 	public String getConfiguredDocumentPartitioning(ISourceViewer sourceViewer) {
 		if (fDocumentPartitioning != null)
@@ -641,7 +641,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 
 	/*
 	 * @see SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
-	 * @since 2.0
+	 * 
 	 */
 	public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
 		return new IInformationControlCreator() {
@@ -658,7 +658,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	 *
 	 * @param sourceViewer the source viewer to be configured by this configuration
 	 * @return an information control creator
-	 * @since 2.1
+	 * 
 	 */
 	private IInformationControlCreator getInformationPresenterControlCreator(ISourceViewer sourceViewer) {
 		return new IInformationControlCreator() {
@@ -678,7 +678,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	 * @param sourceViewer the source viewer to be configured by this configuration
 	 * @param commandId the ID of the command that opens this control
 	 * @return an information control creator
-	 * @since 2.1
+	 * 
 	 */
 	private IInformationControlCreator getOutlinePresenterControlCreator(ISourceViewer sourceViewer, final String commandId) {
 		return new IInformationControlCreator() {
@@ -702,7 +702,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 
 	/*
 	 * @see SourceViewerConfiguration#getInformationPresenter(ISourceViewer)
-	 * @since 2.0
+	 * 
 	 */
 	public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) {
 		InformationPresenter presenter= new InformationPresenter(getInformationPresenterControlCreator(sourceViewer));
@@ -723,9 +723,9 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	 * information requested for the current cursor position.
 	 *
 	 * @param sourceViewer the source viewer to be configured by this configuration
-	 * @param doCodeResolve a boolean which specifies whether code resolve should be used to compute the Java element
+	 * @param doCodeResolve a boolean which specifies whether code resolve should be used to compute the JavaScript element
 	 * @return an information presenter
-	 * @since 2.1
+	 * 
 	 */
 	public IInformationPresenter getOutlinePresenter(ISourceViewer sourceViewer, boolean doCodeResolve) {
 		InformationPresenter presenter;
@@ -751,7 +751,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	 *
 	 * @param sectionName the section name
 	 * @return the settings
-	 * @since 3.0
+	 * 
 	 */
 	private IDialogSettings getSettings(String sectionName) {
 		IDialogSettings settings= JavaScriptPlugin.getDefault().getDialogSettings().getSection(sectionName);
@@ -766,9 +766,9 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	 * information requested for the current cursor position.
 	 *
 	 * @param sourceViewer the source viewer to be configured by this configuration
-	 * @param doCodeResolve a boolean which specifies whether code resolve should be used to compute the Java element
+	 * @param doCodeResolve a boolean which specifies whether code resolve should be used to compute the JavaScript element
 	 * @return an information presenter
-	 * @since 3.0
+	 * 
 	 */
 	public IInformationPresenter getHierarchyPresenter(ISourceViewer sourceViewer, boolean doCodeResolve) {
 		
@@ -796,7 +796,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	 *
 	 * @param event the event to be investigated
 	 * @return <code>true</code> if event causes a behavioral change
-	 * @since 3.0
+	 * 
 	 */
 	public boolean affectsTextPresentation(PropertyChangeEvent event) {
 		return  fCodeScanner.affectsBehavior(event)
@@ -816,7 +816,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 	 *
 	 * @param event the event to which to adapt
 	 * @see JavaScriptSourceViewerConfiguration#JavaSourceViewerConfiguration(IColorManager, IPreferenceStore, ITextEditor, String)
-	 * @since 3.0
+	 * 
 	 */
 	public void handlePropertyChangeEvent(PropertyChangeEvent event) {
 		Assert.isTrue(isNewSetup());
@@ -837,7 +837,7 @@ public class JavaScriptSourceViewerConfiguration extends TextSourceViewerConfigu
 
 	/*
 	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getHyperlinkDetectorTargets(org.eclipse.jface.text.source.ISourceViewer)
-	 * @since 3.3
+	 * 
 	 */
 	protected Map getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
 		Map targets= super.getHyperlinkDetectorTargets(sourceViewer);

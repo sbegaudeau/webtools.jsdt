@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
  * Defines the constants used in the <code>org.eclipse.ui.themes</code>
  * extension contributed by this plug-in.
  * 
- * @since 3.3
+ * 
  */
 public interface IJavaThemeConstants {
 

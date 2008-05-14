@@ -130,7 +130,7 @@ public class RenameSupport {
 	 * operation.
 	 * 
 	 * @see #openDialog(Shell)
-	 * @since 3.3
+	 * 
 	 */
 	public boolean openDialog(Shell parent, boolean showPreviewOnly) throws CoreException {
 		ensureChecked();
@@ -207,7 +207,7 @@ public class RenameSupport {
 	/**
 	 * Flag indicating that textual matches in comments and in string literals
 	 * are to be updated as well.
-	 * @since 3.0
+	 * 
 	 */
 	public static final int UPDATE_TEXTUAL_MATCHES= 1 << 6;
 
@@ -240,7 +240,7 @@ public class RenameSupport {
 	 * @return the {@link RenameSupport}.
 	 * @throws CoreException if an unexpected error occurred while creating the
 	 *         {@link RenameSupport}.
-	 * @since 3.3
+	 * 
 	 */
 	public static RenameSupport create(RenameJavaScriptElementDescriptor descriptor) throws CoreException {
 		return new RenameSupport(descriptor);
@@ -395,7 +395,7 @@ public class RenameSupport {
 	 * @return the {@link RenameSupport}.
 	 * @throws CoreException if an unexpected error occurred while creating
 	 * the {@link RenameSupport}.
-	 * @since 3.1
+	 * 
 	 */
 	public static RenameSupport create(ITypeParameter parameter, String newName, int flags) throws CoreException {
 		RenameTypeParameterProcessor processor= new RenameTypeParameterProcessor(parameter);
@@ -414,7 +414,7 @@ public class RenameSupport {
 	 * @return the {@link RenameSupport}.
 	 * @throws CoreException if an unexpected error occurred while creating
 	 * the {@link RenameSupport}.
-	 * @since 3.1
+	 * 
 	 */
 	public static RenameSupport create(ILocalVariable variable, String newName, int flags) throws CoreException {
 		RenameLocalVariableProcessor processor= new RenameLocalVariableProcessor(variable);

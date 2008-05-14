@@ -67,7 +67,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>: if <code>true</code> return types
 	 * are rendered
 	 * </p>
-	 * @since 3.1
+	 * 
 	 */
 	public static final String APPEARANCE_METHOD_TYPEPARAMETERS= "org.eclipse.wst.jsdt.ui.methodtypeparametesr";//$NON-NLS-1$
 
@@ -78,7 +78,7 @@ public class PreferenceConstants {
 	 * for quick assists.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_QUICKASSIST_LIGHTBULB="org.eclipse.wst.jsdt.quickassist.lightbulb"; //$NON-NLS-1$
 
@@ -110,13 +110,13 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>: if <code>true</code> empty
 	 * inner packages are folded.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public static final String APPEARANCE_FOLD_PACKAGES_IN_PACKAGE_EXPLORER= "org.eclipse.wst.jsdt.ui.flatPackagesInPackageExplorer";//$NON-NLS-1$
 
 	/**
 	 * A named preference that defines how member elements are ordered by the
-	 * Java views using the <code>JavaElementSorter</code>.
+	 * JavaScript views using the <code>JavaElementSorter</code>.
 	 * <p>
 	 * Value is of type <code>String</code>: A comma separated list of the
 	 * following entries. Each entry must be in the list, no duplication. List
@@ -132,13 +132,13 @@ public class PreferenceConstants {
 	 * <li><b>SF</b>: Static Fields</li>
 	 * </ul>
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public static final String APPEARANCE_MEMBER_SORT_ORDER= "outlinesortoption"; //$NON-NLS-1$
 
 	/**
 	 * A named preference that defines how member elements are ordered by visibility in the
-	 * Java views using the <code>JavaElementSorter</code>.
+	 * JavaScript views using the <code>JavaElementSorter</code>.
 	 * <p>
 	 * Value is of type <code>String</code>: A comma separated list of the
 	 * following entries. Each entry must be in the list, no duplication. List
@@ -150,26 +150,26 @@ public class PreferenceConstants {
 	 * <li><b>D</b>: Default</li>
 	 * </ul>
 	 * </p>
-	 * @since 3.0
+	 * 
 	 */
 	public static final String APPEARANCE_VISIBILITY_SORT_ORDER= "org.eclipse.wst.jsdt.ui.visibility.order"; //$NON-NLS-1$
 	
 	/**
-	 * A named preferences that controls if Java elements are also sorted by 
+	 * A named preferences that controls if JavaScript elements are also sorted by 
 	 * visibility.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 3.0
+	 * 
 	 */
 	public static final String APPEARANCE_ENABLE_VISIBILITY_SORT_ORDER= "org.eclipse.wst.jsdt.ui.enable.visibility.order"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that controls category rendering of Java elements in the UI.
+	 * A named preference that controls category rendering of JavaScript elements in the UI.
 	 * <p>
 	 * Value is of type <code>Boolean</code>: if <code>true</code> category is rendered
 	 * </p>
-	 * @since 3.2
+	 * 
 	 */
 	public static final String APPEARANCE_CATEGORY= "org.eclipse.wst.jsdt.ui.category";//$NON-NLS-1$
 
@@ -177,7 +177,7 @@ public class PreferenceConstants {
 	 * The symbolic font name for the font used to display Javadoc 
 	 * (value <code>"org.eclipse.wst.jsdt.ui.javadocfont"</code>).
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public final static String APPEARANCE_JAVADOC_FONT= "org.eclipse.wst.jsdt.ui.javadocfont"; //$NON-NLS-1$
 
@@ -230,7 +230,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 3.0
+	 * 
 	 */
 	public static final String CODEGEN_KEYWORD_THIS= "org.eclipse.wst.jsdt.ui.keywordthis"; //$NON-NLS-1$
 
@@ -240,7 +240,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 3.0
+	 * 
 	 */
 	public static final String CODEGEN_IS_FOR_GETTERS= "org.eclipse.wst.jsdt.ui.gettersetter.use.is"; //$NON-NLS-1$
 	
@@ -251,7 +251,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>String</code>.
 	 * </p>
-	 * @since 3.0
+	 * 
 	 */	
 	public static final String CODEGEN_EXCEPTION_VAR_NAME= "org.eclipse.wst.jsdt.ui.exception.name"; //$NON-NLS-1$
 	
@@ -261,7 +261,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public static final String CODEGEN_ADD_COMMENTS= "org.eclipse.wst.jsdt.ui.javadoc"; //$NON-NLS-1$
 
@@ -270,19 +270,19 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 3.1
+	 * 
 	 */
 	public static final String CODEGEN_USE_OVERRIDE_ANNOTATION= "org.eclipse.wst.jsdt.ui.overrideannotation"; //$NON-NLS-1$
 	
 	/**
 	 * A named preference that holds a list of semicolon separated fully qualified type names with wild card characters.
-	 * @since 3.0
+	 * 
 	 */	
 	public static final String TYPEFILTER_ENABLED= "org.eclipse.wst.jsdt.ui.typefilter.enabled"; //$NON-NLS-1$
 	
 	/**
 	 * A named preference that holds a list of semicolon separated fully qualified type names with wild card characters.
-	 * @since 3.0
+	 * 
 	 */	
 	public static final String TYPEFILTER_DISABLED= "org.eclipse.wst.jsdt.ui.typefilter.disabled"; //$NON-NLS-1$
 	
@@ -310,7 +310,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Integer</code>: positive value specifying the number of non star-import is used
 	 * </p>
-	 * @since 3.2
+	 * 
 	 */
 	public static final String ORGIMPORTS_STATIC_ONDEMANDTHRESHOLD= "org.eclipse.wst.jsdt.ui.staticondemandthreshold"; //$NON-NLS-1$
 	
@@ -337,7 +337,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public static final String LINK_BROWSING_PROJECTS_TO_EDITOR= "org.eclipse.wst.jsdt.ui.browsing.projectstoeditor"; //$NON-NLS-1$
 
@@ -347,7 +347,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public static final String LINK_BROWSING_PACKAGES_TO_EDITOR= "org.eclipse.wst.jsdt.ui.browsing.packagestoeditor"; //$NON-NLS-1$
 
@@ -363,7 +363,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public static final String LINK_BROWSING_TYPES_TO_EDITOR= "org.eclipse.wst.jsdt.ui.browsing.typestoeditor"; //$NON-NLS-1$
 
@@ -373,7 +373,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public static final String LINK_BROWSING_MEMBERS_TO_EDITOR= "org.eclipse.wst.jsdt.ui.browsing.memberstoeditor"; //$NON-NLS-1$
 	/**
@@ -386,7 +386,7 @@ public class PreferenceConstants {
 	public static final String SRCBIN_FOLDERS_IN_NEWPROJ= "org.eclipse.wst.jsdt.ui.wizards.srcBinFoldersInNewProjects"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that specifies the source folder name used when creating a new Java project. Value is inactive
+	 * A named preference that specifies the source folder name used when creating a new JavaScript project. Value is inactive
 	 * if <code>SRCBIN_FOLDERS_IN_NEWPROJ</code> is set to <code>false</code>.
 	 * <p>
 	 * Value is of type <code>String</code>. 
@@ -397,7 +397,7 @@ public class PreferenceConstants {
 	public static final String SRCBIN_SRCNAME= "org.eclipse.wst.jsdt.ui.wizards.srcBinFoldersSrcName"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that specifies the output folder name used when creating a new Java project. Value is inactive
+	 * A named preference that specifies the output folder name used when creating a new JavaScript project. Value is inactive
 	 * if <code>SRCBIN_FOLDERS_IN_NEWPROJ</code> is set to <code>false</code>.
 	 * <p>
 	 * Value is of type <code>String</code>. 
@@ -408,7 +408,7 @@ public class PreferenceConstants {
 	public static final String SRCBIN_BINNAME= "org.eclipse.wst.jsdt.ui.wizards.srcBinFoldersBinName"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that holds a list of possible JRE libraries used by the New Java Project wizard. A library 
+	 * A named preference that holds a list of possible JRE libraries used by the New JavaScript Project wizard. A library 
 	 * consists of a description and an arbitrary number of <code>IIncludePathEntry</code>s, that will represent the 
 	 * JRE on the new project's class path. 
 	 * <p>
@@ -493,7 +493,7 @@ public class PreferenceConstants {
 	public static final String DOUBLE_CLICK_EXPANDS= "packageview.doubleclick.expands"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that controls whether Java views update their presentation while editing or when saving the
+	 * A named preference that controls whether JavaScript views update their presentation while editing or when saving the
 	 * content of an editor. 
 	 * <p>
 	 * Value is of type <code>String</code>: possible values are <code>
@@ -535,7 +535,7 @@ public class PreferenceConstants {
 	 * A named preference that defines whether the hint to make hover sticky should be shown.
 	 *
 	 * @see JavaScriptUI
-	 * @since 3.0
+	 * 
 	 * @deprecated As of 3.3, replaced by {@link AbstractDecoratedTextEditorPreferenceConstants#EDITOR_SHOW_TEXT_HOVER_AFFORDANCE}
 	 */
 	public static final String EDITOR_SHOW_TEXT_HOVER_AFFORDANCE= "PreferenceConstants.EDITOR_SHOW_TEXT_HOVER_AFFORDANCE"; //$NON-NLS-1$
@@ -544,7 +544,7 @@ public class PreferenceConstants {
 	 * A named preference that defines the key for the hover modifiers.
 	 *
 	 * @see JavaScriptUI
-	 * @since 2.1
+	 * 
 	 */
 	public static final String EDITOR_TEXT_HOVER_MODIFIERS= "hoverModifiers"; //$NON-NLS-1$
 
@@ -555,7 +555,7 @@ public class PreferenceConstants {
 	 * 
 	 * @see JavaScriptUI
 	 * @see #EDITOR_TEXT_HOVER_MODIFIERS
-	 * @since 2.1.1
+	 * 
 	 */
 	public static final String EDITOR_TEXT_HOVER_MODIFIER_MASKS= "hoverModifierMasks"; //$NON-NLS-1$
 
@@ -563,7 +563,7 @@ public class PreferenceConstants {
 	 * The id of the best match hover contributed for extension point
 	 * <code>javaEditorTextHovers</code>.
 	 *
-	 * @since 2.1
+	 * 
 	 */
 	public static final String ID_BESTMATCH_HOVER= "org.eclipse.wst.jsdt.ui.BestMatchHover"; //$NON-NLS-1$
 
@@ -571,7 +571,7 @@ public class PreferenceConstants {
 	 * The id of the source code hover contributed for extension point
 	 * <code>javaEditorTextHovers</code>.
 	 *
-	 * @since 2.1
+	 * 
 	 */
 	public static final String ID_SOURCE_HOVER= "org.eclipse.wst.jsdt.ui.JavaSourceHover"; //$NON-NLS-1$
 
@@ -579,7 +579,7 @@ public class PreferenceConstants {
 	 * The id of the javadoc hover contributed for extension point
 	 * <code>javaEditorTextHovers</code>.
 	 *
-	 * @since 2.1
+	 * 
 	 */
 	public static final String ID_JAVADOC_HOVER= "org.eclipse.wst.jsdt.ui.JavadocHover"; //$NON-NLS-1$
 
@@ -693,7 +693,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public final static String EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE= "JavaEditor.SyncOutlineOnCursorMove"; //$NON-NLS-1$
 
@@ -734,7 +734,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_WARNING_INDICATION= "warningIndication"; //$NON-NLS-1$
@@ -749,7 +749,7 @@ public class PreferenceConstants {
 	 * @see #EDITOR_WARNING_INDICATION
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_WARNING_INDICATION_COLOR= "warningIndicationColor"; //$NON-NLS-1$
@@ -759,7 +759,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_TASK_INDICATION= "taskIndication"; //$NON-NLS-1$
@@ -774,7 +774,7 @@ public class PreferenceConstants {
 	 * @see #EDITOR_TASK_INDICATION
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_TASK_INDICATION_COLOR= "taskIndicationColor"; //$NON-NLS-1$
@@ -785,7 +785,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_BOOKMARK_INDICATION= "bookmarkIndication"; //$NON-NLS-1$
@@ -800,7 +800,7 @@ public class PreferenceConstants {
 	 * @see #EDITOR_BOOKMARK_INDICATION
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_BOOKMARK_INDICATION_COLOR= "bookmarkIndicationColor"; //$NON-NLS-1$
@@ -811,7 +811,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_SEARCH_RESULT_INDICATION= "searchResultIndication"; //$NON-NLS-1$
@@ -826,7 +826,7 @@ public class PreferenceConstants {
 	 * @see #EDITOR_SEARCH_RESULT_INDICATION
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_SEARCH_RESULT_INDICATION_COLOR= "searchResultIndicationColor"; //$NON-NLS-1$
@@ -837,7 +837,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_UNKNOWN_INDICATION= "othersIndication"; //$NON-NLS-1$
@@ -853,7 +853,7 @@ public class PreferenceConstants {
 	 * @see #EDITOR_UNKNOWN_INDICATION
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 2.1
+	 * 
 	 * @deprecated
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
@@ -865,7 +865,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_ERROR_INDICATION_IN_OVERVIEW_RULER= "errorIndicationInOverviewRuler"; //$NON-NLS-1$
@@ -876,7 +876,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_WARNING_INDICATION_IN_OVERVIEW_RULER= "warningIndicationInOverviewRuler"; //$NON-NLS-1$
@@ -887,7 +887,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_TASK_INDICATION_IN_OVERVIEW_RULER= "taskIndicationInOverviewRuler"; //$NON-NLS-1$
@@ -898,7 +898,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_BOOKMARK_INDICATION_IN_OVERVIEW_RULER= "bookmarkIndicationInOverviewRuler"; //$NON-NLS-1$
@@ -909,7 +909,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_SEARCH_RESULT_INDICATION_IN_OVERVIEW_RULER= "searchResultIndicationInOverviewRuler"; //$NON-NLS-1$
@@ -920,7 +920,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.0 replaced by {@link org.eclipse.ui.texteditor.MarkerAnnotationPreferences}
 	 */
 	public final static String EDITOR_UNKNOWN_INDICATION_IN_OVERVIEW_RULER= "othersIndicationInOverviewRuler"; //$NON-NLS-1$
@@ -931,7 +931,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public final static String EDITOR_CLOSE_STRINGS= "closeStrings"; //$NON-NLS-1$
 
@@ -941,7 +941,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public final static String EDITOR_WRAP_STRINGS= "wrapStrings"; //$NON-NLS-1$
 
@@ -951,7 +951,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_ESCAPE_STRINGS= "escapeStrings"; //$NON-NLS-1$
 
@@ -961,7 +961,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public final static String EDITOR_CLOSE_BRACKETS= "closeBrackets"; //$NON-NLS-1$
 
@@ -971,17 +971,17 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public final static String EDITOR_CLOSE_BRACES= "closeBraces"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that controls whether the 'close java docs' feature is
+	 * A named preference that controls whether the 'close JavaScript docs' feature is
 	 * enabled.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public final static String EDITOR_CLOSE_JAVADOCS= "closeJavaDocs"; //$NON-NLS-1$
 
@@ -991,7 +991,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public final static String EDITOR_ADD_JAVADOC_TAGS= "addJavaDocTags"; //$NON-NLS-1$
 
@@ -1001,7 +1001,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public final static String EDITOR_FORMAT_JAVADOCS= "autoFormatJavaDocs"; //$NON-NLS-1$
 
@@ -1011,7 +1011,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public final static String EDITOR_SMART_PASTE= "smartPaste"; //$NON-NLS-1$
 
@@ -1020,7 +1020,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_IMPORTS_ON_PASTE= "importsOnPaste"; //$NON-NLS-1$
 	
@@ -1030,7 +1030,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 * @deprecated as of 3.3 replaced by {@link org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants#EDITOR_SMART_HOME_END}
 	 */
 	public final static String EDITOR_SMART_HOME_END= AbstractTextEditor.PREFERENCE_NAVIGATION_SMART_HOME_END;
@@ -1041,7 +1041,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_SUB_WORD_NAVIGATION= "subWordNavigation"; //$NON-NLS-1$
 
@@ -1150,28 +1150,28 @@ public class PreferenceConstants {
 	/**
 	 * Preference key suffix for bold text style preference keys.
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String EDITOR_BOLD_SUFFIX= "_bold"; //$NON-NLS-1$
 
 	/**
 	 * Preference key suffix for italic text style preference keys.
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_ITALIC_SUFFIX= "_italic"; //$NON-NLS-1$
 	
 	/**
 	 * Preference key suffix for strikethrough text style preference keys.
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String EDITOR_STRIKETHROUGH_SUFFIX= "_strikethrough"; //$NON-NLS-1$
 	
 	/**
 	 * Preference key suffix for underline text style preference keys.
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String EDITOR_UNDERLINE_SUFFIX= "_underline"; //$NON-NLS-1$
 
@@ -1188,10 +1188,10 @@ public class PreferenceConstants {
 	public final static String EDITOR_MULTI_LINE_COMMENT_COLOR= IJavaScriptColorConstants.JAVA_MULTI_LINE_COMMENT;
 
 	/**
-	 * The symbolic font name for the Java editor text font 
+	 * The symbolic font name for the JavaScript editor text font 
 	 * (value <code>"org.eclipse.wst.jsdt.ui.editors.textfont"</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public final static String EDITOR_TEXT_FONT= "org.eclipse.wst.jsdt.ui.editors.textfont"; //$NON-NLS-1$
 
@@ -1211,7 +1211,7 @@ public class PreferenceConstants {
 	 * in italic. If <code>false</code> the are rendered using no italic font style attribute.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_MULTI_LINE_COMMENT_ITALIC= IJavaScriptColorConstants.JAVA_MULTI_LINE_COMMENT + EDITOR_ITALIC_SUFFIX;
 	
@@ -1222,7 +1222,7 @@ public class PreferenceConstants {
 	 * in strikethrough. If <code>false</code> the are rendered using no strikethrough font style attribute.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_MULTI_LINE_COMMENT_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_MULTI_LINE_COMMENT + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -1233,7 +1233,7 @@ public class PreferenceConstants {
 	 * in underline. If <code>false</code> the are rendered using no underline font style attribute.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_MULTI_LINE_COMMENT_UNDERLINE= IJavaScriptColorConstants.JAVA_MULTI_LINE_COMMENT + EDITOR_UNDERLINE_SUFFIX; 
 
@@ -1265,7 +1265,7 @@ public class PreferenceConstants {
 	 * in italic. If <code>false</code> the are rendered using no italic font style attribute.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_SINGLE_LINE_COMMENT_ITALIC= IJavaScriptColorConstants.JAVA_SINGLE_LINE_COMMENT + EDITOR_ITALIC_SUFFIX;
 	
@@ -1276,7 +1276,7 @@ public class PreferenceConstants {
 	 * in strikethrough. If <code>false</code> the are rendered using no italic font style attribute.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_SINGLE_LINE_COMMENT_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_SINGLE_LINE_COMMENT + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -1287,12 +1287,12 @@ public class PreferenceConstants {
 	 * in underline. If <code>false</code> the are rendered using no italic font style attribute.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_SINGLE_LINE_COMMENT_UNDERLINE= IJavaScriptColorConstants.JAVA_SINGLE_LINE_COMMENT + EDITOR_UNDERLINE_SUFFIX; 
 
 	/**
-	 * A named preference that holds the color used to render java keywords.
+	 * A named preference that holds the color used to render JavaScript keywords.
 	 * <p>
 	 * Value is of type <code>String</code>. A RGB color value encoded as a string
 	 * using class <code>PreferenceConverter</code>
@@ -1317,7 +1317,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_JAVA_KEYWORD_ITALIC= IJavaScriptColorConstants.JAVA_KEYWORD + EDITOR_ITALIC_SUFFIX;
 	
@@ -1327,7 +1327,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVA_KEYWORD_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_KEYWORD + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -1337,7 +1337,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVA_KEYWORD_UNDERLINE= IJavaScriptColorConstants.JAVA_KEYWORD + EDITOR_UNDERLINE_SUFFIX;
 
@@ -1367,7 +1367,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_STRING_ITALIC= IJavaScriptColorConstants.JAVA_STRING + EDITOR_ITALIC_SUFFIX;
 	
@@ -1377,7 +1377,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_STRING_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_STRING + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -1387,7 +1387,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_STRING_UNDERLINE= IJavaScriptColorConstants.JAVA_STRING + EDITOR_UNDERLINE_SUFFIX;
 
@@ -1400,7 +1400,7 @@ public class PreferenceConstants {
 	 * 
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 3.0
+	 * 
 	 * @deprecated the method name highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#METHOD}
 	 */
 	public final static String EDITOR_JAVA_METHOD_NAME_COLOR= IJavaScriptColorConstants.JAVA_METHOD_NAME;
@@ -1411,7 +1411,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 * @deprecated the method name highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#METHOD}
 	 */
 	public final static String EDITOR_JAVA_METHOD_NAME_BOLD= IJavaScriptColorConstants.JAVA_METHOD_NAME + EDITOR_BOLD_SUFFIX;
@@ -1422,7 +1422,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 * @deprecated the method name highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#METHOD}
 	 */
 	public final static String EDITOR_JAVA_METHOD_NAME_ITALIC= IJavaScriptColorConstants.JAVA_METHOD_NAME + EDITOR_ITALIC_SUFFIX;
@@ -1436,7 +1436,7 @@ public class PreferenceConstants {
 	 * 
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_JAVA_KEYWORD_RETURN_COLOR= IJavaScriptColorConstants.JAVA_KEYWORD_RETURN;	
 
@@ -1446,7 +1446,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_JAVA_KEYWORD_RETURN_BOLD= IJavaScriptColorConstants.JAVA_KEYWORD_RETURN + EDITOR_BOLD_SUFFIX;
 	
@@ -1456,7 +1456,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_JAVA_KEYWORD_RETURN_ITALIC= IJavaScriptColorConstants.JAVA_KEYWORD_RETURN + EDITOR_ITALIC_SUFFIX;
 	
@@ -1466,7 +1466,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVA_KEYWORD_RETURN_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_KEYWORD_RETURN + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -1476,7 +1476,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVA_KEYWORD_RETURN_UNDERLINE= IJavaScriptColorConstants.JAVA_KEYWORD_RETURN + EDITOR_UNDERLINE_SUFFIX;
 	
@@ -1489,7 +1489,7 @@ public class PreferenceConstants {
 	 * 
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_JAVA_OPERATOR_COLOR= IJavaScriptColorConstants.JAVA_OPERATOR;	
  
@@ -1499,7 +1499,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_JAVA_OPERATOR_BOLD= IJavaScriptColorConstants.JAVA_OPERATOR + EDITOR_BOLD_SUFFIX;
 	
@@ -1509,7 +1509,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_JAVA_OPERATOR_ITALIC= IJavaScriptColorConstants.JAVA_OPERATOR + EDITOR_ITALIC_SUFFIX;
 	
@@ -1519,7 +1519,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVA_OPERATOR_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_OPERATOR + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -1529,7 +1529,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVA_OPERATOR_UNDERLINE= IJavaScriptColorConstants.JAVA_OPERATOR + EDITOR_UNDERLINE_SUFFIX;
 	
@@ -1542,7 +1542,7 @@ public class PreferenceConstants {
 	 *
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 3.3
+	 * 
 	 */
 	public final static String EDITOR_JAVA_BRACKET_COLOR= IJavaScriptColorConstants.JAVA_BRACKET;
 
@@ -1552,7 +1552,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 *
-	 * @since 3.3
+	 * 
 	 */
 	public final static String EDITOR_JAVA_BRACKET_BOLD= IJavaScriptColorConstants.JAVA_BRACKET + EDITOR_BOLD_SUFFIX;
 
@@ -1562,7 +1562,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 *
-	 * @since 3.3
+	 * 
 	 */
 	public final static String EDITOR_JAVA_BRACKET_ITALIC= IJavaScriptColorConstants.JAVA_BRACKET + EDITOR_ITALIC_SUFFIX;
 
@@ -1572,7 +1572,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 *
-	 * @since 3.3
+	 * 
 	 */
 	public final static String EDITOR_JAVA_BRACKET_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_BRACKET + EDITOR_STRIKETHROUGH_SUFFIX;
 
@@ -1582,7 +1582,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 *
-	 * @since 3.3
+	 * 
 	 */
 	public final static String EDITOR_JAVA_BRACKET_UNDERLINE= IJavaScriptColorConstants.JAVA_BRACKET + EDITOR_UNDERLINE_SUFFIX;
 
@@ -1595,7 +1595,7 @@ public class PreferenceConstants {
 	 * 
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 3.1
+	 * 
 	 * @deprecated the annotation highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#ANNOTATION}
 	 */
 	public final static String EDITOR_JAVA_ANNOTATION_COLOR= IJavaScriptColorConstants.JAVA_ANNOTATION;	
@@ -1606,7 +1606,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 * @deprecated the annotation highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#ANNOTATION}
 	 */
 	public final static String EDITOR_JAVA_ANNOTATION_BOLD= IJavaScriptColorConstants.JAVA_ANNOTATION + EDITOR_BOLD_SUFFIX;
@@ -1617,7 +1617,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 * @deprecated the annotation highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#ANNOTATION}
 	 */
 	public final static String EDITOR_JAVA_ANNOTATION_ITALIC= IJavaScriptColorConstants.JAVA_ANNOTATION + EDITOR_ITALIC_SUFFIX;
@@ -1628,7 +1628,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 * @deprecated the annotation highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#ANNOTATION}
 	 */
 	public final static String EDITOR_JAVA_ANNOTATION_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_ANNOTATION + EDITOR_STRIKETHROUGH_SUFFIX;
@@ -1639,13 +1639,13 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 * @deprecated the annotation highlighting has been replaced by a semantic highlighting, see {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings#ANNOTATION}
 	 */
 	public final static String EDITOR_JAVA_ANNOTATION_UNDERLINE= IJavaScriptColorConstants.JAVA_ANNOTATION + EDITOR_UNDERLINE_SUFFIX;
 	
 	/**
-	 * A named preference that holds the color used to render java default text.
+	 * A named preference that holds the color used to render JavaScript default text.
 	 * <p>
 	 * Value is of type <code>String</code>. A RGB color value encoded as a string
 	 * using class <code>PreferenceConverter</code>
@@ -1657,7 +1657,7 @@ public class PreferenceConstants {
 	public final static String EDITOR_JAVA_DEFAULT_COLOR= IJavaScriptColorConstants.JAVA_DEFAULT;
 
 	/**
-	 * A named preference that controls whether Java default text is rendered in bold.
+	 * A named preference that controls whether JavaScript default text is rendered in bold.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
@@ -1665,31 +1665,31 @@ public class PreferenceConstants {
 	public final static String EDITOR_JAVA_DEFAULT_BOLD= IJavaScriptColorConstants.JAVA_DEFAULT + EDITOR_BOLD_SUFFIX;
 
 	/**
-	 * A named preference that controls whether Java default text is rendered in italic.
+	 * A named preference that controls whether JavaScript default text is rendered in italic.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_JAVA_DEFAULT_ITALIC= IJavaScriptColorConstants.JAVA_DEFAULT + EDITOR_ITALIC_SUFFIX;
 	/**
-	 * A named preference that controls whether Java default text is rendered in strikethrough.
+	 * A named preference that controls whether JavaScript default text is rendered in strikethrough.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVA_DEFAULT_STRIKETHROUGH= IJavaScriptColorConstants.JAVA_DEFAULT + EDITOR_STRIKETHROUGH_SUFFIX;
 	
 	/**
-	 * A named preference that controls whether Java default text is rendered in underline.
+	 * A named preference that controls whether JavaScript default text is rendered in underline.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVA_DEFAULT_UNDERLINE= IJavaScriptColorConstants.JAVA_DEFAULT + EDITOR_UNDERLINE_SUFFIX;
 
@@ -1702,7 +1702,7 @@ public class PreferenceConstants {
 	 * 
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 2.1
+	 * 
 	 */
 	public final static String EDITOR_TASK_TAG_COLOR= IJavaScriptColorConstants.TASK_TAG;
 
@@ -1711,7 +1711,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public final static String EDITOR_TASK_TAG_BOLD= IJavaScriptColorConstants.TASK_TAG + EDITOR_BOLD_SUFFIX;
 
@@ -1721,7 +1721,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_TASK_TAG_ITALIC= IJavaScriptColorConstants.TASK_TAG + EDITOR_ITALIC_SUFFIX;
 	/**
@@ -1730,7 +1730,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_TASK_TAG_STRIKETHROUGH= IJavaScriptColorConstants.TASK_TAG + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -1740,7 +1740,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_TASK_TAG_UNDERLINE= IJavaScriptColorConstants.TASK_TAG + EDITOR_UNDERLINE_SUFFIX;
 
@@ -1770,7 +1770,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_JAVADOC_KEYWORD_ITALIC= IJavaScriptColorConstants.JAVADOC_KEYWORD + EDITOR_ITALIC_SUFFIX;
 	
@@ -1780,7 +1780,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 * 
 	 */
 	public final static String EDITOR_JAVADOC_KEYWORD_STRIKETHROUGH= IJavaScriptColorConstants.JAVADOC_KEYWORD + EDITOR_STRIKETHROUGH_SUFFIX;
@@ -1791,7 +1791,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVADOC_KEYWORD_UNDERLINE= IJavaScriptColorConstants.JAVADOC_KEYWORD + EDITOR_UNDERLINE_SUFFIX;
 
@@ -1821,7 +1821,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_JAVADOC_TAG_ITALIC= IJavaScriptColorConstants.JAVADOC_TAG + EDITOR_ITALIC_SUFFIX;
 	
@@ -1831,7 +1831,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVADOC_TAG_STRIKETHROUGH= IJavaScriptColorConstants.JAVADOC_TAG + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -1841,7 +1841,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVADOC_TAG_UNDERLINE= IJavaScriptColorConstants.JAVADOC_TAG + EDITOR_UNDERLINE_SUFFIX;
 
@@ -1871,7 +1871,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_JAVADOC_LINKS_ITALIC= IJavaScriptColorConstants.JAVADOC_LINK + EDITOR_ITALIC_SUFFIX;
 	
@@ -1881,7 +1881,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVADOC_LINKS_STRIKETHROUGH= IJavaScriptColorConstants.JAVADOC_LINK + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -1891,7 +1891,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVADOC_LINKS_UNDERLINE= IJavaScriptColorConstants.JAVADOC_LINK + EDITOR_UNDERLINE_SUFFIX;
 		
@@ -1921,7 +1921,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String EDITOR_JAVADOC_DEFAULT_ITALIC= IJavaScriptColorConstants.JAVADOC_DEFAULT + EDITOR_ITALIC_SUFFIX;
 	/**
@@ -1930,7 +1930,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVADOC_DEFAULT_STRIKETHROUGH= IJavaScriptColorConstants.JAVADOC_DEFAULT + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -1940,7 +1940,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public final static String EDITOR_JAVADOC_DEFAULT_UNDERLINE= IJavaScriptColorConstants.JAVADOC_DEFAULT + EDITOR_UNDERLINE_SUFFIX;
 
@@ -1953,7 +1953,7 @@ public class PreferenceConstants {
 	 *
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 2.1
+	 * 
 	 * @deprecated As of 3.1, replaced by {@link AbstractDecoratedTextEditorPreferenceConstants#EDITOR_HYPERLINK_COLOR}
 	 */
 	public final static String EDITOR_LINK_COLOR= "linkColor"; //$NON-NLS-1$
@@ -1978,7 +1978,7 @@ public class PreferenceConstants {
 	 * @see #EDITOR_NO_HOVER_CONFIGURED_ID
 	 * @see #EDITOR_DEFAULT_HOVER_CONFIGURED_ID
 	 * @see JavaScriptUI
-	 * @since 2.1
+	 * 
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 */
 	public static final String EDITOR_NONE_HOVER= "noneHover"; //$NON-NLS-1$
@@ -1994,7 +1994,7 @@ public class PreferenceConstants {
 	 * @see #EDITOR_NO_HOVER_CONFIGURED_ID
 	 * @see #EDITOR_DEFAULT_HOVER_CONFIGURED_ID
 	 * @see JavaScriptUI
-	 * @since 2.1
+	 * 
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 */
 	public static final String EDITOR_CTRL_HOVER= "ctrlHover"; //$NON-NLS-1$
@@ -2010,7 +2010,7 @@ public class PreferenceConstants {
 	 * @see #EDITOR_NO_HOVER_CONFIGURED_ID
 	 * @see #EDITOR_DEFAULT_HOVER_CONFIGURED_ID
 	 * @see JavaScriptUI ID_*_HOVER
-	 * @since 2.1
+	 * 
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 */
 	public static final String EDITOR_SHIFT_HOVER= "shiftHover"; //$NON-NLS-1$
@@ -2026,7 +2026,7 @@ public class PreferenceConstants {
 	 * @see #EDITOR_NO_HOVER_CONFIGURED_ID
 	 * @see #EDITOR_DEFAULT_HOVER_CONFIGURED_ID
 	 * @see JavaScriptUI ID_*_HOVER
-	 * @since 2.1
+	 * 
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 */
 	public static final String EDITOR_CTRL_ALT_HOVER= "ctrlAltHover"; //$NON-NLS-1$
@@ -2042,7 +2042,7 @@ public class PreferenceConstants {
 	 * @see #EDITOR_NO_HOVER_CONFIGURED_ID
 	 * @see #EDITOR_DEFAULT_HOVER_CONFIGURED_ID
 	 * @see JavaScriptUI ID_*_HOVER
-	 * @since 2.1
+	 * 
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 */
 	public static final String EDITOR_CTRL_ALT_SHIFT_HOVER= "ctrlAltShiftHover"; //$NON-NLS-1$
@@ -2058,7 +2058,7 @@ public class PreferenceConstants {
 	 * @see #EDITOR_NO_HOVER_CONFIGURED_ID
 	 * @see #EDITOR_DEFAULT_HOVER_CONFIGURED_ID
 	 * @see JavaScriptUI ID_*_HOVER
-	 * @since 2.1
+	 * 
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 */
 	public static final String EDITOR_CTRL_SHIFT_HOVER= "ctrlShiftHover"; //$NON-NLS-1$
@@ -2075,7 +2075,7 @@ public class PreferenceConstants {
 	 * @see #EDITOR_DEFAULT_HOVER_CONFIGURED_ID
 	 * @see JavaScriptUI ID_*_HOVER
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
-	 * @since 2.1
+	 * 
 	 */
 	public static final String EDITOR_ALT_SHIFT_HOVER= "altShiftHover"; //$NON-NLS-1$
 
@@ -2083,7 +2083,7 @@ public class PreferenceConstants {
 	 * A string value used by the named preferences for hover configuration to
 	 * describe that no hover should be shown for the given key modifiers.
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
-	 * @since 2.1
+	 * 
 	 */
 	public static final String EDITOR_NO_HOVER_CONFIGURED_ID= "noHoverConfiguredId"; //$NON-NLS-1$
 	
@@ -2092,7 +2092,7 @@ public class PreferenceConstants {
 	 * describe that the default hover should be shown for the given key
 	 * modifiers. The default hover is described by the
 	 * <code>EDITOR_DEFAULT_HOVER</code> property.
-	 * @since 2.1
+	 * 
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 */
 	public static final String EDITOR_DEFAULT_HOVER_CONFIGURED_ID= "defaultHoverConfiguredId"; //$NON-NLS-1$
@@ -2103,7 +2103,7 @@ public class PreferenceConstants {
 	 * EDITOR_NO_HOVER_CONFIGURED_ID</code> or the hover id of a hover
 	 * contributed as <code>javaEditorTextHovers</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 * @deprecated As of 3.0, replaced by {@link #EDITOR_TEXT_HOVER_MODIFIERS}
 	 */
 	public static final String EDITOR_DEFAULT_HOVER= "defaultHover"; //$NON-NLS-1$
@@ -2122,7 +2122,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 2.1
+	 * 
 	 * @deprecated As of 3.1, replaced by {@link AbstractDecoratedTextEditorPreferenceConstants#EDITOR_HYPERLINKS_ENABLED}
 	 */
 	public static final String EDITOR_BROWSER_LIKE_LINKS= "browserLikeLinks"; //$NON-NLS-1$
@@ -2133,7 +2133,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>String</code>.
 	 * </p>
 	 * 
-	 * @since 2.1
+	 * 
 	 * @deprecated As of 3.1, replaced by {@link AbstractDecoratedTextEditorPreferenceConstants#EDITOR_HYPERLINK_KEY_MODIFIER}
 	 */
 	public static final String EDITOR_BROWSER_LIKE_LINKS_KEY_MODIFIER= "browserLikeLinksKeyModifier"; //$NON-NLS-1$
@@ -2147,7 +2147,7 @@ public class PreferenceConstants {
 	 * </p>
 	 * 
 	 * @see #EDITOR_BROWSER_LIKE_LINKS_KEY_MODIFIER
-	 * @since 2.1.1
+	 * 
 	 * @deprecated As of 3.1, replaced by {@link AbstractDecoratedTextEditorPreferenceConstants#EDITOR_HYPERLINK_KEY_MODIFIER_MASK}
 	 */
 	public static final String EDITOR_BROWSER_LIKE_LINKS_KEY_MODIFIER_MASK= "browserLikeLinksKeyModifierMask"; //$NON-NLS-1$
@@ -2158,7 +2158,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 *
-	 * @since 3.0
+	 * 
 	 */	
 	public static final String EDITOR_MARK_OCCURRENCES= "markOccurrences"; //$NON-NLS-1$
 
@@ -2168,7 +2168,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 *
-	 * @since 3.0
+	 * 
 	 */	
 	public static final String EDITOR_STICKY_OCCURRENCES= "stickyOccurrences"; //$NON-NLS-1$
 	
@@ -2179,7 +2179,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_MARK_TYPE_OCCURRENCES= "markTypeOccurrences"; //$NON-NLS-1$
 
@@ -2190,7 +2190,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_MARK_METHOD_OCCURRENCES= "markMethodOccurrences"; //$NON-NLS-1$
 	/**
@@ -2200,7 +2200,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_MARK_FIELD_OCCURRENCES= "markFieldOccurrences"; //$NON-NLS-1$
 	/**
@@ -2210,7 +2210,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_MARK_CONSTANT_OCCURRENCES= "markConstantOccurrences"; //$NON-NLS-1$
 	
@@ -2221,7 +2221,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_MARK_LOCAL_VARIABLE_OCCURRENCES= "markLocalVariableOccurrences"; //$NON-NLS-1$
 
@@ -2232,7 +2232,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_MARK_EXCEPTION_OCCURRENCES= "markExceptionOccurrences"; //$NON-NLS-1$
 
@@ -2243,7 +2243,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_MARK_METHOD_EXIT_POINTS= "markMethodExitPoints"; //$NON-NLS-1$
 
@@ -2254,7 +2254,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static final String EDITOR_MARK_BREAK_CONTINUE_TARGETS= "markBreakContinueTargets"; //$NON-NLS-1$
 	
@@ -2265,14 +2265,14 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String EDITOR_MARK_IMPLEMENTORS= "markImplementors"; //$NON-NLS-1$
 
 	/**
 	 * A named preference prefix for semantic highlighting preferences.
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_SEMANTIC_HIGHLIGHTING_PREFIX="semanticHighlighting."; //$NON-NLS-1$
 
@@ -2282,7 +2282,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>:<code>true</code> if enabled.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 * @deprecated As of 3.1, this preference is not used or set any longer; see
 	 *             {@link SemanticHighlightings#affectsEnablement(IPreferenceStore, org.eclipse.jface.util.PropertyChangeEvent)}
 	 */
@@ -2297,7 +2297,7 @@ public class PreferenceConstants {
 	 * 
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_SEMANTIC_HIGHLIGHTING_COLOR_SUFFIX=".color"; //$NON-NLS-1$
 
@@ -2307,7 +2307,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>: <code>true</code> if bold.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_SEMANTIC_HIGHLIGHTING_BOLD_SUFFIX=".bold"; //$NON-NLS-1$
 
@@ -2317,7 +2317,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>: <code>true</code> if italic.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_SEMANTIC_HIGHLIGHTING_ITALIC_SUFFIX=".italic"; //$NON-NLS-1$
 	
@@ -2327,7 +2327,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>: <code>true</code> if strikethrough.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String EDITOR_SEMANTIC_HIGHLIGHTING_STRIKETHROUGH_SUFFIX=".strikethrough"; //$NON-NLS-1$
 	
@@ -2337,7 +2337,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>: <code>true</code> if underline.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String EDITOR_SEMANTIC_HIGHLIGHTING_UNDERLINE_SUFFIX=".underline"; //$NON-NLS-1$
 
@@ -2347,7 +2347,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>: <code>true</code> if enabled.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_SEMANTIC_HIGHLIGHTING_ENABLED_SUFFIX=".enabled"; //$NON-NLS-1$
 
@@ -2357,7 +2357,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 *
-	 * @since 3.0
+	 * 
 	 * @deprecated as of 3.1 replaced by {@link AbstractDecoratedTextEditorPreferenceConstants#EDITOR_DISABLE_OVERWRITE_MODE}
 	 */	
 	public static final String EDITOR_DISABLE_OVERWRITE_MODE= "disable_overwrite_mode"; //$NON-NLS-1$
@@ -2368,7 +2368,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 *
-	 * @since 3.0
+	 * 
 	 */	
 	public static final String EDITOR_SMART_SEMICOLON= "smart_semicolon"; //$NON-NLS-1$
 
@@ -2377,7 +2377,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_SMART_BACKSPACE= "smart_backspace"; //$NON-NLS-1$
 	
@@ -2387,7 +2387,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 *
-	 * @since 3.0
+	 * 
 	 */	
 	public static final String EDITOR_SMART_OPENING_BRACE= "smart_opening_brace"; //$NON-NLS-1$
 
@@ -2396,7 +2396,7 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_SMART_TAB= "smart_tab"; //$NON-NLS-1$
 
@@ -2407,7 +2407,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String SPELLING_IGNORE_DIGITS= "spelling_ignore_digits"; //$NON-NLS-1$
 
@@ -2418,7 +2418,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String SPELLING_IGNORE_MIXED= "spelling_ignore_mixed"; //$NON-NLS-1$
 
@@ -2429,7 +2429,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String SPELLING_IGNORE_SENTENCE= "spelling_ignore_sentence"; //$NON-NLS-1$
 
@@ -2440,7 +2440,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String SPELLING_IGNORE_UPPER= "spelling_ignore_upper"; //$NON-NLS-1$
 
@@ -2451,7 +2451,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String SPELLING_IGNORE_URLS= "spelling_ignore_urls"; //$NON-NLS-1$
 	
@@ -2462,18 +2462,18 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public final static String SPELLING_IGNORE_SINGLE_LETTERS= "spelling_ignore_single_letters"; //$NON-NLS-1$
 	
 	/**
 	 * A named preference that controls whether '&' in
-	 * Java properties files are ignored.
+	 * JavaScript properties files are ignored.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public final static String SPELLING_IGNORE_AMPERSAND_IN_PROPERTIES= "spelling_ignore_ampersand_in_properties"; //$NON-NLS-1$
 	
@@ -2484,7 +2484,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public final static String SPELLING_IGNORE_NON_LETTERS= "spelling_ignore_non_letters"; //$NON-NLS-1$
 
@@ -2494,7 +2494,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>String</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String SPELLING_LOCALE= "spelling_locale"; //$NON-NLS-1$
 
@@ -2505,7 +2505,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Integer</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String SPELLING_PROPOSAL_THRESHOLD= "spelling_proposal_threshold"; //$NON-NLS-1$
 
@@ -2515,7 +2515,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Integer</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String SPELLING_USER_DICTIONARY= "spelling_user_dictionary"; //$NON-NLS-1$
 	
@@ -2525,7 +2525,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>String</code>.
 	 * </p>
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public final static String SPELLING_USER_DICTIONARY_ENCODING= "spelling_user_dictionary_encoding"; //$NON-NLS-1$
 
@@ -2538,12 +2538,12 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String SPELLING_ENABLE_CONTENTASSIST= "spelling_enable_contentassist"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that controls if the Java code assist gets auto activated.
+	 * A named preference that controls if the JavaScript code assist gets auto activated.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
@@ -2568,32 +2568,32 @@ public class PreferenceConstants {
 	public final static String CODEASSIST_SHOW_VISIBLE_PROPOSALS= "content_assist_show_visible_proposals"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that controls if the Java code assist inserts a
+	 * A named preference that controls if the JavaScript code assist inserts a
 	 * proposal automatically if only one proposal is available.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public final static String CODEASSIST_AUTOINSERT= "content_assist_autoinsert"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that controls if the Java code assist adds import
+	 * A named preference that controls if the JavaScript code assist adds import
 	 * statements.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public final static String CODEASSIST_ADDIMPORT= "content_assist_add_import"; //$NON-NLS-1$
 	
 	/**
-	 * A named preference that controls if the Java code assist only inserts
+	 * A named preference that controls if the JavaScript code assist only inserts
 	 * completions. If set to false the proposals can also _replace_ code.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public final static String CODEASSIST_INSERT_COMPLETION= "content_assist_insert_completion"; //$NON-NLS-1$	
 
@@ -2630,14 +2630,14 @@ public class PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 2.1
+	 * 
 	 */
 	public final static String CODEASSIST_GUESS_METHOD_ARGUMENTS= "content_assist_guess_method_arguments"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that holds the characters that auto activate code assist in Java code.
+	 * A named preference that holds the characters that auto activate code assist in JavaScript code.
 	 * <p>
-	 * Value is of type <code>String</code>. All characters that trigger auto code assist in Java code.
+	 * Value is of type <code>String</code>. All characters that trigger auto code assist in JavaScript code.
 	 * </p>
 	 */
 	public final static String CODEASSIST_AUTOACTIVATION_TRIGGERS_JAVA= "content_assist_autoactivation_triggers_java"; //$NON-NLS-1$
@@ -2708,7 +2708,7 @@ public class PreferenceConstants {
 	 *
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 2.1
+	 * 
 	 */
 	public final static String CODEASSIST_REPLACEMENT_BACKGROUND= "content_assist_completion_replacement_background"; //$NON-NLS-1$
 
@@ -2722,7 +2722,7 @@ public class PreferenceConstants {
 	 *
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 2.1
+	 * 
 	 */
 	public final static String CODEASSIST_REPLACEMENT_FOREGROUND= "content_assist_completion_replacement_foreground"; //$NON-NLS-1$
 	
@@ -2734,7 +2734,7 @@ public class PreferenceConstants {
 	 *
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 3.3
+	 * 
 	 */
 	public final static String CODEASSIST_FAVORITE_STATIC_MEMBERS= "content_assist_favorite_static_members"; //$NON-NLS-1$
 
@@ -2811,28 +2811,28 @@ public class PreferenceConstants {
 	
 	/**
 	 * A named preference that controls whether certain refactorings use a lightweight UI when
-	 * started from a Java editor.
+	 * started from a JavaScript editor.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * <p>
 	 * Note: this is work in progress and may change any time
 	 * </p>
-	 * @since 3.3
+	 * 
 	 */
 	public static final String REFACTOR_LIGHTWEIGHT= "Refactor.lightweight"; //$NON-NLS-1$
 	
 	/**
-	 * A named preference that controls a reduced search menu is used in the Java editors.
+	 * A named preference that controls a reduced search menu is used in the JavaScript editors.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * @since 3.0
+	 * 
 	 */
 	public static final String SEARCH_USE_REDUCED_MENU= "Search.usereducemenu"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that controls if the Java Browsing views are linked to the active editor.
+	 * A named preference that controls if the JavaScript Browsing views are linked to the active editor.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
@@ -2841,7 +2841,7 @@ public class PreferenceConstants {
 	public static final String BROWSING_LINK_VIEW_TO_EDITOR= "org.eclipse.wst.jsdt.ui.browsing.linktoeditor"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that controls the layout of the Java Browsing views vertically. Boolean value.
+	 * A named preference that controls the layout of the JavaScript Browsing views vertically. Boolean value.
 	 * <p>
 	 * Value is of type <code>Boolean</code>. If <code>true</code> the views are stacked vertical.
 	 * If <code>false</code> they are stacked horizontal.
@@ -2856,7 +2856,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 *
-	 * @since 2.1
+	 * 
 	 */	
 	public static final String TEMPLATES_USE_CODEFORMATTER= "org.eclipse.wst.jsdt.ui.template.format"; //$NON-NLS-1$
 	
@@ -2866,7 +2866,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>String</code>.
 	 * </p>
 	 *
-	 * @since 3.0
+	 * 
 	 */	
 	public static final String FORMATTER_PROFILE= "formatter_profile"; //$NON-NLS-1$
 	
@@ -2877,7 +2877,7 @@ public class PreferenceConstants {
 	 * uses a roll over to display multiple annotations
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_ANNOTATION_ROLL_OVER= "editor_annotation_roll_over"; //$NON-NLS-1$
 	
@@ -2888,7 +2888,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public final static String CODEASSIST_PREFIX_COMPLETION= "content_assist_prefix_completion"; //$NON-NLS-1$
 
@@ -2899,7 +2899,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>String</code>, a "\0"-separated list of identifiers.
 	 * </p>
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static final String CODEASSIST_EXCLUDED_CATEGORIES= "content_assist_disabled_computers"; //$NON-NLS-1$
 
@@ -2909,17 +2909,17 @@ public class PreferenceConstants {
 	 * Value is of type <code>String</code>, a "\0"-separated list of identifiers.
 	 * </p>
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static final String CODEASSIST_CATEGORY_ORDER= "content_assist_category_order"; //$NON-NLS-1$
 	
 	/**
-	 * A named preference that controls whether folding is enabled in the Java editor.
+	 * A named preference that controls whether folding is enabled in the JavaScript editor.
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_FOLDING_ENABLED= "editor_folding_enabled"; //$NON-NLS-1$
 	
@@ -2929,7 +2929,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>String</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_FOLDING_PROVIDER= "editor_folding_provider"; //$NON-NLS-1$
 	
@@ -2939,7 +2939,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_FOLDING_JAVADOC= "editor_folding_default_javadoc"; //$NON-NLS-1$
 
@@ -2949,7 +2949,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_FOLDING_INNERTYPES= "editor_folding_default_innertypes"; //$NON-NLS-1$
 
@@ -2959,7 +2959,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_FOLDING_METHODS= "editor_folding_default_methods"; //$NON-NLS-1$
 
@@ -2969,7 +2969,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String EDITOR_FOLDING_IMPORTS= "editor_folding_default_imports"; //$NON-NLS-1$
 
@@ -2979,7 +2979,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String EDITOR_FOLDING_HEADERS= "editor_folding_default_headers"; //$NON-NLS-1$
 
@@ -2987,10 +2987,10 @@ public class PreferenceConstants {
 	//---------- Properties File Editor ----------
 	
 	/**
-	 * The symbolic font name for the Java properties file editor text font 
+	 * The symbolic font name for the JavaScript properties file editor text font 
 	 * (value <code>"org.eclipse.wst.jsdt.ui.PropertiesFileEditor.textfont"</code>).
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_EDITOR_TEXT_FONT= "org.eclipse.wst.jsdt.ui.PropertiesFileEditor.textfont"; //$NON-NLS-1$
 
@@ -3003,7 +3003,7 @@ public class PreferenceConstants {
 	 * 
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_KEY= IJavaScriptColorConstants.PROPERTIES_FILE_COLORING_KEY;
 	
@@ -3013,7 +3013,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_KEY_BOLD= PROPERTIES_FILE_COLORING_KEY + EDITOR_BOLD_SUFFIX;
 
@@ -3023,7 +3023,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_KEY_ITALIC= PROPERTIES_FILE_COLORING_KEY + EDITOR_ITALIC_SUFFIX;
 	
@@ -3033,7 +3033,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_KEY_STRIKETHROUGH= PROPERTIES_FILE_COLORING_KEY + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -3043,7 +3043,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_KEY_UNDERLINE= PROPERTIES_FILE_COLORING_KEY + EDITOR_UNDERLINE_SUFFIX;
 	
@@ -3056,7 +3056,7 @@ public class PreferenceConstants {
 	 * 
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_COMMENT= IJavaScriptColorConstants.PROPERTIES_FILE_COLORING_COMMENT;
 
@@ -3066,7 +3066,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_COMMENT_BOLD= PROPERTIES_FILE_COLORING_COMMENT + EDITOR_BOLD_SUFFIX;
 
@@ -3076,7 +3076,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_COMMENT_ITALIC= PROPERTIES_FILE_COLORING_COMMENT + EDITOR_ITALIC_SUFFIX;
 
@@ -3086,7 +3086,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_COMMENT_STRIKETHROUGH= PROPERTIES_FILE_COLORING_COMMENT + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -3096,7 +3096,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_COMMENT_UNDERLINE= PROPERTIES_FILE_COLORING_COMMENT + EDITOR_UNDERLINE_SUFFIX;
 	
@@ -3109,7 +3109,7 @@ public class PreferenceConstants {
 	 * 
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_VALUE= IJavaScriptColorConstants.PROPERTIES_FILE_COLORING_VALUE;
 
@@ -3119,7 +3119,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_VALUE_BOLD= PROPERTIES_FILE_COLORING_VALUE + EDITOR_BOLD_SUFFIX;
 
@@ -3129,7 +3129,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_VALUE_ITALIC= PROPERTIES_FILE_COLORING_VALUE + EDITOR_ITALIC_SUFFIX;
 	
@@ -3139,7 +3139,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_VALUE_STRIKETHROUGH= PROPERTIES_FILE_COLORING_VALUE + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -3149,7 +3149,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_VALUE_UNDERLINE= PROPERTIES_FILE_COLORING_VALUE + EDITOR_UNDERLINE_SUFFIX;
 	
@@ -3162,7 +3162,7 @@ public class PreferenceConstants {
 	 * 
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_ASSIGNMENT= IJavaScriptColorConstants.PROPERTIES_FILE_COLORING_ASSIGNMENT;
 	
@@ -3172,7 +3172,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_ASSIGNMENT_BOLD= PROPERTIES_FILE_COLORING_ASSIGNMENT + EDITOR_BOLD_SUFFIX;
 	
@@ -3182,7 +3182,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_ASSIGNMENT_ITALIC= PROPERTIES_FILE_COLORING_ASSIGNMENT + EDITOR_ITALIC_SUFFIX;
 	
@@ -3192,7 +3192,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_ASSIGNMENT_STRIKETHROUGH= PROPERTIES_FILE_COLORING_ASSIGNMENT + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -3202,7 +3202,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_ASSIGNMENT_UNDERLINE= PROPERTIES_FILE_COLORING_ASSIGNMENT + EDITOR_UNDERLINE_SUFFIX;
 
@@ -3215,7 +3215,7 @@ public class PreferenceConstants {
 	 * 
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_ARGUMENT= IJavaScriptColorConstants.PROPERTIES_FILE_COLORING_ARGUMENT;
 
@@ -3225,7 +3225,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_ARGUMENT_BOLD= PROPERTIES_FILE_COLORING_ARGUMENT + EDITOR_BOLD_SUFFIX;
 	
@@ -3235,7 +3235,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_ARGUMENT_ITALIC= PROPERTIES_FILE_COLORING_ARGUMENT + EDITOR_ITALIC_SUFFIX;
 	
@@ -3245,7 +3245,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_ARGUMENT_STRIKETHROUGH= PROPERTIES_FILE_COLORING_ARGUMENT + EDITOR_STRIKETHROUGH_SUFFIX;
 	
@@ -3255,7 +3255,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static final String PROPERTIES_FILE_COLORING_ARGUMENT_UNDERLINE= PROPERTIES_FILE_COLORING_ARGUMENT + EDITOR_UNDERLINE_SUFFIX;
 
@@ -3266,7 +3266,7 @@ public class PreferenceConstants {
 	 * </p>
 	 * 
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.ContentAssistHistory#load(org.eclipse.core.runtime.Preferences, String)
-	 * @since 3.2
+	 * 
 	 */
 	public static final String CODEASSIST_LRU_HISTORY= "content_assist_lru_history"; //$NON-NLS-1$
 
@@ -3277,7 +3277,7 @@ public class PreferenceConstants {
 	 * </p>
 	 * 
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.ProposalSorterRegistry
-	 * @since 3.2
+	 * 
 	 */
 	public static final String CODEASSIST_SORTER= "content_assist_sorter"; //$NON-NLS-1$
 
@@ -3290,7 +3290,7 @@ public class PreferenceConstants {
 	 *
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 3.3
+	 * 
 	 */
 	public final static String EDITOR_SOURCE_HOVER_BACKGROUND_COLOR= "sourceHoverBackgroundColor"; //$NON-NLS-1$
 	
@@ -3304,7 +3304,7 @@ public class PreferenceConstants {
 	 *
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
-	 * @since 3.3
+	 * 
 	 */
 	public final static String EDITOR_SOURCE_HOVER_BACKGROUND_COLOR_SYSTEM_DEFAULT= "sourceHoverBackgroundColor.SystemDefault"; //$NON-NLS-1$
 	
@@ -3313,7 +3313,7 @@ public class PreferenceConstants {
 	 * 
 	 * @param store the preference store to be initialized
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static void initializeDefaultValues(IPreferenceStore store) {
 		ColorRegistry registry= PlatformUI.getWorkbench().getThemeManager().getCurrentTheme().getColorRegistry();
@@ -3759,7 +3759,7 @@ public class PreferenceConstants {
 	}
 	
 	/**
-	 * Returns the current configuration for the JRE to be used as default in new Java projects.
+	 * Returns the current configuration for the JRE to be used as default in new JavaScript projects.
 	 * This is a convenience method to access the named preference <code>NEWPROJECT_JRELIBRARY_LIST
 	 * </code> with the index defined by <code> NEWPROJECT_JRELIBRARY_INDEX</code>.
 	 *
@@ -3779,7 +3779,7 @@ public class PreferenceConstants {
 	 * workspace setting should be taken. Note that passing <code>null</code> should
 	 * be avoided.
 	 * @return Returns the current value for the string.
-	 * @since 3.1
+	 * 
 	 */
 	public static String getPreference(String key, IJavaScriptProject project) {
 		String val;
@@ -3803,7 +3803,7 @@ public class PreferenceConstants {
 	 * @param store	the preference store
 	 * @param key the preference key
 	 * @param newValue the new value
-	 * @since 3.3
+	 * 
 	 */
 	private static void setDefaultAndFireEvent(IPreferenceStore store, String key, RGB newValue) {
 		RGB oldValue= null;
@@ -3823,7 +3823,7 @@ public class PreferenceConstants {
 	 * @param key the key for the constant in the registry
 	 * @param defaultRGB the default RGB if no entry is found
 	 * @return RGB the RGB
-	 * @since 3.3
+	 * 
 	 */
 	private static RGB findRGB(ColorRegistry registry, String key, RGB defaultRGB) {
 		RGB rgb= registry.getRGB(key);

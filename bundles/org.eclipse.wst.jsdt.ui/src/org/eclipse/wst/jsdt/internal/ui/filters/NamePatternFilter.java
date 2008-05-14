@@ -29,7 +29,7 @@ import org.eclipse.wst.jsdt.internal.ui.util.StringMatcher;
  *   * => any string
  * </p>
  * 
- * @since 2.0
+ * 
  */
 public class NamePatternFilter extends ViewerFilter {
 	private String[] fPatterns;

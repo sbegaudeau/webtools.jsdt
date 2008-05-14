@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.ui.text;
 
 /**
- * Definition of Java partitioning and its partitions.
+ * Definition of JavaScript partitioning and its partitions.
  *
  *
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to
@@ -21,7 +21,7 @@ package org.eclipse.wst.jsdt.ui.text;
 public interface IJavaScriptPartitions {
 
 	/**
-	 * The identifier of the Java partitioning.
+	 * The identifier of the JavaScript partitioning.
 	 */
 	String JAVA_PARTITIONING= "___java_partitioning";  //$NON-NLS-1$
 
@@ -41,12 +41,12 @@ public interface IJavaScriptPartitions {
 	String JAVA_DOC= "__java_javadoc"; //$NON-NLS-1$
 
 	/**
-	 * The identifier of the Java string partition content type.
+	 * The identifier of the JavaScript string partition content type.
 	 */
 	String JAVA_STRING= "__java_string"; //$NON-NLS-1$
 
 	/**
-	 * The identifier of the Java character partition content type.
+	 * The identifier of the JavaScript character partition content type.
 	 */
 	String JAVA_CHARACTER= "__java_character";  //$NON-NLS-1$
 }

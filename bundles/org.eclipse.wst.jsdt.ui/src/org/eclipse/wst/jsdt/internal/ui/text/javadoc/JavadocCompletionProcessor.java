@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.ui.text.java.IJavadocCompletionProcessor;
 /**
  * Javadoc completion processor.
  *
- * @since 3.2
+ * 
  */
 public class JavadocCompletionProcessor extends JavaCompletionProcessor {
 

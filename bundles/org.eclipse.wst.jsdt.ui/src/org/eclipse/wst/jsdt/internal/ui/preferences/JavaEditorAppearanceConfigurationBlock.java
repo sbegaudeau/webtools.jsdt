@@ -42,7 +42,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
  * Configures Java Editor hover preferences.
  * 
- * @since 2.1
+ * 
  */
 class JavaEditorAppearanceConfigurationBlock extends AbstractConfigurationBlock {
 
@@ -393,7 +393,7 @@ class JavaEditorAppearanceConfigurationBlock extends AbstractConfigurationBlock 
 	/**
 	 * Initializes the default colors.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	private void initializeDefaultColors() {
 		if (getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_SOURCE_HOVER_BACKGROUND_COLOR_SYSTEM_DEFAULT)) {

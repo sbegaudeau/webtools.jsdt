@@ -127,7 +127,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 /**
  * Refactoring processor for the pull up refactoring.
  * 
- * @since 3.2
+ * 
  */
 public class PullUpRefactoringProcessor extends HierarchyProcessor {
 

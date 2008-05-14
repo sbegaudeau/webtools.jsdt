@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 /**
  * Persistent modifiable word-list based dictionary.
  *
- * @since 3.0
+ * 
  */
 public class PersistentSpellDictionary extends AbstractSpellDictionary {
 

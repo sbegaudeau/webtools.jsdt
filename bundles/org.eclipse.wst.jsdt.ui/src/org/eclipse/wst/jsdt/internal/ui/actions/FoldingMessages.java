@@ -47,7 +47,7 @@ public class FoldingMessages {
 	 * Returns the resource bundle managed by the receiver.
 	 * 
 	 * @return the resource bundle
-	 * @since 3.0
+	 * 
 	 */
 	public static ResourceBundle getResourceBundle() {
 		return RESOURCE_BUNDLE;

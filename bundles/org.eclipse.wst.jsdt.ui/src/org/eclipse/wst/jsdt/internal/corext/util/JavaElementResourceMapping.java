@@ -46,7 +46,7 @@ import org.eclipse.wst.jsdt.internal.ui.model.JavaModelProvider;
  * set of resources. The class also provides factory methods to create
  * resource mappings.
  * 
- * @since 3.1
+ * 
  */
 public abstract class JavaElementResourceMapping extends ResourceMapping {
 	

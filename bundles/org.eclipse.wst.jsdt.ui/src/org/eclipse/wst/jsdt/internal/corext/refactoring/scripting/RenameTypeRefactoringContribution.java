@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameTypeProcess
 /**
  * Refactoring contribution for the rename type refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class RenameTypeRefactoringContribution extends JDTRefactoringContribution {
 

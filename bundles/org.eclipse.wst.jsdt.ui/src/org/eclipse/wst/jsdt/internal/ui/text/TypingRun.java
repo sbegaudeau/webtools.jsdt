@@ -19,7 +19,7 @@ package org.eclipse.wst.jsdt.internal.ui.text;
  * content of the run.
  * </p>
  *
- * @since 3.0
+ * 
  */
 public final class TypingRun {
 	/**
@@ -59,7 +59,7 @@ public final class TypingRun {
 	/**
 	 * Enumeration of change types.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	public static final class ChangeType {
 		private final boolean fIsModification;

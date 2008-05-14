@@ -17,7 +17,7 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
  * Interface for refactorings which can be initialized when run as a refactoring
  * script.
  * 
- * @since 3.2
+ * 
  */
 public interface IScriptableRefactoring {
 

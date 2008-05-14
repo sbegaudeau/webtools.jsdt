@@ -331,7 +331,7 @@ public class CustomFiltersDialog extends SelectionDialog {
 	
 	/**
 	 * @return a stack with the filter descriptor check history
-	 * @since 3.0
+	 * 
 	 */
 	public Stack getFilterDescriptorChangeHistory() {
 		return fFilterDescriptorChangeHistory;

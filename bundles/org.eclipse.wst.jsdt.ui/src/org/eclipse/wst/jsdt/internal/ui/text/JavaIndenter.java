@@ -29,13 +29,13 @@ import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
  * not threadsafe.
  * </p>
  *
- * @since 3.0
+ * 
  */
 public final class JavaIndenter {
 	
 	/**
 	 * The JDT Core preferences.
-	 * @since 3.2
+	 * 
 	 */
 	private final class CorePrefs {
 		final boolean prefUseTabs;
@@ -85,7 +85,7 @@ public final class JavaIndenter {
 		 *
 		 * @param key the key of the preference
 		 * @return the value of the preference
-		 * @since 3.1
+		 * 
 		 */
 		private String getCoreFormatterOption(String key) {
 			if (fProject == null)
@@ -395,7 +395,7 @@ public final class JavaIndenter {
 	private final JavaHeuristicScanner fScanner;
 	/**
 	 * The JDT Core preferences.
-	 * @since 3.2
+	 * 
 	 */
 	private final CorePrefs fPrefs;
 
@@ -419,7 +419,7 @@ public final class JavaIndenter {
 	 *        <code>IDocument</code>.
 	 * @param project the java project to get the formatter preferences from, or
 	 *        <code>null</code> to use the workspace settings
-	 * @since 3.1
+	 * 
 	 */
 	public JavaIndenter(IDocument document, JavaHeuristicScanner scanner, IJavaScriptProject project) {
 		Assert.isNotNull(document);
@@ -1307,7 +1307,7 @@ public final class JavaIndenter {
 	 * Returns the contents of the current token.
 	 *
 	 * @return the contents of the current token
-	 * @since 3.1
+	 * 
 	 */
 	private CharSequence getTokenContent() {
 		return new DocumentCharacterIterator(fDocument, fPosition, fPreviousPos);

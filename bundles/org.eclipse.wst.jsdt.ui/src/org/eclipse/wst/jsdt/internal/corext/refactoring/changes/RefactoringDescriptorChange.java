@@ -20,7 +20,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 /**
  * Composite change with an associated refactoring descriptor.
  * 
- * @since 3.2
+ * 
  */
 public final class RefactoringDescriptorChange extends CompositeChange {
 

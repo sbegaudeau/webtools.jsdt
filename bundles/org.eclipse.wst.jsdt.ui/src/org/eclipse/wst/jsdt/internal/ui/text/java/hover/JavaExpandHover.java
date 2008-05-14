@@ -47,7 +47,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
  *
  *
- * @since 3.0
+ * 
  */
 public class JavaExpandHover extends AnnotationExpandHover {
 

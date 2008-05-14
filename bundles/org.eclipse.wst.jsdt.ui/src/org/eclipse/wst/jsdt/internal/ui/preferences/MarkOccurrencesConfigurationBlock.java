@@ -37,7 +37,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
  * Configures Java Editor hover preferences.
  * 
- * @since 2.1
+ * 
  */
 class MarkOccurrencesConfigurationBlock implements IPreferenceConfigurationBlock {
 
@@ -58,7 +58,7 @@ class MarkOccurrencesConfigurationBlock implements IPreferenceConfigurationBlock
 	 * List of master/slave listeners when there's a dependency.
 	 * 
 	 * @see #createDependency(Button, String, Control)
-	 * @since 3.0
+	 * 
 	 */
 	private ArrayList fMasterSlaveListeners= new ArrayList();
 	
@@ -260,7 +260,7 @@ class MarkOccurrencesConfigurationBlock implements IPreferenceConfigurationBlock
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.preferences.IPreferenceConfigurationBlock#dispose()
-	 * @since 3.0
+	 * 
 	 */
 	public void dispose() {
 	}

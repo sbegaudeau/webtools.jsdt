@@ -52,7 +52,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavadocLinkTypeCompletionPr
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
 
 /**
- * Java UI implementation of <code>CompletionRequestor</code>. Produces
+ * JavaScript UI implementation of <code>CompletionRequestor</code>. Produces
  * {@link IJavaCompletionProposal}s from the proposal descriptors received via
  * the <code>CompletionRequestor</code> interface.
  * <p>
@@ -116,7 +116,7 @@ public class CompletionProposalCollector extends CompletionRequestor {
 	/**
 	 * The UI invocation context or <code>null</code>.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private JavaContentAssistInvocationContext fInvocationContext;
 
@@ -141,7 +141,7 @@ public class CompletionProposalCollector extends CompletionRequestor {
 	 * {@link CompletionProposalCollector#CompletionProposalCollector(IJavaScriptUnit)}
 	 * instead to get all proposals.
 	 * <p>
-	 * If the passed Java project is <code>null</code>, no javadoc will be
+	 * If the passed JavaScript project is <code>null</code>, no javadoc will be
 	 * available as
 	 * {@link org.eclipse.jface.text.contentassist.ICompletionProposal#getAdditionalProposalInfo() additional info}
 	 * on the created (e.g. method and type) proposals.
@@ -168,7 +168,7 @@ public class CompletionProposalCollector extends CompletionRequestor {
 	 * 
 	 * @param context the invocation context
 	 * @see #getInvocationContext()
-	 * @since 3.2
+	 * 
 	 */
 	public void setInvocationContext(JavaContentAssistInvocationContext context) {
 		Assert.isNotNull(context);
@@ -181,7 +181,7 @@ public class CompletionProposalCollector extends CompletionRequestor {
 	 * {@link #setInvocationContext(JavaContentAssistInvocationContext)}, a new one is created.
 	 * 
 	 * @return invocationContext the invocation context
-	 * @since 3.2
+	 * 
 	 */
 	protected final JavaContentAssistInvocationContext getInvocationContext() {
 		if (fInvocationContext == null)
@@ -358,7 +358,7 @@ public class CompletionProposalCollector extends CompletionRequestor {
 	}
 
 	/**
-	 * Creates a new java completion proposal from a core proposal. This may
+	 * Creates a new JavaScript completion proposal from a core proposal. This may
 	 * involve computing the display label and setting up some context.
 	 * <p>
 	 * This method is called for every proposal that will be displayed to the
@@ -376,7 +376,7 @@ public class CompletionProposalCollector extends CompletionRequestor {
 	 * </p>
 	 *
 	 * @param proposal the core completion proposal to create a UI proposal for
-	 * @return the created java completion proposal, or <code>null</code> if
+	 * @return the created JavaScript completion proposal, or <code>null</code> if
 	 *         no proposal should be displayed
 	 */
 	protected IJavaCompletionProposal createJavaCompletionProposal(CompletionProposal proposal) {

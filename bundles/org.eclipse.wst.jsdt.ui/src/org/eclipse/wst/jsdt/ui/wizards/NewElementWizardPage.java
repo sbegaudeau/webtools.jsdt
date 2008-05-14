@@ -16,7 +16,7 @@ import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
 
 /**
- * Base class for wizard page responsible to create Java elements. The class
+ * Base class for wizard page responsible to create JavaScript elements. The class
  * provides API to update the wizard's status line and OK button according to
  * the value of a <code>IStatus</code> object.
  * 

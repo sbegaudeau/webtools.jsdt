@@ -93,7 +93,7 @@ public class ReadReferencesSearchGroup extends ActionGroup  {
 
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public ReadReferencesSearchGroup(JavaEditor editor) {
 		fEditor= editor;

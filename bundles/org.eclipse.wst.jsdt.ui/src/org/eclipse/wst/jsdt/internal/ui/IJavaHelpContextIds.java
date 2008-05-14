@@ -28,7 +28,7 @@ public interface IJavaHelpContextIds {
 	// Actions
 	public static final String GETTERSETTER_ACTION= 											PREFIX + "getter_setter_action_context"; //$NON-NLS-1$
 	public static final String ADD_UNIMPLEMENTED_METHODS_ACTION= 					PREFIX + "add_unimplemented_methods_action_context"; //$NON-NLS-1$
-	/* @since 3.2 */
+	/*  */
 	public static final String GENERATE_HASHCODE_EQUALS_ACTION=						PREFIX + "add_hashcode_equals_action_context"; //$NON-NLS-1$
 	public static final String ADD_UNIMPLEMENTED_CONSTRUCTORS_ACTION= 			PREFIX + "add_unimplemented_constructors_action_context"; //$NON-NLS-1$	
 	public static final String CREATE_NEW_CONSTRUCTOR_ACTION= 					PREFIX + "create_new_constructor_action_context"; //$NON-NLS-1$	
@@ -59,16 +59,16 @@ public interface IJavaHelpContextIds {
 
 	public static final String OPEN_CLASS_WIZARD_ACTION= 									PREFIX + "open_class_wizard_action"; //$NON-NLS-1$
 	public static final String OPEN_INTERFACE_WIZARD_ACTION= 							PREFIX + "open_interface_wizard_action"; //$NON-NLS-1$
-	/** @since 3.2 */
+	/**  */
 	public static final String OPEN_ENUM_WIZARD_ACTION= 							PREFIX + "open_enum_wizard_action"; //$NON-NLS-1$
-	/** @since 3.2 */
+	/**  */
 	public static final String OPEN_ANNOTATION_WIZARD_ACTION= 							PREFIX + "open_annotation_wizard_action"; //$NON-NLS-1$
 
 	public static final String SORT_MEMBERS_ACTION=											PREFIX + "sort_members_action"; //$NON-NLS-1$	
 
 	public static final String OPEN_PACKAGE_WIZARD_ACTION= 								PREFIX + "open_package_wizard_action"; //$NON-NLS-1$
 	public static final String OPEN_PROJECT_WIZARD_ACTION= 								PREFIX + "open_project_wizard_action"; //$NON-NLS-1$
-	/** @since 3.2 */
+	/**  */
 	public static final String OPEN_SOURCEFOLDER_WIZARD_ACTION= 							PREFIX + "open_sourcefolder_wizard_action"; //$NON-NLS-1$
 
 	public static final String EDIT_WORKING_SET_ACTION= 									PREFIX + "edit_working_set_action"; //$NON-NLS-1$
@@ -79,7 +79,7 @@ public interface IJavaHelpContextIds {
 	public static final String GOTO_MATCHING_BRACKET_ACTION=							PREFIX + "goto_matching_bracket_action"; 	 //$NON-NLS-1$Object[] FORMAT_ALL= null;
 
 	/**
-	 * @since 3.0
+	 * 
 	 */
 	public static final String FORMAT_ALL=														PREFIX + "format_all_action"; 	 //$NON-NLS-1$
 
@@ -100,7 +100,7 @@ public interface IJavaHelpContextIds {
 	
 	
 	/**
-	 * @since 3.0
+	 * 
 	 */
 	public static final String CONFIG_CONTAINER_ACTION= 									PREFIX + "org.eclipse.wst.jsdt.ui.config_container_action"; //$NON-NLS-1$
 	
@@ -115,7 +115,7 @@ public interface IJavaHelpContextIds {
 	public static final String INTRODUCE_PARAMETER_ACTION=								PREFIX + "introduce_parameter_action"; //$NON-NLS-1$	
 	public static final String INTRODUCE_FACTORY_ACTION= 								PREFIX + "introduce_factory_action"; //$NON-NLS-1$
 	/**
-	 * @since 3.2
+	 * 
 	 */
 	public static final String INTRODUCE_INDIRECTION_ACTION= 								PREFIX + "introduce_indirection_action"; //$NON-NLS-1$
 	
@@ -149,7 +149,7 @@ public interface IJavaHelpContextIds {
 	public static final String FIND_STRINGS_TO_EXTERNALIZE_ACTION= 					PREFIX + "find_strings_to_externalize_action"; //$NON-NLS-1$
 	public static final String INLINE_ACTION= 												PREFIX + "inline_action"; //$NON-NLS-1$
 	/**
-	 * @since 3.2
+	 * 
 	 */
 	public static final String REPLACE_INVOCATIONS_ACTION= 							PREFIX + "replace_invocations_action"; //$NON-NLS-1$
 	public static final String MODIFY_PARAMETERS_ACTION= 									PREFIX + "modify_parameters_action"; //$NON-NLS-1$
@@ -160,7 +160,7 @@ public interface IJavaHelpContextIds {
 	public static final String OPEN_SUPER_IMPLEMENTATION_ACTION= 					PREFIX + "open_super_implementation_action"; //$NON-NLS-1$
 	public static final String PULL_UP_ACTION= 													PREFIX + "pull_up_action"; //$NON-NLS-1$
 	/**
-	 * @since 3.2
+	 * 
 	 */
 	public static final String EXTRACT_SUPERTYPE_ACTION= 													PREFIX + "extract_supertype_action"; //$NON-NLS-1$
 	public static final String PUSH_DOWN_ACTION= 													PREFIX + "push_down_action"; //$NON-NLS-1$
@@ -205,7 +205,7 @@ public interface IJavaHelpContextIds {
 	public static final String COMMENT_ACTION=							PREFIX + "comment_action"; 	 //$NON-NLS-1$	
 	public static final String UNCOMMENT_ACTION=							PREFIX + "uncomment_action"; 	 //$NON-NLS-1$	
 	/**
-	 * @since 3.0
+	 * 
 	 */
 	public static final String TOGGLE_COMMENT_ACTION=							PREFIX + "toggle_comment_action"; 	 //$NON-NLS-1$
 	public static final String ADD_BLOCK_COMMENT_ACTION=				PREFIX + "add_block_comment_action"; 	//$NON-NLS-1$
@@ -281,7 +281,7 @@ public interface IJavaHelpContextIds {
 	public static final String BUILD_PATH_PROPERTY_PAGE= 				PREFIX + "build_path_property_page_context"; //$NON-NLS-1$
 	public static final String CP_VARIABLES_PREFERENCE_PAGE= 		PREFIX + "cp_variables_preference_page_context"; //$NON-NLS-1$
 	/**
-	 * @since 3.0
+	 * 
 	 */
 	public static final String CP_USERLIBRARIES_PREFERENCE_PAGE= 		PREFIX + "cp_userlibraries_preference_page_context"; //$NON-NLS-1$
 	
@@ -294,7 +294,7 @@ public interface IJavaHelpContextIds {
 	public static final String TODOTASK_PROPERTY_PAGE= PREFIX + "tasktags_property_page_context"; //$NON-NLS-1$
 
 	/**
-	 * @since 3.0
+	 * 
 	 */
 	public static final String CODE_TEMPLATES_PREFERENCE_PAGE= PREFIX + "code_templates_preference_context"; //$NON-NLS-1$
 
@@ -363,7 +363,7 @@ public interface IJavaHelpContextIds {
 	public static final String INTRODUCE_PARAMETER_WIZARD_PAGE= 						PREFIX + "introduce_parameter_page_context"; //$NON-NLS-1$
 	public static final String INTRODUCE_FACTORY_WIZARD_PAGE= 							PREFIX + "introduce_factory_wizard_page_context"; //$NON-NLS-1$
 	/**
-	 * @since 3.2
+	 * 
 	 */
 	public static final String INTRODUCE_INDIRECTION_WIZARD_PAGE= 							PREFIX + "introduce_indirection_wizard_page_context"; //$NON-NLS-1$
 	
@@ -374,7 +374,7 @@ public interface IJavaHelpContextIds {
 	public static final String MOVE_INNER_TO_TOP_WIZARD_PAGE= 				PREFIX + "move_inner_to_top_wizard_page_context"; //$NON-NLS-1$
 	public static final String PULL_UP_WIZARD_PAGE= 									PREFIX + "pull_up_wizard_page_context"; //$NON-NLS-1$
 	/**
-	 * @since 3.2
+	 * 
 	 */
 	public static final String EXTRACT_SUPERTYPE_WIZARD_PAGE= 									PREFIX + "extract_supertype_wizard_page_context"; //$NON-NLS-1$
 	public static final String PUSH_DOWN_WIZARD_PAGE= 									PREFIX + "push_down_wizard_page_context"; //$NON-NLS-1$
@@ -422,7 +422,7 @@ public interface IJavaHelpContextIds {
     public static final String CALL_HIERARCHY_CANCEL_SEARCH_ACTION= PREFIX + "call_hierarchy_cancel_search_action_context"; //$NON-NLS-1$
 
     /**
-     * @since 3.2
+     * 
      */
     //User library preference page
 	public static final String CP_EDIT_USER_LIBRARY= PREFIX + "cp_edit_user_library"; //$NON-NLS-1$

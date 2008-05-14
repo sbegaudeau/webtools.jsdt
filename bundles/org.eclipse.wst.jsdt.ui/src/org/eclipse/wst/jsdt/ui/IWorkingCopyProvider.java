@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.ui;
 
 /**
- * Interface used for Java element content providers to indicate that
+ * Interface used for JavaScript element content providers to indicate that
  * the content provider can return working copy elements for members
  * below compilation units.
  * 

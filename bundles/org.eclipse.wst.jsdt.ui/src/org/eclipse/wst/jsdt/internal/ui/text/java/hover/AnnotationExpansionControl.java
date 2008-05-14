@@ -76,7 +76,7 @@ import org.eclipse.swt.widgets.Widget;
  * </p>
  * <p>Each annotation can have its custom context menu and hover.</p>
  *
- * @since 3.2
+ * 
  */
 public class AnnotationExpansionControl implements IInformationControl, IInformationControlExtension, IInformationControlExtension2 {
 
@@ -90,7 +90,7 @@ public class AnnotationExpansionControl implements IInformationControl, IInforma
 	 * TODO move to top-level class
 	 * TODO encapsulate fields
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	public static class AnnotationHoverInput {
 		public Annotation[] fAnnotations;
@@ -316,7 +316,7 @@ public class AnnotationExpansionControl implements IInformationControl, IInforma
 	/**
 	 *
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	public class LinearLayouter {
 

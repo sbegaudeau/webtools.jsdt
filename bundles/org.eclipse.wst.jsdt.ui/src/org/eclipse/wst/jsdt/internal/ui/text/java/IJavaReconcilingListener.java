@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 /**
  * Interface of an object listening to Java reconciling.
  *
- * @since 3.0
+ * 
  */
 public interface IJavaReconcilingListener {
 

@@ -68,7 +68,7 @@ import org.eclipse.jface.text.TextPresentation;
  * </ul>
  * </p>
  * 
- * @since 3.2
+ * 
  */
 public class BrowserInformationControl implements IInformationControl, IInformationControlExtension, IInformationControlExtension3, IInformationControlExtension4, DisposeListener {
 
@@ -102,7 +102,7 @@ public class BrowserInformationControl implements IInformationControl, IInformat
 	
 	/**
 	 * Minimal size constraints.
-	 * @since 3.2
+	 * 
 	 */
 	private static final int MIN_WIDTH= 80;
 	private static final int MIN_HEIGHT= 80;
@@ -320,7 +320,7 @@ public class BrowserInformationControl implements IInformationControl, IInformat
 
 	/*
 	 * @see org.eclipse.jdt.internal.ui.text.IInformationControlExtension4#setStatusText(java.lang.String)
-	 * @since 3.2
+	 * 
 	 */
 	public void setStatusText(String statusFieldText) {
 		fStatusFieldText= statusFieldText;
@@ -352,7 +352,7 @@ public class BrowserInformationControl implements IInformationControl, IInformat
 	 * Creates and initializes the text layout used
 	 * to compute the size hint.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private void createTextLayout() {
 		fTextLayout= new TextLayout(fBrowser.getDisplay());

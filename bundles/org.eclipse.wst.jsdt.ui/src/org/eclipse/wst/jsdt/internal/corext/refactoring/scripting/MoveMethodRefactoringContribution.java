@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.MoveInstanceMe
 /**
  * Refactoring contribution for the move method refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class MoveMethodRefactoringContribution extends JDTRefactoringContribution {
 

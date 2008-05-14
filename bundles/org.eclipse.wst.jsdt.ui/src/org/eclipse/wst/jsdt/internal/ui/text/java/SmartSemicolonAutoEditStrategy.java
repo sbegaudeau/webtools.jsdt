@@ -48,7 +48,7 @@ import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
  * or brace after the current caret position, the cursor is moved after it.</p>
  *
  * @see org.eclipse.jface.text.DocumentCommand
- * @since 3.0
+ * 
  */
 public class SmartSemicolonAutoEditStrategy implements IAutoEditStrategy {
 

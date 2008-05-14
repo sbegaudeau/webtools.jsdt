@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.JavaProjectWizard;
 
 /**
- * <p>Action that opens the new Java project wizard. The action initializes the wizard with the
+ * <p>Action that opens the new JavaScript project wizard. The action initializes the wizard with the
  * selection as configured by {@link #setSelection(org.eclipse.jface.viewers.IStructuredSelection)} or the selection of
  * the active workbench window.</p>
  * 

@@ -39,7 +39,7 @@ public class JavaDoubleClickSelector implements ITextDoubleClickStrategy, ISourc
 	 * <dt>@</dt><dd>the at symbol</dd>
 	 * </dl>
 	 *
-	 * @since 3.1
+	 * 
 	 */
 	private static final class AtJavaIdentifierDetector implements ISourceVersionDependent {
 

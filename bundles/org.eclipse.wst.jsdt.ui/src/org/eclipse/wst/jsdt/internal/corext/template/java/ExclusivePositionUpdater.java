@@ -18,7 +18,7 @@ import org.eclipse.jface.text.Position;
 /**
  * Position updater that takes any changes at the borders of a position to not belong to the position.
  *
- * @since 3.2
+ * 
  */
 final class ExclusivePositionUpdater implements IPositionUpdater {
 

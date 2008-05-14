@@ -376,7 +376,7 @@ public class EditorUtility {
 	 * @param editor the editor
 	 * @param primaryOnly if <code>true</code> only primary working copies will be returned
 	 * @return the given editor's input as Java element or <code>null</code> if none
-	 * @since 3.2
+	 * 
 	 */
 	public static IJavaScriptElement getEditorInputJavaElement(IEditorPart editor, boolean primaryOnly) {
 		Assert.isNotNull(editor);
@@ -446,7 +446,7 @@ public class EditorUtility {
 	 *
 	 * @param modifierName the modifier name
 	 * @return the SWT modifier bit, or <code>0</code> if no match was found
-	 * @since 2.1.1
+	 * 
 	 */
 	public static int findLocalizedModifier(String modifierName) {
 		if (modifierName == null)
@@ -470,7 +470,7 @@ public class EditorUtility {
 	 *
 	 * @param stateMask	the SWT modifier bits
 	 * @return the modifier string
-	 * @since 2.1.1
+	 * 
 	 */
 	public static String getModifierString(int stateMask) {
 		String modifierString= ""; //$NON-NLS-1$
@@ -493,7 +493,7 @@ public class EditorUtility {
 	 * @param modifierString	the modifier string
 	 * @param modifier			an int with SWT modifier bit
 	 * @return the concatenated modifier string
-	 * @since 2.1.1
+	 * 
 	 */
 	private static String appendModifierString(String modifierString, int modifier) {
 		if (modifierString == null)
@@ -511,7 +511,7 @@ public class EditorUtility {
 	 * @param input the editor input
 	 * @return the corresponding Java project
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	public static IJavaScriptProject getJavaProject(IEditorInput input) {
 		IJavaScriptProject jProject= null;
@@ -533,7 +533,7 @@ public class EditorUtility {
 	 * presented in more than one editor, only one of those editor parts is part of the result.
 	 * 
 	 * @return an array of all dirty editor parts.
-	 * @since 3.2
+	 * 
 	 */
 	public static IEditorPart[] getDirtyEditors() {
 		Set inputs= new HashSet();
@@ -561,7 +561,7 @@ public class EditorUtility {
 	 * 
 	 * @param saveUnknownEditors <code>true</code> iff editors with unknown buffer management should also be saved
 	 * @return the editors to save
-	 * @since 3.3
+	 * 
 	 */
 	public static IEditorPart[] getDirtyEditorsToSave(boolean saveUnknownEditors) {
 		Set inputs= new HashSet();
@@ -587,7 +587,7 @@ public class EditorUtility {
 	}
 
 	/**
-	 * @since 3.3
+	 * 
 	 */
 	private static boolean mustSaveDirtyEditor(IEditorPart ep, IEditorInput input, boolean saveUnknownEditors) {
 		/*

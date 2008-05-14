@@ -1017,7 +1017,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 	 * @param oldInput old input
 	 * @param newInput new input
 	 * @return	<code>true</code> if the input has to be set
-	 * @since 3.0
+	 * 
 	 */
 	private boolean mustSetNewInput(IJavaScriptElement elementToSelect, IJavaScriptElement oldInput, IJavaScriptElement newInput) {
 		return (newInput == null || !newInput.equals(oldInput))

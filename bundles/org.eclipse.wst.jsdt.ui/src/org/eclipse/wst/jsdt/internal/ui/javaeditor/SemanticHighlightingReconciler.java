@@ -45,7 +45,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.java.IJavaReconcilingListener;
 /**
  * Semantic highlighting reconciler - Background thread implementation.
  *
- * @since 3.0
+ * 
  */
 public class SemanticHighlightingReconciler implements IJavaReconcilingListener, ITextInputListener {
 
@@ -199,13 +199,13 @@ public class SemanticHighlightingReconciler implements IJavaReconcilingListener,
 	private final Object fJobLock= new Object();
 	/**
 	 * Reconcile operation lock.
-	 * @since 3.2
+	 * 
 	 */
 	private final Object fReconcileLock= new Object();
 	/**
 	 * <code>true</code> if any thread is executing
 	 * <code>reconcile</code>, <code>false</code> otherwise.
-	 * @since 3.2
+	 * 
 	 */
 	private boolean fIsReconciling= false;
 
@@ -461,7 +461,7 @@ public class SemanticHighlightingReconciler implements IJavaReconcilingListener,
 	/**
 	 * Refreshes the highlighting.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public void refresh() {
 		scheduleJob();

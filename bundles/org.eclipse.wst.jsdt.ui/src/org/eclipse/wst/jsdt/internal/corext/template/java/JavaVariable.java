@@ -24,7 +24,7 @@ public final class JavaVariable extends MultiVariable {
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.MultiVariable#toString(java.lang.Object)
-	 * @since 3.3
+	 * 
 	 */
 	public String toString(Object object) {
 		if (object instanceof Variable)
@@ -43,7 +43,7 @@ public final class JavaVariable extends MultiVariable {
 	
 	/**
 	 * @param paramType the paramType
-	 * @since 3.3
+	 * 
 	 */
 	public void setParamType(String paramType) {
 		fParamType= paramType;

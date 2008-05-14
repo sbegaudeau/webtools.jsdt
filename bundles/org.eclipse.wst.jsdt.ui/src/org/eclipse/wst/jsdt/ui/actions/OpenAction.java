@@ -45,7 +45,7 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaUILabelProvider;
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
- * This action opens a Java editor on a Java element or file.
+ * This action opens a JavaScript editor on a JavaScript element or file.
  * <p>
  * The action is applicable to selections containing elements of
  * type <code>IJavaScriptUnit</code>, <code>IMember</code>
@@ -82,7 +82,7 @@ public class OpenAction extends SelectionDispatchAction {
 	
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public OpenAction(JavaEditor editor) {
 		this(editor.getEditorSite());
@@ -213,7 +213,7 @@ public class OpenAction extends SelectionDispatchAction {
 	 * 
 	 * @param object the element to open
 	 * @return the real element to open
-	 * @throws JavaScriptModelException if an error occurs while accessing the Java model
+	 * @throws JavaScriptModelException if an error occurs while accessing the JavaScript model
 	 */
 	public Object getElementToOpen(Object object) throws JavaScriptModelException {
 		return object;

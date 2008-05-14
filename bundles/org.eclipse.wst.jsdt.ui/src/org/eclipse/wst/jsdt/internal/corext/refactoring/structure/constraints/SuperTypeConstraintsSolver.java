@@ -32,7 +32,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.TypeEqu
 /**
  * Type constraint solver to solve supertype constraint models.
  * 
- * @since 3.1
+ * 
  */
 public class SuperTypeConstraintsSolver {
 

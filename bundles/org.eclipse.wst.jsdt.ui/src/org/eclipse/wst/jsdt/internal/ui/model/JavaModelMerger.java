@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 /**
  * Java-aware refactoring model merger.
  * 
- * @since 3.2
+ * 
  */
 public final class JavaModelMerger extends AbstractResourceMappingMerger {
 

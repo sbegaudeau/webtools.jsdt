@@ -43,7 +43,7 @@ public class IntroduceParameterAction extends SelectionDispatchAction {
 
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the java editor
+	 * @param editor the JavaScript editor
 	 */
 	public IntroduceParameterAction(JavaEditor editor) {
 		super(editor.getEditorSite());

@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * Contributors to the <code>org.eclipse.wst.jsdt.ui.foldingStructureProvider</code> extension point
- * can specify an implementation of this interface to be displayed on the Java &gt; Editor &gt; Folding
+ * can specify an implementation of this interface to be displayed on the JavaScript &gt; Editor &gt; Folding
  * preference page.
  * <p>
  * Clients may implement this interface.
@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Control;
 public interface IJavaFoldingPreferenceBlock {
 
 	/**
-	 * Creates the control that will be displayed on the Java &gt; Editor &gt; Folding
+	 * Creates the control that will be displayed on the JavaScript &gt; Editor &gt; Folding
 	 * preference page.
 	 *
 	 * @param parent the parent composite to which to add the preferences control

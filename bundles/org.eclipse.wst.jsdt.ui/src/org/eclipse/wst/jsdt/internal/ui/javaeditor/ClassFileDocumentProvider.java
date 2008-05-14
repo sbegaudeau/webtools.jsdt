@@ -227,7 +227,7 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 
 	/*
 	 * @see org.eclipse.ui.editors.text.StorageDocumentProvider#createEmptyDocument()
-	 * @since 3.1
+	 * 
 	 */
 	protected IDocument createEmptyDocument() {
 		IDocument document= FileBuffers.getTextFileBufferManager().createEmptyDocument(null, LocationKind.IFILE);
@@ -310,7 +310,7 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 
 	/*
 	 * @see org.eclipse.ui.texteditor.IDocumentProviderExtension3#isSynchronized(java.lang.Object)
-	 * @since 3.0
+	 * 
 	 */
 	public boolean isSynchronized(Object element) {
 		Object elementInfo= getElementInfo(element);

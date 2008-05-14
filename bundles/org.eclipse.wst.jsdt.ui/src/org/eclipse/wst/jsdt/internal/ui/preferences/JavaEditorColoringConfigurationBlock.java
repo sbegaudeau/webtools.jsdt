@@ -76,14 +76,14 @@ import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 /**
  * Configures Java Editor hover preferences.
  * 
- * @since 2.1
+ * 
  */
 class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 	
 	/**
 	 * Item in the highlighting color list.
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	private static class HighlightingColorListItem {
 		/** Display name */
@@ -96,11 +96,11 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 		private String fItalicKey;
 		/**
 		 * Strikethrough preference key.
-		 * @since 3.1
+		 * 
 		 */
 		private String fStrikethroughKey;
 		/** Underline preference key.
-		 * @since 3.1
+		 * 
 		 */
 		private String fUnderlineKey;
 		
@@ -138,7 +138,7 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 		
 		/**
 		 * @return the strikethrough preference key
-		 * @since 3.1
+		 * 
 		 */
 		public String getStrikethroughKey() {
 			return fStrikethroughKey;
@@ -146,7 +146,7 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 		
 		/**
 		 * @return the underline preference key
-		 * @since 3.1
+		 * 
 		 */
 		public String getUnderlineKey() {
 			return fUnderlineKey;
@@ -198,7 +198,7 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 	/**
 	 * Color list label provider.
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	private class ColorListLabelProvider extends LabelProvider {
 		/*
@@ -214,7 +214,7 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 	/**
 	 * Color list content provider.
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	private class ColorListContentProvider implements ITreeContentProvider {
 	
@@ -269,17 +269,17 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 	private static final String BOLD= PreferenceConstants.EDITOR_BOLD_SUFFIX;
 	/**
 	 * Preference key suffix for italic preferences.
-	 * @since  3.0
+	 * 
 	 */
 	private static final String ITALIC= PreferenceConstants.EDITOR_ITALIC_SUFFIX;
 	/**
 	 * Preference key suffix for strikethrough preferences.
-	 * @since  3.1
+	 * 
 	 */
 	private static final String STRIKETHROUGH= PreferenceConstants.EDITOR_STRIKETHROUGH_SUFFIX;
 	/**
 	 * Preference key suffix for underline preferences.
-	 * @since  3.1
+	 * 
 	 */
 	private static final String UNDERLINE= PreferenceConstants.EDITOR_UNDERLINE_SUFFIX;
 	
@@ -313,47 +313,47 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 	private Button fEnableCheckbox;
 	/**
 	 * Check box for italic preference.
-	 * @since  3.0
+	 * 
 	 */
 	private Button fItalicCheckBox;
 	/**
 	 * Check box for strikethrough preference.
-	 * @since  3.1
+	 * 
 	 */
 	private Button fStrikethroughCheckBox;
 	/**
 	 * Check box for underline preference.
-	 * @since  3.1
+	 * 
 	 */
 	private Button fUnderlineCheckBox;
 	/**
 	 * Highlighting color list
-	 * @since  3.0
+	 * 
 	 */
 	private final java.util.List fListModel= new ArrayList();
 	/**
 	 * Highlighting color list viewer
-	 * @since  3.0
+	 * 
 	 */
 	private StructuredViewer fListViewer;
 	/**
 	 * Semantic highlighting manager
-	 * @since  3.0
+	 * 
 	 */
 	private SemanticHighlightingManager fSemanticHighlightingManager;
 	/**
 	 * The previewer.
-	 * @since 3.0
+	 * 
 	 */
 	private JavaSourceViewer fPreviewViewer;
 	/**
 	 * The color manager.
-	 * @since 3.1
+	 * 
 	 */
 	private IColorManager fColorManager;
 	/**
 	 * The font metrics.
-	 * @since 3.1
+	 * 
 	 */
 	private FontMetrics fFontMetrics;
 
@@ -827,7 +827,7 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 	/**
 	 * Install Semantic Highlighting on the previewer
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	private void installSemanticHighlighting() {
 		if (fSemanticHighlightingManager == null) {
@@ -840,7 +840,7 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 	/**
 	 * Uninstall Semantic Highlighting from the previewer
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	private void uninstallSemanticHighlighting() {
 		if (fSemanticHighlightingManager != null) {
@@ -854,7 +854,7 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 	 * Create the hard coded previewer ranges
 	 * 
 	 * @return the hard coded previewer ranges
-	 * @since 3.0
+	 * 
 	 */
 	private SemanticHighlightingManager.HighlightedRange[][] createPreviewerRanges() {
 		return new SemanticHighlightingManager.HighlightedRange[][] {
@@ -911,7 +911,7 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 	 * @param length the length
 	 * @param key the key
 	 * @return the highlighted range
-	 * @since 3.0
+	 * 
 	 */
 	private HighlightedRange createHighlightedRange(int line, int column, int length, String key) {
 		try {
@@ -929,7 +929,7 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 	 * Returns the current highlighting color list item.
 	 * 
 	 * @return the current highlighting color list item
-	 * @since 3.0
+	 * 
 	 */
 	private HighlightingColorListItem getHighlightingColorListItem() {
 		IStructuredSelection selection= (IStructuredSelection) fListViewer.getSelection();

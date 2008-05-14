@@ -80,40 +80,40 @@ public class JavaSourceViewer extends ProjectionViewer implements IPropertyChang
 
 	/**
 	 * This viewer's foreground color.
-	 * @since 3.0
+	 * 
 	 */
 	private Color fForegroundColor;
 	/**
 	 * The viewer's background color.
-	 * @since 3.0
+	 * 
 	 */
 	private Color fBackgroundColor;
 	/**
 	 * This viewer's selection foreground color.
-	 * @since 3.0
+	 * 
 	 */
 	private Color fSelectionForegroundColor;
 	/**
 	 * The viewer's selection background color.
-	 * @since 3.0
+	 * 
 	 */
 	private Color fSelectionBackgroundColor;
 	/**
 	 * The preference store.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private IPreferenceStore fPreferenceStore;
 	/**
 	 * Is this source viewer configured?
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private boolean fIsConfigured;
 	/**
 	 * The backspace manager of this viewer.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private SmartBackspaceManager fBackspaceManager;
 
@@ -123,7 +123,7 @@ public class JavaSourceViewer extends ProjectionViewer implements IPropertyChang
 	 * Added for performance optimization.
 	 * </p>
 	 * @see #prepareDelayedProjection()
-	 * @since 3.1
+	 * 
 	 */
 	private boolean fIsSetVisibleDocumentDelayed= false;
 
@@ -134,7 +134,7 @@ public class JavaSourceViewer extends ProjectionViewer implements IPropertyChang
 
 	/*
 	 * @see org.eclipse.jface.text.source.SourceViewer#createFormattingContext()
-	 * @since 3.0
+	 * 
 	 */
 	public IFormattingContext createFormattingContext() {
 
@@ -291,7 +291,7 @@ public class JavaSourceViewer extends ProjectionViewer implements IPropertyChang
      * @param key the key used for the lookup in the preference store
      * @param display the display used create the color
      * @return the created color according to the specification in the preference store
-     * @since 3.0
+     * 
      */
     private Color createColor(IPreferenceStore store, String key, Display display) {
 
@@ -313,7 +313,7 @@ public class JavaSourceViewer extends ProjectionViewer implements IPropertyChang
 
 	/*
 	 * @see org.eclipse.jface.text.source.ISourceViewerExtension2#unconfigure()
-	 * @since 3.0
+	 * 
 	 */
 	public void unconfigure() {
 		if (fOutlinePresenter != null) {
@@ -382,7 +382,7 @@ public class JavaSourceViewer extends ProjectionViewer implements IPropertyChang
 	 *
 	 * @param store the preference store
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	public void setPreferenceStore(IPreferenceStore store) {
 		if (fIsConfigured && fPreferenceStore != null)
@@ -398,7 +398,7 @@ public class JavaSourceViewer extends ProjectionViewer implements IPropertyChang
 	
 	/*
 	 * @see org.eclipse.jface.text.ITextViewer#resetVisibleRegion()
-	 * @since 3.1
+	 * 
 	 */
 	public void resetVisibleRegion() {
 		super.resetVisibleRegion();
@@ -435,7 +435,7 @@ public class JavaSourceViewer extends ProjectionViewer implements IPropertyChang
 	 *
 	 * @return the backspace manager for this viewer, or <code>null</code> if
 	 *         there is none
-	 * @since 3.0
+	 * 
 	 */
 	public SmartBackspaceManager getBackspaceManager() {
 		return fBackspaceManager;
@@ -460,7 +460,7 @@ public class JavaSourceViewer extends ProjectionViewer implements IPropertyChang
 	 * the list.
 	 *
 	 * @param listener the text presentation listener
-	 * @since 3.0
+	 * 
 	 */
 	public void prependTextPresentationListener(ITextPresentationListener listener) {
 
@@ -477,7 +477,7 @@ public class JavaSourceViewer extends ProjectionViewer implements IPropertyChang
 	 * Sets the given reconciler.
 	 *
 	 * @param reconciler the reconciler
-	 * @since 3.0
+	 * 
 	 */
 	void setReconciler(IReconciler reconciler) {
 		fReconciler= reconciler;
@@ -487,7 +487,7 @@ public class JavaSourceViewer extends ProjectionViewer implements IPropertyChang
 	 * Returns the reconciler.
 	 *
 	 * @return the reconciler or <code>null</code> if not set
-	 * @since 3.0
+	 * 
 	 */
 	IReconciler getReconciler() {
 		return fReconciler;
@@ -579,7 +579,7 @@ public class JavaSourceViewer extends ProjectionViewer implements IPropertyChang
 	 * </p>
 	 * 
 	 * @see #setVisibleDocument(IDocument)
-	 * @since 3.1
+	 * 
 	 */
 	void prepareDelayedProjection() {
 		Assert.isTrue(!fIsSetVisibleDocumentDelayed);
@@ -593,7 +593,7 @@ public class JavaSourceViewer extends ProjectionViewer implements IPropertyChang
 	 * the text presentation triggered by {@link #setVisibleDocument(IDocument)}
 	 * </p>
 	 * @see #prepareDelayedProjection()
-	 * @since 3.1
+	 * 
 	 */
 	protected void setVisibleDocument(IDocument document) {
 		if (fIsSetVisibleDocumentDelayed) {

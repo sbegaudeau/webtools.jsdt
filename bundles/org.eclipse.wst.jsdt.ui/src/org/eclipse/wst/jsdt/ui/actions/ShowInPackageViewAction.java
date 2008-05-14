@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerPart;
 /**
- * This action reveals the currently selected Java element in the 
+ * This action reveals the currently selected JavaScript element in the 
  * package explorer. 
  * <p>
  * The action is applicable to selections containing elements of type
@@ -61,7 +61,7 @@ public class ShowInPackageViewAction extends SelectionDispatchAction {
 	
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public ShowInPackageViewAction(JavaEditor editor) {
 		this(editor.getEditorSite());

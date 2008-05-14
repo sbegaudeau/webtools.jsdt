@@ -127,7 +127,7 @@ public class JavaCorrectionAssistant extends QuickAssistAssistant {
 
 	/*
 	 * @see org.eclipse.jface.text.quickassist.QuickAssistAssistant#showPossibleQuickAssists()
-	 * @since 3.2
+	 * 
 	 */
 
 	/**

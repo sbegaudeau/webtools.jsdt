@@ -34,7 +34,7 @@ public class ElementQuerySpecification extends QuerySpecification {
 
 	/**
 	 * A constructor.
-	 * @param javaElement The java element the query should search for.
+	 * @param javaElement The JavaScript element the query should search for.
 	 * @param limitTo		  The kind of occurrence the query should search for.
 	 * @param scope		  The scope to search in.
 	 * @param scopeDescription A human readable description of the search scope.

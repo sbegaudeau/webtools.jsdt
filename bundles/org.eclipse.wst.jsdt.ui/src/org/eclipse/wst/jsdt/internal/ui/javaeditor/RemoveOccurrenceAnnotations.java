@@ -16,7 +16,7 @@ import org.eclipse.jface.action.Action;
 /**
  * Remove occurrence annotations action.
  *
- * @since 3.0
+ * 
  */
 class RemoveOccurrenceAnnotations extends Action {
 

@@ -39,7 +39,7 @@ public class JavaInformationProvider implements IInformationProvider, IInformati
 	/**
 	 * Control creator.
 	 *  
-	 * @since 3.3
+	 * 
 	 */
 	private static final class ControlCreator extends AbstractReusableInformationControlCreator {
 		/*
@@ -101,7 +101,7 @@ public class JavaInformationProvider implements IInformationProvider, IInformati
 	/**
 	 * The presentation control creator.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private IInformationControlCreator fPresenterControlCreator;
 	
@@ -168,7 +168,7 @@ public class JavaInformationProvider implements IInformationProvider, IInformati
 
 	/*
 	 * @see IInformationProviderExtension2#getInformationPresenterControlCreator()
-	 * @since 3.1
+	 * 
 	 */
 	public IInformationControlCreator getInformationPresenterControlCreator() {
 		if (fPresenterControlCreator == null)

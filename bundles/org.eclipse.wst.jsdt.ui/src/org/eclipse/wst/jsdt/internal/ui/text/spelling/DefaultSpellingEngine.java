@@ -33,7 +33,7 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
  * the text, Java and Java properties file content types.
  * </p>
  *
- * @since 3.1
+ * 
  */
 public class DefaultSpellingEngine implements ISpellingEngine {
 

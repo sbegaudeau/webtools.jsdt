@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringCo
 /**
  * Partial implementation of a JDT refactoring contribution.
  * 
- * @since 3.2
+ * 
  */
 public abstract class JDTRefactoringContribution extends JavaScriptRefactoringContribution {
 

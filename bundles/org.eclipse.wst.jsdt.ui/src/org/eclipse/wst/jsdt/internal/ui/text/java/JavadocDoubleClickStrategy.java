@@ -27,7 +27,7 @@ import com.ibm.icu.text.BreakIterator;
  * Copied from DefaultTextDoubleClickStrategy. Same behavior, but also
  * allows <code>@identifier</code> to be selected.
  *
- * @since 3.1
+ * 
  */
 public class JavadocDoubleClickStrategy implements ITextDoubleClickStrategy {
 
@@ -38,7 +38,7 @@ public class JavadocDoubleClickStrategy implements ITextDoubleClickStrategy {
 	 * the break iterator.
 	 *
 	 * @see IDocument
-	 * @since 2.0
+	 * 
 	 */
 	static class DocumentCharacterIterator implements CharacterIterator {
 
@@ -167,7 +167,7 @@ public class JavadocDoubleClickStrategy implements ITextDoubleClickStrategy {
 
 	/**
 	 * The document character iterator used by this strategy.
-	 * @since 2.0
+	 * 
 	 */
 	private DocumentCharacterIterator fDocIter= new DocumentCharacterIterator();
 

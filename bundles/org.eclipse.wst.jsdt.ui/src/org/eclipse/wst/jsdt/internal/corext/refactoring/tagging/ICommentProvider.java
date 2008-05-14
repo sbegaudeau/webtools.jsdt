@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.tagging;
 /**
  * Interface for refactorings which provide a comment for the history.
  * 
- * @since 3.2
+ * 
  */
 public interface ICommentProvider {
 

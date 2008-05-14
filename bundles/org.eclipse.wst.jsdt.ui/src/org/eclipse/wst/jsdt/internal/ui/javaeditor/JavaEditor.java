@@ -206,7 +206,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 	/**
 	 * Internal implementation class for a change listener.
-	 * @since 3.0
+	 * 
 	 */
 	protected abstract class AbstractSelectionChangedListener implements ISelectionChangedListener  {
 
@@ -251,7 +251,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * Updates the Java outline page selection and this editor's range indicator.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private class EditorSelectionChangedListener extends AbstractSelectionChangedListener {
 
@@ -281,7 +281,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * throws an {@link java.lang.UnsupportedOperationException}.
 	 * </p>
 	 *
-	 * @since 3.1
+	 * 
 	 */
 	private static class EclipsePreferencesAdapter implements IPreferenceStore {
 
@@ -576,7 +576,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * Cancels the occurrences finder job upon document changes.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	class OccurrencesFinderJobCanceler implements IDocumentListener, ITextInputListener {
 
@@ -653,7 +653,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * - if the caret is before the line's first non-whitespace the caret is moved to the beginning of the line
 	 * - if the caret is at the beginning of the line see first case.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	protected class SmartLineStartAction extends LineStartAction {
 
@@ -701,7 +701,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * Text navigation action to navigate to the next sub-word.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	protected abstract class NextSubWordAction extends TextNavigationAction {
 
@@ -791,7 +791,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * Text navigation action to navigate to the next sub-word.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	protected class NavigateNextSubWordAction extends NextSubWordAction {
 
@@ -813,7 +813,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * Text operation action to delete the next sub-word.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	protected class DeleteNextSubWordAction extends NextSubWordAction implements IUpdate {
 
@@ -860,7 +860,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * Text operation action to select the next sub-word.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	protected class SelectNextSubWordAction extends NextSubWordAction {
 
@@ -895,7 +895,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * Text navigation action to navigate to the previous sub-word.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	protected abstract class PreviousSubWordAction extends TextNavigationAction {
 
@@ -985,7 +985,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * Text navigation action to navigate to the previous sub-word.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	protected class NavigatePreviousSubWordAction extends PreviousSubWordAction {
 
@@ -1007,7 +1007,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * Text operation action to delete the previous sub-word.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	protected class DeletePreviousSubWordAction extends PreviousSubWordAction implements IUpdate {
 
@@ -1053,7 +1053,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * Text operation action to select the previous sub-word.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	protected class SelectPreviousSubWordAction extends PreviousSubWordAction {
 
@@ -1098,12 +1098,12 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * <p>
 	 * Partitions at the end of the selection are not completed, except for comments.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	protected class FormatElementAction extends Action implements IUpdate {
 		
 		/*
-		 * @since 3.2
+		 * 
 		 */
 		FormatElementAction() {
 			setEnabled(isEditorInputModifiable());
@@ -1159,7 +1159,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 		/*
 		 * @see org.eclipse.ui.texteditor.IUpdate#update()
-		 * @since 3.2
+		 * 
 		 */
 		public void update() {
 			setEnabled(isEditorInputModifiable());
@@ -1168,13 +1168,13 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 	/**
 	 * Internal activation listener.
-	 * @since 3.0
+	 * 
 	 */
 	private class ActivationListener implements IWindowListener {
 
 		/*
 		 * @see org.eclipse.ui.IWindowListener#windowActivated(org.eclipse.ui.IWorkbenchWindow)
-		 * @since 3.1
+		 * 
 		 */
 		public void windowActivated(IWorkbenchWindow window) {
 			if (window == getEditorSite().getWorkbenchWindow() && fMarkOccurrenceAnnotations && isActivePart()) {
@@ -1185,7 +1185,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 		/*
 		 * @see org.eclipse.ui.IWindowListener#windowDeactivated(org.eclipse.ui.IWorkbenchWindow)
-		 * @since 3.1
+		 * 
 		 */
 		public void windowDeactivated(IWorkbenchWindow window) {
 			if (window == getEditorSite().getWorkbenchWindow() && fMarkOccurrenceAnnotations && isActivePart())
@@ -1194,14 +1194,14 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 		/*
 		 * @see org.eclipse.ui.IWindowListener#windowClosed(org.eclipse.ui.IWorkbenchWindow)
-		 * @since 3.1
+		 * 
 		 */
 		public void windowClosed(IWorkbenchWindow window) {
 		}
 
 		/*
 		 * @see org.eclipse.ui.IWindowListener#windowOpened(org.eclipse.ui.IWorkbenchWindow)
-		 * @since 3.1
+		 * 
 		 */
 		public void windowOpened(IWorkbenchWindow window) {
 		}
@@ -1217,7 +1217,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * that <code>runWhenNextVisible</code> is only called from the UI thread.
 	 * </p>
 	 *
-	 * @since 3.1
+	 * 
 	 */
 	private final class ToggleFoldingRunner implements IPartListener2 {
 		/**
@@ -1321,7 +1321,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * The editor selection changed listener.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private EditorSelectionChangedListener fEditorSelectionChangedListener;
 	/** The selection changed listener */
@@ -1337,21 +1337,21 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * The action group for folding.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private FoldingActionGroup fFoldingGroup;
 
 	private CompositeActionGroup fContextMenuGroup;
 	/**
 	 * Holds the current occurrence annotations.
-	 * @since 3.0
+	 * 
 	 */
 	private Annotation[] fOccurrenceAnnotations= null;
 	/**
 	 * Tells whether all occurrences of the element at the
 	 * current caret location are automatically marked in
 	 * this editor.
-	 * @since 3.0
+	 * 
 	 */
 	private boolean fMarkOccurrenceAnnotations;
 	/**
@@ -1359,87 +1359,87 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * i.e. whether they stay even if there's no valid Java
 	 * element at the current caret position.
 	 * Only valid if {@link #fMarkOccurrenceAnnotations} is <code>true</code>.
-	 * @since 3.0
+	 * 
 	 */
 	private boolean fStickyOccurrenceAnnotations;
 	/**
 	 * Tells whether to mark type occurrences in this editor.
 	 * Only valid if {@link #fMarkOccurrenceAnnotations} is <code>true</code>.
-	 * @since 3.0
+	 * 
 	 */
 	private boolean fMarkTypeOccurrences;
 	/**
 	 * Tells whether to mark method occurrences in this editor.
 	 * Only valid if {@link #fMarkOccurrenceAnnotations} is <code>true</code>.
-	 * @since 3.0
+	 * 
 	 */
 	private boolean fMarkMethodOccurrences;
 	/**
 	 * Tells whether to mark constant occurrences in this editor.
 	 * Only valid if {@link #fMarkOccurrenceAnnotations} is <code>true</code>.
-	 * @since 3.0
+	 * 
 	 */
 	private boolean fMarkConstantOccurrences;
 	/**
 	 * Tells whether to mark field occurrences in this editor.
 	 * Only valid if {@link #fMarkOccurrenceAnnotations} is <code>true</code>.
-	 * @since 3.0
+	 * 
 	 */
 	private boolean fMarkFieldOccurrences;
 	/**
 	 * Tells whether to mark local variable occurrences in this editor.
 	 * Only valid if {@link #fMarkOccurrenceAnnotations} is <code>true</code>.
-	 * @since 3.0
+	 * 
 	 */
 	private boolean fMarkLocalVariableypeOccurrences;
 	/**
 	 * Tells whether to mark exception occurrences in this editor.
 	 * Only valid if {@link #fMarkOccurrenceAnnotations} is <code>true</code>.
-	 * @since 3.0
+	 * 
 	 */
 	private boolean fMarkExceptions;
 	/**
 	 * Tells whether to mark method exits in this editor.
 	 * Only valid if {@link #fMarkOccurrenceAnnotations} is <code>true</code>.
-	 * @since 3.0
+	 * 
 	 */
 	private boolean fMarkMethodExitPoints;
 	
 	/**
 	 * Tells whether to mark targets of <code>break</code> and <code>continue</code> statements in this editor.
 	 * Only valid if {@link #fMarkOccurrenceAnnotations} is <code>true</code>.
-	 * @since 3.2
+	 * 
 	 */
 	private boolean fMarkBreakContinueTargets;
 	
 	/**
 	 * Tells whether to mark implementors in this editor.
 	 * Only valid if {@link #fMarkOccurrenceAnnotations} is <code>true</code>.
-	 * @since 3.1
+	 * 
 	 */
 	private boolean fMarkImplementors;
 	/**
 	 * The selection used when forcing occurrence marking
 	 * through code.
-	 * @since 3.0
+	 * 
 	 */
 	private ISelection fForcedMarkOccurrencesSelection;
 	/**
 	 * The document modification stamp at the time when the last
 	 * occurrence marking took place.
-	 * @since 3.1
+	 * 
 	 */
 	private long fMarkOccurrenceModificationStamp= IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP;
 	/**
 	 * The region of the word under the caret used to when
 	 * computing the current occurrence markings.
-	 * @since 3.1
+	 * 
 	 */
 	private IRegion fMarkOccurrenceTargetRegion;
 
 	/**
 	 * The internal shell activation listener for updating occurrences.
-	 * @since 3.0
+	 * 
 	 */
 	private ActivationListener fActivationListener= new ActivationListener();
 	private ISelectionListenerWithAST fPostSelectionListenerWithAST;
@@ -1448,27 +1448,27 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	private OccurrencesFinderJobCanceler fOccurrencesFinderJobCanceler;
 	/**
 	 * This editor's projection support
-	 * @since 3.0
+	 * 
 	 */
 	private ProjectionSupport fProjectionSupport;
 	/**
 	 * This editor's projection model updater
-	 * @since 3.0
+	 * 
 	 */
 	private IJavaFoldingStructureProvider fProjectionModelUpdater;
 	/**
 	 * The override and implements indicator manager for this editor.
-	 * @since 3.0
+	 * 
 	 */
 	protected OverrideIndicatorManager fOverrideIndicatorManager;
 	/**
 	 * Semantic highlighting manager
-	 * @since 3.0, protected as of 3.3
+	 * , protected as of 3.3
 	 */
 	protected SemanticHighlightingManager fSemanticManager;
 	/**
 	 * The folding runner.
-	 * @since 3.1
+	 * 
 	 */
 	private ToggleFoldingRunner fFoldingRunner;
 	
@@ -1476,14 +1476,14 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * Tells whether the selection changed event is caused
 	 * by a call to {@link #gotoAnnotation(boolean)}.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private boolean fSelectionChangedViaGotoAnnotation;
 	/**
 	 * The cached selected range.
 	 * 
 	 * @see ITextViewer#getSelectedRange()
-	 * @since 3.3
+	 * 
 	 */
 	private Point fCachedSelectedRange;
 
@@ -1560,7 +1560,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * Returns a new Java source viewer configuration.
 	 * 
 	 * @return a new <code>JavaScriptSourceViewerConfiguration</code>
-	 * @since 3.3
+	 * 
 	 */
 	protected JavaScriptSourceViewerConfiguration createJavaSourceViewerConfiguration() {
 		JavaScriptTextTools textTools= JavaScriptPlugin.getDefault().getJavaTextTools();
@@ -1640,7 +1640,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * @param input The editor input for which to create the preference store
 	 * @return the preference store for this editor
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
 		List stores= new ArrayList(3);
@@ -1781,7 +1781,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 					return new ShowInContext(getEditorInput(), null) {
 						/*
 						 * @see org.eclipse.ui.part.ShowInContext#getSelection()
-						 * @since 3.3
+						 * 
 						 */
 						public ISelection getSelection() {
 							IJavaScriptElement je= null;
@@ -1817,7 +1817,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * React to changed selection.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	protected void selectionChanged() {
 		if (getSelectionProvider() == null)
@@ -2167,7 +2167,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 	/*
 	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#setPreferenceStore(org.eclipse.jface.preference.IPreferenceStore)
-	 * @since 3.0
+	 * 
 	 */
 	protected void setPreferenceStore(IPreferenceStore store) {
 		super.setPreferenceStore(store);
@@ -2335,7 +2335,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
  	 * Subclasses may override to install their own encoding
  	 * support or to disable the default encoding support.
  	 * </p>
-	 * @since 3.2
+	 * 
 	 */
 	protected void installEncodingSupport() {
 		fEncodingSupport= new DefaultEncodingSupport();
@@ -2514,7 +2514,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * Initializes the given viewer's colors.
 	 *
 	 * @param viewer the viewer to be initialized
-	 * @since 3.0
+	 * 
 	 */
 	protected void initializeViewerColors(ISourceViewer viewer) {
 		// is handled by JavaSourceViewer
@@ -2587,7 +2587,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 	/*
 	 * @see org.eclipse.ui.part.WorkbenchPart#getOrientation()
-	 * @since 3.1
+	 * 
 	 */
 	public int getOrientation() {
 		return SWT.LEFT_TO_RIGHT;	//Java editors are always left to right by default
@@ -2622,7 +2622,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 *
 	 * @param annotationModel the annotation model
 	 * @return the annotation model's lock object
-	 * @since 3.0
+	 * 
 	 */
 	private Object getLockObject(IAnnotationModel annotationModel) {
 		if (annotationModel instanceof ISynchronizable) {
@@ -2635,7 +2635,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 	/*
 	 * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#updateMarkerViews(org.eclipse.jface.text.source.Annotation)
-	 * @since 3.2
+	 * 
 	 */
 	protected void updateMarkerViews(Annotation annotation) {
 		if (annotation instanceof IJavaAnnotation) {
@@ -2657,7 +2657,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * Finds and marks occurrence annotations.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	class OccurrencesFinderJob extends Job {
 
@@ -2766,7 +2766,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 *
 	 * @param selection the text selection
 	 * @param astRoot the compilation unit AST
-	 * @since 3.0
+	 * 
 	 */
 	protected void updateOccurrenceAnnotations(ITextSelection selection, JavaScriptUnit astRoot) {
 
@@ -2999,7 +2999,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * Tells whether override indicators are shown.
 	 *
 	 * @return <code>true</code> if the override indicators are shown
-	 * @since 3.0
+	 * 
 	 */
 	protected boolean isShowingOverrideIndicators() {
 		AnnotationPreference preference= getAnnotationPreferenceLookup().getAnnotationPreference(OverrideIndicatorManager.ANNOTATION_TYPE);
@@ -3016,7 +3016,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * @param store the preference store
 	 * @param key the preference key
 	 * @return <code>true</code> if the key exists in the store and its value is <code>true</code>
-	 * @since 3.0
+	 * 
 	 */
 	private boolean getBoolean(IPreferenceStore store, String key) {
 		return key != null && store.getBoolean(key);
@@ -3028,7 +3028,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 *
 	 * @param event the event to be investigated
 	 * @return <code>true</code> if event causes a change
-	 * @since 3.0
+	 * 
 	 */
 	protected boolean affectsOverrideIndicatorAnnotations(PropertyChangeEvent event) {
 		String key= event.getProperty();
@@ -3045,7 +3045,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * @return <code>true</code> if Semantic Highlighting is enabled.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private boolean isSemanticHighlightingEnabled() {
 		return SemanticHighlightings.isEnabled(getPreferenceStore());
@@ -3054,7 +3054,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * Install Semantic Highlighting.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private void installSemanticHighlighting() {
 		if (fSemanticManager == null) {
@@ -3066,7 +3066,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	/**
 	 * Uninstall Semantic Highlighting.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private void uninstallSemanticHighlighting() {
 		if (fSemanticManager != null) {
@@ -3079,7 +3079,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * Returns the Java element wrapped by this editors input.
 	 *
 	 * @return the Java element wrapped by this editors input.
-	 * @since 3.0
+	 * 
 	 */
 	protected IJavaScriptElement getInputJavaElement() {
 		return EditorUtility.getEditorInputJavaElement(this, false);
@@ -3194,7 +3194,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 *
 	 * @return the caret offset in the master document
 	 * @see ITextViewer#getSelectedRange()
-	 * @since 3.3
+	 * 
 	 */
 	public Point getCachedSelectedRange() {
 		return fCachedSelectedRange;
@@ -3202,7 +3202,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 	/*
 	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#handleCursorPositionChanged()
-	 * @since 3.3
+	 * 
 	 */
 	protected void handleCursorPositionChanged() {
 		super.handleCursorPositionChanged();
@@ -3241,7 +3241,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * @param forward <code>true</code> for forwards, <code>false</code> for backward
 	 * @param annotationPosition the position of the found annotation
 	 * @return the found annotation
-	 * @since 3.2
+	 * 
 	 */
 	protected Annotation findAnnotation(final int offset, final int length, boolean forward, Position annotationPosition) {
 
@@ -3317,7 +3317,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * @param offset the region offset
 	 * @param length the region length
 	 * @return the found annotation or <code>null</code>
-	 * @since 3.0
+	 * 
 	 */
 	private Annotation getAnnotation(int offset, int length) {
 		IAnnotationModel model= getDocumentProvider().getAnnotationModel(getEditorInput());
@@ -3333,7 +3333,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 	/*
 	 * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#gotoAnnotation(boolean)
-	 * @since 3.2
+	 * 
 	 */
 	public Annotation gotoAnnotation(boolean forward) {
 		fSelectionChangedViaGotoAnnotation= true;
@@ -3346,7 +3346,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * indication.
 	 *
 	 * @return the computed source reference
-	 * @since 3.0
+	 * 
 	 */
 	protected ISourceReference computeHighlightRangeSourceReference() {
 		ISourceViewer sourceViewer= getSourceViewer();
@@ -3395,7 +3395,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * @param offset the offset inside of the requested element
 	 * @param reconcile <code>true</code> if editor input should be reconciled in advance
 	 * @return the most narrow java element
-	 * @since 3.0
+	 * 
 	 */
 	protected IJavaScriptElement getElementAt(int offset, boolean reconcile) {
 		return getElementAt(offset);
@@ -3447,7 +3447,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 	/*
 	 * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createAnnotationRulerColumn(org.eclipse.jface.text.source.CompositeRuler)
-	 * @since 3.2
+	 * 
 	 */
 	protected IVerticalRulerColumn createAnnotationRulerColumn(CompositeRuler ruler) {
 		if (!getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_ANNOTATION_ROLL_OVER))
@@ -3484,7 +3484,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * Returns the folding action group, or <code>null</code> if there is none.
 	 *
 	 * @return the folding action group, or <code>null</code> if there is none
-	 * @since 3.0
+	 * 
 	 */
 	protected FoldingActionGroup getFoldingActionGroup() {
 		return fFoldingGroup;
@@ -3542,7 +3542,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 	/*
 	 * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#collectContextMenuPreferencePages()
-	 * @since 3.1
+	 * 
 	 */
 	protected String[] collectContextMenuPreferencePages() {
 		String[] inheritedPages= super.collectContextMenuPreferencePages();
@@ -3564,7 +3564,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	
 	/*
 	 * @see AbstractTextEditor#getUndoRedoOperationApprover(IUndoContext)
-	 * @since 3.1
+	 * 
 	 */
 	protected IOperationApprover getUndoRedoOperationApprover(IUndoContext undoContext) {
 		// since IResource is a more general way to compare java elements, we
@@ -3576,7 +3576,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * Resets the foldings structure according to the folding
 	 * preferences.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public void resetProjection() {
 		if (fProjectionModelUpdater != null) {
@@ -3588,7 +3588,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * Collapses all foldable members if supported by the folding
 	 * structure provider.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public void collapseMembers() {
 		if (fProjectionModelUpdater instanceof IJavaFoldingStructureProviderExtension) {
@@ -3601,7 +3601,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	 * Collapses all foldable comments if supported by the folding
 	 * structure provider.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public void collapseComments() {
 		if (fProjectionModelUpdater instanceof IJavaFoldingStructureProviderExtension) {

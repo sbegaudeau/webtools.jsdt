@@ -455,7 +455,7 @@ public class NLSRefactoring extends Refactoring {
 	 * 
 	 * @param isEclipseNLS	<code>true</code> if NLSing is done the Eclipse way
 	 * 						and <code>false</code> if the standard resource bundle mechanism is used
-	 * @since 3.1 
+	 *  
 	 */
 	public void setIsEclipseNLS(boolean isEclipseNLS) {
 		fIsEclipseNLS= isEclipseNLS;
@@ -480,7 +480,7 @@ public class NLSRefactoring extends Refactoring {
 	 * 
 	 * @return		<code>true</code> if NLSing is done the Eclipse way
 	 * 				and <code>false</code> if the standard resource bundle mechanism is used
-	 * @since 3.1 
+	 *  
 	 */
 	public boolean detectIsEclipseNLS() {
 		if (getAccessorClassPackage() != null) {
@@ -507,7 +507,7 @@ public class NLSRefactoring extends Refactoring {
 	 * 
 	 * @return		<code>true</code> if NLSing is done the Eclipse way
 	 * 				and <code>false</code> if the standard resource bundle mechanism is used
-	 * @since 3.1 
+	 *  
 	 */
 	public boolean isEclipseNLS() {
 		return fIsEclipseNLS;

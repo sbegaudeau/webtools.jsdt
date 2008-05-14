@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
 /**
  * Semantic highlighting manager
  *
- * @since 3.0
+ * 
  */
 public class SemanticHighlightingManager implements IPropertyChangeListener {
 
@@ -619,7 +619,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 	 * Returns this hightlighter's reconciler.
 	 * 
 	 * @return the semantic highlighter reconciler or <code>null</code> if none
-	 * @since 3.3
+	 * 
 	 */
 	public SemanticHighlightingReconciler getReconciler() {
 		return fReconciler;

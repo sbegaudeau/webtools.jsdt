@@ -90,14 +90,14 @@ import org.osgi.framework.Bundle;
  * FIXME: As of 3.0 selectAll() and getSelection() is not working
  *			see https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
  *
- * @since 3.0
+ * 
  */
 public class JavadocView extends AbstractInfoView {
 
 	/**
 	 * Preference key for the preference whether to show a dialog
 	 * when the SWT Browser widget is not available.
-	 * @since 3.0
+	 * 
 	 */
 	private static final String DO_NOT_WARN_PREFERENCE_KEY= "JavadocView.error.doNotWarn"; //$NON-NLS-1$
 	
@@ -124,7 +124,7 @@ public class JavadocView extends AbstractInfoView {
 	private static String fgStyleSheet;
 	/**
 	 * <code>true</code> once the style sheet has been loaded.
-	 * @since 3.3
+	 * 
 	 */
 	private static boolean fgStyleSheetLoaded= false;
 
@@ -134,7 +134,7 @@ public class JavadocView extends AbstractInfoView {
 	private RGB fBackgroundColorRGB;
 	/**
 	 * The font listener.
-	 * @since 3.3
+	 * 
 	 */
 	private IPropertyChangeListener fFontListener;
 
@@ -323,7 +323,7 @@ public class JavadocView extends AbstractInfoView {
 	/**
 	 * Registers a listener for the Java editor font.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	private void listenForFontChanges() {
 		fFontListener= new IPropertyChangeListener() {
@@ -392,7 +392,7 @@ public class JavadocView extends AbstractInfoView {
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.infoviews.AbstractInfoView#getSelectAllAction()
-	 * @since 3.0
+	 * 
 	 */
 	protected IAction getSelectAllAction() {
 		// FIXME: see https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
@@ -404,7 +404,7 @@ public class JavadocView extends AbstractInfoView {
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.infoviews.AbstractInfoView#getCopyToClipboardAction()
-	 * @since 3.0
+	 * 
 	 */
 	protected IAction getCopyToClipboardAction() {
 		// FIXME: see https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
@@ -433,7 +433,7 @@ public class JavadocView extends AbstractInfoView {
 	/**
 	 * Refreshes the view.
 	 *
-	 * @since 3.3
+	 * 
 	 */
 	private void refresh() {
 		IJavaScriptElement input= getInput();
@@ -448,7 +448,7 @@ public class JavadocView extends AbstractInfoView {
 	
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.infoviews.AbstractInfoView#getBackgroundColorKey()
-	 * @since 3.2
+	 * 
 	 */
 	protected String getBackgroundColorKey() {
 		return "org.eclipse.wst.jsdt.ui.JavadocView.backgroundColor";		 //$NON-NLS-1$
@@ -618,7 +618,7 @@ public class JavadocView extends AbstractInfoView {
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.infoviews.AbstractInfoView#isIgnoringNewInput(org.eclipse.wst.jsdt.core.IJavaScriptElement, org.eclipse.jface.viewers.ISelection)
-	 * @since 3.2
+	 * 
 	 */
 	protected boolean isIgnoringNewInput(IJavaScriptElement je, IWorkbenchPart part, ISelection selection) {
 		if (super.isIgnoringNewInput(je, part, selection)
@@ -695,7 +695,7 @@ public class JavadocView extends AbstractInfoView {
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.infoviews.AbstractInfoView#getHelpContextId()
-	 * @since 3.1
+	 * 
 	 */
 	protected String getHelpContextId() {
 		return IJavaHelpContextIds.JAVADOC_VIEW;

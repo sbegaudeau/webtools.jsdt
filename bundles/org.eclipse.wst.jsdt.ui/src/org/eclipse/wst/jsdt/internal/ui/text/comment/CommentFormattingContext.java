@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 /**
  * Formatting context for the comment formatter.
  *
- * @since 3.0
+ * 
  */
 public class CommentFormattingContext extends FormattingContext {
 

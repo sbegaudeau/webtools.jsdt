@@ -69,7 +69,7 @@ public class OverrideIndicatorLabelDecorator implements ILabelDecorator, ILightw
 	/*
 	 * Creates decorator with a shared image registry.
 	 * 
-	 * @param registry The registry to use or <code>null</code> to use the Java plugin's
+	 * @param registry The registry to use or <code>null</code> to use the JavaScript plugin's
 	 * image registry.
 	 */	
 	/**

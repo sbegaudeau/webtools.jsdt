@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 /**
  * A move refactoring which can be initialized with refactoring arguments.
  * 
- * @since 3.2
+ * 
  */
 public class JavaMoveRefactoring extends MoveRefactoring implements IScriptableRefactoring {
 

@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.ui.search.QuerySpecification;
 
 /**
  * Finds implementors of the selected element in the enclosing project.
- * The action is applicable to selections representing a Java interface.
+ * The action is applicable to selections representing a JavaScript interface.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -52,7 +52,7 @@ public class FindImplementorsInProjectAction extends FindImplementorsAction {
 
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public FindImplementorsInProjectAction(JavaEditor editor) {
 		super(editor);

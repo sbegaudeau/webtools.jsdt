@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
  * </p>
  * 
  * @see org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator 
- * @since 2.1
+ * 
  */
 public class TreeHierarchyLayoutProblemsDecorator extends ProblemsLabelDecorator {
 

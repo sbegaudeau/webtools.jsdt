@@ -22,7 +22,7 @@ import org.eclipse.team.ui.mapping.ISynchronizationCompareAdapter;
 /**
  * Adaptor factory for model support.
  * 
- * @since 3.2
+ * 
  */
 public final class JavaModelAdapterFactory implements IAdapterFactory {
 

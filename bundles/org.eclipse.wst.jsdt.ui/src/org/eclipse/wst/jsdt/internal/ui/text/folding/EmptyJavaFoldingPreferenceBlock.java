@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingPreferenceBlock;
  * <code>org.eclipse.wst.jsdt.ui.javaFoldingStructureProvider</code> extension
  * point that do not specify their own.
  *
- * @since 3.0
+ * 
  */
 class EmptyJavaFoldingPreferenceBlock implements IJavaFoldingPreferenceBlock {
 	/*

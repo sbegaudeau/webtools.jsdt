@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 /**
  * Change to create move targets during scripting of move refactorings.
  * 
- * @since 3.3
+ * 
  */
 public final class LoggedCreateTargetChange extends JDTChange {
 

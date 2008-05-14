@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 /**
  * An action which toggles comment prefixes on the selected lines.
  *
- * @since 3.0
+ * 
  */
 public final class ToggleCommentAction extends TextEditorAction {
 

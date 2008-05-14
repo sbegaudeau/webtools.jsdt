@@ -91,7 +91,7 @@ public class DocumentAdapter implements IBuffer, IDocumentListener {
 	 * Run the given runnable in the UI thread.
 	 * 
 	 * @param runnable the runnable
-	 * @since 3.3
+	 * 
 	 */
 	private static final void run(Runnable runnable) {
 		Display currentDisplay= Display.getCurrent();
@@ -164,12 +164,12 @@ public class DocumentAdapter implements IBuffer, IDocumentListener {
 	private IStatus fStatus;
 
 	/*
-	 * @since 3.2
+	 * 
 	 */
 	private IPath fPath;
 	
 	/*
-	 * @since 3.3
+	 * 
 	 */
 	private LocationKind fLocationKind;
 
@@ -179,7 +179,7 @@ public class DocumentAdapter implements IBuffer, IDocumentListener {
 	 * 
 	 * @param owner the owner of this buffer
 	 * @param path the path of the file that backs the buffer
-	 * @since 3.2
+	 * 
 	 */
 	public DocumentAdapter(IOpenable owner, IPath path) {
 		Assert.isLegal(path != null);

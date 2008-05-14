@@ -121,7 +121,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator, ILightweightLabe
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
 	 * 
-	 * @param registry The registry to use or <code>null</code> to use the Java plugin's
+	 * @param registry The registry to use or <code>null</code> to use the JavaScript plugin's
 	 *  image registry
 	 */
 	public ProblemsLabelDecorator(ImageDescriptorRegistry registry) {
@@ -193,7 +193,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator, ILightweightLabe
 							IAnnotationModel model= isInJavaAnnotationModel(cu);
 							int result= 0;
 							if (model != null) {
-								// open in Java editor: look at annotation model
+								// open in JavaScript editor: look at annotation model
 								result= getErrorTicksFromAnnotationModel(model, ref);
 							} else {
 								result= getErrorTicksFromMarkers(cu.getResource(), IResource.DEPTH_ONE, ref);
@@ -309,7 +309,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator, ILightweightLabe
 	 * @return boolean Return <code>true</code> if position is located inside the source element.
 	 * @throws CoreException Exception thrown if element range could not be accessed.
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	protected boolean isInside(int pos, ISourceReference sourceElement) throws CoreException {
 		if (fCachedRange == null) {

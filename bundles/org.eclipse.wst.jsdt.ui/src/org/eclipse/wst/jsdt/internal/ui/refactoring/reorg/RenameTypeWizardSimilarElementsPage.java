@@ -101,7 +101,7 @@ import org.eclipse.wst.jsdt.ui.text.JavaScriptTextTools;
  * Wizard page for displaying a tree of similarly named elements renamed along with a
  * type.
  * 
- * @since 3.2
+ * 
  * 
  */
 class RenameTypeWizardSimilarElementsPage extends UserInputWizardPage {

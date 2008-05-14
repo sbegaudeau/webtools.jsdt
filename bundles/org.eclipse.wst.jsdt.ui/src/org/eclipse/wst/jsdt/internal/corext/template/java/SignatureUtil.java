@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.core.Signature;
  * Utilities for Signature operations.
  * 
  * @see Signature
- * @since 3.1
+ * 
  */
 public final class SignatureUtil {
 	

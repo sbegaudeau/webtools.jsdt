@@ -38,7 +38,7 @@ import org.eclipse.jface.text.rules.Token;
  * </p>
  *
  * @see IWordDetector
- * @since 3.0
+ * 
  */
 public class CombinedWordRule implements IRule {
 

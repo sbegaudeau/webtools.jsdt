@@ -34,7 +34,7 @@ import org.eclipse.ui.keys.IBindingService;
  * A quick menu actions provides support to assign short cuts
  * to sub menus.
  * 
- * @since 3.0
+ * 
  */
 public abstract class QuickMenuAction extends Action { 
 
@@ -90,7 +90,7 @@ public abstract class QuickMenuAction extends Action {
 	 * 
 	 * @param menuText the menu text
 	 * @return the menu text with the shortcut
-	 * @since 3.1
+	 * 
 	 */
 	public String addShortcut(String menuText) {
 		String shortcut= getShortcutString();

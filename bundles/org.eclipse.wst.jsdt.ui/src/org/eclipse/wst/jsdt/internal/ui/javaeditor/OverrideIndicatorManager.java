@@ -45,14 +45,14 @@ import org.eclipse.wst.jsdt.ui.JavaScriptUI;
  * Manages the override and overwrite indicators for
  * the given Java element and annotation model.
  *
- * @since 3.0
+ * 
  */
 class OverrideIndicatorManager implements IJavaReconcilingListener {
 
 	/**
 	 * Overwrite and override indicator annotation.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	class OverrideIndicator extends Annotation {
 
@@ -66,7 +66,7 @@ class OverrideIndicatorManager implements IJavaReconcilingListener {
 		 *            an overwrite indicator, <code>false</code> otherwise
 		 * @param text the text associated with this annotation
 		 * @param key the method binding key
-		 * @since 3.0
+		 * 
 		 */
 		OverrideIndicator(boolean isOverwriteIndicator, String text, String key) {
 			super(ANNOTATION_TYPE, false, text);
@@ -137,7 +137,7 @@ class OverrideIndicatorManager implements IJavaReconcilingListener {
 	 *
 	 * @param annotationModel the annotation model
 	 * @return the annotation model's lock object
-	 * @since 3.0
+	 * 
 	 */
 	private Object getLockObject(IAnnotationModel annotationModel) {
 		if (annotationModel instanceof ISynchronizable) {
@@ -154,7 +154,7 @@ class OverrideIndicatorManager implements IJavaReconcilingListener {
 	 *
 	 * @param ast the compilation unit AST
 	 * @param progressMonitor the progress monitor
-	 * @since 3.0
+	 * 
 	 */
 	protected void updateAnnotations(JavaScriptUnit ast, IProgressMonitor progressMonitor) {
 

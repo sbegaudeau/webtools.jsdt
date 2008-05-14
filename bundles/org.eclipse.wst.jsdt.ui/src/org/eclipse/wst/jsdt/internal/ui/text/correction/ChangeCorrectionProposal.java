@@ -37,7 +37,7 @@ import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
  * proposals that invoke a {@link Change}. The proposal offers a proposal information but no context
  * information.
  * 
- * @since 3.2
+ * 
  */
 public class ChangeCorrectionProposal implements IJavaCompletionProposal, ICommandAccess {
 

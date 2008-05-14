@@ -49,7 +49,7 @@ public class FindExceptionOccurrencesAction extends SelectionDispatchAction {
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
 	 * 
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public FindExceptionOccurrencesAction(JavaEditor editor) {
 		this(editor.getEditorSite());
@@ -82,7 +82,7 @@ public class FindExceptionOccurrencesAction extends SelectionDispatchAction {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public void selectionChanged(IStructuredSelection selection) {
 		setEnabled(getMember(selection) != null);

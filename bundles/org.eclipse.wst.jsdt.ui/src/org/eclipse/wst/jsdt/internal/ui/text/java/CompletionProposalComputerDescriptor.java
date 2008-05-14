@@ -41,7 +41,7 @@ import org.osgi.framework.Bundle;
  * immutable. Instances can be obtained from a {@link CompletionProposalComputerRegistry}.
  * 
  * @see CompletionProposalComputerRegistry
- * @since 3.2
+ * 
  */
 final class CompletionProposalComputerDescriptor {
 	/** The default category id. */

@@ -294,7 +294,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 		 * @param type the fully qualified type name of which to match a type argument  
 		 * @param index the index of the type parameter in the type
 		 * @return the type bounds for the specified type argument in this local variable
-		 * @since 3.3
+		 * 
 		 */
 		public String[] getTypeArgumentBoundSignatures(String type, int index) {
 			List all= new ArrayList();
@@ -800,7 +800,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 	 * Returns all field names.
 	 * 
 	 * @return all field names
-	 * @since 3.3
+	 * 
 	 */
 	public String[] getFieldNames() {
 		String[] names= new String[fFields.size()];

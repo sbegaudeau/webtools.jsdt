@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
  * Note: Must be public since it is referenced from plugin.xml
  * </p>
  * 
- * @since 3.0
+ * 
  */
 public class JavaEditorColoringPreferencePage extends AbstractConfigurationBlockPreferencePage {
 

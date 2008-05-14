@@ -36,7 +36,7 @@ import org.eclipse.wst.jsdt.ui.search.QuerySpecification;
 
 /**
  * Finds references of the selected element in the workspace.
- * The action is applicable to selections representing a Java element.
+ * The action is applicable to selections representing a JavaScript element.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -63,7 +63,7 @@ public class FindReferencesAction extends FindAction {
 
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public FindReferencesAction(JavaEditor editor) {
 		super(editor);

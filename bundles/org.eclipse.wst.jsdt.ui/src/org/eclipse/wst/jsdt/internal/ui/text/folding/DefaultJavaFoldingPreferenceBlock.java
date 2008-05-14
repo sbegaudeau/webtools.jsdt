@@ -35,7 +35,7 @@ import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingPreferenceBlock;
 /**
  * Java default folding preferences.
  *
- * @since 3.0
+ * 
  */
 public class DefaultJavaFoldingPreferenceBlock implements IJavaFoldingPreferenceBlock {
 

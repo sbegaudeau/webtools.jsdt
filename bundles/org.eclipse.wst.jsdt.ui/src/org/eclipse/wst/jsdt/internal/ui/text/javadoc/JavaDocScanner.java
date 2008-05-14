@@ -132,7 +132,7 @@ public final class JavaDocScanner extends JavaCommentScanner {
 	 * @param manager	Color manager
 	 * @param store	Preference store
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	public JavaDocScanner(IColorManager manager, IPreferenceStore store) {
 		this(manager, store, null);

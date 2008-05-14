@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
  * Displays an IWorkingSetSelectionDialog and sets the selected 
  * working set in the action group's view.
  * 
- * @since 2.0
+ * 
  */
 public class SelectWorkingSetAction extends Action {
 	private IWorkbenchPartSite fSite;

@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
  * Image provider for annotations based on Java problem markers.
  *
- * @since 3.0
+ * 
  */
 public class JavaAnnotationImageProvider implements IAnnotationImageProvider {
 

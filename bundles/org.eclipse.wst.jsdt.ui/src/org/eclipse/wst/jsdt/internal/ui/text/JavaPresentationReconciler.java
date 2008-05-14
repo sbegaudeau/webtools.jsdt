@@ -20,7 +20,7 @@ import org.eclipse.jface.text.presentation.PresentationReconciler;
 /**
  * Presentation reconciler, adding functionality for operation without a viewer.
  *
- * @since 3.0
+ * 
  */
 public class JavaPresentationReconciler extends PresentationReconciler {
 

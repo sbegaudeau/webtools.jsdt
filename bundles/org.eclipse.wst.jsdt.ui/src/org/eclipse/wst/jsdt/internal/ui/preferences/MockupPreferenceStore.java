@@ -24,7 +24,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
  * an {@link java.lang.UnsupportedOperationException}.
  * </p>
  * 
- * @since 3.0
+ * 
  */
 public class MockupPreferenceStore implements IPreferenceStore {
 

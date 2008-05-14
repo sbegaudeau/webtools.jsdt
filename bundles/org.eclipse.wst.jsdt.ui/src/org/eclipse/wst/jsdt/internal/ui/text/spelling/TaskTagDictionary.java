@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.AbstractSpellDictio
 /**
  * Dictionary for task tags.
  *
- * @since 3.0
+ * 
  */
 public class TaskTagDictionary extends AbstractSpellDictionary implements IPropertyChangeListener {
 
@@ -92,7 +92,7 @@ public class TaskTagDictionary extends AbstractSpellDictionary implements IPrope
 	
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.AbstractSpellDictionary#stripNonLetters(java.lang.String)
-	 * @since 3.3
+	 * 
 	 */
 	protected String stripNonLetters(String word) {
 		return word;

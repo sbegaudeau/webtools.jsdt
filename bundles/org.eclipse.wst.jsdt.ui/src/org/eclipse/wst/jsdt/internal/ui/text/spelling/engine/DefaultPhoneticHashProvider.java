@@ -18,7 +18,7 @@ package org.eclipse.wst.jsdt.internal.ui.text.spelling.engine;
  * Lawrence Philips.
  * <p>
  *
- * @since 3.0
+ * 
  */
 public final class DefaultPhoneticHashProvider implements IPhoneticHashProvider {
 

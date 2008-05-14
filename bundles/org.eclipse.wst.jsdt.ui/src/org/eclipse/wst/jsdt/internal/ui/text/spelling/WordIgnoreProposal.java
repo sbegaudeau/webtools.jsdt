@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 /**
  * Proposal to ignore the word during the current editing session.
  *
- * @since 3.0
+ * 
  */
 public class WordIgnoreProposal implements IJavaCompletionProposal {
 

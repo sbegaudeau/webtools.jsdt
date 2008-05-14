@@ -33,7 +33,7 @@ import org.osgi.framework.Bundle;
 /**
  * Describes a Java editor text hover.
  *
- * @since 2.1
+ * 
  */
 public class JavaEditorTextHoverDescriptor {
 
@@ -285,7 +285,7 @@ public class JavaEditorTextHoverDescriptor {
 	 * Returns this hover descriptors configuration element.
 	 *
 	 * @return the configuration element
-	 * @since 3.0
+	 * 
 	 */
 	public IConfigurationElement getConfigurationElement() {
 		return fElement;

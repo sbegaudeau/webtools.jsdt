@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.JavaWordFinder;
 /**
  * Java element hyperlink detector.
  *
- * @since 3.1
+ * 
  */
 public class JavaElementHyperlinkDetector extends AbstractHyperlinkDetector {
 

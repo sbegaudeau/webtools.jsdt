@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
  * Note: Must be public since it is referenced from plugin.xml
  * </p>
  * 
- * @since 3.3
+ * 
  */
 public class CodeAssistFavoritesPreferencePage extends PropertyAndPreferencePage implements IWorkbenchPreferencePage {
 

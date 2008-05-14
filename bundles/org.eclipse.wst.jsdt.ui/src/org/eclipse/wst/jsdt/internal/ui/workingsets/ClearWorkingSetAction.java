@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 /**
  * Clears the selected working set in the action group's view.
  * 
- * @since 2.0
+ * 
  */
 public class ClearWorkingSetAction extends Action {
 	

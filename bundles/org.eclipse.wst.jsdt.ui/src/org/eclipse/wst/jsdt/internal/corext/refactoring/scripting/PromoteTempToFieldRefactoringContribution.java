@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.PromoteTempToFieldR
 /**
  * Refactoring contribution for the extract interface refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class PromoteTempToFieldRefactoringContribution extends JDTRefactoringContribution {
 

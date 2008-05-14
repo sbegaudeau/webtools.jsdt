@@ -35,7 +35,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
  * cases delegates it to its super class.
  * </p>
  * 
- * @since 3.2
+ * 
  */
 public class JavaNavigatorLabelProvider implements ICommonLabelProvider {
 

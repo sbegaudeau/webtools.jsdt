@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.ui.text.java.IQuickFixProcessor;
 /**
  * Quick fix processor for incorrectly spelled words.
  *
- * @since 3.0
+ * 
  */
 public class WordQuickFixProcessor implements IQuickFixProcessor {
 

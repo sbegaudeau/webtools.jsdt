@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Assert;
 /**
  * A <code>CharSequence</code> based implementation of <code>CharacterIterator</code>.
  *
- * @since 3.0
+ * 
  */
 public class SequenceCharacterIterator implements CharacterIterator {
 

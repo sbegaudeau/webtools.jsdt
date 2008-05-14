@@ -47,7 +47,7 @@ import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 /**
  * Configures Java Editor typing preferences.
  * 
- * @since 3.1
+ * 
  */
 abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlock {
 
@@ -232,7 +232,7 @@ abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlo
 	 * List of master/slave listeners when there's a dependency.
 	 * 
 	 * @see #createDependency(Button, Control)
-	 * @since 3.0
+	 * 
 	 */
 	private ArrayList fMasterSlaveListeners= new ArrayList();
 	
@@ -415,7 +415,7 @@ abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlo
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.preferences.IPreferenceConfigurationBlock#dispose()
-	 * @since 3.0
+	 * 
 	 */
 	public void dispose() {
 	}

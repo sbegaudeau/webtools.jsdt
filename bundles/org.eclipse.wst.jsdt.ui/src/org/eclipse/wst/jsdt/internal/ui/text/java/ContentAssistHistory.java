@@ -58,13 +58,13 @@ import org.xml.sax.SAXException;
 /**
  * An LRU cache for code assist.
  * 
- * @since 3.2
+ * 
  */
 public final class ContentAssistHistory {
 	/**
 	 * Persistence implementation.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private static final class ReaderWriter {
 
@@ -189,7 +189,7 @@ public final class ContentAssistHistory {
 	 * {@linkplain #put(Object, Object) put} as access. This is implemented by always removing an
 	 * element before it gets put back.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private static final class MRUMap extends LinkedHashMap {
 		private static final long serialVersionUID= 1L;
@@ -226,7 +226,7 @@ public final class ContentAssistHistory {
 	 * Most recently used variant with capped size that orders the elements by addition.
 	 * This is implemented by always removing an element before it gets added back.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private static final class MRUSet extends LinkedHashSet {
 		private static final long serialVersionUID= 1L;
@@ -262,7 +262,7 @@ public final class ContentAssistHistory {
 	/**
 	 * A ranking of the most recently selected types.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static final class RHSHistory {
 		private final LinkedHashMap fHistory;

@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 
 /**
- * Provides labels for java content assist proposals. The functionality is
+ * Provides labels for JavaScript content assist proposals. The functionality is
  * similar to the one provided by {@link org.eclipse.wst.jsdt.ui.JavaScriptElementLabels},
  * but based on signatures and {@link CompletionProposal}s.
  *
@@ -46,7 +46,7 @@ public class CompletionProposalLabelProvider {
 	/**
 	 * The completion context.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private CompletionContext fContext;
 
@@ -116,7 +116,7 @@ public class CompletionProposalLabelProvider {
 	 * @param buffer the buffer to append to
 	 * @param typeProposal the type proposal
 	 * @return the modified <code>buffer</code>
-	 * @since 3.2
+	 * 
 	 */
 	private StringBuffer appendTypeParameterList(StringBuffer buffer, CompletionProposal typeProposal) {
 		// TODO remove once https://bugs.eclipse.org/bugs/show_bug.cgi?id=85293
@@ -146,7 +146,7 @@ public class CompletionProposalLabelProvider {
 	 * 
 	 * @param typeName the type name to convert
 	 * @return the converted type name
-	 * @since 3.2
+	 * 
 	 */
     private char[] convertToVararg(char[] typeName) {
     	if (typeName == null)
@@ -169,7 +169,7 @@ public class CompletionProposalLabelProvider {
     }
 
 	/**
-	 * Returns the display string for a java type signature.
+	 * Returns the display string for a JavaScript type signature.
 	 *
 	 * @param typeSignature the type signature to create a display name for
 	 * @return the display name for <code>typeSignature</code>
@@ -300,7 +300,7 @@ public class CompletionProposalLabelProvider {
 	 * 
 	 * @param methodProposal the method proposal to display
 	 * @return the display label for the given method proposal
-	 * @since 3.2
+	 * 
 	 */
 	String createJavadocMethodProposalLabel(CompletionProposal methodProposal) {
 		StringBuffer nameBuffer= new StringBuffer();
@@ -475,7 +475,7 @@ public class CompletionProposalLabelProvider {
 	 * 
 	 * @param string 
 	 * @return <code>true</code> if the given string starts with "this."
-	 * @since 3.3
+	 * 
 	 */
 	private boolean isThisPrefix(char[] string) {
 		if (string == null || string.length < 5)
@@ -745,7 +745,7 @@ public class CompletionProposalLabelProvider {
 	 * Sets the completion context.
 	 * 
 	 * @param context the completion context
-	 * @since 3.2
+	 * 
 	 */
 	void setContext(CompletionContext context) {
 		fContext= context;

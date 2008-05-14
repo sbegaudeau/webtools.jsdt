@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.ui.search.SearchMessages;
 
 /**
  * Finds implementors of the selected element in the workspace.
- * The action is applicable to selections representing a Java interface.
+ * The action is applicable to selections representing a JavaScript interface.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -51,7 +51,7 @@ public class FindImplementorsAction extends FindAction {
 
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public FindImplementorsAction(JavaEditor editor) {
 		super(editor); 

@@ -53,7 +53,7 @@ import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingPreferenceBlock;
 /**
  * Configures Java Editor folding preferences.
  * 
- * @since 3.0
+ * 
  */
 class FoldingConfigurationBlock implements IPreferenceConfigurationBlock {
 	

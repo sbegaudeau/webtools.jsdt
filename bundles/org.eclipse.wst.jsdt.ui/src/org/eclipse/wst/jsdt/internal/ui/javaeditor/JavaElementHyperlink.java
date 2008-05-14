@@ -19,7 +19,7 @@ import org.eclipse.jface.text.hyperlink.IHyperlink;
 /**
  * Java element hyperlink.
  *
- * @since 3.1
+ * 
  */
 public class JavaElementHyperlink implements IHyperlink {
 
@@ -40,7 +40,7 @@ public class JavaElementHyperlink implements IHyperlink {
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.IHyperlink#getHyperlinkRegion()
-	 * @since 3.1
+	 * 
 	 */
 	public IRegion getHyperlinkRegion() {
 		return fRegion;
@@ -48,7 +48,7 @@ public class JavaElementHyperlink implements IHyperlink {
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.IHyperlink#open()
-	 * @since 3.1
+	 * 
 	 */
 	public void open() {
 		fOpenAction.run();
@@ -56,7 +56,7 @@ public class JavaElementHyperlink implements IHyperlink {
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.IHyperlink#getTypeLabel()
-	 * @since 3.1
+	 * 
 	 */
 	public String getTypeLabel() {
 		return null;
@@ -64,7 +64,7 @@ public class JavaElementHyperlink implements IHyperlink {
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.IHyperlink#getHyperlinkText()
-	 * @since 3.1
+	 * 
 	 */
 	public String getHyperlinkText() {
 		return null;

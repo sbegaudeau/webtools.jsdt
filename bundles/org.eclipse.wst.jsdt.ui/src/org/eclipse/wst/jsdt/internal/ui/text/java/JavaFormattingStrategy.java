@@ -29,7 +29,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 /**
  * Formatting strategy for java source code.
  *
- * @since 3.0
+ * 
  */
 public class JavaFormattingStrategy extends ContextBasedFormattingStrategy {
 

@@ -104,7 +104,7 @@ public class JavaTokenComparator implements ITokenComparator {
 	 * 
 	 * @param start of the token
 	 * @param length length of the token
-	 * @since 3.3
+	 * 
 	 */
 	private void recordTokenRange(int start, int length) {
 		fStarts[fCount]= start;
@@ -132,7 +132,7 @@ public class JavaTokenComparator implements ITokenComparator {
 	 * 
 	 * @param tokenType
 	 * @return the length of the token that start a comment
-	 * @since 3.3
+	 * 
 	 */
 	private static int getCommentStartTokenLength(int tokenType) {
 		if (tokenType == ITerminalSymbols.TokenNameCOMMENT_JAVADOC) {

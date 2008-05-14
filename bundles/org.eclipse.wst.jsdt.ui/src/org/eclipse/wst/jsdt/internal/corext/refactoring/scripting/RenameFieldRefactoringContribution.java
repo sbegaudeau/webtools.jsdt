@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameFieldProces
 /**
  * Refactoring contribution for the rename field refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class RenameFieldRefactoringContribution extends JDTRefactoringContribution {
 

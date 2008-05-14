@@ -181,7 +181,7 @@
    </extension>
 
 	<!-- content assist processors - do not change their order -->  
-	<!-- java and javadoc category -->
+	<!-- JavaScript and javadoc category -->
 	<extension
 		point="org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer"
 		id="javaTypeProposalCategory"
@@ -217,7 +217,7 @@
 			icon="$nl$/icons/full/elcl16/wordassist_co.gif"/>
 	</extension>
 	 
-	<!-- java completions -->   
+	<!-- JavaScript completions -->   
 	<extension
 		point="org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer"
 		id="JavaTypeCompletionProposalComputer">
@@ -321,7 +321,7 @@
 			class="org.eclipse.wst.jsdt.internal.ui.text.java.AlphabeticSorter"/>
 	</extension>
 	
-	<!-- commands to surface java elements given handle id encoded parameter -->
+	<!-- commands to surface JavaScript elements given handle id encoded parameter -->
 	<extension
 		point="org.eclipse.ui.commands">
 		<commandParameterType
@@ -1641,7 +1641,7 @@
       </actionSet>
    </extension>
 <!-- =========================================================================== -->
-<!-- Java Search Page                                                            -->
+<!-- JavaScript Search Page                                                            -->
 <!-- =========================================================================== -->
    <extension
          point="org.eclipse.search.searchPages">
@@ -1686,7 +1686,7 @@
    </extension>
   
 <!-- =========================================================================== -->
-<!-- Java Compare                                                                -->
+<!-- JavaScript Compare                                                                -->
 <!-- =========================================================================== -->
    <extension
          point="org.eclipse.ui.themes">
@@ -1876,9 +1876,9 @@
             id="org.eclipse.wst.jsdt.internal.ui.compare.JavaStructureDiffViewerCreator">
       </viewer>
    </extension>
-<!-- End Java Compare -->
+<!-- End JavaScript Compare -->
 <!-- =========================================================================== -->
-<!-- Java Launching and debugging                                                -->
+<!-- JavaScript Launching and debugging                                                -->
 <!-- =========================================================================== -->
    <extension
          point="org.eclipse.ui.ide.resourceFilters">
@@ -1998,7 +1998,7 @@
    </extension>
    
 <!-- =========================================================================== -->
-<!-- Java Browsing 																 -->
+<!-- JavaScript Browsing 																 -->
 <!-- =========================================================================== -->
 <!--
    <extension
@@ -2089,7 +2089,7 @@
    </extension>
 -->   
 <!-- =========================================================================== -->
-<!-- Java and Coding Action Set (Adding the source, refactor and navigate menu)  -->
+<!-- JavaScript and Coding Action Set (Adding the source, refactor and navigate menu)  -->
 <!-- =========================================================================== -->
    <extension
          point="org.eclipse.ui.actionSets">
@@ -2145,7 +2145,7 @@
 <!-- with an A_                                                                -->
 <!-- the open action set is contributed before the CodeActionSet we prefix it  -->
 <!-- Action sets are contributed after they have been sorted. To enfore that   -->
-<!-- Begin Java Open action contributions  -->
+<!-- Begin JavaScript Open action contributions  -->
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
@@ -2217,7 +2217,7 @@
          </part>
       </actionSetPartAssociation>
    </extension>
-<!-- End Java Open action contributions  -->
+<!-- End JavaScript Open action contributions  -->
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
@@ -2696,8 +2696,8 @@
          </part>
       </actionSetPartAssociation>
    </extension>
-<!-- Begin Java Search action set -->
-<!-- End Java Action Set (Adding the source, refactor and navigate menu -->
+<!-- Begin JavaScript Search action set -->
+<!-- End JavaScript Action Set (Adding the source, refactor and navigate menu -->
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
@@ -2988,7 +2988,7 @@
          </part>
       </actionSetPartAssociation>
    </extension>
-<!-- End Java contributions for Search view -->
+<!-- End JavaScript contributions for Search view -->
    <extension
          point="org.eclipse.ui.actionSetPartAssociations">
       <actionSetPartAssociation
@@ -3087,7 +3087,7 @@
       </viewerContribution>
    </extension>
 <!-- =========================================================================== -->
-<!-- Java Working Set                                                            -->
+<!-- JavaScript Working Set                                                            -->
 <!-- =========================================================================== -->
    <extension
          point="org.eclipse.ui.workingSets">

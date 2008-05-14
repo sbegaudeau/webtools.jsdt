@@ -40,7 +40,7 @@ import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 /**
  * A data structure to collect resource modifications.
  * 
- * @since 3.0
+ * 
  */
 public class ResourceModifications {
 	

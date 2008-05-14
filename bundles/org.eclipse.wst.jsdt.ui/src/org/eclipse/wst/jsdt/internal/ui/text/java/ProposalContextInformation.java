@@ -97,7 +97,7 @@ public final class ProposalContextInformation implements IContextInformation, IC
 	 * Sets the context information position.
 	 * 
 	 * @param position the new position, or -1 for unknown.
-	 * @since 3.1
+	 * 
 	 */
 	public void setContextInformationPosition(int position) {
 		fPosition= position;

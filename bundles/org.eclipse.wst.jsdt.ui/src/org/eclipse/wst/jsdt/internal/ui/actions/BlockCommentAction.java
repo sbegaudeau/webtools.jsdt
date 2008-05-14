@@ -38,7 +38,7 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 /**
  * Common block comment code.
  * 
- * @since 3.0
+ * 
  */
 public abstract class BlockCommentAction extends TextEditorAction {
 

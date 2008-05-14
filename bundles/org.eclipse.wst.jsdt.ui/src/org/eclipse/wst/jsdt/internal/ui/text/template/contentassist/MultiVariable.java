@@ -91,7 +91,7 @@ public class MultiVariable extends TemplateVariable {
 	
 	/*
 	 * @see org.eclipse.jface.text.templates.TemplateVariable#getDefaultValue()
-	 * @since 3.3
+	 * 
 	 */
 	public String getDefaultValue() {
 		return toString(fCurrentChoice);

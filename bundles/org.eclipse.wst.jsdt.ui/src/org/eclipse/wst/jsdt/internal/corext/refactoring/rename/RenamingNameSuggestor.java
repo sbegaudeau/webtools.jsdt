@@ -93,7 +93,7 @@ import com.ibm.icu.text.BreakIterator;
  * camel case substring. 
  * 
  * 
- * @since 3.2
+ * 
  * 
  */
 public class RenamingNameSuggestor {

@@ -51,7 +51,7 @@ import org.xml.sax.SAXException;
  * persistent.
  * 
  * @deprecated use TemplateStore instead
- * @since 3.0
+ * 
  */
 public class TemplateSet {
 

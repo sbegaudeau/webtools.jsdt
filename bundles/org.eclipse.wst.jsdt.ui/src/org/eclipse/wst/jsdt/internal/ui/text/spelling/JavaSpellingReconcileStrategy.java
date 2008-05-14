@@ -41,7 +41,7 @@ import org.eclipse.wst.jsdt.core.IProblemRequestor;
  * Modified to use the JavaSpellingEngine always and not consult the SpellingService of the platform. It only checks
  * to comply with the Enabled settings.
  * 
- * @since 3.1
+ * 
  */
 public class JavaSpellingReconcileStrategy implements IReconcilingStrategy, IReconcilingStrategyExtension { //extends SpellingReconcileStrategy {
 
@@ -190,7 +190,7 @@ public class JavaSpellingReconcileStrategy implements IReconcilingStrategy, IRec
 
 	/*
 	 * @see org.eclipse.ui.texteditor.spelling.SpellingReconcileStrategy#createSpellingProblemCollector()
-	 * @since 3.3
+	 * 
 	 */
 	protected ISpellingProblemCollector createSpellingProblemCollector() {
 		return new SpellingProblemCollector();
@@ -206,7 +206,7 @@ public class JavaSpellingReconcileStrategy implements IReconcilingStrategy, IRec
 	
 	/*
 	 * @see org.eclipse.ui.texteditor.spelling.SpellingReconcileStrategy#getAnnotationModel()
-	 * @since 3.3
+	 * 
 	 */
 	protected IAnnotationModel getAnnotationModel() {
 		final IDocumentProvider documentProvider= fEditor.getDocumentProvider();

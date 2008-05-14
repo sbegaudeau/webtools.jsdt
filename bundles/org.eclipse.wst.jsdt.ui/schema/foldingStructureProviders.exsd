@@ -3,7 +3,7 @@
 <schema targetNamespace="org.eclipse.wst.jsdt.ui">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.wst.jsdt.ui" id="foldingStructureProviders" name="Java Folding Structure Provider"/>
+         <meta.schema plugin="org.eclipse.wst.jsdt.ui" id="foldingStructureProviders" name="JavaScript Folding Structure Provider"/>
       </appInfo>
       <documentation>
          Contributions to this extension point define folding structures for the JavaScript editor. That is, they define the regions of a JavaScript source file that can be folded away. See &lt;code&gt;org.eclipse.jface.text.source.ProjectionViewer&lt;/code&gt; for reference.
@@ -124,7 +124,7 @@ Extensions may optionally contribute a preference block which will appear on the
          <meta.section type="implementation"/>
       </appInfo>
       <documentation>
-         &lt;code&gt;org.eclipse.wst.jsdt.ui.text.folding.DefaultJavaFoldingStructureProvider&lt;/code&gt; provides the default folding structure for the Java editor.
+         &lt;code&gt;org.eclipse.wst.jsdt.ui.text.folding.DefaultJavaFoldingStructureProvider&lt;/code&gt; provides the default folding structure for the JavaScript editor.
          &lt;code&gt;org.eclipse.wst.jsdt.internal.ui.text.folding.DefaultJavaFoldingPreferenceBlock&lt;/code&gt; provides the preference block for the default structure provider.
       </documentation>
    </annotation>

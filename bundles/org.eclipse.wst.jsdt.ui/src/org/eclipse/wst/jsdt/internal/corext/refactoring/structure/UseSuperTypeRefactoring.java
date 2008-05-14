@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 /**
  * Refactoring to replace type occurrences by a super type where possible.
  * 
- * @since 3.1
+ * 
  */
 public final class UseSuperTypeRefactoring extends ProcessorBasedRefactoring implements IScriptableRefactoring {
 

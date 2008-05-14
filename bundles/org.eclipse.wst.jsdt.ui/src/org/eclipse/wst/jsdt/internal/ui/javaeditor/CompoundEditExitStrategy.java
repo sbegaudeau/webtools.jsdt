@@ -45,7 +45,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
  * notified and the strategy is disarmed (spring-loaded).
  * </p>
  * 
- * @since 3.1
+ * 
  */
 public final class CompoundEditExitStrategy {
 	/**

@@ -40,7 +40,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.TypingRun.ChangeType;
  * Listeners are informed about the start and end of a <code>TypingRun</code>.
  * </p>
  *
- * @since 3.0
+ * 
  */
 public class TypingRunDetector {
 	/*

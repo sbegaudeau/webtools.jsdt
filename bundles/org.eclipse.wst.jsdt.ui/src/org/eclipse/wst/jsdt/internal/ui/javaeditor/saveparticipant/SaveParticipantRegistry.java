@@ -35,7 +35,7 @@ import org.eclipse.wst.jsdt.internal.ui.fix.CleanUpSaveParticipantPreferenceConf
  * <p>
  * An instance of this registry can be received through a call to {@link org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin#getSaveParticipantRegistry()}.</p>
  * 
- * @since 3.3
+ * 
  */
 public final class SaveParticipantRegistry {
 

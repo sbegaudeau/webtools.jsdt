@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
  *  Viewer sorter which sorts the Java elements like
  *  they appear in the source.
  * 
- * @since 3.2
+ * 
  */
 public class SourcePositionComparator extends ViewerComparator {
 

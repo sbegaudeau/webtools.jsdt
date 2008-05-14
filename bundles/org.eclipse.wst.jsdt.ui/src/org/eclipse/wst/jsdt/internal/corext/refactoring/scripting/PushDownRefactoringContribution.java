@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.PushDownRefact
 /**
  * Refactoring contribution for the push down refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class PushDownRefactoringContribution extends JDTRefactoringContribution {
 

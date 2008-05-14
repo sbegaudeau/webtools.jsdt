@@ -36,7 +36,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 /**
  * Partial implementation of a code creation operation.
  * 
- * @since 3.2
+ * 
  */
 public abstract class AbstractCodeCreationOperation implements IWorkspaceRunnable {
 

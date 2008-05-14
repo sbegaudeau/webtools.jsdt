@@ -46,7 +46,7 @@ public class NodeFinder extends GenericVisitor {
 	 * 
 	 * @return the result node
 	 * 
-	 * @since		2.1
+	
 	 */
 	public static ASTNode perform(ASTNode root, int start, int length) {
 		NodeFinder finder= new NodeFinder(start, length);
@@ -85,7 +85,7 @@ public class NodeFinder extends GenericVisitor {
 	 * @return the result node
 	 * @throws JavaScriptModelException if an error occurs in the Java model
 	 * 
-	 * @since		3.0
+	
 	 */
 	public static ASTNode perform(ASTNode root, int start, int length, ITypeRoot source) throws JavaScriptModelException {
 		NodeFinder finder= new NodeFinder(start, length);

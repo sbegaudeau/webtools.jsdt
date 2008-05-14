@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 /**
  * A rename refactoring which can be initialized with refactoring arguments.
  * 
- * @since 3.2
+ * 
  */
 public final class JavaRenameRefactoring extends RenameRefactoring implements IScriptableRefactoring {
 

@@ -51,7 +51,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptUI;
  * Adds unimplemented methods of a type. The action opens a dialog from which the user can
  * choose the methods to be added.
  * <p>
- * Will open the parent compilation unit in a Java editor. The result is unsaved, so the
+ * Will open the parent compilation unit in a JavaScript editor. The result is unsaved, so the
  * user can decide if the changes are acceptable.
  * <p>
  * The action is applicable to structured selections containing elements of type
@@ -256,7 +256,7 @@ public class OverrideMethodsAction extends SelectionDispatchAction {
 	 * @return returns a runnable that creates the methods stubs.
 	 * @throws IllegalArgumentException a {@link IllegalArgumentException} is thrown if the AST passed has not been created from a {@link IJavaScriptUnit}.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static IWorkspaceRunnable createRunnable(JavaScriptUnit astRoot, ITypeBinding type, IFunctionBinding[] methodToOverride, int insertPos, boolean createComments) {
 		AddUnimplementedMethodsOperation operation= new AddUnimplementedMethodsOperation(astRoot, type, methodToOverride, insertPos, true, true, false);

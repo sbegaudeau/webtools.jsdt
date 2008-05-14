@@ -47,7 +47,7 @@ import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
  * Source viewer based implementation of <code>IInformationControl</code>.
  * Displays information in a source viewer.
  *
- * @since 3.0
+ * 
  */
 public class SourceViewerInformationControl implements IInformationControl, IInformationControlExtension, DisposeListener {
 
@@ -62,29 +62,29 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 	/**
 	 * The optional status field.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private Label fStatusField;
 	/**
 	 * The separator for the optional status field.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private Label fSeparator;
 	/**
 	 * The font of the optional status text label.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private Font fStatusTextFont;
 	/**
 	 * The width size constraint.
-	 * @since 3.2
+	 * 
 	 */
 	private int fMaxWidth= SWT.DEFAULT;
 	/**
 	 * The height size constraint.
-	 * @since 3.2
+	 * 
 	 */
 	private int fMaxHeight= SWT.DEFAULT;
 	
@@ -115,7 +115,7 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 	 * @param style the additional styles for the styled text widget
 	 * @param statusFieldText the text to be used in the optional status field
 	 *                         or <code>null</code> if the status field should be hidden
-	 * @since 3.0
+	 * 
 	 */
 	public SourceViewerInformationControl(Shell parent, int shellStyle, int style, String statusFieldText) {
 		GridLayout layout;
@@ -238,7 +238,7 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 	 * @param style the additional styles for the styled text widget
 	 * @param statusFieldText the text to be used in the optional status field
 	 *                         or <code>null</code> if the status field should be hidden
-	 * @since 3.0
+	 * 
 	 */
 	public SourceViewerInformationControl(Shell parent,int style, String statusFieldText) {
 		this(parent, SWT.NO_TRIM | SWT.TOOL, style, statusFieldText);
@@ -263,7 +263,7 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 	 * @param parent the parent shell
 	 * @param statusFieldText the text to be used in the optional status field
 	 *                         or <code>null</code> if the status field should be hidden
-	 * @since 3.0
+	 * 
 	 */
 	public SourceViewerInformationControl(Shell parent, String statusFieldText) {
 		this(parent, SWT.NONE, statusFieldText);
@@ -272,7 +272,7 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 	/**
 	 * Initialize the font to the Java editor font.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private void initializeFont() {
 		Font font= JFaceResources.getFont("org.eclipse.wst.jsdt.ui.editors.textfont"); //$NON-NLS-1$
@@ -313,7 +313,7 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 
 	/**
 	 * {@inheritDoc}
-	 * @since 3.0
+	 * 
 	 */
 	public void widgetDisposed(DisposeEvent event) {
 		if (fStatusTextFont != null && !fStatusTextFont.isDisposed())

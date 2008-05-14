@@ -32,7 +32,7 @@ import org.osgi.framework.Bundle;
  * <code>org.eclipse.wst.jsdt.ui.javaCompletionProposalSorters</code> extension point. Instances are
  * immutable.
  * 
- * @since 3.2
+ * 
  */
 public final class ProposalSorterHandle {
 	/** The extension schema name of the id attribute. */

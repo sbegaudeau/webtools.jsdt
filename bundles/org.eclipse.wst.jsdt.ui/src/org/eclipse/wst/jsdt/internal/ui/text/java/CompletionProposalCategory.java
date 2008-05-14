@@ -34,7 +34,7 @@ import org.osgi.framework.Bundle;
 /**
  * Describes a category extension to the "javaCompletionProposalComputer" extension point.
  * 
- * @since 3.2
+ * 
  */
 public final class CompletionProposalCategory {
 	/** The extension schema name of the icon attribute. */

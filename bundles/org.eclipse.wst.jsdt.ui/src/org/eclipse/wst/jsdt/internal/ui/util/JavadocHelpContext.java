@@ -232,7 +232,7 @@ public class JavadocHelpContext implements IContext2 {
 	
 	/*
 	 * @see org.eclipse.help.IContext2#getTitle()
-	 * @since 3.1
+	 * 
 	 */
 	public String getTitle() {
 		return fTitle;

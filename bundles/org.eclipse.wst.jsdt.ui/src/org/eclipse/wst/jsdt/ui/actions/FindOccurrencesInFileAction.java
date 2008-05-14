@@ -84,7 +84,7 @@ public class FindOccurrencesInFileAction extends SelectionDispatchAction {
  	
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public FindOccurrencesInFileAction(JavaEditor editor) {
 		this(editor.getEditorSite());
@@ -98,7 +98,7 @@ public class FindOccurrencesInFileAction extends SelectionDispatchAction {
 	 * <code>IStructuredSelection</code>.
 	 * 
 	 * @param site the site providing context information for this action
-	 * @since 3.1
+	 * 
 	 */
 	public FindOccurrencesInFileAction(IWorkbenchSite site) {
 		super(site);

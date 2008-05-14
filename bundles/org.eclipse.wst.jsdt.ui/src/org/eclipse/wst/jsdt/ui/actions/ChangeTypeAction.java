@@ -55,7 +55,7 @@ public class ChangeTypeAction extends SelectionDispatchAction {
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call
 	 * this constructor.
-	 * @param editor the java editor
+	 * @param editor the JavaScript editor
 	 */
 	public ChangeTypeAction(JavaEditor editor) {
 		this(editor.getEditorSite());
@@ -133,7 +133,7 @@ public class ChangeTypeAction extends SelectionDispatchAction {
 
 	/**
 	 * Note: This method is for internal use only. Clients should not call this method.
-	 * @param selection the java text selection
+	 * @param selection the JavaScript text selection
 	 */
 	public void selectionChanged(JavaTextSelection selection) {
 		try {

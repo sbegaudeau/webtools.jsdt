@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.IntroduceParameterR
 /**
  * Refactoring contribution for the introduce parameter refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class IntroduceParameterRefactoringContribution extends JDTRefactoringContribution {
 

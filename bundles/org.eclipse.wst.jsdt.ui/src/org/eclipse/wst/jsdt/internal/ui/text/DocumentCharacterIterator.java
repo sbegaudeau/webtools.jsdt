@@ -27,7 +27,7 @@ import org.eclipse.jface.text.IDocument;
  * <code>CharacterIterator</code> methods as well as <code>charAt</code>may
  * return {@link CharacterIterator#DONE}.
  *
- * @since 3.0
+ * 
  */
 public class DocumentCharacterIterator implements CharacterIterator, CharSequence {
 

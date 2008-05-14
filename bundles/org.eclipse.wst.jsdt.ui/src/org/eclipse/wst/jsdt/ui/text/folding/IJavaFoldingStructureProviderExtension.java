@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.core.IJavaScriptElement;
  * functions:
  * <ul>
  * <li>collapsing of comments and members</li>
- * <li>expanding and collapsing of certain java elements</li>
+ * <li>expanding and collapsing of certain JavaScript elements</li>
  * </ul>
  * 
  *
@@ -39,7 +39,7 @@ public interface IJavaFoldingStructureProviderExtension {
 	/**
 	 * Collapses the given elements.
 	 * 
-	 * @param elements the java elements to collapse (the array and its elements must not be
+	 * @param elements the JavaScript elements to collapse (the array and its elements must not be
 	 *        modified)
 	 */
 	void collapseElements(IJavaScriptElement[] elements);
@@ -47,7 +47,7 @@ public interface IJavaFoldingStructureProviderExtension {
 	/**
 	 * Expands the given elements.
 	 * 
-	 * @param elements the java elements to expand (the array and its elements must not be modified)
+	 * @param elements the JavaScript elements to expand (the array and its elements must not be modified)
 	 */
 	void expandElements(IJavaScriptElement[] elements);
 }

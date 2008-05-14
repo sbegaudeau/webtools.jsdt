@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.ui.text.spelling.engine;
 /**
  * Ranked word proposal for quick fix and content assist.
  *
- * @since 3.0
+ * 
  */
 public class RankedWordProposal implements Comparable {
 

@@ -48,7 +48,7 @@ public class ExtractMethodAction extends SelectionDispatchAction {
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
 	 * 
-	 * @param editor the java editor
+	 * @param editor the JavaScript editor
 	 */
 	public ExtractMethodAction(JavaEditor editor) {
 		super(editor.getEditorSite());

@@ -182,7 +182,7 @@ public class JavaReconcilingStrategy implements IReconcilingStrategy, IReconcili
 	/**
 	 * Called before reconciling is started.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	public void aboutToBeReconciled() {
 		if (fIsJavaReconcilingListener)

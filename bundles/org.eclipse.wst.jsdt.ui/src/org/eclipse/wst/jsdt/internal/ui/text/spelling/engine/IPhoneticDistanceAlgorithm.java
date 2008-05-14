@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.ui.text.spelling.engine;
 /**
  * Interface of algorithms to compute the phonetic distance between two words.
  *
- * @since 3.0
+ * 
  */
 public interface IPhoneticDistanceAlgorithm {
 

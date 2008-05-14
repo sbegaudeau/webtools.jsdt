@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 /**
  * Multi state compilation unit change for composite refactorings.
  * 
- * @since 3.2
+ * 
  */
 public final class MultiStateCompilationUnitChange extends MultiStateTextFileChange {
 

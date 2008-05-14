@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
  * Helper class to check if a set of <tt>IJavaScriptElement</tt> objects can be
  * modified by an operation.
  * 
- * @since 	2.1
+ * 
  */
 public class ElementValidator {
 

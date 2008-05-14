@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameTypeParamet
 /**
  * Refactoring contribution for the rename type parameter refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class RenameTypeParameterRefactoringContribution extends JDTRefactoringContribution {
 

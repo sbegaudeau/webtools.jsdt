@@ -67,14 +67,14 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 /**
  * Helper class to adjust the visibilities of members with respect to a reference element.
  * 
- * @since 3.1
+ * 
  */
 public final class MemberVisibilityAdjustor {
 
 	/**
 	 * The visibility group category set.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static final GroupCategorySet SET_VISIBILITY_ADJUSTMENTS= new GroupCategorySet(new GroupCategory("org.eclipse.wst.jsdt.internal.corext.visibilityAdjustments", //$NON-NLS-1$
 			RefactoringCoreMessages.MemberVisibilityAdjustor_adjustments_name, RefactoringCoreMessages.MemberVisibilityAdjustor_adjustments_description));

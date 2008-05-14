@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 /**
  * Dynamic validation state change with support for refactoring descriptors.
  * 
- * @since 3.2
+ * 
  */
 public final class DynamicValidationRefactoringChange extends DynamicValidationStateChange {
 

@@ -77,7 +77,7 @@ public class RefactorActionGroup extends ActionGroup {
 	/**
 	 * Pop-up menu: id of the refactor sub menu (value <code>org.eclipse.wst.jsdt.ui.refactoring.menu</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String MENU_ID= "org.eclipse.wst.jsdt.ui.refactoring.menu"; //$NON-NLS-1$
 
@@ -85,7 +85,7 @@ public class RefactorActionGroup extends ActionGroup {
 	 * Pop-up menu: id of the reorg group of the refactor sub menu (value
 	 * <code>reorgGroup</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String GROUP_REORG= "reorgGroup"; //$NON-NLS-1$
 
@@ -93,7 +93,7 @@ public class RefactorActionGroup extends ActionGroup {
 	 * Pop-up menu: id of the type group of the refactor sub menu (value
 	 * <code>typeGroup</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String GROUP_TYPE= "typeGroup"; //$NON-NLS-1$
 
@@ -101,7 +101,7 @@ public class RefactorActionGroup extends ActionGroup {
 	 * Pop-up menu: id of the coding group of the refactor sub menu (value
 	 * <code>codingGroup</code>).
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static final String GROUP_CODING= "codingGroup"; //$NON-NLS-1$
 	
@@ -109,7 +109,7 @@ public class RefactorActionGroup extends ActionGroup {
 	 * Pop-up menu: id of the coding group 2 of the refactor sub menu (value
 	 * <code>codingGroup2</code>).
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static final String GROUP_CODING2= "codingGroup2"; //$NON-NLS-1$
 
@@ -117,7 +117,7 @@ public class RefactorActionGroup extends ActionGroup {
 	 * Pop-up menu: id of the reorg group 2 of the refactor sub menu (value
 	 * <code>reorgGroup2</code>).
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private static final String GROUP_REORG2= "reorgGroup2"; //$NON-NLS-1$ //TODO(3.3): make public
 	
@@ -125,7 +125,7 @@ public class RefactorActionGroup extends ActionGroup {
 	 * Pop-up menu: id of the type group 2 of the refactor sub menu (value
 	 * <code>typeGroup2</code>).
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private static final String GROUP_TYPE2= "typeGroup2"; //$NON-NLS-1$ //TODO(3.3): make public
 	
@@ -213,7 +213,7 @@ public class RefactorActionGroup extends ActionGroup {
 	
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the java editor
+	 * @param editor the JavaScript editor
 	 * @param groupName the group name to add the actions to
 	 * @param binary <code>true</code> if the action group is used in a binary environment, <code>false</code> otherwise
 	 */

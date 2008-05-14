@@ -185,7 +185,7 @@ abstract class LogicalPackagesProvider implements IPropertyChangeListener, IElem
 	abstract protected void processDelta(IJavaScriptElementDelta delta) throws JavaScriptModelException;
 
 	/*
-	 * @since 3.0
+	 * 
 	 */
 	protected boolean isClassPathChange(IJavaScriptElementDelta delta) {
 

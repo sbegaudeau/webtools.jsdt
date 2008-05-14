@@ -57,7 +57,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.SourceAttachmentDialo
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
- * Class that gives access to dialogs used by the Java build path page to configure classpath entries
+ * Class that gives access to dialogs used by the JavaScript build path page to configure classpath entries
  * and properties of classpath entries.
  * Static methods are provided to show dialogs for:
  * <ul>
@@ -149,7 +149,7 @@ public final class BuildPathDialogAccess {
 	 * Note that the dialog does not make any changes on the passed entry nor on the classpath that
 	 * contains it.
 	 * 
-	 * @since 3.1
+	 * 
 	 */
 	public static IIncludePathEntry configureJavadocLocation(Shell shell, IIncludePathEntry initialEntry) {
 		if (initialEntry == null) {

@@ -115,7 +115,7 @@ public class NLSElement {
 	 * 
 	 * @return		<code>true</code> if the standard resource bundle mechanism
 	 * 				is used and <code>false</code> NLSing is done the Eclipse way
-	 * @since 3.1 
+	 *  
 	 */
 	public boolean isEclipseNLS() {
 		return fIsEclipseNLS;
@@ -129,7 +129,7 @@ public class NLSElement {
 	 * </p>
 	 * 
 	 * @param accessorClassRef the accessor class reference
-	 * @since 3.1 
+	 *  
 	 */
 	public void setAccessorClassReference(AccessorClassReference accessorClassRef) {
 		Assert.isTrue(fIsEclipseNLS);
@@ -144,7 +144,7 @@ public class NLSElement {
 	 * </p>
 	 * 
 	 * @return the accessor class reference
-	 * @since 3.1 
+	 *  
 	 */
 	public AccessorClassReference getAccessorClassReference() {
 		Assert.isTrue(fIsEclipseNLS);

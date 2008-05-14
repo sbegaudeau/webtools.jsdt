@@ -35,43 +35,43 @@ public interface ITypeHierarchyViewPart extends IViewPart {
 	
 	/**
 	 * Constant used for the vertical view layout.
-	 * @since 3.3
+	 * 
 	 */
 	public static final int VIEW_LAYOUT_VERTICAL= 0;
 	
 	/**
 	 * Constant used for the horizontal view layout.
-	 * @since 3.3
+	 * 
 	 */
 	public static final int VIEW_LAYOUT_HORIZONTAL= 1;
 	
 	/**
 	 * Constant used for the single view layout (no members view)
-	 * @since 3.3
+	 * 
 	 */
 	public static final int VIEW_LAYOUT_SINGLE= 2;
 	
 	/**
 	 * Constant used for the automatic view layout.
-	 * @since 3.3
+	 * 
 	 */
 	public static final int VIEW_LAYOUT_AUTOMATIC= 3;
 	
 	/**
 	 * Constant used for the 'classic' type hierarchy mode.
-	 * @since 3.3
+	 * 
 	 */
 	public static final int HIERARCHY_MODE_CLASSIC= 2;
 	
 	/**
 	 * Constant used for the super types hierarchy mode.
-	 * @since 3.3
+	 * 
 	 */
 	public static final int HIERARCHY_MODE_SUPERTYPES= 0;
 	
 	/**
 	 * Constant used for the sub types hierarchy mode.
-	 * @since 3.3
+	 * 
 	 */
 	public static final int HIERARCHY_MODE_SUBTYPES= 1;
 
@@ -92,7 +92,7 @@ public interface ITypeHierarchyViewPart extends IViewPart {
 	 * @param element the input element of this type hierarchy view, or <code>null</code>
 	 *  to clear any input
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public void setInputElement(IJavaScriptElement element);	
 
@@ -102,7 +102,7 @@ public interface ITypeHierarchyViewPart extends IViewPart {
 	 * @return the input element, or <code>null</code> if no input element is set
 	 * @see #setInputElement(IJavaScriptElement)
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public IJavaScriptElement getInputElement();
 
@@ -111,7 +111,7 @@ public interface ITypeHierarchyViewPart extends IViewPart {
 	 * 
 	 * @param enabled If set, the members view will be locked and the selected members are shown in the hierarchy.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public void showMembersInHierarchy(boolean enabled);
 
@@ -120,7 +120,7 @@ public interface ITypeHierarchyViewPart extends IViewPart {
 	 * 
 	 * @return returns if the lock mode is enabled.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public boolean isShowMembersInHierarchy();
 	
@@ -129,7 +129,7 @@ public interface ITypeHierarchyViewPart extends IViewPart {
 	 * 
 	 * @param enabled if enabled, the hierarchy will also show the type container names
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public void showQualifiedTypeNames(boolean enabled);
 	
@@ -138,7 +138,7 @@ public interface ITypeHierarchyViewPart extends IViewPart {
 	 * 
 	 * @return returns if type names are shown with the parent container's name.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public boolean isQualifiedTypeNamesEnabled();
 	
@@ -147,7 +147,7 @@ public interface ITypeHierarchyViewPart extends IViewPart {
      * 
      * @return <code>true</code> if linking is enabled, <code>false</code> if not
      * 
-     * @since 3.3
+     * 
      */
 	public boolean isLinkingEnabled();	
 	
@@ -156,7 +156,7 @@ public interface ITypeHierarchyViewPart extends IViewPart {
      * 
      * @param enabled <code>true</code> to enable, <code>false</code> to disable
      * 
-     * @since 3.3
+     * 
      */
 	public void setLinkingEnabled(boolean enabled);	
     
@@ -166,7 +166,7 @@ public interface ITypeHierarchyViewPart extends IViewPart {
 	 * 
 	 * @param layout The layout to set
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public void setViewLayout(int layout);
 	
@@ -177,7 +177,7 @@ public interface ITypeHierarchyViewPart extends IViewPart {
 	 * 
 	 * @return The layout currently set
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public int getViewLayout();
 	
@@ -187,7 +187,7 @@ public interface ITypeHierarchyViewPart extends IViewPart {
 	 * 
 	 * @param mode The hierarchy mode to set
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public void setHierarchyMode(int mode);
 	
@@ -197,7 +197,7 @@ public interface ITypeHierarchyViewPart extends IViewPart {
 	 * 
 	 * @return The hierarchy mode currently set
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	public int getHierarchyMode();
     

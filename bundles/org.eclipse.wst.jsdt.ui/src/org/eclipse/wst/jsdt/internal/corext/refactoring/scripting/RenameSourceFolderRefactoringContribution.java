@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameSourceFolde
 /**
  * Refactoring contribution for the rename source folder refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class RenameSourceFolderRefactoringContribution extends JDTRefactoringContribution {
 

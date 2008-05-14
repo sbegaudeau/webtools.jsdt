@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
  * Adapts {@link org.eclipse.core.runtime.Preferences} to
  * {@link org.eclipse.jface.preference.IPreferenceStore}
  *
- * @since 3.0
+ * 
  */
 public class PreferencesAdapter implements IPreferenceStore {
 

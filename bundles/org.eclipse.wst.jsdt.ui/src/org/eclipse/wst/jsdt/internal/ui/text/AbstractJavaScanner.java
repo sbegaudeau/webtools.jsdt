@@ -75,21 +75,21 @@ public abstract class AbstractJavaScanner extends BufferedRuleBasedScanner {
 	 * Preference keys for boolean preferences which are <code>true</code>,
 	 * iff the corresponding token should be rendered italic.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	private String[] fPropertyNamesItalic;
 	/**
 	 * Preference keys for boolean preferences which are <code>true</code>,
 	 * iff the corresponding token should be rendered strikethrough.
 	 *
-	 * @since 3.1
+	 * 
 	 */
 	private String[] fPropertyNamesStrikethrough;
 	/**
 	 * Preference keys for boolean preferences which are <code>true</code>,
 	 * iff the corresponding token should be rendered underline.
 	 *
-	 * @since 3.1
+	 * 
 	 */
 	private String[] fPropertyNamesUnderline;
 
@@ -230,7 +230,7 @@ public abstract class AbstractJavaScanner extends BufferedRuleBasedScanner {
 	 * @param strikethroughKey the strikethrough preference key
 	 * @param underlineKey the italic preference key
 	 * @return the created text attribute
-	 * @since 3.0
+	 * 
 	 */
 	private TextAttribute createTextAttribute(String colorKey, String boldKey, String italicKey, String strikethroughKey, String underlineKey) {
 		Color color= null;
@@ -348,7 +348,7 @@ public abstract class AbstractJavaScanner extends BufferedRuleBasedScanner {
 	 *
 	 * @return the preference store.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	protected IPreferenceStore getPreferenceStore() {
 		return fPreferenceStore;

@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.MoveInnerToTop
 /**
  * Refactoring contribution for the move member type refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class MoveMemberTypeRefactoringContribution extends JDTRefactoringContribution {
 

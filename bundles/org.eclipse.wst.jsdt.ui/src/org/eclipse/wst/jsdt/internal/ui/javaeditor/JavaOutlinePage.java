@@ -839,7 +839,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 		 * This action toggles whether this Java Outline page links
 		 * its selection to the active editor.
 		 *
-		 * @since 3.0
+		 * 
 		 */
 		public class ToggleLinkingAction extends AbstractToggleLinkingAction {
 
@@ -870,7 +870,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 		/**
 		 * Empty selection provider.
 		 * 
-		 * @since 3.2
+		 * 
 		 */
 		private static final class EmptySelectionProvider implements ISelectionProvider {
 			public void addSelectionChangedListener(ISelectionChangedListener listener) {
@@ -909,12 +909,12 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 	private IPropertyChangeListener fPropertyChangeListener;
 	/**
 	 * Custom filter action group.
-	 * @since 3.0
+	 * 
 	 */
 	private CustomFiltersActionGroup fCustomFiltersActionGroup;
 	/**
 	 * Category filter action group.
-	 * @since 3.2
+	 * 
 	 */
 	private CategoryFilterActionGroup fCategoryFilterActionGroup;
 
@@ -1112,7 +1112,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 	}
 
 	/*
-	 * @since 3.2
+	 * 
 	 */
 	private void updateSelectionProvider(IPageSite site) {
 		ISelectionProvider provider= fOutlineViewer;
@@ -1369,7 +1369,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 	 * Returns whether only the contents of the top level type is to be shown.
 	 * 
 	 * @return <code>true</code> if only the contents of the top level type is to be shown.
-	 * @since 3.3
+	 * 
 	 */
 	protected final boolean isTopLevelTypeOnly() {
 		return fTopLevelTypeOnly;
@@ -1379,7 +1379,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 	 * Returns the <code>JavaOutlineViewer</code> of this view.
 	 * 
 	 * @return the {@link JavaOutlineViewer}
-	 * @since 3.3
+	 * 
 	 */
 	protected final JavaOutlineViewer getOutlineViewer() {
 		return fOutlineViewer;

@@ -64,7 +64,7 @@ public class OpenEditorActionGroup extends ActionGroup {
 	
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public OpenEditorActionGroup(JavaEditor editor) {
 		fIsEditorOwner= true;

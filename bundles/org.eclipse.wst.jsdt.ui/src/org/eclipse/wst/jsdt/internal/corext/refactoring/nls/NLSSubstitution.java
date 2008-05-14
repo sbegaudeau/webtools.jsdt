@@ -26,7 +26,7 @@ public class NLSSubstitution {
 	private int fState;
 	private String fKey;
 	/**
-	 * @since 3.1
+	 * 
 	 */
 	private String fCachedPrefixPlusKey;
 	private String fValue;

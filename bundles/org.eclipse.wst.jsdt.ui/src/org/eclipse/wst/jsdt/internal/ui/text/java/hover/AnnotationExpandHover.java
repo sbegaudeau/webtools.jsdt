@@ -52,7 +52,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.java.hover.AnnotationExpansionContr
  * and caused discouraged access warnings. It will be moved down again once
  * annotation roll-over support is provided by Platform Text.
  *   
- * @since 3.2
+ * 
  */
 public class AnnotationExpandHover implements IAnnotationHover, IAnnotationHoverExtension {
 

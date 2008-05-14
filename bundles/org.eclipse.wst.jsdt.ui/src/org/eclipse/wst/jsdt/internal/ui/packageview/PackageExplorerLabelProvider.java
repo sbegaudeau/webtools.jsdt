@@ -35,7 +35,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
  * It provides labels for the packages in hierarchical layout and in all
  * other cases delegates it to its super class.
  * </p>
- * @since 2.1
+ * 
  */
 public class PackageExplorerLabelProvider extends AppearanceAwareLabelProvider {
 	

@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
  * This is a helper class to keep a consistent design between refactorings
  * capable of creating delegates.
  * 
- * @since 3.2
+ * 
  * 
  */
 public class DelegateUIHelper {

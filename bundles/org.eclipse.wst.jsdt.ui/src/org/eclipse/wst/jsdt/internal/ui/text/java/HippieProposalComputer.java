@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
 /**
  * A computer wrapper for the hippie processor.
  * 
- * @since 3.2
+ * 
  */
 public final class HippieProposalComputer implements IJavaCompletionProposalComputer {
 	/** The wrapped processor. */

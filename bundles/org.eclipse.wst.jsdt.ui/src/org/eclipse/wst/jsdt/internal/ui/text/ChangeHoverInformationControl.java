@@ -29,7 +29,7 @@ import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 /**
  * Specialized source viewer information control used to display quick diff hovers.
  *
- * @since 3.0
+ * 
  */
 class ChangeHoverInformationControl extends SourceViewerInformationControl {
 

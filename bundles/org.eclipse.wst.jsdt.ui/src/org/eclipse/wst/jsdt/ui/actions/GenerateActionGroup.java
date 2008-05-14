@@ -64,7 +64,7 @@ public class GenerateActionGroup extends ActionGroup {
 	/**
 	 * Pop-up menu: id of the source sub menu (value <code>org.eclipse.wst.jsdt.ui.source.menu</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String MENU_ID= "org.eclipse.wst.jsdt.ui.source.menu"; //$NON-NLS-1$
 	
@@ -72,7 +72,7 @@ public class GenerateActionGroup extends ActionGroup {
 	 * Pop-up menu: id of the import group of the source sub menu (value
 	 * <code>importGroup</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String GROUP_IMPORT= "importGroup";  //$NON-NLS-1$
 	
@@ -80,7 +80,7 @@ public class GenerateActionGroup extends ActionGroup {
 	 * Pop-up menu: id of the generate group of the source sub menu (value
 	 * <code>generateGroup</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String GROUP_GENERATE= "generateGroup";  //$NON-NLS-1$
 
@@ -88,7 +88,7 @@ public class GenerateActionGroup extends ActionGroup {
 	 * Pop-up menu: id of the code group of the source sub menu (value
 	 * <code>codeGroup</code>).
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static final String GROUP_CODE= "codeGroup";  //$NON-NLS-1$
 

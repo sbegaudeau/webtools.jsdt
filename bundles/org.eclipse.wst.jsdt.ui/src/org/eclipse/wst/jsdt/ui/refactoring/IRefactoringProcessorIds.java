@@ -41,10 +41,10 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaMoveProcessor;
 public interface IRefactoringProcessorIds {
 
 	/**
-	 * Processor ID of the rename Java project processor
+	 * Processor ID of the rename JavaScript project processor
 	 * (value <code>"org.eclipse.wst.jsdt.ui.renameJavaProjectProcessor"</code>).
 	 * 
-	 * The rename Java project processor loads the following participants:
+	 * The rename JavaScript project processor loads the following participants:
 	 * <ul>
 	 *   <li>participants registered for renaming <code>IJavaScriptProject</code>.</li>
 	 *   <li>participants registered for renaming <code>IProject</code>.</li>
@@ -82,9 +82,9 @@ public interface IRefactoringProcessorIds {
 	 * 
 	 * <p>Since 3.3:</p>
 	 * 
-	 * <p>The refactoring processor moves and renames Java elements and resources.
+	 * <p>The refactoring processor moves and renames JavaScript elements and resources.
 	 * Rename package fragment participants can retrieve the new location of
-	 * Java elements and resources through the interfaces
+	 * JavaScript elements and resources through the interfaces
 	 * {@link org.eclipse.wst.jsdt.core.refactoring.IJavaScriptElementMapper} and {@link org.eclipse.ltk.core.refactoring.IResourceMapper}, which can be
 	 * retrieved from the processor using the getAdapter() method.</p>
 	 */
@@ -125,7 +125,7 @@ public interface IRefactoringProcessorIds {
 	 * 
 	 * <p>Rename type participants can retrieve information about similar declarations by casting the
 	 * RenameArguments to RenameTypeArguments. The new signatures of similar declarations
-	 * (and of other Java elements or resources) are available 
+	 * (and of other JavaScript elements or resources) are available 
 	 * through the interfaces {@link org.eclipse.wst.jsdt.core.refactoring.IJavaScriptElementMapper} and {@link org.eclipse.ltk.core.refactoring.IResourceMapper}, which can be retrieved from the 
 	 * processor using the getAdapter() method.</p>
 	 * 
@@ -167,7 +167,7 @@ public interface IRefactoringProcessorIds {
 //	 * <ul>
 //	 *   <li>participants registered for renaming <code>IField</code>.</li>
 //	 * </ul>
-//	 * @since 3.1
+//	 * 
 //	 */
 //	public static String RENAME_ENUM_CONSTANT_PROCESSOR= RenameEnumConstProcessor.IDENTIFIER;
 
@@ -210,7 +210,7 @@ public interface IRefactoringProcessorIds {
 	 * (value <code>"org.eclipse.wst.jsdt.ui.MoveStaticMemberProcessor"</code>).
 	 * 
 	 * The move static members processor loads participants registered for the
-	 * static Java element that gets moved. No support is available to participate
+	 * static JavaScript element that gets moved. No support is available to participate
 	 * in non static member moves.
 	 */
 	public static String MOVE_STATIC_MEMBERS_PROCESSOR= "org.eclipse.wst.jsdt.ui.MoveStaticMemberProcessor"; //$NON-NLS-1$
@@ -264,11 +264,11 @@ public interface IRefactoringProcessorIds {
 	 * </ul>
 	 * <p>
 	 * Use the method {@link org.eclipse.core.resources.mapping.ResourceMapping#accept(org.eclipse.core.resources.mapping.ResourceMappingContext context, org.eclipse.core.resources.IResourceVisitor visitor, org.eclipse.core.runtime.IProgressMonitor monitor)} 
-	 * to enumerate the resources which form the Java element. <code>org.eclipse.core.resources.mapping.ResourceMappingContext.LOCAL_CONTEXT</code> 
+	 * to enumerate the resources which form the JavaScript element. <code>org.eclipse.core.resources.mapping.ResourceMappingContext.LOCAL_CONTEXT</code> 
 	 * should be use as the <code>org.eclipse.core.resources.mapping.ResourceMappingContext</code> passed to the accept method.
 	 * </p>
 	 * @see org.eclipse.core.resources.mapping.ResourceMapping
-	 * @since 3.3
+	 * 
 	 */
 	public static String COPY_PROCESSOR= JavaCopyProcessor.IDENTIFIER;
 }

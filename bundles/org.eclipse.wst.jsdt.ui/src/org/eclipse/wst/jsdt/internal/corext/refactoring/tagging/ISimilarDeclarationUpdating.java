@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.tagging;
 /**
  * Interface implemented by processors able to rename similar declarations.
  * 
- * @since 3.2
+ * 
  */
 public interface ISimilarDeclarationUpdating {
 

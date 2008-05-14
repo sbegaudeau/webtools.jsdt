@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 /**
  * Helper class to get NLSed messages.
  *
- * @since 3.3
+ * 
  */
 class HTMLMessages {
 

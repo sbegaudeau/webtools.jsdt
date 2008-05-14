@@ -76,7 +76,7 @@ public class OpenExternalJavadocAction extends SelectionDispatchAction {
 	
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public OpenExternalJavadocAction(JavaEditor editor) {
 		this(editor.getEditorSite());

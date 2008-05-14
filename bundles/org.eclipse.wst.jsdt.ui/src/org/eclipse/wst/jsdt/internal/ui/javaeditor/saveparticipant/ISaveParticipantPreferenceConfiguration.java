@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Control;
  * Clients may implement this interface.
  * </p>
  * 
- * @since 3.3
+ * 
  */
 public interface ISaveParticipantPreferenceConfiguration {
 

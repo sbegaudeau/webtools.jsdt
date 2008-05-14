@@ -17,7 +17,7 @@ import org.eclipse.jface.text.templates.TemplateProposal;
 import org.eclipse.wst.jsdt.internal.ui.text.java.AbstractJavaCompletionProposal;
 
 /**
- * Comparator for java completion proposals. Completion proposals can be sorted by relevance or
+ * Comparator for JavaScript completion proposals. Completion proposals can be sorted by relevance or
  * alphabetically.
  * <p>
  * Note: this comparator imposes orderings that are inconsistent with equals.

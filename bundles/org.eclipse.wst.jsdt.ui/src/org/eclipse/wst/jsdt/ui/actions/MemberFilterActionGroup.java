@@ -54,9 +54,9 @@ public class MemberFilterActionGroup extends ActionGroup {
 	public static final int FILTER_STATIC= MemberFilter.FILTER_STATIC;
 	public static final int FILTER_FIELDS= MemberFilter.FILTER_FIELDS;
 	
-	/** @since 3.0 */
+	/**  */
 	public static final int FILTER_LOCALTYPES= MemberFilter.FILTER_LOCALTYPES;
-	/** @since 3.0 */
+	/**  */
 	public static final int ALL_FILTERS= FILTER_NONPUBLIC | FILTER_FIELDS | FILTER_STATIC | FILTER_LOCALTYPES;
 	
 	private static final String TAG_HIDEFIELDS= "hidefields"; //$NON-NLS-1$
@@ -92,7 +92,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 * @param inViewMenu if <code>true</code> the actions are added to the view
 	 * menu. If <code>false</code> they are added to the toolbar.
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public MemberFilterActionGroup(StructuredViewer viewer, String viewerId, boolean inViewMenu) {	
 		this(viewer, viewerId, inViewMenu, ALL_FILTERS);
@@ -110,7 +110,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 * <code>FILTER_STATIC</code>, <code>FILTER_FIELDS</code> and <code>FILTER_LOCALTYPES</code>
 	 * or a combination of these constants are possible values. Use <code>ALL_FILTERS</code> to select all available filters.
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public MemberFilterActionGroup(StructuredViewer viewer, String viewerId, boolean inViewMenu, int availableFilters) {	
 				
@@ -319,7 +319,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 * Adds the filter actions to the given menu manager.
 	 * 
 	 * @param menu the menu manager to which the actions are added
-	 * @since 2.1
+	 * 
 	 */
 	public void contributeToViewMenu(IMenuManager menu) {
 		if (!fInViewMenu)

@@ -100,7 +100,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 /**
  * Refactoring processor for the extract supertype refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor {
 

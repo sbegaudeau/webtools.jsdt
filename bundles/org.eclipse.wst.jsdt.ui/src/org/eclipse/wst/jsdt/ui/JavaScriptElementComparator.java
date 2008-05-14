@@ -44,7 +44,7 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.MembersOrderPreferenceCache;
 
 
 /**
- * Viewer comparator for Java elements. Ordered by element category, then by element name. 
+ * Viewer comparator for JavaScript elements. Ordered by element category, then by element name. 
  * Package fragment roots are sorted as ordered on the classpath.
  * 
  * <p>
@@ -216,7 +216,7 @@ public class JavaScriptElementComparator extends ViewerComparator {
 			}
 			return 0; // can't compare
 		}
-		// only java elements from this point
+		// only JavaScript elements from this point
 		
 		if (e1 instanceof IMember) {
 			if (fMemberOrderCache.isSortByVisibility()) {
@@ -285,7 +285,7 @@ public class JavaScriptElementComparator extends ViewerComparator {
 	}
 	
 	private String getNonJavaElementLabel(Viewer viewer, Object element) {
-		// try to use the workbench adapter for non - java resources or if not available, use the viewers label provider
+		// try to use the workbench adapter for non - JavaScript resources or if not available, use the viewers label provider
 		if (element instanceof IResource) {
 			return ((IResource) element).getName();
 		}

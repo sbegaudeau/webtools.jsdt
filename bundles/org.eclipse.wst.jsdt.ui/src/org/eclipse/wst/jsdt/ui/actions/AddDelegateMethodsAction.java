@@ -92,7 +92,7 @@ import com.ibm.icu.text.Collator;
  * which delegate methods can be generated. User is able to check or uncheck items before
  * methods are generated.
  * <p>
- * Will open the parent compilation unit in a Java editor. The result is unsaved, so the
+ * Will open the parent compilation unit in a JavaScript editor. The result is unsaved, so the
  * user can decide if the changes are acceptable.
  * <p>
  * The action is applicable to structured selections containing elements of type
@@ -529,7 +529,7 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 		}
 	}
 
-	// ---- Java Editor --------------------------------------------------------------
+	// ---- JavaScript Editor --------------------------------------------------------------
 
 	/*
 	 * (non-Javadoc) Method declared on SelectionDispatchAction

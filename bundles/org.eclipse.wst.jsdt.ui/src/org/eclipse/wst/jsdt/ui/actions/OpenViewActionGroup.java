@@ -84,7 +84,7 @@ public class OpenViewActionGroup extends ActionGroup {
 	 * @param selectionProvider the selection provider used instead of the
 	 *  page selection provider.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public OpenViewActionGroup(Page page, ISelectionProvider selectionProvider) {
 		createSiteActions(page.getSite(), selectionProvider);
@@ -110,7 +110,7 @@ public class OpenViewActionGroup extends ActionGroup {
 	 * @param selectionProvider the selection provider used instead of the
 	 *  page selection provider.
 	 *  
-	 * @since 3.2
+	 * 
 	 */
 	public OpenViewActionGroup(IViewPart part, ISelectionProvider selectionProvider) {
 		createSiteActions(part.getSite(), selectionProvider);
@@ -129,7 +129,7 @@ public class OpenViewActionGroup extends ActionGroup {
 	 * @param selectionProvider the selection provider used instead of the
 	 *  page selection provider.
 	 *  
-	 * @since 3.2
+	 * 
 	 */
 	public OpenViewActionGroup(IWorkbenchSite site, ISelectionProvider selectionProvider) {
 		createSiteActions(site, selectionProvider);
@@ -167,7 +167,7 @@ public class OpenViewActionGroup extends ActionGroup {
 	 * By default, the action is contained in the group.
 	 * 
 	 * @param enable If set, the 'Properties' action is part of this action group
-	 * @since 3.3
+	 * 
 	 */
 	public void containsOpenPropertiesAction(boolean enable) {
 		fShowOpenPropertiesAction= enable;
@@ -178,7 +178,7 @@ public class OpenViewActionGroup extends ActionGroup {
 	 * By default, the action is  contained in the group except for editors.
 	 * 
 	 * @param enable If set, the 'Show In' menu is part of this action group
-	 * @since 3.3
+	 * 
 	 */
 	public void containsShowInMenu(boolean enable) {
 		fShowShowInMenu= enable;

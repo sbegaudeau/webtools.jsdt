@@ -57,7 +57,7 @@ public abstract class CompilationUnitContext extends DocumentTemplateContext {
 	 * @param document the document
 	 * @param completionPosition the position defining the completion offset and length 
 	 * @param compilationUnit the compilation unit (may be <code>null</code>)
-	 * @since 3.2
+	 * 
 	 */
 	protected CompilationUnitContext(TemplateContextType type, IDocument document, Position completionPosition, IJavaScriptUnit compilationUnit) {
 		super(type, document, completionPosition);

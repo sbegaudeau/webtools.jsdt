@@ -22,7 +22,7 @@ import org.eclipse.ui.texteditor.IDocumentProviderExtension5;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 
 /**
- * @since 3.0
+ * 
  */
 public interface ICompilationUnitDocumentProvider extends IDocumentProvider, IDocumentProviderExtension2, IDocumentProviderExtension3, IDocumentProviderExtension5 {
 

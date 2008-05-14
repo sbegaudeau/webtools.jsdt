@@ -78,7 +78,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
  * Working set elements are presented as a Java element tree.
  * </p>
  * 
- * @since 2.0
+ * 
  */
 public class JavaWorkingSetPage extends WizardPage implements IWorkingSetPage {
 

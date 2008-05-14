@@ -176,7 +176,7 @@ public class FilterDescriptor implements Comparable, IPluginContribution {
 	 * Returns the filter's viewId.
 	 * 
 	 * @return the view ID or <code>null</code> if the filter is for all views
-	 * @since 3.0
+	 * 
 	 */
 	public String getTargetId() {
 		String tid= fElement.getAttribute(TARGET_ID_ATTRIBUTE);

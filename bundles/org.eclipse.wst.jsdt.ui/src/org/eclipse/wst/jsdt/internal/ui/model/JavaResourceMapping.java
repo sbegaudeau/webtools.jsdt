@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * Resource mapping for the java model provider.
  * 
- * @since 3.2
+ * 
  */
 public final class JavaResourceMapping extends ResourceMapping {
 

@@ -55,7 +55,7 @@ public interface IJavaAnnotation {
 	 * Returns the overlay of this annotation.
 	 *
 	 * @return the annotation's overlay
-	 * @since 3.0
+	 * 
 	 */
 	IJavaAnnotation getOverlay();
 

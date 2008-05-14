@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.sef.SelfEncapsulateField
 /**
  * Refactoring contribution for the self encapsulate field refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class SelfEncapsulateRefactoringContribution extends JDTRefactoringContribution {
 

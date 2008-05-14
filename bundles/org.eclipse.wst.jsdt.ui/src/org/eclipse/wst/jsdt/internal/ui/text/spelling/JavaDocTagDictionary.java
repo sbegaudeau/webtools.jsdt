@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.AbstractSpellDictio
 /**
  * Dictionary for Javadoc tags.
  *
- * @since 3.0
+ * 
  */
 public class JavaDocTagDictionary extends AbstractSpellDictionary implements IJavaDocTagConstants {
 
@@ -62,7 +62,7 @@ public class JavaDocTagDictionary extends AbstractSpellDictionary implements IJa
 	
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.AbstractSpellDictionary#stripNonLetters(java.lang.String)
-	 * @since 3.3
+	 * 
 	 */
 	protected String stripNonLetters(String word) {
 		return word;

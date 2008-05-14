@@ -39,7 +39,7 @@ import org.eclipse.wst.jsdt.ui.JSdocContentAccess;
 /**
  * Provides Javadoc as hover info for Java elements.
  *
- * @since 2.1
+ * 
  */
 public class JavadocHover extends AbstractJavaEditorTextHover implements IInformationProviderExtension2, ITextHoverExtension {
 
@@ -47,7 +47,7 @@ public class JavadocHover extends AbstractJavaEditorTextHover implements IInform
 	/**
 	 * Presenter control creator.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	private static final class PresenterControlCreator extends AbstractReusableInformationControlCreator {
 		/*
@@ -67,7 +67,7 @@ public class JavadocHover extends AbstractJavaEditorTextHover implements IInform
 	/**
 	 * Hover control creator.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	private static final class HoverControlCreator extends AbstractReusableInformationControlCreator {
 		/*
@@ -104,20 +104,20 @@ public class JavadocHover extends AbstractJavaEditorTextHover implements IInform
 	/**
 	 * The hover control creator.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private IInformationControlCreator fHoverControlCreator;
 	/**
 	 * The presentation control creator.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private IInformationControlCreator fPresenterControlCreator;
 
 
 	/*
 	 * @see IInformationProviderExtension2#getInformationPresenterControlCreator()
-	 * @since 3.1
+	 * 
 	 */
 	public IInformationControlCreator getInformationPresenterControlCreator() {
 		if (fPresenterControlCreator == null)
@@ -127,7 +127,7 @@ public class JavadocHover extends AbstractJavaEditorTextHover implements IInform
 
 	/*
 	 * @see ITextHoverExtension#getHoverControlCreator()
-	 * @since 3.2
+	 * 
 	 */
 	public IInformationControlCreator getHoverControlCreator() {
 		if (fHoverControlCreator == null)

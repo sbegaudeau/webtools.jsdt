@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 /**
  * Utility that indents a number of lines in a document.
  * 
- * @since 3.1
+ * 
  */
 public final class IndentUtil {
 	

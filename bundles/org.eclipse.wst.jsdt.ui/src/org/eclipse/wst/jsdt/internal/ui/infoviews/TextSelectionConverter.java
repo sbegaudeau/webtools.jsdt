@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
 /**
  * Helper class to convert text selections to Java elements.
  *
- * @since 3.0
+ * 
  */
 class TextSelectionConverter {
 

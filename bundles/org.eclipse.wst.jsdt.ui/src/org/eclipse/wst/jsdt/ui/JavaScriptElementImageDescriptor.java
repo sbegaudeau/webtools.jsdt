@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback
  * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken
  * (repeatedly) as the API evolves.
- * @since 2.0 
+ *  
  */
 public class JavaScriptElementImageDescriptor extends CompositeImageDescriptor {
 	
@@ -67,19 +67,19 @@ public class JavaScriptElementImageDescriptor extends CompositeImageDescriptor {
 	
 	/**
 	 * Flag to render the 'deprecated' adornment.
-	 * @since 3.0
+	 * 
 	 */
 	public final static int DEPRECATED= 	0x400;
 	
 	/**
 	 * Flag to render the 'volatile' adornment.
-	 * @since 3.3
+	 * 
 	 */
 	public final static int VOLATILE= 	0x800;
 	
 	/**
 	 * Flag to render the 'transient' adornment.
-	 * @since 3.3
+	 * 
 	 */
 	public final static int TRANSIENT= 	0x1000;	
 	

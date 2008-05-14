@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 /**
  * Filters synthetic members
  * 
- * @since 3.1
+ * 
  */
 public class SyntheticMembersFilter extends ViewerFilter {
 	public boolean select(Viewer viewer, Object parent, Object element) {

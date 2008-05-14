@@ -47,7 +47,7 @@ public class JavaCompletionProposal extends AbstractJavaCompletionProposal {
 	 *        the replacement string will be taken as display string.
 	 * @param relevance the relevance
 	 * @param inJavadoc <code>true</code> for a javadoc proposal
-	 * @since 3.2
+	 * 
 	 */
 	public JavaCompletionProposal(String replacementString, int replacementOffset, int replacementLength, Image image, String displayString, int relevance, boolean inJavadoc) {
 		this(replacementString, replacementOffset, replacementLength, image, displayString, relevance, inJavadoc, null);
@@ -66,7 +66,7 @@ public class JavaCompletionProposal extends AbstractJavaCompletionProposal {
 	 * @param relevance the relevance
 	 * @param inJavadoc <code>true</code> for a javadoc proposal
 	 * @param invocationContext the invocation context of this completion proposal or <code>null</code> not available
-	 * @since 3.3
+	 * 
 	 */
 	public JavaCompletionProposal(String replacementString, int replacementOffset, int replacementLength, Image image, String displayString, int relevance, boolean inJavadoc, JavaContentAssistInvocationContext invocationContext) {
 		super(invocationContext);

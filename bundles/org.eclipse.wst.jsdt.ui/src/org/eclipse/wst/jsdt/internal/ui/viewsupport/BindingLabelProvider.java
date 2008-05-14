@@ -30,7 +30,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 /**
  * Label provider to render bindings in viewers.
  * 
- * @since 3.1
+ * 
  */
 public class BindingLabelProvider extends LabelProvider {
 	

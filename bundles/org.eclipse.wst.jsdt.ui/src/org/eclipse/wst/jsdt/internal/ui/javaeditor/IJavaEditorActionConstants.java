@@ -18,14 +18,14 @@ public interface IJavaEditorActionConstants {
 	/**
 	 * ID of the action to toggle smart typing.
 	 * Value: <code>"smartTyping"</code>
-	 * @since 3.0
+	 * 
 	 */
 	public static final String TOGGLE_SMART_TYPING= "smartTyping"; //$NON-NLS-1$
 
 	/**
 	 * ID of the smart typing status item
 	 * Value: <code>"SmartTyping"</code>
-	 * @since 3.0
+	 * 
 	 */
 	public static final String STATUS_CATEGORY_SMART_TYPING= "SmartTyping"; //$NON-NLS-1$
 
@@ -36,7 +36,7 @@ public interface IJavaEditorActionConstants {
 	
 	/**
 	 * ID of the action to copy the qualified name.
-	 * @since 3.3
+	 * 
 	 */
 	public static final String COPY_QUALIFIED_NAME= "copyQualifiedName"; //$NON-NLS-1$
 }

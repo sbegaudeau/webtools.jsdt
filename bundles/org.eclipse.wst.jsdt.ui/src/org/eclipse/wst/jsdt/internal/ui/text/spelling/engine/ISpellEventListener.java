@@ -15,7 +15,7 @@ package org.eclipse.wst.jsdt.internal.ui.text.spelling.engine;
 /**
  * Interface for spell event listeners.
  *
- * @since 3.0
+ * 
  */
 public interface ISpellEventListener {
 

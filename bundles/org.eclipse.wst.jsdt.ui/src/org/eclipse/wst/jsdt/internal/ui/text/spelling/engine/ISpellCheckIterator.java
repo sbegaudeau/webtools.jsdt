@@ -16,7 +16,7 @@ import java.util.Iterator;
 /**
  * Interface for iterators used for spell checking.
  *
- * @since 3.0
+ * 
  */
 public interface ISpellCheckIterator extends Iterator {
 
@@ -45,7 +45,7 @@ public interface ISpellCheckIterator extends Iterator {
 	 * Tells whether to ignore single letters
 	 * from being checked.
 	 * 
-	 * @since 3.3
+	 * 
 	 * @param state <code>true</code> if single letters should be ignored
 	 */
 	public void setIgnoreSingleLetters(boolean state);

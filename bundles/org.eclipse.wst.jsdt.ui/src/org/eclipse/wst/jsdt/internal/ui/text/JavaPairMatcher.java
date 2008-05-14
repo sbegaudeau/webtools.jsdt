@@ -26,7 +26,7 @@ public final class JavaPairMatcher extends DefaultCharacterPairMatcher implement
 
 	/**
 	 * Stores the source version state.
-	 * @since 3.1
+	 * 
 	 */
 	private boolean fHighlightAngularBrackets= false;
 
@@ -89,7 +89,7 @@ public final class JavaPairMatcher extends DefaultCharacterPairMatcher implement
 	 * @param scanner a java heuristic scanner on <code>document</code>
 	 * @return <code>true</code> if the bracket is part of a type parameter,
 	 *         <code>false</code> otherwise
-	 * @since 3.1
+	 * 
 	 */
 	private boolean isTypeParameterBracket(int offset, IDocument document, JavaHeuristicScanner scanner) {
 		/*
@@ -131,7 +131,7 @@ public final class JavaPairMatcher extends DefaultCharacterPairMatcher implement
 	 * @param identifier the identifier to check
 	 * @return <code>true</code> if the identifier could introduce a type
 	 *         parameter list
-	 * @since 3.1
+	 * 
 	 */
 	private boolean isTypeParameterIntroducer(String identifier) {
 		return identifier.length() > 0

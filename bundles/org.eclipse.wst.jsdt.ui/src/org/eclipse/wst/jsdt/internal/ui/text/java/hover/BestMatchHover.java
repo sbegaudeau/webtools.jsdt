@@ -108,7 +108,7 @@ public class BestMatchHover extends AbstractJavaEditorTextHover implements IText
 
 	/*
 	 * @see org.eclipse.jface.text.ITextHoverExtension#getHoverControlCreator()
-	 * @since 3.0
+	 * 
 	 */
 	public IInformationControlCreator getHoverControlCreator() {
 		if (fBestHover instanceof ITextHoverExtension)
@@ -119,7 +119,7 @@ public class BestMatchHover extends AbstractJavaEditorTextHover implements IText
 
 	/*
 	 * @see org.eclipse.jface.text.information.IInformationProviderExtension2#getInformationPresenterControlCreator()
-	 * @since 3.0
+	 * 
 	 */
 	public IInformationControlCreator getInformationPresenterControlCreator() {
 		if (fBestHover instanceof IInformationProviderExtension2)

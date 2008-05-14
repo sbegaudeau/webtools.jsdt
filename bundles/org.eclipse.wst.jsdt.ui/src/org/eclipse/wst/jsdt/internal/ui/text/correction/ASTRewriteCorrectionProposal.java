@@ -29,7 +29,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
  * is overridden to provide the AST rewriter that is evaluated to the document when the
  * proposal is applied.
  * 
- * @since 3.2
+ * 
  */
 public class ASTRewriteCorrectionProposal extends CUCorrectionProposal {
 

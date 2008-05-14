@@ -96,7 +96,7 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.JavaPreferencesSettings;
  * element types like methods or fields.
  * </p>
  * 
- * @since 3.2
+ * 
  * 
  */
 public abstract class DelegateCreator {

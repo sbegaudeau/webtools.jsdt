@@ -48,7 +48,7 @@ public class JavaSpellingProblem extends SpellingProblem {
 	/**
 	 * The associated document.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	private IDocument fDocument;
 

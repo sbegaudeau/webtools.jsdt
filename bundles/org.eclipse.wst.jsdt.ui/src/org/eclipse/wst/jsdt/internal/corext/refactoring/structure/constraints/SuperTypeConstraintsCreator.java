@@ -70,7 +70,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParse
 /**
  * Type constraints creator to determine the necessary constraints to replace type occurrences by a given super type.
  * 
- * @since 3.1
+ * 
  */
 public final class SuperTypeConstraintsCreator extends HierarchicalASTVisitor {
 

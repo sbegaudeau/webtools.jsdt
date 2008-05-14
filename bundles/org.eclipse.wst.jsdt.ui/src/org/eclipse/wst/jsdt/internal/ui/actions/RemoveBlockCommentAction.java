@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 /**
  * Action that removes the enclosing comment marks from a Java block comment.
  * 
- * @since 3.0
+ * 
  */
 public class RemoveBlockCommentAction extends BlockCommentAction {
 

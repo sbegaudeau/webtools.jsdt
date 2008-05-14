@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.ui.search.QuerySpecification;
 
 /**
  * Finds declarations of the selected element in working sets.
- * The action is applicable to selections representing a Java element.
+ * The action is applicable to selections representing a JavaScript element.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -70,7 +70,7 @@ public class FindDeclarationsInWorkingSetAction extends FindDeclarationsAction {
 
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 */
 	public FindDeclarationsInWorkingSetAction(JavaEditor editor) {
 		this(editor, null);
@@ -79,7 +79,7 @@ public class FindDeclarationsInWorkingSetAction extends FindDeclarationsAction {
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
 	 * 
-	 * @param editor the Java editor
+	 * @param editor the JavaScript editor
 	 * @param workingSets the working sets to be used in the search
 	 */
 	public FindDeclarationsInWorkingSetAction(JavaEditor editor, IWorkingSet[] workingSets) {

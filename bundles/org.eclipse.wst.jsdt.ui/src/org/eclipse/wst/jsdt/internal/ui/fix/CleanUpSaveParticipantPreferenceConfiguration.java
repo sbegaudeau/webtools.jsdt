@@ -48,7 +48,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 /**
  * Preference configuration UI for the clean up save participant.
  * 
- * @since 3.3
+ * 
  */
 public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveParticipantPreferenceConfiguration {
 	

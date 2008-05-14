@@ -15,7 +15,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 /**
  * Refactoring to extract a supertype from a class.
  * 
- * @since 3.2
+ * 
  */
 public final class ExtractSupertypeRefactoring extends PullUpRefactoring {
 

@@ -41,7 +41,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
  * Spell check engine for Java source spell checking.
  *
- * @since 3.0
+ * 
  */
 public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListener {
 
@@ -54,7 +54,7 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 	/**
 	 * Caches the locales of installed dictionaries.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	private static Set fgLocalesWithInstalledDictionaries;
 
@@ -127,7 +127,7 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 	 *
 	 * @param locale the locale
 	 * @return the dictionary or <code>null</code> if none is suitable
-	 * @since 3.3
+	 * 
 	 */
 	public ISpellDictionary findDictionary(Locale locale) {
 		ISpellDictionary dictionary= (ISpellDictionary)fLocaleDictionaries.get(locale);
@@ -149,7 +149,7 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellCheckEngine#findDictionary(java.util.Locale)
-	 * @since 3.3
+	 * 
 	 */
 	public static Locale findClosestLocale(Locale locale) {
 		if (locale == null || locale.toString().length() == 0)

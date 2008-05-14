@@ -16,7 +16,7 @@ import org.eclipse.ltk.core.refactoring.model.AbstractRefactoringDescriptorResou
 /**
  * Refactoring descriptor resource mapping for the Java model provider.
  * 
- * @since 3.2
+ * 
  */
 public final class JavaRefactoringDescriptorResourceMapping extends AbstractRefactoringDescriptorResourceMapping {
 

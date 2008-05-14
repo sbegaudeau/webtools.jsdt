@@ -39,7 +39,7 @@ import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 /**
  * Finds all implement occurrences of an extended class or an implemented interface.
  * 
- * @since 3.1
+ * 
  */
 public class ImplementOccurrencesFinder implements org.eclipse.wst.jsdt.internal.ui.search.IOccurrencesFinder {
 	

@@ -14,9 +14,9 @@ import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 
 /**
  * <p>
- * Describes a Java search query. A query is described by giving a scope, a
+ * Describes a JavaScript search query. A query is described by giving a scope, a
  * scope description, what kind of match to search for (reference, declarations,
- * etc) and either a Java element or a string and what kind of element to search
+ * etc) and either a JavaScript element or a string and what kind of element to search
  * for (type, field, etc). What exactly it means to, for example, to search for
  * "references to type foo" is up to query participants. For example, a
  * participant might consider the "class" attribute of an extension in a

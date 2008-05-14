@@ -83,7 +83,7 @@ public class JavaContext extends CompilationUnitContext {
 	private CompilationUnitCompletion fCompletion;
 	/**
 	 * The list of used local names.
-	 * @since 3.3
+	 * 
 	 */
 	private Set fUsedNames= new HashSet();
 	private Map fVariables= new HashMap();
@@ -108,7 +108,7 @@ public class JavaContext extends CompilationUnitContext {
 	 * @param document the document.
 	 * @param completionPosition the position defining the completion offset and length 
 	 * @param compilationUnit the compilation unit (may be <code>null</code>).
-	 * @since 3.2
+	 * 
 	 */
 	public JavaContext(TemplateContextType type, IDocument document, Position completionPosition, IJavaScriptUnit compilationUnit) {
 		super(type, document, completionPosition, compilationUnit);
@@ -219,7 +219,7 @@ public class JavaContext extends CompilationUnitContext {
 	 * 
 	 * @param ch the character to test
 	 * @return <code>true</code> if the given character can be part of a template name
-	 * @since 3.3
+	 * 
 	 */
 	private boolean isTempalteNamePart(char ch) {
 		return !Character.isWhitespace(ch) && ch != '(' && ch != ')' && ch != '{' && ch != '}' && ch != ';';
@@ -333,7 +333,7 @@ public class JavaContext extends CompilationUnitContext {
 	 * Sorts already used locals behind any that are not yet used.
 	 * 
 	 * @param variables the variables to sort
-	 * @since 3.3
+	 * 
 	 */
 	private void arrange(Variable[] variables) {
 		Arrays.sort(variables, new Comparator() {
@@ -351,7 +351,7 @@ public class JavaContext extends CompilationUnitContext {
 	 * Returns the names of local variables matching <code>type</code>.
 	 * 
 	 * @return the names of local variables matching <code>type</code>
-	 * @since 3.3
+	 * 
 	 */
 	public Variable[] getLocalVariables(String type) {
 		Variable[] localVariables= getCompletion().findLocalVariables(type);
@@ -363,7 +363,7 @@ public class JavaContext extends CompilationUnitContext {
 	 * Returns the names of fields matching <code>type</code>.
 	 * 
 	 * @return the names of fields matching <code>type</code>
-	 * @since 3.3
+	 * 
 	 */
 	public Variable[] getFields(String type) {
 		Variable[] fields= getCompletion().findFieldVariables(type);
@@ -595,7 +595,7 @@ public class JavaContext extends CompilationUnitContext {
 	 * @param master the master variable - <code>slave</code> needs to be updated when
 	 *        <code>master</code> changes
 	 * @param slave the dependent variable
-	 * @since 3.3
+	 * 
 	 */
 	public void addDependency(MultiVariable master, MultiVariable slave) {
 		MultiVariableGuess guess= getMultiVariableGuess();

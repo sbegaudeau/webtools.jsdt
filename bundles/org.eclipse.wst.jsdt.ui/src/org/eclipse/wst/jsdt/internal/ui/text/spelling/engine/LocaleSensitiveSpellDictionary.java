@@ -18,7 +18,7 @@ import java.util.Locale;
 /**
  * Platform wide read-only locale sensitive dictionary for spell checking.
  *
- * @since 3.0
+ * 
  */
 public class LocaleSensitiveSpellDictionary extends AbstractSpellDictionary {
 

@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.IntroduceIndirectio
 /**
  * Refactoring contribution for the introduce indirection refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class IntroduceIndirectionRefactoringContribution extends JDTRefactoringContribution {
 

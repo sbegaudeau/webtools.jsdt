@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProvider;
 /**
  * Describes a contribution to the folding provider extension point.
  *
- * @since 3.0
+ * 
  */
 public final class JavaFoldingStructureProviderDescriptor {
 

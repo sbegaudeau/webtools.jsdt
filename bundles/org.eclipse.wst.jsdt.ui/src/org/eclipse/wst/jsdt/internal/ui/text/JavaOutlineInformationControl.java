@@ -74,7 +74,7 @@ import org.eclipse.wst.jsdt.ui.StandardJavaScriptElementContentProvider;
 /**
  * Show outline in light-weight control.
  *
- * @since 2.1
+ * 
  */
 public class JavaOutlineInformationControl extends AbstractInformationControl {
 
@@ -94,7 +94,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 	
 	/**
 	 * Category filter action group.
-	 * @since 3.2
+	 * 
 	 */
 	private CategoryFilterActionGroup fCategoryFilterActionGroup;
 	private String fPattern;
@@ -380,7 +380,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 
 		/*
 		 * @see org.eclipse.wst.jsdt.internal.ui.typehierarchy.AbstractHierarchyViewerSorter#getHierarchy(org.eclipse.wst.jsdt.core.IType)
-		 * @since 3.2
+		 * 
 		 */
 		protected ITypeHierarchy getHierarchy(IType type) {
 			return getSuperTypeHierarchy(type);
@@ -388,7 +388,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 
 		/*
 		 * @see org.eclipse.wst.jsdt.internal.ui.typehierarchy.AbstractHierarchyViewerSorter#isSortByDefiningType()
-		 * @since 3.2
+		 * 
 		 */
 		public boolean isSortByDefiningType() {
 			return fSortByDefiningTypeAction.isChecked();
@@ -396,7 +396,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 
 		/*
 		 * @see org.eclipse.wst.jsdt.internal.ui.typehierarchy.AbstractHierarchyViewerSorter#isSortAlphabetically()
-		 * @since 3.2
+		 * 
 		 */
 		public boolean isSortAlphabetically() {
 			return fLexicalSortingAction.isChecked();
@@ -493,7 +493,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 	/**
 	 * String matcher that can match two patterns.
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	private static class OrStringMatcher extends StringMatcher {
 		
@@ -593,7 +593,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.AbstractInformationControl#getId()
-	 * @since 3.0
+	 * 
 	 */
 	protected String getId() {
 		return "org.eclipse.wst.jsdt.internal.ui.text.QuickOutline"; //$NON-NLS-1$
@@ -675,7 +675,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 	
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.AbstractInformationControl#setMatcherString(java.lang.String, boolean)
-	 * @since 3.2
+	 * 
 	 */
 	protected void setMatcherString(String pattern, boolean update) {
 		fPattern= pattern;

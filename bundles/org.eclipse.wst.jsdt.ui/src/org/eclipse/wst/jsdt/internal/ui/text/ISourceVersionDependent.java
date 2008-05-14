@@ -15,7 +15,7 @@ package org.eclipse.wst.jsdt.internal.ui.text;
  * Mix-in for any rule that changes its behavior based on the Java source
  * version.
  *
- * @since 3.1
+ * 
  */
 public interface ISourceVersionDependent {
 

@@ -64,7 +64,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
  * Configures the Content Assist > Static Members preference page.
  * 
- * @since 3.3
+ * 
  */
 class CodeAssistFavoritesConfigurationBlock extends OptionsConfigurationBlock {
 	

@@ -72,7 +72,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
  * 	
- * @since 3.2
+ * 
  */
 final class CodeAssistAdvancedConfigurationBlock extends OptionsConfigurationBlock {
 	

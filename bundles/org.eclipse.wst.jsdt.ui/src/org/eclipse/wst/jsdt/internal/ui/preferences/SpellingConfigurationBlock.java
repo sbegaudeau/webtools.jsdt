@@ -56,7 +56,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
  * Options configuration block for spell check related settings.
  * 
- * @since 3.0
+ * 
  */
 public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 
@@ -65,7 +65,7 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 	 * Currently the spelling engine cannot return word proposals but
 	 * only correction proposals and hence this is disabled.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	private static final boolean SUPPORT_CONTENT_ASSIST_PROPOSALS= false;
 	
@@ -88,7 +88,7 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 
 	/**
 	 * The value for no platform dictionary.
-	 * @since 3.3
+	 * 
 	 */
 	private static final String PREF_VALUE_NO_LOCALE= ""; //$NON-NLS-1$
 
@@ -246,13 +246,13 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 
 	/**
 	 * All controls
-	 * @since 3.1
+	 * 
 	 */
 	private Control[] fAllControls;
 	
 	/**
 	 * All previously enabled controls
-	 * @since 3.1
+	 * 
 	 */
 	private Control[] fEnabledControls;
 	
@@ -449,7 +449,7 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 	 * 
 	 * @param composite the parent composite
 	 * @param allControls list with all controls
-	 * @since 3.3
+	 * 
 	 */
 	private void createEncodingFieldEditor(Composite composite, List allControls) {
 		Label filler= new Label(composite, SWT.NONE);
@@ -519,7 +519,7 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 	
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.preferences.OptionsConfigurationBlock#performOk()
-	 * @since 3.3
+	 * 
 	 */
 	public boolean performOk() {
 		fEncodingEditor.store();
@@ -532,7 +532,7 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 	
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.preferences.OptionsConfigurationBlock#performApply()
-	 * @since 3.3
+	 * 
 	 */
 	public boolean performApply() {
 		fEncodingEditor.store();
@@ -545,7 +545,7 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.preferences.OptionsConfigurationBlock#performDefaults()
-	 * @since 3.3
+	 * 
 	 */
 	public void performDefaults() {
 		super.performDefaults();
@@ -587,7 +587,7 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 	
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.preferences.OptionsConfigurationBlock#updateCheckBox(org.eclipse.swt.widgets.Button)
-	 * @since 3.1
+	 * 
 	 */
 	protected void updateCheckBox(Button curr) {
 		super.updateCheckBox(curr);
@@ -602,7 +602,7 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 	 * Sets the enabled state.
 	 * 
 	 * @param enabled the new state
-	 * @since 3.1
+	 * 
 	 */
 	protected void setEnabled(boolean enabled) {
 		fEncodingEditor.setEnabled(enabled, fEncodingEditorParent);

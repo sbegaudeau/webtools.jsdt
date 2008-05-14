@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * <code>org.eclipse.wst.jsdt.ui.queryParticipants</code>.
  * <p> 
  * A <code>IQueryParticipant</code> is called during the execution of a 
- * Java search query. It can report matches via an {@link ISearchRequestor} and 
+ * JavaScript search query. It can report matches via an {@link ISearchRequestor} and 
  * may contribute a {@link IMatchPresentation} to help render the elements it contributes.
  * </p>
  * <p>
@@ -34,7 +34,7 @@ public interface IQueryParticipant {
 	/**
 	 * Executes the search described by the given <code>querySpecification</code>. Matches are reported
 	 * to the given <code>requester</code>.
-	 * The interpretation of what a given Java search (e.g. "References to class Foo") means is up to the 
+	 * The interpretation of what a given JavaScript search (e.g. "References to class Foo") means is up to the 
 	 * participant.
 	 * @param requestor The requester to report matches to.
 	 * @param querySpecification The specification of the query to run.
@@ -44,8 +44,8 @@ public interface IQueryParticipant {
 	void search(ISearchRequestor requestor, QuerySpecification querySpecification, IProgressMonitor monitor) throws CoreException;
 	/**
 	 * Returns the number of units of work estimated. The returned number should be normalized such
-	 * that the number of ticks for the original Java search job is 1000. For example if the participant
-	 * uses the same amount of time as the Java search, it should return 1000, if it uses half the time,
+	 * that the number of ticks for the original JavaScript search job is 1000. For example if the participant
+	 * uses the same amount of time as the JavaScript search, it should return 1000, if it uses half the time,
 	 * it should return 500, etc.
 	 * This method is supposed to give a quick estimate of the work to be done and is assumed
 	 * to be much faster than the actual query.
@@ -54,7 +54,7 @@ public interface IQueryParticipant {
 	 */
 	int estimateTicks(QuerySpecification specification);
 	/**
-	 * Gets the UI participant responsible for handling the display of elements not known to the Java search UI.  The Java search UI knows
+	 * Gets the UI participant responsible for handling the display of elements not known to the JavaScript search UI.  The JavaScript search UI knows
 	 * elements are of type <code>IJavaScriptElement</code> and <code>IResource</code>.
 	 * A participant may return <code>null</code> if matches are only reported against elements of type <code>IResource</code> and <code>IJavaScriptElement</code>.
 	 * @return The UI participant for this query participant or <code>null</code>.

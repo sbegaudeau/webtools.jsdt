@@ -30,7 +30,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
  * The actions are currently implemented as state based
  * so that after an action is executed the label will have a selection check.
  * 
- * @since 2.1
+ * 
  */
 public class MultiActionGroup extends ActionGroup {
 	

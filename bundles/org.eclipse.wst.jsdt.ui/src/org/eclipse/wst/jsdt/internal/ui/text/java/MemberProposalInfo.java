@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 /**
  * Proposal info that computes the javadoc lazily when it is queried.
  *
- * @since 3.1
+ * 
  */
 public abstract class MemberProposalInfo extends ProposalInfo {
 	/* configuration */

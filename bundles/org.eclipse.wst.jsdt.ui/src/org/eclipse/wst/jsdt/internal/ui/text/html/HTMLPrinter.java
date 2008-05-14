@@ -287,7 +287,7 @@ public class HTMLPrinter {
 	 * @param styles CSS style definitions
 	 * @param fontData the font information to use
 	 * @return the modified style definitions
-	 * @since 3.3
+	 * 
 	 */
 	public static String convertTopLevelFont(String styles, FontData fontData) {
 		boolean bold= (fontData.getStyle() & SWT.BOLD) != 0;

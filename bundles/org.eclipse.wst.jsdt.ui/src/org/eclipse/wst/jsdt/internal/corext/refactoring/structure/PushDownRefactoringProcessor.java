@@ -95,7 +95,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 /**
  * Refactoring processor for the push down refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 

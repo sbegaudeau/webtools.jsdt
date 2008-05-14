@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 /**
  * Proposal to correct the incorrectly spelled word.
  *
- * @since 3.0
+ * 
  */
 public class WordCorrectionProposal implements IJavaCompletionProposal {
 

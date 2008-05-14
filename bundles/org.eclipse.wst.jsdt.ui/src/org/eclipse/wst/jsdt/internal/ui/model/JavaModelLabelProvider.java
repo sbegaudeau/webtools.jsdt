@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 /**
  * Label provider for Java models.
  * 
- * @since 3.2
+ * 
  */
 public final class JavaModelLabelProvider extends AppearanceAwareLabelProvider {
 

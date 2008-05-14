@@ -45,7 +45,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.StorageLabelProvider;
 
 /**
- * <code>JavaScriptElementLabels</code> provides helper methods to render names of Java elements.
+ * <code>JavaScriptElementLabels</code> provides helper methods to render names of JavaScript elements.
  * 
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback
@@ -201,7 +201,7 @@ public class JavaScriptElementLabels {
 	
 	/**
 	 * Compilation unit names are post  qualified.
-	 * e.g. <code>Vector.java - java.util</code>
+	 * e.g. <code>Vector.JavaScript - java.util</code>
 	 */	
 	public final static long CU_POST_QUALIFIED= 1L << 32;
 
@@ -242,14 +242,14 @@ public class JavaScriptElementLabels {
 	public final static long ROOT_POST_QUALIFIED= 1L << 42;	
 	
 	/**
-	 * Add root path to all elements except Package Fragment Roots and Java projects.
+	 * Add root path to all elements except Package Fragment Roots and JavaScript projects.
 	 * e.g. <code>java.lang.Vector - c:\java\lib\rt.jar</code>
 	 * Option only applies to getElementLabel
 	 */
 	public final static long APPEND_ROOT_PATH= 1L << 43;
 
 	/**
-	 * Add root path to all elements except Package Fragment Roots and Java projects.
+	 * Add root path to all elements except Package Fragment Roots and JavaScript projects.
 	 * e.g. <code>java.lang.Vector - c:\java\lib\rt.jar</code>
 	 * Option only applies to getElementLabel
 	 */
@@ -272,17 +272,17 @@ public class JavaScriptElementLabels {
 	
 	/**
 	 * Prepend first category (if any) to field.
-	 * @since 3.2 
+	 *  
 	 */
 	public final static long F_CATEGORY= 1L << 49;
 	/**
 	 * Prepend first category (if any) to method.
-	 * @since 3.2
+	 * 
 	 */
 	public final static long M_CATEGORY= 1L << 50;
 	/**
 	 * Prepend first category (if any) to type.
-	 * @since 3.2 
+	 *  
 	 */
 	public final static long T_CATEGORY= 1L << 51;
 	
@@ -290,7 +290,7 @@ public class JavaScriptElementLabels {
 	public final static long SHOW_TYPE= 1L << 52;
 	/**
 	 * Show category for all elements.
-	 * @since 3.2
+	 * 
 	 */
 	public final static long ALL_CATEGORY= new Long(JavaScriptElementLabels.F_CATEGORY | JavaScriptElementLabels.M_CATEGORY | JavaScriptElementLabels.T_CATEGORY).longValue();
 	
@@ -335,7 +335,7 @@ public class JavaScriptElementLabels {
 	/**
 	 * User-readable string for concatenating categories (e.g. " ").
 	 * XXX: to be made API post 3.2
-	 * @since 3.2
+	 * 
 	 */
 	private final static String CATEGORY_SEPARATOR_STRING= JavaUIMessages.JavaElementLabels_category_separator_string; 
 	/**
@@ -393,10 +393,10 @@ public class JavaScriptElementLabels {
 	}
 				
 	/**
-	 * Returns the label for a Java element with the flags as defined by this class.
+	 * Returns the label for a JavaScript element with the flags as defined by this class.
 	 * @param element The element to render.
 	 * @param flags The rendering flags.
-	 * @return the label of the Java element
+	 * @return the label of the JavaScript element
 	 */
 	public static String getElementLabel(IJavaScriptElement element, long flags) {
 		StringBuffer buf= new StringBuffer(60);
@@ -405,7 +405,7 @@ public class JavaScriptElementLabels {
 	}
 	
 	/**
-	 * Returns the label for a Java element with the flags as defined by this class.
+	 * Returns the label for a JavaScript element with the flags as defined by this class.
 	 * @param element The element to render.
 	 * @param flags The rendering flags.
 	 * @param buf The buffer to append the resulting label to.
@@ -1220,7 +1220,7 @@ public class JavaScriptElementLabels {
 	 * by the root's parent. Returns <code>false</code> if the given root
 	 * doesn't have an underlying resource.
 	 *
-	 * @since 3.2
+	 * 
 	 */
 	private static boolean isReferenced(IPackageFragmentRoot root) {
 		IResource resource= root.getResource();

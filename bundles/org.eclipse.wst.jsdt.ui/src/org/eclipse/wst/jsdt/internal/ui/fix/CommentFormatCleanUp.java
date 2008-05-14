@@ -86,7 +86,7 @@ public class CommentFormatCleanUp extends AbstractCleanUp {
 		StringBuffer buf= new StringBuffer();
 		buf.append("/**\n"); //$NON-NLS-1$
 		buf.append(" *A Jsdoc comment\n"); //$NON-NLS-1$
-		buf.append("* @since 2007\n"); //$NON-NLS-1$
+		buf.append("* \n"); //$NON-NLS-1$
 		buf.append(" */\n"); //$NON-NLS-1$
 		
 		return buf.toString();

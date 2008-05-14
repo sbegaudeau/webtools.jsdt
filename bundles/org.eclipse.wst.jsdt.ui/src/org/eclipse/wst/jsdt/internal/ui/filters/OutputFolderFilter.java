@@ -29,7 +29,7 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
  * are already filtered by the Java Model.
  * </p>
  * 
- * @since 3.0
+ * 
  */
 public class OutputFolderFilter extends ViewerFilter {
 	
@@ -39,7 +39,7 @@ public class OutputFolderFilter extends ViewerFilter {
 	 *
 	 * @param element the element to test 
 	 * @return <code>true</code> if element should be included
-	 * @since 3.0
+	 * 
 	 */
 	public boolean select(Viewer viewer, Object parent, Object element) {
 		if (element instanceof IFolder) {

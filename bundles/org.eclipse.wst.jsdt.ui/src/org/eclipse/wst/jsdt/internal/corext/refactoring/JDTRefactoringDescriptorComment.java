@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 /**
  * Helper class to generate a refactoring descriptor comment.
  * 
- * @since 3.2
+ * 
  */
 public final class JDTRefactoringDescriptorComment {
 

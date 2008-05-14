@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractConstantRefa
 /**
  * Refactoring contribution for the extract constant refactoring.
  * 
- * @since 3.2
+ * 
  */
 public final class ExtractConstantRefactoringContribution extends JDTRefactoringContribution {
 

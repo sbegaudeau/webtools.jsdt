@@ -26,7 +26,7 @@ public class ElementTypeResolver extends TemplateVariableResolver {
 	
 	/*
 	 * @see org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org.eclipse.jface.text.templates.TemplateVariable, org.eclipse.jface.text.templates.TemplateContext)
-	 * @since 3.3
+	 * 
 	 */
 	public void resolve(TemplateVariable variable, TemplateContext context) {
 		if (!(variable instanceof MultiVariable)) {

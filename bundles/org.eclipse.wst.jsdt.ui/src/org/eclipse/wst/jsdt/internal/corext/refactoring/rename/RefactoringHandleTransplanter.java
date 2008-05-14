@@ -33,7 +33,7 @@ import org.eclipse.wst.jsdt.core.Signature;
  * 
  * The returned handle exists in the target model state.
  * 
- * @since 3.2
+ * 
  * 
  */
 public class RefactoringHandleTransplanter {

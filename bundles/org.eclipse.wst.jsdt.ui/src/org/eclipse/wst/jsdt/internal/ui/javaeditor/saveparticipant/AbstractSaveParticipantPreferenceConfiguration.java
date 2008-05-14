@@ -37,7 +37,7 @@ public abstract class AbstractSaveParticipantPreferenceConfiguration implements 
      * </p>
      *
      * @see SaveParticipantDescriptor
-     * @since 3.3
+     * 
      */
     private static final String EDITOR_SAVE_PARTICIPANT_PREFIX= "editor_save_participant_";  //$NON-NLS-1$
 	

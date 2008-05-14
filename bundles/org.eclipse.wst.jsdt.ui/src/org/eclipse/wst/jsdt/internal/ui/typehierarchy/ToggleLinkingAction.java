@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.ui.ITypeHierarchyViewPart;
  * This action toggles whether the type hierarchy links its selection to the active
  * editor.
  * 
- * @since 2.1
+ * 
  */
 public class ToggleLinkingAction extends AbstractToggleLinkingAction {
 	

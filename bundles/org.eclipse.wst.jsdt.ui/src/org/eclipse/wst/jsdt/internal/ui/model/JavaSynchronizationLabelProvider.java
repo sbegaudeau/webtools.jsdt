@@ -33,7 +33,7 @@ import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
 /**
  * Java-aware synchronization label provider.
  * 
- * @since 3.2
+ * 
  */
 public final class JavaSynchronizationLabelProvider extends AbstractSynchronizationLabelProvider implements ITreePathLabelProvider{
 

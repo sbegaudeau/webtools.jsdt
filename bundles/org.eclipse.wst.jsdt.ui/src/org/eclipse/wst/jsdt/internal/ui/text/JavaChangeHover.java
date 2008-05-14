@@ -28,7 +28,7 @@ import org.eclipse.ui.editors.text.EditorsUI;
  * A line change hover for Java source code. Adds a custom information control creator returning a
  * source viewer with syntax coloring.
  *
- * @since 3.0
+ * 
  */
 public class JavaChangeHover extends LineChangeHover  {
 
@@ -44,7 +44,7 @@ public class JavaChangeHover extends LineChangeHover  {
 	/**
 	 * The orientation to be used by this hover.
 	 * Allowed values are: SWT#RIGHT_TO_LEFT or SWT#LEFT_TO_RIGHT
-	 * @since 3.2
+	 * 
 	 */
 	private int fOrientation;
 
@@ -83,7 +83,7 @@ public class JavaChangeHover extends LineChangeHover  {
 
 	/*
 	 * @see org.eclipse.jface.text.information.IInformationProviderExtension2#getInformationPresenterControlCreator()
-	 * @since 3.2
+	 * 
 	 */
 	public IInformationControlCreator getInformationPresenterControlCreator() {
 		return new IInformationControlCreator() {

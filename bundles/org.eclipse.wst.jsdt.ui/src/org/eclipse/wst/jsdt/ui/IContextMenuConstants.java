@@ -26,7 +26,7 @@ public interface IContextMenuConstants {
 	 * Type hierarchy view part: pop-up menu target ID for type hierarchy viewer
 	 * (value <code>"org.eclipse.wst.jsdt.ui.TypeHierarchy.typehierarchy"</code>).
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static final String TARGET_ID_HIERARCHY_VIEW= JavaScriptUI.ID_TYPE_HIERARCHY + ".typehierarchy"; //$NON-NLS-1$	
 
@@ -34,7 +34,7 @@ public interface IContextMenuConstants {
 	 * Type hierarchy view part: pop-up menu target ID for supertype hierarchy viewer
 	 * (value <code>"org.eclipse.wst.jsdt.ui.TypeHierarchy.supertypes"</code>).
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static final String TARGET_ID_SUPERTYPES_VIEW= JavaScriptUI.ID_TYPE_HIERARCHY + ".supertypes"; //$NON-NLS-1$	
 
@@ -42,7 +42,7 @@ public interface IContextMenuConstants {
 	 * Type hierarchy view part: Pop-up menu target ID for the subtype hierarchy viewer
 	 * (value <code>"org.eclipse.wst.jsdt.ui.TypeHierarchy.subtypes"</code>).
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static final String TARGET_ID_SUBTYPES_VIEW= JavaScriptUI.ID_TYPE_HIERARCHY + ".subtypes"; //$NON-NLS-1$	
 
@@ -50,7 +50,7 @@ public interface IContextMenuConstants {
 	 * Type hierarchy view part: pop-up menu target ID for the member viewer
 	 * (value <code>"org.eclipse.wst.jsdt.ui.TypeHierarchy.members"</code>).
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static final String TARGET_ID_MEMBERS_VIEW= JavaScriptUI.ID_TYPE_HIERARCHY + ".members"; //$NON-NLS-1$	
 	
@@ -123,7 +123,7 @@ public interface IContextMenuConstants {
 	 * <code>GROUP_GENERATE</code> to be more consistent with main menu
 	 * bar structure.
 	 * 
-	 * @since 2.0
+	 * 
 	 */	
 	public static final String GROUP_SOURCE=		ICommonMenuConstants.GROUP_SOURCE;
 

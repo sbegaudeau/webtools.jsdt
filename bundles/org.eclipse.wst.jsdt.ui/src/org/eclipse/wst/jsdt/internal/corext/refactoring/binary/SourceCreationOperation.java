@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
  * Operation, which run, creates source code for a list of binary package
  * fragments with attached source.
  * 
- * @since 3.2
+ * 
  */
 public class SourceCreationOperation extends AbstractCodeCreationOperation {
 

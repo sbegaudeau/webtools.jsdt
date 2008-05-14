@@ -29,7 +29,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 /**
- * @since 3.1
+ * 
  */
 public final class ProjectTemplateStore {
 	

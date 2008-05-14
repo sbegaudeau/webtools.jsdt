@@ -641,7 +641,7 @@ public class PackageExplorerPart extends ViewPart
 	 * Answers whether this part shows the packages flat or hierarchical.
 	 * @return <true> if flat layout is selected
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public boolean isFlatLayout() {
 		return fIsCurrentLayoutFlat;

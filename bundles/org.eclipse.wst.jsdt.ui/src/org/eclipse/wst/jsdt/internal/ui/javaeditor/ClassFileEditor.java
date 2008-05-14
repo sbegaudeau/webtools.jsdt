@@ -473,12 +473,12 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 	
 	/**
 	 * The copy action used when there's attached source.
-	 * @since 3.3
+	 * 
 	 */
 	private IAction fSourceCopyAction;
 	/**
 	 * The Select All action used when there's attached source.
-	 * @since 3.3
+	 * 
 	 */
 	private IAction fSelectAllAction;
 
@@ -486,7 +486,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 	 * StyledText widget used to show the disassembled code.
 	 * if there's no source.
 	 * 
-	 * @since 3.3
+	 * 
 	 */
 	private StyledText fNoSourceTextWidget;
 
@@ -584,7 +584,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 
 	/*
 	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#isEditorInputReadOnly()
-	 * @since 3.2
+	 * 
 	 */
 	public boolean isEditorInputReadOnly() {
 		return true;
@@ -654,7 +654,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 		Job job= new Job(JavaEditorMessages.OverrideIndicatorManager_intallJob) {
 			/*
 			 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-			 * @since 3.0
+			 * 
 			 */
 			protected IStatus run(IProgressMonitor monitor) {
 				JavaScriptUnit ast= JavaScriptPlugin.getDefault().getASTProvider().getAST(inputElement, ASTProvider.WAIT_YES, null);

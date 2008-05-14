@@ -19,7 +19,7 @@ import org.eclipse.jface.text.Position;
  * Position updater that takes any change in [position.offset, position.offset + position.length] as
  * belonging to the position.
  *
- * @since 3.0
+ * 
  */
 class InclusivePositionUpdater implements IPositionUpdater {
 

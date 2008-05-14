@@ -48,12 +48,12 @@ import org.eclipse.wst.jsdt.ui.dialogs.TypeSelectionExtension;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
 
 /**
- * Central access point for the Java UI plug-in (id <code>"org.eclipse.wst.jsdt.ui"</code>).
+ * Central access point for the JavaScript UI plug-in (id <code>"org.eclipse.wst.jsdt.ui"</code>).
  * This class provides static methods for:
  * <ul>
  *  <li> creating various kinds of selection dialogs to present a collection
- *       of Java elements to the user and let them make a selection.</li>
- *  <li> opening a Java editor on a compilation unit.</li> 
+ *       of JavaScript elements to the user and let them make a selection.</li>
+ *  <li> opening a JavaScript editor on a compilation unit.</li> 
  * </ul>
  * <p>
  * This class provides static methods and fields only; it is not intended to be
@@ -73,24 +73,24 @@ public final class JavaScriptUI {
 	}
 	
 	/**
-	 * The id of the Java plug-in (value <code>"org.eclipse.wst.jsdt.ui"</code>).
+	 * The id of the JavaScript plug-in (value <code>"org.eclipse.wst.jsdt.ui"</code>).
 	 */	
 	public static final String ID_PLUGIN= "org.eclipse.wst.jsdt.ui"; //$NON-NLS-1$
 	
 	/**
-	 * The id of the Java perspective
+	 * The id of the JavaScript perspective
 	 * (value <code>"org.eclipse.wst.jsdt.ui.JavaPerspective"</code>).
 	 */	
 	public static final String ID_PERSPECTIVE= 		"org.eclipse.wst.jsdt.ui.JavaPerspective"; //$NON-NLS-1$
 	
 	/**
-	 * The id of the Java hierarchy perspective
+	 * The id of the JavaScript hierarchy perspective
 	 * (value <code>"org.eclipse.wst.jsdt.ui.JavaHierarchyPerspective"</code>).
 	 */	
 	public static final String ID_HIERARCHYPERSPECTIVE= "org.eclipse.wst.jsdt.ui.JavaHierarchyPerspective"; //$NON-NLS-1$
 
 	/**
-	 * The id of the Java action set
+	 * The id of the JavaScript action set
 	 * (value <code>"org.eclipse.wst.jsdt.ui.JavaActionSet"</code>).
 	 */
 	public static final String ID_ACTION_SET= "org.eclipse.wst.jsdt.ui.JavaActionSet"; //$NON-NLS-1$
@@ -98,45 +98,45 @@ public final class JavaScriptUI {
 	public static final String ID_ACTION_SET2= "org.eclipse.wst.jsdt.ui.JavaActionSet2"; //$NON-NLS-1$
 
 	/**
-	 * The id of the Java Element Creation action set
+	 * The id of the JavaScript Element Creation action set
 	 * (value <code>"org.eclipse.wst.jsdt.ui.JavaElementCreationActionSet"</code>).
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static final String ID_ELEMENT_CREATION_ACTION_SET= "org.eclipse.wst.jsdt.ui.JavaElementCreationActionSet"; //$NON-NLS-1$
 	
 	/**
-	 * The id of the Java Coding action set
+	 * The id of the JavaScript Coding action set
 	 * (value <code>"org.eclipse.wst.jsdt.ui.CodingActionSet"</code>).
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static final String ID_CODING_ACTION_SET= "org.eclipse.wst.jsdt.ui.CodingActionSet"; //$NON-NLS-1$
 
 	/**
-	 * The id of the Java action set for open actions
+	 * The id of the JavaScript action set for open actions
 	 * (value <code>"org.eclipse.wst.jsdt.ui.A_OpenActionSet"</code>).
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static final String ID_OPEN_ACTION_SET= "org.eclipse.wst.jsdt.ui.A_OpenActionSet"; //$NON-NLS-1$
 
 	/**
-	 * The id of the Java Search action set
+	 * The id of the JavaScript Search action set
 	 * (value <code>org.eclipse.wst.jsdt.ui.SearchActionSet"</code>).
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static final String ID_SEARCH_ACTION_SET= "org.eclipse.wst.jsdt.ui.SearchActionSet"; //$NON-NLS-1$
 	
 	/**
-	 * The editor part id of the editor that presents Java compilation units
+	 * The editor part id of the editor that presents JavaScript compilation units
 	 * (value <code>"org.eclipse.wst.jsdt.ui.CompilationUnitEditor"</code>).
 	 */	
 	public static final String ID_CU_EDITOR=			"org.eclipse.wst.jsdt.ui.CompilationUnitEditor"; //$NON-NLS-1$
 	
 	/**
-	 * The editor part id of the editor that presents Java binary class files
+	 * The editor part id of the editor that presents JavaScript binary class files
 	 * (value <code>"org.eclipse.wst.jsdt.ui.ClassFileEditor"</code>).
 	 */
 	public static final String ID_CF_EDITOR=			"org.eclipse.wst.jsdt.ui.ClassFileEditor"; //$NON-NLS-1$
@@ -185,7 +185,7 @@ public final class JavaScriptUI {
 	 *
 	 * @see org.eclipse.ui.IWorkbenchPage#findView(java.lang.String)
 	 * @see org.eclipse.ui.IWorkbenchPage#showView(java.lang.String)
-	 * @since 3.0
+	 * 
 	 */ 
 	public static final String ID_SOURCE_VIEW=	"org.eclipse.wst.jsdt.ui.SourceView"; //$NON-NLS-1$
 	
@@ -195,52 +195,52 @@ public final class JavaScriptUI {
 	 *
 	 * @see org.eclipse.ui.IWorkbenchPage#findView(java.lang.String)
 	 * @see org.eclipse.ui.IWorkbenchPage#showView(java.lang.String)
-	 * @since 3.0
+	 * 
 	 */ 
 	public static final String ID_JAVADOC_VIEW=	"org.eclipse.wst.jsdt.ui.JavadocView"; //$NON-NLS-1$
 	
 	/**
-	 * The id of the Java Browsing Perspective
+	 * The id of the JavaScript Browsing Perspective
 	 * (value <code>"org.eclipse.wst.jsdt.ui.JavaBrowsingPerspective"</code>).
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static String ID_BROWSING_PERSPECTIVE= "org.eclipse.wst.jsdt.ui.JavaBrowsingPerspective"; //$NON-NLS-1$
 
 	/**
-	 * The view part id of the Java Browsing Projects view
+	 * The view part id of the JavaScript Browsing Projects view
 	 * (value <code>"org.eclipse.wst.jsdt.ui.ProjectsView"</code>).
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static String ID_PROJECTS_VIEW= "org.eclipse.wst.jsdt.ui.ProjectsView"; //$NON-NLS-1$
 
 	/**
-	 * The view part id of the Java Browsing Packages view
+	 * The view part id of the JavaScript Browsing Packages view
 	 * (value <code>"org.eclipse.wst.jsdt.ui.PackagesView"</code>).
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static String ID_PACKAGES_VIEW= "org.eclipse.wst.jsdt.ui.PackagesView"; //$NON-NLS-1$
 
 	/**
-	 * The view part id of the Java Browsing Types view
+	 * The view part id of the JavaScript Browsing Types view
 	 * (value <code>"org.eclipse.wst.jsdt.ui.TypesView"</code>).
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static String ID_TYPES_VIEW= "org.eclipse.wst.jsdt.ui.TypesView"; //$NON-NLS-1$
 
 	/**
-	 * The view part id of the Java Browsing Members view
+	 * The view part id of the JavaScript Browsing Members view
 	 * (value <code>"org.eclipse.wst.jsdt.ui.MembersView"</code>).
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static String ID_MEMBERS_VIEW= "org.eclipse.wst.jsdt.ui.MembersView"; //$NON-NLS-1$
 
 	/**
-	 * Returns the shared images for the Java UI.
+	 * Returns the shared images for the JavaScript UI.
 	 *
 	 * @return the shared images manager
 	 */
@@ -252,13 +252,13 @@ public final class JavaScriptUI {
 	}
 	 
 	/**
-	 * Creates a selection dialog that lists all packages of the given Java project.
+	 * Creates a selection dialog that lists all packages of the given JavaScript project.
 	 * The caller is responsible for opening the dialog with <code>Window.open</code>,
 	 * and subsequently extracting the selected package (of type
 	 * <code>IPackageFragment</code>) via <code>SelectionDialog.getResult</code>.
 	 * 
 	 * @param parent the parent shell of the dialog to be created
-	 * @param project the Java project
+	 * @param project the JavaScript project
 	 * @param style flags defining the style of the dialog; the valid flags are:
 	 *   <code>IJavaScriptElementSearchConstants.CONSIDER_BINARIES</code>, indicating that 
 	 *   packages from binary package fragment roots should be included in addition
@@ -272,7 +272,7 @@ public final class JavaScriptUI {
 	 * @return a new selection dialog
 	 * @exception JavaScriptModelException if the selection dialog could not be opened
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static SelectionDialog createPackageDialog(Shell parent, IJavaScriptProject project, int style, String filter) throws JavaScriptModelException {
 		Assert.isTrue((style | IJavaScriptElementSearchConstants.CONSIDER_BINARIES | IJavaScriptElementSearchConstants.CONSIDER_REQUIRED_PROJECTS) ==
@@ -308,7 +308,7 @@ public final class JavaScriptUI {
 	}
 	
 	/**
-	 * Creates a selection dialog that lists all packages of the given Java search scope.
+	 * Creates a selection dialog that lists all packages of the given JavaScript search scope.
 	 * The caller is responsible for opening the dialog with <code>Window.open</code>,
 	 * and subsequently extracting the selected package (of type
 	 * <code>IPackageFragment</code>) via <code>SelectionDialog.getResult</code>.
@@ -324,7 +324,7 @@ public final class JavaScriptUI {
 	 * is required.
 	 * @return a new selection dialog
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static SelectionDialog createPackageDialog(Shell parent, IRunnableContext context, IJavaScriptSearchScope scope, 
 			boolean multipleSelection, boolean removeDuplicates, String filter) {
@@ -338,13 +338,13 @@ public final class JavaScriptUI {
 	}
 	
 	/**
-	 * Creates a selection dialog that lists all packages of the given Java project.
+	 * Creates a selection dialog that lists all packages of the given JavaScript project.
 	 * The caller is responsible for opening the dialog with <code>Window.open</code>,
 	 * and subsequently extracting the selected package (of type
 	 * <code>IPackageFragment</code>) via <code>SelectionDialog.getResult</code>.
 	 * 
 	 * @param parent the parent shell of the dialog to be created
-	 * @param project the Java project
+	 * @param project the JavaScript project
 	 * @param style flags defining the style of the dialog; the valid flags are:
 	 *   <code>IJavaScriptElementSearchConstants.CONSIDER_BINARIES</code>, indicating that 
 	 *   packages from binary package fragment roots should be included in addition
@@ -374,7 +374,7 @@ public final class JavaScriptUI {
 	 * @return a new selection dialog
 	 * @exception JavaScriptModelException if the selection dialog could not be opened
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static SelectionDialog createPackageDialog(Shell parent, IPackageFragmentRoot root, String filter) throws JavaScriptModelException {
 		IJavaScriptSearchScope scope= SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {root});
@@ -407,7 +407,7 @@ public final class JavaScriptUI {
 	 * @param parent the parent shell of the dialog to be created
 	 * @param context the runnable context used to show progress when the dialog
 	 *   is being populated
-	 * @param project the Java project
+	 * @param project the JavaScript project
 	 * @param style flags defining the style of the dialog; the only valid values are
 	 *   <code>IJavaScriptElementSearchConstants.CONSIDER_CLASSES</code>,
 	 *   <code>IJavaScriptElementSearchConstants.CONSIDER_INTERFACES</code>, 
@@ -486,7 +486,7 @@ public final class JavaScriptUI {
 	 * 
 	 * @exception JavaScriptModelException if the selection dialog could not be opened
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static SelectionDialog createTypeDialog(Shell parent, IRunnableContext context, IJavaScriptSearchScope scope, int style, boolean multipleSelection, String filter) throws JavaScriptModelException {
 		return createTypeDialog(parent, context, scope, style, multipleSelection, filter, null);
@@ -523,7 +523,7 @@ public final class JavaScriptUI {
 	 * 
 	 * @exception JavaScriptModelException if the selection dialog could not be opened
 	 * 
-	 * @since 3.2
+	 * 
 	 */
 	public static SelectionDialog createTypeDialog(Shell parent, IRunnableContext context, IJavaScriptSearchScope scope, int style, 
 			boolean multipleSelection, String filter, TypeSelectionExtension extension) throws JavaScriptModelException {
@@ -555,9 +555,9 @@ public final class JavaScriptUI {
 
 
 	/**
-	 * Opens an editor on the given Java element in the active page. Valid elements are all Java elements that are {@link ISourceReference}.
+	 * Opens an editor on the given JavaScript element in the active page. Valid elements are all JavaScript elements that are {@link ISourceReference}.
  	 * For elements inside a compilation unit or class file, the parent is opened in the editor is opened and the element revealed.
- 	 * If there already is an open Java editor for the given element, it is returned.
+ 	 * If there already is an open JavaScript editor for the given element, it is returned.
 	 *
 	 * @param element the input element; either a compilation unit 
 	 *   (<code>IJavaScriptUnit</code>) or a class file (<code>IClassFile</code>) or source references inside.
@@ -571,9 +571,9 @@ public final class JavaScriptUI {
 	}
 	
 	/**
-	 * Opens an editor on the given Java element in the active page. Valid elements are all Java elements that are {@link ISourceReference}.
+	 * Opens an editor on the given JavaScript element in the active page. Valid elements are all JavaScript elements that are {@link ISourceReference}.
  	 * For elements inside a compilation unit or class file, the parent is opened in the editor is opened.
- 	 * If there already is an open Java editor for the given element, it is returned.
+ 	 * If there already is an open JavaScript editor for the given element, it is returned.
 	 *
 	 * @param element the input element; either a compilation unit 
 	 *   (<code>IJavaScriptUnit</code>) or a class file (<code>IClassFile</code>) or source references inside.
@@ -583,7 +583,7 @@ public final class JavaScriptUI {
 	 * file was opened in an external editor.
 	 * @exception PartInitException if the editor could not be initialized or no workbench page is active
 	 * @exception JavaScriptModelException if this element does not exist or if an exception occurs while accessing its underlying resource
-	 * @since 3.3
+	 * 
 	 */
 	public static IEditorPart openInEditor(IJavaScriptElement element, boolean activate, boolean reveal) throws JavaScriptModelException, PartInitException {
 		if (!(element instanceof ISourceReference)) {
@@ -597,7 +597,7 @@ public final class JavaScriptUI {
 	}	
 
 	/** 
-	 * Reveals the given java element  in the given editor. If the element is not an instance
+	 * Reveals the given JavaScript element  in the given editor. If the element is not an instance
 	 * of <code>ISourceReference</code> this method result in a NOP. If it is a source
 	 * reference no checking is done if the editor displays a compilation unit or class file that 
 	 * contains the source reference element. The editor simply reveals the source range 
@@ -606,27 +606,27 @@ public final class JavaScriptUI {
 	 * @param part the editor displaying a compilation unit or class file
 	 * @param element the element to be revealed
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public static void revealInEditor(IEditorPart part, IJavaScriptElement element) {
 		EditorUtility.revealInEditor(part, element);
 	}
 	 
 	/**
-	 * Returns the working copy manager for the Java UI plug-in.
+	 * Returns the working copy manager for the JavaScript UI plug-in.
 	 *
-	 * @return the working copy manager for the Java UI plug-in
+	 * @return the working copy manager for the JavaScript UI plug-in
 	 */
 	public static IWorkingCopyManager getWorkingCopyManager() {
 		return JavaScriptPlugin.getDefault().getWorkingCopyManager();
 	}
 
 	/**
-	 * Returns the Java element wrapped by the given editor input.
+	 * Returns the JavaScript element wrapped by the given editor input.
 	 *
 	 * @param editorInput the editor input
-	 * @return the Java element wrapped by <code>editorInput</code> or <code>null</code> if none
-	 * @since 3.2
+	 * @return the JavaScript element wrapped by <code>editorInput</code> or <code>null</code> if none
+	 * 
 	 */
 	public static IJavaScriptElement getEditorInputJavaElement(IEditorInput editorInput) {
 		// Performance: check working copy manager first: this is faster
@@ -638,12 +638,12 @@ public final class JavaScriptUI {
 	}
 
 	/**
-	 * Returns the DocumentProvider used for Java compilation units.
+	 * Returns the DocumentProvider used for JavaScript compilation units.
 	 *
-	 * @return the DocumentProvider for Java compilation units.
+	 * @return the DocumentProvider for JavaScript compilation units.
 	 * 
 	 * @see IDocumentProvider
-	 * @since 2.0
+	 * 
 	 */
 	public static IDocumentProvider getDocumentProvider() {
 		return JavaScriptPlugin.getDefault().getCompilationUnitDocumentProvider();
@@ -659,14 +659,14 @@ public final class JavaScriptUI {
 	 * @throws IllegalArgumentException Thrown when the entry is <code>null</code> or not of kind
 	 * {@link IIncludePathEntry#CPE_LIBRARY} or {@link IIncludePathEntry#CPE_VARIABLE}.
 	 * 
-	 * @since 3.1
+	 * 
 	 */	
 	public static URL getLibraryJSdocLocation(IIncludePathEntry entry) {
 		return JavaDocLocations.getLibraryJavadocLocation(entry);
 	}
 	
 	/**
-	 * Sets the Javadoc location for a Java project. This location is used for
+	 * Sets the Javadoc location for a JavaScript project. This location is used for
 	 * all types located in the project's source folders.
 	 * 
 	 * @param project the project
@@ -674,21 +674,21 @@ public final class JavaScriptUI {
 	 * a file 'package-list'. <code>null</code> clears the current documentation
 	 * location.
 	 * 
-	 * @since 2.1
+	 * 
 	 */
 	public static void setProjectJSdocLocation(IJavaScriptProject project, URL url) {
 		JavaDocLocations.setProjectJavadocLocation(project, url);
 	}
 
 	/**
-	 * Returns the Javadoc location for a Java project or <code>null</code> if no
+	 * Returns the Javadoc location for a JavaScript project or <code>null</code> if no
 	 * location is available. This location is used for all types located in the project's
 	 * source folders.
 	 * 
 	 * @param project the project
-	 * @return the Javadoc location for a Java project or <code>null</code>
+	 * @return the Javadoc location for a JavaScript project or <code>null</code>
 	 * 
-	 * @since 2.1
+	 * 
 	 */	
 	public static URL getProjectJSdocLocation(IJavaScriptProject project) {
 		return JavaDocLocations.getProjectJavadocLocation(project);
@@ -704,7 +704,7 @@ public final class JavaScriptUI {
 	 * @return the base location
 	 * @throws JavaScriptModelException thrown when the element can not be accessed
 	 * 
-	 * @since 2.0
+	 * 
 	 */		
 	public static URL getJSdocBaseLocation(IJavaScriptElement element) throws JavaScriptModelException {	
 		return JavaDocLocations.getJavadocBaseLocation(element);
@@ -724,14 +724,14 @@ public final class JavaScriptUI {
 	 * @return the Javadoc URL for the element
 	 * @throws JavaScriptModelException thrown when the element can not be accessed
 	 * 
-	 * @since 2.0
+	 * 
 	 */		
 	public static URL getJSdocLocation(IJavaScriptElement element, boolean includeAnchor) throws JavaScriptModelException {
 		return JavaDocLocations.getJavadocLocation(element, includeAnchor);
 	}
 	
 	/**
-	 * Returns the transfer instance used to copy/paste Java elements to
+	 * Returns the transfer instance used to copy/paste JavaScript elements to
 	 * and from the clipboard. Objects managed by this transfer instance
 	 * are of type <code>IJavaScriptElement[]</code>. So to access data from the
 	 * clipboard clients should use the following code snippet:
@@ -749,21 +749,21 @@ public final class JavaScriptUI {
 	 *     new Transfer[] { JavaScriptUI.getJavaElementClipboardTransfer() } );
 	 * </pre>
 	 * 
-	 * @return returns the transfer object used to copy/paste Java elements
+	 * @return returns the transfer object used to copy/paste JavaScript elements
 	 *  to and from the clipboard
 	 * 
-	 * @since 3.0
+	 * 
 	 */
 	public static Transfer getJavaElementClipboardTransfer() {
 		return JavaElementTransfer.getInstance();
 	}
 	
 	/**
-	 * Returns the color manager the Java UI plug-in which is used to manage
+	 * Returns the color manager the JavaScript UI plug-in which is used to manage
 	 * any Java-specific colors needed for such things like syntax highlighting.
 	 *
-	 * @return the color manager to be used for Java text viewers
-	 * @since 3.2
+	 * @return the color manager to be used for JavaScript text viewers
+	 * 
 	 */
 	public static IColorManager getColorManager() {
 		return JavaScriptPlugin.getDefault().getJavaTextTools().getColorManager();

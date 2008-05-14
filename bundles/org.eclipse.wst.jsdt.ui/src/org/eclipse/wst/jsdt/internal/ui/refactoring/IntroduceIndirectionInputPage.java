@@ -45,7 +45,7 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.JavaTypeComple
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 
 /**
- * @since 3.2
+ * 
  */
 public class IntroduceIndirectionInputPage extends UserInputWizardPage {
 

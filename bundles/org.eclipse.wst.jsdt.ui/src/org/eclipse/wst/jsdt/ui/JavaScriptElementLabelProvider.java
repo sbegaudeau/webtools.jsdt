@@ -17,10 +17,10 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.StorageLabelProvider;
 
 /**
- * Standard label provider for Java elements.
- * Use this class when you want to present the Java elements in a viewer.
+ * Standard label provider for JavaScript elements.
+ * Use this class when you want to present the JavaScript elements in a viewer.
  * <p>
- * The implementation also handles non-Java elements by forwarding the requests to the
+ * The implementation also handles non-JavaScript elements by forwarding the requests to the
  * <code>IWorkbenchAdapter</code> of the element.
  * </p>
  * <p>
@@ -98,7 +98,7 @@ public class JavaScriptElementLabelProvider extends LabelProvider {
 	 * should be rendered qualified.
 	 * Examples: <code>java.lang.String</code>, <code>java.util.Vector.size()</code>
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public final static int SHOW_QUALIFIED=				0x400;
 
@@ -107,7 +107,7 @@ public class JavaScriptElementLabelProvider extends LabelProvider {
 	 * should be rendered qualified.The qualification is appended.
 	 * Examples: <code>String - java.lang</code>, <code>size() - java.util.Vector</code>
 	 * 
-	 * @since 2.0
+	 * 
 	 */
 	public final static int SHOW_POST_QUALIFIED=	0x800;	
 	
@@ -137,7 +137,7 @@ public class JavaScriptElementLabelProvider extends LabelProvider {
 	 * Creates a new label provider with <code>SHOW_DEFAULT</code> flag.
 	 *
 	 * @see #SHOW_DEFAULT
-	 * @since 2.0
+	 * 
 	 */
 	public JavaScriptElementLabelProvider() {
 		this(SHOW_DEFAULT);

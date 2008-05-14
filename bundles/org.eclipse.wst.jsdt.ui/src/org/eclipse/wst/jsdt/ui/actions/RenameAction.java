@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.RenameJavaElementAct
 import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.RenameResourceAction;
 
 /**
- * Renames a Java element or workbench resource.
+ * Renames a JavaScript element or workbench resource.
  * <p>
  * Action is applicable to selections containing elements of type
  * <code>IJavaScriptElement</code> or <code>IResource</code>.
@@ -63,7 +63,7 @@ public class RenameAction extends SelectionDispatchAction {
 	
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
-	 * @param editor the java editor
+	 * @param editor the JavaScript editor
 	 */
 	public RenameAction(JavaEditor editor) {
 		this(editor.getEditorSite());

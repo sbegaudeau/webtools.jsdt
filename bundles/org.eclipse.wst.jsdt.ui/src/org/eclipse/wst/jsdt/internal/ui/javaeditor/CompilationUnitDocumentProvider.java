@@ -339,7 +339,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 
 			/*
 			 * @see org.eclipse.jface.text.quickassist.IQuickFixableAnnotation#setQuickFixable(boolean)
-			 * @since 3.2
+			 * 
 			 */
 			public void setQuickFixable(boolean state) {
 				fIsQuickFixable= state;
@@ -348,7 +348,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 
 			/*
 			 * @see org.eclipse.jface.text.quickassist.IQuickFixableAnnotation#isQuickFixableStateSet()
-			 * @since 3.2
+			 * 
 			 */
 			public boolean isQuickFixableStateSet() {
 				return fIsQuickFixableStateSet;
@@ -356,7 +356,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 
 			/*
 			 * @see org.eclipse.jface.text.quickassist.IQuickFixableAnnotation#isQuickFixable()
-			 * @since 3.2
+			 * 
 			 */
 			public boolean isQuickFixable() {
 				Assert.isTrue(isQuickFixableStateSet());
@@ -727,7 +727,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 
 			/*
 			 * @see IProblemRequestorExtension#setIsHandlingTemporaryProblems(boolean)
-			 * @since 3.1
+			 * 
 			 */
 			public void setIsHandlingTemporaryProblems(boolean enable) {
 				if (fIsHandlingTemporaryProblems != enable) {
@@ -855,7 +855,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 	private GlobalAnnotationModelListener fGlobalAnnotationModelListener;
 	/**
 	 * Element information of all connected elements with a fake CU but no file info.
-	 * @since 3.2
+	 * 
 	 */
 	private final Map fFakeCUMapForMissingInfo= new HashMap();
 
@@ -958,7 +958,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 	 * @param element the element
 	 * @param setContents tells whether to read and set the contents to the new CU
 	 * @return the fake compilation unit
-	 * @since 3.2
+	 * 
 	 */
 	private IJavaScriptUnit createFakeCompiltationUnit(Object element, boolean setContents) {
 		if (element instanceof IStorageEditorInput)
@@ -974,7 +974,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 	 * @param editorInput the storage editor input
 	 * @param setContents tells whether to read and set the contents to the new CU
 	 * @return the fake compilation unit
-	 * @since 3.2
+	 * 
 	 */
 	private IJavaScriptUnit createFakeCompiltationUnit(IStorageEditorInput editorInput, boolean setContents) {
 		try {
@@ -992,7 +992,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 			WorkingCopyOwner woc= new WorkingCopyOwner() {
 				/*
 				 * @see org.eclipse.wst.jsdt.core.WorkingCopyOwner#createBuffer(org.eclipse.wst.jsdt.core.IJavaScriptUnit)
-				 * @since 3.2
+				 * 
 				 */
 				public IBuffer createBuffer(IJavaScriptUnit workingCopy) {
 					return new DocumentAdapter(workingCopy, documentPath);
@@ -1060,7 +1060,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 	 *
 	 * @param editorInput the URI editor input
 	 * @return the fake compilation unit
-	 * @since 3.3
+	 * 
 	 */
 	private IJavaScriptUnit createFakeCompiltationUnit(IURIEditorInput editorInput) {
 		try {
@@ -1073,7 +1073,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 			WorkingCopyOwner woc= new WorkingCopyOwner() {
 				/*
 				 * @see org.eclipse.wst.jsdt.core.WorkingCopyOwner#createBuffer(org.eclipse.wst.jsdt.core.IJavaScriptUnit)
-				 * @since 3.2
+				 * 
 				 */
 				public IBuffer createBuffer(IJavaScriptUnit workingCopy) {
 					return new DocumentAdapter(workingCopy, path);
@@ -1105,7 +1105,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 	 * 
 	 * @param path the path to match
 	 * @return the matching Java project or <code>null</code>
-	 * @since 3.2
+	 * 
 	 */
 	private IJavaScriptProject findJavaProject(IPath path) {
 		if (path == null)
@@ -1150,7 +1150,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 	
 	/*
 	 * @see org.eclipse.ui.editors.text.TextFileDocumentProvider#connect(java.lang.Object)
-	 * @since 3.2
+	 * 
 	 */
 	public void connect(Object element) throws CoreException {
 		super.connect(element);
@@ -1179,7 +1179,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 	
 	/*
 	 * @see org.eclipse.ui.editors.text.TextFileDocumentProvider#getAnnotationModel(java.lang.Object)
-	 * @since 3.2
+	 * 
 	 */
 	public IAnnotationModel getAnnotationModel(Object element) {
 		IAnnotationModel model= super.getAnnotationModel(element);
@@ -1199,7 +1199,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 	
 	/*
 	 * @see org.eclipse.ui.editors.text.TextFileDocumentProvider#disconnect(java.lang.Object)
-	 * @since 3.2
+	 * 
 	 */
 	public void disconnect(Object element) {
 		CompilationUnitInfo info= (CompilationUnitInfo)fFakeCUMapForMissingInfo.get(element);
@@ -1479,7 +1479,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
      * @param monitor the progress monitor
      * @throws CoreException 
      * @see IPostSaveListener
-     * @since 3.3
+     * 
      */
 	protected void notifyPostSaveListeners(final IJavaScriptUnit unit, final CompilationUnitInfo info, final IProgressMonitor monitor) throws CoreException {
 		final IBuffer buffer= unit.getBuffer();

@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
  * Determines all markers for the given line and collects, concatenates, and formats
  * returns their messages in HTML.
  *
- * @since 3.2
+ * 
  */
 public class HTMLAnnotationHover extends DefaultAnnotationHover {
 

@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 /**
  * NLS hyperlink detector.
  *
- * @since 3.1
+ * 
  */
 public class NLSKeyHyperlinkDetector extends AbstractHyperlinkDetector {
 

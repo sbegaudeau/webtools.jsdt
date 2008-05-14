@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 /**
  * Image provider for {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.OverrideIndicatorManager.OverrideIndicator} annotations.
  *
- * @since 3.0
+ * 
  */
 public class OverrideIndicatorImageProvider implements IAnnotationImageProvider {
 

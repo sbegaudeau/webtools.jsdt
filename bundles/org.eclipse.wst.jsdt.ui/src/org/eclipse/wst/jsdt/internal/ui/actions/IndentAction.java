@@ -53,7 +53,7 @@ import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
  * 
  * @see org.eclipse.wst.jsdt.internal.ui.text.JavaHeuristicScanner
  * @see org.eclipse.wst.jsdt.internal.ui.text.JavaIndenter
- * @since 3.0
+ * 
  */
 public class IndentAction extends TextEditorAction {
 	
@@ -295,7 +295,7 @@ public class IndentAction extends TextEditorAction {
 	 * @param partition the javadoc partition
 	 * @return the indent, or <code>null</code> if not computable
 	 * @throws BadLocationException
-	 * @since 3.1
+	 * 
 	 */
 	private String computeJavadocIndent(IDocument document, int line, JavaHeuristicScanner scanner, ITypedRegion partition) throws BadLocationException {
 		if (line == 0) // impossible - the first line is never inside a javadoc comment
@@ -397,7 +397,7 @@ public class IndentAction extends TextEditorAction {
 	 * Returns <code>true</code> if empty lines should be indented, false otherwise.
 	 * 
 	 * @return <code>true</code> if empty lines should be indented, false otherwise
-	 * @since 3.2
+	 * 
 	 */
 	private boolean indentEmptyLines() {
 		return DefaultCodeFormatterConstants.TRUE.equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_INDENT_EMPTY_LINES));
@@ -408,7 +408,7 @@ public class IndentAction extends TextEditorAction {
 	 * 
 	 * @param key the key of the preference
 	 * @return the value of the preference
-	 * @since 3.1
+	 * 
 	 */
 	private String getCoreFormatterOption(String key) {
 		IJavaScriptProject project= getJavaProject();
@@ -424,7 +424,7 @@ public class IndentAction extends TextEditorAction {
 	 * @param key the key of the preference
 	 * @param def the default value
 	 * @return the value of the preference
-	 * @since 3.1
+	 * 
 	 */
 	private int getCoreFormatterOption(String key, int def) {
 		try {
@@ -440,7 +440,7 @@ public class IndentAction extends TextEditorAction {
 	 * 
 	 * @return the <code>IJavaScriptProject</code> of the current editor input, or
 	 *         <code>null</code> if it cannot be found
-	 * @since 3.1
+	 * 
 	 */
 	private IJavaScriptProject getJavaProject() {
 		ITextEditor editor= getTextEditor();

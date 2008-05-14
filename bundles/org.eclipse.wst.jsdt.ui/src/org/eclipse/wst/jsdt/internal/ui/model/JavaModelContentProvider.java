@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.ui.StandardJavaScriptElementContentProvider;
 /**
  * Content provider for Java models.
  * 
- * @since 3.2
+ * 
  */
 public final class JavaModelContentProvider extends StandardJavaScriptElementContentProvider {
 

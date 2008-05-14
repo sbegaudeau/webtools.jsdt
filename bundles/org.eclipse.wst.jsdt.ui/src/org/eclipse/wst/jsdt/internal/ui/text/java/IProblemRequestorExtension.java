@@ -38,14 +38,14 @@ public interface IProblemRequestorExtension {
 	 * a sequence is active, multiple peering calls of <code>beginReporting</code> and
 	 * <code>endReporting</code> can appear.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	void beginReportingSequence();
 
 	/**
 	 * Informs the problem requestor that the sequence of reportings has been finished.
 	 *
-	 * @since 3.0
+	 * 
 	 */
 	void endReportingSequence();
 
@@ -53,7 +53,7 @@ public interface IProblemRequestorExtension {
 	 * Tells the problem requestor to handle temporary problems.
 	 *
 	 * @param enable <code>true</code> if temporary problems are handled
-	 * @since 3.1
+	 * 
 	 */
 	void setIsHandlingTemporaryProblems(boolean enable);
 }

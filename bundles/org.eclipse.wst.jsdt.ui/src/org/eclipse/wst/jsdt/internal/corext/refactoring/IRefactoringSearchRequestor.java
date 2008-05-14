@@ -15,7 +15,7 @@ import org.eclipse.wst.jsdt.core.search.SearchMatch;
 /**
  * Interface for search requestors used in conjunction with {@link org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringSearchEngine2}.
  * 
- * @since 3.1
+ * 
  */
 public interface IRefactoringSearchRequestor {
 

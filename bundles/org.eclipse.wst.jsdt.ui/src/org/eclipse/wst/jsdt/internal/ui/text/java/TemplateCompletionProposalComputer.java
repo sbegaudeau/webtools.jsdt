@@ -35,7 +35,7 @@ import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
 /**
  * 
- * @since 3.2
+ * 
  */
 public final class TemplateCompletionProposalComputer implements IJavaCompletionProposalComputer {
 	
