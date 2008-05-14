@@ -20,13 +20,30 @@ import org.eclipse.core.runtime.IPath;
  */
 public interface LibraryLocation {
 
+	/**
+	 * @param name
+	 * @return path to the given library name
+	 */
 	public String getLibraryPath(String name);
 
+	/**
+	 * @return a list of files in the library
+	 */
 	public char[][] getLibraryFileNames();
 
+	/**
+	 * @return relative path within the plugin library files are stored
+	 */
 	public IPath getLibraryPathInPlugin();
 
+	/**
+	 * @return working location to store library files.
+	 */
 	public IPath getWorkingLibPath();
 
+	/**
+	 * @param name
+	 * @return  path to the given library name
+	 */
 	public String getLibraryPath(char[] name);
 }
