@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Reference" link_to="toc.xml#jsf_dev_reference"> 
+	<topic label="API Reference" href="html/api_reference/overview-summary.html">
+		<link toc="javadoctoc.xml" />
+	</topic>
+	<!--
+	<topic label="Extension Points Reference" href="html/extpts_reference/index.html">
+		<link toc="topics_ExtPoint_Reference.xml" />
+	</topic>
+	
+	-->
+</toc>

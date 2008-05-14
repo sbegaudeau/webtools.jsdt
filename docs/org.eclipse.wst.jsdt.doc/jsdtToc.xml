@@ -62,10 +62,13 @@
 		<topic href="contributing/library.html"
 			label="Contributing to Libraries" />
 	</topic>
-
+	
+	<topic label="Reference">
+		<link toc="tocreference.xml" />
+	</topic>
 
 	<topic label="Legal info and Credits" href="legal/index.html">
 		<anchor id="Legal" />
 	</topic>
-	
+
 </toc>

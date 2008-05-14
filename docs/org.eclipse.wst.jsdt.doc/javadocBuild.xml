@@ -116,7 +116,7 @@
 		</copy>
 		<javadoc 
         	access="public" 
-    		additionalparam="-breakiterator -tag model:X -tag generated:X -tag ordered:X"
+    		additionalparam="-J-Xmx512m -breakiterator -tag model:X -tag generated:X -tag ordered:X"
 			author="false" 
 			classpath="${classpath}" 
 			destdir="${outputDir}/html/api_reference" 
