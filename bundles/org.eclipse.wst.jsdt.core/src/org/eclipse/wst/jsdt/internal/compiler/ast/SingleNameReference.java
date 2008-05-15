@@ -428,12 +428,7 @@ public int nullStatus(FlowInfo flowInfo) {
 		// for code gen, harm the restrictiveFlag
 		constant = Constant.NotAConstant;
 
-		if (this.actualReceiverType != null) {
-			this.binding = scope.getField(this.actualReceiverType, token, this);
-		} else {
-			this.actualReceiverType = scope.enclosingSourceType();
-			this.binding = scope.getBinding(token, (Binding.TYPE|Binding.METHOD | bits)  & RestrictiveFlagMASK, this, true /*resolve*/);
-		}
+		this.binding=findBinding(scope);
 		if (define && this.binding instanceof ProblemBinding)
 		{
 			LocalDeclaration localDeclaration = new LocalDeclaration(this.token,this.sourceEnd,this.sourceEnd);
@@ -533,6 +528,15 @@ public int nullStatus(FlowInfo flowInfo) {
 
 		// error scenarii
 		return this.resolvedType = this.reportError(scope);
+	}
+
+	public Binding findBinding(BlockScope scope) {
+		if (this.actualReceiverType != null) {
+			return scope.getField(this.actualReceiverType, token, this);
+		} else {
+			this.actualReceiverType = scope.enclosingSourceType();
+			return  scope.getBinding(token, (Binding.TYPE|Binding.METHOD | bits)  & RestrictiveFlagMASK, this, true /*resolve*/);
+		}
 	}
 
 	public void traverse(ASTVisitor visitor, BlockScope scope) {

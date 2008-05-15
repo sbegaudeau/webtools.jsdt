@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IFieldReference;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
@@ -354,9 +355,19 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 
 	}
 
-	this.receiverType = receiver.resolveType(scope);
+	char [] possibleTypeName = Util.getTypeName( this );
+	boolean receiverDefined=true;
+   // if this could be a qualified type name, first check if receiver is defined, and if not look up as type name
+	if (possibleTypeName!=null && receiver instanceof SingleNameReference)
+	{
+		Binding receiverBinding = ((SingleNameReference)receiver).findBinding(scope);
+		if (receiverBinding==null || !receiverBinding.isValidBinding())
+			receiverDefined=false;
+		this.receiverType=null;
+	}
+	if (receiverDefined)
+	  this.receiverType = receiver.resolveType(scope);
 	if (this.receiverType == null) {
-		char [] possibleTypeName = Util.getTypeName( this );
 		Binding possibleTypeBinding =null;
 		if (possibleTypeName!=null)
 		   possibleTypeBinding = scope.getBinding( possibleTypeName, Binding.TYPE  & RestrictiveFlagMASK, this, true /*resolve*/);
@@ -561,6 +572,14 @@ public char [][] asQualifiedName()
 			return null;
 	}
 	return (char [][])list.toArray(new char[list.size()][]);
+}
+
+public IExpression getReceiver() {
+	return receiver;
+}
+
+public char[] getToken() {
+	return token;
 }
 
 }
