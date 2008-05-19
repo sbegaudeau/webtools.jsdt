@@ -83,14 +83,14 @@ public class StringLiteral extends Expression {
 		super(ast);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final Object internalGetSetObjectProperty(SimplePropertyDescriptor property, boolean get, Object value) {
@@ -106,14 +106,14 @@ public class StringLiteral extends Expression {
 		return super.internalGetSetObjectProperty(property, get, value);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return STRING_LITERAL;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -123,7 +123,7 @@ public class StringLiteral extends Expression {
 		return result;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -131,7 +131,7 @@ public class StringLiteral extends Expression {
 		return matcher.match(this, other);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -192,7 +192,7 @@ public class StringLiteral extends Expression {
 		postValueChange(ESCAPED_VALUE_PROPERTY);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * This method is a copy of setEscapedValue(String) that doesn't do any validation.
 	 */
 	void internalSetEscapedValue(String token) {
@@ -330,7 +330,7 @@ public class StringLiteral extends Expression {
 		b.append("\""); // closing delimiter //$NON-NLS-1$
 		setEscapedValue(b.toString());
 	}
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -338,7 +338,7 @@ public class StringLiteral extends Expression {
 		return size;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

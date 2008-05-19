@@ -81,14 +81,14 @@ public class BooleanLiteral extends Expression {
 		super(ast);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean internalGetSetBooleanProperty(SimplePropertyDescriptor property, boolean get, boolean newValue) {
@@ -104,14 +104,14 @@ public class BooleanLiteral extends Expression {
 		return super.internalGetSetBooleanProperty(property, get, newValue);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return BOOLEAN_LITERAL;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -121,7 +121,7 @@ public class BooleanLiteral extends Expression {
 		return result;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -129,7 +129,7 @@ public class BooleanLiteral extends Expression {
 		return matcher.match(this, other);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -161,14 +161,14 @@ public class BooleanLiteral extends Expression {
 		postValueChange(BOOLEAN_VALUE_PROPERTY);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return BASE_NODE_SIZE + 1 * 4;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

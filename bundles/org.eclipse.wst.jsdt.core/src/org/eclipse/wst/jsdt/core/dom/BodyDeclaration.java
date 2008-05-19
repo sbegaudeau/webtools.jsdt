@@ -17,10 +17,8 @@ import java.util.List;
 /**
  * Abstract base class of all AST nodes that represent body declarations
  * that may appear in the body of some kind of class or interface declaration,
- * including anonymous class declarations, enumeration declarations, and
- * enumeration constant declarations.
+ * including anonymous class declarations.
  * <p>
- * For JLS2:
  * <pre>
  * BodyDeclaration:
  *		ClassDeclaration
@@ -29,24 +27,10 @@ import java.util.List;
  * 		ConstructorDeclaration
  * 		FieldDeclaration
  * 		Initializer
- * </pre>
- * For JLS3, a number of new node types were introduced:
- * <pre>
- * BodyDeclaration:
- *		ClassDeclaration
- *		InterfaceDeclaration
- *		EnumDeclaration
- *		FunctionDeclaration
- * 		ConstructorDeclaration
- * 		FieldDeclaration
- * 		Initializer
- *		EnumConstantDeclaration
- *		AnnotationTypeDeclaration
- *		AnnotationTypeMemberDeclaration
  * </pre>
  * </p>
  * <p>
- * All types of body declarations carry modifiers (and annotations), although they differ in
+ * All types of body declarations carry modifiers, although they differ in
  * which modifiers are allowed. Most types of body declarations can carry a
  * doc comment; Initializer is the only ones that does not. The source range
  * for body declarations always includes the doc comment if present.
@@ -73,7 +57,7 @@ public abstract class BodyDeclaration extends ProgramElement {
 
 	/**
 	 * The extended modifiers (element type: <code>IExtendedModifier</code>).
-	 * Null in JLS2. Added in JLS3; defaults to an empty list
+	 *  defaults to an empty list
 	 * (see constructor).
 	 *
 	 */
@@ -81,7 +65,7 @@ public abstract class BodyDeclaration extends ProgramElement {
 
 	/**
 	 * Returns structural property descriptor for the "modifiers" property
-	 * of this node as used in JLS2.
+	 * of this node.
 	 *
 	 * @return the property descriptor
 	 */
@@ -89,7 +73,7 @@ public abstract class BodyDeclaration extends ProgramElement {
 
 	/**
 	 * Returns structural property descriptor for the "modifiers" property
-	 * of this node as used in JLS3.
+	 * of this node.
 	 *
 	 * @return the property descriptor
 	 */
@@ -97,7 +81,7 @@ public abstract class BodyDeclaration extends ProgramElement {
 
 	/**
 	 * Returns structural property descriptor for the "modifiers" property
-	 * of this node as used in JLS3.
+	 * of this node.
 	 *
 	 * @return the property descriptor
 	 */
@@ -107,7 +91,7 @@ public abstract class BodyDeclaration extends ProgramElement {
 	}
 
 	/**
-	 * Returns structural property descriptor for the "javadoc" property
+	 * Returns structural property descriptor for the "jsdoc" property
 	 * of this node.
 	 *
 	 * @return the property descriptor
@@ -115,7 +99,7 @@ public abstract class BodyDeclaration extends ProgramElement {
 	abstract ChildPropertyDescriptor internalJavadocProperty();
 
 	/**
-	 * Returns structural property descriptor for the "javadoc" property
+	 * Returns structural property descriptor for the "jsdoc" property
 	 * of this node.
 	 *
 	 * @return the property descriptor
@@ -126,7 +110,7 @@ public abstract class BodyDeclaration extends ProgramElement {
 
 	/**
 	 * Creates and returns a structural property descriptor for the
-	 * "javadoc" property declared on the given concrete node type.
+	 * "jsdoc" property declared on the given concrete node type.
 	 *
 	 * @return the property descriptor
 	 */
@@ -195,10 +179,6 @@ public abstract class BodyDeclaration extends ProgramElement {
 
 	/**
 	 * Returns the modifiers explicitly specified on this declaration.
-	 * <p>
-	 * In the JLS3 API, this method is a convenience method that
-	 * computes these flags from <code>modifiers()</code>.
-	 * </p>
 	 *
 	 * @return the bit-wise or of <code>Modifier</code> constants
 	 * @see Modifier
@@ -227,10 +207,8 @@ public abstract class BodyDeclaration extends ProgramElement {
 	 * Sets the modifiers explicitly specified on this declaration (JLS2 API only).
 	 *
 	 * @param modifiers the given modifiers (bit-wise or of <code>Modifier</code> constants)
-	 * @exception UnsupportedOperationException if this operation is used in
-	 * an AST later than JLS2
 	 * @see Modifier
-	 * @deprecated In the JLS3 API, this method is replaced by
+	 * @deprecated Rhis method is replaced by
 	 * {@link #modifiers()} which contains a list of a <code>Modifier</code> nodes.
 	 */
 	public void setModifiers(int modifiers) {
@@ -254,12 +232,10 @@ public abstract class BodyDeclaration extends ProgramElement {
 
 	/**
 	 * Returns the live ordered list of modifiers and annotations
-	 * of this declaration (added in JLS3 API).
+	 * of this declaration .
 	 *
 	 * @return the live list of modifiers and annotations
 	 *    (element type: <code>IExtendedModifier</code>)
-	 * @exception UnsupportedOperationException if this operation is used in
-	 * a JLS2 AST
 	 */
 	public List modifiers() {
 		// more efficient than just calling unsupportedIn2() to check
@@ -269,7 +245,7 @@ public abstract class BodyDeclaration extends ProgramElement {
 		return this.modifiers;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {

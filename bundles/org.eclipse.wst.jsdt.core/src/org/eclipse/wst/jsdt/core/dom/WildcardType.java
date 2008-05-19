@@ -103,14 +103,14 @@ public class WildcardType extends Type {
 	    unsupportedIn2();
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean internalGetSetBooleanProperty(SimplePropertyDescriptor property, boolean get, boolean value) {
@@ -126,7 +126,7 @@ public class WildcardType extends Type {
 		return super.internalGetSetBooleanProperty(property, get, value);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -142,14 +142,14 @@ public class WildcardType extends Type {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return WILDCARD_TYPE;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -159,7 +159,7 @@ public class WildcardType extends Type {
 		return result;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -167,7 +167,7 @@ public class WildcardType extends Type {
 		return matcher.match(this, other);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -264,14 +264,14 @@ public class WildcardType extends Type {
 		postValueChange(UPPER_BOUND_PROPERTY);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return BASE_NODE_SIZE + 2 * 4;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

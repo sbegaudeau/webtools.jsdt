@@ -19,8 +19,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
 
 /**
  * A binding resolver is an internal mechanism for figuring out the binding
- * for a major declaration, type, or name reference. This also handles
- * the creation and mapping between annotations and the ast nodes that define them.
+ * for a major declaration, type, or name reference. 
  * <p>
  * The default implementation serves as the default binding resolver
  * that does no resolving whatsoever. Internal subclasses do all the real work.
@@ -51,22 +50,15 @@ class BindingResolver {
 	 * different kinds of bindings:
 	 * <ul>
 	 * <li></li>
-	 * <li>package - a <code>PackageDeclaration</code></li>
-	 * <li>class or interface - a <code>TypeDeclaration</code> or a
-	 *    <code>ClassInstanceCreation</code> (for anonymous classes) </li>
-	 * <li>primitive type - none</li>
-	 * <li>array type - none</li>
-	 * <li>field - a <code>VariableDeclarationFragment</code> in a
+	 * <li>var/field - a <code>VariableDeclarationFragment</code> in a
 	 *    <code>FieldDeclaration</code> </li>
 	 * <li>local variable - a <code>SingleVariableDeclaration</code>, or
 	 *    a <code>VariableDeclarationFragment</code> in a
 	 *    <code>VariableDeclarationStatement</code> or
 	 *    <code>VariableDeclarationExpression</code></li>
-	 * <li>method - a <code>FunctionDeclaration</code> </li>
-	 * <li>constructor - a <code>FunctionDeclaration</code> </li>
-	 * <li>annotation type - an <code>AnnotationTypeDeclaration</code>
-	 * <li>annotation type member - an <code>AnnotationTypeMemberDeclaration</code>
+	 * <li>function/method - a <code>FunctionDeclaration</code> </li>
 	 * </ul>
+	 * <ul>
 	 * </p>
 	 * <p>
 	 * The implementation of <code>JavaScriptUnit.findDeclaringNode</code>
@@ -143,7 +135,7 @@ class BindingResolver {
 		return null;
 	}
 
-	/**
+	/*
 	 * Returns the new package binding corresponding to the given old package binding.
 	 * <p>
 	 * The default implementation of this method returns <code>null</code>.

@@ -94,7 +94,7 @@ public class SimpleName extends Name {
 		super(ast);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 *  
 	 */
@@ -102,7 +102,7 @@ public class SimpleName extends Name {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final Object internalGetSetObjectProperty(SimplePropertyDescriptor property, boolean get, Object value) {
@@ -118,14 +118,14 @@ public class SimpleName extends Name {
 		return super.internalGetSetObjectProperty(property, get, value);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return SIMPLE_NAME;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -135,7 +135,7 @@ public class SimpleName extends Name {
 		return result;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -143,7 +143,7 @@ public class SimpleName extends Name {
 		return matcher.match(this, other);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -200,7 +200,7 @@ public class SimpleName extends Name {
 		postValueChange(IDENTIFIER_PROPERTY);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * This method is a copy of setIdentifier(String) that doesn't do any validation.
 	 */
 	void internalSetIdentifier(String ident) {
@@ -265,14 +265,14 @@ public class SimpleName extends Name {
 		return false;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on Name.
 	 */
 	void appendName(StringBuffer buffer) {
 		buffer.append(getIdentifier());
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -284,7 +284,7 @@ public class SimpleName extends Name {
 		return size;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

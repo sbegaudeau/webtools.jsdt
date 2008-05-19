@@ -118,7 +118,7 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		super(ast);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on VariableDeclaration.
 	 *  
 	 */
@@ -126,7 +126,7 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		return EXTRA_DIMENSIONS_PROPERTY;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on VariableDeclaration.
 	 *  
 	 */
@@ -134,7 +134,7 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		return INITIALIZER_PROPERTY;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on VariableDeclaration.
 	 *  
 	 */
@@ -142,14 +142,14 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		return NAME_PROPERTY;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int internalGetSetIntProperty(SimplePropertyDescriptor property, boolean get, int value) {
@@ -165,7 +165,7 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		return super.internalGetSetIntProperty(property, get, value);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -189,14 +189,14 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return VARIABLE_DECLARATION_FRAGMENT;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -209,7 +209,7 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		return result;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -217,7 +217,7 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		return matcher.match(this, other);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -230,7 +230,7 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		visitor.endVisit(this);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on VariableDeclaration.
 	 */
 	public SimpleName getName() {
@@ -247,7 +247,7 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		return this.variableName;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on VariableDeclaration.
 	 */
 	public void setName(SimpleName variableName) {
@@ -300,14 +300,14 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		postValueChange(EXTRA_DIMENSIONS_PROPERTY);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on VariableDeclaration.
 	 */
 	public Expression getInitializer() {
 		return this.optionalInitializer;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on VariableDeclaration.
 	 */
 	public void setInitializer(Expression initializer) {
@@ -317,7 +317,7 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		postReplaceChild(oldChild, initializer, INITIALIZER_PROPERTY);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -325,7 +325,7 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		return BASE_NODE_SIZE + 3 * 4;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

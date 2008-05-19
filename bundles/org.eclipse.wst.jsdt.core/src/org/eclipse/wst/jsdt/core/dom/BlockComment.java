@@ -18,8 +18,7 @@ import java.util.List;
  * <p>
  * Block comments (also called "traditional" comments in JLS 3.7)
  * begin with "/&#42;", may contain line breaks, and must end
- * with "&#42;/". Following the definition in the JLS (first edition
- * but not second edition), block comment normally exclude comments
+ * with "&#42;/". Block comment normally exclude comments
  * that begin with "/&#42;#42;", which are instead classified as doc
  * comments ({@link JSdoc}).
  * </p>
@@ -76,21 +75,21 @@ public final class BlockComment extends Comment {
 		super(ast);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return BLOCK_COMMENT;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -99,7 +98,7 @@ public final class BlockComment extends Comment {
 		return result;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -107,7 +106,7 @@ public final class BlockComment extends Comment {
 		return matcher.match(this, other);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -115,14 +114,14 @@ public final class BlockComment extends Comment {
 		visitor.endVisit(this);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return super.memSize();
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

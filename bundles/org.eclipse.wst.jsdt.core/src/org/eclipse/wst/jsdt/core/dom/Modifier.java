@@ -477,7 +477,7 @@ public final class Modifier extends ASTNode implements IExtendedModifier {
 	    unsupportedIn2();
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 *  
 	 */
@@ -486,7 +486,7 @@ public final class Modifier extends ASTNode implements IExtendedModifier {
 		visitor.endVisit(this);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 *  
 	 */
@@ -507,7 +507,7 @@ public final class Modifier extends ASTNode implements IExtendedModifier {
 		return this.modifierKeyword;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 *  
 	 */
@@ -515,7 +515,7 @@ public final class Modifier extends ASTNode implements IExtendedModifier {
 		return MODIFIER;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final Object internalGetSetObjectProperty(SimplePropertyDescriptor property, boolean get, Object value) {
@@ -531,7 +531,7 @@ public final class Modifier extends ASTNode implements IExtendedModifier {
 		return super.internalGetSetObjectProperty(property, get, value);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
@@ -662,7 +662,7 @@ public final class Modifier extends ASTNode implements IExtendedModifier {
 		return this.modifierKeyword == ModifierKeyword.VOLATILE_KEYWORD;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 *  
 	 */
@@ -687,7 +687,7 @@ public final class Modifier extends ASTNode implements IExtendedModifier {
 		postValueChange(KEYWORD_PROPERTY);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 *  
 	 */
@@ -696,7 +696,7 @@ public final class Modifier extends ASTNode implements IExtendedModifier {
 		return matcher.match(this, other);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 *  
 	 */

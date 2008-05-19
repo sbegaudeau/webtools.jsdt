@@ -66,7 +66,7 @@ import java.util.List;
 public class ClassInstanceCreation extends Expression {
 
 	/**
-	 * The "typeArguments" structural property of this node type (added in JLS3 API).
+	 * The "typeArguments" structural property of this node type .
 	 */
 	public static final ChildListPropertyDescriptor TYPE_ARGUMENTS_PROPERTY =
 		new ChildListPropertyDescriptor(ClassInstanceCreation.class, "typeArguments", Type.class, NO_CYCLE_RISK); //$NON-NLS-1$
@@ -78,7 +78,7 @@ public class ClassInstanceCreation extends Expression {
 		new ChildPropertyDescriptor(ClassInstanceCreation.class, "expression", Expression.class, OPTIONAL, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * The "name" structural property of this node type (JLS2 API only).
+	 * The "name" structural property of this node type .
 	 */
 	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		new ChildPropertyDescriptor(ClassInstanceCreation.class, "name", Name.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
@@ -166,14 +166,14 @@ public class ClassInstanceCreation extends Expression {
 
 	/**
 	 * The type arguments (element type: <code>Type</code>).
-	 * Null in JLS2. Added in JLS3; defaults to an empty list
+	 * Defaults to an empty list
 	 * (see constructor).
 	 */
 	private ASTNode.NodeList typeArguments = null;
 
 	/**
 	 * The type name; lazily initialized; defaults to a unspecified,
-	 * legal type name. Not used in JLS3.
+	 * legal type name.
 	 */
 	private Name typeName = null;
 
@@ -215,7 +215,7 @@ public class ClassInstanceCreation extends Expression {
 		}
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
@@ -223,7 +223,7 @@ public class ClassInstanceCreation extends Expression {
 	}
 
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
@@ -271,7 +271,7 @@ public class ClassInstanceCreation extends Expression {
 		return super.internalGetSetChildProperty(property, get, child);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
@@ -285,14 +285,14 @@ public class ClassInstanceCreation extends Expression {
 		return super.internalGetChildListProperty(property);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final int getNodeType0() {
 		return CLASS_INSTANCE_CREATION;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
@@ -320,7 +320,7 @@ public class ClassInstanceCreation extends Expression {
 		return result;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
@@ -328,7 +328,7 @@ public class ClassInstanceCreation extends Expression {
 		return matcher.match(this, other);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	void accept0(ASTVisitor visitor) {
@@ -578,7 +578,7 @@ public class ClassInstanceCreation extends Expression {
 		return this.ast.getBindingResolver().resolveConstructor(this);
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
@@ -586,7 +586,7 @@ public class ClassInstanceCreation extends Expression {
 		return BASE_NODE_SIZE + 6 * 4;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {

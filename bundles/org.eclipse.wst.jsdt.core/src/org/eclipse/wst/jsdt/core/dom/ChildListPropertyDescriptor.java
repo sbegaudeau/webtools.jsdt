@@ -25,7 +25,7 @@ public final class ChildListPropertyDescriptor extends StructuralPropertyDescrip
 
 	/**
 	 * Element type. For example, for a node type like
-	 * JavaScriptUnit, the "imports" property is ImportDeclaration.class.
+	 * JavaScriptUnit, the "statements" property is Statement.class.
 	 * <p>
 	 * Field is private, but marked package-visible for fast
 	 * access from ASTNode.

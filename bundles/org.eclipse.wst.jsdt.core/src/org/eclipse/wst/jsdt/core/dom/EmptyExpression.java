@@ -68,7 +68,7 @@ public class EmptyExpression extends Expression {
 		return EMPTY_EXPRESSION;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {

@@ -74,7 +74,7 @@ public abstract class Comment extends ASTNode {
 
 	/**
 	 * Returns whether this comment is a doc comment
-	 * (<code>Javadoc</code>).
+	 * (<code>JSdoc</code>).
 	 *
 	 * @return <code>true</code> if this is a doc comment, and
 	 *    <code>false</code> otherwise
@@ -123,7 +123,7 @@ public abstract class Comment extends ASTNode {
 		this.alternateRoot = root;
 	}
 
-	/* (omit jsdoc for this method)
+	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
