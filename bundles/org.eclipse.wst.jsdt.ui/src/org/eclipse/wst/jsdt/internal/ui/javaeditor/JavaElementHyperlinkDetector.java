@@ -35,7 +35,7 @@ public class JavaElementHyperlinkDetector extends AbstractHyperlinkDetector {
 	 */
 	public IHyperlink[] detectHyperlinks(ITextViewer textViewer, IRegion region, boolean canShowMultipleHyperlinks) {
 		ITextEditor textEditor= (ITextEditor)getAdapter(ITextEditor.class);
-		if (region == null || canShowMultipleHyperlinks || !(textEditor instanceof JavaEditor))
+		if (region == null  || !(textEditor instanceof JavaEditor))
 			return null;
 
 		IAction openAction= textEditor.getAction("OpenEditor"); //$NON-NLS-1$
