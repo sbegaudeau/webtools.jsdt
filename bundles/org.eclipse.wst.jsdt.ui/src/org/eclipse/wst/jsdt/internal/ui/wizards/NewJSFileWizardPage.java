@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -49,7 +50,10 @@ class NewJSFileWizardPage extends WizardNewFileCreationPage {
 		
 		if (webContentPath != null && !webContentPath.isPrefixOf(fullPath)) {
 			setContainerFullPath(webContentPath);
+		}else{
+			setContainerFullPath(new Path(""));
 		}
+			
 	}
 	
 	/**
@@ -231,9 +235,10 @@ return true;
 	 * @return IPath of the web contents folder
 	 */
 	private IPath getWebContentPath(IProject project) {
-		IPath path = project.getFullPath();
+		IPath path = null;
 		
-		if (project != null && isWebProject(project)) {			
+		if (project != null && isWebProject(project)) {	
+			path = project.getFullPath();
 //			IVirtualComponent component = ComponentCore.createComponent(project);
 //			path = component.getRootFolder().getWorkspaceRelativePath();
 path.append("/"); //$NON-NLS-1$
