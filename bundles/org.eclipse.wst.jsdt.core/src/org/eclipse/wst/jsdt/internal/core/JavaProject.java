@@ -462,7 +462,12 @@ public class JavaProject
 		info.setChildren(computePackageFragmentRoots(resolvedClasspath, false, null /*no reverse map*/));
 
 		// remember the timestamps of external libraries the first time they are looked up
-		getPerProjectInfo().rememberExternalLibTimestamps();
+		try {
+			getPerProjectInfo().rememberExternalLibTimestamps();
+		} catch (JavaScriptModelException e) {
+			if (e.getStatus().getCode()!=IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST)
+				throw e;
+		}
 
 		return true;
 	}
@@ -1931,10 +1936,20 @@ public class JavaProject
 	 * Returns the cached resolved classpath, or compute it ignoring unresolved entries and cache it.
 	 */
 	public IIncludePathEntry[] getResolvedClasspath() throws JavaScriptModelException {
-		PerProjectInfo perProjectInfo = getPerProjectInfo();
-		if (perProjectInfo.resolvedClasspath == null)
-			resolveClasspath(perProjectInfo);
-		return perProjectInfo.resolvedClasspath;
+		try {
+			PerProjectInfo perProjectInfo = getPerProjectInfo();
+			if (perProjectInfo.resolvedClasspath == null)
+				resolveClasspath(perProjectInfo);
+			return perProjectInfo.resolvedClasspath;
+		} catch (JavaScriptModelException e) {
+			if (e.getStatus().getCode()==IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST)
+			{
+				IIncludePathEntry[] defaultClasspath = defaultClasspath();
+				return resolveClasspath(defaultClasspath);
+			}
+			else
+				throw e;
+		}
 	}
 
 	/**
