@@ -440,7 +440,11 @@ public class InferEngine extends ASTVisitor {
 					{
 					  IFunctionDeclaration function = getDefinedFunction(fRef.receiver);
 					  if (function!=null)
-						  receiverType=addType(constructTypeName(fRef.receiver));
+					  {
+						  char [] typeName = constructTypeName(fRef.receiver);
+						  if (typeName!=null)
+							  receiverType=addType(typeName);
+					  }
 					}
 					if (receiverType==null && this.passNumber==2)
 						  receiverType=getInferredType2(fRef.receiver );
@@ -1365,14 +1369,18 @@ public class InferEngine extends ASTVisitor {
 
 	public void doInfer()
 	{
-		compUnit.traverse(this );
-		passNumber=2;
-		compUnit.traverse(this );
-		for (int i = 0; i < compUnit.numberInferredTypes; i++) {
-			if (compUnit.inferredTypes[i].sourceStart<0)
-				compUnit.inferredTypes[i].sourceStart=0;
+		try {
+			compUnit.traverse(this );
+			passNumber=2;
+			compUnit.traverse(this );
+			for (int i = 0; i < compUnit.numberInferredTypes; i++) {
+				if (compUnit.inferredTypes[i].sourceStart<0)
+					compUnit.inferredTypes[i].sourceStart=0;
+			}
+			this.compUnit=null;
+		} catch (RuntimeException e) {
+			org.eclipse.wst.jsdt.internal.core.util.Util.log(e, "error during type inferencing");
 		}
-		this.compUnit=null;
 }
 
 	protected InferredType addType(char[] className) {
