@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="Reference" link_to="toc.xml#jsf_dev_reference"> 
+<toc label="Reference" link_to="toc.xml"> 
 	<topic label="API Reference" href="html/api_reference/overview-summary.html">
 		<link toc="javadoctoc.xml" />
 	</topic>

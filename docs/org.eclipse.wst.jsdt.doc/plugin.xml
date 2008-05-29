@@ -3,17 +3,21 @@
 
 <plugin>
    <extension point="org.eclipse.help.toc">
-      <toc file="jsdtToc.xml" primary="true"/>
-  
+      <toc file="toc.xml" primary="true"/>
+  <!--
       <toc
             file="tocprogrammersguide.xml"
             />
+   -->
+   
       <toc
             file="tocreference.xml"
             />
+      <!--
       <toc
             file="toctutorials.xml"
             />
+       -->
       <toc
             file="javadoctoc.xml"
       		/>
