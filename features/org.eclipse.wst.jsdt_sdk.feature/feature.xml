@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.wst.jsdt_sdk.feature"
+      label="%featureName"
+      version="1.0.0.qualifier"
+      provider-name="%providerName">
+
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <includes
+         id="org.eclipse.wst.jsdt.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.wst.jsdt.feature.source"
+         version="0.0.0"/>
+
+   <requires>
+      <import feature="org.eclipse.platform" version="3.4.0" match="compatible"/>
+   </requires>
+
+</feature>
