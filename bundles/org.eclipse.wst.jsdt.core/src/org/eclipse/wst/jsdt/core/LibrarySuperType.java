@@ -140,7 +140,7 @@ public class LibrarySuperType {
 
 		}
 
-		return superTypeName + "() in " + getLibraryName(); //$NON-NLS-1$
+		return superTypeName + Messages.getString("LibrarySuperType.0") + getLibraryName(); //$NON-NLS-1$
 	}
 
 	public boolean equals(Object o) {
