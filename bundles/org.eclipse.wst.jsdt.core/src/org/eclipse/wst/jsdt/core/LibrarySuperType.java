@@ -139,8 +139,8 @@ public class LibrarySuperType {
 			return getLibraryName();
 
 		}
-
-		return superTypeName + "() in " + getLibraryName(); //$NON-NLS-1$
+		
+		return  Messages.getString("LibrarySuperType.0", new Object[]{superTypeName, getLibraryName()}); //$NON-NLS-1$
 	}
 
 	public boolean equals(Object o) {
