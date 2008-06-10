@@ -22,14 +22,8 @@
    </url>
 
    <requires>
-      <import plugin="org.eclipse.core.resources" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.core.runtime" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.wst.jsdt.core" version="1.0.0" match="compatible"/>
-      <import plugin="org.junit" version="3.8.2" match="compatible"/>
-      <import plugin="org.eclipse.wst.jsdt.core.tests.compiler" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.team.core" version="3.3.100" match="compatible"/>
-      <import plugin="org.eclipse.text" version="3.4.0" match="compatible"/>
-      <import plugin="com.ibm.icu" version="3.8.1" match="compatible"/>
+      <import feature="org.eclipse.platform" version="3.4.0"/>
+      <import feature="org.eclipse.test" version="3.3.0"/>
    </requires>
 
    <plugin
