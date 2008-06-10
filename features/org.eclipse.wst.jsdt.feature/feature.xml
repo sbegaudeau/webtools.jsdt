@@ -18,35 +18,7 @@
    </license>
 
    <requires>
-      <import plugin="org.eclipse.core.resources" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.core.runtime" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="compatible"/>
-      <import plugin="com.ibm.icu" version="3.8.1" match="compatible"/>
-      <import plugin="org.eclipse.debug.core" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ltk.core.refactoring" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.wst.jsdt.core" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.core.expressions" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ui" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.console" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.help" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.search" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.debug.ui" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.compare" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.team.ui" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.team.core" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.jface.text" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.ide" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.views" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.editors" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ltk.ui.refactoring" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.forms" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.navigator" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.wst.jsdt.manipulation" version="1.0.0" match="compatible"/>
-      <import feature="org.eclipse.platform" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.text" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.wst.jsdt.ui" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.swt" version="3.4.0" match="compatible"/>
+      <import feature="org.eclipse.platform" version="3.4.0"/>
    </requires>
 
    <plugin
