@@ -94,6 +94,7 @@ Window.prototype.dispatchEvent=function(arg1){};
 Window.prototype.getComputedStyle=function(arg1,arg2){};
 Window.prototype.sessionStorage="";
 Window.prototype.location=new location();
+Window.prototype.event="";
 
 /**
   * Object history()
