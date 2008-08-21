@@ -235,7 +235,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					" b: function(){}};" + 
 					"\n",
 					"X.js",
-				"class MyClass extends Object{\n  Number a;\n  String b()\n}\n",
+				"class MyClass extends Object{\n  static Number a;\n  static String b()\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -314,7 +314,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  bar2: function(){}"+
 					"}",
 				"X.js",
-				"class ___anonymous10_44 extends Object{\n  String bar;\n  void bar2()\n}\n",
+				"class ___anonymous10_44 extends Object{\n  static String bar;\n  static void bar2()\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -331,7 +331,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  bar2: function(){}"+
 					"}",
 				"X.js",
-				"class ___anonymous14_48 extends Object{\n  String bar;\n  void bar2()\n}\n",
+				"class ___anonymous14_48 extends Object{\n  static String bar;\n  static void bar2()\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -349,8 +349,8 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  }"+
 					"}",
 				"X.js",
-				"class ___anonymous10_52 extends Object{\n  String bar;\n  ___anonymous32_51 bar2;\n}\n"+
-				"class ___anonymous32_51 extends Object{\n  String bar3;\n}\n",
+				"class ___anonymous10_52 extends Object{\n  static String bar;\n  static ___anonymous32_51 bar2;\n}\n"+
+				"class ___anonymous32_51 extends Object{\n  static String bar3;\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -367,7 +367,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  return \"\";" +
 					"}",
 				"X.js",
-				"class ___anonymous9_10 extends Object{\n  String foo;\n  String bar()\n}\n",
+				"class ___anonymous9_10 extends Object{\n  static String foo;\n  static String bar()\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -383,8 +383,8 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  bar: \"\""+
 					"};",
 				"X.js",
-				"class ___anonymous9_10 extends Object{\n  ___anonymous21_31 foo;\n}\n"+
-				"class ___anonymous21_31 extends Object{\n  String bar;\n}\n",
+				"class ___anonymous9_10 extends Object{\n  static ___anonymous21_31 foo;\n}\n"+
+				"class ___anonymous21_31 extends Object{\n  static String bar;\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -419,7 +419,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"}",
 				"X.js",
 				"class foo extends Object{\n  ___anonymous37_48 bar;\n  foo()\n}\n"+
-				"class ___anonymous37_48 extends Object{\n  String bar2;\n}\n",
+				"class ___anonymous37_48 extends Object{\n  static String bar2;\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -438,8 +438,8 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  return \"\";" +
 					"}",
 				"X.js",
-				"class ___anonymous9_10 extends Object{\n  void foo()\n}\n"+
-				"class ns.foo extends Object{\n  String bar;\n  String bar2()\n  ns.foo()\n}\n",
+				"class ___anonymous9_10 extends Object{\n  static void foo()\n}\n"+
+				"class ns.foo extends Object{\n  String bar;\n  String bar2()\n  static ns.foo()\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -453,7 +453,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"ns.foo2 = abc;" +
 					"",
 				"X.js",
-				"class ___anonymous9_10 extends Object{\n  void foo()\n  void foo2()\n}\n",
+				"class ___anonymous9_10 extends Object{\n  static void foo()\n  static void foo2()\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -466,7 +466,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"ns.foo2 = ns.foo;" +
 					"",
 				"X.js",
-				"class ___anonymous9_10 extends Object{\n  void foo()\n  void foo2()\n}\n",
+				"class ___anonymous9_10 extends Object{\n  static void foo()\n  static void foo2()\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -487,9 +487,9 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  return \"\";" +
 					"}",
 				"X.js",
-				"class ___anonymous10_20 extends Object{\n  ___anonymous18_19 ns2;\n}\n"+
-				"class ___anonymous18_19 extends Object{\n  void foo()\n}\n"+
-				"class ns1.ns2.foo extends Object{\n  String bar;\n  String bar2()\n  ns1.ns2.foo()\n}\n",
+				"class ___anonymous10_20 extends Object{\n  static ___anonymous18_19 ns2;\n}\n"+
+				"class ___anonymous18_19 extends Object{\n  static void foo()\n}\n"+
+				"class ns1.ns2.foo extends Object{\n  String bar;\n  String bar2()\n  static ns1.ns2.foo()\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -511,7 +511,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  return { x : \"\", y : \"\", z : \"\" };" +
 					"};",
 				"X.js",
-				"class ___anonymous10_52 extends Object{\n  String a;\n  String c;\n  String b()\n  ___anonymous101_126 d(x, y, z)\n}\n"+
+				"class ___anonymous10_52 extends Object{\n  static String a;\n  static String c;\n  static String b()\n  static ___anonymous101_126 d(x, y, z)\n}\n"+
 				"class ___anonymous101_126 extends Object{\n  String x;\n  String y;\n  String z;\n}\n",
 				getDefaultOptions()
 				
@@ -525,7 +525,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"}" +
 					"foo.bar = \"\"",
 				"X.js",
-				"class ___anonymous23_24 extends Object{\n  String bar;\n}\n",
+				"class ___anonymous23_24 extends Object{\n  static String bar;\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -561,7 +561,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"	}" +
 					"};",
 				"X.js",
-				"class ___anonymous32_49 extends Object{\n  String x;\n  String y;\n}\n",
+				"class ___anonymous32_49 extends Object{\n  static String x;\n  static String y;\n}\n",
 				getDefaultOptions()
 				
 			 );

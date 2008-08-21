@@ -434,6 +434,20 @@ public class BasicParserTests extends AbstractRegressionTest {
 		 );
 	}
 
+	public void test005j7() {	// expressions
+		this.runParseTest(
+				"i= [,,];" + 
+				"i= [,,,];" + 
+				"i= [,,b,];" + 
+				"\n",
+			"X.js",
+			"i = [, , ];\n" + 
+			"i = [, , , ];\n" + 
+			"i = [, , b, ];" + 
+			"\n"
+		 );
+	}
+
 	public void test007() {	// if
 		this.runParseTest(
 				"if (a>1) this.c=f+5;" + 

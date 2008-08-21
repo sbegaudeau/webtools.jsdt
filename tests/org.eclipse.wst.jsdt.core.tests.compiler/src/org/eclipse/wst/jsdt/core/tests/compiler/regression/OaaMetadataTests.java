@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 import java.util.HashMap;
 
 import org.eclipse.wst.jsdt.core.tests.util.Util;
+import org.eclipse.wst.jsdt.internal.oaametadata.ClassData;
 import org.eclipse.wst.jsdt.internal.oaametadata.IOAAMetaDataConstants;
 import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 import org.eclipse.wst.jsdt.internal.oaametadata.MetadataReader;
@@ -23,25 +24,25 @@ public class OaaMetadataTests extends AbstractRegressionTest {
 	
 	static final String LIB1=
 	"<api xmlns=\"http://ns.openajax.org/api\" version=\"...\" apiType=\"JavaScript\">"
-	+"   <class type=\"libraryname.ClassName\" superclass=\"Object\">"
+	+"   <class name=\"libraryname.ClassName\" superclass=\"Object\">"
 	+"      <constructors>"
 	+"          <constructor scope=\"instance\">"
 	+"              <description>Constructor description</description>"
 	+"              <parameters>"
-	+"                  <parameter name=\"message\" required=\"true\" type=\"String\">"
+	+"                  <parameter name=\"message\" required=\"true\" datatype=\"String\">"
 	+"                      <description>Parameter description</description>"
 	+"                  </parameter>"
 	+"              </parameters>"
-	+"              <returns type=\"Object\">"
+	+"              <returns datatype=\"Object\">"
 	+"                <description>...</description>" 
 	+"              </returns>"
 	+"          </constructor>"
 	+"       </constructors>"
 	+"      <fields>" 
-	+"          <field name=\"propertyInstance\" readonly=\"false\" scope=\"instance\" type=\"String\">"
+	+"          <field name=\"propertyInstance\" readonly=\"false\" scope=\"instance\" datatype=\"String\">"
 	+"              <description>Property description</description>"
 	+"          </field>"
-	+"          <field name=\"propertyStatic\" readonly=\"false\" scope=\"static\" type=\"String\">"
+	+"          <field name=\"propertyStatic\" readonly=\"false\" scope=\"static\" datatype=\"String\">"
 	+"              <description>Property description</description>"
 	+"          </field>"
 	+"      </fields>"
@@ -49,18 +50,18 @@ public class OaaMetadataTests extends AbstractRegressionTest {
 	+"          <method name=\"functionInstance\" scope=\"instance\">"
 	+"              <description>Method description</description>"
 	+"              <parameters>"
-	+"                  <parameter name=\"param\" required=\"true\" type=\"String\">"
+	+"                  <parameter name=\"param\" required=\"true\" datatype=\"String\">"
 	+"                      <description>Parameter description</description>"
 	+"                  </parameter>"
 	+"              </parameters>"
-	+"              <returns type=\"String\">"
+	+"              <returns datatype=\"String\">"
 	+"                <description>...</description>"
 	+"              </returns>"
 	+"          </method>"
 	+"          <method name=\"functionStatic\" scope=\"static\">"
 	+"              <description>Method description</description>"
 	+"              <parameters/>"
-	+"              <returns type=\"String\">" 
+	+"              <returns datatype=\"String\">" 
 	+"                <description>...</description>" 
 	+"              </returns>"
 	+"          </method>"
@@ -98,7 +99,7 @@ public class OaaMetadataTests extends AbstractRegressionTest {
 	public void test001()
 	{
 		
-		LibraryAPIs apis=MetadataReader.readAPIsFromString(LIB1);
+		LibraryAPIs apis=MetadataReader.readAPIsFromString(LIB1,"");
 		assertTrue(apis.classes!=null && apis.classes.length==1);
 	}
 	
@@ -117,4 +118,33 @@ public class OaaMetadataTests extends AbstractRegressionTest {
 				""
 		);
 	}
+	
+	
+	public void testInclude1()	{	 
+		String base="<api xmlns=\"http://ns.openajax.org/api\" version=\"...\" apiType=\"JavaScript\">"
+		+"   <class name=\"cls1\" superclass=\"Object\">"
+		+"      <include src=\"incl2.xml\"/>"
+		+"  </class>"
+		+"  <include src=\"..\\incl1.xml\"/>"
+		+"</api>";
+		String incl1="<fragment xmlns=\"http://ns.openajax.org/api\">"
+			+"   <class name=\"cls2\" superclass=\"Object\">"
+			+"  </class>"
+			+"</fragment>";
+		String incl2="<fragment xmlns=\"http://ns.openajax.org/api\">"
+			+"          <method name=\"functionInstance\" scope=\"instance\"/>"
+			+"</fragment>";
+
+		String filePath=Util.copyToOutput("libDir/"+IOAAMetaDataConstants.METADATA_FILE, base);
+		Util.copyToOutput("incl1.xml", incl1);
+		Util.copyToOutput("libDir/incl2.xml", incl2);
+
+		LibraryAPIs apis=MetadataReader.readAPIsFromFile(filePath);
+		assertTrue(apis.classes!=null && apis.classes.length==2);
+		
+		ClassData classData = apis.classes[0];
+		assertTrue(classData.methods!=null && classData.methods.length==1);
+		
+	}
+
 }
