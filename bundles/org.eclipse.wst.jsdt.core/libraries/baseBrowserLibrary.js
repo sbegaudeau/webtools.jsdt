@@ -762,6 +762,56 @@ Document.prototype = new Node();
  */ 
 Document.prototype.doctype = new DocumentType(); 
 /**
+ * property cookie
+ * @type  Array
+ * @see Document
+ * @class  Document
+ * @since Standard ECMA-262 3rd. Edition
+ * @since Level 2 Document Object Model Core Definition.
+ * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+*/ 
+Document.prototype.cookie = new Array(); 
+/**
+ * property domain
+ * @type  String
+ * @see Document
+ * @class  Document
+ * @since Standard ECMA-262 3rd. Edition
+ * @since Level 2 Document Object Model Core Definition.
+ * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+*/ 
+Document.prototype.domain = ""; 
+/**
+ * property referrer
+ * @type  String
+ * @see Document
+ * @class  Document
+ * @since Standard ECMA-262 3rd. Edition
+ * @since Level 2 Document Object Model Core Definition.
+ * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+*/ 
+Document.prototype.referrer = "";
+/**
+ * property title
+ * @type  String
+ * @see Document
+ * @class  Document
+ * @since Standard ECMA-262 3rd. Edition
+ * @since Level 2 Document Object Model Core Definition.
+ * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+*/ 
+Document.prototype.title = ""; 
+/**
+ * property URL
+ * @type  String
+ * @see Document
+ * @class  Document
+ * @since Standard ECMA-262 3rd. Edition
+ * @since Level 2 Document Object Model Core Definition.
+ * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+*/ 
+Document.prototype.URL = ""; 
+/**
   * property implementation
   * @type   DOMImplementation
   * @see Document
@@ -992,6 +1042,20 @@ Document.prototype.getElementsByTagNameNS=function(namespaceURI, localName){};
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
 Document.prototype.getElementById=function(elementId){}; 
+/**
+ * function getElementsByTagName(tagName)
+ * @type Element
+ * @class Document
+ * @param tagName String
+ * @return  Element
+ * @see Document
+ * @see Element
+ * @since Standard ECMA-262 3rd. Edition 
+ * @since Level 2 Document Object Model Core Definition.
+
+ * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+*/ 
+Document.prototype.getElementsByTagName=function(tagName){}; 
 /**
   * function write(text)
   * @class Document
