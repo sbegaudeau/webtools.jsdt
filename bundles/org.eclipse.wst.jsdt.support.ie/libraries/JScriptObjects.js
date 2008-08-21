@@ -1070,7 +1070,7 @@ Function.prototype.call=function(thisObj, args){};
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx
   */
 function Global(){};
-Global.prototype=new Global();
+Global.prototype=new Object();
  /**
   * Property infinity
   * @class   Global

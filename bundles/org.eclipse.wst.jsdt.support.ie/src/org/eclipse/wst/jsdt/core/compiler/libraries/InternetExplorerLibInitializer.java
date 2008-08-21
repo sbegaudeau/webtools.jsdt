@@ -26,7 +26,7 @@ public class InternetExplorerLibInitializer extends JsGlobalScopeContainerInitia
 	protected static final String PLUGIN_ID = "org.eclipse.wst.jsdt.support.ie";
 
 
-	class IeLibLocation extends SystemLibraryLocation {
+	static class IeLibLocation extends SystemLibraryLocation {
 		IeLibLocation() {
 			super();
 		}
@@ -40,10 +40,17 @@ public class InternetExplorerLibInitializer extends JsGlobalScopeContainerInitia
 		protected String getPluginId() {
 			return InternetExplorerLibInitializer.PLUGIN_ID;
 		}
+		private static LibraryLocation fInstance;
+		public static LibraryLocation getInstance(){
+			if(fInstance== null){
+				fInstance = new IeLibLocation();
+			}
+			return fInstance;
+		}
 	}
 
 	public LibraryLocation getLibraryLocation() {
-		return new IeLibLocation();
+		return IeLibLocation.getInstance();
 	}
 
 

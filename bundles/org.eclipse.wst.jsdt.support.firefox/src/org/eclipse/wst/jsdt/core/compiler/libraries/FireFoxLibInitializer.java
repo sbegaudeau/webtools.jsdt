@@ -25,7 +25,7 @@ public class FireFoxLibInitializer extends JsGlobalScopeContainerInitializer imp
 	protected static final String PLUGIN_ID = "org.eclipse.wst.jsdt.support.firefox";
 
 
-	class FireFoxLibLocation extends SystemLibraryLocation {
+	static class FireFoxLibLocation extends SystemLibraryLocation {
 		FireFoxLibLocation() {
 			super();
 		}
@@ -39,10 +39,19 @@ public class FireFoxLibInitializer extends JsGlobalScopeContainerInitializer imp
 		protected String getPluginId() {
 			return FireFoxLibInitializer.PLUGIN_ID;
 		}
+		
+		private static LibraryLocation fInstance;
+		
+		public static LibraryLocation getInstance(){
+			if(fInstance== null){
+				fInstance = new FireFoxLibLocation();
+			}
+			return fInstance;
+		}
 	}
 
 	public LibraryLocation getLibraryLocation() {
-		return new FireFoxLibLocation();
+		return FireFoxLibLocation.getInstance();
 	}
 
 
