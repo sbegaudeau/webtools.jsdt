@@ -12,21 +12,56 @@ package org.eclipse.wst.jsdt.internal.oaametadata;
 
 import java.util.ArrayList;
 
-public class ClassData extends DocumentedElement{
+public class ClassData extends VersionableElement{
+
+	
+/*	class_element = element class {
+		  class_content  &  class_attributes  &  foreign_nodes
+		}
+		class_content = (
+		  aliases_element?  &  ancestors_element?  &  constructors_element?  &  
+		  mixes_element?  &  methods_element?  &  properties_element?  &  
+		  descriptive_elements  &  compatibility_elements
+		)
+		class_attributes = (
+		  name  &  superclass?  &  visibility?  &
+		  getterPattern?  &  setterPattern?  
+		)
+		
+	
+	interface_element = element interface {
+		  interface_content  &  interface_attributes  &  foreign_nodes
+		}
+		interface_content = (
+		  constructors_element?  &  exceptions_element?  &  mixes_element?  &  
+		  methods_element?  &  properties_element?  &  
+		  descriptive_elements  &  compatibility_elements
+		  # Research the above, make consistent with the spec  
+		  # FIXME: aliases? ancestors?
+		)
+		interface_attributes = (
+		  name?  &  superclass?  &  visibility?  &
+		  getterPattern?  &  setterPattern?  
+		)
+		
+		
+*/		
 
 	public Ancestor [] ancestors;
-	public String name;
-	public String type;
-	public String superclass;
-	public String visibility; 
-
+	public Alias [] aliases;
 	public Method [] constructors;
 	public Event [] events;
 	public Method [] methods;
 	public Property [] fields;
+	public Property [] properties;
+	public Mix [] mixins;
 	
-	public Mix [] mixes;
-	
+	public String name;
+	public String superclass;
+	public String visibility; 
+	public String getterPattern; 
+	public String setterPattern; 
+	public boolean isInterface;
 	
 	public Property [] getFields()
 	{

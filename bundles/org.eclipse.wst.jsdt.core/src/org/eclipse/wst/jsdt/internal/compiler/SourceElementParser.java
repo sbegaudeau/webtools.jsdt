@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     bug 242694 -  Michael Spector <spektom@gmail.com>     
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler;
 
@@ -105,7 +106,7 @@ import org.eclipse.wst.jsdt.internal.core.util.CommentRecorderParser;
  */
 public class SourceElementParser extends CommentRecorderParser {
 
-	public ISourceElementRequestor requestor;
+	ISourceElementRequestor requestor;
 	ISourceType sourceType;
 	boolean reportReferenceInfo;
 	char[][] typeNames;
@@ -241,6 +242,12 @@ public SourceElementParser(
 		this.javadocParser = new SourceJavadocParser(this);
 	}
 }
+
+public void setRequestor(ISourceElementRequestor requestor) {
+	this.requestor = requestor;
+	notifiedTypes.clear();
+}
+
 private void acceptJavadocTypeReference(Expression expression) {
 	if (expression instanceof JavadocSingleTypeReference) {
 		JavadocSingleTypeReference singleRef = (JavadocSingleTypeReference) expression;
@@ -1248,7 +1255,7 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 
 public void notifySourceElementRequestor( InferredType type ) {
 
-	if ( !type.isDefinition)
+	if ( !type.isDefinition || type.isEmptyGlobal())
 		return;
 
 	if (type.isAnonymous && !type.isNamed())

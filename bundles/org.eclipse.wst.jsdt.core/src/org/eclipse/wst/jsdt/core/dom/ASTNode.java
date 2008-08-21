@@ -2662,5 +2662,17 @@ public abstract class ASTNode {
 	 */
 	abstract int memSize();
 	
+	public ASTNode getBodyChild()
+	{
+		ASTNode bodyChild=this;
+		while (bodyChild!=null)
+		{
+			if (bodyChild.parent instanceof JavaScriptUnit || bodyChild.parent instanceof BodyDeclaration)
+				return bodyChild;
+			bodyChild=bodyChild.parent;
+		}
+		return null;
+		
+	}
 
 }

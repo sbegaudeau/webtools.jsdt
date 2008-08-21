@@ -493,10 +493,11 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 			TextEditGroup insertDesc= new TextEditGroup(Messages.format(RefactoringCoreMessages.ExtractMethodRefactoring_add_method, fMethodName)); 
 			result.addTextEditGroup(insertDesc);
 			
-			if (fDestination == fDestinations[0]) {
-				ChildListPropertyDescriptor desc= (ChildListPropertyDescriptor)declaration.getLocationInParent();
-				ListRewrite container= fRewriter.getListRewrite(declaration.getParent(), desc);
-				container.insertAfter(mm, declaration, insertDesc);
+			ASTNode afterDecl = declaration.getBodyChild();
+			if (fDestination == fDestinations[0] || afterDecl==null) {
+				ChildListPropertyDescriptor desc= (ChildListPropertyDescriptor)afterDecl.getLocationInParent();
+				ListRewrite container= fRewriter.getListRewrite(afterDecl.getParent(), desc);
+				container.insertAfter(mm, afterDecl, insertDesc);
 			} else {
 				BodyDeclarationRewrite container= BodyDeclarationRewrite.create(fRewriter, fDestination);
 				container.insert(mm, insertDesc);

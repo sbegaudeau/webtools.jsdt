@@ -128,7 +128,7 @@ public class HandleFactory {
 				if (resourcePath.endsWith("/")) //$NON-NLS-1$
 					resourcePath=resourcePath.substring(0,resourcePath.length()-1);
 				PackageFragmentRoot root= this.getPkgFragmentRoot(resourcePath);
-				if (root instanceof LibraryFragmentRoot)
+				if (root instanceof LibraryFragmentRoot && !((LibraryFragmentRoot)root).isDirectory())
 				{
 					return (Openable)((LibraryFragmentRoot)root).getPackageFragment(resourcePath).getClassFile(resourcePath);
 				}

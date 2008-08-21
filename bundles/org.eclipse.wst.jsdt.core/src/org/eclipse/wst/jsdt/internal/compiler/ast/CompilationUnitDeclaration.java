@@ -429,6 +429,36 @@ public class CompilationUnitDeclaration
 		}
 	}
 
+	public void resolve(int start, int end) {
+		try {
+			int startingTypeIndex = 0;
+			// resolve compilation unit javadoc package if any
+			if (this.javadoc != null && this.javadoc.sourceStart<=start && this.javadoc.sourceEnd>= end) {
+				this.javadoc.resolve(this.scope);
+    		}
+			if (types != null) {
+				for (int i = startingTypeIndex, count = types.length; i < count; i++) {
+					TypeDeclaration typeDeclaration = types[i];
+					if (typeDeclaration.sourceStart<=start && typeDeclaration.sourceEnd>=end)
+						typeDeclaration.resolve(scope);
+				}
+			}
+			if (statements != null) {
+				for (int i = 0, count = statements.length; i < count; i++) {
+					ProgramElement programElement = statements[i];
+					if (programElement.sourceStart<=start && programElement.sourceEnd>=end)
+						programElement.resolve(scope);
+				}
+			}
+			if (!this.compilationResult.hasErrors()) checkUnusedImports();
+			reportNLSProblems();
+		} catch (AbortCompilationUnit e) {
+			this.ignoreFurtherInvestigation = true;
+			return;
+		}
+	}
+
+
 	private void reportNLSProblems() {
 		if (this.nlsTags != null || this.stringLiterals != null) {
 			final int stringLiteralsLength = this.stringLiteralsPtr;

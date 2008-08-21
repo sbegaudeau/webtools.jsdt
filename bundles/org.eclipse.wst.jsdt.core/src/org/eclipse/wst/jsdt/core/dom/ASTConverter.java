@@ -1087,7 +1087,10 @@ class ASTConverter {
 
 	public FunctionExpression convert(org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression expression) {
 		FunctionExpression functionExpression = new FunctionExpression(this.ast);
-		functionExpression.setSourceRange(expression.sourceStart, expression.sourceEnd - expression.sourceStart + 1);
+		int sourceEnd = expression.sourceEnd;
+		if (sourceEnd==0)
+			sourceEnd=expression.methodDeclaration.bodyEnd;
+		functionExpression.setSourceRange(expression.sourceStart, sourceEnd - expression.sourceStart + 1);
 
 		functionExpression.setMethod((FunctionDeclaration)convert(expression.methodDeclaration));
 		if (this.resolveBindings) {

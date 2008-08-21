@@ -75,6 +75,8 @@ public class InferredType extends ASTNode {
 
 	public Object userData;
 	
+	boolean allStatic=false;
+	
 	/**
 	 * Create a new inferred type
 	 * 
@@ -395,5 +397,12 @@ public class InferredType extends ASTNode {
 	public int getNameStart()
 	{
 		return this.nameStart!= -1 ? this.nameStart : this.sourceStart;
+	}
+	
+	public boolean isEmptyGlobal()
+	{
+		return (CharOperation.equals(GLOBAL_NAME, this.name) &&
+				this.numberAttributes==0 && 
+				(this.methods==null || this.methods.isEmpty()));
 	}
 }

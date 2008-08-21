@@ -126,12 +126,17 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 
 	}
 	public void resolve(BlockScope scope) {
+		resolve0(scope);
+		if (this.nextLocal!=null)
+			this.nextLocal.resolve(scope);
+	}
+	
+
+	private void resolve0(BlockScope scope) {
 
 		// create a binding and add it to the scope
 		TypeBinding variableType = resolveVarType(scope);
 
-		if (this.nextLocal!=null)
-			this.nextLocal.resolve(scope);
 		if (variableType != null) {
 			if (variableType == TypeBinding.VOID) {
 				scope.problemReporter().variableTypeCannotBeVoid(this);

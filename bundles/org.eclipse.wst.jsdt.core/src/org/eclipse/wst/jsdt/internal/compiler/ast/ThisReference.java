@@ -16,6 +16,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
@@ -47,16 +48,16 @@ public class ThisReference extends Reference implements IThisReference {
 	public boolean checkAccess(MethodScope methodScope) {
 
 		// this/super cannot be used in constructor call
-		if (methodScope!=null && methodScope.isConstructorCall) {
-			methodScope.problemReporter().fieldsOrThisBeforeConstructorInvocation(this);
-			return false;
-		}
+//		if (methodScope!=null && methodScope.isConstructorCall) {
+//			methodScope.problemReporter().fieldsOrThisBeforeConstructorInvocation(this);
+//			return false;
+//		}
 
 		// static may not refer to this/super
-		if (methodScope!=null && methodScope.isStatic) {
-			methodScope.problemReporter().errorThisSuperInStatic(this);
-			return false;
-		}
+//		if (methodScope!=null && methodScope.isStatic) {
+//			methodScope.problemReporter().errorThisSuperInStatic(this);
+//			return false;
+//		}
 		return true;
 	}
 
@@ -86,6 +87,9 @@ public class ThisReference extends Reference implements IThisReference {
 		if (!this.isImplicitThis() &&!checkAccess(scope.methodScope())) {
 			return null;
 		}
+		MethodScope methodScope = scope.methodScope();
+		if (methodScope!=null && methodScope.isStatic)
+			bits |= Binding.TYPE;
 		return this.resolvedType = scope.enclosingReceiverType();
 	}
 

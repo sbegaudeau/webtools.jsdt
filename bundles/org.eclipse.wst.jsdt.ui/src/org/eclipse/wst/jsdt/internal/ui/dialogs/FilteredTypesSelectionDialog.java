@@ -967,12 +967,13 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 		}
 
 		public String getText(Object element) {
-			return ((TypeNameMatch) element).getSimpleTypeName();
+
+			return ((TypeNameMatch) element).getQualifiedName();
 		}
 
 		public String getQualifiedText(TypeNameMatch type) {
 			StringBuffer result= new StringBuffer();
-			result.append(type.getSimpleTypeName());
+			result.append(type.getQualifiedName());
 			String containerName= type.getTypeContainerName();
 			result.append(JavaScriptElementLabels.CONCAT_STRING);
 			if (containerName.length() > 0) {

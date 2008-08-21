@@ -642,7 +642,7 @@ public class JavaProject
 						// external target - only JARs allowed
 						if (JavaModel.isFile(target))
 						{
-							 if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isJavaFileName(entryPath.lastSegment())) {
+							 if (true) {//org.eclipse.wst.jsdt.internal.compiler.util.Util.isJavaFileName(entryPath.lastSegment())) {
 								 root = new LibraryFragmentRoot(entryPath, this);
 
 							 }
@@ -1762,7 +1762,10 @@ public class JavaProject
 					return getPackageFragmentRoot(this.project.getWorkspace().getRoot().getProject(lastSegment));
 				} else {
 					// lib being a folder
-					return getPackageFragmentRoot(this.project.getWorkspace().getRoot().getFolder(path));
+					IFolder folder = this.project.getWorkspace().getRoot().getFolder(path);
+					if (folder!=null && folder.exists())
+						return getPackageFragmentRoot(folder);
+					return getPackageFragmentRoot0(path);
 				}
 		}
 	}

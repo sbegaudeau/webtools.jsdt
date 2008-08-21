@@ -44,7 +44,7 @@ public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlob
 													  };
 	private static final String LibraryDescription = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3BrowserLibrary;
 	
-	class BasicLibLocation extends SystemLibraryLocation {
+	static class BasicLibLocation extends SystemLibraryLocation {
 		BasicLibLocation() {
 			super();
 		}
@@ -52,10 +52,19 @@ public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlob
 		public char[][] getLibraryFileNames() {
 			return  BasicBrowserLibraryJsGlobalScopeContainerInitializer.LIBRARY_FILE_NAME ;
 		}
+		
+		static LibraryLocation fInstance;
+		
+		public static LibraryLocation getInstance(){
+			if(fInstance== null){
+				fInstance = new BasicLibLocation();
+			}
+			return fInstance;
+		}
 	}
 	
 	public LibraryLocation getLibraryLocation() {
-		return new BasicLibLocation();
+		return BasicLibLocation.getInstance();
 	}
 
 	/**

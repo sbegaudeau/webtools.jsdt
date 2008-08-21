@@ -42,7 +42,7 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 	// storage for internal flags (32 bits)						BIT USAGE
 	public final static int Bit1 = 0x1;					// return type (operator) | name reference kind (name ref) | add assertion (type decl) | useful empty statement (empty statement)
 	public final static int Bit2 = 0x2;					// return type (operator) | name reference kind (name ref) | has local type (type, method, field decl)
-	public final static int Bit3 = 0x4;					// return type (operator) | name reference kind (name ref) | implicit this (this ref)
+	public final static int Bit3 = 0x4;					// return type (operator) | name reference kind (name ref)
 	public final static int Bit4 = 0x8;					// return type (operator) | first assignment to local (name ref,local decl) | undocumented empty block (block, type and method decl)
 	public final static int Bit5 = 0x10;				// value for return (expression) | has all method bodies (unit) | supertype ref (type ref) | resolved (field decl)
 	public final static int Bit6 = 0x20;				// depth (name ref, msg) | ignore need cast check (cast expression) | error in signature (method declaration/ initializer)
@@ -54,7 +54,7 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 	public final static int Bit12 = 0x800;				// depth (name ref, msg) | operator (operator) | has abstract methods (type decl)
 	public final static int Bit13 = 0x1000;				// depth (name ref, msg) | is secondary type (type decl)
 	public final static int Bit14 = 0x2000;				// strictly assigned (reference lhs) | discard enclosing instance (explicit constr call) | hasBeenGenerated (type decl)
-	public final static int Bit15 = 0x4000;				// is unnecessary cast (expression) | is varargs (type ref) | isSubRoutineEscaping (try statement) | superAccess (javadoc allocation expression/javadoc message send/javadoc return statement)
+	public final static int Bit15 = 0x4000;				// is unnecessary cast (expression) | implicit this (this ref) | is varargs (type ref) | isSubRoutineEscaping (try statement) | superAccess (javadoc allocation expression/javadoc message send/javadoc return statement)
 	public final static int Bit16 = 0x8000;				// in javadoc comment (name ref, type ref, msg)
 	public final static int Bit17 = 0x10000;			// compound assigned (reference lhs)
 	public final static int Bit18 = 0x20000;			// non null (expression) | onDemand (import reference)
@@ -130,7 +130,7 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 	public static final int FirstAssignmentToLocal = Bit4;
 
 	// for this reference
-	public static final int IsImplicitThis = Bit3;
+	public static final int IsImplicitThis = Bit15;
 
 	// for single name references
 	public static final int DepthSHIFT = 5;	// Bit6 -> Bit13

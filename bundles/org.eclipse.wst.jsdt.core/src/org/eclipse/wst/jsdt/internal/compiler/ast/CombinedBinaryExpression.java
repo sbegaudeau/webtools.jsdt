@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Michael Spector <spektom@gmail.com>  Bug 242754
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
@@ -128,6 +129,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 	if (this.referencesTable == null) {
 		return super.analyseCode(currentScope, flowContext, flowInfo);
 	}
+	if (this.referencesTable[0] != null && this.referencesTable[0].resolvedType != null) {
 	BinaryExpression cursor;
 	if ((cursor = this.referencesTable[0]).resolvedType.id !=
 			TypeIds.T_JavaLangString) {
@@ -143,6 +145,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 		flowInfo = cursor.right.
 			analyseCode(currentScope, flowContext, flowInfo).
 				unconditionalInits();
+	}
 	}
 	if (this.resolvedType.id != TypeIds.T_JavaLangString) {
 		this.right.checkNPE(currentScope, flowContext, flowInfo);

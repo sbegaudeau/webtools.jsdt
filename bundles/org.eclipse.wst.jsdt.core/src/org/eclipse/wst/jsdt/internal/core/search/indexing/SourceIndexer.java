@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     bug 242694 -  Michael Spector <spektom@gmail.com>     
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.indexing;
 
@@ -54,7 +55,7 @@ public class SourceIndexer extends AbstractIndexer implements SuffixConstants {
 			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(path.segment(0));
 			parser = JavaModelManager.getJavaModelManager().indexManager.getSourceElementParser(JavaScriptCore.create(project), requestor);
 		} else {
-			parser.requestor = requestor;
+			parser.setRequestor(requestor);
 		}
 
 		// Launch the parser
@@ -107,7 +108,7 @@ public class SourceIndexer extends AbstractIndexer implements SuffixConstants {
 			packageName[0]=pkgName.toCharArray();
 		}
 		
-		LibraryAPIs apis = MetadataReader.readAPIsFromString(new String(source));
+		LibraryAPIs apis = MetadataReader.readAPIsFromString(new String(source),documentPath);
 		new MetadataSourceElementNotifier(apis,requestor).notifyRequestor();
 		
 	}

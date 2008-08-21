@@ -1450,6 +1450,8 @@ public class Scribe {
 		printComment();
 		try {
 			int tokenStart=this.scanner.currentPosition;
+			if (this.scanner.atEnd())
+				return;
 			this.currentToken = this.scanner.getNextToken();
 			char[] currentTokenSource = this.scanner.getRawTokenSource();
 			if (expectedTokenType != this.currentToken) {

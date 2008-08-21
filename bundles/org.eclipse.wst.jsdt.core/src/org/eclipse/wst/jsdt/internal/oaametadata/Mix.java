@@ -11,7 +11,19 @@
 package org.eclipse.wst.jsdt.internal.oaametadata;
 
 public class Mix extends DocumentedElement{
-	String type;
+//	mix_element = element mix {
+//		  mix_content  &  mix_attributes  &  foreign_nodes
+//		}
+//		mix_content = (
+//		  descriptive_elements
+//		  # Research the above, make consistent with the spec  
+//		  # FIXME: aliases? ancestors?
+//		)
+//		mix_attributes = (
+//		  datatype?  &  fromScope?  &  toScope?
+//		)
+		
+	String datatype;
 	String fromScope;
 	String toScope; 
 }

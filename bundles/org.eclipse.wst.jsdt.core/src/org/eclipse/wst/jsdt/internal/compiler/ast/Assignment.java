@@ -205,6 +205,8 @@ public TypeBinding resolveType(BlockScope scope) {
 		}
 		return this.resolvedType;
 	}
+	if (rhsType.isFunctionType() && this.lhs.isTypeReference())
+		return lhsType;
 	scope.problemReporter().typeMismatchError(rhsType, lhsType, this.expression);
 	return lhsType;
 }

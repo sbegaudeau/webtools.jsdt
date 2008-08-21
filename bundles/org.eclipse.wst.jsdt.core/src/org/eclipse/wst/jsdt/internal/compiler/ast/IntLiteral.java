@@ -51,20 +51,21 @@ public void computeConstant() {
 	//which is legal if used with a - as prefix....cool....
 	//notice that Integer.MIN_VALUE  == -2147483648
 
-	long MAX = Integer.MAX_VALUE;
 	if (this == One) {	constant = IntConstant.fromValue(1); return ;}
 
 	int length = source.length;
 	long computedValue = 0L;
 	if (source[0] == '0')
-	{	MAX = 0xFFFFFFFFL ; //a long in order to be positive !
-		if (length == 1) {	constant = IntConstant.fromValue(0); return ;}
+	{	if (length == 1) {	constant = IntConstant.fromValue(0); return ;}
 		final int shift,radix;
+		int maxDigit=16;
 		int j ;
 		if ( (source[1] == 'x') || (source[1] == 'X') )
-		{	shift = 4 ; j = 2; radix = 16;}
+		{	shift = 4 ; j = 2; radix = 16; maxDigit=18;}
 		else
 		{	shift = 3 ; j = 1; radix = 8;}
+		if (length>maxDigit)
+			return ;
 		while (source[j]=='0')
 		{	j++; //jump over redondant zero
 			if (j == length)
@@ -77,7 +78,8 @@ public void computeConstant() {
 			if ((digitValue = ScannerHelper.digit(source[j++],radix))	< 0 )
 			{	constant = FORMAT_ERROR; return ;}
 			computedValue = (computedValue<<shift) | digitValue ;
-			if (computedValue > MAX) return /*constant stays null*/ ;}}
+//			if (computedValue > MAX) return /*constant stays null*/ ;
+		}	}
 	else
 	{	//-----------regular case : radix = 10-----------
 		for (int i = 0 ; i < length;i++)
@@ -85,7 +87,8 @@ public void computeConstant() {
 			if ((digitValue = ScannerHelper.digit(source[i],10))	< 0 )
 			{	constant = FORMAT_ERROR; return ;}
 			computedValue = 10*computedValue + digitValue;
-			if (computedValue > MAX) return /*constant stays null*/ ; }}
+//			if (computedValue > MAX) return /*constant stays null*/ ; 
+		}}
 
 	constant = IntConstant.fromValue(value = (int)computedValue);
 

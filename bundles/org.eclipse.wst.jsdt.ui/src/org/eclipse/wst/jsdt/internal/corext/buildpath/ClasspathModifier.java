@@ -31,7 +31,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
@@ -131,12 +130,12 @@ public class ClasspathModifier {
 		cpProject= cpProject.createWorkingCopy();
 		elementToChange= cpProject.get(index);		
 		
-		if (!allowInvalidCP && cpProject.getDefaultOutputLocation().segmentCount() == 1 && !projectPath.equals(elementToChange.getPath())) {
-			String outputFolderName= PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.SRCBIN_BINNAME);
-			cpProject.setDefaultOutputLocation(cpProject.getDefaultOutputLocation().append(outputFolderName));
-			ClasspathModifier.removeFromClasspath(javaProject, cpProject.getCPListElements(), null);
-			result= new StatusInfo(IStatus.INFO, Messages.format(NewWizardMessages.OutputLocationDialog_removeProjectFromBP, cpProject.getDefaultOutputLocation()));
-		}
+//		if (!allowInvalidCP && cpProject.getDefaultOutputLocation().segmentCount() == 1 && !projectPath.equals(elementToChange.getPath())) {
+//			String outputFolderName= PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.SRCBIN_BINNAME);
+//			cpProject.setDefaultOutputLocation(cpProject.getDefaultOutputLocation().append(outputFolderName));
+//			ClasspathModifier.removeFromClasspath(javaProject, cpProject.getCPListElements(), null);
+//			result= new StatusInfo(IStatus.INFO, Messages.format(NewWizardMessages.OutputLocationDialog_removeProjectFromBP, cpProject.getDefaultOutputLocation()));
+//		}
 		
 		exclude(outputPath, cpProject.getCPListElements(), new ArrayList(), cpProject.getJavaProject(), null);
         
@@ -162,26 +161,19 @@ public class ClasspathModifier {
 		if (lastSegment == null)
 			return result;
 		
-		if (lastSegment.equals(".settings") && outputPath.segmentCount() - projectPath.segmentCount() == 1) { //$NON-NLS-1$
-
-			StatusInfo statusInfo= new StatusInfo(IStatus.WARNING, NewWizardMessages.OutputLocation_SettingsAsLocation);
-			if (result.isOK()) {
-				return statusInfo;
-			} else {
-				MultiStatus ms= new MultiStatus(result.getPlugin(), result.getCode(), new IStatus[] {result, statusInfo}, statusInfo.getMessage(), null);
-				return ms;
-			}
-		}
+//		if (lastSegment.equals(".settings") && outputPath.segmentCount() - projectPath.segmentCount() == 1) { //$NON-NLS-1$
+//
+//			StatusInfo statusInfo= new StatusInfo(IStatus.WARNING, NewWizardMessages.OutputLocation_SettingsAsLocation);
+//			if (result.isOK()) {
+//				return statusInfo;
+//			} else {
+//				MultiStatus ms= new MultiStatus(result.getPlugin(), result.getCode(), new IStatus[] {result, statusInfo}, statusInfo.getMessage(), null);
+//				return ms;
+//			}
+//		}
 		
-		if (lastSegment.length() > 1 && lastSegment.charAt(0) == '.') {
-			StatusInfo statusInfo= new StatusInfo(IStatus.WARNING, Messages.format(NewWizardMessages.OutputLocation_DotAsLocation, outputPath.toString()));
-			if (result.isOK()) {
-				return statusInfo;
-			} else {
-				MultiStatus ms= new MultiStatus(result.getPlugin(), result.getCode(), new IStatus[] {result, statusInfo}, statusInfo.getMessage(), null);
-				return ms;
-			}
-		}
+
+		
 		
 		return result;
 	}

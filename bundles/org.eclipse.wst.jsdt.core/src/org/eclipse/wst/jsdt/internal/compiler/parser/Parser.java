@@ -6328,8 +6328,13 @@ protected void consumeRule(int act) {
 
 
 private void comsumeElisionList() {
+	int flag=this.intStack[this.intPtr];
+	if ((flag&UNCONSUMED_ELISION)!=0)
+	{
+		pushOnExpressionStack(new EmptyExpression(this.endPosition,this.endPosition));
+	}
 	concatExpressionLists();
-    this.intStack[this.intPtr]&= ~(UNCONSUMED_ELISION|UNCONSUMED_LIT_ELEMENT);
+//    this.intStack[this.intPtr]&= ~(UNCONSUMED_ELISION|UNCONSUMED_LIT_ELEMENT);
 }
 private void comsumeElisionOne() {
 	pushOnExpressionStack(new EmptyExpression(this.endPosition,this.endPosition));
@@ -7238,9 +7243,12 @@ protected void consumeToken(int type) {
 		case TokenNameSEMICOLON :
 			if (this.insertedSemicolonPosition>0)
 			{
+				if (this.insertedSemicolonPosition>=this.scanner.source.length)
+					this.insertedSemicolonPosition--;
 				this.endStatementPosition = this.insertedSemicolonPosition;
 				this.endPosition = this.insertedSemicolonPosition;
 				this.insertedSemicolonPosition=-1;
+				this.problemReporter().missingSemiColon(null, this.endPosition-1,this.endPosition);
 				break;
 			}// else fallthru
 		case TokenNameRBRACE:

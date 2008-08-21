@@ -97,7 +97,7 @@ class FunctionBinding implements IFunctionBinding {
 			if (this.binding.isConstructor()) {
 				name = this.getDeclaringClass().getName();
 			} else {
-				name = new String(this.binding.selector);
+				name = (this.binding.selector!=null) ? new String(this.binding.selector) : "";
 			}
 		}
 		return name;

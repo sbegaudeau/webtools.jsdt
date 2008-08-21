@@ -981,9 +981,12 @@ protected IJavaScriptElement resolveCompilationUnit(char[] packageName, char[] c
 			false);
 		// iterate type lookup in each package fragment
 		for (int i = 0, length = pkgs == null ? 0 : pkgs.length; i < length; i++) {
+			if (!Util.isMetadataFileName(cuName))
+			{
 			IJavaScriptUnit compUnit=pkgs[i].getJavaScriptUnit(cuName);
 			if (compUnit.exists())
 				return compUnit;
+			}
 			IClassFile classFile=pkgs[i].getClassFile(cuName);
 			if (classFile.exists())
 				return classFile;

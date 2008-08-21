@@ -10,21 +10,26 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
  * A package fragment that represents a package fragment found in a JAR.
@@ -37,7 +42,7 @@ final static String[]DEFAULT_PACKAGE={""}; //$NON-NLS-1$
  * Constructs a package fragment that is contained within a jar or a zip.
  */
 protected LibraryPackageFragment(PackageFragmentRoot root, String[] names) {
-	super(root, DEFAULT_PACKAGE);
+	super(root, names);
 }
 /**
  * Compute the children of this package fragment. Children of jar package fragments
@@ -69,18 +74,66 @@ public IJavaScriptUnit createCompilationUnit(String cuName, String contents, boo
  * @see JavaElement
  */
 protected Object createElementInfo() {
-	return null; // not used for JarPackageFragments: info is created when jar is opened
+	return new LibraryPackageFragmentInfo();  
 }
 /*
  * @see JavaElement#generateInfos
  */
 protected void generateInfos(Object info, HashMap newElements, IProgressMonitor pm) throws JavaScriptModelException {
 	// Open my jar: this creates all the pkg infos
+	
+	if (!getLibraryFragmentRoot().isDirectory())
+	{
 	Openable openableParent = (Openable)this.parent;
 	if (!openableParent.isOpen()) {
 		openableParent.generateInfos(openableParent.createElementInfo(), newElements, pm);
 	}
 }
+	else 
+		super.generateInfos(info, newElements, pm);
+}
+
+
+protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaScriptModelException {
+
+	if (!getLibraryFragmentRoot().isDirectory())
+		return true;	// already built
+	// check whether this pkg can be opened
+
+	// add compilation units/class files from resources
+	HashSet vChildren = new HashSet();
+	try {
+	    File file = getUnderlyingFile();
+		File[] members = file.listFiles();
+		int length = members.length;
+		if (length > 0) {
+			for (int i = 0; i < length; i++) {
+				File child = members[i];
+				if (child.isFile()) {
+					IJavaScriptElement childElement;
+					if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isJavaFileName(child.getName())) {
+						childElement = getClassFile(child.getName());
+						vChildren.add(childElement);
+					} else if (Util.isMetadataFileName(child.getName())) {
+						childElement = getClassFile(child.getName());
+						vChildren.add(childElement);
+					}
+				}
+			}
+		}
+	} catch (CoreException e) {
+		throw new JavaScriptModelException(e);
+	}
+
+
+	IJavaScriptElement[] children = new IJavaScriptElement[vChildren.size()];
+	vChildren.toArray(children);
+	info.setChildren(children);
+	return true;
+}
+
+
+
 /**
  * @see org.eclipse.wst.jsdt.core.IPackageFragment
  */
@@ -137,10 +190,14 @@ protected LibraryFragmentRoot getLibraryFragmentRoot()
 }
 
 public IClassFile getClassFile(String classFileName) {
-	if (!org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(classFileName)) {
+	if (!org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(classFileName)
+			&& !Util.isMetadataFileName(classFileName)) {
 		throw new IllegalArgumentException(Messages.element_invalidClassFileName);
 	}
 
+	LibraryFragmentRoot libraryFragmentRoot = getLibraryFragmentRoot();
+	if (!libraryFragmentRoot.isDirectory())
+	{
 	IPath path = getLibraryFragmentRoot().getPath();
 //	if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment().toCharArray())
 //			&& path.lastSegment().equalsIgnoreCase(classFileName))
@@ -148,6 +205,17 @@ public IClassFile getClassFile(String classFileName) {
 	if(path.toOSString().endsWith(classFileName)
  		|| path.isPrefixOf(new Path(classFileName))) {
 		return new ClassFile(this, path.toOSString());
+		}
+	}
+	else
+	{
+		String filename= "";
+		if (this.getFile()!=null)
+		  filename= this.getFile().getAbsolutePath()+File.separator+classFileName;
+		else 
+			filename=classFileName;
+		
+		return (!Util.isMetadataFileName(classFileName)) ? (IClassFile)new ClassFile(this,filename) : (IClassFile)new MetadataFile(this,filename);
 
 	}
 
@@ -161,6 +229,44 @@ public String getDisplayName() {
 		if(name!=null) return name;
 	}
 	return  parent.getPath().lastSegment();
+}
+
+public File getUnderlyingFile() throws JavaScriptModelException {
+	File file = getLibraryFragmentRoot().getFile();
+	if (file == null) {
+		return null;
+	}
+	if (this.names.length == 0) 
+		return file;
+	// the underlying resource may be a folder or a project (in the case that the project folder
+	// is atually the package fragment root)
+		String[] segs = this.names;
+		for (int i = 0; i < segs.length; ++i) {
+			File child = new File(file,segs[i]);
+			if (!child.exists() ) {
+				throw newNotPresentException();
+			}
+			file = child;
+		}
+		return file;
+}
+
+public File getFile() {
+	File file = getLibraryFragmentRoot().getFile();
+		int length = this.names.length;
+		if (length == 0) {
+			return file;
+		} else {
+			String[] segs = this.names;
+			for (int i = 0; i < segs.length; ++i) {
+				File child = new File(file,segs[i]);
+				if (!child.exists() ) {
+					return null;
+				}
+				file = child;
+			}
+			return file;
+		}
 }
 
 }

@@ -132,7 +132,7 @@ public abstract class AbstractMethodDeclaration
 				ReferenceBinding declaringClass = this.binding.declaringClass;
 				if (declaringClass instanceof CompilationUnitBinding) {
 					CompilationUnitBinding compilationUnitBinding = (CompilationUnitBinding) declaringClass;
-					compilationUnitBinding.resolveTypesFor(this.binding);
+					compilationUnitBinding.resolveTypesFor(this.binding,this);
 				}
 			}
 			boolean used = this.binding.isAbstract() || this.binding.isNative();
@@ -347,7 +347,7 @@ public abstract class AbstractMethodDeclaration
 				if (methodBinding != null) {
 					this.binding = methodBinding;
 					methodBinding = compilationUnitBinding
-							.resolveTypesFor(methodBinding);
+							.resolveTypesFor(methodBinding,this);
 					if (methodBinding != null) {
 						MethodScope enclosingMethodScope = upperScope
 								.enclosingMethodScope();

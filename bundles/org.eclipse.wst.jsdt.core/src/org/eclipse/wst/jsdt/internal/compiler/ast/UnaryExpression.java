@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IUnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.BooleanConstant;
@@ -78,16 +77,17 @@ public FlowInfo analyseCode(
 		}
 		int expressionTypeID = expressionType.id;
 		// autoboxing support
-		boolean use15specifics = scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
-		if (use15specifics) {
-			if (!expressionType.isBaseType()) {
-				expressionTypeID = scope.environment().computeBoxingType(expressionType).id;
-			}
-		}
+//		boolean use15specifics = scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
+//		if (use15specifics) {
+//			if (!expressionType.isBaseType()) {
+//				expressionTypeID = scope.environment().computeBoxingType(expressionType).id;
+//			}
+//		}
 		if (expressionTypeID > 15) {
-			this.constant = Constant.NotAConstant;
-			scope.problemReporter().invalidOperator(this, expressionType);
-			return null;
+			expressionTypeID=T_JavaLangObject;
+//			this.constant = Constant.NotAConstant;
+//			scope.problemReporter().invalidOperator(this, expressionType);
+//			return null;
 		}
 
 		int tableId=-1;

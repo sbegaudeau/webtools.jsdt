@@ -10,9 +10,23 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.oaametadata;
 
-public class Parameter extends DocumentedElement {
+public class Parameter extends VersionableElement {
+//	parameter_element = element parameter {
+//		  parameter_content  &  parameter_attributes  &  foreign_nodes
+//		}
+//		parameter_content = (
+//		  options_element?  &  
+//		  descriptive_elements  &  compatibility_elements
+//		  # Research the above, make consistent with the spec  
+//		)
+//		parameter_attributes = (
+//		  datatype?  &  name?  &  usage?  &
+//		  datatype_supplemental_attributes  # FIXME: Is this correct?
+//		)
+		
+		
 	public String name;
-	public String type;
+	public String dataType;
 	public String usage; 
 
 }

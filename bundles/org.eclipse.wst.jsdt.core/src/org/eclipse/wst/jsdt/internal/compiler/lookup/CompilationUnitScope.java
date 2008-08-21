@@ -36,6 +36,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfType;
 import org.eclipse.wst.jsdt.internal.compiler.util.ObjectVector;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleNameVector;
+import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSetOfCharArray;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 
@@ -301,10 +302,12 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 	int count = 0;
 
 
+	SimpleSetOfCharArray addTypes=new SimpleSetOfCharArray(10);
 //	nextType:
+	String fileName=new String(this.referenceContext.getFileName());
 	for (int i = 0; i < typeLength; i++) {
 		InferredType typeDecl =  referenceContext.inferredTypes[i];
-		if (typeDecl.isDefinition) {
+		if (typeDecl.isDefinition && !typeDecl.isEmptyGlobal()) {
 			ReferenceBinding typeBinding = environment.defaultPackage
 					.getType0(typeDecl.getName());
 			recordSimpleReference(typeDecl.getName()); // needed to detect collision cases
@@ -318,7 +321,6 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 				if (typeBinding instanceof SourceTypeBinding)
 					existingBinding=(SourceTypeBinding)typeBinding;
 			}
-			String fileName=new String(this.referenceContext.getFileName());
 			ClassScope child = new ClassScope(this, typeDecl);
 			SourceTypeBinding type = child.buildInferredType(null, environment.defaultPackage,
 					accessRestriction);
@@ -341,12 +343,21 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 				}
 				else
 					if (typeDecl.isNamed() )
-					  environment.addUnitsContainingBinding(null, typeDecl.getName(), Binding.TYPE,fileName);
+						addTypes.add(typeDecl.getName());
+//					  environment.addUnitsContainingBinding(null, typeDecl.getName(), Binding.TYPE,fileName);
 				topLevelTypes[count++] = type;
 			}
 		}
 	}
 
+	
+	char [][] typeNames= new  char [addTypes.elementSize] [];
+	addTypes.asArray(typeNames);
+	for (int i = 0; i < typeNames.length; i++) {
+		  environment.addUnitsContainingBinding(null, typeNames[i], Binding.TYPE,fileName);
+	}
+
+	
 	// shrink topLevelTypes... only happens if an error was reported
 	if (count != topLevelTypes.length)
 		System.arraycopy(topLevelTypes, 0, topLevelTypes = new SourceTypeBinding[count], 0, count);

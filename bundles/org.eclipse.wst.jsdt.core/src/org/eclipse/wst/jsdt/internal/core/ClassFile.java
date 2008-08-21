@@ -48,6 +48,7 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -486,9 +487,23 @@ protected char getHandleMementoDelimiter() {
 }
 
 protected void getHandleMemento(StringBuffer buff) {
+	
+	PackageFragmentRoot root = getPackageFragmentRoot();
+	try {
+		if (root.isArchive() ||
+				(( root instanceof LibraryFragmentRoot || (getParent() instanceof PackageFragment && ((PackageFragment)getParent()).getKind()==IPackageFragmentRoot.K_BINARY))
+						&& root.getPath().lastSegment().equalsIgnoreCase(getElementName()))
+			) {
+		
 	((JavaElement)getParent()).getHandleMemento(buff);
 	buff.append(getHandleMementoDelimiter());
 	escapeMementoName(buff, getPath().toPortableString());
+}
+		else
+			super.getHandleMemento(buff);
+	} catch (JavaScriptModelException e) {
+		e.printStackTrace();
+	}
 }
 /*
  * @see IJavaScriptElement
@@ -618,7 +633,11 @@ private IStatus validateClassFile() {
 	IPackageFragmentRoot root = getPackageFragmentRoot();
 	try {
 		if (root.getKind() != IPackageFragmentRoot.K_BINARY)
+		{
+			if (((PackageFragment)this.getParent()).getKind()!= IPackageFragmentRoot.K_BINARY)
 			return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, root);
+			
+		}
 	} catch (JavaScriptModelException e) {
 		return e.getJavaScriptModelStatus();
 	}
@@ -828,7 +847,10 @@ public IType[] getTypes() throws JavaScriptModelException {
 		return name.toCharArray();
 	}
 	public char[][] getPackageName() {
-		return new char[][] {getParent().getElementName().toCharArray()};
+//		return new char[][] {getParent().getElementName().toCharArray()};
+		PackageFragment packageFragment = (PackageFragment) getParent();
+		if (packageFragment == null) return CharOperation.NO_CHAR_CHAR;
+		return Util.toCharArrays(packageFragment.names);
 	}
 	public char[] getFileName() {
 		//return getElementName().toCharArray();

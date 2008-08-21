@@ -2185,7 +2185,7 @@ public class NameLookup implements SuffixConstants {
 				try {
 					int matchRule = SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE;
 					new BasicSearchEngine().searchAllBindingNames(
-							null,
+							CharOperation.NO_CHAR,
 							bindingName.toCharArray(),
 							bindingType,
 							matchRule, // not case sensitive

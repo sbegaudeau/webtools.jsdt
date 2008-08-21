@@ -131,8 +131,14 @@ public class ProjectLibraryRoot implements IAdaptable{
 				rawClasspath = project.getRawIncludepath();
 			}
 			catch (JavaScriptModelException e) {}
-			for (int i= 0; i < rawClasspath.length; i++) {
+			next2: for (int i= 0; i < rawClasspath.length; i++) {
 				IIncludePathEntry classpathEntry= rawClasspath[i];
+				IIncludePathAttribute[] attribs = classpathEntry.getExtraAttributes();
+				
+				for(int k = 0;attribs!=null && k<attribs.length;k++) {
+					if(attribs[k].equals(IIncludePathAttribute.HIDE)) continue next2;
+				}
+				
 				if (classpathEntry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
 					projectPackageFragmentRoots.add(new JsGlobalScopeContainer(project, classpathEntry));
 				}	

@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Michael Spector <spektom@gmail.com>  Bug 242987
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 

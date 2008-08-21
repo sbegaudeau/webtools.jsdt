@@ -10,6 +10,23 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.oaametadata;
 
-public class Exception  extends DocumentedElement{
-	String type;
+public class Exception  extends VersionableElement{
+
+	
+//	exception_element = element exception {
+//		  exception_content  &  exception_attributes  &  foreign_nodes
+//		}
+//		exception_content = (
+//		  parameters_element?  &  returns_element?  &  
+//		  descriptive_elements  &  compatibility_elements
+//		  # Research the above, make consistent with the spec  
+//		  # <parameters>? <returns>?
+//		)
+//		exception_attributes = (
+//		  empty
+//		)
+
+	public Parameter[] parameters;
+	public ReturnsData  returns;
+	public String type;
 }

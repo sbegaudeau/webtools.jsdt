@@ -10,16 +10,23 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 
 
@@ -86,17 +93,64 @@ public class LibraryFragmentRoot extends PackageFragmentRoot{
 	protected boolean computeChildren(OpenableElementInfo info, Map newElements) throws JavaScriptModelException {
 
 		String name[]={""};//libraryPath.lastSegment()}; //$NON-NLS-1$
+		ArrayList vChildren = new ArrayList(5);
+		if (!isDirectory())
+		{
 		LibraryPackageFragment packFrag=  new LibraryPackageFragment(this, name);
 		LibraryPackageFragmentInfo fragInfo= new LibraryPackageFragmentInfo();
 
  		packFrag.computeChildren(fragInfo);
-
-
-		newElements.put(packFrag, fragInfo);
-
-		IJavaScriptElement[] children= new IJavaScriptElement[]{packFrag};
+			newElements.put(packFrag, fragInfo);
+			vChildren.add(packFrag);
+		}
+		else
+		{
+			computeDirectoryChildren(getFile(),true, CharOperation.NO_STRINGS, vChildren);
+		}
+		IJavaScriptElement[] children = new IJavaScriptElement[vChildren.size()];
+		vChildren.toArray(children);
 		info.setChildren(children);
 		return true;
+	}
+
+
+	protected void computeDirectoryChildren(File  file, boolean isIncluded, String[] pkgName, ArrayList vChildren) throws JavaScriptModelException {
+
+		if (isIncluded) {
+		    IPackageFragment pkg = getPackageFragment(pkgName);
+			vChildren.add(pkg);
+		}
+		try {
+			JavaModelManager manager = JavaModelManager.getJavaModelManager();
+			File[] members = file.listFiles();
+			boolean hasIncluded = isIncluded;
+			int length = members.length;
+			if (length >0) {
+				for (int i = 0; i < length; i++) {
+					File member = members[i];
+					String memberName = member.getName();
+
+					if (member.isDirectory()) {
+
+		    				String[] newNames = org.eclipse.wst.jsdt.internal.core.util.Util.arrayConcat(pkgName, manager.intern(memberName));
+		    				computeDirectoryChildren(  member, true, newNames, vChildren);
+		    		}
+					else
+					{
+				    		if (!hasIncluded
+				    				&& Util.isJavaFileName(memberName)) {
+				    			hasIncluded = true;
+				    			IPackageFragment pkg = getPackageFragment(pkgName);
+				    			vChildren.add(pkg);
+				    		}
+					}
+				}
+			}
+		} catch(IllegalArgumentException e){
+			throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.ELEMENT_DOES_NOT_EXIST); // could be thrown by ElementTree when path is not found
+		} catch (CoreException e) {
+			throw new JavaScriptModelException(e);
+		}
 	}
 
 	protected Object createElementInfo() {
@@ -217,5 +271,15 @@ protected boolean resourceExists() {
 
 	public boolean isLibrary() {
 		return true;
+	}
+	
+	public boolean isDirectory()
+	{
+		return  !Util.isJavaFileName(this.libraryPath.lastSegment());
+	}
+	
+	public File getFile()
+	{
+		 return new File(this.libraryPath.toOSString());
 	}
 }

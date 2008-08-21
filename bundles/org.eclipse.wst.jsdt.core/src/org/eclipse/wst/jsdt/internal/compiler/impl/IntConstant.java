@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.impl;
 
 public class IntConstant extends Constant {
 
-	int value;
+	long value;
 
 	private static final IntConstant MINUS_FOUR = new IntConstant(-4);
 	private static final IntConstant MINUS_THREE = new IntConstant(-3);
@@ -73,7 +73,7 @@ public class IntConstant extends Constant {
 	}
 
 	public int intValue() {
-		return value;
+		return (int)value;
 	}
 
 	public long longValue() {

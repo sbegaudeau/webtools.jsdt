@@ -103,7 +103,7 @@ private void parseFile(ITypeRequestor requestor) {
 		}
 		for (int inx=0;inx<declaration.numberInferredTypes;inx++) {
 			InferredType inferredType = declaration.inferredTypes[inx];
-			if (inferredType.isDefinition)
+			if (inferredType.isDefinition && !inferredType.isEmptyGlobal())
 				definedItems[Binding.TYPE].put(inferredType.getName(), foundAnswer);
 		}
 

@@ -197,7 +197,7 @@ public class ASTNodeFinder {
 		int count = 0;
 		for (int i = 0; i < this.unit.numberInferredTypes; i++) {
 			InferredType inferredType = this.unit.inferredTypes[i];
-			if (!inferredType.isDefinition)
+			if (!inferredType.isDefinition || inferredType.isEmptyGlobal())
 				continue;
 
 			if (!inferredType.isNamed()) {

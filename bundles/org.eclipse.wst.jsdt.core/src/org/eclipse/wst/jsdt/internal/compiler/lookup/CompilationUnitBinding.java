@@ -14,10 +14,17 @@ import java.io.File;
 
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.PostfixExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 
 
 public class CompilationUnitBinding  extends SourceTypeBinding {
@@ -542,6 +549,11 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 		  for (int i = 0; i < statements.length; i++) {
 			if (statements[i] instanceof AbstractMethodDeclaration && ((AbstractMethodDeclaration)statements[i]).binding==binding)
 				return (AbstractMethodDeclaration)statements[i];
+			else if (statements[i] instanceof Assignment && (((Assignment)statements[i]).expression instanceof FunctionExpression)) {
+				FunctionExpression functionExpression = (FunctionExpression) ((Assignment)statements[i]).expression;
+				if (functionExpression.methodDeclaration !=null && functionExpression.methodDeclaration.binding==binding)
+					return functionExpression.methodDeclaration;
+		  }
 		  }
 
 		  class  MethodFinder extends ASTVisitor
@@ -558,6 +570,41 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 					}
 					return true;
 				}
+
+				public boolean visit(InferredType inferredType, BlockScope scope) {	// not possible to contain method
+					return false;
+				}
+
+				public boolean visit(Javadoc javadoc, BlockScope scope) {	// not possible to contain method
+					return false;
+				}
+
+				public boolean visit(Javadoc javadoc, ClassScope scope) { // not possible to contain method
+					return false;
+				}
+
+				public boolean visit(PostfixExpression postfixExpression,  // not possible to contain method
+						BlockScope scope) {
+					return false;
+				}
+
+				public boolean visit(PrefixExpression prefixExpression,	// not possible to contain method
+						BlockScope scope) {
+					return false;
+				}
+
+				public boolean visit(ThisReference thisReference,	// not possible to contain method
+						BlockScope scope) {
+					return false;
+				}
+
+				public boolean visit(ThisReference thisReference,	// not possible to contain method
+						ClassScope scope) {
+					return false;
+		  }
+				
+				
+				
 		  }
 		  MethodFinder visitor=new MethodFinder(binding);
 		  compilationUnitScope.referenceContext.traverse(visitor, compilationUnitScope,true);
@@ -575,6 +622,10 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 	public void cleanup()
 	{
 		super.cleanup();
+		if (this.methods!=null)
+			for (int i = 0; i < this.methods.length; i++) {
+				this.methods[i].cleanup();
+			}
 		this.compilationUnitScope=null;
 	}
 }

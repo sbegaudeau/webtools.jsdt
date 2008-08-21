@@ -278,7 +278,7 @@ public TypeBinding resolveType(BlockScope scope) {
 //		receiverCast = true;
 //	}
 	this.actualReceiverType = (receiver!=null) ?receiver.resolveType(scope):null;
-	boolean receiverIsType = (receiver instanceof NameReference || receiver instanceof FieldReference)
+	boolean receiverIsType = (receiver instanceof NameReference || receiver instanceof FieldReference  || receiver instanceof ThisReference)
 		&& ( receiver.bits & Binding.TYPE) != 0;
 //	if (receiverCast && this.actualReceiverType != null) {
 //		 // due to change of declaring class with receiver type, only identity cast should be notified
@@ -365,7 +365,7 @@ public TypeBinding resolveType(BlockScope scope) {
 		this.binding=new IndirectMethodBinding(0,this.actualReceiverType,argumentTypes,scope.compilationUnitScope().referenceContext.compilationUnitBinding);
 	else
 	{
-		if (receiver==null || receiver.isImplicitThis())
+		if (receiver==null  /*|| receiver.isImplicitThis()*/)
 			this.binding =scope.getImplicitMethod(selector, argumentTypes, this);
 		else
 		{

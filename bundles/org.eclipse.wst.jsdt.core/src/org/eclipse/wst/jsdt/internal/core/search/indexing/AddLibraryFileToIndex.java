@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
+import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.index.Index;
 import org.eclipse.wst.jsdt.internal.core.search.JavaSearchDocument;
@@ -159,10 +160,14 @@ class AddLibraryFileToIndex extends IndexRequest {
 //				}
 				IPath filePath=(this.absolutePath!=null)?this.absolutePath : this.containerPath;
 				File file = new File(filePath.toOSString());
-				final char[] classFileChars = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileCharContent(file,null);
-				String packageName=libraryFilePath.lastSegment();
-				JavaSearchDocument entryDocument = new JavaSearchDocument(  libraryFilePath, classFileChars, participant,packageName);
-				this.manager.indexDocument(entryDocument, participant, index, this.containerPath);
+
+				if (file.isFile())
+					indexFile(file, participant, index, libraryFilePath);
+				else
+				{
+					indexDirectory(file, participant, index, libraryFilePath);
+				}
+
 				this.manager.saveIndex(index);
 				if (JobManager.VERBOSE)
 					org.eclipse.wst.jsdt.internal.core.util.Util.verbose("-> done indexing of " //$NON-NLS-1$
@@ -187,4 +192,30 @@ class AddLibraryFileToIndex extends IndexRequest {
 	public String toString() {
 		return "indexing " + this.containerPath.toString(); //$NON-NLS-1$
 	}
+	
+	private void indexFile(File file,SearchParticipant participant, Index index, IPath libraryFilePath)
+	{
+		try {
+			final char[] classFileChars = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileCharContent(file,null);
+			String packageName="";
+			JavaSearchDocument entryDocument = new JavaSearchDocument(  new Path(file.getAbsolutePath()), classFileChars, participant,packageName);
+			this.manager.indexDocument(entryDocument, participant, index, this.containerPath);
+		} catch (Exception ex)
+		{}
+
+	}
+
+	private void indexDirectory(File file,SearchParticipant participant, Index index, IPath libraryFilePath)
+	{
+		File[] files = file.listFiles();
+		if (files!=null)
+		 for (int i = 0; i < files.length; i++) {
+			if (files[i].isDirectory())
+			  indexDirectory(files[i], participant, index, libraryFilePath);
+			else if (Util.isClassFileName(files[i].getName()))
+				indexFile(files[i], participant, index, libraryFilePath);
+
+		}
+	}
+	
 }

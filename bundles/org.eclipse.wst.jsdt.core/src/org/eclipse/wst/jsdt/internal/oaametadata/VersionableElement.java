@@ -10,19 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.oaametadata;
 
-public class ReturnsData extends DocumentedElement {
-//	returns_element = element returns {
-//		  returns_content  &  returns_attributes  &  foreign_nodes
-//		}
-//		returns_content = (
-//		  descriptive_elements
-//		  # Research the above, make consistent with the spec  
-//		)
-//		returns_attributes = (
-//		  datatype?  &
-//		  datatype_supplemental_attributes  # FIXME: Is this correct?
-//		)
-		
-		
-		public String dataType;
+public class VersionableElement  extends DocumentedElement{
+
+	public DepreciatedOrAvailable depreciated;
+	public DepreciatedOrAvailable available;
+
 }

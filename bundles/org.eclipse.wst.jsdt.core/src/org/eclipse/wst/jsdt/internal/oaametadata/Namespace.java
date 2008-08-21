@@ -10,19 +10,20 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.oaametadata;
 
-public class ReturnsData extends DocumentedElement {
-//	returns_element = element returns {
-//		  returns_content  &  returns_attributes  &  foreign_nodes
+public class Namespace extends DocumentedElement{
+//	namespace_element = element namespace {
+//		  namespace_content  &  namespace_attributes  &  foreign_nodes
 //		}
-//		returns_content = (
+//		namespace_content = (
 //		  descriptive_elements
 //		  # Research the above, make consistent with the spec  
+//		  # FIXME: aliases? ancestors?
 //		)
-//		returns_attributes = (
-//		  datatype?  &
-//		  datatype_supplemental_attributes  # FIXME: Is this correct?
+//		namespace_attributes = (
+//		  name  &  visibility?
 //		)
+//	)
 		
-		
-		public String dataType;
+	String name;
+	String visibility;
 }

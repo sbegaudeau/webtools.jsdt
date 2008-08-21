@@ -331,7 +331,7 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 			fEnableWebSupport= new SelectionButtonDialogField(SWT.CHECK);
 			fEnableWebSupport.setLabelText(NewWizardMessages.JavaProjectWizardFirstPage_1);
 			fEnableWebSupport.doFillIntoGrid(fGroup, 2);
-			
+			fEnableWebSupport.setEnabled(true);
 			//fPreferenceLink= new Link(fGroup, SWT.NONE);
 			//fPreferenceLink.setFont(fGroup.getFont());
 			//fPreferenceLink.setText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_link_description);
@@ -353,7 +353,7 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 			
 			//DialogField.createEmptySpace(fGroup);
 			
-			fEnableWebSupport.setSelection(false);
+			fEnableWebSupport.setSelection(true);
 		//	fJRECombo.setEnabled(fUseProjectJRE.isSelected());
 		}
 

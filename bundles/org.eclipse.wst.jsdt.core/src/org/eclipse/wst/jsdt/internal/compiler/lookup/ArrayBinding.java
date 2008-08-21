@@ -153,13 +153,13 @@ public boolean isCompatibleWith(TypeBinding otherType) {
 	switch (otherType.kind()) {
 		case Binding.ARRAY_TYPE :
 			ArrayBinding otherArray = (ArrayBinding) otherType;
-			if (otherArray.leafComponentType.isBaseType())
-				return false; // relying on the fact that all equal arrays are identical
-			if (dimensions == otherArray.dimensions)
+//			if (otherArray.leafComponentType.isBaseType())
+//				return false; // relying on the fact that all equal arrays are identical
+//			if (dimensions == otherArray.dimensions)
 				return leafComponentType.isCompatibleWith(otherArray.leafComponentType);
-			if (dimensions < otherArray.dimensions)
-				return false; // cannot assign 'String[]' into 'Object[][]' but can assign 'byte[][]' into 'Object[]'
-			break;
+//			if (dimensions < otherArray.dimensions)
+//				return false; // cannot assign 'String[]' into 'Object[][]' but can assign 'byte[][]' into 'Object[]'
+//			break;
 		case Binding.BASE_TYPE :
 			return otherType.isAnyType();
 		case Binding.WILDCARD_TYPE :

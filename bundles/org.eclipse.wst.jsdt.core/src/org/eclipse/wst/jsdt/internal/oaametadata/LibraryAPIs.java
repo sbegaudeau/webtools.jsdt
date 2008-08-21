@@ -16,13 +16,29 @@ public class LibraryAPIs {
 	public Method [] globalMethods;
 	public Property[] globalVars;
 	
-	public String version;
+//	interface
+//	license
+	
+	
+	public String description;
+	public Author[] authors;
+	public String fileName;
+	public Enum[] enums;
+	public Mixin [] mixins;
+	public Namespace [] namespaces;
+
+		// Attributes
+	public String libraryVersion;
 	public String language;
 	public String getterPattern;
 	public String setterPattern;
-	public String description;
-	public String[] authors;
-	public String fileName;
+	public String spec;
+	
+//	  alias_element*  &  aliases_element?  &  class_element*  &  classes_element?  &
+//			  globals_element?  &  interface_element*  &  interfaces_element?  &  license_element?  &  
+//			  mixin_element*  &  mixins_element?  &  namespace_element*  &  namespaces_element?  &
+//			  descriptive_elements 
+	Alias [] aliases;
 	
 	
 	public Property getGlobalVar(String name) {
@@ -36,7 +52,7 @@ public class LibraryAPIs {
 	public ClassData getClass(String name) {
 		if (this.classes!=null)
 			for (int i = 0; i < this.classes.length; i++) {
-				if (name.equals(this.classes[i].name) || name.equals(this.classes[i].type))
+				if (name.equals(this.classes[i].name))
 					return this.classes[i];
 			}
 			return null;
@@ -49,4 +65,14 @@ public class LibraryAPIs {
 			}
 			return null;
 	}
+	public Enum getEnum(String name) {
+		if (this.enums!=null)
+			for (int i = 0; i < this.enums.length; i++) {
+				if (name.equals(this.enums[i].name))
+					return this.enums[i];
+			}
+			return null;
+	}
+	
+	
 }

@@ -398,6 +398,8 @@ public static long getIrritant(int problemID) {
 			
 		case IProblem.NonConstantExpression:
 			return CompilerOptions.SwitchCaseShouldBeConstant;
+		case IProblem.MissingSemiColon:
+			return CompilerOptions.OptionalSemicolon;
 
 	
 	}
@@ -4844,13 +4846,13 @@ public void missingReturnType(AbstractMethodDeclaration methodDecl) {
 		methodDecl.sourceStart,
 		methodDecl.sourceEnd);
 }
-public void missingSemiColon(Expression expression){
+public void missingSemiColon(Expression expression, int start, int end){
 	this.handle(
 		IProblem.MissingSemiColon,
 		NoArgument,
 		NoArgument,
-		expression.sourceStart,
-		expression.sourceEnd);
+		start,
+		end);
 }
 
 public void missingSerialVersion(TypeDeclaration typeDecl) {

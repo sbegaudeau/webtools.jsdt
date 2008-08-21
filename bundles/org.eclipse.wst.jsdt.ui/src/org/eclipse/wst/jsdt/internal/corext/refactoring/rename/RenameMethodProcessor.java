@@ -835,9 +835,22 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 						} else
 							return ScriptableRefactoring.createInputFatalStatus(null, refactoring, IJavaScriptRefactorings.RENAME_METHOD);
 					} else
-						return ScriptableRefactoring.createInputFatalStatus(element, refactoring, IJavaScriptRefactorings.RENAME_METHOD);
+					{
+						final IJavaScriptUnit unit= method.getJavaScriptUnit();
+						if (unit != null && unit.exists()) {
+							final IFunction[] methods= unit.findFunctions(method);
+							if (methods != null && methods.length == 1 && methods[0] != null) {
+								if (!methods[0].exists())
+									return ScriptableRefactoring.createInputFatalStatus(methods[0], refactoring, IJavaScriptRefactorings.RENAME_METHOD);
+								fMethod= methods[0];
+								initializeWorkingCopyOwner();
+							} else
+								return ScriptableRefactoring.createInputFatalStatus(null, refactoring, IJavaScriptRefactorings.RENAME_METHOD);
+						} else
+							return ScriptableRefactoring.createInputFatalStatus(element, refactoring, IJavaScriptRefactorings.RENAME_METHOD);
+					}
 				} else
-					return ScriptableRefactoring.createInputFatalStatus(element, refactoring, IJavaScriptRefactorings.RENAME_METHOD);
+					return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));
 			} else
 				return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_argument_not_exist, JDTRefactoringDescriptor.ATTRIBUTE_INPUT));
 			final String name= extended.getAttribute(JDTRefactoringDescriptor.ATTRIBUTE_NAME);

@@ -47,9 +47,20 @@ public int match(InferredType node, MatchingNodeSet nodeSet) {
 	if (this.pattern.simpleName == null || matchesName(this.pattern.simpleName, typeName))
 		return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 	char [] pkg=(this.pattern instanceof QualifiedTypeDeclarationPattern)? ((QualifiedTypeDeclarationPattern)this.pattern).qualification : this.pattern.pkg;
-	if (pkg!=null && pkg.length>0 &&
+	if (pkg!=null)
+	{
+		if (pkg.length>0 &&
 			matchesName(CharOperation.concat(pkg, this.pattern.simpleName, '.'), typeName))
 		return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
+	}
+	else // any package
+	{
+		int index=CharOperation.lastIndexOf('.', typeName);
+		if (index>=0 &&
+			matchesName(CharOperation.subarray(typeName, index+1,typeName.length),this.pattern.simpleName))
+			return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
+		
+	}
 	return IMPOSSIBLE_MATCH;
 }
 public int resolveLevel(ASTNode node) {

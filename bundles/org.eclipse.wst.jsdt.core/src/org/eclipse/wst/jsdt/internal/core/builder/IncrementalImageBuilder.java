@@ -499,7 +499,6 @@ protected boolean findSourceFiles(IResourceDelta sourceDelta, ClasspathMultiDire
 				case IResourceDelta.ADDED :
 				    if (!isExcluded) {
 						IPath addedPackagePath = resource.getFullPath().removeFirstSegments(segmentCount);
-						createFolder(addedPackagePath, md.binaryFolder); // ensure package exists in the output folder
 						// add dependents even when the package thinks it exists to be on the safe side
 						if (JavaBuilder.DEBUG)
 							System.out.println("Found added package " + addedPackagePath); //$NON-NLS-1$
@@ -526,7 +525,6 @@ protected boolean findSourceFiles(IResourceDelta sourceDelta, ClasspathMultiDire
 						for (int i = 0, l = sourceLocations.length; i < l; i++) {
 							if (sourceLocations[i].sourceFolder.getFolder(removedPackagePath).exists()) {
 								// only a package fragment was removed, same as removing multiple source files
-								createFolder(removedPackagePath, md.binaryFolder); // ensure package exists in the output folder
 								IResourceDelta[] removedChildren = sourceDelta.getAffectedChildren();
 								for (int j = 0, m = removedChildren.length; j < m; j++)
 									if (!findSourceFiles(removedChildren[j], md, segmentCount))
@@ -623,9 +621,6 @@ protected boolean findSourceFiles(IResourceDelta sourceDelta, ClasspathMultiDire
 						}
 						if (JavaBuilder.DEBUG)
 							System.out.println("Copying added file " + resourcePath); //$NON-NLS-1$
-						createFolder(resourcePath.removeLastSegments(1), md.binaryFolder); // ensure package exists in the output folder
-						resource.copy(outputFile.getFullPath(), IResource.FORCE | IResource.DERIVED, null);
-						Util.setReadOnly(outputFile, false); // just in case the original was read only
 						return true;
 					case IResourceDelta.REMOVED :
 						if (outputFile.exists()) {

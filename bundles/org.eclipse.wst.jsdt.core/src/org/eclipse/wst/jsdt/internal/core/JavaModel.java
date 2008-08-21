@@ -373,7 +373,8 @@ public static synchronized File getFile(Object target) {
 		return (File) target;
 	if (target instanceof File) {
 		File f = (File) target;
-		if (f.isFile()) {
+//		if (f.isFile()) {
+		if (f.exists()) {
 			existingExternalConfirmedFiles.add(f);
 			return f;
 		}

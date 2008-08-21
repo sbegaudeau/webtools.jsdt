@@ -182,6 +182,7 @@
 
 	<!-- content assist processors - do not change their order -->  
 	<!-- JavaScript and javadoc category -->
+	<!--
 	<extension
 		point="org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer"
 		id="javaTypeProposalCategory"
@@ -189,6 +190,7 @@
 		<proposalCategory
 			icon="$nl$/icons/full/elcl16/jtypeassist_co.gif"/>
 	</extension>
+	-->
 	<extension
 		point="org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer"
 		id="javaNoTypeProposalCategory"
@@ -218,6 +220,7 @@
 	</extension>
 	 
 	<!-- JavaScript completions -->   
+	<!--   
 	<extension
 		point="org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer"
 		id="JavaTypeCompletionProposalComputer">
@@ -228,6 +231,7 @@
 			<partition type="__java_string"/>
 		</javaCompletionProposalComputer>
 	</extension>
+	-->
 	<extension
 		point="org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer"
 		id="JavaNoTypeCompletionProposalComputer">

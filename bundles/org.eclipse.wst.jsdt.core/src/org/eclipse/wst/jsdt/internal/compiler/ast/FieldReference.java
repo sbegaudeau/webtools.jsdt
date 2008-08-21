@@ -367,7 +367,7 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 	}
 	if (receiverDefined)
 	  this.receiverType = receiver.resolveType(scope);
-	if (this.receiverType == null) {
+	if (this.receiverType == null || this.receiverType==scope.getJavaLangObject()) {
 		Binding possibleTypeBinding =null;
 		if (possibleTypeName!=null)
 		   possibleTypeBinding = scope.getBinding( possibleTypeName, Binding.TYPE  & RestrictiveFlagMASK, this, true /*resolve*/);
@@ -405,7 +405,7 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 	}
 	
 	Binding memberBinding = scope.getFieldOrMethod(this.receiverType, token, this);
-	boolean receiverIsType = (receiver instanceof NameReference || receiver instanceof FieldReference)
+	boolean receiverIsType = (receiver instanceof NameReference || receiver instanceof FieldReference || receiver instanceof ThisReference)
 		&& ( receiver.bits & Binding.TYPE) != 0;
 	if (!memberBinding.isValidBinding() && (this.receiverType!=null && this.receiverType.isFunctionType()))
 	{
@@ -457,9 +457,8 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 		if (fieldBinding.isStatic()) {
 			// static field accessed through receiver? legal but unoptimal (optional warning)
 			if (!(isImplicitThisRcv
-					|| (receiver instanceof NameReference
-						&& receiverIsType
-						))) {
+					||  receiverIsType
+						)) {
 				scope.problemReporter().nonStaticAccessToStaticField(this, fieldBinding);
 			}
 			if (!isImplicitThisRcv
@@ -580,6 +579,10 @@ public IExpression getReceiver() {
 
 public char[] getToken() {
 	return token;
+}
+
+public boolean isTypeReference() {
+	return (this.bits & Binding.TYPE) ==Binding.TYPE;
 }
 
 }

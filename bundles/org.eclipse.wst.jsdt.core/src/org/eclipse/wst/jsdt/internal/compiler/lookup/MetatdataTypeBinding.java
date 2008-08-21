@@ -67,7 +67,7 @@ private void buildFields() {
 		int modifiers=0;
 		if (field.isStatic())
 			modifiers|=ClassFileConstants.AccStatic;
-			TypeBinding fieldTypeBinding = libraryScope.resolveType(field.type);
+			TypeBinding fieldTypeBinding = libraryScope.resolveType(field.dataType);
 			
 			FieldBinding fieldBinding = new  FieldBinding(fieldName, fieldTypeBinding, modifiers | ExtraCompilerModifiers.AccUnresolved, this, null);
 			fieldBinding.id = count;
@@ -168,7 +168,7 @@ private MethodBinding createMethodBinding(Method method, boolean isConstructor) 
 	}
 	else
 	{
-		TypeBinding returnType = (method.returns!=null ) ? this.libraryScope.resolveType(method.returns.type) : TypeBinding.UNKNOWN;
+		TypeBinding returnType = (method.returns!=null ) ? this.libraryScope.resolveType(method.returns.dataType) : TypeBinding.UNKNOWN;
 //		TypeBinding returnType =
 //		 (method instanceof FunctionDeclaration && ((FunctionDeclaration)method).returnType!=null && method.inferredMethod!=null)?method.inferredType.resolveType(this,((FunctionDeclaration)method).returnType):TypeBinding.ANY;
 		
@@ -190,7 +190,9 @@ public int kind() {
 public char[] computeUniqueKey(boolean isLeaf) {
 	char[] uniqueKey = super.computeUniqueKey(isLeaf);
 	if (uniqueKey.length == 2) return uniqueKey; // problem type's unique key is "L;"
-	if (Util.isClassFileName(this.fileName)) return uniqueKey; // no need to insert compilation unit name for a .class file
+	if (Util.isClassFileName(this.fileName)
+			||org.eclipse.wst.jsdt.internal.core.util.Util.isMetadataFileName(new String(this.fileName))) 
+		return uniqueKey; // no need to insert compilation unit name for a .class file
 
 	// insert compilation unit name if the type name is not the main type name
 	int end = CharOperation.lastIndexOf('.', this.fileName);
@@ -867,7 +869,7 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 		for (int i = 0; i < size; i++) {
 			Parameter arg = arguments[i];
 			TypeBinding parameterType = TypeBinding.UNKNOWN;
-			parameterType = libraryScope.resolveType(arg.type) ;
+			parameterType = libraryScope.resolveType(arg.dataType) ;
 			
 			
 //			else 

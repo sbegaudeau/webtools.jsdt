@@ -738,7 +738,8 @@ private char[][] readIndexState(String dirOSString) {
 					return names;
 			}
 		}
-	} catch (IOException ignored) {
+	}
+	catch (IOException ignored) {
 		if (VERBOSE)
 			Util.verbose("Failed to read saved index file names"); //$NON-NLS-1$
 	}

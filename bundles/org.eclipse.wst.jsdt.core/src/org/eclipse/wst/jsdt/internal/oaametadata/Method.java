@@ -10,10 +10,26 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.oaametadata;
 
-public class Method extends DocumentedElement {
+public class Method extends VersionableElement {
+
+//	method_element = element method {
+//		  method_content  &  method_attributes  &  foreign_nodes
+//		}
+//		method_content = (
+//		  exceptions_element?  &  parameters_element?  &  returns_element?  &  
+//		  descriptive_elements  &  compatibility_elements
+//		  # Research the above, make consistent with the spec  
+//		)
+//		method_attributes = (
+//		  name?  &  scope?  &  visibility?
+//		)
+	
+	
 	public String scope;
 	public String visibility;
 	public String name;
+	
+	public boolean isContructor;
 	
 	public Exception [] exceptions;
 	public Parameter [] parameters;

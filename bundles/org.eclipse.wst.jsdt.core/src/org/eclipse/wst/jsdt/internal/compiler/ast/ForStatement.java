@@ -20,6 +20,7 @@ import org.eclipse.wst.jsdt.internal.compiler.flow.LoopingFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.UnconditionalFlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
@@ -256,10 +257,13 @@ public class ForStatement extends Statement implements IForStatement {
 		/* check where for variable exists in scope chain, report error if not local */
 				if(initializations[i] instanceof Assignment  ) {
 					Assignment as = ((Assignment)initializations[i]);
+					if (as.getLeftHandSide() instanceof SingleNameReference)
+					{
 					LocalVariableBinding bind1 = as.localVariableBinding();
-					if(bind1==null || bind1.declaringScope!=upperScope) {
+						if(bind1==null || bind1.declaringScope instanceof CompilationUnitScope){
 						upperScope.problemReporter().looseVariableDecleration(this, as);
 					}
+				}
 				}
 
 

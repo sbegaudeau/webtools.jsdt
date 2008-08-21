@@ -97,6 +97,9 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 					} else if (kind == IPackageFragmentRoot.K_BINARY && Util.isValidClassFileName(child.getName(), sourceLevel, complianceLevel)) {
 						childElement = getClassFile(child.getName());
 						vChildren.add(childElement);
+					} else if (Util.isMetadataFileName(child.getName())) {
+						childElement = getClassFile(child.getName());
+						vChildren.add(childElement);
 					}
 				}
 			}
@@ -196,6 +199,8 @@ public IClassFile getClassFile(String classFileName) {
 	String filename= "";
 	if (this.getResource()!=null)
 	  filename= this.getResource().getLocation().toOSString()+File.separator+classFileName;
+	else 
+		filename=classFileName;
 	
 	return (!Util.isMetadataFileName(classFileName)) ? (IClassFile)new ClassFile(this,filename) : (IClassFile)new MetadataFile(this,filename);
 }
@@ -319,7 +324,13 @@ protected char getHandleMementoDelimiter() {
  * @see IPackageFragment#getKind()
  */
 public int getKind() throws JavaScriptModelException {
-	return ((IPackageFragmentRoot)getParent()).getKind();
+	int kind= ((IPackageFragmentRoot)getParent()).getKind();
+	if (kind==IPackageFragmentRoot.K_SOURCE)
+	{
+		if (JavaScriptCore.isReadOnly(getUnderlyingResource()))
+			kind=IPackageFragmentRoot.K_BINARY;
+	}
+	return kind;
 }
 /**
  * Returns an array of non-java resources contained in the receiver.

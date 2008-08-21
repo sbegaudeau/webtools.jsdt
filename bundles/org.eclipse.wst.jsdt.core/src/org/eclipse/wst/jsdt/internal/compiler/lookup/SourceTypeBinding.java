@@ -688,7 +688,9 @@ public int kind() {
 public char[] computeUniqueKey(boolean isLeaf) {
 	char[] uniqueKey = super.computeUniqueKey(isLeaf);
 	if (uniqueKey.length == 2) return uniqueKey; // problem type's unique key is "L;"
-	if (Util.isClassFileName(this.fileName)) return uniqueKey; // no need to insert compilation unit name for a .class file
+	if (Util.isClassFileName(this.fileName)
+			||org.eclipse.wst.jsdt.internal.core.util.Util.isMetadataFileName(new String(this.fileName))) 
+		return uniqueKey; // no need to insert compilation unit name for a .class file
 
 	// insert compilation unit name if the type name is not the main type name
 	int end = CharOperation.lastIndexOf('.', this.fileName);
@@ -1564,6 +1566,10 @@ private FieldBinding resolveTypeFor(FieldBinding field) {
 //	return null; // should never reach this point
 }
 public MethodBinding resolveTypesFor(MethodBinding method) {
+	return resolveTypesFor(method,null);
+}
+
+public MethodBinding resolveTypesFor(MethodBinding method,AbstractMethodDeclaration methodDecl) {
 	if ((method.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
 		return method;
 
@@ -1576,7 +1582,8 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 	if (hasRestrictedAccess())
 		method.modifiers |= ExtraCompilerModifiers.AccRestrictedAccess;
 
-	AbstractMethodDeclaration methodDecl = method.sourceMethod();
+	if (methodDecl==null)
+		methodDecl = method.sourceMethod();
 	if (methodDecl == null) return null; // method could not be resolved in previous iteration
 
 	TypeParameter[] typeParameters = methodDecl.typeParameters();

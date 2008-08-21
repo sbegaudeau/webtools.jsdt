@@ -875,4 +875,9 @@ public void updateFrom(MethodBinding functionBinding) {
 	this.returnType=functionBinding.returnType;
 	this.parameters=functionBinding.parameters;
 }
+public void cleanup() {
+	if (this.functionTypeBinding!=null)
+		this.functionTypeBinding.cleanup();
+	
+}
 }

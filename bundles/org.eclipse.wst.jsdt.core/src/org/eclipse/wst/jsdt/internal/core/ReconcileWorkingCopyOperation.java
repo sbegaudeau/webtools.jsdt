@@ -101,7 +101,7 @@ public class ReconcileWorkingCopyOperation extends JavaModelOperation {
 				notifyParticipants(workingCopy);
 
 				// recreate ast if one participant reset it
-				if (this.ast == null)
+				if (this.ast == null && this.astLevel!=IJavaScriptUnit.NO_AST)
 					makeConsistent(workingCopy);
 			}
 

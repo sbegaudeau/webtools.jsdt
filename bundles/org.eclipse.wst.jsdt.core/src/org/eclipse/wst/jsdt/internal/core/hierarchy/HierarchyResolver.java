@@ -520,8 +520,14 @@ private void rememberAllTypes(CompilationUnitDeclaration parsedUnit, Object cont
 	}
 	for (int i=0;i<parsedUnit.numberInferredTypes;i++) {
 		InferredType inferredType = parsedUnit.inferredTypes[i];
-			IType typeHandle= (cu!=null) ? cu.getType(new String(inferredType.getName())) : classFile.getType(new String(inferredType.getName()));
-			rememberInferredType(inferredType,typeHandle,inferredType.binding);
+		
+			if (inferredType.isDefinition && !inferredType.isEmptyGlobal()) {
+				IType typeHandle = (cu != null) ? cu.getType(new String(
+						inferredType.getName())) : classFile
+						.getType(new String(inferredType.getName()));
+				rememberInferredType(inferredType, typeHandle,
+						inferredType.binding);
+			}
 	}
 //	if (includeLocalTypes && parsedUnit.localTypes != null) {
 //		HandleFactory factory = new HandleFactory();
@@ -778,7 +784,7 @@ public void resolve(Openable[] openables, HashSet localTypes, IProgressMonitor m
 				// cache binary type binding
 				ClassFile classFile = (ClassFile)openable;
 				org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit sourceUnit =
-					new org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit(null,classFile.getPath().toOSString(),this.options.defaultEncoding);
+					new org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit(null,new String(classFile.getFileName()),this.options.defaultEncoding);
 				sourceUnit.packageName=Util.toCharArrays(new String[]{classFile.getParent().getElementName()});
 				CompilationResult unitResult = new CompilationResult(sourceUnit, i, openablesLength, this.options.maxProblemsPerUnit);
 				CompilationUnitDeclaration parsedUnit = parser.dietParse(sourceUnit, unitResult);

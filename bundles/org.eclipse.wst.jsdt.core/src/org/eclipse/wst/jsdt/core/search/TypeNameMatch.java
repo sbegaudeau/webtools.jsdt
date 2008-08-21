@@ -84,7 +84,11 @@ public IPackageFragmentRoot getPackageFragmentRoot() {
  * @return the package name
  */
 public String getPackageName() {
-	return getType().getPackageFragment().getElementName();
+	String name=getType().getElementName();
+	int index=name.lastIndexOf(".");
+	if (index>=0)
+		name=name.substring(0,index);
+	return "";
 }
 
 /**
@@ -97,7 +101,11 @@ public String getPackageName() {
  * @return the type name
  */
 public String getSimpleTypeName() {
-	return getType().getElementName();
+	String name=getType().getElementName();
+	int index=name.lastIndexOf(".");
+	if (index>=0)
+		name=name.substring(index+1);
+	return name;
 }
 
 /**
@@ -144,4 +152,9 @@ public String getTypeContainerName() {
 public String getTypeQualifiedName() {
 	return getType().getTypeQualifiedName('.');
 }
+
+public String getQualifiedName() {
+return getType().getElementName();	
+}
+
 }

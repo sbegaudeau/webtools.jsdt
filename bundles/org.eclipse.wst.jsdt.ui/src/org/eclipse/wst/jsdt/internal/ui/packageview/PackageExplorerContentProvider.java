@@ -34,17 +34,20 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IIncludePathEntry;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
 import org.eclipse.wst.jsdt.core.IJavaScriptModel;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
@@ -82,6 +85,8 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 	
 	private Collection fPendingUpdates;
 		
+	private UIJob fUpdateJob;
+
 	/**
 	 * Creates a new content provider for Java elements.
 	 * @param provideMembers if set, members of compilation units and class files are shown
@@ -93,6 +98,8 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 		fFoldPackages= arePackagesFoldedInHierarchicalLayout();
 		fPendingUpdates= null;
 		JavaScriptPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
+
+		fUpdateJob= null;
 	}
 	
 	private boolean arePackagesFoldedInHierarchicalLayout(){
@@ -128,7 +135,7 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 		final Control ctrl= fViewer.getControl();
 		if (ctrl != null && !ctrl.isDisposed()) {
 			//Are we in the UIThread? If so spin it until we are done
-			if ((ctrl.getDisplay().getThread() == Thread.currentThread()) /*&& !fViewer.isBusy()*/) {
+			if ((ctrl.getDisplay().getThread() == Thread.currentThread()) && !fViewer.isBusy()) {
 				runUpdates(runnables);
 			} else {
 				synchronized (this) {
@@ -138,17 +145,14 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 						fPendingUpdates.addAll(runnables);
 					}
 				}
-				ctrl.getDisplay().asyncExec(new Runnable(){
-					public void run() {
 						postAsyncUpdate(ctrl.getDisplay());
 					}
-				});
-			}
 		}
 	}
 	
 	private void postAsyncUpdate(final Display display) {
-		UIJob updateJob= new UIJob(display, PackagesMessages.PackageExplorerContentProvider_update_job_description) {
+		if (fUpdateJob == null) {
+			fUpdateJob= new UIJob(display, PackagesMessages.PackageExplorerContentProvider_update_job_description) {
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				TreeViewer viewer= fViewer;
 				if (viewer != null && viewer.isBusy()) {
@@ -159,8 +163,9 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 				return Status.OK_STATUS;
 			}
 		};
-		updateJob.setSystem(true);
-		updateJob.schedule();
+			fUpdateJob.setSystem(true);
+		}
+		fUpdateJob.schedule();
 	} 	         
 	
 	/**
@@ -290,9 +295,12 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 				return ((ProjectLibraryRoot)parentElement).getChildren();
 			}
 			
-			if (parentElement instanceof IProject) 
-				return ((IProject)parentElement).members();
-			
+			if (parentElement instanceof IProject) {
+				IProject project= (IProject) parentElement;
+				if (project.isAccessible())
+					return project.members();
+				return NO_CHILDREN;
+			}			
 			if(parentElement instanceof IPackageFragmentRoot && ((IPackageFragmentRoot)parentElement).isVirtual()) {
 				return getLibraryChildren((IPackageFragmentRoot)parentElement);
 			}
@@ -369,6 +377,13 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		for (int i= 0; i < roots.length; i++) {
 			IPackageFragmentRoot root= roots[i];
 			IIncludePathEntry classpathEntry= root.getRawIncludepathEntry();
+			
+			IIncludePathAttribute[] attribs = classpathEntry.getExtraAttributes();
+			boolean shouldHide = false;
+			for(int p = 0;p<attribs.length;p++){
+				if(attribs[p]==IIncludePathAttribute.HIDE) shouldHide = true;
+			}
+			
 			int entryKind= classpathEntry.getEntryKind();
 			if (entryKind == IIncludePathEntry.CPE_CONTAINER) {
 				// all JsGlobalScopeContainers are added later 
@@ -383,7 +398,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 					for (int j= 0; j < fragments.length; j++) {
 						result.add(fragments[j]);
 					}
-				} else {
+				} else if(!shouldHide){
 					result.add(root);
 				}
 			}
@@ -1037,6 +1052,12 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 				return false;
 			}
 		}
+		if ((status & IResourceDelta.CHANGED) != 0) {
+			if ((flags & IResourceDelta.TYPE) != 0) {
+				postRefresh(parent, PARENT, resource, runnables);
+				return true;
+			}
+		}
 		// open/close state change of a project
 		if ((flags & IResourceDelta.OPEN) != 0) {
 			postProjectStateChanged(internalGetParent(parent), runnables);
@@ -1082,6 +1103,13 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		postRefresh(toRefresh, true, runnables);
 	}
 	
+	/**
+	 * Can be implemented by subclasses to add additional elements to refresh
+	 * 
+	 * @param toRefresh the elements to refresh
+	 * @param relation the relation to the affected element ({@link #GRANT_PARENT}, {@link #PARENT}, {@link #ORIGINAL}, {@link #PROJECT})
+	 * @param affectedElement the affected element
+	 */
 	protected void augmentElementToRefresh(List toRefresh, int relation, Object affectedElement) {
 	}
 
@@ -1107,7 +1135,16 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 	protected void postAdd(final Object parent, final Object element, Collection runnables) {
 		runnables.add(new Runnable() {
 			public void run() {
-				if (fViewer.testFindItem(element) == null) 
+				Widget[] items= fViewer.testFindItems(element);
+				for (int i= 0; i < items.length; i++) {
+					Widget item= items[i];
+					if (item instanceof TreeItem && !item.isDisposed()) {
+						TreeItem parentItem= ((TreeItem) item).getParentItem();
+						if (parentItem != null && !parentItem.isDisposed() && parent.equals(parentItem.getData())) {
+							return; // no add, element already added (most likely by a refresh)
+						}
+					}
+				}
 					fViewer.add(parent, element);
 				}
 		});

@@ -790,21 +790,21 @@ public boolean isExternal() {
  * Validate whether this package fragment root is on the classpath of its project.
  */
 protected IStatus validateOnClasspath() {
-
-	IPath path = this.getPath();
-	try {
-		// check package fragment root on classpath of its project
-		JavaProject project = (JavaProject) getJavaScriptProject();
-		IIncludePathEntry entry = project.getClasspathEntryFor(path);
-		if (entry != null) {
 			return Status.OK_STATUS;
+//	IPath path = this.getPath();
+//	try {
+//		// check package fragment root on classpath of its project
+//		JavaProject project = (JavaProject) getJavaScriptProject();
+//		IIncludePathEntry entry = project.getClasspathEntryFor(path);
+//		if (entry != null) {
+//			return Status.OK_STATUS;
+//		}
+//	} catch(JavaScriptModelException e){
+//		// could not read classpath, then assume it is outside
+//		return e.getJavaScriptModelStatus();
+//	}
+//	return new JavaModelStatus(IJavaScriptModelStatusConstants.ELEMENT_NOT_ON_CLASSPATH, this);
 		}
-	} catch(JavaScriptModelException e){
-		// could not read classpath, then assume it is outside
-		return e.getJavaScriptModelStatus();
-	}
-	return new JavaModelStatus(IJavaScriptModelStatusConstants.ELEMENT_NOT_ON_CLASSPATH, this);
-}
 /*
  * @see org.eclipse.wst.jsdt.core.IPackageFragmentRoot#move
  */

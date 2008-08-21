@@ -172,9 +172,9 @@ public final class NewWizardMessages extends NLS {
 	public static String NewTypeWizardPage_operationdesc;
 	public static String NewTypeWizardPage_error_uri_location_unkown;
 	
-	public static String OutputLocation_DotAsLocation;
-	public static String OutputLocation_SettingsAsLocation;
-	public static String OutputLocationDialog_removeProjectFromBP;
+	//public static String OutputLocation_DotAsLocation;
+	//public static String OutputLocation_SettingsAsLocation;
+	//public static String OutputLocationDialog_removeProjectFromBP;
 	
 	public static String RemoveFromBuildpathAction_ErrorTitle;
 	

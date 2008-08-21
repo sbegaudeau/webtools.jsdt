@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -24,7 +23,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
-
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -38,10 +37,7 @@ import org.eclipse.ui.navigator.PipelinedViewerUpdate;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModel;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
-import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.navigator.IExtensionStateConstants.Values;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerContentProvider;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
@@ -107,6 +103,9 @@ public class JavaNavigatorContentProvider extends
 		if (parent instanceof IJavaScriptModel) {
 			return getViewerInput() != null ? fRealInput : parent;
 		}
+		if (parent instanceof IJavaScriptProject) {
+			return ((IJavaScriptProject)parent).getProject();
+		}
 		return parent;
 	}
 
@@ -121,6 +120,13 @@ public class JavaNavigatorContentProvider extends
 			return super.getElements(JavaScriptCore.create((IProject)inputElement));
 		}
 		return super.getElements(inputElement);
+	}
+	
+	public boolean hasChildren(Object element) {
+		if (element instanceof IProject) {
+			return ((IProject) element).isAccessible();
+		}
+		return super.hasChildren(element);
 	}
 	
 	public Object[] getChildren(Object parentElement) {
@@ -161,14 +167,15 @@ public class JavaNavigatorContentProvider extends
 		return getParent(object);
 	}
 
-	public PipelinedShapeModification interceptAdd(
-			PipelinedShapeModification addModification) {
+	public PipelinedShapeModification interceptAdd(PipelinedShapeModification addModification) {
 		
-		if(addModification.getParent() instanceof IJavaScriptProject) {
-			addModification.setParent(((IJavaScriptProject)addModification.getParent()).getProject());
-		} else if(addModification.getParent() instanceof IWorkspaceRoot || 
-				addModification.getParent() instanceof IJavaScriptProject){
+		Object parent= addModification.getParent();
 		
+		if (parent instanceof IJavaScriptProject) {
+			addModification.setParent(((IJavaScriptProject)parent).getProject());
+		} 
+		
+		if (parent instanceof IWorkspaceRoot) {		
 			deconvertJavaProjects(addModification);
 		}
 		
@@ -260,89 +267,36 @@ public class JavaNavigatorContentProvider extends
 	 * @param proposedChildren
 	 */
 	private void customize(Object[] javaElements, Set proposedChildren) {
-	//	List elementList= Arrays.asList(javaElements);
-//		IResource[] javaElementResources;
-//		for(int i = 0;i<javaElements.length;i++) {
-//			if(javaElements[i] instanceof IJavaScriptElement) {
-//				
-//			}
-//		}
-		
-		
-//		for (Iterator iter= proposedChildren.iterator(); iter.hasNext();) {
-//			Object element= iter.next();
-//			IResource resource= null;
-//			if (element instanceof IResource) {
-//				resource= (IResource)element;
-//			} else if (element instanceof IAdaptable) {
-//				resource= (IResource)((IAdaptable)element).getAdapter(IResource.class);
-//			}
-//			if (resource != null) {
-//				int i= elementList.indexOf(resource);
-//				if (i >= 0) {
-//					javaElements[i]= null;
-//				}
-//			}
-//		}
-		
-		
-			
-		proposedChildren.removeAll(Arrays.asList(javaElements));
-		proposedChildren.addAll(Arrays.asList(javaElements));
-			
-			
-		
-		Vector allJavaElements = new Vector(Arrays.asList(javaElements));
-		boolean addedPfRoot = false;
-		while(allJavaElements.size()>0) {
-			Object element=null;
-			try {
-				element = allJavaElements.remove(0);
+		List elementList= Arrays.asList(javaElements);
+		for (Iterator iter= proposedChildren.iterator(); iter.hasNext();) {
+			Object element= iter.next();
+			IResource resource= null;
+			if (element instanceof IResource) {
+				resource= (IResource)element;
+			} else if (element instanceof IAdaptable) {
+				resource= (IResource)((IAdaptable)element).getAdapter(IResource.class);
 			}
-			catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			if (resource != null) {
+				int i= elementList.indexOf(resource);
+				if (i >= 0) {
+					javaElements[i]= null;
+				}
 			}
-			
+			}
+		for (int i= 0; i < javaElements.length; i++) {
+			Object element= javaElements[i];
 			if (element instanceof IJavaScriptElement) {
 				IJavaScriptElement cElement= (IJavaScriptElement)element;
 				IResource resource= cElement.getResource();
+				if (resource != null) {
 				proposedChildren.remove(resource);
-				if(cElement instanceof IPackageFragmentRoot) {
-					IPackageFragmentRoot root = (IPackageFragmentRoot)cElement;
-					try {
-						Object[] nonJava = root.getNonJavaScriptResources();
-						allJavaElements.addAll(Arrays.asList(root.getChildren()));
-						proposedChildren.removeAll(Arrays.asList(nonJava));
 					}
-					catch (JavaScriptModelException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+				proposedChildren.add(element);
+			} else if (element != null) {
+				proposedChildren.add(element);
 					}
-				}else if(cElement instanceof IPackageFragment) {
-						IPackageFragment root = (IPackageFragment)cElement;
-						
-						if(root.isDefaultPackage()) {
-							IPackageFragmentRoot pfRoot = (IPackageFragmentRoot)root.getParent();
-							if(!addedPfRoot) allJavaElements.add(pfRoot);
-							addedPfRoot = true;
 						}
-						
-						try {
-							Object[] nonJava = root.getNonJavaScriptResources();
-							Object[] children = root.getChildren();
-							allJavaElements.addAll(Arrays.asList(children));
-							proposedChildren.removeAll(Arrays.asList(nonJava));
 						}
-						catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-				}
-			}
-		}
-		
-	}
 
 
 
@@ -358,6 +312,8 @@ public class JavaNavigatorContentProvider extends
 	protected void postAdd(final Object parent, final Object element, Collection runnables) {
 		if (parent instanceof IJavaScriptModel)
 			super.postAdd(((IJavaScriptModel) parent).getWorkspace(), element, runnables);
+		else if (parent instanceof IJavaScriptProject) 
+			super.postAdd( ((IJavaScriptProject)parent).getProject(), element, runnables);
 		else
 			super.postAdd(parent, element, runnables);
 	}

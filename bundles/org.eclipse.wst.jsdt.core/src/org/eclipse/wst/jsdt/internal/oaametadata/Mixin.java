@@ -11,5 +11,19 @@
 package org.eclipse.wst.jsdt.internal.oaametadata;
 
 public class Mixin extends DocumentedElement {
-   String scope;
+//	mixin_element = element mixin {
+//		  mixin_content  &  mixin_attributes  &  foreign_nodes
+//		}
+//		mixin_content = (
+//		  descriptive_elements
+//		  # Research the above, make consistent with the spec  
+//		  # FIXME: aliases? ancestors?
+//		)
+//		mixin_attributes = (
+//		  name?  &  scope?  &  visibility?
+//		)
+		
+	public String name;
+	public String scope;
+	public String visibility;
 }

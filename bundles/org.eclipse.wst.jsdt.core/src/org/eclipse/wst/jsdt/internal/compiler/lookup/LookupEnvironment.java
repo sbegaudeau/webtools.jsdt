@@ -1412,7 +1412,7 @@ public void buildTypeBindings(LibraryAPIs libraryMetaData) {
 
 		for (int i = 0; i < typeLength; i++) {
 			ClassData clazz=classes[i];
-			char[][] className = CharOperation.arrayConcat(packageBinding.compoundName,clazz.type.toCharArray());
+			char[][] className = CharOperation.arrayConcat(packageBinding.compoundName,clazz.name.toCharArray());
 
 			SourceTypeBinding binding = new MetatdataTypeBinding(className, packageBinding, clazz,  scope) ;
 			this.defaultPackage.addType(binding);

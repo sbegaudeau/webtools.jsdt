@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
  */
 public class AppearanceAwareLabelProvider extends JavaUILabelProvider implements IPropertyChangeListener, IPropertyListener {
 
-	public final static long DEFAULT_TEXTFLAGS= JavaScriptElementLabels.ROOT_VARIABLE | JavaScriptElementLabels.T_TYPE_PARAMETERS | JavaScriptElementLabels.M_PARAMETER_TYPES |  
+	public final static long DEFAULT_TEXTFLAGS= JavaScriptElementLabels.ROOT_VARIABLE | JavaScriptElementLabels.T_TYPE_PARAMETERS | JavaScriptElementLabels.M_PARAMETER_NAMES |  
 		JavaScriptElementLabels.M_APP_TYPE_PARAMETERS | JavaScriptElementLabels.M_APP_RETURNTYPE  | JavaScriptElementLabels.REFERENCED_ROOT_POST_QUALIFIED;
 	public final static int DEFAULT_IMAGEFLAGS= JavaElementImageProvider.OVERLAY_ICONS;
 	

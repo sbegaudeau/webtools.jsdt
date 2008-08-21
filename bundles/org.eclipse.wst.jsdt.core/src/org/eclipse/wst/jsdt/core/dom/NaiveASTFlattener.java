@@ -496,6 +496,7 @@ class NaiveASTFlattener extends ASTVisitor {
 	public boolean visit(ExpressionStatement node) {
 		printIndent();
 		node.getExpression().accept(this);
+		if (node.getParent().getNodeType()!=ASTNode.FOR_IN_STATEMENT)
 		this.buffer.append(";\n");//$NON-NLS-1$
 		return false;
 	}

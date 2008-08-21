@@ -308,7 +308,7 @@ public class JavaScriptElementLabels {
 	/**
 	 *  Default options (M_PARAMETER_TYPES,  M_APP_TYPE_PARAMETERS & T_TYPE_PARAMETERS enabled)
 	 */
-	public final static long ALL_DEFAULT= new Long(M_PARAMETER_TYPES | M_APP_TYPE_PARAMETERS | T_TYPE_PARAMETERS).longValue();
+	public final static long ALL_DEFAULT= new Long(M_PARAMETER_NAMES | M_APP_TYPE_PARAMETERS | T_TYPE_PARAMETERS).longValue();
 
 	/**
 	 *  Default qualify options (All except Root and Package)

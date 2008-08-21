@@ -38,7 +38,7 @@ public class MetadataSourceElementNotifier {
 	
 	public void notifySourceElementRequestor( ClassData clazz ) {
 
-		char [] typeName=clazz.type.toCharArray();
+		char [] typeName=clazz.name.toCharArray();
 					// prevent possible recurrsion
 		if (notifiedTypes.containsKey(typeName))
 			return;
@@ -74,7 +74,7 @@ public class MetadataSourceElementNotifier {
 			fieldInfo.nameSourceStart = 0;//field.nameStart;
 			fieldInfo.nameSourceEnd = 0;//field.nameStart+field.name.length-1;
 
-			fieldInfo.type = field.type!=null ? field.type.toCharArray():null;
+			fieldInfo.type = field.dataType!=null ? field.dataType.toCharArray():null;
 
 //				fieldInfo.annotationPositions = collectAnnotationPositions(fieldDeclaration.annotations);
 //				fieldInfo.categories = (char[][]) this.nodesToCategories.get(fieldDeclaration);
@@ -125,8 +125,8 @@ public class MetadataSourceElementNotifier {
 			argumentTypes = new char[argumentLength][];
 			argumentNames = new char[argumentLength][];
 			for (int i = 0; i < argumentLength; i++) {
-				if (arguments[i].type!=null)
-					argumentTypes[i] = arguments[i].type.toCharArray();
+				if (arguments[i].dataType!=null)
+					argumentTypes[i] = arguments[i].dataType.toCharArray();
 				argumentNames[i] = arguments[i].name.toCharArray();
 			}
 		}

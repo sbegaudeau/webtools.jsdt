@@ -15,4 +15,5 @@ public class DocumentedElement {
 	public String remarks;
 	public String examples;
 
+	public boolean isHTMLDescription;
 }
