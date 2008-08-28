@@ -14,7 +14,7 @@
   * Object DOMException()
   * @super Object
   * @type  constructor
-  * @class DOMException
+  * @memberOf DOMException
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -24,7 +24,7 @@ DOMException.prototype = new Object();
 /**
   * Constant DOMException.INDEX_SIZE_ERR=1
   * @type Number
-  * @class DOMException
+  * @memberOf DOMException
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link DOMException()  
@@ -34,7 +34,7 @@ DOMException.INDEX_SIZE_ERR=1;
 /**
   * Constant DOMException.DOMSTRING_SIZE_ERR=2
   * @type Number
-  * @class DOMException
+  * @memberOf DOMException
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.   
   * @link DOMException()  
@@ -44,7 +44,7 @@ DOMException.DOMSTRING_SIZE_ERR=2;
 /**
   * Constant DOMException.HIERARCHY_REQUEST_ERR=3
   * @type Mi,ber
-  * @class DOMException
+  * @memberOf DOMException
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition. 
   * @see DOMException() 
@@ -55,7 +55,7 @@ DOMException.HIERARCHY_REQUEST_ERR=3;
   * Constant DOMException.WRONG_DOCUMENT_ERR=4
   * @type Number
   * @see DOMException() 
-  * @class DOMException
+  * @memberOf DOMException
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
    
@@ -64,7 +64,7 @@ DOMException.HIERARCHY_REQUEST_ERR=3;
 DOMException.WRONG_DOCUMENT_ERR=4;
 /**
   * Constant DOMException.INVALID_CHARACTER_ERR=5
-  * @class DOMException
+  * @memberOf DOMException
   * @type Number
   * @see DOMException()
   * @since Standard ECMA-262 3rd. Edition 
@@ -76,7 +76,7 @@ DOMException.INVALID_CHARACTER_ERR=5;
 /**
   * Constant DOMException.NO_DATA_ALLOWED_ER=6
   * @type Number
-  * @class DOMException
+  * @memberOf DOMException
   * @see DOMException()  
   * @since Level 2 Document Object Model Core Definition. 
   * @since Standard ECMA-262 3rd. Edition
@@ -87,7 +87,7 @@ DOMException.NO_DATA_ALLOWED_ER=6;
 /**
   * Constant DOMException.NO_MODIFICATION_ALLOWED_ERR=7
   * @type Number
-  * @class DOMException
+  * @memberOf DOMException
   * @see DOMException()  
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -98,7 +98,7 @@ DOMException.NO_MODIFICATION_ALLOWED_ERR=7;
 /**
   * Constant DOMException.NOT_FOUND_ERR=8
   * @type Number
-  * @class DOMException
+  * @memberOf DOMException
   * @see DOMException()  
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -109,7 +109,7 @@ DOMException.NOT_FOUND_ERR=8;
 /**
   * Constant DOMException.NOT_SUPPORTED_ERR=9
   * @type Number
-  * @class DOMException
+  * @memberOf DOMException
   * @see DOMException()  
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -120,7 +120,7 @@ DOMException.NOT_SUPPORTED_ERR=9;
 /**
   * Constant DOMException.INUSE_ATTRIBUTE_ERR=10
   * @type Number
-  * @class DOMException
+  * @memberOf DOMException
   * @see DOMException()
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -131,7 +131,7 @@ DOMException.INUSE_ATTRIBUTE_ERR=10;
 /**
   * Constant DOMException.INVALID_STATE_ERR=11
   * @type Number
-  * @class DOMException
+  * @memberOf DOMException
   * @see DOMException()
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -142,7 +142,7 @@ DOMException.INVALID_STATE_ERR=11;
 /**
   * Constant DOMException.SYNTAX_ERR=12
   * @type Number
-  * @class DOMException
+  * @memberOf DOMException
   * @see DOMException()  
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -153,7 +153,7 @@ DOMException.SYNTAX_ERR=12;
 /**
   * Constant DOMException.INVALID_MODIFICATION_ER=13
   * @type Number
-  * @class DOMException
+  * @memberOf DOMException
   * @see DOMException()  
 
   * @since Standard ECMA-262 3rd. Edition 
@@ -164,7 +164,7 @@ DOMException.INVALID_MODIFICATION_ER=13;
 /**
   * Constant DOMException.NAMESPACE_ERR=14
   * @type Number
-  * @class DOMException
+  * @memberOf DOMException
   * @see DOMException()  
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -175,7 +175,7 @@ DOMException.NAMESPACE_ERR=14;
 /**
   * Constant DOMException.NVALID_ACCESS_ERR=15
   * @type Number
-  * @class DOMException
+  * @memberOf DOMException
   * @see DOMException() 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -186,7 +186,7 @@ DOMException.INVALID_ACCESS_ERR=15;
 /**
   * Property code
   * @type Number
-  * @class DOMException
+  * @memberOf DOMException
   * @see DOMException() 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -200,7 +200,7 @@ DOMException.prototype.code=0;
   * Object DOMImplementation()
   * @super Object
   * @constructor
-  * @class DOMImplementation
+  * @memberOf DOMImplementation
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -211,7 +211,7 @@ DOMImplementation.prototype = new Object();
 /**
   * function hasFeature()
   * @type  boolean
-  * @class DOMImplementation
+  * @memberOf DOMImplementation
   * @param feature String
   * @param version String
   * @return boolean
@@ -226,7 +226,7 @@ DOMImplementation.prototype.hasFeature = function(feature, version){};
 /**
   * function createDocumentType()
   * @type  Document
-  * @class DOMImplementation
+  * @memberOf DOMImplementation
   * @param namespaceURI String
   * @param qualifiedName String
   * @param doctype DocumentType
@@ -242,7 +242,7 @@ DOMImplementation.prototype.createDocument = function(namespaceURI, qualifiedNam
 /**
   * function createDocumentType()
   * @type  DocumentType
-  * @class DOMImplementation
+  * @memberOf DOMImplementation
 
   * @param qualifiedName String
   * @param publicId String
@@ -261,7 +261,7 @@ DOMImplementation.prototype.createDocumentType = function(qualifiedName, publicI
   * Object Node()
   * @super Object
   * @constructor
-  * @class Node
+  * @memberOf Node
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -271,7 +271,7 @@ Node.prototype=new Object();
 /**
   * Constant Node.ELEMENT_NODE=1
   * @type Number
-  * @class Node
+  * @memberOf Node
   * @see Node 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -282,7 +282,7 @@ Node.ELEMENT_NODE=1;
 /**
   * Constant Node.ATTRIBUTE_NODE=2
   * @type Number
-  * @class Node
+  * @memberOf Node
   * @see Node 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -293,7 +293,7 @@ Node.ATTRIBUTE_NODE=2;
 /**
   * Constant Node.TEXT_NODE=3
   * @type Number
-  * @class Node
+  * @memberOf Node
   * @see Node 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -304,7 +304,7 @@ Node.TEXT_NODE=3;
 /**
   * Constant Node.CDATA_SECTION_NODE=4
   * @type Number
-  * @class Node
+  * @memberOf Node
   * @see Node 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -315,7 +315,7 @@ Node.CDATA_SECTION_NODE=4;
 /**
   * Constant Node.ENTITY_REFERENCE_NODE=5
   * @type Number
-  * @class Node
+  * @memberOf Node
   * @see Node 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -326,7 +326,7 @@ Node.ENTITY_REFERENCE_NODE=5;
 /**
   * Constant Node.ENTITY_NODE=6
   * @type Number
-  * @class Node
+  * @memberOf Node
   * @see Node 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -337,7 +337,7 @@ Node.ENTITY_NODE=6;
 /**
   * Constant Node.PROCESSING_INSTRUCTION_NODE=7
   * @type Number
-  * @class Node
+  * @memberOf Node
   * @see Node 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -348,7 +348,7 @@ Node.PROCESSING_INSTRUCTION_NODE=7;
 /**
   * Constant Node.COMMENT_NODE=8
   * @type Number
-  * @class Node
+  * @memberOf Node
   * @see Node 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -359,7 +359,7 @@ Node.COMMENT_NODE=8;
 /**
   * Constant Node.DOCUMENT_NODE=9
   * @type Number
-  * @class Node
+  * @memberOf Node
   * @see Node 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -370,7 +370,7 @@ Node.DOCUMENT_NODE=9;
 /**
   * Constant Node.DOCUMENT_TYPE_NODE=10
   * @type Number
-  * @class Node
+  * @memberOf Node
   * @see Node 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -381,7 +381,7 @@ Node.DOCUMENT_TYPE_NODE=10;
 /**
   * Constant Node.DOCUMENT_FRAGMENT_NODE=11
   * @type Number
-  * @class Node
+  * @memberOf Node
   * @see Node 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -392,7 +392,7 @@ Node.DOCUMENT_FRAGMENT_NODE=11;
 /**
   * Constant Node.NOTATION_NODE=12
   * @type Number
-  * @class Node
+  * @memberOf Node
   * @see Node 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -404,7 +404,7 @@ Node.NOTATION_NODE=12;
 /**
   * Property nodeName
   * @type String
-  * @class Node
+  * @memberOf Node
   * @see Node 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -415,7 +415,7 @@ Node.prototype.nodeName = "";
 /**
   * Property nodeName
   * @type String
-  * @class Node
+  * @memberOf Node
   * @see Node 
   * @throws DOMException when setting or getting the value.
   * @since Standard ECMA-262 3rd. Edition 
@@ -427,7 +427,7 @@ Node.prototype.nodeValue = "";
 /**
   * Property nodeType
   * @type Number
-  * @class Node
+  * @memberOf Node
   * @see Node 
  
   * @since Standard ECMA-262 3rd. Edition 
@@ -439,7 +439,7 @@ Node.prototype.nodeType = 0;
 /**
   * Property parentNode 
   * @type Node
-  * @class Node
+  * @memberOf Node
   * @see Node 
  
   * @since Standard ECMA-262 3rd. Edition 
@@ -451,7 +451,7 @@ Node.prototype.parentNode=new Node();
 /**
   * Property childNodes  
   * @type NodeList
-  * @class Node
+  * @memberOf Node
   * @see Node
   * @see NodeList 
   * @since Standard ECMA-262 3rd. Edition 
@@ -463,7 +463,7 @@ Node.prototype.childNodes=new NodeList();
 /**
   * Property firstChild 
   * @type Node
-  * @class Node
+  * @memberOf Node
   * @see Node 
  
   * @since Standard ECMA-262 3rd. Edition 
@@ -475,7 +475,7 @@ Node.prototype.firstChild=new Node();
 /**
   * Property lastChild 
   * @type Node
-  * @class Node
+  * @memberOf Node
   * @see Node 
  
   * @since Standard ECMA-262 3rd. Edition 
@@ -487,7 +487,7 @@ Node.prototype.lastChild=new Node();
 /**
   * Property previousSibling 
   * @type Node
-  * @class Node
+  * @memberOf Node
   * @see Node 
  
   * @since Standard ECMA-262 3rd. Edition 
@@ -499,7 +499,7 @@ Node.prototype.previousSibling=new Node();
 /**
   * Property nextSibling  
   * @type Node
-  * @class Node
+  * @memberOf Node
   * @see Node 
  
   * @since Standard ECMA-262 3rd. Edition 
@@ -511,7 +511,7 @@ Node.prototype.nextSibling=new Node();
 /**
   * Property attributes  
   * @type NamedNodeMap
-  * @class Node
+  * @memberOf Node
   * @see Node
   * @see NamedNodeMap 
   * @since Standard ECMA-262 3rd. Edition 
@@ -523,7 +523,7 @@ Node.prototype.attributes=new NamedNodeMap();
 /**
   * Property ownerDocument   
   * @type Document
-  * @class Node
+  * @memberOf Node
   * @see Node
   * @see Document
   * @since Standard ECMA-262 3rd. Edition 
@@ -535,7 +535,7 @@ Node.prototype.ownerDocument = new Document();
 /**
   * Property namespaceURI   
   * @type String
-  * @class Node
+  * @memberOf Node
   * @see Node
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -546,7 +546,7 @@ Node.prototype.namespaceURI="";
 /**
   * Property prefix   
   * @type String
-  * @class Node
+  * @memberOf Node
   * @see Node
   * @throws DOMException on setting.
   * @since Standard ECMA-262 3rd. Edition 
@@ -558,7 +558,7 @@ Node.prototype.prefix = "";
 /**
   * Property localName   
   * @type String
-  * @class Node
+  * @memberOf Node
   * @see Node
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -569,7 +569,7 @@ Node.prototype.localName= "";
 /**
   * function insertBefore(newChild, refChild)   
   * @type Node
-  * @class Node
+  * @memberOf Node
   * @param newChilds Node
   * @param refChild Node
   * @return Node
@@ -584,7 +584,7 @@ Node.prototype.insertBefore = function(newChild, refChild){};
 /**
   * function replaceChild(newChild, oldChild) 
   * @type Node
-  * @class Node
+  * @memberOf Node
   * @param newChilds Node
   * @param oldChild Node
   * @return Node
@@ -599,7 +599,7 @@ Node.prototype.replaceChild = function(newChild, oldChild){};
  /**
   * function removeChild(oldChild) 
   * @type Node
-  * @class Node
+  * @memberOf Node
   * @param oldChild Node
   * @return Node
   * @throws DOMException
@@ -613,7 +613,7 @@ Node.prototype.removeChild = function(oldChild){};
  /**
   * function appendChild(newChild) 
   * @type Node
-  * @class Node
+  * @memberOf Node
   * @param newChild Node
   * @return Node
   * @throws DOMException
@@ -627,7 +627,7 @@ Node.prototype.appendChild = function(newChild){};
  /**
   * function hasChildNodes() 
   * @type Boolean
-  * @class Node
+  * @memberOf Node
   * @return Boolean
   * @see Node
   * @since Standard ECMA-262 3rd. Edition 
@@ -639,7 +639,7 @@ Node.prototype.hasChildNodes=function(){};
  /**
   * function hasChildNodes() 
   * @type Node
-  * @class Node
+  * @memberOf Node
   * @param deep Boolean
   * @return Node
   * @see Node
@@ -651,7 +651,7 @@ Node.prototype.hasChildNodes=function(){};
 Node.prototype.cloneNode=function(deep){}; 
  /**
   * function normalize() 
-  * @class Node
+  * @memberOf Node
   * @see Node
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -662,7 +662,7 @@ Node.prototype.normalize = function(){};
  /**
   * function isSupported(feature, version)  
   * @type Boolean
-  * @class Node
+  * @memberOf Node
   * @param feature String
   * @param version String
   * @return Boolean;
@@ -676,7 +676,7 @@ Node.prototype.isSupported=function(feature, version){};
  /**
   * function hasAttributes()   
   * @type Boolean
-  * @class Node
+  * @memberOf Node
   * @return Boolean;
   * @see Node
   * @since Standard ECMA-262 3rd. Edition 
@@ -688,7 +688,7 @@ Node.prototype.hasAttributes=function(){};
  /**
   * Object NodeList   
   * @constructor
-  * @class NodeList
+  * @memberOf NodeList
   * @see NodeList
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -700,7 +700,7 @@ NodeList.prototype = new Object();
  /**
   * property length   
   * @type Number
-  * @class NodeList
+  * @memberOf NodeList
   * @see NodeList
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -713,7 +713,7 @@ NodeList.prototype.length=0;
   * function item(index) 
   *     Note: This object can also be dereferenced using square bracket notation (e.g. obj[1]). Dereferencing with an integer index is equivalent to invoking the item method with that index 
   * @type Node
-  * @class NodeList
+  * @memberOf NodeList
   * @param index Number
   * @return Node;
   * @see NodeList
@@ -730,7 +730,7 @@ NodeList.prototype.item = function(index){};
   * @super Document
   * @constructor
   * @see Document
-  * @class  DocumentFragment
+  * @memberOf  DocumentFragment
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -743,7 +743,7 @@ DocumentFragment.prototype=new Document();
   * @super Node
   * @constructor
   * @see Node
-  * @class  Document
+  * @memberOf  Document
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -755,7 +755,7 @@ Document.prototype = new Node();
   * @type  DocumentType
   * @see Document
   * @see DocumentType
-  * @class  Document
+  * @memberOf  Document
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -765,7 +765,7 @@ Document.prototype.doctype = new DocumentType();
  * property cookie
  * @type  Array
  * @see Document
- * @class  Document
+ * @memberOf  Document
  * @since Standard ECMA-262 3rd. Edition
  * @since Level 2 Document Object Model Core Definition.
  * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -775,7 +775,7 @@ Document.prototype.cookie = new Array();
  * property domain
  * @type  String
  * @see Document
- * @class  Document
+ * @memberOf  Document
  * @since Standard ECMA-262 3rd. Edition
  * @since Level 2 Document Object Model Core Definition.
  * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -785,7 +785,7 @@ Document.prototype.domain = "";
  * property referrer
  * @type  String
  * @see Document
- * @class  Document
+ * @memberOf  Document
  * @since Standard ECMA-262 3rd. Edition
  * @since Level 2 Document Object Model Core Definition.
  * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -795,7 +795,7 @@ Document.prototype.referrer = "";
  * property title
  * @type  String
  * @see Document
- * @class  Document
+ * @memberOf  Document
  * @since Standard ECMA-262 3rd. Edition
  * @since Level 2 Document Object Model Core Definition.
  * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -805,7 +805,7 @@ Document.prototype.title = "";
  * property URL
  * @type  String
  * @see Document
- * @class  Document
+ * @memberOf  Document
  * @since Standard ECMA-262 3rd. Edition
  * @since Level 2 Document Object Model Core Definition.
  * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -816,7 +816,7 @@ Document.prototype.URL = "";
   * @type   DOMImplementation
   * @see Document
   * @see DOMImplementation
-  * @class  Document
+  * @memberOf  Document
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -827,7 +827,7 @@ Document.prototype.implementation = new DOMImplementation();
   * @type   Element
   * @see Document
   * @see Element
-  * @class  Document
+  * @memberOf  Document
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -836,7 +836,7 @@ Document.prototype.documentElement= new Element();
  /**
   * function createElement(tagName)  
   * @type Element
-  * @class Document
+  * @memberOf Document
   * @param tagName String
   * @return Element;
   * @throws DOMException
@@ -852,7 +852,7 @@ Document.prototype.createElement=function(tagName){};
  /**
   * function createDocumentFragment()  
   * @type DocumentFragment
-  * @class Document
+  * @memberOf Document
   * @return DocumentFragment;
   * @see Document
   * @see DocumentFragment
@@ -865,7 +865,7 @@ Document.prototype.createDocumentFragment=function(){};
  /**
   * function createTextNode(data)  
   * @type Text
-  * @class Document
+  * @memberOf Document
   * @param data String
   * @return Text;
   * @see Document
@@ -879,7 +879,7 @@ Document.prototype.createTextNode=function(data){};
  /**
   * function createComment(data)  
   * @type Comment
-  * @class Document
+  * @memberOf Document
   * @param data String
   * @return Comment;
   * @see Document
@@ -893,7 +893,7 @@ Document.prototype.createComment=function(data){};
  /**
   * function createCDATASection(data)  
   * @type CDATASection
-  * @class Document
+  * @memberOf Document
   * @param data String
   * @return CDATASection
   * @throws DOMException
@@ -908,7 +908,7 @@ Document.prototype.createCDATASection(data)
  /**
   * function createProcessingInstruction(target, data) 
   * @type ProcessingInstruction
-  * @class Document
+  * @memberOf Document
   * @param target String
   * @param data String;
   * @return  ProcessingInstruction
@@ -924,7 +924,7 @@ Document.prototype.createProcessingInstruction=function(target, data){};
  /**
   * function createAttribute(name)  
   * @type Attr
-  * @class Document
+  * @memberOf Document
   * @param name String
   * @return  Attr
   * @throws DOMException
@@ -939,7 +939,7 @@ Document.prototype.createAttribute=function(name){};
  /**
   * function createEntityReference(name)  
   * @type DOMException
-  * @class Document
+  * @memberOf Document
   * @param name String
   * @return  EntityReference
   * @throws DOMException
@@ -954,7 +954,7 @@ Document.prototype.createEntityReference=function(name){};
  /**
   * function getElementsByTagName(tagname)  
   * @type NodeList
-  * @class Document
+  * @memberOf Document
   * @param tagname String
   * @return  NodeList
   * @see Document
@@ -968,7 +968,7 @@ Document.prototype.getElementsByTagName=function(tagname){};
  /**
   * function importNode(importedNode, deep)  
   * @type Node
-  * @class Document
+  * @memberOf Document
   * @param importedNode Node
   * @param deep Boolean
   * @return  Node
@@ -984,7 +984,7 @@ Document.prototype.importNode=function(importedNode, deep){};
  /**
   * function createElementNS(namespaceURI, qualifiedName) 
   * @type Element
-  * @class Document
+  * @memberOf Document
   * @param namespaceURI String
   * @param qualifiedName String
   * @return  Element
@@ -1000,7 +1000,7 @@ Document.prototype.createElementNS=function(namespaceURI, qualifiedName){};
  /**
   * function createAttributeNS(namespaceURI, qualifiedName)
   * @type Attr
-  * @class Document
+  * @memberOf Document
   * @param namespaceURI String
   * @param qualifiedName String
   * @return  Attr
@@ -1016,7 +1016,7 @@ Document.prototype.createAttributeNS=function(namespaceURI, qualifiedName){};
 /**
   * function getElementsByTagNameNS(namespaceURI, localName)
   * @type NodeList
-  * @class Document
+  * @memberOf Document
   * @param namespaceURI String
   * @param qualifiedName String
   * @return  NodeList
@@ -1031,7 +1031,7 @@ Document.prototype.getElementsByTagNameNS=function(namespaceURI, localName){};
 /**
   * function getElementById(elementId)
   * @type Element
-  * @class Document
+  * @memberOf Document
   * @param elementId String
   * @return  Element
   * @see Document
@@ -1045,7 +1045,7 @@ Document.prototype.getElementById=function(elementId){};
 /**
  * function getElementsByTagName(tagName)
  * @type Element
- * @class Document
+ * @memberOf Document
  * @param tagName String
  * @return  Element
  * @see Document
@@ -1058,7 +1058,7 @@ Document.prototype.getElementById=function(elementId){};
 Document.prototype.getElementsByTagName=function(tagName){}; 
 /**
   * function write(text)
-  * @class Document
+  * @memberOf Document
   * @param text String
   * @see Document
   * @since Standard ECMA-262 3rd. Edition 
@@ -1069,7 +1069,7 @@ Document.prototype.getElementsByTagName=function(tagName){};
 Document.prototype.write=function(text){}; 
 /**
   * function writeln(text)
-  * @class Document
+  * @memberOf Document
   * @param text String
   * @see Document
   * @since Standard ECMA-262 3rd. Edition 
@@ -1080,7 +1080,7 @@ Document.prototype.write=function(text){};
 Document.prototype.writeln=function(text){}; 
 /**
   * function close()
-  * @class Document
+  * @memberOf Document
   * @see Document
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 1 Document Object Model Core Definition.
@@ -1090,7 +1090,7 @@ Document.prototype.writeln=function(text){};
 Document.prototype.close=function(){}; 
 /**
   * function open()
-  * @class Document
+  * @memberOf Document
   * @see Document
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 1 Document Object Model Core Definition.
@@ -1102,7 +1102,7 @@ Document.prototype.open=function(){};
   * Object NamedNodeMap()
   * @super Object
   * @constructor
-  * @class NamedNodeMap
+  * @memberOf NamedNodeMap
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -1112,7 +1112,7 @@ NamedNodeMap.prototype = new Object();
 /**
   * property length 
   * @type   Number
-  * @class  NamedNodeMap;
+  * @memberOf  NamedNodeMap;
   * @see NamedNodeMap
 
   * @since Standard ECMA-262 3rd. Edition
@@ -1123,7 +1123,7 @@ NamedNodeMap.prototype.length=0;
 /**
   * function getNamedItem(name) 
   * @type Node
-  * @class NamedNodeMap
+  * @memberOf NamedNodeMap
   * @param Name String
   * @return  Node
   * @see NamedNodeMap
@@ -1137,7 +1137,7 @@ NamedNodeMap.prototype.getNamedItem=function(name){};
 /**
   * function setNamedItem(arg) 
   * @type Node
-  * @class NamedNodeMap
+  * @memberOf NamedNodeMap
   * @param arg Node
   * @return  Node
   * @throws DOMException
@@ -1152,7 +1152,7 @@ NamedNodeMap.prototype.setNamedItem=function(arg){};
 /**
   * function removeNamedItem(name)  
   * @type Node
-  * @class NamedNodeMap
+  * @memberOf NamedNodeMap
   * @param name String
   * @return  Node
   * @throws DOMException
@@ -1168,7 +1168,7 @@ NamedNodeMap.prototype.removeNamedItem=function(name){};
   * function item(index)
   * Note: This object can also be dereferenced using square bracket notation (e.g. obj[1]). Dereferencing with an integer index is equivalent to invoking the item method with that index.
   * @type Node
-  * @class NamedNodeMap
+  * @memberOf NamedNodeMap
   * @param index Number
   * @return  Node
   * @see NamedNodeMap
@@ -1182,7 +1182,7 @@ NamedNodeMap.prototype.item=function(index){};
 /**
   * function getNamedItemNS(namespaceURI, localName) 
   * @type Node
-  * @class NamedNodeMap
+  * @memberOf NamedNodeMap
   * @param namespaceURI String
   * @param localName String
   * @return  Node
@@ -1197,7 +1197,7 @@ NamedNodeMap.prototype.getNamedItemNS=function(namespaceURI, localName){};
 /**
   * function setNamedItemNS(arg) 
   * @type Node
-  * @class NamedNodeMap
+  * @memberOf NamedNodeMap
   * @param arg Node
   * @param localName String
   * @return  Node
@@ -1213,7 +1213,7 @@ NamedNodeMap.prototype.setNamedItemNS=function(arg){};
 /**
   * function removeNamedItemNS(namespaceURI, localName)  
   * @type Node
-  * @class NamedNodeMap
+  * @memberOf NamedNodeMap
   * @param namespaceURI String
   * @param localName String
   * @return  Node
@@ -1232,7 +1232,7 @@ NamedNodeMap.prototype.removeNamedItemNS=function(namespaceURI, localName){};
   * @super Node
   * @constructor
   * @see Node
-  * @class  CharacterData
+  * @memberOf  CharacterData
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -1242,7 +1242,7 @@ CharacterData.prototype=new Node();
 /**
   * property data
   * @type   String
-  * @class  CharacterData
+  * @memberOf  CharacterData
   * @throws DOMException on setting and can raise a DOMException object on retrieval.
   * @see CharacterData
 
@@ -1254,7 +1254,7 @@ CharacterData.prototype.data="";
 /**
   * property length
   * @type   Number
-  * @class  CharacterData
+  * @memberOf  CharacterData
   * @see CharacterData
 
   * @since Standard ECMA-262 3rd. Edition
@@ -1265,7 +1265,7 @@ CharacterData.prototype.length=0;
 /**
   * function substringData(offset, count)   
   * @type String
-  * @class CharacterData
+  * @memberOf CharacterData
   * @param parameter Number
   * @param count Number
   * @return String
@@ -1280,7 +1280,7 @@ CharacterData.prototype.substringData=function(offset, count){};
 /**
   * function appendData(arg)    
   * @type String
-  * @class CharacterData
+  * @memberOf CharacterData
   * @param arg String
   * @return String
   * @throws DOMException
@@ -1294,7 +1294,7 @@ CharacterData.prototype.appendData=function(arg){};
 /**
   * function insertData(offset, arg)  
  
-  * @class CharacterData
+  * @memberOf CharacterData
   * @param offset Number
   * @param arg String
   * @throws DOMException
@@ -1308,7 +1308,7 @@ CharacterData.prototype.insertData=function(offset, arg){};
 /**
   * function deleteData(offset, count)  
  
-  * @class CharacterData
+  * @memberOf CharacterData
   * @param offset Number
   * @param count Number
   * @throws DOMException
@@ -1322,7 +1322,7 @@ CharacterData.prototype.deleteData=function(offset, count){};
 /**
   * function replaceData(offset, count, arg)
  
-  * @class CharacterData
+  * @memberOf CharacterData
   * @param offset Number
   * @param count Number
   * @param arg String
@@ -1340,7 +1340,7 @@ CharacterData.prototype.replaceData=function(offset, count, arg){};
   * @super Node
   * @constructor
   * @see Node
-  * @class Attr
+  * @memberOf Attr
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -1350,7 +1350,7 @@ Attr.prototype=new Node();
 /**
   * property name
   * @type   String
-  * @class  Attr
+  * @memberOf  Attr
  
   * @see Attr
 
@@ -1362,7 +1362,7 @@ Attr.prototype.name="";
 /**
   * property specified
   * @type   Boolean
-  * @class  Attr
+  * @memberOf  Attr
   
   * @see Attr
 
@@ -1374,7 +1374,7 @@ Attr.prototype.specified=false;
 /**
   * property value 
   * @type   Boolean
-  * @class  Attr
+  * @memberOf  Attr
   * @throws DOMException on setting and can raise a DOMException object on retrieval.
   * @see Attr
 
@@ -1386,7 +1386,7 @@ Attr.prototype.value="";
 /**
   * property ownerElement 
   * @type   Element
-  * @class  Attr
+  * @memberOf  Attr
   * @throws DOMException on setting and can raise a DOMException object on retrieval.
   * @see Attr
   * @see Element
@@ -1402,7 +1402,7 @@ Attr.prototype.ownerElement=new Element();
   * @super Node
   * @constructor
   * @see Node
-  * @class Attr
+  * @memberOf Attr
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -1412,7 +1412,7 @@ Element.prototype=new Node();
 /**
   * property tagName  
   * @type   String
-  * @class  Element
+  * @memberOf  Element
   * @throws DOMException on setting and can raise a DOMException object on retrieval.
   * @see Attr
   * @see Element
@@ -1425,7 +1425,7 @@ Element.prototype.tagName="";
 /**
   * function getAttribute(name) 
   * @type String
-  * @class Element
+  * @memberOf Element
   * @param name String
   * @return String
   * @see Element
@@ -1438,7 +1438,7 @@ Element.prototype.getAttribute=function(name){};
 /**
   * function setAttribute(name, value) 
   *
-  * @class Element
+  * @memberOf Element
   * @param name String
   * @param value String
   * @throws DOMException
@@ -1452,7 +1452,7 @@ Element.prototype.setAttribute=function(name, value){};
 /**
   * function removeAttribute(name)
   
-  * @class Element
+  * @memberOf Element
   * @param name String
   * @throws DOMException
   * @see Element
@@ -1465,7 +1465,7 @@ Element.prototype.removeAttribute=function(name){};
 /**
   * function getAttributeNode(name)
   * @type Attr
-  * @class Element
+  * @memberOf Element
   * @param name String
   * @return Attr
   * @see Element
@@ -1479,7 +1479,7 @@ Element.prototype.getAttributeNode=function(name){};
 /**
   * function setAttributeNode(newAttr)
   * @type Attr
-  * @class Element
+  * @memberOf Element
   * @param newAttr Attr
   * @return Attr
 
@@ -1495,7 +1495,7 @@ Element.prototype.setAttributeNode=function(newAttr){};
 /**
   * function removeAttributeNode(oldAttr) 
   * @type Attr
-  * @class Element
+  * @memberOf Element
   * @param oldAttr Attr
   * @return Attr
   * @throws DOMException
@@ -1510,7 +1510,7 @@ Element.prototype.removeAttributeNode=function(oldAttr){};
 /**
   * function getElementsByTagName(name)
   * @type NodeList
-  * @class Element
+  * @memberOf Element
   * @param name String
   * @return NodeList
   * @see NodeList
@@ -1524,7 +1524,7 @@ Element.prototype.getElementsByTagName=function(name){};
 /**
   * function getAttributeNS(namespaceURI, localName) 
   * @type String
-  * @class Element
+  * @memberOf Element
   * @param namespaceURI String
   * @param localName String
   * @return String
@@ -1538,7 +1538,7 @@ Element.prototype.getAttributeNS=function(namespaceURI, localName){};
  /**
   * function setAttributeNS(namespaceURI, qualifiedName, value)  
   
-  * @class Element
+  * @memberOf Element
   * @param namespaceURI String
   * @param qualifiedName String
   * @param value String
@@ -1552,7 +1552,7 @@ Element.prototype.setAttributeNS=function(namespaceURI, qualifiedName, value){};
  /**
   * function removeAttributeNS(namespaceURI, localName)  
   
-  * @class Element
+  * @memberOf Element
   * @param namespaceURI String
   * @param localName String
   * @throws DOMException
@@ -1565,7 +1565,7 @@ Element.prototype.removeAttributeNS=function(namespaceURI, localName){};
  /**
   * function getAttributeNodeNS(namespaceURI, localName)   
   * @type Attr
-  * @class Element
+  * @memberOf Element
   * @param namespaceURI String
   * @param localName String
   * @return Attr
@@ -1580,7 +1580,7 @@ Element.prototype.getAttributeNodeNS=function(namespaceURI, localName){};
  /**
   * function setAttributeNodeNS(newAttr)    
   * @type Attr
-  * @class Element
+  * @memberOf Element
   * @param newAttr Attr
 
   * @return Attr
@@ -1595,7 +1595,7 @@ Element.prototype.setAttributeNodeNS=function(newAttr){};
  /**
   * function getElementsByTagNameNS(namespaceURI, localName)   
   * @type NodeList
-  * @class Element
+  * @memberOf Element
   * @param namespaceURI String
   * @param localName String
 
@@ -1611,7 +1611,7 @@ Element.prototype.getElementsByTagNameNS=function(namespaceURI, localName){};
  /**
   * function hasAttribute(name)   
   * @type Boolean
-  * @class Element
+  * @memberOf Element
   
   * @param name String
 
@@ -1627,7 +1627,7 @@ Element.prototype.hasAttribute=function(name){};
  /**
   * function hasAttributeNS(namespaceURI, localName)    
   * @type Boolean
-  * @class Element
+  * @memberOf Element
   * @param namespaceURI String
   * @param localName String
 
@@ -1646,7 +1646,7 @@ Element.prototype.hasAttributeNS=function(namespaceURI, localName){};
   * @super CharacterData
   * @constructor
 
-  * @class Text
+  * @memberOf Text
   * @see CharacterData
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -1657,7 +1657,7 @@ Text.prototype = new CharacterData();
  /**
   * function splitText(offset)     
   * @type Text
-  * @class Text
+  * @memberOf Text
   * @param offset Number
  
 
@@ -1677,7 +1677,7 @@ Text.prototype.splitText=function(offset){};
   * @super CharacterData
   * @constructor
 
-  * @class Comment
+  * @memberOf Comment
   * @see CharacterData
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -1691,7 +1691,7 @@ Comment.prototype = new CharacterData();
   * @super Text
   * @constructor
 
-  * @class CDATASection
+  * @memberOf CDATASection
   * @see Text
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -1705,7 +1705,7 @@ CDATASection.prototype = new Text();
   * @super Node
   * @constructor
 
-  * @class DocumenType
+  * @memberOf DocumenType
   * @see Node
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -1716,7 +1716,7 @@ DocumentType.prototype = new Node();
 /**
   * read-only Property name
   * @type String
-  * @class DocumentType
+  * @memberOf DocumentType
   * @see DocumentType(); 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -1727,7 +1727,7 @@ DocumentType.prototype.name="";
 /**
   * read-only Property entities
   * @type NamedNodeMap
-  * @class DocumentType
+  * @memberOf DocumentType
   * @see DocumentType(); 
   * @see NamedNodeMap
   * @since Standard ECMA-262 3rd. Edition 
@@ -1739,7 +1739,7 @@ DocumentType.prototype.entities = new NamedNodeMap();
 /**
   * Read-Only Property notations 
   * @type NamedNodeMap
-  * @class DocumentType
+  * @memberOf DocumentType
   * @see DocumentType(); 
   * @see NamedNodeMap
   * @since Standard ECMA-262 3rd. Edition 
@@ -1751,7 +1751,7 @@ DocumentType.prototype.notations=new NamedNodeMap();
 /**
   * Read-Only Property publicId 
   * @type String
-  * @class DocumentType
+  * @memberOf DocumentType
   * @see DocumentType(); 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -1762,7 +1762,7 @@ DocumentType.prototype.publicId="";
 /**
   * Read-Only Property systemId  
   * @type String
-  * @class DocumentType
+  * @memberOf DocumentType
   * @see DocumentType(); 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -1773,7 +1773,7 @@ DocumentType.prototype.systemId="";
 /**
   * Read-Only Property internalSubset 
   * @type String
-  * @class DocumentType
+  * @memberOf DocumentType
   * @see DocumentType(); 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -1787,7 +1787,7 @@ DocumentType.prototype.internalSubset="";
   * @super Node
   * @constructor
 
-  * @class Notation
+  * @memberOf Notation
   * @see Node
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -1798,7 +1798,7 @@ Notation.prototype=new Node();
 /**
   * Read-Only Property publicId 
   * @type String
-  * @class Notation
+  * @memberOf Notation
   * @see Notation(); 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -1809,7 +1809,7 @@ Notation.prototype.publicId="";
 /**
   * Read-Only Property systemId 
   * @type String
-  * @class Notation
+  * @memberOf Notation
   * @see Notation(); 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -1823,7 +1823,7 @@ Notation.prototype.systemId="";
   * @super Node
   * @constructor
 
-  * @class Entity
+  * @memberOf Entity
   * @see Node
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -1834,7 +1834,7 @@ Entity.prototype=new Node();
 /**
   * Read-Only Property publicId 
   * @type String
-  * @class Entity
+  * @memberOf Entity
   * @see Entity(); 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -1845,7 +1845,7 @@ Entity.prototype.publicId="";
  /**
   * Read-Only Property systemId 
   * @type String
-  * @class Entity
+  * @memberOf Entity
   * @see Entity(); 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -1856,7 +1856,7 @@ Entity.prototype.systemId="";
  /**
   * Read-Only Property notationName 
   * @type String
-  * @class Entity
+  * @memberOf Entity
   * @see Entity(); 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -1870,7 +1870,7 @@ Entity.prototype.notationName="";
   * @super Node
   * @constructor
 
-  * @class EntityReference
+  * @memberOf EntityReference
   * @see Node
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -1884,7 +1884,7 @@ EntityReference.prototype=new Node();
   * @super Node
   * @constructor
 
-  * @class ProcessingInstruction
+  * @memberOf ProcessingInstruction
   * @see Node
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -1896,7 +1896,7 @@ ProcessingInstruction.prototype=new Node();
  /**
   * Read-Only Property target  
   * @type String
-  * @class ProcessingInstruction
+  * @memberOf ProcessingInstruction
   * @see ProcessingInstruction(); 
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -1907,7 +1907,7 @@ ProcessingInstruction.prototype.target="";
  /**
   * Read-Only Property target  
   * @type String
-  * @class ProcessingInstruction
+  * @memberOf ProcessingInstruction
   * @throws DOMException on setting.
   * @see ProcessingInstruction(); 
   * @since Standard ECMA-262 3rd. Edition 

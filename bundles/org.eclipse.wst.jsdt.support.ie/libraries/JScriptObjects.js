@@ -17,7 +17,7 @@
   *
   * @super Object
   * @type  DABoolean
-  * @class DABoolean
+  * @memberOf DABoolean
   * @since JScript 5.6   
  */
 
@@ -27,7 +27,7 @@ DABoolean.prototype=new Object();
   /* Object arguments()
   * @super Array
   * @type  arguments
-  * @class arguments
+  * @memberOf arguments
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/9dthzd08.aspx     
  */
@@ -40,7 +40,7 @@ arguments.prototype=new Array();
   * Object RegExp()
   * @super Object
   * @type  RegExp
-  * @class RegExp
+  * @memberOf RegExp
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/9dthzd08.aspx     
  */
@@ -49,7 +49,7 @@ RegExp.prototype=new Object();
  /**
   * Property global
   * @type    Boolean
-  * @class   RegExp
+  * @memberOf   RegExp
   * @return  Boolean
   * @see     RegExp
   * @since   JScript 5.6
@@ -59,7 +59,7 @@ RegExp.prototype.global=true;
  /**
   * Property index
   * @type    Number
-  * @class   RegExp
+  * @memberOf   RegExp
   * @return  Number
   * @see     RegExp
   * @since   JScript 5.6
@@ -69,7 +69,7 @@ RegExp.prototype.index=-1;
  /**
   * Property input
   * @type    String
-  * @class   RegExp
+  * @memberOf   RegExp
   * @return  String
   * @see     RegExp
   * @since   JScript 5.6
@@ -79,7 +79,7 @@ RegExp.prototype.input="";
  /**
   * Property lastIndex
   * @type    Number
-  * @class   RegExp
+  * @memberOf   RegExp
   * @return  Number
   * @see     RegExp
   * @since   JScript 5.6
@@ -89,7 +89,7 @@ RegExp.prototype.lastIndex=-1;
  /**
   * Property lastMatch
   * @type    String
-  * @class   RegExp
+  * @memberOf   RegExp
   * @return  String
   * @see     RegExp
   * @since   JScript 5.6
@@ -99,7 +99,7 @@ RegExp.prototype.lastMatch=""
  /**
   * Property lastParen
   * @type    String
-  * @class   RegExp
+  * @memberOf   RegExp
   * @return  String
   * @see     RegExp
   * @since   JScript 5.6
@@ -109,7 +109,7 @@ RegExp.prototype.lastParen="";
  /**
   * Property leftContext
   * @type    String
-  * @class   RegExp
+  * @memberOf   RegExp
   * @return  String
   * @see     RegExp
   * @since   JScript 5.6
@@ -119,7 +119,7 @@ RegExp.prototype.leftContext="";
  /**
   * Property rightContext
   * @type    String
-  * @class   RegExp
+  * @memberOf   RegExp
   * @return  String
   * @see     RegExp
   * @since   JScript 5.6
@@ -129,7 +129,7 @@ RegExp.prototype.rightContext="";
  /**
   * Property ignoreCase
   * @type    Boolean
-  * @class   RegExp
+  * @memberOf   RegExp
   * @return  Boolean
   * @see     RegExp
   * @since   JScript 5.6
@@ -139,7 +139,7 @@ RegExp.prototype.ignoreCase=false;
  /**
   * Property multiline
   * @type    Boolean
-  * @class   RegExp
+  * @memberOf   RegExp
   * @return  Boolean
   * @see     RegExp
   * @since   JScript 5.6
@@ -149,7 +149,7 @@ RegExp.prototype.multiline=false;
  /**
   * Property source
   * @type    String
-  * @class   RegExp
+  * @memberOf   RegExp
   * @return  String
   * @see     RegExp
   * @since   JScript 5.6
@@ -159,7 +159,7 @@ RegExp.prototype.source="";
  /**
   * function test(pos) 
   * @type    Array
-  * @class   RegExp
+  * @memberOf   RegExp
   * @param   array1 Array
   * @param   array2 Array
   * @return  Array
@@ -171,7 +171,7 @@ RegExp.prototype.test=function(){};
  /**
   * function exec(pos) 
   * @type    Boolean
-  * @class   RegExp
+  * @memberOf   RegExp
   * @param   str String
   * @return  Boolean
   * @see     RegExp
@@ -182,7 +182,7 @@ RegExp.prototype.exec=function(str){};
  /**
   * function compile(pos) 
   * @type    Array
-  * @class   RegExp
+  * @memberOf   RegExp
   * @param   pattern String
   * @param   flags String Optional. Available flags, which may be combined, are:g (global search for all occurrences of pattern)i (ignore case)m (multiline search)
   * @return  Array
@@ -199,7 +199,7 @@ RegExp.prototype.compile=function(pattern, flags){};
   * @param servername String Required. The name of the application providing the object
   * @param typename String Required. The type or class of the object to create.
   * @param location String  Optional. The name of the network server where the object is to be created.
-  * @class ActiveXObject
+  * @memberOf ActiveXObject
   * @since JScript 1.0
   * @link  http://msdn2.microsoft.com/en-us/library/7sw4ddf8.aspx  
  */
@@ -209,7 +209,7 @@ ActiveXObject.prototype=new Object();
  /**
   * function concat(pos) 
   * @type    Array
-  * @class   Array
+  * @memberOf   Array
   * @param   array1 Array
   * @param   array2 Array
   * @return  Array
@@ -221,7 +221,7 @@ Array.prototype.concat=function(array1, array2){};
  /**
   * function join(separator)
   * @type    String
-  * @class   Array
+  * @memberOf   Array
   * @param   separator String
   * @param   array2 Array
   * @return  String
@@ -233,7 +233,7 @@ Array.prototype.join=function(separator){};
  /**
   * function pop() 
   * @type    Array
-  * @class   Array
+  * @memberOf   Array
   * @param   array1 Array
   * @param   array2 Array
   * @return  Array
@@ -245,7 +245,7 @@ Array.prototype.pop=function(){};
  /**
   * function push(values) 
   * @type    Object
-  * @class   Array
+  * @memberOf   Array
   * @param   values Array
   * @return  Object
   * @see     Array
@@ -255,7 +255,7 @@ Array.prototype.pop=function(){};
 Array.prototype.push=function(values){};
  /**
   * function reverse()
-  * @class   Array
+  * @memberOf   Array
   * @see     Array
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -264,7 +264,7 @@ Array.prototype.reverse=function(){};
  /**
   * function shift() 
   * @type    Object
-  * @class   Array
+  * @memberOf   Array
   * @return  Object
   * @see     Array
   * @since   JScript 5.6
@@ -274,7 +274,7 @@ Array.prototype.shift=function(){};
  /**
   * function slice() 
   * @type    Array
-  * @class   Array
+  * @memberOf   Array
   * @param   startIndex Number;
   * @param   endIndex Number
   * @return  Array
@@ -285,7 +285,7 @@ Array.prototype.shift=function(){};
 Array.prototype.slice=function(startIndex,endIndex){};
  /**
   * function sort(sortFunction) 
-  * @class   Array
+  * @memberOf   Array
   * @param   sortFunction Function Optional. The name of the function used to determine the order of the elements. If omitted, the elements are sorted in ascending, ASCII character order
   * @see     Array
   * @since   JScript 5.6
@@ -295,7 +295,7 @@ Array.prototype.sort=function(sortFunction){};
  /**
   * function splice(start, deleteCount, items)
   * @type    Array
-  * @class   Array
+  * @memberOf   Array
   * @param start Number
   * @param deleteCount Number
   * @param items Array
@@ -308,7 +308,7 @@ Array.prototype.splice=function(start, deleteCount, items){};
  /**
   * function toLocaleString() 
   * @type    String
-  * @class   Object
+  * @memberOf   Object
   * @return  String
   * @see     Array
   * @since   JScript 5.6
@@ -318,7 +318,7 @@ Object.prototype.toLocaleString=function(){};
  /**
   * function unshift()
   
-  * @class   Array
+  * @memberOf   Array
   * @param   elements Array
   * @see     Array
   * @since   JScript 5.6
@@ -328,7 +328,7 @@ Array.prototype.unshift=function(elements){};
  /**
   * function valueOf()
   * @type    Object
-  * @class   Object
+  * @memberOf   Object
   * @return  Object
   * @see     Array
   * @since   JScript 5.6
@@ -340,7 +340,7 @@ Object.prototype.valueOf=function(){};
   * Object Date()
   * @super Object
   * @type  Date
-  * @class Date
+  * @memberOf Date
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/9dthzd08.aspx     
  */
@@ -349,7 +349,7 @@ function Date(year, month, date, hours, minutes, seconds,ms){};
  /**
   * function getDate()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -359,7 +359,7 @@ Date.prototype.getDate=function(){};
  /**
   * function getDay()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -369,7 +369,7 @@ Date.prototype.getDay=function(){};
  /**
   * function getFullYear()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -379,7 +379,7 @@ Date.prototype.getFullYear=function(){};
  /**
   * function getHours()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -389,7 +389,7 @@ Date.prototype.getHours=function(){};
  /**
   * function getMilliseconds()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -399,7 +399,7 @@ Date.prototype.getMilliseconds=function(){};
  /**
   * function getMinutes()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -409,7 +409,7 @@ Date.prototype.getMinutes=function(){};
  /**
   * function getMonth()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -419,7 +419,7 @@ Date.prototype.getMonth=function(){};
  /**
   * function getSeconds()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -429,7 +429,7 @@ Date.prototype.getSeconds=function(){};
  /**
   * function getTime()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -439,7 +439,7 @@ Date.prototype.getTime=function(){};
  /**
   * function getTimezoneOffset()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -449,7 +449,7 @@ Date.prototype.getTimezoneOffset=function(){};
  /**
   * function getUTCDate()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -459,7 +459,7 @@ Date.prototype.getUTCDate=function(){};
  /**
   * function getUTCDay()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -469,7 +469,7 @@ Date.prototype.getUTCDay=function(){};
  /**
   * function getUTCFullYear()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -479,7 +479,7 @@ Date.prototype.getUTCFullYear=function(){};
  /**
   * function getUTCHours()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -489,7 +489,7 @@ Date.prototype.getUTCHours=function(){};
  /**
   * function getUTCMilliseconds()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -499,7 +499,7 @@ Date.prototype.getUTCMilliseconds=function(){};
  /**
   * function getUTCMinutes()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -509,7 +509,7 @@ Date.prototype.getUTCMinutes=function(){};
  /**
   * function getUTCMonth()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -519,7 +519,7 @@ Date.prototype.getUTCMonth=function(){};
  /**
   * function getUTCSeconds()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -529,7 +529,7 @@ Date.prototype.getUTCSeconds=function(){};
  /**
   * function getVarDate()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -539,7 +539,7 @@ Date.prototype.getVarDate=function(){};
  /**
   * function getYear()
   * @type    Number
-  * @class   Date
+  * @memberOf   Date
   * @return  Number
   * @see     Date
   * @since   JScript 5.6
@@ -549,7 +549,7 @@ Date.prototype.getYear=function(){};
  /**
   * function parse(dateVal)
   * @type    Date
-  * @class   Date
+  * @memberOf   Date
   * @param 	 dateVal String
   * @return  Date
   * @see     Date
@@ -560,7 +560,7 @@ Date.parse=function(dateVal){};
  /**
   * function setDate(dateVale)
  
-  * @class   Date
+  * @memberOf   Date
   * @param 	 dateVal Date
   * @see     Date
   * @since   JScript 5.6
@@ -570,7 +570,7 @@ Date.prototype.setDate=function(dateVal){};
  /**
   * function setFullYear(year,month, day)
   
-  * @class   Date
+  * @memberOf   Date
   * @param 	 year Number
   * @param   month Number
   * @param   day Number
@@ -582,7 +582,7 @@ Date.prototype.setFullYear=function(year,month, day){};
  /**
   * function setHours(number)
 
-  * @class   Date
+  * @memberOf   Date
   * @param 	 numHours Number
   * @param 	 numMin Number
   * @param 	 numSec Number
@@ -595,7 +595,7 @@ Date.prototype.setHours=function(numHours, numMin, numSec, numMilli){};
  /**
   * function setMilliseconds(number)
  
-  * @class   Date
+  * @memberOf   Date
   * @param 	 number Number
   * @see     Date
   * @since   JScript 5.6
@@ -605,7 +605,7 @@ Date.prototype.setMilliseconds=function(number){};
  /**
   * function setMinutes(number)
   
-  * @class   Date
+  * @memberOf   Date
   * @param 	 number Number
   * @param 	 numMilli Number
   * @see     Date
@@ -616,7 +616,7 @@ Date.prototype.setMinutes=function(number, numMilli){};
  /**
   * function setMonth(number)
  
-  * @class   Date
+  * @memberOf   Date
   * @param 	 numMonth Number
   * @param 	 dateVale Number
   * @see     Date
@@ -627,7 +627,7 @@ Date.prototype.setMonth=function(numMonth, dateVale){};
  /**
   * function setSeconds(number)
   
-  * @class   Date
+  * @memberOf   Date
   * @param 	 number Number
   * @param 	 numMilli Numbe
   * @see     Date
@@ -638,7 +638,7 @@ Date.prototype.setSeconds=function(number, numMilli){};
  /**
   * function setTime(number)
  
-  * @class   Date
+  * @memberOf   Date
   * @param 	 milli Number
   * @see     Date
   * @since   JScript 5.6
@@ -648,7 +648,7 @@ Date.prototype.setTime=function(milli){};
  /**
   * function setUTCDate(number)
   
-  * @class   Date
+  * @memberOf   Date
   * @param 	 number Number
   * @see     Date
   * @since   JScript 5.6
@@ -658,7 +658,7 @@ Date.prototype.setUTCDate=function(number){};
  /**
   * function setUTCFullYear(number)
   
-  * @class   Date
+  * @memberOf   Date
   * @param 	 numYear Number
   * @param 	 numMonth Number
   * @param 	 numDate Number
@@ -670,7 +670,7 @@ Date.prototype.setUTCFullYear=function(numYear, numMonth, numDate){};
  /**
   * function setUTCHours(number)
   
-  * @class   Date
+  * @memberOf   Date
   * @param 	 numHours Number
   * @param 	 numMin Number
   * @param 	 numSec Number
@@ -683,7 +683,7 @@ Date.prototype.setUTCHours=function(numHours, numMin, numSec, numMilli){};
  /**
   * function setUTCMilliseconds(number)
  
-  * @class   Date
+  * @memberOf   Date
   * @param 	 number Number
   * @see     Date
   * @since   JScript 5.6
@@ -693,7 +693,7 @@ Date.prototype.setUTCMilliseconds=function(number){};
  /**
   * function setUTCMinutes(number)
  
-  * @class   Date
+  * @memberOf   Date
   * @param 	 numMinutes Number
   * @param 	 numSeconds Number
   * @param 	 numMilli Number
@@ -705,7 +705,7 @@ Date.prototype.setUTCMinutes=function(numMinutes, numSeconds, numMilli){};
  /**
   * function setUTCMonth(number)
   
-  * @class   Date
+  * @memberOf   Date
   * @param 	 numMonth Number
   * @param 	 dateVal Number
   * @see     Date
@@ -716,7 +716,7 @@ Date.prototype.setUTCMonth=function(numMonth, dateVal){};
  /**
   * function setUTCSeconds(number)
 
-  * @class   Date
+  * @memberOf   Date
   * @param 	 numSeconds Number
   * @param 	 numMilli Number
   * @see     Date
@@ -727,7 +727,7 @@ Date.prototype.setUTCSeconds=function(numSeconds, numMilli){};
  /**
   * function setYear(number)
  
-  * @class   Date
+  * @memberOf   Date
   * @param 	 number Number
   * @see     Date
   * @since   JScript 5.6
@@ -737,7 +737,7 @@ Date.prototype.setYear=function(number){};
  /**
   * function toDateString(number)
  
-  * @class   Date
+  * @memberOf   Date
   * @param 	 number Number
   * @see     Date
   * @since   JScript 5.6
@@ -747,7 +747,7 @@ Date.prototype.toDateString=function(){};
  /**
   * function toGMTString(number)
  
-  * @class   Date
+  * @memberOf   Date
   * @param 	 number Number
   * @see     Date
   * @since   JScript 5.6
@@ -757,7 +757,7 @@ Date.prototype.toGMTString=function(){};
  /**
   * function toLocaleDateString()
   * @type    String
-  * @class   Date
+  * @memberOf   Date
   * @return  String
   * @see     Date
   * @since   JScript 5.6
@@ -767,7 +767,7 @@ Date.prototype.toLocaleDateString=function(){};
  /**
   * function toLocaleString()
   * @type    String
-  * @class   Date
+  * @memberOf   Date
   * @return  String
   * @see     Date
   * @since   JScript 5.6
@@ -777,7 +777,7 @@ Date.prototype.toLocaleString=function(){};
  /**
   * function toLocaleTimeString()
   * @type    String
-  * @class   Date
+  * @memberOf   Date
   * @return  String
   * @see     Date
   * @since   JScript 5.6
@@ -787,7 +787,7 @@ Date.prototype.toLocaleTimeString=function(){};
  /**
   * function toTimeString()
   * @type    String
-  * @class   Date
+  * @memberOf   Date
 	* @return  String
   * @see     Date
   * @since   JScript 5.6
@@ -797,7 +797,7 @@ Date.prototype.toTimeString=function(){};
  /**
   * function toUTCString()
   * @type    String
-  * @class   Date
+  * @memberOf   Date
   * @return String
   * @see     Date
   * @since   JScript 5.6
@@ -807,7 +807,7 @@ Date.prototype.toUTCString=function(){};
  /**
   * function UTC();
   * @type    Date
-  * @class   Date
+  * @memberOf   Date
   * @param 	 year Number
   * @param 	 month Number
   * @param 	 day Number
@@ -826,7 +826,7 @@ Date.UTC=function(year, month, day, hours, minutes, seconds, ms){};
   * Object Debug()
   * @super Object
   * @type  Debug
-  * @class Debug
+  * @memberOf Debug
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/bs12a9wf.aspx 
  */
@@ -835,7 +835,7 @@ Debug.prototype=new Object();
  /**
   * function write(value);
 
-  * @class   Debug
+  * @memberOf   Debug
   * @param 	 value String
   * @see     Debug
   * @since   JScript 5.6
@@ -845,7 +845,7 @@ Debug.write=function(value){};
  /**
   * function writeln(value);
  
-  * @class   Debug
+  * @memberOf   Debug
   * @param 	 value String
   * @see     Debug
   * @since   JScript 5.6
@@ -857,7 +857,7 @@ Debug.writeln=function(value){};
   * Object Enumerator()
   * @super Object
   * @type  Enumerator
-  * @class Enumerator
+  * @memberOf Enumerator
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/bs12a9wf.aspx 
  */
@@ -868,7 +868,7 @@ function Enumerator(){};
   * @super Object
   * @type  Enumerator
   * @param collection Object
-  * @class Enumerator
+  * @memberOf Enumerator
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/bs12a9wf.aspx 
  */
@@ -877,7 +877,7 @@ Enumerator.prototype=new Object();
  /**
   * function atEnd()
   * @type    Enumerator
-  * @class   Enumerator
+  * @memberOf   Enumerator
   * @return  Boolean
   * @see     Enumerator
   * @since   JScript 5.6
@@ -887,7 +887,7 @@ Enumerator.prototype.atEnd=function(){};
  /**
   * function item()
   * @type    Object
-  * @class   Enumerator
+  * @memberOf   Enumerator
   * @return  Object
   * @see     Enumerator
   * @since   JScript 5.6
@@ -897,7 +897,7 @@ Enumerator.prototype.item=function(){};
  /**
   * function moveFirst()
   * @type    Object
-  * @class   Enumerator
+  * @memberOf   Enumerator
   * @return  Object
   * @see     Enumerator
   * @since   JScript 5.6
@@ -907,7 +907,7 @@ Enumerator.prototype.moveFirst=function(){};
  /**
   * function moveNext()
   * @type    Object
-  * @class   Enumerator
+  * @memberOf   Enumerator
   * @return  Object
   * @see     Enumerator
   * @since   JScript 5.6
@@ -922,7 +922,7 @@ Enumerator.prototype.moveNext =function(){};
   * @type  Error
   * @param number Number
   * @param description String
-  * @class Error
+  * @memberOf Error
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx
  */
@@ -931,7 +931,7 @@ Error.prototype=new Object();
  /**
   * Property description
   * @type    String
-  * @class   Error
+  * @memberOf   Error
   * @return  String
   * @see     Error
   * @since   JScript 5.6
@@ -941,7 +941,7 @@ Error.prototype.description="";
  /**
   * Property message
   * @type    String
-  * @class   Error
+  * @memberOf   Error
   * @return  String
   * @see     Error
   * @since   JScript 5.6
@@ -951,7 +951,7 @@ Error.prototype.message="";
  /**
   * Property name
   * @type    String
-  * @class   Error
+  * @memberOf   Error
   * @return  String
   * @see     Error
   * @since   JScript 5.6
@@ -961,7 +961,7 @@ Error.prototype.name="";
  /**
   * Property number
   * @type    Number
-  * @class   Error
+  * @memberOf   Error
   * @return  Number
   * @see     Error
   * @since   JScript 5.6
@@ -985,7 +985,7 @@ Error.prototype.number=0;
   * @param arg8 String
   * @param arg9 String
   * @param body String
-  * @class Function
+  * @memberOf Function
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/x844tc74.aspx
  */
@@ -994,7 +994,7 @@ Function.prototype=new Object();
  /**
   * Property arguments
   * @type    arguments
-  * @class   Function
+  * @memberOf   Function
   * @return  arguments
   * @see     Function
   * @since   JScript 5.6
@@ -1004,7 +1004,7 @@ Function.prototype.arguments=new arguments();
  /**
   * Property callee
   * @type    String
-  * @class   Function
+  * @memberOf   Function
   * @return  String
   * @see     Function
   * @since   JScript 5.6
@@ -1014,7 +1014,7 @@ Function.prototype.callee=""
  /**
   * Property caller
   * @type    String
-  * @class   Function
+  * @memberOf   Function
   * @return  String
   * @see     Function
   * @since   JScript 5.6
@@ -1024,7 +1024,7 @@ Function.prototype.caller=""
  /**
   * Property constructor
   * @type    String
-  * @class   Function
+  * @memberOf   Function
   * @return  String
   * @see     Function
   * @since   JScript 5.6
@@ -1034,7 +1034,7 @@ Function.prototype.constructor=""
  /**
   * Property length
   * @type    Number
-  * @class   Function
+  * @memberOf   Function
   * @return  Number
   * @see     Function
   * @since   JScript 5.6
@@ -1043,7 +1043,7 @@ Function.prototype.constructor=""
 Function.prototype.length=function(){};
  /**
   * function apply(thisObj,args)
-  * @class   Function
+  * @memberOf   Function
   * @param   thisObj Object
   * @param   args argument
   * @see     Function
@@ -1053,7 +1053,7 @@ Function.prototype.length=function(){};
 Function.prototype.apply=function(thisObj,args){};
  /**
   * function apply(thisObj,args)
-  * @class   Function
+  * @memberOf   Function
   * @param   thisObj Object
   * @param   args argument
   * @see     Function
@@ -1073,7 +1073,7 @@ function Global(){};
 Global.prototype=new Object();
  /**
   * Property infinity
-  * @class   Global
+  * @memberOf   Global
   * @type 	 Number
   * @return Number
   * @see     Global
@@ -1083,7 +1083,7 @@ Global.prototype=new Object();
 Global.infinity=0;
  /**
   * Property NaN
-  * @class   Global
+  * @memberOf   Global
   * @see     Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
@@ -1091,7 +1091,7 @@ Global.infinity=0;
 Global.NaN=null;
  /**
   * Property undefined
-  * @class   Global
+  * @memberOf   Global
   * @see     Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
@@ -1099,7 +1099,7 @@ Global.NaN=null;
 Global.undefined=null;
  /**
   * function decodeURI(value)
-  * @class   Global
+  * @memberOf   Global
   * @type    String
   * @param   value String
   * @return  String
@@ -1110,7 +1110,7 @@ Global.undefined=null;
 Global.prototype.decodeURI=function(value){};
  /**
   * function decodeURIComponent(value)
-  * @class   Global
+  * @memberOf   Global
   * @type    String
   * @param   value String
   * @return  String
@@ -1121,7 +1121,7 @@ Global.prototype.decodeURI=function(value){};
 Global.prototype.decodeURIComponent=function(value){}; 
  /**
   * function encodeURI(value)
-  * @class   Global
+  * @memberOf   Global
   * @type    String
   * @param   value String
   * @return  String
@@ -1132,7 +1132,7 @@ Global.prototype.decodeURIComponent=function(value){};
 Global.prototype.encodeURI=function(value){}; 
  /**
   * function encodeURIComponent(value)
-  * @class   Global
+  * @memberOf   Global
   * @type    String
   * @param   value String
   * @return  String
@@ -1143,7 +1143,7 @@ Global.prototype.encodeURI=function(value){};
 Global.prototype.encodeURIComponent=function(value){}; 
  /**
   * function escape(value)
-  * @class   Global
+  * @memberOf   Global
   * @type    String
   * @param   value String
   * @return  String
@@ -1154,7 +1154,7 @@ Global.prototype.encodeURIComponent=function(value){};
 Global.prototype.escape=function(value){}; 
  /**
   * function eval(value)
-  * @class   Global
+  * @memberOf   Global
   * @type    String
   * @param   value String
   * @return  String
@@ -1165,7 +1165,7 @@ Global.prototype.escape=function(value){};
 Global.prototype.eval=function(value){}; 
  /**
   * function isFinite(value)
-  * @class   Global
+  * @memberOf   Global
   * @type    String
   * @param   value String
   * @return  String
@@ -1176,7 +1176,7 @@ Global.prototype.eval=function(value){};
 Global.prototype.isFinite=function(value){}; 
  /**
   * function isNaN(value)
-  * @class   Global
+  * @memberOf   Global
   * @type    String
   * @param   value String
   * @return  String
@@ -1187,7 +1187,7 @@ Global.prototype.isFinite=function(value){};
 Global.prototype.isNaN=function(value){}; 
  /**
   * function parseFloat(value)
-  * @class   Global
+  * @memberOf   Global
   * @type    String
   * @param   value String
   * @return  String
@@ -1198,7 +1198,7 @@ Global.prototype.isNaN=function(value){};
 Global.prototype.parseFloat=function(value){}; 
  /**
   * function parseInt(value)
-  * @class   Global
+  * @memberOf   Global
   * @type    String
   * @param   value String
   * @return  String
@@ -1209,7 +1209,7 @@ Global.prototype.parseFloat=function(value){};
 Global.prototype.parseInt=function(value){}; 
  /**
   * function unescape(value)
-  * @class   Global
+  * @memberOf   Global
   * @type    String
   * @param   value String
   * @return  String
@@ -1220,7 +1220,7 @@ Global.prototype.parseInt=function(value){};
 Global.prototype.unescape=function(value){};
 
  /**
-  * @class   Math
+  * @memberOf   Math
   * @see     Number
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1229,7 +1229,7 @@ function Math(){};
 Math.prototype=new Object();
  /**
   * Property E
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @see     Math
@@ -1239,7 +1239,7 @@ Math.prototype=new Object();
 Math.E=0; 
  /**
   * Property LN2
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @see     Math
@@ -1249,7 +1249,7 @@ Math.E=0;
 Math.LN2=0;
  /**
   * Property LN10
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @see     Math
@@ -1259,7 +1259,7 @@ Math.LN2=0;
 Math.LN10=0; 
  /**
   * Property LOG2E
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @see     Math
@@ -1269,7 +1269,7 @@ Math.LN10=0;
 Math.LOG2E=0; 
  /**
   * Property LOG10E
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @see     Math
@@ -1279,7 +1279,7 @@ Math.LOG2E=0;
 Math.LOG10E=0; 
  /**
   * Property PI
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @see     Math
@@ -1289,7 +1289,7 @@ Math.LOG10E=0;
 Math.PI=0; 
  /**
   * Property SQRT1_2
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @see     Math
@@ -1299,7 +1299,7 @@ Math.PI=0;
 Math.SQRT1_2=0; 
  /**
   * Property SQRT2=0
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @see     Math
@@ -1309,7 +1309,7 @@ Math.SQRT1_2=0;
 Math.SQRT2=0;
  /**
   * function abs(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param number Number
@@ -1320,7 +1320,7 @@ Math.SQRT2=0;
 Math.abs=function(number){};
  /**
   * function acos(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param number Number
@@ -1331,7 +1331,7 @@ Math.abs=function(number){};
 Math.acos=function(number){};
  /**
   * function asin(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param number Number
@@ -1342,7 +1342,7 @@ Math.acos=function(number){};
 Math.asin=function(number){};
  /**
   * function atan(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param number Number
@@ -1353,7 +1353,7 @@ Math.asin=function(number){};
 Math.atan=function(number){};
  /**
   * function atan2(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param x Number
@@ -1365,7 +1365,7 @@ Math.atan=function(number){};
 Math.atan2=function(x,y){};
  /**
   * function ceil(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param number Number
@@ -1376,7 +1376,7 @@ Math.atan2=function(x,y){};
 Math.ceil=function(number){};
  /**
   * function cos(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param number Number
@@ -1387,7 +1387,7 @@ Math.ceil=function(number){};
 Math.cos=function(number){};
  /**
   * function exp(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param number Number
@@ -1398,7 +1398,7 @@ Math.cos=function(number){};
 Math.exp=function(number){};
  /**
   * function floor(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param number Number
@@ -1409,7 +1409,7 @@ Math.exp=function(number){};
 Math.floor=function(number){};
  /**
   * function log(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param number Number
@@ -1420,7 +1420,7 @@ Math.floor=function(number){};
 Math.log=function(number){};
  /**
   * function max(argList)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param argList arguments
@@ -1431,7 +1431,7 @@ Math.log=function(number){};
 Math.max=function(argList){};
  /**
   * function min(argList)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param argList arguments
@@ -1442,7 +1442,7 @@ Math.max=function(argList){};
 Math.min=function(argList){};
  /**
   * function pow(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param base Number
@@ -1454,7 +1454,7 @@ Math.min=function(argList){};
 Math.pow=function(base, exp){};
  /**
   * function random(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param number Number
@@ -1465,7 +1465,7 @@ Math.pow=function(base, exp){};
 Math.random=function(number){};
  /**
   * function round(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param number Number
@@ -1476,7 +1476,7 @@ Math.random=function(number){};
 Math.round=function(number){};
  /**
   * function sin(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param number Number
@@ -1487,7 +1487,7 @@ Math.round=function(number){};
 Math.sin=function(number){};
  /**
   * function sqrt(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param number Number
@@ -1498,7 +1498,7 @@ Math.sin=function(number){};
 Math.sqrt=function(number){};
  /**
   * function tan(number)
-  * @class Math
+  * @memberOf Math
   * @type Number
   * @return Number
   * @param number Number
@@ -1516,7 +1516,7 @@ Number.POSITIVE_INFINITY=0;
 
  /**
   * function toExponential()
-  * @class Number
+  * @memberOf Number
   * @type Number
   * @return Number
   * @see     Number
@@ -1526,7 +1526,7 @@ Number.POSITIVE_INFINITY=0;
 Number.prototype.toExponential=function(){};
  /**
   * function toFixed()
-  * @class Number
+  * @memberOf Number
   * @type Number
   * @return Number
   * @see     Number
@@ -1536,7 +1536,7 @@ Number.prototype.toExponential=function(){};
 Number.prototype.toFixed=function(){};
  /**
   * function toLocaleString()
-  * @class Number
+  * @memberOf Number
   * @type String
   * @return String
   * @see     Number
@@ -1546,7 +1546,7 @@ Number.prototype.toFixed=function(){};
 Number.prototype.toLocaleString=function(){};
  /**
   * function toPrecision()
-  * @class Number
+  * @memberOf Number
   * @type Number
   * @return Number
   * @see     Number
@@ -1557,7 +1557,7 @@ Number.prototype.toPrecision=function(){};
 
  /**
   * function anchor(aString)
-  * @class 	String
+  * @memberOf 	String
   * @type 	String
   * @return String
   * @see    String
@@ -1567,7 +1567,7 @@ Number.prototype.toPrecision=function(){};
 String.prototype.anchor=function(aString){};
  /**
   * function big()
-  * @class 	String
+  * @memberOf 	String
 
   * @see    String
   * @since  JScript 5.6
@@ -1576,7 +1576,7 @@ String.prototype.anchor=function(aString){};
 String.prototype.big=function(){};
  /**
   * function blink(aString)
-  * @class 	String
+  * @memberOf 	String
 
   * @see    String
   * @since  JScript 5.6
@@ -1585,7 +1585,7 @@ String.prototype.big=function(){};
 String.prototype.blink=function(){};
  /**
   * function bold(aString)
-  * @class 	String
+  * @memberOf 	String
 
   * @see    String
   * @since  JScript 5.6
@@ -1594,7 +1594,7 @@ String.prototype.blink=function(){};
 String.prototype.bold=function(){};  
  /**
   * function fixed()
-  * @class 	String
+  * @memberOf 	String
 
   * @see    String
   * @since  JScript 5.6
@@ -1603,7 +1603,7 @@ String.prototype.bold=function(){};
 String.prototype.fixed=function(){};
  /**
   * function fontcolor(color)
-  * @class 	String
+  * @memberOf 	String
   * @type 	String
   * @param color String
   * @return String
@@ -1614,7 +1614,7 @@ String.prototype.fixed=function(){};
 String.prototype.fontcolor=function(color){};
  /**
   * function fontsize(aString)
-  * @class 	String
+  * @memberOf 	String
   * @type 	String
   * @return String
   * @param aString String
@@ -1625,7 +1625,7 @@ String.prototype.fontcolor=function(color){};
 String.prototype.fontsize=function(aString){};
  /**
   * function anchor(aString)
-  * @class 	String
+  * @memberOf 	String
   * @type 	String
   * @return String
   * @param args argument
@@ -1636,7 +1636,7 @@ String.prototype.fontsize=function(aString){};
 String.prototype.fromCharCode=function(args){};
  /**
   * function italics()
-  * @class 	String
+  * @memberOf 	String
   * @see    String
   * @since  JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
@@ -1644,7 +1644,7 @@ String.prototype.fromCharCode=function(args){};
 String.prototype.String.prototype.italics=function(){};
  /**
   * function link(aString)
-  * @class 	String
+  * @memberOf 	String
   * @param aString String
   * @see    String
   * @since  JScript 5.6
@@ -1653,7 +1653,7 @@ String.prototype.String.prototype.italics=function(){};
 String.prototype.link=function(aString){};
  /**
   * function strike()
-  * @class 	String
+  * @memberOf 	String
   * @see    String
   * @since  JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
@@ -1661,7 +1661,7 @@ String.prototype.link=function(aString){};
 String.prototype.strike=function(){};
  /**
   * function sub()
-  * @class 	String
+  * @memberOf 	String
   * @see    String
   * @since  JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
@@ -1669,7 +1669,7 @@ String.prototype.strike=function(){};
 String.prototype.sub=function(){};
  /**
   * function substr(start,length)
-  * @class 	String
+  * @memberOf 	String
   * @type 	String
   * @return String
   * @param start Number
@@ -1681,7 +1681,7 @@ String.prototype.sub=function(){};
 String.prototype.substr=function(start,length){};
  /**
   * function substring(aString)
-  * @class 	String
+  * @memberOf 	String
   * @type 	String
   * @return String
     * @param start Number
@@ -1693,7 +1693,7 @@ String.prototype.substr=function(start,length){};
 String.prototype.substring=function(start,length){};
  /**
   * function sup(aString)
-  * @class 	String
+  * @memberOf 	String
   * @see    String
   * @since  JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
@@ -1705,7 +1705,7 @@ String.prototype.sup=function(){};
   * @super Array
   * @type  VBArray
   * @param safe Boolean
-  * @class VBArray
+  * @memberOf VBArray
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
@@ -1715,7 +1715,7 @@ VBArray.prototype=new Array();
   * function dimensions();
   * @type  Number
   * @return Number
-  * @class VBArray
+  * @memberOf VBArray
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
@@ -1724,7 +1724,7 @@ VBArray.prototype.dimensions=function();
   * function getItem(dims);
   * @type  Object
   * @return Object
-  * @class VBArray
+  * @memberOf VBArray
   * @param dims arguments
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
@@ -1734,7 +1734,7 @@ VBArray.prototype.getItem=function(dims);
   * function lbound(dims);
   * @type  Object
   * @return Object
-  * @class VBArray
+  * @memberOf VBArray
   * @param dims arguments
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
@@ -1744,7 +1744,7 @@ VBArray.prototype.lbound=function(dims);
   * function toArray()
   * @type  Array
   * @return Array
-  * @class VBArray
+  * @memberOf VBArray
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
@@ -1753,7 +1753,7 @@ VBArray.prototype.toArray=function();
   * function ubound(dims);
   * @type  Object
   * @return Object
-  * @class VBArray
+  * @memberOf VBArray
   * @param dims arguments
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     

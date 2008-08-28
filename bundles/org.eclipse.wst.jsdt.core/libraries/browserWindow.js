@@ -102,7 +102,7 @@ Window.prototype.event="";
   * @super Array
   * @constructor
   * @see Array
-  * @class history
+  * @memberOf history
   * @since Common Usage, no standard
  */
 function history(){};
@@ -114,7 +114,7 @@ history.prototype.back=function(){};
 
   * @super Object
   * @constructor
-  * @class location
+  * @memberOf location
   * @since Common Usage, no standard
  */
 function location(){};
