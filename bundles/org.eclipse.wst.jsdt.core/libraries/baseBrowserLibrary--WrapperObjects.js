@@ -210,8 +210,8 @@ DOMImplementation.prototype = new Object();
   * function hasFeature()
   * @type  method
   * @memberOf DOMImplementation
-  * @param {String} feature
-  * @param {String} version 
+  * @param {feature} {String}
+  * @param {version} {String} 
   * @return boolean
   * @see DOMImplementation
   * @since Standard ECMA-262 3rd. Edition
@@ -225,9 +225,9 @@ DOMImplementation.prototype.hasFeature = new function(feature, version);
   * function createDocumentType()
   * @type  method
   * @memberOf DOMImplementation
-  * @param {String} namespaceURI
-  * @param {String} qualifiedName 
-  * @param {DocumentType} doctype 
+  * @param {namespaceURI} {String}
+  * @param {qualifiedName} {String} 
+  * @param {doctype} {DocumentType} 
   * @return Document
   * @throws DOMException
   * @see DOMImplementation
@@ -242,9 +242,9 @@ DOMImplementation.prototype.createDocument = function(namespaceURI, qualifiedNam
   * @type  method
   * @memberOf DOMImplementation
 
-  * @param qualifiedName String
-  * @param publicId String
-  * @param systemId String
+  * @param {String} qualifiedName
+  * @param {String} publicId
+  * @param {String} systemId
   
   * @return DocumentType
   * @throws DOMException
@@ -568,8 +568,8 @@ Node.prototype.localName= new String();
   * function insertBefore(newChild, refChild)   
   * @type Method
   * @memberOf Node
-  * @param newChilds Node
-  * @param refChild Node
+  * @param {Node} newChilds
+  * @param {Node} refChild
   * @return Node
   * @throws DOMException
   * @see Node
@@ -583,8 +583,8 @@ Node.prototype.insertBefore = new function(newChild, refChild){};
   * function replaceChild(newChild, oldChild) 
   * @type Method
   * @memberOf Node
-  * @param newChilds Node
-  * @param oldChild Node
+  * @param {Node} newChilds
+  * @param {Node} oldChild
   * @return Node
   * @throws DOMException
   * @see Node
@@ -598,7 +598,7 @@ Node.prototype.replaceChild = function(newChild, oldChild){};
   * function removeChild(oldChild) 
   * @type Method
   * @memberOf Node
-  * @param oldChild Node
+  * @param {Node} oldChild
   * @return Node
   * @throws DOMException
   * @see Node
@@ -612,7 +612,7 @@ Node.prototype.removeChild = function(oldChild){};
   * function appendChild(newChild) 
   * @type Method
   * @memberOf Node
-  * @param newChild Node
+  * @param {Node} newChild
   * @return Node
   * @throws DOMException
   * @see Node
@@ -638,7 +638,7 @@ Node.prototype.hasChildNodes=function(){};
   * function hasChildNodes() 
   * @type Method
   * @memberOf Node
-  * @param deep Boolean
+  * @param {Boolean} deep
   * @return Node
   * @see Node
   * @since Standard ECMA-262 3rd. Edition 
@@ -662,8 +662,8 @@ Node.prototype.normalize = function(){};
   * function isSupported(feature, version)  
   * @type Method
   * @memberOf Node
-  * @param feature String
-  * @param version String
+  * @param {String} feature
+  * @param {String} version
   * @return Boolean;
   * @see Node
   * @since Standard ECMA-262 3rd. Edition 
@@ -713,7 +713,7 @@ NodeList.prototype.length=new Number();
   *     Note: This object can also be dereferenced using square bracket notation (e.g. obj[1]). Dereferencing with an integer index is equivalent to invoking the item method with that index 
   * @type Method
   * @memberOf NodeList
-  * @param index Number
+  * @param {Number} index
   * @return Node;
   * @see NodeList
   * @see Node
@@ -786,7 +786,7 @@ Document.prototype.documentElement= new Element();
   * function createElement(tagName)  
   * @type Method
   * @memberOf Document
-  * @param tagName String
+  * @param {String} tagName
   * @return Element;
   * @throws DOMException
   * @see Document
@@ -815,7 +815,7 @@ Document.prototype.createDocumentFragment=function(){};
   * function createTextNode(data)  
   * @type Method
   * @memberOf Document
-  * @param data String
+  * @param {String} data
   * @return Text;
   * @see Document
   * @see Text
@@ -829,7 +829,7 @@ Document.prototype.createTextNode=function(data){};
   * function createComment(data)  
   * @type Method
   * @memberOf Document
-  * @param data String
+  * @param {String} data
   * @return Comment;
   * @see Document
   * @see Comment
@@ -843,7 +843,7 @@ Document.prototype.createComment=function(data){};
   * function createCDATASection(data)  
   * @type Method
   * @memberOf Document
-  * @param data String
+  * @param {String} data
   * @return CDATASection
   * @throws DOMException
   * @see Document
@@ -858,8 +858,8 @@ Document.prototype.createCDATASection(data)
   * function createProcessingInstruction(target, data) 
   * @type Method
   * @memberOf Document
-  * @param target String
-  * @param data String;
+  * @param {String} target
+  * @param {String;} data
   * @return  ProcessingInstruction
   * @throws DOMException
   * @see Document
@@ -874,7 +874,7 @@ Document.prototype.createProcessingInstruction=function(target, data){};
   * function createAttribute(name)  
   * @type Method
   * @memberOf Document
-  * @param name String
+  * @param {String} name
   * @return  Attr
   * @throws DOMException
   * @see Document
@@ -889,7 +889,7 @@ Document.prototype.createAttribute=function(name){};
   * function createEntityReference(name)  
   * @type Method
   * @memberOf Document
-  * @param name String
+  * @param {String} name
   * @return  EntityReference
   * @throws DOMException
   * @see Document
@@ -904,7 +904,7 @@ Document.prototype.createEntityReference=function(name){};
   * function getElementsByTagName(tagname)  
   * @type Method
   * @memberOf Document
-  * @param tagname String
+  * @param {String} tagname
   * @return  NodeList
   * @see Document
   * @see NodeList
@@ -918,8 +918,8 @@ Document.prototype.getElementsByTagName=function(tagname){};
   * function importNode(importedNode, deep)  
   * @type Method
   * @memberOf Document
-  * @param importedNode Node
-  * @param deep Boolean
+  * @param {Node} importedNode
+  * @param {Boolean} deep
   * @return  Node
   * @throws DOMException
   * @see Document
@@ -934,8 +934,8 @@ Document.prototype.importNode=function(importedNode, deep){};
   * function createElementNS(namespaceURI, qualifiedName) 
   * @type Method
   * @memberOf Document
-  * @param namespaceURI String
-  * @param qualifiedName String
+  * @param {String} namespaceURI
+  * @param {String} qualifiedName
   * @return  Element
   * @throws DOMException
   * @see Document
@@ -950,8 +950,8 @@ Document.prototype.createElementNS=function(namespaceURI, qualifiedName){};
   * function createAttributeNS(namespaceURI, qualifiedName)
   * @type Method
   * @memberOf Document
-  * @param namespaceURI String
-  * @param qualifiedName String
+  * @param {String} namespaceURI
+  * @param {String} qualifiedName
   * @return  Attr
   * @throws DOMException
   * @see Document
@@ -966,8 +966,8 @@ Document.prototype.createAttributeNS=function(namespaceURI, qualifiedName){};
   * function getElementsByTagNameNS(namespaceURI, localName)
   * @type Method
   * @memberOf Document
-  * @param namespaceURI String
-  * @param qualifiedName String
+  * @param {String} namespaceURI
+  * @param {String} qualifiedName
   * @return  NodeList
   * @see Document
   * @see NodeList
@@ -981,7 +981,7 @@ Document.prototype.getElementsByTagNameNS=function(namespaceURI, localName){};
   * function getElementById(elementId)
   * @type Method
   * @memberOf Document
-  * @param elementId String
+  * @param {String} elementId
   * @return  Element
   * @see Document
   * @see Element
@@ -1017,7 +1017,7 @@ NamedNodeMap.prototype.length=new Number();
   * function getNamedItem(name) 
   * @type Method
   * @memberOf NamedNodeMap
-  * @param Name String
+  * @param {String} Name
   * @return  Node
   * @see NamedNodeMap
   * @see Node
@@ -1031,7 +1031,7 @@ NamedNodeMap.prototype.getNamedItem=function(name){};
   * function setNamedItem(arg) 
   * @type Method
   * @memberOf NamedNodeMap
-  * @param arg Node
+  * @param {Node} arg
   * @return  Node
   * @throws DOMException
   * @see NamedNodeMap
@@ -1046,7 +1046,7 @@ NamedNodeMap.prototype.setNamedItem=function(arg){};
   * function removeNamedItem(name)  
   * @type Method
   * @memberOf NamedNodeMap
-  * @param name String
+  * @param {String} name
   * @return  Node
   * @throws DOMException
   * @see NamedNodeMap
@@ -1062,7 +1062,7 @@ NamedNodeMap.prototype.removeNamedItem=function(name){};
   * Note: This object can also be dereferenced using square bracket notation (e.g. obj[1]). Dereferencing with an integer index is equivalent to invoking the item method with that index.
   * @type Method
   * @memberOf NamedNodeMap
-  * @param index Number
+  * @param {Number} index
   * @return  Node
   * @see NamedNodeMap
   * @see Node
@@ -1076,8 +1076,8 @@ NamedNodeMap.prototype.item=function(index){};
   * function getNamedItemNS(namespaceURI, localName) 
   * @type Method
   * @memberOf NamedNodeMap
-  * @param namespaceURI String
-  * @param localName String
+  * @param {String} namespaceURI
+  * @param {String} localName
   * @return  Node
   * @see NamedNodeMap
   * @see Node
@@ -1091,8 +1091,8 @@ NamedNodeMap.prototype.getNamedItemNS=function(namespaceURI, localName){};
   * function setNamedItemNS(arg) 
   * @type Method
   * @memberOf NamedNodeMap
-  * @param arg Node
-  * @param localName String
+  * @param {Node} arg
+  * @param {String} localName
   * @return  Node
   * @throws DOMException
   * @see NamedNodeMap
@@ -1107,8 +1107,8 @@ NamedNodeMap.prototype.setNamedItemNS=function(arg){};
   * function removeNamedItemNS(namespaceURI, localName)  
   * @type Method
   * @memberOf NamedNodeMap
-  * @param namespaceURI String
-  * @param localName String
+  * @param {String} namespaceURI
+  * @param {String} localName
   * @return  Node
   * @throws DOMException
   * @see NamedNodeMap
@@ -1159,8 +1159,8 @@ CharacterData.prototype.length=new Number();
   * function substringData(offset, count)   
   * @type Method
   * @memberOf CharacterData
-  * @param parameter Number
-  * @param count Number
+  * @param {Number} parameter
+  * @param {Number} count
   * @return String
   * @throws DOMException
   * @see CharacterData
@@ -1174,7 +1174,7 @@ CharacterData.prototype.substringData=function(offset, count){};
   * function appendData(arg)    
   * @type Method
   * @memberOf CharacterData
-  * @param arg String
+  * @param {String} arg
   * @return String
   * @throws DOMException
   * @see CharacterData
@@ -1188,8 +1188,8 @@ CharacterData.prototype.appendData=function(arg){};
   * function insertData(offset, arg)  
   * @type Method
   * @memberOf CharacterData
-  * @param offset Number
-  * @param arg String
+  * @param {Number} offset
+  * @param {String} arg
   * @throws DOMException
   * @see CharacterData
   * @since Standard ECMA-262 3rd. Edition 
@@ -1202,8 +1202,8 @@ CharacterData.prototype.insertData=function(offset, arg){};
   * function deleteData(offset, count)  
   * @type Method
   * @memberOf CharacterData
-  * @param offset Number
-  * @param count Number
+  * @param {Number} offset
+  * @param {Number} count
   * @throws DOMException
   * @see CharacterData
   * @since Standard ECMA-262 3rd. Edition 
@@ -1216,9 +1216,9 @@ CharacterData.prototype.deleteData=function(offset, count){};
   * function replaceData(offset, count, arg)
   * @type Method
   * @memberOf CharacterData
-  * @param offset Number
-  * @param count Number
-  * @param arg String
+  * @param {Number} offset
+  * @param {Number} count
+  * @param {String} arg
   * @throws DOMException
   * @see CharacterData
   * @since Standard ECMA-262 3rd. Edition 
@@ -1319,7 +1319,7 @@ Element.prototype.tagName=new String();
   * function getAttribute(name) 
   * @type Method
   * @memberOf Element
-  * @param name String
+  * @param {String} name
   * @return String
   * @see Element
   * @since Standard ECMA-262 3rd. Edition 
@@ -1332,8 +1332,8 @@ Element.prototype.getAttribute=function(name){};
   * function setAttribute(name, value) 
   * @type Method
   * @memberOf Element
-  * @param name String
-  * @param value String
+  * @param {String} name
+  * @param {String} value
   * @throws DOMException
   * @see Element
   * @since Standard ECMA-262 3rd. Edition 
@@ -1346,7 +1346,7 @@ Element.prototype.setAttribute=function(name, value){};
   * function removeAttribute(name)
   * @type Method
   * @memberOf Element
-  * @param name String
+  * @param {String} name
   * @throws DOMException
   * @see Element
   * @since Standard ECMA-262 3rd. Edition 
@@ -1359,7 +1359,7 @@ Element.prototype.removeAttribute=function(name){};
   * function getAttributeNode(name)
   * @type Method
   * @memberOf Element
-  * @param name String
+  * @param {String} name
   * @return Attr
   * @see Element
   * @see Attr
@@ -1373,7 +1373,7 @@ Element.prototype.getAttributeNode=function(name){};
   * function setAttributeNode(newAttr)
   * @type Method
   * @memberOf Element
-  * @param newAttr Attr
+  * @param {Attr} newAttr
   * @return Attr
 
   * @throws DOMException
@@ -1389,7 +1389,7 @@ Element.prototype.setAttributeNode=function(newAttr){};
   * function removeAttributeNode(oldAttr) 
   * @type Method
   * @memberOf Element
-  * @param oldAttr Attr
+  * @param {Attr} oldAttr
   * @return Attr
   * @throws DOMException
   * @see Element
@@ -1404,7 +1404,7 @@ Element.prototype.removeAttributeNode=function(oldAttr){};
   * function getElementsByTagName(name)
   * @type Method
   * @memberOf Element
-  * @param name String
+  * @param {String} name
   * @return NodeList
   * @see NodeList
   * @see Element;
@@ -1418,8 +1418,8 @@ Element.prototype.getElementsByTagName=function(name){};
   * function getAttributeNS(namespaceURI, localName) 
   * @type Method
   * @memberOf Element
-  * @param namespaceURI String
-  * @param localName String
+  * @param {String} namespaceURI
+  * @param {String} localName
   * @return String
   * @see Element
   * @since Standard ECMA-262 3rd. Edition 
@@ -1432,9 +1432,9 @@ Element.prototype.getAttributeNS=function(namespaceURI, localName){};
   * function setAttributeNS(namespaceURI, qualifiedName, value)  
   * @type Method
   * @memberOf Element
-  * @param namespaceURI String
-  * @param qualifiedName String
-  * @param value String
+  * @param {String} namespaceURI
+  * @param {String} qualifiedName
+  * @param {String} value
   * @throws DOMException
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -1446,8 +1446,8 @@ Element.prototype.setAttributeNS=function(namespaceURI, qualifiedName, value){};
   * function removeAttributeNS(namespaceURI, localName)  
   * @type Method
   * @memberOf Element
-  * @param namespaceURI String
-  * @param localName String
+  * @param {String} namespaceURI
+  * @param {String} localName
   * @throws DOMException
   * @since Standard ECMA-262 3rd. Edition 
   * @since Level 2 Document Object Model Core Definition.
@@ -1459,8 +1459,8 @@ Element.prototype.removeAttributeNS=function(namespaceURI, localName){};
   * function getAttributeNodeNS(namespaceURI, localName)   
   * @type Method
   * @memberOf Element
-  * @param namespaceURI String
-  * @param localName String
+  * @param {String} namespaceURI
+  * @param {String} localName
   * @return Attr
   * @throws DOMException
   * @see Attr
@@ -1474,7 +1474,7 @@ Element.prototype.getAttributeNodeNS=function(namespaceURI, localName){};
   * function setAttributeNodeNS(newAttr)    
   * @type Method
   * @memberOf Element
-  * @param newAttr Attr
+  * @param {Attr} newAttr
 
   * @return Attr
   * @throws DOMException
@@ -1489,8 +1489,8 @@ Element.prototype.setAttributeNodeNS=function(newAttr){};
   * function getElementsByTagNameNS(namespaceURI, localName)   
   * @type Method
   * @memberOf Element
-  * @param namespaceURI String
-  * @param localName String
+  * @param {String} namespaceURI
+  * @param {String} localName
 
   * @return NodeList
  
@@ -1506,7 +1506,7 @@ Element.prototype.getElementsByTagNameNS=function(namespaceURI, localName){};
   * @type Method
   * @memberOf Element
   
-  * @param name String
+  * @param {String} name
 
   * @return Boolean
  
@@ -1521,8 +1521,8 @@ Element.prototype.hasAttribute=function(name){};
   * function hasAttributeNS(namespaceURI, localName)    
   * @type Method
   * @memberOf Element
-  * @param namespaceURI String
-  * @param localName String
+  * @param {String} namespaceURI
+  * @param {String} localName
 
   * @return Boolean
  
@@ -1551,7 +1551,7 @@ Text.prototype = new ChracterData();
   * function splitText(offset)     
   * @type Method
   * @memberOf Text
-  * @param offset Number
+  * @param {Number} offset
  
 
   * @return Text

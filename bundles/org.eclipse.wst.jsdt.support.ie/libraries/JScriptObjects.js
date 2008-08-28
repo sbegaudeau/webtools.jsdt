@@ -160,8 +160,8 @@ RegExp.prototype.source="";
   * function test(pos) 
   * @type    Array
   * @memberOf   RegExp
-  * @param   array1 Array
-  * @param   array2 Array
+  * @param   {Array} array1
+  * @param   {Array} array2
   * @return  Array
   * @see     RegExp
   * @since   JScript 5.6
@@ -172,7 +172,7 @@ RegExp.prototype.test=function(){};
   * function exec(pos) 
   * @type    Boolean
   * @memberOf   RegExp
-  * @param   str String
+  * @param   {String} str
   * @return  Boolean
   * @see     RegExp
   * @since   JScript 5.6
@@ -183,8 +183,8 @@ RegExp.prototype.exec=function(str){};
   * function compile(pos) 
   * @type    Array
   * @memberOf   RegExp
-  * @param   pattern String
-  * @param   flags String Optional. Available flags, which may be combined, are:g (global search for all occurrences of pattern)i (ignore case)m (multiline search)
+  * @param   {String} pattern
+  * @param   {String} flags Optional. Available flags, which may be combined, are:g (global search for all occurrences of pattern)i (ignore case)m (multiline search)
   * @return  Array
   * @see     RegExp
   * @since   JScript 5.6
@@ -196,9 +196,9 @@ RegExp.prototype.compile=function(pattern, flags){};
   * Object ActiveXObject(servername.typename, location)
   * @super Object
   * @type  ActiveXObject
-  * @param servername String Required. The name of the application providing the object
-  * @param typename String Required. The type or class of the object to create.
-  * @param location String  Optional. The name of the network server where the object is to be created.
+  * @param {String} servername Required. The name of the application providing the object
+  * @param {String} typename Required. The type or class of the object to create.
+  * @param {String} location  Optional. The name of the network server where the object is to be created.
   * @memberOf ActiveXObject
   * @since JScript 1.0
   * @link  http://msdn2.microsoft.com/en-us/library/7sw4ddf8.aspx  
@@ -210,8 +210,8 @@ ActiveXObject.prototype=new Object();
   * function concat(pos) 
   * @type    Array
   * @memberOf   Array
-  * @param   array1 Array
-  * @param   array2 Array
+  * @param   {Array} array1
+  * @param   {Array} array2
   * @return  Array
   * @see     Array
   * @since   JScript 5.6
@@ -222,8 +222,8 @@ Array.prototype.concat=function(array1, array2){};
   * function join(separator)
   * @type    String
   * @memberOf   Array
-  * @param   separator String
-  * @param   array2 Array
+  * @param   {String} separator
+  * @param   {Array} array2
   * @return  String
   * @see     Array
   * @since   JScript 5.6
@@ -234,8 +234,8 @@ Array.prototype.join=function(separator){};
   * function pop() 
   * @type    Array
   * @memberOf   Array
-  * @param   array1 Array
-  * @param   array2 Array
+  * @param   {Array} array1
+  * @param   {Array} array2
   * @return  Array
   * @see     Array
   * @since   JScript 5.6
@@ -246,7 +246,7 @@ Array.prototype.pop=function(){};
   * function push(values) 
   * @type    Object
   * @memberOf   Array
-  * @param   values Array
+  * @param   {Array} values
   * @return  Object
   * @see     Array
   * @since   JScript 5.6
@@ -275,8 +275,8 @@ Array.prototype.shift=function(){};
   * function slice() 
   * @type    Array
   * @memberOf   Array
-  * @param   startIndex Number;
-  * @param   endIndex Number
+  * @param   {Number;} startIndex
+  * @param   {Number} endIndex
   * @return  Array
   * @see     Array
   * @since   JScript 5.6
@@ -286,7 +286,7 @@ Array.prototype.slice=function(startIndex,endIndex){};
  /**
   * function sort(sortFunction) 
   * @memberOf   Array
-  * @param   sortFunction Function Optional. The name of the function used to determine the order of the elements. If omitted, the elements are sorted in ascending, ASCII character order
+  * @param   {Function} sortFunction Optional. The name of the function used to determine the order of the elements. If omitted, the elements are sorted in ascending, ASCII character order
   * @see     Array
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -296,9 +296,9 @@ Array.prototype.sort=function(sortFunction){};
   * function splice(start, deleteCount, items)
   * @type    Array
   * @memberOf   Array
-  * @param start Number
-  * @param deleteCount Number
-  * @param items Array
+  * @param {Number} start
+  * @param {Number} deleteCount
+  * @param {Array} items
   * @return  Array
   * @see     Array
   * @since   JScript 5.6
@@ -319,7 +319,7 @@ Object.prototype.toLocaleString=function(){};
   * function unshift()
   
   * @memberOf   Array
-  * @param   elements Array
+  * @param   {Array} elements
   * @see     Array
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -550,7 +550,7 @@ Date.prototype.getYear=function(){};
   * function parse(dateVal)
   * @type    Date
   * @memberOf   Date
-  * @param 	 dateVal String
+  * @param 	 {String} dateVal
   * @return  Date
   * @see     Date
   * @since   JScript 5.6
@@ -561,7 +561,7 @@ Date.parse=function(dateVal){};
   * function setDate(dateVale)
  
   * @memberOf   Date
-  * @param 	 dateVal Date
+  * @param 	 {Date} dateVal
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -571,9 +571,9 @@ Date.prototype.setDate=function(dateVal){};
   * function setFullYear(year,month, day)
   
   * @memberOf   Date
-  * @param 	 year Number
-  * @param   month Number
-  * @param   day Number
+  * @param 	 {Number} year
+  * @param   {Number} month
+  * @param   {Number} day
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -583,10 +583,10 @@ Date.prototype.setFullYear=function(year,month, day){};
   * function setHours(number)
 
   * @memberOf   Date
-  * @param 	 numHours Number
-  * @param 	 numMin Number
-  * @param 	 numSec Number
-  * @param 	 numMilli Number
+  * @param 	 {Number} numHours
+  * @param 	 {Number} numMin
+  * @param 	 {Number} numSec
+  * @param 	 {Number} numMilli
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -596,7 +596,7 @@ Date.prototype.setHours=function(numHours, numMin, numSec, numMilli){};
   * function setMilliseconds(number)
  
   * @memberOf   Date
-  * @param 	 number Number
+  * @param 	 {Number} number
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -606,8 +606,8 @@ Date.prototype.setMilliseconds=function(number){};
   * function setMinutes(number)
   
   * @memberOf   Date
-  * @param 	 number Number
-  * @param 	 numMilli Number
+  * @param 	 {Number} number
+  * @param 	 {Number} numMilli
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -617,8 +617,8 @@ Date.prototype.setMinutes=function(number, numMilli){};
   * function setMonth(number)
  
   * @memberOf   Date
-  * @param 	 numMonth Number
-  * @param 	 dateVale Number
+  * @param 	 {Number} numMonth
+  * @param 	 {Number} dateVale
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -628,8 +628,8 @@ Date.prototype.setMonth=function(numMonth, dateVale){};
   * function setSeconds(number)
   
   * @memberOf   Date
-  * @param 	 number Number
-  * @param 	 numMilli Numbe
+  * @param 	 {Number} number
+  * @param 	 {Numbe} numMilli
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -639,7 +639,7 @@ Date.prototype.setSeconds=function(number, numMilli){};
   * function setTime(number)
  
   * @memberOf   Date
-  * @param 	 milli Number
+  * @param 	 {Number} milli
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -649,7 +649,7 @@ Date.prototype.setTime=function(milli){};
   * function setUTCDate(number)
   
   * @memberOf   Date
-  * @param 	 number Number
+  * @param 	 {Number} number
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -659,9 +659,9 @@ Date.prototype.setUTCDate=function(number){};
   * function setUTCFullYear(number)
   
   * @memberOf   Date
-  * @param 	 numYear Number
-  * @param 	 numMonth Number
-  * @param 	 numDate Number
+  * @param 	 {Number} numYear
+  * @param 	 {Number} numMonth
+  * @param 	 {Number} numDate
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -671,10 +671,10 @@ Date.prototype.setUTCFullYear=function(numYear, numMonth, numDate){};
   * function setUTCHours(number)
   
   * @memberOf   Date
-  * @param 	 numHours Number
-  * @param 	 numMin Number
-  * @param 	 numSec Number
-  * @param 	 numMilli Number
+  * @param 	 {Number} numHours
+  * @param 	 {Number} numMin
+  * @param 	 {Number} numSec
+  * @param 	 {Number} numMilli
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -684,7 +684,7 @@ Date.prototype.setUTCHours=function(numHours, numMin, numSec, numMilli){};
   * function setUTCMilliseconds(number)
  
   * @memberOf   Date
-  * @param 	 number Number
+  * @param 	 {Number} number
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -694,9 +694,9 @@ Date.prototype.setUTCMilliseconds=function(number){};
   * function setUTCMinutes(number)
  
   * @memberOf   Date
-  * @param 	 numMinutes Number
-  * @param 	 numSeconds Number
-  * @param 	 numMilli Number
+  * @param 	 {Number} numMinutes
+  * @param 	 {Number} numSeconds
+  * @param 	 {Number} numMilli
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -706,8 +706,8 @@ Date.prototype.setUTCMinutes=function(numMinutes, numSeconds, numMilli){};
   * function setUTCMonth(number)
   
   * @memberOf   Date
-  * @param 	 numMonth Number
-  * @param 	 dateVal Number
+  * @param 	 {Number} numMonth
+  * @param 	 {Number} dateVal
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -717,8 +717,8 @@ Date.prototype.setUTCMonth=function(numMonth, dateVal){};
   * function setUTCSeconds(number)
 
   * @memberOf   Date
-  * @param 	 numSeconds Number
-  * @param 	 numMilli Number
+  * @param 	 {Number} numSeconds
+  * @param 	 {Number} numMilli
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -728,7 +728,7 @@ Date.prototype.setUTCSeconds=function(numSeconds, numMilli){};
   * function setYear(number)
  
   * @memberOf   Date
-  * @param 	 number Number
+  * @param 	 {Number} number
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -738,7 +738,7 @@ Date.prototype.setYear=function(number){};
   * function toDateString(number)
  
   * @memberOf   Date
-  * @param 	 number Number
+  * @param 	 {Number} number
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -748,7 +748,7 @@ Date.prototype.toDateString=function(){};
   * function toGMTString(number)
  
   * @memberOf   Date
-  * @param 	 number Number
+  * @param 	 {Number} number
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -808,12 +808,12 @@ Date.prototype.toUTCString=function(){};
   * function UTC();
   * @type    Date
   * @memberOf   Date
-  * @param 	 year Number
-  * @param 	 month Number
-  * @param 	 day Number
-  * @param 	 hours Number
-  * @param 	 seconds Number
-  * @param 	 ms Number
+  * @param 	 {Number} year
+  * @param 	 {Number} month
+  * @param 	 {Number} day
+  * @param 	 {Number} hours
+  * @param 	 {Number} seconds
+  * @param 	 {Number} ms
   * @return Date
   * @see     Date
   * @since   JScript 5.6
@@ -836,7 +836,7 @@ Debug.prototype=new Object();
   * function write(value);
 
   * @memberOf   Debug
-  * @param 	 value String
+  * @param 	 {String} value
   * @see     Debug
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -846,7 +846,7 @@ Debug.write=function(value){};
   * function writeln(value);
  
   * @memberOf   Debug
-  * @param 	 value String
+  * @param 	 {String} value
   * @see     Debug
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -867,7 +867,7 @@ function Enumerator(){};
   * Object Enumerator(collection)
   * @super Object
   * @type  Enumerator
-  * @param collection Object
+  * @param {Object} collection
   * @memberOf Enumerator
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/bs12a9wf.aspx 
@@ -920,8 +920,8 @@ Enumerator.prototype.moveNext =function(){};
   * Object Error()
   * @super Object
   * @type  Error
-  * @param number Number
-  * @param description String
+  * @param {Number} number
+  * @param {String} description
   * @memberOf Error
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx
@@ -973,18 +973,18 @@ Error.prototype.number=0;
   * Object Function()
   * @super Object
   * @type  Function
-  * @param functionName String
-  * @param arg1 String
-  * @param arg1 String
-  * @param arg2 String
-  * @param arg3 String
-  * @param arg4 String
-  * @param arg5 String
-  * @param arg6 String
-  * @param arg7 String
-  * @param arg8 String
-  * @param arg9 String
-  * @param body String
+  * @param {String} functionName
+  * @param {String} arg1
+  * @param {String} arg1
+  * @param {String} arg2
+  * @param {String} arg3
+  * @param {String} arg4
+  * @param {String} arg5
+  * @param {String} arg6
+  * @param {String} arg7
+  * @param {String} arg8
+  * @param {String} arg9
+  * @param {String} body
   * @memberOf Function
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/x844tc74.aspx
@@ -1044,8 +1044,8 @@ Function.prototype.length=function(){};
  /**
   * function apply(thisObj,args)
   * @memberOf   Function
-  * @param   thisObj Object
-  * @param   args argument
+  * @param   {Object} thisObj
+  * @param   {argument} args
   * @see     Function
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
@@ -1054,8 +1054,8 @@ Function.prototype.apply=function(thisObj,args){};
  /**
   * function apply(thisObj,args)
   * @memberOf   Function
-  * @param   thisObj Object
-  * @param   args argument
+  * @param   {Object} thisObj
+  * @param   {argument} args
   * @see     Function
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
@@ -1101,7 +1101,7 @@ Global.undefined=null;
   * function decodeURI(value)
   * @memberOf   Global
   * @type    String
-  * @param   value String
+  * @param   {String} value
   * @return  String
   * @see     Global
   * @since   JScript 5.6
@@ -1112,7 +1112,7 @@ Global.prototype.decodeURI=function(value){};
   * function decodeURIComponent(value)
   * @memberOf   Global
   * @type    String
-  * @param   value String
+  * @param   {String} value
   * @return  String
   * @see     Global
   * @since   JScript 5.6
@@ -1123,7 +1123,7 @@ Global.prototype.decodeURIComponent=function(value){};
   * function encodeURI(value)
   * @memberOf   Global
   * @type    String
-  * @param   value String
+  * @param   {String} value
   * @return  String
   * @see     Global
   * @since   JScript 5.6
@@ -1134,7 +1134,7 @@ Global.prototype.encodeURI=function(value){};
   * function encodeURIComponent(value)
   * @memberOf   Global
   * @type    String
-  * @param   value String
+  * @param   {String} value
   * @return  String
   * @see     Global
   * @since   JScript 5.6
@@ -1145,7 +1145,7 @@ Global.prototype.encodeURIComponent=function(value){};
   * function escape(value)
   * @memberOf   Global
   * @type    String
-  * @param   value String
+  * @param   {String} value
   * @return  String
   * @see     Global
   * @since   JScript 5.6
@@ -1156,7 +1156,7 @@ Global.prototype.escape=function(value){};
   * function eval(value)
   * @memberOf   Global
   * @type    String
-  * @param   value String
+  * @param   {String} value
   * @return  String
   * @see     Global
   * @since   JScript 5.6
@@ -1167,7 +1167,7 @@ Global.prototype.eval=function(value){};
   * function isFinite(value)
   * @memberOf   Global
   * @type    String
-  * @param   value String
+  * @param   {String} value
   * @return  String
   * @see     Global
   * @since   JScript 5.6
@@ -1178,7 +1178,7 @@ Global.prototype.isFinite=function(value){};
   * function isNaN(value)
   * @memberOf   Global
   * @type    String
-  * @param   value String
+  * @param   {String} value
   * @return  String
   * @see     Global
   * @since   JScript 5.6
@@ -1189,7 +1189,7 @@ Global.prototype.isNaN=function(value){};
   * function parseFloat(value)
   * @memberOf   Global
   * @type    String
-  * @param   value String
+  * @param   {String} value
   * @return  String
   * @see     Global
   * @since   JScript 5.6
@@ -1200,7 +1200,7 @@ Global.prototype.parseFloat=function(value){};
   * function parseInt(value)
   * @memberOf   Global
   * @type    String
-  * @param   value String
+  * @param   {String} value
   * @return  String
   * @see     Global
   * @since   JScript 5.6
@@ -1211,7 +1211,7 @@ Global.prototype.parseInt=function(value){};
   * function unescape(value)
   * @memberOf   Global
   * @type    String
-  * @param   value String
+  * @param   {String} value
   * @return  String
   * @see     Global
   * @since   JScript 5.6
@@ -1312,7 +1312,7 @@ Math.SQRT2=0;
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param number Number
+  * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1323,7 +1323,7 @@ Math.abs=function(number){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param number Number
+  * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1334,7 +1334,7 @@ Math.acos=function(number){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param number Number
+  * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1345,7 +1345,7 @@ Math.asin=function(number){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param number Number
+  * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1356,8 +1356,8 @@ Math.atan=function(number){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param x Number
-   * @param y Number
+  * @param {Number} x
+   * @param {Number} y
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1368,7 +1368,7 @@ Math.atan2=function(x,y){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param number Number
+  * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1379,7 +1379,7 @@ Math.ceil=function(number){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param number Number
+  * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1390,7 +1390,7 @@ Math.cos=function(number){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param number Number
+  * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1401,7 +1401,7 @@ Math.exp=function(number){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param number Number
+  * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1412,7 +1412,7 @@ Math.floor=function(number){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param number Number
+  * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1423,7 +1423,7 @@ Math.log=function(number){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param argList arguments
+  * @param {arguments} argList
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1434,7 +1434,7 @@ Math.max=function(argList){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param argList arguments
+  * @param {arguments} argList
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1445,8 +1445,8 @@ Math.min=function(argList){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param base Number
-  * @param exp Number
+  * @param {Number} base
+  * @param {Number} exp
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1457,7 +1457,7 @@ Math.pow=function(base, exp){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param number Number
+  * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1468,7 +1468,7 @@ Math.random=function(number){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param number Number
+  * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1479,7 +1479,7 @@ Math.round=function(number){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param number Number
+  * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1490,7 +1490,7 @@ Math.sin=function(number){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param number Number
+  * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1501,7 +1501,7 @@ Math.sqrt=function(number){};
   * @memberOf Math
   * @type Number
   * @return Number
-  * @param number Number
+  * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1605,7 +1605,7 @@ String.prototype.fixed=function(){};
   * function fontcolor(color)
   * @memberOf 	String
   * @type 	String
-  * @param color String
+  * @param {String} color
   * @return String
   * @see    String
   * @since  JScript 5.6
@@ -1617,7 +1617,7 @@ String.prototype.fontcolor=function(color){};
   * @memberOf 	String
   * @type 	String
   * @return String
-  * @param aString String
+  * @param {String} aString
   * @see    String
   * @since  JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
@@ -1628,7 +1628,7 @@ String.prototype.fontsize=function(aString){};
   * @memberOf 	String
   * @type 	String
   * @return String
-  * @param args argument
+  * @param {argument} args
   * @see    String
   * @since  JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
@@ -1645,7 +1645,7 @@ String.prototype.String.prototype.italics=function(){};
  /**
   * function link(aString)
   * @memberOf 	String
-  * @param aString String
+  * @param {String} aString
   * @see    String
   * @since  JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
@@ -1672,8 +1672,8 @@ String.prototype.sub=function(){};
   * @memberOf 	String
   * @type 	String
   * @return String
-  * @param start Number
-  * @param length Number
+  * @param {Number} start
+  * @param {Number} length
   * @see    String
   * @since  JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
@@ -1684,8 +1684,8 @@ String.prototype.substr=function(start,length){};
   * @memberOf 	String
   * @type 	String
   * @return String
-    * @param start Number
-  * @param length Number
+    * @param {Number} start
+  * @param {Number} length
   * @see    String
   * @since  JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
@@ -1704,7 +1704,7 @@ String.prototype.sup=function(){};
   * Object VBArray()
   * @super Array
   * @type  VBArray
-  * @param safe Boolean
+  * @param {Boolean} safe
   * @memberOf VBArray
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
@@ -1725,7 +1725,7 @@ VBArray.prototype.dimensions=function();
   * @type  Object
   * @return Object
   * @memberOf VBArray
-  * @param dims arguments
+  * @param {arguments} dims
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
@@ -1735,7 +1735,7 @@ VBArray.prototype.getItem=function(dims);
   * @type  Object
   * @return Object
   * @memberOf VBArray
-  * @param dims arguments
+  * @param {arguments} dims
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
@@ -1754,7 +1754,7 @@ VBArray.prototype.toArray=function();
   * @type  Object
   * @return Object
   * @memberOf VBArray
-  * @param dims arguments
+  * @param {arguments} dims
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
@@ -1766,8 +1766,8 @@ VBArray.prototype.ubound=function(number);
   *
   * GetObject([pathname] [, class])
   * function GetObject()
-  * @param pathname String Optional. Full path and name of the file containing the object to retrieve. If pathname is omitted, class is required
-  * @param class String Optional. Class of the object. The class argument uses the syntax appname.objectype and has these parts: appname Required. Name of the application providing the object. objectype  Required. Type or class of object to create.
+  * @param {String} pathname Optional. Full path and name of the file containing the object to retrieve. If pathname is omitted, class is required
+  * @param {String} class Optional. Class of the object. The class argument uses the syntax appname.objectype and has these parts: appname Required. Name of the application providing the object. objectype  Required. Type or class of object to create.
  *  @since JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/7tf9xwsc.aspx     
  */

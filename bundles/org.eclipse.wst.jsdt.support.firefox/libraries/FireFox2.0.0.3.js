@@ -52,9 +52,9 @@ Window.prototype.property="";
 Window.prototype.navigator=new Navigator();
 /**
 * function addEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -62,7 +62,7 @@ Window.prototype.addEventListener=function(arg1,arg2,arg3){};
 /**
 * function dump(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -118,7 +118,7 @@ Window.prototype.XPCNativeWrapper=function(){};
 /**
 * function GeckoActiveXObject(arg1)
 * @type GeckoActiveXObject
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -174,8 +174,8 @@ Window.prototype.scrollX=0;
 Window.prototype.scrollY=0;
 /**
 * function scrollTo(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -183,8 +183,8 @@ Window.prototype.scrollTo=function(arg1,arg2){};
 /**
 * function scrollBy(arg1,arg2)
 * @type String
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -198,14 +198,14 @@ Window.prototype.scrollBy=function(arg1,arg2){};
 Window.prototype.getSelection=function(){};
 /**
 * function scrollByLines(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
 Window.prototype.scrollByLines=function(arg1){};
 /**
 * function scrollByPages(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -242,28 +242,28 @@ Window.prototype.clearTimeout=function(){};
 Window.prototype.clearInterval=function(){};
 /**
 * function setResizable(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
 Window.prototype.setResizable=function(arg1){};
 /**
 * function captureEvents(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
 Window.prototype.captureEvents=function(arg1){};
 /**
 * function releaseEvents(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
 Window.prototype.releaseEvents=function(arg1){};
 /**
 * function routeEvent(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -519,7 +519,7 @@ Window.prototype.length=0;
 Window.prototype.fullScreen=false;
 /**
 * function alert(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -527,7 +527,7 @@ Window.prototype.alert=function(arg1){};
 /**
 * function confirm(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -576,40 +576,40 @@ Window.prototype.stop=function(){};
 Window.prototype.print=function(){};
 /**
 * function moveTo(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
 Window.prototype.moveTo=function(arg1,arg2){};
 /**
 * function moveBy(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
 Window.prototype.moveBy=function(arg1,arg2){};
 /**
 * function resizeTo(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
 Window.prototype.resizeTo=function(arg1,arg2){};
 /**
 * function resizeBy(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
 Window.prototype.resizeBy=function(arg1,arg2){};
 /**
 * function scroll(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -622,7 +622,7 @@ Window.prototype.scroll=function(arg1,arg2){};
 Window.prototype.close=function(){};
 /**
 * function updateCommands(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -630,7 +630,7 @@ Window.prototype.updateCommands=function(arg1){};
 /**
 * function atob(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -638,7 +638,7 @@ Window.prototype.atob=function(arg1){};
 /**
 * function btoa(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -652,9 +652,9 @@ Window.prototype.btoa=function(arg1){};
 Window.prototype.frameElement=new Object();
 /**
 * function removeEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -662,7 +662,7 @@ Window.prototype.removeEventListener=function(arg1,arg2,arg3){};
 /**
 * function dispatchEvent(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -670,8 +670,8 @@ Window.prototype.dispatchEvent=function(arg1){};
 /**
 * function getComputedStyle(arg1,arg2)
 * @type CSSStyleDeclaration
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Window
 * @since FireFox 2.0.0.3
 */
@@ -757,14 +757,14 @@ Location.prototype.protocol="";
 Location.prototype.search="";
 /**
 * function replace(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Location
 * @since FireFox 2.0.0.3
 */
 Location.prototype.replace=function(arg1){};
 /**
 * function assign(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Location
 * @since FireFox 2.0.0.3
 */
@@ -925,18 +925,18 @@ Navigator.prototype.buildID="";
 Navigator.prototype.preference=function(){};
 /**
 * function registerContentHandler(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf Navigator
 * @since FireFox 2.0.0.3
 */
 Navigator.prototype.registerContentHandler=function(arg1,arg2,arg3){};
 /**
 * function registerProtocolHandler(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf Navigator
 * @since FireFox 2.0.0.3
 */
@@ -960,7 +960,7 @@ MimeTypeArray.prototype.length=0;
 /**
 * function item(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf MimeTypeArray
 * @since FireFox 2.0.0.3
 */
@@ -968,7 +968,7 @@ MimeTypeArray.prototype.item=function(arg1){};
 /**
 * function namedItem(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf MimeTypeArray
 * @since FireFox 2.0.0.3
 */
@@ -1029,7 +1029,7 @@ PluginArray.prototype.length=0;
 /**
 * function item(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf PluginArray
 * @since FireFox 2.0.0.3
 */
@@ -1037,7 +1037,7 @@ PluginArray.prototype.item=function(arg1){};
 /**
 * function namedItem(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf PluginArray
 * @since FireFox 2.0.0.3
 */
@@ -1088,7 +1088,7 @@ Plugin.prototype.name="";
 /**
 * function item(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Plugin
 * @since FireFox 2.0.0.3
 */
@@ -1096,7 +1096,7 @@ Plugin.prototype.item=function(arg1){};
 /**
 * function namedItem(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Plugin
 * @since FireFox 2.0.0.3
 */
@@ -1126,9 +1126,9 @@ HTMLDocument.prototype.open=function(){};
 HTMLDocument.prototype.location=new Location();
 /**
 * function addEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1171,7 +1171,7 @@ HTMLDocument.prototype.baseURI="";
 /**
 * function compareDocumentPosition(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1186,7 +1186,7 @@ HTMLDocument.prototype.textContent=new Object();
 /**
 * function isSameNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1194,7 +1194,7 @@ HTMLDocument.prototype.isSameNode=function(arg1){};
 /**
 * function lookupPrefix(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1202,7 +1202,7 @@ HTMLDocument.prototype.lookupPrefix=function(arg1){};
 /**
 * function isDefaultNamespace(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1210,7 +1210,7 @@ HTMLDocument.prototype.isDefaultNamespace=function(arg1){};
 /**
 * function lookupNamespaceURI(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1218,7 +1218,7 @@ HTMLDocument.prototype.lookupNamespaceURI=function(arg1){};
 /**
 * function isEqualNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1226,17 +1226,17 @@ HTMLDocument.prototype.isEqualNode=function(arg1){};
 /**
 * function getFeature(arg1,arg2)
 * @type String
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
 HTMLDocument.prototype.getFeature=function(arg1,arg2){};
 /**
 * function setUserData(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1244,7 +1244,7 @@ HTMLDocument.prototype.setUserData=function(arg1,arg2,arg3){};
 /**
 * function getUserData(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1370,30 +1370,30 @@ HTMLDocument.prototype.attributes=new Object();
 HTMLDocument.prototype.ownerDocument=new Object();
 /**
 * function insertBefore(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
 HTMLDocument.prototype.insertBefore=function(arg1,arg2){};
 /**
 * function replaceChild(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
 HTMLDocument.prototype.replaceChild=function(arg1,arg2){};
 /**
 * function removeChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
 HTMLDocument.prototype.removeChild=function(arg1){};
 /**
 * function appendChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1408,7 +1408,7 @@ HTMLDocument.prototype.hasChildNodes=function(){};
 /**
 * function cloneNode(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1422,8 +1422,8 @@ HTMLDocument.prototype.normalize=function(){};
 /**
 * function isSupported(arg1,arg2)
 * @type Boolean
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1480,7 +1480,7 @@ HTMLDocument.prototype.documentElement=new HTMLHtmlElement();
 /**
 * function createElement(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1495,7 +1495,7 @@ HTMLDocument.prototype.createDocumentFragment=function(){};
 /**
 * function createTextNode(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1503,7 +1503,7 @@ HTMLDocument.prototype.createTextNode=function(arg1){};
 /**
 * function createComment(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1511,7 +1511,7 @@ HTMLDocument.prototype.createComment=function(arg1){};
 /**
 * function createCDATASection(arg1)
 * @type Text
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1519,8 +1519,8 @@ HTMLDocument.prototype.createCDATASection=function(arg1){};
 /**
 * function createProcessingInstruction(arg1,arg2)
 * @type Element
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1528,7 +1528,7 @@ HTMLDocument.prototype.createProcessingInstruction=function(arg1,arg2){};
 /**
 * function createAttribute(arg1)
 * @type Attr
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1536,7 +1536,7 @@ HTMLDocument.prototype.createAttribute=function(arg1){};
 /**
 * function createEntityReference(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1544,7 +1544,7 @@ HTMLDocument.prototype.createEntityReference=function(arg1){};
 /**
 * function getElementsByTagName(arg1)
 * @type NodeList
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1552,8 +1552,8 @@ HTMLDocument.prototype.getElementsByTagName=function(arg1){};
 /**
 * function importNode(arg1,arg2)
 * @type Element
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1561,8 +1561,8 @@ HTMLDocument.prototype.importNode=function(arg1,arg2){};
 /**
 * function createElementNS(arg1,arg2)
 * @type Element
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1570,8 +1570,8 @@ HTMLDocument.prototype.createElementNS=function(arg1,arg2){};
 /**
 * function createAttributeNS(arg1,arg2)
 * @type Element
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1579,8 +1579,8 @@ HTMLDocument.prototype.createAttributeNS=function(arg1,arg2){};
 /**
 * function getElementsByTagNameNS(arg1,arg2)
 * @type NodeList
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1588,7 +1588,7 @@ HTMLDocument.prototype.getElementsByTagNameNS=function(arg1,arg2){};
 /**
 * function getElementById(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1742,7 +1742,7 @@ HTMLDocument.prototype.close=function(){};
 /**
 * function getElementsByName(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1837,21 +1837,21 @@ HTMLDocument.prototype.writeln=function(){};
 HTMLDocument.prototype.clear=function(){};
 /**
 * function captureEvents(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
 HTMLDocument.prototype.captureEvents=function(arg1){};
 /**
 * function releaseEvents(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
 HTMLDocument.prototype.releaseEvents=function(arg1){};
 /**
 * function routeEvent(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1880,16 +1880,16 @@ HTMLDocument.prototype.designMode="";
 /**
 * function execCommand(arg1,arg2,arg3)
 * @type Object
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
 HTMLDocument.prototype.execCommand=function(arg1,arg2,arg3){};
 /**
 * function execCommandShowHelp(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1897,7 +1897,7 @@ HTMLDocument.prototype.execCommandShowHelp=function(arg1){};
 /**
 * function queryCommandEnabled(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1905,7 +1905,7 @@ HTMLDocument.prototype.queryCommandEnabled=function(arg1){};
 /**
 * function queryCommandIndeterm(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1913,7 +1913,7 @@ HTMLDocument.prototype.queryCommandIndeterm=function(arg1){};
 /**
 * function queryCommandState(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1921,7 +1921,7 @@ HTMLDocument.prototype.queryCommandState=function(arg1){};
 /**
 * function queryCommandSupported(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1929,7 +1929,7 @@ HTMLDocument.prototype.queryCommandSupported=function(arg1){};
 /**
 * function queryCommandText(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1937,7 +1937,7 @@ HTMLDocument.prototype.queryCommandText=function(arg1){};
 /**
 * function queryCommandValue(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1973,15 +1973,15 @@ HTMLDocument.prototype.lastModified="";
 /**
 * function getBoxObjectFor(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
 HTMLDocument.prototype.getBoxObjectFor=function(arg1){};
 /**
 * function setBoxObjectFor(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -1989,7 +1989,7 @@ HTMLDocument.prototype.setBoxObjectFor=function(arg1,arg2){};
 /**
 * function createEvent(arg1)
 * @type Event
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -2018,10 +2018,10 @@ HTMLDocument.prototype.createRange=function(){};
 /**
 * function createNodeIterator(arg1,arg2,arg3,arg4)
 * @type Iterator
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
-* @param arg4 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
+* @param {Object} arg4
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -2029,10 +2029,10 @@ HTMLDocument.prototype.createNodeIterator=function(arg1,arg2,arg3,arg4){};
 /**
 * function createTreeWalker(arg1,arg2,arg3,arg4)
 * @type TreeWalker
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
-* @param arg4 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
+* @param {Object} arg4
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -2040,7 +2040,7 @@ HTMLDocument.prototype.createTreeWalker=function(arg1,arg2,arg3,arg4){};
 /**
 * function getAnonymousNodes(arg1)
 * @type NodeList
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -2048,25 +2048,25 @@ HTMLDocument.prototype.getAnonymousNodes=function(arg1){};
 /**
 * function getAnonymousElementByAttribute(arg1,arg2,arg3)
 * @type Element
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
 HTMLDocument.prototype.getAnonymousElementByAttribute=function(arg1,arg2,arg3){};
 /**
 * function addBinding(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
 HTMLDocument.prototype.addBinding=function(arg1,arg2){};
 /**
 * function removeBinding(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -2074,7 +2074,7 @@ HTMLDocument.prototype.removeBinding=function(arg1,arg2){};
 /**
 * function getBindingParent(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -2082,16 +2082,16 @@ HTMLDocument.prototype.getBindingParent=function(arg1){};
 /**
 * function loadBindingDocument(arg1)
 * @type HTMLDocument
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
 HTMLDocument.prototype.loadBindingDocument=function(arg1){};
 /**
 * function removeEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -2099,7 +2099,7 @@ HTMLDocument.prototype.removeEventListener=function(arg1,arg2,arg3){};
 /**
 * function dispatchEvent(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -2141,7 +2141,7 @@ HTMLDocument.prototype.strictErrorChecking=false;
 HTMLDocument.prototype.documentURI="";
 /**
 * function adoptNode(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -2161,9 +2161,9 @@ HTMLDocument.prototype.domConfig=new Object();
 HTMLDocument.prototype.normalizeDocument=function(){};
 /**
 * function renameNode(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -2171,8 +2171,8 @@ HTMLDocument.prototype.renameNode=function(arg1,arg2,arg3){};
 /**
 * function createExpression(arg1,arg2)
 * @type RegExp
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -2180,7 +2180,7 @@ HTMLDocument.prototype.createExpression=function(arg1,arg2){};
 /**
 * function createNSResolver(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -2188,11 +2188,11 @@ HTMLDocument.prototype.createNSResolver=function(arg1){};
 /**
 * function evaluate(arg1,arg2,arg3,arg4,arg5)
 * @type HTMLDocument
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
-* @param arg4 Object
-* @param arg5 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
+* @param {Object} arg4
+* @param {Object} arg5
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
@@ -2216,7 +2216,7 @@ StyleSheetList.prototype.length=0;
 /**
 * function item(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf StyleSheetList
 * @since FireFox 2.0.0.3
 */
@@ -2240,7 +2240,7 @@ NodeList.prototype.length=0;
 /**
 * function item(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf NodeList
 * @since FireFox 2.0.0.3
 */
@@ -2333,30 +2333,30 @@ DocumentType.prototype.attributes=new Object();
 DocumentType.prototype.ownerDocument=new HTMLDocument();
 /**
 * function insertBefore(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
 DocumentType.prototype.insertBefore=function(arg1,arg2){};
 /**
 * function replaceChild(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
 DocumentType.prototype.replaceChild=function(arg1,arg2){};
 /**
 * function removeChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
 DocumentType.prototype.removeChild=function(arg1){};
 /**
 * function appendChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
@@ -2371,7 +2371,7 @@ DocumentType.prototype.hasChildNodes=function(){};
 /**
 * function cloneNode(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
@@ -2385,8 +2385,8 @@ DocumentType.prototype.normalize=function(){};
 /**
 * function isSupported(arg1,arg2)
 * @type Boolean
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
@@ -2555,7 +2555,7 @@ DocumentType.prototype.baseURI="";
 /**
 * function compareDocumentPosition(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
@@ -2570,7 +2570,7 @@ DocumentType.prototype.textContent=new Object();
 /**
 * function isSameNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
@@ -2578,7 +2578,7 @@ DocumentType.prototype.isSameNode=function(arg1){};
 /**
 * function lookupPrefix(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
@@ -2586,7 +2586,7 @@ DocumentType.prototype.lookupPrefix=function(arg1){};
 /**
 * function isDefaultNamespace(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
@@ -2594,7 +2594,7 @@ DocumentType.prototype.isDefaultNamespace=function(arg1){};
 /**
 * function lookupNamespaceURI(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
@@ -2602,7 +2602,7 @@ DocumentType.prototype.lookupNamespaceURI=function(arg1){};
 /**
 * function isEqualNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
@@ -2610,17 +2610,17 @@ DocumentType.prototype.isEqualNode=function(arg1){};
 /**
 * function getFeature(arg1,arg2)
 * @type String
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
 DocumentType.prototype.getFeature=function(arg1,arg2){};
 /**
 * function setUserData(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
@@ -2628,7 +2628,7 @@ DocumentType.prototype.setUserData=function(arg1,arg2,arg3){};
 /**
 * function getUserData(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf DocumentType
 * @since FireFox 2.0.0.3
 */
@@ -2686,9 +2686,9 @@ HTMLHtmlElement.prototype=new Object();
 function HTMLHtmlElement(){};
 /**
 * function addEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -2772,30 +2772,30 @@ HTMLHtmlElement.prototype.attributes=new NamedNodeMap();
 HTMLHtmlElement.prototype.ownerDocument=new HTMLDocument();
 /**
 * function insertBefore(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
 HTMLHtmlElement.prototype.insertBefore=function(arg1,arg2){};
 /**
 * function replaceChild(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
 HTMLHtmlElement.prototype.replaceChild=function(arg1,arg2){};
 /**
 * function removeChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
 HTMLHtmlElement.prototype.removeChild=function(arg1){};
 /**
 * function appendChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -2810,7 +2810,7 @@ HTMLHtmlElement.prototype.hasChildNodes=function(){};
 /**
 * function cloneNode(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -2824,8 +2824,8 @@ HTMLHtmlElement.prototype.normalize=function(){};
 /**
 * function isSupported(arg1,arg2)
 * @type Boolean
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -2952,22 +2952,22 @@ HTMLHtmlElement.prototype.tagName="";
 /**
 * function getAttribute(arg1)
 * @type Attr
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
 HTMLHtmlElement.prototype.getAttribute=function(arg1){};
 /**
 * function setAttribute(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
 HTMLHtmlElement.prototype.setAttribute=function(arg1,arg2){};
 /**
 * function removeAttribute(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -2975,21 +2975,21 @@ HTMLHtmlElement.prototype.removeAttribute=function(arg1){};
 /**
 * function getAttributeNode(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
 HTMLHtmlElement.prototype.getAttributeNode=function(arg1){};
 /**
 * function setAttributeNode(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
 HTMLHtmlElement.prototype.setAttributeNode=function(arg1){};
 /**
 * function removeAttributeNode(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -2997,7 +2997,7 @@ HTMLHtmlElement.prototype.removeAttributeNode=function(arg1){};
 /**
 * function getElementsByTagName(arg1)
 * @type NodeList
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3005,25 +3005,25 @@ HTMLHtmlElement.prototype.getElementsByTagName=function(arg1){};
 /**
 * function getAttributeNS(arg1,arg2)
 * @type Object
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
 HTMLHtmlElement.prototype.getAttributeNS=function(arg1,arg2){};
 /**
 * function setAttributeNS(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
 HTMLHtmlElement.prototype.setAttributeNS=function(arg1,arg2,arg3){};
 /**
 * function removeAttributeNS(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3031,15 +3031,15 @@ HTMLHtmlElement.prototype.removeAttributeNS=function(arg1,arg2){};
 /**
 * function getAttributeNodeNS(arg1,arg2)
 * @type Object
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
 HTMLHtmlElement.prototype.getAttributeNodeNS=function(arg1,arg2){};
 /**
 * function setAttributeNodeNS(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3047,8 +3047,8 @@ HTMLHtmlElement.prototype.setAttributeNodeNS=function(arg1){};
 /**
 * function getElementsByTagNameNS(arg1,arg2)
 * @type NodeList
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3056,7 +3056,7 @@ HTMLHtmlElement.prototype.getElementsByTagNameNS=function(arg1,arg2){};
 /**
 * function hasAttribute(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3064,8 +3064,8 @@ HTMLHtmlElement.prototype.hasAttribute=function(arg1){};
 /**
 * function hasAttributeNS(arg1,arg2)
 * @type Boolean
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3231,9 +3231,9 @@ HTMLHtmlElement.prototype.spellcheck=false;
 HTMLHtmlElement.prototype.style=new CSSStyleDeclaration();
 /**
 * function removeEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3241,7 +3241,7 @@ HTMLHtmlElement.prototype.removeEventListener=function(arg1,arg2,arg3){};
 /**
 * function dispatchEvent(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3256,7 +3256,7 @@ HTMLHtmlElement.prototype.baseURI="";
 /**
 * function compareDocumentPosition(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3271,7 +3271,7 @@ HTMLHtmlElement.prototype.textContent="";
 /**
 * function isSameNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3279,7 +3279,7 @@ HTMLHtmlElement.prototype.isSameNode=function(arg1){};
 /**
 * function lookupPrefix(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3287,7 +3287,7 @@ HTMLHtmlElement.prototype.lookupPrefix=function(arg1){};
 /**
 * function isDefaultNamespace(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3295,7 +3295,7 @@ HTMLHtmlElement.prototype.isDefaultNamespace=function(arg1){};
 /**
 * function lookupNamespaceURI(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3303,7 +3303,7 @@ HTMLHtmlElement.prototype.lookupNamespaceURI=function(arg1){};
 /**
 * function isEqualNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3311,17 +3311,17 @@ HTMLHtmlElement.prototype.isEqualNode=function(arg1){};
 /**
 * function getFeature(arg1,arg2)
 * @type String
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
 HTMLHtmlElement.prototype.getFeature=function(arg1,arg2){};
 /**
 * function setUserData(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3329,7 +3329,7 @@ HTMLHtmlElement.prototype.setUserData=function(arg1,arg2,arg3){};
 /**
 * function getUserData(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHtmlElement
 * @since FireFox 2.0.0.3
 */
@@ -3387,9 +3387,9 @@ HTMLHeadElement.prototype=new Object();
 function HTMLHeadElement(){};
 /**
 * function addEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3473,30 +3473,30 @@ HTMLHeadElement.prototype.attributes=new NamedNodeMap();
 HTMLHeadElement.prototype.ownerDocument=new HTMLDocument();
 /**
 * function insertBefore(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
 HTMLHeadElement.prototype.insertBefore=function(arg1,arg2){};
 /**
 * function replaceChild(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
 HTMLHeadElement.prototype.replaceChild=function(arg1,arg2){};
 /**
 * function removeChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
 HTMLHeadElement.prototype.removeChild=function(arg1){};
 /**
 * function appendChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3511,7 +3511,7 @@ HTMLHeadElement.prototype.hasChildNodes=function(){};
 /**
 * function cloneNode(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3525,8 +3525,8 @@ HTMLHeadElement.prototype.normalize=function(){};
 /**
 * function isSupported(arg1,arg2)
 * @type Boolean
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3653,22 +3653,22 @@ HTMLHeadElement.prototype.tagName="";
 /**
 * function getAttribute(arg1)
 * @type Attr
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
 HTMLHeadElement.prototype.getAttribute=function(arg1){};
 /**
 * function setAttribute(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
 HTMLHeadElement.prototype.setAttribute=function(arg1,arg2){};
 /**
 * function removeAttribute(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3676,21 +3676,21 @@ HTMLHeadElement.prototype.removeAttribute=function(arg1){};
 /**
 * function getAttributeNode(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
 HTMLHeadElement.prototype.getAttributeNode=function(arg1){};
 /**
 * function setAttributeNode(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
 HTMLHeadElement.prototype.setAttributeNode=function(arg1){};
 /**
 * function removeAttributeNode(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3698,7 +3698,7 @@ HTMLHeadElement.prototype.removeAttributeNode=function(arg1){};
 /**
 * function getElementsByTagName(arg1)
 * @type NodeList
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3706,25 +3706,25 @@ HTMLHeadElement.prototype.getElementsByTagName=function(arg1){};
 /**
 * function getAttributeNS(arg1,arg2)
 * @type Object
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
 HTMLHeadElement.prototype.getAttributeNS=function(arg1,arg2){};
 /**
 * function setAttributeNS(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
 HTMLHeadElement.prototype.setAttributeNS=function(arg1,arg2,arg3){};
 /**
 * function removeAttributeNS(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3732,15 +3732,15 @@ HTMLHeadElement.prototype.removeAttributeNS=function(arg1,arg2){};
 /**
 * function getAttributeNodeNS(arg1,arg2)
 * @type Object
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
 HTMLHeadElement.prototype.getAttributeNodeNS=function(arg1,arg2){};
 /**
 * function setAttributeNodeNS(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3748,8 +3748,8 @@ HTMLHeadElement.prototype.setAttributeNodeNS=function(arg1){};
 /**
 * function getElementsByTagNameNS(arg1,arg2)
 * @type NodeList
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3757,7 +3757,7 @@ HTMLHeadElement.prototype.getElementsByTagNameNS=function(arg1,arg2){};
 /**
 * function hasAttribute(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3765,8 +3765,8 @@ HTMLHeadElement.prototype.hasAttribute=function(arg1){};
 /**
 * function hasAttributeNS(arg1,arg2)
 * @type Boolean
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3932,9 +3932,9 @@ HTMLHeadElement.prototype.spellcheck=false;
 HTMLHeadElement.prototype.style=new CSSStyleDeclaration();
 /**
 * function removeEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3942,7 +3942,7 @@ HTMLHeadElement.prototype.removeEventListener=function(arg1,arg2,arg3){};
 /**
 * function dispatchEvent(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3957,7 +3957,7 @@ HTMLHeadElement.prototype.baseURI="";
 /**
 * function compareDocumentPosition(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3972,7 +3972,7 @@ HTMLHeadElement.prototype.textContent="";
 /**
 * function isSameNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3980,7 +3980,7 @@ HTMLHeadElement.prototype.isSameNode=function(arg1){};
 /**
 * function lookupPrefix(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3988,7 +3988,7 @@ HTMLHeadElement.prototype.lookupPrefix=function(arg1){};
 /**
 * function isDefaultNamespace(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -3996,7 +3996,7 @@ HTMLHeadElement.prototype.isDefaultNamespace=function(arg1){};
 /**
 * function lookupNamespaceURI(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -4004,7 +4004,7 @@ HTMLHeadElement.prototype.lookupNamespaceURI=function(arg1){};
 /**
 * function isEqualNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -4012,17 +4012,17 @@ HTMLHeadElement.prototype.isEqualNode=function(arg1){};
 /**
 * function getFeature(arg1,arg2)
 * @type String
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
 HTMLHeadElement.prototype.getFeature=function(arg1,arg2){};
 /**
 * function setUserData(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -4030,7 +4030,7 @@ HTMLHeadElement.prototype.setUserData=function(arg1,arg2,arg3){};
 /**
 * function getUserData(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLHeadElement
 * @since FireFox 2.0.0.3
 */
@@ -4088,9 +4088,9 @@ Comment.prototype=new Object();
 function Comment(){};
 /**
 * function addEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
@@ -4174,30 +4174,30 @@ Comment.prototype.attributes=new Object();
 Comment.prototype.ownerDocument=new HTMLDocument();
 /**
 * function insertBefore(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
 Comment.prototype.insertBefore=function(arg1,arg2){};
 /**
 * function replaceChild(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
 Comment.prototype.replaceChild=function(arg1,arg2){};
 /**
 * function removeChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
 Comment.prototype.removeChild=function(arg1){};
 /**
 * function appendChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
@@ -4212,7 +4212,7 @@ Comment.prototype.hasChildNodes=function(){};
 /**
 * function cloneNode(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
@@ -4226,8 +4226,8 @@ Comment.prototype.normalize=function(){};
 /**
 * function isSupported(arg1,arg2)
 * @type Boolean
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
@@ -4361,49 +4361,49 @@ Comment.prototype.length=0;
 /**
 * function substringData(arg1,arg2)
 * @type String
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
 Comment.prototype.substringData=function(arg1,arg2){};
 /**
 * function appendData(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
 Comment.prototype.appendData=function(arg1){};
 /**
 * function insertData(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
 Comment.prototype.insertData=function(arg1,arg2){};
 /**
 * function deleteData(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
 Comment.prototype.deleteData=function(arg1,arg2){};
 /**
 * function replaceData(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
 Comment.prototype.replaceData=function(arg1,arg2,arg3){};
 /**
 * function removeEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
@@ -4411,7 +4411,7 @@ Comment.prototype.removeEventListener=function(arg1,arg2,arg3){};
 /**
 * function dispatchEvent(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
@@ -4426,7 +4426,7 @@ Comment.prototype.baseURI="";
 /**
 * function compareDocumentPosition(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
@@ -4441,7 +4441,7 @@ Comment.prototype.textContent="";
 /**
 * function isSameNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
@@ -4449,7 +4449,7 @@ Comment.prototype.isSameNode=function(arg1){};
 /**
 * function lookupPrefix(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
@@ -4457,7 +4457,7 @@ Comment.prototype.lookupPrefix=function(arg1){};
 /**
 * function isDefaultNamespace(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
@@ -4465,7 +4465,7 @@ Comment.prototype.isDefaultNamespace=function(arg1){};
 /**
 * function lookupNamespaceURI(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
@@ -4473,7 +4473,7 @@ Comment.prototype.lookupNamespaceURI=function(arg1){};
 /**
 * function isEqualNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
@@ -4481,17 +4481,17 @@ Comment.prototype.isEqualNode=function(arg1){};
 /**
 * function getFeature(arg1,arg2)
 * @type String
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
 Comment.prototype.getFeature=function(arg1,arg2){};
 /**
 * function setUserData(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
@@ -4499,7 +4499,7 @@ Comment.prototype.setUserData=function(arg1,arg2,arg3){};
 /**
 * function getUserData(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Comment
 * @since FireFox 2.0.0.3
 */
@@ -4557,9 +4557,9 @@ HTMLScriptElement.prototype=new Object();
 function HTMLScriptElement(){};
 /**
 * function addEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -4643,30 +4643,30 @@ HTMLScriptElement.prototype.attributes=new NamedNodeMap();
 HTMLScriptElement.prototype.ownerDocument=new HTMLDocument();
 /**
 * function insertBefore(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
 HTMLScriptElement.prototype.insertBefore=function(arg1,arg2){};
 /**
 * function replaceChild(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
 HTMLScriptElement.prototype.replaceChild=function(arg1,arg2){};
 /**
 * function removeChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
 HTMLScriptElement.prototype.removeChild=function(arg1){};
 /**
 * function appendChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -4681,7 +4681,7 @@ HTMLScriptElement.prototype.hasChildNodes=function(){};
 /**
 * function cloneNode(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -4695,8 +4695,8 @@ HTMLScriptElement.prototype.normalize=function(){};
 /**
 * function isSupported(arg1,arg2)
 * @type Boolean
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -4823,22 +4823,22 @@ HTMLScriptElement.prototype.tagName="";
 /**
 * function getAttribute(arg1)
 * @type Attr
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
 HTMLScriptElement.prototype.getAttribute=function(arg1){};
 /**
 * function setAttribute(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
 HTMLScriptElement.prototype.setAttribute=function(arg1,arg2){};
 /**
 * function removeAttribute(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -4846,21 +4846,21 @@ HTMLScriptElement.prototype.removeAttribute=function(arg1){};
 /**
 * function getAttributeNode(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
 HTMLScriptElement.prototype.getAttributeNode=function(arg1){};
 /**
 * function setAttributeNode(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
 HTMLScriptElement.prototype.setAttributeNode=function(arg1){};
 /**
 * function removeAttributeNode(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -4868,7 +4868,7 @@ HTMLScriptElement.prototype.removeAttributeNode=function(arg1){};
 /**
 * function getElementsByTagName(arg1)
 * @type NodeList
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -4876,25 +4876,25 @@ HTMLScriptElement.prototype.getElementsByTagName=function(arg1){};
 /**
 * function getAttributeNS(arg1,arg2)
 * @type Object
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
 HTMLScriptElement.prototype.getAttributeNS=function(arg1,arg2){};
 /**
 * function setAttributeNS(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
 HTMLScriptElement.prototype.setAttributeNS=function(arg1,arg2,arg3){};
 /**
 * function removeAttributeNS(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -4902,15 +4902,15 @@ HTMLScriptElement.prototype.removeAttributeNS=function(arg1,arg2){};
 /**
 * function getAttributeNodeNS(arg1,arg2)
 * @type Object
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
 HTMLScriptElement.prototype.getAttributeNodeNS=function(arg1,arg2){};
 /**
 * function setAttributeNodeNS(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -4918,8 +4918,8 @@ HTMLScriptElement.prototype.setAttributeNodeNS=function(arg1){};
 /**
 * function getElementsByTagNameNS(arg1,arg2)
 * @type NodeList
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -4927,7 +4927,7 @@ HTMLScriptElement.prototype.getElementsByTagNameNS=function(arg1,arg2){};
 /**
 * function hasAttribute(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -4935,8 +4935,8 @@ HTMLScriptElement.prototype.hasAttribute=function(arg1){};
 /**
 * function hasAttributeNS(arg1,arg2)
 * @type Boolean
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -5144,9 +5144,9 @@ HTMLScriptElement.prototype.spellcheck=false;
 HTMLScriptElement.prototype.style=new CSSStyleDeclaration();
 /**
 * function removeEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -5154,7 +5154,7 @@ HTMLScriptElement.prototype.removeEventListener=function(arg1,arg2,arg3){};
 /**
 * function dispatchEvent(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -5169,7 +5169,7 @@ HTMLScriptElement.prototype.baseURI="";
 /**
 * function compareDocumentPosition(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -5184,7 +5184,7 @@ HTMLScriptElement.prototype.textContent="";
 /**
 * function isSameNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -5192,7 +5192,7 @@ HTMLScriptElement.prototype.isSameNode=function(arg1){};
 /**
 * function lookupPrefix(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -5200,7 +5200,7 @@ HTMLScriptElement.prototype.lookupPrefix=function(arg1){};
 /**
 * function isDefaultNamespace(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -5208,7 +5208,7 @@ HTMLScriptElement.prototype.isDefaultNamespace=function(arg1){};
 /**
 * function lookupNamespaceURI(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -5216,7 +5216,7 @@ HTMLScriptElement.prototype.lookupNamespaceURI=function(arg1){};
 /**
 * function isEqualNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -5224,17 +5224,17 @@ HTMLScriptElement.prototype.isEqualNode=function(arg1){};
 /**
 * function getFeature(arg1,arg2)
 * @type String
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
 HTMLScriptElement.prototype.getFeature=function(arg1,arg2){};
 /**
 * function setUserData(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -5242,7 +5242,7 @@ HTMLScriptElement.prototype.setUserData=function(arg1,arg2,arg3){};
 /**
 * function getUserData(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLScriptElement
 * @since FireFox 2.0.0.3
 */
@@ -5300,9 +5300,9 @@ Text.prototype=new Object();
 function Text(){};
 /**
 * function addEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5386,30 +5386,30 @@ Text.prototype.attributes=new Object();
 Text.prototype.ownerDocument=new HTMLDocument();
 /**
 * function insertBefore(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
 Text.prototype.insertBefore=function(arg1,arg2){};
 /**
 * function replaceChild(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
 Text.prototype.replaceChild=function(arg1,arg2){};
 /**
 * function removeChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
 Text.prototype.removeChild=function(arg1){};
 /**
 * function appendChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5424,7 +5424,7 @@ Text.prototype.hasChildNodes=function(){};
 /**
 * function cloneNode(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5438,8 +5438,8 @@ Text.prototype.normalize=function(){};
 /**
 * function isSupported(arg1,arg2)
 * @type Boolean
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5573,40 +5573,40 @@ Text.prototype.length=0;
 /**
 * function substringData(arg1,arg2)
 * @type String
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
 Text.prototype.substringData=function(arg1,arg2){};
 /**
 * function appendData(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
 Text.prototype.appendData=function(arg1){};
 /**
 * function insertData(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
 Text.prototype.insertData=function(arg1,arg2){};
 /**
 * function deleteData(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
 Text.prototype.deleteData=function(arg1,arg2){};
 /**
 * function replaceData(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5614,16 +5614,16 @@ Text.prototype.replaceData=function(arg1,arg2,arg3){};
 /**
 * function splitText(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
 Text.prototype.splitText=function(arg1){};
 /**
 * function removeEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5631,7 +5631,7 @@ Text.prototype.removeEventListener=function(arg1,arg2,arg3){};
 /**
 * function dispatchEvent(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5646,7 +5646,7 @@ Text.prototype.baseURI="";
 /**
 * function compareDocumentPosition(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5661,7 +5661,7 @@ Text.prototype.textContent="";
 /**
 * function isSameNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5669,7 +5669,7 @@ Text.prototype.isSameNode=function(arg1){};
 /**
 * function lookupPrefix(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5677,7 +5677,7 @@ Text.prototype.lookupPrefix=function(arg1){};
 /**
 * function isDefaultNamespace(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5685,7 +5685,7 @@ Text.prototype.isDefaultNamespace=function(arg1){};
 /**
 * function lookupNamespaceURI(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5693,7 +5693,7 @@ Text.prototype.lookupNamespaceURI=function(arg1){};
 /**
 * function isEqualNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5701,17 +5701,17 @@ Text.prototype.isEqualNode=function(arg1){};
 /**
 * function getFeature(arg1,arg2)
 * @type String
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
 Text.prototype.getFeature=function(arg1,arg2){};
 /**
 * function setUserData(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5719,7 +5719,7 @@ Text.prototype.setUserData=function(arg1,arg2,arg3){};
 /**
 * function getUserData(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Text
 * @since FireFox 2.0.0.3
 */
@@ -5785,21 +5785,21 @@ NamedNodeMap.prototype.length=0;
 /**
 * function getNamedItem(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf NamedNodeMap
 * @since FireFox 2.0.0.3
 */
 NamedNodeMap.prototype.getNamedItem=function(arg1){};
 /**
 * function setNamedItem(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf NamedNodeMap
 * @since FireFox 2.0.0.3
 */
 NamedNodeMap.prototype.setNamedItem=function(arg1){};
 /**
 * function removeNamedItem(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf NamedNodeMap
 * @since FireFox 2.0.0.3
 */
@@ -5807,7 +5807,7 @@ NamedNodeMap.prototype.removeNamedItem=function(arg1){};
 /**
 * function item(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf NamedNodeMap
 * @since FireFox 2.0.0.3
 */
@@ -5815,23 +5815,23 @@ NamedNodeMap.prototype.item=function(arg1){};
 /**
 * function getNamedItemNS(arg1,arg2)
 * @type Element
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf NamedNodeMap
 * @since FireFox 2.0.0.3
 */
 NamedNodeMap.prototype.getNamedItemNS=function(arg1,arg2){};
 /**
 * function setNamedItemNS(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf NamedNodeMap
 * @since FireFox 2.0.0.3
 */
 NamedNodeMap.prototype.setNamedItemNS=function(arg1){};
 /**
 * function removeNamedItemNS(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf NamedNodeMap
 * @since FireFox 2.0.0.3
 */
@@ -5924,30 +5924,30 @@ Attr.prototype.attributes=new Object();
 Attr.prototype.ownerDocument=new HTMLDocument();
 /**
 * function insertBefore(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
 Attr.prototype.insertBefore=function(arg1,arg2){};
 /**
 * function replaceChild(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
 Attr.prototype.replaceChild=function(arg1,arg2){};
 /**
 * function removeChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
 Attr.prototype.removeChild=function(arg1){};
 /**
 * function appendChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
@@ -5962,7 +5962,7 @@ Attr.prototype.hasChildNodes=function(){};
 /**
 * function cloneNode(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
@@ -5976,8 +5976,8 @@ Attr.prototype.normalize=function(){};
 /**
 * function isSupported(arg1,arg2)
 * @type Boolean
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
@@ -6132,7 +6132,7 @@ Attr.prototype.baseURI="";
 /**
 * function compareDocumentPosition(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
@@ -6147,7 +6147,7 @@ Attr.prototype.textContent="";
 /**
 * function isSameNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
@@ -6155,7 +6155,7 @@ Attr.prototype.isSameNode=function(arg1){};
 /**
 * function lookupPrefix(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
@@ -6163,7 +6163,7 @@ Attr.prototype.lookupPrefix=function(arg1){};
 /**
 * function isDefaultNamespace(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
@@ -6171,7 +6171,7 @@ Attr.prototype.isDefaultNamespace=function(arg1){};
 /**
 * function lookupNamespaceURI(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
@@ -6179,7 +6179,7 @@ Attr.prototype.lookupNamespaceURI=function(arg1){};
 /**
 * function isEqualNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
@@ -6187,17 +6187,17 @@ Attr.prototype.isEqualNode=function(arg1){};
 /**
 * function getFeature(arg1,arg2)
 * @type String
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
 Attr.prototype.getFeature=function(arg1,arg2){};
 /**
 * function setUserData(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
@@ -6205,7 +6205,7 @@ Attr.prototype.setUserData=function(arg1,arg2,arg3){};
 /**
 * function getUserData(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Attr
 * @since FireFox 2.0.0.3
 */
@@ -6278,7 +6278,7 @@ CSSStyleDeclaration.prototype.cssText="";
 /**
 * function getPropertyValue(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf CSSStyleDeclaration
 * @since FireFox 2.0.0.3
 */
@@ -6286,14 +6286,14 @@ CSSStyleDeclaration.prototype.getPropertyValue=function(arg1){};
 /**
 * function getPropertyCSSValue(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf CSSStyleDeclaration
 * @since FireFox 2.0.0.3
 */
 CSSStyleDeclaration.prototype.getPropertyCSSValue=function(arg1){};
 /**
 * function removeProperty(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf CSSStyleDeclaration
 * @since FireFox 2.0.0.3
 */
@@ -6301,16 +6301,16 @@ CSSStyleDeclaration.prototype.removeProperty=function(arg1){};
 /**
 * function getPropertyPriority(arg1)
 * @type Number
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf CSSStyleDeclaration
 * @since FireFox 2.0.0.3
 */
 CSSStyleDeclaration.prototype.getPropertyPriority=function(arg1){};
 /**
 * function setProperty(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf CSSStyleDeclaration
 * @since FireFox 2.0.0.3
 */
@@ -6318,7 +6318,7 @@ CSSStyleDeclaration.prototype.setProperty=function(arg1,arg2,arg3){};
 /**
 * function item(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf CSSStyleDeclaration
 * @since FireFox 2.0.0.3
 */
@@ -7538,9 +7538,9 @@ HTMLBodyElement.prototype=new Object();
 function HTMLBodyElement(){};
 /**
 * function addEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -7624,30 +7624,30 @@ HTMLBodyElement.prototype.attributes=new NamedNodeMap();
 HTMLBodyElement.prototype.ownerDocument=new HTMLDocument();
 /**
 * function insertBefore(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
 HTMLBodyElement.prototype.insertBefore=function(arg1,arg2){};
 /**
 * function replaceChild(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
 HTMLBodyElement.prototype.replaceChild=function(arg1,arg2){};
 /**
 * function removeChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
 HTMLBodyElement.prototype.removeChild=function(arg1){};
 /**
 * function appendChild(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -7662,7 +7662,7 @@ HTMLBodyElement.prototype.hasChildNodes=function(){};
 /**
 * function cloneNode(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -7676,8 +7676,8 @@ HTMLBodyElement.prototype.normalize=function(){};
 /**
 * function isSupported(arg1,arg2)
 * @type Boolean
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -7804,22 +7804,22 @@ HTMLBodyElement.prototype.tagName="";
 /**
 * function getAttribute(arg1)
 * @type Attr
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
 HTMLBodyElement.prototype.getAttribute=function(arg1){};
 /**
 * function setAttribute(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
 HTMLBodyElement.prototype.setAttribute=function(arg1,arg2){};
 /**
 * function removeAttribute(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -7827,21 +7827,21 @@ HTMLBodyElement.prototype.removeAttribute=function(arg1){};
 /**
 * function getAttributeNode(arg1)
 * @type Element
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
 HTMLBodyElement.prototype.getAttributeNode=function(arg1){};
 /**
 * function setAttributeNode(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
 HTMLBodyElement.prototype.setAttributeNode=function(arg1){};
 /**
 * function removeAttributeNode(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -7849,7 +7849,7 @@ HTMLBodyElement.prototype.removeAttributeNode=function(arg1){};
 /**
 * function getElementsByTagName(arg1)
 * @type NodeList
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -7857,25 +7857,25 @@ HTMLBodyElement.prototype.getElementsByTagName=function(arg1){};
 /**
 * function getAttributeNS(arg1,arg2)
 * @type Object
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
 HTMLBodyElement.prototype.getAttributeNS=function(arg1,arg2){};
 /**
 * function setAttributeNS(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
 HTMLBodyElement.prototype.setAttributeNS=function(arg1,arg2,arg3){};
 /**
 * function removeAttributeNS(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -7883,15 +7883,15 @@ HTMLBodyElement.prototype.removeAttributeNS=function(arg1,arg2){};
 /**
 * function getAttributeNodeNS(arg1,arg2)
 * @type Object
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
 HTMLBodyElement.prototype.getAttributeNodeNS=function(arg1,arg2){};
 /**
 * function setAttributeNodeNS(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -7899,8 +7899,8 @@ HTMLBodyElement.prototype.setAttributeNodeNS=function(arg1){};
 /**
 * function getElementsByTagNameNS(arg1,arg2)
 * @type NodeList
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -7908,7 +7908,7 @@ HTMLBodyElement.prototype.getElementsByTagNameNS=function(arg1,arg2){};
 /**
 * function hasAttribute(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -7916,8 +7916,8 @@ HTMLBodyElement.prototype.hasAttribute=function(arg1){};
 /**
 * function hasAttributeNS(arg1,arg2)
 * @type Boolean
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -8118,9 +8118,9 @@ HTMLBodyElement.prototype.spellcheck=false;
 HTMLBodyElement.prototype.style=new CSSStyleDeclaration();
 /**
 * function removeEventListener(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -8128,7 +8128,7 @@ HTMLBodyElement.prototype.removeEventListener=function(arg1,arg2,arg3){};
 /**
 * function dispatchEvent(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -8143,7 +8143,7 @@ HTMLBodyElement.prototype.baseURI="";
 /**
 * function compareDocumentPosition(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -8158,7 +8158,7 @@ HTMLBodyElement.prototype.textContent="";
 /**
 * function isSameNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -8166,7 +8166,7 @@ HTMLBodyElement.prototype.isSameNode=function(arg1){};
 /**
 * function lookupPrefix(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -8174,7 +8174,7 @@ HTMLBodyElement.prototype.lookupPrefix=function(arg1){};
 /**
 * function isDefaultNamespace(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -8182,7 +8182,7 @@ HTMLBodyElement.prototype.isDefaultNamespace=function(arg1){};
 /**
 * function lookupNamespaceURI(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -8190,7 +8190,7 @@ HTMLBodyElement.prototype.lookupNamespaceURI=function(arg1){};
 /**
 * function isEqualNode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -8198,17 +8198,17 @@ HTMLBodyElement.prototype.isEqualNode=function(arg1){};
 /**
 * function getFeature(arg1,arg2)
 * @type String
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
 HTMLBodyElement.prototype.getFeature=function(arg1,arg2){};
 /**
 * function setUserData(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -8216,7 +8216,7 @@ HTMLBodyElement.prototype.setUserData=function(arg1,arg2,arg3){};
 /**
 * function getUserData(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLBodyElement
 * @since FireFox 2.0.0.3
 */
@@ -8275,8 +8275,8 @@ function DOMImplementation(){};
 /**
 * function hasFeature(arg1,arg2)
 * @type Boolean
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf DOMImplementation
 * @since FireFox 2.0.0.3
 */
@@ -8284,9 +8284,9 @@ DOMImplementation.prototype.hasFeature=function(arg1,arg2){};
 /**
 * function createDocumentType(arg1,arg2,arg3)
 * @type Object
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf DOMImplementation
 * @since FireFox 2.0.0.3
 */
@@ -8294,9 +8294,9 @@ DOMImplementation.prototype.createDocumentType=function(arg1,arg2,arg3){};
 /**
 * function createDocument(arg1,arg2,arg3)
 * @type HTMLDocument
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf DOMImplementation
 * @since FireFox 2.0.0.3
 */
@@ -8320,7 +8320,7 @@ HTMLCollection.prototype.length=0;
 /**
 * function item(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLCollection
 * @since FireFox 2.0.0.3
 */
@@ -8328,7 +8328,7 @@ HTMLCollection.prototype.item=function(arg1){};
 /**
 * function namedItem(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf HTMLCollection
 * @since FireFox 2.0.0.3
 */
@@ -8354,7 +8354,7 @@ function nsXPCComponents(){};
 /**
 * function QueryInterface(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf nsXPCComponents
 * @since FireFox 2.0.0.3
 */
@@ -8439,7 +8439,7 @@ nsXPCComponents.prototype.Constructor=new Object();
 /**
 * function isSuccessCode(arg1)
 * @type Boolean
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf nsXPCComponents
 * @since FireFox 2.0.0.3
 */
@@ -8604,7 +8604,7 @@ History.prototype.forward=function(){};
 /**
 * function item(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf History
 * @since FireFox 2.0.0.3
 */
@@ -8647,9 +8647,9 @@ Crypto.prototype.enableSmartCardEvents=false;
 Crypto.prototype.generateCRMFRequest=function(){};
 /**
 * function importUserCertificates(arg1,arg2,arg3)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
 * @memberOf Crypto
 * @since FireFox 2.0.0.3
 */
@@ -8657,7 +8657,7 @@ Crypto.prototype.importUserCertificates=function(arg1,arg2,arg3){};
 /**
 * function popChallengeResponse(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Crypto
 * @since FireFox 2.0.0.3
 */
@@ -8665,7 +8665,7 @@ Crypto.prototype.popChallengeResponse=function(arg1){};
 /**
 * function random(arg1)
 * @type Number
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Crypto
 * @since FireFox 2.0.0.3
 */
@@ -8673,15 +8673,15 @@ Crypto.prototype.random=function(arg1){};
 /**
 * function signText(arg1,arg2)
 * @type String
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf Crypto
 * @since FireFox 2.0.0.3
 */
 Crypto.prototype.signText=function(arg1,arg2){};
 /**
 * function alert(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Crypto
 * @since FireFox 2.0.0.3
 */
@@ -8709,17 +8709,17 @@ Pkcs11.prototype=new Object();
 function Pkcs11(){};
 /**
 * function deletemodule(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf Pkcs11
 * @since FireFox 2.0.0.3
 */
 Pkcs11.prototype.deletemodule=function(arg1){};
 /**
 * function addmodule(arg1,arg2,arg3,arg4)
-* @param arg1 Object
-* @param arg2 Object
-* @param arg3 Object
-* @param arg4 Object
+* @param {Object} arg1
+* @param {Object} arg2
+* @param {Object} arg3
+* @param {Object} arg4
 * @memberOf Pkcs11
 * @since FireFox 2.0.0.3
 */
@@ -8736,7 +8736,7 @@ function XULControllers(){};
 /**
 * function QueryInterface(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf XULControllers
 * @since FireFox 2.0.0.3
 */
@@ -8751,15 +8751,15 @@ XULControllers.prototype.commandDispatcher=new Object();
 /**
 * function getControllerForCommand(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf XULControllers
 * @since FireFox 2.0.0.3
 */
 XULControllers.prototype.getControllerForCommand=function(arg1){};
 /**
 * function insertControllerAt(arg1,arg2)
-* @param arg1 Object
-* @param arg2 Object
+* @param {Object} arg1
+* @param {Object} arg2
 * @memberOf XULControllers
 * @since FireFox 2.0.0.3
 */
@@ -8767,7 +8767,7 @@ XULControllers.prototype.insertControllerAt=function(arg1,arg2){};
 /**
 * function removeControllerAt(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf XULControllers
 * @since FireFox 2.0.0.3
 */
@@ -8775,21 +8775,21 @@ XULControllers.prototype.removeControllerAt=function(arg1){};
 /**
 * function getControllerAt(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf XULControllers
 * @since FireFox 2.0.0.3
 */
 XULControllers.prototype.getControllerAt=function(arg1){};
 /**
 * function appendController(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf XULControllers
 * @since FireFox 2.0.0.3
 */
 XULControllers.prototype.appendController=function(arg1){};
 /**
 * function removeController(arg1)
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf XULControllers
 * @since FireFox 2.0.0.3
 */
@@ -8797,7 +8797,7 @@ XULControllers.prototype.removeController=function(arg1){};
 /**
 * function getControllerId(arg1)
 * @type String
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf XULControllers
 * @since FireFox 2.0.0.3
 */
@@ -8805,7 +8805,7 @@ XULControllers.prototype.getControllerId=function(arg1){};
 /**
 * function getControllerById(arg1)
 * @type Object
-* @param arg1 Object
+* @param {Object} arg1
 * @memberOf XULControllers
 * @since FireFox 2.0.0.3
 */

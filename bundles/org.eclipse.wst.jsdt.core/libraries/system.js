@@ -56,7 +56,7 @@ Object.prototype.valueOf = function( ){;};
   * function hasOwnProperty(V) 
   * @type    Boolean
   * @memberOf   Object
-  * @param   V Object
+  * @param   {Object} V
   * @return  Boolean
   * @throws  DOMException
   * @see     Object
@@ -68,7 +68,7 @@ Object.prototype.hasOwnProperty  = function (V){return true;};
   * function isPrototypeOf(V) 
   * @type    Boolean
   * @memberOf   Object
-  * @param   V Object
+  * @param   {Object} V
   * @return  Boolean
   * @throws  DOMException
   * @see     Object
@@ -80,7 +80,7 @@ Object.prototype.isPrototypeOf  = function (V){return true;};
   * function propertyIsEnumerable(V) 
   * @type    String
   * @memberOf   Object
-  * @param   V Object
+  * @param   {Object} V
   * @return  String
   * @throws  DOMException
   * @see     Object
@@ -117,7 +117,7 @@ Object.prototype.Value=0;
   * @memberOf Object
   * @type Object
   * @return Object
-  * @param property String
+  * @param {String} property
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
  */ 
@@ -125,8 +125,8 @@ Object.prototype.Get=function(property){};
 /**
   * function Put(property, value)
   * @memberOf Object
-  * @param property String
-  * @param value String
+  * @param {String} property
+  * @param {String} value
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
  */ 
@@ -134,7 +134,7 @@ Object.prototype.Put=function(property, value){};
 /**
   * function CanPut(property)
   * @memberOf Object
-  * @param property String
+  * @param {String} property
   * @type Boolean
   * @return Boolean
   * @since Standard ECMA-262 3rd. Edition
@@ -144,7 +144,7 @@ Object.prototype.CanPut=function(property){};
 /**
   * function HasProperty(property)
   * @memberOf Object
-  * @param property String
+  * @param {String} property
   * @type Boolean
   * @return Boolean
   * @since Standard ECMA-262 3rd. Edition
@@ -154,7 +154,7 @@ Object.prototype.HasProperty=function(property){};
 /**
   * function Delete(property)
   * @memberOf Object
-  * @param property String
+  * @param {String} property
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
  */ 
@@ -169,8 +169,8 @@ Object.prototype.DefaultValue=function(){};
 /**
   * function Match(value,index)
   * @memberOf Object
-  * @param value String
-  * @param index String
+  * @param {String} value
+  * @param {String} index
   * @type Object
   * @return Object
   * @since Standard ECMA-262 3rd. Edition
@@ -193,7 +193,7 @@ String.prototype = new Object();
   * static function fromCharCode(chars)
   * @type    String
   * @return String
-  * @param chars Array
+  * @param {Array} chars
   * @memberOf   String
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
@@ -213,7 +213,7 @@ String.prototype.length =1;
   * function charAt(pos) 
   * @type    String
   * @memberOf   String
-  * @param   pos Number
+  * @param   {Number} pos
   * @return  String
   * @throws  DOMException
   * @see     String
@@ -225,7 +225,7 @@ String.prototype.charAt = function(pos){return "";};
   * function charCodeAt(pos) 
   * @type    String
   * @memberOf   String
-  * @param   pos Number
+  * @param   {Number} pos
   * @return  String
   * @throws  DOMException
   * @see     String
@@ -248,8 +248,8 @@ String.prototype.concat= function(){return "";};
   * function indexOf(searchString, position) 
   * @type    Number
   * @memberOf   String
-  * @param   searchString String
-  * @param   position Number
+  * @param   {String} searchString
+  * @param   {Number} position
   * @return  Number
   * @throws  DOMException
   * @see     String
@@ -261,8 +261,8 @@ String.prototype.indexOf = function(searchString, position){return 1;};
   * function lastIndexOf(pos) 
   * @type    Number
   * @memberOf   String
-  * @param   searchString String
-  * @param   position Number
+  * @param   {String} searchString
+  * @param   {Number} position
   * @return  Number
   * @throws  DOMException
   * @see     String
@@ -274,7 +274,7 @@ String.prototype.lastIndexOf = function(searchString, position){return 1;};
   * function localeCompare(that) 
   * @type    Boolean
   * @memberOf   String
-  * @param   that String
+  * @param   {String} that
   * @return  Boolean
   * @throws  DOMException
   * @see     String
@@ -286,7 +286,7 @@ String.prototype.localeCompare = function(that){return true;};
   * function match(regexp) 
   * @type    Boolean
   * @memberOf   String
-  * @param   regexp String
+  * @param   {String} regexp
   * @return  Boolean
   * @throws  DOMException
   * @see     String
@@ -298,8 +298,8 @@ String.prototype.match = function(regexp){return true;};
   * function replace(searchValue, replaceValue) 
   * @type    String
   * @memberOf   String
-  * @param   searchValue String
-  * @param   replaceValue String
+  * @param   {String} searchValue
+  * @param   {String} replaceValue
   * @return  String
   * @throws  DOMException
   * @see     String
@@ -311,7 +311,7 @@ String.prototype.replace = function(searchValue, replaceValue){return "";};
   * function search(regexp) 
   * @type    Number
   * @memberOf   String
-  * @param   regexp String
+  * @param   {String} regexp
   * @return  Number
   * @throws  DOMException
   * @see     String
@@ -323,8 +323,8 @@ String.prototype.search = function(regexp){return 1;};
   * function slice(start, end) 
   * @type    String
   * @memberOf   String
-  * @param   start String
-  * @param   end String
+  * @param   {String} start
+  * @param   {String} end
   * @return  String
   * @throws  DOMException
   * @see     String
@@ -336,8 +336,8 @@ String.prototype.slice = function(start, end){return "";};
   * function split(separator, limit) 
   * @type    String
   * @memberOf   String
-  * @param   separator String
-  * @param   limit String
+  * @param   {String} separator
+  * @param   {String} limit
   * @return  String
   * @throws  DOMException
   * @see     String
@@ -349,8 +349,8 @@ String.prototype.split = function(separator, limit){return "";};
   * function substring(start, end) 
   * @type    String
   * @memberOf   String
-  * @param   start String
-  * @param   end String
+  * @param   {String} start
+  * @param   {String} end
   * @return  String
   * @throws  DOMException
   * @see     String
@@ -462,7 +462,7 @@ Number.POSITIVE_INFINITY=0;
   * function toFixed(fractionDigits)
   * @type Number
   * @memberOf Number
-  * @param fractionDigits Number
+  * @param {Number} fractionDigits
   * @type Number
   * @return Number
   * @since Standard ECMA-262 3rd. Edition
@@ -474,7 +474,7 @@ Number.prototype.toFixed=function(fractionDigits){};
   * function toExponential(fractionDigits)
   * @type Number
   * @memberOf Number
-  * @param fractionDigits Number
+  * @param {Number} fractionDigits
   * @type Number
   * @return Number
   * @since Standard ECMA-262 3rd. Edition
@@ -486,7 +486,7 @@ Number.prototype.toExponential=function(fractionDigits){};
   * function toPrecision(precision)
   * @type Number
   * @memberOf Number
-  * @param precision Number
+  * @param {Number} precision
   * @type Number
   * @return Number
   * @since Standard ECMA-262 3rd. Edition
@@ -529,7 +529,7 @@ Array.prototype = new Object();
 Array.prototype.length = 1;
 /**
   * function concat(args)
-  * @param args Array
+  * @param {Array} args
   * @type    Array
   * @return Array
   * @memberOf   Array
@@ -541,7 +541,7 @@ Array.prototype.length = 1;
 Array.prototype.concat = function(args){};
 /**
   * function join(seperator)
-  * @param seperator String
+  * @param {String} seperator
   * @type    Array
   * @return Array
   * @memberOf   Array
@@ -564,7 +564,7 @@ Array.prototype.join = function(seperator){};
 Array.prototype.pop = function(){};
 /**
   * function push(args)
-  * @param args Array
+  * @param {Array} args
   * @memberOf   Array
   * @see     Array
   * @since   Standard ECMA-262 3rd. Edition 
@@ -598,8 +598,8 @@ Array.prototype.shift = function(){};
   * function slice(start, end)
   * @type    Array
   * @return  Array
-  * @param start Number
-  * @param end Number
+  * @param {Number} start
+  * @param {Number} end
   * @memberOf   Array
   * @see     Array
   * @since   Standard ECMA-262 3rd. Edition 
@@ -611,7 +611,7 @@ Array.prototype.slice = function(start, end){};
   * function sort(funct)
   * @type    Array
   * @return  Array
-  * @param funct Function
+  * @param {Function} funct
   * @memberOf   Array
   * @see     Array
   * @since   Standard ECMA-262 3rd. Edition 
@@ -623,9 +623,9 @@ Array.prototype.sort = function(funct){};
   * function splice(start, deletecount, items)
   * @type    Array
   * @return  Array
-  * @param start Number
-  * @param deletecount Number
-  * @param items Array
+  * @param {Number} start
+  * @param {Number} deletecount
+  * @param {Array} items
   * @memberOf   Array
   * @see     Array
   * @since   Standard ECMA-262 3rd. Edition 
@@ -637,7 +637,7 @@ Array.prototype.splice = function(start, deletecount, items){};
   * function unshift(items)
   * @type    Array
   * @return  Array
-  * @param items Array
+  * @param {Array} items
   * @memberOf   Array
   * @see     Array
   * @since   Standard ECMA-262 3rd. Edition 
@@ -660,8 +660,8 @@ Function.prototype = new Object();
 
 /**
   * function apply (thisArg, argArray)
-  * @param thisArg Object
-  * @param argArray Array
+  * @param {Object} thisArg
+  * @param {Array} argArray
   * @type Object
   * @return Object
   * @since   Standard ECMA-262 3rd. Edition 
@@ -672,8 +672,8 @@ Function.prototype.apply=function(thisArg, argArray){};
 /**
   * function call (thisArg, argArray)
 
-  * @param thisArg Object
-  * @param argArray Array
+  * @param {Object} thisArg
+  * @param {Array} argArray
   * @type Object
   * @return Object
   * @since   Standard ECMA-262 3rd. Edition 
@@ -707,7 +707,7 @@ Function.prototype.HasInstance=function(){};
   * @super Object
   * @constructor
   * @memberOf Date
-  * @param s String
+  * @param {String} s
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -718,10 +718,10 @@ Date.prototype = new Object();
 /**
   * function MakeTime(hour, min, sec, ms)
   * @memberOf Date
-  * @param hour Number
-  * @param min Number
-  * @param sec Number
-  * @param ms Number  
+  * @param {Number} hour
+  * @param {Number} min
+  * @param {Number} sec
+  * @param {Number} ms  
   * @type Number
   * @return Number
   * @since Standard ECMA-262 3rd. Edition
@@ -732,10 +732,10 @@ Date.MakeTime =function(hour, min, sec, ms){};
 /**
  * function UTC(hour, min, sec, ms)
  * @memberOf Date
- * @param hour Number
- * @param min Number
- * @param sec Number
- * @param ms Number  
+ * @param {Number} hour
+ * @param {Number} min
+ * @param {Number} sec
+ * @param {Number} ms  
  * @type Number
  * @return Number
  * @since Standard ECMA-262 3rd. Edition
@@ -747,9 +747,9 @@ Date.UTC =function(hour, min, sec, ms){};
 /**
   * function MakeDay(year, month, date)
   * @memberOf Date
-  * @param year Number
-  * @param month Number
-  * @param date Number
+  * @param {Number} year
+  * @param {Number} month
+  * @param {Number} date
   * @type Number
   * @return Number
   * @since Standard ECMA-262 3rd. Edition
@@ -760,8 +760,8 @@ Date.MakeDay =function(year, month, date){};
 /**
   * function MakeDate(day,time)
   * @memberOf Date
-  * @param day Number
-  * @param time Number
+  * @param {Number} day
+  * @param {Number} time
 
   * @type Number
   * @return Number
@@ -773,7 +773,7 @@ Date.MakeDate =function(day,time){};
 /**
   * function TimeClip(time)
   * @memberOf Date
-  * @param time Number
+  * @param {Number} time
   * @type Number
   * @return Number
   * @since Standard ECMA-262 3rd. Edition
@@ -785,7 +785,7 @@ Date.TimeClip =function(time){};
 /**
   * function parse(string)
   * @memberOf Date
-  * @param string Strig
+  * @param {Strig} string
   * @type Date
   * @return Date
   * @since Standard ECMA-262 3rd. Edition
@@ -1042,7 +1042,7 @@ Date.prototype.getTimezoneOffset=function(){};
   * @memberOf Date
   * @type Number
   * @return Number
-  * @param value Number
+  * @param {Number} value
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1054,7 +1054,7 @@ Date.prototype.setTime=function(value){};
   * @memberOf Date
   * @type Number
   * @return Number
-  * @param value Number
+  * @param {Number} value
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1066,7 +1066,7 @@ Date.prototype.setMilliseconds=function(value){};
   * @type Number
   * @return Number
 
-  * @param ms Number
+  * @param {Number} ms
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1077,8 +1077,8 @@ Date.prototype.setUTCMilliseconds=function(ms){};
   * @memberOf Date
   * @type Number
   * @return Number
-  * @param sec Number
-  * @param ms Number
+  * @param {Number} sec
+  * @param {Number} ms
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1089,8 +1089,8 @@ Date.prototype.setSeconds=function(sec,ms){};
   * @memberOf Date
   * @type Number
   * @return Number
-  * @param sec Number
-  * @param ms Number
+  * @param {Number} sec
+  * @param {Number} ms
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1101,9 +1101,9 @@ Date.prototype.setUTCSeconds=function(sec,ms){};
   * @memberOf Date
   * @type Number
   * @return Number
-  * @param min Number
-  * @param sec Number
-  * @param ms Number
+  * @param {Number} min
+  * @param {Number} sec
+  * @param {Number} ms
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1114,9 +1114,9 @@ Date.prototype.setMinutes=function(min,sec,ms){};
   * @memberOf Date
   * @type Number
   * @return Number
-  * @param min Number
-  * @param sec Number
-  * @param ms Number
+  * @param {Number} min
+  * @param {Number} sec
+  * @param {Number} ms
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1127,10 +1127,10 @@ Date.prototype.setUTCMinute=function(min,sec,ms){};
   * @memberOf Date
   * @type Number
   * @return Number
-  * @param hour Number
-  * @param min Number
-  * @param sec Number
-  * @param ms Number
+  * @param {Number} hour
+  * @param {Number} min
+  * @param {Number} sec
+  * @param {Number} ms
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1141,10 +1141,10 @@ Date.prototype.setHours=function(hour,min,sec,ms){};
   * @memberOf Date
   * @type Number
   * @return Number
-  * @param hour Number
-  * @param min Number
-  * @param sec Number
-  * @param ms Number
+  * @param {Number} hour
+  * @param {Number} min
+  * @param {Number} sec
+  * @param {Number} ms
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1156,7 +1156,7 @@ Date.prototype.setUTCHours=function(hour,min,sec,ms){};
   * @memberOf Date
   * @type Number
   * @return Number
-  * @param date Number
+  * @param {Number} date
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1168,7 +1168,7 @@ Date.prototype.setDate=function(date){};
   * @memberOf Date
   * @type Number
   * @return Number
-  * @param date Number
+  * @param {Number} date
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1180,8 +1180,8 @@ Date.prototype.setUTCDate=function(date){};
   * @memberOf Date
   * @type Date
   * @return Date
-  * @param date Number
-  * @param month Number
+  * @param {Number} date
+  * @param {Number} month
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1192,8 +1192,8 @@ Date.prototype.setMonth=function(month,date){};
   * @memberOf Date
   * @type Date
   * @return Date
-  * @param date Number
-  * @param month Number
+  * @param {Number} date
+  * @param {Number} month
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1204,9 +1204,9 @@ Date.prototype.setUTCMonth=function(month,date){};
   * @memberOf Date
   * @type Date
   * @return Date
-  * @param date Number
-  * @param month Number
-  * @param year Number
+  * @param {Number} date
+  * @param {Number} month
+  * @param {Number} year
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1217,9 +1217,9 @@ Date.prototype.setFullYear=function(year, month,date){};
   * @memberOf Date
   * @type Date
   * @return Date
-  * @param date Number
-  * @param month Number
-  * @param year Number
+  * @param {Number} date
+  * @param {Number} month
+  * @param {Number} year
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
      
@@ -1265,7 +1265,7 @@ Global.prototype.Infinity=0;
 /**
   * function eval(s)
   * @memberOf Global
-  * @param s String
+  * @param {String} s
   * @type Object
   * @return Object;
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1285,8 +1285,8 @@ Global.prototype.eval=function(s){};
 /**
   * function parseInt(s,radix)
   * @memberOf Global
-  * @param s String
-  * @param radix Number
+  * @param {String} s
+  * @param {Number} radix
   * @type Number
   * @return Number;
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1297,7 +1297,7 @@ Global.prototype.parseInt=function(s,radix){};
 /**
   * function parseFloat(s)
   * @memberOf Global
-  * @param s String
+  * @param {String} s
   * @type Object
   * @return Object;
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1308,7 +1308,7 @@ Global.prototype.parseFloat=function(s){};
 /**
  * function escape(s)
  * @memberOf Global
- * @param s String
+ * @param {String} s
  * @type String
  * @return String;
  * @since   Standard ECMA-262 3rd. Edition 
@@ -1319,7 +1319,7 @@ Global.prototype.escape=function(s){};
 /**
  * function unescape(s)
  * @memberOf Global
- * @param s String
+ * @param {String} s
  * @type String
  * @return String;
  * @since   Standard ECMA-262 3rd. Edition 
@@ -1330,7 +1330,7 @@ Global.prototype.unescape=function(s){};
 /**
   * function isNaN(number)
   * @memberOf Global
-  * @param number String
+  * @param {String} number
   * @type Boolean
   * @return Boolean;
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1341,7 +1341,7 @@ Global.prototype.isNaN=function(number){};
 /**
   * function isFinite(number)
   * @memberOf Global
-  * @param number String
+  * @param {String} number
   * @type Boolean
   * @return Boolean;
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1352,7 +1352,7 @@ Global.prototype.isFinite=function(number){};
 /**
  * function decodeURI(encodedURI)
  * @memberOf Global
- * @param encodedURI String
+ * @param {String} encodedURI
  * @type String
  * @return String
  * @since   Standard ECMA-262 3rd. Edition 
@@ -1362,7 +1362,7 @@ Global.prototype.isFinite=function(number){};
 Global.prototype.decodeURI=function(encodedURI){};
 /**
  * @memberOf Global
- * @param uriComponent String
+ * @param {String} uriComponent
  * @type String
  * @return String
  * @since   Standard ECMA-262 3rd. Edition 
@@ -1373,7 +1373,7 @@ Global.prototype.decodeURIComponent=function(uriComponent){};
 /**
  * function encodeURIComponent(uriComponent)
  * @memberOf Global
- * @param uriComponent String
+ * @param {String} uriComponent
  * @type String
  * @return String
  * @since   Standard ECMA-262 3rd. Edition 
@@ -1385,7 +1385,7 @@ Global.prototype.encodeURIComponent=function(uriComponent){};
 /**
  * function encodeURIComponent(URI)
  * @memberOf Global
- * @param URI String
+ * @param {String} URI
  * @type String
  * @return String
  * @since   Standard ECMA-262 3rd. Edition 
@@ -1472,7 +1472,7 @@ Math.SQRT2=0;
 /**
   * function abs(x)
   * @memberOf Math
-  * @param x Number
+  * @param {Number} x
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1483,7 +1483,7 @@ Math.abs=function(x){};
 /**
   * function acos(x)
   * @memberOf Math
-  * @param x Number
+  * @param {Number} x
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1494,7 +1494,7 @@ Math.acos=function(x){};
 /**
   * function asin(x)
   * @memberOf Math
-  * @param x Number
+  * @param {Number} x
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1505,7 +1505,7 @@ Math.asin=function(x){};
 /**
   * function atan(x)
   * @memberOf Math
-  * @param x Number
+  * @param {Number} x
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1516,8 +1516,8 @@ Math.atan=function(x){};
 /**
   * function atan2(x,y)
   * @memberOf Math
-  * @param x Number
-   * @param y Number
+  * @param {Number} x
+   * @param {Number} y
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1528,7 +1528,7 @@ Math.atan2=function(x,y){};
 /**
   * function ceil(x)
   * @memberOf Math
-  * @param x Number
+  * @param {Number} x
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1539,7 +1539,7 @@ Math.ceil=function(x){};
 /**
   * function cos(x)
   * @memberOf Math
-  * @param x Number
+  * @param {Number} x
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1550,7 +1550,7 @@ Math.cos=function(x){};
 /**
   * function exp(x)
   * @memberOf Math
-  * @param x Number
+  * @param {Number} x
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1561,7 +1561,7 @@ Math.exp=function(x){};
 /**
   * function floor(x)
   * @memberOf Math
-  * @param x Number
+  * @param {Number} x
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1572,7 +1572,7 @@ Math.floor=function(x){};
 /**
   * function log(x)
   * @memberOf Math
-  * @param x Number
+  * @param {Number} x
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1583,7 +1583,7 @@ Math.log=function(x){};
 /**
   * function max(arg)
   * @memberOf Math
-  * @param arg Array
+  * @param {Array} arg
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1594,7 +1594,7 @@ Math.max=function(arg){};
 /**
   * function min(arg)
   * @memberOf Math
-  * @param arg Array
+  * @param {Array} arg
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1605,8 +1605,8 @@ Math.min=function(arg){};
 /**
   * function pow(x,y)
   * @memberOf Math
-  * @param x Number
-  @ @param y Number
+  * @param {Number} x
+  @ @param {Number} y
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1627,7 +1627,7 @@ Math.random=function(){};
 /**
   * function round(x)
   * @memberOf Math
-  * @param x Number
+  * @param {Number} x
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1638,7 +1638,7 @@ Math.round=function(x){};
 /**
   * function sin(x)
   * @memberOf Math
-  * @param x Number
+  * @param {Number} x
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1649,7 +1649,7 @@ Math.sin=function(x){};
 /**
   * function sqrt(x)
   * @memberOf Math
-  * @param x Number
+  * @param {Number} x
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1660,7 +1660,7 @@ Math.sqrt=function(x){};
 /**
   * function tan(x)
   * @memberOf Math
-  * @param x Number
+  * @param {Number} x
   * @type Number
   * @return Number
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1681,7 +1681,7 @@ function RegExp(){};
 RegExp.prototype=new Object();
 /**
   * function exec(string)
-  * @param string String
+  * @param {String} string
   * @return Array
   * @type Array
   * @memberOf RegExp
@@ -1692,7 +1692,7 @@ RegExp.prototype=new Object();
 RegExp.prototype.exec=function(string){};
 /**
   * function test(string)
-  * @param string String
+  * @param {String} string
   * @return Boolean
   * @type Boolean
   * @memberOf RegExp
@@ -1751,7 +1751,7 @@ RegExp.prototype.lastIndex=0;
   * Object Error(message)
   * @super Object
   * @constructor
-  * @param message String
+  * @param {String} message
   * @memberOf Error
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
