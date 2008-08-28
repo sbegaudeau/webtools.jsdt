@@ -210,8 +210,8 @@ DOMImplementation.prototype = new Object();
   * function hasFeature()
   * @type  method
   * @memberOf DOMImplementation
-  * @param {feature} {String}
-  * @param {version} {String} 
+  * @param {String} feature
+  * @param {String} version 
   * @return boolean
   * @see DOMImplementation
   * @since Standard ECMA-262 3rd. Edition
@@ -225,9 +225,9 @@ DOMImplementation.prototype.hasFeature = new function(feature, version);
   * function createDocumentType()
   * @type  method
   * @memberOf DOMImplementation
-  * @param {namespaceURI} {String}
-  * @param {qualifiedName} {String} 
-  * @param {doctype} {DocumentType} 
+  * @param {String} namespaceURI
+  * @param {String} qualifiedName 
+  * @param {DocumentType} doctype 
   * @return Document
   * @throws DOMException
   * @see DOMImplementation
