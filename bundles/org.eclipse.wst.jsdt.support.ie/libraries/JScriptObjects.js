@@ -50,7 +50,7 @@ RegExp.prototype=new Object();
   * Property global
   * @type    Boolean
   * @memberOf   RegExp
-  * @return  Boolean
+  * @returns {Boolean}
   * @see     RegExp
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -60,7 +60,7 @@ RegExp.prototype.global=true;
   * Property index
   * @type    Number
   * @memberOf   RegExp
-  * @return  Number
+  * @returns {Number}
   * @see     RegExp
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -70,7 +70,7 @@ RegExp.prototype.index=-1;
   * Property input
   * @type    String
   * @memberOf   RegExp
-  * @return  String
+  * @returns {String}
   * @see     RegExp
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -80,7 +80,7 @@ RegExp.prototype.input="";
   * Property lastIndex
   * @type    Number
   * @memberOf   RegExp
-  * @return  Number
+  * @returns {Number}
   * @see     RegExp
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -90,7 +90,7 @@ RegExp.prototype.lastIndex=-1;
   * Property lastMatch
   * @type    String
   * @memberOf   RegExp
-  * @return  String
+  * @returns {String}
   * @see     RegExp
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -100,7 +100,7 @@ RegExp.prototype.lastMatch=""
   * Property lastParen
   * @type    String
   * @memberOf   RegExp
-  * @return  String
+  * @returns {String}
   * @see     RegExp
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -110,7 +110,7 @@ RegExp.prototype.lastParen="";
   * Property leftContext
   * @type    String
   * @memberOf   RegExp
-  * @return  String
+  * @returns {String}
   * @see     RegExp
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -120,7 +120,7 @@ RegExp.prototype.leftContext="";
   * Property rightContext
   * @type    String
   * @memberOf   RegExp
-  * @return  String
+  * @returns {String}
   * @see     RegExp
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -130,7 +130,7 @@ RegExp.prototype.rightContext="";
   * Property ignoreCase
   * @type    Boolean
   * @memberOf   RegExp
-  * @return  Boolean
+  * @returns {Boolean}
   * @see     RegExp
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -140,7 +140,7 @@ RegExp.prototype.ignoreCase=false;
   * Property multiline
   * @type    Boolean
   * @memberOf   RegExp
-  * @return  Boolean
+  * @returns {Boolean}
   * @see     RegExp
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -150,7 +150,7 @@ RegExp.prototype.multiline=false;
   * Property source
   * @type    String
   * @memberOf   RegExp
-  * @return  String
+  * @returns {String}
   * @see     RegExp
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -162,7 +162,7 @@ RegExp.prototype.source="";
   * @memberOf   RegExp
   * @param   {Array} array1
   * @param   {Array} array2
-  * @return  Array
+  * @returns {Array}
   * @see     RegExp
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -173,7 +173,7 @@ RegExp.prototype.test=function(){};
   * @type    Boolean
   * @memberOf   RegExp
   * @param   {String} str
-  * @return  Boolean
+  * @returns {Boolean}
   * @see     RegExp
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -185,7 +185,7 @@ RegExp.prototype.exec=function(str){};
   * @memberOf   RegExp
   * @param   {String} pattern
   * @param   {String} flags Optional. Available flags, which may be combined, are:g (global search for all occurrences of pattern)i (ignore case)m (multiline search)
-  * @return  Array
+  * @returns {Array}
   * @see     RegExp
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -212,7 +212,7 @@ ActiveXObject.prototype=new Object();
   * @memberOf   Array
   * @param   {Array} array1
   * @param   {Array} array2
-  * @return  Array
+  * @returns {Array}
   * @see     Array
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -224,7 +224,7 @@ Array.prototype.concat=function(array1, array2){};
   * @memberOf   Array
   * @param   {String} separator
   * @param   {Array} array2
-  * @return  String
+  * @returns {String}
   * @see     Array
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -236,7 +236,7 @@ Array.prototype.join=function(separator){};
   * @memberOf   Array
   * @param   {Array} array1
   * @param   {Array} array2
-  * @return  Array
+  * @returns {Array}
   * @see     Array
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -247,7 +247,7 @@ Array.prototype.pop=function(){};
   * @type    Object
   * @memberOf   Array
   * @param   {Array} values
-  * @return  Object
+  * @returns {Object}
   * @see     Array
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -265,7 +265,7 @@ Array.prototype.reverse=function(){};
   * function shift() 
   * @type    Object
   * @memberOf   Array
-  * @return  Object
+  * @returns {Object}
   * @see     Array
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -277,7 +277,7 @@ Array.prototype.shift=function(){};
   * @memberOf   Array
   * @param   {Number;} startIndex
   * @param   {Number} endIndex
-  * @return  Array
+  * @returns {Array}
   * @see     Array
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -299,7 +299,7 @@ Array.prototype.sort=function(sortFunction){};
   * @param {Number} start
   * @param {Number} deleteCount
   * @param {Array} items
-  * @return  Array
+  * @returns {Array}
   * @see     Array
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -309,7 +309,7 @@ Array.prototype.splice=function(start, deleteCount, items){};
   * function toLocaleString() 
   * @type    String
   * @memberOf   Object
-  * @return  String
+  * @returns {String}
   * @see     Array
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -329,7 +329,7 @@ Array.prototype.unshift=function(elements){};
   * function valueOf()
   * @type    Object
   * @memberOf   Object
-  * @return  Object
+  * @returns {Object}
   * @see     Array
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
@@ -350,7 +350,7 @@ function Date(year, month, date, hours, minutes, seconds,ms){};
   * function getDate()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -360,7 +360,7 @@ Date.prototype.getDate=function(){};
   * function getDay()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -370,7 +370,7 @@ Date.prototype.getDay=function(){};
   * function getFullYear()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -380,7 +380,7 @@ Date.prototype.getFullYear=function(){};
   * function getHours()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -390,7 +390,7 @@ Date.prototype.getHours=function(){};
   * function getMilliseconds()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -400,7 +400,7 @@ Date.prototype.getMilliseconds=function(){};
   * function getMinutes()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -410,7 +410,7 @@ Date.prototype.getMinutes=function(){};
   * function getMonth()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -420,7 +420,7 @@ Date.prototype.getMonth=function(){};
   * function getSeconds()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -430,7 +430,7 @@ Date.prototype.getSeconds=function(){};
   * function getTime()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -440,7 +440,7 @@ Date.prototype.getTime=function(){};
   * function getTimezoneOffset()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -450,7 +450,7 @@ Date.prototype.getTimezoneOffset=function(){};
   * function getUTCDate()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -460,7 +460,7 @@ Date.prototype.getUTCDate=function(){};
   * function getUTCDay()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -470,7 +470,7 @@ Date.prototype.getUTCDay=function(){};
   * function getUTCFullYear()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -480,7 +480,7 @@ Date.prototype.getUTCFullYear=function(){};
   * function getUTCHours()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -490,7 +490,7 @@ Date.prototype.getUTCHours=function(){};
   * function getUTCMilliseconds()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -500,7 +500,7 @@ Date.prototype.getUTCMilliseconds=function(){};
   * function getUTCMinutes()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -510,7 +510,7 @@ Date.prototype.getUTCMinutes=function(){};
   * function getUTCMonth()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -520,7 +520,7 @@ Date.prototype.getUTCMonth=function(){};
   * function getUTCSeconds()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -530,7 +530,7 @@ Date.prototype.getUTCSeconds=function(){};
   * function getVarDate()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -540,7 +540,7 @@ Date.prototype.getVarDate=function(){};
   * function getYear()
   * @type    Number
   * @memberOf   Date
-  * @return  Number
+  * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -551,7 +551,7 @@ Date.prototype.getYear=function(){};
   * @type    Date
   * @memberOf   Date
   * @param 	 {String} dateVal
-  * @return  Date
+  * @returns {Date}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
@@ -758,7 +758,7 @@ Date.prototype.toGMTString=function(){};
   * function toLocaleDateString()
   * @type    String
   * @memberOf   Date
-  * @return  String
+  * @returns {String}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -768,7 +768,7 @@ Date.prototype.toLocaleDateString=function(){};
   * function toLocaleString()
   * @type    String
   * @memberOf   Date
-  * @return  String
+  * @returns {String}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -778,7 +778,7 @@ Date.prototype.toLocaleString=function(){};
   * function toLocaleTimeString()
   * @type    String
   * @memberOf   Date
-  * @return  String
+  * @returns {String}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -788,7 +788,7 @@ Date.prototype.toLocaleTimeString=function(){};
   * function toTimeString()
   * @type    String
   * @memberOf   Date
-	* @return  String
+	* @returns {String}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -798,7 +798,7 @@ Date.prototype.toTimeString=function(){};
   * function toUTCString()
   * @type    String
   * @memberOf   Date
-  * @return String
+  * @returns {String}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -814,7 +814,7 @@ Date.prototype.toUTCString=function(){};
   * @param 	 {Number} hours
   * @param 	 {Number} seconds
   * @param 	 {Number} ms
-  * @return Date
+  * @returns {Date}
   * @see     Date
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -878,7 +878,7 @@ Enumerator.prototype=new Object();
   * function atEnd()
   * @type    Enumerator
   * @memberOf   Enumerator
-  * @return  Boolean
+  * @returns {Boolean}
   * @see     Enumerator
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -888,7 +888,7 @@ Enumerator.prototype.atEnd=function(){};
   * function item()
   * @type    Object
   * @memberOf   Enumerator
-  * @return  Object
+  * @returns {Object}
   * @see     Enumerator
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -898,7 +898,7 @@ Enumerator.prototype.item=function(){};
   * function moveFirst()
   * @type    Object
   * @memberOf   Enumerator
-  * @return  Object
+  * @returns {Object}
   * @see     Enumerator
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -908,7 +908,7 @@ Enumerator.prototype.moveFirst=function(){};
   * function moveNext()
   * @type    Object
   * @memberOf   Enumerator
-  * @return  Object
+  * @returns {Object}
   * @see     Enumerator
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
@@ -932,7 +932,7 @@ Error.prototype=new Object();
   * Property description
   * @type    String
   * @memberOf   Error
-  * @return  String
+  * @returns {String}
   * @see     Error
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
@@ -942,7 +942,7 @@ Error.prototype.description="";
   * Property message
   * @type    String
   * @memberOf   Error
-  * @return  String
+  * @returns {String}
   * @see     Error
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
@@ -952,7 +952,7 @@ Error.prototype.message="";
   * Property name
   * @type    String
   * @memberOf   Error
-  * @return  String
+  * @returns {String}
   * @see     Error
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
@@ -962,7 +962,7 @@ Error.prototype.name="";
   * Property number
   * @type    Number
   * @memberOf   Error
-  * @return  Number
+  * @returns {Number}
   * @see     Error
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
@@ -995,7 +995,7 @@ Function.prototype=new Object();
   * Property arguments
   * @type    arguments
   * @memberOf   Function
-  * @return  arguments
+  * @returns {arguments}
   * @see     Function
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
@@ -1005,7 +1005,7 @@ Function.prototype.arguments=new arguments();
   * Property callee
   * @type    String
   * @memberOf   Function
-  * @return  String
+  * @returns {String}
   * @see     Function
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
@@ -1015,7 +1015,7 @@ Function.prototype.callee=""
   * Property caller
   * @type    String
   * @memberOf   Function
-  * @return  String
+  * @returns {String}
   * @see     Function
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
@@ -1025,7 +1025,7 @@ Function.prototype.caller=""
   * Property constructor
   * @type    String
   * @memberOf   Function
-  * @return  String
+  * @returns {String}
   * @see     Function
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
@@ -1035,7 +1035,7 @@ Function.prototype.constructor=""
   * Property length
   * @type    Number
   * @memberOf   Function
-  * @return  Number
+  * @returns {Number}
   * @see     Function
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
@@ -1075,7 +1075,7 @@ Global.prototype=new Object();
   * Property infinity
   * @memberOf   Global
   * @type 	 Number
-  * @return Number
+  * @returns {Number}
   * @see     Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
@@ -1102,7 +1102,7 @@ Global.undefined=null;
   * @memberOf   Global
   * @type    String
   * @param   {String} value
-  * @return  String
+  * @returns {String}
   * @see     Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
@@ -1113,7 +1113,7 @@ Global.prototype.decodeURI=function(value){};
   * @memberOf   Global
   * @type    String
   * @param   {String} value
-  * @return  String
+  * @returns {String}
   * @see     Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
@@ -1124,7 +1124,7 @@ Global.prototype.decodeURIComponent=function(value){};
   * @memberOf   Global
   * @type    String
   * @param   {String} value
-  * @return  String
+  * @returns {String}
   * @see     Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
@@ -1135,7 +1135,7 @@ Global.prototype.encodeURI=function(value){};
   * @memberOf   Global
   * @type    String
   * @param   {String} value
-  * @return  String
+  * @returns {String}
   * @see     Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
@@ -1146,7 +1146,7 @@ Global.prototype.encodeURIComponent=function(value){};
   * @memberOf   Global
   * @type    String
   * @param   {String} value
-  * @return  String
+  * @returns {String}
   * @see     Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
@@ -1157,7 +1157,7 @@ Global.prototype.escape=function(value){};
   * @memberOf   Global
   * @type    String
   * @param   {String} value
-  * @return  String
+  * @returns {String}
   * @see     Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
@@ -1168,7 +1168,7 @@ Global.prototype.eval=function(value){};
   * @memberOf   Global
   * @type    String
   * @param   {String} value
-  * @return  String
+  * @returns {String}
   * @see     Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
@@ -1179,7 +1179,7 @@ Global.prototype.isFinite=function(value){};
   * @memberOf   Global
   * @type    String
   * @param   {String} value
-  * @return  String
+  * @returns {String}
   * @see     Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
@@ -1190,7 +1190,7 @@ Global.prototype.isNaN=function(value){};
   * @memberOf   Global
   * @type    String
   * @param   {String} value
-  * @return  String
+  * @returns {String}
   * @see     Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
@@ -1201,7 +1201,7 @@ Global.prototype.parseFloat=function(value){};
   * @memberOf   Global
   * @type    String
   * @param   {String} value
-  * @return  String
+  * @returns {String}
   * @see     Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
@@ -1212,7 +1212,7 @@ Global.prototype.parseInt=function(value){};
   * @memberOf   Global
   * @type    String
   * @param   {String} value
-  * @return  String
+  * @returns {String}
   * @see     Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
@@ -1231,7 +1231,7 @@ Math.prototype=new Object();
   * Property E
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1241,7 +1241,7 @@ Math.E=0;
   * Property LN2
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1251,7 +1251,7 @@ Math.LN2=0;
   * Property LN10
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1261,7 +1261,7 @@ Math.LN10=0;
   * Property LOG2E
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1271,7 +1271,7 @@ Math.LOG2E=0;
   * Property LOG10E
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1281,7 +1281,7 @@ Math.LOG10E=0;
   * Property PI
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1291,7 +1291,7 @@ Math.PI=0;
   * Property SQRT1_2
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1301,7 +1301,7 @@ Math.SQRT1_2=0;
   * Property SQRT2=0
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
@@ -1311,7 +1311,7 @@ Math.SQRT2=0;
   * function abs(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
@@ -1322,7 +1322,7 @@ Math.abs=function(number){};
   * function acos(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
@@ -1333,7 +1333,7 @@ Math.acos=function(number){};
   * function asin(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
@@ -1344,7 +1344,7 @@ Math.asin=function(number){};
   * function atan(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
@@ -1355,7 +1355,7 @@ Math.atan=function(number){};
   * function atan2(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} x
    * @param {Number} y
   * @see     Math
@@ -1367,7 +1367,7 @@ Math.atan2=function(x,y){};
   * function ceil(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
@@ -1378,7 +1378,7 @@ Math.ceil=function(number){};
   * function cos(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
@@ -1389,7 +1389,7 @@ Math.cos=function(number){};
   * function exp(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
@@ -1400,7 +1400,7 @@ Math.exp=function(number){};
   * function floor(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
@@ -1411,7 +1411,7 @@ Math.floor=function(number){};
   * function log(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
@@ -1422,7 +1422,7 @@ Math.log=function(number){};
   * function max(argList)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {arguments} argList
   * @see     Math
   * @since   JScript 5.6
@@ -1433,7 +1433,7 @@ Math.max=function(argList){};
   * function min(argList)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {arguments} argList
   * @see     Math
   * @since   JScript 5.6
@@ -1444,7 +1444,7 @@ Math.min=function(argList){};
   * function pow(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} base
   * @param {Number} exp
   * @see     Math
@@ -1456,7 +1456,7 @@ Math.pow=function(base, exp){};
   * function random(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
@@ -1467,7 +1467,7 @@ Math.random=function(number){};
   * function round(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
@@ -1478,7 +1478,7 @@ Math.round=function(number){};
   * function sin(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
@@ -1489,7 +1489,7 @@ Math.sin=function(number){};
   * function sqrt(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
@@ -1500,7 +1500,7 @@ Math.sqrt=function(number){};
   * function tan(number)
   * @memberOf Math
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
@@ -1518,7 +1518,7 @@ Number.POSITIVE_INFINITY=0;
   * function toExponential()
   * @memberOf Number
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @see     Number
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dwab3ed2.aspx
@@ -1528,7 +1528,7 @@ Number.prototype.toExponential=function(){};
   * function toFixed()
   * @memberOf Number
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @see     Number
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dwab3ed2.aspx
@@ -1538,7 +1538,7 @@ Number.prototype.toFixed=function(){};
   * function toLocaleString()
   * @memberOf Number
   * @type String
-  * @return String
+  * @returns {String}
   * @see     Number
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dwab3ed2.aspx
@@ -1548,7 +1548,7 @@ Number.prototype.toLocaleString=function(){};
   * function toPrecision()
   * @memberOf Number
   * @type Number
-  * @return Number
+  * @returns {Number}
   * @see     Number
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/dwab3ed2.aspx
@@ -1559,7 +1559,7 @@ Number.prototype.toPrecision=function(){};
   * function anchor(aString)
   * @memberOf 	String
   * @type 	String
-  * @return String
+  * @returns {String}
   * @see    String
   * @since  JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
@@ -1606,7 +1606,7 @@ String.prototype.fixed=function(){};
   * @memberOf 	String
   * @type 	String
   * @param {String} color
-  * @return String
+  * @returns {String}
   * @see    String
   * @since  JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
@@ -1616,7 +1616,7 @@ String.prototype.fontcolor=function(color){};
   * function fontsize(aString)
   * @memberOf 	String
   * @type 	String
-  * @return String
+  * @returns {String}
   * @param {String} aString
   * @see    String
   * @since  JScript 5.6
@@ -1627,7 +1627,7 @@ String.prototype.fontsize=function(aString){};
   * function anchor(aString)
   * @memberOf 	String
   * @type 	String
-  * @return String
+  * @returns {String}
   * @param {argument} args
   * @see    String
   * @since  JScript 5.6
@@ -1671,7 +1671,7 @@ String.prototype.sub=function(){};
   * function substr(start,length)
   * @memberOf 	String
   * @type 	String
-  * @return String
+  * @returns {String}
   * @param {Number} start
   * @param {Number} length
   * @see    String
@@ -1683,7 +1683,7 @@ String.prototype.substr=function(start,length){};
   * function substring(aString)
   * @memberOf 	String
   * @type 	String
-  * @return String
+  * @returns {String}
     * @param {Number} start
   * @param {Number} length
   * @see    String
@@ -1714,7 +1714,7 @@ VBArray.prototype=new Array();
 /**
   * function dimensions();
   * @type  Number
-  * @return Number
+  * @returns {Number}
   * @memberOf VBArray
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
@@ -1723,7 +1723,7 @@ VBArray.prototype.dimensions=function();
 /**
   * function getItem(dims);
   * @type  Object
-  * @return Object
+  * @returns {Object}
   * @memberOf VBArray
   * @param {arguments} dims
   * @since JScript 5.6
@@ -1733,7 +1733,7 @@ VBArray.prototype.getItem=function(dims);
 /**
   * function lbound(dims);
   * @type  Object
-  * @return Object
+  * @returns {Object}
   * @memberOf VBArray
   * @param {arguments} dims
   * @since JScript 5.6
@@ -1743,7 +1743,7 @@ VBArray.prototype.lbound=function(dims);
 /**
   * function toArray()
   * @type  Array
-  * @return Array
+  * @returns {Array}
   * @memberOf VBArray
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
@@ -1752,7 +1752,7 @@ VBArray.prototype.toArray=function();
 /**
   * function ubound(dims);
   * @type  Object
-  * @return Object
+  * @returns {Object}
   * @memberOf VBArray
   * @param {arguments} dims
   * @since JScript 5.6
@@ -1778,7 +1778,8 @@ function GetObject(pathname, class){};
   *
   * ScriptEngine()
   * function ScriptEngine( )
-  * @return String The ScriptEngine function can return any of the following strings: JScript Indicates that Microsoft JScript is the current scripting engine.VBA Indicates that Microsoft Visual Basic for Applications is the current scripting engine.VBScript Indicates that Microsoft Visual Basic Scripting Edition is the current scripting engine.
+  * @returns {String}
+ The ScriptEngine function can return any of the following strings: JScript Indicates that Microsoft JScript is the current scripting engine.VBA Indicates that Microsoft Visual Basic for Applications is the current scripting engine.VBScript Indicates that Microsoft Visual Basic Scripting Edition is the current scripting engine.
   * @since JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/efy5bay1.aspx     
  */
@@ -1789,7 +1790,8 @@ function ScriptEngine(){};
   *
   * ScriptEngineBuildVersion()
   * function ScriptEngineBuildVersion( )
-  * @return String  
+  * @returns {String}
+  
   * @since JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/yftk84kt.aspx     
  */
@@ -1800,7 +1802,8 @@ function ScriptEngineBuildVersion(){};
   *
   * ScriptEngineMajorVersion()
   * function ScriptEngineMajorVersion( )
-  * @return String  
+  * @returns {String}
+  
   * @since JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/x7cbaet3.aspx    
  */
@@ -1811,7 +1814,8 @@ function ScriptEngineMajorVersion(){};
   *
   * ScriptEngineMajorVersion()
   * function ScriptEngineMajorVersion( )
-  * @return String  
+  * @returns {String}
+  
   * @since JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/wzaz8hhz.aspx    
  */
