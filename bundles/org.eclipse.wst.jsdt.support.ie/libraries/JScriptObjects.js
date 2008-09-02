@@ -29,7 +29,7 @@ DABoolean.prototype=new Object();
   * @type  arguments
   * @memberOf arguments
   * @since JScript 5.6
-  * @link  http://msdn2.microsoft.com/en-us/library/9dthzd08.aspx     
+  * @see  http://msdn2.microsoft.com/en-us/library/9dthzd08.aspx     
  */
 
 function arguments(){};
@@ -42,7 +42,7 @@ arguments.prototype=new Array();
   * @type  RegExp
   * @memberOf RegExp
   * @since JScript 5.6
-  * @link  http://msdn2.microsoft.com/en-us/library/9dthzd08.aspx     
+  * @see  http://msdn2.microsoft.com/en-us/library/9dthzd08.aspx     
  */
 function RegExp(){};
 RegExp.prototype=new Object();
@@ -53,7 +53,7 @@ RegExp.prototype=new Object();
   * @returns {Boolean}
   * @see     RegExp
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 RegExp.prototype.global=true;
  /**
@@ -63,7 +63,7 @@ RegExp.prototype.global=true;
   * @returns {Number}
   * @see     RegExp
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */ 
 RegExp.prototype.index=-1;
  /**
@@ -73,7 +73,7 @@ RegExp.prototype.index=-1;
   * @returns {String}
   * @see     RegExp
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */
 RegExp.prototype.input="";
  /**
@@ -83,7 +83,7 @@ RegExp.prototype.input="";
   * @returns {Number}
   * @see     RegExp
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */
 RegExp.prototype.lastIndex=-1;
  /**
@@ -93,7 +93,7 @@ RegExp.prototype.lastIndex=-1;
   * @returns {String}
   * @see     RegExp
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */
 RegExp.prototype.lastMatch=""
  /**
@@ -103,7 +103,7 @@ RegExp.prototype.lastMatch=""
   * @returns {String}
   * @see     RegExp
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */
 RegExp.prototype.lastParen="";
  /**
@@ -113,7 +113,7 @@ RegExp.prototype.lastParen="";
   * @returns {String}
   * @see     RegExp
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */
 RegExp.prototype.leftContext="";
  /**
@@ -123,7 +123,7 @@ RegExp.prototype.leftContext="";
   * @returns {String}
   * @see     RegExp
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */
 RegExp.prototype.rightContext="";
  /**
@@ -133,7 +133,7 @@ RegExp.prototype.rightContext="";
   * @returns {Boolean}
   * @see     RegExp
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */
 RegExp.prototype.ignoreCase=false;
  /**
@@ -143,7 +143,7 @@ RegExp.prototype.ignoreCase=false;
   * @returns {Boolean}
   * @see     RegExp
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */
 RegExp.prototype.multiline=false; 
  /**
@@ -153,7 +153,7 @@ RegExp.prototype.multiline=false;
   * @returns {String}
   * @see     RegExp
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */
 RegExp.prototype.source="";
  /**
@@ -165,7 +165,7 @@ RegExp.prototype.source="";
   * @returns {Array}
   * @see     RegExp
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 RegExp.prototype.test=function(){};
  /**
@@ -176,7 +176,7 @@ RegExp.prototype.test=function(){};
   * @returns {Boolean}
   * @see     RegExp
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 RegExp.prototype.exec=function(str){};
  /**
@@ -188,7 +188,7 @@ RegExp.prototype.exec=function(str){};
   * @returns {Array}
   * @see     RegExp
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 RegExp.prototype.compile=function(pattern, flags){};
 /**
@@ -201,7 +201,7 @@ RegExp.prototype.compile=function(pattern, flags){};
   * @param {String} location  Optional. The name of the network server where the object is to be created.
   * @memberOf ActiveXObject
   * @since JScript 1.0
-  * @link  http://msdn2.microsoft.com/en-us/library/7sw4ddf8.aspx  
+  * @see  http://msdn2.microsoft.com/en-us/library/7sw4ddf8.aspx  
  */
 function ActiveXObject(){};
 ActiveXObject.prototype=new Object();
@@ -215,7 +215,7 @@ ActiveXObject.prototype=new Object();
   * @returns {Array}
   * @see     Array
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 Array.prototype.concat=function(array1, array2){};
  /**
@@ -227,7 +227,7 @@ Array.prototype.concat=function(array1, array2){};
   * @returns {String}
   * @see     Array
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 Array.prototype.join=function(separator){};
  /**
@@ -239,7 +239,7 @@ Array.prototype.join=function(separator){};
   * @returns {Array}
   * @see     Array
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 Array.prototype.pop=function(){};
  /**
@@ -250,7 +250,7 @@ Array.prototype.pop=function(){};
   * @returns {Object}
   * @see     Array
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 Array.prototype.push=function(values){};
  /**
@@ -258,7 +258,7 @@ Array.prototype.push=function(values){};
   * @memberOf   Array
   * @see     Array
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 Array.prototype.reverse=function(){};
  /**
@@ -268,7 +268,7 @@ Array.prototype.reverse=function(){};
   * @returns {Object}
   * @see     Array
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 Array.prototype.shift=function(){};
  /**
@@ -280,7 +280,7 @@ Array.prototype.shift=function(){};
   * @returns {Array}
   * @see     Array
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 Array.prototype.slice=function(startIndex,endIndex){};
  /**
@@ -289,7 +289,7 @@ Array.prototype.slice=function(startIndex,endIndex){};
   * @param   {Function} sortFunction Optional. The name of the function used to determine the order of the elements. If omitted, the elements are sorted in ascending, ASCII character order
   * @see     Array
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 Array.prototype.sort=function(sortFunction){};
  /**
@@ -302,7 +302,7 @@ Array.prototype.sort=function(sortFunction){};
   * @returns {Array}
   * @see     Array
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 Array.prototype.splice=function(start, deleteCount, items){};
  /**
@@ -312,7 +312,7 @@ Array.prototype.splice=function(start, deleteCount, items){};
   * @returns {String}
   * @see     Array
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 Object.prototype.toLocaleString=function(){};
  /**
@@ -322,7 +322,7 @@ Object.prototype.toLocaleString=function(){};
   * @param   {Array} elements
   * @see     Array
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 Array.prototype.unshift=function(elements){};
  /**
@@ -332,7 +332,7 @@ Array.prototype.unshift=function(elements){};
   * @returns {Object}
   * @see     Array
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/k4h76zbx.aspx     
  */  
 Object.prototype.valueOf=function(){};
 
@@ -342,7 +342,7 @@ Object.prototype.valueOf=function(){};
   * @type  Date
   * @memberOf Date
   * @since JScript 5.6
-  * @link  http://msdn2.microsoft.com/en-us/library/9dthzd08.aspx     
+  * @see  http://msdn2.microsoft.com/en-us/library/9dthzd08.aspx     
  */
 function Date(dateVal){};
 function Date(year, month, date, hours, minutes, seconds,ms){}; 
@@ -353,7 +353,7 @@ function Date(year, month, date, hours, minutes, seconds,ms){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getDate=function(){};
  /**
@@ -363,7 +363,7 @@ Date.prototype.getDate=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getDay=function(){}; 
  /**
@@ -373,7 +373,7 @@ Date.prototype.getDay=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getFullYear=function(){};
  /**
@@ -383,7 +383,7 @@ Date.prototype.getFullYear=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */   
 Date.prototype.getHours=function(){}; 
  /**
@@ -393,7 +393,7 @@ Date.prototype.getHours=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getMilliseconds=function(){}; 
  /**
@@ -403,7 +403,7 @@ Date.prototype.getMilliseconds=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getMinutes=function(){}; 
  /**
@@ -413,7 +413,7 @@ Date.prototype.getMinutes=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getMonth=function(){}; 
  /**
@@ -423,7 +423,7 @@ Date.prototype.getMonth=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getSeconds=function(){}; 
  /**
@@ -433,7 +433,7 @@ Date.prototype.getSeconds=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getTime=function(){}; 
  /**
@@ -443,7 +443,7 @@ Date.prototype.getTime=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getTimezoneOffset=function(){}; 
  /**
@@ -453,7 +453,7 @@ Date.prototype.getTimezoneOffset=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getUTCDate=function(){}; 
  /**
@@ -463,7 +463,7 @@ Date.prototype.getUTCDate=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getUTCDay=function(){}; 
  /**
@@ -473,7 +473,7 @@ Date.prototype.getUTCDay=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getUTCFullYear=function(){}; 
  /**
@@ -483,7 +483,7 @@ Date.prototype.getUTCFullYear=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getUTCHours=function(){}; 
  /**
@@ -493,7 +493,7 @@ Date.prototype.getUTCHours=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getUTCMilliseconds=function(){}; 
  /**
@@ -503,7 +503,7 @@ Date.prototype.getUTCMilliseconds=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getUTCMinutes=function(){}; 
  /**
@@ -513,7 +513,7 @@ Date.prototype.getUTCMinutes=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getUTCMonth=function(){}; 
  /**
@@ -523,7 +523,7 @@ Date.prototype.getUTCMonth=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getUTCSeconds=function(){}; 
  /**
@@ -533,7 +533,7 @@ Date.prototype.getUTCSeconds=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getVarDate=function(){}; 
  /**
@@ -543,7 +543,7 @@ Date.prototype.getVarDate=function(){};
   * @returns {Number}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.getYear=function(){}; 
  /**
@@ -554,7 +554,7 @@ Date.prototype.getYear=function(){};
   * @returns {Date}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.parse=function(dateVal){}; 
  /**
@@ -564,7 +564,7 @@ Date.parse=function(dateVal){};
   * @param 	 {Date} dateVal
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx     
  */  
 Date.prototype.setDate=function(dateVal){}; 
  /**
@@ -576,7 +576,7 @@ Date.prototype.setDate=function(dateVal){};
   * @param   {Number} day
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.setFullYear=function(year,month, day){};
  /**
@@ -589,7 +589,7 @@ Date.prototype.setFullYear=function(year,month, day){};
   * @param 	 {Number} numMilli
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */  
 Date.prototype.setHours=function(numHours, numMin, numSec, numMilli){}; 
  /**
@@ -599,7 +599,7 @@ Date.prototype.setHours=function(numHours, numMin, numSec, numMilli){};
   * @param 	 {Number} number
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.setMilliseconds=function(number){}; 
  /**
@@ -610,7 +610,7 @@ Date.prototype.setMilliseconds=function(number){};
   * @param 	 {Number} numMilli
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.setMinutes=function(number, numMilli){}; 
  /**
@@ -621,7 +621,7 @@ Date.prototype.setMinutes=function(number, numMilli){};
   * @param 	 {Number} dateVale
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.setMonth=function(numMonth, dateVale){}; 
  /**
@@ -632,7 +632,7 @@ Date.prototype.setMonth=function(numMonth, dateVale){};
   * @param 	 {Numbe} numMilli
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.setSeconds=function(number, numMilli){}; 
  /**
@@ -642,7 +642,7 @@ Date.prototype.setSeconds=function(number, numMilli){};
   * @param 	 {Number} milli
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.setTime=function(milli){}; 
  /**
@@ -652,7 +652,7 @@ Date.prototype.setTime=function(milli){};
   * @param 	 {Number} number
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.setUTCDate=function(number){}; 
  /**
@@ -664,7 +664,7 @@ Date.prototype.setUTCDate=function(number){};
   * @param 	 {Number} numDate
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.setUTCFullYear=function(numYear, numMonth, numDate){}; 
  /**
@@ -677,7 +677,7 @@ Date.prototype.setUTCFullYear=function(numYear, numMonth, numDate){};
   * @param 	 {Number} numMilli
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.setUTCHours=function(numHours, numMin, numSec, numMilli){}; 
  /**
@@ -687,7 +687,7 @@ Date.prototype.setUTCHours=function(numHours, numMin, numSec, numMilli){};
   * @param 	 {Number} number
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.setUTCMilliseconds=function(number){}; 
  /**
@@ -699,7 +699,7 @@ Date.prototype.setUTCMilliseconds=function(number){};
   * @param 	 {Number} numMilli
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.setUTCMinutes=function(numMinutes, numSeconds, numMilli){}; 
  /**
@@ -710,7 +710,7 @@ Date.prototype.setUTCMinutes=function(numMinutes, numSeconds, numMilli){};
   * @param 	 {Number} dateVal
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.setUTCMonth=function(numMonth, dateVal){}; 
  /**
@@ -721,7 +721,7 @@ Date.prototype.setUTCMonth=function(numMonth, dateVal){};
   * @param 	 {Number} numMilli
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.setUTCSeconds=function(numSeconds, numMilli){}; 
  /**
@@ -731,7 +731,7 @@ Date.prototype.setUTCSeconds=function(numSeconds, numMilli){};
   * @param 	 {Number} number
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.setYear=function(number){}; 
  /**
@@ -741,7 +741,7 @@ Date.prototype.setYear=function(number){};
   * @param 	 {Number} number
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.toDateString=function(){}; 
  /**
@@ -751,7 +751,7 @@ Date.prototype.toDateString=function(){};
   * @param 	 {Number} number
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.toGMTString=function(){}; 
  /**
@@ -761,7 +761,7 @@ Date.prototype.toGMTString=function(){};
   * @returns {String}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.toLocaleDateString=function(){}; 
  /**
@@ -771,7 +771,7 @@ Date.prototype.toLocaleDateString=function(){};
   * @returns {String}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.toLocaleString=function(){}; 
  /**
@@ -781,7 +781,7 @@ Date.prototype.toLocaleString=function(){};
   * @returns {String}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.toLocaleTimeString=function(){}; 
  /**
@@ -791,7 +791,7 @@ Date.prototype.toLocaleTimeString=function(){};
 	* @returns {String}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.toTimeString=function(){}; 
  /**
@@ -801,7 +801,7 @@ Date.prototype.toTimeString=function(){};
   * @returns {String}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.prototype.toUTCString=function(){}; 
  /**
@@ -817,7 +817,7 @@ Date.prototype.toUTCString=function(){};
   * @returns {Date}
   * @see     Date
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Date.UTC=function(year, month, day, hours, minutes, seconds, ms){}; 
 
@@ -828,7 +828,7 @@ Date.UTC=function(year, month, day, hours, minutes, seconds, ms){};
   * @type  Debug
   * @memberOf Debug
   * @since JScript 5.6
-  * @link  http://msdn2.microsoft.com/en-us/library/bs12a9wf.aspx 
+  * @see  http://msdn2.microsoft.com/en-us/library/bs12a9wf.aspx 
  */
 function Debug(){};
 Debug.prototype=new Object();
@@ -839,7 +839,7 @@ Debug.prototype=new Object();
   * @param 	 {String} value
   * @see     Debug
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Debug.write=function(value){};
  /**
@@ -849,7 +849,7 @@ Debug.write=function(value){};
   * @param 	 {String} value
   * @see     Debug
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */ 
 Debug.writeln=function(value){};
 /**
@@ -859,7 +859,7 @@ Debug.writeln=function(value){};
   * @type  Enumerator
   * @memberOf Enumerator
   * @since JScript 5.6
-  * @link  http://msdn2.microsoft.com/en-us/library/bs12a9wf.aspx 
+  * @see  http://msdn2.microsoft.com/en-us/library/bs12a9wf.aspx 
  */
 function Enumerator(){};
 /**
@@ -870,7 +870,7 @@ function Enumerator(){};
   * @param {Object} collection
   * @memberOf Enumerator
   * @since JScript 5.6
-  * @link  http://msdn2.microsoft.com/en-us/library/bs12a9wf.aspx 
+  * @see  http://msdn2.microsoft.com/en-us/library/bs12a9wf.aspx 
  */
 function Enumerator(collection){};
 Enumerator.prototype=new Object();
@@ -881,7 +881,7 @@ Enumerator.prototype=new Object();
   * @returns {Boolean}
   * @see     Enumerator
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */
 Enumerator.prototype.atEnd=function(){};
  /**
@@ -891,7 +891,7 @@ Enumerator.prototype.atEnd=function(){};
   * @returns {Object}
   * @see     Enumerator
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */
 Enumerator.prototype.item=function(){};
  /**
@@ -901,7 +901,7 @@ Enumerator.prototype.item=function(){};
   * @returns {Object}
   * @see     Enumerator
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */
 Enumerator.prototype.moveFirst=function(){};
  /**
@@ -911,7 +911,7 @@ Enumerator.prototype.moveFirst=function(){};
   * @returns {Object}
   * @see     Enumerator
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/cd9w2te4.aspx   
   */
 Enumerator.prototype.moveNext =function(){};
 
@@ -924,7 +924,7 @@ Enumerator.prototype.moveNext =function(){};
   * @param {String} description
   * @memberOf Error
   * @since JScript 5.6
-  * @link  http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx
+  * @see  http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx
  */
 function Error(number,description){};
 Error.prototype=new Object();
@@ -935,7 +935,7 @@ Error.prototype=new Object();
   * @returns {String}
   * @see     Error
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
   */
 Error.prototype.description="";
  /**
@@ -945,7 +945,7 @@ Error.prototype.description="";
   * @returns {String}
   * @see     Error
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
   */
 Error.prototype.message="";
  /**
@@ -955,7 +955,7 @@ Error.prototype.message="";
   * @returns {String}
   * @see     Error
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
   */
 Error.prototype.name="";
  /**
@@ -965,7 +965,7 @@ Error.prototype.name="";
   * @returns {Number}
   * @see     Error
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
   */
 Error.prototype.number=0;
 /**
@@ -987,7 +987,7 @@ Error.prototype.number=0;
   * @param {String} body
   * @memberOf Function
   * @since JScript 5.6
-  * @link  http://msdn2.microsoft.com/en-us/library/x844tc74.aspx
+  * @see  http://msdn2.microsoft.com/en-us/library/x844tc74.aspx
  */
 function Function(functionName, arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9, body){};
 Function.prototype=new Object();
@@ -998,7 +998,7 @@ Function.prototype=new Object();
   * @returns {arguments}
   * @see     Function
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
   */
 Function.prototype.arguments=new arguments();
  /**
@@ -1008,7 +1008,7 @@ Function.prototype.arguments=new arguments();
   * @returns {String}
   * @see     Function
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
   */
 Function.prototype.callee=""
  /**
@@ -1018,7 +1018,7 @@ Function.prototype.callee=""
   * @returns {String}
   * @see     Function
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
   */
 Function.prototype.caller=""
  /**
@@ -1028,7 +1028,7 @@ Function.prototype.caller=""
   * @returns {String}
   * @see     Function
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
   */
 Function.prototype.constructor=""
  /**
@@ -1038,7 +1038,7 @@ Function.prototype.constructor=""
   * @returns {Number}
   * @see     Function
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
   */
 Function.prototype.length=function(){};
  /**
@@ -1048,7 +1048,7 @@ Function.prototype.length=function(){};
   * @param   {argument} args
   * @see     Function
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
   */
 Function.prototype.apply=function(thisObj,args){};
  /**
@@ -1058,7 +1058,7 @@ Function.prototype.apply=function(thisObj,args){};
   * @param   {argument} args
   * @see     Function
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
+  * @see    http://msdn2.microsoft.com/en-us/library/dww52sbt.aspx   
   */
 Function.prototype.call=function(thisObj, args){};
 /**
@@ -1067,7 +1067,7 @@ Function.prototype.call=function(thisObj, args){};
   * @super Object
   * @type  Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx
   */
 function Global(){};
 Global.prototype=new Object();
@@ -1078,7 +1078,7 @@ Global.prototype=new Object();
   * @returns {Number}
   * @see     Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
   */
 Global.infinity=0;
  /**
@@ -1086,7 +1086,7 @@ Global.infinity=0;
   * @memberOf   Global
   * @see     Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
   */
 Global.NaN=null;
  /**
@@ -1094,7 +1094,7 @@ Global.NaN=null;
   * @memberOf   Global
   * @see     Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
   */
 Global.undefined=null;
  /**
@@ -1105,7 +1105,7 @@ Global.undefined=null;
   * @returns {String}
   * @see     Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
   */
 Global.prototype.decodeURI=function(value){};
  /**
@@ -1116,7 +1116,7 @@ Global.prototype.decodeURI=function(value){};
   * @returns {String}
   * @see     Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
   */ 
 Global.prototype.decodeURIComponent=function(value){}; 
  /**
@@ -1127,7 +1127,7 @@ Global.prototype.decodeURIComponent=function(value){};
   * @returns {String}
   * @see     Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
   */
 Global.prototype.encodeURI=function(value){}; 
  /**
@@ -1138,7 +1138,7 @@ Global.prototype.encodeURI=function(value){};
   * @returns {String}
   * @see     Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
   */
 Global.prototype.encodeURIComponent=function(value){}; 
  /**
@@ -1149,7 +1149,7 @@ Global.prototype.encodeURIComponent=function(value){};
   * @returns {String}
   * @see     Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
   */
 Global.prototype.escape=function(value){}; 
  /**
@@ -1160,7 +1160,7 @@ Global.prototype.escape=function(value){};
   * @returns {String}
   * @see     Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
   */
 Global.prototype.eval=function(value){}; 
  /**
@@ -1171,7 +1171,7 @@ Global.prototype.eval=function(value){};
   * @returns {String}
   * @see     Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
   */
 Global.prototype.isFinite=function(value){}; 
  /**
@@ -1182,7 +1182,7 @@ Global.prototype.isFinite=function(value){};
   * @returns {String}
   * @see     Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
   */
 Global.prototype.isNaN=function(value){}; 
  /**
@@ -1193,7 +1193,7 @@ Global.prototype.isNaN=function(value){};
   * @returns {String}
   * @see     Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
   */
 Global.prototype.parseFloat=function(value){}; 
  /**
@@ -1204,7 +1204,7 @@ Global.prototype.parseFloat=function(value){};
   * @returns {String}
   * @see     Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
   */
 Global.prototype.parseInt=function(value){}; 
  /**
@@ -1215,7 +1215,7 @@ Global.prototype.parseInt=function(value){};
   * @returns {String}
   * @see     Global
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
+  * @see    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx  
   */
 Global.prototype.unescape=function(value){};
 
@@ -1223,7 +1223,7 @@ Global.prototype.unescape=function(value){};
   * @memberOf   Math
   * @see     Number
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 function Math(){};
 Math.prototype=new Object();
@@ -1234,7 +1234,7 @@ Math.prototype=new Object();
   * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.E=0; 
  /**
@@ -1244,7 +1244,7 @@ Math.E=0;
   * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.LN2=0;
  /**
@@ -1254,7 +1254,7 @@ Math.LN2=0;
   * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */ 
 Math.LN10=0; 
  /**
@@ -1264,7 +1264,7 @@ Math.LN10=0;
   * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.LOG2E=0; 
  /**
@@ -1274,7 +1274,7 @@ Math.LOG2E=0;
   * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.LOG10E=0; 
  /**
@@ -1284,7 +1284,7 @@ Math.LOG10E=0;
   * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.PI=0; 
  /**
@@ -1294,7 +1294,7 @@ Math.PI=0;
   * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.SQRT1_2=0; 
  /**
@@ -1304,7 +1304,7 @@ Math.SQRT1_2=0;
   * @returns {Number}
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.SQRT2=0;
  /**
@@ -1315,7 +1315,7 @@ Math.SQRT2=0;
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.abs=function(number){};
  /**
@@ -1326,7 +1326,7 @@ Math.abs=function(number){};
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.acos=function(number){};
  /**
@@ -1337,7 +1337,7 @@ Math.acos=function(number){};
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.asin=function(number){};
  /**
@@ -1348,7 +1348,7 @@ Math.asin=function(number){};
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.atan=function(number){};
  /**
@@ -1360,7 +1360,7 @@ Math.atan=function(number){};
    * @param {Number} y
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.atan2=function(x,y){};
  /**
@@ -1371,7 +1371,7 @@ Math.atan2=function(x,y){};
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.ceil=function(number){};
  /**
@@ -1382,7 +1382,7 @@ Math.ceil=function(number){};
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.cos=function(number){};
  /**
@@ -1393,7 +1393,7 @@ Math.cos=function(number){};
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.exp=function(number){};
  /**
@@ -1404,7 +1404,7 @@ Math.exp=function(number){};
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.floor=function(number){};
  /**
@@ -1415,7 +1415,7 @@ Math.floor=function(number){};
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.log=function(number){};
  /**
@@ -1426,7 +1426,7 @@ Math.log=function(number){};
   * @param {arguments} argList
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.max=function(argList){};
  /**
@@ -1437,7 +1437,7 @@ Math.max=function(argList){};
   * @param {arguments} argList
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.min=function(argList){};
  /**
@@ -1449,7 +1449,7 @@ Math.min=function(argList){};
   * @param {Number} exp
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.pow=function(base, exp){};
  /**
@@ -1460,7 +1460,7 @@ Math.pow=function(base, exp){};
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.random=function(number){};
  /**
@@ -1471,7 +1471,7 @@ Math.random=function(number){};
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.round=function(number){};
  /**
@@ -1482,7 +1482,7 @@ Math.round=function(number){};
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.sin=function(number){};
  /**
@@ -1493,7 +1493,7 @@ Math.sin=function(number){};
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.sqrt=function(number){};
  /**
@@ -1504,7 +1504,7 @@ Math.sqrt=function(number){};
   * @param {Number} number
   * @see     Math
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/b272f386.aspx
   */
 Math.tan=function(number){};
 
@@ -1521,7 +1521,7 @@ Number.POSITIVE_INFINITY=0;
   * @returns {Number}
   * @see     Number
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dwab3ed2.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/dwab3ed2.aspx
   */
 Number.prototype.toExponential=function(){};
  /**
@@ -1531,7 +1531,7 @@ Number.prototype.toExponential=function(){};
   * @returns {Number}
   * @see     Number
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dwab3ed2.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/dwab3ed2.aspx
   */
 Number.prototype.toFixed=function(){};
  /**
@@ -1541,7 +1541,7 @@ Number.prototype.toFixed=function(){};
   * @returns {String}
   * @see     Number
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dwab3ed2.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/dwab3ed2.aspx
   */
 Number.prototype.toLocaleString=function(){};
  /**
@@ -1551,7 +1551,7 @@ Number.prototype.toLocaleString=function(){};
   * @returns {Number}
   * @see     Number
   * @since   JScript 5.6
-  * @link    http://msdn2.microsoft.com/en-us/library/dwab3ed2.aspx
+  * @see    http://msdn2.microsoft.com/en-us/library/dwab3ed2.aspx
   */
 Number.prototype.toPrecision=function(){};
 
@@ -1562,7 +1562,7 @@ Number.prototype.toPrecision=function(){};
   * @returns {String}
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.anchor=function(aString){};
  /**
@@ -1571,7 +1571,7 @@ String.prototype.anchor=function(aString){};
 
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.big=function(){};
  /**
@@ -1580,7 +1580,7 @@ String.prototype.big=function(){};
 
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.blink=function(){};
  /**
@@ -1589,7 +1589,7 @@ String.prototype.blink=function(){};
 
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.bold=function(){};  
  /**
@@ -1598,7 +1598,7 @@ String.prototype.bold=function(){};
 
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.fixed=function(){};
  /**
@@ -1609,7 +1609,7 @@ String.prototype.fixed=function(){};
   * @returns {String}
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.fontcolor=function(color){};
  /**
@@ -1620,7 +1620,7 @@ String.prototype.fontcolor=function(color){};
   * @param {String} aString
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.fontsize=function(aString){};
  /**
@@ -1631,7 +1631,7 @@ String.prototype.fontsize=function(aString){};
   * @param {argument} args
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.fromCharCode=function(args){};
  /**
@@ -1639,7 +1639,7 @@ String.prototype.fromCharCode=function(args){};
   * @memberOf 	String
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.String.prototype.italics=function(){};
  /**
@@ -1648,7 +1648,7 @@ String.prototype.String.prototype.italics=function(){};
   * @param {String} aString
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.link=function(aString){};
  /**
@@ -1656,7 +1656,7 @@ String.prototype.link=function(aString){};
   * @memberOf 	String
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.strike=function(){};
  /**
@@ -1664,7 +1664,7 @@ String.prototype.strike=function(){};
   * @memberOf 	String
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.sub=function(){};
  /**
@@ -1676,7 +1676,7 @@ String.prototype.sub=function(){};
   * @param {Number} length
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.substr=function(start,length){};
  /**
@@ -1688,7 +1688,7 @@ String.prototype.substr=function(start,length){};
   * @param {Number} length
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.substring=function(start,length){};
  /**
@@ -1696,7 +1696,7 @@ String.prototype.substring=function(start,length){};
   * @memberOf 	String
   * @see    String
   * @since  JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
+  * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
 String.prototype.sup=function(){};
 /**
@@ -1707,7 +1707,7 @@ String.prototype.sup=function(){};
   * @param {Boolean} safe
   * @memberOf VBArray
   * @since JScript 5.6
-  * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
+  * @see  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
 function VBArray(safe){};
 VBArray.prototype=new Array();
@@ -1717,7 +1717,7 @@ VBArray.prototype=new Array();
   * @returns {Number}
   * @memberOf VBArray
   * @since JScript 5.6
-  * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
+  * @see  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
 VBArray.prototype.dimensions=function();
 /**
@@ -1727,7 +1727,7 @@ VBArray.prototype.dimensions=function();
   * @memberOf VBArray
   * @param {arguments} dims
   * @since JScript 5.6
-  * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
+  * @see  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
 VBArray.prototype.getItem=function(dims);
 /**
@@ -1737,7 +1737,7 @@ VBArray.prototype.getItem=function(dims);
   * @memberOf VBArray
   * @param {arguments} dims
   * @since JScript 5.6
-  * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
+  * @see  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
 VBArray.prototype.lbound=function(dims);
 /**
@@ -1746,7 +1746,7 @@ VBArray.prototype.lbound=function(dims);
   * @returns {Array}
   * @memberOf VBArray
   * @since JScript 5.6
-  * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
+  * @see  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
 VBArray.prototype.toArray=function();
 /**
@@ -1756,7 +1756,7 @@ VBArray.prototype.toArray=function();
   * @memberOf VBArray
   * @param {arguments} dims
   * @since JScript 5.6
-  * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
+  * @see  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
 VBArray.prototype.ubound=function(number);
 
@@ -1769,7 +1769,7 @@ VBArray.prototype.ubound=function(number);
   * @param {String} pathname Optional. Full path and name of the file containing the object to retrieve. If pathname is omitted, class is required
   * @param {String} class Optional. Class of the object. The class argument uses the syntax appname.objectype and has these parts: appname Required. Name of the application providing the object. objectype  Required. Type or class of object to create.
  *  @since JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/7tf9xwsc.aspx     
+  * @see   http://msdn2.microsoft.com/en-us/library/7tf9xwsc.aspx     
  */
 function GetObject(pathname, class){};
 
@@ -1781,7 +1781,7 @@ function GetObject(pathname, class){};
   * @returns {String}
  The ScriptEngine function can return any of the following strings: JScript Indicates that Microsoft JScript is the current scripting engine.VBA Indicates that Microsoft Visual Basic for Applications is the current scripting engine.VBScript Indicates that Microsoft Visual Basic Scripting Edition is the current scripting engine.
   * @since JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/efy5bay1.aspx     
+  * @see   http://msdn2.microsoft.com/en-us/library/efy5bay1.aspx     
  */
 function ScriptEngine(){};
 
@@ -1793,7 +1793,7 @@ function ScriptEngine(){};
   * @returns {String}
   
   * @since JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/yftk84kt.aspx     
+  * @see   http://msdn2.microsoft.com/en-us/library/yftk84kt.aspx     
  */
 function ScriptEngineBuildVersion(){};
 
@@ -1805,7 +1805,7 @@ function ScriptEngineBuildVersion(){};
   * @returns {String}
   
   * @since JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/x7cbaet3.aspx    
+  * @see   http://msdn2.microsoft.com/en-us/library/x7cbaet3.aspx    
  */
 function ScriptEngineMajorVersion(){};
 
@@ -1817,7 +1817,7 @@ function ScriptEngineMajorVersion(){};
   * @returns {String}
   
   * @since JScript 5.6
-  * @link   http://msdn2.microsoft.com/en-us/library/wzaz8hhz.aspx    
+  * @see   http://msdn2.microsoft.com/en-us/library/wzaz8hhz.aspx    
  */
 function ScriptEngineMinorVersion(){}
 
