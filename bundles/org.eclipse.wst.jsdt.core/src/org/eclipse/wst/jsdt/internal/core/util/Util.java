@@ -1201,7 +1201,7 @@ public class Util {
 	public static int indexOfMatchingPath(IPath checkedPath, IPath[] paths, int pathCount) {
 
 		for (int i = 0; i < pathCount; i++){
-			if (paths[i].equals(checkedPath)) return i;
+			if (paths[i]!=null && paths[i].equals(checkedPath)) return i;
 		}
 		return -1;
 	}
