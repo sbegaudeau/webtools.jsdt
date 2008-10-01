@@ -712,4 +712,24 @@ public class InferTypesTests extends AbstractRegressionTest {
 //				
 //			 );
 //		}
+
+
+		public void test083() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"function Car() {" +
+				"	this.color = 'red';" +
+				"	this.Move = function() { return \"I'm moving\"; };" +
+				"};" +
+				"Car.Stop = function() { return \"I'm not moving\"; };" +
+				"Car.engine = 'diesel';" +
+				"",
+				"X.js",
+				"class Car extends Object{\n  static String engine;\n  String color;\n  Car()\n  String Move()\n  static String Stop()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+
+
 }

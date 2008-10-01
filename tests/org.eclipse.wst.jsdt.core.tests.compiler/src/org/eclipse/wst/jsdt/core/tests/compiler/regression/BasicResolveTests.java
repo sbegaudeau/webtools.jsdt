@@ -946,7 +946,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 				""
 		);
 	}
-
+	
 	public void test064()	{
 		this.runNegativeTest(
 				new String[] {
