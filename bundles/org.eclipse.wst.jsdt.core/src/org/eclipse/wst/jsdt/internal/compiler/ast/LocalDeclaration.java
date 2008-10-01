@@ -125,13 +125,14 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		return variableType;
 
 	}
+
 	public void resolve(BlockScope scope) {
 		resolve0(scope);
 		if (this.nextLocal!=null)
 			this.nextLocal.resolve(scope);
 	}
 	
-
+	
 	private void resolve0(BlockScope scope) {
 
 		// create a binding and add it to the scope

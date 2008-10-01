@@ -62,6 +62,9 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	/* returns the projects scope file */
 	IFile getJSDTScopeFile();
 	
+	/* returns the projects scope file */
+	IFile getJSDTScopeFile(boolean forceCreate);
+	
 	/**
 	 * Decodes the includepath entry that has been encoded in the given string
 	 * in the context of this project.

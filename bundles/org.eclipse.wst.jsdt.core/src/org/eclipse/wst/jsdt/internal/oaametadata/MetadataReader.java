@@ -46,7 +46,7 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 	boolean collectText=false;
 	boolean collectHTML=false;
 	boolean pendingEndElement=false;
-
+	
 	boolean doTranslation=true;
 
 	String collectTextElement;
@@ -58,8 +58,9 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 	HashMap collections;
 
 	String filePath;
-	
+
 	HashMap messages=new HashMap();
+	
 	
 	static class StackElement {
 		HashMap collections;
@@ -129,7 +130,7 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 	static final int STATE_USERAGENTS =52;
 
 	static final int STATE_INCLUDE =53;
-	
+
 	static final ArrayList EMPTY_LIST=new ArrayList();
 
 	{
@@ -205,7 +206,7 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 		parseMetadata(inputSource, handler);
 		return handler.apis;
 	}
-		
+
 	private static void parseMetadata(InputSource inputSource,
 			 MetadataReader handler) {
 		try {
@@ -256,6 +257,7 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 
 	public void endElement(String uri, String localName, String name)
 			throws SAXException {
+		
 		if (collectText)
 		{
 			if (NAMESPACE_API.equals(uri)&& localName.equals(collectTextElement))
@@ -314,7 +316,6 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 		}
 		else
 		{
-			
 			
 			switch (this.currentState)
 			{
@@ -407,11 +408,11 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 		if (collectText)
 		{
 			if (collectHTML) {
-			text.append("<").append(localName);
-			int nAttributes=attributes.getLength();
+				text.append("<").append(localName);
+				int nAttributes = attributes.getLength();
 				for (int i = 0; i < nAttributes; i++) {
-				String qname=attributes.getQName(i);
-				String value=attributes.getValue(i);
+					String qname = attributes.getQName(i);
+					String value = attributes.getValue(i);
 					text.append(" ").append(qname).append("=\"").append(value)
 							.append("\"");
 				}
@@ -500,7 +501,7 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 							addCollectionElement(TAG_INTERFACE, clazz);
 						}
 						else
-						addCollectionElement(TAG_CLASS, clazz);
+							addCollectionElement(TAG_CLASS, clazz);
 						clazz.name = attributes.getValue(ATTRIBUTE_CLASS_NAME);
 						clazz.superclass = attributes.getValue(ATTRIBUTE_CLASS_SUPERCLASS);
 						clazz.visibility = attributes.getValue(ATTRIBUTE_CLASS_VISIBILITY);
@@ -569,7 +570,7 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 						this.collections=new HashMap();
 						break;
 					}
-
+					
 					case STATE_EXCEPTION:
 					{
 						Exception exception=new Exception();
@@ -579,6 +580,7 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 						this.collections=new HashMap();
 						break;
 					}
+					
 					
 					case STATE_FIELD:
 					case STATE_PROPERTY:
@@ -591,7 +593,7 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 							addCollectionElement(TAG_FIELD, property);
 						}
 						else
-						addCollectionElement(TAG_PROPERTY, property);
+							addCollectionElement(TAG_PROPERTY, property);
 						property.name = attributes.getValue(ATTRIBUTE_FIELD_NAME);
 						property.dataType = attributes.getValue(ATTRIBUTE_FIELD_DATATYPE);
 						property.scope = attributes.getValue(ATTRIBUTE_FIELD_SCOPE);
@@ -826,7 +828,7 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 			File file = new File(variants[i]);
 			if (!file.exists())
 				continue;
-	
+			
 			try {
 				InputSource inputSource = new InputSource(new FileReader(file));
 			} catch (FileNotFoundException e) {

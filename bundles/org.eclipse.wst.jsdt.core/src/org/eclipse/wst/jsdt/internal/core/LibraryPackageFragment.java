@@ -50,11 +50,11 @@ protected LibraryPackageFragment(PackageFragmentRoot root, String[] names) {
  */
 protected boolean computeChildren(OpenableElementInfo info) {
 	String name = this.getPackageFragmentRoot().getPath().toOSString();
-	ClassFile classFile = new ClassFile(this,name);
+		ClassFile classFile = new ClassFile(this,name);
 //	JavaScriptUnit cu= new JavaScriptUnit(this, this.getPackageFragmentRoot().getPath().toOSString(), DefaultWorkingCopyOwner.PRIMARY);
-	IJavaScriptElement[] children= new IJavaScriptElement[]{classFile};
-	info.setChildren(children);
-	return true;
+		IJavaScriptElement[] children= new IJavaScriptElement[]{classFile};
+		info.setChildren(children);
+		return true;
 }
 
 /**
@@ -84,11 +84,11 @@ protected void generateInfos(Object info, HashMap newElements, IProgressMonitor 
 	
 	if (!getLibraryFragmentRoot().isDirectory())
 	{
-	Openable openableParent = (Openable)this.parent;
-	if (!openableParent.isOpen()) {
-		openableParent.generateInfos(openableParent.createElementInfo(), newElements, pm);
+		Openable openableParent = (Openable)this.parent;
+		if (!openableParent.isOpen()) {
+			openableParent.generateInfos(openableParent.createElementInfo(), newElements, pm);
+		}
 	}
-}
 	else 
 		super.generateInfos(info, newElements, pm);
 }
@@ -198,13 +198,13 @@ public IClassFile getClassFile(String classFileName) {
 	LibraryFragmentRoot libraryFragmentRoot = getLibraryFragmentRoot();
 	if (!libraryFragmentRoot.isDirectory())
 	{
-	IPath path = getLibraryFragmentRoot().getPath();
-//	if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment().toCharArray())
-//			&& path.lastSegment().equalsIgnoreCase(classFileName))
-//	{
-	if(path.toOSString().endsWith(classFileName)
- 		|| path.isPrefixOf(new Path(classFileName))) {
-		return new ClassFile(this, path.toOSString());
+		IPath path = getLibraryFragmentRoot().getPath();
+//		if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment().toCharArray())
+//				&& path.lastSegment().equalsIgnoreCase(classFileName))
+//		{
+		if(path.toOSString().endsWith(classFileName)
+				|| path.isPrefixOf(new Path(classFileName))) {
+			return new ClassFile(this, path.toOSString());
 		}
 	}
 	else
@@ -218,7 +218,6 @@ public IClassFile getClassFile(String classFileName) {
 		return (!Util.isMetadataFileName(classFileName)) ? (IClassFile)new ClassFile(this,filename) : (IClassFile)new MetadataFile(this,filename);
 
 	}
-
 	return super.getClassFile(classFileName);
 }
 public String getDisplayName() {

@@ -477,7 +477,6 @@ public class InferEngine extends ASTVisitor {
 							else
 							{
 							  attr = receiverType.addAttribute( fRef.token, assignment );
-
 							  attr.type=exprType;
 							/*
 							 * determine if static

@@ -2195,9 +2195,10 @@ public class NameLookup implements SuffixConstants {
 							progressMonitor);
 					if (bindingAcceptor.getFoundPath()!=null)
 					{
-						for (Iterator iterator = bindingAcceptor.getFoundPaths().iterator(); iterator
-								.hasNext();) {
-							String path = (String) iterator.next();
+						
+						Object[] foundPaths = bindingAcceptor.getFoundPaths().toArray();
+						for (int i = 0; i < foundPaths.length; ++i) {
+							String path = (String) foundPaths[i];
 
 						IOpenable openable ; //= createOpenable(getRestrictedAccessRequestor().getFoundPath(), this.searchScope);
 //						if (openable!=null)

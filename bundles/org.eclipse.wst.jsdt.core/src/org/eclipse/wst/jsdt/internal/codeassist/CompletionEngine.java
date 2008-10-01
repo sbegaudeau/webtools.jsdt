@@ -133,6 +133,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FunctionTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
@@ -1809,6 +1810,28 @@ public final class CompletionEngine
 						null,
 						null,
 						false);
+					if (qualifiedBinding instanceof FunctionTypeBinding) {
+						FunctionTypeBinding functionTypeBinding = (FunctionTypeBinding) qualifiedBinding;
+						if (functionTypeBinding.functionBinding!=null && functionTypeBinding.functionBinding.isConstructor())
+						{
+							ReferenceBinding declaringClass = (ReferenceBinding)functionTypeBinding.functionBinding.returnType;
+							findFieldsAndMethods(
+									this.completionToken,
+									declaringClass,
+									scope,
+									access,
+									scope,
+									true,
+									false,
+									access.receiver instanceof SuperReference,
+									null,
+									null,
+									null,
+									false);
+							
+						}
+						
+					}
 				}
 			}
 
@@ -2503,7 +2526,6 @@ public final class CompletionEngine
 			// for now until we can change the UI.
 			CompilationResult result = new CompilationResult(sourceUnit, 1, 1, this.compilerOptions.maxProblemsPerUnit);
 			CompilationUnitDeclaration parsedUnit = this.parser.dietParse(sourceUnit, result, this.actualCompletionPosition);
-
 			//		boolean completionNodeFound = false;
 			if (parsedUnit != null) {
 				if(DEBUG) {

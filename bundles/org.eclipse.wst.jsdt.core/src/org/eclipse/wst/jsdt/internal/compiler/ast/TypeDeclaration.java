@@ -65,7 +65,7 @@ public class TypeDeclaration extends Statement implements ProblemSeverities, Ref
 	public FieldDeclaration[] fields;
 	public AbstractMethodDeclaration[] methods;
 	public TypeDeclaration[] memberTypes;
-	public SourceTypeBinding binding;
+	public SourceTypeBinding binding= new SourceTypeBinding(null,null,null);
 	public ClassScope scope;
 	public MethodScope initializerScope;
 	public MethodScope staticInitializerScope;

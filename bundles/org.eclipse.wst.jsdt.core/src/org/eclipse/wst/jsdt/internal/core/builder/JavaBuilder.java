@@ -289,7 +289,7 @@ private void buildAll() {
 	clearLastState();
 	BatchImageBuilder imageBuilder = new BatchImageBuilder(this, true);
 	imageBuilder.build();
-	//recordNewState(imageBuilder.newState);
+	recordNewState(imageBuilder.newState);
 }
 
 private void buildDeltas(SimpleLookupTable deltas) {

@@ -7542,14 +7542,14 @@ protected void consumeUnaryExpression(int op, boolean post) {
 			this.expressionStack[this.expressionPtr] =
 				new PostfixExpression(
 					leftHandSide,
-					IntLiteral.One,
+					IntLiteral.getOne(),
 					op,
 					this.endStatementPosition);
 		} else {
 			this.expressionStack[this.expressionPtr] =
 				new PrefixExpression(
 					leftHandSide,
-					IntLiteral.One,
+					IntLiteral.getOne(),
 					op,
 					this.intStack[this.intPtr--]);
 		}

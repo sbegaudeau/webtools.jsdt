@@ -25,14 +25,17 @@ import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.core.MetadataFile;
 import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocCommentReader;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavaDoc2HTMLTextReader;
+import org.eclipse.wst.jsdt.internal.ui.text.javadoc.OAADocReader;
 
 /**
  * Helper needed to get the content of a Javadoc comment.
@@ -77,7 +80,13 @@ public class JSdocContentAccess {
 		if (docReader!=null)
 			return docReader.getContentReader(member, allowInherited);
 		
-		IBuffer buf= member.getOpenable().getBuffer();
+		IOpenable openable = member.getOpenable();
+ 		if (openable instanceof MetadataFile)
+ 		{
+ 			return new OAADocReader((MetadataFile)openable,member);
+ 		}
+		
+		IBuffer buf= openable.getBuffer();
 		if (buf == null) {
 			return null; // no source attachment found
 		}

@@ -137,7 +137,7 @@ public abstract class AbstractMethodDeclaration
 			}
 			boolean used = this.binding.isAbstract() || this.binding.isNative();
 			AnnotationBinding[][] paramAnnotations = null;
-			for (int i = 0, length = this.arguments.length; i < length; i++) {
+			for (int i = 0, length = this.arguments.length; i < length && i < this.binding.parameters.length; i++) {
 				IArgument argument = this.arguments[i];
 				argument.bind(this.scope, this.binding.parameters[i], used);
 //				if (argument.getAnnotation() != null) {

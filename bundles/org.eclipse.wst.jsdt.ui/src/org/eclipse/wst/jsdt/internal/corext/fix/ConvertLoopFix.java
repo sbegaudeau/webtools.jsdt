@@ -14,13 +14,12 @@
 package org.eclipse.wst.jsdt.internal.corext.fix;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 
@@ -45,53 +44,7 @@ public class ConvertLoopFix extends LinkedFix {
 		/* (non-Javadoc)
 		 * @see org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor#visit(org.eclipse.wst.jsdt.core.dom.ForStatement)
 		 */
-		public boolean visit(ForStatement node) {
-			if (fFindForLoopsToConvert || fConvertIterableForLoops) {
-				ForStatement current= node;
-				ConvertLoopOperation operation= getConvertOperation(current);
-				ConvertLoopOperation oldOperation= null;
-				while (operation != null) {
-					if (oldOperation == null) {
-						fResult.add(operation);
-					} else {
-						oldOperation.setBodyConverter(operation);
-					}
-					
-					if (current.getBody() instanceof ForStatement) {
-						current= (ForStatement)current.getBody();
-						oldOperation= operation;
-						operation= getConvertOperation(current);
-					} else {
-						operation= null;
-					}
-				}
-				current.getBody().accept(this);
-				return false;
-			}
-			
-			return super.visit(node);
-		}
-		
-		private ConvertLoopOperation getConvertOperation(ForStatement node) {
-			
-			Collection usedNamesCollection= fUsedNames.values();
-			String[] usedNames= (String[])usedNamesCollection.toArray(new String[usedNamesCollection.size()]);
-			ConvertLoopOperation convertForLoopOperation= new ConvertForLoopOperation(node, usedNames, fMakeFinal);
-			if (convertForLoopOperation.satisfiesPreconditions().isOK()) {
-				if (fFindForLoopsToConvert) {
-					fUsedNames.put(node, convertForLoopOperation.getIntroducedVariableName());
-					return convertForLoopOperation;
-				}
-			} else if (fConvertIterableForLoops) {
-				ConvertLoopOperation iterableConverter= new ConvertIterableLoopOperation(node, usedNames, fMakeFinal);
-				if (iterableConverter.satisfiesPreconditions().isOK()) {
-					fUsedNames.put(node, iterableConverter.getIntroducedVariableName());
-					return iterableConverter;
-				}
-			}
-			
-			return null;
-		}
+
 		
 		/* (non-Javadoc)
 		 * @see org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.ForStatement)
@@ -123,14 +76,7 @@ public class ConvertLoopFix extends LinkedFix {
 		return new ConvertLoopFix(FixMessages.ControlStatementsFix_change_name, compilationUnit, ops);
 	}
 	
-	public static IFix createConvertForLoopToEnhancedFix(JavaScriptUnit compilationUnit, ForStatement loop) {
-		ConvertLoopOperation convertForLoopOperation= new ConvertForLoopOperation(loop);
-		if (!convertForLoopOperation.satisfiesPreconditions().isOK())
-			return null;
-		
-		return new ConvertLoopFix(FixMessages.Java50Fix_ConvertToEnhancedForLoop_description, compilationUnit, new ILinkedFixRewriteOperation[] {convertForLoopOperation});
-	}
-	
+
 	public static IFix createConvertIterableLoopToEnhancedFix(JavaScriptUnit compilationUnit, ForStatement loop) {
 		ConvertIterableLoopOperation loopConverter= new ConvertIterableLoopOperation(loop);
 		IStatus status= loopConverter.satisfiesPreconditions();

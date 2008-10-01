@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.ui.fix.ControlStatementsCleanUp;
-import org.eclipse.wst.jsdt.internal.ui.fix.ConvertLoopCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ExpressionsCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.VariableDeclarationCleanUp;
@@ -35,7 +34,6 @@ public final class CodeStyleTabPage extends CleanUpTabPage {
     protected ICleanUp[] createPreviewCleanUps(Map values) {
     	return new ICleanUp[] {
         		new ControlStatementsCleanUp(values),
-        		new ConvertLoopCleanUp(values),
         		new ExpressionsCleanUp(values),
         		new VariableDeclarationCleanUp(values)
         };
@@ -54,8 +52,6 @@ public final class CodeStyleTabPage extends CleanUpTabPage {
 		final RadioPreference useBlockNeverPref= createRadioPref(controlGroup, numColumns - 1, CleanUpMessages.CodeStyleTabPage_RadioName_NeverUseBlocks, CleanUpConstants.CONTROL_STATMENTS_USE_BLOCKS_NEVER, CleanUpModifyDialog.FALSE_TRUE);
 		registerSlavePreference(useBlockPref, new RadioPreference[] {useBlockAlwaysPref, useBlockJDTStylePref, useBlockNeverPref});
 		    	
-    	CheckboxPreference convertLoop= createCheckboxPref(controlGroup, numColumns, CleanUpMessages.CodeStyleTabPage_CheckboxName_ConvertForLoopToEnhanced, CleanUpConstants.CONTROL_STATMENTS_CONVERT_FOR_LOOP_TO_ENHANCED, CleanUpModifyDialog.FALSE_TRUE);
-    	registerPreference(convertLoop);
     	
     	Group expressionsGroup= createGroup(numColumns, composite, CleanUpMessages.CodeStyleTabPage_GroupName_Expressions);
     	

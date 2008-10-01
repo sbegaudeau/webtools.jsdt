@@ -21,9 +21,9 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
@@ -35,6 +35,7 @@ class NewJSFileWizardPage extends WizardNewFileCreationPage {
 	
 	public NewJSFileWizardPage(String pageName, IStructuredSelection selection) {
         super(pageName, selection);
+        super.setImageDescriptor(ImageDescriptor.createFromFile(this.getClass(),"full_rhino_transparent.gif"));
     }
 	
 	/**
@@ -42,17 +43,22 @@ class NewJSFileWizardPage extends WizardNewFileCreationPage {
 	 * folder if the current selection is outside the web contents folder. 
 	 */
 	protected void initialPopulateContainerNameField() {
+		
 		super.initialPopulateContainerNameField();
 		
 		IPath fullPath = getContainerFullPath();
 		IProject project = getProjectFromPath(fullPath);
 		IPath webContentPath = getWebContentPath(project);
-		
-		if (webContentPath != null && !webContentPath.isPrefixOf(fullPath)) {
+		IPath projectPath = project.getFullPath();
+		if(fullPath==null || projectPath.equals(fullPath)) 
 			setContainerFullPath(webContentPath);
-		}else{
-			setContainerFullPath(new Path(""));
-		}
+		else
+			setContainerFullPath(fullPath);
+		//if (webContentPath != null && !webContentPath.isPrefixOf(fullPath)) {
+			//setContainerFullPath(webContentPath);
+	//	}else{
+			//setContainerFullPath(new Path(""));
+	//	}
 			
 	}
 	
@@ -246,4 +252,6 @@ path.append("/"); //$NON-NLS-1$
 		
 		return path;
 	}
+	
+	
 }

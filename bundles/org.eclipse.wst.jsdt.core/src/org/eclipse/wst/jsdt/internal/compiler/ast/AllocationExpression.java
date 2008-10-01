@@ -27,6 +27,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.NestedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticArgumentBinding;
@@ -68,7 +69,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 	}
 	// record some dependency information for exception types
 	ReferenceBinding[] thrownExceptions;
-	if (((thrownExceptions = this.binding.thrownExceptions).length) != 0) {
+	if (this.binding != null && this.binding.thrownExceptions != null && (thrownExceptions = this.binding.thrownExceptions).length != 0) {
 		// check exception handling
 		flowContext.checkExceptionHandlers(
 			thrownExceptions,
@@ -276,7 +277,7 @@ public TypeBinding resolveType(BlockScope scope) {
 //			return this.resolvedType;
 //		}
 	}
-	if (this.resolvedType == null || this.resolvedType.isAnyType())
+	if (this.resolvedType == null || this.resolvedType.isAnyType()|| this.resolvedType instanceof ProblemReferenceBinding)
 	{
 		this.binding= new ProblemMethodBinding(
 				TypeConstants.INIT,

@@ -357,11 +357,19 @@ public class CompilerOptions {
 	public InferOptions inferOptions=new InferOptions();
 
 
+    public boolean onlyReportSyntaxErrors=false;
+	
+
 	/**
 	 * Initializing the compiler options with defaults
 	 */
 	public CompilerOptions(){
 		// use default options
+		try {
+			this.onlyReportSyntaxErrors=JavaScriptCore.getPlugin().getPluginPreferences().getBoolean("onlySyntaxErrors");
+		} catch (Exception ex) 
+		{this.onlyReportSyntaxErrors=false;}
+
 	}
 
 	/**
@@ -684,6 +692,11 @@ public class CompilerOptions {
 	}
 
 	public void set(Map optionsMap) {
+
+		try {
+			this.onlyReportSyntaxErrors=JavaScriptCore.getPlugin().getPluginPreferences().getBoolean("onlySyntaxErrors");
+		} catch (Exception ex) 
+		{this.onlyReportSyntaxErrors=false;}
 
 		Object optionValue;
 		if ((optionValue = optionsMap.get(OPTION_LocalVariableAttribute)) != null) {

@@ -4004,7 +4004,14 @@ public final class JavaScriptCore extends Plugin {
 		if (affectedProjects.length != respectiveContainers.length)
 			Assert.isTrue(false, "Projects and containers collections should have the same size"); //$NON-NLS-1$
 		SetContainerOperation operation = new SetContainerOperation(containerPath, affectedProjects, respectiveContainers);
-		operation.runOperation(monitor);
+//		operation.runOperation(monitor);
+		
+		operation.progressMonitor=monitor;
+		
+		operation.execute();
+		
+		
+		
 	}
 
 	/**

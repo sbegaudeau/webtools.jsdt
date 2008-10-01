@@ -156,7 +156,7 @@ public void acceptResult(CompilationResult result) {
 		if (result.hasAnnotations && this.filesWithAnnotations != null) // only initialized if an annotation processor is attached
 			this.filesWithAnnotations.add(compilationUnit);
 
-		finishedWith(typeLocator, result, compilationUnit.getMainTypeName(), null, null);
+		finishedWith(typeLocator, result, compilationUnit.getMainTypeName(), new ArrayList(), new ArrayList());
 		notifier.compiled(compilationUnit);
 	}
 }
@@ -200,7 +200,7 @@ protected void addAllSourceFiles(final ArrayList sourceFiles) throws CoreExcepti
 									return inclusionPatterns != null;
 								}
 							}
-								}
+					}
 					return true;
 				}
 			},
@@ -381,6 +381,7 @@ protected void finishedWith(String sourceLocator, CompilationResult result, char
 	}
 	newState.record(sourceLocator, qualifiedRefs, simpleRefs, mainTypeName, definedTypeNames);
 }
+
 
 
 

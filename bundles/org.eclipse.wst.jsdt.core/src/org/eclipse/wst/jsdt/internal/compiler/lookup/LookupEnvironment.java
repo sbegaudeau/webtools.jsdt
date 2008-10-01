@@ -177,6 +177,11 @@ void addUnitsContainingBinding(PackageBinding packageBinding, char[] name, int m
 				if (!acceptedCompilationUnits.contains(fileName)) {
 					// the type was found as a .js file, try to build it then search the cache
 					acceptedCompilationUnits.add(fileName);
+//					if (compilationUnits[i] instanceof MetadataFile)
+//					{
+//						typeRequestor.accept(((MetadataFile)compilationUnits[i]).getAPIs());
+//					}
+//					else
 					typeRequestor.accept(compilationUnits[i], answer
 							.getAccessRestriction());
 				}

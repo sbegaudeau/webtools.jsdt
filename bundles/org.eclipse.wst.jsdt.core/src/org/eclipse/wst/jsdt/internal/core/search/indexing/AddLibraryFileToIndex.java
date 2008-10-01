@@ -85,13 +85,13 @@ class AddLibraryFileToIndex extends IndexRequest {
 					// external file -> it is ok to use toFile()
 					libraryFilePath = (Path) this.containerPath;
 					// path is already canonical since coming from a library classpath entry
-
+			
 				if (this.isCancelled) {
 					if (JobManager.VERBOSE)
 						org.eclipse.wst.jsdt.internal.core.util.Util.verbose("-> indexing of " + libraryFilePath.toString() + " has been cancelled"); //$NON-NLS-1$ //$NON-NLS-2$
 					return false;
 				}
-
+			
 				if (JobManager.VERBOSE)
 					org.eclipse.wst.jsdt.internal.core.util.Util.verbose("-> indexing " + libraryFilePath.toString()); //$NON-NLS-1$
 				long initialTime = System.currentTimeMillis();

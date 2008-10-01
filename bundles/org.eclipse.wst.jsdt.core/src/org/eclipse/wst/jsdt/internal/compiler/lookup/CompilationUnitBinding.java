@@ -553,7 +553,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 				FunctionExpression functionExpression = (FunctionExpression) ((Assignment)statements[i]).expression;
 				if (functionExpression.methodDeclaration !=null && functionExpression.methodDeclaration.binding==binding)
 					return functionExpression.methodDeclaration;
-		  }
+			}
 		  }
 
 		  class  MethodFinder extends ASTVisitor
@@ -562,6 +562,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 			  MethodDeclaration method;
 			  MethodFinder(MethodBinding binding)
 			  {this.binding=binding;}
+			  
 				public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
 					if (methodDeclaration.binding==this.binding)
 					{
@@ -601,7 +602,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 				public boolean visit(ThisReference thisReference,	// not possible to contain method
 						ClassScope scope) {
 					return false;
-		  }
+				}
 				
 				
 				

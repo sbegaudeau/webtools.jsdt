@@ -92,7 +92,7 @@ public class JsNature implements IProjectNature {
 			int k = 0;
 			head: for (int i = 0; i < prevNatures.length; i++) {
 				for (int j = 0; j < JsNature.NATURE_IDS.length; j++) {
-					if (prevNatures[i] == JsNature.NATURE_IDS[j]) {
+					if (prevNatures[i].equals(JsNature.NATURE_IDS[j])) {
 						continue head;
 					}
 				}

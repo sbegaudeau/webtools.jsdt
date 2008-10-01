@@ -55,7 +55,7 @@ public class ClassData extends VersionableElement{
 	public Property [] fields;
 	public Property [] properties;
 	public Mix [] mixins;
-	
+
 	public String name;
 	public String superclass;
 	public String visibility; 
@@ -95,5 +95,20 @@ public class ClassData extends VersionableElement{
 				
 			}
 		return null;
+	}
+
+	public Property getField(String elementName) {
+        if (this.fields!=null)
+        	for (int i = 0; i < this.fields.length; i++) {
+				if (elementName.equals( this.fields[i].name))
+					return this.fields[i];
+			}
+        if (this.properties!=null)
+        	for (int i = 0; i < this.properties.length; i++) {
+				if (elementName.equals( this.properties[i].name))
+					return this.properties[i];
+			}
+        return null;
+
 	}
 }

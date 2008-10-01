@@ -84,6 +84,7 @@ public class SystemLibraryLocation implements LibraryLocation {
 	}
 	public SystemLibraryLocation(){
 		try {
+		
 			IPath libraryRuntimePath = Platform.getStateLocation(Platform.getBundle(JavaScriptCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY));
 			if(!libraryRuntimePath.toFile().exists()) {
 				libraryRuntimePath.toFile().mkdir();

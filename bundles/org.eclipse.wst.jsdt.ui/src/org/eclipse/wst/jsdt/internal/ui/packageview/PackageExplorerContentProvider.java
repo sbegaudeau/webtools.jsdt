@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -145,28 +144,28 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 						fPendingUpdates.addAll(runnables);
 					}
 				}
-						postAsyncUpdate(ctrl.getDisplay());
-					}
+				postAsyncUpdate(ctrl.getDisplay());
+			}
 		}
 	}
 	
 	private void postAsyncUpdate(final Display display) {
 		if (fUpdateJob == null) {
 			fUpdateJob= new UIJob(display, PackagesMessages.PackageExplorerContentProvider_update_job_description) {
-			public IStatus runInUIThread(IProgressMonitor monitor) {
-				TreeViewer viewer= fViewer;
-				if (viewer != null && viewer.isBusy()) {
-					schedule(100); // reschedule when viewer is busy: bug 184991
-				} else {
-					runPendingUpdates();
+				public IStatus runInUIThread(IProgressMonitor monitor) {
+					TreeViewer viewer= fViewer;
+					if (viewer != null && viewer.isBusy()) {
+						schedule(100); // reschedule when viewer is busy: bug 184991
+					} else {
+						runPendingUpdates();
+					}
+					return Status.OK_STATUS;
 				}
-				return Status.OK_STATUS;
-			}
-		};
+			};
 			fUpdateJob.setSystem(true);
 		}
 		fUpdateJob.schedule();
-	} 	         
+	}         
 	
 	/**
 	 * Run all of the runnables that are the widget updates. Must be called in the display thread.
@@ -310,6 +309,8 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 			return NO_CHILDREN;
 		}
 	}
+	
+
 private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		
 		
@@ -1075,7 +1076,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 					return true;
 				}
 			}
-		}
+		}	
 		for (int i= 0; i < resourceDeltas.length; i++) {
 			if (processResourceDelta(resourceDeltas[i], resource, runnables)) {
 				return false; // early return, element got refreshed
@@ -1145,8 +1146,8 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 						}
 					}
 				}
-					fViewer.add(parent, element);
-				}
+				fViewer.add(parent, element);
+			}
 		});
 	}
 

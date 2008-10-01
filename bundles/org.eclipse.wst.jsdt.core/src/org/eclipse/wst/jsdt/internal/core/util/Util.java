@@ -629,7 +629,8 @@ public class Util {
 			if (extensionStart + suffix.length != fileNameLength) continue;
 			if (fileName.charAt(stringLength) != '.') continue;
 			for (int j = extensionStart; j < fileNameLength; j++) {
-				if (fileName.charAt(j) != suffix[j-extensionStart])
+				char ch = fileName.charAt(j);
+				if (ch != suffix[j-extensionStart] && Character.toLowerCase(ch) != suffix[j-extensionStart])
 					continue suffixes;
 			}
 			return true;
@@ -1187,7 +1188,8 @@ public class Util {
 			if (dotIndex < 0) continue;
 			if (fileName.charAt(dotIndex) != '.') continue;
 			for (int j = 0; j < extensionLength; j++) {
-				if (fileName.charAt(extensionStart + j) != extension[j])
+				char ch = fileName.charAt(extensionStart + j);
+				if (ch != extension[j] && Character.toLowerCase(ch)!=extension[j]         )
 					continue extensions;
 			}
 			return dotIndex;
@@ -2260,7 +2262,8 @@ public class Util {
 			if (extensionStart-1 < 0) continue;
 			if (fileName[extensionStart-1] != '.') continue;
 			for (int j = 0; j < extensionLength; j++) {
-				if (fileName[extensionStart + j] != extension[j])
+				char ch = fileName[extensionStart + j];
+				if (ch != extension[j] && Character.toLowerCase(ch)!= extension[j])
 					continue extensions;
 			}
 			return true;

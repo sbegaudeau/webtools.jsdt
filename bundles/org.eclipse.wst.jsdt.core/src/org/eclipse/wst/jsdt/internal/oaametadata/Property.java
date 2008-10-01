@@ -39,7 +39,7 @@ public class Property extends VersionableElement{
 //		  datatype_supplemental_attributes  &  pattern_attributes  &  pubsub_attributes
 //		)
 	
-
+	
 	public String name;
 	public String dataType;
 	public String visibility;

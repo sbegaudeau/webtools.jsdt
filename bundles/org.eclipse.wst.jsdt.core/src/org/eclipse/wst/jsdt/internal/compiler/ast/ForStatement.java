@@ -259,11 +259,11 @@ public class ForStatement extends Statement implements IForStatement {
 					Assignment as = ((Assignment)initializations[i]);
 					if (as.getLeftHandSide() instanceof SingleNameReference)
 					{
-					LocalVariableBinding bind1 = as.localVariableBinding();
+						LocalVariableBinding bind1 = as.localVariableBinding();
 						if(bind1==null || bind1.declaringScope instanceof CompilationUnitScope){
-						upperScope.problemReporter().looseVariableDecleration(this, as);
+							upperScope.problemReporter().looseVariableDecleration(this, as);
+						}
 					}
-				}
 				}
 
 

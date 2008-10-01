@@ -61,7 +61,8 @@ class AddFolderToIndex extends IndexRequest {
 					new IResourceProxyVisitor() {
 						public boolean visit(IResourceProxy proxy) /* throws CoreException */{
 							if (proxy.getType() == IResource.FILE) {
-								if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(proxy.getName()))
+								if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(proxy.getName())
+										||org.eclipse.wst.jsdt.internal.core.util.Util.isMetadataFileName(proxy.getName()))
 									indexManager.addSource((IFile) proxy.requestResource(), container, parser);
 								return false;
 							}

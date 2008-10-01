@@ -34,7 +34,7 @@ public class LibraryFragmentRoot extends PackageFragmentRoot{
 
 	protected final IPath libraryPath;
 	protected boolean[] fLangeRuntime= new boolean[] {false,false};
-
+	
 	protected LibraryFragmentRoot(IPath jarPath, JavaProject project) {
 		super(null, project);
 		this.libraryPath = jarPath;
@@ -96,10 +96,10 @@ public class LibraryFragmentRoot extends PackageFragmentRoot{
 		ArrayList vChildren = new ArrayList(5);
 		if (!isDirectory())
 		{
-		LibraryPackageFragment packFrag=  new LibraryPackageFragment(this, name);
-		LibraryPackageFragmentInfo fragInfo= new LibraryPackageFragmentInfo();
-
- 		packFrag.computeChildren(fragInfo);
+			LibraryPackageFragment packFrag=  new LibraryPackageFragment(this, name);
+			LibraryPackageFragmentInfo fragInfo= new LibraryPackageFragmentInfo();
+			
+			packFrag.computeChildren(fragInfo);
 			newElements.put(packFrag, fragInfo);
 			vChildren.add(packFrag);
 		}
@@ -113,7 +113,7 @@ public class LibraryFragmentRoot extends PackageFragmentRoot{
 		return true;
 	}
 
-
+	
 	protected void computeDirectoryChildren(File  file, boolean isIncluded, String[] pkgName, ArrayList vChildren) throws JavaScriptModelException {
 
 		if (isIncluded) {
@@ -153,6 +153,7 @@ public class LibraryFragmentRoot extends PackageFragmentRoot{
 		}
 	}
 
+	
 	protected Object createElementInfo() {
 		return new LibraryFragmentRootInfo();
 	}

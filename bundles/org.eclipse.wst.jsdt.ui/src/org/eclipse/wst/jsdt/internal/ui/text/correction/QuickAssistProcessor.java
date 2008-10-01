@@ -39,13 +39,14 @@ import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
@@ -53,8 +54,7 @@ import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
@@ -95,8 +95,8 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractTempRefactor
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.InlineTempRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.PromoteTempToFieldRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.ControlStatementsCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ConvertLoopCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
@@ -143,12 +143,10 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 				|| getArrayInitializerToArrayCreation(context, coveringNode, null)
 				|| getCreateInSuperClassProposals(context, coveringNode, null)
 				|| getInvertEqualsProposal(context, coveringNode, null)
-				|| getConvertForLoopProposal(context, coveringNode, null)
 				|| getExtractLocalProposal(context, coveringNode, null)
 				|| getInlineLocalProposal(context, coveringNode, null)
 				|| getConvertLocalToFieldProposal(context, coveringNode, null)
 				|| getConvertAnonymousToNestedProposal(context, coveringNode, null)
-				|| getConvertIterableLoopProposal(context, coveringNode, null)
 				|| getRemoveBlockProposals(context, coveringNode, null)
 				|| getMakeVariableDeclarationFinalProposals(context, coveringNode, null);
 		}
@@ -181,8 +179,6 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 				getInlineLocalProposal(context, coveringNode, resultingCollections);
 				getConvertLocalToFieldProposal(context, coveringNode, resultingCollections);				
 				getConvertAnonymousToNestedProposal(context, coveringNode, resultingCollections);
-				if (!getConvertForLoopProposal(context, coveringNode, resultingCollections))
-					getConvertIterableLoopProposal(context, coveringNode, resultingCollections);
 				getRemoveBlockProposals(context, coveringNode, resultingCollections);
 				getMakeVariableDeclarationFinalProposals(context, coveringNode, resultingCollections);
 			}
@@ -1223,29 +1219,6 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 				}
 			}
 		}
-		return true;
-	}
-
-	private static boolean getConvertForLoopProposal(IInvocationContext context, ASTNode node, Collection resultingCollections) throws CoreException {
-		ForStatement forStatement= getEnclosingForStatementHeader(node);
-		if (forStatement == null)
-			return false;
-
-		if (resultingCollections == null)
-			return true;
-		
-		IFix fix= ConvertLoopFix.createConvertForLoopToEnhancedFix(context.getASTRoot(), forStatement);
-		if (fix == null)
-			return false;
-		
-		Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
-		Map options= new HashMap();
-		options.put(CleanUpConstants.CONTROL_STATMENTS_CONVERT_FOR_LOOP_TO_ENHANCED, CleanUpConstants.TRUE);
-		ICleanUp cleanUp= new ConvertLoopCleanUp(options);
-		FixCorrectionProposal proposal= new FixCorrectionProposal(fix, cleanUp, 1, image, context);
-		proposal.setCommandId(CONVERT_FOR_LOOP_ID);
-		
-		resultingCollections.add(proposal);
 		return true;
 	}
 

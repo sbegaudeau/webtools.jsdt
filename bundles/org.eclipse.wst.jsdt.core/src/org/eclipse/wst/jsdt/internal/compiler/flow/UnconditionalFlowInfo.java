@@ -1162,7 +1162,7 @@ public void markAsDefinitelyAssigned(FieldBinding field) {
 }
 
 public void markAsDefinitelyAssigned(LocalVariableBinding local) {
- 	if (this != DEAD_END)
+ 	if (this != DEAD_END && local != null)
  	{
 		markAsDefinitelyAssigned(getLocalID(local));
  	}

@@ -812,10 +812,10 @@ private void buildMoreCompletionContext(Expression expression) {
 					Expression operatorExpression = null;
 					switch (info) {
 						case PLUS_PLUS :
-							operatorExpression = new PrefixExpression(expression,IntLiteral.One, PLUS, expression.sourceStart);
+							operatorExpression = new PrefixExpression(expression,IntLiteral.getOne(), PLUS, expression.sourceStart);
 							break;
 						case MINUS_MINUS :
-							operatorExpression = new PrefixExpression(expression,IntLiteral.One, MINUS, expression.sourceStart);
+							operatorExpression = new PrefixExpression(expression,IntLiteral.getOne(), MINUS, expression.sourceStart);
 							break;
 						default :
 							operatorExpression = new UnaryExpression(expression, info);

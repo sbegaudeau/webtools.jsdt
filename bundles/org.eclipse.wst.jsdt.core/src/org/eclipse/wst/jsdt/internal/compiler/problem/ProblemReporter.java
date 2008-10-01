@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Michael Spector <spektom@gmail.com> -  Bug 243886
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.problem;
 
@@ -1115,7 +1116,12 @@ public void codeSnippetMissingMethod(String className, String missingMethod, Str
  * to indicate that this problem is configurable through options
  */
 public int computeSeverity(int problemID){
+ 	
 
+	if (this.options.onlyReportSyntaxErrors && (problemID & IProblem.Syntax) == 0) {
+		return ProblemSeverities.Ignore;
+	}
+	
 	switch (problemID) {
 		case IProblem.Task :
 			return ProblemSeverities.Warning;
@@ -4890,7 +4896,7 @@ public void mustSpecifyPackage(CompilationUnitDeclaration compUnitDecl) {
 		compUnitDecl.sourceStart,
 		compUnitDecl.sourceStart + 1);
 }
-public void mustUseAStaticMethod(MessageSend messageSend, MethodBinding method) {
+public void mustUseAStaticMethod(ASTNode messageSend, MethodBinding method) {
 	this.handle(
 		IProblem.StaticMethodRequested,
 		new String[] {new String(method.declaringClass.readableName()), new String(method.selector), typesAsString(method.isVarargs(), method.parameters, false)},

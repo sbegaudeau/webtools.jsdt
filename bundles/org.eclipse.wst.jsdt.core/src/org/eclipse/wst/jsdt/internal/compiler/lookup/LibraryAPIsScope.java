@@ -63,6 +63,10 @@ public PackageBinding getDefaultPackage() {
 
 public TypeBinding resolveType(String name)
 {
+	
+	if (name==null)
+		return TypeBinding.ANY;
+	
   TypeBinding binding = (TypeBinding)this.resolvedTypes.get(name);
   if (binding!=null)
 	  return binding;

@@ -1366,7 +1366,7 @@ public class Main implements ProblemSeverities, SuffixConstants {
 
 	public boolean showProgress = false;
 	public long startTime;
-
+	
 	public boolean showError=true;
 
 public boolean systemExitWhenFinished = true;

@@ -23,8 +23,6 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 public class IntLiteral extends NumberLiteral implements IIntLiteral {
 	public int value;
 
-	public static final IntLiteral
-		One = new IntLiteral(new char[]{'1'},0,0,1);//used for ++ and --
 
 	static final Constant FORMAT_ERROR = DoubleConstant.fromValue(1.0/0.0); // NaN;
 public IntLiteral(char[] token, int s, int e) {
@@ -51,7 +49,6 @@ public void computeConstant() {
 	//which is legal if used with a - as prefix....cool....
 	//notice that Integer.MIN_VALUE  == -2147483648
 
-	if (this == One) {	constant = IntConstant.fromValue(1); return ;}
 
 	int length = source.length;
 	long computedValue = 0L;
@@ -147,4 +144,10 @@ public int getASTType() {
 	return IASTNode.INT_LITERAL;
 
 }
+
+public static IntLiteral getOne()
+{
+	return new IntLiteral(new char[]{'1'},0,0,1);//used for ++ and --
+}
+
 }

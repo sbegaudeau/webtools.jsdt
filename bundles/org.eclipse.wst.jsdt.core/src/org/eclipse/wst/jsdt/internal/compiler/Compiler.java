@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Michael Spector <spektom@gmail.com> -  Bug 243886
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler;
 
@@ -397,6 +398,9 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		CompilationUnitDeclaration unit,
 		CompilationResult result) {
 
+		
+		if (this.options.onlyReportSyntaxErrors)
+			return;
 		if ((result == null) && (unit != null)) {
 			result = unit.compilationResult; // current unit being processed ?
 		}

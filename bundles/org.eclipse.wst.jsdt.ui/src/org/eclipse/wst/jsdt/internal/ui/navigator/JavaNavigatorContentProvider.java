@@ -282,21 +282,21 @@ public class JavaNavigatorContentProvider extends
 					javaElements[i]= null;
 				}
 			}
-			}
+		}
 		for (int i= 0; i < javaElements.length; i++) {
 			Object element= javaElements[i];
 			if (element instanceof IJavaScriptElement) {
 				IJavaScriptElement cElement= (IJavaScriptElement)element;
 				IResource resource= cElement.getResource();
 				if (resource != null) {
-				proposedChildren.remove(resource);
-					}
+					proposedChildren.remove(resource);
+				}
 				proposedChildren.add(element);
 			} else if (element != null) {
 				proposedChildren.add(element);
-					}
-						}
-						}
+			}
+		}
+	}
 
 
 
@@ -331,5 +331,4 @@ public class JavaNavigatorContentProvider extends
 		} 
 		super.postRefresh(toRefresh, updateLabels, runnables);		
 	}
-
 }

@@ -219,7 +219,7 @@
 			icon="$nl$/icons/full/elcl16/wordassist_co.gif"/>
 	</extension>
 	 
-	<!-- JavaScript completions -->   
+	<!-- JavaScript completions -->
 	<!--   
 	<extension
 		point="org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer"
@@ -4696,6 +4696,7 @@
             id="org.eclipse.wst.jsdt.ui.PackageExplorer.ImportDeclarationFilter">
       </filter>
       -->
+      <!--
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             name="%HideSyntheticMembers.label"
@@ -4704,6 +4705,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.SyntheticMembersFilter"
             id="org.eclipse.wst.jsdt.ui.PackageExplorer.SyntheticMembersFilter">
       </filter>
+      -->
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             name="%HideNonJavaProjects.label"
@@ -4744,6 +4746,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.StaticsFilter"
             id="org.eclipse.wst.jsdt.ui.PackageExplorer.StaticsFilter">
       </filter>
+      <!--
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             name="%HideNonPublic.label"
@@ -4752,6 +4755,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.NonPublicFilter"
             id="org.eclipse.wst.jsdt.ui.PackageExplorer.NonPublicFilter">
       </filter>
+      -->
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             name="%HideLocalTypes.label"
@@ -4769,6 +4773,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.NonPublicTypeFilter"
             id="org.eclipse.wst.jsdt.ui.TypesView.NonPublicTypeFilter">
       </filter>
+      <!--
       <filter
             targetId="org.eclipse.wst.jsdt.ui.TypesView"
             name="%HideInterface.label"
@@ -4777,7 +4782,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.InterfaceFilter"
             id="org.eclipse.wst.jsdt.ui.TypesView.InterfaceFilter">
       </filter>
-<!--      
+      
       <filter
             targetId="org.eclipse.wst.jsdt.ui.TypesView"
             name="%HideEnum.label"
@@ -4854,6 +4859,7 @@
             id="org.eclipse.wst.jsdt.ui.ProjectsView.NonSharedProjectsFilter">
       </filter>
 <!-- Members view -->
+<!--
       <filter
             targetId="org.eclipse.wst.jsdt.ui.MembersView"
             name="%HideImportDeclaration.label"
@@ -4870,6 +4876,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.SyntheticMembersFilter"
             id="org.eclipse.wst.jsdt.ui.MembersView.SyntheticMembersFilter">
       </filter>
+      -->
 <!-- Outline Page -->
 <!--
       <filter
@@ -4891,6 +4898,7 @@
             id="org.eclipse.wst.jsdt.ui.JavaOutlinePage.ImportDeclarationFilter">
       </filter>
  -->
+ <!--
       <filter
             targetId="org.eclipse.wst.jsdt.ui.JavaOutlinePage"
             name="%HideSyntheticMembers.label"
@@ -4899,6 +4907,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.SyntheticMembersFilter"
             id="org.eclipse.wst.jsdt.ui.JavaOutlinePage.SyntheticMembersFilter">
       </filter>
+      -->
 <!-- Quick Outline -->
       <filter
             targetId="org.eclipse.wst.jsdt.internal.ui.text.QuickOutline"
@@ -4932,6 +4941,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.StaticsFilter"
             id="org.eclipse.wst.jsdt.internal.ui.text.QuickOutline.StaticsFilter">
       </filter>
+      <!--
       <filter
             targetId="org.eclipse.wst.jsdt.internal.ui.text.QuickOutline"
             name="%HideNonPublic.label"
@@ -4940,6 +4950,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.NonPublicFilter"
             id="org.eclipse.wst.jsdt.internal.ui.text.QuickOutline.NonPublicFilter">
       </filter>
+      -->
       <filter
             targetId="org.eclipse.wst.jsdt.internal.ui.text.QuickOutline"
             name="%HideLocalTypes.label"
@@ -4948,6 +4959,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.LocalTypesFilter"
             id="org.eclipse.wst.jsdt.internal.ui.text.QuickOutline.LocalTypesFilter">
       </filter>
+      <!--
       <filter
             targetId="org.eclipse.wst.jsdt.internal.ui.text.QuickOutline"
             name="%HideSyntheticMembers.label"
@@ -4956,6 +4968,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.SyntheticMembersFilter"
             id="org.eclipse.wst.jsdt.internal.ui.text.QuickOutline.SyntheticMembersFilter">
       </filter>
+      -->
 <!-- Quick Hierarchy -->
       <filter
             targetId="org.eclipse.wst.jsdt.internal.ui.typehierarchy.QuickHierarchy"
@@ -4965,6 +4978,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.StaticsFilter"
             id="org.eclipse.wst.jsdt.internal.ui.typehierarchy.QuickHierarchy.StaticsFilter">
       </filter>
+      <!--
       <filter
             targetId="org.eclipse.wst.jsdt.internal.ui.typehierarchy.QuickHierarchy"
             name="%HideNonPublic.label"
@@ -4973,6 +4987,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.NonPublicFilter"
             id="org.eclipse.wst.jsdt.internal.ui.typehierarchy.QuickHierarchy.NonPublicFilter">
       </filter>
+      -->
       <filter
             targetId="org.eclipse.wst.jsdt.internal.ui.typehierarchy.QuickHierarchy"
             name="%HideLocalTypes.label"
@@ -5622,12 +5637,14 @@
 		        name="%HideEnum.label"
 		        description="%HideEnum.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideAnnotations"/>
--->		        
+-->		  
+<!--      
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.InterfaceFilter"
 		        name="%HideInterface.label"
 		        description="%HideInterface.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideInterface"/>		        		        
+-->
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.FieldsFilter"
 		        name="%HideFields.label"
@@ -5641,12 +5658,14 @@
 		        description="%HideImportDeclaration.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideImportDeclaration"/> 
   		-->
+  		<!--
   		<commonFilter
 		        activeByDefault="true"
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.InnerClassFilesFilter"
 		        name="%HideInnerClassFiles.label"
 		        description="%HideInnerClassFiles.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideInnerClassFiles"/>
+  		-->
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.JavaFileFilter"
 		        name="%HideJavaFiles.label"
@@ -5666,12 +5685,14 @@
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.NonJavaProjectsFilter"
 		        name="%HideNonJavaProjects.label"
 		        description="%HideNonJavaProjects.description"
-		        id="org.eclipse.wst.jsdt.java.ui.filters.HideNonJavaProjects"/>   
+		        id="org.eclipse.wst.jsdt.java.ui.filters.HideNonJavaProjects"/> 
+		<!--  
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.NonPublicFilter"
 		        name="%HideNonPublic.label"
 		        description="%HideNonPublic.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideNonPublic"/>   
+  		-->
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.NonSharedProjectFilter"
 		        name="%HideNonSharedProjects.label"
@@ -5695,12 +5716,14 @@
 		        name="%HideStatics.label"
 		        description="%HideStatics.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideStatics"/>
+		<!--
   		<commonFilter
 		        activeByDefault="true"
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.SyntheticMembersFilter"
 		        name="%HideSyntheticMembers.label"
 		        description="%HideSyntheticMembers.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideSyntheticMembers"/>
+		 -->
    </extension>
    <extension
        point="org.eclipse.ui.navigator.linkHelper">

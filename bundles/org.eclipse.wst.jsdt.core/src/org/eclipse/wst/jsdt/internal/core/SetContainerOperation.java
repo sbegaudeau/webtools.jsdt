@@ -37,6 +37,11 @@ public class SetContainerOperation extends ChangeClasspathOperation {
 	}
 
 	protected void executeOperation() throws JavaScriptModelException {
+		execute();
+	}
+		
+	public void execute() throws JavaScriptModelException {
+
 		checkCanceled();
 		try {
 			beginTask("", 1); //$NON-NLS-1$

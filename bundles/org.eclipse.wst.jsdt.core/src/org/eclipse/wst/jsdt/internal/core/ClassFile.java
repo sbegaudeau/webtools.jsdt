@@ -495,10 +495,10 @@ protected void getHandleMemento(StringBuffer buff) {
 						&& root.getPath().lastSegment().equalsIgnoreCase(getElementName()))
 			) {
 		
-	((JavaElement)getParent()).getHandleMemento(buff);
-	buff.append(getHandleMementoDelimiter());
-	escapeMementoName(buff, getPath().toPortableString());
-}
+		((JavaElement)getParent()).getHandleMemento(buff);
+		buff.append(getHandleMementoDelimiter());
+		escapeMementoName(buff, getPath().toPortableString());
+		}
 		else
 			super.getHandleMemento(buff);
 	} catch (JavaScriptModelException e) {
@@ -635,7 +635,7 @@ private IStatus validateClassFile() {
 		if (root.getKind() != IPackageFragmentRoot.K_BINARY)
 		{
 			if (((PackageFragment)this.getParent()).getKind()!= IPackageFragmentRoot.K_BINARY)
-			return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, root);
+			 return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, root);
 			
 		}
 	} catch (JavaScriptModelException e) {

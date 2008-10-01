@@ -44,8 +44,8 @@ import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.text.edits.TextEditVisitor;
 import org.eclipse.text.edits.UndoEdit;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
@@ -63,7 +63,6 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.CodeFormatCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.CommentFormatCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ControlStatementsCleanUp;
-import org.eclipse.wst.jsdt.internal.ui.fix.ConvertLoopCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ExpressionsCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.SortMembersCleanUp;
@@ -1031,7 +1030,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 		return new ICleanUp[] {
 //				new CodeStyleCleanUp(), 
 				new ControlStatementsCleanUp(), 
-				new ConvertLoopCleanUp(), 
+//				new ConvertLoopCleanUp(), 
 //				new VariableDeclarationCleanUp(), 
 				new ExpressionsCleanUp(), 
 				new UnusedCodeCleanUp(), 
@@ -1048,7 +1047,7 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 		return new ICleanUp[] {
 //				new CodeStyleCleanUp(settings), 
 				new ControlStatementsCleanUp(settings), 
-				new ConvertLoopCleanUp(settings), 
+//				new ConvertLoopCleanUp(settings), 
 //				new VariableDeclarationCleanUp(settings), 
 				new ExpressionsCleanUp(settings), 
 				new UnusedCodeCleanUp(settings), 

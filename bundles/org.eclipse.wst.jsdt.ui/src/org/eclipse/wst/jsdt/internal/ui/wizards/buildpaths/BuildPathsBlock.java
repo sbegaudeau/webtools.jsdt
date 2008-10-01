@@ -429,7 +429,7 @@ public class BuildPathsBlock {
 	}
 	
 	public void initializeTimeStamps() {
-		IFile file= fCurrJProject.getJSDTScopeFile(); //$NON-NLS-1$
+		IFile file= fCurrJProject.getJSDTScopeFile(true); //$NON-NLS-1$
 		fFileTimeStamp= file.getModificationStamp();
 		fUserSettingsTimeStamp= getEncodedSettings();
 	}

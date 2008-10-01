@@ -50,8 +50,8 @@ public int match(InferredType node, MatchingNodeSet nodeSet) {
 	if (pkg!=null)
 	{
 		if (pkg.length>0 &&
-			matchesName(CharOperation.concat(pkg, this.pattern.simpleName, '.'), typeName))
-		return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
+				matchesName(CharOperation.concat(pkg, this.pattern.simpleName, '.'), typeName))
+			return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 	}
 	else // any package
 	{

@@ -47,7 +47,7 @@ public abstract class Expression extends Statement implements IExpression {
 	//Expression is a subclass of Statement. See the message isValidJavaStatement()
 
 	public int implicitConversion;
-	public TypeBinding resolvedType;
+	public TypeBinding resolvedType = TypeBinding.UNKNOWN;
 
 public static final boolean isConstantValueRepresentable(Constant constant, int constantTypeID, int targetTypeID) {
 	//true if there is no loss of precision while casting.

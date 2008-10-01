@@ -183,9 +183,14 @@ public class JavaProject
 	}
 
 	public IFile getJSDTScopeFile() {
+		return getJSDTScopeFile(false);
+	}
+		
+	public IFile getJSDTScopeFile(boolean forceCreate) {
+
 		// Return the projects .jsdtscope file
 		IFolder rscPath = this.project.getFolder(JavaProject.SHARED_PROPERTIES_DIRECTORY);
-		if(!rscPath.exists())
+		if(!rscPath.exists()&&forceCreate)
 			try {
 				rscPath.create(true, true, new NullProgressMonitor());
 			}
@@ -2741,7 +2746,7 @@ public class JavaProject
 
 		// actual file saving
 		try {
-			setSharedProperty(getJSDTScopeFile().getProjectRelativePath().toString(), encodeClasspath(newClasspath, newOutputLocation, true, unknownElements));
+			setSharedProperty(getJSDTScopeFile(true).getProjectRelativePath().toString(), encodeClasspath(newClasspath, newOutputLocation, true, unknownElements));
 			return true;
 		} catch (CoreException e) {
 			throw new JavaScriptModelException(e);
@@ -2869,7 +2874,7 @@ public class JavaProject
 		this.project = project;
 		this.parent = JavaModelManager.getJavaModelManager().getJavaModel();
 		/* Make sure the scope file is properly set. */
-		getJSDTScopeFile();
+		getJSDTScopeFile(true);
 	}
 
 	/**
@@ -3086,7 +3091,7 @@ public class JavaProject
 
 			try {
 				IFolder rscPath = this.project.getFolder(JavaProject.SHARED_PROPERTIES_DIRECTORY);
-				if(!rscPath.exists()) rscPath.create(true, true, new NullProgressMonitor());
+//				if(!rscPath.exists()) rscPath.create(true, true, new NullProgressMonitor());
 
 				IPath fullPath = new Path(JavaProject.SHARED_PROPERTIES_DIRECTORY);//.append(LibrarySuperType.SUPER_TYPE_NAME);
 

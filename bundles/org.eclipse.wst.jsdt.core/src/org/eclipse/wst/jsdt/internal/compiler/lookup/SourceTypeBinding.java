@@ -973,7 +973,7 @@ private MethodBinding getExactMethod0(char[] selector, TypeBinding[] argumentTyp
 				}
 			}
 			// check dup collisions
-			boolean isSource15 = this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
+			boolean isSource15 = this.scope!=null  &&  this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
 			for (int i = start; i <= end; i++) {
 				MethodBinding method1 = this.methods[i];
 				for (int j = end; j > i; j--) {
@@ -1116,7 +1116,7 @@ private MethodBinding[] getMethods0(char[] selector) {
 	} else {
 		return Binding.NO_METHODS;
 	}
-	boolean isSource15 = this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
+	boolean isSource15 = this.scope!=null && this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
 	for (int i = 0, length = result.length - 1; i < length; i++) {
 		MethodBinding method = result[i];
 		for (int j = length; j > i; j--) {

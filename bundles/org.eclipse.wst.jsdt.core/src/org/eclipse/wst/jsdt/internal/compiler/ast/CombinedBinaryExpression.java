@@ -130,22 +130,22 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 		return super.analyseCode(currentScope, flowContext, flowInfo);
 	}
 	if (this.referencesTable[0] != null && this.referencesTable[0].resolvedType != null) {
-	BinaryExpression cursor;
-	if ((cursor = this.referencesTable[0]).resolvedType.id !=
-			TypeIds.T_JavaLangString) {
-		cursor.left.checkNPE(currentScope, flowContext, flowInfo);
-	}
-	flowInfo = cursor.left.analyseCode(currentScope, flowContext, flowInfo).
-		unconditionalInits();
-	for (int i = 0, end = this.arity; i < end; i ++) {
-		if ((cursor = this.referencesTable[i]).resolvedType.id !=
+		BinaryExpression cursor;
+		if ((cursor = this.referencesTable[0]).resolvedType.id !=
 				TypeIds.T_JavaLangString) {
-			cursor.right.checkNPE(currentScope, flowContext, flowInfo);
+			cursor.left.checkNPE(currentScope, flowContext, flowInfo);
 		}
-		flowInfo = cursor.right.
-			analyseCode(currentScope, flowContext, flowInfo).
-				unconditionalInits();
-	}
+		flowInfo = cursor.left.analyseCode(currentScope, flowContext, flowInfo).
+			unconditionalInits();
+		for (int i = 0, end = this.arity; i < end; i ++) {
+			if ((cursor = this.referencesTable[i]).resolvedType.id !=
+					TypeIds.T_JavaLangString) {
+				cursor.right.checkNPE(currentScope, flowContext, flowInfo);
+			}
+			flowInfo = cursor.right.
+				analyseCode(currentScope, flowContext, flowInfo).
+					unconditionalInits();
+		}
 	}
 	if (this.resolvedType.id != TypeIds.T_JavaLangString) {
 		this.right.checkNPE(currentScope, flowContext, flowInfo);
