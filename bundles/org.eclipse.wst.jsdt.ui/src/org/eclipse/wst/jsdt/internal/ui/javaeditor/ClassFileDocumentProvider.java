@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.LocationKind;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,6 +26,7 @@ import org.eclipse.jface.text.ISynchronizable;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IClassFile;
@@ -192,6 +194,7 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 	protected boolean setDocumentContent(IDocument document, IEditorInput editorInput, String encoding) throws CoreException {
 		if (editorInput instanceof IClassFileEditorInput) {
 			IClassFile classFile= ((IClassFileEditorInput) editorInput).getClassFile();
+			classFile.makeConsistent(getProgressMonitor());
 			String source= classFile.getSource();
 			if (source == null)
 				source= ""; //$NON-NLS-1$
@@ -247,7 +250,29 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 		}
 		return document;
 	}
-
+	public String getEncoding(Object element) {
+		if (element instanceof IStorageEditorInput) {
+			StorageInfo info= (StorageInfo) getElementInfo(element);
+			if (info != null)
+				return info.fEncoding;
+			return getPersistedEncoding(element);
+		}
+		if(element instanceof InternalClassFileEditorInput){
+			InternalClassFileEditorInput input = (InternalClassFileEditorInput)element;
+			IClassFile file = input.getClassFile();
+			if(file!=null){
+				String fileEncoding = null;
+				try {
+					IResource resource =(	file.getResource()); 
+					fileEncoding = (resource==null&&resource instanceof IFile)?null:((IFile)resource).getCharset();
+				} catch (CoreException e) {
+					// resource not in workspace, use default encoding.
+				}
+				return fileEncoding;
+			}
+		}
+		return null;
+	}
 	/*
 	 * @see AbstractDocumentProvider#createElementInfo(Object)
 	 */

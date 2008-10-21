@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -31,7 +32,6 @@ import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
-import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
@@ -355,14 +355,7 @@ public byte[] getBytes() throws JavaScriptModelException {
 		return Util.getResourceContentsAsByteArray(file);
 //	}
 }
-public IBuffer getBuffer() throws JavaScriptModelException {
-	IStatus status = validateClassFile();
-	if (status.isOK()) {
-		return super.getBuffer();
-	} else {
-		throw new JavaScriptModelException((IJavaScriptModelStatus) status);
-	}
-}
+
 /**
  * @see org.eclipse.wst.jsdt.core.IMember
  */
@@ -547,6 +540,11 @@ public String getSource() throws JavaScriptModelException {
 	}
 	return buffer.getContents();
 }
+
+public void makeConsistent(IProgressMonitor monitor) throws JavaScriptModelException {
+	openBuffer(monitor, createElementInfo()); // open buffer independently from the info, since we are building the info
+}
+
 /**
  * @see org.eclipse.wst.jsdt.core.ISourceReference
  */
@@ -661,8 +659,17 @@ protected IBuffer openBuffer(IProgressMonitor pm, Object info) throws JavaScript
 }
 private IBuffer mapSource(SourceMapper mapper, IBinaryType info) {
 	char[] contents =null;
+	
+	
+	String fileEncoding = null;
 	try {
-		contents=org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileCharContent(new File(filePath.toOSString()),null);
+		IResource resource =(this.getResource()); 
+		fileEncoding = (resource!=null&&resource instanceof IFile)?((IFile)resource).getCharset():null;
+	} catch (CoreException e) {
+		// resource not in workspace, use default encoding.
+	}
+	try {
+		contents=org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileCharContent(new File(filePath.toOSString()),fileEncoding);
 	} catch (IOException ex){}
 	//mapper.findSource(getType(), info);
 	if (contents != null) {
@@ -835,9 +842,16 @@ public IType[] getTypes() throws JavaScriptModelException {
 }
 
  	public char[] getContents() {
+ 		String fileEncoding = null;
+ 		try {
+ 			IResource resource =(this.getResource()); 
+ 			fileEncoding = (resource!=null&&resource instanceof IFile)?((IFile)resource).getCharset():null;
+ 		} catch (CoreException e) {
+ 			// resource not in workspace, use default encoding.
+ 		}
 		char [] chars=null;
 		try {
-			chars=org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileCharContent(new File(filePath.toOSString()),null);
+			chars=org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileCharContent(new File(filePath.toOSString()),fileEncoding);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
