@@ -880,4 +880,15 @@ public void cleanup() {
 		this.functionTypeBinding.cleanup();
 	
 }
+
+void ensureBindingsAreComplete()
+{
+	if (this.declaringClass instanceof SourceTypeBinding) {
+		SourceTypeBinding parentBinding = (SourceTypeBinding) this.declaringClass;
+		if ((parentBinding.tagBits & TagBits.AreMethodsComplete) == 0) {
+				parentBinding.methods(); //finish resolving method bindings 
+		}
+	}
+}
+ 
 }

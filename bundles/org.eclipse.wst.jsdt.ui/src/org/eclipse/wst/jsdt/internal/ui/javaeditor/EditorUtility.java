@@ -66,6 +66,7 @@ import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
@@ -401,7 +402,17 @@ public class EditorUtility {
 			}
 
 			if (element instanceof IClassFile)
+			{
+				String elementName = element.getElementName();
+				if (Util.isMetadataFileName(elementName))
+				{
+					IResource resource=element.getResource();
+					if (resource instanceof IFile)
+								return new FileEditorInput((IFile) resource);
+
+				}
 				return new InternalClassFileEditorInput((IClassFile) element);
+			}
 
 			element= element.getParent();
 		}

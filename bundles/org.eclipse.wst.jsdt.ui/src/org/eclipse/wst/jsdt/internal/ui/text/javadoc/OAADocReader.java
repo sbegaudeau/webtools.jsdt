@@ -35,8 +35,18 @@ public class OAADocReader extends Reader {
 				buffer.append("</p>");
 			}
 
+			if (method!=null)
+			  printMethod(method);
+
+		}
+		buffer.append("</dl>"); //$NON-NLS-1$
+
+		sr = new StringReader(buffer.toString());
+	}
+
+	private void printMethod(Method method) {
 			buffer.append("<dl>"); //$NON-NLS-1$
-			if (method != null && method.parameters != null
+		if ( method.parameters != null
 					&& method.parameters.length > 0) {
 				printSectionHead(JavaDocMessages.JavaDoc2HTMLTextReader_parameters_section);
 				for (int i = 0; i < method.parameters.length; i++) {
@@ -54,7 +64,7 @@ public class OAADocReader extends Reader {
 						JavaDocMessages.JavaDoc2HTMLTextReader_returns_section,
 						method.returns.dataType, method.returns.description);
 
-			if (method != null && method.exceptions != null
+		if ( method.exceptions != null
 					&& method.exceptions.length > 0) {
 				printSectionHead(JavaDocMessages.JavaDoc2HTMLTextReader_throws_section);
 				for (int i = 0; i < method.exceptions.length; i++) {
@@ -64,11 +74,6 @@ public class OAADocReader extends Reader {
 					buffer.append("</dd>"); //$NON-NLS-1$
 				}
 			}
-
-		}
-		buffer.append("</dl>"); //$NON-NLS-1$
-
-		sr = new StringReader(buffer.toString());
 	}
 
 	public void close() throws IOException {

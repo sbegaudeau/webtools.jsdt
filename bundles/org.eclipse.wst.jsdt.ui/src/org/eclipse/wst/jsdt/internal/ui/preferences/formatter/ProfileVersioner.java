@@ -30,7 +30,7 @@ public class ProfileVersioner implements IProfileVersioner {
 	private static final int VERSION_4= 4; 
 	private static final int VERSION_5= 5; // after splitting of FORMATTER_INDENT_BLOCK_STATEMENTS
 	private static final int VERSION_6= 6; // after splitting of new_line_in_control_statements
-	private static final int VERSION_7= 7; // after moving comment formatter to JDT Core
+	private static final int VERSION_7= 7; // after moving comment formatter to JSDT Core
 	private static final int VERSION_8= 8; // fix for https://bugs.eclipse.org/bugs/show_bug.cgi?id=89739
 	private static final int VERSION_9= 9; // after storing project profile names in preferences
 	private static final int VERSION_10= 10; // splitting options for annotation types

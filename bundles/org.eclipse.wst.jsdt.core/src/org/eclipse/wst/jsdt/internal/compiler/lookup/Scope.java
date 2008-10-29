@@ -1186,7 +1186,10 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		{
 			Binding binding = getTypeOrPackage(selector, Binding.METHOD);
 			if (binding instanceof MethodBinding)
+			{
+				((MethodBinding) binding).ensureBindingsAreComplete();
 				found.add(binding);
+		}
 		}
 		// if found several candidates, then eliminate those not matching argument types
 		int foundSize = found.size;

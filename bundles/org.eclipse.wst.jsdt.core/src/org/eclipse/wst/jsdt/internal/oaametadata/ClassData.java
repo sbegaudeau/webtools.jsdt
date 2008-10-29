@@ -111,4 +111,18 @@ public class ClassData extends VersionableElement{
         return null;
 
 	}
+	
+	public String getSuperClass()
+	{
+		if (superclass!=null && superclass.length()>0)
+			return superclass;
+		if (this.ancestors!=null )
+			for (int i = 0; i < this.ancestors.length; i++) {
+//TODO:   should be other attributes on ancestor to check, not yet in spec				
+				String dataType = this.ancestors[i].dataType;
+				if (dataType!=null&& dataType.length()>0)
+					return dataType;
+			}
+		return null;
+	}
 }

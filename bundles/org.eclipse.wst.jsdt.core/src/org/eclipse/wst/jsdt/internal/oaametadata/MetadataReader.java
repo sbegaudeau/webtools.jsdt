@@ -449,6 +449,16 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 						break;
 					}
 
+					case STATE_ANCESTOR:
+					{
+						Ancestor ancestor=new Ancestor();
+						this.currentObject=ancestor;
+						addCollectionElement(TAG_ANCESTOR, ancestor);
+						ancestor.dataType = attributes.getValue(ATTRIBUTE_ANCESTOR_DATATYPE);
+						
+						break;
+					}
+
 					case STATE_API:
 					{
 						this.apis.libraryVersion = attributes.getValue(ATTRIBUTE_API_VERSION);

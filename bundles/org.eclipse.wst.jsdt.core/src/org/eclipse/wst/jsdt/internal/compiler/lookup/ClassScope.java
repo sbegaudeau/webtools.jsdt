@@ -989,11 +989,47 @@ public class ClassScope extends Scope {
 	}
 
 
+	private boolean connectMixins() {
+		SourceTypeBinding sourceType = this.inferredType.binding;
+		sourceType.superInterfaces = Binding.NO_MIXINS;
+		if (sourceType.id == T_JavaLangObject) // already handled the case of redefining java.lang.Object
+			return true;
+		if (this.inferredType.mixins==null || this.inferredType.mixins.isEmpty())
+			return true;
+		
+		boolean noProblems = true;
+		int length = this.inferredType.mixins.size();
+		ReferenceBinding[] mixinBindings = new ReferenceBinding[length];
+		int count = 0;
+		nextMixin : for (int i = 0; i < length; i++) {
+			char []mixinName=(char [])this.inferredType.mixins.get(i);
+			ReferenceBinding mixin = (ReferenceBinding)this.getType(mixinName);
+			if (mixin == null) { // detected cycle
+				sourceType.tagBits |= TagBits.HierarchyHasProblems;
+				noProblems = false;
+				continue nextMixin;
+			}
+			// only want to reach here when no errors are reported
+			mixinBindings[count++] = mixin;
+		}
+		// hold onto all correctly resolved superinterfaces
+		if (count > 0) {
+			if (count != length)
+				System.arraycopy(mixinBindings, 0, mixinBindings = new ReferenceBinding[count], 0, count);
+			sourceType.mixins = mixinBindings;
+		}
+		return noProblems;
+	}
+
+
+	
+	
 	void connectTypeHierarchy() {
  		SourceTypeBinding sourceType = getReferenceBinding();
 		if ((sourceType.tagBits & TagBits.BeginHierarchyCheck) == 0) {
 			sourceType.tagBits |= TagBits.BeginHierarchyCheck;
 			 boolean noProblems  = connectSuperclass();
+		     noProblems &= connectMixins();
 			//noProblems &= connectSuperInterfaces();
 			sourceType.tagBits |= TagBits.EndHierarchyCheck;
 //			noProblems &= connectTypeVariables(referenceContext.typeParameters, false);
@@ -1031,7 +1067,8 @@ public class ClassScope extends Scope {
 
 		sourceType.tagBits |= TagBits.BeginHierarchyCheck;
 		boolean noProblems = connectSuperclass();
-		noProblems &= connectSuperInterfaces();
+	     noProblems &= connectMixins();
+//		noProblems &= connectSuperInterfaces();
 		sourceType.tagBits |= TagBits.EndHierarchyCheck;
 //		noProblems &= connectTypeVariables(referenceContext.typeParameters, false);
 		sourceType.tagBits |= TagBits.TypeVariablesAreConnected;

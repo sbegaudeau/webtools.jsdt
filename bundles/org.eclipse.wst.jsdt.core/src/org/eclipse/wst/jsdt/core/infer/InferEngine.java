@@ -1704,4 +1704,10 @@ public class InferEngine extends ASTVisitor {
 	{
 		return this.compUnit;
 	}
+	
+	public InferredType findDefinedType(char [] className)
+	{
+		return compUnit.findInferredType(className);
+	}
+
 }

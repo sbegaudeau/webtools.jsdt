@@ -66,6 +66,7 @@ public class InferredType extends ASTNode {
 	public String inferenceProviderID;
 	public String inferenceStyle;
 	
+	public ArrayList mixins;
 	
 	public final static char[] OBJECT_NAME=new char[]{'O','b','j','e','c','t'};
 	public final static char[] OBJECT_LITERAL_NAME = new char[]{'{','}'};
@@ -405,4 +406,17 @@ public class InferredType extends ASTNode {
 				this.numberAttributes==0 && 
 				(this.methods==null || this.methods.isEmpty()));
 	}
+
+
+	/**
+	 *  Add a reference to a mixin
+	 * @param mixinName the name of the mixin
+	 */
+	public void addMixin(char[] mixinName)
+	{
+		if (mixins==null)
+			mixins=new ArrayList();
+		mixins.add(mixinName);
+	}
+
 }

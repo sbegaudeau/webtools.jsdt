@@ -53,8 +53,10 @@ public class MetadataSourceElementNotifier {
 
 		typeInfo.nameSourceStart = 0;//type.getNameStart();
 		typeInfo.nameSourceEnd = 0;//typeInfo.nameSourceStart+typeInfo.name.length-1;
-		if (clazz.superclass!=null)
-			typeInfo.superclass = clazz.superclass.toCharArray();
+		
+		String superClass=clazz.getSuperClass();
+		if (superClass!=null)
+			typeInfo.superclass =superClass.toCharArray();
 		typeInfo.superinterfaces = null;
 		typeInfo.secondary = false;
 

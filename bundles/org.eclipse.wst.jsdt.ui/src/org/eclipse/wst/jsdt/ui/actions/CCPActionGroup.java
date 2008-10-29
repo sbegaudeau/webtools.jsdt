@@ -151,7 +151,7 @@ public class CCPActionGroup extends ActionGroup {
 			SelectionDispatchAction action= fActions[i];
 			if (action == fCutAction && !fCutAction.isEnabled())
 				continue;
-			if (action!=fPasteAction && this.showLimited)
+			if (this.showLimited/*  -- in case you want paste action to always show up--  &&  action!=fPasteAction */)
 				continue;
 			menu.appendToGroup(ICommonMenuConstants.GROUP_EDIT, action);
 		}		

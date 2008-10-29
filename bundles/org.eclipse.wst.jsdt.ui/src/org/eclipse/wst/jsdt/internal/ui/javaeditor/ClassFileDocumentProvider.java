@@ -198,6 +198,7 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 			String source= classFile.getSource();
 			if (source == null)
 				source= ""; //$NON-NLS-1$
+			classFile.makeConsistent(getProgressMonitor());
 			document.set(source);
 			return true;
 		}
@@ -250,6 +251,7 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 		}
 		return document;
 	}
+
 	public String getEncoding(Object element) {
 		if (element instanceof IStorageEditorInput) {
 			StorageInfo info= (StorageInfo) getElementInfo(element);
@@ -273,6 +275,7 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 		}
 		return null;
 	}
+
 	/*
 	 * @see AbstractDocumentProvider#createElementInfo(Object)
 	 */

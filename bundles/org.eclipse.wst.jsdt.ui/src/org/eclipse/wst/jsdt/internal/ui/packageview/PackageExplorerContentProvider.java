@@ -654,6 +654,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 				IFolder curr= (IFolder) resource;
 				IJavaScriptElement element= JavaScriptCore.create(curr);
 				if (element instanceof IPackageFragment) {
+					if (element.exists()) {
 					if (fFoldPackages) {
 						IPackageFragment fragment= (IPackageFragment) element;
 						IPackageFragmentRoot root= (IPackageFragmentRoot) fragment.getParent();
@@ -663,6 +664,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 				} 
 			}	
 		}
+	}
 	}
 
 	public Object getHierarchicalPackageParent(IPackageFragment child) {

@@ -294,16 +294,16 @@ public class ForStatement extends Statement implements IForStatement {
 			}
 
 			if (condition != null)
-				condition.traverse(visitor, scope);
+				condition.traverse(visitor, visitScope);
 
 			if (increments != null) {
 				int incrementsLength = increments.length;
 				for (int i = 0; i < incrementsLength; i++)
-					increments[i].traverse(visitor, scope);
+					increments[i].traverse(visitor, visitScope);
 			}
 
 			if (action != null)
-				action.traverse(visitor, scope);
+				action.traverse(visitor, visitScope);
 		}
 		visitor.endVisit(this, blockScope);
 	}

@@ -42,7 +42,6 @@ import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 import org.eclipse.wst.jsdt.internal.oaametadata.ClassData;
 import org.eclipse.wst.jsdt.internal.oaametadata.DocumentedElement;
-import org.eclipse.wst.jsdt.internal.oaametadata.IOAAMetaDataConstants;
 import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 import org.eclipse.wst.jsdt.internal.oaametadata.MetadataReader;
 import org.eclipse.wst.jsdt.internal.oaametadata.MetadataSourceElementNotifier;
@@ -57,6 +56,7 @@ public class MetadataFile extends Openable implements
 	private static final IField[] NO_FIELDS = new IField[0];
 	private static final IFunction[] NO_METHODS = new IFunction[0];
 	private LibraryAPIs apis=null;
+	protected BinaryType binaryType = null;
 	
 	
 	protected MetadataFile(PackageFragment parent, String path) {
@@ -176,7 +176,10 @@ public class MetadataFile extends Openable implements
 	}
 
 	public IType getType() {
-		return null;
+		if (this.binaryType == null) {
+			this.binaryType = new BinaryType(this, getTypeName());
+		}
+		return this.binaryType;
 	}
 
 	public IType[] getTypes() throws JavaScriptModelException {
@@ -331,7 +334,7 @@ public class MetadataFile extends Openable implements
 	}
 
 	public String getElementName() {
-		return IOAAMetaDataConstants.METADATA_FILE;
+		return filePath.lastSegment();
 	}
 
 	
@@ -373,4 +376,18 @@ public class MetadataFile extends Openable implements
 		}
 		return null;
 	}
+	
+	public String getTypeName() {
+		// Internal class file name doesn't contain ".class" file extension
+		int lastDollar = this.name.lastIndexOf('$');
+		return lastDollar > -1 ? Util.localTypeName(this.name, lastDollar, this.name.length()) : this.name;
+	}
+	
+	public boolean equals(Object o) {
+		if (!(o instanceof MetadataFile)) return false;
+		MetadataFile other = (MetadataFile) o;
+		return this.name.equals(other.name) && this.parent.equals(other.parent);
+	}
+ 
+	 
 }

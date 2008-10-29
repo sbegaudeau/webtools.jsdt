@@ -1257,7 +1257,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 						}
 					}
 					public void handleException(Throwable ex) {
-						IStatus status= new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.OK, "Error in JDT Core during reconcile while saving", ex);  //$NON-NLS-1$
+						IStatus status= new Status(IStatus.ERROR, JavaScriptUI.ID_PLUGIN, IStatus.OK, "Error in JSDT Core during reconcile while saving", ex);  //$NON-NLS-1$
 						JavaScriptPlugin.getDefault().getLog().log(status);
 					}
 				});

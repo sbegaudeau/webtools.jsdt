@@ -541,10 +541,10 @@ public String getSource() throws JavaScriptModelException {
 	return buffer.getContents();
 }
 
+
 public void makeConsistent(IProgressMonitor monitor) throws JavaScriptModelException {
 	openBuffer(monitor, createElementInfo()); // open buffer independently from the info, since we are building the info
 }
-
 /**
  * @see org.eclipse.wst.jsdt.core.ISourceReference
  */

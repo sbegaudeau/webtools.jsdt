@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Olivier Oeuillot <oeuillot@free.fr>  - bug 244411
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
@@ -762,7 +763,7 @@ public class JavadocParser extends AbstractCommentParser {
 
 	private boolean parseExtends() throws InvalidInputException {
 		this.extendsType=(TypeReference)parseQualifiedName(true);
-		return this.namespace!=null;
+		return this.extendsType!=null;
 	}
 
 	private boolean parseType() throws InvalidInputException {

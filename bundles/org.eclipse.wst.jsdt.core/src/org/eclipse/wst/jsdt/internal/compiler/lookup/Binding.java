@@ -42,6 +42,7 @@ public abstract class Binding {
 	public static final FieldBinding[] NO_FIELDS = new FieldBinding[0];
 	public static final MethodBinding[] NO_METHODS = new MethodBinding[0];
 	public static final ReferenceBinding[] NO_SUPERINTERFACES = new ReferenceBinding[0];
+	public static final ReferenceBinding[] NO_MIXINS = new ReferenceBinding[0];
 	public static final ReferenceBinding[] NO_MEMBER_TYPES = new ReferenceBinding[0];
 	public static final TypeVariableBinding[] NO_TYPE_VARIABLES = new TypeVariableBinding[0];
 	public static final AnnotationBinding[] NO_ANNOTATIONS = new AnnotationBinding[0];
