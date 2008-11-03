@@ -599,11 +599,7 @@ protected String getPackageName(IFolder folder) {
  * @see IJavaScriptElement
  */
 public IPath getPath() {
-	IResource resource = getResource();
-	if(resource!=null) return resource.getFullPath();
-	
-	if(parent!=null) return parent.getPath();
-	return null;
+	return getResource().getFullPath();
 }
 
 /*
