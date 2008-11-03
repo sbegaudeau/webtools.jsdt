@@ -599,7 +599,11 @@ protected String getPackageName(IFolder folder) {
  * @see IJavaScriptElement
  */
 public IPath getPath() {
-	return getResource().getFullPath();
+	IResource resource = getResource();
+	if(resource!=null) return resource.getFullPath();
+	
+	if(parent!=null) return parent.getPath();
+	return null;
 }
 
 /*
@@ -763,7 +767,8 @@ public boolean hasChildren() throws JavaScriptModelException {
 }
 
 public int hashCode() {
-	return this.resource.hashCode();
+	if(this.resource!=null) return this.resource.hashCode();
+	return super.hashCode();
 }
 
 /**
