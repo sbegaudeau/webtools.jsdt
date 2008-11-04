@@ -484,7 +484,8 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	}
 
 	public IPath getPath() {
-		return fRelativeFile.getFullPath().removeLastSegments(1);
+		if(fRelativeFile!=null) return fRelativeFile.getFullPath().removeLastSegments(1);
+		return super.getPath();
 	}
 
 	public boolean equals(Object o) {
