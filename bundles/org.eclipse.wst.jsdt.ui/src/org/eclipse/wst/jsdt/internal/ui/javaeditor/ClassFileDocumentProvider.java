@@ -265,9 +265,10 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 			if(file!=null){
 				String fileEncoding = null;
 				try {
-					IResource resource =(	file.getResource()); 
-					fileEncoding = (resource==null&&resource instanceof IFile)?null:((IFile)resource).getCharset();
-				} catch (CoreException e) {
+					IResource resource = (file.getResource());
+					fileEncoding = (resource != null && resource instanceof IFile) ? ((IFile) resource).getCharset() : null;
+				}
+				catch (CoreException e) {
 					// resource not in workspace, use default encoding.
 				}
 				return fileEncoding;
