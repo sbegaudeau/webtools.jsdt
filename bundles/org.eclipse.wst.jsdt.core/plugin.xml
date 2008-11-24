@@ -182,7 +182,7 @@
 <!-- =================================================================================== -->
 <!-- Extension: Java Content Types                                                       -->
 <!-- =================================================================================== -->
-<extension point="org.eclipse.core.runtime.contentTypes">
+<extension point="org.eclipse.core.contenttype.contentTypes">
 
 	<!-- Associates .jsdtscope to the XML content type -->
 	<file-association 
