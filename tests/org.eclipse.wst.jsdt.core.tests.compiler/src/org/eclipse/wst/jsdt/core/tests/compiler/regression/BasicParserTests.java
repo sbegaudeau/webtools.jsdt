@@ -448,6 +448,16 @@ public class BasicParserTests extends AbstractRegressionTest {
 		 );
 	}
 
+	public void test005j8() {	// expressions
+		this.runParseTest(
+				"i= [a,b,,c];" + 
+				"\n",
+			"X.js",
+			"i = [a, b, , c];" + 
+			"\n"
+		 );
+	}
+
 	public void test007() {	// if
 		this.runParseTest(
 				"if (a>1) this.c=f+5;" + 
@@ -959,6 +969,46 @@ public class BasicParserTests extends AbstractRegressionTest {
 		       "      var components = value.match(),"+
 		        " unit = null;"+
 		   		"\n}\n;\n"  
+		);
+	}
+  
+	  
+	public void testbug254572() {
+		this.runParseTest(
+					 
+				"var fields = ["+
+			     "               {name: 'id', type: 'int'},"+
+			      "             abc, userName, , 'forumtitle', 'forumid', 'author',"+
+				""+
+				"                {name: 'lastpost', mapping: 'lastpost', type: 'date',"+
+			    "dateFormat: 'timestamp'},"+
+			     "               'lastposter', 'excerpt'"+
+			      "          ];"+
+			   		";",
+				      
+			"X.js",
+			"var fields = ["+
+		     "{\n  name : 'id',\n  type : 'int'\n},"+
+		      " abc, userName, , 'forumtitle', 'forumid', 'author',"+
+			" {\n  name : 'lastpost',\n  mapping : 'lastpost',\n  type : 'date',\n"+
+		    "  dateFormat : 'timestamp'\n},"+
+		     " 'lastposter', 'excerpt'"+
+		      "];"+
+		   		"\n;\n"  
+		);
+	}
+  
+	public void testbug248145() {
+		this.runParseTest(
+					 
+				"return \n"+
+			     "a+b;"+
+			   		"",
+				      
+			"X.js",
+			"return ;\n"+
+		     "(a + b);"+
+		   		"\n"  
 		);
 	}
   
