@@ -1105,6 +1105,9 @@ public int getNextToken() throws InvalidInputException {
 						if (this.recordLineSeparator) {
 							pushLineSeparator();
 						}
+						// automatically insert semicolon if return followed by newline						
+						if (this.currentNonWhitespaceToken==TokenNamereturn)
+							return TokenNameSEMICOLON; 
 					}
 					// inline version of:
 					//isWhiteSpace =

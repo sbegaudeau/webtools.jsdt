@@ -113,7 +113,13 @@ public class InferrenceManager {
 						  return getSingleEngine(inferenceProviders[i]);
 			    	}
 			    }
-			    int applies = inferenceProviders[i].applysTo(script);
+			    int applies = InferrenceProvider.NOT_THIS;
+			    try {
+			    	applies = inferenceProviders[i].applysTo(script);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					Util.log(e, "exception in inferrence provider "+inferenceProviders[i].getID());
+				}
 			    switch (applies) {
 				case InferrenceProvider.MAYBE_THIS:
 					  InferEngine eng=inferenceProviders[i].getInferEngine();

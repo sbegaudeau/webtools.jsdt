@@ -2758,11 +2758,14 @@ public class CodeFormatterVisitor extends ASTVisitor {
 	public boolean visit(ObjectLiteralField literalField,BlockScope scope)
 	{
 		literalField.fieldName.traverse(this, scope);
-		this.scribe.space();
-		this.scribe.printNextToken(TerminalTokens.TokenNameCOLON);
+		this.scribe.printNextToken(TerminalTokens.TokenNameCOLON, this.preferences.insert_space_before_colon_in_object_initializer);
+		if(this.preferences.insert_space_after_colon_in_object_initializer) {
+			this.scribe.space();
+		}
 		literalField.initializer.traverse(this, scope);
 		return false;
 	}
+	
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
 	 */

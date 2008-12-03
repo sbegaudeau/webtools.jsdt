@@ -6338,7 +6338,7 @@ private void comsumeElisionList() {
 }
 private void comsumeElisionOne() {
 	pushOnExpressionStack(new EmptyExpression(this.endPosition,this.endPosition));
-    if ( (this.intStack[this.intPtr]&UNCONSUMED_LIT_ELEMENT)!=0)
+    if ( (this.intStack[this.intPtr]&UNCONSUMED_LIT_ELEMENT)!=0 || (this.intStack[this.intPtr]&WAS_ARRAY_LIT_ELEMENT)!=0)
 		   concatExpressionLists();
 	this.intStack[this.intPtr]|=(WAS_ARRAY_LIT_ELEMENT|UNCONSUMED_ELISION) ;
 

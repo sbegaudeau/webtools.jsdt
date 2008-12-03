@@ -98,6 +98,7 @@ public class CompilerOptions {
 	public static final String OPTION_InlineJsr = "org.eclipse.wst.jsdt.core.compiler.codegen.inlineJsrBytecode"; //$NON-NLS-1$
 	public static final String OPTION_ReportNullReference = "org.eclipse.wst.jsdt.core.compiler.problem.nullReference"; //$NON-NLS-1$
 	public static final String OPTION_ReportPotentialNullReference = "org.eclipse.wst.jsdt.core.compiler.problem.potentialNullReference"; //$NON-NLS-1$
+	public static final String OPTION_ReportDuplicateLocalVariables = "org.eclipse.wst.jsdt.core.compiler.problem.duplicateLocalVariables"; //$NON-NLS-1$
 	public static final String OPTION_ReportRedundantNullCheck = "org.eclipse.wst.jsdt.core.compiler.problem.redundantNullCheck"; //$NON-NLS-1$
 	public static final String OPTION_ReportAutoboxing = "org.eclipse.wst.jsdt.core.compiler.problem.autoboxing"; //$NON-NLS-1$
 	public static final String OPTION_ReportAnnotationSuperInterface = "org.eclipse.wst.jsdt.core.compiler.problem.annotationSuperInterface"; //$NON-NLS-1$
@@ -217,6 +218,7 @@ public class CompilerOptions {
 	public static final long FallthroughCase = ASTNode.Bit49L;
 	public static final long OverridingMethodWithoutSuperInvocation = ASTNode.Bit50L;
 	public static final long PotentialNullReference = ASTNode.Bit51L;
+	public static final long DuplicateLocalVariables = ASTNode.Bit58L;
 	public static final long RedundantNullCheck = ASTNode.Bit52L;
 
 
@@ -471,6 +473,7 @@ public class CompilerOptions {
 		optionsMap.put(OPTION_InlineJsr, this.inlineJsrBytecode ? ENABLED : DISABLED);
 		optionsMap.put(OPTION_ReportNullReference, getSeverityString(NullReference));
 		optionsMap.put(OPTION_ReportPotentialNullReference, getSeverityString(PotentialNullReference));
+		optionsMap.put(OPTION_ReportDuplicateLocalVariables, getSeverityString(DuplicateLocalVariables));
 		optionsMap.put(OPTION_ReportRedundantNullCheck, getSeverityString(RedundantNullCheck));
 		optionsMap.put(OPTION_SuppressWarnings, this.suppressWarnings ? ENABLED : DISABLED);
 		optionsMap.put(OPTION_ReportUnhandledWarningToken, getSeverityString(UnhandledWarningToken));
@@ -589,6 +592,8 @@ public class CompilerOptions {
 					return OPTION_ReportNullReference;
 				case (int)(PotentialNullReference >>> 32) :
 					return OPTION_ReportPotentialNullReference;
+				case (int)(DuplicateLocalVariables >>> 32) :
+					return OPTION_ReportDuplicateLocalVariables;
 				case (int)(RedundantNullCheck >>> 32) :
 					return OPTION_ReportRedundantNullCheck;
 				case (int)(AutoBoxing >>> 32) :
@@ -901,6 +906,7 @@ public class CompilerOptions {
 		if ((optionValue = optionsMap.get(OPTION_ReportVarargsArgumentNeedCast)) != null) updateSeverity(VarargsArgumentNeedCast, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportNullReference)) != null) updateSeverity(NullReference, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportPotentialNullReference)) != null) updateSeverity(PotentialNullReference, optionValue);
+		if ((optionValue = optionsMap.get(OPTION_ReportDuplicateLocalVariables)) != null) updateSeverity(DuplicateLocalVariables, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportRedundantNullCheck)) != null) updateSeverity(RedundantNullCheck, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportAutoboxing)) != null) updateSeverity(AutoBoxing, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportAnnotationSuperInterface)) != null) updateSeverity(AnnotationSuperInterface, optionValue);
@@ -1104,6 +1110,7 @@ public class CompilerOptions {
 		buf.append("\n\t- discouraged reference to type with access restriction: ").append(getSeverityString(DiscouragedReference)); //$NON-NLS-1$
 		buf.append("\n\t- null reference: ").append(getSeverityString(NullReference)); //$NON-NLS-1$
 		buf.append("\n\t- potential null reference: ").append(getSeverityString(PotentialNullReference)); //$NON-NLS-1$
+		buf.append("\n\t- duplicate local variables: ").append(getSeverityString(DuplicateLocalVariables)); //$NON-NLS-1%
 		buf.append("\n\t- redundant null check: ").append(getSeverityString(RedundantNullCheck)); //$NON-NLS-1$
 		buf.append("\n\t- autoboxing: ").append(getSeverityString(AutoBoxing)); //$NON-NLS-1$
 		buf.append("\n\t- annotation super interface: ").append(getSeverityString(AnnotationSuperInterface)); //$NON-NLS-1$
@@ -1234,6 +1241,7 @@ public class CompilerOptions {
 			OPTION_ReportNonStaticAccessToStatic,
 			OPTION_ReportNullReference,
 			OPTION_ReportPotentialNullReference,
+			OPTION_ReportDuplicateLocalVariables,
 			OPTION_ReportRedundantNullCheck,
 			OPTION_ReportUndefinedField,
 			OPTION_ReportParameterAssignment,

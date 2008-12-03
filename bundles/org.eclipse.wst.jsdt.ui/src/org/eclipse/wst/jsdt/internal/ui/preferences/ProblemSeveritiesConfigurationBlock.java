@@ -76,6 +76,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 	
 	private static final Key PREF_PB_NULL_REFERENCE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_NULL_REFERENCE);
 	private static final Key PREF_PB_POTENTIAL_NULL_REFERENCE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_POTENTIAL_NULL_REFERENCE);
+	private static final Key PREF_PB_DUPLICATE_LOCAL_VARIABLES= getJDTCoreKey(JavaScriptCore.COMPILER_PB_DUPLICATE_LOCAL_VARIABLES);
 	private static final Key PREF_PB_REDUNDANT_NULL_CHECK= getJDTCoreKey(JavaScriptCore.COMPILER_PB_REDUNDANT_NULL_CHECK);
 	
 //	private static final Key PREF_15_PB_UNCHECKED_TYPE_OPERATION= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNCHECKED_TYPE_OPERATION);
@@ -144,6 +145,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 				PREF_PB_UNDOCUMENTED_EMPTY_BLOCK, PREF_PB_FINALLY_BLOCK_NOT_COMPLETING, PREF_PB_DEPRECATION_WHEN_OVERRIDING,
 				PREF_PB_UNUSED_DECLARED_THROWN_EXCEPTION_WHEN_OVERRIDING, /*PREF_PB_MISSING_SERIAL_VERSION, */
 				PREF_PB_PARAMETER_ASSIGNMENT, PREF_PB_NULL_REFERENCE, PREF_PB_POTENTIAL_NULL_REFERENCE,
+				PREF_PB_DUPLICATE_LOCAL_VARIABLES,
 				PREF_PB_REDUNDANT_NULL_CHECK, PREF_PB_FALLTHROUGH_CASE,
 //				PREF_15_PB_UNCHECKED_TYPE_OPERATION, PREF_15_PB_FINAL_PARAM_BOUND, PREF_15_PB_VARARGS_ARGUMENT_NEED_CAST,
 //				PREF_15_PB_AUTOBOXING_PROBLEM, PREF_15_PB_MISSING_OVERRIDE_ANNOTATION, PREF_15_PB_ANNOTATION_SUPER_INTERFACE,
@@ -320,6 +322,9 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		
 		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_pb_potential_null_reference;
 		addComboBox(inner, label, PREF_PB_POTENTIAL_NULL_REFERENCE, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);
+		
+		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_pb_duplicate_local_variables;
+		addComboBox(inner, label, PREF_PB_DUPLICATE_LOCAL_VARIABLES, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);
 		
 		// --- name_shadowing
 		

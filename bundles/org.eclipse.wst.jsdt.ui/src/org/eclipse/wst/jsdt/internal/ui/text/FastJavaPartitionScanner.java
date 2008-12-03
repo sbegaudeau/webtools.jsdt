@@ -32,6 +32,7 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 	private static final int JAVADOC= 3;
 	private static final int CHARACTER= 4;
 	private static final int STRING= 5;
+	private static final int REGULAR_EXPRESSION = 6;
 
 	// beginning of prefixes and postfixes
 	private static final int NONE= 0;
@@ -41,6 +42,7 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 	private static final int SLASH_STAR_STAR= 4; // prefix for MULTI_LINE_COMMENT or JSDOC
 	private static final int STAR= 5; // postfix for MULTI_LINE_COMMENT or JSDOC
 	private static final int CARRIAGE_RETURN=6; // postfix for STRING, CHARACTER and SINGLE_LINE_COMMENT
+	private static final int REGULAR_EXPRESSION_END=7;
 
 	/** The scanner. */
 	private final BufferedDocumentScanner fScanner= new BufferedDocumentScanner(1000);	// faster implementation
@@ -68,7 +70,8 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 		new Token(JAVA_MULTI_LINE_COMMENT),
 		new Token(JAVA_DOC),
 		new Token(JAVA_CHARACTER),
-		new Token(JAVA_STRING)
+		new Token(JAVA_STRING),
+		new Token(JAVA_STRING)	// regular expression same as string
 	};
 
 	public FastJavaPartitionScanner(boolean emulate) {
@@ -98,9 +101,14 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 		fTokenOffset += fTokenLength;
 		fTokenLength= fPrefixLength;
 
+		boolean possibleRegExp=false;
+		int ch2=-1;
+		int lastch=-1;
 		while (true) {
+			if (!Character.isWhitespace((char)ch2))
+				lastch=ch2;
 			final int ch= fScanner.read();
-
+		    ch2=ch;
 			// characters
 	 		switch (ch) {
 	 		case ICharacterScanner.EOF:
@@ -127,6 +135,7 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 					case SINGLE_LINE_COMMENT:
 					case CHARACTER:
 					case STRING:
+					case REGULAR_EXPRESSION:
 						if (fTokenLength > 0) {
 							IToken token= fTokens[fState];
 
@@ -158,6 +167,7 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 				switch (fState) {
 				case SINGLE_LINE_COMMENT:
 				case CHARACTER:
+				case REGULAR_EXPRESSION:
 				case STRING:
 					// assert(fTokenLength > 0);
 					return postFix(fState);
@@ -167,10 +177,13 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 					continue;
 				}
 
+				
+				
 			default:
 				if (!fEmulate && fLast == CARRIAGE_RETURN) {
 					switch (fState) {
 					case SINGLE_LINE_COMMENT:
+					case REGULAR_EXPRESSION:
 					case CHARACTER:
 					case STRING:
 
@@ -238,6 +251,30 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 						}
 
 					} else {
+						switch (lastch)	//possible chars before regexp 
+						{
+						case '(':
+						case ',':
+						case '=':
+						case ':':
+						case '[':
+						case '!':
+						case '&':
+						case '?':
+						case '{':
+						case '}':
+							//check if regexp
+							possibleRegExp=true;
+							fLast= NONE; // ignore fLast
+							if (fTokenLength > 0)
+								return preFix(JAVA, REGULAR_EXPRESSION, NONE, 1);
+							else {
+								preFix(JAVA, REGULAR_EXPRESSION, NONE, 1);
+								fTokenOffset += fTokenLength;
+								fTokenLength= fPrefixLength;
+								break;
+							}
+						}
 						fTokenLength++;
 						fLast= SLASH;
 						break;
@@ -362,6 +399,45 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 	 				}
 
 		 		default:
+					consume();
+	 				break;
+	 			}
+	 			break;
+
+	 		case REGULAR_EXPRESSION:
+	 			switch (ch) {
+
+				case '\\':
+					fLast= (fLast == BACKSLASH) ? NONE : BACKSLASH;
+					fTokenLength++;
+					break;
+
+				case '/':
+					fLast= (fLast == BACKSLASH) ? NONE : SLASH;
+					fTokenLength++;
+					break;	 				
+
+				case 'g':
+				case 'm':
+				case 'i':
+		 			if (fLast==SLASH || fLast==REGULAR_EXPRESSION_END)
+		 			{
+	 					  fLast=REGULAR_EXPRESSION_END;
+	 						fTokenLength++;
+		 			}
+		 			else
+						consume();
+	 				break;
+		 				
+					
+
+		 		default:
+		 			if (fLast==SLASH || fLast==REGULAR_EXPRESSION_END)
+		 			{
+		 				fTokenLength--;
+		 				fScanner.unread();
+ 					   return postFix(REGULAR_EXPRESSION);
+		 			}
 					consume();
 	 				break;
 	 			}

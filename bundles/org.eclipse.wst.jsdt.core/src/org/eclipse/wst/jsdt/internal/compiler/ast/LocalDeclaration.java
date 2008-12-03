@@ -249,9 +249,14 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 					}
 					if (variableType==TypeBinding.UNKNOWN && initializationType!=TypeBinding.NULL)
 						this.binding.type=initializationType;
-					else if (initialization.isConstantValueOfTypeAssignableToType(initializationType, variableType)
-						|| variableType.isBaseType() /* && BaseTypeBinding.isWidening(variableType.id, initializationType.id)) */
-						|| initializationType.isCompatibleWith(variableType)) {
+					else {
+						TypeBinding reconcileAnonymous = initializationType.reconcileAnonymous(this.binding.type);
+						if (reconcileAnonymous!=null)
+							this.binding.type=variableType=reconcileAnonymous;
+						
+						if (initialization.isConstantValueOfTypeAssignableToType(initializationType, variableType)
+								|| variableType.isBaseType() /* && BaseTypeBinding.isWidening(variableType.id, initializationType.id)) */
+								|| initializationType.isCompatibleWith(variableType)) {
 
 
 //						this.initialization.computeConversion(scope, variableType, initializationType);
@@ -272,8 +277,9 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 //								&& (this.initialization.bits & ASTNode.UnnecessaryCast) == 0) {
 //							CastExpression.checkNeedForAssignedCast(scope, variableType, (CastExpression) this.initialization);
 //						}
-					} else {
-						scope.problemReporter().typeMismatchError(initializationType, variableType, this.initialization);
+						} else {
+							scope.problemReporter().typeMismatchError(initializationType, variableType, this.initialization);
+						}
 					}
 				}
 			}

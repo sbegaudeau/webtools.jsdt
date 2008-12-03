@@ -56,6 +56,7 @@ public class SourceTypeBinding extends ReferenceBinding {
 	
 	public SourceTypeBinding nextType;
 
+	
 	private SimpleLookupTable storedAnnotations = null; // keys are this ReferenceBinding & its fields and methods, value is an AnnotationHolder
 
 public SourceTypeBinding(char[][] compoundName, PackageBinding fPackage,  Scope scope) {
@@ -1023,6 +1024,7 @@ private MethodBinding getExactMethod0(char[] selector, TypeBinding[] argumentTyp
 				
 			}
 		}
+		
 	}
 	return null;
 }
@@ -1034,6 +1036,20 @@ public FieldBinding getField(char[] fieldName, boolean needResolve) {
 		field=this.nextType.getField(fieldName, needResolve);
 	return field;
 }
+
+public FieldBinding getFieldInHierarchy(char[] fieldName, boolean needResolve) {
+	SourceTypeBinding currentType=this;
+	while (currentType!=null)
+	{
+		FieldBinding field = currentType.getField(fieldName, needResolve);
+		if (field!=null)
+			return field;
+		currentType=(SourceTypeBinding)currentType.superclass();
+	}
+	return null;
+}
+
+
 //NOTE: the type of a field of a source type is resolved when needed
 private FieldBinding getField0(char[] fieldName, boolean needResolve) {
 
@@ -1983,6 +1999,39 @@ public void addNextType(SourceTypeBinding type) {
 	while (binding.nextType!=null)
 		binding=binding.nextType;
 	binding.nextType=type;
+	
+}
+
+
+public TypeBinding reconcileAnonymous(TypeBinding other) {
+	if (!(other instanceof SourceTypeBinding))
+		return null;
+	SourceTypeBinding otherBinding=(SourceTypeBinding) other;
+	if (!otherBinding.isAnonymousType())
+		return null;
+   if (otherBinding.methods!=null)
+   {
+	   
+	   for (int i = 0; i < otherBinding.methods.length; i++) {
+		 MethodBinding methodBinding = otherBinding.methods[i];
+		    MethodBinding exactMethod = this.getExactMethod(methodBinding.selector, methodBinding.parameters, null);
+		    if (exactMethod==null)
+		    	return null;
+	}
+   }
+   
+   if (otherBinding.fields!=null)
+   {
+	   
+	   for (int i = 0; i < otherBinding.fields.length; i++) {
+		 FieldBinding fieldBinding = otherBinding.fields[i];
+		 FieldBinding myField = this.getFieldInHierarchy(fieldBinding.name, true);
+		    if (myField==null)
+		    	return null;
+	}
+   }
+
+	return this;
 	
 }
 

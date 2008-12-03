@@ -305,7 +305,7 @@ public TypeBinding resolveType(BlockScope scope) {
 	int leftTypeID = leftType.id;
 	int rightTypeID = rightType.id;
 
-	if(operator==OperatorIds.INSTANCEOF) {
+	if(operator==OperatorIds.INSTANCEOF  ||operator==OperatorIds.IN  ) {
 		if ( rightTypeID>15)
 			rightTypeID=  TypeIds.T_JavaLangObject;
 		if ( leftTypeID>15)

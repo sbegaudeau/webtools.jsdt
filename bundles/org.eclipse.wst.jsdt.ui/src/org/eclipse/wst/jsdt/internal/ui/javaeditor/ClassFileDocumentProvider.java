@@ -194,7 +194,6 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 	protected boolean setDocumentContent(IDocument document, IEditorInput editorInput, String encoding) throws CoreException {
 		if (editorInput instanceof IClassFileEditorInput) {
 			IClassFile classFile= ((IClassFileEditorInput) editorInput).getClassFile();
-			classFile.makeConsistent(getProgressMonitor());
 			String source= classFile.getSource();
 			if (source == null)
 				source= ""; //$NON-NLS-1$
@@ -251,7 +250,7 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 		}
 		return document;
 	}
-
+	
 	public String getEncoding(Object element) {
 		if (element instanceof IStorageEditorInput) {
 			StorageInfo info= (StorageInfo) getElementInfo(element);
@@ -265,10 +264,9 @@ public class ClassFileDocumentProvider extends FileDocumentProvider {
 			if(file!=null){
 				String fileEncoding = null;
 				try {
-					IResource resource = (file.getResource());
-					fileEncoding = (resource != null && resource instanceof IFile) ? ((IFile) resource).getCharset() : null;
-				}
-				catch (CoreException e) {
+					IResource resource =(	file.getResource()); 
+					fileEncoding = (resource==null|| !(resource instanceof IFile))?null:((IFile)resource).getCharset();
+				} catch (CoreException e) {
 					// resource not in workspace, use default encoding.
 				}
 				return fileEncoding;

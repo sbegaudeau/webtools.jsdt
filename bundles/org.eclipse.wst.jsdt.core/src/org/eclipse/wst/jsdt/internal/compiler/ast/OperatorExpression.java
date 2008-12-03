@@ -483,7 +483,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_JavaLangString<<4)+T_float] 		= T_undefined;
 		     table[(T_JavaLangString<<4)+T_boolean] 		= T_boolean;
 		//     table[(T_JavaLangString<<4)+T_char] 		= T_undefined;
-		//     table[(T_JavaLangString<<4)+T_int] 			= T_undefined;
+		     table[(T_JavaLangString<<4)+T_int] 			= T_any;
 		//     table[(T_JavaLangString<<4)+T_null] 		= T_undefined;
 		table[(T_JavaLangString<<4)+T_any] 			= T_boolean;
 
@@ -567,7 +567,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_int<<4)+T_long] 		= T_undefined;
 		//     table[(T_int<<4)+T_short] 		= T_undefined;
 		//     table[(T_int<<4)+T_void] 		= T_undefined;
-		     table[(T_int<<4)+T_JavaLangString] 		= T_undefined;
+		     table[(T_int<<4)+T_JavaLangString] 		= T_any;
 		//     table[(T_int<<4)+T_Object] 		= T_undefined;
 		//     table[(T_int<<4)+T_double] 		= T_undefined;
 		//     table[(T_int<<4)+T_float] 		= T_undefined;
@@ -598,7 +598,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		   table[(T_function<<4)+T_undefined] 		= T_boolean;
 		   table[(T_function<<4)+T_any] 		= T_boolean;
 		   table[(T_function<<4)+T_int] 		= T_boolean;
-		   table[(T_function<<4)+T_function] 		= T_boolean;
+		   table[(T_function<<4)+T_function] 		= T_function;
 
 
 		   table[(T_any<<4)+T_byte] 			= T_boolean;
@@ -720,7 +720,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_undefined<<4)+T_int] 			= T_undefined;
 		//	table[(T_undefined<<4)+T_null] 			= T_undefined;
 
-		//	table[(T_byte<<4)+T_undefined] 	= T_undefined;
+			table[(T_byte<<4)+T_undefined] 	= T_undefined;
 		table[(T_byte<<4)+T_byte] 		= (Byte2Int<<12)+(Byte2Int<<4)+T_boolean;
 		table[(T_byte<<4)+T_long] 		= (Byte2Long<<12)+(Long2Long<<4)+T_boolean;
 		table[(T_byte<<4)+T_short] 		= (Byte2Int<<12)+(Short2Int<<4)+T_boolean;
@@ -914,7 +914,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_any<<4)+T_byte] 			= T_boolean;
 		table[(T_any<<4)+T_long] 			= T_boolean;
 		table[(T_any<<4)+T_short] 			= T_boolean;
-		table[(T_any<<4)+T_void] 			= T_boolean;
+		table[(T_any<<4)+T_void] 			= T_undefined;
 		table[(T_any<<4)+T_JavaLangString] 		= T_boolean;
 		table[(T_any<<4)+T_JavaLangObject] 		= T_boolean;
 		table[(T_any<<4)+T_double] 		= T_boolean;

@@ -659,6 +659,11 @@ public final class JavaScriptCore extends Plugin {
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
 	 */
+	public static final String COMPILER_PB_DUPLICATE_LOCAL_VARIABLES = PLUGIN_ID + ".compiler.problem.duplicateLocalVariables"; //$NON-NLS-1$
+	/**
+	 * Possible  configurable option ID.
+	 * @see #getDefaultOptions()
+	 */
 	public static final String COMPILER_PB_REDUNDANT_NULL_CHECK = PLUGIN_ID + ".compiler.problem.redundantNullCheck"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
@@ -1909,6 +1914,14 @@ public final class JavaScriptCore extends Plugin {
 	 *    method.
 	 *
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.potentialNullReference"
+	 *     - possible values:   { "error", "warning", "ignore" }
+	 *     - default:           "ignore"
+	 *
+	 *	  VALIDATOR / Reporting Duplicate Local Variables
+	 *    When enabled, the validator will issue an error or a warning whenever a
+	 *    two local variables with the same name have been declared.
+	 *
+	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.duplicateLocalVariables"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *

@@ -998,4 +998,16 @@ public char[] getFileName()
 {
 	return new char[]{};
 }
+
+/**
+ * Compare two type bindings.  If all members of the other bindngs are a member of this type, return this type.
+ *  
+ * @param other
+ * @return
+ */
+public TypeBinding  reconcileAnonymous(TypeBinding other)
+{
+	return null;
+}
+
 }

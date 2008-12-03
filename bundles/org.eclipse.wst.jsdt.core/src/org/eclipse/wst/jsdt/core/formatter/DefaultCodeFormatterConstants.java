@@ -1309,6 +1309,18 @@ public class DefaultCodeFormatterConstants {
 	public static final String FORMATTER_INSERT_SPACE_AFTER_COLON_IN_CASE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_colon_in_case";	//$NON-NLS-1$
 	/**
 	 * <pre>
+	 * FORMATTER / Option to insert a space after the colon in an object initializer expression
+	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.insert_space_after_colon_in_object_initializer"
+	 *     - possible values:   { INSERT, DO_NOT_INSERT }
+	 *     - default:           INSERT
+	 * </pre>
+	 * @see JavaScriptCore#INSERT
+	 * @see JavaScriptCore#DO_NOT_INSERT
+	 *  
+	 */
+	public static final String FORMATTER_INSERT_SPACE_AFTER_COLON_IN_OBJECT_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_colon_in_object_initializer"; //$NON-NLS-1$
+	/**
+	 * <pre>
 	 * FORMATTER / Option to insert a space after the colon in a conditional expression
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.insert_space_after_colon_in_conditional"
 	 *     - possible values:   { INSERT, DO_NOT_INSERT }
@@ -2183,6 +2195,18 @@ public class DefaultCodeFormatterConstants {
 	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_CASE = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_colon_in_case";	//$NON-NLS-1$
+	/**
+	 * <pre>
+	 * FORMATTER / Option to insert a space before colon in an object initializer expression
+	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.insert_space_before_colon_in_object_initializer"
+	 *     - possible values:   { INSERT, DO_NOT_INSERT }
+	 *     - default:           INSERT
+	 * </pre>
+	 * @see JavaScriptCore#INSERT
+	 * @see JavaScriptCore#DO_NOT_INSERT
+	 *  
+	 */
+	public static final String FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_OBJECT_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_colon_in_object_initializer";	//$NON-NLS-1$
 	/**
 	 * <pre>
 	 * FORMATTER / Option to insert a space before colon in a conditional expression

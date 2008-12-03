@@ -443,6 +443,7 @@ public int nullStatus(FlowInfo flowInfo) {
 				case Binding.FIELD:
 				case Binding.LOCAL : // =========only variable============
 				case Binding.VARIABLE : // =========only variable============
+				case Binding.LOCAL | Binding.TYPE : //====both variable and type============
 				case Binding.VARIABLE | Binding.TYPE : //====both variable and type============
 					if (binding instanceof VariableBinding) {
 						VariableBinding variable = (VariableBinding) binding;

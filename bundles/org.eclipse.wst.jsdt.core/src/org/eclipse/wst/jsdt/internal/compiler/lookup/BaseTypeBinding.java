@@ -96,6 +96,7 @@ public final class BaseTypeBinding extends TypeBinding {
 					case TypeIds.T_byte :
 					case TypeIds.T_char :
 					case TypeIds.T_short :
+					case TypeIds.T_double :
 						return true;
 					default :
 						return false;

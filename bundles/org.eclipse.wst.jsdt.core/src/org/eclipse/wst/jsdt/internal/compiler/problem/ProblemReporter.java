@@ -287,6 +287,9 @@ public static long getIrritant(int problemID) {
 
 		case IProblem.PotentialNullLocalVariableReference:
 			return CompilerOptions.PotentialNullReference;
+			
+		case IProblem.RedefinedLocal:
+			return CompilerOptions.DuplicateLocalVariables;
 
 		case IProblem.RedundantLocalVariableNullAssignment:
 		case IProblem.RedundantNullCheckOnNonNullLocalVariable:
@@ -490,6 +493,7 @@ public static int getProblemCategory(int severity, int problemID) {
 				case (int)(CompilerOptions.VarargsArgumentNeedCast >>> 32):
 				case (int)(CompilerOptions.NullReference >>> 32):
 				case (int)(CompilerOptions.PotentialNullReference >>> 32):
+				case (int)(CompilerOptions.DuplicateLocalVariables >>> 32):
 				case (int)(CompilerOptions.RedundantNullCheck >>> 32):
 				case (int)(CompilerOptions.IncompleteEnumSwitch >>> 32):
 				case (int)(CompilerOptions.FallthroughCase >>> 32):
@@ -846,35 +850,6 @@ public void boundMustBeAnInterface(ASTNode location, TypeBinding type) {
 		IProblem.BoundMustBeAnInterface,
 		new String[] {new String(type.readableName())},
 		new String[] {new String(type.shortReadableName())},
-		location.sourceStart,
-		location.sourceEnd);
-}
-public void bytecodeExceeds64KLimit(AbstractMethodDeclaration location) {
-	MethodBinding method = location.binding;
-	if (location.isConstructor()) {
-		this.handle(
-			IProblem.BytecodeExceeds64KLimitForConstructor,
-			new String[] {new String(location.selector), typesAsString(method.isVarargs(), method.parameters, false)},
-			new String[] {new String(location.selector), typesAsString(method.isVarargs(), method.parameters, true)},
-			ProblemSeverities.Error | ProblemSeverities.Abort | ProblemSeverities.Fatal,
-			location.sourceStart,
-			location.sourceEnd);
-	} else {
-		this.handle(
-			IProblem.BytecodeExceeds64KLimit,
-			new String[] {new String(location.selector), typesAsString(method.isVarargs(), method.parameters, false)},
-			new String[] {new String(location.selector), typesAsString(method.isVarargs(), method.parameters, true)},
-			ProblemSeverities.Error | ProblemSeverities.Abort | ProblemSeverities.Fatal,
-			location.sourceStart,
-			location.sourceEnd);
-	}
-}
-public void bytecodeExceeds64KLimit(TypeDeclaration location) {
-	this.handle(
-		IProblem.BytecodeExceeds64KLimitForClinit,
-		NoArgument,
-		NoArgument,
-		ProblemSeverities.Error | ProblemSeverities.Abort | ProblemSeverities.Fatal,
 		location.sourceStart,
 		location.sourceEnd);
 }
@@ -1636,17 +1611,20 @@ public void emptyControlFlowStatement(int sourceStart, int sourceEnd) {
 }
 public void enumAbstractMethodMustBeImplemented(AbstractMethodDeclaration method) {
 	MethodBinding abstractMethod = method.binding;
+	char[] methodSelector = abstractMethod.selector;
+	if(methodSelector == null)
+		methodSelector = method.getSafeName();
 	this.handle(
 		// Must implement the inherited abstract method %1
 		// 8.4.3 - Every non-abstract subclass of an abstract type, A, must provide a concrete implementation of all of A's methods.
 		IProblem.EnumAbstractMethodMustBeImplemented,
 		new String[] {
-		        new String(abstractMethod.selector),
+		        new String(methodSelector),
 		        typesAsString(abstractMethod.isVarargs(), abstractMethod.parameters, false),
 		        new String(abstractMethod.declaringClass.readableName()),
 		},
 		new String[] {
-		        new String(abstractMethod.selector),
+		        new String(methodSelector),
 		        typesAsString(abstractMethod.isVarargs(), abstractMethod.parameters, true),
 		        new String(abstractMethod.declaringClass.shortReadableName()),
 		},
@@ -4736,10 +4714,14 @@ public void localVariableRedundantNullAssignment(LocalVariableBinding local, AST
 }
 public void methodMustOverride(AbstractMethodDeclaration method) {
 	MethodBinding binding = method.binding;
+	char[] methodSelector = binding.selector;
+	if(methodSelector == null)
+		methodSelector = method.getSafeName();
+	
 	this.handle(
 		this.options.sourceLevel == ClassFileConstants.JDK1_5 ? IProblem.MethodMustOverride : IProblem.MethodMustOverrideOrImplement,
-		new String[] {new String(binding.selector), typesAsString(binding.isVarargs(), binding.parameters, false), new String(binding.declaringClass.readableName()), },
-		new String[] {new String(binding.selector), typesAsString(binding.isVarargs(), binding.parameters, true), new String(binding.declaringClass.shortReadableName()),},
+		new String[] {new String(methodSelector), typesAsString(binding.isVarargs(), binding.parameters, false), new String(binding.declaringClass.readableName()), },
+		new String[] {new String(methodSelector), typesAsString(binding.isVarargs(), binding.parameters, true), new String(binding.declaringClass.shortReadableName()),},
 		method.sourceStart,
 		method.sourceEnd);
 }
@@ -4804,10 +4786,14 @@ public void missingDeprecatedAnnotationForMethod(AbstractMethodDeclaration metho
 	int severity = computeSeverity(IProblem.MethodMissingDeprecatedAnnotation);
 	if (severity == ProblemSeverities.Ignore) return;
 	MethodBinding binding = method.binding;
+	char[] methodSelector = binding.selector;
+	if(methodSelector == null)
+		methodSelector = method.getSafeName();
+	
 	this.handle(
 		IProblem.MethodMissingDeprecatedAnnotation,
-		new String[] {new String(binding.selector), typesAsString(binding.isVarargs(), binding.parameters, false), new String(binding.declaringClass.readableName()), },
-		new String[] {new String(binding.selector), typesAsString(binding.isVarargs(), binding.parameters, true), new String(binding.declaringClass.shortReadableName()),},
+		new String[] {new String(methodSelector), typesAsString(binding.isVarargs(), binding.parameters, false), new String(binding.declaringClass.readableName()), },
+		new String[] {new String(methodSelector), typesAsString(binding.isVarargs(), binding.parameters, true), new String(binding.declaringClass.shortReadableName()),},
 		severity,
 		method.sourceStart,
 		method.sourceEnd);
@@ -4836,10 +4822,14 @@ public void missingOverrideAnnotation(AbstractMethodDeclaration method) {
 	int severity = computeSeverity(IProblem.MissingOverrideAnnotation);
 	if (severity == ProblemSeverities.Ignore) return;
 	MethodBinding binding = method.binding;
+	char[] methodSelector = binding.selector;
+	if(methodSelector == null)
+		methodSelector = method.getSafeName();
+	
 	this.handle(
 		IProblem.MissingOverrideAnnotation,
-		new String[] {new String(binding.selector), typesAsString(binding.isVarargs(), binding.parameters, false), new String(binding.declaringClass.readableName()), },
-		new String[] {new String(binding.selector), typesAsString(binding.isVarargs(), binding.parameters, true), new String(binding.declaringClass.shortReadableName()),},
+		new String[] {new String(methodSelector), typesAsString(binding.isVarargs(), binding.parameters, false), new String(binding.declaringClass.readableName()), },
+		new String[] {new String(methodSelector), typesAsString(binding.isVarargs(), binding.parameters, true), new String(binding.declaringClass.shortReadableName()),},
 		severity,
 		method.sourceStart,
 		method.sourceEnd);
@@ -6846,13 +6836,16 @@ public void unusedPrivateMethod(AbstractMethodDeclaration methodDecl) {
 	if (severity == ProblemSeverities.Ignore) return;
 
 	MethodBinding method = methodDecl.binding;
+	char[] methodSelector = method.selector;
+	if(methodSelector == null)
+		methodSelector = methodDecl.getSafeName();
 
 	// no report for serialization support 'void readObject(ObjectInputStream)'
 	if (!method.isStatic()
 			&& TypeBinding.VOID == method.returnType
 			&& method.parameters.length == 1
 			&& method.parameters[0].dimensions() == 0
-			&& CharOperation.equals(method.selector, TypeConstants.READOBJECT)
+			&& CharOperation.equals(methodSelector, TypeConstants.READOBJECT)
 			&& CharOperation.equals(TypeConstants.CharArray_JAVA_IO_OBJECTINPUTSTREAM, method.parameters[0].readableName())) {
 		return;
 	}
@@ -6861,7 +6854,7 @@ public void unusedPrivateMethod(AbstractMethodDeclaration methodDecl) {
 			&& TypeBinding.VOID == method.returnType
 			&& method.parameters.length == 1
 			&& method.parameters[0].dimensions() == 0
-			&& CharOperation.equals(method.selector, TypeConstants.WRITEOBJECT)
+			&& CharOperation.equals(methodSelector, TypeConstants.WRITEOBJECT)
 			&& CharOperation.equals(TypeConstants.CharArray_JAVA_IO_OBJECTOUTPUTSTREAM, method.parameters[0].readableName())) {
 		return;
 	}
@@ -6869,26 +6862,26 @@ public void unusedPrivateMethod(AbstractMethodDeclaration methodDecl) {
 	if (!method.isStatic()
 			&& TypeIds.T_JavaLangObject == method.returnType.id
 			&& method.parameters.length == 0
-			&& CharOperation.equals(method.selector, TypeConstants.READRESOLVE)) {
+			&& CharOperation.equals(methodSelector, TypeConstants.READRESOLVE)) {
 		return;
 	}
 	// no report for serialization support 'Object writeReplace()'
 	if (!method.isStatic()
 			&& TypeIds.T_JavaLangObject == method.returnType.id
 			&& method.parameters.length == 0
-			&& CharOperation.equals(method.selector, TypeConstants.WRITEREPLACE)) {
+			&& CharOperation.equals(methodSelector, TypeConstants.WRITEREPLACE)) {
 		return;
 	}
 	this.handle(
 			IProblem.UnusedPrivateMethod,
 		new String[] {
 			new String(method.declaringClass.readableName()),
-			new String(method.selector),
+			new String(methodSelector),
 			typesAsString(method.isVarargs(), method.parameters, false)
 		 },
 		new String[] {
 			new String(method.declaringClass.shortReadableName()),
-			new String(method.selector),
+			new String(methodSelector),
 			typesAsString(method.isVarargs(), method.parameters, true)
 		 },
 		severity,

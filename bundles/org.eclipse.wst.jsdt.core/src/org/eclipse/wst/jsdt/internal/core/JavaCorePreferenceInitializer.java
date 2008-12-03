@@ -104,7 +104,7 @@ public class JavaCorePreferenceInitializer extends AbstractPreferenceInitializer
 		/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 		defaultOptionsMap.put(JavaScriptCore.LOOSE_VAR_DECL, JavaScriptCore.WARNING);
 		defaultOptionsMap.put(JavaScriptCore.OPTIONAL_SEMICOLON, JavaScriptCore.WARNING);
-
+		defaultOptionsMap.put(JavaScriptCore.COMPILER_PB_DUPLICATE_LOCAL_VARIABLES, JavaScriptCore.WARNING);
 		/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 
 		// Time out for parameter names

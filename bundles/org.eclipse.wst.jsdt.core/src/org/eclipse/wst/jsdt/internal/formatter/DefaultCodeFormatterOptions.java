@@ -155,6 +155,7 @@ public class DefaultCodeFormatterOptions {
 	public boolean insert_space_after_colon_in_assert;
 	public boolean insert_space_after_colon_in_case;
 	public boolean insert_space_after_colon_in_conditional;
+	public boolean insert_space_after_colon_in_object_initializer;
 	public boolean insert_space_after_colon_in_for;
 	public boolean insert_space_after_colon_in_labeled_statement;
 	public boolean insert_space_after_comma_in_allocation_expression;
@@ -228,6 +229,7 @@ public class DefaultCodeFormatterOptions {
 	public boolean insert_space_before_colon_in_assert;
 	public boolean insert_space_before_colon_in_case;
 	public boolean insert_space_before_colon_in_conditional;
+	public boolean insert_space_before_colon_in_object_initializer;
 	public boolean insert_space_before_colon_in_default;
 	public boolean insert_space_before_colon_in_for;
 	public boolean insert_space_before_colon_in_labeled_statement;
@@ -436,6 +438,7 @@ public class DefaultCodeFormatterOptions {
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_ASSERT, this.insert_space_after_colon_in_assert ? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_CASE, this.insert_space_after_colon_in_case ? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_CONDITIONAL, this.insert_space_after_colon_in_conditional ? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_OBJECT_INITIALIZER, this.insert_space_after_colon_in_object_initializer ? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_FOR, this.insert_space_after_colon_in_for ? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_LABELED_STATEMENT, this.insert_space_after_colon_in_labeled_statement? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_ALLOCATION_EXPRESSION, this.insert_space_after_comma_in_allocation_expression? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
@@ -509,6 +512,7 @@ public class DefaultCodeFormatterOptions {
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_ASSERT, this.insert_space_before_colon_in_assert? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_CASE, this.insert_space_before_colon_in_case? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_CONDITIONAL, this.insert_space_before_colon_in_conditional? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_OBJECT_INITIALIZER, this.insert_space_before_colon_in_object_initializer? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_DEFAULT, this.insert_space_before_colon_in_default? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_FOR, this.insert_space_before_colon_in_for ? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_LABELED_STATEMENT, this.insert_space_before_colon_in_labeled_statement? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
@@ -1279,6 +1283,10 @@ public class DefaultCodeFormatterOptions {
 		if (insertSpaceAfterColonInConditionalOption != null) {
 			this.insert_space_after_colon_in_conditional = JavaScriptCore.INSERT.equals(insertSpaceAfterColonInConditionalOption);
 		}
+		final Object insertSpaceAfterColonInObjectInitializerOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_OBJECT_INITIALIZER);
+		if (insertSpaceAfterColonInObjectInitializerOption != null) {
+			this.insert_space_after_colon_in_object_initializer = JavaScriptCore.INSERT.equals(insertSpaceAfterColonInObjectInitializerOption);
+		}
 		final Object insertSpaceAfterColonInForOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_FOR);
 		if (insertSpaceAfterColonInForOption != null) {
 			this.insert_space_after_colon_in_for = JavaScriptCore.INSERT.equals(insertSpaceAfterColonInForOption);
@@ -1570,6 +1578,10 @@ public class DefaultCodeFormatterOptions {
 		final Object insertSpaceBeforeColonInConditionalOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_CONDITIONAL);
 		if (insertSpaceBeforeColonInConditionalOption != null) {
 			this.insert_space_before_colon_in_conditional = JavaScriptCore.INSERT.equals(insertSpaceBeforeColonInConditionalOption);
+		}
+		final Object insertSpaceBeforeColonInObjectInitializerOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_OBJECT_INITIALIZER);
+		if (insertSpaceBeforeColonInObjectInitializerOption != null) {
+			this.insert_space_before_colon_in_object_initializer = JavaScriptCore.INSERT.equals(insertSpaceBeforeColonInObjectInitializerOption);
 		}
 		final Object insertSpaceBeforeColonInDefaultOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_DEFAULT);
 		if (insertSpaceBeforeColonInDefaultOption != null) {
@@ -2062,6 +2074,7 @@ public class DefaultCodeFormatterOptions {
 		this.insert_space_after_colon_in_assert = true;
 		this.insert_space_after_colon_in_case = true;
 		this.insert_space_after_colon_in_conditional = true;
+		this.insert_space_after_colon_in_object_initializer = true;
 		this.insert_space_after_colon_in_for = true;
 		this.insert_space_after_colon_in_labeled_statement = true;
 		this.insert_space_after_comma_in_allocation_expression = true;
@@ -2135,6 +2148,7 @@ public class DefaultCodeFormatterOptions {
 		this.insert_space_before_colon_in_assert = true;
 		this.insert_space_before_colon_in_case = true;
 		this.insert_space_before_colon_in_conditional = true;
+		this.insert_space_before_colon_in_object_initializer = true;
 		this.insert_space_before_colon_in_default = true;
 		this.insert_space_before_colon_in_for = true;
 		this.insert_space_before_colon_in_labeled_statement = true;
@@ -2330,6 +2344,7 @@ public class DefaultCodeFormatterOptions {
 		this.insert_space_after_colon_in_assert = true;
 		this.insert_space_after_colon_in_case = true;
 		this.insert_space_after_colon_in_conditional = true;
+		this.insert_space_after_colon_in_object_initializer = true;
 		this.insert_space_after_colon_in_for = true;
 		this.insert_space_after_colon_in_labeled_statement = true;
 		this.insert_space_after_comma_in_allocation_expression = true;
@@ -2403,6 +2418,7 @@ public class DefaultCodeFormatterOptions {
 		this.insert_space_before_colon_in_assert = true;
 		this.insert_space_before_colon_in_case = false;
 		this.insert_space_before_colon_in_conditional = true;
+		this.insert_space_before_colon_in_object_initializer = true;
 		this.insert_space_before_colon_in_default = false;
 		this.insert_space_before_colon_in_for = true;
 		this.insert_space_before_colon_in_labeled_statement = false;

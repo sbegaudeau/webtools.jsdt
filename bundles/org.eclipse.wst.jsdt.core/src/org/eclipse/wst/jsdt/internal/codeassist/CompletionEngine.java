@@ -1832,27 +1832,6 @@ public final class CompletionEngine
 						}
 						
 					}
-					if (qualifiedBinding instanceof FunctionTypeBinding) {
-						FunctionTypeBinding functionTypeBinding = (FunctionTypeBinding) qualifiedBinding;
-						if (functionTypeBinding.functionBinding!=null && functionTypeBinding.functionBinding.isConstructor())
-						{
-							ReferenceBinding declaringClass = (ReferenceBinding)functionTypeBinding.functionBinding.returnType;
-							findFieldsAndMethods(
-									this.completionToken,
-									declaringClass,
-									scope,
-									access,
-									scope,
-									true,
-									false,
-									access.receiver instanceof SuperReference,
-									null,
-									null,
-									null,
-									false);
-							
-				}
-			}
 				}
 			}
 

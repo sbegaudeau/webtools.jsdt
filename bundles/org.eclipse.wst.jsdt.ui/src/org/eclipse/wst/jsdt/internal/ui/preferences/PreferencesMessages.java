@@ -750,6 +750,7 @@ public final class PreferencesMessages extends NLS {
 	public static String ProblemSeveritiesConfigurationBlock_pb_parameter_assignment;
 	public static String ProblemSeveritiesConfigurationBlock_pb_null_reference;
 	public static String ProblemSeveritiesConfigurationBlock_pb_potential_null_reference;
+	public static String ProblemSeveritiesConfigurationBlock_pb_duplicate_local_variables;
 	public static String ProblemSeveritiesConfigurationBlock_pb_fall_through_case;
 	public static String CodeAssistConfigurationBlock_hideDeprecated_label;
 	

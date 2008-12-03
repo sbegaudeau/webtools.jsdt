@@ -282,6 +282,11 @@ public final class WhiteSpaceOptions {
     	CodeFormatter.K_STATEMENTS,
     	"throw (e);" //$NON-NLS-1$
     );
+    
+	private final PreviewSnippet OBJECT_INITIALIZER_PREVIEW= new PreviewSnippet(
+		CodeFormatter.K_STATEMENTS,
+		"anObject = { color:'red', wheels:4, engine:{ cylinders:4, size:2.2 } };" //$NON-NLS-1$   
+	);
 
 //    private final PreviewSnippet ANNOTATION_DECL_PREVIEW= new PreviewSnippet(
 //        CodeFormatter.K_CLASS_BODY_DECLARATIONS,
@@ -557,8 +562,9 @@ public final class WhiteSpaceOptions {
 		createAssignmentTree(workingValues, expressions);
 		createOperatorTree(workingValues, expressions);
 		createParenthesizedExpressionTree(workingValues, expressions);
-//		createTypecastTree(workingValues, expressions);
 		createConditionalTree(workingValues, expressions);
+		createObjectInitializerTree(workingValues, expressions);
+//		createTypecastTree(workingValues, expressions);
 		
 		final InnerNode arrays= new InnerNode(null, workingValues, FormatterMessages.WhiteSpaceTabPage_arrays); 
 		createArrayDeclarationTree(workingValues, arrays);
@@ -603,7 +609,8 @@ public final class WhiteSpaceOptions {
     	createOption(parent, workingValues, FormatterMessages.WhiteSpaceOptions_assert, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_ASSERT, ASSERT_PREVIEW); 
         createOption(parent, workingValues, FormatterMessages.WhiteSpaceOptions_conditional, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_CONDITIONAL, CONDITIONAL_PREVIEW); 
         createOption(parent, workingValues, FormatterMessages.WhiteSpaceOptions_label, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_LABELED_STATEMENT, LABEL_PREVIEW); 
-
+        createOption(parent, workingValues, FormatterMessages.WhiteSpaceOptions_object_initializer, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_OBJECT_INITIALIZER, OBJECT_INITIALIZER_PREVIEW);
+        
         final InnerNode switchStatement= createChild(parent, workingValues, FormatterMessages.WhiteSpaceOptions_switch); 
         createOption(switchStatement, workingValues, FormatterMessages.WhiteSpaceOptions_case, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_CASE, SWITCH_PREVIEW); 
         createOption(switchStatement, workingValues, FormatterMessages.WhiteSpaceOptions_default, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_DEFAULT, SWITCH_PREVIEW); 
@@ -779,6 +786,7 @@ public final class WhiteSpaceOptions {
     	createOption(parent, workingValues, FormatterMessages.WhiteSpaceOptions_assert, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_ASSERT, ASSERT_PREVIEW); 
         createOption(parent, workingValues, FormatterMessages.WhiteSpaceOptions_conditional, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_CONDITIONAL, CONDITIONAL_PREVIEW); 
         createOption(parent, workingValues, FormatterMessages.WhiteSpaceOptions_label, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_LABELED_STATEMENT, LABEL_PREVIEW); 
+        createOption(parent, workingValues, FormatterMessages.WhiteSpaceOptions_object_initializer, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_OBJECT_INITIALIZER, OBJECT_INITIALIZER_PREVIEW);
         createOption(parent, workingValues, FormatterMessages.WhiteSpaceOptions_for, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_FOR, FOR_PREVIEW); 
     }
 
@@ -912,6 +920,13 @@ public final class WhiteSpaceOptions {
         final InnerNode root= new InnerNode(parent, workingValues, FormatterMessages.WhiteSpaceTabPage_assignments); 
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_assignments_before_assignment_operator, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_ASSIGNMENT_OPERATOR, OPERATOR_PREVIEW); 
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_assignments_after_assignment_operator, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_ASSIGNMENT_OPERATOR, OPERATOR_PREVIEW); 
+        return root;
+    }
+    
+    private InnerNode createObjectInitializerTree(Map workingValues, InnerNode parent) {
+        final InnerNode root= new InnerNode(parent, workingValues, FormatterMessages.WhiteSpaceTabPage_object_initializer); 
+        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_object_initializer_before_colon, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_OBJECT_INITIALIZER, OBJECT_INITIALIZER_PREVIEW); 
+        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_object_initializer_after_colon, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_OBJECT_INITIALIZER, OBJECT_INITIALIZER_PREVIEW); 
         return root;
     }
     
