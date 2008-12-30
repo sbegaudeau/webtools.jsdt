@@ -67,6 +67,6 @@ public class JavaElementHyperlink implements IHyperlink {
 	 * 
 	 */
 	public String getHyperlinkText() {
-		return null;
+		return fOpenAction.getToolTipText();
 	}
 }
