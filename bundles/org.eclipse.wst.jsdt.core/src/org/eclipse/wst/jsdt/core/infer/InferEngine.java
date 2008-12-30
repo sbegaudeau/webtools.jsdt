@@ -1368,7 +1368,7 @@ public class InferEngine extends ASTVisitor {
 			SingleNameReference snr = (SingleNameReference) expr;
 			return CharOperation.equals(snr.token, matchName);
 		}
-		else if (expr instanceof FieldReference && names.length>1) {
+		else if (expr instanceof FieldReference && names.length>1 && index>0) {
 			FieldReference fieldReference = (FieldReference) expr;
 			if (CharOperation.equals(fieldReference.token, matchName))
 				return isMatch(fieldReference.receiver, names, index-1);

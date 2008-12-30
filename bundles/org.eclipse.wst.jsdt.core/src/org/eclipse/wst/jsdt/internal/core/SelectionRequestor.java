@@ -842,8 +842,8 @@ private boolean areTypeParametersCompatible(IFunction method, char[][] typeParam
  */
 protected IJavaScriptElement findLocalElement(int pos) {
 	IJavaScriptElement res = null;
-	if(this.openable instanceof IJavaScriptUnit) {
-		IJavaScriptUnit cu = (IJavaScriptUnit) this.openable;
+	if(this.openable instanceof ITypeRoot) {
+		ITypeRoot cu = (ITypeRoot) this.openable;
 		try {
 			res = cu.getElementAt(pos);
 		} catch (JavaScriptModelException e) {

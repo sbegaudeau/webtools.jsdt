@@ -536,7 +536,7 @@ public JsGlobalScopeContainerInitializer getContainerInitializer() {
 }
 public boolean isSource() {
 	try {
-		return getPackageFragmentRoot().getKind() == IPackageFragmentRoot.K_SOURCE;
+		return getKind() == IPackageFragmentRoot.K_SOURCE;
 	} catch (JavaScriptModelException e) {
 	}
 	return true;
