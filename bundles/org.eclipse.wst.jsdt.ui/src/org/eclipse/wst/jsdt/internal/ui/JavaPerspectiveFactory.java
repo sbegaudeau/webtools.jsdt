@@ -76,6 +76,7 @@ public class JavaPerspectiveFactory implements IPerspectiveFactory {
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.JavaProjectWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewPackageCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewClassCreationWizard"); //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.NewJSWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewInterfaceCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewEnumCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewAnnotationCreationWizard"); //$NON-NLS-1$

@@ -546,8 +546,20 @@
 			<description>%wizard.description.0</description>
 			<selection class="org.eclipse.core.resources.IResource" />
 		</wizard>
-
 <!--      
+      <wizard
+            name="%NewJavaClass.label"
+            icon="$nl$/icons/full/etool16/newclass_wiz.gif"
+            category="org.eclipse.wst.jsdt.ui.java"
+            id="org.eclipse.wst.jsdt.ui.wizards.NewClassCreationWizard">
+         <class class="org.eclipse.wst.jsdt.internal.ui.wizards.NewClassCreationWizard">
+            <parameter name="javatype" value="true"/>
+         </class>
+         <description>
+            %NewJavaClass.description
+         </description>
+      </wizard>
+
       <wizard
             name="%NewJavaPackage.label"
             icon="$nl$/icons/full/etool16/newpack_wiz.gif"
@@ -556,18 +568,6 @@
             id="org.eclipse.wst.jsdt.ui.wizards.NewPackageCreationWizard">
          <description>
             %NewJavaPackage.description
-         </description>
-      </wizard>
-      <wizard
-            name="%NewJavaClass.label"
-            icon="$nl$/icons/full/etool16/newclass_wiz.gif"
-            category="org.eclipse.wst.jsdt.ui.java"
-            id="org.eclipse.wst.jsdt.ui.wizards.NewClassCreationWizard">
-         <class class="org.eclipse.wst.jsdt.internal.ui.wizards.NewJSWizard">
-            <parameter name="javatype" value="true"/>
-         </class>
-         <description>
-            %NewJavaClass.description
          </description>
       </wizard>
       <wizard
@@ -1292,6 +1292,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             name="%javaPrefName"
+            category="org.eclipse.wst.html.ui.preferences.web"
             class="org.eclipse.wst.jsdt.internal.ui.preferences.JavaBasePreferencePage"
             id="org.eclipse.wst.jsdt.ui.preferences.JavaBasePreferencePage">
             <keywordReference id="org.eclipse.wst.jsdt.ui.general"/>

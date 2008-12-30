@@ -369,6 +369,7 @@ public class JavaPluginImages {
     public static final ImageDescriptor DESC_OVR_MAX_LEVEL= createUnManaged(T_OVR, "maxlevel_co.gif");                    //$NON-NLS-1$
 		
 	public static final ImageDescriptor DESC_WIZBAN_NEWCLASS= createUnManaged(T_WIZBAN, "newclass_wiz.png"); 			//$NON-NLS-1$
+	public static final ImageDescriptor DESC_WIZBAN_NEWJSFILE= createUnManaged(T_WIZBAN, "newjscriptfile_wiz.png"); //$NON-NLS-1$
 	public static final ImageDescriptor DESC_WIZBAN_NEWINT= createUnManaged(T_WIZBAN, "newint_wiz.png"); 				//$NON-NLS-1$
 	public static final ImageDescriptor DESC_WIZBAN_NEWENUM= createUnManaged(T_WIZBAN, "newenum_wiz.png"); 				//$NON-NLS-1$
 	public static final ImageDescriptor DESC_WIZBAN_NEWANNOT= createUnManaged(T_WIZBAN, "newannotation_wiz.png"); 				//$NON-NLS-1$

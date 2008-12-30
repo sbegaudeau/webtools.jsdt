@@ -21,8 +21,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 public class NewJSWizard extends Wizard implements INewWizard {
 	
@@ -39,11 +39,7 @@ public class NewJSWizard extends Wizard implements INewWizard {
 	public void init(IWorkbench aWorkbench, IStructuredSelection aSelection) {
 		fSelection = aSelection;
 		setWindowTitle(NewWizardMessages.Javascript_UI_Wizard_New_Title); //$NON-NLS-1$
-		
-//		ImageDescriptor descriptor = JSEditorPluginImageHelper.getInstance().getImageDescriptor(JSEditorPluginImages.IMG_WIZBAN_NEWJSFILE);
-//		setDefaultPageImageDescriptor(descriptor);
-// Set image below to actual modified image.
-setDefaultPageImageDescriptor(JavaPluginImages.DESC_WIZBAN_NEWENUM);
+		setDefaultPageImageDescriptor(JavaPluginImages.DESC_WIZBAN_NEWJSFILE);
 	}
 
 	private void openEditor(final IFile file) {
@@ -52,11 +48,11 @@ setDefaultPageImageDescriptor(JavaPluginImages.DESC_WIZBAN_NEWENUM);
 				public void run() {
 					try {
 						IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-						IDE.openEditor(page, file, true);
+						IDE.openEditor(page, file, true, false);
 					}
 					catch (PartInitException e) {
-// STP						Logger.log(Logger.WARNING_DEBUG, e.getMessage(), e);
-JavaScriptPlugin.log(e);
+						// STP Logger.log(Logger.WARNING_DEBUG, e.getMessage(), e);
+						JavaScriptPlugin.log(e);
 					}
 				}
 			});

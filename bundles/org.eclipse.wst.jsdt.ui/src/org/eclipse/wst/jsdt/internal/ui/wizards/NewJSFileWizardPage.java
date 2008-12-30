@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
@@ -35,7 +34,6 @@ class NewJSFileWizardPage extends WizardNewFileCreationPage {
 	
 	public NewJSFileWizardPage(String pageName, IStructuredSelection selection) {
         super(pageName, selection);
-        super.setImageDescriptor(ImageDescriptor.createFromFile(this.getClass(),"full_rhino_transparent.gif"));
     }
 	
 	/**
@@ -47,13 +45,15 @@ class NewJSFileWizardPage extends WizardNewFileCreationPage {
 		super.initialPopulateContainerNameField();
 		
 		IPath fullPath = getContainerFullPath();
-		IProject project = getProjectFromPath(fullPath);
-		IPath webContentPath = getWebContentPath(project);
-		IPath projectPath = project.getFullPath();
-		if(fullPath==null || projectPath.equals(fullPath)) 
-			setContainerFullPath(webContentPath);
-		else
-			setContainerFullPath(fullPath);
+		if (fullPath != null && fullPath.segmentCount() > 0) {
+			IProject project = getProjectFromPath(fullPath);
+			IPath webContentPath = getWebContentPath(project);
+			IPath projectPath = project.getFullPath();
+			if (projectPath.equals(fullPath))
+				setContainerFullPath(webContentPath);
+			else
+				setContainerFullPath(fullPath);
+		}
 		//if (webContentPath != null && !webContentPath.isPrefixOf(fullPath)) {
 			//setContainerFullPath(webContentPath);
 	//	}else{
