@@ -878,7 +878,8 @@ public class ClassScope extends Scope {
 				} else {
 					// only want to reach here when no errors are reported
 					sourceType.superclass = superclass;
-					return true;
+					if (superclass.isValidBinding())
+						return true;
 				}
 			}
 
