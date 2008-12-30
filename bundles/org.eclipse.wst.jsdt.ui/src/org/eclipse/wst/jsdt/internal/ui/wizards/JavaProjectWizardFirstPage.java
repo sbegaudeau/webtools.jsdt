@@ -314,6 +314,7 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 	private final class JREGroup implements Observer, SelectionListener, IDialogFieldListener {
 
 		private final SelectionButtonDialogField fEnableWebSupport;//, fUseProjectJRE;
+		private final SelectionButtonDialogField fDefaultWindowSuperType;
 		//private final ComboDialogField fJRECombo;
 		private final Group fGroup;
 		private String[] fComplianceLabels;
@@ -332,6 +333,21 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 			fEnableWebSupport.setLabelText(NewWizardMessages.JavaProjectWizardFirstPage_1);
 			fEnableWebSupport.doFillIntoGrid(fGroup, 2);
 			fEnableWebSupport.setEnabled(true);
+			fEnableWebSupport.getSelectionButton(fGroup).addSelectionListener(new SelectionListener() {
+				public void widgetSelected(SelectionEvent e) {
+					if (fDefaultWindowSuperType != null)
+						fDefaultWindowSuperType.setEnabled(fEnableWebSupport.isSelected());
+				}			
+				public void widgetDefaultSelected(SelectionEvent e) {
+					widgetSelected(e);
+				}
+			});
+			
+			fDefaultWindowSuperType = new SelectionButtonDialogField(SWT.CHECK);
+			fDefaultWindowSuperType.setLabelText(NewWizardMessages.JavaProjectWizardFirstPage_2);
+			fDefaultWindowSuperType.doFillIntoGrid(fGroup, 2);
+			fDefaultWindowSuperType.setEnabled(true);
+
 			//fPreferenceLink= new Link(fGroup, SWT.NONE);
 			//fPreferenceLink.setFont(fGroup.getFont());
 			//fPreferenceLink.setText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_link_description);
@@ -354,11 +370,15 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 			//DialogField.createEmptySpace(fGroup);
 			
 			fEnableWebSupport.setSelection(true);
+			fDefaultWindowSuperType.setSelection(false);
 		//	fJRECombo.setEnabled(fUseProjectJRE.isSelected());
 		}
 
 		public boolean shouldEnableWebSupport() {
 			return fEnableWebSupport.isSelected();
+		}
+		public boolean shouldDefaultToWebBrowser() {
+			return fDefaultWindowSuperType.isEnabled() && fDefaultWindowSuperType.isSelected();
 		}
 		private void fillInstalledJREs(ComboDialogField comboField) {
 //			String selectedItem= null;
@@ -539,6 +559,7 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 			fIcon.setImage(Dialog.getImage(Dialog.DLG_IMG_MESSAGE_WARNING));
 			GridData gridData= new GridData(SWT.LEFT, SWT.CENTER, false, false);
 			fIcon.setLayoutData(gridData);
+			fIcon.setVisible(false);
 			
 			fHintText= new Link(composite, SWT.WRAP);
 			fHintText.setFont(composite.getFont());
@@ -597,6 +618,8 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 						fIcon.setImage(Dialog.getImage(Dialog.DLG_IMG_MESSAGE_INFO));
 						fIcon.setVisible(true);
 					} else {
+						fHintText.setVisible(false);
+						fIcon.setVisible(false);
 					//	handlePossibleJVMChange();
 					}
 				}
@@ -884,6 +907,10 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 	public boolean isWebEnabled() {
 		return fJREGroup.shouldEnableWebSupport();
 		//return null; //fJREGroup.getSelectedCompilerCompliance();
+	}
+	
+	public boolean isWebDefault() {
+		return fJREGroup.shouldDefaultToWebBrowser();
 	}
 	
 	/*

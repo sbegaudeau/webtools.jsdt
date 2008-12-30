@@ -255,7 +255,7 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 			}
 			IJavaScriptProject javaProject = JavaScriptCore.create(fCurrProject);
             init(javaProject,  entries, false);
-			if(fFirstPage.isWebEnabled()) {
+			if(fFirstPage.isWebDefault()) {
 				LibrarySuperType superType = new LibrarySuperType(new Path( JavaRuntime.BASE_BROWSER_LIB),  getJavaProject(), SUPER_TYPE_NAME);
 				getBuildPathsBlock().setSuperType(superType);
 				configureJavaProject(new SubProgressMonitor(monitor, 3)); // create the Java project to allow the use of the new source folder page

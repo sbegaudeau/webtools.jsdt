@@ -65,6 +65,7 @@ public final class NewWizardMessages extends NLS {
 	public static String IncludeToBuildpathAction_ErrorTitle;
 	public static String JavaProjectWizardFirstPage_0;
 	public static String JavaProjectWizardFirstPage_1;
+	public static String JavaProjectWizardFirstPage_2;
 	public static String JavaProjectWizardFirstPage_DetectGroup_differendWorkspaceCC_message;
 	public static String JavaProjectWizardFirstPage_EnableWorkingSet_button;
 	public static String JavaProjectWizardFirstPage_JREGroup_specific_EE;
