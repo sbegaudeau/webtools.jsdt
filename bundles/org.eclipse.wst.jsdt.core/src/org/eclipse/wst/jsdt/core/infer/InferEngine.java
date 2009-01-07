@@ -889,7 +889,7 @@ public class InferEngine extends ASTVisitor {
 		}
 		else if (expression instanceof SingleNameReference)
 		{
-			AbstractVariableDeclaration varDecl = getVariable( (SingleNameReference)expression );
+			AbstractVariableDeclaration varDecl = getVariable( expression );
 			if( varDecl != null )
 				return varDecl.inferredType;
 			if (this.inferredGlobal!=null)
