@@ -17,10 +17,6 @@
       %license
    </license>
 
-   <requires>
-      <import feature="org.eclipse.platform" version="3.4.0"/>
-   </requires>
-
    <plugin
          id="org.eclipse.wst.jsdt.core"
          download-size="0"
