@@ -40,8 +40,6 @@ public final class NewWizardMessages extends NLS {
 	public static String AddSourceFolderWizardPage_conflictWarning;
 	public static String AddSourceFolderWizardPage_ignoreNestingConflicts;
 	public static String AddSourceFolderWizardPage_replaceSourceFolderInfo;
-	public static String BaseLibraryWizardPage_DefaultBrowserLibraryAdded;
-	public static String BaseLibraryWizardPage_WebBrowserSupport;
 	public static String BuildPathDialogAccess_SelectSupertType;
 	public static String BuildPathDialogAccess_SuperTypeSelection;
 	public static String BuildPathsBlock_GlobalOrder;
@@ -704,6 +702,10 @@ public final class NewWizardMessages extends NLS {
 	public static String UserLibraryMarkerResolutionGenerator_error_creationfailed_message;
 	public static String UserLibraryMarkerResolutionGenerator_error_title;
 	public static String UserLibraryMarkerResolutionGenerator_error_applyingfailed_message;
+	
+	public static String BaseLibraryWizardPage_title;
+	public static String BaseLibraryWizardPage_DefaultBrowserLibraryAdded;
+	public static String BaseLibraryWizardPage_WebBrowserSupport;
 	
 	public static String ChangeComplianceDialog_title;
 	public static String ChangeComplianceDialog_message;

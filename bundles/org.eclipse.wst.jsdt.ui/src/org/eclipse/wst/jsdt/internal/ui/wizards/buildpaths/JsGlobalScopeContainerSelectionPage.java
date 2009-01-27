@@ -83,6 +83,8 @@ public class JsGlobalScopeContainerSelectionPage extends WizardPage {
 		fListViewer.setInput(Arrays.asList(fContainers));
 		fListViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
+				if(canFlipToNextPage())
+					getNextPage();
 				validatePage();
 			}
 		});
@@ -97,6 +99,8 @@ public class JsGlobalScopeContainerSelectionPage extends WizardPage {
 			selectionIndex= 0;
 		}
 		fListViewer.getList().select(selectionIndex);
+		if(canFlipToNextPage())
+			getNextPage();
 		validatePage();
 		setControl(fListViewer.getList());
 		Dialog.applyDialogFont(fListViewer.getList());
