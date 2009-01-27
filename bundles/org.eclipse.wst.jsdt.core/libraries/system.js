@@ -1299,8 +1299,8 @@ Global.prototype.parseInt=function(s,radix){};
   * function parseFloat(s)
   * @memberOf Global
   * @param {String} s
-  * @type Object
-  * @returns {Object}
+  * @type Number
+  * @returns {Number}
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
