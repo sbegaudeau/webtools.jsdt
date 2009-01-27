@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Tom Eicher (Avaloq Evolution AG) - block selection mode
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
@@ -27,15 +28,14 @@ import org.eclipse.jface.text.source.ILineRange;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IndentUtil.IndentResult;
 
@@ -314,11 +314,9 @@ public class JavaMoveLinesAction extends TextEditorAction {
 			return;
 
 		// get selection
-		Point p= viewer.getSelectedRange();
-		if (p == null)
+		ITextSelection sel= (ITextSelection) viewer.getSelectionProvider().getSelection();
+		if (sel.isEmpty())
 			return;
-
-		ITextSelection sel= new TextSelection(document, p.x, p.y);
 
 		ITextSelection skippedLine= getSkippedLine(document, sel);
 		if (skippedLine == null)
@@ -429,8 +427,17 @@ public class JavaMoveLinesAction extends TextEditorAction {
 		final int numberOfLines= lineRange.getNumberOfLines();
 		if (numberOfLines < 1)
 			return new Region(offset, 0);
-		int endLine= startLine + numberOfLines - 1;
-		int endOffset= document.getLineOffset(endLine) + document.getLineLength(endLine);
+		int endLine = startLine + numberOfLines - 1;
+		int endOffset;
+		if (fSharedState.fEditor.isBlockSelectionModeEnabled()) {
+			// in column mode, don't select the last delimiter as we count an
+			// empty selected line
+			IRegion endLineInfo = document.getLineInformation(endLine);
+			endOffset = endLineInfo.getOffset() + endLineInfo.getLength();
+		}
+		else {
+			endOffset = document.getLineOffset(endLine) + document.getLineLength(endLine);
+		}
 		return new Region(offset, endOffset - offset);
 	}
 

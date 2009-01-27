@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Nikolay Metchev - Fixed https://bugs.eclipse.org/bugs/show_bug.cgi?id=29909
+ *     Tom Eicher (Avaloq Evolution AG) - block selection mode
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text.java;
-
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -26,10 +26,12 @@ import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.rules.FastPartitioner;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
@@ -38,15 +40,14 @@ import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
-import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-import org.eclipse.wst.jsdt.core.dom.WithStatement;
+import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
@@ -56,6 +57,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.JavaIndenter;
 import org.eclipse.wst.jsdt.internal.ui.text.Symbols;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
+
 
 /**
  * Auto indent strategy sensitive to brackets.
@@ -79,20 +81,28 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	private boolean fCloseBrace;
 	private boolean fIsSmartMode;
+	private boolean fIsSmartTab;
 
 	private String fPartitioning;
 	private final IJavaScriptProject fProject;
 	private static IScanner fgScanner= ToolFactory.createScanner(false, false, false, false);
+	/**
+	 * The viewer.
+	 * @since 3.5
+	 */
+	private final ISourceViewer fViewer;
 
 	/**
 	 * Creates a new Java auto indent strategy for the given document partitioning.
 	 *
 	 * @param partitioning the document partitioning
 	 * @param project the project to get formatting preferences from, or null to use default preferences
+	 * @param viewer the source viewer that this strategy is attached to
 	 */
-	public JavaAutoIndentStrategy(String partitioning, IJavaScriptProject project) {
+	public JavaAutoIndentStrategy(String partitioning, IJavaScriptProject project, ISourceViewer viewer) {
 		fPartitioning= partitioning;
 		fProject= project;
+		fViewer= viewer;
  	}
 
 	private int getBracketCount(IDocument d, int startOffset, int endOffset, boolean ignoreCloseBrackets) throws BadLocationException {
@@ -265,7 +275,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 		JavaIndenter indenter= new JavaIndenter(d, scanner, fProject);
 		StringBuffer indent= indenter.computeIndentation(c.offset);
 		if (indent == null)
-			indent= new StringBuffer(); 
+			indent= new StringBuffer();
 
 		int docLength= d.getLength();
 		if (c.offset == -1 || docLength == 0)
@@ -296,7 +306,8 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
 				// copy old content of line behind insertion point to new line
 				// unless we think we are inserting an anonymous type definition
-				if (c.offset == 0 || !(computeAnonymousPosition(d, c.offset - 1, fPartitioning, lineEnd) != -1)) {
+
+				if (c.offset == 0 || computeAnonymousPosition(d, c.offset - 1, fPartitioning, lineEnd) == -1) {
 					if (lineEnd - contentStart > 0) {
 						c.length=  lineEnd - c.offset;
 						buf.append(d.get(contentStart, lineEnd - contentStart).toCharArray());
@@ -364,14 +375,18 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 			scanTo= length;
 
 		int closingParen= findClosingParenToLeft(scanner, pos) - 1;
-
+		boolean hasNewToken= looksLikeAnonymousClassDef(document, partitioning, scanner, pos);
+		int openingParen= -1;
 		while (true) {
 			int startScan= closingParen + 1;
 			closingParen= scanner.scanForward(startScan, scanTo, ')');
-			if (closingParen == -1)
+			if (closingParen == -1) {
+				if (hasNewToken && openingParen != -1)
+					return openingParen + 1;
 				break;
+			}
 
-			int openingParen= scanner.findOpeningPeer(closingParen - 1, '(', ')');
+			openingParen= scanner.findOpeningPeer(closingParen - 1, '(', ')');
 
 			// no way an expression at the beginning of the document can mean anything
 			if (openingParen < 1)
@@ -392,7 +407,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	/**
 	 * Finds a closing parenthesis to the left of <code>position</code> in document, where that parenthesis is only
 	 * separated by whitespace from <code>position</code>. If no such parenthesis can be found, <code>position</code> is returned.
-	 *
+	 * 
 	 * @param scanner the java heuristic scanner set up on the document
 	 * @param position the first character position in <code>document</code> to be considered
 	 * @return the position of a closing parenthesis left to <code>position</code> separated only by whitespace, or <code>position</code> if no parenthesis can be found
@@ -450,8 +465,9 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	 * parenthesis of the definition's parameter list.
 	 *
 	 * @param document the document being modified
-	 * @param position the first character position in <code>document</code> to be considered
 	 * @param partitioning the document partitioning
+	 * @param scanner the scanner
+	 * @param position the first character position in <code>document</code> to be considered
 	 * @return <code>true</code> if the content of <code>document</code> looks like an anonymous class definition, <code>false</code> otherwise
 	 */
 	private static boolean looksLikeAnonymousClassDef(IDocument document, String partitioning, JavaHeuristicScanner scanner, int position) {
@@ -489,7 +505,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	private boolean isClosed(IDocument document, int offset, int length) {
 
-		CompilationUnitInfo info= getCompilationUnitForMethod(document, offset, fPartitioning);
+		CompilationUnitInfo info= getCompilationUnitForMethod(document, offset);
 		if (info == null)
 			return false;
 
@@ -517,7 +533,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 			while (node != null && (relativeOffset == node.getStartPosition() || relativeOffset == node.getStartPosition() + node.getLength()))
 				node= node.getParent();
 		}
-		
+
 		if (node == null)
 			return false;
 
@@ -562,30 +578,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 					return body != null;
 			}
 			break;
-			case ASTNode.FOR_IN_STATEMENT:
-			{
-				Expression collection= ((ForInStatement) node).getCollection() ;
-				IRegion collectionRegion= createRegion(collection, info.delta);
-				Statement body= ((ForInStatement) node).getBody();
-				IRegion bodyRegion= createRegion(body, info.delta);
 
-				// between expression and body statement
-				if (collectionRegion.getOffset() + collectionRegion.getLength() <= offset && offset + length <= bodyRegion.getOffset())
-					return body != null;
-			}
-			break;
-			case ASTNode.WITH_STATEMENT:
-			{
-				Expression collection= ((WithStatement) node).getExpression() ;
-				IRegion collectionRegion= createRegion(collection, info.delta);
-				Statement body= ((WithStatement) node).getBody();
-				IRegion bodyRegion= createRegion(body, info.delta);
-
-				// between expression and body statement
-				if (collectionRegion.getOffset() + collectionRegion.getLength() <= offset && offset + length <= bodyRegion.getOffset())
-					return body != null;
-			}
-			break;			
 			case ASTNode.DO_STATEMENT:
 			{
 				DoStatement doStatement= (DoStatement) node;
@@ -825,7 +818,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 		int newInsert= insert;
 		while (newInsert < endOffset - 2 && document.get(newInsert, 2).equals(LINE_COMMENT))
 			newInsert += 2;
-		
+
 		// Heuristic to check whether it is commented code or just a comment
 		if (newInsert > insert) {
 			int whitespaceCount= 0;
@@ -837,7 +830,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 				 whitespaceCount= whitespaceCount + computeVisualLength(ch, tabLength);
 				 i++;
 			}
-			
+
 			if (whitespaceCount != 0 && whitespaceCount >= CodeFormatterUtil.getIndentWidth(fProject))
 				insert= newInsert;
 		}
@@ -929,6 +922,32 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 		return CodeFormatterUtil.getTabWidth(fProject);
 	}
 
+	/**
+	 * The preference setting that tells whether to insert spaces when pressing the Tab key.
+	 *
+	 * @return <code>true</code> if spaces are inserted when pressing the Tab key
+	 * @since 3.5
+	 */
+	private boolean isInsertingSpacesForTab() {
+		return JavaScriptCore.SPACE.equals(getCoreOption(fProject, DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR));
+	}
+
+	/**
+	 * Returns the possibly <code>project</code>-specific core preference defined under
+	 * <code>key</code>.
+	 *
+	 * @param project the project to get the preference from, or <code>null</code> to get the global
+	 *            preference
+	 * @param key the key of the preference
+	 * @return the value of the preference
+	 * @since 3.5
+	 */
+	private static String getCoreOption(IJavaScriptProject project, String key) {
+		if (project == null)
+			return JavaScriptCore.getOption(key);
+		return project.getOption(key, true);
+	}
+
 	private int getPeerPosition(IDocument document, DocumentCommand command) {
 		if (document.getLength() == 0)
 			return 0;
@@ -1014,13 +1033,14 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     }
 
     /**
-     * Skips the scope opened by <code>token</code> in <code>document</code>,
-     * returns either the position of the
-     * @param pos
-     * @param token
-     * @return the position after the scope
+     * Skips the scope opened by <code>token</code>.
+     *
+     * @param scanner the scanner
+     * @param start the start position
+     * @param token the token
+     * @return the position after the scope or <code>JavaHeuristicScanner.NOT_FOUND</code>
      */
-    private static int skipScope(JavaHeuristicScanner scanner, int pos, int token) {
+    private static int skipScope(JavaHeuristicScanner scanner, int start, int token) {
     	int openToken= token;
     	int closeToken;
     	switch (token) {
@@ -1039,7 +1059,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     	}
 
     	int depth= 1;
-    	int p= pos;
+    	int p= start;
 
     	while (true) {
     		int tok= scanner.nextToken(p, JavaHeuristicScanner.UNBOUND);
@@ -1174,23 +1194,50 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	 * @see org.eclipse.jface.text.IAutoIndentStrategy#customizeDocumentCommand(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.DocumentCommand)
 	 */
 	public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
-
 		if (c.doit == false)
 			return;
 
 		clearCachedValues();
-		if (!isSmartMode()) {
+
+		if (!fIsSmartMode) {
 			super.customizeDocumentCommand(d, c);
 			return;
 		}
+
+		if (!fIsSmartTab && isRepresentingTab(c.text))
+			return;
 
 		if (c.length == 0 && c.text != null && isLineDelimiter(d, c.text))
 			smartIndentAfterNewLine(d, c);
 		else if (c.text.length() == 1)
 			smartIndentOnKeypress(d, c);
 		else if (c.text.length() > 1 && getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_SMART_PASTE))
-			smartPaste(d, c); // no smart backspace for paste
+			if (fViewer == null || fViewer.getTextWidget() == null || !fViewer.getTextWidget().getBlockSelection())
+				smartPaste(d, c); // no smart backspace for paste
 
+	}
+
+	/**
+	 * Tells whether the given inserted string represents hitting the Tab key.
+	 *
+	 * @param text the text to check
+	 * @return <code>true</code> if the text represents hitting the Tab key
+	 * @since 3.5
+	 */
+	private boolean isRepresentingTab(String text) {
+		if (text == null)
+			return false;
+
+		if (isInsertingSpacesForTab()) {
+			if (text.length() == 0 || text.length() > getVisualTabLengthPreference())
+				return false;
+			for (int i= 0; i < text.length(); i++) {
+				if (text.charAt(i) != ' ')
+					return false;
+			}
+			return true;
+		} else
+			return text.length() == 1 && text.charAt(0) == '\t';
 	}
 
 	private static IPreferenceStore getPreferenceStore() {
@@ -1201,13 +1248,10 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 		return fCloseBrace;
 	}
 
-	private boolean isSmartMode() {
-		return fIsSmartMode;
-	}
-
 	private void clearCachedValues() {
         IPreferenceStore preferenceStore= getPreferenceStore();
 		fCloseBrace= preferenceStore.getBoolean(PreferenceConstants.EDITOR_CLOSE_BRACES);
+		fIsSmartTab= preferenceStore.getBoolean(PreferenceConstants.EDITOR_SMART_TAB);
 		fIsSmartMode= computeSmartMode();
 	}
 
@@ -1223,7 +1267,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 		return false;
 	}
 
-	private static CompilationUnitInfo getCompilationUnitForMethod(IDocument document, int offset, String partitioning) {
+	private static CompilationUnitInfo getCompilationUnitForMethod(IDocument document, int offset) {
 		try {
 			JavaHeuristicScanner scanner= new JavaHeuristicScanner(document);
 
@@ -1233,7 +1277,7 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 			String source= document.get(sourceRange.getOffset(), sourceRange.getLength());
 
 			StringBuffer contents= new StringBuffer();
-			contents.append("function abc()"); //$NON-NLS-1$
+			contents.append("class ____C{void ____m()"); //$NON-NLS-1$
 			final int methodOffset= contents.length();
 			contents.append(source);
 			contents.append('}');
@@ -1250,13 +1294,13 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	}
 
 	/**
-	 * Returns the block balance, i.e. zero if the blocks are balanced at
-	 * <code>offset</code>, a negative number if there are more closing than opening
-	 * braces, and a positive number if there are more opening than closing braces.
-	 *
-	 * @param document
-	 * @param offset
-	 * @param partitioning
+	 * Returns the block balance, i.e. zero if the blocks are balanced at <code>offset</code>, a
+	 * negative number if there are more closing than opening braces, and a positive number if there
+	 * are more opening than closing braces.
+	 * 
+	 * @param document the document
+	 * @param offset the offset
+	 * @param partitioning the partitioning
 	 * @return the block balance
 	 */
 	private static int getBlockBalance(IDocument document, int offset, String partitioning) {

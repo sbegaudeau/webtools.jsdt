@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Tom Eicher (Avaloq Evolution AG) - block selection mode
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
@@ -131,11 +132,11 @@ import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportContainer;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
@@ -145,9 +146,9 @@ import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.core.util.IModifierConstants;
@@ -735,12 +736,17 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 				return;
 
 			int next= findNextPosition(position);
-			if (next != BreakIterator.DONE) {
-				setCaretPosition(next);
-				getTextWidget().showSelection();
-				fireSelectionChanged();
+			try {
+				if (isBlockSelectionModeEnabled() && document.getLineOfOffset(next) != document.getLineOfOffset(position)) {
+					super.run(); // may navigate into virtual white space
+				} else if (next != BreakIterator.DONE) {
+					setCaretPosition(next);
+					getTextWidget().showSelection();
+					fireSelectionChanged();
+				}
+			} catch (BadLocationException x) {
+				// ignore
 			}
-
 		}
 
 		/**
@@ -832,20 +838,33 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 				return;
 
 			final ISourceViewer viewer= getSourceViewer();
-			final int caret, length;
-			Point selection= viewer.getSelectedRange();
-			if (selection.y != 0) {
-				caret= selection.x;
-				length= selection.y;
-			} else {
-				caret= widgetOffset2ModelOffset(viewer, viewer.getTextWidget().getCaretOffset());
-				length= position - caret;
-			}
+			StyledText text= viewer.getTextWidget();
+			Point widgetSelection= text.getSelection();
+			if (isBlockSelectionModeEnabled() && widgetSelection.y != widgetSelection.x) {
+				final int caret= text.getCaretOffset();
+				final int offset= modelOffset2WidgetOffset(viewer, position);
 
-			try {
-				viewer.getDocument().replace(caret, length, ""); //$NON-NLS-1$
-			} catch (BadLocationException exception) {
-				// Should not happen
+				if (caret == widgetSelection.x)
+					text.setSelectionRange(widgetSelection.y, offset - widgetSelection.y);
+				else
+					text.setSelectionRange(widgetSelection.x, offset - widgetSelection.x);
+				text.invokeAction(ST.DELETE_NEXT);
+			} else {
+				Point selection= viewer.getSelectedRange();
+				final int caret, length;
+				if (selection.y != 0) {
+					caret= selection.x;
+					length= selection.y;
+				} else {
+					caret= widgetOffset2ModelOffset(viewer, text.getCaretOffset());
+					length= position - caret;
+				}
+
+				try {
+					viewer.getDocument().replace(caret, length, ""); //$NON-NLS-1$
+				} catch (BadLocationException exception) {
+					// Should not happen
+				}
 			}
 		}
 
@@ -929,10 +948,16 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 				return;
 
 			int previous= findPreviousPosition(position);
-			if (previous != BreakIterator.DONE) {
-				setCaretPosition(previous);
-				getTextWidget().showSelection();
-				fireSelectionChanged();
+			try {
+				if (isBlockSelectionModeEnabled() && document.getLineOfOffset(previous) != document.getLineOfOffset(position)) {
+					super.run(); // may navigate into virtual white space
+				} else if (previous != BreakIterator.DONE) {
+					setCaretPosition(previous);
+					getTextWidget().showSelection();
+					fireSelectionChanged();
+				}
+			} catch (BadLocationException x) {
+				// ignore - getLineOfOffset failed
 			}
 
 		}
@@ -1027,18 +1052,31 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 			final int length;
 			final ISourceViewer viewer= getSourceViewer();
-			Point selection= viewer.getSelectedRange();
-			if (selection.y != 0) {
-				position= selection.x;
-				length= selection.y;
-			} else {
-				length= widgetOffset2ModelOffset(viewer, viewer.getTextWidget().getCaretOffset()) - position;
-			}
+			StyledText text= viewer.getTextWidget();
+			Point widgetSelection= text.getSelection();
+			if (isBlockSelectionModeEnabled() && widgetSelection.y != widgetSelection.x) {
+				final int caret= text.getCaretOffset();
+				final int offset= modelOffset2WidgetOffset(viewer, position);
 
-			try {
-				viewer.getDocument().replace(position, length, ""); //$NON-NLS-1$
-			} catch (BadLocationException exception) {
-				// Should not happen
+				if (caret == widgetSelection.x)
+					text.setSelectionRange(widgetSelection.y, offset - widgetSelection.y);
+				else
+					text.setSelectionRange(widgetSelection.x, offset - widgetSelection.x);
+				text.invokeAction(ST.DELETE_PREVIOUS);
+			} else {
+				Point selection= viewer.getSelectedRange();
+				if (selection.y != 0) {
+					position= selection.x;
+					length= selection.y;
+				} else {
+					length= widgetOffset2ModelOffset(viewer, text.getCaretOffset()) - position;
+				}
+
+				try {
+					viewer.getDocument().replace(position, length, ""); //$NON-NLS-1$
+				} catch (BadLocationException exception) {
+					// Should not happen
+				}
 			}
 		}
 
