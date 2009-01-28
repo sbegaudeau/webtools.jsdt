@@ -1064,6 +1064,76 @@ public class BasicResolveTests extends AbstractRegressionTest {
 				""
 		);
 	}
+	
+	public void testbug259187_String_slice()	{	 
+		// String.split() argument count
+		this.runNegativeTest(
+					new String[] {
+							"X.js",
+							"var params = \"some?string\".slice('?');\n"
+					},
+					"----------\n" + 
+			"1. WARNING in X.js (at line 1)\n" + 
+			"	var params = \"some?string\".slice(\'?\');\n" + 
+			"	             ^^^^^^^^^^^^^^^^^^^^^^^^\n" + 
+			"Wrong number of arguments for the function slice (), expecting 2 argument(s), but there was 1 \n" + 
+			"----------\n"
+			);
+		
+		// check return type and argument count
+		runBasicTest(new String[] {
+			"Yprime.js",
+			"var aString = \"some?string\".slice(2, 4);\n" +
+			"aString.length;" 
+		});
+	}
+
+	public void testbug259187_String_split()	{	 
+		// String.split() argument count
+		this.runNegativeTest(
+					new String[] {
+							"Y.js",
+							"var params = \"some?string\".split('?');\n" +
+							"var base = params.shift();"
+					},
+					"----------\n" + 
+			"1. WARNING in Y.js (at line 1)\n" + 
+			"	var params = \"some?string\".split(\'?\');\n" + 
+			"	             ^^^^^^^^^^^^^^^^^^^^^^^^\n" + 
+			"Wrong number of arguments for the function split (), expecting 2 argument(s), but there was 1 \n" + 
+			"----------\n"
+			);
+		
+		// check return type and argument count
+		runBasicTest(new String[] {
+			"Yprime.js",
+			"var count = \"some?string\".split(\",\", 3);\n" +
+			"count.length;" 
+		});
+	}
+
+	public void testbug259187_String_substring() {
+		// String.substring() argument count
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"var count = \"some?string\".substring('?');" 
+					},
+					"----------\n" + 
+			"1. WARNING in Z.js (at line 1)\n" + 
+			"	var count = \"some?string\".substring(\'?\');\n" + 
+			"	            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" + 
+			"Wrong number of arguments for the function substring (), expecting 2 argument(s), but there was 1 \n" + 
+			"----------\n"
+			);
+		
+		// check return type and argument count
+		runBasicTest(new String[] {
+			"Zprime.js",
+			"var count = \"some?string\".substring(4, 3);\n" +
+			"count.substring(4, 3);" 
+		});
+	}
 
 
 }
