@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 IBM Corporation and others.
+ * Copyright (c) 2008, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -323,8 +323,8 @@ String.prototype.search = function(regexp){return 1;};
   * function slice(start, end) 
   * @type    String
   * @memberOf   String
-  * @param   {String} start
-  * @param   {String} end
+  * @param   {Number} start
+  * @param   {Number} end
   * @returns {String}
   * @throws  DOMException
   * @see     String
@@ -334,23 +334,23 @@ String.prototype.search = function(regexp){return 1;};
 String.prototype.slice = function(start, end){return "";};
  /**
   * function split(separator, limit) 
-  * @type    String
+  * @type    Array
   * @memberOf   String
   * @param   {String} separator
-  * @param   {String} limit
-  * @returns {String}
+  * @param   {Number} limit
+  * @returns {Array}
   * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
-String.prototype.split = function(separator, limit){return "";};
+String.prototype.split = function(separator, limit){return [];};
  /**
   * function substring(start, end) 
   * @type    String
   * @memberOf   String
-  * @param   {String} start
-  * @param   {String} end
+  * @param   {Number} start
+  * @param   {Number} end
   * @returns {String}
   * @throws  DOMException
   * @see     String
