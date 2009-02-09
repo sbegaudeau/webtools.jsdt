@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -124,9 +124,8 @@ public class LibraryFragmentRoot extends PackageFragmentRoot{
 			JavaModelManager manager = JavaModelManager.getJavaModelManager();
 			File[] members = file.listFiles();
 			boolean hasIncluded = isIncluded;
-			int length = members.length;
-			if (length >0) {
-				for (int i = 0; i < length; i++) {
+			if (members != null && members.length > 0) {
+				for (int i = 0; i < members.length; i++) {
 					File member = members[i];
 					String memberName = member.getName();
 
