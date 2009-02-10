@@ -188,24 +188,22 @@ public class ForInStatement extends Statement implements IForInStatement {
 			action.resolve(scope);
 	}
 
-	public void traverse(
-		ASTVisitor visitor,
-		BlockScope blockScope) {
-
+	public void traverse(ASTVisitor visitor, BlockScope blockScope) {
+		BlockScope visitScope = (this.scope != null) ? this.scope : blockScope;
 		if (visitor.visit(this, blockScope)) {
 			if (iterationVariable != null) {
-				iterationVariable.traverse(visitor, scope);
+				iterationVariable.traverse(visitor, visitScope);
 			}
 
 			if (collection != null)
-				collection.traverse(visitor, scope);
-
+				collection.traverse(visitor, visitScope);
 
 			if (action != null)
-				action.traverse(visitor, scope);
+				action.traverse(visitor, visitScope);
 		}
 		visitor.endVisit(this, blockScope);
 	}
+
 	public int getASTType() {
 		return IASTNode.FOR_IN_STATEMENT;
 	
