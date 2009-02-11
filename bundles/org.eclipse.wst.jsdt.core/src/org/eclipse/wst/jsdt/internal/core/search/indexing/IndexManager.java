@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,11 +19,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.zip.CRC32;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -77,6 +80,8 @@ public class IndexManager extends JobManager implements IIndexConstants {
 	public static Integer UPDATING_STATE = new Integer(1);
 	public static Integer UNKNOWN_STATE = new Integer(2);
 	public static Integer REBUILDING_STATE = new Integer(3);
+	private static final String INDEX_FILE_SUFFIX = ".index";
+
 
 public synchronized void aboutToUpdateIndex(IPath containerPath, Integer newIndexState) {
 	// newIndexState is either UPDATING_STATE or REBUILDING_STATE
@@ -171,8 +176,7 @@ private void deleteIndexFiles(SimpleSet pathsToKeep) {
 	for (int i = 0, l = indexesFiles.length; i < l; i++) {
 		String fileName = indexesFiles[i].getAbsolutePath();
 		if (pathsToKeep != null && pathsToKeep.includes(fileName)) continue;
-		String suffix = ".index"; //$NON-NLS-1$
-		if (fileName.regionMatches(true, fileName.length() - suffix.length(), suffix, 0, suffix.length())) {
+		if (fileName.regionMatches(true, fileName.length() - INDEX_FILE_SUFFIX.length(), INDEX_FILE_SUFFIX, 0, INDEX_FILE_SUFFIX.length())) {
 			if (VERBOSE)
 				Util.verbose("Deleting index file " + indexesFiles[i]); //$NON-NLS-1$
 			indexesFiles[i].delete();
@@ -319,12 +323,25 @@ private SimpleLookupTable getIndexStates() {
 	}
 	return this.indexStates;
 }
-private IPath getJavaPluginWorkingLocation() {
-	if (this.javaPluginLocation != null) return this.javaPluginLocation;
 
-	IPath stateLocation = JavaScriptCore.getPlugin().getStateLocation();
-	return this.javaPluginLocation = stateLocation;
-}
+	private IPath getJavaPluginWorkingLocation() {
+		if (this.javaPluginLocation != null)
+			return this.javaPluginLocation;
+
+		IPath stateLocation = JavaScriptCore.getPlugin().getStateLocation().addTrailingSeparator().append("indexes"); //$NON-NLS-1$
+		try {
+			IFileStore store = EFS.getLocalFileSystem().getStore(stateLocation);
+			if (!store.fetchInfo().exists()) {
+				store.mkdir(EFS.SHALLOW, null);
+			}
+		}
+		catch (CoreException e) {
+			e.printStackTrace();
+		}
+
+		return this.javaPluginLocation = stateLocation;
+	}
+
 private File getSavedIndexesDirectory() {
 	return new File(getJavaPluginWorkingLocation().toOSString());
 }
