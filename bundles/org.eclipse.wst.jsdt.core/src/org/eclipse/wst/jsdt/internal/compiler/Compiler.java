@@ -398,7 +398,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		CompilationUnitDeclaration unit,
 		CompilationResult result) {
 
-		if (this.options.onlyReportSyntaxErrors)
+		if (!this.options.enableSemanticValidation)
 			return;
 		
 		if ((result == null) && (unit != null)) {
@@ -466,7 +466,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		AbortCompilation abortException,
 		CompilationUnitDeclaration unit) {
 
-		if (this.options.onlyReportSyntaxErrors)
+		if (!this.options.enableSemanticValidation)
 			return;
 
 		/* special treatment for SilentAbort: silently cancelling the compilation process */

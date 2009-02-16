@@ -1093,7 +1093,11 @@ public void codeSnippetMissingMethod(String className, String missingMethod, Str
 public int computeSeverity(int problemID){
  	
 
-	if (this.options.onlyReportSyntaxErrors && (problemID & IProblem.Syntax) == 0) {
+	/*
+	 * If semantic validation is not enabled and this is anything but a
+	 * syntax or task problem, ignore.
+	 */
+	if (!this.options.enableSemanticValidation && (problemID & IProblem.Syntax) == 0 && (problemID & IProblem.Task) == 0) {
 		return ProblemSeverities.Ignore;
 	}
 	

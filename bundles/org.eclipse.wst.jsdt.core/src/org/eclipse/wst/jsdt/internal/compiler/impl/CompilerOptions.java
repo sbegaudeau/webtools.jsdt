@@ -359,7 +359,7 @@ public class CompilerOptions {
 	public InferOptions inferOptions=new InferOptions();
 
 
-	public boolean onlyReportSyntaxErrors=false;
+	public boolean enableSemanticValidation=false;
 	
 
 	/**
@@ -369,10 +369,10 @@ public class CompilerOptions {
 		// use default options
 
 		try {
-			this.onlyReportSyntaxErrors = JavaScriptCore.getPlugin().getPluginPreferences().getBoolean("onlySyntaxErrors"); //$NON-NLS-1$
+			this.enableSemanticValidation = JavaScriptCore.getPlugin().getPluginPreferences().getBoolean("semanticValidation"); //$NON-NLS-1$
 		}
 		catch (Exception ex) {
-			this.onlyReportSyntaxErrors = false;
+			this.enableSemanticValidation = false;
 		}
 	}
 
@@ -700,10 +700,10 @@ public class CompilerOptions {
 	public void set(Map optionsMap) {
 
 		try {
-			this.onlyReportSyntaxErrors = JavaScriptCore.getPlugin().getPluginPreferences().getBoolean("onlySyntaxErrors"); //$NON-NLS-1$
+			this.enableSemanticValidation = JavaScriptCore.getPlugin().getPluginPreferences().getBoolean("semanticValidation"); //$NON-NLS-1$
 		}
 		catch (Exception ex) {
-			this.onlyReportSyntaxErrors = false;
+			this.enableSemanticValidation = false;
 		}
 
 		Object optionValue;
