@@ -82,7 +82,7 @@ public class CodeSnippetParsingUtilTests extends TestCase {
 		final List problems = new ArrayList();
 		final IProblemRequestor requestor = new IProblemRequestor() {
 			public void acceptProblem(IProblem problem) {
-				System.err.println(problem.getMessage());
+//				System.err.println(problem.getMessage());
 				problems.add(problem);
 			}
 
