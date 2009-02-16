@@ -14,7 +14,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.eclipse.wst.jsdt.core.tests.model.AllJavaModelTests;
+import org.eclipse.wst.jsdt.core.tests.model.JSDTModelTests;
 
 /**
  * Runs all Java model tests.
@@ -25,7 +25,7 @@ public RunModelTests(String name) {
 }
 public static Test suite() {
 	TestSuite suite = new TestSuite(RunModelTests.class.getName());
-	suite.addTest(AllJavaModelTests.suite());
+	suite.addTest(JSDTModelTests.suite());
 	return suite;
 }
 }
