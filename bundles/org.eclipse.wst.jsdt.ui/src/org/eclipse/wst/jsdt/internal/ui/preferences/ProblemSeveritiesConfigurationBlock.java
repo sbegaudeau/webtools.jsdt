@@ -11,7 +11,9 @@
 package org.eclipse.wst.jsdt.internal.ui.preferences;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.dialogs.ControlEnableState;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -31,6 +33,8 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
 public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlock {
 
 	private static final String SETTINGS_SECTION_NAME= "ProblemSeveritiesConfigurationBlock";  //$NON-NLS-1$
+	
+	private static final Key PREF_PB_ONLY_PARSE_ERRORS = getJDTCoreKey("onlySyntaxErrors"); //$NON-NLS-1$
 	
 	// Preference store keys, see JavaScriptCore.getOptions
 	private static final Key PREF_PB_UNDEFINED_FIELD= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNDEFINED_FIELD);
@@ -118,6 +122,9 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 	
 
 	private PixelConverter fPixelConverter;
+
+	private ControlEnableState fBlockEnableState;
+	private Composite fControlsComposite;
 	
 	public ProblemSeveritiesConfigurationBlock(IStatusChangeListener context, IProject project, IWorkbenchPreferenceContainer container) {
 		super(context, project, getKeys(), container);
@@ -130,6 +137,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 	
 	private static Key[] getKeys() {
 		return new Key[] {
+				PREF_PB_ONLY_PARSE_ERRORS,
 				PREF_PB_UNDEFINED_FIELD,
 				/*PREF_PB_METHOD_WITH_CONSTRUCTOR_NAME,*/ PREF_PB_DEPRECATION, PREF_PB_HIDDEN_CATCH_BLOCK, PREF_PB_UNUSED_LOCAL,
 				PREF_PB_UNUSED_PARAMETER, PREF_PB_UNUSED_PARAMETER_INCLUDE_DOC_COMMENT_REFERENCE,
@@ -168,11 +176,21 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		layout.marginHeight= 0;
 		layout.marginWidth= 0;
 		mainComp.setLayout(layout);
-		
+
+		if (fProject == null) {
+			String label = PreferencesMessages.ProblemSeveritiesConfigurationBlock_onlySyntaxErrors;
+			addCheckBox(mainComp, label, PREF_PB_ONLY_PARSE_ERRORS, new String[]{"true", "false"}, 0); //$NON-NLS-1$ //$NON-NLS-2$
+			Label horizontalLine= new Label(mainComp, SWT.SEPARATOR | SWT.HORIZONTAL);
+			horizontalLine.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false, 2, 1));
+			horizontalLine.setFont(mainComp.getFont());
+		}
+
 		Composite commonComposite= createStyleTabContent(mainComp);
-		GridData gridData= new GridData(GridData.FILL, GridData.FILL, true, true);
+		GridData gridData= GridDataFactory.fillDefaults().grab(true, true).span(3, 1).create();
 		gridData.heightHint= fPixelConverter.convertHeightInCharsToPixels(20);
 		commonComposite.setLayoutData(gridData);
+
+		fControlsComposite = commonComposite;
 		
 		validateSettings(null, null, null);
 	
@@ -494,7 +512,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		}
 		
 		if (changedKey != null) {
-			if (PREF_PB_UNUSED_PARAMETER.equals(changedKey)  )
+			if (PREF_PB_UNUSED_PARAMETER.equals(changedKey) || PREF_PB_ONLY_PARSE_ERRORS.equals(changedKey) )
 //					PREF_PB_DEPRECATION.equals(changedKey) ||
 //					PREF_PB_LOCAL_VARIABLE_HIDING.equals(changedKey) ||
 //					PREF_PB_UNUSED_DECLARED_THROWN_EXCEPTION.equals(changedKey)) 
@@ -513,19 +531,37 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 	}
 	
 	private void updateEnableStates() {
-		boolean enableUnusedParams= !checkValue(PREF_PB_UNUSED_PARAMETER, IGNORE);
-//		getCheckBox(PREF_PB_SIGNAL_PARAMETER_IN_OVERRIDING).setEnabled(enableUnusedParams);
-		getCheckBox(PREF_PB_UNUSED_PARAMETER_INCLUDE_DOC_COMMENT_REFERENCE).setEnabled(enableUnusedParams);
+		boolean onlyParseErrors = checkValue(PREF_PB_ONLY_PARSE_ERRORS, "true"); //$NON-NLS-1$
+		enableConfigControls(!onlyParseErrors);
 		
-		boolean enableDeprecation= !checkValue(PREF_PB_DEPRECATION, IGNORE);
-		getCheckBox(PREF_PB_DEPRECATION_IN_DEPRECATED_CODE).setEnabled(enableDeprecation);
-		getCheckBox(PREF_PB_DEPRECATION_WHEN_OVERRIDING).setEnabled(enableDeprecation);
-		
-//		boolean enableThrownExceptions= !checkValue(PREF_PB_UNUSED_DECLARED_THROWN_EXCEPTION, IGNORE);
-//		getCheckBox(PREF_PB_UNUSED_DECLARED_THROWN_EXCEPTION_WHEN_OVERRIDING).setEnabled(enableThrownExceptions);
-
-//		boolean enableHiding= !checkValue(PREF_PB_LOCAL_VARIABLE_HIDING, IGNORE);
-//		getCheckBox(PREF_PB_SPECIAL_PARAMETER_HIDING_FIELD).setEnabled(enableHiding);
+		if (!onlyParseErrors) {
+			boolean enableUnusedParams= !checkValue(PREF_PB_UNUSED_PARAMETER, IGNORE);
+	//		getCheckBox(PREF_PB_SIGNAL_PARAMETER_IN_OVERRIDING).setEnabled(enableUnusedParams);
+			getCheckBox(PREF_PB_UNUSED_PARAMETER_INCLUDE_DOC_COMMENT_REFERENCE).setEnabled(enableUnusedParams);
+			
+			boolean enableDeprecation= !checkValue(PREF_PB_DEPRECATION, IGNORE);
+			getCheckBox(PREF_PB_DEPRECATION_IN_DEPRECATED_CODE).setEnabled(enableDeprecation);
+			getCheckBox(PREF_PB_DEPRECATION_WHEN_OVERRIDING).setEnabled(enableDeprecation);
+			
+	//		boolean enableThrownExceptions= !checkValue(PREF_PB_UNUSED_DECLARED_THROWN_EXCEPTION, IGNORE);
+	//		getCheckBox(PREF_PB_UNUSED_DECLARED_THROWN_EXCEPTION_WHEN_OVERRIDING).setEnabled(enableThrownExceptions);
+	
+	//		boolean enableHiding= !checkValue(PREF_PB_LOCAL_VARIABLE_HIDING, IGNORE);
+	//		getCheckBox(PREF_PB_SPECIAL_PARAMETER_HIDING_FIELD).setEnabled(enableHiding);
+		}
+	}
+	
+	protected void enableConfigControls(boolean enable) {
+		if (enable) {
+			if (fBlockEnableState != null) {
+				fBlockEnableState.restore();
+				fBlockEnableState= null;
+			}
+		} else {
+			if (fBlockEnableState == null) {
+				fBlockEnableState= ControlEnableState.disable(fControlsComposite);
+			}
+		}	
 	}
 
 	protected String[] getFullBuildDialogStrings(boolean workspaceSettings) {

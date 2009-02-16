@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -398,9 +398,9 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		CompilationUnitDeclaration unit,
 		CompilationResult result) {
 
-		
 		if (this.options.onlyReportSyntaxErrors)
 			return;
+		
 		if ((result == null) && (unit != null)) {
 			result = unit.compilationResult; // current unit being processed ?
 		}
@@ -465,6 +465,9 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	protected void handleInternalException(
 		AbortCompilation abortException,
 		CompilationUnitDeclaration unit) {
+
+		if (this.options.onlyReportSyntaxErrors)
+			return;
 
 		/* special treatment for SilentAbort: silently cancelling the compilation process */
 		if (abortException.isSilent) {

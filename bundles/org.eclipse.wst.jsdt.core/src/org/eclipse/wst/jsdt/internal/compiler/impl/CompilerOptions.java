@@ -359,19 +359,21 @@ public class CompilerOptions {
 	public InferOptions inferOptions=new InferOptions();
 
 
-    public boolean onlyReportSyntaxErrors=false;
+	public boolean onlyReportSyntaxErrors=false;
 	
 
 	/**
 	 * Initializing the compiler options with defaults
 	 */
-	public CompilerOptions(){
+	public CompilerOptions() {
 		// use default options
-		try {
-			this.onlyReportSyntaxErrors=JavaScriptCore.getPlugin().getPluginPreferences().getBoolean("onlySyntaxErrors");
-		} catch (Exception ex) 
-		{this.onlyReportSyntaxErrors=false;}
 
+		try {
+			this.onlyReportSyntaxErrors = JavaScriptCore.getPlugin().getPluginPreferences().getBoolean("onlySyntaxErrors"); //$NON-NLS-1$
+		}
+		catch (Exception ex) {
+			this.onlyReportSyntaxErrors = false;
+		}
 	}
 
 	/**
@@ -379,7 +381,6 @@ public class CompilerOptions {
 	 * @param settings
 	 */
 	public CompilerOptions(Map settings){
-
 		if (settings == null) return;
 		set(settings);
 	}
@@ -699,9 +700,11 @@ public class CompilerOptions {
 	public void set(Map optionsMap) {
 
 		try {
-			this.onlyReportSyntaxErrors=JavaScriptCore.getPlugin().getPluginPreferences().getBoolean("onlySyntaxErrors");
-		} catch (Exception ex) 
-		{this.onlyReportSyntaxErrors=false;}
+			this.onlyReportSyntaxErrors = JavaScriptCore.getPlugin().getPluginPreferences().getBoolean("onlySyntaxErrors"); //$NON-NLS-1$
+		}
+		catch (Exception ex) {
+			this.onlyReportSyntaxErrors = false;
+		}
 
 		Object optionValue;
 		if ((optionValue = optionsMap.get(OPTION_LocalVariableAttribute)) != null) {
