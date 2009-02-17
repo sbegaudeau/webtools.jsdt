@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,15 +15,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
 /**
@@ -63,13 +63,13 @@ public class JavaModelStatus extends Status implements IJavaScriptModelStatus, I
 	 */
 	public JavaModelStatus() {
 		// no code for an multi-status
-		super(ERROR, JavaScriptCore.PLUGIN_ID, 0, "JavaModelStatus", null); //$NON-NLS-1$
+		super(ERROR, JavaScriptCore.PLUGIN_ID, 0, "JavaScriptModelStatus", null); //$NON-NLS-1$
 	}
 	/**
 	 * Constructs an Java model status with no corresponding elements.
 	 */
 	public JavaModelStatus(int code) {
-		super(ERROR, JavaScriptCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
+		super(ERROR, JavaScriptCore.PLUGIN_ID, code, "JavaScriptModelStatus", null); //$NON-NLS-1$
 		this.elements= JavaElement.NO_ELEMENTS;
 	}
 	/**
@@ -77,7 +77,7 @@ public class JavaModelStatus extends Status implements IJavaScriptModelStatus, I
 	 * elements.
 	 */
 	public JavaModelStatus(int code, IJavaScriptElement[] elements) {
-		super(ERROR, JavaScriptCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
+		super(ERROR, JavaScriptCore.PLUGIN_ID, code, "JavaScriptModelStatus", null); //$NON-NLS-1$
 		this.elements= elements;
 		this.path= null;
 	}
@@ -91,7 +91,7 @@ public class JavaModelStatus extends Status implements IJavaScriptModelStatus, I
 	 * Constructs an Java model status with no corresponding elements.
 	 */
 	public JavaModelStatus(int severity, int code, String string) {
-		super(severity, JavaScriptCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
+		super(severity, JavaScriptCore.PLUGIN_ID, code, "JavaScriptModelStatus", null); //$NON-NLS-1$
 		this.elements= JavaElement.NO_ELEMENTS;
 		this.path= null;
 		this.string = string;
@@ -100,14 +100,14 @@ public class JavaModelStatus extends Status implements IJavaScriptModelStatus, I
 	 * Constructs an Java model status with no corresponding elements.
 	 */
 	public JavaModelStatus(int code, Throwable throwable) {
-		super(ERROR, JavaScriptCore.PLUGIN_ID, code, "JavaModelStatus", throwable); //$NON-NLS-1$
+		super(ERROR, JavaScriptCore.PLUGIN_ID, code, "JavaScriptModelStatus", throwable); //$NON-NLS-1$
 		this.elements= JavaElement.NO_ELEMENTS;
 	}
 	/**
 	 * Constructs an Java model status with no corresponding elements.
 	 */
 	public JavaModelStatus(int code, IPath path) {
-		super(ERROR, JavaScriptCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
+		super(ERROR, JavaScriptCore.PLUGIN_ID, code, "JavaScriptModelStatus", null); //$NON-NLS-1$
 		this.elements= JavaElement.NO_ELEMENTS;
 		this.path= path;
 	}
@@ -151,7 +151,7 @@ public class JavaModelStatus extends Status implements IJavaScriptModelStatus, I
      * element and path
      */
     public JavaModelStatus(int severity, int code, IJavaScriptElement element, IPath path, String msg) {
-    	super(severity, JavaScriptCore.PLUGIN_ID, code, "JavaModelStatus", null); //$NON-NLS-1$
+    	super(severity, JavaScriptCore.PLUGIN_ID, code, "JavaScriptModelStatus", null); //$NON-NLS-1$
     	this.elements= new IJavaScriptElement[]{element};
     	this.path = path;
     	this.string = msg;
@@ -161,7 +161,7 @@ public class JavaModelStatus extends Status implements IJavaScriptModelStatus, I
 	 * Constructs an Java model status with no corresponding elements.
 	 */
 	public JavaModelStatus(CoreException coreException) {
-		super(ERROR, JavaScriptCore.PLUGIN_ID, CORE_EXCEPTION, "JavaModelStatus", coreException); //$NON-NLS-1$
+		super(ERROR, JavaScriptCore.PLUGIN_ID, CORE_EXCEPTION, "JavaScriptModelStatus", coreException); //$NON-NLS-1$
 		elements= JavaElement.NO_ELEMENTS;
 	}
 	protected int getBits() {
@@ -470,10 +470,10 @@ public class JavaModelStatus extends Status implements IJavaScriptModelStatus, I
 	 */
 	public String toString() {
 		if (this == VERIFIED_OK){
-			return "JavaModelStatus[OK]"; //$NON-NLS-1$
+			return "JavaScriptModelStatus[OK]"; //$NON-NLS-1$
 		}
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("Java Model Status ["); //$NON-NLS-1$
+		buffer.append("JavaScript Model Status ["); //$NON-NLS-1$
 		buffer.append(getMessage());
 		buffer.append("]"); //$NON-NLS-1$
 		return buffer.toString();
