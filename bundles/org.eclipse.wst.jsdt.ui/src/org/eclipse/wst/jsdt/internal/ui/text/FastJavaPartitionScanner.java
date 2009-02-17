@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text;
 
-
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
@@ -18,18 +17,17 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
-
 /**
- * This scanner recognizes the JavaDoc comments, Java multi line comments, Java single line comments,
- * Java strings and Java characters.
+ * This scanner recognizes the JSDoc comments, multi line comments, single line comments,
+ * strings, characters, and regular expressions.
  */
 public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaScriptPartitions {
 
 	// states
-	private static final int JAVA= 0;
+	private static final int JAVASCRIPT= 0;
 	private static final int SINGLE_LINE_COMMENT= 1;
 	private static final int MULTI_LINE_COMMENT= 2;
-	private static final int JAVADOC= 3;
+	private static final int JSDOC= 3;
 	private static final int CHARACTER= 4;
 	private static final int STRING= 5;
 	private static final int REGULAR_EXPRESSION = 6;
@@ -59,11 +57,6 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 	/** The amount of characters already read on first call to nextToken(). */
 	private int fPrefixLength;
 
-	// emulate JavaPartitionScanner
-	private boolean fEmulate= false;
-	private int fJavaOffset;
-	private int fJavaLength;
-
 	private final IToken[] fTokens= new IToken[] {
 		new Token(null),
 		new Token(JAVA_SINGLE_LINE_COMMENT),
@@ -74,47 +67,33 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 		new Token(JAVA_STRING)	// regular expression same as string
 	};
 
-	public FastJavaPartitionScanner(boolean emulate) {
-	    fEmulate= emulate;
-	}
-
 	public FastJavaPartitionScanner() {
-	    this(false);
+	    // create the scanner
 	}
 
 	/*
 	 * @see org.eclipse.jface.text.rules.ITokenScanner#nextToken()
 	 */
 	public IToken nextToken() {
-
-		// emulate JavaPartitionScanner
-		if (fEmulate) {
-			if (fJavaOffset != -1 && fTokenOffset + fTokenLength != fJavaOffset + fJavaLength) {
-				fTokenOffset += fTokenLength;
-				return fTokens[JAVA];
-			} else {
-				fJavaOffset= -1;
-				fJavaLength= 0;
-			}
-		}
-
 		fTokenOffset += fTokenLength;
 		fTokenLength= fPrefixLength;
-
-		boolean possibleRegExp=false;
-		int ch2=-1;
-		int lastch=-1;
+		
+		int lastNonWhitespaceChar = NONE;
+		int currentChar = NONE;
+		
 		while (true) {
-			if (!Character.isWhitespace((char)ch2))
-				lastch=ch2;
-			final int ch= fScanner.read();
-		    ch2=ch;
+			if (!Character.isWhitespace((char)currentChar))
+				lastNonWhitespaceChar = currentChar;
+			
+			// read in the next char
+			currentChar= fScanner.read();
+
 			// characters
-	 		switch (ch) {
+	 		switch (currentChar) {
 	 		case ICharacterScanner.EOF:
 		 		if (fTokenLength > 0) {
 		 			fLast= NONE; // ignore last
-		 			return preFix(fState, JAVA, NONE, 0);
+		 			return preFix(fState, JAVASCRIPT, NONE, 0);
 
 		 		} else {
 		 			fLast= NONE;
@@ -123,14 +102,12 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 		 		}
 
 	 		case '\r':
-	 			// emulate JavaPartitionScanner
-	 			if (!fEmulate && fLast != CARRIAGE_RETURN) {
+	 			if (fLast != CARRIAGE_RETURN) {
 						fLast= CARRIAGE_RETURN;
 						fTokenLength++;
 	 					continue;
 
 	 			} else {
-
 					switch (fState) {
 					case SINGLE_LINE_COMMENT:
 					case CHARACTER:
@@ -138,18 +115,11 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 					case REGULAR_EXPRESSION:
 						if (fTokenLength > 0) {
 							IToken token= fTokens[fState];
+				 			
+							fLast= CARRIAGE_RETURN;
+							fPrefixLength= 1;
 
-				 			// emulate JavaPartitionScanner
-							if (fEmulate) {
-								fTokenLength++;
-								fLast= NONE;
-								fPrefixLength= 0;
-							} else {
-								fLast= CARRIAGE_RETURN;
-								fPrefixLength= 1;
-							}
-
-							fState= JAVA;
+							fState= JAVASCRIPT;
 							return token;
 
 						} else {
@@ -169,18 +139,15 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 				case CHARACTER:
 				case REGULAR_EXPRESSION:
 				case STRING:
-					// assert(fTokenLength > 0);
 					return postFix(fState);
 
 				default:
 					consume();
 					continue;
 				}
-
-				
 				
 			default:
-				if (!fEmulate && fLast == CARRIAGE_RETURN) {
+				if (fLast == CARRIAGE_RETURN) {
 					switch (fState) {
 					case SINGLE_LINE_COMMENT:
 					case REGULAR_EXPRESSION:
@@ -189,15 +156,15 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 
 						int last;
 						int newState;
-						switch (ch) {
+						switch (currentChar) {
 						case '/':
 							last= SLASH;
-							newState= JAVA;
+							newState= JAVASCRIPT;
 							break;
 
 						case '*':
 							last= STAR;
-							newState= JAVA;
+							newState= JAVASCRIPT;
 							break;
 
 						case '\'':
@@ -212,17 +179,17 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 
 						case '\r':
 							last= CARRIAGE_RETURN;
-							newState= JAVA;
+							newState= JAVASCRIPT;
 							break;
 
 						case '\\':
 							last= BACKSLASH;
-							newState= JAVA;
+							newState= JAVASCRIPT;
 							break;
 
 						default:
 							last= NONE;
-							newState= JAVA;
+							newState= JAVASCRIPT;
 							break;
 						}
 
@@ -237,21 +204,21 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 
 			// states
 	 		switch (fState) {
-	 		case JAVA:
-				switch (ch) {
+	 		case JAVASCRIPT:
+				switch (currentChar) {
 				case '/':
 					if (fLast == SLASH) {
 						if (fTokenLength - getLastLength(fLast) > 0) {
-							return preFix(JAVA, SINGLE_LINE_COMMENT, NONE, 2);
+							return preFix(JAVASCRIPT, SINGLE_LINE_COMMENT, NONE, 2);
 						} else {
-							preFix(JAVA, SINGLE_LINE_COMMENT, NONE, 2);
+							preFix(JAVASCRIPT, SINGLE_LINE_COMMENT, NONE, 2);
 							fTokenOffset += fTokenLength;
 							fTokenLength= fPrefixLength;
 							break;
 						}
 
 					} else {
-						switch (lastch)	//possible chars before regexp 
+						switch (lastNonWhitespaceChar)	//possible chars before regexp 
 						{
 						case '(':
 						case ',':
@@ -263,17 +230,25 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 						case '?':
 						case '{':
 						case '}':
-							//check if regexp
-							possibleRegExp=true;
-							fLast= NONE; // ignore fLast
-							if (fTokenLength > 0)
-								return preFix(JAVA, REGULAR_EXPRESSION, NONE, 1);
-							else {
-								preFix(JAVA, REGULAR_EXPRESSION, NONE, 1);
-								fTokenOffset += fTokenLength;
-								fTokenLength= fPrefixLength;
+							int tempChar = fScanner.read();
+							fScanner.unread();
+							switch(tempChar) {
+							case '/':
+							case '*':
 								break;
+							default:
+								//check if regexp
+								fLast= NONE; // ignore fLast
+								if (fTokenLength > 0)
+									return preFix(JAVASCRIPT, REGULAR_EXPRESSION, NONE, 1);
+								else {
+									preFix(JAVASCRIPT, REGULAR_EXPRESSION, NONE, 1);
+									fTokenOffset += fTokenLength;
+									fTokenLength= fPrefixLength;
+									break;
+								}
 							}
+							
 						}
 						fTokenLength++;
 						fLast= SLASH;
@@ -283,9 +258,9 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 				case '*':
 					if (fLast == SLASH) {
 						if (fTokenLength - getLastLength(fLast) > 0)
-							return preFix(JAVA, MULTI_LINE_COMMENT, SLASH_STAR, 2);
+							return preFix(JAVASCRIPT, MULTI_LINE_COMMENT, SLASH_STAR, 2);
 						else {
-							preFix(JAVA, MULTI_LINE_COMMENT, SLASH_STAR, 2);
+							preFix(JAVASCRIPT, MULTI_LINE_COMMENT, SLASH_STAR, 2);
 							fTokenOffset += fTokenLength;
 							fTokenLength= fPrefixLength;
 							break;
@@ -299,9 +274,9 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 				case '\'':
 					fLast= NONE; // ignore fLast
 					if (fTokenLength > 0)
-						return preFix(JAVA, CHARACTER, NONE, 1);
+						return preFix(JAVASCRIPT, CHARACTER, NONE, 1);
 					else {
-						preFix(JAVA, CHARACTER, NONE, 1);
+						preFix(JAVASCRIPT, CHARACTER, NONE, 1);
 						fTokenOffset += fTokenLength;
 						fTokenLength= fPrefixLength;
 						break;
@@ -310,9 +285,9 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 				case '"':
 					fLast= NONE; // ignore fLast
 					if (fTokenLength > 0)
-						return preFix(JAVA, STRING, NONE, 1);
+						return preFix(JAVASCRIPT, STRING, NONE, 1);
 					else {
-						preFix(JAVA, STRING, NONE, 1);
+						preFix(JAVASCRIPT, STRING, NONE, 1);
 						fTokenOffset += fTokenLength;
 						fTokenLength= fPrefixLength;
 						break;
@@ -328,15 +303,15 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 				consume();
 				break;
 
-	 		case JAVADOC:
-				switch (ch) {
+	 		case JSDOC:
+				switch (currentChar) {
 				case '/':
 					switch (fLast) {
 					case SLASH_STAR_STAR:
 						return postFix(MULTI_LINE_COMMENT);
 
 					case STAR:
-						return postFix(JAVADOC);
+						return postFix(JSDOC);
 
 					default:
 						consume();
@@ -356,12 +331,12 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 				break;
 
 	 		case MULTI_LINE_COMMENT:
-				switch (ch) {
+				switch (currentChar) {
 				case '*':
 					if (fLast == SLASH_STAR) {
 						fLast= SLASH_STAR_STAR;
 						fTokenLength++;
-						fState= JAVADOC;
+						fState= JSDOC;
 					} else {
 						fTokenLength++;
 						fLast= STAR;
@@ -383,7 +358,7 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 				break;
 
 	 		case STRING:
-	 			switch (ch) {
+	 			switch (currentChar) {
 	 			case '\\':
 					fLast= (fLast == BACKSLASH) ? NONE : BACKSLASH;
 					fTokenLength++;
@@ -405,7 +380,7 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 	 			break;
 
 	 		case REGULAR_EXPRESSION:
-	 			switch (ch) {
+	 			switch (currentChar) {
 
 				case '\\':
 					fLast= (fLast == BACKSLASH) ? NONE : BACKSLASH;
@@ -444,7 +419,7 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 	 			break;
 
 	 		case CHARACTER:
-	 			switch (ch) {
+	 			switch (currentChar) {
 				case '\\':
 					fLast= (fLast == BACKSLASH) ? NONE : BACKSLASH;
 					fTokenLength++;
@@ -498,37 +473,24 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 	private final IToken postFix(int state) {
 		fTokenLength++;
 		fLast= NONE;
-		fState= JAVA;
+		fState= JAVASCRIPT;
 		fPrefixLength= 0;
 		return fTokens[state];
 	}
 
 	private final IToken preFix(int state, int newState, int last, int prefixLength) {
-		// emulate JavaPartitionScanner
-		if (fEmulate && state == JAVA && (fTokenLength - getLastLength(fLast) > 0)) {
-			fTokenLength -= getLastLength(fLast);
-			fJavaOffset= fTokenOffset;
-			fJavaLength= fTokenLength;
-			fTokenLength= 1;
-			fState= newState;
-			fPrefixLength= prefixLength;
-			fLast= last;
-			return fTokens[state];
-
-		} else {
-			fTokenLength -= getLastLength(fLast);
-			fLast= last;
-			fPrefixLength= prefixLength;
-			IToken token= fTokens[state];
-			fState= newState;
-			return token;
-		}
+		fTokenLength -= getLastLength(fLast);
+		fLast= last;
+		fPrefixLength= prefixLength;
+		IToken token= fTokens[state];
+		fState= newState;
+		return token;
 	}
 
 	private static int getState(String contentType) {
 
 		if (contentType == null)
-			return JAVA;
+			return JAVASCRIPT;
 
 		else if (contentType.equals(JAVA_SINGLE_LINE_COMMENT))
 			return SINGLE_LINE_COMMENT;
@@ -537,7 +499,7 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 			return MULTI_LINE_COMMENT;
 
 		else if (contentType.equals(JAVA_DOC))
-			return JAVADOC;
+			return JSDOC;
 
 		else if (contentType.equals(JAVA_STRING))
 			return STRING;
@@ -546,7 +508,7 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 			return CHARACTER;
 
 		else
-			return JAVA;
+			return JAVASCRIPT;
 	}
 
 	/*
@@ -562,15 +524,9 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 
 		if (offset == partitionOffset) {
 			// restart at beginning of partition
-			fState= JAVA;
+			fState= JAVASCRIPT;
 		} else {
 			fState= getState(contentType);
-		}
-
-		// emulate JavaPartitionScanner
-		if (fEmulate) {
-			fJavaOffset= -1;
-			fJavaLength= 0;
 		}
 	}
 
@@ -584,13 +540,7 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 		fTokenLength= 0;
 		fPrefixLength= 0;
 		fLast= NONE;
-		fState= JAVA;
-
-		// emulate JavaPartitionScanner
-		if (fEmulate) {
-			fJavaOffset= -1;
-			fJavaLength= 0;
-		}
+		fState= JAVASCRIPT;
 	}
 
 	/*
