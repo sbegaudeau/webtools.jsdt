@@ -462,12 +462,6 @@
                id="org.eclipse.wst.jsdt.ui.JavaPerspective">
          </perspectiveShortcut>
       </perspectiveExtension>
-      <perspectiveExtension
-            targetID="org.eclipse.debug.ui.DebugPerspective">
-         <actionSet
-               id="org.eclipse.wst.jsdt.ui.JavaActionSet">
-         </actionSet>
-      </perspectiveExtension>
       
       <perspectiveExtension targetID="org.eclipse.wst.jsdt.ui.JavaPerspective">
          <showInPart id="org.eclipse.wst.jsdt.ui.PackageExplorer"/>
@@ -2114,16 +2108,6 @@
                menubarPath="project/additions"
                id="exportJavadoc">
          </action>
-      </actionSet>
-   </extension>
-
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            label="%JavaActionSet.label"
-            description="%JavaActionSet.description"
-            visible="false"
-            id="org.eclipse.wst.jsdt.ui.JavaActionSet2">
          <action
                id="openType"
                toolbarPath="org.eclipse.search.searchActionSet/Search"
@@ -2136,9 +2120,7 @@
                tooltip="%OpenTypeAction.tooltip">
          </action>
       </actionSet>
-   </extension>
-   
-   
+   </extension>   
    
 <!-- with an A_                                                                -->
 <!-- the open action set is contributed before the CodeActionSet we prefix it  -->
