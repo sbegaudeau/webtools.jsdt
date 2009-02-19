@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.tests.junit.extension.TestCase;
 
 	/**
@@ -24,6 +25,7 @@ import org.eclipse.wst.jsdt.core.tests.junit.extension.TestCase;
 	public class JSDTModelTests extends TestSuite {
 		public JSDTModelTests() {
 			this("JavaScript Model Tests");
+			JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
 		}
 		
 	public JSDTModelTests(String name) {

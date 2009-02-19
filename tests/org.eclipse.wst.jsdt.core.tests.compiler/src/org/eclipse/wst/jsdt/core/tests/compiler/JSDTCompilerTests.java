@@ -16,6 +16,7 @@ import java.util.Iterator;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.BasicParserTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.BasicResolveTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.InferTypesTests;
@@ -26,6 +27,7 @@ import org.eclipse.wst.jsdt.core.tests.compiler.regression.InferTypesTests;
 public class JSDTCompilerTests extends TestSuite {
 	public JSDTCompilerTests() {
 		this("JavaScript Model Tests");
+		JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
 	}
 
 public JSDTCompilerTests(String testName) {
