@@ -23,10 +23,13 @@ import org.eclipse.wst.jsdt.core.tests.junit.extension.TestCase;
 	 * Run all java model tests.
 	 */
 	public class JSDTModelTests extends TestSuite {
-		public JSDTModelTests() {
-			this("JavaScript Model Tests");
-			JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
-		}
+	static {
+		JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
+	}
+	
+	public JSDTModelTests() {
+		this("JavaScript Model Tests");
+	}
 		
 	public JSDTModelTests(String name) {
 		super(name);

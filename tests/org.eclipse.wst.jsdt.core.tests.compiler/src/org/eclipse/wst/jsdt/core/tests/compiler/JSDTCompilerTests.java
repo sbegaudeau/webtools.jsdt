@@ -25,10 +25,14 @@ import org.eclipse.wst.jsdt.core.tests.compiler.regression.InferTypesTests;
  * Run all compiler regression tests
  */
 public class JSDTCompilerTests extends TestSuite {
-	public JSDTCompilerTests() {
-		this("JavaScript Model Tests");
-		JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
-	}
+
+static {
+	JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
+}
+
+public JSDTCompilerTests() {
+	this("JavaScript Model Tests");
+}
 
 public JSDTCompilerTests(String testName) {
 	super(testName);
@@ -37,6 +41,7 @@ public JSDTCompilerTests(String testName) {
 	addTestSuite(BasicResolveTests.class);
 }
 public static Test suite() {
+
 	ArrayList standardTests = new ArrayList();
 //	standardTests.addAll(JavadocTest.allTestClasses);
 	standardTests.add(BasicParserTests.class);
