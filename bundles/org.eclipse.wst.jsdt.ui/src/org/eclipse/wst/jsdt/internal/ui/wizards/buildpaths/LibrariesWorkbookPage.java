@@ -188,7 +188,7 @@ public class LibrariesWorkbookPage extends BuildPathBasePage {
 
 		public Object[] getChildren(TreeListDialogField field, Object element) {
 			if (element instanceof CPListElement) {
-				return ((CPListElement) element).getChildren(false);
+				return ((CPListElement) element).getChildren();
 			} else if (element instanceof CPListElementAttribute) {
 				CPListElementAttribute attribute= (CPListElementAttribute) element;
 				if (CPListElement.ACCESSRULES.equals(attribute.getKey())) {
@@ -254,7 +254,6 @@ public class LibrariesWorkbookPage extends BuildPathBasePage {
 				CPListElement curr= libentries[i];
 				if (!cplist.contains(curr) && !elementsToAdd.contains(curr)) {
 					elementsToAdd.add(curr);
-					curr.setAttribute(CPListElement.SOURCEATTACHMENT, BuildPathSupport.guessSourceAttachment(curr));
 					curr.setAttribute(CPListElement.JAVADOC, BuildPathSupport.guessJavadocLocation(curr));
 				}
 			}
@@ -462,18 +461,7 @@ public class LibrariesWorkbookPage extends BuildPathBasePage {
 		String key= elem.getKey();
 		CPListElement selElement= elem.getParent();
 		
-		if (key.equals(CPListElement.SOURCEATTACHMENT)) {
-			IIncludePathEntry result= BuildPathDialogAccess.configureSourceAttachment(getShell(), selElement.getClasspathEntry());
-			if (result != null) {
-				selElement.setAttribute(CPListElement.SOURCEATTACHMENT, result.getSourceAttachmentPath());
-				String[] changedAttributes= { CPListElement.SOURCEATTACHMENT };
-				attributeUpdated(selElement, changedAttributes);
-				fLibrariesList.refresh(elem);
-				fLibrariesList.update(selElement); // image
-				fClassPathList.refresh(); // images
-				updateEnabledState();
-			}
-		} else if (key.equals(CPListElement.ACCESSRULES)) {
+		if (key.equals(CPListElement.ACCESSRULES)) {
 			AccessRulesDialog dialog= new AccessRulesDialog(getShell(), selElement, fCurrJProject, fPageContainer != null);
 			int res= dialog.open();
 			if (res == Window.OK || res == AccessRulesDialog.SWITCH_PAGE) {

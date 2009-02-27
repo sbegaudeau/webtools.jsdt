@@ -32,11 +32,9 @@ public abstract class BuildPathWizard extends NewElementWizard {
 	private boolean fDoFlushChange;
 	private final CPListElement fEntryToEdit;
 	private IPackageFragmentRoot fPackageFragmentRoot;
-	private IPath fOutputLocation;
 	private final ArrayList fExistingEntries;
 
-	public BuildPathWizard(CPListElement[] existingEntries, CPListElement newEntry, IPath outputLocation, String titel, ImageDescriptor image) {
-		fOutputLocation= outputLocation;
+	public BuildPathWizard(CPListElement[] existingEntries, CPListElement newEntry, String titel, ImageDescriptor image) {
 		if (image != null)
 			setDefaultPageImageDescriptor(image);
 		
@@ -81,14 +79,6 @@ public abstract class BuildPathWizard extends NewElementWizard {
 	
 	public ArrayList getExistingEntries() {
 		return fExistingEntries;
-	}
-
-	public IPath getOutputLocation() {
-		return fOutputLocation;
-	}
-	
-	protected void setOutputLocation(IPath outputLocation) {
-		fOutputLocation= outputLocation;
 	}
 
 	protected CPListElement getEntryToEdit() {

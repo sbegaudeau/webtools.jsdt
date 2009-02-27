@@ -107,11 +107,11 @@ import org.eclipse.ui.views.framelist.IFrameSource;
 import org.eclipse.ui.views.framelist.TreeFrame;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJarEntryResource;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModel;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
@@ -123,7 +123,6 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dnd.DelegatingDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.dnd.JdtViewerDragAdapter;
 import org.eclipse.wst.jsdt.internal.ui.dnd.ResourceTransferDragAdapter;
-import org.eclipse.wst.jsdt.internal.ui.filters.OutputFolderFilter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.preferences.MembersOrderPreferenceCache;
 import org.eclipse.wst.jsdt.internal.ui.util.JavaUIHelp;
@@ -1070,7 +1069,6 @@ public class PackageExplorerPart extends ViewPart
 	}
 
 	private void restoreFilterAndSorter() {
-		fViewer.addFilter(new OutputFolderFilter());
 		setComparator();
 		if (fMemento != null)	
 			fActionSet.restoreFilterAndSorterState(fMemento);

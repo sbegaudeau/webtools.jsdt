@@ -26,12 +26,6 @@ public final class NewWizardMessages extends NLS {
 	public static String AbstractOpenWizardAction_createerror_message;
 	public static String AddArchiveToBuildpathAction_DuplicateArchiveInfo_message;
 	public static String AddArchiveToBuildpathAction_DuplicateArchivesInfo_message;
-	public static String AddArchiveToBuildpathAction_ErrorTitle;
-	public static String AddArchiveToBuildpathAction_InfoTitle;
-	
-	public static String AddLibraryToBuildpathAction_ErrorTitle;
-	
-	public static String AddSelectedLibraryToBuildpathAction_ErrorTitle;
 	
 	public static String AddSourceFolderToBuildpathAction_ErrorTitle;
 	
@@ -43,7 +37,6 @@ public final class NewWizardMessages extends NLS {
 	public static String BuildPathDialogAccess_SelectSupertType;
 	public static String BuildPathDialogAccess_SuperTypeSelection;
 	public static String BuildPathsBlock_GlobalOrder;
-	public static String BuildPathsBlock_RemoveOldOutputFolder_description;
 	public static String BuildPathSupport_deprecated;
 	public static String ClasspathOrderingWorkbookPage_SelectReorder;
 	public static String ClasspathOrderingWorkbookPage_SuperType;
@@ -54,24 +47,17 @@ public final class NewWizardMessages extends NLS {
 	public static String CPVariableElementLabelProvider_read_only;
 	public static String CPVariableElementLabelProvider_two_restrictions;
 	
-	public static String EditOutputFolderAction_DeleteOldOutputFolderQuestion;
-	public static String EditOutputFolderAction_ErrorDescription;
-	public static String EditOutputFolderAction_ProgressMonitorDescription;
-	
 	public static String ExcludeFromBuildathAction_ErrorTitle;
 	
 	public static String IncludeToBuildpathAction_ErrorTitle;
 	public static String JavaProjectWizardFirstPage_0;
 	public static String JavaProjectWizardFirstPage_1;
 	public static String JavaProjectWizardFirstPage_2;
-	public static String JavaProjectWizardFirstPage_DetectGroup_differendWorkspaceCC_message;
 	public static String JavaProjectWizardFirstPage_EnableWorkingSet_button;
-	public static String JavaProjectWizardFirstPage_JREGroup_specific_EE;
 	public static String JavaProjectWizardFirstPage_Message_existingFolderInWorkspace;
 	public static String JavaProjectWizardFirstPage_Message_invalidProjectNameForWorkspaceRoot;
 	public static String JavaProjectWizardFirstPage_Message_notExisingProjectOnWorkspaceRoot;
 	public static String JavaProjectWizardFirstPage_Message_notOnWorkspaceRoot;
-	public static String JavaProjectWizardFirstPage_NoJREFound_link;
 	public static String JavaProjectWizardFirstPage_UnknownDefaultJRE_name;
 	public static String JavaProjectWizardFirstPage_WorkingSets_group;
 	public static String JavaProjectWizardFirstPage_WorkingSetSelection_message;
@@ -266,7 +252,6 @@ public final class NewWizardMessages extends NLS {
 	public static String CPListLabelProvider_willbecreated;
 	public static String CPListLabelProvider_unbound_library;
 	public static String CPListLabelProvider_systemlibrary;
-	public static String CPListLabelProvider_native_library_path;
 	
 	public static String SourceContainerWorkbookPage_folders_label;
 	public static String SourceContainerWorkbookPage_folders_remove_button;
@@ -578,28 +563,13 @@ public final class NewWizardMessages extends NLS {
 	public static String NewSourceContainerWorkbookPage_ToolBar_CreateSrcFolder_label;
 	public static String NewSourceContainerWorkbookPage_ToolBar_CreateSrcFolder_tooltip;
 	
-	public static String NewFolderDialog_TypeGroup_title;
-	public static String NewFolderDialog_folderNameGroup_label;
-	public static String NewFolderDialog_folderTypeGroup_source_desc;
-	public static String NewFolderDialog_folderTypeGroup_normal_desc;
-	public static String NewFolderDialog_dependenciesGroup_none_desc;
-	public static String NewFolderDialog_dependenciesGroup_copy_desc;
-	public static String NewFolderDialog_dependenciesGroup_link_desc;
-	public static String NewFolderDialog_dependenciesGroup_link_descDisabled;
-	public static String NewFolderDialog_dependenciesGroup_locationLabel_desc;
-	public static String NewFolderDialog_dependenciesGroup_browseButton_desc;
-	public static String NewFolderDialog_dependenciesGroup_variables_desc;
-	public static String NewFolderDialog_DependencyGroup_title;
-	public static String NewFolderDialog_links_parentNotProject;
 	public static String NewFolderDialog_linkTargetNonExistent;
 	public static String NewFolderDialog_linkTargetNotFolder;
 	public static String NewFolderDialog_folderNameEmpty;
 	public static String NewFolderDialog_folderNameEmpty_alreadyExists;
-	public static String NewFolderDialog_title;
 	public static String NewFolderDialog_errorTitle;
 	public static String NewFolderDialog_internalError;
 	public static String NewFolderDialog_progress;
-	public static String NewFolderDialog_notExists;
 	public static String NewFolderDialog_createIn;
 	
 	public static String LinkFolderDialog_title;
@@ -609,42 +579,24 @@ public final class NewWizardMessages extends NLS {
 	public static String LinkFolderDialog_dependenciesGroup_browseButton_desc;
 	public static String LinkFolderDialog_dependenciesGroup_variables_desc;
 	
-	public static String PackageExplorerActionGroup_NoAction_File;
-	public static String PackageExplorerActionGroup_NoAction_DefaultPackage;
 	public static String PackageExplorerActionGroup_NoAction_NullSelection;
 	public static String PackageExplorerActionGroup_NoAction_MultiSelection;
-	public static String PackageExplorerActionGroup_NoAction_ArchiveResource;
 	public static String PackageExplorerActionGroup_NoAction_NoReason;
-	public static String PackageExplorerActionGroup_FormText_create;
 	public static String PackageExplorerActionGroup_FormText_createLinkedFolder;
 	public static String PackageExplorerActionGroup_FormText_FolderToBuildpath;
-	public static String PackageExplorerActionGroup_FormText_ArchiveToBuildpath;
 	public static String PackageExplorerActionGroup_FormText_PackageToBuildpath;
 	public static String PackageExplorerActionGroup_FormText_ProjectToBuildpath;
 	public static String PackageExplorerActionGroup_FormText_fromBuildpath;
 	public static String PackageExplorerActionGroup_FormText_ProjectFromBuildpath;
 	public static String PackageExplorerActionGroup_FormText_ExcludePackage;
 	public static String PackageExplorerActionGroup_FormText_ExcludeFile;
-	public static String PackageExplorerActionGroup_FormText_Include;
 	public static String PackageExplorerActionGroup_FormText_Edit;
 	public static String PackageExplorerActionGroup_FormText_UnexcludeFolder;
-	public static String PackageExplorerActionGroup_FormText_UnincludeFolder;
-	public static String PackageExplorerActionGroup_FormText_UnincludeFile;
-	public static String PackageExplorerActionGroup_FormText_ResetFilters;
 	public static String PackageExplorerActionGroup_FormText_UnexcludeFile;
-	public static String PackageExplorerActionGroup_FormText_EditOutputFolder;
-	public static String PackageExplorerActionGroup_FormText_SetOutputToDefault;
-	public static String PackageExplorerActionGroup_FormText_Default_Uninclude;
 	public static String PackageExplorerActionGroup_FormText_Default_Unexclude;
-	public static String PackageExplorerActionGroup_FormText_Default_ResetAllOutputFolders;
 	public static String PackageExplorerActionGroup_FormText_Default_FromBuildpath;
-	public static String PackageExplorerActionGroup_FormText_Default_Include;
 	public static String PackageExplorerActionGroup_FormText_Default_Exclude;
-	public static String PackageExplorerActionGroup_FormText_Default_CreateOutput;
 	public static String PackageExplorerActionGroup_FormText_Default_toBuildpath;
-	public static String PackageExplorerActionGroup_FormText_Default_toBuildpath_archives;
-	public static String PackageExplorerActionGroup_FormText_Default_toBuildpath_library;
-	public static String PackageExplorerActionGroup_FormText_Default_Reset;
 	public static String PackageExplorerActionGroup_FormText_Default_ResetAll;
 	public static String PackageExplorerActionGroup_FormText_createNewSourceFolder;
 	
@@ -656,25 +608,20 @@ public final class NewWizardMessages extends NLS {
 	public static String ClasspathModifier_Monitor_RemoveFromBuildpath;
 	public static String ClasspathModifier_Monitor_ResetFilters;
 	public static String ClasspathModifier_Monitor_Including;
-	public static String ClasspathModifier_Monitor_RemoveInclusion;
 	public static String ClasspathModifier_Monitor_Excluding;
 	public static String ClasspathModifier_Monitor_RemoveExclusion;
 	public static String ClasspathModifier_Monitor_ContainsPath;
 	public static String ClasspathModifier_Monitor_ExamineInputFilters;
-	public static String ClasspathModifier_Monitor_EditInclusionExclusionFilters;
 	public static String ClasspathModifier_Monitor_RemovePath;
 	public static String ClasspathModifier_Monitor_CheckOutputFolders;
-	public static String ClasspathModifier_Monitor_Resetting;
 	public static String ClasspathModifier_Monitor_SetNewEntry;
 	public static String ClasspathModifier_Monitor_ComparePaths;
-	public static String ClasspathModifier_Monitor_ResetOutputFolder;
 	public static String ClasspathModifier_ChangeOutputLocationDialog_title;
 	public static String ClasspathModifier_ChangeOutputLocationDialog_project_message;
 	public static String ClasspathModifier_ChangeOutputLocationDialog_project_outputLocation;
 	public static String ClasspathModifier_Error_NoNatures;
 
 	public static String ClassPathDetector_operation_description;
-	public static String ClassPathDetector_error_closing_file;
 	
 	public static String JavaProjectWizardSecondPage_error_title;
 	public static String JavaProjectWizardSecondPage_error_message;
@@ -707,31 +654,12 @@ public final class NewWizardMessages extends NLS {
 	public static String BaseLibraryWizardPage_DefaultBrowserLibraryAdded;
 	public static String BaseLibraryWizardPage_WebBrowserSupport;
 	
-	public static String ChangeComplianceDialog_title;
-	public static String ChangeComplianceDialog_message;
-	public static String ChangeComplianceDialog_project_selection;
-	public static String ChangeComplianceDialog_workspace_selection;
-	public static String GenerateBuildPathActionGroup_no_action_available;
-
-	public static String NativeLibrariesDialog_extfiledialog_text;
-	public static String NativeLibrariesDialog_intfiledialog_title;
-	public static String NativeLibrariesDialog_intfiledialog_message;
-	public static String NativeLibrariesDialog_location_label;
-	public static String NativeLibrariesDialog_workspace_browse;
-	public static String NativeLibrariesDialog_external_browse;
-	public static String NativeLibrariesDialog_description;
-	public static String NativeLibrariesDialog_title;
-	public static String NativeLibrariesDialog_error_external_not_existing;
-	public static String NativeLibrariesDialog_error_internal_not_existing;
-	
 	public static String NewContainerWizardPage_warning_inside_classfolder;
 	
-	public static String CPListLabelProvider_non_modifiable_attribute;
 	public static String CPListLabelProvider_access_rules_label;
 	public static String CPListLabelProvider_container_access_rules;
 	public static String CPListLabelProvider_container_no_access_rules;
 	
-	public static String NativeLibrariesDialog_external_message;
 	public static String SourceAttachmentBlock_extfolderdialog_message;
 	public static String AccessRulesDialog_severity_info_with_link;
 	public static String AccessRulesDialog_severity_info_no_link;
@@ -741,19 +669,11 @@ public final class NewWizardMessages extends NLS {
 	public static String AccessRulesDialog_switch_dialog_title;
 	public static String AccessRulesDialog_switch_dialog_message;
 	public static String JavaProjectWizardFirstPage_LayoutGroup_link_description;
-	public static String JavaProjectWizardFirstPage_JREGroup_title;
-	public static String JavaProjectWizardFirstPage_JREGroup_default_compliance;
-	public static String JavaProjectWizardFirstPage_JREGroup_link_description;
-	public static String JavaProjectWizardFirstPage_JREGroup_specific_compliance;
-	public static String JavaProjectWizardFirstPage_JREGroup_compliance_13;
-	public static String JavaProjectWizardFirstPage_JREGroup_compliance_14;
-	public static String JavaProjectWizardFirstPage_JREGroup_compliance_50;
 	public static String ClasspathModifierQueries_confirm_remove_linked_folder_label;
 	public static String ClasspathModifierQueries_confirm_remove_linked_folder_message;
 	public static String ClasspathModifierQueries_delete_linked_folder;
 	public static String ClasspathModifierQueries_do_not_delete_linked_folder;
 	public static String EditVariableEntryDialog_filename_empty;
-	public static String JavaProjectWizardFirstPage_DetectGroup_jre_message;
 
 	public static String Javascript_UI_Wizard_New_Description;
 	public static String Javascript_UI_Wizard_New_Heading;

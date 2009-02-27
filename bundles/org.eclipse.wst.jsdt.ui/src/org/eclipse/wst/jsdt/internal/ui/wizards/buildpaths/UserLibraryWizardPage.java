@@ -57,11 +57,13 @@ import com.ibm.icu.text.Collator;
  */
 public class UserLibraryWizardPage extends NewElementWizardPage implements IJsGlobalScopeContainerPage, IJsGlobalScopeContainerPageExtension, IJsGlobalScopeContainerPageExtension2  {
 	
+	private IJavaScriptProject fProject;
+	
 	private CheckedListDialogField fLibrarySelector;
 	private CPUserLibraryElement fEditResult;
 	private Set fUsedPaths;
+	
 	private boolean fIsEditMode;
-	private IJavaScriptProject fProject;
 	private boolean fIsExported;
 	
 	public UserLibraryWizardPage() {
@@ -266,7 +268,7 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IJsGl
 		
 		updateDescription(containerEntry);
 		fIsEditMode= (containerEntry != null);
-		if (containerEntry != null) {
+		if (fIsEditMode) {
 			fUsedPaths.remove(containerEntry.getPath());
 		}
 		

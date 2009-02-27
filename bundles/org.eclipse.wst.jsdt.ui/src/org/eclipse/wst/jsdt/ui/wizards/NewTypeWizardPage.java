@@ -125,7 +125,6 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.JavaPackageCom
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.JavaTypeCompletionProcessor;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
-import org.eclipse.wst.jsdt.internal.ui.wizards.SuperInterfaceSelectionDialog;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IListAdapter;
@@ -949,7 +948,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	
 	private void typePageCustomButtonPressed(DialogField field, int index) {		
 		if (field == fSuperInterfacesDialogField) {
-			chooseSuperInterfaces();
 			List interfaces= fSuperInterfacesDialogField.getElements();
 			if (!interfaces.isEmpty()) {
 				Object element= interfaces.get(interfaces.size() - 1);
@@ -1862,35 +1860,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 		}
 		return null;
 	}
-	
-	/**
-	 * Opens a selection dialog that allows to select the super interfaces. The selected interfaces are
-	 * directly added to the wizard page using {@link #addSuperInterface(String)}.
-	 * 
-	 * 	<p>
-	 * Clients can override this method if they want to offer a different dialog.
-	 * </p>
-	 * 
-	 * 
-	 */
-	protected void chooseSuperInterfaces() {
-		IJavaScriptProject project= getJavaProject();
-		if (project == null) {
-			return;
-		}	
-
-		SuperInterfaceSelectionDialog dialog= new SuperInterfaceSelectionDialog(getShell(), getWizard().getContainer(), this, project);
-		dialog.setTitle(getInterfaceDialogTitle());
-		dialog.setMessage(NewWizardMessages.NewTypeWizardPage_InterfacesDialog_message); 
-		dialog.open();
-	}
-	
-	private String getInterfaceDialogTitle() {
-	    if (fTypeKind == INTERFACE_TYPE)
-	        return NewWizardMessages.NewTypeWizardPage_InterfacesDialog_interface_title; 
-	    return NewWizardMessages.NewTypeWizardPage_InterfacesDialog_class_title; 
-	}
-	
 		
 	// ---- creation ----------------
 

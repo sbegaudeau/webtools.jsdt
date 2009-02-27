@@ -636,6 +636,7 @@ public final class PreferencesMessages extends NLS {
 	public static String UserLibraryPreferencePage_libraries_new_button;
 	public static String UserLibraryPreferencePage_libraries_edit_button;
 	public static String UserLibraryPreferencePage_libraries_addjar_button;
+	public static String UserLibraryPreferencePage_libraries_addfolder_button;
 	public static String UserLibraryPreferencePage_libraries_remove_button;
 	public static String UserLibraryPreferencePage_libraries_load_button;
 	public static String UserLibraryPreferencePage_libraries_save_button;
@@ -651,6 +652,7 @@ public final class PreferencesMessages extends NLS {
 	public static String UserLibraryPreferencePage_LibraryNameDialog_issystem_label;
 	public static String UserLibraryPreferencePage_LibraryNameDialog_name_error_entername;
 	public static String UserLibraryPreferencePage_LibraryNameDialog_name_error_exists;
+	public static String UserLibraryPreferencePage_LibraryNameDialog_name_error_invalid;
 	public static String UserLibraryPreferencePage_LoadSaveDialog_save_title;
 	public static String UserLibraryPreferencePage_LoadSaveDialog_save_ok_title;
 	public static String UserLibraryPreferencePage_LoadSaveDialog_load_title;
@@ -679,6 +681,8 @@ public final class PreferencesMessages extends NLS {
 	public static String UserLibraryPreferencePage_LoadSaveDialog_list_error_load_nothingselected;
 	public static String UserLibraryPreferencePage_LoadSaveDialog_load_badformat;
 	public static String UserLibraryPreferencePage_LoadSaveDialog_load_replace_title;
+	public static String UserLibraryPreferencePage_browsefolder_new_title;
+	public static String UserLibraryPreferencePage_browsefolder_new_messag;
 	public static String EditTemplateDialog_error_noname;
 	public static String EditTemplateDialog_error_spaces;
 	public static String EditTemplateDialog_title_new;

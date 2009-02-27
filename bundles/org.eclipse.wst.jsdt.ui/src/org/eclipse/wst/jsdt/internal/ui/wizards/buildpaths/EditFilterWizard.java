@@ -18,8 +18,8 @@ public class EditFilterWizard extends BuildPathWizard {
 	private SetFilterWizardPage fFilterPage;
 	private final IPath[] fOrginalInclusion, fOriginalExclusion;
 	
-	public EditFilterWizard(CPListElement[] existingEntries, CPListElement newEntry, IPath outputLocation) {
-		super(existingEntries, newEntry, outputLocation, NewWizardMessages.ExclusionInclusionDialog_title, null);
+	public EditFilterWizard(CPListElement[] existingEntries, CPListElement newEntry) {
+		super(existingEntries, newEntry, NewWizardMessages.ExclusionInclusionDialog_title, null);
 		
 		IPath[] inc= (IPath[])newEntry.getAttribute(CPListElement.INCLUSION);
 		fOrginalInclusion= new IPath[inc.length];
@@ -36,7 +36,7 @@ public class EditFilterWizard extends BuildPathWizard {
 	public void addPages() {
 		super.addPages();
 		
-		fFilterPage= new SetFilterWizardPage(getEntryToEdit(), getExistingEntries(), getOutputLocation());
+		fFilterPage= new SetFilterWizardPage(getEntryToEdit(), getExistingEntries());
 		addPage(fFilterPage);
 	}	
 	

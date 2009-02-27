@@ -20,11 +20,8 @@ import java.util.List;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -47,11 +44,7 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.ArchiveFileFilter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElementAttribute;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage.ClasspathModifierQueries.OutputFolderValidator;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 /**
 *
 * Provisional API: This class/interface is part of an interim API that is still under development and expected to
@@ -62,196 +55,12 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 public class ClasspathModifier {
 
 	private ClasspathModifier() {}
-	
-	public static BuildpathDelta setOutputLocation(CPListElement elementToChange, IPath outputPath, boolean allowInvalidCP, CPJavaProject cpProject) throws CoreException {
-		BuildpathDelta result= new BuildpathDelta(NewWizardMessages.NewSourceContainerWorkbookPage_ToolBar_EditOutput_tooltip);
-		
-		IJavaScriptProject javaProject= cpProject.getJavaProject();
-		IProject project= javaProject.getProject();
-		IWorkspace workspace= project.getWorkspace();
-		
-		IPath projectPath= project.getFullPath();								
-		
-		if (!allowInvalidCP && cpProject.getDefaultOutputLocation().segmentCount() == 1 && !projectPath.equals(elementToChange.getPath())) {
-			String outputFolderName= PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.SRCBIN_BINNAME);
-			cpProject.setDefaultOutputLocation(cpProject.getDefaultOutputLocation().append(outputFolderName));
-			List existingEntries= cpProject.getCPListElements();
-			CPListElement elem= ClasspathModifier.getListElement(javaProject.getPath(), existingEntries);
-            if (elem != null) {
-            	existingEntries.remove(elem);
-            	result.removeEntry(elem);
-            }
-		}
-		
-		if (outputPath != null)
-			exclude(outputPath, cpProject.getCPListElements(), new ArrayList(), cpProject.getJavaProject(), null);
-		
-		IPath oldOutputLocation= (IPath)elementToChange.getAttribute(CPListElement.OUTPUT);
-        if (oldOutputLocation != null && oldOutputLocation.segmentCount() > 1 && !oldOutputLocation.equals(cpProject.getDefaultOutputLocation())) {
-			include(cpProject, oldOutputLocation);
-        	result.addDeletedResource(workspace.getRoot().getFolder(oldOutputLocation));
-        }
-		elementToChange.setAttribute(CPListElement.OUTPUT, outputPath);
-		
-		result.setDefaultOutputLocation(cpProject.getDefaultOutputLocation());
-		result.setNewEntries((CPListElement[])cpProject.getCPListElements().toArray(new CPListElement[cpProject.getCPListElements().size()]));
-		if (outputPath != null && outputPath.segmentCount() > 1) {
-			result.addCreatedResource(workspace.getRoot().getFolder(outputPath));
-		}
-		
-		return result;
-	}
-
-	public static IStatus checkSetOutputLocationPrecondition(CPListElement elementToChange, IPath outputPath, boolean allowInvalidCP, CPJavaProject cpProject) throws CoreException {
-		IJavaScriptProject javaProject= cpProject.getJavaProject();
-		IProject project= javaProject.getProject();
-		IWorkspace workspace= project.getWorkspace();
-		
-		IPath projectPath= project.getFullPath();		
-		
-		if (outputPath == null)
-			outputPath= cpProject.getDefaultOutputLocation();
-						
-//		IStatus pathValidation= workspace.validatePath(outputPath.toString(), IResource.PROJECT | IResource.FOLDER);
-//		if (!pathValidation.isOK())
-//			return new StatusInfo(IStatus.ERROR, Messages.format(NewWizardMessages.OutputLocationDialog_error_invalidpath, pathValidation.getMessage()));
-		
-		IWorkspaceRoot root= workspace.getRoot();
-		IResource res= root.findMember(outputPath);
-//		if (res != null) {
-//			// if exists, must be a folder or project
-//			if (res.getType() == IResource.FILE)
-//				return new StatusInfo(IStatus.ERROR, NewWizardMessages.OutputLocationDialog_error_existingisfile);
-//		}
-		
-		IStatus result= StatusInfo.OK_STATUS;
-		
-		int index= cpProject.indexOf(elementToChange);
-		cpProject= cpProject.createWorkingCopy();
-		elementToChange= cpProject.get(index);		
-		
-//		if (!allowInvalidCP && cpProject.getDefaultOutputLocation().segmentCount() == 1 && !projectPath.equals(elementToChange.getPath())) {
-//			String outputFolderName= PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.SRCBIN_BINNAME);
-//			cpProject.setDefaultOutputLocation(cpProject.getDefaultOutputLocation().append(outputFolderName));
-//			ClasspathModifier.removeFromClasspath(javaProject, cpProject.getCPListElements(), null);
-//			result= new StatusInfo(IStatus.INFO, Messages.format(NewWizardMessages.OutputLocationDialog_removeProjectFromBP, cpProject.getDefaultOutputLocation()));
-//		}
-		
-		exclude(outputPath, cpProject.getCPListElements(), new ArrayList(), cpProject.getJavaProject(), null);
-        
-		IPath oldOutputLocation= (IPath)elementToChange.getAttribute(CPListElement.OUTPUT);
-        if (oldOutputLocation != null && oldOutputLocation.segmentCount() > 1 && !oldOutputLocation.equals(cpProject.getDefaultOutputLocation())) {
-			include(cpProject, oldOutputLocation);
-        }
-		elementToChange.setAttribute(CPListElement.OUTPUT, outputPath);
-		
-		IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(javaProject, cpProject.getClasspathEntries(), cpProject.getDefaultOutputLocation());
-		if (!status.isOK()) {
-			if (allowInvalidCP) {
-				return new StatusInfo(IStatus.WARNING, status.getMessage());
-			} else {
-				return new StatusInfo(IStatus.ERROR, status.getMessage());
-			}
-		}
-		
-		if (outputPath.segmentCount() - projectPath.segmentCount() < 1)
-			return result;
-		
-		String lastSegment= outputPath.lastSegment();
-		if (lastSegment == null)
-			return result;
-		
-//		if (lastSegment.equals(".settings") && outputPath.segmentCount() - projectPath.segmentCount() == 1) { //$NON-NLS-1$
-//
-//			StatusInfo statusInfo= new StatusInfo(IStatus.WARNING, NewWizardMessages.OutputLocation_SettingsAsLocation);
-//			if (result.isOK()) {
-//				return statusInfo;
-//			} else {
-//				MultiStatus ms= new MultiStatus(result.getPlugin(), result.getCode(), new IStatus[] {result, statusInfo}, statusInfo.getMessage(), null);
-//				return ms;
-//			}
-//		}
-		
-
-		
-		
-		return result;
-	}
-	
-    public static IStatus checkAddExternalJarsPrecondition(IPath[] absolutePaths, CPJavaProject cpProject) throws CoreException {
-    	IStatus result= StatusInfo.OK_STATUS;
-    	
-    	IJavaScriptProject javaProject= cpProject.getJavaProject();
-    	
-    	List newEntries= new ArrayList();
-    	List duplicateEntries= new ArrayList();
-    	List existingEntries= cpProject.getCPListElements();
-    	for (int i= 0; i < absolutePaths.length; i++) {
-	        CPListElement newEntry= new CPListElement(javaProject, IIncludePathEntry.CPE_LIBRARY, absolutePaths[i], null);
-	        if (existingEntries.contains(newEntry)) {
-	        	duplicateEntries.add(newEntry);
-	        } else {
-	        	newEntries.add(newEntry);
-	        }
-        }
-    	
-		if (duplicateEntries.size() > 0) {
-			String message;
-			if (duplicateEntries.size() > 1) {
-				StringBuffer buf= new StringBuffer();
-				for (Iterator iterator= duplicateEntries.iterator(); iterator.hasNext();) {
-	                CPListElement dup= (CPListElement)iterator.next();
-	                buf.append('\n').append(dup.getPath().lastSegment());
-                }
-				message= Messages.format(NewWizardMessages.AddArchiveToBuildpathAction_DuplicateArchivesInfo_message, buf.toString());
-			} else {
-				message= Messages.format(NewWizardMessages.AddArchiveToBuildpathAction_DuplicateArchiveInfo_message, ((CPListElement)duplicateEntries.get(0)).getPath().lastSegment());
-			}
-			result= new StatusInfo(IStatus.INFO, message);
-		}
-		
-		if (newEntries.size() == 0)
-			return result;
-		
-		cpProject= cpProject.createWorkingCopy();
-		existingEntries= cpProject.getCPListElements();
-	
-		for (Iterator iterator= newEntries.iterator(); iterator.hasNext();) {
-            CPListElement newEntry= (CPListElement)iterator.next();
-            insertAtEndOfCategory(newEntry, existingEntries);
-        }
-		
-		IJavaScriptModelStatus cpStatus= JavaScriptConventions.validateClasspath(javaProject, cpProject.getClasspathEntries(), cpProject.getDefaultOutputLocation());
-		if (!cpStatus.isOK())
-			return cpStatus;
-		
-		return result;
-    }
-    
-    public static BuildpathDelta addExternalJars(IPath[] absolutePaths, CPJavaProject cpProject) throws CoreException {
-    	BuildpathDelta result= new BuildpathDelta(NewWizardMessages.NewSourceContainerWorkbookPage_ToolBar_AddJarCP_tooltip);
-    	
-    	IJavaScriptProject javaProject= cpProject.getJavaProject();
-    	
-    	List existingEntries= cpProject.getCPListElements();
-    	for (int i= 0; i < absolutePaths.length; i++) {
-	        CPListElement newEntry= new CPListElement(javaProject, IIncludePathEntry.CPE_LIBRARY, absolutePaths[i], null);
-	        if (!existingEntries.contains(newEntry)) {
-	        	insertAtEndOfCategory(newEntry, existingEntries);
-	        	result.addEntry(newEntry);
-	        }
-        }
-    	
-		result.setNewEntries((CPListElement[])existingEntries.toArray(new CPListElement[existingEntries.size()]));
-		result.setDefaultOutputLocation(cpProject.getDefaultOutputLocation());
-		return result;
-    }
     
     public static BuildpathDelta removeFromBuildpath(CPListElement[] toRemove, CPJavaProject cpProject) {
     	
-        IJavaScriptProject javaProject= cpProject.getJavaProject();
-		IPath projectPath= javaProject.getPath();
-        IWorkspaceRoot workspaceRoot= javaProject.getProject().getWorkspace().getRoot();
+        IJavaScriptProject javaScriptProject= cpProject.getJavaProject();
+		IPath projectPath= javaScriptProject.getPath();
+        IWorkspaceRoot workspaceRoot= javaScriptProject.getProject().getWorkspace().getRoot();
         
     	List existingEntries= cpProject.getCPListElements();
 		BuildpathDelta result= new BuildpathDelta(NewWizardMessages.NewSourceContainerWorkbookPage_ToolBar_RemoveFromCP_tooltip);
@@ -261,48 +70,26 @@ public class ClasspathModifier {
 	        existingEntries.remove(element);
 	        result.removeEntry(element);
 	        IPath path= element.getPath();
-			removeFilters(path, javaProject, existingEntries);
+			removeFilters(path, javaScriptProject, existingEntries);
 			if (!path.equals(projectPath)) {
 	            IResource member= workspaceRoot.findMember(path);
 	            if (member != null)
 	            	result.addDeletedResource(member);
-            } else if (cpProject.getDefaultOutputLocation().equals(projectPath) && containsSourceFolders(cpProject)) {
-            	String outputFolderName= PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.SRCBIN_BINNAME);
-    			cpProject.setDefaultOutputLocation(cpProject.getDefaultOutputLocation().append(outputFolderName));
             }
         }
 		
-		result.setDefaultOutputLocation(cpProject.getDefaultOutputLocation());
     	result.setNewEntries((CPListElement[])existingEntries.toArray(new CPListElement[existingEntries.size()]));
 
 	    return result;
-    }
-    
-    private static boolean containsSourceFolders(CPJavaProject cpProject) {
-    	List elements= cpProject.getCPListElements();
-    	for (Iterator iterator= elements.iterator(); iterator.hasNext();) {
-	        CPListElement element= (CPListElement)iterator.next();
-	        if (element.getEntryKind() == IIncludePathEntry.CPE_SOURCE)
-	        	return true;
-        }
-	    return false;
-    }
-
-	private static void include(CPJavaProject cpProject, IPath path) {
-	    List elements= cpProject.getCPListElements();
-	    for (Iterator iterator= elements.iterator(); iterator.hasNext();) {
-	        CPListElement element= (CPListElement)iterator.next();
-	        element.removeFromExclusions(path);
-	    }
     }
 
 	/**
 	 * Get the <code>IIncludePathEntry</code> from the project and 
 	 * convert it into a list of <code>CPListElement</code>s.
 	 * 
-	 * @param project the Java project to get it's build path entries from
+	 * @param project the JavaScript project to get it's include path entries from
 	 * @return a list of <code>CPListElement</code>s corresponding to the 
-	 * build path entries of the project
+	 * include path entries of the project
 	 * @throws JavaScriptModelException
 	 */
 	public static List getExistingEntries(IJavaScriptProject project) throws JavaScriptModelException {
@@ -341,29 +128,11 @@ public class ClasspathModifier {
 	}
 
 	/**
-	 * For a given <code>IResource</code>, try to
-	 * convert it into a <code>IPackageFragmentRoot</code>
-	 * if possible or return <code>null</code> if no
-	 * fragment root could be created.
-	 * 
-	 * @param resource the resource to be converted
-	 * @return the <code>resource<code> as
-	 * <code>IPackageFragment</code>,or <code>null</code>
-	 * if failed to convert
-	 */
-	public static IPackageFragment getFragment(IResource resource) {
-		IJavaScriptElement elem= JavaScriptCore.create(resource);
-		if (elem instanceof IPackageFragment)
-			return (IPackageFragment) elem;
-		return null;
-	}
-
-	/**
 	 * Get the source folder of a given <code>IResource</code> element,
 	 * starting with the resource's parent.
 	 * 
 	 * @param resource the resource to get the fragment root from
-	 * @param project the Java project
+	 * @param project the JavaScript project
 	 * @param monitor progress monitor, can be <code>null</code>
 	 * @return resolved fragment root, or <code>null</code> the resource is not (in) a source folder
 	 * @throws JavaScriptModelException
@@ -400,7 +169,7 @@ public class ClasspathModifier {
 	 * build path entries on the project
 	 * 
 	 * @param path the path to find a build path entry for
-	 * @param project the Java project
+	 * @param project the JavaScript project
 	 * @return the <code>IIncludePathEntry</code> corresponding
 	 * to the <code>path</code> or <code>null</code> if there
 	 * is no such entry
@@ -414,18 +183,6 @@ public class ClasspathModifier {
 				return entry;
 		}
 		return null;
-	}
-
-	/**
-	 * Check whether the current selection is the project's 
-	 * default output folder or not
-	 * 
-	 * @param attrib the attribute to be checked
-	 * @return <code>true</code> if is the default output folder,
-	 * <code>false</code> otherwise.
-	 */
-	public static boolean isDefaultOutputFolder(CPListElementAttribute attrib) {
-		return attrib.getValue() == null;
 	}
 
 	/**
@@ -500,47 +257,6 @@ public class ClasspathModifier {
 			if (contains(path, entry.getExclusionPatterns(), null))
 				return true;
 			path= path.removeLastSegments(1);
-		}
-		return false;
-	}
-
-	/**
-	 * Check wheter the output location of the <code>IPackageFragmentRoot</code>
-	 * is <code>null</code>. If this holds, then the root 
-	 * does use the default output folder.
-	 * 
-	 * @param root the root to examine the output location for
-	 * @return <code>true</code> if the root uses the default output folder, <code>false
-	 * </code> otherwise.
-	 * @throws JavaScriptModelException
-	 */
-	public static boolean hasDefaultOutputFolder(IPackageFragmentRoot root) throws JavaScriptModelException {
-		return root.getRawIncludepathEntry().getOutputLocation() == null;
-	}
-
-	/**
-	 * Check whether at least one source folder of the given
-	 * Java project has an output folder set.
-	 * 
-	 * @param project the Java project
-	 * @param monitor progress monitor, can be <code>null</code>
-	 * @return <code>true</code> if at least one outputfolder
-	 * is set, <code>false</code> otherwise
-	 * @throws JavaScriptModelException 
-	 */
-	public static boolean hasOutputFolders(IJavaScriptProject project, IProgressMonitor monitor) throws JavaScriptModelException {
-		if (monitor == null)
-			monitor= new NullProgressMonitor();
-		try {
-			IPackageFragmentRoot[] roots= project.getPackageFragmentRoots();
-			monitor.beginTask(NewWizardMessages.ClasspathModifier_Monitor_CheckOutputFolders, roots.length); 
-			for (int i= 0; i < roots.length; i++) {
-				if (roots[i].getRawIncludepathEntry().getOutputLocation() != null)
-					return true;
-				monitor.worked(1);
-			}
-		} finally {
-			monitor.done();
 		}
 		return false;
 	}
@@ -669,23 +385,6 @@ public class ClasspathModifier {
 		} finally {
 			monitor.done();
 		}
-	}
-
-	/**
-	 * Check whether the provided file is an archive (.jar or .zip).
-	 * 
-	 * @param file the file to be checked
-	 * @param project the Java project
-	 * @return <code>true</code> if the file is an archive, <code>false</code> 
-	 * otherwise
-	 * @throws JavaScriptModelException
-	 */
-	public static boolean isArchive(IFile file, IJavaScriptProject project) throws JavaScriptModelException {
-		if (!ArchiveFileFilter.isArchivePath(file.getFullPath()))
-			return false;
-		if (project != null && project.exists() && (project.findPackageFragmentRoot(file.getFullPath()) == null))
-			return true;
-		return false;
 	}
 
 	/**
@@ -937,13 +636,7 @@ public class ClasspathModifier {
 			monitor.beginTask(NewWizardMessages.ClasspathModifier_Monitor_ResetFilters, 3); 
 
 			List exclusionList= getFoldersOnCP(element.getPath(), project, new SubProgressMonitor(monitor, 2));
-			IPath outputLocation= (IPath) entry.getAttribute(CPListElement.OUTPUT);
-			if (outputLocation != null) {
-				IPath[] exclusionPatterns= (IPath[]) entry.getAttribute(CPListElement.EXCLUSION);
-				if (contains(new Path(completeName(outputLocation.lastSegment())), exclusionPatterns, null)) {
-					exclusionList.add(new Path(completeName(outputLocation.lastSegment())));
-				}
-			}
+			
 			IPath[] exclusions= (IPath[]) exclusionList.toArray(new IPath[exclusionList.size()]);
 
 			entry.setAttribute(CPListElement.INCLUSION, new IPath[0]);
@@ -951,20 +644,6 @@ public class ClasspathModifier {
 		} finally {
 			monitor.done();
 		}
-	}
-
-	/**
-	 * Reset the output folder for the given entry to the default output folder
-	 * 
-	 * @param entry the <code>CPListElement</code> to be edited
-	 * @param project the Java project
-	 * @return an attribute representing the modified output folder
-	 * @throws JavaScriptModelException 
-	 */
-	public static CPListElementAttribute resetOutputFolder(CPListElement entry, IJavaScriptProject project) throws JavaScriptModelException {
-		entry.setAttribute(CPListElement.OUTPUT, null);
-		CPListElementAttribute outputFolder= new CPListElementAttribute(entry, CPListElement.OUTPUT, entry.getAttribute(CPListElement.OUTPUT), true);
-		return outputFolder;
 	}
 
 	/**
@@ -1033,13 +712,12 @@ public class ClasspathModifier {
 		
 		try {
 			IIncludePathEntry[] entries= convert(cpProject.getCPListElements());
-			IPath outputLocation= cpProject.getDefaultOutputLocation();
 
-			IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(cpProject.getJavaProject(), entries, outputLocation);
+			IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(cpProject.getJavaProject(), entries, null);
 			if (!status.isOK())
 				throw new JavaScriptModelException(status);
 
-			cpProject.getJavaProject().setRawIncludepath(entries, outputLocation, new SubProgressMonitor(monitor, 2));
+			cpProject.getJavaProject().setRawIncludepath(entries, null, new SubProgressMonitor(monitor, 2));
 		} finally {
 			monitor.done();
 		}
@@ -1274,7 +952,6 @@ public class ClasspathModifier {
 	 */
 	private static void validateAndAddEntry(CPListElement entry, List existingEntries, IJavaScriptProject project) throws CoreException {
 		IPath path= entry.getPath();
-		IPath projPath= project.getProject().getFullPath();
 		IWorkspaceRoot workspaceRoot= ResourcesPlugin.getWorkspace().getRoot();
 		IStatus validate= workspaceRoot.getWorkspace().validatePath(path.toString(), IResource.FOLDER);
 		StatusInfo rootStatus= new StatusInfo();
@@ -1316,24 +993,12 @@ public class ClasspathModifier {
 			if (!isExternal && !entry.getPath().equals(project.getPath()))
 				exclude(entry.getPath(), existingEntries, new ArrayList(), project, null);
 
-			IPath outputLocation= project.getOutputLocation();
 			insertAtEndOfCategory(entry, existingEntries);
 
 			IIncludePathEntry[] entries= convert(existingEntries);
 
-			IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(project, entries, outputLocation);
+			IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(project, entries, null);
 			if (!status.isOK()) {
-				if (outputLocation.equals(projPath)) {
-					IStatus status2= JavaScriptConventions.validateClasspath(project, entries, outputLocation);
-					if (status2.isOK()) {
-						if (project.isOnIncludepath(project)) {
-							rootStatus.setInfo(Messages.format(NewWizardMessages.NewSourceFolderWizardPage_warning_ReplaceSFandOL, outputLocation.makeRelative().toString())); 
-						} else {
-							rootStatus.setInfo(Messages.format(NewWizardMessages.NewSourceFolderWizardPage_warning_ReplaceOL, outputLocation.makeRelative().toString())); 
-						}
-						return;
-					}
-				}
 				rootStatus.setError(status.getMessage());
 				throw new CoreException(rootStatus);
 			}
@@ -1371,7 +1036,6 @@ public class ClasspathModifier {
 		case IIncludePathEntry.CPE_CONTAINER:
 		case IIncludePathEntry.CPE_LIBRARY:
 		case IIncludePathEntry.CPE_PROJECT:
-		case IIncludePathEntry.CPE_VARIABLE:
 		default:
 			existingEntries.add(entry);
 			break;
@@ -1401,92 +1065,4 @@ public class ClasspathModifier {
 	private static boolean equalEntryKind(IIncludePathEntry entry, int kind) {
 		return entry.getEntryKind() == kind;
 	}
-
-	public static OutputFolderValidator getValidator(final List newElements, final IJavaScriptProject project) throws JavaScriptModelException {
-		return new OutputFolderValidator(newElements, project) {
-
-			public boolean validate(IPath outputLocation) {
-				for (int i= 0; i < newElements.size(); i++) {
-					if (isInvalid(newElements.get(i), outputLocation))
-						return false;
-				}
-
-				for (int i= 0; i < fEntries.length; i++) {
-					if (isInvalid(fEntries[i], outputLocation))
-						return false;
-				}
-				return true;
-			}
-
-			/**
-			 * Check if the output location for the given object is valid
-			 * 
-			 * @param object the object to retrieve its path from and compare it 
-			 * to the output location
-			 * @param outputLocation the output location
-			 * @return <code>true</code> if the output location is invalid, that is, 
-			 * if it is a subfolder of the provided object.
-			 */
-			private boolean isInvalid(Object object, IPath outputLocation) {
-				IPath path= null;
-				if (object instanceof IFolder)
-					path= getFolderPath(object);
-				else
-					if (object instanceof IJavaScriptElement)
-						path= getJavaElementPath(object);
-					else
-						if (object instanceof IIncludePathEntry)
-							path= getCPEntryPath(object);
-				return isSubFolderOf(path, outputLocation);
-			}
-
-			/**
-			 * Get an <code>IFolder</code>'s path
-			 * 
-			 * @param element an element which is of type <code>IFolder</code>
-			 * @return the path of the folder
-			 */
-			private IPath getFolderPath(Object element) {
-				return ((IFolder) element).getFullPath();
-			}
-
-			/**
-			 * Get an <code>IJavaScriptElement</code>'s path
-			 * 
-			 * @param element an element which is of type <code>IJavaScriptElement</code>
-			 * @return the path of the Java element
-			 */
-			private IPath getJavaElementPath(Object element) {
-				return ((IJavaScriptElement) element).getPath();
-			}
-
-			/**
-			 * Get an <code>IIncludePathEntry</code>'s path
-			 * 
-			 * @param entry an element which is of type <code>IIncludePathEntry</code>
-			 * @return the path of the classpath entry
-			 */
-			private IPath getCPEntryPath(Object entry) {
-				return ((IIncludePathEntry) entry).getPath();
-			}
-
-			/**
-			 * 
-			 * @param path1 the first path
-			 * @param path2 the second path
-			 * @return <code>true</code> if path1 is a subfolder of 
-			 * path2, <code>false</code> otherwise
-			 */
-			private boolean isSubFolderOf(IPath path1, IPath path2) {
-				if (path1 == null || path2 == null) {
-					if (path1 == null && path2 == null)
-						return true;
-					return false;
-				}
-				return path2.matchingFirstSegments(path1) == path2.segmentCount();
-			}
-
-		};
-	}
-
 }

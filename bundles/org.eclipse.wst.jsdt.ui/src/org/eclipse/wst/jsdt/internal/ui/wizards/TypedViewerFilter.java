@@ -61,5 +61,4 @@ public class TypedViewerFilter extends ViewerFilter {
 		}
 		return false;
 	}
-
 }

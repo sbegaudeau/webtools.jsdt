@@ -110,29 +110,19 @@ public class SourceAttachmentBlock {
 		
 		SourceAttachmentAdapter adapter= new SourceAttachmentAdapter();
 		
-		// create the dialog fields (no widgets yet)
-		if (isVariableEntry()) {
-			fFileNameField= new VariablePathDialogField(adapter);
-			fFileNameField.setDialogFieldListener(adapter);
-			fFileNameField.setLabelText(NewWizardMessages.SourceAttachmentBlock_filename_varlabel); 
-			fFileNameField.setButtonLabel(NewWizardMessages.SourceAttachmentBlock_filename_external_varbutton); 
-			((VariablePathDialogField)fFileNameField).setVariableButtonLabel(NewWizardMessages.SourceAttachmentBlock_filename_variable_button); 
-					
-		} else {
-			fFileNameField= new StringButtonDialogField(adapter);
-			fFileNameField.setDialogFieldListener(adapter);
-			fFileNameField.setLabelText(NewWizardMessages.SourceAttachmentBlock_filename_label); 
-			fFileNameField.setButtonLabel(NewWizardMessages.SourceAttachmentBlock_filename_externalfile_button); 
-		
-			fWorkspaceButton= new SelectionButtonDialogField(SWT.PUSH);
-			fWorkspaceButton.setDialogFieldListener(adapter);
-			fWorkspaceButton.setLabelText(NewWizardMessages.SourceAttachmentBlock_filename_internal_button); 
-
-			fExternalFolderButton= new SelectionButtonDialogField(SWT.PUSH);
-			fExternalFolderButton.setDialogFieldListener(adapter);
-			fExternalFolderButton.setLabelText(NewWizardMessages.SourceAttachmentBlock_filename_externalfolder_button); 
-		}	
+		fFileNameField= new StringButtonDialogField(adapter);
+		fFileNameField.setDialogFieldListener(adapter);
+		fFileNameField.setLabelText(NewWizardMessages.SourceAttachmentBlock_filename_label); 
+		fFileNameField.setButtonLabel(NewWizardMessages.SourceAttachmentBlock_filename_externalfile_button); 
 	
+		fWorkspaceButton= new SelectionButtonDialogField(SWT.PUSH);
+		fWorkspaceButton.setDialogFieldListener(adapter);
+		fWorkspaceButton.setLabelText(NewWizardMessages.SourceAttachmentBlock_filename_internal_button); 
+
+		fExternalFolderButton= new SelectionButtonDialogField(SWT.PUSH);
+		fExternalFolderButton.setDialogFieldListener(adapter);
+		fExternalFolderButton.setLabelText(NewWizardMessages.SourceAttachmentBlock_filename_externalfolder_button); 
+		
 		// set the old settings
 		setDefaults();
 	}
@@ -179,7 +169,6 @@ public class SourceAttachmentBlock {
 	
 	public IIncludePathEntry getNewEntry() {
 		CPListElement elem= CPListElement.createFromExisting(fEntry, fProject);
-		elem.setAttribute(CPListElement.SOURCEATTACHMENT, getSourceAttachmentPath());
 		return elem.getClasspathEntry();
 	}
 		
@@ -574,7 +563,7 @@ public class SourceAttachmentBlock {
 		return new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {				
 				try {
-					String[] changedAttributes= { CPListElement.SOURCEATTACHMENT };
+					String[] changedAttributes= {};
 					BuildPathSupport.modifyClasspathEntry(shell, newEntry, changedAttributes, jproject, containerPath, monitor);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);

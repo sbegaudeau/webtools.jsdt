@@ -44,9 +44,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.internal.ui.wizards.NewClassCreationWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewElementWizard;
-import org.eclipse.wst.jsdt.internal.ui.wizards.NewInterfaceCreationWizard;
 import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.wizards.NewTypeWizardPage;
 
@@ -189,7 +187,7 @@ public class NewCUCompletionUsingWizardProposal extends ChangeCorrectionProposal
 	
 
 	public void apply(IDocument document) {
-		NewElementWizard wizard= createWizard();
+		NewElementWizard wizard= null;
 		wizard.init(JavaScriptPlugin.getDefault().getWorkbench(), new StructuredSelection(fCompilationUnit));
 
 		IType createdType= null;
@@ -235,20 +233,6 @@ public class NewCUCompletionUsingWizardProposal extends ChangeCorrectionProposal
 			fCreatedType= createdType;
 		}
 		
-	}
-
-	private NewElementWizard createWizard() {
-		switch (fTypeKind) {
-			case K_CLASS:
-				return new NewClassCreationWizard();
-			case K_INTERFACE:
-				return new NewInterfaceCreationWizard();
-//			case K_ENUM:
-//				return new NewEnumCreationWizard();
-//			case K_ANNOTATION:
-//				return new NewAnnotationCreationWizard();
-		}
-		throw new IllegalArgumentException();
 	}
 
 	private NewTypeWizardPage configureWizardPage(NewElementWizard wizard) {

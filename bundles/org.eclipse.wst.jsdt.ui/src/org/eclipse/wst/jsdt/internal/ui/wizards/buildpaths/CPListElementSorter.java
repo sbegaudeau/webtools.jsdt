@@ -23,7 +23,6 @@ public class CPListElementSorter extends ViewerComparator {
 	private static final int SOURCE= 0;
 	private static final int PROJECT= 1;
 	private static final int LIBRARY= 2;
-	private static final int VARIABLE= 3;
 	private static final int CONTAINER= 4;
 	
 	private static final int ATTRIBUTE= 5;
@@ -42,17 +41,14 @@ public class CPListElementSorter extends ViewerComparator {
 				return CONTAINER_ENTRY;
 			}
 			
-
-//			IPath containerPath = element.getPath();
-//			IPath JREPath = new Path(JavaRuntime.JRE_CONTAINER);
-			
 			if(element.isJRE()) {
 				return JRE_ENTRY;
 			}
 			
 			if(element.isInNonModifiableContainer()) {
 				return REQUIRED_ENTRY;
-			}			
+			}	
+			
 			switch (element.getEntryKind()) {
 			case IIncludePathEntry.CPE_LIBRARY:
 				return LIBRARY;
@@ -60,8 +56,6 @@ public class CPListElementSorter extends ViewerComparator {
 				return PROJECT;
 			case IIncludePathEntry.CPE_SOURCE:
 				return SOURCE;
-			case IIncludePathEntry.CPE_VARIABLE:
-				return VARIABLE;
 			case IIncludePathEntry.CPE_CONTAINER:
 				return CONTAINER;
 			}

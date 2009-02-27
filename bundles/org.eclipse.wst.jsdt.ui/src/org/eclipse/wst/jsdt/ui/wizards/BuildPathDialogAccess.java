@@ -48,11 +48,9 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.TypedElementSelectionValidator;
 import org.eclipse.wst.jsdt.internal.ui.wizards.TypedViewerFilter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.ArchiveFileFilter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.JsGlobalScopeContainerWizard;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.EditVariableEntryDialog;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.JavadocLocationDialog;
+import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.JsGlobalScopeContainerWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.MultipleFolderSelectionDialog;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.NewVariableEntryDialog;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.SourceAttachmentDialog;
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
@@ -167,55 +165,6 @@ public final class BuildPathDialogAccess {
 			URL res= dialog.getResult();
 			element.setAttribute(CPListElement.JAVADOC, res != null ? res.toExternalForm() : null);
 			return element.getClasspathEntry();
-		}
-		return null;
-	}
-	
-	/**
-	 * Shows the UI for configuring a variable classpath entry. See {@link IIncludePathEntry#CPE_VARIABLE} for
-	 * details about variable classpath entries.
-	 * The dialog returns the configured classpath entry path or <code>null</code> if the dialog has
-	 * been canceled. The dialog does not apply any changes.
-	 * 
-	 * @param shell The parent shell for the dialog.
-	 * @param initialEntryPath The initial variable classpath variable path or <code>null</code> to use
-	 * an empty path. 
-	 * @param existingPaths An array of paths that are already on the classpath and therefore should not be
-	 * selected again.
-	 * @return Returns the configures classpath entry path or <code>null</code> if the dialog has
-	 * been canceled.
-	 */
-	public static IPath configureVariableEntry(Shell shell, IPath initialEntryPath, IPath[] existingPaths) {
-		if (existingPaths == null) {
-			throw new IllegalArgumentException();
-		}
-		
-		EditVariableEntryDialog dialog= new EditVariableEntryDialog(shell, initialEntryPath, existingPaths);
-		if (dialog.open() == Window.OK) {
-			return dialog.getPath();
-		}
-		return null;
-	}
-	
-	/**
-	 * Shows the UI for selecting new variable classpath entries. See {@link IIncludePathEntry#CPE_VARIABLE} for
-	 * details about variable classpath entries.
-	 * The dialog returns an array of the selected variable entries or <code>null</code> if the dialog has
-	 * been canceled. The dialog does not apply any changes.
-	 * 
-	 * @param shell The parent shell for the dialog.
-	 * @param existingPaths An array of paths that are already on the classpath and therefore should not be
-	 * selected again.
-	 * @return Returns an non empty array of the selected variable entries or <code>null</code> if the dialog has
-	 * been canceled.
-	 */
-	public static IPath[] chooseVariableEntries(Shell shell, IPath[] existingPaths) {
-		if (existingPaths == null) {
-			throw new IllegalArgumentException();
-		}
-		NewVariableEntryDialog dialog= new NewVariableEntryDialog(shell);
-		if (dialog.open() == Window.OK) {
-			return dialog.getResult();
 		}
 		return null;
 	}

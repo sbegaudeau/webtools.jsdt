@@ -67,7 +67,6 @@ import org.eclipse.wst.jsdt.ui.wizards.JavaCapabilityConfigurationPage;
 public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage {
 
 	private static final String FILENAME_PROJECT= ".project"; //$NON-NLS-1$
-//	private static final String FILENAME_CLASSPATH = JavaProject.CLASSPATH_FILENAME; //$NON-NLS-1$
 
 	private final JavaProjectWizardFirstPage fFirstPage;
 
@@ -201,13 +200,11 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 			}
 				
 			IIncludePathEntry[] entries= null;
-//			IPath outputLocation= null;
 	
 			if (fFirstPage.getDetect()) {
 				if (!fCurrProject.getFolder(JavaProject.SHARED_PROPERTIES_DIRECTORY).getFile(JavaProject.CLASSPATH_FILENAME).exists()) { 
 					final ClassPathDetector detector= new ClassPathDetector(fCurrProject, new SubProgressMonitor(monitor, 2));
 					entries= detector.getClasspath();
-//                    outputLocation= detector.getOutputLocation();
 				} else {
 					monitor.worked(2);
 				}
@@ -277,9 +274,6 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 	}
 	
 	private IIncludePathEntry[] getDefaultClasspathEntry() {
-		
-		
-		boolean browserlib= fFirstPage.isWebEnabled();
 		IPath jreContainerPath= new Path(JavaRuntime.JRE_CONTAINER);
 		IPath BROWSER_LIB = new Path(JavaRuntime.BASE_BROWSER_LIB);
 		 
@@ -290,22 +284,6 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 		}else {
 			return new IIncludePathEntry[] { JavaScriptCore.newContainerEntry(jreContainerPath)};
 		}
-		
-		
-//		IIncludePathEntry[] defaultJRELibrary= PreferenceConstants.getDefaultJRELibrary();
-//		boolean browserlib= fFirstPage.isWebEnabled();
-//		IPath jreContainerPath= new Path(JavaRuntime.JRE_CONTAINER);
-//		IPath BROWSER_LIB = new Path(JavaRuntime.BASE_BROWSER_LIB);
-//		 
-//		if (compliance == null || defaultJRELibrary.length > 1 || !jreContainerPath.isPrefixOf(defaultJRELibrary[0].getPath())) {
-//			// use default
-//			return defaultJRELibrary;
-//		}
-//		IPath newPath= fFirstPage.getJREContainerPath();
-//		if (newPath != null) {
-//			return new IIncludePathEntry[] { JavaScriptCore.newContainerEntry(newPath) };
-//		}
-//		return defaultJRELibrary;
 	}
 	
 	private void deleteProjectFile(URI projectLocation) throws CoreException {
@@ -415,17 +393,6 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 				updateProject(new SubProgressMonitor(monitor, 1));
 			}
 			configureJavaProject(new SubProgressMonitor(monitor, 2));
-			
-//			if (!fKeepContent) {
-//				String compliance= fFirstPage.getCompilerCompliance();
-//				if (compliance != null) {
-//					IJavaScriptProject project= JavaScriptCore.create(fCurrProject);
-//					Map options= project.getOptions(false);
-//					JavaModelUtil.setCompilanceOptions(options, compliance);
-//					JavaModelUtil.setDefaultClassfileOptions(options, compliance); // complete compliance options
-//					project.setOptions(options);
-//				}
-//			}
 		} finally {
 			monitor.done();
 			fCurrProject= null;

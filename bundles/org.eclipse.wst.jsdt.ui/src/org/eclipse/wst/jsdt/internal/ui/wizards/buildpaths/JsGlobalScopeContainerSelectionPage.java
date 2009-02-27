@@ -34,21 +34,25 @@ import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 
 /**
-  */
+ * The first page of the Add JavaScript Library wizard.
+ */
 public class JsGlobalScopeContainerSelectionPage extends WizardPage {
 
-	private static final String DIALOGSTORE_SECTION= "JsGlobalScopeContainerSelectionPage"; //$NON-NLS-1$
-	private static final String DIALOGSTORE_CONTAINER_IDX= "index"; //$NON-NLS-1$
-
-
+	/**
+	 * A label provider for the wizard page
+	 */
 	private static class JsGlobalScopeContainerLabelProvider extends LabelProvider {
 		public String getText(Object element) {
 			return ((JsGlobalScopeContainerDescriptor) element).getName();
 		}
 	}
+	
+	private static final String DIALOGSTORE_SECTION= "JsGlobalScopeContainerSelectionPage"; //$NON-NLS-1$
+	private static final String DIALOGSTORE_CONTAINER_IDX= "index"; //$NON-NLS-1$
 
-	private ListViewer fListViewer;
 	private JsGlobalScopeContainerDescriptor[] fContainers;
+	
+	private ListViewer fListViewer;
 	private IDialogSettings fDialogSettings;
 
 	/**
@@ -69,7 +73,6 @@ public class JsGlobalScopeContainerSelectionPage extends WizardPage {
 			fDialogSettings= settings.addNewSection(DIALOGSTORE_SECTION);
 			fDialogSettings.put(DIALOGSTORE_CONTAINER_IDX, 0);
 		}
-		validatePage();
 	}
 
 	/* (non-Javadoc)

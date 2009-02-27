@@ -65,12 +65,9 @@ public class SetFilterWizardPage extends NewElementWizardPage {
 
 	private final ArrayList fExistingEntries;
 
-	private final IPath fOutputLocation;
-
-	public SetFilterWizardPage(CPListElement entryToEdit, ArrayList existingEntries, IPath outputLocation) {
+	public SetFilterWizardPage(CPListElement entryToEdit, ArrayList existingEntries) {
 		super(PAGE_NAME);
 		fExistingEntries= existingEntries;
-		fOutputLocation= outputLocation;
 		
 		setTitle(NewWizardMessages.ExclusionInclusionDialog_title); 
 		setDescription(NewWizardMessages.ExclusionInclusionDialog_description2);
@@ -200,7 +197,7 @@ public class SetFilterWizardPage extends NewElementWizardPage {
 		
 //		fCurrElement.setAttribute(CPListElement.INCLUSION, getInclusionPattern());
 //		fCurrElement.setAttribute(CPListElement.EXCLUSION, getExclusionPattern());
-		IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(fCurrElement.getJavaProject(), CPListElement.convertToClasspathEntries(fExistingEntries), fOutputLocation);
+		IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(fCurrElement.getJavaProject(), CPListElement.convertToClasspathEntries(fExistingEntries), null);
 		if (!status.isOK()) {
 			StatusInfo statusInfo= new StatusInfo();
 			statusInfo.setError(status.getMessage());

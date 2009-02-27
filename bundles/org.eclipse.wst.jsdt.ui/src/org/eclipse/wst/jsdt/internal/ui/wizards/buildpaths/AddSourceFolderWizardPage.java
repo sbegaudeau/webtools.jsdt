@@ -202,7 +202,7 @@ public class AddSourceFolderWizardPage extends NewElementWizardPage {
 	private final boolean fCanCommitConflictingBuildpath;
 	private final IContainer fParent;
 	
-	public AddSourceFolderWizardPage(CPListElement newElement, List/*<CPListElement>*/ existingEntries, IPath outputLocation, 
+	public AddSourceFolderWizardPage(CPListElement newElement, List/*<CPListElement>*/ existingEntries, 
 			boolean linkedMode, boolean canCommitConflictingBuildpath,
 			boolean allowIgnoreConflicts, boolean allowRemoveProjectFolder, boolean allowAddExclusionPatterns, IContainer parent) {
 		
@@ -257,7 +257,6 @@ public class AddSourceFolderWizardPage extends NewElementWizardPage {
 		fExistingEntries= existingEntries;
 		fModifiedElements= new ArrayList();
 		fRemovedElements= new ArrayList();
-		fOutputLocation= outputLocation;
 		
 		RootFieldAdapter adapter= new RootFieldAdapter();
 		

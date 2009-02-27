@@ -61,7 +61,6 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
@@ -455,15 +454,6 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 		}
 		monitor.beginTask(NewWizardMessages.NewSourceFolderWizardPage_operation, 3); 
 		try {
-			IPath projPath= fCurrJProject.getProject().getFullPath();
-			if (fOutputLocation.equals(projPath) && !fNewOutputLocation.equals(projPath)) {
-				if (BuildPathsBlock.hasClassfiles(fCurrJProject.getProject())) {
-					if (BuildPathsBlock.getRemoveOldBinariesQuery(getShell()).doQuery(false, projPath)) {
-						BuildPathsBlock.removeOldClassfiles(fCurrJProject.getProject());
-					}
-				}
-			}		
-			
 			String relPath= fRootDialogField.getText();
 				
 			IFolder folder= fCurrJProject.getProject().getFolder(relPath);

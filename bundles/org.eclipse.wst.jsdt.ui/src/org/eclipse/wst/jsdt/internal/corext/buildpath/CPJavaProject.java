@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
@@ -30,15 +29,13 @@ public class CPJavaProject {
 
 	public static CPJavaProject createFromExisting(IJavaScriptProject javaProject) throws CoreException {
 		List classpathEntries= ClasspathModifier.getExistingEntries(javaProject);
-		return new CPJavaProject(classpathEntries, javaProject.getOutputLocation());
+		return new CPJavaProject(classpathEntries);
     }
 
     private final List fCPListElements;
-	private IPath fDefaultOutputLocation;
 
-	public CPJavaProject(List cpListElements, IPath defaultOutputLocation) {
+	public CPJavaProject(List cpListElements) {
 		fCPListElements= cpListElements;
-		fDefaultOutputLocation= defaultOutputLocation;
     }
 
     public CPJavaProject createWorkingCopy() {
@@ -47,14 +44,14 @@ public class CPJavaProject {
 	        CPListElement element= (CPListElement)iterator.next();
 	        newList.add(element.copy());
         }
-	    return new CPJavaProject(newList, fDefaultOutputLocation);
+	    return new CPJavaProject(newList);
     }
 
     public CPListElement get(int index) {
     	return (CPListElement)fCPListElements.get(index);
     }
 
-    public IIncludePathEntry[] getClasspathEntries() {
+    public IIncludePathEntry[] getIncludePathEntries() {
     	IIncludePathEntry[] result= new IIncludePathEntry[fCPListElements.size()];
     	int i= 0;
     	for (Iterator iterator= fCPListElements.iterator(); iterator.hasNext();) {
@@ -72,10 +69,6 @@ public class CPJavaProject {
     public List getCPListElements() {
 	    return fCPListElements;
     }
-
-    public IPath getDefaultOutputLocation() {
-	    return fDefaultOutputLocation;
-    }
     
     public IJavaScriptProject getJavaProject() {
 	    return ((CPListElement)fCPListElements.get(0)).getJavaProject();
@@ -83,9 +76,5 @@ public class CPJavaProject {
 
     public int indexOf(CPListElement element) {
 		return fCPListElements.indexOf(element);
-    }
-
-    public void setDefaultOutputLocation(IPath path) {
-    	fDefaultOutputLocation= path;
     }
 }

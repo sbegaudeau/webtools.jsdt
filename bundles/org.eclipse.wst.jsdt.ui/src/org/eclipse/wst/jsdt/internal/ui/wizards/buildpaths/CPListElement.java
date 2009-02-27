@@ -38,17 +38,13 @@ import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class CPListElement {
 	
-	public static final String SOURCEATTACHMENT= "sourcepath"; //$NON-NLS-1$
-	public static final String OUTPUT= "output"; //$NON-NLS-1$
 	public static final String EXCLUSION= "exclusion"; //$NON-NLS-1$
 	public static final String INCLUSION= "inclusion"; //$NON-NLS-1$
-	public static final String SUPER_TYPE= "supertype"; //$NON-NLS-1$
 	
 	public static final String ACCESSRULES= "accessrules"; //$NON-NLS-1$
 	public static final String COMBINE_ACCESSRULES= "combineaccessrules"; //$NON-NLS-1$
 
 	public static final String JAVADOC= IIncludePathAttribute.JSDOC_LOCATION_ATTRIBUTE_NAME;
-	public static final String NATIVE_LIB_PATH= JavaRuntime.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY;
 	
 	private IJavaScriptProject fProject;
 	
@@ -104,25 +100,20 @@ public class CPListElement {
 		
 		switch (entryKind) {
 			case IIncludePathEntry.CPE_SOURCE:
-				//createAttributeElement(OUTPUT, null, true);
 				createAttributeElement(INCLUSION, new Path[0], true);
 				createAttributeElement(EXCLUSION, new Path[0], true);
-				//createAttributeElement(NATIVE_LIB_PATH, null, false);
 				break;
 			case IIncludePathEntry.CPE_LIBRARY:
 			case IIncludePathEntry.CPE_VARIABLE:
-				//createAttributeElement(SOURCEATTACHMENT, null, true);
 				if(allowJsDoc) createAttributeElement(JAVADOC, null, false);
-				//createAttributeElement(NATIVE_LIB_PATH, null, false);
-				//createAttributeElement(ACCESSRULES, new IAccessRule[0], true);
+				createAttributeElement(ACCESSRULES, new IAccessRule[0], true);
 				break;
 			case IIncludePathEntry.CPE_PROJECT:
-				//createAttributeElement(ACCESSRULES, new IAccessRule[0], true);
+				createAttributeElement(ACCESSRULES, new IAccessRule[0], true);
 				createAttributeElement(COMBINE_ACCESSRULES, Boolean.FALSE, true); // not rendered
-				//createAttributeElement(NATIVE_LIB_PATH, null, false);
 				break;
 			case IIncludePathEntry.CPE_CONTAINER:
-				//createAttributeElement(ACCESSRULES, new IAccessRule[0], true);
+				createAttributeElement(ACCESSRULES, new IAccessRule[0], true);
 				try {
 					IJsGlobalScopeContainer container= JavaScriptCore.getJsGlobalScopeContainer(fPath, fProject);
 					if (container != null) {
@@ -148,7 +139,6 @@ public class CPListElement {
 					}
 				} catch (JavaScriptModelException e) {
 				}			
-				//createAttributeElement(NATIVE_LIB_PATH, null, false);
 				break;
 			default:
 		}
@@ -185,12 +175,10 @@ public class CPListElement {
 			case IIncludePathEntry.CPE_SOURCE:
 				IPath[] inclusionPattern= (IPath[]) getAttribute(INCLUSION);
 				IPath[] exclusionPattern= (IPath[]) getAttribute(EXCLUSION);
-				IPath outputLocation= (IPath) getAttribute(OUTPUT);
-				return JavaScriptCore.newSourceEntry(fPath, inclusionPattern, exclusionPattern, outputLocation, extraAttributes);
+				return JavaScriptCore.newSourceEntry(fPath, inclusionPattern, exclusionPattern, null, extraAttributes);
 			case IIncludePathEntry.CPE_LIBRARY: {
-				IPath attach= (IPath) getAttribute(SOURCEATTACHMENT);
 				IAccessRule[] accesRules= (IAccessRule[]) getAttribute(ACCESSRULES);
-				return JavaScriptCore.newLibraryEntry(fPath, attach, null, accesRules, extraAttributes, isExported());
+				return JavaScriptCore.newLibraryEntry(fPath, null, null, accesRules, extraAttributes, isExported());
 			}
 			case IIncludePathEntry.CPE_PROJECT: {
 				IAccessRule[] accesRules= (IAccessRule[]) getAttribute(ACCESSRULES);
@@ -202,9 +190,8 @@ public class CPListElement {
 				return JavaScriptCore.newContainerEntry(fPath, accesRules, extraAttributes, isExported());
 			}
 			case IIncludePathEntry.CPE_VARIABLE: {
-				IPath varAttach= (IPath) getAttribute(SOURCEATTACHMENT);
 				IAccessRule[] accesRules= (IAccessRule[]) getAttribute(ACCESSRULES);
-				return JavaScriptCore.newVariableEntry(fPath, varAttach, null, accesRules, extraAttributes, isExported());
+				return JavaScriptCore.newVariableEntry(fPath, null, null, accesRules, extraAttributes, isExported());
 			}
 			default:
 				return null;
@@ -361,7 +348,7 @@ public class CPListElement {
 			if (curr.isNotSupported()) {
 				return true;
 			}
-			if (!curr.isBuiltIn() && !key.equals(CPListElement.JAVADOC) && !key.equals(CPListElement.NATIVE_LIB_PATH)) {
+			if (!curr.isBuiltIn() && !key.equals(CPListElement.JAVADOC)) {
 				return !JavaScriptPlugin.getDefault().getClasspathAttributeConfigurationDescriptors().containsKey(key);
 			}
 		}
@@ -381,13 +368,7 @@ public class CPListElement {
 		return res.toArray();
 	}
 		
-	public Object[] getChildren(boolean hideOutputFolder) {
-		if (hideOutputFolder && fEntryKind == IIncludePathEntry.CPE_SOURCE) {
-			return getFilteredChildren(new String[] { OUTPUT });
-		}
-		/*if (isInContainer(JavaRuntime.JRE_CONTAINER)) {
-			return getFilteredChildren(new String[] { COMBINE_ACCESSRULES, NATIVE_LIB_PATH });
-		}*/
+	public Object[] getChildren() {
 		if (fEntryKind == IIncludePathEntry.CPE_PROJECT) {
 			return getFilteredChildren(new String[] { COMBINE_ACCESSRULES });
 		}
@@ -420,9 +401,7 @@ public class CPListElement {
 			JsGlobalScopeContainerInitializer initializer= JavaScriptCore.getJsGlobalScopeContainerInitializer(fPath.segment(0));
 			if (initializer != null && initializer.canUpdateJsGlobalScopeContainer(fPath, fProject)) {
 				if (attrib.isBuiltIn()) {
-					if (CPListElement.SOURCEATTACHMENT.equals(attrib.getKey())) {
-						return initializer.getSourceAttachmentStatus(fPath, fProject);
-					} else if (CPListElement.ACCESSRULES.equals(attrib.getKey())) {
+					if (CPListElement.ACCESSRULES.equals(attrib.getKey())) {
 						return initializer.getAccessRulesStatus(fPath, fProject);
 					}
 				} else {
@@ -624,8 +603,6 @@ public class CPListElement {
 		}
 		CPListElement elem= new CPListElement(parent, project, curr.getEntryKind(), path, res, linkTarget);
 		elem.setExported(curr.isExported());
-		elem.setAttribute(SOURCEATTACHMENT, curr.getSourceAttachmentPath());
-		elem.setAttribute(OUTPUT, curr.getOutputLocation());
 		elem.setAttribute(EXCLUSION, curr.getExclusionPatterns());
 		elem.setAttribute(INCLUSION, curr.getInclusionPatterns());
 		elem.setAttribute(ACCESSRULES, curr.getAccessRules());
@@ -708,9 +685,7 @@ public class CPListElement {
 				CPListElementAttribute elem= (CPListElementAttribute) curr;
 				if (elem.isBuiltIn()) {
 					String key= elem.getKey();
-					if (OUTPUT.equals(key) || SOURCEATTACHMENT.equals(key)) {
-						appendEncodePath((IPath) elem.getValue(), buf).append(';');
-					} else if (EXCLUSION.equals(key) || INCLUSION.equals(key)) {
+					if (EXCLUSION.equals(key) || INCLUSION.equals(key)) {
 						appendEncodedFilter((IPath[]) elem.getValue(), buf).append(';');
 					} else if (ACCESSRULES.equals(key)) {
 						appendEncodedAccessRules((IAccessRule[]) elem.getValue(), buf).append(';');

@@ -44,8 +44,6 @@ public abstract class BuildpathModifierAction extends Action implements ISelecti
 	public static final int EDIT_FILTERS= 4;
 	public static final int CREATE_LINK= 5;
 	public static final int RESET_ALL= 6;
-	public static final int EDIT_OUTPUT= 7;
-	public static final int CREATE_OUTPUT= 8;
 	public static final int RESET= 9;
 	public static final int INCLUDE= 10;
 	public static final int UNINCLUDE= 11;
@@ -54,7 +52,6 @@ public abstract class BuildpathModifierAction extends Action implements ISelecti
 	public static final int ADD_LIB_TO_BP= 14;
 	public static final int ADD_SEL_LIB_TO_BP= 15;
 	public static final int CONFIGURE_BUILD_PATH= 16;
-	public static final int RESET_ALL_OUTPUT_FOLDERS= 17;
 	public static final int DROP_DOWN_ACTION= 18;
 
 	private final IWorkbenchSite fSite;

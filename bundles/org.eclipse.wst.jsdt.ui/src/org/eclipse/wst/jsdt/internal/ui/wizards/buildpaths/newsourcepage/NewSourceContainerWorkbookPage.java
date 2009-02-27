@@ -45,7 +45,6 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElementAttribute;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
 
 public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements IBuildpathModifierListener {
     
@@ -54,16 +53,11 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
     private ListDialogField fClassPathList;
     private HintTextGroup fHintTextGroup;
     private DialogPackageExplorer fPackageExplorer;
-   // private SelectionButtonDialogField fUseFolderOutputs;
-	//private final StringDialogField fOutputLocationField;
 	private DialogPackageExplorerActionGroup fActionGroup;
 	
-	private IJavaScriptProject fJavaProject;
+	private IJavaScriptProject fJavaScriptProject;
 
 	private final IRunnableContext fContext;
-
-//	private final BuildPathsBlock fBuildPathsBlock;
-
 
     /**
      * Constructor of the <code>NewSourceContainerWorkbookPage</code> which consists of 
@@ -72,20 +66,13 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
      * additionally with some short description.
      * 
      * @param classPathList
-     * @param outputLocationField
      * @param context a runnable context, can be <code>null</code>
      * @param buildPathsBlock 
      */
-    public NewSourceContainerWorkbookPage(ListDialogField classPathList, StringDialogField outputLocationField, IRunnableContext context, BuildPathsBlock buildPathsBlock) {
+    public NewSourceContainerWorkbookPage(ListDialogField classPathList, IRunnableContext context, BuildPathsBlock buildPathsBlock) {
         fClassPathList= classPathList;
-		//fOutputLocationField= outputLocationField;
 		fContext= context;
-//		fBuildPathsBlock= buildPathsBlock;
-    
-//        fUseFolderOutputs= new SelectionButtonDialogField(SWT.CHECK);
-//        fUseFolderOutputs.setSelection(false);
-//        fUseFolderOutputs.setLabelText(NewWizardMessages.SourceContainerWorkbookPage_folders_check); 
-        
+
 		fPackageExplorer= new DialogPackageExplorer();
 		fHintTextGroup= new HintTextGroup();
      }
@@ -101,7 +88,7 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
      * @param javaProject the current java project
      */
     public void init(IJavaScriptProject javaProject) {
-		fJavaProject= javaProject;
+		fJavaScriptProject= javaProject;
 		fPackageExplorer.addPostSelectionChangedListener(fHintTextGroup);
 	    fActionGroup.getResetAllAction().setBreakPoint(javaProject);
 
@@ -117,19 +104,7 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
     }
     
 	private void doUpdateUI() {
-        fPackageExplorer.setInput(fJavaProject);
-		
-		boolean useFolderOutputs= false;
-		List cpelements= fClassPathList.getElements();
-		for (int i= 0; i < cpelements.size() && !useFolderOutputs; i++) {
-			CPListElement cpe= (CPListElement) cpelements.get(i);
-			if (cpe.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
-				if (cpe.getAttribute(CPListElement.OUTPUT) != null) {
-					useFolderOutputs= true;
-				}
-			}
-		}
-		//fUseFolderOutputs.setSelection(useFolderOutputs);
+        fPackageExplorer.setInput(fJavaScriptProject);
     }
     
     public void dispose() {
@@ -189,36 +164,10 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
                  });
         
         excomposite.setClient(fHintTextGroup.createControl(excomposite));
-       // fUseFolderOutputs.doFillIntoGrid(body, 1);
 		
         fActionGroup= new DialogPackageExplorerActionGroup(fHintTextGroup, fContext, fPackageExplorer, this);
 		fActionGroup.addBuildpathModifierListener(this);
-		   
-		
-//        fUseFolderOutputs.setDialogFieldListener(new IDialogFieldListener() {
-//            public void dialogFieldChanged(DialogField field) {
-//                boolean isUseFolders= fUseFolderOutputs.isSelected();
-//                if (isUseFolders) {
-//                	ResetAllOutputFoldersAction action= new ResetAllOutputFoldersAction(fContext, fJavaProject, fPackageExplorer) {
-//                		public void run() {
-//                    		commitDefaultOutputFolder();
-//                    	    super.run();
-//                    	}
-//                	};
-//                	action.addBuildpathModifierListener(NewSourceContainerWorkbookPage.this);
-//                	action.run();
-//                }
-//				fPackageExplorer.showOutputFolders(isUseFolders);
-//            }
-//        });
-        
-        Composite outputLocation= new Composite(body, SWT.NONE);
-        outputLocation.setLayout(new GridLayout(2, false));
-        outputLocation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        
-//		LayoutUtil.doDefaultLayout(outputLocation, new DialogField[] {fOutputLocationField }, true, SWT.DEFAULT, SWT.DEFAULT);
-//		LayoutUtil.setHorizontalGrabbing(fOutputLocationField.getTextControl(null));
-//        
+          
         // Create toolbar with actions on the left
         ToolBarManager tbm= fActionGroup.createLeftToolBarManager(pane);
         pane.setTopCenter(null);
@@ -237,8 +186,6 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
 		PixelConverter converter= new PixelConverter(parent);
 		gd.heightHint= converter.convertHeightInCharsToPixels(20);
 		sashForm.setLayoutData(gd);
-        
-      //  fUseFolderOutputs.dialogFieldChanged();
         
         parent.layout(true);
 
@@ -290,7 +237,7 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
     public List getSelection() {
         List selectedList= new ArrayList();
         
-        IJavaScriptProject project= fJavaProject;
+        IJavaScriptProject project= fJavaScriptProject;
         try {
             List list= ((StructuredSelection)fPackageExplorer.getSelection()).toList();
             List existingEntries= ClasspathModifier.getExistingEntries(project);
@@ -351,7 +298,7 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
             entries[i]= entry.getClasspathEntry(); 
         }
         try {
-			fJavaProject.setRawIncludepath(entries, null);
+			fJavaScriptProject.setRawIncludepath(entries, null);
         } catch (JavaScriptModelException e) {
             JavaScriptPlugin.log(e);
         }
@@ -371,35 +318,6 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
      */
     public void buildpathChanged(BuildpathDelta delta) {
 //        fClassPathList.setElements(Arrays.asList(delta.getNewEntries()));
-//        
-//        try {
-//	        fOutputLocationField.setText(fJavaProject.getOutputLocation().makeRelative().toString());
-//        } catch (JavaScriptModelException e) {
-//	        JavaScriptPlugin.log(e);
-//        }
-    }
-
-	public void commitDefaultOutputFolder() {
-//		if (!fBuildPathsBlock.isOKStatus())
-//			return;
-//		try {
-//			IPath path= new Path(fOutputLocationField.getText()).makeAbsolute();
-//			IPath outputLocation= fJavaProject.getOutputLocation();
-//			if (path.equals(outputLocation))
-//				return;
-//			
-//			if (!outputLocation.equals(fJavaProject.getPath())) {
-//				IFolder folder= fJavaProject.getProject().getWorkspace().getRoot().getFolder(outputLocation);
-//				if (folder.exists() && JavaScriptCore.create(folder) == null) {
-//					folder.delete(true, null);
-//				}
-//			}
-//	        fJavaProject.setOutputLocation(path, null);
-//        } catch (JavaScriptModelException e) {
-//	     	JavaScriptPlugin.log(e);
-//        } catch (CoreException e) {
-//	        JavaScriptPlugin.log(e);
-//        }
     }
 
 	/**
@@ -409,7 +327,7 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
     	fPackageExplorer.getViewerControl().setFocus();
     }
 
-	public IJavaScriptProject getJavaProject() {
-		return fJavaProject;
+	public IJavaScriptProject getJavaScriptProject() {
+		return fJavaScriptProject;
 	}
 }

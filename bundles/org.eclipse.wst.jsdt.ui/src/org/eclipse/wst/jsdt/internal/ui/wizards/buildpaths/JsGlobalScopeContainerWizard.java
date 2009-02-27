@@ -25,20 +25,19 @@ import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPage;
 import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension;
 import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension2;
 
-
 /**
+ * This wizard is used to add/edit JavaScript libraries to a JavaScript project.
   */
 public class JsGlobalScopeContainerWizard extends Wizard {
-
-	private JsGlobalScopeContainerDescriptor fPageDesc;
-	private IIncludePathEntry fEntryToEdit;
-
-	private IIncludePathEntry[] fNewEntries;
-	private IJsGlobalScopeContainerPage fContainerPage;
+	
 	private IJavaScriptProject fCurrProject;
+	
+	private IIncludePathEntry fEntryToEdit;
+	private IIncludePathEntry[] fNewEntries;
 	private IIncludePathEntry[] fCurrClasspath;
 	
 	private JsGlobalScopeContainerSelectionPage fSelectionWizardPage;
+	private IJsGlobalScopeContainerPage fContainerPage;
 
 	/**
 	 * Constructor for JsGlobalScopeContainerWizard.
@@ -47,36 +46,23 @@ public class JsGlobalScopeContainerWizard extends Wizard {
 	 * @param currEntries entries currently in classpath
 	 */
 	public JsGlobalScopeContainerWizard(IIncludePathEntry entryToEdit, IJavaScriptProject currProject, IIncludePathEntry[] currEntries) {
-		this(entryToEdit, null, currProject, currEntries);
-	}
-	
-	/**
-	 * Constructor for JsGlobalScopeContainerWizard.
-	 * @param pageDesc page description
-	 * @param currProject current project
-	 * @param currEntries entries currently in classpath
-	 */
-	public JsGlobalScopeContainerWizard(JsGlobalScopeContainerDescriptor pageDesc, IJavaScriptProject currProject, IIncludePathEntry[] currEntries) {
-		this(null, pageDesc, currProject, currEntries);	
-	}
-
-	private JsGlobalScopeContainerWizard(IIncludePathEntry entryToEdit, JsGlobalScopeContainerDescriptor pageDesc, IJavaScriptProject currProject, IIncludePathEntry[] currEntries) {
-		fEntryToEdit= entryToEdit;
-		fPageDesc= pageDesc;
-		fNewEntries= null;
-		
 		fCurrProject= currProject;
+		
+		fEntryToEdit= entryToEdit;
+		fNewEntries= null;
 		fCurrClasspath= currEntries;
 		
-		String title;
 		if (entryToEdit == null) {
-			title= NewWizardMessages.JsGlobalScopeContainerWizard_new_title; 
+			setWindowTitle(NewWizardMessages.JsGlobalScopeContainerWizard_new_title);
 		} else {
-			title= NewWizardMessages.JsGlobalScopeContainerWizard_edit_title; 
+			setWindowTitle(NewWizardMessages.JsGlobalScopeContainerWizard_edit_title);
 		}
-		setWindowTitle(title);
 	}
 		
+	/**
+	 * Return an array of new include path entries
+	 * @return
+	 */
 	public IIncludePathEntry[] getNewEntries() {
 		return fNewEntries;
 	}
@@ -103,10 +89,7 @@ public class JsGlobalScopeContainerWizard extends Wizard {
 	 * @see IWizard#addPages()
 	 */
 	public void addPages() {
-		if (fPageDesc != null) {
-			fContainerPage= getContainerPage(fPageDesc);
-			addPage(fContainerPage);			
-		} else if (fEntryToEdit == null) { // new entry: show selection page as first page
+		if (fEntryToEdit == null) { // new entry: show selection page as first page
 			JsGlobalScopeContainerDescriptor[] containers= JsGlobalScopeContainerDescriptor.getDescriptors();
 
 			fSelectionWizardPage= new JsGlobalScopeContainerSelectionPage(containers);
@@ -135,7 +118,6 @@ public class JsGlobalScopeContainerWizard extends Wizard {
 				containerPage= pageDesc.createPage();
 			} catch (CoreException e) {
 				handlePageCreationFailed(e);
-				containerPage= null;
 			}
 		}
 
@@ -202,15 +184,7 @@ public class JsGlobalScopeContainerWizard extends Wizard {
 	 * @see IWizard#canFinish()
 	 */
 	public boolean canFinish() {
-		if (fSelectionWizardPage != null) {
-			if (!fContainerPage.isPageComplete()) {
-				return false;
-			}
-		}
-		if (fContainerPage != null) {
-			return fContainerPage.isPageComplete();
-		}
-		return false;
+		return fContainerPage.isPageComplete();
 	}
 	
 	public static int openWizard(Shell shell, JsGlobalScopeContainerWizard wizard) {

@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 
@@ -28,16 +27,16 @@ public class AddSourceFolderWizard extends BuildPathWizard {
 	private final boolean fCanCommitConflict;
 	private final IContainer fParent;
 	
-	public AddSourceFolderWizard(CPListElement[] existingEntries, CPListElement newEntry, IPath outputLocation, 
+	public AddSourceFolderWizard(CPListElement[] existingEntries, CPListElement newEntry, 
 			boolean linkedMode, boolean canCommitConflict, 
 			boolean allowConflict, boolean allowRemoveProjectFolder, boolean allowAddExclusionPatterns) {
-		this(existingEntries, newEntry, outputLocation, linkedMode, canCommitConflict, allowConflict, allowRemoveProjectFolder, allowAddExclusionPatterns, newEntry.getJavaProject().getProject());
+		this(existingEntries, newEntry, linkedMode, canCommitConflict, allowConflict, allowRemoveProjectFolder, allowAddExclusionPatterns, newEntry.getJavaProject().getProject());
 	}
 	
-	public AddSourceFolderWizard(CPListElement[] existingEntries, CPListElement newEntry, IPath outputLocation, 
+	public AddSourceFolderWizard(CPListElement[] existingEntries, CPListElement newEntry, 
 			boolean linkedMode, boolean canCommitConflict, 
 			boolean allowConflict, boolean allowRemoveProjectFolder, boolean allowAddExclusionPatterns, IContainer parent) {
-		super(existingEntries, newEntry, outputLocation, getTitel(newEntry, linkedMode), JavaPluginImages.DESC_WIZBAN_NEWSRCFOLDR);
+		super(existingEntries, newEntry, getTitel(newEntry, linkedMode), JavaPluginImages.DESC_WIZBAN_NEWSRCFOLDR);
 		fLinkedMode= linkedMode;
 		fCanCommitConflict= canCommitConflict;
 		fAllowConflict= allowConflict;
@@ -64,12 +63,12 @@ public class AddSourceFolderWizard extends BuildPathWizard {
 	public void addPages() {
 		super.addPages();
 	
-		fAddFolderPage= new AddSourceFolderWizardPage(getEntryToEdit(), getExistingEntries(), getOutputLocation(), 
+		fAddFolderPage= new AddSourceFolderWizardPage(getEntryToEdit(), getExistingEntries(), 
 				fLinkedMode, fCanCommitConflict,
 				fAllowConflict, fAllowRemoveProjectFolder, fAllowAddExclusionPatterns, fParent);
 		addPage(fAddFolderPage);
 		
-		fFilterPage= new SetFilterWizardPage(getEntryToEdit(), getExistingEntries(), getOutputLocation());
+		fFilterPage= new SetFilterWizardPage(getEntryToEdit(), getExistingEntries());
 		addPage(fFilterPage);
 	}
 	
@@ -104,7 +103,6 @@ public class AddSourceFolderWizard extends BuildPathWizard {
 	public boolean performFinish() {
 		getEntryToEdit().setAttribute(CPListElement.INCLUSION, fFilterPage.getInclusionPattern());
 		getEntryToEdit().setAttribute(CPListElement.EXCLUSION, fFilterPage.getExclusionPattern());
-		setOutputLocation(fAddFolderPage.getOutputLocation());
 		
 		boolean res= super.performFinish();
 		if (res) {

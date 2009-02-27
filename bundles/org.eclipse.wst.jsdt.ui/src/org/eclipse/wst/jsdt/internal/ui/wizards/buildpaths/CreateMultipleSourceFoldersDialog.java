@@ -254,7 +254,7 @@ public class CreateMultipleSourceFoldersDialog extends TrayDialog {
 	}
 	
 	private AddSourceFolderWizard newSourceFolderWizard(CPListElement element, CPListElement[] existing, String outputLocation, IContainer parent) {
-		AddSourceFolderWizard wizard= new AddSourceFolderWizard(existing, element, new Path(outputLocation).makeAbsolute(), false, true, false, false, false, parent);
+		AddSourceFolderWizard wizard= new AddSourceFolderWizard(existing, element, false, true, false, false, false, parent);
 		wizard.setDoFlushChange(false);
 		return wizard;
 	}

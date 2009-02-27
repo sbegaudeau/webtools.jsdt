@@ -11,8 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.wizards;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -43,11 +41,7 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
-import org.eclipse.wst.jsdt.internal.ui.preferences.CompliancePreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.NewJavaProjectPreferencePage;
-import org.eclipse.wst.jsdt.internal.ui.preferences.PropertyAndPreferencePage;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathSupport;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ComboDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
@@ -57,17 +51,16 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogF
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.JavaWorkingSetUpdater;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetConfigurationBlock;
-import org.eclipse.wst.jsdt.launching.JavaRuntime;
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
- * The first page of the <code>SimpleProjectWizard</code>.
+ * The first page of the <code>JavaScriptProjectWizard</code>.
  */
 public class JavaProjectWizardFirstPage extends WizardPage {
 	
 	/**
-	 * Request a project name. Fires an event whenever the text field is
+	 * Request a project name. Notifies observers whenever the text field is
 	 * changed, regardless of its content.
 	 */
 	private final class NameGroup extends Observable implements IDialogFieldListener {
@@ -90,11 +83,6 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 			fNameField.doFillIntoGrid(nameComposite, 2);
 			LayoutUtil.setHorizontalGrabbing(fNameField.getTextControl(null));
 		}
-		
-		protected void fireEvent() {
-			setChanged();
-			notifyObservers();
-		}
 
 		public String getName() {
 			return fNameField.getText().trim();
@@ -112,13 +100,13 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		 * @see org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener#dialogFieldChanged(org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField)
 		 */
 		public void dialogFieldChanged(DialogField field) {
-			fireEvent();
+			setChanged();
+			notifyObservers();
 		}
-		
 	}
 
 	/**
-	 * Request a location. Fires an event whenever the checkbox or the location
+	 * Request a location for the project. Fires an event whenever the location
 	 * field is changed, regardless of whether the change originates from the
 	 * user or has been invoked programmatically.
 	 */
@@ -306,23 +294,17 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		public void widgetDefaultSelected(SelectionEvent e) {
 			String id= NewJavaProjectPreferencePage.ID;
 			PreferencesUtil.createPreferenceDialogOn(getShell(), id, new String[] { id }, null).open();
-			//fDetectGroup.handlePossibleJVMChange();
-			//fJREGroup.handlePossibleJVMChange();
 		}
 	}
 	
-	private final class JREGroup implements Observer, SelectionListener, IDialogFieldListener {
+	private final class WebPageSupportGroup implements Observer {
 
-		private final SelectionButtonDialogField fEnableWebSupport;//, fUseProjectJRE;
-		private final SelectionButtonDialogField fDefaultWindowSuperType;
-		//private final ComboDialogField fJRECombo;
 		private final Group fGroup;
-		private String[] fComplianceLabels;
-		private String[] fComplianceData;
-		//private final Link fPreferenceLink;
 		
+		private final SelectionButtonDialogField fEnableWebSupport;
+		private final SelectionButtonDialogField fDefaultWindowSuperType;
 		
-		public JREGroup(Composite composite) {
+		public WebPageSupportGroup(Composite composite) {
 			fGroup= new Group(composite, SWT.NONE);
 			fGroup.setFont(composite.getFont());
 			fGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -347,31 +329,10 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 			fDefaultWindowSuperType.setLabelText(NewWizardMessages.JavaProjectWizardFirstPage_2);
 			fDefaultWindowSuperType.doFillIntoGrid(fGroup, 2);
 			fDefaultWindowSuperType.setEnabled(true);
-
-			//fPreferenceLink= new Link(fGroup, SWT.NONE);
-			//fPreferenceLink.setFont(fGroup.getFont());
-			//fPreferenceLink.setText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_link_description);
-			//fPreferenceLink.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false));
-		//	fPreferenceLink.addSelectionListener(this);
-		
-		//	fUseProjectJRE= new SelectionButtonDialogField(SWT.RADIO);
-		//	fUseProjectJRE.setLabelText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_specific_compliance);
-		//	fUseProjectJRE.doFillIntoGrid(fGroup, 1);
-		//	fUseProjectJRE.setDialogFieldListener(this);
 						
-			//fJRECombo= new ComboDialogField(SWT.READ_ONLY);
-			//fillInstalledJREs(fJRECombo);
-			//fJRECombo.setDialogFieldListener(this);
-
-		//	Combo comboControl= fJRECombo.getComboControl(fGroup);
-			//comboControl.setLayoutData(new GridData(GridData.BEGINNING, GridData.CENTER, true, false)); // make sure column 2 is grabing (but no fill)
-			//comboControl.setVisibleItemCount(20);
-			
-			//DialogField.createEmptySpace(fGroup);
 			
 			fEnableWebSupport.setSelection(true);
-			fDefaultWindowSuperType.setSelection(false);
-		//	fJRECombo.setEnabled(fUseProjectJRE.isSelected());
+			fDefaultWindowSuperType.setSelection(true);
 		}
 
 		public boolean shouldEnableWebSupport() {
@@ -380,136 +341,12 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		public boolean shouldDefaultToWebBrowser() {
 			return fDefaultWindowSuperType.isEnabled() && fDefaultWindowSuperType.isSelected();
 		}
-		private void fillInstalledJREs(ComboDialogField comboField) {
-//			String selectedItem= null;
-//			int selectionIndex= -1;
-//			if (fUseProjectJRE.isSelected()) {
-//				selectionIndex= comboField.getSelectionIndex();
-//				if (selectionIndex != -1) {//paranoia
-//					selectedItem= comboField.getItems()[selectionIndex];
-//				}
-//			}
-//			
-//			fInstalledJVMs= getWorkspaceJREs();
-//			Arrays.sort(fInstalledJVMs, new Comparator() {
-//
-//				public int compare(Object arg0, Object arg1) {
-//					IVMInstall i0= (IVMInstall)arg0;
-//					IVMInstall i1= (IVMInstall)arg1;
-//					if (i1 instanceof IVMInstall2 && i0 instanceof IVMInstall2) {
-//						String cc0= JavaModelUtil.getCompilerCompliance((IVMInstall2) i0, JavaScriptCore.VERSION_1_4);
-//						String cc1= JavaModelUtil.getCompilerCompliance((IVMInstall2) i1, JavaScriptCore.VERSION_1_4);
-//						int result= cc1.compareTo(cc0);
-//						if (result == 0)
-//							result= i0.getName().compareTo(i1.getName());
-//						return result;
-//					} else {
-//						return i0.getName().compareTo(i1.getName());
-//					}
-//				}
-//				
-//			});
-//			selectionIndex= -1;//find new index
-//			fComplianceLabels= new String[fInstalledJVMs.length];
-//			fComplianceData= new String[fInstalledJVMs.length];
-//			for (int i= 0; i < fInstalledJVMs.length; i++) {
-//				fComplianceLabels[i]= fInstalledJVMs[i].getName();
-//				if (selectedItem != null && fComplianceLabels[i].equals(selectedItem)) {
-//					selectionIndex= i;
-//				}
-//				if (fInstalledJVMs[i] instanceof IVMInstall2) {
-//					fComplianceData[i]= JavaModelUtil.getCompilerCompliance((IVMInstall2) fInstalledJVMs[i], JavaScriptCore.VERSION_1_4);
-//				} else {
-//					fComplianceData[i]= JavaScriptCore.VERSION_1_4;
-//				}
-//			}
-//			comboField.setItems(fComplianceLabels);
-//			if (selectionIndex == -1) {
-//				fJRECombo.selectItem(getDefaultJVMName());
-//			} else {
-//				fJRECombo.selectItem(selectedItem);
-//			}
-		}
-		
-
-		private String getDefaultJVMName() {
-			return JavaRuntime.getDefaultVMInstall().getName();
-		}
-
-		private String getDefaultJVMLabel() {
-			return Messages.format(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_default_compliance, getDefaultJVMName());
-		}
 
 		public void update(Observable o, Object arg) {
-			updateEnableState();
-		}
-
-		private void updateEnableState() {
-//			final boolean detect= fDetectGroup.mustDetect();
-//			fUseDefaultJRE.setEnabled(!detect);
-//			fUseProjectJRE.setEnabled(!detect);
-//			fJRECombo.setEnabled(!detect && fUseProjectJRE.isSelected());
-//			//fPreferenceLink.setEnabled(!detect);
-//			fGroup.setEnabled(!detect);
-		}
-		
-		/* (non-Javadoc)
-		 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-		 */
-		public void widgetSelected(SelectionEvent e) {
-			widgetDefaultSelected(e);
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-		 */
-		public void widgetDefaultSelected(SelectionEvent e) {
-			String jreID= BuildPathSupport.JRE_PREF_PAGE_ID;
-			String complianceId= CompliancePreferencePage.PREF_ID;
-			Map data= new HashMap();
-			data.put(PropertyAndPreferencePage.DATA_NO_LINK, Boolean.TRUE);
-			PreferencesUtil.createPreferenceDialogOn(getShell(), jreID, new String[] { jreID, complianceId  }, data).open();
-			
-			handlePossibleJVMChange();
-			//fDetectGroup.handlePossibleJVMChange();
-		}
-		
-		public void handlePossibleJVMChange() {
-			fEnableWebSupport.setLabelText(getDefaultJVMLabel());
-			//fillInstalledJREs(fJRECombo);
-		}
-		
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener#dialogFieldChanged(org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField)
-		 */
-		public void dialogFieldChanged(DialogField field) {
-			updateEnableState();
-			//fDetectGroup.handlePossibleJVMChange();
-		}
-		
-		public boolean isUseSpecific() {
-		return false;//	return fUseProjectJRE.isSelected();
-		}
-		
-//		public IVMInstall getSelectedJVM() {
-//			if (fUseProjectJRE.isSelected()) {
-//				int index= fJRECombo.getSelectionIndex();
-//				if (index >= 0 && index < fComplianceData.length) { // paranoia
-//					return fInstalledJVMs[index];
-//				}
-//			}
-//			return null;
-//		}
-		
-		public String getSelectedCompilerCompliance() {
-//			if (fUseProjectJRE.isSelected()) {
-//				int index= fJRECombo.getSelectionIndex();
-//				if (index >= 0 && index < fComplianceData.length) { // paranoia
-//					return fComplianceData[index];
-//				}
-//			}
-			return null;
+			final boolean detect= fDetectGroup.mustDetect();
+			fEnableWebSupport.setEnabled(!detect);
+			fDefaultWindowSuperType.setEnabled(!detect);
+			fGroup.setEnabled(!detect);
 		}
 	}
 
@@ -537,11 +374,10 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		}
 	}
 
-
 	/**
 	 * Show a warning when the project location contains files.
 	 */
-	private final class DetectGroup extends Observable implements Observer, SelectionListener {
+	private final class DetectGroup extends Observable implements Observer {
 
 		private final Link fHintText;
 		private Label fIcon;
@@ -563,40 +399,11 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 			
 			fHintText= new Link(composite, SWT.WRAP);
 			fHintText.setFont(composite.getFont());
-			fHintText.addSelectionListener(this);
 			gridData= new GridData(GridData.FILL, SWT.FILL, true, true);
 			gridData.widthHint= convertWidthInCharsToPixels(50);
 			gridData.heightHint= convertHeightInCharsToPixels(3);
 			fHintText.setLayoutData(gridData);
-			
-			//handlePossibleJVMChange();
 		}
-		
-//		public void handlePossibleJVMChange() {
-//			String selectedCompliance= fJREGroup.getSelectedCompilerCompliance();
-//			if (selectedCompliance == null) {
-//				selectedCompliance= JavaScriptCore.getOption(JavaScriptCore.COMPILER_COMPLIANCE);
-//			}
-//			IVMInstall selectedJVM= fJREGroup.getSelectedJVM();
-//			if (selectedJVM == null) {
-//				selectedJVM= JavaRuntime.getDefaultVMInstall();
-//			}
-//			String jvmCompliance= JavaScriptCore.VERSION_1_4;
-//			if (selectedJVM instanceof IVMInstall2) {
-//				jvmCompliance= JavaModelUtil.getCompilerCompliance((IVMInstall2) selectedJVM, JavaScriptCore.VERSION_1_4);
-//			}
-//			if (!selectedCompliance.equals(jvmCompliance) && (JavaModelUtil.is50OrHigher(selectedCompliance) || JavaModelUtil.is50OrHigher(jvmCompliance))) {
-//				if (selectedCompliance.equals(JavaScriptCore.VERSION_1_5))
-//					selectedCompliance= "5.0"; //$NON-NLS-1$
-//				else if (selectedCompliance.equals(JavaScriptCore.VERSION_1_6))
-//					selectedCompliance= "6.0"; //$NON-NLS-1$
-//				
-//				fHintText.setText(Messages.format(NewWizardMessages.JavaProjectWizardFirstPage_DetectGroup_jre_message, new String[] {selectedCompliance, jvmCompliance}));
-//				fHintText.setVisible(true);
-//			} else {
-//				fHintText.setVisible(false);
-//			}
-//		}
 		
 		public void update(Observable o, Object arg) {
 			if (o instanceof LocationGroup) {
@@ -620,7 +427,6 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 					} else {
 						fHintText.setVisible(false);
 						fIcon.setVisible(false);
-					//	handlePossibleJVMChange();
 					}
 				}
 			}
@@ -628,28 +434,6 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 
 		public boolean mustDetect() {
 			return fDetect;
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-		 */
-		public void widgetSelected(SelectionEvent e) {
-			widgetDefaultSelected(e);
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-		 */
-		public void widgetDefaultSelected(SelectionEvent e) {
-			String jreID= BuildPathSupport.JRE_PREF_PAGE_ID;
-			String complianceId= CompliancePreferencePage.PREF_ID;
-			Map data= new HashMap();
-			data.put(PropertyAndPreferencePage.DATA_NO_LINK, Boolean.TRUE);
-			String id= "JRE".equals(e.text) ? jreID : complianceId; //$NON-NLS-1$
-			PreferencesUtil.createPreferenceDialogOn(getShell(), id, new String[] { jreID, complianceId  }, data).open();
-			
-//			fJREGroup.handlePossibleJVMChange();
-//			handlePossibleJVMChange();
 		}
 	}
 
@@ -773,7 +557,7 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 	private NameGroup fNameGroup;
 	private LocationGroup fLocationGroup;
 	private LayoutGroup fLayoutGroup;
-	private JREGroup fJREGroup;
+	private WebPageSupportGroup webPageSupportGroup;
 	private DetectGroup fDetectGroup;
 	private Validator fValidator;
 
@@ -792,11 +576,6 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		setTitle(NewWizardMessages.JavaProjectWizardFirstPage_page_title); 
 		setDescription(NewWizardMessages.JavaProjectWizardFirstPage_page_description); 
 		fInitialName= ""; //$NON-NLS-1$
-		initializeDefaultVM();
-	}
-	
-	private void initializeDefaultVM() {
-		JavaRuntime.getDefaultVMInstall();
 	}
 	
 	public void setName(String name) {
@@ -817,7 +596,7 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		// create UI elements
 		fNameGroup= new NameGroup(composite, fInitialName);
 		fLocationGroup= new LocationGroup(composite);
-		fJREGroup= new JREGroup(composite);
+		webPageSupportGroup= new WebPageSupportGroup(composite);
 		fLayoutGroup= new LayoutGroup(composite);
 		fWorkingSetGroup= new WorkingSetGroup(composite, fInitWorkingSets);
 		fDetectGroup= new DetectGroup(composite);
@@ -825,7 +604,7 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		// establish connections
 		fNameGroup.addObserver(fLocationGroup);
 		fDetectGroup.addObserver(fLayoutGroup);
-		fDetectGroup.addObserver(fJREGroup);
+		fDetectGroup.addObserver(webPageSupportGroup);
 		fLocationGroup.addObserver(fDetectGroup);
 
 		// initialize all elements
@@ -833,7 +612,6 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		
 		// create and connect validator
 		fValidator= new Validator();
-		fNameGroup.addObserver(fValidator);
 		fLocationGroup.addObserver(fValidator);
 
 		setControl(composite);
@@ -857,7 +635,6 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 	public IPath getLocationPath() {
 		return fLocationGroup.getLocation();
 	}
-
 
 	/**
 	 * Creates a project resource handle for the current project name field
@@ -893,24 +670,14 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 	}
 	
 	/**
-	 * Returns the path of the classpath container selected, or <code>null</code> if the default JRE was selected
-	 * @return the path to the selected JRE
-	 */
-	public IPath getJREContainerPath() {
-//		return fJREGroup.getJREContainerPath();
-		return null;
-	}
-	
-	/**
 	 * @return the selected Compiler Compliance, or <code>null</code> iff the default Compiler Compliance should be used
 	 */
 	public boolean isWebEnabled() {
-		return fJREGroup.shouldEnableWebSupport();
-		//return null; //fJREGroup.getSelectedCompilerCompliance();
+		return webPageSupportGroup.shouldEnableWebSupport();
 	}
 	
 	public boolean isWebDefault() {
-		return fJREGroup.shouldDefaultToWebBrowser();
+		return webPageSupportGroup.shouldDefaultToWebBrowser();
 	}
 	
 	/*

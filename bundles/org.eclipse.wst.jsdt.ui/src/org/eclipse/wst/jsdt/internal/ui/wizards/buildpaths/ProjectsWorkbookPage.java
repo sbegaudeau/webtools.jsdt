@@ -46,9 +46,8 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
 public class ProjectsWorkbookPage extends BuildPathBasePage {
 	
 	private final int IDX_ADDPROJECT= 0;
-	
-	private final int IDX_EDIT= 2;
-	private final int IDX_REMOVE= 3;
+	private final int IDX_EDIT= 1;
+	private final int IDX_REMOVE= 2;
 	
 	private ListDialogField fClassPathList;
 	private IJavaScriptProject fCurrJProject;
@@ -65,8 +64,7 @@ public class ProjectsWorkbookPage extends BuildPathBasePage {
 		fSWTControl= null;	
 		
 		String[] buttonLabels= new String[] {
-			NewWizardMessages.ProjectsWorkbookPage_projects_add_button, 
-			null,
+			NewWizardMessages.ProjectsWorkbookPage_projects_add_button,
 			NewWizardMessages.ProjectsWorkbookPage_projects_edit_button, 
 			NewWizardMessages.ProjectsWorkbookPage_projects_remove_button
 		};
@@ -203,7 +201,7 @@ public class ProjectsWorkbookPage extends BuildPathBasePage {
 
 		public Object[] getChildren(TreeListDialogField field, Object element) {
 			if (element instanceof CPListElement) {
-				return ((CPListElement) element).getChildren(false);
+				return ((CPListElement) element).getChildren();
 			}
 			return EMPTY_ARR;
 		}

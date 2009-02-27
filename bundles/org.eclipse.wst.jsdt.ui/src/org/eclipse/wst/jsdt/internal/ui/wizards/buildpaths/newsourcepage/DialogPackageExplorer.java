@@ -40,7 +40,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -56,16 +55,13 @@ import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.filters.LibraryFilter;
-import org.eclipse.wst.jsdt.internal.ui.filters.OutputFolderFilter;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerContentProvider;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElementAttribute;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetModel;
 import org.eclipse.wst.jsdt.ui.JavaScriptElementComparator;
 import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
@@ -78,8 +74,7 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
  */
 public class DialogPackageExplorer implements IMenuListener, ISelectionProvider, IPostSelectionProvider, ISetSelectionTarget {
     /**
-     * A extended content provider for the package explorer which can additionally display
-     * an output folder item.
+     * A extended content provider for the package explorer.
      */
     private final class PackageContentProvider extends PackageExplorerContentProvider {
         public PackageContentProvider() {
@@ -98,58 +93,20 @@ public class DialogPackageExplorer implements IMenuListener, ISelectionProvider,
                 return new Object[0];
             return new Object[] {fCurrJProject};
         }
-        
-        /**
-         * Get the children of the current <code>element</code>. If the
-         * element is of type <code>IPackageFragmentRoot</code> and
-         * displaying the output folders is selected, then an icon for
-         * the output folder is created and displayed additionally.
-         * 
-         * @param element the current element to get the children from
-         * @return an array of children
-         */
-        public Object[] getChildren(Object element) {
-            Object[] children= super.getChildren(element);
-            if (((element instanceof IPackageFragmentRoot && !((IPackageFragmentRoot)element).isArchive()) || 
-                    (element instanceof IJavaScriptProject && fCurrJProject.isOnIncludepath(fCurrJProject))) && fShowOutputFolders) {
-                try {
-                    IIncludePathEntry entry;
-                    if (element instanceof IPackageFragmentRoot)
-                        entry= ((IPackageFragmentRoot) element).getRawIncludepathEntry();
-                    else
-                        entry= ClasspathModifier.getClasspathEntryFor(fCurrJProject.getPath(), fCurrJProject, IIncludePathEntry.CPE_SOURCE);
-                    CPListElement parent= CPListElement.createFromExisting(entry, fCurrJProject);                    
-                    CPListElementAttribute outputFolder= new CPListElementAttribute(parent, CPListElement.OUTPUT, 
-                            parent.getAttribute(CPListElement.OUTPUT), true);
-                    Object[] extendedChildren= new Object[children.length + 1];
-                    System.arraycopy(children, 0, extendedChildren, 1, children.length);
-                    extendedChildren[0]= outputFolder;
-                    return extendedChildren;
-                } catch (JavaScriptModelException e) {
-                    JavaScriptPlugin.log(e);
-                }
-                return null;
-            }
-            else
-                return children;                    
-        }
     }
     
     /**
-     * A extended label provider for the package explorer which can additionally display
-     * an output folder item.
+     * A extended label provider for the package explorer.
      */
     private final class PackageLabelProvider extends AppearanceAwareLabelProvider {
-        private CPListLabelProvider outputFolderLabel;
         
         public PackageLabelProvider(long textFlags, int imageFlags) {
             super(textFlags, imageFlags);
-            outputFolderLabel= new CPListLabelProvider();
         }
         
         public String getText(Object element) {
             if (element instanceof CPListElementAttribute)
-                return outputFolderLabel.getText(element);
+                return null;
             String text= super.getText(element);
             try {
                 if (element instanceof IPackageFragmentRoot) {
@@ -220,22 +177,10 @@ public class DialogPackageExplorer implements IMenuListener, ISelectionProvider,
         private Color getBlueColor() {
             return Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
         }
-        
-        public Image getImage(Object element) {
-            if (element instanceof CPListElementAttribute)
-                return outputFolderLabel.getImage(element);
-            return super.getImage(element);
-        }
-        
-        public void dispose() {
-            outputFolderLabel.dispose();
-            super.dispose();
-        }
     }
     
     /**
-     * A extended element sorter for the package explorer which displays the output
-     * folder (if any) as first child of a source folder. The other java elements
+     * A extended element sorter for the package explorer. The java elements
      * are sorted in the normal way.
      */
     private final class ExtendedJavaElementSorter extends JavaScriptElementComparator {
@@ -260,7 +205,6 @@ public class DialogPackageExplorer implements IMenuListener, ISelectionProvider,
      * hidden folders.
      */
     private final class PackageFilter extends LibraryFilter {
-        private OutputFolderFilter fOutputFolderFilter= new OutputFolderFilter();
         public boolean select(Viewer viewer, Object parentElement, Object element) {
             try {
                 if (element instanceof IFile) {
@@ -290,7 +234,7 @@ public class DialogPackageExplorer implements IMenuListener, ISelectionProvider,
                 if (root.getElementName().endsWith(".jar") || root.getElementName().endsWith(".zip")) //$NON-NLS-1$ //$NON-NLS-2$
                     return false;
             }*/
-            return /*super.select(viewer, parentElement, element) &&*/ fOutputFolderFilter.select(viewer, parentElement, element);
+            return super.select(viewer, parentElement, element);
         }
     }
     
@@ -301,15 +245,6 @@ public class DialogPackageExplorer implements IMenuListener, ISelectionProvider,
     /** The action group which is used to fill the context menu. The action group
      * is also called if the selection on the tree changes */
     private DialogPackageExplorerActionGroup fActionGroup;
-    /**
-     * Flag to indicate whether output folders
-     * can be created or not. This is used to
-     * set the content correctly in the case
-     * that a IPackageFragmentRoot is selected.
-     * 
-     * @see #showOutputFolders(boolean)
-     */
-    private boolean fShowOutputFolders= false;
     
     /** Stores the current selection in the tree 
      * @see #getSelection()
@@ -338,13 +273,6 @@ public class DialogPackageExplorer implements IMenuListener, ISelectionProvider,
                 Object element= ((IStructuredSelection)event.getSelection()).getFirstElement();
                 if (fPackageViewer.isExpandable(element)) {
                     fPackageViewer.setExpandedState(element, !fPackageViewer.getExpandedState(element));
-                } else {
-                	if (element instanceof CPListElementAttribute) {
-						CPListElementAttribute attribute= (CPListElementAttribute)element;
-//                		if (attribute.getKey().equals(CPListElement.OUTPUT)) {
-//                			fActionGroup.getEditOutputFolderAction().run();
-//                		}
-                	}
                 }
             }
         });
@@ -477,20 +405,6 @@ public class DialogPackageExplorer implements IMenuListener, ISelectionProvider,
      */
     public Control getViewerControl() {
         return fPackageViewer.getControl();
-    }
-    
-    /**
-     * Method that is called whenever setting of 
-     * output folders is allowed or forbidden (for example 
-     * on changing a checkbox with this setting):
-     * 
-     * @param showOutputFolders <code>true</code> if output 
-     * folders should be shown, <code>false</code> otherwise.
-     */
-    public void showOutputFolders(boolean showOutputFolders) {
-        fShowOutputFolders= showOutputFolders;
-//        fActionGroup.getEditOutputFolderAction().showOutputFolders(showOutputFolders);
-        fPackageViewer.refresh();
     }
 
 	/**

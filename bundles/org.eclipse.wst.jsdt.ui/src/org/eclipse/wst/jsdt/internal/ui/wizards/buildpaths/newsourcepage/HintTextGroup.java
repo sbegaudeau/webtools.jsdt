@@ -174,9 +174,6 @@ public final class HintTextGroup implements ISelectionChangedListener {
      * to the result object, unless the result object is <code>
      * null</code></li>
      * <li>Add the created folder to the list of new folders</li>
-     * <li>Adjust the text of <code>fOutputLocationField</code> 
-     * and add the project's new output location to the list of 
-     * new folders, if necessary
      * 
      * In this case, the list consists only of one element on which the 
      * new folder has been created

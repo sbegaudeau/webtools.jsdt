@@ -141,13 +141,7 @@
       <classpathAttributeConfiguration
       		attributeName="javadoc_location"
             class="org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.JavadocAttributeConfiguration">
-      </classpathAttributeConfiguration>
-<!--      
-      <classpathAttributeConfiguration
-      		attributeName="org.eclipse.wst.jsdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY"
-            class="org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.NativeLibAttributeConfiguration">
-      </classpathAttributeConfiguration>
--->            
+      </classpathAttributeConfiguration>           
    </extension>
    
    <extension
@@ -816,17 +810,6 @@
 		     </adapt>
          </enabledWhen>
       </page>
-      <!--
-      <page
-            name="%nativeLibraryPageName"
-            category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
-            class="org.eclipse.wst.jsdt.internal.ui.preferences.NativeLibrariesPropertyPage"
-            id="org.eclipse.wst.jsdt.ui.preferences.NativeLibrariesPropertyPage">
-         <enabledWhen>
-            <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
-         </enabledWhen>
-      </page>
-      -->
       <page
             name="%editorPageName"
             category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
@@ -1342,13 +1325,6 @@
             <keywordReference id="org.eclipse.wst.jsdt.ui.buildpathoptions"/>
       </page>      
       <page
-            name="%classPathVarPrefName"
-            category="org.eclipse.wst.jsdt.ui.preferences.BuildPathPreferencePage"
-            class="org.eclipse.wst.jsdt.internal.ui.preferences.ClasspathVariablesPreferencePage"
-            id="org.eclipse.wst.jsdt.ui.preferences.ClasspathVariablesPreferencePage">
-            <keywordReference id="org.eclipse.wst.jsdt.ui.cpvars"/>
-      </page>
-      <page
             name="%userLibrariesPrefName"
             category="org.eclipse.wst.jsdt.ui.preferences.BuildPathPreferencePage"
             class="org.eclipse.wst.jsdt.internal.ui.preferences.UserLibraryPreferencePage"
@@ -1609,28 +1585,10 @@
             visible="false"
             id="org.eclipse.wst.jsdt.ui.JavaElementCreationActionSet">
          <action
-               id="org.eclipse.wst.jsdt.ui.actions.NewTypeDropDown"
-               toolbarPath="Normal/JavaWizards"
-               class="org.eclipse.wst.jsdt.internal.ui.wizards.NewTypeDropDownAction"
-               disabledIcon="$nl$/icons/full/dtool16/newclass_wiz.gif"
-               icon="$nl$/icons/full/etool16/newclass_wiz.gif"
-               label="%OpenClassWizardAction.label"
-               style="pulldown"
-               tooltip="%OpenClassWizardAction.tooltip">
-         </action>
-         <action
-               label="%OpenPackageWizardAction.label"
-               icon="$nl$/icons/full/etool16/newpack_wiz.gif"
-               tooltip="%OpenPackageWizardAction.tooltip"
-               class="org.eclipse.wst.jsdt.internal.ui.wizards.OpenPackageWizardToolbarAction"
-               toolbarPath="Normal/JavaWizards"
-               id="org.eclipse.wst.jsdt.ui.actions.OpenPackageWizard">
-         </action>
-         <action
                label="%OpenProjectWizardAction.label"
                icon="$nl$/icons/full/etool16/newjprj_wiz.gif"
                tooltip="%OpenProjectWizardAction.tooltip"
-               class="org.eclipse.wst.jsdt.internal.ui.wizards.OpenJavaProjectWizardToolbarAction"
+               class="org.eclipse.wst.jsdt.internal.ui.wizards.OpenJavaScriptProjectWizardToolbarAction"
                toolbarPath="Normal/JavaWizards"
                id="org.eclipse.wst.jsdt.ui.actions.OpenProjectWizard">
          </action>
@@ -6332,7 +6290,7 @@
    		</objectContribution>
    </extension>
    --> 
-
+   
 	<!--
 		Allow for sharing via ECF when present.
 	-->

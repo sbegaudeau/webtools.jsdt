@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 /**
 *
@@ -28,7 +27,6 @@ public class BuildpathDelta {
 	private final String fOperationDescription;
 	private CPListElement[] fNewEntries;
 	private final List fCreatedResources;
-	private IPath fOutputLocation;
 	private final List fDeletedResources;
 	private final List fAddedEntries;
 	private final ArrayList fRemovedEntries;
@@ -57,10 +55,6 @@ public class BuildpathDelta {
 	public IResource[] getDeletedResources() {
 		return (IResource[])fDeletedResources.toArray(new IResource[fDeletedResources.size()]);
 	}
-	
-	public IPath getDefaultOutputLocation() {
-		return fOutputLocation;
-	}
 
 	public void setNewEntries(CPListElement[] newEntries) {
 		fNewEntries= newEntries;
@@ -68,10 +62,6 @@ public class BuildpathDelta {
 
 	public void addCreatedResource(IResource resource) {
 		fCreatedResources.add(resource);
-    }
-
-	public void setDefaultOutputLocation(IPath outputLocation) {
-		fOutputLocation= outputLocation;
     }
 
 	public void addDeletedResource(IResource resource) {

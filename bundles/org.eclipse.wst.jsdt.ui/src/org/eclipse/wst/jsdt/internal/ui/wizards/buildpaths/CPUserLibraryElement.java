@@ -11,14 +11,13 @@
 package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 public class CPUserLibraryElement {
@@ -58,7 +57,7 @@ public class CPUserLibraryElement {
 		 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#getKind()
 		 */
 		public int getKind() {
-			return isSystemLibrary() ? IJsGlobalScopeContainer.K_SYSTEM : K_APPLICATION;
+			return K_APPLICATION;
 		}
 
 		/* (non-Javadoc)
@@ -80,7 +79,6 @@ public class CPUserLibraryElement {
 	
 	private String fName;
 	private List fChildren;
-	private boolean fIsSystemLibrary;
 
 	public CPUserLibraryElement(String name, IJsGlobalScopeContainer container, IJavaScriptProject project) {
 		fName= name;
@@ -91,17 +89,12 @@ public class CPUserLibraryElement {
 			for (int i= 0; i < res.length; i++) {
 				IIncludePathEntry curr= entries[i];
 				CPListElement elem= CPListElement.createFromExisting(this, curr, project);
-				//elem.setAttribute(CPListElement.SOURCEATTACHMENT, curr.getSourceAttachmentPath());
-				//elem.setAttribute(CPListElement.JAVADOC, JavaScriptUI.getLibraryJavadocLocation(curr.getPath()));
 				fChildren.add(elem);
 			}
-			fIsSystemLibrary= container.getKind() == IJsGlobalScopeContainer.K_SYSTEM;
-		} else {
-			fIsSystemLibrary= false;
 		}
 	}
 	
-	public CPUserLibraryElement(String name, boolean isSystemLibrary, CPListElement[] children) {
+	public CPUserLibraryElement(String name, CPListElement[] children) {
 		fName= name;
 		fChildren= new ArrayList();
 		if (children != null) {
@@ -109,7 +102,6 @@ public class CPUserLibraryElement {
 				fChildren.add(children[i]);
 			}
 		}
-		fIsSystemLibrary= isSystemLibrary;
 	}
 	
 	public CPListElement[] getChildren() {
@@ -123,52 +115,12 @@ public class CPUserLibraryElement {
 	public IPath getPath() {
 		return new Path(JavaScriptCore.USER_LIBRARY_CONTAINER_ID).append(fName);
 	}
-
-	public boolean isSystemLibrary() {
-		return fIsSystemLibrary;
-	}
 	
 	public void add(CPListElement element) {
 		if (!fChildren.contains(element)) {
 			fChildren.add(element);
 		}
 	}
-		
-	private List moveUp(List elements, List move) {
-		int nElements= elements.size();
-		List res= new ArrayList(nElements);
-		Object floating= null;
-		for (int i= 0; i < nElements; i++) {
-			Object curr= elements.get(i);
-			if (move.contains(curr)) {
-				res.add(curr);
-			} else {
-				if (floating != null) {
-					res.add(floating);
-				}
-				floating= curr;
-			}
-		}
-		if (floating != null) {
-			res.add(floating);
-		}
-		return res;
-	}
-	
-	public void moveUp(List toMoveUp) {
-		if (toMoveUp.size() > 0) {
-			fChildren= moveUp(fChildren, toMoveUp);
-		}
-	}
-	
-	public void moveDown(List toMoveDown) {
-		if (toMoveDown.size() > 0) {
-			Collections.reverse(fChildren);
-			fChildren= moveUp(fChildren, toMoveDown);
-			Collections.reverse(fChildren);
-		}
-	}
-	
 	
 	public void remove(CPListElement element) {
 		fChildren.remove(element);
@@ -193,7 +145,7 @@ public class CPUserLibraryElement {
 	}
 		
 	public boolean hasChanges(IJsGlobalScopeContainer oldContainer) {
-		if (oldContainer == null || (oldContainer.getKind() == IJsGlobalScopeContainer.K_SYSTEM) != fIsSystemLibrary) {
+		if (oldContainer == null) {
 			return true;
 		}
 		IIncludePathEntry[] oldEntries= oldContainer.getIncludepathEntries();

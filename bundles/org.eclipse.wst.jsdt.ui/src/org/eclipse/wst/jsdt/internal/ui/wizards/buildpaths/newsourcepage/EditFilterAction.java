@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -39,7 +38,6 @@ import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.EditFilterWizard;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 //SelectedElements iff enabled: (IJavaScriptProject || IPackageFragmentRoot) && size == 1
 public class EditFilterAction extends BuildpathModifierAction {
@@ -96,8 +94,6 @@ public class EditFilterAction extends BuildpathModifierAction {
 				
 				IResource resource= wizard.getCreatedElement().getCorrespondingResource();
 				delta.addCreatedResource(resource);
-				
-				delta.setDefaultOutputLocation(wizard.getOutputLocation());
 					
 				informListeners(delta);
 				
@@ -122,17 +118,7 @@ public class EditFilterAction extends BuildpathModifierAction {
 		}
 		CPListElement[] existingEntries= CPListElement.createFromExisting(javaProject);
 		CPListElement elementToEdit= findElement((IJavaScriptElement)firstElement, existingEntries);
-		return new EditFilterWizard(existingEntries, elementToEdit, getOutputLocation(javaProject));
-	}
-	
-	private IPath getOutputLocation(IJavaScriptProject javaProject) {
-		try {
-			return javaProject.getOutputLocation();		
-		} catch (CoreException e) {
-			IProject project= javaProject.getProject();
-			IPath projPath= project.getFullPath();
-			return projPath.append(PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.SRCBIN_BINNAME));
-		}
+		return new EditFilterWizard(existingEntries, elementToEdit);
 	}
 	
 	private static CPListElement findElement(IJavaScriptElement element, CPListElement[] elements) {

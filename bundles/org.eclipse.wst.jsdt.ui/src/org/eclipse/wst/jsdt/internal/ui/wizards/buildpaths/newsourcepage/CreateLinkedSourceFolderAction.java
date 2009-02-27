@@ -12,10 +12,8 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -35,7 +33,6 @@ import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.AddSourceFolderWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 //SelectedElements iff enabled: IJavaScriptProject && size == 1
 public class CreateLinkedSourceFolderAction extends BuildpathModifierAction {
@@ -77,7 +74,7 @@ public class CreateLinkedSourceFolderAction extends BuildpathModifierAction {
             CPListElement[] existing= CPListElement.createFromExisting(javaProject);
             boolean isProjectSrcFolder= CPListElement.isProjectSourceFolder(existing, javaProject);
             
-			AddSourceFolderWizard wizard= new AddSourceFolderWizard(existing, newEntrie, getOutputLocation(javaProject), true, false, false, isProjectSrcFolder, isProjectSrcFolder);
+			AddSourceFolderWizard wizard= new AddSourceFolderWizard(existing, newEntrie, true, false, false, isProjectSrcFolder, isProjectSrcFolder);
 			wizard.init(PlatformUI.getWorkbench(), new StructuredSelection(javaProject));
 			
 			WizardDialog dialog= new WizardDialog(shell, wizard);
@@ -95,8 +92,6 @@ public class CreateLinkedSourceFolderAction extends BuildpathModifierAction {
 				IResource resource= wizard.getCreatedElement().getCorrespondingResource();
 				delta.addCreatedResource(resource);
 				
-				delta.setDefaultOutputLocation(wizard.getOutputLocation());
-				
 				informListeners(delta);
 
 				selectAndReveal(new StructuredSelection(wizard.getCreatedElement()));
@@ -109,16 +104,6 @@ public class CreateLinkedSourceFolderAction extends BuildpathModifierAction {
 			ExceptionHandler.handle(e, shell, title, message);
 		}
 	}
-	
-    private IPath getOutputLocation(IJavaScriptProject javaProject) {
-    	try {
-			return javaProject.getOutputLocation();		
-		} catch (CoreException e) {
-			IProject project= javaProject.getProject();
-			IPath projPath= project.getFullPath();
-			return projPath.append(PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.SRCBIN_BINNAME));
-		}
-    }
 
     protected boolean canHandle(IStructuredSelection selection) {
     	if (selection.size() != 1)

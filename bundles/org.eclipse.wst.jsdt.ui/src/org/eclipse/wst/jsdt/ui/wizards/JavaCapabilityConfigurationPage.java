@@ -55,14 +55,14 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
  * (repeatedly) as the API evolves. */
 public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 
-	private static final String PAGE_NAME= "JavaCapabilityConfigurationPage"; //$NON-NLS-1$
+	private static final String PAGE_NAME= "JavaScriptCapabilityConfigurationPage"; //$NON-NLS-1$
 	
-	private IJavaScriptProject fJavaProject;
+	private IJavaScriptProject fJavaScriptProject;
 	private BuildPathsBlock fBuildPathsBlock;
 	
 	/**
 	 * Creates a wizard page that can be used in a JavaScript project creation wizard.
-	 * It contains UI to configure a the classpath and the output folder.
+	 * It contains UI to configure a the classpath.
 	 * 
 	 * <p>
 	 * After constructing, a call to {@link #init(IJavaScriptProject, IPath, IIncludePathEntry[], boolean)} is required.
@@ -70,7 +70,7 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 	 */	
 	public JavaCapabilityConfigurationPage() {
         super(PAGE_NAME);
-        fJavaProject= null;
+        fJavaScriptProject= null;
         
         setTitle(NewWizardMessages.JavaCapabilityConfigurationPage_title); 
         setDescription(NewWizardMessages.JavaCapabilityConfigurationPage_description); 
@@ -139,7 +139,7 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 			defaultEntries= null;
 		}
 		getBuildPathsBlock().init(jproject,  defaultEntries);
-		fJavaProject= jproject;
+		fJavaScriptProject= jproject;
 	}	
 
 	/* (non-Javadoc)
@@ -183,7 +183,7 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 	 * @return the managed JavaScript project or <code>null</code>
 	 */	
 	public IJavaScriptProject getJavaProject() {
-		return fJavaProject;
+		return fJavaScriptProject;
 	}	
 	
 
