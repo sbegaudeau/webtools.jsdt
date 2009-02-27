@@ -18,7 +18,6 @@ import junit.framework.TestSuite;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.tests.compiler.JSDTCompilerTests;
 import org.eclipse.wst.jsdt.core.tests.model.JSDTModelTests;
 import org.eclipse.wst.jsdt.web.core.tests.translation.AllWebCoreTests;
@@ -27,14 +26,13 @@ import org.osgi.framework.Bundle;
 
 public class MasterJSDTTestSuite extends TestSuite {
 	private static final Bundle BUNDLE = Activator.getDefault().getBundle();
-	private static final String CLASS = "class";
 	private static final String EXTENSION_POINT_ID = BUNDLE.getSymbolicName() + ".additionalTests";
+	private static final String CLASS = "class";
 
 	public MasterJSDTTestSuite() {
 		super("JSDT Tests");
 
 		System.setProperty("wtp.autotest.noninteractive", "true");
-		JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
 
 		addTest(JSDTCompilerTests.suite());
 		addTest(JSDTModelTests.suite());
