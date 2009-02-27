@@ -162,7 +162,7 @@ public class JavaBuildConfigurationBlock extends OptionsConfigurationBlock {
 		label= PreferencesMessages.JavaBuildConfigurationBlock_enable_multiple_outputlocations_label; 
 		addCheckBox(othersComposite, label, PREF_ENABLE_MULTIPLE_OUTPUT_LOCATIONS, enableDisableValues, 0);
 
-		label= PreferencesMessages.JavaBuildConfigurationBlock_section_build_path_problems; 
+		label= PreferencesMessages.JavaBuildConfigurationBlock_section_include_path_problems; 
 		excomposite= createStyleSection(composite, label, nColumns);
 		
 		othersComposite= new Composite(excomposite, SWT.NONE);

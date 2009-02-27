@@ -352,7 +352,7 @@ public final class PreferencesMessages extends NLS {
 	public static String JavaBuildConfigurationBlock_section_general;
 	public static String JavaBuildConfigurationBlock_section_output_folder;
 	public static String JavaBuildConfigurationBlock_section_access_rules;
-	public static String JavaBuildConfigurationBlock_section_build_path_problems;
+	public static String JavaBuildConfigurationBlock_section_include_path_problems;
 	public static String JavaBuildConfigurationBlock_error;
 	public static String JavaBuildConfigurationBlock_warning;
 	public static String JavaBuildConfigurationBlock_ignore;
@@ -682,7 +682,7 @@ public final class PreferencesMessages extends NLS {
 	public static String UserLibraryPreferencePage_LoadSaveDialog_load_badformat;
 	public static String UserLibraryPreferencePage_LoadSaveDialog_load_replace_title;
 	public static String UserLibraryPreferencePage_browsefolder_new_title;
-	public static String UserLibraryPreferencePage_browsefolder_new_messag;
+	public static String UserLibraryPreferencePage_browsefolder_new_message;
 	public static String EditTemplateDialog_error_noname;
 	public static String EditTemplateDialog_error_spaces;
 	public static String EditTemplateDialog_title_new;
