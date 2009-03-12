@@ -1843,13 +1843,13 @@
 <!-- =========================================================================== -->
 <!-- Export wizard category                                                      -->
 <!-- =========================================================================== -->
-   <extension
+   <!--<extension
          point="org.eclipse.ui.exportWizards">
       <category
 	     name="%importExportWizards.category"
 	     id="org.eclipse.wst.jsdt.ui.Java">
 	  </category>
-   </extension>
+   </extension>-->
    
 <!-- =========================================================================== -->
 <!-- JAR Packager                                                                -->
@@ -1904,9 +1904,8 @@
 <!-- =========================================================================== -->
 <!-- Javadoc Export                                                              -->
 <!-- =========================================================================== -->
-   <extension
+  <!-- <extension
          point="org.eclipse.ui.exportWizards">
-<!-- Change to necessary NLS -->
       <wizard
             name="%JavadocWizard.name"
             icon="$nl$/icons/full/etool16/javadoc.gif"
@@ -1937,7 +1936,7 @@
                id="LaunchJavadocWizard">
          </action>
       </objectContribution>
-   </extension>
+   </extension> -->
    <extension
          point="org.eclipse.debug.ui.consoleLineTrackers">
       <consoleLineTracker
