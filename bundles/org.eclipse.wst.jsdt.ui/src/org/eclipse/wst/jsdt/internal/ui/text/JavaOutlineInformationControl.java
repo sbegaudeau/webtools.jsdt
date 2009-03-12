@@ -165,6 +165,9 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 			if (kind != IJavaScriptElement.METHOD) {
 				return declaringType;
 			}
+			if (declaringType == null) {
+			    return null;
+			}
 			ITypeHierarchy hierarchy= getSuperTypeHierarchy(declaringType);
 			if (hierarchy == null) {
 				return declaringType;

@@ -128,14 +128,16 @@ public abstract class AbstractHierarchyViewerSorter extends ViewerComparator {
 		}
 	
 		IType declaringType= method.getDeclaringType();
-		ITypeHierarchy hierarchy= getHierarchy(declaringType);
-		if (hierarchy != null) {
-			MethodOverrideTester tester= new MethodOverrideTester(declaringType, hierarchy);
-			IFunction res= tester.findDeclaringMethod(method, true);
-			if (res != null) {
-				return res.getDeclaringType();
-			}
-		}
+		if (declaringType != null) {
+            ITypeHierarchy hierarchy = getHierarchy(declaringType);
+            if (hierarchy != null) {
+                MethodOverrideTester tester = new MethodOverrideTester(declaringType, hierarchy);
+                IFunction res = tester.findDeclaringMethod(method, true);
+                if (res != null) {
+                    return res.getDeclaringType();
+                }
+            }
+        }
 		return null;
 	}
 	
