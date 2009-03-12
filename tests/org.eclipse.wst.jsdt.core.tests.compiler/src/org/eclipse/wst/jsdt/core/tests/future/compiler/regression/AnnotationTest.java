@@ -5176,7 +5176,6 @@ public void test142c() {
     //https://bugs.eclipse.org/bugs/show_bug.cgi?id=99009
     public void test163() {
 		Map options = this.getCompilerOptions();
-		options.put(CompilerOptions.OPTION_ReportUnusedImport, CompilerOptions.WARNING);
 		options.put(CompilerOptions.OPTION_ReportUnusedLocal, CompilerOptions.WARNING);
 		options.put(CompilerOptions.OPTION_ReportUnusedParameter, CompilerOptions.WARNING);
 		options.put(CompilerOptions.OPTION_ReportUnusedPrivateMember, CompilerOptions.WARNING);

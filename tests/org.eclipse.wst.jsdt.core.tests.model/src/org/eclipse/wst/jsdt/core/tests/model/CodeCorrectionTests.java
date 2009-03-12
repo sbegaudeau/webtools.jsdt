@@ -10,13 +10,25 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.model;
 
-import junit.framework.*;
+import junit.framework.Test;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.wst.jsdt.core.CorrectionEngine;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelMarker;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchEngine;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
+import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
 
 
 public class CodeCorrectionTests extends AbstractJavaModelTests {
@@ -769,7 +781,6 @@ public void testWarningTokens() {
 	assertEquals("wrong token", "hiding", CorrectionEngine.getWarningToken(IProblem.TypeParameterHidingType));
 	assertEquals("wrong token", "nls", CorrectionEngine.getWarningToken(IProblem.NonExternalizedStringLiteral));
 	assertEquals("wrong token", "incomplete-switch", CorrectionEngine.getWarningToken(IProblem.MissingEnumConstantCase));
-	assertEquals("wrong token", "unused", CorrectionEngine.getWarningToken(IProblem.UnusedImport));
 	assertEquals("wrong token", "unused", CorrectionEngine.getWarningToken(IProblem.LocalVariableIsNeverUsed));
 	assertEquals("wrong token", "unused", CorrectionEngine.getWarningToken(IProblem.ArgumentIsNeverUsed));
 	assertEquals("wrong token", "unused", CorrectionEngine.getWarningToken(IProblem.UnusedPrivateConstructor));
@@ -788,14 +799,9 @@ public void testWarningTokens() {
 	assertEquals("wrong token", "synthetic-access", CorrectionEngine.getWarningToken(IProblem.NeedToEmulateMethodAccess));
 	assertEquals("wrong token", "synthetic-access", CorrectionEngine.getWarningToken(IProblem.NeedToEmulateConstructorAccess));
 	assertEquals("wrong token", "unqualified-field-access", CorrectionEngine.getWarningToken(IProblem.UnqualifiedFieldAccess));
-	assertEquals("wrong token", "unchecked", CorrectionEngine.getWarningToken(IProblem.UnsafeRawConstructorInvocation));
-	assertEquals("wrong token", "unchecked", CorrectionEngine.getWarningToken(IProblem.UnsafeRawMethodInvocation));
 	assertEquals("wrong token", "unchecked", CorrectionEngine.getWarningToken(IProblem.UnsafeTypeConversion));
-	assertEquals("wrong token", "unchecked", CorrectionEngine.getWarningToken(IProblem.UnsafeRawFieldAssignment));
 	assertEquals("wrong token", "unchecked", CorrectionEngine.getWarningToken(IProblem.UnsafeGenericCast));
 	assertEquals("wrong token", "unchecked", CorrectionEngine.getWarningToken(IProblem.UnsafeReturnTypeOverride));
-	assertEquals("wrong token", "unchecked", CorrectionEngine.getWarningToken(IProblem.UnsafeRawGenericMethodInvocation));
-	assertEquals("wrong token", "unchecked", CorrectionEngine.getWarningToken(IProblem.UnsafeRawGenericConstructorInvocation));
 	assertEquals("wrong token", "serial", CorrectionEngine.getWarningToken(IProblem.MissingSerialVersion));
 }
 }

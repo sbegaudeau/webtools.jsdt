@@ -12,9 +12,9 @@ package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
-
 import junit.framework.Test;
+
+import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 
 public class NonFatalErrorTest extends AbstractRegressionTest {
 	public NonFatalErrorTest(String name) {
@@ -39,7 +39,6 @@ public class NonFatalErrorTest extends AbstractRegressionTest {
 	public void test001() {
 		Map customOptions = getCompilerOptions();
 		customOptions.put(CompilerOptions.OPTION_FatalOptionalError, CompilerOptions.DISABLED);
-		customOptions.put(CompilerOptions.OPTION_ReportUnusedImport, CompilerOptions.ERROR);
 		this.runNegativeTestWithExecution(
 			new String[] {
 				"X.java",
@@ -68,7 +67,6 @@ public class NonFatalErrorTest extends AbstractRegressionTest {
 	public void test002() {
 		Map customOptions = getCompilerOptions();
 		customOptions.put(CompilerOptions.OPTION_FatalOptionalError, CompilerOptions.ENABLED);
-		customOptions.put(CompilerOptions.OPTION_ReportUnusedImport, CompilerOptions.ERROR);
 		this.runNegativeTestWithExecution(
 			new String[] {
 				"X.java",
