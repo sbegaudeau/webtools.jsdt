@@ -61,6 +61,11 @@ public class JavadocFieldReference extends FieldReference implements IJsDocField
 		if (this.receiverType == null) {
 			return null;
 		}
+		
+		//temp fix for 267053 - I don't think these javadoc classes have ever been updated to work well with javascript - cmj
+		if(this.receiver != null && this.receiver.isThis() && scope.classScope() == null) {
+			return null;
+		}
 
 		Binding fieldBinding = (this.receiver != null && this.receiver.isThis())
 			? scope.classScope().getBinding(this.token, this.bits & RestrictiveFlagMASK, this, true /*resolve*/)
