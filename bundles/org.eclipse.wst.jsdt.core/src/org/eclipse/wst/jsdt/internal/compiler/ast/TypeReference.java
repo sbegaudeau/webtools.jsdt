@@ -15,7 +15,6 @@ import org.eclipse.wst.jsdt.core.ast.ITypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
-import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -26,7 +25,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
-import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
 public abstract class TypeReference extends Expression implements ITypeReference {
 
@@ -155,11 +153,6 @@ public TypeBinding resolveType(BlockScope scope, boolean checkBounds) {
 		reportDeprecatedType(type, scope);
 
 	type = scope.environment().convertToRawType(type);
-	if (type.leafComponentType().isRawType()
-			&& (this.bits & ASTNode.IgnoreRawTypeCheck) == 0
-			&& scope.compilerOptions().getSeverity(CompilerOptions.RawTypeReference) != ProblemSeverities.Ignore) {
-		scope.problemReporter().rawTypeReference(this, type);
-	}
 	return this.resolvedType = type;
 }
 public TypeBinding resolveType(ClassScope scope) {
@@ -183,11 +176,6 @@ public TypeBinding resolveType(ClassScope scope) {
 		reportDeprecatedType(type, scope);
 
 	type = scope.environment().convertToRawType(type);
-	if (type.leafComponentType().isRawType()
-			&& (this.bits & ASTNode.IgnoreRawTypeCheck) == 0
-			&& scope.compilerOptions().getSeverity(CompilerOptions.RawTypeReference) != ProblemSeverities.Ignore) {
-		scope.problemReporter().rawTypeReference(this, type);
-	}
 	return this.resolvedType = type;
 }
 

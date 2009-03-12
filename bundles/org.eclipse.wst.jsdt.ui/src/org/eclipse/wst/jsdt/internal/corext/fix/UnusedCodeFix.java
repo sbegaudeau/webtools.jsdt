@@ -448,7 +448,7 @@ public class UnusedCodeFix extends AbstractFix {
 	
 	public static UnusedCodeFix createRemoveUnusedImportFix(JavaScriptUnit compilationUnit, IProblemLocation problem) {
 		int id= problem.getProblemId();
-		if (id == IProblem.UnusedImport || id == IProblem.DuplicateImport || id == IProblem.ConflictingImport ||
+		if (id == IProblem.DuplicateImport || id == IProblem.ConflictingImport ||
 		    id == IProblem.CannotImportPackage || id == IProblem.ImportNotFound) {
 			
 			ImportDeclaration node= getImportDeclaration(problem, compilationUnit);
@@ -542,7 +542,7 @@ public class UnusedCodeFix extends AbstractFix {
 			IProblemLocation problem= problems[i];
 			int id= problem.getProblemId();
 			
-			if (removeUnusedImports && (id == IProblem.UnusedImport || id == IProblem.DuplicateImport || id == IProblem.ConflictingImport ||
+			if (removeUnusedImports && (id == IProblem.DuplicateImport || id == IProblem.ConflictingImport ||
 				    id == IProblem.CannotImportPackage || id == IProblem.ImportNotFound)) 
 			{
 				ImportDeclaration node= UnusedCodeFix.getImportDeclaration(problem, compilationUnit);

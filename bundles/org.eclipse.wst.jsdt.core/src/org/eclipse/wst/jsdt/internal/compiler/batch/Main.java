@@ -1691,10 +1691,6 @@ protected void handleWarningToken(String token, boolean isEnabling, boolean useE
 		this.options.put(
 			CompilerOptions.OPTION_ReportUnusedParameter,
 			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
-	} else if (token.equals("unusedImport") || token.equals("unusedImports")/*backward compatible*/) { //$NON-NLS-1$ //$NON-NLS-2$
-		this.options.put(
-			CompilerOptions.OPTION_ReportUnusedImport,
-			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
 	} else if (token.equals("unusedPrivate")) { //$NON-NLS-1$
 		this.options.put(
 			CompilerOptions.OPTION_ReportUnusedPrivateMember,
@@ -1963,9 +1959,6 @@ protected void handleWarningToken(String token, boolean isEnabling, boolean useE
 			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
 		this.options.put(
 			CompilerOptions.OPTION_ReportUnusedParameter,
-			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
-		this.options.put(
-			CompilerOptions.OPTION_ReportUnusedImport,
 			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
 		this.options.put(
 			CompilerOptions.OPTION_ReportUnusedPrivateMember,

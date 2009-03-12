@@ -49,7 +49,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.TypeMismatch:
 			case IProblem.UnhandledException:
 			case IProblem.UnreachableCatch:
-			case IProblem.InvalidCatchBlockSequence:
 			case IProblem.VoidMethodReturnsValue:
 			case IProblem.ShouldReturnValue:
 			case IProblem.MissingReturnType:
@@ -239,7 +238,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				int pos= moveBack(problem.getOffset() + problem.getLength(), problem.getOffset(), "\n\r", context.getCompilationUnit()); //$NON-NLS-1$
 				proposals.add(new ReplaceCorrectionProposal(quoteLabel, context.getCompilationUnit(), pos, 0, "\"", 0)); //$NON-NLS-1$
 				break;
-			case IProblem.UnusedImport:
 			case IProblem.DuplicateImport:
 			case IProblem.CannotImportPackage:
 			case IProblem.ConflictingImport:
@@ -273,9 +271,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.JavadocAmbiguousType:
 				UnresolvedElementsSubProcessor.getAmbiguosTypeReferenceProposals(context, problem, proposals);
 				break;
-			case IProblem.PublicClassMustMatchFileName:
-				ReorgCorrectionsSubProcessor.getWrongTypeNameProposals(context, problem, proposals);
-				break;
 			case IProblem.PackageIsNotExpectedPackage:
 				ReorgCorrectionsSubProcessor.getWrongPackageDeclNameProposals(context, problem, proposals);
 				break;
@@ -296,7 +291,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				LocalCorrectionsSubProcessor.addUncaughtExceptionProposals(context, problem, proposals);
 				break;
 			case IProblem.UnreachableCatch:
-			case IProblem.InvalidCatchBlockSequence:
 				LocalCorrectionsSubProcessor.addUnreachableCatchProposals(context, problem, proposals);
 				break;
 			case IProblem.VoidMethodReturnsValue:
@@ -527,8 +521,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				LocalCorrectionsSubProcessor.getAssignmentHasNoEffectProposals(context, problem, proposals);
 				break;
 			case IProblem.UnsafeTypeConversion:
-			case IProblem.RawTypeReference:
-			case IProblem.UnsafeRawMethodInvocation:
 				LocalCorrectionsSubProcessor.addDeprecatedFieldsToMethodsProposals(context, problem, proposals);
 				LocalCorrectionsSubProcessor.addTypePrametersToRawTypeReference(context, problem, proposals);
 				break;

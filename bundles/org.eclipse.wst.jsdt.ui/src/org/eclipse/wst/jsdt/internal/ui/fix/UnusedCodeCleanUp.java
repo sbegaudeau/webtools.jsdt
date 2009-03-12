@@ -199,7 +199,7 @@ public class UnusedCodeCleanUp extends AbstractCleanUp {
 		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_IMPORTS) && !isEnabled(CleanUpConstants.ORGANIZE_IMPORTS)) {
 			for (int i=0;i<problems.length;i++) {
 				int id= problems[i].getID();
-				if (id == IProblem.UnusedImport || id == IProblem.DuplicateImport || id == IProblem.ConflictingImport ||
+				if (id == IProblem.DuplicateImport || id == IProblem.ConflictingImport ||
 					    id == IProblem.CannotImportPackage || id == IProblem.ImportNotFound)
 					result++;
 			}

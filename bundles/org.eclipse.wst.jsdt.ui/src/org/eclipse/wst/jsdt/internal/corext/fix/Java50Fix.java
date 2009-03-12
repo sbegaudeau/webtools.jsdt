@@ -303,7 +303,7 @@ public class Java50Fix extends LinkedFix {
 		for (int i= 0; i < locations.length; i++) {
 			IProblemLocation problem= locations[i];
 			int id= problem.getProblemId();
-			if (id == IProblem.UnsafeTypeConversion || id == IProblem.RawTypeReference || id == IProblem.UnsafeRawMethodInvocation) {
+			if (id == IProblem.UnsafeTypeConversion) {
 		
 				ASTNode node= problem.getCoveredNode(compilationUnit);
 				if (node instanceof ClassInstanceCreation) {

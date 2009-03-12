@@ -743,14 +743,12 @@ void faultInImports() {
 			ImportBinding resolved = resolvedImports[j];
 			if (resolved.onDemand == ((importReference.bits & ASTNode.OnDemand) != 0) && resolved.isStatic() == importReference.isStatic()) {
 				if (CharOperation.equals(compoundName, resolved.compoundName)) {
-					problemReporter().unusedImport(importReference); // since skipped, must be reported now
 					continue nextImport;
 				}
 			}
 		}
 		if ((importReference.bits & ASTNode.OnDemand) != 0) {
 			if (CharOperation.equals(compoundName, currentPackageName)) {
-				problemReporter().unusedImport(importReference); // since skipped, must be reported now
 				continue nextImport;
 			}
 

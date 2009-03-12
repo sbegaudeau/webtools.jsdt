@@ -31,7 +31,6 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
@@ -212,19 +211,6 @@ public class CompilationUnitDeclaration
 		if (type.binding != null) {
 			// null out the type's scope backpointers
 			type.binding.scope = null;
-		}
-	}
-
-	public void checkUnusedImports(){
-
-		if (this.scope.imports != null){
-			for (int i = 0, max = this.scope.imports.length; i < max; i++){
-				ImportBinding importBinding = this.scope.imports[i];
-				ImportReference importReference = importBinding.reference;
-				if (importReference != null && ((importReference.bits & ASTNode.Used) == 0)){
-					scope.problemReporter().unusedImport(importReference);
-				}
-			}
 		}
 	}
 
@@ -421,7 +407,6 @@ public class CompilationUnitDeclaration
 					statements[i].resolve(scope);
 				}
 			}
-			if (!this.compilationResult.hasErrors()) checkUnusedImports();
 			reportNLSProblems();
 		} catch (AbortCompilationUnit e) {
 			this.ignoreFurtherInvestigation = true;
@@ -450,7 +435,6 @@ public class CompilationUnitDeclaration
 						programElement.resolve(scope);
 				}
 			}
-			if (!this.compilationResult.hasErrors()) checkUnusedImports();
 			reportNLSProblems();
 		} catch (AbortCompilationUnit e) {
 			this.ignoreFurtherInvestigation = true;

@@ -74,12 +74,10 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SwitchStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TryStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
@@ -104,7 +102,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.parser.RecoveryScanner;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
@@ -123,9 +120,6 @@ public static long getIrritant(int problemID) {
 
 		case IProblem.MaskedCatch :
 			return CompilerOptions.MaskedCatchBlock;
-
-		case IProblem.UnusedImport :
-			return CompilerOptions.UnusedImport;
 
 		case IProblem.MethodButWithConstructorName :
 			return CompilerOptions.MethodWithConstructorName;
@@ -244,19 +238,10 @@ public static long getIrritant(int problemID) {
 		case IProblem.UnnecessaryElse:
 			return CompilerOptions.UnnecessaryElse;
 
-		case IProblem.UnsafeRawConstructorInvocation:
-		case IProblem.UnsafeRawMethodInvocation:
 		case IProblem.UnsafeTypeConversion:
-		case IProblem.UnsafeRawFieldAssignment:
 		case IProblem.UnsafeGenericCast:
 		case IProblem.UnsafeReturnTypeOverride:
-		case IProblem.UnsafeRawGenericMethodInvocation:
-		case IProblem.UnsafeRawGenericConstructorInvocation:
-		case IProblem.UnsafeGenericArrayForVarargs:
 			return CompilerOptions.UncheckedTypeOperation;
-
-		case IProblem.RawTypeReference:
-			return CompilerOptions.RawTypeReference;
 
 		case IProblem.MissingOverrideAnnotation:
 			return CompilerOptions.MissingOverrideAnnotation;
@@ -449,7 +434,6 @@ public static int getProblemCategory(int severity, int problemID) {
 
 				case (int)CompilerOptions.UnusedLocalVariable:
 				case (int)CompilerOptions.UnusedArgument:
-				case (int)CompilerOptions.UnusedImport:
 				case (int)CompilerOptions.UnusedPrivateMember:
 				case (int)CompilerOptions.UnusedDeclaredThrownException:
 				case (int)CompilerOptions.UnnecessaryTypeCheck:
@@ -5684,44 +5668,6 @@ public void possibleFallThroughCase(CaseStatement caseStatement) {
 		caseStatement.sourceStart,
 		caseStatement.sourceEnd);
 }
-public void publicClassMustMatchFileName(CompilationUnitDeclaration compUnitDecl, TypeDeclaration typeDecl) {
-	this.referenceContext = typeDecl; // report the problem against the type not the entire compilation unit
-	String[] arguments = new String[] {new String(compUnitDecl.getFileName()), new String(typeDecl.name)};
-	this.handle(
-		IProblem.PublicClassMustMatchFileName,
-		arguments,
-		arguments,
-		typeDecl.sourceStart,
-		typeDecl.sourceEnd,
-		compUnitDecl.compilationResult);
-}
-public void rawMemberTypeCannotBeParameterized(ASTNode location, ReferenceBinding type, TypeBinding[] argumentTypes) {
-	if (location == null) { // binary case
-	    this.handle(
-			IProblem.RawMemberTypeCannotBeParameterized,
-			new String[] {new String(type.readableName()), typesAsString(false, argumentTypes, false), new String(type.enclosingType().readableName())},
-			new String[] {new String(type.shortReadableName()), typesAsString(false, argumentTypes, true), new String(type.enclosingType().shortReadableName())},
-			ProblemSeverities.AbortCompilation | ProblemSeverities.Error | ProblemSeverities.Fatal,
-			0,
-			0);
-	    return;
-	}
-    this.handle(
-		IProblem.RawMemberTypeCannotBeParameterized,
-		new String[] {new String(type.readableName()), typesAsString(false, argumentTypes, false), new String(type.enclosingType().readableName())},
-		new String[] {new String(type.shortReadableName()), typesAsString(false, argumentTypes, true), new String(type.enclosingType().shortReadableName())},
-		location.sourceStart,
-		location.sourceEnd);
-}
-public void rawTypeReference(ASTNode location, TypeBinding type) {
-	type = type.leafComponentType();
-    this.handle(
-		IProblem.RawTypeReference,
-		new String[] {new String(type.readableName()), new String(type.erasure().readableName()), },
-		new String[] {new String(type.shortReadableName()),new String(type.erasure().shortReadableName()),},
-		location.sourceStart,
-		nodeSourceEnd(null, location));
-}
 public void recursiveConstructorInvocation(ExplicitConstructorCall constructorCall) {
 	this.handle(
 		IProblem.RecursiveConstructorInvocation,
@@ -6541,112 +6487,6 @@ public void unsafeCast(CastExpression castExpression, Scope scope) {
 		castExpression.sourceStart,
 		castExpression.sourceEnd);
 }
-public void unsafeGenericArrayForVarargs(TypeBinding leafComponentType, ASTNode location) {
-	int severity = computeSeverity(IProblem.UnsafeGenericArrayForVarargs);
-	if (severity == ProblemSeverities.Ignore) return;
-	this.handle(
-		IProblem.UnsafeGenericArrayForVarargs,
-		new String[]{ new String(leafComponentType.readableName())},
-		new String[]{ new String(leafComponentType.shortReadableName())},
-		severity,
-		location.sourceStart,
-		location.sourceEnd);
-}
-public void unsafeRawFieldAssignment(FieldBinding field, TypeBinding expressionType, ASTNode location) {
-	int severity = computeSeverity(IProblem.UnsafeRawFieldAssignment);
-	if (severity == ProblemSeverities.Ignore) return;
-	this.handle(
-		IProblem.UnsafeRawFieldAssignment,
-		new String[] {
-		        new String(expressionType.readableName()), new String(field.name), new String(field.declaringClass.readableName()), new String(field.declaringClass.erasure().readableName()) },
-		new String[] {
-		        new String(expressionType.shortReadableName()), new String(field.name), new String(field.declaringClass.shortReadableName()), new String(field.declaringClass.erasure().shortReadableName()) },
-		severity,
-		nodeSourceStart(field,location),
-		nodeSourceEnd(field, location));
-}
-public void unsafeRawGenericMethodInvocation(ASTNode location, MethodBinding rawMethod) {
-	boolean isConstructor = rawMethod.isConstructor();
-	int severity = computeSeverity(isConstructor ? IProblem.UnsafeRawGenericConstructorInvocation : IProblem.UnsafeRawGenericMethodInvocation);
-	if (severity == ProblemSeverities.Ignore) return;
-    if (isConstructor) {
-		this.handle(
-			IProblem.UnsafeRawGenericConstructorInvocation, // The generic constructor {0}({1}) of type {2} is applied to non-parameterized type arguments ({3})
-			new String[] {
-				new String(rawMethod.declaringClass.sourceName()),
-				typesAsString(rawMethod.original().isVarargs(), rawMethod.original().parameters, false),
-				new String(rawMethod.declaringClass.readableName()),
-				typesAsString(rawMethod.original().isVarargs(), rawMethod.parameters, false),
-			 },
-			new String[] {
-				new String(rawMethod.declaringClass.sourceName()),
-				typesAsString(rawMethod.original().isVarargs(), rawMethod.original().parameters, true),
-				new String(rawMethod.declaringClass.shortReadableName()),
-				typesAsString(rawMethod.original().isVarargs(), rawMethod.parameters, true),
-			 },
-			severity,
-			location.sourceStart,
-			location.sourceEnd);
-    } else {
-		this.handle(
-			IProblem.UnsafeRawGenericMethodInvocation,
-			new String[] {
-				new String(rawMethod.selector),
-				typesAsString(rawMethod.original().isVarargs(), rawMethod.original().parameters, false),
-				new String(rawMethod.declaringClass.readableName()),
-				typesAsString(rawMethod.original().isVarargs(), rawMethod.parameters, false),
-			 },
-			new String[] {
-				new String(rawMethod.selector),
-				typesAsString(rawMethod.original().isVarargs(), rawMethod.original().parameters, true),
-				new String(rawMethod.declaringClass.shortReadableName()),
-				typesAsString(rawMethod.original().isVarargs(), rawMethod.parameters, true),
-			 },
-			severity,
-			location.sourceStart,
-			location.sourceEnd);
-    }
-}
-public void unsafeRawInvocation(ASTNode location, MethodBinding rawMethod) {
-	boolean isConstructor = rawMethod.isConstructor();
-	int severity = computeSeverity(isConstructor ? IProblem.UnsafeRawConstructorInvocation : IProblem.UnsafeRawMethodInvocation);
-	if (severity == ProblemSeverities.Ignore) return;
-    if (isConstructor) {
-		this.handle(
-			IProblem.UnsafeRawConstructorInvocation,
-			new String[] {
-				new String(rawMethod.declaringClass.readableName()),
-				typesAsString(rawMethod.original().isVarargs(), rawMethod.parameters, false),
-				new String(rawMethod.declaringClass.erasure().readableName()),
-			 },
-			new String[] {
-				new String(rawMethod.declaringClass.shortReadableName()),
-				typesAsString(rawMethod.original().isVarargs(), rawMethod.parameters, true),
-				new String(rawMethod.declaringClass.erasure().shortReadableName()),
-			 },
-			severity,
-			location.sourceStart,
-			location.sourceEnd);
-    } else {
-		this.handle(
-			IProblem.UnsafeRawMethodInvocation,
-			new String[] {
-				new String(rawMethod.selector),
-				typesAsString(rawMethod.original().isVarargs(), rawMethod.parameters, false),
-				new String(rawMethod.declaringClass.readableName()),
-				new String(rawMethod.declaringClass.erasure().readableName()),
-			 },
-			new String[] {
-				new String(rawMethod.selector),
-				typesAsString(rawMethod.original().isVarargs(), rawMethod.parameters, true),
-				new String(rawMethod.declaringClass.shortReadableName()),
-				new String(rawMethod.declaringClass.erasure().shortReadableName()),
-			 },
-			severity,
-			location.sourceStart,
-			location.sourceEnd);
-    }
-}
 public void unsafeReturnTypeOverride(MethodBinding currentMethod, MethodBinding inheritedMethod, SourceTypeBinding type) {
 	int severity = computeSeverity(IProblem.UnsafeReturnTypeOverride);
 	if (severity == ProblemSeverities.Ignore) return;
@@ -6743,18 +6583,6 @@ public void unusedDeclaredThrownException(ReferenceBinding exceptionType, Abstra
 			location.sourceStart,
 			location.sourceEnd);
 	}
-}
-public void unusedImport(ImportReference importRef) {
-	int severity = computeSeverity(IProblem.UnusedImport);
-	if (severity == ProblemSeverities.Ignore) return;
-	String[] arguments = new String[] { CharOperation.toString(importRef.tokens) };
-	this.handle(
-		IProblem.UnusedImport,
-		arguments,
-		arguments,
-		severity,
-		importRef.sourceStart,
-		importRef.sourceEnd);
 }
 public void unusedLabel(LabeledStatement statement) {
 	int severity = computeSeverity(IProblem.UnusedLabel);
@@ -7019,89 +6847,5 @@ public void visibilityConflict(MethodBinding currentMethod, MethodBinding inheri
 		new String[] {new String(inheritedMethod.declaringClass.shortReadableName())},
 		currentMethod.sourceStart(),
 		currentMethod.sourceEnd());
-}
-public void wildcardAssignment(TypeBinding variableType, TypeBinding expressionType, ASTNode location) {
-	this.handle(
-		IProblem.WildcardFieldAssignment,
-		new String[] {
-		        new String(expressionType.readableName()), new String(variableType.readableName()) },
-		new String[] {
-		        new String(expressionType.shortReadableName()), new String(variableType.shortReadableName()) },
-		location.sourceStart,
-		location.sourceEnd);
-}
-public void wildcardInvocation(ASTNode location, TypeBinding receiverType, MethodBinding method, TypeBinding[] arguments) {
-	TypeBinding offendingArgument = null;
-	TypeBinding offendingParameter = null;
-	for (int i = 0, length = method.parameters.length; i < length; i++) {
-		TypeBinding parameter = method.parameters[i];
-		if (parameter.isWildcard() && (((WildcardBinding) parameter).boundKind != Wildcard.SUPER)) {
-			offendingParameter = parameter;
-			offendingArgument = arguments[i];
-			break;
-		}
-	}
-
-    if (method.isConstructor()) {
-		this.handle(
-			IProblem.WildcardConstructorInvocation,
-			new String[] {
-				new String(receiverType.sourceName()),
-				typesAsString(method.isVarargs(), method.parameters, false),
-				new String(receiverType.readableName()),
-				typesAsString(false, arguments, false),
-				new String(offendingArgument.readableName()),
-				new String(offendingParameter.readableName()),
-			 },
-			new String[] {
-				new String(receiverType.sourceName()),
-				typesAsString(method.isVarargs(), method.parameters, true),
-				new String(receiverType.shortReadableName()),
-				typesAsString(false, arguments, true),
-				new String(offendingArgument.shortReadableName()),
-				new String(offendingParameter.shortReadableName()),
-			 },
-			location.sourceStart,
-			location.sourceEnd);
-    } else {
-		this.handle(
-			IProblem.WildcardMethodInvocation,
-			new String[] {
-				new String(method.selector),
-				typesAsString(method.isVarargs(), method.parameters, false),
-				new String(receiverType.readableName()),
-				typesAsString(false, arguments, false),
-				new String(offendingArgument.readableName()),
-				new String(offendingParameter.readableName()),
-			 },
-			new String[] {
-				new String(method.selector),
-				typesAsString(method.isVarargs(), method.parameters, true),
-				new String(receiverType.shortReadableName()),
-				typesAsString(false, arguments, true),
-				new String(offendingArgument.shortReadableName()),
-				new String(offendingParameter.shortReadableName()),
-			 },
-			location.sourceStart,
-			location.sourceEnd);
-    }
-}
-public void wrongSequenceOfExceptionTypesError(TryStatement statement, TypeBinding exceptionType, int under, TypeBinding hidingExceptionType) {
-	//the two catch block under and upper are in an incorrect order.
-	//under should be define BEFORE upper in the source
-
-	TypeReference typeRef = statement.catchArguments[under].type;
-	this.handle(
-		IProblem.InvalidCatchBlockSequence,
-		new String[] {
-			new String(exceptionType.readableName()),
-			new String(hidingExceptionType.readableName()),
-		 },
-		new String[] {
-			new String(exceptionType.shortReadableName()),
-			new String(hidingExceptionType.shortReadableName()),
-		 },
-		typeRef.sourceStart,
-		typeRef.sourceEnd);
 }
 }

@@ -426,11 +426,6 @@ public TypeBinding resolveType(BlockScope scope) {
 		// the "receiver" must not be a type, in other words, a NameReference that the TC has bound to a Type
 		if (receiverIsType && binding.isValidBinding()) {
 			scope.problemReporter().mustUseAStaticMethod(this, binding);
-			if (this.actualReceiverType.isRawType()
-					&& (this.receiver.bits & IgnoreRawTypeCheck) == 0
-					&& compilerOptions.getSeverity(CompilerOptions.RawTypeReference) != ProblemSeverities.Ignore) {
-				scope.problemReporter().rawTypeReference(this.receiver, this.actualReceiverType);
-			}
 		} else {
 			if (receiver!=null)
 				receiver.computeConversion(scope, this.actualReceiverType, this.actualReceiverType);

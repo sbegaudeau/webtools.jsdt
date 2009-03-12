@@ -281,14 +281,7 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 //			}
 //		}
 		int invocationStatus = INVOCATION_ARGUMENT_OK;
-		if (arguments == null) {
-			if (method.isVarargs()) {
-				TypeBinding parameterType = ((ArrayBinding) params[paramLength-1]).elementsType(); // no element was supplied for vararg parameter
-		    	if (!parameterType.isReifiable()) {
-				    scope.problemReporter().unsafeGenericArrayForVarargs(parameterType, (ASTNode)invocationSite);
-		    	}
-			}
-		} else {
+		if (arguments != null) {
 			if (method.isVarargs()) {
 				// 4 possibilities exist for a call to the vararg method foo(int i, long ... value) : foo(1), foo(1, 2), foo(1, 2, 3, 4) & foo(1, new long[] {1, 2})
 				int lastIndex = paramLength - 1;
@@ -303,9 +296,6 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 
 				    if (paramLength != argLength || parameterType.dimensions() != argumentTypes[lastIndex].dimensions()) {
 				    	parameterType = ((ArrayBinding) parameterType).elementsType(); // single element was provided for vararg parameter
-				    	if (!parameterType.isReifiable()) {
-						    scope.problemReporter().unsafeGenericArrayForVarargs(parameterType, (ASTNode)invocationSite);
-				    	}
 						originalRawParam = rawOriginalGenericMethod == null ? null : ((ArrayBinding)rawOriginalGenericMethod.parameters[lastIndex]).elementsType();
 				    }
 					for (int i = lastIndex; i < argLength; i++) {

@@ -176,8 +176,6 @@ public class ParameterizedSingleTypeReference extends ArrayTypeReference impleme
 		} else if (!currentType.isStatic()) {
 			ReferenceBinding actualEnclosing = currentType.enclosingType();
 			if (actualEnclosing != null && actualEnclosing.isRawType()){
-				scope.problemReporter().rawMemberTypeCannotBeParameterized(
-						this, scope.environment().createRawType((ReferenceBinding)currentType.erasure(), actualEnclosing), argTypes);
 				return null;
 			}
 		}

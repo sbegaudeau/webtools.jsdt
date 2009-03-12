@@ -2091,7 +2091,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 			IProblem curr= problems[i];
 			if (curr.getSourceEnd() < importsEnd) {
 				int id= curr.getID();
-				if (id == IProblem.UnusedImport || id == IProblem.NotVisibleType) { // not visible problems hide unused -> remove both
+				if( id == IProblem.NotVisibleType) { // not visible problems hide unused -> remove both
 					int pos= curr.getSourceStart();
 					for (int k= 0; k < importsDecls.size(); k++) {
 						ImportDeclaration decl= (ImportDeclaration) importsDecls.get(k);

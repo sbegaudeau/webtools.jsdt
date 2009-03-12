@@ -13,13 +13,11 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.ISingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
 public class SingleTypeReference extends TypeReference implements ISingleTypeReference {
 
@@ -75,11 +73,6 @@ public class SingleTypeReference extends TypeReference implements ISingleTypeRef
 		if (isTypeUseDeprecated(memberType, scope))
 			scope.problemReporter().deprecatedType(memberType, this);
 		memberType = scope.environment().convertToRawType(memberType);
-		if (memberType.isRawType()
-				&& (this.bits & IgnoreRawTypeCheck) == 0
-				&& scope.compilerOptions().getSeverity(CompilerOptions.RawTypeReference) != ProblemSeverities.Ignore){
-			scope.problemReporter().rawTypeReference(this, memberType);
-		}
 		return this.resolvedType = memberType;
 	}
 

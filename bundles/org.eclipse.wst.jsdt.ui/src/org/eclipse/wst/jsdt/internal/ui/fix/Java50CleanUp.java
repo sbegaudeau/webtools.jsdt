@@ -169,7 +169,7 @@ public class Java50CleanUp extends AbstractCleanUp {
 		if (isEnabled(CleanUpConstants.VARIABLE_DECLARATION_USE_TYPE_ARGUMENTS_FOR_RAW_TYPE_REFERENCES)) {
 			for (int i=0;i<problems.length;i++) {
 				int id= problems[i].getID();
-				if (id == IProblem.UnsafeTypeConversion || id == IProblem.RawTypeReference || id == IProblem.UnsafeRawMethodInvocation)
+				if (id == IProblem.UnsafeTypeConversion)
 					result++;
 			}
 		}

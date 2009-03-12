@@ -47,7 +47,6 @@ public class CompilerOptions {
 	public static final String OPTION_ReportUnusedParameterWhenImplementingAbstract = "org.eclipse.wst.jsdt.core.compiler.problem.unusedParameterWhenImplementingAbstract"; //$NON-NLS-1$
 	public static final String OPTION_ReportUnusedParameterWhenOverridingConcrete = "org.eclipse.wst.jsdt.core.compiler.problem.unusedParameterWhenOverridingConcrete"; //$NON-NLS-1$
 	public static final String OPTION_ReportUnusedParameterIncludeDocCommentReference = "org.eclipse.wst.jsdt.core.compiler.problem.unusedParameterIncludeDocCommentReference"; //$NON-NLS-1$
-	public static final String OPTION_ReportUnusedImport = "org.eclipse.wst.jsdt.core.compiler.problem.unusedImport"; //$NON-NLS-1$
 	public static final String OPTION_ReportWrongNumberOfArguments = "org.eclipse.wst.jsdt.core.compiler.problem.wrongNumberOfArguments"; //$NON-NLS-1$
 	public static final String OPTION_ReportNoEffectAssignment = "org.eclipse.wst.jsdt.core.compiler.problem.noEffectAssignment"; //$NON-NLS-1$
 	public static final String OPTION_ReportLocalVariableHiding = "org.eclipse.wst.jsdt.core.compiler.problem.localVariableHiding"; //$NON-NLS-1$
@@ -175,7 +174,6 @@ public class CompilerOptions {
 	public static final long WrongNumberOfArguments = ASTNode.Bit8;
 	public static final long NonExternalizedString = ASTNode.Bit9;
 	public static final long AssertUsedAsAnIdentifier = ASTNode.Bit10;
-	public static final long UnusedImport = ASTNode.Bit11;
 	public static final long NonStaticAccessToStatic = ASTNode.Bit12;
 	public static final long Task = ASTNode.Bit13;
 	public static final long NoEffectAssignment = ASTNode.Bit14;
@@ -246,7 +244,6 @@ public class CompilerOptions {
 		| UsingDeprecatedAPI
 		| MaskedCatchBlock
 		| UndefinedField
-		| UnusedImport
 		| NonStaticAccessToStatic
 		| NoEffectAssignment
 		| IncompatibleNonInheritedInterfaceMethod
@@ -408,7 +405,6 @@ public class CompilerOptions {
 		optionsMap.put(OPTION_ReportHiddenCatchBlock, getSeverityString(MaskedCatchBlock));
 		optionsMap.put(OPTION_ReportUnusedLocal, getSeverityString(UnusedLocalVariable));
 		optionsMap.put(OPTION_ReportUnusedParameter, getSeverityString(UnusedArgument));
-		optionsMap.put(OPTION_ReportUnusedImport, getSeverityString(UnusedImport));
 		optionsMap.put(OPTION_ReportWrongNumberOfArguments, getSeverityString(WrongNumberOfArguments));
 		optionsMap.put(OPTION_ReportNoEffectAssignment, getSeverityString(NoEffectAssignment));
 		optionsMap.put(OPTION_ReportNonExternalizedStringLiteral, getSeverityString(NonExternalizedString));
@@ -533,8 +529,6 @@ public class CompilerOptions {
 					return OPTION_ReportNonExternalizedStringLiteral;
 				case (int) AssertUsedAsAnIdentifier :
 					return OPTION_ReportAssertIdentifier;
-				case (int) UnusedImport :
-					return OPTION_ReportUnusedImport;
 				case (int) NonStaticAccessToStatic :
 					return OPTION_ReportNonStaticAccessToStatic;
 				case (int) Task :
@@ -878,7 +872,6 @@ public class CompilerOptions {
 		if ((optionValue = optionsMap.get(OPTION_ReportHiddenCatchBlock)) != null) updateSeverity(MaskedCatchBlock, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportUnusedLocal)) != null) updateSeverity(UnusedLocalVariable, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportUnusedParameter)) != null) updateSeverity(UnusedArgument, optionValue);
-		if ((optionValue = optionsMap.get(OPTION_ReportUnusedImport)) != null) updateSeverity(UnusedImport, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportUnusedPrivateMember)) != null) updateSeverity(UnusedPrivateMember, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportUnusedDeclaredThrownException)) != null) updateSeverity(UnusedDeclaredThrownException, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportNoImplicitStringConversion)) != null) updateSeverity(NoImplicitStringConversion, optionValue);
@@ -1057,7 +1050,6 @@ public class CompilerOptions {
 		buf.append("\n\t- masked catch block: ").append(getSeverityString(MaskedCatchBlock)); //$NON-NLS-1$
 		buf.append("\n\t- unused local variable: ").append(getSeverityString(UnusedLocalVariable)); //$NON-NLS-1$
 		buf.append("\n\t- unused parameter: ").append(getSeverityString(UnusedArgument)); //$NON-NLS-1$
-		buf.append("\n\t- unused import: ").append(getSeverityString(UnusedImport)); //$NON-NLS-1$
 		buf.append("\n\t- synthetic access emulation: ").append(getSeverityString(AccessEmulation)); //$NON-NLS-1$
 		buf.append("\n\t- assignment with no effect: ").append(getSeverityString(NoEffectAssignment)); //$NON-NLS-1$
 		buf.append("\n\t- non externalized string: ").append(getSeverityString(NonExternalizedString)); //$NON-NLS-1$
@@ -1257,7 +1249,6 @@ public class CompilerOptions {
 			OPTION_ReportUnnecessaryTypeCheck,
 			OPTION_ReportUnqualifiedFieldAccess,
 			OPTION_ReportUnusedDeclaredThrownException,
-			OPTION_ReportUnusedImport,
 			OPTION_ReportUnusedLocal,
 			OPTION_ReportUnusedParameter,
 			OPTION_ReportUnusedPrivateMember,
@@ -1288,7 +1279,6 @@ public class CompilerOptions {
 					return "cast"; //$NON-NLS-1$
 				case (int) UnusedLocalVariable :
 				case (int) UnusedArgument :
-				case (int) UnusedImport :
 				case (int) UnusedPrivateMember:
 				case (int) UnusedDeclaredThrownException:
 					return "unused"; //$NON-NLS-1$
@@ -1414,7 +1404,7 @@ public class CompilerOptions {
 				break;
 			case 'u' :
 				if ("unused".equals(warningToken)) //$NON-NLS-1$
-					return UnusedLocalVariable | UnusedArgument | UnusedPrivateMember | UnusedDeclaredThrownException | UnusedLabel | UnusedImport;
+					return UnusedLocalVariable | UnusedArgument | UnusedPrivateMember | UnusedDeclaredThrownException | UnusedLabel;
 				if ("unchecked".equals(warningToken)) //$NON-NLS-1$
 					return UncheckedTypeOperation | RawTypeReference;
 				if ("unqualified-field-access".equals(warningToken)) //$NON-NLS-1$
