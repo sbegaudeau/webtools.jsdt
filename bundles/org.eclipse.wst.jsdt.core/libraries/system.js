@@ -467,7 +467,6 @@ Number.POSITIVE_INFINITY=0;
   * @returns {Number}
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
-     
  */
 Number.prototype.toFixed=function(fractionDigits){};
 /**
@@ -1518,7 +1517,7 @@ Math.atan=function(x){};
   * function atan2(x,y)
   * @memberOf Math
   * @param {Number} x
-   * @param {Number} y
+  * @param {Number} y
   * @type Number
   * @returns {Number}
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1607,7 +1606,7 @@ Math.min=function(arg){};
   * function pow(x,y)
   * @memberOf Math
   * @param {Number} x
-  @ @param {Number} y
+  * @param {Number} y
   * @type Number
   * @returns {Number}
   * @since   Standard ECMA-262 3rd. Edition 
@@ -1676,7 +1675,6 @@ Math.tan=function(x){};
   * @memberOf RegExp
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
-     
  */
 function RegExp(){};
 RegExp.prototype=new Object();
@@ -1688,7 +1686,6 @@ RegExp.prototype=new Object();
   * @memberOf RegExp
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
-     
  */
 RegExp.prototype.exec=function(string){};
 /**
@@ -1698,8 +1695,7 @@ RegExp.prototype.exec=function(string){};
   * @type Boolean
   * @memberOf RegExp
   * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
-     
+  * @since Level 2 Document Object Model Core Definition.  
  */
 RegExp.prototype.test=function(string){};
 /**
@@ -1707,8 +1703,7 @@ RegExp.prototype.test=function(string){};
   * @type String
   * @memberOf RegExp
   * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
-     
+  * @since Level 2 Document Object Model Core Definition. 
  */
 RegExp.prototype.source="";
 /**
@@ -1717,7 +1712,6 @@ RegExp.prototype.source="";
   * @memberOf RegExp
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
-     
  */
 RegExp.prototype.global=false;
 
@@ -1726,8 +1720,7 @@ RegExp.prototype.global=false;
   * @type Boolean
   * @memberOf RegExp
   * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
-     
+  * @since Level 2 Document Object Model Core Definition. 
  */
 RegExp.prototype.ignoreCase=false;
 /**
@@ -1736,7 +1729,6 @@ RegExp.prototype.ignoreCase=false;
   * @memberOf RegExp
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
-     
  */
 RegExp.prototype.multiline=false;
 /**
@@ -1745,7 +1737,6 @@ RegExp.prototype.multiline=false;
   * @memberOf RegExp
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
-     
  */
 RegExp.prototype.lastIndex=0;
 /**
@@ -1755,8 +1746,7 @@ RegExp.prototype.lastIndex=0;
   * @param {String} message
   * @memberOf Error
   * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
-     
+  * @since Level 2 Document Object Model Core Definition. 
  */
 function Error(message){};
 Error.prototype=new Object();
@@ -1765,8 +1755,7 @@ Error.prototype=new Object();
   * @type String
   * @memberOf Error
   * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
-     
+  * @since Level 2 Document Object Model Core Definition. 
  */
 Error.prototype.name="";
 /**
@@ -1774,19 +1763,17 @@ Error.prototype.name="";
   * @type String
   * @memberOf Error
   * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
-     
+  * @since Level 2 Document Object Model Core Definition. 
  */
 Error.prototype.message="";
 /**
   * Object EvalError()
   * @super Error
   * @constructor
-
+  *
   * @memberOf EvalError
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
-     
  */
 function EvalError(){};
 EvalError.prototype=new Error("");
@@ -1794,11 +1781,10 @@ EvalError.prototype=new Error("");
   * Object RangeError()
   * @super Error
   * @constructor
-
+  *
   * @memberOf RangeError
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
-     
  */
 function RangeError(){};
 RangeError.prototype=new Error("");
@@ -1806,11 +1792,10 @@ RangeError.prototype=new Error("");
   * Object ReferenceError()
   * @super Error
   * @constructor
-
+  *
   * @memberOf ReferenceError
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
-     
  */
 function ReferenceError(){};
 ReferenceError.prototype=new Error("");
@@ -1818,11 +1803,10 @@ ReferenceError.prototype=new Error("");
   * Object SyntaxError()
   * @super Error
   * @constructor
-
+  *
   * @memberOf SyntaxError
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
-     
  */
 function SyntaxError(){};
 SyntaxError.prototype=new Error("");
@@ -1830,11 +1814,10 @@ SyntaxError.prototype=new Error("");
   * Object TypeError()
   * @super Error
   * @constructor
-
+  *
   * @memberOf TypeError
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
-     
  */
 function TypeError(){};
 TypeError.prototype=new Error("");
@@ -1842,11 +1825,10 @@ TypeError.prototype=new Error("");
   * Object URIError()
   * @super Error
   * @constructor
-
+  *
   * @memberOf URIError
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
-     
  */
 function URIError(){};
 URIError.prototype=new Error("");
