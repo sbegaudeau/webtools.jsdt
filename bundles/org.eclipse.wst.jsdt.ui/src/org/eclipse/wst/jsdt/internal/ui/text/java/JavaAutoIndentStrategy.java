@@ -1194,26 +1194,30 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	 * @see org.eclipse.jface.text.IAutoIndentStrategy#customizeDocumentCommand(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.DocumentCommand)
 	 */
 	public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
-		if (c.doit == false)
+		try {
+			if (c.doit == false)
 			return;
 
-		clearCachedValues();
-
-		if (!fIsSmartMode) {
-			super.customizeDocumentCommand(d, c);
-			return;
+			clearCachedValues();
+	
+			if (!fIsSmartMode) {
+				super.customizeDocumentCommand(d, c);
+				return;
+			}
+	
+			if (!fIsSmartTab && isRepresentingTab(c.text))
+				return;
+	
+			if (c.length == 0 && c.text != null && isLineDelimiter(d, c.text))
+				smartIndentAfterNewLine(d, c);
+			else if (c.text.length() == 1)
+				smartIndentOnKeypress(d, c);
+			else if (c.text.length() > 1 && getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_SMART_PASTE))
+				if (fViewer == null || fViewer.getTextWidget() == null || !fViewer.getTextWidget().getBlockSelection())
+					smartPaste(d, c); // no smart backspace for paste
+		} catch(IllegalArgumentException e) {
+			// ignore
 		}
-
-		if (!fIsSmartTab && isRepresentingTab(c.text))
-			return;
-
-		if (c.length == 0 && c.text != null && isLineDelimiter(d, c.text))
-			smartIndentAfterNewLine(d, c);
-		else if (c.text.length() == 1)
-			smartIndentOnKeypress(d, c);
-		else if (c.text.length() > 1 && getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_SMART_PASTE))
-			if (fViewer == null || fViewer.getTextWidget() == null || !fViewer.getTextWidget().getBlockSelection())
-				smartPaste(d, c); // no smart backspace for paste
 
 	}
 
