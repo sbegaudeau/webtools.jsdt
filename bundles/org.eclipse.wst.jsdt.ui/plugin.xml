@@ -746,6 +746,7 @@
          </enabledWhen>
          <keywordReference id="org.eclipse.wst.jsdt.ui.javadocproblems"/>
       </page>
+      <!--
       <page
             name="%builderPageName"
             class="org.eclipse.wst.jsdt.internal.ui.preferences.JavaBuildPreferencePage"
@@ -758,6 +759,7 @@
          </enabledWhen>
          <keywordReference id="org.eclipse.wst.jsdt.ui.building"/>
       </page>
+      -->
       <page
             name="%todoPageName"
             class="org.eclipse.wst.jsdt.internal.ui.preferences.TodoTaskPreferencePage"
