@@ -55,6 +55,9 @@ public final class BaseTypeBinding extends TypeBinding {
 
 		switch (right.id) {
 			case TypeIds.T_boolean :
+				if(id == TypeIds.T_boolean)
+					return true;
+				break;
 			case TypeIds.T_byte :
 			case TypeIds.T_char :
 				return false;
