@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -369,7 +369,7 @@ public class Javadoc extends ASTNode implements IJsDoc {
 			if (reportMissing && methDecl != null) {
 				if (methDecl.isMethod()) {
 					MethodDeclaration meth = (MethodDeclaration) methDecl;
-					if (meth.binding.returnType != TypeBinding.VOID) {
+					if (meth.binding.returnType != TypeBinding.VOID && !meth.binding.isConstructor()) {
 						// method with return should have @return tag
 						methScope.problemReporter().javadocMissingReturnTag(meth.declarationSourceStart, meth.declarationSourceEnd, methDecl.binding.modifiers);
 					}
