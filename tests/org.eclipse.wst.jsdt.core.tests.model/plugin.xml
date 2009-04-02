@@ -37,8 +37,8 @@
 			class="org.eclipse.wst.jsdt.core.tests.model.ContainerInitializer"/>
 	</extension>
 
-	<!-- Extra Java-like file extensions -->
-	<extension point="org.eclipse.core.runtime.contentTypes">
+	<!-- Extra JavaScript-like file extensions -->
+	<extension point="org.eclipse.core.contenttype.contentTypes">
 	    <file-association 
 	        content-type="org.eclipse.wst.jsdt.core.javaSource"
 	        file-extensions="foo,bar"/>
