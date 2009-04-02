@@ -21,8 +21,8 @@ Window.prototype.parent= new Window();
 Window.prototype.top= new Window();
 Window.prototype.scrollbars= new BarProp();
 Window.prototype.name="";
-Window.prototype.scrollX="";
-Window.prototype.scrollY="";
+Window.prototype.scrollX=0;
+Window.prototype.scrollY=0;
 Window.prototype.scrollTo=function(arg1,arg2){};
 Window.prototype.scrollBy=function(arg1,arg2){};
 Window.prototype.getSelection=function(){};
@@ -36,14 +36,14 @@ Window.prototype.dump=function(arg1){};
  * @memberOf  Window
  * @returns {Object}
  */
-Window.prototype.setTimeout=function(){};
+Window.prototype.function(arg1, arg2){};
 /**
  * function setInterval() 
  * @type    Object
  * @memberOf  Window
  * @returns {Object}
  */
-Window.prototype.setInterval=function(){};
+Window.prototype.setInterval=function(arg1, arg2){};
 Window.prototype.clearTimeout=function(){};
 Window.prototype.clearInterval=function(){};
 Window.prototype.setResizable=function(arg1){};
@@ -61,11 +61,11 @@ Window.prototype.disableExternalCapture=function(){};
 Window.prototype.prompt=function(){};
 Window.prototype.open=function(){};
 Window.prototype.openDialog=function(){};
-Window.prototype.frames= new Window();
+Window.prototype.frames= new Array();
 Window.prototype.window= new Window();
 Window.prototype.find=function(){};
 Window.prototype.self= new Window();
-Window.prototype.history= new history();
+Window.prototype.history= new History();
 Window.prototype.content= new Window();
 Window.prototype.menubar= new BarProp();
 Window.prototype.toolbar= new BarProp();
@@ -73,8 +73,8 @@ Window.prototype.locationbar= new BarProp();
 Window.prototype.personalbar= new BarProp();
 Window.prototype.statusbar= new BarProp();
 Window.prototype.directories= new BarProp();
-Window.prototype.closed="";
-Window.prototype.opener="";
+Window.prototype.closed=new Boolean();
+Window.prototype.opener=new Window();
 Window.prototype.status="";
 Window.prototype.defaultStatus="";
 Window.prototype.innerWidth=0;
@@ -83,10 +83,10 @@ Window.prototype.outerWidth=0;
 Window.prototype.outerHeight=0;
 Window.prototype.screenX=0;
 Window.prototype.screenY=0;
-Window.prototype.pageXOffset="";
-Window.prototype.pageYOffset="";
-Window.prototype.scrollMaxX="";
-Window.prototype.scrollMaxY="";
+Window.prototype.pageXOffset=0;
+Window.prototype.pageYOffset=0;
+Window.prototype.scrollMaxX=0;
+Window.prototype.scrollMaxY=0;
 Window.prototype.fullScreen="";
 Window.prototype.alert=function(arg1){};
 /**
@@ -123,35 +123,46 @@ Window.prototype.dispatchEvent=function(arg1){};
  */
 Window.prototype.getComputedStyle=function(arg1,arg2){};
 Window.prototype.sessionStorage="";
-Window.prototype.location=new location();
+Window.prototype.location=new Location();
 Window.prototype.event="";
 
 /**
-  * Object history()
-
-  * @super Array
-  * @constructor
-  * @see Array
-  * @memberOf history
-  * @since Common Usage, no standard
- */
-function history(){};
-history.prototype=new Array();
-history.prototype.back=function(){};
-
-/**
-  * Object location()
+  * Object History()
 
   * @super Object
   * @constructor
-  * @memberOf location
+  * @memberOf History
   * @since Common Usage, no standard
  */
-function location(){};
-location.prototype=new Object();
-location.prototype.reload=function(arg1){};
+function History(){};
+History.prototype=new Object();
+History.prototype.history = new History();
+History.prototype.length = new Number();
+History.prototype.back=function(){};
+History.prototype.forward=function(){};
+History.prototype.go=function(arg1){};
 
+/**
+  * Object Location()
 
+  * @super Object
+  * @constructor
+  * @memberOf Location
+  * @since Common Usage, no standard
+ */
+function Location(){};
+Location.prototype=new Object();
+Location.prototype.location = new Location();
+Location.prototype.hash = "";
+Location.prototype.host = "";
+Location.prototype.hostname = "";
+Location.prototype.href = "";
+Location.prototype.pathname = "";
+Location.prototype.port = "";
+Location.prototype.protocol = "";
+Location.prototype.search = "";
+Location.prototype.reload=function(arg1){};
+Location.prototype.replace=function(arg1){};
 
 /*
 Window.prototype.navigator= new Navigator();
