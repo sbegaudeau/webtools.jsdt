@@ -49,6 +49,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
@@ -959,6 +960,9 @@ public class InferEngine extends ASTVisitor {
 			return getTypeOf(((Assignment)expression).getExpression());
 		else if (expression instanceof FunctionExpression)
 			return FunctionType;
+		else if(expression instanceof UnaryExpression) {
+			return getTypeOf(((UnaryExpression)expression).expression);
+		}
 
 		return null;
 	}
