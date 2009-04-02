@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 IBM Corporation and others.
+ * Copyright (c) 2008, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,19 @@ Window.prototype.scrollByLines=function(arg1){};
 Window.prototype.scrollByPages=function(arg1){};
 Window.prototype.sizeToContent=function(){};
 Window.prototype.dump=function(arg1){};
+/**
+ * function setTimeout() 
+ * @type    Object
+ * @memberOf  Window
+ * @returns {Object}
+ */
 Window.prototype.setTimeout=function(){};
+/**
+ * function setInterval() 
+ * @type    Object
+ * @memberOf  Window
+ * @returns {Object}
+ */
 Window.prototype.setInterval=function(){};
 Window.prototype.clearTimeout=function(){};
 Window.prototype.clearInterval=function(){};
@@ -40,6 +52,12 @@ Window.prototype.releaseEvents=function(arg1){};
 Window.prototype.routeEvent=function(arg1){};
 Window.prototype.enableExternalCapture=function(){};
 Window.prototype.disableExternalCapture=function(){};
+/**
+ * function prompt() 
+ * @type    String
+ * @memberOf  Window
+ * @returns {String}
+ */
 Window.prototype.prompt=function(){};
 Window.prototype.open=function(){};
 Window.prototype.openDialog=function(){};
@@ -71,6 +89,12 @@ Window.prototype.scrollMaxX="";
 Window.prototype.scrollMaxY="";
 Window.prototype.fullScreen="";
 Window.prototype.alert=function(arg1){};
+/**
+ * function confirm() 
+ * @type    Object
+ * @memberOf  Window
+ * @returns {Object}
+ */
 Window.prototype.confirm=function(arg1){};
 Window.prototype.focus=function(){};
 Window.prototype.blur=function(){};
@@ -91,6 +115,12 @@ Window.prototype.btoa=function(arg1){};
 Window.prototype.frameElement="";
 Window.prototype.removeEventListener=function(arg1,arg2,arg3){};
 Window.prototype.dispatchEvent=function(arg1){};
+/**
+ * function getComputedStyle() 
+ * @type    Object
+ * @memberOf  Window
+ * @returns {Object}
+ */
 Window.prototype.getComputedStyle=function(arg1,arg2){};
 Window.prototype.sessionStorage="";
 Window.prototype.location=new location();
