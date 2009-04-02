@@ -97,6 +97,10 @@
 	${cursor}
 }</template>
 
+<template name="function" description="%Templates.anonymous_public_method" id="org.eclipse.wst.jsdt.ui.templates.anonymous_public_method" context="javaScript" enabled="true" autoinsert="false">function (${}) {
+	${cursor}
+}</template>
+
 <!--
 <template name="protected_method" description="%Templates.protected_method" id="org.eclipse.wst.jsdt.ui.templates.protected_method" context="javaScript" enabled="true" autoinsert="false">protected ${return_type} ${name}(${}) {
 	${cursor}
