@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -981,6 +981,10 @@ public class InferEngine extends ASTVisitor {
 						SingleNameReference singleNameReference = (SingleNameReference) field.fieldName;
 						name = singleNameReference.token;
 						nameStart = singleNameReference.sourceStart;
+					} else if (field.fieldName instanceof StringLiteral) {
+						StringLiteral stringLiteral = (StringLiteral) field.fieldName;
+						name = stringLiteral.source();
+						nameStart = stringLiteral.sourceStart;
 					} else
 						continue; //not supporting this case right now
 
