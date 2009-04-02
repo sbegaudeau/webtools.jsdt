@@ -98,7 +98,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 			// check for missing returning path
 			TypeBinding returnTypeBinding = binding.returnType;
 			boolean isJsDocInferredReturn = (binding.tagBits&TagBits.IsInferredJsDocType)!=0;
-			if ((returnTypeBinding == TypeBinding.VOID) || isAbstract()) {
+			if ((returnTypeBinding == TypeBinding.VOID || returnTypeBinding == TypeBinding.UNKNOWN) || isAbstract()) {
 				this.needFreeReturn =
 					(flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0;
 			} else {
