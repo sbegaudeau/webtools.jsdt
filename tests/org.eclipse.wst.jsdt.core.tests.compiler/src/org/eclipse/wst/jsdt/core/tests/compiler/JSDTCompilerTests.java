@@ -53,7 +53,7 @@ public static Test suite() {
 //		standardTests.add(JavadocTest.ALL_CLASSES.get(i));
 //	}
 //
-	TestSuite all = new TestSuite(JSDTCompilerTests.class.getName());
+	TestSuite all = new TestSuite("JSDT 'Compiler' Tests");
 //	int possibleComplianceLevels = AbstractCompilerTest.getPossibleComplianceLevels();
 //	if ((possibleComplianceLevels & AbstractCompilerTest.F_1_3) != 0) {
 //		ArrayList tests_1_3 = (ArrayList)standardTests.clone();
