@@ -1624,7 +1624,7 @@ String.prototype.fontcolor=function(color){};
   */
 String.prototype.fontsize=function(aString){};
  /**
-  * function anchor(aString)
+  * static function fromCharCode(aString)
   * @memberOf 	String
   * @type 	String
   * @returns {String}
@@ -1633,7 +1633,7 @@ String.prototype.fontsize=function(aString){};
   * @since  JScript 5.6
   * @see   http://msdn2.microsoft.com/en-us/library/ecczf11c.aspx
   */
-String.prototype.fromCharCode=function(args){};
+String.fromCharCode=function(args){};
  /**
   * function italics()
   * @memberOf 	String
