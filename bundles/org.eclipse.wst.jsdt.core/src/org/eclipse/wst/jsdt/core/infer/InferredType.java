@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.core.ast.IFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MultipleTypeBinding;
@@ -32,7 +33,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 
 
 /**
- * The representation of an inferred type. 
+ * The represenation of an inferred type. 
  * 
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
@@ -260,14 +261,14 @@ public class InferredType extends ASTNode {
 			return this.resolvedType.isValidBinding() ? this.resolvedType : null; // already reported error
 
 
-		/*if (isArray())
+		if (isArray())
 		{
 			TypeBinding memberType = (referenceClass!=null)?referenceClass.resolveType(scope,node):null;
 			if (memberType==null)
 				memberType=TypeBinding.UNKNOWN;
 			this.resolvedType=new ArrayBinding(memberType, 1, scope.compilationUnitScope().environment) ;
 
-		}*/
+		}
 		else {
 			if (CharOperation.indexOf('|', name)>0)
 			{
