@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 IBM Corporation and others.
+ * Copyright (c) 2008, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -904,7 +904,7 @@ Document.prototype.createComment=function(data){};
  
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Document.prototype.createCDATASection(data) 
+Document.prototype.createCDATASection=function(data){}; 
  /**
   * function createProcessingInstruction(target, data) 
   * @type ProcessingInstruction

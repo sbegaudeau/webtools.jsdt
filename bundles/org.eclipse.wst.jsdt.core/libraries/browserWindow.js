@@ -36,7 +36,7 @@ Window.prototype.dump=function(arg1){};
  * @memberOf  Window
  * @returns {Object}
  */
-Window.prototype.function(arg1, arg2){};
+Window.prototype.setTimeout=function(arg1, arg2){};
 /**
  * function setInterval() 
  * @type    Object
