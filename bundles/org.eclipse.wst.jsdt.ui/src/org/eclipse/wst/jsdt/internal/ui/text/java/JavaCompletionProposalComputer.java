@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -218,10 +218,9 @@ public class JavaCompletionProposalComputer implements IJavaCompletionProposalCo
 	 * Creates the collector used to get proposals from core.
 	 */
 	protected CompletionProposalCollector createCollector(JavaContentAssistInvocationContext context) {
-		if (PreferenceConstants.getPreferenceStore().getBoolean(PreferenceConstants.CODEASSIST_FILL_ARGUMENT_NAMES))
-			return new FillArgumentNamesCompletionProposalCollector(context);
-		else
-			return new CompletionProposalCollector(context.getCompilationUnit());
+		CompletionProposalCollector collector = new CompletionProposalCollector(context.getCompilationUnit());
+		collector.setInvocationContext(context);
+		return collector;
 	}
 
 	/*

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
@@ -38,6 +39,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.java.AnonymousTypeCompletionProposal;
 import org.eclipse.wst.jsdt.internal.ui.text.java.AnonymousTypeProposalInfo;
 import org.eclipse.wst.jsdt.internal.ui.text.java.FieldProposalInfo;
+import org.eclipse.wst.jsdt.internal.ui.text.java.FilledArgumentNamesMethodProposal;
 import org.eclipse.wst.jsdt.internal.ui.text.java.GetterSetterCompletionProposal;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposal;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaMethodCompletionProposal;
@@ -46,10 +48,12 @@ import org.eclipse.wst.jsdt.internal.ui.text.java.LazyJavaTypeCompletionProposal
 import org.eclipse.wst.jsdt.internal.ui.text.java.MethodDeclarationCompletionProposal;
 import org.eclipse.wst.jsdt.internal.ui.text.java.MethodProposalInfo;
 import org.eclipse.wst.jsdt.internal.ui.text.java.OverrideCompletionProposal;
+import org.eclipse.wst.jsdt.internal.ui.text.java.ParameterGuessingProposal;
 import org.eclipse.wst.jsdt.internal.ui.text.java.ProposalContextInformation;
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavadocInlineTagCompletionProposal;
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavadocLinkTypeCompletionProposal;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
  * JavaScript UI implementation of <code>CompletionRequestor</code>. Produces
@@ -724,7 +728,25 @@ public class CompletionProposalCollector extends CompletionRequestor {
 	}
 
 	private IJavaCompletionProposal createMethodReferenceProposal(CompletionProposal methodProposal) {
-		LazyJavaCompletionProposal proposal= new JavaMethodCompletionProposal(methodProposal, getInvocationContext());
+		IPreferenceStore preferenceStore= JavaScriptPlugin.getDefault().getPreferenceStore();
+		LazyJavaCompletionProposal proposal = null;
+		
+		if(preferenceStore.getBoolean(PreferenceConstants.CODEASSIST_FILL_ARGUMENT_NAMES)) {
+			String completion= String.valueOf(methodProposal.getCompletion());
+			// normal behavior if this is not a normal completion or has no parameters
+			if ((completion.length() == 0) || ((completion.length() == 1) && completion.charAt(0) == ')') || Signature.getParameterCount(methodProposal.getSignature()) == 0 || getContext().isInJsdoc()) {
+				proposal= new JavaMethodCompletionProposal(methodProposal, getInvocationContext());
+			} else {
+				if (preferenceStore.getBoolean(PreferenceConstants.CODEASSIST_GUESS_METHOD_ARGUMENTS))
+					proposal = new ParameterGuessingProposal(methodProposal, getInvocationContext());
+				else
+					proposal =  new FilledArgumentNamesMethodProposal(methodProposal, getInvocationContext());
+			}
+		}
+		
+		if(proposal == null)
+			proposal= new JavaMethodCompletionProposal(methodProposal, getInvocationContext());
+		
 		adaptLength(proposal, methodProposal);
 		return proposal;
 	}
