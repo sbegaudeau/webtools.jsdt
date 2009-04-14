@@ -18,7 +18,7 @@
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
  */
-function Object(){}
+function Object(){};
  /**
   * function toString() 
   * @type    String
@@ -51,7 +51,7 @@ Object.prototype.toLocaleString  = function( ){return "";};
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
-Object.prototype.valueOf = function( ){;};
+Object.prototype.valueOf = function( ){return new Object();};
  /**
   * function hasOwnProperty(V) 
   * @type    Boolean
@@ -121,7 +121,7 @@ Object.prototype.Value=0;
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
  */ 
-Object.prototype.Get=function(property){};
+Object.prototype.Get=function(property){return new Object();};
 /**
   * function Put(property, value)
   * @memberOf Object
@@ -140,7 +140,7 @@ Object.prototype.Put=function(property, value){};
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
  */ 
-Object.prototype.CanPut=function(property){};
+Object.prototype.CanPut=function(property){return false;};
 /**
   * function HasProperty(property)
   * @memberOf Object
@@ -150,7 +150,7 @@ Object.prototype.CanPut=function(property){};
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
  */ 
-Object.prototype.HasProperty=function(property){};
+Object.prototype.HasProperty=function(property){return false;};
 /**
   * function Delete(property)
   * @memberOf Object
@@ -176,7 +176,7 @@ Object.prototype.DefaultValue=function(){};
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
  */ 
-Object.prototype.Match=function(value,index){};
+Object.prototype.Match=function(value,index){return new Object();};
 /**
   * Object String()
   * @super Object
@@ -535,7 +535,7 @@ Array.prototype.length = 1;
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Array.prototype.concat = function(args){};
+Array.prototype.concat = function(args){return [];};
 /**
   * function join(seperator)
   * @param {String} seperator
@@ -547,7 +547,7 @@ Array.prototype.concat = function(args){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Array.prototype.join = function(seperator){};
+Array.prototype.join = function(seperator){return [];};
 /**
   * function pop()
   * @type    Object
@@ -558,7 +558,7 @@ Array.prototype.join = function(seperator){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Array.prototype.pop = function(){};
+Array.prototype.pop = function(){return new Object();};
 /**
   * function push(args)
   * @param {Array} args
@@ -579,7 +579,7 @@ Array.prototype.push = function(args){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Array.prototype.reverse = function(){};
+Array.prototype.reverse = function(){return [];};
 /**
   * function shift()
   * @type    Object
@@ -590,7 +590,7 @@ Array.prototype.reverse = function(){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Array.prototype.shift = function(){};
+Array.prototype.shift = function(){return new Object();};
 /**
   * function slice(start, end)
   * @type    Array
@@ -603,7 +603,7 @@ Array.prototype.shift = function(){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Array.prototype.slice = function(start, end){};
+Array.prototype.slice = function(start, end){return [];};
 /**
   * function sort(funct)
   * @type    Array
@@ -615,7 +615,7 @@ Array.prototype.slice = function(start, end){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Array.prototype.sort = function(funct){};
+Array.prototype.sort = function(funct){return [];};
 /**
   * function splice(start, deletecount, items)
   * @type    Array
@@ -629,7 +629,7 @@ Array.prototype.sort = function(funct){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Array.prototype.splice = function(start, deletecount, items){};
+Array.prototype.splice = function(start, deletecount, items){return [];};
 /**
   * function unshift(items)
   * @type    Array
@@ -641,7 +641,7 @@ Array.prototype.splice = function(start, deletecount, items){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Array.prototype.unshift = function(start){};
+Array.prototype.unshift = function(start){return [];};
 /**
   * Object Function()
   * @super Object
@@ -665,7 +665,7 @@ Function.prototype = new Object();
  * @since   Level 2 Document Object Model Core Definition.
  * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Function.prototype.apply=function(thisArg, argArray){};
+Function.prototype.apply=function(thisArg, argArray){return new Object();};
 /**
   * function call (thisObject, args)
   *
@@ -677,7 +677,7 @@ Function.prototype.apply=function(thisArg, argArray){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Function.prototype.call=function(thisObject, args){};
+Function.prototype.call=function(thisObject, args){return new Object();};
 /**
   * property length
   * @type    Number
@@ -697,7 +697,7 @@ Function.prototype.length=0;
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Function.prototype.HasInstance=function(){};
+Function.prototype.HasInstance=function(){return false;};
 
 /**
   * Object Date(s)
@@ -725,7 +725,7 @@ Date.prototype = new Object();
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.MakeTime =function(hour, min, sec, ms){};
+Date.MakeTime =function(hour, min, sec, ms){return 0;};
 /**
  * function UTC(hour, min, sec, ms)
  * @memberOf Date
@@ -739,7 +739,7 @@ Date.MakeTime =function(hour, min, sec, ms){};
  * @since Level 2 Document Object Model Core Definition.
     
 */
-Date.UTC =function(hour, min, sec, ms){};
+Date.UTC =function(hour, min, sec, ms){return 0;};
 
 /**
   * function MakeDay(year, month, date)
@@ -753,7 +753,7 @@ Date.UTC =function(hour, min, sec, ms){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.MakeDay =function(year, month, date){};
+Date.MakeDay =function(year, month, date){return 0;};
 /**
   * function MakeDate(day,time)
   * @memberOf Date
@@ -766,7 +766,7 @@ Date.MakeDay =function(year, month, date){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.MakeDate =function(day,time){};
+Date.MakeDate =function(day,time){return 0;};
 /**
   * function TimeClip(time)
   * @memberOf Date
@@ -777,7 +777,7 @@ Date.MakeDate =function(day,time){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.TimeClip =function(time){};
+Date.TimeClip =function(time){return 0;};
 
 /**
   * function parse(string)
@@ -789,7 +789,7 @@ Date.TimeClip =function(time){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.parse=function(string){};
+Date.parse=function(string){return new Date();};
 /**
   * function toDateString()
   * @memberOf Date
@@ -799,7 +799,7 @@ Date.parse=function(string){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.toDateString=function(){};
+Date.prototype.toDateString=function(){return "";};
 
 /**
   * function toTimeString()
@@ -810,7 +810,7 @@ Date.prototype.toDateString=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.toTimeString=function(){};
+Date.prototype.toTimeString=function(){return "";};
 /**
   * function toLocaleString()
   * @memberOf Date
@@ -830,7 +830,7 @@ Date.prototype.toLocaleString=function(){return "";};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.toLocaleDateString=function(){};
+Date.prototype.toLocaleDateString=function(){return "";};
 /**
   * function toLocaleTimeString()
   * @memberOf Date
@@ -840,7 +840,7 @@ Date.prototype.toLocaleDateString=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.toLocaleTimeString=function(){};
+Date.prototype.toLocaleTimeString=function(){return "";};
 
 /**
   * function valueOf()
@@ -851,7 +851,7 @@ Date.prototype.toLocaleTimeString=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.valueOf=function(){};
+Date.prototype.valueOf=function(){return new Object();};
 
 /**
   * function getFullYear()
@@ -862,7 +862,7 @@ Date.prototype.valueOf=function(){};
   * @since Level 2 Document Object Model Core Definition.
 
  */
-Date.prototype.getFullYear=function(){};
+Date.prototype.getFullYear=function(){return 0;};
 /**
   * function getTime()
   * @memberOf Date
@@ -872,7 +872,7 @@ Date.prototype.getFullYear=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getTime=function(){};
+Date.prototype.getTime=function(){return 0;};
 /**
   * function getUTCFullYear()
   * @memberOf Date
@@ -882,7 +882,7 @@ Date.prototype.getTime=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getUTCFullYear=function(){};
+Date.prototype.getUTCFullYear=function(){return 0;};
 /**
   * function getMonth()
   * @memberOf Date
@@ -892,7 +892,7 @@ Date.prototype.getUTCFullYear=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getMonth=function(){};
+Date.prototype.getMonth=function(){return 0;};
 /**
   * function getUTCMonth()
   * @memberOf Date
@@ -902,7 +902,7 @@ Date.prototype.getMonth=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getUTCMonth=function(){};
+Date.prototype.getUTCMonth=function(){return 0;};
 /**
   * function getDate()
   * @memberOf Date
@@ -912,7 +912,7 @@ Date.prototype.getUTCMonth=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getDate=function(){};
+Date.prototype.getDate=function(){return 0;};
 /**
   * function getUTCDate()
   * @memberOf Date
@@ -922,7 +922,7 @@ Date.prototype.getDate=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getUTCDate=function(){};
+Date.prototype.getUTCDate=function(){return 0;};
 /**
   * function getDay()
   * @memberOf Date
@@ -932,7 +932,7 @@ Date.prototype.getUTCDate=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getDay=function(){};
+Date.prototype.getDay=function(){return 0;};
 /**
   * function getUTCDay()
   * @memberOf Date
@@ -942,7 +942,7 @@ Date.prototype.getDay=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getUTCDay=function(){};
+Date.prototype.getUTCDay=function(){return 0;};
 /**
   * function getHours()
   * @memberOf Date
@@ -952,7 +952,7 @@ Date.prototype.getUTCDay=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getHours=function(){};
+Date.prototype.getHours=function(){return 0;};
 /**
   * function getUTCHours()
   * @memberOf Date
@@ -962,7 +962,7 @@ Date.prototype.getHours=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getUTCHours=function(){};
+Date.prototype.getUTCHours=function(){return 0;};
 /**
   * function getMinutes()
   * @memberOf Date
@@ -972,7 +972,7 @@ Date.prototype.getUTCHours=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getMinutes=function(){};
+Date.prototype.getMinutes=function(){return 0;};
 /**
   * function getUTCMinutes()
   * @memberOf Date
@@ -982,7 +982,7 @@ Date.prototype.getMinutes=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getUTCMinutes=function(){};
+Date.prototype.getUTCMinutes=function(){return 0;};
 /**
   * function getSeconds()
   * @memberOf Date
@@ -992,7 +992,7 @@ Date.prototype.getUTCMinutes=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getSeconds=function(){};
+Date.prototype.getSeconds=function(){return 0;};
 /**
   * function getUTCSeconds()
   * @memberOf Date
@@ -1002,7 +1002,7 @@ Date.prototype.getSeconds=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getUTCSeconds=function(){};
+Date.prototype.getUTCSeconds=function(){return 0;};
 
 /**
   * function getMilliseconds()
@@ -1013,7 +1013,7 @@ Date.prototype.getUTCSeconds=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getMilliseconds=function(){};
+Date.prototype.getMilliseconds=function(){return 0;};
 /**
   * function getUTCMilliseconds()
   * @memberOf Date
@@ -1023,7 +1023,7 @@ Date.prototype.getMilliseconds=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getUTCMilliseconds=function(){};
+Date.prototype.getUTCMilliseconds=function(){return 0;};
 /**
   * function getTimezoneOffset()
   * @memberOf Date
@@ -1033,7 +1033,7 @@ Date.prototype.getUTCMilliseconds=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.getTimezoneOffset=function(){};
+Date.prototype.getTimezoneOffset=function(){return 0;};
 /**
   * function setTime(value)
   * @memberOf Date
@@ -1044,7 +1044,7 @@ Date.prototype.getTimezoneOffset=function(){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.setTime=function(value){};
+Date.prototype.setTime=function(value){return 0;};
 
 /**
   * function setMilliseconds(value)
@@ -1056,7 +1056,7 @@ Date.prototype.setTime=function(value){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.setMilliseconds=function(value){};
+Date.prototype.setMilliseconds=function(value){return 0;};
 /**
   * function setUTCMilliseconds(value)
   * @memberOf Date
@@ -1067,7 +1067,7 @@ Date.prototype.setMilliseconds=function(value){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.setUTCMilliseconds=function(ms){};
+Date.prototype.setUTCMilliseconds=function(ms){return 0;};
 /**
   * function setSeconds(sec,ms)
   * @memberOf Date
@@ -1079,7 +1079,7 @@ Date.prototype.setUTCMilliseconds=function(ms){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.setSeconds=function(sec,ms){};
+Date.prototype.setSeconds=function(sec,ms){return 0;};
 /**
   * function setUTCSeconds(sec,ms)
   * @memberOf Date
@@ -1091,7 +1091,7 @@ Date.prototype.setSeconds=function(sec,ms){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.setUTCSeconds=function(sec,ms){};
+Date.prototype.setUTCSeconds=function(sec,ms){return 0;};
 /**
   * function setMinutes(min,sec,ms)
   * @memberOf Date
@@ -1104,7 +1104,7 @@ Date.prototype.setUTCSeconds=function(sec,ms){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.setMinutes=function(min,sec,ms){};
+Date.prototype.setMinutes=function(min,sec,ms){return 0;};
 /**
   * function setUTCMinute(min,sec,ms)
   * @memberOf Date
@@ -1117,7 +1117,7 @@ Date.prototype.setMinutes=function(min,sec,ms){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.setUTCMinute=function(min,sec,ms){};
+Date.prototype.setUTCMinute=function(min,sec,ms){return 0;};
 /**
   * function setHours(hour, min,sec,ms)
   * @memberOf Date
@@ -1131,7 +1131,7 @@ Date.prototype.setUTCMinute=function(min,sec,ms){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.setHours=function(hour,min,sec,ms){};
+Date.prototype.setHours=function(hour,min,sec,ms){return 0;};
 /**
   * function setUTCHours(hour, min,sec,ms)
   * @memberOf Date
@@ -1145,7 +1145,7 @@ Date.prototype.setHours=function(hour,min,sec,ms){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.setUTCHours=function(hour,min,sec,ms){};
+Date.prototype.setUTCHours=function(hour,min,sec,ms){return 0;};
 
 /**
   * function setDate(date)
@@ -1157,7 +1157,7 @@ Date.prototype.setUTCHours=function(hour,min,sec,ms){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.setDate=function(date){};
+Date.prototype.setDate=function(date){return 0;};
 
 /**
   * function setUTCDate(date)
@@ -1169,7 +1169,7 @@ Date.prototype.setDate=function(date){};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.setUTCDate=function(date){};
+Date.prototype.setUTCDate=function(date){return 0;};
 
 /**
   * function setMonth(month,date)
@@ -1207,7 +1207,7 @@ Date.prototype.setUTCMonth=function(month,date){return 1;};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.prototype.setFullYear=function(year, month,date){};
+Date.prototype.setFullYear=function(year, month,date){return 0;};
 /**
   * function setUTCFullYear(month,date)
   * @memberOf Date
@@ -1219,7 +1219,7 @@ Date.prototype.setFullYear=function(year, month,date){};
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
  */
-Date.prototype.setUTCFullYear=function(year, month,date){return 1};
+Date.prototype.setUTCFullYear=function(year, month,date){return 1;};
 /**
  * function toUTCString()
  * @memberOf Date
@@ -1229,7 +1229,7 @@ Date.prototype.setUTCFullYear=function(year, month,date){return 1};
  * @since Level 2 Document Object Model Core Definition.
 
 */
-Date.prototype.toUTCString=function(){};
+Date.prototype.toUTCString=function(){return "";};
 /**
   * Object Global
   * @super Object
@@ -1266,6 +1266,7 @@ Global.prototype.Infinity=0;
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
+Global.prototype.eval=function(s){return new Object();};
 
 //@GINO: Bug 197987 (Temp Fix)
 /**
@@ -1275,7 +1276,6 @@ Global.prototype.Infinity=0;
  */
 Global.prototype.debugger=null;
 
-Global.prototype.eval=function(s){};
 /**
   * function parseInt(s,radix)
   * @memberOf Global
@@ -1287,7 +1287,7 @@ Global.prototype.eval=function(s){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Global.prototype.parseInt=function(s,radix){};
+Global.prototype.parseInt=function(s,radix){return 0;};
 /**
   * function parseFloat(s)
   * @memberOf Global
@@ -1298,7 +1298,7 @@ Global.prototype.parseInt=function(s,radix){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Global.prototype.parseFloat=function(s){};
+Global.prototype.parseFloat=function(s){return 0;};
 /**
  * function escape(s)
  * @memberOf Global
@@ -1309,7 +1309,7 @@ Global.prototype.parseFloat=function(s){};
  * @since   Level 2 Document Object Model Core Definition.
  * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
 */
-Global.prototype.escape=function(s){};
+Global.prototype.escape=function(s){return "";};
 /**
  * function unescape(s)
  * @memberOf Global
@@ -1320,7 +1320,7 @@ Global.prototype.escape=function(s){};
  * @since   Level 2 Document Object Model Core Definition.
  * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
 */
-Global.prototype.unescape=function(s){};
+Global.prototype.unescape=function(s){return "";};
 /**
   * function isNaN(number)
   * @memberOf Global
@@ -1331,7 +1331,7 @@ Global.prototype.unescape=function(s){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Global.prototype.isNaN=function(number){};
+Global.prototype.isNaN=function(number){return false;};
 /**
   * function isFinite(number)
   * @memberOf Global
@@ -1342,7 +1342,7 @@ Global.prototype.isNaN=function(number){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Global.prototype.isFinite=function(number){};
+Global.prototype.isFinite=function(number){return false;};
 /**
  * function decodeURI(encodedURI)
  * @memberOf Global
@@ -1353,7 +1353,7 @@ Global.prototype.isFinite=function(number){};
  * @since   Level 2 Document Object Model Core Definition.
  * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
 */
-Global.prototype.decodeURI=function(encodedURI){};
+Global.prototype.decodeURI=function(encodedURI){return "";};
 /**
  * @memberOf Global
  * @param {String} uriComponent
@@ -1363,7 +1363,7 @@ Global.prototype.decodeURI=function(encodedURI){};
  * @since   Level 2 Document Object Model Core Definition.
  * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
 */
-Global.prototype.decodeURIComponent=function(uriComponent){};
+Global.prototype.decodeURIComponent=function(uriComponent){return "";};
 /**
  * function encodeURIComponent(uriComponent)
  * @memberOf Global
@@ -1374,7 +1374,7 @@ Global.prototype.decodeURIComponent=function(uriComponent){};
  * @since   Level 2 Document Object Model Core Definition.
  * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
 */
-Global.prototype.encodeURIComponent=function(uriComponent){};
+Global.prototype.encodeURIComponent=function(uriComponent){return "";};
 
 /**
  * function encodeURIComponent(URI)
@@ -1386,7 +1386,7 @@ Global.prototype.encodeURIComponent=function(uriComponent){};
  * @since   Level 2 Document Object Model Core Definition.
  * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
 */
-Global.prototype.encodeURI=function(URI){};
+Global.prototype.encodeURI=function(URI){return "";};
 
 /**
   * Object Math(\s)
@@ -1473,7 +1473,7 @@ Math.SQRT2=0;
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.abs=function(x){};
+Math.abs=function(x){return 0;};
 /**
   * function acos(x)
   * @memberOf Math
@@ -1484,7 +1484,7 @@ Math.abs=function(x){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.acos=function(x){};
+Math.acos=function(x){return 0;};
 /**
   * function asin(x)
   * @memberOf Math
@@ -1495,7 +1495,7 @@ Math.acos=function(x){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.asin=function(x){};
+Math.asin=function(x){return 0;};
 /**
   * function atan(x)
   * @memberOf Math
@@ -1506,7 +1506,7 @@ Math.asin=function(x){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.atan=function(x){};
+Math.atan=function(x){return 0;};
 /**
   * function atan2(x,y)
   * @memberOf Math
@@ -1518,7 +1518,7 @@ Math.atan=function(x){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.atan2=function(x,y){};
+Math.atan2=function(x,y){return 0;};
 /**
   * function ceil(x)
   * @memberOf Math
@@ -1529,7 +1529,7 @@ Math.atan2=function(x,y){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.ceil=function(x){};
+Math.ceil=function(x){return 0;};
 /**
   * function cos(x)
   * @memberOf Math
@@ -1540,7 +1540,7 @@ Math.ceil=function(x){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.cos=function(x){};
+Math.cos=function(x){return 0;};
 /**
   * function exp(x)
   * @memberOf Math
@@ -1551,7 +1551,7 @@ Math.cos=function(x){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.exp=function(x){};
+Math.exp=function(x){return 0;};
 /**
   * function floor(x)
   * @memberOf Math
@@ -1562,7 +1562,7 @@ Math.exp=function(x){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.floor=function(x){};
+Math.floor=function(x){return 0;};
 /**
   * function log(x)
   * @memberOf Math
@@ -1573,7 +1573,7 @@ Math.floor=function(x){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.log=function(x){};
+Math.log=function(x){return 0;};
 /**
   * function max(arg)
   * @memberOf Math
@@ -1584,7 +1584,7 @@ Math.log=function(x){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.max=function(args){};
+Math.max=function(args){return 0;};
 /**
   * function min(arg)
   * @memberOf Math
@@ -1595,7 +1595,7 @@ Math.max=function(args){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.min=function(args){};
+Math.min=function(args){return 0;};
 /**
   * function pow(x,y)
   * @memberOf Math
@@ -1607,7 +1607,7 @@ Math.min=function(args){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.pow=function(x,y){};
+Math.pow=function(x,y){return 0;};
 /**
   * function pow()
   * @memberOf Math
@@ -1617,7 +1617,7 @@ Math.pow=function(x,y){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.random=function(){};
+Math.random=function(){return 0;};
 /**
   * function round(x)
   * @memberOf Math
@@ -1628,7 +1628,7 @@ Math.random=function(){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.round=function(x){};
+Math.round=function(x){return 0;};
 /**
   * function sin(x)
   * @memberOf Math
@@ -1639,7 +1639,7 @@ Math.round=function(x){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.sin=function(x){};
+Math.sin=function(x){return 0;};
 /**
   * function sqrt(x)
   * @memberOf Math
@@ -1650,7 +1650,7 @@ Math.sin=function(x){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.sqrt=function(x){};
+Math.sqrt=function(x){return 0;};
 /**
   * function tan(x)
   * @memberOf Math
@@ -1661,7 +1661,7 @@ Math.sqrt=function(x){};
   * @since   Level 2 Document Object Model Core Definition.
   * @see    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.tan=function(x){};
+Math.tan=function(x){return 0;};
 /**
   * Object RegExp()
   * @super Object
@@ -1681,7 +1681,7 @@ RegExp.prototype=new Object();
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
  */
-RegExp.prototype.exec=function(string){};
+RegExp.prototype.exec=function(string){return [];};
 /**
   * function test(string)
   * @param {String} string
@@ -1691,7 +1691,7 @@ RegExp.prototype.exec=function(string){};
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.  
  */
-RegExp.prototype.test=function(string){};
+RegExp.prototype.test=function(string){return false;};
 /**
   * property source
   * @type String
