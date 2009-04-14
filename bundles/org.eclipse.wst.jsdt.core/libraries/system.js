@@ -789,7 +789,7 @@ Date.TimeClip =function(time){return 0;};
   * @since Level 2 Document Object Model Core Definition.
      
  */
-Date.parse=function(string){return new Date();};
+Date.parse=function(string){return new Date("");};
 /**
   * function toDateString()
   * @memberOf Date
