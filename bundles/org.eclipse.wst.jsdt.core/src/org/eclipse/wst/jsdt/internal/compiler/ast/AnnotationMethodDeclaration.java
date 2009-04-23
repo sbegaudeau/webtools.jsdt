@@ -93,15 +93,6 @@ public class AnnotationMethodDeclaration extends MethodDeclaration implements IA
 	public void resolveStatements() {
 
 		super.resolveStatements();
-		if (this.arguments != null) {
-			scope.problemReporter().annotationMembersCannotHaveParameters(this);
-		}
-		if (this.typeParameters != null) {
-			scope.problemReporter().annotationMembersCannotHaveTypeParameters(this);
-		}
-		if (this.extendedDimensions != 0) {
-			scope.problemReporter().illegalExtendedDimensions(this);
-		}
 		if (this.binding == null) return;
 		TypeBinding returnTypeBinding = this.binding.returnType;
 		if (returnTypeBinding != null) {
@@ -126,7 +117,6 @@ public class AnnotationMethodDeclaration extends MethodDeclaration implements IA
 					if (leafReturnType.isEnum() || leafReturnType.isAnnotationType())
 						break checkAnnotationMethodType;
 				}
-				scope.problemReporter().invalidAnnotationMemberType(this);
 			}
 			if (this.defaultValue != null) {
 				MemberValuePair pair = new MemberValuePair(this.selector, this.sourceStart, this.sourceEnd, this.defaultValue);

@@ -84,8 +84,6 @@ public class CompilerOptions {
 	public static final String OPTION_ReportUncheckedTypeOperation = "org.eclipse.wst.jsdt.core.compiler.problem.uncheckedTypeOperation"; //$NON-NLS-1$
 	public static final String OPTION_ReportRawTypeReference =  "org.eclipse.wst.jsdt.core.compiler.problem.rawTypeReference"; //$NON-NLS-1$
 	public static final String OPTION_ReportFinalParameterBound = "org.eclipse.wst.jsdt.core.compiler.problem.finalParameterBound"; //$NON-NLS-1$
-	public static final String OPTION_ReportSwitchCaseShouldBeConstant = "org.eclipse.wst.jsdt.core.compiler.problem.SwitchCaseShouldBeConstant"; //$NON-NLS-1$
-	public static final String OPTION_ReportVarargsArgumentNeedCast = "org.eclipse.wst.jsdt.core.compiler.problem.varargsArgumentNeedCast"; //$NON-NLS-1$
 	public static final String OPTION_Source = "org.eclipse.wst.jsdt.core.compiler.source"; //$NON-NLS-1$
 	public static final String OPTION_TargetPlatform = "org.eclipse.wst.jsdt.core.compiler.codegen.targetPlatform"; //$NON-NLS-1$
 	public static final String OPTION_Compliance = "org.eclipse.wst.jsdt.core.compiler.compliance"; //$NON-NLS-1$
@@ -100,14 +98,9 @@ public class CompilerOptions {
 	public static final String OPTION_ReportDuplicateLocalVariables = "org.eclipse.wst.jsdt.core.compiler.problem.duplicateLocalVariables"; //$NON-NLS-1$
 	public static final String OPTION_ReportRedundantNullCheck = "org.eclipse.wst.jsdt.core.compiler.problem.redundantNullCheck"; //$NON-NLS-1$
 	public static final String OPTION_ReportAutoboxing = "org.eclipse.wst.jsdt.core.compiler.problem.autoboxing"; //$NON-NLS-1$
-	public static final String OPTION_ReportAnnotationSuperInterface = "org.eclipse.wst.jsdt.core.compiler.problem.annotationSuperInterface"; //$NON-NLS-1$
-	public static final String OPTION_ReportMissingOverrideAnnotation = "org.eclipse.wst.jsdt.core.compiler.problem.missingOverrideAnnotation"; //$NON-NLS-1$
-	public static final String OPTION_ReportMissingDeprecatedAnnotation = "org.eclipse.wst.jsdt.core.compiler.problem.missingDeprecatedAnnotation"; //$NON-NLS-1$
-	public static final String OPTION_ReportIncompleteEnumSwitch = "org.eclipse.wst.jsdt.core.compiler.problem.incompleteEnumSwitch"; //$NON-NLS-1$
 	public static final String OPTION_ReportForbiddenReference =  "org.eclipse.wst.jsdt.core.compiler.problem.forbiddenReference"; //$NON-NLS-1$
 	public static final String OPTION_ReportDiscouragedReference =  "org.eclipse.wst.jsdt.core.compiler.problem.discouragedReference"; //$NON-NLS-1$
 	public static final String OPTION_SuppressWarnings =  "org.eclipse.wst.jsdt.core.compiler.problem.suppressWarnings"; //$NON-NLS-1$
-	public static final String OPTION_ReportUnhandledWarningToken =  "org.eclipse.wst.jsdt.core.compiler.problem.unhandledWarningToken"; //$NON-NLS-1$
 	public static final String OPTION_ReportUnusedLabel =  "org.eclipse.wst.jsdt.core.compiler.problem.unusedLabel"; //$NON-NLS-1$
 	public static final String OPTION_FatalOptionalError =  "org.eclipse.wst.jsdt.core.compiler.problem.fatalOptionalError"; //$NON-NLS-1$
 	public static final String OPTION_ReportParameterAssignment =  "org.eclipse.wst.jsdt.core.compiler.problem.parameterAssignment"; //$NON-NLS-1$
@@ -197,19 +190,12 @@ public class CompilerOptions {
 	public static final long FinalParameterBound = ASTNode.Bit32L;
 //TODO: remove	MissingSerialVersion
 	public static final long MissingSerialVersion = ASTNode.Bit33L;
-	public static final long SwitchCaseShouldBeConstant = ASTNode.Bit33L;
 	public static final long EnumUsedAsAnIdentifier = ASTNode.Bit34L;
 	public static final long ForbiddenReference = ASTNode.Bit35L;
-	public static final long VarargsArgumentNeedCast = ASTNode.Bit36L;
 	public static final long NullReference = ASTNode.Bit37L;
 	public static final long AutoBoxing = ASTNode.Bit38L;
-	public static final long AnnotationSuperInterface = ASTNode.Bit39L;
 	public static final long TypeHiding = ASTNode.Bit40L;
-	public static final long MissingOverrideAnnotation = ASTNode.Bit41L;
-	public static final long IncompleteEnumSwitch = ASTNode.Bit42L;
-	public static final long MissingDeprecatedAnnotation = ASTNode.Bit43L;
 	public static final long DiscouragedReference = ASTNode.Bit44L;
-	public static final long UnhandledWarningToken = ASTNode.Bit45L;
 	public static final long RawTypeReference = ASTNode.Bit46L;
 	public static final long UnusedLabel = ASTNode.Bit47L;
 	public static final long ParameterAssignment = ASTNode.Bit48L;
@@ -253,14 +239,10 @@ public class CompilerOptions {
 		| EnumUsedAsAnIdentifier
 		| UncheckedTypeOperation
 		| RawTypeReference
-		| SwitchCaseShouldBeConstant
-		| VarargsArgumentNeedCast
 		| ForbiddenReference
 		| DiscouragedReference
-		| AnnotationSuperInterface
 		| TypeHiding
 		| FinalParameterBound
-		| UnhandledWarningToken
 		| UnusedLocalVariable
 		| UnusedPrivateMember
 		| UnusedLabel
@@ -424,8 +406,6 @@ public class CompilerOptions {
 		optionsMap.put(OPTION_ReportUnnecessaryTypeCheck, getSeverityString(UnnecessaryTypeCheck));
 		optionsMap.put(OPTION_ReportUnnecessaryElse, getSeverityString(UnnecessaryElse));
 		optionsMap.put(OPTION_ReportAutoboxing, getSeverityString(AutoBoxing));
-		optionsMap.put(OPTION_ReportAnnotationSuperInterface, getSeverityString(AnnotationSuperInterface));
-		optionsMap.put(OPTION_ReportIncompleteEnumSwitch, getSeverityString(IncompleteEnumSwitch));
 		optionsMap.put(OPTION_ReportInvalidJavadoc, getSeverityString(InvalidJavadoc));
 		optionsMap.put(OPTION_ReportInvalidJavadocTagsVisibility, getVisibilityString(this.reportInvalidJavadocTagsVisibility));
 		optionsMap.put(OPTION_ReportInvalidJavadocTags, this.reportInvalidJavadocTags ? ENABLED : DISABLED);
@@ -444,13 +424,8 @@ public class CompilerOptions {
 		optionsMap.put(OPTION_ReportUncheckedTypeOperation, getSeverityString(UncheckedTypeOperation));
 		optionsMap.put(OPTION_ReportRawTypeReference, getSeverityString(RawTypeReference));
 		optionsMap.put(OPTION_ReportFinalParameterBound, getSeverityString(FinalParameterBound));
-		optionsMap.put(OPTION_ReportSwitchCaseShouldBeConstant, getSeverityString(SwitchCaseShouldBeConstant));
 		optionsMap.put(OPTION_ReportForbiddenReference, getSeverityString(ForbiddenReference));
 		optionsMap.put(OPTION_ReportDiscouragedReference, getSeverityString(DiscouragedReference));
-		optionsMap.put(OPTION_ReportVarargsArgumentNeedCast, getSeverityString(VarargsArgumentNeedCast));
-		optionsMap.put(OPTION_ReportMissingOverrideAnnotation, getSeverityString(MissingOverrideAnnotation));
-		optionsMap.put(OPTION_ReportMissingDeprecatedAnnotation, getSeverityString(MissingDeprecatedAnnotation));
-		optionsMap.put(OPTION_ReportIncompleteEnumSwitch, getSeverityString(IncompleteEnumSwitch));
 		optionsMap.put(OPTION_ReportUnusedLabel, getSeverityString(UnusedLabel));
 		optionsMap.put(OPTION_Compliance, versionFromJdkLevel(this.complianceLevel));
 		optionsMap.put(OPTION_Source, versionFromJdkLevel(this.sourceLevel));
@@ -473,7 +448,6 @@ public class CompilerOptions {
 		optionsMap.put(OPTION_ReportDuplicateLocalVariables, getSeverityString(DuplicateLocalVariables));
 		optionsMap.put(OPTION_ReportRedundantNullCheck, getSeverityString(RedundantNullCheck));
 		optionsMap.put(OPTION_SuppressWarnings, this.suppressWarnings ? ENABLED : DISABLED);
-		optionsMap.put(OPTION_ReportUnhandledWarningToken, getSeverityString(UnhandledWarningToken));
 		optionsMap.put(OPTION_ReportParameterAssignment, getSeverityString(ParameterAssignment));
 		optionsMap.put(OPTION_ReportFallthroughCase, getSeverityString(FallthroughCase));
 		optionsMap.put(OPTION_ReportOverridingMethodWithoutSuperInvocation, getSeverityString(OverridingMethodWithoutSuperInvocation));
@@ -575,14 +549,10 @@ public class CompilerOptions {
 		} else {
 			irritantInt = (int)(irritant >>> 32);
 			switch (irritantInt) {
-				case (int)(SwitchCaseShouldBeConstant >>> 32) :
-					return OPTION_ReportSwitchCaseShouldBeConstant ;
 				case (int)(EnumUsedAsAnIdentifier >>> 32) :
 					return OPTION_ReportEnumIdentifier;
 				case (int)(ForbiddenReference >>> 32) :
 					return OPTION_ReportForbiddenReference;
-				case (int)(VarargsArgumentNeedCast >>> 32) :
-					return OPTION_ReportVarargsArgumentNeedCast;
 				case (int)(NullReference >>> 32) :
 					return OPTION_ReportNullReference;
 				case (int)(PotentialNullReference >>> 32) :
@@ -593,20 +563,10 @@ public class CompilerOptions {
 					return OPTION_ReportRedundantNullCheck;
 				case (int)(AutoBoxing >>> 32) :
 					return OPTION_ReportAutoboxing;
-				case (int)(AnnotationSuperInterface >>> 32) :
-					return OPTION_ReportAnnotationSuperInterface;
 				case (int)(TypeHiding >>> 32) :
 					return OPTION_ReportTypeParameterHiding;
-				case (int)(MissingOverrideAnnotation >>> 32) :
-					return OPTION_ReportMissingOverrideAnnotation;
-				case (int)(IncompleteEnumSwitch >>> 32) :
-					return OPTION_ReportIncompleteEnumSwitch;
-				case (int)(MissingDeprecatedAnnotation >>> 32) :
-					return OPTION_ReportMissingDeprecatedAnnotation;
 				case (int)(DiscouragedReference >>> 32) :
 					return OPTION_ReportDiscouragedReference;
-				case (int)(UnhandledWarningToken >>> 32) :
-					return OPTION_ReportUnhandledWarningToken;
 				case (int)(RawTypeReference >>> 32) :
 					return OPTION_ReportRawTypeReference;
 				case (int)(UnusedLabel >>> 32) :
@@ -896,20 +856,13 @@ public class CompilerOptions {
 		if ((optionValue = optionsMap.get(OPTION_ReportUncheckedTypeOperation)) != null) updateSeverity(UncheckedTypeOperation, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportRawTypeReference)) != null) updateSeverity(RawTypeReference, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportFinalParameterBound)) != null) updateSeverity(FinalParameterBound, optionValue);
-		if ((optionValue = optionsMap.get(OPTION_ReportSwitchCaseShouldBeConstant)) != null) updateSeverity(SwitchCaseShouldBeConstant, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportForbiddenReference)) != null) updateSeverity(ForbiddenReference, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportDiscouragedReference)) != null) updateSeverity(DiscouragedReference, optionValue);
-		if ((optionValue = optionsMap.get(OPTION_ReportVarargsArgumentNeedCast)) != null) updateSeverity(VarargsArgumentNeedCast, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportNullReference)) != null) updateSeverity(NullReference, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportPotentialNullReference)) != null) updateSeverity(PotentialNullReference, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportDuplicateLocalVariables)) != null) updateSeverity(DuplicateLocalVariables, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportRedundantNullCheck)) != null) updateSeverity(RedundantNullCheck, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportAutoboxing)) != null) updateSeverity(AutoBoxing, optionValue);
-		if ((optionValue = optionsMap.get(OPTION_ReportAnnotationSuperInterface)) != null) updateSeverity(AnnotationSuperInterface, optionValue);
-		if ((optionValue = optionsMap.get(OPTION_ReportMissingOverrideAnnotation)) != null) updateSeverity(MissingOverrideAnnotation, optionValue);
-		if ((optionValue = optionsMap.get(OPTION_ReportMissingDeprecatedAnnotation)) != null) updateSeverity(MissingDeprecatedAnnotation, optionValue);
-		if ((optionValue = optionsMap.get(OPTION_ReportIncompleteEnumSwitch)) != null) updateSeverity(IncompleteEnumSwitch, optionValue);
-		if ((optionValue = optionsMap.get(OPTION_ReportUnhandledWarningToken)) != null) updateSeverity(UnhandledWarningToken, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportUnusedLabel)) != null) updateSeverity(UnusedLabel, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportParameterAssignment)) != null) updateSeverity(ParameterAssignment, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportFallthroughCase)) != null) updateSeverity(FallthroughCase, optionValue);
@@ -1099,8 +1052,6 @@ public class CompilerOptions {
 		buf.append("\n\t- unsafe type operation: ").append(getSeverityString(UncheckedTypeOperation)); //$NON-NLS-1$
 		buf.append("\n\t- unsafe raw type: ").append(getSeverityString(RawTypeReference)); //$NON-NLS-1$
 		buf.append("\n\t- final bound for type parameter: ").append(getSeverityString(FinalParameterBound)); //$NON-NLS-1$
-		buf.append("\n\t- missing serialVersionUID: ").append(getSeverityString(SwitchCaseShouldBeConstant)); //$NON-NLS-1$
-		buf.append("\n\t- varargs argument need cast: ").append(getSeverityString(VarargsArgumentNeedCast)); //$NON-NLS-1$
 		buf.append("\n\t- forbidden reference to type with access restriction: ").append(getSeverityString(ForbiddenReference)); //$NON-NLS-1$
 		buf.append("\n\t- discouraged reference to type with access restriction: ").append(getSeverityString(DiscouragedReference)); //$NON-NLS-1$
 		buf.append("\n\t- null reference: ").append(getSeverityString(NullReference)); //$NON-NLS-1$
@@ -1108,12 +1059,7 @@ public class CompilerOptions {
 		buf.append("\n\t- duplicate local variables: ").append(getSeverityString(DuplicateLocalVariables)); //$NON-NLS-1%
 		buf.append("\n\t- redundant null check: ").append(getSeverityString(RedundantNullCheck)); //$NON-NLS-1$
 		buf.append("\n\t- autoboxing: ").append(getSeverityString(AutoBoxing)); //$NON-NLS-1$
-		buf.append("\n\t- annotation super interface: ").append(getSeverityString(AnnotationSuperInterface)); //$NON-NLS-1$
-		buf.append("\n\t- missing @Override annotation: ").append(getSeverityString(MissingOverrideAnnotation)); //$NON-NLS-1$
-		buf.append("\n\t- missing @Deprecated annotation: ").append(getSeverityString(MissingDeprecatedAnnotation)); //$NON-NLS-1$
-		buf.append("\n\t- incomplete enum switch: ").append(getSeverityString(IncompleteEnumSwitch)); //$NON-NLS-1$
 		buf.append("\n\t- suppress warnings: ").append(this.suppressWarnings ? ENABLED : DISABLED); //$NON-NLS-1$
-		buf.append("\n\t- unhandled warning token: ").append(getSeverityString(UnhandledWarningToken)); //$NON-NLS-1$
 		buf.append("\n\t- unused label: ").append(getSeverityString(UnusedLabel)); //$NON-NLS-1$
 		buf.append("\n\t- treat optional error as fatal: ").append(this.treatOptionalErrorAsFatal ? ENABLED : DISABLED); //$NON-NLS-1$
 		buf.append("\n\t- parameter assignment: ").append(getSeverityString(ParameterAssignment)); //$NON-NLS-1$
@@ -1206,7 +1152,6 @@ public class CompilerOptions {
 	 */
 	public static String[] warningOptionNames() {
 		String[] result = {
-			OPTION_ReportAnnotationSuperInterface,
 			OPTION_ReportAssertIdentifier,
 			OPTION_ReportAutoboxing,
 			OPTION_ReportDeprecation,
@@ -1220,16 +1165,12 @@ public class CompilerOptions {
 			OPTION_ReportForbiddenReference,
 			OPTION_ReportHiddenCatchBlock,
 			OPTION_ReportIncompatibleNonInheritedInterfaceMethod,
-			OPTION_ReportIncompleteEnumSwitch,
 			OPTION_ReportIndirectStaticAccess,
 			OPTION_ReportInvalidJavadoc,
 			OPTION_ReportLocalVariableHiding,
 			OPTION_ReportMethodWithConstructorName,
-			OPTION_ReportMissingDeprecatedAnnotation,
 			OPTION_ReportMissingJavadocComments,
 			OPTION_ReportMissingJavadocTags,
-			OPTION_ReportMissingOverrideAnnotation,
-			OPTION_ReportSwitchCaseShouldBeConstant,
 			OPTION_ReportNoEffectAssignment,
 			OPTION_ReportNoImplicitStringConversion,
 			OPTION_ReportNonExternalizedStringLiteral,
@@ -1252,8 +1193,6 @@ public class CompilerOptions {
 			OPTION_ReportUnusedLocal,
 			OPTION_ReportUnusedParameter,
 			OPTION_ReportUnusedPrivateMember,
-			OPTION_ReportVarargsArgumentNeedCast,
-			OPTION_ReportUnhandledWarningToken,
 			OPTION_ReportOverridingMethodWithoutSuperInvocation
 		};
 		return result;
@@ -1295,16 +1234,10 @@ public class CompilerOptions {
 		} else {
 			irritantInt = (int)(irritant >>> 32);
 			switch (irritantInt) {
-				case (int)(SwitchCaseShouldBeConstant >>> 32) :
-					return "serial"; //$NON-NLS-1$
 				case (int)(AutoBoxing >>> 32) :
 					return "boxing"; //$NON-NLS-1$
 				case (int)(TypeHiding >>> 32) :
 					return "hiding"; //$NON-NLS-1$
-				case (int)(IncompleteEnumSwitch >>> 32) :
-					return "incomplete-switch"; //$NON-NLS-1$
-				case (int)(MissingDeprecatedAnnotation >>> 32) :
-					return "dep-ann"; //$NON-NLS-1$
 				case (int)(RawTypeReference >>> 32):
 					return "unchecked"; //$NON-NLS-1$
 				case (int) (UnusedLabel >>> 32):
@@ -1329,16 +1262,13 @@ public class CompilerOptions {
 		"all", //$NON-NLS-1$
 		"boxing", //$NON-NLS-1$
 		"cast", //$NON-NLS-1$
-		"dep-ann", //$NON-NLS-1$
 		"deprecation", //$NON-NLS-1$
 		"fallthrough", //$NON-NLS-1$
 		"finally", //$NON-NLS-1$
 		"hiding", //$NON-NLS-1$
-		"incomplete-switch", //$NON-NLS-1$
 		"nls", //$NON-NLS-1$
 		"null", //$NON-NLS-1$
 		"restriction", //$NON-NLS-1$
-		"serial", //$NON-NLS-1$
 		"static-access", //$NON-NLS-1$
 		"super", //$NON-NLS-1$
 		"synthetic-access", //$NON-NLS-1$
@@ -1365,8 +1295,6 @@ public class CompilerOptions {
 			case 'd' :
 				if ("deprecation".equals(warningToken)) //$NON-NLS-1$
 					return UsingDeprecatedAPI;
-				if ("dep-ann".equals(warningToken)) //$NON-NLS-1$
-					return MissingDeprecatedAnnotation;
 				break;
 			case 'f' :
 				if ("fallthrough".equals(warningToken)) //$NON-NLS-1$
@@ -1377,9 +1305,6 @@ public class CompilerOptions {
 			case 'h' :
 				if ("hiding".equals(warningToken)) //$NON-NLS-1$
 					return FieldHiding | LocalVariableHiding | MaskedCatchBlock | TypeHiding;
-			case 'i' :
-				if ("incomplete-switch".equals(warningToken)) //$NON-NLS-1$
-					return IncompleteEnumSwitch;
 				break;
 			case 'n' :
 				if ("nls".equals(warningToken)) //$NON-NLS-1$
@@ -1392,8 +1317,6 @@ public class CompilerOptions {
 					return DiscouragedReference | ForbiddenReference;
 				break;
 			case 's' :
-				if ("serial".equals(warningToken)) //$NON-NLS-1$
-					return SwitchCaseShouldBeConstant;
 				if ("static-access".equals(warningToken)) //$NON-NLS-1$
 					return IndirectStaticAccess | NonStaticAccessToStatic;
 				if ("synthetic-access".equals(warningToken)) //$NON-NLS-1$

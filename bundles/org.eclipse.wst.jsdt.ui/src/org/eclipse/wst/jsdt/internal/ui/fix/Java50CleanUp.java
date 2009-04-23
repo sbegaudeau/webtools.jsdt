@@ -156,16 +156,6 @@ public class Java50CleanUp extends AbstractCleanUp {
 	public int maximalNumberOfFixes(JavaScriptUnit compilationUnit) {
 		int result= 0;
 		IProblem[] problems= compilationUnit.getProblems();
-		if (isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS) && isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS_OVERRIDE)) {
-			result+= getNumberOfProblems(problems, IProblem.MissingOverrideAnnotation);
-		}
-		if (isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS) && isEnabled(CleanUpConstants.ADD_MISSING_ANNOTATIONS_DEPRECATED)) {
-			for (int i=0;i<problems.length;i++) {
-				int id= problems[i].getID();
-				if (id == IProblem.FieldMissingDeprecatedAnnotation || id == IProblem.MethodMissingDeprecatedAnnotation || id == IProblem.TypeMissingDeprecatedAnnotation)
-					result++;
-			}
-		}
 		if (isEnabled(CleanUpConstants.VARIABLE_DECLARATION_USE_TYPE_ARGUMENTS_FOR_RAW_TYPE_REFERENCES)) {
 			for (int i=0;i<problems.length;i++) {
 				int id= problems[i].getID();

@@ -405,7 +405,6 @@ public TypeBinding resolveType(BlockScope scope) {
 			case ProblemReasons.NonStaticReferenceInConstructorInvocation :
 			case ProblemReasons.NonStaticReferenceInStaticContext :
 			case ProblemReasons.ReceiverTypeNotVisible :
-			case ProblemReasons.ParameterBoundMismatch :
 				// only steal returnType in cases listed above
 				if (closestMatch != null) this.resolvedType = closestMatch.returnType;
 			default :

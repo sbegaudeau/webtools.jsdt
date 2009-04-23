@@ -308,21 +308,9 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 					ArrayBinding varargsType = (ArrayBinding) params[varargsIndex];
 					TypeBinding lastArgType = argumentTypes[varargsIndex];
 					int dimensions;
-					if (lastArgType == TypeBinding.NULL) {
-						if (!(varargsType.leafComponentType().isBaseType() && varargsType.dimensions() == 1))
-							scope.problemReporter().varargsArgumentNeedCast(method, lastArgType, invocationSite);
-					} else if (varargsType.dimensions <= (dimensions = lastArgType.dimensions())) {
+					if (lastArgType != TypeBinding.NULL && (varargsType.dimensions <= (dimensions = lastArgType.dimensions()))) {
 						if (lastArgType.leafComponentType().isBaseType()) {
 							dimensions--;
-						}
-						if (varargsType.dimensions < dimensions) {
-							scope.problemReporter().varargsArgumentNeedCast(method, lastArgType, invocationSite);
-						} else if (varargsType.dimensions == dimensions
-										&& lastArgType != varargsType
-										&& lastArgType.leafComponentType().erasure() != varargsType.leafComponentType.erasure()
-										&& lastArgType.isCompatibleWith(varargsType.elementsType())
-										&& lastArgType.isCompatibleWith(varargsType)) {
-							scope.problemReporter().varargsArgumentNeedCast(method, lastArgType, invocationSite);
 						}
 					}
 				}

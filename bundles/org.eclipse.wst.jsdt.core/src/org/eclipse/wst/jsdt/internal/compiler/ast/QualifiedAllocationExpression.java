@@ -27,10 +27,8 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.RawTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 
 /**
  * Variation on allocation, where can optionally be specified any of:
@@ -232,9 +230,6 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 				TypeReference typeReference = this.typeArguments[i];
 				TypeBinding argType = typeReference.resolveType(scope, true /* check bounds*/);
 				if (argType == null) {
-					if (typeReference instanceof Wildcard) {
-						scope.problemReporter().illegalUsageOfWildcard(typeReference);
-					}
 					return null; // error already reported
 				}
 				this.genericTypeArguments[i] = argType;
@@ -333,13 +328,7 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 		// insert anonymous type in scope
 		scope.addAnonymousType(this.anonymousType, (ReferenceBinding) receiverType);
 		this.anonymousType.resolve(scope);
-		if (this.superTypeBinding.erasure().id == TypeIds.T_JavaLangEnum) {
-			scope.problemReporter().cannotExtendEnum(this.anonymousType.binding, this.type, this.superTypeBinding);
-		}
 
-		if ((receiverType.tagBits & TagBits.HasDirectWildcard) != 0) {
-			scope.problemReporter().superTypeCannotUseWildcard(this.anonymousType.binding, this.type, receiverType);
-		}
 		// find anonymous super constructor
 		MethodBinding inheritedBinding = scope.getConstructor(this.superTypeBinding, argumentTypes, this);
 		if (!inheritedBinding.isValidBinding()) {

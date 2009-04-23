@@ -139,7 +139,6 @@ void checkAbstractMethod(MethodBinding abstractMethod) {
 }
 void checkAgainstInheritedMethods(MethodBinding currentMethod, MethodBinding[] methods, int length, MethodBinding[] allInheritedMethods) {
 	if (this.type.isAnnotationType()) { // annotation cannot override any method
-		problemReporter().annotationCannotOverrideMethod(currentMethod, methods[length - 1]);
 		return; // do not repoort against subsequent inherited methods
 	}
 	CompilerOptions options = type.scope.compilerOptions();

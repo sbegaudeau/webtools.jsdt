@@ -41,9 +41,6 @@ public class CaseStatement extends Statement implements ICaseStatement {
 		FlowInfo flowInfo) {
 
 		if (constantExpression != null) {
-			if (!this.isEnumConstant && constantExpression.constant == Constant.NotAConstant) {
-				currentScope.problemReporter().caseExpressionMustBeConstant(constantExpression);
-			}
 			this.constantExpression.analyseCode(currentScope, flowContext, flowInfo);
 		}
 		return flowInfo;
@@ -106,11 +103,6 @@ public class CaseStatement extends Statement implements ICaseStatement {
 						&& (constantExpression.bits & RestrictiveFlagMASK) == Binding.FIELD) {
 					NameReference reference = (NameReference) constantExpression;
 					FieldBinding field = reference.fieldBinding();
-					if ((field.modifiers & ClassFileConstants.AccEnum) == 0) {
-						 scope.problemReporter().enumSwitchCannotTargetField(reference, field);
-					} else 	if (reference instanceof QualifiedNameReference) {
-						 scope.problemReporter().cannotUseQualifiedEnumConstantInCaseLabel(reference, field);
-					}
 					return IntConstant.fromValue(field.original().id + 1); // (ordinal value + 1) zero should not be returned see bug 141810
 				}
 			} else {

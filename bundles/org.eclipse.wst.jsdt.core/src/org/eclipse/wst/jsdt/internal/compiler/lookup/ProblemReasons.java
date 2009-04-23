@@ -21,10 +21,6 @@ public interface ProblemReasons {
 	final int NonStaticReferenceInStaticContext = 7;
 	final int ReceiverTypeNotVisible = 8;
 	final int IllegalSuperTypeVariable = 9;
-	final int ParameterBoundMismatch = 10; // for generic method
-	final int TypeParameterArityMismatch = 11; // for generic method
-	final int ParameterizedMethodTypeMismatch = 12; // for generic method
-	final int TypeArgumentsForRawGenericMethod = 13; // for generic method
 	final int InvalidTypeForStaticImport = 14;
 	final int NotAFunction = 15;
 }

@@ -1776,10 +1776,6 @@ protected void handleWarningToken(String token, boolean isEnabling, boolean useE
 		this.options.put(
 			CompilerOptions.OPTION_SuppressWarnings,
 			isEnabling ? CompilerOptions.ENABLED : CompilerOptions.DISABLED);
-	} else if (token.equals("warningToken")) {//$NON-NLS-1$
-		this.options.put(
-			CompilerOptions.OPTION_ReportUnhandledWarningToken,
-			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
 	} else if (token.equals("unnecessaryElse")) {//$NON-NLS-1$
 		this.options.put(
 			CompilerOptions.OPTION_ReportUnnecessaryElse,
@@ -1880,10 +1876,6 @@ protected void handleWarningToken(String token, boolean isEnabling, boolean useE
 		this.options.put(
 			CompilerOptions.OPTION_ReportTypeParameterHiding,
 			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
-	} else if (token.equals("varargsCast")) { //$NON-NLS-1$
-		this.options.put(
-			CompilerOptions.OPTION_ReportVarargsArgumentNeedCast,
-			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
 	} else if (token.equals("null")) { //$NON-NLS-1$
 		if (isEnabling) {
 			this.options.put(CompilerOptions.OPTION_ReportNullReference,
@@ -1915,23 +1907,6 @@ protected void handleWarningToken(String token, boolean isEnabling, boolean useE
 	} else if (token.equals("boxing")) { //$NON-NLS-1$
 		this.options.put(
 			CompilerOptions.OPTION_ReportAutoboxing,
-			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
-	} else if (token.equals("over-ann")) { //$NON-NLS-1$
-		this.options.put(
-			CompilerOptions.OPTION_ReportMissingOverrideAnnotation,
-			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
-	} else if (token.equals("dep-ann")) { //$NON-NLS-1$
-		this.options.put(
-			CompilerOptions.OPTION_ReportMissingDeprecatedAnnotation,
-			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
-	} else if (token.equals("intfAnnotation")) { //$NON-NLS-1$
-		this.options.put(
-			CompilerOptions.OPTION_ReportAnnotationSuperInterface,
-			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
-	} else if (token.equals("enumSwitch") //$NON-NLS-1$
-			|| token.equals("incomplete-switch")) { //$NON-NLS-1$
-		this.options.put(
-			CompilerOptions.OPTION_ReportIncompleteEnumSwitch,
 			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
 	} else if (token.equals("hiding")) { //$NON-NLS-1$
 		this.options.put(

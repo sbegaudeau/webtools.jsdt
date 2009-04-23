@@ -14,7 +14,6 @@ import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IAnnotation;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding;
@@ -143,9 +142,7 @@ public abstract class Annotation extends Expression implements IAnnotation {
 									FieldBinding field = ((Reference) initExpr).fieldBinding();
 									if (field != null && field.declaringClass.id == T_JavaLangAnnotationElementType) {
 										long element = getTargetElementType(field.name);
-										if ((tagBits & element) != 0) {
-											scope.problemReporter().duplicateTargetInTargetAnnotation(annotationType, (NameReference)initExpr);
-										} else {
+										if ((tagBits & element) == 0) {
 											tagBits |= element;
 										}
 									}
@@ -210,8 +207,6 @@ public abstract class Annotation extends Expression implements IAnnotation {
 								if (irritant != 0) {
 									suppressWarningIrritants |= irritant;
 									if (~suppressWarningIrritants == 0) break pairLoop;
-								} else {
-									scope.problemReporter().unhandledWarningToken(inits[j]);
 								}
 							}
 						}
@@ -223,8 +218,6 @@ public abstract class Annotation extends Expression implements IAnnotation {
 						if (irritant != 0) {
 							suppressWarningIrritants |= irritant;
 							if (~suppressWarningIrritants == 0) break pairLoop;
-						} else {
-							scope.problemReporter().unhandledWarningToken(value);
 						}
 					}
 				}
@@ -290,26 +283,20 @@ public abstract class Annotation extends Expression implements IAnnotation {
 						if (otherPair == null) continue;
 						if (CharOperation.equals(otherPair.name, selector)) {
 							foundDuplicate = true;
-							scope.problemReporter().duplicateAnnotationValue(annotationType, otherPair);
 							otherPair.binding = method;
 							otherPair.resolveTypeExpecting(scope, method.returnType);
 							pairs[k] = null;
 						}
 					}
 					if (foundDuplicate) {
-						scope.problemReporter().duplicateAnnotationValue(annotationType, pair);
 						continue nextMember;
 					}
 				}
-			}
-			if (!foundValue && (method.modifiers & ClassFileConstants.AccAnnotationDefault) == 0) {
-				scope.problemReporter().missingValueForAnnotationMember(this, selector);
 			}
 		}
 		// check unused pairs
 		for (int i = 0; i < pairsLength; i++) {
 			if (pairs[i] != null) {
-				scope.problemReporter().undefinedAnnotationValue(annotationType, pairs[i]);
 				pairs[i].resolveTypeExpecting(scope, null); // resilient
 			}
 		}
@@ -408,7 +395,6 @@ public abstract class Annotation extends Expression implements IAnnotation {
 							break checkTargetCompatibility;
 						break;
 				}
-				scope.problemReporter().disallowedTargetForAnnotation(this);
 			}
 		}
 		return this.resolvedType;

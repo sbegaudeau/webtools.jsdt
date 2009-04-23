@@ -3358,16 +3358,6 @@ protected void consumeToken(int token) {
 		}
 	}
 }
-protected void consumeOnlyTypeArguments() {
-	super.consumeOnlyTypeArguments();
-	popElement(K_BINARY_OPERATOR);
-	if(topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_PARAMETERIZED_METHOD_INVOCATION) {
-		popElement(K_PARAMETERIZED_METHOD_INVOCATION);
-		pushOnElementStack(K_PARAMETERIZED_METHOD_INVOCATION, INSIDE_NAME);
-	} else {
-		popElement(K_PARAMETERIZED_ALLOCATION);
-	}
-}
 protected void consumeOnlyTypeArgumentsForCastExpression() {
 	super.consumeOnlyTypeArgumentsForCastExpression();
 	pushOnElementStack(K_PARAMETERIZED_CAST);

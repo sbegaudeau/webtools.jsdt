@@ -69,7 +69,6 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 				for (int i = 0, length = typeVariables.length; i < length; i++) {
 				    if (typeVariables[i].boundCheck(this, this.arguments[i])  != TypeConstants.OK) {
 				    	hasErrors = true;
-						scope.problemReporter().typeMismatchError(this.arguments[i], typeVariables[i], this.type, argumentReferences[i]);
 				    }
 				}
 			}

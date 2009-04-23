@@ -13,12 +13,9 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IMemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ElementValuePair;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
@@ -79,7 +76,6 @@ public class MemberValuePair extends ASTNode implements IMemberValuePair {
 			ArrayInitializer initializer = (ArrayInitializer) this.value;
 			valueType = initializer.resolveTypeExpecting(scope, this.binding.returnType);
 		} else if (this.value instanceof ArrayAllocationExpression) {
-			scope.problemReporter().annotationValueMustBeArrayInitializer(this.binding.declaringClass, this.name, this.value);
 			this.value.resolveType(scope);
 			valueType = null; // no need to pursue
 		} else {
@@ -100,9 +96,7 @@ public class MemberValuePair extends ASTNode implements IMemberValuePair {
 							|| (leafType.isBaseType() && BaseTypeBinding.isWidening(leafType.id, valueType.id)))
 							|| valueType.isCompatibleWith(leafType))) {
 
-				if (leafType.isAnnotationType() && !valueType.isAnnotationType()) {
-					scope.problemReporter().annotationValueMustBeAnnotation(this.binding.declaringClass, this.name, this.value, leafType);
-				} else {
+				if (!leafType.isAnnotationType() || valueType.isAnnotationType()) {
 					scope.problemReporter().typeMismatchError(valueType, requiredType, this.value);
 				}
 				return; // may allow to proceed to find more errors at once
@@ -124,97 +118,14 @@ public class MemberValuePair extends ASTNode implements IMemberValuePair {
 				case T_double :
 				case T_boolean :
 				case T_JavaLangString :
-					if (this.value instanceof ArrayInitializer) {
-						ArrayInitializer initializer = (ArrayInitializer) this.value;
-						final Expression[] expressions = initializer.expressions;
-						if (expressions != null) {
-							for (int i =0, max = expressions.length; i < max; i++) {
-								if (expressions[i].constant == Constant.NotAConstant) {
-									scope.problemReporter().annotationValueMustBeConstant(this.binding.declaringClass, this.name, expressions[i], false);
-								}
-							}
-						}
-					} else if (this.value.constant == Constant.NotAConstant) {
-						if (valueType.isArrayType()) {
-							scope.problemReporter().annotationValueMustBeArrayInitializer(this.binding.declaringClass, this.name, this.value);
-						} else {
-							scope.problemReporter().annotationValueMustBeConstant(this.binding.declaringClass, this.name, this.value, false);
-						}
-					}
 					break checkAnnotationMethodType;
 				case T_JavaLangClass :
-					if (this.value instanceof ArrayInitializer) {
-						ArrayInitializer initializer = (ArrayInitializer) this.value;
-						final Expression[] expressions = initializer.expressions;
-						if (expressions != null) {
-							for (int i =0, max = expressions.length; i < max; i++) {
-								Expression currentExpression = expressions[i];
-								if (!(currentExpression instanceof ClassLiteralAccess)) {
-									scope.problemReporter().annotationValueMustBeClassLiteral(this.binding.declaringClass, this.name, currentExpression);
-								}
-							}
-						}
-					} else if (!(this.value instanceof ClassLiteralAccess)) {
-						scope.problemReporter().annotationValueMustBeClassLiteral(this.binding.declaringClass, this.name, this.value);
-					}
 					break checkAnnotationMethodType;
 			}
 			if (leafType.isEnum()) {
-				if (this.value instanceof NullLiteral) {
-					scope.problemReporter().annotationValueMustBeConstant(this.binding.declaringClass, this.name, this.value, true);
-				} else if (this.value instanceof ArrayInitializer) {
-					ArrayInitializer initializer = (ArrayInitializer) this.value;
-					final Expression[] expressions = initializer.expressions;
-					if (expressions != null) {
-						for (int i =0, max = expressions.length; i < max; i++) {
-							Expression currentExpression = expressions[i];
-							if (currentExpression instanceof NullLiteral) {
-								scope.problemReporter().annotationValueMustBeConstant(this.binding.declaringClass, this.name, currentExpression, true);
-							} else if (currentExpression instanceof NameReference) {
-								NameReference nameReference = (NameReference) currentExpression;
-								final Binding nameReferenceBinding = nameReference.binding;
-								if (nameReferenceBinding.kind() == Binding.FIELD) {
-									FieldBinding fieldBinding = (FieldBinding) nameReferenceBinding;
-									if (!fieldBinding.declaringClass.isEnum()) {
-										scope.problemReporter().annotationValueMustBeConstant(this.binding.declaringClass, this.name, currentExpression, true);
-									}
-								}
-							}
-						}
-					}
-				} else if (this.value instanceof NameReference) {
-					NameReference nameReference = (NameReference) this.value;
-					final Binding nameReferenceBinding = nameReference.binding;
-					if (nameReferenceBinding.kind() == Binding.FIELD) {
-						FieldBinding fieldBinding = (FieldBinding) nameReferenceBinding;
-						if (!fieldBinding.declaringClass.isEnum()) {
-							if (!fieldBinding.type.isArrayType()) {
-								scope.problemReporter().annotationValueMustBeConstant(this.binding.declaringClass, this.name, this.value, true);
-							} else {
-								scope.problemReporter().annotationValueMustBeArrayInitializer(this.binding.declaringClass, this.name, this.value);
-							}
-						}
-					}
-				}
 				break checkAnnotationMethodType;
 			}
 			if (leafType.isAnnotationType()) {
-				if (!valueType.leafComponentType().isAnnotationType()) { // check annotation type and also reject null literal
-					scope.problemReporter().annotationValueMustBeAnnotation(this.binding.declaringClass, this.name, this.value, leafType);
-				} else if (this.value instanceof ArrayInitializer) {
-					ArrayInitializer initializer = (ArrayInitializer) this.value;
-					final Expression[] expressions = initializer.expressions;
-					if (expressions != null) {
-						for (int i =0, max = expressions.length; i < max; i++) {
-							Expression currentExpression = expressions[i];
-							if (currentExpression instanceof NullLiteral || !(currentExpression instanceof Annotation)) {
-								scope.problemReporter().annotationValueMustBeAnnotation(this.binding.declaringClass, this.name, currentExpression, leafType);
-							}
-						}
-					}
-				} else if (!(this.value instanceof Annotation)) {
-					scope.problemReporter().annotationValueMustBeAnnotation(this.binding.declaringClass, this.name, this.value, leafType);
-				}
 				break checkAnnotationMethodType;
 			}
 		}

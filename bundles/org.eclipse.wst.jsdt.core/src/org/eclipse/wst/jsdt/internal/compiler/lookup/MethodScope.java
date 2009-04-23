@@ -106,11 +106,7 @@ public class MethodScope extends BlockScope {
 		// check for abnormal modifiers
 		final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccStatic | ClassFileConstants.AccPublic | ClassFileConstants.AccPrivate | ClassFileConstants.AccProtected | ClassFileConstants.AccStrictfp);
 		if (declaringClass.isEnum() && !((ConstructorDeclaration) referenceContext).isDefaultConstructor) {
-			final int UNEXPECTED_ENUM_CONSTR_MODIFIERS = ~(ClassFileConstants.AccPrivate | ClassFileConstants.AccStrictfp);
-			if ((realModifiers & UNEXPECTED_ENUM_CONSTR_MODIFIERS) != 0) {
-				problemReporter().illegalModifierForEnumConstructor((AbstractMethodDeclaration) referenceContext);
-				modifiers &= ~ExtraCompilerModifiers.AccJustFlag | ~UNEXPECTED_ENUM_CONSTR_MODIFIERS;
-			} else if ((((AbstractMethodDeclaration) referenceContext).modifiers & ClassFileConstants.AccStrictfp) != 0) {
+			if ((((AbstractMethodDeclaration) referenceContext).modifiers & ClassFileConstants.AccStrictfp) != 0) {
 				// must check the parse node explicitly
 				problemReporter().illegalModifierForMethod((AbstractMethodDeclaration) referenceContext);
 			}

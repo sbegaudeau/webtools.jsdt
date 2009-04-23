@@ -16,7 +16,6 @@ import java.util.Comparator;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.IDependent;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
@@ -569,16 +568,7 @@ public boolean detectAnnotationCycle() {
 	boolean inCycle = false; // check each method before failing
 	for (int i = 0, l = currentMethods.length; i < l; i++) {
 		TypeBinding returnType = currentMethods[i].returnType.leafComponentType();
-		if (this == returnType) {
-			if (this instanceof SourceTypeBinding) {
-				MethodDeclaration decl = (MethodDeclaration) currentMethods[i].sourceMethod();
-				((SourceTypeBinding) this).scope.problemReporter().annotationCircularity(this, this, decl != null ? decl.returnType : null);
-			}
-		} else if (returnType.isAnnotationType() && ((ReferenceBinding) returnType).detectAnnotationCycle()) {
-			if (this instanceof SourceTypeBinding) {
-				MethodDeclaration decl = (MethodDeclaration) currentMethods[i].sourceMethod();
-				((SourceTypeBinding) this).scope.problemReporter().annotationCircularity(this, returnType, decl != null ? decl.returnType : null);
-			}
+		if (returnType.isAnnotationType() && ((ReferenceBinding) returnType).detectAnnotationCycle()) {
 			inCycle = true;
 		}
 	}

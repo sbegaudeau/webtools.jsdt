@@ -353,7 +353,6 @@ public class ClassScope extends Scope {
 		sourceType.typeVariables = Binding.NO_TYPE_VARIABLES; // safety
 
 		if (sourceType.id == T_JavaLangObject) { // handle the case of redefining java.lang.Object up front
-			problemReporter().objectCannotBeGeneric(referenceContext);
 			return;
 		}
 		sourceType.typeVariables = createTypeVariables(typeParameters, sourceType);
@@ -442,9 +441,7 @@ public class ClassScope extends Scope {
 				final int UNEXPECTED_MODIFIERS =
 					~(ClassFileConstants.AccPublic | ClassFileConstants.AccPrivate | ClassFileConstants.AccProtected | ClassFileConstants.AccStatic | ClassFileConstants.AccAbstract | ClassFileConstants.AccInterface | ClassFileConstants.AccStrictfp | ClassFileConstants.AccAnnotation);
 				if ((realModifiers & UNEXPECTED_MODIFIERS) != 0) {
-					if ((realModifiers & ClassFileConstants.AccAnnotation) != 0)
-						problemReporter().illegalModifierForAnnotationMemberType(sourceType);
-					else
+					if ((realModifiers & ClassFileConstants.AccAnnotation) == 0)
 						problemReporter().illegalModifierForMemberInterface(sourceType);
 				}
 				/*
@@ -456,28 +453,13 @@ public class ClassScope extends Scope {
 			} else {
 				final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccPublic | ClassFileConstants.AccAbstract | ClassFileConstants.AccInterface | ClassFileConstants.AccStrictfp | ClassFileConstants.AccAnnotation);
 				if ((realModifiers & UNEXPECTED_MODIFIERS) != 0) {
-					if ((realModifiers & ClassFileConstants.AccAnnotation) != 0)
-						problemReporter().illegalModifierForAnnotationType(sourceType);
-					else
+					if ((realModifiers & ClassFileConstants.AccAnnotation) == 0)
 						problemReporter().illegalModifierForInterface(sourceType);
 				}
 			}
 			modifiers |= ClassFileConstants.AccAbstract;
 		} else if ((realModifiers & ClassFileConstants.AccEnum) != 0) {
 			// detect abnormal cases for enums
-			if (isMemberType) { // includes member types defined inside local types
-				final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccPublic | ClassFileConstants.AccPrivate | ClassFileConstants.AccProtected | ClassFileConstants.AccStatic | ClassFileConstants.AccStrictfp | ClassFileConstants.AccEnum);
-				if ((realModifiers & UNEXPECTED_MODIFIERS) != 0)
-					problemReporter().illegalModifierForMemberEnum(sourceType);
-			} else if (sourceType.isLocalType()) { // each enum constant is an anonymous local type
-				final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccStrictfp | ClassFileConstants.AccFinal | ClassFileConstants.AccEnum); // add final since implicitly set for anonymous type
-				if ((realModifiers & UNEXPECTED_MODIFIERS) != 0)
-					problemReporter().illegalModifierForLocalEnum(sourceType);
-			} else {
-				final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccPublic | ClassFileConstants.AccStrictfp | ClassFileConstants.AccEnum);
-				if ((realModifiers & UNEXPECTED_MODIFIERS) != 0)
-					problemReporter().illegalModifierForEnum(sourceType);
-			}
 			if (!sourceType.isAnonymousType()) {
 				checkAbstractEnum: {
 					// does define abstract methods ?
@@ -615,18 +597,12 @@ public class ClassScope extends Scope {
 
 			// and then check that they are the only ones
 			if ((modifiers & ExtraCompilerModifiers.AccJustFlag) != IMPLICIT_MODIFIERS) {
-				if ((declaringClass.modifiers  & ClassFileConstants.AccAnnotation) != 0)
-					problemReporter().illegalModifierForAnnotationField(fieldDecl);
-				else
+				if ((declaringClass.modifiers  & ClassFileConstants.AccAnnotation) == 0)
 					problemReporter().illegalModifierForInterfaceField(fieldDecl);
 			}
 			fieldBinding.modifiers = modifiers;
 			return;
 		} else if (fieldDecl.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
-			// check that they are not modifiers in source
-			if ((modifiers & ExtraCompilerModifiers.AccJustFlag) != 0)
-				problemReporter().illegalModifierForEnumConstant(declaringClass, fieldDecl);
-
 			// set the modifiers
 			final int IMPLICIT_MODIFIERS = ClassFileConstants.AccPublic | ClassFileConstants.AccStatic | ClassFileConstants.AccFinal | ClassFileConstants.AccEnum;
 			fieldBinding.modifiers|= IMPLICIT_MODIFIERS;
@@ -852,10 +828,6 @@ public class ClassScope extends Scope {
 					problemReporter().superclassMustBeAClass(sourceType, superclassRef, superclass);
 				} else if (superclass.isFinal()) {
 					problemReporter().classExtendFinalClass(sourceType, superclassRef, superclass);
-				} else if ((superclass.tagBits & TagBits.HasDirectWildcard) != 0) {
-					problemReporter().superTypeCannotUseWildcard(sourceType, superclassRef, superclass);
-				} else if (superclass.erasure().id == T_JavaLangEnum) {
-					problemReporter().cannotExtendEnum(sourceType, superclassRef, superclass);
 				} else {
 					// only want to reach here when no errors are reported
 					sourceType.superclass = superclass;
@@ -910,10 +882,6 @@ public class ClassScope extends Scope {
 		// check argument type compatibility
 		ParameterizedTypeBinding  superType = environment().createParameterizedType(rootEnumType, new TypeBinding[]{ environment().convertToRawType(sourceType) } , null);
 		sourceType.superclass = superType;
-		// bound check (in case of bogus definition of Enum type)
-		if (refTypeVariables[0].boundCheck(superType, sourceType) != TypeConstants.OK) {
-			problemReporter().typeMismatchError(rootEnumType, refTypeVariables[0], sourceType, null);
-		}
 		return !foundCycle;
 	}
 

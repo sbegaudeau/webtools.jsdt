@@ -1621,11 +1621,6 @@ protected void consumeAnnotationTypeDeclarationHeaderName() {
 	annotationTypeDeclaration.javadoc = this.javadoc;
 	this.javadoc = null;
 	pushOnAstStack(annotationTypeDeclaration);
-	if(!this.statementRecoveryActivated &&
-			options.sourceLevel < ClassFileConstants.JDK1_5 &&
-			this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
-		this.problemReporter().invalidUsageOfAnnotationDeclarations(annotationTypeDeclaration);
-	}
 
 	// recovery
 	if (this.currentElement != null){
@@ -3589,13 +3584,6 @@ protected void consumeEnumHeaderName() {
 
 	this.listLength = 0; // will be updated when reading super-interfaces
 
-	if(!this.statementRecoveryActivated &&
-			options.sourceLevel < ClassFileConstants.JDK1_5 &&
-			this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
-		//TODO this code will be never run while 'enum' is an identifier in 1.3 scanner
-		this.problemReporter().invalidUsageOfEnumDeclarations(enumDeclaration);
-	}
-
 	// recovery
 	if (this.currentElement != null){
 		this.lastCheckPoint = enumDeclaration.bodyStart;
@@ -3902,17 +3890,6 @@ protected void consumeFormalParameter(boolean isVarArgs) {
 	/* if incomplete method header, this.listLength counter will not have been reset,
 		indicating that some arguments are available on the stack */
 	this.listLength++;
-
-//	if(isVarArgs) {
-//		if (!this.statementRecoveryActivated &&
-//				options.sourceLevel < ClassFileConstants.JDK1_5 &&
-//				this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
-//				this.problemReporter().invalidUsageOfVarargs(arg);
-//		} else if (!this.statementRecoveryActivated &&
-//				extendedDimensions > 0) {
-//			this.problemReporter().illegalExtendedDimensions(arg);
-//		}
-//	}
 }
 
 protected void handleArgumentComment(Argument arg)
@@ -4343,11 +4320,6 @@ protected void consumeMarkerAnnotation() {
 	markerAnnotation = new MarkerAnnotation(typeReference, this.intStack[this.intPtr--]);
 	markerAnnotation.declarationSourceEnd = markerAnnotation.sourceEnd;
 	pushOnExpressionStack(markerAnnotation);
-	if(!this.statementRecoveryActivated &&
-			options.sourceLevel < ClassFileConstants.JDK1_5 &&
-			this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
-		this.problemReporter().invalidUsageOfAnnotation(markerAnnotation);
-	}
 	this.recordStringLiterals = true;
 }
 protected void consumeMemberValueArrayInitializer() {
@@ -4909,27 +4881,11 @@ protected void consumeNormalAnnotation() {
 		annotationRecoveryCheckPoint(normalAnnotation.sourceStart, normalAnnotation.declarationSourceEnd);
 	}
 
-	if(!this.statementRecoveryActivated &&
-			options.sourceLevel < ClassFileConstants.JDK1_5 &&
-			this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
-		this.problemReporter().invalidUsageOfAnnotation(normalAnnotation);
-	}
 	this.recordStringLiterals = true;
 }
 protected void consumeOneDimLoop() {
 	// OneDimLoop ::= '[' ']'
 	this.dimensions++;
-}
- 
-protected void consumeOnlyTypeArguments() {
-	if(!this.statementRecoveryActivated &&
-			options.sourceLevel < ClassFileConstants.JDK1_5 &&
-			this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
-		int length = this.genericsLengthStack[this.genericsLengthPtr];
-		this.problemReporter().invalidUsageOfTypeArguments(
-			(TypeReference)this.genericsStack[this.genericsPtr - length + 1],
-			(TypeReference)this.genericsStack[this.genericsPtr]);
-	}
 }
 protected void consumeOnlyTypeArgumentsForCastExpression() {
 	// OnlyTypeArgumentsForCastExpression ::= OnlyTypeArguments
@@ -6482,11 +6438,6 @@ protected void consumeSingleMemberAnnotation() {
 		annotationRecoveryCheckPoint(singleMemberAnnotation.sourceStart, singleMemberAnnotation.declarationSourceEnd);
 	}
 
-	if(!this.statementRecoveryActivated &&
-			options.sourceLevel < ClassFileConstants.JDK1_5 &&
-			this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
-		this.problemReporter().invalidUsageOfAnnotation(singleMemberAnnotation);
-	}
 	this.recordStringLiterals = true;
 }
 
@@ -7261,15 +7212,6 @@ protected void consumeTypeArgumentReferenceType2() {
 protected void consumeTypeArguments() {
 	concatGenericsLists();
 	intPtr--;
-
-	if(!this.statementRecoveryActivated &&
-			options.sourceLevel < ClassFileConstants.JDK1_5 &&
-			this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
-		int length = this.genericsLengthStack[this.genericsLengthPtr];
-		this.problemReporter().invalidUsageOfTypeArguments(
-			(TypeReference)this.genericsStack[this.genericsPtr - length + 1],
-			(TypeReference)this.genericsStack[this.genericsPtr]);
-	}
 }
 protected void consumeTypeDeclarations() {
 	// TypeDeclarations ::= TypeDeclarations TypeDeclaration

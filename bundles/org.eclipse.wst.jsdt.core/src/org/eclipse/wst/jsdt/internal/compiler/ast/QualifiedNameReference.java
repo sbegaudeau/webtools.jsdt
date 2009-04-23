@@ -67,21 +67,6 @@ public FlowInfo analyseAssignment(BlockScope currentScope, 	FlowContext flowCont
 			if (needValue || complyTo14) {
 				manageSyntheticAccessIfNecessary(currentScope, lastFieldBinding, this.actualReceiverType, 0, flowInfo);
 			}
-			if (this.indexOfFirstFieldBinding == 1) { // was an implicit reference to the first field binding
-				ReferenceBinding declaringClass = lastFieldBinding.declaringClass;
-				// check if accessing enum static field in initializer
-				if (declaringClass.isEnum()) {
-					MethodScope methodScope = currentScope.methodScope();
-					SourceTypeBinding sourceType = methodScope.enclosingSourceType();
-					if (lastFieldBinding.isStatic()
-							&& (sourceType == declaringClass || sourceType.superclass == declaringClass) // enum constant body
-							&& lastFieldBinding.constant() == Constant.NotAConstant
-							&& !methodScope.isStatic
-							&& methodScope.isInsideInitializerOrConstructor()) {
-						currentScope.problemReporter().enumStaticFieldUsedDuringInitialization(lastFieldBinding, this);
-					}
-				}
-			}
 			// check if final blank field
 			if (lastFieldBinding.isBlankFinal()
 				    && this.otherBindings != null // the last field binding is only assigned
@@ -222,19 +207,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			}
 			if (this.indexOfFirstFieldBinding == 1) { // was an implicit reference to the first field binding
 				FieldBinding fieldBinding = (FieldBinding) this.binding;
-				ReferenceBinding declaringClass = fieldBinding.declaringClass;
-				// check if accessing enum static field in initializer
-				if (declaringClass.isEnum()) {
-					MethodScope methodScope = currentScope.methodScope();
-					SourceTypeBinding sourceType = methodScope.enclosingSourceType();
-					if (fieldBinding.isStatic()
-							&& (sourceType == declaringClass || sourceType.superclass == declaringClass) // enum constant body
-							&& fieldBinding.constant() == Constant.NotAConstant
-							&& !methodScope.isStatic
-							&& methodScope.isInsideInitializerOrConstructor()) {
-						currentScope.problemReporter().enumStaticFieldUsedDuringInitialization(fieldBinding, this);
-					}
-				}
+
 				// check if reading a final blank field
 				if (fieldBinding.isBlankFinal()
 						&& currentScope.allowBlankFinalFieldAssignment(fieldBinding)

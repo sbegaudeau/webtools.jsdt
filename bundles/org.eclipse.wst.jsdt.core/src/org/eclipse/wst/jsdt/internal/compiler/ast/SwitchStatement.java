@@ -220,27 +220,6 @@ public class SwitchStatement extends Statement implements ISwitchStatement{
 					upperScope.problemReporter().undocumentedEmptyBlock(this.blockStart, this.sourceEnd);
 				}
 			}
-			// for enum switch, check if all constants are accounted for (if no default)
-//			if (isEnumSwitch && defaultCase == null
-//					&& upperScope.compilerOptions().getSeverity(CompilerOptions.IncompleteEnumSwitch) != ProblemSeverities.Ignore) {
-//				int constantCount = this.constants == null ? 0 : this.constants.length; // could be null if no case statement
-//				if (constantCount == caseCount // ignore diagnosis if unresolved constants
-//						&& caseCount != ((ReferenceBinding)expressionType).enumConstantCount()) {
-//					FieldBinding[] enumFields = ((ReferenceBinding)expressionType.erasure()).fields();
-//					for (int i = 0, max = enumFields.length; i <max; i++) {
-//						FieldBinding enumConstant = enumFields[i];
-//						if ((enumConstant.modifiers & ClassFileConstants.AccEnum) == 0) continue;
-//						findConstant : {
-//							for (int j = 0; j < caseCount; j++) {
-//								if ((enumConstant.id + 1) == this.constants[j]) // zero should not be returned see bug 141810
-//									break findConstant;
-//							}
-//							// enum constant did not get referenced from switch
-//							upperScope.problemReporter().missingEnumConstantCase(this, enumConstant);
-//						}
-//					}
-//				}
-//			}
 	    } finally {
 	        if (this.scope != null) this.scope.enclosingCase = null; // no longer inside switch case block
 	    }

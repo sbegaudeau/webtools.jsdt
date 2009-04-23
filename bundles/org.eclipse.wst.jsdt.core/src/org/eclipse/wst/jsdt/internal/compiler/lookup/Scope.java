@@ -443,21 +443,10 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			if (method == null) return null; // incompatible
 			if (!method.isValidBinding()) return method; // bound check issue is taking precedence
 			parameters = method.parameters; // reacquire them after type inference has performed
-		} else if (genericTypeArguments != null) {
-			if (method instanceof ParameterizedGenericMethodBinding) {
-				if (!((ParameterizedGenericMethodBinding) method).wasInferred) {
-					// attempt to invoke generic method of raw type with type hints <String>foo()
-					return new ProblemMethodBinding(method, method.selector, genericTypeArguments, ProblemReasons.TypeArgumentsForRawGenericMethod);
-				}
-			} else {
-				return new ProblemMethodBinding(method, method.selector, genericTypeArguments, ProblemReasons.TypeParameterArityMismatch);
-			}
 		}
 
 		if (parameterCompatibilityLevel(method, arguments) > NOT_COMPATIBLE)
 			return method;
-		if (genericTypeArguments != null)
-			return new ProblemMethodBinding(method, method.selector, arguments, ProblemReasons.ParameterizedMethodTypeMismatch);
 		return null; // incompatible
 	}
 

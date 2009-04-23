@@ -235,10 +235,6 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 			if (receiverType == null) {
 				return;
 			}
-			// prevent (explicit) super constructor invocation from within enum
-			if (this.accessMode == Super && receiverType.erasure().id == T_JavaLangEnum) {
-				scope.problemReporter().cannotInvokeSuperConstructorInEnum(this, methodScope.referenceMethod().binding);
-			}
 			// qualification should be from the type of the enclosingType
 			if (qualification != null) {
 				if (accessMode != Super) {
@@ -266,9 +262,6 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 					TypeReference typeReference = this.typeArguments[i];
 					if ((this.genericTypeArguments[i] = typeReference.resolveType(scope, true /* check bounds*/)) == null) {
 						argHasError = true;
-					}
-					if (argHasError && typeReference instanceof Wildcard) {
-						scope.problemReporter().illegalUsageOfWildcard(typeReference);
 					}
 				}
 				if (argHasError) {

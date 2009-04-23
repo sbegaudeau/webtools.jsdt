@@ -157,20 +157,8 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.RedefinedArgument:
 			case IProblem.CodeCannotBeReached:
 			case IProblem.InvalidUsageOfTypeParameters:
-			case IProblem.InvalidUsageOfStaticImports:
 			case IProblem.InvalidUsageOfForeachStatements:
-			case IProblem.InvalidUsageOfTypeArguments:
-			case IProblem.InvalidUsageOfEnumDeclarations:
-			case IProblem.InvalidUsageOfVarargs:
-			case IProblem.InvalidUsageOfAnnotations:
-			case IProblem.InvalidUsageOfAnnotationDeclarations:
-			case IProblem.FieldMissingDeprecatedAnnotation:
 			case IProblem.OverridingDeprecatedMethod:
-			case IProblem.MethodMissingDeprecatedAnnotation:
-			case IProblem.TypeMissingDeprecatedAnnotation:
-			case IProblem.MissingOverrideAnnotation:
-			case IProblem.MethodMustOverride:
-			case IProblem.MethodMustOverrideOrImplement:
 			case IProblem.IsClassPathCorrect:
 			case IProblem.MethodReturnsVoid:
 			case IProblem.ForbiddenReference:
@@ -178,11 +166,8 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.UnnecessaryNLSTag:
 			case IProblem.AssignmentHasNoEffect:
 			case IProblem.UnsafeTypeConversion:
-			case IProblem.UndefinedAnnotationMember:
-			case IProblem.MissingValueForAnnotationMember:
 			case IProblem.FallthroughCase:
 			case IProblem.NonGenericType:
-			case IProblem.UnhandledWarningToken:
 				return true;
 			default:
 //				if (JavaModelUtil.is50OrHigher(cu.getJavaScriptProject())) {
@@ -483,29 +468,11 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				LocalCorrectionsSubProcessor.getUnreachableCodeProposals(context, problem, proposals);
 				break;
 			case IProblem.InvalidUsageOfTypeParameters:
-			case IProblem.InvalidUsageOfStaticImports:
 			case IProblem.InvalidUsageOfForeachStatements:
-			case IProblem.InvalidUsageOfTypeArguments:
-			case IProblem.InvalidUsageOfEnumDeclarations:
-			case IProblem.InvalidUsageOfVarargs:
-			case IProblem.InvalidUsageOfAnnotations:
-			case IProblem.InvalidUsageOfAnnotationDeclarations:
 				ReorgCorrectionsSubProcessor.getNeed50ComplianceProposals(context, problem, proposals);
 				break;
 			case IProblem.NonGenericType:
 				TypeParameterMismatchSubProcessor.removeMismatchedParameters(context, problem, proposals);
-				break;
-//			case IProblem.MissingOverrideAnnotation:
-//				ModifierCorrectionSubProcessor.addOverrideAnnotationProposal(context, problem, proposals);
-//				break;
-			case IProblem.MethodMustOverride:
-			case IProblem.MethodMustOverrideOrImplement:
-				ModifierCorrectionSubProcessor.removeOverrideAnnotationProposal(context, problem, proposals);
-				break;
-			case IProblem.FieldMissingDeprecatedAnnotation:
-			case IProblem.MethodMissingDeprecatedAnnotation:
-			case IProblem.TypeMissingDeprecatedAnnotation:
-//				ModifierCorrectionSubProcessor.addDeprecatedAnnotationProposal(context, problem, proposals);
 				break;
 			case IProblem.OverridingDeprecatedMethod:
 				ModifierCorrectionSubProcessor.addOverridingDeprecatedMethodProposal(context, problem, proposals);

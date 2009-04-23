@@ -310,10 +310,6 @@ public boolean checkConstructors(Parser parser) {
 							// report the problem and continue the parsing
 							parser.problemReporter().interfaceCannotHaveConstructors((ConstructorDeclaration) am);
 							break;
-						case TypeDeclaration.ANNOTATION_TYPE_DECL :
-							// report the problem and continue the parsing
-							parser.problemReporter().annotationTypeDeclarationCannotHaveConstructor((ConstructorDeclaration) am);
-							break;
 
 					}
 					hasConstructor = true;
@@ -862,12 +858,6 @@ public void resolve() {
 //		} finally {
 //			this.staticInitializerScope.insideTypeAnnotation = old;
 //		}
-		// check @Deprecated annotation
-		if ((sourceType.getAnnotationTagBits() & TagBits.AnnotationDeprecated) == 0
-				&& (sourceType.modifiers & ClassFileConstants.AccDeprecated) != 0
-				&& this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
-			this.scope.problemReporter().missingDeprecatedAnnotationForType(this);
-		}
 		if ((this.bits & ASTNode.UndocumentedEmptyBlock) != 0) {
 			this.scope.problemReporter().undocumentedEmptyBlock(this.bodyStart-1, this.bodyEnd);
 		}
@@ -984,30 +974,6 @@ public void resolve() {
 		}
 		if (needSerialVersion) {
 			this.scope.problemReporter().missingSerialVersion(this);
-		}
-		// check extends/implements for annotation type
-		switch(kind(this.modifiers)) {
-			case TypeDeclaration.ANNOTATION_TYPE_DECL :
-				if (this.superclass != null) {
-					this.scope.problemReporter().annotationTypeDeclarationCannotHaveSuperclass(this);
-				}
-				if (this.superInterfaces != null) {
-					this.scope.problemReporter().annotationTypeDeclarationCannotHaveSuperinterfaces(this);
-				}
-				break;
-			case TypeDeclaration.ENUM_DECL :
-				// check enum abstract methods
-				if (this.binding.isAbstract()) {
-					if (!hasEnumConstants || hasEnumConstantsWithoutBody) {
-						for (int i = 0, count = this.methods.length; i < count; i++) {
-							final AbstractMethodDeclaration methodDeclaration = this.methods[i];
-							if (methodDeclaration.isAbstract() && methodDeclaration.binding != null) {
-								this.scope.problemReporter().enumAbstractMethodMustBeImplemented(methodDeclaration);
-							}
-						}
-					}
-				}
-				break;
 		}
 
 		int missingAbstractMethodslength = this.missingAbstractMethods == null ? 0 : this.missingAbstractMethods.length;

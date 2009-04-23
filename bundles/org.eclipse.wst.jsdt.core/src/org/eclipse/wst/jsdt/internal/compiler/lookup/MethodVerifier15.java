@@ -102,8 +102,6 @@ void checkConcreteInheritedMethod(MethodBinding concreteMethod, MethodBinding[] 
 
 	for (int i = 0, l = abstractMethods.length; i < l; i++) {
 		MethodBinding abstractMethod = abstractMethods[i];
-		if (concreteMethod.isVarargs() != abstractMethod.isVarargs())
-			problemReporter().varargsConflict(concreteMethod, abstractMethod, this.type);
 
 		// so the parameters are equal and the return type is compatible b/w the currentMethod & the substituted inheritedMethod
 		MethodBinding originalInherited = abstractMethod.original();
@@ -127,9 +125,6 @@ void checkConcreteInheritedMethod(MethodBinding concreteMethod, MethodBinding[] 
 	}
 }
 void checkForBridgeMethod(MethodBinding currentMethod, MethodBinding inheritedMethod, MethodBinding[] allInheritedMethods) {
-	if (currentMethod.isVarargs() != inheritedMethod.isVarargs())
-		problemReporter(currentMethod).varargsConflict(currentMethod, inheritedMethod, this.type);
-
 	// so the parameters are equal and the return type is compatible b/w the currentMethod & the substituted inheritedMethod
 	MethodBinding originalInherited = inheritedMethod.original();
 	if (originalInherited.returnType != currentMethod.returnType) {

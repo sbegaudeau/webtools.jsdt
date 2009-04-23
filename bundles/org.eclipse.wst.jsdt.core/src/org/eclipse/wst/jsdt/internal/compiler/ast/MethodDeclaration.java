@@ -15,7 +15,6 @@ import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IFunctionDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.ExceptionHandlingFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -155,32 +154,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 			}
 		}
 
-		// check @Override annotation
 		final CompilerOptions compilerOptions = this.scope.compilerOptions();
-		checkOverride: {
-			if (this.binding == null) break checkOverride;
-			long sourceLevel = compilerOptions.sourceLevel;
-			if (sourceLevel < ClassFileConstants.JDK1_5) break checkOverride;
-			int bindingModifiers = this.binding.modifiers;
-			boolean hasOverrideAnnotation = (this.binding.tagBits & TagBits.AnnotationOverride) != 0;
-			boolean isInterfaceMethod = this.binding.declaringClass.isInterface();
-			if (hasOverrideAnnotation) {
-				// no static method is considered overriding
-				if (!isInterfaceMethod && (bindingModifiers & (ClassFileConstants.AccStatic|ExtraCompilerModifiers.AccOverriding)) == ExtraCompilerModifiers.AccOverriding)
-					break checkOverride;
-				//	in 1.5, strictly for overriding superclass method
-				//	in 1.6 and above, also tolerate implementing interface method
-				if (sourceLevel >= ClassFileConstants.JDK1_6
-						&& ((bindingModifiers & (ClassFileConstants.AccStatic|ExtraCompilerModifiers.AccImplementing)) == ExtraCompilerModifiers.AccImplementing))
-					break checkOverride;
-				// claims to override, and doesn't actually do so
-				this.scope.problemReporter().methodMustOverride(this);
-			} else if (!isInterfaceMethod
-						&& (bindingModifiers & (ClassFileConstants.AccStatic|ExtraCompilerModifiers.AccOverriding)) == ExtraCompilerModifiers.AccOverriding) {
-				// actually overrides, but did not claim to do so
-				this.scope.problemReporter().missingOverrideAnnotation(this);
-			}
-		}
 
 		// by grammatical construction, interface methods are always abstract
 //		switch (TypeDeclaration.kind(this.scope.referenceType().modifiers)) {

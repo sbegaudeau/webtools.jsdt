@@ -28,9 +28,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemFieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
@@ -92,19 +90,6 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 				manageSyntheticAccessIfNecessary(currentScope, flowInfo, false /*write-access*/);
 
 				FieldBinding fieldBinding = (FieldBinding) binding;
-				ReferenceBinding declaringClass = fieldBinding.declaringClass;
-				// check if accessing enum static field in initializer
-				if (declaringClass.isEnum()) {
-					MethodScope methodScope = currentScope.methodScope();
-					SourceTypeBinding sourceType = currentScope.enclosingSourceType();
-					if (fieldBinding.isStatic()
-							&& this.constant == Constant.NotAConstant
-							&& !methodScope.isStatic
-							&& (sourceType == declaringClass || sourceType.superclass == declaringClass) // enum constant body
-							&& methodScope.isInsideInitializerOrConstructor()) {
-						currentScope.problemReporter().enumStaticFieldUsedDuringInitialization(fieldBinding, this);
-					}
-				}
 				// check if assigning a final field
 				if (fieldBinding.isFinal()) {
 					// inside a context where allowed
@@ -160,19 +145,7 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 					manageSyntheticAccessIfNecessary(currentScope, flowInfo, true /*read-access*/);
 				}
 				FieldBinding fieldBinding = (FieldBinding) binding;
-				ReferenceBinding declaringClass = fieldBinding.declaringClass;
-				// check if accessing enum static field in initializer
-				if (declaringClass.isEnum()) {
-					MethodScope methodScope = currentScope.methodScope();
-					SourceTypeBinding sourceType = currentScope.enclosingSourceType();
-					if (fieldBinding.isStatic()
-							&& this.constant == Constant.NotAConstant
-							&& !methodScope.isStatic
-							&& (sourceType == declaringClass || sourceType.superclass == declaringClass) // enum constant body
-							&& methodScope.isInsideInitializerOrConstructor()) {
-						currentScope.problemReporter().enumStaticFieldUsedDuringInitialization(fieldBinding, this);
-					}
-				}
+
 				// check if reading a final blank field
 				if (fieldBinding.isBlankFinal() && currentScope.allowBlankFinalFieldAssignment(fieldBinding)) {
 					if (!flowInfo.isDefinitelyAssigned(fieldBinding)) {

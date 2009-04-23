@@ -639,30 +639,6 @@ public class ModifierCorrectionSubProcessor {
 			proposals.add(new ModifierChangeCompletionProposal(label, cu, binding, selectedNode, Modifier.FINAL, 0, 5, image));
 		}
 	}
-//	
-//	public static void addOverrideAnnotationProposal(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-//		IFix fix= Java50Fix.createAddOverrideAnnotationFix(context.getASTRoot(), problem);
-//		if (fix != null) {
-//			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
-//			Map options= new Hashtable();
-//			options.put(CleanUpConstants.ADD_MISSING_ANNOTATIONS, CleanUpConstants.TRUE);
-//			options.put(CleanUpConstants.ADD_MISSING_ANNOTATIONS_OVERRIDE, CleanUpConstants.TRUE);
-//			FixCorrectionProposal proposal= new FixCorrectionProposal(fix, new Java50CleanUp(options), 5, image, context);
-//			proposals.add(proposal);
-//		}
-//	}
-//	
-//	public static void addDeprecatedAnnotationProposal(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-//		IFix fix= Java50Fix.createAddDeprectatedAnnotation(context.getASTRoot(), problem);
-//		if (fix != null) {
-//			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
-//			Map options= new Hashtable();
-//			options.put(CleanUpConstants.ADD_MISSING_ANNOTATIONS, CleanUpConstants.TRUE);
-//			options.put(CleanUpConstants.ADD_MISSING_ANNOTATIONS_DEPRECATED, CleanUpConstants.TRUE);
-//			FixCorrectionProposal proposal= new FixCorrectionProposal(fix, new Java50CleanUp(options), 5, image, context);
-//			proposals.add(proposal);
-//		}
-//	}
 	
 	public static void addOverridingDeprecatedMethodProposal(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
 		
@@ -691,27 +667,6 @@ public class ModifierCorrectionSubProcessor {
 		Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
 		ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, cu, rewrite, 15, image);
 		proposals.add(proposal);
-	}
-		
-	public static void removeOverrideAnnotationProposal(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-//		IJavaScriptUnit cu= context.getCompilationUnit();
-//
-//		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
-//		if (!(selectedNode instanceof FunctionDeclaration)) {
-//			return;
-//		}
-//		FunctionDeclaration methodDecl= (FunctionDeclaration) selectedNode;
-//		Annotation annot= findAnnotation("java.lang.Override", methodDecl.modifiers()); //$NON-NLS-1$
-//		if (annot != null) {
-//			ASTRewrite rewrite= ASTRewrite.create(annot.getAST());
-//			rewrite.remove(annot, null);
-//			String label= CorrectionMessages.ModifierCorrectionSubProcessor_remove_override;
-//			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
-//			ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, cu, rewrite, 6, image);
-//			proposals.add(proposal);
-//			
-//			QuickAssistProcessor.getCreateInSuperClassProposals(context, methodDecl.getName(), proposals);
-//		}
 	}
 
 	private static final String KEY_MODIFIER= "modifier"; //$NON-NLS-1$

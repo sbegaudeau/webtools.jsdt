@@ -70,9 +70,7 @@ public FlowInfo analyseCode(
 		if (expressionType == null || checkedType == null)
 			return null;
 
-		if (!checkedType.isReifiable()) {
-			scope.problemReporter().illegalInstanceOfGenericType(checkedType, this);
-		} else if ((expressionType != TypeBinding.NULL && expressionType.isBaseType()) // disallow autoboxing
+		if ((expressionType != TypeBinding.NULL && expressionType.isBaseType()) // disallow autoboxing
 				|| !checkCastTypesCompatibility(scope, checkedType, expressionType, null)) {
 			scope.problemReporter().notCompatibleTypesError(this, expressionType, checkedType);
 		}

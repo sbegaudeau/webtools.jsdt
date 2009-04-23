@@ -26,7 +26,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class FieldDeclaration extends AbstractVariableDeclaration implements IFieldDeclaration {
@@ -169,12 +168,6 @@ public void resolve(MethodScope initializationScope) {
 		initializationScope.lastVisibleFieldID = this.binding.id;
 
 //		resolveAnnotations(initializationScope, this.annotations, this.binding);
-		// check @Deprecated annotation presence
-		if ((this.binding.getAnnotationTagBits() & TagBits.AnnotationDeprecated) == 0
-				&& (this.binding.modifiers & ClassFileConstants.AccDeprecated) != 0
-				&& initializationScope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
-			initializationScope.problemReporter().missingDeprecatedAnnotationForField(this);
-		}
 		// the resolution of the initialization hasn't been done
 		if (this.initialization == null) {
 			this.binding.setConstant(Constant.NotAConstant);

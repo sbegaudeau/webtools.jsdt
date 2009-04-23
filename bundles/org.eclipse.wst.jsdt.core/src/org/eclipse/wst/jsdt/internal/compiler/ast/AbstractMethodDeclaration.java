@@ -37,7 +37,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilationUnit;
@@ -376,16 +375,7 @@ public abstract class AbstractMethodDeclaration
 			if (JavaScriptCore.IS_ECMASCRIPT4)
 				bindThrownExceptions();
 			resolveJavadoc();
-//			if (JavaScriptCore.IS_ECMASCRIPT4)
-//				resolveAnnotations(scope, this.annotations, this.binding);
 			resolveStatements();
-			// check @Deprecated annotation presence
-			if (this.binding != null
-					&& (this.binding.getAnnotationTagBits() & TagBits.AnnotationDeprecated) == 0
-					&& (this.binding.modifiers & ClassFileConstants.AccDeprecated) != 0
-					&& this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
-				this.scope.problemReporter().missingDeprecatedAnnotationForMethod(this);
-			}
 		} catch (AbortMethod e) {	// ========= abort on fatal error =============
 			this.ignoreFurtherInvestigation = true;
 		}
