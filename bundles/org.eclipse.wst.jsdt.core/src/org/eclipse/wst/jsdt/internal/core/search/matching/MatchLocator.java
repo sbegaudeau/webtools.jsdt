@@ -2307,8 +2307,8 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 
 				ImportReference importRef = (ImportReference) node;
 				Binding binding = (importRef.bits & ASTNode.OnDemand) != 0
-					? unitScope.getImport(CharOperation.subarray(importRef.tokens, 0, importRef.tokens.length), true, importRef.isStatic())
-					: unitScope.getImport(importRef.tokens, false, importRef.isStatic());
+					? unitScope.getImport(CharOperation.subarray(importRef.tokens, 0, importRef.tokens.length), true)
+					: unitScope.getImport(importRef.tokens, false);
 				this.patternLocator.matchLevelAndReportImportRef(importRef, binding, this);
 			}
 			nodeSet.addMatch(node, this.patternLocator.resolveLevel(node));
@@ -2349,14 +2349,6 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 	}
 
 	if (matchedUnitContainer) {
-		ImportReference pkg = unit.currentPackage;
-		if (pkg != null && pkg.annotations != null) {
-			IJavaScriptElement element = createPackageDeclarationHandle(unit);
-			if (element != null) {
-				reportMatching(pkg.annotations, element, null, nodeSet, true, encloses(element));
-			}
-		}
-
 		ImportReference[] imports = unit.imports;
 		if (imports != null) {
 			for (int i = 0, l = imports.length; i < l; i++) {

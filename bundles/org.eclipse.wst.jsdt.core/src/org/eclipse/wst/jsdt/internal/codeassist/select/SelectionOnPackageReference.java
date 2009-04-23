@@ -30,11 +30,10 @@ package org.eclipse.wst.jsdt.internal.codeassist.select;
  */
 
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
 public class SelectionOnPackageReference extends ImportReference {
 public SelectionOnPackageReference(char[][] tokens , long[] positions) {
-	super(tokens, positions, true, ClassFileConstants.AccDefault);
+	super(tokens, positions, true);
 }
 public StringBuffer print(int tab, StringBuffer output, boolean withOnDemand) {
 	printIndent(tab, output).append("<SelectOnPackage:"); //$NON-NLS-1$

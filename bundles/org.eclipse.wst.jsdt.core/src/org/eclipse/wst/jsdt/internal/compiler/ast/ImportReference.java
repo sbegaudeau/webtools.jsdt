@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IImportReference;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 
 public class ImportReference extends ASTNode implements IImportReference {
@@ -24,25 +22,19 @@ public class ImportReference extends ASTNode implements IImportReference {
 	public int declarationEnd; // doesn't include an potential trailing comment
 	public int declarationSourceStart;
 	public int declarationSourceEnd;
-	public int modifiers; // 1.5 addition for static imports
-	public Annotation[] annotations;
 
 	public ImportReference(
-			char[][] tokens,
-			long[] sourcePositions,
-			boolean onDemand,
-			int modifiers) {
+			char[][] tokens, long[] sourcePositions, boolean onDemand) {
 
 		this.tokens = tokens;
 		this.sourcePositions = sourcePositions;
 		if (onDemand) {
-				this.bits |= ASTNode.OnDemand;
+			this.bits |= ASTNode.OnDemand;
 		}
+		
 		this.sourceEnd = (int) (sourcePositions[sourcePositions.length-1] & 0x00000000FFFFFFFF);
 		this.sourceStart = (int) (sourcePositions[0] >>> 32);
-		this.modifiers = modifiers;
 	}
-
 
 	public ImportReference(		// for internal imports
 			char[] name, int startPosition, int endPosition, int nameStartPosition) {
@@ -58,23 +50,16 @@ public class ImportReference extends ASTNode implements IImportReference {
 		this.bits |= ASTNode.OnDemand;
 		this.declarationSourceStart=this.sourceStart = startPosition;
 		this.declarationSourceEnd=this.declarationEnd=this.sourceEnd = endPosition;
-		this.modifiers = ClassFileConstants.AccDefault;
-	}
-
-	public boolean isStatic() {
-		return (this.modifiers & ClassFileConstants.AccStatic) != 0;
 	}
 
 	/**
 	 * @return char[][]
 	 */
 	public char[][] getImportName() {
-
 		return tokens;
 	}
 
 	public StringBuffer print(int indent, StringBuffer output) {
-
 		return print(indent, output, true);
 	}
 
@@ -91,23 +76,30 @@ public class ImportReference extends ASTNode implements IImportReference {
 		return output;
 	}
 
+	/**
+	 * Traverse the node
+	 * @param visitor
+	 * @param scope
+	 */
 	public void traverse(ASTVisitor visitor, CompilationUnitScope scope) {
-		// annotations are traversed during the compilation unit traversal using a class scope
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
 	}
-	public int getASTType() {
-		return IASTNode.IMPORT_REFERENCE;
 	
-	}
-	public boolean isInternal()
-	{
-	  return (this.bits&ASTNode.IsFileImport)!=0;
+	/**
+	 * Returns true if this is an internal import.
+	 * @return true if an internal import.
+	 */
+	public boolean isInternal() {
+	  return (this.bits & ASTNode.IsFileImport) != 0;
 	}
 	
-	public boolean isFileImport()
-	{
-	  return (this.bits&ASTNode.IsFileImport)!=0;
+	/**
+	 * Returns true if this is a file import.
+	 * @return true if a file import.
+	 */
+	public boolean isFileImport() {
+	  return (this.bits & ASTNode.IsFileImport) != 0;
 	}
 
 }

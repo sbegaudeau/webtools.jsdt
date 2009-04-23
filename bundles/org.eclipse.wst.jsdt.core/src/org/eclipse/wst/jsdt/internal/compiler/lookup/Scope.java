@@ -1678,65 +1678,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					problemField = foundField;
 					foundField = null;
 				}
-
-				if (compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
-					// at this point the scope is a compilation unit scope & need to check for imported static fields
-					unitScope.faultInImports(); // ensure static imports are resolved
-					ImportBinding[] imports = unitScope.imports;
-					if (imports != null) {
-						// check single static imports
-						for (int i = 0, length = imports.length; i < length; i++) {
-							ImportBinding importBinding = imports[i];
-							if (importBinding.isStatic() && !importBinding.onDemand) {
-								if (CharOperation.equals(importBinding.compoundName[importBinding.compoundName.length - 1], name)) {
-									if (unitScope.resolveSingleImport(importBinding) != null && importBinding.resolvedImport instanceof FieldBinding) {
-										foundField = (FieldBinding) importBinding.resolvedImport;
-										ImportReference importReference = importBinding.reference;
-										if (importReference != null && needResolve)
-											importReference.bits |= ASTNode.Used;
-										invocationSite.setActualReceiverType(foundField.declaringClass);
-										if (foundField.isValidBinding()) {
-											return foundField;
-										}
-										if (problemField == null)
-											problemField = foundField;
-									}
-								}
-							}
-						}
-						// check on demand imports
-						boolean foundInImport = false;
-						for (int i = 0, length = imports.length; i < length; i++) {
-							ImportBinding importBinding = imports[i];
-							if (importBinding.isStatic() && importBinding.onDemand) {
-								Binding resolvedImport = importBinding.resolvedImport;
-								if (resolvedImport instanceof ReferenceBinding) {
-									FieldBinding temp = findField((ReferenceBinding) resolvedImport, name, invocationSite, needResolve);
-									if (temp != null) {
-										if (!temp.isValidBinding()) {
-											if (problemField == null)
-												problemField = temp;
-										} else if (temp.isStatic()) {
-											if (foundField == temp) continue;
-											ImportReference importReference = importBinding.reference;
-											if (importReference != null && needResolve)
-												importReference.bits |= ASTNode.Used;
-											if (foundInImport)
-												// Answer error binding -- import on demand conflict; name found in two import on demand packages.
-												return new ProblemReferenceBinding(name, null, ProblemReasons.Ambiguous);
-											foundField = temp;
-											foundInImport = true;
-										}
-									}
-								}
-							}
-						}
-						if (foundField != null) {
-							invocationSite.setActualReceiverType(foundField.declaringClass);
-							return foundField;
-						}
-					}
-				}
 			}
 
 			if ( (mask&Binding.METHOD)!=0)
@@ -2415,81 +2356,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					return foundProblem; // visible method selectors take precedence
 				}
 			}
-
-			// at this point the scope is a compilation unit scope & need to check for imported static methods
-			CompilationUnitScope unitScope = (CompilationUnitScope) scope;
-			ImportBinding[] imports = unitScope.imports;
-			if (imports != null) {
-				ObjectVector visible = null;
-				boolean skipOnDemand = false; // set to true when matched static import of method name so stop looking for on demand methods
-				for (int i = 0, length = imports.length; i < length; i++) {
-					ImportBinding importBinding = imports[i];
-					if (importBinding.isStatic()) {
-						Binding resolvedImport = importBinding.resolvedImport;
-						MethodBinding possible = null;
-						if (importBinding.onDemand) {
-							if (!skipOnDemand && resolvedImport instanceof ReferenceBinding)
-								// answers closest approximation, may not check argumentTypes or visibility
-								possible = findMethod((ReferenceBinding) resolvedImport, selector, argumentTypes, invocationSite);
-						} else {
-							if (resolvedImport instanceof MethodBinding) {
-								MethodBinding staticMethod = (MethodBinding) resolvedImport;
-								if (CharOperation.equals(staticMethod.selector, selector))
-									// answers closest approximation, may not check argumentTypes or visibility
-									possible = findMethod(staticMethod.declaringClass, selector, argumentTypes, invocationSite);
-							} else if (resolvedImport instanceof FieldBinding) {
-								// check to see if there are also methods with the same name
-								FieldBinding staticField = (FieldBinding) resolvedImport;
-								if (CharOperation.equals(staticField.name, selector)) {
-									// must find the importRef's type again since the field can be from an inherited type
-									char[][] importName = importBinding.reference.tokens;
-									TypeBinding referencedType = getType(importName, importName.length - 1);
-									if (referencedType != null)
-										// answers closest approximation, may not check argumentTypes or visibility
-										possible = findMethod((ReferenceBinding) referencedType, selector, argumentTypes, invocationSite);
-								}
-							}
-						}
-						if (possible != null && possible != foundProblem) {
-							if (!possible.isValidBinding()) {
-								if (foundProblem == null)
-									foundProblem = possible; // answer as error case match
-							} else if (possible.isStatic()) {
-								MethodBinding compatibleMethod = computeCompatibleMethod(possible, argumentTypes, invocationSite);
-								if (compatibleMethod != null) {
-									if (compatibleMethod.isValidBinding()) {
-										if (compatibleMethod.canBeSeenBy(unitScope.getDefaultPackage())) {
-											if (visible == null || !visible.contains(compatibleMethod)) {
-												ImportReference importReference = importBinding.reference;
-												if (importReference != null)
-													importReference.bits |= ASTNode.Used;
-												if (!skipOnDemand && !importBinding.onDemand) {
-													visible = null; // forget previous matches from on demand imports
-													skipOnDemand = true;
-												}
-												if (visible == null)
-													visible = new ObjectVector(3);
-												visible.add(compatibleMethod);
-											}
-										} else if (foundProblem == null) {
-											foundProblem = new ProblemMethodBinding(compatibleMethod, selector, compatibleMethod.parameters, ProblemReasons.NotVisible);
-										}
-									} else if (foundProblem == null) {
-										foundProblem = compatibleMethod;
-									}
-								} else if (foundProblem == null) {
-									foundProblem = new ProblemMethodBinding(possible, selector, argumentTypes, ProblemReasons.NotFound);
-								}
-							}
-						}
-					}
-				}
-				if (visible != null) {
-					MethodBinding[] temp = new MethodBinding[visible.size];
-					visible.copyInto(temp);
-					foundMethod = mostSpecificMethodBinding(temp, temp.length, argumentTypes, invocationSite, null);
-				}
-			}
 		}
 
 		if (foundMethod != null) {
@@ -3009,10 +2875,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 						Binding temp = null;
 						if (resolvedImport instanceof PackageBinding) {
 							temp = findBinding(name, mask, (PackageBinding) resolvedImport, currentPackage, false);
-						} else if (someImport.isStatic()) {
-							temp = findMemberType(name, (ReferenceBinding) resolvedImport); // static imports are allowed to see inherited member types
-//							if (temp != null && !temp.isStatic())
-//								temp = null;
 						} else {
 							temp = findDirectMemberType(name, (ReferenceBinding) resolvedImport);
 						}

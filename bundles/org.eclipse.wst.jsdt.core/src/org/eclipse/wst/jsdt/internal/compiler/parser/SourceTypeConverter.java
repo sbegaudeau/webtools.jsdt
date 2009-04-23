@@ -169,7 +169,7 @@ public class SourceTypeConverter {
 		if (packageName.length > 0)
 			// if its null then it is defined in the default package
 			this.unit.currentPackage =
-				createImportReference(packageName, start, end, false, ClassFileConstants.AccDefault);
+				createImportReference(packageName, start, end, false);
 		IImportDeclaration[] importDeclarations = topLevelTypeInfo.getHandle().getJavaScriptUnit().getImports();
 		int importCount = importDeclarations.length;
 		this.unit.imports = new ImportReference[importCount];
@@ -181,8 +181,7 @@ public class SourceTypeConverter {
 				Util.splitOn('.', nameWithoutStar, 0, nameWithoutStar.length()),
 				sourceImport.getDeclarationSourceStart(),
 				sourceImport.getDeclarationSourceEnd(),
-				importDeclaration.isOnDemand(),
-				sourceImport.getModifiers());
+				importDeclaration.isOnDemand());
 		}
 		/* convert type(s) */
 		try {
@@ -668,8 +667,7 @@ public class SourceTypeConverter {
 		String[] importName,
 		int start,
 		int end,
-		boolean onDemand,
-		int modifiers) {
+		boolean onDemand) {
 
 		int length = importName.length;
 		long[] positions = new long[length];
@@ -682,8 +680,7 @@ public class SourceTypeConverter {
 		return new ImportReference(
 			qImportName,
 			positions,
-			onDemand,
-			modifiers);
+			onDemand);
 	}
 
 	private TypeParameter createTypeParameter(char[] typeParameterName, char[][] typeParameterBounds, int start, int end) {

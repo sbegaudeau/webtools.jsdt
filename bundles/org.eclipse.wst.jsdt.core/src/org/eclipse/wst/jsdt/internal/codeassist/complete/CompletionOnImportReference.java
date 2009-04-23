@@ -36,8 +36,8 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 
 public class CompletionOnImportReference extends ImportReference {
 
-public CompletionOnImportReference(char[][] tokens , long[] positions, int modifiers) {
-	super(tokens, positions, false, modifiers);
+public CompletionOnImportReference(char[][] tokens , long[] positions) {
+	super(tokens, positions, false);
 }
 public StringBuffer print(int indent, StringBuffer output, boolean withOnDemand) {
 

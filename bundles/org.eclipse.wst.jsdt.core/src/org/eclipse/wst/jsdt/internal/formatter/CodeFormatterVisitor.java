@@ -635,10 +635,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		this.scribe.printNextToken(TerminalTokens.TokenNameimport);
 		this.preferences.number_of_empty_lines_to_preserve = this.preferences.blank_lines_between_import_groups;
 		this.scribe.space();
-		if (importRef.isStatic()) {
-			this.scribe.printNextToken(TerminalTokens.TokenNamestatic);
-			this.scribe.space();
-		}
 		if ((importRef.bits & ASTNode.OnDemand) != 0) {
 			this.scribe.printQualifiedReference(importRef.sourceEnd);
 			this.scribe.printNextToken(TerminalTokens.TokenNameDOT);
@@ -3145,7 +3141,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
 				this.scribe.printEmptyLines(blankLinesBeforePackage);
 			}
 
-			this.scribe.printModifiers(compilationUnitDeclaration.currentPackage.annotations, this);
 			this.scribe.space();
 			// dump the package keyword
 			this.scribe.printNextToken(TerminalTokens.TokenNamepackage);

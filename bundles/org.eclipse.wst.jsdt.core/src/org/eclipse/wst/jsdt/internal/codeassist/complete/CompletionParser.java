@@ -2802,10 +2802,6 @@ protected void consumeSingleMemberAnnotation() {
 	super.consumeSingleMemberAnnotation();
 	}
 }
-protected void consumeSingleStaticImportDeclarationName() {
-	super.consumeSingleStaticImportDeclarationName();
-	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
-}
 protected void consumeSingleTypeImportDeclarationName() {
 	super.consumeSingleTypeImportDeclarationName();
 	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
@@ -2831,10 +2827,6 @@ protected void consumeStatementSwitch() {
 		popElement(K_SWITCH_LABEL);
 		popElement(K_BLOCK_DELIMITER);
 	}
-}
-protected void consumeStaticImportOnDemandDeclarationName() {
-	super.consumeStaticImportOnDemandDeclarationName();
-	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
 }
 protected void consumeStaticInitializer() {
 	super.consumeStaticInitializer();
@@ -3550,8 +3542,8 @@ protected void consumeUnaryExpression(int op, boolean post) {
 	}
 }
 
-public ImportReference createAssistImportReference(char[][] tokens, long[] positions, int mod){
-	return new CompletionOnImportReference(tokens, positions, mod);
+public ImportReference createAssistImportReference(char[][] tokens, long[] positions){
+	return new CompletionOnImportReference(tokens, positions);
 }
 public ImportReference createAssistPackageReference(char[][] tokens, long[] positions){
 	return new CompletionOnPackageReference(tokens, positions);

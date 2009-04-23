@@ -116,21 +116,6 @@ protected boolean isVirtualInvoke(MethodBinding method, MessageSend messageSend)
 }
 public int match(ASTNode node, MatchingNodeSet nodeSet) {
 	int declarationsLevel = IMPOSSIBLE_MATCH;
-	if (this.pattern.findReferences) {
-		if (node instanceof ImportReference) {
-			// With static import, we can have static method reference in import reference
-			ImportReference importRef = (ImportReference) node;
-			int length = importRef.tokens.length-1;
-			if (importRef.isStatic() && ((importRef.bits & ASTNode.OnDemand) == 0) && matchesName(this.pattern.selector, importRef.tokens[length])) {
-				char[][] compoundName = new char[length][];
-				System.arraycopy(importRef.tokens, 0, compoundName, 0, length);
-				char[] declaringType = CharOperation.concat(pattern.declaringQualification, pattern.declaringSimpleName, '.');
-				if (matchesName(declaringType, CharOperation.concatWith(compoundName, '.'))) {
-					declarationsLevel = ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH;
-				}
-			}
-		}
-	}
 	return nodeSet.addMatch(node, declarationsLevel);
 }
 //public int match(ConstructorDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
@@ -227,9 +212,6 @@ protected int matchContainer() {
  * Accept to report match of static field on static import
  */
 protected void matchLevelAndReportImportRef(ImportReference importRef, Binding binding, MatchLocator locator) throws CoreException {
-	if (importRef.isStatic() && binding instanceof MethodBinding) {
-		super.matchLevelAndReportImportRef(importRef, binding, locator);
-	}
 }
 protected int matchMethod(MethodBinding method, boolean skipImpossibleArg) {
 	if (!matchesName(this.pattern.selector, method.selector)) return IMPOSSIBLE_MATCH;

@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 public class IndexingParser extends SourceElementParser {
 	SingleNameReference singleNameReference = new SingleNameReference(CharOperation.NO_CHAR, 0);
 	QualifiedNameReference qualifiedNameReference = new QualifiedNameReference(CharOperation.NO_CHAR_CHAR, new long[0], 0, 0);
-	ImportReference importReference = new ImportReference(CharOperation.NO_CHAR_CHAR, new long[1], false, 0);
+	ImportReference importReference = new ImportReference(CharOperation.NO_CHAR_CHAR, new long[1], false);
 
 	public IndexingParser(ISourceElementRequestor requestor, IProblemFactory problemFactory, CompilerOptions options, boolean reportLocalDeclarations, boolean optimizeStringLiterals, boolean useSourceJavadocParser) {
 		super(requestor, problemFactory, options, reportLocalDeclarations,

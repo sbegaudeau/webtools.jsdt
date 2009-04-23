@@ -687,51 +687,30 @@ class DefaultBindingResolver extends BindingResolver {
 			org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode node = (org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode) this.newAstToOldAst.get(importDeclaration);
 			if (node instanceof ImportReference) {
 				ImportReference importReference = (ImportReference) node;
-				final boolean isStatic = importReference.isStatic();
 				if ((importReference.bits & org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode.OnDemand) != 0) {
-					Binding binding = this.scope.getImport(CharOperation.subarray(importReference.tokens, 0, importReference.tokens.length), true, isStatic);
+					Binding binding = this.scope.getImport(CharOperation.subarray(importReference.tokens, 0, importReference.tokens.length), true);
 					if (binding != null) {
-						if (isStatic) {
-							if (binding instanceof org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) {
-								ITypeBinding typeBinding = this.getTypeBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) binding);
-								return typeBinding == null ? null : typeBinding;
+						if ((binding.kind() & Binding.PACKAGE) != 0) {
+							IPackageBinding packageBinding = this.getPackageBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding) binding);
+							if (packageBinding == null) {
+								return null;
 							}
+							return packageBinding;
 						} else {
-							if ((binding.kind() & Binding.PACKAGE) != 0) {
-								IPackageBinding packageBinding = this.getPackageBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding) binding);
-								if (packageBinding == null) {
-									return null;
-								}
-								return packageBinding;
-							} else {
-								// if it is not a package, it has to be a type
-								ITypeBinding typeBinding = this.getTypeBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) binding);
-								if (typeBinding == null) {
-									return null;
-								}
-								return typeBinding;
+							// if it is not a package, it has to be a type
+							ITypeBinding typeBinding = this.getTypeBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) binding);
+							if (typeBinding == null) {
+								return null;
 							}
+							return typeBinding;
 						}
 					}
 				} else {
-					Binding binding = this.scope.getImport(importReference.tokens, false, isStatic);
+					Binding binding = this.scope.getImport(importReference.tokens, false);
 					if (binding != null) {
-						if (isStatic) {
-							if (binding instanceof org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) {
-								ITypeBinding typeBinding = this.getTypeBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) binding);
-								return typeBinding == null ? null : typeBinding;
-							} else if (binding instanceof FieldBinding) {
-								IVariableBinding variableBinding = this.getVariableBinding((FieldBinding) binding);
-								return variableBinding == null ? null : variableBinding;
-							} else if (binding instanceof org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding) {
-								// it is a type
-								return this.getMethodBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding)binding);
-							}
-						} else {
-							if (binding instanceof org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) {
-								ITypeBinding typeBinding = this.getTypeBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) binding);
-								return typeBinding == null ? null : typeBinding;
-							}
+						if (binding instanceof org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) {
+							ITypeBinding typeBinding = this.getTypeBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) binding);
+							return typeBinding == null ? null : typeBinding;
 						}
 					}
 				}
@@ -908,13 +887,13 @@ class DefaultBindingResolver extends BindingResolver {
 				if (this.scope == null) return null;
 				if (importReferenceLength == index) {
 					try {
-						binding = this.scope.getImport(CharOperation.subarray(importReference.tokens, 0, index), (importReference.bits & org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode.OnDemand) != 0, importReference.isStatic());
+						binding = this.scope.getImport(CharOperation.subarray(importReference.tokens, 0, index), (importReference.bits & org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode.OnDemand) != 0);
 					} catch (AbortCompilation e) {
 						// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=53357
 					}
 				} else {
 					try {
-						binding = this.scope.getImport(CharOperation.subarray(importReference.tokens, 0, index), true, importReference.isStatic());
+						binding = this.scope.getImport(CharOperation.subarray(importReference.tokens, 0, index), true);
 					} catch (AbortCompilation e) {
 						// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=53357
 					}
@@ -1116,13 +1095,13 @@ class DefaultBindingResolver extends BindingResolver {
 				if (this.scope == null) return null;
 				if (importReferenceLength == index) {
 					try {
-						binding = this.scope.getImport(CharOperation.subarray(importReference.tokens, 0, index), (importReference.bits & org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode.OnDemand) != 0, importReference.isStatic());
+						binding = this.scope.getImport(CharOperation.subarray(importReference.tokens, 0, index), (importReference.bits & org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode.OnDemand) != 0);
 					} catch (AbortCompilation e) {
 						// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=53357
 					}
 				} else {
 					try {
-						binding = this.scope.getImport(CharOperation.subarray(importReference.tokens, 0, index), true, importReference.isStatic());
+						binding = this.scope.getImport(CharOperation.subarray(importReference.tokens, 0, index), true);
 					} catch (AbortCompilation e) {
 						// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=53357
 					}

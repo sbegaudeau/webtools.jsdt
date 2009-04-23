@@ -537,7 +537,7 @@ void checkAndSetImports() {
 	int numberOfImports = numberOfStatements + 1;
 	for (int i = 0; i < numberOfStatements; i++) {
 		ImportReference importReference = referenceContext.imports[i];
-		if (((importReference.bits & ASTNode.OnDemand) != 0) && CharOperation.equals(JAVA_LANG, importReference.tokens) && !importReference.isStatic()) {
+		if (((importReference.bits & ASTNode.OnDemand) != 0) && CharOperation.equals(JAVA_LANG, importReference.tokens)) {
 			numberOfImports--;
 			break;
 		}
@@ -553,7 +553,7 @@ void checkAndSetImports() {
 		// skip duplicates or imports of the current package
 		for (int j = 0; j < index; j++) {
 			ImportBinding resolved = resolvedImports[j];
-			if (resolved.onDemand == ((importReference.bits & ASTNode.OnDemand) != 0) && resolved.isStatic() == importReference.isStatic())
+			if (resolved.onDemand == ((importReference.bits & ASTNode.OnDemand) != 0))
 				if (CharOperation.equals(compoundName, resolvedImports[j].compoundName))
 					continue nextImport;
 		}
@@ -563,7 +563,7 @@ void checkAndSetImports() {
 				continue nextImport;
 
 			Binding importBinding = findImport(compoundName, compoundName.length);
-			if (!importBinding.isValidBinding() || (importReference.isStatic() && importBinding instanceof PackageBinding))
+			if (!importBinding.isValidBinding())
 				continue nextImport;	// we report all problems in faultInImports()
 			resolvedImports[index++] = new ImportBinding(compoundName, true, importBinding, importReference);
 		} else {
@@ -722,7 +722,7 @@ void faultInImports() {
 	int numberOfImports = numberOfStatements + defaultImports.length;
 	for (int i = 0; i < numberOfStatements; i++) {
 		ImportReference importReference = referenceContext.imports[i];
-		if (((importReference.bits & ASTNode.OnDemand) != 0) && CharOperation.equals(JAVA_LANG, importReference.tokens) && !importReference.isStatic()) {
+		if (((importReference.bits & ASTNode.OnDemand) != 0) && CharOperation.equals(JAVA_LANG, importReference.tokens)) {
 			numberOfImports--;
 			break;
 		}
@@ -741,7 +741,7 @@ void faultInImports() {
 		// skip duplicates or imports of the current package
 		for (int j = 0; j < index; j++) {
 			ImportBinding resolved = resolvedImports[j];
-			if (resolved.onDemand == ((importReference.bits & ASTNode.OnDemand) != 0) && resolved.isStatic() == importReference.isStatic()) {
+			if (resolved.onDemand == ((importReference.bits & ASTNode.OnDemand) != 0)) {
 				if (CharOperation.equals(compoundName, resolved.compoundName)) {
 					continue nextImport;
 				}
@@ -757,13 +757,9 @@ void faultInImports() {
 				problemReporter().importProblem(importReference, importBinding);
 				continue nextImport;
 			}
-			if (importReference.isStatic() && importBinding instanceof PackageBinding) {
-				problemReporter().cannotImportPackage(importReference);
-				continue nextImport;
-			}
 			resolvedImports[index++] = new ImportBinding(compoundName, true, importBinding, importReference);
 		} else {
-			Binding importBinding = findSingleImport(compoundName, importReference.isStatic());
+			Binding importBinding = findSingleImport(compoundName);
 			if (!importBinding.isValidBinding()) {
 				problemReporter().importProblem(importReference, importBinding);
 				continue nextImport;
@@ -800,18 +796,7 @@ void faultInImports() {
 					continue nextImport;
 				}
 				typesBySimpleNames.put(compoundName[compoundName.length - 1], referenceBinding);
-			} else if (importBinding instanceof FieldBinding) {
-				for (int j = 0; j < index; j++) {
-					ImportBinding resolved = resolvedImports[j];
-					// find other static fields with the same name
-					if (resolved.isStatic() && resolved.resolvedImport instanceof FieldBinding && importBinding != resolved.resolvedImport) {
-						if (CharOperation.equals(compoundName[compoundName.length - 1], resolved.compoundName[resolved.compoundName.length - 1])) {
-							problemReporter().duplicateImport(importReference);
-							continue nextImport;
-						}
-					}
-				}
-			}
+			} 
 			resolvedImports[index++] = conflictingType == null
 				? new ImportBinding(compoundName, false, importBinding, importReference)
 				: new ImportConflictBinding(compoundName, importBinding, conflictingType, importReference);
@@ -840,11 +825,11 @@ public void faultInTypes() {
 }
 
 //this API is for code assist purpose
-public Binding findImport(char[][] compoundName, boolean findStaticImports, boolean onDemand) {
+public Binding findImport(char[][] compoundName, boolean onDemand) {
 	if(onDemand) {
 		return findImport(compoundName, compoundName.length);
 	} else {
-		return findSingleImport(compoundName, findStaticImports);
+		return findSingleImport(compoundName);
 	}
 }
 
@@ -899,7 +884,7 @@ private Binding findImport(char[][] compoundName, int length) {
 		return new ProblemReferenceBinding(compoundName, type, ProblemReasons.NotVisible);
 	return type;
 }
-private Binding findSingleImport(char[][] compoundName, boolean findStaticImports) {
+private Binding findSingleImport(char[][] compoundName) {
 	if (compoundName.length == 1) {
 		// findType records the reference
 		// the name cannot be a package
@@ -911,42 +896,9 @@ private Binding findSingleImport(char[][] compoundName, boolean findStaticImport
 		return typeBinding;
 	}
 
-	if (findStaticImports)
-		return findSingleStaticImport(compoundName);
 	return findImport(compoundName, compoundName.length);
 }
-private Binding findSingleStaticImport(char[][] compoundName) {
-	Binding binding = findImport(compoundName, compoundName.length - 1);
-	if (!binding.isValidBinding()) return binding;
 
-	char[] name = compoundName[compoundName.length - 1];
-	if (binding instanceof PackageBinding) {
-		Binding temp = ((PackageBinding) binding).getTypeOrPackage(name,  Binding.TYPE | Binding.PACKAGE);
-		if (temp != null && temp instanceof ReferenceBinding) // must resolve to a member type or field, not a top level type
-			return new ProblemReferenceBinding(compoundName, (ReferenceBinding) temp, ProblemReasons.InvalidTypeForStaticImport);
-		return binding; // cannot be a package, error is caught in sender
-	}
-
-	// look to see if its a static field first
-	ReferenceBinding type = (ReferenceBinding) binding;
-	FieldBinding field = findField(type, name, null, true);
-	if (field != null && field.isValidBinding() && field.isStatic() && field.canBeSeenBy(type, null, this))
-		return field;
-
-	// look to see if there is a static method with the same selector
-	MethodBinding method = findStaticMethod(type, name);
-	if (method != null) return method;
-
-	type = findMemberType(name, type);
-	if (type == null || !type.isStatic()) {
-		if (field != null && !field.isValidBinding() && field.problemId() != ProblemReasons.NotFound)
-			return field;
-		return new ProblemReferenceBinding(compoundName, type, ProblemReasons.NotFound);
-	}
-	if (!type.canBeSeenBy(environment.defaultPackage))
-		return new ProblemReferenceBinding(compoundName, type, ProblemReasons.NotVisible);
-	return type;
-}
 MethodBinding findStaticMethod(ReferenceBinding currentType, char[] selector) {
 	if (!currentType.canBeSeenBy(this))
 		return null;
@@ -1024,10 +976,10 @@ ImportBinding[] getDefaultImports() {
 	return defaultImports ;
 }
 // NOT Public API
-public final Binding getImport(char[][] compoundName, boolean onDemand, boolean isStaticImport) {
+public final Binding getImport(char[][] compoundName, boolean onDemand) {
 	if (onDemand)
 		return findImport(compoundName, compoundName.length);
-	return findSingleImport(compoundName, isStaticImport);
+	return findSingleImport(compoundName);
 }
 
 public int nextCaptureID() {
@@ -1149,7 +1101,7 @@ void recordTypeReferences(TypeBinding[] types) {
 }
 Binding resolveSingleImport(ImportBinding importBinding) {
 	if (importBinding.resolvedImport == null) {
-		importBinding.resolvedImport = findSingleImport(importBinding.compoundName, importBinding.isStatic());
+		importBinding.resolvedImport = findSingleImport(importBinding.compoundName);
 		if (!importBinding.resolvedImport.isValidBinding() || importBinding.resolvedImport instanceof PackageBinding) {
 			if (this.imports != null) {
 				ImportBinding[] newImports = new ImportBinding[imports.length - 1];

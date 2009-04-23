@@ -224,8 +224,7 @@ public class SourceMapper
 			int declarationStart,
 			int declarationEnd,
 			char[][] tokens,
-			boolean onDemand,
-			int modifiers) {
+			boolean onDemand) {
 		char[][] imports = (char[][]) this.importsTable.get(this.binaryType);
 		int importsCounter;
 		if (imports == null) {

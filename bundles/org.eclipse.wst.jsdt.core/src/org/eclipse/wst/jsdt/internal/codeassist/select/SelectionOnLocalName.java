@@ -15,7 +15,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
 public class SelectionOnLocalName extends LocalDeclaration{
 
-	public SelectionOnLocalName(char[] name,	int sourceStart, int sourceEnd) {
+	public SelectionOnLocalName(char[] name, int sourceStart, int sourceEnd) {
 
 		super(name, sourceStart, sourceEnd);
 	}
@@ -30,8 +30,7 @@ public class SelectionOnLocalName extends LocalDeclaration{
 		printIndent(indent, output);
 		output.append("<SelectionOnLocalName:"); //$NON-NLS-1$
 		printModifiers(this.modifiers, output);
-//		 type.print(0, output).append(' ').append(this.name);
-		 output.append(this.name);
+		output.append(this.name);
 		if (initialization != null) {
 			output.append(" = "); //$NON-NLS-1$
 			initialization.printExpression(0, output);

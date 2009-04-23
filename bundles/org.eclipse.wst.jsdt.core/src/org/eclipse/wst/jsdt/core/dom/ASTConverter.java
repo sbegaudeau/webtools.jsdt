@@ -2740,20 +2740,7 @@ class ASTConverter {
 		importDeclaration.setSourceRange(importReference.declarationSourceStart, importReference.declarationEnd - importReference.declarationSourceStart + 1);
 		importDeclaration.setOnDemand(onDemand && !isFile);
 		importDeclaration.setIsFileImport(isFile);
-		int modifiers = importReference.modifiers;
-		if (modifiers != ClassFileConstants.AccDefault) {
-			switch(this.ast.apiLevel) {
-				case AST.JLS2_INTERNAL :
-					importDeclaration.setFlags(importDeclaration.getFlags() | ASTNode.MALFORMED);
-					break;
-				case AST.JLS3 :
-					if (modifiers == ClassFileConstants.AccStatic) {
-						importDeclaration.setStatic(true);
-					} else {
-						importDeclaration.setFlags(importDeclaration.getFlags() | ASTNode.MALFORMED);
-					}
-			}
-		}
+		
 		if (this.resolveBindings) {
 			recordNodes(importDeclaration, importReference);
 		}
@@ -2781,18 +2768,7 @@ class ASTConverter {
 			}
 		}
 		packageDeclaration.setSourceRange(importReference.declarationSourceStart, importReference.declarationEnd - importReference.declarationSourceStart + 1);
-		org.eclipse.wst.jsdt.internal.compiler.ast.Annotation[] annotations = importReference.annotations;
-		if (annotations != null) {
-			switch(this.ast.apiLevel) {
-				case AST.JLS2_INTERNAL :
-					packageDeclaration.setFlags(packageDeclaration.getFlags() & ASTNode.MALFORMED);
-					break;
-				case AST.JLS3 :
-					for (int i = 0, max = annotations.length; i < max; i++) {
-						packageDeclaration.annotations().add(convert(annotations[i]));
-					}
-			}
-		}
+		
 		if (this.resolveBindings) {
 			recordNodes(packageDeclaration, importReference);
 		}

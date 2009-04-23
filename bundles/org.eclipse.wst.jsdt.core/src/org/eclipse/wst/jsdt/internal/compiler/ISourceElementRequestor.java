@@ -106,10 +106,8 @@ public interface ISourceElementRequestor {
 	 * @param onDemand
 	 *                   set to true if the import is an import on demand (e.g. import
 	 *                   java.io.*). False otherwise.
-	 * @param modifiers
-	 *                   can be set to static from 1.5 on.
 	 */
-	void acceptImport(int declarationStart, int declarationEnd, char[][] tokens, boolean onDemand, int modifiers);
+	void acceptImport(int declarationStart, int declarationEnd, char[][] tokens, boolean onDemand);
 
 	/*
 	 * Table of line separator position. This table is passed once at the end of

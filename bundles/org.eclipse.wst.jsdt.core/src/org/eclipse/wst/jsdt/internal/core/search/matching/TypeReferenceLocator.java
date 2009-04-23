@@ -46,7 +46,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.MemberTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemBinding;
@@ -184,42 +183,7 @@ protected int matchLevel(ImportReference importRef) {
 	}
 	return IMPOSSIBLE_MATCH;
 }
-/* (non-Javadoc)
- * @see org.eclipse.wst.jsdt.internal.core.search.matching.PatternLocator#matchLevelAndReportImportRef(org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference, org.eclipse.wst.jsdt.internal.compiler.lookup.Binding, org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator)
- */
-protected void matchLevelAndReportImportRef(ImportReference importRef, Binding binding, MatchLocator locator) throws CoreException {
-	Binding refBinding = binding;
-	if (importRef.isStatic()) {
-		// for static import, binding can be a field binding or a member type binding
-		// verify that in this case binding is static and use declaring class for fields
-		if (binding instanceof FieldBinding) {
-			FieldBinding fieldBinding = (FieldBinding) binding;
-			if (!fieldBinding.isStatic()) return;
-			refBinding = fieldBinding.declaringClass;
-		} else if (binding instanceof MethodBinding) {
-			MethodBinding methodBinding = (MethodBinding) binding;
-			if (!methodBinding.isStatic()) return;
-			refBinding = methodBinding.declaringClass;
-		} else if (binding instanceof MemberTypeBinding) {
-			MemberTypeBinding memberBinding = (MemberTypeBinding) binding;
-			if (!memberBinding.isStatic()) return;
-		}
-		// resolve and report
-		int level = resolveLevel(refBinding);
-		if (level >= INACCURATE_MATCH) {
-			matchReportImportRef(
-				importRef,
-				binding,
-				locator.createImportHandle(importRef),
-				level == ACCURATE_MATCH
-					? SearchMatch.A_ACCURATE
-					: SearchMatch.A_INACCURATE,
-				locator);
-		}
-		return;
-	}
-	super.matchLevelAndReportImportRef(importRef, refBinding, locator);
-}
+
 protected void matchReportImportRef(ImportReference importRef, Binding binding, IJavaScriptElement element, int accuracy, MatchLocator locator) throws CoreException {
 	if (this.isDeclarationOfReferencedTypesPattern) {
 		if ((element = findElement(element, accuracy)) != null) {
@@ -255,10 +219,8 @@ protected void matchReportImportRef(ImportReference importRef, Binding binding, 
 		typeBinding = (ReferenceBinding) binding;
 	} else if (binding instanceof FieldBinding) { // may happen for static import
 		typeBinding = ((FieldBinding)binding).declaringClass;
-		lastButOne = importRef.isStatic() && ((importRef.bits & ASTNode.OnDemand) == 0);
 	} else if (binding instanceof MethodBinding) { // may happen for static import
 		typeBinding = ((MethodBinding)binding).declaringClass;
-		lastButOne = importRef.isStatic() && ((importRef.bits & ASTNode.OnDemand) == 0);
 	}
 	if (typeBinding != null) {
 		int lastIndex = importRef.tokens.length - 1;

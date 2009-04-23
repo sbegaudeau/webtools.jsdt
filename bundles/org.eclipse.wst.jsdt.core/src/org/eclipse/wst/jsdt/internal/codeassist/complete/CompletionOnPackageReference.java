@@ -33,11 +33,10 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
  */
 
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
 public class CompletionOnPackageReference extends ImportReference {
 public CompletionOnPackageReference(char[][] tokens , long[] positions) {
-	super(tokens, positions, true, ClassFileConstants.AccDefault);
+	super(tokens, positions, true);
 }
 public StringBuffer print(int indent, StringBuffer output, boolean withOnDemand) {
 

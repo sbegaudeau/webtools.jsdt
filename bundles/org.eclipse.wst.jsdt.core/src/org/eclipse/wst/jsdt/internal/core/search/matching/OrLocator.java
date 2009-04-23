@@ -29,9 +29,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.MemberTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 
 public class OrLocator extends PatternLocator {
 
@@ -206,24 +203,7 @@ protected int matchContainer() {
 	return result;
 }
 protected void matchLevelAndReportImportRef(ImportReference importRef, Binding binding, MatchLocator locator) throws CoreException {
-
-	// for static import, binding can be a field binding or a member type binding
-	// verify that in this case binding is static and use declaring class for fields
 	Binding refBinding = binding;
-	if (importRef.isStatic()) {
-		if (binding instanceof FieldBinding) {
-			FieldBinding fieldBinding = (FieldBinding) binding;
-			if (!fieldBinding.isStatic()) return;
-			refBinding = fieldBinding.declaringClass;
-		} else if (binding instanceof MethodBinding) {
-			MethodBinding methodBinding = (MethodBinding) binding;
-			if (!methodBinding.isStatic()) return;
-			refBinding = methodBinding.declaringClass;
-		} else if (binding instanceof MemberTypeBinding) {
-			MemberTypeBinding memberBinding = (MemberTypeBinding) binding;
-			if (!memberBinding.isStatic()) return;
-		}
-	}
 
 	// Look for closest pattern
 	PatternLocator closestPattern = null;

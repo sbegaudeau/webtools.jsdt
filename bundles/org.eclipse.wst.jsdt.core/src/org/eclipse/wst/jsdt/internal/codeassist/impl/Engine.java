@@ -20,7 +20,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
@@ -207,21 +206,13 @@ public abstract class Engine implements ITypeRequestor {
 									'.');
 					}
 					if(CharOperation.equals(fullyQualifiedEnclosingTypeName, importFlatName)) {
-						if(importBinding.isStatic()) {
-							isFound = (modifiers & ClassFileConstants.AccStatic) != 0;
-						} else {
-							isFound = true;
-						}
+						isFound = true;
 					}
 				}
 			} else {
 				if(enclosingTypeNames == null || enclosingTypeNames.length == 0) {
 					if(CharOperation.equals(packageName, importFlatName)) {
-						if(importBinding.isStatic()) {
-							isFound = (modifiers & ClassFileConstants.AccStatic) != 0;
-						} else {
-							isFound = true;
-						}
+						isFound = true;
 					}
 				}
 			}

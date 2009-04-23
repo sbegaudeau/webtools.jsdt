@@ -810,11 +810,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 									Binding binding = this.unitScope.getTypeOrPackage(qualifierTokens);
 									if(binding != null && binding instanceof ReferenceBinding) {
 										ReferenceBinding ref = (ReferenceBinding) binding;
-										selectMemberTypeFromImport(parsedUnit, lastToken, ref, importReference.isStatic());
-										if(importReference.isStatic()) {
-											selectStaticFieldFromStaticImport(parsedUnit, lastToken, ref);
-											selectStaticMethodFromStaticImport(parsedUnit, lastToken, ref);
-										}
+										selectMemberTypeFromImport(parsedUnit, lastToken, ref);
 									}
 								}
 							}
@@ -897,16 +893,13 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 		}
 	}
 
-	private void selectMemberTypeFromImport(CompilationUnitDeclaration parsedUnit, char[] lastToken, ReferenceBinding ref, boolean staticOnly) {
+	private void selectMemberTypeFromImport(CompilationUnitDeclaration parsedUnit, char[] lastToken, ReferenceBinding ref) {
 		int fieldLength = lastToken.length;
 		ReferenceBinding[] memberTypes = ref.memberTypes();
 		next : for (int j = 0; j < memberTypes.length; j++) {
 			ReferenceBinding memberType = memberTypes[j];
 
 			if (fieldLength > memberType.sourceName.length)
-				continue next;
-
-			if (staticOnly && !memberType.isStatic())
 				continue next;
 
 			if (!CharOperation.equals(lastToken, memberType.sourceName, true))

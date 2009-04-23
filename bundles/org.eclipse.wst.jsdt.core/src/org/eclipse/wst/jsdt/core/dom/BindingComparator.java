@@ -97,8 +97,7 @@ class BindingComparator {
 			}
 			ImportBinding importBinding = (ImportBinding) declaringElement;
 			ImportBinding importBinding2 = (ImportBinding) declaringElement2;
-			return importBinding.isStatic() == importBinding2.isStatic()
-				&& importBinding.onDemand == importBinding2.onDemand
+			return importBinding.onDemand == importBinding2.onDemand
 				&& CharOperation.equals(importBinding.compoundName, importBinding2.compoundName);
 		}
 		return false;

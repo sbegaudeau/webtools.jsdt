@@ -300,9 +300,6 @@ public class CompilationUnitDeclaration
 					continue;
 				printIndent(indent, output).append("import "); //$NON-NLS-1$
 				ImportReference currentImport = imports[i];
-				if (currentImport.isStatic()) {
-					output.append("static "); //$NON-NLS-1$
-				}
 				currentImport.print(0, output).append(";\n"); //$NON-NLS-1$
 			}
 
@@ -393,9 +390,7 @@ public class CompilationUnitDeclaration
 				this.javadoc.resolve(this.scope);
     		}
 		}
-		if (this.currentPackage != null && this.currentPackage.annotations != null && !isPackageInfo) {
-			scope.problemReporter().invalidFileNameForPackageAnnotations(this.currentPackage.annotations[0]);
-		}
+
 		try {
 			if (types != null) {
 				for (int i = startingTypeIndex, count = types.length; i < count; i++) {
@@ -573,15 +568,6 @@ public class CompilationUnitDeclaration
 					final MethodScope methodScope = syntheticTypeDeclaration.staticInitializerScope;
 					if (this.javadoc != null) {
 						this.javadoc.traverse(visitor, methodScope);
-					}
-					if (this.currentPackage != null) {
-					final Annotation[] annotations = this.currentPackage.annotations;
-					if (annotations != null) {
-						int annotationsLength = annotations.length;
-						for (int i = 0; i < annotationsLength; i++) {
-							annotations[i].traverse(visitor, methodScope);
-						}
-					}
 					}
 				}
 

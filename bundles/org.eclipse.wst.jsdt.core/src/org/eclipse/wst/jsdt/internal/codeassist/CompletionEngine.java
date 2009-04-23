@@ -401,7 +401,6 @@ public final class CompletionEngine
 	char[] completionToken;
 	char[] qualifiedCompletionToken;
 	boolean resolvingImports = false;
-	boolean resolvingStaticImports = false;
 	boolean insideQualifiedReference = false;
 	boolean noProposal = true;
 	CategorizedProblem problem = null;
@@ -659,20 +658,8 @@ public final class CompletionEngine
 			this.knownTypes.put(fullyQualifiedName, this);
 
 			if (this.resolvingImports) {
-				char[] completionName;
-
-				if(this.resolvingStaticImports) {
-					if(enclosingTypeNames == null || enclosingTypeNames.length == 0) {
-						completionName = CharOperation.concat(fullyQualifiedName, new char[] { '.' });
-					} else if ((modifiers & ClassFileConstants.AccStatic) == 0) {
-						continue next;
-					} else {
-						completionName = CharOperation.concat(fullyQualifiedName, new char[] { ';' });
-					}
-				} else {
-					completionName = CharOperation.concat(fullyQualifiedName, new char[] { ';' });
-				}
-
+				char[] completionName = CharOperation.concat(fullyQualifiedName, new char[] { ';' });
+				
 				int relevance = computeBaseRelevance();
 				relevance += computeRelevanceForResolution();
 				relevance += computeRelevanceForInterestingProposal();
@@ -2581,18 +2568,7 @@ public final class CompletionEngine
 										} else {
 											ReferenceBinding ref = (ReferenceBinding) binding;
 											if(!this.requestor.isIgnored(CompletionProposal.TYPE_REF)) {
-												this.findImportsOfMemberTypes(lastToken, ref, importReference.isStatic());
-											}
-											if(importReference.isStatic()) {
-												if(!this.requestor.isIgnored(CompletionProposal.FIELD_REF)) {
-													long positions = importReference.sourcePositions[importReference.sourcePositions.length - 1];
-													setSourceRange((int) (positions >>> 32), (int) positions);
-													this.findImportsOfStaticFields(lastToken, ref);
-													setSourceRange(importReference.sourceStart, importReference.declarationSourceEnd);
-												}
-												if(!this.requestor.isIgnored(CompletionProposal.METHOD_NAME_REFERENCE)) {
-													this.findImportsOfStaticMethods(lastToken, ref);
-												}
+												this.findImportsOfMemberTypes(lastToken, ref);
 											}
 										}
 									}
@@ -4435,7 +4411,6 @@ public final class CompletionEngine
 			importName = CharOperation.concat(importName, new char[]{'.'});
 
 		this.resolvingImports = true;
-		this.resolvingStaticImports = importReference.isStatic();
 
 		this.completionToken =  importName;
 		// want to replace the existing .*;
@@ -4453,7 +4428,7 @@ public final class CompletionEngine
 		}
 	}
 
-	private void findImportsOfMemberTypes(char[] typeName,	ReferenceBinding ref, boolean onlyStatic) {
+	private void findImportsOfMemberTypes(char[] typeName,	ReferenceBinding ref) {
 		ReferenceBinding[] memberTypes = ref.memberTypes();
 
 		int typeLength = typeName.length;
@@ -4461,9 +4436,6 @@ public final class CompletionEngine
 			ReferenceBinding memberType = memberTypes[m];
 			//		if (!wantClasses && memberType.isClass()) continue next;
 			//		if (!wantInterfaces && memberType.isInterface()) continue next;
-
-			if (onlyStatic && !memberType.isStatic())
-				continue next;
 
 			if (typeLength > memberType.sourceName.length)
 				continue next;
@@ -7269,10 +7241,6 @@ public final class CompletionEngine
 			}
 		}
 
-		if(!skip && proposeType) {
-			this.findTypesFromStaticImports(token, scope, proposeAllMemberTypes, typesFound);
-		}
-
 		if (isEmptyPrefix && !this.assistNodeIsAnnotation) {
 			if(proposeType && this.expectedTypesPtr > -1) {
 				next : for (int i = 0; i <= this.expectedTypesPtr; i++) {
@@ -7540,91 +7508,6 @@ public final class CompletionEngine
 //		}
 	}
 
-	private void findTypesFromStaticImports(char[] token, Scope scope, boolean proposeAllMemberTypes, ObjectVector typesFound) {
-		ImportBinding[] importBindings = scope.compilationUnitScope().imports;
-		for (int i = 0; i < importBindings.length; i++) {
-			ImportBinding importBinding = importBindings[i];
-			if(importBinding.isValidBinding() && importBinding.isStatic()) {
-				Binding binding = importBinding.resolvedImport;
-				if(binding != null && binding.isValidBinding()) {
-					if(importBinding.onDemand) {
-						if((binding.kind() & Binding.TYPE) != 0) {
-							this.findMemberTypes(
-									token,
-									(ReferenceBinding) binding,
-									scope,
-									scope.enclosingSourceType(),
-									true,
-									false,
-									true,
-									true,
-									proposeAllMemberTypes,
-									null,
-									typesFound);
-						}
-					} else {
-						if ((binding.kind() & Binding.TYPE) != 0) {
-							ReferenceBinding typeBinding = (ReferenceBinding) binding;
-							int typeLength = token.length;
-
-							if (!typeBinding.isStatic()) continue;
-
-							if (typeLength > typeBinding.sourceName.length)	continue;
-
-							if (!CharOperation.prefixEquals(token, typeBinding.sourceName, false)
-									&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(token, typeBinding.sourceName)))	continue;
-
-							if (typesFound.contains(typeBinding))  continue;
-
-							typesFound.add(typeBinding);
-
-							if(this.assistNodeIsClass) {
-								if(!typeBinding.isClass()) continue;
-							} else if(this.assistNodeIsInterface) {
-								if(!typeBinding.isInterface() && !typeBinding.isAnnotationType()) continue;
-							} else if (this.assistNodeIsAnnotation) {
-								if(!typeBinding.isAnnotationType()) continue;
-							}
-
-							int relevance = computeBaseRelevance();
-							relevance += computeRelevanceForResolution();
-							relevance += computeRelevanceForInterestingProposal();
-							relevance += computeRelevanceForCaseMatching(token, typeBinding.sourceName);
-							relevance += computeRelevanceForExpectingType(typeBinding);
-							relevance += computeRelevanceForQualification(false);
-							relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE);
-
-							if (typeBinding.isClass()) {
-								relevance += computeRelevanceForClass();
-								relevance += computeRelevanceForException(typeBinding.sourceName);
-							} else if(typeBinding.isEnum()) {
-								relevance += computeRelevanceForEnum();
-							} else if(typeBinding.isInterface()) {
-								relevance += computeRelevanceForInterface();
-							}
-
-							this.noProposal = false;
-							if(!this.requestor.isIgnored(CompletionProposal.TYPE_REF)) {
-								CompletionProposal proposal = this.createProposal(CompletionProposal.TYPE_REF, this.actualCompletionPosition);
-								proposal.setDeclarationSignature(typeBinding.qualifiedPackageName());
-								proposal.setSignature(getSignature(typeBinding));
-								proposal.setPackageName(typeBinding.qualifiedPackageName());
-								proposal.setTypeName(typeBinding.qualifiedSourceName());
-								proposal.setCompletion(typeBinding.sourceName());
-								proposal.setFlags(typeBinding.modifiers);
-								proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
-								proposal.setRelevance(relevance);
-								this.requestor.accept(proposal);
-								if(DEBUG) {
-									this.printDebug(proposal);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
 	private void findVariablesAndMethods(
 		char[] token,
 		Scope scope,
@@ -7831,93 +7714,6 @@ public final class CompletionEngine
 						break done2;
 				}
 				currentScope = currentScope.parent;
-			}
-
-			// search in static import
-			ImportBinding[] importBindings = scope.compilationUnitScope().imports;
-			for (int i = 0; i < importBindings.length; i++) {
-				ImportBinding importBinding = importBindings[i];
-				if(importBinding.isValidBinding() && importBinding.isStatic()) {
-					Binding binding = importBinding.resolvedImport;
-					if(binding != null && binding.isValidBinding()) {
-						if(importBinding.onDemand) {
-							if((binding.kind() & Binding.TYPE) != 0) {
-								if(proposeField) {
-									findFields(
-										token,
-										(ReferenceBinding)binding,
-										scope,
-										fieldsFound,
-										localsFound,
-										true,
-										invocationSite,
-										invocationScope,
-										true,
-										false,
-										null,
-										null,
-										null,
-										false);
-								}
-								if(proposeMethod && !insideAnnotationAttribute) {
-									findMethods(
-										token,
-										null,
-										null,
-										(ReferenceBinding)binding,
-										scope,
-										methodsFound,
-										true,
-										false,
-										false,
-										invocationSite,
-										invocationScope,
-										true,
-										false,
-										false,
-										null,
-										null,
-										null,
-										false);
-								}
-							}
-						} else {
-							if ((binding.kind() & Binding.FIELD) != 0) {
-								if(proposeField) {
-										findFields(
-												token,
-												new FieldBinding[]{(FieldBinding)binding},
-												scope,
-												fieldsFound,
-												localsFound,
-												true,
-												((FieldBinding)binding).declaringClass,
-												invocationSite,
-												invocationScope,
-												true,
-												false,
-												null,
-												null,
-												null,
-												false);
-								}
-							} else if ((binding.kind() & Binding.METHOD) != 0) {
-								if(proposeMethod && !insideAnnotationAttribute) {
-									MethodBinding methodBinding = (MethodBinding)binding;
-									if(CharOperation.prefixEquals(token, methodBinding.selector))
-
-									findLocalMethodsOfStaticImports(
-											methodBinding.selector,
-											methodBinding.declaringClass.methods(),
-											scope,
-											methodsFound,
-											methodBinding.declaringClass,
-											invocationSite);
-								}
-							}
-						}
-					}
-				}
 			}
 
 			if (this.assistNodeInJavadoc == 0) {
@@ -8367,10 +8163,9 @@ public final class CompletionEngine
 				new ImportReference(
 						compoundName,
 						new long[compoundName.length],
-						onDemand,
-						isStatic ? ClassFileConstants.AccStatic : ClassFileConstants.AccDefault);
+						onDemand);
 
-			Binding importBinding = this.unitScope.findImport(compoundName, isStatic, onDemand);
+			Binding importBinding = this.unitScope.findImport(compoundName, onDemand);
 
 			if (!importBinding.isValidBinding()) {
 				continue next;

@@ -27,10 +27,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.MemberTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemFieldBinding;
@@ -141,29 +138,6 @@ protected int matchLevelForTokens(char[][] tokens) {
 			break;
 	}
 	return IMPOSSIBLE_MATCH;
-}
-/* (non-Javadoc)
- * @see org.eclipse.wst.jsdt.internal.core.search.matching.PatternLocator#matchLevelAndReportImportRef(org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference, org.eclipse.wst.jsdt.internal.compiler.lookup.Binding, org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator)
- */
-protected void matchLevelAndReportImportRef(ImportReference importRef, Binding binding, MatchLocator locator) throws CoreException {
-	Binding refBinding = binding;
-	if (importRef.isStatic()) {
-		// for static import, binding can be a field binding or a member type binding
-		// verify that in this case binding is static and use declaring class for fields
-		if (binding instanceof FieldBinding) {
-			FieldBinding fieldBinding = (FieldBinding) binding;
-			if (!fieldBinding.isStatic()) return;
-			refBinding = fieldBinding.declaringClass;
-		} else if (binding instanceof MethodBinding) {
-			MethodBinding methodBinding = (MethodBinding) binding;
-			if (!methodBinding.isStatic()) return;
-			refBinding = methodBinding.declaringClass;
-		} else if (binding instanceof MemberTypeBinding) {
-			MemberTypeBinding memberBinding = (MemberTypeBinding) binding;
-			if (!memberBinding.isStatic()) return;
-		}
-	}
-	super.matchLevelAndReportImportRef(importRef, refBinding, locator);
 }
 protected void matchReportImportRef(ImportReference importRef, Binding binding, IJavaScriptElement element, int accuracy, MatchLocator locator) throws CoreException {
 	if (binding == null) {

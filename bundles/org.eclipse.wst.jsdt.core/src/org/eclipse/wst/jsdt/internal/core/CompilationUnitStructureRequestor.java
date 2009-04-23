@@ -112,7 +112,7 @@ protected CompilationUnitStructureRequestor(IJavaScriptElement unit, Compilation
 /**
  * @see ISourceElementRequestor
  */
-public void acceptImport(int declarationStart, int declarationEnd, char[][] tokens, boolean onDemand, int modifiers) {
+public void acceptImport(int declarationStart, int declarationEnd, char[][] tokens, boolean onDemand) {
 	JavaElement parentHandle= (JavaElement) this.handleStack.peek();
 	if (!(parentHandle.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT)) {
 		Assert.isTrue(false); // Should not happen
@@ -135,7 +135,6 @@ public void acceptImport(int declarationStart, int declarationEnd, char[][] toke
 	ImportDeclarationElementInfo info = new ImportDeclarationElementInfo();
 	info.setSourceRangeStart(declarationStart);
 	info.setSourceRangeEnd(declarationEnd);
-	info.setFlags(modifiers);
 
 	addToChildren(this.importContainerInfo, handle);
 	this.newElements.put(handle, info);

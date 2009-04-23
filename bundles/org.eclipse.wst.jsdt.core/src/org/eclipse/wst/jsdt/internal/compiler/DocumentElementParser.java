@@ -972,23 +972,6 @@ protected void consumePushRealModifiers() {
 	}
 	resetModifiers();
 }
-protected void consumeSingleStaticImportDeclarationName() {
-	// SingleTypeImportDeclarationName ::= 'import' 'static' Name
-
-	/* persisting javadoc positions */
-	pushOnIntArrayStack(this.getJavaDocPositions());
-
-	super.consumeSingleStaticImportDeclarationName();
-	ImportReference importReference = (ImportReference) astStack[astPtr];
-	requestor.acceptImport(
-		importReference.declarationSourceStart,
-		importReference.declarationSourceEnd,
-		intArrayStack[intArrayPtr--],
-		CharOperation.concatWith(importReference.getImportName(), '.'),
-		importReference.sourceStart,
-		false,
-		ClassFileConstants.AccStatic);
-}
 /*
  *
  * INTERNAL USE-ONLY
@@ -1009,23 +992,6 @@ protected void consumeSingleTypeImportDeclarationName() {
 		importReference.sourceStart,
 		false,
 		ClassFileConstants.AccDefault);
-}
-protected void consumeStaticImportOnDemandDeclarationName() {
-	// SingleTypeImportDeclarationName ::= 'import' 'static' Name '.' '*'
-
-	/* persisting javadoc positions */
-	pushOnIntArrayStack(this.getJavaDocPositions());
-
-	super.consumeStaticImportOnDemandDeclarationName();
-	ImportReference importReference = (ImportReference) astStack[astPtr];
-	requestor.acceptImport(
-		importReference.declarationSourceStart,
-		importReference.declarationSourceEnd,
-		intArrayStack[intArrayPtr--],
-		CharOperation.concatWith(importReference.getImportName(), '.'),
-		importReference.sourceStart,
-		true,
-		ClassFileConstants.AccStatic);
 }
 /*
  *

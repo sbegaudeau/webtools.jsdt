@@ -50,7 +50,7 @@ public class BinaryTypeConverter {
 		char[][] packageName = Util.toCharArrays(pkg.names);
 
 		if (packageName.length > 0) {
-			compilationUnit.currentPackage = new ImportReference(packageName, new long[]{0}, false, ClassFileConstants.AccDefault);
+			compilationUnit.currentPackage = new ImportReference(packageName, new long[]{0}, false);
 		}
 
 		/* convert type */

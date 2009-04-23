@@ -27,8 +27,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 public class Argument extends LocalDeclaration implements IArgument {
 
 	public char [] comment;
-	// prefix for setter method (to recognize special hiding argument)
-//	private final static char[] SET = "set".toCharArray(); //$NON-NLS-1$
 
 	public Argument(char[] name, long posNom, TypeReference tr, int modifiers) {
 
@@ -163,31 +161,22 @@ public class Argument extends LocalDeclaration implements IArgument {
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 
 		if (visitor.visit(this, scope)) {
-			if (this.annotations != null) {
-				int annotationsLength = this.annotations.length;
-				for (int i = 0; i < annotationsLength; i++)
-					this.annotations[i].traverse(visitor, scope);
-			}
 			if (type != null)
 				type.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, scope);
 	}
+	
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
 
 		if (visitor.visit(this, scope)) {
-			if (this.annotations != null) {
-				int annotationsLength = this.annotations.length;
-				for (int i = 0; i < annotationsLength; i++)
-					this.annotations[i].traverse(visitor, scope);
-			}
 			if (type != null)
 				type.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, scope);
 	}
+	
 	public int getASTType() {
 		return IASTNode.ARGUMENT;
-	
 	}
 }

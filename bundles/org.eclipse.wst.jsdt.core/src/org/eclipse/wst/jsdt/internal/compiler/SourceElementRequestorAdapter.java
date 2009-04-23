@@ -32,14 +32,13 @@ public class SourceElementRequestorAdapter implements ISourceElementRequestor {
 	}
 
 	/**
-	 * @see ISourceElementRequestor#acceptImport(int, int, char[][], boolean, int)
+	 * @see ISourceElementRequestor#acceptImport(int, int, char[][], boolean)
 	 */
 	public void acceptImport(
 		int declarationStart,
 		int declarationEnd,
 		char[][] tokens,
-		boolean onDemand,
-		int modifiers) {
+		boolean onDemand) {
 		// default implementation: do nothing
 	}
 

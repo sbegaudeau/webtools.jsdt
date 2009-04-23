@@ -679,63 +679,6 @@ protected void consumeSingleMemberAnnotation() {
 		requestor.acceptMethodReference(TypeConstants.VALUE, 0, member.sourceStart);
 	}
 }
-protected void consumeSingleStaticImportDeclarationName() {
-	// SingleTypeImportDeclarationName ::= 'import' 'static' Name
-	ImportReference impt;
-	int length;
-	char[][] tokens = new char[length = this.identifierLengthStack[this.identifierLengthPtr--]][];
-	this.identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(this.identifierStack, this.identifierPtr + 1, tokens, 0, length);
-	System.arraycopy(this.identifierPositionStack, this.identifierPtr + 1, positions, 0, length);
-	pushOnAstStack(impt = newImportReference(tokens, positions, false, ClassFileConstants.AccStatic));
-
-	this.modifiers = ClassFileConstants.AccDefault;
-	this.modifiersSourceStart = -1; // <-- see comment into modifiersFlag(int)
-
-	if (this.currentToken == TokenNameSEMICOLON){
-		impt.declarationSourceEnd = this.scanner.currentPosition - 1;
-	} else {
-		impt.declarationSourceEnd = impt.sourceEnd;
-	}
-	impt.declarationEnd = impt.declarationSourceEnd;
-	//this.endPosition is just before the ;
-	impt.declarationSourceStart = this.intStack[this.intPtr--];
-
-	if(!this.statementRecoveryActivated &&
-			this.options.sourceLevel < ClassFileConstants.JDK1_5 &&
-			this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
-		impt.modifiers = ClassFileConstants.AccDefault; // convert the static import reference to a non-static importe reference
-		this.problemReporter().invalidUsageOfStaticImports(impt);
-	}
-
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = impt.declarationSourceEnd+1;
-		this.currentElement = this.currentElement.add(impt, 0);
-		this.lastIgnoredToken = -1;
-		this.restartRecovery = true; // used to avoid branching back into the regular automaton
-	}
-	if (reportReferenceInfo) {
-		// Name for static import is TypeName '.' Identifier
-		// => accept unknown ref on identifier
-		int tokensLength = impt.tokens.length-1;
-		int start = (int) (impt.sourcePositions[tokensLength] >>> 32);
-		char[] last = impt.tokens[tokensLength];
-		// accept all possible kind for last name, index users will have to select the right one...
-		// see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=86901
-		requestor.acceptFieldReference(last, start);
-		requestor.acceptMethodReference(last, 0,start);
-		requestor.acceptTypeReference(last, start);
-		// accept type name
-		if (tokensLength > 0) {
-			char[][] compoundName = new char[tokensLength][];
-			System.arraycopy(impt.tokens, 0, compoundName, 0, tokensLength);
-			int end = (int) impt.sourcePositions[tokensLength-1];
-			requestor.acceptTypeReference(compoundName, impt.sourceStart, end);
-		}
-	}
-}
 
 protected void consumeSingleTypeImportDeclarationName() {
 	// SingleTypeImportDeclarationName ::= 'import' Name
@@ -749,7 +692,7 @@ protected void consumeSingleTypeImportDeclarationName() {
 	long[] positions = new long[length];
 	System.arraycopy(this.identifierStack, this.identifierPtr + 1, tokens, 0, length);
 	System.arraycopy(this.identifierPositionStack, this.identifierPtr + 1, positions, 0, length);
-	pushOnAstStack(impt = newImportReference(tokens, positions, false, ClassFileConstants.AccDefault));
+	pushOnAstStack(impt = newImportReference(tokens, positions, false));
 
 	if (this.currentToken == TokenNameSEMICOLON){
 		impt.declarationSourceEnd = this.scanner.currentPosition - 1;
@@ -759,50 +702,6 @@ protected void consumeSingleTypeImportDeclarationName() {
 	impt.declarationEnd = impt.declarationSourceEnd;
 	//this.endPosition is just before the ;
 	impt.declarationSourceStart = this.intStack[this.intPtr--];
-
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = impt.declarationSourceEnd+1;
-		this.currentElement = this.currentElement.add(impt, 0);
-		this.lastIgnoredToken = -1;
-		this.restartRecovery = true; // used to avoid branching back into the regular automaton
-	}
-	if (reportReferenceInfo) {
-		requestor.acceptTypeReference(impt.tokens, impt.sourceStart, impt.sourceEnd);
-	}
-}
-protected void consumeStaticImportOnDemandDeclarationName() {
-	// TypeImportOnDemandDeclarationName ::= 'import' 'static' Name '.' '*'
-	/* push an ImportRef build from the last name
-	stored in the identifier stack. */
-
-	ImportReference impt;
-	int length;
-	char[][] tokens = new char[length = this.identifierLengthStack[this.identifierLengthPtr--]][];
-	this.identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(this.identifierStack, this.identifierPtr + 1, tokens, 0, length);
-	System.arraycopy(this.identifierPositionStack, this.identifierPtr + 1, positions, 0, length);
-	pushOnAstStack(impt = new ImportReference(tokens, positions, true, ClassFileConstants.AccStatic));
-
-	this.modifiers = ClassFileConstants.AccDefault;
-	this.modifiersSourceStart = -1; // <-- see comment into modifiersFlag(int)
-
-	if (this.currentToken == TokenNameSEMICOLON){
-		impt.declarationSourceEnd = this.scanner.currentPosition - 1;
-	} else {
-		impt.declarationSourceEnd = impt.sourceEnd;
-	}
-	impt.declarationEnd = impt.declarationSourceEnd;
-	//this.endPosition is just before the ;
-	impt.declarationSourceStart = this.intStack[this.intPtr--];
-
-	if(!this.statementRecoveryActivated &&
-			options.sourceLevel < ClassFileConstants.JDK1_5 &&
-			this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
-		impt.modifiers = ClassFileConstants.AccDefault; // convert the static import reference to a non-static importe reference
-		this.problemReporter().invalidUsageOfStaticImports(impt);
-	}
 
 	// recovery
 	if (this.currentElement != null){
@@ -827,7 +726,7 @@ protected void consumeTypeImportOnDemandDeclarationName() {
 	long[] positions = new long[length];
 	System.arraycopy(this.identifierStack, this.identifierPtr + 1, tokens, 0, length);
 	System.arraycopy(this.identifierPositionStack, this.identifierPtr + 1, positions, 0, length);
-	pushOnAstStack(impt = new ImportReference(tokens, positions, true, ClassFileConstants.AccDefault));
+	pushOnAstStack(impt = new ImportReference(tokens, positions, true));
 
 	if (this.currentToken == TokenNameSEMICOLON){
 		impt.declarationSourceEnd = this.scanner.currentPosition - 1;
@@ -1105,8 +1004,8 @@ private boolean hasDeprecatedAnnotation(Annotation[] annotations) {
 	return false;
 }
 
-protected ImportReference newImportReference(char[][] tokens, long[] positions, boolean onDemand, int mod) {
-	return new ImportReference(tokens, positions, onDemand, mod);
+protected ImportReference newImportReference(char[][] tokens, long[] positions, boolean onDemand) {
+	return new ImportReference(tokens, positions, onDemand);
 }
 protected QualifiedNameReference newQualifiedNameReference(char[][] tokens, long[] positions, int sourceStart, int sourceEnd) {
 	return new QualifiedNameReference(tokens, positions, sourceStart, sourceEnd);
@@ -1701,8 +1600,7 @@ public void notifySourceElementRequestor(
 			importReference.declarationSourceStart,
 			importReference.declarationSourceEnd,
 			importReference.tokens,
-			(importReference.bits & ASTNode.OnDemand) != 0,
-			importReference.modifiers);
+			(importReference.bits & ASTNode.OnDemand) != 0);
 	}
 }
 public void notifySourceElementRequestor(TypeDeclaration typeDeclaration, boolean notifyTypePresence, TypeDeclaration declaringType) {
