@@ -181,6 +181,7 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 				}
 				break;
 			case Binding.LOCAL : // reading a local variable
+			case Binding.LOCAL | Binding.TYPE :
 				LocalVariableBinding localBinding= (LocalVariableBinding) binding;
 
 				if (localBinding.isSameCompilationUnit(currentScope) &&
@@ -191,7 +192,8 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 					localBinding.useFlag = LocalVariableBinding.USED;
 				} else if (localBinding.useFlag == LocalVariableBinding.UNUSED) {
 					localBinding.useFlag = LocalVariableBinding.FAKE_USED;
-				}
+				}	
+				
 		}
 		if (valueRequired) {
 			manageEnclosingInstanceAccessIfNecessary(currentScope, flowInfo);
