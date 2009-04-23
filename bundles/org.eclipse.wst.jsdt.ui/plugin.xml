@@ -1240,6 +1240,7 @@
 
    <extension
          point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+<!--      
       <hyperlinkDetector
             class="org.eclipse.wst.jsdt.internal.ui.javaeditor.NLSKeyHyperlinkDetector"
             id="org.eclipse.wst.jsdt.internal.ui.javaeditor.NLSKeyHyperlinkDetector"
@@ -1247,6 +1248,7 @@
             modifierKeys="M1+M3"
             targetId="org.eclipse.wst.jsdt.ui.javaCode">
       </hyperlinkDetector>
+-->      
       <hyperlinkDetector
             class="org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaElementHyperlinkDetector"
             id="org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaElementHyperlinkDetector"
