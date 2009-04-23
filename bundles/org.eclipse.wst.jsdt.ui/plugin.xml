@@ -5369,16 +5369,17 @@
 				name="%commonNavigatorContentName"
 				priority="high">
 			<triggerPoints>
-				<or>
+				<and>
 					<adapt type="org.eclipse.core.resources.IProject" >
 						<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
 					</adapt>
-					<instanceof	value="org.eclipse.core.resources.IResource" />
-					<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
-					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
-					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
-					<instanceof value="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot" />
- 				</or>
+					<or>
+						<instanceof	value="org.eclipse.core.resources.IResource" />
+						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
+						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
+						<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
+	 				</or>
+	 			</and>
 			</triggerPoints>
 			<possibleChildren>
 				<or>
@@ -5466,10 +5467,11 @@
 		        </or>
 		     </enablement>
 		  </commonWizard>
+
 		  <commonWizard
 		        menuGroupId="org.eclipse.wst.jsdt.ui.java"
 		        type="new"
-		        wizardId="org.eclipse.wst.jsdt.ui.wizards.NewClassCreationWizard">
+		        wizardId="org.eclipse.wst.jsdt.ui.NewJSWizard">
 		     <enablement>
 		        <or>
 		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragment"/>
