@@ -83,11 +83,10 @@ public void acceptImport(
 	int declarationStart, 
 	int declarationEnd, 
 	char[][] tokens, 
-	boolean onDemand,
-	int modifiers) {
+	boolean onDemand) {
 
 	addImport(
-		new SourceImport(declarationStart, declarationEnd, CharOperation.concatWith(tokens, '.'), onDemand, modifiers, source)); 
+		new SourceImport(declarationStart, declarationEnd, CharOperation.concatWith(tokens, '.'), onDemand, source)); 
 }
 /**
  * acceptLineSeparatorPositions method comment.

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class BasicResolveTests extends AbstractRegressionTest {
 
@@ -782,7 +785,95 @@ public class BasicResolveTests extends AbstractRegressionTest {
 				""
 		);
 	}
+	
+	/*public void testbug259187()	{	 
 
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"var params = \"some?string\".split('?');\n" +
+				        "var base = params.shift();"
+				},
+				"----------\n" + 
+		"1. WARNING in X.js (at line 1)\n" + 
+		"	var params = \"some?string\".split(\'?\');\n" + 
+		"	             ^^^^^^^^^^^^^^^^^^^^^^^^\n" + 
+		"Wrong number of arguments for the function split (), expecting 2 argument(s), but there was 1 \n" + 
+		"----------\n"
+		);
+	}
+	
+	public void testbug259023()	{	 
+		Map custom = new HashMap();
+		custom.put("org.eclipse.wst.jsdt.core.compiler.problem.unusedLocal", "error");
+		
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"var myObject = {\n" +
+							"val1: \"test1\",\n" +
+							"val2: \"test2\"\n" +
+						"};\n" +
+						"myObject.val1 = \"test3\";"
+				},
+				"", null, true, custom
+		);
+	}
+	
+	public void testbug259023_2()	{	 
+		Map custom = new HashMap();
+		custom.put("org.eclipse.wst.jsdt.core.compiler.problem.unusedLocal", "error");
+		
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"var myObject = \"test3\";\n" +
+						"if(myObject == \"test3\") {}"
+				},
+				"", null, true, custom
+		);
+	}
+	
+	public void testbug251374()	{	
+		Map custom = new HashMap();
+		custom.put("org.eclipse.wst.jsdt.core.compiler.problem.nullReference", "error");
+		
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"var a = null;\n" +
+						"function foo() { a.toString();}\n" +
+						"a = 1; foo();"
+				},
+				"", null, true, custom
+		);
+	}
+	
+	public void testChris()	{	 
+		Map custom = new HashMap();
+		custom.put("org.eclipse.wst.jsdt.core.compiler.problem.unusedLocal", "error");
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"var square = function(x) {return x*x;};" +
+						"square(2);",
+				},
+				"", null, true, custom
+		);
+	}
+
+	public void testChris2()	{	 
+		Map custom = new HashMap();
+		custom.put("org.eclipse.wst.jsdt.core.compiler.problem.unusedLocal", "error");
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"var square = \"chris\";" +
+						"square.split(\".\", 1);",
+				},
+				"", null, true, custom
+		);
+	}*/
 
 	public void test054()	{
 		this.runNegativeTest(
