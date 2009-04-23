@@ -767,9 +767,6 @@ public void testWarningTokens() {
 	assertEquals("wrong token", "deprecation", CorrectionEngine.getWarningToken(IProblem.UsingDeprecatedField));
 	assertEquals("wrong token", "boxing", CorrectionEngine.getWarningToken(IProblem.BoxingConversion));
 	assertEquals("wrong token", "boxing", CorrectionEngine.getWarningToken(IProblem.UnboxingConversion));
-	assertEquals("wrong token", "dep-ann", CorrectionEngine.getWarningToken(IProblem.FieldMissingDeprecatedAnnotation));
-	assertEquals("wrong token", "dep-ann", CorrectionEngine.getWarningToken(IProblem.MethodMissingDeprecatedAnnotation));
-	assertEquals("wrong token", "dep-ann", CorrectionEngine.getWarningToken(IProblem.TypeMissingDeprecatedAnnotation));
 	assertEquals("wrong token", "finally", CorrectionEngine.getWarningToken(IProblem.FinallyMustCompleteNormally));
 	assertEquals("wrong token", "hiding", CorrectionEngine.getWarningToken(IProblem.FieldHidingLocalVariable));
 	assertEquals("wrong token", "hiding", CorrectionEngine.getWarningToken(IProblem.FieldHidingField));
@@ -780,7 +777,6 @@ public void testWarningTokens() {
 	assertEquals("wrong token", "hiding", CorrectionEngine.getWarningToken(IProblem.MaskedCatch));
 	assertEquals("wrong token", "hiding", CorrectionEngine.getWarningToken(IProblem.TypeParameterHidingType));
 	assertEquals("wrong token", "nls", CorrectionEngine.getWarningToken(IProblem.NonExternalizedStringLiteral));
-	assertEquals("wrong token", "incomplete-switch", CorrectionEngine.getWarningToken(IProblem.MissingEnumConstantCase));
 	assertEquals("wrong token", "unused", CorrectionEngine.getWarningToken(IProblem.LocalVariableIsNeverUsed));
 	assertEquals("wrong token", "unused", CorrectionEngine.getWarningToken(IProblem.ArgumentIsNeverUsed));
 	assertEquals("wrong token", "unused", CorrectionEngine.getWarningToken(IProblem.UnusedPrivateConstructor));

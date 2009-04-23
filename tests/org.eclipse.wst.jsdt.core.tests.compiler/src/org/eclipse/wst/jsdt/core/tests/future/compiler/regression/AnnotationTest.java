@@ -4387,62 +4387,62 @@ public class AnnotationTest extends AbstractComparableTest {
 			null, true, customOptions);
     }      
     // check @SuppressWarning support
-    public void test138() {
-    	Map customOptions = new Hashtable();
-    	customOptions.put(CompilerOptions.OPTION_ReportUnhandledWarningToken, CompilerOptions.WARNING);
-        this.runNegativeTest(
-
-            new String[] {
-                "X.java",
-    			"@SuppressWarnings(\"zork\")//$NON-NLS-1$\n" + 
-    			"public class X {\n" + 
-    			"	Zork z;\n" + 
-    			"}\n"
-            },
-			"----------\n" + 
-			"1. WARNING in X.java (at line 1)\n" + 
-			"	@SuppressWarnings(\"zork\")//$NON-NLS-1$\n" + 
-			"	                  ^^^^^^\n" + 
-			"Unhandled warning token zork\n" + 
-			"----------\n" + 
-			"2. ERROR in X.java (at line 3)\n" + 
-			"	Zork z;\n" + 
-			"	^^^^\n" + 
-			"Zork cannot be resolved to a type\n" + 
-			"----------\n",
-			null, true, customOptions);
-    }      
+//    public void test138() {
+//    	Map customOptions = new Hashtable();
+//    	customOptions.put(CompilerOptions.OPTION_ReportUnhandledWarningToken, CompilerOptions.WARNING);
+//        this.runNegativeTest(
+//
+//            new String[] {
+//                "X.java",
+//    			"@SuppressWarnings(\"zork\")//$NON-NLS-1$\n" + 
+//    			"public class X {\n" + 
+//    			"	Zork z;\n" + 
+//    			"}\n"
+//            },
+//			"----------\n" + 
+//			"1. WARNING in X.java (at line 1)\n" + 
+//			"	@SuppressWarnings(\"zork\")//$NON-NLS-1$\n" + 
+//			"	                  ^^^^^^\n" + 
+//			"Unhandled warning token zork\n" + 
+//			"----------\n" + 
+//			"2. ERROR in X.java (at line 3)\n" + 
+//			"	Zork z;\n" + 
+//			"	^^^^\n" + 
+//			"Zork cannot be resolved to a type\n" + 
+//			"----------\n",
+//			null, true, customOptions);
+//    }      
     // check @SuppressWarning support
-    public void test139() {
-    	Map customOptions = new Hashtable();
-    	customOptions.put(CompilerOptions.OPTION_ReportUnhandledWarningToken, CompilerOptions.WARNING);
-        this.runNegativeTest(
-
-            new String[] {
-                "X.java",
-    			"@SuppressWarnings({\"zork\", \"warningToken\"})//$NON-NLS-1$//$NON-NLS-2$\n" + 
-    			"public class X {\n" + 
-    			"	Zork z;\n" + 
-    			"}\n"
-            },
-            "----------\n" + 
-    		"1. WARNING in X.java (at line 1)\n" + 
-    		"	@SuppressWarnings({\"zork\", \"warningToken\"})//$NON-NLS-1$//$NON-NLS-2$\n" + 
-    		"	                   ^^^^^^\n" + 
-    		"Unhandled warning token zork\n" + 
-    		"----------\n" + 
-    		"2. WARNING in X.java (at line 1)\n" + 
-    		"	@SuppressWarnings({\"zork\", \"warningToken\"})//$NON-NLS-1$//$NON-NLS-2$\n" + 
-    		"	                           ^^^^^^^^^^^^^^\n" + 
-    		"Unhandled warning token warningToken\n" + 
-    		"----------\n" + 
-    		"3. ERROR in X.java (at line 3)\n" + 
-    		"	Zork z;\n" + 
-    		"	^^^^\n" + 
-    		"Zork cannot be resolved to a type\n" + 
-    		"----------\n",
-			null, true, customOptions);
-    }          
+//    public void test139() {
+//    	Map customOptions = new Hashtable();
+//    	customOptions.put(CompilerOptions.OPTION_ReportUnhandledWarningToken, CompilerOptions.WARNING);
+//        this.runNegativeTest(
+//
+//            new String[] {
+//                "X.java",
+//    			"@SuppressWarnings({\"zork\", \"warningToken\"})//$NON-NLS-1$//$NON-NLS-2$\n" + 
+//    			"public class X {\n" + 
+//    			"	Zork z;\n" + 
+//    			"}\n"
+//            },
+//            "----------\n" + 
+//    		"1. WARNING in X.java (at line 1)\n" + 
+//    		"	@SuppressWarnings({\"zork\", \"warningToken\"})//$NON-NLS-1$//$NON-NLS-2$\n" + 
+//    		"	                   ^^^^^^\n" + 
+//    		"Unhandled warning token zork\n" + 
+//    		"----------\n" + 
+//    		"2. WARNING in X.java (at line 1)\n" + 
+//    		"	@SuppressWarnings({\"zork\", \"warningToken\"})//$NON-NLS-1$//$NON-NLS-2$\n" + 
+//    		"	                           ^^^^^^^^^^^^^^\n" + 
+//    		"Unhandled warning token warningToken\n" + 
+//    		"----------\n" + 
+//    		"3. ERROR in X.java (at line 3)\n" + 
+//    		"	Zork z;\n" + 
+//    		"	^^^^\n" + 
+//    		"Zork cannot be resolved to a type\n" + 
+//    		"----------\n",
+//			null, true, customOptions);
+//    }          
     // https://bugs.eclipse.org/bugs/show_bug.cgi?id=90111 - variation
     public void test140() {
     	String expectedOutput = new CompilerOptions(getCompilerOptions()).sourceLevel < ClassFileConstants.JDK1_6
@@ -4912,32 +4912,32 @@ public void test142c() {
 		);
     }
     //https://bugs.eclipse.org/bugs/show_bug.cgi?id=99009
-    public void test153() {
-		Map options = this.getCompilerOptions();
-		options.put(CompilerOptions.OPTION_ReportIncompleteEnumSwitch, CompilerOptions.WARNING);
-        this.runNegativeTest(
-            new String[] {
-                "X.java",
-                "enum E { A, B, C }\n" +
-				"public class X {\n" +
-				"    @SuppressWarnings({\"incomplete-switch\"})\n" +
-				"	 public static void main(String[] args) {\n" +
-				"		for (E e : E.values()) {\n" +
-				"			switch(e) {\n" +
-				"				case A :\n" +
-				"					System.out.println(e);\n" +
-				"				break;\n" +
-				"			}\n" +
-				"		}\n" +
-				"	 }\n" +
-				"}",
-            },
-			"",
-			null,
-			true,
-			options
-		);
-    }
+//    public void test153() {
+//		Map options = this.getCompilerOptions();
+//		options.put(CompilerOptions.OPTION_ReportIncompleteEnumSwitch, CompilerOptions.WARNING);
+//        this.runNegativeTest(
+//            new String[] {
+//                "X.java",
+//                "enum E { A, B, C }\n" +
+//				"public class X {\n" +
+//				"    @SuppressWarnings({\"incomplete-switch\"})\n" +
+//				"	 public static void main(String[] args) {\n" +
+//				"		for (E e : E.values()) {\n" +
+//				"			switch(e) {\n" +
+//				"				case A :\n" +
+//				"					System.out.println(e);\n" +
+//				"				break;\n" +
+//				"			}\n" +
+//				"		}\n" +
+//				"	 }\n" +
+//				"}",
+//            },
+//			"",
+//			null,
+//			true,
+//			options
+//		);
+//    }
     //https://bugs.eclipse.org/bugs/show_bug.cgi?id=99009
     public void test154() {
 		Map options = this.getCompilerOptions();
@@ -5243,11 +5243,9 @@ public void test142c() {
     //https://bugs.eclipse.org/bugs/show_bug.cgi?id=99009
     public void test165() {
 		Map options = this.getCompilerOptions();
-		options.put(CompilerOptions.OPTION_ReportMissingDeprecatedAnnotation, CompilerOptions.IGNORE);
 		options.put(CompilerOptions.OPTION_ReportInvalidJavadocTagsDeprecatedRef, CompilerOptions.ENABLED);
 		options.put(CompilerOptions.OPTION_ReportDeprecationInDeprecatedCode, CompilerOptions.ENABLED);
 		options.put(CompilerOptions.OPTION_ReportDeprecation, CompilerOptions.WARNING);
-		options.put(CompilerOptions.OPTION_ReportMissingOverrideAnnotation, CompilerOptions.IGNORE);
 		options.put(CompilerOptions.OPTION_ReportInvalidJavadoc, CompilerOptions.WARNING);
 		options.put(CompilerOptions.OPTION_DocCommentSupport, CompilerOptions.ENABLED);
 		options.put(CompilerOptions.OPTION_ReportInvalidJavadocTagsVisibility, CompilerOptions.PRIVATE);
