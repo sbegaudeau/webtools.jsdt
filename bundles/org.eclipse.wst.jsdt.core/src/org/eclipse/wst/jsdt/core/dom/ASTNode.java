@@ -1183,7 +1183,10 @@ public abstract class ASTNode {
 		 */
 		public void add(int index, Object element) {
 		    if (element == null) {
-		        throw new IllegalArgumentException();
+				// http://bugs.eclipse.org/255538 - Very frequent IllegalArgumentException in JSDT
+				// XXX: Workaround until we've gotten the AST corrected, silenty return
+		    	return;
+		        //throw new IllegalArgumentException();
 		    }
 			if ((ASTNode.this.typeAndFlags & PROTECT) != 0) {
 				// this node is protected => cannot gain or lose children
