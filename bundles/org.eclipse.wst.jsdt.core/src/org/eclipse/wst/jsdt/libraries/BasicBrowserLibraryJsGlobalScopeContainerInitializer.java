@@ -13,14 +13,13 @@ package org.eclipse.wst.jsdt.libraries;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-
-import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
@@ -40,7 +39,8 @@ public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlob
 	private static final String FILE_DESCRIPTION1 = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_CommonWebBrowser;
 	private static final char[][] LIBRARY_FILE_NAME = {
 														{ 'b', 'a', 's', 'e', 'B', 'r', 'o', 'w', 's', 'e', 'r', 'L', 'i', 'b', 'r', 'a', 'r', 'y', '.', 'j', 's' },
-														{'b','r','o','w','s','e','r','W','i','n','d','o','w','.','j','s'}
+														{'b','r','o','w','s','e','r','W','i','n','d','o','w','.','j','s'},
+														{'x','h','r','.','j','s'}
 													  };
 	private static final String LibraryDescription = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3BrowserLibrary;
 	

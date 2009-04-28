@@ -21,7 +21,10 @@ import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 public class FireFoxLibInitializer extends JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainerInitializer {
 	protected static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.FireFoxBrowserLibrary";
 	protected static final String ContainerDescription = "FireFox Browser Support Library";
-	protected static final char[][] LIBRARY_FILE_NAMES = {{'F', 'i', 'r', 'e', 'F', 'o', 'x', '2', '.', '0', '.', '0', '.', '3', '.', 'j', 's'}};
+	protected static final char[][] LIBRARY_FILE_NAMES = {
+		{'F', 'i', 'r', 'e', 'F', 'o', 'x', '2', '.', '0', '.', '0', '.', '3', '.', 'j', 's'},
+		{'X', 'M', 'L', 'H', 't', 't', 'p', 'R', 'e', 'q', 'u', 'e', 's', 't', '.', 'j', 's'}
+	};
 	protected static final String PLUGIN_ID = "org.eclipse.wst.jsdt.support.firefox";
 
 
