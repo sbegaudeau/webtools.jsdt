@@ -88,7 +88,10 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 				for (int i = 0, count = statements.length; i < count; i++) {
 					Statement stat = statements[i];
 					if (!stat.complainIfUnreachable(flowInfo, scope, didAlreadyComplain)) {
-						flowInfo = stat.analyseCode(scope, methodContext, flowInfo);
+						if (stat instanceof  AbstractMethodDeclaration) {
+							((AbstractMethodDeclaration)stat).analyseCode(this.scope, null, flowInfo.copy());
+						} else
+							flowInfo = stat.analyseCode(scope, methodContext, flowInfo);
 					} else {
 						didAlreadyComplain = true;
 					}
