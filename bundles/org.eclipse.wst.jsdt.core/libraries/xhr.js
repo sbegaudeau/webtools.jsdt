@@ -25,7 +25,7 @@ Window.prototype.createRequest=new function(){return new XMLHttpRequest();};
 * @type constructor
 * @memberOf Global
 */
-XMLHttpRequest.prototype=new Global();
+XMLHttpRequest.prototype=new Object();
 function XMLHttpRequest(){};
 
 /**
