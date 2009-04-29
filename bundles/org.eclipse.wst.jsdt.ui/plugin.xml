@@ -6297,21 +6297,4 @@
    </extension>
    --> 
    
-	<!--
-		Allow for sharing via ECF when present.
-	-->
-	<extension point="org.eclipse.ui.menus">
-		<menuContribution locationURI="popup:org.eclipse.wst.jsdt.ui.CompilationUnitEditor.EditorContext?after=additions">
-			<dynamic id="org.eclipse.wst.jsdt.ui.CompilationUnitEditor.EditorContext.DocShareRosterMenu">
-				<class class="org.eclipse.ecf.docshare.menu.DocShareRosterMenuContributionItem" />
-				<visibleWhen>
-					<or>
-						<test property="org.eclipse.core.runtime.bundleState" args="org.eclipse.ecf.docshare" value="ACTIVE"/>
-						<test property="org.eclipse.core.runtime.bundleState" args="org.eclipse.ecf.docshare" value="RESOLVED"/>
-					</or>
-				</visibleWhen>
-			</dynamic>
-		</menuContribution>
-	</extension>
-
 </plugin>
