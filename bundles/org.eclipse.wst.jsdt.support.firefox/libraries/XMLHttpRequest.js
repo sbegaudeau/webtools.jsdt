@@ -118,13 +118,6 @@ XMLHttpRequest.prototype.abort=function(){};
 * @since FireFox 2.0
 */
 XMLHttpRequest.prototype.getAllResponseHeaders=function(){return "";};
-/**
-* function getAllResponseHeader()
-* @type String
-* @memberOf XMLHttpRequest
-* @since FireFox 2.0
-*/
-XMLHttpRequest.prototype.getResponseHeader=function(){return "";};
 
 ///**
 // * function open(method, url)

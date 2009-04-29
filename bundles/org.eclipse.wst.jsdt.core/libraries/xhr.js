@@ -72,17 +72,8 @@ XMLHttpRequest.prototype.abort=function(){};
 * function getAllResponseHeaders()
 * @type String
 * @memberOf XMLHttpRequest
-* @since FireFox 2.0
 */
 XMLHttpRequest.prototype.getAllResponseHeaders=function(){return "";};
-/**
-* function getAllResponseHeader()
-* @type String
-* @memberOf XMLHttpRequest
-* @since FireFox 2.0
-*/
-XMLHttpRequest.prototype.getResponseHeader=function(){return "";};
-
 /**
 * function open(method, url, async, username, password)
 * @param {String} method
@@ -91,7 +82,6 @@ XMLHttpRequest.prototype.getResponseHeader=function(){return "";};
 * @param {String} optional username
 * @param {String} optional password
 * @memberOf XMLHttpRequest
-* @since FireFox 2.0
 */
 XMLHttpRequest.prototype.open=function(method, url, async, username, password){};
 /**
@@ -112,6 +102,5 @@ XMLHttpRequest.prototype.setRequestHeader=function(header,value){};
 * @param {String} header
 * @type String
 * @memberOf XMLHttpRequest
-* @since FireFox 2.0
 */
 XMLHttpRequest.prototype.getResponseHeader=function(header){return "";};
