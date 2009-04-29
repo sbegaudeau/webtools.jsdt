@@ -5274,6 +5274,7 @@
       </factory>
    </extension>
    
+   <!--
    <extension
          id="jdtContentProvider"
          point="org.eclipse.team.ui.teamContentProviders">
@@ -5292,11 +5293,11 @@
                   pattern="org.eclipse.wst.jsdt.ui.javaModelContent"/>
          </includes>
       </viewerContentBinding>
-   </extension>
+   </extension>-->
    
        <!-- CommonNavigator -->
    
-   
+   <!--
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
@@ -5346,6 +5347,7 @@
          </actionProvider>
       </navigatorContent>
    </extension>
+   -->
 	
 	<extension
 			point="org.eclipse.ui.navigator.viewer">
@@ -5369,17 +5371,18 @@
 				name="%commonNavigatorContentName"
 				priority="high">
 			<triggerPoints>
-				<and>
-					<adapt type="org.eclipse.core.resources.IProject" >
-						<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
-					</adapt>
-					<or>
+			     <or>
+					<and>
 						<instanceof	value="org.eclipse.core.resources.IResource" />
-						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
-						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
-						<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
-	 				</or>
-	 			</and>
+						<adapt type="org.eclipse.core.resources.IProject">
+							<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
+						</adapt>
+					</and>
+					<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
+					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
+					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
+					<instanceof value="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot" />
+				</or>
 			</triggerPoints>
 			<possibleChildren>
 				<or>
@@ -5451,7 +5454,7 @@
 			<commonSorter
 					class="org.eclipse.wst.jsdt.ui.JavaElementSorter"
 					id="org.eclipse.wst.jsdt.ui.javaElementSorter"/>
-		   
+		   <!--
 		   <commonWizard
 		        menuGroupId="org.eclipse.wst.jsdt.ui.java"
 		        type="new"
@@ -5466,24 +5469,29 @@
 		           </adapt>
 		        </or>
 		     </enablement>
-		  </commonWizard>
+		  </commonWizard>-->
 
 		  <commonWizard
 		        menuGroupId="org.eclipse.wst.jsdt.ui.java"
 		        type="new"
 		        wizardId="org.eclipse.wst.jsdt.ui.NewJSWizard">
 		     <enablement>
-		        <or>
-		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragment"/>
-		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
-		           <instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptUnit"/>
-		           <adapt type="org.eclipse.core.resources.IProject">
-		              <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
-		           </adapt>
-		        </or>
+			     <or>
+					<and>
+						<instanceof	value="org.eclipse.core.resources.IResource" />
+						<adapt type="org.eclipse.core.resources.IProject">
+							<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
+						</adapt>
+					</and>
+					<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
+					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
+					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
+					<instanceof value="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot" />
+				</or>
 		     </enablement>
 		  </commonWizard>
 
+		<!--
    	      <commonWizard
 		        menuGroupId="org.eclipse.wst.jsdt.ui.java"
 		        type="new"
@@ -5529,7 +5537,7 @@
 						</adapt>
 					</or>
 				 </enablement>
-		    </commonWizard>	 
+		    </commonWizard>	 -->
 		    <commonWizard
 		          menuGroupId="org.eclipse.wst.jsdt.ui.java"
 		          type="new"
