@@ -2575,6 +2575,16 @@ HTMLOptGroupElement.prototype.disabled=false;
 HTMLOptGroupElement.prototype.label="";
 
 /**
+ * Object Option()
+ * @constructor
+ * @param {String} text
+ * @param {String} value
+ * @param {Boolean} defaultSelected
+ * @param {Boolean} selected
+ */
+function Option(text, value, defaultSelected, selected){};
+Option.prototype = new HTMLOptionElement();
+/**
  * Object HTMLOptionElement()
  * http://www.w3.org/TR/2003/REC-DOM-Level-2-HTML-20030109/html.html
  * 
@@ -3777,6 +3787,14 @@ HTMLAnchorElement.prototype.blur = function(){};
  */
 HTMLAnchorElement.prototype.focus = function(){};
 
+/**
+ * Object Image()
+ * @constructor
+ * @param {Number} width
+ * @param {Number} height
+ */
+function Image(width, height){};
+Image.prototype = new HTMLImageElement();
 /**
  * Object HTMLImageElement()
  * http://www.w3.org/TR/2003/REC-DOM-Level-2-HTML-20030109/html.html
