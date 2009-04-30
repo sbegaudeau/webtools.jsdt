@@ -13,13 +13,6 @@
  **/
 
 /**
-* function createRequest
-* @type XMLHttpRequest
-* @memberOf Window
-* @since FireFox 2.0
-*/
-Window.prototype.createRequest=new function(){return new XMLHttpRequest();};
-/**
 * Object XMLHttpRequest
 * @super Global
 * @type constructor

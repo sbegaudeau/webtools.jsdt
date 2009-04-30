@@ -690,6 +690,7 @@ Window.prototype.sessionStorage=new Object();
 * @since FireFox 2.0.0.3
 */
 Window.prototype.globalStorage=new StorageList();
+
 /**
 * Object Location
 * @super Object
@@ -1487,11 +1488,11 @@ HTMLDocument.prototype.documentElement=new HTMLHtmlElement();
 HTMLDocument.prototype.createElement=function(arg1){};
 /**
 * function createDocumentFragment()
-* @type Element
+* @type DocumentFragment
 * @memberOf HTMLDocument
 * @since FireFox 2.0.0.3
 */
-HTMLDocument.prototype.createDocumentFragment=function(){};
+HTMLDocument.prototype.createDocumentFragment=function(){return new DocumentFragment();};
 /**
 * function createTextNode(arg1)
 * @type Element
@@ -2245,6 +2246,8 @@ NodeList.prototype.length=0;
 * @since FireFox 2.0.0.3
 */
 NodeList.prototype.item=function(arg1){};
+DocumentFragment.prototype=new Object();
+function DocumentFragment(){};
 /**
 * Object DocumentType
 * @super Object
