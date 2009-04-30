@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -211,7 +211,8 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 			} else if (fFirstPage.isSrcBin()) {
 				IPreferenceStore store= PreferenceConstants.getPreferenceStore();
 				IPath srcPath= new Path(store.getString(PreferenceConstants.SRCBIN_SRCNAME));
-				IPath binPath= new Path(store.getString(PreferenceConstants.SRCBIN_BINNAME));
+				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=272495
+				// IPath binPath= new Path(store.getString(PreferenceConstants.SRCBIN_BINNAME));
 				
 				if (srcPath.segmentCount() > 0) {
 					IFolder folder= fCurrProject.getFolder(srcPath);
@@ -220,12 +221,12 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 					monitor.worked(1);
 				}
 				
-				if (binPath.segmentCount() > 0 && !binPath.equals(srcPath)) {
-					IFolder folder= fCurrProject.getFolder(binPath);
-					CoreUtility.createDerivedFolder(folder, true, true, new SubProgressMonitor(monitor, 1));
-				} else {
+//				if (binPath.segmentCount() > 0 && !binPath.equals(srcPath)) {
+//					IFolder folder= fCurrProject.getFolder(binPath);
+//					CoreUtility.createDerivedFolder(folder, true, true, new SubProgressMonitor(monitor, 1));
+//				} else {
 					monitor.worked(1);
-				}
+//				}
 				
 				final IPath projectPath= fCurrProject.getFullPath();
 

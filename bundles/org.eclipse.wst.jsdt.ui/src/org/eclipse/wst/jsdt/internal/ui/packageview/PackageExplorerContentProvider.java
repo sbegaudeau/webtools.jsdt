@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -293,7 +293,28 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 			if(parentElement instanceof ProjectLibraryRoot) {
 				return ((ProjectLibraryRoot)parentElement).getChildren();
 			}
-			
+			if (parentElement instanceof IPackageFragmentRoot) {
+				Object[] children = super.getChildren(parentElement);
+				for (int i = 0; i < children.length; i++) {
+					// replace the "default package" with its contents
+					if (children[i] instanceof IPackageFragment && ((IPackageFragment) children[i]).isDefaultPackage()) {
+						List combined = new ArrayList(children.length);
+						for (int j = 0; j < children.length; j++) {
+							if (j != i) {
+								combined.add(children[j]);
+							}
+							else {
+								Object[] defaultChildren = super.getChildren(children[j]);
+								for (int k = 0; k < defaultChildren.length; k++) {
+									combined.add(defaultChildren[k]);
+								}
+							}
+						}
+						return combined.toArray();
+					}
+				}
+				return children;
+			}
 			if (parentElement instanceof IProject) {
 				IProject project= (IProject) parentElement;
 				if (project.isAccessible())

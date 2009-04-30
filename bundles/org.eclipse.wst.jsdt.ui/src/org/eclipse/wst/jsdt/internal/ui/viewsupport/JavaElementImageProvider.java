@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.internal.ui.viewsupport;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -22,17 +23,18 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaWorkbenchAdapter;
 import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
 
@@ -310,6 +312,23 @@ public class JavaElementImageProvider {
 //			return JavaPluginImages.DESC_OBJS_EMPTY_PACKAGE_RESOURCES;
 //		else if (!containsJavaElements)
 //			return JavaPluginImages.DESC_OBJS_EMPTY_PACKAGE;
+
+		if (((IPackageFragment) element).getJavaScriptUnits().length > 0) {
+			// borrow this one for now
+			return JavaPluginImages.DESC_OBJS_PACKFRAG_ROOT;
+		}
+
+		IResource resource = element.getResource();
+		if (resource != null) {
+			IWorkbenchAdapter wbAdapter = (IWorkbenchAdapter) resource.getAdapter(IWorkbenchAdapter.class);
+			if (wbAdapter != null && !(wbAdapter instanceof JavaWorkbenchAdapter)) { // avoid
+																						// recursion
+				ImageDescriptor imageDescriptor = wbAdapter.getImageDescriptor(resource);
+				if (imageDescriptor != null) {
+					return imageDescriptor;
+				}
+			}
+		}
 		return JavaPluginImages.DESC_OBJS_PACKAGE;
 	}
 	
