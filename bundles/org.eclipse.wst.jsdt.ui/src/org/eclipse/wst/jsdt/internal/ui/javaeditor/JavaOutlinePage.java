@@ -77,14 +77,14 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
@@ -94,13 +94,14 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.AbstractToggleLinkingAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.CategoryFilterActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.dnd.DelegatingDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.dnd.JdtViewerDragAdapter;
+import org.eclipse.wst.jsdt.internal.ui.packageview.PackagesMessages;
 import org.eclipse.wst.jsdt.internal.ui.packageview.SelectionTransferDragAdapter;
 import org.eclipse.wst.jsdt.internal.ui.packageview.SelectionTransferDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.preferences.MembersOrderPreferenceCache;
@@ -835,6 +836,24 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 			}
 		}
 
+		private class CollapseAllAction extends Action {
+			JavaOutlineViewer fJavaOutlineViewer;
+			CollapseAllAction(JavaOutlineViewer viewer) {
+				super(PackagesMessages.CollapseAllAction_label); 
+				setDescription(PackagesMessages.CollapseAllAction_description); 
+				setToolTipText(PackagesMessages.CollapseAllAction_tooltip); 
+				JavaPluginImages.setLocalImageDescriptors(this, "collapseall.gif"); //$NON-NLS-1$
+				
+				fJavaOutlineViewer= viewer;
+				PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.COLLAPSE_ALL_ACTION);
+			}
+		 
+			public void run() { 
+				fJavaOutlineViewer.collapseAll();
+			}
+		}
+
+
 		/**
 		 * This action toggles whether this Java Outline page links
 		 * its selection to the active editor.
@@ -1024,6 +1043,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 		fToggleLinkingAction= new ToggleLinkingAction(this);
 	//	viewMenuManager.add(new ClassOnlyAction());
 		viewMenuManager.add(fToggleLinkingAction);
+		toolBarManager.add(new CollapseAllAction(getOutlineViewer()));
 
 		fCategoryFilterActionGroup= new CategoryFilterActionGroup(fOutlineViewer, "org.eclipse.wst.jsdt.ui.JavaOutlinePage", new IJavaScriptElement[] {fInput}); //$NON-NLS-1$
 		fCategoryFilterActionGroup.contributeToViewMenu(viewMenuManager);
