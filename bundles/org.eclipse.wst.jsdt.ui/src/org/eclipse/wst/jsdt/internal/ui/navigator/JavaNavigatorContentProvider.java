@@ -37,7 +37,6 @@ import org.eclipse.ui.navigator.PipelinedViewerUpdate;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModel;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.navigator.IExtensionStateConstants.Values;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerContentProvider;
@@ -57,7 +56,9 @@ public class JavaNavigatorContentProvider extends
 	public static final String JDT_EXTENSION_ID = "org.eclipse.wst.jsdt.ui.javaContent"; //$NON-NLS-1$ 
 
 	private IExtensionStateModel fStateModel;
-	
+
+	private Object fRealInput;
+
 	private IPropertyChangeListener fLayoutPropertyListener;
 
 	public void init(ICommonContentExtensionSite commonContentExtensionSite) {
@@ -93,13 +94,14 @@ public class JavaNavigatorContentProvider extends
 	}
 
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) { 
+		fRealInput = newInput;
 		super.inputChanged(viewer, oldInput, findInputElement(newInput));
 	}
 	
 	public Object getParent(Object element) {
 		Object parent= super.getParent(element);
 		if (parent instanceof IJavaScriptModel) {
-			return ((IJavaScriptModel)parent).getWorkspace().getRoot();
+			return parent.equals(getViewerInput()) ? fRealInput : parent;
 		}
 		if (parent instanceof IJavaScriptProject) {
 			return ((IJavaScriptProject)parent).getProject();
@@ -233,6 +235,7 @@ public class JavaNavigatorContentProvider extends
 	 * @return returns true if the conversion took place
 	 */
 	private boolean convertToJavaElements(Set currentChildren) {
+
 		LinkedHashSet convertedChildren = new LinkedHashSet();
 		IJavaScriptElement newChild;
 		for (Iterator childrenItr = currentChildren.iterator(); childrenItr
@@ -321,19 +324,11 @@ public class JavaNavigatorContentProvider extends
 			Object element = iter.next();
 			if (element instanceof IJavaScriptModel) {
 				iter.remove();
-				toRefresh.add(((IJavaScriptModel)element).getWorkspace().getRoot());
+				toRefresh.add(element.equals(getViewerInput()) ? fRealInput : element);
 				super.postRefresh(toRefresh, updateLabels, runnables);
 				return;
 			}
-			if (element instanceof IPackageFragment) {
-				IResource resource = ((IPackageFragment) element).getResource();
-				if (resource != null) {
-					toRefresh.add(resource);
-					super.postRefresh(toRefresh, updateLabels, runnables);
-					return;
-				}
-			}
-		}
-		super.postRefresh(toRefresh, updateLabels, runnables);
+		} 
+		super.postRefresh(toRefresh, updateLabels, runnables);		
 	}
 }
