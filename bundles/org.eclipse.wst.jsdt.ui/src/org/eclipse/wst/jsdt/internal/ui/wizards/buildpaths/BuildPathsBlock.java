@@ -793,7 +793,9 @@ public class BuildPathsBlock {
 		if(superType==null) {
 			System.out.println("---------------------------------- NULL SUPER TYPE -------------------------"); //$NON-NLS-1$
 		}
-		setProjectSuperType(javaScriptProject, superType);
+		if (superType != null) {
+			setProjectSuperType(javaScriptProject, superType);
+		}
 		
 		if (monitor == null) {
 			monitor= new NullProgressMonitor();

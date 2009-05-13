@@ -12,6 +12,7 @@
 package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.action.ToolBarManager;
@@ -317,7 +318,7 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
      * Update <code>fClassPathList</code>.
      */
     public void buildpathChanged(BuildpathDelta delta) {
-//        fClassPathList.setElements(Arrays.asList(delta.getNewEntries()));
+        fClassPathList.setElements(Arrays.asList(delta.getNewEntries()));
     }
 
 	/**
