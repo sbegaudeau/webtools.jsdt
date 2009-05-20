@@ -87,7 +87,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 				"}",
 			"X.js",
 			"class Shape extends Object{\n  ?? GetArea()\n  Shape()\n}\n"+
-			"class Circle extends Shape{\n  void GetArea()\n}\n",
+			"class Circle extends Shape{\n  ?? constructor;\n  void GetArea()\n}\n",
 			getDefaultOptions()
 			
 		 );
