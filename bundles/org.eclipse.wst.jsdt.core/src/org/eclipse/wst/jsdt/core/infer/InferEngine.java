@@ -818,7 +818,8 @@ public class InferEngine extends ASTVisitor {
 					InferredMember method = newType.addMethod(memberName, methodDecl,false);
 					method.nameStart=nameStart;
 				}
-				else if (!CharOperation.equals(CONSTRUCTOR_ID, memberName))
+				// http://bugs.eclipse.org/269053 - constructor property not supported in JSDT
+				else /*if (!CharOperation.equals(CONSTRUCTOR_ID, memberName))*/
 				{
 					InferredAttribute attribute = newType.addAttribute(memberName, assignment);
 					attribute.initializationStart=assignment.expression.sourceStart;
