@@ -370,7 +370,7 @@ public void resolve(BlockScope upperScope) {
 //			finallyScope.addLocalVariable(this.anyExceptionVariable);
 //			this.anyExceptionVariable.setConstant(Constant.NotAConstant); // not inlinable
 
-			if (!methodScope.isInsideInitializer()) {
+			if (methodScope != null && !methodScope.isInsideInitializer()) {
 				MethodBinding methodBinding =
 					((AbstractMethodDeclaration) methodScope.referenceContext).binding;
 				if (methodBinding != null) {
