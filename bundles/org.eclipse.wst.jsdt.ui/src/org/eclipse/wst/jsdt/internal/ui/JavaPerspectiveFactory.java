@@ -17,6 +17,7 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
+import org.eclipse.ui.texteditor.templates.TemplatesView;
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class JavaPerspectiveFactory implements IPerspectiveFactory {
@@ -40,6 +41,7 @@ public class JavaPerspectiveFactory implements IPerspectiveFactory {
 		outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
 		outputfolder.addView(JavaScriptUI.ID_JAVADOC_VIEW);
 		outputfolder.addView(JavaScriptUI.ID_SOURCE_VIEW);
+		outputfolder.addView(TemplatesView.ID);
 		outputfolder.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
 		outputfolder.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
 		outputfolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
