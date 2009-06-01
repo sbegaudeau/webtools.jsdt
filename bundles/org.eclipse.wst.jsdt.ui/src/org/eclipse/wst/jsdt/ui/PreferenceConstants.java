@@ -436,34 +436,6 @@ public class PreferenceConstants {
 	 * @see #NEWPROJECT_JRELIBRARY_LIST
 	 */
 	public static final String NEWPROJECT_JRELIBRARY_INDEX= "org.eclipse.wst.jsdt.ui.wizards.jre.index"; //$NON-NLS-1$
-
-	/**
-	 * A named preference that controls if a new type hierarchy gets opened in a 
-	 * new type hierarchy perspective or inside the type hierarchy view part.
-	 * <p>
-	 * Value is of type <code>String</code>: possible values are <code>
-	 * OPEN_TYPE_HIERARCHY_IN_PERSPECTIVE</code> or <code>
-	 * OPEN_TYPE_HIERARCHY_IN_VIEW_PART</code>.
-	 * </p>
-	 * 
-	 * @see #OPEN_TYPE_HIERARCHY_IN_PERSPECTIVE
-	 * @see #OPEN_TYPE_HIERARCHY_IN_VIEW_PART
-	 */
-	public static final String OPEN_TYPE_HIERARCHY= "org.eclipse.wst.jsdt.ui.openTypeHierarchy"; //$NON-NLS-1$
-
-	/**
-	 * A string value used by the named preference <code>OPEN_TYPE_HIERARCHY</code>.
-	 * 
-	 * @see #OPEN_TYPE_HIERARCHY
-	 */
-	public static final String OPEN_TYPE_HIERARCHY_IN_PERSPECTIVE= "perspective"; //$NON-NLS-1$
-
-	/**
-	 * A string value used by the named preference <code>OPEN_TYPE_HIERARCHY</code>.
-	 * 
-	 * @see #OPEN_TYPE_HIERARCHY
-	 */
-	public static final String OPEN_TYPE_HIERARCHY_IN_VIEW_PART= "viewPart"; //$NON-NLS-1$
 	
 	/**
 	 * A named preference that controls the behavior when double clicking on a container in the packages view. 
@@ -3320,7 +3292,6 @@ public class PreferenceConstants {
 		store.setDefault(PreferenceConstants.EDITOR_SHOW_SEGMENTS, false);
 
 		// JavaBasePreferencePage
-		store.setDefault(PreferenceConstants.OPEN_TYPE_HIERARCHY, PreferenceConstants.OPEN_TYPE_HIERARCHY_IN_VIEW_PART);
 		store.setDefault(PreferenceConstants.DOUBLE_CLICK, PreferenceConstants.DOUBLE_CLICK_EXPANDS);
 		store.setDefault(PreferenceConstants.UPDATE_JAVA_VIEWS, PreferenceConstants.UPDATE_WHILE_EDITING);	
 		store.setToDefault(PreferenceConstants.UPDATE_JAVA_VIEWS); // clear preference, update on save not supported anymore

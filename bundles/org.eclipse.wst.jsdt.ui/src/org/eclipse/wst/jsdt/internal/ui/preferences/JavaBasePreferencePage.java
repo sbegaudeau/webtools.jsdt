@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
@@ -47,17 +46,12 @@ public class JavaBasePreferencePage extends PreferencePage implements IWorkbench
 	
 	public static final String JAVA_BASE_PREF_PAGE_ID= "org.eclipse.wst.jsdt.ui.preferences.JavaBasePreferencePage"; //$NON-NLS-1$
 
-	private static final String OPEN_TYPE_HIERARCHY= PreferenceConstants.OPEN_TYPE_HIERARCHY;
-	private static final String OPEN_TYPE_HIERARCHY_IN_PERSPECTIVE= PreferenceConstants.OPEN_TYPE_HIERARCHY_IN_PERSPECTIVE;
-	private static final String OPEN_TYPE_HIERARCHY_IN_VIEW_PART= PreferenceConstants.OPEN_TYPE_HIERARCHY_IN_VIEW_PART;
-
 	private static final String DOUBLE_CLICK= PreferenceConstants.DOUBLE_CLICK;
 	private static final String DOUBLE_CLICK_GOES_INTO= PreferenceConstants.DOUBLE_CLICK_GOES_INTO;
 	private static final String DOUBLE_CLICK_EXPANDS= PreferenceConstants.DOUBLE_CLICK_EXPANDS;
 
 	private ArrayList fCheckBoxes;
 	private ArrayList fRadioButtons;
-	private ArrayList fTextControls;
 	
 	public JavaBasePreferencePage() {
 		super();
@@ -66,7 +60,6 @@ public class JavaBasePreferencePage extends PreferencePage implements IWorkbench
 	
 		fRadioButtons= new ArrayList();
 		fCheckBoxes= new ArrayList();
-		fTextControls= new ArrayList();
 	}
 
 	/*
@@ -121,33 +114,13 @@ public class JavaBasePreferencePage extends PreferencePage implements IWorkbench
 		layout.verticalSpacing= convertVerticalDLUsToPixels(10);
 		layout.horizontalSpacing= convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
 		result.setLayout(layout);
-		
-		// new Label(composite, SWT.NONE); // spacer
-		// Group linkSettings= new Group(result, SWT.NONE);
-		// linkSettings.setLayout(new GridLayout());
-		// linkSettings.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		// linkSettings.setText(PreferencesMessages.getString("JavaBasePreferencePage.linkSettings.text")); //$NON-NLS-1$
-		//addCheckBox(linkSettings, PreferencesMessages.getString("JavaBasePreferencePage.linkJavaBrowsingViewsCheckbox.text"), LINK_BROWSING_VIEW_TO_EDITOR); //$NON-NLS-1$
-		//addCheckBox(linkSettings, PreferencesMessages.getString("JavaBasePreferencePage.linkPackageView"), LINK_PACKAGES_TO_EDITOR); //$NON-NLS-1$
-		//addCheckBox(linkSettings, PreferencesMessages.getString("JavaBasePreferencePage.linkTypeHierarchy"), LINK_TYPEHIERARCHY_TO_EDITOR); //$NON-NLS-1$
-
-		// new Label(result, SWT.NONE); // spacer
 
 		Group doubleClickGroup= new Group(result, SWT.NONE);
 		doubleClickGroup.setLayout(new GridLayout());		
 		doubleClickGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		doubleClickGroup.setText(PreferencesMessages.JavaBasePreferencePage_doubleclick_action);  
 		addRadioButton(doubleClickGroup, PreferencesMessages.JavaBasePreferencePage_doubleclick_gointo, DOUBLE_CLICK, DOUBLE_CLICK_GOES_INTO); 
-		addRadioButton(doubleClickGroup, PreferencesMessages.JavaBasePreferencePage_doubleclick_expand, DOUBLE_CLICK, DOUBLE_CLICK_EXPANDS); 
-
-		// new Label(result, SWT.NONE); // spacer
-		
-		Group typeHierarchyGroup= new Group(result, SWT.NONE);
-		typeHierarchyGroup.setLayout(new GridLayout());		
-		typeHierarchyGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		typeHierarchyGroup.setText(PreferencesMessages.JavaBasePreferencePage_openTypeHierarchy); 
-		addRadioButton(typeHierarchyGroup, PreferencesMessages.JavaBasePreferencePage_inPerspective, OPEN_TYPE_HIERARCHY, OPEN_TYPE_HIERARCHY_IN_PERSPECTIVE);  
-		addRadioButton(typeHierarchyGroup, PreferencesMessages.JavaBasePreferencePage_inView, OPEN_TYPE_HIERARCHY, OPEN_TYPE_HIERARCHY_IN_VIEW_PART); 
+		addRadioButton(doubleClickGroup, PreferencesMessages.JavaBasePreferencePage_doubleclick_expand, DOUBLE_CLICK, DOUBLE_CLICK_EXPANDS);  
 
 		if ( IUIConstants.SUPPORT_REFACTORING ) {
 			Group refactoringGroup= new Group(result, SWT.NONE);
@@ -222,11 +195,6 @@ public class JavaBasePreferencePage extends PreferencePage implements IWorkbench
 			String[] info= (String[]) button.getData();
 			button.setSelection(info[1].equals(store.getDefaultString(info[0])));
 		}
-		for (int i= 0; i < fTextControls.size(); i++) {
-			Text text= (Text) fTextControls.get(i);
-			String key= (String) text.getData();
-			text.setText(store.getDefaultString(key));
-		}
 		super.performDefaults();
 	}
 
@@ -247,17 +215,9 @@ public class JavaBasePreferencePage extends PreferencePage implements IWorkbench
 				store.setValue(info[0], info[1]);
 			}
 		}
-		for (int i= 0; i < fTextControls.size(); i++) {
-			Text text= (Text) fTextControls.get(i);
-			String key= (String) text.getData();
-			store.setValue(key, text.getText());
-		}
 		
 		JavaScriptPlugin.getDefault().savePluginPreferences();
 		return super.performOk();
 	}
 
-
 }
-
-

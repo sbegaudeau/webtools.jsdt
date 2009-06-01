@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,15 +12,12 @@ package org.eclipse.wst.jsdt.internal.ui.util;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.WorkbenchException;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
-import org.eclipse.wst.jsdt.core.IMember;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -31,7 +28,6 @@ import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.typehierarchy.TypeHierarchyViewPart;
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 public class OpenTypeHierarchyUtil {
 	
@@ -59,24 +55,9 @@ public class OpenTypeHierarchyUtil {
 		}
 		if (input == null)
 			return null;
+
 			
-		try {
-			if (PreferenceConstants.OPEN_TYPE_HIERARCHY_IN_PERSPECTIVE.equals(PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.OPEN_TYPE_HIERARCHY))) {
-				return openInPerspective(window, input);
-			} else {
-				return openInViewPart(window, input);
-			}
-				
-		} catch (WorkbenchException e) {
-			ExceptionHandler.handle(e, window.getShell(),
-				JavaUIMessages.OpenTypeHierarchyUtil_error_open_perspective, 
-				e.getMessage());
-		} catch (JavaScriptModelException e) {
-			ExceptionHandler.handle(e, window.getShell(),
-				JavaUIMessages.OpenTypeHierarchyUtil_error_open_editor, 
-				e.getMessage());
-		}
-		return null;
+		return openInViewPart(window, input);
 	}
 
 	private static TypeHierarchyViewPart openInViewPart(IWorkbenchWindow window, IJavaScriptElement input) {
@@ -95,37 +76,6 @@ public class OpenTypeHierarchyUtil {
 		}
 		return null;		
 	}
-	
-	private static TypeHierarchyViewPart openInPerspective(IWorkbenchWindow window, IJavaScriptElement input) throws WorkbenchException, JavaScriptModelException {
-		IWorkbench workbench= JavaScriptPlugin.getDefault().getWorkbench();
-		// The problem is that the input element can be a working copy. So we first convert it to the original element if
-		// it exists.
-		IJavaScriptElement perspectiveInput= input;
-		
-		if (input instanceof IMember) {
-			if (input.getElementType() != IJavaScriptElement.TYPE) {
-				IMember member=(IMember)input;
-				perspectiveInput= member.getDeclaringType()!=null ? member.getDeclaringType() : (IJavaScriptElement)member.getJavaScriptUnit();
-			} else {
-				perspectiveInput= input;
-			}
-		}
-		IWorkbenchPage page= workbench.showPerspective(JavaScriptUI.ID_HIERARCHYPERSPECTIVE, window, perspectiveInput);
-		
-		TypeHierarchyViewPart part= (TypeHierarchyViewPart) page.findView(JavaScriptUI.ID_TYPE_HIERARCHY);
-		if (part != null) {
-			part.clearNeededRefresh(); // avoid refresh of old hierarchy on 'becomes visible'
-		}		
-		part= (TypeHierarchyViewPart) page.showView(JavaScriptUI.ID_TYPE_HIERARCHY);
-		part.setInputElement(input);
-		if (input instanceof IMember) {
-			if (page.getEditorReferences().length == 0) {
-				JavaScriptUI.openInEditor(input, false, false); // only open when the perspecive has been created
-			}
-		}
-		return part;
-	}
-
 
 	/**
 	 * Converts the input to a possible input candidates

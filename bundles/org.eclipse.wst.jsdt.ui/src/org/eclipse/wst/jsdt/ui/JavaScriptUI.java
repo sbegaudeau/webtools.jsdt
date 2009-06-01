@@ -82,12 +82,6 @@ public final class JavaScriptUI {
 	 * (value <code>"org.eclipse.wst.jsdt.ui.JavaPerspective"</code>).
 	 */	
 	public static final String ID_PERSPECTIVE= 		"org.eclipse.wst.jsdt.ui.JavaPerspective"; //$NON-NLS-1$
-	
-	/**
-	 * The id of the JavaScript hierarchy perspective
-	 * (value <code>"org.eclipse.wst.jsdt.ui.JavaHierarchyPerspective"</code>).
-	 */	
-	public static final String ID_HIERARCHYPERSPECTIVE= "org.eclipse.wst.jsdt.ui.JavaHierarchyPerspective"; //$NON-NLS-1$
 
 	/**
 	 * The id of the JavaScript action set
