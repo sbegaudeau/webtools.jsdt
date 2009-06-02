@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,15 +11,12 @@
 package org.eclipse.wst.jsdt.core.tests.model;
 
 import org.eclipse.wst.jsdt.core.BindingKey;
-import org.eclipse.wst.jsdt.core.Signature;
 
 import junit.framework.Test;
 
 public class BindingKeyTests extends AbstractJavaModelTests {
 	
 	static {
-//		TESTS_PREFIX = "testInvalidCompilerOptions";
-//		TESTS_NAMES = new String[] { "test028"};
 	}
 
 	public BindingKeyTests(String name) {
@@ -125,36 +122,6 @@ public class BindingKeyTests extends AbstractJavaModelTests {
 	}
 
 	/*
-	 * Generic type
-	 */
-	public void test009() {
-		assertBindingKeySignatureEquals(
-			"<T:Ljava/lang/Object;>Lp1.X;",
-			"Lp1/X<TT;>;"
-		);
-	}
-
-	/*
-	 * Generic type
-	 */
-	public void test010() {
-		assertBindingKeySignatureEquals(
-			"<T:Ljava/lang/Object;U:Ljava/lang/Object;>Lp1.X;",
-			"Lp1/X<TT;TU;>;"
-		);
-	}
-
-	/*
-	 * Parameterized type
-	 */
-	public void test011() {
-		assertBindingKeySignatureEquals(
-			"Lp1.X<Ljava.lang.String;>;",
-			"Lp1/X<Ljava/lang/String;>;"
-		);
-	}
-
-	/*
 	 * Secondary type
 	 */
 	public void test012() {
@@ -214,26 +181,6 @@ public class BindingKeyTests extends AbstractJavaModelTests {
 			"[Z",
 			key);
 	}
-	
-	/*
-	 * Create a parameterized type binding key
-	 */
-	public void test018() {
-		String key = BindingKey.createParameterizedTypeBindingKey("Ljava/util/Map<TK;TV;>;", new String[] {"Ljava/lang/String;", "Ljava/lang/Object;"});
-		assertBindingKeyEquals(
-			"Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;",
-			key);
-	}
-
-	/*
-	 * Create a raw type binding key
-	 */
-	public void test019() {
-		String key = BindingKey.createParameterizedTypeBindingKey("Ljava/util/List<TE:>;", new String[] {});
-		assertBindingKeyEquals(
-			"Ljava/util/List<>;",
-			key);
-	}
 
 	/*
 	 * Create an array type binding key
@@ -253,66 +200,6 @@ public class BindingKeyTests extends AbstractJavaModelTests {
 		assertBindingKeyEquals(
 			"[[I",
 			key);
-	}
-
-	/*
-	 * Create a wildcard type binding key
-	 */
-	public void test022() {
-		String key = BindingKey.createWilcardTypeBindingKey(null, Signature.C_STAR);
-		assertBindingKeyEquals(
-			"*",
-			key);
-	}
-
-	/*
-	 * Create a wildcard type binding key
-	 */
-	public void test023() {
-		String key = BindingKey.createWilcardTypeBindingKey("Ljava/util/List<TE;>;", Signature.C_SUPER);
-		assertBindingKeyEquals(
-			"-Ljava/util/List<TE;>;",
-			key);
-	}
-
-	/*
-	 * Create a wildcard type binding key
-	 */
-	public void test024() {
-		String key = BindingKey.createWilcardTypeBindingKey("Ljava/util/ArrayList;", Signature.C_EXTENDS);
-		assertBindingKeyEquals(
-			"+Ljava/util/ArrayList;",
-			key);
-	}
-
-	/*
-	 * Create a type variable binding key
-	 */
-	public void test025() {
-		String key = BindingKey.createTypeVariableBindingKey("T", "Ljava/util/List<TE;>;");
-		assertBindingKeyEquals(
-			"Ljava/util/List<TE;>;:TT;",
-			key);
-	}
-
-	/*
-	 * Create a type variable binding key
-	 */
-	public void test026() {
-		String key = BindingKey.createTypeVariableBindingKey("SomeTypeVariable", "Lp/X;.foo()V");
-		assertBindingKeyEquals(
-			"Lp/X;.foo()V:TSomeTypeVariable;",
-			key);
-	}
-	
-	/*
-	 * Parameterized member type
-	 */
-	public void test027() {
-		assertBindingKeySignatureEquals(
-			"Lp1.X<Ljava.lang.String;>.Member;",
-			"Lp1/X<Ljava/lang/String;>.Member;"
-		);
 	}
 
 	/*
@@ -387,27 +274,6 @@ public class BindingKeyTests extends AbstractJavaModelTests {
 	}
 	
 	/*
-	 * Parameterized method with capture argument
-	 * (regression test for bug 96410 Incorrect information in selection resolved key)
-	 */
-	public void test035() {
-		assertBindingKeySignatureEquals(
-			"(!*)!*",
-			"LX;&LX~Store<!LX~Store;*157;>;.get(!*)!*"
-		);
-	}
-		
-	/*
-	 * Parameterized method with argument similar to a type name
-	 */
-	public void test036() {
-		assertBindingKeySignatureEquals(
-			"<U:Ljava.lang.Object;>(La.TU;La.TU;)V",
-			"La/A<La/A~TU;>;.foo<U:Ljava/lang/Object;>(TU;La/TU;)V%<La/A~TU;>"
-		);
-	}
-	
-	/*
 	 * Field
 	 * (regression test for bug  87362 BindingKey#internalToSignature() should return the field's type signature)
 	 */
@@ -419,17 +285,6 @@ public class BindingKeyTests extends AbstractJavaModelTests {
 	}
 
 	/*
-	 * Generic secondary type
-	 * (regression test for bug 96858 IllegalArgumentException in Signature)
-	 */
-	public void test038() {
-		assertBindingKeySignatureEquals(
-			"<T:Ljava/lang/Object;U:Ljava/lang/Object;>Lp1.Y;",
-			"Lp1/X~Y<TT;TU;>;"
-		);
-	}
-
-	/*
 	 * Base type
 	 * (regression test for bug 97187 [rendering] Shows Single Char for primitve Types)
 	 */
@@ -437,59 +292,6 @@ public class BindingKeyTests extends AbstractJavaModelTests {
 		assertBindingKeySignatureEquals(
 			"Z",
 			"Z"
-		);
-	}
-	
-	/*
-	 * Parameterized method with argument nested in another argument
-	 * (regression test for bug 97275 method reference should not contain type variable anymore)
-	 */
-	public void test040() {
-		assertBindingKeySignatureEquals(
-			"<T:Ljava.lang.Object;>(Ljava.util.List<Ljava.lang.String;>;Ljava.lang.Integer;)V",
-			"Lp1/X;.foo<T:Ljava/lang/Object;>(Ljava/util/List<TT;>;Ljava/lang/Integer;)V%<Ljava/lang/String;>)"
-		);
-	}
-	
-	/*
-	 * Parameterized method with argument nested in another argument as a wilcard bound
-	 * (regression test for bug 97814 Incorrect resolved information on hover)
-	 */
-	public void test041() {
-		assertBindingKeySignatureEquals(
-			"<T:Ljava.lang.Object;>(LY<-Ljava.lang.NullPointerException;>;Ljava.lang.NullPointerException;)V",
-			"LX~Z;.foo<T:Ljava/lang/Object;>(LY<-TT;>;TT;)V%<Ljava/lang/NullPointerException;>"
-		);
-	}
-
-	/*
-	 * Parameterized method with argument nested in another argument as an array
-	 * (regression test for bug 97814 Incorrect resolved information on hover)
-	 */
-	public void test042() {
-		assertBindingKeySignatureEquals(
-			"<T:Ljava.lang.Object;>([Ljava.lang.NullPointerException;Ljava.lang.NullPointerException;)V",
-			"LX~Z;.foo<T:Ljava/lang/Object;>([TT;TT;)V%<Ljava/lang/NullPointerException;>"
-		);
-	}
-
-	/*
-	 * Parameterized type binding with a type variable of the current's method in its arguments
-	 * (regression test for bug 97902 NPE on Open Declaration on reference to generic type)
-	 */
-	public void test043() {
-		assertBindingKeySignatureEquals(
-			"Lp1.Y<TT;>;",
-			"Lp1/X~Y<Lp1/X;:40TT;>;"
-		);
-	}
-	/*
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=102710
-	 */
-	public void test044() {
-		assertBindingKeySignatureEquals(
-			"<SM:Ljava/lang/Object;LM:Ljava/lang/Object;>LX;",
-			"LX<TSM;TLM;>;"
 		);
 	}
 }

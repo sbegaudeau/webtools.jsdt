@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1718,116 +1718,6 @@ public void test073() throws CoreException, IOException {
 	}
 }
 
-/**
- * @bug 155003: [model] Missing exception types / wrong signature?
- * @test Ensure that thrown exceptions are added in method unique key (not in signature)
- * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=155003"
- */
-public void test074_Bug155003() throws CoreException {
-	assertBindingCreated(
-		new String[] {
-			"/P/X.js",
-			"public class X {\n" + 
-			"    public void foo() throws InterruptedException, IllegalMonitorStateException {\n" + 
-			"    }\n" + 
-			"    void test() throws InterruptedException, IllegalMonitorStateException {\n" + 
-			"    	/*start*/foo()/*end*/;\n" + 
-			"    }\n" + 
-			"}",
-		},
-		"LX;.foo()V|Ljava/lang/InterruptedException;|Ljava/lang/IllegalMonitorStateException;"
-	);
-	String content = "public class X {\n" + 
-			"    public void foo() throws InterruptedException, IllegalMonitorStateException {\n" + 
-			"    }\n" + 
-			"    void test() throws InterruptedException, IllegalMonitorStateException {\n" + 
-			"    	/*start*/foo()/*end*/;\n" + 
-			"    }\n" + 
-			"}";
-	this.workingCopies = createWorkingCopies(new String[] { "/P/X.js", content }, true /*resolve*/);
-	ASTNode node = buildAST(content, this.workingCopies[0]);
-	assertEquals("Invalid node type!", ASTNode.FUNCTION_INVOCATION, node.getNodeType());
-	IBinding binding = resolveBinding(node);
-	BindingKey bindingKey = new BindingKey(binding.getKey());
-	assertStringsEqual("Unexpected thrown exceptions",
-		"Ljava.lang.InterruptedException;\n" + 
-		"Ljava.lang.IllegalMonitorStateException;\n",
-		bindingKey.getThrownExceptions()
-	);
-}
-public void test075_Bug155003() throws CoreException {
-	String content = "public class X<T> {\n" + 
-		"	<U extends Exception> X<T> foo(X<T> x) throws RuntimeException, U {\n" + 
-		"		return null;\n" + 
-		"	}\n" + 
-		"	void test() throws Exception {\n" + 
-		"		/*start*/foo(this)/*end*/;\n" + 
-		"	}\n" + 
-		"}";
-	this.workingCopies = createWorkingCopies(new String[] { "/P/X.js", content }, true /*resolve*/);
-	ASTNode node = buildAST(content, this.workingCopies[0]);
-	assertEquals("Invalid node type!", ASTNode.FUNCTION_INVOCATION, node.getNodeType());
-	IBinding binding = resolveBinding(node);
-	BindingKey bindingKey = new BindingKey(binding.getKey());
-	assertStringsEqual("Unexpected thrown exceptions",
-		"Ljava.lang.RuntimeException;\n" + 
-		"TU;\n",
-		bindingKey.getThrownExceptions()
-	);
-}
-public void test076_Bug155003() throws CoreException {
-	String content = "public class X<T> {\n" + 
-		"	<K, V> V bar(K key, V value) throws Exception {\n" + 
-		"		return value;\n" + 
-		"	}\n" + 
-		"	void test() throws Exception {\n" + 
-		"		/*start*/bar(\"\", \"\")/*end*/;\n" + 
-		"	}\n" + 
-		"}";
-	this.workingCopies = createWorkingCopies(new String[] { "/P/X.js", content }, true /*resolve*/);
-	ASTNode node = buildAST(content, this.workingCopies[0]);
-	assertEquals("Invalid node type!", ASTNode.FUNCTION_INVOCATION, node.getNodeType());
-	IBinding binding = resolveBinding(node);
-	BindingKey bindingKey = new BindingKey(binding.getKey());
-	assertStringsEqual("Unexpected thrown exceptions",
-		"Ljava.lang.Exception;\n",
-		bindingKey.getThrownExceptions()
-	);
-}
-
-/**
- * @bug 163647: [model] Thrown exceptions are not found in method binding key which have a capture as declaring class
- * @test Ensure that thrown exceptions are added in method unique key (not in signature)
- * 			even when declaring class is a capture 
- * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=163647"
- */
-public void test077_Bug163647() throws CoreException {
-	String content = 	"public class Test {\n" + 
-		"    public X<? extends Object> getX() { return null; }\n" + 
-		"    public void bar() {\n" + 
-		"		try {\n" + 
-		"			/*start*/getX().foo()/*end*/;\n" + 
-		"		} catch (Exception e) {\n" + 
-		"			// skip\n" + 
-		"		}\n" + 
-		"    }\n" + 
-		"}\n" + 
-		"class X<T> {\n" + 
-		"    public void foo() throws CloneNotSupportedException, IllegalMonitorStateException, InterruptedException {\n" + 
-		"    }\n" + 
-		"}";
-	this.workingCopies = createWorkingCopies(new String[] { "/P/Test.js", content }, true /*resolve*/);
-	ASTNode node = buildAST(content, this.workingCopies[0]);
-	assertEquals("Invalid node type!", ASTNode.FUNCTION_INVOCATION, node.getNodeType());
-	IBinding binding = resolveBinding(node);
-	BindingKey bindingKey = new BindingKey(binding.getKey());
-	assertStringsEqual("Unexpected thrown exceptions",
-		"Ljava.lang.CloneNotSupportedException;\n" + 
-		"Ljava.lang.IllegalMonitorStateException;\n" + 
-		"Ljava.lang.InterruptedException;\n",
-		bindingKey.getThrownExceptions()
-	);
-}
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152060
 public void test078() throws CoreException, IOException {
 	try {
