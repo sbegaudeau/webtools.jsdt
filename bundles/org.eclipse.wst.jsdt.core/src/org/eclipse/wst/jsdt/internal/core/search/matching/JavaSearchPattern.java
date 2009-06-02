@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,17 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
-import org.eclipse.wst.jsdt.core.BindingKey;
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
-import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 
 public class JavaSearchPattern extends SearchPattern implements IIndexConstants {
@@ -109,41 +106,21 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 	 * and type parameters for non-generic ones.
 	 */
 	char[][] extractMethodArguments(IFunction method) {
-		String[] argumentsSignatures = null;
-		BindingKey key;
-		if (method.isResolved() && (key = new BindingKey(method.getKey())).isParameterizedType()) {
-			argumentsSignatures = key.getTypeArguments();
-		} else {
-			try {
-				ITypeParameter[] parameters = method.getTypeParameters();
-				if (parameters != null) {
-					int length = parameters.length;
-					if (length > 0) {
-						char[][] arguments = new char[length][];
-						for (int i=0; i<length; i++) {
-							arguments[i] = Signature.createTypeSignature(parameters[i].getElementName(), false).toCharArray();
-						}
-						return arguments;
+		try {
+			ITypeParameter[] parameters = method.getTypeParameters();
+			if (parameters != null) {
+				int length = parameters.length;
+				if (length > 0) {
+					char[][] arguments = new char[length][];
+					for (int i=0; i<length; i++) {
+						arguments[i] = Signature.createTypeSignature(parameters[i].getElementName(), false).toCharArray();
 					}
+					return arguments;
 				}
 			}
-			catch (JavaScriptModelException jme) {
-				// do nothing
-			}
-			return null;
 		}
-
-		// Parameterized method
-		if (argumentsSignatures != null) {
-			int length = argumentsSignatures.length;
-			if (length > 0) {
-				char[][] methodArguments = new char[length][];
-				for (int i=0; i<length; i++) {
-					methodArguments[i] = argumentsSignatures[i].toCharArray();
-					CharOperation.replace(methodArguments[i], new char[] { '$', '/' }, '.');
-				}
-				return methodArguments;
-			}
+		catch (JavaScriptModelException jme) {
+			// do nothing
 		}
 		return null;
 	}
@@ -303,48 +280,43 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 	 * and type parameters for non-generic ones
 	 */
 	void storeTypeSignaturesAndArguments(IType type) {
-		BindingKey key;
-		if (type.isResolved() && (key = new BindingKey(type.getKey())).isParameterizedType()) {
-			String signature = key.toSignature();
-			this.typeSignatures = Util.splitTypeLevelsSignature(signature);
-			setTypeArguments(Util.getAllTypeArguments(this.typeSignatures));
-		} else {
-			// Scan hierachy to store type arguments at each level
-			char[][][] typeParameters = new char[10][][];
-			int ptr = -1;
-			boolean hasParameters = false;
-			try {
-				IJavaScriptElement parent = type;
-				ITypeParameter[] parameters = null;
-				while (parent != null && parent.getElementType() == IJavaScriptElement.TYPE) {
-					if (++ptr > typeParameters.length) {
-						System.arraycopy(typeParameters, 0, typeParameters = new char[typeParameters.length+10][][], 0, ptr);
-					}
-					IType parentType = (IType) parent;
-					parameters = parentType.getTypeParameters();
-					if (parameters !=null) {
-						int length = parameters.length;
-						if (length > 0) {
-							hasParameters = true;
-							typeParameters[ptr] = new char[length][];
-							for (int i=0; i<length; i++)
-								typeParameters[ptr][i] = Signature.createTypeSignature(parameters[i].getElementName(), false).toCharArray();
-						}
-					}
-					parent = parent.getParent();
+		// Scan hierachy to store type arguments at each level
+		char[][][] typeParameters = new char[10][][];
+		int ptr = -1;
+		boolean hasParameters = false;
+		try {
+			IJavaScriptElement parent = type;
+			ITypeParameter[] parameters = null;
+			while (parent != null && parent.getElementType() == IJavaScriptElement.TYPE) {
+				if (++ptr > typeParameters.length) {
+					System.arraycopy(typeParameters, 0, typeParameters = new char[typeParameters.length+10][][], 0, ptr);
 				}
-			}
-			catch (JavaScriptModelException jme) {
-				return;
-			}
-			// Store type arguments if any
-			if (hasParameters) {
-				if (++ptr < typeParameters.length)
-					System.arraycopy(typeParameters, 0, typeParameters = new char[ptr][][], 0, ptr);
-				setTypeArguments(typeParameters);
+				IType parentType = (IType) parent;
+				parameters = parentType.getTypeParameters();
+				if (parameters !=null) {
+					int length = parameters.length;
+					if (length > 0) {
+						hasParameters = true;
+						typeParameters[ptr] = new char[length][];
+						for (int i=0; i<length; i++)
+							typeParameters[ptr][i] = Signature.createTypeSignature(parameters[i].getElementName(), false).toCharArray();
+					}
+				}
+				parent = parent.getParent();
 			}
 		}
+		catch (JavaScriptModelException jme) {
+			return;
+		}
+		// Store type arguments if any
+		if (hasParameters) {
+			if (++ptr < typeParameters.length)
+				System.arraycopy(typeParameters, 0, typeParameters = new char[ptr][][], 0, ptr);
+			setTypeArguments(typeParameters);
+		}
+	
 	}
+	
 	public final String toString() {
 		return print(new StringBuffer(30)).toString();
 	}

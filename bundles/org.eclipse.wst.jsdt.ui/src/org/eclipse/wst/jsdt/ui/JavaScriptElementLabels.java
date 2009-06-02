@@ -482,18 +482,10 @@ public class JavaScriptElementLabels {
 			// type parameters
 			if (getFlag(flags, M_PRE_TYPE_PARAMETERS)) {
 				if (resolvedKey != null) {
-					if (resolvedKey.isParameterizedMethod()) {
-						String[] typeArgRefs= resolvedKey.getTypeArguments();
-						if (typeArgRefs.length > 0) {
-							getTypeArgumentSignaturesLabel(typeArgRefs, flags, buf);
-							buf.append(' ');
-						}
-					} else {
-						String[] typeParameterSigs= Signature.getTypeParameters(resolvedSig);
-						if (typeParameterSigs.length > 0) {
-							getTypeParameterSignaturesLabel(typeParameterSigs, flags, buf);
-							buf.append(' ');
-						}
+					String[] typeParameterSigs= Signature.getTypeParameters(resolvedSig);
+					if (typeParameterSigs.length > 0) {
+						getTypeParameterSignaturesLabel(typeParameterSigs, flags, buf);
+						buf.append(' ');
 					}
 				} else if (method.exists()) {
 					ITypeParameter[] typeParameters= method.getTypeParameters();
@@ -600,7 +592,8 @@ public class JavaScriptElementLabels {
 			if (getFlag(flags, M_EXCEPTIONS)) {
 				String[] types;
 				if (resolvedKey != null) {
-					types= resolvedKey.getThrownExceptions();
+					//types= resolvedKey.getThrownExceptions();
+					types = new String[0];
 				} else {
 					types= method.exists() ? method.getExceptionTypes() : new String[0];
 				}
@@ -617,18 +610,10 @@ public class JavaScriptElementLabels {
 			
 			if (getFlag(flags, M_APP_TYPE_PARAMETERS)) {
 				if (resolvedKey != null) {
-					if (resolvedKey.isParameterizedMethod()) {
-						String[] typeArgRefs= resolvedKey.getTypeArguments();
-						if (typeArgRefs.length > 0) {
-							buf.append(' ');
-							getTypeArgumentSignaturesLabel(typeArgRefs, flags, buf);
-						}
-					} else {
-						String[] typeParameterSigs= Signature.getTypeParameters(resolvedSig);
-						if (typeParameterSigs.length > 0) {
-							buf.append(' ');
-							getTypeParameterSignaturesLabel(typeParameterSigs, flags, buf);
-						}
+					String[] typeParameterSigs= Signature.getTypeParameters(resolvedSig);
+					if (typeParameterSigs.length > 0) {
+						buf.append(' ');
+						getTypeParameterSignaturesLabel(typeParameterSigs, flags, buf);
 					}
 				} else if (method.exists()) {
 					ITypeParameter[] typeParameters= method.getTypeParameters();
@@ -930,13 +915,8 @@ public class JavaScriptElementLabels {
 		if (getFlag(flags, T_TYPE_PARAMETERS)) {
 			if (getFlag(flags, USE_RESOLVED) && type.isResolved()) {
 				BindingKey key= new BindingKey(type.getKey());
-				if (key.isParameterizedType()) {
-					String[] typeArguments= key.getTypeArguments();
-					getTypeArgumentSignaturesLabel(typeArguments, flags, buf);
-				} else {
-					String[] typeParameters= Signature.getTypeParameters(key.toSignature());
-					getTypeParameterSignaturesLabel(typeParameters, flags, buf);
-				}
+				String[] typeParameters= Signature.getTypeParameters(key.toSignature());
+				getTypeParameterSignaturesLabel(typeParameters, flags, buf);
 			} else if (type.exists()) {
 				try {
 					getTypeParametersLabel(type.getTypeParameters(), flags, buf);

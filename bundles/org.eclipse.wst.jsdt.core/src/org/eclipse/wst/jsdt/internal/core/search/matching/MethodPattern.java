@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import java.io.IOException;
 
-import org.eclipse.wst.jsdt.core.BindingKey;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
@@ -150,26 +149,13 @@ public MethodPattern(
 	} catch (JavaScriptModelException e) {
 		// do nothing
 	}
-
-	// Get unique key for parameterized constructors
-	String genericDeclaringTypeSignature = null;
-//	String genericSignature = null;
-	String key;
-	if (method.isResolved() && (new BindingKey(key = method.getKey())).isParameterizedType()) {
-		genericDeclaringTypeSignature = Util.getDeclaringTypeSignature(key);
-	} else {
-		methodParameters = true;
-	}
-
+	
+	methodParameters = true;
+	
 	if (declaringType!=null) {
 		// Store type signature and arguments for declaring type
-		if (genericDeclaringTypeSignature != null) {
-			this.typeSignatures = Util
-					.splitTypeLevelsSignature(genericDeclaringTypeSignature);
-			setTypeArguments(Util.getAllTypeArguments(this.typeSignatures));
-		} else {
-			storeTypeSignaturesAndArguments(declaringType);
-		}
+		storeTypeSignaturesAndArguments(declaringType);
+		
 	}
 	// Store type signatures and arguments for return type
 	if (returnSignature != null) {

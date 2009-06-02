@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -175,18 +175,10 @@ public class ColoredJavaElementLabels {
 			// type parameters
 			if (getFlag(flags, JavaScriptElementLabels.M_PRE_TYPE_PARAMETERS)) {
 				if (resolvedKey != null) {
-					if (resolvedKey.isParameterizedMethod()) {
-						String[] typeArgRefs= resolvedKey.getTypeArguments();
-						if (typeArgRefs.length > 0) {
-							getTypeArgumentSignaturesLabel(typeArgRefs, flags, result);
-							result.append(' ');
-						}
-					} else {
-						String[] typeParameterSigs= Signature.getTypeParameters(resolvedSig);
-						if (typeParameterSigs.length > 0) {
-							getTypeParameterSignaturesLabel(typeParameterSigs, flags, result);
-							result.append(' ');
-						}
+					String[] typeParameterSigs= Signature.getTypeParameters(resolvedSig);
+					if (typeParameterSigs.length > 0) {
+						getTypeParameterSignaturesLabel(typeParameterSigs, flags, result);
+						result.append(' ');
 					}
 				} else if (method.exists()) {
 					ITypeParameter[] typeParameters= method.getTypeParameters();
@@ -283,7 +275,8 @@ public class ColoredJavaElementLabels {
 			if (getFlag(flags, JavaScriptElementLabels.M_EXCEPTIONS)) {
 				String[] types;
 				if (resolvedKey != null) {
-					types= resolvedKey.getThrownExceptions();
+					//types= resolvedKey.getThrownExceptions();
+					types = new String[0];
 				} else {
 					types= method.exists() ? method.getExceptionTypes() : new String[0];
 				}
@@ -301,18 +294,10 @@ public class ColoredJavaElementLabels {
 			if (getFlag(flags, JavaScriptElementLabels.M_APP_TYPE_PARAMETERS)) {
 				int offset= result.length();
 				if (resolvedKey != null) {
-					if (resolvedKey.isParameterizedMethod()) {
-						String[] typeArgRefs= resolvedKey.getTypeArguments();
-						if (typeArgRefs.length > 0) {
-							result.append(' ');
-							getTypeArgumentSignaturesLabel(typeArgRefs, flags, result);
-						}
-					} else {
-						String[] typeParameterSigs= Signature.getTypeParameters(resolvedSig);
-						if (typeParameterSigs.length > 0) {
-							result.append(' ');
-							getTypeParameterSignaturesLabel(typeParameterSigs, flags, result);
-						}
+					String[] typeParameterSigs= Signature.getTypeParameters(resolvedSig);
+					if (typeParameterSigs.length > 0) {
+						result.append(' ');
+						getTypeParameterSignaturesLabel(typeParameterSigs, flags, result);
 					}
 				} else if (method.exists()) {
 					ITypeParameter[] typeParameters= method.getTypeParameters();
@@ -623,13 +608,8 @@ public class ColoredJavaElementLabels {
 		if (getFlag(flags, JavaScriptElementLabels.T_TYPE_PARAMETERS)) {
 			if (getFlag(flags, JavaScriptElementLabels.USE_RESOLVED) && type.isResolved()) {
 				BindingKey key= new BindingKey(type.getKey());
-				if (key.isParameterizedType()) {
-					String[] typeArguments= key.getTypeArguments();
-					getTypeArgumentSignaturesLabel(typeArguments, flags, result);
-				} else {
-					String[] typeParameters= Signature.getTypeParameters(key.toSignature());
-					getTypeParameterSignaturesLabel(typeParameters, flags, result);
-				}
+				String[] typeParameters= Signature.getTypeParameters(key.toSignature());
+				getTypeParameterSignaturesLabel(typeParameters, flags, result);
 			} else if (type.exists()) {
 				try {
 					getTypeParametersLabel(type.getTypeParameters(), flags, result);
