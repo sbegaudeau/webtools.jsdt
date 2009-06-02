@@ -86,8 +86,8 @@ private static Class[] getAllTestClasses() {
 //		// test class name with special names like names containing '$'
 //		ClassNameTests.class,
 //		
-//		// IBuffer tests
-//		BufferTests.class,
+		// IBuffer tests
+		BufferTests.class,
 //	
 //		// Name lookup tests
 //		NameLookupTests2.class,
