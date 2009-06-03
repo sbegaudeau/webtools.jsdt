@@ -430,7 +430,7 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 					System.arraycopy(exclusionFilters, 0, newExclusionFilters, 0, exclusionFilters.length);
 					newExclusionFilters[exclusionFilters.length]= pathToExclude;
 					
-					IIncludePathEntry updated= JavaScriptCore.newSourceEntry(currPath, newExclusionFilters, curr.getOutputLocation());
+					IIncludePathEntry updated= JavaScriptCore.newSourceEntry(currPath, newExclusionFilters, null);
 					existing.set(i, updated);
 					modifiedEntries.add(updated);
 				}

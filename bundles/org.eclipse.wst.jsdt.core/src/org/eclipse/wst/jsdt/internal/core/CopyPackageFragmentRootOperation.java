@@ -207,7 +207,7 @@ public class CopyPackageFragmentRootOperation extends JavaModelOperation {
 			case IIncludePathEntry.CPE_PROJECT:
 				return JavaScriptCore.newProjectEntry(entry.getPath(), entry.getAccessRules(), entry.combineAccessRules(), entry.getExtraAttributes(), entry.isExported());
 			case IIncludePathEntry.CPE_SOURCE:
-				return JavaScriptCore.newSourceEntry(this.destination, entry.getInclusionPatterns(), entry.getExclusionPatterns(), entry.getOutputLocation(), entry.getExtraAttributes());
+				return JavaScriptCore.newSourceEntry(this.destination, entry.getInclusionPatterns(), entry.getExclusionPatterns(), null, entry.getExtraAttributes());
 			case IIncludePathEntry.CPE_VARIABLE:
 				try {
 					return JavaScriptCore.newVariableEntry(entry.getPath(), entry.getSourceAttachmentPath(), entry.getSourceAttachmentRootPath(), entry.getAccessRules(), entry.getExtraAttributes(), entry.isExported());

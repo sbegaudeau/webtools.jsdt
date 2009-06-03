@@ -130,12 +130,6 @@ public class IndexAllProject extends IndexRequest {
 					if (sourceFolder.getType() == IResource.PROJECT) {
 						// Do not create marker while getting output location (see bug 41859)
 						outputs.add(javaProject.getOutputLocation());
-						for (int j = 0; j < sourceEntriesNumber; j++) {
-							IPath output = sourceEntries[j].getOutputLocation();
-							if (output != null) {
-								outputs.add(output);
-							}
-						}
 					}
 					final boolean hasOutputs = !outputs.isEmpty();
 

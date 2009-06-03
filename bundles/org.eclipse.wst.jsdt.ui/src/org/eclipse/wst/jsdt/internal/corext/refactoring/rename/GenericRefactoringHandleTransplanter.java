@@ -78,9 +78,6 @@ public class GenericRefactoringHandleTransplanter {
 			case IJavaScriptElement.LOCAL_VARIABLE:
 				return transplantHandle((ILocalVariable) element);
 				
-			case IJavaScriptElement.TYPE_PARAMETER:
-				return transplantHandle((IMember) parent, (ITypeParameter) element);
-				
 			default:
 				throw new IllegalArgumentException(element.toString());
 		}

@@ -805,10 +805,6 @@ public class JavaProject
 					&& entryPath.isPrefixOf(fullPath)) {
 				innerMostEntry = entry;
 			}
-			IPath entryOutput = classpath[j].getOutputLocation();
-			if (entryOutput != null && entryOutput.isPrefixOf(fullPath)) {
-				innerMostOutput = entryOutput;
-			}
 		}
 		if (innerMostEntry != null) {
 			// special case prj==src and nested output location

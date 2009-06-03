@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2446,10 +2446,6 @@ public final class JavaScriptCore extends Plugin {
 			int rootPathSegmentCounts = packageFragmentRoot.getPath().segmentCount();
 			try {
 				IIncludePathEntry entry = packageFragmentRoot.getRawIncludepathEntry();
-				IPath entryOutputLocation = entry.getOutputLocation();
-				if (entryOutputLocation != null) {
-					outputLocation = entryOutputLocation;
-				}
 			} catch (JavaScriptModelException e) {
 				e.printStackTrace();
 			}

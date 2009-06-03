@@ -475,9 +475,6 @@ public class RenameLinkedMode {
 			case IJavaScriptElement.FIELD:
 				contributionId= IJavaScriptRefactorings.RENAME_FIELD;
 				break;
-			case IJavaScriptElement.TYPE_PARAMETER:
-				contributionId= IJavaScriptRefactorings.RENAME_TYPE_PARAMETER;
-				break;
 			case IJavaScriptElement.LOCAL_VARIABLE:
 				contributionId= IJavaScriptRefactorings.RENAME_LOCAL_VARIABLE;
 				break;

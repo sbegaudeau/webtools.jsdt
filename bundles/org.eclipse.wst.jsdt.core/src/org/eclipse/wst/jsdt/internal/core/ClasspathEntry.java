@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1328,30 +1328,6 @@ public class ClasspathEntry implements IIncludePathEntry {
 			switch(resolvedEntry.getEntryKind()){
 				case IIncludePathEntry.CPE_SOURCE :
 					sourceEntryCount++;
-
-					IPath customOutput;
-					if ((customOutput = resolvedEntry.getOutputLocation()) != null) {
-
-//						if (disableCustomOutputLocations) {
-//							return new JavaModelStatus(IJavaScriptModelStatusConstants.DISABLED_CP_MULTIPLE_OUTPUT_LOCATIONS, javaProject, resolvedEntry.getPath());
-//						}
-						// ensure custom output is in project
-						if (customOutput.isAbsolute()) {
-							if (!javaProject.getPath().isPrefixOf(customOutput)) {
-								return new JavaModelStatus(IJavaScriptModelStatusConstants.PATH_OUTSIDE_PROJECT, javaProject, customOutput.toString());
-							}
-						} else {
-							return new JavaModelStatus(IJavaScriptModelStatusConstants.RELATIVE_PATH, customOutput);
-						}
-
-						// ensure custom output doesn't conflict with other outputs
-						// check exact match
-						if (Util.indexOfMatchingPath(customOutput, outputLocations, outputCount) != -1) {
-							continue; // already found
-						}
-						// accumulate all outputs, will check nesting once all available (to handle ordering issues)
-						outputLocations[outputCount++] = customOutput;
-					}
 			}
 		}
 		// check nesting across output locations

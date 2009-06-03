@@ -73,7 +73,7 @@ public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOpe
 							entry.getPath(),
 							newInclusionPatterns == null ? entry.getInclusionPatterns() : newInclusionPatterns,
 							newExclusionPatterns == null ? entry.getExclusionPatterns() : newExclusionPatterns,
-							entry.getOutputLocation(),
+							null,
 							entry.getExtraAttributes());
 				} else if (newClasspath != null) {
 					newClasspath[newCPIndex++] = entry;

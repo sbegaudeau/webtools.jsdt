@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -130,14 +130,6 @@ public interface IJavaScriptElement extends IAdaptable, ILookupScope{
 	 * A JavaScript element with this type can be safely cast to {@link ILocalVariable}.
 	 */
 	int LOCAL_VARIABLE = 14;
-
-	/**
-	 * Constant representing a type parameter declaration.
-	 * A JavaScript element with this type can be safely cast to {@link ITypeParameter}.
-	 * 
-	 * <b>This type only applies to ECMAScript 4 which is not yet supported</b>
-	 */
-	int TYPE_PARAMETER = 15;
 
 	/**
 	 * Returns whether this JavaScript element exists in the model.

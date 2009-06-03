@@ -25,7 +25,6 @@ import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
@@ -208,8 +207,6 @@ public class RenameJavaElementAction extends SelectionDispatchAction {
 			case IJavaScriptElement.FIELD:
 				final IField field= (IField) element;
 				return RefactoringAvailabilityTester.isRenameFieldAvailable(field);
-			case IJavaScriptElement.TYPE_PARAMETER:
-				return RefactoringAvailabilityTester.isRenameAvailable((ITypeParameter) element);
 			case IJavaScriptElement.LOCAL_VARIABLE:
 				return RefactoringAvailabilityTester.isRenameAvailable((ILocalVariable) element);
 		}

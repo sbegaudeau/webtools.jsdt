@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1681,16 +1681,6 @@ public class DeltaProcessor {
 				for (int i = 0, length = classpath.length; i < length; i++) {
 					IIncludePathEntry entry = classpath[i];
 					IPath entryPath = entry.getPath();
-					IPath output = entry.getOutputLocation();
-					if (output != null) {
-						outputs[outputCount] = output;
-						// check case of src==bin
-						if (entryPath.equals(output)) {
-							traverseModes[outputCount++] = (entry.getEntryKind() == IIncludePathEntry.CPE_SOURCE) ? SOURCE : BINARY;
-						} else {
-							traverseModes[outputCount++] = IGNORE;
-						}
-					}
 
 					// check case of src==bin
 					if (entryPath.equals(projectOutput)) {

@@ -328,24 +328,6 @@ public interface IIncludePathEntry {
 	 */
 	IPath[] getInclusionPatterns();
 
-	/*
-	 * Returns the full path to the specific location where the builder writes
-	 * <code>.class</code> files generated for this source entry
-	 * (entry kind {@link #CPE_SOURCE}).
-	 * <p>
-	 * Source entries can optionally be associated with a specific output location.
-	 * If none is provided, the source entry will be implicitly associated with its project
-	 * default output location (see {@link IJavaScriptProject#getOutputLocation}).
-	 * </p><p>
-	 * NOTE: A specific output location cannot coincidate with another source/library entry.
-	 * </p>
-	 *
-	 * @return the full path to the specific location where the builder writes
-	 * <code>.class</code> files for this source entry, or <code>null</code>
-	 * if using default output folder
-	 */
-	IPath getOutputLocation();
-
 	/**
 	 * Returns the path of this includepath entry.
 	 *

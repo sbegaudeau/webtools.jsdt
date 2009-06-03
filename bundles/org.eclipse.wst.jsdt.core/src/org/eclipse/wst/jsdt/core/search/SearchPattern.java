@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,11 @@
 package org.eclipse.wst.jsdt.core.search;
 
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -39,7 +38,6 @@ import org.eclipse.wst.jsdt.internal.core.search.matching.PackageReferencePatter
 import org.eclipse.wst.jsdt.internal.core.search.matching.QualifiedTypeDeclarationPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.SuperTypeReferencePattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.TypeDeclarationPattern;
-import org.eclipse.wst.jsdt.internal.core.search.matching.TypeParameterPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.TypeReferencePattern;
 
 
@@ -1390,25 +1388,6 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
 					findVarReadAccess,
 					findVarWriteAccess,
 					localVar,
-					matchRule);
-			break;
-		case IJavaScriptElement.TYPE_PARAMETER:
-			ITypeParameter typeParam = (ITypeParameter) element;
-			boolean findParamDeclarations = true;
-			boolean findParamReferences = true;
-			switch (maskedLimitTo) {
-				case IJavaScriptSearchConstants.DECLARATIONS :
-					findParamReferences = false;
-					break;
-				case IJavaScriptSearchConstants.REFERENCES :
-					findParamDeclarations = false;
-					break;
-			}
-			searchPattern =
-				new TypeParameterPattern(
-					findParamDeclarations,
-					findParamReferences,
-					typeParam,
 					matchRule);
 			break;
 		case IJavaScriptElement.METHOD :

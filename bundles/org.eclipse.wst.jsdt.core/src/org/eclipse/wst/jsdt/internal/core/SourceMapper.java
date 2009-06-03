@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1003,20 +1003,6 @@ public class SourceMapper
 					}
 				}
 				break;
-			case IJavaScriptElement.TYPE_PARAMETER :
-				IJavaScriptElement parent = element.getParent();
-				if (parent.getElementType() == IJavaScriptElement.METHOD) {
-					IFunction method = (IFunction) parent;
-					if (method.isBinary()) {
-						IJavaScriptElement[] el = getUnqualifiedMethodHandle(method, false);
-						if(el[1] != null && this.sourceRanges.get(el[0]) == null) {
-							method = (IFunction) getUnqualifiedMethodHandle(method, true)[0];
-						} else {
-							method = (IFunction) el[0];
-						}
-						element = null;
-					}
-				}
 		}
 		SourceRange[] ranges = (SourceRange[]) this.sourceRanges.get(element);
 		if (ranges == null) {
@@ -1070,20 +1056,6 @@ public class SourceMapper
 					}
 				}
 				break;
-			case IJavaScriptElement.TYPE_PARAMETER :
-				IJavaScriptElement parent = element.getParent();
-				if (parent.getElementType() == IJavaScriptElement.METHOD) {
-					IFunction method = (IFunction) parent;
-					if (method.isBinary()) {
-						IJavaScriptElement[] el = getUnqualifiedMethodHandle(method, false);
-						if(el[1] != null && this.sourceRanges.get(el[0]) == null) {
-							method = (IFunction) getUnqualifiedMethodHandle(method, true)[0];
-						} else {
-							method = (IFunction) el[0];
-						}
-						element = null;
-					}
-				}
 		}
 		SourceRange[] ranges = (SourceRange[]) this.sourceRanges.get(element);
 		if (ranges == null) {

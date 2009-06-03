@@ -269,9 +269,6 @@ public class JavaElementImageProvider {
 					
 				case IJavaScriptElement.JAVASCRIPT_MODEL:
 					return JavaPluginImages.DESC_OBJS_JAVA_MODEL;
-
-				case IJavaScriptElement.TYPE_PARAMETER:
-					return JavaPluginImages.DESC_OBJS_LOCAL_VARIABLE;
 					
 				default:
 					// ignore. Must be a new, yet unknown Java element

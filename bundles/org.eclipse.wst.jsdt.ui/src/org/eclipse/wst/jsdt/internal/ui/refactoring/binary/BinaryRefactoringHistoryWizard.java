@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -102,7 +102,7 @@ public abstract class BinaryRefactoringHistoryWizard extends RefactoringHistoryW
 					final IPath[] filters= new IPath[patterns.length + 1];
 					System.arraycopy(patterns, 0, filters, 0, patterns.length);
 					filters[patterns.length]= path.removeFirstSegments(entry.getPath().segmentCount()).addTrailingSeparator();
-					entries.set(index, JavaScriptCore.newSourceEntry(entry.getPath(), filters, entry.getOutputLocation()));
+					entries.set(index, JavaScriptCore.newSourceEntry(entry.getPath(), filters, null));
 				}
 			}
 		}

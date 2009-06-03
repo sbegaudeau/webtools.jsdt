@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,6 @@ import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.SearchRequestor;
 import org.eclipse.wst.jsdt.core.search.TypeDeclarationMatch;
-import org.eclipse.wst.jsdt.core.search.TypeParameterDeclarationMatch;
 import org.eclipse.wst.jsdt.core.search.TypeParameterReferenceMatch;
 import org.eclipse.wst.jsdt.core.search.TypeReferenceMatch;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
@@ -1508,8 +1507,6 @@ public SearchMatch newDeclarationMatch(
 			return new LocalVariableDeclarationMatch(element, accuracy, offset, length, participant, resource);
 		case IJavaScriptElement.PACKAGE_DECLARATION:
 			return new PackageDeclarationMatch(element, accuracy, offset, length, participant, resource);
-		case IJavaScriptElement.TYPE_PARAMETER:
-			return new TypeParameterDeclarationMatch(element, accuracy, offset, length, participant, resource);
 		default:
 			return null;
 	}
