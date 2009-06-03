@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8200,7 +8200,6 @@ public void test0264() throws JavaScriptModelException {
 		"}");
 
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
-	requestor.setIgnored(CompletionProposal.ANNOTATION_ATTRIBUTE_REF, true);
 	
 	String str = this.workingCopies[0].getSource();
 	String completeBehind = "MyEnum";

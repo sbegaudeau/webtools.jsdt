@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -265,9 +265,6 @@ public class CompletionTestsRequestor2 extends CompletionRequestor {
 			case CompletionProposal.METHOD_NAME_REFERENCE :
 				buffer.append("METHOD_IMPORT"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.ANNOTATION_ATTRIBUTE_REF :
-				buffer.append("ANNOTATION_ATTRIBUTE_REF"); //$NON-NLS-1$
-				break;
 			case CompletionProposal.JSDOC_BLOCK_TAG :
 				buffer.append("JSDOC_BLOCK_TAG"); //$NON-NLS-1$
 				break;
@@ -433,7 +430,6 @@ public class CompletionTestsRequestor2 extends CompletionRequestor {
 			case CompletionProposal.VARIABLE_DECLARATION:
 			case CompletionProposal.POTENTIAL_METHOD_DECLARATION:
 			case CompletionProposal.METHOD_NAME_REFERENCE:
-			case CompletionProposal.ANNOTATION_ATTRIBUTE_REF:
 			case CompletionProposal.JSDOC_BLOCK_TAG :
 			case CompletionProposal.JSDOC_INLINE_TAG :
 			case CompletionProposal.JSDOC_FIELD_REF:
