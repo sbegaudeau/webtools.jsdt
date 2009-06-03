@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.AmbiguousMethodTest;
-import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.AnnotationTest;
 import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.Compliance_1_5;
 import org.eclipse.wst.jsdt.core.tests.junit.extension.TestCase;
 
@@ -33,13 +32,10 @@ public class RunComparableTests extends junit.framework.TestCase {
 		ALL_CLASSES.add(AmbiguousMethodTest.class);
 //		ALL_CLASSES.add(AutoBoxingTest.class);
 		ALL_CLASSES.add(Compliance_1_5.class);
-		ALL_CLASSES.add(GenericTypeTest.class);
 //		ALL_CLASSES.add(ForeachStatementTest.class);
 		ALL_CLASSES.add(StaticImportTest.class);
 		ALL_CLASSES.add(VarargsTest.class);
-		ALL_CLASSES.add(EnumTest.class);
 		ALL_CLASSES.add(MethodVerifyTest.class);
-		ALL_CLASSES.add(AnnotationTest.class);
 //		ALL_CLASSES.add(EnclosingMethodAttributeTest.class);
 		// Reset forgotten subsets tests
 		TestCase.TESTS_PREFIX = null;

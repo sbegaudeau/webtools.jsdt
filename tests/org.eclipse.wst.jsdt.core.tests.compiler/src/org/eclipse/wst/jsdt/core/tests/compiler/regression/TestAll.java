@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -82,7 +82,6 @@ public static Test suite() {
 	ArrayList since_1_5 = new ArrayList();
 	since_1_5.addAll(RunComparableTests.ALL_CLASSES);
 //	since_1_5.add(ClassFileReaderTest_1_5.class);
-	since_1_5.add(GenericTypeSignatureTest.class);
 	since_1_5.add(InternalHexFloatTest.class);
 	since_1_5.add(JavadocTest_1_5.class);
 //	since_1_5.add(BatchCompilerTest.class);
