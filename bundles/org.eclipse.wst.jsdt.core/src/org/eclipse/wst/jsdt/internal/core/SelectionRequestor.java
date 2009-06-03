@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -155,9 +155,7 @@ protected void acceptBinaryMethod(
 			IFunction[] methods = type.findMethods(method);
 			if (methods.length > 1) {
 				for (int i = 0; i < methods.length; i++) {
-					if (areTypeParametersCompatible(methods[i], typeParameterNames, typeParameterBoundNames)) {
-						acceptBinaryMethod(type, method, uniqueKey, isConstructor);
-					}
+					acceptBinaryMethod(type, method, uniqueKey, isConstructor);
 				}
 				return;
 			}
@@ -402,23 +400,6 @@ public void acceptLocalTypeParameter(TypeVariableBinding typeVariableBinding) {
 		}
 	}
 }
-public void acceptLocalMethodTypeParameter(TypeVariableBinding typeVariableBinding) {
-	MethodBinding methodBinding = (MethodBinding)typeVariableBinding.declaringElement;
-	IJavaScriptElement res = findLocalElement(methodBinding.sourceStart());
-	if(res != null && res.getElementType() == IJavaScriptElement.METHOD) {
-		IFunction method = (IFunction) res;
-
-		ITypeParameter typeParameter = method.getTypeParameter(new String(typeVariableBinding.sourceName));
-		if (typeParameter.exists()) {
-			addElement(typeParameter);
-			if(SelectionEngine.DEBUG){
-				System.out.print("SELECTION - accept type parameter("); //$NON-NLS-1$
-				System.out.print(typeParameter.toString());
-				System.out.println(")"); //$NON-NLS-1$
-			}
-		}
-	}
-}
 public void acceptLocalVariable(LocalVariableBinding binding) {
 	LocalDeclaration local = binding.declaration;
 	if (local==null)
@@ -652,10 +633,6 @@ protected void acceptSourceMethod(
 			}
 		}
 
-		if (match && !areTypeParametersCompatible(method, typeParameterNames, typeParameterBoundNames)) {
-			match = false;
-		}
-
 		if (match) {
 			addElement(method);
 			if(SelectionEngine.DEBUG){
@@ -769,21 +746,11 @@ public void acceptMethodTypeParameter(char[] declaringTypePackageName, char[] fi
 				System.out.println(")"); //$NON-NLS-1$
 			}
 		} else {
-			ITypeParameter typeParameter = method.getTypeParameter(new String(typeParameterName));
-			if(typeParameter == null) {
-				addElement(method);
-				if(SelectionEngine.DEBUG){
-					System.out.print("SELECTION - accept method("); //$NON-NLS-1$
-					System.out.print(method.toString());
-					System.out.println(")"); //$NON-NLS-1$
-				}
-			} else {
-				addElement(typeParameter);
-				if(SelectionEngine.DEBUG){
-					System.out.print("SELECTION - accept method type parameter("); //$NON-NLS-1$
-					System.out.print(typeParameter.toString());
-					System.out.println(")"); //$NON-NLS-1$
-				}
+			addElement(method);
+			if(SelectionEngine.DEBUG){
+				System.out.print("SELECTION - accept method("); //$NON-NLS-1$
+				System.out.print(method.toString());
+				System.out.println(")"); //$NON-NLS-1$
 			}
 		}
 	}
@@ -797,45 +764,6 @@ protected void addElement(IJavaScriptElement element) {
 		System.arraycopy(this.elements, 0, this.elements = new IJavaScriptElement[(elementLength*2) + 1], 0, elementLength);
 	}
 	this.elements[++this.elementIndex] = element;
-}
-private boolean areTypeParametersCompatible(IFunction method, char[][] typeParameterNames, char[][][] typeParameterBoundNames) {
-	try {
-		ITypeParameter[] typeParameters = method.getTypeParameters();
-		int length1 = typeParameters == null ? 0 : typeParameters.length;
-		int length2 = typeParameterNames == null ? 0 : typeParameterNames.length;
-		if (length1 != length2) {
-			return false;
-		} else {
-			for (int j = 0; j < length1; j++) {
-				ITypeParameter typeParameter = typeParameters[j];
-				String typeParameterName = typeParameter.getElementName();
-				if (!typeParameterName.equals(new String(typeParameterNames[j]))) {
-					return false;
-				}
-
-				String[] bounds = typeParameter.getBounds();
-				int boundCount = typeParameterBoundNames[j] == null ? 0 : typeParameterBoundNames[j].length;
-
-				if (bounds.length != boundCount) {
-					return false;
-				} else {
-					for (int k = 0; k < boundCount; k++) {
-						String simpleName = Signature.getSimpleName(bounds[k]);
-						int index = simpleName.indexOf('<');
-						if (index != -1) {
-							simpleName = simpleName.substring(0, index);
-						}
-						if (!simpleName.equals(new String(typeParameterBoundNames[j][k]))) {
-							return false;
-						}
-					}
-				}
-			}
-		}
-	} catch (JavaScriptModelException e) {
-		return false;
-	}
-	return true;
 }
 /*
  * findLocalElement() cannot find local variable

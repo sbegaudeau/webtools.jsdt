@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -230,35 +230,7 @@ public class MethodOverrideTester {
 			return false;
 		}
 		
-		if (!hasCompatibleTypeParameters(overriding, overridden)) {
-			return false;
-		}
-		
 		return nParameters == 0 || hasCompatibleParameterTypes(overriding, overridden);
-	}
-
-	private boolean hasCompatibleTypeParameters(IFunction overriding, IFunction overridden) throws JavaScriptModelException {
-		ITypeParameter[] overriddenTypeParameters= overridden.getTypeParameters();
-		ITypeParameter[] overridingTypeParameters= overriding.getTypeParameters();
-		int nOverridingTypeParameters= overridingTypeParameters.length;
-		if (overriddenTypeParameters.length != nOverridingTypeParameters) {
-			return nOverridingTypeParameters == 0;
-		}
-		Substitutions overriddenSubst= getMethodSubstitions(overridden);
-		Substitutions overridingSubst= getMethodSubstitions(overriding);
-		for (int i= 0; i < nOverridingTypeParameters; i++) {
-			String erasure1= overriddenSubst.getErasure(overriddenTypeParameters[i].getElementName());
-			String erasure2= overridingSubst.getErasure(overridingTypeParameters[i].getElementName());
-			if (erasure1 == null || !erasure1.equals(erasure2)) {
-				return false;
-			}
-			// comparing only the erasure is not really correct: Need to compare all bounds, that can be in different order
-			int nBounds= overriddenTypeParameters[i].getBounds().length;
-			if (nBounds > 1 && nBounds != overridingTypeParameters[i].getBounds().length) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	private boolean hasCompatibleParameterTypes(IFunction overriding, IFunction overridden) throws JavaScriptModelException {
@@ -339,17 +311,7 @@ public class MethodOverrideTester {
 		
 		Substitutions s= (Substitutions) fMethodSubstitutions.get(method);
 		if (s == null) {
-			ITypeParameter[] typeParameters= method.getTypeParameters();
-			if (typeParameters.length == 0) {
-				s= Substitutions.EMPTY_SUBST;
-			} else {
-				IType instantiatedType= method.getDeclaringType();
-				s= new Substitutions();
-				for (int i= 0; i < typeParameters.length; i++) {
-					ITypeParameter curr= typeParameters[i];
-					s.addSubstitution(curr.getElementName(), '+' + String.valueOf(i), getTypeParameterErasure(curr, instantiatedType));
-				}
-			}
+			s= Substitutions.EMPTY_SUBST;
 			fMethodSubstitutions.put(method, s);
 		}
 		return s;

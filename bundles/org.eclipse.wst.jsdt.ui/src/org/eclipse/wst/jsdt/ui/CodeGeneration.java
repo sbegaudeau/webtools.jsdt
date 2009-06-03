@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -259,11 +259,10 @@ public class CodeGeneration {
 	public static String getMethodComment(IFunction method, IFunction overridden, String lineDelimiter) throws CoreException {
 		String retType= method.isConstructor() ? null : method.getReturnType();
 		String[] paramNames= method.getParameterNames();
-		String[] typeParameterNames= StubUtility.getTypeParameterNames(method.getTypeParameters());
 		
 		String typeName = (method.getDeclaringType()!=null) ? method.getDeclaringType().getElementName() : ""; //$NON-NLS-1$
 		return StubUtility.getMethodComment(method.getJavaScriptUnit(), typeName,
-			method.getElementName(), paramNames, method.getExceptionTypes(), retType, typeParameterNames, overridden, false, lineDelimiter);
+			method.getElementName(), paramNames, new String[0], retType, new String[0], overridden, false, lineDelimiter);
 	}
 	
 	/**

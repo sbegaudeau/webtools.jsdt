@@ -180,12 +180,6 @@ public class ColoredJavaElementLabels {
 						getTypeParameterSignaturesLabel(typeParameterSigs, flags, result);
 						result.append(' ');
 					}
-				} else if (method.exists()) {
-					ITypeParameter[] typeParameters= method.getTypeParameters();
-					if (typeParameters.length > 0) {
-						getTypeParametersLabel(typeParameters, flags, result);
-						result.append(' ');
-					}
 				}
 			}
 			
@@ -278,7 +272,7 @@ public class ColoredJavaElementLabels {
 					//types= resolvedKey.getThrownExceptions();
 					types = new String[0];
 				} else {
-					types= method.exists() ? method.getExceptionTypes() : new String[0];
+					types= new String[0];
 				}
 				if (types.length > 0) {
 					result.append(" throws "); //$NON-NLS-1$
@@ -298,12 +292,6 @@ public class ColoredJavaElementLabels {
 					if (typeParameterSigs.length > 0) {
 						result.append(' ');
 						getTypeParameterSignaturesLabel(typeParameterSigs, flags, result);
-					}
-				} else if (method.exists()) {
-					ITypeParameter[] typeParameters= method.getTypeParameters();
-					if (typeParameters.length > 0) {
-						result.append(' ');
-						getTypeParametersLabel(typeParameters, flags, result);
 					}
 				}
 				if (getFlag(flags, COLORIZE)) {

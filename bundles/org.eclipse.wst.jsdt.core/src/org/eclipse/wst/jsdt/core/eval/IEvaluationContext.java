@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.core.eval;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
-import org.eclipse.wst.jsdt.core.ICompletionRequestor;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
@@ -101,65 +100,7 @@ public interface IEvaluationContext {
 	 * @return the list of global variables
 	 */
 	public IGlobalVariable[] allVariables();
-	/**
-	 * Performs a code completion at the given position in the given code snippet,
-	 * reporting results to the given completion requestor.
-	 * <p>
-	 * Note that code completion does not involve evaluation.
-	 * <p>
-	 *
-	 * @param codeSnippet the code snippet to complete in
-	 * @param position the character position in the code snippet to complete at,
-	 *   or -1 indicating the beginning of the snippet
-	 * @param requestor the code completion requestor capable of accepting all
-	 *    possible types of completions
-	 * @exception JavaScriptModelException if code completion could not be performed. Reasons include:
-	 *  <ul>
-	 *	  <li>The position specified is less than -1 or is greater than the snippet's
-	 *	    length (INDEX_OUT_OF_BOUNDS)</li>
-	 *  </ul>
-	 *  
-	 * @deprecated Use {@link #codeComplete(String,int,CompletionRequestor)} instead.
-	 */
-	public void codeComplete(
-		String codeSnippet,
-		int position,
-		ICompletionRequestor requestor)
-		throws JavaScriptModelException;
-	/**
-	 * Performs a code completion at the given position in the given code snippet,
-	 * reporting results to the given completion requestor.
-	 * It considers types in the working copies with the given owner first. In other words,
-	 * the owner's working copies will take precedence over their original javascript unit s
-	 * in the workspace.
-	 * <p>
-	 * Note that if a working copy is empty, it will be as if the original compilation
-	 * unit had been deleted.
-	 * </p>
-	 * <p>
-	 * Note that code completion does not involve evaluation.
-	 * <p>
-	 *
-	 * @param codeSnippet the code snippet to complete in
-	 * @param position the character position in the code snippet to complete at,
-	 *   or -1 indicating the beginning of the snippet
-	 * @param requestor the code completion requestor capable of accepting all
-	 *    possible types of completions
-	 * @param owner the owner of working copies that take precedence over their original javascript unit s
-	 * @exception JavaScriptModelException if code completion could not be performed. Reasons include:
-	 *  <ul>
-	 *	  <li>The position specified is less than -1 or is greater than the snippet's
-	 *	    length (INDEX_OUT_OF_BOUNDS)</li>
-	 *  </ul>
-	 *  
-	 * @deprecated Use {@link #codeComplete(String,int,CompletionRequestor,WorkingCopyOwner)} instead.
-	 */
-	public void codeComplete(
-		String codeSnippet,
-		int position,
-		ICompletionRequestor requestor,
-		WorkingCopyOwner owner)
-		throws JavaScriptModelException;
+
 	/**
 	 * Performs a code completion at the given position in the given code snippet,
 	 * reporting results to the given completion requestor.

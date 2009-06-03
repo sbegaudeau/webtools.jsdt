@@ -487,12 +487,6 @@ public class JavaScriptElementLabels {
 						getTypeParameterSignaturesLabel(typeParameterSigs, flags, buf);
 						buf.append(' ');
 					}
-				} else if (method.exists()) {
-					ITypeParameter[] typeParameters= method.getTypeParameters();
-					if (typeParameters.length > 0) {
-						getTypeParametersLabel(typeParameters, flags, buf);
-						buf.append(' ');
-					}
 				}
 			}
 			
@@ -595,7 +589,7 @@ public class JavaScriptElementLabels {
 					//types= resolvedKey.getThrownExceptions();
 					types = new String[0];
 				} else {
-					types= method.exists() ? method.getExceptionTypes() : new String[0];
+					types= new String[0];
 				}
 				if (types.length > 0) {
 					buf.append(" throws "); //$NON-NLS-1$
@@ -615,13 +609,7 @@ public class JavaScriptElementLabels {
 						buf.append(' ');
 						getTypeParameterSignaturesLabel(typeParameterSigs, flags, buf);
 					}
-				} else if (method.exists()) {
-					ITypeParameter[] typeParameters= method.getTypeParameters();
-					if (typeParameters.length > 0) {
-						buf.append(' ');
-						getTypeParametersLabel(typeParameters, flags, buf);
-					}
-				}					
+				}
 			}
 			
 			if (getFlag(flags, M_APP_RETURNTYPE) && method.exists() && !method.isConstructor()) {

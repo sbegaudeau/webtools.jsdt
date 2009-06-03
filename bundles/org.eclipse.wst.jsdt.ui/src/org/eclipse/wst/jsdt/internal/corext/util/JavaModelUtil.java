@@ -468,19 +468,6 @@ public final class JavaModelUtil {
 	}
 	
 	/**
-	 * Checks whether the given type has a valid main method or not.
-	 */
-	public static boolean hasMainMethod(IType type) throws JavaScriptModelException {
-		IFunction[] methods= type.getFunctions();
-		for (int i= 0; i < methods.length; i++) {
-			if (methods[i].isMainMethod()) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
 	 * Checks if the field is boolean.
 	 */
 	public static boolean isBoolean(IField field) throws JavaScriptModelException{

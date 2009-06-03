@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -978,7 +978,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 			} else if(enclosingElement instanceof MethodBinding) {
 				MethodBinding enclosingMethod = (MethodBinding) enclosingElement;
 				if (isLocal(enclosingMethod.declaringClass) && this.requestor instanceof SelectionRequestor) {
-					((SelectionRequestor)this.requestor).acceptLocalMethodTypeParameter(typeVariableBinding);
+					//((SelectionRequestor)this.requestor).acceptLocalMethodTypeParameter(typeVariableBinding);
 				} else {
 					this.requestor.acceptMethodTypeParameter(
 						enclosingMethod.declaringClass.qualifiedPackageName(),

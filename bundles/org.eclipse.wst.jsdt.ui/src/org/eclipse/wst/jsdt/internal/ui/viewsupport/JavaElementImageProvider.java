@@ -336,12 +336,7 @@ public class JavaElementImageProvider {
 					flags |= JavaScriptElementImageDescriptor.STATIC;
 				
 				if (Flags.isDeprecated(modifiers))
-					flags |= JavaScriptElementImageDescriptor.DEPRECATED;
-				if (member.getElementType() == IJavaScriptElement.TYPE) {
-					if (JavaModelUtil.hasMainMethod((IType) member)) {
-						flags |= JavaScriptElementImageDescriptor.RUNNABLE;
-					}
-				}				
+					flags |= JavaScriptElementImageDescriptor.DEPRECATED;			
 			} catch (JavaScriptModelException e) {
 				// do nothing. Can't compute runnable adornment or get flags
 			}

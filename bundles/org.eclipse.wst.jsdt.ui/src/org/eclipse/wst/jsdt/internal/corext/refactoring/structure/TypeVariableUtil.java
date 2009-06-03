@@ -128,7 +128,7 @@ public final class TypeVariableUtil {
 			for (int index= 0; index < types.length; index++)
 				extractTypeVariables(types[index], set);
 			extractTypeVariables(method.getReturnType(), set);
-			final String[] arguments= parametersToVariables(((IFunction) member).getTypeParameters());
+			final String[] arguments= parametersToVariables(null);
 			for (int index= 0; index < arguments.length; index++)
 				set.add(arguments[index]);
 			result= new String[set.size()];

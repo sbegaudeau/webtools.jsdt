@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,6 @@ import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
@@ -220,18 +219,6 @@ public class TypeContextChecker {
 		private int appendMethodDeclaration(StringBuffer cuString, String[] types, int parameterCount) throws JavaScriptModelException {
 			if (Flags.isStatic(fMethod.getFlags()))
 				cuString.append("static "); //$NON-NLS-1$
-
-			ITypeParameter[] methodTypeParameters= fMethod.getTypeParameters();
-			if (methodTypeParameters.length != 0) {
-				cuString.append('<');
-				for (int i= 0; i < methodTypeParameters.length; i++) {
-					ITypeParameter typeParameter= methodTypeParameters[i];
-					if (i > 0)
-						cuString.append(',');
-					cuString.append(typeParameter.getElementName());
-				}
-				cuString.append("> "); //$NON-NLS-1$
-			}
 			
 			cuString.append(types[parameterCount]).append(' ');
 			int offsetBeforeMethodName= cuString.length();

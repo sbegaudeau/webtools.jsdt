@@ -768,7 +768,7 @@ public class SourceMapper
 			if (methodInfo.typeParameters != null) {
 				for (int i = 0, length = methodInfo.typeParameters.length; i < length; i++) {
 					TypeParameterInfo typeParameterInfo = methodInfo.typeParameters[i];
-					ITypeParameter typeParameter = method.getTypeParameter(new String(typeParameterInfo.name));
+					ITypeParameter typeParameter = null;
 					setSourceRange(
 						typeParameter,
 						new SourceRange(
@@ -1014,7 +1014,7 @@ public class SourceMapper
 						} else {
 							method = (IFunction) el[0];
 						}
-						element = method.getTypeParameter(element.getElementName());
+						element = null;
 					}
 				}
 		}
@@ -1081,7 +1081,7 @@ public class SourceMapper
 						} else {
 							method = (IFunction) el[0];
 						}
-						element = method.getTypeParameter(element.getElementName());
+						element = null;
 					}
 				}
 		}

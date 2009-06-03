@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -228,10 +228,6 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 			final IType type= (IType) member;
 			if (type.getTypeParameter(name).exists())
 				result.addFatalError(RefactoringCoreMessages.RenameTypeParameterRefactoring_class_type_parameter_already_defined);
-		} else if (member instanceof IFunction) {
-			final IFunction method= (IFunction) member;
-			if (method.getTypeParameter(name).exists())
-				result.addFatalError(RefactoringCoreMessages.RenameTypeParameterRefactoring_method_type_parameter_already_defined);
 		} else {
 			JavaScriptPlugin.logErrorMessage("Unexpected sub-type of IMember: " + member.getClass().getName()); //$NON-NLS-1$
 			Assert.isTrue(false);
@@ -328,8 +324,7 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 			final IType type= (IType) member;
 			return type.getTypeParameter(getNewElementName());
 		} else if (member instanceof IFunction) {
-			final IFunction method= (IFunction) member;
-			return method.getTypeParameter(getNewElementName());
+			return null;
 		} else {
 			JavaScriptPlugin.logErrorMessage("Unexpected sub-type of IMember: " + member.getClass().getName()); //$NON-NLS-1$
 			Assert.isTrue(false);
@@ -358,7 +353,7 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 					return ScriptableRefactoring.createInputFatalStatus(element, getRefactoring().getName(), IJavaScriptRefactorings.RENAME_TYPE_PARAMETER);
 				else {
 					if (element instanceof IFunction)
-						fTypeParameter= ((IFunction) element).getTypeParameter(parameter);
+						fTypeParameter= null;
 					else if (element instanceof IType)
 						fTypeParameter= ((IType) element).getTypeParameter(parameter);
 					else

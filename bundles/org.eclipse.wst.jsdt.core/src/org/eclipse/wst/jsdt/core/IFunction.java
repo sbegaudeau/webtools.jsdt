@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,42 +31,6 @@ public interface IFunction extends IMember {
  * @return the simple name of this method
  */
 String getElementName();
-/**
- * Returns the type signatures of the exceptions this method throws,
- * in the order declared in the source. Returns an empty array
- * if this method throws no exceptions.
- * <p>
- * For example, a source method declaring <code>"throws IOException"</code>,
- * would return the array <code>{"QIOException;"}</code>.
- * </p>
- * <p>
- * The type signatures may be either unresolved (for source types)
- * or resolved (for binary types), and either basic (for basic types)
- * or rich (for parameterized types). See {@link Signature} for details.
- * </p>
- *
- * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
- *
- * @exception JavaScriptModelException if this element does not exist or if an
- *      exception occurs while accessing its corresponding resource.
- * @return the type signatures of the exceptions this method throws,
- * in the order declared in the source, an empty array if this method throws no exceptions
- * @see Signature
- */
-String[] getExceptionTypes() throws JavaScriptModelException;
-
-/**
- * Returns the formal type parameters for this method.
- * Returns an empty array if this method has no formal type parameters.
- *
- * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
- *
- * @exception JavaScriptModelException if this element does not exist or if an
- *      exception occurs while accessing its corresponding resource.
- * @return the formal type parameters of this method,
- * in the order declared in the source, an empty array if none
- */
-ITypeParameter[] getTypeParameters() throws JavaScriptModelException;
 /**
  * Returns the number of parameters of this method.
  * This is a handle-only method.
@@ -169,16 +133,6 @@ String getReturnType() throws JavaScriptModelException;
  */
 String getSignature() throws JavaScriptModelException;
 /**
- * Returns the type parameter declared in this method with the given name.
- * This is a handle-only method. The type parameter may or may not exist.
- *
- * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
- *
- * @param name the given simple name
- * @return the type parameter declared in this method with the given name
- */
-ITypeParameter getTypeParameter(String name);
-/**
  * Returns whether this method is a constructor.
  *
  * @exception JavaScriptModelException if this element does not exist or if an
@@ -188,21 +142,6 @@ ITypeParameter getTypeParameter(String name);
  */
 boolean isConstructor() throws JavaScriptModelException;
 
-/*
- * Returns whether this method is a main method.
- * It is a main method if:
- * <ul>
- * <li>its name is equal to <code>"main"</code></li>
- * <li>its return type is <code>void</code></li>
- * <li>it is <code>static</code> and <code>public</code></li>
- * <li>it defines one parameter whose type's simple name is <code>String[]</code></li>
- * </ul>
- *
- * @exception JavaScriptModelException if this element does not exist or if an
- *      exception occurs while accessing its corresponding resource.
- * @return true if this method is a main method, false otherwise
- */
-boolean isMainMethod() throws JavaScriptModelException;
 /**
  * Returns whether this method represents a resolved method.
  * If a method is resoved, its key contains resolved information.

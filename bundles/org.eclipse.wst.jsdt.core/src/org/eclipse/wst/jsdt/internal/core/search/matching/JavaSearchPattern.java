@@ -106,22 +106,6 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 	 * and type parameters for non-generic ones.
 	 */
 	char[][] extractMethodArguments(IFunction method) {
-		try {
-			ITypeParameter[] parameters = method.getTypeParameters();
-			if (parameters != null) {
-				int length = parameters.length;
-				if (length > 0) {
-					char[][] arguments = new char[length][];
-					for (int i=0; i<length; i++) {
-						arguments[i] = Signature.createTypeSignature(parameters[i].getElementName(), false).toCharArray();
-					}
-					return arguments;
-				}
-			}
-		}
-		catch (JavaScriptModelException jme) {
-			// do nothing
-		}
 		return null;
 	}
 

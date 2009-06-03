@@ -162,8 +162,7 @@ public class StubCreator {
 						final IFunction superMethod= superMethods[index];
 						if (superMethod.isConstructor() && !Flags.isPrivate(superMethod.getFlags())) {
 							superConstructor= superMethod;
-							if (superConstructor.getExceptionTypes().length == 0)
-								break;
+							break;
 						}
 					}
 					if (superConstructor != null) {
@@ -198,11 +197,6 @@ public class StubCreator {
 		if (!method.isConstructor()) {
 			fBuffer.append(Signature.toString(returnType));
 			fBuffer.append(" "); //$NON-NLS-1$
-			final ITypeParameter[] parameters= method.getTypeParameters();
-			if (parameters.length > 0) {
-				appendTypeParameters(parameters);
-				fBuffer.append(" "); //$NON-NLS-1$
-			}
 		}
 		fBuffer.append(method.getElementName());
 		fBuffer.append("("); //$NON-NLS-1$
@@ -224,15 +218,6 @@ public class StubCreator {
 			appendMethodParameterName(method, index);
 		}
 		fBuffer.append(")"); //$NON-NLS-1$
-		final String[] exceptionTypes= method.getExceptionTypes();
-		final int exceptionLength= exceptionTypes.length;
-		if (exceptionLength > 0)
-			fBuffer.append(" throws "); //$NON-NLS-1$
-		for (int index= 0; index < exceptionLength; index++) {
-			if (index > 0)
-				fBuffer.append(","); //$NON-NLS-1$
-			fBuffer.append(Signature.toString(exceptionTypes[index]));
-		}
 		if (Flags.isAbstract(flags))
 			fBuffer.append(";"); //$NON-NLS-1$
 		else {
