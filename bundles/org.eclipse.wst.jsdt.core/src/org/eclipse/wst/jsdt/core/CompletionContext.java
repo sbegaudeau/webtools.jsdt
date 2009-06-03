@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,8 +44,8 @@ public final class CompletionContext extends InternalCompletionContext {
 	 * The string literal ends quote can be not present the source.
 	 * <code>"foo"</code> or <code>"foo</code>.
 	 */
-
 	public static final int TOKEN_KIND_STRING_LITERAL = 2;
+	
 	/**
 	 * Tell user whether completion takes place in a jsdoc comment or not.
 	 *

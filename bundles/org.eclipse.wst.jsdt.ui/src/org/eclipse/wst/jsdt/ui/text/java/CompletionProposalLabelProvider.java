@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -565,7 +565,6 @@ public class CompletionProposalLabelProvider {
 				return createJavadocMethodProposalLabel(proposal);
 			case CompletionProposal.PACKAGE_REF:
 				return createPackageProposalLabel(proposal);
-			case CompletionProposal.ANNOTATION_ATTRIBUTE_REF:
 			case CompletionProposal.FIELD_REF:
 				return createLabelWithTypeAndDeclaration(proposal);
 			case CompletionProposal.LOCAL_VARIABLE_REF:
@@ -609,7 +608,6 @@ public class CompletionProposalLabelProvider {
 			case CompletionProposal.METHOD_DECLARATION:
 			case CompletionProposal.METHOD_NAME_REFERENCE:
 			case CompletionProposal.METHOD_REF:
-			case CompletionProposal.ANNOTATION_ATTRIBUTE_REF:
 			case CompletionProposal.POTENTIAL_METHOD_DECLARATION:
 				descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, flags);
 				break;

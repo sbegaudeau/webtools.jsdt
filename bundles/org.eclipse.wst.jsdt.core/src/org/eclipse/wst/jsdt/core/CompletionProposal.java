@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -371,8 +371,6 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * @see #getKind()
 	 */
 	public static final int METHOD_NAME_REFERENCE = 12;
-
-	public static final int ANNOTATION_ATTRIBUTE_REF = 13;
 
 	/**
 	 * Completion is a link reference to a field in a JSdoc text.
@@ -1921,9 +1919,6 @@ public final class CompletionProposal extends InternalCompletionProposal {
 				break;
 			case CompletionProposal.METHOD_NAME_REFERENCE :
 				buffer.append("METHOD_IMPORT"); //$NON-NLS-1$
-				break;
-			case CompletionProposal.ANNOTATION_ATTRIBUTE_REF :
-				buffer.append("ANNOTATION_ATTRIBUTE_REF"); //$NON-NLS-1$
 				break;
 			case CompletionProposal.JSDOC_BLOCK_TAG :
 				buffer.append("JSDOC_BLOCK_TAG"); //$NON-NLS-1$

@@ -347,7 +347,6 @@ public class CompletionProposalCollector extends CompletionRequestor {
 			case CompletionProposal.METHOD_REF:
 			case CompletionProposal.METHOD_NAME_REFERENCE:
 			case CompletionProposal.METHOD_DECLARATION:
-			case CompletionProposal.ANNOTATION_ATTRIBUTE_REF:
 				return baseRelevance + 4;
 			case CompletionProposal.POTENTIAL_METHOD_DECLARATION:
 				return baseRelevance + 4 /* + 99 */;
@@ -410,8 +409,6 @@ public class CompletionProposalCollector extends CompletionRequestor {
 			case CompletionProposal.LOCAL_VARIABLE_REF:
 			case CompletionProposal.VARIABLE_DECLARATION:
 				return createLocalVariableProposal(proposal);
-			case CompletionProposal.ANNOTATION_ATTRIBUTE_REF:
-				return createAnnotationAttributeReferenceProposal(proposal);
 			case CompletionProposal.JSDOC_BLOCK_TAG:
 			case CompletionProposal.JSDOC_PARAM_REF:
 				return createJavadocSimpleProposal(proposal);
@@ -552,7 +549,6 @@ public class CompletionProposalCollector extends CompletionRequestor {
 			case CompletionProposal.METHOD_NAME_REFERENCE:
 			case CompletionProposal.JSDOC_METHOD_REF:
 			case CompletionProposal.METHOD_REF:
-			case CompletionProposal.ANNOTATION_ATTRIBUTE_REF:
 			case CompletionProposal.POTENTIAL_METHOD_DECLARATION:
 			case CompletionProposal.ANONYMOUS_CLASS_DECLARATION:
 			case CompletionProposal.FIELD_REF:
@@ -604,13 +600,6 @@ public class CompletionProposalCollector extends CompletionRequestor {
 		} catch (CoreException e) {
 			JavaScriptPlugin.log(e);
 		}
-	}
-
-	private IJavaCompletionProposal createAnnotationAttributeReferenceProposal(CompletionProposal proposal) {
-		String displayString= fLabelProvider.createLabelWithTypeAndDeclaration(proposal);
-		ImageDescriptor descriptor= fLabelProvider.createMethodImageDescriptor(proposal);
-		String completion= String.valueOf(proposal.getCompletion());
-		return new JavaCompletionProposal(completion, proposal.getReplaceStart(), getLength(proposal), getImage(descriptor), displayString, computeRelevance(proposal));
 	}
 
 	private IJavaCompletionProposal createAnonymousTypeProposal(CompletionProposal proposal) {

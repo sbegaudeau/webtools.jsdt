@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2742,44 +2742,7 @@ public final class CompletionEngine
 		}
 		return argTypes;
 	}
-
-	private void findAnnotationAttributes(char[] token, MemberValuePair[] attributesFound, ReferenceBinding annotation) {
-		MethodBinding[] methods = annotation.availableMethods();
-		nextAttribute: for (int i = 0; i < methods.length; i++) {
-			MethodBinding method = methods[i];
-
-			if(!CharOperation.prefixEquals(token, method.selector, false)
-					&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(token, method.selector))) continue nextAttribute;
-
-			int length = attributesFound == null ? 0 : attributesFound.length;
-			for (int j = 0; j < length; j++) {
-				if(CharOperation.equals(method.selector, attributesFound[j].name, false)) continue nextAttribute;
-			}
-
-			int relevance = computeBaseRelevance();
-			relevance += computeRelevanceForResolution();
-			relevance += computeRelevanceForInterestingProposal(method);
-			relevance += computeRelevanceForCaseMatching(token, method.selector);
-			relevance += computeRelevanceForQualification(false);
-			relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE);
-
-			this.noProposal = false;
-			if(!this.requestor.isIgnored(CompletionProposal.ANNOTATION_ATTRIBUTE_REF)) {
-				CompletionProposal proposal = this.createProposal(CompletionProposal.ANNOTATION_ATTRIBUTE_REF, this.actualCompletionPosition);
-				proposal.setDeclarationSignature(getSignature(method.declaringClass));
-				proposal.setSignature(getSignature(method.returnType));
-				proposal.setName(method.selector);
-				proposal.setCompletion(method.selector);
-				proposal.setFlags(method.modifiers);
-				proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
-				proposal.setRelevance(relevance);
-				this.requestor.accept(proposal);
-				if(DEBUG) {
-					this.printDebug(proposal);
-				}
-			}
-		}
-	}
+	
 	private void findAnonymousType(
 		ReferenceBinding currentType,
 		TypeBinding[] argTypes,
@@ -9273,9 +9236,6 @@ public final class CompletionEngine
 				break;
 			case CompletionProposal.METHOD_NAME_REFERENCE :
 				buffer.append("METHOD_NAME_REFERENCE"); //$NON-NLS-1$
-				break;
-			case CompletionProposal.ANNOTATION_ATTRIBUTE_REF :
-				buffer.append("ANNOTATION_ATTRIBUT_REF"); //$NON-NLS-1$
 				break;
 			case CompletionProposal.FIELD_IMPORT :
 				buffer.append("FIELD_IMPORT"); //$NON-NLS-1$
