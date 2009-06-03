@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -361,24 +361,6 @@ public void testTypeParameter1() throws CoreException {
 	}
 }
 /*
- * Ensure that an ITypeParameter exists if it exists in source.
- */
-public void testTypeParameter2() throws CoreException {
-	try {
-		createJavaProject("P");
-		createFile(
-			"P/X.js", 
-			"public class X {\n" +
-			"  <T extends String> void foo() {}\n" +
-			"}"
-		);
-		ITypeParameter typeParameter = getCompilationUnit("P/X.js").getType("X").getFunction("foo", new String[0]).getTypeParameter("T");
-		assertTrue("Type parameter should exist", typeParameter.exists()); 
-	} finally {
-		deleteProject("P");
-	}
-}
-/*
  * Ensure that an ITypeParameter doesn't exist if it doesn't exist in source.
  */
 public void testTypeParameter3() throws CoreException {
@@ -389,24 +371,6 @@ public void testTypeParameter3() throws CoreException {
 			"public class X<T> {}"
 		);
 		ITypeParameter typeParameter = getCompilationUnit("P/X.js").getType("X").getTypeParameter("U");
-		assertTrue("Type parameter should not exist", !typeParameter.exists()); 
-	} finally {
-		deleteProject("P");
-	}
-}
-/*
- * Ensure that an ITypeParameter doesn't exist if it doesn't exist in source.
- */
-public void testTypeParameter4() throws CoreException {
-	try {
-		createJavaProject("P");
-		createFile(
-			"P/X.js", 
-			"public class X {\n" +
-			"  <T extends String> void foo() {}\n" +
-			"}"
-		);
-		ITypeParameter typeParameter = getCompilationUnit("P/X.js").getType("X").getFunction("foo", new String[0]).getTypeParameter("String");
 		assertTrue("Type parameter should not exist", !typeParameter.exists()); 
 	} finally {
 		deleteProject("P");

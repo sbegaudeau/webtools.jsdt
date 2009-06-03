@@ -699,13 +699,4 @@ public void testTypeParameter1() {
 		"=P/src<p{X.java[X]T",
 		typeParameter);
 }
-/*
- * Tests that a type parameter can be persisted and restored using its memento.
- */
-public void testTypeParameter2() {
-	ITypeParameter typeParameter = getCompilationUnit("/P/src/p/X.js").getType("X").getFunction("foo", new String[0]).getTypeParameter("T");
-	assertMemento(
-		"=P/src<p{X.java[X~foo]T",
-		typeParameter);
-}
 }

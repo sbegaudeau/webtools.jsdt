@@ -242,27 +242,6 @@ public class GetSourceTests extends ModifyingResourceTests {
 	}
 	
 	/*
-	 * Ensures the name range for a type parameter is correct.
-	 */
-	public void testNameRangeTypeParameter2() throws CoreException {
-		try {
-			String cuSource = 
-				"package p;\n" +
-				"public class Y {\n" +
-				"  <T extends String, U extends StringBuffer & Runnable> void foo() {} \n" +
-				"}";
-			createFile("/P/p/Y.js", cuSource);
-			ITypeParameter typeParameter = getCompilationUnit("/P/p/Y.js").getType("Y").getFunction("foo", new String[0]).getTypeParameter("U");
-			assertSourceEquals(
-				"Unexpected source'", 
-				"U", 
-				getNameSource(cuSource, typeParameter));
-		} finally {
-			deleteFile("/P/p/Y.js");
-		}
-	}
-	
-	/*
 	 * Ensures the source for a type parameter is correct.
 	 */
 	public void testTypeParameter1() throws CoreException {
@@ -276,27 +255,6 @@ public class GetSourceTests extends ModifyingResourceTests {
 			assertSourceEquals(
 				"Unexpected source'", 
 				"T extends String", 
-				typeParameter.getSource());
-		} finally {
-			deleteFile("/P/p/Y.js");
-		}
-	}
-
-	/*
-	 * Ensures the source for a type parameter is correct.
-	 */
-	public void testTypeParameter2() throws CoreException {
-		try {
-			String cuSource = 
-				"package p;\n" +
-				"public class Y {\n" +
-				"  <T extends String, U extends StringBuffer & Runnable> void foo() {} \n" +
-				"}";
-			createFile("/P/p/Y.js", cuSource);
-			ITypeParameter typeParameter = getCompilationUnit("/P/p/Y.js").getType("Y").getFunction("foo", new String[0]).getTypeParameter("U");
-			assertSourceEquals(
-				"Unexpected source'", 
-				"U extends StringBuffer & Runnable", 
 				typeParameter.getSource());
 		} finally {
 			deleteFile("/P/p/Y.js");

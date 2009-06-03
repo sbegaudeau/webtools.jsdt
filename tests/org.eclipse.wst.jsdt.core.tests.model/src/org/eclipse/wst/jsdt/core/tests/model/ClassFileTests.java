@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -147,31 +147,6 @@ private IClassFile createClassFile(String contents) throws CoreException, IOExce
 public void testDotName() throws JavaScriptModelException {
 	IType type = getClassFile("/P/X.Y.class").getType();
 	assertEquals("X.Y", type.getElementName());
-}
-
-/*
- * Ensure that the exception types of a binary method are correct.
- */
-public void testExceptionTypes1() throws JavaScriptModelException {
-	IType type = this.jarRoot.getPackageFragment("generic").getClassFile("X.class").getType();
-	IFunction method = type.getFunction("foo", new String[] {"TK;", "TV;"});
-	assertStringsEqual(
-		"Unexpected return type",
-		"Ljava.lang.Exception;\n",
-		method.getExceptionTypes());
-}
-
-/*
- * Ensure that the exception types of a binary method is correct.
- */
-public void testExceptionTypes2() throws JavaScriptModelException {
-	IType type = this.jarRoot.getPackageFragment("generic").getClassFile("X.class").getType();
-	IFunction method = type.getFunction("foo", new String[] {"Lgeneric.X<TT;>;"});
-	assertStringsEqual(
-		"Unexpected return type",
-		"Ljava.lang.RuntimeException;\n" + 
-		"TU;\n",
-		method.getExceptionTypes());
 }
 
 /*
