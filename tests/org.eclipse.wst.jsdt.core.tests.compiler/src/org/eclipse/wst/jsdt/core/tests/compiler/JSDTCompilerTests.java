@@ -17,6 +17,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.tests.compiler.parser.SyntaxErrorTest;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.BasicParserTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.BasicResolveTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.InferTypesTests;
@@ -39,6 +40,7 @@ public JSDTCompilerTests(String testName) {
 	addTestSuite(BasicParserTests.class);
 	addTestSuite(InferTypesTests.class);
 	addTestSuite(BasicResolveTests.class);
+	addTestSuite(SyntaxErrorTest.class);
 }
 public static Test suite() {
 
@@ -48,6 +50,7 @@ public static Test suite() {
 //	standardTests.add(BasicErrorTests.class);
 	standardTests.add(InferTypesTests.class);
 	standardTests.add(BasicResolveTests.class);
+	standardTests.add(SyntaxErrorTest.class);
 	//	// add all javadoc tests
 //	for (int i=0, l=JavadocTest.ALL_CLASSES.size(); i<l; i++) {
 //		standardTests.add(JavadocTest.ALL_CLASSES.get(i));
