@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -607,26 +607,6 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 			"		o.toString();\n" + 
 			"	}\n" + 
 			"}\n"
-		);
-	}
-	public void testJavadocTypeParameterReferences01() throws CoreException {
-		setUpJavadocTypeParameterReferences();
-		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(workingCopies);
-		ITypeParameter typeParam = selectTypeParameter(workingCopies[0], "T1", 2);
-		search(typeParam, REFERENCES, scope);
-		assertSearchResults(
-			"src/b81190/Test.java b81190.Test [T1] EXACT_MATCH INSIDE_JAVADOC\n" + 
-			"src/b81190/Test.java void b81190.Test.generic(U, T1) [T1] EXACT_MATCH OUTSIDE_JAVADOC"
-		);
-	}
-	public void testJavadocTypeParameterReferences02() throws CoreException {
-		setUpJavadocTypeParameterReferences();
-		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(workingCopies);
-		ITypeParameter typeParam = selectTypeParameter(workingCopies[0], "U", 2);
-		search(typeParam, REFERENCES, scope);
-		assertSearchResults(
-			"src/b81190/Test.java void b81190.Test.generic(U, T1) [U] EXACT_MATCH INSIDE_JAVADOC\n" + 
-			"src/b81190/Test.java void b81190.Test.generic(U, T1) [U] EXACT_MATCH OUTSIDE_JAVADOC"
 		);
 	}
 	// Local variables references in Javadoc have been fixed while implementing 81190

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1981,29 +1981,6 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 */
 	protected IType selectType(IJavaScriptUnit unit, String selection, int occurences) throws JavaScriptModelException {
 		return (IType) selectJavaElement(unit, selection, occurences, IJavaScriptElement.TYPE);
-	}
-
-	/**
-	 * Select a type parameter in a compilation unit identified with the first occurence in the source of a given selection.
-	 * @param unit
-	 * @param selection
-	 * @return IType
-	 * @throws JavaScriptModelException
-	 */
-	protected ITypeParameter selectTypeParameter(IJavaScriptUnit unit, String selection) throws JavaScriptModelException {
-		return selectTypeParameter(unit, selection, 1);
-	}
-
-	/**
-	 * Select a type parameter in a compilation unit identified with the nth occurence in the source of a given selection.
-	 * @param unit
-	 * @param selection
-	 * @param occurences
-	 * @return IType
-	 * @throws JavaScriptModelException
-	 */
-	protected ITypeParameter selectTypeParameter(IJavaScriptUnit unit, String selection, int occurences) throws JavaScriptModelException {
-		return (ITypeParameter) selectJavaElement(unit, selection, occurences, IJavaScriptElement.TYPE_PARAMETER);
 	}
 
 	/**

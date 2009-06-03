@@ -2646,7 +2646,7 @@ public void testReadEmptyCustomOutput() throws CoreException {
 		);
 		IIncludePathEntry[] classpath = project.getRawIncludepath();
 		assertEquals("Unexpected classpath length", 1, classpath.length);
-		assertEquals("Unexpected custom output location", new Path("/P"), classpath[0].getOutputLocation());
+		assertEquals("Unexpected custom output location", new Path("/P"), null);
 	} finally {
 		this.deleteProject("P");
 	}

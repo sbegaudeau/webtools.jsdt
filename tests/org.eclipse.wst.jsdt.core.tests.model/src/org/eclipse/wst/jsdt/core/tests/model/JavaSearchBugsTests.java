@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2369,28 +2369,6 @@ public void testBug84727b() throws CoreException {
 	search(methods[1], REFERENCES);
 	assertSearchResults(
 		"src/b84727/X.java void b84727.X.foo() [getXYZ(\"\")] EXACT_MATCH"
-	);
-}
-
-/**
- * Bug 85810: [1.5][search] Missed type parameter reference in implements clause
- * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=85810"
- */
-public void testBug85810() throws CoreException {
-	resultCollector.showRule = true;
-	workingCopies = new IJavaScriptUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b85810/Test.js",
-		"package b85810;\n" + 
-		"public class Test<E> implements In<Test<E>> {\n" + 
-		"	E e;\n" + 
-		"}\n" +
-		"interface In<T> {}\n"
-		);
-	ITypeParameter param = selectTypeParameter(workingCopies[0], "E");
-	search(param, REFERENCES);
-	assertSearchResults(
-		"src/b85810/Test.java b85810.Test [E] EXACT_MATCH\n" + 
-		"src/b85810/Test.java b85810.Test.e [E] EXACT_MATCH"
 	);
 }
 
