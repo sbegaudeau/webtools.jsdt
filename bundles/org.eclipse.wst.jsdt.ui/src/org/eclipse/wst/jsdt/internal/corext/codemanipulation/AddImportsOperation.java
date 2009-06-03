@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -388,16 +388,6 @@ public class AddImportsOperation implements IWorkspaceRunnable {
 	}
 	
 	private boolean isOfKind(TypeNameMatch curr, int typeKinds, boolean is50OrHigher) {
-		int flags= curr.getModifiers();
-		if (Flags.isAnnotation(flags)) {
-			return is50OrHigher && ((typeKinds & SimilarElementsRequestor.ANNOTATIONS) != 0);
-		}
-		if (Flags.isEnum(flags)) {
-			return is50OrHigher && ((typeKinds & SimilarElementsRequestor.ENUMS) != 0);
-		}
-		if (Flags.isInterface(flags)) {
-			return (typeKinds & SimilarElementsRequestor.INTERFACES) != 0;
-		}
 		return (typeKinds & SimilarElementsRequestor.CLASSES) != 0;
 	}
 
@@ -407,7 +397,7 @@ public class AddImportsOperation implements IWorkspaceRunnable {
 		if (Flags.isPrivate(flags)) {
 			return false;
 		}
-		if (Flags.isPublic(flags) || Flags.isProtected(flags)) {
+		if (Flags.isPublic(flags)) {
 			return true;
 		}
 		return curr.getPackageName().equals(fCompilationUnit.getParent().getElementName());

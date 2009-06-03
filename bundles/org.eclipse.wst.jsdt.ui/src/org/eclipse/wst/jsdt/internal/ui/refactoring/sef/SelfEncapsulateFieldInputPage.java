@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -271,18 +271,14 @@ public class SelfEncapsulateFieldInputPage extends UserInputWizardPage {
 
 	private Object[] createData(int visibility) {
 		String pub= RefactoringMessages.SelfEncapsulateFieldInputPage_public; 
-		String pro= RefactoringMessages.SelfEncapsulateFieldInputPage_protected; 
 		String def= RefactoringMessages.SelfEncapsulateFieldInputPage_default; 
 		String priv= RefactoringMessages.SelfEncapsulateFieldInputPage_private; 
 		
 		String[] labels= null;
 		Integer[] data= null;
 		if (Flags.isPrivate(visibility)) {
-			labels= new String[] { pub, pro, def, priv };
-			data= new Integer[] {new Integer(Flags.AccPublic), new Integer(Flags.AccProtected), new Integer(0), new Integer(Flags.AccPrivate) };
-		} else if (Flags.isProtected(visibility)) {
-			labels= new String[] { pub, pro };
-			data= new Integer[] {new Integer(Flags.AccPublic), new Integer(Flags.AccProtected)};
+			labels= new String[] { pub, def, priv };
+			data= new Integer[] {new Integer(Flags.AccPublic), new Integer(0), new Integer(Flags.AccPrivate) };
 		} else {
 			labels= new String[] { pub, def };
 			data= new Integer[] {new Integer(Flags.AccPublic), new Integer(0)};

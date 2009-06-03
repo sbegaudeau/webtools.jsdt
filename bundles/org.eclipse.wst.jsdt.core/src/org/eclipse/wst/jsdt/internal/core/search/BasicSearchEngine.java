@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,12 +20,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
-import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
@@ -463,19 +462,7 @@ public class BasicSearchEngine {
 	boolean match(char patternTypeSuffix, int modifiers) {
 		switch(patternTypeSuffix) {
 			case IIndexConstants.CLASS_SUFFIX :
-				return (modifiers & (Flags.AccAnnotation | Flags.AccInterface | Flags.AccEnum)) == 0;
-			case IIndexConstants.CLASS_AND_INTERFACE_SUFFIX:
-				return (modifiers & (Flags.AccAnnotation | Flags.AccEnum)) == 0;
-			case IIndexConstants.CLASS_AND_ENUM_SUFFIX:
-				return (modifiers & (Flags.AccAnnotation | Flags.AccInterface)) == 0;
-			case IIndexConstants.INTERFACE_SUFFIX :
-				return (modifiers & Flags.AccInterface) != 0;
-			case IIndexConstants.INTERFACE_AND_ANNOTATION_SUFFIX:
-				return (modifiers & (Flags.AccInterface | Flags.AccAnnotation)) != 0;
-			case IIndexConstants.ENUM_SUFFIX :
-				return (modifiers & Flags.AccEnum) != 0;
-			case IIndexConstants.ANNOTATION_TYPE_SUFFIX :
-				return (modifiers & Flags.AccAnnotation) != 0;
+				return modifiers == 0;
 		}
 		return true;
 	}

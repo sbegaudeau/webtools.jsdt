@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.codeassist;
 
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
-import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
@@ -57,48 +56,24 @@ public class CompletionRequestorWrapper extends CompletionRequestor {
 				}
 				break;
 			case CompletionProposal.TYPE_REF:
-				if((proposal.getFlags() & Flags.AccEnum) != 0) {
-					// does not exist for old requestor
-				} else if((proposal.getFlags() & Flags.AccInterface) != 0) {
-					if(DECODE_SIGNATURE) {
-						this.requestor.acceptInterface(
-								proposal.getDeclarationSignature(),
-								Signature.getSignatureSimpleName(proposal.getSignature()),
-								proposal.getCompletion(),
-								proposal.getFlags() & ~Flags.AccInterface,
-								proposal.getReplaceStart(),
-								proposal.getReplaceEnd(),
-								proposal.getRelevance());
-					} else {
-						this.requestor.acceptInterface(
-								proposal.getPackageName() == null ? CharOperation.NO_CHAR : proposal.getPackageName(),
-								proposal.getTypeName(),
-								proposal.getCompletion(),
-								proposal.getFlags() & ~Flags.AccInterface,
-								proposal.getReplaceStart(),
-								proposal.getReplaceEnd(),
-								proposal.getRelevance());
-					}
+				if(DECODE_SIGNATURE) {
+					this.requestor.acceptClass(
+							proposal.getDeclarationSignature(),
+							Signature.getSignatureSimpleName(proposal.getSignature()),
+							proposal.getCompletion(),
+							proposal.getFlags(),
+							proposal.getReplaceStart(),
+							proposal.getReplaceEnd(),
+							proposal.getRelevance());
 				} else {
-					if(DECODE_SIGNATURE) {
-						this.requestor.acceptClass(
-								proposal.getDeclarationSignature(),
-								Signature.getSignatureSimpleName(proposal.getSignature()),
-								proposal.getCompletion(),
-								proposal.getFlags(),
-								proposal.getReplaceStart(),
-								proposal.getReplaceEnd(),
-								proposal.getRelevance());
-					} else {
-						this.requestor.acceptClass(
-								proposal.getPackageName() == null ? CharOperation.NO_CHAR : proposal.getPackageName(),
-								proposal.getTypeName(),
-								proposal.getCompletion(),
-								proposal.getFlags(),
-								proposal.getReplaceStart(),
-								proposal.getReplaceEnd(),
-								proposal.getRelevance());
-					}
+					this.requestor.acceptClass(
+							proposal.getPackageName() == null ? CharOperation.NO_CHAR : proposal.getPackageName(),
+							proposal.getTypeName(),
+							proposal.getCompletion(),
+							proposal.getFlags(),
+							proposal.getReplaceStart(),
+							proposal.getReplaceEnd(),
+							proposal.getRelevance());
 				}
 				break;
 			case CompletionProposal.FIELD_REF:

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -560,7 +560,7 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 			if (!field.exists())
 				continue;
 
-			boolean isAccessible= pulledUpList.contains(field) || deletedList.contains(field) || canBeAccessedFrom(field, destination, hierarchy) || Flags.isEnum(field.getFlags());
+			boolean isAccessible= pulledUpList.contains(field) || deletedList.contains(field) || canBeAccessedFrom(field, destination, hierarchy);
 			if (!isAccessible) {
 				final String message= Messages.format(RefactoringCoreMessages.PullUpRefactoring_field_not_accessible, new String[] { JavaScriptElementLabels.getTextLabel(field, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), JavaScriptElementLabels.getTextLabel(destination, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)});
 				result.addError(message, JavaStatusContext.create(field));
@@ -645,7 +645,7 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 				if (method.getDeclaringType().getPackageFragment().equals(fDestinationType.getPackageFragment())) {
 					if (JdtFlags.isPrivate(method))
 						result.addError(Messages.format(RefactoringCoreMessages.PullUpRefactoring_lower_default_visibility, new String[] { JavaScriptElementLabels.getTextLabel(method, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), JavaScriptElementLabels.getTextLabel(method.getDeclaringType(), JavaScriptElementLabels.ALL_FULLY_QUALIFIED)}), JavaStatusContext.create(method));
-				} else if (!JdtFlags.isPublic(method) && !JdtFlags.isProtected(method))
+				} else if (!JdtFlags.isPublic(method))
 					result.addError(Messages.format(RefactoringCoreMessages.PullUpRefactoring_lower_protected_visibility, new String[] { JavaScriptElementLabels.getTextLabel(method, JavaScriptElementLabels.ALL_FULLY_QUALIFIED), JavaScriptElementLabels.getTextLabel(method.getDeclaringType(), JavaScriptElementLabels.ALL_FULLY_QUALIFIED)}), JavaStatusContext.create(method));
 			}
 		}
@@ -1280,7 +1280,7 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 
 	private BodyDeclaration createNewTypeDeclarationNode(final IType type, final AbstractTypeDeclaration oldType, final JavaScriptUnit declaringCuNode, final TypeVariableMaplet[] mapping, final ASTRewrite rewrite) throws JavaScriptModelException {
 		final IJavaScriptUnit declaringCu= getDeclaringType().getJavaScriptUnit();
-		if (!JdtFlags.isPublic(type) && !JdtFlags.isProtected(type)) {
+		if (!JdtFlags.isPublic(type)) {
 			if (mapping.length > 0)
 				return createPlaceholderForTypeDeclaration(oldType, declaringCu, mapping, rewrite, true);
 

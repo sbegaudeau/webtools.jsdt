@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -353,7 +353,7 @@ public final class JavaModelUtil {
 		int otherflags= member.getFlags();
 		
 		IType declaringType= member.getDeclaringType();
-		if (Flags.isPublic(otherflags) || Flags.isProtected(otherflags) || (declaringType != null && isInterfaceOrAnnotation(declaringType))) {
+		if (Flags.isPublic(otherflags) || (declaringType != null && isInterfaceOrAnnotation(declaringType))) {
 			return true;
 		} else if (Flags.isPrivate(otherflags)) {
 			return false;
@@ -594,15 +594,6 @@ public final class JavaModelUtil {
 		IType superClass= hierarchy.getSuperclass(type);
 		if (superClass != null && (possibleSuperType.equals(superClass) || isSuperType(hierarchy, possibleSuperType, superClass))) {
 			return true;
-		}
-		if (Flags.isInterface(hierarchy.getCachedFlags(possibleSuperType))) {
-			IType[] superInterfaces= hierarchy.getSuperInterfaces(type);
-			for (int i= 0; i < superInterfaces.length; i++) {
-				IType curr= superInterfaces[i];
-				if (possibleSuperType.equals(curr) || isSuperType(hierarchy, possibleSuperType, curr)) {
-					return true;
-				}
-			}
 		}
 		return false;
 	}

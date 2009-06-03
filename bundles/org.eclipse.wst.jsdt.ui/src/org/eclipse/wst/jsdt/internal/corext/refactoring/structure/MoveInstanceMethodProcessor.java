@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1373,7 +1373,7 @@ public final class MoveInstanceMethodProcessor extends MoveProcessor implements 
 		Assert.isNotNull(monitor);
 		Assert.isNotNull(status);
 		try {
-			monitor.beginTask("", 5); //$NON-NLS-1$
+			monitor.beginTask("", 2); //$NON-NLS-1$
 			monitor.setTaskName(RefactoringCoreMessages.MoveInstanceMethodProcessor_checking);
 			final int flags= fMethod.getFlags();
 			if (Flags.isStatic(flags))
@@ -1381,19 +1381,8 @@ public final class MoveInstanceMethodProcessor extends MoveProcessor implements 
 			else if (Flags.isAbstract(flags))
 				status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.MoveInstanceMethodProcessor_single_implementation, JavaStatusContext.create(fMethod)));
 			monitor.worked(1);
-			if (Flags.isNative(flags))
-				status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.MoveInstanceMethodProcessor_no_native_methods, JavaStatusContext.create(fMethod)));
-			monitor.worked(1);
-			if (Flags.isSynchronized(flags))
-				status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.MoveInstanceMethodProcessor_no_synchronized_methods, JavaStatusContext.create(fMethod)));
-			monitor.worked(1);
 			if (fMethod.isConstructor())
 				status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.MoveInstanceMethodProcessor_no_constructors, JavaStatusContext.create(fMethod)));
-			monitor.worked(1);
-//			if (fMethod.getDeclaringType().isAnnotation())
-//				status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.MoveInstanceMethodProcessor_no_annotation, JavaStatusContext.create(fMethod)));
-//			else if (fMethod.getDeclaringType().isInterface())
-//				status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.MoveInstanceMethodProcessor_no_interface, JavaStatusContext.create(fMethod)));
 			monitor.worked(1);
 		} finally {
 			monitor.done();

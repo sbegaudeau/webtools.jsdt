@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,14 +27,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
-import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IIncludePathEntry;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
@@ -555,70 +554,13 @@ public int getCachedFlags(IType type) {
  * @see ITypeHierarchy
  */
 public IType[] getExtendingInterfaces(IType type) {
-	if (!this.isInterface(type)) return NO_TYPE;
-	return getExtendingInterfaces0(type);
-}
-/**
- * Assumes that the type is an interface
- * @see #getExtendingInterfaces
- */
-private IType[] getExtendingInterfaces0(IType extendedInterface) {
-	Iterator iter = this.typeToSuperInterfaces.entrySet().iterator();
-	ArrayList interfaceList = new ArrayList();
-	while (iter.hasNext()) {
-		Map.Entry entry = (Map.Entry) iter.next();
-		IType type = (IType) entry.getKey();
-		if (!this.isInterface(type)) {
-			continue;
-		}
-		IType[] superInterfaces = (IType[]) entry.getValue();
-		if (superInterfaces != null) {
-			for (int i = 0; i < superInterfaces.length; i++) {
-				IType superInterface = superInterfaces[i];
-				if (superInterface.equals(extendedInterface)) {
-					interfaceList.add(type);
-				}
-			}
-		}
-	}
-	IType[] extendingInterfaces = new IType[interfaceList.size()];
-	interfaceList.toArray(extendingInterfaces);
-	return extendingInterfaces;
+	return NO_TYPE;
 }
 /**
  * @see ITypeHierarchy
  */
 public IType[] getImplementingClasses(IType type) {
-	if (!this.isInterface(type)) {
-		return NO_TYPE;
-	}
-	return getImplementingClasses0(type);
-}
-/**
- * Assumes that the type is an interface
- * @see #getImplementingClasses
- */
-private IType[] getImplementingClasses0(IType interfce) {
-
-	Iterator iter = this.typeToSuperInterfaces.entrySet().iterator();
-	ArrayList iMenters = new ArrayList();
-	while (iter.hasNext()) {
-		Map.Entry entry = (Map.Entry) iter.next();
-		IType type = (IType) entry.getKey();
-		if (this.isInterface(type)) {
-			continue;
-		}
-		IType[] types = (IType[]) entry.getValue();
-		for (int i = 0; i < types.length; i++) {
-			IType iFace = types[i];
-			if (iFace.equals(interfce)) {
-				iMenters.add(type);
-			}
-		}
-	}
-	IType[] implementers = new IType[iMenters.size()];
-	iMenters.toArray(implementers);
-	return implementers;
+	return NO_TYPE;
 }
 /**
  * @see ITypeHierarchy
@@ -649,9 +591,6 @@ public IType[] getRootInterfaces() {
  * @see ITypeHierarchy
  */
 public IType[] getSubclasses(IType type) {
-	if (this.isInterface(type)) {
-		return NO_TYPE;
-	}
 	TypeVector vector = (TypeVector)this.typeToSubtypes.get(type);
 	if (vector == null)
 		return NO_TYPE;
@@ -678,9 +617,6 @@ private IType[] getSubtypesForType(IType type) {
  * @see ITypeHierarchy
  */
 public IType getSuperclass(IType type) {
-	if (this.isInterface(type)) {
-		return null;
-	}
 	return (IType) this.classToSuperclass.get(type);
 }
 /**
@@ -1052,18 +988,6 @@ protected boolean isAffectedByOpenable(IJavaScriptElementDelta delta, IJavaScrip
 		}
 	}
 	return false;
-}
-private boolean isInterface(IType type) {
-	int flags = this.getCachedFlags(type);
-	if (flags == -1) {
-		try {
-			return type.isInterface();
-		} catch (JavaScriptModelException e) {
-			return false;
-		}
-	} else {
-		return Flags.isInterface(flags);
-	}
 }
 /**
  * Returns the java project this hierarchy was created in.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -369,8 +369,6 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, Flags.AccPublic);
 				} else if (s.equals(PRIVATE)) {
 					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, Flags.AccPrivate);
-				} else if (s.equals(PROTECTED)) {
-					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, Flags.AccProtected);
 				} else if (s.equals(DEFAULT)) {
 					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, Flags.AccDefault);
 				}

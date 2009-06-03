@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -287,8 +287,6 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		if (result.hasFatalError())
 				return result;
 		result.merge(Checks.checkIfCuBroken(fMethod));
-		if (JdtFlags.isNative(fMethod))
-			result.addError(RefactoringCoreMessages.RenameMethodRefactoring_no_native); 
 		return result;
 	}
 
@@ -473,8 +471,6 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 				result.addFatalError(Messages.format(RefactoringCoreMessages.RenameMethodRefactoring_no_binary, msgData)); 
 			if (method.isReadOnly())
 				result.addFatalError(Messages.format(RefactoringCoreMessages.RenameMethodRefactoring_no_read_only, msgData));
-			if (JdtFlags.isNative(method))
-				result.addError(Messages.format(RefactoringCoreMessages.RenameMethodRefactoring_no_native_1, msgData));
 		}
 		return result;	
 	}

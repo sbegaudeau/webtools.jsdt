@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.ui.util;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
@@ -115,14 +114,6 @@ public class TypeNameMatchLabelProvider extends LabelProvider {
 		} else if (isSet(SHOW_PACKAGE_ONLY)) {
 			return PKG_ICON;
 		} else {
-			int modifiers= ((TypeNameMatch)element).getModifiers();
-			if (Flags.isAnnotation(modifiers)) {
-				return ANNOTATION_ICON;
-			} else if (Flags.isEnum(modifiers)) {
-				return ENUM_ICON;
-			} else if (Flags.isInterface(modifiers)) {
-				return INTERFACE_ICON;
-			}
 			return CLASS_ICON;
 		}
 	}	

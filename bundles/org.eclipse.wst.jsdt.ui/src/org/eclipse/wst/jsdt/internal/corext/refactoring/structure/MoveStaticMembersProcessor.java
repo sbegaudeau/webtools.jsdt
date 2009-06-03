@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -349,8 +349,6 @@ public final class MoveStaticMembersProcessor extends MoveProcessor implements I
 			if (result.hasFatalError())
 				return result;
 			
-			result.merge(checkNativeMovedMethods(new SubProgressMonitor(pm, 1)));
-			
 			if (result.hasFatalError())
 				return result;
 			
@@ -461,8 +459,6 @@ public final class MoveStaticMembersProcessor extends MoveProcessor implements I
 		switch (member.getElementType()) {
 			case IJavaScriptElement.FIELD:
 				if (!(Flags.isPublic(flags) && Flags.isStatic(flags) && Flags.isFinal(flags)))
-					return false;
-				if (Flags.isEnum(flags))
 					return false;
 				VariableDeclarationFragment declaration= ASTNodeSearchUtil.getFieldDeclarationFragmentNode((IField) member, fSource.getRoot());
 				if (declaration != null)
@@ -643,23 +639,6 @@ public final class MoveStaticMembersProcessor extends MoveProcessor implements I
 				return true;
 		}
 		return false;
-	}
-
-	private RefactoringStatus checkNativeMovedMethods(IProgressMonitor pm) throws JavaScriptModelException{
-		pm.beginTask(RefactoringCoreMessages.MoveMembersRefactoring_checking, fMembersToMove.length); 
-		RefactoringStatus result= new RefactoringStatus();
-		for (int i= 0; i < fMembersToMove.length; i++) {
-			if (fMembersToMove[i].getElementType() != IJavaScriptElement.METHOD)
-				continue;
-			if (! JdtFlags.isNative(fMembersToMove[i]))
-				continue;
-			String message= Messages.format(RefactoringCoreMessages.MoveMembersRefactoring_native, 
-				JavaElementUtil.createMethodSignature((IFunction)fMembersToMove[i]));
-			result.addWarning(message, JavaStatusContext.create(fMembersToMove[i]));
-			pm.worked(1);
-		}
-		pm.done();
-		return result;		
 	}
 
 	public Change createChange(IProgressMonitor pm) throws CoreException {

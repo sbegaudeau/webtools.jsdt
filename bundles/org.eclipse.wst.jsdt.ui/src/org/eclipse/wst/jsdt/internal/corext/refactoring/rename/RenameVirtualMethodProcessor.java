@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityT
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStatusContext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TextChangeManager;
-import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 
@@ -139,11 +138,6 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 					result.addError(RefactoringCoreMessages.RenameMethodInInterfaceRefactoring_already_defined, context); 
 				}
 			} else {
-				if (classesDeclareOverridingNativeMethod(hierarchy.getAllSubtypes(declaring))) {
-					result.addError(Messages.format(
-						RefactoringCoreMessages.RenameVirtualMethodRefactoring_requieres_renaming_native,  
-						new String[]{method.getElementName(), "UnsatisfiedLinkError"})); //$NON-NLS-1$
-				}
 	
 				IFunction[] hierarchyMethods= hierarchyDeclaresMethodName(new SubProgressMonitor(pm, 1), hierarchy, method, name);
 				for (int i= 0; i < hierarchyMethods.length; i++) {
@@ -220,18 +214,6 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 	
 	//---- Class checks -------------------------------------
 	
-	private boolean classesDeclareOverridingNativeMethod(IType[] classes) throws CoreException {
-		for (int i= 0; i < classes.length; i++){
-			IFunction[] methods= classes[i].getFunctions();
-			for (int j= 0; j < methods.length; j++){
-				if ((!methods[j].equals(getMethod()))
-					&& (JdtFlags.isNative(methods[j]))
-					&& (null != Checks.findSimilarMethod(getMethod(), new IFunction[]{methods[j]})))
-						return true;
-			}
-		}
-		return false;
-	}
 
 	public RefactoringStatus initialize(RefactoringArguments arguments) {
 		final RefactoringStatus status= super.initialize(arguments);

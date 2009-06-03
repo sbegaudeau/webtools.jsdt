@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -246,8 +246,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	public int F_PUBLIC = Flags.AccPublic;
 	/** Private access flag. See The JavaScript Virtual Machine Specification for more details. */
 	public int F_PRIVATE = Flags.AccPrivate;
-	/**  Protected access flag. See The JavaScript Virtual Machine Specification for more details. */
-	public int F_PROTECTED = Flags.AccProtected;
 	/** Static access flag. See The JavaScript Virtual Machine Specification for more details. */
 	public int F_STATIC = Flags.AccStatic;
 	/** Final access flag. See The JavaScript Virtual Machine Specification for more details. */
@@ -1166,8 +1164,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 			mdf+= F_PUBLIC;
 		} else if (fAccMdfButtons.isSelected(PRIVATE_INDEX)) {
 			mdf+= F_PRIVATE;
-		} else if (fAccMdfButtons.isSelected(PROTECTED_INDEX)) {	
-			mdf+= F_PROTECTED;
 		}
 		if (fOtherMdfButtons.isSelected(ABSTRACT_INDEX)) {	
 			mdf+= F_ABSTRACT;
@@ -1196,8 +1192,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 			fAccMdfButtons.setSelection(PUBLIC_INDEX, true);
 		} else if (Flags.isPrivate(modifiers)) {
 			fAccMdfButtons.setSelection(PRIVATE_INDEX, true);
-		} else if (Flags.isProtected(modifiers)) {
-			fAccMdfButtons.setSelection(PROTECTED_INDEX, true);
 		} else {
 			fAccMdfButtons.setSelection(DEFAULT_INDEX, true);
 		}
@@ -1977,10 +1971,8 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 					IField[] fields = enclosingType.getFields();
 					if (fields.length > 0) {
 						for (int i = 0, max = fields.length; i < max; i++) {
-							if (!fields[i].isEnumConstant()) {
-								sibling = fields[i];
-								break;
-							}
+							sibling = fields[i];
+							break;
 						}
 					}
 				} else {

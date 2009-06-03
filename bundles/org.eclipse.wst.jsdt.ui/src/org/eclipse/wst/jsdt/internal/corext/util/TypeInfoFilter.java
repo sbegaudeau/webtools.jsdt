@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.util;
 
-import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
@@ -63,6 +62,7 @@ public class TypeInfoFilter {
 						return true;
 					}
 					// fall through to prefix match if camel case failed (bug 137244)
+				//$FALL-THROUGH$
 				default:
 					return Strings.startsWithIgnoreCase(text, fPattern);
 			}
@@ -127,8 +127,6 @@ public class TypeInfoFilter {
 
 	private PatternMatcher fPackageMatcher;
 	private PatternMatcher fNameMatcher;
-	
-	private static final int TYPE_MODIFIERS= Flags.AccEnum | Flags.AccAnnotation | Flags.AccInterface;
 	
 	public TypeInfoFilter(String text, IJavaScriptSearchScope scope, int elementKind, ITypeInfoFilterExtension extension) {
 		fText= text;
@@ -251,20 +249,20 @@ public class TypeInfoFilter {
 	private boolean matchesModifiers(TypeNameMatch type) {
 		if (fElementKind == IJavaScriptSearchConstants.TYPE)
 			return true;
-		int modifiers= type.getModifiers() & TYPE_MODIFIERS;
+		int modifiers= type.getModifiers();
 		switch (fElementKind) {
 			case IJavaScriptSearchConstants.CLASS:
 				return modifiers == 0;
 			case IJavaScriptSearchConstants.ANNOTATION_TYPE:
-				return Flags.isAnnotation(modifiers);
+				return false;
 			case IJavaScriptSearchConstants.INTERFACE:
-				return Flags.isInterface(modifiers);
+				return false;
 			case IJavaScriptSearchConstants.ENUM:
-				return Flags.isEnum(modifiers);
+				return false;
 			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE:
-				return modifiers == 0 || Flags.isInterface(modifiers);
+				return modifiers == 0;
 			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
-				return modifiers == 0 || Flags.isEnum(modifiers);
+				return modifiers == 0;
 		}
 		return false;
 	}

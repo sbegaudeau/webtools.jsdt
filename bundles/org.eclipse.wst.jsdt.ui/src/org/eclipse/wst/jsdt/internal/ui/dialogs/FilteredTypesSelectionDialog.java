@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,7 +65,6 @@ import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.SearchPattern;
-import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptConventions;
@@ -1101,8 +1100,6 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 	 */
 	private class TypeItemsFilter extends ItemsFilter {
 
-		private static final int TYPE_MODIFIERS= Flags.AccEnum | Flags.AccAnnotation | Flags.AccInterface;
-
 		private final IJavaScriptSearchScope fScope;
 
 		private final boolean fIsWorkspaceScope;
@@ -1242,20 +1239,20 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 		private boolean matchesModifiers(TypeNameMatch type) {
 			if (fElemKind == IJavaScriptSearchConstants.TYPE)
 				return true;
-			int modifiers= type.getModifiers() & TYPE_MODIFIERS;
+			int modifiers= type.getModifiers();
 			switch (fElemKind) {
 			case IJavaScriptSearchConstants.CLASS:
 				return modifiers == 0;
 			case IJavaScriptSearchConstants.ANNOTATION_TYPE:
-				return Flags.isAnnotation(modifiers);
+				return false;
 			case IJavaScriptSearchConstants.INTERFACE:
-				return Flags.isInterface(modifiers);
+				return false;
 			case IJavaScriptSearchConstants.ENUM:
-				return Flags.isEnum(modifiers);
+				return false;
 			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE:
-				return modifiers == 0 || Flags.isInterface(modifiers);
+				return modifiers == 0;
 			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
-				return modifiers == 0 || Flags.isEnum(modifiers);
+				return modifiers == 0;
 			}
 			return false;
 		}

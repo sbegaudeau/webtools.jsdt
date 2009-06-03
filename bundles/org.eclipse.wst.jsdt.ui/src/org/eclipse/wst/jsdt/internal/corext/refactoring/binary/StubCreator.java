@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,11 +44,7 @@ public class StubCreator {
 	protected void appendEnumConstants(final IType type) throws JavaScriptModelException {
 		final IField[] fields= type.getFields();
 		final List list= new ArrayList(fields.length);
-		for (int index= 0; index < fields.length; index++) {
-			final IField field= fields[index];
-			if (Flags.isEnum(field.getFlags()))
-				list.add(field);
-		}
+		
 		for (int index= 0; index < list.size(); index++) {
 			if (index > 0)
 				fBuffer.append(","); //$NON-NLS-1$
@@ -103,11 +99,8 @@ public class StubCreator {
 			if (!type.isMember())
 				flags&= ~Flags.AccPrivate;
 		}
-		if (Flags.isEnum(flags))
-			flags&= ~Flags.AccFinal;
 		if (kind == IJavaScriptElement.METHOD) {
 			flags&= ~Flags.AccVarargs;
-			flags&= ~Flags.AccBridge;
 		}
 		if (flags != 0)
 			fBuffer.append(Flags.toString(flags));
@@ -121,13 +114,13 @@ public class StubCreator {
 				final IMember child= (IMember) children[index];
 				final int flags= child.getFlags();
 				final boolean isPrivate= Flags.isPrivate(flags);
-				final boolean isDefault= !Flags.isPublic(flags) && !Flags.isProtected(flags) && !isPrivate;
+				final boolean isDefault= !Flags.isPublic(flags) && !isPrivate;
 				final boolean stub= fStubInvisible || (!isPrivate && !isDefault);
 				if (child instanceof IType) {
 					if (stub)
 						appendTypeDeclaration((IType) child, new SubProgressMonitor(monitor, 1));
 				} else if (child instanceof IField) {
-					if (stub && !Flags.isEnum(flags) && !Flags.isSynthetic(flags))
+					if (stub)
 						appendFieldDeclaration((IField) child);
 				} else if (child instanceof IFunction) {
 					final IFunction method= (IFunction) child;
@@ -144,7 +137,6 @@ public class StubCreator {
 					boolean skip= !stub || name.equals("<clinit>"); //$NON-NLS-1$
 					if (method.isConstructor())
 						skip= false;
-					skip= skip || Flags.isSynthetic(flags) || Flags.isBridge(flags);
 					if (!skip)
 						appendMethodDeclaration(method);
 				}
@@ -241,7 +233,7 @@ public class StubCreator {
 				fBuffer.append(","); //$NON-NLS-1$
 			fBuffer.append(Signature.toString(exceptionTypes[index]));
 		}
-		if (Flags.isAbstract(flags) || Flags.isNative(flags))
+		if (Flags.isAbstract(flags))
 			fBuffer.append(";"); //$NON-NLS-1$
 		else {
 			fBuffer.append("{\n"); //$NON-NLS-1$

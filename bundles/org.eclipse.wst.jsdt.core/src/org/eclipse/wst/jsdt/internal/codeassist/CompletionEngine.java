@@ -83,7 +83,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ConditionalExpression;
@@ -1410,7 +1409,6 @@ public final class CompletionEngine
 					&& switchStatement.expression.resolvedType.isEnum()) {
 				if (!this.requestor.isIgnored(CompletionProposal.FIELD_REF)) {
 					this.assistNodeIsEnum = true;
-					this.findEnumConstant(this.completionToken, (SwitchStatement) astNodeParent);
 				}
 			} else if (this.expectedTypesPtr > -1 && this.expectedTypes[0].isAnnotationType()) {
 				findTypesAndPackages(this.completionToken, scope, new ObjectVector());
@@ -2842,74 +2840,6 @@ public final class CompletionEngine
 				this.requestor.accept(proposal);
 				if(DEBUG) {
 					this.printDebug(proposal);
-				}
-			}
-		}
-	}
-	private void findEnumConstant(char[] enumConstantName, SwitchStatement switchStatement) {
-		TypeBinding expressionType = switchStatement.expression.resolvedType;
-		if(expressionType != null && expressionType.isEnum()) {
-			ReferenceBinding enumType = (ReferenceBinding) expressionType;
-
-			CaseStatement[] cases = switchStatement.cases;
-
-			char[][] alreadyUsedConstants = new char[switchStatement.caseCount][];
-			int alreadyUsedConstantCount = 0;
-			for (int i = 0; i < switchStatement.caseCount; i++) {
-				Expression caseExpression = cases[i].constantExpression;
-				if((caseExpression instanceof SingleNameReference)
-						&& (caseExpression.resolvedType != null && caseExpression.resolvedType.isEnum())) {
-					alreadyUsedConstants[alreadyUsedConstantCount++] = ((SingleNameReference)cases[i].constantExpression).token;
-				}
-			}
-
-			FieldBinding[] fields = enumType.fields();
-
-			int enumConstantLength = enumConstantName.length;
-			next : for (int f = fields.length; --f >= 0;) {
-				FieldBinding field = fields[f];
-
-				if (field.isSynthetic()) continue next;
-
-				if ((field.modifiers & Flags.AccEnum) == 0) continue next;
-
-				if (enumConstantLength > field.name.length) continue next;
-
-				if (!CharOperation.prefixEquals(enumConstantName, field.name, false /* ignore case */)
-						&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(enumConstantName, field.name)))	continue next;
-
-				char[] completion = field.name;
-
-				for (int i = 0; i < alreadyUsedConstantCount; i++) {
-					if(CharOperation.equals(alreadyUsedConstants[i], completion)) continue next;
-				}
-
-				int relevance = computeBaseRelevance();
-				relevance += computeRelevanceForInterestingProposal(field);
-				relevance += computeRelevanceForEnum();
-				relevance += computeRelevanceForCaseMatching(enumConstantName, field.name);
-				relevance += computeRelevanceForExpectingType(field.type);
-				relevance += computeRelevanceForQualification(false);
-				relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE);
-
-				this.noProposal = false;
-				if(!this.requestor.isIgnored(CompletionProposal.FIELD_REF)) {
-					CompletionProposal proposal = this.createProposal(CompletionProposal.FIELD_REF, this.actualCompletionPosition);
-					proposal.setDeclarationSignature(getSignature(field.declaringClass));
-					proposal.setSignature(getSignature(field.type));
-					proposal.setDeclarationPackageName(field.declaringClass.qualifiedPackageName());
-					proposal.setDeclarationTypeName(field.declaringClass.qualifiedSourceName());
-					proposal.setPackageName(field.type.qualifiedPackageName());
-					proposal.setTypeName(field.type.qualifiedSourceName());
-					proposal.setName(field.name);
-					proposal.setCompletion(completion);
-					proposal.setFlags(field.modifiers);
-					proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
-					proposal.setRelevance(relevance);
-					this.requestor.accept(proposal);
-					if(DEBUG) {
-						this.printDebug(proposal);
-					}
 				}
 			}
 		}
@@ -9270,8 +9200,6 @@ public final class CompletionEngine
 		buffer.append("\tFlags[");//$NON-NLS-1$
 		int flags = proposal.getFlags();
 		buffer.append(Flags.toString(flags));
-		if((flags & Flags.AccInterface) != 0) buffer.append("interface ");//$NON-NLS-1$
-		if((flags & Flags.AccEnum) != 0) buffer.append("enum ");//$NON-NLS-1$
 		buffer.append("]\n"); //$NON-NLS-1$
 
 		CompletionProposal[] proposals = proposal.getRequiredProposals();

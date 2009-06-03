@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 
@@ -111,9 +110,7 @@ public class TraditionalHierarchyViewer extends TypeHierarchyViewer {
 						res.add(interfaces[i]);
 					}
 				} else {
-					if (Flags.isInterface(hierarchy.getCachedFlags(input))) {
-						res.add(input);
-					} else if (isAnonymousFromInterface(input)) {
+					if (isAnonymousFromInterface(input)) {
 						res.add(hierarchy.getSuperInterfaces(input)[0]);
 					} else {
 						IType[] roots= hierarchy.getRootClasses();
@@ -144,21 +141,10 @@ public class TraditionalHierarchyViewer extends TypeHierarchyViewer {
 						}
 					}
 				} else {
-					boolean isHierarchyOnType= (hierarchy.getType() != null);
-					boolean isClass= !Flags.isInterface(hierarchy.getCachedFlags(type));
-					if (isClass || isHierarchyOnType) {
-						for (int i= 0; i < types.length; i++) {
-							res.add(types[i]);
-						}
-					} else {
-						for (int i= 0; i < types.length; i++) {
-							IType curr= types[i];
-							// no classes implementing interfaces, only if anonymous
-							if (Flags.isInterface(hierarchy.getCachedFlags(curr)) || isAnonymous(curr)) {
-								res.add(curr);
-							}
-						}
+					for (int i= 0; i < types.length; i++) {
+						res.add(types[i]);
 					}
+					
 				}
 			}
 		}

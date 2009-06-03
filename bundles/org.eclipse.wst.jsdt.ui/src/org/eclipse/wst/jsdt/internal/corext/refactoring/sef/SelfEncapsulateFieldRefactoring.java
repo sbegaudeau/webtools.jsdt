@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 
 	public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException {
 		if (fVisibility < 0)
-			fVisibility= (fField.getFlags() & (Flags.AccPublic | Flags.AccProtected | Flags.AccPrivate));
+			fVisibility= (fField.getFlags() & (Flags.AccPublic | Flags.AccPrivate));
 		RefactoringStatus result=  new RefactoringStatus();
 		result.merge(Checks.checkAvailability(fField));
 		if (result.hasFatalError())
@@ -669,8 +669,6 @@ public class SelfEncapsulateFieldRefactoring extends ScriptableRefactoring {
 		int result= 0;
 		if (Flags.isPublic(fVisibility)) 
 			result |= Modifier.PUBLIC;
-		else if (Flags.isProtected(fVisibility)) 
-			result |= Modifier.PROTECTED;
 		else if (Flags.isPrivate(fVisibility))
 			result |= Modifier.PRIVATE;
 		if (JdtFlags.isStatic(fField)) 

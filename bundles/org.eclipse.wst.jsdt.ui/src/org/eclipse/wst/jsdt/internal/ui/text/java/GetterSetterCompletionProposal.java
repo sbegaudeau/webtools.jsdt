@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,6 @@ import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.GetterSetterUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
-import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
@@ -48,16 +47,14 @@ public class GetterSetterCompletionProposal extends JavaTypeCompletionProposal i
 		IFunction[] methods= type.getFunctions();
 		for (int i= 0; i < fields.length; i++) {
 			IField curr= fields[i];
-			if (!JdtFlags.isEnum(curr)) {
-				String getterName= GetterSetterUtil.getGetterName(curr, null);
-				if (getterName.startsWith(prefix) && !hasMethod(methods, getterName) && suggestedMethods.add(getterName)) {
-					result.add(new GetterSetterCompletionProposal(curr, offset, length, true, relevance));
-				}
+			String getterName= GetterSetterUtil.getGetterName(curr, null);
+			if (getterName.startsWith(prefix) && !hasMethod(methods, getterName) && suggestedMethods.add(getterName)) {
+				result.add(new GetterSetterCompletionProposal(curr, offset, length, true, relevance));
+			}
 
-				String setterName= GetterSetterUtil.getSetterName(curr, null);
-				if (setterName.startsWith(prefix) && !hasMethod(methods, setterName) && suggestedMethods.add(setterName)) {
-					result.add(new GetterSetterCompletionProposal(curr, offset, length, false, relevance));
-				}
+			String setterName= GetterSetterUtil.getSetterName(curr, null);
+			if (setterName.startsWith(prefix) && !hasMethod(methods, setterName) && suggestedMethods.add(setterName)) {
+				result.add(new GetterSetterCompletionProposal(curr, offset, length, false, relevance));
 			}
 		}
 	}

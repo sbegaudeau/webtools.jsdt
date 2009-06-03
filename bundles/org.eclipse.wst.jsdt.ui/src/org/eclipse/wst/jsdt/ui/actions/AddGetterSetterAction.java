@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,9 +57,9 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -73,7 +73,6 @@ import org.eclipse.wst.jsdt.internal.corext.codemanipulation.IRequestQuery;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CodeTemplateContextType;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
@@ -240,8 +239,7 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 			return false;
 		int count= 0;
 		for (int index= 0; index < fields.length; index++) {
-			if (!JdtFlags.isEnum(fields[index]))
-				count++;
+			count++;
 		}
 		if (count == 0)
 			MessageDialog.openInformation(getShell(), DIALOG_TITLE, ActionMessages.AddGetterSetterAction_not_applicable); 
@@ -608,9 +606,6 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 	private void setOperationStatusFields(AddGetterSetterOperation op) {
 		// Set the status fields corresponding to the visibility and modifiers set
 		int flags= fVisibility;
-		if (fSynchronized) {
-			flags|= Flags.AccSynchronized;
-		}
 		if (fFinal) {
 			flags|= Flags.AccFinal;
 		}
@@ -750,21 +745,21 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 		for (int i= 0; i < fields.length; i++) {
 			IField field= fields[i];
 			int flags= field.getFlags();
-			if (!Flags.isEnum(flags)) {
-				List l= new ArrayList(2);
-				if (GetterSetterUtil.getGetter(field) == null) {
-					l.add(new GetterSetterEntry(field, true, Flags.isFinal(flags)));
-					incNumEntries();
-				}
-
-				if (GetterSetterUtil.getSetter(field) == null) {
-					l.add(new GetterSetterEntry(field, false, Flags.isFinal(flags)));
-					incNumEntries();
-				}
-
-				if (!l.isEmpty())
-					result.put(field, l.toArray(new GetterSetterEntry[l.size()]));
+			
+			List l= new ArrayList(2);
+			if (GetterSetterUtil.getGetter(field) == null) {
+				l.add(new GetterSetterEntry(field, true, Flags.isFinal(flags)));
+				incNumEntries();
 			}
+
+			if (GetterSetterUtil.getSetter(field) == null) {
+				l.add(new GetterSetterEntry(field, false, Flags.isFinal(flags)));
+				incNumEntries();
+			}
+
+			if (!l.isEmpty())
+				result.put(field, l.toArray(new GetterSetterEntry[l.size()]));
+		
 		}
 		return result;
 	}

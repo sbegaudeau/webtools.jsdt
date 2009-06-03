@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -147,7 +147,6 @@ public class HierarchyLabelProvider extends AppearanceAwareLabelProvider {
 			return new JavaScriptElementImageDescriptor(JavaPluginImages.DESC_OBJS_CLASS, 0, JavaElementImageProvider.BIG_SIZE);
 		}
 		
-		boolean isInterface= Flags.isInterface(flags);
 		boolean isInner= (type.getDeclaringType() != null);
 		
 		ImageDescriptor desc= JavaElementImageProvider.getTypeImageDescriptor(isInner, false, flags, isDifferentScope(type));
@@ -156,7 +155,7 @@ public class HierarchyLabelProvider extends AppearanceAwareLabelProvider {
 		if (Flags.isFinal(flags)) {
 			adornmentFlags |= JavaScriptElementImageDescriptor.FINAL;
 		}
-		if (Flags.isAbstract(flags) && !isInterface) {
+		if (Flags.isAbstract(flags)) {
 			adornmentFlags |= JavaScriptElementImageDescriptor.ABSTRACT;
 		}
 		if (Flags.isStatic(flags)) {

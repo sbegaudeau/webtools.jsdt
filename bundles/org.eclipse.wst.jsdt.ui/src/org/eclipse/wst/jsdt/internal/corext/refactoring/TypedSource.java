@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,19 +19,18 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IImportContainer;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ASTNodeSearchUtil;
@@ -153,28 +152,21 @@ public class TypedSource {
 	}
 
 	private static String getFieldSource(IField field, SourceTuple tuple) throws CoreException {
-		if (Flags.isEnum(field.getFlags())) {
-			String source= field.getSource();
-			if (source != null)
-				return source;
-		} else {
-			if (tuple.node == null) {
-				ASTParser parser= ASTParser.newParser(AST.JLS3);
-				parser.setSource(tuple.unit);
-				tuple.node= (JavaScriptUnit) parser.createAST(null);
-			}
-			FieldDeclaration declaration= ASTNodeSearchUtil.getFieldDeclarationNode(field, tuple.node);
-			if (declaration.fragments().size() == 1)
-				return getSourceOfDeclararationNode(field, tuple.unit);
-			VariableDeclarationFragment declarationFragment= ASTNodeSearchUtil.getFieldDeclarationFragmentNode(field, tuple.node);
-			IBuffer buffer= tuple.unit.getBuffer();
-			StringBuffer buff= new StringBuffer();
-			buff.append(buffer.getText(declaration.getStartPosition(), ((ASTNode) declaration.fragments().get(0)).getStartPosition() - declaration.getStartPosition()));
-			buff.append(buffer.getText(declarationFragment.getStartPosition(), declarationFragment.getLength()));
-			buff.append(";"); //$NON-NLS-1$
-			return buff.toString();
+		if (tuple.node == null) {
+			ASTParser parser= ASTParser.newParser(AST.JLS3);
+			parser.setSource(tuple.unit);
+			tuple.node= (JavaScriptUnit) parser.createAST(null);
 		}
-		return ""; //$NON-NLS-1$
+		FieldDeclaration declaration= ASTNodeSearchUtil.getFieldDeclarationNode(field, tuple.node);
+		if (declaration.fragments().size() == 1)
+			return getSourceOfDeclararationNode(field, tuple.unit);
+		VariableDeclarationFragment declarationFragment= ASTNodeSearchUtil.getFieldDeclarationFragmentNode(field, tuple.node);
+		IBuffer buffer= tuple.unit.getBuffer();
+		StringBuffer buff= new StringBuffer();
+		buff.append(buffer.getText(declaration.getStartPosition(), ((ASTNode) declaration.fragments().get(0)).getStartPosition() - declaration.getStartPosition()));
+		buff.append(buffer.getText(declarationFragment.getStartPosition(), declarationFragment.getLength()));
+		buff.append(";"); //$NON-NLS-1$
+		return buff.toString();
 	}
 
 	private static String getSourceOfDeclararationNode(IJavaScriptElement elem, IJavaScriptUnit cu) throws JavaScriptModelException, CoreException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -204,13 +204,7 @@ public class InterfaceIndicatorLabelDecorator implements ILabelDecorator, ILight
 	}
 
 	private ImageDescriptor getOverlayFromFlags(int flags)  {
-		if (Flags.isAnnotation(flags)) {
-			return JavaPluginImages.DESC_OVR_ANNOTATION;
-		} else if (Flags.isEnum(flags)) {
-			return JavaPluginImages.DESC_OVR_ENUM;
-		} else if (Flags.isInterface(flags)) {
-			return JavaPluginImages.DESC_OVR_INTERFACE;
-		} else if (/* is class */ Flags.isAbstract(flags)) {
+		if (/* is class */ Flags.isAbstract(flags)) {
 			return JavaPluginImages.DESC_OVR_ABSTRACT_CLASS;
 		}
 		return null;

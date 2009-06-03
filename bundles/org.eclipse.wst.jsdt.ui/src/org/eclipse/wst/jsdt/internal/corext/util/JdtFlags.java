@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,17 +59,11 @@ public class JdtFlags {
 			return true;
 		if (isAnonymousType(member))	
 			return true;
-		if (isEnumConstant(member))
-			return true;
 		return Flags.isFinal(member.getFlags());
 	}
 
-	public static boolean isNative(IMember member) throws JavaScriptModelException{
-		return Flags.isNative(member.getFlags());
-	}
-
 	public static boolean isPackageVisible(IMember member) throws JavaScriptModelException{
-		return (! isPrivate(member) && ! isProtected(member) && ! isPublic(member));
+		return (! isPrivate(member) && ! isPublic(member));
 	}
 
 	public static boolean isPackageVisible(BodyDeclaration bodyDeclaration) {
@@ -92,10 +86,6 @@ public class JdtFlags {
 		return Modifier.isPrivate(binding.getModifiers());
 	}
 
-	public static boolean isProtected(IMember member) throws JavaScriptModelException{
-		return Flags.isProtected(member.getFlags());
-	}
-
 	public static boolean isProtected(BodyDeclaration bodyDeclaration) {
 		return Modifier.isProtected(bodyDeclaration.getModifiers());
 	}
@@ -106,8 +96,6 @@ public class JdtFlags {
 
 	public static boolean isPublic(IMember member) throws JavaScriptModelException{
 		if (isInterfaceOrAnnotationMember(member))
-			return true;
-		if (isEnumConstant(member))
 			return true;
 		return Flags.isPublic(member.getFlags());
 	}
@@ -130,8 +118,6 @@ public class JdtFlags {
 			return true;
 		if (member.getElementType() != IJavaScriptElement.METHOD && isInterfaceOrAnnotationMember(member))
 			return true;
-		if (isEnumConstant(member))
-			return true;
 		return Flags.isStatic(member.getFlags());
 	}
 
@@ -145,36 +131,8 @@ public class JdtFlags {
 		return Modifier.isStatic(variableBinding.getModifiers());
 	}
 
-	public static boolean isStrictfp(IMember member) throws JavaScriptModelException{
-		return Flags.isStrictfp(member.getFlags());
-	}
-
-	public static boolean isSynchronized(IMember member) throws JavaScriptModelException{
-		return Flags.isSynchronized(member.getFlags());
-	}
-
-	public static boolean isSynthetic(IMember member) throws JavaScriptModelException{
-		return Flags.isSynthetic(member.getFlags());
-	}
-
-	public static boolean isAnnotation(IMember member) throws JavaScriptModelException{
-		return Flags.isAnnotation(member.getFlags());
-	}
-
-	public static boolean isEnum(IMember member) throws JavaScriptModelException{
-		return Flags.isEnum(member.getFlags());
-	}
-
 	public static boolean isVarargs(IFunction method) throws JavaScriptModelException{
 		return Flags.isVarargs(method.getFlags());
-	}
-
-	public static boolean isTransient(IMember member) throws JavaScriptModelException{
-		return Flags.isTransient(member.getFlags());
-	}
-
-	public static boolean isVolatile(IMember member) throws JavaScriptModelException{
-		return Flags.isVolatile(member.getFlags());
 	}
 	
 	private static boolean isInterfaceOrAnnotationMethod(IMember member) throws JavaScriptModelException {
@@ -212,10 +170,6 @@ public class JdtFlags {
 				member.getDeclaringType() != null &&
 				JavaModelUtil.isInterfaceOrAnnotation((IType)member);
 	}
-	
-	private static boolean isEnumConstant(IMember member) throws JavaScriptModelException {
-		return member.getElementType() == IJavaScriptElement.FIELD && isEnum(member);
-	}
 
 	private static boolean isAnonymousType(IMember member) throws JavaScriptModelException {
 		return member.getElementType() == IJavaScriptElement.TYPE && 
@@ -225,8 +179,6 @@ public class JdtFlags {
 	public static int getVisibilityCode(IMember member) throws JavaScriptModelException {
 		if (isPublic(member))
 			return Modifier.PUBLIC;
-		else if (isProtected(member))
-			return Modifier.PROTECTED;
 		else if (isPackageVisible(member))
 			return Modifier.NONE;
 		else if (isPrivate(member))

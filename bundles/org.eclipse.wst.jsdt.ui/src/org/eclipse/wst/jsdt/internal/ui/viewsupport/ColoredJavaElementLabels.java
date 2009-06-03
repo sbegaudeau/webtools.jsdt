@@ -377,7 +377,7 @@ public class ColoredJavaElementLabels {
 	public static void getFieldLabel(IField field, long flags, ColoredString result) {
 		try {
 			
-			if (getFlag(flags, JavaScriptElementLabels.F_PRE_TYPE_SIGNATURE) && field.exists() && !Flags.isEnum(field.getFlags())) {
+			if (getFlag(flags, JavaScriptElementLabels.F_PRE_TYPE_SIGNATURE) && field.exists()) {
 				if (getFlag(flags, JavaScriptElementLabels.USE_RESOLVED) && field.isResolved()) {
 					getTypeSignatureLabel(new BindingKey(field.getKey()).toSignature(), flags, result);
 				} else {
@@ -393,7 +393,7 @@ public class ColoredJavaElementLabels {
 			}
 			result.append(field.getElementName());
 			
-			if (getFlag(flags, JavaScriptElementLabels.F_APP_TYPE_SIGNATURE) && field.exists() && !Flags.isEnum(field.getFlags())) {
+			if (getFlag(flags, JavaScriptElementLabels.F_APP_TYPE_SIGNATURE) && field.exists()) {
 				int offset= result.length();
 				result.append(JavaScriptElementLabels.DECL_STRING);
 				if (getFlag(flags, JavaScriptElementLabels.USE_RESOLVED) && field.isResolved()) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,12 +47,6 @@ public final class Flags {
 	 */
 	public static final int AccPrivate = ClassFileConstants.AccPrivate;
 	/**
-	 * Protected access flag.  
-	 *
-	 * <b>This flag only applies to ECMAScript 4 which is not yet supported</b>
-	 */
-	public static final int AccProtected = ClassFileConstants.AccProtected;
-	/**
 	 * Static access flag. 
 	 */
 	public static final int AccStatic = ClassFileConstants.AccStatic;
@@ -60,28 +54,6 @@ public final class Flags {
 	 * Final access flag. 
 	 */
 	public static final int AccFinal = ClassFileConstants.AccFinal;
-	/*
-	 * Synchronized access flag.
-	 */
-	public static final int AccSynchronized = ClassFileConstants.AccSynchronized;
-	/*
-	 * Volatile property flag. 
-	 */
-	public static final int AccVolatile = ClassFileConstants.AccVolatile;
-	/*
-	 * Transient property flag. 
-	 */
-	public static final int AccTransient = ClassFileConstants.AccTransient;
-	/*
-	 * Native property flag.
-	 */
-	public static final int AccNative = ClassFileConstants.AccNative;
-	/**
-	 * Interface property flag.
-	 *
-	 * <b>This flag only applies to ECMAScript 4 which is not yet supported</b>
-	 */
-	public static final int AccInterface = ClassFileConstants.AccInterface;
 	/**
 	 * Abstract property flag. 
 	 *
@@ -89,25 +61,15 @@ public final class Flags {
 	 */
 	public static final int AccAbstract = ClassFileConstants.AccAbstract;
 	/**
-	 * Strictfp property flag.  
-	 */
-	public static final int AccStrictfp = ClassFileConstants.AccStrictfp;
-	/**
 	 * Super property flag.  
 	 *
 	 * <b>This flag only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static final int AccSuper = ClassFileConstants.AccSuper;
-	/*
-	 * Synthetic property flag.  
-	 */
-	public static final int AccSynthetic = ClassFileConstants.AccSynthetic;
 	/**
 	 * Deprecated property flag.  
 	 */
 	public static final int AccDeprecated = ClassFileConstants.AccDeprecated;
-
-	public static final int AccBridge = ClassFileConstants.AccBridge;
 
 	/**=
 	 * Varargs method property 
@@ -116,10 +78,6 @@ public final class Flags {
 	 * <b>This flag only applies to ECMAScript 4 which is not yet supported</b>
 	 */
 	public static final int AccVarargs = ClassFileConstants.AccVarargs;
-
-	public static final int AccEnum = ClassFileConstants.AccEnum;
-
-	public static final int AccAnnotation = ClassFileConstants.AccAnnotation;
 
 	/**
 	 * Not instantiable.
@@ -157,26 +115,6 @@ public final class Flags {
 	public static boolean isFinal(int flags) {
 		return (flags & AccFinal) != 0;
 	}
-	/**
-	 * Returns whether the given integer includes the <code>interface</code> modifier.
-	 *
-	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
-	 *
-	 * @param flags the flags
-	 * @return <code>true</code> if the <code>interface</code> modifier is included
-	 */
-	public static boolean isInterface(int flags) {
-		return (flags & AccInterface) != 0;
-	}
-	/*
-	 * Returns whether the given integer includes the <code>native</code> modifier.
-	 *
-	 * @param flags the flags
-	 * @return <code>true</code> if the <code>native</code> modifier is included
-	 */
-	public static boolean isNative(int flags) {
-		return (flags & AccNative) != 0;
-	}
 	/*
 	 * Returns whether the given integer does not include one of the
 	 * <code>public</code>, <code>private</code>, or <code>protected</code> flags.
@@ -187,7 +125,7 @@ public final class Flags {
 	 * @return <code>true</code> if no visibility flag is set
 	 */
 	public static boolean isPackageDefault(int flags) {
-		return (flags & (AccPublic | AccPrivate | AccProtected)) == 0;
+		return (flags & (AccPublic | AccPrivate)) == 0;
 	}
 	/**
 	 * Returns whether the given integer includes the <code>private</code> modifier.
@@ -199,17 +137,6 @@ public final class Flags {
 	 */
 	public static boolean isPrivate(int flags) {
 		return (flags & AccPrivate) != 0;
-	}
-	/**
-	 * Returns whether the given integer includes the <code>protected</code> modifier.
-	 *
-	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
-	 *
-	 * @param flags the flags
-	 * @return <code>true</code> if the <code>protected</code> modifier is included
-	 */
-	public static boolean isProtected(int flags) {
-		return (flags & AccProtected) != 0;
 	}
 	/**
 	 * Returns whether the given integer includes the <code>public</code> modifier.
@@ -242,64 +169,6 @@ public final class Flags {
 	public static boolean isSuper(int flags) {
 		return (flags & AccSuper) != 0;
 	}
-	/*
-	 * Returns whether the given integer includes the <code>strictfp</code> modifier.
-	 *
-	 * @param flags the flags
-	 * @return <code>true</code> if the <code>strictfp</code> modifier is included
-	 */
-	public static boolean isStrictfp(int flags) {
-		return (flags & AccStrictfp) != 0;
-	}
-	/*
-	 * Returns whether the given integer includes the <code>synchronized</code> modifier.
-	 *
-	 * @param flags the flags
-	 * @return <code>true</code> if the <code>synchronized</code> modifier is included
-	 */
-	public static boolean isSynchronized(int flags) {
-		return (flags & AccSynchronized) != 0;
-	}
-	/*
-	 * Returns whether the given integer includes the indication that the
-	 * element is synthetic.
-	 *
-	 * @param flags the flags
-	 * @return <code>true</code> if the element is marked synthetic
-	 */
-	public static boolean isSynthetic(int flags) {
-		return (flags & AccSynthetic) != 0;
-	}
-	/*
-	 * Returns whether the given integer includes the <code>transient</code> modifier.
-	 *
-	 * @param flags the flags
-	 * @return <code>true</code> if the <code>transient</code> modifier is included
-	 */
-	public static boolean isTransient(int flags) {
-		return (flags & AccTransient) != 0;
-	}
-	/*
-	 * Returns whether the given integer includes the <code>volatile</code> modifier.
-	 *
-	 * @param flags the flags
-	 * @return <code>true</code> if the <code>volatile</code> modifier is included
-	 */
-	public static boolean isVolatile(int flags) {
-		return (flags & AccVolatile) != 0;
-	}
-
-	/*
-	 * Returns whether the given integer has the <code>AccBridge</code>
-	 * bit set.
-	 *
-	 * @param flags the flags
-	 * @return <code>true</code> if the <code>AccBridge</code> flag is included
-	 * @see #AccBridge
-	 */
-	public static boolean isBridge(int flags) {
-		return (flags & AccBridge) != 0;
-	}
 
 	/*
 	 * Returns whether the given integer has the <code>AccVarargs</code>
@@ -311,30 +180,6 @@ public final class Flags {
 	 */
 	public static boolean isVarargs(int flags) {
 		return (flags & AccVarargs) != 0;
-	}
-
-	/*
-	 * Returns whether the given integer has the <code>AccEnum</code>
-	 * bit set.
-	 *
-	 * @param flags the flags
-	 * @return <code>true</code> if the <code>AccEnum</code> flag is included
-	 * @see #AccEnum
-	 */
-	public static boolean isEnum(int flags) {
-		return (flags & AccEnum) != 0;
-	}
-
-	/*
-	 * Returns whether the given integer has the <code>AccAnnotation</code>
-	 * bit set.
-	 *
-	 * @param flags the flags
-	 * @return <code>true</code> if the <code>AccAnnotation</code> flag is included
-	 * @see #AccAnnotation
-	 */
-	public static boolean isAnnotation(int flags) {
-		return (flags & AccAnnotation) != 0;
 	}
 
 	/**
@@ -365,8 +210,6 @@ public final class Flags {
 
 		if (isPublic(flags))
 			sb.append("public "); //$NON-NLS-1$
-		if (isProtected(flags))
-			sb.append("protected "); //$NON-NLS-1$
 		if (isPrivate(flags))
 			sb.append("private "); //$NON-NLS-1$
 		if (isStatic(flags))
@@ -375,16 +218,6 @@ public final class Flags {
 			sb.append("abstract "); //$NON-NLS-1$
 		if (isFinal(flags))
 			sb.append("final "); //$NON-NLS-1$
-		if (isNative(flags))
-			sb.append("native "); //$NON-NLS-1$
-		if (isSynchronized(flags))
-			sb.append("synchronized "); //$NON-NLS-1$
-		if (isTransient(flags))
-			sb.append("transient "); //$NON-NLS-1$
-		if (isVolatile(flags))
-			sb.append("volatile "); //$NON-NLS-1$
-		if (isStrictfp(flags))
-			sb.append("strictfp "); //$NON-NLS-1$
 
 		int len = sb.length();
 		if (len == 0)

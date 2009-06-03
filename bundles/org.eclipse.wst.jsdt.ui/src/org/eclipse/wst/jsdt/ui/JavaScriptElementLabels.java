@@ -687,7 +687,7 @@ public class JavaScriptElementLabels {
 	public static void getFieldLabel(IField field, long flags, StringBuffer buf) {
 		try {
 			
-			if (getFlag(flags, F_PRE_TYPE_SIGNATURE) && field.exists() && !Flags.isEnum(field.getFlags())) {
+			if (getFlag(flags, F_PRE_TYPE_SIGNATURE) && field.exists()) {
 				if (getFlag(flags, USE_RESOLVED) && field.isResolved()) {
 					getTypeSignatureLabel(new BindingKey(field.getKey()).toSignature(), flags, buf);
 				} else {
@@ -707,7 +707,7 @@ public class JavaScriptElementLabels {
 			}
 			buf.append(field.getDisplayName());
 			
-			if (getFlag(flags, F_APP_TYPE_SIGNATURE) && field.exists() && !Flags.isEnum(field.getFlags())) {
+			if (getFlag(flags, F_APP_TYPE_SIGNATURE) && field.exists()) {
 				if (field.getTypeSignature()!=null)
 				{
 					buf.append(DECL_STRING);

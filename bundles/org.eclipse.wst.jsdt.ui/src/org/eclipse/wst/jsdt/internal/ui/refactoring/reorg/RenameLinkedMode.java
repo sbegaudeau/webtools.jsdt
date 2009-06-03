@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,11 +49,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
-import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptConventions;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -474,11 +473,7 @@ public class RenameLinkedMode {
 					contributionId= IJavaScriptRefactorings.RENAME_METHOD;
 				break;
 			case IJavaScriptElement.FIELD:
-				IField field= (IField) javaElement;
-				if (field.isEnumConstant())
-					contributionId= IJavaScriptRefactorings.RENAME_ENUM_CONSTANT;
-				else
-					contributionId= IJavaScriptRefactorings.RENAME_FIELD;
+				contributionId= IJavaScriptRefactorings.RENAME_FIELD;
 				break;
 			case IJavaScriptElement.TYPE_PARAMETER:
 				contributionId= IJavaScriptRefactorings.RENAME_TYPE_PARAMETER;

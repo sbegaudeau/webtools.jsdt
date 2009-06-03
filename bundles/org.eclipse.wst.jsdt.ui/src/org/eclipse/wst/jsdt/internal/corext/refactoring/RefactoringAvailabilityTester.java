@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -155,7 +155,7 @@ public final class RefactoringAvailabilityTester {
 	}
 
 	public static boolean isChangeSignatureAvailable(final IFunction method) throws JavaScriptModelException {
-		return Checks.isAvailable(method) && (method.getDeclaringType()==null || !Flags.isAnnotation(method.getDeclaringType().getFlags()));
+		return Checks.isAvailable(method);
 	}
 
 	public static boolean isChangeSignatureAvailable(final IStructuredSelection selection) throws JavaScriptModelException {
@@ -200,9 +200,6 @@ public final class RefactoringAvailabilityTester {
 
 	public static boolean isConvertAnonymousAvailable(final IType type) throws JavaScriptModelException {
 		if (Checks.isAvailable(type)) {
-			final IJavaScriptElement element= type.getParent();
-			if (element instanceof IField && JdtFlags.isEnum((IMember) element))
-				return false;
 			return type.isAnonymous();
 		}
 		return false;
@@ -364,19 +361,15 @@ public final class RefactoringAvailabilityTester {
 		final int type= member.getElementType();
 		if (type != IJavaScriptElement.METHOD && type != IJavaScriptElement.FIELD && type != IJavaScriptElement.TYPE)
 			return false;
-		if (JdtFlags.isEnum(member) && type != IJavaScriptElement.TYPE)
-			return false;
 		if (!Checks.isAvailable(member))
 			return false;
 		if (member instanceof IType) {
-			if (!JdtFlags.isStatic(member) && !JdtFlags.isEnum(member) && !JdtFlags.isAnnotation(member))
+			if (!JdtFlags.isStatic(member))
 				return false;
 		}
 		if (member instanceof IFunction) {
 			final IFunction method= (IFunction) member;
 			if (method.isConstructor())
-				return false;
-			if (JdtFlags.isNative(method))
 				return false;
 			final IType declaring= method.getDeclaringType();
 			if (declaring != null && declaring.isAnnotation())
@@ -438,15 +431,10 @@ public final class RefactoringAvailabilityTester {
 				type= ((IFunction) element).getReturnType();
 			else if (element instanceof IField) {
 				final IField field= (IField) element;
-				if (JdtFlags.isEnum(field))
-					return false;
 				type= field.getTypeSignature();
 			} else if (element instanceof ILocalVariable)
 				return true;
 			else if (element instanceof IType) {
-				final IType clazz= (IType) element;
-				if (JdtFlags.isEnum(clazz))
-					return false;
 				return true;
 			}
 			if (type == null || PrimitiveType.toCode(Signature.toString(type)) != null)
@@ -470,8 +458,8 @@ public final class RefactoringAvailabilityTester {
 				final IField field= (IField) element;
 				if (!field.exists())
 					return false;
-				if (!JdtFlags.isEnum(field))
-					return Checks.isAvailable(field);
+
+				return Checks.isAvailable(field);
 			}
 		}
 		return false;
@@ -541,7 +529,7 @@ public final class RefactoringAvailabilityTester {
 	}
 
 	public static boolean isInlineConstantAvailable(final IField field) throws JavaScriptModelException {
-		return Checks.isAvailable(field) && JdtFlags.isStatic(field) && JdtFlags.isFinal(field) && !JdtFlags.isEnum(field);
+		return Checks.isAvailable(field) && JdtFlags.isStatic(field) && JdtFlags.isFinal(field);
 	}
 
 	public static boolean isInlineConstantAvailable(final IStructuredSelection selection) throws JavaScriptModelException {
@@ -712,8 +700,6 @@ public final class RefactoringAvailabilityTester {
 					return false;
 				if ((element instanceof IPackageDeclaration))
 					return false;
-				if (element instanceof IField && JdtFlags.isEnum((IMember) element))
-					return false;
 			}
 		}
 		return ReorgPolicyFactory.createMovePolicy(resources, elements).canEnable();
@@ -771,8 +757,6 @@ public final class RefactoringAvailabilityTester {
 			return false;
 		final int type= member.getElementType();
 		if (type != IJavaScriptElement.METHOD && type != IJavaScriptElement.FIELD && type != IJavaScriptElement.TYPE)
-			return false;
-		if (JdtFlags.isEnum(member) && type != IJavaScriptElement.TYPE)
 			return false;
 		final IType declaring= member.getDeclaringType();
 		if (declaring == null)
@@ -836,19 +820,15 @@ public final class RefactoringAvailabilityTester {
 		final int type= member.getElementType();
 		if (type != IJavaScriptElement.METHOD && type != IJavaScriptElement.FIELD && type != IJavaScriptElement.TYPE)
 			return false;
-		if (JdtFlags.isEnum(member) && type != IJavaScriptElement.TYPE)
-			return false;
 		if (!Checks.isAvailable(member))
 			return false;
 		if (member instanceof IType) {
-			if (!JdtFlags.isStatic(member) && !JdtFlags.isEnum(member) && !JdtFlags.isAnnotation(member))
+			if (!JdtFlags.isStatic(member))
 				return false;
 		}
 		if (member instanceof IFunction) {
 			final IFunction method= (IFunction) member;
 			if (method.isConstructor())
-				return false;
-			if (JdtFlags.isNative(method))
 				return false;
 			final IType declaring= method.getDeclaringType();
 			if (declaring != null && declaring.isAnnotation())
@@ -904,8 +884,6 @@ public final class RefactoringAvailabilityTester {
 		final int type= member.getElementType();
 		if (type != IJavaScriptElement.METHOD && type != IJavaScriptElement.FIELD)
 			return false;
-		if (JdtFlags.isEnum(member))
-			return false;
 		if (!Checks.isAvailable(member))
 			return false;
 		if (JdtFlags.isStatic(member))
@@ -913,8 +891,6 @@ public final class RefactoringAvailabilityTester {
 		if (type == IJavaScriptElement.METHOD) {
 			final IFunction method= (IFunction) member;
 			if (method.isConstructor())
-				return false;
-			if (JdtFlags.isNative(method))
 				return false;
 			final IType declaring= method.getDeclaringType();
 			if (declaring != null && declaring.isAnnotation())
@@ -928,8 +904,6 @@ public final class RefactoringAvailabilityTester {
 			final IType type= getTopLevelType(members);
 			if (type != null && RefactoringAvailabilityTester.getPushDownMembers(type).length != 0)
 				return true;
-			if (type != null && JdtFlags.isEnum(type))
-				return false;
 			for (int index= 0; index < members.length; index++) {
 				if (!isPushDownAvailable(members[index]))
 					return false;
@@ -1070,7 +1044,7 @@ public final class RefactoringAvailabilityTester {
 	}
 
 	public static boolean isRenameFieldAvailable(final IField field) throws JavaScriptModelException {
-		return Checks.isAvailable(field) && !JdtFlags.isEnum(field);
+		return Checks.isAvailable(field);
 	}
 
 	public static boolean isRenameNonVirtualMethodAvailable(final IFunction method) throws JavaScriptModelException, CoreException {
@@ -1121,14 +1095,14 @@ public final class RefactoringAvailabilityTester {
 	}
 
 	public static boolean isSelfEncapsulateAvailable(IField field) throws JavaScriptModelException {
-		return Checks.isAvailable(field) && !JdtFlags.isEnum(field) && !field.getDeclaringType().isAnnotation();
+		return Checks.isAvailable(field);
 	}
 
 	public static boolean isSelfEncapsulateAvailable(final IStructuredSelection selection) throws JavaScriptModelException {
 		if (selection.size() == 1) {
 			if (selection.getFirstElement() instanceof IField) {
 				final IField field= (IField) selection.getFirstElement();
-				return Checks.isAvailable(field) && !JdtFlags.isEnum(field);
+				return Checks.isAvailable(field);
 			}
 		}
 		return false;

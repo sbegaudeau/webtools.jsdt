@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -161,7 +161,7 @@ public final class MemberVisibilityAdjustor {
 			Assert.isNotNull(rewrite);
 			Assert.isNotNull(root);
 			final int visibility= fKeyword != null ? fKeyword.toFlagValue() : Modifier.NONE;
-			if (fMember instanceof IField && !Flags.isEnum(fMember.getFlags())) {
+			if (fMember instanceof IField) {
 				final VariableDeclarationFragment fragment= ASTNodeSearchUtil.getFieldDeclarationFragmentNode((IField) fMember, root);
 				final FieldDeclaration declaration= (FieldDeclaration) fragment.getParent();
 				if (declaration.fragments().size() == 1)
@@ -401,8 +401,6 @@ public final class MemberVisibilityAdjustor {
 			visibility= Flags.AccPublic;
 		else if (keyword == ModifierKeyword.PRIVATE_KEYWORD)
 			visibility= Flags.AccPrivate;
-		else if (keyword == ModifierKeyword.PROTECTED_KEYWORD)
-			visibility= Flags.AccProtected;
 		return visibility;
 	}
 

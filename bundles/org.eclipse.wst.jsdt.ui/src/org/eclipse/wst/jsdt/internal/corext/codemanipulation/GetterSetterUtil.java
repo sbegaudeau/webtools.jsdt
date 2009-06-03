@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -117,7 +117,6 @@ public class GetterSetterUtil {
 		String argname= StubUtility.suggestArgumentName(project, accessorName, EMPTY);
 
 		boolean isStatic= Flags.isStatic(flags);
-		boolean isSync= Flags.isSynchronized(flags);
 		boolean isFinal= Flags.isFinal(flags);
 
 		String lineDelim= "\n"; // Use default line delimiter, as generated stub has to be formatted anyway //$NON-NLS-1$
@@ -133,8 +132,6 @@ public class GetterSetterUtil {
 		buf.append(' ');	
 		if (isStatic)
 			buf.append("static "); //$NON-NLS-1$
-		if (isSync)
-			buf.append("synchronized "); //$NON-NLS-1$
 		if (isFinal)
 			buf.append("final "); //$NON-NLS-1$				
 			
@@ -178,7 +175,6 @@ public class GetterSetterUtil {
 		IType parentType= field.getDeclaringType();
 		
 		boolean isStatic= Flags.isStatic(flags);
-		boolean isSync= Flags.isSynchronized(flags);
 		boolean isFinal= Flags.isFinal(flags);
 		
 		String typeName= Signature.toString(field.getTypeSignature());
@@ -198,8 +194,6 @@ public class GetterSetterUtil {
 		buf.append(' ');			
 		if (isStatic)
 			buf.append("static "); //$NON-NLS-1$
-		if (isSync)
-			buf.append("synchronized "); //$NON-NLS-1$
 		if (isFinal)
 			buf.append("final "); //$NON-NLS-1$
 			

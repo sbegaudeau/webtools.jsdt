@@ -675,8 +675,7 @@ public class CompletionProposalLabelProvider {
 
 	ImageDescriptor createTypeImageDescriptor(CompletionProposal proposal) {
 		final int flags= proposal.getFlags();
-		boolean isInterfaceOrAnnotation= Flags.isInterface(flags) || Flags.isAnnotation(flags);
-		return decorateImageDescriptor(JavaElementImageProvider.getTypeImageDescriptor(true /* in order to get all visibility decorations */, isInterfaceOrAnnotation, flags, false), proposal);
+		return decorateImageDescriptor(JavaElementImageProvider.getTypeImageDescriptor(true /* in order to get all visibility decorations */, false, flags, false), proposal);
 	}
 
 	ImageDescriptor createFieldImageDescriptor(CompletionProposal proposal) {
@@ -729,11 +728,7 @@ public class CompletionProposalLabelProvider {
 			if (Flags.isStatic(flags))
 				adornments |= JavaScriptElementImageDescriptor.STATIC;
 
-		if (kind == CompletionProposal.METHOD_DECLARATION || kind == CompletionProposal.METHOD_DECLARATION || kind == CompletionProposal.METHOD_NAME_REFERENCE || kind == CompletionProposal.METHOD_REF)
-			if (Flags.isSynchronized(flags))
-				adornments |= JavaScriptElementImageDescriptor.SYNCHRONIZED;
-
-		if (kind == CompletionProposal.TYPE_REF && Flags.isAbstract(flags) && !Flags.isInterface(flags))
+		if (kind == CompletionProposal.TYPE_REF && Flags.isAbstract(flags))
 			adornments |= JavaScriptElementImageDescriptor.ABSTRACT;
 
 		return new JavaScriptElementImageDescriptor(descriptor, adornments, JavaElementImageProvider.SMALL_SIZE);

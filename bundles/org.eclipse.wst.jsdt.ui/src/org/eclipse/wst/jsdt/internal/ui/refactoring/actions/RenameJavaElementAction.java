@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,13 +16,12 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
-import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
@@ -208,10 +207,7 @@ public class RenameJavaElementAction extends SelectionDispatchAction {
 					return RefactoringAvailabilityTester.isRenameAvailable(method);
 			case IJavaScriptElement.FIELD:
 				final IField field= (IField) element;
-				if (Flags.isEnum(field.getFlags()))
-				return RefactoringAvailabilityTester.isRenameEnumConstAvailable(field);
-				else
-					return RefactoringAvailabilityTester.isRenameFieldAvailable(field);
+				return RefactoringAvailabilityTester.isRenameFieldAvailable(field);
 			case IJavaScriptElement.TYPE_PARAMETER:
 				return RefactoringAvailabilityTester.isRenameAvailable((ITypeParameter) element);
 			case IJavaScriptElement.LOCAL_VARIABLE:

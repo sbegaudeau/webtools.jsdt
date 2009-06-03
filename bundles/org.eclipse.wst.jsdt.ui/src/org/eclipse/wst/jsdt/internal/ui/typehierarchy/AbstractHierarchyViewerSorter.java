@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ public abstract class AbstractHierarchyViewerSorter extends ViewerComparator {
 	
 	private static final int OTHER= 1;
 	private static final int CLASS= 2;
-	private static final int INTERFACE= 3;
 	private static final int ANONYM= 4;
 	
 	private JavaScriptElementComparator fNormalSorter;
@@ -57,16 +56,8 @@ public abstract class AbstractHierarchyViewerSorter extends ViewerComparator {
 			if (type.getElementName().length() == 0) {
 				return ANONYM;
 			}
-			try {
-				int flags= getTypeFlags(type);
-				if (Flags.isInterface(flags)) {
-					return INTERFACE;
-				} else {
-					return CLASS;
-				}
-			} catch (JavaScriptModelException e) {
-				// ignore
-			}
+
+			return CLASS;
 		}
 		return OTHER;
 	}
@@ -147,20 +138,6 @@ public abstract class AbstractHierarchyViewerSorter extends ViewerComparator {
 			return 1;
 		} else if (JavaModelUtil.isSuperType(getHierarchy(def2), def1, def2)) {
 			return -1;
-		}
-		// interfaces after classes
-		try {
-			int flags1= getTypeFlags(def1);
-			int flags2= getTypeFlags(def2);
-			if (Flags.isInterface(flags1)) {
-				if (!Flags.isInterface(flags2)) {
-					return 1;
-				}
-			} else if (Flags.isInterface(flags2)) {
-				return -1;
-			}
-		} catch (JavaScriptModelException e) {
-			// ignore
 		}
 		String name1= def1.getElementName();
 		String name2= def2.getElementName();

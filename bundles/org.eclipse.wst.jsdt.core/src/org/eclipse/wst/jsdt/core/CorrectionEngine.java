@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,10 +62,6 @@ public class CorrectionEngine implements ProblemReasons {
 	 * This field is not intended to be used by client.
 	 */
 	protected static final int CLASSES = 0x00000001;
-	/**
-	 * This field is not intended to be used by client.
-	 */
-	protected static final int INTERFACES = 0x00000002;
 	/**
 	 * This field is not intended to be used by client.
 	 */
@@ -161,7 +157,7 @@ public class CorrectionEngine implements ProblemReasons {
 			requestor);
 	}
 
-	/*
+	/**
 	 * Ask the engine to compute a correction for the specified problem
 	 * of the given compilation unit.
 	 * Correction results are answered through a requestor.
@@ -207,7 +203,7 @@ public class CorrectionEngine implements ProblemReasons {
 					argument = arguments[0];
 					break;
 				case IProblem.UndefinedType :
-					this.filter = CLASSES | INTERFACES;
+					this.filter = CLASSES;
 					argument = arguments[0];
 					break;
 
@@ -306,29 +302,26 @@ public class CorrectionEngine implements ProblemReasons {
 		public void accept(CompletionProposal proposal) {
 			switch (proposal.getKind()) {
 				case CompletionProposal.TYPE_REF:
-					int flags = proposal.getFlags();
-					if (!(Flags.isEnum(flags) || Flags.isAnnotation(flags))) {
-						if((CorrectionEngine.this.filter & (CLASSES | INTERFACES)) != 0) {
-							char[] completionName = proposal.getCompletion();
-							CorrectionEngine.this.correctionRequestor.acceptClass(
-								proposal.getDeclarationSignature(),
-								Signature.getSignatureSimpleName(proposal.getSignature()),
-								CharOperation.subarray(completionName, CorrectionEngine.this.prefixLength, completionName.length),
-								proposal.getFlags(),
-								CorrectionEngine.this.correctionStart,
-								CorrectionEngine.this.correctionEnd);
-						} else if((CorrectionEngine.this.filter & IMPORT) != 0) {
-							char[] packageName = proposal.getDeclarationSignature();
-							char[] className = Signature.getSignatureSimpleName(proposal.getSignature());
-							char[] fullName = CharOperation.concat(packageName, className, '.');
-							CorrectionEngine.this.correctionRequestor.acceptClass(
-								packageName,
-								className,
-								CharOperation.subarray(fullName, CorrectionEngine.this.prefixLength, fullName.length),
-								proposal.getFlags(),
-								CorrectionEngine.this.correctionStart,
-								CorrectionEngine.this.correctionEnd);
-						}
+					if((CorrectionEngine.this.filter & CLASSES) != 0) {
+						char[] completionName = proposal.getCompletion();
+						CorrectionEngine.this.correctionRequestor.acceptClass(
+							proposal.getDeclarationSignature(),
+							Signature.getSignatureSimpleName(proposal.getSignature()),
+							CharOperation.subarray(completionName, CorrectionEngine.this.prefixLength, completionName.length),
+							proposal.getFlags(),
+							CorrectionEngine.this.correctionStart,
+							CorrectionEngine.this.correctionEnd);
+					} else if((CorrectionEngine.this.filter & IMPORT) != 0) {
+						char[] packageName = proposal.getDeclarationSignature();
+						char[] className = Signature.getSignatureSimpleName(proposal.getSignature());
+						char[] fullName = CharOperation.concat(packageName, className, '.');
+						CorrectionEngine.this.correctionRequestor.acceptClass(
+							packageName,
+							className,
+							CharOperation.subarray(fullName, CorrectionEngine.this.prefixLength, fullName.length),
+							proposal.getFlags(),
+							CorrectionEngine.this.correctionStart,
+							CorrectionEngine.this.correctionEnd);
 					}
 					break;
 				case CompletionProposal.FIELD_REF:
@@ -388,7 +381,7 @@ public class CorrectionEngine implements ProblemReasons {
 					}
 					break;
 				case CompletionProposal.PACKAGE_REF:
-					if((CorrectionEngine.this.filter & (CLASSES | INTERFACES | IMPORT)) != 0) {
+					if((CorrectionEngine.this.filter & (CLASSES | IMPORT)) != 0) {
 						char[] packageName = proposal.getDeclarationSignature();
 						CorrectionEngine.this.correctionRequestor.acceptPackage(
 							packageName,

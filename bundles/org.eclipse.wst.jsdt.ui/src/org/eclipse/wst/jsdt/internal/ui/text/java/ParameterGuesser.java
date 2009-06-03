@@ -349,19 +349,8 @@ public class ParameterGuesser {
 			if (Flags.isFinal(modifiers))
 				flags |= JavaScriptElementImageDescriptor.FINAL;
 
-			if (Flags.isSynchronized(modifiers))
-				flags |= JavaScriptElementImageDescriptor.SYNCHRONIZED;
-
 			if (Flags.isAbstract(modifiers))
 				flags |= JavaScriptElementImageDescriptor.ABSTRACT;
-			
-			if (isField) {
-				if (Flags.isVolatile(modifiers))
-					flags |= JavaScriptElementImageDescriptor.VOLATILE;
-	
-				if (Flags.isTransient(modifiers))
-					flags |= JavaScriptElementImageDescriptor.TRANSIENT;
-			}
 			
 			return new JavaScriptElementImageDescriptor(descriptor, flags, JavaElementImageProvider.SMALL_SIZE);
 

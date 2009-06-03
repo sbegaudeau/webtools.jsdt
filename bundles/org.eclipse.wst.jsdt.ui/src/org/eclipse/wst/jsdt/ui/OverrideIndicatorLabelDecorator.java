@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -124,9 +124,6 @@ public class OverrideIndicatorLabelDecorator implements ILabelDecorator, ILightw
 				int flags= method.getFlags();
 				if (!method.isConstructor() && !Flags.isPrivate(flags) && !Flags.isStatic(flags)) {
 					int res= getOverrideIndicators(method);
-					if (res != 0 && Flags.isSynchronized(flags)) {
-						return res | JavaScriptElementImageDescriptor.SYNCHRONIZED;
-					}
 					return res;
 				}
 			} catch (JavaScriptModelException e) {
