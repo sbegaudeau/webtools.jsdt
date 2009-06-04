@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,9 +79,8 @@ public class AddToClasspathChange extends JDTChange {
 	
 	public boolean validateClasspath() throws JavaScriptModelException {
 		IJavaScriptProject javaProject= getJavaProject();
-		IPath outputLocation= javaProject.getOutputLocation();
 		IIncludePathEntry[] newClasspathEntries= getNewClasspathEntries();
-		return JavaScriptConventions.validateClasspath(javaProject, newClasspathEntries, outputLocation).isOK();
+		return JavaScriptConventions.validateClasspath(javaProject, newClasspathEntries, null).isOK();
 	}
 	
 	private IIncludePathEntry[] getNewClasspathEntries() throws JavaScriptModelException{

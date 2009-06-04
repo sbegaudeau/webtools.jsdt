@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -271,7 +271,6 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 			if (project.hasNature(JavaScriptCore.NATURE_ID)) {
 				fCurrJProject= JavaScriptCore.create(project);
 				fEntries= fCurrJProject.getRawIncludepath();
-				fOutputLocation= fCurrJProject.getOutputLocation();
 				fProjectStatus.setOK();
 				return;
 			}
@@ -464,7 +463,7 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 				throw new InterruptedException();
 			}
 			
-			fCurrJProject.setRawIncludepath(fNewEntries, fNewOutputLocation, new SubProgressMonitor(monitor, 2));
+			fCurrJProject.setRawIncludepath(fNewEntries, new SubProgressMonitor(monitor, 2));
 	
 			fCreatedRoot= fCurrJProject.getPackageFragmentRoot(folder);
 		} finally {

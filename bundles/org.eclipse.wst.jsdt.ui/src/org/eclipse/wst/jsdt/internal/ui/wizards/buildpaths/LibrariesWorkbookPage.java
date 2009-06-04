@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,6 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
@@ -704,17 +703,6 @@ public class LibrariesWorkbookPage extends BuildPathBasePage {
 	
 	private IPath[] getUsedContainers(CPListElement existing) {
 		ArrayList res= new ArrayList();
-		if (fCurrJProject.exists()) {
-			try {
-				IPath outputLocation= fCurrJProject.getOutputLocation();
-				if (outputLocation != null && outputLocation.segmentCount() > 1) { // != Project
-					res.add(outputLocation);
-				}
-			} catch (JavaScriptModelException e) {
-				// ignore it here, just log
-				JavaScriptPlugin.log(e.getStatus());
-			}
-		}	
 			
 		List cplist= fLibrariesList.getElements();
 		for (int i= 0; i < cplist.size(); i++) {

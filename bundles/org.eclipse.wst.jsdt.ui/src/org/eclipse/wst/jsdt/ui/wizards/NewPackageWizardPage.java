@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -240,17 +239,6 @@ public class NewPackageWizardPage extends NewContainerWizardPage {
 		if (root != null && root.getJavaScriptProject().exists()) {
 			IPackageFragment pack= root.getPackageFragment(packName);
 			try {
-				IPath rootPath= root.getPath();
-				IPath outputPath= root.getJavaScriptProject().getOutputLocation();
-				if (rootPath.isPrefixOf(outputPath) && !rootPath.equals(outputPath)) {
-					// if the bin folder is inside of our root, don't allow to name a package
-					// like the bin folder
-					IPath packagePath= pack.getPath();
-					if (outputPath.isPrefixOf(packagePath)) {
-						status.setError(NewWizardMessages.NewPackageWizardPage_error_IsOutputFolder); 
-						return status;
-					}
-				}		
 				if (pack.exists()) {
 					if (pack.containsJavaResources() || !pack.hasSubpackages()) {
 						status.setError(NewWizardMessages.NewPackageWizardPage_error_PackageExists); 

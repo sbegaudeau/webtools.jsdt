@@ -2431,12 +2431,8 @@ public final class JavaScriptCore extends Plugin {
 				}
 				continue;
 			}
-			IPath outputLocation = null;
-			try {
-				outputLocation = javaProject.getOutputLocation();
-			} catch (JavaScriptModelException e) {
-				// ignore
-			}
+			String outputLocation = "";
+			
 			IJavaScriptElement root = element;
 			while (root != null && root.getElementType() != IJavaScriptElement.PACKAGE_FRAGMENT_ROOT) {
 				root = root.getParent();
@@ -2449,78 +2445,6 @@ public final class JavaScriptCore extends Plugin {
 			} catch (JavaScriptModelException e) {
 				e.printStackTrace();
 			}
-			if (outputLocation == null) continue;
-			IContainer container = (IContainer) project.getWorkspace().getRoot().findMember(outputLocation);
-			switch(element.getElementType()) {
-				case IJavaScriptElement.JAVASCRIPT_UNIT :
-					// get the .class files generated when this element was built
-					IJavaScriptUnit unit = (IJavaScriptUnit) element;
-					getGeneratedResource(unit, container, state, rootPathSegmentCounts, collector);
-					break;
-				case IJavaScriptElement.PACKAGE_FRAGMENT :
-					// collect all the .class files generated when all the units in this package were built
-					IPackageFragment fragment = (IPackageFragment) element;
-					IJavaScriptUnit[] compilationUnits = null;
-					try {
-						compilationUnits = fragment.getJavaScriptUnits();
-					} catch (JavaScriptModelException e) {
-						// ignore
-					}
-					if (compilationUnits == null) continue;
-					for (int j = 0, max2 = compilationUnits.length; j < max2; j++) {
-						getGeneratedResource(compilationUnits[j], container, state, rootPathSegmentCounts, collector);
-					}
-					if (includesNonJavaResources) {
-						// retrieve all non-javaScript resources from the output location using the package fragment path
-						Object[] nonJavaResources = null;
-						try {
-							nonJavaResources = fragment.getNonJavaScriptResources();
-						} catch (JavaScriptModelException e) {
-							// ignore
-						}
-						if (nonJavaResources != null) {
-							addNonJavaScriptResources(nonJavaResources, container, rootPathSegmentCounts, collector);
-						}
-					}
-					break;
-				case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT :
-					// collect all the .class files generated when all the units in this package were built
-					IPackageFragmentRoot fragmentRoot = (IPackageFragmentRoot) element;
-					if (fragmentRoot.isArchive()) continue;
-					IJavaScriptElement[] children = null;
-					try {
-						children = fragmentRoot.getChildren();
-					} catch (JavaScriptModelException e) {
-						// ignore
-					}
-					if (children == null) continue;
-					for (int j = 0, max2 = children.length; j < max2; j++) {
-						fragment = (IPackageFragment) children[j];
-						IJavaScriptUnit[] units = null;
-						try {
-							units = fragment.getJavaScriptUnits();
-						} catch (JavaScriptModelException e) {
-							// ignore
-						}
-						if (units == null) continue;
-						for (int n = 0, max3 = units.length; n < max3; n++) {
-							getGeneratedResource(units[n], container, state, rootPathSegmentCounts, collector);
-						}
-						if (includesNonJavaResources) {
-							// retrieve all non-javaScript resources from the output location using the package fragment path
-							Object[] nonJavaResources = null;
-							try {
-								nonJavaResources = fragment.getNonJavaScriptResources();
-							} catch (JavaScriptModelException e) {
-								// ignore
-							}
-							if (nonJavaResources != null) {
-								addNonJavaScriptResources(nonJavaResources, container, rootPathSegmentCounts, collector);
-							}
-						}
-					}
-					break;
-			}
 		}
 		int size = collector.size();
 		if (size != 0) {
@@ -2530,33 +2454,6 @@ public final class JavaScriptCore extends Plugin {
 		}
 		return NO_GENERATED_RESOURCES;
 	}
-
-	private static void getGeneratedResource(IJavaScriptUnit unit,
-			IContainer container,
-			State state,
-			int rootPathSegmentCounts,
-			ArrayList collector) {
-		IResource resource = unit.getResource();
-		char[][] typeNames = state.getDefinedTypeNamesFor(resource.getProjectRelativePath().toString());
-		if (typeNames != null) {
-			IPath path = unit.getPath().removeFirstSegments(rootPathSegmentCounts).removeLastSegments(1);
-			for (int j = 0, max2 = typeNames.length; j < max2; j++) {
-				IPath localPath = path.append(new String(typeNames[j]) + ".class"); //$NON-NLS-1$
-				IResource member = container.findMember(localPath);
-				if (member != null && member.exists()) {
-					collector.add(member);
-				}
-			}
-		} else {
-			IPath path = unit.getPath().removeFirstSegments(rootPathSegmentCounts).removeLastSegments(1);
-			path = path.append(Util.getNameWithoutJavaLikeExtension(unit.getElementName()) + ".class"); //$NON-NLS-1$
-			IResource member = container.findMember(path);
-			if (member != null && member.exists()) {
-				collector.add(member);
-			}
-		}
-	}
-
 
 	/**
 	 * Returns the single instance of the JavaScript core plug-in runtime class.

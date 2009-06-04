@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -87,7 +87,7 @@ public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOpe
 			if (newCPIndex < newClasspath.length) {
 				System.arraycopy(newClasspath, 0, newClasspath = new IIncludePathEntry[newCPIndex], 0, newCPIndex);
 			}
-			IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(project, newClasspath, project.getOutputLocation());
+			IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(project, newClasspath, null);
 			if (status.isOK())
 				project.setRawIncludepath(newClasspath, progressMonitor);
 			// don't update classpath if status is not ok to avoid JavaScriptModelException (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=129991)

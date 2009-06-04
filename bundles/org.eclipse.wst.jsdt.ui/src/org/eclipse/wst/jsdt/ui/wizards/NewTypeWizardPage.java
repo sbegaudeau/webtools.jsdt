@@ -23,7 +23,6 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -65,11 +64,11 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceRange;
@@ -87,9 +86,9 @@ import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
@@ -111,8 +110,8 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.Resources;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.FilteredTypesSelectionDialog;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.TableTextCellEditor;
@@ -1399,25 +1398,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 		}
 		
 		if (project != null) {
-			if (project.exists() && packName.length() > 0) {
-				try {
-					IPath rootPath= root.getPath();
-					IPath outputPath= project.getOutputLocation();
-					if (rootPath.isPrefixOf(outputPath) && !rootPath.equals(outputPath)) {
-						// if the bin folder is inside of our root, don't allow to name a package
-						// like the bin folder
-						IPath packagePath= rootPath.append(packName.replace('.', '/'));
-						if (outputPath.isPrefixOf(packagePath)) {
-							status.setError(NewWizardMessages.NewTypeWizardPage_error_ClashOutputLocation); 
-							return status;
-						}
-					}
-				} catch (JavaScriptModelException e) {
-					JavaScriptPlugin.log(e);
-					// let pass			
-				}
-			}
-			
 			fCurrPackage= root.getPackageFragment(packName);
 		} else {
 			status.setError(""); //$NON-NLS-1$

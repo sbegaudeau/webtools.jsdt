@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -447,14 +447,6 @@ public class JavadocTreeWizardPage extends JavadocWizardPage {
 				
 				// Not really clear yet what to do here for EFS. See bug
 				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=113233.
-				
-				// However if the output location is not local it is currently
-				// not part of JavaRuntime.computeDefaultRuntimeClassPath either
-				// so it will be simply not added to the result which would be
-				// correct.
-				IResource outputPathFolder= root.findMember(curr.getOutputLocation());
-				if (outputPathFolder != null)
-					outputLocation= outputPathFolder.getLocation();
 
 				String[] classPath= JavaRuntime.computeDefaultRuntimeClassPath(curr);
 				for (int i= 0; i < classPath.length; i++) {

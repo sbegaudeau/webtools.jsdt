@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -632,7 +632,7 @@ public class PasteAction extends SelectionDispatchAction{
 					IIncludePathEntry jreEntry= JavaScriptCore.newContainerEntry(fVMPath);
 					//IPath outputLocation= BuildPathsBlock.getDefaultOutputLocation(javaProject);
 					IIncludePathEntry[] cpes= new IIncludePathEntry[] { srcEntry, jreEntry };
-					javaProject.setRawIncludepath(cpes, null, new SubProgressMonitor(pm, 1));
+					javaProject.setRawIncludepath(cpes, new SubProgressMonitor(pm, 1));
 					return javaProject.getPackageFragmentRoot(srcFolder);
 				}
 

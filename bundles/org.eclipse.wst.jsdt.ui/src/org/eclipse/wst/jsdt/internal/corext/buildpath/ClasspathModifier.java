@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -692,13 +692,12 @@ public class ClasspathModifier {
 		
 		try {
 			IIncludePathEntry[] entries= convert(newEntries);
-			IPath outputLocation= project.getOutputLocation();
 
-			IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(project, entries, outputLocation);
+			IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(project, entries, null);
 			if (!status.isOK())
 				throw new JavaScriptModelException(status);
 
-			project.setRawIncludepath(entries, outputLocation, new SubProgressMonitor(monitor, 2));
+			project.setRawIncludepath(entries, new SubProgressMonitor(monitor, 2));
 		} finally {
 			monitor.done();
 		}
@@ -717,7 +716,7 @@ public class ClasspathModifier {
 			if (!status.isOK())
 				throw new JavaScriptModelException(status);
 
-			cpProject.getJavaProject().setRawIncludepath(entries, null, new SubProgressMonitor(monitor, 2));
+			cpProject.getJavaProject().setRawIncludepath(entries, new SubProgressMonitor(monitor, 2));
 		} finally {
 			monitor.done();
 		}

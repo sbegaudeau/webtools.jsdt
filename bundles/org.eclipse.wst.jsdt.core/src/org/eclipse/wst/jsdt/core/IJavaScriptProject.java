@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -402,28 +402,6 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	Map getOptions(boolean inheritJavaCoreOptions);
 
 	/**
-	 * Returns the default output location for this project as a workspace-
-	 * relative absolute path.
-	 * <p>
-	 * The default output location is where class files are ordinarily generated
-	 * (and resource files, copied). Each source includepath entry can also
-	 * specify an output location for the generated class files (and copied
-	 * resource files) corresponding to javaScript units under that source
-	 * folder. This makes it possible to arrange generated class files for
-	 * different source folders in different output folders, and not
-	 * necessarily the default output folder. This means that the generated
-	 * class files for the project may end up scattered across several folders,
-	 * rather than all in the default output folder (which is more standard).
-	 * </p>
-	 *
-	 * @return the workspace-relative absolute path of the default output folder
-	 * @exception JavaScriptModelException if this element does not exist
-	 * @see #setOutputLocation(org.eclipse.core.runtime.IPath, IProgressMonitor)
-	 * @see IIncludePathEntry#getOutputLocation()
-	 */
-	IPath getOutputLocation() throws JavaScriptModelException;
-
-	/**
 	 * Returns a package fragment root for the file at the specified file system path.
 	 * This is a handle-only method.  The underlying <code>java.io.File</code>
 	 * may or may not exist. No resource is associated with this local file
@@ -697,37 +675,6 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 		throws JavaScriptModelException;
 
 	/**
-	 * Returns the default output location for the project as defined by its <code>.jsdtScope</code> file from disk, or <code>null</code>
-	 * if unable to read the file.
-	 * <p>
-	 * This output location may differ from the in-memory one returned by <code>getOutputLocation</code>, in case the
-	 * automatic reconciliation mechanism has not been performed yet. Usually, any change to the <code>.classpath</code> file
-	 * is automatically noticed and reconciled at the next resource change notification event.
-	 * However, if the file is modified within an operation, where this change needs to be taken into account before the
-	 * operation ends, then the output location from disk can be read using this method, and further assigned to the project
-	 * using <code>setRawIncludepath(...)</code>.
-	 * <p>
-	 * The default output location is where class files are ordinarily generated
-	 * (and resource files, copied). Each source includepath entry can also
-	 * specify an output location for the generated class files (and copied
-	 * resource files) corresponding to javaScript units under that source
-	 * folder. This makes it possible to arrange generated class files for
-	 * different source folders in different output folders, and not
-	 * necessarily the default output folder. This means that the generated
-	 * class files for the project may end up scattered across several folders,
-	 * rather than all in the default output folder (which is more standard).
-	 * <p>
-	 * In order to manually force a project includepath refresh, one can simply assign the project includepath using the result of this
-	 * method, as follows:
-	 * <code>proj.setRawIncludepath(proj.readRawIncludepath(), proj.readOutputLocation(), monitor)</code>
-	 * (note that the <code>readRawIncludepath/readOutputLocation</code> methods could return <code>null</code>).
-	 * <p>
-	 * @return the workspace-relative absolute path of the default output folder
-	 * @see #getOutputLocation()
-	 */
-	IPath readOutputLocation();
-
-	/**
 	 * Returns the raw includepath for the project as defined by its
 	 * <code>.jsdtScope</code> file from disk, or <code>null</code>
 	 * if unable to read the file.
@@ -757,8 +704,8 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * <p>
 	 * In order to manually force a project includepath refresh, one can simply
 	 * assign the project includepath using the result of this method, as follows:
-	 * <code>proj.setRawIncludepath(proj.readRawIncludepath(), proj.readOutputLocation(), monitor)</code>
-	 * (note that the <code>readRawIncludepath/readOutputLocation</code> methods
+	 * <code>proj.setRawIncludepath(proj.readRawIncludepath(), monitor)</code>
+	 * (note that the <code>readRawIncludepath</code> method
 	 * could return <code>null</code>).
 	 * </p>
 	 *
@@ -794,76 +741,6 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * @see JavaScriptCore#getDefaultOptions()
 	 */
 	void setOptions(Map newOptions);
-
-	/**
-	 * Sets the default output location of this project to the location
-	 * described by the given workspace-relative absolute path.
-	 * <p>
-	 * The default output location is where class files are ordinarily generated
-	 * (and resource files, copied). Each source includepath entries can also
-	 * specify an output location for the generated class files (and copied
-	 * resource files) corresponding to javaScript units under that source
-	 * folder. This makes it possible to arrange that generated class files for
-	 * different source folders to end up in different output folders, and not
-	 * necessarily the default output folder. This means that the generated
-	 * class files for the project may end up scattered across several folders,
-	 * rather than all in the default output folder (which is more standard).
-	 * </p>
-	 *
-	 * @param path the workspace-relative absolute path of the default output
-	 * folder
-	 * @param monitor the progress monitor
-	 *
-	 * @exception JavaScriptModelException if the includepath could not be set. Reasons include:
-	 * <ul>
-	 *  <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
-	 *  <li> The path refers to a location not contained in this project (<code>PATH_OUTSIDE_PROJECT</code>)
-	 *  <li> The path is not an absolute path (<code>RELATIVE_PATH</code>)
-	 *  <li> The path is nested inside a package fragment root of this project (<code>INVALID_PATH</code>)
-	 *  <li> The output location is being modified during resource change event notification (CORE_EXCEPTION)
-	 * </ul>
-	 * @see #getOutputLocation()
-     * @see IIncludePathEntry#getOutputLocation()
-	 */
-	void setOutputLocation(IPath path, IProgressMonitor monitor)
-		throws JavaScriptModelException;
-
-	/**
-	 * Sets both the includepath of this project and its default output
-	 * location at once. The includepath is defined using a list of includepath
-	 * entries. In particular such a includepath may contain includepath variable entries.
-	 * Includepath variable entries can be resolved individually ({@link JavaScriptCore#getIncludepathVariable(String)}),
-	 * or the full includepath can be resolved at once using the helper method {@link #getResolvedIncludepath(boolean)}.
-	 * <p>
-	 * </p><p>
-	 * If it is specified that this operation cannot modify resources, the .jsdtScope file will not be written to disk
-	 * and no error marker will be generated. To synchronize the .jsdtScope with the in-memory includepath,
-	 * one can use <code>setRawIncludepath(readRawIncludepath(), true, monitor)</code>.
-	 * </p><p>
-	 * Setting the includepath to <code>null</code> specifies a default includepath
-	 * (the project root). Setting the includepath to an empty array specifies an
-	 * empty includepath.
-	 * </p><p>
-	 * If a cycle is detected while setting this includepath (and if resources can be modified), an error marker will be added
-	 * to the project closing the cycle.
-	 * To avoid this problem, use {@link #hasIncludepathCycle(IIncludePathEntry[])}
-	 * before setting the includepath.
-	 * <p>
-	 * This operation acquires a lock on the workspace's root.
-	 *
-	 * @param entries a list of includepath entries
-	 * @param outputLocation the default output location
-	 * @param canModifyResources whether resources should be written to disk if needed
-	 * @param monitor the given progress monitor
-	 * @exception JavaScriptModelException if the includepath could not be set. Reasons include:
-	 * <ul>
-	 * <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
-	 * <li> The includepath is being modified during resource change event notification (CORE_EXCEPTION)
-	 * <li> The includepath failed the validation check as defined by {@link JavaScriptConventions#validateIncludepath(IJavaScriptProject, IIncludePathEntry[], IPath)}
-	 * </ul>
-	 * @see IIncludePathEntry
-	 */
-	void setRawIncludepath(IIncludePathEntry[] entries, IPath outputLocation, boolean canModifyResources, IProgressMonitor monitor) throws JavaScriptModelException;
 
 	/**
 	 * Sets the includepath of this project using a list of includepath entries. In particular such a includepath may contain
@@ -927,51 +804,6 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * @see IIncludePathEntry
 	 */
 	void setRawIncludepath(IIncludePathEntry[] entries, IProgressMonitor monitor)
-		throws JavaScriptModelException;
-
-	/**
-	 * Sets the both the includepath of this project and its default output
-	 * location at once. The includepath is defined using a list of includepath
-	 * entries. In particular, such a includepath may contain includepath variable
-	 * entries. Includepath variable entries can be resolved individually (see
-	 * ({@link JavaScriptCore#getIncludepathVariable(String)}), or the full includepath can be
-	 * resolved at once using the helper method
-	 * {@link #getResolvedIncludepath(boolean)}.
-	 * <p>
-	 * </p>
-	 * <p>
-	 * Setting the includepath to <code>null</code> specifies a default includepath
-	 * (the project root). Setting the includepath to an empty array specifies an
-	 * empty includepath.
-	 * </p>
-	 * <p>
-	 * If a cycle is detected while setting this includepath, an error marker will
-	 * be added to the project closing the cycle. To avoid this problem, use
-	 * {@link #hasIncludepathCycle(IIncludePathEntry[])} before setting
-	 * the includepath.
-	 * </p>
-	 * <p>
-	 * This operation acquires a lock on the workspace's root.
-	 * </p>
-	 *
-	 * @param entries a list of includepath entries
-	 * @param monitor the progress monitor
-	 * @param outputLocation the default output location
-	 * @exception JavaScriptModelException if the includepath could not be set. Reasons
-	 * include:
-	 * <ul>
-	 * <li> This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
-	 * <li> Two or more entries specify source roots with the same or overlapping paths (NAME_COLLISION)
-	 * <li> A entry of kind <code>CPE_PROJECT</code> refers to this project (INVALID_PATH)
-	 *  <li>This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
-	 *	<li>The output location path refers to a location not contained in this project (<code>PATH_OUTSIDE_PROJECT</code>)
-	 *	<li>The output location path is not an absolute path (<code>RELATIVE_PATH</code>)
-	 *  <li>The output location path is nested inside a package fragment root of this project (<code>INVALID_PATH</code>)
-	 * <li> The includepath is being modified during resource change event notification (CORE_EXCEPTION)
-	 * </ul>
-	 * @see IIncludePathEntry
-	 */
-	void setRawIncludepath(IIncludePathEntry[] entries, IPath outputLocation, IProgressMonitor monitor)
 		throws JavaScriptModelException;
 	
 	ITypeRoot findTypeRoot(String fullyQualifiedName) throws JavaScriptModelException;

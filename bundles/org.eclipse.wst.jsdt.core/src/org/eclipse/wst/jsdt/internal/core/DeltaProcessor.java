@@ -2483,15 +2483,7 @@ public class DeltaProcessor {
 				IFile file = (IFile) delta.getResource();
 				IJavaScriptProject project = element.getJavaScriptProject();
 				IPath binaryFolderPath = element.getPackageFragmentRoot().getPath();
-				// if the class file is part of the binary output, it has been created by
-				// the java builder -> ignore
-				try {
-					if (binaryFolderPath.equals(project.getOutputLocation())) {
-						break;
-					}
-				} catch (JavaScriptModelException e) {
-					// project doesn't exist: ignore
-				}
+			
 				switch (delta.getKind()) {
 					case IResourceDelta.CHANGED :
 						// no need to index if the content has not changed
